@@ -5,10 +5,12 @@
   "scripts": {
     "dev": "nodemon src/index.js",
     "start": "node src/index.js",
-    "kill-port": "node kill-port.js"
+    "kill-port": "node kill-port.js",
+    "heroku-postbuild": "node heroku-postbuild.js"
   },
   "dependencies": {
     "bcrypt": "^5.1.1",
+    "bcryptjs": "^2.4.3",
     "connect-pg-simple": "^9.0.0",
     "dotenv": "^16.3.1",
     "ejs": "^3.1.9",
