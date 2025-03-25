@@ -251,7 +251,7 @@
                 <div class="starter-card" onclick="openModal(<%= index %>)">
                     <div class="starter-card-header">
                         <h3 class="starter-card-title">
-                            <% 
+                            <%
                                 // Create a title from the species data names
                                 const speciesNames = starter.speciesData.map(s => {
                                     if (s.species === 'Pokemon') return s.data.SpeciesName;
@@ -259,7 +259,7 @@
                                     if (s.species === 'Yokai') return s.data.Name;
                                     return s.species;
                                 }).filter(Boolean);
-                                
+
                                 // Join with slashes
                                 const title = speciesNames.join(' / ');
                             %>
@@ -308,12 +308,12 @@
         <div class="modal-body">
             <form id="claimForm" action="/trainers/<%= trainer.id %>/claim-starter" method="POST">
                 <input type="hidden" id="starterIndex" name="starterIndex" value="">
-                
+
                 <div class="form-group">
                     <label for="monsterName">Name your new monster:</label>
-                    <input type="text" id="monsterName" name="monsterName" class="form-control" required>
+                    <input type="text" id="monsterName" name="monster_name" class="form-control" required>
                 </div>
-                
+
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancel</button>
                     <button type="submit" class="btn btn-primary">Claim Starter</button>
@@ -328,12 +328,12 @@
     const modal = document.getElementById('starterModal');
     const modalTitle = document.getElementById('modalTitle');
     const starterIndexInput = document.getElementById('starterIndex');
-    
+
     function openModal(index) {
         // Get the starter data
         const starters = <%- JSON.stringify(starters) %>;
         const starter = starters[index];
-        
+
         // Create title from species names
         const speciesNames = starter.speciesData.map(s => {
             if (s.species === 'Pokemon') return s.data.SpeciesName;
@@ -341,21 +341,21 @@
             if (s.species === 'Yokai') return s.data.Name;
             return s.species;
         }).filter(Boolean);
-        
+
         const title = speciesNames.join(' / ');
-        
+
         // Update modal title and starter index
         modalTitle.textContent = `Claim ${title}`;
         starterIndexInput.value = index;
-        
+
         // Show the modal
         modal.style.display = 'block';
     }
-    
+
     function closeModal() {
         modal.style.display = 'none';
     }
-    
+
     // Close modal when clicking outside of it
     window.onclick = function(event) {
         if (event.target === modal) {

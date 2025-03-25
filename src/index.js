@@ -12,7 +12,9 @@ const Monster = require('./models/Monster');
 const Pokemon = require('./models/Pokemon');
 const Digimon = require('./models/Digimon');
 const Yokai = require('./models/Yokai');
+const Move = require('./models/Move');
 const MonsterRoller = require('./utils/MonsterRoller');
+const MonsterInitializer = require('./utils/MonsterInitializer');
 require('dotenv').config();
 
 const app = express();
@@ -601,6 +603,15 @@ app.get('/trainers/:id/roll-starters', async (req, res) => {
     }
 
     const trainerId = req.params.id;
+
+    // Validate that trainerId is a valid integer
+    if (!trainerId || isNaN(parseInt(trainerId))) {
+      return res.status(400).render('error', {
+        message: 'Invalid trainer ID',
+        error: { status: 400 }
+      });
+    }
+
     const trainer = await Trainer.getById(trainerId);
 
     if (!trainer) {
@@ -683,6 +694,15 @@ app.post('/trainers/:id/claim-starter', async (req, res) => {
     }
 
     const trainerId = req.params.id;
+
+    // Validate that trainerId is a valid integer
+    if (!trainerId || isNaN(parseInt(trainerId))) {
+      return res.status(400).render('error', {
+        message: 'Invalid trainer ID',
+        error: { status: 400 }
+      });
+    }
+
     const trainer = await Trainer.getById(trainerId);
 
     if (!trainer) {
@@ -700,6 +720,13 @@ app.post('/trainers/:id/claim-starter', async (req, res) => {
       });
     }
 
+    // Get the request body data
+    console.log('Request body in claim-starter:', req.body);
+    const { starterIndex, monster_name, monsterName } = req.body;
+
+    // Use monster_name if available, otherwise fall back to monsterName
+    const monsterNameToUse = monster_name || monsterName;
+
     // Get the starters from the session
     const starters = req.session.starters;
     if (!starters || starters.length === 0) {
@@ -709,21 +736,59 @@ app.post('/trainers/:id/claim-starter', async (req, res) => {
       });
     }
 
-    // Get the selected starter index and name
-    const { starterIndex, monsterName } = req.body;
-    const selectedStarter = starters[parseInt(starterIndex)];
+    console.log('Starters in session:', starters.length, 'starters available');
+
+    // Validate the starter index
+    const starterIndexNum = parseInt(starterIndex);
+    if (isNaN(starterIndexNum) || starterIndexNum < 0 || starterIndexNum >= starters.length) {
+      return res.status(400).render('error', {
+        message: `Invalid starter index: ${starterIndex}. Must be between 0 and ${starters.length - 1}`,
+        error: { status: 400 }
+      });
+    }
+
+    const selectedStarter = starters[starterIndexNum];
 
     if (!selectedStarter) {
+      console.error(`Starter at index ${starterIndexNum} not found in starters array`);
+      console.error('Available starters:', starters.map((s, i) => `Index ${i}: ${s.species1}${s.species2 ? '/' + s.species2 : ''}${s.species3 ? '/' + s.species3 : ''}`))
       return res.status(400).render('error', {
-        message: 'Invalid starter selection',
+        message: `Invalid starter selection: Starter at index ${starterIndexNum} not found`,
         error: { status: 400 }
+      });
+    }
+
+    if (!monsterNameToUse) {
+      return res.status(400).render('error', {
+        message: 'Monster name is required',
+        error: { status: 400 }
+      });
+    }
+
+    // Double-check that the trainer exists in the database
+    // First, make sure trainerId is a valid integer
+    const trainerIdNum = parseInt(trainerId);
+    if (isNaN(trainerIdNum)) {
+      console.error(`Invalid trainer ID: ${trainerId} is not a number`);
+      return res.status(400).render('error', {
+        message: 'Invalid trainer ID: must be a number',
+        error: { status: 400 }
+      });
+    }
+
+    const trainerExists = await Trainer.getById(trainerIdNum);
+    if (!trainerExists) {
+      console.error(`Trainer with ID ${trainerIdNum} not found in database`);
+      return res.status(404).render('error', {
+        message: 'Trainer not found in database',
+        error: { status: 404 }
       });
     }
 
     // Create the monster
     const monsterData = {
-      trainer_id: trainerId,
-      name: monsterName,
+      trainer_id: trainerIdNum, // Use the validated integer trainer ID
+      name: monsterNameToUse,
       level: 5, // Starters start at level 5
       species1: selectedStarter.species1,
       species2: selectedStarter.species2 || null,
@@ -735,13 +800,36 @@ app.post('/trainers/:id/claim-starter', async (req, res) => {
       type5: selectedStarter.type5 || null,
       attribute: selectedStarter.attribute,
       box_number: -1, // Put in battle box by default
-      is_starter: true // Mark as a starter
+      is_starter_template: true // Mark as a starter (using true as it's a boolean column)
+      // img_link is intentionally omitted to use the default
     };
 
-    const monster = await Monster.create(monsterData);
+    console.log('About to create monster with data:', JSON.stringify(monsterData, null, 2));
+    try {
+      const monster = await Monster.create(monsterData);
+      console.log('Monster creation result:', monster ? 'Success' : 'Failed');
 
-    if (!monster) {
-      throw new Error('Failed to create monster');
+      if (monster) {
+        console.log('Created monster ID:', monster.mon_id);
+      }
+
+      if (!monster) {
+        console.error('Monster creation failed in claim-starter route');
+        console.error('Monster data:', JSON.stringify(monsterData, null, 2));
+        return res.status(500).render('error', {
+          message: 'Failed to create monster',
+          error: { status: 500, stack: 'Check server logs for details' },
+          title: 'Error'
+        });
+      }
+    } catch (createError) {
+      console.error('Error during monster creation:', createError);
+      console.error('Monster data that caused error:', JSON.stringify(monsterData, null, 2));
+      return res.status(500).render('error', {
+        message: 'Error creating monster: ' + createError.message,
+        error: { status: 500, stack: createError.stack },
+        title: 'Error'
+      });
     }
 
     // Increment the starter set
@@ -764,8 +852,25 @@ app.post('/trainers/:id/claim-starter', async (req, res) => {
     }
   } catch (error) {
     console.error('Error claiming starter:', error);
+    console.error('Request body:', req.body);
+    console.error('Session data:', req.session);
+
+    // Try to provide a more helpful error message
+    let errorMessage = 'Error claiming starter';
+    if (error.message.includes('null value in column')) {
+      errorMessage = 'Missing required field: ' + error.message;
+    } else if (error.message.includes('violates foreign key constraint')) {
+      errorMessage = 'Invalid trainer ID or reference: ' + error.message;
+    } else if (error.message.includes('syntax error')) {
+      errorMessage = 'Database query syntax error: ' + error.message;
+    } else if (error.message.includes('Trainer with ID')) {
+      errorMessage = error.message;
+    } else if (error.message.includes('Invalid trainer_id')) {
+      errorMessage = error.message;
+    }
+
     res.status(500).render('error', {
-      message: 'Error claiming starter',
+      message: errorMessage,
       error: { status: 500, stack: error.stack },
       title: 'Error'
     });

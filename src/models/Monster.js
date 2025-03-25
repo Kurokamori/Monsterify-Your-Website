@@ -88,65 +88,110 @@ class Monster {
         processedData.img_link = '/images/default_mon.png';
       }
 
-      const {
-        trainer_id,
-        name,
-        level,
-        species1,
-        species2,
-        species3,
-        type1,
-        type2,
-        type3,
-        type4,
-        type5,
-        attribute,
-        img_link,
-        box_number
-      } = processedData;
+      // Initialize monster stats and moves
+      const MonsterInitializer = require('../utils/MonsterInitializer');
+      const initializedData = await MonsterInitializer.initializeMonster(processedData);
+
+      // Integer fields in the mons table
+      const integerFields = ['mon_id', 'trainer_id', 'level', 'mon_index', 'box_number',
+                            'hp_total', 'hp_ev', 'hp_iv', 'atk_total', 'atk_ev', 'atk_iv',
+                            'def_total', 'def_ev', 'def_iv', 'spa_total', 'spa_ev', 'spa_iv',
+                            'spd_total', 'spd_ev', 'spd_iv', 'spe_total', 'spe_ev', 'spe_iv',
+                            'shiny', 'alpha', 'shadow', 'paradox', 'pokerus', 'friendship'];
+      
+      // Boolean fields in the database
+      const booleanFields = ['is_starter_template'];
+
+      // Build the columns and values for the query
+      const columns = [];
+      const placeholders = [];
+      const values = [];
+      let paramIndex = 1;
+
+      // Add each field to the query
+      Object.entries(initializedData).forEach(([key, value]) => {
+        if (value !== undefined) {
+          // For boolean fields, add explicit cast to boolean
+          if (booleanFields.includes(key)) {
+            columns.push(key);
+            placeholders.push(`$${paramIndex}::boolean`);
+          } else {
+            columns.push(key);
+            placeholders.push(`$${paramIndex}`);
+          }
+
+          // Handle empty strings for integer fields
+          if (integerFields.includes(key) && value === '') {
+            values.push(null);
+          }
+          // Handle boolean fields (ensure they are proper booleans)
+          else if (booleanFields.includes(key)) {
+            // Convert truthy/falsy values to true/false
+            values.push(value === true || value === 'true' || value === 1);
+          } else {
+            values.push(value);
+          }
+
+          paramIndex++;
+        }
+      });
+
+      // Ensure we have at least the required fields
+      if (!columns.includes('trainer_id') || !columns.includes('name') || !columns.includes('level')) {
+        throw new Error('Missing required fields: trainer_id, name, and level are required');
+      }
+      
+      // Validate trainer_id is a valid integer
+      const trainerIdIndex = columns.indexOf('trainer_id');
+      if (trainerIdIndex !== -1) {
+        const trainerId = values[trainerIdIndex];
+        if (isNaN(parseInt(trainerId))) {
+          throw new Error(`Invalid trainer_id: ${trainerId}`);
+        }
+        
+        // Check if the trainer exists in the database
+        try {
+          const Trainer = require('./Trainer');
+          const trainer = await Trainer.getById(trainerId);
+          if (!trainer) {
+            throw new Error(`Trainer with ID ${trainerId} not found in database`);
+          }
+        } catch (trainerError) {
+          console.error('Error validating trainer:', trainerError);
+          // Don't throw here, as we want to continue with the monster creation
+          // The foreign key constraint will catch this if necessary
+        }
+      }
+
+      // Ensure we have matching columns and placeholders
+      if (columns.length !== placeholders.length || columns.length !== values.length) {
+        throw new Error(`Mismatch in query parameters: ${columns.length} columns, ${placeholders.length} placeholders, ${values.length} values`);
+      }
 
       const query = `
         INSERT INTO mons (
-          trainer_id,
-          name,
-          level,
-          species1,
-          species2,
-          species3,
-          type1,
-          type2,
-          type3,
-          type4,
-          type5,
-          attribute,
-          img_link,
-          box_number
+          ${columns.join(', ')}
         )
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
+        VALUES (${placeholders.join(', ')})
         RETURNING *
       `;
 
-      const values = [
-        trainer_id,
-        name,
-        level,
-        species1,
-        species2,
-        species3,
-        type1,
-        type2,
-        type3,
-        type4,
-        type5,
-        attribute,
-        img_link,
-        box_number
-      ];
+      console.log('Monster creation query:', query);
+      console.log('Monster creation values:', values);
+      
+      // Log the types of each value for debugging
+      console.log('Value types:');
+      values.forEach((value, index) => {
+        console.log(`  ${columns[index]}: ${value === null ? 'null' : typeof value} = ${value}`);
+      });
 
       const result = await pool.query(query, values);
+      console.log('Monster created successfully:', result.rows[0]);
       return result.rows[0];
     } catch (error) {
       console.error('Error creating monster:', error);
+      // Don't try to access query or values here as they might not be defined in this scope
+      console.error('Monster data that failed:', monsterData);
       return null;
     }
   }
