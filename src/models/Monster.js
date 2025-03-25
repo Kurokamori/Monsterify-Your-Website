@@ -220,6 +220,174 @@ class Monster {
       return false;
     }
   }
+
+  /**
+   * Get monsters by trainer ID and box number
+   * @param {number} trainerId - Trainer ID
+   * @param {number} boxNumber - Box number
+   * @returns {Promise<Array>} - Array of monsters in the specified box
+   */
+  static async getByTrainerIdAndBoxNumber(trainerId, boxNumber) {
+    try {
+      const query = 'SELECT * FROM mons WHERE trainer_id = $1 AND box_number = $2 ORDER BY trainer_index, name';
+      const result = await pool.query(query, [trainerId, boxNumber]);
+      return result.rows;
+    } catch (error) {
+      console.error('Error getting monsters by trainer ID and box number:', error);
+      return [];
+    }
+  }
+
+  /**
+   * Get all box numbers for a trainer
+   * @param {number} trainerId - Trainer ID
+   * @returns {Promise<Array>} - Array of box numbers
+   */
+  static async getBoxNumbersByTrainerId(trainerId) {
+    try {
+      const query = 'SELECT DISTINCT box_number FROM mons WHERE trainer_id = $1 ORDER BY box_number';
+      const result = await pool.query(query, [trainerId]);
+      return result.rows.map(row => row.box_number);
+    } catch (error) {
+      console.error('Error getting box numbers by trainer ID:', error);
+      return [];
+    }
+  }
+
+  /**
+   * Get monsters by trainer ID with pagination
+   * @param {number} trainerId - Trainer ID
+   * @param {number} page - Page number (1-based)
+   * @param {number} limit - Number of monsters per page
+   * @returns {Promise<Object>} - Object containing monsters and pagination info
+   */
+  static async getByTrainerIdPaginated(trainerId, page = 1, limit = 30) {
+    try {
+      // Calculate offset
+      const offset = (page - 1) * limit;
+
+      // Get total count
+      const countQuery = 'SELECT COUNT(*) FROM mons WHERE trainer_id = $1';
+      const countResult = await pool.query(countQuery, [trainerId]);
+      const totalCount = parseInt(countResult.rows[0].count);
+
+      // Get monsters for the current page
+      const query = 'SELECT * FROM mons WHERE trainer_id = $1 ORDER BY box_number, trainer_index, name LIMIT $2 OFFSET $3';
+      const result = await pool.query(query, [trainerId, limit, offset]);
+
+      // Calculate total pages
+      const totalPages = Math.ceil(totalCount / limit);
+
+      return {
+        monsters: result.rows,
+        pagination: {
+          total: totalCount,
+          page,
+          limit,
+          totalPages
+        }
+      };
+    } catch (error) {
+      console.error('Error getting paginated monsters by trainer ID:', error);
+      return {
+        monsters: [],
+        pagination: {
+          total: 0,
+          page,
+          limit,
+          totalPages: 0
+        }
+      };
+    }
+  }
+
+  /**
+   * Get monsters by trainer ID and box number with pagination
+   * @param {number} trainerId - Trainer ID
+   * @param {number} boxNumber - Box number
+   * @param {number} page - Page number (1-based)
+   * @param {number} limit - Number of monsters per page
+   * @returns {Promise<Object>} - Object containing monsters and pagination info
+   */
+  static async getByTrainerIdAndBoxNumberPaginated(trainerId, boxNumber, page = 1, limit = 30) {
+    try {
+      // Calculate offset
+      const offset = (page - 1) * limit;
+
+      // Get total count
+      const countQuery = 'SELECT COUNT(*) FROM mons WHERE trainer_id = $1 AND box_number = $2';
+      const countResult = await pool.query(countQuery, [trainerId, boxNumber]);
+      const totalCount = parseInt(countResult.rows[0].count);
+
+      // Get monsters for the current page
+      const query = 'SELECT * FROM mons WHERE trainer_id = $1 AND box_number = $2 ORDER BY trainer_index, name LIMIT $3 OFFSET $4';
+      const result = await pool.query(query, [trainerId, boxNumber, limit, offset]);
+
+      // Calculate total pages
+      const totalPages = Math.ceil(totalCount / limit);
+
+      return {
+        monsters: result.rows,
+        pagination: {
+          total: totalCount,
+          page,
+          limit,
+          totalPages
+        }
+      };
+    } catch (error) {
+      console.error('Error getting paginated monsters by trainer ID and box number:', error);
+      return {
+        monsters: [],
+        pagination: {
+          total: 0,
+          page,
+          limit,
+          totalPages: 0
+        }
+      };
+    }
+  }
+
+  /**
+   * Reorganize monsters into boxes of specified size
+   * @param {number} trainerId - Trainer ID
+   * @param {number} boxSize - Maximum number of monsters per box
+   * @returns {Promise<boolean>} - Success status
+   */
+  static async reorganizeBoxes(trainerId, boxSize = 30) {
+    try {
+      // Get all monsters for the trainer, excluding battle box (box_number = -1)
+      const query = 'SELECT * FROM mons WHERE trainer_id = $1 AND box_number != -1 ORDER BY trainer_index, name';
+      const result = await pool.query(query, [trainerId]);
+      const monsters = result.rows;
+
+      // Calculate new box numbers
+      const updates = [];
+      monsters.forEach((monster, index) => {
+        const newBoxNumber = Math.floor(index / boxSize) + 1; // Box numbers start at 1
+        if (monster.box_number !== newBoxNumber) {
+          updates.push({
+            monId: monster.mon_id,
+            boxNumber: newBoxNumber
+          });
+        }
+      });
+
+      // Update box numbers in batches
+      for (const update of updates) {
+        await pool.query(
+          'UPDATE mons SET box_number = $1, updated_at = CURRENT_TIMESTAMP WHERE mon_id = $2',
+          [update.boxNumber, update.monId]
+        );
+      }
+
+      return true;
+    } catch (error) {
+      console.error('Error reorganizing boxes:', error);
+      return false;
+    }
+  }
 }
 
 module.exports = Monster;

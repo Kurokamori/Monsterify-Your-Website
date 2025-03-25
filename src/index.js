@@ -542,6 +542,93 @@ app.get('/trainer-viewer/:id', (req, res) => {
   res.redirect(`/trainers/${req.params.id}`);
 });
 
+// PC Box route
+app.get('/trainers/:id/pc', async (req, res) => {
+  try {
+    const trainerId = req.params.id;
+    const page = parseInt(req.query.page) || 1;
+    const boxNumber = parseInt(req.query.box) || null;
+    const boxPage = parseInt(req.query.boxPage) || 1;
+    const boxSize = 30; // 5x6 grid
+
+    // Get trainer
+    const trainer = await Trainer.getById(trainerId);
+    if (!trainer) {
+      return res.status(404).render('error', {
+        message: 'Trainer not found',
+        error: { status: 404 }
+      });
+    }
+
+    // Get all monsters for this trainer
+    let result;
+    if (boxNumber !== null) {
+      // Get monsters for a specific box
+      result = await Monster.getByTrainerIdAndBoxNumberPaginated(trainerId, boxNumber, page, boxSize);
+    } else {
+      // Get all monsters
+      result = await Monster.getByTrainerIdPaginated(trainerId, page, boxSize);
+    }
+
+    // Get all box numbers for this trainer
+    const boxNumbers = await Monster.getBoxNumbersByTrainerId(trainerId);
+
+    // Check if any box has more than 30 monsters
+    let needsReorganization = false;
+    for (const box of boxNumbers) {
+      if (box !== -1) { // Skip battle box
+        const boxMonsters = await Monster.getByTrainerIdAndBoxNumber(trainerId, box);
+        if (boxMonsters.length > boxSize) {
+          needsReorganization = true;
+          break;
+        }
+      }
+    }
+
+    // Reorganize boxes if needed
+    if (needsReorganization) {
+      await Monster.reorganizeBoxes(trainerId, boxSize);
+      // Refresh data after reorganization
+      if (boxNumber !== null) {
+        result = await Monster.getByTrainerIdAndBoxNumberPaginated(trainerId, boxNumber, page, boxSize);
+      } else {
+        result = await Monster.getByTrainerIdPaginated(trainerId, page, boxSize);
+      }
+      // Refresh box numbers
+      const updatedBoxNumbers = await Monster.getBoxNumbersByTrainerId(trainerId);
+      boxNumbers.length = 0;
+      boxNumbers.push(...updatedBoxNumbers);
+    }
+
+    // Get box overview (for the sidebar)
+    const boxOverviewResult = await Monster.getByTrainerIdAndBoxNumberPaginated(
+      trainerId,
+      boxNumber || (boxNumbers.length > 0 ? boxNumbers[0] : 1),
+      boxPage,
+      boxSize
+    );
+
+    res.render('trainers/pc', {
+      trainer,
+      monsters: result.monsters,
+      pagination: result.pagination,
+      boxNumbers,
+      currentBox: boxNumber,
+      boxOverview: boxOverviewResult.monsters,
+      boxPagination: boxOverviewResult.pagination,
+      boxPage,
+      title: `${trainer.name} - PC Boxes`
+    });
+  } catch (error) {
+    console.error('Error getting PC boxes:', error);
+    res.status(500).render('error', {
+      message: 'Error getting PC boxes',
+      error: { status: 500, stack: error.stack },
+      title: 'Error'
+    });
+  }
+});
+
 // Monster detail route
 app.get('/trainers/:trainerId/monsters/:monsterId', async (req, res) => {
   try {
