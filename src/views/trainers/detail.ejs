@@ -47,6 +47,13 @@
         <!-- Right: Trainer Info -->
         <div class="trainer-info-column">
             <h1 class="text-5xl font-display font-bold mb-4"><%= trainer.name %></h1>
+            <% if (trainer.nickname || trainer.full_name) { %>
+                <h3 class="text-2xl font-display mb-2">
+                    <% if (trainer.nickname) { %><span class="text-[#f8d030]"><%= trainer.nickname %></span><% } %>
+                    <% if (trainer.nickname && trainer.full_name) { %> • <% } %>
+                    <% if (trainer.full_name) { %><span class="text-[#a8a878]"><%= trainer.full_name %></span><% } %>
+                </h3>
+            <% } %>
             <% if (trainer.title) { %>
                 <h2 class="text-3xl font-display text-[#d4b3ff] mb-8"><%= trainer.title %></h2>
             <% } %>
@@ -144,13 +151,15 @@
 
             <!-- Secondary Information -->
             <div class="info-grid secondary-info">
-                <% if (trainer.gender || trainer.pronouns) { %>
+                <% if (trainer.gender || trainer.pronouns || trainer.sexuality) { %>
                 <div class="info-item">
                     <label>Identity</label>
                     <span>
                         <% if (trainer.gender) { %><%= trainer.gender %><% } %>
-                        <% if (trainer.gender && trainer.pronouns) { %> • <% } %>
+                        <% if ((trainer.gender && trainer.pronouns) || (trainer.gender && trainer.sexuality)) { %> • <% } %>
                         <% if (trainer.pronouns) { %><%= trainer.pronouns %><% } %>
+                        <% if (trainer.pronouns && trainer.sexuality) { %> • <% } %>
+                        <% if (trainer.sexuality) { %><%= trainer.sexuality %><% } %>
                     </span>
                 </div>
                 <% } %>

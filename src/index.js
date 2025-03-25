@@ -500,6 +500,59 @@ app.get('/trainers/:id', async (req, res) => {
 });
 
 // API routes
+
+// Update monster box assignments
+app.post('/api/trainers/:id/update-boxes', async (req, res) => {
+  try {
+    const trainerId = parseInt(req.params.id, 10);
+    const { updates } = req.body;
+
+    if (!Array.isArray(updates)) {
+      return res.status(400).json({ error: 'Invalid updates format' });
+    }
+
+    // Check if user is authorized to update this trainer's monsters
+    const trainer = await Trainer.getById(trainerId);
+    if (!trainer) {
+      return res.status(404).json({ error: 'Trainer not found' });
+    }
+
+    // Check if the user is the owner of this trainer
+    if (!req.session.user || (req.session.user.discord_id && req.session.user.discord_id.toString() !== trainer.player_user_id)) {
+      return res.status(403).json({ error: 'Not authorized to update this trainer\'s monsters' });
+    }
+
+    // Process updates
+    const results = [];
+    for (const update of updates) {
+      const { monId, boxNumber, trainerIndex } = update;
+
+      if (!monId || boxNumber === undefined || trainerIndex === undefined) {
+        results.push({ monId, success: false, error: 'Missing required fields' });
+        continue;
+      }
+
+      try {
+        // Update the monster's box number and trainer index
+        await pool.query(
+          'UPDATE mons SET box_number = $1, trainer_index = $2, updated_at = CURRENT_TIMESTAMP WHERE mon_id = $3 AND trainer_id = $4',
+          [boxNumber, trainerIndex, monId, trainerId]
+        );
+
+        results.push({ monId, success: true });
+      } catch (error) {
+        console.error(`Error updating monster ${monId}:`, error);
+        results.push({ monId, success: false, error: error.message });
+      }
+    }
+
+    return res.json({ results });
+  } catch (error) {
+    console.error('Error updating boxes:', error);
+    return res.status(500).json({ error: 'Server error', message: error.message });
+  }
+});
+
 app.get('/api/trainers/:id', async (req, res) => {
   try {
     const trainerId = parseInt(req.params.id, 10);
@@ -541,7 +594,61 @@ app.get('/trainer-viewer/:id', (req, res) => {
   res.redirect(`/trainers/${req.params.id}`);
 });
 
-// PC Box route
+// PC Box routes
+
+// All Boxes route - shows all boxes at once
+app.get('/trainers/:id/boxes', async (req, res) => {
+  try {
+    const trainerId = req.params.id;
+
+    // Get trainer
+    const trainer = await Trainer.getById(trainerId);
+    if (!trainer) {
+      return res.status(404).render('error', {
+        message: 'Trainer not found',
+        error: { status: 404 }
+      });
+    }
+
+    // Get all box numbers for this trainer
+    const boxNumbers = await Monster.getBoxNumbersByTrainerId(trainerId);
+
+    // Get battle box monsters (box_number = -1)
+    const battleBoxMonsters = await Monster.getByTrainerIdAndBoxNumber(trainerId, -1);
+
+    // Get monsters for each regular box
+    const regularBoxes = [];
+    for (const boxNum of boxNumbers) {
+      // Skip battle box as we already got it separately
+      if (boxNum === -1) continue;
+
+      const monsters = await Monster.getByTrainerIdAndBoxNumber(trainerId, boxNum);
+      regularBoxes.push({
+        boxNumber: boxNum,
+        monsters: monsters
+      });
+    }
+
+    // Check if the user is viewing their own trainer
+    const isOwnTrainer = req.session.user && req.session.user.discord_id && req.session.user.discord_id.toString() === trainer.player_user_id;
+
+    res.render('trainers/boxes', {
+      trainer,
+      battleBoxMonsters,
+      regularBoxes,
+      isOwnTrainer,
+      title: `${trainer.name} - All Boxes`
+    });
+  } catch (error) {
+    console.error('Error getting all boxes:', error);
+    res.status(500).render('error', {
+      message: 'Error getting all boxes',
+      error
+    });
+  }
+});
+
+// Single Box route - shows a single box at a time
 app.get('/trainers/:id/pc', async (req, res) => {
   try {
     const trainerId = req.params.id;
@@ -600,12 +707,123 @@ app.get('/trainers/:id/pc', async (req, res) => {
     }
 
     // Get box overview (for the sidebar)
-    const boxOverviewResult = await Monster.getByTrainerIdAndBoxNumberPaginated(
-      trainerId,
-      boxNumber || (boxNumbers.length > 0 ? boxNumbers[0] : 1),
-      boxPage,
-      boxSize
-    );
+    // Determine which box to show in the overview
+    const overviewBoxNumber = boxNumber || (boxNumbers.length > 0 ? boxNumbers[0] : 1);
+
+    // Log for debugging
+    console.log('Loading box overview for box:', overviewBoxNumber, 'page:', boxPage);
+
+    // Get all monsters for the selected box (without pagination for the overview)
+    let boxOverviewMonsters = [];
+    try {
+      // First try to get all monsters for the box directly
+      const boxMonstersResult = await Monster.getByTrainerIdAndBoxNumber(trainerId, overviewBoxNumber);
+      boxOverviewMonsters = boxMonstersResult || [];
+
+      console.log(`Found ${boxOverviewMonsters.length} monsters in box ${overviewBoxNumber} (direct query)`);
+
+      // If no monsters found or if no specific box is selected, reorganize all monsters
+      if (boxOverviewMonsters.length === 0 || boxNumber === null) {
+        console.log('Box is empty or no specific box selected. Reorganizing all monsters...');
+
+        // Get all monsters for this trainer
+        const allMonsters = await Monster.getByTrainerId(trainerId);
+        console.log(`Found ${allMonsters.length} total monsters for trainer ${trainerId}`);
+
+        if (allMonsters.length > 0) {
+          // Sort monsters by trainer_index (if available) or alphabetically by name
+          allMonsters.sort((a, b) => {
+            // First sort by trainer_index if both have it
+            if (a.trainer_index !== null && b.trainer_index !== null) {
+              return a.trainer_index - b.trainer_index;
+            }
+            // If only one has trainer_index, prioritize that one
+            if (a.trainer_index !== null) return -1;
+            if (b.trainer_index !== null) return 1;
+            // Otherwise sort alphabetically by name
+            return a.name.localeCompare(b.name);
+          });
+
+          // Skip battle box monsters (box_number = -1)
+          const regularMonsters = allMonsters.filter(mon => mon.box_number !== -1);
+
+          // Reorganize monsters into boxes of 30
+          const updates = [];
+          regularMonsters.forEach((monster, index) => {
+            const newBoxNumber = Math.floor(index / boxSize) + 1; // Box numbers start at 1
+            if (monster.box_number !== newBoxNumber) {
+              updates.push({
+                monId: monster.mon_id,
+                boxNumber: newBoxNumber
+              });
+            }
+          });
+
+          console.log(`Updating ${updates.length} monsters with new box numbers`);
+
+          // Update box numbers in database
+          for (const update of updates) {
+            await pool.query(
+              'UPDATE mons SET box_number = $1, updated_at = CURRENT_TIMESTAMP WHERE mon_id = $2',
+              [update.boxNumber, update.monId]
+            );
+          }
+
+          // Refresh box numbers
+          const updatedBoxNumbers = await Monster.getBoxNumbersByTrainerId(trainerId);
+          boxNumbers.length = 0;
+          boxNumbers.push(...updatedBoxNumbers);
+
+          // Set the overview box number to the first box if not specified
+          const newOverviewBoxNumber = boxNumber || (boxNumbers.length > 0 ? boxNumbers[0] : 1);
+
+          // Get monsters for the selected box after reorganization
+          boxOverviewMonsters = await Monster.getByTrainerIdAndBoxNumber(trainerId, newOverviewBoxNumber);
+          console.log(`After reorganization: Found ${boxOverviewMonsters.length} monsters in box ${newOverviewBoxNumber}`);
+        }
+      }
+    } catch (error) {
+      console.error('Error getting or reorganizing box overview monsters:', error);
+      boxOverviewMonsters = [];
+    }
+
+    // Create pagination info for the box overview
+    const boxPagination = {
+      total: boxOverviewMonsters.length,
+      page: boxPage,
+      limit: boxSize,
+      totalPages: Math.ceil(boxOverviewMonsters.length / boxSize) || 1
+    };
+
+    // Log the result for debugging
+    console.log('Box overview result:', {
+      boxNumber: overviewBoxNumber,
+      monstersCount: boxOverviewMonsters.length,
+      pagination: boxPagination
+    });
+
+    // If we have no monsters in the box overview but we have monsters in the result,
+    // use the first box of monsters for the overview
+    if (boxOverviewMonsters.length === 0 && result.monsters.length > 0) {
+      // Group monsters by box number
+      const monstersByBox = {};
+      result.monsters.forEach(monster => {
+        if (!monstersByBox[monster.box_number]) {
+          monstersByBox[monster.box_number] = [];
+        }
+        monstersByBox[monster.box_number].push(monster);
+      });
+
+      // Find the first box with monsters
+      const firstBoxWithMonsters = Object.keys(monstersByBox)
+        .filter(box => box !== '-1') // Skip battle box
+        .sort((a, b) => parseInt(a) - parseInt(b))[0];
+
+      if (firstBoxWithMonsters) {
+        boxOverviewMonsters = monstersByBox[firstBoxWithMonsters];
+        console.log(`Using monsters from box ${firstBoxWithMonsters} for overview (${boxOverviewMonsters.length} monsters)`);
+      }
+    }
 
     res.render('trainers/pc', {
       trainer,
@@ -613,8 +831,8 @@ app.get('/trainers/:id/pc', async (req, res) => {
       pagination: result.pagination,
       boxNumbers,
       currentBox: boxNumber,
-      boxOverview: boxOverviewResult.monsters,
-      boxPagination: boxOverviewResult.pagination,
+      boxOverview: boxOverviewMonsters,
+      boxPagination: boxPagination,
       boxPage,
       title: `${trainer.name} - PC Boxes`
     });
@@ -647,9 +865,32 @@ app.get('/trainers/:trainerId/monsters/:monsterId', async (req, res) => {
       return res.status(403).send('This monster does not belong to this trainer');
     }
 
+    // Get next and previous monsters in the same box for pagination
+    let prev_mon_in_box = null;
+    let next_mon_in_box = null;
+
+    if (monster.box_number) {
+      // Get all monsters in the same box
+      const boxMonsters = await Monster.getByTrainerIdAndBoxNumber(trainerId, monster.box_number);
+
+      // Find the current monster's index in the box
+      const currentIndex = boxMonsters.findIndex(mon => mon.mon_id === parseInt(monsterId));
+
+      // Get previous and next monsters
+      if (currentIndex > 0) {
+        prev_mon_in_box = boxMonsters[currentIndex - 1];
+      }
+
+      if (currentIndex < boxMonsters.length - 1) {
+        next_mon_in_box = boxMonsters[currentIndex + 1];
+      }
+    }
+
     res.render('monsters/detail', {  // Assuming you have a monster detail view
       trainer,
       monster,
+      prev_mon_in_box,
+      next_mon_in_box,
       title: `${monster.name} - Monster Details`
     });
   } catch (error) {

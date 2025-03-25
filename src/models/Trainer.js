@@ -79,7 +79,7 @@ class Trainer {
 
       // Set default image if not provided
       if (!dataWithoutId.main_ref) {
-        dataWithoutId.main_ref = '/images/default_trainer.svg';
+        dataWithoutId.main_ref = '/images/default_trainer.png';
       }
 
       // Get the maximum ID currently in the table and set the sequence to start after it
@@ -142,7 +142,7 @@ class Trainer {
       
       // If main_ref is empty string, set to default
       if (processedData.main_ref === '') {
-        processedData.main_ref = '/images/default_trainer.svg';
+        processedData.main_ref = '/images/default_trainer.png';
       }
       
       // Integer fields in the trainers table

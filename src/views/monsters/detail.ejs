@@ -84,6 +84,48 @@
     margin: 0.75rem 0;
 }
 
+.box-navigation-container {
+    padding: 0.5rem 0;
+}
+
+.box-nav-title {
+    font-size: 0.85rem;
+    color: var(--accent-color);
+    margin-bottom: 0.5rem;
+    padding-left: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.mon-pagination {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 0.5rem;
+    padding: 0.5rem 0.75rem;
+}
+
+.pagination-link {
+    font-size: 0.85rem;
+    color: var(--text-color);
+    text-decoration: none;
+    transition: all 0.2s ease;
+    padding: 0.3rem 0.5rem;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.pagination-link:hover {
+    background: var(--nav-hover);
+    color: var(--accent-color);
+}
+
+.pagination-link.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background: none;
+}
+
 .owner-action {
     border-left: 3px solid var(--accent-color);
 }
@@ -628,6 +670,12 @@
         display: none;
     }
 
+    .mon-pagination {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+
     .main-info-container {
         flex-direction: column;
     }
@@ -720,6 +768,37 @@
                       monster.pokerus || monster.mega_stone) { %>
                 <a href="#special-features" class="sidebar-link">Special Features</a>
                 <% } %>
+
+                <!-- Box Navigation -->
+                <% if (monster.box_number) { %>
+                <div class="sidebar-divider"></div>
+                <div class="box-navigation-container">
+                    <h3 class="box-nav-title">Box Navigation</h3>
+                    <a href="/trainers/<%= trainer.id %>/pc?box=<%= monster.box_number %>" class="sidebar-link">Return to Box <%= monster.box_number %></a>
+                    <a href="/trainers/<%= trainer.id %>/pc" class="sidebar-link">Return to Box Overview</a>
+
+                    <!-- Pagination for monsters in the same box -->
+                    <div class="mon-pagination">
+                        <% if (locals.prev_mon_in_box) { %>
+                        <a href="/trainers/<%= trainer.id %>/monsters/<%= prev_mon_in_box.mon_id %>" class="pagination-link prev" title="<%= prev_mon_in_box.name %>">
+                            ← Previous
+                        </a>
+                        <% } else { %>
+                        <span class="pagination-link disabled">← Previous</span>
+                        <% } %>
+
+                        <% if (locals.next_mon_in_box) { %>
+                        <a href="/trainers/<%= trainer.id %>/monsters/<%= next_mon_in_box.mon_id %>" class="pagination-link next" title="<%= next_mon_in_box.name %>">
+                            Next →
+                        </a>
+                        <% } else { %>
+                        <span class="pagination-link disabled">Next →</span>
+                        <% } %>
+                    </div>
+                </div>
+                <% } %>
+
+                <div class="sidebar-divider"></div>
                 <a href="/trainers/<%= trainer.id %>" class="sidebar-link">Back to Trainer</a>
 
                 <% if (locals.user && locals.user.discord_id && trainer.player_user_id && locals.user.discord_id.toString() === trainer.player_user_id) { %>
