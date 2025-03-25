@@ -1789,6 +1789,22 @@ app.post('/trainers/:id/update', async (req, res) => {
       currency_amount: trainer.currency_amount // Ensure currency cannot be changed
     };
 
+    // Debug output
+    console.log('Form data received:', req.body);
+    console.log('main_ref value:', req.body.main_ref);
+    console.log('main_ref_artist value:', req.body.main_ref_artist);
+
+    // Explicitly ensure main_ref and main_ref_artist are included
+    if (req.body.main_ref !== undefined) {
+      updatedTrainer.main_ref = req.body.main_ref;
+    }
+
+    if (req.body.main_ref_artist !== undefined) {
+      updatedTrainer.main_ref_artist = req.body.main_ref_artist;
+    }
+
+    console.log('Final updatedTrainer object:', updatedTrainer);
+
     // Update trainer
     await Trainer.update(trainerId, updatedTrainer);
 

@@ -183,7 +183,6 @@ class Trainer {
         if (value !== undefined) {
           // Handle empty strings for integer fields
           if (integerFields.includes(key) && value === '') {
-            // Skip this field or set it to null
             columns.push(`${key} = $${paramCounter}`);
             values.push(null);
             paramCounter++;
@@ -194,6 +193,19 @@ class Trainer {
           }
         }
       });
+
+      // Explicitly ensure main_ref and main_ref_artist are included in the update
+      if (!columns.some(col => col.startsWith('main_ref =')) && processedData.main_ref !== undefined) {
+        columns.push(`main_ref = $${paramCounter}`);
+        values.push(processedData.main_ref);
+        paramCounter++;
+      }
+
+      if (!columns.some(col => col.startsWith('main_ref_artist =')) && processedData.main_ref_artist !== undefined) {
+        columns.push(`main_ref_artist = $${paramCounter}`);
+        values.push(processedData.main_ref_artist);
+        paramCounter++;
+      }
 
       // Add the updated_at timestamp
       columns.push(`updated_at = CURRENT_TIMESTAMP`);
