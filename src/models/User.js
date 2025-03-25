@@ -1,0 +1,117 @@
+const bcrypt = require('bcrypt');
+const pool = require('../db');
+
+class User {
+  /**
+   * Create a new user
+   * @param {Object} userData - User data
+   * @param {string} userData.username - Username
+   * @param {string} userData.display_name - Display name (optional)
+   * @param {string} userData.discord_id - Discord ID (optional)
+   * @param {string} userData.password - Password
+   * @param {boolean} userData.is_admin - Is admin (optional)
+   * @returns {Promise<Object>} - Created user
+   */
+  static async create({ username, display_name, discord_id, password, is_admin = false }) {
+    try {
+      // Hash password
+      const saltRounds = 10;
+      const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+      // Use display_name if provided, otherwise use username
+      const finalDisplayName = display_name || username;
+
+      // Insert user into database
+      const query = `
+        INSERT INTO users (username, display_name, discord_id, password, is_admin)
+        VALUES ($1, $2, $3, $4, $5)
+        RETURNING id, username, display_name, discord_id, is_admin, created_at
+      `;
+
+      const values = [username, finalDisplayName, discord_id, hashedPassword, is_admin];
+      const result = await pool.query(query, values);
+
+      return result.rows[0];
+    } catch (error) {
+      console.error('Error creating user:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Find a user by username
+   * @param {string} username - Username
+   * @returns {Promise<Object|null>} - User or null if not found
+   */
+  static async findByUsername(username) {
+    try {
+      const query = 'SELECT * FROM users WHERE username = $1';
+      const result = await pool.query(query, [username]);
+
+      return result.rows[0] || null;
+    } catch (error) {
+      console.error('Error finding user by username:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Verify a user's password
+   * @param {string} plainPassword - Plain text password
+   * @param {string} hashedPassword - Hashed password
+   * @returns {Promise<boolean>} - True if password matches
+   */
+  static async verifyPassword(plainPassword, hashedPassword) {
+    try {
+      return await bcrypt.compare(plainPassword, hashedPassword);
+    } catch (error) {
+      console.error('Error verifying password:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Find a user by Discord ID
+   * @param {string} discordId - Discord ID
+   * @returns {Promise<Object|null>} - User or null if not found
+   */
+  static async findByDiscordId(discordId) {
+    try {
+      const query = 'SELECT * FROM users WHERE discord_id = $1';
+      const result = await pool.query(query, [discordId]);
+
+      return result.rows[0] || null;
+    } catch (error) {
+      console.error('Error finding user by Discord ID:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Initialize the database by creating the admin user if it doesn't exist
+   */
+  static async initializeDatabase() {
+    try {
+      // Check if admin user exists
+      const adminUser = await this.findByUsername('Kurokamori');
+
+      if (!adminUser) {
+        // Create admin user
+        await this.create({
+          username: 'Kurokamori',
+          display_name: 'Kurokamori',
+          discord_id: null, // Admin doesn't need a Discord ID
+          password: 'admin123', // This should be changed to a secure password in production
+          is_admin: true
+        });
+
+        console.log('Admin user created successfully');
+      }
+    } catch (error) {
+      console.error('Error initializing database:', error);
+      throw error;
+    }
+  }
+}
+
+module.exports = User;

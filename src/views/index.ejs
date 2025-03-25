@@ -1,0 +1,34 @@
+<% /* Set the title and other variables for the layout */ %>
+<% title = title || 'Dusk and Dawn' %>
+<div class="container">
+    <div class="text-center mb-12">
+        <img src="/images/welcome-image.png" alt="Welcome" class="mx-auto mb-8 max-w-2xl w-full rounded-lg shadow-2xl" onerror="this.src='https://via.placeholder.com/800x300/1e2532/d6a339?text=Welcome+to+Dusk+and+Dawn'">
+        <h1 class="text-4xl md:text-6xl font-display font-bold mb-4">
+            Welcome to Dusk and Dawn
+        </h1>
+        <p class="text-lg text-[#9ca3af] max-w-2xl mx-auto">
+            Explore a world of adventure, train your creatures, and become the ultimate champion.
+        </p>
+    </div>
+
+    <% if (!user) { %>
+        <div class="text-center">
+            <a href="/register" class="btn-primary text-lg px-8 py-3 mr-4">Get Started</a>
+            <a href="/login" class="btn-secondary text-lg px-8 py-3">Login</a>
+        </div>
+    <% } else { %>
+        <div class="card">
+            <div class="card-body">
+                <h2 class="text-2xl font-bold mb-4">Welcome Back, <%= user.username %>!</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <a href="/town" class="btn-primary text-center">
+                        <i class="fas fa-home mr-2"></i>Visit Town
+                    </a>
+                    <a href="/trainers" class="btn-secondary text-center">
+                        <i class="fas fa-users mr-2"></i>View Trainers
+                    </a>
+                </div>
+            </div>
+        </div>
+    <% } %>
+</div>

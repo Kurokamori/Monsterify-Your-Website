@@ -1,0 +1,69 @@
+<% /* Set the title and other variables for the layout */ %>
+<% title = 'Admin Dashboard' %>
+
+<div class="mt-20 mb-8">
+    <h1 class="text-4xl font-display font-bold text-center mb-8">Admin Dashboard</h1>
+</div>
+
+<main class="container">
+    <div class="card">
+        <div class="card-header">
+            <h2 class="text-xl font-bold">Dashboard Controls</h2>
+        </div>
+        <div class="card-body">
+            <p class="mb-4">Welcome to the admin dashboard, <%= user.display_name %>!</p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="text-xl font-bold">User Management</h2>
+                    </div>
+                    <div class="card-body">
+                        <p>Manage users and permissions</p>
+                        <a href="/admin/users" class="btn-primary mt-4 block text-center">Manage Users</a>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="text-xl font-bold">Content Management</h2>
+                    </div>
+                    <div class="card-body">
+                        <p>Manage guides, lore, and other content</p>
+                        <a href="/admin/content" class="btn-primary mt-4 block text-center">Manage Content</a>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="text-xl font-bold">Fakemon Management</h2>
+                    </div>
+                    <div class="card-body">
+                        <p>Manage Fakemon entries</p>
+                        <a href="/admin/fakemon" class="btn-primary mt-4 block text-center">Manage Fakemon</a>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="text-xl font-bold">Trainer Management</h2>
+                    </div>
+                    <div class="card-body">
+                        <p>Manage trainers and monsters</p>
+                        <a href="/trainers" class="btn-primary mt-4 block text-center">View Trainers</a>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="text-xl font-bold">Database Tools</h2>
+                    </div>
+                    <div class="card-body">
+                        <p>Database maintenance tools</p>
+                        <a href="/admin/seed" class="btn-primary mt-4 block text-center">Seed Sample Data</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>

@@ -1,0 +1,79 @@
+<% /* Set the title and other variables for the layout */ %>
+<% title = 'Visit Town' %>
+
+<div class="mt-20 mb-8">
+    <h1 class="text-4xl font-display font-bold text-center mb-8">Welcome to Town</h1>
+</div>
+
+<main class="container">
+    <div class="card">
+        <div class="card-header">
+            <h2 class="text-xl font-bold">Town Locations</h2>
+        </div>
+        <div class="card-body">
+            <p class="mb-4">Welcome to the town, <%= user.display_name %>!</p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="text-xl font-bold">Apothecary</h2>
+                    </div>
+                    <div class="card-body">
+                        <p>Visit the apothecary to buy potions and remedies</p>
+                        <a href="/apothecary" class="btn-primary mt-4 block text-center">Visit</a>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="text-xl font-bold">Bakery</h2>
+                    </div>
+                    <div class="card-body">
+                        <p>Visit the bakery for delicious treats</p>
+                        <a href="/bakery" class="btn-primary mt-4 block text-center">Visit</a>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="text-xl font-bold">Witch's Hut</h2>
+                    </div>
+                    <div class="card-body">
+                        <p>Visit the witch for magical items</p>
+                        <a href="/witchs_hut" class="btn-primary mt-4 block text-center">Visit</a>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="text-xl font-bold">Megamart</h2>
+                    </div>
+                    <div class="card-body">
+                        <p>Visit the megamart for general supplies</p>
+                        <a href="/megamart" class="btn-primary mt-4 block text-center">Visit</a>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="text-xl font-bold">Antique Store</h2>
+                    </div>
+                    <div class="card-body">
+                        <p>Visit the antique store for rare items</p>
+                        <a href="/antique_store" class="btn-primary mt-4 block text-center">Visit</a>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="text-xl font-bold">Adoption Center</h2>
+                    </div>
+                    <div class="card-body">
+                        <p>Visit the adoption center to adopt creatures</p>
+                        <a href="/town_adoption_center" class="btn-primary mt-4 block text-center">Visit</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="">
+    <title><%= typeof title !== 'undefined' ? title : 'Dusk and Dawn' %></title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <%- typeof style !== 'undefined' ? style : '' %>
+</head>
+<body class="bg-[#111319] text-[#d7ddf3]">
+    <nav class="top-nav">
+        <div class="nav-left">
+            <a href="/">
+                <img src="/images/logo.png" alt="Logo" class="logo" onerror="this.src='https://via.placeholder.com/160x40/1e2532/d6a339?text=Dusk+and+Dawn'">
+            </a>
+            <a href="/trainers" class="top-nav-link">Trainers</a>
+            <a href="/statistics" class="top-nav-link">Statistics</a>
+            <a href="/fakedex" class="top-nav-link">Fakemon Dex</a>
+            <div class="dropdown">
+                <a href="/guides" class="top-nav-link">
+                    Guides
+                    <span class="dropdown-arrow"></span>
+                </a>
+                <div class="dropdown-content">
+                    <a href="/guides">Guides</a>
+                    <a href="/locations">Locations</a>
+                    <a href="/interactive_map">Interactive Map</a>
+                    <a href="/lore">Lore</a>
+                    <a href="/factions">Factions</a>
+                    <a href="/npcs">NPCs</a>
+                </div>
+            </div>
+            <div class="nav-divider"></div>
+            <% if (typeof user !== 'undefined' && user) { %>
+                <div class="dropdown">
+                    <span class="top-nav-link">
+                        Profile
+                        <span class="dropdown-arrow"></span>
+                    </span>
+                    <div class="dropdown-content">
+                        <a href="/my_trainers">View My Trainers</a>
+                        <a href="/submit_artwork">Submit Artwork</a>
+                        <a href="/submit_writing">Submit Writing</a>
+                        <a href="/submit_references">Submit References</a>
+                        <a href="/manage_schedule">Manage Schedule</a>
+                        <a href="/add_trainer">Add New Trainer</a>
+                    </div>
+                </div>
+                <div class="dropdown">
+                    <a href="/town" class="top-nav-link">
+                        Visit Town
+                        <span class="dropdown-arrow"></span>
+                    </a>
+                    <div class="dropdown-content">
+                        <a href="/apothecary">Apothecary</a>
+                        <a href="/bakery">Bakery</a>
+                        <a href="/witchs_hut">Witch's Hut</a>
+                        <a href="/megamart">Megamart</a>
+                        <a href="/antique_store">Antique Store</a>
+                        <a href="/town_adoption_center">Adoption Center</a>
+                        <a href="/farm">Farm</a>
+                        <a href="/nursery">Nursery</a>
+                        <a href="/pirates_dock">Pirate's Dock</a>
+                    </div>
+                </div>
+            <% } %>
+        </div>
+        <div class="nav-right">
+            <% if (typeof user !== 'undefined' && user) { %>
+                <% if (user.is_admin) { %>
+                    <a href="/admin/dashboard" class="auth-button">Admin Dashboard</a>
+                <% } %>
+                <a href="/logout" class="auth-button">Logout</a>
+            <% } else { %>
+                <a href="/login" class="auth-button">Login</a>
+                <a href="/register" class="auth-button">Register</a>
+            <% } %>
+        </div>
+    </nav>
+
+    <main class="pt-16 pb-12 mt-8">
+        <%- body %>
+    </main>
+
+    <script src="/js/main.js"></script>
+    <%- typeof script !== 'undefined' ? script : '' %>
+</body>
+</html>
