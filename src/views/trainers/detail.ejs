@@ -22,7 +22,7 @@
                 <a href="/trainers/<%= trainer.id %>/edit" class="sidebar-link owner-action">Edit Trainer</a>
                 <a href="/trainers/<%= trainer.id %>/edit-boxes" class="sidebar-link owner-action">Edit Boxes</a>
 
-                <% if (!battle_box_mons || battle_box_mons.length === 0) { %>
+                <% if (all_monsters && all_monsters.length < 3) { %>
                 <a href="/trainers/<%= trainer.id %>/roll-starters" class="sidebar-link owner-action highlight">Roll Starters</a>
                 <% } %>
                 <% } %>
@@ -93,58 +93,88 @@
             <div class="species-types-row">
                 <div class="info-item">
                     <label>Species</label>
-                    <div class="species-list">
-                        <% if (trainer.species1) { %><span class="species"><%= trainer.species1 %></span><% } %>
-                        <% if (trainer.species2) { %><span class="species"><%= trainer.species2 %></span><% } %>
-                        <% if (trainer.species3) { %><span class="species"><%= trainer.species3 %></span><% } %>
+                    <div class="species-grid">
+                        <%
+                        // Create an array of species
+                        const speciesArray = [];
+                        if (trainer.species1) speciesArray.push(trainer.species1);
+                        if (trainer.species2) speciesArray.push(trainer.species2);
+                        if (trainer.species3) speciesArray.push(trainer.species3);
+
+                        // Fill in empty slots to maintain the grid
+                        while (speciesArray.length < 3) {
+                            speciesArray.push(null);
+                        }
+
+                        // Display in a 1x3 grid
+                        for (let i = 0; i < 3; i++) {
+                            const speciesName = speciesArray[i];
+                            if (speciesName) { %>
+                                <span class="species"><%= speciesName %></span>
+                            <% } else { %>
+                                <span class="species-placeholder"></span>
+                            <% }
+                        } %>
                     </div>
                 </div>
 
                 <div class="info-item">
                     <label>Trainer Types</label>
-                    <div class="type-list">
-                        <% if (trainer.type1) { %>
-                        <span class="type <%= trainer.type1.toLowerCase() %>"><%= trainer.type1 %></span>
-                        <% } %>
-                        <% if (trainer.type2) { %>
-                        <span class="type <%= trainer.type2.toLowerCase() %>"><%= trainer.type2 %></span>
-                        <% } %>
-                        <% if (trainer.type3) { %>
-                        <span class="type <%= trainer.type3.toLowerCase() %>"><%= trainer.type3 %></span>
-                        <% } %>
-                        <% if (trainer.type4) { %>
-                        <span class="type <%= trainer.type4.toLowerCase() %>"><%= trainer.type4 %></span>
-                        <% } %>
-                        <% if (trainer.type5) { %>
-                        <span class="type <%= trainer.type5.toLowerCase() %>"><%= trainer.type5 %></span>
-                        <% } %>
-                        <% if (trainer.type6) { %>
-                        <span class="type <%= trainer.type6.toLowerCase() %>"><%= trainer.type6 %></span>
-                        <% } %>
+                    <div class="type-grid">
+                        <%
+                        // Create an array of trainer types
+                        const trainerTypes = [];
+                        if (trainer.type1) trainerTypes.push({type: trainer.type1, class: trainer.type1.toLowerCase()});
+                        if (trainer.type2) trainerTypes.push({type: trainer.type2, class: trainer.type2.toLowerCase()});
+                        if (trainer.type3) trainerTypes.push({type: trainer.type3, class: trainer.type3.toLowerCase()});
+                        if (trainer.type4) trainerTypes.push({type: trainer.type4, class: trainer.type4.toLowerCase()});
+                        if (trainer.type5) trainerTypes.push({type: trainer.type5, class: trainer.type5.toLowerCase()});
+                        if (trainer.type6) trainerTypes.push({type: trainer.type6, class: trainer.type6.toLowerCase()});
+
+                        // Fill in empty slots to maintain the grid
+                        while (trainerTypes.length < 6) {
+                            trainerTypes.push(null);
+                        }
+
+                        // Display in a 2x3 grid
+                        for (let i = 0; i < 6; i++) {
+                            const typeInfo = trainerTypes[i];
+                            if (typeInfo) { %>
+                                <span class="type <%= typeInfo.class %>"><%= typeInfo.type %></span>
+                            <% } else { %>
+                                <span class="type-placeholder"></span>
+                            <% }
+                        } %>
                     </div>
                 </div>
 
                 <div class="info-item">
                     <label>Favorite Types</label>
-                    <div class="type-list">
-                        <% if (trainer.fav_type1) { %>
-                        <span class="type <%= trainer.fav_type1.toLowerCase() %>"><%= trainer.fav_type1 %></span>
-                        <% } %>
-                        <% if (trainer.fav_type2) { %>
-                        <span class="type <%= trainer.fav_type2.toLowerCase() %>"><%= trainer.fav_type2 %></span>
-                        <% } %>
-                        <% if (trainer.fav_type3) { %>
-                        <span class="type <%= trainer.fav_type3.toLowerCase() %>"><%= trainer.fav_type3 %></span>
-                        <% } %>
-                        <% if (trainer.fav_type4) { %>
-                        <span class="type <%= trainer.fav_type4.toLowerCase() %>"><%= trainer.fav_type4 %></span>
-                        <% } %>
-                        <% if (trainer.fav_type5) { %>
-                        <span class="type <%= trainer.fav_type5.toLowerCase() %>"><%= trainer.fav_type5 %></span>
-                        <% } %>
-                        <% if (trainer.fav_type6) { %>
-                        <span class="type <%= trainer.fav_type6.toLowerCase() %>"><%= trainer.fav_type6 %></span>
-                        <% } %>
+                    <div class="type-grid">
+                        <%
+                        // Create an array of favorite types
+                        const favTypes = [];
+                        if (trainer.fav_type1) favTypes.push({type: trainer.fav_type1, class: trainer.fav_type1.toLowerCase()});
+                        if (trainer.fav_type2) favTypes.push({type: trainer.fav_type2, class: trainer.fav_type2.toLowerCase()});
+                        if (trainer.fav_type3) favTypes.push({type: trainer.fav_type3, class: trainer.fav_type3.toLowerCase()});
+                        if (trainer.fav_type4) favTypes.push({type: trainer.fav_type4, class: trainer.fav_type4.toLowerCase()});
+                        if (trainer.fav_type5) favTypes.push({type: trainer.fav_type5, class: trainer.fav_type5.toLowerCase()});
+                        if (trainer.fav_type6) favTypes.push({type: trainer.fav_type6, class: trainer.fav_type6.toLowerCase()});
+
+                        // Fill in empty slots to maintain the grid
+                        while (favTypes.length < 6) {
+                            favTypes.push(null);
+                        }
+
+                        // Display in a 2x3 grid
+                        for (let i = 0; i < 6; i++) {
+                            const typeInfo = favTypes[i];
+                            if (typeInfo) { %>
+                                <span class="type <%= typeInfo.class %>"><%= typeInfo.type %></span>
+                            <% } else { %>
+                                <span class="type-placeholder"></span>
+                            <% }
+                        } %>
                     </div>
                 </div>
             </div>
@@ -456,11 +486,35 @@
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-.species-list, .type-list {
+.species-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: repeat(3, 1fr);
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+    width: 100%;
+}
+
+.type-list {
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem;
     margin-top: 0.5rem;
+}
+
+.type-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+    width: 100%;
+}
+
+.type-placeholder {
+    height: 32px; /* Match the height of type badges */
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.05);
 }
 
 .species {
@@ -468,6 +522,17 @@
     padding: 0.3rem 0.8rem;
     border-radius: 20px;
     font-size: 0.9rem;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 32px;
+}
+
+.species-placeholder {
+    height: 32px;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.05);
 }
 
 .type {
@@ -477,6 +542,11 @@
     font-weight: 600;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 32px;
 }
 
 /* Battle Box Styling */
@@ -893,6 +963,17 @@
     .species-types-row {
         grid-template-columns: 1fr;
     }
+
+    /* Maintain the grid structure even on mobile */
+    .type-grid {
+        grid-template-columns: repeat(2, 1fr);
+        grid-template-rows: repeat(3, 1fr);
+    }
+
+    .species-grid {
+        grid-template-columns: 1fr;
+        grid-template-rows: repeat(3, 1fr);
+    }
 }
 
 @media (max-width: 1024px) {
@@ -977,6 +1058,12 @@
 
     .badge-grid {
         grid-template-columns: repeat(4, 1fr);
+    }
+
+    /* Adjust font size for species and type tags on very small screens */
+    .species, .type {
+        font-size: 0.8rem;
+        padding: 0.25rem 0.6rem;
     }
 
     .quote-section {

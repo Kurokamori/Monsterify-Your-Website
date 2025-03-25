@@ -9,6 +9,10 @@ const { loadAllFakemon, getFakemonByNumber } = require('./utils/fakemon-loader')
 const User = require('./models/User');
 const Trainer = require('./models/Trainer');
 const Monster = require('./models/Monster');
+const Pokemon = require('./models/Pokemon');
+const Digimon = require('./models/Digimon');
+const Yokai = require('./models/Yokai');
+const MonsterRoller = require('./utils/MonsterRoller');
 require('dotenv').config();
 
 const app = express();
@@ -319,6 +323,455 @@ app.get('/admin/seed', async (req, res) => {
   }
 });
 
+// Monster Roller routes
+app.get('/admin/monster-roller', async (req, res) => {
+  // Check if user is logged in and is an admin
+  if (!req.session.user || !req.session.user.is_admin) {
+    return res.redirect('/');
+  }
+
+  try {
+    // Get Pokemon regions for the form
+    const allPokemon = await Pokemon.getAll();
+    const regions = [...new Set(allPokemon.map(p => p.region).filter(Boolean))];
+
+    // Get Digimon stages
+    const allDigimon = await Digimon.getAll();
+    const stages = [...new Set(allDigimon.map(d => d.Stage).filter(Boolean))];
+
+    // Get Yokai ranks and tribes
+    const allYokai = await Yokai.getAll();
+    const ranks = [...new Set(allYokai.map(y => y.Rank).filter(Boolean))];
+    const tribes = [...new Set(allYokai.map(y => y.Tribe).filter(Boolean))];
+
+    res.render('admin/monster-roller', {
+      title: 'Monster Roller',
+      regions,
+      stages,
+      ranks,
+      tribes,
+      results: null,
+      formData: {}
+    });
+  } catch (error) {
+    console.error('Error loading monster roller:', error);
+    res.status(500).render('error', {
+      message: 'Error loading monster roller',
+      error: { status: 500, stack: error.stack },
+      title: 'Error'
+    });
+  }
+});
+
+app.post('/admin/monster-roller', async (req, res) => {
+  // Check if user is logged in and is an admin
+  if (!req.session.user || !req.session.user.is_admin) {
+    return res.redirect('/');
+  }
+
+  try {
+    // Parse form data
+    const formData = req.body;
+
+    // Build options for the monster roller
+    const options = {
+      overrideParams: {},
+      filters: {
+        pokemon: {},
+        digimon: {},
+        yokai: {}
+      }
+    };
+
+    // Process override parameters
+    if (formData.override_species) {
+      options.overrideParams.species = formData.override_species.split(',').map(s => s.trim());
+    }
+
+    if (formData.override_types) {
+      options.overrideParams.types = formData.override_types.split(',').map(t => t.trim());
+    }
+
+    if (formData.override_attributes) {
+      options.overrideParams.attributes = formData.override_attributes.split(',').map(a => a.trim());
+    }
+
+    if (formData.force_fusion === 'true') {
+      options.overrideParams.forceFusion = true;
+    }
+
+    if (formData.force_no_fusion === 'true') {
+      options.overrideParams.forceNoFusion = true;
+    }
+
+    if (formData.min_species) {
+      options.overrideParams.minSpecies = parseInt(formData.min_species);
+    }
+
+    if (formData.max_species) {
+      options.overrideParams.maxSpecies = parseInt(formData.max_species);
+    }
+
+    if (formData.min_type) {
+      options.overrideParams.minType = parseInt(formData.min_type);
+    }
+
+    if (formData.max_type) {
+      options.overrideParams.maxType = parseInt(formData.max_type);
+    }
+
+    // Process Pokemon filters
+    if (formData.pokemon_rarity) {
+      options.filters.pokemon.rarity = formData.pokemon_rarity;
+    }
+
+    if (formData.pokemon_region) {
+      options.filters.pokemon.region = formData.pokemon_region;
+    }
+
+    if (formData.pokemon_exclude_type) {
+      options.filters.pokemon.excludeType = formData.pokemon_exclude_type.split(',').map(t => t.trim());
+    }
+
+    if (formData.pokemon_include_type) {
+      options.filters.pokemon.includeType = formData.pokemon_include_type.split(',').map(t => t.trim());
+    }
+
+    if (formData.pokemon_stage) {
+      options.filters.pokemon.stage = formData.pokemon_stage;
+    }
+
+    // Process Digimon filters
+    if (formData.digimon_stage) {
+      options.filters.digimon.stage = formData.digimon_stage;
+    }
+
+    if (formData.digimon_attribute) {
+      options.filters.digimon.attribute = formData.digimon_attribute;
+    }
+
+    if (formData.digimon_kind) {
+      options.filters.digimon.kind = formData.digimon_kind;
+    }
+
+    // Process Yokai filters
+    if (formData.yokai_rank) {
+      options.filters.yokai.rank = formData.yokai_rank;
+    }
+
+    if (formData.yokai_tribe) {
+      options.filters.yokai.tribe = formData.yokai_tribe;
+    }
+
+    if (formData.yokai_attribute) {
+      options.filters.yokai.attribute = formData.yokai_attribute;
+    }
+
+    // Process species inclusion/exclusion
+    if (formData.include_species) {
+      options.filters.includeSpecies = formData.include_species.split(',').map(s => s.trim());
+    }
+
+    if (formData.exclude_species) {
+      options.filters.excludeSpecies = formData.exclude_species.split(',').map(s => s.trim());
+    }
+
+    // Roll monsters
+    const count = parseInt(formData.count) || 1;
+    const roller = new MonsterRoller(options);
+    const results = await roller.rollMultiple(count);
+
+    // Get data for the form
+    const allPokemon = await Pokemon.getAll();
+    const regions = [...new Set(allPokemon.map(p => p.region).filter(Boolean))];
+
+    const allDigimon = await Digimon.getAll();
+    const stages = [...new Set(allDigimon.map(d => d.Stage).filter(Boolean))];
+
+    const allYokai = await Yokai.getAll();
+    const ranks = [...new Set(allYokai.map(y => y.Rank).filter(Boolean))];
+    const tribes = [...new Set(allYokai.map(y => y.Tribe).filter(Boolean))];
+
+    res.render('admin/monster-roller', {
+      title: 'Monster Roller',
+      regions,
+      stages,
+      ranks,
+      tribes,
+      results,
+      formData
+    });
+  } catch (error) {
+    console.error('Error rolling monsters:', error);
+    res.status(500).render('error', {
+      message: 'Error rolling monsters',
+      error: { status: 500, stack: error.stack },
+      title: 'Error'
+    });
+  }
+});
+
+app.get('/admin/monster-claim', async (req, res) => {
+  // Check if user is logged in and is an admin
+  if (!req.session.user || !req.session.user.is_admin) {
+    return res.redirect('/');
+  }
+
+  try {
+    // Get monster data from session or query parameters
+    const monsterData = req.session.monsterData || {};
+
+    // Get trainers for the dropdown
+    const trainers = await Trainer.getAll();
+
+    res.render('admin/monster-claim', {
+      title: 'Claim Monster',
+      monsterData,
+      trainers
+    });
+  } catch (error) {
+    console.error('Error loading monster claim page:', error);
+    res.status(500).render('error', {
+      message: 'Error loading monster claim page',
+      error: { status: 500, stack: error.stack },
+      title: 'Error'
+    });
+  }
+});
+
+app.post('/admin/monster-claim', async (req, res) => {
+  // Check if user is logged in and is an admin
+  if (!req.session.user || !req.session.user.is_admin) {
+    return res.redirect('/');
+  }
+
+  try {
+    const { trainer_id, monster_name, species1, species2, species3, type1, type2, type3, type4, type5, attribute } = req.body;
+
+    // Validate required fields
+    if (!trainer_id || !monster_name || !species1 || !type1) {
+      return res.status(400).render('error', {
+        message: 'Missing required fields',
+        error: { status: 400 },
+        title: 'Error'
+      });
+    }
+
+    // Create monster
+    const monsterData = {
+      trainer_id,
+      name: monster_name,
+      level: 1,
+      species1,
+      species2: species2 || null,
+      species3: species3 || null,
+      type1,
+      type2: type2 || null,
+      type3: type3 || null,
+      type4: type4 || null,
+      type5: type5 || null,
+      attribute,
+      box_number: 1 // Default to box 1
+    };
+
+    const monster = await Monster.create(monsterData);
+
+    if (!monster) {
+      throw new Error('Failed to create monster');
+    }
+
+    // Redirect to the monster's page
+    res.redirect(`/trainers/${trainer_id}/monsters/${monster.mon_id}`);
+  } catch (error) {
+    console.error('Error claiming monster:', error);
+    res.status(500).render('error', {
+      message: 'Error claiming monster',
+      error: { status: 500, stack: error.stack },
+      title: 'Error'
+    });
+  }
+});
+
+// Starter Roller Routes
+app.get('/trainers/:id/roll-starters', async (req, res) => {
+  try {
+    // Check if user is logged in
+    if (!req.session.user) {
+      return res.redirect('/login?error=' + encodeURIComponent('You must be logged in to roll starters'));
+    }
+
+    const trainerId = req.params.id;
+    const trainer = await Trainer.getById(trainerId);
+
+    if (!trainer) {
+      return res.status(404).render('error', {
+        message: 'Trainer not found',
+        error: { status: 404 }
+      });
+    }
+
+    // Check if the logged-in user owns this trainer
+    if (req.session.user.discord_id != trainer.player_user_id) {
+      return res.status(403).render('error', {
+        message: 'You do not have permission to roll starters for this trainer',
+        error: { status: 403 }
+      });
+    }
+
+    // Check if the trainer already has monsters
+    const trainerMonsters = await Monster.getByTrainerId(trainerId);
+    if (trainerMonsters.length >= 3) {
+      return res.status(403).render('error', {
+        message: 'This trainer already has 3 or more monsters and cannot roll starters',
+        error: { status: 403 }
+      });
+    }
+
+    // Get the current set number from the session or default to 1
+    const currentSet = req.session.starterSet || 1;
+
+    // Roll 10 starter monsters
+    const options = {
+      overrideParams: {
+        minSpecies: 1,
+        maxSpecies: 2,  // Limit to 1-2 species for starters
+        minType: 1,
+        maxType: 3      // Limit to 1-3 types for starters
+      },
+      filters: {
+        pokemon: {
+          rarity: 'Common',
+          stage: ['Base Stage', 'Doesn\'t Evolve']
+        },
+        digimon: {
+          stage: ['Training 1', 'Training 2', 'Rookie']
+        },
+        yokai: {
+          rank: ['E', 'D', 'C']
+        }
+      }
+    };
+
+    const roller = new MonsterRoller(options);
+    const starters = await roller.rollMultiple(10);
+
+    // Store the starters in the session
+    req.session.starters = starters;
+    req.session.starterSet = currentSet;
+
+    res.render('trainers/roll-starters', {
+      title: `Roll Starters - Set ${currentSet} of 3`,
+      trainer,
+      starters,
+      currentSet
+    });
+  } catch (error) {
+    console.error('Error rolling starters:', error);
+    res.status(500).render('error', {
+      message: 'Error rolling starters',
+      error: { status: 500, stack: error.stack },
+      title: 'Error'
+    });
+  }
+});
+
+app.post('/trainers/:id/claim-starter', async (req, res) => {
+  try {
+    // Check if user is logged in
+    if (!req.session.user) {
+      return res.redirect('/login?error=' + encodeURIComponent('You must be logged in to claim a starter'));
+    }
+
+    const trainerId = req.params.id;
+    const trainer = await Trainer.getById(trainerId);
+
+    if (!trainer) {
+      return res.status(404).render('error', {
+        message: 'Trainer not found',
+        error: { status: 404 }
+      });
+    }
+
+    // Check if the logged-in user owns this trainer
+    if (req.session.user.discord_id != trainer.player_user_id) {
+      return res.status(403).render('error', {
+        message: 'You do not have permission to claim starters for this trainer',
+        error: { status: 403 }
+      });
+    }
+
+    // Get the starters from the session
+    const starters = req.session.starters;
+    if (!starters || starters.length === 0) {
+      return res.status(400).render('error', {
+        message: 'No starters available to claim',
+        error: { status: 400 }
+      });
+    }
+
+    // Get the selected starter index and name
+    const { starterIndex, monsterName } = req.body;
+    const selectedStarter = starters[parseInt(starterIndex)];
+
+    if (!selectedStarter) {
+      return res.status(400).render('error', {
+        message: 'Invalid starter selection',
+        error: { status: 400 }
+      });
+    }
+
+    // Create the monster
+    const monsterData = {
+      trainer_id: trainerId,
+      name: monsterName,
+      level: 5, // Starters start at level 5
+      species1: selectedStarter.species1,
+      species2: selectedStarter.species2 || null,
+      species3: selectedStarter.species3 || null,
+      type1: selectedStarter.type1,
+      type2: selectedStarter.type2 || null,
+      type3: selectedStarter.type3 || null,
+      type4: selectedStarter.type4 || null,
+      type5: selectedStarter.type5 || null,
+      attribute: selectedStarter.attribute,
+      box_number: -1, // Put in battle box by default
+      is_starter: true // Mark as a starter
+    };
+
+    const monster = await Monster.create(monsterData);
+
+    if (!monster) {
+      throw new Error('Failed to create monster');
+    }
+
+    // Increment the starter set
+    const currentSet = req.session.starterSet || 1;
+    const nextSet = currentSet + 1;
+
+    if (nextSet <= 3) {
+      // Move to the next set
+      req.session.starterSet = nextSet;
+      // Clear the starters for the next roll
+      req.session.starters = null;
+      // Redirect to roll the next set
+      return res.redirect(`/trainers/${trainerId}/roll-starters`);
+    } else {
+      // All sets completed, clear session data
+      req.session.starterSet = null;
+      req.session.starters = null;
+      // Redirect to the trainer's page
+      return res.redirect(`/trainers/${trainerId}`);
+    }
+  } catch (error) {
+    console.error('Error claiming starter:', error);
+    res.status(500).render('error', {
+      message: 'Error claiming starter',
+      error: { status: 500, stack: error.stack },
+      title: 'Error'
+    });
+  }
+});
+
 // Town routes (protected, only for logged-in users)
 app.get('/town', (req, res) => {
   // Check if user is logged in
@@ -487,6 +940,7 @@ app.get('/trainers/:id', async (req, res) => {
       trainer,
       battle_box_mons,
       monsters,
+      all_monsters: monsters, // Pass all monsters for the starter button check
       title: `${trainer.name} - Trainer Profile`
       // No need to pass user explicitly, it's already available via res.locals.user
     });

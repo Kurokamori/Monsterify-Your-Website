@@ -1,0 +1,616 @@
+<% /* Set the title and other variables for the layout */ %>
+<% title = 'Monster Roller' %>
+
+<style>
+.form-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+    background: rgba(30, 37, 50, 0.5);
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+.form-title {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.form-section {
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 12px;
+}
+
+.form-section-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    color: var(--accent-color, #d4b3ff);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 0.5rem;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+}
+
+.form-control {
+    width: 100%;
+    padding: 0.75rem;
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    color: #fff;
+    font-size: 1rem;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: var(--accent-color, #d4b3ff);
+    box-shadow: 0 0 0 2px rgba(212, 179, 255, 0.2);
+}
+
+.form-control:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+textarea.form-control {
+    min-height: 120px;
+    resize: vertical;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 2rem;
+}
+
+.btn {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-primary {
+    background-color: var(--accent-color, #d4b3ff);
+    color: #000;
+}
+
+.btn-primary:hover {
+    background-color: #c49ef7;
+}
+
+.btn-secondary {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #fff;
+}
+
+.btn-secondary:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.btn-danger {
+    background-color: #e74c3c;
+    color: #fff;
+}
+
+.btn-danger:hover {
+    background-color: #c0392b;
+}
+
+.form-note {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.6);
+    margin-top: 0.5rem;
+}
+
+.form-note.warning {
+    color: #e74c3c;
+}
+
+.monster-results {
+    margin-top: 2rem;
+}
+
+.monster-card {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.monster-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 0.5rem;
+}
+
+.monster-card-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--accent-color, #d4b3ff);
+}
+
+.monster-card-body {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1rem;
+}
+
+.monster-card-section {
+    margin-bottom: 1rem;
+}
+
+.monster-card-section-title {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--accent-color, #d4b3ff);
+}
+
+.monster-card-footer {
+    margin-top: 1rem;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.monster-type {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    margin-right: 0.5rem;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.monster-type.Normal { background-color: #A8A878; color: #fff; }
+.monster-type.Fire { background-color: #F08030; color: #fff; }
+.monster-type.Water { background-color: #6890F0; color: #fff; }
+.monster-type.Electric { background-color: #F8D030; color: #000; }
+.monster-type.Grass { background-color: #78C850; color: #fff; }
+.monster-type.Ice { background-color: #98D8D8; color: #000; }
+.monster-type.Fighting { background-color: #C03028; color: #fff; }
+.monster-type.Poison { background-color: #A040A0; color: #fff; }
+.monster-type.Ground { background-color: #E0C068; color: #000; }
+.monster-type.Flying { background-color: #A890F0; color: #fff; }
+.monster-type.Psychic { background-color: #F85888; color: #fff; }
+.monster-type.Bug { background-color: #A8B820; color: #fff; }
+.monster-type.Rock { background-color: #B8A038; color: #fff; }
+.monster-type.Ghost { background-color: #705898; color: #fff; }
+.monster-type.Dragon { background-color: #7038F8; color: #fff; }
+.monster-type.Dark { background-color: #705848; color: #fff; }
+.monster-type.Steel { background-color: #B8B8D0; color: #000; }
+.monster-type.Fairy { background-color: #EE99AC; color: #000; }
+
+.monster-attribute {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    margin-right: 0.5rem;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.monster-attribute.Vaccine { background-color: #78C850; color: #fff; }
+.monster-attribute.Variable { background-color: #F8D030; color: #000; }
+.monster-attribute.Virus { background-color: #F08030; color: #fff; }
+.monster-attribute.Data { background-color: #6890F0; color: #fff; }
+.monster-attribute.Free { background-color: #A8A878; color: #fff; }
+
+.checkbox-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 0.5rem;
+}
+
+.checkbox-item {
+    display: flex;
+    align-items: center;
+}
+
+.checkbox-item input[type="checkbox"] {
+    margin-right: 0.5rem;
+}
+
+@media (max-width: 768px) {
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .form-actions {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .btn {
+        width: 100%;
+    }
+
+    .monster-card-body {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+
+<div class="container mt-8 mb-12">
+    <div class="form-container">
+        <h1 class="form-title text-4xl font-display font-bold">Monster Roller</h1>
+
+        <form action="/admin/monster-roller" method="POST">
+            <!-- Override Parameters Section -->
+            <div class="form-section">
+                <h2 class="form-section-title">Override Parameters</h2>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="override_species">Override Species</label>
+                        <input type="text" id="override_species" name="override_species" class="form-control" value="<%= formData.override_species || '' %>">
+                        <p class="form-note">Comma-separated list of species to include (Pokemon, Digimon, Yokai)</p>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="override_types">Override Types</label>
+                        <input type="text" id="override_types" name="override_types" class="form-control" value="<%= formData.override_types || '' %>">
+                        <p class="form-note">Comma-separated list of types to include</p>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="override_attributes">Override Attributes</label>
+                        <input type="text" id="override_attributes" name="override_attributes" class="form-control" value="<%= formData.override_attributes || '' %>">
+                        <p class="form-note">Comma-separated list of attributes (Vaccine, Variable, Virus, Data, Free)</p>
+                    </div>
+                </div>
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Fusion Options</label>
+                        <div class="checkbox-group">
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="force_fusion" name="force_fusion" value="true" <%= formData.force_fusion === 'true' ? 'checked' : '' %>>
+                                <label for="force_fusion">Force Fusion</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="force_no_fusion" name="force_no_fusion" value="true" <%= formData.force_no_fusion === 'true' ? 'checked' : '' %>>
+                                <label for="force_no_fusion">Force No Fusion</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="min_species">Min Species</label>
+                        <input type="number" id="min_species" name="min_species" class="form-control" value="<%= formData.min_species || '1' %>" min="1" max="3">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="max_species">Max Species</label>
+                        <input type="number" id="max_species" name="max_species" class="form-control" value="<%= formData.max_species || '3' %>" min="1" max="3">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="min_type">Min Types</label>
+                        <input type="number" id="min_type" name="min_type" class="form-control" value="<%= formData.min_type || '1' %>" min="1" max="5">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="max_type">Max Types</label>
+                        <input type="number" id="max_type" name="max_type" class="form-control" value="<%= formData.max_type || '5' %>" min="1" max="5">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pokemon Filters Section -->
+            <div class="form-section">
+                <h2 class="form-section-title">Pokemon Filters</h2>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="pokemon_rarity">Rarity</label>
+                        <select id="pokemon_rarity" name="pokemon_rarity" class="form-control">
+                            <option value="" <%= !formData.pokemon_rarity ? 'selected' : '' %>>Any</option>
+                            <option value="Common" <%= formData.pokemon_rarity === 'Common' ? 'selected' : '' %>>Common</option>
+                            <option value="Legendary" <%= formData.pokemon_rarity === 'Legendary' ? 'selected' : '' %>>Legendary</option>
+                            <option value="Mythical" <%= formData.pokemon_rarity === 'Mythical' ? 'selected' : '' %>>Mythical</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="pokemon_region">Region</label>
+                        <select id="pokemon_region" name="pokemon_region" class="form-control">
+                            <option value="" <%= !formData.pokemon_region ? 'selected' : '' %>>Any</option>
+                            <% regions.forEach(region => { %>
+                                <option value="<%= region %>" <%= formData.pokemon_region === region ? 'selected' : '' %>><%= region %></option>
+                            <% }); %>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="pokemon_exclude_type">Exclude Types</label>
+                        <input type="text" id="pokemon_exclude_type" name="pokemon_exclude_type" class="form-control" value="<%= formData.pokemon_exclude_type || '' %>">
+                        <p class="form-note">Comma-separated list of types to exclude</p>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="pokemon_include_type">Include Types</label>
+                        <input type="text" id="pokemon_include_type" name="pokemon_include_type" class="form-control" value="<%= formData.pokemon_include_type || '' %>">
+                        <p class="form-note">Comma-separated list of types to include</p>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="pokemon_stage">Stage</label>
+                        <select id="pokemon_stage" name="pokemon_stage" class="form-control">
+                            <option value="" <%= !formData.pokemon_stage ? 'selected' : '' %>>Any</option>
+                            <option value="Base Stage" <%= formData.pokemon_stage === 'Base Stage' ? 'selected' : '' %>>Base Stage</option>
+                            <option value="Middle Stage" <%= formData.pokemon_stage === 'Middle Stage' ? 'selected' : '' %>>Middle Stage</option>
+                            <option value="Final Stage" <%= formData.pokemon_stage === 'Final Stage' ? 'selected' : '' %>>Final Stage</option>
+                            <option value="Doesn't Evolve" <%= formData.pokemon_stage === "Doesn't Evolve" ? 'selected' : '' %>>Doesn't Evolve</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Digimon Filters Section -->
+            <div class="form-section">
+                <h2 class="form-section-title">Digimon Filters</h2>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="digimon_stage">Stage</label>
+                        <select id="digimon_stage" name="digimon_stage" class="form-control">
+                            <option value="" <%= !formData.digimon_stage ? 'selected' : '' %>>Any</option>
+                            <% stages.forEach(stage => { %>
+                                <option value="<%= stage %>" <%= formData.digimon_stage === stage ? 'selected' : '' %>><%= stage %></option>
+                            <% }); %>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="digimon_attribute">Attribute</label>
+                        <input type="text" id="digimon_attribute" name="digimon_attribute" class="form-control" value="<%= formData.digimon_attribute || '' %>">
+                        <p class="form-note">Attribute to filter by</p>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="digimon_kind">Kind/Type</label>
+                        <input type="text" id="digimon_kind" name="digimon_kind" class="form-control" value="<%= formData.digimon_kind || '' %>">
+                        <p class="form-note">Kind/Type to filter by</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Yokai Filters Section -->
+            <div class="form-section">
+                <h2 class="form-section-title">Yokai Filters</h2>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="yokai_rank">Rank</label>
+                        <select id="yokai_rank" name="yokai_rank" class="form-control">
+                            <option value="" <%= !formData.yokai_rank ? 'selected' : '' %>>Any</option>
+                            <% ranks.forEach(rank => { %>
+                                <option value="<%= rank %>" <%= formData.yokai_rank === rank ? 'selected' : '' %>><%= rank %></option>
+                            <% }); %>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="yokai_tribe">Tribe</label>
+                        <select id="yokai_tribe" name="yokai_tribe" class="form-control">
+                            <option value="" <%= !formData.yokai_tribe ? 'selected' : '' %>>Any</option>
+                            <% tribes.forEach(tribe => { %>
+                                <option value="<%= tribe %>" <%= formData.yokai_tribe === tribe ? 'selected' : '' %>><%= tribe %></option>
+                            <% }); %>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="yokai_attribute">Attribute</label>
+                        <input type="text" id="yokai_attribute" name="yokai_attribute" class="form-control" value="<%= formData.yokai_attribute || '' %>">
+                        <p class="form-note">Attribute to filter by</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Species Inclusion/Exclusion Section -->
+            <div class="form-section">
+                <h2 class="form-section-title">Species Inclusion/Exclusion</h2>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="include_species">Include Species</label>
+                        <input type="text" id="include_species" name="include_species" class="form-control" value="<%= formData.include_species || '' %>">
+                        <p class="form-note">Comma-separated list of species to include (Pokemon, Digimon, Yokai)</p>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="exclude_species">Exclude Species</label>
+                        <input type="text" id="exclude_species" name="exclude_species" class="form-control" value="<%= formData.exclude_species || '' %>">
+                        <p class="form-note">Comma-separated list of species to exclude (Pokemon, Digimon, Yokai)</p>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="count">Number of Monsters to Roll</label>
+                        <input type="number" id="count" name="count" class="form-control" value="<%= formData.count || '1' %>" min="1" max="10">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Form Actions -->
+            <div class="form-actions">
+                <button type="reset" class="btn btn-secondary">Reset Form</button>
+                <button type="submit" class="btn btn-primary">Roll Monsters</button>
+            </div>
+        </form>
+
+        <% if (results && results.length > 0) { %>
+            <div class="monster-results">
+                <h2 class="form-section-title">Results</h2>
+
+                <% results.forEach((monster, index) => { %>
+                    <div class="monster-card">
+                        <div class="monster-card-header">
+                            <h3 class="monster-card-title">
+                                <%
+                                    // Create a title from the species data names
+                                    const speciesNames = monster.speciesData.map(s => {
+                                        if (s.species === 'Pokemon') return s.data.SpeciesName;
+                                        if (s.species === 'Digimon') return s.data.name;
+                                        if (s.species === 'Yokai') return s.data.Name;
+                                        return s.species;
+                                    }).filter(Boolean);
+
+                                    // Join with slashes
+                                    const title = speciesNames.join(' / ');
+                                %>
+                                <%= title %>
+                            </h3>
+                            <form action="/admin/monster-claim" method="GET">
+                                <input type="hidden" name="species1" value="<%= monster.species1 %>">
+                                <input type="hidden" name="species2" value="<%= monster.species2 %>">
+                                <input type="hidden" name="species3" value="<%= monster.species3 %>">
+                                <input type="hidden" name="type1" value="<%= monster.type1 %>">
+                                <input type="hidden" name="type2" value="<%= monster.type2 %>">
+                                <input type="hidden" name="type3" value="<%= monster.type3 %>">
+                                <input type="hidden" name="type4" value="<%= monster.type4 %>">
+                                <input type="hidden" name="type5" value="<%= monster.type5 %>">
+                                <input type="hidden" name="attribute" value="<%= monster.attribute %>">
+                                <button type="submit" class="btn btn-primary">Claim This Monster</button>
+                            </form>
+                        </div>
+                        <div class="monster-card-body">
+                            <div class="monster-card-section">
+                                <h4 class="monster-card-section-title">Species</h4>
+                                <p>
+                                    <strong>Primary:</strong> <%= monster.species1 %><br>
+                                    <% if (monster.species2) { %>
+                                        <strong>Secondary:</strong> <%= monster.species2 %><br>
+                                    <% } %>
+                                    <% if (monster.species3) { %>
+                                        <strong>Tertiary:</strong> <%= monster.species3 %><br>
+                                    <% } %>
+                                </p>
+                            </div>
+
+                            <div class="monster-card-section">
+                                <h4 class="monster-card-section-title">Types</h4>
+                                <p>
+                                    <% if (monster.type1) { %><span class="monster-type <%= monster.type1 %>"><%= monster.type1 %></span><% } %>
+                                    <% if (monster.type2) { %><span class="monster-type <%= monster.type2 %>"><%= monster.type2 %></span><% } %>
+                                    <% if (monster.type3) { %><span class="monster-type <%= monster.type3 %>"><%= monster.type3 %></span><% } %>
+                                    <% if (monster.type4) { %><span class="monster-type <%= monster.type4 %>"><%= monster.type4 %></span><% } %>
+                                    <% if (monster.type5) { %><span class="monster-type <%= monster.type5 %>"><%= monster.type5 %></span><% } %>
+                                </p>
+                            </div>
+
+                            <div class="monster-card-section">
+                                <h4 class="monster-card-section-title">Attribute</h4>
+                                <p>
+                                    <span class="monster-attribute <%= monster.attribute %>"><%= monster.attribute %></span>
+                                </p>
+                            </div>
+                        </div>
+
+                        <% if (monster.speciesData && monster.speciesData.length > 0) { %>
+                            <div class="monster-card-section mt-4">
+                                <h4 class="monster-card-section-title">Source Data</h4>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <% monster.speciesData.forEach(source => { %>
+                                        <div class="bg-gray-800 bg-opacity-50 p-3 rounded">
+                                            <h5 class="font-bold mb-2"><%= source.species %></h5>
+                                            <% if (source.species === 'Pokemon') { %>
+                                                <p>
+                                                    <strong>Name:</strong> <%= source.data.SpeciesName %><br>
+                                                    <strong>Type:</strong> <%= source.data.Type1 %><% if (source.data.Type2) { %>, <%= source.data.Type2 %><% } %><br>
+                                                    <strong>Stage:</strong> <%= source.data.Stage %><br>
+                                                    <strong>Region:</strong> <%= source.data.region %><br>
+                                                    <strong>Rarity:</strong> <%= source.data.Rarity %>
+                                                </p>
+                                            <% } else if (source.species === 'Digimon') { %>
+                                                <p>
+                                                    <strong>Name:</strong> <%= source.data.name %><br>
+                                                    <strong>Stage:</strong> <%= source.data.Stage %><br>
+                                                    <strong>Types:</strong> <%= source.data.types %><br>
+                                                    <strong>Attributes:</strong> <%= source.data.attributes %>
+                                                </p>
+                                            <% } else if (source.species === 'Yokai') { %>
+                                                <p>
+                                                    <strong>Name:</strong> <%= source.data.Name %><br>
+                                                    <strong>Rank:</strong> <%= source.data.Rank %><br>
+                                                    <strong>Tribe:</strong> <%= source.data.Tribe %><br>
+                                                    <strong>Attribute:</strong> <%= source.data.Attribute %>
+                                                </p>
+                                            <% } %>
+                                        </div>
+                                    <% }); %>
+                                </div>
+                            </div>
+                        <% } %>
+                    </div>
+                <% }); %>
+            </div>
+        <% } %>
+    </div>
+</div>
+
+<script>
+    // Add client-side validation
+    document.addEventListener('DOMContentLoaded', function() {
+        const forceFusionCheckbox = document.getElementById('force_fusion');
+        const forceNoFusionCheckbox = document.getElementById('force_no_fusion');
+
+        // Make force fusion and force no fusion mutually exclusive
+        forceFusionCheckbox.addEventListener('change', function() {
+            if (this.checked) {
+                forceNoFusionCheckbox.checked = false;
+            }
+        });
+
+        forceNoFusionCheckbox.addEventListener('change', function() {
+            if (this.checked) {
+                forceFusionCheckbox.checked = false;
+            }
+        });
+
+        // Validate min/max values
+        const form = document.querySelector('form');
+        form.addEventListener('submit', function(event) {
+            const minSpecies = parseInt(document.getElementById('min_species').value);
+            const maxSpecies = parseInt(document.getElementById('max_species').value);
+            const minType = parseInt(document.getElementById('min_type').value);
+            const maxType = parseInt(document.getElementById('max_type').value);
+
+            if (minSpecies > maxSpecies) {
+                alert('Min Species cannot be greater than Max Species');
+                event.preventDefault();
+                return;
+            }
+
+            if (minType > maxType) {
+                alert('Min Types cannot be greater than Max Types');
+                event.preventDefault();
+                return;
+            }
+        });
+    });
+</script>
