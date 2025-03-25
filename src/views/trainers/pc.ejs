@@ -27,31 +27,31 @@
             <!-- Box Overview -->
             <div class="box-overview-section">
                 <h3 class="text-xl font-display font-bold mb-2">Box Overview</h3>
-                
+
                 <!-- Box Selector -->
                 <div class="box-selector">
                     <% boxNumbers.forEach(boxNum => { %>
                         <% if (boxNum !== -1) { %> <!-- Skip battle box -->
-                            <a href="/trainers/<%= trainer.id %>/pc?box=<%= boxNum %>" 
+                            <a href="/trainers/<%= trainer.id %>/pc?box=<%= boxNum %>"
                                class="box-selector-item <%= currentBox === boxNum ? 'active' : '' %>">
                                 Box <%= boxNum %>
                             </a>
                         <% } %>
                     <% }) %>
                 </div>
-                
+
                 <!-- Box Grid -->
                 <div class="box-grid">
-                    <% 
+                    <%
                     // Create a 5x6 grid
                     for (let i = 0; i < 30; i++) {
                         const monster = boxOverview[i];
                     %>
                         <div class="box-slot <%= monster ? 'filled' : 'empty' %>">
                             <% if (monster) { %>
-                                <a href="/trainers/<%= trainer.id %>/monsters/<%= monster.mon_id %>" 
+                                <a href="/trainers/<%= trainer.id %>/monsters/<%= monster.mon_id %>"
                                    title="<%= monster.name %> (Level <%= monster.level %>)">
-                                    <img src="<%= monster.img_link || '/images/default_mon.png' %>" 
+                                    <img src="<%= monster.img_link || '/images/default_mon.png' %>"
                                          alt="<%= monster.name %>"
                                          onerror="this.src='/images/default_mon.png'">
                                 </a>
@@ -59,26 +59,26 @@
                         </div>
                     <% } %>
                 </div>
-                
+
                 <!-- Box Pagination -->
                 <% if (boxPagination.totalPages > 1) { %>
                 <div class="box-pagination">
                     <% if (boxPage > 1) { %>
-                        <a href="/trainers/<%= trainer.id %>/pc?box=<%= currentBox %>&boxPage=<%= boxPage - 1 %>&page=<%= pagination.page %>" 
+                        <a href="/trainers/<%= trainer.id %>/pc?box=<%= currentBox %>&boxPage=<%= boxPage - 1 %>&page=<%= pagination.page %>"
                            class="pagination-link">Previous</a>
                     <% } %>
-                    
+
                     <span class="pagination-info">Box <%= boxPage %> of <%= boxPagination.totalPages %></span>
-                    
+
                     <% if (boxPage < boxPagination.totalPages) { %>
-                        <a href="/trainers/<%= trainer.id %>/pc?box=<%= currentBox %>&boxPage=<%= boxPage + 1 %>&page=<%= pagination.page %>" 
+                        <a href="/trainers/<%= trainer.id %>/pc?box=<%= currentBox %>&boxPage=<%= boxPage + 1 %>&page=<%= pagination.page %>"
                            class="pagination-link">Next</a>
                     <% } %>
                 </div>
                 <% } %>
-                
+
                 <!-- Go to Box Button -->
-                <a href="/trainers/<%= trainer.id %>/pc?box=<%= currentBox || (boxNumbers.length > 0 ? boxNumbers[0] : 1) %>" 
+                <a href="/trainers/<%= trainer.id %>/pc?box=<%= currentBox || (boxNumbers.length > 0 ? boxNumbers[0] : 1) %>"
                    class="go-to-box-btn">Go to Box</a>
             </div>
         </div>
@@ -92,12 +92,12 @@
                         - Box <%= currentBox %>
                     <% } %>
                 </h1>
-                
+
                 <div class="box-filter">
                     <a href="/trainers/<%= trainer.id %>/pc" class="box-filter-link <%= currentBox === null ? 'active' : '' %>">All Boxes</a>
                     <% boxNumbers.forEach(boxNum => { %>
                         <% if (boxNum !== -1) { %> <!-- Skip battle box -->
-                            <a href="/trainers/<%= trainer.id %>/pc?box=<%= boxNum %>" 
+                            <a href="/trainers/<%= trainer.id %>/pc?box=<%= boxNum %>"
                                class="box-filter-link <%= currentBox === boxNum ? 'active' : '' %>">
                                 Box <%= boxNum %>
                             </a>
@@ -158,28 +158,28 @@
             <% if (pagination.totalPages > 1) { %>
             <div class="pagination">
                 <% if (pagination.page > 1) { %>
-                    <a href="/trainers/<%= trainer.id %>/pc?<%= currentBox !== null ? 'box=' + currentBox + '&' : '' %>page=<%= pagination.page - 1 %>&boxPage=<%= boxPage %>" 
+                    <a href="/trainers/<%= trainer.id %>/pc?<%= currentBox !== null ? 'box=' + currentBox + '&' : '' %>page=<%= pagination.page - 1 %>&boxPage=<%= boxPage %>"
                        class="pagination-link">Previous</a>
                 <% } %>
-                
-                <% 
+
+                <%
                 // Show up to 5 page links
                 let startPage = Math.max(1, pagination.page - 2);
                 let endPage = Math.min(pagination.totalPages, startPage + 4);
-                
+
                 // Adjust startPage if we're near the end
                 if (endPage - startPage < 4) {
                     startPage = Math.max(1, endPage - 4);
                 }
-                
-                for (let i = startPage; i <= endPage; i++) { 
+
+                for (let i = startPage; i <= endPage; i++) {
                 %>
-                    <a href="/trainers/<%= trainer.id %>/pc?<%= currentBox !== null ? 'box=' + currentBox + '&' : '' %>page=<%= i %>&boxPage=<%= boxPage %>" 
+                    <a href="/trainers/<%= trainer.id %>/pc?<%= currentBox !== null ? 'box=' + currentBox + '&' : '' %>page=<%= i %>&boxPage=<%= boxPage %>"
                        class="pagination-link <%= pagination.page === i ? 'active' : '' %>"><%= i %></a>
                 <% } %>
-                
+
                 <% if (pagination.page < pagination.totalPages) { %>
-                    <a href="/trainers/<%= trainer.id %>/pc?<%= currentBox !== null ? 'box=' + currentBox + '&' : '' %>page=<%= pagination.page + 1 %>&boxPage=<%= boxPage %>" 
+                    <a href="/trainers/<%= trainer.id %>/pc?<%= currentBox !== null ? 'box=' + currentBox + '&' : '' %>page=<%= pagination.page + 1 %>&boxPage=<%= boxPage %>"
                        class="pagination-link">Next</a>
                 <% } %>
             </div>

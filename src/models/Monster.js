@@ -80,6 +80,14 @@ class Monster {
    */
   static async create(monsterData) {
     try {
+      // Create a copy of the monster data to modify
+      const processedData = { ...monsterData };
+
+      // Set default image if not provided
+      if (!processedData.img_link) {
+        processedData.img_link = '/images/default_mon.png';
+      }
+
       const {
         trainer_id,
         name,
@@ -95,7 +103,7 @@ class Monster {
         attribute,
         img_link,
         box_number
-      } = monsterData;
+      } = processedData;
 
       const query = `
         INSERT INTO mons (
@@ -151,6 +159,14 @@ class Monster {
    */
   static async update(id, monsterData) {
     try {
+      // Create a copy of the monster data to modify
+      const processedData = { ...monsterData };
+
+      // If img_link is empty string, set to default
+      if (processedData.img_link === '') {
+        processedData.img_link = '/images/default_mon.png';
+      }
+
       // Integer fields in the mons table
       const integerFields = ['mon_id', 'trainer_id', 'level', 'mon_index', 'box_number',
                             'hp_total', 'hp_ev', 'hp_iv', 'atk_total', 'atk_ev', 'atk_iv',
@@ -164,7 +180,7 @@ class Monster {
       let paramCounter = 1;
 
       // Add each property to the columns and values arrays
-      Object.entries(monsterData).forEach(([key, value]) => {
+      Object.entries(processedData).forEach(([key, value]) => {
         if (value !== undefined) {
           // Handle empty strings for integer fields
           if (integerFields.includes(key) && value === '') {

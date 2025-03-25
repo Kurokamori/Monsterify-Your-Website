@@ -77,6 +77,11 @@ class Trainer {
         throw new Error('Name and player_user_id are required fields');
       }
 
+      // Set default image if not provided
+      if (!dataWithoutId.main_ref) {
+        dataWithoutId.main_ref = '/images/default_trainer.png';
+      }
+
       // First, try to reset the sequence to avoid conflicts
       try {
         await pool.query('ALTER SEQUENCE trainers_id_seq RESTART WITH 100;');
@@ -136,6 +141,14 @@ class Trainer {
    */
   static async update(id, trainerData) {
     try {
+      // Create a copy of the trainer data to modify
+      const processedData = { ...trainerData };
+
+      // If main_ref is empty string, set to default
+      if (processedData.main_ref === '') {
+        processedData.main_ref = '/images/default_trainer.png';
+      }
+
       // Integer fields in the trainers table
       const integerFields = ['alter_human', 'age', 'height_ft', 'height_in', 'level', 'level_modifier',
                             'badge_amount', 'frontier_badges_amount', 'contest_ribbons_amount', 'mon_amount', 'mon_referenced_amount'];
@@ -146,7 +159,7 @@ class Trainer {
       let paramCounter = 1;
 
       // Add each property to the columns and values arrays
-      Object.entries(trainerData).forEach(([key, value]) => {
+      Object.entries(processedData).forEach(([key, value]) => {
         if (value !== undefined) {
           // Handle empty strings for integer fields
           if (integerFields.includes(key) && value === '') {

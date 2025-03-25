@@ -154,14 +154,13 @@ app.use(session(sessionConfig));
 // Make user available to all views
 app.use((req, res, next) => {
   res.locals.user = req.session.user || null;
-  console.log('Session user:', req.session.user ? `ID: ${req.session.user.id}, Username: ${req.session.user.username}` : 'Not logged in');
   next();
 });
 
 // Routes
 app.get('/', (req, res) => {
   res.render('index', {
-    title: 'ARPG Game'
+    title: 'Dusk and Dawn'
   });
 });
 

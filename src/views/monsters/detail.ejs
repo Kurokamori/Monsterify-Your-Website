@@ -980,7 +980,7 @@
                     <!-- Current Monster -->
                     <div class="evolution-stage current">
                         <div class="evolution-image">
-                            <img src="<%= monster.img_link || '/images/default_mon.png' %>" alt="<%= monster.name %>">
+                            <img src="<%= monster.img_link || '/images/default_mon.png' %>" alt="<%= monster.name %>" onerror="this.src='/images/default_mon.png'">
                         </div>
                         <div class="evolution-name"><%= monster.name %></div>
                         <div class="evolution-level">Level <%= monster.level %></div>
