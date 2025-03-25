@@ -874,6 +874,99 @@ app.post('/trainers/:trainerId/monsters/:monsterId/update', async (req, res) => 
   }
 });
 
+// Add trainer form route
+app.get('/add_trainer', async (req, res) => {
+  try {
+    // Check if user is logged in
+    if (!req.session.user) {
+      return res.redirect('/login?error=' + encodeURIComponent('You must be logged in to add a trainer'));
+    }
+
+    // Check if user has a Discord ID
+    if (!req.session.user.discord_id) {
+      return res.status(403).render('error', {
+        message: 'You need to have a Discord ID linked to your account to create a trainer',
+        error: { status: 403 }
+      });
+    }
+
+    res.render('trainers/add', {
+      title: 'Add New Trainer'
+    });
+  } catch (error) {
+    console.error('Error loading add trainer form:', error);
+    res.status(500).render('error', {
+      message: 'Error loading add trainer form',
+      error: { status: 500, stack: error.stack },
+      title: 'Error'
+    });
+  }
+});
+
+// Add trainer submission route
+app.post('/add_trainer', async (req, res) => {
+  try {
+    // Check if user is logged in
+    if (!req.session.user) {
+      return res.redirect('/login?error=' + encodeURIComponent('You must be logged in to add a trainer'));
+    }
+
+    // Check if user has a Discord ID
+    if (!req.session.user.discord_id) {
+      return res.status(403).render('error', {
+        message: 'You need to have a Discord ID linked to your account to create a trainer',
+        error: { status: 403 }
+      });
+    }
+
+    // Validate required fields
+    if (!req.body.name) {
+      return res.status(400).render('error', {
+        message: 'Trainer name is required',
+        error: { status: 400 }
+      });
+    }
+
+    // Create trainer data object with defaults
+    // Make a completely new object without any id field
+    const cleanedBody = {};
+    for (const [key, value] of Object.entries(req.body)) {
+      if (key !== 'id') {
+        cleanedBody[key] = value;
+      }
+    }
+
+    const trainerData = {
+      ...cleanedBody,
+      player_user_id: req.session.user.discord_id,
+      level: 1,
+      currency_amount: 0
+    };
+
+    console.log('Creating trainer with data:', JSON.stringify(trainerData, null, 2));
+
+    // Handle empty string values for integer fields
+    const integerFields = ['age', 'height_ft', 'height_in', 'alter_human'];
+    for (const field of integerFields) {
+      if (field in trainerData && trainerData[field] === '') {
+        trainerData[field] = null;
+      }
+    }
+
+    // Create the trainer
+    const newTrainer = await Trainer.create(trainerData);
+
+    res.redirect(`/trainers/${newTrainer.id}`);
+  } catch (error) {
+    console.error('Error creating trainer:', error);
+    res.status(500).render('error', {
+      message: 'Error creating trainer',
+      error: { status: 500, stack: error.stack },
+      title: 'Error'
+    });
+  }
+});
+
 // Make sure your category route comes AFTER the API routes
 app.get('/:category/:path(*)', (req, res) => {
   const category = req.params.category;

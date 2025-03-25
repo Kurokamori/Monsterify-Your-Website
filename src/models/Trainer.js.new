@@ -59,69 +59,51 @@ class Trainer {
       const integerFields = ['alter_human', 'age', 'height_ft', 'height_in', 'level', 'level_modifier',
                             'badge_amount', 'frontier_badges_amount', 'contest_ribbons_amount', 'mon_amount', 'mon_referenced_amount'];
 
-      // Create a new object without the id field
-      const { id, ...dataWithoutId } = trainerData;
-
       // Process the data to handle empty strings for integer fields
+      const processedData = { ...trainerData };
+      
+      // Remove the id field to let PostgreSQL auto-generate it
+      delete processedData.id;
+      
+      // Handle empty strings for integer fields
       for (const field of integerFields) {
-        if (field in dataWithoutId && dataWithoutId[field] === '') {
-          dataWithoutId[field] = null;
+        if (field in processedData && processedData[field] === '') {
+          processedData[field] = null;
         }
       }
 
-      // Extract the required fields
-      const { name, player_user_id } = dataWithoutId;
+      // Build the query dynamically
+      const columns = [];
+      const placeholders = [];
+      const values = [];
+      let paramIndex = 1;
 
-      // Ensure we have the minimum required fields
-      if (!name || !player_user_id) {
-        throw new Error('Name and player_user_id are required fields');
+      // Add each field to the query
+      for (const [key, value] of Object.entries(processedData)) {
+        if (value !== undefined) {
+          columns.push(key);
+          placeholders.push(`$${paramIndex}`);
+          values.push(value);
+          paramIndex++;
+        }
       }
 
-      // First, try to reset the sequence to avoid conflicts
-      try {
-        await pool.query('ALTER SEQUENCE trainers_id_seq RESTART WITH 100;');
-        console.log('Reset trainers_id_seq to start at 100');
-      } catch (seqError) {
-        console.error('Error resetting sequence:', seqError);
-        // Continue anyway
-      }
-
-      // Use the most basic query possible with DEFAULT for id
       const query = `
-        INSERT INTO trainers (name, player_user_id)
-        VALUES ($1, $2)
+        INSERT INTO trainers (
+          ${columns.join(',\n          ')}
+        )
+        VALUES (
+          ${placeholders.join(', ')}
+        )
         RETURNING *
       `;
 
-      const values = [name, player_user_id];
-
-      console.log('Using explicit DEFAULT for id to avoid conflicts');
-      console.log('SQL Query:', query);
-      console.log('Values:', values);
+      // Log the query and values for debugging
+      console.log('Number of columns:', columns.length);
+      console.log('Number of values:', values.length);
 
       const result = await pool.query(query, values);
-
-      if (!result.rows[0]) {
-        throw new Error('Failed to create trainer - no rows returned');
-      }
-
-      const newTrainer = result.rows[0];
-      const trainerId = newTrainer.id;
-
-      console.log('Created new trainer with ID:', trainerId);
-
-      // If we have additional fields, update the trainer in a separate query
-      const additionalFields = { ...dataWithoutId };
-      delete additionalFields.name;
-      delete additionalFields.player_user_id;
-
-      if (Object.keys(additionalFields).length > 0) {
-        console.log('Updating trainer with additional fields');
-        await this.update(trainerId, additionalFields);
-        return await this.getById(trainerId);
-      }
-
-      return newTrainer;
+      return result.rows[0];
     } catch (error) {
       console.error('Error creating trainer:', error);
       throw error;
@@ -202,7 +184,7 @@ class Trainer {
       throw error;
     }
   }
-
+  
   /**
    * Get monsters in a trainer's battle box
    * @param {number} trainerId - Trainer ID

@@ -155,6 +155,19 @@ textarea.form-control {
                     <div class="form-group">
                         <label for="name">Name</label>
                         <input type="text" id="name" name="name" class="form-control" value="<%= trainer.name %>" required>
+                        <p class="form-note">The primary name of your trainer</p>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="nickname">Nickname</label>
+                        <input type="text" id="nickname" name="nickname" class="form-control" value="<%= trainer.nickname || '' %>">
+                        <p class="form-note">A shorter or informal name</p>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="full_name">Full Name</label>
+                        <input type="text" id="full_name" name="full_name" class="form-control" value="<%= trainer.full_name || '' %>">
+                        <p class="form-note">Complete formal name if different from primary name</p>
                     </div>
 
                     <div class="form-group">
