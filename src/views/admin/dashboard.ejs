@@ -1,8 +1,27 @@
 <% /* Set the title and other variables for the layout */ %>
 <% title = 'Admin Dashboard' %>
 
+<style>
+.alert {
+    padding: 1rem;
+    border-radius: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.alert-success {
+    background-color: rgba(52, 211, 153, 0.2);
+    border: 1px solid rgba(52, 211, 153, 0.5);
+    color: #10b981;
+}
+</style>
+
 <div class="mt-20 mb-8">
     <h1 class="text-4xl font-display font-bold text-center mb-8">Admin Dashboard</h1>
+    <% if (typeof message !== 'undefined' && message) { %>
+    <div class="alert alert-success text-center mb-8">
+        <%= message %>
+    </div>
+    <% } %>
 </div>
 
 <main class="container">
@@ -71,6 +90,36 @@
                     <div class="card-body">
                         <p>Generate random monsters for trainers</p>
                         <a href="/admin/monster-roller" class="btn-primary mt-4 block text-center">Roll Monsters</a>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="text-xl font-bold">Add Monster</h2>
+                    </div>
+                    <div class="card-body">
+                        <p>Create a custom monster for any trainer</p>
+                        <a href="/admin/add-monster" class="btn-primary mt-4 block text-center">Add Monster</a>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="text-xl font-bold">Monster Counts</h2>
+                    </div>
+                    <div class="card-body">
+                        <p>Recalculate monster counts for all trainers</p>
+                        <a href="/admin/recalculate-monster-counts" class="btn-primary mt-4 block text-center">Recalculate Counts</a>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="text-xl font-bold">Inventory Manager</h2>
+                    </div>
+                    <div class="card-body">
+                        <p>Add or remove items from trainer inventories</p>
+                        <a href="/admin/inventory-manager" class="btn-primary mt-4 block text-center">Manage Inventories</a>
                     </div>
                 </div>
             </div>

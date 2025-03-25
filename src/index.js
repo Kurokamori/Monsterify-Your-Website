@@ -74,6 +74,7 @@ app.set('layout extractStyles', true);
 // Other middleware
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 // Error handling middleware
 app.use((err, req, res, next) => {
@@ -300,8 +301,110 @@ app.get('/admin/dashboard', (req, res) => {
   }
 
   res.render('admin/dashboard', {
-    title: 'Admin Dashboard'
+    title: 'Admin Dashboard',
+    message: req.query.message
   });
+});
+
+// Admin route to recalculate monster counts
+app.get('/admin/recalculate-monster-counts', async (req, res) => {
+  // Check if user is logged in and is an admin
+  if (!req.session.user || !req.session.user.is_admin) {
+    return res.redirect('/');
+  }
+
+  try {
+    // Get all trainers
+    const trainers = await Trainer.getAll();
+
+    // Redirect back to admin dashboard
+    res.redirect('/admin/dashboard?message=' + encodeURIComponent('Monster counts recalculated successfully'));
+  } catch (error) {
+    console.error('Error recalculating monster counts:', error);
+    res.status(500).render('error', {
+      message: 'Error recalculating monster counts',
+      error: { status: 500, stack: error.stack },
+      title: 'Error'
+    });
+  }
+});
+
+// Admin inventory manager routes
+app.get('/admin/inventory-manager', async (req, res) => {
+  // Check if user is logged in and is an admin
+  if (!req.session.user || !req.session.user.is_admin) {
+    return res.redirect('/');
+  }
+
+  try {
+    // Get all trainers
+    const trainers = await Trainer.getAll();
+
+    // Get selected trainer if any
+    let selectedTrainer = null;
+    let inventory = null;
+
+    if (req.query.trainer_id) {
+      selectedTrainer = await Trainer.getById(req.query.trainer_id);
+      if (selectedTrainer) {
+        inventory = await Trainer.getInventory(selectedTrainer.id);
+      }
+    }
+
+    res.render('admin/inventory-manager', {
+      title: 'Inventory Manager',
+      trainers,
+      selectedTrainer,
+      inventory,
+      message: req.query.message,
+      messageType: req.query.messageType
+    });
+  } catch (error) {
+    console.error('Error loading inventory manager:', error);
+    res.status(500).render('error', {
+      message: 'Error loading inventory manager',
+      error: { status: 500, stack: error.stack },
+      title: 'Error'
+    });
+  }
+});
+
+app.post('/admin/inventory-manager/update', async (req, res) => {
+  // Check if user is logged in and is an admin
+  if (!req.session.user || !req.session.user.is_admin) {
+    return res.redirect('/');
+  }
+
+  try {
+    const { trainer_id, category, item_name, quantity } = req.body;
+
+    // Validate inputs
+    if (!trainer_id || !category || !item_name || !quantity) {
+      return res.redirect('/admin/inventory-manager?messageType=error&message=' + encodeURIComponent('All fields are required'));
+    }
+
+    // Update inventory
+    const success = await Trainer.updateInventoryItem(
+      trainer_id,
+      category,
+      item_name,
+      parseInt(quantity)
+    );
+
+    if (!success) {
+      return res.redirect(`/admin/inventory-manager?trainer_id=${trainer_id}&messageType=error&message=` + encodeURIComponent('Failed to update inventory'));
+    }
+
+    // Redirect back to inventory manager
+    res.redirect(`/admin/inventory-manager?trainer_id=${trainer_id}&message=` + encodeURIComponent('Inventory updated successfully'));
+  } catch (error) {
+    console.error('Error updating inventory:', error);
+    res.status(500).render('error', {
+      message: 'Error updating inventory: ' + error.message,
+      error: { status: 500, stack: error.stack },
+      title: 'Error'
+    });
+  }
 });
 
 // Admin route to seed the database
@@ -521,7 +624,22 @@ app.get('/admin/monster-claim', async (req, res) => {
 
   try {
     // Get monster data from session or query parameters
-    const monsterData = req.session.monsterData || {};
+    let monsterData = req.session.monsterData || {};
+
+    // If we have query parameters, use those instead
+    if (req.query.species1) {
+      monsterData = {
+        species1: req.query.species1,
+        species2: req.query.species2 || null,
+        species3: req.query.species3 || null,
+        type1: req.query.type1,
+        type2: req.query.type2 || null,
+        type3: req.query.type3 || null,
+        type4: req.query.type4 || null,
+        type5: req.query.type5 || null,
+        attribute: req.query.attribute
+      };
+    }
 
     // Get trainers for the dropdown
     const trainers = await Trainer.getAll();
@@ -535,6 +653,146 @@ app.get('/admin/monster-claim', async (req, res) => {
     console.error('Error loading monster claim page:', error);
     res.status(500).render('error', {
       message: 'Error loading monster claim page',
+      error: { status: 500, stack: error.stack },
+      title: 'Error'
+    });
+  }
+});
+
+// Add Monster routes
+app.get('/admin/add-monster', async (req, res) => {
+  // Check if user is logged in and is an admin
+  if (!req.session.user || !req.session.user.is_admin) {
+    return res.redirect('/');
+  }
+
+  try {
+    // Get trainers for the dropdown
+    const trainers = await Trainer.getAll();
+
+    res.render('admin/add-monster', {
+      title: 'Add Monster',
+      trainers
+    });
+  } catch (error) {
+    console.error('Error loading add monster page:', error);
+    res.status(500).render('error', {
+      message: 'Error loading add monster page',
+      error: { status: 500, stack: error.stack },
+      title: 'Error'
+    });
+  }
+});
+
+app.post('/admin/add-monster', async (req, res) => {
+  // Check if user is logged in and is an admin
+  if (!req.session.user || !req.session.user.is_admin) {
+    return res.redirect('/');
+  }
+
+  try {
+    // Extract form data
+    const formData = req.body;
+
+    // Validate required fields
+    if (!formData.trainer_id || !formData.name || !formData.species1 || !formData.type1) {
+      return res.status(400).render('error', {
+        message: 'Missing required fields',
+        error: { status: 400 },
+        title: 'Error'
+      });
+    }
+
+    // Create monster data object
+    const monsterData = {
+      trainer_id: formData.trainer_id,
+      name: formData.name,
+      level: parseInt(formData.level) || 1,
+      species1: formData.species1,
+      species2: formData.species2 || null,
+      species3: formData.species3 || null,
+      type1: formData.type1,
+      type2: formData.type2 || null,
+      type3: formData.type3 || null,
+      type4: formData.type4 || null,
+      type5: formData.type5 || null,
+      attribute: formData.attribute || null,
+      box_number: parseInt(formData.box_number) || 1,
+      img_link: formData.img_link || null,
+      gender: formData.gender || null,
+      pronouns: formData.pronouns || null,
+      nature: formData.nature || null,
+      characteristic: formData.characteristic || null,
+      height: formData.height || null,
+      shiny: formData.shiny === '1' ? 1 : 0,
+      alpha: formData.alpha === '1' ? 1 : 0,
+      shadow: formData.shadow === '1' ? 1 : 0,
+      friendship: parseInt(formData.friendship) || 70,
+      fav_berry: formData.fav_berry || null,
+      held_item: formData.held_item || null,
+      seal: formData.seal || null,
+      mark: formData.mark || null,
+      poke_ball: formData.poke_ball || null,
+      date_met: formData.date_met || new Date().toISOString().split('T')[0],
+      where_met: formData.where_met || null,
+      acquired: formData.acquired || null,
+      talk: formData.talk || null,
+      tldr: formData.tldr || null,
+      bio: formData.bio || null
+    };
+
+    // Handle manual stats if provided
+    if (formData.manual_stats) {
+      if (formData.hp_total) monsterData.hp_total = parseInt(formData.hp_total);
+      if (formData.hp_iv) monsterData.hp_iv = parseInt(formData.hp_iv);
+      if (formData.hp_ev) monsterData.hp_ev = parseInt(formData.hp_ev);
+
+      if (formData.atk_total) monsterData.atk_total = parseInt(formData.atk_total);
+      if (formData.atk_iv) monsterData.atk_iv = parseInt(formData.atk_iv);
+      if (formData.atk_ev) monsterData.atk_ev = parseInt(formData.atk_ev);
+
+      if (formData.def_total) monsterData.def_total = parseInt(formData.def_total);
+      if (formData.def_iv) monsterData.def_iv = parseInt(formData.def_iv);
+      if (formData.def_ev) monsterData.def_ev = parseInt(formData.def_ev);
+
+      if (formData.spa_total) monsterData.spa_total = parseInt(formData.spa_total);
+      if (formData.spa_iv) monsterData.spa_iv = parseInt(formData.spa_iv);
+      if (formData.spa_ev) monsterData.spa_ev = parseInt(formData.spa_ev);
+
+      if (formData.spd_total) monsterData.spd_total = parseInt(formData.spd_total);
+      if (formData.spd_iv) monsterData.spd_iv = parseInt(formData.spd_iv);
+      if (formData.spd_ev) monsterData.spd_ev = parseInt(formData.spd_ev);
+
+      if (formData.spe_total) monsterData.spe_total = parseInt(formData.spe_total);
+      if (formData.spe_iv) monsterData.spe_iv = parseInt(formData.spe_iv);
+      if (formData.spe_ev) monsterData.spe_ev = parseInt(formData.spe_ev);
+    }
+
+    // Handle manual moves if provided
+    if (formData.manual_moves && formData.moves && formData.moves.length > 0) {
+      // Filter out empty moves
+      const moves = formData.moves.filter(move => move && move.trim() !== '');
+      if (moves.length > 0) {
+        monsterData.moveset = JSON.stringify(moves);
+      }
+    }
+
+    // Create the monster
+    const monster = await Monster.create(monsterData);
+
+    if (!monster) {
+      throw new Error('Failed to create monster');
+    }
+
+    // Get the trainer for the redirect
+    const trainer = await Trainer.getById(formData.trainer_id);
+
+    // Redirect to the monster detail page
+    res.redirect(`/trainers/${trainer.id}/monsters/${monster.mon_id}`);
+  } catch (error) {
+    console.error('Error creating monster:', error);
+    res.status(500).render('error', {
+      message: 'Error creating monster: ' + error.message,
       error: { status: 500, stack: error.stack },
       title: 'Error'
     });
@@ -1586,6 +1844,166 @@ app.get('/trainers/:trainerId/monsters/:monsterId/edit', async (req, res) => {
     console.error('Error loading monster edit form:', error);
     res.status(500).render('error', {
       message: 'Error loading monster edit form',
+      error: { status: 500, stack: error.stack },
+      title: 'Error'
+    });
+  }
+});
+
+// Edit Evolution Line route
+app.get('/trainers/:trainerId/monsters/:monsterId/edit-evolution', async (req, res) => {
+  try {
+    // Check if user is logged in
+    if (!req.session.user) {
+      return res.redirect('/login?error=' + encodeURIComponent('You must be logged in to edit a monster\'s evolution line'));
+    }
+
+    const { trainerId, monsterId } = req.params;
+
+    const trainer = await Trainer.getById(trainerId);
+    if (!trainer) {
+      return res.status(404).send('Trainer not found');
+    }
+
+    // Check if the logged-in user owns this trainer
+    if (req.session.user.discord_id != trainer.player_user_id) {
+      return res.status(403).render('error', {
+        message: 'You do not have permission to edit this monster\'s evolution line',
+        error: { status: 403 }
+      });
+    }
+
+    const monster = await Monster.getById(monsterId);
+    if (!monster) {
+      return res.status(404).send('Monster not found');
+    }
+
+    if (monster.trainer_id != trainerId) {
+      return res.status(403).send('This monster does not belong to this trainer');
+    }
+
+    // Parse pre-evolutions if they exist
+    let preEvolutions = [];
+    if (monster.preevolution) {
+      try {
+        preEvolutions = JSON.parse(monster.preevolution);
+        if (!Array.isArray(preEvolutions)) {
+          preEvolutions = [preEvolutions];
+        }
+      } catch (e) {
+        // If parsing fails, leave as empty array
+      }
+    }
+
+    // Parse future evolutions if they exist
+    let futureEvolutions = [];
+    if (monster.evolution) {
+      try {
+        futureEvolutions = JSON.parse(monster.evolution);
+        if (!Array.isArray(futureEvolutions)) {
+          futureEvolutions = [futureEvolutions];
+        }
+      } catch (e) {
+        // If parsing fails, leave as empty array
+      }
+    }
+
+    res.render('monsters/edit-evolution', {
+      trainer,
+      monster,
+      preEvolutions,
+      futureEvolutions,
+      title: `Edit Evolution Line for ${monster.name}`
+    });
+  } catch (error) {
+    console.error('Error loading evolution edit form:', error);
+    res.status(500).render('error', {
+      message: 'Error loading evolution edit form',
+      error: { status: 500, stack: error.stack },
+      title: 'Error'
+    });
+  }
+});
+
+// Update Evolution Line route
+app.post('/trainers/:trainerId/monsters/:monsterId/update-evolution', async (req, res) => {
+  try {
+    // Check if user is logged in
+    if (!req.session.user) {
+      return res.redirect('/login?error=' + encodeURIComponent('You must be logged in to update a monster\'s evolution line'));
+    }
+
+    const { trainerId, monsterId } = req.params;
+
+    const trainer = await Trainer.getById(trainerId);
+    if (!trainer) {
+      return res.status(404).send('Trainer not found');
+    }
+
+    // Check if the logged-in user owns this trainer
+    if (req.session.user.discord_id != trainer.player_user_id) {
+      return res.status(403).render('error', {
+        message: 'You do not have permission to update this monster\'s evolution line',
+        error: { status: 403 }
+      });
+    }
+
+    const monster = await Monster.getById(monsterId);
+    if (!monster) {
+      return res.status(404).send('Monster not found');
+    }
+
+    if (monster.trainer_id != trainerId) {
+      return res.status(403).send('This monster does not belong to this trainer');
+    }
+
+    // Process the form data for preEvolutions
+    const preEvolutions = [];
+    if (req.body.preEvolutions) {
+      const preEvoData = Array.isArray(req.body.preEvolutions) ? req.body.preEvolutions : [req.body.preEvolutions];
+
+      for (let i = 0; i < preEvoData.length; i++) {
+        if (preEvoData[i].name && preEvoData[i].name.trim() !== '') {
+          preEvolutions.push({
+            index: i,
+            name: preEvoData[i].name.trim(),
+            condition: preEvoData[i].condition || '',
+            image: preEvoData[i].image || ''
+          });
+        }
+      }
+    }
+
+    // Process the form data for futureEvolutions
+    const futureEvolutions = [];
+    if (req.body.futureEvolutions) {
+      const futureEvoData = Array.isArray(req.body.futureEvolutions) ? req.body.futureEvolutions : [req.body.futureEvolutions];
+
+      for (let i = 0; i < futureEvoData.length; i++) {
+        if (futureEvoData[i].name && futureEvoData[i].name.trim() !== '') {
+          futureEvolutions.push({
+            index: i,
+            name: futureEvoData[i].name.trim(),
+            condition: futureEvoData[i].condition || '',
+            image: futureEvoData[i].image || ''
+          });
+        }
+      }
+    }
+
+    // Update the monster with the new evolution data
+    const updatedMonster = {
+      preevolution: preEvolutions.length > 0 ? JSON.stringify(preEvolutions) : null,
+      evolution: futureEvolutions.length > 0 ? JSON.stringify(futureEvolutions) : null
+    };
+
+    await Monster.update(monsterId, updatedMonster);
+
+    res.redirect(`/trainers/${trainerId}/monsters/${monsterId}#evolution`);
+  } catch (error) {
+    console.error('Error updating evolution line:', error);
+    res.status(500).render('error', {
+      message: 'Error updating evolution line',
       error: { status: 500, stack: error.stack },
       title: 'Error'
     });

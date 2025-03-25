@@ -33,7 +33,7 @@
 }
 
 .monster-sidebar {
-    flex: 0 0 180px;
+    flex: 0 0 220px;
     align-self: flex-start;
     position: sticky;
     top: 2rem;
@@ -804,6 +804,7 @@
                 <% if (locals.user && locals.user.discord_id && trainer.player_user_id && locals.user.discord_id.toString() === trainer.player_user_id) { %>
                 <div class="sidebar-divider"></div>
                 <a href="/trainers/<%= trainer.id %>/monsters/<%= monster.mon_id %>/edit" class="sidebar-link owner-action">Edit Monster</a>
+                <a href="/trainers/<%= trainer.id %>/monsters/<%= monster.mon_id %>/edit-evolution" class="sidebar-link owner-action">Edit Evolution Line</a>
                 <% } %>
             </div>
         </div>

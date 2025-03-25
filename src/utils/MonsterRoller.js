@@ -283,9 +283,10 @@ class MonsterRoller {
 
       // Construct the monster data
       const monsterData = {
-        species1: speciesData[0]?.species,
-        species2: speciesData[1]?.species || null,
-        species3: speciesData[2]?.species || null,
+        // Use the actual species name instead of the origin
+        species1: this.getSpeciesName(speciesData[0]),
+        species2: speciesData.length > 1 ? this.getSpeciesName(speciesData[1]) : null,
+        species3: speciesData.length > 2 ? this.getSpeciesName(speciesData[2]) : null,
         type1: types[0] || null,
         type2: types[1] || null,
         type3: types[2] || null,
@@ -342,6 +343,28 @@ class MonsterRoller {
   static async rollTen(options = {}) {
     const roller = new MonsterRoller(options);
     return roller.rollMultiple(10);
+  }
+
+  /**
+   * Helper method to get the actual species name from species data
+   * @param {Object} speciesData - Species data object
+   * @returns {string} - Actual species name
+   */
+  getSpeciesName(speciesData) {
+    if (!speciesData) return null;
+
+    const { species, data } = speciesData;
+
+    switch (species) {
+      case 'Pokemon':
+        return data.SpeciesName || species;
+      case 'Digimon':
+        return data.name || species;
+      case 'Yokai':
+        return data.Name || species;
+      default:
+        return species;
+    }
   }
 }
 

@@ -486,9 +486,18 @@ textarea.form-control {
                                 <%= title %>
                             </h3>
                             <form action="/admin/monster-claim" method="GET">
-                                <input type="hidden" name="species1" value="<%= monster.species1 %>">
-                                <input type="hidden" name="species2" value="<%= monster.species2 %>">
-                                <input type="hidden" name="species3" value="<%= monster.species3 %>">
+                                <%
+                                    // Get actual species names from speciesData
+                                    const speciesNames = monster.speciesData.map(s => {
+                                        if (s.species === 'Pokemon') return s.data.SpeciesName;
+                                        if (s.species === 'Digimon') return s.data.name;
+                                        if (s.species === 'Yokai') return s.data.Name;
+                                        return s.species;
+                                    }).filter(Boolean);
+                                %>
+                                <input type="hidden" name="species1" value="<%= speciesNames[0] || monster.species1 %>">
+                                <input type="hidden" name="species2" value="<%= speciesNames[1] || monster.species2 %>">
+                                <input type="hidden" name="species3" value="<%= speciesNames[2] || monster.species3 %>">
                                 <input type="hidden" name="type1" value="<%= monster.type1 %>">
                                 <input type="hidden" name="type2" value="<%= monster.type2 %>">
                                 <input type="hidden" name="type3" value="<%= monster.type3 %>">

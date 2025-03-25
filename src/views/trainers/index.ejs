@@ -37,8 +37,8 @@
                                 <td><%= trainer.level || 1 %></td>
                                 <td><%= Math.round(trainer.currency_amount) || 0 %></td>
                                 <td><%= trainer.faction || 'None' %></td>
-                                <td><%= trainer.monster_count || 0 %></td>
-                                <td><%= trainer.monster_ref_count || 0 %></td>
+                                <td><%= trainer.monster_count || trainer.mon_amount || 0 %></td>
+                                <td><%= trainer.monster_ref_count || trainer.mon_referenced_amount || 0 %></td>
                                 <td><%= trainer.monster_ref_percent || 0 %>%</td>
                             </tr>
                         <% }) %>

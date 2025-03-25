@@ -98,7 +98,7 @@ class Monster {
                             'def_total', 'def_ev', 'def_iv', 'spa_total', 'spa_ev', 'spa_iv',
                             'spd_total', 'spd_ev', 'spd_iv', 'spe_total', 'spe_ev', 'spe_iv',
                             'shiny', 'alpha', 'shadow', 'paradox', 'pokerus', 'friendship'];
-      
+
       // Boolean fields in the database
       const booleanFields = ['is_starter_template'];
 
@@ -140,7 +140,7 @@ class Monster {
       if (!columns.includes('trainer_id') || !columns.includes('name') || !columns.includes('level')) {
         throw new Error('Missing required fields: trainer_id, name, and level are required');
       }
-      
+
       // Validate trainer_id is a valid integer
       const trainerIdIndex = columns.indexOf('trainer_id');
       if (trainerIdIndex !== -1) {
@@ -148,7 +148,7 @@ class Monster {
         if (isNaN(parseInt(trainerId))) {
           throw new Error(`Invalid trainer_id: ${trainerId}`);
         }
-        
+
         // Check if the trainer exists in the database
         try {
           const Trainer = require('./Trainer');
@@ -178,7 +178,7 @@ class Monster {
 
       console.log('Monster creation query:', query);
       console.log('Monster creation values:', values);
-      
+
       // Log the types of each value for debugging
       console.log('Value types:');
       values.forEach((value, index) => {
@@ -187,6 +187,13 @@ class Monster {
 
       const result = await pool.query(query, values);
       console.log('Monster created successfully:', result.rows[0]);
+
+      // Update monster counts for the trainer
+      if (result.rows[0] && result.rows[0].trainer_id) {
+        const Trainer = require('./Trainer');
+        await Trainer.recalculateMonsterCounts(result.rows[0].trainer_id);
+      }
+
       return result.rows[0];
     } catch (error) {
       console.error('Error creating monster:', error);
@@ -259,6 +266,12 @@ class Monster {
       // Debug output
       console.log('Updated monster:', JSON.stringify(result.rows[0], null, 2));
 
+      // Update monster counts for the trainer
+      if (result.rows[0] && result.rows[0].trainer_id) {
+        const Trainer = require('./Trainer');
+        await Trainer.recalculateMonsterCounts(result.rows[0].trainer_id);
+      }
+
       return result.rows[0];
     } catch (error) {
       console.error('Error updating monster:', error);
@@ -273,8 +286,21 @@ class Monster {
    */
   static async delete(id) {
     try {
+      // First get the monster to get the trainer_id
+      const getQuery = 'SELECT trainer_id FROM mons WHERE mon_id = $1';
+      const getResult = await pool.query(getQuery, [id]);
+      const trainerId = getResult.rows[0]?.trainer_id;
+
+      // Delete the monster
       const query = 'DELETE FROM mons WHERE mon_id = $1';
       await pool.query(query, [id]);
+
+      // Update monster counts for the trainer if we have a trainer_id
+      if (trainerId) {
+        const Trainer = require('./Trainer');
+        await Trainer.recalculateMonsterCounts(trainerId);
+      }
+
       return true;
     } catch (error) {
       console.error('Error deleting monster:', error);

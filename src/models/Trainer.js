@@ -3,13 +3,37 @@ const pool = require('../db');
 class Trainer {
   /**
    * Get all trainers
-   * @returns {Promise<Array>} - Array of trainers
+   * @returns {Promise<Array>} - Array of trainers with monster counts
    */
   static async getAll() {
     try {
+      // Get all trainers
       const query = 'SELECT * FROM trainers ORDER BY name';
       const result = await pool.query(query);
-      return result.rows;
+      const trainers = result.rows;
+
+      // Get monster counts for each trainer
+      for (const trainer of trainers) {
+        // Count total monsters
+        const monsterCountQuery = 'SELECT COUNT(*) FROM mons WHERE trainer_id = $1';
+        const monsterCountResult = await pool.query(monsterCountQuery, [trainer.id]);
+        trainer.monster_count = parseInt(monsterCountResult.rows[0].count) || 0;
+
+        // Count monsters with references (non-empty img_link)
+        const monsterRefCountQuery = 'SELECT COUNT(*) FROM mons WHERE trainer_id = $1 AND img_link IS NOT NULL AND img_link != \'\'';
+        const monsterRefCountResult = await pool.query(monsterRefCountQuery, [trainer.id]);
+        trainer.monster_ref_count = parseInt(monsterRefCountResult.rows[0].count) || 0;
+
+        // Calculate percentage
+        trainer.monster_ref_percent = trainer.monster_count > 0
+          ? Math.round((trainer.monster_ref_count / trainer.monster_count) * 100)
+          : 0;
+
+        // Update the trainer record with these counts
+        await this.updateMonsterCounts(trainer.id, trainer.monster_count, trainer.monster_ref_count);
+      }
+
+      return trainers;
     } catch (error) {
       console.error('Error getting all trainers:', error);
       return [];
@@ -87,7 +111,7 @@ class Trainer {
         const maxIdResult = await pool.query('SELECT MAX(id) FROM trainers');
         const maxId = maxIdResult.rows[0].max || 0;
         const newSeqStart = Math.max(100, maxId + 1);
-        
+
         await pool.query(`ALTER SEQUENCE trainers_id_seq RESTART WITH ${newSeqStart};`);
         console.log(`Reset trainers_id_seq to start at ${newSeqStart}`);
       } catch (seqError) {
@@ -100,13 +124,13 @@ class Trainer {
       const fields = Object.keys(dataWithoutId);
       const placeholders = fields.map((_, i) => `$${i + 1}`).join(', ');
       const values = fields.map(field => dataWithoutId[field]);
-      
+
       const query = `
         INSERT INTO trainers (${fields.join(', ')})
         VALUES (${placeholders})
         RETURNING *
       `;
-      
+
       console.log('Using complete field list for insertion');
       console.log('Fields:', fields);
       console.log('Values:', values);
@@ -139,12 +163,12 @@ class Trainer {
     try {
       // Create a copy of the trainer data to modify
       const processedData = { ...trainerData };
-      
+
       // If main_ref is empty string, set to default
       if (processedData.main_ref === '') {
         processedData.main_ref = '/images/default_trainer.png';
       }
-      
+
       // Integer fields in the trainers table
       const integerFields = ['alter_human', 'age', 'height_ft', 'height_in', 'level', 'level_modifier',
                             'badge_amount', 'frontier_badges_amount', 'contest_ribbons_amount', 'mon_amount', 'mon_referenced_amount'];
@@ -211,7 +235,7 @@ class Trainer {
       throw error;
     }
   }
-  
+
   /**
    * Get monsters in a trainer's battle box
    * @param {number} trainerId - Trainer ID
@@ -238,6 +262,157 @@ class Trainer {
     } catch (error) {
       console.error('Error getting battle box monsters:', error);
       return [];
+    }
+  }
+
+  /**
+   * Update monster counts for a trainer
+   * @param {number} trainerId - Trainer ID
+   * @param {number} monsterCount - Total monster count
+   * @param {number} monsterRefCount - Monster reference count
+   * @returns {Promise<boolean>} - Success status
+   */
+  static async updateMonsterCounts(trainerId, monsterCount, monsterRefCount) {
+    try {
+      const query = `
+        UPDATE trainers
+        SET mon_amount = $1, mon_referenced_amount = $2, updated_at = CURRENT_TIMESTAMP
+        WHERE id = $3
+      `;
+      await pool.query(query, [monsterCount, monsterRefCount, trainerId]);
+      return true;
+    } catch (error) {
+      console.error('Error updating monster counts:', error);
+      return false;
+    }
+  }
+
+  /**
+   * Get inventory for a trainer
+   * @param {number} trainerId - Trainer ID
+   * @returns {Promise<Object>} - Trainer inventory object
+   */
+  static async getInventory(trainerId) {
+    try {
+      const query = `
+        SELECT
+          inv_items, inv_balls, inv_berries, inv_pastries,
+          inv_evolution, inv_eggs, inv_antiques, inv_helditems, inv_seals
+        FROM trainers
+        WHERE id = $1
+      `;
+      const result = await pool.query(query, [trainerId]);
+
+      if (!result.rows[0]) {
+        return null;
+      }
+
+      const inventory = {};
+      const trainer = result.rows[0];
+
+      // Parse each inventory category
+      const categories = [
+        'inv_items', 'inv_balls', 'inv_berries', 'inv_pastries',
+        'inv_evolution', 'inv_eggs', 'inv_antiques', 'inv_helditems', 'inv_seals'
+      ];
+
+      for (const category of categories) {
+        try {
+          inventory[category] = trainer[category] ? JSON.parse(trainer[category]) : {};
+        } catch (e) {
+          console.error(`Error parsing ${category} for trainer ${trainerId}:`, e);
+          inventory[category] = {};
+        }
+      }
+
+      return inventory;
+    } catch (error) {
+      console.error('Error getting trainer inventory:', error);
+      return null;
+    }
+  }
+
+  /**
+   * Update inventory item for a trainer
+   * @param {number} trainerId - Trainer ID
+   * @param {string} category - Inventory category (inv_items, inv_balls, etc.)
+   * @param {string} itemName - Item name
+   * @param {number} quantity - Quantity to add (positive) or remove (negative)
+   * @returns {Promise<boolean>} - Success status
+   */
+  static async updateInventoryItem(trainerId, category, itemName, quantity) {
+    try {
+      // Validate category
+      const validCategories = [
+        'inv_items', 'inv_balls', 'inv_berries', 'inv_pastries',
+        'inv_evolution', 'inv_eggs', 'inv_antiques', 'inv_helditems', 'inv_seals'
+      ];
+
+      if (!validCategories.includes(category)) {
+        throw new Error(`Invalid inventory category: ${category}`);
+      }
+
+      // Get current inventory
+      const query = `SELECT ${category} FROM trainers WHERE id = $1`;
+      const result = await pool.query(query, [trainerId]);
+
+      if (!result.rows[0]) {
+        throw new Error(`Trainer with ID ${trainerId} not found`);
+      }
+
+      // Parse inventory
+      let inventory = {};
+      try {
+        inventory = result.rows[0][category] ? JSON.parse(result.rows[0][category]) : {};
+      } catch (e) {
+        console.error(`Error parsing ${category} for trainer ${trainerId}:`, e);
+        // Continue with empty inventory if parsing fails
+      }
+
+      // Update item quantity
+      const currentQuantity = inventory[itemName] || 0;
+      const newQuantity = currentQuantity + quantity;
+
+      // Remove item if quantity is 0 or less
+      if (newQuantity <= 0) {
+        delete inventory[itemName];
+      } else {
+        inventory[itemName] = newQuantity;
+      }
+
+      // Update inventory in database
+      const updateQuery = `UPDATE trainers SET ${category} = $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2`;
+      await pool.query(updateQuery, [JSON.stringify(inventory), trainerId]);
+
+      return true;
+    } catch (error) {
+      console.error('Error updating inventory item:', error);
+      return false;
+    }
+  }
+
+  /**
+   * Recalculate monster counts for a specific trainer
+   * @param {number} trainerId - Trainer ID
+   * @returns {Promise<boolean>} - Success status
+   */
+  static async recalculateMonsterCounts(trainerId) {
+    try {
+      // Count total monsters
+      const monsterCountQuery = 'SELECT COUNT(*) FROM mons WHERE trainer_id = $1';
+      const monsterCountResult = await pool.query(monsterCountQuery, [trainerId]);
+      const monsterCount = parseInt(monsterCountResult.rows[0].count) || 0;
+
+      // Count monsters with references (non-empty img_link)
+      const monsterRefCountQuery = 'SELECT COUNT(*) FROM mons WHERE trainer_id = $1 AND img_link IS NOT NULL AND img_link != \'\'';
+      const monsterRefCountResult = await pool.query(monsterRefCountQuery, [trainerId]);
+      const monsterRefCount = parseInt(monsterRefCountResult.rows[0].count) || 0;
+
+      // Update the trainer record
+      return await this.updateMonsterCounts(trainerId, monsterCount, monsterRefCount);
+    } catch (error) {
+      console.error('Error recalculating monster counts:', error);
+      return false;
     }
   }
 }
