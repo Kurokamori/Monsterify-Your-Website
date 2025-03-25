@@ -79,29 +79,36 @@ class Trainer {
 
       // Set default image if not provided
       if (!dataWithoutId.main_ref) {
-        dataWithoutId.main_ref = '/images/default_trainer.png';
+        dataWithoutId.main_ref = '/images/default_trainer.svg';
       }
 
-      // First, try to reset the sequence to avoid conflicts
+      // Get the maximum ID currently in the table and set the sequence to start after it
       try {
-        await pool.query('ALTER SEQUENCE trainers_id_seq RESTART WITH 100;');
-        console.log('Reset trainers_id_seq to start at 100');
+        const maxIdResult = await pool.query('SELECT MAX(id) FROM trainers');
+        const maxId = maxIdResult.rows[0].max || 0;
+        const newSeqStart = Math.max(100, maxId + 1);
+        
+        await pool.query(`ALTER SEQUENCE trainers_id_seq RESTART WITH ${newSeqStart};`);
+        console.log(`Reset trainers_id_seq to start at ${newSeqStart}`);
       } catch (seqError) {
         console.error('Error resetting sequence:', seqError);
         // Continue anyway
       }
 
-      // Use the most basic query possible with DEFAULT for id
+      // Build a more complete query with all the fields
+      // Extract all fields from dataWithoutId
+      const fields = Object.keys(dataWithoutId);
+      const placeholders = fields.map((_, i) => `$${i + 1}`).join(', ');
+      const values = fields.map(field => dataWithoutId[field]);
+      
       const query = `
-        INSERT INTO trainers (name, player_user_id)
-        VALUES ($1, $2)
+        INSERT INTO trainers (${fields.join(', ')})
+        VALUES (${placeholders})
         RETURNING *
       `;
-
-      const values = [name, player_user_id];
-
-      console.log('Using explicit DEFAULT for id to avoid conflicts');
-      console.log('SQL Query:', query);
+      
+      console.log('Using complete field list for insertion');
+      console.log('Fields:', fields);
       console.log('Values:', values);
 
       const result = await pool.query(query, values);
@@ -114,17 +121,6 @@ class Trainer {
       const trainerId = newTrainer.id;
 
       console.log('Created new trainer with ID:', trainerId);
-
-      // If we have additional fields, update the trainer in a separate query
-      const additionalFields = { ...dataWithoutId };
-      delete additionalFields.name;
-      delete additionalFields.player_user_id;
-
-      if (Object.keys(additionalFields).length > 0) {
-        console.log('Updating trainer with additional fields');
-        await this.update(trainerId, additionalFields);
-        return await this.getById(trainerId);
-      }
 
       return newTrainer;
     } catch (error) {
@@ -143,12 +139,12 @@ class Trainer {
     try {
       // Create a copy of the trainer data to modify
       const processedData = { ...trainerData };
-
+      
       // If main_ref is empty string, set to default
       if (processedData.main_ref === '') {
-        processedData.main_ref = '/images/default_trainer.png';
+        processedData.main_ref = '/images/default_trainer.svg';
       }
-
+      
       // Integer fields in the trainers table
       const integerFields = ['alter_human', 'age', 'height_ft', 'height_in', 'level', 'level_modifier',
                             'badge_amount', 'frontier_badges_amount', 'contest_ribbons_amount', 'mon_amount', 'mon_referenced_amount'];
@@ -215,7 +211,7 @@ class Trainer {
       throw error;
     }
   }
-
+  
   /**
    * Get monsters in a trainer's battle box
    * @param {number} trainerId - Trainer ID

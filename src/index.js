@@ -938,8 +938,13 @@ app.post('/add_trainer', async (req, res) => {
     const trainerData = {
       ...cleanedBody,
       player_user_id: req.session.user.discord_id,
+      player_display_name: req.session.user.display_name || req.session.user.username,
       level: 1,
-      currency_amount: 0
+      currency_amount: 500,
+      total_earned_currency: 500,
+      inv_items: JSON.stringify({"Daycare Daypass":1,"Legacy Leeway":1}),
+      inv_balls: JSON.stringify({"Poke Ball":10}),
+      inv_eggs: JSON.stringify({"Standard Egg":1})
     };
 
     console.log('Creating trainer with data:', JSON.stringify(trainerData, null, 2));
