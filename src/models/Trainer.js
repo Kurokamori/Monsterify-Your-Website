@@ -164,6 +164,11 @@ class Trainer {
       // Create a copy of the trainer data to modify
       const processedData = { ...trainerData };
 
+      // Debug output
+      console.log('Trainer update data received:', processedData);
+      console.log('main_ref in update:', processedData.main_ref);
+      console.log('main_ref_artist in update:', processedData.main_ref_artist);
+
       // If main_ref is empty string, set to default
       if (processedData.main_ref === '') {
         processedData.main_ref = '/images/default_trainer.png';
@@ -219,6 +224,10 @@ class Trainer {
         WHERE id = $${paramCounter}
         RETURNING *
       `;
+
+      // Debug output
+      console.log('Final SQL query:', query);
+      console.log('Final SQL values:', values);
 
       const result = await pool.query(query, values);
 
