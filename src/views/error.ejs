@@ -1,0 +1,32 @@
+<% /* Set the title and other variables for the layout */ %>
+<% var pageTitle = 'Error'; %>
+
+<div class="container mt-8 mb-12">
+    <div class="bg-[rgba(30,37,50,0.5)] p-8 rounded-xl shadow-lg max-w-3xl mx-auto">
+        <h1 class="text-4xl font-display font-bold mb-6 text-center"><%= message %></h1>
+
+        <% if (error && error.status) { %>
+        <div class="text-center mb-6">
+            <span class="text-6xl font-bold text-red-500"><%= error.status %></span>
+        </div>
+        <% } %>
+
+        <div class="bg-[rgba(0,0,0,0.2)] p-6 rounded-lg mb-6">
+            <p class="text-lg mb-4">
+                Something went wrong. Please try again or contact an administrator if the problem persists.
+            </p>
+
+            <% if (error && error.stack && process.env.NODE_ENV !== 'production') { %>
+            <div class="mt-6 p-4 bg-[rgba(0,0,0,0.3)] rounded-lg overflow-auto">
+                <pre class="text-sm text-gray-300"><%= error.stack %></pre>
+            </div>
+            <% } %>
+        </div>
+
+        <div class="flex justify-center">
+            <a href="/" class="bg-[rgba(255,255,255,0.1)] hover:bg-[rgba(255,255,255,0.2)] text-white font-bold py-3 px-6 rounded-lg transition-all duration-200">
+                Return to Home
+            </a>
+        </div>
+    </div>
+</div>

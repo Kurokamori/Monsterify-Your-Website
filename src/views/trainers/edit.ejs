@@ -1,0 +1,684 @@
+<% /* Set the title and other variables for the layout */ %>
+<% title = `Edit ${trainer.name} - Trainer Profile` %>
+
+<style>
+.form-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+    background: rgba(30, 37, 50, 0.5);
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+.form-title {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.form-section {
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 12px;
+}
+
+.form-section-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    color: var(--accent-color, #d4b3ff);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 0.5rem;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+}
+
+.form-control {
+    width: 100%;
+    padding: 0.75rem;
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    color: #fff;
+    font-size: 1rem;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: var(--accent-color, #d4b3ff);
+    box-shadow: 0 0 0 2px rgba(212, 179, 255, 0.2);
+}
+
+.form-control:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+textarea.form-control {
+    min-height: 120px;
+    resize: vertical;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 2rem;
+}
+
+.btn {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-primary {
+    background-color: var(--accent-color, #d4b3ff);
+    color: #000;
+}
+
+.btn-primary:hover {
+    background-color: #c49ef7;
+}
+
+.btn-secondary {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #fff;
+}
+
+.btn-secondary:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.btn-danger {
+    background-color: #e74c3c;
+    color: #fff;
+}
+
+.btn-danger:hover {
+    background-color: #c0392b;
+}
+
+.form-note {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.6);
+    margin-top: 0.5rem;
+}
+
+.form-note.warning {
+    color: #e74c3c;
+}
+
+@media (max-width: 768px) {
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .form-actions {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .btn {
+        width: 100%;
+    }
+}
+</style>
+
+<div class="container mt-8 mb-12">
+    <div class="form-container">
+        <h1 class="form-title text-4xl font-display font-bold">Edit Trainer: <%= trainer.name %></h1>
+
+        <form action="/trainers/<%= trainer.id %>/update" method="POST">
+            <!-- Basic Information Section -->
+            <div class="form-section">
+                <h2 class="form-section-title">Basic Information</h2>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="name">Name</label>
+                        <input type="text" id="name" name="name" class="form-control" value="<%= trainer.name %>" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="title">Title</label>
+                        <input type="text" id="title" name="title" class="form-control" value="<%= trainer.title || '' %>">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="level">Level</label>
+                        <input type="number" id="level" name="level" class="form-control" value="<%= trainer.level || '' %>" disabled>
+                        <p class="form-note">Level cannot be edited directly</p>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="currency_amount">Currency</label>
+                        <input type="number" id="currency_amount" name="currency_amount" class="form-control" value="<%= trainer.currency_amount || 0 %>" disabled>
+                        <p class="form-note">Currency cannot be edited directly</p>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="faction">Faction</label>
+                        <input type="text" id="faction" name="faction" class="form-control" value="<%= trainer.faction || '' %>">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Species and Types Section -->
+            <div class="form-section">
+                <h2 class="form-section-title">Species and Types</h2>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="species1">Primary Species</label>
+                        <input type="text" id="species1" name="species1" class="form-control" value="<%= trainer.species1 || '' %>">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="species2">Secondary Species</label>
+                        <input type="text" id="species2" name="species2" class="form-control" value="<%= trainer.species2 || '' %>">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="species3">Tertiary Species</label>
+                        <input type="text" id="species3" name="species3" class="form-control" value="<%= trainer.species3 || '' %>">
+                    </div>
+                </div>
+
+                <h3 class="text-xl font-display font-bold mt-4 mb-3">Trainer Types</h3>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="type1">Type 1</label>
+                        <select id="type1" name="type1" class="form-control">
+                            <option value="" <%= !trainer.type1 ? 'selected' : '' %>>None</option>
+                            <option value="Normal" <%= trainer.type1 === 'Normal' ? 'selected' : '' %>>Normal</option>
+                            <option value="Fire" <%= trainer.type1 === 'Fire' ? 'selected' : '' %>>Fire</option>
+                            <option value="Water" <%= trainer.type1 === 'Water' ? 'selected' : '' %>>Water</option>
+                            <option value="Electric" <%= trainer.type1 === 'Electric' ? 'selected' : '' %>>Electric</option>
+                            <option value="Grass" <%= trainer.type1 === 'Grass' ? 'selected' : '' %>>Grass</option>
+                            <option value="Ice" <%= trainer.type1 === 'Ice' ? 'selected' : '' %>>Ice</option>
+                            <option value="Fighting" <%= trainer.type1 === 'Fighting' ? 'selected' : '' %>>Fighting</option>
+                            <option value="Poison" <%= trainer.type1 === 'Poison' ? 'selected' : '' %>>Poison</option>
+                            <option value="Ground" <%= trainer.type1 === 'Ground' ? 'selected' : '' %>>Ground</option>
+                            <option value="Flying" <%= trainer.type1 === 'Flying' ? 'selected' : '' %>>Flying</option>
+                            <option value="Psychic" <%= trainer.type1 === 'Psychic' ? 'selected' : '' %>>Psychic</option>
+                            <option value="Bug" <%= trainer.type1 === 'Bug' ? 'selected' : '' %>>Bug</option>
+                            <option value="Rock" <%= trainer.type1 === 'Rock' ? 'selected' : '' %>>Rock</option>
+                            <option value="Ghost" <%= trainer.type1 === 'Ghost' ? 'selected' : '' %>>Ghost</option>
+                            <option value="Dragon" <%= trainer.type1 === 'Dragon' ? 'selected' : '' %>>Dragon</option>
+                            <option value="Dark" <%= trainer.type1 === 'Dark' ? 'selected' : '' %>>Dark</option>
+                            <option value="Steel" <%= trainer.type1 === 'Steel' ? 'selected' : '' %>>Steel</option>
+                            <option value="Fairy" <%= trainer.type1 === 'Fairy' ? 'selected' : '' %>>Fairy</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="type2">Type 2</label>
+                        <select id="type2" name="type2" class="form-control">
+                            <option value="" <%= !trainer.type2 ? 'selected' : '' %>>None</option>
+                            <option value="Normal" <%= trainer.type2 === 'Normal' ? 'selected' : '' %>>Normal</option>
+                            <option value="Fire" <%= trainer.type2 === 'Fire' ? 'selected' : '' %>>Fire</option>
+                            <option value="Water" <%= trainer.type2 === 'Water' ? 'selected' : '' %>>Water</option>
+                            <option value="Electric" <%= trainer.type2 === 'Electric' ? 'selected' : '' %>>Electric</option>
+                            <option value="Grass" <%= trainer.type2 === 'Grass' ? 'selected' : '' %>>Grass</option>
+                            <option value="Ice" <%= trainer.type2 === 'Ice' ? 'selected' : '' %>>Ice</option>
+                            <option value="Fighting" <%= trainer.type2 === 'Fighting' ? 'selected' : '' %>>Fighting</option>
+                            <option value="Poison" <%= trainer.type2 === 'Poison' ? 'selected' : '' %>>Poison</option>
+                            <option value="Ground" <%= trainer.type2 === 'Ground' ? 'selected' : '' %>>Ground</option>
+                            <option value="Flying" <%= trainer.type2 === 'Flying' ? 'selected' : '' %>>Flying</option>
+                            <option value="Psychic" <%= trainer.type2 === 'Psychic' ? 'selected' : '' %>>Psychic</option>
+                            <option value="Bug" <%= trainer.type2 === 'Bug' ? 'selected' : '' %>>Bug</option>
+                            <option value="Rock" <%= trainer.type2 === 'Rock' ? 'selected' : '' %>>Rock</option>
+                            <option value="Ghost" <%= trainer.type2 === 'Ghost' ? 'selected' : '' %>>Ghost</option>
+                            <option value="Dragon" <%= trainer.type2 === 'Dragon' ? 'selected' : '' %>>Dragon</option>
+                            <option value="Dark" <%= trainer.type2 === 'Dark' ? 'selected' : '' %>>Dark</option>
+                            <option value="Steel" <%= trainer.type2 === 'Steel' ? 'selected' : '' %>>Steel</option>
+                            <option value="Fairy" <%= trainer.type2 === 'Fairy' ? 'selected' : '' %>>Fairy</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="type3">Type 3</label>
+                        <select id="type3" name="type3" class="form-control">
+                            <option value="" <%= !trainer.type3 ? 'selected' : '' %>>None</option>
+                            <option value="Normal" <%= trainer.type3 === 'Normal' ? 'selected' : '' %>>Normal</option>
+                            <option value="Fire" <%= trainer.type3 === 'Fire' ? 'selected' : '' %>>Fire</option>
+                            <option value="Water" <%= trainer.type3 === 'Water' ? 'selected' : '' %>>Water</option>
+                            <option value="Electric" <%= trainer.type3 === 'Electric' ? 'selected' : '' %>>Electric</option>
+                            <option value="Grass" <%= trainer.type3 === 'Grass' ? 'selected' : '' %>>Grass</option>
+                            <option value="Ice" <%= trainer.type3 === 'Ice' ? 'selected' : '' %>>Ice</option>
+                            <option value="Fighting" <%= trainer.type3 === 'Fighting' ? 'selected' : '' %>>Fighting</option>
+                            <option value="Poison" <%= trainer.type3 === 'Poison' ? 'selected' : '' %>>Poison</option>
+                            <option value="Ground" <%= trainer.type3 === 'Ground' ? 'selected' : '' %>>Ground</option>
+                            <option value="Flying" <%= trainer.type3 === 'Flying' ? 'selected' : '' %>>Flying</option>
+                            <option value="Psychic" <%= trainer.type3 === 'Psychic' ? 'selected' : '' %>>Psychic</option>
+                            <option value="Bug" <%= trainer.type3 === 'Bug' ? 'selected' : '' %>>Bug</option>
+                            <option value="Rock" <%= trainer.type3 === 'Rock' ? 'selected' : '' %>>Rock</option>
+                            <option value="Ghost" <%= trainer.type3 === 'Ghost' ? 'selected' : '' %>>Ghost</option>
+                            <option value="Dragon" <%= trainer.type3 === 'Dragon' ? 'selected' : '' %>>Dragon</option>
+                            <option value="Dark" <%= trainer.type3 === 'Dark' ? 'selected' : '' %>>Dark</option>
+                            <option value="Steel" <%= trainer.type3 === 'Steel' ? 'selected' : '' %>>Steel</option>
+                            <option value="Fairy" <%= trainer.type3 === 'Fairy' ? 'selected' : '' %>>Fairy</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="type4">Type 4</label>
+                        <select id="type4" name="type4" class="form-control">
+                            <option value="" <%= !trainer.type4 ? 'selected' : '' %>>None</option>
+                            <option value="Normal" <%= trainer.type4 === 'Normal' ? 'selected' : '' %>>Normal</option>
+                            <option value="Fire" <%= trainer.type4 === 'Fire' ? 'selected' : '' %>>Fire</option>
+                            <option value="Water" <%= trainer.type4 === 'Water' ? 'selected' : '' %>>Water</option>
+                            <option value="Electric" <%= trainer.type4 === 'Electric' ? 'selected' : '' %>>Electric</option>
+                            <option value="Grass" <%= trainer.type4 === 'Grass' ? 'selected' : '' %>>Grass</option>
+                            <option value="Ice" <%= trainer.type4 === 'Ice' ? 'selected' : '' %>>Ice</option>
+                            <option value="Fighting" <%= trainer.type4 === 'Fighting' ? 'selected' : '' %>>Fighting</option>
+                            <option value="Poison" <%= trainer.type4 === 'Poison' ? 'selected' : '' %>>Poison</option>
+                            <option value="Ground" <%= trainer.type4 === 'Ground' ? 'selected' : '' %>>Ground</option>
+                            <option value="Flying" <%= trainer.type4 === 'Flying' ? 'selected' : '' %>>Flying</option>
+                            <option value="Psychic" <%= trainer.type4 === 'Psychic' ? 'selected' : '' %>>Psychic</option>
+                            <option value="Bug" <%= trainer.type4 === 'Bug' ? 'selected' : '' %>>Bug</option>
+                            <option value="Rock" <%= trainer.type4 === 'Rock' ? 'selected' : '' %>>Rock</option>
+                            <option value="Ghost" <%= trainer.type4 === 'Ghost' ? 'selected' : '' %>>Ghost</option>
+                            <option value="Dragon" <%= trainer.type4 === 'Dragon' ? 'selected' : '' %>>Dragon</option>
+                            <option value="Dark" <%= trainer.type4 === 'Dark' ? 'selected' : '' %>>Dark</option>
+                            <option value="Steel" <%= trainer.type4 === 'Steel' ? 'selected' : '' %>>Steel</option>
+                            <option value="Fairy" <%= trainer.type4 === 'Fairy' ? 'selected' : '' %>>Fairy</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="type5">Type 5</label>
+                        <select id="type5" name="type5" class="form-control">
+                            <option value="" <%= !trainer.type5 ? 'selected' : '' %>>None</option>
+                            <option value="Normal" <%= trainer.type5 === 'Normal' ? 'selected' : '' %>>Normal</option>
+                            <option value="Fire" <%= trainer.type5 === 'Fire' ? 'selected' : '' %>>Fire</option>
+                            <option value="Water" <%= trainer.type5 === 'Water' ? 'selected' : '' %>>Water</option>
+                            <option value="Electric" <%= trainer.type5 === 'Electric' ? 'selected' : '' %>>Electric</option>
+                            <option value="Grass" <%= trainer.type5 === 'Grass' ? 'selected' : '' %>>Grass</option>
+                            <option value="Ice" <%= trainer.type5 === 'Ice' ? 'selected' : '' %>>Ice</option>
+                            <option value="Fighting" <%= trainer.type5 === 'Fighting' ? 'selected' : '' %>>Fighting</option>
+                            <option value="Poison" <%= trainer.type5 === 'Poison' ? 'selected' : '' %>>Poison</option>
+                            <option value="Ground" <%= trainer.type5 === 'Ground' ? 'selected' : '' %>>Ground</option>
+                            <option value="Flying" <%= trainer.type5 === 'Flying' ? 'selected' : '' %>>Flying</option>
+                            <option value="Psychic" <%= trainer.type5 === 'Psychic' ? 'selected' : '' %>>Psychic</option>
+                            <option value="Bug" <%= trainer.type5 === 'Bug' ? 'selected' : '' %>>Bug</option>
+                            <option value="Rock" <%= trainer.type5 === 'Rock' ? 'selected' : '' %>>Rock</option>
+                            <option value="Ghost" <%= trainer.type5 === 'Ghost' ? 'selected' : '' %>>Ghost</option>
+                            <option value="Dragon" <%= trainer.type5 === 'Dragon' ? 'selected' : '' %>>Dragon</option>
+                            <option value="Dark" <%= trainer.type5 === 'Dark' ? 'selected' : '' %>>Dark</option>
+                            <option value="Steel" <%= trainer.type5 === 'Steel' ? 'selected' : '' %>>Steel</option>
+                            <option value="Fairy" <%= trainer.type5 === 'Fairy' ? 'selected' : '' %>>Fairy</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="type6">Type 6</label>
+                        <select id="type6" name="type6" class="form-control">
+                            <option value="" <%= !trainer.type6 ? 'selected' : '' %>>None</option>
+                            <option value="Normal" <%= trainer.type6 === 'Normal' ? 'selected' : '' %>>Normal</option>
+                            <option value="Fire" <%= trainer.type6 === 'Fire' ? 'selected' : '' %>>Fire</option>
+                            <option value="Water" <%= trainer.type6 === 'Water' ? 'selected' : '' %>>Water</option>
+                            <option value="Electric" <%= trainer.type6 === 'Electric' ? 'selected' : '' %>>Electric</option>
+                            <option value="Grass" <%= trainer.type6 === 'Grass' ? 'selected' : '' %>>Grass</option>
+                            <option value="Ice" <%= trainer.type6 === 'Ice' ? 'selected' : '' %>>Ice</option>
+                            <option value="Fighting" <%= trainer.type6 === 'Fighting' ? 'selected' : '' %>>Fighting</option>
+                            <option value="Poison" <%= trainer.type6 === 'Poison' ? 'selected' : '' %>>Poison</option>
+                            <option value="Ground" <%= trainer.type6 === 'Ground' ? 'selected' : '' %>>Ground</option>
+                            <option value="Flying" <%= trainer.type6 === 'Flying' ? 'selected' : '' %>>Flying</option>
+                            <option value="Psychic" <%= trainer.type6 === 'Psychic' ? 'selected' : '' %>>Psychic</option>
+                            <option value="Bug" <%= trainer.type6 === 'Bug' ? 'selected' : '' %>>Bug</option>
+                            <option value="Rock" <%= trainer.type6 === 'Rock' ? 'selected' : '' %>>Rock</option>
+                            <option value="Ghost" <%= trainer.type6 === 'Ghost' ? 'selected' : '' %>>Ghost</option>
+                            <option value="Dragon" <%= trainer.type6 === 'Dragon' ? 'selected' : '' %>>Dragon</option>
+                            <option value="Dark" <%= trainer.type6 === 'Dark' ? 'selected' : '' %>>Dark</option>
+                            <option value="Steel" <%= trainer.type6 === 'Steel' ? 'selected' : '' %>>Steel</option>
+                            <option value="Fairy" <%= trainer.type6 === 'Fairy' ? 'selected' : '' %>>Fairy</option>
+                        </select>
+                    </div>
+                </div>
+
+                <h3 class="text-xl font-display font-bold mt-4 mb-3">Favorite Types</h3>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="fav_type1">Favorite Type 1</label>
+                        <select id="fav_type1" name="fav_type1" class="form-control">
+                            <option value="" <%= !trainer.fav_type1 ? 'selected' : '' %>>None</option>
+                            <option value="Normal" <%= trainer.fav_type1 === 'Normal' ? 'selected' : '' %>>Normal</option>
+                            <option value="Fire" <%= trainer.fav_type1 === 'Fire' ? 'selected' : '' %>>Fire</option>
+                            <option value="Water" <%= trainer.fav_type1 === 'Water' ? 'selected' : '' %>>Water</option>
+                            <option value="Electric" <%= trainer.fav_type1 === 'Electric' ? 'selected' : '' %>>Electric</option>
+                            <option value="Grass" <%= trainer.fav_type1 === 'Grass' ? 'selected' : '' %>>Grass</option>
+                            <option value="Ice" <%= trainer.fav_type1 === 'Ice' ? 'selected' : '' %>>Ice</option>
+                            <option value="Fighting" <%= trainer.fav_type1 === 'Fighting' ? 'selected' : '' %>>Fighting</option>
+                            <option value="Poison" <%= trainer.fav_type1 === 'Poison' ? 'selected' : '' %>>Poison</option>
+                            <option value="Ground" <%= trainer.fav_type1 === 'Ground' ? 'selected' : '' %>>Ground</option>
+                            <option value="Flying" <%= trainer.fav_type1 === 'Flying' ? 'selected' : '' %>>Flying</option>
+                            <option value="Psychic" <%= trainer.fav_type1 === 'Psychic' ? 'selected' : '' %>>Psychic</option>
+                            <option value="Bug" <%= trainer.fav_type1 === 'Bug' ? 'selected' : '' %>>Bug</option>
+                            <option value="Rock" <%= trainer.fav_type1 === 'Rock' ? 'selected' : '' %>>Rock</option>
+                            <option value="Ghost" <%= trainer.fav_type1 === 'Ghost' ? 'selected' : '' %>>Ghost</option>
+                            <option value="Dragon" <%= trainer.fav_type1 === 'Dragon' ? 'selected' : '' %>>Dragon</option>
+                            <option value="Dark" <%= trainer.fav_type1 === 'Dark' ? 'selected' : '' %>>Dark</option>
+                            <option value="Steel" <%= trainer.fav_type1 === 'Steel' ? 'selected' : '' %>>Steel</option>
+                            <option value="Fairy" <%= trainer.fav_type1 === 'Fairy' ? 'selected' : '' %>>Fairy</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="fav_type2">Favorite Type 2</label>
+                        <select id="fav_type2" name="fav_type2" class="form-control">
+                            <option value="" <%= !trainer.fav_type2 ? 'selected' : '' %>>None</option>
+                            <option value="Normal" <%= trainer.fav_type2 === 'Normal' ? 'selected' : '' %>>Normal</option>
+                            <option value="Fire" <%= trainer.fav_type2 === 'Fire' ? 'selected' : '' %>>Fire</option>
+                            <option value="Water" <%= trainer.fav_type2 === 'Water' ? 'selected' : '' %>>Water</option>
+                            <option value="Electric" <%= trainer.fav_type2 === 'Electric' ? 'selected' : '' %>>Electric</option>
+                            <option value="Grass" <%= trainer.fav_type2 === 'Grass' ? 'selected' : '' %>>Grass</option>
+                            <option value="Ice" <%= trainer.fav_type2 === 'Ice' ? 'selected' : '' %>>Ice</option>
+                            <option value="Fighting" <%= trainer.fav_type2 === 'Fighting' ? 'selected' : '' %>>Fighting</option>
+                            <option value="Poison" <%= trainer.fav_type2 === 'Poison' ? 'selected' : '' %>>Poison</option>
+                            <option value="Ground" <%= trainer.fav_type2 === 'Ground' ? 'selected' : '' %>>Ground</option>
+                            <option value="Flying" <%= trainer.fav_type2 === 'Flying' ? 'selected' : '' %>>Flying</option>
+                            <option value="Psychic" <%= trainer.fav_type2 === 'Psychic' ? 'selected' : '' %>>Psychic</option>
+                            <option value="Bug" <%= trainer.fav_type2 === 'Bug' ? 'selected' : '' %>>Bug</option>
+                            <option value="Rock" <%= trainer.fav_type2 === 'Rock' ? 'selected' : '' %>>Rock</option>
+                            <option value="Ghost" <%= trainer.fav_type2 === 'Ghost' ? 'selected' : '' %>>Ghost</option>
+                            <option value="Dragon" <%= trainer.fav_type2 === 'Dragon' ? 'selected' : '' %>>Dragon</option>
+                            <option value="Dark" <%= trainer.fav_type2 === 'Dark' ? 'selected' : '' %>>Dark</option>
+                            <option value="Steel" <%= trainer.fav_type2 === 'Steel' ? 'selected' : '' %>>Steel</option>
+                            <option value="Fairy" <%= trainer.fav_type2 === 'Fairy' ? 'selected' : '' %>>Fairy</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="fav_type3">Favorite Type 3</label>
+                        <select id="fav_type3" name="fav_type3" class="form-control">
+                            <option value="" <%= !trainer.fav_type3 ? 'selected' : '' %>>None</option>
+                            <option value="Normal" <%= trainer.fav_type3 === 'Normal' ? 'selected' : '' %>>Normal</option>
+                            <option value="Fire" <%= trainer.fav_type3 === 'Fire' ? 'selected' : '' %>>Fire</option>
+                            <option value="Water" <%= trainer.fav_type3 === 'Water' ? 'selected' : '' %>>Water</option>
+                            <option value="Electric" <%= trainer.fav_type3 === 'Electric' ? 'selected' : '' %>>Electric</option>
+                            <option value="Grass" <%= trainer.fav_type3 === 'Grass' ? 'selected' : '' %>>Grass</option>
+                            <option value="Ice" <%= trainer.fav_type3 === 'Ice' ? 'selected' : '' %>>Ice</option>
+                            <option value="Fighting" <%= trainer.fav_type3 === 'Fighting' ? 'selected' : '' %>>Fighting</option>
+                            <option value="Poison" <%= trainer.fav_type3 === 'Poison' ? 'selected' : '' %>>Poison</option>
+                            <option value="Ground" <%= trainer.fav_type3 === 'Ground' ? 'selected' : '' %>>Ground</option>
+                            <option value="Flying" <%= trainer.fav_type3 === 'Flying' ? 'selected' : '' %>>Flying</option>
+                            <option value="Psychic" <%= trainer.fav_type3 === 'Psychic' ? 'selected' : '' %>>Psychic</option>
+                            <option value="Bug" <%= trainer.fav_type3 === 'Bug' ? 'selected' : '' %>>Bug</option>
+                            <option value="Rock" <%= trainer.fav_type3 === 'Rock' ? 'selected' : '' %>>Rock</option>
+                            <option value="Ghost" <%= trainer.fav_type3 === 'Ghost' ? 'selected' : '' %>>Ghost</option>
+                            <option value="Dragon" <%= trainer.fav_type3 === 'Dragon' ? 'selected' : '' %>>Dragon</option>
+                            <option value="Dark" <%= trainer.fav_type3 === 'Dark' ? 'selected' : '' %>>Dark</option>
+                            <option value="Steel" <%= trainer.fav_type3 === 'Steel' ? 'selected' : '' %>>Steel</option>
+                            <option value="Fairy" <%= trainer.fav_type3 === 'Fairy' ? 'selected' : '' %>>Fairy</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="fav_type4">Favorite Type 4</label>
+                        <select id="fav_type4" name="fav_type4" class="form-control">
+                            <option value="" <%= !trainer.fav_type4 ? 'selected' : '' %>>None</option>
+                            <option value="Normal" <%= trainer.fav_type4 === 'Normal' ? 'selected' : '' %>>Normal</option>
+                            <option value="Fire" <%= trainer.fav_type4 === 'Fire' ? 'selected' : '' %>>Fire</option>
+                            <option value="Water" <%= trainer.fav_type4 === 'Water' ? 'selected' : '' %>>Water</option>
+                            <option value="Electric" <%= trainer.fav_type4 === 'Electric' ? 'selected' : '' %>>Electric</option>
+                            <option value="Grass" <%= trainer.fav_type4 === 'Grass' ? 'selected' : '' %>>Grass</option>
+                            <option value="Ice" <%= trainer.fav_type4 === 'Ice' ? 'selected' : '' %>>Ice</option>
+                            <option value="Fighting" <%= trainer.fav_type4 === 'Fighting' ? 'selected' : '' %>>Fighting</option>
+                            <option value="Poison" <%= trainer.fav_type4 === 'Poison' ? 'selected' : '' %>>Poison</option>
+                            <option value="Ground" <%= trainer.fav_type4 === 'Ground' ? 'selected' : '' %>>Ground</option>
+                            <option value="Flying" <%= trainer.fav_type4 === 'Flying' ? 'selected' : '' %>>Flying</option>
+                            <option value="Psychic" <%= trainer.fav_type4 === 'Psychic' ? 'selected' : '' %>>Psychic</option>
+                            <option value="Bug" <%= trainer.fav_type4 === 'Bug' ? 'selected' : '' %>>Bug</option>
+                            <option value="Rock" <%= trainer.fav_type4 === 'Rock' ? 'selected' : '' %>>Rock</option>
+                            <option value="Ghost" <%= trainer.fav_type4 === 'Ghost' ? 'selected' : '' %>>Ghost</option>
+                            <option value="Dragon" <%= trainer.fav_type4 === 'Dragon' ? 'selected' : '' %>>Dragon</option>
+                            <option value="Dark" <%= trainer.fav_type4 === 'Dark' ? 'selected' : '' %>>Dark</option>
+                            <option value="Steel" <%= trainer.fav_type4 === 'Steel' ? 'selected' : '' %>>Steel</option>
+                            <option value="Fairy" <%= trainer.fav_type4 === 'Fairy' ? 'selected' : '' %>>Fairy</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="fav_type5">Favorite Type 5</label>
+                        <select id="fav_type5" name="fav_type5" class="form-control">
+                            <option value="" <%= !trainer.fav_type5 ? 'selected' : '' %>>None</option>
+                            <option value="Normal" <%= trainer.fav_type5 === 'Normal' ? 'selected' : '' %>>Normal</option>
+                            <option value="Fire" <%= trainer.fav_type5 === 'Fire' ? 'selected' : '' %>>Fire</option>
+                            <option value="Water" <%= trainer.fav_type5 === 'Water' ? 'selected' : '' %>>Water</option>
+                            <option value="Electric" <%= trainer.fav_type5 === 'Electric' ? 'selected' : '' %>>Electric</option>
+                            <option value="Grass" <%= trainer.fav_type5 === 'Grass' ? 'selected' : '' %>>Grass</option>
+                            <option value="Ice" <%= trainer.fav_type5 === 'Ice' ? 'selected' : '' %>>Ice</option>
+                            <option value="Fighting" <%= trainer.fav_type5 === 'Fighting' ? 'selected' : '' %>>Fighting</option>
+                            <option value="Poison" <%= trainer.fav_type5 === 'Poison' ? 'selected' : '' %>>Poison</option>
+                            <option value="Ground" <%= trainer.fav_type5 === 'Ground' ? 'selected' : '' %>>Ground</option>
+                            <option value="Flying" <%= trainer.fav_type5 === 'Flying' ? 'selected' : '' %>>Flying</option>
+                            <option value="Psychic" <%= trainer.fav_type5 === 'Psychic' ? 'selected' : '' %>>Psychic</option>
+                            <option value="Bug" <%= trainer.fav_type5 === 'Bug' ? 'selected' : '' %>>Bug</option>
+                            <option value="Rock" <%= trainer.fav_type5 === 'Rock' ? 'selected' : '' %>>Rock</option>
+                            <option value="Ghost" <%= trainer.fav_type5 === 'Ghost' ? 'selected' : '' %>>Ghost</option>
+                            <option value="Dragon" <%= trainer.fav_type5 === 'Dragon' ? 'selected' : '' %>>Dragon</option>
+                            <option value="Dark" <%= trainer.fav_type5 === 'Dark' ? 'selected' : '' %>>Dark</option>
+                            <option value="Steel" <%= trainer.fav_type5 === 'Steel' ? 'selected' : '' %>>Steel</option>
+                            <option value="Fairy" <%= trainer.fav_type5 === 'Fairy' ? 'selected' : '' %>>Fairy</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="fav_type6">Favorite Type 6</label>
+                        <select id="fav_type6" name="fav_type6" class="form-control">
+                            <option value="" <%= !trainer.fav_type6 ? 'selected' : '' %>>None</option>
+                            <option value="Normal" <%= trainer.fav_type6 === 'Normal' ? 'selected' : '' %>>Normal</option>
+                            <option value="Fire" <%= trainer.fav_type6 === 'Fire' ? 'selected' : '' %>>Fire</option>
+                            <option value="Water" <%= trainer.fav_type6 === 'Water' ? 'selected' : '' %>>Water</option>
+                            <option value="Electric" <%= trainer.fav_type6 === 'Electric' ? 'selected' : '' %>>Electric</option>
+                            <option value="Grass" <%= trainer.fav_type6 === 'Grass' ? 'selected' : '' %>>Grass</option>
+                            <option value="Ice" <%= trainer.fav_type6 === 'Ice' ? 'selected' : '' %>>Ice</option>
+                            <option value="Fighting" <%= trainer.fav_type6 === 'Fighting' ? 'selected' : '' %>>Fighting</option>
+                            <option value="Poison" <%= trainer.fav_type6 === 'Poison' ? 'selected' : '' %>>Poison</option>
+                            <option value="Ground" <%= trainer.fav_type6 === 'Ground' ? 'selected' : '' %>>Ground</option>
+                            <option value="Flying" <%= trainer.fav_type6 === 'Flying' ? 'selected' : '' %>>Flying</option>
+                            <option value="Psychic" <%= trainer.fav_type6 === 'Psychic' ? 'selected' : '' %>>Psychic</option>
+                            <option value="Bug" <%= trainer.fav_type6 === 'Bug' ? 'selected' : '' %>>Bug</option>
+                            <option value="Rock" <%= trainer.fav_type6 === 'Rock' ? 'selected' : '' %>>Rock</option>
+                            <option value="Ghost" <%= trainer.fav_type6 === 'Ghost' ? 'selected' : '' %>>Ghost</option>
+                            <option value="Dragon" <%= trainer.fav_type6 === 'Dragon' ? 'selected' : '' %>>Dragon</option>
+                            <option value="Dark" <%= trainer.fav_type6 === 'Dark' ? 'selected' : '' %>>Dark</option>
+                            <option value="Steel" <%= trainer.fav_type6 === 'Steel' ? 'selected' : '' %>>Steel</option>
+                            <option value="Fairy" <%= trainer.fav_type6 === 'Fairy' ? 'selected' : '' %>>Fairy</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Personal Information Section -->
+            <div class="form-section">
+                <h2 class="form-section-title">Personal Information</h2>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="gender">Gender</label>
+                        <input type="text" id="gender" name="gender" class="form-control" value="<%= trainer.gender || '' %>">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="pronouns">Pronouns</label>
+                        <input type="text" id="pronouns" name="pronouns" class="form-control" value="<%= trainer.pronouns || '' %>">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="age">Age</label>
+                        <input type="number" id="age" name="age" class="form-control" value="<%= trainer.age || '' %>" min="0">
+                        <p class="form-note">Leave empty if not applicable</p>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="birthday">Birthday</label>
+                        <input type="text" id="birthday" name="birthday" class="form-control" value="<%= trainer.birthday || '' %>">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="birthplace">Birthplace</label>
+                        <input type="text" id="birthplace" name="birthplace" class="form-control" value="<%= trainer.birthplace || '' %>">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="residence">Residence</label>
+                        <input type="text" id="residence" name="residence" class="form-control" value="<%= trainer.residence || '' %>">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="height_ft">Height (Feet)</label>
+                        <input type="number" id="height_ft" name="height_ft" class="form-control" value="<%= trainer.height_ft || '' %>" min="0">
+                        <p class="form-note">Leave empty if not applicable</p>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="height_in">Height (Inches)</label>
+                        <input type="number" id="height_in" name="height_in" class="form-control" value="<%= trainer.height_in || '' %>" min="0" max="11">
+                        <p class="form-note">Leave empty if not applicable</p>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="fav_berry">Favorite Berries</label>
+                        <input type="text" id="fav_berry" name="fav_berry" class="form-control" value="<%= trainer.fav_berry || '' %>">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Biography Section -->
+            <div class="form-section">
+                <h2 class="form-section-title">Biography</h2>
+
+                <div class="form-group">
+                    <label for="quote">Quote</label>
+                    <input type="text" id="quote" name="quote" class="form-control" value="<%= trainer.quote || '' %>">
+                </div>
+
+                <div class="form-group">
+                    <label for="tldr">TL;DR</label>
+                    <textarea id="tldr" name="tldr" class="form-control"><%= trainer.tldr || '' %></textarea>
+                    <p class="form-note">A brief summary of your trainer's character</p>
+                </div>
+
+                <div class="form-group">
+                    <label for="long_bio">Full Biography</label>
+                    <textarea id="long_bio" name="long_bio" class="form-control" rows="8"><%= trainer.long_bio || '' %></textarea>
+                </div>
+            </div>
+
+            <!-- Mega Evolution Section -->
+            <div class="form-section">
+                <h2 class="form-section-title">Mega Evolution</h2>
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="mega_evo">Mega Evolution</label>
+                        <input type="text" id="mega_evo" name="mega_evo" class="form-control" value="<%= trainer.mega_evo || '' %>">
+                    </div>
+                </div>
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="mega_main_reference">Mega Reference Image URL</label>
+                        <input type="text" id="mega_main_reference" name="mega_main_reference" class="form-control" value="<%= trainer.mega_main_reference || '' %>">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="mega_artist">Mega Artist</label>
+                        <input type="text" id="mega_artist" name="mega_artist" class="form-control" value="<%= trainer.mega_artist || '' %>">
+                    </div>
+                </div>
+
+                <h3 class="text-xl font-display font-bold mt-4 mb-3">Mega Types</h3>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="mega_type1">Mega Type 1</label>
+                        <input type="text" id="mega_type1" name="mega_type1" class="form-control" value="<%= trainer.mega_type1 || '' %>">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="mega_type2">Mega Type 2</label>
+                        <input type="text" id="mega_type2" name="mega_type2" class="form-control" value="<%= trainer.mega_type2 || '' %>">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="mega_type3">Mega Type 3</label>
+                        <input type="text" id="mega_type3" name="mega_type3" class="form-control" value="<%= trainer.mega_type3 || '' %>">
+                    </div>
+                </div>
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="mega_type4">Mega Type 4</label>
+                        <input type="text" id="mega_type4" name="mega_type4" class="form-control" value="<%= trainer.mega_type4 || '' %>">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="mega_type5">Mega Type 5</label>
+                        <input type="text" id="mega_type5" name="mega_type5" class="form-control" value="<%= trainer.mega_type5 || '' %>">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="mega_type6">Mega Type 6</label>
+                        <input type="text" id="mega_type6" name="mega_type6" class="form-control" value="<%= trainer.mega_type6 || '' %>">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="mega_ability">Mega Ability</label>
+                    <input type="text" id="mega_ability" name="mega_ability" class="form-control" value="<%= trainer.mega_ability || '' %>">
+                </div>
+            </div>
+
+            <!-- Appearance Section -->
+            <div class="form-section">
+                <h2 class="form-section-title">Appearance</h2>
+
+                <div class="form-group">
+                    <label for="main_ref">Main Reference Image URL</label>
+                    <input type="text" id="main_ref" name="main_ref" class="form-control" value="<%= trainer.main_ref || '' %>">
+                    <p class="form-note">Direct link to an image (e.g., https://example.com/image.jpg)</p>
+                </div>
+
+                <div class="form-group">
+                    <label for="main_ref_artist">Reference Artist Credit</label>
+                    <input type="text" id="main_ref_artist" name="main_ref_artist" class="form-control" value="<%= trainer.main_ref_artist || '' %>">
+                </div>
+
+                <% if (trainer.main_ref) { %>
+                <div class="mt-4">
+                    <p class="mb-2">Current Image:</p>
+                    <img src="<%= trainer.main_ref %>" alt="<%= trainer.name %>" style="max-width: 300px; max-height: 300px; border-radius: 8px;">
+                </div>
+                <% } %>
+            </div>
+
+            <!-- Form Actions -->
+            <div class="form-actions">
+                <a href="/trainers/<%= trainer.id %>" class="btn btn-secondary">Cancel</a>
+                <button type="submit" class="btn btn-primary">Save Changes</button>
+            </div>
+        </form>
+    </div>
+</div>
