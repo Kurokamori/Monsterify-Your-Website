@@ -182,8 +182,127 @@ function getAdjacentFakemon(currentNumber) {
   return { prev, next };
 }
 
+/**
+ * Generate markdown content from fakemon object
+ * @param {Object} fakemon - Fakemon data
+ * @returns {string} Markdown content
+ */
+function generateFakemonMarkdown(fakemon) {
+  let markdown = `# ${fakemon.name}\n\n`;
+
+  // Classification
+  markdown += `## Classification\n${fakemon.species_class || 'The Something Pokemon'}\n\n`;
+
+  // Types
+  markdown += `## Types\n${fakemon.types.join(', ')}\n\n`;
+
+  // Attribute
+  markdown += `## Attribute\n${fakemon.attribute}\n\n`;
+
+  // Abilities
+  markdown += `## Abilities\n${fakemon.abilities.join(', ')}\n\n`;
+
+  // Physical
+  markdown += `## Physical\nHeight: ${fakemon.height || '1.0 m'} | Weight: ${fakemon.weight || '20.0 kg'}\n\n`;
+
+  // Stats
+  markdown += `## Stats\n`;
+  for (const [stat, value] of Object.entries(fakemon.stats)) {
+    markdown += `${stat.toUpperCase()}: ${value}\n`;
+  }
+  markdown += '\n';
+
+  // Evolution
+  markdown += `## Evolution\n`;
+  if (fakemon.evolution_line && fakemon.evolution_line.length > 0) {
+    fakemon.evolution_line.forEach(evo => {
+      markdown += `#${evo.number} (${evo.requirement})\n`;
+    });
+  } else {
+    markdown += `#${fakemon.number} (Base)\n`;
+  }
+  markdown += '\n';
+
+  // Pokedex Entry
+  markdown += `## Pokedex Entry\n${fakemon.pokedex_entry || 'This is the pokedex entry text...'}\n\n`;
+
+  // Artist
+  markdown += `## Artist\n${fakemon.artist_caption || 'Art by Artist Name'}`;
+
+  return markdown;
+}
+
+/**
+ * Save a fakemon to a markdown file
+ * @param {Object} fakemon - Fakemon data
+ * @returns {boolean} Success status
+ */
+function saveFakemon(fakemon) {
+  try {
+    const fakemonDir = path.join(__dirname, '..', 'content', 'fakemon');
+    const paddedNumber = fakemon.number.toString().padStart(3, '0');
+    const filePath = path.join(fakemonDir, `${paddedNumber}.md`);
+
+    // Generate markdown content
+    const markdown = generateFakemonMarkdown(fakemon);
+
+    // Write to file
+    fs.writeFileSync(filePath, markdown, 'utf8');
+
+    return true;
+  } catch (error) {
+    console.error(`Error saving Fakemon #${fakemon.number}:`, error);
+    return false;
+  }
+}
+
+/**
+ * Delete a fakemon markdown file
+ * @param {string} number - Fakemon number
+ * @returns {boolean} Success status
+ */
+function deleteFakemon(number) {
+  try {
+    const fakemonDir = path.join(__dirname, '..', 'content', 'fakemon');
+    const paddedNumber = number.toString().padStart(3, '0');
+    const filePath = path.join(fakemonDir, `${paddedNumber}.md`);
+
+    // Check if file exists
+    if (!fs.existsSync(filePath)) {
+      return false;
+    }
+
+    // Delete file
+    fs.unlinkSync(filePath);
+
+    return true;
+  } catch (error) {
+    console.error(`Error deleting Fakemon #${number}:`, error);
+    return false;
+  }
+}
+
+/**
+ * Get the next available fakemon number
+ * @returns {string} Next available number
+ */
+function getNextFakemonNumber() {
+  const fakemonList = loadAllFakemon();
+
+  if (fakemonList.length === 0) {
+    return '001';
+  }
+
+  // Find the highest number and increment
+  const highestNumber = Math.max(...fakemonList.map(mon => parseInt(mon.number)));
+  return (highestNumber + 1).toString().padStart(3, '0');
+}
+
 module.exports = {
   loadAllFakemon,
   getFakemonByNumber,
-  getAdjacentFakemon
+  getAdjacentFakemon,
+  saveFakemon,
+  deleteFakemon,
+  getNextFakemonNumber
 };

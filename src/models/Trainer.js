@@ -7,31 +7,43 @@ class Trainer {
    */
   static async getAll() {
     try {
-      // Get all trainers
-      const query = 'SELECT * FROM trainers ORDER BY name';
+      // Get all trainers with monster counts in a single query
+      const query = `
+        SELECT
+          t.*,
+          COALESCE(monster_count.count, 0) AS monster_count,
+          COALESCE(monster_ref_count.count, 0) AS monster_ref_count,
+          CASE
+            WHEN COALESCE(monster_count.count, 0) > 0
+            THEN ROUND((COALESCE(monster_ref_count.count, 0)::numeric / monster_count.count) * 100)
+            ELSE 0
+          END AS monster_ref_percent
+        FROM
+          trainers t
+        LEFT JOIN
+          (SELECT trainer_id, COUNT(*) as count FROM mons GROUP BY trainer_id) monster_count
+          ON t.id = monster_count.trainer_id
+        LEFT JOIN
+          (SELECT trainer_id, COUNT(*) as count FROM mons WHERE img_link IS NOT NULL AND img_link != '' GROUP BY trainer_id) monster_ref_count
+          ON t.id = monster_ref_count.trainer_id
+        ORDER BY
+          t.name
+      `;
+
       const result = await pool.query(query);
       const trainers = result.rows;
 
-      // Get monster counts for each trainer
-      for (const trainer of trainers) {
-        // Count total monsters
-        const monsterCountQuery = 'SELECT COUNT(*) FROM mons WHERE trainer_id = $1';
-        const monsterCountResult = await pool.query(monsterCountQuery, [trainer.id]);
-        trainer.monster_count = parseInt(monsterCountResult.rows[0].count) || 0;
-
-        // Count monsters with references (non-empty img_link)
-        const monsterRefCountQuery = 'SELECT COUNT(*) FROM mons WHERE trainer_id = $1 AND img_link IS NOT NULL AND img_link != \'\'';
-        const monsterRefCountResult = await pool.query(monsterRefCountQuery, [trainer.id]);
-        trainer.monster_ref_count = parseInt(monsterRefCountResult.rows[0].count) || 0;
-
-        // Calculate percentage
-        trainer.monster_ref_percent = trainer.monster_count > 0
-          ? Math.round((trainer.monster_ref_count / trainer.monster_count) * 100)
-          : 0;
-
-        // Update the trainer record with these counts
-        await this.updateMonsterCounts(trainer.id, trainer.monster_count, trainer.monster_ref_count);
-      }
+      // Update the trainer records with these counts (in the background)
+      // This is done asynchronously to not slow down the response
+      setTimeout(async () => {
+        try {
+          for (const trainer of trainers) {
+            await this.updateMonsterCounts(trainer.id, trainer.monster_count, trainer.monster_ref_count);
+          }
+        } catch (error) {
+          console.error('Error updating trainer monster counts in background:', error);
+        }
+      }, 0);
 
       return trainers;
     } catch (error) {
@@ -57,18 +69,18 @@ class Trainer {
   }
 
   /**
-   * Get a trainer by player user ID
+   * Get all trainers for a player user ID
    * @param {number} userId - User ID
-   * @returns {Promise<Object>} - Trainer object
+   * @returns {Promise<Array>} - Array of trainer objects
    */
   static async getByUserId(userId) {
     try {
-      const query = 'SELECT * FROM trainers WHERE player_user_id = $1';
+      const query = 'SELECT * FROM trainers WHERE player_user_id = $1 ORDER BY name';
       const result = await pool.query(query, [userId]);
-      return result.rows[0];
+      return result.rows;
     } catch (error) {
-      console.error('Error getting trainer by user ID:', error);
-      return null;
+      console.error('Error getting trainers by user ID:', error);
+      return [];
     }
   }
 
@@ -212,8 +224,10 @@ class Trainer {
         paramCounter++;
       }
 
-      // Add the updated_at timestamp
-      columns.push(`updated_at = CURRENT_TIMESTAMP`);
+      // Add the updated_at timestamp if it's not already in the columns
+      if (!columns.some(col => col.startsWith('updated_at ='))) {
+        columns.push(`updated_at = CURRENT_TIMESTAMP`);
+      }
 
       // Add the ID as the last parameter
       values.push(id);
@@ -237,6 +251,57 @@ class Trainer {
       return result.rows[0];
     } catch (error) {
       console.error('Error updating trainer:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Add an item to a trainer's inventory
+   * @param {number} trainerId - Trainer ID
+   * @param {Object} item - Item to add (with item_id and quantity)
+   * @returns {Promise<Object>} Updated trainer
+   */
+  static async addItemToInventory(trainerId, item) {
+    try {
+      // Get the trainer
+      const trainer = await this.getById(trainerId);
+
+      if (!trainer) {
+        throw new Error(`Trainer with ID ${trainerId} not found`);
+      }
+
+      // Parse the current inventory
+      let inventory = [];
+      try {
+        if (trainer.inventory) {
+          inventory = JSON.parse(trainer.inventory);
+        }
+      } catch (inventoryError) {
+        console.error(`Error parsing inventory for trainer ${trainerId}:`, inventoryError);
+        inventory = [];
+      }
+
+      // Check if the item already exists in the inventory
+      const existingItemIndex = inventory.findIndex(i => i.item_id === item.item_id);
+
+      if (existingItemIndex >= 0) {
+        // Update the quantity of the existing item
+        inventory[existingItemIndex].quantity += item.quantity;
+      } else {
+        // Add the new item to the inventory
+        inventory.push(item);
+      }
+
+      // Update the trainer's inventory
+      const updatedTrainer = {
+        ...trainer,
+        inventory: JSON.stringify(inventory)
+      };
+
+      // Save the updated trainer
+      return await this.update(trainerId, updatedTrainer);
+    } catch (error) {
+      console.error(`Error adding item to inventory for trainer ${trainerId}:`, error);
       throw error;
     }
   }

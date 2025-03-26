@@ -1,0 +1,225 @@
+<% /* Set the title and other variables for the layout */ %>
+<% title = 'Visit Markets' %>
+
+<div class="container mx-auto px-4">
+  <div>
+    <img src="https://i.imgur.com/DP1nFn2.png" alt="Market Banner" class="location-banner w-full object-cover">
+    <div class="flex flex-col items-center">
+      <h2 class="text-2xl font-display font-bold text-center">Visit Markets</h2>
+      <p class="text-center text-sm text-gray-200">Explore our marketplace and discover unique treasures!</p>
+
+      <% if (typeof message !== 'undefined' && message) { %>
+      <div class="alert alert-<%= messageType || 'success' %> text-center mt-2 max-w-2xl mx-auto text-sm">
+        <%= message %>
+      </div>
+      <% } %>
+    </div>
+  </div>
+
+<div class="location-grid">
+    <!-- Apothecary -->
+    <div class="location-card">
+      <div class="relative">
+        <img src="https://i.imgur.com/HViAPDq.jpeg" alt="Apothecary" class="w-full h-48 object-cover rounded-t-lg">
+        <div class="absolute inset-0 bg-gradient-to-t from-black/90 to-transparent rounded-t-lg"></div>
+        <div class="absolute bottom-0 left-0 right-0 p-4">
+          <h3 class="text-xl font-bold text-white text-shadow-lg">Apothecary</h3>
+        </div>
+      </div>
+      <div class="location-card-content">
+        <div class="flex items-center mb-2">
+          <span class="badge badge-berries px-2 py-1 rounded-full text-xs font-medium bg-opacity-80">
+            <i class="fas fa-tag mr-1"></i> Berries
+          </span>
+        </div>
+        <p class="text-sm text-gray-300 line-clamp-2">Purchase berries and healing items for your monsters.</p>
+        <div class="flex justify-center mt-4">
+          <a href="/town/shop/berry_shop" class="btn-primary w-full text-center py-2 px-4 rounded text-sm">
+            <i class="fas fa-store mr-1"></i> Visit Shop
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bakery -->
+    <div class="location-card">
+      <div class="relative">
+        <img src="https://i.imgur.com/5cgcSGC.png" alt="Bakery" class="w-full h-48 object-cover rounded-t-lg">
+        <div class="absolute inset-0 bg-gradient-to-t from-black/90 to-transparent rounded-t-lg"></div>
+        <div class="absolute bottom-0 left-0 right-0 p-4">
+          <h3 class="text-xl font-bold text-white text-shadow-lg">Bakery</h3>
+        </div>
+      </div>
+      <div class="location-card-content">
+        <div class="flex items-center mb-2">
+          <span class="badge badge-pastries px-2 py-1 rounded-full text-xs font-medium bg-opacity-80">
+            <i class="fas fa-tag mr-1"></i> Pastries
+          </span>
+        </div>
+        <p class="text-sm text-gray-300 line-clamp-2">Purchase delicious pastries for your monsters.</p>
+        <div class="flex justify-center mt-4">
+          <a href="/town/shop/pastry_shop" class="btn-primary w-full text-center py-2 px-4 rounded text-sm">
+            <i class="fas fa-store mr-1"></i> Visit Shop
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Witch's Hut -->
+    <div class="location-card">
+      <div class="relative">
+        <img src="https://i.imgur.com/5cgcSGC.png" alt="Witch's Hut" class="w-full h-48 object-cover rounded-t-lg">
+        <div class="absolute inset-0 bg-gradient-to-t from-black/90 to-transparent rounded-t-lg"></div>
+        <div class="absolute bottom-0 left-0 right-0 p-4">
+          <h3 class="text-xl font-bold text-white text-shadow-lg">Witch's Hut</h3>
+        </div>
+      </div>
+      <div class="location-card-content">
+        <div class="flex items-center mb-2">
+          <span class="badge badge-evolution px-2 py-1 rounded-full text-xs font-medium bg-opacity-80">
+            <i class="fas fa-tag mr-1"></i> Evolution
+          </span>
+        </div>
+        <p class="text-sm text-gray-300 line-clamp-2">Purchase evolution items and learn new abilities.</p>
+        <div class="flex justify-center mt-4">
+          <a href="/town/shop/evolution_shop" class="btn-primary w-full text-center py-2 px-4 rounded text-sm">
+            <i class="fas fa-store mr-1"></i> Visit Shop
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mega Mart -->
+    <div class="location-card">
+      <div class="relative">
+        <img src="https://i.imgur.com/RmKySNO.png" alt="Mega Mart" class="w-full h-48 object-cover rounded-t-lg">
+        <div class="absolute inset-0 bg-gradient-to-t from-black/90 to-transparent rounded-t-lg"></div>
+        <div class="absolute bottom-0 left-0 right-0 p-4">
+          <h3 class="text-xl font-bold text-white text-shadow-lg">Mega Mart</h3>
+        </div>
+      </div>
+      <div class="location-card-content">
+        <div class="flex items-center mb-2">
+          <span class="badge badge-balls px-2 py-1 rounded-full text-xs font-medium bg-opacity-80">
+            <i class="fas fa-tag mr-1"></i> Balls
+          </span>
+        </div>
+        <p class="text-sm text-gray-300 line-clamp-2">Purchase Poké Balls and other catching items.</p>
+        <div class="flex justify-center mt-4">
+          <a href="/town/shop/ball_shop" class="btn-primary w-full text-center py-2 px-4 rounded text-sm">
+            <i class="fas fa-store mr-1"></i> Visit Shop
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Antique Store -->
+    <div class="location-card">
+      <div class="relative">
+        <img src="https://i.imgur.com/5cgcSGC.png" alt="Antique Store" class="w-full h-48 object-cover rounded-t-lg">
+        <div class="absolute inset-0 bg-gradient-to-t from-black/90 to-transparent rounded-t-lg"></div>
+        <div class="absolute bottom-0 left-0 right-0 p-4">
+          <h3 class="text-xl font-bold text-white text-shadow-lg">Antique Store</h3>
+        </div>
+      </div>
+      <div class="location-card-content">
+        <div class="flex items-center mb-2">
+          <span class="badge badge-antiques px-2 py-1 rounded-full text-xs font-medium bg-opacity-80">
+            <i class="fas fa-tag mr-1"></i> Antiques
+          </span>
+        </div>
+        <p class="text-sm text-gray-300 line-clamp-2">Purchase rare antiques and collectibles.</p>
+        <div class="flex justify-center mt-4">
+          <a href="/town/shop/antique_shop" class="btn-primary w-full text-center py-2 px-4 rounded text-sm">
+            <i class="fas fa-store mr-1"></i> Visit Shop
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Nursery -->
+    <div class="location-card">
+      <div class="relative">
+        <img src="https://i.imgur.com/IhtWUxD.png" alt="Nursery" class="w-full h-48 object-cover rounded-t-lg">
+        <div class="absolute inset-0 bg-gradient-to-t from-black/90 to-transparent rounded-t-lg"></div>
+        <div class="absolute bottom-0 left-0 right-0 p-4">
+          <h3 class="text-xl font-bold text-white text-shadow-lg">Nursery</h3>
+        </div>
+      </div>
+      <div class="location-card-content">
+        <div class="flex items-center mb-2">
+          <span class="badge badge-eggs px-2 py-1 rounded-full text-xs font-medium bg-opacity-80">
+            <i class="fas fa-tag mr-1"></i> Eggs
+          </span>
+        </div>
+        <p class="text-sm text-gray-300 line-clamp-2">Purchase egg items and accessories.</p>
+        <div class="flex justify-center mt-4">
+          <a href="/town/shop/egg_shop" class="btn-primary w-full text-center py-2 px-4 rounded text-sm">
+            <i class="fas fa-store mr-1"></i> Visit Shop
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pirate's Dock -->
+    <div class="location-card">
+      <div class="relative">
+        <img src="https://i.imgur.com/RmKySNO.png" alt="Pirate's Dock" class="w-full h-48 object-cover rounded-t-lg">
+        <div class="absolute inset-0 bg-gradient-to-t from-black/90 to-transparent rounded-t-lg"></div>
+        <div class="absolute bottom-0 left-0 right-0 p-4">
+          <h3 class="text-xl font-bold text-white text-shadow-lg">Pirate's Dock</h3>
+        </div>
+      </div>
+      <div class="location-card-content">
+        <div class="flex items-center mb-2">
+          <span class="badge badge-black_market px-2 py-1 rounded-full text-xs font-medium bg-opacity-80">
+            <i class="fas fa-tag mr-1"></i> Black Market
+          </span>
+        </div>
+        <p class="text-sm text-gray-300 line-clamp-2">Purchase black market items at a markup.</p>
+        <div class="flex justify-center mt-4">
+          <a href="/town/shop/black_market_shop" class="btn-primary w-full text-center py-2 px-4 rounded text-sm">
+            <i class="fas fa-store mr-1"></i> Visit Shop
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+.text-shadow {
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.text-shadow-lg {
+  text-shadow: 0 4px 8px rgba(0, 0, 0, 0.8);
+}
+
+.text-shadow-xl {
+  text-shadow: 0 6px 12px rgba(0, 0, 0, 0.9);
+}
+
+
+.badge {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.btn-primary {
+  background-color: var(--accent-color);
+  color: var(--background-color);
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.btn-primary:hover {
+  background-color: var(--accent-hover);
+  transform: translateY(-2px);
+}
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Add any client-side functionality here
+  });
+</script>

@@ -70,9 +70,10 @@
 
     .fakemon-card img {
         width: 100%;
-        height: auto;
+        height: 180px;
         border-radius: 5px;
         margin-bottom: 0.8rem;
+        object-fit: contain;
     }
 
     .fakemon-info {
@@ -97,12 +98,25 @@
         gap: 0.5rem;
         flex-wrap: wrap;
         margin-top: 0.3rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .fakemon-info .attribute-container {
+        display: flex;
+        margin-top: 0.3rem;
     }
 
     .fakemon-info .type {
         padding: 0.2rem 0.6rem;
         border-radius: 3px;
         font-size: 0.8rem;
+    }
+
+    .attribute-badge {
+        padding: 0.25rem 0.75rem;
+        border-radius: 4px;
+        font-size: 0.8rem;
+        font-weight: bold;
     }
 
     /* Type colors */
@@ -169,6 +183,9 @@
                                     <% mon.types.forEach(function(type) { %>
                                     <span class="type type-<%= type.toLowerCase() %>"><%= type %></span>
                                     <% }); %>
+                                </div>
+                                <div class="attribute-container">
+                                    <span class="attribute-badge attribute-<%= mon.attribute.toLowerCase() %>"><%= mon.attribute %></span>
                                 </div>
                             </div>
                         </a>

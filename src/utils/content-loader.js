@@ -323,8 +323,275 @@ function getContentCategories() {
   return categories;
 }
 
+/**
+ * Create a new directory for content
+ * @param {string} category - Category name (e.g., 'guides', 'lore')
+ * @param {string} directoryName - Name of the directory to create
+ * @param {string} directoryTitle - Display title for the directory
+ * @param {string} parentPath - Parent directory path (optional)
+ * @returns {boolean} Success status
+ */
+function createContentDirectory(category, directoryName, directoryTitle, parentPath = '') {
+  try {
+    const contentPath = path.join(__dirname, '..', 'content');
+    const categoryPath = path.join(contentPath, category);
+
+    // Validate category exists
+    if (!fs.existsSync(categoryPath)) {
+      console.error(`Category does not exist: ${category}`);
+      return false;
+    }
+
+    // Build the full directory path
+    let dirPath = categoryPath;
+    if (parentPath) {
+      dirPath = path.join(dirPath, parentPath);
+
+      // Validate parent path exists
+      if (!fs.existsSync(dirPath)) {
+        console.error(`Parent path does not exist: ${dirPath}`);
+        return false;
+      }
+    }
+
+    // Add the new directory name
+    dirPath = path.join(dirPath, directoryName);
+
+    // Check if directory already exists
+    if (fs.existsSync(dirPath)) {
+      console.error(`Directory already exists: ${dirPath}`);
+      return false;
+    }
+
+    // Create the directory
+    fs.mkdirSync(dirPath, { recursive: true });
+
+    // Create an overview.md file with the title
+    const overviewPath = path.join(dirPath, 'overview.md');
+    const overviewContent = `# ${directoryTitle}\n\nAdd your content here...`;
+    fs.writeFileSync(overviewPath, overviewContent, 'utf8');
+
+    return true;
+  } catch (error) {
+    console.error(`Error creating content directory: ${error.message}`);
+    return false;
+  }
+}
+
+/**
+ * Save content to a markdown file
+ * @param {string} category - Category name (e.g., 'guides', 'lore')
+ * @param {string} filePath - File path relative to category
+ * @param {string} content - Markdown content
+ * @param {string} parentPath - Parent directory path (optional)
+ * @returns {boolean} Success status
+ */
+function saveContentFile(category, filePath, content, parentPath = '') {
+  try {
+    const contentPath = path.join(__dirname, '..', 'content');
+    const categoryPath = path.join(contentPath, category);
+
+    // Validate category exists
+    if (!fs.existsSync(categoryPath)) {
+      console.error(`Category does not exist: ${category}`);
+      return false;
+    }
+
+    // Build the full file path
+    let fullPath = categoryPath;
+    if (parentPath) {
+      fullPath = path.join(fullPath, parentPath);
+
+      // Validate parent path exists
+      if (!fs.existsSync(fullPath)) {
+        console.error(`Parent path does not exist: ${fullPath}`);
+        return false;
+      }
+    }
+
+    // Add the file name
+    fullPath = path.join(fullPath, filePath);
+
+    // Write the content to the file
+    fs.writeFileSync(fullPath, content, 'utf8');
+
+    return true;
+  } catch (error) {
+    console.error(`Error saving content file: ${error.message}`);
+    return false;
+  }
+}
+
+/**
+ * Delete a content file
+ * @param {string} category - Category name (e.g., 'guides', 'lore')
+ * @param {string} filePath - File path relative to category
+ * @param {string} parentPath - Parent directory path (optional)
+ * @returns {boolean} Success status
+ */
+function deleteContentFile(category, filePath, parentPath = '') {
+  try {
+    const contentPath = path.join(__dirname, '..', 'content');
+    const categoryPath = path.join(contentPath, category);
+
+    // Validate category exists
+    if (!fs.existsSync(categoryPath)) {
+      console.error(`Category does not exist: ${category}`);
+      return false;
+    }
+
+    // Build the full file path
+    let fullPath = categoryPath;
+    if (parentPath) {
+      fullPath = path.join(fullPath, parentPath);
+
+      // Validate parent path exists
+      if (!fs.existsSync(fullPath)) {
+        console.error(`Parent path does not exist: ${fullPath}`);
+        return false;
+      }
+    }
+
+    // Add the file name
+    fullPath = path.join(fullPath, filePath);
+
+    // Check if file exists
+    if (!fs.existsSync(fullPath)) {
+      console.error(`File does not exist: ${fullPath}`);
+      return false;
+    }
+
+    // Delete the file
+    fs.unlinkSync(fullPath);
+
+    return true;
+  } catch (error) {
+    console.error(`Error deleting content file: ${error.message}`);
+    return false;
+  }
+}
+
+/**
+ * Delete a content directory and all its contents
+ * @param {string} category - Category name (e.g., 'guides', 'lore')
+ * @param {string} directoryPath - Directory path relative to category
+ * @param {string} parentPath - Parent directory path (optional)
+ * @returns {boolean} Success status
+ */
+function deleteContentDirectory(category, directoryPath, parentPath = '') {
+  try {
+    const contentPath = path.join(__dirname, '..', 'content');
+    const categoryPath = path.join(contentPath, category);
+
+    // Validate category exists
+    if (!fs.existsSync(categoryPath)) {
+      console.error(`Category does not exist: ${category}`);
+      return false;
+    }
+
+    // Build the full directory path
+    let fullPath = categoryPath;
+    if (parentPath) {
+      fullPath = path.join(fullPath, parentPath);
+
+      // Validate parent path exists
+      if (!fs.existsSync(fullPath)) {
+        console.error(`Parent path does not exist: ${fullPath}`);
+        return false;
+      }
+    }
+
+    // Add the directory name
+    fullPath = path.join(fullPath, directoryPath);
+
+    // Check if directory exists
+    if (!fs.existsSync(fullPath)) {
+      console.error(`Directory does not exist: ${fullPath}`);
+      return false;
+    }
+
+    // Helper function to recursively delete directory contents
+    function deleteDirRecursive(dirPath) {
+      if (fs.existsSync(dirPath)) {
+        fs.readdirSync(dirPath).forEach((file) => {
+          const curPath = path.join(dirPath, file);
+          if (fs.lstatSync(curPath).isDirectory()) {
+            // Recursive call for directories
+            deleteDirRecursive(curPath);
+          } else {
+            // Delete file
+            fs.unlinkSync(curPath);
+          }
+        });
+        // Delete the empty directory
+        fs.rmdirSync(dirPath);
+      }
+    }
+
+    // Delete the directory and its contents
+    deleteDirRecursive(fullPath);
+
+    return true;
+  } catch (error) {
+    console.error(`Error deleting content directory: ${error.message}`);
+    return false;
+  }
+}
+
+/**
+ * Get raw content of a markdown file
+ * @param {string} category - Category name (e.g., 'guides', 'lore')
+ * @param {string} filePath - File path relative to category
+ * @param {string} parentPath - Parent directory path (optional)
+ * @returns {string|null} Markdown content or null if not found
+ */
+function getRawContentFile(category, filePath, parentPath = '') {
+  try {
+    const contentPath = path.join(__dirname, '..', 'content');
+    const categoryPath = path.join(contentPath, category);
+
+    // Validate category exists
+    if (!fs.existsSync(categoryPath)) {
+      console.error(`Category does not exist: ${category}`);
+      return null;
+    }
+
+    // Build the full file path
+    let fullPath = categoryPath;
+    if (parentPath) {
+      fullPath = path.join(fullPath, parentPath);
+
+      // Validate parent path exists
+      if (!fs.existsSync(fullPath)) {
+        console.error(`Parent path does not exist: ${fullPath}`);
+        return null;
+      }
+    }
+
+    // Add the file name
+    fullPath = path.join(fullPath, filePath);
+
+    // Check if file exists
+    if (!fs.existsSync(fullPath)) {
+      console.error(`File does not exist: ${fullPath}`);
+      return null;
+    }
+
+    // Read the file content
+    return fs.readFileSync(fullPath, 'utf8');
+  } catch (error) {
+    console.error(`Error reading content file: ${error.message}`);
+    return null;
+  }
+}
+
 module.exports = {
   loadMarkdownContent,
   getDirectoryStructure,
-  getContentCategories
+  getContentCategories,
+  createContentDirectory,
+  saveContentFile,
+  deleteContentFile,
+  deleteContentDirectory,
+  getRawContentFile
 };

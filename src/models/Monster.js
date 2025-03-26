@@ -85,7 +85,7 @@ class Monster {
 
       // Set default image if not provided
       if (!processedData.img_link) {
-        processedData.img_link = '/images/default_mon.png';
+        processedData.img_link = '';
       }
 
       // Initialize monster stats and moves
@@ -216,7 +216,7 @@ class Monster {
 
       // If img_link is empty string, set to default
       if (processedData.img_link === '') {
-        processedData.img_link = '/images/default_mon.png';
+        processedData.img_link = '';
       }
 
       // Integer fields in the mons table
@@ -248,8 +248,10 @@ class Monster {
         }
       });
 
-      // Add the updated_at timestamp
-      columns.push(`updated_at = CURRENT_TIMESTAMP`);
+      // Add the updated_at timestamp if it's not already in the columns
+      if (!columns.some(col => col.startsWith('updated_at ='))) {
+        columns.push(`updated_at = CURRENT_TIMESTAMP`);
+      }
 
       // Add the ID as the last parameter
       values.push(id);

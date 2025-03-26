@@ -1,0 +1,365 @@
+<% /* Set the title and other variables for the layout */ %>
+<% title = title || 'Trainer Statistics' %>
+
+<div class="statistics-container">
+    <div class="container">
+        <h1>Trainer Statistics</h1>
+
+        <!-- Global Statistics -->
+        <section class="stat-section">
+            <h2>Global Records</h2>
+            <div class="stat-grid">
+                <div class="stat-card">
+                    <h3>Most Active Player</h3>
+                    <p><%= getPlayerMapping()[mostTrainers.player_name] || mostTrainers.player_name %> (<%= mostTrainers.trainer_count %> trainers)</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Least Active Player</h3>
+                    <p><%= getPlayerMapping()[leastTrainers.player_name] || leastTrainers.player_name %> (<%= leastTrainers.trainer_count %> trainers)</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Most Referenced</h3>
+                    <p>Player: <%= getPlayerMapping()[mostReferenced.player_name] || mostReferenced.player_name %> (<%= mostReferenced.reference_percentage.toFixed(1) %>%)</p>
+                    <p>Trainer: <%= trainerMostReferenced.name %> (<%= trainerMostReferenced.reference_percentage.toFixed(1) %>%)</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Type Leaderboard -->
+        <section class="stat-section">
+            <h2>Type Leaderboard</h2>
+            <div class="type-grid">
+                <% for (const [type, data] of Object.entries(typeLeaderboard)) { %>
+                <div class="type-card <%= type.toLowerCase() %>">
+                    <h3><%= type %></h3>
+                    <p>Player: <%= getPlayerMapping()[data.player] || data.player %> (<%= data.player_count %>)</p>
+                    <p>Trainer: <%= data.trainer %> (<%= data.trainer_count %>)</p>
+                </div>
+                <% } %>
+            </div>
+        </section>
+
+        <!-- Per-Player Statistics -->
+        <% for (const [player_id, stats] of Object.entries(playerStats)) { %>
+        <section class="stat-section">
+            <h2><%= getPlayerMapping()[player_id] || player_id %></h2>
+            <div class="player-stats">
+                <div class="stat-summary">
+                    <div class="summary-card">
+                        <h4>Trainers</h4>
+                        <p><%= stats.trainer_count %></p>
+                    </div>
+                    <div class="summary-card">
+                        <h4>Total Monsters</h4>
+                        <p><%= stats.total_monsters %></p>
+                    </div>
+                    <div class="summary-card">
+                        <h4>Referenced</h4>
+                        <p><%= stats.total_references %> (<%= stats.reference_percentage.toFixed(1) %>%)</p>
+                    </div>
+                    <div class="summary-card">
+                        <h4>Current Currency Range</h4>
+                        <p><%= Math.round(stats.lowest_currency) %> - <%= Math.round(stats.highest_currency) %></p>
+                    </div>
+                    <div class="summary-card">
+                        <h4>Total Earned Range</h4>
+                        <p><%= Math.round(stats.lowest_total_earned) %> - <%= Math.round(stats.highest_total_earned) %></p>
+                    </div>
+                </div>
+
+                <!-- Type Distribution Section -->
+                <div class="type-distribution-section">
+                    <h3>Type Distribution</h3>
+                    <div class="type-distribution">
+                        <% for (const [type, count] of Object.entries(stats.type_counts)) { %>
+                        <div class="type-bar">
+                            <span class="type-name <%= type.toLowerCase() %>"><%= type %></span>
+                            <div class="bar-container">
+                                <%
+                                // Calculate percentage with a minimum width for visibility
+                                const percentage = Math.round((count / stats.total_monsters * 100));
+                                const displayWidth = Math.max(percentage, 3); // Minimum 3% width for visibility
+                                %>
+                                <div class="bar <%= type.toLowerCase() %>" style="width: <%= displayWidth %>%">
+                                    <%= count %> (<%= percentage %>%)
+                                </div>
+                            </div>
+                        </div>
+                        <% } %>
+                    </div>
+                </div>
+
+                <!-- Trainer Section -->
+                <div class="trainer-section">
+                    <h3>Trainers</h3>
+                    <div class="trainer-grid">
+                        <% for (const trainer of stats.trainer_stats) { %>
+                        <div class="trainer-card" onclick="window.location.href='/trainers/<%= trainer.id %>'">
+                            <h4><%= trainer.name %></h4>
+                            <p>Monsters: <%= trainer.monster_count %></p>
+                            <p>Referenced: <%= trainer.reference_count %> (<%= trainer.reference_percentage.toFixed(1) %>%)</p>
+                            <p>Current Currency: <%= Math.round(trainer.currency_amount) %></p>
+                            <p>Total Earned: <%= Math.round(trainer.total_earned_currency) %></p>
+                            <p>Favorite Type: <span class="type-badge <%= trainer.most_common_type.toLowerCase() %>"><%= trainer.most_common_type %></span></p>
+                        </div>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <% } %>
+    </div>
+</div>
+
+<style>
+/* Main Container */
+.statistics-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Navigation Tabs */
+.nav-tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #333;
+    padding-bottom: 10px;
+}
+
+.tab {
+    padding: 10px 20px;
+    background: #2b3645;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background-color 0.2s;
+}
+
+.tab:hover, .tab.active {
+    background: #3d4b5d;
+}
+
+/* Section Styling */
+.stat-section {
+    margin: 2rem 0;
+    padding: 1.5rem;
+    background: #1e2532;
+    border-radius: 10px;
+}
+
+.stat-section h2 {
+    color: #fff;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #1e1f22;
+}
+
+/* Grid Layouts */
+.stat-grid, .type-grid, .trainer-grid {
+    display: grid;
+    gap: 1rem;
+}
+
+.stat-grid {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+}
+
+.type-grid {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+}
+
+.trainer-grid {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+}
+
+/* Cards */
+.stat-card, .type-card, .trainer-card, .summary-card {
+    background: #2b3645;
+    padding: 1rem;
+    border-radius: 8px;
+    transition: transform 0.2s;
+}
+
+.stat-card:hover, .type-card:hover, .trainer-card:hover, .summary-card:hover {
+    transform: translateY(-2px);
+}
+
+/* Type Distribution */
+.type-distribution-section {
+    margin: 2rem 0;
+}
+
+.type-distribution {
+    background: #1e2532;
+    padding: 1rem;
+    border-radius: 8px;
+}
+
+.type-bar {
+    display: flex;
+    align-items: center;
+    margin: 0.5rem 0;
+    gap: 1rem;
+}
+
+.type-name {
+    min-width: 100px;
+    padding: 0.25rem 0.5rem;
+    border-radius: 3px;
+    color: white;
+    text-align: center;
+}
+
+.bar-container {
+    flex-grow: 1;
+    background: #1e2532;
+    border-radius: 3px;
+    overflow: visible;
+    position: relative;
+    height: 28px;
+}
+
+.bar {
+    padding: 0.25rem 0.5rem;
+    color: white;
+    text-align: right;
+    transition: width 0.3s ease;
+    height: 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
+    white-space: nowrap;
+    min-width: 30px;
+}
+
+/* Type Badge */
+.type-badge {
+    padding: 2px 8px;
+    border-radius: 3px;
+    color: white;
+    font-size: 0.9em;
+}
+
+/* Summary Cards */
+.stat-summary {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+/* Type Colors with contrasting text colors */
+.normal {
+    background-color: #A8A878;
+    color: #49492F;
+}
+.fire {
+    background-color: #F08030;
+    color: #6B2704;
+}
+.water {
+    background-color: #6890F0;
+    color: #1C3987;
+}
+.electric {
+    background-color: #F8D030;
+    color: #8B6B04;
+}
+.grass {
+    background-color: #78C850;
+    color: #2E5B1A;
+}
+.ice {
+    background-color: #98D8D8;
+    color: #386B6B;
+}
+.fighting {
+    background-color: #C03028;
+    color: #4A0F0C;
+}
+.poison {
+    background-color: #A040A0;
+    color: #3B0F3B;
+}
+.ground {
+    background-color: #E0C068;
+    color: #6B531C;
+}
+.flying {
+    background-color: #A890F0;
+    color: #392D87;
+}
+.psychic {
+    background-color: #F85888;
+    color: #8B1639;
+}
+.bug {
+    background-color: #A8B820;
+    color: #4A4F09;
+}
+.rock {
+    background-color: #B8A038;
+    color: #4F410C;
+}
+.ghost {
+    background-color: #705898;
+    color: #2A1B42;
+}
+.dragon {
+    background-color: #7038F8;
+    color: #2A0987;
+}
+.dark {
+    background-color: #705848;
+    color: #2A1B0F;
+}
+.steel {
+    background-color: #B8B8D0;
+    color: #494963;
+}
+.fairy {
+    background-color: #EE99AC;
+    color: #873B4A;
+}
+.cosmic {
+    background-color: #5A38A0;
+    color: #2A1B42;
+}
+.light {
+    background-color: #F8F878;
+    color: #8B6B04;
+}
+.none {
+    background-color: #68A090;
+    color: #2E5B4A;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .type-bar {
+        flex-direction: column;
+        align-items: stretch;
+        margin-bottom: 1.5rem;
+    }
+
+    .type-name {
+        width: 100%;
+        margin-bottom: 0.25rem;
+    }
+
+    .bar-container {
+        height: 28px;
+        margin-top: 0.5rem;
+    }
+
+    .stat-summary {
+        grid-template-columns: 1fr;
+    }
+
+    .type-grid, .trainer-grid {
+        grid-template-columns: 1fr;
+    }
+}
+</style>

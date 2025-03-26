@@ -2,31 +2,31 @@
 <% title = 'Trainer Directory' %>
 
 <div class="mt-20 mb-12">
-    <h1 class="text-4xl font-display font-bold text-center mb-8">Trainer Directory</h1>
+    <span></span>
 </div>
 
-<div class="card">
-    <div class="card-header">
-        <p class="text-[#9ca3af]">Browse all trainers in the Dusk and Dawn world. Click on a trainer to view their profile.</p>
-    </div>
-    <div class="card-body">
-        <div class="mb-4">
-            <input type="text" id="searchInput" class="input" placeholder="Search trainers...">
-        </div>
-
-        <% if (trainers && trainers.length > 0) { %>
-            <div class="overflow-x-auto">
-                <table id="trainersTable" class="w-full">
+<div class="container">
+    <div class="trainer-directory-wrapper">
+        <div class="card">
+            <div class="card-header">
+                <div class="search-container">
+                    <input type="text" id="searchInput" class="input" placeholder="Search trainers...">
+                </div>
+            </div>
+            <div class="card-body">
+                <% if (trainers && trainers.length > 0) { %>
+                    <div class="overflow-x-auto">
+                        <table id="trainersTable" class="narrow-table">
                     <thead>
                         <tr>
                             <th class="sortable" data-sort="name">Name <i class="fas fa-sort"></i></th>
                             <th class="sortable" data-sort="player">Player <i class="fas fa-sort"></i></th>
-                            <th class="sortable" data-sort="level">Level <i class="fas fa-sort"></i></th>
+                            <th class="sortable" data-sort="level">Lvl <i class="fas fa-sort"></i></th>
                             <th class="sortable" data-sort="currency">Currency <i class="fas fa-sort"></i></th>
                             <th class="sortable" data-sort="faction">Faction <i class="fas fa-sort"></i></th>
-                            <th class="sortable" data-sort="monsters">Monsters <i class="fas fa-sort"></i></th>
+                            <th class="sortable" data-sort="monsters">Mons <i class="fas fa-sort"></i></th>
                             <th class="sortable" data-sort="refs">Refs <i class="fas fa-sort"></i></th>
-                            <th class="sortable" data-sort="percent">Ref % <i class="fas fa-sort"></i></th>
+                            <th class="sortable" data-sort="percent">Ref% <i class="fas fa-sort"></i></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -56,6 +56,8 @@
                 <% } %>
             </div>
         <% } %>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -91,15 +93,74 @@
     }
 
     th, td {
-        padding: 0.75rem;
+        padding: 0.4rem 0.5rem;
         text-align: left;
         border-bottom: 1px solid var(--divider-color);
+        font-size: 0.9rem;
+    }
+
+    .compact-table th, .compact-table td {
+        white-space: nowrap;
+    }
+
+    .trainer-directory-wrapper {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .search-container {
+        width: 100%;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .narrow-table {
+        width: 100%;
+        margin: 0 auto;
     }
 
     th {
         background-color: var(--card-background);
         font-weight: bold;
         color: var(--accent-color);
+    }
+
+    .spinner {
+        border: 4px solid rgba(0, 0, 0, 0.1);
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        border-left-color: var(--accent-color);
+        animation: spin 1s linear infinite;
+        margin: 0 auto 1rem;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    .pagination-button {
+        padding: 0.5rem 1rem;
+        background-color: var(--nav-background);
+        color: var(--text-color);
+        border-radius: 0.375rem;
+        cursor: pointer;
+        transition: background-color 0.2s;
+    }
+
+    .pagination-button:hover {
+        background-color: var(--nav-hover);
+    }
+
+    .pagination-button.active {
+        background-color: var(--accent-color);
+        color: white;
+    }
+
+    .pagination-button.disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
     }
 </style>
 
@@ -175,7 +236,7 @@
             }
         }
 
-        // Search functionality (works even if table doesn't exist yet)
+        // Search functionality
         if (searchInput) {
             searchInput.addEventListener('input', () => {
                 if (table) {

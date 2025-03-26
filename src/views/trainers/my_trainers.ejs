@@ -1,0 +1,238 @@
+<% /* Set the title and other variables for the layout */ %>
+<% title = 'My Trainers' %>
+
+<div class="mt-20 mb-12">
+    <h1 class="text-4xl font-display font-bold text-center mb-8">My Trainers</h1>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <p class="text-[#9ca3af]">Manage your trainers in the Dusk and Dawn world.</p>
+    </div>
+    <div class="card-body">
+        <div class="mb-4 flex justify-between items-center">
+            <input type="text" id="searchInput" class="input" placeholder="Search trainers...">
+            <a href="/add_trainer" class="btn-primary">Add New Trainer</a>
+        </div>
+
+        <% if (trainers && trainers.length > 0) { %>
+            <div class="overflow-x-auto">
+                <table id="trainersTable" class="w-full">
+                    <thead>
+                        <tr>
+                            <th class="sortable" data-sort="name">Name <i class="fas fa-sort"></i></th>
+                            <th class="sortable" data-sort="level">Level <i class="fas fa-sort"></i></th>
+                            <th class="sortable" data-sort="currency">Currency <i class="fas fa-sort"></i></th>
+                            <th class="sortable" data-sort="faction">Faction <i class="fas fa-sort"></i></th>
+                            <th class="sortable" data-sort="monsters">Monsters <i class="fas fa-sort"></i></th>
+                            <th class="sortable" data-sort="refs">Refs <i class="fas fa-sort"></i></th>
+                            <th class="sortable" data-sort="percent">Ref % <i class="fas fa-sort"></i></th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% trainers.forEach(trainer => { %>
+                            <tr class="trainer-row" data-id="<%= trainer.id %>">
+                                <td><%= trainer.name %></td>
+                                <td><%= trainer.level || 1 %></td>
+                                <td><%= Math.round(trainer.currency_amount) || 0 %></td>
+                                <td><%= trainer.faction || 'None' %></td>
+                                <td><%= trainer.monster_count || trainer.mon_amount || 0 %></td>
+                                <td><%= trainer.monster_ref_count || trainer.mon_referenced_amount || 0 %></td>
+                                <td><%= trainer.monster_ref_percent || 0 %>%</td>
+                                <td class="actions">
+                                    <a href="/trainers/<%= trainer.id %>" class="action-btn view-btn" title="View Trainer">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                    <a href="/trainers/<%= trainer.id %>/edit" class="action-btn edit-btn" title="Edit Trainer">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <a href="/trainers/<%= trainer.id %>/pc" class="action-btn pc-btn" title="View PC Boxes">
+                                        <i class="fas fa-box"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            </div>
+        <% } else { %>
+            <div class="text-center py-8">
+                <p class="text-xl mb-4">You don't have any trainers yet</p>
+                <p class="text-[#9ca3af]">Create your first trainer to start your adventure!</p>
+                <a href="/add_trainer" class="btn-primary mt-4 inline-block">Create Trainer</a>
+            </div>
+        <% } %>
+    </div>
+</div>
+
+<style>
+    .sortable {
+        cursor: pointer;
+    }
+
+    .sortable:hover {
+        background-color: var(--nav-hover);
+    }
+
+    .sortable.asc i:before {
+        content: "\f0de"; /* fa-sort-up */
+    }
+
+    .sortable.desc i:before {
+        content: "\f0dd"; /* fa-sort-down */
+    }
+
+    .trainer-row {
+        transition: background-color 0.2s;
+    }
+
+    .trainer-row:hover {
+        background-color: var(--nav-hover);
+    }
+
+    table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    th, td {
+        padding: 0.75rem;
+        text-align: left;
+        border-bottom: 1px solid var(--divider-color);
+    }
+
+    th {
+        background-color: var(--card-background);
+        font-weight: bold;
+        color: var(--accent-color);
+    }
+
+    .actions {
+        display: flex;
+        gap: 0.5rem;
+    }
+
+    .action-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 2rem;
+        height: 2rem;
+        border-radius: 0.25rem;
+        color: var(--text-color);
+        background-color: var(--nav-background);
+        transition: background-color 0.2s;
+    }
+
+    .action-btn:hover {
+        background-color: var(--nav-hover);
+    }
+
+    .view-btn:hover {
+        color: #4ade80; /* green */
+    }
+
+    .edit-btn:hover {
+        color: #3b82f6; /* blue */
+    }
+
+    .pc-btn:hover {
+        color: #f59e0b; /* amber */
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const table = document.getElementById('trainersTable');
+        const searchInput = document.getElementById('searchInput');
+
+        if (table) {
+            // Sort functionality
+            table.querySelectorAll('th.sortable').forEach(th => {
+                th.addEventListener('click', () => {
+                    const sortBy = th.dataset.sort;
+                    const isAsc = th.classList.contains('asc');
+
+                    // Reset all headers
+                    table.querySelectorAll('th.sortable').forEach(header => {
+                        header.classList.remove('asc', 'desc');
+                    });
+
+                    // Set new sort direction
+                    th.classList.add(isAsc ? 'desc' : 'asc');
+
+                    // Sort the table
+                    sortTable(sortBy, !isAsc);
+                });
+            });
+
+            // Prevent row click when clicking on action buttons
+            table.querySelectorAll('.actions a').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                });
+            });
+
+            // Row click to view trainer details
+            table.querySelectorAll('tbody tr').forEach(row => {
+                row.addEventListener('click', () => {
+                    const trainerId = parseInt(row.dataset.id, 10); // Ensure it's a number
+                    if (!isNaN(trainerId)) {
+                        window.location.href = `/trainers/${trainerId}`;
+                    } else {
+                        console.error('Invalid trainer ID:', row.dataset.id);
+                    }
+                });
+            });
+
+            // Sort the table
+            function sortTable(sortBy, asc) {
+                const tbody = table.querySelector('tbody');
+                const rows = Array.from(tbody.querySelectorAll('tr'));
+
+                // Define sort functions for different columns
+                const sortFunctions = {
+                    name: (a, b) => a.cells[0].textContent.localeCompare(b.cells[0].textContent),
+                    level: (a, b) => parseInt(a.cells[1].textContent) - parseInt(b.cells[1].textContent),
+                    currency: (a, b) => parseInt(a.cells[2].textContent) - parseInt(b.cells[2].textContent),
+                    faction: (a, b) => a.cells[3].textContent.localeCompare(b.cells[3].textContent),
+                    monsters: (a, b) => parseInt(a.cells[4].textContent) - parseInt(b.cells[4].textContent),
+                    refs: (a, b) => parseInt(a.cells[5].textContent) - parseInt(b.cells[5].textContent),
+                    percent: (a, b) => parseInt(a.cells[6].textContent) - parseInt(b.cells[6].textContent)
+                };
+
+                // Sort the rows
+                rows.sort((a, b) => {
+                    const result = sortFunctions[sortBy](a, b);
+                    return asc ? result : -result;
+                });
+
+                // Remove all rows
+                while (tbody.firstChild) {
+                    tbody.removeChild(tbody.firstChild);
+                }
+
+                // Add sorted rows
+                rows.forEach(row => {
+                    tbody.appendChild(row);
+                });
+            }
+        }
+
+        // Search functionality (works even if table doesn't exist yet)
+        if (searchInput) {
+            searchInput.addEventListener('input', () => {
+                if (table) {
+                    const searchTerm = searchInput.value.toLowerCase();
+                    const rows = table.querySelectorAll('tbody tr');
+
+                    rows.forEach(row => {
+                        const text = row.textContent.toLowerCase();
+                        row.style.display = text.includes(searchTerm) ? '' : 'none';
+                    });
+                }
+            });
+        }
+    });
+</script>

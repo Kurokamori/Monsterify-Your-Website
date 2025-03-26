@@ -112,6 +112,99 @@ class User {
       throw error;
     }
   }
+
+  /**
+   * Get all users
+   * @returns {Promise<Array>} - Array of users
+   */
+  static async getAll() {
+    try {
+      const query = 'SELECT id, username, display_name, discord_id, is_admin, created_at FROM users ORDER BY id';
+      const result = await pool.query(query);
+
+      return result.rows;
+    } catch (error) {
+      console.error('Error getting all users:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Find a user by ID
+   * @param {number} id - User ID
+   * @returns {Promise<Object|null>} - User or null if not found
+   */
+  static async findById(id) {
+    try {
+      const query = 'SELECT id, username, display_name, discord_id, is_admin, created_at FROM users WHERE id = $1';
+      const result = await pool.query(query, [id]);
+
+      return result.rows[0] || null;
+    } catch (error) {
+      console.error('Error finding user by ID:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Update a user
+   * @param {number} id - User ID
+   * @param {Object} userData - User data to update
+   * @returns {Promise<Object>} - Updated user
+   */
+  static async update(id, { username, display_name, discord_id, password, is_admin }) {
+    try {
+      let query;
+      let values;
+
+      if (password) {
+        // Hash the new password
+        const saltRounds = 10;
+        const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+        query = `
+          UPDATE users
+          SET username = $1, display_name = $2, discord_id = $3, password = $4, is_admin = $5
+          WHERE id = $6
+          RETURNING id, username, display_name, discord_id, is_admin, created_at
+        `;
+        values = [username, display_name, discord_id, hashedPassword, is_admin, id];
+      } else {
+        // Don't update password
+        query = `
+          UPDATE users
+          SET username = $1, display_name = $2, discord_id = $3, is_admin = $4
+          WHERE id = $5
+          RETURNING id, username, display_name, discord_id, is_admin, created_at
+        `;
+        values = [username, display_name, discord_id, is_admin, id];
+      }
+
+      const result = await pool.query(query, values);
+
+      return result.rows[0];
+    } catch (error) {
+      console.error('Error updating user:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Delete a user
+   * @param {number} id - User ID
+   * @returns {Promise<boolean>} - True if user was deleted
+   */
+  static async delete(id) {
+    try {
+      const query = 'DELETE FROM users WHERE id = $1';
+      await pool.query(query, [id]);
+
+      return true;
+    } catch (error) {
+      console.error('Error deleting user:', error);
+      throw error;
+    }
+  }
 }
 
 module.exports = User;

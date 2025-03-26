@@ -3,16 +3,53 @@ const path = require('path');
 const session = require('express-session');
 const pgSession = require('connect-pg-simple')(session);
 const fs = require('fs');
+const multer = require('multer');
 const expressLayouts = require('express-ejs-layouts');
-const { loadMarkdownContent, getContentCategories } = require('./utils/content-loader');
-const { loadAllFakemon, getFakemonByNumber } = require('./utils/fakemon-loader');
+const {
+  loadMarkdownContent,
+  getContentCategories,
+  createContentDirectory,
+  saveContentFile,
+  deleteContentFile,
+  deleteContentDirectory,
+  getRawContentFile
+} = require('./utils/content-loader');
+const {
+  loadAllFakemon,
+  getFakemonByNumber,
+  saveFakemon,
+  deleteFakemon,
+  getNextFakemonNumber
+} = require('./utils/fakemon-loader');
+
+// Configure multer for file uploads
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    const uploadDir = path.join(__dirname, 'public', 'uploads');
+    if (!fs.existsSync(uploadDir)) {
+      fs.mkdirSync(uploadDir, { recursive: true });
+    }
+    cb(null, uploadDir);
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + '-' + file.originalname);
+  }
+});
+
+const upload = multer({ storage: storage });
 const User = require('./models/User');
 const Trainer = require('./models/Trainer');
 const Monster = require('./models/Monster');
+const Item = require('./models/Item');
+const { ShopConfig, DailyShopItems, PlayerShopPurchases } = require('./models/ShopSystem');
 const Pokemon = require('./models/Pokemon');
 const Digimon = require('./models/Digimon');
 const Yokai = require('./models/Yokai');
 const Move = require('./models/Move');
+const Task = require('./models/Task');
+const Habit = require('./models/Habit');
+const TaskTemplate = require('./models/TaskTemplate');
+const Reminder = require('./models/Reminder');
 const MonsterRoller = require('./utils/MonsterRoller');
 const MonsterInitializer = require('./utils/MonsterInitializer');
 require('dotenv').config();
@@ -70,6 +107,37 @@ app.use(expressLayouts);
 app.set('layout', 'layouts/main');
 app.set('layout extractScripts', true);
 app.set('layout extractStyles', true);
+
+// Helper functions for views
+app.locals.formatCategory = (category) => {
+  const formatted = category.replace(/_/g, ' ');
+  return formatted.charAt(0).toUpperCase() + formatted.slice(1);
+};
+
+app.locals.getCategoryBadgeColor = (category) => {
+  const categoryColors = {
+    general: 'blue',
+    potions: 'green',
+    berries: 'pink',
+    balls: 'red',
+    evolution: 'purple',
+    antiques: 'yellow',
+    pastries: 'orange',
+    items: 'teal',
+    eggs: 'indigo',
+    black_market: 'gray'
+  };
+
+  return categoryColors[category] || 'blue';
+};
+
+app.locals.getRarityBadgeColor = (rarity) => {
+  if (rarity <= 2) return 'gray';
+  if (rarity <= 4) return 'blue';
+  if (rarity <= 6) return 'green';
+  if (rarity <= 8) return 'purple';
+  return 'gold';
+};
 
 // Other middleware
 app.use(express.static(path.join(__dirname, 'public')));
@@ -165,10 +233,66 @@ app.use((req, res, next) => {
 });
 
 // Routes
-app.get('/', (req, res) => {
-  res.render('index', {
-    title: 'Dusk and Dawn'
-  });
+app.get('/', async (req, res) => {
+  try {
+    // Get featured trainers (top 3 by monster count)
+    let featuredTrainers = [];
+    let totalTrainers = 0;
+    let totalMonsters = 0;
+    let totalUsers = 0;
+
+    try {
+      // Get all trainers
+      const allTrainers = await Trainer.getAll();
+      totalTrainers = allTrainers.length;
+
+      // Sort by monster count and take top 3
+      featuredTrainers = allTrainers
+        .sort((a, b) => (b.monster_count || 0) - (a.monster_count || 0))
+        .slice(0, 3);
+
+      // Count total monsters
+      totalMonsters = allTrainers.reduce((sum, trainer) => sum + (trainer.monster_count || 0), 0);
+
+      // Get total users
+      const usersResult = await pool.query('SELECT COUNT(*) FROM users');
+      totalUsers = parseInt(usersResult.rows[0].count) || 0;
+    } catch (dbError) {
+      console.error('Database error getting featured trainers:', dbError);
+      // Continue with empty featured trainers
+    }
+
+    // Get all fakemon for the main page
+    const allFakemon = loadAllFakemon();
+
+    // Randomly select 8 fakemon to display
+    const randomFakemon = [];
+    if (allFakemon.length > 0) {
+      const shuffled = [...allFakemon].sort(() => 0.5 - Math.random());
+      randomFakemon.push(...shuffled.slice(0, 8));
+    }
+
+    // Get content categories for guides, locations, and factions
+    const categories = getContentCategories();
+
+    res.render('index', {
+      title: 'Dusk and Dawn',
+      featuredTrainers,
+      totalTrainers,
+      totalMonsters,
+      totalUsers,
+      totalSpecies: 1200, // Hardcoded for now
+      randomFakemon,
+      categories
+    });
+  } catch (error) {
+    console.error('Error rendering home page:', error);
+    res.status(500).render('error', {
+      message: 'Error loading home page',
+      error: { status: 500, stack: error.stack },
+      title: 'Error'
+    });
+  }
 });
 
 // Auth routes
@@ -306,6 +430,451 @@ app.get('/admin/dashboard', (req, res) => {
   });
 });
 
+// Admin User Management Routes
+app.get('/admin/users', async (req, res) => {
+  // Check if user is logged in and is an admin
+  if (!req.session.user || !req.session.user.is_admin) {
+    return res.redirect('/');
+  }
+
+  try {
+    // Get all users
+    const users = await User.getAll();
+    const message = req.query.message || '';
+    const messageType = req.query.messageType || 'success';
+
+    res.render('admin/users/index', {
+      title: 'User Management',
+      users,
+      message,
+      messageType,
+      user_session: req.session.user
+    });
+  } catch (error) {
+    console.error('Error loading users:', error);
+    res.status(500).render('error', {
+      message: 'Error loading users',
+      error: { status: 500, stack: error.stack },
+      title: 'Error'
+    });
+  }
+});
+
+app.get('/admin/users/add', (req, res) => {
+  // Check if user is logged in and is an admin
+  if (!req.session.user || !req.session.user.is_admin) {
+    return res.redirect('/');
+  }
+
+  res.render('admin/users/form', {
+    title: 'Add New User',
+    user: {
+      username: '',
+      display_name: '',
+      discord_id: '',
+      is_admin: false
+    },
+    isNew: true
+  });
+});
+
+app.get('/admin/users/edit/:id', async (req, res) => {
+  // Check if user is logged in and is an admin
+  if (!req.session.user || !req.session.user.is_admin) {
+    return res.redirect('/');
+  }
+
+  try {
+    const userId = req.params.id;
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.redirect('/admin/users?messageType=error&message=' + encodeURIComponent('User not found'));
+    }
+
+    res.render('admin/users/form', {
+      title: `Edit User: ${user.username}`,
+      user,
+      isNew: false
+    });
+  } catch (error) {
+    console.error('Error loading user:', error);
+    res.status(500).render('error', {
+      message: 'Error loading user',
+      error: { status: 500, stack: error.stack },
+      title: 'Error'
+    });
+  }
+});
+
+app.post('/admin/users/save', async (req, res) => {
+  // Check if user is logged in and is an admin
+  if (!req.session.user || !req.session.user.is_admin) {
+    return res.redirect('/');
+  }
+
+  try {
+    const {
+      id,
+      username,
+      display_name,
+      discord_id,
+      password,
+      is_admin,
+      isNew
+    } = req.body;
+
+    // Validate required fields
+    if (!username) {
+      return res.redirect('/admin/users?messageType=error&message=' + encodeURIComponent('Username is required'));
+    }
+
+    if (isNew === 'true') {
+      // Create new user
+      if (!password) {
+        return res.redirect('/admin/users/add?messageType=error&message=' + encodeURIComponent('Password is required for new users'));
+      }
+
+      await User.create({
+        username,
+        display_name: display_name || username,
+        discord_id: discord_id || null,
+        password,
+        is_admin: is_admin === 'on'
+      });
+
+      return res.redirect('/admin/users?message=' + encodeURIComponent('User created successfully'));
+    } else {
+      // Update existing user
+      await User.update(id, {
+        username,
+        display_name: display_name || username,
+        discord_id: discord_id || null,
+        password: password || undefined, // Only update password if provided
+        is_admin: is_admin === 'on'
+      });
+
+      return res.redirect('/admin/users?message=' + encodeURIComponent('User updated successfully'));
+    }
+  } catch (error) {
+    console.error('Error saving user:', error);
+    return res.redirect('/admin/users?messageType=error&message=' + encodeURIComponent('Error: ' + error.message));
+  }
+});
+
+app.post('/admin/users/delete/:id', async (req, res) => {
+  // Check if user is logged in and is an admin
+  if (!req.session.user || !req.session.user.is_admin) {
+    return res.redirect('/');
+  }
+
+  try {
+    const userId = req.params.id;
+
+    // Don't allow deleting the current user
+    if (parseInt(userId) === req.session.user.id) {
+      return res.redirect('/admin/users?messageType=error&message=' + encodeURIComponent('You cannot delete your own account'));
+    }
+
+    await User.delete(userId);
+    return res.redirect('/admin/users?message=' + encodeURIComponent('User deleted successfully'));
+  } catch (error) {
+    console.error('Error deleting user:', error);
+    return res.redirect('/admin/users?messageType=error&message=' + encodeURIComponent('Error: ' + error.message));
+  }
+});
+
+// Admin Content Management Routes
+app.get('/admin/content', (req, res) => {
+  // Check if user is logged in and is an admin
+  if (!req.session.user || !req.session.user.is_admin) {
+    return res.redirect('/');
+  }
+
+  const categories = getContentCategories();
+  const message = req.query.message || '';
+  const messageType = req.query.messageType || 'success';
+
+  res.render('admin/content/index', {
+    title: 'Content Management',
+    categories,
+    message,
+    messageType
+  });
+});
+
+app.get('/admin/content/:category', (req, res) => {
+  // Check if user is logged in and is an admin
+  if (!req.session.user || !req.session.user.is_admin) {
+    return res.redirect('/');
+  }
+
+  const category = req.params.category;
+  const parentPath = req.query.path || '';
+  const categories = getContentCategories();
+
+  if (!categories[category]) {
+    return res.redirect('/admin/content?messageType=error&message=' + encodeURIComponent('Category not found'));
+  }
+
+  const message = req.query.message || '';
+  const messageType = req.query.messageType || 'success';
+
+  res.render('admin/content/category', {
+    title: `${categories[category].name} Content`,
+    category,
+    categoryData: categories[category],
+    categories,
+    parentPath,
+    message,
+    messageType
+  });
+});
+
+app.get('/admin/content/:category/add', (req, res) => {
+  // Check if user is logged in and is an admin
+  if (!req.session.user || !req.session.user.is_admin) {
+    return res.redirect('/');
+  }
+
+  const category = req.params.category;
+  const categories = getContentCategories();
+
+  if (!categories[category]) {
+    return res.redirect('/admin/content?messageType=error&message=' + encodeURIComponent('Category not found'));
+  }
+
+  const parentPath = req.query.parent || '';
+
+  res.render('admin/content/form', {
+    title: `Add New ${categories[category].name} Content`,
+    category,
+    categoryData: categories[category],
+    content: {
+      title: '',
+      content: '# New Content\n\nEnter your content here...',
+      path: ''
+    },
+    parentPath,
+    isNew: true
+  });
+});
+
+app.get('/admin/content/:category/edit', (req, res) => {
+  // Check if user is logged in and is an admin
+  if (!req.session.user || !req.session.user.is_admin) {
+    return res.redirect('/');
+  }
+
+  const category = req.params.category;
+  const contentPath = req.query.path;
+  const parentPath = path.dirname(contentPath) !== '.' ? path.dirname(contentPath) : '';
+
+  if (!contentPath) {
+    return res.redirect(`/admin/content/${category}?messageType=error&message=` + encodeURIComponent('Content path is required'));
+  }
+
+  const categories = getContentCategories();
+
+  if (!categories[category]) {
+    return res.redirect('/admin/content?messageType=error&message=' + encodeURIComponent('Category not found'));
+  }
+
+  // Get the raw content using our utility function
+  const rawContent = getRawContentFile(category, path.basename(contentPath), parentPath);
+
+  if (!rawContent) {
+    return res.redirect(`/admin/content/${category}?messageType=error&message=` + encodeURIComponent('Content not found'));
+  }
+
+  // Extract title from the first heading
+  const titleMatch = rawContent.match(/^# (.+)/m);
+  const title = titleMatch ? titleMatch[1] : path.basename(contentPath, '.md');
+
+  res.render('admin/content/form', {
+    title: `Edit ${categories[category].name} Content`,
+    category,
+    categoryData: categories[category],
+    content: {
+      title: title,
+      content: rawContent,
+      path: path.basename(contentPath)
+    },
+    parentPath,
+    isNew: false
+  });
+});
+
+app.post('/admin/content/save', (req, res) => {
+  // Check if user is logged in and is an admin
+  if (!req.session.user || !req.session.user.is_admin) {
+    return res.redirect('/');
+  }
+
+  try {
+    const {
+      category,
+      title,
+      content,
+      path: contentPath,
+      parentPath,
+      isNew,
+      originalPath
+    } = req.body;
+
+    // Validate required fields
+    if (!category || !title || !content) {
+      return res.redirect(`/admin/content/${category}?messageType=error&message=` + encodeURIComponent('Category, title, and content are required'));
+    }
+
+    const categories = getContentCategories();
+
+    if (!categories[category]) {
+      return res.redirect('/admin/content?messageType=error&message=' + encodeURIComponent('Category not found'));
+    }
+
+    // Ensure the content starts with the title as a heading
+    let finalContent = content;
+    if (!content.startsWith(`# ${title}`)) {
+      finalContent = `# ${title}\n\n${content}`;
+    }
+
+    let success;
+
+    if (isNew === 'true') {
+      // Save new content
+      success = saveContentFile(category, contentPath, finalContent, parentPath);
+    } else {
+      // Update existing content
+      success = saveContentFile(category, originalPath || contentPath, finalContent, parentPath);
+    }
+
+    if (!success) {
+      return res.redirect(`/admin/content/${category}?messageType=error&message=` + encodeURIComponent('Failed to save content'));
+    }
+
+    const redirectUrl = `/admin/content/${category}${parentPath ? '?path=' + parentPath + '&' : '?'}message=` + encodeURIComponent(`Content ${isNew === 'true' ? 'created' : 'updated'} successfully`);
+    return res.redirect(redirectUrl);
+  } catch (error) {
+    console.error('Error saving content:', error);
+    return res.redirect('/admin/content?messageType=error&message=' + encodeURIComponent('Error: ' + error.message));
+  }
+});
+
+// Delete file route
+app.post('/admin/content/:category/delete-file', (req, res) => {
+  // Check if user is logged in and is an admin
+  if (!req.session.user || !req.session.user.is_admin) {
+    return res.redirect('/');
+  }
+
+  try {
+    const category = req.params.category;
+    const { filePath, parentPath } = req.body;
+
+    // Validate required fields
+    if (!category || !filePath) {
+      return res.redirect(`/admin/content/${category}?messageType=error&message=` + encodeURIComponent('Category and file path are required'));
+    }
+
+    const categories = getContentCategories();
+
+    if (!categories[category]) {
+      return res.redirect('/admin/content?messageType=error&message=' + encodeURIComponent('Category not found'));
+    }
+
+    // Delete the file using our utility function
+    const success = deleteContentFile(category, filePath, parentPath);
+
+    if (!success) {
+      const errorUrl = `/admin/content/${category}${parentPath ? '?path=' + parentPath + '&' : '?'}messageType=error&message=` + encodeURIComponent('Failed to delete file');
+      return res.redirect(errorUrl);
+    }
+
+    const successUrl = `/admin/content/${category}${parentPath ? '?path=' + parentPath + '&' : '?'}message=` + encodeURIComponent('File deleted successfully');
+    return res.redirect(successUrl);
+  } catch (error) {
+    console.error('Error deleting file:', error);
+    return res.redirect('/admin/content?messageType=error&message=' + encodeURIComponent('Error: ' + error.message));
+  }
+});
+
+// Delete directory route
+app.post('/admin/content/:category/delete-directory', (req, res) => {
+  // Check if user is logged in and is an admin
+  if (!req.session.user || !req.session.user.is_admin) {
+    return res.redirect('/');
+  }
+
+  try {
+    const category = req.params.category;
+    const { directoryPath, parentPath } = req.body;
+
+    // Validate required fields
+    if (!category || !directoryPath) {
+      return res.redirect(`/admin/content/${category}?messageType=error&message=` + encodeURIComponent('Category and directory path are required'));
+    }
+
+    const categories = getContentCategories();
+
+    if (!categories[category]) {
+      return res.redirect('/admin/content?messageType=error&message=' + encodeURIComponent('Category not found'));
+    }
+
+    // Delete the directory using our utility function
+    const success = deleteContentDirectory(category, directoryPath, parentPath);
+
+    if (!success) {
+      const errorUrl = `/admin/content/${category}${parentPath ? '?path=' + parentPath + '&' : '?'}messageType=error&message=` + encodeURIComponent('Failed to delete directory');
+      return res.redirect(errorUrl);
+    }
+
+    const successUrl = `/admin/content/${category}${parentPath ? '?path=' + parentPath + '&' : '?'}message=` + encodeURIComponent('Directory deleted successfully');
+    return res.redirect(successUrl);
+  } catch (error) {
+    console.error('Error deleting directory:', error);
+    return res.redirect('/admin/content?messageType=error&message=' + encodeURIComponent('Error: ' + error.message));
+  }
+});
+
+// Add category route
+app.post('/admin/content/:category/add-category', (req, res) => {
+  // Check if user is logged in and is an admin
+  if (!req.session.user || !req.session.user.is_admin) {
+    return res.redirect('/');
+  }
+
+  try {
+    const category = req.params.category;
+    const { categoryName, categoryTitle, parentPath } = req.body;
+
+    // Validate required fields
+    if (!category || !categoryName || !categoryTitle) {
+      return res.redirect(`/admin/content/${category}?messageType=error&message=` + encodeURIComponent('Category name and title are required'));
+    }
+
+    const categories = getContentCategories();
+
+    if (!categories[category]) {
+      return res.redirect('/admin/content?messageType=error&message=' + encodeURIComponent('Category not found'));
+    }
+
+    // Create the directory using our utility function
+    const success = createContentDirectory(category, categoryName, categoryTitle, parentPath);
+
+    if (!success) {
+      const errorUrl = `/admin/content/${category}${parentPath ? '?path=' + parentPath + '&' : '?'}messageType=error&message=` + encodeURIComponent('Failed to create category');
+      return res.redirect(errorUrl);
+    }
+
+    const successUrl = `/admin/content/${category}${parentPath ? '?path=' + parentPath + '&' : '?'}message=` + encodeURIComponent('Category created successfully');
+    return res.redirect(successUrl);
+  } catch (error) {
+    console.error('Error creating category:', error);
+    return res.redirect('/admin/content?messageType=error&message=' + encodeURIComponent('Error: ' + error.message));
+  }
+});
+
 // Admin route to recalculate monster counts
 app.get('/admin/recalculate-monster-counts', async (req, res) => {
   // Check if user is logged in and is an admin
@@ -326,6 +895,441 @@ app.get('/admin/recalculate-monster-counts', async (req, res) => {
       error: { status: 500, stack: error.stack },
       title: 'Error'
     });
+  }
+});
+
+// Town and Shop Routes
+app.get('/town', (req, res) => {
+  // Check if user is logged in
+  if (!req.session.user) {
+    return res.redirect('/login');
+  }
+
+  // Render the town view with fixed shops
+  res.render('town', {
+    message: req.query.message,
+    messageType: req.query.messageType
+  });
+});
+
+app.get('/town/shop/:shopId', async (req, res) => {
+  // Check if user is logged in
+  if (!req.session.user) {
+    return res.redirect('/login');
+  }
+
+  try {
+    const { shopId } = req.params;
+    const playerId = req.session.user.id;
+
+    // Get shop information
+    console.log(`Getting shop information for shop ID: ${shopId}`);
+    const shop = await ShopConfig.getById(shopId);
+    console.log('Shop information:', shop);
+
+    if (!shop) {
+      console.error(`Shop not found: ${shopId}`);
+      return res.status(404).render('error', {
+        message: 'Shop not found',
+        error: { status: 404 },
+        title: 'Error'
+      });
+    }
+
+    // Get trainer information
+    const trainer = await Trainer.getByUserId(playerId);
+
+    if (!trainer) {
+      return res.redirect('/create-trainer');
+    }
+
+    // Get shop items for today
+    console.log(`Getting shop items for shop ID: ${shopId}`);
+    const shopItems = await DailyShopItems.getShopItems(shopId);
+    console.log(`Found ${shopItems ? shopItems.length : 0} items for shop ${shopId}:`, shopItems);
+
+    // Get remaining quantities for each item
+    console.log('Getting remaining quantities for each item...');
+    const itemsWithQuantities = await Promise.all(
+      shopItems.map(async (item) => {
+        console.log(`Getting remaining quantity for item ${item.item_id}`);
+        const remainingQuantity = await DailyShopItems.getRemainingQuantity(
+          playerId,
+          shopId,
+          item.item_id
+        );
+        console.log(`Remaining quantity for item ${item.item_id}: ${remainingQuantity}`);
+
+        return {
+          ...item,
+          remaining_quantity: remainingQuantity
+        };
+      })
+    );
+    console.log('Items with quantities:', itemsWithQuantities);
+
+    console.log('Rendering shop page with data:', {
+      shop: shop.name,
+      trainer: trainer.name,
+      itemCount: itemsWithQuantities.length,
+      message: req.query.message
+    });
+
+    res.render('shop', {
+      shop,
+      trainer,
+      items: itemsWithQuantities,
+      message: req.query.message,
+      messageType: req.query.messageType
+    });
+  } catch (error) {
+    console.error(`Error loading shop ${req.params.shopId}:`, error);
+    res.status(500).render('error', {
+      message: 'Error loading shop',
+      error: { status: 500, stack: error.stack },
+      title: 'Error'
+    });
+  }
+});
+
+app.get('/town/shop/:shopId/restock', async (req, res) => {
+  // Check if user is logged in
+  if (!req.session.user) {
+    return res.redirect('/login');
+  }
+
+  try {
+    const { shopId } = req.params;
+
+    console.log(`Force restocking shop ${shopId}...`);
+
+    // Restock the shop
+    const result = await DailyShopItems.restockShop(shopId);
+
+    console.log(`Restock result:`, result);
+
+    // Redirect back to the shop
+    return res.redirect(`/town/shop/${shopId}?message=${encodeURIComponent('Shop restocked successfully!')}&messageType=success`);
+  } catch (error) {
+    console.error(`Error restocking shop ${req.params.shopId}:`, error);
+    return res.redirect(`/town/shop/${req.params.shopId}?message=${encodeURIComponent('Error restocking shop: ' + error.message)}&messageType=error`);
+  }
+});
+
+app.get('/town/shop/:shopId/restock', async (req, res) => {
+  // Check if user is logged in
+  if (!req.session.user) {
+    return res.redirect('/login');
+  }
+
+  try {
+    const { shopId } = req.params;
+
+    console.log(`Force restocking shop ${shopId}...`);
+
+    // Restock the shop
+    const result = await DailyShopItems.restockShop(shopId);
+
+    console.log(`Restock result:`, result);
+
+    // Redirect back to the shop
+    return res.redirect(`/town/shop/${shopId}?message=${encodeURIComponent('Shop restocked successfully!')}&messageType=success`);
+  } catch (error) {
+    console.error(`Error restocking shop ${req.params.shopId}:`, error);
+    return res.redirect(`/town/shop/${req.params.shopId}?message=${encodeURIComponent('Error restocking shop: ' + error.message)}&messageType=error`);
+  }
+});
+
+app.post('/town/shop/:shopId/purchase', async (req, res) => {
+  // Check if user is logged in
+  if (!req.session.user) {
+    return res.redirect('/login');
+  }
+
+  try {
+    const { shopId } = req.params;
+    const { item_id, quantity } = req.body;
+    const playerId = req.session.user.id;
+
+    // Validate inputs
+    if (!item_id || !quantity) {
+      return res.redirect(`/town/shop/${shopId}?messageType=error&message=${encodeURIComponent('Item ID and quantity are required')}`);
+    }
+
+    const parsedQuantity = parseInt(quantity);
+
+    if (isNaN(parsedQuantity) || parsedQuantity <= 0) {
+      return res.redirect(`/town/shop/${shopId}?messageType=error&message=${encodeURIComponent('Quantity must be a positive number')}`);
+    }
+
+    // Get shop information
+    console.log(`Getting shop information for shop ID: ${shopId}`);
+    const shop = await ShopConfig.getById(shopId);
+    console.log('Shop information:', shop);
+
+    if (!shop) {
+      console.error(`Shop not found: ${shopId}`);
+      return res.status(404).render('error', {
+        message: 'Shop not found',
+        error: { status: 404 },
+        title: 'Error'
+      });
+    }
+
+    // Get trainer information
+    const trainer = await Trainer.getByUserId(playerId);
+
+    if (!trainer) {
+      return res.redirect('/create-trainer');
+    }
+
+    // Get item information
+    const shopItems = await DailyShopItems.getShopItems(shopId);
+    const item = shopItems.find(i => i.item_id === item_id);
+
+    if (!item) {
+      return res.redirect(`/town/shop/${shopId}?messageType=error&message=${encodeURIComponent('Item not available in this shop')}`);
+    }
+
+    // Check if the player has enough remaining quantity
+    const remainingQuantity = await DailyShopItems.getRemainingQuantity(
+      playerId,
+      shopId,
+      item_id
+    );
+
+    if (remainingQuantity < parsedQuantity) {
+      return res.redirect(`/town/shop/${shopId}?messageType=error&message=${encodeURIComponent(`Only ${remainingQuantity} of this item available for purchase`)}`);
+    }
+
+    // Calculate total price
+    const totalPrice = item.price * parsedQuantity;
+
+    // Check if the player has enough currency
+    if (trainer.currency_amount < totalPrice) {
+      return res.redirect(`/town/shop/${shopId}?messageType=error&message=${encodeURIComponent('Not enough coins to make this purchase')}`);
+    }
+
+    // Record the purchase
+    await PlayerShopPurchases.recordPurchase(
+      playerId,
+      shopId,
+      item_id,
+      parsedQuantity
+    );
+
+    // Update trainer's inventory
+    const inventoryItem = {
+      item_id,
+      quantity: parsedQuantity
+    };
+
+    await Trainer.addItemToInventory(trainer.id, inventoryItem);
+
+    // Update trainer's currency
+    const updatedTrainer = {
+      ...trainer,
+      currency_amount: trainer.currency_amount - totalPrice
+    };
+
+    await Trainer.update(trainer.id, updatedTrainer);
+
+    // Redirect back to the shop with success message
+    return res.redirect(`/town/shop/${shopId}?message=${encodeURIComponent(`Successfully purchased ${parsedQuantity} ${item.item_name}(s) for ${totalPrice} coins`)}`);
+  } catch (error) {
+    console.error(`Error purchasing item from shop ${req.params.shopId}:`, error);
+    return res.redirect(`/town/shop/${req.params.shopId}?messageType=error&message=${encodeURIComponent('Error purchasing item: ' + error.message)}`);
+  }
+});
+
+// Admin level manager routes
+app.get('/admin/level-manager', async (req, res) => {
+  // Check if user is logged in and is an admin
+  if (!req.session.user || !req.session.user.is_admin) {
+    return res.redirect('/');
+  }
+
+  try {
+    // Get all trainers
+    const trainers = await Trainer.getAll();
+
+    // Get all monsters
+    const monsters = [];
+    for (const trainer of trainers) {
+      const trainerMonsters = await Monster.getByTrainerId(trainer.id);
+      monsters.push(...trainerMonsters);
+    }
+
+    res.render('admin/level-manager', {
+      title: 'Level Manager',
+      trainers,
+      monsters,
+      message: req.query.message,
+      messageType: req.query.messageType
+    });
+  } catch (error) {
+    console.error('Error loading level manager:', error);
+    res.status(500).render('error', {
+      message: 'Error loading level manager',
+      error: { status: 500, stack: error.stack },
+      title: 'Error'
+    });
+  }
+});
+
+app.post('/admin/level-manager/trainer', async (req, res) => {
+  // Check if user is logged in and is an admin
+  if (!req.session.user || !req.session.user.is_admin) {
+    return res.redirect('/');
+  }
+
+  try {
+    const { trainer_id, levels, coins, reason } = req.body;
+
+    // Validate inputs
+    if (!trainer_id || !levels) {
+      return res.redirect('/admin/level-manager?messageType=error&message=' + encodeURIComponent('Trainer ID and levels are required'));
+    }
+
+    // Parse levels and coins as integers
+    const parsedLevels = parseInt(levels);
+    const parsedCoins = parseInt(coins) || parsedLevels * 50; // Default to 50 coins per level
+
+    if (isNaN(parsedLevels) || parsedLevels <= 0) {
+      return res.redirect('/admin/level-manager?messageType=error&message=' + encodeURIComponent('Levels must be a positive number'));
+    }
+
+    // Get the trainer
+    const trainer = await Trainer.getById(trainer_id);
+    if (!trainer) {
+      return res.redirect('/admin/level-manager?messageType=error&message=' + encodeURIComponent('Trainer not found'));
+    }
+
+    // Update trainer levels and coins
+    const updatedTrainer = {
+      ...trainer,
+      level: trainer.level + parsedLevels,
+      currency_amount: trainer.currency_amount + parsedCoins,
+      total_earned_currency: trainer.total_earned_currency + parsedCoins
+    };
+
+    // Save the updated trainer
+    await Trainer.update(trainer_id, updatedTrainer);
+
+    // Log the action
+    console.log(`Admin ${req.session.user.username} added ${parsedLevels} levels and ${parsedCoins} coins to trainer ${trainer.name} (ID: ${trainer_id})`);
+    if (reason) {
+      console.log(`Reason: ${reason}`);
+    }
+
+    // Redirect back to level manager with success message
+    return res.redirect('/admin/level-manager?message=' + encodeURIComponent(`Successfully added ${parsedLevels} levels and ${parsedCoins} coins to trainer ${trainer.name}`));
+  } catch (error) {
+    console.error('Error adding levels to trainer:', error);
+    return res.redirect('/admin/level-manager?messageType=error&message=' + encodeURIComponent('Error adding levels to trainer: ' + error.message));
+  }
+});
+
+app.post('/admin/level-manager/monster', async (req, res) => {
+  // Check if user is logged in and is an admin
+  if (!req.session.user || !req.session.user.is_admin) {
+    return res.redirect('/');
+  }
+
+  try {
+    const { monster_id, levels, coins, reason } = req.body;
+
+    // Validate inputs
+    if (!monster_id || !levels) {
+      return res.redirect('/admin/level-manager?messageType=error&message=' + encodeURIComponent('Monster ID and levels are required'));
+    }
+
+    // Parse levels and coins as integers
+    const parsedLevels = parseInt(levels);
+    const parsedCoins = parseInt(coins) || parsedLevels * 50; // Default to 50 coins per level
+
+    if (isNaN(parsedLevels) || parsedLevels <= 0) {
+      return res.redirect('/admin/level-manager?messageType=error&message=' + encodeURIComponent('Levels must be a positive number'));
+    }
+
+    // Get the monster
+    const monster = await Monster.getById(monster_id);
+    if (!monster) {
+      return res.redirect('/admin/level-manager?messageType=error&message=' + encodeURIComponent('Monster not found'));
+    }
+
+    // Get the trainer who owns the monster
+    const trainer = await Trainer.getById(monster.trainer_id);
+    if (!trainer) {
+      return res.redirect('/admin/level-manager?messageType=error&message=' + encodeURIComponent('Trainer not found'));
+    }
+
+    // Calculate new level
+    const newLevel = monster.level + parsedLevels;
+
+    // Calculate new stats based on the new level
+    const baseStats = MonsterInitializer.calculateBaseStats(newLevel);
+
+    // Get current moveset
+    let currentMoves = [];
+    try {
+      if (monster.moveset) {
+        currentMoves = JSON.parse(monster.moveset);
+      }
+    } catch (movesetError) {
+      console.error(`Error parsing current moveset for monster ${monster_id}:`, movesetError);
+      currentMoves = [];
+    }
+
+    // Calculate how many moves the monster should have based on new level
+    const oldMoveCount = Math.max(1, Math.floor(monster.level / 5) + 1);
+    const newMoveCount = Math.max(1, Math.floor(newLevel / 5) + 1);
+
+    // If the monster should learn new moves, get them
+    let updatedMoves = [...currentMoves];
+    if (newMoveCount > oldMoveCount) {
+      try {
+        // Get new moves
+        const newMoves = await MonsterInitializer.getMovesForMonster(monster, newMoveCount - oldMoveCount);
+
+        // Add new moves to the moveset
+        updatedMoves = [...currentMoves, ...newMoves];
+      } catch (moveError) {
+        console.error(`Error getting new moves for monster ${monster_id}:`, moveError);
+        // Continue with current moves if there's an error
+      }
+    }
+
+    // Update monster with new level, stats, and moves
+    const updatedMonster = {
+      ...monster,
+      level: newLevel,
+      ...baseStats,
+      moveset: JSON.stringify(updatedMoves)
+    };
+
+    // Update trainer coins
+    const updatedTrainer = {
+      ...trainer,
+      currency_amount: trainer.currency_amount + parsedCoins,
+      total_earned_currency: trainer.total_earned_currency + parsedCoins
+    };
+
+    // Save the updated monster and trainer
+    await Monster.update(monster_id, updatedMonster);
+    await Trainer.update(trainer.id, updatedTrainer);
+
+    // Log the action
+    console.log(`Admin ${req.session.user.username} added ${parsedLevels} levels to monster ${monster.name} (ID: ${monster_id}) and ${parsedCoins} coins to trainer ${trainer.name}`);
+    if (reason) {
+      console.log(`Reason: ${reason}`);
+    }
+
+    // Redirect back to level manager with success message
+    return res.redirect('/admin/level-manager?message=' + encodeURIComponent(`Successfully added ${parsedLevels} levels to monster ${monster.name} and ${parsedCoins} coins to trainer ${trainer.name}`));
+  } catch (error) {
+    console.error('Error adding levels to monster:', error);
+    return res.redirect('/admin/level-manager?messageType=error&message=' + encodeURIComponent('Error adding levels to monster: ' + error.message));
   }
 });
 
@@ -1135,8 +2139,8 @@ app.post('/trainers/:id/claim-starter', async (req, res) => {
   }
 });
 
-// Town routes (protected, only for logged-in users)
-app.get('/town', (req, res) => {
+// Town visit routes (protected, only for logged-in users)
+app.get('/town/visit', (req, res) => {
   // Check if user is logged in
   if (!req.session.user) {
     return res.redirect('/login');
@@ -1145,6 +2149,865 @@ app.get('/town', (req, res) => {
   res.render('town/index', {
     title: 'Visit Town'
   });
+});
+
+// Town visit sub-routes
+app.get('/town/visit/trade', (req, res) => {
+  // Check if user is logged in
+  if (!req.session.user) {
+    return res.redirect('/login');
+  }
+
+  res.render('town/trade', {
+    title: 'Trade Center'
+  });
+});
+
+app.get('/town/visit/garden', (req, res) => {
+  // Check if user is logged in
+  if (!req.session.user) {
+    return res.redirect('/login');
+  }
+
+  res.render('town/garden', {
+    title: 'Garden'
+  });
+});
+
+app.get('/town/visit/farm', (req, res) => {
+  // Check if user is logged in
+  if (!req.session.user) {
+    return res.redirect('/login');
+  }
+
+  res.render('town/farm', {
+    title: 'Farm'
+  });
+});
+
+// Adventures routes
+app.get('/adventures', (req, res) => {
+  // Check if user is logged in
+  if (!req.session.user) {
+    return res.redirect('/login');
+  }
+
+  res.render('adventures/index', {
+    title: 'Adventures'
+  });
+});
+
+app.get('/adventures/missions', (req, res) => {
+  // Check if user is logged in
+  if (!req.session.user) {
+    return res.redirect('/login');
+  }
+
+  res.render('adventures/missions', {
+    title: 'Missions'
+  });
+});
+
+app.get('/adventures/boss', (req, res) => {
+  // Check if user is logged in
+  if (!req.session.user) {
+    return res.redirect('/login');
+  }
+
+  res.render('adventures/boss', {
+    title: 'Boss Battles'
+  });
+});
+
+app.get('/adventures/event', (req, res) => {
+  // Check if user is logged in
+  if (!req.session.user) {
+    return res.redirect('/login');
+  }
+
+  res.render('adventures/event', {
+    title: 'Events'
+  });
+});
+
+// Competition Circuit routes (nested under Adventures)
+app.get('/adventures/competition', (req, res) => {
+  // Check if user is logged in
+  if (!req.session.user) {
+    return res.redirect('/login');
+  }
+
+  res.render('competition/index', {
+    title: 'Competition Circuit'
+  });
+});
+
+// Competition sub-routes (all showing coming soon)
+app.get('/adventures/competition/:type', (req, res) => {
+  // Check if user is logged in
+  if (!req.session.user) {
+    return res.redirect('/login');
+  }
+
+  const competitionTypes = {
+    'friendly': 'Friendly Match',
+    'league': 'Challenge League',
+    'frontier': 'Challenge Frontier',
+    'exhibition': 'Friendly Exhibition',
+    'contest': 'Contest',
+    'festival': 'Grand Festival'
+  };
+
+  const type = req.params.type;
+  const title = competitionTypes[type] || 'Competition';
+
+  res.render('competition/coming-soon', {
+    title: title,
+    competitionType: title
+  });
+});
+
+// Art Submission route
+app.get('/submit_artwork', (req, res) => {
+  // Check if user is logged in
+  if (!req.session.user) {
+    return res.redirect('/login?error=' + encodeURIComponent('You must be logged in to submit artwork'));
+  }
+
+  res.render('submit_artwork', {
+    title: 'Submit Artwork'
+  });
+});
+
+// API route to get user's trainers
+app.get('/api/user/trainers', async (req, res) => {
+  try {
+    console.log('API: Received request for /api/user/trainers');
+
+    // Check if user is logged in
+    if (!req.session.user) {
+      console.log('API: User not logged in');
+      return res.status(401).json({ error: 'You must be logged in to access this resource' });
+    }
+
+    // Get user's trainers using Discord ID
+    const userDiscordId = req.session.user.discord_id;
+    console.log(`API: Looking up trainers for Discord ID: ${userDiscordId}`);
+
+    if (!userDiscordId) {
+      console.log('API: No Discord ID found for user');
+      return res.status(403).json({ error: 'You need to have a Discord ID linked to your account' });
+    }
+
+    // For testing, if no Trainer model is available, return mock data
+    if (typeof Trainer === 'undefined' || !Trainer.getByDiscordId) {
+      console.log('API: Trainer model not available, returning mock data');
+      const mockTrainers = [
+        { id: 1, name: 'Mock Trainer 1', player_user_id: userDiscordId },
+        { id: 2, name: 'Mock Trainer 2', player_user_id: userDiscordId }
+      ];
+      return res.json(mockTrainers);
+    }
+
+    const trainers = await Trainer.getByDiscordId(userDiscordId);
+    console.log(`API: Found ${trainers?.length || 0} trainers for user`);
+    res.json(trainers || []);
+  } catch (error) {
+    console.error('Error fetching user trainers:', error);
+    res.status(500).json({ error: 'Error fetching trainers' });
+  }
+});
+
+// API route to get monsters for a trainer
+app.get('/api/trainers/:trainerId/monsters', async (req, res) => {
+  try {
+    console.log(`API: Received request for /api/trainers/${req.params.trainerId}/monsters`);
+
+    // Check if user is logged in
+    if (!req.session.user) {
+      console.log('API: User not logged in');
+      return res.status(401).json({ error: 'You must be logged in to access this resource' });
+    }
+
+    const trainerId = req.params.trainerId;
+    console.log(`API: Looking up trainer with ID: ${trainerId}`);
+
+    // For testing, if no Trainer model is available, use mock data
+    if (typeof Trainer === 'undefined' || !Trainer.getById) {
+      console.log('API: Trainer model not available, using mock data');
+      const mockTrainer = {
+        id: parseInt(trainerId),
+        name: `Mock Trainer ${trainerId}`,
+        player_user_id: req.session.user.discord_id
+      };
+
+      // Generate mock monsters
+      const mockMonsters = [
+        { id: 101, name: 'Pikachu', trainer_id: parseInt(trainerId) },
+        { id: 102, name: 'Charmander', trainer_id: parseInt(trainerId) },
+        { id: 103, name: 'Bulbasaur', trainer_id: parseInt(trainerId) }
+      ];
+
+      console.log(`API: Returning ${mockMonsters.length} mock monsters for trainer ${trainerId}`);
+      return res.json(mockMonsters);
+    }
+
+    const trainer = await Trainer.getById(trainerId);
+
+    if (!trainer) {
+      console.log(`API: Trainer with ID ${trainerId} not found`);
+      return res.status(404).json({ error: 'Trainer not found' });
+    }
+
+    // Note: We're allowing any user to access any trainer's monsters
+    // This is because characters can appear in artwork by different users
+    console.log(`API: Allowing access to monsters for trainer ${trainerId} regardless of ownership`);
+
+    // For testing, if no Monster model is available, return mock data
+    if (typeof Monster === 'undefined' || !Monster.getByTrainerId) {
+      console.log('API: Monster model not available, returning mock data');
+      const mockMonsters = [
+        { id: 101, name: 'Pikachu', trainer_id: parseInt(trainerId) },
+        { id: 102, name: 'Charmander', trainer_id: parseInt(trainerId) },
+        { id: 103, name: 'Bulbasaur', trainer_id: parseInt(trainerId) }
+      ];
+      return res.json(mockMonsters);
+    }
+
+    const monsters = await Monster.getByTrainerId(trainerId);
+    console.log(`API: Found ${monsters?.length || 0} monsters for trainer ${trainerId}`);
+    res.json(monsters || []);
+  } catch (error) {
+    console.error('Error fetching trainer monsters:', error);
+    res.status(500).json({ error: 'Error fetching monsters' });
+  }
+});
+
+// API route to apply levels to a trainer
+app.post('/api/trainers/:trainerId/apply-levels', async (req, res) => {
+  try {
+    console.log(`API: Received request to apply levels to trainer ${req.params.trainerId}`);
+
+    // Check if user is logged in
+    if (!req.session.user) {
+      console.log('API: User not logged in');
+      return res.status(401).json({ error: 'You must be logged in to apply levels' });
+    }
+
+    const trainerId = req.params.trainerId;
+    const { levels, coins } = req.body;
+    console.log(`API: Applying ${levels} levels and ${coins} coins to trainer ${trainerId}`);
+
+    // Validate input
+    if (isNaN(levels) || levels <= 0) {
+      console.log(`API: Invalid level amount: ${levels}`);
+      return res.status(400).json({ error: 'Invalid level amount' });
+    }
+
+    if (isNaN(coins) || coins < 0) {
+      console.log(`API: Invalid coin amount: ${coins}`);
+      return res.status(400).json({ error: 'Invalid coin amount' });
+    }
+
+    // For testing, if no Trainer model is available, use mock data
+    if (typeof Trainer === 'undefined' || !Trainer.getById) {
+      console.log('API: Trainer model not available, using mock data');
+      const mockTrainer = {
+        id: parseInt(trainerId),
+        name: `Mock Trainer ${trainerId}`,
+        player_user_id: req.session.user.discord_id,
+        level: 10,
+        currency_amount: 500,
+        total_earned_currency: 1000
+      };
+
+      // Simulate updating the trainer
+      const updatedTrainer = {
+        ...mockTrainer,
+        level: mockTrainer.level + levels,
+        currency_amount: mockTrainer.currency_amount + coins,
+        total_earned_currency: mockTrainer.total_earned_currency + coins
+      };
+
+      console.log(`API: Mock trainer updated: Level ${updatedTrainer.level}, Coins ${updatedTrainer.currency_amount}`);
+      return res.json(updatedTrainer);
+    }
+
+    // Get the trainer
+    const trainer = await Trainer.getById(trainerId);
+
+    if (!trainer) {
+      console.log(`API: Trainer with ID ${trainerId} not found`);
+      return res.status(404).json({ error: 'Trainer not found' });
+    }
+
+    // Note: We're allowing any user to assign levels to any trainer
+    // This is because characters can appear in artwork by different users
+    console.log(`API: Allowing level assignment to trainer ${trainerId} regardless of ownership`);
+
+    // Update trainer levels and coins
+    const updatedTrainer = {
+      ...trainer,
+      level: trainer.level + levels,
+      currency_amount: trainer.currency_amount + coins,
+      total_earned_currency: trainer.total_earned_currency + coins
+    };
+
+    // Save the updated trainer
+    await Trainer.update(trainerId, updatedTrainer);
+    console.log(`API: Trainer ${trainerId} updated successfully`);
+
+    // Get the updated trainer
+    const refreshedTrainer = await Trainer.getById(trainerId);
+
+    res.json(refreshedTrainer);
+  } catch (error) {
+    console.error('Error applying levels to trainer:', error);
+    res.status(500).json({ error: 'Error applying levels to trainer' });
+  }
+});
+
+// API route to apply levels to a monster
+app.post('/api/monsters/:monsterId/apply-levels', async (req, res) => {
+  try {
+    console.log(`API: Received request to apply levels to monster ${req.params.monsterId}`);
+
+    // Check if user is logged in
+    if (!req.session.user) {
+      console.log('API: User not logged in');
+      return res.status(401).json({ error: 'You must be logged in to apply levels' });
+    }
+
+    const monsterId = req.params.monsterId;
+    const { levels, coins } = req.body;
+    console.log(`API: Applying ${levels} levels and ${coins} coins for monster ${monsterId}`);
+
+    // Validate input
+    if (isNaN(levels) || levels <= 0) {
+      console.log(`API: Invalid level amount: ${levels}`);
+      return res.status(400).json({ error: 'Invalid level amount' });
+    }
+
+    if (isNaN(coins) || coins < 0) {
+      console.log(`API: Invalid coin amount: ${coins}`);
+      return res.status(400).json({ error: 'Invalid coin amount' });
+    }
+
+    // For testing, if no Monster model is available, use mock data
+    if (typeof Monster === 'undefined' || !Monster.getById) {
+      console.log('API: Monster model not available, using mock data');
+
+      // Create mock monster and trainer
+      const mockMonster = {
+        id: parseInt(monsterId),
+        name: `Mock Monster ${monsterId}`,
+        trainer_id: 1,
+        level: 5
+      };
+
+      const mockTrainer = {
+        id: mockMonster.trainer_id,
+        name: 'Mock Trainer',
+        player_user_id: req.session.user.discord_id,
+        level: 10,
+        currency_amount: 500,
+        total_earned_currency: 1000
+      };
+
+      // Simulate updating the monster and trainer
+      const updatedMonster = {
+        ...mockMonster,
+        level: mockMonster.level + levels
+      };
+
+      console.log(`API: Mock monster updated: Level ${updatedMonster.level}`);
+      console.log(`API: Mock trainer would receive ${coins} coins`);
+
+      return res.json(updatedMonster);
+    }
+
+    // Get the monster
+    const monster = await Monster.getById(monsterId);
+
+    if (!monster) {
+      console.log(`API: Monster with ID ${monsterId} not found`);
+      return res.status(404).json({ error: 'Monster not found' });
+    }
+
+    // Get the trainer who owns the monster
+    const trainer = await Trainer.getById(monster.trainer_id);
+
+    if (!trainer) {
+      console.log(`API: Trainer for monster ${monsterId} not found`);
+      return res.status(404).json({ error: 'Trainer not found' });
+    }
+
+    // Note: We're allowing any user to assign levels to any monster
+    // This is because characters can appear in artwork by different users
+    console.log(`API: Allowing level assignment to monster ${monsterId} regardless of ownership`);
+
+    // Update monster level and calculate new stats and moves
+    const newLevel = monster.level + levels;
+    console.log(`API: Updating monster ${monsterId} from level ${monster.level} to ${newLevel}`);
+
+    // Calculate new stats based on the new level
+    const baseStats = MonsterInitializer.calculateBaseStats(newLevel);
+    console.log(`API: Calculated new base stats for level ${newLevel}:`, baseStats);
+
+    // Get current moveset
+    let currentMoves = [];
+    try {
+      if (monster.moveset) {
+        currentMoves = JSON.parse(monster.moveset);
+      }
+    } catch (movesetError) {
+      console.error(`API: Error parsing current moveset for monster ${monsterId}:`, movesetError);
+      currentMoves = [];
+    }
+
+    // Calculate how many moves the monster should have based on new level
+    const oldMoveCount = Math.max(1, Math.floor(monster.level / 5) + 1);
+    const newMoveCount = Math.max(1, Math.floor(newLevel / 5) + 1);
+
+    console.log(`API: Monster should have ${oldMoveCount} moves at level ${monster.level} and ${newMoveCount} moves at level ${newLevel}`);
+
+    // If the monster should learn new moves, get them
+    let updatedMoves = [...currentMoves];
+    if (newMoveCount > oldMoveCount) {
+      console.log(`API: Monster will learn ${newMoveCount - oldMoveCount} new moves`);
+      try {
+        // Get new moves
+        const newMoves = await MonsterInitializer.getMovesForMonster(monster, newMoveCount - oldMoveCount);
+        console.log(`API: New moves for monster ${monsterId}:`, newMoves);
+
+        // Add new moves to the moveset
+        updatedMoves = [...currentMoves, ...newMoves];
+      } catch (moveError) {
+        console.error(`API: Error getting new moves for monster ${monsterId}:`, moveError);
+        // Continue with current moves if there's an error
+      }
+    }
+
+    // Update monster with new level, stats, and moves
+    const updatedMonster = {
+      ...monster,
+      level: newLevel,
+      ...baseStats,
+      moveset: JSON.stringify(updatedMoves)
+    };
+
+    // Update trainer coins
+    const updatedTrainer = {
+      ...trainer,
+      currency_amount: trainer.currency_amount + coins,
+      total_earned_currency: trainer.total_earned_currency + coins
+    };
+
+    // Save the updated monster and trainer
+    await Monster.update(monsterId, updatedMonster);
+    await Trainer.update(trainer.id, updatedTrainer);
+    console.log(`API: Monster ${monsterId} and trainer ${trainer.id} updated successfully`);
+    console.log(`API: Monster now has ${updatedMoves.length} moves:`, updatedMoves);
+
+    // Get the updated monster
+    const refreshedMonster = await Monster.getById(monsterId);
+
+    res.json(refreshedMonster);
+  } catch (error) {
+    console.error('Error applying levels to monster:', error);
+    res.status(500).json({ error: 'Error applying levels to monster' });
+  }
+});
+
+// Schedule Management routes
+app.get('/manage_schedule', async (req, res) => {
+  try {
+    // Check if user is logged in
+    if (!req.session.user) {
+      return res.redirect('/login?error=' + encodeURIComponent('You must be logged in to manage your schedule'));
+    }
+
+    // Get user's trainers using Discord ID
+    const userDiscordId = req.session.user.discord_id;
+    if (!userDiscordId) {
+      return res.status(403).render('error', {
+        message: 'You need to have a Discord ID linked to your account to manage your schedule',
+        error: { status: 403 }
+      });
+    }
+
+    // Get trainers with the user's Discord ID
+    const trainers = await Trainer.getByUserId(userDiscordId);
+
+    // If user has no trainers, redirect to add trainer page
+    if (!trainers || trainers.length === 0) {
+      return res.redirect('/add_trainer?error=' + encodeURIComponent('You need to create a trainer first'));
+    }
+
+    // Default to the first trainer if none is selected
+    const selectedTrainerId = req.query.trainer_id || trainers[0].id;
+
+    // Get the selected trainer
+    const selectedTrainer = trainers.find(t => t.id == selectedTrainerId) || trainers[0];
+
+    // Get today's date
+    const today = new Date();
+    const dateStr = req.query.date || today.toISOString().split('T')[0];
+    const selectedDate = new Date(dateStr);
+
+    // Get tasks for the selected date
+    const tasks = await Task.getByTrainerIdAndDate(selectedTrainer.id, selectedDate);
+
+    // Get all habits
+    const habits = await Habit.getByTrainerId(selectedTrainer.id);
+
+    // Get all templates
+    const templates = await TaskTemplate.getByTrainerId(selectedTrainer.id);
+
+    // Get the trainer's monsters for binding
+    const monsters = await Monster.getByTrainerId(selectedTrainer.id);
+
+    res.render('schedule/index', {
+      title: 'Manage Schedule',
+      trainers,
+      selectedTrainer,
+      selectedDate,
+      tasks,
+      habits,
+      templates,
+      monsters
+    });
+  } catch (error) {
+    console.error('Error loading schedule management page:', error);
+    res.status(500).render('error', {
+      message: 'Error loading schedule management page',
+      error: { status: 500, stack: error.stack },
+      title: 'Error'
+    });
+  }
+});
+
+// Task routes
+app.post('/tasks', async (req, res) => {
+  try {
+    // Check if user is logged in
+    if (!req.session.user) {
+      return res.status(401).json({ error: 'You must be logged in to create a task' });
+    }
+
+    // Handle empty string values for timestamps
+    const taskData = { ...req.body };
+    if (taskData.due_date === '') taskData.due_date = null;
+    if (taskData.reminder_time === '') taskData.reminder_time = null;
+
+    // Create the task
+    const task = await Task.create(taskData);
+
+    // If reminder is enabled and reminder_time is valid, create a reminder
+    if (task.reminder_enabled && task.reminder_time) {
+      try {
+        await Reminder.create({
+          task_id: task.task_id,
+          trainer_id: task.trainer_id,
+          scheduled_time: new Date(task.reminder_time)
+        });
+      } catch (reminderError) {
+        console.error('Error creating reminder:', reminderError);
+        // Continue even if reminder creation fails
+      }
+    }
+
+    res.status(201).json(task);
+  } catch (error) {
+    console.error('Error creating task:', error);
+    res.status(500).json({ error: 'Error creating task: ' + error.message });
+  }
+});
+
+app.put('/tasks/:id', async (req, res) => {
+  try {
+    // Check if user is logged in
+    if (!req.session.user) {
+      return res.status(401).json({ error: 'You must be logged in to update a task' });
+    }
+
+    const taskId = req.params.id;
+
+    // Update the task
+    const task = await Task.update(taskId, req.body);
+
+    res.json(task);
+  } catch (error) {
+    console.error('Error updating task:', error);
+    res.status(500).json({ error: 'Error updating task' });
+  }
+});
+
+app.post('/tasks/:id/complete', async (req, res) => {
+  try {
+    // Check if user is logged in
+    if (!req.session.user) {
+      return res.status(401).json({ error: 'You must be logged in to complete a task' });
+    }
+
+    const taskId = req.params.id;
+    const { awarded_to_mon_id, awarded_to_trainer_id } = req.body;
+
+    // Complete the task
+    const task = await Task.complete(taskId, awarded_to_mon_id, awarded_to_trainer_id);
+
+    res.json(task);
+  } catch (error) {
+    console.error('Error completing task:', error);
+    res.status(500).json({ error: 'Error completing task' });
+  }
+});
+
+app.delete('/tasks/:id', async (req, res) => {
+  try {
+    // Check if user is logged in
+    if (!req.session.user) {
+      return res.status(401).json({ error: 'You must be logged in to delete a task' });
+    }
+
+    const taskId = req.params.id;
+
+    // Delete the task
+    const deleted = await Task.delete(taskId);
+
+    if (deleted) {
+      res.json({ success: true });
+    } else {
+      res.status(404).json({ error: 'Task not found' });
+    }
+  } catch (error) {
+    console.error('Error deleting task:', error);
+    res.status(500).json({ error: 'Error deleting task' });
+  }
+});
+
+// Habit routes
+app.post('/habits', async (req, res) => {
+  try {
+    // Check if user is logged in
+    if (!req.session.user) {
+      return res.status(401).json({ error: 'You must be logged in to create a habit' });
+    }
+
+    // Create the habit
+    const habit = await Habit.create(req.body);
+
+    res.status(201).json(habit);
+  } catch (error) {
+    console.error('Error creating habit:', error);
+    res.status(500).json({ error: 'Error creating habit' });
+  }
+});
+
+app.put('/habits/:id', async (req, res) => {
+  try {
+    // Check if user is logged in
+    if (!req.session.user) {
+      return res.status(401).json({ error: 'You must be logged in to update a habit' });
+    }
+
+    const habitId = req.params.id;
+
+    // Update the habit
+    const habit = await Habit.update(habitId, req.body);
+
+    res.json(habit);
+  } catch (error) {
+    console.error('Error updating habit:', error);
+    res.status(500).json({ error: 'Error updating habit' });
+  }
+});
+
+app.post('/habits/:id/complete', async (req, res) => {
+  try {
+    // Check if user is logged in
+    if (!req.session.user) {
+      return res.status(401).json({ error: 'You must be logged in to complete a habit' });
+    }
+
+    const habitId = req.params.id;
+    const { awarded_to_mon_id, awarded_to_trainer_id } = req.body;
+
+    // Complete the habit
+    const result = await Habit.complete(habitId, awarded_to_mon_id, awarded_to_trainer_id);
+
+    res.json(result);
+  } catch (error) {
+    console.error('Error completing habit:', error);
+    res.status(500).json({ error: 'Error completing habit' });
+  }
+});
+
+app.delete('/habits/:id', async (req, res) => {
+  try {
+    // Check if user is logged in
+    if (!req.session.user) {
+      return res.status(401).json({ error: 'You must be logged in to delete a habit' });
+    }
+
+    const habitId = req.params.id;
+    console.log(`Received request to delete habit with ID ${habitId}`);
+
+    // Get the habit first to check if it exists and belongs to the user
+    const habit = await Habit.getById(habitId);
+    if (!habit) {
+      console.log(`Habit with ID ${habitId} not found`);
+      return res.status(404).json({ error: 'Habit not found' });
+    }
+
+    // Skip permission check for now - just check if the habit exists
+    // We'll implement proper permission checking later
+
+    // Permission check removed for now
+
+    // Delete the habit
+    console.log(`Deleting habit with ID ${habitId}`);
+    const deleted = await Habit.delete(habitId);
+
+    if (deleted) {
+      console.log(`Successfully deleted habit with ID ${habitId}`);
+      res.json({ success: true });
+    } else {
+      console.log(`Failed to delete habit with ID ${habitId}`);
+      res.status(500).json({ error: 'Failed to delete habit' });
+    }
+  } catch (error) {
+    console.error('Error deleting habit:', error);
+    res.status(500).json({ error: `Error deleting habit: ${error.message}` });
+  }
+});
+
+// Template routes
+app.post('/templates', async (req, res) => {
+  try {
+    // Check if user is logged in
+    if (!req.session.user) {
+      return res.status(401).json({ error: 'You must be logged in to create a template' });
+    }
+
+    // Process tasks to handle empty time values
+    const templateData = { ...req.body };
+    if (templateData.tasks && Array.isArray(templateData.tasks)) {
+      templateData.tasks = templateData.tasks.map(task => {
+        if (task.time === '') delete task.time;
+        if (task.reminder_time === '') delete task.reminder_time;
+        return task;
+      });
+    }
+
+    // Create the template
+    const template = await TaskTemplate.create(templateData);
+
+    res.status(201).json(template);
+  } catch (error) {
+    console.error('Error creating template:', error);
+    res.status(500).json({ error: 'Error creating template: ' + error.message });
+  }
+});
+
+app.put('/templates/:id', async (req, res) => {
+  try {
+    // Check if user is logged in
+    if (!req.session.user) {
+      return res.status(401).json({ error: 'You must be logged in to update a template' });
+    }
+
+    const templateId = req.params.id;
+
+    // Process tasks to handle empty time values
+    const templateData = { ...req.body };
+    if (templateData.tasks && Array.isArray(templateData.tasks)) {
+      templateData.tasks = templateData.tasks.map(task => {
+        if (task.time === '') delete task.time;
+        if (task.reminder_time === '') delete task.reminder_time;
+        return task;
+      });
+    }
+
+    // Update the template
+    const template = await TaskTemplate.update(templateId, templateData);
+
+    res.json(template);
+  } catch (error) {
+    console.error('Error updating template:', error);
+    res.status(500).json({ error: 'Error updating template: ' + error.message });
+  }
+});
+
+app.get('/templates/:id', async (req, res) => {
+  try {
+    // Check if user is logged in
+    if (!req.session.user) {
+      return res.status(401).json({ error: 'You must be logged in to view a template' });
+    }
+
+    const templateId = req.params.id;
+
+    // Get the template
+    const template = await TaskTemplate.getById(templateId);
+
+    if (!template) {
+      return res.status(404).json({ error: 'Template not found' });
+    }
+
+    res.json(template);
+  } catch (error) {
+    console.error('Error getting template:', error);
+    res.status(500).json({ error: 'Error getting template' });
+  }
+});
+
+app.post('/templates/:id/apply', async (req, res) => {
+  try {
+    // Check if user is logged in
+    if (!req.session.user) {
+      return res.status(401).json({ error: 'You must be logged in to apply a template' });
+    }
+
+    const templateId = req.params.id;
+    const { due_date } = req.body;
+
+    // Validate due_date
+    if (!due_date) {
+      return res.status(400).json({ error: 'Due date is required' });
+    }
+
+    // Apply the template
+    const tasks = await TaskTemplate.apply(templateId, new Date(due_date));
+
+    res.json(tasks);
+  } catch (error) {
+    console.error('Error applying template:', error);
+    res.status(500).json({ error: 'Error applying template: ' + error.message });
+  }
+});
+
+app.delete('/templates/:id', async (req, res) => {
+  try {
+    // Check if user is logged in
+    if (!req.session.user) {
+      return res.status(401).json({ error: 'You must be logged in to delete a template' });
+    }
+
+    const templateId = req.params.id;
+
+    // Delete the template
+    const deleted = await TaskTemplate.delete(templateId);
+
+    if (deleted) {
+      res.json({ success: true });
+    } else {
+      res.status(404).json({ error: 'Template not found' });
+    }
+  } catch (error) {
+    console.error('Error deleting template:', error);
+    res.status(500).json({ error: 'Error deleting template' });
+  }
 });
 
 // Guide system routes
@@ -1218,6 +3081,262 @@ app.get('/locations', (req, res) => {
   });
 });
 
+// Statistics routes
+app.get('/statistics', async (req, res) => {
+  try {
+    // Get all trainers
+    const allTrainers = await Trainer.getAll();
+
+    // Group trainers by player
+    const playerTrainers = {};
+    const playerMapping = {};
+
+    // Get all users to create player mapping
+    const usersResult = await pool.query('SELECT id, username, discord_id, display_name FROM users');
+    usersResult.rows.forEach(user => {
+      if (user.discord_id) {
+        // Prefer display_name if available, otherwise use username
+        playerMapping[user.discord_id] = user.display_name || user.username || user.discord_id;
+      }
+    });
+
+    // Add 'NPC' mapping
+    playerMapping['NPC'] = 'NPC';
+
+    // Process all trainers
+    allTrainers.forEach(trainer => {
+      const playerId = trainer.player_user_id || 'NPC';
+      if (!playerTrainers[playerId]) {
+        playerTrainers[playerId] = [];
+      }
+      playerTrainers[playerId].push(trainer);
+    });
+
+    // Calculate global statistics
+    const globalStats = {
+      totalTrainers: allTrainers.length,
+      totalMonsters: allTrainers.reduce((sum, trainer) => {
+        // Make sure we're using a number
+        const monsterCount = parseInt(trainer.monster_count || 0);
+        return sum + monsterCount;
+      }, 0),
+      totalUsers: Object.keys(playerTrainers).length
+    };
+
+    // Find most active player (most trainers)
+    let mostTrainers = { player_name: 'None', trainer_count: 0 };
+    let leastTrainers = { player_name: 'None', trainer_count: Number.MAX_SAFE_INTEGER };
+
+    for (const [playerId, trainers] of Object.entries(playerTrainers)) {
+      if (trainers.length > mostTrainers.trainer_count) {
+        mostTrainers = { player_name: playerId, trainer_count: trainers.length };
+      }
+      if (trainers.length < leastTrainers.trainer_count && trainers.length > 0) {
+        leastTrainers = { player_name: playerId, trainer_count: trainers.length };
+      }
+    }
+
+    // Find most referenced player and trainer
+    let mostReferenced = { player_name: 'None', reference_percentage: 0 };
+    let trainerMostReferenced = { name: 'None', reference_percentage: 0 };
+
+    for (const [playerId, trainers] of Object.entries(playerTrainers)) {
+      const totalMonsters = trainers.reduce((sum, t) => sum + (t.monster_count || 0), 0);
+      const totalReferenced = trainers.reduce((sum, t) => sum + (t.monster_ref_count || 0), 0);
+      const refPercentage = totalMonsters > 0 ? (totalReferenced / totalMonsters) * 100 : 0;
+
+      if (refPercentage > mostReferenced.reference_percentage && totalMonsters > 10) {
+        mostReferenced = { player_name: playerId, reference_percentage: refPercentage };
+      }
+
+      // Check each trainer
+      trainers.forEach(trainer => {
+        const trainerRefPercentage = trainer.monster_count > 0 ?
+          (trainer.monster_ref_count / trainer.monster_count) * 100 : 0;
+
+        if (trainerRefPercentage > trainerMostReferenced.reference_percentage && trainer.monster_count > 10) {
+          trainerMostReferenced = {
+            name: trainer.name,
+            reference_percentage: trainerRefPercentage
+          };
+        }
+      });
+    }
+
+    // Calculate type leaderboard
+    const typeLeaderboard = {};
+
+    // First, get all monster types for each trainer
+    const trainerTypes = {};
+    for (const trainer of allTrainers) {
+      const trainerId = trainer.id;
+      trainerTypes[trainerId] = {};
+
+      // Get all monsters for this trainer
+      const monstersQuery = `
+        SELECT type1, type2, type3, type4, type5 FROM mons WHERE trainer_id = $1
+      `;
+      const monstersResult = await pool.query(monstersQuery, [trainerId]);
+
+      // Count types
+      monstersResult.rows.forEach(monster => {
+        ['type1', 'type2', 'type3', 'type4', 'type5'].forEach(typeField => {
+          if (monster[typeField]) {
+            const type = monster[typeField];
+            trainerTypes[trainerId][type] = (trainerTypes[trainerId][type] || 0) + 1;
+          }
+        });
+      });
+    }
+
+    // Find the player and trainer with most of each type
+    const allTypes = new Set();
+    Object.values(trainerTypes).forEach(types => {
+      Object.keys(types).forEach(type => allTypes.add(type));
+    });
+
+    allTypes.forEach(type => {
+      let maxPlayerCount = 0;
+      let maxPlayerId = 'None';
+      let maxTrainerCount = 0;
+      let maxTrainerName = 'None';
+
+      // Check each player
+      for (const [playerId, trainers] of Object.entries(playerTrainers)) {
+        let playerTypeCount = 0;
+
+        // Sum up type counts across all trainers for this player
+        trainers.forEach(trainer => {
+          if (trainerTypes[trainer.id] && trainerTypes[trainer.id][type]) {
+            playerTypeCount += trainerTypes[trainer.id][type];
+
+            // Check if this trainer has more of this type
+            if (trainerTypes[trainer.id][type] > maxTrainerCount) {
+              maxTrainerCount = trainerTypes[trainer.id][type];
+              maxTrainerName = trainer.name;
+            }
+          }
+        });
+
+        // Check if this player has more of this type
+        if (playerTypeCount > maxPlayerCount) {
+          maxPlayerCount = playerTypeCount;
+          maxPlayerId = playerId;
+        }
+      }
+
+      typeLeaderboard[type] = {
+        player: maxPlayerId,
+        player_count: maxPlayerCount,
+        trainer: maxTrainerName,
+        trainer_count: maxTrainerCount
+      };
+    });
+
+    // Calculate per-player statistics
+    const playerStats = {};
+
+    for (const [playerId, trainers] of Object.entries(playerTrainers)) {
+      // Skip if no trainers
+      if (trainers.length === 0) continue;
+
+      // Basic stats
+      const totalMonsters = trainers.reduce((sum, t) => {
+        const monsterCount = parseInt(t.monster_count || 0);
+        return sum + monsterCount;
+      }, 0);
+      const totalReferences = trainers.reduce((sum, t) => {
+        const refCount = parseInt(t.monster_ref_count || 0);
+        return sum + refCount;
+      }, 0);
+      const refPercentage = totalMonsters > 0 ? (totalReferences / totalMonsters) * 100 : 0;
+
+      // Currency ranges
+      const currencies = trainers.map(t => t.currency_amount || 0);
+      const totalEarned = trainers.map(t => t.total_earned_currency || 0);
+
+      // Type counts for this player
+      const typeCounts = {};
+      trainers.forEach(trainer => {
+        if (trainerTypes[trainer.id]) {
+          Object.entries(trainerTypes[trainer.id]).forEach(([type, count]) => {
+            typeCounts[type] = (typeCounts[type] || 0) + count;
+          });
+        }
+      });
+
+      // Trainer stats with most common type
+      const trainerStats = trainers.map(trainer => {
+        // Find most common type for this trainer
+        let mostCommonType = 'None';
+        let maxCount = 0;
+
+        if (trainerTypes[trainer.id]) {
+          Object.entries(trainerTypes[trainer.id]).forEach(([type, count]) => {
+            if (count > maxCount) {
+              maxCount = count;
+              mostCommonType = type;
+            }
+          });
+        }
+
+        const monsterCount = parseInt(trainer.monster_count || 0);
+        const referenceCount = parseInt(trainer.monster_ref_count || 0);
+        const referencePercentage = monsterCount > 0 ?
+          (referenceCount / monsterCount) * 100 : 0;
+
+        return {
+          id: trainer.id,
+          name: trainer.name,
+          monster_count: monsterCount,
+          reference_count: referenceCount,
+          reference_percentage: referencePercentage,
+          currency_amount: trainer.currency_amount || 0,
+          total_earned_currency: trainer.total_earned_currency || 0,
+          most_common_type: mostCommonType
+        };
+      });
+
+      playerStats[playerId] = {
+        trainer_count: trainers.length,
+        total_monsters: totalMonsters,
+        total_references: totalReferences,
+        reference_percentage: refPercentage,
+        lowest_currency: Math.min(...currencies),
+        highest_currency: Math.max(...currencies),
+        lowest_total_earned: Math.min(...totalEarned),
+        highest_total_earned: Math.max(...totalEarned),
+        type_counts: typeCounts,
+        trainer_stats: trainerStats
+      };
+    }
+
+    // Helper function to get player display name
+    const getPlayerMapping = () => {
+      return playerMapping;
+    };
+
+    res.render('statistics/index', {
+      title: 'Trainer Statistics',
+      globalStats,
+      mostTrainers,
+      leastTrainers,
+      mostReferenced,
+      trainerMostReferenced,
+      typeLeaderboard,
+      playerStats,
+      getPlayerMapping: () => playerMapping
+    });
+  } catch (error) {
+    console.error('Error rendering statistics page:', error);
+    res.status(500).render('error', {
+      message: 'Error loading statistics page',
+      error: { status: 500, stack: error.stack },
+      title: 'Error'
+    });
+  }
+});
+
 // Fakemon Dex routes
 app.get('/fakedex', (req, res) => {
   const fakemonList = loadAllFakemon();
@@ -1252,6 +3371,186 @@ app.get('/fakedex/:number', (req, res) => {
   });
 });
 
+// Admin Fakemon Management Routes
+app.get('/admin/fakemon', (req, res) => {
+  // Check if user is logged in and is an admin
+  if (!req.session.user || !req.session.user.is_admin) {
+    return res.redirect('/');
+  }
+
+  const fakemonList = loadAllFakemon();
+  const message = req.query.message || '';
+  const messageType = req.query.messageType || 'success';
+
+  res.render('admin/fakemon/index', {
+    title: 'Fakemon Management',
+    fakemon_list: fakemonList,
+    message,
+    messageType
+  });
+});
+
+app.get('/admin/fakemon/add', (req, res) => {
+  // Check if user is logged in and is an admin
+  if (!req.session.user || !req.session.user.is_admin) {
+    return res.redirect('/');
+  }
+
+  const nextNumber = getNextFakemonNumber();
+
+  res.render('admin/fakemon/form', {
+    title: 'Add New Fakemon',
+    fakemon: {
+      number: nextNumber,
+      name: '',
+      species_class: 'The Something Pokemon',
+      types: ['Normal'],
+      attribute: 'Data',
+      abilities: ['Ability1'],
+      height: '1.0 m',
+      weight: '20.0 kg',
+      stats: {
+        hp: '45',
+        atk: '49',
+        def: '49',
+        spatk: '65',
+        spdef: '65',
+        spe: '45'
+      },
+      pokedex_entry: '',
+      evolution_line: [],
+      artist_caption: ''
+    },
+    isNew: true
+  });
+});
+
+app.get('/admin/fakemon/edit/:number', (req, res) => {
+  // Check if user is logged in and is an admin
+  if (!req.session.user || !req.session.user.is_admin) {
+    return res.redirect('/');
+  }
+
+  const number = req.params.number;
+  const fakemon = getFakemonByNumber(number);
+
+  if (!fakemon) {
+    return res.redirect('/admin/fakemon?messageType=error&message=' + encodeURIComponent('Fakemon not found'));
+  }
+
+  res.render('admin/fakemon/form', {
+    title: `Edit Fakemon #${fakemon.number}`,
+    fakemon,
+    isNew: false
+  });
+});
+
+app.post('/admin/fakemon/save', upload.single('image'), (req, res) => {
+  // Check if user is logged in and is an admin
+  if (!req.session.user || !req.session.user.is_admin) {
+    return res.redirect('/');
+  }
+
+  try {
+    const {
+      number,
+      name,
+      species_class,
+      types,
+      attribute,
+      abilities,
+      height,
+      weight,
+      hp,
+      atk,
+      def,
+      spatk,
+      spdef,
+      spe,
+      pokedex_entry,
+      evolution_line,
+      artist_caption,
+      isNew
+    } = req.body;
+
+    // Validate required fields
+    if (!number || !name || !types) {
+      return res.redirect('/admin/fakemon?messageType=error&message=' + encodeURIComponent('Missing required fields'));
+    }
+
+    // Create fakemon object
+    const fakemon = {
+      number: number.padStart(3, '0'),
+      name,
+      species_class,
+      types: Array.isArray(types) ? types : [types],
+      attribute,
+      abilities: Array.isArray(abilities) ? abilities : [abilities],
+      height,
+      weight,
+      stats: {
+        hp: hp || '45',
+        atk: atk || '49',
+        def: def || '49',
+        spatk: spatk || '65',
+        spdef: spdef || '65',
+        spe: spe || '45'
+      },
+      pokedex_entry,
+      evolution_line: evolution_line ? JSON.parse(evolution_line) : [],
+      artist_caption,
+      image_path: `/images/fakemon/${number.padStart(3, '0')}.png`
+    };
+
+    // Save fakemon to markdown file
+    const saveResult = saveFakemon(fakemon);
+
+    if (!saveResult) {
+      return res.redirect('/admin/fakemon?messageType=error&message=' + encodeURIComponent('Error saving Fakemon'));
+    }
+
+    // Handle image upload if provided
+    if (req.file) {
+      const imagePath = path.join(__dirname, 'public', 'images', 'fakemon', `${fakemon.number}.png`);
+      fs.renameSync(req.file.path, imagePath);
+    }
+
+    res.redirect('/admin/fakemon?message=' + encodeURIComponent(`Fakemon #${fakemon.number} ${isNew === 'true' ? 'created' : 'updated'} successfully`));
+  } catch (error) {
+    console.error('Error saving Fakemon:', error);
+    res.redirect('/admin/fakemon?messageType=error&message=' + encodeURIComponent('Error: ' + error.message));
+  }
+});
+
+app.post('/admin/fakemon/delete/:number', (req, res) => {
+  // Check if user is logged in and is an admin
+  if (!req.session.user || !req.session.user.is_admin) {
+    return res.redirect('/');
+  }
+
+  const number = req.params.number;
+
+  try {
+    // Delete fakemon markdown file
+    const deleteResult = deleteFakemon(number);
+
+    if (!deleteResult) {
+      return res.redirect('/admin/fakemon?messageType=error&message=' + encodeURIComponent('Error deleting Fakemon'));
+    }
+
+    // Try to delete image file if it exists
+    const imagePath = path.join(__dirname, 'public', 'images', 'fakemon', `${number.padStart(3, '0')}.png`);
+    if (fs.existsSync(imagePath)) {
+      fs.unlinkSync(imagePath);
+    }
+
+    res.redirect('/admin/fakemon?message=' + encodeURIComponent(`Fakemon #${number} deleted successfully`));
+  } catch (error) {
+    console.error('Error deleting Fakemon:', error);
+    res.redirect('/admin/fakemon?messageType=error&message=' + encodeURIComponent('Error: ' + error.message));
+  }
+});
+
 // Trainer routes
 app.get('/trainers', async (req, res) => {
   try {
@@ -1270,6 +3569,60 @@ app.get('/trainers', async (req, res) => {
   } catch (error) {
     console.error('Error getting trainers:', error);
     res.status(500).send('An error occurred while getting trainers');
+  }
+});
+
+// My Trainers route - shows trainers belonging to the logged-in user
+app.get('/my_trainers', async (req, res) => {
+  try {
+    // Check if user is logged in
+    if (!req.session.user) {
+      return res.redirect('/login?error=' + encodeURIComponent('You must be logged in to view your trainers'));
+    }
+
+    // Get the user's Discord ID
+    const userDiscordId = req.session.user.discord_id;
+    if (!userDiscordId) {
+      return res.status(403).render('error', {
+        message: 'You need to have a Discord ID linked to your account to view your trainers',
+        error: { status: 403 }
+      });
+    }
+
+    // Query for trainers with the user's Discord ID
+    const query = 'SELECT * FROM trainers WHERE player_user_id = $1 ORDER BY name';
+    const result = await pool.query(query, [userDiscordId]);
+    const trainers = result.rows;
+
+    // Get monster counts for each trainer
+    for (const trainer of trainers) {
+      // Count total monsters
+      const monsterCountQuery = 'SELECT COUNT(*) FROM mons WHERE trainer_id = $1';
+      const monsterCountResult = await pool.query(monsterCountQuery, [trainer.id]);
+      trainer.monster_count = parseInt(monsterCountResult.rows[0].count) || 0;
+
+      // Count monsters with references (non-empty img_link)
+      const monsterRefCountQuery = 'SELECT COUNT(*) FROM mons WHERE trainer_id = $1 AND img_link IS NOT NULL AND img_link != \'\'';
+      const monsterRefCountResult = await pool.query(monsterRefCountQuery, [trainer.id]);
+      trainer.monster_ref_count = parseInt(monsterRefCountResult.rows[0].count) || 0;
+
+      // Calculate percentage
+      trainer.monster_ref_percent = trainer.monster_count > 0
+        ? Math.round((trainer.monster_ref_count / trainer.monster_count) * 100)
+        : 0;
+    }
+
+    res.render('trainers/my_trainers', {
+      title: 'My Trainers',
+      trainers
+    });
+  } catch (error) {
+    console.error('Error getting user\'s trainers:', error);
+    res.status(500).render('error', {
+      message: 'Error getting your trainers',
+      error: { status: 500, stack: error.stack },
+      title: 'Error'
+    });
   }
 });
 
@@ -1657,6 +4010,206 @@ app.get('/trainers/:id/pc', async (req, res) => {
     console.error('Error getting PC boxes:', error);
     res.status(500).render('error', {
       message: 'Error getting PC boxes',
+      error: { status: 500, stack: error.stack },
+      title: 'Error'
+    });
+  }
+});
+
+// Trainer stats route
+app.get('/trainers/:id/stats', async (req, res) => {
+  try {
+    const trainerId = req.params.id;
+    const trainer = await Trainer.getById(trainerId);
+
+    if (!trainer) {
+      return res.status(404).render('error', {
+        message: 'Trainer not found',
+        error: { status: 404 }
+      });
+    }
+
+    // Get all monsters for this trainer
+    const monsters = await Monster.getByTrainerId(trainerId);
+
+    // Calculate statistics
+    const stats = {};
+
+    // Type distribution
+    const typeCount = {};
+    let totalTypes = 0;
+
+    monsters.forEach(monster => {
+      // Count each type
+      ['type1', 'type2', 'type3', 'type4', 'type5'].forEach(typeField => {
+        if (monster[typeField]) {
+          const type = monster[typeField];
+          typeCount[type] = (typeCount[type] || 0) + 1;
+          totalTypes++;
+        }
+      });
+    });
+
+    // Sort types by count (descending)
+    const sortedTypes = Object.entries(typeCount)
+      .sort((a, b) => b[1] - a[1])
+      .map(([type, count]) => ({
+        type,
+        count,
+        percentage: totalTypes > 0 ? Math.round((count / totalTypes) * 100) : 0
+      }));
+
+    stats.types = sortedTypes;
+    stats.favoriteType = sortedTypes.length > 0 ? sortedTypes[0].type : 'None';
+
+    // Species distribution
+    const speciesCount = {};
+    const speciesExamples = {};
+
+    monsters.forEach(monster => {
+      // Count each species
+      ['species1', 'species2', 'species3'].forEach(speciesField => {
+        if (monster[speciesField]) {
+          const species = monster[speciesField];
+          speciesCount[species] = (speciesCount[species] || 0) + 1;
+
+          // Store up to 3 examples of each species
+          if (!speciesExamples[species]) {
+            speciesExamples[species] = [];
+          }
+          if (speciesExamples[species].length < 3) {
+            speciesExamples[species].push({
+              id: monster.mon_id,
+              name: monster.name,
+              level: monster.level,
+              img_link: monster.img_link
+            });
+          }
+        }
+      });
+    });
+
+    // Sort species by count (descending) and take top 5
+    const sortedSpecies = Object.entries(speciesCount)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 5)
+      .map(([species, count]) => ({
+        species,
+        count,
+        examples: speciesExamples[species] || []
+      }));
+
+    stats.topSpecies = sortedSpecies;
+    stats.favoriteSpecies = sortedSpecies.length > 0 ? sortedSpecies[0].species : 'None';
+
+    // Reference percentage
+    const totalMonsters = monsters.length;
+    const referencedMonsters = monsters.filter(monster => monster.img_link && monster.img_link !== '').length;
+    stats.totalMonsters = totalMonsters;
+    stats.referencedMonsters = referencedMonsters;
+    stats.referencePercentage = totalMonsters > 0 ? Math.round((referencedMonsters / totalMonsters) * 100) : 0;
+
+    // Currency statistics
+    stats.currentCurrency = Math.round(trainer.currency_amount) || 0;
+    stats.totalEarnedCurrency = Math.round(trainer.total_earned_currency) || 0;
+
+    // Level statistics
+    const levels = monsters.map(monster => monster.level || 1);
+    stats.averageLevel = levels.length > 0
+      ? Math.round(levels.reduce((sum, level) => sum + level, 0) / levels.length * 10) / 10
+      : 0;
+    stats.maxLevel = levels.length > 0 ? Math.max(...levels) : 0;
+
+    // Special monsters
+    stats.shinyCount = monsters.filter(monster => monster.shiny === 1).length;
+    stats.alphaCount = monsters.filter(monster => monster.alpha === 1).length;
+    stats.shadowCount = monsters.filter(monster => monster.shadow === 1).length;
+
+    // Box statistics
+    const boxNumbers = await Monster.getBoxNumbersByTrainerId(trainerId);
+    stats.boxCount = boxNumbers.filter(box => box !== -1).length; // Exclude battle box
+
+    res.render('trainers/stats', {
+      title: `${trainer.name} - Statistics`,
+      trainer,
+      stats
+    });
+  } catch (error) {
+    console.error('Error getting trainer stats:', error);
+    res.status(500).render('error', {
+      message: 'Error getting trainer statistics',
+      error: { status: 500, stack: error.stack },
+      title: 'Error'
+    });
+  }
+});
+
+// Trainer achievements route
+app.get('/trainers/:id/achievements', async (req, res) => {
+  try {
+    const trainerId = req.params.id;
+    const trainer = await Trainer.getById(trainerId);
+
+    if (!trainer) {
+      return res.status(404).render('error', {
+        message: 'Trainer not found',
+        error: { status: 404 }
+      });
+    }
+
+    res.render('trainers/achievements', {
+      title: `${trainer.name} - Achievements`,
+      trainer
+    });
+  } catch (error) {
+    console.error('Error getting trainer achievements:', error);
+    res.status(500).render('error', {
+      message: 'Error getting trainer achievements',
+      error: { status: 500, stack: error.stack },
+      title: 'Error'
+    });
+  }
+});
+
+// Trainer inventory route
+app.get('/trainers/:id/inventory', async (req, res) => {
+  try {
+    const trainerId = req.params.id;
+    const trainer = await Trainer.getById(trainerId);
+
+    if (!trainer) {
+      return res.status(404).render('error', {
+        message: 'Trainer not found',
+        error: { status: 404 }
+      });
+    }
+
+    // Get inventory data
+    const inventory = await Trainer.getInventory(trainerId);
+
+    // Define category display names and order
+    const categories = [
+      { id: 'inv_items', name: 'Items', icon: 'fas fa-toolbox' },
+      { id: 'inv_balls', name: 'Poké Balls', icon: 'fas fa-circle' },
+      { id: 'inv_berries', name: 'Berries', icon: 'fas fa-apple-alt' },
+      { id: 'inv_pastries', name: 'Pastries', icon: 'fas fa-cookie' },
+      { id: 'inv_evolution', name: 'Evolution Items', icon: 'fas fa-level-up-alt' },
+      { id: 'inv_eggs', name: 'Eggs', icon: 'fas fa-egg' },
+      { id: 'inv_antiques', name: 'Antiques', icon: 'fas fa-gem' },
+      { id: 'inv_helditems', name: 'Held Items', icon: 'fas fa-hand-holding' },
+      { id: 'inv_seals', name: 'Seals', icon: 'fas fa-stamp' }
+    ];
+
+    res.render('trainers/inventory', {
+      title: `${trainer.name} - Inventory`,
+      trainer,
+      inventory,
+      categories
+    });
+  } catch (error) {
+    console.error('Error getting trainer inventory:', error);
+    res.status(500).render('error', {
+      message: 'Error getting trainer inventory',
       error: { status: 500, stack: error.stack },
       title: 'Error'
     });
