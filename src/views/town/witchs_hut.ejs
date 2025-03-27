@@ -1,0 +1,280 @@
+<% /* Set the title and other variables for the layout */ %>
+<% title = 'Witch\'s Hut' %>
+
+<div class="container mx-auto px-4">
+  <div>
+    <img src="https://i.imgur.com/5cgcSGC.png" alt="Witch's Hut Banner" class="location-banner w-full object-cover rounded-lg shadow-lg">
+    <div class="flex flex-col items-center">
+      <div class="flex items-center mb-4 w-full">
+        <a href="/town/visit" class="btn-secondary mr-4 hover:scale-105 transition-transform">
+          <i class="fas fa-arrow-left mr-2"></i> Back to Town
+        </a>
+        <h2 class="text-2xl font-display font-bold text-center text-amber-400 text-shadow-lg">Witch's Hut</h2>
+      </div>
+      <p class="text-center text-sm text-gray-200 mb-4">Evolve your monsters and learn new abilities with the help of the town witch.</p>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+    <!-- Evolution Items Section -->
+    <div class="location-card overflow-hidden">
+      <div class="relative">
+        <img src="https://i.imgur.com/5cgcSGC.png" alt="Evolution Items" class="w-full h-48 object-cover">
+        <div class="absolute inset-0 bg-gradient-to-t from-black/90 to-transparent"></div>
+        <div class="absolute bottom-0 left-0 right-0 p-4">
+          <h3 class="text-xl font-bold text-white text-shadow-lg">Evolution Items</h3>
+        </div>
+      </div>
+      <div class="location-card-content">
+        <p class="text-sm text-gray-300 mb-4">Use special items to evolve your monsters into more powerful forms.</p>
+
+        <div class="bg-gray-800/50 p-4 rounded-lg mb-4">
+          <h4 class="text-amber-400 mb-2 font-medium">Your Evolution Items</h4>
+          <div class="grid grid-cols-2 gap-2">
+            <div class="flex items-center p-2 bg-gray-700/50 rounded-lg">
+              <div class="w-8 h-8 bg-red-600/20 rounded-full flex items-center justify-center mr-2">
+                <i class="fas fa-fire text-red-400"></i>
+              </div>
+              <div>
+                <div class="text-xs text-gray-300">Fire Stone</div>
+                <div class="text-xs text-green-400">Quantity: 2</div>
+              </div>
+            </div>
+            <div class="flex items-center p-2 bg-gray-700/50 rounded-lg">
+              <div class="w-8 h-8 bg-blue-600/20 rounded-full flex items-center justify-center mr-2">
+                <i class="fas fa-water text-blue-400"></i>
+              </div>
+              <div>
+                <div class="text-xs text-gray-300">Water Stone</div>
+                <div class="text-xs text-green-400">Quantity: 1</div>
+              </div>
+            </div>
+            <div class="flex items-center p-2 bg-gray-700/50 rounded-lg">
+              <div class="w-8 h-8 bg-yellow-600/20 rounded-full flex items-center justify-center mr-2">
+                <i class="fas fa-bolt text-yellow-400"></i>
+              </div>
+              <div>
+                <div class="text-xs text-gray-300">Thunder Stone</div>
+                <div class="text-xs text-green-400">Quantity: 1</div>
+              </div>
+            </div>
+            <div class="flex items-center p-2 bg-gray-700/50 rounded-lg">
+              <div class="w-8 h-8 bg-green-600/20 rounded-full flex items-center justify-center mr-2">
+                <i class="fas fa-leaf text-green-400"></i>
+              </div>
+              <div>
+                <div class="text-xs text-gray-300">Leaf Stone</div>
+                <div class="text-xs text-green-400">Quantity: 0</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-gray-800/50 p-4 rounded-lg mb-4">
+          <h4 class="text-amber-400 mb-2 font-medium">Evolve a Monster</h4>
+          <select class="w-full bg-gray-700 border-gray-600 text-white rounded-md p-2 mb-4">
+            <option value="">-- Select a Monster --</option>
+            <option value="1">Pikachu (Lv. 25) - Needs Thunder Stone</option>
+            <option value="2">Charmeleon (Lv. 36) - Ready to evolve naturally</option>
+            <option value="3">Eevee (Lv. 15) - Multiple evolution options</option>
+            <option value="4">Vulpix (Lv. 22) - Needs Fire Stone</option>
+          </select>
+
+          <div class="bg-gray-700/50 p-3 rounded-lg mb-4">
+            <div class="text-xs text-gray-300 mb-1">Evolution Preview:</div>
+            <div class="text-sm text-amber-400">Select a monster to see evolution options</div>
+          </div>
+        </div>
+
+        <button class="btn-primary w-full text-center py-2 px-4 rounded text-sm" disabled>
+          <i class="fas fa-arrow-up mr-1"></i> Evolve Monster
+        </button>
+      </div>
+    </div>
+
+    <!-- Learn Abilities Section -->
+    <div class="location-card overflow-hidden">
+      <div class="relative">
+        <img src="https://i.imgur.com/RmKySNO.png" alt="Learn Abilities" class="w-full h-48 object-cover">
+        <div class="absolute inset-0 bg-gradient-to-t from-black/90 to-transparent"></div>
+        <div class="absolute bottom-0 left-0 right-0 p-4">
+          <h3 class="text-xl font-bold text-white text-shadow-lg">Learn Abilities</h3>
+        </div>
+      </div>
+      <div class="location-card-content">
+        <p class="text-sm text-gray-300 mb-4">Teach your monsters new abilities and moves with the witch's help.</p>
+
+        <div class="bg-gray-800/50 p-4 rounded-lg mb-4">
+          <h4 class="text-amber-400 mb-2 font-medium">Select Monster</h4>
+          <select class="w-full bg-gray-700 border-gray-600 text-white rounded-md p-2 mb-4">
+            <option value="">-- Select a Monster --</option>
+            <option value="1">Pikachu (Lv. 25)</option>
+            <option value="2">Charizard (Lv. 36)</option>
+            <option value="3">Bulbasaur (Lv. 15)</option>
+            <option value="4">Squirtle (Lv. 18)</option>
+          </select>
+
+          <h4 class="text-amber-400 mb-2 font-medium">Current Abilities</h4>
+          <div class="space-y-2 mb-4">
+            <div class="p-2 bg-gray-700/50 rounded-lg">
+              <div class="flex justify-between items-center">
+                <div class="text-xs text-gray-300">Thunderbolt</div>
+                <div class="text-xs text-yellow-400">Electric | 90 Power</div>
+              </div>
+            </div>
+            <div class="p-2 bg-gray-700/50 rounded-lg">
+              <div class="flex justify-between items-center">
+                <div class="text-xs text-gray-300">Quick Attack</div>
+                <div class="text-xs text-gray-400">Normal | 40 Power</div>
+              </div>
+            </div>
+            <div class="p-2 bg-gray-700/50 rounded-lg">
+              <div class="flex justify-between items-center">
+                <div class="text-xs text-gray-300">Iron Tail</div>
+                <div class="text-xs text-gray-300">Steel | 100 Power</div>
+              </div>
+            </div>
+            <div class="p-2 bg-gray-700/50 rounded-lg">
+              <div class="flex justify-between items-center">
+                <div class="text-xs text-gray-300">Thunder Wave</div>
+                <div class="text-xs text-yellow-400">Electric | Status</div>
+              </div>
+            </div>
+          </div>
+
+          <h4 class="text-amber-400 mb-2 font-medium">Available to Learn</h4>
+          <div class="space-y-2">
+            <div class="p-2 bg-gray-700/50 rounded-lg">
+              <div class="flex justify-between items-center">
+                <div class="text-xs text-gray-300">Thunder</div>
+                <div class="text-xs text-yellow-400">Electric | 110 Power</div>
+              </div>
+              <div class="flex justify-between items-center mt-1">
+                <div class="text-xs text-gray-400">Cost: 2500 coins</div>
+                <button class="text-xs text-green-400 hover:text-green-300">
+                  <i class="fas fa-plus-circle"></i> Learn
+                </button>
+              </div>
+            </div>
+            <div class="p-2 bg-gray-700/50 rounded-lg">
+              <div class="flex justify-between items-center">
+                <div class="text-xs text-gray-300">Volt Tackle</div>
+                <div class="text-xs text-yellow-400">Electric | 120 Power</div>
+              </div>
+              <div class="flex justify-between items-center mt-1">
+                <div class="text-xs text-gray-400">Cost: 5000 coins</div>
+                <button class="text-xs text-green-400 hover:text-green-300">
+                  <i class="fas fa-plus-circle"></i> Learn
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <a href="/town/shop/evolution_shop" class="btn-primary w-full text-center py-2 px-4 rounded text-sm">
+          <i class="fas fa-shopping-basket mr-1"></i> Buy Evolution Items
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+.text-shadow {
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.text-shadow-lg {
+  text-shadow: 0 4px 8px rgba(0, 0, 0, 0.8);
+}
+
+.location-card {
+  background-color: var(--card-background);
+  border-radius: 0.75rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.location-card:hover {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+}
+
+.location-card-content {
+  padding: 1.25rem;
+  background-color: var(--card-background);
+}
+
+.btn-primary {
+  background-color: var(--accent-color);
+  color: var(--background-color);
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background-color: var(--accent-hover);
+  transform: translateY(-2px);
+}
+
+.btn-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-secondary {
+  background-color: var(--secondary-color);
+  color: var(--text-color);
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  border-radius: 0.375rem;
+  transition: all 0.2s;
+}
+
+.btn-secondary:hover {
+  background-color: var(--secondary-hover);
+}
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const monsterSelect = document.querySelector('.location-card:first-child select');
+    const evolutionPreview = document.querySelector('.bg-gray-700\\/50 .text-amber-400');
+    const evolveButton = document.querySelector('.btn-primary');
+
+    monsterSelect.addEventListener('change', function() {
+      const selectedValue = this.value;
+
+      if (selectedValue) {
+        const monsterName = this.options[this.selectedIndex].text.split(' (')[0];
+        let evolutionInfo = '';
+
+        switch(selectedValue) {
+          case '1':
+            evolutionInfo = `${monsterName} will evolve into Raichu using a Thunder Stone`;
+            evolveButton.disabled = false;
+            break;
+          case '2':
+            evolutionInfo = `${monsterName} is ready to evolve into Charizard naturally`;
+            evolveButton.disabled = false;
+            break;
+          case '3':
+            evolutionInfo = `${monsterName} can evolve into Vaporeon, Jolteon, or Flareon using different stones`;
+            evolveButton.disabled = false;
+            break;
+          case '4':
+            evolutionInfo = `${monsterName} will evolve into Ninetales using a Fire Stone`;
+            evolveButton.disabled = false;
+            break;
+          default:
+            evolutionInfo = 'Select a monster to see evolution options';
+            evolveButton.disabled = true;
+        }
+
+        evolutionPreview.textContent = evolutionInfo;
+      } else {
+        evolutionPreview.textContent = 'Select a monster to see evolution options';
+        evolveButton.disabled = true;
+      }
+    });
+  });
+</script>

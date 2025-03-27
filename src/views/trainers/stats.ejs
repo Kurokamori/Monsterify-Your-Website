@@ -17,22 +17,16 @@
                 <a href="/trainers/<%= trainer.id %>/inventory" class="sidebar-link">Inventory</a>
                 <a href="/trainers/<%= trainer.id %>/stats" class="sidebar-link active">Stats</a>
                 <a href="/trainers/<%= trainer.id %>/achievements" class="sidebar-link">Achievements</a>
-                <a href="/trainers/<%= trainer.id %>/additional-references" class="sidebar-link">Additional References</a>
 
                 <% if (locals.user && locals.user.discord_id && trainer.player_user_id && locals.user.discord_id.toString() === trainer.player_user_id) { %>
-                <div class="sidebar-divider"></div>
-                <a href="/trainers/<%= trainer.id %>/edit" class="sidebar-link owner-action">Edit Trainer</a>
-                <a href="/trainers/<%= trainer.id %>/edit-boxes" class="sidebar-link owner-action">Edit Boxes</a>
-
-                <% if (typeof all_monsters !== 'undefined' && all_monsters && all_monsters.length < 3) { %>
-                <a href="/trainers/<%= trainer.id %>/roll-starters" class="sidebar-link owner-action highlight">Roll Starters</a>
-                <% } %>
+                    <div class="sidebar-divider"></div>
+                    <a href="/trainers/<%= trainer.id %>/edit" class="sidebar-link">Edit Trainer</a>
                 <% } %>
             </div>
         </div>
 
         <!-- Main Content -->
-        <div class="trainer-main-content">
+        <div class="trainer-content">
             <div class="trainer-header">
                 <h1 class="trainer-name"><%= trainer.name %>'s Statistics</h1>
                 <div class="trainer-level">
@@ -502,24 +496,6 @@
         color: var(--text-color);
         opacity: 0.7;
         font-size: 0.875rem;
-    }
-
-    /* Main layout containers */
-    .full-width-section {
-        width: 100vw;
-        position: relative;
-        left: 50%;
-        right: 50%;
-        margin-left: -50vw;
-        margin-right: -50vw;
-        padding: 3rem 0;
-        background-image: linear-gradient(to bottom, rgba(30, 37, 50, 0.8), rgba(17, 19, 25, 0.9));
-    }
-
-    .full-width-content {
-        max-width: 1600px;
-        margin: 0 auto;
-        padding: 0 2rem;
     }
 
     @media (max-width: 768px) {

@@ -1,0 +1,2 @@
+# Variation - Fusions
+Up to three monsters can be fused to create a whole new monster, but each individual monster's unique characteristics must be present in the final design. While it doesn't have to be obvious exactly which monsters are present in the new monster, the design choices should reflect the original monsters. This should be present not only in the first design, but also in all evolutions if there are any.

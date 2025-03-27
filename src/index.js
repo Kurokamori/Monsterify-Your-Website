@@ -48,11 +48,6 @@ const Yokai = require('./models/Yokai');
 const Move = require('./models/Move');
 const Task = require('./models/Task');
 const Habit = require('./models/Habit');
-
-// Import location activity models
-const LocationTaskPrompt = require('./models/LocationTaskPrompt');
-const LocationReward = require('./models/LocationReward');
-const LocationActivitySession = require('./models/LocationActivitySession');
 const TaskTemplate = require('./models/TaskTemplate');
 const Reminder = require('./models/Reminder');
 const MonsterRoller = require('./utils/MonsterRoller');
@@ -2157,15 +2152,63 @@ app.get('/town/visit', (req, res) => {
 });
 
 // Town visit sub-routes
-app.get('/town/visit/trade', (req, res) => {
+app.get('/town/visit/trade', async (req, res) => {
   // Check if user is logged in
   if (!req.session.user) {
     return res.redirect('/login');
   }
 
-  res.render('town/trade', {
-    title: 'Trade Center'
-  });
+  try {
+    // Get user's trainers using discord_id
+    const userDiscordId = req.session.user.discord_id || req.session.user.id;
+    const userTrainers = await Trainer.getByUserId(userDiscordId);
+
+    // Get selected trainer if trainer_id is provided
+    let selectedTrainer = null;
+    if (req.query.trainer_id) {
+      selectedTrainer = await Trainer.getById(req.query.trainer_id);
+    } else if (userTrainers && userTrainers.length > 0) {
+      // Default to first trainer if none selected
+      selectedTrainer = userTrainers[0];
+    }
+
+    // Get user's trades
+    let trades = [];
+
+    // Import the Trade model if it exists
+    let Trade;
+    try {
+      Trade = require('./models/Trade');
+    } catch (err) {
+      console.warn('Trade model not found, using empty trades array');
+    }
+
+    // If we have a selected trainer and the Trade model, fetch trades
+    if (selectedTrainer && Trade && typeof Trade.getByTrainerId === 'function') {
+      try {
+        trades = await Trade.getByTrainerId(selectedTrainer.id);
+      } catch (tradeError) {
+        console.error('Error fetching trades:', tradeError);
+        // Continue without trades if there's an error
+      }
+    }
+
+    res.render('town/trade', {
+      title: 'Trade Center',
+      userTrainers: userTrainers || [],
+      selectedTrainer: selectedTrainer,
+      trades: trades || [],
+      message: req.query.message,
+      messageType: req.query.messageType
+    });
+  } catch (error) {
+    console.error('Error loading trade center:', error);
+    res.status(500).render('error', {
+      message: 'Error loading trade center',
+      error: { status: 500, stack: error.stack },
+      title: 'Error'
+    });
+  }
 });
 
 app.get('/town/visit/garden', (req, res) => {
@@ -2179,45 +2222,6 @@ app.get('/town/visit/garden', (req, res) => {
   });
 });
 
-// Garden - Tend Garden route
-app.get('/town/visit/garden/tend', async (req, res) => {
-  // Check if user is logged in
-  if (!req.session.user) {
-    return res.redirect('/login');
-  }
-
-  try {
-    // Get the trainer
-    const trainer = await Trainer.getById(req.session.user.trainer_id);
-
-    // Check if the trainer has an active session
-    const activeSessions = await LocationActivitySession.getActiveForTrainer(trainer.id);
-
-    if (activeSessions && activeSessions.length > 0) {
-      // If there's an active session, redirect to it
-      const activeSession = activeSessions[0];
-      return res.redirect(`/town/visit/activity-session/${activeSession.session_id}`);
-    }
-
-    // Render the garden tend view
-    res.render('town/garden/tend', {
-      title: 'Tend Garden',
-      trainer,
-      location: 'garden',
-      activity: 'tend',
-      welcomeImage: 'https://i.imgur.com/Z5dNHXv.jpeg',
-      welcomeText: 'Welcome to the garden! The plants need your care and attention. Help tend to them and you might find something interesting growing among the leaves.'
-    });
-  } catch (error) {
-    console.error('Error loading tend garden page:', error);
-    res.status(500).render('error', {
-      message: 'Error loading tend garden page',
-      error: { status: 500, stack: error.stack },
-      title: 'Error'
-    });
-  }
-});
-
 app.get('/town/visit/farm', (req, res) => {
   // Check if user is logged in
   if (!req.session.user) {
@@ -2228,7 +2232,7 @@ app.get('/town/visit/farm', (req, res) => {
     title: 'Farm'
   });
 });
-// Game Corner route
+
 app.get('/town/visit/game_corner', async (req, res) => {
   // Check if user is logged in
   if (!req.session.user) {
@@ -2236,494 +2240,135 @@ app.get('/town/visit/game_corner', async (req, res) => {
   }
 
   try {
-    // Import the Trainer and Monster models
-    const Trainer = require('./models/Trainer');
-    const Monster = require('./models/Monster');
-
-    // Get the user's trainers
-    const trainers = await Trainer.getByUserId(req.session.user.discord_id);
+    // Get user's trainers using discord_id
+    const userDiscordId = req.session.user.discord_id;
+    const userTrainers = await Trainer.getByUserId(userDiscordId);
 
     // Get monsters for each trainer
-    let monsters = [];
-    for (const trainer of trainers) {
+    let allMonsters = [];
+    for (const trainer of userTrainers) {
       const trainerMonsters = await Monster.getByTrainerId(trainer.id);
-      monsters = [...monsters, ...trainerMonsters];
+      if (trainerMonsters && trainerMonsters.length > 0) {
+        allMonsters = [...allMonsters, ...trainerMonsters];
+      }
     }
 
-    console.log(`Loaded ${trainers.length} trainers and ${monsters.length} monsters for Game Corner`);
-
-    // Render the game corner template with real data
     res.render('town/game_corner', {
       title: 'Pomodoro Game Corner',
-      trainers: trainers,
-      monsters: monsters
+      trainers: userTrainers || [],
+      monsters: allMonsters || [],
+      message: req.query.message,
+      messageType: req.query.messageType
     });
   } catch (error) {
-    console.error('Error loading Game Corner data:', error);
-
-    // Render with empty data in case of error
-    res.render('town/game_corner', {
-      title: 'Pomodoro Game Corner',
-      trainers: [],
-      monsters: []
-    });
-  }
-});
-
-// Game Corner APIs
-const gameCornerRewardsRouter = require('./routes/game_corner_rewards');
-app.use('/api/game-corner', gameCornerRewardsRouter);
-
-// Game Corner Generation API
-const gameCornerApiRouter = require('./routes/game_corner_api');
-app.use('/api/game-corner-gen', gameCornerApiRouter);
-
-// Generic handler for other town locations
-app.get('/town/visit/:location', (req, res) => {
-  // Check if user is logged in
-  if (!req.session.user) {
-    return res.redirect('/login');
-  }
-
-  const location = req.params.location;
-
-  // Check if the view exists
-  const viewPath = path.join(__dirname, 'views', 'town', `${location}.ejs`);
-
-  if (fs.existsSync(viewPath)) {
-    // Format the location name for the title
-    const locationName = location
-      .split('_')
-      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(' ');
-
-    res.render(`town/${location}`, {
-      title: locationName
-    });
-  } else {
-    // Render a coming soon page if the view doesn't exist
-    res.render('town/coming-soon', {
-      title: 'Coming Soon',
-      location: location
-        .split('_')
-        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-        .join(' ')
-    });
-  }
-});
-// Farm - Work Farm route
-app.get('/town/visit/farm/work', async (req, res) => {
-  // Check if user is logged in
-  if (!req.session.user) {
-    return res.redirect('/login');
-  }
-
-  try {
-    // Get the trainer
-    const trainer = await Trainer.getById(req.session.user.trainer_id);
-
-    // Check if the trainer has an active session
-    const activeSessions = await LocationActivitySession.getActiveForTrainer(trainer.id);
-
-    if (activeSessions && activeSessions.length > 0) {
-      // If there's an active session, redirect to it
-      const activeSession = activeSessions[0];
-      return res.redirect(`/town/visit/activity-session/${activeSession.session_id}`);
-    }
-
-    // Render the farm work view
-    res.render('town/farm/work', {
-      title: 'Work the Farm',
-      trainer,
-      location: 'farm',
-      activity: 'work',
-      welcomeImage: 'https://i.imgur.com/fztdYkJ.png',
-      welcomeText: 'Welcome to the farm! There\'s always work to be done here, from feeding animals to tending crops. Roll up your sleeves and get to work!'
-    });
-  } catch (error) {
-    console.error('Error loading work farm page:', error);
+    console.error('Error loading game corner:', error);
     res.status(500).render('error', {
-      message: 'Error loading work farm page',
+      message: 'Error loading game corner',
       error: { status: 500, stack: error.stack },
       title: 'Error'
     });
   }
 });
 
-// Pirates Dock route
-app.get('/town/visit/pirates_dock', (req, res) => {
-  // Check if user is logged in
-  if (!req.session.user) {
-    return res.redirect('/login');
-  }
-
-  res.render('town/pirates_dock', {
-    title: 'Pirate\'s Dock'
-  });
-});
-
-// Pirates Dock - Swab Deck route
-app.get('/town/visit/pirates_dock/swab', async (req, res) => {
+// Handle claim rewards from pomodoro sessions
+app.post('/town/visit/game_corner/claim_rewards', async (req, res) => {
   // Check if user is logged in
   if (!req.session.user) {
     return res.redirect('/login');
   }
 
   try {
-    // Get the trainer
-    const trainer = await Trainer.getById(req.session.user.trainer_id);
+    const { trainers, monsters, sessionData } = req.body;
+    console.log('Received claim rewards request:', { trainers, monsters, sessionData });
 
-    // Check if the trainer has an active session
-    const activeSessions = await LocationActivitySession.getActiveForTrainer(trainer.id);
+    // Process trainer rewards
+    if (trainers && Array.isArray(trainers)) {
+      for (const trainerData of trainers) {
+        if (!trainerData.id) continue;
 
-    if (activeSessions && activeSessions.length > 0) {
-      // If there's an active session, redirect to it
-      const activeSession = activeSessions[0];
-      return res.redirect(`/town/visit/activity-session/${activeSession.session_id}`);
+        // Get trainer from database
+        const trainer = await Trainer.getById(trainerData.id);
+        if (!trainer) {
+          console.warn(`Trainer with ID ${trainerData.id} not found`);
+          continue;
+        }
+
+        // Verify trainer belongs to user
+        if (trainer.player_user_id !== req.session.user.discord_id) {
+          console.warn(`Trainer ${trainerData.id} does not belong to user ${req.session.user.discord_id}`);
+          continue;
+        }
+
+        // Update trainer coins and level
+        const updatedCoins = trainer.coins + (parseInt(trainerData.coins) || 0);
+        const updatedLevel = trainer.level + (parseInt(trainerData.levels) || 0);
+
+        await Trainer.update({
+          id: trainer.id,
+          coins: updatedCoins,
+          level: updatedLevel
+        });
+
+        // Process items if any
+        if (trainerData.items && Array.isArray(trainerData.items)) {
+          for (const item of trainerData.items) {
+            await Item.create({
+              trainer_id: trainer.id,
+              name: item.name,
+              rarity: item.rarity,
+              type: 'pomodoro_reward'
+            });
+          }
+        }
+      }
     }
 
-    // Render the swab deck view
-    res.render('town/pirates_dock/swab', {
-      title: 'Swab the Deck',
-      trainer,
-      location: 'pirates_dock_swab',
-      activity: 'swab',
-      welcomeImage: 'https://i.imgur.com/RmKySNO.png',
-      welcomeText: 'Ahoy there! The deck needs a good swabbing after last night\'s storm. Grab a mop and help the crew keep the ship shipshape!'
-    });
+    // Process monster captures
+    if (monsters && Array.isArray(monsters)) {
+      for (const monsterData of monsters) {
+        if (!monsterData.trainerId) continue;
+
+        // Get trainer from database
+        const trainer = await Trainer.getById(monsterData.trainerId);
+        if (!trainer) {
+          console.warn(`Trainer with ID ${monsterData.trainerId} not found for monster`);
+          continue;
+        }
+
+        // Verify trainer belongs to user
+        if (trainer.player_user_id !== req.session.user.discord_id) {
+          console.warn(`Trainer ${monsterData.trainerId} does not belong to user ${req.session.user.discord_id}`);
+          continue;
+        }
+
+        // Create monster
+        await Monster.create({
+          trainer_id: monsterData.trainerId,
+          name: monsterData.name || monsterData.species,
+          species: monsterData.species,
+          type: monsterData.type,
+          rarity: monsterData.rarity,
+          level: monsterData.level || 1,
+          source: 'pomodoro'
+        });
+      }
+    }
+
+    // Record session data for analytics
+    if (sessionData) {
+      await PomodoroSession.create({
+        user_id: req.session.user.discord_id,
+        completed_sessions: sessionData.completedSessions || 0,
+        focus_minutes: sessionData.focusMinutes || 0,
+        productivity_score: sessionData.productivityScore || 0,
+        timestamp: new Date()
+      });
+    }
+
+    return res.redirect('/town/visit/game_corner?message=Rewards+claimed+successfully!');
   } catch (error) {
-    console.error('Error loading swab deck page:', error);
-    res.status(500).render('error', {
-      message: 'Error loading swab deck page',
-      error: { status: 500, stack: error.stack },
-      title: 'Error'
-    });
-  }
-});
-
-// Pirates Dock - Go Fishing route
-app.get('/town/visit/pirates_dock/fishing', async (req, res) => {
-  // Check if user is logged in
-  if (!req.session.user) {
-    return res.redirect('/login');
-  }
-
-  try {
-    // Get the trainer
-    const trainer = await Trainer.getById(req.session.user.trainer_id);
-
-    // Check if the trainer has an active session
-    const activeSessions = await LocationActivitySession.getActiveForTrainer(trainer.id);
-
-    if (activeSessions && activeSessions.length > 0) {
-      // If there's an active session, redirect to it
-      const activeSession = activeSessions[0];
-      return res.redirect(`/town/visit/activity-session/${activeSession.session_id}`);
-    }
-
-    // Render the fishing view
-    res.render('town/pirates_dock/fishing', {
-      title: 'Go Fishing',
-      trainer,
-      location: 'pirates_dock_fishing',
-      activity: 'fishing',
-      welcomeImage: 'https://i.imgur.com/RmKySNO.png',
-      welcomeText: 'The sea is calm today, perfect for fishing! Grab a rod and see what you can catch. Who knows what might be lurking beneath the waves?'
-    });
-  } catch (error) {
-    console.error('Error loading fishing page:', error);
-    res.status(500).render('error', {
-      message: 'Error loading fishing page',
-      error: { status: 500, stack: error.stack },
-      title: 'Error'
-    });
-  }
-});
-
-// Activity session route
-app.get('/town/visit/activity-session/:sessionId', async (req, res) => {
-  // Check if user is logged in
-  if (!req.session.user) {
-    return res.redirect('/login');
-  }
-
-  try {
-    const { sessionId } = req.params;
-
-    // Get the session
-    const session = await LocationActivitySession.getById(sessionId);
-
-    if (!session) {
-      return res.status(404).render('error', {
-        message: 'Activity session not found',
-        error: { status: 404 },
-        title: 'Error'
-      });
-    }
-
-    // Check if the session belongs to the current user
-    if (session.trainer_id !== req.session.user.trainer_id) {
-      return res.status(403).render('error', {
-        message: 'You do not have permission to view this session',
-        error: { status: 403 },
-        title: 'Error'
-      });
-    }
-
-    // Get the trainer
-    const trainer = await Trainer.getById(req.session.user.trainer_id);
-
-    // Check if the session is completed
-    if (session.completed) {
-      // If completed, show the rewards
-      return res.render('town/activity_completed', {
-        title: 'Activity Completed',
-        trainer,
-        session,
-        rewards: JSON.parse(session.rewards),
-        activityUrl: `/town/visit/${session.location.replace('_swab', '').replace('_fishing', '')}/${session.activity}`
-      });
-    }
-
-    // Calculate time remaining
-    const startTime = new Date(session.start_time);
-    const endTime = new Date(startTime.getTime() + (session.duration_minutes * 60 * 1000));
-    const now = new Date();
-    const timeRemaining = Math.max(0, endTime - now);
-    const minutesRemaining = Math.ceil(timeRemaining / (60 * 1000));
-
-    // Render the activity session view
-    res.render('town/activity_session', {
-      title: 'Activity Session',
-      trainer,
-      session,
-      minutesRemaining,
-      endTime: endTime.toISOString()
-    });
-  } catch (error) {
-    console.error('Error loading activity session page:', error);
-    res.status(500).render('error', {
-      message: 'Error loading activity session page',
-      error: { status: 500, stack: error.stack },
-      title: 'Error'
-    });
-  }
-});
-
-// Start activity session route
-app.post('/town/visit/start-activity', async (req, res) => {
-  // Check if user is logged in
-  if (!req.session.user) {
-    return res.status(401).json({ success: false, message: 'You must be logged in' });
-  }
-
-  try {
-    const { location, activity } = req.body;
-
-    if (!location || !activity) {
-      return res.status(400).json({ success: false, message: 'Location and activity are required' });
-    }
-
-    // Get the trainer
-    const trainer = await Trainer.getById(req.session.user.trainer_id);
-
-    // Check if the trainer has an active session
-    const activeSessions = await LocationActivitySession.getActiveForTrainer(trainer.id);
-
-    if (activeSessions && activeSessions.length > 0) {
-      // If there's an active session, return its ID
-      const activeSession = activeSessions[0];
-      return res.json({
-        success: true,
-        session_id: activeSession.session_id,
-        redirect: `/town/visit/activity-session/${activeSession.session_id}`
-      });
-    }
-
-    // Get a random task prompt for the location
-    const prompt = await LocationTaskPrompt.getRandomForLocation(location);
-
-    if (!prompt) {
-      return res.status(404).json({ success: false, message: 'No prompts found for this location' });
-    }
-
-    // Generate a random duration between 20 and 60 minutes
-    const durationMinutes = Math.floor(Math.random() * 41) + 20; // 20 to 60 minutes
-
-    // Create a new activity session
-    const session = await LocationActivitySession.create({
-      trainer_id: trainer.id,
-      location,
-      activity,
-      prompt_id: prompt.prompt_id,
-      duration_minutes: durationMinutes
-    });
-
-    // Return the session ID and redirect URL
-    res.json({
-      success: true,
-      session_id: session.session_id,
-      redirect: `/town/visit/activity-session/${session.session_id}`
-    });
-  } catch (error) {
-    console.error('Error starting activity session:', error);
-    res.status(500).json({ success: false, message: 'Error starting activity session' });
-  }
-});
-
-// Complete activity session route
-app.post('/town/visit/complete-activity', async (req, res) => {
-  // Check if user is logged in
-  if (!req.session.user) {
-    return res.status(401).json({ success: false, message: 'You must be logged in' });
-  }
-
-  try {
-    const { session_id } = req.body;
-
-    if (!session_id) {
-      return res.status(400).json({ success: false, message: 'Session ID is required' });
-    }
-
-    // Get the session
-    const session = await LocationActivitySession.getById(session_id);
-
-    if (!session) {
-      return res.status(404).json({ success: false, message: 'Activity session not found' });
-    }
-
-    // Check if the session belongs to the current user
-    if (session.trainer_id !== req.session.user.trainer_id) {
-      return res.status(403).json({ success: false, message: 'You do not have permission to complete this session' });
-    }
-
-    // Check if the session is already completed
-    if (session.completed) {
-      return res.json({
-        success: true,
-        already_completed: true,
-        redirect: `/town/visit/activity-session/${session_id}`
-      });
-    }
-
-    // Get random rewards for the location
-    // Number of rewards based on difficulty
-    let rewardCount = 1;
-    if (session.difficulty === 'normal') rewardCount = 2;
-    if (session.difficulty === 'hard') rewardCount = 3;
-
-    const rewards = await LocationReward.getRandomForLocation(session.location, rewardCount);
-
-    // Complete the session with rewards
-    const completedSession = await LocationActivitySession.complete(session_id, rewards);
-
-    // Return success and redirect URL
-    res.json({
-      success: true,
-      redirect: `/town/visit/activity-session/${session_id}`
-    });
-  } catch (error) {
-    console.error('Error completing activity session:', error);
-    res.status(500).json({ success: false, message: 'Error completing activity session' });
-  }
-});
-
-// Claim reward route
-app.post('/api/claim-reward', async (req, res) => {
-  // Check if user is logged in
-  if (!req.session.user) {
-    return res.status(401).json({ success: false, message: 'You must be logged in' });
-  }
-
-  try {
-    const { reward_id, reward_type, session_id } = req.body;
-
-    if (!reward_id || !reward_type || !session_id) {
-      return res.status(400).json({ success: false, message: 'Reward ID, reward type, and session ID are required' });
-    }
-
-    // Get the session
-    const session = await LocationActivitySession.getById(session_id);
-
-    if (!session) {
-      return res.status(404).json({ success: false, message: 'Activity session not found' });
-    }
-
-    // Check if the session belongs to the current user
-    if (session.trainer_id !== req.session.user.trainer_id) {
-      return res.status(403).json({ success: false, message: 'You do not have permission to claim rewards from this session' });
-    }
-
-    // Check if the session is completed
-    if (!session.completed) {
-      return res.status(400).json({ success: false, message: 'Cannot claim rewards from an incomplete session' });
-    }
-
-    // Get the rewards from the session
-    const rewards = JSON.parse(session.rewards);
-
-    // Find the reward
-    const rewardIndex = rewards.findIndex(r => r.reward_id == reward_id);
-
-    if (rewardIndex === -1) {
-      return res.status(404).json({ success: false, message: 'Reward not found in this session' });
-    }
-
-    const reward = rewards[rewardIndex];
-
-    // Check if the reward type matches
-    if (reward.reward_type !== reward_type) {
-      return res.status(400).json({ success: false, message: 'Reward type mismatch' });
-    }
-
-    // Get the trainer
-    const trainer = await Trainer.getById(req.session.user.trainer_id);
-
-    // Process the reward based on type
-    if (reward_type === 'monster') {
-      // Add the monster to the trainer's team
-      const monsterData = reward.reward_data;
-
-      // Create the monster
-      await Monster.create({
-        trainer_id: trainer.id,
-        name: monsterData.species,
-        species1: monsterData.species,
-        type1: 'Normal', // Default type, should be replaced with actual type
-        level: monsterData.level || 5
-      });
-    } else if (reward_type === 'item') {
-      // Add the item to the trainer's inventory
-      const itemData = reward.reward_data;
-
-      // Update the trainer's inventory based on item type
-      // This is a simplified version, you'll need to adapt it to your inventory system
-      await Trainer.update(trainer.id, {
-        inv_items: JSON.stringify([...JSON.parse(trainer.inv_items || '[]'), itemData])
-      });
-    } else if (reward_type === 'coin') {
-      // Add coins to the trainer's balance
-      const coinAmount = reward.reward_data.amount || 0;
-
-      await Trainer.update(trainer.id, {
-        coins: trainer.coins + coinAmount
-      });
-    }
-
-    // Mark the reward as claimed in the session
-    rewards[rewardIndex].claimed = true;
-
-    // Update the session with the updated rewards
-    await pool.query(
-      'UPDATE location_activity_sessions SET rewards = $1 WHERE session_id = $2',
-      [JSON.stringify(rewards), session_id]
-    );
-
-    // Return success
-    res.json({ success: true });
-  } catch (error) {
-    console.error('Error claiming reward:', error);
-    res.status(500).json({ success: false, message: 'Error claiming reward' });
+    console.error('Error claiming rewards:', error);
+    return res.redirect('/town/visit/game_corner?message=Error+claiming+rewards');
   }
 });
 
@@ -3567,11 +3212,6 @@ app.get('/guides', (req, res) => {
   });
 });
 
-// Add redirect for old guide URLs to new content prefix pattern
-app.get('/guides/:path(*)', (req, res) => {
-  res.redirect(`/content/guides/${req.params.path}`);
-});
-
 app.get('/lore', (req, res) => {
   const categories = getContentCategories();
   const contentPath = path.join(__dirname, 'content', 'lore', 'overview.md');
@@ -3584,11 +3224,6 @@ app.get('/lore', (req, res) => {
     currentPath: '',
     content
   });
-});
-
-// Add redirect for old lore URLs to new content prefix pattern
-app.get('/lore/:path(*)', (req, res) => {
-  res.redirect(`/content/lore/${req.params.path}`);
 });
 
 app.get('/factions', (req, res) => {
@@ -3605,11 +3240,6 @@ app.get('/factions', (req, res) => {
   });
 });
 
-// Add redirect for old faction URLs to new content prefix pattern
-app.get('/factions/:path(*)', (req, res) => {
-  res.redirect(`/content/factions/${req.params.path}`);
-});
-
 app.get('/npcs', (req, res) => {
   const categories = getContentCategories();
   const contentPath = path.join(__dirname, 'content', 'npcs', 'overview.md');
@@ -3624,11 +3254,6 @@ app.get('/npcs', (req, res) => {
   });
 });
 
-// Add redirect for old NPC URLs to new content prefix pattern
-app.get('/npcs/:path(*)', (req, res) => {
-  res.redirect(`/content/npcs/${req.params.path}`);
-});
-
 app.get('/locations', (req, res) => {
   const categories = getContentCategories();
   const contentPath = path.join(__dirname, 'content', 'locations', 'overview.md');
@@ -3641,11 +3266,6 @@ app.get('/locations', (req, res) => {
     currentPath: '',
     content
   });
-});
-
-// Add redirect for old location URLs to new content prefix pattern
-app.get('/locations/:path(*)', (req, res) => {
-  res.redirect(`/content/locations/${req.params.path}`);
 });
 
 // Statistics routes
@@ -4190,6 +3810,158 @@ app.get('/my_trainers', async (req, res) => {
       error: { status: 500, stack: error.stack },
       title: 'Error'
     });
+  }
+});
+
+// Additional References routes
+app.get('/trainers/:id/additional-references', async (req, res) => {
+  try {
+    // Check if user is logged in
+    if (!req.session.user) {
+      return res.redirect('/login');
+    }
+
+    const trainerId = req.params.id;
+    const trainer = await Trainer.getById(trainerId);
+
+    if (!trainer) {
+      return res.status(404).render('error', {
+        message: 'Trainer not found',
+        error: { status: 404 },
+        title: 'Error'
+      });
+    }
+
+    // Check if the user owns this trainer
+    if (trainer.player_user_id !== req.session.user.discord_id) {
+      return res.status(403).render('error', {
+        message: 'You do not have permission to view this trainer\'s additional references',
+        error: { status: 403 },
+        title: 'Error'
+      });
+    }
+
+    // Parse additional_info if it exists
+    if (trainer.additional_info && typeof trainer.additional_info === 'string') {
+      try {
+        trainer.additional_info = JSON.parse(trainer.additional_info);
+      } catch (e) {
+        console.error('Error parsing additional_info:', e);
+        trainer.additional_info = {};
+      }
+    } else if (!trainer.additional_info) {
+      trainer.additional_info = {};
+    }
+
+    res.render('trainers/additional-references', {
+      trainer,
+      title: `${trainer.name}'s Additional References`
+    });
+  } catch (error) {
+    console.error('Error loading additional references:', error);
+    res.status(500).render('error', {
+      message: 'Error loading additional references',
+      error: { status: 500, stack: error.stack },
+      title: 'Error'
+    });
+  }
+});
+
+// Get a specific additional reference item
+app.get('/trainers/:id/additional-references/:itemId', async (req, res) => {
+  try {
+    // Check if user is logged in
+    if (!req.session.user) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+
+    const trainerId = req.params.id;
+    const itemId = req.params.itemId;
+    const trainer = await Trainer.getById(trainerId);
+
+    if (!trainer) {
+      return res.status(404).json({ error: 'Trainer not found' });
+    }
+
+    // Check if the user owns this trainer
+    if (trainer.player_user_id !== req.session.user.discord_id) {
+      return res.status(403).json({ error: 'You do not have permission to access this trainer\'s data' });
+    }
+
+    // Get the item
+    const item = await Trainer.getAdditionalInfoItem(trainerId, itemId);
+
+    if (!item) {
+      return res.status(404).json({ error: 'Item not found' });
+    }
+
+    res.json(item);
+  } catch (error) {
+    console.error('Error getting additional reference item:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// Save or update an additional reference item
+app.post('/trainers/:id/additional-references/:itemId', async (req, res) => {
+  try {
+    // Check if user is logged in
+    if (!req.session.user) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+
+    const trainerId = req.params.id;
+    const itemId = req.params.itemId;
+    const itemData = req.body;
+    const trainer = await Trainer.getById(trainerId);
+
+    if (!trainer) {
+      return res.status(404).json({ error: 'Trainer not found' });
+    }
+
+    // Check if the user owns this trainer
+    if (trainer.player_user_id !== req.session.user.discord_id) {
+      return res.status(403).json({ error: 'You do not have permission to modify this trainer\'s data' });
+    }
+
+    // Update the item
+    await Trainer.updateAdditionalInfo(trainerId, itemId, itemData);
+
+    res.json({ success: true });
+  } catch (error) {
+    console.error('Error saving additional reference item:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// Delete an additional reference item
+app.delete('/trainers/:id/additional-references/:itemId', async (req, res) => {
+  try {
+    // Check if user is logged in
+    if (!req.session.user) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+
+    const trainerId = req.params.id;
+    const itemId = req.params.itemId;
+    const trainer = await Trainer.getById(trainerId);
+
+    if (!trainer) {
+      return res.status(404).json({ error: 'Trainer not found' });
+    }
+
+    // Check if the user owns this trainer
+    if (trainer.player_user_id !== req.session.user.discord_id) {
+      return res.status(403).json({ error: 'You do not have permission to modify this trainer\'s data' });
+    }
+
+    // Delete the item
+    await Trainer.deleteAdditionalInfoItem(trainerId, itemId);
+
+    res.json({ success: true });
+  } catch (error) {
+    console.error('Error deleting additional reference item:', error);
+    res.status(500).json({ error: 'Internal server error' });
   }
 });
 
@@ -4738,39 +4510,6 @@ app.get('/trainers/:id/achievements', async (req, res) => {
   }
 });
 
-// Trainer additional references route
-app.get('/trainers/:id/additional-references', async (req, res) => {
-  try {
-    const trainerId = req.params.id;
-    const trainer = await Trainer.getById(trainerId);
-
-    if (!trainer) {
-      return res.status(404).render('error', {
-        message: 'Trainer not found',
-        error: { status: 404 }
-      });
-    }
-
-    // Get additional references from the trainer model
-    // This assumes you have a references array in your trainer model
-    // If not, you'll need to modify this to match your data structure
-    const references = trainer.additional_references || [];
-
-    res.render('trainers/additional-references', {
-      title: `${trainer.name} - Additional References`,
-      trainer,
-      references
-    });
-  } catch (error) {
-    console.error('Error getting trainer additional references:', error);
-    res.status(500).render('error', {
-      message: 'Error getting trainer additional references',
-      error: { status: 500, stack: error.stack },
-      title: 'Error'
-    });
-  }
-});
-
 // Trainer inventory route
 app.get('/trainers/:id/inventory', async (req, res) => {
   try {
@@ -4954,11 +4693,6 @@ app.post('/trainers/:id/update', async (req, res) => {
 
     if (req.body.main_ref_artist !== undefined) {
       updatedTrainer.main_ref_artist = req.body.main_ref_artist;
-    }
-
-    // Handle additional references
-    if (req.body.additional_references) {
-      updatedTrainer.additional_references = req.body.additional_references;
     }
 
     console.log('Final updatedTrainer object:', updatedTrainer);
@@ -5363,8 +5097,8 @@ app.post('/add_trainer', async (req, res) => {
   }
 });
 
-// Content category route with specific prefix to avoid conflicts with other routes
-app.get('/content/:category/:path(*)', (req, res) => {
+// Make sure your category route comes AFTER the API routes
+app.get('/:category/:path(*)', (req, res) => {
   const category = req.params.category;
   const validCategories = ['guides', 'lore', 'factions', 'npcs', 'locations'];
 
@@ -5464,291 +5198,4 @@ app.use((req, res) => {
       </body>
     </html>
   `);
-});
-
-// Activity session route
-app.get('/town/visit/activity-session/:sessionId', async (req, res) => {
-  // Check if user is logged in
-  if (!req.session.user) {
-    return res.redirect('/login');
-  }
-
-  try {
-    const { sessionId } = req.params;
-
-    // Get the session
-    const session = await LocationActivitySession.getById(sessionId);
-
-    if (!session) {
-      return res.status(404).render('error', {
-        message: 'Activity session not found',
-        error: { status: 404 },
-        title: 'Error'
-      });
-    }
-
-    // Check if the session belongs to the current user
-    if (session.trainer_id !== req.session.user.trainer_id) {
-      return res.status(403).render('error', {
-        message: 'You do not have permission to view this session',
-        error: { status: 403 },
-        title: 'Error'
-      });
-    }
-
-    // Get the trainer
-    const trainer = await Trainer.getById(req.session.user.trainer_id);
-
-    // Check if the session is completed
-    if (session.completed) {
-      // If completed, show the rewards
-      return res.render('town/activity_completed', {
-        title: 'Activity Completed',
-        trainer,
-        session,
-        rewards: JSON.parse(session.rewards),
-        activityUrl: `/town/visit/${session.location.replace('_swab', '').replace('_fishing', '')}/${session.activity}`
-      });
-    }
-
-    // Calculate time remaining
-    const startTime = new Date(session.start_time);
-    const endTime = new Date(startTime.getTime() + (session.duration_minutes * 60 * 1000));
-    const now = new Date();
-    const timeRemaining = Math.max(0, endTime - now);
-    const minutesRemaining = Math.ceil(timeRemaining / (60 * 1000));
-
-    // Render the activity session view
-    res.render('town/activity_session', {
-      title: 'Activity Session',
-      trainer,
-      session,
-      minutesRemaining,
-      endTime: endTime.toISOString()
-    });
-  } catch (error) {
-    console.error('Error loading activity session page:', error);
-    res.status(500).render('error', {
-      message: 'Error loading activity session page',
-      error: { status: 500, stack: error.stack },
-      title: 'Error'
-    });
-  }
-});
-
-// Start activity session route
-app.post('/town/visit/start-activity', async (req, res) => {
-  // Check if user is logged in
-  if (!req.session.user) {
-    return res.status(401).json({ success: false, message: 'You must be logged in' });
-  }
-
-  try {
-    const { location, activity } = req.body;
-
-    if (!location || !activity) {
-      return res.status(400).json({ success: false, message: 'Location and activity are required' });
-    }
-
-    // Get the trainer
-    const trainer = await Trainer.getById(req.session.user.trainer_id);
-
-    // Check if the trainer has an active session
-    const activeSessions = await LocationActivitySession.getActiveForTrainer(trainer.id);
-
-    if (activeSessions && activeSessions.length > 0) {
-      // If there's an active session, return its ID
-      const activeSession = activeSessions[0];
-      return res.json({
-        success: true,
-        session_id: activeSession.session_id,
-        redirect: `/town/visit/activity-session/${activeSession.session_id}`
-      });
-    }
-
-    // Get a random task prompt for the location
-    const prompt = await LocationTaskPrompt.getRandomForLocation(location);
-
-    if (!prompt) {
-      return res.status(404).json({ success: false, message: 'No prompts found for this location' });
-    }
-
-    // Generate a random duration between 20 and 60 minutes
-    const durationMinutes = Math.floor(Math.random() * 41) + 20; // 20 to 60 minutes
-
-    // Create a new activity session
-    const session = await LocationActivitySession.create({
-      trainer_id: trainer.id,
-      location,
-      activity,
-      prompt_id: prompt.prompt_id,
-      duration_minutes: durationMinutes
-    });
-
-    // Return the session ID and redirect URL
-    res.json({
-      success: true,
-      session_id: session.session_id,
-      redirect: `/town/visit/activity-session/${session.session_id}`
-    });
-  } catch (error) {
-    console.error('Error starting activity session:', error);
-    res.status(500).json({ success: false, message: 'Error starting activity session' });
-  }
-});
-
-// Complete activity session route
-app.post('/town/visit/complete-activity', async (req, res) => {
-  // Check if user is logged in
-  if (!req.session.user) {
-    return res.status(401).json({ success: false, message: 'You must be logged in' });
-  }
-
-  try {
-    const { session_id } = req.body;
-
-    if (!session_id) {
-      return res.status(400).json({ success: false, message: 'Session ID is required' });
-    }
-
-    // Get the session
-    const session = await LocationActivitySession.getById(session_id);
-
-    if (!session) {
-      return res.status(404).json({ success: false, message: 'Activity session not found' });
-    }
-
-    // Check if the session belongs to the current user
-    if (session.trainer_id !== req.session.user.trainer_id) {
-      return res.status(403).json({ success: false, message: 'You do not have permission to complete this session' });
-    }
-
-    // Check if the session is already completed
-    if (session.completed) {
-      return res.json({
-        success: true,
-        already_completed: true,
-        redirect: `/town/visit/activity-session/${session_id}`
-      });
-    }
-
-    // Get random rewards for the location
-    // Number of rewards based on difficulty
-    let rewardCount = 1;
-    if (session.difficulty === 'normal') rewardCount = 2;
-    if (session.difficulty === 'hard') rewardCount = 3;
-
-    const rewards = await LocationReward.getRandomForLocation(session.location, rewardCount);
-
-    // Complete the session with rewards
-    const completedSession = await LocationActivitySession.complete(session_id, rewards);
-
-    // Return success and redirect URL
-    res.json({
-      success: true,
-      redirect: `/town/visit/activity-session/${session_id}`
-    });
-  } catch (error) {
-    console.error('Error completing activity session:', error);
-    res.status(500).json({ success: false, message: 'Error completing activity session' });
-  }
-});
-
-// Claim reward route
-app.post('/api/claim-reward', async (req, res) => {
-  // Check if user is logged in
-  if (!req.session.user) {
-    return res.status(401).json({ success: false, message: 'You must be logged in' });
-  }
-
-  try {
-    const { reward_id, reward_type, session_id } = req.body;
-
-    if (!reward_id || !reward_type || !session_id) {
-      return res.status(400).json({ success: false, message: 'Reward ID, reward type, and session ID are required' });
-    }
-
-    // Get the session
-    const session = await LocationActivitySession.getById(session_id);
-
-    if (!session) {
-      return res.status(404).json({ success: false, message: 'Activity session not found' });
-    }
-
-    // Check if the session belongs to the current user
-    if (session.trainer_id !== req.session.user.trainer_id) {
-      return res.status(403).json({ success: false, message: 'You do not have permission to claim rewards from this session' });
-    }
-
-    // Check if the session is completed
-    if (!session.completed) {
-      return res.status(400).json({ success: false, message: 'Cannot claim rewards from an incomplete session' });
-    }
-
-    // Get the rewards from the session
-    const rewards = JSON.parse(session.rewards);
-
-    // Find the reward
-    const rewardIndex = rewards.findIndex(r => r.reward_id == reward_id);
-
-    if (rewardIndex === -1) {
-      return res.status(404).json({ success: false, message: 'Reward not found in this session' });
-    }
-
-    const reward = rewards[rewardIndex];
-
-    // Check if the reward type matches
-    if (reward.reward_type !== reward_type) {
-      return res.status(400).json({ success: false, message: 'Reward type mismatch' });
-    }
-
-    // Get the trainer
-    const trainer = await Trainer.getById(req.session.user.trainer_id);
-
-    // Process the reward based on type
-    if (reward_type === 'monster') {
-      // Add the monster to the trainer's team
-      const monsterData = reward.reward_data;
-
-      // Create the monster
-      await Monster.create({
-        trainer_id: trainer.id,
-        name: monsterData.species,
-        species1: monsterData.species,
-        type1: 'Normal', // Default type, should be replaced with actual type
-        level: monsterData.level || 5
-      });
-    } else if (reward_type === 'item') {
-      // Add the item to the trainer's inventory
-      const itemData = reward.reward_data;
-
-      // Update the trainer's inventory based on item type
-      // This is a simplified version, you'll need to adapt it to your inventory system
-      await Trainer.update(trainer.id, {
-        inv_items: JSON.stringify([...JSON.parse(trainer.inv_items || '[]'), itemData])
-      });
-    } else if (reward_type === 'coin') {
-      // Add coins to the trainer's balance
-      const coinAmount = reward.reward_data.amount || 0;
-
-      await Trainer.update(trainer.id, {
-        coins: trainer.coins + coinAmount
-      });
-    }
-
-    // Mark the reward as claimed in the session
-    rewards[rewardIndex].claimed = true;
-
-    // Update the session with the updated rewards
-    await pool.query(
-      'UPDATE location_activity_sessions SET rewards = $1 WHERE session_id = $2',
-      [JSON.stringify(rewards), session_id]
-    );
-
-    // Return success
-    res.json({ success: true });
-  } catch (error) {
-    console.error('Error claiming reward:', error);
-    res.status(500).json({ success: false, message: 'Error claiming reward' });
-  }
 });

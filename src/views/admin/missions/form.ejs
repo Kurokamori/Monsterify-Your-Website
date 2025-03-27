@@ -1,0 +1,576 @@
+<% /* Set the title and other variables for the layout */ %>
+<% title = isNew ? 'Add New Mission' : 'Edit Mission' %>
+
+<style>
+    .admin-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+    }
+
+    .admin-title {
+        font-size: 2rem;
+        font-weight: bold;
+    }
+
+    .admin-actions {
+        display: flex;
+        gap: 1rem;
+    }
+
+    .btn-back {
+        background-color: #7f8c8d;
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 4px;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .btn-back:hover {
+        background-color: #95a5a6;
+    }
+
+    .form-container {
+        background-color: var(--card-background);
+        border-radius: 0.5rem;
+        padding: 2rem;
+        margin-bottom: 2rem;
+    }
+
+    .form-section {
+        margin-bottom: 2rem;
+        padding-bottom: 1.5rem;
+        border-bottom: 1px solid var(--divider-color);
+    }
+
+    .form-section:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+        padding-bottom: 0;
+    }
+
+    .form-section-title {
+        font-size: 1.25rem;
+        font-weight: bold;
+        margin-bottom: 1rem;
+        color: var(--accent-color);
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-row {
+        display: flex;
+        gap: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .form-col {
+        flex: 1;
+    }
+
+    .form-label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: bold;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 0.75rem;
+        background-color: var(--input-background);
+        border: 1px solid var(--divider-color);
+        border-radius: 0.25rem;
+        color: var(--text-color);
+    }
+
+    .form-control:focus {
+        outline: none;
+        border-color: var(--accent-color);
+    }
+
+    .form-hint {
+        margin-top: 0.25rem;
+        font-size: 0.875rem;
+        color: var(--text-color);
+        opacity: 0.7;
+    }
+
+    .form-check {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .form-check-input {
+        width: 1rem;
+        height: 1rem;
+    }
+
+    .form-check-label {
+        font-size: 0.875rem;
+    }
+
+    .btn-submit {
+        background-color: #2ecc71;
+        color: white;
+        padding: 0.75rem 1.5rem;
+        border-radius: 4px;
+        border: none;
+        font-size: 1rem;
+        font-weight: bold;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .btn-submit:hover {
+        background-color: #27ae60;
+    }
+
+    .tag-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-top: 0.5rem;
+    }
+
+    .tag {
+        background-color: var(--nav-hover);
+        color: var(--text-color);
+        padding: 0.25rem 0.5rem;
+        border-radius: 0.25rem;
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+    }
+
+    .tag-remove {
+        cursor: pointer;
+        color: var(--text-color);
+        opacity: 0.7;
+    }
+
+    .tag-remove:hover {
+        opacity: 1;
+    }
+
+    .select-container {
+        position: relative;
+    }
+
+    .select-dropdown {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        max-height: 200px;
+        overflow-y: auto;
+        background-color: var(--input-background);
+        border: 1px solid var(--divider-color);
+        border-top: none;
+        border-radius: 0 0 0.25rem 0.25rem;
+        z-index: 10;
+        display: none;
+    }
+
+    .select-dropdown.show {
+        display: block;
+    }
+
+    .select-option {
+        padding: 0.5rem 0.75rem;
+        cursor: pointer;
+    }
+
+    .select-option:hover {
+        background-color: var(--nav-hover);
+    }
+
+    .alert {
+        padding: 1rem;
+        border-radius: 0.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .alert-error {
+        background-color: rgba(239, 68, 68, 0.2);
+        border: 1px solid rgba(239, 68, 68, 0.5);
+        color: #ef4444;
+    }
+</style>
+
+<div class="container">
+    <div class="admin-header">
+        <h1 class="admin-title"><%= isNew ? 'Add New Mission' : 'Edit Mission' %></h1>
+        <div class="admin-actions">
+            <a href="/admin/missions" class="btn-back">
+                <i class="fas fa-arrow-left"></i> Back to Missions
+            </a>
+        </div>
+    </div>
+
+    <% if (typeof error !== 'undefined' && error) { %>
+    <div class="alert alert-error">
+        <%= error %>
+    </div>
+    <% } %>
+
+    <form action="<%= isNew ? '/admin/missions/add' : '/admin/missions/edit/' + mission.id %>" method="POST" class="form-container">
+        <!-- Basic Information Section -->
+        <div class="form-section">
+            <h2 class="form-section-title">Basic Information</h2>
+
+            <div class="form-group">
+                <label for="name" class="form-label">Mission Name</label>
+                <input type="text" id="name" name="name" class="form-control" value="<%= mission.name || '' %>" required>
+                <div class="form-hint">The name of the mission (max 100 characters)</div>
+            </div>
+
+            <div class="form-group">
+                <label for="description" class="form-label">Description</label>
+                <textarea id="description" name="description" class="form-control" rows="3" required><%= mission.description || '' %></textarea>
+                <div class="form-hint">A detailed description of the mission</div>
+            </div>
+
+            <div class="form-group">
+                <label for="level_requirement" class="form-label">Level Requirement</label>
+                <input type="number" id="level_requirement" name="level_requirement" class="form-control" value="<%= mission.level_requirement || '' %>" min="1">
+                <div class="form-hint">Minimum monster level required (leave empty for no requirement)</div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Type Requirements</label>
+                <input type="text" id="type_input" class="form-control" placeholder="Add a type...">
+                <div class="form-hint">Monster types required for this mission</div>
+
+                <div class="tag-container" id="type_tags">
+                    <% if (mission.type_requirements && mission.type_requirements.length > 0) { %>
+                        <% mission.type_requirements.forEach(function(type) { %>
+                            <div class="tag">
+                                <%= type %>
+                                <span class="tag-remove" onclick="removeTag(this, 'type')">×</span>
+                                <input type="hidden" name="type_requirements" value="<%= type %>">
+                            </div>
+                        <% }); %>
+                    <% } %>
+                </div>
+
+                <div class="select-container">
+                    <div class="select-dropdown" id="type_dropdown">
+                        <% availableTypes.forEach(function(type) { %>
+                            <div class="select-option" onclick="addTag('<%= type %>', 'type')"><%= type %></div>
+                        <% }); %>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Attribute Requirements</label>
+                <input type="text" id="attribute_input" class="form-control" placeholder="Add an attribute...">
+                <div class="form-hint">Monster attributes required for this mission</div>
+
+                <div class="tag-container" id="attribute_tags">
+                    <% if (mission.attribute_requirements && mission.attribute_requirements.length > 0) { %>
+                        <% mission.attribute_requirements.forEach(function(attribute) { %>
+                            <div class="tag">
+                                <%= attribute %>
+                                <span class="tag-remove" onclick="removeTag(this, 'attribute')">×</span>
+                                <input type="hidden" name="attribute_requirements" value="<%= attribute %>">
+                            </div>
+                        <% }); %>
+                    <% } %>
+                </div>
+
+                <div class="select-container">
+                    <div class="select-dropdown" id="attribute_dropdown">
+                        <% availableAttributes.forEach(function(attribute) { %>
+                            <div class="select-option" onclick="addTag('<%= attribute %>', 'attribute')"><%= attribute %></div>
+                        <% }); %>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Requirements Type</label>
+                <div class="form-check">
+                    <input type="radio" id="requirements_or" name="requirements_type" value="OR" class="form-check-input" <%= (!mission.requirements_type || mission.requirements_type === 'OR') ? 'checked' : '' %>>
+                    <label for="requirements_or" class="form-check-label">OR (Monster needs to match any of the requirements)</label>
+                </div>
+                <div class="form-check">
+                    <input type="radio" id="requirements_and" name="requirements_type" value="AND" class="form-check-input" <%= (mission.requirements_type === 'AND') ? 'checked' : '' %>>
+                    <label for="requirements_and" class="form-check-label">AND (Monster needs to match all requirements)</label>
+                </div>
+            </div>
+        </div>
+
+        <!-- Progress and Flavor Section -->
+        <div class="form-section">
+            <h2 class="form-section-title">Progress and Flavor Text</h2>
+
+            <div class="form-row">
+                <div class="form-col">
+                    <label for="min_progress_needed" class="form-label">Minimum Progress Needed</label>
+                    <input type="number" id="min_progress_needed" name="min_progress_needed" class="form-control" value="<%= mission.min_progress_needed || 5 %>" min="1" required>
+                    <div class="form-hint">Minimum number of tasks needed to complete</div>
+                </div>
+
+                <div class="form-col">
+                    <label for="max_progress_needed" class="form-label">Maximum Progress Needed</label>
+                    <input type="number" id="max_progress_needed" name="max_progress_needed" class="form-control" value="<%= mission.max_progress_needed || '' %>" min="1">
+                    <div class="form-hint">Maximum number of tasks (leave empty for fixed progress)</div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="progress_flavor_1" class="form-label">Progress Flavor Text 1 (0-20%)</label>
+                <textarea id="progress_flavor_1" name="progress_flavor_1" class="form-control" rows="2"><%= mission.progress_flavor_1 || '' %></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="progress_flavor_2" class="form-label">Progress Flavor Text 2 (21-40%)</label>
+                <textarea id="progress_flavor_2" name="progress_flavor_2" class="form-control" rows="2"><%= mission.progress_flavor_2 || '' %></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="progress_flavor_3" class="form-label">Progress Flavor Text 3 (41-60%)</label>
+                <textarea id="progress_flavor_3" name="progress_flavor_3" class="form-control" rows="2"><%= mission.progress_flavor_3 || '' %></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="progress_flavor_4" class="form-label">Progress Flavor Text 4 (61-80%)</label>
+                <textarea id="progress_flavor_4" name="progress_flavor_4" class="form-control" rows="2"><%= mission.progress_flavor_4 || '' %></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="progress_flavor_5" class="form-label">Progress Flavor Text 5 (81-99%)</label>
+                <textarea id="progress_flavor_5" name="progress_flavor_5" class="form-control" rows="2"><%= mission.progress_flavor_5 || '' %></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="completion_message" class="form-label">Completion Message (100%)</label>
+                <textarea id="completion_message" name="completion_message" class="form-control" rows="2"><%= mission.completion_message || '' %></textarea>
+            </div>
+
+            <div class="form-row">
+                <div class="form-col">
+                    <label for="progress_image_url" class="form-label">Progress Image URL</label>
+                    <input type="text" id="progress_image_url" name="progress_image_url" class="form-control" value="<%= mission.progress_image_url || '' %>">
+                    <div class="form-hint">Image shown during mission progress</div>
+                </div>
+
+                <div class="form-col">
+                    <label for="completion_image_url" class="form-label">Completion Image URL</label>
+                    <input type="text" id="completion_image_url" name="completion_image_url" class="form-control" value="<%= mission.completion_image_url || '' %>">
+                    <div class="form-hint">Image shown when mission is completed</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Rewards Section -->
+        <div class="form-section">
+            <h2 class="form-section-title">Rewards</h2>
+
+            <div class="form-row">
+                <div class="form-col">
+                    <label for="level_rewards" class="form-label">Level Rewards</label>
+                    <input type="number" id="level_rewards" name="level_rewards" class="form-control" value="<%= mission.level_rewards || 1 %>" min="1" required>
+                    <div class="form-hint">Number of levels rewarded</div>
+                </div>
+
+                <div class="form-col">
+                    <label for="coin_rewards" class="form-label">Coin Rewards</label>
+                    <input type="number" id="coin_rewards" name="coin_rewards" class="form-control" value="<%= mission.coin_rewards || 100 %>" min="0" required>
+                    <div class="form-hint">Number of coins rewarded</div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Item Rewards</label>
+                <input type="text" id="item_input" class="form-control" placeholder="Add an item...">
+                <div class="form-hint">Items rewarded upon completion</div>
+
+                <div class="tag-container" id="item_tags">
+                    <% if (mission.item_rewards && mission.item_rewards.length > 0) { %>
+                        <% mission.item_rewards.forEach(function(item) { %>
+                            <div class="tag">
+                                <%= item %>
+                                <span class="tag-remove" onclick="removeTag(this, 'item')">×</span>
+                                <input type="hidden" name="item_rewards" value="<%= item %>">
+                            </div>
+                        <% }); %>
+                    <% } %>
+                </div>
+
+                <div class="select-container">
+                    <div class="select-dropdown" id="item_dropdown">
+                        <% availableItems.forEach(function(item) { %>
+                            <div class="select-option" onclick="addTag('<%= item.name %>', 'item')"><%= item.name %> (<%= item.category %>)</div>
+                        <% }); %>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="item_reward_amount" class="form-label">Item Reward Amount</label>
+                <input type="number" id="item_reward_amount" name="item_reward_amount" class="form-control" value="<%= mission.item_reward_amount || 0 %>" min="0">
+                <div class="form-hint">Number of random items to give (0 means all items)</div>
+            </div>
+        </div>
+
+        <!-- Status Section -->
+        <div class="form-section">
+            <h2 class="form-section-title">Status</h2>
+
+            <div class="form-group">
+                <div class="form-check">
+                    <input type="checkbox" id="is_active" name="is_active" class="form-check-input" <%= (mission.is_active === undefined || mission.is_active) ? 'checked' : '' %>>
+                    <label for="is_active" class="form-check-label">Mission is active and available to players</label>
+                </div>
+            </div>
+        </div>
+
+        <button type="submit" class="btn-submit">
+            <i class="fas fa-save"></i> <%= isNew ? 'Create Mission' : 'Update Mission' %>
+        </button>
+    </form>
+</div>
+
+<script>
+    // Tag input functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        // Type dropdown
+        const typeInput = document.getElementById('type_input');
+        const typeDropdown = document.getElementById('type_dropdown');
+
+        typeInput.addEventListener('focus', function() {
+            typeDropdown.classList.add('show');
+        });
+
+        typeInput.addEventListener('input', function() {
+            const value = this.value.toLowerCase();
+            const options = typeDropdown.querySelectorAll('.select-option');
+
+            options.forEach(function(option) {
+                const text = option.textContent.toLowerCase();
+                if (text.includes(value)) {
+                    option.style.display = 'block';
+                } else {
+                    option.style.display = 'none';
+                }
+            });
+
+            typeDropdown.classList.add('show');
+        });
+
+        // Attribute dropdown
+        const attributeInput = document.getElementById('attribute_input');
+        const attributeDropdown = document.getElementById('attribute_dropdown');
+
+        attributeInput.addEventListener('focus', function() {
+            attributeDropdown.classList.add('show');
+        });
+
+        attributeInput.addEventListener('input', function() {
+            const value = this.value.toLowerCase();
+            const options = attributeDropdown.querySelectorAll('.select-option');
+
+            options.forEach(function(option) {
+                const text = option.textContent.toLowerCase();
+                if (text.includes(value)) {
+                    option.style.display = 'block';
+                } else {
+                    option.style.display = 'none';
+                }
+            });
+
+            attributeDropdown.classList.add('show');
+        });
+
+        // Item dropdown
+        const itemInput = document.getElementById('item_input');
+        const itemDropdown = document.getElementById('item_dropdown');
+
+        itemInput.addEventListener('focus', function() {
+            itemDropdown.classList.add('show');
+        });
+
+        itemInput.addEventListener('input', function() {
+            const value = this.value.toLowerCase();
+            const options = itemDropdown.querySelectorAll('.select-option');
+
+            options.forEach(function(option) {
+                const text = option.textContent.toLowerCase();
+                if (text.includes(value)) {
+                    option.style.display = 'block';
+                } else {
+                    option.style.display = 'none';
+                }
+            });
+
+            itemDropdown.classList.add('show');
+        });
+
+        // Close dropdowns when clicking outside
+        document.addEventListener('click', function(event) {
+            if (!typeInput.contains(event.target) && !typeDropdown.contains(event.target)) {
+                typeDropdown.classList.remove('show');
+            }
+
+            if (!attributeInput.contains(event.target) && !attributeDropdown.contains(event.target)) {
+                attributeDropdown.classList.remove('show');
+            }
+
+            if (!itemInput.contains(event.target) && !itemDropdown.contains(event.target)) {
+                itemDropdown.classList.remove('show');
+            }
+        });
+    });
+
+    // Add tag function
+    function addTag(value, type) {
+        // Check if tag already exists
+        const tags = document.querySelectorAll(`#${type}_tags .tag input[value="${value}"]`);
+        if (tags.length > 0) {
+            return;
+        }
+
+        const tagsContainer = document.getElementById(`${type}_tags`);
+        const tag = document.createElement('div');
+        tag.className = 'tag';
+        tag.innerHTML = `
+            ${value}
+            <span class="tag-remove" onclick="removeTag(this, '${type}')">×</span>
+            <input type="hidden" name="${type}_requirements" value="${value}">
+        `;
+
+        if (type === 'item') {
+            tag.innerHTML = `
+                ${value}
+                <span class="tag-remove" onclick="removeTag(this, '${type}')">×</span>
+                <input type="hidden" name="item_rewards" value="${value}">
+            `;
+        }
+
+        tagsContainer.appendChild(tag);
+
+        // Clear input
+        document.getElementById(`${type}_input`).value = '';
+
+        // Hide dropdown
+        document.getElementById(`${type}_dropdown`).classList.remove('show');
+    }
+
+    // Remove tag function
+    function removeTag(element, type) {
+        const tag = element.parentNode;
+        tag.parentNode.removeChild(tag);
+    }
+</script>
