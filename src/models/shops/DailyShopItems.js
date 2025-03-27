@@ -1,1 +1,0 @@
-// DailyShopItems model
