@@ -298,7 +298,7 @@
                         <% if (structure.files && structure.files.length > 0) { %>
                             <% structure.files.forEach(file => { %>
                                 <div class="file-item <%= currentPath === file.path ? 'active' : '' %>">
-                                    <a href="/content/<%= activeCategory %>/<%= file.url.replace(/\\/g, '/') %>" class="block w-full h-full">
+                                    <a href="/<%= activeCategory %>/<%= activeCategory %>/<%= file.url.replace(/\\/g, '/') %>" class="block w-full h-full">
                                         <%= file.name %>
                                     </a>
                                 </div>

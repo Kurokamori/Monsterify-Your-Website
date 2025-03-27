@@ -16,8 +16,6 @@
                 <a href="/trainers/<%= trainer.id %>/boxes" class="sidebar-link">All Boxes</a>
                 <a href="/trainers/<%= trainer.id %>/inventory" class="sidebar-link">Inventory</a>
                 <a href="/trainers/<%= trainer.id %>/stats" class="sidebar-link">Stats</a>
-                <a href="/trainers/<%= trainer.id %>/achievements" class="sidebar-link">Achievements</a>
-                <a href="/trainers/<%= trainer.id %>/additional-references" class="sidebar-link">Additional References</a>
 
                 <% if (locals.user && locals.user.discord_id && trainer.player_user_id && locals.user.discord_id.toString() === trainer.player_user_id) { %>
                 <div class="sidebar-divider"></div>

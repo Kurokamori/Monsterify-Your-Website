@@ -1,0 +1,195 @@
+<% /* Set the title and other variables for the layout */ %>
+<% title = title || 'Content Management' %>
+
+<style>
+    .admin-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+    }
+
+    .admin-title {
+        font-size: 2rem;
+        font-weight: bold;
+    }
+
+    .admin-actions {
+        display: flex;
+        gap: 1rem;
+    }
+
+    .btn-back {
+        background-color: #7f8c8d;
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 4px;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .btn-back:hover {
+        background-color: #95a5a6;
+    }
+
+    .alert {
+        padding: 1rem;
+        border-radius: 0.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .alert-success {
+        background-color: rgba(52, 211, 153, 0.2);
+        border: 1px solid rgba(52, 211, 153, 0.5);
+        color: #10b981;
+    }
+
+    .alert-error {
+        background-color: rgba(239, 68, 68, 0.2);
+        border: 1px solid rgba(239, 68, 68, 0.5);
+        color: #ef4444;
+    }
+
+    .categories-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 1.5rem;
+        margin-top: 1.5rem;
+    }
+
+    .category-card {
+        background: rgba(0, 0, 0, 0.2);
+        border-radius: 8px;
+        overflow: hidden;
+        transition: transform 0.2s ease;
+    }
+
+    .category-card:hover {
+        transform: translateY(-5px);
+    }
+
+    .category-header {
+        padding: 1.5rem;
+        background: rgba(0, 0, 0, 0.2);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .category-title {
+        font-size: 1.5rem;
+        font-weight: bold;
+        margin: 0;
+    }
+
+    .category-body {
+        padding: 1.5rem;
+    }
+
+    .category-description {
+        margin-bottom: 1.5rem;
+        color: rgba(255, 255, 255, 0.8);
+    }
+
+    .category-stats {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .stat {
+        background: rgba(0, 0, 0, 0.2);
+        padding: 0.5rem 1rem;
+        border-radius: 4px;
+        font-size: 0.875rem;
+    }
+
+    .stat-label {
+        font-weight: bold;
+        margin-right: 0.5rem;
+    }
+
+    .btn-manage {
+        background-color: #3498db;
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 4px;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        width: 100%;
+        justify-content: center;
+    }
+
+    .btn-manage:hover {
+        background-color: #2980b9;
+    }
+</style>
+
+<div class="container">
+    <div class="admin-header">
+        <h1 class="admin-title">Content Management</h1>
+        <div class="admin-actions">
+            <a href="/admin/dashboard" class="btn-back">
+                <i class="fas fa-arrow-left"></i> Back to Dashboard
+            </a>
+        </div>
+    </div>
+
+    <% if (message) { %>
+    <div class="alert alert-<%= messageType %>">
+        <%= message %>
+    </div>
+    <% } %>
+
+    <p>Select a content category to manage:</p>
+
+    <div class="categories-grid">
+        <% Object.keys(categories).forEach(function(key) { %>
+        <div class="category-card">
+            <div class="category-header">
+                <h2 class="category-title"><%= categories[key].name %></h2>
+            </div>
+            <div class="category-body">
+                <div class="category-description">
+                    <p>Manage <%= categories[key].name.toLowerCase() %> content including pages, articles, and documentation.</p>
+                </div>
+                <div class="category-stats">
+                    <%
+                    let fileCount = 0;
+                    let dirCount = 0;
+
+                    function countItems(structure) {
+                        if (!structure) return;
+                        fileCount += structure.files ? structure.files.length : 0;
+                        dirCount += structure.directories ? structure.directories.length : 0;
+
+                        if (structure.directories) {
+                            structure.directories.forEach(dir => {
+                                if (dir.children) {
+                                    countItems(dir.children);
+                                }
+                            });
+                        }
+                    }
+
+                    countItems(categories[key].structure);
+                    %>
+                    <div class="stat">
+                        <span class="stat-label">Files:</span>
+                        <span class="stat-value"><%= fileCount %></span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-label">Directories:</span>
+                        <span class="stat-value"><%= dirCount %></span>
+                    </div>
+                </div>
+                <a href="/admin/content/<%= key %>" class="btn-manage">
+                    <i class="fas fa-edit"></i> Manage <%= categories[key].name %>
+                </a>
+            </div>
+        </div>
+        <% }); %>
+    </div>
+</div>

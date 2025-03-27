@@ -1,4 +1,4 @@
-const pool = require('../db');
+const pool = require('../config/database');
 
 class Trainer {
   /**
@@ -45,20 +45,6 @@ class Trainer {
         }
       }, 0);
 
-      // Parse additional_references JSON for each trainer
-      trainers.forEach(trainer => {
-        if (trainer.additional_references) {
-          try {
-            trainer.additional_references = JSON.parse(trainer.additional_references);
-          } catch (e) {
-            console.error('Error parsing additional_references JSON:', e);
-            trainer.additional_references = [];
-          }
-        } else {
-          trainer.additional_references = [];
-        }
-      });
-
       return trainers;
     } catch (error) {
       console.error('Error getting all trainers:', error);
@@ -75,26 +61,7 @@ class Trainer {
     try {
       const query = 'SELECT * FROM trainers WHERE id = $1';
       const result = await pool.query(query, [id]);
-
-      if (result.rows.length === 0) {
-        return null;
-      }
-
-      const trainer = result.rows[0];
-
-      // Parse additional_references JSON if it exists
-      if (trainer.additional_references) {
-        try {
-          trainer.additional_references = JSON.parse(trainer.additional_references);
-        } catch (e) {
-          console.error('Error parsing additional_references JSON:', e);
-          trainer.additional_references = [];
-        }
-      } else {
-        trainer.additional_references = [];
-      }
-
-      return trainer;
+      return result.rows[0];
     } catch (error) {
       console.error('Error getting trainer by ID:', error);
       return null;
@@ -110,23 +77,7 @@ class Trainer {
     try {
       const query = 'SELECT * FROM trainers WHERE player_user_id = $1 ORDER BY name';
       const result = await pool.query(query, [userId]);
-
-      // Parse additional_references JSON for each trainer
-      const trainers = result.rows.map(trainer => {
-        if (trainer.additional_references) {
-          try {
-            trainer.additional_references = JSON.parse(trainer.additional_references);
-          } catch (e) {
-            console.error('Error parsing additional_references JSON:', e);
-            trainer.additional_references = [];
-          }
-        } else {
-          trainer.additional_references = [];
-        }
-        return trainer;
-      });
-
-      return trainers;
+      return result.rows;
     } catch (error) {
       console.error('Error getting trainers by user ID:', error);
       return [];
@@ -229,28 +180,6 @@ class Trainer {
       console.log('Trainer update data received:', processedData);
       console.log('main_ref in update:', processedData.main_ref);
       console.log('main_ref_artist in update:', processedData.main_ref_artist);
-
-      // Handle additional references
-      if (processedData.additional_references) {
-        // Convert to JSON string if it's an array
-        if (Array.isArray(processedData.additional_references)) {
-          // Filter out empty references (those without title or description)
-          const filteredReferences = processedData.additional_references.filter(ref => {
-            return (ref.title && ref.title.trim()) || (ref.description && ref.description.trim());
-          });
-
-          // Set the type to 'text' if img_url is empty
-          filteredReferences.forEach(ref => {
-            if (!ref.img_url || ref.img_url.trim() === '') {
-              ref.type = 'text';
-            } else if (!ref.type) {
-              ref.type = 'image';
-            }
-          });
-
-          processedData.additional_references = JSON.stringify(filteredReferences);
-        }
-      }
 
       // If main_ref is empty string, set to default
       if (processedData.main_ref === '') {
@@ -441,6 +370,131 @@ class Trainer {
     } catch (error) {
       console.error('Error updating monster counts:', error);
       return false;
+    }
+  }
+
+  /**
+   * Update a trainer's additional references
+   * @param {number} id - Trainer ID
+   * @param {string} itemId - Item ID
+   * @param {Object} itemData - Item data
+   * @returns {Promise<Object>} - Updated trainer
+   */
+  static async updateAdditionalInfo(id, itemId, itemData) {
+    try {
+      // First, get the current additional_info
+      const trainer = await this.getById(id);
+      if (!trainer) {
+        throw new Error(`Trainer with ID ${id} not found`);
+      }
+
+      // Parse the additional_info or initialize as empty object
+      let additionalInfo = {};
+      if (trainer.additional_info) {
+        try {
+          additionalInfo = typeof trainer.additional_info === 'string'
+            ? JSON.parse(trainer.additional_info)
+            : trainer.additional_info;
+        } catch (e) {
+          console.error('Error parsing additional_info:', e);
+        }
+      }
+
+      // Update or add the item
+      additionalInfo[itemId] = itemData;
+
+      // Update the trainer
+      const result = await pool.query(
+        `UPDATE trainers
+         SET additional_info = $1
+         WHERE id = $2
+         RETURNING *`,
+        [JSON.stringify(additionalInfo), id]
+      );
+
+      return result.rows[0];
+    } catch (error) {
+      console.error('Error updating additional info:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Delete an item from a trainer's additional references
+   * @param {number} id - Trainer ID
+   * @param {string} itemId - Item ID to delete
+   * @returns {Promise<Object>} - Updated trainer
+   */
+  static async deleteAdditionalInfoItem(id, itemId) {
+    try {
+      // First, get the current additional_info
+      const trainer = await this.getById(id);
+      if (!trainer) {
+        throw new Error(`Trainer with ID ${id} not found`);
+      }
+
+      // Parse the additional_info or initialize as empty object
+      let additionalInfo = {};
+      if (trainer.additional_info) {
+        try {
+          additionalInfo = typeof trainer.additional_info === 'string'
+            ? JSON.parse(trainer.additional_info)
+            : trainer.additional_info;
+        } catch (e) {
+          console.error('Error parsing additional_info:', e);
+        }
+      }
+
+      // Delete the item
+      delete additionalInfo[itemId];
+
+      // Update the trainer
+      const result = await pool.query(
+        `UPDATE trainers
+         SET additional_info = $1
+         WHERE id = $2
+         RETURNING *`,
+        [JSON.stringify(additionalInfo), id]
+      );
+
+      return result.rows[0];
+    } catch (error) {
+      console.error('Error deleting additional info item:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Get a specific item from a trainer's additional references
+   * @param {number} id - Trainer ID
+   * @param {string} itemId - Item ID
+   * @returns {Promise<Object>} - Item data
+   */
+  static async getAdditionalInfoItem(id, itemId) {
+    try {
+      // Get the trainer
+      const trainer = await this.getById(id);
+      if (!trainer) {
+        throw new Error(`Trainer with ID ${id} not found`);
+      }
+
+      // Parse the additional_info or initialize as empty object
+      let additionalInfo = {};
+      if (trainer.additional_info) {
+        try {
+          additionalInfo = typeof trainer.additional_info === 'string'
+            ? JSON.parse(trainer.additional_info)
+            : trainer.additional_info;
+        } catch (e) {
+          console.error('Error parsing additional_info:', e);
+        }
+      }
+
+      // Return the item or null if not found
+      return additionalInfo[itemId] || null;
+    } catch (error) {
+      console.error('Error getting additional info item:', error);
+      throw error;
     }
   }
 

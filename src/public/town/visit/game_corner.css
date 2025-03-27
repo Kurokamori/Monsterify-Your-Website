@@ -272,16 +272,6 @@ input[type="number"] {
   margin: 0 auto;
 }
 
-#timer-status {
-  font-size: 0.75rem;
-  color: var(--accent-color, #d6a339);
-  opacity: 0.7;
-  text-align: center;
-  width: 100%;
-  display: block;
-  margin: 0.25rem auto 0;
-}
-
 /* Timer container positioning */
 .progress-circle-container {
   position: relative;

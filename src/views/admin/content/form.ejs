@@ -1,0 +1,478 @@
+<% /* Set the title and other variables for the layout */ %>
+<% title = title || 'Content Form' %>
+
+<style>
+    .admin-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+    }
+
+    .admin-title {
+        font-size: 2rem;
+        font-weight: bold;
+    }
+
+    .admin-actions {
+        display: flex;
+        gap: 1rem;
+    }
+
+    .btn-back {
+        background-color: #7f8c8d;
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 4px;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .btn-back:hover {
+        background-color: #95a5a6;
+    }
+
+    .form-container {
+        background: rgba(0, 0, 0, 0.2);
+        padding: 2rem;
+        border-radius: 8px;
+        margin-bottom: 2rem;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: bold;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 0.75rem;
+        background: rgba(0, 0, 0, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 4px;
+        color: #ffffff;
+    }
+
+    .form-control:focus {
+        outline: none;
+        border-color: #3498db;
+    }
+
+    .form-hint {
+        font-size: 0.875rem;
+        color: #7f8c8d;
+        margin-top: 0.25rem;
+    }
+
+    .btn-submit {
+        background-color: #2ecc71;
+        color: white;
+        padding: 0.75rem 1.5rem;
+        border-radius: 4px;
+        text-decoration: none;
+        border: none;
+        cursor: pointer;
+        font-size: 1rem;
+        font-weight: bold;
+    }
+
+    .btn-submit:hover {
+        background-color: #27ae60;
+    }
+
+    .markdown-editor {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .editor-toolbar {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+    }
+
+    .editor-btn {
+        background-color: #34495e;
+        color: white;
+        padding: 0.5rem;
+        border-radius: 4px;
+        border: none;
+        cursor: pointer;
+        font-size: 0.875rem;
+    }
+
+    .editor-btn:hover {
+        background-color: #2c3e50;
+    }
+
+    .editor-preview {
+        background: rgba(0, 0, 0, 0.1);
+        padding: 1rem;
+        border-radius: 4px;
+        margin-top: 1rem;
+        min-height: 200px;
+        max-height: 500px;
+        overflow-y: auto;
+    }
+
+    .editor-preview h1 {
+        font-size: 2rem;
+        font-weight: bold;
+        margin-bottom: 1rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        padding-bottom: 0.5rem;
+    }
+
+    .editor-preview h2 {
+        font-size: 1.5rem;
+        font-weight: bold;
+        margin-top: 1.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .editor-preview h3 {
+        font-size: 1.25rem;
+        font-weight: bold;
+        margin-top: 1.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .editor-preview p {
+        margin-bottom: 1rem;
+    }
+
+    .editor-preview ul, .editor-preview ol {
+        margin-bottom: 1rem;
+        padding-left: 2rem;
+    }
+
+    .editor-preview li {
+        margin-bottom: 0.5rem;
+    }
+
+    .editor-preview code {
+        background: rgba(0, 0, 0, 0.2);
+        padding: 0.25rem 0.5rem;
+        border-radius: 4px;
+        font-family: monospace;
+    }
+
+    .editor-preview pre {
+        background: rgba(0, 0, 0, 0.2);
+        padding: 1rem;
+        border-radius: 4px;
+        overflow-x: auto;
+        margin-bottom: 1rem;
+    }
+
+    .editor-preview pre code {
+        background: transparent;
+        padding: 0;
+    }
+
+    .editor-preview blockquote {
+        border-left: 4px solid #3498db;
+        padding-left: 1rem;
+        margin-left: 0;
+        margin-bottom: 1rem;
+        color: rgba(255, 255, 255, 0.7);
+    }
+
+    .editor-preview table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 1rem;
+    }
+
+    .editor-preview th, .editor-preview td {
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        padding: 0.5rem;
+    }
+
+    .editor-preview th {
+        background: rgba(0, 0, 0, 0.2);
+    }
+
+    .editor-preview img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 4px;
+        margin-bottom: 1rem;
+    }
+
+    .editor-preview a {
+        color: #3498db;
+        text-decoration: none;
+    }
+
+    .editor-preview a:hover {
+        text-decoration: underline;
+    }
+
+    .tab-container {
+        margin-bottom: 1.5rem;
+    }
+
+    .tabs {
+        display: flex;
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .tab {
+        padding: 0.5rem 1rem;
+        background: rgba(0, 0, 0, 0.2);
+        border-radius: 4px 4px 0 0;
+        cursor: pointer;
+    }
+
+    .tab.active {
+        background: rgba(0, 0, 0, 0.3);
+        font-weight: bold;
+    }
+
+    .tab-content {
+        display: none;
+    }
+
+    .tab-content.active {
+        display: block;
+    }
+</style>
+
+<div class="container">
+    <div class="admin-header">
+        <h1 class="admin-title"><%= isNew ? `Add New ${categoryData.name} Content` : 'Edit Content' %></h1>
+        <div class="admin-actions">
+            <a href="/admin/content/<%= category %><%= parentPath ? '?path=' + parentPath : '' %>" class="btn-back">
+                <i class="fas fa-arrow-left"></i> Back to <%= categoryData.name %>
+            </a>
+        </div>
+    </div>
+
+    <% if (typeof message !== 'undefined' && message) { %>
+    <div class="alert alert-<%= messageType %>">
+        <%= message %>
+    </div>
+    <% } %>
+
+    <div class="form-container">
+        <form action="/admin/content/save" method="POST">
+            <input type="hidden" name="isNew" value="<%= isNew %>">
+            <input type="hidden" name="category" value="<%= category %>">
+            <input type="hidden" name="parentPath" value="<%= parentPath %>">
+            <input type="hidden" name="originalPath" value="<%= content.path %>">
+
+            <div class="form-group">
+                <label for="title" class="form-label">Title</label>
+                <input type="text" id="title" name="title" class="form-control" value="<%= content.title %>" required>
+                <div class="form-hint">This will be displayed as the page title and in navigation</div>
+            </div>
+
+            <div class="form-group">
+                <label for="path" class="form-label">File Name</label>
+                <input type="text" id="path" name="path" class="form-control" value="<%= content.path %>" <%= isNew ? 'required' : 'readonly' %>>
+                <div class="form-hint">
+                    <% if (isNew) { %>
+                        File name with .md extension (e.g., my-page.md)
+                    <% } else { %>
+                        File names cannot be changed after creation
+                    <% } %>
+                </div>
+            </div>
+
+            <div class="tab-container">
+                <div class="tabs">
+                    <div class="tab active" onclick="switchTab('editor')">Editor</div>
+                    <div class="tab" onclick="switchTab('preview')">Preview</div>
+                </div>
+
+                <div class="tab-content active" id="editor-tab">
+                    <div class="form-group">
+                        <label for="content" class="form-label">Content (Markdown)</label>
+                        <div class="markdown-editor">
+                            <div class="editor-toolbar">
+                                <button type="button" class="editor-btn" onclick="insertMarkdown('# ', '')">H1</button>
+                                <button type="button" class="editor-btn" onclick="insertMarkdown('## ', '')">H2</button>
+                                <button type="button" class="editor-btn" onclick="insertMarkdown('### ', '')">H3</button>
+                                <button type="button" class="editor-btn" onclick="insertMarkdown('**', '**')">Bold</button>
+                                <button type="button" class="editor-btn" onclick="insertMarkdown('*', '*')">Italic</button>
+                                <button type="button" class="editor-btn" onclick="insertMarkdown('[', '](url)')">Link</button>
+                                <button type="button" class="editor-btn" onclick="insertMarkdown('![alt text](', ')')">Image</button>
+                                <button type="button" class="editor-btn" onclick="insertMarkdown('- ', '')">List</button>
+                                <button type="button" class="editor-btn" onclick="insertMarkdown('1. ', '')">Numbered List</button>
+                                <button type="button" class="editor-btn" onclick="insertMarkdown('> ', '')">Quote</button>
+                                <button type="button" class="editor-btn" onclick="insertMarkdown('```\n', '\n```')">Code Block</button>
+                                <button type="button" class="editor-btn" onclick="insertMarkdown('`', '`')">Inline Code</button>
+                                <button type="button" class="editor-btn" onclick="insertMarkdown('---\n', '')">Horizontal Rule</button>
+                                <button type="button" class="editor-btn" onclick="insertTable()">Table</button>
+                            </div>
+                            <textarea id="content" name="content" class="form-control" rows="15" oninput="updatePreview()"><%= content.content %></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-content" id="preview-tab">
+                    <div class="form-group">
+                        <label class="form-label">Content Preview</label>
+                        <div class="editor-preview" id="preview"></div>
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-submit">
+                <i class="fas fa-save"></i> <%= isNew ? 'Create Content' : 'Save Changes' %>
+            </button>
+        </form>
+    </div>
+</div>
+
+<script>
+    // Initialize preview on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        updatePreview();
+    });
+
+    // Switch between editor and preview tabs
+    function switchTab(tab) {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+
+        if (tab === 'editor') {
+            document.querySelector('.tab:nth-child(1)').classList.add('active');
+            document.getElementById('editor-tab').classList.add('active');
+        } else {
+            document.querySelector('.tab:nth-child(2)').classList.add('active');
+            document.getElementById('preview-tab').classList.add('active');
+            updatePreview();
+        }
+    }
+
+    // Insert markdown syntax at cursor position
+    function insertMarkdown(before, after) {
+        const textarea = document.getElementById('content');
+        const start = textarea.selectionStart;
+        const end = textarea.selectionEnd;
+        const selectedText = textarea.value.substring(start, end);
+        const replacement = before + selectedText + after;
+
+        textarea.value = textarea.value.substring(0, start) + replacement + textarea.value.substring(end);
+
+        // Set cursor position after insertion
+        const newCursorPos = start + replacement.length;
+        textarea.focus();
+        textarea.setSelectionRange(newCursorPos, newCursorPos);
+
+        updatePreview();
+    }
+
+    // Insert a markdown table template
+    function insertTable() {
+        const tableTemplate = `| Header 1 | Header 2 | Header 3 |
+| -------- | -------- | -------- |
+| Cell 1   | Cell 2   | Cell 3   |
+| Cell 4   | Cell 5   | Cell 6   |
+`;
+        insertMarkdown(tableTemplate, '');
+    }
+
+    // Simple markdown to HTML converter for preview
+    function markdownToHtml(markdown) {
+        if (!markdown) return '';
+
+        // Replace headings
+        let html = markdown
+            .replace(/^# (.+)$/gm, '<h1>$1</h1>')
+            .replace(/^## (.+)$/gm, '<h2>$1</h2>')
+            .replace(/^### (.+)$/gm, '<h3>$1</h3>')
+            .replace(/^#### (.+)$/gm, '<h4>$1</h4>')
+            .replace(/^##### (.+)$/gm, '<h5>$1</h5>')
+            .replace(/^###### (.+)$/gm, '<h6>$1</h6>');
+
+        // Replace bold and italic
+        html = html
+            .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+            .replace(/\*(.+?)\*/g, '<em>$1</em>')
+            .replace(/_(.+?)_/g, '<em>$1</em>');
+
+        // Replace links and images
+        html = html
+            .replace(/!\[(.+?)\]\((.+?)\)/g, '<img src="$2" alt="$1">')
+            .replace(/\[(.+?)\]\((.+?)\)/g, '<a href="$2">$1</a>');
+
+        // Replace lists
+        html = html
+            .replace(/^- (.+)$/gm, '<li>$1</li>')
+            .replace(/^(\d+)\. (.+)$/gm, '<li>$2</li>');
+
+        // Wrap lists
+        html = html
+            .replace(/(<li>.+<\/li>\n)+/g, match => {
+                if (match.startsWith('<li>1.') || match.match(/^<li>\d+\./)) {
+                    return '<ol>\n' + match + '</ol>\n';
+                } else {
+                    return '<ul>\n' + match + '</ul>\n';
+                }
+            });
+
+        // Replace code blocks
+        html = html.replace(/```([\s\S]+?)```/g, '<pre><code>$1</code></pre>');
+
+        // Replace inline code
+        html = html.replace(/`(.+?)`/g, '<code>$1</code>');
+
+        // Replace blockquotes
+        html = html.replace(/^> (.+)$/gm, '<blockquote>$1</blockquote>');
+
+        // Replace horizontal rules
+        html = html.replace(/^---$/gm, '<hr>');
+
+        // Process tables
+        html = html.replace(/^\|(.+)\|$/gm, '<tr>$1</tr>');
+        html = html.replace(/\|([^|]+)\|/g, '<td>$1</td>');
+        html = html.replace(/<tr>(.+?)<\/tr>/g, '<tr>$1</tr>');
+        html = html.replace(/<td>-+<\/td>/g, '');
+        html = html.replace(/(<tr>.+?<\/tr>\n)+/g, match => {
+            return '<table>\n' + match + '</table>\n';
+        });
+
+        // Replace paragraphs (any line that doesn't start with a special character)
+        html = html.replace(/^([^<#\-*>\d\s|].+)$/gm, '<p>$1</p>');
+
+        // Fix empty lines between paragraphs
+        html = html.replace(/<\/p>\s+<p>/g, '</p>\n<p>');
+
+        return html;
+    }
+
+    // Update preview pane with HTML from markdown
+    function updatePreview() {
+        const markdown = document.getElementById('content').value;
+        const html = markdownToHtml(markdown);
+        document.getElementById('preview').innerHTML = html;
+    }
+
+    // Auto-generate filename from title
+    document.getElementById('title').addEventListener('input', function() {
+        const isNew = <%= isNew %>;
+        if (isNew) {
+            const title = this.value;
+            const filename = title
+                .toLowerCase()
+                .replace(/[^\w\s-]/g, '') // Remove special characters
+                .replace(/\s+/g, '-') // Replace spaces with hyphens
+                .replace(/-+/g, '-') // Replace multiple hyphens with single hyphen
+                .trim();
+
+            document.getElementById('path').value = filename + '.md';
+        }
+    });
+</script>

@@ -65,9 +65,6 @@ class ShopConfig {
       if (shopCount === 0) {
         await this.initializeShopData();
       }
-
-      // Add any missing columns to the shop_config table
-      await this.addMissingColumns();
     } catch (error) {
       console.error('Error creating shop tables:', error);
       throw error;
@@ -78,79 +75,48 @@ class ShopConfig {
    * Initialize shop data with default shops
    * @returns {Promise<void>}
    */
-  /**
-   * Add missing columns to the shop_config table
-   * @returns {Promise<void>}
-   */
-  static async addMissingColumns() {
-    try {
-      // Check if updated_at column exists
-      const checkQuery = `
-        SELECT column_name
-        FROM information_schema.columns
-        WHERE table_name = 'shop_config' AND column_name = 'updated_at'
-      `;
-
-      const result = await db.query(checkQuery);
-
-      // If updated_at column doesn't exist, add it
-      if (result.rows.length === 0) {
-        console.log('Adding missing updated_at column to shop_config table');
-        const alterQuery = `
-          ALTER TABLE shop_config
-          ADD COLUMN updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        `;
-        await db.query(alterQuery);
-        console.log('Added updated_at column to shop_config table');
-      }
-    } catch (error) {
-      console.error('Error adding missing columns to shop_config table:', error);
-      throw error;
-    }
-  }
-
   static async initializeShopData() {
     try {
       const shops = [
         {
-          shop_id: 'apothecary',
+          shop_id: 'berry_shop',
           name: 'Apothecary',
           description: 'Purchase berries and healing items for your monsters.',
           image_url: 'https://i.imgur.com/HViAPDq.jpeg',
-          category: 'BERRIES',
+          category: 'berries',
           price_multiplier_min: 1.0,
           price_multiplier_max: 1.5,
           min_items: 5,
           max_items: 10
         },
         {
-          shop_id: 'bakery',
+          shop_id: 'pastry_shop',
           name: 'Bakery',
           description: 'Purchase delicious pastries for your monsters.',
           image_url: 'https://i.imgur.com/5cgcSGC.png',
-          category: 'PASTRIES',
+          category: 'pastries',
           price_multiplier_min: 1.0,
           price_multiplier_max: 1.5,
           min_items: 5,
           max_items: 10
         },
         {
-          shop_id: 'witchs_hut',
+          shop_id: 'evolution_shop',
           name: 'Witch\'s Hut',
           description: 'Purchase evolution items and learn new abilities.',
           image_url: 'https://i.imgur.com/5cgcSGC.png',
-          category: 'EVOLUTION',
+          category: 'evolution',
           price_multiplier_min: 1.5,
           price_multiplier_max: 2.5,
           min_items: 3,
           max_items: 8
         },
         {
-          shop_id: 'megamart',
+          shop_id: 'ball_shop',
           name: 'Mega Mart',
           description: 'Purchase Poké Balls and other catching items.',
           image_url: 'https://i.imgur.com/RmKySNO.png',
-          category: 'BALLS',
+          category: 'balls',
           price_multiplier_min: 1.0,
           price_multiplier_max: 2.0,
           min_items: 4,
@@ -161,14 +127,14 @@ class ShopConfig {
           name: 'Antique Store',
           description: 'Purchase rare antiques and collectibles.',
           image_url: 'https://i.imgur.com/Yg6BWUm.jpeg',
-          category: 'ANTIQUES',
+          category: 'antiques',
           price_multiplier_min: 2.0,
           price_multiplier_max: 3.0,
           min_items: 3,
           max_items: 6
         },
         {
-          shop_id: 'nursery',
+          shop_id: 'egg_shop',
           name: 'Nursery',
           description: 'Purchase egg items and accessories.',
           image_url: 'https://i.imgur.com/IhtWUxD.png',
@@ -179,11 +145,11 @@ class ShopConfig {
           max_items: 7
         },
         {
-          shop_id: 'pirates_dock',
+          shop_id: 'black_market_shop',
           name: 'Pirate\'s Dock',
           description: 'Purchase black market items at a markup.',
           image_url: 'https://i.imgur.com/RmKySNO.png',
-          category: 'BLACK_MARKET',
+          category: 'black_market',
           price_multiplier_min: 2.5,
           price_multiplier_max: 4.0,
           min_items: 2,
@@ -232,78 +198,6 @@ class ShopConfig {
       return result.rows[0];
     } catch (error) {
       console.error(`Error getting shop ${shopId}:`, error);
-      throw error;
-    }
-  }
-
-  /**
-   * Get all shops
-   * @returns {Promise<Array>} Array of shop configurations
-   */
-  static async getAll() {
-    try {
-      const query = 'SELECT * FROM shop_config ORDER BY name';
-      const result = await db.query(query);
-      return result.rows;
-    } catch (error) {
-      console.error('Error getting all shops:', error);
-      throw error;
-    }
-  }
-
-  /**
-   * Update a shop
-   * @param {string} shopId - The shop ID
-   * @param {Object} shopData - The shop data to update
-   * @returns {Promise<Object>} Updated shop
-   */
-  static async update(shopId, shopData) {
-    try {
-      // Build the SET clause dynamically based on provided data
-      const fields = [];
-      const values = [];
-      let paramIndex = 1;
-
-      for (const [key, value] of Object.entries(shopData)) {
-        fields.push(`${key} = $${paramIndex}`);
-        values.push(value);
-        paramIndex++;
-      }
-
-      // Add updated_at timestamp
-      fields.push('updated_at = CURRENT_TIMESTAMP');
-
-      // Add the shop_id as the last parameter
-      values.push(shopId);
-
-      const query = `
-        UPDATE shop_config
-        SET ${fields.join(', ')}
-        WHERE shop_id = $${paramIndex}
-        RETURNING *
-      `;
-
-      const result = await db.query(query, values);
-      return result.rows[0];
-    } catch (error) {
-      console.error(`Error updating shop ${shopId}:`, error);
-      throw error;
-    }
-  }
-
-
-
-  /**
-   * Get all active shops
-   * @returns {Promise<Array>} Array of active shop configurations
-   */
-  static async getAllActive() {
-    try {
-      const query = 'SELECT * FROM shop_config WHERE is_active = TRUE ORDER BY name';
-      const result = await db.query(query);
-      return result.rows;
-    } catch (error) {
-      console.error('Error getting active shops:', error);
       throw error;
     }
   }
@@ -441,8 +335,6 @@ class DailyShopItems {
         ORDER BY i.name
       `;
 
-      console.log(`Executing query to get shop items: ${query} with params [${shopId}, ${targetDate}]`);
-
       const result = await db.query(query, [shopId, targetDate]);
       console.log(`Shop ${shopId} items for ${targetDate}:`, result.rows);
       return result.rows;
@@ -547,19 +439,8 @@ class DailyShopItems {
           Math.random() * (shop.price_multiplier_max - shop.price_multiplier_min) +
           shop.price_multiplier_min;
 
-        // Ensure rarity is a valid number, default to 1 if not
-        const rarity = typeof item.rarity === 'number' && !isNaN(item.rarity) ? item.rarity : 1;
-        const basePrice = rarity * 100; // Base price calculation
-        let price = Math.round(basePrice * multiplier);
-
-        // Ensure price is a valid integer, default to 100 if not
-        if (isNaN(price) || !Number.isInteger(price) || price <= 0) {
-          console.warn(`Invalid price calculated for ${item.name}: ${price}. Using default price of 100.`);
-          price = 100;
-        }
-
-        // Log the price calculation for debugging
-        console.log(`Price calculation for ${item.name}: rarity=${rarity}, basePrice=${basePrice}, multiplier=${multiplier}, final price=${price}`);
+        const basePrice = item.rarity * 100; // Base price calculation
+        const price = Math.round(basePrice * multiplier);
 
         // Random quantity between 1 and 10
         const maxQuantity = Math.floor(Math.random() * 10) + 1;
@@ -759,11 +640,9 @@ class PlayerShopPurchases {
         const existingRecord = checkResult.rows[0];
         const newQuantity = existingRecord.quantity + quantity;
 
-        console.log(`Updating existing purchase record: ID=${existingRecord.id}, new quantity=${newQuantity}`);
-
         const updateQuery = `
           UPDATE player_shop_purchases
-          SET quantity = $1
+          SET quantity = $1, updated_at = CURRENT_TIMESTAMP
           WHERE id = $2
           RETURNING *
         `;
@@ -772,8 +651,6 @@ class PlayerShopPurchases {
         return updateResult.rows[0];
       } else {
         // Create new record
-        console.log(`Creating new purchase record: player=${playerId}, shop=${shopId}, item=${itemId}, quantity=${quantity}, date=${targetDate}`);
-
         const insertQuery = `
           INSERT INTO player_shop_purchases (player_id, shop_id, item_id, quantity, date)
           VALUES ($1, $2, $3, $4, $5)
@@ -785,34 +662,6 @@ class PlayerShopPurchases {
       }
     } catch (error) {
       console.error(`Error recording purchase for player ${playerId}, shop ${shopId}, item ${itemId}:`, error);
-      throw error;
-    }
-  }
-
-  /**
-   * Remove an item from a shop
-   * @param {string} shopId - The shop ID
-   * @param {string} itemId - The item ID
-   * @param {string} [date=today] - The date (YYYY-MM-DD)
-   * @returns {Promise<boolean>} Whether the item was removed
-   */
-  static async removeItem(shopId, itemId, date = null) {
-    try {
-      // Use today's date if not provided
-      const targetDate = date || new Date().toISOString().split('T')[0];
-      console.log(`Removing item ${itemId} from shop ${shopId} for date ${targetDate}`);
-
-      const query = `
-        DELETE FROM daily_shop_items
-        WHERE shop_id = $1 AND item_id = $2 AND date = $3
-        RETURNING *
-      `;
-      const values = [shopId, itemId, targetDate];
-
-      const result = await db.query(query, values);
-      return result.rows.length > 0;
-    } catch (error) {
-      console.error(`Error removing item ${itemId} from shop ${shopId}:`, error);
       throw error;
     }
   }

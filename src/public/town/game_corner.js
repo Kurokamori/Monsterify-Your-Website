@@ -30,21 +30,6 @@
         selector: document.getElementById('video-selector'),
         muteToggle: document.getElementById('mute-toggle'),
         volumeIcon: document.getElementById('volume-icon')
-      },
-      workAssessment: {
-        modal: document.getElementById('work-assessment-modal'),
-        buttons: document.querySelectorAll('.work-assessment-btn')
-      },
-      rewards: {
-        container: document.getElementById('rewards-container'),
-        closeBtn: document.getElementById('close-rewards-btn'),
-        completedSessions: document.getElementById('completed-sessions'),
-        focusMinutes: document.getElementById('focus-minutes'),
-        productivityScore: document.getElementById('productivity-score'),
-        list: document.getElementById('rewards-list'),
-        trainers: document.getElementById('trainers-container'),
-        monsterEncounter: document.getElementById('monster-encounter-container'),
-        monsterEncountersList: document.getElementById('monster-encounters-list')
       }
     };
 
@@ -154,25 +139,6 @@
       updateTimerWithProgress();
     }
 
-    // Add safe video handling
-    function handleVideo(action) {
-      const videoElement = document.querySelector('.focus-video');
-      if (!videoElement) {
-        console.log('Video element not found, skipping video actions');
-        return;
-      }
-
-      try {
-        if (action === 'play' && typeof videoElement.play === 'function') {
-          videoElement.play().catch(e => console.log('Video play error:', e));
-        } else if (action === 'pause' && typeof videoElement.pause === 'function') {
-          videoElement.pause();
-        }
-      } catch (error) {
-        console.log('Video action error:', error);
-      }
-    }
-
     function startTimer() {
       if (!state.isRunning) {
         if (!state.isPaused) {
@@ -188,7 +154,6 @@
         state.isPaused = false;
         updateButtonStates(true);
         elements.timer.status.textContent = 'Timer running';
-        handleVideo('play');
         state.timer = setInterval(updateTimer, 1000);
       }
     }
@@ -204,17 +169,27 @@
     }
 
     function resetTimer() {
+      console.log('Resetting timer...');
       clearInterval(state.timer);
       state.isRunning = false;
       state.isPaused = false;
+      state.currentSession = 0;
       state.isFocusTime = true;
-      state.minutes = parseInt(elements.focus.input.value);
-      state.seconds = 0;
-      
-      updateTimerDisplay();
+
+      // Don't reset completed sessions or focus minutes
+      // These should persist until the page is refreshed
+
       updateButtonStates(false);
       elements.timer.status.textContent = 'Ready to start';
-      handleVideo('pause');
+      updateTimerDisplay();
+      updateSessionInfo();
+
+      // Reset progress circle
+      const progressCircle = document.getElementById('progress-circle');
+      if (progressCircle) {
+        progressCircle.style.strokeDashoffset = progressCircle.style.strokeDasharray;
+        progressCircle.style.stroke = '#8B5CF6';
+      }
     }
 
     function updateButtonStates(isRunning) {
@@ -242,180 +217,6 @@
     updateSessionInfo();
     initializeControls();
 
-    const MONSTER_RARITY_WEIGHTS = {
-      common: { weight: 70, evolveChance: 0.1 },
-      uncommon: { weight: 20, evolveChance: 0.2 },
-      rare: { weight: 8, evolveChance: 0.3 },
-      epic: { weight: 1.99, evolveChance: 0.4 },
-      legendary: { weight: 0.01, evolveChance: 1 }
-    };
-    
-    const ITEMS_TABLE = [
-      { name: 'Potion', rarity: 'common', icon: 'flask', color: 'blue', weight: 100 },
-      { name: 'Super Potion', rarity: 'uncommon', icon: 'flask', color: 'purple', weight: 50 },
-      { name: 'Rare Candy', rarity: 'rare', icon: 'candy-cane', color: 'red', weight: 25 },
-      { name: 'Master Ball', rarity: 'epic', icon: 'circle', color: 'purple', weight: 10 },
-      { name: 'Golden Berry', rarity: 'epic', icon: 'apple-alt', color: 'yellow', weight: 15 }
-    ];
-    
-    async function assessProductivity(score) {
-      document.getElementById('productivity-modal').style.display = 'none';
-      document.getElementById('rewards-loading').style.display = 'flex';
-      
-      const sessionData = {
-        productivityScore: score,
-        completedSessions: window.completedSessions || 1,
-        totalFocusMinutes: window.totalFocusMinutes || 25
-      };
-    
-      try {
-        const rewards = await generateRewards(sessionData);
-        displayRewards(rewards);
-      } catch (error) {
-        console.error('Error generating rewards:', error);
-        alert('Failed to generate rewards. Please try again.');
-      }
-    }
-    
-    async function generateRewards(sessionData) {
-      const { productivityScore, completedSessions, totalFocusMinutes } = sessionData;
-      
-      // Calculate multipliers
-      const productivityMultiplier = productivityScore / 100;
-      const sessionMultiplier = Math.min(2, completedSessions / 4);
-      const timeMultiplier = Math.min(2, totalFocusMinutes / 60);
-      const combinedMultiplier = 1 + (productivityMultiplier + sessionMultiplier + timeMultiplier) / 3;
-    
-      // Generate rewards
-      const rewards = {
-        coins: generateCoins(combinedMultiplier, completedSessions),
-        levels: generateLevels(combinedMultiplier, completedSessions),
-        items: generateItems(combinedMultiplier, completedSessions),
-        monsters: await generateMonsters(combinedMultiplier, productivityScore, completedSessions)
-      };
-    
-      // Randomly assign rewards to trainers
-      return assignRewardsToTrainers(rewards);
-    }
-    
-    async function rollMonsterRarity(productivityScore) {
-      const boost = productivityScore / 100;
-      const roll = Math.random() * 100;
-      let cumulative = 0;
-      
-      for (const [rarity, data] of Object.entries(MONSTER_RARITY_WEIGHTS)) {
-        cumulative += data.weight * (1 + boost);
-        if (roll <= cumulative) {
-          console.log(`Rolling monster with rarity: ${rarity}, evolveChance: ${data.evolveChance}`);
-          return { rarity, evolveChance: data.evolveChance };
-        }
-      }
-      
-      console.log('Defaulting to common monster');
-      return { rarity: 'common', evolveChance: 0.1 };
-    }
-    
-    async function generateMonsters(multiplier, productivityScore, sessions) {
-      const monsterChance = 0.3 * multiplier;
-      const monsters = [];
-      
-      for (let i = 0; i < sessions; i++) {
-        if (Math.random() < monsterChance) {
-          const { rarity, evolveChance } = rollMonsterRarity(productivityScore);
-          const isEvolved = Math.random() < evolveChance * multiplier;
-          
-          try {
-            // Modified MonsterRoller call with proper parameters
-            const monster = await MonsterRoller.rollOne({
-              filters: {
-                rarity: rarity.toUpperCase(), // Ensure rarity is uppercase
-                stage: isEvolved ? 'EVOLVED' : 'BASIC'
-              }
-            });
-            
-            if (monster) {
-              monsters.push({
-                name: monster.species1,
-                type: monster.type1 + (monster.type2 ? `/${monster.type2}` : ''),
-                rarity: monster.speciesData[0]?.data?.Rarity || 'Common',
-                isEvolved: isEvolved
-              });
-            } else {
-              // Fallback monster if no match found
-              monsters.push({
-                name: 'Mystery Monster',
-                type: 'Normal',
-                rarity: rarity,
-                isEvolved: false
-              });
-            }
-          } catch (error) {
-            console.error('Error rolling monster:', error);
-            // Add fallback monster
-            monsters.push({
-              name: 'Mystery Monster',
-              type: 'Normal',
-              rarity: rarity,
-              isEvolved: false
-            });
-          }
-        }
-      }
-      
-      return monsters;
-    }
-
-    function displayRewards(rewards) {
-      const rewardsList = document.getElementById('rewards-list');
-      rewardsList.innerHTML = '';
-      
-      // Display coins
-      rewards.coins.forEach(coin => {
-        rewardsList.appendChild(createRewardCard('coin', coin));
-      });
-      
-      // Display levels
-      rewards.levels.forEach(level => {
-        rewardsList.appendChild(createRewardCard('level', level));
-      });
-      
-      // Display items
-      rewards.items.forEach(item => {
-        rewardsList.appendChild(createRewardCard('item', item));
-      });
-      
-      // Display monsters
-      rewards.monsters.forEach(monster => {
-        rewardsList.appendChild(createMonsterCard(monster));
-      });
-      
-      document.getElementById('rewards-loading').style.display = 'none';
-      document.getElementById('rewards-container').style.display = 'flex';
-    }
-    
-    function createRewardCard(type, reward) {
-      const card = document.createElement('div');
-      card.className = 'bg-gray-800/70 rounded-lg p-2 border border-amber-500/20';
-      
-      const trainer = window.trainers.find(t => t.id === reward.trainerId);
-      
-      card.innerHTML = `
-        <div class="flex items-center">
-          <img src="${trainer.image}" class="w-8 h-8 rounded-full mr-2">
-          <div>
-            <div class="text-white text-sm">${trainer.name}</div>
-            <div class="text-amber-400 text-xs">
-              ${type === 'coin' ? `${reward.amount} coins` :
-                type === 'level' ? `+${reward.levels} levels` :
-                `${reward.name}`}
-            </div>
-          </div>
-        </div>
-      `;
-      
-      return card;
-    }
-    
     // Work assessment modal
     const workAssessmentModal = document.getElementById('work-assessment-modal');
     const workAssessmentBtns = document.querySelectorAll('.work-assessment-btn');
@@ -496,86 +297,71 @@
     });
 
     function updateTimer() {
-      if (state.seconds === 0 && state.minutes === 0) {
-        // Timer completed
-        clearInterval(state.timer);
-        
-        if (state.isFocusTime) {
-          // Completed a focus session
-          state.completedSessions++;
-          state.totalFocusMinutes += parseInt(elements.focus.input.value);
-          
-          // Save session data for final rewards
-          window.completedSessions = state.completedSessions;
-          window.totalFocusMinutes = state.totalFocusMinutes;
-          
-          // Show productivity assessment immediately for final session
-          if (state.currentSession >= parseInt(elements.sessions.input.value)) {
-            showProductivityAssessment();
-          } else {
-            // Not final session - switch to break
-            startBreak();
-          }
-        } else {
-          // Break completed - start next focus session
-          startNextSession();
-        }
-        return;
-      }
-      
-      // Normal timer update
       if (state.seconds === 0) {
+        if (state.minutes === 0) {
+          // Timer completed
+          clearInterval(state.timer);
+
+          if (state.isFocusTime) {
+            // Completed a focus session
+            state.completedSessions++;
+            state.totalFocusMinutes += parseInt(elements.focus.input.value);
+
+            // Show work assessment modal
+            workAssessmentModal.classList.remove('hidden');
+            workAssessmentModal.style.display = 'flex';
+            // Force a reflow to ensure the transition works
+            void workAssessmentModal.offsetWidth;
+            setTimeout(() => {
+              workAssessmentModal.style.opacity = '1';
+            }, 10);
+
+            // Don't continue automatically - wait for user input
+            return;
+          } else {
+            // Completed a break - no assessment needed
+            state.currentSession++;
+            state.isFocusTime = true;
+            state.minutes = parseInt(elements.focus.input.value);
+            state.seconds = 0;
+            elements.timer.status.textContent = 'Focus time!';
+
+            updateSessionInfo();
+            updateTimerDisplay();
+            startTimer(); // Auto-start the next session
+            return;
+          }
+        }
         state.minutes--;
         state.seconds = 59;
       } else {
         state.seconds--;
       }
-      
-      updateTimerDisplay();
-    }
 
-    function showProductivityAssessment() {
-      const productivityModal = document.getElementById('productivity-modal');
-      productivityModal.classList.remove('hidden');
-      productivityModal.style.display = 'flex';
-      productivityModal.style.opacity = '1';
-      
-      // Update status
-      elements.timer.status.textContent = 'All sessions completed!';
-      updateSessionInfo();
-    }
+      elements.timer.display.textContent = `${state.minutes.toString().padStart(2, '0')}:${state.seconds.toString().padStart(2, '0')}`;
 
-    function startBreak() {
-      state.isFocusTime = false;
-      state.minutes = parseInt(elements.break.input.value);
-      state.seconds = 0;
-      elements.timer.status.textContent = 'Break time!';
-      
-      updateSessionInfo();
-      updateTimerDisplay();
-      startTimer();
-    }
-
-    function startNextSession() {
-      state.currentSession++;
-      state.isFocusTime = true;
-      state.minutes = parseInt(elements.focus.input.value);
-      state.seconds = 0;
-      elements.timer.status.textContent = 'Focus time!';
-      
-      updateSessionInfo();
-      updateTimerDisplay();
-      startTimer();
+      // Update the progress circle
+      updateTimerWithProgress();
     }
 
     function continueAfterAssessment() {
-      console.log('Continue after assessment - Current session:', state.currentSession, 
-        'Total sessions:', parseInt(elements.sessions.input.value));
+      console.log('Continue after assessment - Current session:', state.currentSession, 'Total sessions:', parseInt(elements.sessions.input.value));
 
       // Check if all sessions are completed
       if (state.currentSession >= parseInt(elements.sessions.input.value)) {
-        console.log('All sessions completed!');
+        console.log('All sessions completed! Showing rewards...');
         elements.timer.status.textContent = 'All sessions completed!';
+
+        // Only show rewards once
+        if (!state.rewardsShown) {
+          state.rewardsShown = true;
+
+          // Force show rewards with a slight delay to ensure UI updates
+          setTimeout(() => {
+            showRewards();
+          }, 500);
+        }
+
         resetTimer();
         return;
       }
