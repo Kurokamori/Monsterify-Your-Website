@@ -1,0 +1,769 @@
+<% /* Set the title and other variables for the layout */ %>
+<% title = title || `${trainer.name} - Additional References` %>
+<div class="full-width-section">
+    <div class="container">
+        <span></span>
+    </div>
+</div>
+
+<div class="full-width-content">
+    <div class="trainer-page-layout" data-trainer-id="<%= trainer.id %>">
+        <!-- Side Navigation -->
+        <div class="trainer-sidebar">
+            <div class="sidebar-nav">
+                <a href="/trainers/<%= trainer.id %>" class="sidebar-link">Profile</a>
+                <a href="/trainers/<%= trainer.id %>/pc" class="sidebar-link">PC Boxes</a>
+                <a href="/trainers/<%= trainer.id %>/boxes" class="sidebar-link">All Boxes</a>
+                <a href="/trainers/<%= trainer.id %>/inventory" class="sidebar-link">Inventory</a>
+                <a href="/trainers/<%= trainer.id %>/stats" class="sidebar-link">Stats</a>
+                <a href="/trainers/<%= trainer.id %>/additional-references" class="sidebar-link active">Additional References</a>
+
+                <% if (locals.user && locals.user.discord_id && trainer.player_user_id && locals.user.discord_id.toString() === trainer.player_user_id) { %>
+                <div class="sidebar-divider"></div>
+                <a href="/trainers/<%= trainer.id %>/edit" class="sidebar-link owner-action">Edit Trainer</a>
+                <a href="/trainers/<%= trainer.id %>/edit-boxes" class="sidebar-link owner-action">Edit Boxes</a>
+                <% } %>
+            </div>
+        </div>
+
+    <!-- Main Content -->
+    <div class="trainer-content">
+      <div class="content-section">
+        <div class="section-header">
+          <h2>Additional References</h2>
+          <div class="section-actions">
+            <button id="add-image-btn" class="action-button primary-action">
+              <i class="fas fa-image"></i> Add Image
+            </button>
+            <button id="add-text-btn" class="action-button secondary-action">
+              <i class="fas fa-align-left"></i> Add Text
+            </button>
+          </div>
+        </div>
+
+        <p class="section-description">Add custom images and text to showcase additional information about your trainer.</p>
+
+        <!-- Content Area -->
+        <div id="content-area" class="references-grid">
+          <% if (trainer.additional_info && Object.keys(trainer.additional_info).length > 0) { %>
+            <% Object.entries(trainer.additional_info).forEach(([id, item]) => { %>
+              <% if (item.type === 'image') { %>
+                <div class="reference-card" data-id="<%= id %>">
+                  <div class="reference-image-container">
+                    <img src="<%= item.url %>" alt="<%= item.title || 'Image' %>" class="reference-image">
+                    <div class="reference-actions">
+                      <button class="edit-item-btn action-icon edit-icon">
+                        <i class="fas fa-edit"></i>
+                      </button>
+                      <button class="delete-item-btn action-icon delete-icon">
+                        <i class="fas fa-trash"></i>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="reference-content">
+                    <h3 class="reference-title"><%= item.title || 'Untitled Image' %></h3>
+                    <p class="reference-description"><%= item.description || '' %></p>
+                  </div>
+                </div>
+              <% } else if (item.type === 'text') { %>
+                <div class="reference-card text-reference" data-id="<%= id %>">
+                  <div class="reference-content">
+                    <div class="reference-header">
+                      <h3 class="reference-title"><%= item.title || 'Untitled Text' %></h3>
+                      <div class="reference-actions">
+                        <button class="edit-item-btn action-icon edit-icon">
+                          <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="delete-item-btn action-icon delete-icon">
+                          <i class="fas fa-trash"></i>
+                        </button>
+                      </div>
+                    </div>
+                    <div class="reference-text"><%= item.content || '' %></div>
+                  </div>
+                </div>
+              <% } %>
+            <% }); %>
+          <% } else { %>
+            <div class="empty-references">
+              <i class="fas fa-info-circle empty-icon"></i>
+              <p class="empty-message">No additional references yet. Click the buttons above to add content.</p>
+            </div>
+          <% } %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Image Modal -->
+<div id="image-modal" class="modal-overlay">
+  <div class="modal-container">
+    <div class="modal-header">
+      <h3 id="modal-title">Add Image</h3>
+      <button id="close-image-modal" class="modal-close"><i class="fas fa-times"></i></button>
+    </div>
+    <form id="image-form" class="modal-form">
+      <input type="hidden" id="image-id">
+      <div class="form-group">
+        <label for="image-url">Image URL</label>
+        <input type="text" id="image-url" class="form-input" placeholder="https://example.com/image.jpg" required>
+      </div>
+      <div class="form-group">
+        <label for="image-title">Title</label>
+        <input type="text" id="image-title" class="form-input" placeholder="Image Title">
+      </div>
+      <div class="form-group">
+        <label for="image-description">Description (optional)</label>
+        <textarea id="image-description" class="form-textarea" placeholder="Describe this image..."></textarea>
+      </div>
+      <div class="form-actions">
+        <button type="button" id="cancel-image" class="cancel-button">Cancel</button>
+        <button type="submit" class="submit-button">Save</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Text Modal -->
+<div id="text-modal" class="modal-overlay">
+  <div class="modal-container">
+    <div class="modal-header">
+      <h3 id="text-modal-title">Add Text</h3>
+      <button id="close-text-modal" class="modal-close"><i class="fas fa-times"></i></button>
+    </div>
+    <form id="text-form" class="modal-form">
+      <input type="hidden" id="text-id">
+      <div class="form-group">
+        <label for="text-title">Title</label>
+        <input type="text" id="text-title" class="form-input" placeholder="Text Title">
+      </div>
+      <div class="form-group">
+        <label for="text-content">Content</label>
+        <textarea id="text-content" class="form-textarea" rows="8" placeholder="Enter your text here..." required></textarea>
+      </div>
+      <div class="form-actions">
+        <button type="button" id="cancel-text" class="cancel-button">Cancel</button>
+        <button type="submit" class="submit-button">Save</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div id="delete-modal" class="modal-overlay">
+  <div class="modal-container">
+    <div class="modal-header">
+      <h3>Confirm Deletion</h3>
+      <button id="close-delete-modal" class="modal-close"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="modal-content">
+      <p>Are you sure you want to delete this item? This action cannot be undone.</p>
+    </div>
+    <div class="modal-footer">
+      <button id="cancel-delete" class="cancel-button">Cancel</button>
+      <button id="confirm-delete" class="delete-button">Delete</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // DOM Elements
+    const contentArea = document.getElementById('content-area');
+    const addImageBtn = document.getElementById('add-image-btn');
+    const addTextBtn = document.getElementById('add-text-btn');
+
+    // Image Modal Elements
+    const imageModal = document.getElementById('image-modal');
+    const closeImageModal = document.getElementById('close-image-modal');
+    const cancelImage = document.getElementById('cancel-image');
+    const imageForm = document.getElementById('image-form');
+    const imageId = document.getElementById('image-id');
+    const imageUrl = document.getElementById('image-url');
+    const imageTitle = document.getElementById('image-title');
+    const imageDescription = document.getElementById('image-description');
+    const modalTitle = document.getElementById('modal-title');
+
+    // Text Modal Elements
+    const textModal = document.getElementById('text-modal');
+    const closeTextModal = document.getElementById('close-text-modal');
+    const cancelText = document.getElementById('cancel-text');
+    const textForm = document.getElementById('text-form');
+    const textId = document.getElementById('text-id');
+    const textTitle = document.getElementById('text-title');
+    const textContent = document.getElementById('text-content');
+    const textModalTitle = document.getElementById('text-modal-title');
+
+    // Delete Modal Elements
+    const deleteModal = document.getElementById('delete-modal');
+    const closeDeleteModal = document.getElementById('close-delete-modal');
+    const cancelDelete = document.getElementById('cancel-delete');
+    const confirmDelete = document.getElementById('confirm-delete');
+    let itemToDelete = null;
+
+    // Event Listeners
+    addImageBtn.addEventListener('click', () => {
+      modalTitle.textContent = 'Add Image';
+      imageId.value = '';
+      imageUrl.value = '';
+      imageTitle.value = '';
+      imageDescription.value = '';
+      imageModal.classList.remove('hidden');
+    });
+
+    addTextBtn.addEventListener('click', () => {
+      textModalTitle.textContent = 'Add Text';
+      textId.value = '';
+      textTitle.value = '';
+      textContent.value = '';
+      textModal.classList.remove('hidden');
+    });
+
+    closeImageModal.addEventListener('click', () => imageModal.classList.add('hidden'));
+    cancelImage.addEventListener('click', () => imageModal.classList.add('hidden'));
+
+    closeTextModal.addEventListener('click', () => textModal.classList.add('hidden'));
+    cancelText.addEventListener('click', () => textModal.classList.add('hidden'));
+
+    closeDeleteModal.addEventListener('click', () => deleteModal.classList.add('hidden'));
+    cancelDelete.addEventListener('click', () => deleteModal.classList.add('hidden'));
+
+    // Edit and Delete buttons event delegation
+    contentArea.addEventListener('click', (e) => {
+      const contentItem = e.target.closest('.content-item');
+      if (!contentItem) return;
+
+      const itemId = contentItem.dataset.id;
+
+      // Edit button clicked
+      if (e.target.closest('.edit-item-btn')) {
+        editItem(itemId);
+      }
+
+      // Delete button clicked
+      if (e.target.closest('.delete-item-btn')) {
+        itemToDelete = itemId;
+        deleteModal.classList.remove('hidden');
+      }
+    });
+
+    // Form submissions
+    imageForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      saveImage();
+    });
+
+    textForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      saveText();
+    });
+
+    confirmDelete.addEventListener('click', () => {
+      if (itemToDelete) {
+        deleteItem(itemToDelete);
+        deleteModal.classList.add('hidden');
+      }
+    });
+
+    // Functions
+    function editItem(id) {
+      fetch(`/trainers/<%= trainer.id %>/additional-references/${id}`)
+        .then(response => response.json())
+        .then(data => {
+          if (data.type === 'image') {
+            modalTitle.textContent = 'Edit Image';
+            imageId.value = id;
+            imageUrl.value = data.url || '';
+            imageTitle.value = data.title || '';
+            imageDescription.value = data.description || '';
+            imageModal.classList.remove('hidden');
+          } else if (data.type === 'text') {
+            textModalTitle.textContent = 'Edit Text';
+            textId.value = id;
+            textTitle.value = data.title || '';
+            textContent.value = data.content || '';
+            textModal.classList.remove('hidden');
+          }
+        })
+        .catch(error => {
+          console.error('Error fetching item:', error);
+          alert('Error loading item. Please try again.');
+        });
+    }
+
+    function saveImage() {
+      const id = imageId.value || generateId();
+      const data = {
+        type: 'image',
+        url: imageUrl.value,
+        title: imageTitle.value,
+        description: imageDescription.value
+      };
+
+      saveItem(id, data, () => {
+        imageModal.classList.add('hidden');
+      });
+    }
+
+    function saveText() {
+      const id = textId.value || generateId();
+      const data = {
+        type: 'text',
+        title: textTitle.value,
+        content: textContent.value
+      };
+
+      saveItem(id, data, () => {
+        textModal.classList.add('hidden');
+      });
+    }
+
+    function saveItem(id, data, callback) {
+      fetch(`/trainers/<%= trainer.id %>/additional-references/${id}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Failed to save item');
+          }
+          return response.json();
+        })
+        .then(() => {
+          window.location.reload();
+          if (callback) callback();
+        })
+        .catch(error => {
+          console.error('Error saving item:', error);
+          alert('Error saving item. Please try again.');
+        });
+    }
+
+    function deleteItem(id) {
+      fetch(`/trainers/<%= trainer.id %>/additional-references/${id}`, {
+        method: 'DELETE'
+      })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Failed to delete item');
+          }
+          return response.json();
+        })
+        .then(() => {
+          window.location.reload();
+        })
+        .catch(error => {
+          console.error('Error deleting item:', error);
+          alert('Error deleting item. Please try again.');
+        });
+    }
+
+    function generateId() {
+      return 'item_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+    }
+  });
+</script>
+<style>
+.full-width-section {
+  width: 100%;
+  background: linear-gradient(to bottom, rgba(17, 24, 39, 0.8), rgba(17, 24, 39, 0.9));
+  padding: 2rem 0;
+}
+
+.trainer-page-layout {
+  display: grid;
+  grid-template-columns: 250px 1fr;
+  gap: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.trainer-sidebar {
+  background: rgba(31, 41, 55, 0.5);
+  border-radius: 0.75rem;
+  padding: 1rem;
+  height: fit-content;
+}
+
+.sidebar-link {
+  display: block;
+  padding: 0.75rem 1rem;
+  color: #e5e7eb;
+  border-radius: 0.5rem;
+  margin-bottom: 0.5rem;
+  transition: all 0.2s;
+}
+
+.sidebar-link:hover {
+  background: rgba(55, 65, 81, 0.5);
+}
+
+.sidebar-link.active {
+  background: rgba(59, 130, 246, 0.2);
+  color: #60a5fa;
+}
+
+.trainer-content {
+  background: rgba(31, 41, 55, 0.5);
+  border-radius: 0.75rem;
+  padding: 2rem;
+}
+
+.content-section {
+  margin-bottom: 2rem;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.section-actions {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.action-button {
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.2s;
+}
+
+.primary-action {
+  background: #2563eb;
+  color: white;
+}
+
+.primary-action:hover {
+  background: #1d4ed8;
+}
+
+.secondary-action {
+  background: #374151;
+  color: white;
+}
+
+.secondary-action:hover {
+  background: #4b5563;
+}
+
+.references-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+.reference-card {
+  background: rgba(31, 41, 55, 0.7);
+  border-radius: 0.75rem;
+  overflow: hidden;
+  transition: transform 0.2s;
+}
+
+.reference-card:hover {
+  transform: translateY(-2px);
+}
+
+.reference-image-container {
+  position: relative;
+  padding-top: 56.25%;
+}
+
+.reference-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.reference-actions {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.action-icon {
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.edit-icon:hover {
+  background: #2563eb;
+}
+
+.delete-icon:hover {
+  background: #dc2626;
+}
+
+.reference-content {
+  padding: 1rem;
+}
+
+.reference-title {
+  color: white;
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.reference-description {
+  color: #9ca3af;
+  font-size: 0.875rem;
+}
+
+.empty-references {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 3rem;
+  background: rgba(31, 41, 55, 0.3);
+  border-radius: 0.75rem;
+}
+
+.empty-icon {
+  font-size: 2rem;
+  color: #60a5fa;
+  margin-bottom: 1rem;
+}
+
+.empty-message {
+  color: #9ca3af;
+}
+
+/* Modal Styles */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.75);
+  z-index: 50;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-container {
+  background: #1f2937;
+  border-radius: 0.75rem;
+  width: 100%;
+  max-width: 500px;
+  margin: 1rem;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  border-bottom: 1px solid rgba(75, 85, 99, 0.4);
+}
+
+.modal-close {
+  color: #9ca3af;
+  padding: 0.5rem;
+  transition: color 0.2s;
+}
+
+.modal-close:hover {
+  color: white;
+}
+
+.modal-form {
+  padding: 1rem;
+}
+
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.form-group label {
+  display: block;
+  color: #e5e7eb;
+  margin-bottom: 0.5rem;
+}
+
+.form-input,
+.form-textarea {
+  width: 100%;
+  background: #374151;
+  border: 1px solid #4b5563;
+  border-radius: 0.5rem;
+  padding: 0.5rem;
+  color: white;
+}
+
+.form-textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+
+.cancel-button {
+  background: #4b5563;
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  transition: background 0.2s;
+}
+
+.cancel-button:hover {
+  background: #6b7280;
+}
+
+.submit-button {
+  background: #2563eb;
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  transition: background 0.2s;
+}
+
+.submit-button:hover {
+  background: #1d4ed8;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Elements
+  const addImageBtn = document.getElementById('add-image-btn');
+  const addTextBtn = document.getElementById('add-text-btn');
+  const imageModal = document.getElementById('image-modal');
+  const textModal = document.getElementById('text-modal');
+  const contentArea = document.getElementById('content-area');
+  const trainerId = document.querySelector('.trainer-page-layout').dataset.trainerId;
+
+  // Forms
+  const imageForm = document.getElementById('image-form');
+  const textForm = document.getElementById('text-form');
+
+  // Modal close buttons
+  const closeButtons = document.querySelectorAll('.modal-close, .cancel-button');
+
+  // Show modals
+  addImageBtn.addEventListener('click', () => {
+    imageModal.style.display = 'flex';
+  });
+
+  addTextBtn.addEventListener('click', () => {
+    textModal.style.display = 'flex';
+  });
+
+  // Close modals
+  closeButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      imageModal.style.display = 'none';
+      textModal.style.display = 'none';
+    });
+  });
+
+  // Handle form submissions
+  imageForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const formData = {
+      type: 'image',
+      url: document.getElementById('image-url').value,
+      title: document.getElementById('image-title').value,
+      description: document.getElementById('image-description').value
+    };
+
+    try {
+      const response = await fetch(`/trainers/${trainerId}/additional-references`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formData)
+      });
+
+      if (!response.ok) throw new Error('Failed to save image');
+
+      window.location.reload();
+    } catch (error) {
+      console.error('Error saving image:', error);
+      alert('Failed to save image. Please try again.');
+    }
+  });
+
+  textForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const formData = {
+      type: 'text',
+      title: document.getElementById('text-title').value,
+      content: document.getElementById('text-content').value
+    };
+
+    try {
+      const response = await fetch(`/trainers/${trainerId}/additional-references`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formData)
+      });
+
+      if (!response.ok) throw new Error('Failed to save text');
+
+      window.location.reload();
+    } catch (error) {
+      console.error('Error saving text:', error);
+      alert('Failed to save text. Please try again.');
+    }
+  });
+
+  // Handle delete
+  contentArea.addEventListener('click', async (e) => {
+    if (e.target.closest('.delete-icon')) {
+      const card = e.target.closest('.reference-card');
+      const itemId = card.dataset.id;
+
+      if (confirm('Are you sure you want to delete this item?')) {
+        try {
+          const response = await fetch(`/trainers/${trainerId}/additional-references/${itemId}`, {
+            method: 'DELETE'
+          });
+
+          if (!response.ok) throw new Error('Failed to delete item');
+
+          window.location.reload();
+        } catch (error) {
+          console.error('Error deleting item:', error);
+          alert('Failed to delete item. Please try again.');
+        }
+      }
+    }
+  });
+});
+</script>
+
+<% /* Add any additional scripts needed for this page */ %>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/js/all.min.js"></script>

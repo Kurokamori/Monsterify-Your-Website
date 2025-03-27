@@ -2270,6 +2270,108 @@ app.get('/town/visit/game_corner', async (req, res) => {
   }
 });
 
+// Handle claim rewards from pomodoro sessions
+app.post('/town/visit/game_corner/claim_rewards', async (req, res) => {
+  // Check if user is logged in
+  if (!req.session.user) {
+    return res.redirect('/login');
+  }
+
+  try {
+    const { trainers, monsters, sessionData } = req.body;
+    console.log('Received claim rewards request:', { trainers, monsters, sessionData });
+
+    // Process trainer rewards
+    if (trainers && Array.isArray(trainers)) {
+      for (const trainerData of trainers) {
+        if (!trainerData.id) continue;
+
+        // Get trainer from database
+        const trainer = await Trainer.getById(trainerData.id);
+        if (!trainer) {
+          console.warn(`Trainer with ID ${trainerData.id} not found`);
+          continue;
+        }
+
+        // Verify trainer belongs to user
+        if (trainer.player_user_id !== req.session.user.discord_id) {
+          console.warn(`Trainer ${trainerData.id} does not belong to user ${req.session.user.discord_id}`);
+          continue;
+        }
+
+        // Update trainer coins and level
+        const updatedCoins = trainer.coins + (parseInt(trainerData.coins) || 0);
+        const updatedLevel = trainer.level + (parseInt(trainerData.levels) || 0);
+
+        await Trainer.update({
+          id: trainer.id,
+          coins: updatedCoins,
+          level: updatedLevel
+        });
+
+        // Process items if any
+        if (trainerData.items && Array.isArray(trainerData.items)) {
+          for (const item of trainerData.items) {
+            await Item.create({
+              trainer_id: trainer.id,
+              name: item.name,
+              rarity: item.rarity,
+              type: 'pomodoro_reward'
+            });
+          }
+        }
+      }
+    }
+
+    // Process monster captures
+    if (monsters && Array.isArray(monsters)) {
+      for (const monsterData of monsters) {
+        if (!monsterData.trainerId) continue;
+
+        // Get trainer from database
+        const trainer = await Trainer.getById(monsterData.trainerId);
+        if (!trainer) {
+          console.warn(`Trainer with ID ${monsterData.trainerId} not found for monster`);
+          continue;
+        }
+
+        // Verify trainer belongs to user
+        if (trainer.player_user_id !== req.session.user.discord_id) {
+          console.warn(`Trainer ${monsterData.trainerId} does not belong to user ${req.session.user.discord_id}`);
+          continue;
+        }
+
+        // Create monster
+        await Monster.create({
+          trainer_id: monsterData.trainerId,
+          name: monsterData.name || monsterData.species,
+          species: monsterData.species,
+          type: monsterData.type,
+          rarity: monsterData.rarity,
+          level: monsterData.level || 1,
+          source: 'pomodoro'
+        });
+      }
+    }
+
+    // Record session data for analytics
+    if (sessionData) {
+      await PomodoroSession.create({
+        user_id: req.session.user.discord_id,
+        completed_sessions: sessionData.completedSessions || 0,
+        focus_minutes: sessionData.focusMinutes || 0,
+        productivity_score: sessionData.productivityScore || 0,
+        timestamp: new Date()
+      });
+    }
+
+    return res.redirect('/town/visit/game_corner?message=Rewards+claimed+successfully!');
+  } catch (error) {
+    console.error('Error claiming rewards:', error);
+    return res.redirect('/town/visit/game_corner?message=Error+claiming+rewards');
+  }
+});
+
 // Adventures routes
 app.get('/adventures', (req, res) => {
   // Check if user is logged in
@@ -3708,6 +3810,158 @@ app.get('/my_trainers', async (req, res) => {
       error: { status: 500, stack: error.stack },
       title: 'Error'
     });
+  }
+});
+
+// Additional References routes
+app.get('/trainers/:id/additional-references', async (req, res) => {
+  try {
+    // Check if user is logged in
+    if (!req.session.user) {
+      return res.redirect('/login');
+    }
+
+    const trainerId = req.params.id;
+    const trainer = await Trainer.getById(trainerId);
+
+    if (!trainer) {
+      return res.status(404).render('error', {
+        message: 'Trainer not found',
+        error: { status: 404 },
+        title: 'Error'
+      });
+    }
+
+    // Check if the user owns this trainer
+    if (trainer.player_user_id !== req.session.user.discord_id) {
+      return res.status(403).render('error', {
+        message: 'You do not have permission to view this trainer\'s additional references',
+        error: { status: 403 },
+        title: 'Error'
+      });
+    }
+
+    // Parse additional_info if it exists
+    if (trainer.additional_info && typeof trainer.additional_info === 'string') {
+      try {
+        trainer.additional_info = JSON.parse(trainer.additional_info);
+      } catch (e) {
+        console.error('Error parsing additional_info:', e);
+        trainer.additional_info = {};
+      }
+    } else if (!trainer.additional_info) {
+      trainer.additional_info = {};
+    }
+
+    res.render('trainers/additional-references', {
+      trainer,
+      title: `${trainer.name}'s Additional References`
+    });
+  } catch (error) {
+    console.error('Error loading additional references:', error);
+    res.status(500).render('error', {
+      message: 'Error loading additional references',
+      error: { status: 500, stack: error.stack },
+      title: 'Error'
+    });
+  }
+});
+
+// Get a specific additional reference item
+app.get('/trainers/:id/additional-references/:itemId', async (req, res) => {
+  try {
+    // Check if user is logged in
+    if (!req.session.user) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+
+    const trainerId = req.params.id;
+    const itemId = req.params.itemId;
+    const trainer = await Trainer.getById(trainerId);
+
+    if (!trainer) {
+      return res.status(404).json({ error: 'Trainer not found' });
+    }
+
+    // Check if the user owns this trainer
+    if (trainer.player_user_id !== req.session.user.discord_id) {
+      return res.status(403).json({ error: 'You do not have permission to access this trainer\'s data' });
+    }
+
+    // Get the item
+    const item = await Trainer.getAdditionalInfoItem(trainerId, itemId);
+
+    if (!item) {
+      return res.status(404).json({ error: 'Item not found' });
+    }
+
+    res.json(item);
+  } catch (error) {
+    console.error('Error getting additional reference item:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// Save or update an additional reference item
+app.post('/trainers/:id/additional-references/:itemId', async (req, res) => {
+  try {
+    // Check if user is logged in
+    if (!req.session.user) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+
+    const trainerId = req.params.id;
+    const itemId = req.params.itemId;
+    const itemData = req.body;
+    const trainer = await Trainer.getById(trainerId);
+
+    if (!trainer) {
+      return res.status(404).json({ error: 'Trainer not found' });
+    }
+
+    // Check if the user owns this trainer
+    if (trainer.player_user_id !== req.session.user.discord_id) {
+      return res.status(403).json({ error: 'You do not have permission to modify this trainer\'s data' });
+    }
+
+    // Update the item
+    await Trainer.updateAdditionalInfo(trainerId, itemId, itemData);
+
+    res.json({ success: true });
+  } catch (error) {
+    console.error('Error saving additional reference item:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// Delete an additional reference item
+app.delete('/trainers/:id/additional-references/:itemId', async (req, res) => {
+  try {
+    // Check if user is logged in
+    if (!req.session.user) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+
+    const trainerId = req.params.id;
+    const itemId = req.params.itemId;
+    const trainer = await Trainer.getById(trainerId);
+
+    if (!trainer) {
+      return res.status(404).json({ error: 'Trainer not found' });
+    }
+
+    // Check if the user owns this trainer
+    if (trainer.player_user_id !== req.session.user.discord_id) {
+      return res.status(403).json({ error: 'You do not have permission to modify this trainer\'s data' });
+    }
+
+    // Delete the item
+    await Trainer.deleteAdditionalInfoItem(trainerId, itemId);
+
+    res.json({ success: true });
+  } catch (error) {
+    console.error('Error deleting additional reference item:', error);
+    res.status(500).json({ error: 'Internal server error' });
   }
 });
 

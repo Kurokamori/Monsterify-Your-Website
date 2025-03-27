@@ -574,7 +574,8 @@ create table if not exists trainers
     theme                  text,
     created_at             timestamp default CURRENT_TIMESTAMP,
     updated_at             timestamp default CURRENT_TIMESTAMP,
-    player_display_name    varchar(255)
+    player_display_name    varchar(255),
+    additional_info        jsonb      default '{}'::jsonb
 );
 
 alter table trainers

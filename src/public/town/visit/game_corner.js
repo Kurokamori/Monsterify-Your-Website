@@ -235,20 +235,28 @@
     // Close rewards modal when clicking the close button
     if (closeRewardsBtn) {
       closeRewardsBtn.addEventListener('click', function() {
-        const modalContent = rewardsContainer.querySelector('.bg-gray-800');
+        const modalContent = rewardsContainer.querySelector('.bg-gray-900\/95');
         if (modalContent) {
           modalContent.classList.remove('scale-100');
           modalContent.classList.add('scale-95');
         }
 
+        // Immediately start fading out
+        rewardsContainer.style.opacity = '0';
+
+        // After animation completes, hide the modal
         setTimeout(() => {
-          rewardsContainer.style.opacity = '0';
-          setTimeout(() => {
-            rewardsContainer.classList.add('hidden');
-            rewardsContainer.style.display = 'none';
-            rewardsContainer.style.opacity = '1';
-          }, 300);
-        }, 100);
+          rewardsContainer.classList.add('hidden');
+          rewardsContainer.style.display = 'none';
+
+          // Reset any dynamic heights
+          const scrollableAreas = rewardsContainer.querySelectorAll('.overflow-y-auto');
+          scrollableAreas.forEach(area => {
+            if (area.style.maxHeight && !area.getAttribute('style').includes('calc')) {
+              area.style.maxHeight = '';
+            }
+          });
+        }, 300);
       });
     }
     const claimRewardsBtn = document.getElementById('claim-rewards-btn');
@@ -410,11 +418,17 @@
       // Add animation effect
       setTimeout(() => {
         rewardsContainer.style.opacity = '1';
-        const modalContent = rewardsContainer.querySelector('.bg-gray-800');
+        const modalContent = rewardsContainer.querySelector('.bg-gray-900\/95');
         if (modalContent) {
           modalContent.classList.add('scale-100');
           modalContent.classList.remove('scale-95');
         }
+
+        // Ensure scrollable areas have proper height
+        const scrollableAreas = rewardsContainer.querySelectorAll('.overflow-y-auto');
+        scrollableAreas.forEach(area => {
+          area.style.maxHeight = area.style.maxHeight || area.getAttribute('style')?.includes('max-height') ? area.style.maxHeight : area.classList.contains('flex-grow') ? 'calc(85vh - 120px)' : '150px';
+        });
 
         // Initialize the rewards UI
         initializeRewardsUI();
@@ -424,7 +438,14 @@
       fetchTrainers();
 
       // Generate rewards based on sessions and productivity
-      setTimeout(generateRewards, 1500); // Delay for dramatic effect
+      console.log('Generating rewards...');
+      const combinedMultiplier = generateRewards(); // Generate rewards immediately
+
+      // Generate monster encounters with a delay for dramatic effect
+      setTimeout(() => {
+        console.log('Generating monster encounters...');
+        generateMonsterEncounters(combinedMultiplier);
+      }, 1500);
 
       // Log reward data for debugging
       console.log('Reward data:', {
@@ -472,32 +493,47 @@
     function renderTrainers() {
       trainersContainer.innerHTML = '';
 
+      // Limit to showing max 4 trainers to keep it compact
+      const maxTrainersToShow = 4;
+      const trainersToShow = trainersData.slice(0, maxTrainersToShow);
+      const remainingCount = trainersData.length - maxTrainersToShow;
+
       // Add all trainers to the selectedTrainers object automatically
       trainersData.forEach(trainer => {
         selectedTrainers[trainer.id] = trainer;
+      });
 
+      // Show a subset of trainers
+      trainersToShow.forEach(trainer => {
         const trainerCard = document.createElement('div');
-        trainerCard.className = 'trainer-card bg-gray-800/40 rounded-lg p-2 flex items-center border border-gray-700/50 hover:border-blue-500/30';
+        trainerCard.className = 'trainer-card bg-gray-800/40 rounded-lg p-2 flex items-center border border-gray-700/50';
         trainerCard.innerHTML = `
           <div class="flex-shrink-0 mr-2">
-            <img src="${trainer.image}" alt="${trainer.name}" class="w-10 h-10 rounded-full object-cover border border-gray-600 shadow-md">
+            <img src="${trainer.image}" alt="${trainer.name}" class="w-8 h-8 rounded-full object-cover border border-gray-600 shadow-md">
           </div>
           <div class="flex-grow overflow-hidden">
             <h5 class="text-white text-xs font-medium truncate">${trainer.name}</h5>
-            <div class="flex items-center">
-              <span class="text-amber-400 text-xs mr-1">Lv.${trainer.level}</span>
-              <span class="inline-block w-2 h-2 rounded-full bg-green-500"></span>
-            </div>
+            <span class="text-amber-400 text-xs">Lv.${trainer.level}</span>
           </div>
         `;
 
         trainersContainer.appendChild(trainerCard);
       });
 
+      // If there are more trainers, show a count
+      if (remainingCount > 0) {
+        const moreTrainersElement = document.createElement('div');
+        moreTrainersElement.className = 'col-span-2 text-center text-gray-400 py-1';
+        moreTrainersElement.innerHTML = `
+          <p class="text-xs">+${remainingCount} more trainer${remainingCount > 1 ? 's' : ''}</p>
+        `;
+        trainersContainer.appendChild(moreTrainersElement);
+      }
+
       // If no trainers, show a message
       if (trainersData.length === 0) {
         const noTrainersElement = document.createElement('div');
-        noTrainersElement.className = 'col-span-full text-center text-amber-400 py-3';
+        noTrainersElement.className = 'col-span-full text-center text-amber-400 py-2';
         noTrainersElement.innerHTML = `
           <i class="fas fa-exclamation-circle text-sm mb-1"></i>
           <p class="text-xs">No trainers available</p>
@@ -539,14 +575,25 @@
         return;
       }
 
+      // Not all trainers will receive rewards - select a random subset
+      const numTrainersToReward = Math.min(
+        Math.max(1, Math.floor(trainerIds.length * 0.6)), // Reward about 60% of trainers
+        Math.max(1, Math.ceil(state.completedSessions / 2)) // Or 1 trainer per 2 sessions, whichever is greater
+      );
+
+      // Shuffle the trainer IDs and take the first numTrainersToReward
+      const shuffledTrainerIds = [...trainerIds].sort(() => Math.random() - 0.5).slice(0, numTrainersToReward);
+
+      console.log('Selected trainers for rewards:', shuffledTrainerIds.length, 'out of', trainerIds.length);
+
       // Initialize rewards tracking
       const trainerRewards = {};
       const monsterRewards = {};
 
-      // Initialize rewards for each trainer
+      // Initialize rewards for each trainer - but only those in the shuffled subset will get rewards
       trainerIds.forEach(id => {
+        // Initialize with empty rewards
         trainerRewards[id] = { coins: 0, levels: 0, items: [] };
-        // Initialize monsters for this trainer (placeholder - would be fetched from database in real implementation)
         monsterRewards[id] = [];
       });
 
@@ -566,9 +613,9 @@
         remainingCoins -= bundleSize;
       }
 
-      // Distribute coin bundles to random trainers
+      // Distribute coin bundles to random trainers from the shuffled subset
       coinBundles.forEach(coins => {
-        const randomTrainerId = trainerIds[Math.floor(Math.random() * trainerIds.length)];
+        const randomTrainerId = shuffledTrainerIds[Math.floor(Math.random() * shuffledTrainerIds.length)];
         trainerRewards[randomTrainerId].coins += coins;
       });
 
@@ -588,9 +635,9 @@
         remainingLevels -= bundleSize;
       }
 
-      // Distribute level bundles to random trainers
+      // Distribute level bundles to random trainers from the shuffled subset
       levelBundles.forEach(levels => {
-        const randomTrainerId = trainerIds[Math.floor(Math.random() * trainerIds.length)];
+        const randomTrainerId = shuffledTrainerIds[Math.floor(Math.random() * shuffledTrainerIds.length)];
         trainerRewards[randomTrainerId].levels += levels;
       });
 
@@ -616,8 +663,8 @@
       // Roll for items
       for (let i = 0; i < state.completedSessions; i++) {
         if (Math.random() < itemChance && Object.values(trainerRewards).reduce((sum, r) => sum + r.items.length, 0) < maxItems) {
-          // Select a random trainer
-          const randomTrainerId = trainerIds[Math.floor(Math.random() * trainerIds.length)];
+          // Select a random trainer from the shuffled subset
+          const randomTrainerId = shuffledTrainerIds[Math.floor(Math.random() * shuffledTrainerIds.length)];
 
           // Roll for item rarity based on productivity
           const rarityRoll = Math.random() * combinedMultiplier; // Higher multiplier = better chance for rare items
@@ -725,8 +772,11 @@
       });
 
       // 5. MONSTER ENCOUNTERS
-      // Use the roll utility with rarity scaling based on productivity
-      generateMonsterEncounters(combinedMultiplier);
+      // Monster encounters are now generated with a delay in the showRewards function
+      console.log('Rewards generation complete, monster encounters will be generated with delay');
+
+      // Return the combinedMultiplier for monster encounters
+      return combinedMultiplier;
     }
 
     // Generate monster encounters using the MonsterRoller utility
@@ -935,26 +985,26 @@
         let typeColor = 'gray-400';
         let typeBg = 'gray-700';
 
-        // Type color mapping
+        // Type color mapping with icons
         const typeColors = {
-          'Fire': { color: 'red-400', bg: 'red-900/30' },
-          'Water': { color: 'blue-400', bg: 'blue-900/30' },
-          'Grass': { color: 'green-400', bg: 'green-900/30' },
-          'Electric': { color: 'yellow-400', bg: 'yellow-900/30' },
-          'Psychic': { color: 'purple-400', bg: 'purple-900/30' },
-          'Dark': { color: 'gray-400', bg: 'gray-900/50' },
-          'Normal': { color: 'gray-300', bg: 'gray-700/50' },
-          'Fighting': { color: 'red-500', bg: 'red-950/30' },
-          'Flying': { color: 'blue-300', bg: 'blue-800/30' },
-          'Poison': { color: 'purple-500', bg: 'purple-950/30' },
-          'Ground': { color: 'yellow-600', bg: 'yellow-950/30' },
-          'Rock': { color: 'yellow-700', bg: 'yellow-950/40' },
-          'Bug': { color: 'green-500', bg: 'green-950/30' },
-          'Ghost': { color: 'indigo-400', bg: 'indigo-900/30' },
-          'Steel': { color: 'gray-400', bg: 'gray-800/50' },
-          'Ice': { color: 'cyan-300', bg: 'cyan-900/30' },
-          'Dragon': { color: 'indigo-500', bg: 'indigo-950/30' },
-          'Fairy': { color: 'pink-400', bg: 'pink-900/30' }
+          'Fire': { color: 'red-400', bg: 'red-900/30', icon: 'fa-fire' },
+          'Water': { color: 'blue-400', bg: 'blue-900/30', icon: 'fa-water' },
+          'Grass': { color: 'green-400', bg: 'green-900/30', icon: 'fa-leaf' },
+          'Electric': { color: 'yellow-400', bg: 'yellow-900/30', icon: 'fa-bolt' },
+          'Psychic': { color: 'purple-400', bg: 'purple-900/30', icon: 'fa-brain' },
+          'Dark': { color: 'gray-400', bg: 'gray-900/50', icon: 'fa-moon' },
+          'Normal': { color: 'gray-300', bg: 'gray-700/50', icon: 'fa-circle' },
+          'Fighting': { color: 'red-500', bg: 'red-950/30', icon: 'fa-fist-raised' },
+          'Flying': { color: 'blue-300', bg: 'blue-800/30', icon: 'fa-feather' },
+          'Poison': { color: 'purple-500', bg: 'purple-950/30', icon: 'fa-skull-crossbones' },
+          'Ground': { color: 'yellow-600', bg: 'yellow-950/30', icon: 'fa-mountain' },
+          'Rock': { color: 'yellow-700', bg: 'yellow-950/40', icon: 'fa-gem' },
+          'Bug': { color: 'green-500', bg: 'green-950/30', icon: 'fa-bug' },
+          'Ghost': { color: 'indigo-400', bg: 'indigo-900/30', icon: 'fa-ghost' },
+          'Steel': { color: 'gray-400', bg: 'gray-800/50', icon: 'fa-shield-alt' },
+          'Ice': { color: 'cyan-300', bg: 'cyan-900/30', icon: 'fa-snowflake' },
+          'Dragon': { color: 'indigo-500', bg: 'indigo-950/30', icon: 'fa-dragon' },
+          'Fairy': { color: 'pink-400', bg: 'pink-900/30', icon: 'fa-hat-wizard' }
         };
 
         // Set colors based on primary type
@@ -968,41 +1018,45 @@
                           monster.rarity === 'mythical' ? 'shadow-lg shadow-purple-500/20' :
                           monster.rarity === 'rare' ? 'shadow-md shadow-blue-500/10' : '';
 
-        // Format type display for dual types
+        // Format type display for dual types with icons
         const typeDisplay = monster.type.includes('/') ?
           `<div class="flex space-x-1">
-            ${monster.type.split('/').map(t =>
-              `<span class="px-1.5 py-0.5 rounded-full bg-${typeColors[t]?.bg || 'gray-700'} text-${typeColors[t]?.color || 'gray-400'} text-xs">${t}</span>`
-            ).join('')}
+            ${monster.type.split('/').map(t => {
+              const typeInfo = typeColors[t] || { color: 'gray-400', bg: 'gray-700', icon: 'fa-question' };
+              return `<span class="inline-flex items-center px-1.5 py-0.5 rounded-full bg-${typeInfo.bg} text-${typeInfo.color} text-xs shadow-sm">
+                <i class="fas ${typeInfo.icon} text-xs mr-1"></i>${t}
+              </span>`;
+            }).join('')}
            </div>` :
-          `<span class="px-2 py-1 rounded-full bg-${typeBg} text-${typeColor} text-xs font-medium">${monster.type}</span>`;
+          (() => {
+            const typeInfo = typeColors[monster.type] || { color: 'gray-400', bg: 'gray-700', icon: 'fa-question' };
+            return `<span class="inline-flex items-center px-2 py-0.5 rounded-full bg-${typeBg} text-${typeColor} text-xs font-medium shadow-sm">
+              <i class="fas ${typeInfo.icon} text-xs mr-1"></i>${monster.type}
+            </span>`;
+          })();
 
         monsterCard.innerHTML = `
           <div class="relative">
             <div class="absolute top-1 left-1 px-1.5 py-0.5 rounded-full bg-${rarityBg} text-${rarityColor} text-xs font-medium">
-              ${monster.rarity.charAt(0).toUpperCase()}
-            </div>
-            <div class="absolute top-1 right-1">
-              ${typeDisplay}
+              ${monster.rarity.charAt(0).toUpperCase() + monster.rarity.slice(1)}
             </div>
             <div class="p-3 flex justify-center">
               <img src="${monster.image}" alt="${monster.species}" class="w-24 h-24 object-contain ${monster.rarity === 'legendary' ? 'animate-pulse' : ''}">
             </div>
           </div>
           <div class="p-3 border-t border-gray-700/30">
-            <h5 class="text-${rarityColor} font-bold text-sm mb-0.5 truncate">${monster.species}</h5>
-            <div class="flex justify-between items-center mb-2">
-              <p class="text-gray-300 text-xs">Level ${monster.level}</p>
-              <div class="flex items-center">
-                ${monster.rarity === 'legendary' ? '<i class="fas fa-star text-yellow-400 text-xs mr-1"></i>' : ''}
-                ${monster.rarity === 'mythical' ? '<i class="fas fa-sparkles text-purple-400 text-xs mr-1"></i>' : ''}
-                <span class="text-xs text-${rarityColor}">${monster.rarity.charAt(0).toUpperCase() + monster.rarity.slice(1, 3)}</span>
-              </div>
+            <h5 class="text-${rarityColor} font-bold text-sm mb-2 truncate">${monster.species}</h5>
+
+            <div class="flex flex-wrap gap-1 mb-2">
+              ${typeDisplay}
+              <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gray-700 text-gray-300">
+                <i class="fas fa-arrow-up text-xs mr-1"></i> Lv.${monster.level}
+              </span>
             </div>
 
-            <div class="bg-gray-800/30 p-1.5 rounded-lg mb-2">
+            <div class="bg-gray-800/30 p-2 rounded-lg mb-3">
               <div class="flex justify-between items-center">
-                <span class="text-xs text-gray-400">Power:</span>
+                <span class="text-xs text-gray-400">Power Rating:</span>
                 <span class="text-xs text-${rarityColor} font-bold">${Math.floor(monster.level * (monster.rarity === 'legendary' ? 10 : monster.rarity === 'mythical' ? 8 : monster.rarity === 'rare' ? 5 : monster.rarity === 'uncommon' ? 3 : 1))}</span>
               </div>
               <div class="w-full bg-gray-700 rounded-full h-1 mt-1">
@@ -1010,14 +1064,15 @@
               </div>
             </div>
 
-            <div class="mb-2">
-              <input type="text" class="monster-name-input bg-gray-800/70 border border-gray-700 text-white w-full rounded p-1.5 text-xs"
-                     placeholder="Name your monster" data-monster-id="${monster.id}">
+            <div class="mb-3">
+              <label class="block text-xs text-gray-400 mb-1">Give your ${monster.species} a name:</label>
+              <input type="text" class="monster-name-input bg-gray-800/70 border border-gray-700 text-white w-full rounded p-2 text-sm"
+                     placeholder="Enter name" data-monster-id="${monster.id}">
             </div>
 
-            <button class="capture-monster-btn bg-gradient-to-r from-green-600 to-green-700 hover:from-green-500 hover:to-green-600 text-white py-1.5 px-3 rounded text-xs w-full transition-colors flex items-center justify-center"
+            <button class="capture-monster-btn bg-gray-800 hover:bg-gray-700 text-white py-2 px-3 rounded text-sm w-full transition-colors border border-gray-700 shadow-md flex items-center justify-center"
                     data-monster-id="${monster.id}">
-              <i class="fas fa-check-circle mr-1"></i> Capture
+              <i class="fas fa-check-circle mr-1"></i> Capture ${monster.species}
             </button>
           </div>
         `;
@@ -1180,7 +1235,7 @@
       }
 
       // Process each trainer reward card
-      const trainerCards = rewardsList.querySelectorAll('.bg-gray-700');
+      const trainerCards = rewardsList.querySelectorAll('.reward-item');
       console.log(`Found ${trainerCards.length} trainer reward cards`);
 
       trainerCards.forEach(card => {
@@ -1208,39 +1263,53 @@
           return;
         }
 
-        // Extract coins
-        const coinsElement = card.querySelector('.text-amber-400');
-        if (coinsElement) {
-          const coinsText = coinsElement.textContent;
-          const coins = parseInt(coinsText.replace(/[^0-9]/g, ''));
-          if (!isNaN(coins)) {
-            trainerRewardsToSubmit[matchingTrainerId].coins = coins;
-            console.log(`Found ${coins} coins for ${trainerName}`);
+        // Extract coins - look for the amber text with the + symbol
+        const coinsElements = card.querySelectorAll('.text-amber-300, .text-xs.text-amber-300');
+        coinsElements.forEach(element => {
+          if (element.textContent.includes('+')) {
+            const coinsText = element.textContent;
+            const coins = parseInt(coinsText.replace(/[^0-9]/g, ''));
+            if (!isNaN(coins)) {
+              trainerRewardsToSubmit[matchingTrainerId].coins = coins;
+              console.log(`Found ${coins} coins for ${trainerName}`);
+            }
           }
-        }
+        });
 
-        // Extract levels
-        const levelsElement = card.querySelector('.text-green-400');
-        if (levelsElement) {
-          const levelsText = levelsElement.textContent;
-          const levels = parseInt(levelsText.replace(/[^0-9]/g, ''));
-          if (!isNaN(levels)) {
-            trainerRewardsToSubmit[matchingTrainerId].levels = levels;
-            console.log(`Found ${levels} levels for ${trainerName}`);
+        // Extract levels - look for the green text with the + symbol
+        const levelsElements = card.querySelectorAll('.text-green-300, .text-xs.text-green-300, .text-green-400');
+        levelsElements.forEach(element => {
+          if (element.textContent.includes('+')) {
+            const levelsText = element.textContent;
+            const levels = parseInt(levelsText.replace(/[^0-9]/g, ''));
+            if (!isNaN(levels)) {
+              trainerRewardsToSubmit[matchingTrainerId].levels = levels;
+              console.log(`Found ${levels} levels for ${trainerName}`);
+            }
           }
-        }
+        });
 
-        // Extract items
-        const itemElements = card.querySelectorAll('.bg-gray-800');
+        // Extract items - look for item containers with different background colors
+        const itemElements = card.querySelectorAll('[class*="bg-"][class*="-900/20"]');
         itemElements.forEach(itemElement => {
-          const itemNameElement = itemElement.querySelector('h6.text-sm.text-white');
-          const itemRarityElement = itemElement.querySelector('p.text-xs.text-gray-400');
+          const itemNameElement = itemElement.querySelector('h6.text-xs.text-white');
+          const itemRarityElement = itemElement.querySelector('[class*="text-"][class*="-400"]');
           if (itemNameElement && itemRarityElement) {
+            // Extract the rarity from the first character (e.g., "C" for Common)
+            const rarityChar = itemRarityElement.textContent.trim();
+            let rarity = 'common';
+
+            // Map the first character to full rarity name
+            if (rarityChar === 'U') rarity = 'uncommon';
+            else if (rarityChar === 'R') rarity = 'rare';
+            else if (rarityChar === 'E') rarity = 'epic';
+            else if (rarityChar === 'L') rarity = 'legendary';
+
             trainerRewardsToSubmit[matchingTrainerId].items.push({
               name: itemNameElement.textContent.trim(),
-              rarity: itemRarityElement.textContent.trim().toLowerCase()
+              rarity: rarity
             });
-            console.log(`Found item ${itemNameElement.textContent.trim()} for ${trainerName}`);
+            console.log(`Found item ${itemNameElement.textContent.trim()} (${rarity}) for ${trainerName}`);
           }
         });
       });

@@ -195,6 +195,7 @@ input[type="number"] {
 
 #rewards-container .bg-gray-800\/95, #work-assessment-modal .bg-gray-800\/95 {
   transition: transform 0.3s ease, opacity 0.3s ease;
+  background-color: var(--card-background);
 }
 
 /* Animation for rewards and encounters */

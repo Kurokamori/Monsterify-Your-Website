@@ -169,85 +169,98 @@
   </div>
 
   <!-- Rewards Modal - Initially hidden -->
-  <div id="rewards-container" class="fixed inset-0 bg-black/80 flex items-center justify-center z-50 hidden" style="display: none;">
-    <div class="bg-gray-800/95 rounded-xl shadow-2xl max-w-4xl w-full p-6 border border-amber-500/30 backdrop-blur-sm mx-auto my-10 transform transition-all duration-300 scale-95 max-h-[90vh] overflow-y-auto">
-      <div class="flex justify-between items-center mb-4">
-        <h3 class="text-xl font-bold text-amber-400">Pomodoro Rewards</h3>
-        <button id="close-rewards-btn" class="text-gray-400 hover:text-white">
-          <i class="fas fa-times"></i>
-        </button>
-      </div>
-      <div class="relative">
-        <img src="https://i.imgur.com/XlGrD6J.jpeg" alt="Rewards" class="w-full h-48 object-cover">
-        <div class="absolute inset-0 bg-gradient-to-t from-black/90 to-transparent"></div>
-        <div class="absolute bottom-0 left-0 right-0 p-4">
-          <h3 class="text-xl font-bold text-white text-shadow-lg">Pomodoro Rewards</h3>
+  <div id="rewards-container" class="fixed inset-0 bg-black/95 flex items-center justify-center z-50 hidden" style="display: none;">
+    <div class="bg-gray-900/95 rounded-2xl shadow-2xl max-w-2xl w-full border border-amber-500/20 backdrop-blur-sm mx-auto my-4 transform transition-all duration-300 scale-95 max-h-[85vh] overflow-hidden flex flex-col">
+      <!-- Header with gradient background -->
+      <div class="relative bg-gradient-to-r from-amber-900/50 to-purple-900/50 p-3 border-b border-amber-500/20">
+        <div class="absolute inset-0 bg-[url('https://i.imgur.com/XlGrD6J.jpeg')] opacity-20 bg-cover bg-center mix-blend-overlay"></div>
+        <div class="flex justify-between items-center relative z-10">
+          <div class="flex items-center">
+            <div class="bg-amber-500 rounded-full p-1.5 mr-2 shadow-lg shadow-amber-500/20">
+              <i class="fas fa-trophy text-gray-900 text-sm"></i>
+            </div>
+            <h3 class="text-lg font-bold text-white text-shadow-lg">Pomodoro Rewards</h3>
+          </div>
+          <button id="close-rewards-btn" class="bg-gray-800/50 hover:bg-gray-700/50 text-gray-300 hover:text-white rounded-full p-1.5 transition-all duration-200 transform hover:scale-105">
+            <i class="fas fa-times"></i>
+          </button>
         </div>
       </div>
-      <div class="location-card-content">
-        <p class="text-sm text-gray-300 mb-4">Congratulations on completing your Pomodoro sessions! Here are your rewards:</p>
 
-        <div class="bg-gray-800/50 p-4 rounded-lg mb-4">
-          <h4 class="text-amber-400 mb-2 font-medium">Session Summary</h4>
-          <div class="space-y-2">
-            <div class="flex items-center justify-between">
-              <span class="text-sm text-gray-300">Completed Sessions:</span>
-              <span class="text-sm text-white" id="completed-sessions">0</span>
+      <!-- Scrollable content area -->
+      <div class="overflow-y-auto custom-scrollbar p-3 space-y-3 flex-grow" style="max-height: calc(85vh - 120px);">
+        <!-- Session Summary with visual indicators -->
+        <div class="flex items-center justify-between bg-gradient-to-r from-gray-800/80 to-gray-900/80 rounded-xl p-3 border border-gray-700/50 shadow-inner">
+          <div class="flex items-center">
+            <div class="bg-purple-600/20 rounded-full p-2 mr-2">
+              <i class="fas fa-clock text-purple-400 text-xs"></i>
             </div>
-            <div class="flex items-center justify-between">
-              <span class="text-sm text-gray-300">Focus Minutes:</span>
-              <span class="text-sm text-white" id="focus-minutes">0</span>
+            <div>
+              <h4 class="text-white text-sm font-medium">Session Summary</h4>
+              <p class="text-xs text-gray-400">Great work!</p>
             </div>
-            <div class="flex items-center justify-between">
-              <span class="text-sm text-gray-300">Productivity Score:</span>
-              <span class="text-sm text-white" id="productivity-score">0%</span>
+          </div>
+          <div class="flex space-x-3">
+            <div class="text-center">
+              <div class="text-base font-bold text-white" id="completed-sessions">0</div>
+              <div class="text-xs text-gray-400">Sessions</div>
+            </div>
+            <div class="text-center">
+              <div class="text-base font-bold text-white" id="focus-minutes">0</div>
+              <div class="text-xs text-gray-400">Minutes</div>
+            </div>
+            <div class="text-center">
+              <div class="text-base font-bold text-amber-400" id="productivity-score">0%</div>
+              <div class="text-xs text-gray-400">Productivity</div>
             </div>
           </div>
         </div>
 
-        <!-- Trainer Information -->
-        <div class="bg-gray-800/50 p-4 rounded-lg mb-4">
-          <h4 class="text-amber-400 mb-2 font-medium">Your Trainers</h4>
-          <p class="text-sm text-gray-300 mb-3">Rewards will be randomly distributed among your trainers and monsters:</p>
 
-          <div id="trainers-container" class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-2">
-            <!-- Trainers will be loaded here -->
-            <div class="text-center text-gray-400 py-4 col-span-full">
-              <i class="fas fa-spinner fa-spin text-xl"></i>
-              <p class="mt-1">Loading trainers...</p>
-            </div>
-          </div>
-        </div>
 
         <!-- Rewards Section -->
-        <div class="bg-gray-800/50 p-4 rounded-lg mb-4">
-          <h4 class="text-amber-400 mb-2 font-medium">Your Rewards</h4>
-          <div id="rewards-list" class="space-y-4">
+        <div class="bg-gradient-to-r from-gray-800/80 to-gray-900/80 rounded-xl p-3 border border-gray-700/50 shadow-inner">
+          <div class="flex items-center mb-2">
+            <div class="bg-amber-600/20 rounded-full p-1.5 mr-2">
+              <i class="fas fa-gift text-amber-400 text-xs"></i>
+            </div>
+            <h4 class="text-white text-sm font-medium">Trainers Receiving Rewards</h4>
+          </div>
+          <p class="text-xs text-gray-400 mb-2">Based on your performance, these trainers have earned rewards:</p>
+          <div id="rewards-list" class="space-y-2 max-h-[180px] overflow-y-auto custom-scrollbar pr-1">
             <!-- Rewards will be dynamically inserted here -->
-            <div class="text-center text-gray-400 py-4">
-              <i class="fas fa-spinner fa-spin text-2xl"></i>
-              <p class="mt-2">Rolling rewards...</p>
+            <div class="text-center text-gray-400 py-2 flex flex-col items-center justify-center">
+              <i class="fas fa-spinner fa-spin text-sm"></i>
+              <p class="mt-1 text-xs">Rolling rewards...</p>
             </div>
           </div>
         </div>
 
         <!-- Monster Encounter Section -->
-        <div id="monster-encounter-container" class="hidden mb-4">
-          <h4 class="text-amber-400 mb-2 font-medium">Monster Encounters</h4>
-          <div id="monster-encounters-list" class="grid grid-cols-1 gap-4">
+        <div id="monster-encounter-container" class="hidden bg-gradient-to-r from-gray-800/80 to-gray-900/80 rounded-xl p-3 border border-gray-700/50 shadow-inner">
+          <div class="flex items-center mb-2">
+            <div class="bg-green-600/20 rounded-full p-1.5 mr-2">
+              <i class="fas fa-dragon text-green-400 text-xs"></i>
+            </div>
+            <h4 class="text-white text-sm font-medium">Monster Encounters</h4>
+          </div>
+          <div id="monster-encounters-list" class="grid grid-cols-1 gap-2 max-h-[200px] overflow-y-auto custom-scrollbar pr-1">
             <!-- Monster encounters will be inserted here -->
           </div>
         </div>
+      </div>
 
-        <button id="claim-rewards-btn" class="btn-primary w-full text-center py-3 px-4 rounded-lg text-sm font-medium">
-          <i class="fas fa-award mr-1"></i> Claim All Rewards
+      <!-- Fixed footer with claim button -->
+      <div class="p-3 border-t border-gray-800 bg-gray-900/80">
+        <button id="claim-rewards-btn" class="bg-gray-800 hover:bg-gray-700 w-full text-center py-2 px-4 rounded-lg text-sm font-medium text-white border border-gray-700 shadow-md transition-all duration-200 transform hover:scale-[1.02] flex items-center justify-center">
+          <i class="fas fa-award mr-2 text-amber-400"></i> Claim All Rewards
         </button>
       </div>
     </div>
   </div>
 
   <!-- Work Assessment Modal - Initially hidden -->
-  <div id="work-assessment-modal" class="fixed inset-0 bg-black/80 items-center justify-center z-50 hidden" style="display: none;">
+  <div id="work-assessment-modal" class="fixed inset-0 bg-black/95 items-center justify-center z-50 hidden" style="display: none;">
     <div class="bg-gray-800/95 rounded-xl shadow-2xl max-w-md w-full p-8 border border-purple-500/30 backdrop-blur-sm mx-auto my-20 transform transition-all duration-300 scale-95">
       <div class="text-center mb-2">
         <i class="fas fa-check-circle text-green-400 text-3xl"></i>
@@ -256,28 +269,28 @@
       <p class="text-gray-300 mb-6">How much of the time did you actually work during this session?</p>
 
       <div class="grid grid-cols-2 gap-4 mb-6">
-        <button class="work-assessment-btn bg-gray-700/50 hover:bg-red-900/30 text-white py-4 px-4 rounded-xl transition-all transform hover:scale-105 border border-gray-600/30 hover:border-red-500/50" data-value="none">
+        <button class="work-assessment-btn bg-gray-800 hover:bg-gray-700 text-white py-4 px-4 rounded-lg transition-all transform hover:scale-105 border border-gray-700 shadow-md" data-value="none">
           <div class="flex flex-col items-center">
             <i class="fas fa-times-circle text-red-500 text-2xl mb-3"></i>
             <span class="block font-medium">None</span>
             <span class="text-xs text-gray-400 mt-1">0% productive</span>
           </div>
         </button>
-        <button class="work-assessment-btn bg-gray-700/50 hover:bg-yellow-900/30 text-white py-4 px-4 rounded-xl transition-all transform hover:scale-105 border border-gray-600/30 hover:border-yellow-500/50" data-value="some">
+        <button class="work-assessment-btn bg-gray-800 hover:bg-gray-700 text-white py-4 px-4 rounded-lg transition-all transform hover:scale-105 border border-gray-700 shadow-md" data-value="some">
           <div class="flex flex-col items-center">
             <i class="fas fa-dot-circle text-yellow-500 text-2xl mb-3"></i>
             <span class="block font-medium">Some</span>
             <span class="text-xs text-gray-400 mt-1">~25% productive</span>
           </div>
         </button>
-        <button class="work-assessment-btn bg-gray-700/50 hover:bg-blue-900/30 text-white py-4 px-4 rounded-xl transition-all transform hover:scale-105 border border-gray-600/30 hover:border-blue-500/50" data-value="most">
+        <button class="work-assessment-btn bg-gray-800 hover:bg-gray-700 text-white py-4 px-4 rounded-lg transition-all transform hover:scale-105 border border-gray-700 shadow-md" data-value="most">
           <div class="flex flex-col items-center">
             <i class="fas fa-check-circle text-blue-500 text-2xl mb-3"></i>
             <span class="block font-medium">Most</span>
             <span class="text-xs text-gray-400 mt-1">~75% productive</span>
           </div>
         </button>
-        <button class="work-assessment-btn bg-gray-700/50 hover:bg-green-900/30 text-white py-4 px-4 rounded-xl transition-all transform hover:scale-105 border border-gray-600/30 hover:border-green-500/50" data-value="all">
+        <button class="work-assessment-btn bg-gray-800 hover:bg-gray-700 text-white py-4 px-4 rounded-lg transition-all transform hover:scale-105 border border-gray-700 shadow-md" data-value="all">
           <div class="flex flex-col items-center">
             <i class="fas fa-star text-green-500 text-2xl mb-3"></i>
             <span class="block font-medium">All</span>

@@ -374,6 +374,131 @@ class Trainer {
   }
 
   /**
+   * Update a trainer's additional references
+   * @param {number} id - Trainer ID
+   * @param {string} itemId - Item ID
+   * @param {Object} itemData - Item data
+   * @returns {Promise<Object>} - Updated trainer
+   */
+  static async updateAdditionalInfo(id, itemId, itemData) {
+    try {
+      // First, get the current additional_info
+      const trainer = await this.getById(id);
+      if (!trainer) {
+        throw new Error(`Trainer with ID ${id} not found`);
+      }
+
+      // Parse the additional_info or initialize as empty object
+      let additionalInfo = {};
+      if (trainer.additional_info) {
+        try {
+          additionalInfo = typeof trainer.additional_info === 'string'
+            ? JSON.parse(trainer.additional_info)
+            : trainer.additional_info;
+        } catch (e) {
+          console.error('Error parsing additional_info:', e);
+        }
+      }
+
+      // Update or add the item
+      additionalInfo[itemId] = itemData;
+
+      // Update the trainer
+      const result = await pool.query(
+        `UPDATE trainers
+         SET additional_info = $1
+         WHERE id = $2
+         RETURNING *`,
+        [JSON.stringify(additionalInfo), id]
+      );
+
+      return result.rows[0];
+    } catch (error) {
+      console.error('Error updating additional info:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Delete an item from a trainer's additional references
+   * @param {number} id - Trainer ID
+   * @param {string} itemId - Item ID to delete
+   * @returns {Promise<Object>} - Updated trainer
+   */
+  static async deleteAdditionalInfoItem(id, itemId) {
+    try {
+      // First, get the current additional_info
+      const trainer = await this.getById(id);
+      if (!trainer) {
+        throw new Error(`Trainer with ID ${id} not found`);
+      }
+
+      // Parse the additional_info or initialize as empty object
+      let additionalInfo = {};
+      if (trainer.additional_info) {
+        try {
+          additionalInfo = typeof trainer.additional_info === 'string'
+            ? JSON.parse(trainer.additional_info)
+            : trainer.additional_info;
+        } catch (e) {
+          console.error('Error parsing additional_info:', e);
+        }
+      }
+
+      // Delete the item
+      delete additionalInfo[itemId];
+
+      // Update the trainer
+      const result = await pool.query(
+        `UPDATE trainers
+         SET additional_info = $1
+         WHERE id = $2
+         RETURNING *`,
+        [JSON.stringify(additionalInfo), id]
+      );
+
+      return result.rows[0];
+    } catch (error) {
+      console.error('Error deleting additional info item:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Get a specific item from a trainer's additional references
+   * @param {number} id - Trainer ID
+   * @param {string} itemId - Item ID
+   * @returns {Promise<Object>} - Item data
+   */
+  static async getAdditionalInfoItem(id, itemId) {
+    try {
+      // Get the trainer
+      const trainer = await this.getById(id);
+      if (!trainer) {
+        throw new Error(`Trainer with ID ${id} not found`);
+      }
+
+      // Parse the additional_info or initialize as empty object
+      let additionalInfo = {};
+      if (trainer.additional_info) {
+        try {
+          additionalInfo = typeof trainer.additional_info === 'string'
+            ? JSON.parse(trainer.additional_info)
+            : trainer.additional_info;
+        } catch (e) {
+          console.error('Error parsing additional_info:', e);
+        }
+      }
+
+      // Return the item or null if not found
+      return additionalInfo[itemId] || null;
+    } catch (error) {
+      console.error('Error getting additional info item:', error);
+      throw error;
+    }
+  }
+
+  /**
    * Get inventory for a trainer
    * @param {number} trainerId - Trainer ID
    * @returns {Promise<Object>} - Trainer inventory object

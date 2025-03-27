@@ -196,6 +196,43 @@ input[type="number"] {
   transition: transform 0.3s ease, opacity 0.3s ease;
 }
 
+/* Custom scrollbar for rewards container */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: rgba(30, 30, 40, 0.5);
+  border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(217, 119, 6, 0.3);
+  border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(217, 119, 6, 0.5);
+}
+
+/* Hide scrollbar when not needed */
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(217, 119, 6, 0.3) rgba(30, 30, 40, 0.5);
+}
+
+/* Ensure content doesn't overflow */
+#rewards-container .overflow-y-auto {
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+}
+
+/* Ensure fixed height containers */
+#trainers-container, #rewards-list, #monster-encounters-list {
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
 /* Animation for rewards and encounters */
 @keyframes fadeInUp {
   from {

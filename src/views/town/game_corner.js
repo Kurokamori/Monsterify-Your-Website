@@ -1138,238 +1138,82 @@
     }
 
     // Handle claim rewards button click
-    function handleClaimRewards() {
-      console.log('Claim rewards button clicked');
-      // Check if any trainers are selected
-      const selectedTrainerIds = Object.keys(selectedTrainers);
-      if (selectedTrainerIds.length === 0) {
-        alert('Please select at least one trainer to receive rewards');
-        return;
-      }
-
-      // Create a form to submit the rewards
-      const form = document.createElement('form');
-      form.method = 'POST';
-      form.action = '/town/visit/game_corner/claim_rewards';
-
-      // Use the already calculated rewards from generateRewards function
-      // We'll collect all the rewards that were displayed to the user
-      const trainerRewardsToSubmit = {};
-
-      // Initialize rewards for each trainer
-      selectedTrainerIds.forEach(id => {
-        // Start with empty rewards
-        trainerRewardsToSubmit[id] = { coins: 0, levels: 0, items: [] };
-      });
-
-      // Find all trainer reward cards
-      const rewardsList = document.getElementById('rewards-list');
-      if (!rewardsList) {
-        console.error('Rewards list container not found');
-        alert('Error: Could not find rewards list. Please try again.');
-        return;
-      }
-
-      // Process each trainer reward card
-      const trainerCards = rewardsList.querySelectorAll('.bg-gray-700');
-      console.log(`Found ${trainerCards.length} trainer reward cards`);
-
-      trainerCards.forEach(card => {
-        // Find trainer name
-        const trainerNameElement = card.querySelector('h5.text-white');
-        if (!trainerNameElement) {
-          console.log('No trainer name found in card:', card);
-          return;
-        }
-
-        const trainerName = trainerNameElement.textContent.trim();
-        console.log('Processing rewards for trainer:', trainerName);
-
-        // Find matching trainer ID
-        let matchingTrainerId = null;
-        for (const [id, trainer] of Object.entries(selectedTrainers)) {
-          if (trainer.name === trainerName) {
-            matchingTrainerId = id;
-            break;
-          }
-        }
-
-        if (!matchingTrainerId) {
-          console.log('No matching trainer ID found for name:', trainerName);
-          return;
-        }
-
-        // Extract coins
-        const coinsElement = card.querySelector('.text-amber-400');
-        if (coinsElement) {
-          const coinsText = coinsElement.textContent;
-          const coins = parseInt(coinsText.replace(/[^0-9]/g, ''));
-          if (!isNaN(coins)) {
-            trainerRewardsToSubmit[matchingTrainerId].coins = coins;
-            console.log(`Found ${coins} coins for ${trainerName}`);
-          }
-        }
-
-        // Extract levels
-        const levelsElement = card.querySelector('.text-green-400');
-        if (levelsElement) {
-          const levelsText = levelsElement.textContent;
-          const levels = parseInt(levelsText.replace(/[^0-9]/g, ''));
-          if (!isNaN(levels)) {
-            trainerRewardsToSubmit[matchingTrainerId].levels = levels;
-            console.log(`Found ${levels} levels for ${trainerName}`);
-          }
-        }
-
-        // Extract items
-        const itemElements = card.querySelectorAll('.bg-gray-800');
-        itemElements.forEach(itemElement => {
-          const itemNameElement = itemElement.querySelector('h6.text-sm.text-white');
-          const itemRarityElement = itemElement.querySelector('p.text-xs.text-gray-400');
-          if (itemNameElement && itemRarityElement) {
-            trainerRewardsToSubmit[matchingTrainerId].items.push({
-              name: itemNameElement.textContent.trim(),
-              rarity: itemRarityElement.textContent.trim().toLowerCase()
-            });
-            console.log(`Found item ${itemNameElement.textContent.trim()} for ${trainerName}`);
-          }
-        });
-      });
-
-      console.log('Final trainer rewards to submit:', trainerRewardsToSubmit);
-
-      // Add trainer rewards to form
-      Object.entries(trainerRewardsToSubmit).forEach(([trainerId, rewards], index) => {
-        // Skip trainers that didn't receive any rewards
-        if (rewards.coins === 0 && rewards.levels === 0 && rewards.items.length === 0) return;
-
-        // Add trainer ID field
-        const trainerIdInput = document.createElement('input');
-        trainerIdInput.type = 'hidden';
-        trainerIdInput.name = `trainers[${index}][id]`;
-        trainerIdInput.value = trainerId;
-        form.appendChild(trainerIdInput);
-
-        // Add coins field
-        const coinsInput = document.createElement('input');
-        coinsInput.type = 'hidden';
-        coinsInput.name = `trainers[${index}][coins]`;
-        coinsInput.value = rewards.coins;
-        form.appendChild(coinsInput);
-
-        // Add levels field
-        const levelsInput = document.createElement('input');
-        levelsInput.type = 'hidden';
-        levelsInput.name = `trainers[${index}][levels]`;
-        levelsInput.value = rewards.levels;
-        form.appendChild(levelsInput);
-
-        // Add items
-        rewards.items.forEach((item, itemIndex) => {
-          const itemNameInput = document.createElement('input');
-          itemNameInput.type = 'hidden';
-          itemNameInput.name = `trainers[${index}][items][${itemIndex}][name]`;
-          itemNameInput.value = item.name;
-          form.appendChild(itemNameInput);
-
-          const itemRarityInput = document.createElement('input');
-          itemRarityInput.type = 'hidden';
-          itemRarityInput.name = `trainers[${index}][items][${itemIndex}][rarity]`;
-          itemRarityInput.value = item.rarity;
-          form.appendChild(itemRarityInput);
-        });
-      });
-
-      // Add captured monsters
-      const capturedMonsters = monsterEncounters.filter(monster => monster.captured);
-      capturedMonsters.forEach((monster, index) => {
-        // Add monster name
-        const monsterNameInput = document.createElement('input');
-        monsterNameInput.type = 'hidden';
-        monsterNameInput.name = `monsters[${index}][name]`;
-        monsterNameInput.value = monster.name;
-        form.appendChild(monsterNameInput);
-
-        // Add monster species
-        const monsterSpeciesInput = document.createElement('input');
-        monsterSpeciesInput.type = 'hidden';
-        monsterSpeciesInput.name = `monsters[${index}][species]`;
-        monsterSpeciesInput.value = monster.species;
-        form.appendChild(monsterSpeciesInput);
-
-        // Add monster type
-        const monsterTypeInput = document.createElement('input');
-        monsterTypeInput.type = 'hidden';
-        monsterTypeInput.name = `monsters[${index}][type]`;
-        monsterTypeInput.value = monster.type.toLowerCase();
-        form.appendChild(monsterTypeInput);
-
-        // Add monster rarity
-        const monsterRarityInput = document.createElement('input');
-        monsterRarityInput.type = 'hidden';
-        monsterRarityInput.name = `monsters[${index}][rarity]`;
-        monsterRarityInput.value = monster.rarity;
-        form.appendChild(monsterRarityInput);
-
-        // Add monster level
-        const monsterLevelInput = document.createElement('input');
-        monsterLevelInput.type = 'hidden';
-        monsterLevelInput.name = `monsters[${index}][level]`;
-        monsterLevelInput.value = monster.level;
-        form.appendChild(monsterLevelInput);
-
-        // Add trainer ID for this monster
-        const monsterTrainerInput = document.createElement('input');
-        monsterTrainerInput.type = 'hidden';
-        monsterTrainerInput.name = `monsters[${index}][trainerId]`;
-        monsterTrainerInput.value = monster.trainerId;
-        form.appendChild(monsterTrainerInput);
-      });
-
-      // Add session data for analytics
-      const sessionsInput = document.createElement('input');
-      sessionsInput.type = 'hidden';
-      sessionsInput.name = 'sessionData[completedSessions]';
-      sessionsInput.value = state.completedSessions;
-      form.appendChild(sessionsInput);
-
-      const focusMinutesInput = document.createElement('input');
-      focusMinutesInput.type = 'hidden';
-      focusMinutesInput.name = 'sessionData[focusMinutes]';
-      focusMinutesInput.value = state.totalFocusMinutes;
-      form.appendChild(focusMinutesInput);
-
-      const productivityInput = document.createElement('input');
-      productivityInput.type = 'hidden';
-      productivityInput.name = 'sessionData[productivityScore]';
-      productivityInput.value = productivityScore;
-      form.appendChild(productivityInput);
-
-      // Add form to document and submit
-      document.body.appendChild(form);
-
-      // Reset UI elements before submitting
+    async function handleClaimRewards() {
       const rewardsContainer = document.getElementById('rewards-container');
-      if (rewardsContainer) {
-        rewardsContainer.classList.add('hidden');
-        rewardsContainer.style.display = 'none';
+      const rewardsList = document.getElementById('rewards-list');
+      const trainersContainer = document.getElementById('trainers-container');
+
+      if (!rewardsContainer || !rewardsList || !trainersContainer) {
+        console.error('Required elements not found');
+        return;
       }
 
-      const monsterEncounterContainer = document.getElementById('monster-encounter-container');
-      if (monsterEncounterContainer) {
-        monsterEncounterContainer.classList.add('hidden');
-        monsterEncounterContainer.style.display = 'none';
+      try {
+        // Show the rewards container
+        rewardsContainer.style.display = 'flex';
+        
+        // Show loading state
+        rewardsList.innerHTML = `
+          <div class="text-center text-gray-400 py-2 flex flex-col items-center justify-center">
+            <i class="fas fa-spinner fa-spin text-sm"></i>
+            <p class="mt-1 text-xs">Rolling rewards...</p>
+          </div>
+        `;
+
+        // Fetch rewards from the server
+        const response = await fetch('/town/game-corner/claim-rewards', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch rewards');
+        }
+
+        const data = await response.json();
+
+        // Clear loading state
+        rewardsList.innerHTML = '';
+
+        // Display rewards
+        data.rewards.forEach(reward => {
+          const rewardElement = document.createElement('div');
+          rewardElement.className = 'reward-item bg-gray-700/50 rounded-lg p-3 border border-amber-500/20 flex items-center justify-between';
+          rewardElement.innerHTML = `
+            <div class="flex items-center">
+              <div class="bg-amber-500/20 rounded-full p-2 mr-3">
+                <i class="fas ${reward.icon || 'fa-gift'} text-amber-400"></i>
+              </div>
+              <div>
+                <h5 class="text-white text-sm font-medium">${reward.name}</h5>
+                <p class="text-gray-400 text-xs">${reward.description}</p>
+              </div>
+            </div>
+            <div class="text-amber-400 font-medium">×${reward.quantity}</div>
+          `;
+          rewardsList.appendChild(rewardElement);
+        });
+
+        // Update trainers list
+        if (data.trainers) {
+          trainersContainer.innerHTML = data.trainers.map(trainer => `
+            <div class="bg-gray-700/30 rounded-lg p-2 flex items-center">
+              <img src="${trainer.avatar}" alt="${trainer.name}" class="w-6 h-6 rounded-full mr-2">
+              <span class="text-gray-300 text-xs">${trainer.name}</span>
+            </div>
+          `).join('');
+        }
+      } catch (error) {
+        console.error('Error claiming rewards:', error);
+        rewardsList.innerHTML = `
+          <div class="text-center text-red-400 py-2">
+            <i class="fas fa-exclamation-circle"></i>
+            <p class="mt-1 text-xs">Failed to generate rewards. Please try again.</p>
+          </div>
+        `;
       }
-
-      // Reset state
-      state.completedSessions = 0;
-      state.totalFocusMinutes = 0;
-      state.rewardsShown = false;
-      sessionProductivity = [];
-
-      // Submit the form
-      console.log('Submitting form with rewards');
-      form.submit();
     }
 
     // Call setupClaimRewardsButton when rewards are generated
