@@ -233,6 +233,7 @@ app.use((req, res, next) => {
 });
 
 // Routes
+
 app.get('/', async (req, res) => {
   try {
     // Get featured trainers (top 3 by monster count)
@@ -2152,15 +2153,666 @@ app.get('/town/visit', (req, res) => {
 });
 
 // Town visit sub-routes
-app.get('/town/visit/trade', (req, res) => {
+app.get('/town/visit/trade', async (req, res) => {
   // Check if user is logged in
   if (!req.session.user) {
     return res.redirect('/login');
   }
 
-  res.render('town/trade', {
-    title: 'Trade Center'
-  });
+  try {
+    // Get user's trainers
+    const userTrainers = await Trainer.getByUserId(req.session.user.discord_id);
+
+    // Get selected trainer if trainer_id is provided
+    let selectedTrainer = null;
+    if (req.query.trainer_id) {
+      selectedTrainer = await Trainer.getById(req.query.trainer_id);
+
+      // Verify that the selected trainer belongs to the user
+      if (!selectedTrainer || selectedTrainer.player_user_id !== req.session.user.discord_id) {
+        selectedTrainer = null;
+      }
+    }
+
+    // If no trainer is selected but user has trainers, select the first one
+    if (!selectedTrainer && userTrainers.length > 0) {
+      selectedTrainer = userTrainers[0];
+    }
+
+    // For now, just provide an empty trades array
+    // This can be updated later when a Trade model is implemented
+    const trades = [];
+
+    res.render('town/trade', {
+      title: 'Trade Center',
+      userTrainers,
+      selectedTrainer,
+      trades
+    });
+  } catch (error) {
+    console.error('Error loading trade page:', error);
+    res.render('town/trade', {
+      title: 'Trade Center',
+      message: 'Error loading trainers. Please try again.',
+      messageType: 'error',
+      userTrainers: [],
+      trades: []
+    });
+  }
+});
+
+// API endpoint for fetching a trainer's monsters
+app.get('/api/trainers/:id/monsters', async (req, res) => {
+  // Check if user is logged in
+  if (!req.session.user) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+
+  try {
+    const trainerId = req.params.id;
+
+    // Get the trainer
+    const trainer = await Trainer.getById(trainerId);
+    if (!trainer) {
+      return res.status(404).json({ error: 'Trainer not found' });
+    }
+
+    // Get the trainer's monsters
+    const monsters = await Monster.getByTrainerId(trainerId) || [];
+
+    // Log the monsters for debugging
+    console.log(`Found ${monsters.length} monsters for trainer ${trainerId}`);
+
+    res.json({
+      monsters
+    });
+  } catch (error) {
+    console.error('Error fetching trainer monsters:', error);
+    res.status(500).json({ error: 'Error fetching trainer monsters' });
+  }
+});
+
+// Monster Trading Route
+app.get('/town/visit/trade/mons', async (req, res) => {
+  // Check if user is logged in
+  if (!req.session.user) {
+    return res.redirect('/login');
+  }
+
+  try {
+    // Get user's trainers
+    const userTrainers = await Trainer.getByUserId(req.session.user.discord_id);
+
+    // Get selected trainer if trainer_id is provided
+    let selectedTrainer = null;
+    if (req.query.trainer_id) {
+      selectedTrainer = await Trainer.getById(req.query.trainer_id);
+
+      // Verify that the selected trainer belongs to the user
+      if (!selectedTrainer || selectedTrainer.player_user_id !== req.session.user.discord_id) {
+        selectedTrainer = null;
+      }
+    }
+
+    // If no trainer is selected but user has trainers, select the first one
+    if (!selectedTrainer && userTrainers.length > 0) {
+      selectedTrainer = userTrainers[0];
+    }
+
+    // Get the trainer's monsters
+    let yourMonsters = [];
+    if (selectedTrainer) {
+      try {
+        // Check if we have a Monster model
+        if (typeof Monster !== 'undefined' && Monster.getByTrainerId) {
+          yourMonsters = await Monster.getByTrainerId(selectedTrainer.id);
+        }
+      } catch (monsterError) {
+        console.error('Error loading trainer monsters:', monsterError);
+      }
+    }
+
+    // Get all trainers for the dropdown
+    let otherTrainers = [];
+    try {
+      // Get all trainers
+      otherTrainers = await Trainer.getAll();
+    } catch (trainersError) {
+      console.error('Error loading all trainers:', trainersError);
+    }
+
+    res.render('town/trade/mons', {
+      title: 'Monster Trading',
+      userTrainers,
+      selectedTrainer,
+      yourMonsters,
+      otherTrainers, // All trainers for the dropdown
+      otherTrainer: null, // This would be the selected trainer to trade with
+      otherMonsters: [] // This would be the monsters of the other trainer
+    });
+  } catch (error) {
+    console.error('Error loading monster trade page:', error);
+    res.render('town/trade/mons', {
+      title: 'Monster Trading',
+      message: 'Error loading trainers or monsters. Please try again.',
+      messageType: 'error',
+      userTrainers: [],
+      selectedTrainer: null,
+      yourMonsters: [],
+      otherTrainers: [], // Empty array for error case
+      otherTrainer: null,
+      otherMonsters: []
+    });
+  }
+});
+
+// Monster Trading POST Route
+app.post('/town/visit/trade/mons', async (req, res) => {
+  // Check if user is logged in
+  if (!req.session.user) {
+    return res.redirect('/login');
+  }
+
+  try {
+    const { initiator_id, recipient_id, offered_mons, requested_mons } = req.body;
+
+    // Validate the required fields
+    if (!initiator_id || !recipient_id) {
+      return res.render('town/trade/mons', {
+        title: 'Monster Trading',
+        message: 'Missing required fields. Please try again.',
+        messageType: 'error',
+        userTrainers: await Trainer.getByUserId(req.session.user.discord_id),
+        selectedTrainer: await Trainer.getById(initiator_id),
+        yourMonsters: [],
+        otherTrainers: await Trainer.getAll(),
+        otherTrainer: null,
+        otherMonsters: []
+      });
+    }
+
+    // Verify that the initiator trainer belongs to the current user
+    const initiatorTrainer = await Trainer.getById(initiator_id);
+    if (!initiatorTrainer || initiatorTrainer.player_user_id !== req.session.user.discord_id) {
+      return res.render('town/trade/mons', {
+        title: 'Monster Trading',
+        message: 'You can only initiate trades with your own trainers.',
+        messageType: 'error',
+        userTrainers: await Trainer.getByUserId(req.session.user.discord_id),
+        selectedTrainer: null,
+        yourMonsters: [],
+        otherTrainers: await Trainer.getAll(),
+        otherTrainer: null,
+        otherMonsters: []
+      });
+    }
+
+    // Get the recipient trainer
+    const recipientTrainer = await Trainer.getById(recipient_id);
+    if (!recipientTrainer) {
+      return res.render('town/trade/mons', {
+        title: 'Monster Trading',
+        message: 'Recipient trainer not found.',
+        messageType: 'error',
+        userTrainers: await Trainer.getByUserId(req.session.user.discord_id),
+        selectedTrainer: initiatorTrainer,
+        yourMonsters: [],
+        otherTrainers: await Trainer.getAll(),
+        otherTrainer: null,
+        otherMonsters: []
+      });
+    }
+
+    // Process the trade
+    try {
+      // Parse the monster IDs
+      const offeredMonsterIds = offered_mons ? (Array.isArray(offered_mons) ? offered_mons : [offered_mons]) : [];
+      const requestedMonsterIds = requested_mons ? (Array.isArray(requested_mons) ? requested_mons : [requested_mons]) : [];
+
+      // Validate that there are monsters to trade
+      if (offeredMonsterIds.length === 0 && requestedMonsterIds.length === 0) {
+        return res.render('town/trade/mons', {
+          title: 'Monster Trading',
+          message: 'No monsters selected for trade.',
+          messageType: 'error',
+          userTrainers: await Trainer.getByUserId(req.session.user.discord_id),
+          selectedTrainer: initiatorTrainer,
+          yourMonsters: await Monster.getByTrainerId(initiator_id),
+          otherTrainers: await Trainer.getAll(),
+          otherTrainer: recipientTrainer,
+          otherMonsters: []
+        });
+      }
+
+      // Verify that the offered monsters belong to the initiator
+      for (const monId of offeredMonsterIds) {
+        const monster = await Monster.getById(monId);
+        if (!monster || monster.trainer_id !== initiator_id) {
+          return res.render('town/trade/mons', {
+            title: 'Monster Trading',
+            message: 'One or more of the offered monsters do not belong to you.',
+            messageType: 'error',
+            userTrainers: await Trainer.getByUserId(req.session.user.discord_id),
+            selectedTrainer: initiatorTrainer,
+            yourMonsters: await Monster.getByTrainerId(initiator_id),
+            otherTrainers: await Trainer.getAll(),
+            otherTrainer: recipientTrainer,
+            otherMonsters: []
+          });
+        }
+      }
+
+      // Verify that the requested monsters belong to the recipient
+      for (const monId of requestedMonsterIds) {
+        const monster = await Monster.getById(monId);
+        if (!monster || monster.trainer_id !== recipient_id) {
+          return res.render('town/trade/mons', {
+            title: 'Monster Trading',
+            message: 'One or more of the requested monsters do not belong to the recipient.',
+            messageType: 'error',
+            userTrainers: await Trainer.getByUserId(req.session.user.discord_id),
+            selectedTrainer: initiatorTrainer,
+            yourMonsters: await Monster.getByTrainerId(initiator_id),
+            otherTrainers: await Trainer.getAll(),
+            otherTrainer: recipientTrainer,
+            otherMonsters: []
+          });
+        }
+      }
+
+      // Perform the trade - update trainer_id for each monster
+      // 1. Transfer offered monsters to recipient
+      for (const monId of offeredMonsterIds) {
+        await Monster.update(monId, {
+          trainer_id: recipient_id,
+          box_number: 0 // Put in first box by default
+        });
+      }
+
+      // 2. Transfer requested monsters to initiator
+      for (const monId of requestedMonsterIds) {
+        await Monster.update(monId, {
+          trainer_id: initiator_id,
+          box_number: 0 // Put in first box by default
+        });
+      }
+
+      // 3. Create a trade record if needed (this would be implemented in a Trade model)
+      // For now, we'll just log the trade
+      console.log(`Trade completed: ${initiator_id} traded ${offeredMonsterIds.join(', ')} for ${requestedMonsterIds.join(', ')} from ${recipient_id}`);
+
+      // Return success message
+      return res.render('town/trade/mons', {
+        title: 'Monster Trading',
+        message: 'Trade completed successfully!',
+        messageType: 'success',
+        userTrainers: await Trainer.getByUserId(req.session.user.discord_id),
+        selectedTrainer: initiatorTrainer,
+        yourMonsters: await Monster.getByTrainerId(initiator_id),
+        otherTrainers: await Trainer.getAll(),
+        otherTrainer: recipientTrainer,
+        otherMonsters: []
+      });
+    } catch (tradeError) {
+      console.error('Error processing trade:', tradeError);
+      return res.render('town/trade/mons', {
+        title: 'Monster Trading',
+        message: 'Error processing trade: ' + tradeError.message,
+        messageType: 'error',
+        userTrainers: await Trainer.getByUserId(req.session.user.discord_id),
+        selectedTrainer: initiatorTrainer,
+        yourMonsters: await Monster.getByTrainerId(initiator_id),
+        otherTrainers: await Trainer.getAll(),
+        otherTrainer: recipientTrainer,
+        otherMonsters: []
+      });
+    }
+  } catch (error) {
+    console.error('Error processing monster trade:', error);
+    res.render('town/trade/mons', {
+      title: 'Monster Trading',
+      message: 'Error processing trade. Please try again.',
+      messageType: 'error',
+      userTrainers: await Trainer.getByUserId(req.session.user.discord_id),
+      selectedTrainer: null,
+      yourMonsters: [],
+      otherTrainers: [],
+      otherTrainer: null,
+      otherMonsters: []
+    });
+  }
+});
+
+// Item Trading POST Route
+app.post('/town/visit/trade/items', async (req, res) => {
+  // Check if user is logged in
+  if (!req.session.user) {
+    return res.redirect('/login');
+  }
+
+  try {
+    const { initiator_id, recipient_id, offered_items, requested_items } = req.body;
+
+    // Validate the required fields
+    if (!initiator_id || !recipient_id) {
+      return res.render('town/trade/items', {
+        title: 'Item Trading',
+        message: 'Missing required fields. Please try again.',
+        messageType: 'error',
+        userTrainers: await Trainer.getByUserId(req.session.user.discord_id),
+        selectedTrainer: await Trainer.getById(initiator_id),
+        inventory: {},
+        itemDetails: {},
+        otherTrainers: await Trainer.getAll(),
+        otherTrainer: null,
+        otherItems: {}
+      });
+    }
+
+    // Verify that the initiator trainer belongs to the current user
+    const initiatorTrainer = await Trainer.getById(initiator_id);
+    if (!initiatorTrainer || initiatorTrainer.player_user_id !== req.session.user.discord_id) {
+      return res.render('town/trade/items', {
+        title: 'Item Trading',
+        message: 'You can only initiate trades with your own trainers.',
+        messageType: 'error',
+        userTrainers: await Trainer.getByUserId(req.session.user.discord_id),
+        selectedTrainer: null,
+        inventory: {},
+        itemDetails: {},
+        otherTrainers: await Trainer.getAll(),
+        otherTrainer: null,
+        otherItems: {}
+      });
+    }
+
+    // Get the recipient trainer
+    const recipientTrainer = await Trainer.getById(recipient_id);
+    if (!recipientTrainer) {
+      return res.render('town/trade/items', {
+        title: 'Item Trading',
+        message: 'Recipient trainer not found.',
+        messageType: 'error',
+        userTrainers: await Trainer.getByUserId(req.session.user.discord_id),
+        selectedTrainer: initiatorTrainer,
+        inventory: await Trainer.getInventory(initiator_id) || {},
+        itemDetails: {},
+        otherTrainers: await Trainer.getAll(),
+        otherTrainer: null,
+        otherItems: {}
+      });
+    }
+
+    // Process the trade
+    try {
+      // Parse the item data
+      const offeredItems = offered_items ? (typeof offered_items === 'string' ? JSON.parse(offered_items) : offered_items) : {};
+      const requestedItems = requested_items ? (typeof requested_items === 'string' ? JSON.parse(requested_items) : requested_items) : {};
+
+      // Validate that there are items to trade
+      const hasOfferedItems = Object.values(offeredItems).some(count => count > 0);
+      const hasRequestedItems = Object.values(requestedItems).some(count => count > 0);
+
+      if (!hasOfferedItems && !hasRequestedItems) {
+        return res.render('town/trade/items', {
+          title: 'Item Trading',
+          message: 'No items selected for trade.',
+          messageType: 'error',
+          userTrainers: await Trainer.getByUserId(req.session.user.discord_id),
+          selectedTrainer: initiatorTrainer,
+          inventory: await Trainer.getInventory(initiator_id) || {},
+          itemDetails: {},
+          otherTrainers: await Trainer.getAll(),
+          otherTrainer: recipientTrainer,
+          otherItems: {}
+        });
+      }
+
+      // Get the inventories
+      const initiatorInventory = await Trainer.getInventory(initiator_id) || {};
+      const recipientInventory = await Trainer.getInventory(recipient_id) || {};
+
+      // Verify that the initiator has the offered items
+      for (const [itemId, count] of Object.entries(offeredItems)) {
+        if (count <= 0) continue;
+
+        const category = Object.keys(initiatorInventory).find(cat =>
+          initiatorInventory[cat] && initiatorInventory[cat][itemId] !== undefined
+        );
+
+        if (!category || initiatorInventory[category][itemId] < count) {
+          return res.render('town/trade/items', {
+            title: 'Item Trading',
+            message: 'You do not have enough of one or more offered items.',
+            messageType: 'error',
+            userTrainers: await Trainer.getByUserId(req.session.user.discord_id),
+            selectedTrainer: initiatorTrainer,
+            inventory: initiatorInventory,
+            itemDetails: {},
+            otherTrainers: await Trainer.getAll(),
+            otherTrainer: recipientTrainer,
+            otherItems: {}
+          });
+        }
+      }
+
+      // Verify that the recipient has the requested items
+      for (const [itemId, count] of Object.entries(requestedItems)) {
+        if (count <= 0) continue;
+
+        const category = Object.keys(recipientInventory).find(cat =>
+          recipientInventory[cat] && recipientInventory[cat][itemId] !== undefined
+        );
+
+        if (!category || recipientInventory[category][itemId] < count) {
+          return res.render('town/trade/items', {
+            title: 'Item Trading',
+            message: 'The recipient does not have enough of one or more requested items.',
+            messageType: 'error',
+            userTrainers: await Trainer.getByUserId(req.session.user.discord_id),
+            selectedTrainer: initiatorTrainer,
+            inventory: initiatorInventory,
+            itemDetails: {},
+            otherTrainers: await Trainer.getAll(),
+            otherTrainer: recipientTrainer,
+            otherItems: {}
+          });
+        }
+      }
+
+      // Perform the trade - update inventories
+      // 1. Transfer offered items to recipient
+      for (const [itemId, count] of Object.entries(offeredItems)) {
+        if (count <= 0) continue;
+
+        // Find the category for this item
+        const category = Object.keys(initiatorInventory).find(cat =>
+          initiatorInventory[cat] && initiatorInventory[cat][itemId] !== undefined
+        );
+
+        if (category) {
+          // Remove from initiator
+          await Trainer.updateInventoryItem(initiator_id, category, itemId, -count);
+
+          // Add to recipient
+          await Trainer.updateInventoryItem(recipient_id, category, itemId, count);
+        }
+      }
+
+      // 2. Transfer requested items to initiator
+      for (const [itemId, count] of Object.entries(requestedItems)) {
+        if (count <= 0) continue;
+
+        // Find the category for this item
+        const category = Object.keys(recipientInventory).find(cat =>
+          recipientInventory[cat] && recipientInventory[cat][itemId] !== undefined
+        );
+
+        if (category) {
+          // Remove from recipient
+          await Trainer.updateInventoryItem(recipient_id, category, itemId, -count);
+
+          // Add to initiator
+          await Trainer.updateInventoryItem(initiator_id, category, itemId, count);
+        }
+      }
+
+      // 3. Create a trade record if needed (this would be implemented in a Trade model)
+      // For now, we'll just log the trade
+      console.log(`Item trade completed between ${initiator_id} and ${recipient_id}`);
+
+      // Return success message
+      return res.render('town/trade/items', {
+        title: 'Item Trading',
+        message: 'Trade completed successfully!',
+        messageType: 'success',
+        userTrainers: await Trainer.getByUserId(req.session.user.discord_id),
+        selectedTrainer: initiatorTrainer,
+        inventory: await Trainer.getInventory(initiator_id) || {},
+        itemDetails: {},
+        otherTrainers: await Trainer.getAll(),
+        otherTrainer: recipientTrainer,
+        otherItems: {}
+      });
+    } catch (tradeError) {
+      console.error('Error processing item trade:', tradeError);
+      return res.render('town/trade/items', {
+        title: 'Item Trading',
+        message: 'Error processing trade: ' + tradeError.message,
+        messageType: 'error',
+        userTrainers: await Trainer.getByUserId(req.session.user.discord_id),
+        selectedTrainer: initiatorTrainer,
+        inventory: await Trainer.getInventory(initiator_id) || {},
+        itemDetails: {},
+        otherTrainers: await Trainer.getAll(),
+        otherTrainer: recipientTrainer,
+        otherItems: {}
+      });
+    }
+  } catch (error) {
+    console.error('Error processing item trade:', error);
+    res.render('town/trade/items', {
+      title: 'Item Trading',
+      message: 'Error processing trade. Please try again.',
+      messageType: 'error',
+      userTrainers: [],
+      selectedTrainer: null,
+      inventory: {},
+      itemDetails: {},
+      otherTrainers: [],
+      otherTrainer: null,
+      otherItems: {}
+    });
+  }
+});
+
+// API endpoint for fetching a trainer's inventory
+app.get('/api/trainers/:id/inventory', async (req, res) => {
+  // Check if user is logged in
+  if (!req.session.user) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+
+  try {
+    const trainerId = req.params.id;
+
+    // Get the trainer
+    const trainer = await Trainer.getById(trainerId);
+    if (!trainer) {
+      return res.status(404).json({ error: 'Trainer not found' });
+    }
+
+    // Get the trainer's inventory
+    const inventory = await Trainer.getInventory(trainerId) || {};
+
+    // Log the inventory for debugging
+    console.log('Trainer inventory:', JSON.stringify(inventory, null, 2));
+
+    // Get item details (this would be implemented in an Item model)
+    // For now, we'll just return the inventory
+
+    res.json({
+      inventory,
+      itemDetails: {}
+    });
+  } catch (error) {
+    console.error('Error fetching trainer inventory:', error);
+    res.status(500).json({ error: 'Error fetching trainer inventory' });
+  }
+});
+
+// Item Trading Route
+app.get('/town/visit/trade/items', async (req, res) => {
+  // Check if user is logged in
+  if (!req.session.user) {
+    return res.redirect('/login');
+  }
+
+  try {
+    // Get user's trainers
+    const userTrainers = await Trainer.getByUserId(req.session.user.discord_id);
+
+    // Get selected trainer if trainer_id is provided
+    let selectedTrainer = null;
+    if (req.query.trainer_id) {
+      selectedTrainer = await Trainer.getById(req.query.trainer_id);
+
+      // Verify that the selected trainer belongs to the user
+      if (!selectedTrainer || selectedTrainer.player_user_id !== req.session.user.discord_id) {
+        selectedTrainer = null;
+      }
+    }
+
+    // If no trainer is selected but user has trainers, select the first one
+    if (!selectedTrainer && userTrainers.length > 0) {
+      selectedTrainer = userTrainers[0];
+    }
+
+    // Get the trainer's items
+    let inventory = {};
+    if (selectedTrainer) {
+      try {
+        // Use Trainer.getInventory method
+        inventory = await Trainer.getInventory(selectedTrainer.id) || {};
+      } catch (inventoryError) {
+        console.error('Error loading trainer inventory:', inventoryError);
+      }
+    }
+
+    // Get all trainers for the dropdown
+    let otherTrainers = [];
+    try {
+      // Get all trainers
+      otherTrainers = await Trainer.getAll();
+    } catch (trainersError) {
+      console.error('Error loading all trainers:', trainersError);
+    }
+
+    res.render('town/trade/items', {
+      title: 'Item Trading',
+      userTrainers,
+      selectedTrainer,
+      inventory,
+      itemDetails: {}, // This would be populated with item details from a database
+      otherTrainers, // All trainers for the dropdown
+      otherTrainer: null, // This would be the selected trainer to trade with
+      otherItems: {} // This would be the items of the other trainer
+    });
+  } catch (error) {
+    console.error('Error loading item trade page:', error);
+    res.render('town/trade/items', {
+      title: 'Item Trading',
+      message: 'Error loading trainers or items. Please try again.',
+      messageType: 'error',
+      userTrainers: [],
+      selectedTrainer: null,
+      inventory: {},
+      itemDetails: {},
+      otherTrainers: [],
+      otherTrainer: null,
+      otherItems: {}
+    });
+  }
 });
 
 app.get('/town/visit/garden', (req, res) => {
@@ -2183,6 +2835,90 @@ app.get('/town/visit/farm', (req, res) => {
   res.render('town/farm', {
     title: 'Farm'
   });
+});
+
+// Game Corner route
+app.get('/town/visit/game_corner', async (req, res) => {
+  // Check if user is logged in
+  if (!req.session.user) {
+    return res.redirect('/login');
+  }
+
+  try {
+    // Import the Trainer and Monster models
+    const Trainer = require('./models/Trainer');
+    const Monster = require('./models/Monster');
+
+    // Get the user's trainers
+    const trainers = await Trainer.getByUserId(req.session.user.discord_id);
+
+    // Get monsters for each trainer
+    let monsters = [];
+    for (const trainer of trainers) {
+      const trainerMonsters = await Monster.getByTrainerId(trainer.id);
+      monsters = [...monsters, ...trainerMonsters];
+    }
+
+    console.log(`Loaded ${trainers.length} trainers and ${monsters.length} monsters for Game Corner`);
+
+    // Render the game corner template with real data
+    res.render('town/game_corner', {
+      title: 'Pomodoro Game Corner',
+      trainers: trainers,
+      monsters: monsters
+    });
+  } catch (error) {
+    console.error('Error loading Game Corner data:', error);
+
+    // Render with empty data in case of error
+    res.render('town/game_corner', {
+      title: 'Pomodoro Game Corner',
+      trainers: [],
+      monsters: []
+    });
+  }
+});
+
+// Game Corner APIs
+const gameCornerRewardsRouter = require('./routes/game_corner_rewards');
+app.use('/api/game-corner', gameCornerRewardsRouter);
+
+// Game Corner Generation API
+const gameCornerApiRouter = require('./routes/game_corner_api');
+app.use('/api/game-corner-gen', gameCornerApiRouter);
+
+// Generic handler for other town locations
+app.get('/town/visit/:location', (req, res) => {
+  // Check if user is logged in
+  if (!req.session.user) {
+    return res.redirect('/login');
+  }
+
+  const location = req.params.location;
+
+  // Check if the view exists
+  const viewPath = path.join(__dirname, 'views', 'town', `${location}.ejs`);
+
+  if (fs.existsSync(viewPath)) {
+    // Format the location name for the title
+    const locationName = location
+      .split('_')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ');
+
+    res.render(`town/${location}`, {
+      title: locationName
+    });
+  } else {
+    // Render a coming soon page if the view doesn't exist
+    res.render('town/coming-soon', {
+      title: 'Coming Soon',
+      location: location
+        .split('_')
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(' ')
+    });
+  }
 });
 
 // Adventures routes
@@ -3025,6 +3761,11 @@ app.get('/guides', (req, res) => {
   });
 });
 
+// Add redirect for old guide URLs to new content prefix pattern
+app.get('/guides/:path(*)', (req, res) => {
+  res.redirect(`/content/guides/${req.params.path}`);
+});
+
 app.get('/lore', (req, res) => {
   const categories = getContentCategories();
   const contentPath = path.join(__dirname, 'content', 'lore', 'overview.md');
@@ -3037,6 +3778,11 @@ app.get('/lore', (req, res) => {
     currentPath: '',
     content
   });
+});
+
+// Add redirect for old lore URLs to new content prefix pattern
+app.get('/lore/:path(*)', (req, res) => {
+  res.redirect(`/content/lore/${req.params.path}`);
 });
 
 app.get('/factions', (req, res) => {
@@ -3053,6 +3799,11 @@ app.get('/factions', (req, res) => {
   });
 });
 
+// Add redirect for old faction URLs to new content prefix pattern
+app.get('/factions/:path(*)', (req, res) => {
+  res.redirect(`/content/factions/${req.params.path}`);
+});
+
 app.get('/npcs', (req, res) => {
   const categories = getContentCategories();
   const contentPath = path.join(__dirname, 'content', 'npcs', 'overview.md');
@@ -3067,6 +3818,11 @@ app.get('/npcs', (req, res) => {
   });
 });
 
+// Add redirect for old NPC URLs to new content prefix pattern
+app.get('/npcs/:path(*)', (req, res) => {
+  res.redirect(`/content/npcs/${req.params.path}`);
+});
+
 app.get('/locations', (req, res) => {
   const categories = getContentCategories();
   const contentPath = path.join(__dirname, 'content', 'locations', 'overview.md');
@@ -3079,6 +3835,11 @@ app.get('/locations', (req, res) => {
     currentPath: '',
     content
   });
+});
+
+// Add redirect for old location URLs to new content prefix pattern
+app.get('/locations/:path(*)', (req, res) => {
+  res.redirect(`/content/locations/${req.params.path}`);
 });
 
 // Statistics routes
@@ -4171,6 +4932,39 @@ app.get('/trainers/:id/achievements', async (req, res) => {
   }
 });
 
+// Trainer additional references route
+app.get('/trainers/:id/additional-references', async (req, res) => {
+  try {
+    const trainerId = req.params.id;
+    const trainer = await Trainer.getById(trainerId);
+
+    if (!trainer) {
+      return res.status(404).render('error', {
+        message: 'Trainer not found',
+        error: { status: 404 }
+      });
+    }
+
+    // Get additional references from the trainer model
+    // This assumes you have a references array in your trainer model
+    // If not, you'll need to modify this to match your data structure
+    const references = trainer.additional_references || [];
+
+    res.render('trainers/additional-references', {
+      title: `${trainer.name} - Additional References`,
+      trainer,
+      references
+    });
+  } catch (error) {
+    console.error('Error getting trainer additional references:', error);
+    res.status(500).render('error', {
+      message: 'Error getting trainer additional references',
+      error: { status: 500, stack: error.stack },
+      title: 'Error'
+    });
+  }
+});
+
 // Trainer inventory route
 app.get('/trainers/:id/inventory', async (req, res) => {
   try {
@@ -4354,6 +5148,11 @@ app.post('/trainers/:id/update', async (req, res) => {
 
     if (req.body.main_ref_artist !== undefined) {
       updatedTrainer.main_ref_artist = req.body.main_ref_artist;
+    }
+
+    // Handle additional references
+    if (req.body.additional_references) {
+      updatedTrainer.additional_references = req.body.additional_references;
     }
 
     console.log('Final updatedTrainer object:', updatedTrainer);
@@ -4758,8 +5557,8 @@ app.post('/add_trainer', async (req, res) => {
   }
 });
 
-// Make sure your category route comes AFTER the API routes
-app.get('/:category/:path(*)', (req, res) => {
+// Content category route with specific prefix to avoid conflicts with other routes
+app.get('/content/:category/:path(*)', (req, res) => {
   const category = req.params.category;
   const validCategories = ['guides', 'lore', 'factions', 'npcs', 'locations'];
 

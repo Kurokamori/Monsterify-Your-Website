@@ -1,0 +1,518 @@
+<% /* Set the title and other variables for the layout */ %>
+<% title = title || `${trainer.name} - Statistics` %>
+<div class="full-width-section">
+    <div class="container">
+        <span></span>
+    </div>
+</div>
+
+<div class="full-width-content">
+    <div class="trainer-page-layout">
+        <!-- Side Navigation -->
+        <div class="trainer-sidebar">
+            <div class="sidebar-nav">
+                <a href="/trainers/<%= trainer.id %>" class="sidebar-link">Profile</a>
+                <a href="/trainers/<%= trainer.id %>/pc" class="sidebar-link">PC Boxes</a>
+                <a href="/trainers/<%= trainer.id %>/boxes" class="sidebar-link">All Boxes</a>
+                <a href="/trainers/<%= trainer.id %>/inventory" class="sidebar-link">Inventory</a>
+                <a href="/trainers/<%= trainer.id %>/stats" class="sidebar-link active">Stats</a>
+                <a href="/trainers/<%= trainer.id %>/achievements" class="sidebar-link">Achievements</a>
+
+                <% if (locals.user && locals.user.discord_id && trainer.player_user_id && locals.user.discord_id.toString() === trainer.player_user_id) { %>
+                    <div class="sidebar-divider"></div>
+                    <a href="/trainers/<%= trainer.id %>/edit" class="sidebar-link">Edit Trainer</a>
+                <% } %>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="trainer-content">
+            <div class="trainer-header">
+                <h1 class="trainer-name"><%= trainer.name %>'s Statistics</h1>
+                <div class="trainer-level">
+                    Level <%= trainer.level || 1 %>
+                </div>
+            </div>
+
+            <div class="stats-container">
+                <!-- Overview Stats -->
+                <div class="stats-card">
+                    <h2 class="stats-card-title">Overview</h2>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <div class="stat-label">Total Monsters</div>
+                            <div class="stat-value"><%= stats.totalMonsters %></div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Referenced</div>
+                            <div class="stat-value"><%= stats.referencedMonsters %> (<%= stats.referencePercentage %>%)</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Current Currency</div>
+                            <div class="stat-value"><i class="fas fa-coins"></i> <%= stats.currentCurrency %></div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Total Earned</div>
+                            <div class="stat-value"><i class="fas fa-coins"></i> <%= stats.totalEarnedCurrency %></div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Average Level</div>
+                            <div class="stat-value"><%= stats.averageLevel %></div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Highest Level</div>
+                            <div class="stat-value"><%= stats.maxLevel %></div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">PC Boxes</div>
+                            <div class="stat-value"><%= stats.boxCount %></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Special Monsters -->
+                <div class="stats-card">
+                    <h2 class="stats-card-title">Special Monsters</h2>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <div class="stat-label">Shiny</div>
+                            <div class="stat-value"><%= stats.shinyCount %></div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Alpha</div>
+                            <div class="stat-value"><%= stats.alphaCount %></div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Shadow</div>
+                            <div class="stat-value"><%= stats.shadowCount %></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Type Distribution -->
+                <div class="stats-card">
+                    <h2 class="stats-card-title">Type Distribution</h2>
+                    <div class="favorite-type">
+                        <div class="favorite-label">Favorite Type:</div>
+                        <div class="favorite-value"><%= stats.favoriteType %></div>
+                    </div>
+
+                    <div class="type-distribution">
+                        <% if (stats.types && stats.types.length > 0) { %>
+                            <div class="type-bars">
+                                <% stats.types.forEach(typeData => { %>
+                                    <div class="type-bar-container">
+                                        <div class="type-name type-<%= typeData.type.toLowerCase() %>"><%= typeData.type %></div>
+                                        <div class="type-bar-wrapper">
+                                            <div class="type-bar type-bg-<%= typeData.type.toLowerCase() %>" style="width: <%= typeData.percentage %>%"></div>
+                                            <div class="type-count"><%= typeData.count %> (<%= typeData.percentage %>%)</div>
+                                        </div>
+                                    </div>
+                                <% }); %>
+                            </div>
+                        <% } else { %>
+                            <div class="empty-stats">No type data available</div>
+                        <% } %>
+                    </div>
+                </div>
+
+                <!-- Top Species -->
+                <div class="stats-card">
+                    <h2 class="stats-card-title">Top Species</h2>
+                    <div class="favorite-species">
+                        <div class="favorite-label">Favorite Species:</div>
+                        <div class="favorite-value"><%= stats.favoriteSpecies %></div>
+                    </div>
+
+                    <div class="species-list">
+                        <% if (stats.topSpecies && stats.topSpecies.length > 0) { %>
+                            <% stats.topSpecies.forEach(speciesData => { %>
+                                <div class="species-item">
+                                    <div class="species-header">
+                                        <div class="species-name"><%= speciesData.species %></div>
+                                        <div class="species-count"><%= speciesData.count %></div>
+                                    </div>
+                                    <div class="species-examples">
+                                        <% if (speciesData.examples && speciesData.examples.length > 0) { %>
+                                            <% speciesData.examples.forEach(example => { %>
+                                                <a href="/trainers/<%= trainer.id %>/monsters/<%= example.id %>" class="species-example">
+                                                    <div class="example-image">
+                                                        <img src="<%= example.img_link || '/images/default_mon.png' %>"
+                                                             alt="<%= example.name %>"
+                                                             onerror="this.onerror=null; this.src='/images/default_mon.png';">
+                                                    </div>
+                                                    <div class="example-info">
+                                                        <div class="example-name"><%= example.name %></div>
+                                                        <div class="example-level">Lv. <%= example.level || 1 %></div>
+                                                    </div>
+                                                </a>
+                                            <% }); %>
+                                        <% } else { %>
+                                            <div class="empty-examples">No examples available</div>
+                                        <% } %>
+                                    </div>
+                                </div>
+                            <% }); %>
+                        <% } else { %>
+                            <div class="empty-stats">No species data available</div>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .trainer-page-layout {
+        display: flex;
+        gap: 2rem;
+    }
+
+    .trainer-sidebar {
+        width: 250px;
+        flex-shrink: 0;
+    }
+
+    .trainer-content {
+        flex-grow: 1;
+    }
+
+    .sidebar-nav {
+        background-color: var(--card-background);
+        border-radius: 0.5rem;
+        padding: 1rem;
+        position: sticky;
+        top: 6rem;
+    }
+
+    .sidebar-link {
+        display: block;
+        padding: 0.75rem 1rem;
+        color: var(--text-color);
+        text-decoration: none;
+        border-radius: 0.375rem;
+        margin-bottom: 0.5rem;
+        transition: background-color 0.2s;
+    }
+
+    .sidebar-link:hover {
+        background-color: var(--nav-hover);
+    }
+
+    .sidebar-link.active {
+        background-color: var(--nav-active);
+        color: var(--accent-color);
+        font-weight: bold;
+    }
+
+    .sidebar-divider {
+        height: 1px;
+        background-color: var(--divider-color);
+        margin: 1rem 0;
+    }
+
+    .trainer-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+    }
+
+    .trainer-name {
+        font-size: 2rem;
+        font-weight: bold;
+        color: var(--accent-color);
+    }
+
+    .trainer-level {
+        font-size: 1.25rem;
+        color: var(--accent-color);
+        background-color: var(--card-background);
+        padding: 0.5rem 1rem;
+        border-radius: 0.5rem;
+    }
+
+    .stats-container {
+        display: grid;
+        grid-template-rows: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1.5rem;
+    }
+
+    .stats-card {
+        background-color: var(--card-background);
+        border-radius: 0.5rem;
+        padding: 1.5rem;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .stats-card-title {
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: var(--accent-color);
+        margin-bottom: 1.5rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 1px solid var(--divider-color);
+    }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        gap: 1rem;
+    }
+
+    .stat-item {
+        text-align: center;
+        padding: 0.75rem;
+        background-color: var(--nav-background);
+        border-radius: 0.375rem;
+        transition: transform 0.2s;
+    }
+
+    .stat-item:hover {
+        transform: translateY(-2px);
+        background-color: var(--nav-hover);
+    }
+
+    .stat-label {
+        font-size: 0.875rem;
+        color: var(--text-color);
+        margin-bottom: 0.5rem;
+        opacity: 0.8;
+    }
+
+    .stat-value {
+        font-size: 1.25rem;
+        font-weight: bold;
+        color: var(--accent-color);
+    }
+
+    .favorite-type, .favorite-species {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1.5rem;
+        padding: 0.75rem;
+        background-color: var(--nav-background);
+        border-radius: 0.375rem;
+    }
+
+    .favorite-label {
+        font-weight: bold;
+        margin-right: 0.5rem;
+    }
+
+    .favorite-value {
+        color: var(--accent-color);
+        font-size: 1.125rem;
+    }
+
+    .type-distribution, .species-list {
+        margin-top: 1rem;
+    }
+
+    .type-bar-container {
+        display: flex;
+        align-items: center;
+        margin-bottom: 0.75rem;
+    }
+
+    .type-name {
+        width: 100px;
+        font-size: 0.875rem;
+        padding: 0.25rem 0.5rem;
+        border-radius: 0.25rem;
+        text-align: center;
+        margin-right: 0.5rem;
+        color: white;
+        font-weight: bold;
+        text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5);
+    }
+
+    /* Type colors */
+    .type-normal { background-color: #A8A878; }
+    .type-fire { background-color: #F08030; }
+    .type-water { background-color: #6890F0; }
+    .type-electric { background-color: #F8D030; }
+    .type-grass { background-color: #78C850; }
+    .type-ice { background-color: #98D8D8; }
+    .type-fighting { background-color: #C03028; }
+    .type-poison { background-color: #A040A0; }
+    .type-ground { background-color: #E0C068; }
+    .type-flying { background-color: #A890F0; }
+    .type-psychic { background-color: #F85888; }
+    .type-bug { background-color: #A8B820; }
+    .type-rock { background-color: #B8A038; }
+    .type-ghost { background-color: #705898; }
+    .type-dragon { background-color: #7038F8; }
+    .type-dark { background-color: #705848; }
+    .type-steel { background-color: #B8B8D0; }
+    .type-fairy { background-color: #EE99AC; }
+    .type-cosmic { background-color: #5A38A0; }
+    .type-light { background-color: #F8F878; color: #333; text-shadow: none; }
+
+    /* Type background colors (lighter versions for bars) */
+    .type-bg-normal { background-color: #C6C6A7; }
+    .type-bg-fire { background-color: #F5AC78; }
+    .type-bg-water { background-color: #9DB7F5; }
+    .type-bg-electric { background-color: #FAE078; }
+    .type-bg-grass { background-color: #A7DB8D; }
+    .type-bg-ice { background-color: #BCE6E6; }
+    .type-bg-fighting { background-color: #D67873; }
+    .type-bg-poison { background-color: #C183C1; }
+    .type-bg-ground { background-color: #EBD69D; }
+    .type-bg-flying { background-color: #C6B7F5; }
+    .type-bg-psychic { background-color: #FA92B2; }
+    .type-bg-bug { background-color: #C6D16E; }
+    .type-bg-rock { background-color: #D1C17D; }
+    .type-bg-ghost { background-color: #A292BC; }
+    .type-bg-dragon { background-color: #A27DFA; }
+    .type-bg-dark { background-color: #A29288; }
+    .type-bg-steel { background-color: #D1D1E0; }
+    .type-bg-fairy { background-color: #F4BDC9; }
+    .type-bg-cosmic { background-color: #9D7BC1; }
+    .type-bg-light { background-color: #F8F8B8; }
+
+    .type-bar-wrapper {
+        flex-grow: 1;
+        position: relative;
+        height: 24px;
+        background-color: var(--nav-background);
+        border-radius: 0.25rem;
+        overflow: hidden;
+    }
+
+    .type-bar {
+        height: 100%;
+        background-color: var(--accent-color);
+        border-radius: 0.25rem;
+        transition: width 0.5s ease-out;
+    }
+
+    .type-count {
+        position: absolute;
+        right: 8px;
+        top: 0;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        font-size: 0.75rem;
+        color: var(--text-color);
+    }
+
+    .species-item {
+        margin-bottom: 1.5rem;
+        padding: 1rem;
+        background-color: var(--nav-background);
+        border-radius: 0.375rem;
+    }
+
+    .species-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 1px solid var(--divider-color);
+    }
+
+    .species-name {
+        font-weight: bold;
+        font-size: 1.125rem;
+    }
+
+    .species-count {
+        background-color: var(--accent-color);
+        color: var(--nav-background);
+        padding: 0.25rem 0.5rem;
+        border-radius: 0.25rem;
+        font-weight: bold;
+        font-size: 0.875rem;
+    }
+
+    .species-examples {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        gap: 0.75rem;
+    }
+
+    .species-example {
+        display: flex;
+        flex-direction: column;
+        text-decoration: none;
+        color: var(--text-color);
+        background-color: var(--card-background);
+        border-radius: 0.375rem;
+        overflow: hidden;
+        transition: transform 0.2s;
+    }
+
+    .species-example:hover {
+        transform: translateY(-2px);
+    }
+
+    .example-image {
+        width: 100%;
+        height: 80px;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: var(--nav-active);
+    }
+
+    .example-image img {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+    }
+
+    .example-info {
+        padding: 0.5rem;
+    }
+
+    .example-name {
+        font-weight: bold;
+        font-size: 0.875rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .example-level {
+        font-size: 0.75rem;
+        color: var(--accent-color);
+    }
+
+    .empty-stats {
+        text-align: center;
+        padding: 2rem;
+        color: var(--text-color);
+        opacity: 0.7;
+    }
+
+    .empty-examples {
+        text-align: center;
+        padding: 1rem;
+        color: var(--text-color);
+        opacity: 0.7;
+        font-size: 0.875rem;
+    }
+
+    @media (max-width: 768px) {
+        .trainer-page-layout {
+            flex-direction: column;
+        }
+
+        .trainer-sidebar {
+            width: 100%;
+        }
+
+        .sidebar-nav {
+            position: static;
+        }
+
+        .stats-container {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>

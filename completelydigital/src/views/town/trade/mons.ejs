@@ -1,0 +1,801 @@
+<% /* Set the title and other variables for the layout */ %>
+<% title = 'Monster Trading' %>
+
+<style>
+  .trade-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+  }
+
+  .trade-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+  }
+
+  .trade-title {
+    font-size: 2rem;
+    font-weight: bold;
+    color: var(--accent-color);
+  }
+
+  .btn-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background-color: var(--card-background);
+    color: var(--text-color);
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+  }
+
+  .btn-back:hover {
+    background-color: var(--nav-hover);
+  }
+
+  .trainer-selector {
+    margin: 0 auto 2rem;
+    max-width: 400px;
+    padding: 1rem;
+    background-color: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+  }
+
+  .trainer-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .trainer-label {
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+    color: var(--text-color);
+  }
+
+  .trainer-select {
+    width: 100%;
+    padding: 0.5rem;
+    border-radius: 4px;
+    background-color: var(--bg-color-light);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+  }
+
+  .trade-form {
+    background-color: var(--card-background);
+    border-radius: 1rem;
+    padding: 2rem;
+    margin-bottom: 2rem;
+  }
+
+  .form-group {
+    margin-bottom: 1.5rem;
+  }
+
+  .form-label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+  }
+
+  .form-control {
+    width: 100%;
+    padding: 0.75rem;
+    background-color: var(--input-background);
+    border: 1px solid var(--divider-color);
+    border-radius: 0.5rem;
+    color: var(--text-color);
+  }
+
+  .form-control:focus {
+    outline: none;
+    border-color: var(--accent-color);
+  }
+
+  .form-hint {
+    font-size: 0.875rem;
+    color: var(--text-color);
+    opacity: 0.7;
+    margin-top: 0.25rem;
+  }
+
+  .trade-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+  }
+
+  .trade-section {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .trade-section-title {
+    font-size: 1.25rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+    color: var(--accent-color);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .monster-selection {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .search-container {
+    margin-bottom: 1rem;
+    width: 100%;
+  }
+
+  .search-input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--border-color, #2a3a5a);
+    border-radius: 8px;
+    background-color: rgba(0, 0, 0, 0.2);
+    color: var(--text-color, #e1e1e1);
+    font-size: 0.95rem;
+  }
+
+  .search-input:focus {
+    outline: none;
+    border-color: var(--accent-color, #9c59b6);
+    box-shadow: 0 0 0 2px rgba(156, 89, 182, 0.2);
+  }
+
+  .monster-list {
+    flex: 1;
+    background-color: rgba(0, 0, 0, 0.1);
+    border-radius: 0.5rem;
+    padding: 1rem;
+    min-height: 300px;
+    max-height: 500px;
+    overflow-y: auto;
+  }
+
+  .monster-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 1rem;
+  }
+
+  .monster-card {
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 0.5rem;
+    padding: 1rem;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    position: relative;
+  }
+
+  .monster-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+
+  .monster-card.selected {
+    border: 2px solid var(--accent-color);
+  }
+
+  .monster-card.selected::after {
+    content: '✓';
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    background-color: var(--accent-color);
+    color: white;
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.875rem;
+    font-weight: bold;
+  }
+
+  .monster-image {
+    width: 100%;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 0.25rem;
+    margin-bottom: 0.5rem;
+    background-color: rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .monster-image img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+  }
+
+  .monster-image-placeholder {
+    color: var(--text-color);
+    opacity: 0.5;
+    font-size: 2rem;
+  }
+
+  .monster-name {
+    font-weight: bold;
+    margin-bottom: 0.25rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .monster-details {
+    font-size: 0.75rem;
+    color: var(--text-color);
+    opacity: 0.7;
+  }
+
+  .monster-type {
+    display: inline-block;
+    padding: 0.125rem 0.25rem;
+    border-radius: 0.25rem;
+    font-size: 0.625rem;
+    margin-right: 0.25rem;
+    margin-bottom: 0.25rem;
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+
+  .selected-monsters {
+    margin-top: 1rem;
+    background-color: rgba(0, 0, 0, 0.1);
+    border-radius: 0.5rem;
+    padding: 1rem;
+    min-height: 100px;
+  }
+
+  .selected-monsters-title {
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+  }
+
+  .selected-monsters-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .selected-monster-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background-color: rgba(0, 0, 0, 0.2);
+    padding: 0.5rem;
+    border-radius: 0.25rem;
+  }
+
+  .selected-monster-tag-remove {
+    cursor: pointer;
+    color: var(--text-color);
+    opacity: 0.7;
+  }
+
+  .selected-monster-tag-remove:hover {
+    opacity: 1;
+  }
+
+  .empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    min-height: 200px;
+    color: var(--text-color);
+    opacity: 0.5;
+  }
+
+  .empty-state-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+  }
+
+  .empty-state-text {
+    font-size: 1rem;
+  }
+
+  .trade-actions {
+    display: flex;
+    justify-content: center;
+    margin-top: 2rem;
+  }
+
+  .btn-submit {
+    background-color: var(--accent-color);
+    color: white;
+    padding: 0.75rem 2rem;
+    border-radius: 0.5rem;
+    font-size: 1.125rem;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .btn-submit:hover {
+    background-color: var(--accent-hover-color);
+  }
+
+  .btn-submit:disabled {
+    background-color: var(--divider-color);
+    cursor: not-allowed;
+  }
+
+  .alert {
+    padding: 1rem;
+    border-radius: 0.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .alert-success {
+    background-color: rgba(72, 187, 120, 0.2);
+    color: #48bb78;
+    border: 1px solid rgba(72, 187, 120, 0.5);
+  }
+
+  .alert {
+    padding: 1rem;
+    border-radius: 0.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .alert-info {
+    background-color: rgba(66, 153, 225, 0.2);
+    color: #4299e1;
+    border: 1px solid rgba(66, 153, 225, 0.5);
+  }
+
+  .alert-success {
+    background-color: rgba(72, 187, 120, 0.2);
+    color: #48bb78;
+    border: 1px solid rgba(72, 187, 120, 0.5);
+  }
+
+  .alert-error {
+    background-color: rgba(245, 101, 101, 0.2);
+    color: #f56565;
+    border: 1px solid rgba(245, 101, 101, 0.5);
+  }
+
+  @media (max-width: 768px) {
+    .trade-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .trade-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+  }
+</style>
+
+<div class="trade-container">
+  <div class="trade-header">
+    <h1 class="trade-title">Monster Trading</h1>
+    <a href="/town/visit/trade" class="btn-back">
+      <i class="fas fa-arrow-left"></i> Back to Trade Center
+    </a>
+  </div>
+
+  <% if (typeof message !== 'undefined' && message) { %>
+  <div class="alert alert-<%= messageType || 'info' %>">
+    <%= message %>
+  </div>
+  <% } %>
+
+  <% if (typeof userTrainers !== 'undefined' && userTrainers && userTrainers.length > 0) { %>
+    <div class="trainer-selector">
+      <form action="/town/visit/trade/mons" method="GET" class="trainer-form">
+        <label for="trainer_id" class="trainer-label">Select Your Trainer:</label>
+        <select id="trainer_id" name="trainer_id" class="trainer-select" onchange="this.form.submit()">
+          <% userTrainers.forEach(trainer => { %>
+            <option value="<%= trainer.id %>" <%= typeof selectedTrainer !== 'undefined' && selectedTrainer && trainer.id === selectedTrainer.id ? 'selected' : '' %>>
+              <%= trainer.name %> (Level <%= trainer.level %>)
+            </option>
+          <% }); %>
+        </select>
+      </form>
+    </div>
+  <% } %>
+
+  <% if (typeof message !== 'undefined' && message) { %>
+    <div class="alert alert-<%= messageType || 'success' %>">
+      <%= message %>
+    </div>
+  <% } %>
+
+  <form action="/town/visit/trade/mons" method="POST" class="trade-form">
+    <% if (typeof selectedTrainer !== 'undefined' && selectedTrainer) { %>
+      <input type="hidden" name="initiator_id" value="<%= selectedTrainer.id %>">
+    <% } %>
+    <div class="form-group">
+      <label for="recipient_id" class="form-label">Select Recipient Trainer</label>
+      <select id="recipient_id" name="recipient_id" class="form-control" required>
+        <option value="">-- Select a trainer --</option>
+        <% (typeof otherTrainers !== 'undefined' && otherTrainers ? otherTrainers : []).forEach(trainer => { %>
+          <% if (typeof selectedTrainer !== 'undefined' && selectedTrainer && trainer.id !== selectedTrainer.id) { %>
+            <option value="<%= trainer.id %>"><%= trainer.name %></option>
+          <% } %>
+        <% }); %>
+      </select>
+      <div class="form-hint">Select the trainer you want to trade with</div>
+    </div>
+
+    <div class="trade-grid">
+      <!-- Your Monsters (Offering) -->
+      <div class="trade-section">
+        <h2 class="trade-section-title">
+          <i class="fas fa-hand-holding"></i> Your Monsters (Offering)
+        </h2>
+
+        <div class="monster-selection">
+          <div class="search-container">
+            <input type="text" id="your-monsters-search" class="search-input" placeholder="Search your monsters..." onkeyup="searchMonsters('your')">
+          </div>
+          <div class="monster-list">
+            <% if (typeof yourMonsters !== 'undefined' && yourMonsters && yourMonsters.length > 0) { %>
+              <div class="monster-grid">
+                <% yourMonsters.forEach(monster => { %>
+                  <div class="monster-card" data-monster-id="<%= monster.mon_id %>" onclick="toggleMonsterSelection(this, 'offered')">
+                    <div class="monster-image">
+                      <% if (monster.img_link) { %>
+                        <img src="<%= monster.img_link %>" alt="<%= monster.name %>">
+                      <% } else { %>
+                        <div class="monster-image-placeholder">
+                          <i class="fas fa-question"></i>
+                        </div>
+                      <% } %>
+                    </div>
+                    <div class="monster-name"><%= monster.name %></div>
+                    <div class="monster-details">Level <%= monster.level %></div>
+                    <div>
+                      <% if (monster.type1) { %>
+                        <span class="monster-type"><%= monster.type1 %></span>
+                      <% } %>
+                      <% if (monster.type2) { %>
+                        <span class="monster-type"><%= monster.type2 %></span>
+                      <% } %>
+                    </div>
+                  </div>
+                <% }); %>
+              </div>
+            <% } else { %>
+              <div class="empty-state">
+                <div class="empty-state-icon">
+                  <i class="fas fa-ghost"></i>
+                </div>
+                <div class="empty-state-text">You don't have any monsters to trade</div>
+              </div>
+            <% } %>
+          </div>
+
+          <div class="selected-monsters">
+            <div class="selected-monsters-title">Selected Monsters to Offer:</div>
+            <div class="selected-monsters-list" id="offered-monsters-list">
+              <!-- Selected monsters will be added here dynamically -->
+              <div class="empty-state" id="offered-empty-state">
+                <div class="empty-state-text">No monsters selected</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Their Monsters (Requesting) -->
+      <div class="trade-section">
+        <h2 class="trade-section-title">
+          <i class="fas fa-hand-receiving"></i> Their Monsters (Requesting)
+        </h2>
+
+        <div class="monster-selection">
+          <div class="search-container">
+            <input type="text" id="their-monsters-search" class="search-input" placeholder="Search their monsters..." onkeyup="searchMonsters('their')">
+          </div>
+          <div class="monster-list" id="recipient-monsters-container">
+            <div class="empty-state">
+              <div class="empty-state-icon">
+                <i class="fas fa-user-alt"></i>
+              </div>
+              <div class="empty-state-text">Select a trainer to see their monsters</div>
+            </div>
+          </div>
+
+          <div class="selected-monsters">
+            <div class="selected-monsters-title">Selected Monsters to Request:</div>
+            <div class="selected-monsters-list" id="requested-monsters-list">
+              <!-- Selected monsters will be added here dynamically -->
+              <div class="empty-state" id="requested-empty-state">
+                <div class="empty-state-text">No monsters selected</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Hidden inputs to store selected monster IDs -->
+    <div id="offered-monsters-inputs"></div>
+    <div id="requested-monsters-inputs"></div>
+
+    <div class="trade-actions">
+      <button type="submit" class="btn-submit" id="submit-trade" disabled>
+        <i class="fas fa-exchange-alt"></i> Create Trade
+      </button>
+    </div>
+  </form>
+</div>
+
+<script>
+  // Store selected monsters
+  const selectedMonsters = {
+    offered: [],
+    requested: []
+  };
+
+  // Toggle monster selection
+  function toggleMonsterSelection(element, type) {
+    const monsterId = element.dataset.monsterId;
+    const monsterName = element.querySelector('.monster-name').textContent;
+
+    // Check if already selected
+    const index = selectedMonsters[type].findIndex(m => m.id === monsterId);
+
+    if (index === -1) {
+      // Add to selection
+      selectedMonsters[type].push({
+        id: monsterId,
+        name: monsterName
+      });
+      element.classList.add('selected');
+    } else {
+      // Remove from selection
+      selectedMonsters[type].splice(index, 1);
+      element.classList.remove('selected');
+    }
+
+    // Update the UI
+    updateSelectedMonstersList(type);
+    updateHiddenInputs();
+    updateSubmitButton();
+  }
+
+  // Update the selected monsters list
+  function updateSelectedMonstersList(type) {
+    const listElement = document.getElementById(`${type}-monsters-list`);
+    const emptyState = document.getElementById(`${type}-empty-state`);
+
+    // Clear current list
+    listElement.innerHTML = '';
+
+    if (selectedMonsters[type].length === 0) {
+      // Show empty state
+      listElement.appendChild(emptyState);
+      return;
+    }
+
+    // Add selected monsters
+    selectedMonsters[type].forEach(monster => {
+      const tag = document.createElement('div');
+      tag.className = 'selected-monster-tag';
+      tag.innerHTML = `
+        ${monster.name}
+        <span class="selected-monster-tag-remove" onclick="removeSelectedMonster('${type}', '${monster.id}')">
+          &times;
+        </span>
+      `;
+      listElement.appendChild(tag);
+    });
+  }
+
+  // Remove a selected monster
+  function removeSelectedMonster(type, monsterId) {
+    // Remove from array
+    const index = selectedMonsters[type].findIndex(m => m.id === monsterId);
+    if (index !== -1) {
+      selectedMonsters[type].splice(index, 1);
+    }
+
+    // Remove selection from card
+    const card = document.querySelector(`.monster-card[data-monster-id="${monsterId}"]`);
+    if (card) {
+      card.classList.remove('selected');
+    }
+
+    // Update UI
+    updateSelectedMonstersList(type);
+    updateHiddenInputs();
+    updateSubmitButton();
+  }
+
+  // Update hidden inputs for form submission
+  function updateHiddenInputs() {
+    const offeredInputsContainer = document.getElementById('offered-monsters-inputs');
+    const requestedInputsContainer = document.getElementById('requested-monsters-inputs');
+
+    // Clear current inputs
+    offeredInputsContainer.innerHTML = '';
+    requestedInputsContainer.innerHTML = '';
+
+    // Add offered monsters inputs
+    selectedMonsters.offered.forEach(monster => {
+      const input = document.createElement('input');
+      input.type = 'hidden';
+      input.name = 'offered_mons';
+      input.value = monster.id;
+      offeredInputsContainer.appendChild(input);
+    });
+
+    // Add requested monsters inputs
+    selectedMonsters.requested.forEach(monster => {
+      const input = document.createElement('input');
+      input.type = 'hidden';
+      input.name = 'requested_mons';
+      input.value = monster.id;
+      requestedInputsContainer.appendChild(input);
+    });
+  }
+
+  // Update submit button state
+  function updateSubmitButton() {
+    const submitButton = document.getElementById('submit-trade');
+    const recipientSelect = document.getElementById('recipient_id');
+
+    // Enable button if a recipient is selected and at least one monster is selected (either offered or requested)
+    const hasRecipient = recipientSelect.value !== '';
+    const hasMonsters = selectedMonsters.offered.length > 0 || selectedMonsters.requested.length > 0;
+
+    submitButton.disabled = !(hasRecipient && hasMonsters);
+  }
+
+  // Load recipient's monsters when a trainer is selected
+  document.getElementById('recipient_id').addEventListener('change', async function() {
+    const trainerId = this.value;
+    const container = document.getElementById('recipient-monsters-container');
+    const searchInput = document.getElementById('their-monsters-search');
+
+    // Reset search input
+    if (searchInput) {
+      searchInput.value = '';
+    }
+
+    // Clear current selection when trainer changes
+    selectedMonsters.requested = [];
+    updateSelectedMonstersList('requested');
+    updateHiddenInputs();
+    updateSubmitButton();
+
+    if (!trainerId) {
+      container.innerHTML = `
+        <div class="empty-state">
+          <div class="empty-state-icon">
+            <i class="fas fa-user-alt"></i>
+          </div>
+          <div class="empty-state-text">Select a trainer to see their monsters</div>
+        </div>
+      `;
+      return;
+    }
+
+    // Show loading state
+    container.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-state-icon">
+          <i class="fas fa-spinner fa-spin"></i>
+        </div>
+        <div class="empty-state-text">Loading monsters...</div>
+      </div>
+    `;
+
+    try {
+      // Fetch the trainer's monsters
+      const response = await fetch(`/api/trainers/${trainerId}/monsters`);
+      const data = await response.json();
+
+      if (!data.monsters || data.monsters.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-state-icon">
+              <i class="fas fa-ghost"></i>
+            </div>
+            <div class="empty-state-text">This trainer doesn't have any monsters</div>
+          </div>
+        `;
+        return;
+      }
+
+      // Render the monsters
+      let html = '<div class="monster-grid">';
+
+      data.monsters.forEach(monster => {
+        html += `
+          <div class="monster-card" data-monster-id="${monster.mon_id}" onclick="toggleMonsterSelection(this, 'requested')">
+            <div class="monster-image">
+              ${monster.img_link
+                ? `<img src="${monster.img_link}" alt="${monster.name}">`
+                : `<div class="monster-image-placeholder"><i class="fas fa-question"></i></div>`
+              }
+            </div>
+            <div class="monster-name">${monster.name}</div>
+            <div class="monster-details">Level ${monster.level}</div>
+            <div>
+              ${monster.type1 ? `<span class="monster-type">${monster.type1}</span>` : ''}
+              ${monster.type2 ? `<span class="monster-type">${monster.type2}</span>` : ''}
+            </div>
+          </div>
+        `;
+      });
+
+      html += '</div>';
+      container.innerHTML = html;
+    } catch (error) {
+      console.error('Error fetching monsters:', error);
+      container.innerHTML = `
+        <div class="empty-state">
+          <div class="empty-state-icon">
+            <i class="fas fa-exclamation-triangle"></i>
+          </div>
+          <div class="empty-state-text">Error loading monsters</div>
+        </div>
+      `;
+    }
+  });
+
+  // Initialize empty states
+  // Search monsters function
+  function searchMonsters(side) {
+    const searchInput = document.getElementById(`${side}-monsters-search`);
+    const searchTerm = searchInput.value.toLowerCase();
+
+    // Determine which container to search in
+    const container = side === 'your' ?
+      document.querySelector('.monster-grid') :
+      document.getElementById('recipient-monsters-container');
+
+    if (!container) return;
+
+    // Get all monster cards in the container
+    const monsterCards = container.querySelectorAll('.monster-card');
+
+    // Loop through all monster cards and show/hide based on search term
+    monsterCards.forEach(card => {
+      const monsterName = card.querySelector('.monster-name')?.textContent.toLowerCase() || '';
+      const monsterSpecies = card.querySelector('.monster-species')?.textContent.toLowerCase() || '';
+      const monsterType = card.querySelector('.monster-type')?.textContent.toLowerCase() || '';
+
+      // Check if the monster matches the search term
+      const matches =
+        monsterName.includes(searchTerm) ||
+        monsterSpecies.includes(searchTerm) ||
+        monsterType.includes(searchTerm);
+
+      // Show or hide the monster card
+      card.style.display = matches ? 'block' : 'none';
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', function() {
+    updateSelectedMonstersList('offered');
+    updateSelectedMonstersList('requested');
+    updateSubmitButton();
+  });
+</script>
