@@ -1,0 +1,89 @@
+<%- include('../layouts/header') %>
+
+
+<div class='container mx-auto px-4 py-8'>
+  <div class='max-w-4xl mx-auto'>
+    <div class='mb-8'>
+      <img src='https://i.imgur.com/RmKySNO.png' alt='Pirate\'s Dock' class='w-full h-64 object-cover rounded-lg shadow-lg'>
+      <h1 class='text-3xl font-display font-bold text-center mt-4'>Pirate's Dock</h1>
+      <p class='text-center text-gray-300 mt-2'>Ahoy, matey! Welcome to the Pirate's Dock, where adventure awaits on the high seas!</p>
+    </div>
+    
+    <div class='grid grid-cols-1 md:grid-cols-2 gap-6'>
+      <!-- Fishing Activity Card -->
+      <div class='bg-card rounded-lg overflow-hidden shadow-lg'>
+        <div class='relative'>
+          <img src='https://i.imgur.com/RmKySNO.png' alt='Fishing' class='w-full h-48 object-cover'>
+          <div class='absolute inset-0 bg-gradient-to-t from-black/90 to-transparent'></div>
+          <div class='absolute bottom-0 left-0 right-0 p-4'>
+            <h3 class='text-xl font-bold text-white text-shadow-lg'>Go Fishing</h3>
+          </div>
+        </div>
+        <div class='p-4'>
+          <p class='text-gray-300 mb-4'>Cast your line into the deep blue sea and see what treasures you can catch! You might find rare items or even water-dwelling monsters.</p>
+          <a href='/town/visit/pirates_dock/fishing' class='btn-primary block text-center py-2 px-4 rounded'>
+            <i class='fas fa-fish mr-2'></i> Go Fishing
+          </a>
+        </div>
+      </div>
+      
+      <!-- Swab Deck Activity Card -->
+      <div class='bg-card rounded-lg overflow-hidden shadow-lg'>
+        <div class='relative'>
+          <img src='https://i.imgur.com/RmKySNO.png' alt='Swab the Deck' class='w-full h-48 object-cover'>
+          <div class='absolute inset-0 bg-gradient-to-t from-black/90 to-transparent'></div>
+          <div class='absolute bottom-0 left-0 right-0 p-4'>
+            <h3 class='text-xl font-bold text-white text-shadow-lg'>Swab the Deck</h3>
+          </div>
+        </div>
+        <div class='p-4'>
+          <p class='text-gray-300 mb-4'>Help the pirates keep their ship shipshape by swabbing the deck! The captain rewards hard workers with valuable treasures and rare monsters.</p>
+          <a href='/town/visit/pirates_dock/swab' class='btn-primary block text-center py-2 px-4 rounded'>
+            <i class='fas fa-broom mr-2'></i> Swab the Deck
+          </a>
+        </div>
+      </div>
+    </div>
+    
+    <div class='mt-8 text-center'>
+      <a href='/town/visit' class='btn-secondary inline-block py-2 px-4 rounded'>
+        <i class='fas fa-arrow-left mr-2'></i> Back to Town
+      </a>
+    </div>
+  </div>
+</div>
+
+
+<style>
+  .bg-card {
+    background-color: var(--card-bg);
+  }
+  
+  .text-shadow-lg {
+    text-shadow: 0 4px 8px rgba(0, 0, 0, 0.8);
+  }
+  
+  .btn-primary {
+    background-color: var(--accent-color);
+    color: var(--background-color);
+    font-weight: 500;
+    transition: all 0.2s;
+  }
+  
+  .btn-primary:hover {
+    background-color: var(--accent-hover);
+    transform: translateY(-2px);
+  }
+  
+  .btn-secondary {
+    background-color: var(--card-bg-light);
+    color: var(--text-color);
+    font-weight: 500;
+    transition: all 0.2s;
+  }
+  
+  .btn-secondary:hover {
+    background-color: var(--card-bg);
+    transform: translateY(-2px);
+  }
+</style>
