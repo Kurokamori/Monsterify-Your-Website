@@ -1,0 +1,1091 @@
+<% /* Set the title and other variables for the layout */ %>
+<% title = trainer.name + ' - Trainer Profile' %>
+<div class="full-width-section">
+    <div class="container">
+        <span></span>
+    </div>
+</div>
+
+<div class="full-width-content">
+    <div class="trainer-page-layout">
+        <!-- Side Navigation -->
+        <div class="trainer-sidebar">
+            <div class="sidebar-nav">
+                <a href="#profile" class="sidebar-link active">Profile</a>
+                <a href="/trainers/<%= trainer.id %>/pc" class="sidebar-link">PC Boxes</a>
+                <a href="/trainers/<%= trainer.id %>/boxes" class="sidebar-link">All Boxes</a>
+                <a href="/trainers/<%= trainer.id %>/inventory" class="sidebar-link">Inventory</a>
+                <a href="/trainers/<%= trainer.id %>/stats" class="sidebar-link">Stats</a>
+
+                <% if (locals.user && locals.user.discord_id && trainer.player_user_id && locals.user.discord_id.toString() === trainer.player_user_id) { %>
+                <div class="sidebar-divider"></div>
+                <a href="/trainers/<%= trainer.id %>/edit" class="sidebar-link owner-action">Edit Trainer</a>
+                <a href="/trainers/<%= trainer.id %>/edit-boxes" class="sidebar-link owner-action">Edit Boxes</a>
+
+                <% if (all_monsters && all_monsters.length < 3) { %>
+                <a href="/trainers/<%= trainer.id %>/roll-starters" class="sidebar-link owner-action highlight">Roll Starters</a>
+                <% } %>
+                <% } %>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="trainer-main-content">
+            <div class="main-info-container">
+        <!-- Left: Trainer Image -->
+        <div class="reference-image-container">
+            <div class="reference-image">
+                <img src="<%= trainer.main_ref || '/images/default_trainer.png' %>"
+                     alt="<%= trainer.name %>"
+                     onerror="this.src='/images/default_trainer.png'">
+                <% if (trainer.main_ref_artist) { %>
+                <div class="image-credit">Art by: <%= trainer.main_ref_artist %></div>
+                <% } %>
+            </div>
+        </div>
+
+        <!-- Right: Trainer Info -->
+        <div class="trainer-info-column">
+            <h1 class="text-5xl font-display font-bold mb-4"><%= trainer.name %></h1>
+            <% if (trainer.nickname || trainer.full_name) { %>
+                <h3 class="text-2xl font-display mb-2">
+                    <% if (trainer.nickname) { %><span class="text-[#f8d030]"><%= trainer.nickname %></span><% } %>
+                    <% if (trainer.nickname && trainer.full_name) { %> • <% } %>
+                    <% if (trainer.full_name) { %><span class="text-[#a8a878]"><%= trainer.full_name %></span><% } %>
+                </h3>
+            <% } %>
+            <% if (trainer.title) { %>
+                <h2 class="text-3xl font-display text-[#d4b3ff] mb-8"><%= trainer.title %></h2>
+            <% } %>
+
+            <!-- Primary Information -->
+            <div class="info-grid">
+                <% if (trainer.player_display_name || trainer.player_username) { %>
+                <div class="info-item">
+                    <label>Player</label>
+                    <span><%= trainer.player_display_name || trainer.player_username %></span>
+                </div>
+                <% } %>
+
+                <% if (trainer.level) { %>
+                <div class="info-item">
+                    <label>Level</label>
+                    <span><%= trainer.level %></span>
+                </div>
+                <% } %>
+
+                <% if (trainer.currency_amount) { %>
+                <div class="info-item">
+                    <label>Currency</label>
+                    <span><%= Math.round(trainer.currency_amount) %></span>
+                </div>
+                <% } %>
+
+                <% if (trainer.faction) { %>
+                <div class="info-item">
+                    <label>Faction</label>
+                    <span><%= trainer.faction %></span>
+                </div>
+                <% } %>
+            </div>
+
+            <!-- Species and Types Row -->
+            <div class="species-types-row">
+                <div class="info-item">
+                    <label>Species</label>
+                    <div class="species-grid">
+                        <%
+                        // Create an array of species
+                        const speciesArray = [];
+                        if (trainer.species1) speciesArray.push(trainer.species1);
+                        if (trainer.species2) speciesArray.push(trainer.species2);
+                        if (trainer.species3) speciesArray.push(trainer.species3);
+
+                        // Fill in empty slots to maintain the grid
+                        while (speciesArray.length < 3) {
+                            speciesArray.push(null);
+                        }
+
+                        // Display in a 1x3 grid
+                        for (let i = 0; i < 3; i++) {
+                            const speciesName = speciesArray[i];
+                            if (speciesName) { %>
+                                <span class="species"><%= speciesName %></span>
+                            <% } else { %>
+                                <span class="species-placeholder"></span>
+                            <% }
+                        } %>
+                    </div>
+                </div>
+
+                <div class="info-item">
+                    <label>Trainer Types</label>
+                    <div class="type-grid">
+                        <%
+                        // Create an array of trainer types
+                        const trainerTypes = [];
+                        if (trainer.type1) trainerTypes.push({type: trainer.type1, class: trainer.type1.toLowerCase()});
+                        if (trainer.type2) trainerTypes.push({type: trainer.type2, class: trainer.type2.toLowerCase()});
+                        if (trainer.type3) trainerTypes.push({type: trainer.type3, class: trainer.type3.toLowerCase()});
+                        if (trainer.type4) trainerTypes.push({type: trainer.type4, class: trainer.type4.toLowerCase()});
+                        if (trainer.type5) trainerTypes.push({type: trainer.type5, class: trainer.type5.toLowerCase()});
+                        if (trainer.type6) trainerTypes.push({type: trainer.type6, class: trainer.type6.toLowerCase()});
+
+                        // Fill in empty slots to maintain the grid
+                        while (trainerTypes.length < 6) {
+                            trainerTypes.push(null);
+                        }
+
+                        // Display in a 2x3 grid
+                        for (let i = 0; i < 6; i++) {
+                            const typeInfo = trainerTypes[i];
+                            if (typeInfo) { %>
+                                <span class="type <%= typeInfo.class %>"><%= typeInfo.type %></span>
+                            <% } else { %>
+                                <span class="type-placeholder"></span>
+                            <% }
+                        } %>
+                    </div>
+                </div>
+
+                <div class="info-item">
+                    <label>Favorite Types</label>
+                    <div class="type-grid">
+                        <%
+                        // Create an array of favorite types
+                        const favTypes = [];
+                        if (trainer.fav_type1) favTypes.push({type: trainer.fav_type1, class: trainer.fav_type1.toLowerCase()});
+                        if (trainer.fav_type2) favTypes.push({type: trainer.fav_type2, class: trainer.fav_type2.toLowerCase()});
+                        if (trainer.fav_type3) favTypes.push({type: trainer.fav_type3, class: trainer.fav_type3.toLowerCase()});
+                        if (trainer.fav_type4) favTypes.push({type: trainer.fav_type4, class: trainer.fav_type4.toLowerCase()});
+                        if (trainer.fav_type5) favTypes.push({type: trainer.fav_type5, class: trainer.fav_type5.toLowerCase()});
+                        if (trainer.fav_type6) favTypes.push({type: trainer.fav_type6, class: trainer.fav_type6.toLowerCase()});
+
+                        // Fill in empty slots to maintain the grid
+                        while (favTypes.length < 6) {
+                            favTypes.push(null);
+                        }
+
+                        // Display in a 2x3 grid
+                        for (let i = 0; i < 6; i++) {
+                            const typeInfo = favTypes[i];
+                            if (typeInfo) { %>
+                                <span class="type <%= typeInfo.class %>"><%= typeInfo.type %></span>
+                            <% } else { %>
+                                <span class="type-placeholder"></span>
+                            <% }
+                        } %>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Secondary Information -->
+            <div class="info-grid secondary-info">
+                <% if (trainer.gender || trainer.pronouns || trainer.sexuality) { %>
+                <div class="info-item">
+                    <label>Identity</label>
+                    <span>
+                        <% if (trainer.gender) { %><%= trainer.gender %><% } %>
+                        <% if ((trainer.gender && trainer.pronouns) || (trainer.gender && trainer.sexuality)) { %> • <% } %>
+                        <% if (trainer.pronouns) { %><%= trainer.pronouns %><% } %>
+                        <% if (trainer.pronouns && trainer.sexuality) { %> • <% } %>
+                        <% if (trainer.sexuality) { %><%= trainer.sexuality %><% } %>
+                    </span>
+                </div>
+                <% } %>
+
+                <% if (trainer.age || trainer.birthday) { %>
+                <div class="info-item">
+                    <label>Age & Birthday</label>
+                    <span>
+                        <% if (trainer.age) { %><%= trainer.age %><% } %>
+                        <% if (trainer.age && trainer.birthday) { %> • <% } %>
+                        <% if (trainer.birthday) { %><%= trainer.birthday %><% } %>
+                    </span>
+                </div>
+                <% } %>
+
+                <% if (trainer.birthplace) { %>
+                <div class="info-item">
+                    <label>From</label>
+                    <span><%= trainer.birthplace %></span>
+                </div>
+                <% } %>
+
+                <% if (trainer.residence) { %>
+                <div class="info-item">
+                    <label>Lives</label>
+                    <span><%= trainer.residence %></span>
+                </div>
+                <% } %>
+
+                <% if (trainer.fav_berry) { %>
+                <div class="info-item">
+                    <label>Favorite Berries</label>
+                    <span><%= trainer.fav_berry %></span>
+                </div>
+                <% } %>
+            </div>
+        </div>
+    </div>
+
+    <!-- Battle Box Section -->
+
+
+    <% if (battle_box_mons && battle_box_mons.length > 0) { %>
+    <div class="battle-box-section">
+        <h2 class="text-3xl font-display font-bold mb-4">Battle Box</h2>
+        <div class="battle-box-grid">
+            <% battle_box_mons.forEach(mon => { %>
+            <a href="/trainers/<%= trainer.id %>/monsters/<%= mon.mon_id %>"
+               class="monster-card-link">
+                <div class="monster-card">
+                    <div class="monster-header">
+                        <h3><%= mon.name %></h3>
+                        <span class="monster-level">Level <%= mon.level %></span>
+                    </div>
+                    <div class="monster-image">
+                        <img src="<%= mon.img_link || '/images/default_mon.png' %>"
+                             alt="<%= mon.name %>"
+                             onerror="this.src='/images/default_mon.png'">
+                    </div>
+                    <div class="monster-info">
+                        <div class="species-container">
+                            <% if (mon.species1) { %><span class="species"><%= mon.species1 %></span><% } %>
+                            <% if (mon.species2) { %><span class="species"><%= mon.species2 %></span><% } %>
+                            <% if (mon.species3) { %><span class="species"><%= mon.species3 %></span><% } %>
+                        </div>
+                        <div class="monster-badges">
+                            <div class="types-container">
+                                <% if (mon.type1) { %><span class="type <%= mon.type1.toLowerCase() %>"><%= mon.type1 %></span><% } %>
+                                <% if (mon.type2) { %><span class="type <%= mon.type2.toLowerCase() %>"><%= mon.type2 %></span><% } %>
+                                <% if (mon.type3) { %><span class="type <%= mon.type3.toLowerCase() %>"><%= mon.type3 %></span><% } %>
+                                <% if (mon.type4) { %><span class="type <%= mon.type4.toLowerCase() %>"><%= mon.type4 %></span><% } %>
+                                <% if (mon.type5) { %><span class="type <%= mon.type5.toLowerCase() %>"><%= mon.type5 %></span><% } %>
+                            </div>
+                            <% if (mon.attribute) { %>
+                            <div class="attribute-container">
+                                <span class="attribute-badge attribute-<%= mon.attribute.toLowerCase() %>"><%= mon.attribute %></span>
+                            </div>
+                            <% } %>
+                        </div>
+                    </div>
+                </div>
+            </a>
+            <% }) %>
+        </div>
+    </div>
+    <% } %>
+
+    <!-- Quote Section -->
+    <% if (trainer.quote) { %>
+    <div class="quote-section">
+        <blockquote class="text-2xl italic"><%= trainer.quote %></blockquote>
+    </div>
+    <% } %>
+
+    <!-- TLDR Section -->
+    <% if (trainer.tldr) { %>
+    <div class="tldr-section">
+        <h2 class="text-3xl font-display font-bold mb-4">TL;DR</h2>
+        <p><%= trainer.tldr %></p>
+    </div>
+    <% } %>
+
+    <!-- Badge Cases Section -->
+    <div class="badge-cases-section">
+        <h2 class="text-3xl font-display font-bold mb-4">Badge Collections</h2>
+        <div class="badge-cases-grid">
+            <div class="badge-case">
+                <h3 class="text-xl font-display font-bold mb-2">Gym Badges</h3>
+                <div class="badge-grid">
+                    <% for (let j = 0; j < 8; j++) { %>
+                    <div class="badge-slot empty"></div>
+                    <% } %>
+                </div>
+            </div>
+            <div class="badge-case">
+                <h3 class="text-xl font-display font-bold mb-2">Contest Badges</h3>
+                <div class="badge-grid">
+                    <% for (let j = 0; j < 8; j++) { %>
+                    <div class="badge-slot empty"></div>
+                    <% } %>
+                </div>
+            </div>
+            <div class="badge-case">
+                <h3 class="text-xl font-display font-bold mb-2">Frontier Badges</h3>
+                <div class="badge-grid">
+                    <% for (let j = 0; j < 8; j++) { %>
+                    <div class="badge-slot empty"></div>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Biography Section -->
+    <% if (trainer.long_bio) { %>
+    <div class="biography-section">
+        <h2 class="text-3xl font-display font-bold mb-4">Biography</h2>
+        <div class="bio-content"><%= trainer.long_bio %></div>
+    </div>
+    <% } %>
+
+    <!-- Mega Evolution Section -->
+    <% if (trainer.mega_stone || trainer.mega_partner || trainer.mega_info) { %>
+    <div class="mega-evolution-section">
+        <h2 class="text-3xl font-display font-bold mb-4">Mega Evolution</h2>
+        <div class="mega-content">
+            <% if (trainer.mega_stone) { %>
+            <div class="mega-item">
+                <label>Mega Stone</label>
+                <span><%= trainer.mega_stone %></span>
+            </div>
+            <% } %>
+            <% if (trainer.mega_partner) { %>
+            <div class="mega-item">
+                <label>Mega Partner</label>
+                <span><%= trainer.mega_partner %></span>
+            </div>
+            <% } %>
+            <% if (trainer.mega_info) { %>
+            <div class="mega-description">
+                <p><%= trainer.mega_info %></p>
+            </div>
+            <% } %>
+        </div>
+    </div>
+    <% } %>
+
+    <!-- Additional Properties Section -->
+    <% if (trainer.fav_berry) { %>
+    <div class="additional-properties-section">
+        <h2 class="text-3xl font-display font-bold mb-4">Additional Information</h2>
+        <div class="properties-grid">
+            <% if (trainer.fav_berry) { %>
+            <div class="property-item">
+                <label>Favorite Berries</label>
+                <span><%= trainer.fav_berry %></span>
+            </div>
+            <% } %>
+            <!-- Add any other properties that aren't displayed elsewhere -->
+        </div>
+    </div>
+    <% } %>
+        </div>
+    </div>
+</div>
+
+<style>
+/* Main layout containers */
+.full-width-section {
+    width: 100vw;
+    position: relative;
+    left: 50%;
+    right: 50%;
+    margin-left: -50vw;
+    margin-right: -50vw;
+    padding: 3rem 0;
+    background-image: linear-gradient(to bottom, rgba(30, 37, 50, 0.8), rgba(17, 19, 25, 0.9));
+}
+
+.full-width-content {
+    max-width: 1600px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+.main-info-container {
+    display: flex;
+    gap: 3rem;
+    margin-bottom: 3rem;
+}
+
+.trainer-info-column {
+    flex: 1;
+    min-width: 0; /* Prevents flex item from overflowing */
+}
+
+.reference-image-container {
+    flex: 0 0 500px;
+    height: auto;
+    max-height: 700px;
+    position: relative;
+}
+
+.reference-image {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.05);
+}
+
+.reference-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    transition: transform 0.5s ease;
+}
+
+.reference-image:hover img {
+    transform: scale(1.03);
+}
+
+.image-credit {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    background: rgba(0, 0, 0, 0.7);
+    color: rgba(255, 255, 255, 0.8);
+    padding: 0.5rem 1rem;
+    font-size: 0.8rem;
+    border-top-left-radius: 8px;
+}
+
+/* Info Grid Styling */
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+    background: rgba(30, 37, 50, 0.5);
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.info-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.info-item label {
+    font-size: 0.9rem;
+    color: var(--accent-color);
+    margin-bottom: 0.3rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.info-item span {
+    font-size: 1.1rem;
+}
+
+/* Species and Types Styling */
+.species-types-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 1.5rem;
+    margin: 2rem 0;
+    background: rgba(30, 37, 50, 0.5);
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.species-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: repeat(3, 1fr);
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+    width: 100%;
+}
+
+.type-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.type-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+    width: 100%;
+}
+
+.type-placeholder {
+    height: 32px; /* Match the height of type badges */
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.species {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 0.3rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 32px;
+}
+
+.species-placeholder {
+    height: 32px;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.type {
+    padding: 0.3rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 32px;
+}
+
+/* Battle Box Styling */
+.battle-box-section {
+    margin: 3rem 0;
+    background: rgba(30, 37, 50, 0.5);
+    padding: 2rem;
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+.battle-box-grid {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+    padding-bottom: 1rem;
+    scroll-snap-type: x mandatory;
+}
+
+.monster-card-link {
+    text-decoration: none;
+    color: inherit;
+    flex: 0 0 250px;
+    scroll-snap-align: start;
+}
+
+.monster-card {
+    background: linear-gradient(to bottom, rgba(46, 56, 77, 0.8), rgba(30, 37, 50, 0.8));
+    border-radius: 12px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.monster-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+    border-color: var(--accent-color);
+}
+
+.monster-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.monster-header h3 {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+.monster-level {
+    background: var(--accent-color);
+    color: #000;
+    padding: 0.2rem 0.6rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.monster-image {
+    height: 180px;
+    overflow: hidden;
+    position: relative;
+}
+
+.monster-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.monster-card:hover .monster-image img {
+    transform: scale(1.05);
+}
+
+.monster-info {
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+}
+
+.species-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.monster-badges {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.types-container, .attribute-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+/* Quote and TLDR Sections */
+.quote-section {
+    text-align: center;
+    padding: 3rem 2rem;
+    margin: 3rem 0;
+    background: linear-gradient(135deg, rgba(46, 56, 77, 0.6), rgba(30, 37, 50, 0.6));
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    position: relative;
+}
+
+.quote-section::before {
+    content: '\201C';
+    position: absolute;
+    top: 1rem;
+    left: 2rem;
+    font-size: 5rem;
+    color: var(--accent-color);
+    opacity: 0.3;
+    font-family: Georgia, serif;
+}
+
+.quote-section::after {
+    content: '\201D';
+    position: absolute;
+    bottom: 0;
+    right: 2rem;
+    font-size: 5rem;
+    color: var(--accent-color);
+    opacity: 0.3;
+    font-family: Georgia, serif;
+}
+
+.tldr-section {
+    margin: 3rem 0;
+    padding: 2rem;
+    background: linear-gradient(135deg, rgba(46, 56, 77, 0.6), rgba(30, 37, 50, 0.6));
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    border-left: 4px solid var(--accent-color);
+}
+
+/* Badge Cases Section */
+.badge-cases-section {
+    margin: 3rem 0;
+    background: rgba(30, 37, 50, 0.5);
+    padding: 2rem;
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+.badge-cases-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-top: 1.5rem;
+}
+
+.badge-case {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.badge-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.badge-slot {
+    aspect-ratio: 1/1;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.badge-slot.empty {
+    opacity: 0.3;
+    border: 2px dashed rgba(255, 255, 255, 0.2);
+}
+
+/* Biography Section */
+.biography-section {
+    margin: 3rem 0;
+    padding: 2rem;
+    background: linear-gradient(135deg, rgba(46, 56, 77, 0.6), rgba(30, 37, 50, 0.6));
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+.bio-content {
+    line-height: 1.8;
+    white-space: pre-line;
+}
+
+/* Type Colors */
+.normal { background-color: #A8A878; color: #fff; }
+.fire { background-color: #F08030; color: #fff; }
+.water { background-color: #6890F0; color: #fff; }
+.electric { background-color: #F8D030; color: #000; }
+.grass { background-color: #78C850; color: #fff; }
+.ice { background-color: #98D8D8; color: #000; }
+.fighting { background-color: #C03028; color: #fff; }
+.poison { background-color: #A040A0; color: #fff; }
+.ground { background-color: #E0C068; color: #000; }
+.flying { background-color: #A890F0; color: #fff; }
+.psychic { background-color: #F85888; color: #fff; }
+.bug { background-color: #A8B820; color: #fff; }
+.rock { background-color: #B8A038; color: #fff; }
+.ghost { background-color: #705898; color: #fff; }
+.dragon { background-color: #7038F8; color: #fff; }
+.dark { background-color: #705848; color: #fff; }
+.steel { background-color: #B8B8D0; color: #000; }
+.fairy { background-color: #EE99AC; color: #000; }
+
+/* Attribute colors */
+.attribute-badge {
+    padding: 0.3rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+.attribute-data { background-color: #3498db; color: #fff; }
+.attribute-vaccine { background-color: #2ecc71; color: #fff; }
+.attribute-virus { background-color: #e74c3c; color: #fff; }
+.attribute-free { background-color: #9b59b6; color: #fff; }
+.attribute-variable { background-color: #f1c40f; color: #000; }
+
+/* Trainer Page Layout */
+.trainer-page-layout {
+    display: flex;
+    gap: 1.5rem;
+    position: relative;
+}
+
+.trainer-sidebar {
+    flex: 0 0 180px;
+    align-self: flex-start;
+}
+
+.trainer-main-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.sidebar-nav {
+    background: rgba(30, 37, 50, 0.7);
+    border-radius: 12px;
+    padding: 1rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+}
+
+.sidebar-link {
+    padding: 0.5rem 0.75rem;
+    border-radius: 8px;
+    color: var(--text-color);
+    text-decoration: none;
+    transition: all 0.2s ease;
+    font-weight: 500;
+    font-size: 0.95rem;
+}
+
+.sidebar-link:hover {
+    background: var(--nav-hover);
+}
+
+.sidebar-link.active {
+    background: var(--nav-active);
+    color: var(--accent-color);
+}
+
+.sidebar-divider {
+    height: 1px;
+    background: var(--divider-color);
+    margin: 0.75rem 0;
+}
+
+.owner-action {
+    border-left: 3px solid var(--accent-color);
+}
+
+.owner-action.highlight {
+    background: rgba(214, 163, 57, 0.2);
+}
+
+.owner-action.highlight:hover {
+    background: rgba(214, 163, 57, 0.3);
+}
+
+/* Mega Evolution Section */
+.mega-evolution-section {
+    margin: 3rem 0;
+    padding: 2rem;
+    background: linear-gradient(135deg, rgba(112, 56, 248, 0.2), rgba(30, 37, 50, 0.6));
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    position: relative;
+    overflow: hidden;
+}
+
+.mega-evolution-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 150px;
+    height: 150px;
+    background: radial-gradient(circle, rgba(112, 56, 248, 0.4) 0%, rgba(112, 56, 248, 0) 70%);
+    border-radius: 50%;
+    opacity: 0.6;
+    z-index: 0;
+}
+
+.mega-content {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    position: relative;
+    z-index: 1;
+}
+
+.mega-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.mega-item label {
+    font-size: 0.9rem;
+    color: var(--accent-color);
+    margin-bottom: 0.3rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.mega-item span {
+    font-size: 1.1rem;
+    background: rgba(0, 0, 0, 0.2);
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+}
+
+.mega-description {
+    grid-column: 1 / -1;
+    background: rgba(0, 0, 0, 0.2);
+    padding: 1rem;
+    border-radius: 8px;
+    line-height: 1.6;
+}
+
+/* Additional Properties Section */
+.additional-properties-section {
+    margin: 3rem 0;
+    padding: 2rem;
+    background: linear-gradient(135deg, rgba(46, 56, 77, 0.6), rgba(30, 37, 50, 0.6));
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+.properties-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+}
+
+.property-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.property-item label {
+    font-size: 0.9rem;
+    color: var(--accent-color);
+    margin-bottom: 0.3rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.property-item span {
+    font-size: 1.1rem;
+    background: rgba(0, 0, 0, 0.2);
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+    .species-types-row {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .species-types-row {
+        grid-template-columns: 1fr;
+    }
+
+    /* Maintain the grid structure even on mobile */
+    .type-grid {
+        grid-template-columns: repeat(2, 1fr);
+        grid-template-rows: repeat(3, 1fr);
+    }
+
+    .species-grid {
+        grid-template-columns: 1fr;
+        grid-template-rows: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 1024px) {
+    .trainer-page-layout {
+        flex-direction: column;
+    }
+
+    .trainer-sidebar {
+        flex: 0 0 auto;
+        position: static;
+        height: auto;
+        margin-bottom: 1.5rem;
+    }
+
+    .sidebar-nav {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 0.4rem;
+        padding: 0.75rem;
+    }
+
+    .sidebar-link {
+        padding: 0.4rem 0.75rem;
+        font-size: 0.9rem;
+    }
+
+    .sidebar-divider {
+        display: none;
+    }
+
+    .main-info-container {
+        flex-direction: column;
+    }
+
+    .reference-image-container {
+        flex: 0 0 auto;
+        max-height: 550px;
+        position: relative;
+        margin: 0 auto;
+        width: 100%;
+        max-width: 500px;
+    }
+
+    /* For small screens, allow wrapping to 2 rows if needed */
+    .battle-box-grid {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .monster-card-link {
+        flex: 0 0 calc(50% - 0.75rem);
+    }
+}
+
+@media (max-width: 768px) {
+    .full-width-section {
+        padding: 2rem 0;
+    }
+
+    .info-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .badge-cases-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .badge-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+
+    .mega-content {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 480px) {
+    .info-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .badge-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+
+    /* Adjust font size for species and type tags on very small screens */
+    .species, .type {
+        font-size: 0.8rem;
+        padding: 0.25rem 0.6rem;
+    }
+
+    .quote-section {
+        padding: 2rem 1rem;
+    }
+
+    .quote-section::before,
+    .quote-section::after {
+        font-size: 3rem;
+    }
+
+    .monster-card-link {
+        flex: 0 0 100%;
+    }
+
+    .sidebar-link {
+        font-size: 0.85rem;
+        padding: 0.35rem 0.6rem;
+    }
+
+    .reference-image-container {
+        max-height: 450px;
+    }
+}
+</style>

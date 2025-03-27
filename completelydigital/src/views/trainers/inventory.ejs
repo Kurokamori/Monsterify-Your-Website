@@ -1,0 +1,328 @@
+<% /* Set the title and other variables for the layout */ %>
+<% title = title || `${trainer.name} - Inventory` %>
+<div class="full-width-section">
+    <div class="container">
+        <span></span>
+    </div>
+</div>
+
+<div class="full-width-content">
+    <div class="trainer-page-layout">
+        <!-- Side Navigation -->
+        <div class="trainer-sidebar">
+            <div class="sidebar-nav">
+                <a href="/trainers/<%= trainer.id %>" class="sidebar-link">Profile</a>
+                <a href="/trainers/<%= trainer.id %>/pc" class="sidebar-link">PC Boxes</a>
+                <a href="/trainers/<%= trainer.id %>/boxes" class="sidebar-link">All Boxes</a>
+                <a href="/trainers/<%= trainer.id %>/inventory" class="sidebar-link active">Inventory</a>
+                <a href="/trainers/<%= trainer.id %>/stats" class="sidebar-link">Stats</a>
+                <a href="/trainers/<%= trainer.id %>/achievements" class="sidebar-link">Achievements</a>
+
+                <% if (locals.user && locals.user.discord_id && trainer.player_user_id && locals.user.discord_id.toString() === trainer.player_user_id) { %>
+                    <div class="sidebar-divider"></div>
+                    <a href="/trainers/<%= trainer.id %>/edit" class="sidebar-link">Edit Trainer</a>
+                <% } %>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="trainer-content">
+            <div class="trainer-header">
+                <h1 class="trainer-name"><%= trainer.name %>'s Inventory</h1>
+                <div class="trainer-currency">
+                    <i class="fas fa-coins"></i> <%= Math.round(trainer.currency_amount) || 0 %>
+                </div>
+            </div>
+
+            <div class="inventory-container">
+                <% if (inventory) { %>
+                    <div class="inventory-tabs">
+                        <% categories.forEach((category, index) => { %>
+                            <button class="inventory-tab <%= index === 0 ? 'active' : '' %>"
+                                    data-category="<%= category.id %>">
+                                <i class="<%= category.icon %>"></i> <%= category.name %>
+                            </button>
+                        <% }); %>
+                    </div>
+
+                    <div class="inventory-content">
+                        <% categories.forEach((category, index) => { %>
+                            <div class="inventory-section <%= index === 0 ? 'active' : '' %>"
+                                 id="<%= category.id %>-section">
+                                <h2 class="inventory-section-title">
+                                    <i class="<%= category.icon %>"></i> <%= category.name %>
+                                </h2>
+
+                                <% if (inventory[category.id] && Object.keys(inventory[category.id]).length > 0) { %>
+                                    <div class="inventory-grid">
+                                        <%
+                                        // Sort items alphabetically
+                                        const sortedItems = Object.entries(inventory[category.id])
+                                            .sort((a, b) => a[0].localeCompare(b[0]));
+
+                                        sortedItems.forEach(([itemName, quantity]) => {
+                                            // Generate path to item icon
+                                            const iconPath = `/images/items/${itemName.toLowerCase().replace(/\s+/g, '_')}.png`;
+                                            const defaultIcon = `/images/items/default_${category.id.replace('inv_', '')}.png`;
+                                        %>
+                                            <div class="inventory-item">
+                                                <div class="item-icon">
+                                                    <img src="<%= iconPath %>"
+                                                         alt="<%= itemName %>"
+                                                         onerror="this.onerror=null; this.src='<%= defaultIcon %>'; if (this.src.includes('default_') && this.src.includes('404')) this.src='/images/default_mon.png';">
+                                                </div>
+                                                <div class="item-details">
+                                                    <div class="item-name"><%= itemName %></div>
+                                                    <div class="item-quantity">x<%= quantity %></div>
+                                                </div>
+                                            </div>
+                                        <% }); %>
+                                    </div>
+                                <% } else { %>
+                                    <div class="empty-inventory">
+                                        <p>No <%= category.name.toLowerCase() %> in inventory</p>
+                                    </div>
+                                <% } %>
+                            </div>
+                        <% }); %>
+                    </div>
+                <% } else { %>
+                    <div class="empty-inventory-message">
+                        <p>This trainer has no items in their inventory.</p>
+                    </div>
+                <% } %>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .trainer-page-layout {
+        display: flex;
+        gap: 2rem;
+    }
+
+    .trainer-sidebar {
+        width: 250px;
+        flex-shrink: 0;
+    }
+
+    .trainer-content {
+        flex-grow: 1;
+    }
+
+    .sidebar-nav {
+        background-color: var(--card-background);
+        border-radius: 0.5rem;
+        padding: 1rem;
+        position: sticky;
+        top: 6rem;
+    }
+
+    .sidebar-link {
+        display: block;
+        padding: 0.75rem 1rem;
+        color: var(--text-color);
+        text-decoration: none;
+        border-radius: 0.375rem;
+        margin-bottom: 0.5rem;
+        transition: background-color 0.2s;
+    }
+
+    .sidebar-link:hover {
+        background-color: var(--nav-hover);
+    }
+
+    .sidebar-link.active {
+        background-color: var(--nav-active);
+        color: var(--accent-color);
+        font-weight: bold;
+    }
+
+    .sidebar-divider {
+        height: 1px;
+        background-color: var(--divider-color);
+        margin: 1rem 0;
+    }
+
+    .trainer-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+    }
+
+    .trainer-name {
+        font-size: 2rem;
+        font-weight: bold;
+        color: var(--accent-color);
+    }
+
+    .trainer-currency {
+        font-size: 1.25rem;
+        color: var(--accent-color);
+        background-color: var(--card-background);
+        padding: 0.5rem 1rem;
+        border-radius: 0.5rem;
+    }
+
+    .inventory-container {
+        background-color: var(--card-background);
+        border-radius: 0.5rem;
+        padding: 1.5rem;
+    }
+
+    .inventory-tabs {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-bottom: 1.5rem;
+        border-bottom: 1px solid var(--divider-color);
+        padding-bottom: 1rem;
+    }
+
+    .inventory-tab {
+        background-color: var(--nav-background);
+        color: var(--text-color);
+        border: none;
+        padding: 0.75rem 1rem;
+        border-radius: 0.375rem;
+        cursor: pointer;
+        transition: background-color 0.2s;
+        font-size: 0.875rem;
+    }
+
+    .inventory-tab:hover {
+        background-color: var(--nav-hover);
+    }
+
+    .inventory-tab.active {
+        background-color: var(--nav-active);
+        color: var(--accent-color);
+        font-weight: bold;
+    }
+
+    .inventory-section {
+        display: none;
+    }
+
+    .inventory-section.active {
+        display: block;
+    }
+
+    .inventory-section-title {
+        font-size: 1.5rem;
+        margin-bottom: 1.5rem;
+        color: var(--accent-color);
+    }
+
+    .inventory-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 1rem;
+    }
+
+    .inventory-item {
+        background-color: var(--nav-background);
+        border-radius: 0.5rem;
+        padding: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        transition: transform 0.2s, background-color 0.2s;
+    }
+
+    .inventory-item:hover {
+        background-color: var(--nav-hover);
+        transform: translateY(-2px);
+    }
+
+    .item-icon {
+        width: 40px;
+        height: 40px;
+        background-color: var(--nav-active);
+        border-radius: 0.25rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+    }
+
+    .item-icon img {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+    }
+
+    .item-details {
+        flex-grow: 1;
+    }
+
+    .item-name {
+        font-weight: bold;
+        margin-bottom: 0.25rem;
+    }
+
+    .item-quantity {
+        color: var(--accent-color);
+        font-size: 0.875rem;
+    }
+
+    .empty-inventory {
+        text-align: center;
+        padding: 2rem;
+        color: var(--text-color);
+        opacity: 0.7;
+    }
+
+    .empty-inventory-message {
+        text-align: center;
+        padding: 3rem;
+        color: var(--text-color);
+        opacity: 0.7;
+    }
+
+    @media (max-width: 768px) {
+        .trainer-page-layout {
+            flex-direction: column;
+        }
+
+        .trainer-sidebar {
+            width: 100%;
+        }
+
+        .sidebar-nav {
+            position: static;
+        }
+
+        .inventory-grid {
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        }
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Tab switching functionality
+        const tabs = document.querySelectorAll('.inventory-tab');
+        const sections = document.querySelectorAll('.inventory-section');
+
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const category = tab.dataset.category;
+
+                // Update active tab
+                tabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+
+                // Show corresponding section
+                sections.forEach(section => {
+                    section.classList.remove('active');
+                    if (section.id === `${category}-section`) {
+                        section.classList.add('active');
+                    }
+                });
+            });
+        });
+    });
+</script>
