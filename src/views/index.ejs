@@ -85,12 +85,12 @@
                             <% if (categories && categories.guides && categories.guides.structure && categories.guides.structure.directories) { %>
                                 <% const guideItems = categories.guides.structure.directories.slice(0, 3); %>
                                 <% guideItems.forEach(function(item) { %>
-                                    <a href="/guides/<%= item.path %>" class="world-item">
+                                    <a href="/content/guides/<%= item.path %>" class="world-item">
                                         <span><%= item.name %></span>
                                     </a>
                                 <% }); %>
                             <% } else { %>
-                                <a href="/guides/getting-started" class="world-item">
+                                <a href="/content/guides/getting-started" class="world-item">
                                     <span>Getting Started</span>
                                 </a>
                             <% } %>
@@ -105,7 +105,7 @@
                             <% if (categories && categories.locations && categories.locations.structure && categories.locations.structure.directories) { %>
                                 <% const locationItems = categories.locations.structure.directories.slice(0, 3); %>
                                 <% locationItems.forEach(function(item) { %>
-                                    <a href="/locations/<%= item.path %>" class="world-item">
+                                    <a href="/content/locations/<%= item.path %>" class="world-item">
                                         <img src="/images/default_trainer.png" alt="<%= item.name %>">
                                         <span><%= item.name %></span>
                                     </a>
@@ -127,7 +127,7 @@
                             <% if (categories && categories.factions && categories.factions.structure && categories.factions.structure.directories) { %>
                                 <% const factionItems = categories.factions.structure.directories.slice(0, 3); %>
                                 <% factionItems.forEach(function(item) { %>
-                                    <a href="/factions/<%= item.path %>" class="world-item">
+                                    <a href="/content/factions/<%= item.path %>" class="world-item">
                                         <img src="/images/default_trainer.png" alt="<%= item.name %>">
                                         <span><%= item.name %></span>
                                     </a>
