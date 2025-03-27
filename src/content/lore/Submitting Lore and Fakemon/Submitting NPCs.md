@@ -1,3 +1,0 @@
-# Submitting NPCs
-(Coming Soon)
-

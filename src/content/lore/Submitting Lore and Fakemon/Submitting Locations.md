@@ -1,3 +1,0 @@
-# Submitting Locations
-(Coming Soon)
-
