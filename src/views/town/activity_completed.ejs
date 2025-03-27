@@ -1,0 +1,279 @@
+<%- include('../layouts/header') %>
+
+<div class='container mx-auto px-4 py-8'>
+  <div class='max-w-4xl mx-auto'>
+    <div class='mb-8 text-center'>
+      <h1 class='text-3xl font-display font-bold'>Task Completed!</h1>
+      <p class='text-gray-300 mt-2'>Great job! You've earned the following rewards:</p>
+    </div>
+    
+    <div class='bg-card rounded-lg p-6 shadow-lg mb-8'>
+      <div class='rewards-list'>
+        <% if (rewards && rewards.length > 0) { %>
+          <% rewards.forEach(reward => { %>
+            <div class='reward-item <%= reward.rarity %>'>
+              <% if (reward.reward_type === 'monster') { %>
+                <div class='monster-reward'>
+                  <div class='reward-icon'>
+                    <i class='fas fa-dragon'></i>
+                  </div>
+                  <div class='reward-details'>
+                    <h3 class='reward-title'><%= reward.reward_data.species %></h3>
+                    <p class='reward-description'>Level <%= reward.reward_data.level %></p>
+                    <button class='btn-primary claim-reward' data-reward-id='<%= reward.reward_id %>' data-reward-type='monster' <%= reward.claimed ? 'disabled' : '' %>>
+                      <% if (reward.claimed) { %>
+                        <i class='fas fa-check mr-1'></i> Claimed
+                      <% } else { %>
+                        <i class='fas fa-plus-circle mr-1'></i> Add to Team
+                      <% } %>
+                    </button>
+                  </div>
+                </div>
+              <% } else if (reward.reward_type === 'item') { %>
+                <div class='item-reward'>
+                  <div class='reward-icon'>
+                    <i class='fas fa-box'></i>
+                  </div>
+                  <div class='reward-details'>
+                    <h3 class='reward-title'><%= reward.reward_data.item_name %></h3>
+                    <p class='reward-description'><%= reward.reward_data.item_description %></p>
+                    <p class='reward-quantity'>Quantity: <%= reward.reward_data.quantity %></p>
+                    <button class='btn-primary claim-reward' data-reward-id='<%= reward.reward_id %>' data-reward-type='item' <%= reward.claimed ? 'disabled' : '' %>>
+                      <% if (reward.claimed) { %>
+                        <i class='fas fa-check mr-1'></i> Claimed
+                      <% } else { %>
+                        <i class='fas fa-plus-circle mr-1'></i> Add to Inventory
+                      <% } %>
+                    </button>
+                  </div>
+                </div>
+              <% } else if (reward.reward_type === 'coin') { %>
+                <div class='coin-reward'>
+                  <div class='reward-icon'>
+                    <i class='fas fa-coins'></i>
+                  </div>
+                  <div class='reward-details'>
+                    <h3 class='reward-title'>Coins</h3>
+                    <p class='reward-quantity'><%= reward.reward_data.amount %> coins</p>
+                    <button class='btn-primary claim-reward' data-reward-id='<%= reward.reward_id %>' data-reward-type='coin' <%= reward.claimed ? 'disabled' : '' %>>
+                      <% if (reward.claimed) { %>
+                        <i class='fas fa-check mr-1'></i> Claimed
+                      <% } else { %>
+                        <i class='fas fa-plus-circle mr-1'></i> Claim Coins
+                      <% } %>
+                    </button>
+                  </div>
+                </div>
+              <% } %>
+            </div>
+          <% }); %>
+        <% } else { %>
+          <p class='text-center'>No rewards found. Try again later!</p>
+        <% } %>
+      </div>
+    </div>
+    
+    <div class='text-center'>
+      <a href='<%= activityUrl %>' class='btn-secondary mr-4'>
+        <i class='fas fa-redo mr-1'></i> Do Another Task
+      </a>
+      <a href='/town/visit' class='btn-secondary'>
+        <i class='fas fa-home mr-1'></i> Return to Town
+      </a>
+    </div>
+  </div>
+</div>
+
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Session data
+    const sessionId = '<%= session.session_id %>';
+    
+    // Handle claim reward buttons
+    const claimButtons = document.querySelectorAll('.claim-reward');
+    
+    claimButtons.forEach(button => {
+      button.addEventListener('click', async function() {
+        const rewardId = this.dataset.rewardId;
+        const rewardType = this.dataset.rewardType;
+        
+        try {
+          // Disable the button to prevent multiple clicks
+          this.disabled = true;
+          this.innerHTML = 'Claiming...';
+          
+          const response = await fetch('/api/claim-reward', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              reward_id: rewardId,
+              reward_type: rewardType,
+              session_id: sessionId
+            })
+          });
+          
+          const data = await response.json();
+          
+          if (data.success) {
+            // Update the button to show claimed status
+            this.innerHTML = 'Claimed';
+            this.classList.add('btn-success');
+            this.classList.remove('btn-primary');
+          } else {
+            alert('Error claiming reward: ' + data.message);
+            this.disabled = false;
+            
+            // Reset the button text based on reward type
+            if (rewardType === 'monster') {
+              this.innerHTML = 'Add to Team';
+            } else if (rewardType === 'item') {
+              this.innerHTML = 'Add to Inventory';
+            } else if (rewardType === 'coin') {
+              this.innerHTML = 'Claim Coins';
+            }
+          }
+        } catch (error) {
+          console.error('Error claiming reward:', error);
+          alert('Error claiming reward. Please try again.');
+          this.disabled = false;
+          
+          // Reset the button text based on reward type
+          if (rewardType === 'monster') {
+            this.innerHTML = 'Add to Team';
+          } else if (rewardType === 'item') {
+            this.innerHTML = 'Add to Inventory';
+          } else if (rewardType === 'coin') {
+            this.innerHTML = 'Claim Coins';
+          }
+        }
+      });
+    });
+  });
+</script>
+
+<style>
+  .bg-card {
+    background-color: var(--card-bg);
+  }
+  
+  .rewards-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1rem;
+  }
+  
+  .reward-item {
+    background-color: var(--card-bg-light);
+    border-radius: 0.5rem;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    border: 2px solid transparent;
+  }
+  
+  .reward-item.common {
+    border-color: #9e9e9e;
+  }
+  
+  .reward-item.uncommon {
+    border-color: #4caf50;
+  }
+  
+  .reward-item.rare {
+    border-color: #2196f3;
+  }
+  
+  .reward-item.epic {
+    border-color: #9c27b0;
+  }
+  
+  .reward-item.legendary {
+    border-color: #ff9800;
+    box-shadow: 0 0 10px rgba(255, 152, 0, 0.5);
+  }
+  
+  .monster-reward, .item-reward, .coin-reward {
+    display: flex;
+    gap: 1rem;
+  }
+  
+  .reward-icon {
+    width: 80px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    background-color: var(--card-bg);
+    border-radius: 0.25rem;
+  }
+  
+  .reward-details {
+    flex: 1;
+  }
+  
+  .reward-title {
+    font-weight: bold;
+    font-size: 1.1rem;
+    margin-bottom: 0.25rem;
+  }
+  
+  .reward-description {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    margin-bottom: 0.5rem;
+  }
+  
+  .reward-quantity {
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .btn-primary {
+    background-color: var(--accent-color);
+    color: var(--background-color);
+    font-weight: 500;
+    transition: all 0.2s;
+    padding: 0.5rem 1rem;
+    border-radius: 0.25rem;
+    display: inline-block;
+  }
+  
+  .btn-primary:hover {
+    background-color: var(--accent-hover);
+    transform: translateY(-2px);
+  }
+  
+  .btn-primary:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none;
+  }
+  
+  .btn-success {
+    background-color: #4caf50;
+    color: white;
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    border-radius: 0.25rem;
+    display: inline-block;
+  }
+  
+  .btn-secondary {
+    background-color: var(--card-bg-light);
+    color: var(--text-color);
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.25rem;
+    font-weight: 500;
+    transition: all 0.2s;
+    display: inline-block;
+  }
+  
+  .btn-secondary:hover {
+    background-color: var(--card-bg);
+    transform: translateY(-2px);
+  }
+</style>

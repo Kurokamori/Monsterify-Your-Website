@@ -1,0 +1,1 @@
+﻿-- Create location_task_prompts table

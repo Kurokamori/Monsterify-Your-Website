@@ -1,0 +1,152 @@
+<%- include(\"../../layouts/header\") %>
+
+<div class="container mx-auto px-4 py-8">
+  <div class="max-w-4xl mx-auto">
+    <div class="mb-8">
+      <img src="https://i.imgur.com/Z5dNHXv.jpeg" alt="Garden" class="w-full h-64 object-cover rounded-lg shadow-lg">
+      <h1 class="text-3xl font-display font-bold text-center mt-4">Tend Garden</h1>
+      <p class="text-center text-gray-300 mt-2">Welcome to the garden! The plants need your care and attention. Help tend to them and you might find something interesting growing among the leaves.</p>
+    </div>
+    
+    <div class="bg-card rounded-lg p-6 shadow-lg">
+      <div class="text-center">
+        <button id="begin-activity" class="btn-primary text-lg py-3 px-6 rounded-lg">
+          <i class="fas fa-seedling mr-2"></i> Begin Tending
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    const beginButton = document.getElementById("begin-activity");
+    
+    beginButton.addEventListener("click", async function() {
+      try {
+        // Disable the button to prevent multiple clicks
+        beginButton.disabled = true;
+        beginButton.innerHTML = "<i class=\"fas fa-spinner fa-spin mr-2\"></i> Starting...";
+        
+        // Start the activity session
+        const response = await fetch("/town/visit/start-activity", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            location: "garden",
+            activity: "tend"
+          })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+          // Redirect to the activity session page
+          window.location.href = data.redirect;
+        } else {
+          alert("Error starting activity: " + data.message);
+          beginButton.disabled = false;
+          beginButton.innerHTML = "<i class=\"fas fa-seedling mr-2\"></i> Begin Tending";
+        }
+      } catch (error) {
+        console.error("Error starting activity:", error);
+        alert("Error starting activity. Please try again.");
+        beginButton.disabled = false;
+        beginButton.innerHTML = "<i class=\"fas fa-seedling mr-2\"></i> Begin Tending";
+      }
+    });
+  });
+</script>
+
+<style>
+  .bg-card {
+    background-color: var(--card-bg);
+  }
+  
+  .btn-primary {
+    background-color: var(--accent-color);
+    color: var(--background-color);
+    font-weight: 500;
+    transition: all 0.2s;
+  }
+  
+  .btn-primary:hover {
+    background-color: var(--accent-hover);
+    transform: translateY(-2px);
+  }
+  
+  .btn-primary:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none;
+  }
+</style>
+
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const beginButton = document.getElementById('begin-activity');
+    
+    beginButton.addEventListener('click', async function() {
+      try {
+        // Disable the button to prevent multiple clicks
+        beginButton.disabled = true;
+        beginButton.innerHTML = 'Starting...';
+        
+        // Start the activity session
+        const response = await fetch('/town/visit/start-activity', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            location: 'garden',
+            activity: 'tend'
+          })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+          // Redirect to the activity session page
+          window.location.href = data.redirect;
+        } else {
+          alert('Error starting activity: ' + data.message);
+          beginButton.disabled = false;
+          beginButton.innerHTML = 'Begin Tending';
+        }
+      } catch (error) {
+        console.error('Error starting activity:', error);
+        alert('Error starting activity. Please try again.');
+        beginButton.disabled = false;
+        beginButton.innerHTML = 'Begin Tending';
+      }
+    });
+  });
+</script>
+
+<style>
+  .bg-card {
+    background-color: var(--card-bg);
+  }
+  
+  .btn-primary {
+    background-color: var(--accent-color);
+    color: var(--background-color);
+    font-weight: 500;
+    transition: all 0.2s;
+  }
+  
+  .btn-primary:hover {
+    background-color: var(--accent-hover);
+    transform: translateY(-2px);
+  }
+  
+  .btn-primary:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none;
+  }
+</style>
