@@ -1,0 +1,1047 @@
+<% /* Set the title and other variables for the layout */ %>
+<% title = 'Item Trading' %>
+
+<style>
+  .trade-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+  }
+
+  .trade-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+  }
+
+  .trade-title {
+    font-size: 2rem;
+    font-weight: bold;
+    color: var(--accent-color);
+  }
+
+  .btn-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background-color: var(--card-background);
+    color: var(--text-color);
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+  }
+
+  .btn-back:hover {
+    background-color: var(--nav-hover);
+  }
+
+  .trainer-selector {
+    margin: 0 auto 2rem;
+    max-width: 400px;
+    padding: 1rem;
+    background-color: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+  }
+
+  .trainer-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .trainer-label {
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+    color: var(--text-color);
+  }
+
+  .trainer-select {
+    width: 100%;
+    padding: 0.5rem;
+    border-radius: 4px;
+    background-color: var(--bg-color-light);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+  }
+
+  .trade-form {
+    background-color: var(--card-background);
+    border-radius: 1rem;
+    padding: 2rem;
+    margin-bottom: 2rem;
+  }
+
+  .form-group {
+    margin-bottom: 1.5rem;
+  }
+
+  .form-label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+  }
+
+  .form-control {
+    width: 100%;
+    padding: 0.75rem;
+    background-color: var(--input-background);
+    border: 1px solid var(--divider-color);
+    border-radius: 0.5rem;
+    color: var(--text-color);
+  }
+
+  .form-control:focus {
+    outline: none;
+    border-color: var(--accent-color);
+  }
+
+  .form-hint {
+    font-size: 0.875rem;
+    color: var(--text-color);
+    opacity: 0.7;
+    margin-top: 0.25rem;
+  }
+
+  .trade-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+  }
+
+  .trade-section {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .trade-section-title {
+    font-size: 1.25rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+    color: var(--accent-color);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .item-selection {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .item-categories {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+  }
+
+  .item-category {
+    padding: 0.5rem 1rem;
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+
+  .item-category:hover {
+    background-color: rgba(0, 0, 0, 0.3);
+  }
+
+  .item-category.active {
+    background-color: var(--accent-color);
+    color: white;
+  }
+
+  .item-list {
+    flex: 1;
+    background-color: rgba(0, 0, 0, 0.1);
+    border-radius: 0.5rem;
+    padding: 1rem;
+    min-height: 300px;
+    max-height: 500px;
+    overflow-y: auto;
+  }
+
+  .item-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 1rem;
+  }
+
+  .item-card {
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 0.5rem;
+    padding: 1rem;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    position: relative;
+  }
+
+  .item-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+
+  .item-image {
+    width: 100%;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 0.5rem;
+    background-color: rgba(0, 0, 0, 0.1);
+    border-radius: 0.25rem;
+  }
+
+  .item-image-icon {
+    font-size: 2rem;
+    color: var(--text-color);
+    opacity: 0.5;
+  }
+
+  .item-name {
+    font-weight: bold;
+    margin-bottom: 0.25rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .item-quantity {
+    font-size: 0.875rem;
+    color: var(--text-color);
+    opacity: 0.7;
+  }
+
+  .item-rarity {
+    font-size: 0.75rem;
+    padding: 0.125rem 0.25rem;
+    border-radius: 0.25rem;
+    display: inline-block;
+    margin-top: 0.25rem;
+  }
+
+  .rarity-common {
+    background-color: rgba(74, 222, 128, 0.2);
+    color: #4ade80;
+  }
+
+  .rarity-uncommon {
+    background-color: rgba(56, 189, 248, 0.2);
+    color: #38bdf8;
+  }
+
+  .rarity-rare {
+    background-color: rgba(168, 85, 247, 0.2);
+    color: #a855f7;
+  }
+
+  .rarity-epic {
+    background-color: rgba(251, 113, 133, 0.2);
+    color: #fb7185;
+  }
+
+  .rarity-legendary {
+    background-color: rgba(250, 204, 21, 0.2);
+    color: #facc15;
+  }
+
+  .item-quantity-selector {
+    display: flex;
+    align-items: center;
+    margin-top: 0.5rem;
+  }
+
+  .quantity-btn {
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.3);
+    border: none;
+    border-radius: 4px;
+    color: var(--text-color);
+    cursor: pointer;
+  }
+
+  .quantity-btn:hover {
+    background-color: rgba(0, 0, 0, 0.4);
+  }
+
+  .quantity-input {
+    width: 40px;
+    text-align: center;
+    background-color: rgba(0, 0, 0, 0.2);
+    border: none;
+    color: var(--text-color);
+    padding: 0.25rem;
+    margin: 0 0.25rem;
+    border-radius: 4px;
+  }
+
+  .selected-items {
+    margin-top: 1rem;
+    background-color: rgba(0, 0, 0, 0.1);
+    border-radius: 0.5rem;
+    padding: 1rem;
+    min-height: 100px;
+  }
+
+  .selected-items-title {
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+  }
+
+  .selected-items-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .selected-item-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background-color: rgba(0, 0, 0, 0.2);
+    padding: 0.5rem;
+    border-radius: 0.25rem;
+  }
+
+  .selected-item-tag-quantity {
+    background-color: rgba(0, 0, 0, 0.3);
+    padding: 0.125rem 0.25rem;
+    border-radius: 0.25rem;
+    font-size: 0.75rem;
+  }
+
+  .selected-item-tag-remove {
+    cursor: pointer;
+    color: var(--text-color);
+    opacity: 0.7;
+  }
+
+  .selected-item-tag-remove:hover {
+    opacity: 1;
+  }
+
+  .empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    min-height: 200px;
+    color: var(--text-color);
+    opacity: 0.5;
+  }
+
+  .empty-state-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+  }
+
+  .empty-state-text {
+    font-size: 1rem;
+  }
+
+  .trade-actions {
+    display: flex;
+    justify-content: center;
+    margin-top: 2rem;
+  }
+
+  .btn-submit {
+    background-color: var(--accent-color);
+    color: white;
+    padding: 0.75rem 2rem;
+    border-radius: 0.5rem;
+    font-size: 1.125rem;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .btn-submit:hover {
+    background-color: var(--accent-hover-color);
+  }
+
+  .btn-submit:disabled {
+    background-color: var(--divider-color);
+    cursor: not-allowed;
+  }
+
+  .alert {
+    padding: 1rem;
+    border-radius: 0.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .alert-success {
+    background-color: rgba(72, 187, 120, 0.2);
+    color: #48bb78;
+    border: 1px solid rgba(72, 187, 120, 0.5);
+  }
+
+  .alert-error {
+    background-color: rgba(245, 101, 101, 0.2);
+    color: #f56565;
+    border: 1px solid rgba(245, 101, 101, 0.5);
+  }
+
+  @media (max-width: 768px) {
+    .trade-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .trade-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+  }
+</style>
+
+<div class="trade-container">
+  <div class="trade-header">
+    <h1 class="trade-title">Item Trading</h1>
+    <a href="/town/visit/trade" class="btn-back">
+      <i class="fas fa-arrow-left"></i> Back to Trade Center
+    </a>
+  </div>
+
+  <% if (typeof message !== 'undefined' && message) { %>
+  <div class="alert alert-<%= messageType || 'info' %>">
+    <%= message %>
+  </div>
+  <% } %>
+
+  <% if (typeof userTrainers !== 'undefined' && userTrainers && userTrainers.length > 0) { %>
+    <div class="trainer-selector">
+      <form action="/town/visit/trade/items" method="GET" class="trainer-form">
+        <label for="trainer_id" class="trainer-label">Select Your Trainer:</label>
+        <select id="trainer_id" name="trainer_id" class="trainer-select" onchange="this.form.submit()">
+          <% userTrainers.forEach(trainer => { %>
+            <option value="<%= trainer.id %>" <%= typeof selectedTrainer !== 'undefined' && selectedTrainer && trainer.id === selectedTrainer.id ? 'selected' : '' %>>
+              <%= trainer.name %> (Level <%= trainer.level %>)
+            </option>
+          <% }); %>
+        </select>
+      </form>
+    </div>
+  <% } %>
+
+  <% if (typeof message !== 'undefined' && message) { %>
+    <div class="alert alert-<%= messageType || 'success' %>">
+      <%= message %>
+    </div>
+  <% } %>
+
+  <form action="/town/visit/trade/items" method="POST" class="trade-form">
+    <% if (typeof selectedTrainer !== 'undefined' && selectedTrainer) { %>
+      <input type="hidden" name="initiator_id" value="<%= selectedTrainer.id %>">
+    <% } %>
+    <div class="form-group">
+      <label for="recipient_id" class="form-label">Select Recipient Trainer</label>
+      <select id="recipient_id" name="recipient_id" class="form-control" required>
+        <option value="">-- Select a trainer --</option>
+        <% (typeof otherTrainers !== 'undefined' && otherTrainers ? otherTrainers : []).forEach(trainer => { %>
+          <% if (typeof selectedTrainer !== 'undefined' && selectedTrainer && trainer.id !== selectedTrainer.id) { %>
+            <option value="<%= trainer.id %>"><%= trainer.name %></option>
+          <% } %>
+        <% }); %>
+      </select>
+      <div class="form-hint">Select the trainer you want to trade with</div>
+    </div>
+
+    <div class="trade-grid">
+      <!-- Your Items (Offering) -->
+      <div class="trade-section">
+        <h2 class="trade-section-title">
+          <i class="fas fa-hand-holding"></i> Your Items (Offering)
+        </h2>
+
+        <div class="item-selection">
+          <div class="item-categories">
+            <% const categories = Object.keys(typeof inventory !== 'undefined' ? inventory || {} : {}); %>
+            <% if (categories && categories.length > 0) { %>
+              <% categories.forEach((category, index) => { %>
+                <div class="item-category <%= index === 0 ? 'active' : '' %>" data-category="<%= category %>" onclick="switchCategory(this, 'your')">
+                  <%= category.replace('inv_', '').charAt(0).toUpperCase() + category.replace('inv_', '').slice(1) %>
+                </div>
+              <% }); %>
+            <% } else { %>
+              <div class="item-category active">No Items</div>
+            <% } %>
+          </div>
+
+          <div class="item-list" id="your-items-container">
+            <% if (categories.length > 0) { %>
+              <% const firstCategory = categories[0]; %>
+              <% const items = (typeof inventory !== 'undefined' && inventory && firstCategory) ? (inventory[firstCategory] || {}) : {}; %>
+              <% if (Object.keys(items).length > 0) { %>
+                <div class="item-grid">
+                  <% Object.entries(items).forEach(([itemName, quantity]) => { %>
+                    <% const item = itemDetails[itemName] || { name: itemName, rarity: 'common', category: firstCategory }; %>
+                    <div class="item-card" data-item-name="<%= itemName %>" data-item-category="<%= firstCategory %>">
+                      <div class="item-image">
+                        <div class="item-image-icon">
+                          <i class="fas fa-box"></i>
+                        </div>
+                      </div>
+                      <div class="item-name"><%= itemName %></div>
+                      <div class="item-quantity">Quantity: <%= quantity %></div>
+                      <div class="item-rarity rarity-<%= item.rarity || 'common' %>">
+                        <%= (item.rarity || 'common').charAt(0).toUpperCase() + (item.rarity || 'common').slice(1) %>
+                      </div>
+                      <div class="item-quantity-selector">
+                        <button type="button" class="quantity-btn" onclick="decrementQuantity(this)">-</button>
+                        <input type="number" class="quantity-input" value="0" min="0" max="<%= quantity %>" onchange="updateSelectedItems('offered', '<%= itemName %>', '<%= firstCategory %>', this.value)">
+                        <button type="button" class="quantity-btn" onclick="incrementQuantity(this, <%= quantity %>)">+</button>
+                      </div>
+                    </div>
+                  <% }); %>
+                </div>
+              <% } else { %>
+                <div class="empty-state">
+                  <div class="empty-state-icon">
+                    <i class="fas fa-box-open"></i>
+                  </div>
+                  <div class="empty-state-text">No items in this category</div>
+                </div>
+              <% } %>
+            <% } else { %>
+              <div class="empty-state">
+                <div class="empty-state-icon">
+                  <i class="fas fa-box-open"></i>
+                </div>
+                <div class="empty-state-text">You don't have any items to trade</div>
+              </div>
+            <% } %>
+          </div>
+
+          <div class="selected-items">
+            <div class="selected-items-title">Selected Items to Offer:</div>
+            <div class="selected-items-list" id="offered-items-list">
+              <!-- Selected items will be added here dynamically -->
+              <div class="empty-state" id="offered-empty-state">
+                <div class="empty-state-text">No items selected</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+             < ! - -   T h e i r   I t e m s   ( R e q u e s t i n g )   - - > 
+             < d i v   c l a s s = " t r a d e - s e c t i o n " > 
+                 < h 2   c l a s s = " t r a d e - s e c t i o n - t i t l e " > 
+                     < i   c l a s s = " f a s   f a - h a n d - r e c e i v i n g " > < / i >   T h e i r   I t e m s   ( R e q u e s t i n g ) 
+                 < / h 2 > 
+                 
+                 < d i v   c l a s s = " i t e m - s e l e c t i o n " > 
+                     < d i v   c l a s s = " i t e m - c a t e g o r i e s "   i d = " r e c i p i e n t - c a t e g o r i e s " > 
+                         < d i v   c l a s s = " i t e m - c a t e g o r y   a c t i v e " > S e l e c t   a   t r a i n e r < / d i v > 
+                     < / d i v > 
+                     
+                     < d i v   c l a s s = " i t e m - l i s t "   i d = " r e c i p i e n t - i t e m s - c o n t a i n e r " > 
+                         < d i v   c l a s s = " e m p t y - s t a t e " > 
+                             < d i v   c l a s s = " e m p t y - s t a t e - i c o n " > 
+                                 < i   c l a s s = " f a s   f a - u s e r - a l t " > < / i > 
+                             < / d i v > 
+                             < d i v   c l a s s = " e m p t y - s t a t e - t e x t " > S e l e c t   a   t r a i n e r   t o   s e e   t h e i r   i t e m s < / d i v > 
+                         < / d i v > 
+                     < / d i v > 
+ 
+                     < d i v   c l a s s = " s e l e c t e d - i t e m s " > 
+                         < d i v   c l a s s = " s e l e c t e d - i t e m s - t i t l e " > S e l e c t e d   I t e m s   t o   R e q u e s t : < / d i v > 
+                         < d i v   c l a s s = " s e l e c t e d - i t e m s - l i s t "   i d = " r e q u e s t e d - i t e m s - l i s t " > 
+                             < ! - -   S e l e c t e d   i t e m s   w i l l   b e   a d d e d   h e r e   d y n a m i c a l l y   - - > 
+                             < d i v   c l a s s = " e m p t y - s t a t e "   i d = " r e q u e s t e d - e m p t y - s t a t e " > 
+                                 < d i v   c l a s s = " e m p t y - s t a t e - t e x t " > N o   i t e m s   s e l e c t e d < / d i v > 
+                             < / d i v > 
+                         < / d i v > 
+                     < / d i v > 
+                 < / d i v > 
+             < / d i v > 
+         < / d i v > 
+ 
+         < ! - -   H i d d e n   i n p u t s   t o   s t o r e   s e l e c t e d   i t e m   d a t a   - - > 
+         < d i v   i d = " o f f e r e d - i t e m s - i n p u t s " > < / d i v > 
+         < d i v   i d = " r e q u e s t e d - i t e m s - i n p u t s " > < / d i v > 
+ 
+         < d i v   c l a s s = " t r a d e - a c t i o n s " > 
+             < b u t t o n   t y p e = " s u b m i t "   c l a s s = " b t n - s u b m i t "   i d = " s u b m i t - t r a d e "   d i s a b l e d > 
+                 < i   c l a s s = " f a s   f a - e x c h a n g e - a l t " > < / i >   C r e a t e   T r a d e 
+             < / b u t t o n > 
+         < / d i v > 
+     < / f o r m > 
+ < / d i v > 
+ 
+ <script>
+  // Store selected items
+  const selectedItems = {
+    offered: {},
+    requested: {}
+  };
+
+  // Switch item category
+  function switchCategory(element, type) {
+    // Update active class
+    const categories = element.parentElement.querySelectorAll(".item-category");
+    categories.forEach(cat => cat.classList.remove("active"));
+    element.classList.add("active");
+
+    const category = element.dataset.category;
+
+    if (type === "your") {
+      // Load your items for the selected category
+      loadYourItems(category);
+    } else {
+      // Load recipient items for the selected category
+      loadRecipientItems(category);
+    }
+  }
+
+  // Load your items for a category
+  function loadYourItems(category) {
+    const container = document.getElementById("your-items-container");
+    const inventory = <%- JSON.stringify(typeof inventory !== 'undefined' ? inventory || {} : {}) %>;
+    const itemDetails = <%- JSON.stringify(itemDetails || {}) %>;
+
+    if (!inventory || !category || !inventory[category] || Object.keys(inventory[category] || {}).length === 0) {
+      container.innerHTML = `
+        <div class="empty-state">
+          <div class="empty-state-icon">
+            <i class="fas fa-box-open"></i>
+          </div>
+          <div class="empty-state-text">No items in this category</div>
+        </div>
+      `;
+      return;
+    }
+
+    let html = "<div class=\"item-grid\">";
+
+    Object.entries(inventory[category]).forEach(([itemName, quantity]) => {
+      const item = itemDetails[itemName] || { name: itemName, rarity: "common", category };
+      const selectedQuantity = selectedItems.offered[category]?.[itemName] || 0;
+
+      html += `
+        <div class="item-card" data-item-name="${itemName}" data-item-category="${category}">
+          <div class="item-image">
+            <div class="item-image-icon">
+              <i class="fas fa-box"></i>
+            </div>
+          </div>
+          <div class="item-name">${itemName}</div>
+          <div class="item-quantity">Quantity: ${quantity}</div>
+          <div class="item-rarity rarity-${item.rarity || "common"}">
+            ${(item.rarity || "common").charAt(0).toUpperCase() + (item.rarity || "common").slice(1)}
+          </div>
+          <div class="item-quantity-selector">
+            <button type="button" class="quantity-btn" onclick="decrementQuantity(this)">-</button>
+            <input type="number" class="quantity-input" value="${selectedQuantity}" min="0" max="${quantity}"
+              onchange="updateSelectedItems('offered', '${itemName}', '${category}', this.value)">
+            <button type="button" class="quantity-btn" onclick="incrementQuantity(this, ${quantity})">+</button>
+          </div>
+        </div>
+      `;
+    });
+
+    html += "</div>";
+    container.innerHTML = html;
+  }
+
+  // Increment quantity
+  function incrementQuantity(button, max) {
+    const input = button.previousElementSibling;
+    let value = parseInt(input.value) || 0;
+
+    if (value < max) {
+      value++;
+      input.value = value;
+
+      // Update selected items
+      const card = button.closest(".item-card");
+      const itemName = card.dataset.itemName;
+      const category = card.dataset.itemCategory;
+      const type = card.closest(".trade-section").querySelector(".trade-section-title").textContent.includes("Offering") ? "offered" : "requested";
+
+      updateSelectedItems(type, itemName, category, value);
+    }
+  }
+
+  // Decrement quantity
+  function decrementQuantity(button) {
+    const input = button.nextElementSibling;
+    let value = parseInt(input.value) || 0;
+
+    if (value > 0) {
+      value--;
+      input.value = value;
+
+      // Update selected items
+      const card = button.closest(".item-card");
+      const itemName = card.dataset.itemName;
+      const category = card.dataset.itemCategory;
+      const type = card.closest(".trade-section").querySelector(".trade-section-title").textContent.includes("Offering") ? "offered" : "requested";
+
+      updateSelectedItems(type, itemName, category, value);
+    }
+  }
+
+  // Update selected items
+  function updateSelectedItems(type, itemName, category, quantity) {
+    quantity = parseInt(quantity) || 0;
+
+    // Initialize category if it doesn't exist
+    if (!selectedItems[type][category]) {
+      selectedItems[type][category] = {};
+    }
+
+    if (quantity > 0) {
+      // Add or update item
+      selectedItems[type][category][itemName] = quantity;
+    } else {
+      // Remove item if quantity is 0
+      delete selectedItems[type][category][itemName];
+
+      // Remove category if empty
+      if (Object.keys(selectedItems[type][category]).length === 0) {
+        delete selectedItems[type][category];
+      }
+    }
+
+    // Update UI
+    updateSelectedItemsList(type);
+    updateHiddenInputs();
+    updateSubmitButton();
+  }
+
+  // Update the selected items list
+  function updateSelectedItemsList(type) {
+    const listElement = document.getElementById(`${type}-items-list`);
+    const emptyState = document.getElementById(`${type}-empty-state`);
+
+    // Clear current list
+    listElement.innerHTML = "";
+
+    const categories = Object.keys(selectedItems[type]);
+
+    if (categories.length === 0) {
+      // Show empty state
+      listElement.appendChild(emptyState);
+      return;
+    }
+
+    // Add selected items
+    categories.forEach(category => {
+      Object.entries(selectedItems[type][category]).forEach(([itemName, quantity]) => {
+        const tag = document.createElement("div");
+        tag.className = "selected-item-tag";
+        tag.innerHTML = `
+          ${itemName}
+          <span class="selected-item-tag-quantity">${quantity}</span>
+          <span class="selected-item-tag-remove" onclick="removeSelectedItem('${type}', '${itemName}', '${category}')">
+            &times;
+          </span>
+        `;
+        listElement.appendChild(tag);
+      });
+    });
+  }
+
+  // Remove a selected item
+  function removeSelectedItem(type, itemName, category) {
+    // Remove from object
+    if (selectedItems[type][category] && selectedItems[type][category][itemName]) {
+      delete selectedItems[type][category][itemName];
+
+      // Remove category if empty
+      if (Object.keys(selectedItems[type][category]).length === 0) {
+        delete selectedItems[type][category];
+      }
+    }
+
+    // Reset quantity input if visible
+    const card = document.querySelector(`.item-card[data-item-name="${itemName}"][data-item-category="${category}"]`);
+    if (card) {
+      const input = card.querySelector(".quantity-input");
+      if (input) {
+        input.value = 0;
+      }
+    }
+
+    // Update UI
+    updateSelectedItemsList(type);
+    updateHiddenInputs();
+    updateSubmitButton();
+  }
+
+  // Update hidden inputs for form submission
+  function updateHiddenInputs() {
+    const offeredInputsContainer = document.getElementById("offered-items-inputs");
+    const requestedInputsContainer = document.getElementById("requested-items-inputs");
+
+    // Clear current inputs
+    offeredInputsContainer.innerHTML = "";
+    requestedInputsContainer.innerHTML = "";
+
+    // Add offered items inputs
+    Object.entries(selectedItems.offered).forEach(([category, items]) => {
+      Object.entries(items).forEach(([itemName, quantity]) => {
+        const input = document.createElement("input");
+        input.type = "hidden";
+        input.name = `offered_items[${category}][${itemName}]`;
+        input.value = quantity;
+        offeredInputsContainer.appendChild(input);
+      });
+    });
+
+    // Add requested items inputs
+    Object.entries(selectedItems.requested).forEach(([category, items]) => {
+      Object.entries(items).forEach(([itemName, quantity]) => {
+        const input = document.createElement("input");
+        input.type = "hidden";
+        input.name = `requested_items[${category}][${itemName}]`;
+        input.value = quantity;
+        requestedInputsContainer.appendChild(input);
+      });
+    });
+  }
+
+  // Update submit button state
+  function updateSubmitButton() {
+    const submitButton = document.getElementById("submit-trade");
+    const recipientSelect = document.getElementById("recipient_id");
+
+    // Enable button if a recipient is selected and at least one item is selected (either offered or requested)
+    const hasRecipient = recipientSelect.value !== "";
+    const hasOfferedItems = Object.keys(selectedItems.offered).length > 0;
+    const hasRequestedItems = Object.keys(selectedItems.requested).length > 0;
+
+    submitButton.disabled = !(hasRecipient && (hasOfferedItems || hasRequestedItems));
+  }
+
+  // Load recipient's items when a trainer is selected
+  document.getElementById("recipient_id").addEventListener("change", async function() {
+    const trainerId = this.value;
+    const categoriesContainer = document.getElementById("recipient-categories");
+    const itemsContainer = document.getElementById("recipient-items-container");
+
+    // Clear current selection when trainer changes
+    selectedItems.requested = {};
+    updateSelectedItemsList("requested");
+    updateHiddenInputs();
+    updateSubmitButton();
+
+    if (!trainerId) {
+      categoriesContainer.innerHTML = `<div class="item-category active">Select a trainer</div>`;
+      itemsContainer.innerHTML = `
+        <div class="empty-state">
+          <div class="empty-state-icon">
+            <i class="fas fa-user-alt"></i>
+          </div>
+          <div class="empty-state-text">Select a trainer to see their items</div>
+        </div>
+      `;
+      return;
+    }
+
+    // Show loading state
+    itemsContainer.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-state-icon">
+          <i class="fas fa-spinner fa-spin"></i>
+        </div>
+        <div class="empty-state-text">Loading items...</div>
+      </div>
+    `;
+
+    try {
+      // Fetch the trainer's inventory
+      const response = await fetch(`/api/trainers/${trainerId}/inventory`);
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      console.log('API Response:', data);
+
+      if (data.error) {
+        throw new Error(data.error);
+      }
+
+      if (!data.inventory || Object.keys(data.inventory).length === 0) {
+        categoriesContainer.innerHTML = `<div class="item-category active">No Items</div>`;
+        itemsContainer.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-state-icon">
+              <i class="fas fa-box-open"></i>
+            </div>
+            <div class="empty-state-text">This trainer doesn't have any items</div>
+          </div>
+        `;
+        return;
+      }
+
+      // Update categories
+      let categoriesHtml = "";
+      const categories = Object.keys(data.inventory);
+
+      // Format category names for display
+      const formatCategoryName = (category) => {
+        // Remove 'inv_' prefix and capitalize
+        return category.replace('inv_', '').charAt(0).toUpperCase() + category.replace('inv_', '').slice(1);
+      };
+
+      categories.forEach((category, index) => {
+        categoriesHtml += `
+          <div class="item-category ${index === 0 ? 'active' : ''}" data-category="${category}" onclick="switchCategory(this, 'recipient')">
+            ${formatCategoryName(category)}
+          </div>
+        `;
+      });
+
+      categoriesContainer.innerHTML = categoriesHtml;
+
+      // Load items for the first category
+      const firstCategory = categories[0];
+      const items = data.inventory[firstCategory] || {};
+
+      if (Object.keys(items).length === 0) {
+        itemsContainer.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-state-icon">
+              <i class="fas fa-box-open"></i>
+            </div>
+            <div class="empty-state-text">No items in this category</div>
+          </div>
+        `;
+        return;
+      }
+
+      // Render the items
+      let html = "<div class=\"item-grid\">";
+
+      Object.entries(items).forEach(([itemName, quantity]) => {
+        const item = data.itemDetails[itemName] || { name: itemName, rarity: "common", category: firstCategory };
+
+        html += `
+          <div class="item-card" data-item-name="${itemName}" data-item-category="${firstCategory}">
+            <div class="item-image">
+              <div class="item-image-icon">
+                <i class="fas fa-box"></i>
+              </div>
+            </div>
+            <div class="item-name">${itemName}</div>
+            <div class="item-quantity">Quantity: ${quantity}</div>
+            <div class="item-rarity rarity-${item.rarity || "common"}">
+              ${(item.rarity || "common").charAt(0).toUpperCase() + (item.rarity || "common").slice(1)}
+            </div>
+            <div class="item-quantity-selector">
+              <button type="button" class="quantity-btn" onclick="decrementQuantity(this)">-</button>
+              <input type="number" class="quantity-input" value="0" min="0" max="${quantity}"
+                onchange="updateSelectedItems('requested', '${itemName}', '${firstCategory}', this.value)">
+              <button type="button" class="quantity-btn" onclick="incrementQuantity(this, ${quantity})">+</button>
+            </div>
+          </div>
+        `;
+      });
+
+      html += "</div>";
+      itemsContainer.innerHTML = html;
+
+      // Store the inventory data for later use
+      console.log('Received inventory data:', data.inventory);
+      window.recipientInventory = data.inventory;
+      window.recipientItemDetails = data.itemDetails;
+    } catch (error) {
+      console.error("Error fetching inventory:", error);
+      itemsContainer.innerHTML = `
+        <div class="empty-state">
+          <div class="empty-state-icon">
+            <i class="fas fa-exclamation-triangle"></i>
+          </div>
+          <div class="empty-state-text">Error loading items: ${error.message}</div>
+          <div class="empty-state-subtext">Please try again or select a different trainer.</div>
+        </div>
+      `;
+
+      // Clear the categories container
+      categoriesContainer.innerHTML = `<div class="item-category active">Error</div>`;
+    }
+  });
+
+  // Load recipient items for a category
+  function loadRecipientItems(category) {
+    if (!window.recipientInventory) return;
+
+    const container = document.getElementById("recipient-items-container");
+    const inventory = window.recipientInventory;
+    const itemDetails = window.recipientItemDetails || {};
+
+    console.log('Loading recipient items for category:', category);
+    console.log('Inventory:', inventory);
+    console.log('Category data:', inventory[category]);
+
+    if (!inventory || !category || !inventory[category] || Object.keys(inventory[category] || {}).length === 0) {
+      container.innerHTML = `
+        <div class="empty-state">
+          <div class="empty-state-icon">
+            <i class="fas fa-box-open"></i>
+          </div>
+          <div class="empty-state-text">No items in this category</div>
+        </div>
+      `;
+      return;
+    }
+
+    let html = "<div class=\"item-grid\">";
+
+    Object.entries(inventory[category]).forEach(([itemName, quantity]) => {
+      const item = itemDetails[itemName] || { name: itemName, rarity: "common", category };
+      const selectedQuantity = selectedItems.requested[category]?.[itemName] || 0;
+
+      html += `
+        <div class="item-card" data-item-name="${itemName}" data-item-category="${category}">
+          <div class="item-image">
+            <div class="item-image-icon">
+              <i class="fas fa-box"></i>
+            </div>
+          </div>
+          <div class="item-name">${itemName}</div>
+          <div class="item-quantity">Quantity: ${quantity}</div>
+          <div class="item-rarity rarity-${item.rarity || "common"}">
+            ${(item.rarity || "common").charAt(0).toUpperCase() + (item.rarity || "common").slice(1)}
+          </div>
+          <div class="item-quantity-selector">
+            <button type="button" class="quantity-btn" onclick="decrementQuantity(this)">-</button>
+            <input type="number" class="quantity-input" value="${selectedQuantity}" min="0" max="${quantity}"
+              onchange="updateSelectedItems('requested', '${itemName}', '${category}', this.value)">
+            <button type="button" class="quantity-btn" onclick="incrementQuantity(this, ${quantity})">+</button>
+          </div>
+        </div>
+      `;
+    });
+
+    html += "</div>";
+    container.innerHTML = html;
+  }
+
+  // Initialize empty states
+  document.addEventListener("DOMContentLoaded", function() {
+    updateSelectedItemsList("offered");
+    updateSelectedItemsList("requested");
+    updateSubmitButton();
+  });
+</script>

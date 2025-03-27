@@ -2228,7 +2228,89 @@ app.get('/town/visit/farm', (req, res) => {
     title: 'Farm'
   });
 });
+// Game Corner route
+app.get('/town/visit/game_corner', async (req, res) => {
+  // Check if user is logged in
+  if (!req.session.user) {
+    return res.redirect('/login');
+  }
 
+  try {
+    // Import the Trainer and Monster models
+    const Trainer = require('./models/Trainer');
+    const Monster = require('./models/Monster');
+
+    // Get the user's trainers
+    const trainers = await Trainer.getByUserId(req.session.user.discord_id);
+
+    // Get monsters for each trainer
+    let monsters = [];
+    for (const trainer of trainers) {
+      const trainerMonsters = await Monster.getByTrainerId(trainer.id);
+      monsters = [...monsters, ...trainerMonsters];
+    }
+
+    console.log(`Loaded ${trainers.length} trainers and ${monsters.length} monsters for Game Corner`);
+
+    // Render the game corner template with real data
+    res.render('town/game_corner', {
+      title: 'Pomodoro Game Corner',
+      trainers: trainers,
+      monsters: monsters
+    });
+  } catch (error) {
+    console.error('Error loading Game Corner data:', error);
+
+    // Render with empty data in case of error
+    res.render('town/game_corner', {
+      title: 'Pomodoro Game Corner',
+      trainers: [],
+      monsters: []
+    });
+  }
+});
+
+// Game Corner APIs
+const gameCornerRewardsRouter = require('./routes/game_corner_rewards');
+app.use('/api/game-corner', gameCornerRewardsRouter);
+
+// Game Corner Generation API
+const gameCornerApiRouter = require('./routes/game_corner_api');
+app.use('/api/game-corner-gen', gameCornerApiRouter);
+
+// Generic handler for other town locations
+app.get('/town/visit/:location', (req, res) => {
+  // Check if user is logged in
+  if (!req.session.user) {
+    return res.redirect('/login');
+  }
+
+  const location = req.params.location;
+
+  // Check if the view exists
+  const viewPath = path.join(__dirname, 'views', 'town', `${location}.ejs`);
+
+  if (fs.existsSync(viewPath)) {
+    // Format the location name for the title
+    const locationName = location
+      .split('_')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ');
+
+    res.render(`town/${location}`, {
+      title: locationName
+    });
+  } else {
+    // Render a coming soon page if the view doesn't exist
+    res.render('town/coming-soon', {
+      title: 'Coming Soon',
+      location: location
+        .split('_')
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(' ')
+    });
+  }
+});
 // Farm - Work Farm route
 app.get('/town/visit/farm/work', async (req, res) => {
   // Check if user is logged in
@@ -3485,6 +3567,11 @@ app.get('/guides', (req, res) => {
   });
 });
 
+// Add redirect for old guide URLs to new content prefix pattern
+app.get('/guides/:path(*)', (req, res) => {
+  res.redirect(`/content/guides/${req.params.path}`);
+});
+
 app.get('/lore', (req, res) => {
   const categories = getContentCategories();
   const contentPath = path.join(__dirname, 'content', 'lore', 'overview.md');
@@ -3497,6 +3584,11 @@ app.get('/lore', (req, res) => {
     currentPath: '',
     content
   });
+});
+
+// Add redirect for old lore URLs to new content prefix pattern
+app.get('/lore/:path(*)', (req, res) => {
+  res.redirect(`/content/lore/${req.params.path}`);
 });
 
 app.get('/factions', (req, res) => {
@@ -3513,6 +3605,11 @@ app.get('/factions', (req, res) => {
   });
 });
 
+// Add redirect for old faction URLs to new content prefix pattern
+app.get('/factions/:path(*)', (req, res) => {
+  res.redirect(`/content/factions/${req.params.path}`);
+});
+
 app.get('/npcs', (req, res) => {
   const categories = getContentCategories();
   const contentPath = path.join(__dirname, 'content', 'npcs', 'overview.md');
@@ -3527,6 +3624,11 @@ app.get('/npcs', (req, res) => {
   });
 });
 
+// Add redirect for old NPC URLs to new content prefix pattern
+app.get('/npcs/:path(*)', (req, res) => {
+  res.redirect(`/content/npcs/${req.params.path}`);
+});
+
 app.get('/locations', (req, res) => {
   const categories = getContentCategories();
   const contentPath = path.join(__dirname, 'content', 'locations', 'overview.md');
@@ -3539,6 +3641,11 @@ app.get('/locations', (req, res) => {
     currentPath: '',
     content
   });
+});
+
+// Add redirect for old location URLs to new content prefix pattern
+app.get('/locations/:path(*)', (req, res) => {
+  res.redirect(`/content/locations/${req.params.path}`);
 });
 
 // Statistics routes
@@ -4631,6 +4738,39 @@ app.get('/trainers/:id/achievements', async (req, res) => {
   }
 });
 
+// Trainer additional references route
+app.get('/trainers/:id/additional-references', async (req, res) => {
+  try {
+    const trainerId = req.params.id;
+    const trainer = await Trainer.getById(trainerId);
+
+    if (!trainer) {
+      return res.status(404).render('error', {
+        message: 'Trainer not found',
+        error: { status: 404 }
+      });
+    }
+
+    // Get additional references from the trainer model
+    // This assumes you have a references array in your trainer model
+    // If not, you'll need to modify this to match your data structure
+    const references = trainer.additional_references || [];
+
+    res.render('trainers/additional-references', {
+      title: `${trainer.name} - Additional References`,
+      trainer,
+      references
+    });
+  } catch (error) {
+    console.error('Error getting trainer additional references:', error);
+    res.status(500).render('error', {
+      message: 'Error getting trainer additional references',
+      error: { status: 500, stack: error.stack },
+      title: 'Error'
+    });
+  }
+});
+
 // Trainer inventory route
 app.get('/trainers/:id/inventory', async (req, res) => {
   try {
@@ -4814,6 +4954,11 @@ app.post('/trainers/:id/update', async (req, res) => {
 
     if (req.body.main_ref_artist !== undefined) {
       updatedTrainer.main_ref_artist = req.body.main_ref_artist;
+    }
+
+    // Handle additional references
+    if (req.body.additional_references) {
+      updatedTrainer.additional_references = req.body.additional_references;
     }
 
     console.log('Final updatedTrainer object:', updatedTrainer);
@@ -5218,8 +5363,8 @@ app.post('/add_trainer', async (req, res) => {
   }
 });
 
-// Make sure your category route comes AFTER the API routes
-app.get('/:category/:path(*)', (req, res) => {
+// Content category route with specific prefix to avoid conflicts with other routes
+app.get('/content/:category/:path(*)', (req, res) => {
   const category = req.params.category;
   const validCategories = ['guides', 'lore', 'factions', 'npcs', 'locations'];
 

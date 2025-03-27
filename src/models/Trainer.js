@@ -45,6 +45,20 @@ class Trainer {
         }
       }, 0);
 
+      // Parse additional_references JSON for each trainer
+      trainers.forEach(trainer => {
+        if (trainer.additional_references) {
+          try {
+            trainer.additional_references = JSON.parse(trainer.additional_references);
+          } catch (e) {
+            console.error('Error parsing additional_references JSON:', e);
+            trainer.additional_references = [];
+          }
+        } else {
+          trainer.additional_references = [];
+        }
+      });
+
       return trainers;
     } catch (error) {
       console.error('Error getting all trainers:', error);
@@ -61,7 +75,26 @@ class Trainer {
     try {
       const query = 'SELECT * FROM trainers WHERE id = $1';
       const result = await pool.query(query, [id]);
-      return result.rows[0];
+
+      if (result.rows.length === 0) {
+        return null;
+      }
+
+      const trainer = result.rows[0];
+
+      // Parse additional_references JSON if it exists
+      if (trainer.additional_references) {
+        try {
+          trainer.additional_references = JSON.parse(trainer.additional_references);
+        } catch (e) {
+          console.error('Error parsing additional_references JSON:', e);
+          trainer.additional_references = [];
+        }
+      } else {
+        trainer.additional_references = [];
+      }
+
+      return trainer;
     } catch (error) {
       console.error('Error getting trainer by ID:', error);
       return null;
@@ -77,7 +110,23 @@ class Trainer {
     try {
       const query = 'SELECT * FROM trainers WHERE player_user_id = $1 ORDER BY name';
       const result = await pool.query(query, [userId]);
-      return result.rows;
+
+      // Parse additional_references JSON for each trainer
+      const trainers = result.rows.map(trainer => {
+        if (trainer.additional_references) {
+          try {
+            trainer.additional_references = JSON.parse(trainer.additional_references);
+          } catch (e) {
+            console.error('Error parsing additional_references JSON:', e);
+            trainer.additional_references = [];
+          }
+        } else {
+          trainer.additional_references = [];
+        }
+        return trainer;
+      });
+
+      return trainers;
     } catch (error) {
       console.error('Error getting trainers by user ID:', error);
       return [];
@@ -180,6 +229,28 @@ class Trainer {
       console.log('Trainer update data received:', processedData);
       console.log('main_ref in update:', processedData.main_ref);
       console.log('main_ref_artist in update:', processedData.main_ref_artist);
+
+      // Handle additional references
+      if (processedData.additional_references) {
+        // Convert to JSON string if it's an array
+        if (Array.isArray(processedData.additional_references)) {
+          // Filter out empty references (those without title or description)
+          const filteredReferences = processedData.additional_references.filter(ref => {
+            return (ref.title && ref.title.trim()) || (ref.description && ref.description.trim());
+          });
+
+          // Set the type to 'text' if img_url is empty
+          filteredReferences.forEach(ref => {
+            if (!ref.img_url || ref.img_url.trim() === '') {
+              ref.type = 'text';
+            } else if (!ref.type) {
+              ref.type = 'image';
+            }
+          });
+
+          processedData.additional_references = JSON.stringify(filteredReferences);
+        }
+      }
 
       // If main_ref is empty string, set to default
       if (processedData.main_ref === '') {
