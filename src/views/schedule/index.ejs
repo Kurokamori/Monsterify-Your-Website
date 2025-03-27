@@ -1,0 +1,2540 @@
+<% /* Set the title and other variables for the layout */ %>
+<% title = 'Manage Schedule' %>
+
+<div class="mt-20 mb-12">
+    <span></span>
+</div>
+
+<!-- Inline script for navigation - ensures it works even if there are other JS errors -->
+<script>
+    window.addEventListener('DOMContentLoaded', function() {
+        // Direct navigation function
+        function navigateToSchedule(trainerId, date) {
+            console.log(`Inline script navigating to: /manage_schedule?trainer_id=${trainerId}&date=${date}`);
+            window.location.href = `/manage_schedule?trainer_id=${trainerId}&date=${date}`;
+        }
+
+        // Get elements
+        const trainerSelect = document.getElementById('trainerSelect');
+        const dateSelect = document.getElementById('dateSelect');
+
+        // Add event listeners if elements exist
+        if (trainerSelect) {
+            trainerSelect.addEventListener('change', function() {
+                if (dateSelect) {
+                    navigateToSchedule(this.value, dateSelect.value);
+                }
+            });
+        }
+
+        if (dateSelect) {
+            dateSelect.addEventListener('change', function() {
+                if (trainerSelect) {
+                    navigateToSchedule(trainerSelect.value, this.value);
+                }
+            });
+        }
+    });
+</script>
+
+<div class="container">
+    <div class="schedule-wrapper">
+        <div class="card">
+            <div class="card-header">
+                <h1 class="text-2xl font-bold mb-4">Manage Schedule</h1>
+
+                <!-- Trainer Selection -->
+                <div class="mb-6">
+                    <label for="trainerSelect" class="block mb-2">Select Trainer:</label>
+                    <select id="trainerSelect" class="input w-full md:w-1/3">
+                        <% trainers.forEach(trainer => { %>
+                            <option value="<%= trainer.id %>" <%= selectedTrainer.id == trainer.id ? 'selected' : '' %>>
+                                <%= trainer.name %>
+                            </option>
+                        <% }) %>
+                    </select>
+                </div>
+
+                <!-- Date Selection -->
+                <div class="mb-6">
+                    <label for="dateSelect" class="block mb-2">Select Date:</label>
+                    <input type="date" id="dateSelect" class="input w-full md:w-1/3"
+                           value="<%= selectedDate.toISOString().split('T')[0] %>">
+                </div>
+            </div>
+
+            <div class="card-body">
+                <!-- Tabs -->
+                <div class="tabs mb-6">
+                    <button class="tab-btn active" data-tab="tasks">Tasks</button>
+                    <button class="tab-btn" data-tab="habits">Habits</button>
+                    <button class="tab-btn" data-tab="templates">Templates</button>
+                </div>
+
+                <!-- Tab Content -->
+                <div class="tab-content">
+                    <!-- Tasks Tab -->
+                    <div id="tasks-tab" class="tab-pane active">
+                        <div class="flex justify-between items-center mb-4">
+                            <h2 class="text-xl font-semibold">Tasks for <%= selectedDate.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) %></h2>
+                            <button id="addTaskBtn" class="btn-primary">
+                                <i class="fas fa-plus mr-2"></i> Add Task
+                            </button>
+                        </div>
+
+                        <div class="task-list">
+                            <% if (tasks && tasks.length > 0) { %>
+                                <% tasks.forEach(task => { %>
+                                    <div class="task-item <%= task.completed ? 'completed' : '' %>" data-id="<%= task.task_id %>">
+                                        <div class="task-header">
+                                            <div class="task-title-wrapper">
+                                                <input type="checkbox" class="task-checkbox" <%= task.completed ? 'checked' : '' %>>
+                                                <h3 class="task-title"><%= task.title %></h3>
+                                            </div>
+                                            <div class="task-actions">
+                                                <button class="btn-icon edit-task-btn" title="Edit Task">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                                <button class="btn-icon delete-task-btn" title="Delete Task">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="task-details">
+                                            <% if (task.description) { %>
+                                                <p class="task-description"><%= task.description %></p>
+                                            <% } %>
+                                            <div class="task-meta">
+                                                <span class="task-difficulty <%= task.difficulty %>">
+                                                    <%= task.difficulty.charAt(0).toUpperCase() + task.difficulty.slice(1) %>
+                                                </span>
+                                                <span class="task-rewards">
+                                                    <i class="fas fa-star" title="Level Reward"></i> <%= task.level_reward %>
+                                                    <i class="fas fa-coins ml-2" title="Coin Reward"></i> <%= task.coin_reward %>
+                                                </span>
+                                                <% if (task.bound_to_mon_id) { %>
+                                                    <span class="task-bound">
+                                                        <i class="fas fa-link" title="Bound to Monster"></i>
+                                                        <%= task.monster_name || 'Monster #' + task.bound_to_mon_id %>
+                                                    </span>
+                                                <% } else if (task.bound_to_trainer) { %>
+                                                    <span class="task-bound">
+                                                        <i class="fas fa-link" title="Bound to Trainer"></i>
+                                                        <%= selectedTrainer.name %>
+                                                    </span>
+                                                <% } %>
+                                                <% if (task.reminder_enabled) { %>
+                                                    <span class="task-reminder">
+                                                        <i class="fas fa-bell" title="Reminder Set"></i>
+                                                        <%= new Date(task.reminder_time).toLocaleTimeString() %>
+                                                    </span>
+                                                <% } %>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <% }) %>
+                            <% } else { %>
+                                <div class="empty-state">
+                                    <p>No tasks scheduled for this day.</p>
+                                    <button id="emptyAddTaskBtn" class="btn-primary mt-4">
+                                        <i class="fas fa-plus mr-2"></i> Add Your First Task
+                                    </button>
+                                </div>
+                            <% } %>
+                        </div>
+                    </div>
+
+                    <!-- Habits Tab -->
+                    <div id="habits-tab" class="tab-pane">
+                        <div class="flex justify-between items-center mb-4">
+                            <h2 class="text-xl font-semibold">Your Habits</h2>
+                            <button id="addHabitBtn" class="btn-primary">
+                                <i class="fas fa-plus mr-2"></i> Add Habit
+                            </button>
+                        </div>
+
+                        <div class="habit-list">
+                            <% if (habits && habits.length > 0) { %>
+                                <div class="habit-categories mb-4">
+                                    <button class="habit-filter active" data-filter="all">All</button>
+                                    <button class="habit-filter" data-filter="daily">Daily</button>
+                                    <button class="habit-filter" data-filter="weekly">Weekly</button>
+                                </div>
+
+                                <% habits.forEach(habit => { %>
+                                    <div class="habit-item" data-id="<%= habit.habit_id %>" data-frequency="<%= habit.frequency %>">
+                                        <div class="habit-header">
+                                            <div class="habit-title-wrapper">
+                                                <button class="complete-habit-btn <%= habit.last_completed && new Date(habit.last_completed).toDateString() === new Date().toDateString() ? 'completed' : '' %>">
+                                                    <i class="fas fa-check"></i>
+                                                </button>
+                                                <h3 class="habit-title"><%= habit.title %></h3>
+                                            </div>
+                                            <div class="habit-actions">
+                                                <button class="btn-icon edit-habit-btn" title="Edit Habit">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                                <button class="btn-icon delete-habit-btn" title="Delete Habit">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="habit-details">
+                                            <% if (habit.description) { %>
+                                                <p class="habit-description"><%= habit.description %></p>
+                                            <% } %>
+                                            <div class="habit-meta">
+                                                <span class="habit-frequency <%= habit.frequency %>">
+                                                    <%= habit.frequency.charAt(0).toUpperCase() + habit.frequency.slice(1) %>
+                                                </span>
+                                                <span class="habit-difficulty <%= habit.difficulty %>">
+                                                    <%= habit.difficulty.charAt(0).toUpperCase() + habit.difficulty.slice(1) %>
+                                                </span>
+                                                <span class="habit-streak">
+                                                    <i class="fas fa-fire" title="Current Streak"></i> <%= habit.streak %>
+                                                    <% if (habit.longest_streak > 0) { %>
+                                                        <span class="text-xs ml-1">(Best: <%= habit.longest_streak %>)</span>
+                                                    <% } %>
+                                                </span>
+                                                <span class="habit-rewards">
+                                                    <i class="fas fa-star" title="Level Reward"></i> <%= habit.level_reward %>
+                                                    <i class="fas fa-coins ml-2" title="Coin Reward"></i> <%= habit.coin_reward %>
+                                                </span>
+                                                <% if (habit.bound_to_mon_id) { %>
+                                                    <span class="habit-bound">
+                                                        <i class="fas fa-link" title="Bound to Monster"></i>
+                                                        <%= habit.monster_name || 'Monster #' + habit.bound_to_mon_id %>
+                                                    </span>
+                                                <% } else if (habit.bound_to_trainer) { %>
+                                                    <span class="habit-bound">
+                                                        <i class="fas fa-link" title="Bound to Trainer"></i>
+                                                        <%= selectedTrainer.name %>
+                                                    </span>
+                                                <% } %>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <% }) %>
+                            <% } else { %>
+                                <div class="empty-state">
+                                    <p>You don't have any habits yet.</p>
+                                    <button id="emptyAddHabitBtn" class="btn-primary mt-4">
+                                        <i class="fas fa-plus mr-2"></i> Create Your First Habit
+                                    </button>
+                                </div>
+                            <% } %>
+                        </div>
+                    </div>
+
+                    <!-- Templates Tab -->
+                    <div id="templates-tab" class="tab-pane">
+                        <div class="flex justify-between items-center mb-4">
+                            <h2 class="text-xl font-semibold">Task Templates</h2>
+                            <button id="addTemplateBtn" class="btn-primary">
+                                <i class="fas fa-plus mr-2"></i> Create Template
+                            </button>
+                        </div>
+
+                        <div class="template-list">
+                            <% if (templates && templates.length > 0) { %>
+                                <% templates.forEach(template => { %>
+                                    <div class="template-item" data-id="<%= template.template_id %>">
+                                        <div class="template-header">
+                                            <div class="template-title-wrapper">
+                                                <h3 class="template-title"><%= template.name %></h3>
+                                            </div>
+                                            <div class="template-actions">
+                                                <button class="btn-primary apply-template-btn" title="Apply Template">
+                                                    <i class="fas fa-play mr-1"></i> Apply
+                                                </button>
+                                                <button class="btn-icon edit-template-btn" title="Edit Template">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                                <button class="btn-icon delete-template-btn" title="Delete Template">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="template-details">
+                                            <% if (template.description) { %>
+                                                <p class="template-description"><%= template.description %></p>
+                                            <% } %>
+                                            <div class="template-tasks">
+                                                <h4 class="text-sm font-semibold mb-2">Tasks in this template:</h4>
+                                                <ul class="template-task-list">
+                                                    <% const tasks = JSON.parse(template.tasks); %>
+                                                    <% if (tasks && tasks.length > 0) { %>
+                                                        <% tasks.forEach(task => { %>
+                                                            <li class="template-task-item">
+                                                                <span class="template-task-title"><%= task.title %></span>
+                                                                <span class="template-task-difficulty <%= task.difficulty %>">
+                                                                    <%= task.difficulty.charAt(0).toUpperCase() + task.difficulty.slice(1) %>
+                                                                </span>
+                                                            </li>
+                                                        <% }) %>
+                                                    <% } else { %>
+                                                        <li class="template-task-item empty">No tasks in this template</li>
+                                                    <% } %>
+                                                </ul>
+                                            </div>
+                                            <div class="template-settings-display">
+                                                <div class="template-settings-badges">
+                                                    <% if (template.preserve_times) { %>
+                                                        <span class="template-setting-badge time-badge">
+                                                            <i class="fas fa-clock"></i> Preserves times
+                                                        </span>
+                                                    <% } %>
+                                                    <% if (template.preserve_notifications) { %>
+                                                        <span class="template-setting-badge notification-badge">
+                                                            <i class="fas fa-bell"></i> Preserves notifications
+                                                        </span>
+                                                    <% } %>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <% }) %>
+                            <% } else { %>
+                                <div class="empty-state">
+                                    <p>You don't have any task templates yet.</p>
+                                    <p class="text-sm mt-2">Templates let you create a set of tasks that you can apply to any day with one click.</p>
+                                    <button id="emptyAddTemplateBtn" class="btn-primary mt-4">
+                                        <i class="fas fa-plus mr-2"></i> Create Your First Template
+                                    </button>
+                                </div>
+                            <% } %>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modals -->
+<!-- Task Modal -->
+<div id="taskModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 id="taskModalTitle">Add New Task</h2>
+            <span class="close">&times;</span>
+        </div>
+        <div class="modal-body">
+            <form id="taskForm">
+                <input type="hidden" id="taskId" name="task_id">
+                <input type="hidden" id="trainerId" name="trainer_id" value="<%= selectedTrainer.id %>">
+
+                <div class="form-group">
+                    <label for="taskTitle">Task Title</label>
+                    <input type="text" id="taskTitle" name="title" class="input" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="taskDescription">Description (Optional)</label>
+                    <textarea id="taskDescription" name="description" class="input" rows="3"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="taskDueDate">Due Date</label>
+                    <input type="date" id="taskDueDate" name="due_date" class="input" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="taskDifficulty">Difficulty</label>
+                    <select id="taskDifficulty" name="difficulty" class="input">
+                        <option value="easy">Easy</option>
+                        <option value="medium" selected>Medium</option>
+                        <option value="hard">Hard</option>
+                    </select>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group half">
+                        <label for="taskLevelReward">Level Reward</label>
+                        <input type="number" id="taskLevelReward" name="level_reward" class="input" min="1" value="1">
+                    </div>
+
+                    <div class="form-group half">
+                        <label for="taskCoinReward">Coin Reward</label>
+                        <input type="number" id="taskCoinReward" name="coin_reward" class="input" min="0" value="100">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Reward Assignment</label>
+                    <div class="reward-options">
+                        <div class="reward-option">
+                            <input type="radio" id="rewardNone" name="reward_assignment" value="none" checked>
+                            <label for="rewardNone">Ask when completed</label>
+                        </div>
+
+                        <div class="reward-option">
+                            <input type="radio" id="rewardTrainer" name="reward_assignment" value="trainer">
+                            <label for="rewardTrainer">Assign to Trainer</label>
+                            <input type="hidden" id="boundToTrainer" name="bound_to_trainer" value="false">
+                        </div>
+
+                        <div class="reward-option">
+                            <input type="radio" id="rewardMon" name="reward_assignment" value="mon">
+                            <label for="rewardMon">Assign to Monster</label>
+                            <select id="boundToMonId" name="bound_to_mon_id" class="input" disabled>
+                                <option value="">Select a monster</option>
+                                <% monsters.forEach(monster => { %>
+                                    <option value="<%= monster.mon_id %>"><%= monster.name %></option>
+                                <% }) %>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="reminderEnabled" name="reminder_enabled">
+                        <label for="reminderEnabled">Enable Discord Reminder</label>
+                    </div>
+
+                    <div id="reminderTimeGroup" class="mt-2" style="display: none;">
+                        <label for="reminderTime">Reminder Time</label>
+                        <input type="datetime-local" id="reminderTime" name="reminder_time" class="input">
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary" id="cancelTaskBtn">Cancel</button>
+                    <button type="submit" class="btn-primary" id="saveTaskBtn">Save Task</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Habit Modal -->
+<div id="habitModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 id="habitModalTitle">Add New Habit</h2>
+            <span class="close">&times;</span>
+        </div>
+        <div class="modal-body">
+            <form id="habitForm">
+                <input type="hidden" id="habitId" name="habit_id">
+                <input type="hidden" id="habitTrainerId" name="trainer_id" value="<%= selectedTrainer.id %>">
+
+                <div class="form-group">
+                    <label for="habitTitle">Habit Title</label>
+                    <input type="text" id="habitTitle" name="title" class="input" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="habitDescription">Description (Optional)</label>
+                    <textarea id="habitDescription" name="description" class="input" rows="3"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="habitFrequency">Frequency</label>
+                    <select id="habitFrequency" name="frequency" class="input">
+                        <option value="daily" selected>Daily</option>
+                        <option value="weekly">Weekly</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="habitDifficulty">Difficulty</label>
+                    <select id="habitDifficulty" name="difficulty" class="input">
+                        <option value="easy">Easy</option>
+                        <option value="medium" selected>Medium</option>
+                        <option value="hard">Hard</option>
+                    </select>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group half">
+                        <label for="habitLevelReward">Level Reward</label>
+                        <input type="number" id="habitLevelReward" name="level_reward" class="input" min="1" value="1">
+                    </div>
+
+                    <div class="form-group half">
+                        <label for="habitCoinReward">Coin Reward</label>
+                        <input type="number" id="habitCoinReward" name="coin_reward" class="input" min="0" value="50">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Reward Assignment</label>
+                    <div class="reward-options">
+                        <div class="reward-option">
+                            <input type="radio" id="habitRewardNone" name="habit_reward_assignment" value="none" checked>
+                            <label for="habitRewardNone">Ask when completed</label>
+                        </div>
+
+                        <div class="reward-option">
+                            <input type="radio" id="habitRewardTrainer" name="habit_reward_assignment" value="trainer">
+                            <label for="habitRewardTrainer">Assign to Trainer</label>
+                            <input type="hidden" id="habitBoundToTrainer" name="bound_to_trainer" value="false">
+                        </div>
+
+                        <div class="reward-option">
+                            <input type="radio" id="habitRewardMon" name="habit_reward_assignment" value="mon">
+                            <label for="habitRewardMon">Assign to Monster</label>
+                            <select id="habitBoundToMonId" name="bound_to_mon_id" class="input" disabled>
+                                <option value="">Select a monster</option>
+                                <% monsters.forEach(monster => { %>
+                                    <option value="<%= monster.mon_id %>"><%= monster.name %></option>
+                                <% }) %>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary" id="cancelHabitBtn">Cancel</button>
+                    <button type="submit" class="btn-primary" id="saveHabitBtn">Save Habit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Template Modal -->
+<div id="templateModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 id="templateModalTitle">Create Template</h2>
+            <span class="close">&times;</span>
+        </div>
+        <div class="modal-body">
+            <form id="templateForm">
+                <input type="hidden" id="templateId" name="template_id">
+                <input type="hidden" id="templateTrainerId" name="trainer_id" value="<%= selectedTrainer.id %>">
+
+                <div class="form-group">
+                    <label for="templateName">Template Name</label>
+                    <input type="text" id="templateName" name="name" class="input" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="templateDescription">Description (Optional)</label>
+                    <textarea id="templateDescription" name="description" class="input" rows="3"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Tasks in Template</label>
+                    <div id="templateTasks" class="template-tasks-container">
+                        <!-- Template tasks will be added here dynamically -->
+                    </div>
+                    <button type="button" id="addTemplateTaskBtn" class="btn-secondary mt-2">
+                        <i class="fas fa-plus mr-2"></i> Add Task to Template
+                    </button>
+                </div>
+
+                <div class="form-group">
+                    <label>Template Settings</label>
+                    <div class="template-settings">
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="preserveTimes" name="preserve_times">
+                            <label for="preserveTimes">Preserve task times when applying template</label>
+                            <p class="text-xs text-muted mt-1">If checked, tasks will keep their original times when applied to a new date.</p>
+                        </div>
+
+                        <div class="checkbox-group mt-3">
+                            <input type="checkbox" id="preserveNotifications" name="preserve_notifications">
+                            <label for="preserveNotifications">Preserve notification settings when applying template</label>
+                            <p class="text-xs text-muted mt-1">If checked, tasks will keep their reminder settings when applied to a new date.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary" id="cancelTemplateBtn">Cancel</button>
+                    <button type="submit" class="btn-primary" id="saveTemplateBtn">Save Template</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Apply Template Modal -->
+<div id="applyTemplateModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Apply Template</h2>
+            <span class="close">&times;</span>
+        </div>
+        <div class="modal-body">
+            <form id="applyTemplateForm">
+                <input type="hidden" id="applyTemplateId" name="template_id">
+
+                <div class="form-group">
+                    <p>Apply template <strong id="applyTemplateName"></strong> to:</p>
+                </div>
+
+                <div class="form-group">
+                    <label for="applyTemplateDate">Date</label>
+                    <input type="date" id="applyTemplateDate" name="due_date" class="input" required>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary" id="cancelApplyTemplateBtn">Cancel</button>
+                    <button type="submit" class="btn-primary" id="confirmApplyTemplateBtn">Apply</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Reward Assignment Modal -->
+<div id="rewardModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Assign Rewards</h2>
+            <span class="close">&times;</span>
+        </div>
+        <div class="modal-body">
+            <form id="rewardForm">
+                <input type="hidden" id="rewardItemId" name="item_id">
+                <input type="hidden" id="rewardItemType" name="item_type">
+
+                <div class="form-group">
+                    <p>Assign rewards for <strong id="rewardItemTitle"></strong> to:</p>
+                </div>
+
+                <div class="form-group">
+                    <div class="reward-options">
+                        <div class="reward-option">
+                            <input type="radio" id="rewardModalTrainer" name="reward_target" value="trainer" checked>
+                            <label for="rewardModalTrainer">Trainer (<%= selectedTrainer.name %>)</label>
+                        </div>
+
+                        <div class="reward-option">
+                            <input type="radio" id="rewardModalMon" name="reward_target" value="mon">
+                            <label for="rewardModalMon">Monster</label>
+                            <select id="rewardModalMonId" name="mon_id" class="input" disabled>
+                                <option value="">Select a monster</option>
+                                <% monsters.forEach(monster => { %>
+                                    <option value="<%= monster.mon_id %>"><%= monster.name %></option>
+                                <% }) %>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary" id="cancelRewardBtn">Cancel</button>
+                    <button type="submit" class="btn-primary" id="confirmRewardBtn">Confirm</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+/* Schedule Page Styles */
+.schedule-wrapper {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Tabs */
+.tabs {
+    display: flex;
+    border-bottom: 1px solid var(--divider-color);
+    margin-bottom: 1rem;
+}
+
+.tab-btn {
+    padding: 0.75rem 1.5rem;
+    background: none;
+    border: none;
+    color: var(--text-color);
+    cursor: pointer;
+    font-weight: 500;
+    position: relative;
+}
+
+.tab-btn:hover {
+    color: var(--accent-color);
+}
+
+.tab-btn.active {
+    color: var(--accent-color);
+}
+
+.tab-btn.active::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: var(--accent-color);
+}
+
+.tab-pane {
+    display: none;
+}
+
+.tab-pane.active {
+    display: block;
+}
+
+/* Task and Habit Items */
+.task-item, .habit-item, .template-item {
+    background-color: var(--card-background);
+    border-radius: 0.5rem;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.task-header, .habit-header, .template-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.task-title-wrapper, .habit-title-wrapper, .template-title-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.task-title, .habit-title, .template-title {
+    font-weight: 600;
+    font-size: 1.1rem;
+    margin: 0;
+}
+
+.task-actions, .habit-actions, .template-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.task-details, .habit-details, .template-details {
+    padding-left: 1.75rem;
+}
+
+.task-description, .habit-description, .template-description {
+    margin-bottom: 0.75rem;
+    color: var(--text-secondary);
+}
+
+.task-meta, .habit-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    font-size: 0.85rem;
+}
+
+.task-difficulty, .habit-difficulty, .template-task-difficulty {
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    font-weight: 500;
+}
+
+.task-difficulty.easy, .habit-difficulty.easy, .template-task-difficulty.easy {
+    background-color: #4caf5033;
+    color: #4caf50;
+}
+
+.task-difficulty.medium, .habit-difficulty.medium, .template-task-difficulty.medium {
+    background-color: #ff980033;
+    color: #ff9800;
+}
+
+.task-difficulty.hard, .habit-difficulty.hard, .template-task-difficulty.hard {
+    background-color: #f4433633;
+    color: #f44336;
+}
+
+.habit-frequency {
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    font-weight: 500;
+}
+
+.habit-frequency.daily {
+    background-color: #2196f333;
+    color: #2196f3;
+}
+
+.habit-frequency.weekly {
+    background-color: #9c27b033;
+    color: #9c27b0;
+}
+
+/* Template Settings */
+.template-settings-display {
+    margin-top: 0.75rem;
+}
+
+.template-settings-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.template-setting-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.template-setting-badge.time-badge {
+    background-color: #2196f333;
+    color: #2196f3;
+}
+
+.template-setting-badge.notification-badge {
+    background-color: #ff980033;
+    color: #ff9800;
+}
+
+.text-xs {
+    font-size: 0.75rem;
+}
+
+.text-muted {
+    color: var(--text-secondary);
+}
+
+.mt-1 {
+    margin-top: 0.25rem;
+}
+
+.mt-3 {
+    margin-top: 0.75rem;
+}
+
+/* Template Task Items */
+.template-tasks-container {
+    border: 1px solid var(--divider-color);
+    border-radius: 0.5rem;
+    padding: 1rem;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.template-task-item {
+    background-color: var(--card-background-light);
+    border-radius: 0.5rem;
+    padding: 1rem;
+    margin-bottom: 1rem;
+}
+
+.template-task-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+}
+
+.template-task-header h4 {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.remove-template-task-btn {
+    color: var(--text-secondary);
+}
+
+.remove-template-task-btn:hover {
+    color: var(--danger-color);
+}
+
+.task-rewards, .habit-rewards {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.task-bound, .habit-bound {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.task-reminder {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    color: #ff9800;
+}
+
+.task-checkbox {
+    width: 1.25rem;
+    height: 1.25rem;
+    cursor: pointer;
+}
+
+.complete-habit-btn {
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 50%;
+    border: 2px solid var(--accent-color);
+    background: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: transparent;
+}
+
+.complete-habit-btn:hover {
+    background-color: var(--accent-color-light);
+    color: var(--accent-color);
+}
+
+.complete-habit-btn.completed {
+    background-color: var(--accent-color);
+    color: white;
+}
+
+.task-item.completed {
+    opacity: 0.7;
+}
+
+.task-item.completed .task-title {
+    text-decoration: line-through;
+}
+
+.habit-streak {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    color: #ff9800;
+}
+
+/* Template Styles */
+.template-tasks {
+    margin-top: 0.75rem;
+}
+
+.template-task-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.template-task-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem;
+    border-radius: 0.25rem;
+    background-color: var(--card-background-light);
+    margin-bottom: 0.25rem;
+}
+
+.template-task-item.empty {
+    color: var(--text-secondary);
+    font-style: italic;
+}
+
+.template-tasks-container {
+    margin-bottom: 1rem;
+}
+
+.template-task-form {
+    background-color: var(--card-background-light);
+    padding: 1rem;
+    border-radius: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+/* Empty States */
+.empty-state {
+    text-align: center;
+    padding: 2rem;
+    color: var(--text-secondary);
+}
+
+/* Habit Filters */
+.habit-categories {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.habit-filter {
+    padding: 0.5rem 1rem;
+    border-radius: 0.25rem;
+    background-color: var(--card-background-light);
+    border: none;
+    cursor: pointer;
+    color: var(--text-color);
+    font-weight: normal;
+}
+
+.habit-filter:hover {
+    background-color: var(--card-background-hover);
+}
+
+.habit-filter.active {
+    background-color: var(--accent-color);
+    color: white !important;
+    font-weight: 500;
+}
+
+/* Modals */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+    background-color: var(--card-background);
+    margin: 5% auto;
+    padding: 0;
+    border-radius: 0.5rem;
+    width: 90%;
+    max-width: 600px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    animation: modalFadeIn 0.3s;
+}
+
+@keyframes modalFadeIn {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.modal-header {
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid var(--divider-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-header h2 {
+    margin: 0;
+    font-size: 1.5rem;
+}
+
+.modal-body {
+    padding: 1.5rem;
+}
+
+.close {
+    color: var(--text-secondary);
+    font-size: 1.5rem;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close:hover {
+    color: var(--text-color);
+}
+
+/* Form Styles */
+.form-group {
+    margin-bottom: 1.25rem;
+}
+
+.form-row {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+}
+
+.form-group.half {
+    flex: 1;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+
+.input {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid var(--divider-color);
+    border-radius: 0.375rem;
+    background-color: var(--input-background);
+    color: var(--text-color);
+}
+
+.input:focus {
+    outline: none;
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 2px var(--accent-color-light);
+}
+
+.checkbox-group {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.reward-options {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.reward-option {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.reward-option select {
+    margin-left: 1.5rem;
+    width: calc(100% - 1.5rem);
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+}
+
+/* Buttons */
+.btn-primary {
+    background-color: var(--accent-color);
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 0.375rem;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background-color 0.2s;
+}
+
+.btn-primary:hover {
+    background-color: var(--accent-color-dark);
+}
+
+.btn-secondary {
+    background-color: var(--card-background-light);
+    color: var(--text-color);
+    border: 1px solid var(--divider-color);
+    padding: 0.5rem 1rem;
+    border-radius: 0.375rem;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background-color 0.2s;
+}
+
+.btn-secondary:hover {
+    background-color: var(--card-background-hover);
+}
+
+.btn-icon {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    padding: 0.25rem;
+    border-radius: 0.25rem;
+    transition: color 0.2s, background-color 0.2s;
+}
+
+.btn-icon:hover {
+    color: var(--text-color);
+    background-color: var(--card-background-light);
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .form-row {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .modal-content {
+        width: 95%;
+        margin: 10% auto;
+    }
+
+    .tabs {
+        overflow-x: auto;
+        white-space: nowrap;
+        padding-bottom: 0.5rem;
+    }
+
+    .tab-btn {
+        padding: 0.75rem 1rem;
+    }
+}
+</style>
+
+<script>
+console.log('Schedule page script loading...');
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM content loaded');
+    try {
+    // DOM Elements
+    const trainerSelect = document.getElementById('trainerSelect');
+    const dateSelect = document.getElementById('dateSelect');
+    const tabButtons = document.querySelectorAll('.tab-btn');
+    const tabPanes = document.querySelectorAll('.tab-pane');
+    console.log('Tab panes found:', tabPanes.length);
+    tabPanes.forEach((pane, index) => {
+        console.log(`Tab pane ${index}:`, pane.id);
+    });
+    const closeButtons = document.querySelectorAll('.modal .close');
+
+    // Task elements
+    const addTaskBtn = document.getElementById('addTaskBtn');
+    const emptyAddTaskBtn = document.getElementById('emptyAddTaskBtn');
+    const taskModal = document.getElementById('taskModal');
+    const taskForm = document.getElementById('taskForm');
+    const taskModalTitle = document.getElementById('taskModalTitle');
+    const taskCheckboxes = document.querySelectorAll('.task-checkbox');
+    const editTaskBtns = document.querySelectorAll('.edit-task-btn');
+    const deleteTaskBtns = document.querySelectorAll('.delete-task-btn');
+    const cancelTaskBtn = document.getElementById('cancelTaskBtn');
+
+    // Habit elements
+    const addHabitBtn = document.getElementById('addHabitBtn');
+    const emptyAddHabitBtn = document.getElementById('emptyAddHabitBtn');
+    const habitModal = document.getElementById('habitModal');
+    const habitForm = document.getElementById('habitForm');
+    const habitModalTitle = document.getElementById('habitModalTitle');
+    const completeHabitBtns = document.querySelectorAll('.complete-habit-btn');
+    const editHabitBtns = document.querySelectorAll('.edit-habit-btn');
+    const deleteHabitBtns = document.querySelectorAll('.delete-habit-btn');
+    const cancelHabitBtn = document.getElementById('cancelHabitBtn');
+    const habitFilters = document.querySelectorAll('.habit-filter');
+
+    // Template elements
+    const addTemplateBtn = document.getElementById('addTemplateBtn');
+    const emptyAddTemplateBtn = document.getElementById('emptyAddTemplateBtn');
+    const templateModal = document.getElementById('templateModal');
+    const templateForm = document.getElementById('templateForm');
+    const templateModalTitle = document.getElementById('templateModalTitle');
+    const applyTemplateBtns = document.querySelectorAll('.apply-template-btn');
+    const editTemplateBtns = document.querySelectorAll('.edit-template-btn');
+    const deleteTemplateBtns = document.querySelectorAll('.delete-template-btn');
+    const cancelTemplateBtn = document.getElementById('cancelTemplateBtn');
+    const addTemplateTaskBtn = document.getElementById('addTemplateTaskBtn');
+
+    // Apply template elements
+    const applyTemplateModal = document.getElementById('applyTemplateModal');
+    const applyTemplateForm = document.getElementById('applyTemplateForm');
+    const applyTemplateName = document.getElementById('applyTemplateName');
+    const applyTemplateDate = document.getElementById('applyTemplateDate');
+    const cancelApplyTemplateBtn = document.getElementById('cancelApplyTemplateBtn');
+
+    // Reward assignment elements
+    const rewardModal = document.getElementById('rewardModal');
+    const rewardForm = document.getElementById('rewardForm');
+    const rewardItemTitle = document.getElementById('rewardItemTitle');
+    const rewardModalTrainer = document.getElementById('rewardModalTrainer');
+    const rewardModalMon = document.getElementById('rewardModalMon');
+    const rewardModalMonId = document.getElementById('rewardModalMonId');
+    const cancelRewardBtn = document.getElementById('cancelRewardBtn');
+
+    // Task form elements
+    const reminderEnabled = document.getElementById('reminderEnabled');
+    const reminderTimeGroup = document.getElementById('reminderTimeGroup');
+    const rewardNone = document.getElementById('rewardNone');
+    const rewardTrainer = document.getElementById('rewardTrainer');
+    const rewardMon = document.getElementById('rewardMon');
+    const boundToTrainer = document.getElementById('boundToTrainer');
+    const boundToMonId = document.getElementById('boundToMonId');
+
+    // Habit form elements
+    const habitRewardNone = document.getElementById('habitRewardNone');
+    const habitRewardTrainer = document.getElementById('habitRewardTrainer');
+    const habitRewardMon = document.getElementById('habitRewardMon');
+    const habitBoundToTrainer = document.getElementById('habitBoundToTrainer');
+    const habitBoundToMonId = document.getElementById('habitBoundToMonId');
+    const habitItems = document.querySelectorAll('.habit-item');
+
+    // Template form elements
+    const preserveTimes = document.getElementById('preserveTimes');
+    const preserveNotifications = document.getElementById('preserveNotifications');
+
+    // Initialize date picker with today's date if no date is selected
+    if (dateSelect) {
+        console.log('Current dateSelect value:', dateSelect.value);
+        if (!dateSelect.value) {
+            console.log('Setting dateSelect to today');
+            dateSelect.valueAsDate = new Date();
+        }
+    } else {
+        console.error('dateSelect element not found during initialization');
+    }
+
+    // Tab switching
+    console.log('Tab buttons found:', tabButtons.length);
+    tabButtons.forEach((button, index) => {
+        console.log(`Tab button ${index}:`, button.getAttribute('data-tab'));
+        button.addEventListener('click', () => {
+            const tabId = button.getAttribute('data-tab');
+            console.log('Tab clicked:', tabId);
+
+            // Remove active class from all buttons and panes
+            tabButtons.forEach(btn => btn.classList.remove('active'));
+            tabPanes.forEach(pane => pane.classList.remove('active'));
+
+            // Add active class to current button and pane
+            button.classList.add('active');
+            const tabPane = document.getElementById(`${tabId}-tab`);
+            if (tabPane) {
+                tabPane.classList.add('active');
+                console.log(`Activated tab pane: ${tabId}-tab`);
+            } else {
+                console.error(`Tab pane not found: ${tabId}-tab`);
+            }
+        });
+    });
+
+    // Direct navigation function
+    function navigateToSchedule(trainerId, date) {
+        console.log(`Navigating to: /manage_schedule?trainer_id=${trainerId}&date=${date}`);
+        window.location.href = `/manage_schedule?trainer_id=${trainerId}&date=${date}`;
+    }
+
+    // Add direct click handlers to the elements
+    document.getElementById('trainerSelect').onchange = function() {
+        console.log('Trainer changed to:', this.value);
+        navigateToSchedule(this.value, document.getElementById('dateSelect').value);
+    };
+
+    document.getElementById('dateSelect').onchange = function() {
+        console.log('Date changed to:', this.value);
+        navigateToSchedule(document.getElementById('trainerSelect').value, this.value);
+    };
+
+    // Close modals when clicking the close button
+    closeButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const modal = button.closest('.modal');
+            if (modal) {
+                modal.style.display = 'none';
+            }
+        });
+    });
+
+    // Close modals when clicking outside the modal content
+    window.addEventListener('click', (event) => {
+        if (event.target.classList.contains('modal')) {
+            event.target.style.display = 'none';
+        }
+    });
+
+    // Toggle reminder time input based on checkbox
+    if (reminderEnabled) {
+        reminderEnabled.addEventListener('change', () => {
+            reminderTimeGroup.style.display = reminderEnabled.checked ? 'block' : 'none';
+        });
+    }
+
+    // Task reward assignment radio buttons
+    if (rewardNone && rewardTrainer && rewardMon) {
+        rewardNone.addEventListener('change', () => {
+            boundToMonId.disabled = true;
+            boundToTrainer.value = 'false';
+        });
+
+        rewardTrainer.addEventListener('change', () => {
+            boundToMonId.disabled = true;
+            boundToTrainer.value = 'true';
+        });
+
+        rewardMon.addEventListener('change', () => {
+            boundToMonId.disabled = false;
+            boundToTrainer.value = 'false';
+        });
+    }
+
+    // Habit reward assignment radio buttons
+    if (habitRewardNone && habitRewardTrainer && habitRewardMon) {
+        habitRewardNone.addEventListener('change', () => {
+            habitBoundToMonId.disabled = true;
+            habitBoundToTrainer.value = 'false';
+        });
+
+        habitRewardTrainer.addEventListener('change', () => {
+            habitBoundToMonId.disabled = true;
+            habitBoundToTrainer.value = 'true';
+        });
+
+        habitRewardMon.addEventListener('change', () => {
+            habitBoundToMonId.disabled = false;
+            habitBoundToTrainer.value = 'false';
+        });
+    }
+
+    // Reward modal radio buttons
+    if (rewardModalTrainer && rewardModalMon) {
+        rewardModalTrainer.addEventListener('change', () => {
+            rewardModalMonId.disabled = true;
+        });
+
+        rewardModalMon.addEventListener('change', () => {
+            rewardModalMonId.disabled = false;
+        });
+    }
+
+    // ===== TASK FUNCTIONALITY =====
+
+    // Open task modal for adding a new task
+    if (addTaskBtn) {
+        addTaskBtn.addEventListener('click', () => {
+            // Reset form
+            taskForm.reset();
+            document.getElementById('taskId').value = '';
+            document.getElementById('taskDueDate').value = dateSelect.value;
+            taskModalTitle.textContent = 'Add New Task';
+
+            // Show modal
+            taskModal.style.display = 'block';
+        });
+    }
+
+    // Empty state add task button
+    if (emptyAddTaskBtn) {
+        emptyAddTaskBtn.addEventListener('click', () => {
+            // Reset form
+            taskForm.reset();
+            document.getElementById('taskId').value = '';
+            document.getElementById('taskDueDate').value = dateSelect.value;
+            taskModalTitle.textContent = 'Add New Task';
+
+            // Show modal
+            taskModal.style.display = 'block';
+        });
+    }
+
+    // Cancel task button
+    if (cancelTaskBtn) {
+        cancelTaskBtn.addEventListener('click', () => {
+            taskModal.style.display = 'none';
+        });
+    }
+
+    // Task form submission
+    if (taskForm) {
+        taskForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            // Get form data
+            const formData = new FormData(taskForm);
+            const taskData = {};
+
+            for (const [key, value] of formData.entries()) {
+                taskData[key] = value;
+            }
+
+            // Convert checkbox values
+            taskData.reminder_enabled = formData.has('reminder_enabled');
+
+            // Handle empty task_id
+            if (!taskData.task_id) {
+                delete taskData.task_id;
+            }
+
+            try {
+                let response;
+                let task;
+
+                if (taskData.task_id) {
+                    // Update existing task
+                    response = await fetch(`/tasks/${taskData.task_id}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(taskData)
+                    });
+                } else {
+                    // Create new task
+                    response = await fetch('/tasks', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(taskData)
+                    });
+                }
+
+                if (response.ok) {
+                    task = await response.json();
+
+                    // Close modal and refresh page
+                    taskModal.style.display = 'none';
+                    window.location.reload();
+                } else {
+                    const error = await response.json();
+                    alert(`Error: ${error.error || 'Failed to save task'}`);
+                }
+            } catch (error) {
+                console.error('Error saving task:', error);
+                alert('An error occurred while saving the task');
+            }
+        });
+    }
+
+    // Edit task buttons
+    editTaskBtns.forEach(button => {
+        button.addEventListener('click', async () => {
+            const taskItem = button.closest('.task-item');
+            const taskId = taskItem.getAttribute('data-id');
+
+            try {
+                // Fetch task data
+                const response = await fetch(`/tasks/${taskId}`);
+
+                if (response.ok) {
+                    const task = await response.json();
+
+                    // Populate form
+                    document.getElementById('taskId').value = task.task_id;
+                    document.getElementById('taskTitle').value = task.title;
+                    document.getElementById('taskDescription').value = task.description || '';
+                    document.getElementById('taskDueDate').value = new Date(task.due_date).toISOString().split('T')[0];
+                    document.getElementById('taskDifficulty').value = task.difficulty;
+                    document.getElementById('taskLevelReward').value = task.level_reward;
+                    document.getElementById('taskCoinReward').value = task.coin_reward;
+
+                    // Set reward assignment
+                    if (task.bound_to_mon_id) {
+                        document.getElementById('rewardMon').checked = true;
+                        document.getElementById('boundToMonId').value = task.bound_to_mon_id;
+                        document.getElementById('boundToMonId').disabled = false;
+                        document.getElementById('boundToTrainer').value = 'false';
+                    } else if (task.bound_to_trainer) {
+                        document.getElementById('rewardTrainer').checked = true;
+                        document.getElementById('boundToTrainer').value = 'true';
+                        document.getElementById('boundToMonId').disabled = true;
+                    } else {
+                        document.getElementById('rewardNone').checked = true;
+                        document.getElementById('boundToTrainer').value = 'false';
+                        document.getElementById('boundToMonId').disabled = true;
+                    }
+
+                    // Set reminder
+                    document.getElementById('reminderEnabled').checked = task.reminder_enabled;
+                    if (task.reminder_enabled && task.reminder_time) {
+                        document.getElementById('reminderTimeGroup').style.display = 'block';
+                        document.getElementById('reminderTime').value = new Date(task.reminder_time).toISOString().slice(0, 16);
+                    } else {
+                        document.getElementById('reminderTimeGroup').style.display = 'none';
+                    }
+
+                    // Update modal title
+                    taskModalTitle.textContent = 'Edit Task';
+
+                    // Show modal
+                    taskModal.style.display = 'block';
+                } else {
+                    alert('Failed to fetch task data');
+                }
+            } catch (error) {
+                console.error('Error fetching task:', error);
+                alert('An error occurred while fetching the task');
+            }
+        });
+    });
+
+    // Delete task buttons
+    deleteTaskBtns.forEach(button => {
+        button.addEventListener('click', async () => {
+            if (confirm('Are you sure you want to delete this task?')) {
+                const taskItem = button.closest('.task-item');
+                const taskId = taskItem.getAttribute('data-id');
+
+                try {
+                    const response = await fetch(`/tasks/${taskId}`, {
+                        method: 'DELETE'
+                    });
+
+                    if (response.ok) {
+                        // Remove task from DOM
+                        taskItem.remove();
+
+                        // If no tasks left, show empty state
+                        const taskList = document.querySelector('.task-list');
+                        if (taskList.children.length === 0) {
+                            taskList.innerHTML = `
+                                <div class="empty-state">
+                                    <p>No tasks scheduled for this day.</p>
+                                    <button id="emptyAddTaskBtn" class="btn-primary mt-4">
+                                        <i class="fas fa-plus mr-2"></i> Add Your First Task
+                                    </button>
+                                </div>
+                            `;
+
+                            // Add event listener to new button
+                            document.getElementById('emptyAddTaskBtn').addEventListener('click', () => {
+                                taskForm.reset();
+                                document.getElementById('taskId').value = '';
+                                document.getElementById('taskDueDate').value = dateSelect.value;
+                                taskModalTitle.textContent = 'Add New Task';
+                                taskModal.style.display = 'block';
+                            });
+                        }
+                    } else {
+                        alert('Failed to delete task');
+                    }
+                } catch (error) {
+                    console.error('Error deleting task:', error);
+                    alert('An error occurred while deleting the task');
+                }
+            }
+        });
+    });
+
+    // Task checkbox completion
+    taskCheckboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', async () => {
+            const taskItem = checkbox.closest('.task-item');
+            const taskId = taskItem.getAttribute('data-id');
+
+            if (checkbox.checked) {
+                // If task is not bound to a trainer or monster, show reward assignment modal
+                const isBound = taskItem.querySelector('.task-bound');
+
+                if (!isBound) {
+                    // Show reward assignment modal
+                    document.getElementById('rewardItemId').value = taskId;
+                    document.getElementById('rewardItemType').value = 'task';
+                    document.getElementById('rewardItemTitle').textContent = taskItem.querySelector('.task-title').textContent;
+                    rewardModal.style.display = 'block';
+                } else {
+                    // Complete task with existing binding
+                    try {
+                        const response = await fetch(`/tasks/${taskId}/complete`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({})
+                        });
+
+                        if (response.ok) {
+                            // Mark task as completed in UI
+                            taskItem.classList.add('completed');
+                        } else {
+                            checkbox.checked = false;
+                            alert('Failed to complete task');
+                        }
+                    } catch (error) {
+                        checkbox.checked = false;
+                        console.error('Error completing task:', error);
+                        alert('An error occurred while completing the task');
+                    }
+                }
+            } else {
+                // Unchecking is not allowed for completed tasks
+                checkbox.checked = true;
+            }
+        });
+    });
+
+    // ===== HABIT FUNCTIONALITY =====
+
+    // Open habit modal for adding a new habit
+    if (addHabitBtn) {
+        addHabitBtn.addEventListener('click', () => {
+            // Reset form
+            habitForm.reset();
+            document.getElementById('habitId').value = '';
+            habitModalTitle.textContent = 'Add New Habit';
+
+            // Show modal
+            habitModal.style.display = 'block';
+        });
+    }
+
+    // Empty state add habit button
+    if (emptyAddHabitBtn) {
+        emptyAddHabitBtn.addEventListener('click', () => {
+            // Reset form
+            habitForm.reset();
+            document.getElementById('habitId').value = '';
+            habitModalTitle.textContent = 'Add New Habit';
+
+            // Show modal
+            habitModal.style.display = 'block';
+        });
+    }
+
+    // Cancel habit button
+    if (cancelHabitBtn) {
+        cancelHabitBtn.addEventListener('click', () => {
+            habitModal.style.display = 'none';
+        });
+    }
+
+    // Habit form submission
+    if (habitForm) {
+        habitForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            // Get form data
+            const formData = new FormData(habitForm);
+            const habitData = {};
+
+            for (const [key, value] of formData.entries()) {
+                habitData[key] = value;
+            }
+
+            // Handle empty habit_id
+            if (!habitData.habit_id) {
+                delete habitData.habit_id;
+            }
+
+            try {
+                let response;
+                let habit;
+
+                if (habitData.habit_id) {
+                    // Update existing habit
+                    response = await fetch(`/habits/${habitData.habit_id}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(habitData)
+                    });
+                } else {
+                    // Create new habit
+                    response = await fetch('/habits', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(habitData)
+                    });
+                }
+
+                if (response.ok) {
+                    habit = await response.json();
+
+                    // Close modal and refresh page
+                    habitModal.style.display = 'none';
+                    window.location.reload();
+                } else {
+                    const error = await response.json();
+                    alert(`Error: ${error.error || 'Failed to save habit'}`);
+                }
+            } catch (error) {
+                console.error('Error saving habit:', error);
+                alert('An error occurred while saving the habit');
+            }
+        });
+    }
+
+    // Habit filtering
+    if (habitFilters.length > 0) {
+        habitFilters.forEach(filter => {
+            filter.addEventListener('click', () => {
+                // Remove active class from all filters
+                habitFilters.forEach(f => f.classList.remove('active'));
+
+                // Add active class to current filter
+                filter.classList.add('active');
+
+                const filterValue = filter.getAttribute('data-filter');
+
+                // Show/hide habits based on filter
+                habitItems.forEach(item => {
+                    if (filterValue === 'all') {
+                        item.style.display = 'block';
+                    } else {
+                        const habitFrequency = item.getAttribute('data-frequency');
+                        item.style.display = habitFrequency === filterValue ? 'block' : 'none';
+                    }
+                });
+            });
+        });
+    }
+
+    // Habit completion
+    completeHabitBtns.forEach(button => {
+        button.addEventListener('click', async () => {
+            const habitItem = button.closest('.habit-item');
+            const habitId = habitItem.getAttribute('data-id');
+
+            // If already completed, don't do anything
+            if (button.classList.contains('completed')) {
+                return;
+            }
+
+            // Check if habit is bound to a trainer or monster
+            const isBound = habitItem.querySelector('.habit-bound');
+
+            if (!isBound) {
+                // Show reward assignment modal
+                document.getElementById('rewardItemId').value = habitId;
+                document.getElementById('rewardItemType').value = 'habit';
+                document.getElementById('rewardItemTitle').textContent = habitItem.querySelector('.habit-title').textContent;
+                rewardModal.style.display = 'block';
+            } else {
+                // Complete habit with existing binding
+                try {
+                    const response = await fetch(`/habits/${habitId}/complete`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({})
+                    });
+
+                    if (response.ok) {
+                        const result = await response.json();
+
+                        if (result.alreadyCompletedToday) {
+                            alert('This habit has already been completed today.');
+                        } else {
+                            // Mark habit as completed in UI
+                            button.classList.add('completed');
+
+                            // Update streak display
+                            const streakElement = habitItem.querySelector('.habit-streak');
+                            if (streakElement && result.habit) {
+                                streakElement.innerHTML = `<i class="fas fa-fire" title="Current Streak"></i> ${result.habit.streak}
+                                    <span class="text-xs ml-1">(Best: ${result.habit.longest_streak})</span>`;
+                            }
+                        }
+                    } else {
+                        alert('Failed to complete habit');
+                    }
+                } catch (error) {
+                    console.error('Error completing habit:', error);
+                    alert('An error occurred while completing the habit');
+                }
+            }
+        });
+    });
+
+    // Delete habit buttons
+    deleteHabitBtns.forEach(button => {
+        button.addEventListener('click', async () => {
+            if (confirm('Are you sure you want to delete this habit?')) {
+                const habitItem = button.closest('.habit-item');
+                const habitId = habitItem.getAttribute('data-id');
+
+                try {
+                    console.log('Deleting habit with ID:', habitId);
+                    const response = await fetch(`/habits/${habitId}`, {
+                        method: 'DELETE'
+                    });
+
+                    if (response.ok) {
+                        console.log('Habit deleted successfully');
+                        // Remove habit from DOM
+                        habitItem.remove();
+
+                        // If no habits left, show empty state
+                        const habitList = document.querySelector('.habit-list');
+                        if (habitList && habitList.children.length === 0) {
+                            habitList.innerHTML = `
+                                <div class="empty-state">
+                                    <p>You don't have any habits yet.</p>
+                                    <p class="text-sm mt-2">Habits help you build consistency and earn rewards regularly.</p>
+                                    <button id="emptyAddHabitBtn" class="btn-primary mt-4">
+                                        <i class="fas fa-plus mr-2"></i> Create Your First Habit
+                                    </button>
+                                </div>
+                            `;
+
+                            // Add event listener to new button
+                            document.getElementById('emptyAddHabitBtn').addEventListener('click', () => {
+                                habitForm.reset();
+                                document.getElementById('habitId').value = '';
+                                habitModalTitle.textContent = 'Add New Habit';
+                                habitModal.style.display = 'block';
+                            });
+                        }
+                    } else {
+                        const errorData = await response.json();
+                        alert(`Failed to delete habit: ${errorData.error || 'Unknown error'}`);
+                    }
+                } catch (error) {
+                    console.error('Error deleting habit:', error);
+                    alert('An error occurred while deleting the habit');
+                }
+            }
+        });
+    });
+
+    // Edit habit buttons
+    editHabitBtns.forEach(button => {
+        button.addEventListener('click', async () => {
+            const habitItem = button.closest('.habit-item');
+            const habitId = habitItem.getAttribute('data-id');
+
+            try {
+                // Fetch habit data
+                const response = await fetch(`/habits/${habitId}`);
+
+                if (response.ok) {
+                    const habit = await response.json();
+
+                    // Populate form
+                    document.getElementById('habitId').value = habit.habit_id;
+                    document.getElementById('habitTitle').value = habit.title;
+                    document.getElementById('habitDescription').value = habit.description || '';
+                    document.getElementById('habitFrequency').value = habit.frequency;
+                    document.getElementById('habitDifficulty').value = habit.difficulty;
+                    document.getElementById('habitLevelReward').value = habit.level_reward;
+                    document.getElementById('habitCoinReward').value = habit.coin_reward;
+
+                    // Set reward assignment
+                    if (habit.bound_to_mon_id) {
+                        document.getElementById('habitRewardMon').checked = true;
+                        document.getElementById('habitBoundToMonId').value = habit.bound_to_mon_id;
+                        document.getElementById('habitBoundToMonId').disabled = false;
+                        document.getElementById('habitBoundToTrainer').value = 'false';
+                    } else if (habit.bound_to_trainer) {
+                        document.getElementById('habitRewardTrainer').checked = true;
+                        document.getElementById('habitBoundToTrainer').value = 'true';
+                        document.getElementById('habitBoundToMonId').disabled = true;
+                    } else {
+                        document.getElementById('habitRewardNone').checked = true;
+                        document.getElementById('habitBoundToTrainer').value = 'false';
+                        document.getElementById('habitBoundToMonId').disabled = true;
+                    }
+
+                    // Update modal title
+                    habitModalTitle.textContent = 'Edit Habit';
+
+                    // Show modal
+                    habitModal.style.display = 'block';
+                } else {
+                    alert('Failed to fetch habit data');
+                }
+            } catch (error) {
+                console.error('Error fetching habit:', error);
+                alert('An error occurred while fetching the habit');
+            }
+        });
+    });
+
+    // ===== TEMPLATE FUNCTIONALITY =====
+
+    // Open template modal for adding a new template
+    if (addTemplateBtn) {
+        addTemplateBtn.addEventListener('click', () => {
+            // Reset form
+            templateForm.reset();
+            document.getElementById('templateId').value = '';
+            templateModalTitle.textContent = 'Create Template';
+            document.getElementById('templateTasks').innerHTML = '';
+
+            // Show modal
+            templateModal.style.display = 'block';
+        });
+    }
+
+    // Empty state add template button
+    if (emptyAddTemplateBtn) {
+        emptyAddTemplateBtn.addEventListener('click', () => {
+            // Reset form
+            templateForm.reset();
+            document.getElementById('templateId').value = '';
+            templateModalTitle.textContent = 'Create Template';
+            document.getElementById('templateTasks').innerHTML = '';
+
+            // Show modal
+            templateModal.style.display = 'block';
+        });
+    }
+
+    // Cancel template button
+    if (cancelTemplateBtn) {
+        cancelTemplateBtn.addEventListener('click', () => {
+            templateModal.style.display = 'none';
+        });
+    }
+
+    // Add task to template
+    if (addTemplateTaskBtn) {
+        addTemplateTaskBtn.addEventListener('click', () => {
+            const templateTasks = document.getElementById('templateTasks');
+            const taskIndex = templateTasks.children.length;
+
+            const taskHtml = `
+                <div class="template-task-item" data-index="${taskIndex}">
+                    <div class="template-task-header">
+                        <h4>Task ${taskIndex + 1}</h4>
+                        <button type="button" class="btn-icon remove-template-task-btn">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <div class="template-task-form">
+                        <div class="form-group">
+                            <label for="templateTaskTitle${taskIndex}">Title</label>
+                            <input type="text" id="templateTaskTitle${taskIndex}" name="tasks[${taskIndex}][title]" class="input" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="templateTaskDescription${taskIndex}">Description (Optional)</label>
+                            <textarea id="templateTaskDescription${taskIndex}" name="tasks[${taskIndex}][description]" class="input" rows="2"></textarea>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group half">
+                                <label for="templateTaskDifficulty${taskIndex}">Difficulty</label>
+                                <select id="templateTaskDifficulty${taskIndex}" name="tasks[${taskIndex}][difficulty]" class="input">
+                                    <option value="easy">Easy</option>
+                                    <option value="medium" selected>Medium</option>
+                                    <option value="hard">Hard</option>
+                                </select>
+                            </div>
+                            <div class="form-group half">
+                                <label for="templateTaskTime${taskIndex}">Time (Optional)</label>
+                                <input type="time" id="templateTaskTime${taskIndex}" name="tasks[${taskIndex}][time]" class="input">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group half">
+                                <label for="templateTaskLevelReward${taskIndex}">Level Reward</label>
+                                <input type="number" id="templateTaskLevelReward${taskIndex}" name="tasks[${taskIndex}][level_reward]" class="input" min="1" value="1">
+                            </div>
+                            <div class="form-group half">
+                                <label for="templateTaskCoinReward${taskIndex}">Coin Reward</label>
+                                <input type="number" id="templateTaskCoinReward${taskIndex}" name="tasks[${taskIndex}][coin_reward]" class="input" min="0" value="100">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="templateTaskReminderEnabled${taskIndex}" name="tasks[${taskIndex}][reminder_enabled]">
+                                <label for="templateTaskReminderEnabled${taskIndex}">Enable Discord Reminder</label>
+                            </div>
+                            <div id="templateTaskReminderTimeGroup${taskIndex}" class="mt-2" style="display: none;">
+                                <label for="templateTaskReminderTime${taskIndex}">Reminder Time</label>
+                                <input type="time" id="templateTaskReminderTime${taskIndex}" name="tasks[${taskIndex}][reminder_time]" class="input">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // Add task to template
+            templateTasks.insertAdjacentHTML('beforeend', taskHtml);
+
+            // Add event listener to remove button
+            const removeBtn = templateTasks.lastElementChild.querySelector('.remove-template-task-btn');
+            removeBtn.addEventListener('click', () => {
+                removeBtn.closest('.template-task-item').remove();
+                // Renumber tasks
+                renumberTemplateTasks();
+            });
+
+            // Add event listener to reminder checkbox
+            const reminderCheckbox = document.getElementById(`templateTaskReminderEnabled${taskIndex}`);
+            const reminderTimeGroup = document.getElementById(`templateTaskReminderTimeGroup${taskIndex}`);
+            reminderCheckbox.addEventListener('change', () => {
+                reminderTimeGroup.style.display = reminderCheckbox.checked ? 'block' : 'none';
+            });
+        });
+    }
+
+    // Function to renumber template tasks
+    function renumberTemplateTasks() {
+        const templateTasks = document.getElementById('templateTasks');
+        const taskItems = templateTasks.querySelectorAll('.template-task-item');
+
+        taskItems.forEach((item, index) => {
+            // Update data-index
+            item.setAttribute('data-index', index);
+
+            // Update heading
+            item.querySelector('h4').textContent = `Task ${index + 1}`;
+
+            // Update form field names
+            const inputs = item.querySelectorAll('input, textarea, select');
+            inputs.forEach(input => {
+                const name = input.getAttribute('name');
+                if (name) {
+                    input.setAttribute('name', name.replace(/tasks\[\d+\]/, `tasks[${index}]`));
+                }
+
+                const id = input.getAttribute('id');
+                if (id && id.startsWith('templateTask')) {
+                    const newId = id.replace(/templateTask[A-Za-z]+\d+/, `templateTask${id.match(/[A-Za-z]+/)[0]}${index}`);
+                    input.setAttribute('id', newId);
+
+                    // Update associated label
+                    const label = item.querySelector(`label[for="${id}"]`);
+                    if (label) {
+                        label.setAttribute('for', newId);
+                    }
+                }
+            });
+        });
+    }
+
+    // Template form submission
+    if (templateForm) {
+        templateForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            // Get form data
+            const formData = new FormData(templateForm);
+            const templateData = {};
+            const tasks = [];
+
+            // Process form data
+            for (const [key, value] of formData.entries()) {
+                if (key.startsWith('tasks[')) {
+                    // Extract task index and property name
+                    const matches = key.match(/tasks\[(\d+)\]\[([^\]]+)\]/);
+                    if (matches) {
+                        const [, index, prop] = matches;
+
+                        // Initialize task object if it doesn't exist
+                        if (!tasks[index]) {
+                            tasks[index] = {};
+                        }
+
+                        // Set property value
+                        tasks[index][prop] = value;
+                    }
+                } else {
+                    // Handle checkbox values
+                    if (key === 'preserve_times' || key === 'preserve_notifications') {
+                        templateData[key] = formData.has(key);
+                    } else {
+                        templateData[key] = value;
+                    }
+                }
+            }
+
+            // Filter out empty tasks and convert reminder_enabled to boolean
+            const filteredTasks = tasks.filter(task => task && task.title).map(task => {
+                return {
+                    ...task,
+                    reminder_enabled: task.reminder_enabled === 'on'
+                };
+            });
+
+            // Add tasks to template data
+            templateData.tasks = filteredTasks;
+
+            // Handle empty template_id
+            if (!templateData.template_id) {
+                delete templateData.template_id;
+            }
+
+            try {
+                let response;
+                let template;
+
+                if (templateData.template_id) {
+                    // Update existing template
+                    response = await fetch(`/templates/${templateData.template_id}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(templateData)
+                    });
+                } else {
+                    // Create new template
+                    response = await fetch('/templates', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(templateData)
+                    });
+                }
+
+                if (response.ok) {
+                    template = await response.json();
+
+                    // Close modal and refresh page
+                    templateModal.style.display = 'none';
+                    window.location.reload();
+                } else {
+                    const error = await response.json();
+                    alert(`Error: ${error.error || 'Failed to save template'}`);
+                }
+            } catch (error) {
+                console.error('Error saving template:', error);
+                alert('An error occurred while saving the template');
+            }
+        });
+    }
+
+    // Edit template buttons
+    editTemplateBtns.forEach(button => {
+        button.addEventListener('click', async () => {
+            const templateItem = button.closest('.template-item');
+            const templateId = templateItem.getAttribute('data-id');
+
+            try {
+                // Fetch template data
+                const response = await fetch(`/templates/${templateId}`);
+
+                if (response.ok) {
+                    const template = await response.json();
+
+                    // Populate form
+                    document.getElementById('templateId').value = template.template_id;
+                    document.getElementById('templateName').value = template.name;
+                    document.getElementById('templateDescription').value = template.description || '';
+                    document.getElementById('preserveTimes').checked = template.preserve_times;
+                    document.getElementById('preserveNotifications').checked = template.preserve_notifications;
+
+                    // Clear existing tasks
+                    document.getElementById('templateTasks').innerHTML = '';
+
+                    // Add tasks to form
+                    const tasks = JSON.parse(template.tasks);
+                    if (tasks && tasks.length > 0) {
+                        tasks.forEach((task, index) => {
+                            const taskHtml = `
+                                <div class="template-task-item" data-index="${index}">
+                                    <div class="template-task-header">
+                                        <h4>Task ${index + 1}</h4>
+                                        <button type="button" class="btn-icon remove-template-task-btn">
+                                            <i class="fas fa-times"></i>
+                                        </button>
+                                    </div>
+                                    <div class="template-task-form">
+                                        <div class="form-group">
+                                            <label for="templateTaskTitle${index}">Title</label>
+                                            <input type="text" id="templateTaskTitle${index}" name="tasks[${index}][title]" class="input" value="${task.title || ''}" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="templateTaskDescription${index}">Description (Optional)</label>
+                                            <textarea id="templateTaskDescription${index}" name="tasks[${index}][description]" class="input" rows="2">${task.description || ''}</textarea>
+                                        </div>
+                                        <div class="form-row">
+                                            <div class="form-group half">
+                                                <label for="templateTaskDifficulty${index}">Difficulty</label>
+                                                <select id="templateTaskDifficulty${index}" name="tasks[${index}][difficulty]" class="input">
+                                                    <option value="easy" ${task.difficulty === 'easy' ? 'selected' : ''}>Easy</option>
+                                                    <option value="medium" ${task.difficulty === 'medium' ? 'selected' : ''}>Medium</option>
+                                                    <option value="hard" ${task.difficulty === 'hard' ? 'selected' : ''}>Hard</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group half">
+                                                <label for="templateTaskTime${index}">Time (Optional)</label>
+                                                <input type="time" id="templateTaskTime${index}" name="tasks[${index}][time]" class="input" value="${task.time || (task.due_date ? new Date(task.due_date).toTimeString().slice(0, 5) : '')}">
+                                            </div>
+                                        </div>
+                                        <div class="form-row">
+                                            <div class="form-group half">
+                                                <label for="templateTaskLevelReward${index}">Level Reward</label>
+                                                <input type="number" id="templateTaskLevelReward${index}" name="tasks[${index}][level_reward]" class="input" min="1" value="${task.level_reward || 1}">
+                                            </div>
+                                            <div class="form-group half">
+                                                <label for="templateTaskCoinReward${index}">Coin Reward</label>
+                                                <input type="number" id="templateTaskCoinReward${index}" name="tasks[${index}][coin_reward]" class="input" min="0" value="${task.coin_reward || 100}">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="checkbox-group">
+                                                <input type="checkbox" id="templateTaskReminderEnabled${index}" name="tasks[${index}][reminder_enabled]" ${task.reminder_enabled ? 'checked' : ''}>
+                                                <label for="templateTaskReminderEnabled${index}">Enable Discord Reminder</label>
+                                            </div>
+                                            <div id="templateTaskReminderTimeGroup${index}" class="mt-2" style="display: ${task.reminder_enabled ? 'block' : 'none'};">
+                                                <label for="templateTaskReminderTime${index}">Reminder Time</label>
+                                                <input type="time" id="templateTaskReminderTime${index}" name="tasks[${index}][reminder_time]" class="input" value="${task.reminder_time || (task.reminder_time ? new Date(task.reminder_time).toTimeString().slice(0, 5) : '')}">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+
+                            // Add task to template
+                            document.getElementById('templateTasks').insertAdjacentHTML('beforeend', taskHtml);
+
+                            // Add event listener to remove button
+                            const removeBtn = document.getElementById('templateTasks').lastElementChild.querySelector('.remove-template-task-btn');
+                            removeBtn.addEventListener('click', () => {
+                                removeBtn.closest('.template-task-item').remove();
+                                // Renumber tasks
+                                renumberTemplateTasks();
+                            });
+
+                            // Add event listener to reminder checkbox
+                            const reminderCheckbox = document.getElementById(`templateTaskReminderEnabled${index}`);
+                            const reminderTimeGroup = document.getElementById(`templateTaskReminderTimeGroup${index}`);
+                            reminderCheckbox.addEventListener('change', () => {
+                                reminderTimeGroup.style.display = reminderCheckbox.checked ? 'block' : 'none';
+                            });
+                        });
+                    }
+
+                    // Update modal title
+                    templateModalTitle.textContent = 'Edit Template';
+
+                    // Show modal
+                    templateModal.style.display = 'block';
+                } else {
+                    alert('Failed to fetch template data');
+                }
+            } catch (error) {
+                console.error('Error fetching template:', error);
+                alert('An error occurred while fetching the template');
+            }
+        });
+    });
+
+    // Delete template buttons
+    deleteTemplateBtns.forEach(button => {
+        button.addEventListener('click', async () => {
+            if (confirm('Are you sure you want to delete this template?')) {
+                const templateItem = button.closest('.template-item');
+                const templateId = templateItem.getAttribute('data-id');
+
+                try {
+                    const response = await fetch(`/templates/${templateId}`, {
+                        method: 'DELETE'
+                    });
+
+                    if (response.ok) {
+                        // Remove template from DOM
+                        templateItem.remove();
+
+                        // If no templates left, show empty state
+                        const templateList = document.querySelector('.template-list');
+                        if (templateList.children.length === 0) {
+                            templateList.innerHTML = `
+                                <div class="empty-state">
+                                    <p>You don't have any task templates yet.</p>
+                                    <p class="text-sm mt-2">Templates let you create a set of tasks that you can apply to any day with one click.</p>
+                                    <button id="emptyAddTemplateBtn" class="btn-primary mt-4">
+                                        <i class="fas fa-plus mr-2"></i> Create Your First Template
+                                    </button>
+                                </div>
+                            `;
+
+                            // Add event listener to new button
+                            document.getElementById('emptyAddTemplateBtn').addEventListener('click', () => {
+                                templateForm.reset();
+                                document.getElementById('templateId').value = '';
+                                document.getElementById('templateTasks').innerHTML = '';
+                                templateModalTitle.textContent = 'Create Template';
+                                templateModal.style.display = 'block';
+                            });
+                        }
+                    } else {
+                        alert('Failed to delete template');
+                    }
+                } catch (error) {
+                    console.error('Error deleting template:', error);
+                    alert('An error occurred while deleting the template');
+                }
+            }
+        });
+    });
+
+    // Apply template buttons
+    applyTemplateBtns.forEach(button => {
+        button.addEventListener('click', () => {
+            const templateItem = button.closest('.template-item');
+            const templateId = templateItem.getAttribute('data-id');
+            const templateName = templateItem.querySelector('.template-title').textContent;
+
+            // Set template ID and name in apply modal
+            document.getElementById('applyTemplateId').value = templateId;
+            document.getElementById('applyTemplateName').textContent = templateName;
+
+            // Set date to current selected date
+            document.getElementById('applyTemplateDate').value = dateSelect.value;
+
+            // Show apply modal
+            applyTemplateModal.style.display = 'block';
+        });
+    });
+
+    // Cancel apply template button
+    if (cancelApplyTemplateBtn) {
+        cancelApplyTemplateBtn.addEventListener('click', () => {
+            applyTemplateModal.style.display = 'none';
+        });
+    }
+
+    // Apply template form submission
+    if (applyTemplateForm) {
+        applyTemplateForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            // Get form data
+            const formData = new FormData(applyTemplateForm);
+            const templateId = formData.get('template_id');
+            const dueDate = formData.get('due_date');
+
+            try {
+                const response = await fetch(`/templates/${templateId}/apply`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ due_date: dueDate })
+                });
+
+                if (response.ok) {
+                    const tasks = await response.json();
+
+                    // Close modal and navigate to the date where tasks were applied
+                    applyTemplateModal.style.display = 'none';
+                    window.location.href = `/manage_schedule?trainer_id=${trainerSelect.value}&date=${dueDate}`;
+                } else {
+                    const error = await response.json();
+                    alert(`Error: ${error.error || 'Failed to apply template'}`);
+                }
+            } catch (error) {
+                console.error('Error applying template:', error);
+                alert('An error occurred while applying the template');
+            }
+        });
+    }
+
+    // Reward form elements are already defined above
+
+    // Toggle monster select based on reward target
+    if (rewardModalTrainer && rewardModalMon) {
+        rewardModalTrainer.addEventListener('change', () => {
+            rewardModalMonId.disabled = true;
+        });
+
+        rewardModalMon.addEventListener('change', () => {
+            rewardModalMonId.disabled = false;
+        });
+    }
+
+    // Cancel reward button
+    if (cancelRewardBtn) {
+        cancelRewardBtn.addEventListener('click', () => {
+            rewardModal.style.display = 'none';
+        });
+    }
+
+    // Reward form submission
+    if (rewardForm) {
+        rewardForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            // Get form data
+            const formData = new FormData(rewardForm);
+            const itemId = formData.get('item_id');
+            const itemType = formData.get('item_type');
+            const rewardTarget = formData.get('reward_target');
+            const monId = formData.get('mon_id');
+
+            // Validate form
+            if (rewardTarget === 'mon' && !monId) {
+                alert('Please select a monster');
+                return;
+            }
+
+            try {
+                let url;
+                let data = {};
+
+                if (itemType === 'habit') {
+                    url = `/habits/${itemId}/complete`;
+                    data = {
+                        bound_to_trainer: rewardTarget === 'trainer',
+                        bound_to_mon_id: rewardTarget === 'mon' ? monId : null
+                    };
+                } else if (itemType === 'task') {
+                    url = `/tasks/${itemId}/complete`;
+                    data = {
+                        bound_to_trainer: rewardTarget === 'trainer',
+                        bound_to_mon_id: rewardTarget === 'mon' ? monId : null
+                    };
+                }
+
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+
+                    // Close modal
+                    rewardModal.style.display = 'none';
+
+                    // Mark item as completed in UI
+                    if (itemType === 'habit') {
+                        const habitItem = document.querySelector(`.habit-item[data-id="${itemId}"]`);
+                        if (habitItem) {
+                            const completeBtn = habitItem.querySelector('.complete-habit-btn');
+                            if (completeBtn) {
+                                completeBtn.classList.add('completed');
+                            }
+
+                            // Update streak display
+                            const streakElement = habitItem.querySelector('.habit-streak');
+                            if (streakElement && result.habit) {
+                                streakElement.innerHTML = `<i class="fas fa-fire" title="Current Streak"></i> ${result.habit.streak}
+                                    <span class="text-xs ml-1">(Best: ${result.habit.longest_streak})</span>`;
+                            }
+
+                            // Add bound indicator
+                            const boundIndicator = document.createElement('div');
+                            boundIndicator.className = 'habit-bound';
+                            if (rewardTarget === 'trainer') {
+                                boundIndicator.innerHTML = `<i class="fas fa-user" title="Bound to Trainer"></i>`;
+                            } else {
+                                const monster = document.querySelector(`#rewardModalMonId option[value="${monId}"]`);
+                                const monsterName = monster ? monster.textContent : 'Monster';
+                                boundIndicator.innerHTML = `<i class="fas fa-dragon" title="Bound to ${monsterName}"></i>`;
+                            }
+
+                            const habitHeader = habitItem.querySelector('.habit-header');
+                            if (habitHeader && !habitHeader.querySelector('.habit-bound')) {
+                                habitHeader.appendChild(boundIndicator);
+                            }
+                        }
+                    } else if (itemType === 'task') {
+                        const taskItem = document.querySelector(`.task-item[data-id="${itemId}"]`);
+                        if (taskItem) {
+                            taskItem.classList.add('completed');
+                            const completeBtn = taskItem.querySelector('.complete-task-btn');
+                            if (completeBtn) {
+                                completeBtn.classList.add('completed');
+                                completeBtn.innerHTML = '<i class="fas fa-check"></i>';
+                            }
+                        }
+                    }
+
+                    // Show reward notification
+                    if (result.rewards) {
+                        let rewardMessage = 'Rewards: ';
+                        if (result.rewards.level_reward > 0) {
+                            rewardMessage += `+${result.rewards.level_reward} XP`;
+                        }
+                        if (result.rewards.coin_reward > 0) {
+                            rewardMessage += `${result.rewards.level_reward > 0 ? ', ' : ''}+${result.rewards.coin_reward} coins`;
+                        }
+
+                        alert(`${itemType.charAt(0).toUpperCase() + itemType.slice(1)} completed! ${rewardMessage}`);
+                    }
+                } else {
+                    const error = await response.json();
+                    alert(`Error: ${error.error || `Failed to complete ${itemType}`}`);
+                }
+            } catch (error) {
+                console.error(`Error completing ${itemType}:`, error);
+                alert(`An error occurred while completing the ${itemType}`);
+            }
+        });
+    }
+    } catch (error) {
+        console.error('Error in schedule page script:', error);
+    }
+});
+</script>

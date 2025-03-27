@@ -19,8 +19,10 @@
                 </div>
                 <div class="stat-card">
                     <h3>Most Referenced</h3>
-                    <p>Player: <%= getPlayerMapping()[mostReferenced.player_name] || mostReferenced.player_name %> (<%= mostReferenced.reference_percentage.toFixed(1) %>%)</p>
-                    <p>Trainer: <%= trainerMostReferenced.name %> (<%= trainerMostReferenced.reference_percentage.toFixed(1) %>%)</p>
+                    <p>Player: <%= getPlayerMapping()[mostReferenced?.player_name] || mostReferenced?.player_name || 'None' %> 
+                       (<%= (mostReferenced?.reference_percentage || 0).toFixed(1) %>%)</p>
+                    <p>Trainer: <%= trainerMostReferenced?.name || 'None' %> 
+                       (<%= (trainerMostReferenced?.reference_percentage || 0).toFixed(1) %>%)</p>
                 </div>
             </div>
         </section>
@@ -71,20 +73,24 @@
                 <div class="type-distribution-section">
                     <h3>Type Distribution</h3>
                     <div class="type-distribution">
-                        <% for (const [type, count] of Object.entries(stats.type_counts)) { %>
-                        <div class="type-bar">
-                            <span class="type-name <%= type.toLowerCase() %>"><%= type %></span>
-                            <div class="bar-container">
-                                <%
-                                // Calculate percentage with a minimum width for visibility
-                                const percentage = Math.round((count / stats.total_monsters * 100));
-                                const displayWidth = Math.max(percentage, 3); // Minimum 3% width for visibility
-                                %>
-                                <div class="bar <%= type.toLowerCase() %>" style="width: <%= displayWidth %>%">
-                                    <%= count %> (<%= percentage %>%)
+                        <% if (stats.type_counts && Object.entries(stats.type_counts).length > 0) { %>
+                            <% for (const [type, count] of Object.entries(stats.type_counts)) { %>
+                                <div class="type-bar">
+                                    <span class="type-name <%= type.toLowerCase() %>"><%= type %></span>
+                                    <div class="bar-container">
+                                        <%
+                                        // Calculate percentage with a minimum width for visibility
+                                        const percentage = Math.round((count / stats.total_monsters * 100));
+                                        const displayWidth = Math.max(percentage, 3); // Minimum 3% width for visibility
+                                        %>
+                                        <div class="bar <%= type.toLowerCase() %>" style="width: <%= displayWidth %>%">
+                                            <%= count %> (<%= percentage %>%)
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                        </div>
+                            <% } %>
+                        <% } else { %>
+                            <p>No type distribution data available</p>
                         <% } %>
                     </div>
                 </div>

@@ -1,0 +1,402 @@
+<% /* Set the title and other variables for the layout */ %>
+<% title = 'Inventory Manager' %>
+
+<style>
+.form-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+    background: rgba(30, 37, 50, 0.5);
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+.form-title {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.form-section {
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 12px;
+}
+
+.form-section-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    color: var(--accent-color, #d4b3ff);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 0.5rem;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+}
+
+.form-control {
+    width: 100%;
+    padding: 0.75rem;
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    color: #fff;
+    font-size: 1rem;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: var(--accent-color, #d4b3ff);
+    box-shadow: 0 0 0 2px rgba(212, 179, 255, 0.2);
+}
+
+.form-note {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.7);
+    margin-top: 0.5rem;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 2rem;
+    gap: 1rem;
+}
+
+.btn {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-primary {
+    background-color: var(--accent-color, #d4b3ff);
+    color: #000;
+}
+
+.btn-primary:hover {
+    background-color: #c49ef7;
+}
+
+.btn-secondary {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #fff;
+}
+
+.btn-secondary:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.alert {
+    padding: 1rem;
+    border-radius: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.alert-success {
+    background-color: rgba(52, 211, 153, 0.2);
+    border: 1px solid rgba(52, 211, 153, 0.5);
+    color: #10b981;
+}
+
+.alert-error {
+    background-color: rgba(239, 68, 68, 0.2);
+    border: 1px solid rgba(239, 68, 68, 0.5);
+    color: #ef4444;
+}
+
+.inventory-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+}
+
+.inventory-table th,
+.inventory-table td {
+    padding: 0.75rem;
+    text-align: left;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.inventory-table th {
+    font-weight: 600;
+    color: var(--accent-color, #d4b3ff);
+}
+
+.inventory-table tr:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.tab-container {
+    margin-bottom: 2rem;
+}
+
+.tab-buttons {
+    display: flex;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    margin-bottom: 1.5rem;
+    overflow-x: auto;
+    padding-bottom: 1px;
+}
+
+.tab-button {
+    padding: 0.75rem 1.5rem;
+    background: none;
+    border: none;
+    color: #fff;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-bottom: 3px solid transparent;
+    white-space: nowrap;
+}
+
+.tab-button.active {
+    color: var(--accent-color, #d4b3ff);
+    border-bottom-color: var(--accent-color, #d4b3ff);
+}
+
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 2rem;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.empty-state i {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.action-btn {
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    border: none;
+}
+
+.action-btn-edit {
+    background-color: rgba(59, 130, 246, 0.2);
+    color: #3b82f6;
+}
+
+.action-btn-delete {
+    background-color: rgba(239, 68, 68, 0.2);
+    color: #ef4444;
+}
+
+@media (max-width: 768px) {
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .form-actions {
+        flex-direction: column;
+    }
+
+    .btn {
+        width: 100%;
+    }
+
+    .tab-buttons {
+        flex-wrap: nowrap;
+    }
+}
+</style>
+
+<div class="mt-20 mb-12">
+    <h1 class="text-4xl font-display font-bold text-center mb-8">Inventory Manager</h1>
+    <% if (typeof message !== 'undefined' && message) { %>
+    <div class="alert alert-<%= messageType || 'success' %> text-center mb-8">
+        <%= message %>
+    </div>
+    <% } %>
+</div>
+
+<div class="container">
+    <div class="form-container">
+        <div class="form-section">
+            <h2 class="form-section-title">Select Trainer</h2>
+            <form action="/admin/inventory-manager" method="GET" class="mb-8">
+                <div class="form-group">
+                    <label for="trainer_id">Trainer</label>
+                    <select id="trainer_id" name="trainer_id" class="form-control" required onchange="this.form.submit()">
+                        <option value="">Select a Trainer</option>
+                        <% trainers.forEach(trainer => { %>
+                            <option value="<%= trainer.id %>" <%= selectedTrainer && selectedTrainer.id == trainer.id ? 'selected' : '' %>>
+                                <%= trainer.name %> (<%= trainer.player_display_name %>)
+                            </option>
+                        <% }); %>
+                    </select>
+                </div>
+            </form>
+        </div>
+
+        <% if (selectedTrainer) { %>
+        <div class="form-section">
+            <h2 class="form-section-title">Manage Inventory for <%= selectedTrainer.name %></h2>
+            
+            <div class="tab-container">
+                <div class="tab-buttons">
+                    <button type="button" class="tab-button active" data-tab="add-item">Add/Remove Items</button>
+                    <button type="button" class="tab-button" data-tab="inv-items">Items</button>
+                    <button type="button" class="tab-button" data-tab="inv-balls">Poké Balls</button>
+                    <button type="button" class="tab-button" data-tab="inv-berries">Berries</button>
+                    <button type="button" class="tab-button" data-tab="inv-pastries">Pastries</button>
+                    <button type="button" class="tab-button" data-tab="inv-evolution">Evolution Items</button>
+                    <button type="button" class="tab-button" data-tab="inv-eggs">Eggs</button>
+                    <button type="button" class="tab-button" data-tab="inv-antiques">Antiques</button>
+                    <button type="button" class="tab-button" data-tab="inv-helditems">Held Items</button>
+                    <button type="button" class="tab-button" data-tab="inv-seals">Seals</button>
+                </div>
+
+                <!-- Add/Remove Items Tab -->
+                <div id="add-item" class="tab-content active">
+                    <form action="/admin/inventory-manager/update" method="POST">
+                        <input type="hidden" name="trainer_id" value="<%= selectedTrainer.id %>">
+                        
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="category">Category</label>
+                                <select id="category" name="category" class="form-control" required>
+                                    <option value="inv_items">Items</option>
+                                    <option value="inv_balls">Poké Balls</option>
+                                    <option value="inv_berries">Berries</option>
+                                    <option value="inv_pastries">Pastries</option>
+                                    <option value="inv_evolution">Evolution Items</option>
+                                    <option value="inv_eggs">Eggs</option>
+                                    <option value="inv_antiques">Antiques</option>
+                                    <option value="inv_helditems">Held Items</option>
+                                    <option value="inv_seals">Seals</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="item_name">Item Name</label>
+                                <input type="text" id="item_name" name="item_name" class="form-control" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="quantity">Quantity</label>
+                                <input type="number" id="quantity" name="quantity" class="form-control" value="1" required>
+                                <p class="form-note">Use positive numbers to add items, negative to remove</p>
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <a href="/admin/dashboard" class="btn btn-secondary">Back to Dashboard</a>
+                            <button type="submit" class="btn btn-primary">Update Inventory</button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Inventory Tabs -->
+                <% const categories = [
+                    { id: 'inv-items', name: 'inv_items', title: 'Items' },
+                    { id: 'inv-balls', name: 'inv_balls', title: 'Poké Balls' },
+                    { id: 'inv-berries', name: 'inv_berries', title: 'Berries' },
+                    { id: 'inv-pastries', name: 'inv_pastries', title: 'Pastries' },
+                    { id: 'inv-evolution', name: 'inv_evolution', title: 'Evolution Items' },
+                    { id: 'inv-eggs', name: 'inv_eggs', title: 'Eggs' },
+                    { id: 'inv-antiques', name: 'inv_antiques', title: 'Antiques' },
+                    { id: 'inv-helditems', name: 'inv_helditems', title: 'Held Items' },
+                    { id: 'inv-seals', name: 'inv_seals', title: 'Seals' }
+                ]; %>
+
+                <% categories.forEach(category => { %>
+                <div id="<%= category.id %>" class="tab-content">
+                    <h3 class="text-xl font-bold mb-4"><%= category.title %></h3>
+                    
+                    <% if (inventory && inventory[category.name] && Object.keys(inventory[category.name]).length > 0) { %>
+                        <table class="inventory-table">
+                            <thead>
+                                <tr>
+                                    <th>Item Name</th>
+                                    <th>Quantity</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% Object.entries(inventory[category.name]).forEach(([itemName, quantity]) => { %>
+                                <tr>
+                                    <td><%= itemName %></td>
+                                    <td><%= quantity %></td>
+                                    <td class="action-buttons">
+                                        <form action="/admin/inventory-manager/update" method="POST" style="display: inline;">
+                                            <input type="hidden" name="trainer_id" value="<%= selectedTrainer.id %>">
+                                            <input type="hidden" name="category" value="<%= category.name %>">
+                                            <input type="hidden" name="item_name" value="<%= itemName %>">
+                                            <input type="hidden" name="quantity" value="-<%= quantity %>">
+                                            <button type="submit" class="action-btn action-btn-delete" onclick="return confirm('Are you sure you want to remove all <%= itemName %>?')">Remove All</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                <% }); %>
+                            </tbody>
+                        </table>
+                    <% } else { %>
+                        <div class="empty-state">
+                            <i class="fas fa-box-open"></i>
+                            <p>No <%= category.title.toLowerCase() %> in inventory</p>
+                        </div>
+                    <% } %>
+                </div>
+                <% }); %>
+            </div>
+        </div>
+        <% } %>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Tab switching
+        const tabButtons = document.querySelectorAll('.tab-button');
+        const tabContents = document.querySelectorAll('.tab-content');
+
+        tabButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const tabId = this.getAttribute('data-tab');
+                
+                // Remove active class from all buttons and contents
+                tabButtons.forEach(btn => btn.classList.remove('active'));
+                tabContents.forEach(content => content.classList.remove('active'));
+                
+                // Add active class to current button and content
+                this.classList.add('active');
+                document.getElementById(tabId).classList.add('active');
+            });
+        });
+    });
+</script>
