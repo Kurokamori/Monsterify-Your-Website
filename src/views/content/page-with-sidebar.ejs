@@ -1,0 +1,21 @@
+<div class="content-page">
+  <div class="content-navigation">
+    <% if (categories && categories[activeCategory]) { %>
+      <h3><%= categories[activeCategory].name %></h3>
+      <ul>
+        <% for (const item of categories[activeCategory].items || []) { %>
+          <li class="<%= path === item.path ? 'active' : '' %>">
+            <a href="/<%= activeCategory %>/<%= item.path %>">
+              <%= item.title %>
+            </a>
+          </li>
+        <% } %>
+      </ul>
+    <% } %>
+  </div>
+
+  <div class="content-main">
+    <h1><%= title %></h1>
+    <%- content %>
+  </div>
+</div>

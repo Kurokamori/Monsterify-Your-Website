@@ -2152,15 +2152,63 @@ app.get('/town/visit', (req, res) => {
 });
 
 // Town visit sub-routes
-app.get('/town/visit/trade', (req, res) => {
+app.get('/town/visit/trade', async (req, res) => {
   // Check if user is logged in
   if (!req.session.user) {
     return res.redirect('/login');
   }
 
-  res.render('town/trade', {
-    title: 'Trade Center'
-  });
+  try {
+    // Get user's trainers using discord_id
+    const userDiscordId = req.session.user.discord_id || req.session.user.id;
+    const userTrainers = await Trainer.getByUserId(userDiscordId);
+
+    // Get selected trainer if trainer_id is provided
+    let selectedTrainer = null;
+    if (req.query.trainer_id) {
+      selectedTrainer = await Trainer.getById(req.query.trainer_id);
+    } else if (userTrainers && userTrainers.length > 0) {
+      // Default to first trainer if none selected
+      selectedTrainer = userTrainers[0];
+    }
+
+    // Get user's trades
+    let trades = [];
+
+    // Import the Trade model if it exists
+    let Trade;
+    try {
+      Trade = require('./models/Trade');
+    } catch (err) {
+      console.warn('Trade model not found, using empty trades array');
+    }
+
+    // If we have a selected trainer and the Trade model, fetch trades
+    if (selectedTrainer && Trade && typeof Trade.getByTrainerId === 'function') {
+      try {
+        trades = await Trade.getByTrainerId(selectedTrainer.id);
+      } catch (tradeError) {
+        console.error('Error fetching trades:', tradeError);
+        // Continue without trades if there's an error
+      }
+    }
+
+    res.render('town/trade', {
+      title: 'Trade Center',
+      userTrainers: userTrainers || [],
+      selectedTrainer: selectedTrainer,
+      trades: trades || [],
+      message: req.query.message,
+      messageType: req.query.messageType
+    });
+  } catch (error) {
+    console.error('Error loading trade center:', error);
+    res.status(500).render('error', {
+      message: 'Error loading trade center',
+      error: { status: 500, stack: error.stack },
+      title: 'Error'
+    });
+  }
 });
 
 app.get('/town/visit/garden', (req, res) => {
@@ -2183,6 +2231,43 @@ app.get('/town/visit/farm', (req, res) => {
   res.render('town/farm', {
     title: 'Farm'
   });
+});
+
+app.get('/town/visit/game_corner', async (req, res) => {
+  // Check if user is logged in
+  if (!req.session.user) {
+    return res.redirect('/login');
+  }
+
+  try {
+    // Get user's trainers using discord_id
+    const userDiscordId = req.session.user.discord_id;
+    const userTrainers = await Trainer.getByUserId(userDiscordId);
+
+    // Get monsters for each trainer
+    let allMonsters = [];
+    for (const trainer of userTrainers) {
+      const trainerMonsters = await Monster.getByTrainerId(trainer.id);
+      if (trainerMonsters && trainerMonsters.length > 0) {
+        allMonsters = [...allMonsters, ...trainerMonsters];
+      }
+    }
+
+    res.render('town/game_corner', {
+      title: 'Pomodoro Game Corner',
+      trainers: userTrainers || [],
+      monsters: allMonsters || [],
+      message: req.query.message,
+      messageType: req.query.messageType
+    });
+  } catch (error) {
+    console.error('Error loading game corner:', error);
+    res.status(500).render('error', {
+      message: 'Error loading game corner',
+      error: { status: 500, stack: error.stack },
+      title: 'Error'
+    });
+  }
 });
 
 // Adventures routes

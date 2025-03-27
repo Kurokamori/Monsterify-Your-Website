@@ -15,6 +15,9 @@
             <a href="/">
                 <img src="/images/logo.png" alt="Logo" class="logo" onerror="this.src='https://via.placeholder.com/160x40/1e2532/d6a339?text=Dusk+and+Dawn'">
             </a>
+            <button class="mobile-menu-button" id="mobileMenuButton">
+                <i class="fas fa-bars"></i>
+            </button>
             <a href="/trainers" class="top-nav-link">Trainers</a>
             <a href="/statistics" class="top-nav-link">Statistics</a>
             <a href="/fakedex" class="top-nav-link">Fakemon Dex</a>
@@ -125,6 +128,127 @@
             <% } %>
         </div>
     </nav>
+
+    <!-- Mobile Navigation Menu -->
+    <div class="mobile-nav" id="mobileNav">
+        <div class="mobile-nav-header">
+            <a href="/">
+                <img src="/images/logo.png" alt="Logo" class="logo" onerror="this.src='https://via.placeholder.com/160x40/1e2532/d6a339?text=Dusk+and+Dawn'">
+            </a>
+            <button class="mobile-nav-close" id="mobileNavClose">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="mobile-nav-links">
+            <a href="/trainers" class="mobile-nav-link">Trainers</a>
+            <a href="/statistics" class="mobile-nav-link">Statistics</a>
+            <a href="/fakedex" class="mobile-nav-link">Fakemon Dex</a>
+
+            <div class="mobile-dropdown">
+                <button class="mobile-dropdown-toggle" data-target="guidesMobileDropdown">
+                    Guides <i class="fas fa-chevron-down"></i>
+                </button>
+                <div class="mobile-dropdown-content" id="guidesMobileDropdown">
+                    <a href="/guides" class="mobile-nav-link">Guides</a>
+                    <a href="/locations" class="mobile-nav-link">Locations</a>
+                    <a href="/interactive_map" class="mobile-nav-link">Interactive Map</a>
+                    <a href="/lore" class="mobile-nav-link">Lore</a>
+                    <a href="/factions" class="mobile-nav-link">Factions</a>
+                    <a href="/npcs" class="mobile-nav-link">NPCs</a>
+                </div>
+            </div>
+
+            <% if (typeof user !== 'undefined' && user) { %>
+                <div class="mobile-dropdown">
+                    <button class="mobile-dropdown-toggle" data-target="profileMobileDropdown">
+                        Profile <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="mobile-dropdown-content" id="profileMobileDropdown">
+                        <a href="/my_trainers" class="mobile-nav-link">View My Trainers</a>
+                        <a href="/submit_artwork" class="mobile-nav-link">Submit Artwork</a>
+                        <a href="/submit_writing" class="mobile-nav-link">Submit Writing</a>
+                        <a href="/submit_references" class="mobile-nav-link">Submit References</a>
+                        <a href="/manage_schedule" class="mobile-nav-link">Manage Schedule</a>
+                        <a href="/add_trainer" class="mobile-nav-link">Add New Trainer</a>
+                    </div>
+                </div>
+
+                <div class="mobile-dropdown">
+                    <button class="mobile-dropdown-toggle" data-target="marketsMobileDropdown">
+                        Visit Markets <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="mobile-dropdown-content" id="marketsMobileDropdown">
+                        <a href="/town" class="mobile-nav-link">Markets Square</a>
+                        <a href="/town/shop/apothecary" class="mobile-nav-link">Apothecary</a>
+                        <a href="/town/shop/bakery" class="mobile-nav-link">Bakery</a>
+                        <a href="/town/shop/witchs_hut" class="mobile-nav-link">Witch's Hut</a>
+                        <a href="/town/shop/megamart" class="mobile-nav-link">Mega Mart</a>
+                        <a href="/town/shop/antique_shop" class="mobile-nav-link">Antique Store</a>
+                        <a href="/town/shop/nursery" class="mobile-nav-link">Nursery</a>
+                        <a href="/town/shop/pirates_dock" class="mobile-nav-link">Pirate's Dock</a>
+                    </div>
+                </div>
+
+                <div class="mobile-dropdown">
+                    <button class="mobile-dropdown-toggle" data-target="townMobileDropdown">
+                        Town Square <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="mobile-dropdown-content" id="townMobileDropdown">
+                        <a href="/town/visit" class="mobile-nav-link">Town Center</a>
+                        <a href="/town/visit/apothecary" class="mobile-nav-link">Apothecary</a>
+                        <a href="/town/visit/bakery" class="mobile-nav-link">Bakery</a>
+                        <a href="/town/visit/witchs_hut" class="mobile-nav-link">Witch's Hut</a>
+                        <a href="/town/visit/megamart" class="mobile-nav-link">Mega Mart</a>
+                        <a href="/town/visit/antique_shop" class="mobile-nav-link">Antique Store</a>
+                        <a href="/town/visit/game_corner" class="mobile-nav-link">Pomodoro Game Corner</a>
+                        <a href="/town/visit/trade" class="mobile-nav-link">Trade Center</a>
+                        <a href="/town/visit/garden" class="mobile-nav-link">Garden</a>
+                        <a href="/town/visit/farm" class="mobile-nav-link">Farm</a>
+                        <a href="/town/visit/nursery" class="mobile-nav-link">Nursery</a>
+                        <a href="/town/visit/pirates_dock" class="mobile-nav-link">Pirate's Dock</a>
+                    </div>
+                </div>
+
+                <div class="mobile-dropdown">
+                    <button class="mobile-dropdown-toggle" data-target="adventuresMobileDropdown">
+                        Adventures <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="mobile-dropdown-content" id="adventuresMobileDropdown">
+                        <a href="/adventures" class="mobile-nav-link">Adventures</a>
+                        <a href="/adventures/missions" class="mobile-nav-link">Missions</a>
+                        <a href="/adventures/boss" class="mobile-nav-link">Boss</a>
+                        <a href="/adventures/event" class="mobile-nav-link">Event</a>
+
+                        <div class="mobile-nested-dropdown">
+                            <button class="mobile-dropdown-toggle" data-target="competitionMobileDropdown">
+                                Competition Circuit <i class="fas fa-chevron-down"></i>
+                            </button>
+                            <div class="mobile-nested-dropdown-content" id="competitionMobileDropdown">
+                                <a href="/adventures/competition/friendly" class="mobile-nav-link">Friendly Match</a>
+                                <a href="/adventures/competition/league" class="mobile-nav-link">Challenge League</a>
+                                <a href="/adventures/competition/frontier" class="mobile-nav-link">Challenge Frontier</a>
+                                <a href="/adventures/competition/exhibition" class="mobile-nav-link">Friendly Exhibition</a>
+                                <a href="/adventures/competition/contest" class="mobile-nav-link">Enter Contest</a>
+                                <a href="/adventures/competition/festival" class="mobile-nav-link">Enter Grand Festival</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <% } %>
+
+            <div class="mobile-nav-auth">
+                <% if (typeof user !== 'undefined' && user) { %>
+                    <% if (user.is_admin) { %>
+                        <a href="/admin/dashboard" class="auth-button">Admin Dashboard</a>
+                    <% } %>
+                    <a href="/logout" class="auth-button">Logout</a>
+                <% } else { %>
+                    <a href="/login" class="auth-button">Login</a>
+                    <a href="/register" class="auth-button">Register</a>
+                <% } %>
+            </div>
+        </div>
+    </div>
 
     <main class="pt-16 pb-12 mt-8">
         <%- body %>

@@ -1,0 +1,535 @@
+<% /* Set the title and other variables for the layout */ %>
+<% title = 'Trade Center' %>
+
+<style>
+  .trade-center-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+  }
+
+  .trade-center-header {
+    text-align: center;
+    margin-bottom: 3rem;
+  }
+
+  .trade-center-title {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+    color: var(--accent-color);
+  }
+
+  .trade-center-subtitle {
+    font-size: 1.2rem;
+    color: var(--text-color);
+    opacity: 0.8;
+    max-width: 800px;
+    margin: 0 auto 1.5rem;
+  }
+
+  .trainer-selector {
+    margin: 1.5rem auto;
+    max-width: 400px;
+    padding: 1rem;
+    background-color: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+  }
+
+  .trainer-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .trainer-label {
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+    color: var(--text-color);
+  }
+
+  .trainer-select {
+    width: 100%;
+    padding: 0.5rem;
+    border-radius: 4px;
+    background-color: var(--bg-color-light);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+  }
+
+  .trade-options {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+  }
+
+  .trade-option {
+    background-color: var(--card-background);
+    border-radius: 1rem;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+
+  .trade-option:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+  }
+
+  .trade-option-image {
+    height: 200px;
+    width: 100%;
+    object-fit: cover;
+    position: relative;
+  }
+
+  .trade-option-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .trade-option-image::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(to bottom, rgba(0,0,0,0) 50%, rgba(0,0,0,0.7) 100%);
+  }
+
+  .trade-option-content {
+    padding: 1.5rem;
+  }
+
+  .trade-option-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+    color: var(--accent-color);
+  }
+
+  .trade-option-description {
+    color: var(--text-color);
+    margin-bottom: 1.5rem;
+    line-height: 1.6;
+  }
+
+  .trade-option-button {
+    display: inline-block;
+    background-color: var(--accent-color);
+    color: var(--background-color);
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    text-decoration: none;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+  }
+
+  .trade-option-button:hover {
+    background-color: var(--accent-hover-color);
+  }
+
+  .trade-history {
+    margin-top: 4rem;
+  }
+
+  .trade-history-title {
+    font-size: 1.8rem;
+    font-weight: bold;
+    margin-bottom: 1.5rem;
+    color: var(--accent-color);
+    text-align: center;
+  }
+
+  .trade-history-empty {
+    text-align: center;
+    padding: 2rem;
+    background-color: var(--card-background);
+    border-radius: 1rem;
+  }
+
+  .trade-history-empty-icon {
+    font-size: 3rem;
+    color: var(--text-color);
+    opacity: 0.3;
+    margin-bottom: 1rem;
+  }
+
+  .trade-history-empty-text {
+    font-size: 1.2rem;
+    color: var(--text-color);
+    opacity: 0.7;
+  }
+
+  .trade-history-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .trade-card {
+    background-color: var(--card-background);
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .trade-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+
+  .trade-card-id {
+    font-size: 0.875rem;
+    color: var(--text-color);
+    opacity: 0.6;
+  }
+
+  .trade-card-status {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: bold;
+  }
+
+  .status-pending {
+    background-color: rgba(236, 201, 75, 0.2);
+    color: #ecc94b;
+  }
+
+  .status-completed {
+    background-color: rgba(72, 187, 120, 0.2);
+    color: #48bb78;
+  }
+
+  .status-cancelled {
+    background-color: rgba(245, 101, 101, 0.2);
+    color: #f56565;
+  }
+
+  .trade-card-parties {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+
+  .trade-card-trainer {
+    flex: 1;
+    text-align: center;
+  }
+
+  .trade-card-trainer-name {
+    font-weight: bold;
+    margin-bottom: 0.25rem;
+  }
+
+  .trade-card-trainer-role {
+    font-size: 0.75rem;
+    color: var(--text-color);
+    opacity: 0.7;
+  }
+
+  .trade-card-arrow {
+    margin: 0 1rem;
+    color: var(--accent-color);
+  }
+
+  .trade-card-details {
+    margin-top: 1rem;
+    font-size: 0.875rem;
+  }
+
+  .trade-card-detail {
+    margin-bottom: 0.5rem;
+  }
+
+  .trade-card-label {
+    font-weight: bold;
+    margin-right: 0.5rem;
+  }
+
+  .trade-card-actions {
+    margin-top: 1rem;
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+  }
+
+  .trade-card-button {
+    padding: 0.5rem 1rem;
+    border-radius: 0.25rem;
+    font-size: 0.875rem;
+    font-weight: bold;
+    text-decoration: none;
+    cursor: pointer;
+    border: none;
+  }
+
+  .button-view {
+    background-color: var(--accent-color);
+    color: var(--background-color);
+  }
+
+  .button-view:hover {
+    background-color: var(--accent-hover-color);
+  }
+
+  .button-cancel {
+    background-color: #e53e3e;
+    color: white;
+  }
+
+  .button-cancel:hover {
+    background-color: #c53030;
+  }
+
+  /* Empty trade history styles */
+  .trade-history-empty {
+    background-color: rgba(0, 0, 0, 0.1);
+    border-radius: 0.5rem;
+    padding: 3rem 2rem;
+    text-align: center;
+    margin-top: 1rem;
+  }
+
+  .trade-history-empty-icon {
+    font-size: 3rem;
+    color: rgba(255, 255, 255, 0.2);
+    margin-bottom: 1rem;
+  }
+
+  .trade-history-empty-text {
+    font-size: 1.1rem;
+    color: rgba(255, 255, 255, 0.6);
+  }
+
+  /* Alert styles */
+  .alert {
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+  }
+
+  .alert-info {
+    background-color: rgba(59, 130, 246, 0.2);
+    border: 1px solid rgba(59, 130, 246, 0.5);
+    color: #3b82f6;
+  }
+
+  .alert-success {
+    background-color: rgba(34, 197, 94, 0.2);
+    border: 1px solid rgba(34, 197, 94, 0.5);
+    color: #22c55e;
+  }
+
+  .alert-warning {
+    background-color: rgba(234, 179, 8, 0.2);
+    border: 1px solid rgba(234, 179, 8, 0.5);
+    color: #eab308;
+  }
+
+  .alert-danger {
+    background-color: rgba(239, 68, 68, 0.2);
+    border: 1px solid rgba(239, 68, 68, 0.5);
+    color: #ef4444;
+  }
+
+  .alert-link {
+    font-weight: bold;
+    text-decoration: underline;
+  }
+
+  @media (max-width: 768px) {
+    .trade-center-title {
+      font-size: 2rem;
+    }
+
+    .trade-options {
+      grid-template-columns: 1fr;
+    }
+
+    .trade-history-list {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<div class="trade-center-container">
+  <div class="trade-center-header">
+    <h1 class="trade-center-title">Trade Center</h1>
+    <p class="trade-center-subtitle">
+      Welcome to the Trade Center! Here you can trade monsters and items with other trainers.
+      Choose what you'd like to trade below.
+    </p>
+
+    <% if (typeof message !== 'undefined' && message) { %>
+      <div class="alert alert-<%= messageType || 'info' %>">
+        <%= message %>
+      </div>
+    <% } %>
+
+    <% if (userTrainers && userTrainers.length > 0) { %>
+      <div class="trainer-selector">
+        <form action="/town/visit/trade" method="GET" class="trainer-form">
+          <label for="trainer_id" class="trainer-label">Select Your Trainer:</label>
+          <select id="trainer_id" name="trainer_id" class="trainer-select" onchange="this.form.submit()">
+            <% userTrainers.forEach(trainer => { %>
+              <option value="<%= trainer.id %>" <%= selectedTrainer && trainer.id === selectedTrainer.id ? 'selected' : '' %>>
+                <%= trainer.name %> (Level <%= trainer.level %>)
+              </option>
+            <% }); %>
+          </select>
+        </form>
+      </div>
+    <% } else { %>
+      <div class="alert alert-warning">
+        <p>You don't have any trainers yet. <a href="/add_trainer" class="alert-link">Create a trainer</a> to start trading!</p>
+      </div>
+    <% } %>
+  </div>
+
+  <div class="trade-options">
+    <!-- Monster Trading Option -->
+    <div class="trade-option">
+      <div class="trade-option-image">
+        <img src="https://i.imgur.com/HViAPDq.jpeg" alt="Monster Trading">
+      </div>
+      <div class="trade-option-content">
+        <h2 class="trade-option-title">Monster Trading</h2>
+        <p class="trade-option-description">
+          Trade your monsters with other trainers. Select monsters from your collection to offer and request monsters from another trainer.
+        </p>
+        <a href="/town/visit/trade/mons" class="trade-option-button">
+          <i class="fas fa-exchange-alt mr-2"></i> Trade Monsters
+        </a>
+      </div>
+    </div>
+
+    <!-- Item Trading Option -->
+    <div class="trade-option">
+      <div class="trade-option-image">
+        <img src="https://i.imgur.com/9XqYOSA.jpeg" alt="Item Trading">
+      </div>
+      <div class="trade-option-content">
+        <h2 class="trade-option-title">Item Trading</h2>
+        <p class="trade-option-description">
+          Exchange items with other trainers. Select items from your inventory to offer and request items from another trainer.
+        </p>
+        <a href="/town/visit/trade/items" class="trade-option-button">
+          <i class="fas fa-box mr-2"></i> Trade Items
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Trade History Section -->
+  <div class="trade-history">
+    <h2 class="trade-history-title">Your Recent Trades</h2>
+
+    <% if (trades && trades.length > 0) { %>
+      <div class="trade-history-list">
+        <% trades.forEach(trade => { %>
+          <div class="trade-card">
+            <div class="trade-card-header">
+              <span class="trade-card-id">Trade #<%= trade.trade_id %></span>
+              <span class="trade-card-status status-<%= trade.status %>">
+                <%= trade.status.charAt(0).toUpperCase() + trade.status.slice(1) %>
+              </span>
+            </div>
+
+            <div class="trade-card-parties">
+              <div class="trade-card-trainer">
+                <div class="trade-card-trainer-name"><%= trade.initiator_name %></div>
+                <div class="trade-card-trainer-role">Initiator</div>
+              </div>
+
+              <div class="trade-card-arrow">
+                <i class="fas fa-exchange-alt"></i>
+              </div>
+
+              <div class="trade-card-trainer">
+                <div class="trade-card-trainer-name"><%= trade.recipient_name %></div>
+                <div class="trade-card-trainer-role">Recipient</div>
+              </div>
+            </div>
+
+            <div class="trade-card-details">
+              <div class="trade-card-detail">
+                <span class="trade-card-label">Date:</span>
+                <%= new Date(trade.created_at).toLocaleDateString() %>
+              </div>
+
+              <div class="trade-card-detail">
+                <span class="trade-card-label">Monsters:</span>
+                <%= (trade.offered_mons?.length || 0) + (trade.requested_mons?.length || 0) %> total
+              </div>
+
+              <div class="trade-card-detail">
+                <span class="trade-card-label">Items:</span>
+                <%
+                  let itemCount = 0;
+                  if (trade.offered_items) {
+                    const offeredItems = typeof trade.offered_items === 'string'
+                      ? JSON.parse(trade.offered_items)
+                      : trade.offered_items;
+
+                    Object.values(offeredItems).forEach(items => {
+                      itemCount += Object.keys(items).length;
+                    });
+                  }
+
+                  if (trade.requested_items) {
+                    const requestedItems = typeof trade.requested_items === 'string'
+                      ? JSON.parse(trade.requested_items)
+                      : trade.requested_items;
+
+                    Object.values(requestedItems).forEach(items => {
+                      itemCount += Object.keys(items).length;
+                    });
+                  }
+                %>
+                <%= itemCount %> total
+              </div>
+            </div>
+
+            <div class="trade-card-actions">
+              <% if (trade.status === 'pending') { %>
+                <form action="/town/visit/trade/process" method="POST" style="display: inline;">
+                  <input type="hidden" name="trade_id" value="<%= trade.trade_id %>">
+                  <button type="submit" class="trade-card-button button-view">
+                    <i class="fas fa-check mr-1"></i> Process
+                  </button>
+                </form>
+
+                <form action="/town/visit/trade/cancel" method="POST" style="display: inline;">
+                  <input type="hidden" name="trade_id" value="<%= trade.trade_id %>">
+                  <button type="submit" class="trade-card-button button-cancel">
+                    <i class="fas fa-times mr-1"></i> Cancel
+                  </button>
+                </form>
+              <% } else { %>
+                <span class="trade-card-button button-view" style="cursor: default;">
+                  <i class="fas fa-check mr-1"></i> <%= trade.status.charAt(0).toUpperCase() + trade.status.slice(1) %>
+                </span>
+              <% } %>
+            </div>
+          </div>
+        <% }); %>
+      </div>
+    <% } else { %>
+      <div class="trade-history-empty">
+        <div class="trade-history-empty-icon">
+          <i class="fas fa-exchange-alt"></i>
+        </div>
+        <p class="trade-history-empty-text">You haven't made any trades yet.</p>
+      </div>
+    <% } %>
+  </div>
+</div>

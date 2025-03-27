@@ -423,7 +423,7 @@ alter table digimon
 create table if not exists items
 (
     icon       text,
-    name       text,
+    name       text primary key,
     effect     text,
     rarity     text,
     category   text,
@@ -613,4 +613,62 @@ create table if not exists users
 
 alter table users
     owner to u3f7f8n9i5oagn;
+
+create table if not exists shop_config
+(
+    shop_id              varchar(50) primary key,
+    name                 varchar(100) not null,
+    description          text,
+    image_url            text,
+    category             varchar(50) not null,
+    price_multiplier_min float default 1.0,
+    price_multiplier_max float default 2.0,
+    min_items            integer default 5,
+    max_items            integer default 10,
+    restock_hour         integer default 0,
+    is_active            boolean default true,
+    created_at           timestamp default CURRENT_TIMESTAMP,
+    updated_at           timestamp default CURRENT_TIMESTAMP
+);
+
+alter table shop_config
+    owner to u3f7f8n9i5oagn;
+
+create table if not exists daily_shop_items
+(
+    id           serial primary key,
+    shop_id      varchar(50) references shop_config (shop_id),
+    item_id      varchar(100),
+    price        integer not null,
+    max_quantity integer default 1,
+    date         date not null,
+    created_at   timestamp default CURRENT_TIMESTAMP
+);
+
+alter table daily_shop_items
+    owner to u3f7f8n9i5oagn;
+
+create index if not exists idx_daily_shop_items_shop_date
+    on daily_shop_items (shop_id, date);
+
+create table if not exists player_shop_purchases
+(
+    id         serial primary key,
+    player_id  varchar(50) not null,
+    shop_id    varchar(50) not null,
+    item_id    varchar(100) not null,
+    quantity   integer not null,
+    date       date not null,
+    created_at timestamp default CURRENT_TIMESTAMP,
+    updated_at timestamp default CURRENT_TIMESTAMP
+);
+
+alter table player_shop_purchases
+    owner to u3f7f8n9i5oagn;
+
+create index if not exists idx_player_shop_purchases_player
+    on player_shop_purchases (player_id);
+
+create index if not exists idx_player_shop_purchases_shop_date
+    on player_shop_purchases (shop_id, date);
 

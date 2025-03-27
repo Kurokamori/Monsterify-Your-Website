@@ -91,24 +91,17 @@
                 <!-- Box Grid -->
                 <div class="box-grid">
                     <%
-                    // Calculate start and end indices for the current page
-                    const startIndex = (boxPage - 1) * 30;
-                    const endIndex = Math.min(startIndex + 30, boxOverview.length);
-
-                    // Create a 5x6 grid
-                    for (let i = 0; i < 30; i++) {
-                        // Get the monster at this position if it exists
-                        // Adjust index based on pagination
-                        const monster = boxOverview && boxOverview[startIndex + i];
-
-                        // Debug: Log the monster at this position
-                        if (i < 5) {
-                            console.log(`Box slot ${i} (index ${startIndex + i}):`,
-                                monster ? `${monster.name} (ID: ${monster.mon_id})` : 'Empty');
-                        }
+                    if (boxOverview && boxOverview.length > 0) {
+                        // Calculate start and end indices for the current page
+                        const startIndex = (boxPage - 1) * 30;
+                        const endIndex = Math.min(startIndex + 30, boxOverview.length);
+                        
+                        for (let i = startIndex; i < endIndex; i++) {
+                            const monster = boxOverview[i];
                     %>
                         <div class="box-slot <%= monster ? 'filled' : 'empty' %>">
                             <% if (monster && monster.mon_id) { %>
+                                <!-- Monster slot content -->
                                 <a href="/trainers/<%= trainer.id %>/monsters/<%= monster.mon_id %>"
                                    title="<%= monster.name %> (Level <%= monster.level %>)">
                                     <img src="<%= monster.img_link || '/images/default_mon.png' %>"
@@ -119,11 +112,18 @@
                                     </div>
                                 </a>
                             <% } else { %>
-                                <!-- Empty slot with default image -->
+                                <!-- Empty slot -->
                                 <div class="empty-slot-placeholder">
                                     <img src="/images/default_mon.png" alt="Empty Slot" class="empty-slot-image">
                                 </div>
                             <% } %>
+                        </div>
+                    <% 
+                        }
+                    } else { 
+                    %>
+                        <div class="empty-box-message">
+                            <p>No monsters found in this box.</p>
                         </div>
                     <% } %>
                 </div>
@@ -258,34 +258,18 @@
             </div>
 
             <!-- Pagination -->
-            <% if (pagination.totalPages > 1) { %>
-            <div class="pagination">
-                <% if (pagination.page > 1) { %>
-                    <a href="/trainers/<%= trainer.id %>/pc?<%= currentBox !== null ? 'box=' + currentBox + '&' : '' %>page=<%= pagination.page - 1 %>&boxPage=<%= boxPage %>"
-                       class="pagination-link">Previous</a>
-                <% } %>
-
-                <%
-                // Show up to 5 page links
-                let startPage = Math.max(1, pagination.page - 2);
-                let endPage = Math.min(pagination.totalPages, startPage + 4);
-
-                // Adjust startPage if we're near the end
-                if (endPage - startPage < 4) {
-                    startPage = Math.max(1, endPage - 4);
-                }
-
-                for (let i = startPage; i <= endPage; i++) {
-                %>
-                    <a href="/trainers/<%= trainer.id %>/pc?<%= currentBox !== null ? 'box=' + currentBox + '&' : '' %>page=<%= i %>&boxPage=<%= boxPage %>"
-                       class="pagination-link <%= pagination.page === i ? 'active' : '' %>"><%= i %></a>
-                <% } %>
-
-                <% if (pagination.page < pagination.totalPages) { %>
-                    <a href="/trainers/<%= trainer.id %>/pc?<%= currentBox !== null ? 'box=' + currentBox + '&' : '' %>page=<%= pagination.page + 1 %>&boxPage=<%= boxPage %>"
-                       class="pagination-link">Next</a>
-                <% } %>
-            </div>
+            <% if (boxPagination.totalPages > 1) { %>
+                <div class="pagination">
+                    <% if (boxPagination.hasPrev) { %>
+                        <a href="?box=<%= currentBox %>&boxPage=<%= boxPage - 1 %>" class="pagination-link">&laquo; Previous</a>
+                    <% } %>
+                    
+                    <span class="pagination-info">Page <%= boxPage %> of <%= boxPagination.totalPages %></span>
+                    
+                    <% if (boxPagination.hasNext) { %>
+                        <a href="?box=<%= currentBox %>&boxPage=<%= boxPage + 1 %>" class="pagination-link">Next &raquo;</a>
+                    <% } %>
+                </div>
             <% } %>
         </div>
     </div>

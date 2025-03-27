@@ -1,0 +1,194 @@
+<% /* Set the title and other variables for the layout */ %>
+<% title = 'Farm' %>
+
+<div class="container mx-auto px-4">
+  <div>
+    <img src="https://i.imgur.com/fztdYkJ.png" alt="Farm Banner" class="location-banner w-full object-cover rounded-lg shadow-lg">
+    <div class="flex flex-col items-center">
+      <div class="flex items-center mb-4 w-full">
+        <a href="/town/visit" class="btn-secondary mr-4 hover:scale-105 transition-transform">
+          <i class="fas fa-arrow-left mr-2"></i> Back to Town
+        </a>
+        <h2 class="text-2xl font-display font-bold text-center text-amber-400 text-shadow-lg">Town Farm</h2>
+      </div>
+      <p class="text-center text-sm text-gray-200 mb-4">Work on the farm and breed your monsters to create new companions.</p>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+    <!-- Work Farm Section -->
+    <div class="location-card overflow-hidden">
+      <div class="relative">
+        <img src="https://i.imgur.com/fztdYkJ.png" alt="Work Farm" class="w-full h-48 object-cover">
+        <div class="absolute inset-0 bg-gradient-to-t from-black/90 to-transparent"></div>
+        <div class="absolute bottom-0 left-0 right-0 p-4">
+          <h3 class="text-xl font-bold text-white text-shadow-lg">Work Farm</h3>
+        </div>
+      </div>
+      <div class="location-card-content">
+        <p class="text-sm text-gray-300 mb-4">Assign your monsters to work on the farm to earn rewards and experience.</p>
+
+        <div class="bg-gray-800/50 p-4 rounded-lg mb-4">
+          <h4 class="text-amber-400 mb-2 font-medium">Farm Status</h4>
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-sm text-gray-300">Productivity:</span>
+            <div class="w-2/3 bg-gray-700 rounded-full h-2.5">
+              <div class="bg-green-600 h-2.5 rounded-full" style="width: 75%"></div>
+            </div>
+          </div>
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-sm text-gray-300">Monster Happiness:</span>
+            <div class="w-2/3 bg-gray-700 rounded-full h-2.5">
+              <div class="bg-yellow-600 h-2.5 rounded-full" style="width: 60%"></div>
+            </div>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-sm text-gray-300">Farm Expansion:</span>
+            <div class="w-2/3 bg-gray-700 rounded-full h-2.5">
+              <div class="bg-blue-600 h-2.5 rounded-full" style="width: 30%"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-gray-800/50 p-4 rounded-lg mb-4">
+          <h4 class="text-amber-400 mb-2 font-medium">Assigned Monsters</h4>
+          <div class="space-y-2">
+            <div class="flex items-center justify-between p-2 bg-gray-700/50 rounded-lg">
+              <div class="flex items-center">
+                <div class="w-8 h-8 bg-blue-600/20 rounded-full flex items-center justify-center mr-2">
+                  <i class="fas fa-dragon text-blue-400"></i>
+                </div>
+                <div>
+                  <div class="text-xs text-gray-300">Dragonite</div>
+                  <div class="text-xs text-green-400">Working (3h left)</div>
+                </div>
+              </div>
+              <button class="text-xs text-red-400 hover:text-red-300">
+                <i class="fas fa-times-circle"></i> Remove
+              </button>
+            </div>
+            <div class="flex items-center justify-between p-2 bg-gray-700/50 rounded-lg">
+              <div class="flex items-center">
+                <div class="w-8 h-8 bg-green-600/20 rounded-full flex items-center justify-center mr-2">
+                  <i class="fas fa-leaf text-green-400"></i>
+                </div>
+                <div>
+                  <div class="text-xs text-gray-300">Bulbasaur</div>
+                  <div class="text-xs text-green-400">Working (5h left)</div>
+                </div>
+              </div>
+              <button class="text-xs text-red-400 hover:text-red-300">
+                <i class="fas fa-times-circle"></i> Remove
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <a href="/town/visit/farm/work" class="btn-primary w-full text-center py-2 px-4 rounded text-sm">
+          <i class="fas fa-plus mr-1"></i> Assign Monster to Work
+        </a>
+      </div>
+    </div>
+
+    <!-- Breed Monsters Section -->
+    <div class="location-card overflow-hidden">
+      <div class="relative">
+        <img src="https://i.imgur.com/IhtWUxD.png" alt="Breed Monsters" class="w-full h-48 object-cover">
+        <div class="absolute inset-0 bg-gradient-to-t from-black/90 to-transparent"></div>
+        <div class="absolute bottom-0 left-0 right-0 p-4">
+          <h3 class="text-xl font-bold text-white text-shadow-lg">Breed Monsters</h3>
+        </div>
+      </div>
+      <div class="location-card-content">
+        <p class="text-sm text-gray-300 mb-4">Pair compatible monsters to breed and create eggs that will hatch into new monsters.</p>
+
+        <div class="bg-gray-800/50 p-4 rounded-lg mb-4">
+          <h4 class="text-amber-400 mb-2 font-medium">Breeding Pairs</h4>
+          <div class="space-y-2">
+            <div class="p-2 bg-gray-700/50 rounded-lg">
+              <div class="flex justify-between items-center mb-2">
+                <div class="text-xs text-gray-300">Charizard + Dragonite</div>
+                <div class="text-xs text-amber-400">Compatibility: 85%</div>
+              </div>
+              <div class="w-full bg-gray-700 rounded-full h-1.5 mb-2">
+                <div class="bg-amber-600 h-1.5 rounded-full" style="width: 45%"></div>
+              </div>
+              <div class="text-xs text-gray-400 text-right">Egg progress: 45%</div>
+            </div>
+            <div class="p-2 bg-gray-700/50 rounded-lg">
+              <div class="flex justify-between items-center mb-2">
+                <div class="text-xs text-gray-300">Pikachu + Raichu</div>
+                <div class="text-xs text-green-400">Compatibility: 95%</div>
+              </div>
+              <div class="w-full bg-gray-700 rounded-full h-1.5 mb-2">
+                <div class="bg-amber-600 h-1.5 rounded-full" style="width: 78%"></div>
+              </div>
+              <div class="text-xs text-gray-400 text-right">Egg progress: 78%</div>
+            </div>
+          </div>
+        </div>
+
+        <a href="/town/visit/farm/breed" class="btn-primary w-full text-center py-2 px-4 rounded text-sm">
+          <i class="fas fa-heart mr-1"></i> Create New Breeding Pair
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+.text-shadow {
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.text-shadow-lg {
+  text-shadow: 0 4px 8px rgba(0, 0, 0, 0.8);
+}
+
+.location-card {
+  background-color: var(--card-background);
+  border-radius: 0.75rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.location-card:hover {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+}
+
+.location-card-content {
+  padding: 1.25rem;
+  background-color: var(--card-background);
+}
+
+.btn-primary {
+  background-color: var(--accent-color);
+  color: var(--background-color);
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.btn-primary:hover {
+  background-color: var(--accent-hover);
+  transform: translateY(-2px);
+}
+
+.btn-secondary {
+  background-color: var(--secondary-color);
+  color: var(--text-color);
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  border-radius: 0.375rem;
+  transition: all 0.2s;
+}
+
+.btn-secondary:hover {
+  background-color: var(--secondary-hover);
+}
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Add any client-side functionality here
+  });
+</script>

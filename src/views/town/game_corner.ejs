@@ -1,0 +1,300 @@
+<% /* Set the title and other variables for the layout */ %>
+<% title = 'Pomodoro Game Corner' %>
+
+<!-- Main Container -->
+<div class="container mx-auto px-4">
+  <div class="flex items-center mb-4 w-full">
+    <a href="/town/visit" class="btn-secondary mr-4 hover:scale-105 transition-transform">
+      <i class="fas fa-arrow-left mr-2"></i> Back to Town
+    </a>
+  </div>
+
+  <!-- Message notification section -->
+  <% if (typeof message !== 'undefined' && message) { %>
+    <div class="notification <%= messageType === 'error' ? 'bg-red-800/70' : 'bg-green-800/70' %> text-white p-4 rounded-lg mb-4 flex items-center justify-between">
+      <div>
+        <i class="<%= messageType === 'error' ? 'fas fa-exclamation-circle' : 'fas fa-check-circle' %> mr-2"></i>
+        <%= message %>
+      </div>
+      <button class="text-white hover:text-gray-200" onclick="this.parentElement.style.display='none'">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+  <% } %>
+
+  <!-- Main Content Area with Collapsible Sections -->
+  <div class="w-full max-w-screen-2xl mx-auto px-4">
+    <!-- Grid Container -->
+    <div class="grid grid-cols-4 gap-6">
+      <!-- Video Player Section (75%) -->
+      <div class="col-span-3">
+        <div class="bg-gray-800 rounded-lg shadow-lg">
+          <div class="flex justify-between items-center p-4" id="video-header">
+            <h3 class="text-xl font-bold text-white">Pomodoro Videos</h3>
+            <div class="flex items-center space-x-3">
+              <button id="expand-video" class="bg-white/10 hover:bg-white/20 text-white p-2 rounded transition-all">
+                <i class="fas fa-expand-alt"></i>
+              </button>
+              <button id="collapse-video" class="bg-white/10 hover:bg-white/20 text-white p-2 rounded transition-all">
+                <i class="fas fa-compress-alt"></i>
+              </button>
+            </div>
+          </div>
+          <div id="video-content">
+            <div class="relative">
+              <video id="pomodoro-video" class="w-full" controls loop>
+                <source src="/videos/pomodoro1.mp4" type="video/mp4" id="video-source">
+                Your browser does not support the video tag.
+              </video>
+              <div class="video-controls p-4 bg-gray-800/80 absolute bottom-0 left-0 right-0">
+                <div class="flex justify-between items-center">
+                  <div>
+                    <button id="mute-toggle" class="text-white p-2 rounded hover:bg-gray-700">
+                      <i class="fas fa-volume-up" id="volume-icon"></i>
+                    </button>
+                  </div>
+                  <div>
+                    <select id="video-selector" class="bg-gray-700 text-white rounded p-2">
+                      <option value="/videos/pomodoro1.mp4">Default Video</option>
+                      <option value="/videos/pomodoro2.mp4">Forest Scene</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Timer Section (25%) -->
+      <div class="col-span-1">
+        <div class="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl shadow-xl overflow-hidden">
+          <!-- Timer Display with Progress Circle -->
+          <div class="p-5">
+            <!-- Progress Circle Container -->
+            <div class="relative w-full aspect-square max-w-[160px] mx-auto mb-6">
+              <!-- SVG Progress Circle -->
+              <svg class="w-full h-full -rotate-90" viewBox="0 0 100 100">
+                <!-- Background Circle -->
+                <circle
+                  cx="50" cy="50" r="40"
+                  fill="none"
+                  stroke="rgba(255,255,255,0.1)"
+                  stroke-width="8"
+                />
+                <!-- Progress Circle -->
+                <circle
+                  id="progress-circle"
+                  cx="50" cy="50" r="40"
+                  fill="none"
+                  stroke="#8B5CF6"
+                  stroke-width="8"
+                  stroke-linecap="round"
+                  stroke-dasharray="251.3"
+                  stroke-dashoffset="251.3"
+                />
+              </svg>
+
+              <!-- Timer Display -->
+              <div class="absolute inset-0 flex items-center justify-center">
+                <div class="text-center">
+                  <div class="text-3xl font-bold text-white font-mono tracking-wider" id="timer-display">25:00</div>
+                  <div class="text-xs text-purple-300 mt-1" id="session-info">Session 0/4</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Timer Status -->
+            <div class="text-xs text-gray-400 italic mb-4 text-center" id="timer-status">Ready to start</div>
+
+            <!-- Timer Controls -->
+            <div class="grid grid-cols-3 gap-2 w-full">
+              <button id="start-timer" class="bg-green-600 hover:bg-green-500 text-white py-2 rounded-lg transition-all shadow-md flex items-center justify-center text-xs">
+                <i class="fas fa-play mr-1"></i>Start
+              </button>
+              <button id="pause-timer" class="bg-yellow-600 hover:bg-yellow-500 text-white py-2 rounded-lg transition-all shadow-md flex items-center justify-center text-xs" disabled>
+                <i class="fas fa-pause mr-1"></i>Pause
+              </button>
+              <button id="reset-timer" class="bg-red-600 hover:bg-red-500 text-white py-2 rounded-lg transition-all shadow-md flex items-center justify-center text-xs" disabled>
+                <i class="fas fa-undo mr-1"></i>Reset
+              </button>
+            </div>
+          </div>
+
+          <!-- Collapsible Settings -->
+          <div class="border-t border-gray-700">
+            <button id="toggle-settings" class="w-full flex items-center justify-between text-gray-300 hover:text-white py-3 px-4 bg-gray-800/50">
+              <span class="font-medium text-sm">Timer Settings</span>
+              <i class="fas fa-chevron-down transition-transform duration-300" id="settings-chevron"></i>
+            </button>
+
+            <div id="settings-panel" class="hidden px-4 py-3 space-y-3 bg-gray-800/30">
+              <!-- Focus Duration -->
+              <div>
+                <label class="block text-xs text-gray-400 mb-1.5">Focus Duration (minutes)</label>
+                <div class="flex items-center space-x-2">
+                  <button id="decrease-focus" class="bg-gray-700 hover:bg-gray-600 text-white w-8 h-8 rounded-lg flex items-center justify-center shadow-sm">-</button>
+                  <input type="number" id="focus-duration" value="25" min="1" max="60" step="1"
+                         class="bg-gray-700 text-white text-center w-16 rounded-lg px-2 py-1.5 shadow-sm">
+                  <button id="increase-focus" class="bg-gray-700 hover:bg-gray-600 text-white w-8 h-8 rounded-lg flex items-center justify-center shadow-sm">+</button>
+                </div>
+              </div>
+
+              <!-- Break Duration -->
+              <div>
+                <label class="block text-xs text-gray-400 mb-1.5">Break Duration (minutes)</label>
+                <div class="flex items-center space-x-2">
+                  <button id="decrease-break" class="bg-gray-700 hover:bg-gray-600 text-white w-8 h-8 rounded-lg flex items-center justify-center shadow-sm">-</button>
+                  <input type="number" id="break-duration" value="5" min="1" max="30" step="1"
+                         class="bg-gray-700 text-white text-center w-16 rounded-lg px-2 py-1.5 shadow-sm">
+                  <button id="increase-break" class="bg-gray-700 hover:bg-gray-600 text-white w-8 h-8 rounded-lg flex items-center justify-center shadow-sm">+</button>
+                </div>
+              </div>
+
+              <!-- Number of Sessions -->
+              <div>
+                <label class="block text-xs text-gray-400 mb-1.5">Number of Sessions</label>
+                <div class="flex items-center space-x-2">
+                  <button id="decrease-sessions" class="bg-gray-700 hover:bg-gray-600 text-white w-8 h-8 rounded-lg flex items-center justify-center shadow-sm">-</button>
+                  <input type="number" id="num-sessions" value="4" min="1" max="10" step="1"
+                         class="bg-gray-700 text-white text-center w-16 rounded-lg px-2 py-1.5 shadow-sm">
+                  <button id="increase-sessions" class="bg-gray-700 hover:bg-gray-600 text-white w-8 h-8 rounded-lg flex items-center justify-center shadow-sm">+</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Rewards Modal - Initially hidden -->
+  <div id="rewards-container" class="fixed inset-0 bg-black/80 flex items-center justify-center z-50 hidden" style="display: none;">
+    <div class="bg-gray-800/95 rounded-xl shadow-2xl max-w-4xl w-full p-6 border border-amber-500/30 backdrop-blur-sm mx-auto my-10 transform transition-all duration-300 scale-95 max-h-[90vh] overflow-y-auto">
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="text-xl font-bold text-amber-400">Pomodoro Rewards</h3>
+        <button id="close-rewards-btn" class="text-gray-400 hover:text-white">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="relative">
+        <img src="https://i.imgur.com/XlGrD6J.jpeg" alt="Rewards" class="w-full h-48 object-cover">
+        <div class="absolute inset-0 bg-gradient-to-t from-black/90 to-transparent"></div>
+        <div class="absolute bottom-0 left-0 right-0 p-4">
+          <h3 class="text-xl font-bold text-white text-shadow-lg">Pomodoro Rewards</h3>
+        </div>
+      </div>
+      <div class="location-card-content">
+        <p class="text-sm text-gray-300 mb-4">Congratulations on completing your Pomodoro sessions! Here are your rewards:</p>
+
+        <div class="bg-gray-800/50 p-4 rounded-lg mb-4">
+          <h4 class="text-amber-400 mb-2 font-medium">Session Summary</h4>
+          <div class="space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="text-sm text-gray-300">Completed Sessions:</span>
+              <span class="text-sm text-white" id="completed-sessions">0</span>
+            </div>
+            <div class="flex items-center justify-between">
+              <span class="text-sm text-gray-300">Focus Minutes:</span>
+              <span class="text-sm text-white" id="focus-minutes">0</span>
+            </div>
+            <div class="flex items-center justify-between">
+              <span class="text-sm text-gray-300">Productivity Score:</span>
+              <span class="text-sm text-white" id="productivity-score">0%</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Trainer Information -->
+        <div class="bg-gray-800/50 p-4 rounded-lg mb-4">
+          <h4 class="text-amber-400 mb-2 font-medium">Your Trainers</h4>
+          <p class="text-sm text-gray-300 mb-3">Rewards will be randomly distributed among your trainers and monsters:</p>
+
+          <div id="trainers-container" class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-2">
+            <!-- Trainers will be loaded here -->
+            <div class="text-center text-gray-400 py-4 col-span-full">
+              <i class="fas fa-spinner fa-spin text-xl"></i>
+              <p class="mt-1">Loading trainers...</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Rewards Section -->
+        <div class="bg-gray-800/50 p-4 rounded-lg mb-4">
+          <h4 class="text-amber-400 mb-2 font-medium">Your Rewards</h4>
+          <div id="rewards-list" class="space-y-4">
+            <!-- Rewards will be dynamically inserted here -->
+            <div class="text-center text-gray-400 py-4">
+              <i class="fas fa-spinner fa-spin text-2xl"></i>
+              <p class="mt-2">Rolling rewards...</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Monster Encounter Section -->
+        <div id="monster-encounter-container" class="hidden mb-4">
+          <h4 class="text-amber-400 mb-2 font-medium">Monster Encounters</h4>
+          <div id="monster-encounters-list" class="grid grid-cols-1 gap-4">
+            <!-- Monster encounters will be inserted here -->
+          </div>
+        </div>
+
+        <button id="claim-rewards-btn" class="btn-primary w-full text-center py-3 px-4 rounded-lg text-sm font-medium">
+          <i class="fas fa-award mr-1"></i> Claim All Rewards
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Work Assessment Modal - Initially hidden -->
+  <div id="work-assessment-modal" class="fixed inset-0 bg-black/80 items-center justify-center z-50 hidden" style="display: none;">
+    <div class="bg-gray-800/95 rounded-xl shadow-2xl max-w-md w-full p-8 border border-purple-500/30 backdrop-blur-sm mx-auto my-20 transform transition-all duration-300 scale-95">
+      <div class="text-center mb-2">
+        <i class="fas fa-check-circle text-green-400 text-3xl"></i>
+      </div>
+      <h3 class="text-xl font-bold text-amber-400 mb-4">Session Complete!</h3>
+      <p class="text-gray-300 mb-6">How much of the time did you actually work during this session?</p>
+
+      <div class="grid grid-cols-2 gap-4 mb-6">
+        <button class="work-assessment-btn bg-gray-700/50 hover:bg-red-900/30 text-white py-4 px-4 rounded-xl transition-all transform hover:scale-105 border border-gray-600/30 hover:border-red-500/50" data-value="none">
+          <div class="flex flex-col items-center">
+            <i class="fas fa-times-circle text-red-500 text-2xl mb-3"></i>
+            <span class="block font-medium">None</span>
+            <span class="text-xs text-gray-400 mt-1">0% productive</span>
+          </div>
+        </button>
+        <button class="work-assessment-btn bg-gray-700/50 hover:bg-yellow-900/30 text-white py-4 px-4 rounded-xl transition-all transform hover:scale-105 border border-gray-600/30 hover:border-yellow-500/50" data-value="some">
+          <div class="flex flex-col items-center">
+            <i class="fas fa-dot-circle text-yellow-500 text-2xl mb-3"></i>
+            <span class="block font-medium">Some</span>
+            <span class="text-xs text-gray-400 mt-1">~25% productive</span>
+          </div>
+        </button>
+        <button class="work-assessment-btn bg-gray-700/50 hover:bg-blue-900/30 text-white py-4 px-4 rounded-xl transition-all transform hover:scale-105 border border-gray-600/30 hover:border-blue-500/50" data-value="most">
+          <div class="flex flex-col items-center">
+            <i class="fas fa-check-circle text-blue-500 text-2xl mb-3"></i>
+            <span class="block font-medium">Most</span>
+            <span class="text-xs text-gray-400 mt-1">~75% productive</span>
+          </div>
+        </button>
+        <button class="work-assessment-btn bg-gray-700/50 hover:bg-green-900/30 text-white py-4 px-4 rounded-xl transition-all transform hover:scale-105 border border-gray-600/30 hover:border-green-500/50" data-value="all">
+          <div class="flex flex-col items-center">
+            <i class="fas fa-star text-green-500 text-2xl mb-3"></i>
+            <span class="block font-medium">All</span>
+            <span class="text-xs text-gray-400 mt-1">100% productive</span>
+          </div>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<link rel="stylesheet" href="/town/visit/game_corner.css">
+
+<script>
+  // Pass server-side data to client-side JavaScript
+  const trainers = <%- JSON.stringify(trainers || []) %>;
+  const monsters = <%- JSON.stringify(monsters || []) %>;
+</script>
+
+<script src="/town/visit/game_corner.js"></script>

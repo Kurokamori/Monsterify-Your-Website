@@ -6,6 +6,170 @@ const Item = require('./Item');
  */
 class ShopConfig {
   /**
+   * Create the shop_config table if it doesn't exist and initialize shop data
+   * @returns {Promise<void>}
+   */
+  static async createTableIfNotExists() {
+    try {
+      const query = `
+        CREATE TABLE IF NOT EXISTS shop_config (
+          shop_id VARCHAR(50) PRIMARY KEY,
+          name VARCHAR(100) NOT NULL,
+          description TEXT,
+          image_url TEXT,
+          category VARCHAR(50) NOT NULL,
+          price_multiplier_min FLOAT DEFAULT 1.0,
+          price_multiplier_max FLOAT DEFAULT 2.0,
+          min_items INTEGER DEFAULT 5,
+          max_items INTEGER DEFAULT 10,
+          restock_hour INTEGER DEFAULT 0,
+          is_active BOOLEAN DEFAULT TRUE,
+          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+          updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
+
+        CREATE TABLE IF NOT EXISTS daily_shop_items (
+          id SERIAL PRIMARY KEY,
+          shop_id VARCHAR(50) REFERENCES shop_config(shop_id),
+          item_id VARCHAR(100),
+          price INTEGER NOT NULL,
+          max_quantity INTEGER DEFAULT 1,
+          date DATE NOT NULL,
+          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
+
+        CREATE TABLE IF NOT EXISTS player_shop_purchases (
+          id SERIAL PRIMARY KEY,
+          player_id VARCHAR(50) NOT NULL,
+          shop_id VARCHAR(50) NOT NULL,
+          item_id VARCHAR(100) NOT NULL,
+          quantity INTEGER NOT NULL,
+          date DATE NOT NULL,
+          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+          updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
+
+        CREATE INDEX IF NOT EXISTS idx_daily_shop_items_shop_date ON daily_shop_items(shop_id, date);
+        CREATE INDEX IF NOT EXISTS idx_player_shop_purchases_player ON player_shop_purchases(player_id);
+        CREATE INDEX IF NOT EXISTS idx_player_shop_purchases_shop_date ON player_shop_purchases(shop_id, date);
+      `;
+
+      await db.query(query);
+      console.log('Shop tables created or already exist');
+
+      // Check if we need to initialize shop data
+      const checkQuery = 'SELECT COUNT(*) as count FROM shop_config';
+      const checkResult = await db.query(checkQuery);
+      const shopCount = parseInt(checkResult.rows[0].count);
+
+      if (shopCount === 0) {
+        await this.initializeShopData();
+      }
+    } catch (error) {
+      console.error('Error creating shop tables:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Initialize shop data with default shops
+   * @returns {Promise<void>}
+   */
+  static async initializeShopData() {
+    try {
+      const shops = [
+        {
+          shop_id: 'berry_shop',
+          name: 'Apothecary',
+          description: 'Purchase berries and healing items for your monsters.',
+          image_url: 'https://i.imgur.com/HViAPDq.jpeg',
+          category: 'berries',
+          price_multiplier_min: 1.0,
+          price_multiplier_max: 1.5,
+          min_items: 5,
+          max_items: 10
+        },
+        {
+          shop_id: 'pastry_shop',
+          name: 'Bakery',
+          description: 'Purchase delicious pastries for your monsters.',
+          image_url: 'https://i.imgur.com/5cgcSGC.png',
+          category: 'pastries',
+          price_multiplier_min: 1.0,
+          price_multiplier_max: 1.5,
+          min_items: 5,
+          max_items: 10
+        },
+        {
+          shop_id: 'evolution_shop',
+          name: 'Witch\'s Hut',
+          description: 'Purchase evolution items and learn new abilities.',
+          image_url: 'https://i.imgur.com/5cgcSGC.png',
+          category: 'evolution',
+          price_multiplier_min: 1.5,
+          price_multiplier_max: 2.5,
+          min_items: 3,
+          max_items: 8
+        },
+        {
+          shop_id: 'ball_shop',
+          name: 'Mega Mart',
+          description: 'Purchase Poké Balls and other catching items.',
+          image_url: 'https://i.imgur.com/RmKySNO.png',
+          category: 'balls',
+          price_multiplier_min: 1.0,
+          price_multiplier_max: 2.0,
+          min_items: 4,
+          max_items: 8
+        },
+        {
+          shop_id: 'antique_shop',
+          name: 'Antique Store',
+          description: 'Purchase rare antiques and collectibles.',
+          image_url: 'https://i.imgur.com/Yg6BWUm.jpeg',
+          category: 'antiques',
+          price_multiplier_min: 2.0,
+          price_multiplier_max: 3.0,
+          min_items: 3,
+          max_items: 6
+        },
+        {
+          shop_id: 'egg_shop',
+          name: 'Nursery',
+          description: 'Purchase egg items and accessories.',
+          image_url: 'https://i.imgur.com/IhtWUxD.png',
+          category: 'EGGS',
+          price_multiplier_min: 1.5,
+          price_multiplier_max: 2.5,
+          min_items: 3,
+          max_items: 7
+        },
+        {
+          shop_id: 'black_market_shop',
+          name: 'Pirate\'s Dock',
+          description: 'Purchase black market items at a markup.',
+          image_url: 'https://i.imgur.com/RmKySNO.png',
+          category: 'black_market',
+          price_multiplier_min: 2.5,
+          price_multiplier_max: 4.0,
+          min_items: 2,
+          max_items: 5
+        }
+      ];
+
+      for (const shop of shops) {
+        await this.create(shop);
+        console.log(`Created shop: ${shop.name}`);
+      }
+
+      console.log('Shop data initialized successfully');
+    } catch (error) {
+      console.error('Error initializing shop data:', error);
+      throw error;
+    }
+  }
+
+  /**
    * Get all active shops
    * @returns {Promise<Array>} Array of shop configurations
    */
@@ -357,6 +521,42 @@ class DailyShopItems {
         success: false,
         error: error.message
       };
+    }
+  }
+
+  /**
+   * Initialize shop items for all shops
+   * @param {string} date - The date in YYYY-MM-DD format
+   * @returns {Promise<boolean>} True if shops were initialized
+   */
+  static async initializeShopItems(date = null) {
+    try {
+      // If no date is provided, use today
+      const targetDate = date || new Date().toISOString().split('T')[0];
+      console.log(`Initializing shop items for ${targetDate}`);
+
+      // Check if we have any items for today
+      const checkQuery = `
+        SELECT COUNT(*) as count
+        FROM daily_shop_items
+        WHERE date = $1
+      `;
+
+      const checkResult = await db.query(checkQuery, [targetDate]);
+      const itemCount = parseInt(checkResult.rows[0].count);
+
+      if (itemCount > 0) {
+        console.log(`Shops already have ${itemCount} items for ${targetDate}`);
+        return false;
+      }
+
+      // Restock all shops
+      console.log(`Initializing all shops for ${targetDate}`);
+      await this.restockAllShops(targetDate);
+      return true;
+    } catch (error) {
+      console.error('Error initializing shop items:', error);
+      return false;
     }
   }
 

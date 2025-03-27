@@ -471,39 +471,18 @@ textarea.form-control {
                     <div class="monster-card">
                         <div class="monster-card-header">
                             <h3 class="monster-card-title">
-                                <%
-                                    // Create a title from the species data names
-                                    const speciesNames = monster.speciesData.map(s => {
-                                        if (s.species === 'Pokemon') return s.data.SpeciesName;
-                                        if (s.species === 'Digimon') return s.data.name;
-                                        if (s.species === 'Yokai') return s.data.Name;
-                                        return s.species;
-                                    }).filter(Boolean);
-
-                                    // Join with slashes
-                                    const title = speciesNames.join(' / ');
-                                %>
-                                <%= title %>
+                                <%= monster.title %>
                             </h3>
                             <form action="/admin/monster-claim" method="GET">
-                                <%
-                                    // Get actual species names from speciesData
-                                    const speciesNames = monster.speciesData.map(s => {
-                                        if (s.species === 'Pokemon') return s.data.SpeciesName;
-                                        if (s.species === 'Digimon') return s.data.name;
-                                        if (s.species === 'Yokai') return s.data.Name;
-                                        return s.species;
-                                    }).filter(Boolean);
-                                %>
-                                <input type="hidden" name="species1" value="<%= speciesNames[0] || monster.species1 %>">
-                                <input type="hidden" name="species2" value="<%= speciesNames[1] || monster.species2 %>">
-                                <input type="hidden" name="species3" value="<%= speciesNames[2] || monster.species3 %>">
-                                <input type="hidden" name="type1" value="<%= monster.type1 %>">
-                                <input type="hidden" name="type2" value="<%= monster.type2 %>">
-                                <input type="hidden" name="type3" value="<%= monster.type3 %>">
-                                <input type="hidden" name="type4" value="<%= monster.type4 %>">
-                                <input type="hidden" name="type5" value="<%= monster.type5 %>">
-                                <input type="hidden" name="attribute" value="<%= monster.attribute %>">
+                                <input type="hidden" name="species1" value="<%= (monster.species && monster.species[0]) || monster.species1 || '' %>">
+                                <input type="hidden" name="species2" value="<%= (monster.species && monster.species[1]) || monster.species2 || '' %>">
+                                <input type="hidden" name="species3" value="<%= (monster.species && monster.species[2]) || monster.species3 || '' %>">
+                                <input type="hidden" name="type1" value="<%= monster.type1 || '' %>">
+                                <input type="hidden" name="type2" value="<%= monster.type2 || '' %>">
+                                <input type="hidden" name="type3" value="<%= monster.type3 || '' %>">
+                                <input type="hidden" name="type4" value="<%= monster.type4 || '' %>">
+                                <input type="hidden" name="type5" value="<%= monster.type5 || '' %>">
+                                <input type="hidden" name="attribute" value="<%= monster.attribute || '' %>">
                                 <button type="submit" class="btn btn-primary">Claim This Monster</button>
                             </form>
                         </div>

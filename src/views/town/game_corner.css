@@ -1,0 +1,216 @@
+<style>
+ .grid-cols-4 {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+ .col-span-1 {
+  grid-column: span 1 / span 1;
+}
+ .col-span-3 {
+  grid-column: span 3 / span 3;
+}
+
+.text-shadow {
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.text-shadow-lg {
+  text-shadow: 0 4px 8px rgba(0, 0, 0, 0.8);
+}
+
+.location-card {
+  background-color: var(--card-background);
+  border-radius: 0.75rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transition: all 0.3s ease;
+}
+
+.location-card:hover {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+}
+
+.location-card-content {
+  padding: 1.25rem;
+  background-color: var(--card-background);
+}
+
+/* Collapsible sections */
+#video-section, #timer-section {
+  transition: all 0.3s ease-in-out;
+}
+
+#video-header, #timer-header {
+  position: relative;
+  z-index: 10;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+#video-content, #timer-content {
+  transition: all 0.3s ease;
+}
+
+.btn-primary {
+  background-color: var(--accent-color);
+  color: var(--background-color);
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background-color: var(--accent-hover);
+  transform: translateY(-2px);
+}
+
+.btn-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-secondary {
+  background-color: var(--accent-color);
+  color: var(--text-color);
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  border-radius: 0.375rem;
+  transition: all 0.2s;
+}
+
+.btn-secondary:hover {
+  background-color: var(--accent-hover);
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Video player styles */
+.video-player-container {
+  position: relative;
+}
+
+.video-controls {
+  transition: opacity 0.3s ease;
+  opacity: 0;
+}
+
+.video-player-container:hover .video-controls {
+  opacity: 1;
+}
+
+/* Work assessment modal */
+#work-assessment-modal {
+  transition: opacity 0.3s ease;
+  opacity: 0;
+}
+
+#work-assessment-modal.show {
+  opacity: 1;
+}
+
+#progress-wheel {
+  transform-origin: center;
+  transition: clip-path 1s linear;
+}
+
+.settings-panel-enter {
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
+}
+
+.settings-panel-enter-active {
+  max-height: 500px;
+  opacity: 1;
+}
+
+#progress-circle {
+  transition: stroke-dashoffset 0.5s ease, stroke 0.5s ease;
+  filter: drop-shadow(0 1px 3px rgba(139, 92, 246, 0.5));
+}
+
+/* Button glow effects */
+#start-timer:not(:disabled) {
+  box-shadow: 0 0 15px rgba(74, 222, 128, 0.2);
+}
+
+#pause-timer:not(:disabled) {
+  box-shadow: 0 0 15px rgba(251, 191, 36, 0.2);
+}
+
+#reset-timer:not(:disabled) {
+  box-shadow: 0 0 15px rgba(239, 68, 68, 0.2);
+}
+
+/* Disable number input arrows */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+/* Add to your existing style section */
+.modal-overlay {
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.modal-content {
+  transform: scale(0.95);
+  opacity: 0;
+  transition: all 0.3s ease-in-out;
+}
+
+.modal-overlay.show {
+  opacity: 1;
+}
+
+.modal-overlay.show .modal-content {
+  transform: scale(1);
+  opacity: 1;
+}
+
+/* Popup modal styles */
+#rewards-container, #work-assessment-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.3s ease;
+}
+
+#rewards-container .bg-gray-800\/95, #work-assessment-modal .bg-gray-800\/95 {
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+/* Animation for rewards and encounters */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.reward-item, .monster-card {
+  animation: fadeInUp 0.3s ease-out forwards;
+}
+
+</style>
