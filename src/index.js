@@ -41,6 +41,7 @@ const User = require('./models/User');
 const Trainer = require('./models/Trainer');
 const Monster = require('./models/Monster');
 const Item = require('./models/Item');
+const rewardRoutes = require('./routes/api/rewards');
 const { ShopConfig, DailyShopItems, PlayerShopPurchases } = require('./models/ShopSystem');
 const Pokemon = require('./models/Pokemon');
 const Digimon = require('./models/Digimon');
@@ -50,16 +51,34 @@ const Task = require('./models/Task');
 const Habit = require('./models/Habit');
 const TaskTemplate = require('./models/TaskTemplate');
 const Reminder = require('./models/Reminder');
+const GardenHarvest = require('./models/GardenHarvest');
 const MonsterRoller = require('./utils/MonsterRoller');
 const MonsterInitializer = require('./utils/MonsterInitializer');
+const EvolutionService = require('./utils/EvolutionService');
 const Trade = require('./models/Trade');
 require('dotenv').config();
 
 const app = express();
 
 const PORT = process.env.PORT || 9000;
-app.listen(PORT, () => {
+
+// Initialize database tables
+async function initializeTables() {
+  try {
+    // Initialize garden harvests table
+    await GardenHarvest.initTable();
+    console.log('Database tables initialized');
+  } catch (error) {
+    console.error('Error initializing database tables:', error);
+  }
+}
+
+// Start the server
+app.listen(PORT, async () => {
   console.log(`Server running on port ${PORT}`);
+
+  // Initialize database tables
+  await initializeTables();
 });
 
 
@@ -1619,6 +1638,8 @@ const shopRoutes = require('./routes/admin/shops');
 
 // Use shop management routes
 app.use('/admin/shops', shopRoutes);
+
+app.use('/api/rewards', rewardRoutes);
 
 // Monster Roller routes
 app.get('/admin/monster-roller', async (req, res) => {
@@ -3793,6 +3814,17 @@ app.use('/api/game-corner', gameCornerClaimRouter);
 const gameCornerApiRouter = require('./routes/game_corner_api');
 app.use('/api/game-corner-gen', gameCornerApiRouter);
 
+// Witch's Hut route
+app.get('/town/visit/witchs_hut', (req, res) => {
+  // Check if user is logged in
+  if (!req.session.user) {
+    return res.redirect('/login');
+  }
+
+  // Render the witch's hut view
+  res.render('town/witchs_hut');
+});
+
 // Pirate's Dock routes
 app.get('/town/visit/pirates_dock', (req, res) => {
   // Check if user is logged in
@@ -3930,14 +3962,445 @@ app.get('/town/visit/garden/fertilize', (req, res) => {
   res.redirect('/town/visit/garden?message=You added fertilizer to the garden!&messageType=success');
 });
 
-app.get('/town/visit/garden/harvest', (req, res) => {
+app.get('/town/visit/garden/harvest', async (req, res) => {
   // Check if user is logged in
   if (!req.session.user) {
     return res.redirect('/login');
   }
 
-  // Redirect back to garden with a message
-  res.redirect('/town/visit/garden?message=You harvested all ready crops!&messageType=success');
+  try {
+    // Initialize garden harvests table if needed
+    await GardenHarvest.initTable();
+
+    // Get the user's Discord ID
+    const discordUserId = req.session.user.discord_id || req.session.user.id;
+
+    // Get the user's trainers
+    const trainers = await Trainer.getByUserId(discordUserId);
+    if (!trainers || trainers.length === 0) {
+      return res.redirect('/town/visit/garden?message=You need at least one trainer to harvest the garden!&messageType=error');
+    }
+
+    // Check if the user has already harvested today
+    const hasHarvestedToday = await GardenHarvest.hasHarvestedToday(discordUserId);
+    if (hasHarvestedToday) {
+      return res.redirect('/town/visit/garden?message=You have already harvested your garden today. Come back tomorrow!&messageType=info');
+    }
+
+    // Set garden points (in a real implementation, this would be based on user's garden size/quality)
+    // For now, we'll generate a random number between 1 and 5
+    const gardenPoints = Math.floor(Math.random() * 5) + 1;
+
+    // Record the harvest in the database
+    await GardenHarvest.recordHarvest(discordUserId, gardenPoints);
+
+    // Generate rewards based on garden points
+    const rewards = [];
+
+    // Roll for berry items (25% chance per garden point)
+    for (let i = 0; i < gardenPoints; i++) {
+      if (Math.random() < 0.25) { // 25% chance
+        rewards.push({
+          id: `berry-${Date.now()}-${i}`,
+          type: 'item',
+          reward_type: 'item',
+          rarity: 'common',
+          reward_data: {
+            name: RewardSystem.getRandomItemForSource('garden', 'common'),
+            quantity: Math.floor(Math.random() * 3) + 1,
+            category: 'berries'
+          }
+        });
+      }
+    }
+
+    // Roll for garden monsters (15% chance per garden point)
+    for (let i = 0; i < gardenPoints; i++) {
+      if (Math.random() < 0.15) { // 15% chance
+        // Determine monster rarity
+        let monsterRarity = 'common';
+        const rarityRoll = Math.random() * 100;
+
+        if (rarityRoll < 0.01) { // 0.01% chance for legendary
+          monsterRarity = 'legendary';
+        } else if (rarityRoll < 1) { // 1% chance for epic
+          monsterRarity = 'epic';
+        } else if (rarityRoll < 10) { // 10% chance for rare
+          monsterRarity = 'rare';
+        } else if (rarityRoll < 30) { // 30% chance for uncommon
+          monsterRarity = 'uncommon';
+        }
+
+        rewards.push({
+          id: `monster-${Date.now()}-${i}`,
+          type: 'monster',
+          reward_type: 'monster',
+          rarity: monsterRarity,
+          reward_data: {
+            species: ['Pokemon', 'Digimon'],
+            types: ['Grass', 'Bug'],
+            minLevel: 1,
+            maxLevel: 10,
+            filters: {
+              pokemon: { rarity: RewardSystem.mapRarityToPokeRarity(monsterRarity) },
+              digimon: { stage: RewardSystem.mapRarityToDigiStage(monsterRarity) }
+            }
+          }
+        });
+      }
+    }
+
+    // Add a coin reward as a fallback if no other rewards were generated
+    if (rewards.length === 0) {
+      rewards.push({
+        id: `coin-${Date.now()}`,
+        type: 'coin',
+        reward_type: 'coin',
+        rarity: 'common',
+        reward_data: {
+          amount: gardenPoints * 50,
+          title: `${gardenPoints * 50} Coins`
+        }
+      });
+    }
+
+    // Process rewards to generate random values
+    const processedRewards = await RewardSystem.processRewards(rewards);
+
+    // Store rewards in session for claiming later
+    req.session.rewards = processedRewards;
+
+    // Render the rewards view
+    res.render('rewards', {
+      title: 'Garden Harvest Rewards',
+      rewards: processedRewards,
+      trainers: trainers,
+      source: 'garden',
+      message: `You harvested your garden and earned ${gardenPoints} garden points!`,
+      returnUrl: '/town/visit/garden'
+    });
+  } catch (error) {
+    console.error('Error harvesting garden:', error);
+    res.redirect('/town/visit/garden?message=Error harvesting garden: ' + error.message + '&messageType=error');
+  }
+});
+
+// API routes for evolution
+app.get('/api/trainers', async (req, res) => {
+  try {
+    // Check if user is logged in
+    if (!req.session.user) {
+      return res.status(401).json({ success: false, message: 'You must be logged in to access this resource' });
+    }
+
+    // Get user's trainers
+    const discordUserId = req.session.user.discord_id || req.session.user.id;
+    const trainers = await Trainer.getByUserId(discordUserId);
+
+    res.json(trainers || []);
+  } catch (error) {
+    console.error('Error getting trainers:', error);
+    res.status(500).json({ success: false, message: 'Error getting trainers' });
+  }
+});
+
+app.get('/api/trainers/:trainerId/monsters', async (req, res) => {
+  try {
+    // Check if user is logged in
+    if (!req.session.user) {
+      return res.status(401).json({ success: false, message: 'You must be logged in to access this resource' });
+    }
+
+    const trainerId = req.params.trainerId;
+
+    // Verify trainer belongs to user
+    const discordUserId = req.session.user.discord_id || req.session.user.id;
+    const trainer = await Trainer.getById(trainerId);
+
+    if (!trainer || trainer.player_user_id !== discordUserId) {
+      return res.status(403).json({ success: false, message: 'You do not own this trainer' });
+    }
+
+    // Get trainer's monsters
+    const monsters = await Monster.getByTrainerId(trainerId);
+
+    res.json(monsters || []);
+  } catch (error) {
+    console.error('Error getting monsters:', error);
+    res.status(500).json({ success: false, message: 'Error getting monsters' });
+  }
+});
+
+app.get('/api/monsters/:monsterId/evolution-options', async (req, res) => {
+  try {
+    // Check if user is logged in
+    if (!req.session.user) {
+      return res.status(401).json({ success: false, message: 'You must be logged in to access this resource' });
+    }
+
+    const monsterId = req.params.monsterId;
+
+    // Get evolution options
+    const evolutionOptions = await EvolutionService.checkEvolutionOptions(monsterId);
+
+    res.json(evolutionOptions);
+  } catch (error) {
+    console.error('Error getting evolution options:', error);
+    res.status(500).json({ success: false, message: 'Error getting evolution options' });
+  }
+});
+
+app.get('/api/species/:speciesName/evolution-options', async (req, res) => {
+  try {
+    // Check if user is logged in
+    if (!req.session.user) {
+      return res.status(401).json({ success: false, message: 'You must be logged in to access this resource' });
+    }
+
+    const speciesName = req.params.speciesName;
+
+    // Get evolution options
+    const evolutionOptions = await EvolutionService.checkSpeciesEvolutionOptions(speciesName);
+
+    res.json(evolutionOptions);
+  } catch (error) {
+    console.error('Error getting species evolution options:', error);
+    res.status(500).json({ success: false, message: 'Error getting species evolution options' });
+  }
+});
+
+app.get('/api/items/evolution', async (req, res) => {
+  try {
+    // Check if user is logged in
+    if (!req.session.user) {
+      return res.status(401).json({ success: false, message: 'You must be logged in to access this resource' });
+    }
+
+    // Get user's trainers
+    const discordUserId = req.session.user.discord_id || req.session.user.id;
+    const trainers = await Trainer.getByUserId(discordUserId);
+
+    if (!trainers || trainers.length === 0) {
+      return res.json([]);
+    }
+
+    // Use the first trainer to get evolution items
+    const evolutionItems = await EvolutionService.getEvolutionItems(trainers[0].id);
+
+    res.json(evolutionItems || []);
+  } catch (error) {
+    console.error('Error getting evolution items:', error);
+    res.status(500).json({ success: false, message: 'Error getting evolution items' });
+  }
+});
+
+app.post('/api/monsters/:monsterId/evolve', async (req, res) => {
+  try {
+    // Check if user is logged in
+    if (!req.session.user) {
+      return res.status(401).json({ success: false, message: 'You must be logged in to access this resource' });
+    }
+
+    const monsterId = req.params.monsterId;
+    const { trainerId, submissionUrl, useItem, itemName, selectedEvolution, speciesIndex } = req.body;
+
+    // Verify trainer belongs to user
+    const discordUserId = req.session.user.discord_id || req.session.user.id;
+    const trainer = await Trainer.getById(trainerId);
+
+    if (!trainer || trainer.player_user_id !== discordUserId) {
+      return res.status(403).json({ success: false, message: 'You do not own this trainer' });
+    }
+
+    // Verify monster belongs to trainer
+    const monster = await Monster.getById(monsterId);
+
+    if (!monster || monster.trainer_id !== parseInt(trainerId)) {
+      return res.status(403).json({ success: false, message: 'This trainer does not own this monster' });
+    }
+
+    // Process evolution
+    const result = await EvolutionService.processEvolution({
+      monsterId,
+      trainerId,
+      submissionUrl,
+      useItem: useItem === 'yes' || useItem === true,
+      itemName,
+      selectedEvolution,
+      speciesIndex
+    });
+
+    res.json(result);
+  } catch (error) {
+    console.error('Error evolving monster:', error);
+    res.status(500).json({ success: false, message: 'Error evolving monster' });
+  }
+});
+
+// API routes for claiming rewards
+app.post('/api/claim-reward', async (req, res) => {
+  // Check if user is logged in
+  if (!req.session.user) {
+    return res.status(401).json({ success: false, message: 'You must be logged in to claim rewards' });
+  }
+
+  try {
+    const { rewardId, rewardType, trainerId, source } = req.body;
+
+    if (!rewardId || !rewardType || !trainerId || !source) {
+      return res.status(400).json({ success: false, message: 'Missing required parameters' });
+    }
+
+    // Get the user's Discord ID
+    const discordUserId = req.session.user.discord_id || req.session.user.id;
+
+    // Get the trainer
+    const trainer = await Trainer.getById(trainerId);
+    if (!trainer) {
+      return res.status(404).json({ success: false, message: 'Trainer not found' });
+    }
+
+    // Verify the trainer belongs to the user
+    if (trainer.player_user_id !== discordUserId) {
+      return res.status(403).json({ success: false, message: 'You do not own this trainer' });
+    }
+
+    // Get all trainers for the user (needed for RewardSystem)
+    const trainers = await Trainer.getByUserId(discordUserId);
+
+    // Find the reward in the session
+    const sessionRewards = req.session.rewards || [];
+    const reward = sessionRewards.find(r => r.id === rewardId && r.type === rewardType);
+
+    if (!reward) {
+      return res.status(404).json({ success: false, message: 'Reward not found' });
+    }
+
+    // Process the reward claim
+    const result = await RewardSystem.processRewardClaim(reward, trainerId, trainers, source);
+
+    if (result.success) {
+      // Mark the reward as claimed in the session
+      const rewardIndex = sessionRewards.findIndex(r => r.id === rewardId && r.type === rewardType);
+      if (rewardIndex !== -1) {
+        sessionRewards[rewardIndex].claimed = true;
+        sessionRewards[rewardIndex].assignedTo = {
+          id: trainer.id,
+          name: trainer.name
+        };
+        req.session.rewards = sessionRewards;
+      }
+
+      return res.json({
+        success: true,
+        message: result.message,
+        trainerId: result.trainerId,
+        trainerName: result.trainerName
+      });
+    } else {
+      return res.status(400).json({ success: false, message: result.message });
+    }
+  } catch (error) {
+    console.error('Error claiming reward:', error);
+    return res.status(500).json({ success: false, message: 'Error claiming reward: ' + error.message });
+  }
+});
+
+app.post('/api/claim-all-rewards', async (req, res) => {
+  // Check if user is logged in
+  if (!req.session.user) {
+    return res.status(401).json({ success: false, message: 'You must be logged in to claim rewards' });
+  }
+
+  try {
+    const { rewards, source } = req.body;
+
+    if (!rewards || !Array.isArray(rewards) || rewards.length === 0 || !source) {
+      return res.status(400).json({ success: false, message: 'Missing required parameters' });
+    }
+
+    // Get the user's Discord ID
+    const discordUserId = req.session.user.discord_id || req.session.user.id;
+
+    // Get all trainers for the user
+    const trainers = await Trainer.getByUserId(discordUserId);
+    if (!trainers || trainers.length === 0) {
+      return res.status(404).json({ success: false, message: 'No trainers found for this user' });
+    }
+
+    // Get session rewards
+    const sessionRewards = req.session.rewards || [];
+
+    // Process each reward
+    const results = [];
+    for (const reward of rewards) {
+      // Find the reward in the session
+      const sessionReward = sessionRewards.find(r => r.id === reward.id && r.type === reward.type);
+
+      if (!sessionReward) {
+        results.push({
+          rewardId: reward.id,
+          success: false,
+          message: 'Reward not found'
+        });
+        continue;
+      }
+
+      // Skip already claimed rewards
+      if (sessionReward.claimed) {
+        results.push({
+          rewardId: reward.id,
+          success: false,
+          message: 'Reward already claimed'
+        });
+        continue;
+      }
+
+      // Randomly select a trainer
+      const randomIndex = Math.floor(Math.random() * trainers.length);
+      const selectedTrainer = trainers[randomIndex];
+
+      // Process the reward claim
+      const result = await RewardSystem.processRewardClaim(sessionReward, selectedTrainer.id, trainers, source);
+
+      if (result.success) {
+        // Mark the reward as claimed in the session
+        const rewardIndex = sessionRewards.findIndex(r => r.id === reward.id && r.type === reward.type);
+        if (rewardIndex !== -1) {
+          sessionRewards[rewardIndex].claimed = true;
+          sessionRewards[rewardIndex].assignedTo = {
+            id: selectedTrainer.id,
+            name: selectedTrainer.name
+          };
+        }
+
+        results.push({
+          rewardId: reward.id,
+          success: true,
+          message: result.message,
+          trainerId: result.trainerId,
+          trainerName: result.trainerName
+        });
+      } else {
+        results.push({
+          rewardId: reward.id,
+          success: false,
+          message: result.message
+        });
+      }
+    }
+
+    // Update session rewards
+    req.session.rewards = sessionRewards;
+
+    return res.json({
+      success: true,
+      results
+    });
+  } catch (error) {
+    console.error('Error claiming all rewards:', error);
+    return res.status(500).json({ success: false, message: 'Error claiming rewards: ' + error.message });
+  }
 });
 
 // Generic handler for other town locations

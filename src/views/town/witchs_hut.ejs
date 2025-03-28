@@ -30,63 +30,93 @@
 
         <div class="bg-gray-800/50 p-4 rounded-lg mb-4">
           <h4 class="text-amber-400 mb-2 font-medium">Your Evolution Items</h4>
-          <div class="grid grid-cols-2 gap-2">
-            <div class="flex items-center p-2 bg-gray-700/50 rounded-lg">
-              <div class="w-8 h-8 bg-red-600/20 rounded-full flex items-center justify-center mr-2">
-                <i class="fas fa-fire text-red-400"></i>
-              </div>
-              <div>
-                <div class="text-xs text-gray-300">Fire Stone</div>
-                <div class="text-xs text-green-400">Quantity: 2</div>
-              </div>
-            </div>
-            <div class="flex items-center p-2 bg-gray-700/50 rounded-lg">
-              <div class="w-8 h-8 bg-blue-600/20 rounded-full flex items-center justify-center mr-2">
-                <i class="fas fa-water text-blue-400"></i>
-              </div>
-              <div>
-                <div class="text-xs text-gray-300">Water Stone</div>
-                <div class="text-xs text-green-400">Quantity: 1</div>
-              </div>
-            </div>
-            <div class="flex items-center p-2 bg-gray-700/50 rounded-lg">
-              <div class="w-8 h-8 bg-yellow-600/20 rounded-full flex items-center justify-center mr-2">
-                <i class="fas fa-bolt text-yellow-400"></i>
-              </div>
-              <div>
-                <div class="text-xs text-gray-300">Thunder Stone</div>
-                <div class="text-xs text-green-400">Quantity: 1</div>
-              </div>
-            </div>
-            <div class="flex items-center p-2 bg-gray-700/50 rounded-lg">
-              <div class="w-8 h-8 bg-green-600/20 rounded-full flex items-center justify-center mr-2">
-                <i class="fas fa-leaf text-green-400"></i>
-              </div>
-              <div>
-                <div class="text-xs text-gray-300">Leaf Stone</div>
-                <div class="text-xs text-green-400">Quantity: 0</div>
+          <div id="evolution-items-container" class="grid grid-cols-2 gap-2">
+            <div class="flex items-center justify-center p-4">
+              <div class="animate-pulse text-gray-400">
+                <i class="fas fa-spinner fa-spin mr-2"></i> Loading items...
               </div>
             </div>
           </div>
         </div>
 
-        <div class="bg-gray-800/50 p-4 rounded-lg mb-4">
+        <form id="evolution-form" class="bg-gray-800/50 p-4 rounded-lg mb-4">
           <h4 class="text-amber-400 mb-2 font-medium">Evolve a Monster</h4>
-          <select class="w-full bg-gray-700 border-gray-600 text-white rounded-md p-2 mb-4">
-            <option value="">-- Select a Monster --</option>
-            <option value="1">Pikachu (Lv. 25) - Needs Thunder Stone</option>
-            <option value="2">Charmeleon (Lv. 36) - Ready to evolve naturally</option>
-            <option value="3">Eevee (Lv. 15) - Multiple evolution options</option>
-            <option value="4">Vulpix (Lv. 22) - Needs Fire Stone</option>
-          </select>
 
-          <div class="bg-gray-700/50 p-3 rounded-lg mb-4">
-            <div class="text-xs text-gray-300 mb-1">Evolution Preview:</div>
-            <div class="text-sm text-amber-400">Select a monster to see evolution options</div>
+          <!-- Trainer Selection -->
+          <div class="mb-4">
+            <label for="trainer-select" class="block text-xs text-gray-300 mb-1">Select Trainer:</label>
+            <select id="trainer-select" name="trainerId" class="w-full bg-gray-700 border-gray-600 text-white rounded-md p-2">
+              <option value="">-- Select a Trainer --</option>
+              <!-- Trainers will be populated via JavaScript -->
+            </select>
           </div>
-        </div>
 
-        <button class="btn-primary w-full text-center py-2 px-4 rounded text-sm" disabled>
+          <!-- Monster Selection -->
+          <div class="mb-4">
+            <label for="monster-select" class="block text-xs text-gray-300 mb-1">Select Monster:</label>
+            <select id="monster-select" name="monsterId" class="w-full bg-gray-700 border-gray-600 text-white rounded-md p-2" disabled>
+              <option value="">-- Select a Monster --</option>
+              <!-- Monsters will be populated via JavaScript -->
+            </select>
+          </div>
+
+          <!-- Species Selection (Hidden by default) -->
+          <div id="species-selection" class="mb-4 hidden">
+            <label for="species-select" class="block text-xs text-gray-300 mb-1">Select Species to Evolve:</label>
+            <select id="species-select" name="speciesIndex" class="w-full bg-gray-700 border-gray-600 text-white rounded-md p-2">
+              <option value="1">Species 1</option>
+              <option value="2">Species 2</option>
+              <option value="3">Species 3</option>
+            </select>
+          </div>
+
+          <!-- Evolution Options -->
+          <div id="evolution-options" class="bg-gray-700/50 p-3 rounded-lg mb-4">
+            <div class="text-xs text-gray-300 mb-1">Evolution Preview:</div>
+            <div id="evolution-preview" class="text-sm text-amber-400">Select a monster to see evolution options</div>
+          </div>
+
+          <!-- Evolution Selection (Hidden by default) -->
+          <div id="evolution-selection" class="mb-4 hidden">
+            <label for="evolution-select" class="block text-xs text-gray-300 mb-1">Select Evolution:</label>
+            <select id="evolution-select" name="selectedEvolution" class="w-full bg-gray-700 border-gray-600 text-white rounded-md p-2">
+              <!-- Evolution options will be populated via JavaScript -->
+            </select>
+          </div>
+
+          <!-- Item Usage -->
+          <div class="mb-4">
+            <label class="block text-xs text-gray-300 mb-1">Use an Evolution Item?</label>
+            <div class="flex space-x-4">
+              <label class="inline-flex items-center">
+                <input type="radio" name="useItem" value="no" class="form-radio text-amber-500" checked>
+                <span class="ml-2 text-sm text-gray-300">No</span>
+              </label>
+              <label class="inline-flex items-center">
+                <input type="radio" name="useItem" value="yes" class="form-radio text-amber-500">
+                <span class="ml-2 text-sm text-gray-300">Yes</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Item Selection (Hidden by default) -->
+          <div id="item-selection" class="mb-4 hidden">
+            <label for="item-select" class="block text-xs text-gray-300 mb-1">Select Item:</label>
+            <select id="item-select" name="itemName" class="w-full bg-gray-700 border-gray-600 text-white rounded-md p-2">
+              <option value="">-- Select an Item --</option>
+              <!-- Items will be populated via JavaScript -->
+            </select>
+          </div>
+
+          <!-- Submission URL -->
+          <div class="mb-4">
+            <label for="submission-url" class="block text-xs text-gray-300 mb-1">Submission URL:</label>
+            <input type="url" id="submission-url" name="submissionUrl" class="w-full bg-gray-700 border-gray-600 text-white rounded-md p-2" placeholder="Paste your evolution artwork URL here">
+            <p class="text-xs text-gray-400 mt-1">Provide a link to your evolution artwork submission</p>
+          </div>
+        </form>
+
+        <button id="evolve-button" class="btn-primary w-full text-center py-3 px-4 rounded text-sm" disabled>
           <i class="fas fa-arrow-up mr-1"></i> Evolve Monster
         </button>
       </div>
@@ -237,44 +267,464 @@
 
 <script>
   document.addEventListener('DOMContentLoaded', function() {
-    const monsterSelect = document.querySelector('.location-card:first-child select');
-    const evolutionPreview = document.querySelector('.bg-gray-700\\/50 .text-amber-400');
-    const evolveButton = document.querySelector('.btn-primary');
+    // DOM Elements
+    const trainerSelect = document.getElementById('trainer-select');
+    const monsterSelect = document.getElementById('monster-select');
+    const speciesSelection = document.getElementById('species-selection');
+    const speciesSelect = document.getElementById('species-select');
+    const evolutionPreview = document.getElementById('evolution-preview');
+    const evolutionSelection = document.getElementById('evolution-selection');
+    const evolutionSelect = document.getElementById('evolution-select');
+    const itemRadios = document.querySelectorAll('input[name="useItem"]');
+    const itemSelection = document.getElementById('item-selection');
+    const itemSelect = document.getElementById('item-select');
+    const submissionUrl = document.getElementById('submission-url');
+    const evolveButton = document.getElementById('evolve-button');
+    const evolutionItemsContainer = document.getElementById('evolution-items-container');
 
-    monsterSelect.addEventListener('change', function() {
-      const selectedValue = this.value;
+    // State
+    let currentMonster = null;
+    let evolutionOptions = [];
+    let evolutionSource = null;
 
-      if (selectedValue) {
-        const monsterName = this.options[this.selectedIndex].text.split(' (')[0];
-        let evolutionInfo = '';
+    // Load trainers on page load
+    loadTrainers();
 
-        switch(selectedValue) {
-          case '1':
-            evolutionInfo = `${monsterName} will evolve into Raichu using a Thunder Stone`;
-            evolveButton.disabled = false;
-            break;
-          case '2':
-            evolutionInfo = `${monsterName} is ready to evolve into Charizard naturally`;
-            evolveButton.disabled = false;
-            break;
-          case '3':
-            evolutionInfo = `${monsterName} can evolve into Vaporeon, Jolteon, or Flareon using different stones`;
-            evolveButton.disabled = false;
-            break;
-          case '4':
-            evolutionInfo = `${monsterName} will evolve into Ninetales using a Fire Stone`;
-            evolveButton.disabled = false;
-            break;
-          default:
-            evolutionInfo = 'Select a monster to see evolution options';
-            evolveButton.disabled = true;
+    // Load evolution items on page load
+    loadEvolutionItems();
+
+    // Event Listeners
+    trainerSelect.addEventListener('change', handleTrainerChange);
+    monsterSelect.addEventListener('change', handleMonsterChange);
+    speciesSelect.addEventListener('change', handleSpeciesChange);
+    evolutionSelect.addEventListener('change', validateForm);
+    itemRadios.forEach(radio => {
+      radio.addEventListener('change', handleItemRadioChange);
+    });
+    itemSelect.addEventListener('change', validateForm);
+    submissionUrl.addEventListener('input', validateForm);
+    evolveButton.addEventListener('click', handleEvolveClick);
+
+    // Functions
+    async function loadTrainers() {
+      try {
+        const response = await fetch('/api/trainers');
+        if (!response.ok) throw new Error('Failed to load trainers');
+
+        const trainers = await response.json();
+
+        // Clear existing options except the placeholder
+        while (trainerSelect.options.length > 1) {
+          trainerSelect.remove(1);
         }
 
-        evolutionPreview.textContent = evolutionInfo;
-      } else {
-        evolutionPreview.textContent = 'Select a monster to see evolution options';
-        evolveButton.disabled = true;
+        // Add trainer options
+        trainers.forEach(trainer => {
+          const option = document.createElement('option');
+          option.value = trainer.id;
+          option.textContent = trainer.name;
+          trainerSelect.appendChild(option);
+        });
+      } catch (error) {
+        console.error('Error loading trainers:', error);
+        showNotification('Failed to load trainers. Please try again.', 'error');
       }
-    });
+    }
+
+    async function loadEvolutionItems() {
+      try {
+        const response = await fetch('/api/items/evolution');
+        if (!response.ok) throw new Error('Failed to load evolution items');
+
+        const items = await response.json();
+
+        // Clear loading indicator
+        evolutionItemsContainer.innerHTML = '';
+
+        if (items.length === 0) {
+          evolutionItemsContainer.innerHTML = `
+            <div class="col-span-2 text-center p-4 text-gray-400">
+              <i class="fas fa-info-circle mr-2"></i> No evolution items found
+            </div>
+          `;
+          return;
+        }
+
+        // Add item cards
+        items.forEach(item => {
+          const itemCard = document.createElement('div');
+          itemCard.className = 'flex items-center p-2 bg-gray-700/50 rounded-lg';
+
+          // Determine icon and color based on item name
+          let iconClass = 'fa-gem';
+          let colorClass = 'purple';
+
+          if (item.name.includes('Fire')) {
+            iconClass = 'fa-fire';
+            colorClass = 'red';
+          } else if (item.name.includes('Water')) {
+            iconClass = 'fa-water';
+            colorClass = 'blue';
+          } else if (item.name.includes('Thunder') || item.name.includes('Electric')) {
+            iconClass = 'fa-bolt';
+            colorClass = 'yellow';
+          } else if (item.name.includes('Leaf') || item.name.includes('Grass')) {
+            iconClass = 'fa-leaf';
+            colorClass = 'green';
+          } else if (item.name.includes('Moon')) {
+            iconClass = 'fa-moon';
+            colorClass = 'indigo';
+          } else if (item.name.includes('Sun')) {
+            iconClass = 'fa-sun';
+            colorClass = 'orange';
+          } else if (item.name.includes('Digital')) {
+            iconClass = 'fa-microchip';
+            colorClass = 'blue';
+          }
+
+          itemCard.innerHTML = `
+            <div class="w-8 h-8 bg-${colorClass}-600/20 rounded-full flex items-center justify-center mr-2">
+              <i class="fas ${iconClass} text-${colorClass}-400"></i>
+            </div>
+            <div>
+              <div class="text-xs text-gray-300">${item.name}</div>
+              <div class="text-xs ${item.quantity > 0 ? 'text-green-400' : 'text-red-400'}">Quantity: ${item.quantity}</div>
+            </div>
+          `;
+
+          evolutionItemsContainer.appendChild(itemCard);
+
+          // Also add to item select dropdown
+          const option = document.createElement('option');
+          option.value = item.name;
+          option.textContent = item.name;
+          option.disabled = item.quantity <= 0;
+          itemSelect.appendChild(option);
+        });
+      } catch (error) {
+        console.error('Error loading evolution items:', error);
+        evolutionItemsContainer.innerHTML = `
+          <div class="col-span-2 text-center p-4 text-red-400">
+            <i class="fas fa-exclamation-circle mr-2"></i> Failed to load items
+          </div>
+        `;
+      }
+    }
+
+    async function handleTrainerChange() {
+      const trainerId = trainerSelect.value;
+
+      // Reset monster select
+      monsterSelect.innerHTML = '<option value="">-- Select a Monster --</option>';
+      monsterSelect.disabled = !trainerId;
+
+      // Reset other fields
+      resetForm();
+
+      if (!trainerId) return;
+
+      try {
+        const response = await fetch(`/api/trainers/${trainerId}/monsters`);
+        if (!response.ok) throw new Error('Failed to load monsters');
+
+        const monsters = await response.json();
+
+        if (monsters.length === 0) {
+          monsterSelect.innerHTML = '<option value="">No monsters found</option>';
+          return;
+        }
+
+        // Add monster options
+        monsters.forEach(monster => {
+          const option = document.createElement('option');
+          option.value = monster.mon_id;
+
+          // Create display name with species and level
+          let displayName = monster.name;
+          if (monster.species1) {
+            displayName += ` (${monster.species1}`;
+            if (monster.species2) displayName += `/+`;
+            displayName += `, Lv. ${monster.level})`;
+          } else {
+            displayName += ` (Lv. ${monster.level})`;
+          }
+
+          option.textContent = displayName;
+          monsterSelect.appendChild(option);
+        });
+      } catch (error) {
+        console.error('Error loading monsters:', error);
+        showNotification('Failed to load monsters. Please try again.', 'error');
+        monsterSelect.innerHTML = '<option value="">Error loading monsters</option>';
+      }
+    }
+
+    async function handleMonsterChange() {
+      const monsterId = monsterSelect.value;
+
+      // Reset form
+      resetForm(true);
+
+      if (!monsterId) return;
+
+      try {
+        const response = await fetch(`/api/monsters/${monsterId}/evolution-options`);
+        if (!response.ok) throw new Error('Failed to load evolution options');
+
+        const data = await response.json();
+        currentMonster = data.monster;
+        evolutionOptions = data.evolutionOptions;
+        evolutionSource = data.source;
+
+        // Check if monster has multiple species
+        if (currentMonster.species2 || currentMonster.species3) {
+          speciesSelection.classList.remove('hidden');
+
+          // Update species options
+          speciesSelect.innerHTML = '';
+
+          const option1 = document.createElement('option');
+          option1.value = '1';
+          option1.textContent = currentMonster.species1;
+          speciesSelect.appendChild(option1);
+
+          if (currentMonster.species2) {
+            const option2 = document.createElement('option');
+            option2.value = '2';
+            option2.textContent = currentMonster.species2;
+            speciesSelect.appendChild(option2);
+          }
+
+          if (currentMonster.species3) {
+            const option3 = document.createElement('option');
+            option3.value = '3';
+            option3.textContent = currentMonster.species3;
+            speciesSelect.appendChild(option3);
+          }
+
+          // Trigger species change to load evolution options for the first species
+          handleSpeciesChange();
+        } else {
+          // Display evolution options directly
+          updateEvolutionOptions(data);
+        }
+      } catch (error) {
+        console.error('Error loading evolution options:', error);
+        showNotification('Failed to load evolution options. Please try again.', 'error');
+        evolutionPreview.textContent = 'Error loading evolution options';
+      }
+    }
+
+    async function handleSpeciesChange() {
+      const speciesIndex = parseInt(speciesSelect.value);
+      if (!speciesIndex || !currentMonster) return;
+
+      let speciesName;
+      switch (speciesIndex) {
+        case 1: speciesName = currentMonster.species1; break;
+        case 2: speciesName = currentMonster.species2; break;
+        case 3: speciesName = currentMonster.species3; break;
+        default: return;
+      }
+
+      try {
+        const response = await fetch(`/api/species/${encodeURIComponent(speciesName)}/evolution-options`);
+        if (!response.ok) throw new Error('Failed to load species evolution options');
+
+        const data = await response.json();
+        updateEvolutionOptions(data);
+      } catch (error) {
+        console.error('Error loading species evolution options:', error);
+        showNotification('Failed to load species evolution options. Please try again.', 'error');
+        evolutionPreview.textContent = 'Error loading evolution options';
+      }
+    }
+
+    function updateEvolutionOptions(data) {
+      evolutionOptions = data.evolutionOptions;
+      evolutionSource = data.source;
+
+      // Update evolution preview
+      if (!data.canEvolve) {
+        evolutionPreview.textContent = 'This monster cannot evolve';
+        evolveButton.disabled = true;
+        return;
+      }
+
+      // Show evolution options
+      if (evolutionOptions.length === 1) {
+        evolutionPreview.textContent = `This monster can evolve into ${evolutionOptions[0]}`;
+      } else if (evolutionOptions.length > 1) {
+        evolutionPreview.textContent = `This monster has multiple evolution options`;
+
+        // Show evolution selection
+        evolutionSelection.classList.remove('hidden');
+        evolutionSelect.innerHTML = '<option value="">-- Select Evolution --</option>';
+
+        evolutionOptions.forEach(evolution => {
+          const option = document.createElement('option');
+          option.value = evolution;
+          option.textContent = evolution;
+          evolutionSelect.appendChild(option);
+        });
+      }
+
+      validateForm();
+    }
+
+    function handleItemRadioChange() {
+      const useItem = document.querySelector('input[name="useItem"]:checked').value === 'yes';
+
+      if (useItem) {
+        itemSelection.classList.remove('hidden');
+      } else {
+        itemSelection.classList.add('hidden');
+      }
+
+      validateForm();
+    }
+
+    function validateForm() {
+      const trainerId = trainerSelect.value;
+      const monsterId = monsterSelect.value;
+      const submissionUrlValue = submissionUrl.value.trim();
+      const useItem = document.querySelector('input[name="useItem"]:checked').value === 'yes';
+      const itemValue = useItem ? itemSelect.value : null;
+
+      // Basic validation
+      let isValid = trainerId && monsterId && submissionUrlValue && evolutionOptions.length > 0;
+
+      // Check if we need to validate evolution selection
+      if (isValid && evolutionOptions.length > 1 && !evolutionSelection.classList.contains('hidden')) {
+        isValid = isValid && evolutionSelect.value;
+      }
+
+      // Check if we need to validate item selection
+      if (isValid && useItem) {
+        isValid = isValid && itemValue;
+      }
+
+      evolveButton.disabled = !isValid;
+    }
+
+    function resetForm(keepTrainer = false) {
+      if (!keepTrainer) {
+        trainerSelect.value = '';
+        monsterSelect.innerHTML = '<option value="">-- Select a Monster --</option>';
+        monsterSelect.disabled = true;
+      }
+
+      speciesSelection.classList.add('hidden');
+      evolutionSelection.classList.add('hidden');
+      itemSelection.classList.add('hidden');
+
+      document.querySelector('input[name="useItem"][value="no"]').checked = true;
+      itemSelect.value = '';
+      submissionUrl.value = '';
+
+      evolutionPreview.textContent = 'Select a monster to see evolution options';
+      evolveButton.disabled = true;
+
+      currentMonster = null;
+      evolutionOptions = [];
+      evolutionSource = null;
+    }
+
+    async function handleEvolveClick() {
+      // Disable button to prevent multiple submissions
+      evolveButton.disabled = true;
+      evolveButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Processing...';
+
+      // Get form data
+      const trainerId = trainerSelect.value;
+      const monsterId = monsterSelect.value;
+      const submissionUrlValue = submissionUrl.value.trim();
+      const useItem = document.querySelector('input[name="useItem"]:checked').value === 'yes';
+      const itemValue = useItem ? itemSelect.value : null;
+
+      // Get selected evolution if multiple options
+      let selectedEvolution = null;
+      if (evolutionOptions.length > 1 && !evolutionSelection.classList.contains('hidden')) {
+        selectedEvolution = evolutionSelect.value;
+      } else if (evolutionOptions.length === 1) {
+        selectedEvolution = evolutionOptions[0];
+      }
+
+      // Get selected species if multiple species
+      let speciesIndex = null;
+      if (!speciesSelection.classList.contains('hidden')) {
+        speciesIndex = parseInt(speciesSelect.value);
+      }
+
+      try {
+        const response = await fetch(`/api/monsters/${monsterId}/evolve`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            trainerId,
+            submissionUrl: submissionUrlValue,
+            useItem,
+            itemName: itemValue,
+            selectedEvolution,
+            speciesIndex
+          })
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+          showNotification(result.message, 'success');
+          resetForm();
+
+          // Reload evolution items after successful evolution
+          loadEvolutionItems();
+        } else {
+          throw new Error(result.message || 'Evolution failed');
+        }
+      } catch (error) {
+        console.error('Error evolving monster:', error);
+        showNotification(error.message || 'Failed to evolve monster. Please try again.', 'error');
+      } finally {
+        // Reset button state
+        evolveButton.disabled = false;
+        evolveButton.innerHTML = '<i class="fas fa-arrow-up mr-1"></i> Evolve Monster';
+      }
+    }
+
+    function showNotification(message, type = 'info') {
+      const notification = document.createElement('div');
+
+      // Set styles based on notification type
+      let bgColor, iconClass;
+      switch (type) {
+        case 'success':
+          bgColor = 'bg-green-500';
+          iconClass = 'fa-check-circle';
+          break;
+        case 'error':
+          bgColor = 'bg-red-500';
+          iconClass = 'fa-exclamation-circle';
+          break;
+        default:
+          bgColor = 'bg-blue-500';
+          iconClass = 'fa-info-circle';
+      }
+
+      notification.className = `fixed top-4 right-4 ${bgColor} text-white px-4 py-2 rounded-lg shadow-lg z-50 transition-opacity duration-300 opacity-0`;
+      notification.innerHTML = `<i class="fas ${iconClass} mr-2"></i> ${message}`;
+
+      document.body.appendChild(notification);
+
+      // Trigger fade-in animation
+      setTimeout(() => notification.classList.remove('opacity-0'), 10);
+
+      // Remove notification after 5 seconds
+      setTimeout(() => {
+        notification.classList.add('opacity-0');
+        setTimeout(() => notification.remove(), 300);
+      }, 5000);
+    }
   });
 </script>

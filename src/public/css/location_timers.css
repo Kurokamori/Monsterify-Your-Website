@@ -1,0 +1,95 @@
+/* Location-specific timer colors */
+
+/* Default timer color */
+.timer-circle circle.progress {
+  stroke: #8b5cf6; /* Default purple */
+}
+.timer-display {
+  color: #8b5cf6; /* Default purple */
+}
+
+.timer-display #timer-display {
+  font-size: 2rem;
+  font-weight: bold;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  transition: color 0.3s ease;
+}
+
+/* Farm timer - orange */
+.location-farm .timer-circle circle.progress {
+  stroke: #f97316; /* Orange-500 */
+}
+.location-farm .timer-display #timer-display {
+  color: #f97316; /* Orange-500 */
+}
+
+/* Garden timer - green */
+.location-garden .timer-circle circle.progress {
+  stroke: #22c55e; /* Green-500 */
+}
+.location-garden .timer-display #timer-display {
+  color: #22c55e; /* Green-500 */
+}
+
+/* Fishing timer - blue */
+.location-pirates_dock_fishing .timer-circle circle.progress,
+.location-fishing .timer-circle circle.progress {
+  stroke: #3b82f6; /* Blue-500 */
+}
+.location-pirates_dock_fishing .timer-display #timer-display,
+.location-fishing .timer-display #timer-display {
+  color: #3b82f6; /* Blue-500 */
+}
+
+/* Swab the deck timer - pink */
+.location-pirates_dock_swab .timer-circle circle.progress,
+.location-swab .timer-circle circle.progress {
+  stroke: #ec4899; /* Pink-500 */
+}
+.location-pirates_dock_swab .timer-display #timer-display,
+.location-swab .timer-display #timer-display {
+  color: #ec4899; /* Pink-500 */
+}
+
+/* Location banner styles */
+.location-banner {
+  position: relative;
+  width: 100%;
+  height: 200px;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  margin-bottom: 2rem;
+}
+
+.location-banner img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.location-banner-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 1.5rem;
+}
+
+.location-banner-title {
+  color: white;
+  font-size: 1.75rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.location-banner-subtitle {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 1rem;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
