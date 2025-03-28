@@ -557,6 +557,8 @@
     const monsterId = element.dataset.monsterId;
     const monsterName = element.querySelector('.monster-name').textContent;
 
+    console.log(`Toggling monster selection: ${monsterName} (ID: ${monsterId}) for type: ${type}`);
+
     // Check if already selected
     const index = selectedMonsters[type].findIndex(m => m.id === monsterId);
 
@@ -567,10 +569,12 @@
         name: monsterName
       });
       element.classList.add('selected');
+      console.log(`Added monster to ${type} selection:`, selectedMonsters[type]);
     } else {
       // Remove from selection
       selectedMonsters[type].splice(index, 1);
       element.classList.remove('selected');
+      console.log(`Removed monster from ${type} selection:`, selectedMonsters[type]);
     }
 
     // Update the UI
@@ -582,13 +586,22 @@
   // Update the selected monsters list
   function updateSelectedMonstersList(type) {
     const listElement = document.getElementById(`${type}-monsters-list`);
-    const emptyState = document.getElementById(`${type}-empty-state`);
+    if (!listElement) {
+      console.error(`List element for ${type} monsters not found`);
+      return;
+    }
 
     // Clear current list
     listElement.innerHTML = '';
 
+    console.log(`Updating ${type} monsters list with:`, selectedMonsters[type]);
+
     if (selectedMonsters[type].length === 0) {
       // Show empty state
+      const emptyState = document.createElement('div');
+      emptyState.className = 'empty-state';
+      emptyState.id = `${type}-empty-state`;
+      emptyState.innerHTML = '<div class="empty-state-text">No monsters selected</div>';
       listElement.appendChild(emptyState);
       return;
     }
@@ -609,16 +622,25 @@
 
   // Remove a selected monster
   function removeSelectedMonster(type, monsterId) {
+    console.log(`Removing monster: type=${type}, monsterId=${monsterId}`);
+
     // Remove from array
     const index = selectedMonsters[type].findIndex(m => m.id === monsterId);
     if (index !== -1) {
+      const removedMonster = selectedMonsters[type][index];
       selectedMonsters[type].splice(index, 1);
+      console.log(`Removed monster from ${type} selection:`, removedMonster);
+    } else {
+      console.warn(`Monster with ID ${monsterId} not found in ${type} selection`);
     }
 
     // Remove selection from card
     const card = document.querySelector(`.monster-card[data-monster-id="${monsterId}"]`);
     if (card) {
       card.classList.remove('selected');
+      console.log(`Removed 'selected' class from monster card:`, card);
+    } else {
+      console.warn(`Monster card with ID ${monsterId} not found in the DOM`);
     }
 
     // Update UI
@@ -632,9 +654,19 @@
     const offeredInputsContainer = document.getElementById('offered-monsters-inputs');
     const requestedInputsContainer = document.getElementById('requested-monsters-inputs');
 
+    if (!offeredInputsContainer || !requestedInputsContainer) {
+      console.error('Hidden input containers not found');
+      return;
+    }
+
     // Clear current inputs
     offeredInputsContainer.innerHTML = '';
     requestedInputsContainer.innerHTML = '';
+
+    console.log('Updating hidden inputs with:', {
+      offered: selectedMonsters.offered,
+      requested: selectedMonsters.requested
+    });
 
     // Add offered monsters inputs
     selectedMonsters.offered.forEach(monster => {
@@ -643,6 +675,7 @@
       input.name = 'offered_mons';
       input.value = monster.id;
       offeredInputsContainer.appendChild(input);
+      console.log(`Added hidden input for offered monster: ${monster.name} (ID: ${monster.id})`);
     });
 
     // Add requested monsters inputs
@@ -652,6 +685,7 @@
       input.name = 'requested_mons';
       input.value = monster.id;
       requestedInputsContainer.appendChild(input);
+      console.log(`Added hidden input for requested monster: ${monster.name} (ID: ${monster.id})`);
     });
   }
 
@@ -660,11 +694,23 @@
     const submitButton = document.getElementById('submit-trade');
     const recipientSelect = document.getElementById('recipient_id');
 
+    if (!submitButton || !recipientSelect) {
+      console.error('Submit button or recipient select not found');
+      return;
+    }
+
     // Enable button if a recipient is selected and at least one monster is selected (either offered or requested)
     const hasRecipient = recipientSelect.value !== '';
     const hasMonsters = selectedMonsters.offered.length > 0 || selectedMonsters.requested.length > 0;
 
-    submitButton.disabled = !(hasRecipient && hasMonsters);
+    const shouldEnable = hasRecipient && hasMonsters;
+    submitButton.disabled = !shouldEnable;
+
+    console.log('Updated submit button state:', {
+      hasRecipient,
+      hasMonsters,
+      isEnabled: !submitButton.disabled
+    });
   }
 
   // Load recipient's monsters when a trainer is selected
@@ -672,6 +718,13 @@
     const trainerId = this.value;
     const container = document.getElementById('recipient-monsters-container');
     const searchInput = document.getElementById('their-monsters-search');
+
+    console.log(`Loading monsters for trainer ID: ${trainerId}`);
+
+    if (!container) {
+      console.error('Recipient monsters container not found');
+      return;
+    }
 
     // Reset search input
     if (searchInput) {
@@ -708,8 +761,15 @@
 
     try {
       // Fetch the trainer's monsters
+      console.log(`Fetching monsters for trainer ID: ${trainerId}`);
       const response = await fetch(`/api/trainers/${trainerId}/monsters`);
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
       const data = await response.json();
+      console.log('Received monsters data:', data);
 
       if (!data.monsters || data.monsters.length === 0) {
         container.innerHTML = `
@@ -740,6 +800,9 @@
             <div>
               ${monster.type1 ? `<span class="monster-type">${monster.type1}</span>` : ''}
               ${monster.type2 ? `<span class="monster-type">${monster.type2}</span>` : ''}
+              ${monster.type3 ? `<span class="monster-type">${monster.type3}</span>` : ''}
+              ${monster.type4 ? `<span class="monster-type">${monster.type4}</span>` : ''}
+              ${monster.type5 ? `<span class="monster-type">${monster.type5}</span>` : ''}
             </div>
           </div>
         `;
@@ -747,6 +810,7 @@
 
       html += '</div>';
       container.innerHTML = html;
+      console.log(`Rendered ${data.monsters.length} monsters for trainer ID: ${trainerId}`);
     } catch (error) {
       console.error('Error fetching monsters:', error);
       container.innerHTML = `
@@ -754,48 +818,83 @@
           <div class="empty-state-icon">
             <i class="fas fa-exclamation-triangle"></i>
           </div>
-          <div class="empty-state-text">Error loading monsters</div>
+          <div class="empty-state-text">Error loading monsters: ${error.message}</div>
         </div>
       `;
     }
   });
 
-  // Initialize empty states
   // Search monsters function
   function searchMonsters(side) {
     const searchInput = document.getElementById(`${side}-monsters-search`);
+    if (!searchInput) {
+      console.error(`Search input for ${side} monsters not found`);
+      return;
+    }
+
     const searchTerm = searchInput.value.toLowerCase();
+    console.log(`Searching ${side} monsters for: ${searchTerm}`);
 
     // Determine which container to search in
-    const container = side === 'your' ?
-      document.querySelector('.monster-grid') :
-      document.getElementById('recipient-monsters-container');
+    let container;
+    if (side === 'your') {
+      // For 'your' monsters, find the first monster-grid in the first trade-section
+      const yourSection = document.querySelector('.trade-section');
+      container = yourSection ? yourSection.querySelector('.monster-grid') : null;
+    } else {
+      // For 'their' monsters, use the recipient-monsters-container
+      container = document.getElementById('recipient-monsters-container');
+      // If the container has a monster-grid child, use that instead
+      const grid = container ? container.querySelector('.monster-grid') : null;
+      if (grid) {
+        container = grid;
+      }
+    }
 
-    if (!container) return;
+    if (!container) {
+      console.error(`Container for ${side} monsters not found`);
+      return;
+    }
 
     // Get all monster cards in the container
     const monsterCards = container.querySelectorAll('.monster-card');
+    console.log(`Found ${monsterCards.length} monster cards in ${side} container`);
 
     // Loop through all monster cards and show/hide based on search term
+    let matchCount = 0;
     monsterCards.forEach(card => {
       const monsterName = card.querySelector('.monster-name')?.textContent.toLowerCase() || '';
-      const monsterSpecies = card.querySelector('.monster-species')?.textContent.toLowerCase() || '';
-      const monsterType = card.querySelector('.monster-type')?.textContent.toLowerCase() || '';
+      const monsterDetails = card.querySelector('.monster-details')?.textContent.toLowerCase() || '';
+
+      // Get all type spans and combine their text
+      const typeSpans = card.querySelectorAll('.monster-type');
+      let monsterTypes = '';
+      typeSpans.forEach(span => {
+        monsterTypes += span.textContent.toLowerCase() + ' ';
+      });
 
       // Check if the monster matches the search term
       const matches =
         monsterName.includes(searchTerm) ||
-        monsterSpecies.includes(searchTerm) ||
-        monsterType.includes(searchTerm);
+        monsterDetails.includes(searchTerm) ||
+        monsterTypes.includes(searchTerm);
 
       // Show or hide the monster card
       card.style.display = matches ? 'block' : 'none';
+      if (matches) matchCount++;
     });
+
+    console.log(`Search results: ${matchCount} matches out of ${monsterCards.length} monsters`);
   }
 
+  // Initialize the page when DOM is loaded
   document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM loaded, initializing monster trading page');
     updateSelectedMonstersList('offered');
     updateSelectedMonstersList('requested');
+    updateHiddenInputs();
     updateSubmitButton();
   });
+
+  // This is a duplicate event listener that can be removed
 </script>

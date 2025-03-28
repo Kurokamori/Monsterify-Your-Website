@@ -19,7 +19,7 @@ router.post('/generate-items', async (req, res) => {
     }
 
     const { rewardMultiplier, numItems, trainers } = req.body;
-    
+
     if (!rewardMultiplier || !numItems || !trainers || !Array.isArray(trainers)) {
       return res.status(400).json({ success: false, message: 'Invalid request parameters' });
     }
@@ -93,7 +93,7 @@ router.post('/generate-items', async (req, res) => {
 
       // Get items for the selected rarity
       let tierItems = itemsByRarity[rarityKey];
-      
+
       // Use fallback if no items found for this rarity
       if (!tierItems || tierItems.length === 0) {
         tierItems = fallbackItems[rarityKey];
@@ -102,7 +102,7 @@ router.post('/generate-items', async (req, res) => {
       if (tierItems && tierItems.length > 0) {
         // Select a random item from the tier
         const selectedItem = tierItems[Math.floor(Math.random() * tierItems.length)];
-        
+
         // Select a random trainer to receive the item
         const trainerIndex = Math.floor(Math.random() * trainers.length);
         const trainer = trainers[trainerIndex];
@@ -142,7 +142,7 @@ router.post('/generate-monsters', async (req, res) => {
     }
 
     const { rewardMultiplier, numEncounters } = req.body;
-    
+
     if (!rewardMultiplier || !numEncounters) {
       return res.status(400).json({ success: false, message: 'Invalid request parameters' });
     }
@@ -152,21 +152,22 @@ router.post('/generate-monsters', async (req, res) => {
     // For each encounter, determine rarity based on multiplier and random chance
     for (let i = 0; i < numEncounters; i++) {
       // Base chance calculations
-      const legendaryChance = 0.0001; // 0.01% chance for legendary
-      const mythicalChance = 0.001;   // 0.1% chance for mythical
-      const rareChance = 0.05;        // 5% chance for rare
-      const uncommonChance = 0.25;    // 25% chance for uncommon
-      
-      // Apply multiplier to increase chances (but keep them still rare)
-      const adjustedLegendaryChance = Math.min(0.01, legendaryChance * rewardMultiplier * 5); // Cap at 1%
-      const adjustedMythicalChance = Math.min(0.05, mythicalChance * rewardMultiplier * 5);  // Cap at 5%
+      const legendaryChance = 0.000001; // 0.001% chance for legendary (1/100,000)
+      const mythicalChance = 0.00001;   // 0.01% chance for mythical (1/10,000)
+      const rareChance = 0.005;         // 5% chance for rare
+      const uncommonChance = 0.025;     // 25% chance for uncommon
+
+      // Apply multiplier to increase chances (but keep legendaries extremely rare)
+      // Even with max multiplier, legendary chance is capped at 0.002% (1/50,000)
+      const adjustedLegendaryChance = Math.min(0.00002, legendaryChance * rewardMultiplier * 2);
+      const adjustedMythicalChance = Math.min(0.001, mythicalChance * rewardMultiplier * 5);  // Cap at 0.1%
       const adjustedRareChance = Math.min(0.3, rareChance * rewardMultiplier * 2);          // Cap at 30%
       const adjustedUncommonChance = Math.min(0.6, uncommonChance * rewardMultiplier * 1.5); // Cap at 60%
-      
+
       // Roll for monster rarity
       const rarityRoll = Math.random();
       let monsterOptions = {};
-      
+
       if (rarityRoll < adjustedLegendaryChance) {
         // Legendary monster (extremely rare)
         monsterOptions = {
@@ -208,15 +209,15 @@ router.post('/generate-monsters', async (req, res) => {
           }
         };
       }
-      
+
       try {
         // Use MonsterRoller to generate a monster
         const monsterData = await MonsterRoller.rollOne(monsterOptions);
-        
+
         // Determine if the monster is evolved based on multiplier
         const evolutionChance = rewardMultiplier * 0.2;
         const isEvolved = Math.random() < evolutionChance;
-        
+
         // Extract relevant information from monster data
         const monster = {
           name: monsterData.species1,
@@ -224,7 +225,7 @@ router.post('/generate-monsters', async (req, res) => {
           rarity: monsterData.speciesData[0]?.data?.Rarity || 'Common',
           isEvolved: isEvolved
         };
-        
+
         monsterRewards.push(monster);
       } catch (error) {
         console.error('Error rolling monster:', error);
@@ -260,7 +261,7 @@ router.post('/generate-rewards', async (req, res) => {
     }
 
     const { sessionLength, productivityScore, trainers } = req.body;
-    
+
     if (!sessionLength || !productivityScore || !trainers || !Array.isArray(trainers)) {
       return res.status(400).json({ success: false, message: 'Invalid request parameters' });
     }
@@ -321,7 +322,7 @@ router.post('/generate-rewards', async (req, res) => {
 
       // Get all items from the database
       const allItems = await Item.getAll();
-      
+
       // Group items by rarity
       const itemsByRarity = {
         common: allItems.filter(item => item.rarity === 'common'),
@@ -378,7 +379,7 @@ router.post('/generate-rewards', async (req, res) => {
 
         // Get items for the selected rarity
         let tierItems = itemsByRarity[rarityKey];
-        
+
         // Use fallback if no items found for this rarity
         if (!tierItems || tierItems.length === 0) {
           tierItems = fallbackItems[rarityKey];
@@ -387,7 +388,7 @@ router.post('/generate-rewards', async (req, res) => {
         if (tierItems && tierItems.length > 0) {
           // Select a random item from the tier
           const selectedItem = tierItems[Math.floor(Math.random() * tierItems.length)];
-          
+
           // Select a random trainer to receive the item
           const trainerIndex = Math.floor(Math.random() * trainers.length);
           const trainer = trainers[trainerIndex];
@@ -441,21 +442,22 @@ router.post('/generate-rewards', async (req, res) => {
       // For each encounter, determine rarity based on multiplier and random chance
       for (let i = 0; i < numEncounters; i++) {
         // Base chance calculations
-        const legendaryChance = 0.0001; // 0.01% chance for legendary
-        const mythicalChance = 0.001;   // 0.1% chance for mythical
-        const rareChance = 0.05;        // 5% chance for rare
-        const uncommonChance = 0.25;    // 25% chance for uncommon
-        
-        // Apply multiplier to increase chances (but keep them still rare)
-        const adjustedLegendaryChance = Math.min(0.01, legendaryChance * rewardMultiplier * 5); // Cap at 1%
-        const adjustedMythicalChance = Math.min(0.05, mythicalChance * rewardMultiplier * 5);  // Cap at 5%
+        const legendaryChance = 0.000001; // 0.001% chance for legendary (1/100,000)
+        const mythicalChance = 0.00001;   // 0.01% chance for mythical (1/10,000)
+        const rareChance = 0.005;         // 5% chance for rare
+        const uncommonChance = 0.025;     // 25% chance for uncommon
+
+        // Apply multiplier to increase chances (but keep legendaries extremely rare)
+        // Even with max multiplier, legendary chance is capped at 0.002% (1/50,000)
+        const adjustedLegendaryChance = Math.min(0.00002, legendaryChance * rewardMultiplier * 2);
+        const adjustedMythicalChance = Math.min(0.001, mythicalChance * rewardMultiplier * 5);  // Cap at 0.1%
         const adjustedRareChance = Math.min(0.3, rareChance * rewardMultiplier * 2);          // Cap at 30%
         const adjustedUncommonChance = Math.min(0.6, uncommonChance * rewardMultiplier * 1.5); // Cap at 60%
-        
+
         // Roll for monster rarity
         const rarityRoll = Math.random();
         let monsterOptions = {};
-        
+
         if (rarityRoll < adjustedLegendaryChance) {
           // Legendary monster (extremely rare)
           monsterOptions = {
@@ -497,15 +499,15 @@ router.post('/generate-rewards', async (req, res) => {
             }
           };
         }
-        
+
         try {
           // Use MonsterRoller to generate a monster
           const monsterData = await MonsterRoller.rollOne(monsterOptions);
-          
+
           // Determine if the monster is evolved based on multiplier
           const evolutionChance = rewardMultiplier * 0.2;
           const isEvolved = Math.random() < evolutionChance;
-          
+
           // Extract relevant information from monster data
           const monster = {
             name: monsterData.species1,
@@ -513,7 +515,7 @@ router.post('/generate-rewards', async (req, res) => {
             rarity: monsterData.speciesData[0]?.data?.Rarity || 'Common',
             isEvolved: isEvolved
           };
-          
+
           rewards.monsters.push(monster);
         } catch (error) {
           console.error('Error rolling monster:', error);

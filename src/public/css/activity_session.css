@@ -1,0 +1,101 @@
+/* Activity Session Styles */
+
+/* Timer Circle */
+.timer-circle-wrapper {
+  width: 100%;
+  max-width: 300px;
+  margin: 0 auto 20px;
+}
+
+.timer-circle {
+  position: relative;
+  width: 100%;
+  padding-bottom: 100%; /* Creates a square aspect ratio */
+}
+
+.timer-circle svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+  overflow: visible;
+}
+
+.timer-circle circle {
+  transition: stroke-dashoffset 0.3s ease;
+}
+
+.timer-display {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+#timer-display {
+  font-size: 3.5rem;
+  font-weight: bold;
+  color: #8b5cf6; /* Purple color */
+  text-shadow: 0 0 15px rgba(139, 92, 246, 0.4);
+  line-height: 1;
+  text-align: center;
+  width: 100%;
+  display: block;
+  margin: 0 auto;
+  position: relative;
+  z-index: 10;
+  margin-bottom: 5px;
+}
+
+#timer-status {
+  font-size: 1rem;
+  color: #a78bfa; /* Lighter purple */
+  opacity: 0.9;
+  text-shadow: 0 0 5px rgba(139, 92, 246, 0.3);
+}
+
+#progress-circle {
+  transition: stroke-dashoffset 1s linear;
+  filter: drop-shadow(0 0 8px rgba(139, 92, 246, 0.5));
+}
+
+/* Task details */
+.task-details {
+  margin-bottom: 2rem;
+}
+
+/* Completion button pulse animation */
+@keyframes completePulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+#complete-task {
+  animation: completePulse 2s infinite;
+  box-shadow: 0 0 15px rgba(139, 92, 246, 0.5);
+}
+
+#complete-task:hover {
+  animation: none;
+  transform: scale(1.05);
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+  #timer-display {
+    font-size: 2.5rem;
+  }
+  
+  .timer-circle-wrapper {
+    max-width: 200px;
+  }
+}

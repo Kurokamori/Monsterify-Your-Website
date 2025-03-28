@@ -252,6 +252,16 @@
   .trade-card-label {
     font-weight: bold;
     margin-right: 0.5rem;
+    color: var(--accent-color);
+  }
+
+  .text-accent {
+    color: var(--accent-color);
+    font-weight: bold;
+  }
+
+  .text-muted {
+    opacity: 0.7;
   }
 
   .trade-card-actions {
@@ -463,60 +473,72 @@
             <div class="trade-card-details">
               <div class="trade-card-detail">
                 <span class="trade-card-label">Date:</span>
-                <%= new Date(trade.created_at).toLocaleDateString() %>
+                <%= trade.created_at_formatted %>
+              </div>
+
+              <div class="trade-card-detail">
+                <span class="trade-card-label">Your Role:</span>
+                <span class="<%= trade.is_initiator ? 'text-accent' : 'text-muted' %>">
+                  <%= trade.is_initiator ? 'Initiator' : 'Recipient' %>
+                </span>
               </div>
 
               <div class="trade-card-detail">
                 <span class="trade-card-label">Monsters:</span>
-                <%= (trade.offered_mons?.length || 0) + (trade.requested_mons?.length || 0) %> total
+                <% if (trade.is_initiator) { %>
+                  <span title="Monsters you offered">Offered: <%= trade.offered_mons_count %></span> |
+                  <span title="Monsters you requested">Requested: <%= trade.requested_mons_count %></span>
+                <% } else { %>
+                  <span title="Monsters offered to you">Received: <%= trade.offered_mons_count %></span> |
+                  <span title="Monsters requested from you">Given: <%= trade.requested_mons_count %></span>
+                <% } %>
               </div>
 
               <div class="trade-card-detail">
                 <span class="trade-card-label">Items:</span>
-                <%
-                  let itemCount = 0;
-                  if (trade.offered_items) {
-                    const offeredItems = typeof trade.offered_items === 'string'
-                      ? JSON.parse(trade.offered_items)
-                      : trade.offered_items;
-
-                    Object.values(offeredItems).forEach(items => {
-                      itemCount += Object.keys(items).length;
-                    });
-                  }
-
-                  if (trade.requested_items) {
-                    const requestedItems = typeof trade.requested_items === 'string'
-                      ? JSON.parse(trade.requested_items)
-                      : trade.requested_items;
-
-                    Object.values(requestedItems).forEach(items => {
-                      itemCount += Object.keys(items).length;
-                    });
-                  }
-                %>
-                <%= itemCount %> total
+                <% if (trade.is_initiator) { %>
+                  <span title="Items you offered">Offered: <%= trade.offered_items_count %></span> |
+                  <span title="Items you requested">Requested: <%= trade.requested_items_count %></span>
+                <% } else { %>
+                  <span title="Items offered to you">Received: <%= trade.offered_items_count %></span> |
+                  <span title="Items requested from you">Given: <%= trade.requested_items_count %></span>
+                <% } %>
               </div>
             </div>
 
             <div class="trade-card-actions">
               <% if (trade.status === 'pending') { %>
-                <form action="/town/visit/trade/process" method="POST" style="display: inline;">
-                  <input type="hidden" name="trade_id" value="<%= trade.trade_id %>">
-                  <button type="submit" class="trade-card-button button-view">
-                    <i class="fas fa-check mr-1"></i> Process
-                  </button>
-                </form>
+                <% if (trade.is_initiator) { %>
+                  <!-- Initiator can cancel their own pending trades -->
+                  <form action="/town/visit/trade/cancel" method="POST" style="display: inline;">
+                    <input type="hidden" name="trade_id" value="<%= trade.trade_id %>">
+                    <button type="submit" class="trade-card-button button-cancel">
+                      <i class="fas fa-times mr-1"></i> Cancel Trade
+                    </button>
+                  </form>
+                <% } else { %>
+                  <!-- Recipient can process or cancel pending trades -->
+                  <form action="/town/visit/trade/process" method="POST" style="display: inline;">
+                    <input type="hidden" name="trade_id" value="<%= trade.trade_id %>">
+                    <button type="submit" class="trade-card-button button-view">
+                      <i class="fas fa-check mr-1"></i> Accept Trade
+                    </button>
+                  </form>
 
-                <form action="/town/visit/trade/cancel" method="POST" style="display: inline;">
-                  <input type="hidden" name="trade_id" value="<%= trade.trade_id %>">
-                  <button type="submit" class="trade-card-button button-cancel">
-                    <i class="fas fa-times mr-1"></i> Cancel
-                  </button>
-                </form>
+                  <form action="/town/visit/trade/cancel" method="POST" style="display: inline;">
+                    <input type="hidden" name="trade_id" value="<%= trade.trade_id %>">
+                    <button type="submit" class="trade-card-button button-cancel">
+                      <i class="fas fa-times mr-1"></i> Decline
+                    </button>
+                  </form>
+                <% } %>
               <% } else { %>
-                <span class="trade-card-button button-view" style="cursor: default;">
-                  <i class="fas fa-check mr-1"></i> <%= trade.status.charAt(0).toUpperCase() + trade.status.slice(1) %>
+                <span class="trade-card-button <%= trade.status === 'completed' ? 'button-view' : 'button-cancel' %>" style="cursor: default;">
+                  <% if (trade.status === 'completed') { %>
+                    <i class="fas fa-check mr-1"></i> Completed
+                  <% } else { %>
+                    <i class="fas fa-times mr-1"></i> Cancelled
+                  <% } %>
                 </span>
               <% } %>
             </div>

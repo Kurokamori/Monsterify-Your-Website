@@ -535,7 +535,17 @@
           this.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i> Processing...';
 
           // Call API to process the reward
-          const response = await fetch('/api/game-corner/claim-reward', {
+          // Determine the API endpoint based on the source
+          const apiEndpoint = '<%= source %>' === 'activity'
+            ? '/api/activity/claim-reward'
+            : '/api/game-corner/claim-reward';
+
+          // Add session ID for activity rewards
+          const extraParams = '<%= source %>' === 'activity'
+            ? { sessionId: new URLSearchParams(window.location.search).get('session_id') }
+            : {};
+
+          const response = await fetch(apiEndpoint, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json'
@@ -544,7 +554,8 @@
               rewardId,
               rewardType,
               trainerId: selectedTrainerId,
-              source: '<%= source || "game_corner" %>'
+              source: '<%= source || "game_corner" %>',
+              ...extraParams
             })
           });
 
@@ -637,8 +648,18 @@
         }));
 
         try {
+          // Determine the API endpoint based on the source
+          const apiEndpoint = '<%= source %>' === 'activity'
+            ? '/api/activity/claim-all-rewards'
+            : '/api/game-corner/claim-all-rewards';
+
+          // Add session ID for activity rewards
+          const extraParams = '<%= source %>' === 'activity'
+            ? { sessionId: new URLSearchParams(window.location.search).get('session_id') }
+            : {};
+
           // Call API to process all rewards
-          const response = await fetch('/api/game-corner/claim-all-rewards', {
+          const response = await fetch(apiEndpoint, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json'
@@ -646,7 +667,8 @@
             body: JSON.stringify({
               rewards,
               trainerId: selectedTrainerId,
-              source: '<%= source || "game_corner" %>'
+              source: '<%= source || "game_corner" %>',
+              ...extraParams
             })
           });
 

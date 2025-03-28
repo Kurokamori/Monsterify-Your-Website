@@ -52,6 +52,7 @@ const TaskTemplate = require('./models/TaskTemplate');
 const Reminder = require('./models/Reminder');
 const MonsterRoller = require('./utils/MonsterRoller');
 const MonsterInitializer = require('./utils/MonsterInitializer');
+const Trade = require('./models/Trade');
 require('dotenv').config();
 
 const app = express();
@@ -921,7 +922,30 @@ app.get('/town/shop/:shopId', async (req, res) => {
 
   try {
     const { shopId } = req.params;
-    const playerId = req.session.user.id;
+    const playerId = req.session.user.discord_id;
+
+    console.log(`Shop request: shopId=${shopId}`);
+
+    // Validate that shopId is a valid shop ID
+    if (!shopId || typeof shopId !== 'string') {
+      console.error(`Invalid shop ID: ${shopId}`);
+      return res.redirect('/town?messageType=error&message=' + encodeURIComponent('Invalid shop ID'));
+    }
+
+    // If shopId is an emoji (starts with <:), redirect to the appropriate shop
+    if (shopId.includes('<:')) {
+      console.log(`Emoji detected in shop ID: ${shopId}, redirecting to apothecary`);
+      return res.redirect('/town/shop/apothecary');
+    }
+
+    if (!playerId) {
+      console.error('No Discord ID found for user');
+      return res.status(403).render('error', {
+        message: 'You need to have a Discord ID linked to your account to access the shop',
+        error: { status: 403 },
+        title: 'Error'
+      });
+    }
 
     // Get shop information
     console.log(`Getting shop information for shop ID: ${shopId}`);
@@ -937,17 +961,39 @@ app.get('/town/shop/:shopId', async (req, res) => {
       });
     }
 
-    // Get trainer information
-    const trainer = await Trainer.getByUserId(playerId);
+    // Get all trainers for the user
+    console.log(`Getting trainers for Discord ID: ${playerId}`);
+    const userTrainers = await Trainer.getByUserId(playerId);
+    console.log(`Found ${userTrainers ? userTrainers.length : 0} trainers for user`);
 
+    if (!userTrainers || userTrainers.length === 0) {
+      console.log('No trainers found, redirecting to /add_trainer');
+      return res.redirect('/add_trainer');
+    }
+
+    // Get selected trainer if trainer_id is provided
+    let trainer = null;
+    if (req.query.trainer_id) {
+      trainer = userTrainers.find(t => t.id === parseInt(req.query.trainer_id));
+    }
+
+    // If no trainer is selected or the selected trainer doesn't belong to the user, select the first one
     if (!trainer) {
-      return res.redirect('/create-trainer');
+      trainer = userTrainers[0];
     }
 
     // Get shop items for today
     console.log(`Getting shop items for shop ID: ${shopId}`);
-    const shopItems = await DailyShopItems.getShopItems(shopId);
+    let shopItems = await DailyShopItems.getShopItems(shopId);
     console.log(`Found ${shopItems ? shopItems.length : 0} items for shop ${shopId}:`, shopItems);
+
+    // If no items are found, automatically restock the shop
+    if (!shopItems || shopItems.length === 0) {
+      console.log(`No items found for shop ${shopId}, automatically restocking...`);
+      await DailyShopItems.restockShop(shopId);
+      shopItems = await DailyShopItems.getShopItems(shopId);
+      console.log(`After restock: Found ${shopItems ? shopItems.length : 0} items for shop ${shopId}`);
+    }
 
     // Get remaining quantities for each item
     console.log('Getting remaining quantities for each item...');
@@ -969,19 +1015,25 @@ app.get('/town/shop/:shopId', async (req, res) => {
     );
     console.log('Items with quantities:', itemsWithQuantities);
 
+    // Determine if shop was automatically restocked
+    const wasRestocked = req.query.message ? req.query.message :
+      (shopItems.length > 0 && !req.query.message ? 'Shop has been automatically restocked with new items!' : '');
+    const messageType = req.query.messageType || 'success';
+
     console.log('Rendering shop page with data:', {
       shop: shop.name,
       trainer: trainer.name,
       itemCount: itemsWithQuantities.length,
-      message: req.query.message
+      message: wasRestocked
     });
 
     res.render('shop', {
       shop,
-      trainer,
+      trainer: trainer,
+      trainers: userTrainers,
       items: itemsWithQuantities,
-      message: req.query.message,
-      messageType: req.query.messageType
+      message: wasRestocked,
+      messageType: messageType
     });
   } catch (error) {
     console.error(`Error loading shop ${req.params.shopId}:`, error);
@@ -1049,18 +1101,47 @@ app.post('/town/shop/:shopId/purchase', async (req, res) => {
 
   try {
     const { shopId } = req.params;
-    const { item_id, quantity } = req.body;
-    const playerId = req.session.user.id;
+    const { item_id, quantity, trainer_id } = req.body;
+    const playerId = req.session.user.discord_id;
+
+    console.log(`Purchase request: shopId=${shopId}, item_id=${item_id}, quantity=${quantity}, trainer_id=${trainer_id}`);
+
+    // Validate that shopId is a valid shop ID
+    if (!shopId || typeof shopId !== 'string') {
+      console.error(`Invalid shop ID: ${shopId}`);
+      return res.redirect('/town?messageType=error&message=' + encodeURIComponent('Invalid shop ID'));
+    }
+
+    // If shopId is an emoji (starts with <:), redirect to the appropriate shop
+    if (shopId.includes('<:')) {
+      const itemId = shopId;
+      console.log(`Emoji detected in shop ID: ${shopId}, redirecting to apothecary`);
+      return res.redirect('/town/shop/apothecary');
+    }
+
+    if (!playerId) {
+      console.error('No Discord ID found for user');
+      return res.status(403).render('error', {
+        message: 'You need to have a Discord ID linked to your account to make purchases',
+        error: { status: 403 },
+        title: 'Error'
+      });
+    }
 
     // Validate inputs
-    if (!item_id || !quantity) {
-      return res.redirect(`/town/shop/${shopId}?messageType=error&message=${encodeURIComponent('Item ID and quantity are required')}`);
+    if (!item_id || !quantity || !trainer_id) {
+      return res.redirect(`/town/shop/${shopId}?messageType=error&message=${encodeURIComponent('Item ID, quantity, and trainer are required')}`);
     }
 
     const parsedQuantity = parseInt(quantity);
+    const parsedTrainerId = parseInt(trainer_id);
 
     if (isNaN(parsedQuantity) || parsedQuantity <= 0) {
       return res.redirect(`/town/shop/${shopId}?messageType=error&message=${encodeURIComponent('Quantity must be a positive number')}`);
+    }
+
+    if (isNaN(parsedTrainerId) || parsedTrainerId <= 0) {
+      return res.redirect(`/town/shop/${shopId}?messageType=error&message=${encodeURIComponent('Invalid trainer selected')}`);
     }
 
     // Get shop information
@@ -1077,11 +1158,22 @@ app.post('/town/shop/:shopId/purchase', async (req, res) => {
       });
     }
 
-    // Get trainer information
-    const trainer = await Trainer.getByUserId(playerId);
+    // Get all trainers for the user
+    console.log(`Getting trainers for Discord ID: ${playerId}`);
+    const userTrainers = await Trainer.getByUserId(playerId);
+    console.log(`Found ${userTrainers ? userTrainers.length : 0} trainers for user`);
 
+    if (!userTrainers || userTrainers.length === 0) {
+      console.log('No trainers found, redirecting to /add_trainer');
+      return res.redirect('/add_trainer');
+    }
+
+    // Find the selected trainer
+    const trainer = userTrainers.find(t => t.id === parsedTrainerId);
+
+    // Verify that the selected trainer belongs to the user
     if (!trainer) {
-      return res.redirect('/create-trainer');
+      return res.redirect(`/town/shop/${shopId}?messageType=error&message=${encodeURIComponent('Invalid trainer selected')}`);
     }
 
     // Get item information
@@ -1112,34 +1204,102 @@ app.post('/town/shop/:shopId/purchase', async (req, res) => {
     }
 
     // Record the purchase
-    await PlayerShopPurchases.recordPurchase(
-      playerId,
-      shopId,
-      item_id,
-      parsedQuantity
-    );
+    console.log(`Recording purchase: player=${playerId}, shop=${shopId}, item=${item_id}, quantity=${parsedQuantity}`);
+    try {
+      await PlayerShopPurchases.recordPurchase(
+        playerId,
+        shopId,
+        item_id,
+        parsedQuantity
+      );
+      console.log('Purchase recorded successfully');
+    } catch (purchaseError) {
+      console.error('Error recording purchase:', purchaseError);
+      return res.redirect(`/town/shop/${shopId}?messageType=error&message=${encodeURIComponent('Error recording purchase: ' + purchaseError.message)}`);
+    }
 
-    // Update trainer's inventory
-    const inventoryItem = {
-      item_id,
-      quantity: parsedQuantity
-    };
+    // Determine the inventory category based on the shop ID
+    let inventoryCategory;
 
-    await Trainer.addItemToInventory(trainer.id, inventoryItem);
+    // Map shop ID to inventory category
+    switch(shopId) {
+      case 'apothecary':
+        inventoryCategory = 'inv_berries';
+        break;
+      case 'bakery':
+        inventoryCategory = 'inv_pastries';
+        break;
+      case 'witchs_hut':
+        inventoryCategory = 'inv_evolution';
+        break;
+      case 'megamart':
+        inventoryCategory = 'inv_balls';
+        break;
+      case 'antique_shop':
+        inventoryCategory = 'inv_antiques';
+        break;
+      case 'nursery':
+        inventoryCategory = 'inv_eggs';
+        break;
+      case 'pirates_dock':
+        inventoryCategory = 'inv_helditems';
+        break;
+      default:
+        inventoryCategory = 'inv_items';
+        break;
+    }
+
+    console.log(`Using inventory category ${inventoryCategory} for shop ${shopId}`);
+    console.log(`Adding ${parsedQuantity} ${item_id} to ${trainer.name}'s ${inventoryCategory}`);
+
+    // Update the trainer's inventory with the correct category using the direct method
+    try {
+      const success = await Trainer.addItemDirectly(
+        trainer.id,
+        inventoryCategory,
+        item_id,
+        parsedQuantity
+      );
+
+      if (!success) {
+        console.error('Failed to add item to inventory');
+        return res.redirect(`/town/shop/${shopId}?messageType=error&message=${encodeURIComponent('Failed to add item to inventory')}`);
+      }
+      console.log('Item added to inventory successfully');
+    } catch (inventoryError) {
+      console.error('Error updating inventory:', inventoryError);
+      return res.redirect(`/town/shop/${shopId}?messageType=error&message=${encodeURIComponent('Error updating inventory: ' + inventoryError.message)}`);
+    }
 
     // Update trainer's currency
-    const updatedTrainer = {
-      ...trainer,
-      currency_amount: trainer.currency_amount - totalPrice
-    };
+    console.log(`Updating trainer currency: trainer_id=${trainer.id}, current=${trainer.currency_amount}, price=${totalPrice}, new=${trainer.currency_amount - totalPrice}`);
+    try {
+      // Get the latest trainer data to ensure we have the updated inventory
+      const latestTrainer = await Trainer.getById(trainer.id);
+      if (!latestTrainer) {
+        throw new Error(`Trainer with ID ${trainer.id} not found`);
+      }
 
-    await Trainer.update(trainer.id, updatedTrainer);
+      console.log('Latest trainer data retrieved for currency update');
+
+      // Only update the currency amount, not the entire trainer object
+      const currencyUpdate = {
+        currency_amount: latestTrainer.currency_amount - totalPrice
+      };
+
+      await Trainer.update(trainer.id, currencyUpdate);
+      console.log('Trainer currency updated successfully');
+    } catch (currencyError) {
+      console.error('Error updating trainer currency:', currencyError);
+      return res.redirect(`/town/shop/${shopId}?messageType=error&message=${encodeURIComponent('Error updating trainer currency: ' + currencyError.message)}`);
+    }
 
     // Redirect back to the shop with success message
     return res.redirect(`/town/shop/${shopId}?message=${encodeURIComponent(`Successfully purchased ${parsedQuantity} ${item.item_name}(s) for ${totalPrice} coins`)}`);
   } catch (error) {
-    console.error(`Error purchasing item from shop ${req.params.shopId}:`, error);
-    return res.redirect(`/town/shop/${req.params.shopId}?messageType=error&message=${encodeURIComponent('Error purchasing item: ' + error.message)}`);
+    console.error(`Error purchasing item from shop ${shopId}:`, error);
+    // Always redirect back to the original shop ID, not the item ID
+    return res.redirect(`/town/shop/${shopId}?messageType=error&message=${encodeURIComponent('Error purchasing item: ' + error.message)}`);
   }
 });
 
@@ -1432,6 +1592,33 @@ app.get('/admin/seed', async (req, res) => {
     res.status(500).send('Error seeding database: ' + error.message);
   }
 });
+
+// Admin route for testing rewards
+app.get('/admin/test-rewards', async (req, res) => {
+  // Check if user is logged in and is an admin
+  if (!req.session.user || !req.session.user.is_admin) {
+    return res.redirect('/');
+  }
+
+  try {
+    res.render('admin/test_rewards', {
+      title: 'Test Rewards'
+    });
+  } catch (error) {
+    console.error('Error loading test rewards page:', error);
+    res.status(500).render('error', {
+      message: 'Error loading test rewards page',
+      error: { status: 500, stack: error.stack },
+      title: 'Error'
+    });
+  }
+});
+
+// Import shop management routes
+const shopRoutes = require('./routes/admin/shops');
+
+// Use shop management routes
+app.use('/admin/shops', shopRoutes);
 
 // Monster Roller routes
 app.get('/admin/monster-roller', async (req, res) => {
@@ -2163,25 +2350,81 @@ app.get('/town/visit/trade', async (req, res) => {
     // Get user's trainers
     const userTrainers = await Trainer.getByUserId(req.session.user.discord_id);
 
-    // Get selected trainer if trainer_id is provided
-    let selectedTrainer = null;
-    if (req.query.trainer_id) {
-      selectedTrainer = await Trainer.getById(req.query.trainer_id);
+    // Get selected trainer from query params or default to first trainer
+    let selectedTrainerId = req.query.trainer_id;
+    let selectedTrainer;
 
-      // Verify that the selected trainer belongs to the user
-      if (!selectedTrainer || selectedTrainer.player_user_id !== req.session.user.discord_id) {
-        selectedTrainer = null;
-      }
+    if (selectedTrainerId) {
+      selectedTrainer = userTrainers.find(t => t.id == selectedTrainerId);
     }
 
-    // If no trainer is selected but user has trainers, select the first one
     if (!selectedTrainer && userTrainers.length > 0) {
-      selectedTrainer = userTrainers[0];
+      selectedTrainer = userTrainers[0]; // Default to first trainer
     }
 
-    // For now, just provide an empty trades array
-    // This can be updated later when a Trade model is implemented
-    const trades = [];
+    if (!selectedTrainer) {
+      return res.render('town/trade', {
+        title: 'Trade Center',
+        message: 'No trainers found. Please create a trainer first.',
+        messageType: 'warning',
+        userTrainers: [],
+        trades: []
+      });
+    }
+
+    // Fetch trades for the selected trainer
+    const rawTrades = await Trade.getByTrainerId(selectedTrainer.id);
+
+    // Format trades with trainer names and item/monster counts
+    const trades = await Promise.all(rawTrades.map(async (trade) => {
+      // Get initiator and recipient trainer names
+      const initiator = await Trainer.getById(trade.initiator_id);
+      const recipient = await Trainer.getById(trade.recipient_id);
+
+      // Format the trade data
+      const formattedTrade = {
+        ...trade,
+        initiator_name: initiator ? initiator.name : 'Unknown Trainer',
+        recipient_name: recipient ? recipient.name : 'Unknown Trainer',
+        is_initiator: trade.initiator_id == selectedTrainer.id,
+        created_at_formatted: new Date(trade.created_at).toLocaleString(),
+        updated_at_formatted: new Date(trade.updated_at).toLocaleString(),
+        // Format monster counts
+        offered_mons_count: Array.isArray(trade.offered_mons) ? trade.offered_mons.length : 0,
+        requested_mons_count: Array.isArray(trade.requested_mons) ? trade.requested_mons.length : 0,
+        // Format item counts
+        offered_items_count: 0,
+        requested_items_count: 0
+      };
+
+      // Count offered items
+      if (trade.offered_items) {
+        const offeredItems = typeof trade.offered_items === 'string'
+          ? JSON.parse(trade.offered_items)
+          : trade.offered_items;
+
+        Object.values(offeredItems).forEach(items => {
+          Object.values(items).forEach(quantity => {
+            formattedTrade.offered_items_count += parseInt(quantity) || 0;
+          });
+        });
+      }
+
+      // Count requested items
+      if (trade.requested_items) {
+        const requestedItems = typeof trade.requested_items === 'string'
+          ? JSON.parse(trade.requested_items)
+          : trade.requested_items;
+
+        Object.values(requestedItems).forEach(items => {
+          Object.values(items).forEach(quantity => {
+            formattedTrade.requested_items_count += parseInt(quantity) || 0;
+          });
+        });
+      }
+
+      return formattedTrade;
+    }));
 
     res.render('town/trade', {
       title: 'Trade Center',
@@ -2366,8 +2609,30 @@ app.post('/town/visit/trade/mons', async (req, res) => {
     // Process the trade
     try {
       // Parse the monster IDs
-      const offeredMonsterIds = offered_mons ? (Array.isArray(offered_mons) ? offered_mons : [offered_mons]) : [];
-      const requestedMonsterIds = requested_mons ? (Array.isArray(requested_mons) ? requested_mons : [requested_mons]) : [];
+      console.log('Processing trade with offered_mons:', offered_mons);
+      console.log('Processing trade with requested_mons:', requested_mons);
+
+      // Convert to arrays if they're not already
+      let offeredMonsterIds = [];
+      if (offered_mons) {
+        if (Array.isArray(offered_mons)) {
+          offeredMonsterIds = offered_mons;
+        } else {
+          offeredMonsterIds = [offered_mons];
+        }
+      }
+
+      let requestedMonsterIds = [];
+      if (requested_mons) {
+        if (Array.isArray(requested_mons)) {
+          requestedMonsterIds = requested_mons;
+        } else {
+          requestedMonsterIds = [requested_mons];
+        }
+      }
+
+      console.log('Processed offered monster IDs:', offeredMonsterIds);
+      console.log('Processed requested monster IDs:', requestedMonsterIds);
 
       // Validate that there are monsters to trade
       if (offeredMonsterIds.length === 0 && requestedMonsterIds.length === 0) {
@@ -2386,11 +2651,29 @@ app.post('/town/visit/trade/mons', async (req, res) => {
 
       // Verify that the offered monsters belong to the initiator
       for (const monId of offeredMonsterIds) {
+        console.log(`Verifying offered monster ID: ${monId}`);
         const monster = await Monster.getById(monId);
-        if (!monster || monster.trainer_id !== initiator_id) {
+
+        if (!monster) {
+          console.error(`Monster with ID ${monId} not found`);
           return res.render('town/trade/mons', {
             title: 'Monster Trading',
-            message: 'One or more of the offered monsters do not belong to you.',
+            message: `Monster with ID ${monId} not found.`,
+            messageType: 'error',
+            userTrainers: await Trainer.getByUserId(req.session.user.discord_id),
+            selectedTrainer: initiatorTrainer,
+            yourMonsters: await Monster.getByTrainerId(initiator_id),
+            otherTrainers: await Trainer.getAll(),
+            otherTrainer: recipientTrainer,
+            otherMonsters: []
+          });
+        }
+
+        console.log(`Monster ${monId} belongs to trainer ${monster.trainer_id}, initiator is ${initiator_id}`);
+        if (parseInt(monster.trainer_id) !== parseInt(initiator_id)) {
+          return res.render('town/trade/mons', {
+            title: 'Monster Trading',
+            message: `The monster ${monster.name} (ID: ${monId}) does not belong to you.`,
             messageType: 'error',
             userTrainers: await Trainer.getByUserId(req.session.user.discord_id),
             selectedTrainer: initiatorTrainer,
@@ -2404,11 +2687,29 @@ app.post('/town/visit/trade/mons', async (req, res) => {
 
       // Verify that the requested monsters belong to the recipient
       for (const monId of requestedMonsterIds) {
+        console.log(`Verifying requested monster ID: ${monId}`);
         const monster = await Monster.getById(monId);
-        if (!monster || monster.trainer_id !== recipient_id) {
+
+        if (!monster) {
+          console.error(`Monster with ID ${monId} not found`);
           return res.render('town/trade/mons', {
             title: 'Monster Trading',
-            message: 'One or more of the requested monsters do not belong to the recipient.',
+            message: `Monster with ID ${monId} not found.`,
+            messageType: 'error',
+            userTrainers: await Trainer.getByUserId(req.session.user.discord_id),
+            selectedTrainer: initiatorTrainer,
+            yourMonsters: await Monster.getByTrainerId(initiator_id),
+            otherTrainers: await Trainer.getAll(),
+            otherTrainer: recipientTrainer,
+            otherMonsters: []
+          });
+        }
+
+        console.log(`Monster ${monId} belongs to trainer ${monster.trainer_id}, recipient is ${recipient_id}`);
+        if (parseInt(monster.trainer_id) !== parseInt(recipient_id)) {
+          return res.render('town/trade/mons', {
+            title: 'Monster Trading',
+            message: `The monster ${monster.name} (ID: ${monId}) does not belong to the recipient.`,
             messageType: 'error',
             userTrainers: await Trainer.getByUserId(req.session.user.discord_id),
             selectedTrainer: initiatorTrainer,
@@ -2421,38 +2722,85 @@ app.post('/town/visit/trade/mons', async (req, res) => {
       }
 
       // Perform the trade - update trainer_id for each monster
-      // 1. Transfer offered monsters to recipient
-      for (const monId of offeredMonsterIds) {
-        await Monster.update(monId, {
-          trainer_id: recipient_id,
-          box_number: 0 // Put in first box by default
+      try {
+        // 1. Transfer offered monsters to recipient
+        for (const monId of offeredMonsterIds) {
+          console.log(`Transferring offered monster ${monId} from ${initiator_id} to ${recipient_id}`);
+          const updateResult = await Monster.update(monId, {
+            trainer_id: recipient_id,
+            box_number: 1 // Put in first box by default
+          });
+
+          if (!updateResult) {
+            throw new Error(`Failed to transfer monster ${monId} to recipient`);
+          }
+          console.log(`Successfully transferred monster ${monId} to recipient`);
+        }
+
+        // 2. Transfer requested monsters to initiator
+        for (const monId of requestedMonsterIds) {
+          console.log(`Transferring requested monster ${monId} from ${recipient_id} to ${initiator_id}`);
+          const updateResult = await Monster.update(monId, {
+            trainer_id: initiator_id,
+            box_number: 1 // Put in first box by default
+          });
+
+          if (!updateResult) {
+            throw new Error(`Failed to transfer monster ${monId} to initiator`);
+          }
+          console.log(`Successfully transferred monster ${monId} to initiator`);
+        }
+
+        // 3. Create a trade record in the database
+        const tradeData = {
+          initiator_id: initiator_id,
+          recipient_id: recipient_id,
+          status: 'completed',
+          offered_mons: offeredMonsterIds,
+          offered_items: {},
+          requested_mons: requestedMonsterIds,
+          requested_items: {}
+        };
+
+        // Create the trade record
+        const tradeRecord = await Trade.create(tradeData);
+
+        if (!tradeRecord) {
+          throw new Error('Failed to create trade record');
+        }
+
+        console.log(`Trade completed: ${initiator_id} traded ${offeredMonsterIds.join(', ')} for ${requestedMonsterIds.join(', ')} from ${recipient_id}, trade ID: ${tradeRecord.trade_id}`);
+
+        // Recalculate monster counts for both trainers
+        await Trainer.recalculateMonsterCounts(initiator_id);
+        await Trainer.recalculateMonsterCounts(recipient_id);
+
+        // Return success message
+        return res.render('town/trade/mons', {
+          title: 'Monster Trading',
+          message: 'Trade completed successfully!',
+          messageType: 'success',
+          userTrainers: await Trainer.getByUserId(req.session.user.discord_id),
+          selectedTrainer: initiatorTrainer,
+          yourMonsters: await Monster.getByTrainerId(initiator_id),
+          otherTrainers: await Trainer.getAll(),
+          otherTrainer: recipientTrainer,
+          otherMonsters: []
+        });
+      } catch (transferError) {
+        console.error('Error transferring monsters:', transferError);
+        return res.render('town/trade/mons', {
+          title: 'Monster Trading',
+          message: `Error transferring monsters: ${transferError.message}`,
+          messageType: 'error',
+          userTrainers: await Trainer.getByUserId(req.session.user.discord_id),
+          selectedTrainer: initiatorTrainer,
+          yourMonsters: await Monster.getByTrainerId(initiator_id),
+          otherTrainers: await Trainer.getAll(),
+          otherTrainer: recipientTrainer,
+          otherMonsters: []
         });
       }
-
-      // 2. Transfer requested monsters to initiator
-      for (const monId of requestedMonsterIds) {
-        await Monster.update(monId, {
-          trainer_id: initiator_id,
-          box_number: 0 // Put in first box by default
-        });
-      }
-
-      // 3. Create a trade record if needed (this would be implemented in a Trade model)
-      // For now, we'll just log the trade
-      console.log(`Trade completed: ${initiator_id} traded ${offeredMonsterIds.join(', ')} for ${requestedMonsterIds.join(', ')} from ${recipient_id}`);
-
-      // Return success message
-      return res.render('town/trade/mons', {
-        title: 'Monster Trading',
-        message: 'Trade completed successfully!',
-        messageType: 'success',
-        userTrainers: await Trainer.getByUserId(req.session.user.discord_id),
-        selectedTrainer: initiatorTrainer,
-        yourMonsters: await Monster.getByTrainerId(initiator_id),
-        otherTrainers: await Trainer.getAll(),
-        otherTrainer: recipientTrainer,
-        otherMonsters: []
-      });
     } catch (tradeError) {
       console.error('Error processing trade:', tradeError);
       return res.render('town/trade/mons', {
@@ -2546,12 +2894,67 @@ app.post('/town/visit/trade/items', async (req, res) => {
     // Process the trade
     try {
       // Parse the item data
-      const offeredItems = offered_items ? (typeof offered_items === 'string' ? JSON.parse(offered_items) : offered_items) : {};
-      const requestedItems = requested_items ? (typeof requested_items === 'string' ? JSON.parse(requested_items) : requested_items) : {};
+      console.log('Processing trade with offered_items:', offered_items);
+      console.log('Processing trade with requested_items:', requested_items);
+
+      // Process offered items
+      let offeredItems = {};
+      if (offered_items) {
+        // Handle array of JSON strings (from form submission)
+        if (Array.isArray(offered_items)) {
+          offered_items.forEach(item => {
+            try {
+              const parsedItem = typeof item === 'string' ? JSON.parse(item) : item;
+              if (parsedItem.name && parsedItem.category && parsedItem.quantity > 0) {
+                if (!offeredItems[parsedItem.category]) {
+                  offeredItems[parsedItem.category] = {};
+                }
+                offeredItems[parsedItem.category][parsedItem.name] = parsedItem.quantity;
+              }
+            } catch (e) {
+              console.error('Error parsing offered item:', e, item);
+            }
+          });
+        } else if (typeof offered_items === 'object') {
+          // Handle direct object
+          offeredItems = offered_items;
+        }
+      }
+
+      // Process requested items
+      let requestedItems = {};
+      if (requested_items) {
+        // Handle array of JSON strings (from form submission)
+        if (Array.isArray(requested_items)) {
+          requested_items.forEach(item => {
+            try {
+              const parsedItem = typeof item === 'string' ? JSON.parse(item) : item;
+              if (parsedItem.name && parsedItem.category && parsedItem.quantity > 0) {
+                if (!requestedItems[parsedItem.category]) {
+                  requestedItems[parsedItem.category] = {};
+                }
+                requestedItems[parsedItem.category][parsedItem.name] = parsedItem.quantity;
+              }
+            } catch (e) {
+              console.error('Error parsing requested item:', e, item);
+            }
+          });
+        } else if (typeof requested_items === 'object') {
+          // Handle direct object
+          requestedItems = requested_items;
+        }
+      }
+
+      console.log('Processed offered items:', offeredItems);
+      console.log('Processed requested items:', requestedItems);
 
       // Validate that there are items to trade
-      const hasOfferedItems = Object.values(offeredItems).some(count => count > 0);
-      const hasRequestedItems = Object.values(requestedItems).some(count => count > 0);
+      const hasOfferedItems = Object.keys(offeredItems).some(category =>
+        Object.values(offeredItems[category]).some(count => count > 0)
+      );
+      const hasRequestedItems = Object.keys(requestedItems).some(category =>
+        Object.values(requestedItems[category]).some(count => count > 0)
+      );
 
       if (!hasOfferedItems && !hasRequestedItems) {
         return res.render('town/trade/items', {
@@ -2573,93 +2976,101 @@ app.post('/town/visit/trade/items', async (req, res) => {
       const recipientInventory = await Trainer.getInventory(recipient_id) || {};
 
       // Verify that the initiator has the offered items
-      for (const [itemId, count] of Object.entries(offeredItems)) {
-        if (count <= 0) continue;
+      for (const category in offeredItems) {
+        for (const [itemName, count] of Object.entries(offeredItems[category])) {
+          if (count <= 0) continue;
 
-        const category = Object.keys(initiatorInventory).find(cat =>
-          initiatorInventory[cat] && initiatorInventory[cat][itemId] !== undefined
-        );
-
-        if (!category || initiatorInventory[category][itemId] < count) {
-          return res.render('town/trade/items', {
-            title: 'Item Trading',
-            message: 'You do not have enough of one or more offered items.',
-            messageType: 'error',
-            userTrainers: await Trainer.getByUserId(req.session.user.discord_id),
-            selectedTrainer: initiatorTrainer,
-            inventory: initiatorInventory,
-            itemDetails: {},
-            otherTrainers: await Trainer.getAll(),
-            otherTrainer: recipientTrainer,
-            otherItems: {}
-          });
+          // Check if the initiator has this category in their inventory
+          if (!initiatorInventory[category] || initiatorInventory[category][itemName] === undefined || initiatorInventory[category][itemName] < count) {
+            return res.render('town/trade/items', {
+              title: 'Item Trading',
+              message: `You do not have enough of ${itemName} in your inventory.`,
+              messageType: 'error',
+              userTrainers: await Trainer.getByUserId(req.session.user.discord_id),
+              selectedTrainer: initiatorTrainer,
+              inventory: initiatorInventory,
+              itemDetails: {},
+              otherTrainers: await Trainer.getAll(),
+              otherTrainer: recipientTrainer,
+              otherItems: {}
+            });
+          }
         }
       }
 
       // Verify that the recipient has the requested items
-      for (const [itemId, count] of Object.entries(requestedItems)) {
-        if (count <= 0) continue;
+      for (const category in requestedItems) {
+        for (const [itemName, count] of Object.entries(requestedItems[category])) {
+          if (count <= 0) continue;
 
-        const category = Object.keys(recipientInventory).find(cat =>
-          recipientInventory[cat] && recipientInventory[cat][itemId] !== undefined
-        );
-
-        if (!category || recipientInventory[category][itemId] < count) {
-          return res.render('town/trade/items', {
-            title: 'Item Trading',
-            message: 'The recipient does not have enough of one or more requested items.',
-            messageType: 'error',
-            userTrainers: await Trainer.getByUserId(req.session.user.discord_id),
-            selectedTrainer: initiatorTrainer,
-            inventory: initiatorInventory,
-            itemDetails: {},
-            otherTrainers: await Trainer.getAll(),
-            otherTrainer: recipientTrainer,
-            otherItems: {}
-          });
+          // Check if the recipient has this category in their inventory
+          if (!recipientInventory[category] || recipientInventory[category][itemName] === undefined || recipientInventory[category][itemName] < count) {
+            return res.render('town/trade/items', {
+              title: 'Item Trading',
+              message: `The recipient does not have enough of ${itemName} in their inventory.`,
+              messageType: 'error',
+              userTrainers: await Trainer.getByUserId(req.session.user.discord_id),
+              selectedTrainer: initiatorTrainer,
+              inventory: initiatorInventory,
+              itemDetails: {},
+              otherTrainers: await Trainer.getAll(),
+              otherTrainer: recipientTrainer,
+              otherItems: {}
+            });
+          }
         }
       }
 
       // Perform the trade - update inventories
       // 1. Transfer offered items to recipient
-      for (const [itemId, count] of Object.entries(offeredItems)) {
-        if (count <= 0) continue;
+      for (const category in offeredItems) {
+        for (const [itemName, count] of Object.entries(offeredItems[category])) {
+          if (count <= 0) continue;
 
-        // Find the category for this item
-        const category = Object.keys(initiatorInventory).find(cat =>
-          initiatorInventory[cat] && initiatorInventory[cat][itemId] !== undefined
-        );
+          console.log(`Transferring ${count} ${itemName} from initiator to recipient (category: ${category})`);
 
-        if (category) {
           // Remove from initiator
-          await Trainer.updateInventoryItem(initiator_id, category, itemId, -count);
+          await Trainer.updateInventoryItem(initiator_id, category, itemName, -count);
 
           // Add to recipient
-          await Trainer.updateInventoryItem(recipient_id, category, itemId, count);
+          await Trainer.updateInventoryItem(recipient_id, category, itemName, count);
         }
       }
 
       // 2. Transfer requested items to initiator
-      for (const [itemId, count] of Object.entries(requestedItems)) {
-        if (count <= 0) continue;
+      for (const category in requestedItems) {
+        for (const [itemName, count] of Object.entries(requestedItems[category])) {
+          if (count <= 0) continue;
 
-        // Find the category for this item
-        const category = Object.keys(recipientInventory).find(cat =>
-          recipientInventory[cat] && recipientInventory[cat][itemId] !== undefined
-        );
+          console.log(`Transferring ${count} ${itemName} from recipient to initiator (category: ${category})`);
 
-        if (category) {
           // Remove from recipient
-          await Trainer.updateInventoryItem(recipient_id, category, itemId, -count);
+          await Trainer.updateInventoryItem(recipient_id, category, itemName, -count);
 
           // Add to initiator
-          await Trainer.updateInventoryItem(initiator_id, category, itemId, count);
+          await Trainer.updateInventoryItem(initiator_id, category, itemName, count);
         }
       }
 
-      // 3. Create a trade record if needed (this would be implemented in a Trade model)
-      // For now, we'll just log the trade
-      console.log(`Item trade completed between ${initiator_id} and ${recipient_id}`);
+      // 3. Create a trade record in the database
+      const tradeData = {
+        initiator_id: initiator_id,
+        recipient_id: recipient_id,
+        status: 'completed',
+        offered_mons: [],
+        offered_items: offeredItems,
+        requested_mons: [],
+        requested_items: requestedItems
+      };
+
+      // Create the trade record
+      const tradeRecord = await Trade.create(tradeData);
+
+      if (!tradeRecord) {
+        throw new Error('Failed to create trade record');
+      }
+
+      console.log(`Item trade completed between ${initiator_id} and ${recipient_id}, trade ID: ${tradeRecord.trade_id}`);
 
       // Return success message
       return res.render('town/trade/items', {
@@ -2703,6 +3114,74 @@ app.post('/town/visit/trade/items', async (req, res) => {
       otherTrainer: null,
       otherItems: {}
     });
+  }
+});
+
+// Process Trade Route
+app.post('/town/visit/trade/process', async (req, res) => {
+  // Check if user is logged in
+  if (!req.session.user) {
+    return res.redirect('/login');
+  }
+
+  try {
+    const { trade_id } = req.body;
+
+    if (!trade_id) {
+      return res.redirect('/town/visit/trade?message=Missing+trade+ID&messageType=error');
+    }
+
+    // Get the trade
+    const trade = await Trade.getById(trade_id);
+    if (!trade) {
+      return res.redirect('/town/visit/trade?message=Trade+not+found&messageType=error');
+    }
+
+    // Process the trade
+    const result = await Trade.processTrade(trade_id);
+
+    if (result.success) {
+      return res.redirect('/town/visit/trade?message=Trade+processed+successfully&messageType=success');
+    } else {
+      return res.redirect(`/town/visit/trade?message=${encodeURIComponent(result.message)}&messageType=error`);
+    }
+  } catch (error) {
+    console.error('Error processing trade:', error);
+    return res.redirect('/town/visit/trade?message=Error+processing+trade&messageType=error');
+  }
+});
+
+// Cancel Trade Route
+app.post('/town/visit/trade/cancel', async (req, res) => {
+  // Check if user is logged in
+  if (!req.session.user) {
+    return res.redirect('/login');
+  }
+
+  try {
+    const { trade_id } = req.body;
+
+    if (!trade_id) {
+      return res.redirect('/town/visit/trade?message=Missing+trade+ID&messageType=error');
+    }
+
+    // Get the trade
+    const trade = await Trade.getById(trade_id);
+    if (!trade) {
+      return res.redirect('/town/visit/trade?message=Trade+not+found&messageType=error');
+    }
+
+    // Cancel the trade
+    const cancelledTrade = await Trade.cancelTrade(trade_id);
+
+    if (cancelledTrade) {
+      return res.redirect('/town/visit/trade?message=Trade+cancelled+successfully&messageType=success');
+    } else {
+      return res.redirect('/town/visit/trade?message=Error+cancelling+trade&messageType=error');
+    }
+  } catch (error) {
+    console.error('Error cancelling trade:', error);
+    return res.redirect('/town/visit/trade?message=Error+cancelling+trade&messageType=error');
   }
 });
 
@@ -2879,13 +3358,587 @@ app.get('/town/visit/game_corner', async (req, res) => {
   }
 });
 
+// Generic Rewards Route
+app.get('/town/rewards', async (req, res) => {
+  // Check if user is logged in
+  if (!req.session.user) {
+    return res.redirect('/login');
+  }
+
+  try {
+    // Get parameters from query
+    const source = req.query.source || 'game_corner';
+    const returnUrl = req.query.returnUrl || '/town/visit';
+    const returnButtonText = req.query.returnButtonText || 'Go Back';
+    const pageTitle = req.query.pageTitle || 'Rewards';
+    const pageSubtitle = req.query.pageSubtitle || 'You\'ve earned the following rewards:';
+    const summaryTitle = req.query.summaryTitle || 'Summary';
+    const allowTrainerSelection = req.query.allowTrainerSelection === 'true';
+    const showClaimAllButton = req.query.showClaimAllButton === 'true';
+
+    // Get the user's trainers
+    const trainers = await Trainer.getByUserId(req.session.user.discord_id);
+
+    // Check if rewards are passed in the query
+    let rewards = [];
+    if (req.query.rewards) {
+      try {
+        rewards = JSON.parse(req.query.rewards);
+      } catch (e) {
+        console.error('Error parsing rewards JSON:', e);
+      }
+    } else {
+      // Generate rewards based on parameters if not provided directly
+      // This is for backward compatibility with the game corner
+      const completedSessions = parseInt(req.query.sessions) || 0;
+      const totalFocusMinutes = parseInt(req.query.minutes) || 0;
+      const productivityScore = parseInt(req.query.productivity) || 0;
+
+      // Create summary data for game corner
+      const summaryData = {
+        'Completed Sessions': completedSessions,
+        'Focus Minutes': totalFocusMinutes,
+        'Productivity': productivityScore + '%'
+      };
+
+      // Add coin rewards - scale with both sessions and time spent
+      const baseCoins = 50;
+      const sessionFactor = completedSessions;
+      const timeFactor = Math.ceil(totalFocusMinutes / 15); // Additional coins per 15 minutes
+      const productivityMultiplier = productivityScore / 100;
+      const coinAmount = Math.round(baseCoins * (sessionFactor + timeFactor) * productivityMultiplier);
+      const coinReward = {
+        id: 'coin-' + Date.now(),
+        type: 'coin',
+        rarity: 'common',
+        data: {
+          amount: coinAmount
+        }
+      };
+      rewards.push(coinReward);
+
+      // Add level rewards if productivity is good - potentially multiple
+      const levelRewards = [];
+      if (productivityScore >= 50) { // Lower threshold to 50% productivity
+        // Calculate max number of level rewards based on productivity and time spent
+        const productivityFactor = Math.floor(productivityScore / 20); // 0-5 based on productivity
+        const timeFactor = Math.floor(totalFocusMinutes / 30); // Factor based on time (1 per 30 minutes)
+        const maxLevelRewards = Math.min(Math.max(productivityFactor, timeFactor), 5); // Cap at 5
+        // Actual number of level rewards (random between 0 and max)
+        const numLevelRewards = Math.floor(Math.random() * (maxLevelRewards + 1));
+
+        // Track how many monster vs trainer level rewards to create
+        const numMonsterLevels = Math.ceil(numLevelRewards * 0.7); // 70% for monsters
+        const numTrainerLevels = numLevelRewards - numMonsterLevels; // 30% for trainers
+
+        // Add monster level rewards
+        for (let i = 0; i < numMonsterLevels; i++) {
+          const levelReward = {
+            id: 'monster-level-' + Date.now() + '-' + i,
+            type: 'level',
+            subtype: 'monster', // Specify this is for a monster
+            rarity: 'uncommon',
+            data: {
+              levels: Math.ceil(Math.random() * 2), // 1-2 levels per reward
+              isMonster: true // Flag to identify monster level-ups
+            }
+          };
+          levelRewards.push(levelReward);
+          rewards.push(levelReward);
+        }
+
+        // Add trainer level rewards
+        for (let i = 0; i < numTrainerLevels; i++) {
+          const levelReward = {
+            id: 'trainer-level-' + Date.now() + '-' + i,
+            type: 'level',
+            subtype: 'trainer', // Specify this is for a trainer
+            rarity: 'uncommon',
+            data: {
+              levels: Math.ceil(Math.random() * 2), // 1-2 levels per reward
+              isTrainer: true, // Flag to identify trainer level-ups
+              title: 'Trainer Level Up'
+            }
+          };
+          levelRewards.push(levelReward);
+          rewards.push(levelReward);
+        }
+      }
+
+      // Add item rewards - get from database - potentially multiple
+      const itemRewards = [];
+      try {
+        // Get random items from database
+        const allItems = await Item.getAll();
+        if (allItems && allItems.length > 0) {
+          // Determine max number of items based on productivity and time spent
+          const productivityFactor = Math.floor(productivityScore / 20); // 0-5 based on productivity
+          const timeFactor = Math.floor(totalFocusMinutes / 25); // Factor based on time (1 per 25 minutes)
+          const maxItems = Math.min(Math.max(productivityFactor, timeFactor), 5); // Cap at 5
+          // Actual number of items (random between 0 and max)
+          const numItems = Math.floor(Math.random() * (maxItems + 1));
+
+          for (let i = 0; i < numItems; i++) {
+            // Determine item rarity based on productivity
+            let rarityFilter = '1'; // Default to common
+            if (productivityScore >= 90) {
+              // 10% chance for rare item at high productivity
+              rarityFilter = Math.random() < 0.1 ? '3' : '2';
+            } else if (productivityScore >= 70) {
+              rarityFilter = '2'; // Uncommon for good productivity
+            }
+
+            // Filter items by rarity
+            const eligibleItems = allItems.filter(item => item.rarity === rarityFilter);
+            const selectedItems = eligibleItems.length > 0 ? eligibleItems : allItems;
+
+            // Select random item
+            const randomItem = selectedItems[Math.floor(Math.random() * selectedItems.length)];
+
+            const itemReward = {
+              id: 'item-' + Date.now() + '-' + i,
+              type: 'item',
+              rarity: rarityFilter === '3' ? 'rare' : rarityFilter === '2' ? 'uncommon' : 'common',
+              data: {
+                name: randomItem.name,
+                description: randomItem.effect || 'A useful item',
+                quantity: Math.ceil(Math.random() * 3), // 1-3 of each item
+                category: randomItem.category || 'general'
+              }
+            };
+            itemRewards.push(itemReward);
+            rewards.push(itemReward);
+          }
+        } else {
+          // Fallback if no items in database
+          const fallbackItems = ['Potion', 'Super Potion', 'Pokeball', 'Great Ball', 'Rare Candy'];
+          const itemDescriptions = {
+            'Potion': 'Restores 20 HP to a monster',
+            'Super Potion': 'Restores 50 HP to a monster',
+            'Pokeball': 'Used to catch wild monsters',
+            'Great Ball': 'Better chance to catch wild monsters',
+            'Rare Candy': 'Increases a monster\'s level by 1'
+          };
+
+          // Add at least one item
+          const randomItem = fallbackItems[Math.floor(Math.random() * fallbackItems.length)];
+          const itemReward = {
+            id: 'item-' + Date.now(),
+            type: 'item',
+            rarity: 'uncommon',
+            data: {
+              name: randomItem,
+              description: itemDescriptions[randomItem],
+              quantity: Math.ceil(Math.random() * 3), // 1-3 of the item
+              category: 'general'
+            }
+          };
+          itemRewards.push(itemReward);
+          rewards.push(itemReward);
+        }
+      } catch (error) {
+        console.error('Error getting items from database:', error);
+        // Fallback item if database query fails
+        const itemReward = {
+          id: 'item-' + Date.now(),
+          type: 'item',
+          rarity: 'common',
+          data: {
+            name: 'Potion',
+            description: 'Restores 20 HP to a monster',
+            quantity: 1,
+            category: 'general'
+          }
+        };
+        itemRewards.push(itemReward);
+        rewards.push(itemReward);
+      }
+
+      // Add monster encounters if productivity is high - potentially multiple
+      const monsterRewards = [];
+      if (productivityScore >= 80) {
+        // Determine max number of monsters based on productivity and time spent
+        const productivityFactor = Math.floor(productivityScore / 20); // 0-5 based on productivity
+        const timeFactor = Math.floor(totalFocusMinutes / 35); // Factor based on time (1 per 35 minutes)
+        const maxMonsters = Math.min(Math.max(productivityFactor, timeFactor), 5); // Cap at 5
+        // Actual number of monsters (random between 0 and max)
+        const numMonsters = Math.floor(Math.random() * (maxMonsters + 1));
+
+        for (let i = 0; i < numMonsters; i++) {
+          try {
+            // Determine rarity based on productivity score
+            let monsterRarity;
+            let rarityFilters = {};
+
+            if (productivityScore >= 95) {
+              // Legendary - 0.002% chance (1 in 500,000) at 95%+ productivity
+              monsterRarity = Math.random() <= 0.000002 ? 'legendary' : 'epic';
+              // For legendary, use higher tier monsters
+              rarityFilters = {
+                pokemon: { rarity: ['Legendary', 'Mythical', 'Ultra Beast'] },
+                digimon: { stage: ['Ultimate', 'Mega'] },
+                yokai: { rank: ['A', 'S', 'SS'] }
+              };
+            } else if (productivityScore >= 90) {
+              // Epic - use rare/strong monsters
+              monsterRarity = 'epic';
+              rarityFilters = {
+                pokemon: { rarity: ['Rare', 'Very Rare'] },
+                digimon: { stage: ['Champion', 'Ultimate'] },
+                yokai: { rank: ['B', 'A'] }
+              };
+            } else {
+              // Rare - use uncommon monsters
+              monsterRarity = 'rare';
+              rarityFilters = {
+                pokemon: { rarity: ['Uncommon', 'Rare'] },
+                digimon: { stage: ['Rookie', 'Champion'] },
+                yokai: { rank: ['C', 'B'] }
+              };
+            }
+
+            // Configure monster roller options
+            const monsterOptions = {
+              filters: rarityFilters
+            };
+
+            // Roll a monster using MonsterRoller
+            const rolledMonster = await MonsterRoller.rollOne(monsterOptions);
+
+            if (rolledMonster) {
+              // Create monster reward
+              monsterReward = {
+                id: 'monster-' + Date.now(),
+                type: 'monster',
+                rarity: monsterRarity,
+                data: {
+                  species: rolledMonster.species1 || 'Unknown Monster',
+                  species2: rolledMonster.species2 || null,
+                  species3: rolledMonster.species3 || null,
+                  level: Math.floor(5 + (completedSessions / 2)),
+                  type: rolledMonster.type1 || 'Normal',
+                  type2: rolledMonster.type2 || null,
+                  type3: rolledMonster.type3 || null,
+                  type4: rolledMonster.type4 || null,
+                  type5: rolledMonster.type5 || null,
+                  attribute: rolledMonster.attribute || 'Data'
+                }
+              };
+            } else {
+              // Fallback if monster rolling fails
+              monsterReward = {
+                id: 'monster-' + Date.now(),
+                type: 'monster',
+                rarity: monsterRarity,
+                data: {
+                  species: ['Pikachu', 'Charmander', 'Bulbasaur', 'Squirtle', 'Eevee'][Math.floor(Math.random() * 5)],
+                  level: Math.floor(5 + (completedSessions / 2)),
+                  type: ['Electric', 'Fire', 'Grass', 'Water', 'Normal'][Math.floor(Math.random() * 5)],
+                  attribute: ['Vaccine', 'Data', 'Virus', 'Free'][Math.floor(Math.random() * 4)]
+                }
+              };
+            }
+
+            monsterRewards.push(monsterReward);
+            rewards.push(monsterReward);
+          } catch (error) {
+            console.error('Error rolling monster:', error);
+            // Fallback monster if rolling fails
+            const monsterReward = {
+              id: 'monster-' + Date.now(),
+              type: 'monster',
+              rarity: (productivityScore >= 95 && Math.random() <= 0.000002) ? 'legendary' : productivityScore >= 90 ? 'epic' : 'rare',
+              data: {
+                species: ['Pikachu', 'Charmander', 'Bulbasaur', 'Squirtle', 'Eevee'][Math.floor(Math.random() * 5)],
+                level: Math.floor(5 + (completedSessions / 2)),
+                type: ['Electric', 'Fire', 'Grass', 'Water', 'Normal'][Math.floor(Math.random() * 5)],
+                attribute: ['Vaccine', 'Data', 'Virus', 'Free'][Math.floor(Math.random() * 4)]
+              }
+            };
+            monsterRewards.push(monsterReward);
+            rewards.push(monsterReward);
+          }
+        }
+      }
+
+      // For game corner, automatically assign rewards to random trainers
+      if (source === 'game_corner' && trainers && trainers.length > 0) {
+        // Process each reward
+        const { processReward } = require('./routes/game_corner_claim');
+
+        // Process coin reward
+        const coinResult = await processReward(coinReward, 'random', trainers, 'game_corner');
+        if (coinResult.success) {
+          coinReward.assigned = true;
+          coinReward.assignedTo = {
+            id: coinResult.trainerId,
+            name: coinResult.trainerName
+          };
+        }
+
+        // Process level rewards
+        for (const levelReward of levelRewards) {
+          const levelResult = await processReward(levelReward, 'random', trainers, 'game_corner');
+          if (levelResult.success) {
+            levelReward.assigned = true;
+            levelReward.assignedTo = {
+              id: levelResult.trainerId,
+              name: levelResult.trainerName
+            };
+
+            if (levelResult.monsterLevelUp && levelResult.monsterName) {
+              // This is a monster level-up
+              levelReward.data.monsterName = levelResult.monsterName;
+              // Make the monster name more prominent
+              levelReward.data.monsterNameHighlight = true;
+              // Flag to make trainer name smaller
+              levelReward.data.smallTrainerName = true;
+            } else if (levelResult.trainerLevelUp) {
+              // This is a trainer level-up
+              levelReward.data.title = 'Trainer Level Up';
+              levelReward.data.trainerLevelUp = true;
+            }
+          }
+        }
+
+        // Process item rewards
+        for (const itemReward of itemRewards) {
+          const itemResult = await processReward(itemReward, 'random', trainers, 'game_corner');
+          if (itemResult.success) {
+            itemReward.assigned = true;
+            itemReward.assignedTo = {
+              id: itemResult.trainerId,
+              name: itemResult.trainerName
+            };
+          }
+        }
+
+        // Process monster rewards
+        for (const monsterReward of monsterRewards) {
+          const monsterResult = await processReward(monsterReward, 'random', trainers, 'game_corner');
+          if (monsterResult.success) {
+            monsterReward.assigned = true;
+            monsterReward.assignedTo = {
+              id: monsterResult.trainerId,
+              name: monsterResult.trainerName
+            };
+          }
+        }
+      }
+
+      // Render without summary data for game corner
+      return res.render('town/rewards', {
+        title: pageTitle,
+        pageTitle,
+        pageSubtitle,
+        rewards,
+        trainers,
+        source,
+        returnUrl,
+        returnButtonText,
+        allowTrainerSelection,
+        showClaimAllButton
+      });
+    }
+
+    // Parse summary data if provided
+    let summaryData = {};
+    if (req.query.summaryData) {
+      try {
+        summaryData = JSON.parse(req.query.summaryData);
+      } catch (e) {
+        console.error('Error parsing summaryData JSON:', e);
+      }
+    }
+
+    // Render the rewards page
+    res.render('town/rewards', {
+      title: pageTitle,
+      pageTitle,
+      pageSubtitle,
+      rewards,
+      trainers,
+      source,
+      returnUrl,
+      returnButtonText,
+      allowTrainerSelection,
+      showClaimAllButton
+    });
+  } catch (error) {
+    console.error('Error generating rewards:', error);
+    res.render('town/rewards', {
+      title: 'Rewards',
+      pageTitle: 'Rewards',
+      pageSubtitle: 'An error occurred while generating rewards.',
+      rewards: [],
+      trainers: [],
+      source: 'error',
+      returnUrl: '/town/visit',
+      returnButtonText: 'Go Back',
+      allowTrainerSelection: false,
+      showClaimAllButton: false
+    });
+  }
+});
+
 // Game Corner APIs
 const gameCornerRewardsRouter = require('./routes/game_corner_rewards');
 app.use('/api/game-corner', gameCornerRewardsRouter);
 
+// Game Corner Claim API
+const gameCornerClaimRouter = require('./routes/game_corner_claim');
+app.use('/api/game-corner', gameCornerClaimRouter);
+
 // Game Corner Generation API
 const gameCornerApiRouter = require('./routes/game_corner_api');
 app.use('/api/game-corner-gen', gameCornerApiRouter);
+
+// Pirate's Dock routes
+app.get('/town/visit/pirates_dock', (req, res) => {
+  // Check if user is logged in
+  if (!req.session.user) {
+    return res.redirect('/login');
+  }
+
+  res.render('town/pirates_dock', {
+    title: 'Pirate\'s Dock',
+    message: req.query.message,
+    messageType: req.query.messageType
+  });
+});
+
+app.get('/town/visit/pirates_dock/swab', (req, res) => {
+  // Check if user is logged in
+  if (!req.session.user) {
+    return res.redirect('/login');
+  }
+
+  res.render('town/visit/pirates_dock/swab', {
+    title: 'Swab the Deck',
+    message: req.query.message,
+    messageType: req.query.messageType
+  });
+});
+
+app.get('/town/visit/pirates_dock/fishing', (req, res) => {
+  // Check if user is logged in
+  if (!req.session.user) {
+    return res.redirect('/login');
+  }
+
+  // Redirect back to pirate's dock with a message
+  res.redirect('/town/visit/pirates_dock?message=You caught a Magikarp!&messageType=success');
+});
+
+// Farm routes
+app.get('/town/visit/farm', (req, res) => {
+  // Check if user is logged in
+  if (!req.session.user) {
+    return res.redirect('/login');
+  }
+
+  res.render('town/farm', {
+    title: 'Farm',
+    message: req.query.message,
+    messageType: req.query.messageType
+  });
+});
+
+app.get('/town/visit/farm/work', (req, res) => {
+  // Check if user is logged in
+  if (!req.session.user) {
+    return res.redirect('/login');
+  }
+
+  // Create the work.ejs file if it doesn't exist
+  const workViewPath = path.join(__dirname, 'views', 'town', 'visit', 'farm');
+  if (!fs.existsSync(workViewPath)) {
+    fs.mkdirSync(workViewPath, { recursive: true });
+  }
+
+  // Redirect back to farm with a message
+  res.redirect('/town/visit/farm?message=Farm work feature coming soon!&messageType=info');
+});
+
+app.get('/town/visit/farm/breed', (req, res) => {
+  // Check if user is logged in
+  if (!req.session.user) {
+    return res.redirect('/login');
+  }
+
+  // Redirect back to farm with a message
+  res.redirect('/town/visit/farm?message=Monster breeding feature coming soon!&messageType=info');
+});
+
+// Garden routes
+app.get('/town/visit/garden', (req, res) => {
+  // Check if user is logged in
+  if (!req.session.user) {
+    return res.redirect('/login');
+  }
+
+  res.render('town/garden', {
+    title: 'Garden',
+    message: req.query.message,
+    messageType: req.query.messageType
+  });
+});
+
+app.get('/town/visit/garden/tend', (req, res) => {
+  // Check if user is logged in
+  if (!req.session.user) {
+    return res.redirect('/login');
+  }
+
+  // Create the tend.ejs file if it doesn't exist
+  const tendViewPath = path.join(__dirname, 'views', 'town', 'visit', 'garden');
+  if (!fs.existsSync(tendViewPath)) {
+    fs.mkdirSync(tendViewPath, { recursive: true });
+  }
+
+  // Redirect back to garden with a message
+  res.redirect('/town/visit/garden?message=You planted some seeds!&messageType=success');
+});
+
+app.get('/town/visit/garden/water', (req, res) => {
+  // Check if user is logged in
+  if (!req.session.user) {
+    return res.redirect('/login');
+  }
+
+  // Redirect back to garden with a message
+  res.redirect('/town/visit/garden?message=You watered the plants!&messageType=success');
+});
+
+app.get('/town/visit/garden/weed', (req, res) => {
+  // Check if user is logged in
+  if (!req.session.user) {
+    return res.redirect('/login');
+  }
+
+  // Redirect back to garden with a message
+  res.redirect('/town/visit/garden?message=You removed the weeds!&messageType=success');
+});
+
+app.get('/town/visit/garden/fertilize', (req, res) => {
+  // Check if user is logged in
+  if (!req.session.user) {
+    return res.redirect('/login');
+  }
+
+  // Redirect back to garden with a message
+  res.redirect('/town/visit/garden?message=You added fertilizer to the garden!&messageType=success');
+});
+
+app.get('/town/visit/garden/harvest', (req, res) => {
+  // Check if user is logged in
+  if (!req.session.user) {
+    return res.redirect('/login');
+  }
+
+  // Redirect back to garden with a message
+  res.redirect('/town/visit/garden?message=You harvested all ready crops!&messageType=success');
+});
 
 // Generic handler for other town locations
 app.get('/town/visit/:location', (req, res) => {
@@ -2907,7 +3960,9 @@ app.get('/town/visit/:location', (req, res) => {
       .join(' ');
 
     res.render(`town/${location}`, {
-      title: locationName
+      title: locationName,
+      message: req.query.message,
+      messageType: req.query.messageType
     });
   } else {
     // Render a coming soon page if the view doesn't exist
@@ -5625,6 +6680,10 @@ app.get('/content/:category/:path(*)', (req, res) => {
   }
 });
 
+
+// Import and use location activity routes
+const locationActivityRoutes = require('./location_activity_routes');
+locationActivityRoutes(app);
 
 // 404 handler - must be defined after all other routes
 app.use((req, res) => {

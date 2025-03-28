@@ -1,4 +1,4 @@
-const pool = require(\"../db\");
+const pool = require("../db");
 
 class LocationActivitySession {
   /**
@@ -34,7 +34,7 @@ class LocationActivitySession {
       const result = await pool.query(query, values);
       return result.rows[0];
     } catch (error) {
-      console.error(\"Error creating activity session:\", error);
+      console.error("Error creating activity session:", error);
       throw error;
     }
   }
@@ -118,7 +118,7 @@ class LocationActivitySession {
   static async complete(sessionId, rewards = []) {
     try {
       // Start a transaction
-      await pool.query(\"BEGIN\");
+      await pool.query("BEGIN");
 
       // Update the session
       const query = `
@@ -141,17 +141,17 @@ class LocationActivitySession {
       const updatedSession = result.rows[0];
       
       if (!updatedSession) {
-        await pool.query(\"ROLLBACK\");
+        await pool.query("ROLLBACK");
         throw new Error(`Session with ID ${sessionId} not found`);
       }
       
       // Commit the transaction
-      await pool.query(\"COMMIT\");
+      await pool.query("COMMIT");
       
       return updatedSession;
     } catch (error) {
       // Rollback the transaction on error
-      await pool.query(\"ROLLBACK\");
+      await pool.query("ROLLBACK");
       console.error(`Error completing activity session ${sessionId}:`, error);
       throw error;
     }

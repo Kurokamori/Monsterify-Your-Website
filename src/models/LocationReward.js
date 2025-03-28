@@ -1,4 +1,5 @@
-const pool = require(\"../db\");
+const pool = require("../db");
+
 
 class LocationReward {
   /**
@@ -85,7 +86,7 @@ class LocationReward {
     location,
     reward_type,
     reward_data,
-    rarity = \"common\",
+    rarity = "common",
     weight = 100
   }) {
     try {
@@ -100,7 +101,7 @@ class LocationReward {
       const values = [
         location, 
         reward_type, 
-        typeof reward_data === \"object\" ? JSON.stringify(reward_data) : reward_data,
+        typeof reward_data === "object" ? JSON.stringify(reward_data) : reward_data,
         rarity,
         weight
       ];
@@ -108,7 +109,7 @@ class LocationReward {
       const result = await pool.query(query, values);
       return result.rows[0];
     } catch (error) {
-      console.error(\"Error creating reward:\", error);
+      console.error("Error creating reward:", error);
       throw error;
     }
   }
@@ -151,7 +152,7 @@ class LocationReward {
       
       if (reward_data !== undefined) {
         updates.push(`reward_data = $${valueIndex}`);
-        values.push(typeof reward_data === \"object\" ? JSON.stringify(reward_data) : reward_data);
+        values.push(typeof reward_data === "object" ? JSON.stringify(reward_data) : reward_data);
         valueIndex++;
       }
       
@@ -168,7 +169,7 @@ class LocationReward {
       }
       
       // Add updated_at timestamp
-      updates.push(\"updated_at = CURRENT_TIMESTAMP\");
+      updates.push("updated_at = CURRENT_TIMESTAMP");
       
       // If no fields to update, return the existing reward
       if (updates.length === 1) {
@@ -177,7 +178,7 @@ class LocationReward {
       
       const query = `
         UPDATE location_rewards
-        SET ${updates.join(\", \")}
+        SET ${updates.join(", ")}
         WHERE reward_id = $1
         RETURNING *
       `;

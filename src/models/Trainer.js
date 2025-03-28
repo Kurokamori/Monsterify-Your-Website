@@ -73,8 +73,15 @@ class Trainer {
    */
   static async getById(id) {
     try {
+      // Validate id is a valid integer
+      const trainerId = parseInt(id);
+      if (isNaN(trainerId) || trainerId <= 0) {
+        console.error('Invalid trainer ID:', id);
+        return null;
+      }
+
       const query = 'SELECT * FROM trainers WHERE id = $1';
-      const result = await pool.query(query, [id]);
+      const result = await pool.query(query, [trainerId]);
 
       if (result.rows.length === 0) {
         return null;

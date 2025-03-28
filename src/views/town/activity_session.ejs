@@ -1,28 +1,58 @@
-
-
 <div class='container mx-auto px-4 py-8'>
   <div class='max-w-4xl mx-auto'>
     <div class='mb-8 text-center'>
       <h1 class='text-3xl font-display font-bold'><%= session.activity.charAt(0).toUpperCase() + session.activity.slice(1) %> Task</h1>
-      <p class='text-gray-300 mt-2'>Time remaining: <span id='time-remaining'><%= minutesRemaining %> minutes</span></p>
+      <p class='text-gray-300 mt-2'>Location: <%= session.location.replace('_', ' ').charAt(0).toUpperCase() + session.location.replace('_', ' ').slice(1) %></p>
     </div>
-    
+
     <div class='bg-card rounded-lg p-6 shadow-lg mb-8'>
       <h2 class='text-xl font-bold mb-4'>Your Task:</h2>
       <p class='text-lg mb-6'><%= session.prompt_text %></p>
-      
-      <div class='task-timer'>
-        <div class='progress-bar'>
-          <div id='progress' class='progress' style='width: 100%'></div>
+
+      <!-- Timer Circle -->
+      <div class='timer-circle-wrapper mb-6'>
+        <div class='timer-circle'>
+          <svg viewBox='0 0 100 100'>
+            <circle cx='50' cy='50' r='45' fill='none' stroke='rgba(255, 255, 255, 0.1)' stroke-width='8' />
+            <circle id='progress-circle' cx='50' cy='50' r='45' fill='none' stroke='#8b5cf6' stroke-width='8' stroke-dasharray='283' stroke-dashoffset='0' />
+          </svg>
+          <div class='timer-display'>
+            <span id='timer-display'>00:00</span>
+            <span id='timer-status' class='text-sm'>Loading...</span>
+          </div>
         </div>
-        <p class='text-center text-sm mt-2'>Complete this task by <span id='end-time-display'></span></p>
       </div>
+
+      <!-- Timer Controls -->
+      <div class='flex justify-center space-x-4 mb-4'>
+        <button id='pause-timer' class='btn-secondary opacity-50' disabled>
+          <i class='fas fa-pause mr-2'></i> Pause
+        </button>
+        <button id='resume-timer' class='btn-secondary opacity-50' disabled>
+          <i class='fas fa-play mr-2'></i> Resume
+        </button>
+      </div>
+
+      <p class='text-center text-sm mt-2'>Complete this task by <span id='end-time-display'></span></p>
     </div>
-    
+
     <div class='text-center'>
       <button id='complete-task' class='btn-primary text-lg py-3 px-6 rounded-lg'>
-        I'm Done!
+        <i class='fas fa-check-circle mr-2'></i> I've Completed This Task
       </button>
     </div>
   </div>
 </div>
+
+<!-- Hidden session data -->
+<div id='session-data'
+  data-session-id='<%= session.session_id %>'
+  data-end-time='<%= endTime %>'
+  data-duration='<%= session.duration_minutes %>'
+  data-location='<%= session.location %>'
+  data-activity='<%= session.activity %>'
+  style='display: none;'>
+</div>
+
+<link rel='stylesheet' href='/css/activity_session.css'>
+<script src='/js/activity_session.js'></script>

@@ -747,10 +747,10 @@
           const rarityRoll = Math.random();
 
           // Scale chances based on combined multiplier
-          const legendaryChance = 0.01 * combinedMultiplier;
-          const mythicalChance = 0.03 * combinedMultiplier;
-          const rareChance = 0.15 * combinedMultiplier;
-          const uncommonChance = 0.30 * combinedMultiplier;
+          const legendaryChance = 0.00001 * combinedMultiplier; // 0.001% base chance (1/100,000)
+          const mythicalChance = 0.0001 * combinedMultiplier;  // 0.01% base chance (1/10,000)
+          const rareChance = 0.15 * combinedMultiplier;        // 15% base chance
+          const uncommonChance = 0.30 * combinedMultiplier;    // 30% base chance
 
           if (rarityRoll < legendaryChance) {
             rarityTier = 'legendary';

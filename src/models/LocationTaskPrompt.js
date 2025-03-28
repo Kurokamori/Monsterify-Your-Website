@@ -1,4 +1,5 @@
-const pool = require(\"../db\");
+const pool = require("../db");
+
 
 class LocationTaskPrompt {
   /**
@@ -75,7 +76,7 @@ class LocationTaskPrompt {
   static async create({
     location,
     prompt_text,
-    difficulty = \"normal\"
+    difficulty = "normal"
   }) {
     try {
       const query = `
@@ -93,7 +94,7 @@ class LocationTaskPrompt {
       const result = await pool.query(query, values);
       return result.rows[0];
     } catch (error) {
-      console.error(\"Error creating task prompt:\", error);
+      console.error("Error creating task prompt:", error);
       throw error;
     }
   }
@@ -137,7 +138,7 @@ class LocationTaskPrompt {
       }
       
       // Add updated_at timestamp
-      updates.push(\"updated_at = CURRENT_TIMESTAMP\");
+      updates.push("updated_at = CURRENT_TIMESTAMP");
       
       // If no fields to update, return the existing prompt
       if (updates.length === 1) {
@@ -146,7 +147,7 @@ class LocationTaskPrompt {
       
       const query = `
         UPDATE location_task_prompts
-        SET ${updates.join(\", \")}
+        SET ${updates.join(", ")}
         WHERE prompt_id = $1
         RETURNING *
       `;
