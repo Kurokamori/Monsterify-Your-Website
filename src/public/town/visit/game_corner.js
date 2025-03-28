@@ -1,236 +1,237 @@
-  document.addEventListener('DOMContentLoaded', function() {
-    // Timer elements
-    const elements = {
-      focus: {
-        input: document.getElementById('focus-duration'),
-        increase: document.getElementById('increase-focus'),
-        decrease: document.getElementById('decrease-focus')
-      },
-      break: {
-        input: document.getElementById('break-duration'),
-        increase: document.getElementById('increase-break'),
-        decrease: document.getElementById('decrease-break')
-      },
-      sessions: {
-        input: document.getElementById('num-sessions'),
-        increase: document.getElementById('increase-sessions'),
-        decrease: document.getElementById('decrease-sessions')
-      },
-      timer: {
-        display: document.getElementById('timer-display'),
-        status: document.getElementById('timer-status'),
-        sessionInfo: document.getElementById('session-info'),
-        start: document.getElementById('start-timer'),
-        pause: document.getElementById('pause-timer'),
-        reset: document.getElementById('reset-timer')
-      },
-      video: {
-        player: document.getElementById('pomodoro-video'),
-        source: document.getElementById('video-source'),
-        selector: document.getElementById('video-selector'),
-        muteToggle: document.getElementById('mute-toggle'),
-        volumeIcon: document.getElementById('volume-icon')
+document.addEventListener('DOMContentLoaded', function() {
+  console.log('Game Corner JS loaded');
+  // Timer elements
+  const elements = {
+    focus: {
+      input: document.getElementById('focus-duration'),
+      increase: document.getElementById('increase-focus'),
+      decrease: document.getElementById('decrease-focus')
+    },
+    break: {
+      input: document.getElementById('break-duration'),
+      increase: document.getElementById('increase-break'),
+      decrease: document.getElementById('decrease-break')
+    },
+    sessions: {
+      input: document.getElementById('num-sessions'),
+      increase: document.getElementById('increase-sessions'),
+      decrease: document.getElementById('decrease-sessions')
+    },
+    timer: {
+      display: document.getElementById('timer-display'),
+      status: document.getElementById('timer-status'),
+      sessionInfo: document.getElementById('session-info'),
+      start: document.getElementById('start-timer'),
+      pause: document.getElementById('pause-timer'),
+      reset: document.getElementById('reset-timer')
+    },
+    video: {
+      player: document.getElementById('pomodoro-video'),
+      source: document.getElementById('video-source'),
+      selector: document.getElementById('video-selector'),
+      muteToggle: document.getElementById('mute-toggle'),
+      volumeIcon: document.getElementById('volume-icon')
+    }
+  };
+
+  // Timer state
+  const state = {
+    timer: null,
+    minutes: 25,
+    seconds: 0,
+    isRunning: false,
+    isPaused: false,
+    currentSession: 0,
+    isFocusTime: true,
+    completedSessions: 0,
+    totalFocusMinutes: 0,
+    rewardsShown: false // Track if rewards have been shown
+  };
+
+  // Initialize controls
+  function initializeControls() {
+    // Focus duration controls
+    elements.focus.increase.addEventListener('click', () => {
+      const max = parseInt(elements.focus.input.max);
+      const current = parseInt(elements.focus.input.value);
+      const step = parseInt(elements.focus.input.step);
+      if (current < max) {
+        elements.focus.input.value = current + step;
+        updateTimerDisplay();
       }
-    };
+    });
 
-    // Timer state
-    const state = {
-      timer: null,
-      minutes: 25,
-      seconds: 0,
-      isRunning: false,
-      isPaused: false,
-      currentSession: 0,
-      isFocusTime: true,
-      completedSessions: 0,
-      totalFocusMinutes: 0,
-      rewardsShown: false // Track if rewards have been shown
-    };
-
-    // Initialize controls
-    function initializeControls() {
-      // Focus duration controls
-      elements.focus.increase.addEventListener('click', () => {
-        const max = parseInt(elements.focus.input.max);
-        const current = parseInt(elements.focus.input.value);
-        const step = parseInt(elements.focus.input.step);
-        if (current < max) {
-          elements.focus.input.value = current + step;
-          updateTimerDisplay();
-        }
-      });
-
-      elements.focus.decrease.addEventListener('click', () => {
-        const min = parseInt(elements.focus.input.min);
-        const current = parseInt(elements.focus.input.value);
-        const step = parseInt(elements.focus.input.step);
-        if (current > min) {
-          elements.focus.input.value = current - step;
-          updateTimerDisplay();
-        }
-      });
-
-      // Break duration controls
-      elements.break.increase.addEventListener('click', () => {
-        const max = parseInt(elements.break.input.max);
-        const current = parseInt(elements.break.input.value);
-        const step = parseInt(elements.break.input.step);
-        if (current < max) {
-          elements.break.input.value = current + step;
-        }
-      });
-
-      elements.break.decrease.addEventListener('click', () => {
-        const min = parseInt(elements.break.input.min);
-        const current = parseInt(elements.break.input.value);
-        const step = parseInt(elements.break.input.step);
-        if (current > min) {
-          elements.break.input.value = current - step;
-        }
-      });
-
-      // Session count controls
-      elements.sessions.increase.addEventListener('click', () => {
-        const max = parseInt(elements.sessions.input.max);
-        const current = parseInt(elements.sessions.input.value);
-        const step = parseInt(elements.sessions.input.step);
-        if (current < max) {
-          elements.sessions.input.value = current + step;
-          updateSessionInfo();
-        }
-      });
-
-      elements.sessions.decrease.addEventListener('click', () => {
-        const min = parseInt(elements.sessions.input.min);
-        const current = parseInt(elements.sessions.input.value);
-        const step = parseInt(elements.sessions.input.step);
-        if (current > min) {
-          elements.sessions.input.value = current - step;
-          updateSessionInfo();
-        }
-      });
-
-      // Timer controls
-      elements.timer.start.addEventListener('click', startTimer);
-      elements.timer.pause.addEventListener('click', pauseTimer);
-      elements.timer.reset.addEventListener('click', resetTimer);
-
-      // Video controls
-      elements.video.selector.addEventListener('change', function() {
-        elements.video.source.src = this.value;
-        elements.video.player.load();
-        elements.video.player.play();
-      });
-
-      elements.video.muteToggle.addEventListener('click', function() {
-        elements.video.player.muted = !elements.video.player.muted;
-        elements.video.volumeIcon.className = elements.video.player.muted ?
-          'fas fa-volume-mute' : 'fas fa-volume-up';
-      });
-    }
-
-    function updateTimerDisplay() {
-      state.minutes = parseInt(elements.focus.input.value);
-      state.seconds = 0;
-      elements.timer.display.textContent =
-        `${state.minutes.toString().padStart(2, '0')}:${state.seconds.toString().padStart(2, '0')}`;
-
-      // Initialize progress circle
-      updateTimerWithProgress();
-    }
-
-    function startTimer() {
-      if (!state.isRunning) {
-        if (!state.isPaused) {
-          state.minutes = parseInt(elements.focus.input.value);
-          state.seconds = 0;
-          state.currentSession = 1;
-          state.isFocusTime = true;
-          updateTimerDisplay();
-          updateSessionInfo();
-        }
-
-        state.isRunning = true;
-        state.isPaused = false;
-        updateButtonStates(true);
-        elements.timer.status.textContent = 'Timer running';
-        state.timer = setInterval(updateTimer, 1000);
+    elements.focus.decrease.addEventListener('click', () => {
+      const min = parseInt(elements.focus.input.min);
+      const current = parseInt(elements.focus.input.value);
+      const step = parseInt(elements.focus.input.step);
+      if (current > min) {
+        elements.focus.input.value = current - step;
+        updateTimerDisplay();
       }
-    }
+    });
 
-    function pauseTimer() {
-      if (state.isRunning) {
-        clearInterval(state.timer);
-        state.isRunning = false;
-        state.isPaused = true;
-        updateButtonStates(false);
-        elements.timer.status.textContent = 'Timer paused';
+    // Break duration controls
+    elements.break.increase.addEventListener('click', () => {
+      const max = parseInt(elements.break.input.max);
+      const current = parseInt(elements.break.input.value);
+      const step = parseInt(elements.break.input.step);
+      if (current < max) {
+        elements.break.input.value = current + step;
       }
-    }
+    });
 
-    function resetTimer() {
-      console.log('Resetting timer...');
+    elements.break.decrease.addEventListener('click', () => {
+      const min = parseInt(elements.break.input.min);
+      const current = parseInt(elements.break.input.value);
+      const step = parseInt(elements.break.input.step);
+      if (current > min) {
+        elements.break.input.value = current - step;
+      }
+    });
+
+    // Session count controls
+    elements.sessions.increase.addEventListener('click', () => {
+      const max = parseInt(elements.sessions.input.max);
+      const current = parseInt(elements.sessions.input.value);
+      const step = parseInt(elements.sessions.input.step);
+      if (current < max) {
+        elements.sessions.input.value = current + step;
+        updateSessionInfo();
+      }
+    });
+
+    elements.sessions.decrease.addEventListener('click', () => {
+      const min = parseInt(elements.sessions.input.min);
+      const current = parseInt(elements.sessions.input.value);
+      const step = parseInt(elements.sessions.input.step);
+      if (current > min) {
+        elements.sessions.input.value = current - step;
+        updateSessionInfo();
+      }
+    });
+
+    // Timer controls
+    elements.timer.start.addEventListener('click', startTimer);
+    elements.timer.pause.addEventListener('click', pauseTimer);
+    elements.timer.reset.addEventListener('click', resetTimer);
+
+    // Video controls
+    elements.video.selector.addEventListener('change', function() {
+      elements.video.source.src = this.value;
+      elements.video.player.load();
+      elements.video.player.play();
+    });
+
+    elements.video.muteToggle.addEventListener('click', function() {
+      elements.video.player.muted = !elements.video.player.muted;
+      elements.video.volumeIcon.className = elements.video.player.muted ?
+        'fas fa-volume-mute' : 'fas fa-volume-up';
+    });
+  }
+
+  function updateTimerDisplay() {
+    state.minutes = parseInt(elements.focus.input.value);
+    state.seconds = 0;
+    elements.timer.display.textContent =
+      `${state.minutes.toString().padStart(2, '0')}:${state.seconds.toString().padStart(2, '0')}`;
+
+    // Initialize progress circle
+    updateTimerWithProgress();
+  }
+
+  function startTimer() {
+    if (!state.isRunning) {
+      if (!state.isPaused) {
+        state.minutes = parseInt(elements.focus.input.value);
+        state.seconds = 0;
+        state.currentSession = 1;
+        state.isFocusTime = true;
+        updateTimerDisplay();
+        updateSessionInfo();
+      }
+
+      state.isRunning = true;
+      state.isPaused = false;
+      updateButtonStates(true);
+      elements.timer.status.textContent = 'Timer running';
+      state.timer = setInterval(updateTimer, 1000);
+    }
+  }
+
+  function pauseTimer() {
+    if (state.isRunning) {
       clearInterval(state.timer);
       state.isRunning = false;
-      state.isPaused = false;
-      state.currentSession = 0;
-      state.isFocusTime = true;
-
-      // Don't reset completed sessions or focus minutes
-      // These should persist until the page is refreshed
-
+      state.isPaused = true;
       updateButtonStates(false);
-      elements.timer.status.textContent = 'Ready to start';
-      updateTimerDisplay();
-      updateSessionInfo();
-
-      // Reset progress circle
-      const progressCircle = document.getElementById('progress-circle');
-      if (progressCircle) {
-        progressCircle.style.strokeDashoffset = progressCircle.style.strokeDasharray;
-        progressCircle.style.stroke = '#8B5CF6';
-      }
+      elements.timer.status.textContent = 'Timer paused';
     }
+  }
 
-    function updateButtonStates(isRunning) {
-      elements.timer.start.disabled = isRunning;
-      elements.timer.start.classList.toggle('opacity-50', isRunning);
-      elements.timer.pause.disabled = !isRunning;
-      elements.timer.pause.classList.toggle('opacity-50', !isRunning);
-      elements.timer.reset.disabled = !isRunning && !state.isPaused;
-      elements.timer.reset.classList.toggle('opacity-50', !isRunning && !state.isPaused);
-    }
+  function resetTimer() {
+    console.log('Resetting timer...');
+    clearInterval(state.timer);
+    state.isRunning = false;
+    state.isPaused = false;
+    state.currentSession = 0;
+    state.isFocusTime = true;
 
-    function updateSessionInfo() {
-      // If timer is not running, show 0/total sessions
-      if (state.currentSession === 0) {
-        elements.timer.sessionInfo.textContent = `Session 0/${elements.sessions.input.value}`;
-        elements.timer.status.textContent = 'Ready to start';
-      } else {
-        elements.timer.sessionInfo.textContent = `Session ${state.currentSession}/${elements.sessions.input.value}`;
-        elements.timer.status.textContent = state.isFocusTime ? 'Focus Time' : 'Break Time';
-      }
-    }
+    // Don't reset completed sessions or focus minutes
+    // These should persist until the page is refreshed
 
-    // Initialize everything
+    updateButtonStates(false);
+    elements.timer.status.textContent = 'Ready to start';
     updateTimerDisplay();
     updateSessionInfo();
-    initializeControls();
 
-    // Work assessment modal
-    const workAssessmentModal = document.getElementById('work-assessment-modal');
-    const workAssessmentBtns = document.querySelectorAll('.work-assessment-btn');
+    // Reset progress circle
+    const progressCircle = document.getElementById('progress-circle');
+    if (progressCircle) {
+      progressCircle.style.strokeDashoffset = progressCircle.style.strokeDasharray;
+      progressCircle.style.stroke = '#8B5CF6';
+    }
+  }
 
-    // Reward elements
-    const rewardsContainer = document.getElementById('rewards-container');
-    const closeRewardsBtn = document.getElementById('close-rewards-btn');
-    const completedSessionsEl = document.getElementById('completed-sessions');
-    const focusMinutesEl = document.getElementById('focus-minutes');
-    const productivityScoreEl = document.getElementById('productivity-score');
-    const rewardsList = document.getElementById('rewards-list');
-    const trainersContainer = document.getElementById('trainers-container');
-    const monsterEncounterContainer = document.getElementById('monster-encounter-container');
-    const monsterEncountersList = document.getElementById('monster-encounters-list');
+  function updateButtonStates(isRunning) {
+    elements.timer.start.disabled = isRunning;
+    elements.timer.start.classList.toggle('opacity-50', isRunning);
+    elements.timer.pause.disabled = !isRunning;
+    elements.timer.pause.classList.toggle('opacity-50', !isRunning);
+    elements.timer.reset.disabled = !isRunning && !state.isPaused;
+    elements.timer.reset.classList.toggle('opacity-50', !isRunning && !state.isPaused);
+  }
+
+  function updateSessionInfo() {
+    // If timer is not running, show 0/total sessions
+    if (state.currentSession === 0) {
+      elements.timer.sessionInfo.textContent = `Session 0/${elements.sessions.input.value}`;
+      elements.timer.status.textContent = 'Ready to start';
+    } else {
+      elements.timer.sessionInfo.textContent = `Session ${state.currentSession}/${elements.sessions.input.value}`;
+      elements.timer.status.textContent = state.isFocusTime ? 'Focus Time' : 'Break Time';
+    }
+  }
+
+  // Initialize everything
+  updateTimerDisplay();
+  updateSessionInfo();
+  initializeControls();
+
+  // Work assessment modal
+  const workAssessmentModal = document.getElementById('work-assessment-modal');
+  const workAssessmentBtns = document.querySelectorAll('.work-assessment-btn');
+
+  // Reward elements
+  const rewardsContainer = document.getElementById('rewards-container');
+  const closeRewardsBtn = document.getElementById('close-rewards-btn');
+  const completedSessionsEl = document.getElementById('completed-sessions');
+  const focusMinutesEl = document.getElementById('focus-minutes');
+  const productivityScoreEl = document.getElementById('productivity-score');
+  const rewardsList = document.getElementById('rewards-list');
+  const trainersContainer = document.getElementById('trainers-container');
+  const monsterEncounterContainer = document.getElementById('monster-encounter-container');
+  const monsterEncountersList = document.getElementById('monster-encounters-list');
 
     // Close rewards modal when clicking the close button
     if (closeRewardsBtn) {
@@ -1486,13 +1487,13 @@
       }
     }
 
-    // Update progress circle in the timer function
-    function updateTimerWithProgress() {
-      // Update progress circle
-      const totalSeconds = state.minutes * 60 + state.seconds;
-      const totalTime = state.isFocusTime ?
-        parseInt(elements.focus.input.value) * 60 :
-        parseInt(elements.break.input.value) * 60;
-      updateProgressCircle(totalSeconds, totalTime);
-    }
-  });
+  // Update progress circle in the timer function
+  function updateTimerWithProgress() {
+    // Update progress circle
+    const totalSeconds = state.minutes * 60 + state.seconds;
+    const totalTime = state.isFocusTime ?
+      parseInt(elements.focus.input.value) * 60 :
+      parseInt(elements.break.input.value) * 60;
+    updateProgressCircle(totalSeconds, totalTime);
+  }
+});

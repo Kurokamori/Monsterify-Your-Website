@@ -103,13 +103,15 @@ class Trainer {
 
   /**
    * Get all trainers for a player user ID
-   * @param {number} userId - User ID
+   * @param {string} userId - User Discord ID
    * @returns {Promise<Array>} - Array of trainer objects
    */
   static async getByUserId(userId) {
     try {
+      console.log(`Executing query to get trainers for Discord ID: ${userId}`);
       const query = 'SELECT * FROM trainers WHERE player_user_id = $1 ORDER BY name';
       const result = await pool.query(query, [userId]);
+      console.log(`Query returned ${result.rows.length} trainers`);
 
       // Parse additional_references JSON for each trainer
       const trainers = result.rows.map(trainer => {
@@ -295,10 +297,7 @@ class Trainer {
         paramCounter++;
       }
 
-      // Add the updated_at timestamp if it's not already in the columns
-      if (!columns.some(col => col.startsWith('updated_at ='))) {
-        columns.push(`updated_at = CURRENT_TIMESTAMP`);
-      }
+      // Removed updated_at timestamp as it doesn't exist in the trainers table
 
       // Add the ID as the last parameter
       values.push(id);
@@ -378,6 +377,69 @@ class Trainer {
   }
 
   /**
+   * Add an item directly to a trainer's category inventory (inv_berries, inv_pastries, etc.)
+   * @param {number} trainerId - Trainer ID
+   * @param {string} category - Inventory category (inv_berries, inv_pastries, etc.)
+   * @param {string} itemName - Item name
+   * @param {number} quantity - Quantity to add
+   * @returns {Promise<boolean>} Success status
+   */
+  static async addItemDirectly(trainerId, category, itemName, quantity) {
+    try {
+      console.log(`Adding item directly: trainerId=${trainerId}, category=${category}, itemName=${itemName}, quantity=${quantity}`);
+
+      // Get the trainer
+      const query = `SELECT * FROM trainers WHERE id = $1`;
+      const result = await pool.query(query, [trainerId]);
+
+      if (result.rows.length === 0) {
+        console.error(`Trainer with ID ${trainerId} not found`);
+        return false;
+      }
+
+      const trainer = result.rows[0];
+
+      // Get the current inventory for the category
+      let inventory = {};
+      try {
+        if (trainer[category]) {
+          inventory = JSON.parse(trainer[category]);
+        }
+      } catch (e) {
+        console.error(`Error parsing ${category} for trainer ${trainerId}:`, e);
+        // Continue with empty inventory if parsing fails
+      }
+
+      console.log(`Current inventory for ${category}:`, inventory);
+
+      // Update the item quantity
+      const currentQuantity = inventory[itemName] || 0;
+      const newQuantity = currentQuantity + quantity;
+
+      console.log(`Updating quantity: ${itemName} - current=${currentQuantity}, adding=${quantity}, new=${newQuantity}`);
+
+      // Set the new quantity
+      inventory[itemName] = newQuantity;
+
+      // Convert inventory to JSON string
+      const inventoryJson = JSON.stringify(inventory);
+
+      console.log(`New inventory JSON for ${category}:`, inventoryJson);
+
+      // Update the trainer's inventory in the database
+      const updateQuery = `UPDATE trainers SET ${category} = $1 WHERE id = $2`;
+      const updateResult = await pool.query(updateQuery, [inventoryJson, trainerId]);
+
+      console.log(`Update result: rowCount=${updateResult.rowCount}`);
+
+      return updateResult.rowCount > 0;
+    } catch (error) {
+      console.error(`Error adding item directly to trainer ${trainerId}:`, error);
+      return false;
+    }
+  }
+
+  /**
    * Delete a trainer
    * @param {number} id - Trainer ID
    * @returns {Promise<boolean>} - Success status
@@ -433,7 +495,7 @@ class Trainer {
     try {
       const query = `
         UPDATE trainers
-        SET mon_amount = $1, mon_referenced_amount = $2, updated_at = CURRENT_TIMESTAMP
+        SET mon_amount = $1, mon_referenced_amount = $2
         WHERE id = $3
       `;
       await pool.query(query, [monsterCount, monsterRefCount, trainerId]);
@@ -624,6 +686,8 @@ class Trainer {
    */
   static async updateInventoryItem(trainerId, category, itemName, quantity) {
     try {
+      console.log(`Starting updateInventoryItem: trainerId=${trainerId}, category=${category}, itemName=${itemName}, quantity=${quantity}`);
+
       // Validate category
       const validCategories = [
         'inv_items', 'inv_balls', 'inv_berries', 'inv_pastries',
@@ -631,21 +695,42 @@ class Trainer {
       ];
 
       if (!validCategories.includes(category)) {
+        console.error(`Invalid inventory category: ${category}`);
         throw new Error(`Invalid inventory category: ${category}`);
       }
 
       // Get current inventory
+      console.log(`Checking if column ${category} exists in trainers table`);
+      const checkColumnQuery = `
+        SELECT column_name
+        FROM information_schema.columns
+        WHERE table_name = 'trainers' AND column_name = $1
+      `;
+      const checkColumnResult = await pool.query(checkColumnQuery, [category]);
+
+      if (checkColumnResult.rows.length === 0) {
+        console.error(`Column ${category} does not exist in trainers table`);
+        return false;
+      }
+
+      console.log(`Column ${category} exists in trainers table`);
       const query = `SELECT ${category} FROM trainers WHERE id = $1`;
+      console.log(`Executing query: ${query} with trainerId=${trainerId}`);
       const result = await pool.query(query, [trainerId]);
+      console.log(`Query result:`, result.rows);
 
       if (!result.rows[0]) {
+        console.error(`Trainer with ID ${trainerId} not found`);
         throw new Error(`Trainer with ID ${trainerId} not found`);
       }
 
       // Parse inventory
       let inventory = {};
       try {
-        inventory = result.rows[0][category] ? JSON.parse(result.rows[0][category]) : {};
+        const rawInventory = result.rows[0][category];
+        console.log(`Raw inventory for ${category}:`, rawInventory);
+        inventory = rawInventory ? JSON.parse(rawInventory) : {};
+        console.log(`Parsed inventory:`, inventory);
       } catch (e) {
         console.error(`Error parsing ${category} for trainer ${trainerId}:`, e);
         // Continue with empty inventory if parsing fails
@@ -654,17 +739,55 @@ class Trainer {
       // Update item quantity
       const currentQuantity = inventory[itemName] || 0;
       const newQuantity = currentQuantity + quantity;
+      console.log(`Updating quantity: current=${currentQuantity}, adding=${quantity}, new=${newQuantity}`);
 
       // Remove item if quantity is 0 or less
       if (newQuantity <= 0) {
+        console.log(`Removing item ${itemName} from inventory (quantity <= 0)`);
         delete inventory[itemName];
       } else {
+        console.log(`Setting item ${itemName} quantity to ${newQuantity}`);
         inventory[itemName] = newQuantity;
       }
 
       // Update inventory in database
-      const updateQuery = `UPDATE trainers SET ${category} = $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2`;
-      await pool.query(updateQuery, [JSON.stringify(inventory), trainerId]);
+      const inventoryJson = JSON.stringify(inventory);
+      console.log(`New inventory JSON:`, inventoryJson);
+
+      // Check if the inventory JSON is valid
+      try {
+        JSON.parse(inventoryJson);
+      } catch (e) {
+        console.error(`Invalid JSON for inventory: ${e.message}`);
+        return false;
+      }
+
+      const updateQuery = `UPDATE trainers SET ${category} = $1 WHERE id = $2`;
+      console.log(`Executing update query: ${updateQuery}`);
+      console.log(`Query parameters: trainerId=${trainerId}, category=${category}, inventoryJson=${inventoryJson}`);
+
+      try {
+        const updateResult = await pool.query(updateQuery, [inventoryJson, trainerId]);
+        console.log(`Update result: rowCount=${updateResult.rowCount}`);
+
+        if (updateResult.rowCount === 0) {
+          console.error(`No rows updated for trainer ${trainerId}`);
+          return false;
+        }
+
+        // Verify the update by retrieving the updated inventory
+        const verifyQuery = `SELECT ${category} FROM trainers WHERE id = $1`;
+        const verifyResult = await pool.query(verifyQuery, [trainerId]);
+
+        if (verifyResult.rows.length > 0) {
+          console.log(`Updated inventory verified: ${verifyResult.rows[0][category]}`);
+        } else {
+          console.error(`Could not verify update for trainer ${trainerId}`);
+        }
+      } catch (updateError) {
+        console.error(`Error executing update query: ${updateError.message}`);
+        return false;
+      }
 
       return true;
     } catch (error) {

@@ -1,0 +1,283 @@
+<% /* Set the title and other variables for the layout */ %>
+<% title = 'Shop Configuration Management' %>
+
+<style>
+.alert {
+    padding: 1rem;
+    border-radius: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.alert-success {
+    background-color: rgba(52, 211, 153, 0.2);
+    border: 1px solid rgba(52, 211, 153, 0.5);
+    color: #10b981;
+}
+
+.alert-error {
+    background-color: rgba(239, 68, 68, 0.2);
+    border: 1px solid rgba(239, 68, 68, 0.5);
+    color: #ef4444;
+}
+
+.shop-card {
+    background-color: var(--card-background);
+    border-radius: 0.5rem;
+    overflow: hidden;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.shop-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
+}
+
+.shop-card-header {
+    padding: 1.5rem;
+    border-bottom: 1px solid var(--divider-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.shop-card-body {
+    padding: 1.5rem;
+}
+
+.shop-card-footer {
+    padding: 1rem 1.5rem;
+    border-top: 1px solid var(--divider-color);
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+}
+
+.shop-image {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+}
+
+.shop-badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    background-color: var(--nav-background);
+    margin-right: 0.5rem;
+}
+
+.shop-stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.shop-stat {
+    background-color: var(--nav-background);
+    padding: 0.5rem 1rem;
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+
+.form-input {
+    width: 100%;
+    padding: 0.75rem;
+    background-color: var(--input-background);
+    border: 1px solid var(--divider-color);
+    border-radius: 0.375rem;
+    color: var(--text-color);
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: var(--accent-color);
+}
+
+.form-select {
+    width: 100%;
+    padding: 0.75rem;
+    background-color: var(--input-background);
+    border: 1px solid var(--divider-color);
+    border-radius: 0.375rem;
+    color: var(--text-color);
+}
+
+.form-textarea {
+    width: 100%;
+    padding: 0.75rem;
+    background-color: var(--input-background);
+    border: 1px solid var(--divider-color);
+    border-radius: 0.375rem;
+    color: var(--text-color);
+    min-height: 100px;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.grid-cols-2 {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+}
+
+@media (max-width: 768px) {
+    .grid-cols-2 {
+        grid-template-columns: 1fr;
+    }
+}
+
+.status-active {
+    background-color: rgba(16, 185, 129, 0.2);
+    color: #10b981;
+}
+
+.status-inactive {
+    background-color: rgba(239, 68, 68, 0.2);
+    color: #ef4444;
+}
+
+.search-container {
+    margin-bottom: 2rem;
+}
+
+.search-input {
+    width: 100%;
+    padding: 0.75rem;
+    background-color: var(--input-background);
+    border: 1px solid var(--divider-color);
+    border-radius: 0.375rem;
+    color: var(--text-color);
+}
+</style>
+
+<div class="mt-20 mb-8">
+    <h1 class="text-4xl font-display font-bold text-center mb-8">Shop Configuration Management</h1>
+    <% if (typeof message !== 'undefined' && message) { %>
+    <div class="alert alert-<%= messageType || 'success' %> text-center mb-8">
+        <%= message %>
+    </div>
+    <% } %>
+</div>
+
+<main class="container mx-auto px-4 pb-16">
+    <div class="card mb-8">
+        <div class="card-header">
+            <h2 class="text-xl font-bold">Shop Configurations</h2>
+        </div>
+        <div class="card-body">
+            <div class="search-container">
+                <input type="text" id="shopSearch" class="search-input" placeholder="Search shops by name, ID, or category...">
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="shopGrid">
+                <% shops.forEach(shop => { %>
+                <div class="shop-card" data-shop-id="<%= shop.shop_id %>" data-shop-name="<%= shop.name %>" data-shop-category="<%= shop.category %>">
+                    <img src="<%= shop.image_url || 'https://i.imgur.com/DP1nFn2.png' %>" alt="<%= shop.name %>" class="shop-image">
+                    <div class="shop-card-header">
+                        <h3 class="text-lg font-bold"><%= shop.name %></h3>
+                        <span class="shop-badge status-<%= shop.is_active ? 'active' : 'inactive' %>">
+                            <%= shop.is_active ? 'Active' : 'Inactive' %>
+                        </span>
+                    </div>
+                    <div class="shop-card-body">
+                        <p class="text-sm mb-2"><%= shop.description %></p>
+                        <div class="shop-badge"><%= shop.category %></div>
+                        
+                        <div class="shop-stats">
+                            <div class="shop-stat">
+                                <i class="fas fa-tag mr-1"></i> ID: <%= shop.shop_id %>
+                            </div>
+                            <div class="shop-stat">
+                                <i class="fas fa-box mr-1"></i> Items: <%= shop.min_items %>-<%= shop.max_items %>
+                            </div>
+                            <div class="shop-stat">
+                                <i class="fas fa-dollar-sign mr-1"></i> Price: <%= shop.price_multiplier_min %>x-<%= shop.price_multiplier_max %>x
+                            </div>
+                        </div>
+                    </div>
+                    <div class="shop-card-footer">
+                        <a href="/admin/shops/config/edit/<%= shop.shop_id %>" class="btn-secondary">
+                            <i class="fas fa-edit mr-1"></i> Edit
+                        </a>
+                        <% if (shop.is_active) { %>
+                        <form action="/admin/shops/config/deactivate/<%= shop.shop_id %>" method="POST" class="inline">
+                            <button type="submit" class="btn-secondary text-red-500">
+                                <i class="fas fa-times-circle mr-1"></i> Deactivate
+                            </button>
+                        </form>
+                        <% } else { %>
+                        <form action="/admin/shops/config/activate/<%= shop.shop_id %>" method="POST" class="inline">
+                            <button type="submit" class="btn-secondary text-green-500">
+                                <i class="fas fa-check-circle mr-1"></i> Activate
+                            </button>
+                        </form>
+                        <% } %>
+                    </div>
+                </div>
+                <% }); %>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h2 class="text-xl font-bold">Quick Actions</h2>
+        </div>
+        <div class="card-body">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <a href="/admin/shops/config/new" class="btn-primary block text-center py-3">
+                    <i class="fas fa-plus mr-2"></i> Create New Shop
+                </a>
+                <a href="/admin/shops" class="btn-secondary block text-center py-3">
+                    <i class="fas fa-store mr-2"></i> Shop Dashboard
+                </a>
+                <a href="/admin/dashboard" class="btn-secondary block text-center py-3">
+                    <i class="fas fa-arrow-left mr-2"></i> Back to Dashboard
+                </a>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Shop search functionality
+    const searchInput = document.getElementById('shopSearch');
+    const shopCards = document.querySelectorAll('.shop-card');
+    
+    searchInput.addEventListener('input', function() {
+        const searchTerm = this.value.toLowerCase();
+        
+        shopCards.forEach(card => {
+            const shopId = card.getAttribute('data-shop-id').toLowerCase();
+            const shopName = card.getAttribute('data-shop-name').toLowerCase();
+            const shopCategory = card.getAttribute('data-shop-category').toLowerCase();
+            
+            if (shopId.includes(searchTerm) || shopName.includes(searchTerm) || shopCategory.includes(searchTerm)) {
+                card.style.display = 'block';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+    });
+});
+</script>

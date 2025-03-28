@@ -1,0 +1,257 @@
+<% /* Set the title and other variables for the layout */ %>
+<% title = shop ? `Edit Shop: ${shop.name}` : 'Create New Shop' %>
+
+<style>
+.alert {
+    padding: 1rem;
+    border-radius: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.alert-success {
+    background-color: rgba(52, 211, 153, 0.2);
+    border: 1px solid rgba(52, 211, 153, 0.5);
+    color: #10b981;
+}
+
+.alert-error {
+    background-color: rgba(239, 68, 68, 0.2);
+    border: 1px solid rgba(239, 68, 68, 0.5);
+    color: #ef4444;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+
+.form-input {
+    width: 100%;
+    padding: 0.75rem;
+    background-color: var(--input-background);
+    border: 1px solid var(--divider-color);
+    border-radius: 0.375rem;
+    color: var(--text-color);
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: var(--accent-color);
+}
+
+.form-select {
+    width: 100%;
+    padding: 0.75rem;
+    background-color: var(--input-background);
+    border: 1px solid var(--divider-color);
+    border-radius: 0.375rem;
+    color: var(--text-color);
+}
+
+.form-textarea {
+    width: 100%;
+    padding: 0.75rem;
+    background-color: var(--input-background);
+    border: 1px solid var(--divider-color);
+    border-radius: 0.375rem;
+    color: var(--text-color);
+    min-height: 100px;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.form-hint {
+    font-size: 0.875rem;
+    color: var(--text-color);
+    opacity: 0.7;
+    margin-top: 0.25rem;
+}
+
+.grid-cols-2 {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+}
+
+@media (max-width: 768px) {
+    .grid-cols-2 {
+        grid-template-columns: 1fr;
+    }
+}
+
+.preview-image {
+    max-width: 100%;
+    max-height: 200px;
+    margin-top: 1rem;
+    border-radius: 0.375rem;
+    display: none;
+}
+</style>
+
+<div class="mt-20 mb-8">
+    <h1 class="text-4xl font-display font-bold text-center mb-8"><%= shop ? `Edit Shop: ${shop.name}` : 'Create New Shop' %></h1>
+    <% if (typeof message !== 'undefined' && message) { %>
+    <div class="alert alert-<%= messageType || 'success' %> text-center mb-8">
+        <%= message %>
+    </div>
+    <% } %>
+</div>
+
+<main class="container mx-auto px-4 pb-16">
+    <div class="card">
+        <div class="card-header">
+            <h2 class="text-xl font-bold"><%= shop ? 'Edit Shop Configuration' : 'Create New Shop' %></h2>
+        </div>
+        <div class="card-body">
+            <form action="<%= shop ? `/admin/shops/config/update/${shop.shop_id}` : '/admin/shops/config/create' %>" method="POST">
+                <div class="grid-cols-2">
+                    <div class="form-group">
+                        <label for="shop_id" class="form-label">Shop ID</label>
+                        <input type="text" id="shop_id" name="shop_id" class="form-input" value="<%= shop ? shop.shop_id : '' %>" <%= shop ? 'readonly' : 'required' %>>
+                        <p class="form-hint">Unique identifier for the shop (e.g., "apothecary", "bakery"). Cannot be changed after creation.</p>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="name" class="form-label">Shop Name</label>
+                        <input type="text" id="name" name="name" class="form-input" value="<%= shop ? shop.name : '' %>" required>
+                        <p class="form-hint">Display name for the shop.</p>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="description" class="form-label">Description</label>
+                    <textarea id="description" name="description" class="form-textarea" required><%= shop ? shop.description : '' %></textarea>
+                    <p class="form-hint">Brief description of the shop and what it sells.</p>
+                </div>
+
+                <div class="form-group">
+                    <label for="image_url" class="form-label">Image URL</label>
+                    <input type="url" id="image_url" name="image_url" class="form-input" value="<%= shop ? shop.image_url : '' %>">
+                    <p class="form-hint">URL to an image for the shop. Leave blank for default image.</p>
+                    <img id="preview" src="<%= shop && shop.image_url ? shop.image_url : '' %>" alt="Preview" class="preview-image" style="<%= shop && shop.image_url ? 'display: block;' : '' %>">
+                </div>
+
+                <div class="grid-cols-2">
+                    <div class="form-group">
+                        <label for="category" class="form-label">Category</label>
+                        <select id="category" name="category" class="form-select" required>
+                            <option value="">Select a category</option>
+                            <% const categories = ['BERRIES', 'PASTRIES', 'POTIONS', 'BALLS', 'EVOLUTION', 'ANTIQUES', 'GENERAL']; %>
+                            <% categories.forEach(category => { %>
+                                <option value="<%= category %>" <%= shop && shop.category === category ? 'selected' : '' %>><%= category %></option>
+                            <% }); %>
+                        </select>
+                        <p class="form-hint">Category of items this shop sells.</p>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="restock_hour" class="form-label">Restock Hour (0-23)</label>
+                        <input type="number" id="restock_hour" name="restock_hour" class="form-input" min="0" max="23" value="<%= shop ? shop.restock_hour : '0' %>" required>
+                        <p class="form-hint">Hour of the day when shop automatically restocks (0-23, where 0 is midnight).</p>
+                    </div>
+                </div>
+
+                <div class="grid-cols-2">
+                    <div class="form-group">
+                        <label for="min_items" class="form-label">Minimum Items</label>
+                        <input type="number" id="min_items" name="min_items" class="form-input" min="1" max="20" value="<%= shop ? shop.min_items : '5' %>" required>
+                        <p class="form-hint">Minimum number of items to stock each day.</p>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="max_items" class="form-label">Maximum Items</label>
+                        <input type="number" id="max_items" name="max_items" class="form-input" min="1" max="20" value="<%= shop ? shop.max_items : '10' %>" required>
+                        <p class="form-hint">Maximum number of items to stock each day.</p>
+                    </div>
+                </div>
+
+                <div class="grid-cols-2">
+                    <div class="form-group">
+                        <label for="price_multiplier_min" class="form-label">Min Price Multiplier</label>
+                        <input type="number" id="price_multiplier_min" name="price_multiplier_min" class="form-input" min="0.1" max="5" step="0.1" value="<%= shop ? shop.price_multiplier_min : '1.0' %>" required>
+                        <p class="form-hint">Minimum price multiplier (e.g., 0.8 for 20% discount).</p>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="price_multiplier_max" class="form-label">Max Price Multiplier</label>
+                        <input type="number" id="price_multiplier_max" name="price_multiplier_max" class="form-input" min="0.1" max="5" step="0.1" value="<%= shop ? shop.price_multiplier_max : '1.5' %>" required>
+                        <p class="form-hint">Maximum price multiplier (e.g., 1.2 for 20% markup).</p>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="is_active" class="form-label">Status</label>
+                    <select id="is_active" name="is_active" class="form-select" required>
+                        <option value="true" <%= shop && shop.is_active ? 'selected' : '' %>>Active</option>
+                        <option value="false" <%= shop && !shop.is_active ? 'selected' : '' %>>Inactive</option>
+                    </select>
+                    <p class="form-hint">Whether this shop is active and visible to users.</p>
+                </div>
+
+                <div class="form-actions">
+                    <a href="/admin/shops/config" class="btn-secondary">Cancel</a>
+                    <button type="submit" class="btn-primary">
+                        <%= shop ? 'Update Shop' : 'Create Shop' %>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</main>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Image preview functionality
+    const imageUrlInput = document.getElementById('image_url');
+    const previewImage = document.getElementById('preview');
+    
+    imageUrlInput.addEventListener('input', function() {
+        const imageUrl = this.value.trim();
+        
+        if (imageUrl) {
+            previewImage.src = imageUrl;
+            previewImage.style.display = 'block';
+            
+            // Handle image load error
+            previewImage.onerror = function() {
+                previewImage.src = 'https://i.imgur.com/DP1nFn2.png';
+                previewImage.alt = 'Invalid image URL';
+            };
+        } else {
+            previewImage.style.display = 'none';
+        }
+    });
+    
+    // Form validation
+    const form = document.querySelector('form');
+    
+    form.addEventListener('submit', function(e) {
+        const minItems = parseInt(document.getElementById('min_items').value);
+        const maxItems = parseInt(document.getElementById('max_items').value);
+        const minPrice = parseFloat(document.getElementById('price_multiplier_min').value);
+        const maxPrice = parseFloat(document.getElementById('price_multiplier_max').value);
+        
+        if (minItems > maxItems) {
+            e.preventDefault();
+            alert('Minimum items cannot be greater than maximum items.');
+            return;
+        }
+        
+        if (minPrice > maxPrice) {
+            e.preventDefault();
+            alert('Minimum price multiplier cannot be greater than maximum price multiplier.');
+            return;
+        }
+    });
+});
+</script>

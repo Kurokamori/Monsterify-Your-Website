@@ -1,0 +1,128 @@
+<div class="container mx-auto px-4 py-8">
+  <div class="max-w-4xl mx-auto">
+    <div class="mb-8">
+      <h1 class="text-3xl font-display font-bold text-center">Test Rewards</h1>
+      <p class="text-gray-300 mt-2 text-center">Test different reward scenarios for the game</p>
+    </div>
+
+    <div class="bg-gray-800 rounded-lg p-6 shadow-lg mb-8">
+      <h2 class="text-xl font-bold mb-4">Game Corner Rewards</h2>
+      <p class="text-gray-300 mb-6">Test rewards from the Game Corner with different parameters</p>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Game Corner Productivity Levels -->
+        <div class="bg-gray-700/50 rounded-lg p-4">
+          <h3 class="text-lg font-bold mb-3">Productivity Levels</h3>
+          <div class="grid grid-cols-2 gap-3">
+            <a href="/town/rewards?sessions=4&minutes=100&productivity=25&source=game_corner&pageTitle=Pomodoro+Session+Complete!&returnUrl=/admin/test-rewards&returnButtonText=Back+to+Test+Rewards&allowTrainerSelection=false&showClaimAllButton=false" class="btn-secondary text-center py-3">
+              <i class="fas fa-thumbs-down text-red-500 mr-2"></i> Low Productivity (25%)
+            </a>
+            <a href="/town/rewards?sessions=4&minutes=100&productivity=50&source=game_corner&pageTitle=Pomodoro+Session+Complete!&returnUrl=/admin/test-rewards&returnButtonText=Back+to+Test+Rewards&allowTrainerSelection=false&showClaimAllButton=false" class="btn-secondary text-center py-3">
+              <i class="fas fa-meh text-yellow-500 mr-2"></i> Medium Productivity (50%)
+            </a>
+            <a href="/town/rewards?sessions=4&minutes=100&productivity=75&source=game_corner&pageTitle=Pomodoro+Session+Complete!&returnUrl=/admin/test-rewards&returnButtonText=Back+to+Test+Rewards&allowTrainerSelection=false&showClaimAllButton=false" class="btn-secondary text-center py-3">
+              <i class="fas fa-smile text-blue-500 mr-2"></i> High Productivity (75%)
+            </a>
+            <a href="/town/rewards?sessions=4&minutes=100&productivity=100&source=game_corner&pageTitle=Pomodoro+Session+Complete!&returnUrl=/admin/test-rewards&returnButtonText=Back+to+Test+Rewards&allowTrainerSelection=false&showClaimAllButton=false" class="btn-secondary text-center py-3">
+              <i class="fas fa-thumbs-up text-green-500 mr-2"></i> Perfect Productivity (100%)
+            </a>
+          </div>
+        </div>
+
+        <!-- Game Corner Session Counts -->
+        <div class="bg-gray-700/50 rounded-lg p-4">
+          <h3 class="text-lg font-bold mb-3">Session Counts</h3>
+          <div class="grid grid-cols-2 gap-3">
+            <a href="/town/rewards?sessions=1&minutes=25&productivity=75&source=game_corner&pageTitle=Pomodoro+Session+Complete!&returnUrl=/admin/test-rewards&returnButtonText=Back+to+Test+Rewards&allowTrainerSelection=false&showClaimAllButton=false" class="btn-secondary text-center py-3">
+              <i class="fas fa-hourglass-start mr-2"></i> 1 Session
+            </a>
+            <a href="/town/rewards?sessions=2&minutes=50&productivity=75&source=game_corner&pageTitle=Pomodoro+Session+Complete!&returnUrl=/admin/test-rewards&returnButtonText=Back+to+Test+Rewards&allowTrainerSelection=false&showClaimAllButton=false" class="btn-secondary text-center py-3">
+              <i class="fas fa-hourglass-half mr-2"></i> 2 Sessions
+            </a>
+            <a href="/town/rewards?sessions=4&minutes=100&productivity=75&source=game_corner&pageTitle=Pomodoro+Session+Complete!&returnUrl=/admin/test-rewards&returnButtonText=Back+to+Test+Rewards&allowTrainerSelection=false&showClaimAllButton=false" class="btn-secondary text-center py-3">
+              <i class="fas fa-hourglass-end mr-2"></i> 4 Sessions
+            </a>
+            <a href="/town/rewards?sessions=8&minutes=200&productivity=75&source=game_corner&pageTitle=Pomodoro+Session+Complete!&returnUrl=/admin/test-rewards&returnButtonText=Back+to+Test+Rewards&allowTrainerSelection=false&showClaimAllButton=false" class="btn-secondary text-center py-3">
+              <i class="fas fa-hourglass-end mr-2"></i> 8 Sessions
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Custom Game Corner Parameters -->
+      <div class="mt-6 bg-gray-700/50 rounded-lg p-4">
+        <h3 class="text-lg font-bold mb-3">Custom Parameters</h3>
+        <form id="custom-game-corner-form" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div>
+            <label for="sessions" class="block text-sm font-medium text-gray-300 mb-1">Sessions</label>
+            <input type="number" id="sessions" name="sessions" min="1" max="20" value="4" class="w-full bg-gray-800 border border-gray-700 rounded-md py-2 px-3 text-white">
+          </div>
+          <div>
+            <label for="minutes" class="block text-sm font-medium text-gray-300 mb-1">Minutes</label>
+            <input type="number" id="minutes" name="minutes" min="1" max="500" value="100" class="w-full bg-gray-800 border border-gray-700 rounded-md py-2 px-3 text-white">
+          </div>
+          <div>
+            <label for="productivity" class="block text-sm font-medium text-gray-300 mb-1">Productivity (%)</label>
+            <input type="number" id="productivity" name="productivity" min="1" max="100" value="75" class="w-full bg-gray-800 border border-gray-700 rounded-md py-2 px-3 text-white">
+          </div>
+          <div class="md:col-span-3">
+            <button type="submit" class="btn-primary w-full py-3">
+              <i class="fas fa-play-circle mr-2"></i> Test Custom Parameters
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Future reward test sections can be added here -->
+    <div class="bg-gray-800 rounded-lg p-6 shadow-lg mb-8 opacity-50">
+      <h2 class="text-xl font-bold mb-4">Other Reward Sources (Coming Soon)</h2>
+      <p class="text-gray-300 mb-6">Test rewards from other sources like quests, battles, etc.</p>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="bg-gray-700/50 rounded-lg p-4 text-center">
+          <h3 class="text-lg font-bold mb-3">Quest Rewards</h3>
+          <button disabled class="btn-secondary w-full py-3 opacity-50 cursor-not-allowed">
+            <i class="fas fa-scroll mr-2"></i> Test Quest Rewards
+          </button>
+        </div>
+        <div class="bg-gray-700/50 rounded-lg p-4 text-center">
+          <h3 class="text-lg font-bold mb-3">Battle Rewards</h3>
+          <button disabled class="btn-secondary w-full py-3 opacity-50 cursor-not-allowed">
+            <i class="fas fa-fist-raised mr-2"></i> Test Battle Rewards
+          </button>
+        </div>
+        <div class="bg-gray-700/50 rounded-lg p-4 text-center">
+          <h3 class="text-lg font-bold mb-3">Event Rewards</h3>
+          <button disabled class="btn-secondary w-full py-3 opacity-50 cursor-not-allowed">
+            <i class="fas fa-calendar-alt mr-2"></i> Test Event Rewards
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Back to Dashboard Button -->
+    <div class="text-center">
+      <a href="/admin/dashboard" class="btn-secondary inline-block px-6 py-3">
+        <i class="fas fa-arrow-left mr-2"></i> Back to Dashboard
+      </a>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const customForm = document.getElementById('custom-game-corner-form');
+
+    customForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const sessions = document.getElementById('sessions').value;
+      const minutes = document.getElementById('minutes').value;
+      const productivity = document.getElementById('productivity').value;
+
+      // Redirect to rewards page with custom parameters
+      window.location.href = `/town/rewards?sessions=${sessions}&minutes=${minutes}&productivity=${productivity}&source=game_corner&pageTitle=Pomodoro+Session+Complete!&returnUrl=/admin/test-rewards&returnButtonText=Back+to+Test+Rewards&allowTrainerSelection=false&showClaimAllButton=false`;
+    });
+  });
+</script>
