@@ -657,16 +657,12 @@
       // Get trainers from the server-rendered data
       if (typeof trainers !== 'undefined' && trainers.length > 0) {
         // Use server-provided trainers
-        trainersData = [
-          trainers.forEach(function(trainer, index) {
-            {
-              id: trainer.id;
-              name: trainer.name;
-              level: trainer.level;
-              image: trainer.image;
-            }
-          })
-        ];
+        trainersData = trainers.map(trainer => ({
+          id: trainer.id,
+          name: trainer.name,
+          level: trainer.level || 1,
+          image: trainer.image || '/images/default_trainer.png'
+        }));
       }
 
       // If no trainers were found, show a message

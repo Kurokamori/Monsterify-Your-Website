@@ -190,11 +190,11 @@ class RewardSystem {
 
       // Validate selected trainer
       if (!selectedTrainer || !selectedTrainer.id || !selectedTrainer.name) {
-        console.error('Invalid trainer selection:', { 
-          trainerId, 
+        console.error('Invalid trainer selection:', {
+          trainerId,
           source,
           selectedTrainer,
-          trainersCount: trainers.length 
+          trainersCount: trainers.length
         });
         return { success: false, message: 'Invalid trainer selection' };
       }
@@ -301,7 +301,7 @@ class RewardSystem {
           try {
             console.log('=== START MONSTER REWARD PROCESSING ===');
             console.log('Initial reward data:', JSON.stringify(rewardData, null, 2));
-            
+
             // Prepare roller options with more specific defaults
             const rollerOptions = {
               overrideParams: {
@@ -331,11 +331,11 @@ class RewardSystem {
             };
 
             console.log('Prepared roller options:', JSON.stringify(rollerOptions, null, 2));
-            
+
             // Use MonsterService for rolling
             const monsterService = require('./MonsterService');
             console.log('Attempting to roll monster using MonsterService...');
-            
+
             let newMonster = await monsterService.rollOne(rollerOptions);
             console.log('Monster roll result:', JSON.stringify(newMonster, null, 2));
 
@@ -379,7 +379,7 @@ class RewardSystem {
             console.error('=== MONSTER REWARD PROCESSING FAILED ===');
             console.error('Error details:', error);
             console.error('Stack trace:', error.stack);
-            
+
             // Create a more interesting fallback monster
             const fallbackMonster = {
               trainer_id: selectedTrainer.id,
@@ -395,7 +395,7 @@ class RewardSystem {
 
             console.log('Creating fallback monster:', JSON.stringify(fallbackMonster, null, 2));
             const createdFallback = await Monster.create(fallbackMonster);
-            
+
             return {
               success: true,
               message: `${createdFallback.name} added to ${selectedTrainer.name}'s collection`,
@@ -422,6 +422,11 @@ class RewardSystem {
    * @returns {Array} - Generated rewards
    */
   static async generateRewards(source, params = {}) {
+    // Handle garden-specific rewards
+    if (source === 'garden' && params.gardenPoints) {
+      return await this.generateGardenRewards(params);
+    }
+
     const rewards = [];
 
     // Common parameters
@@ -572,7 +577,7 @@ class RewardSystem {
           }
         }
       };
-      
+
       rewards.push(monsterReward);
     }
 
@@ -609,6 +614,123 @@ class RewardSystem {
       case 'epic': return ['Ultimate'];
       case 'legendary': return ['Mega'];
       default: return ['Rookie'];
+    }
+  }
+
+  /**
+   * Generate rewards specifically for Garden activity
+   * @param {Object} params - Garden parameters
+   * @param {number} params.gardenPoints - Points earned from garden activity
+   * @returns {Promise<Array>} - Array of generated rewards
+   */
+  static async generateGardenRewards(params) {
+    try {
+      const rewards = [];
+      const gardenPoints = params.gardenPoints || 1;
+
+      // Base coin reward
+      const coinAmount = gardenPoints * 50;
+      const coinReward = {
+        id: `coin-${Date.now()}`,
+        type: 'coin',
+        reward_type: 'coin',
+        rarity: 'common',
+        reward_data: {
+          amount: coinAmount,
+          title: `${coinAmount} Coins`
+        }
+      };
+      rewards.push(coinReward);
+
+      // Berry rewards (25% chance per point)
+      for (let i = 0; i < gardenPoints; i++) {
+        if (Math.random() < 0.25) {
+          const berryRarity = Math.random() < 0.1 ? 'rare' :
+                          Math.random() < 0.3 ? 'uncommon' :
+                          'common';
+
+          const itemReward = {
+            id: `berry-${Date.now()}-${i}`,
+            type: 'item',
+            reward_type: 'item',
+            rarity: berryRarity,
+            reward_data: {
+              name: this.getRandomItemForSource('garden', berryRarity),
+              quantity: Math.floor(Math.random() * 3) + 1,
+              category: 'berries'
+            }
+          };
+          rewards.push(itemReward);
+        }
+      }
+
+      // Monster rewards (15% chance per point)
+      for (let i = 0; i < gardenPoints; i++) {
+        if (Math.random() < 0.15) {
+          const rarityRoll = Math.random() * 100;
+          let monsterRarity;
+
+          if (rarityRoll < 0.01) {          // 0.01% legendary
+            monsterRarity = 'legendary';
+          } else if (rarityRoll < 1) {      // 1% epic
+            monsterRarity = 'epic';
+          } else if (rarityRoll < 10) {     // 10% rare
+            monsterRarity = 'rare';
+          } else if (rarityRoll < 30) {     // 30% uncommon
+            monsterRarity = 'uncommon';
+          } else {                          // 59% common
+            monsterRarity = 'common';
+          }
+
+          const monsterReward = {
+            id: `monster-${Date.now()}-${i}`,
+            type: 'monster',
+            reward_type: 'monster',
+            rarity: monsterRarity,
+            reward_data: {
+              species: ['Pokemon', 'Digimon'],
+              types: ['Grass', 'Bug'],
+              minLevel: 1,
+              maxLevel: 5,
+              filters: {
+                pokemon: { rarity: this.mapRarityToPokeRarity(monsterRarity) },
+                digimon: { stage: this.mapRarityToDigiStage(monsterRarity) },
+                yokai: { tribe: ['Nature'] }
+              }
+            }
+          };
+          rewards.push(monsterReward);
+        }
+      }
+
+      // If no rewards were generated, add a fallback coin reward
+      if (rewards.length === 0) {
+        rewards.push({
+          id: `coin-fallback-${Date.now()}`,
+          type: 'coin',
+          reward_type: 'coin',
+          rarity: 'common',
+          reward_data: {
+            amount: 50,
+            title: '50 Coins'
+          }
+        });
+      }
+
+      return rewards;
+    } catch (error) {
+      console.error('Error generating Garden rewards:', error);
+      // Return minimum fallback reward
+      return [{
+        id: `coin-error-${Date.now()}`,
+        type: 'coin',
+        reward_type: 'coin',
+        rarity: 'common',
+        reward_data: {
+          amount: 50,
+          title: '50 Coins'
+        }
+      }];
     }
   }
 

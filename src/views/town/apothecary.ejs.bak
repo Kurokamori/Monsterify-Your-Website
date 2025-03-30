@@ -1,0 +1,1555 @@
+<%- /* Set the title and other variables for the layout */ %>
+<% const pageTitle = locals.title || 'Apothecary'; %>
+<% title = pageTitle; %>
+
+<%- /* Add custom styles */ %>
+<% style = `
+<style>
+  .location-card {
+    background-color: rgba(17, 24, 39, 0.8);
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    transition: transform 0.3s, box-shadow 0.3s;
+    border: 1px solid rgba(75, 85, 99, 0.3);
+    backdrop-filter: blur(10px);
+  }
+
+  .location-card:hover {
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+  }
+
+  .location-card-content {
+    padding: 1.5rem;
+    background-color: rgba(17, 24, 39, 0.6);
+  }
+
+  .btn-primary {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    color: #111827;
+    font-weight: 600;
+    transition: all 0.3s;
+    border: none;
+    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .btn-primary:hover:not(:disabled) {
+    background: linear-gradient(135deg, #f59e0b 0%, #b45309 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(245, 158, 11, 0.4);
+  }
+
+  .btn-primary:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    filter: grayscale(50%);
+  }
+
+  .btn-secondary {
+    background: rgba(31, 41, 55, 0.8);
+    color: #e5e7eb;
+    padding: 0.5rem 1rem;
+    border-radius: 0.375rem;
+    font-weight: 500;
+    transition: all 0.3s;
+    border: 1px solid rgba(75, 85, 99, 0.4);
+    backdrop-filter: blur(4px);
+  }
+
+  .btn-secondary:hover {
+    background: rgba(55, 65, 81, 0.9);
+    border-color: rgba(107, 114, 128, 0.5);
+    transform: translateY(-1px);
+  }
+
+  .text-shadow-lg {
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  }
+
+  .location-banner {
+    height: 200px;
+    object-fit: cover;
+  }
+
+  .inventory-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+  }
+
+  .inventory-item {
+    background-color: rgba(30, 37, 50, 0.8);
+    border-radius: 0.5rem;
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    transition: transform 0.2s, background-color 0.2s, box-shadow 0.2s;
+    border: 1px solid rgba(61, 75, 93, 0.3);
+  }
+
+  .inventory-item:hover {
+    background-color: rgba(43, 54, 69, 0.9);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+    border-color: rgba(214, 163, 57, 0.5);
+  }
+
+  .item-icon {
+    width: 40px;
+    height: 40px;
+    background-color: rgba(61, 75, 93, 0.5);
+    border-radius: 0.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    border: 1px solid rgba(214, 163, 57, 0.3);
+  }
+
+  .item-details {
+    flex-grow: 1;
+  }
+
+  .item-name {
+    font-weight: bold;
+    margin-bottom: 0.25rem;
+    color: var(--text-color);
+  }
+
+  .item-quantity {
+    color: var(--accent-color);
+    font-size: 0.875rem;
+  }
+
+  .species-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 1rem;
+  }
+
+  .species-card {
+    background-color: rgba(17, 24, 39, 0.7);
+    border-radius: 0.5rem;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    transition: all 0.3s;
+    border: 1px solid rgba(55, 65, 81, 0.3);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .species-card:hover {
+    background-color: rgba(31, 41, 55, 0.9);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+    border-color: rgba(107, 114, 128, 0.5);
+  }
+
+  .species-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.75rem;
+  }
+
+  .species-icon {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 9999px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 0.75rem;
+    background: radial-gradient(circle, rgba(0,0,0,0) 0%, rgba(0,0,0,0.2) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .species-name {
+    font-weight: bold;
+    font-size: 1rem;
+    color: var(--text-color);
+  }
+
+  .species-info {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.7);
+    margin-bottom: 1rem;
+  }
+
+  .species-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: auto;
+  }
+
+  .btn-select {
+    background: linear-gradient(135deg, rgba(214, 163, 57, 0.8) 0%, rgba(184, 138, 48, 0.8) 100%);
+    color: #111827;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 0.375rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.75rem;
+    flex-grow: 1;
+  }
+
+  .btn-select:hover {
+    background: linear-gradient(135deg, rgba(214, 163, 57, 1) 0%, rgba(184, 138, 48, 1) 100%);
+    transform: translateY(-1px);
+  }
+
+  .btn-reroll {
+    background: rgba(61, 75, 93, 0.5);
+    color: var(--text-color);
+    border: 1px solid rgba(61, 75, 93, 0.8);
+    padding: 0.5rem;
+    border-radius: 0.375rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.75rem;
+    margin-left: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .btn-reroll:hover {
+    background: rgba(61, 75, 93, 0.8);
+  }
+
+  .berry-effect-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 1.5rem;
+    border: 1px solid rgba(61, 75, 93, 0.3);
+    border-radius: 0.5rem;
+    overflow: hidden;
+  }
+
+  .berry-effect-table th {
+    background-color: rgba(30, 37, 50, 0.9);
+    color: var(--accent-color);
+    text-align: left;
+    padding: 0.75rem 1rem;
+    font-weight: 600;
+    border-bottom: 1px solid rgba(61, 75, 93, 0.5);
+  }
+
+  .berry-effect-table td {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid rgba(61, 75, 93, 0.3);
+    color: var(--text-color);
+  }
+
+  .berry-effect-table tr:last-child td {
+    border-bottom: none;
+  }
+
+  .berry-effect-table tr:hover td {
+    background-color: rgba(43, 54, 69, 0.5);
+  }
+
+  .berry-name {
+    color: var(--accent-color);
+    font-weight: 500;
+  }
+
+  .card-section {
+    background-color: rgba(17, 24, 39, 0.7);
+    border-radius: 0.75rem;
+    border: 1px solid rgba(55, 65, 81, 0.3);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(8px);
+    margin-bottom: 1.5rem;
+    overflow: hidden;
+  }
+
+  .card-header {
+    background: linear-gradient(to right, rgba(31, 41, 55, 0.9), rgba(17, 24, 39, 0.7));
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid rgba(75, 85, 99, 0.3);
+  }
+
+  .card-body {
+    padding: 1.5rem;
+  }
+</style>
+` %>
+
+<div class="container mx-auto px-4 py-8">
+  <!-- Navigation and Breadcrumbs -->
+  <div class="flex items-center justify-between mb-6">
+    <div class="flex items-center space-x-2 text-sm">
+      <a href="/town/visit" class="text-gray-400 hover:text-amber-400 transition-colors">
+        <i class="fas fa-home"></i> Town
+      </a>
+      <span class="text-gray-600">/</span>
+      <span class="text-amber-400">Apothecary</span>
+    </div>
+    <div class="flex space-x-2">
+      <a href="/town/visit" class="btn-secondary text-sm py-2 px-4">
+        <i class="fas fa-arrow-left mr-1"></i> Back to Town
+      </a>
+    </div>
+  </div>
+
+  <!-- Messages -->
+  <% if (locals.message && locals.messageType) { %>
+  <div class="<%= messageType === 'success' ? 'bg-green-900/50 border-green-700 text-green-300' : 'bg-red-900/50 border-red-700 text-red-300' %> border rounded-lg p-4 mb-6">
+    <div class="flex items-center">
+      <i class="<%= messageType === 'success' ? 'fas fa-check-circle text-green-400' : 'fas fa-exclamation-circle text-red-400' %> mr-3 text-xl"></i>
+      <p><%= message %></p>
+    </div>
+  </div>
+  <% } %>
+
+  <div class="location-card mb-8">
+    <img src="<%= locals.bannerImage || '/images/locations/apothecary-banner.jpg' %>" alt="Apothecary" class="location-banner w-full rounded-t-xl" onerror="this.src='/images/locations/default-banner.jpg'">
+    <div class="location-card-content">
+      <h1 class="text-3xl font-bold mb-4 text-shadow-lg">Welcome to the Apothecary</h1>
+      <p class="text-gray-300 mb-6">Browse our selection of healing items and remedies for your monsters.</p>
+    <div class="bg-gradient-to-b from-gray-900/90 to-gray-800/80 rounded-2xl shadow-2xl border border-gray-700/50 overflow-hidden backdrop-blur-md">
+      <!-- Header -->
+      <div class="bg-gradient-to-r from-amber-900/40 to-amber-800/20 p-6 border-b border-gray-700/50">
+        <h3 class="text-2xl font-bold text-amber-400 mb-2 text-center">Berry Feeding Laboratory</h3>
+        <p class="text-sm text-gray-300 text-center max-w-3xl mx-auto">Feed special berries to your monsters to modify their species, types, and attributes. Each berry has a unique effect that can permanently change your monster's characteristics.</p>
+
+        <div class="flex justify-end mt-2">
+          <a href="/town/shop/berry_shop" class="text-xs text-amber-400 hover:text-amber-300 transition-colors flex items-center">
+            <i class="fas fa-shopping-basket mr-1"></i> Visit Shop for More Berries
+          </a>
+        </div>
+      </div>
+
+      <div class="p-6">
+        <!-- Berry Feeding Form -->
+        <div class="card-section mb-8">
+          <div class="card-header">
+            <h4 class="text-xl font-semibold text-amber-400">Feed a Berry</h4>
+            <p class="text-xs text-gray-400 mt-1">Select a trainer, monster, and berry to feed. The effects are permanent, so choose carefully!</p>
+          </div>
+
+          <div class="card-body">
+            <form id="berry-form">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Left Column -->
+                <div>
+                  <!-- Trainer Selection -->
+                  <div class="mb-6">
+                    <div class="flex items-center mb-2">
+                      <div class="w-8 h-8 rounded-full bg-blue-900/30 flex items-center justify-center mr-2 border border-blue-700/30">
+                        <i class="fas fa-user text-blue-400"></i>
+                      </div>
+                      <label for="trainer-select" class="block text-sm text-amber-400 font-semibold">Select Trainer</label>
+                    </div>
+                    <select
+                      id="trainer-select"
+                      class="block w-full h-12 pl-3 pr-10 py-2 bg-gray-900/80 text-white placeholder-gray-400 border border-gray-700/50 rounded-lg focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition-all duration-200"
+                      required
+                    >
+                      <option value="">-- Select a Trainer --</option>
+                    </select>
+                  </div>
+
+                  <!-- Monster Selection -->
+                  <div class="mb-6">
+                    <div class="flex items-center mb-2">
+                      <div class="w-8 h-8 rounded-full bg-purple-900/30 flex items-center justify-center mr-2 border border-purple-700/30">
+                        <i class="fas fa-dragon text-purple-400"></i>
+                      </div>
+                      <label for="monster-select" class="block text-sm text-amber-400 font-semibold">Select Monster</label>
+                    </div>
+                    <select
+                      id="monster-select"
+                      class="block w-full h-12 pl-3 pr-10 py-2 bg-gray-900/80 text-white placeholder-gray-400 border border-gray-700/50 rounded-lg focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition-all duration-200"
+                      required
+                      disabled
+                    >
+                      <option value="">-- Select a Monster --</option>
+                    </select>
+                  </div>
+                </div>
+
+                <!-- Right Column -->
+                <div>
+                  <!-- Berry Selection -->
+                  <div class="mb-6">
+                    <div class="flex items-center mb-2">
+                      <div class="w-8 h-8 rounded-full bg-amber-900/30 flex items-center justify-center mr-2 border border-amber-700/30">
+                        <i class="fas fa-apple-alt text-amber-400"></i>
+                      </div>
+                      <label for="berry-select" class="block text-sm text-amber-400 font-semibold">Select Berry</label>
+                    </div>
+                    <select
+                      id="berry-select"
+                      class="block w-full h-12 pl-3 pr-10 py-2 bg-gray-900/80 text-white placeholder-gray-400 border border-gray-700/50 rounded-lg focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition-all duration-200"
+                      required
+                      disabled
+                    >
+                      <option value="">-- Select a Berry --</option>
+                    </select>
+                  </div>
+
+                  <!-- Effect Preview -->
+                  <div class="bg-gray-900/60 p-4 rounded-lg mb-6 border border-gray-700/50">
+                    <div class="flex items-center mb-2">
+                      <div class="w-6 h-6 rounded-full bg-green-900/30 flex items-center justify-center mr-2 border border-green-700/30">
+                        <i class="fas fa-info-circle text-green-400 text-xs"></i>
+                      </div>
+                      <span class="text-sm text-amber-400 font-semibold">Effect Preview</span>
+                    </div>
+                    <div class="text-sm text-gray-300 italic" id="effect-preview">Select a monster and berry to see the effect</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Species Selection Container (hidden by default) -->
+              <div id="species-selection-container" class="hidden mb-6 bg-gray-900/60 p-6 rounded-lg border border-gray-700/50">
+                <div class="flex items-center mb-3">
+                  <div class="w-8 h-8 rounded-full bg-amber-900/30 flex items-center justify-center mr-2 border border-amber-700/30">
+                    <i class="fas fa-dna text-amber-400"></i>
+                  </div>
+                  <div>
+                    <span class="text-lg text-amber-400 font-semibold">Choose a Species</span>
+                    <p class="text-xs text-gray-400 mt-1">Select one of the following species options or reroll for new choices.</p>
+                  </div>
+                </div>
+
+                <% if (locals.speciesOptions && speciesOptions.length > 0) { %>
+                  <div id="species-options" class="species-grid mt-4">
+                    <% speciesOptions.forEach(function(option, index) { %>
+                      <div class="species-card" data-species="<%= option.name %>" data-index="<%= index %>" data-type="<%= option.type %>" data-origin="<%= option.species %>">
+                        <div class="species-header">
+                          <div class="species-icon bg-<%= option.typeColor %>-900/40 border-<%= option.typeColor %>-700/50">
+                            <i class="fas fa-dna text-<%= option.typeColor %>-400"></i>
+                          </div>
+                          <div class="species-name text-<%= option.typeColor %>-300"><%= option.name %></div>
+                        </div>
+                        <div class="species-info">
+                          <div><span class="text-gray-400">Origin:</span> <%= option.species %></div>
+                          <div><span class="text-gray-400">Type:</span> <%= option.type %></div>
+                        </div>
+                        <div class="species-actions">
+                          <button class="btn-select select-species" data-species="<%= option.name %>">
+                            <i class="fas fa-check mr-1"></i> Select
+                          </button>
+                          <button class="btn-reroll reroll-species" data-index="<%= index %>" title="Reroll this option">
+                            <i class="fas fa-dice"></i>
+                          </button>
+                        </div>
+                      </div>
+                    <% }); %>
+                  </div>
+                <% } else { %>
+                  <div id="species-options" class="species-grid mt-4">
+                    <!-- Species options will be inserted here -->
+                    <div class="text-center text-gray-400 py-4 col-span-full">
+                      <i class="fas fa-spinner fa-spin mr-2"></i> Loading species options...
+                    </div>
+                  </div>
+                <% } %>
+
+                <div class="flex justify-between items-center mt-4 pt-4 border-t border-gray-700/30">
+                  <div class="text-xs text-gray-400">
+                    <span class="text-amber-400"><i class="fas fa-info-circle mr-1"></i> Tip:</span> You can reroll using another berry of the same type or a Forget-Me-Not berry.
+                  </div>
+                  <button id="cancel-species-selection" class="btn-secondary text-sm py-2 px-4">
+                    <i class="fas fa-times mr-1"></i> Cancel
+                  </button>
+                </div>
+              </div>
+
+              <!-- Feed Button -->
+              <div class="mt-8">
+                <button
+                  id="use-berry-button"
+                  type="submit"
+                  class="block w-full h-14 bg-gradient-to-br from-amber-500 to-amber-700 text-gray-900 font-bold rounded-lg shadow-lg transition-all duration-300 hover:from-amber-600 hover:to-amber-800 disabled:opacity-50 disabled:cursor-not-allowed"
+                  disabled
+                >
+                  <div class="flex items-center justify-center gap-2">
+                    <i class="fas fa-hand-holding-medical"></i>
+                    <span>FEED BERRY</span>
+                  </div>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- Berry Inventory Section -->
+        <div class="card-section mb-8">
+          <div class="card-header">
+            <h4 class="text-xl font-semibold text-amber-400">Your Berry Inventory</h4>
+            <p class="text-xs text-gray-400 mt-1">These are the special berries in your inventory that can modify your monsters' characteristics.</p>
+          </div>
+
+          <div class="card-body">
+            <% if (locals.initialBerries && initialBerries.length > 0) { %>
+              <div id="berry-inventory" class="inventory-grid">
+                <% initialBerries.forEach(function(berry) { %>
+                  <div class="inventory-item">
+                    <div class="item-icon" style="background: linear-gradient(135deg, rgba(<%= berry.colorRGB %>, 0.3) 0%, rgba(<%= berry.colorRGB %>, 0.1) 100%);">
+                      <i class="fas <%= berry.icon %> text-<%= berry.color %>-400"></i>
+                    </div>
+                    <div class="item-details">
+                      <div class="item-name"><%= berry.name %></div>
+                      <div class="item-quantity">Quantity: <%= berry.quantity %></div>
+                      <div class="text-xs text-gray-400 mt-1 truncate"><%= berry.effect %></div>
+                    </div>
+                  </div>
+                <% }); %>
+              </div>
+            <% } else { %>
+              <div id="berry-inventory" class="inventory-grid">
+                <div class="text-center text-gray-400 py-4 col-span-full">
+                  <i class="fas fa-spinner fa-spin mr-2"></i> Loading berry inventory...
+                </div>
+              </div>
+            <% } %>
+          </div>
+        </div>
+
+        <!-- Berry Effects Guide -->
+        <div class="card-section">
+          <div class="card-header">
+            <h4 class="text-xl font-semibold text-amber-400">Berry Effects Guide</h4>
+            <p class="text-xs text-gray-400 mt-1">Each berry has a unique effect on your monsters. Here's a guide to what each berry does.</p>
+          </div>
+
+          <div class="card-body">
+            <div class="mb-6">
+              <h5 class="text-amber-400 mb-3 font-medium flex items-center">
+                <i class="fas fa-dna text-amber-300 mr-2"></i> Species Modification
+              </h5>
+              <table class="berry-effect-table">
+                <thead>
+                  <tr>
+                    <th width="30%">Berry</th>
+                    <th>Effect</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><span class="berry-name">Mala Berry</span></td>
+                    <td>Remove Species 2 (if present)</td>
+                  </tr>
+                  <tr>
+                    <td><span class="berry-name">Merco Berry</span></td>
+                    <td>Remove Species 3 (if present)</td>
+                  </tr>
+                  <tr>
+                    <td><span class="berry-name">Patama Berry</span></td>
+                    <td>Choose from 10 random species for Species 1</td>
+                  </tr>
+                  <tr>
+                    <td><span class="berry-name">Bluk Berry</span></td>
+                    <td>Choose from 10 random species for Species 2 (if present)</td>
+                  </tr>
+                  <tr>
+                    <td><span class="berry-name">Nuevo Berry</span></td>
+                    <td>Choose from 10 random species for Species 3 (if present)</td>
+                  </tr>
+                  <tr>
+                    <td><span class="berry-name">Azzuk Berry</span></td>
+                    <td>Choose from 10 random species for Species 2 (if not present)</td>
+                  </tr>
+                  <tr>
+                    <td><span class="berry-name">Mangus Berry</span></td>
+                    <td>Choose from 10 random species for Species 3 (if not present)</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="mb-6">
+              <h5 class="text-amber-400 mb-3 font-medium flex items-center">
+                <i class="fas fa-fire-alt text-amber-300 mr-2"></i> Type Modification
+              </h5>
+              <table class="berry-effect-table">
+                <thead>
+                  <tr>
+                    <th width="30%">Berry</th>
+                    <th>Effect</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><span class="berry-name">Lilan Berry</span></td>
+                    <td>Remove Type 2 (if present)</td>
+                  </tr>
+                  <tr>
+                    <td><span class="berry-name">Kham Berry</span></td>
+                    <td>Remove Type 3 (if present)</td>
+                  </tr>
+                  <tr>
+                    <td><span class="berry-name">Maizi Berry</span></td>
+                    <td>Remove Type 4 (if present)</td>
+                  </tr>
+                  <tr>
+                    <td><span class="berry-name">Fani Berry</span></td>
+                    <td>Remove Type 5 (if present)</td>
+                  </tr>
+                  <tr>
+                    <td><span class="berry-name">Miraca Berry</span></td>
+                    <td>Randomize Type 1</td>
+                  </tr>
+                  <tr>
+                    <td><span class="berry-name">Cocon Berry</span></td>
+                    <td>Randomize Type 2 (if present)</td>
+                  </tr>
+                  <tr>
+                    <td><span class="berry-name">Durian Berry</span></td>
+                    <td>Randomize Type 3 (if present)</td>
+                  </tr>
+                  <tr>
+                    <td><span class="berry-name">Monel Berry</span></td>
+                    <td>Randomize Type 4 (if present)</td>
+                  </tr>
+                  <tr>
+                    <td><span class="berry-name">Perep Berry</span></td>
+                    <td>Randomize Type 5 (if present)</td>
+                  </tr>
+                  <tr>
+                    <td><span class="berry-name">Addish Berry</span></td>
+                    <td>Add Type 2 (if not present)</td>
+                  </tr>
+                  <tr>
+                    <td><span class="berry-name">Sky Carrot Berry</span></td>
+                    <td>Add Type 3 (if not present)</td>
+                  </tr>
+                  <tr>
+                    <td><span class="berry-name">Kembre Berry</span></td>
+                    <td>Add Type 4 (if not present)</td>
+                  </tr>
+                  <tr>
+                    <td><span class="berry-name">Espara Berry</span></td>
+                    <td>Add Type 5 (if not present)</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div>
+              <h5 class="text-amber-400 mb-3 font-medium flex items-center">
+                <i class="fas fa-certificate text-amber-300 mr-2"></i> Attribute Modification
+              </h5>
+              <table class="berry-effect-table">
+                <thead>
+                  <tr>
+                    <th width="30%">Berry</th>
+                    <th>Effect</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><span class="berry-name">Datei Berry</span></td>
+                    <td>Randomize Attribute</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<% script = `
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const trainerSelect = document.getElementById('trainer-select');
+    const monsterSelect = document.getElementById('monster-select');
+    const berrySelect = document.getElementById('berry-select');
+    const effectPreview = document.getElementById('effect-preview');
+    const useButton = document.getElementById('use-berry-button');
+    const berryForm = document.getElementById('berry-form');
+
+    // Berry effects dictionary
+    const BERRY_EFFECTS = {
+      'Mala Berry': 'Remove Species 2 (if present)',
+      'Merco Berry': 'Remove Species 3 (if present)',
+      'Lilan Berry': 'Remove Type 2 (if present)',
+      'Kham Berry': 'Remove Type 3 (if present)',
+      'Maizi Berry': 'Remove Type 4 (if present)',
+      'Fani Berry': 'Remove Type 5 (if present)',
+      'Miraca Berry': 'Randomize Type 1',
+      'Cocon Berry': 'Randomize Type 2 (if present)',
+      'Durian Berry': 'Randomize Type 3 (if present)',
+      'Monel Berry': 'Randomize Type 4 (if present)',
+      'Perep Berry': 'Randomize Type 5 (if present)',
+      'Addish Berry': 'Add Type 2 (if not present)',
+      'Sky Carrot Berry': 'Add Type 3 (if not present)',
+      'Kembre Berry': 'Add Type 4 (if not present)',
+      'Espara Berry': 'Add Type 5 (if not present)',
+      'Patama Berry': 'Randomize Species 1',
+      'Bluk Berry': 'Randomize Species 2 (if present)',
+      'Nuevo Berry': 'Randomize Species 3 (if present)',
+      'Azzuk Berry': 'Add a new random species to Species 2 (if not present)',
+      'Mangus Berry': 'Add a new random species to Species 3 (if not present)',
+      'Datei Berry': 'Randomize Attribute'
+    };
+
+    // Function to load trainers
+    async function loadTrainers() {
+      const trainerSelect = document.getElementById('trainer-select');
+      if (!trainerSelect) {
+        console.error('Trainer select element not found');
+        return;
+      }
+
+      try {
+        console.log('Fetching trainers from /api/trainers/user');
+        const response = await fetch('/api/trainers/user');
+        if (!response.ok) {
+          console.error('Error fetching trainers: ' + response.status);
+          throw new Error('Error fetching trainers');
+        }
+
+        const trainers = await response.json();
+        console.log('Received ' + (trainers ? trainers.length : 0) + ' trainers:', trainers);
+
+        trainerSelect.innerHTML = '<option value="">-- Select a Trainer --</option>';
+
+        if (trainers && trainers.length > 0) {
+          trainers.forEach(trainer => {
+            const option = document.createElement('option');
+            option.value = trainer.id;
+            option.textContent = `${trainer.name} (Level ${trainer.level || 1})`;
+            trainerSelect.appendChild(option);
+          });
+          trainerSelect.disabled = false;
+        } else {
+          const option = document.createElement('option');
+          option.value = "";
+          option.textContent = "No trainers found";
+          option.disabled = true;
+          trainerSelect.appendChild(option);
+          trainerSelect.disabled = true;
+        }
+      } catch (error) {
+        console.error('Error loading trainers:', error);
+        if (trainerSelect) {
+          trainerSelect.innerHTML = '<option value="">Error loading trainers</option>';
+          trainerSelect.disabled = true;
+        }
+      }
+    }
+
+    // Function to load monsters for a trainer
+    async function loadMonsters(trainerId) {
+      if (!trainerId) {
+        monsterSelect.innerHTML = '<option value="">-- Select a Trainer First --</option>';
+        monsterSelect.disabled = true;
+        return;
+      }
+
+      try {
+        console.log('Fetching monsters for trainer ' + trainerId);
+        const response = await fetch('/api/trainers/' + trainerId + '/monsters');
+        if (!response.ok) {
+          console.error('Error fetching monsters: ' + response.status);
+          throw new Error('Error fetching monsters');
+        }
+
+        const monsters = await response.json();
+        console.log('Received ' + (monsters ? monsters.length : 0) + ' monsters:', monsters);
+
+        monsterSelect.innerHTML = '<option value="">-- Select a Monster --</option>';
+
+        if (monsters && monsters.length > 0) {
+          monsters.forEach(monster => {
+            const option = document.createElement('option');
+            option.value = monster.mon_id;
+            option.textContent = `${monster.name} (Level ${monster.level || 1})`;
+            // Store monster data as attributes for later use
+            option.dataset.species1 = monster.species1 || '';
+            option.dataset.species2 = monster.species2 || '';
+            option.dataset.species3 = monster.species3 || '';
+            option.dataset.type1 = monster.type1 || '';
+            option.dataset.type2 = monster.type2 || '';
+            option.dataset.type3 = monster.type3 || '';
+            option.dataset.type4 = monster.type4 || '';
+            option.dataset.type5 = monster.type5 || '';
+            option.dataset.attribute = monster.attribute || '';
+            monsterSelect.appendChild(option);
+          });
+          monsterSelect.disabled = false;
+        } else {
+          monsterSelect.innerHTML = '<option value="">No monsters available</option>';
+          monsterSelect.disabled = true;
+        }
+      } catch (error) {
+        console.error('Error loading monsters:', error);
+        monsterSelect.innerHTML = '<option value="">Error loading monsters</option>';
+        monsterSelect.disabled = true;
+      }
+    }
+
+    // Function to load berries for a trainer
+    async function loadBerries(trainerId) {
+      if (!trainerId) {
+        berrySelect.innerHTML = '<option value="">-- Select a Trainer First --</option>';
+        berrySelect.disabled = true;
+        return;
+      }
+
+      try {
+        console.log('Fetching inventory for trainer ' + trainerId);
+        const response = await fetch('/api/trainers/' + trainerId);
+        if (!response.ok) {
+          console.error('Error fetching trainer inventory: ' + response.status);
+          throw new Error('Error fetching trainer inventory');
+        }
+
+        const data = await response.json();
+        const trainer = data.trainer;
+        console.log('Received trainer data:', trainer);
+
+        // Parse berry inventory
+        let berryInventory = {};
+        if (trainer.inv_berries) {
+          try {
+            if (typeof trainer.inv_berries === 'string') {
+              berryInventory = JSON.parse(trainer.inv_berries);
+            } else {
+              berryInventory = trainer.inv_berries;
+            }
+          } catch (e) {
+            console.error('Error parsing berry inventory:', e);
+            berryInventory = {};
+          }
+        }
+
+        console.log('Berry inventory:', berryInventory);
+
+        berrySelect.innerHTML = '<option value="">-- Select a Berry --</option>';
+
+        // Add berries from the inventory that match our effects list
+        const availableBerries = Object.keys(berryInventory).filter(berry =>
+          BERRY_EFFECTS[berry] && berryInventory[berry] > 0
+        );
+
+        if (availableBerries.length > 0) {
+          availableBerries.forEach(berry => {
+            const option = document.createElement('option');
+            option.value = berry;
+            option.textContent = `${berry} (${berryInventory[berry]}) - ${BERRY_EFFECTS[berry]}`;
+            berrySelect.appendChild(option);
+          });
+          berrySelect.disabled = false;
+        } else {
+          berrySelect.innerHTML = '<option value="">No special berries available</option>';
+          berrySelect.disabled = true;
+        }
+      } catch (error) {
+        console.error('Error loading berries:', error);
+        berrySelect.innerHTML = '<option value="">Error loading berries</option>';
+        berrySelect.disabled = true;
+      }
+    }
+
+    // Function to update the effect preview
+    function updatePreview() {
+      const monsterValue = monsterSelect.value;
+      const berryValue = berrySelect.value;
+
+      if (monsterValue && berryValue) {
+        const monsterOption = monsterSelect.options[monsterSelect.selectedIndex];
+        const monsterName = monsterOption.text.split(' (')[0];
+        const effect = BERRY_EFFECTS[berryValue] || 'Unknown effect';
+
+        // Check if the berry effect is applicable to this monster
+        let isApplicable = true;
+        let applicabilityMessage = '';
+
+        if (berryValue === 'Mala Berry' && !monsterOption.dataset.species2) {
+          isApplicable = false;
+          applicabilityMessage = 'This monster doesn\'t have a second species.';
+        } else if (berryValue === 'Merco Berry' && !monsterOption.dataset.species3) {
+          isApplicable = false;
+          applicabilityMessage = 'This monster doesn\'t have a third species.';
+        } else if (berryValue === 'Lilan Berry' && !monsterOption.dataset.type2) {
+          isApplicable = false;
+          applicabilityMessage = 'This monster doesn\'t have a second type.';
+        } else if (berryValue === 'Kham Berry' && !monsterOption.dataset.type3) {
+          isApplicable = false;
+          applicabilityMessage = 'This monster doesn\'t have a third type.';
+        } else if (berryValue === 'Maizi Berry' && !monsterOption.dataset.type4) {
+          isApplicable = false;
+          applicabilityMessage = 'This monster doesn\'t have a fourth type.';
+        } else if (berryValue === 'Fani Berry' && !monsterOption.dataset.type5) {
+          isApplicable = false;
+          applicabilityMessage = 'This monster doesn\'t have a fifth type.';
+        } else if (berryValue === 'Cocon Berry' && !monsterOption.dataset.type2) {
+          isApplicable = false;
+          applicabilityMessage = 'This monster doesn\'t have a second type.';
+        } else if (berryValue === 'Durian Berry' && !monsterOption.dataset.type3) {
+          isApplicable = false;
+          applicabilityMessage = 'This monster doesn\'t have a third type.';
+        } else if (berryValue === 'Monel Berry' && !monsterOption.dataset.type4) {
+          isApplicable = false;
+          applicabilityMessage = 'This monster doesn\'t have a fourth type.';
+        } else if (berryValue === 'Perep Berry' && !monsterOption.dataset.type5) {
+          isApplicable = false;
+          applicabilityMessage = 'This monster doesn\'t have a fifth type.';
+        } else if (berryValue === 'Addish Berry' && monsterOption.dataset.type2) {
+          isApplicable = false;
+          applicabilityMessage = 'This monster already has a second type.';
+        } else if (berryValue === 'Sky Carrot Berry' && monsterOption.dataset.type3) {
+          isApplicable = false;
+          applicabilityMessage = 'This monster already has a third type.';
+        } else if (berryValue === 'Kembre Berry' && monsterOption.dataset.type4) {
+          isApplicable = false;
+          applicabilityMessage = 'This monster already has a fourth type.';
+        } else if (berryValue === 'Espara Berry' && monsterOption.dataset.type5) {
+          isApplicable = false;
+          applicabilityMessage = 'This monster already has a fifth type.';
+        } else if (berryValue === 'Bluk Berry' && !monsterOption.dataset.species2) {
+          isApplicable = false;
+          applicabilityMessage = 'This monster doesn\'t have a second species.';
+        } else if (berryValue === 'Nuevo Berry' && !monsterOption.dataset.species3) {
+          isApplicable = false;
+          applicabilityMessage = 'This monster doesn\'t have a third species.';
+        } else if (berryValue === 'Azzuk Berry' && monsterOption.dataset.species2) {
+          isApplicable = false;
+          applicabilityMessage = 'This monster already has a second species.';
+        } else if (berryValue === 'Mangus Berry' && monsterOption.dataset.species3) {
+          isApplicable = false;
+          applicabilityMessage = 'This monster already has a third species.';
+        }
+
+        if (isApplicable) {
+          effectPreview.textContent = `${effect} on ${monsterName}`;
+          useButton.disabled = false;
+        } else {
+          effectPreview.textContent = applicabilityMessage;
+          useButton.disabled = true;
+        }
+      } else {
+        effectPreview.textContent = 'Select a monster and berry to see the effect';
+        useButton.disabled = true;
+      }
+    }
+
+    // Event listeners
+    trainerSelect.addEventListener('change', function() {
+      const trainerId = this.value;
+      loadMonsters(trainerId);
+      loadBerries(trainerId);
+      updatePreview();
+    });
+
+    monsterSelect.addEventListener('change', updatePreview);
+    berrySelect.addEventListener('change', updatePreview);
+
+    // Species selection variables
+    let selectedSpecies = null;
+    let targetField = null;
+    const speciesSelectionContainer = document.getElementById('species-selection-container');
+    const speciesOptions = document.getElementById('species-options');
+
+    // Function to load species options
+    async function loadSpeciesOptions(berryName, monsterData) {
+      try {
+        // Show loading state
+        speciesOptions.innerHTML = '<div class="text-center text-gray-400 py-4 col-span-full"><i class="fas fa-spinner fa-spin mr-2"></i> Loading species options...</div>';
+        speciesSelectionContainer.classList.remove('hidden');
+
+        // Fetch species options from the API
+        const response = await fetch('/api/apothecary/species-options');
+        if (!response.ok) {
+          throw new Error('Error fetching species options');
+        }
+
+        const data = await response.json();
+        if (!data.success || !data.options || data.options.length === 0) {
+          throw new Error('No species options returned from the server');
+        }
+
+        // Generate HTML for each species option
+        const optionsHtml = data.options.map((option, index) => {
+          const typeColor = getTypeColor(option.type);
+          return `
+            <div class="species-card" data-species="${option.name}" data-index="${index}" data-type="${option.type}" data-origin="${option.species}">
+              <div class="species-header">
+                <div class="species-icon bg-${typeColor}-900/40 border-${typeColor}-700/50">
+                  <i class="fas fa-dna text-${typeColor}-400"></i>
+                </div>
+                <div class="species-name text-${typeColor}-300">${option.name}</div>
+              </div>
+              <div class="species-info">
+                <div><span class="text-gray-400">Origin:</span> ${option.species}</div>
+                <div><span class="text-gray-400">Type:</span> ${option.type}</div>
+              </div>
+              <div class="species-actions">
+                <button class="btn-select select-species" data-species="${option.name}">
+                  <i class="fas fa-check mr-1"></i> Select
+                </button>
+                <button class="btn-reroll reroll-species" data-index="${index}" title="Reroll this option">
+                  <i class="fas fa-dice"></i>
+                </button>
+              </div>
+            </div>
+          `;
+        }).join('');
+
+        // Update the species options container
+        speciesOptions.innerHTML = optionsHtml;
+
+        // Add event listeners to select buttons
+        document.querySelectorAll('.select-species').forEach(button => {
+          button.addEventListener('click', function() {
+            // Get the parent card
+            const card = this.closest('.species-card');
+
+            // Remove selected class from all cards
+            document.querySelectorAll('.species-card').forEach(c => {
+              c.classList.remove('border-amber-400');
+            });
+
+            // Add selected class to this card
+            card.classList.add('border-amber-400');
+
+            // Set the selected species
+            selectedSpecies = this.dataset.species;
+
+            // Enable the feed button
+            useButton.disabled = false;
+            useButton.innerHTML = '<i class="fas fa-check mr-1"></i> Confirm Selection';
+          });
+        });
+
+        // Add event listeners to reroll buttons
+        document.querySelectorAll('.reroll-species').forEach(button => {
+          button.addEventListener('click', function() {
+            // Show reroll confirmation dialog
+            const index = this.dataset.index;
+            const card = this.closest('.species-card');
+            const speciesName = card.dataset.species;
+            const speciesType = card.dataset.type;
+            const speciesOrigin = card.dataset.origin;
+
+            // Create and show the reroll modal
+            showRerollModal(index, speciesName, speciesType, speciesOrigin, berryName);
+          });
+        });
+
+        // Add event listener to cancel button
+        document.getElementById('cancel-species-selection').addEventListener('click', function() {
+          speciesSelectionContainer.classList.add('hidden');
+          selectedSpecies = null;
+          useButton.disabled = false;
+          useButton.innerHTML = '<i class="fas fa-hand-holding-medical mr-1"></i> Feed Berry';
+        });
+      } catch (error) {
+        console.error('Error loading species options:', error);
+        speciesOptions.innerHTML = '<div class="text-center text-red-400 py-4 col-span-full">Error loading species options</div>';
+      }
+    }
+
+    // Function to show reroll confirmation modal
+    function showRerollModal(index, speciesName, speciesType, speciesOrigin, berryName) {
+      // Create modal backdrop
+      const backdrop = document.createElement('div');
+      backdrop.className = 'fixed inset-0 bg-black/70 flex items-center justify-center z-50';
+      backdrop.id = 'reroll-modal-backdrop';
+
+      // Create modal content
+      const modal = document.createElement('div');
+      modal.className = 'bg-gray-900 rounded-lg shadow-2xl border border-gray-700 max-w-md w-full mx-4';
+
+      // Modal header
+      const header = document.createElement('div');
+      header.className = 'p-4 border-b border-gray-700';
+      header.innerHTML = `
+        <h3 class="text-lg font-semibold text-amber-400">Reroll Species Option</h3>
+        <p class="text-xs text-gray-400 mt-1">Choose how you want to reroll this species option.</p>
+      `;
+
+      // Modal body
+      const body = document.createElement('div');
+      body.className = 'p-4';
+      body.innerHTML = `
+        <div class="mb-4 p-3 bg-gray-800 rounded-lg">
+          <div class="text-sm text-gray-300 mb-2">Current selection:</div>
+          <div class="flex items-center">
+            <div class="w-8 h-8 rounded-full bg-${getTypeColor(speciesType)}-900/40 flex items-center justify-center mr-2 border border-${getTypeColor(speciesType)}-700/50">
+              <i class="fas fa-dna text-${getTypeColor(speciesType)}-400"></i>
+            </div>
+            <div>
+              <div class="text-${getTypeColor(speciesType)}-300 font-medium">${speciesName}</div>
+              <div class="text-xs text-gray-400">${speciesOrigin} - ${speciesType}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="text-sm text-gray-300 mb-3">Reroll using:</div>
+
+        <div class="space-y-3">
+          <button id="reroll-same-berry" class="w-full text-left p-3 bg-gray-800 hover:bg-gray-700 rounded-lg transition-colors flex items-center">
+            <div class="w-8 h-8 rounded-full bg-amber-900/40 flex items-center justify-center mr-2 border border-amber-700/50">
+              <i class="fas fa-apple-alt text-amber-400"></i>
+            </div>
+            <div class="flex-1">
+              <div class="text-amber-300 font-medium">${berryName}</div>
+              <div class="text-xs text-gray-400">Use another ${berryName} from your inventory</div>
+            </div>
+          </button>
+
+          <button id="reroll-forget-me-not" class="w-full text-left p-3 bg-gray-800 hover:bg-gray-700 rounded-lg transition-colors flex items-center">
+            <div class="w-8 h-8 rounded-full bg-blue-900/40 flex items-center justify-center mr-2 border border-blue-700/50">
+              <i class="fas fa-seedling text-blue-400"></i>
+            </div>
+            <div class="flex-1">
+              <div class="text-blue-300 font-medium">Forget-Me-Not Berry</div>
+              <div class="text-xs text-gray-400">Use a Forget-Me-Not Berry from your inventory</div>
+            </div>
+          </button>
+        </div>
+      `;
+
+      // Modal footer
+      const footer = document.createElement('div');
+      footer.className = 'p-4 border-t border-gray-700 flex justify-end';
+      footer.innerHTML = `
+        <button id="cancel-reroll" class="btn-secondary text-sm py-2 px-4 mr-2">
+          <i class="fas fa-times mr-1"></i> Cancel
+        </button>
+      `;
+
+      // Assemble modal
+      modal.appendChild(header);
+      modal.appendChild(body);
+      modal.appendChild(footer);
+      backdrop.appendChild(modal);
+
+      // Add to document
+      document.body.appendChild(backdrop);
+
+      // Add event listeners
+      document.getElementById('cancel-reroll').addEventListener('click', function() {
+        document.body.removeChild(backdrop);
+      });
+
+      document.getElementById('reroll-same-berry').addEventListener('click', function() {
+        rerollSpeciesOption(index, berryName);
+        document.body.removeChild(backdrop);
+      });
+
+      document.getElementById('reroll-forget-me-not').addEventListener('click', function() {
+        rerollSpeciesOption(index, 'Forget-Me-Not Berry');
+        document.body.removeChild(backdrop);
+      });
+    }
+
+    // Function to reroll a specific species option
+    async function rerollSpeciesOption(index, berryToUse) {
+      try {
+        const trainerId = trainerSelect.value;
+        if (!trainerId) {
+          alert('Please select a trainer first.');
+          return;
+        }
+
+        // Show loading state for the specific card
+        const cards = document.querySelectorAll('.species-card');
+        if (cards[index]) {
+          cards[index].innerHTML = '<div class="flex items-center justify-center h-full"><i class="fas fa-spinner fa-spin text-amber-400"></i></div>';
+        }
+
+        // Check if the trainer has the berry
+        const response = await fetch('/api/trainers/' + trainerId);
+        if (!response.ok) {
+          throw new Error('Error fetching trainer inventory');
+        }
+
+        const data = await response.json();
+        const trainer = data.trainer;
+
+        // Parse berry inventory
+        let berryInventory = {};
+        if (trainer.inv_berries) {
+          try {
+            if (typeof trainer.inv_berries === 'string') {
+              berryInventory = JSON.parse(trainer.inv_berries);
+            } else {
+              berryInventory = trainer.inv_berries;
+            }
+          } catch (e) {
+            console.error('Error parsing berry inventory:', e);
+            berryInventory = {};
+          }
+        }
+
+        // Check if the trainer has the berry
+        if (!berryInventory[berryToUse] || berryInventory[berryToUse] <= 0) {
+          alert(`You don't have any ${berryToUse} in your inventory.`);
+          // Refresh the species options
+          await loadSpeciesOptions(berrySelect.value, monsterSelect.options[monsterSelect.selectedIndex].dataset);
+          return;
+        }
+
+        // Use the berry
+        await fetch('/api/trainers/use-berry', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            trainerId,
+            berryName: berryToUse
+          })
+        });
+
+        // Get a new species option
+        const newOptionResponse = await fetch('/api/apothecary/species-options');
+        if (!newOptionResponse.ok) {
+          throw new Error('Error fetching new species option');
+        }
+
+        const newOptionData = await newOptionResponse.json();
+        if (!newOptionData.success || !newOptionData.options || newOptionData.options.length === 0) {
+          throw new Error('No species options returned from the server');
+        }
+
+        // Get a random option from the new options
+        const randomIndex = Math.floor(Math.random() * newOptionData.options.length);
+        const newOption = newOptionData.options[randomIndex];
+
+        // Update the card with the new option
+        if (cards[index]) {
+          const typeColor = getTypeColor(newOption.type);
+          cards[index].dataset.species = newOption.name;
+          cards[index].dataset.type = newOption.type;
+          cards[index].dataset.origin = newOption.species;
+
+          cards[index].innerHTML = `
+            <div class="species-header">
+              <div class="species-icon bg-${typeColor}-900/40 border-${typeColor}-700/50">
+                <i class="fas fa-dna text-${typeColor}-400"></i>
+              </div>
+              <div class="species-name text-${typeColor}-300">${newOption.name}</div>
+            </div>
+            <div class="species-info">
+              <div><span class="text-gray-400">Origin:</span> ${newOption.species}</div>
+              <div><span class="text-gray-400">Type:</span> ${newOption.type}</div>
+            </div>
+            <div class="species-actions">
+              <button class="btn-select select-species" data-species="${newOption.name}">
+                <i class="fas fa-check mr-1"></i> Select
+              </button>
+              <button class="btn-reroll reroll-species" data-index="${index}" title="Reroll this option">
+                <i class="fas fa-dice"></i>
+              </button>
+            </div>
+          `;
+
+          // Re-add event listeners
+          cards[index].querySelector('.select-species').addEventListener('click', function() {
+            // Remove selected class from all cards
+            document.querySelectorAll('.species-card').forEach(c => {
+              c.classList.remove('border-amber-400');
+            });
+
+            // Add selected class to this card
+            cards[index].classList.add('border-amber-400');
+
+            // Set the selected species
+            selectedSpecies = this.dataset.species;
+
+            // Enable the feed button
+            useButton.disabled = false;
+            useButton.innerHTML = '<i class="fas fa-check mr-1"></i> Confirm Selection';
+          });
+
+          cards[index].querySelector('.reroll-species').addEventListener('click', function() {
+            // Show reroll confirmation dialog
+            showRerollModal(index, newOption.name, newOption.type, newOption.species, berrySelect.value);
+          });
+        }
+
+        // Update the berry inventory display
+        loadBerryInventory();
+      } catch (error) {
+        console.error('Error rerolling species option:', error);
+        alert('An error occurred while rerolling the species option. Please try again.');
+      }
+    }
+
+    // Helper function to get color based on type
+    function getTypeColor(type) {
+      const typeColors = {
+        'Normal': 'gray',
+        'Fire': 'red',
+        'Water': 'blue',
+        'Electric': 'yellow',
+        'Grass': 'green',
+        'Ice': 'cyan',
+        'Fighting': 'orange',
+        'Poison': 'purple',
+        'Ground': 'amber',
+        'Flying': 'indigo',
+        'Psychic': 'pink',
+        'Bug': 'lime',
+        'Rock': 'stone',
+        'Ghost': 'violet',
+        'Dragon': 'teal',
+        'Dark': 'gray',
+        'Steel': 'slate',
+        'Fairy': 'rose',
+        'Cosmic': 'blue',
+        'Cyber': 'cyan',
+        'Magic': 'purple',
+        'Sound': 'indigo',
+        'Light': 'yellow',
+        'Shadow': 'gray'
+      };
+
+      return typeColors[type] || 'blue';
+    }
+
+    // Form submission
+    berryForm.addEventListener('submit', async function(e) {
+      e.preventDefault();
+
+      const trainerId = trainerSelect.value;
+      const monsterId = monsterSelect.value;
+      const berryName = berrySelect.value;
+      const selectedType = this.dataset.selectedType; // Get type from form's data attribute
+
+      console.log('Submitting with data:', { // Debug log
+        trainerId,
+        monsterId,
+        berryName,
+        selectedType
+      });
+
+      if (!trainerId || !monsterId || !berryName) {
+        alert('Please select a trainer, monster, and berry.');
+        return;
+      }
+
+      // For berries that modify types, ensure a type is selected
+      if (BERRY_EFFECTS[berryName]?.includes('Type') && !selectedType) {
+        alert('Please select a type before proceeding.');
+        return;
+      }
+
+      useButton.disabled = true;
+      useButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i> Processing...';
+
+      try {
+        const response = await fetch('/api/apothecary/feed-berry', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            trainerId,
+            monsterId,
+            berryName,
+            newType: selectedType // Changed to newType to be more explicit
+          })
+        });
+
+        const result = await response.json();
+        console.log('Server response:', result); // Debug log
+
+        if (result.success) {
+          const typeSelectionContainer = document.getElementById('type-selection');
+          if (typeSelectionContainer) {
+            typeSelectionContainer.classList.add('hidden');
+          }
+          this.dataset.selectedType = ''; // Clear the stored type
+
+          alert(result.message || 'Berry used successfully!');
+          await loadMonsters(trainerId);
+          await loadBerries(trainerId);
+        } else {
+          alert(result.message || 'Error using berry. Please try again.');
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        alert('An error occurred. Please try again.');
+      } finally {
+        useButton.disabled = false;
+        useButton.innerHTML = '<i class="fas fa-hand-holding-medical mr-2"></i> Feed Berry';
+      }
+    });
+
+    // Function to load and display berry inventory
+    async function loadBerryInventory() {
+      const berryInventoryContainer = document.getElementById('berry-inventory');
+
+      try {
+        // Get the first trainer
+        const response = await fetch('/api/trainers/user');
+        if (!response.ok) {
+          throw new Error('Error fetching trainers');
+        }
+
+        const trainers = await response.json();
+        if (!trainers || trainers.length === 0) {
+          berryInventoryContainer.innerHTML = '<div class="text-center text-gray-400 py-4 col-span-full">No trainers found</div>';
+          return;
+        }
+
+        // Use the first trainer to get berry inventory
+        const trainerId = trainers[0].id;
+        const trainerResponse = await fetch('/api/trainers/' + trainerId);
+        if (!trainerResponse.ok) {
+          throw new Error('Error fetching trainer inventory');
+        }
+
+        const data = await trainerResponse.json();
+        const trainer = data.trainer;
+
+        // Parse berry inventory
+        let berryInventory = {};
+        if (trainer.inv_berries) {
+          try {
+            if (typeof trainer.inv_berries === 'string') {
+              berryInventory = JSON.parse(trainer.inv_berries);
+            } else {
+              berryInventory = trainer.inv_berries;
+            }
+          } catch (e) {
+            console.error('Error parsing berry inventory:', e);
+            berryInventory = {};
+          }
+        }
+
+        // Display berries
+        if (Object.keys(berryInventory).length === 0) {
+          berryInventoryContainer.innerHTML = '<div class="text-center text-gray-400 py-4 col-span-full">No berries in inventory</div>';
+          return;
+        }
+
+        // Generate HTML for each berry, excluding Edenweiss and Forget-Me-Not
+        const berryHtml = Object.entries(berryInventory)
+          .filter(([berryName, quantity]) => {
+            return quantity > 0 &&
+                   berryName !== 'Edenweiss' &&
+                   berryName !== 'Forget-Me-Not' &&
+                   berryName !== 'Edenweiss Berry' &&
+                   berryName !== 'Forget-Me-Not Berry';
+          })
+          .map(([berryName, quantity]) => {
+            // Generate a color based on the berry name
+            const colors = {
+              'Mala': 'red',
+              'Merco': 'blue',
+              'Lilan': 'green',
+              'Kham': 'purple',
+              'Maizi': 'yellow',
+              'Fani': 'pink',
+              'Miraca': 'orange',
+              'Cocon': 'teal',
+              'Durian': 'amber',
+              'Monel': 'indigo',
+              'Perep': 'lime',
+              'Addish': 'cyan',
+              'Sky Carrot': 'sky',
+              'Kembre': 'amber',
+              'Espara': 'emerald',
+              'Patama': 'fuchsia',
+              'Bluk': 'violet',
+              'Nuevo': 'rose',
+              'Azzuk': 'slate',
+              'Mangus': 'zinc',
+              'Datei': 'gold'
+            };
+
+            // Find a color match or use a default
+            let colorClass = 'blue';
+            for (const [prefix, color] of Object.entries(colors)) {
+              if (berryName.includes(prefix)) {
+                colorClass = color;
+                break;
+              }
+            }
+
+            // Get the effect description
+            const effect = BERRY_EFFECTS[berryName] || 'Unknown effect';
+
+            // Get berry icon based on type
+            let iconClass = 'fa-apple-alt';
+            if (berryName.includes('Carrot')) {
+              iconClass = 'fa-carrot';
+            } else if (berryName.includes('Durian')) {
+              iconClass = 'fa-lemon';
+            } else if (berryName.includes('Seed') || berryName.includes('Sprout')) {
+              iconClass = 'fa-seedling';
+            }
+
+            return `
+              <div class="inventory-item">
+                <div class="item-icon" style="background: linear-gradient(135deg, rgba(${getColorRGB(colorClass)}, 0.3) 0%, rgba(${getColorRGB(colorClass)}, 0.1) 100%);">
+                  <i class="fas ${iconClass} text-${colorClass}-400"></i>
+                </div>
+                <div class="item-details">
+                  <div class="item-name">${berryName}</div>
+                  <div class="item-quantity">Quantity: ${quantity}</div>
+                  <div class="text-xs text-gray-400 mt-1 truncate">${effect}</div>
+                </div>
+              </div>
+            `;
+          })
+          .join('');
+
+        if (berryHtml) {
+          berryInventoryContainer.innerHTML = berryHtml;
+        } else {
+          berryInventoryContainer.innerHTML = '<div class="text-center text-gray-400 py-4 col-span-full">No special berries in inventory</div>';
+        }
+      } catch (error) {
+        console.error('Error loading berry inventory:', error);
+        berryInventoryContainer.innerHTML = '<div class="text-center text-red-400 py-4 col-span-full">Error loading berry inventory</div>';
+      }
+    }
+
+    // Helper function to convert color name to RGB values
+    function getColorRGB(colorName) {
+      const colorMap = {
+        'red': '220, 38, 38',
+        'blue': '37, 99, 235',
+        'green': '22, 163, 74',
+        'purple': '126, 34, 206',
+        'yellow': '202, 138, 4',
+        'pink': '219, 39, 119',
+        'orange': '234, 88, 12',
+        'teal': '13, 148, 136',
+        'amber': '217, 119, 6',
+        'indigo': '79, 70, 229',
+        'lime': '101, 163, 13',
+        'cyan': '8, 145, 178',
+        'sky': '14, 165, 233',
+        'emerald': '5, 150, 105',
+        'fuchsia': '192, 38, 211',
+        'violet': '139, 92, 246',
+        'rose': '225, 29, 72',
+        'slate': '71, 85, 105',
+        'zinc': '113, 113, 122',
+        'gold': '234, 179, 8'
+      };
+
+      return colorMap[colorName] || '107, 114, 128'; // Default to gray-500
+    }
+
+    // Load trainers and berry inventory when the page loads
+    loadTrainers();
+    loadBerryInventory();
+  });
+</script>
+` %>
+
+
+
+

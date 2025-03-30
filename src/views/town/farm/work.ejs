@@ -1,17 +1,32 @@
+<% /* Set the title for the layout */ %>
+<% title = 'Work the Farm' %>
 
-
-<div class='container mx-auto px-4 py-8'>
-  <div class='max-w-4xl mx-auto'>
-    <div class='mb-8'>
-      <img src='https://i.imgur.com/fztdYkJ.png' alt='Farm' class='w-full h-64 object-cover rounded-lg shadow-lg'>
-      <h1 class='text-3xl font-display font-bold text-center mt-4'>Work the Farm</h1>
-      <p class='text-center text-gray-300 mt-2'>Welcome to the farm! There's always work to be done here, from feeding animals to tending crops. Roll up your sleeves and get to work!</p>
+<div class="container mx-auto px-4 py-6">
+  <!-- Header Section - Location Banner -->
+  <div class="location-banner">
+    <img src="https://i.imgur.com/fztdYkJ.png" alt="Farm" class="w-full h-full object-cover">
+    <div class="location-banner-overlay">
+      <div class="flex items-center mb-4 w-full">
+        <a href="/town/visit/farm" class="btn-secondary hover:scale-105 transition-transform">
+          <i class="fas fa-arrow-left mr-2"></i> Back to Farm
+        </a>
+      </div>
+      <h1 class="location-banner-title">Work the Farm</h1>
+      <p class="location-banner-subtitle max-w-2xl">
+        Welcome to the farm! There's always work to be done here, from feeding animals to tending crops. Roll up your sleeves and get to work!
+      </p>
     </div>
-    
-    <div class='bg-card rounded-lg p-6 shadow-lg'>
-      <div class='text-center'>
-        <button id='begin-activity' class='btn-primary text-lg py-3 px-6 rounded-lg'>
-          <i class='fas fa-tractor mr-2'></i> Begin Farm Work
+  </div>
+
+  <!-- Activity Section -->
+  <div class="max-w-4xl mx-auto mt-8">
+    <div class="location-card p-6">
+      <h2 class="text-xl font-display font-bold mb-4 text-accent">Start Working</h2>
+      <p class="text-gray-300 mb-6">Ready to start working on the farm? Click the button below to begin.</p>
+
+      <div class="text-center">
+        <button id="begin-activity" class="farm-btn text-center py-6 px-8 rounded-lg transition-all duration-200 hover:scale-105">
+          <i class="fas fa-tractor mr-3"></i> <span class="farm-btn-text">Begin Farm Work</span>
         </button>
       </div>
     </div>
@@ -20,67 +35,246 @@
 
 
 <script>
-  document.addEventListener('DOMContentLoaded', function() {
-    const beginButton = document.getElementById('begin-activity');
-    
-    beginButton.addEventListener('click', async function() {
-      try {
-        // Disable the button to prevent multiple clicks
-        beginButton.disabled = true;
-        beginButton.innerHTML = 'Starting...';
-        
-        // Start the activity session
-        const response = await fetch('/town/visit/start-activity', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            location: 'farm',
-            activity: 'work'
-          })
-        });
-        
-        const data = await response.json();
-        
-        if (data.success) {
-          // Redirect to the activity session page
-          window.location.href = data.redirect;
-        } else {
-          alert('Error starting activity: ' + data.message);
-          beginButton.disabled = false;
-          beginButton.innerHTML = 'Begin Farm Work';
-        }
-      } catch (error) {
-        console.error('Error starting activity:', error);
-        alert('Error starting activity. Please try again.');
-        beginButton.disabled = false;
-        beginButton.innerHTML = 'Begin Farm Work';
+document.addEventListener('DOMContentLoaded', function() {
+  const beginButton = document.getElementById('begin-activity');
+
+  // Function to show notification
+  function showNotification(message, type = 'error') {
+    const notification = document.createElement('div');
+    const bgColor = type === 'error' ? 'bg-red-500' : type === 'success' ? 'bg-green-500' : 'bg-blue-500';
+    notification.className = `fixed top-4 right-4 ${bgColor} text-white px-4 py-2 rounded-lg shadow-lg z-50 transition-opacity duration-300 opacity-0`;
+    const icon = type === 'error' ? 'fa-exclamation-circle' : type === 'success' ? 'fa-check-circle' : 'fa-info-circle';
+    notification.innerHTML = `<i class="fas ${icon} mr-2"></i> ${message}`;
+    document.body.appendChild(notification);
+
+    // Trigger fade-in animation
+    setTimeout(() => notification.classList.remove('opacity-0'), 10);
+
+    // Remove notification after 5 seconds
+    setTimeout(() => {
+      notification.classList.add('opacity-0');
+      setTimeout(() => notification.remove(), 300);
+    }, 5000);
+  }
+
+  beginButton.addEventListener('click', async function() {
+    try {
+      // Disable button and show loading state
+      beginButton.disabled = true;
+      beginButton.classList.add('opacity-70');
+      beginButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-3"></i> <span class="farm-btn-text">Starting...</span>';
+
+      // Start the activity session
+      const response = await fetch('/town/visit/start-activity', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          location: 'farm',
+          activity: 'work'
+        })
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        // Redirect to the activity session page
+        window.location.href = data.redirect;
+      } else {
+        throw new Error(data.message);
       }
-    });
+    } catch (error) {
+      console.error('Error starting activity:', error);
+
+      // Show error message
+      showNotification(error.message || 'Please try again.', 'error');
+
+      // Reset button
+      beginButton.disabled = false;
+      beginButton.classList.remove('opacity-70');
+      beginButton.innerHTML = '<i class="fas fa-tractor mr-3"></i> <span class="farm-btn-text">Begin Farm Work</span>';
+    }
   });
+
+  // Check for message parameter in URL
+  const urlParams = new URLSearchParams(window.location.search);
+  const message = urlParams.get('message');
+  const messageType = urlParams.get('messageType') || 'info';
+
+  // Show message if present
+  if (message) {
+    showNotification(message, messageType);
+  }
+});
 </script>
 
 <style>
-  .bg-card {
-    background-color: var(--card-bg);
+/* Farm specific styles */
+.farm-btn {
+  background-color: #f97316; /* Orange-500 */
+  color: var(--background-color);
+  font-weight: 600;
+  transition: all 0.3s;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  border: none;
+  cursor: pointer;
+  min-height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.farm-btn-text {
+  font-size: 1.25rem;
+  letter-spacing: 0.025em;
+}
+
+/* Responsive adjustments for buttons */
+@media (max-width: 768px) {
+  .farm-btn {
+    min-height: 70px;
   }
-  
-  .btn-primary {
-    background-color: var(--accent-color);
-    color: var(--background-color);
-    font-weight: 500;
-    transition: all 0.2s;
+
+  .farm-btn-text {
+    font-size: 1.125rem;
   }
-  
-  .btn-primary:hover {
-    background-color: var(--accent-hover);
-    transform: translateY(-2px);
+}
+
+@media (max-width: 480px) {
+  .farm-btn {
+    min-height: 60px;
+    padding: 1rem 1.25rem;
   }
-  
-  .btn-primary:disabled {
-    opacity: 0.7;
-    cursor: not-allowed;
-    transform: none;
+
+  .farm-btn-text {
+    font-size: 1rem;
   }
+}
+
+.farm-btn:hover {
+  background-color: #ea580c; /* Orange-600 */
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  transform: translateY(-2px);
+}
+
+.farm-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+.farm-btn:active {
+  transform: translateY(1px);
+}
+
+.btn-secondary {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: var(--text-color);
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  transition: all 0.3s;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.btn-secondary:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.location-card {
+  background-color: var(--card-background);
+  border-radius: 0.75rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transition: all 0.3s ease;
+}
+
+.location-card:hover {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+}
+
+.text-accent {
+  color: #f97316; /* Orange-500 */
+}
+
+.hover\:scale-105:hover {
+  transform: scale(1.05);
+}
+
+/* Location banner styles */
+.location-banner {
+  position: relative;
+  width: 100%;
+  height: 250px;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  margin-bottom: 2rem;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+}
+
+.location-banner img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.location-banner-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 1.5rem;
+}
+
+.location-banner-title {
+  color: white;
+  font-size: 2.25rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  text-shadow: 0 4px 8px rgba(0, 0, 0, 0.8);
+  font-family: var(--font-display, sans-serif);
+}
+
+.location-banner-subtitle {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 1.125rem;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+/* Notification styles */
+.transition-opacity {
+  transition: opacity 0.3s ease;
+}
+
+.duration-300 {
+  transition-duration: 300ms;
+}
+
+.opacity-0 {
+  opacity: 0;
+}
+
+.opacity-70 {
+  opacity: 0.7;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .location-banner {
+    height: 200px;
+  }
+
+  .location-banner-title {
+    font-size: 1.75rem;
+  }
+
+  .location-banner-subtitle {
+    font-size: 1rem;
+  }
+}
 </style>

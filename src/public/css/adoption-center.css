@@ -1,0 +1,217 @@
+/* Adoption Center Styles */
+
+/* Monster Card */
+.monster-card {
+  background-color: #1e2532;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.monster-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+}
+
+/* Species Tag */
+.species-tag {
+  background-color: #2b3645;
+  color: #d7ddf3;
+  border-radius: 0.25rem;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.875rem;
+  display: inline-block;
+  margin-right: 0.25rem;
+  margin-bottom: 0.25rem;
+}
+
+/* Type Badge */
+.type {
+  padding: 0.3rem 0.8rem;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  display: inline-block;
+  margin-right: 0.25rem;
+  margin-bottom: 0.25rem;
+}
+
+/* Type Colors */
+.normal { background-color: #A8A878; color: #000; }
+.fire { background-color: #F08030; color: #fff; }
+.water { background-color: #6890F0; color: #fff; }
+.electric { background-color: #F8D030; color: #000; }
+.grass { background-color: #78C850; color: #000; }
+.ice { background-color: #98D8D8; color: #000; }
+.fighting { background-color: #C03028; color: #fff; }
+.poison { background-color: #A040A0; color: #fff; }
+.ground { background-color: #E0C068; color: #000; }
+.flying { background-color: #A890F0; color: #fff; }
+.psychic { background-color: #F85888; color: #fff; }
+.bug { background-color: #A8B820; color: #000; }
+.rock { background-color: #B8A038; color: #fff; }
+.ghost { background-color: #705898; color: #fff; }
+.dragon { background-color: #7038F8; color: #fff; }
+.dark { background-color: #705848; color: #fff; }
+.steel { background-color: #B8B8D0; color: #000; }
+.fairy { background-color: #EE99AC; color: #000; }
+
+/* Attribute Badge */
+.attribute-badge {
+  padding: 0.3rem 0.8rem;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  display: inline-block;
+  margin-right: 0.25rem;
+  margin-bottom: 0.25rem;
+}
+
+/* Attribute Colors */
+.attribute-data { background-color: #3498db; color: #fff; }
+.attribute-vaccine { background-color: #2ecc71; color: #fff; }
+.attribute-virus { background-color: #e74c3c; color: #fff; }
+.attribute-free { background-color: #9b59b6; color: #fff; }
+.attribute-variable { background-color: #f1c40f; color: #000; }
+
+/* Pagination */
+.pagination {
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+}
+
+.pagination-link {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  margin: 0 0.25rem;
+  border-radius: 0.25rem;
+  background-color: #2b3645;
+  color: #d7ddf3;
+  text-decoration: none;
+  transition: background-color 0.2s;
+}
+
+.pagination-link:hover {
+  background-color: #3d4b5d;
+}
+
+.pagination-link.active {
+  background-color: #d6a339;
+  color: #1e2532;
+}
+
+/* Modal */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.8);
+}
+
+.modal-content {
+  background-color: #1e2532;
+  margin: 10% auto;
+  padding: 2rem;
+  border-radius: 0.5rem;
+  max-width: 500px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+}
+
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.close:hover,
+.close:focus {
+  color: #d6a339;
+  text-decoration: none;
+}
+
+/* Form Elements */
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+}
+
+.form-control {
+  width: 100%;
+  padding: 0.75rem;
+  border-radius: 0.25rem;
+  border: 1px solid #3d4b5d;
+  background-color: #2b3645;
+  color: #d7ddf3;
+  font-size: 1rem;
+}
+
+.form-control:focus {
+  outline: none;
+  border-color: #d6a339;
+  box-shadow: 0 0 0 2px rgba(214, 163, 57, 0.25);
+}
+
+/* Buttons */
+.btn-primary {
+  background-color: #d6a339;
+  color: #1e2532;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.25rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.btn-primary:hover {
+  background-color: #b88a30;
+}
+
+.btn-primary:disabled {
+  background-color: #6c757d;
+  cursor: not-allowed;
+}
+
+.btn-secondary {
+  background-color: #3d4b5d;
+  color: #d7ddf3;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.25rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.btn-secondary:hover {
+  background-color: #4d5b6d;
+}
+
+.btn-secondary.active {
+  background-color: #d6a339;
+  color: #1e2532;
+}
+
+/* Location Banner */
+.location-banner {
+  height: 200px;
+  object-fit: cover;
+  border-radius: 0.5rem;
+  margin-bottom: 1.5rem;
+}

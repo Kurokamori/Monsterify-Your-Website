@@ -1,0 +1,236 @@
+<% /* Set the title and other variables for the layout */ %>
+<% title = 'Egg Hatching' %>
+
+<%- /* Add custom styles */ %>
+<% style = `
+<link rel="stylesheet" href="/css/egg-hatching.css">
+` %>
+
+<div class="container mx-auto px-4 py-8">
+  <!-- Header -->
+  <div class="mb-8">
+    <img src="https://i.imgur.com/IhtWUxD.png" alt="Nursery Banner" class="w-full h-48 object-cover rounded-lg shadow-lg mb-4">
+    <div class="flex items-center justify-between">
+      <a href="/town/visit" class="btn-secondary hover:scale-105 transition-transform">
+        <i class="fas fa-arrow-left mr-2"></i> Back to Town
+      </a>
+      <h2 class="text-2xl font-display font-bold text-amber-400 text-shadow-lg">Nursery - Egg Hatching</h2>
+    </div>
+  </div>
+
+  <!-- Main Form -->
+  <form id="egg-hatching-form" class="space-y-6 max-w-4xl mx-auto">
+    <!-- Step 1: Trainer Selection -->
+    <div id="step-trainer" class="step-container active">
+      <div class="step-header">
+        <h3 class="step-title"><i class="fas fa-user mr-2"></i>Select Trainer</h3>
+      </div>
+      <div class="step-content">
+        <div class="trainer-selector">
+          <label for="trainer-select" class="trainer-label">Select Trainer:</label>
+          <select id="trainer-select" name="trainer_id" class="trainer-select">
+            <option value="">-- Select a Trainer --</option>
+            <% trainers.forEach(trainer => { %>
+              <option value="<%= trainer.id %>">
+                <%= trainer.name %> (Level <%= trainer.level %>)
+              </option>
+            <% }); %>
+          </select>
+          <div id="trainer-egg-count" class="mt-3 hidden">
+            <span class="text-amber-400">Available Eggs: <span id="egg-count" class="font-bold">0</span></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 2: Incubator Usage -->
+    <div id="step-incubator" class="step-container hidden">
+      <div class="step-header">
+        <h3 class="step-title"><i class="fas fa-flask mr-2"></i>Incubator Usage</h3>
+      </div>
+      <div class="step-content">
+        <div class="radio-group">
+          <label class="radio-option">
+            <input type="radio" name="useIncubator" value="yes" class="hidden">
+            <div class="radio-content">
+              <div class="radio-icon"><i class="fas fa-flask"></i></div>
+              <div class="radio-label">Use Incubator</div>
+              <div class="radio-description">Skip the art submission requirement</div>
+            </div>
+          </label>
+          <label class="radio-option">
+            <input type="radio" name="useIncubator" value="no" class="hidden">
+            <div class="radio-content">
+              <div class="radio-icon"><i class="fas fa-paint-brush"></i></div>
+              <div class="radio-label">Submit Art</div>
+              <div class="radio-description">Provide a URL to your egg hatching art</div>
+            </div>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 3: Submission URL (conditional) -->
+    <div id="step-submission" class="step-container hidden">
+      <div class="step-header">
+        <h3 class="step-title"><i class="fas fa-link mr-2"></i>Submission URL</h3>
+      </div>
+      <div class="step-content">
+        <div class="form-group">
+          <label for="submission-url" class="form-label">Enter your submission URL:</label>
+          <div class="input-with-icon">
+            <input type="url" id="submission-url" name="submission_url" class="form-input" placeholder="https://">
+            <i class="fas fa-link input-icon"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 4: Eggs Configuration -->
+    <div id="step-eggs" class="step-container hidden">
+      <div class="step-header">
+        <h3 class="step-title"><i class="fas fa-egg mr-2"></i>Configure Eggs</h3>
+        <button type="button" id="add-egg-btn" class="btn-primary-sm">
+          <i class="fas fa-plus mr-1"></i> Add Egg
+        </button>
+      </div>
+      <div class="step-content">
+        <div id="eggs-list" class="eggs-grid">
+          <!-- Eggs will be dynamically added here -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Hatch Button -->
+    <div id="hatch-button-container" class="hidden">
+      <button type="submit" id="hatch-button" class="btn-primary w-full py-4 text-lg">
+        <i class="fas fa-egg mr-2"></i> Hatch Eggs
+      </button>
+    </div>
+  </form>
+
+  <!-- Results Section -->
+  <div id="results-section" class="hidden mt-8">
+    <div class="step-header mb-4">
+      <h3 class="step-title"><i class="fas fa-star mr-2"></i>Hatching Results</h3>
+    </div>
+    <div id="results-content" class="space-y-6">
+      <!-- Results will be dynamically added here -->
+    </div>
+    <div class="mt-6 text-center">
+      <p class="text-amber-400 mb-2">Select monsters to claim (max: <span id="max-claims">0</span>)</p>
+      <button id="claim-button" class="btn-primary py-3 px-8">
+        <i class="fas fa-check-circle mr-2"></i> Claim Selected Monsters
+      </button>
+    </div>
+  </div>
+
+  <!-- Success Section -->
+  <div id="success-section" class="hidden mt-8">
+    <div class="bg-gray-800/70 rounded-lg p-6 border border-green-700 text-center">
+      <i class="fas fa-check-circle text-green-500 text-5xl mb-4"></i>
+      <h3 class="text-xl font-semibold text-green-400 mb-2">Success!</h3>
+      <p id="success-message" class="text-gray-300 mb-4">Your monsters have been claimed successfully.</p>
+      <div class="flex justify-center space-x-4">
+        <a href="/town/nursery/hatch" class="btn-secondary">
+          <i class="fas fa-egg mr-2"></i> Hatch More Eggs
+        </a>
+        <a href="/trainers/monsters" class="btn-primary">
+          <i class="fas fa-paw mr-2"></i> View My Monsters
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Egg Template (hidden, used by JavaScript) -->
+<template id="egg-template">
+  <div class="egg-container" id="">
+    <div class="egg-header">
+      <h4 class="egg-title">Egg Settings</h4>
+      <button type="button" class="remove-egg-btn">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    <div class="egg-content">
+      <div class="hatch-type-buttons">
+        <button type="button" class="hatch-type-btn" data-type="simple">
+          <i class="fas fa-egg mr-1"></i> Simple Hatch
+        </button>
+        <button type="button" class="hatch-type-btn" data-type="complex">
+          <i class="fas fa-cogs mr-1"></i> Complex Nurture
+        </button>
+      </div>
+
+      <div class="complex-options hidden">
+        <div class="collapsible-header" data-target="items-section">
+          <h5><i class="fas fa-flask mr-1"></i> Configure Items</h5>
+          <i class="fas fa-chevron-down"></i>
+        </div>
+        <div class="items-section collapsible-content hidden">
+          <div class="items-grid">
+            <!-- Items will be loaded here -->
+            <div class="loading-spinner"><i class="fas fa-spinner fa-spin"></i> Loading items...</div>
+          </div>
+        </div>
+
+        <div class="dna-splicer-container mt-4">
+          <div class="flex items-center justify-between mb-2">
+            <label class="text-amber-400">Use DNA Splicer?</label>
+            <div class="toggle-switch">
+              <input type="checkbox" class="dna-splicer-toggle hidden">
+              <div class="toggle-slider"></div>
+            </div>
+          </div>
+          <div class="dna-splicer-amount hidden">
+            <label class="block text-sm text-gray-400 mb-2">Number of DNA Splicers:</label>
+            <input type="number" class="form-input w-24" min="1" max="9" value="1">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<!-- Monster Result Template (hidden, used by JavaScript) -->
+<template id="monster-result-template">
+  <div class="monster-result">
+    <div class="egg-header mb-4">
+      <h4 class="egg-title">Egg Results</h4>
+    </div>
+    <div class="monsters-grid">
+      <!-- Monster cards will be added here -->
+    </div>
+  </div>
+</template>
+
+<!-- Monster Card Template (hidden, used by JavaScript) -->
+<template id="monster-card-template">
+  <div class="monster-card" data-monster-id="">
+    <div class="monster-card-content">
+      <h5 class="monster-name"></h5>
+      <div class="monster-types"></div>
+      <div class="monster-attribute"></div>
+    </div>
+    <div class="monster-card-footer">
+      <button type="button" class="select-monster-btn">
+        <i class="far fa-circle"></i> Select
+      </button>
+    </div>
+  </div>
+</template>
+
+<% script = `
+<script src="/js/nursery/egg-hatching.js"></script>
+<script>
+  // Initialize after DOM is fully loaded
+  document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM loaded, initializing egg hatching manager');
+    if (typeof EggHatchingManager === 'undefined') {
+      console.error('EggHatchingManager class not found!');
+    } else {
+      window.eggHatchingManager = new EggHatchingManager();
+    }
+  });
+</script>
+` %>

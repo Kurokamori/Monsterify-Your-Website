@@ -21,6 +21,7 @@ const {
   deleteFakemon,
   getNextFakemonNumber
 } = require('./utils/fakemon-loader');
+const AntiqueAppraisalService = require('./utils/AntiqueAppraisalService');
 
 // Configure multer for file uploads
 const storage = multer.diskStorage({
@@ -67,6 +68,11 @@ async function initializeTables() {
   try {
     // Initialize garden harvests table
     await GardenHarvest.initTable();
+
+    // Initialize adoption system tables
+    const AdoptionService = require('./utils/AdoptionService');
+    await AdoptionService.initialize();
+
     console.log('Database tables initialized');
   } catch (error) {
     console.error('Error initializing database tables:', error);
@@ -252,6 +258,8 @@ app.use((req, res, next) => {
   next();
 });
 
+// API endpoint for getting user's trainers is now handled by the API router
+
 // Routes
 
 app.get('/', async (req, res) => {
@@ -295,6 +303,7 @@ app.get('/', async (req, res) => {
 
     // Get content categories for guides, locations, and factions
     const categories = getContentCategories();
+
 
     res.render('index', {
       title: 'Dusk and Dawn',
@@ -1636,8 +1645,40 @@ app.get('/admin/test-rewards', async (req, res) => {
 // Import shop management routes
 const shopRoutes = require('./routes/admin/shops');
 
+// Import API routes
+const apiRoutes = require('./routes/api');
+
 // Use shop management routes
 app.use('/admin/shops', shopRoutes);
+
+// Use API routes
+app.use('/api', apiRoutes);
+
+// Nursery routes
+app.use('/api/trainers', require('./routes/api/trainers'));
+app.use('/api/items', require('./routes/api/items'));
+app.use('/api/nursery', require('./routes/api/nursery'));
+
+app.get('/town/visit/nursery/hatch', async (req, res) => {
+  if (!req.session.user) {
+    return res.redirect('/login');
+  }
+
+  try {
+    const userTrainers = await Trainer.getByUserId(req.session.user.discord_id);
+
+    res.render('town/nursery/hatch', {
+      title: 'Egg Hatching',
+      trainers: userTrainers  // Changed to match the template's expected variable name
+    });
+  } catch (error) {
+    console.error('Error loading egg hatching page:', error);
+    res.status(500).render('error', {
+      message: 'Error loading egg hatching page',
+      error: { status: 500, stack: error.stack }
+    });
+  }
+});
 
 app.use('/api/rewards', rewardRoutes);
 
@@ -3339,18 +3380,16 @@ app.get('/town/visit/farm', (req, res) => {
 
 // Game Corner route
 app.get('/town/visit/game_corner', async (req, res) => {
-  // Check if user is logged in
-  if (!req.session.user) {
-    return res.redirect('/login');
-  }
-
   try {
-    // Import the Trainer and Monster models
-    const Trainer = require('./models/Trainer');
-    const Monster = require('./models/Monster');
+    // Ensure user is logged in
+    if (!req.session.user) {
+      return res.redirect('/login');
+    }
+
+    const discordUserId = req.session.user.discord_id;
 
     // Get the user's trainers
-    const trainers = await Trainer.getByUserId(req.session.user.discord_id);
+    const trainers = await Trainer.getByUserId(discordUserId);
 
     // Get monsters for each trainer
     let monsters = [];
@@ -3367,12 +3406,13 @@ app.get('/town/visit/game_corner', async (req, res) => {
       trainers: trainers,
       monsters: monsters
     });
-  } catch (error) {
-    console.error('Error loading Game Corner data:', error);
 
-    // Render with empty data in case of error
+  } catch (error) {
+    console.error('Error loading game corner:', error);
     res.render('town/game_corner', {
       title: 'Pomodoro Game Corner',
+      message: 'Error loading trainers and monsters. Please try again.',
+      messageType: 'error',
       trainers: [],
       monsters: []
     });
@@ -3825,6 +3865,230 @@ app.get('/town/visit/witchs_hut', (req, res) => {
   res.render('town/witchs_hut');
 });
 
+// Antique Appraisal page
+app.get('/town/visit/antique/appraisal', async (req, res) => {
+  // Check if user is logged in
+  if (!req.session.user) {
+    return res.redirect('/login');
+  }
+
+  try {
+    // Get user's trainers
+    const trainers = await Trainer.getByUserId(req.session.user.discord_id);
+    console.log('Trainers for antique appraisal:', trainers);
+
+    // Get all antiques
+    const antiques = AntiqueAppraisalService.getAllAntiques();
+    console.log('Available antiques:', antiques);
+
+    // Get unique categories
+    const categories = [...new Set(antiques.map(a => a.category))].map(cat => ({
+      id: cat.toLowerCase().replace(/\s+/g, '_'),
+      name: cat
+    }));
+
+    // Add "All" category at the beginning
+    categories.unshift({ id: 'all', name: 'All Antiques' });
+
+    res.render('town/antique_appraisal', {
+      title: 'Antique Appraisal',
+      trainers,
+      categories,
+      antiques,
+      message: req.query.message,
+      messageType: req.query.messageType
+    });
+  } catch (error) {
+    console.error('Error rendering antique appraisal page:', error);
+    res.status(500).send('Error loading antique appraisal page');
+  }
+});
+
+// Adoption Center route
+app.get('/town/visit/adoption', async (req, res) => {
+  // Check if user is logged in
+  if (!req.session.user) {
+    return res.redirect('/login');
+  }
+
+  try {
+    // Get user's trainers
+    const trainers = await Trainer.getByUserId(req.session.user.discord_id);
+
+    // Ensure current month adopts exist
+    const MonthlyAdopt = require('./models/MonthlyAdopt');
+    await MonthlyAdopt.ensureCurrentMonthAdopts();
+
+    // Render the adoption center page
+    res.render('town/adoption_center', {
+      title: 'Adoption Center',
+      trainers
+    });
+  } catch (error) {
+    console.error('Error rendering adoption center:', error);
+    res.status(500).render('error', {
+      message: 'Error rendering adoption center',
+      error: { status: 500, stack: error.stack },
+      title: 'Error'
+    });
+  }
+});
+
+// Apothecary route
+app.get('/town/visit/apothecary', async (req, res) => {
+  // Check if user is logged in
+  if (!req.session.user) {
+    return res.redirect('/login');
+  }
+
+  try {
+    // Get initial data for the page
+    const Trainer = require('./models/Trainer');
+    const initialData = {};
+
+    // Get message from query params if any
+    if (req.query.message) {
+      initialData.message = req.query.message;
+      initialData.messageType = req.query.messageType || 'error';
+    }
+
+    // Try to get the user's trainers
+    try {
+      const discordUserId = req.session.user.discord_id;
+      const trainers = await Trainer.getByUserId(discordUserId);
+
+      if (trainers && trainers.length > 0) {
+        // Get the first trainer's berry inventory
+        const trainer = await Trainer.getById(trainers[0].id);
+
+        if (trainer && trainer.inv_berries) {
+          let berryInventory = {};
+          try {
+            if (typeof trainer.inv_berries === 'string') {
+              berryInventory = JSON.parse(trainer.inv_berries);
+            } else {
+              berryInventory = trainer.inv_berries;
+            }
+
+            // Define berry effects
+            const BERRY_EFFECTS = {
+              'Mala Berry': 'Remove Species 2 (if present)',
+              'Merco Berry': 'Remove Species 3 (if present)',
+              'Lilan Berry': 'Remove Type 2 (if present)',
+              'Kham Berry': 'Remove Type 3 (if present)',
+              'Maizi Berry': 'Remove Type 4 (if present)',
+              'Fani Berry': 'Remove Type 5 (if present)',
+              'Miraca Berry': 'Randomize Type 1',
+              'Cocon Berry': 'Randomize Type 2 (if present)',
+              'Durian Berry': 'Randomize Type 3 (if present)',
+              'Monel Berry': 'Randomize Type 4 (if present)',
+              'Perep Berry': 'Randomize Type 5 (if present)',
+              'Addish Berry': 'Add Type 2 (if not present)',
+              'Sky Carrot Berry': 'Add Type 3 (if not present)',
+              'Kembre Berry': 'Add Type 4 (if not present)',
+              'Espara Berry': 'Add Type 5 (if not present)',
+              'Patama Berry': 'Randomize Species 1',
+              'Bluk Berry': 'Randomize Species 2 (if present)',
+              'Nuevo Berry': 'Randomize Species 3 (if present)',
+              'Azzuk Berry': 'Add a new random species to Species 2 (if not present)',
+              'Mangus Berry': 'Add a new random species to Species 3 (if not present)',
+              'Datei Berry': 'Randomize Attribute'
+            };
+
+            // Generate color mapping
+            const colorMap = {
+              'Mala': { color: 'red', rgb: '220, 38, 38' },
+              'Merco': { color: 'blue', rgb: '37, 99, 235' },
+              'Lilan': { color: 'green', rgb: '22, 163, 74' },
+              'Kham': { color: 'purple', rgb: '126, 34, 206' },
+              'Maizi': { color: 'yellow', rgb: '202, 138, 4' },
+              'Fani': { color: 'pink', rgb: '219, 39, 119' },
+              'Miraca': { color: 'orange', rgb: '234, 88, 12' },
+              'Cocon': { color: 'teal', rgb: '13, 148, 136' },
+              'Durian': { color: 'amber', rgb: '217, 119, 6' },
+              'Monel': { color: 'indigo', rgb: '79, 70, 229' },
+              'Perep': { color: 'lime', rgb: '101, 163, 13' },
+              'Addish': { color: 'cyan', rgb: '8, 145, 178' },
+              'Sky Carrot': { color: 'sky', rgb: '14, 165, 233' },
+              'Kembre': { color: 'amber', rgb: '217, 119, 6' },
+              'Espara': { color: 'emerald', rgb: '5, 150, 105' },
+              'Patama': { color: 'fuchsia', rgb: '192, 38, 211' },
+              'Bluk': { color: 'violet', rgb: '139, 92, 246' },
+              'Nuevo': { color: 'rose', rgb: '225, 29, 72' },
+              'Azzuk': { color: 'slate', rgb: '71, 85, 105' },
+              'Mangus': { color: 'zinc', rgb: '113, 113, 122' },
+              'Datei': { color: 'gold', rgb: '234, 179, 8' }
+            };
+
+            // Format berries for the template
+            const initialBerries = [];
+            Object.entries(berryInventory)
+              .filter(([berryName, quantity]) => {
+                return quantity > 0 &&
+                       berryName !== 'Edenweiss' &&
+                       berryName !== 'Forget-Me-Not' &&
+                       berryName !== 'Edenweiss Berry' &&
+                       berryName !== 'Forget-Me-Not Berry';
+              })
+              .forEach(([berryName, quantity]) => {
+                // Find color for the berry
+                let colorInfo = { color: 'blue', rgb: '37, 99, 235' };
+                for (const [prefix, info] of Object.entries(colorMap)) {
+                  if (berryName.includes(prefix)) {
+                    colorInfo = info;
+                    break;
+                  }
+                }
+
+                // Get berry icon based on type
+                let iconClass = 'fa-apple-alt';
+                if (berryName.includes('Carrot')) {
+                  iconClass = 'fa-carrot';
+                } else if (berryName.includes('Durian')) {
+                  iconClass = 'fa-lemon';
+                } else if (berryName.includes('Seed') || berryName.includes('Sprout')) {
+                  iconClass = 'fa-seedling';
+                }
+
+                initialBerries.push({
+                  name: berryName,
+                  quantity: quantity,
+                  effect: BERRY_EFFECTS[berryName] || 'Unknown effect',
+                  color: colorInfo.color,
+                  colorRGB: colorInfo.rgb,
+                  icon: iconClass
+                });
+              });
+
+            if (initialBerries.length > 0) {
+              initialData.initialBerries = initialBerries;
+            }
+          } catch (e) {
+            console.error('Error parsing berry inventory:', e);
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Error getting trainer data:', error);
+      // Don't fail the page load if we can't get trainer data
+    }
+
+    // Render the apothecary view with initial data
+    res.render('town/apothecary', {
+      title: 'Apothecary',
+      bannerImage: '/images/locations/apothecary-banner.jpg',
+      ...initialData
+    });
+  } catch (error) {
+    console.error('Error rendering apothecary page:', error);
+    res.render('town/apothecary', {
+      title: 'Apothecary',
+      message: 'An error occurred while loading the page. Please try again.',
+      messageType: 'error'
+    });
+  }
+});
+
 // Pirate's Dock routes
 app.get('/town/visit/pirates_dock', (req, res) => {
   // Check if user is logged in
@@ -3892,14 +4156,29 @@ app.get('/town/visit/farm/work', (req, res) => {
   res.redirect('/town/visit/farm?message=Farm work feature coming soon!&messageType=info');
 });
 
-app.get('/town/visit/farm/breed', (req, res) => {
+app.get('/town/visit/farm/breed', async (req, res) => {
   // Check if user is logged in
   if (!req.session.user) {
     return res.redirect('/login');
   }
 
-  // Redirect back to farm with a message
-  res.redirect('/town/visit/farm?message=Monster breeding feature coming soon!&messageType=info');
+  try {
+    // Get user's trainers
+    const userTrainers = await Trainer.getByUserId(req.session.user.discord_id);
+
+    // Render the breeding view
+    res.render('town/farm/breed', {
+      title: 'Monster Breeding',
+      userTrainers: userTrainers || []
+    });
+  } catch (error) {
+    console.error('Error loading breeding page:', error);
+    res.status(500).render('error', {
+      message: 'Error loading breeding page',
+      error: { status: 500, stack: error.stack },
+      title: 'Error'
+    });
+  }
 });
 
 // Garden routes
@@ -3916,21 +4195,7 @@ app.get('/town/visit/garden', (req, res) => {
   });
 });
 
-app.get('/town/visit/garden/tend', (req, res) => {
-  // Check if user is logged in
-  if (!req.session.user) {
-    return res.redirect('/login');
-  }
-
-  // Create the tend.ejs file if it doesn't exist
-  const tendViewPath = path.join(__dirname, 'views', 'town', 'visit', 'garden');
-  if (!fs.existsSync(tendViewPath)) {
-    fs.mkdirSync(tendViewPath, { recursive: true });
-  }
-
-  // Redirect back to garden with a message
-  res.redirect('/town/visit/garden?message=You planted some seeds!&messageType=success');
-});
+// Garden tend route is now handled in location_activity_routes.js
 
 app.get('/town/visit/garden/water', (req, res) => {
   // Check if user is logged in
@@ -3994,86 +4259,21 @@ app.get('/town/visit/garden/harvest', async (req, res) => {
     // Record the harvest in the database
     await GardenHarvest.recordHarvest(discordUserId, gardenPoints);
 
-    // Generate rewards based on garden points
-    const rewards = [];
-
-    // Roll for berry items (25% chance per garden point)
-    for (let i = 0; i < gardenPoints; i++) {
-      if (Math.random() < 0.25) { // 25% chance
-        rewards.push({
-          id: `berry-${Date.now()}-${i}`,
-          type: 'item',
-          reward_type: 'item',
-          rarity: 'common',
-          reward_data: {
-            name: RewardSystem.getRandomItemForSource('garden', 'common'),
-            quantity: Math.floor(Math.random() * 3) + 1,
-            category: 'berries'
-          }
-        });
-      }
-    }
-
-    // Roll for garden monsters (15% chance per garden point)
-    for (let i = 0; i < gardenPoints; i++) {
-      if (Math.random() < 0.15) { // 15% chance
-        // Determine monster rarity
-        let monsterRarity = 'common';
-        const rarityRoll = Math.random() * 100;
-
-        if (rarityRoll < 0.01) { // 0.01% chance for legendary
-          monsterRarity = 'legendary';
-        } else if (rarityRoll < 1) { // 1% chance for epic
-          monsterRarity = 'epic';
-        } else if (rarityRoll < 10) { // 10% chance for rare
-          monsterRarity = 'rare';
-        } else if (rarityRoll < 30) { // 30% chance for uncommon
-          monsterRarity = 'uncommon';
-        }
-
-        rewards.push({
-          id: `monster-${Date.now()}-${i}`,
-          type: 'monster',
-          reward_type: 'monster',
-          rarity: monsterRarity,
-          reward_data: {
-            species: ['Pokemon', 'Digimon'],
-            types: ['Grass', 'Bug'],
-            minLevel: 1,
-            maxLevel: 10,
-            filters: {
-              pokemon: { rarity: RewardSystem.mapRarityToPokeRarity(monsterRarity) },
-              digimon: { stage: RewardSystem.mapRarityToDigiStage(monsterRarity) }
-            }
-          }
-        });
-      }
-    }
-
-    // Add a coin reward as a fallback if no other rewards were generated
-    if (rewards.length === 0) {
-      rewards.push({
-        id: `coin-${Date.now()}`,
-        type: 'coin',
-        reward_type: 'coin',
-        rarity: 'common',
-        reward_data: {
-          amount: gardenPoints * 50,
-          title: `${gardenPoints * 50} Coins`
-        }
-      });
-    }
-
-    // Process rewards to generate random values
-    const processedRewards = await RewardSystem.processRewards(rewards);
+    // Generate rewards using the RewardSystem
+    const rewards = await RewardSystem.generateRewards('garden', {
+      gardenPoints: gardenPoints,
+      productivityScore: 100, // Default productivity score
+      timeSpent: 30, // Default time spent in minutes
+      difficulty: 'normal' // Default difficulty
+    });
 
     // Store rewards in session for claiming later
-    req.session.rewards = processedRewards;
+    req.session.rewards = rewards;
 
     // Render the rewards view
     res.render('rewards', {
       title: 'Garden Harvest Rewards',
-      rewards: processedRewards,
+      rewards: rewards,
       trainers: trainers,
       source: 'garden',
       message: `You harvested your garden and earned ${gardenPoints} garden points!`,
@@ -4085,51 +4285,7 @@ app.get('/town/visit/garden/harvest', async (req, res) => {
   }
 });
 
-// API routes for evolution
-app.get('/api/trainers', async (req, res) => {
-  try {
-    // Check if user is logged in
-    if (!req.session.user) {
-      return res.status(401).json({ success: false, message: 'You must be logged in to access this resource' });
-    }
-
-    // Get user's trainers
-    const discordUserId = req.session.user.discord_id || req.session.user.id;
-    const trainers = await Trainer.getByUserId(discordUserId);
-
-    res.json(trainers || []);
-  } catch (error) {
-    console.error('Error getting trainers:', error);
-    res.status(500).json({ success: false, message: 'Error getting trainers' });
-  }
-});
-
-app.get('/api/trainers/:trainerId/monsters', async (req, res) => {
-  try {
-    // Check if user is logged in
-    if (!req.session.user) {
-      return res.status(401).json({ success: false, message: 'You must be logged in to access this resource' });
-    }
-
-    const trainerId = req.params.trainerId;
-
-    // Verify trainer belongs to user
-    const discordUserId = req.session.user.discord_id || req.session.user.id;
-    const trainer = await Trainer.getById(trainerId);
-
-    if (!trainer || trainer.player_user_id !== discordUserId) {
-      return res.status(403).json({ success: false, message: 'You do not own this trainer' });
-    }
-
-    // Get trainer's monsters
-    const monsters = await Monster.getByTrainerId(trainerId);
-
-    res.json(monsters || []);
-  } catch (error) {
-    console.error('Error getting monsters:', error);
-    res.status(500).json({ success: false, message: 'Error getting monsters' });
-  }
-});
+// API routes for evolution are now handled by the API router
 
 app.get('/api/monsters/:monsterId/evolution-options', async (req, res) => {
   try {
@@ -4147,6 +4303,56 @@ app.get('/api/monsters/:monsterId/evolution-options', async (req, res) => {
   } catch (error) {
     console.error('Error getting evolution options:', error);
     res.status(500).json({ success: false, message: 'Error getting evolution options' });
+  }
+});
+
+// API endpoint for getting user's trainers is now handled by the API router
+
+// API endpoint for getting trainer's monsters is now handled by the API router
+
+// API endpoint for updating trainer level and currency
+app.post('/api/trainers/:trainerId/update', async (req, res) => {
+  try {
+    const trainerId = parseInt(req.params.trainerId);
+    if (isNaN(trainerId)) {
+      return res.status(400).json({ error: 'Invalid trainer ID' });
+    }
+
+    const { levels = 0, coins = 0 } = req.body;
+    const trainer = await Trainer.getById(trainerId);
+
+    if (!trainer) {
+      return res.status(404).json({ error: 'Trainer not found' });
+    }
+
+    const updatedTrainer = await Trainer.updateLevelAndCurrency(trainerId, levels, coins);
+    res.json(updatedTrainer);
+  } catch (error) {
+    console.error('Error updating trainer:', error);
+    res.status(500).json({ error: 'Error updating trainer' });
+  }
+});
+
+// API endpoint for updating monster level
+app.post('/api/monsters/:monsterId/update', async (req, res) => {
+  try {
+    const monsterId = parseInt(req.params.monsterId);
+    if (isNaN(monsterId)) {
+      return res.status(400).json({ error: 'Invalid monster ID' });
+    }
+
+    const { levels = 0 } = req.body;
+    const monster = await Monster.getById(monsterId);
+
+    if (!monster) {
+      return res.status(404).json({ error: 'Monster not found' });
+    }
+
+    const updatedMonster = await Monster.updateLevel(monsterId, levels);
+    res.json(updatedMonster);
+  } catch (error) {
+    console.error('Error updating monster:', error);
+    res.status(500).json({ error: 'Error updating monster' });
   }
 });
 
@@ -4479,8 +4685,14 @@ app.get('/adventures/event', (req, res) => {
     return res.redirect('/login');
   }
 
-  res.render('adventures/event', {
-    title: 'Events'
+  const categories = getContentCategories();
+  
+  res.render('adventures/event/index', {
+    title: 'Lore Library',
+    categories,
+    activeCategory: 'events',
+    currentPath: '',
+    eventType: 'current'
   });
 });
 
@@ -4554,7 +4766,7 @@ app.get('/api/user/trainers', async (req, res) => {
     }
 
     // For testing, if no Trainer model is available, return mock data
-    if (typeof Trainer === 'undefined' || !Trainer.getByDiscordId) {
+    if (typeof Trainer === 'undefined' || !Trainer.getByUserId) {
       console.log('API: Trainer model not available, returning mock data');
       const mockTrainers = [
         { id: 1, name: 'Mock Trainer 1', player_user_id: userDiscordId },
@@ -4563,7 +4775,7 @@ app.get('/api/user/trainers', async (req, res) => {
       return res.json(mockTrainers);
     }
 
-    const trainers = await Trainer.getByDiscordId(userDiscordId);
+    const trainers = await Trainer.getByUserId(userDiscordId);
     console.log(`API: Found ${trainers?.length || 0} trainers for user`);
     res.json(trainers || []);
   } catch (error) {
@@ -7075,13 +7287,93 @@ app.post('/add_trainer', async (req, res) => {
   }
 });
 
+// Adventures routes
+app.get('/adventures/event', (req, res) => {
+  res.render('adventures/event/index', {
+    title: 'Lore Library'
+  });
+});
+
+app.get('/adventures/event/current', (req, res) => {
+  const categories = getContentCategories();
+  const contentPath = path.join(__dirname, 'content', 'events', 'current', 'overview.md');
+  const content = loadMarkdownContent(contentPath);
+
+  res.render('adventures/event/view', {
+    title: 'Current Event',
+    categories,
+    activeCategory: 'events',
+    currentPath: 'current/overview',
+    content,
+    eventType: 'current'
+  });
+});
+
+app.get('/adventures/event/past', (req, res) => {
+  const categories = getContentCategories();
+  const contentPath = path.join(__dirname, 'content', 'events', 'past', 'spring-bloom', 'overview.md');
+  const content = loadMarkdownContent(contentPath);
+
+  res.render('adventures/event/view', {
+    title: 'Past Events',
+    categories,
+    activeCategory: 'events',
+    currentPath: '',
+    content,
+    eventType: 'past'
+  });
+});
+
+// Add route for direct navigation to event content
+app.get('/adventures/event/:type/:path(*)', (req, res) => {
+  const { type, path: eventPath } = req.params;
+  const fullPath = `${type}/${eventPath}`;
+  res.redirect(`/content/events/${fullPath}`);
+});
+
 // Content category route with specific prefix to avoid conflicts with other routes
 app.get('/content/:category/:path(*)', (req, res) => {
   const category = req.params.category;
-  const validCategories = ['guides', 'lore', 'factions', 'npcs', 'locations'];
+  const validCategories = ['guides', 'lore', 'factions', 'npcs', 'locations', 'events'];
 
   if (!validCategories.includes(category)) {
     return res.status(404).send('Category not found');
+  }
+
+  // Special handling for events category
+  if (category === 'events') {
+    const filePath = req.params.path;
+    const contentPath = path.join(__dirname, 'content', 'events', filePath);
+    console.log('Events content path:', contentPath);
+
+    // Check if it's a markdown file
+    let mdPath;
+    if (contentPath.endsWith('.md')) {
+      mdPath = contentPath;
+    } else {
+      // Try with .md extension
+      mdPath = `${contentPath}.md`;
+      console.log('Trying with .md extension:', mdPath);
+    }
+
+    if (fs.existsSync(mdPath)) {
+      console.log('Found markdown file:', mdPath);
+      const content = loadMarkdownContent(mdPath);
+      const categories = getContentCategories();
+
+      // Determine if it's a current or past event based on the path
+      const eventType = filePath.startsWith('current') ? 'current' : 'past';
+
+      res.render('adventures/event/view', {
+        title: eventType === 'current' ? 'Current Event' : 'Past Events',
+        categories,
+        activeCategory: 'events',
+        currentPath: filePath,
+        content,
+        eventType
+      });
+      return;
+    }
   }
 
   const filePath = req.params.path;

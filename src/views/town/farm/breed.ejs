@@ -1,0 +1,1302 @@
+<% /* Set the title for the layout */ %>
+<% title = 'Monster Breeding' %>
+
+<!-- Breeding Interface -->
+<div class="container mx-auto px-4 py-6">
+  <!-- Header Section - Location Banner -->
+  <div class="location-banner">
+    <img src="https://i.imgur.com/fztdYkJ.png" alt="Farm" class="w-full h-full object-cover">
+    <div class="location-banner-overlay">
+      <div class="flex items-center mb-4 w-full">
+        <a href="/town/visit/farm" class="btn-secondary hover:scale-105 transition-transform">
+          <i class="fas fa-arrow-left mr-2"></i> Back to Farm
+        </a>
+      </div>
+      <h1 class="location-banner-title">Monster Breeding</h1>
+      <p class="location-banner-subtitle max-w-2xl">
+        Breed two monsters together to create offspring with inherited traits.
+      </p>
+    </div>
+  </div>
+
+  <div class="max-w-4xl mx-auto mt-8">
+
+    <div class="location-card p-6 mb-6">
+      <h2 class="text-xl font-display font-bold mb-4 text-accent">Select Trainers</h2>
+
+      <!-- First Trainer Selection (User's Trainer) -->
+      <div class="mb-6">
+        <label for="trainer1-select" class="block text-sm text-amber-400 font-semibold mb-2">Your Trainer</label>
+        <select id="trainer1-select" class="">
+          <option value="">-- Select Your Trainer --</option>
+          <!-- Trainer options will be populated via JavaScript -->
+        </select>
+        <div id="legacy-leeway-status" class="mt-2 text-sm hidden">
+          <div id="legacy-leeway-message"></div>
+        </div>
+      </div>
+
+      <!-- Second Trainer Selection (Any Trainer) -->
+      <div class="mb-6">
+        <label for="trainer2-select" class="block text-sm text-amber-400 font-semibold mb-2">Second Trainer</label>
+        <select id="trainer2-select" class="" disabled>
+          <option value="">-- Select Second Trainer --</option>
+          <!-- Trainer options will be populated via JavaScript -->
+        </select>
+      </div>
+    </div>
+
+    <!-- Monster Selection (initially hidden) -->
+    <div id="monster-selection" class="location-card p-6 mb-6 hidden">
+      <h2 class="text-xl font-display font-bold mb-4 text-accent">Select Monsters</h2>
+
+      <!-- First Monster Selection -->
+      <div class="mb-6">
+        <label for="monster1-select" class="block text-sm text-amber-400 font-semibold mb-2">First Monster</label>
+        <select id="monster1-select" class="">
+          <option value="">-- Select First Monster --</option>
+          <!-- Monster options will be populated via JavaScript -->
+        </select>
+        <div id="monster1-details" class="mt-2 text-sm"></div>
+      </div>
+
+      <!-- Second Monster Selection -->
+      <div class="mb-6">
+        <label for="monster2-select" class="block text-sm text-amber-400 font-semibold mb-2">Second Monster</label>
+        <select id="monster2-select" class="">
+          <option value="">-- Select Second Monster --</option>
+          <!-- Monster options will be populated via JavaScript -->
+        </select>
+        <div id="monster2-details" class="mt-2 text-sm"></div>
+      </div>
+
+      <!-- Breeding Button -->
+      <div class="text-center">
+        <button id="start-breeding" class="farm-btn text-center py-6 px-8 rounded-lg transition-all duration-200 hover:scale-105" disabled>
+          <i class="fas fa-dna mr-3"></i> <span class="farm-btn-text">Start Breeding</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Breeding Results (initially hidden) -->
+    <div id="breeding-results" class="location-card p-6 mb-6 hidden">
+      <h2 class="text-xl font-display font-bold mb-4 text-accent">Breeding Results</h2>
+      <p class="text-gray-300 mb-4">The following offspring were produced:</p>
+
+      <!-- Offspring Grid -->
+      <div id="offspring-grid" class="grid gap-3">
+        <!-- Offspring cards will be populated via JavaScript -->
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+
+<style>
+/* Farm specific styles */
+.farm-btn {
+  background-color: #f97316; /* Orange-500 */
+  color: var(--background-color);
+  font-weight: 600;
+  transition: all 0.3s;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  border: none;
+  cursor: pointer;
+  min-height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.farm-btn-text {
+  font-size: 1.25rem;
+  letter-spacing: 0.025em;
+}
+
+.farm-btn-sm {
+  background-color: #f97316; /* Orange-500 */
+  color: var(--background-color);
+  font-weight: 600;
+  transition: all 0.3s;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Responsive adjustments for buttons */
+@media (max-width: 768px) {
+  .farm-btn {
+    min-height: 70px;
+  }
+
+  .farm-btn-text {
+    font-size: 1.125rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .farm-btn {
+    min-height: 60px;
+    padding: 1rem 1.25rem;
+  }
+
+  .farm-btn-text {
+    font-size: 1rem;
+  }
+}
+
+.farm-btn:hover, .farm-btn-sm:hover {
+  background-color: #ea580c; /* Orange-600 */
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  transform: translateY(-2px);
+}
+
+.farm-btn:disabled, .farm-btn-sm:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+.farm-btn:active, .farm-btn-sm:active {
+  transform: translateY(1px);
+}
+
+.btn-secondary {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: var(--text-color);
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  transition: all 0.3s;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.btn-secondary:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.location-card {
+  background-color: var(--card-background);
+  border-radius: 0.75rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transition: all 0.3s ease;
+}
+
+.location-card:hover {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+}
+
+.text-accent {
+  color: #f97316; /* Orange-500 */
+}
+
+.hover\:scale-105:hover {
+  transform: scale(1.05);
+}
+
+.monster-card {
+  background-color: var(--card-background);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  transition: all 0.3s;
+}
+
+.monster-card:hover {
+  border-color: #f97316; /* Orange-500 */
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.monster-card.claimed {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.compact-card {
+  padding: 0.75rem;
+  font-size: 0.875rem;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.compact-card .species-tag,
+.compact-card .type-tag {
+  padding: 0.125rem 0.375rem;
+  font-size: 0.7rem;
+}
+
+.compact-card .claim-btn {
+  margin-top: auto;
+}
+
+/* Location banner styles */
+.location-banner {
+  position: relative;
+  width: 100%;
+  height: 250px;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  margin-bottom: 2rem;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+}
+
+.location-banner img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.location-banner-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 1.5rem;
+}
+
+.location-banner-title {
+  color: white;
+  font-size: 2.25rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  text-shadow: 0 4px 8px rgba(0, 0, 0, 0.8);
+  font-family: var(--font-display, sans-serif);
+}
+
+.location-banner-subtitle {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 1.125rem;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+/* Notification styles */
+.transition-opacity {
+  transition: opacity 0.3s ease;
+}
+
+.duration-300 {
+  transition-duration: 300ms;
+}
+
+.opacity-0 {
+  opacity: 0;
+}
+
+.opacity-70 {
+  opacity: 0.7;
+}
+
+/* Dropdown and Input Styling from bakery.ejs */
+/* Trainer select dropdown styling */
+#trainer1-select, #trainer2-select, #monster1-select, #monster2-select, #claim-trainer-select {
+  width: 100% !important;
+  height: 48px !important;
+  background-color: rgb(31 41 55 / 0.9) !important;
+  color: white !important;
+  border: 1px solid rgb(55 65 81) !important;
+  border-radius: 0.5rem !important;
+  padding: 0.75rem 1rem !important;
+  appearance: none !important;
+  cursor: pointer !important;
+  margin-bottom: 1.5rem !important;
+}
+
+#trainer1-select:focus, #trainer2-select:focus, #monster1-select:focus, #monster2-select:focus, #claim-trainer-select:focus {
+  outline: none !important;
+  border-color: rgb(217 119 6) !important;
+  box-shadow: 0 0 0 2px rgba(217, 119, 6, 0.2) !important;
+}
+
+/* Input field styling */
+#monster-name-input {
+  width: 100% !important;
+  height: 48px !important;
+  background-color: rgb(31 41 55 / 0.9) !important;
+  color: white !important;
+  border: 1px solid rgb(55 65 81) !important;
+  border-radius: 0.5rem !important;
+  padding: 0.75rem 1rem !important;
+  margin-bottom: 1.5rem !important;
+}
+
+#monster-name-input:focus {
+  outline: none !important;
+  border-color: rgb(217 119 6) !important;
+  box-shadow: 0 0 0 2px rgba(217, 119, 6, 0.2) !important;
+}
+
+/* Custom dropdown arrow for all select elements */
+#trainer1-select, #trainer2-select, #monster1-select, #monster2-select, #claim-trainer-select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23d6a339'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E") !important;
+  background-repeat: no-repeat !important;
+  background-position: right 0.75rem center !important;
+  background-size: 1.5rem !important;
+}
+
+/* Disabled state styling */
+#trainer1-select:disabled,
+#trainer2-select:disabled,
+#monster1-select:disabled,
+#monster2-select:disabled,
+#claim-trainer-select:disabled,
+#monster-name-input:disabled {
+  opacity: 0.6 !important;
+  cursor: not-allowed !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .location-banner {
+    height: 200px;
+  }
+
+  .location-banner-title {
+    font-size: 1.75rem;
+  }
+
+  .location-banner-subtitle {
+    font-size: 1rem;
+  }
+}
+
+/* Scrollbar styling */
+.monster-cards-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.monster-cards-container::-webkit-scrollbar-track {
+  background: rgba(31, 41, 55, 0.5);
+  border-radius: 4px;
+}
+
+.monster-cards-container::-webkit-scrollbar-thumb {
+  background: rgba(217, 119, 6, 0.5);
+  border-radius: 4px;
+}
+
+.monster-cards-container::-webkit-scrollbar-thumb:hover {
+  background: rgba(217, 119, 6, 0.7);
+}
+
+.species-tag {
+  font-size: 0.75rem;
+  padding: 0.125rem 0.5rem;
+  border-radius: 9999px;
+  background-color: rgba(139, 92, 246, 0.2);
+  color: rgb(167, 139, 250);
+  border: 1px solid rgba(139, 92, 246, 0.3);
+}
+
+.type-tag {
+  font-size: 0.75rem;
+  padding: 0.125rem 0.5rem;
+  border-radius: 9999px;
+  background-color: rgba(var(--type-color), 0.2);
+  color: rgb(var(--type-color));
+  border: 1px solid rgba(var(--type-color), 0.3);
+}
+
+.breeding-monster-select {
+  background: rgba(17, 24, 39, 0.5);
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  border: 1px solid rgba(55, 65, 81, 0.3);
+}
+
+/* Add to your existing styles section */
+#monster-search {
+  width: 100% !important;
+  height: 48px !important;
+  background-color: rgb(31 41 55 / 0.9) !important;
+  color: white !important;
+  border: 1px solid rgb(55 65 81) !important;
+  border-radius: 0.5rem !important;
+  padding: 0.75rem 2.5rem !important;
+  appearance: none !important;
+  margin-bottom: 1.5rem !important;
+}
+
+#monster-search:focus {
+  outline: none !important;
+  border-color: rgb(217 119 6) !important;
+  box-shadow: 0 0 0 2px rgba(217, 119, 6, 0.2) !important;
+}
+
+#monster-search::placeholder {
+  color: rgb(156 163 175) !important;
+}
+
+.search-container {
+  position: relative !important;
+}
+
+.search-container i.fa-search {
+  position: absolute !important;
+  left: 1rem !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  color: rgb(156 163 175) !important;
+  pointer-events: none !important;
+}
+</style>
+
+<script>
+
+
+  document.addEventListener('DOMContentLoaded', function() {
+    // Create claim modal element
+    function createClaimModal() {
+      // Create the main modal container
+      const modal = document.createElement('div');
+      modal.id = 'claim-modal';
+      modal.className = 'fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50 hidden';
+      modal.style.position = 'fixed';
+      modal.style.top = '0';
+      modal.style.left = '0';
+      modal.style.right = '0';
+      modal.style.bottom = '0';
+      modal.style.display = 'none';
+
+      // Create the modal content
+      const modalContent = document.createElement('div');
+      modalContent.className = 'location-card p-6 max-w-md w-full';
+
+      // Create the header
+      const header = document.createElement('h3');
+      header.className = 'text-xl font-display font-bold mb-4 text-accent';
+      header.textContent = 'Claim Monster';
+
+      // Create the monster preview
+      const preview = document.createElement('div');
+      preview.id = 'claim-monster-preview';
+      preview.className = 'mb-4 p-3 bg-gray-900 rounded-lg';
+
+      // Create the trainer selection
+      const trainerDiv = document.createElement('div');
+      trainerDiv.className = 'mb-4';
+
+      const trainerLabel = document.createElement('label');
+      trainerLabel.htmlFor = 'claim-trainer-select';
+      trainerLabel.className = 'block text-sm text-amber-400 font-semibold mb-2';
+      trainerLabel.textContent = 'Select Trainer';
+
+      const trainerSelect = document.createElement('select');
+      trainerSelect.id = 'claim-trainer-select';
+      trainerSelect.className = '';
+
+      trainerDiv.appendChild(trainerLabel);
+      trainerDiv.appendChild(trainerSelect);
+
+      // Create the monster name input
+      const nameDiv = document.createElement('div');
+      nameDiv.className = 'mb-6';
+
+      const nameLabel = document.createElement('label');
+      nameLabel.htmlFor = 'monster-name-input';
+      nameLabel.className = 'block text-sm text-amber-400 font-semibold mb-2';
+      nameLabel.textContent = 'Monster Name';
+
+      const nameInput = document.createElement('input');
+      nameInput.type = 'text';
+      nameInput.id = 'monster-name-input';
+      nameInput.className = '';
+      nameInput.placeholder = 'Enter a name';
+
+      nameDiv.appendChild(nameLabel);
+      nameDiv.appendChild(nameInput);
+
+      // Create the buttons
+      const buttonDiv = document.createElement('div');
+      buttonDiv.className = 'flex justify-end space-x-3';
+
+      const cancelButton = document.createElement('button');
+      cancelButton.id = 'cancel-claim';
+      cancelButton.className = 'btn-secondary py-2 px-4 rounded-lg hover:scale-105 transition-transform';
+      cancelButton.textContent = 'Cancel';
+
+      const confirmButton = document.createElement('button');
+      confirmButton.id = 'confirm-claim';
+      confirmButton.className = 'farm-btn-sm py-2 px-4 rounded-lg hover:scale-105 transition-transform';
+      confirmButton.textContent = 'Claim';
+
+      buttonDiv.appendChild(cancelButton);
+      buttonDiv.appendChild(confirmButton);
+
+      // Assemble the modal
+      modalContent.appendChild(header);
+      modalContent.appendChild(preview);
+      modalContent.appendChild(trainerDiv);
+      modalContent.appendChild(nameDiv);
+      modalContent.appendChild(buttonDiv);
+
+      modal.appendChild(modalContent);
+
+      return modal;
+    }
+
+    // Create and append the modal to the body
+    const claimModal = createClaimModal();
+    document.body.appendChild(claimModal);
+    // DOM Elements
+    const trainer1Select = document.getElementById('trainer1-select');
+    const trainer2Select = document.getElementById('trainer2-select');
+    const legacyLeewayStatus = document.getElementById('legacy-leeway-status');
+    const legacyLeewayMessage = document.getElementById('legacy-leeway-message');
+    const monsterSelection = document.getElementById('monster-selection');
+    const monster1Select = document.getElementById('monster1-select');
+    const monster2Select = document.getElementById('monster2-select');
+    const monster1Details = document.getElementById('monster1-details');
+    const monster2Details = document.getElementById('monster2-details');
+    const startBreedingBtn = document.getElementById('start-breeding');
+    const breedingResults = document.getElementById('breeding-results');
+    const offspringGrid = document.getElementById('offspring-grid');
+    // Get references to claim modal elements
+    const claimTrainerSelect = claimModal.querySelector('#claim-trainer-select');
+    const monsterNameInput = claimModal.querySelector('#monster-name-input');
+    const cancelClaimBtn = claimModal.querySelector('#cancel-claim');
+    const confirmClaimBtn = claimModal.querySelector('#confirm-claim');
+
+    // State
+    let selectedOffspringId = null;
+    let offspringData = [];
+
+    // Load user's trainers
+    async function loadUserTrainers() {
+      const trainer1Select = document.getElementById('trainer1-select');
+      const trainer2Select = document.getElementById('trainer2-select');
+
+      // Only include selects that exist in the DOM
+      const selects = [trainer1Select, trainer2Select].filter(select => select);
+
+      try {
+        const response = await fetch('/api/trainers/user');
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        let trainers = Array.isArray(data) ? data : data.trainers || [];
+
+        // Clear and set default option for all selects
+        selects.forEach(select => {
+          select.innerHTML = '<option value="">-- Select a Trainer --</option>';
+        });
+
+        if (trainers.length > 0) {
+          trainers.forEach(trainer => {
+            selects.forEach(select => {
+              const option = document.createElement('option');
+              option.value = trainer.id;
+              option.textContent = `${trainer.name} (Level ${trainer.level || 1})`;
+              select.appendChild(option);
+            });
+          });
+
+          // Enable/disable appropriate selects
+          trainer1Select.disabled = false;
+          trainer2Select.disabled = true; // Stays disabled until trainer1 is selected
+          claimTrainerSelect.disabled = false;
+        } else {
+          selects.forEach(select => {
+            select.innerHTML = '<option value="" disabled>No trainers available</option>';
+            select.disabled = true;
+          });
+        }
+      } catch (error) {
+        console.error('Error loading trainers:', error);
+
+        // Try fallback API
+        try {
+          const fallbackResponse = await fetch('/api/trainers');
+          if (fallbackResponse.ok) {
+            const fallbackData = await fallbackResponse.json();
+            let fallbackTrainers = Array.isArray(fallbackData) ? fallbackData : fallbackData.trainers || [];
+
+            if (fallbackTrainers.length > 0) {
+              selects.forEach(select => {
+                select.innerHTML = '<option value="">-- Select a Trainer --</option>';
+                fallbackTrainers.forEach(trainer => {
+                  const option = document.createElement('option');
+                  option.value = trainer.id;
+                  option.textContent = `${trainer.name} (Level ${trainer.level || 1})`;
+                  select.appendChild(option);
+                });
+              });
+
+              trainer1Select.disabled = false;
+              trainer2Select.disabled = true;
+              claimTrainerSelect.disabled = false;
+              return;
+            }
+          }
+        } catch (fallbackError) {
+          console.error('Fallback API failed:', fallbackError);
+        }
+
+        selects.forEach(select => {
+          select.innerHTML = '<option value="" disabled>Error loading trainers</option>';
+          select.disabled = true;
+        });
+      }
+    }
+
+    // Load all trainers for second dropdown
+    async function loadAllTrainers() {
+      try {
+        const response = await fetch('/api/trainers/all');
+        const data = await response.json();
+
+        if (data.success) {
+          // Populate trainer2 dropdown (all trainers)
+          data.trainers.forEach(trainer => {
+            const option = document.createElement('option');
+            option.value = trainer.id;
+            option.textContent = `${trainer.name} (Level ${trainer.level})`;
+            trainer2Select.appendChild(option);
+          });
+
+          // Enable second trainer dropdown
+          trainer2Select.disabled = false;
+        } else {
+          console.error('Error loading all trainers:', data.message);
+        }
+      } catch (error) {
+        console.error('Error loading all trainers:', error);
+      }
+    }
+
+    // Check if trainer has Legacy Leeway
+    async function checkLegacyLeeway(trainerId) {
+      try {
+        const response = await fetch(`/api/trainers/${trainerId}/inventory/check?item=Legacy%20Leeway&category=inv_items`);
+        const data = await response.json();
+
+        const legacyLeewayMessage = document.getElementById('legacy-leeway-message');
+
+        if (data.success && data.hasItem) {
+          // Show has legacy leeway message
+          legacyLeewayMessage.innerHTML = `
+            <div class="flex items-center text-green-400">
+              <i class="fas fa-check-circle mr-1"></i>
+              <span>Has Legacy Leeway ✓</span>
+            </div>
+          `;
+          legacyLeewayStatus.classList.remove('hidden');
+
+          // Enable second trainer selection
+          trainer2Select.disabled = false;
+
+          // Load all trainers for second dropdown
+          loadAllTrainers();
+        } else {
+          // Show no legacy leeway message
+          legacyLeewayMessage.innerHTML = `
+            <div class="flex items-center text-red-400">
+              <i class="fas fa-times-circle mr-1"></i>
+              <span>No Legacy Leeway available</span>
+            </div>
+          `;
+          legacyLeewayStatus.classList.remove('hidden');
+
+          // Disable second trainer selection
+          trainer2Select.disabled = true;
+          trainer2Select.value = '';
+
+          // Hide monster selection
+          monsterSelection.classList.add('hidden');
+        }
+      } catch (error) {
+        console.error('Error checking Legacy Leeway:', error);
+        legacyLeewayStatus.classList.add('hidden');
+      }
+    }
+
+    // Load monsters for a trainer
+    async function loadTrainerMonsters(trainerId, selectElement) {
+      try {
+        const response = await fetch(`/api/trainers/${trainerId}/monsters`);
+        const data = await response.json();
+
+        if (data.success) {
+          // Clear previous options except the first one
+          while (selectElement.options.length > 1) {
+            selectElement.remove(1);
+          }
+
+          // Populate monster dropdown
+          data.monsters.forEach(monster => {
+            const option = document.createElement('option');
+            option.value = monster.mon_id;
+            option.textContent = `${monster.name} (${monster.species1})`;
+            option.dataset.monster = JSON.stringify(monster);
+            selectElement.appendChild(option);
+          });
+        } else {
+          console.error('Error loading monsters:', data.message);
+        }
+      } catch (error) {
+        console.error('Error loading monsters:', error);
+      }
+    }
+
+    // Display monster details
+    function displayMonsterDetails(monster, detailsElement) {
+      if (!monster) {
+        detailsElement.innerHTML = '';
+        return;
+      }
+
+      // Get all types
+      const types = [monster.type1, monster.type2, monster.type3, monster.type4, monster.type5]
+        .filter(type => type)
+        .join(', ');
+
+      // Get all species
+      const species = [monster.species1, monster.species2, monster.species3]
+        .filter(species => species)
+        .join(', ');
+
+      detailsElement.innerHTML = `
+        <div class="text-gray-300">
+          <p><span class="text-amber-400">Species:</span> ${species}</p>
+          <p><span class="text-amber-400">Types:</span> ${types}</p>
+          <p><span class="text-amber-400">Attribute:</span> ${monster.attribute || 'None'}</p>
+          <p><span class="text-amber-400">Level:</span> ${monster.level}</p>
+        </div>
+      `;
+    }
+
+    // Check if monsters are eligible for breeding
+    async function checkBreedingEligibility() {
+      const monster1Id = monster1Select.value;
+      const monster2Id = monster2Select.value;
+
+      if (!monster1Id || !monster2Id) {
+        startBreedingBtn.disabled = true;
+        return;
+      }
+
+      try {
+        const response = await fetch('/api/farm/breed/check-eligibility', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            monster1Id,
+            monster2Id
+          })
+        });
+
+        const data = await response.json();
+
+        if (data.success && data.eligible) {
+          startBreedingBtn.disabled = false;
+        } else {
+          startBreedingBtn.disabled = true;
+
+          if (data.message) {
+            alert(data.message);
+          }
+        }
+      } catch (error) {
+        console.error('Error checking breeding eligibility:', error);
+        startBreedingBtn.disabled = true;
+      }
+    }
+
+    // Start breeding process
+    async function startBreeding() {
+      const trainer1Id = trainer1Select.value;
+      const monster1Id = monster1Select.value;
+      const monster2Id = monster2Select.value;
+
+      try {
+        startBreedingBtn.disabled = true;
+        startBreedingBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Breeding...';
+
+        const response = await fetch('/api/farm/breed/start', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            trainer1Id,
+            monster1Id,
+            monster2Id
+          })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          // Store offspring data
+          offspringData = data.offspring;
+
+          // Display breeding results
+          displayBreedingResults(data.offspring);
+
+          // Show breeding results section
+          breedingResults.classList.remove('hidden');
+
+          // Scroll to breeding results
+          breedingResults.scrollIntoView({ behavior: 'smooth' });
+        } else {
+          alert(data.message || 'Error starting breeding process');
+          startBreedingBtn.disabled = false;
+          startBreedingBtn.innerHTML = '<i class="fas fa-dna mr-2"></i> Start Breeding';
+        }
+      } catch (error) {
+        console.error('Error starting breeding:', error);
+        alert('Error starting breeding process. Please try again.');
+        startBreedingBtn.disabled = false;
+        startBreedingBtn.innerHTML = '<i class="fas fa-dna mr-2"></i> Start Breeding';
+      }
+    }
+
+    // Display breeding results
+    function displayBreedingResults(offspring) {
+      // Store offspring data
+      offspringData = offspring;
+
+      // Clear previous results
+      offspringGrid.innerHTML = '';
+
+      // Set grid columns based on number of offspring
+      if (offspring.length === 1) {
+        // Single offspring - center it
+        offspringGrid.className = 'grid gap-3 max-w-sm mx-auto';
+      } else if (offspring.length === 2) {
+        // Two offspring - 2 columns
+        offspringGrid.className = 'grid grid-cols-2 gap-3';
+      } else {
+        // 3 or more offspring - 3 columns
+        offspringGrid.className = 'grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3';
+      }
+
+      // Create a card for each offspring
+      offspring.forEach((monster, index) => {
+        // Get all types
+        const types = [monster.type1, monster.type2, monster.type3, monster.type4, monster.type5]
+          .filter(type => type)
+          .join(', ');
+
+        // Get all species
+        const species = [monster.species1, monster.species2, monster.species3]
+          .filter(species => species)
+          .join(', ');
+
+        const card = document.createElement('div');
+        card.className = 'monster-card compact-card';
+        card.dataset.index = index;
+
+        // Create species tags
+        const speciesTags = [monster.species1, monster.species2, monster.species3]
+          .filter(s => s)
+          .map(s => `<span class="species-tag inline-block mr-1 mb-1 text-xs">${s}</span>`)
+          .join('');
+
+        // Create type tags with color variables
+        const typeTags = [monster.type1, monster.type2, monster.type3, monster.type4, monster.type5]
+          .filter(t => t)
+          .map(t => {
+            // Set type color variable based on type
+            let typeColorVar;
+            switch(t.toLowerCase()) {
+              case 'normal': typeColorVar = '156, 156, 156'; break;
+              case 'fire': typeColorVar = '238, 129, 48'; break;
+              case 'water': typeColorVar = '99, 144, 240'; break;
+              case 'electric': typeColorVar = '247, 208, 44'; break;
+              case 'grass': typeColorVar = '122, 199, 76'; break;
+              case 'ice': typeColorVar = '150, 217, 214'; break;
+              case 'fighting': typeColorVar = '194, 46, 40'; break;
+              case 'poison': typeColorVar = '163, 62, 161'; break;
+              case 'ground': typeColorVar = '226, 191, 101'; break;
+              case 'flying': typeColorVar = '169, 143, 243'; break;
+              case 'psychic': typeColorVar = '249, 85, 135'; break;
+              case 'bug': typeColorVar = '166, 185, 26'; break;
+              case 'rock': typeColorVar = '182, 161, 54'; break;
+              case 'ghost': typeColorVar = '115, 87, 151'; break;
+              case 'dragon': typeColorVar = '111, 53, 252'; break;
+              case 'dark': typeColorVar = '112, 87, 70'; break;
+              case 'steel': typeColorVar = '183, 183, 206'; break;
+              case 'fairy': typeColorVar = '214, 133, 173'; break;
+              case 'vaccine': typeColorVar = '52, 152, 219'; break;
+              case 'data': typeColorVar = '46, 204, 113'; break;
+              case 'virus': typeColorVar = '231, 76, 60'; break;
+              case 'free': typeColorVar = '155, 89, 182'; break;
+              case 'variable': typeColorVar = '241, 196, 15'; break;
+              default: typeColorVar = '156, 156, 156';
+            }
+
+            return `<span class="type-tag inline-block mr-1 mb-1 text-xs" style="--type-color: ${typeColorVar}">${t}</span>`;
+          })
+          .join('');
+
+        // Create attribute badge
+        let attributeClass = '';
+        if (monster.attribute) {
+          switch(monster.attribute.toLowerCase()) {
+            case 'vaccine': attributeClass = 'bg-blue-800 text-blue-200'; break;
+            case 'data': attributeClass = 'bg-green-800 text-green-200'; break;
+            case 'virus': attributeClass = 'bg-red-800 text-red-200'; break;
+            case 'free': attributeClass = 'bg-purple-800 text-purple-200'; break;
+            case 'variable': attributeClass = 'bg-yellow-800 text-yellow-200'; break;
+            case 'fire': attributeClass = 'bg-orange-800 text-orange-200'; break;
+            case 'water': attributeClass = 'bg-blue-800 text-blue-200'; break;
+            case 'wind': attributeClass = 'bg-teal-800 text-teal-200'; break;
+            case 'earth': attributeClass = 'bg-amber-800 text-amber-200'; break;
+            case 'light': attributeClass = 'bg-yellow-800 text-yellow-200'; break;
+            case 'dark': attributeClass = 'bg-gray-800 text-gray-200'; break;
+            default: attributeClass = 'bg-gray-800 text-gray-200';
+          }
+        }
+
+        const attributeBadge = monster.attribute ?
+          `<span class="px-2 py-1 rounded-full text-xs ${attributeClass}">${monster.attribute}</span>` :
+          '';
+
+        card.innerHTML = `
+          <h3 class="text-sm font-semibold mb-1">Offspring #${index + 1}</h3>
+          <div class="flex-grow">
+            <div class="mb-1">
+              <p class="text-xs text-amber-400 mb-0.5">Species:</p>
+              <div class="flex flex-wrap">${speciesTags}</div>
+            </div>
+            <div class="mb-1">
+              <p class="text-xs text-amber-400 mb-0.5">Types:</p>
+              <div class="flex flex-wrap">${typeTags}</div>
+            </div>
+            <div class="mb-1">
+              <p class="text-xs text-amber-400 mb-0.5">Attribute:</p>
+              <div>${attributeBadge || '<span class="text-gray-400 text-xs">None</span>'}</div>
+            </div>
+          </div>
+          <button class="claim-btn farm-btn-sm w-full py-1 text-sm rounded-lg mt-2">
+            <i class="fas fa-plus-circle mr-1"></i> Claim
+          </button>
+        `;
+
+        // Add click event to claim button
+        card.querySelector('.claim-btn').addEventListener('click', async () => {
+          selectedOffspringId = index;
+          await openClaimModal(monster);
+        });
+
+        offspringGrid.appendChild(card);
+      });
+    }
+
+    // Open claim modal
+    async function openClaimModal(monster) {
+      // Reset the modal
+      resetClaimModal();
+
+      // Populate trainer dropdown with user's trainers
+      claimTrainerSelect.innerHTML = '<option value="">-- Select a Trainer --</option>';
+
+      // Fetch user's trainers
+      try {
+        const response = await fetch('/api/trainers/user');
+        if (response.ok) {
+          const data = await response.json();
+          let trainers = Array.isArray(data) ? data : data.trainers || [];
+
+          trainers.forEach(trainer => {
+            const option = document.createElement('option');
+            option.value = trainer.id;
+            option.textContent = `${trainer.name} (Level ${trainer.level})`;
+            claimTrainerSelect.appendChild(option);
+          });
+        }
+      } catch (error) {
+        console.error('Error loading trainers for claim modal:', error);
+      }
+
+      // Set default monster name
+      monsterNameInput.value = `Baby ${monster.species1}`;
+
+      // Populate monster preview
+      const previewElement = claimModal.querySelector('#claim-monster-preview');
+
+      // Create species tags
+      const speciesTags = [monster.species1, monster.species2, monster.species3]
+        .filter(s => s)
+        .map(s => `<span class="species-tag inline-block mr-1 mb-1">${s}</span>`)
+        .join('');
+
+      // Create type tags with color variables
+      const typeTags = [monster.type1, monster.type2, monster.type3, monster.type4, monster.type5]
+        .filter(t => t)
+        .map(t => {
+          // Set type color variable based on type
+          let typeColorVar;
+          switch(t.toLowerCase()) {
+            case 'normal': typeColorVar = '156, 156, 156'; break;
+            case 'fire': typeColorVar = '238, 129, 48'; break;
+            case 'water': typeColorVar = '99, 144, 240'; break;
+            case 'electric': typeColorVar = '247, 208, 44'; break;
+            case 'grass': typeColorVar = '122, 199, 76'; break;
+            case 'ice': typeColorVar = '150, 217, 214'; break;
+            case 'fighting': typeColorVar = '194, 46, 40'; break;
+            case 'poison': typeColorVar = '163, 62, 161'; break;
+            case 'ground': typeColorVar = '226, 191, 101'; break;
+            case 'flying': typeColorVar = '169, 143, 243'; break;
+            case 'psychic': typeColorVar = '249, 85, 135'; break;
+            case 'bug': typeColorVar = '166, 185, 26'; break;
+            case 'rock': typeColorVar = '182, 161, 54'; break;
+            case 'ghost': typeColorVar = '115, 87, 151'; break;
+            case 'dragon': typeColorVar = '111, 53, 252'; break;
+            case 'dark': typeColorVar = '112, 87, 70'; break;
+            case 'steel': typeColorVar = '183, 183, 206'; break;
+            case 'fairy': typeColorVar = '214, 133, 173'; break;
+            case 'vaccine': typeColorVar = '52, 152, 219'; break;
+            case 'data': typeColorVar = '46, 204, 113'; break;
+            case 'virus': typeColorVar = '231, 76, 60'; break;
+            case 'free': typeColorVar = '155, 89, 182'; break;
+            case 'variable': typeColorVar = '241, 196, 15'; break;
+            default: typeColorVar = '156, 156, 156';
+          }
+
+          return `<span class="type-tag inline-block mr-1 mb-1" style="--type-color: ${typeColorVar}">${t}</span>`;
+        })
+        .join('');
+
+      // Create attribute badge
+      let attributeClass = '';
+      if (monster.attribute) {
+        switch(monster.attribute.toLowerCase()) {
+          case 'vaccine': attributeClass = 'bg-blue-800 text-blue-200'; break;
+          case 'data': attributeClass = 'bg-green-800 text-green-200'; break;
+          case 'virus': attributeClass = 'bg-red-800 text-red-200'; break;
+          case 'free': attributeClass = 'bg-purple-800 text-purple-200'; break;
+          case 'variable': attributeClass = 'bg-yellow-800 text-yellow-200'; break;
+          case 'fire': attributeClass = 'bg-orange-800 text-orange-200'; break;
+          case 'water': attributeClass = 'bg-blue-800 text-blue-200'; break;
+          case 'wind': attributeClass = 'bg-teal-800 text-teal-200'; break;
+          case 'earth': attributeClass = 'bg-amber-800 text-amber-200'; break;
+          case 'light': attributeClass = 'bg-yellow-800 text-yellow-200'; break;
+          case 'dark': attributeClass = 'bg-gray-800 text-gray-200'; break;
+          default: attributeClass = 'bg-gray-800 text-gray-200';
+        }
+      }
+
+      const attributeBadge = monster.attribute ?
+        `<span class="px-2 py-1 rounded-full text-xs ${attributeClass}">${monster.attribute}</span>` :
+        '<span class="text-gray-400">None</span>';
+
+      previewElement.innerHTML = `
+        <div class="mb-2">
+          <p class="text-sm text-amber-400 mb-1">Species:</p>
+          <div class="flex flex-wrap">${speciesTags}</div>
+        </div>
+        <div class="mb-2">
+          <p class="text-sm text-amber-400 mb-1">Types:</p>
+          <div class="flex flex-wrap">${typeTags}</div>
+        </div>
+        <div class="mb-2">
+          <p class="text-sm text-amber-400 mb-1">Attribute:</p>
+          <div>${attributeBadge}</div>
+        </div>
+      `;
+
+      // Reset confirm button
+      confirmClaimBtn.disabled = false;
+      confirmClaimBtn.textContent = 'Claim';
+
+      // Show modal
+      claimModal.style.display = 'flex';
+      claimModal.classList.remove('hidden');
+    }
+
+    // Reset claim modal
+    function resetClaimModal() {
+      claimTrainerSelect.innerHTML = '';
+      monsterNameInput.value = '';
+      claimModal.querySelector('#claim-monster-preview').innerHTML = '';
+      confirmClaimBtn.disabled = false;
+      confirmClaimBtn.textContent = 'Claim';
+    }
+
+    // Close claim modal
+    function closeClaimModal() {
+      claimModal.style.display = 'none';
+      claimModal.classList.add('hidden');
+      selectedOffspringId = null;
+    }
+
+    // Claim offspring
+    async function claimOffspring() {
+      const trainerId = claimTrainerSelect.value;
+      const monsterName = monsterNameInput.value.trim();
+
+      if (!trainerId) {
+        alert('Please select a trainer');
+        return;
+      }
+
+      if (!monsterName) {
+        alert('Please enter a name for the monster');
+        return;
+      }
+
+      if (selectedOffspringId === null || !offspringData[selectedOffspringId]) {
+        alert('Invalid monster selection');
+        closeClaimModal();
+        return;
+      }
+
+      try {
+        confirmClaimBtn.disabled = true;
+        confirmClaimBtn.textContent = 'Claiming...';
+
+        const response = await fetch('/api/farm/breed/claim', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            trainerId,
+            monsterName,
+            monsterData: offspringData[selectedOffspringId]
+          })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          // Mark the monster as claimed
+          const card = offspringGrid.querySelector(`[data-index="${selectedOffspringId}"]`);
+          if (card) {
+            card.classList.add('claimed');
+            const claimBtn = card.querySelector('.claim-btn');
+            claimBtn.innerHTML = '<i class="fas fa-check-circle mr-1"></i> Claimed';
+            claimBtn.disabled = true;
+            claimBtn.classList.remove('farm-btn-sm');
+            claimBtn.classList.add('btn-secondary');
+
+            // Add claimed by text
+            const trainerName = claimTrainerSelect.options[claimTrainerSelect.selectedIndex].text;
+            const claimedByText = document.createElement('p');
+            claimedByText.className = 'text-xs text-gray-400 mt-1 text-center';
+            claimedByText.textContent = `Claimed by ${trainerName} as "${monsterName}"`;
+            card.appendChild(claimedByText);
+          }
+
+          // Close modal
+          closeClaimModal();
+
+          // Show success message
+          const successMessage = document.createElement('div');
+          successMessage.className = 'fixed bottom-4 right-4 bg-green-800 text-white px-4 py-2 rounded-lg shadow-lg z-50 transition-opacity duration-300';
+          successMessage.innerHTML = `<i class="fas fa-check-circle mr-2"></i> Successfully claimed ${monsterName}!`;
+          document.body.appendChild(successMessage);
+
+          // Remove success message after 3 seconds
+          setTimeout(() => {
+            successMessage.classList.add('opacity-0');
+            setTimeout(() => {
+              document.body.removeChild(successMessage);
+            }, 300);
+          }, 3000);
+        } else {
+          alert(data.message || 'Error claiming monster');
+          confirmClaimBtn.disabled = false;
+          confirmClaimBtn.textContent = 'Claim';
+        }
+      } catch (error) {
+        console.error('Error claiming offspring:', error);
+        alert('Error claiming monster. Please try again.');
+        confirmClaimBtn.disabled = false;
+        confirmClaimBtn.textContent = 'Claim';
+      }
+    }
+
+    // Event Listeners
+    trainer1Select.addEventListener('change', function() {
+      const trainerId = this.value;
+
+      if (trainerId) {
+        // Check if trainer has Legacy Leeway
+        checkLegacyLeeway(trainerId);
+
+        // Load monsters for this trainer
+        loadTrainerMonsters(trainerId, monster1Select);
+
+        // Show monster selection
+        monsterSelection.classList.remove('hidden');
+      } else {
+        // Hide Legacy Leeway status
+        legacyLeewayStatus.classList.add('hidden');
+
+        // Disable second trainer selection
+        trainer2Select.disabled = true;
+        trainer2Select.value = '';
+
+        // Hide monster selection
+        monsterSelection.classList.add('hidden');
+      }
+    });
+
+    trainer2Select.addEventListener('change', function() {
+      const trainerId = this.value;
+
+      if (trainerId) {
+        // Load monsters for this trainer
+        loadTrainerMonsters(trainerId, monster2Select);
+      }
+    });
+
+    monster1Select.addEventListener('change', function() {
+      const selectedOption = this.options[this.selectedIndex];
+
+      if (selectedOption && selectedOption.dataset.monster) {
+        const monster = JSON.parse(selectedOption.dataset.monster);
+        displayMonsterDetails(monster, monster1Details);
+      } else {
+        monster1Details.innerHTML = '';
+      }
+
+      // Check breeding eligibility
+      checkBreedingEligibility();
+    });
+
+    monster2Select.addEventListener('change', function() {
+      const selectedOption = this.options[this.selectedIndex];
+
+      if (selectedOption && selectedOption.dataset.monster) {
+        const monster = JSON.parse(selectedOption.dataset.monster);
+        displayMonsterDetails(monster, monster2Details);
+      } else {
+        monster2Details.innerHTML = '';
+      }
+
+      // Check breeding eligibility
+      checkBreedingEligibility();
+    });
+
+    startBreedingBtn.addEventListener('click', startBreeding);
+
+    cancelClaimBtn.addEventListener('click', closeClaimModal);
+
+    confirmClaimBtn.addEventListener('click', claimOffspring);
+
+    // Initialize
+    loadUserTrainers();
+  });
+</script>
+
+
+

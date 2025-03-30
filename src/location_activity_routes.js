@@ -19,8 +19,17 @@ app.get('/town/visit/garden/tend', async (req, res) => {
   }
 
   try {
-    // Get the trainer
-    const trainer = await Trainer.getById(req.session.user.trainer_id);
+    // Get the user's Discord ID
+    const discordUserId = req.session.user.discord_id || req.session.user.id;
+
+    // Get the user's trainers
+    const trainers = await Trainer.getByUserId(discordUserId);
+    if (!trainers || trainers.length === 0) {
+      return res.redirect('/town/visit/garden?message=You need at least one trainer to tend the garden!&messageType=error');
+    }
+
+    // Use the first trainer
+    const trainer = trainers[0];
 
     // Check if the trainer has an active session
     const activeSessions = await LocationActivitySession.getActiveForTrainer(trainer.id);

@@ -1,247 +1,911 @@
 <% /* Set the title and other variables for the layout */ %>
 <% title = 'Bakery' %>
 
-<div class="container mx-auto px-4">
-  <div>
-    <img src="https://i.imgur.com/5cgcSGC.png" alt="Bakery Banner" class="location-banner w-full object-cover rounded-lg shadow-lg">
-    <div class="flex flex-col items-center">
-      <div class="flex items-center mb-4 w-full">
-        <a href="/town/visit" class="btn-secondary mr-4 hover:scale-105 transition-transform">
-          <i class="fas fa-arrow-left mr-2"></i> Back to Town
-        </a>
-        <h2 class="text-2xl font-display font-bold text-center text-amber-400 text-shadow-lg">Bakery</h2>
-      </div>
-      <p class="text-center text-sm text-gray-200 mb-4">Feed your monsters delicious pastries for special effects.</p>
-    </div>
-  </div>
+<div class="container mx-auto px-4 py-8">
+  <% if (locals.bannerImage) { %>
+    <img src="<%= bannerImage %>" alt="Bakery Banner" class="location-banner w-full rounded-xl mb-8">
+  <% } %>
 
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-    <!-- Pastry Inventory Section -->
-    <div class="location-card overflow-hidden">
-      <div class="relative">
-        <img src="https://i.imgur.com/5cgcSGC.png" alt="Pastry Inventory" class="w-full h-48 object-cover">
-        <div class="absolute inset-0 bg-gradient-to-t from-black/90 to-transparent"></div>
-        <div class="absolute bottom-0 left-0 right-0 p-4">
-          <h3 class="text-xl font-bold text-white text-shadow-lg">Pastry Inventory</h3>
+  <div class="location-card mb-8">
+    <div class="location-card-content">
+      <div class="mb-8 p-6 bg-gray-900 bg-opacity-50 rounded-lg">
+        <h3 class="text-2xl font-bold text-amber-400 mb-2 text-center">Monster Pastry Workshop</h3>
+        <p class="text-sm text-gray-300 text-center max-w-3xl mx-auto">Feed special pastries to your monsters to customize their species, types, and attributes. Unlike berries, pastries allow you to enter your own predetermined values!</p>
+
+        <div class="flex justify-center mt-8 mb-12">
+          <a href="/town/shop/pastry_shop" class="btn-secondary py-2 px-6 rounded-lg text-sm flex items-center hover:scale-105 transition-transform duration-200">
+            <i class="fas fa-shopping-basket mr-2"></i> Visit Shop for More Pastries
+          </a>
         </div>
       </div>
-      <div class="location-card-content">
-        <p class="text-sm text-gray-300 mb-4">Your collection of pastries that can be used to boost your monsters' stats and happiness.</p>
 
-        <div class="bg-gray-800/50 p-4 rounded-lg mb-4">
-          <h4 class="text-amber-400 mb-2 font-medium">Your Pastries</h4>
-          <div class="grid grid-cols-2 gap-2">
-            <div class="flex items-center p-2 bg-gray-700/50 rounded-lg">
-              <div class="w-8 h-8 bg-yellow-600/20 rounded-full flex items-center justify-center mr-2">
-                <i class="fas fa-cookie text-yellow-400"></i>
-              </div>
-              <div>
-                <div class="text-xs text-gray-300">Sweet Cake</div>
-                <div class="text-xs text-green-400">Quantity: 5</div>
-              </div>
-            </div>
-            <div class="flex items-center p-2 bg-gray-700/50 rounded-lg">
-              <div class="w-8 h-8 bg-red-600/20 rounded-full flex items-center justify-center mr-2">
-                <i class="fas fa-cookie-bite text-red-400"></i>
-              </div>
-              <div>
-                <div class="text-xs text-gray-300">Sour Cake</div>
-                <div class="text-xs text-green-400">Quantity: 3</div>
-              </div>
-            </div>
-            <div class="flex items-center p-2 bg-gray-700/50 rounded-lg">
-              <div class="w-8 h-8 bg-purple-600/20 rounded-full flex items-center justify-center mr-2">
-                <i class="fas fa-cookie text-purple-400"></i>
-              </div>
-              <div>
-                <div class="text-xs text-gray-300">Bitter Cake</div>
-                <div class="text-xs text-green-400">Quantity: 4</div>
-              </div>
-            </div>
-            <div class="flex items-center p-2 bg-gray-700/50 rounded-lg">
-              <div class="w-8 h-8 bg-orange-600/20 rounded-full flex items-center justify-center mr-2">
-                <i class="fas fa-cookie-bite text-orange-400"></i>
-              </div>
-              <div>
-                <div class="text-xs text-gray-300">Spicy Cake</div>
-                <div class="text-xs text-green-400">Quantity: 2</div>
-              </div>
-            </div>
-            <div class="flex items-center p-2 bg-gray-700/50 rounded-lg">
-              <div class="w-8 h-8 bg-blue-600/20 rounded-full flex items-center justify-center mr-2">
-                <i class="fas fa-cookie text-blue-400"></i>
-              </div>
-              <div>
-                <div class="text-xs text-gray-300">Dry Cake</div>
-                <div class="text-xs text-green-400">Quantity: 3</div>
-              </div>
-            </div>
-            <div class="flex items-center p-2 bg-gray-700/50 rounded-lg">
-              <div class="w-8 h-8 bg-yellow-600/20 rounded-full flex items-center justify-center mr-2">
-                <i class="fas fa-bread-slice text-yellow-400"></i>
-              </div>
-              <div>
-                <div class="text-xs text-gray-300">Sweet Bread</div>
-                <div class="text-xs text-green-400">Quantity: 7</div>
-              </div>
-            </div>
+      <% if (locals.message) { %>
+        <div class="alert alert-<%= messageType || 'info' %> mb-4">
+          <%= message %>
+        </div>
+      <% } %>
+
+      <!-- Form section -->
+      <form id="pastry-form" class="space-y-4">
+        <!-- Trainer Selection -->
+        <div class="mb-6">
+          <div class="flex items-center mb-2">
+            <i class="fas fa-user text-blue-400 mr-2"></i>
+            <label for="trainer-select" class="block text-sm text-amber-400 font-semibold">Select Trainer</label>
           </div>
+          <select
+            id="trainer-select"
+            name="trainerId"
+            class="block w-full h-12 pl-3 pr-10 py-2 bg-gray-800/90 text-white placeholder-gray-400 border border-gray-700 rounded-lg focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400"
+            required
+          >
+            <option value="">-- Select a Trainer --</option>
+          </select>
         </div>
 
-        <a href="/town/shop/pastry_shop" class="btn-primary w-full text-center py-2 px-4 rounded text-sm">
-          <i class="fas fa-shopping-basket mr-1"></i> Buy More Pastries
-        </a>
-      </div>
-    </div>
-
-    <!-- Use Pastries Section -->
-    <div class="location-card overflow-hidden">
-      <div class="relative">
-        <img src="https://i.imgur.com/fztdYkJ.png" alt="Use Pastries" class="w-full h-48 object-cover">
-        <div class="absolute inset-0 bg-gradient-to-t from-black/90 to-transparent"></div>
-        <div class="absolute bottom-0 left-0 right-0 p-4">
-          <h3 class="text-xl font-bold text-white text-shadow-lg">Use Pastries</h3>
-        </div>
-      </div>
-      <div class="location-card-content">
-        <p class="text-sm text-gray-300 mb-4">Select a monster and a pastry to use on them for various stat boosts.</p>
-
-        <div class="bg-gray-800/50 p-4 rounded-lg mb-4">
-          <h4 class="text-amber-400 mb-2 font-medium">Select Monster</h4>
-          <select class="w-full bg-gray-700 border-gray-600 text-white rounded-md p-2 mb-4">
+        <!-- Monster Selection -->
+        <div class="mb-6">
+          <div class="flex items-center mb-2">
+            <i class="fas fa-dragon text-purple-400 mr-2"></i>
+            <label for="monster-select" class="block text-sm text-amber-400 font-semibold">Select Monster</label>
+          </div>
+          <select
+            id="monster-select"
+            name="monsterId"
+            class="block w-full h-12 pl-3 pr-10 py-2 bg-gray-800/90 text-white placeholder-gray-400 border border-gray-700 rounded-lg focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400"
+            required
+            disabled
+          >
             <option value="">-- Select a Monster --</option>
-            <option value="1">Pikachu (Lv. 25) - Happiness: 120/255</option>
-            <option value="2">Charizard (Lv. 36) - Happiness: 180/255</option>
-            <option value="3">Bulbasaur (Lv. 15) - Happiness: 90/255</option>
-            <option value="4">Squirtle (Lv. 18) - Happiness: 110/255</option>
           </select>
-
-          <h4 class="text-amber-400 mb-2 font-medium">Select Pastry</h4>
-          <select class="w-full bg-gray-700 border-gray-600 text-white rounded-md p-2 mb-4">
-            <option value="">-- Select a Pastry --</option>
-            <option value="sweet">Sweet Cake (Increases happiness)</option>
-            <option value="sour">Sour Cake (Increases attack)</option>
-            <option value="bitter">Bitter Cake (Increases defense)</option>
-            <option value="spicy">Spicy Cake (Increases speed)</option>
-            <option value="dry">Dry Cake (Increases special attack)</option>
-            <option value="bread">Sweet Bread (Increases happiness slightly)</option>
-          </select>
-
-          <div class="bg-gray-700/50 p-3 rounded-lg mb-4">
-            <div class="text-xs text-gray-300 mb-1">Effect Preview:</div>
-            <div class="text-sm text-amber-400">Select a monster and pastry to see the effect</div>
-          </div>
         </div>
 
-        <button class="btn-primary w-full text-center py-2 px-4 rounded text-sm" disabled>
-          <i class="fas fa-cookie mr-1"></i> Feed Pastry
-        </button>
+        <!-- Pastry Selection -->
+        <div class="mb-6">
+          <div class="flex items-center mb-2">
+            <i class="fas fa-cookie text-amber-400 mr-2"></i>
+            <label for="pastry-select" class="block text-sm text-amber-400 font-semibold">Select Pastry</label>
+          </div>
+          <select
+            id="pastry-select"
+            name="pastryName"
+            class="block w-full h-12 pl-3 pr-10 py-2 bg-gray-800/90 text-white placeholder-gray-400 border border-gray-700 rounded-lg focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400"
+            required
+            disabled
+          >
+            <option value="">-- Select a Pastry --</option>
+          </select>
+        </div>
+
+        <!-- Effect Preview -->
+        <div id="effect-preview" class="hidden mb-6">
+          <div id="effect-description" class="text-gray-300"></div>
+        </div>
+
+        <!-- Custom Value Input -->
+        <div id="custom-value-container" class="mb-6 hidden">
+          <div class="flex items-center mb-2">
+            <i class="fas fa-edit text-blue-400 mr-2"></i>
+            <label id="custom-value-label" for="custom-value-input" class="block text-sm text-amber-400 font-semibold">Enter Value</label>
+          </div>
+          <input
+            type="text"
+            id="custom-value-input"
+            name="customValue"
+            class="block w-full h-12 pl-3 pr-10 py-2 bg-gray-800/90 text-white placeholder-gray-400 border border-gray-700 rounded-lg focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400"
+            placeholder="Enter value..."
+          >
+          <p id="custom-value-help" class="mt-1 text-sm text-gray-400"></p>
+        </div>
+
+        <!-- Submit Button -->
+        <div class="flex justify-center">
+          <button
+            type="submit"
+            id="use-button"
+            class="btn-primary px-6 py-3 rounded-lg flex items-center gap-2"
+            disabled
+          >
+            <i class="fas fa-cookie-bite"></i>
+            Feed Pastry
+          </button>
+        </div>
+      </form>
+
+      <div id="pastry-inventory" class="inventory-grid mt-8">
       </div>
     </div>
   </div>
 </div>
 
 <style>
-.text-shadow {
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-}
+  .location-card {
+    background-color: rgba(17, 24, 39, 0.8);
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    transition: transform 0.3s, box-shadow 0.3s;
+    border: 1px solid rgba(75, 85, 99, 0.3);
+    backdrop-filter: blur(10px);
+  }
 
-.text-shadow-lg {
-  text-shadow: 0 4px 8px rgba(0, 0, 0, 0.8);
-}
+  .location-card:hover {
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+  }
 
-.location-card {
-  background-color: var(--card-background);
-  border-radius: 0.75rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  transition: transform 0.3s, box-shadow 0.3s;
-}
+  .location-card-content {
+    padding: 1.5rem;
+    background-color: rgba(17, 24, 39, 0.6);
+  }
 
-.location-card:hover {
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
-}
+  .btn-primary {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    color: #111827;
+    font-weight: 600;
+    transition: all 0.3s;
+    border: none;
+    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
 
-.location-card-content {
-  padding: 1.25rem;
-  background-color: var(--card-background);
-}
+  .btn-primary:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(245, 158, 11, 0.4);
+  }
 
-.btn-primary {
-  background-color: var(--accent-color);
-  color: var(--background-color);
-  font-weight: 500;
-  transition: all 0.2s;
-}
+  .btn-primary:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
 
-.btn-primary:hover:not(:disabled) {
-  background-color: var(--accent-hover);
-  transform: translateY(-2px);
-}
+  .btn-secondary {
+    background-color: rgba(31, 41, 55, 0.8);
+    color: #e5e7eb;
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    border-radius: 0.375rem;
+    transition: all 0.3s;
+    border: 1px solid rgba(75, 85, 99, 0.3);
+  }
 
-.btn-primary:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
+  .btn-secondary:hover {
+    background-color: rgba(31, 41, 55, 0.9);
+    transform: translateY(-2px);
+  }
 
-.btn-secondary {
-  background-color: var(--secondary-color);
-  color: var(--text-color);
-  font-weight: 500;
-  padding: 0.5rem 1rem;
-  border-radius: 0.375rem;
-  transition: all 0.2s;
-}
+  /* Trainer select dropdown styling */
+  #trainer-select {
+    width: 100% !important;
+    height: 48px !important;
+    background-color: rgb(31 41 55 / 0.9) !important;
+    color: white !important;
+    border: 1px solid rgb(55 65 81) !important;
+    border-radius: 0.5rem !important;
+    padding: 0.75rem 1rem !important;
+    appearance: none !important;
+    cursor: pointer !important;
+    margin-bottom: 1.5rem !important;
+  }
 
-.btn-secondary:hover {
-  background-color: var(--secondary-hover);
-}
+  #trainer-select:focus {
+    outline: none !important;
+    border-color: rgb(217 119 6) !important;
+    box-shadow: 0 0 0 2px rgba(217, 119, 6, 0.2) !important;
+  }
+
+  /* Monster select dropdown styling */
+  #monster-select {
+    width: 100% !important;
+    height: 48px !important;
+    background-color: rgb(31 41 55 / 0.9) !important;
+    color: white !important;
+    border: 1px solid rgb(55 65 81) !important;
+    border-radius: 0.5rem !important;
+    padding: 0.75rem 1rem !important;
+    appearance: none !important;
+    cursor: pointer !important;
+    margin-bottom: 1.5rem !important;
+  }
+
+  #monster-select:focus {
+    outline: none !important;
+    border-color: rgb(217 119 6) !important;
+    box-shadow: 0 0 0 2px rgba(217, 119, 6, 0.2) !important;
+  }
+
+  /* Pastry select dropdown styling */
+  #pastry-select {
+    width: 100% !important;
+    height: 48px !important;
+    background-color: rgb(31 41 55 / 0.9) !important;
+    color: white !important;
+    border: 1px solid rgb(55 65 81) !important;
+    border-radius: 0.5rem !important;
+    padding: 0.75rem 1rem !important;
+    appearance: none !important;
+    cursor: pointer !important;
+    margin-bottom: 1.5rem !important;
+  }
+
+  #pastry-select:focus {
+    outline: none !important;
+    border-color: rgb(217 119 6) !important;
+    box-shadow: 0 0 0 2px rgba(217, 119, 6, 0.2) !important;
+  }
+
+  /* Custom value input styling */
+  #custom-value-input {
+    width: 100% !important;
+    height: 48px !important;
+    background-color: rgb(31 41 55 / 0.9) !important;
+    color: white !important;
+    border: 1px solid rgb(55 65 81) !important;
+    border-radius: 0.5rem !important;
+    padding: 0.75rem 1rem !important;
+    margin-bottom: 1.5rem !important;
+  }
+
+  #custom-value-input:focus {
+    outline: none !important;
+    border-color: rgb(217 119 6) !important;
+    box-shadow: 0 0 0 2px rgba(217, 119, 6, 0.2) !important;
+  }
+
+  /* Custom dropdown arrow for all select elements */
+  #trainer-select, #monster-select, #pastry-select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23d6a339'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E") !important;
+    background-repeat: no-repeat !important;
+    background-position: right 0.75rem center !important;
+    background-size: 1.5rem !important;
+  }
+
+  /* Disabled state styling */
+  #trainer-select:disabled,
+  #monster-select:disabled,
+  #pastry-select:disabled,
+  #custom-value-input:disabled {
+    opacity: 0.6 !important;
+    cursor: not-allowed !important;
+  }
+
+  .text-shadow-lg {
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  }
+
+  .location-banner {
+    height: 200px;
+    object-fit: cover;
+  }
+
+  .inventory-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+  }
+
+  .item-name {
+    font-weight: bold;
+    margin-bottom: 0.25rem;
+    color: var(--text-color);
+  }
+
+  .item-quantity {
+    color: var(--accent-color);
+    font-size: 0.875rem;
+  }
+
+  .species-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 1rem;
+  }
+
+  .species-card {
+    background-color: rgba(17, 24, 39, 0.7);
+    border-radius: 0.5rem;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    transition: all 0.3s;
+    border: 1px solid rgba(55, 65, 81, 0.3);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .species-card:hover {
+    background-color: rgba(31, 41, 55, 0.9);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+    border-color: rgba(107, 114, 128, 0.5);
+  }
+
+  .btn-reroll {
+    background: rgba(61, 75, 93, 0.5);
+    color: var(--text-color);
+    border: 1px solid rgba(61, 75, 93, 0.8);
+    padding: 0.5rem;
+    border-radius: 0.375rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.75rem;
+    margin-left: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .btn-reroll:hover {
+    background: rgba(61, 75, 93, 0.8);
+  }
+
+  .pastry-effect-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 1.5rem;
+    border: 1px solid rgba(61, 75, 93, 0.3);
+    border-radius: 0.5rem;
+    overflow: hidden;
+  }
+
+  .pastry-effect-table th {
+    background-color: rgba(30, 37, 50, 0.9);
+    color: var(--accent-color);
+    text-align: left;
+    padding: 0.75rem 1rem;
+    font-weight: 600;
+    border-bottom: 1px solid rgba(61, 75, 93, 0.5);
+  }
+
+  .pastry-effect-table td {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid rgba(61, 75, 93, 0.3);
+    color: var(--text-color);
+  }
+
+  .pastry-effect-table tr:last-child td {
+    border-bottom: none;
+  }
+
+  .pastry-effect-table tr:hover td {
+    background-color: rgba(43, 54, 69, 0.5);
+  }
+
+  .pastry-name {
+    color: var(--accent-color);
+    font-weight: 500;
+  }
+
+  .card-section {
+    background-color: rgba(17, 24, 39, 0.7);
+    border-radius: 0.75rem;
+    border: 1px solid rgba(55, 65, 81, 0.3);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(8px);
+    margin-bottom: 1.5rem;
+    overflow: hidden;
+  }
+
+  .card-header {
+    background: linear-gradient(to right, rgba(31, 41, 55, 0.9), rgba(17, 24, 39, 0.7));
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid rgba(75, 85, 99, 0.3);
+  }
+
+  .card-body {
+    padding: 1.5rem;
+  }
+
+  /* Add these to your existing styles */
+  #trainer-select, #monster-select, #pastry-select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23d6a339'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E") !important;
+    background-repeat: no-repeat !important;
+    background-position: right 0.75rem center !important;
+    background-size: 1.5rem !important;
+  }
+
+  #trainer-select:focus, #monster-select:focus, #pastry-select:focus {
+    outline: none !important;
+    border-color: rgb(217 119 6) !important;
+    box-shadow: 0 0 0 2px rgba(217, 119, 6, 0.2) !important;
+  }
+
+  #custom-value-input:focus {
+    outline: none !important;
+    border-color: rgb(217 119 6) !important;
+    box-shadow: 0 0 0 2px rgba(217, 119, 6, 0.2) !important;
+  }
 </style>
 
 <script>
   document.addEventListener('DOMContentLoaded', function() {
-    const monsterSelect = document.querySelector('select:nth-of-type(1)');
-    const pastrySelect = document.querySelector('select:nth-of-type(2)');
-    const effectPreview = document.querySelector('.bg-gray-700\\/50 .text-amber-400');
-    const useButton = document.querySelector('.btn-primary');
+    // Define pastry effects
+    const PASTRY_EFFECTS = {
+      'Miraca Pastry': {
+        description: 'Set Type 1',
+        requiresInput: true,
+        inputLabel: 'Enter the new type',
+        inputPlaceholder: 'e.g., Fire, Water, Electric'
+      },
+      'Cocon Pastry': {
+        description: 'Set Type 2 (if present)',
+        requiresInput: true,
+        inputLabel: 'Enter the new type',
+        inputPlaceholder: 'e.g., Flying, Ground, Psychic'
+      },
+      'Durian Pastry': {
+        description: 'Set Type 3 (if present)',
+        requiresInput: true,
+        inputLabel: 'Enter the new type',
+        inputPlaceholder: 'e.g., Dark, Steel, Fairy'
+      },
+      'Monel Pastry': {
+        description: 'Set Type 4 (if present)',
+        requiresInput: true,
+        inputLabel: 'Enter the new type',
+        inputPlaceholder: 'e.g., Ghost, Ice, Rock'
+      },
+      'Perep Pastry': {
+        description: 'Set Type 5 (if present)',
+        requiresInput: true,
+        inputLabel: 'Enter the new type',
+        inputPlaceholder: 'e.g., Bug, Fighting, Poison'
+      },
+      'Addish Pastry': {
+        description: 'Add Type 2 (if not present)',
+        requiresInput: true,
+        inputLabel: 'Enter the new type',
+        inputPlaceholder: 'e.g., Flying, Ground, Psychic'
+      },
+      'Sky Carrot Pastry': {
+        description: 'Add Type 3 (if not present)',
+        requiresInput: true,
+        inputLabel: 'Enter the new type',
+        inputPlaceholder: 'e.g., Dark, Steel, Fairy'
+      },
+      'Kembre Pastry': {
+        description: 'Add Type 4 (if not present)',
+        requiresInput: true,
+        inputLabel: 'Enter the new type',
+        inputPlaceholder: 'e.g., Ghost, Ice, Rock'
+      },
+      'Espara Pastry': {
+        description: 'Add Type 5 (if not present)',
+        requiresInput: true,
+        inputLabel: 'Enter the new type',
+        inputPlaceholder: 'e.g., Bug, Fighting, Poison'
+      },
+      'Patama Pastry': {
+        description: 'Set Species 1',
+        requiresInput: true,
+        inputLabel: 'Enter the new species',
+        inputPlaceholder: 'e.g., Pikachu, Charizard'
+      },
+      'Bluk Pastry': {
+        description: 'Set Species 2 (if present)',
+        requiresInput: true,
+        inputLabel: 'Enter the new species',
+        inputPlaceholder: 'e.g., Bulbasaur, Squirtle'
+      },
+      'Nuevo Pastry': {
+        description: 'Set Species 3 (if present)',
+        requiresInput: true,
+        inputLabel: 'Enter the new species',
+        inputPlaceholder: 'e.g., Eevee, Dratini'
+      },
+      'Azzuk Pastry': {
+        description: 'Add Species 2 (if not present)',
+        requiresInput: true,
+        inputLabel: 'Enter the new species',
+        inputPlaceholder: 'e.g., Bulbasaur, Squirtle'
+      },
+      'Mangus Pastry': {
+        description: 'Add Species 3 (if not present)',
+        requiresInput: true,
+        inputLabel: 'Enter the new species',
+        inputPlaceholder: 'e.g., Eevee, Dratini'
+      },
+      'Datei Pastry': {
+        description: 'Set Attribute',
+        requiresInput: true,
+        inputLabel: 'Enter the new attribute',
+        inputPlaceholder: 'e.g., Brave, Timid, Jolly'
+      }
+    };
 
-    function updatePreview() {
-      const monsterValue = monsterSelect.value;
-      const pastryValue = pastrySelect.value;
+    const trainerSelect = document.getElementById('trainer-select');
+    const monsterSelect = document.getElementById('monster-select');
+    const pastrySelect = document.getElementById('pastry-select');
+    const useButton = document.getElementById('use-button');
+    const effectPreview = document.getElementById('effect-preview');
+    const effectDescription = document.getElementById('effect-description');
+    const pastryForm = document.getElementById('pastry-form');
+    const customValueInput = document.getElementById('custom-value-input');
+    const customValueContainer = document.getElementById('custom-value-container');
+    const customValueLabel = document.getElementById('custom-value-label');
+    const customValueHelp = document.getElementById('custom-value-help');
 
-      if (monsterValue && pastryValue) {
-        const monsterName = monsterSelect.options[monsterSelect.selectedIndex].text.split(' (')[0];
-        let effect = '';
+    // Function to update the effect preview
+    function updateEffectPreview(pastryName) {
+      if (!pastryName || !PASTRY_EFFECTS[pastryName]) {
+        effectPreview.classList.add('hidden');
+        customValueContainer.classList.add('hidden');
+        return;
+      }
 
-        switch(pastryValue) {
-          case 'sweet':
-            effect = `Increase ${monsterName}'s happiness significantly`;
-            break;
-          case 'sour':
-            effect = `Increase ${monsterName}'s attack stat`;
-            break;
-          case 'bitter':
-            effect = `Increase ${monsterName}'s defense stat`;
-            break;
-          case 'spicy':
-            effect = `Increase ${monsterName}'s speed stat`;
-            break;
-          case 'dry':
-            effect = `Increase ${monsterName}'s special attack stat`;
-            break;
-          case 'bread':
-            effect = `Increase ${monsterName}'s happiness slightly`;
-            break;
-        }
+      const effect = PASTRY_EFFECTS[pastryName];
+      effectPreview.classList.remove('hidden');
 
-        effectPreview.textContent = effect;
-        useButton.disabled = false;
+      // Update the effect description without creating a new input field
+      effectDescription.innerHTML = `
+        <div class="flex items-center gap-2 mb-2">
+          <i class="fas fa-info-circle text-amber-400"></i>
+          <span class="font-semibold text-amber-400">Effect:</span>
+        </div>
+        <div class="ml-6">
+          <p class="text-gray-300">${effect.description}</p>
+        </div>
+      `;
+
+      // Show/hide and update the existing custom value input field
+      if (effect.requiresInput) {
+        customValueContainer.classList.remove('hidden');
+        customValueLabel.textContent = effect.inputLabel;
+        customValueInput.placeholder = effect.inputPlaceholder;
+        customValueHelp.textContent = `Enter ${effect.inputLabel.toLowerCase()}`;
       } else {
-        effectPreview.textContent = 'Select a monster and pastry to see the effect';
-        useButton.disabled = true;
+        customValueContainer.classList.add('hidden');
       }
     }
 
-    monsterSelect.addEventListener('change', updatePreview);
-    pastrySelect.addEventListener('change', updatePreview);
+    // Event listener for pastry selection
+    pastrySelect.addEventListener('change', function() {
+      const selectedPastry = this.value;
+      updateEffectPreview(selectedPastry);
+
+      // Enable/disable submit button based on selection
+      useButton.disabled = !selectedPastry;
+      if (selectedPastry) {
+        useButton.innerHTML = '<i class="fas fa-cookie-bite mr-2"></i>Feed Pastry';
+      }
+    });
+
+    // Form submission handler
+    pastryForm.addEventListener('submit', async function(e) {
+      e.preventDefault();
+
+      const trainerId = trainerSelect.value;
+      const monsterId = monsterSelect.value;
+      const pastryName = pastrySelect.value;
+      const customValue = document.querySelector('input[name="customValue"]')?.value;
+
+      if (!trainerId || !monsterId || !pastryName) {
+        alert('Please select a trainer, monster, and pastry.');
+        return;
+      }
+
+      if (PASTRY_EFFECTS[pastryName].requiresInput && !customValue) {
+        alert('Please enter the required value for this pastry.');
+        return;
+      }
+
+      setFormDisabled(true);
+      useButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Feeding...';
+
+      try {
+        const response = await fetch('/api/bakery/feed-pastry', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            trainerId,
+            monsterId,
+            pastryName,
+            customValue
+          })
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+          window.location.href = `/town/visit/bakery?message=${encodeURIComponent(result.message)}&messageType=success`;
+        } else {
+          alert(result.message || 'Failed to feed pastry. Please try again.');
+          setFormDisabled(false);
+        }
+      } catch (error) {
+        console.error('Error feeding pastry:', error);
+        alert('An error occurred while feeding the pastry. Please try again.');
+        setFormDisabled(false);
+      }
+    });
+
+    // Helper function to disable/enable form elements
+    function setFormDisabled(disabled) {
+      trainerSelect.disabled = disabled;
+      monsterSelect.disabled = disabled;
+      pastrySelect.disabled = disabled;
+      useButton.disabled = disabled;
+      const customValueInputs = document.querySelectorAll('input[name="customValue"]');
+      customValueInputs.forEach(input => input.disabled = disabled);
+    }
+
+    // Update pastry inventory display
+    async function updatePastryInventory(trainerId) {
+      const inventoryContainer = document.getElementById('pastry-inventory');
+      if (!inventoryContainer) {
+        console.error('Pastry inventory container not found in the DOM');
+        return;
+      }
+
+      // Show loading state
+      inventoryContainer.innerHTML = '<div class="text-center text-gray-400 py-4"><i class="fas fa-spinner fa-spin mr-2"></i> Loading pastry inventory...</div>';
+
+      try {
+        console.log(`Fetching pastries for trainer ${trainerId}`);
+        const response = await fetch(`/api/trainers/${trainerId}/pastries`);
+
+        if (!response.ok) {
+          throw new Error(`Failed to fetch pastries: ${response.status} ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        console.log('Received pastry data:', data);
+
+        if (data.success && data.pastries && data.pastries.length > 0) {
+          console.log(`Found ${data.pastries.length} pastries to display`);
+
+          // Generate HTML for each pastry
+          const pastryHtml = data.pastries.map(pastry => {
+            const icon = getPastryIcon(pastry.name);
+            const color = getPastryColor(pastry.name);
+            console.log(`Rendering pastry: ${pastry.name}, icon: ${icon}, color: ${color}`);
+
+            return `
+              <div class="inventory-item bg-gray-800/60 p-4 rounded-lg border border-gray-700/50">
+                <div class="flex items-center gap-2">
+                  <i class="fas ${icon} text-${color}-400"></i>
+                  <span class="font-medium text-gray-200">${pastry.name}</span>
+                </div>
+                <div class="mt-1 text-sm text-gray-400">Quantity: ${pastry.quantity}</div>
+              </div>
+            `;
+          }).join('');
+
+          inventoryContainer.innerHTML = pastryHtml;
+        } else {
+          console.log('No pastries found or empty pastries array');
+          inventoryContainer.innerHTML = '<div class="text-center text-gray-400 py-4">No pastries found</div>';
+        }
+      } catch (error) {
+        console.error('Error loading pastry inventory:', error);
+        inventoryContainer.innerHTML = '<div class="text-center text-red-400 py-4">Failed to load pastry inventory</div>';
+      }
+    }
+
+    // Helper functions for pastry display
+    function getPastryIcon(pastryName) {
+      // Add specific icons for different pastry types
+      if (pastryName.includes('Species')) return 'fa-dna';
+      if (pastryName.includes('Type')) return 'fa-fire';
+      if (pastryName.includes('Attribute')) return 'fa-star';
+      return 'fa-cookie';
+    }
+
+    function getPastryColor(pastryName) {
+      // Add specific colors for different pastry types
+      if (pastryName.includes('Species')) return 'purple';
+      if (pastryName.includes('Type')) return 'blue';
+      if (pastryName.includes('Attribute')) return 'yellow';
+      return 'amber';
+    }
+
+    // Initialize trainer selection if available
+    if (trainerSelect.value) {
+      updatePastryInventory(trainerSelect.value);
+    }
+
+    // Load trainers when the page loads
+    loadTrainers();
+
+    async function loadTrainers() {
+      if (!trainerSelect) {
+        console.error('Trainer select element not found in the DOM');
+        return;
+      }
+
+      try {
+        console.log('Fetching trainers from /api/trainers/user');
+        const response = await fetch('/api/trainers/user');
+        if (!response.ok) {
+          throw new Error(`Failed to fetch trainers: ${response.status} ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        console.log('Received trainer data:', data);
+
+        // Handle both response formats (direct array or object with trainers property)
+        let trainers = Array.isArray(data) ? data : (data.trainers || []);
+        console.log(`Processing ${trainers.length} trainers:`, trainers);
+
+        // Clear existing options
+        trainerSelect.innerHTML = '<option value="">-- Select a Trainer --</option>';
+
+        // Add trainer options
+        if (trainers && trainers.length > 0) {
+          trainers.forEach(trainer => {
+            const option = document.createElement('option');
+            option.value = trainer.id;
+            option.textContent = trainer.name;
+            trainerSelect.appendChild(option);
+          });
+        } else {
+          console.warn('No trainers found');
+        }
+      } catch (error) {
+        console.error('Error loading trainers:', error);
+        trainerSelect.innerHTML = '<option value="">Error loading trainers</option>';
+      }
+    }
+
+    // Event listener for trainer selection
+    trainerSelect.addEventListener('change', function() {
+      const trainerId = this.value;
+      if (trainerId) {
+        // Load monsters and pastries for the selected trainer
+        loadMonsters(trainerId);
+        loadPastries(trainerId);
+
+        // Update the pastry inventory display
+        updatePastryInventory(trainerId);
+      } else {
+        monsterSelect.innerHTML = '<option value="">-- Select a Monster --</option>';
+        monsterSelect.disabled = true;
+        pastrySelect.innerHTML = '<option value="">-- Select a Pastry --</option>';
+        pastrySelect.disabled = true;
+      }
+    });
+
+    async function loadMonsters(trainerId) {
+      if (!monsterSelect) {
+        console.error('Monster select element not found in the DOM');
+        return;
+      }
+
+      try {
+        console.log(`Fetching monsters for trainer ${trainerId}`);
+        monsterSelect.disabled = true;
+        monsterSelect.innerHTML = '<option value="">Loading monsters...</option>';
+
+        // Fetch monsters for the trainer
+        const response = await fetch(`/api/trainers/${trainerId}/monsters`);
+        if (!response.ok) {
+          throw new Error(`Failed to fetch monsters: ${response.status} ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        console.log('Received monster data:', data);
+
+        // Handle both response formats (direct array or object with monsters property)
+        let monsters = Array.isArray(data) ? data : (data.monsters || []);
+        console.log(`Processing ${monsters.length} monsters:`, monsters);
+
+        // Clear existing options
+        monsterSelect.innerHTML = '<option value="">-- Select a Monster --</option>';
+
+        // Add monster options
+        if (monsters && monsters.length > 0) {
+          monsters.forEach(monster => {
+            const option = document.createElement('option');
+            option.value = monster.mon_id;
+
+            // Format monster name with species and level
+            let displayName = monster.name;
+            if (monster.species1) {
+              displayName += ` (${monster.species1}`;
+              if (monster.species2) displayName += `/${monster.species2}`;
+              if (monster.species3) displayName += `/${monster.species3}`;
+              displayName += `, Lv.${monster.level})`;
+            } else {
+              displayName += ` (Lv.${monster.level})`;
+            }
+
+            option.textContent = displayName;
+            monsterSelect.appendChild(option);
+          });
+
+          monsterSelect.disabled = false;
+        } else {
+          monsterSelect.innerHTML = '<option value="">No monsters found</option>';
+        }
+      } catch (error) {
+        console.error('Error loading monsters:', error);
+        monsterSelect.innerHTML = '<option value="">Error loading monsters</option>';
+        monsterSelect.disabled = true;
+      }
+    }
+
+    async function loadPastries(trainerId) {
+      if (!pastrySelect) {
+        console.error('Pastry select element not found in the DOM');
+        return;
+      }
+
+      try {
+        console.log(`Fetching pastries for trainer ${trainerId}`);
+        pastrySelect.disabled = true;
+        pastrySelect.innerHTML = '<option value="">Loading pastries...</option>';
+
+        // Fetch trainer inventory
+        const response = await fetch(`/api/trainers/${trainerId}/inventory`);
+        if (!response.ok) {
+          throw new Error(`Failed to fetch trainer inventory: ${response.status} ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        console.log('Trainer inventory data:', data);
+
+        // Clear existing options
+        pastrySelect.innerHTML = '<option value="">-- Select a Pastry --</option>';
+
+        // Get pastries from inventory
+        // The API might return inventory directly or nested in an 'inventory' property
+        const inventory = data.inventory || data;
+        const pastries = inventory.inv_pastries || {};
+
+        // Parse pastries if it's a string (JSON)
+        let pastriesObj = pastries;
+        if (typeof pastries === 'string') {
+          try {
+            pastriesObj = JSON.parse(pastries);
+          } catch (e) {
+            console.error('Error parsing pastries JSON:', e);
+            pastriesObj = {};
+          }
+        }
+
+        console.log('Parsed pastries:', pastriesObj);
+        const pastryNames = Object.keys(pastriesObj);
+
+        if (pastryNames.length > 0) {
+          let hasPastries = false;
+
+          pastryNames.forEach(pastryName => {
+            const quantity = pastriesObj[pastryName];
+            if (quantity > 0) {
+              hasPastries = true;
+              const option = document.createElement('option');
+              option.value = pastryName;
+              option.textContent = `${pastryName} (${quantity})`;
+              pastrySelect.appendChild(option);
+
+              // If this pastry doesn't have a defined effect, add a default one
+              if (!PASTRY_EFFECTS[pastryName]) {
+                PASTRY_EFFECTS[pastryName] = {
+                  description: 'Custom effect',
+                  requiresInput: true,
+                  inputLabel: 'Enter the value',
+                  inputPlaceholder: 'Enter a value for this pastry'
+                };
+                console.log(`Added default effect for ${pastryName}`);
+              }
+            }
+          });
+
+          if (hasPastries) {
+            pastrySelect.disabled = false;
+          } else {
+            pastrySelect.innerHTML = '<option value="">No pastries available</option>';
+          }
+        } else {
+          pastrySelect.innerHTML = '<option value="">No pastries available</option>';
+        }
+
+        updateEffectPreview(pastrySelect.value);
+      } catch (error) {
+        console.error('Error loading pastries:', error);
+        pastrySelect.innerHTML = '<option value="">Error loading pastries</option>';
+        pastrySelect.disabled = true;
+      }
+    }
   });
 </script>

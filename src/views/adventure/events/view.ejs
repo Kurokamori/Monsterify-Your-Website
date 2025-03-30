@@ -1,0 +1,354 @@
+<% /* Set the title for the layout */ %>
+<% title = eventType === 'current' ? 'Current Event' : 'Past Events' %>
+
+<div class="container mx-auto px-4 py-6">
+  <!-- Header Section - Location Banner -->
+  <div class="location-banner">
+    <img src="https://i.imgur.com/Z5dNHXv.jpeg" alt="<%= title %> Banner" class="w-full h-full object-cover">
+    <div class="location-banner-overlay">
+      <div class="flex items-center mb-4 w-full">
+        <a href="/adventure/events" class="btn-secondary hover:scale-105 transition-transform">
+          <i class="fas fa-arrow-left mr-2"></i> Back to Lore Library
+        </a>
+      </div>
+      <h1 class="location-banner-title"><%= title %></h1>
+      <p class="location-banner-subtitle max-w-2xl">
+        <% if (eventType === 'current') { %>
+          Discover the latest happenings in the world of Dusk and Dawn.
+        <% } else { %>
+          Explore the history of events that have shaped the world of Dusk and Dawn.
+        <% } %>
+      </p>
+    </div>
+  </div>
+
+  <!-- Content Section -->
+  <div class="page-layout">
+    <div class="page-sidebar">
+      <div class="sidebar-nav">
+        <div class="sidebar-nav-title"><%= categories[activeCategory]?.name || 'Navigation' %></div>
+
+        <% if (categories[activeCategory] && categories[activeCategory].structure) { %>
+          <% function renderDirectories(structure, currentPath = '') { %>
+            <% if (structure.directories && structure.directories.length > 0) { %>
+              <% structure.directories.forEach(dir => { %>
+                <div class="category-item">
+                  <div class="category-header <%= currentPath === dir.path ? 'active' : '' %>"
+                       onclick="toggleCategory(this)">
+                    <span class="category-icon <%= currentPath === dir.path ? 'expanded' : '' %>">
+                      <i class="fas fa-chevron-right"></i>
+                    </span>
+                    <span><%= dir.name %></span>
+                  </div>
+                  <div class="category-children <%= currentPath === dir.path ? 'expanded' : '' %>">
+                    <% if (dir.children) { %>
+                      <% renderDirectories(dir.children, currentPath); %>
+                    <% } %>
+                  </div>
+                </div>
+              <% }); %>
+            <% } %>
+
+            <% if (structure.files && structure.files.length > 0) { %>
+              <% structure.files.forEach(file => { %>
+                <div class="file-item <%= currentPath === file.path ? 'active' : '' %>">
+                  <a href="/content/events/<%= eventType %>/<%= file.url.replace(/\\/g, '/') %>" class="block w-full h-full">
+                    <%= file.name %>
+                  </a>
+                </div>
+              <% }); %>
+            <% } %>
+          <% } %>
+
+          <% renderDirectories(categories[activeCategory].structure, currentPath); %>
+        <% } %>
+      </div>
+    </div>
+
+    <div class="page-content">
+      <div class="guide-content">
+        <%- content %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+/* Event view specific styles */
+.guide-content {
+  background-color: var(--card-background);
+  border-radius: 0.5rem;
+  padding: 2rem;
+  overflow-y: auto;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.category-item {
+  margin-bottom: 0.5rem;
+}
+
+.category-header {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 0.25rem;
+  transition: background-color 0.2s;
+}
+
+.category-header:hover {
+  background-color: var(--nav-hover);
+}
+
+.category-header.active {
+  background-color: var(--nav-active);
+  color: var(--accent-color);
+}
+
+.category-icon {
+  margin-right: 0.5rem;
+  width: 1rem;
+  text-align: center;
+  transition: transform 0.2s;
+}
+
+.category-icon.expanded {
+  transform: rotate(90deg);
+}
+
+.category-children {
+  margin-left: 1.5rem;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease-out;
+}
+
+.category-children.expanded {
+  max-height: 1000px;
+}
+
+.file-item {
+  padding: 0.5rem;
+  padding-left: 1.5rem;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.file-item:hover {
+  background-color: var(--nav-hover);
+}
+
+.file-item.active {
+  background-color: var(--nav-active);
+  color: var(--accent-color);
+}
+
+.block {
+  display: block;
+  width: 100%;
+  height: 100%;
+  color: inherit;
+  text-decoration: none;
+}
+
+.guide-content h1 {
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
+  color: var(--accent-color);
+}
+
+.guide-content h2 {
+  font-size: 1.5rem;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--divider-color);
+}
+
+.guide-content h3 {
+  font-size: 1.25rem;
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.guide-content p {
+  margin-bottom: 1rem;
+  line-height: 1.6;
+}
+
+.guide-content ul, .guide-content ol {
+  margin-bottom: 1rem;
+  padding-left: 2rem;
+}
+
+.guide-content li {
+  margin-bottom: 0.5rem;
+}
+
+.guide-content a {
+  color: var(--accent-color);
+  text-decoration: none;
+}
+
+.guide-content a:hover {
+  text-decoration: underline;
+}
+
+.guide-content code {
+  background-color: var(--nav-background);
+  padding: 0.2rem 0.4rem;
+  border-radius: 0.25rem;
+  font-family: monospace;
+}
+
+.guide-content pre {
+  background-color: var(--nav-background);
+  padding: 1rem;
+  border-radius: 0.25rem;
+  overflow-x: auto;
+  margin-bottom: 1rem;
+}
+
+.guide-content pre code {
+  background-color: transparent;
+  padding: 0;
+}
+
+.guide-content blockquote {
+  border-left: 4px solid var(--accent-color);
+  padding-left: 1rem;
+  margin-left: 0;
+  margin-right: 0;
+  margin-bottom: 1rem;
+  color: var(--text-secondary);
+}
+
+.guide-content img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.25rem;
+  margin: 1rem 0;
+}
+
+/* Table styles */
+.guide-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 1.5rem;
+  border-radius: 0.25rem;
+  overflow: hidden;
+}
+
+.guide-content th, .guide-content td {
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--divider-color);
+  text-align: left;
+}
+
+.guide-content th {
+  background-color: var(--nav-background);
+  font-weight: 600;
+  color: var(--accent-color);
+}
+
+.guide-content tr:nth-child(even) {
+  background-color: var(--nav-hover);
+}
+
+.guide-content tr:hover {
+  background-color: var(--nav-active);
+}
+
+/* Location banner styles */
+.location-banner {
+  position: relative;
+  width: 100%;
+  height: 250px;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  margin-bottom: 2rem;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+}
+
+.location-banner img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.location-banner-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 1.5rem;
+}
+
+.location-banner-title {
+  color: white;
+  font-size: 2.25rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  text-shadow: 0 4px 8px rgba(0, 0, 0, 0.8);
+  font-family: var(--font-display, sans-serif);
+}
+
+.location-banner-subtitle {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 1.125rem;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .location-banner {
+    height: 200px;
+  }
+
+  .location-banner-title {
+    font-size: 1.75rem;
+  }
+
+  .location-banner-subtitle {
+    font-size: 1rem;
+  }
+}
+</style>
+
+<script>
+  function toggleCategory(element) {
+    const icon = element.querySelector('.category-icon');
+    const children = element.nextElementSibling;
+
+    icon.classList.toggle('expanded');
+    children.classList.toggle('expanded');
+  }
+
+  // Expand all parent categories of active items
+  document.addEventListener('DOMContentLoaded', function() {
+    const activeItems = document.querySelectorAll('.category-header.active, .file-item.active');
+
+    activeItems.forEach(item => {
+      let parent = item.parentElement;
+
+      while (parent) {
+        const categoryHeader = parent.querySelector('.category-header');
+        const categoryChildren = parent.querySelector('.category-children');
+
+        if (categoryHeader && categoryChildren) {
+          const icon = categoryHeader.querySelector('.category-icon');
+          icon.classList.add('expanded');
+          categoryChildren.classList.add('expanded');
+        }
+
+        parent = parent.parentElement;
+      }
+    });
+  });
+</script>

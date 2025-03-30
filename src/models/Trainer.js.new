@@ -33,18 +33,20 @@ class Trainer {
   }
 
   /**
-   * Get a trainer by player user ID
-   * @param {number} userId - User ID
-   * @returns {Promise<Object>} - Trainer object
+   * Get all trainers for a player user ID
+   * @param {string} userId - User Discord ID
+   * @returns {Promise<Array>} - Array of trainer objects
    */
   static async getByUserId(userId) {
     try {
-      const query = 'SELECT * FROM trainers WHERE player_user_id = $1';
+      console.log(`Executing query to get trainers for Discord ID: ${userId}`);
+      const query = 'SELECT * FROM trainers WHERE player_user_id = $1 ORDER BY name';
       const result = await pool.query(query, [userId]);
-      return result.rows[0];
+      console.log(`Query returned ${result.rows.length} trainers`);
+      return result.rows;
     } catch (error) {
-      console.error('Error getting trainer by user ID:', error);
-      return null;
+      console.error('Error getting trainers by user ID:', error);
+      return [];
     }
   }
 
@@ -87,7 +89,7 @@ class Trainer {
         const maxIdResult = await pool.query('SELECT MAX(id) FROM trainers');
         const maxId = maxIdResult.rows[0].max || 0;
         const newSeqStart = Math.max(100, maxId + 1);
-        
+
         await pool.query(`ALTER SEQUENCE trainers_id_seq RESTART WITH ${newSeqStart};`);
         console.log(`Reset trainers_id_seq to start at ${newSeqStart}`);
       } catch (seqError) {
@@ -100,13 +102,13 @@ class Trainer {
       const fields = Object.keys(dataWithoutId);
       const placeholders = fields.map((_, i) => `$${i + 1}`).join(', ');
       const values = fields.map(field => dataWithoutId[field]);
-      
+
       const query = `
         INSERT INTO trainers (${fields.join(', ')})
         VALUES (${placeholders})
         RETURNING *
       `;
-      
+
       console.log('Using complete field list for insertion');
       console.log('Fields:', fields);
       console.log('Values:', values);
@@ -139,12 +141,12 @@ class Trainer {
     try {
       // Create a copy of the trainer data to modify
       const processedData = { ...trainerData };
-      
+
       // If main_ref is empty string, set to default
       if (processedData.main_ref === '') {
         processedData.main_ref = '/images/default_trainer.png';
       }
-      
+
       // Integer fields in the trainers table
       const integerFields = ['alter_human', 'age', 'height_ft', 'height_in', 'level', 'level_modifier',
                             'badge_amount', 'frontier_badges_amount', 'contest_ribbons_amount', 'mon_amount', 'mon_referenced_amount'];
@@ -211,7 +213,7 @@ class Trainer {
       throw error;
     }
   }
-  
+
   /**
    * Get monsters in a trainer's battle box
    * @param {number} trainerId - Trainer ID

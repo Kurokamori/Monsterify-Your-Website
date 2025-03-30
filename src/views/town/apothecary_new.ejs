@@ -1,0 +1,32 @@
+<%- /* Set the title and other variables for the layout */ %>
+<% const pageTitle = locals.title || 'Apothecary'; %>
+<% title = pageTitle; %>
+
+<%- /* Add custom styles */ %>
+<% style = `
+<style>
+  /* Basic styles */
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1rem;
+  }
+  
+  .text-center {
+    text-align: center;
+  }
+</style>
+` %>
+
+<div class="container">
+  <h1 class="text-center">Apothecary</h1>
+  <p class="text-center">This is a simplified version of the apothecary page.</p>
+</div>
+
+<% script = `
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    console.log('Apothecary page loaded');
+  });
+</script>
+` %>

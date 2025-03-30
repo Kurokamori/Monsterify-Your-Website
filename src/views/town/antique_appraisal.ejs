@@ -1,0 +1,503 @@
+<% /* Set the title and other variables for the layout */ %>
+<% title = 'Antique Appraisal' %>
+
+<div class="container mx-auto px-4" style="max-width: 1200px; margin: 0 auto; padding: 1.5rem;">
+  <!-- Back Navigation -->
+  <div style="margin-bottom: 2rem;">
+    <a href="/town/visit/antique"
+      style="display: inline-flex; align-items: center; padding: 0.5rem 1rem; background-color: #1e2532; color: #9ca3af; border-radius: 0.5rem; text-decoration: none; transition: all 0.2s;">
+      <i class="fas fa-arrow-left" style="margin-right: 0.5rem;"></i> Back to Antique Store
+    </a>
+  </div>
+
+  <!-- Banner Section -->
+  <div style="margin-bottom: 2rem;">
+    <img src="https://i.imgur.com/Yg6BWUm.jpeg" alt="Antique Appraisal"
+      style="width: 100%; height: 240px; object-fit: cover; border-radius: 0.75rem; box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);">
+    <h1 style="font-size: 2rem; font-weight: bold; color: #d6a339; text-align: center; margin-top: 1rem; text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);">
+      Antique Appraisal
+    </h1>
+    <p style="text-align: center; color: #9ca3af; margin-top: 0.5rem;">
+      Have your antiques appraised to discover hidden treasures
+    </p>
+  </div>
+
+  <!-- Trainer Selection -->
+  <div style="margin-bottom: 2rem;">
+    <label for="trainerSelect" style="display: block; color: #d6a339; margin-bottom: 0.5rem; font-weight: 500;">
+      Select Trainer
+    </label>
+    <select id="trainerSelect"
+      style="width: 100%; padding: 0.75rem 1rem; background-color: #1e2532; border: 1px solid #3d4b5d; border-radius: 0.5rem; color: #d7ddf3; font-size: 0.875rem; transition: all 0.2s;">
+      <option value="">Select a Trainer</option>
+      <% trainers.forEach(function(trainer) { %>
+        <option value="<%= trainer.id %>"><%= trainer.name %></option>
+      <% }); %>
+    </select>
+  </div>
+
+  <!-- Category Tabs -->
+  <div style="display: flex; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 2rem; padding: 0.5rem; background-color: #171d28; border-radius: 0.75rem;">
+    <% categories.forEach(function(category) { %>
+      <button class="category-tab <%= category.id === 'all' ? 'active' : '' %>"
+        data-category="<%= category.id %>"
+        style="padding: 0.75rem 1.5rem; background-color: <%= category.id === 'all' ? '#d6a339' : '#1e2532' %>;
+        color: <%= category.id === 'all' ? '#171d28' : '#d7ddf3' %>;
+        border: 1px solid <%= category.id === 'all' ? '#d6a339' : '#3d4b5d' %>;
+        border-radius: 0.5rem; font-weight: 600; cursor: pointer; transition: all 0.2s;">
+        <%= category.name %>
+      </button>
+    <% }); %>
+  </div>
+
+  <!-- Antiques Grid -->
+  <div id="antiquesGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem;">
+    <% antiques.forEach(function(antique) { %>
+      <div class="antique-card" data-category="<%= antique.category %>"
+        style="background-color: #1e2532; border: 1px solid #3d4b5d; border-radius: 0.75rem; overflow: hidden; transition: all 0.2s;">
+        <div style="padding: 1.25rem; background-color: #171d28; border-bottom: 1px solid #3d4b5d;">
+          <h3 style="font-size: 1.125rem; font-weight: 600; color: #d6a339; margin-bottom: 0.5rem;">
+            <%= antique.name %>
+          </h3>
+          <p style="font-size: 0.875rem; color: #9ca3af;"><%= antique.type %></p>
+        </div>
+
+        <div style="padding: 1.25rem;">
+          <p style="color: #9ca3af; font-size: 0.875rem; line-height: 1.5; margin-bottom: 1rem;">
+            <%= antique.description %>
+          </p>
+
+          <button onclick="appraiseAntique('<%= antique.id %>')"
+            style="width: 100%; padding: 0.75rem 1.5rem; background-color: #d6a339; color: #171d28; border: none; border-radius: 0.5rem; font-weight: 600; cursor: pointer; transition: all 0.2s;">
+            Appraise
+          </button>
+        </div>
+      </div>
+    <% }); %>
+  </div>
+
+  <!-- Appraisal Modal -->
+  <div id="appraisalModal"
+    style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.75); z-index: 1000;">
+    <div style="position: relative; background-color: #1e2532; margin: 2rem auto; padding: 2rem; border-radius: 0.75rem; max-width: 800px; max-height: 90vh; overflow-y: auto;">
+      <button onclick="closeModal()"
+        style="position: absolute; top: 1rem; right: 1rem; background: none; border: none; color: #9ca3af; cursor: pointer;">
+        ✕
+      </button>
+      <div id="appraisalResults"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', async () => {
+    console.log('Antique appraisal page loaded');
+    await loadTrainerAntiques();
+  });
+
+  async function loadTrainerAntiques() {
+    const trainerId = document.getElementById('trainerSelect').value;
+    if (!trainerId) {
+      console.log('No trainer selected');
+      return;
+    }
+
+    try {
+      console.log('Fetching antiques for trainer:', trainerId);
+      const response = await fetch(`/api/antiques/trainer/${trainerId}`);
+      const result = await response.json();
+
+      console.log('Antiques API response:', result);
+
+      if (result.success && result.data) {
+        const antiquesGrid = document.getElementById('antiquesGrid');
+        if (!antiquesGrid) {
+          console.error('Antiques grid element not found');
+          return;
+        }
+
+        if (result.data.length === 0) {
+          console.log('No antiques found');
+          antiquesGrid.innerHTML = `
+            <div class="empty-state" style="grid-column: 1/-1; text-align: center; padding: 2rem;">
+              <p>No antiques found for this trainer.</p>
+            </div>
+          `;
+          return;
+        }
+
+        const html = result.data.map(antique => `
+          <div class="antique-card" data-category="${antique.category}">
+            <div style="padding: 1.25rem; background-color: #171d28; border-bottom: 1px solid #3d4b5d;">
+              <h3 style="font-size: 1.125rem; font-weight: 600; color: #d6a339; margin-bottom: 0.5rem;">
+                ${antique.name}
+              </h3>
+              <p style="font-size: 0.875rem; color: #9ca3af;">Quantity: ${antique.quantity}</p>
+            </div>
+            <div style="padding: 1.25rem;">
+              <button onclick="window.appraiseAntique('${antique.name.replace(/'/g, "\\'")}')"
+                      class="btn-appraise"
+                      ${antique.quantity <= 0 ? 'disabled' : ''}
+                      style="width: 100%; padding: 0.75rem 1.5rem;
+                             background-color: ${antique.quantity > 0 ? '#d6a339' : '#6c757d'};
+                             color: ${antique.quantity > 0 ? '#1e2532' : '#d7ddf3'};
+                             border: none; border-radius: 0.5rem;
+                             font-weight: 600;
+                             cursor: ${antique.quantity > 0 ? 'pointer' : 'not-allowed'};
+                             transition: all 0.2s;">
+                ${antique.quantity > 0 ? 'Appraise' : 'Out of Stock'}
+              </button>
+            </div>
+          </div>
+        `).join('');
+
+        antiquesGrid.innerHTML = html;
+        console.log(`Rendered ${result.data.length} antiques`);
+
+        // Add hover effects to appraise buttons
+        document.querySelectorAll('.btn-appraise').forEach(btn => {
+          if (!btn.disabled) {
+            btn.addEventListener('mouseover', function() {
+              this.style.backgroundColor = '#b88a30';
+              this.style.transform = 'translateY(-2px)';
+            });
+            btn.addEventListener('mouseout', function() {
+              this.style.backgroundColor = '#d6a339';
+              this.style.transform = 'translateY(0)';
+            });
+          }
+        });
+      } else {
+        console.error('Failed to load antiques:', result.message);
+      }
+    } catch (error) {
+      console.error('Error loading antiques:', error);
+    }
+  }
+
+  // Update your existing trainer selection handler
+  document.getElementById('trainerSelect').addEventListener('change', loadTrainerAntiques);
+
+  function filterAntiques(category) {
+    console.log('Filtering by category:', category);
+    const cards = document.querySelectorAll('.antique-card');
+    cards.forEach(card => {
+      const cardCategory = card.dataset.category.toLowerCase().replace(/\s+/g, '_');
+      if (category === 'all' || cardCategory === category) {
+        card.style.display = 'block';
+      } else {
+        card.style.display = 'none';
+      }
+    });
+  }
+
+  // Make appraiseAntique function global
+  window.appraiseAntique = async function(antiqueName) {
+    const trainerId = document.getElementById('trainerSelect').value;
+    if (!trainerId) {
+      alert('Please select a trainer first');
+      return;
+    }
+
+    try {
+      console.log('Sending appraisal request:', { trainerId, antiqueName }); // Debug log
+
+      const response = await fetch('/api/antiques/appraise', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          trainerId: trainerId,
+          antiqueName: antiqueName
+        })
+      });
+
+      const result = await response.json();
+      console.log('Appraisal response:', result); // Debug log
+
+      if (!result.success) {
+        throw new Error(result.message || 'Failed to appraise antique');
+      }
+
+      // Show custom popup with monsters
+      const resultPopup = document.getElementById('resultPopup');
+      const popupMessage = document.getElementById('popupMessage');
+      const monsterResults = document.getElementById('monsterResults');
+      const closePopupBtn = document.getElementById('closePopupBtn');
+      const popupClose = document.querySelector('.popup-close');
+
+      // Set the message
+      popupMessage.textContent = result.message;
+
+      // Clear previous results
+      monsterResults.innerHTML = '';
+
+      // Add monster results
+      if (result.monsters && result.monsters.length > 0) {
+        result.monsters.forEach((monster, index) => {
+          console.log('Monster data:', monster, 'Index:', index); // Debug log
+
+          // Create species display
+          const speciesText = [
+            monster.species1 || '',
+            monster.species2 || '',
+            monster.species3 || ''
+          ].filter(s => s).join('/');
+
+          // Create default name for the monster
+          const defaultName = speciesText;
+
+          // Create type badges
+          const typeColors = {
+            'normal': { bg: '#A8A878', text: '#000' },
+            'fire': { bg: '#F08030', text: '#fff' },
+            'water': { bg: '#6890F0', text: '#fff' },
+            'electric': { bg: '#F8D030', text: '#000' },
+            'grass': { bg: '#78C850', text: '#000' },
+            'ice': { bg: '#98D8D8', text: '#000' },
+            'fighting': { bg: '#C03028', text: '#fff' },
+            'poison': { bg: '#A040A0', text: '#fff' },
+            'ground': { bg: '#E0C068', text: '#000' },
+            'flying': { bg: '#A890F0', text: '#fff' },
+            'psychic': { bg: '#F85888', text: '#fff' },
+            'bug': { bg: '#A8B820', text: '#000' },
+            'rock': { bg: '#B8A038', text: '#fff' },
+            'ghost': { bg: '#705898', text: '#fff' },
+            'dragon': { bg: '#7038F8', text: '#fff' },
+            'dark': { bg: '#705848', text: '#fff' },
+            'steel': { bg: '#B8B8D0', text: '#000' },
+            'fairy': { bg: '#EE99AC', text: '#000' }
+          };
+
+          const typeBadges = [
+            monster.type1,
+            monster.type2,
+            monster.type3,
+            monster.type4,
+            monster.type5
+          ]
+            .filter(t => t)
+            .map(t => {
+              const type = t.toLowerCase();
+              const colors = typeColors[type] || { bg: '#A8A878', text: '#000' };
+              return `<span style="display: inline-block; padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.9rem; font-weight: 600; margin-right: 0.25rem; margin-bottom: 0.25rem; background-color: ${colors.bg}; color: ${colors.text};">${t}</span>`;
+            })
+            .join('');
+
+          // Create attribute badge
+          const attributeColors = {
+            'data': { bg: '#3498db', text: '#fff' },
+            'vaccine': { bg: '#2ecc71', text: '#fff' },
+            'virus': { bg: '#e74c3c', text: '#fff' },
+            'free': { bg: '#9b59b6', text: '#fff' },
+            'variable': { bg: '#f1c40f', text: '#000' }
+          };
+
+          const attributeBadge = monster.attribute ? (() => {
+            const attr = monster.attribute.toLowerCase();
+            const colors = attributeColors[attr] || { bg: '#3498db', text: '#fff' };
+            return `<span style="display: inline-block; padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.9rem; font-weight: 600; margin-right: 0.25rem; margin-bottom: 0.25rem; background-color: ${colors.bg}; color: ${colors.text};">${monster.attribute}</span>`;
+          })() : '';
+
+          // Create monster result HTML
+          const monsterHTML = `
+            <div style="background-color: #2b3645; border-radius: 0.5rem; padding: 1.25rem; margin-bottom: 1rem;">
+              <h4 style="font-size: 1.25rem; font-weight: 600; color: #d7ddf3; margin-bottom: 0.75rem;">${speciesText}</h4>
+
+              <div style="margin-bottom: 0.75rem;">
+                <div style="font-size: 0.875rem; color: #a0aec0; margin-bottom: 0.25rem;">Types</div>
+                <div>${typeBadges || 'None'}</div>
+              </div>
+
+              <div style="margin-bottom: 0.75rem;">
+                <div style="font-size: 0.875rem; color: #a0aec0; margin-bottom: 0.25rem;">Attribute</div>
+                <div>${attributeBadge || 'None'}</div>
+              </div>
+
+              <div style="margin-bottom: 1rem;">
+                <label for="monster-name-${index}" style="display: block; font-size: 0.875rem; color: #a0aec0; margin-bottom: 0.25rem;">Monster Name</label>
+                <input type="text" id="monster-name-${index}" value="${defaultName}" style="width: 100%; padding: 0.5rem; background-color: #1e2532; border: 1px solid #3d4b5d; border-radius: 0.25rem; color: #d7ddf3;">
+              </div>
+
+              <button class="btn-claim" data-index="${index}" data-monster='${JSON.stringify(monster)}' style="width: 100%; padding: 0.75rem; background-color: #d6a339; color: #1e2532; border: none; border-radius: 0.5rem; font-weight: 600; cursor: pointer;">
+                Claim This Monster
+              </button>
+            </div>
+          `;
+
+          monsterResults.innerHTML += monsterHTML;
+        });
+      } else {
+        console.error('No monsters in result:', result);
+        monsterResults.innerHTML = '<p style="color: #9ca3af; text-align: center;">No monsters were found.</p>';
+      }
+
+      // Show the popup
+      resultPopup.style.display = 'block';
+
+      // Add event listeners to claim buttons
+      document.querySelectorAll('.btn-claim').forEach(btn => {
+        btn.addEventListener('click', function() {
+          const index = parseInt(this.dataset.index);
+          const monsterData = JSON.parse(this.dataset.monster);
+          claimMonster(index, monsterData);
+        });
+      });
+
+      // Add event listeners to close the popup
+      const closePopup = () => {
+        resultPopup.style.display = 'none';
+        // Refresh the display after closing
+        location.reload();
+      };
+
+      closePopupBtn.addEventListener('click', closePopup);
+      popupClose.addEventListener('click', closePopup);
+
+    } catch (error) {
+      console.error('Error appraising antique:', error);
+      alert(error.message || 'An error occurred while appraising the antique');
+    }
+  }
+
+  function showModal() {
+    document.getElementById('appraisalModal').style.display = 'block';
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeModal() {
+    document.getElementById('appraisalModal').style.display = 'none';
+    document.body.style.overflow = 'auto';
+  }
+
+  function renderAppraisalResults(result) {
+    const { antique, monsters } = result;
+
+    let html = `
+      <div style="margin-bottom: 1rem;">
+        <h3 style="font-size: 1.25rem; font-weight: bold; color: #d6a339; margin-bottom: 0.5rem;">
+          Antique: ${antique.name}
+        </h3>
+        <p style="color: #d7ddf3; margin-bottom: 1rem;">
+          You've appraised your ${antique.name} and discovered the following monsters:
+        </p>
+      </div>
+    `;
+
+    html += monsters.map((monster, index) => {
+      const defaultName = `${monster.species1}${monster.species2 ? '-' + monster.species2 : ''}${monster.species3 ? '-' + monster.species3 : ''}`;
+
+      return `
+        <div style="background-color: #171d28; border: 1px solid #3d4b5d; border-radius: 0.75rem; padding: 1.5rem; margin-bottom: 1rem;">
+          <h4 style="font-size: 1.125rem; font-weight: bold; color: #d6a339; margin-bottom: 1rem;">
+            Monster #${index + 1}
+          </h4>
+
+          <div style="margin-bottom: 1rem;">
+            <div style="margin-bottom: 0.5rem;">
+              <span style="color: #9ca3af; font-size: 0.875rem;">Species:</span>
+              <span style="color: #d7ddf3; margin-left: 0.5rem;">
+                ${monster.species1}${monster.species2 ? ', ' + monster.species2 : ''}${monster.species3 ? ', ' + monster.species3 : ''}
+              </span>
+            </div>
+
+            <div style="margin-bottom: 0.5rem;">
+              <span style="color: #9ca3af; font-size: 0.875rem;">Types:</span>
+              <div style="display: flex; gap: 0.5rem; margin-top: 0.25rem;">
+                ${[monster.type1, monster.type2, monster.type3, monster.type4, monster.type5]
+                  .filter(t => t)
+                  .map(t => `<span style="padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 600; background-color: rgba(214, 163, 57, 0.1); color: #d6a339;">${t}</span>`)
+                  .join('')}
+              </div>
+            </div>
+          </div>
+
+          <div style="margin-bottom: 1rem;">
+            <label style="display: block; color: #9ca3af; font-size: 0.875rem; margin-bottom: 0.5rem;">
+              Monster Name
+            </label>
+            <input type="text" id="monster-name-${index}" value="${defaultName}"
+              style="width: 100%; padding: 0.75rem 1rem; background-color: #1e2532; border: 1px solid #3d4b5d; border-radius: 0.5rem; color: #d7ddf3; transition: all 0.2s;">
+          </div>
+
+          <button onclick="claimMonster(${index}, '${monster.id}')"
+            class="btn-claim" data-index="${index}"
+            style="width: 100%; padding: 0.75rem 1.5rem; background-color: #d6a339; color: #171d28; border: none; border-radius: 0.5rem; font-weight: 600; cursor: pointer; transition: all 0.2s;">
+            Claim This Monster
+          </button>
+        </div>
+      `;
+    }).join('');
+
+    document.getElementById('appraisalResults').innerHTML = html;
+
+    // Add hover effects to buttons and inputs
+    document.querySelectorAll('.btn-claim').forEach(btn => {
+      btn.addEventListener('mouseover', function() {
+        if (!this.disabled) {
+          this.style.backgroundColor = '#e6b349';
+          this.style.transform = 'translateY(-2px)';
+        }
+      });
+      btn.addEventListener('mouseout', function() {
+        if (!this.disabled) {
+          this.style.backgroundColor = '#d6a339';
+          this.style.transform = 'translateY(0)';
+        }
+      });
+    });
+  }
+
+  async function claimMonster(index, monsterData) {
+    const trainerId = document.getElementById('trainerSelect').value;
+    const name = document.getElementById(`monster-name-${index}`).value;
+
+    try {
+      console.log('Claiming monster with data:', { trainerId, monsterData, name });
+
+      const response = await fetch('/api/antiques/claim', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          trainerId,
+          monsterData,
+          monsterName: name
+        })
+      });
+
+      const result = await response.json();
+      if (result.success) {
+        const button = document.querySelector(`.btn-claim[data-index="${index}"]`);
+        button.style.backgroundColor = '#4ade80';
+        button.style.cursor = 'default';
+        button.disabled = true;
+        button.textContent = 'Claimed!';
+      } else {
+        alert(result.message || 'Failed to claim monster');
+      }
+    } catch (error) {
+      console.error('Claim error:', error);
+      alert('An error occurred while claiming the monster');
+    }
+  }
+</script>
+
+<!-- Custom Result Popup -->
+<div id="resultPopup" class="custom-popup" style="display: none; position: fixed; z-index: 1100; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0, 0, 0, 0.85);">
+  <div class="popup-content" style="background-color: #1e2532; margin: 10% auto; padding: 2rem; border-radius: 0.75rem; border: 1px solid #3d4b5d; max-width: 500px; box-shadow: 0 5px 25px rgba(0, 0, 0, 0.7);">
+    <div class="popup-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 1px solid #3d4b5d;">
+      <h3 class="popup-title" style="font-size: 1.5rem; font-weight: 700; color: #d6a339;">Appraisal Results</h3>
+      <span class="popup-close" style="color: #aaa; font-size: 24px; font-weight: bold; cursor: pointer;">&times;</span>
+    </div>
+    <div class="popup-body" style="margin-bottom: 1.5rem;">
+      <p id="popupMessage" class="popup-message" style="color: #d7ddf3; margin-bottom: 1.5rem;"></p>
+      <div id="monsterResults"></div>
+    </div>
+    <div class="popup-footer" style="display: flex; justify-content: flex-end;">
+      <button id="closePopupBtn" class="popup-button" style="background-color: #d6a339; color: #1e2532; border: none; padding: 0.75rem 1.5rem; border-radius: 0.5rem; font-weight: 600; cursor: pointer;">Close</button>
+    </div>
+  </div>
+</div>

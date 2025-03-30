@@ -28,6 +28,7 @@ const evolutionStoneTypes = {
   'Ice Evolution Stone': 'Ice',
   'Dragon Scale': 'Dragon',
   'Metal Coat': 'Steel',
+  'Fighting Evolution Stone': 'Fighting', // Added Fighting Evolution Stone
   'Aurorus Stone': 'Random', // Special case - adds random type
   'Aurora Evolution Stone': 'Random', // Special case - adds random type
   'Void Stone': 'None' // Special case - doesn't add type
@@ -249,15 +250,27 @@ async function processEvolution(evolutionData) {
 
     // Determine which species to evolve
     let speciesName;
-    if (speciesIndex) {
-      switch (parseInt(speciesIndex)) {
-        case 1: speciesName = monster.species1; break;
-        case 2: speciesName = monster.species2; break;
-        case 3: speciesName = monster.species3; break;
-        default: speciesName = monster.species1;
-      }
-    } else {
-      speciesName = monster.species1;
+    const speciesIndexNum = speciesIndex ? parseInt(speciesIndex) : 1;
+
+    console.log(`Processing evolution for monster ${monsterId} with species index: ${speciesIndexNum}`);
+    console.log(`Monster species: species1=${monster.species1}, species2=${monster.species2}, species3=${monster.species3}`);
+
+    switch (speciesIndexNum) {
+      case 1:
+        speciesName = monster.species1;
+        console.log(`Using species1: ${speciesName}`);
+        break;
+      case 2:
+        speciesName = monster.species2;
+        console.log(`Using species2: ${speciesName}`);
+        break;
+      case 3:
+        speciesName = monster.species3;
+        console.log(`Using species3: ${speciesName}`);
+        break;
+      default:
+        speciesName = monster.species1;
+        console.log(`Using default species1: ${speciesName}`);
     }
 
     // Check evolution options
@@ -311,20 +324,29 @@ async function processEvolution(evolutionData) {
 async function processEvolutionWithItem(monster, trainer, itemName, newSpecies, speciesIndex, submissionUrl) {
   try {
     // Check if trainer has the item
+    console.log(`Checking if trainer ${trainer.id} has item ${itemName}`);
     const inventory = await Trainer.getInventory(trainer.id);
+    console.log('Trainer inventory:', inventory);
 
     // Get evolution items from inventory
     let evolutionItems = {};
     if (inventory && inventory.inv_evolution) {
       evolutionItems = inventory.inv_evolution;
+      console.log('Evolution items in inventory:', evolutionItems);
+    } else {
+      console.error(`No inv_evolution found in inventory for trainer ${trainer.id}`);
     }
 
     if (!evolutionItems[itemName] || evolutionItems[itemName] < 1) {
+      console.error(`Item ${itemName} not found in trainer's inventory or quantity is less than 1`);
       return {
         success: false,
         message: `You don't have any ${itemName} in your inventory`
       };
     }
+
+    console.log(`Trainer has ${evolutionItems[itemName]} of item ${itemName}`);
+
 
     // Check if item is a special item
     if (specialEvolutionItems.includes(itemName)) {
@@ -332,13 +354,26 @@ async function processEvolutionWithItem(monster, trainer, itemName, newSpecies, 
       if (itemName === 'Digital Repair Kit') {
         // Update monster species
         const updateData = {};
+        const speciesIndexNum = speciesIndex ? parseInt(speciesIndex) : 1;
 
-        if (speciesIndex === 1 || !speciesIndex) {
-          updateData.species1 = newSpecies;
-        } else if (speciesIndex === 2) {
-          updateData.species2 = newSpecies;
-        } else if (speciesIndex === 3) {
-          updateData.species3 = newSpecies;
+        console.log(`Updating monster species with index ${speciesIndexNum} to ${newSpecies}`);
+
+        switch (speciesIndexNum) {
+          case 1:
+            updateData.species1 = newSpecies;
+            console.log(`Setting species1 to ${newSpecies}`);
+            break;
+          case 2:
+            updateData.species2 = newSpecies;
+            console.log(`Setting species2 to ${newSpecies}`);
+            break;
+          case 3:
+            updateData.species3 = newSpecies;
+            console.log(`Setting species3 to ${newSpecies}`);
+            break;
+          default:
+            updateData.species1 = newSpecies;
+            console.log(`Setting default species1 to ${newSpecies}`);
         }
 
         await Monster.update(monster.mon_id, updateData);
@@ -367,8 +402,12 @@ async function processEvolutionWithItem(monster, trainer, itemName, newSpecies, 
     }
 
     // Check if item is an evolution stone
+    console.log(`Checking if ${itemName} is a valid evolution stone...`);
+    console.log('Available evolution stones:', Object.keys(evolutionStoneTypes));
+
     if (evolutionStoneTypes[itemName]) {
       const stoneType = evolutionStoneTypes[itemName];
+      console.log(`${itemName} is a valid evolution stone with type: ${stoneType}`);
 
       // Handle Aurorus Stone (adds random type)
       if (stoneType === 'Random') {
@@ -377,13 +416,26 @@ async function processEvolutionWithItem(monster, trainer, itemName, newSpecies, 
 
         // Update monster
         const updateData = {};
+        const speciesIndexNum = speciesIndex ? parseInt(speciesIndex) : 1;
 
-        if (speciesIndex === 1 || !speciesIndex) {
-          updateData.species1 = newSpecies;
-        } else if (speciesIndex === 2) {
-          updateData.species2 = newSpecies;
-        } else if (speciesIndex === 3) {
-          updateData.species3 = newSpecies;
+        console.log(`Updating monster species with index ${speciesIndexNum} to ${newSpecies} using Aurorus Stone`);
+
+        switch (speciesIndexNum) {
+          case 1:
+            updateData.species1 = newSpecies;
+            console.log(`Setting species1 to ${newSpecies}`);
+            break;
+          case 2:
+            updateData.species2 = newSpecies;
+            console.log(`Setting species2 to ${newSpecies}`);
+            break;
+          case 3:
+            updateData.species3 = newSpecies;
+            console.log(`Setting species3 to ${newSpecies}`);
+            break;
+          default:
+            updateData.species1 = newSpecies;
+            console.log(`Setting default species1 to ${newSpecies}`);
         }
 
         // Add type if not already present
@@ -449,13 +501,26 @@ async function processEvolutionWithItem(monster, trainer, itemName, newSpecies, 
 
       // Handle regular evolution stone (adds type if not already present)
       const updateData = {};
+      const speciesIndexNum = speciesIndex ? parseInt(speciesIndex) : 1;
 
-      if (speciesIndex === 1 || !speciesIndex) {
-        updateData.species1 = newSpecies;
-      } else if (speciesIndex === 2) {
-        updateData.species2 = newSpecies;
-      } else if (speciesIndex === 3) {
-        updateData.species3 = newSpecies;
+      console.log(`Updating monster species with index ${speciesIndexNum} to ${newSpecies} using evolution stone`);
+
+      switch (speciesIndexNum) {
+        case 1:
+          updateData.species1 = newSpecies;
+          console.log(`Setting species1 to ${newSpecies}`);
+          break;
+        case 2:
+          updateData.species2 = newSpecies;
+          console.log(`Setting species2 to ${newSpecies}`);
+          break;
+        case 3:
+          updateData.species3 = newSpecies;
+          console.log(`Setting species3 to ${newSpecies}`);
+          break;
+        default:
+          updateData.species1 = newSpecies;
+          console.log(`Setting default species1 to ${newSpecies}`);
       }
 
       // Add type if not already present
@@ -495,6 +560,10 @@ async function processEvolutionWithItem(monster, trainer, itemName, newSpecies, 
     }
 
     // If we get here, the item is not a recognized evolution item
+    console.error(`${itemName} is not recognized as a valid evolution item`);
+    console.log('Valid special evolution items:', specialEvolutionItems);
+    console.log('Valid evolution stones:', Object.keys(evolutionStoneTypes));
+
     return {
       success: false,
       message: `${itemName} is not a valid evolution item`
@@ -520,13 +589,26 @@ async function processEvolutionWithoutItem(monster, newSpecies, speciesIndex, su
   try {
     // Update monster species
     const updateData = {};
+    const speciesIndexNum = speciesIndex ? parseInt(speciesIndex) : 1;
 
-    if (speciesIndex === 1 || !speciesIndex) {
-      updateData.species1 = newSpecies;
-    } else if (speciesIndex === 2) {
-      updateData.species2 = newSpecies;
-    } else if (speciesIndex === 3) {
-      updateData.species3 = newSpecies;
+    console.log(`Updating monster species with index ${speciesIndexNum} to ${newSpecies} without item`);
+
+    switch (speciesIndexNum) {
+      case 1:
+        updateData.species1 = newSpecies;
+        console.log(`Setting species1 to ${newSpecies}`);
+        break;
+      case 2:
+        updateData.species2 = newSpecies;
+        console.log(`Setting species2 to ${newSpecies}`);
+        break;
+      case 3:
+        updateData.species3 = newSpecies;
+        console.log(`Setting species3 to ${newSpecies}`);
+        break;
+      default:
+        updateData.species1 = newSpecies;
+        console.log(`Setting default species1 to ${newSpecies}`);
     }
 
     await Monster.update(monster.mon_id, updateData);

@@ -1,0 +1,689 @@
+<%- /* Set the title and other variables for the layout */ %>
+<% const pageTitle = locals.title || 'Adoption Center'; %>
+<% title = pageTitle; %>
+
+<%- /* Add custom styles */ %>
+<% style = `
+<link rel="stylesheet" href="/css/adoption-center.css">
+<style>
+  /* Table styles */
+  .adoption-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 12px;
+  }
+
+  .adoption-table th {
+    text-align: left;
+    padding: 1.25rem 1.5rem;
+    color: #d6a339;
+    font-weight: 600;
+    border-bottom: 1px solid #3d4b5d;
+  }
+
+  .adoption-table td {
+    padding: 1.25rem 1.5rem;
+    border-top: 1px solid #3d4b5d;
+    border-bottom: 1px solid #3d4b5d;
+  }
+
+  .adoption-table tbody tr:nth-child(odd) td {
+    background-color: #1e2532;
+  }
+
+  .adoption-table tbody tr:nth-child(even) td {
+    background-color: #252e3d;
+  }
+
+  .adoption-table tr td:first-child {
+    border-left: 1px solid #3d4b5d;
+    border-top-left-radius: 0.75rem;
+    border-bottom-left-radius: 0.75rem;
+  }
+
+  .adoption-table tr td:last-child {
+    border-right: 1px solid #3d4b5d;
+    border-top-right-radius: 0.75rem;
+    border-bottom-right-radius: 0.75rem;
+    text-align: right;
+  }
+
+  .species-tag {
+    display: inline-block;
+    background-color: #2b3645;
+    color: #d7ddf3;
+    border-radius: 1rem;
+    padding: 0.4rem 0.8rem;
+    font-size: 0.95rem;
+    font-weight: 600;
+    margin-right: 0.5rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .type-badge {
+    display: inline-block;
+    padding: 0.3rem 0.7rem;
+    border-radius: 1rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin-right: 0.5rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .attribute-badge {
+    display: inline-block;
+    padding: 0.3rem 0.7rem;
+    border-radius: 1rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+  }
+</style>
+` %>
+
+<div class="container mx-auto px-4">
+  <div>
+    <img src="https://i.imgur.com/HViAPDq.jpeg" alt="Adoption Center Banner" class="location-banner w-full object-cover rounded-lg shadow-lg">
+    <div class="flex flex-col items-center">
+      <div class="flex items-center mb-4 w-full">
+        <a href="/town/visit" class="btn-secondary mr-4 hover:scale-105 transition-transform">
+          <i class="fas fa-arrow-left mr-2"></i> Back to Town
+        </a>
+        <h2 class="text-2xl font-display font-bold text-center text-amber-400 text-shadow-lg">Adoption Center</h2>
+      </div>
+      <p class="text-center text-sm text-gray-200 mb-4">Welcome to the Adoption Center! Here you can adopt monsters using your Daycare Daypasses.</p>
+    </div>
+  </div>
+
+  <div class="mb-6">
+    <div class="flex justify-between items-center mb-4">
+      <h3 class="text-xl font-bold text-amber-400">Monthly Adopts</h3>
+      <div class="flex space-x-2">
+        <button id="current-month-btn" class="btn-secondary active">Current Month</button>
+        <button id="all-adopts-btn" class="btn-secondary">All Adopts</button>
+      </div>
+    </div>
+
+    <div id="adopts-container" class="mx-auto max-w-6xl">
+      <table class="adoption-table">
+      <!-- Adopts will be loaded here -->
+      <tr>
+        <td colspan="4" style="text-align: center; padding: 2rem;">
+          <i class="fas fa-spinner fa-spin text-3xl text-amber-400"></i>
+          <p class="mt-4 text-gray-300">Loading monsters...</p>
+        </td>
+      </tr>
+      </table>
+    </div>
+
+    <div id="pagination" class="pagination">
+      <!-- Pagination will be loaded here -->
+    </div>
+  </div>
+
+  <!-- Claim Modal -->
+  <div id="claim-modal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h2 class="text-xl font-bold text-amber-400 mb-4">Adopt Monster</h2>
+
+      <div id="claim-monster-preview" class="mb-4">
+        <!-- Monster preview will be loaded here -->
+      </div>
+
+      <form id="claim-form">
+        <input type="hidden" id="adopt-id" name="adoptId">
+
+        <div class="form-group">
+          <label for="trainer-select" class="form-label">Select Trainer</label>
+          <select id="trainer-select" name="trainerId" class="form-control" required>
+            <option value="">Select a trainer</option>
+            <% if (locals.trainers && trainers.length > 0) { %>
+              <% trainers.forEach(trainer => { %>
+                <option value="<%= trainer.id %>"><%= trainer.name %></option>
+              <% }); %>
+            <% } %>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="monster-name" class="form-label">Monster Name</label>
+          <input type="text" id="monster-name" name="monsterName" class="form-control" required>
+        </div>
+
+        <div id="daypass-status" class="mb-4 text-sm">
+          <!-- Daypass status will be loaded here -->
+        </div>
+
+        <button type="submit" id="claim-btn" class="btn-primary w-full" disabled>
+          Adopt Monster
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Elements
+    const adoptsContainer = document.getElementById('adopts-container');
+    const paginationContainer = document.getElementById('pagination');
+    const currentMonthBtn = document.getElementById('current-month-btn');
+    const allAdoptsBtn = document.getElementById('all-adopts-btn');
+    const claimModal = document.getElementById('claim-modal');
+    const closeModalBtn = claimModal.querySelector('.close');
+    const claimForm = document.getElementById('claim-form');
+    const adoptIdInput = document.getElementById('adopt-id');
+    const trainerSelect = document.getElementById('trainer-select');
+    const monsterNameInput = document.getElementById('monster-name');
+    const claimBtn = document.getElementById('claim-btn');
+    const daypassStatus = document.getElementById('daypass-status');
+
+    // State
+    let currentPage = 1;
+    let currentView = 'current'; // 'current' or 'all'
+    let trainerInventories = {};
+
+    // Get URL parameters
+    const urlParams = new URLSearchParams(window.location.search);
+    const urlTrainerId = urlParams.get('trainerId');
+    const urlMonsterName = urlParams.get('monsterName');
+    const urlAdoptId = urlParams.get('adoptId');
+
+    // Set values from URL parameters if available
+    if (urlTrainerId) {
+      console.log('Setting trainer ID from URL:', urlTrainerId);
+      // Wait for trainers to load
+      setTimeout(() => {
+        if (trainerSelect.querySelector(`option[value="${urlTrainerId}"]`)) {
+          trainerSelect.value = urlTrainerId;
+          checkDaypassAvailability();
+        }
+      }, 500);
+    }
+
+    if (urlMonsterName) {
+      console.log('Setting monster name from URL:', urlMonsterName);
+      monsterNameInput.value = urlMonsterName;
+    }
+
+    if (urlAdoptId) {
+      console.log('Setting adopt ID from URL:', urlAdoptId);
+      adoptIdInput.value = urlAdoptId;
+    }
+
+    // Load adopts
+    loadAdopts();
+
+    // Event listeners
+    currentMonthBtn.addEventListener('click', function() {
+      currentMonthBtn.classList.add('active');
+      allAdoptsBtn.classList.remove('active');
+      currentView = 'current';
+      currentPage = 1;
+      loadAdopts();
+    });
+
+    allAdoptsBtn.addEventListener('click', function() {
+      allAdoptsBtn.classList.add('active');
+      currentMonthBtn.classList.remove('active');
+      currentView = 'all';
+      currentPage = 1;
+      loadAdopts();
+    });
+
+    closeModalBtn.addEventListener('click', function() {
+      claimModal.style.display = 'none';
+    });
+
+    window.addEventListener('click', function(event) {
+      if (event.target === claimModal) {
+        claimModal.style.display = 'none';
+      }
+    });
+
+    trainerSelect.addEventListener('change', function() {
+      checkDaypassAvailability();
+    });
+
+    claimForm.addEventListener('submit', function(event) {
+      event.preventDefault();
+      claimAdopt();
+    });
+
+    // Functions
+    async function loadAdopts() {
+      try {
+        adoptsContainer.querySelector('table').innerHTML = `
+          <tr>
+            <td colspan="4" style="text-align: center; padding: 2rem;">
+              <i class="fas fa-spinner fa-spin text-3xl text-amber-400"></i>
+              <p class="mt-4 text-gray-300">Loading monsters...</p>
+            </td>
+          </tr>
+        `;
+
+        const endpoint = currentView === 'current' ? '/api/adoption/current' : '/api/adoption';
+        const response = await fetch(`${endpoint}?page=${currentPage}&limit=10`);
+        const result = await response.json();
+
+        if (!result.success) {
+          throw new Error(result.message || 'Failed to load adopts');
+        }
+
+        const { adopts, pagination } = result.data;
+
+        if (adopts.length === 0) {
+          adoptsContainer.querySelector('table').innerHTML = `
+            <tr>
+              <td colspan="4" style="text-align: center; padding: 2rem;">
+                <p class="text-gray-300">No monsters available for adoption.</p>
+              </td>
+            </tr>
+          `;
+          paginationContainer.innerHTML = '';
+          return;
+        }
+
+        // Render adopts as table rows
+        const tableContent = `
+          <thead>
+            <tr>
+              <th>Species</th>
+              <th>Types</th>
+              <th>Attribute</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${adopts.map(adopt => createAdoptRow(adopt)).join('')}
+          </tbody>
+        `;
+        adoptsContainer.querySelector('table').innerHTML = tableContent;
+
+        // Render pagination
+        renderPagination(pagination);
+
+        // Add event listeners to claim buttons
+        document.querySelectorAll('.claim-btn').forEach(btn => {
+          btn.addEventListener('click', function() {
+            const adoptId = this.dataset.id;
+            const adopt = adopts.find(a => a.id == adoptId);
+            openClaimModal(adopt);
+          });
+        });
+      } catch (error) {
+        console.error('Error loading adopts:', error);
+        adoptsContainer.innerHTML = `
+          <div class="col-span-full text-center py-8">
+            <p class="text-red-500">Error loading monsters: ${error.message}</p>
+          </div>
+        `;
+      }
+    }
+
+    function createAdoptRow(adopt) {
+      // Create species tags
+      const speciesTags = [adopt.species1, adopt.species2, adopt.species3]
+        .filter(s => s)
+        .map(s => `<span class="species-tag">${s}</span>`)
+        .join('');
+
+      // Create type tags
+      const typeColors = {
+        'normal': { bg: '#A8A878', text: '#000' },
+        'fire': { bg: '#F08030', text: '#fff' },
+        'water': { bg: '#6890F0', text: '#fff' },
+        'electric': { bg: '#F8D030', text: '#000' },
+        'grass': { bg: '#78C850', text: '#000' },
+        'ice': { bg: '#98D8D8', text: '#000' },
+        'fighting': { bg: '#C03028', text: '#fff' },
+        'poison': { bg: '#A040A0', text: '#fff' },
+        'ground': { bg: '#E0C068', text: '#000' },
+        'flying': { bg: '#A890F0', text: '#fff' },
+        'psychic': { bg: '#F85888', text: '#fff' },
+        'bug': { bg: '#A8B820', text: '#000' },
+        'rock': { bg: '#B8A038', text: '#fff' },
+        'ghost': { bg: '#705898', text: '#fff' },
+        'dragon': { bg: '#7038F8', text: '#fff' },
+        'dark': { bg: '#705848', text: '#fff' },
+        'steel': { bg: '#B8B8D0', text: '#000' },
+        'fairy': { bg: '#EE99AC', text: '#000' }
+      };
+
+      const typeTags = [adopt.type1, adopt.type2, adopt.type3, adopt.type4, adopt.type5]
+        .filter(t => t)
+        .map(t => {
+          const type = t.toLowerCase();
+          const colors = typeColors[type] || { bg: '#A8A878', text: '#000' };
+          return `<span class="type-badge" style="background-color: ${colors.bg}; color: ${colors.text};">${t}</span>`;
+        })
+        .join('');
+
+      // Create attribute tag
+      const attributeColors = {
+        'data': { bg: '#3498db', text: '#fff' },
+        'vaccine': { bg: '#2ecc71', text: '#fff' },
+        'virus': { bg: '#e74c3c', text: '#fff' },
+        'free': { bg: '#9b59b6', text: '#fff' },
+        'variable': { bg: '#f1c40f', text: '#000' }
+      };
+
+      const attributeTag = adopt.attribute ? (() => {
+        const attr = adopt.attribute.toLowerCase();
+        const colors = attributeColors[attr] || { bg: '#3498db', text: '#fff' };
+        return `<span class="attribute-badge" style="background-color: ${colors.bg}; color: ${colors.text};">${adopt.attribute}</span>`;
+      })() : 'None';
+
+      // Create table row
+      return `
+        <tr>
+          <td>${speciesTags}</td>
+          <td>${typeTags}</td>
+          <td>${attributeTag}</td>
+          <td>
+            <button class="claim-btn btn-primary" style="padding: 0.5rem 1.25rem; border-radius: 0.5rem;" data-id="${adopt.id}" ${adopt.claimed ? 'disabled' : ''}>
+              ${adopt.claimed ? 'Already Adopted' : 'Adopt'}
+            </button>
+          </td>
+        </tr>
+      `;
+    }
+
+    function renderPagination(pagination) {
+      if (pagination.totalPages <= 1) {
+        paginationContainer.innerHTML = '';
+        return;
+      }
+
+      let paginationHTML = '';
+
+      // Previous button
+      if (pagination.page > 1) {
+        paginationHTML += `<a href="#" class="pagination-link prev-page">Previous</a>`;
+      }
+
+      // Page numbers
+      const startPage = Math.max(1, pagination.page - 2);
+      const endPage = Math.min(pagination.totalPages, startPage + 4);
+
+      for (let i = startPage; i <= endPage; i++) {
+        paginationHTML += `<a href="#" class="pagination-link page-number ${pagination.page === i ? 'active' : ''}" data-page="${i}">${i}</a>`;
+      }
+
+      // Next button
+      if (pagination.page < pagination.totalPages) {
+        paginationHTML += `<a href="#" class="pagination-link next-page">Next</a>`;
+      }
+
+      paginationContainer.innerHTML = paginationHTML;
+
+      // Add event listeners to pagination links
+      document.querySelectorAll('.page-number').forEach(link => {
+        link.addEventListener('click', function(event) {
+          event.preventDefault();
+          currentPage = parseInt(this.dataset.page);
+          loadAdopts();
+        });
+      });
+
+      const prevPageBtn = document.querySelector('.prev-page');
+      if (prevPageBtn) {
+        prevPageBtn.addEventListener('click', function(event) {
+          event.preventDefault();
+          currentPage--;
+          loadAdopts();
+        });
+      }
+
+      const nextPageBtn = document.querySelector('.next-page');
+      if (nextPageBtn) {
+        nextPageBtn.addEventListener('click', function(event) {
+          event.preventDefault();
+          currentPage++;
+          loadAdopts();
+        });
+      }
+    }
+
+    function openClaimModal(adopt) {
+      // Set adopt ID
+      adoptIdInput.value = adopt.id;
+
+      // Create monster preview using the same functions as the table
+      const speciesTags = [adopt.species1, adopt.species2, adopt.species3]
+        .filter(s => s)
+        .map(s => `<span class="species-tag">${s}</span>`)
+        .join('');
+
+      const typeColors = {
+        'normal': { bg: '#A8A878', text: '#000' },
+        'fire': { bg: '#F08030', text: '#fff' },
+        'water': { bg: '#6890F0', text: '#fff' },
+        'electric': { bg: '#F8D030', text: '#000' },
+        'grass': { bg: '#78C850', text: '#000' },
+        'ice': { bg: '#98D8D8', text: '#000' },
+        'fighting': { bg: '#C03028', text: '#fff' },
+        'poison': { bg: '#A040A0', text: '#fff' },
+        'ground': { bg: '#E0C068', text: '#000' },
+        'flying': { bg: '#A890F0', text: '#fff' },
+        'psychic': { bg: '#F85888', text: '#fff' },
+        'bug': { bg: '#A8B820', text: '#000' },
+        'rock': { bg: '#B8A038', text: '#fff' },
+        'ghost': { bg: '#705898', text: '#fff' },
+        'dragon': { bg: '#7038F8', text: '#fff' },
+        'dark': { bg: '#705848', text: '#fff' },
+        'steel': { bg: '#B8B8D0', text: '#000' },
+        'fairy': { bg: '#EE99AC', text: '#000' }
+      };
+
+      const typeTags = [adopt.type1, adopt.type2, adopt.type3, adopt.type4, adopt.type5]
+        .filter(t => t)
+        .map(t => {
+          const type = t.toLowerCase();
+          const colors = typeColors[type] || { bg: '#A8A878', text: '#000' };
+          return `<span class="type-badge" style="background-color: ${colors.bg}; color: ${colors.text};">${t}</span>`;
+        })
+        .join('');
+
+      const attributeColors = {
+        'data': { bg: '#3498db', text: '#fff' },
+        'vaccine': { bg: '#2ecc71', text: '#fff' },
+        'virus': { bg: '#e74c3c', text: '#fff' },
+        'free': { bg: '#9b59b6', text: '#fff' },
+        'variable': { bg: '#f1c40f', text: '#000' }
+      };
+
+      const attributeTag = adopt.attribute ? (() => {
+        const attr = adopt.attribute.toLowerCase();
+        const colors = attributeColors[attr] || { bg: '#3498db', text: '#fff' };
+        return `<span class="attribute-badge" style="background-color: ${colors.bg}; color: ${colors.text};">${adopt.attribute}</span>`;
+      })() : 'None';
+
+      const previewHTML = `
+        <div class="bg-gray-800 p-5 rounded-lg" style="background-color: #1e2532; border: 1px solid #3d4b5d; border-radius: 0.75rem;">
+          <table class="w-full">
+            <tr>
+              <th class="text-left text-gray-300 pb-3 pr-4" style="padding-bottom: 1rem;">Species</th>
+              <td class="pb-3">${speciesTags}</td>
+            </tr>
+            <tr>
+              <th class="text-left text-gray-300 pb-3 pr-4" style="padding-bottom: 1rem;">Types</th>
+              <td class="pb-3">${typeTags}</td>
+            </tr>
+            <tr>
+              <th class="text-left text-gray-300 pr-4">Attribute</th>
+              <td>${attributeTag}</td>
+            </tr>
+          </table>
+        </div>
+      `;
+
+      document.getElementById('claim-monster-preview').innerHTML = previewHTML;
+
+      // Set default monster name
+      monsterNameInput.value = `Adopted ${adopt.species1}`;
+
+      // Reset trainer select
+      trainerSelect.value = '';
+
+      // Reset daypass status
+      daypassStatus.innerHTML = '';
+
+      // Disable claim button
+      claimBtn.disabled = true;
+
+      // Show modal
+      claimModal.style.display = 'block';
+    }
+
+    async function checkDaypassAvailability() {
+      const trainerId = trainerSelect.value;
+
+      if (!trainerId) {
+        daypassStatus.innerHTML = '';
+        claimBtn.disabled = true;
+        return;
+      }
+
+      try {
+        // Check if we already have the inventory for this trainer
+        if (!trainerInventories[trainerId]) {
+          const response = await fetch(`/api/trainers/${trainerId}/inventory`);
+          const result = await response.json();
+
+          if (result.error) {
+            throw new Error(result.error || 'Failed to get trainer inventory');
+          }
+
+          trainerInventories[trainerId] = result.inventory;
+        }
+
+        const inventory = trainerInventories[trainerId];
+        let itemsInventory = {};
+
+        // Parse the inventory items if needed
+        if (inventory.inv_items) {
+          if (typeof inventory.inv_items === 'string') {
+            try {
+              itemsInventory = JSON.parse(inventory.inv_items);
+            } catch (e) {
+              console.error('Error parsing inventory items:', e);
+              itemsInventory = {};
+            }
+          } else {
+            itemsInventory = inventory.inv_items;
+          }
+        }
+
+        const daypassCount = itemsInventory['Daycare Daypass'] || 0;
+
+        if (daypassCount > 0) {
+          daypassStatus.innerHTML = `<p class="text-green-500">You have ${daypassCount} Daycare Daypass(es) available.</p>`;
+          claimBtn.disabled = false;
+        } else {
+          daypassStatus.innerHTML = `<p class="text-red-500">You don't have any Daycare Daypasses. You need at least one to adopt a monster.</p>`;
+          claimBtn.disabled = true;
+        }
+      } catch (error) {
+        console.error('Error checking daypass availability:', error);
+        daypassStatus.innerHTML = `<p class="text-red-500">Error checking Daycare Daypass availability: ${error.message}</p>`;
+        claimBtn.disabled = true;
+      }
+    }
+
+    async function claimAdopt() {
+      try {
+        // Disable form
+        claimBtn.disabled = true;
+        claimBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Adopting...';
+
+        // Get form data
+        const adoptId = adoptIdInput.value;
+        const trainerId = trainerSelect.value;
+        const monsterName = monsterNameInput.value;
+
+        // Validate form data
+        if (!adoptId) {
+          console.log('Missing adopt ID');
+          throw new Error('Missing adopt ID. Please select a monster to adopt.');
+        }
+
+        if (!trainerId) {
+          console.log('Missing trainer ID');
+          throw new Error('Please select a trainer.');
+        }
+
+        if (!monsterName) {
+          console.log('Missing monster name');
+          throw new Error('Please enter a name for your monster.');
+        }
+
+        console.log('Sending claim request with data:', { adoptId, trainerId, monsterName });
+
+        // Send claim request
+        const response = await fetch('/api/adoption/claim', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            adoptId: parseInt(adoptId),
+            trainerId: parseInt(trainerId),
+            monsterName
+          })
+        });
+
+        const result = await response.json();
+        console.log('Claim result:', result);
+
+        if (!result.success) {
+          throw new Error(result.message || 'Failed to claim adopt');
+        }
+
+        // Update trainer inventory
+        if (trainerInventories[trainerId]) {
+          let itemsInventory = {};
+
+          // Parse the inventory items if needed
+          if (trainerInventories[trainerId].inv_items) {
+            if (typeof trainerInventories[trainerId].inv_items === 'string') {
+              try {
+                itemsInventory = JSON.parse(trainerInventories[trainerId].inv_items);
+              } catch (e) {
+                console.error('Error parsing inventory items:', e);
+                itemsInventory = {};
+              }
+            } else {
+              itemsInventory = trainerInventories[trainerId].inv_items;
+            }
+          }
+
+          itemsInventory['Daycare Daypass'] = (itemsInventory['Daycare Daypass'] || 0) - 1;
+
+          // Update the inventory
+          if (typeof trainerInventories[trainerId].inv_items === 'string') {
+            trainerInventories[trainerId].inv_items = JSON.stringify(itemsInventory);
+          } else {
+            trainerInventories[trainerId].inv_items = itemsInventory;
+          }
+        }
+
+        // Show success message
+        alert('Monster adopted successfully!');
+
+        // Close modal
+        claimModal.style.display = 'none';
+
+        // Reload adopts
+        loadAdopts();
+      } catch (error) {
+        console.error('Error claiming adopt:', error);
+        alert(`Error adopting monster: ${error.message}`);
+      } finally {
+        // Re-enable form
+        claimBtn.innerHTML = 'Adopt Monster';
+        checkDaypassAvailability();
+      }
+    }
+  });
+</script>

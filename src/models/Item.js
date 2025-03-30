@@ -34,11 +34,12 @@ class Item {
 
   /**
    * Get items by category
-   * @param {string} category - The category
-   * @returns {Promise<Array>} Array of items
+   * @param {string} category - The item category
+   * @returns {Promise<Array>} Array of items in the category
    */
   static async getByCategory(category) {
     try {
+      console.log(`Getting items by category: ${category}`);
       const query = 'SELECT * FROM items WHERE category = $1 ORDER BY name';
       console.log(`Executing query for category ${category}:`, query);
       const result = await db.query(query, [category]);
@@ -46,7 +47,7 @@ class Item {
       return result.rows;
     } catch (error) {
       console.error(`Error getting items by category ${category}:`, error);
-      throw error;
+      return [];
     }
   }
 

@@ -1,0 +1,263 @@
+<% /* Set the title for the layout */ %>
+<% title = 'Lore Library' %>
+
+<div class="container mx-auto px-4 py-6">
+  <!-- Header Section - Location Banner -->
+  <div class="location-banner">
+    <img src="https://i.imgur.com/pQHIerl.jpeg" alt="Lore Library Banner" class="w-full h-full object-cover">
+    <div class="location-banner-overlay">
+      <div class="flex items-center mb-4 w-full">
+        <a href="/" class="btn-secondary hover:scale-105 transition-transform">
+          <i class="fas fa-arrow-left mr-2"></i> Back to Home
+        </a>
+      </div>
+      <h1 class="location-banner-title">Lore Library</h1>
+      <p class="location-banner-subtitle max-w-2xl">
+        Explore the rich history and ongoing events of the Dusk and Dawn world.
+      </p>
+    </div>
+  </div>
+
+  <!-- Main Options Section -->
+  <div class="max-w-6xl mx-auto mt-8">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <!-- Current Event Option -->
+      <div class="event-card">
+        <a href="/adventures/event/current" class="event-card-link">
+          <div class="event-card-image">
+            <img src="https://i.imgur.com/JKdiPRN.jpeg" alt="Current Event" class="w-full h-full object-cover">
+            <div class="event-card-overlay">
+              <div class="event-card-content">
+                <h2 class="event-card-title">Current Event</h2>
+                <p class="event-card-description">Discover the latest happenings in the world of Dusk and Dawn. Stay updated with ongoing events, challenges, and special opportunities.</p>
+                <div class="event-card-button">
+                  <span class="btn-text"><i class="fas fa-calendar-day mr-2"></i> View Current Event</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </a>
+      </div>
+
+      <!-- Past Events Option -->
+      <div class="event-card event-card-disabled">
+        <div class="event-card-link">
+          <div class="event-card-image">
+            <img src="https://i.imgur.com/8XKGxgR.jpeg" alt="Past Events" class="w-full h-full object-cover">
+            <div class="event-card-overlay">
+              <div class="event-card-content">
+                <h2 class="event-card-title">Past Events</h2>
+                <p class="event-card-description">There have been no past events yet. Check back later as the world of Dusk and Dawn continues to evolve and new stories unfold.</p>
+                <div class="event-card-button event-card-button-disabled">
+                  <span class="btn-text"><i class="fas fa-history mr-2"></i> No Past Events</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+/* Lore Library specific styles */
+.text-accent {
+  color: var(--accent-color);
+}
+
+.hover\:scale-105:hover {
+  transform: scale(1.05);
+}
+
+/* Location banner styles */
+.location-banner {
+  position: relative;
+  width: 100%;
+  height: 250px;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  margin-bottom: 2rem;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+}
+
+.location-banner img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.location-banner-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 1.5rem;
+}
+
+.location-banner-title {
+  color: white;
+  font-size: 2.25rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  text-shadow: 0 4px 8px rgba(0, 0, 0, 0.8);
+  font-family: var(--font-display, sans-serif);
+}
+
+.location-banner-subtitle {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 1.125rem;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+/* Event Card Styles */
+.event-card {
+  position: relative;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  height: 400px;
+}
+
+.event-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
+}
+
+.event-card-disabled {
+  cursor: default;
+}
+
+.event-card-disabled:hover {
+  transform: none;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+}
+
+.event-card-link {
+  display: block;
+  width: 100%;
+  height: 100%;
+  text-decoration: none;
+  color: inherit;
+}
+
+.event-card-image {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.event-card-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.9) 30%, rgba(0, 0, 0, 0.5) 60%, rgba(0, 0, 0, 0.2));
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 2rem;
+  transition: background 0.3s ease;
+}
+
+.event-card:hover .event-card-overlay {
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.95) 40%, rgba(0, 0, 0, 0.6) 70%, rgba(0, 0, 0, 0.3));
+}
+
+.event-card-content {
+  text-align: center;
+  max-width: 100%;
+  transition: transform 0.3s ease;
+}
+
+.event-card:hover .event-card-content {
+  transform: translateY(-10px);
+}
+
+.event-card-title {
+  color: var(--accent-color);
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  font-family: var(--font-display, sans-serif);
+}
+
+.event-card-description {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 1rem;
+  line-height: 1.5;
+  margin-bottom: 1.5rem;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.event-card-button {
+  display: inline-block;
+  background-color: var(--accent-color);
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  font-weight: bold;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+.event-card:hover .event-card-button {
+  background-color: var(--accent-hover);
+  transform: scale(1.05);
+}
+
+.btn-text {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.event-card-button-disabled {
+  background-color: #555;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.event-card:hover .event-card-button-disabled {
+  background-color: #555;
+  transform: none;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .location-banner {
+    height: 200px;
+  }
+
+  .location-banner-title {
+    font-size: 1.75rem;
+  }
+
+  .location-banner-subtitle {
+    font-size: 1rem;
+  }
+
+  .event-card {
+    height: 350px;
+  }
+
+  .event-card-title {
+    font-size: 1.5rem;
+  }
+
+  .event-card-description {
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+  }
+}
+</style>
+
+

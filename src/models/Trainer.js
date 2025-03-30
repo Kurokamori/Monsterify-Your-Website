@@ -141,6 +141,16 @@ class Trainer {
   }
 
   /**
+   * Get all trainers for a player Discord ID (alias for getByUserId)
+   * @param {string} discordId - User Discord ID
+   * @returns {Promise<Array>} - Array of trainer objects
+   */
+  static async getByDiscordId(discordId) {
+    // This is just an alias for getByUserId since they both use the Discord ID
+    return this.getByUserId(discordId);
+  }
+
+  /**
    * Create a new trainer
    * @param {Object} trainerData - Trainer data
    * @returns {Promise<Object>} - Created trainer
