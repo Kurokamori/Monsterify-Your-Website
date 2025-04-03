@@ -1,0 +1,68 @@
+<div class="container mx-auto px-4 py-8 location-activity-container">
+  <div class="max-w-5xl mx-auto">
+    <div class="mb-8 text-center">
+      <h1 class="text-4xl font-display font-bold text-white mb-2">Location Activities</h1>
+      <p class="text-gray-300 text-lg">Choose a location to perform activities and earn rewards.</p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <% locations.forEach(location => { %>
+        <div class="location-card hover:shadow-<%= location.color %>-glow transition-all duration-300 transform hover:-translate-y-2">
+          <div class="relative h-52 overflow-hidden">
+            <img
+              src="<%= location.image || '/images/locations/default.jpg' %>"
+              alt="<%= location.name %>"
+              class="w-full h-full object-cover"
+              onerror="this.src='/images/locations/default.jpg'"
+            >
+            <div class="absolute inset-0 bg-gradient-to-t from-gray-900 to-transparent"></div>
+            <div class="absolute bottom-0 left-0 right-0 p-4">
+              <h2 class="text-2xl font-display font-bold text-white mb-1"><%= location.name %></h2>
+              <div class="flex items-center">
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-<%= location.color %>-900 text-<%= location.color %>-300 border border-<%= location.color %>-700">
+                  <% if (location.id.includes('garden')) { %>
+                    <i class="fas fa-seedling mr-1"></i> Gardening
+                  <% } else if (location.id.includes('farm')) { %>
+                    <i class="fas fa-tractor mr-1"></i> Farming
+                  <% } else if (location.id.includes('fishing')) { %>
+                    <i class="fas fa-fish mr-1"></i> Fishing
+                  <% } else if (location.id.includes('swab')) { %>
+                    <i class="fas fa-broom mr-1"></i> Swabbing
+                  <% } else { %>
+                    <i class="fas fa-map-marker-alt mr-1"></i> Activity
+                  <% } %>
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="p-5">
+            <p class="text-gray-300 mb-5 text-sm leading-relaxed"><%= location.description %></p>
+
+            <form action="/town/activities/start" method="POST" class="mt-4">
+              <input type="hidden" name="location" value="<%= location.id %>">
+              <input type="hidden" name="activity" value="<%= location.activity %>">
+
+              <button
+                type="submit"
+                class="w-full py-3 px-4 bg-<%= location.color %>-600 hover:bg-<%= location.color %>-700 text-white font-bold rounded-md transition-all duration-300 flex items-center justify-center"
+                onclick="console.log('Starting activity:', '<%= location.id %>', '<%= location.activity %>');"
+              >
+                <i class="fas fa-play-circle mr-2"></i> Start Activity
+              </button>
+            </form>
+
+            <!-- Debug info -->
+            <div class="mt-2 text-xs text-gray-500" style="display: none;">
+              Location ID: <%= location.id %><br>
+              Activity: <%= location.activity %>
+            </div>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+  </div>
+</div>
+
+<link rel="stylesheet" href="/css/location_activities.css">
+

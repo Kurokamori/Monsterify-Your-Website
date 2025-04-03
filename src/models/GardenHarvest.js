@@ -40,7 +40,7 @@ class GardenHarvest {
         // Update existing record
         const query = `
           UPDATE garden_harvests
-          SET 
+          SET
             garden_points = $1,
             last_harvest_date = $2,
             updated_at = NOW()
@@ -90,13 +90,18 @@ class GardenHarvest {
           discord_user_id TEXT NOT NULL,
           garden_points INTEGER DEFAULT 0,
           last_harvest_date DATE,
-          created_at TIMESTAMP NOT NULL,
-          updated_at TIMESTAMP NOT NULL,
+          created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+          updated_at TIMESTAMP NOT NULL DEFAULT NOW(),
           UNIQUE(discord_user_id)
         )
       `;
       await pool.query(query);
       console.log('Garden harvests table initialized');
+
+      // Check if the table has any records
+      const checkQuery = `SELECT COUNT(*) FROM garden_harvests`;
+      const result = await pool.query(checkQuery);
+      console.log(`Garden harvests table has ${result.rows[0].count} records`);
     } catch (error) {
       console.error('Error initializing garden harvests table:', error);
     }
@@ -111,12 +116,14 @@ class GardenHarvest {
     try {
       const harvestData = await this.getByDiscordUserId(discordUserId);
       if (!harvestData || !harvestData.last_harvest_date) {
+        console.log(`User ${discordUserId} has no harvest data or last harvest date`);
         return false;
       }
 
       const today = new Date().toISOString().split('T')[0];
       const lastHarvestDate = new Date(harvestData.last_harvest_date).toISOString().split('T')[0];
-      
+
+      console.log(`User ${discordUserId} last harvest date: ${lastHarvestDate}, today: ${today}`);
       return lastHarvestDate === today;
     } catch (error) {
       console.error('Error checking if user has harvested today:', error);
@@ -171,17 +178,86 @@ class GardenHarvest {
    */
   static async recordHarvest(discordUserId, points) {
     try {
+      console.log(`Recording harvest for user ${discordUserId} with ${points} points`);
       const today = new Date().toISOString().split('T')[0];
       const harvestData = await this.getByDiscordUserId(discordUserId);
       const currentPoints = harvestData ? harvestData.garden_points : 0;
-      
-      return await this.upsert(discordUserId, {
+
+      console.log(`Current points: ${currentPoints}, new total: ${currentPoints + points}`);
+      const result = await this.upsert(discordUserId, {
         garden_points: currentPoints + points,
         last_harvest_date: today
       });
+
+      console.log(`Harvest recorded successfully:`, result);
+      return result;
     } catch (error) {
       console.error('Error recording harvest:', error);
       return null;
+    }
+  }
+
+  /**
+   * Harvest the garden and get rewards
+   * @param {string} discordUserId - Discord user ID
+   * @returns {Object} - Harvest results with rewards
+   */
+  static async harvestGarden(discordUserId) {
+    try {
+      // Get current garden points
+      const harvestData = await this.getByDiscordUserId(discordUserId);
+      if (!harvestData) {
+        return {
+          success: false,
+          message: 'No garden data found',
+          rewards: []
+        };
+      }
+
+      const points = harvestData.garden_points;
+      console.log(`Harvesting garden for user ${discordUserId} with ${points} points`);
+
+      // If no points, return early
+      if (points <= 0) {
+        return {
+          success: true,
+          message: 'No points to harvest',
+          rewards: []
+        };
+      }
+
+      // Generate rewards based on points (1/3 chance per point)
+      const rewards = [];
+      for (let i = 0; i < points; i++) {
+        if (Math.random() < 1/3) { // 1/3 chance for each point
+          // Generate a reward
+          const RewardSystem = require('../utils/RewardSystem');
+          const reward = await RewardSystem.generateRandomReward('garden');
+          if (reward) {
+            rewards.push(reward);
+          }
+        }
+      }
+
+      // Reset points to 0
+      await this.upsert(discordUserId, {
+        garden_points: 0,
+        last_harvest_date: new Date().toISOString().split('T')[0]
+      });
+
+      return {
+        success: true,
+        message: `Successfully harvested garden with ${points} points`,
+        pointsHarvested: points,
+        rewards: rewards
+      };
+    } catch (error) {
+      console.error('Error harvesting garden:', error);
+      return {
+        success: false,
+        message: 'Error harvesting garden',
+        rewards: []
+      };
     }
   }
 }

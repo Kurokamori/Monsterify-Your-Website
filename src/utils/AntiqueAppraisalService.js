@@ -75,7 +75,7 @@ class AntiqueAppraisalService {
       "roll_count": 1,
       "force_fusion": true,
       "override_parameters": {
-        "species1": ["Pumpkinmon", "Gotsumon"],
+        "species1": ["Pumpkinmon", "Gotsumon", "Wizardmon"],
         "attribute": ["Spooky"]
       },
       "category": "American Holidays"
@@ -521,7 +521,7 @@ class AntiqueAppraisalService {
           break;
 
         case "Fright Night Fudge":
-          // Force fusion with Pumpkinmon/Gotsumon and Spooky attribute
+          // Force fusion with Pumpkinmon/Gotsumon/Wizardmon and Spooky attribute
           rollerOptions.overrideParams.forceFusion = true;
           const frightSpecies = antique.override_parameters.species1;
           const randomFrightSpecies = frightSpecies[Math.floor(Math.random() * frightSpecies.length)];

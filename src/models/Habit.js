@@ -1,4 +1,5 @@
 const pool = require('../db');
+const RewardSystem = require('../utils/RewardSystem');
 
 class Habit {
   /**
@@ -283,10 +284,42 @@ class Habit {
 
       const completion = completionResult.rows[0];
 
+      // Process additional rewards (mission progress, garden points, boss damage)
+      let additionalRewards = null;
+      try {
+        // Get the user ID from the trainer ID
+        const trainerQuery = `
+          SELECT player_user_id FROM trainers
+          WHERE id = $1
+          LIMIT 1
+        `;
+        const trainerResult = await pool.query(trainerQuery, [habit.trainer_id]);
+
+        if (trainerResult.rows.length > 0) {
+          const playerUserId = trainerResult.rows[0].player_user_id;
+
+          // Process additional rewards
+          additionalRewards = await RewardSystem.processAdditionalRewards(playerUserId, 'habit', {
+            difficulty: habit.difficulty,
+            streak: newStreak,
+            levels: habit.level_reward,
+            coins: habit.coin_reward
+          });
+        }
+      } catch (error) {
+        console.error('Error processing additional rewards:', error);
+        // Continue with the habit completion even if additional rewards fail
+      }
+
       // Commit the transaction
       await pool.query('COMMIT');
 
-      return { habit: updatedHabit, completion, alreadyCompletedToday: false };
+      return {
+        habit: updatedHabit,
+        completion,
+        alreadyCompletedToday: false,
+        additionalRewards
+      };
     } catch (error) {
       // Rollback the transaction on error
       await pool.query('ROLLBACK');

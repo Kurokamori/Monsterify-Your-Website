@@ -253,8 +253,8 @@ class TaskTemplate {
         throw new Error('Template not found');
       }
 
-      // Parse the tasks
-      const tasks = JSON.parse(template.tasks);
+      // Parse the tasks if they're stored as a string, otherwise use the object directly
+      const tasks = typeof template.tasks === 'string' ? JSON.parse(template.tasks) : template.tasks;
 
       // Create the tasks
       const createdTasks = [];

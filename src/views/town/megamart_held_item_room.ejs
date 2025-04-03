@@ -1,0 +1,1042 @@
+<% /* Set the title and other variables for the layout */ %>
+<% title = 'Mega Mart - Held Item Room' %>
+
+<div class="container mx-auto px-4 py-8">
+  <% if (locals.bannerImage) { %>
+    <img src="<%= bannerImage %>" alt="Held Item Room Banner" class="location-banner w-full rounded-xl mb-8">
+  <% } %>
+
+  <div class="location-card mb-8">
+    <div class="location-card-content">
+      <div class="mb-8 p-6 bg-gray-900 bg-opacity-50 rounded-lg">
+        <h3 class="text-2xl font-bold text-amber-400 mb-2 text-center">Held Item Room</h3>
+        <p class="text-sm text-gray-300 text-center max-w-3xl mx-auto">Equip, remove, or swap held items for your monsters. Some items provide special stat bonuses when held!</p>
+
+        <div class="flex justify-center mt-8 mb-12">
+          <a href="/town/visit/megamart" class="btn-secondary py-2 px-6 rounded-lg text-sm flex items-center hover:scale-105 transition-transform duration-200">
+            <i class="fas fa-arrow-left mr-2"></i> Back to Mega Mart
+          </a>
+        </div>
+      </div>
+
+      <% if (locals.message) { %>
+        <div class="alert alert-<%= messageType || 'info' %> mb-4">
+          <%= message %>
+        </div>
+      <% } %>
+
+      <!-- Form section -->
+      <form id="held-item-form" class="space-y-4">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          <!-- Left Column: Trainer & Monster Selection (4 cols) -->
+          <div class="bg-gray-800/60 rounded-lg p-4 shadow-lg lg:col-span-4">
+            <!-- Trainer Selection -->
+            <div class="mb-6">
+              <div class="flex items-center mb-2">
+                <i class="fas fa-user text-blue-400 mr-2"></i>
+                <label for="trainer-select" class="block text-sm text-amber-400 font-semibold">Select Trainer</label>
+              </div>
+              <select
+                id="trainer-select"
+                name="trainerId"
+                class="modern-select"
+                required
+              >
+                <option value="">-- Select a Trainer --</option>
+              </select>
+            </div>
+
+            <!-- Monster Selection -->
+            <div class="mb-6">
+              <div class="flex items-center mb-2">
+                <i class="fas fa-dragon text-purple-400 mr-2"></i>
+                <label for="monster-select" class="block text-sm text-amber-400 font-semibold">Select Monster</label>
+              </div>
+              <select
+                id="monster-select"
+                name="monsterId"
+                class="modern-select"
+                required
+                disabled
+              >
+                <option value="">-- Select a Monster --</option>
+              </select>
+            </div>
+
+            <!-- Monster Details -->
+            <div id="monster-details" class="hidden mt-4 p-4 bg-gray-700/50 rounded-lg">
+              <!-- Two-column layout for monster image and details -->
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Left column: Monster image -->
+                <div class="flex justify-center items-center">
+                  <div id="monster-image" class="w-40 h-40 bg-gray-600 rounded-lg overflow-hidden border-2 border-gray-500">
+                    <img src="/images/default_mon.png" alt="Monster" class="w-full h-full object-contain">
+                  </div>
+                </div>
+
+                <!-- Right column: Monster info -->
+                <div class="flex flex-col justify-center">
+                  <div id="monster-name" class="text-white text-lg font-medium mb-1">-</div>
+                  <div id="monster-info" class="text-sm text-gray-400 mb-2">-</div>
+                  <div class="mb-2 flex items-center">
+                    <i class="fas fa-hand-holding text-amber-400 mr-2"></i>
+                    <span id="current-held-item" class="text-sm text-amber-400">No held item</span>
+                  </div>
+
+                  <!-- Stats affected by held items -->
+                  <div class="p-3 bg-gray-800/70 rounded-lg mt-2">
+                    <h4 class="text-amber-400 text-xs font-medium mb-2">Stats</h4>
+                    <div class="grid grid-cols-2 gap-2 text-xs">
+                      <div>
+                        <span class="text-gray-400">HP:</span>
+                        <span id="stat-hp" class="text-white ml-1">-</span>
+                      </div>
+                      <div>
+                        <span class="text-gray-400">Attack:</span>
+                        <span id="stat-atk" class="text-white ml-1">-</span>
+                      </div>
+                      <div>
+                        <span class="text-gray-400">Defense:</span>
+                        <span id="stat-def" class="text-white ml-1">-</span>
+                      </div>
+                      <div>
+                        <span class="text-gray-400">Sp. Atk:</span>
+                        <span id="stat-spatk" class="text-white ml-1">-</span>
+                      </div>
+                      <div>
+                        <span class="text-gray-400">Sp. Def:</span>
+                        <span id="stat-spdef" class="text-white ml-1">-</span>
+                      </div>
+                      <div>
+                        <span class="text-gray-400">Speed:</span>
+                        <span id="stat-speed" class="text-white ml-1">-</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Middle Column: Action Selection (4 cols) -->
+          <div class="bg-gray-800/60 rounded-lg p-4 shadow-lg lg:col-span-4">
+            <h3 class="text-lg font-bold text-amber-400 mb-4">Item Management</h3>
+
+            <!-- Action Selection -->
+            <div class="mb-6">
+              <div class="flex items-center mb-2">
+                <i class="fas fa-cog text-amber-400 mr-2"></i>
+                <label for="action-select" class="block text-sm text-amber-400 font-semibold">Select Action</label>
+              </div>
+              <select
+                id="action-select"
+                name="action"
+                class="modern-select"
+                required
+                disabled
+              >
+                <option value="">-- Select an Action --</option>
+                <option value="remove">Remove Held Item</option>
+                <option value="give">Give/Swap Held Item</option>
+              </select>
+            </div>
+
+            <!-- Item Selection (only shown for give/swap action) -->
+            <div id="item-selection" class="hidden">
+              <div class="mb-6">
+                <div class="flex items-center mb-2">
+                  <i class="fas fa-hand-holding text-green-400 mr-2"></i>
+                  <label for="item-select" class="block text-sm text-amber-400 font-semibold">Select Item</label>
+                </div>
+                <select
+                  id="item-select"
+                  name="itemName"
+                  class="modern-select"
+                  required
+                >
+                  <option value="">-- Select an Item --</option>
+                </select>
+              </div>
+
+              <!-- Item Effect Preview -->
+              <div id="item-effect-preview" class="hidden p-3 bg-gray-700/50 rounded-lg mb-4">
+                <h4 class="text-amber-400 text-sm font-medium mb-2">Item Effect</h4>
+                <p id="item-effect-description" class="text-xs text-gray-300">-</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Column: Preview and Submit (4 cols) -->
+          <div class="bg-gray-800/60 rounded-lg p-4 shadow-lg lg:col-span-4">
+            <h3 class="text-lg font-bold text-amber-400 mb-4">Preview</h3>
+
+            <div id="preview-container" class="bg-gray-700/50 p-4 rounded-lg mb-6">
+              <div class="text-center text-gray-400 mb-4">
+                <p>Select a monster and action to preview changes</p>
+              </div>
+
+              <div id="preview-content" class="hidden">
+                <!-- This will be populated by JavaScript -->
+              </div>
+            </div>
+
+            <!-- Submit Button -->
+            <button
+              type="submit"
+              id="submit-button"
+              class="btn-primary w-full text-center py-3 px-4 rounded text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+              disabled
+            >
+              <i class="fas fa-check-circle mr-2"></i> Apply Changes
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<style>
+  .location-card {
+    background-color: rgba(17, 24, 39, 0.8);
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    transition: transform 0.3s, box-shadow 0.3s;
+    border: 1px solid rgba(75, 85, 99, 0.3);
+    backdrop-filter: blur(10px);
+  }
+
+  .location-card:hover {
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+  }
+
+  .location-card-content {
+    padding: 1.5rem;
+    background-color: rgba(17, 24, 39, 0.6);
+  }
+
+  .btn-primary {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    color: #111827;
+    font-weight: 600;
+    transition: all 0.3s;
+    border: none;
+    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .btn-primary:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(245, 158, 11, 0.4);
+  }
+
+  .btn-primary:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  .btn-secondary {
+    background-color: rgba(31, 41, 55, 0.8);
+    color: #e5e7eb;
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    border-radius: 0.375rem;
+    transition: all 0.3s;
+    border: 1px solid rgba(75, 85, 99, 0.3);
+  }
+
+  .btn-secondary:hover {
+    background-color: rgba(31, 41, 55, 0.9);
+    transform: translateY(-2px);
+  }
+
+  /* Using modern-select class from dropdown-styles.css */
+  .modern-select {
+    width: 100%;
+    padding: 0.5rem 1rem;
+    background-color: rgba(31, 41, 55, 0.8);
+    border: 1px solid rgba(75, 85, 99, 0.5);
+    border-radius: 0.375rem;
+    color: #e5e7eb;
+    appearance: none;
+    margin-bottom: 1rem;
+  }
+
+  /* Custom dropdown arrow for all select elements */
+  .modern-select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23d6a339'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E") !important;
+    background-repeat: no-repeat !important;
+    background-position: right 0.75rem center !important;
+    background-size: 1.5rem !important;
+  }
+
+  .modern-select:focus {
+    outline: none !important;
+    border-color: rgb(217 119 6) !important;
+    box-shadow: 0 0 0 2px rgba(217, 119, 6, 0.2) !important;
+  }
+
+  /* Disabled state styling */
+  .modern-select:disabled {
+    opacity: 0.6 !important;
+    cursor: not-allowed !important;
+  }
+
+  .text-shadow-lg {
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  }
+
+  .location-banner {
+    height: 200px;
+    object-fit: cover;
+  }
+
+  /* Alert styles */
+  .alert {
+    padding: 0.75rem 1rem;
+    border-radius: 0.375rem;
+    margin-bottom: 1rem;
+  }
+
+  .alert-success {
+    background-color: rgba(16, 185, 129, 0.2);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+    color: #10b981;
+  }
+
+  .alert-error {
+    background-color: rgba(239, 68, 68, 0.2);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    color: #ef4444;
+  }
+
+  .alert-info {
+    background-color: rgba(59, 130, 246, 0.2);
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    color: #3b82f6;
+  }
+
+  .alert-warning {
+    background-color: rgba(245, 158, 11, 0.2);
+    border: 1px solid rgba(245, 158, 11, 0.3);
+    color: #f59e0b;
+  }
+
+  /* Stat change indicators */
+  .stat-increase {
+    color: #10b981;
+  }
+
+  .stat-decrease {
+    color: #ef4444;
+  }
+
+  /* Monster image styling */
+  #monster-image {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(31, 41, 55, 0.5);
+  }
+
+  #monster-image img {
+    max-width: 100%;
+    max-height: 128px;
+    object-fit: contain;
+  }
+
+  .monster-display-image {
+    max-width: 100%;
+    max-height: 128px;
+    object-fit: contain;
+    border-radius: 4px;
+  }
+
+  /* Responsive adjustments for monster details */
+  @media (max-width: 768px) {
+    #monster-details .grid {
+      grid-template-columns: 1fr;
+    }
+
+    #monster-details .flex-col {
+      margin-top: 1rem;
+    }
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Define item effects and their stat impacts
+    const ITEM_EFFECTS = {
+      'Assault Vest': {
+        description: 'For every 4 levels add 1 defence EV',
+        effect: (monster) => {
+          const defBoost = Math.floor(monster.level / 4);
+          return { def_ev: defBoost };
+        }
+      },
+      'Eviolite': {
+        description: 'Raise Defense and Special Defence EV by 4 * Level / 10',
+        effect: (monster) => {
+          const boost = Math.floor(4 * monster.level / 10);
+          return { def_ev: boost, spdef_ev: boost };
+        }
+      },
+      'Macho Brace': {
+        description: 'Increase Attack and Special Attack EVs by Speed EVs/2',
+        effect: (monster) => {
+          const boost = Math.floor(monster.speed_ev / 2);
+          return { atk_ev: boost, spatk_ev: boost };
+        }
+      },
+      'Power Anklet': {
+        description: 'Increase Speed EV by 2, decrease Speed IV by 2',
+        effect: (monster) => {
+          return { speed_ev: 2, speed_iv: -2 };
+        }
+      },
+      'Power Band': {
+        description: 'Increase Sp. Defence EV by 2, decrease Speed IV by 2',
+        effect: (monster) => {
+          return { spdef_ev: 2, speed_iv: -2 };
+        }
+      },
+      'Power Belt': {
+        description: 'Increase Defence EV by 2, decrease Speed IV by 2',
+        effect: (monster) => {
+          return { def_ev: 2, speed_iv: -2 };
+        }
+      },
+      'Power Bracer': {
+        description: 'Increase Attack EV by 2, decrease Speed IV by 2',
+        effect: (monster) => {
+          return { atk_ev: 2, speed_iv: -2 };
+        }
+      },
+      'Power Lens': {
+        description: 'Increase Sp. Attack EV by 2, decrease Speed IV by 2',
+        effect: (monster) => {
+          return { spatk_ev: 2, speed_iv: -2 };
+        }
+      },
+      'Power Weight': {
+        description: 'Increase HP EV by 2, decrease Speed IV by 2',
+        effect: (monster) => {
+          return { hp_ev: 2, speed_iv: -2 };
+        }
+      },
+      'Quick Claw': {
+        description: 'Increase Speed IV by 2',
+        effect: (monster) => {
+          return { speed_iv: 2 };
+        }
+      },
+      'Offense Plugin A': {
+        description: 'Increase Attack and Special Attack IV by 1',
+        effect: (monster) => {
+          return { atk_iv: 1, spatk_iv: 1 };
+        }
+      },
+      'Offense Plugin X': {
+        description: 'Increase Attack and Special Attack IV by 3',
+        effect: (monster) => {
+          return { atk_iv: 3, spatk_iv: 3 };
+        }
+      },
+      'Defence Plugin A': {
+        description: 'Increase Defence and Special Defence IV by 3',
+        effect: (monster) => {
+          return { def_iv: 3, spdef_iv: 3 };
+        }
+      },
+      'Defence Plugin X': {
+        description: 'Increase Defence and Special Defence IV by 3',
+        effect: (monster) => {
+          return { def_iv: 3, spdef_iv: 3 };
+        }
+      },
+      'Speed Plugin B': {
+        description: 'Increase Speed IV by 1',
+        effect: (monster) => {
+          return { speed_iv: 1 };
+        }
+      },
+      'Speed Plugin EX': {
+        description: 'Increase Speed IV by 4',
+        effect: (monster) => {
+          return { speed_iv: 4 };
+        }
+      },
+      'Miracle Charm': {
+        description: 'Increase All Stats IV by 1',
+        effect: (monster) => {
+          return { hp_iv: 1, atk_iv: 1, def_iv: 1, spatk_iv: 1, spdef_iv: 1, speed_iv: 1 };
+        }
+      },
+      'Spirit Ring': {
+        description: 'Increase Attack and Special Attack IV by 2',
+        effect: (monster) => {
+          return { atk_iv: 2, spatk_iv: 2 };
+        }
+      },
+      'Brute Bracer': {
+        description: 'Increase Attack EV by 2',
+        effect: (monster) => {
+          return { atk_ev: 2 };
+        }
+      },
+      'Guard Glorifier': {
+        description: 'Increase Defence EV by 2',
+        effect: (monster) => {
+          return { def_ev: 2 };
+        }
+      },
+      'Runic Charm': {
+        description: 'Increase Special Attack and Special Defense EV by 2',
+        effect: (monster) => {
+          return { spatk_ev: 2, spdef_ev: 2 };
+        }
+      },
+      'Tough Bell': {
+        description: 'Increase Defence EV by 4',
+        effect: (monster) => {
+          return { def_ev: 4 };
+        }
+      },
+      'Rough Whetstone': {
+        description: 'Increase Attack and Special Attack EV by 2 but decrease Defense EV by 2',
+        effect: (monster) => {
+          return { atk_ev: 2, spatk_ev: 2, def_ev: -2 };
+        }
+      },
+      'Fiend Badge': {
+        description: 'Increase Attack and Special Attack EV by 4 but decrease Speed EV by 2',
+        effect: (monster) => {
+          return { atk_ev: 4, spatk_ev: 4, speed_ev: -2 };
+        }
+      },
+      'General\'s Soul': {
+        description: 'Increase Attack and Special Attack EV by 8 but decrease Speed EV by 6',
+        effect: (monster) => {
+          return { atk_ev: 8, spatk_ev: 8, speed_ev: -6 };
+        }
+      }
+    };
+
+    // DOM elements
+    const trainerSelect = document.getElementById('trainer-select');
+    const monsterSelect = document.getElementById('monster-select');
+    const actionSelect = document.getElementById('action-select');
+    const itemSelect = document.getElementById('item-select');
+    const monsterDetails = document.getElementById('monster-details');
+    const monsterImage = document.getElementById('monster-image').querySelector('img');
+    const monsterName = document.getElementById('monster-name');
+    const monsterInfo = document.getElementById('monster-info');
+    const currentHeldItem = document.getElementById('current-held-item');
+    const itemSelection = document.getElementById('item-selection');
+    const itemEffectPreview = document.getElementById('item-effect-preview');
+    const itemEffectDescription = document.getElementById('item-effect-description');
+    const previewContainer = document.getElementById('preview-container');
+    const previewContent = document.getElementById('preview-content');
+    const submitButton = document.getElementById('submit-button');
+    const heldItemForm = document.getElementById('held-item-form');
+
+    // Stat elements
+    const statHP = document.getElementById('stat-hp');
+    const statAtk = document.getElementById('stat-atk');
+    const statDef = document.getElementById('stat-def');
+    const statSpAtk = document.getElementById('stat-spatk');
+    const statSpDef = document.getElementById('stat-spdef');
+    const statSpeed = document.getElementById('stat-speed');
+
+    // State variables
+    let currentMonster = null;
+    let monsters = [];
+
+    // Load trainers when the page loads
+    loadTrainers();
+
+    async function loadTrainers() {
+      try {
+        console.log('Fetching trainers from /api/trainers/user');
+        const response = await fetch('/api/trainers/user');
+        if (!response.ok) {
+          throw new Error(`Failed to fetch trainers: ${response.status} ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        console.log('Received trainer data:', data);
+
+        // Handle both response formats (direct array or object with trainers property)
+        let trainers = Array.isArray(data) ? data : (data.trainers || []);
+
+        // Clear existing options
+        trainerSelect.innerHTML = '<option value="">-- Select a Trainer --</option>';
+
+        // Add trainer options
+        if (trainers && trainers.length > 0) {
+          trainers.forEach(trainer => {
+            const option = document.createElement('option');
+            option.value = trainer.id;
+            option.textContent = trainer.name;
+            trainerSelect.appendChild(option);
+          });
+        } else {
+          console.warn('No trainers found');
+        }
+      } catch (error) {
+        console.error('Error loading trainers:', error);
+        trainerSelect.innerHTML = '<option value="">Error loading trainers</option>';
+      }
+    }
+
+    // Event listener for trainer selection
+    trainerSelect.addEventListener('change', function() {
+      const trainerId = this.value;
+      if (trainerId) {
+        loadMonsters(trainerId);
+        monsterSelect.disabled = false;
+      } else {
+        monsterSelect.innerHTML = '<option value="">-- Select a Monster --</option>';
+        monsterSelect.disabled = true;
+        actionSelect.disabled = true;
+        itemSelect.disabled = true;
+        monsterDetails.classList.add('hidden');
+        itemSelection.classList.add('hidden');
+        itemEffectPreview.classList.add('hidden');
+        previewContent.classList.add('hidden');
+        submitButton.disabled = true;
+      }
+    });
+
+    async function loadMonsters(trainerId) {
+      try {
+        console.log(`Fetching monsters for trainer ${trainerId}`);
+        monsterSelect.disabled = true;
+        monsterSelect.innerHTML = '<option value="">Loading monsters...</option>';
+
+        // Fetch monsters for the trainer
+        const response = await fetch(`/api/trainers/${trainerId}/monsters`);
+        if (!response.ok) {
+          throw new Error(`Failed to fetch monsters: ${response.status} ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        console.log('Received monster data:', data);
+
+        // Handle both response formats (direct array or object with monsters property)
+        monsters = Array.isArray(data) ? data : (data.monsters || []);
+
+        // Clear existing options
+        monsterSelect.innerHTML = '<option value="">-- Select a Monster --</option>';
+
+        // Add monster options
+        if (monsters && monsters.length > 0) {
+          monsters.forEach(monster => {
+            const option = document.createElement('option');
+            option.value = monster.mon_id;
+
+            // Format monster name with species and level
+            let displayName = monster.name;
+            if (monster.species1) {
+              displayName += ` (${monster.species1}`;
+              if (monster.species2) displayName += `/${monster.species2}`;
+              if (monster.species3) displayName += `/${monster.species3}`;
+              displayName += `, Lv.${monster.level})`;
+            } else {
+              displayName += ` (Lv.${monster.level})`;
+            }
+
+            option.textContent = displayName;
+            monsterSelect.appendChild(option);
+          });
+
+          monsterSelect.disabled = false;
+        } else {
+          monsterSelect.innerHTML = '<option value="">No monsters found</option>';
+        }
+      } catch (error) {
+        console.error('Error loading monsters:', error);
+        monsterSelect.innerHTML = '<option value="">Error loading monsters</option>';
+        monsterSelect.disabled = true;
+      }
+    }
+
+    // Event listener for monster selection
+    monsterSelect.addEventListener('change', function() {
+      const monsterId = this.value;
+      if (monsterId) {
+        loadMonsterDetails(monsterId);
+        actionSelect.disabled = false;
+      } else {
+        monsterDetails.classList.add('hidden');
+        actionSelect.disabled = true;
+        itemSelection.classList.add('hidden');
+        itemEffectPreview.classList.add('hidden');
+        previewContent.classList.add('hidden');
+        submitButton.disabled = true;
+      }
+    });
+
+    // Process monster details and update UI
+    function processMonsterDetails(monster) {
+      console.log('Processing monster details:', monster);
+      monsterDetails.classList.add('hidden');
+
+      // Store current monster data
+      currentMonster = monster;
+
+      // Update monster details display
+      if (monster.img_link && monster.img_link !== 'default_mon.png') {
+        monsterImage.src = monster.img_link;
+      } else {
+        monsterImage.src = '/images/default_mon.png';
+      }
+
+      // Ensure proper image display
+      monsterImage.classList.add('monster-display-image');
+      monsterImage.onerror = function() {
+        this.src = '/images/default_mon.png';
+      };
+
+      monsterName.textContent = monster.name;
+
+      // Format monster info
+      let infoText = `Level ${monster.level}`;
+      if (monster.species1) {
+        infoText += ` • ${monster.species1}`;
+        if (monster.species2) infoText += `/${monster.species2}`;
+        if (monster.species3) infoText += `/${monster.species3}`;
+      }
+      if (monster.type1) {
+        infoText += ` • ${monster.type1}`;
+        if (monster.type2) infoText += `/${monster.type2}`;
+        if (monster.type3) infoText += `/${monster.type3}`;
+      }
+      monsterInfo.textContent = infoText;
+
+      // Display held item
+      if (monster.held_item) {
+        currentHeldItem.textContent = monster.held_item;
+      } else {
+        currentHeldItem.textContent = 'No held item';
+      }
+
+      // Display stats
+      statHP.textContent = formatStat(monster.hp_iv, monster.hp_ev);
+      statAtk.textContent = formatStat(monster.atk_iv, monster.atk_ev);
+      statDef.textContent = formatStat(monster.def_iv, monster.def_ev);
+      statSpAtk.textContent = formatStat(monster.spatk_iv, monster.spatk_ev);
+      statSpDef.textContent = formatStat(monster.spdef_iv, monster.spdef_ev);
+      statSpeed.textContent = formatStat(monster.speed_iv, monster.speed_ev);
+
+      monsterDetails.classList.remove('hidden');
+    }
+
+    async function loadMonsterDetails(monsterId) {
+      try {
+        console.log(`Fetching details for monster ${monsterId}`);
+        monsterDetails.classList.add('hidden');
+
+        // Fetch monster details
+        // First try to get the monster from the monsters array we already have
+        const monsterFromList = monsters.find(m => m.mon_id == monsterId);
+
+        if (monsterFromList) {
+          // Use the monster we already have
+          processMonsterDetails(monsterFromList);
+          return;
+        }
+
+        // If not found in the list, fetch from API
+        const response = await fetch(`/api/trainers/${trainerSelect.value}/monsters`);
+        if (!response.ok) {
+          throw new Error(`Failed to fetch monsters: ${response.status} ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        const monstersData = Array.isArray(data) ? data : (data.monsters || []);
+        const monster = monstersData.find(m => m.mon_id == monsterId);
+
+        if (!monster) {
+          throw new Error(`Monster with ID ${monsterId} not found`);
+        }
+
+        console.log('Monster details:', monster);
+        processMonsterDetails(monster);
+      } catch (error) {
+        console.error('Error loading monster details:', error);
+        alert('Failed to load monster details. Please try again.');
+      }
+    }
+
+    function formatStat(iv, ev) {
+      return `IV: ${iv || 0} / EV: ${ev || 0}`;
+    }
+
+    // Event listener for action selection
+    actionSelect.addEventListener('change', function() {
+      const action = this.value;
+      if (action) {
+        if (action === 'give') {
+          loadHeldItems(trainerSelect.value);
+          itemSelection.classList.remove('hidden');
+        } else {
+          itemSelection.classList.add('hidden');
+          itemEffectPreview.classList.add('hidden');
+          updatePreview(action);
+        }
+      } else {
+        itemSelection.classList.add('hidden');
+        itemEffectPreview.classList.add('hidden');
+        previewContent.classList.add('hidden');
+        submitButton.disabled = true;
+      }
+    });
+
+    async function loadHeldItems(trainerId) {
+      try {
+        console.log(`Fetching held items for trainer ${trainerId}`);
+        itemSelect.disabled = true;
+        itemSelect.innerHTML = '<option value="">Loading items...</option>';
+
+        // Fetch trainer inventory
+        const response = await fetch(`/api/trainers/${trainerId}/inventory`);
+        if (!response.ok) {
+          throw new Error(`Failed to fetch trainer inventory: ${response.status} ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        console.log('Trainer inventory data:', data);
+
+        // Clear existing options
+        itemSelect.innerHTML = '<option value="">-- Select an Item --</option>';
+
+        // Get items from inventory
+        const inventory = data.inventory || data;
+        const heldItems = inventory.inv_helditems || {};
+
+        // Parse items if it's a string (JSON)
+        let itemsObj = heldItems;
+        if (typeof heldItems === 'string') {
+          try {
+            itemsObj = JSON.parse(heldItems);
+          } catch (e) {
+            console.error('Error parsing held items JSON:', e);
+            itemsObj = {};
+          }
+        }
+
+        console.log('Parsed held items:', itemsObj);
+
+        let hasItems = false;
+        // Add held items to select
+        for (const [itemName, quantity] of Object.entries(itemsObj)) {
+          if (quantity > 0) {
+            hasItems = true;
+            const option = document.createElement('option');
+            option.value = itemName;
+            option.textContent = `${itemName} (${quantity})`;
+            itemSelect.appendChild(option);
+          }
+        }
+
+        if (hasItems) {
+          itemSelect.disabled = false;
+        } else {
+          itemSelect.innerHTML = '<option value="">No held items available</option>';
+        }
+      } catch (error) {
+        console.error('Error loading held items:', error);
+        itemSelect.innerHTML = '<option value="">Error loading items</option>';
+        itemSelect.disabled = true;
+      }
+    }
+
+    // Event listener for item selection
+    itemSelect.addEventListener('change', function() {
+      const itemName = this.value;
+      if (itemName) {
+        showItemEffect(itemName);
+        updatePreview('give', itemName);
+      } else {
+        itemEffectPreview.classList.add('hidden');
+        previewContent.classList.add('hidden');
+        submitButton.disabled = true;
+      }
+    });
+
+    function showItemEffect(itemName) {
+      if (ITEM_EFFECTS[itemName]) {
+        itemEffectDescription.textContent = ITEM_EFFECTS[itemName].description;
+        itemEffectPreview.classList.remove('hidden');
+      } else {
+        itemEffectDescription.textContent = 'This item has no special stat effects.';
+        itemEffectPreview.classList.remove('hidden');
+      }
+    }
+
+    function updatePreview(action, itemName = null) {
+      if (!currentMonster) return;
+
+      let previewHTML = '';
+
+      if (action === 'remove') {
+        if (!currentMonster.held_item) {
+          previewHTML = `
+            <div class="p-3 bg-gray-800/70 rounded-lg">
+              <p class="text-yellow-400 text-center">This monster is not holding any item.</p>
+            </div>
+          `;
+          submitButton.disabled = true;
+        } else {
+          previewHTML = `
+            <div class="p-3 bg-gray-800/70 rounded-lg">
+              <p class="text-green-400 text-center">Remove ${currentMonster.held_item} from ${currentMonster.name}.</p>
+            </div>
+          `;
+          submitButton.disabled = false;
+          submitButton.innerHTML = '<i class="fas fa-minus-circle mr-2"></i> Remove Item';
+        }
+      } else if (action === 'give' && itemName) {
+        if (currentMonster.held_item) {
+          previewHTML = `
+            <div class="p-3 bg-gray-800/70 rounded-lg mb-3">
+              <p class="text-yellow-400 text-center">Replace ${currentMonster.held_item} with ${itemName}.</p>
+            </div>
+          `;
+        } else {
+          previewHTML = `
+            <div class="p-3 bg-gray-800/70 rounded-lg mb-3">
+              <p class="text-green-400 text-center">Give ${itemName} to ${currentMonster.name}.</p>
+            </div>
+          `;
+        }
+
+        // Show stat changes if the item has effects
+        if (ITEM_EFFECTS[itemName]) {
+          const statChanges = ITEM_EFFECTS[itemName].effect(currentMonster);
+          previewHTML += `
+            <div class="p-3 bg-gray-800/70 rounded-lg">
+              <h4 class="text-amber-400 text-sm font-medium mb-2">Stat Changes:</h4>
+              <div class="grid grid-cols-2 gap-2 text-xs">
+          `;
+
+          // Add stat changes to preview
+          if (statChanges.hp_iv || statChanges.hp_ev) {
+            previewHTML += formatStatChange('HP', statChanges.hp_iv, statChanges.hp_ev);
+          }
+          if (statChanges.atk_iv || statChanges.atk_ev) {
+            previewHTML += formatStatChange('Attack', statChanges.atk_iv, statChanges.atk_ev);
+          }
+          if (statChanges.def_iv || statChanges.def_ev) {
+            previewHTML += formatStatChange('Defense', statChanges.def_iv, statChanges.def_ev);
+          }
+          if (statChanges.spatk_iv || statChanges.spatk_ev) {
+            previewHTML += formatStatChange('Sp. Atk', statChanges.spatk_iv, statChanges.spatk_ev);
+          }
+          if (statChanges.spdef_iv || statChanges.spdef_ev) {
+            previewHTML += formatStatChange('Sp. Def', statChanges.spdef_iv, statChanges.spdef_ev);
+          }
+          if (statChanges.speed_iv || statChanges.speed_ev) {
+            previewHTML += formatStatChange('Speed', statChanges.speed_iv, statChanges.speed_ev);
+          }
+
+          previewHTML += `
+              </div>
+            </div>
+          `;
+        }
+
+        submitButton.disabled = false;
+        submitButton.innerHTML = '<i class="fas fa-hand-holding mr-2"></i> Give Item';
+      }
+
+      if (previewHTML) {
+        previewContent.innerHTML = previewHTML;
+        previewContent.classList.remove('hidden');
+      } else {
+        previewContent.classList.add('hidden');
+      }
+    }
+
+    function formatStatChange(statName, ivChange, evChange) {
+      let html = `<div><span class="text-gray-400">${statName}:</span> `;
+
+      if (ivChange) {
+        const ivClass = ivChange > 0 ? 'stat-increase' : 'stat-decrease';
+        const ivSign = ivChange > 0 ? '+' : '';
+        html += `<span class="${ivClass}">IV ${ivSign}${ivChange}</span> `;
+      }
+
+      if (evChange) {
+        const evClass = evChange > 0 ? 'stat-increase' : 'stat-decrease';
+        const evSign = evChange > 0 ? '+' : '';
+        html += `<span class="${evClass}">EV ${evSign}${evChange}</span>`;
+      }
+
+      html += `</div>`;
+      return html;
+    }
+
+    // Form submission handler
+    heldItemForm.addEventListener('submit', async function(e) {
+      e.preventDefault();
+
+      const trainerId = trainerSelect.value;
+      const monsterId = monsterSelect.value;
+      const action = actionSelect.value;
+      const itemName = itemSelect.value;
+
+      if (!trainerId || !monsterId || !action) {
+        alert('Please select a trainer, monster, and action.');
+        return;
+      }
+
+      if (action === 'give' && !itemName) {
+        alert('Please select an item to give.');
+        return;
+      }
+
+      // Disable form elements during submission
+      setFormDisabled(true);
+      submitButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Processing...';
+
+      try {
+        const response = await fetch('/api/megamart/held-item', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            trainerId,
+            monsterId,
+            action,
+            itemName
+          })
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+          window.location.href = `/town/visit/megamart/held_item_room?message=${encodeURIComponent(result.message)}&messageType=success`;
+        } else {
+          alert(result.message || 'Failed to apply changes. Please try again.');
+          setFormDisabled(false);
+        }
+      } catch (error) {
+        console.error('Error applying changes:', error);
+        alert('An error occurred while applying changes. Please try again.');
+        setFormDisabled(false);
+      }
+    });
+
+    // Helper function to disable/enable form elements
+    function setFormDisabled(disabled) {
+      trainerSelect.disabled = disabled;
+      monsterSelect.disabled = disabled;
+      actionSelect.disabled = disabled;
+      itemSelect.disabled = disabled;
+      submitButton.disabled = disabled;
+    }
+  });
+</script>

@@ -5,685 +5,824 @@
 <%- /* Add custom styles */ %>
 <% style = `
 <link rel="stylesheet" href="/css/adoption-center.css">
-<style>
-  /* Table styles */
-  .adoption-table {
-    width: 100%;
-    border-collapse: separate;
-    border-spacing: 0 12px;
-  }
-
-  .adoption-table th {
-    text-align: left;
-    padding: 1.25rem 1.5rem;
-    color: #d6a339;
-    font-weight: 600;
-    border-bottom: 1px solid #3d4b5d;
-  }
-
-  .adoption-table td {
-    padding: 1.25rem 1.5rem;
-    border-top: 1px solid #3d4b5d;
-    border-bottom: 1px solid #3d4b5d;
-  }
-
-  .adoption-table tbody tr:nth-child(odd) td {
-    background-color: #1e2532;
-  }
-
-  .adoption-table tbody tr:nth-child(even) td {
-    background-color: #252e3d;
-  }
-
-  .adoption-table tr td:first-child {
-    border-left: 1px solid #3d4b5d;
-    border-top-left-radius: 0.75rem;
-    border-bottom-left-radius: 0.75rem;
-  }
-
-  .adoption-table tr td:last-child {
-    border-right: 1px solid #3d4b5d;
-    border-top-right-radius: 0.75rem;
-    border-bottom-right-radius: 0.75rem;
-    text-align: right;
-  }
-
-  .species-tag {
-    display: inline-block;
-    background-color: #2b3645;
-    color: #d7ddf3;
-    border-radius: 1rem;
-    padding: 0.4rem 0.8rem;
-    font-size: 0.95rem;
-    font-weight: 600;
-    margin-right: 0.5rem;
-    margin-bottom: 0.25rem;
-  }
-
-  .type-badge {
-    display: inline-block;
-    padding: 0.3rem 0.7rem;
-    border-radius: 1rem;
-    font-size: 0.8rem;
-    font-weight: 600;
-    margin-right: 0.5rem;
-    margin-bottom: 0.25rem;
-  }
-
-  .attribute-badge {
-    display: inline-block;
-    padding: 0.3rem 0.7rem;
-    border-radius: 1rem;
-    font-size: 0.8rem;
-    font-weight: 600;
-  }
-</style>
 ` %>
 
-<div class="container mx-auto px-4">
-  <div>
-    <img src="https://i.imgur.com/HViAPDq.jpeg" alt="Adoption Center Banner" class="location-banner w-full object-cover rounded-lg shadow-lg">
-    <div class="flex flex-col items-center">
-      <div class="flex items-center mb-4 w-full">
-        <a href="/town/visit" class="btn-secondary mr-4 hover:scale-105 transition-transform">
-          <i class="fas fa-arrow-left mr-2"></i> Back to Town
-        </a>
-        <h2 class="text-2xl font-display font-bold text-center text-amber-400 text-shadow-lg">Adoption Center</h2>
+<div style="width: 100%; max-width: 100%; overflow-x: hidden; position: relative;">
+  <div style="position: relative; width: 100vw; height: 300px; margin-left: calc(-50vw + 50%); margin-right: calc(-50vw + 50%); overflow: hidden;">
+    <img src="https://i.imgur.com/HViAPDq.jpeg" alt="Adoption Center Banner"
+         style="width: 100%; height: 100%; object-fit: cover;">
+    <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(to bottom, rgba(0,0,0,0.2), rgba(0,0,0,0.8)); display: flex; align-items: flex-end;">
+      <div style="width: 100%; max-width: 1200px; margin: 0 auto; padding: 2rem;">
+        <div style="display: flex; flex-direction: column; align-items: center;">
+          <div style="display: flex; align-items: center; margin-bottom: 1.5rem; width: 100%;">
+            <a href="/town/visit" style="background: var(--nav-hover); color: var(--text-color); padding: 0.75rem 1.5rem; border-radius: 0.75rem; text-decoration: none; margin-right: 1rem;">
+              <i class="fas fa-arrow-left" style="margin-right: 0.5rem;"></i> Back to Town
+            </a>
+            <h2 style="font-size: 1.5rem; font-weight: bold; text-align: center; color: #d6a339;">Adoption Center</h2>
+          </div>
+          <p style="text-align: center; color: #d7ddf3; margin-bottom: 1.5rem;">Welcome to the Adoption Center! Here you can adopt monsters using your Daycare Daypasses.</p>
+        </div>
       </div>
-      <p class="text-center text-sm text-gray-200 mb-4">Welcome to the Adoption Center! Here you can adopt monsters using your Daycare Daypasses.</p>
     </div>
   </div>
 
-  <div class="mb-6">
-    <div class="flex justify-between items-center mb-4">
-      <h3 class="text-xl font-bold text-amber-400">Monthly Adopts</h3>
-      <div class="flex space-x-2">
-        <button id="current-month-btn" class="btn-secondary active">Current Month</button>
-        <button id="all-adopts-btn" class="btn-secondary">All Adopts</button>
-      </div>
-    </div>
-
-    <div id="adopts-container" class="mx-auto max-w-6xl">
-      <table class="adoption-table">
-      <!-- Adopts will be loaded here -->
-      <tr>
-        <td colspan="4" style="text-align: center; padding: 2rem;">
-          <i class="fas fa-spinner fa-spin text-3xl text-amber-400"></i>
-          <p class="mt-4 text-gray-300">Loading monsters...</p>
-        </td>
-      </tr>
-      </table>
-    </div>
-
-    <div id="pagination" class="pagination">
-      <!-- Pagination will be loaded here -->
-    </div>
-  </div>
-
-  <!-- Claim Modal -->
-  <div id="claim-modal" class="modal">
-    <div class="modal-content">
-      <span class="close">&times;</span>
-      <h2 class="text-xl font-bold text-amber-400 mb-4">Adopt Monster</h2>
-
-      <div id="claim-monster-preview" class="mb-4">
-        <!-- Monster preview will be loaded here -->
-      </div>
-
-      <form id="claim-form">
-        <input type="hidden" id="adopt-id" name="adoptId">
-
-        <div class="form-group">
-          <label for="trainer-select" class="form-label">Select Trainer</label>
-          <select id="trainer-select" name="trainerId" class="form-control" required>
-            <option value="">Select a trainer</option>
-            <% if (locals.trainers && trainers.length > 0) { %>
-              <% trainers.forEach(trainer => { %>
-                <option value="<%= trainer.id %>"><%= trainer.name %></option>
-              <% }); %>
-            <% } %>
-          </select>
-        </div>
-
-        <div class="form-group">
-          <label for="monster-name" class="form-label">Monster Name</label>
-          <input type="text" id="monster-name" name="monsterName" class="form-control" required>
-        </div>
-
-        <div id="daypass-status" class="mb-4 text-sm">
-          <!-- Daypass status will be loaded here -->
-        </div>
-
-        <button type="submit" id="claim-btn" class="btn-primary w-full" disabled>
-          Adopt Monster
-        </button>
-      </form>
-    </div>
-  </div>
+  <!-- Content will be loaded by the grid layout below -->
 </div>
+
+<!-- First script section removed to avoid duplication -->
+
+<!-- Single Adoption container -->
+<div class="container mx-auto px-4 py-8" style="max-width: 1200px; margin: 0 auto; padding: 2rem;">
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-2xl font-display font-bold text-accent">Adoption Center</h1>
+    <div class="flex gap-4">
+      <button id="current-month-btn" class="btn-primary">Current Month</button>
+      <button id="all-adopts-btn" class="btn-secondary">All Adopts</button>
+    </div>
+  </div>
+
+  <!-- Table container for adopts -->
+  <div id="adopts-container" style="width: 100%; margin-bottom: 2rem;">
+    <table class="adoption-table" style="width: 100%; border-collapse: separate; border-spacing: 0 1rem; margin: 1.5rem 0;">
+      <thead>
+        <tr>
+          <th style="text-align: left; padding: 1rem 1.5rem; color: var(--accent-color); font-weight: 600; font-size: 1.1rem;">Species</th>
+          <th style="text-align: left; padding: 1rem 1.5rem; color: var(--accent-color); font-weight: 600; font-size: 1.1rem;">Types</th>
+          <th style="text-align: left; padding: 1rem 1.5rem; color: var(--accent-color); font-weight: 600; font-size: 1.1rem;">Attribute</th>
+          <th style="text-align: left; padding: 1rem 1.5rem; color: var(--accent-color); font-weight: 600; font-size: 1.1rem;">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td colspan="4" style="text-align: center; padding: 3rem;">
+            <i class="fas fa-spinner fa-spin" style="font-size: 1.875rem; color: #d6a339;"></i>
+            <p style="margin-top: 1rem; color: #d7ddf3;">Loading monsters...</p>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Single Pagination -->
+  <div id="pagination" class="mt-8 flex justify-center gap-2"></div>
+</div>
+
+<!-- The modal will be created dynamically via JavaScript -->
 
 <script>
   document.addEventListener('DOMContentLoaded', function() {
-    // Elements
-    const adoptsContainer = document.getElementById('adopts-container');
-    const paginationContainer = document.getElementById('pagination');
-    const currentMonthBtn = document.getElementById('current-month-btn');
-    const allAdoptsBtn = document.getElementById('all-adopts-btn');
-    const claimModal = document.getElementById('claim-modal');
-    const closeModalBtn = claimModal.querySelector('.close');
-    const claimForm = document.getElementById('claim-form');
-    const adoptIdInput = document.getElementById('adopt-id');
-    const trainerSelect = document.getElementById('trainer-select');
-    const monsterNameInput = document.getElementById('monster-name');
-    const claimBtn = document.getElementById('claim-btn');
-    const daypassStatus = document.getElementById('daypass-status');
+    // State variables - Define these at the top
+    const state = {
+      currentPage: 1,
+      itemsPerPage: 10,
+      showCurrentMonthOnly: true,
+      monthsWithData: [] // Will store the list of months with adoption data
+    };
 
-    // State
-    let currentPage = 1;
-    let currentView = 'current'; // 'current' or 'all'
-    let trainerInventories = {};
+    // Create claim modal element
+    function createClaimModal() {
+      // Create the main modal container
+      const modal = document.createElement('div');
+      modal.id = 'claim-modal';
+      modal.className = 'modal';
 
-    // Get URL parameters
-    const urlParams = new URLSearchParams(window.location.search);
-    const urlTrainerId = urlParams.get('trainerId');
-    const urlMonsterName = urlParams.get('monsterName');
-    const urlAdoptId = urlParams.get('adoptId');
+      // Add inline styles to ensure it's hidden by default
+      modal.style.display = 'none';
+      modal.style.position = 'fixed';
+      modal.style.zIndex = '1000';
+      modal.style.left = '0';
+      modal.style.top = '0';
+      modal.style.width = '100%';
+      modal.style.height = '100%';
+      modal.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
+      modal.style.backdropFilter = 'blur(4px)';
 
-    // Set values from URL parameters if available
-    if (urlTrainerId) {
-      console.log('Setting trainer ID from URL:', urlTrainerId);
-      // Wait for trainers to load
-      setTimeout(() => {
-        if (trainerSelect.querySelector(`option[value="${urlTrainerId}"]`)) {
-          trainerSelect.value = urlTrainerId;
-          checkDaypassAvailability();
-        }
-      }, 500);
-    }
+      // Create the modal content
+      const modalContent = document.createElement('div');
+      modalContent.className = 'modal-content';
 
-    if (urlMonsterName) {
-      console.log('Setting monster name from URL:', urlMonsterName);
-      monsterNameInput.value = urlMonsterName;
-    }
+      // Add inline styles to the modal content
+      modalContent.style.backgroundColor = 'var(--card-background)';
+      modalContent.style.margin = '5% auto';
+      modalContent.style.padding = '2rem';
+      modalContent.style.borderRadius = '1rem';
+      modalContent.style.maxWidth = '550px';
+      modalContent.style.width = '90%';
+      modalContent.style.boxShadow = '0 8px 32px rgba(0, 0, 0, 0.3)';
+      modalContent.style.border = '1px solid var(--divider-color)';
 
-    if (urlAdoptId) {
-      console.log('Setting adopt ID from URL:', urlAdoptId);
-      adoptIdInput.value = urlAdoptId;
-    }
-
-    // Load adopts
-    loadAdopts();
-
-    // Event listeners
-    currentMonthBtn.addEventListener('click', function() {
-      currentMonthBtn.classList.add('active');
-      allAdoptsBtn.classList.remove('active');
-      currentView = 'current';
-      currentPage = 1;
-      loadAdopts();
-    });
-
-    allAdoptsBtn.addEventListener('click', function() {
-      allAdoptsBtn.classList.add('active');
-      currentMonthBtn.classList.remove('active');
-      currentView = 'all';
-      currentPage = 1;
-      loadAdopts();
-    });
-
-    closeModalBtn.addEventListener('click', function() {
-      claimModal.style.display = 'none';
-    });
-
-    window.addEventListener('click', function(event) {
-      if (event.target === claimModal) {
-        claimModal.style.display = 'none';
-      }
-    });
-
-    trainerSelect.addEventListener('change', function() {
-      checkDaypassAvailability();
-    });
-
-    claimForm.addEventListener('submit', function(event) {
-      event.preventDefault();
-      claimAdopt();
-    });
-
-    // Functions
-    async function loadAdopts() {
-      try {
-        adoptsContainer.querySelector('table').innerHTML = `
-          <tr>
-            <td colspan="4" style="text-align: center; padding: 2rem;">
-              <i class="fas fa-spinner fa-spin text-3xl text-amber-400"></i>
-              <p class="mt-4 text-gray-300">Loading monsters...</p>
-            </td>
-          </tr>
-        `;
-
-        const endpoint = currentView === 'current' ? '/api/adoption/current' : '/api/adoption';
-        const response = await fetch(`${endpoint}?page=${currentPage}&limit=10`);
-        const result = await response.json();
-
-        if (!result.success) {
-          throw new Error(result.message || 'Failed to load adopts');
-        }
-
-        const { adopts, pagination } = result.data;
-
-        if (adopts.length === 0) {
-          adoptsContainer.querySelector('table').innerHTML = `
-            <tr>
-              <td colspan="4" style="text-align: center; padding: 2rem;">
-                <p class="text-gray-300">No monsters available for adoption.</p>
-              </td>
-            </tr>
-          `;
-          paginationContainer.innerHTML = '';
-          return;
-        }
-
-        // Render adopts as table rows
-        const tableContent = `
-          <thead>
-            <tr>
-              <th>Species</th>
-              <th>Types</th>
-              <th>Attribute</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${adopts.map(adopt => createAdoptRow(adopt)).join('')}
-          </tbody>
-        `;
-        adoptsContainer.querySelector('table').innerHTML = tableContent;
-
-        // Render pagination
-        renderPagination(pagination);
-
-        // Add event listeners to claim buttons
-        document.querySelectorAll('.claim-btn').forEach(btn => {
-          btn.addEventListener('click', function() {
-            const adoptId = this.dataset.id;
-            const adopt = adopts.find(a => a.id == adoptId);
-            openClaimModal(adopt);
-          });
-        });
-      } catch (error) {
-        console.error('Error loading adopts:', error);
-        adoptsContainer.innerHTML = `
-          <div class="col-span-full text-center py-8">
-            <p class="text-red-500">Error loading monsters: ${error.message}</p>
-          </div>
-        `;
-      }
-    }
-
-    function createAdoptRow(adopt) {
-      // Create species tags
-      const speciesTags = [adopt.species1, adopt.species2, adopt.species3]
-        .filter(s => s)
-        .map(s => `<span class="species-tag">${s}</span>`)
-        .join('');
-
-      // Create type tags
-      const typeColors = {
-        'normal': { bg: '#A8A878', text: '#000' },
-        'fire': { bg: '#F08030', text: '#fff' },
-        'water': { bg: '#6890F0', text: '#fff' },
-        'electric': { bg: '#F8D030', text: '#000' },
-        'grass': { bg: '#78C850', text: '#000' },
-        'ice': { bg: '#98D8D8', text: '#000' },
-        'fighting': { bg: '#C03028', text: '#fff' },
-        'poison': { bg: '#A040A0', text: '#fff' },
-        'ground': { bg: '#E0C068', text: '#000' },
-        'flying': { bg: '#A890F0', text: '#fff' },
-        'psychic': { bg: '#F85888', text: '#fff' },
-        'bug': { bg: '#A8B820', text: '#000' },
-        'rock': { bg: '#B8A038', text: '#fff' },
-        'ghost': { bg: '#705898', text: '#fff' },
-        'dragon': { bg: '#7038F8', text: '#fff' },
-        'dark': { bg: '#705848', text: '#fff' },
-        'steel': { bg: '#B8B8D0', text: '#000' },
-        'fairy': { bg: '#EE99AC', text: '#000' }
-      };
-
-      const typeTags = [adopt.type1, adopt.type2, adopt.type3, adopt.type4, adopt.type5]
-        .filter(t => t)
-        .map(t => {
-          const type = t.toLowerCase();
-          const colors = typeColors[type] || { bg: '#A8A878', text: '#000' };
-          return `<span class="type-badge" style="background-color: ${colors.bg}; color: ${colors.text};">${t}</span>`;
-        })
-        .join('');
-
-      // Create attribute tag
-      const attributeColors = {
-        'data': { bg: '#3498db', text: '#fff' },
-        'vaccine': { bg: '#2ecc71', text: '#fff' },
-        'virus': { bg: '#e74c3c', text: '#fff' },
-        'free': { bg: '#9b59b6', text: '#fff' },
-        'variable': { bg: '#f1c40f', text: '#000' }
-      };
-
-      const attributeTag = adopt.attribute ? (() => {
-        const attr = adopt.attribute.toLowerCase();
-        const colors = attributeColors[attr] || { bg: '#3498db', text: '#fff' };
-        return `<span class="attribute-badge" style="background-color: ${colors.bg}; color: ${colors.text};">${adopt.attribute}</span>`;
-      })() : 'None';
-
-      // Create table row
-      return `
-        <tr>
-          <td>${speciesTags}</td>
-          <td>${typeTags}</td>
-          <td>${attributeTag}</td>
-          <td>
-            <button class="claim-btn btn-primary" style="padding: 0.5rem 1.25rem; border-radius: 0.5rem;" data-id="${adopt.id}" ${adopt.claimed ? 'disabled' : ''}>
-              ${adopt.claimed ? 'Already Adopted' : 'Adopt'}
-            </button>
-          </td>
-        </tr>
+      // Create header
+      const header = document.createElement('div');
+      header.className = 'flex justify-between items-center mb-4';
+      header.innerHTML = `
+        <h2 class="text-xl font-bold text-amber-400" style="font-size: 1.5rem; font-weight: bold; color: #d6a339;">Claim Monster</h2>
+        <button id="cancel-claim" class="close" style="color: var(--text-color); opacity: 0.7; font-size: 1.5rem; font-weight: bold; cursor: pointer; background: none; border: none;">
+          <i class="fas fa-times"></i>
+        </button>
       `;
+
+      // Create preview section
+      const preview = document.createElement('div');
+      preview.id = 'claim-monster-preview';
+      preview.className = 'mb-4';
+
+      // Create trainer selection
+      const trainerDiv = document.createElement('div');
+      trainerDiv.className = 'form-group';
+      trainerDiv.innerHTML = `
+        <label class="form-label text-amber-400" style="display: block; margin-bottom: 0.75rem; font-weight: 600; color: #d6a339;">Select Trainer</label>
+        <select id="claim-trainer-select" class="form-control" style="width: 100%; padding: 0.875rem; border-radius: 0.75rem; border: 1px solid var(--divider-color); background: var(--input-background); color: var(--text-color); font-size: 1rem;">
+          <option value="">-- Select a Trainer --</option>
+        </select>
+        <div id="daypass-status" class="mt-2 text-sm" style="margin-top: 0.5rem; font-size: 0.875rem;"></div>
+      `;
+
+      // Create name input
+      const nameDiv = document.createElement('div');
+      nameDiv.className = 'form-group';
+      nameDiv.innerHTML = `
+        <label class="form-label text-amber-400" style="display: block; margin-bottom: 0.75rem; font-weight: 600; color: #d6a339;">Monster Name</label>
+        <input type="text" id="monster-name-input" class="form-control" style="width: 100%; padding: 0.875rem; border-radius: 0.75rem; border: 1px solid var(--divider-color); background: var(--input-background); color: var(--text-color); font-size: 1rem;">
+      `;
+
+      // Create buttons
+      const buttonDiv = document.createElement('div');
+      buttonDiv.className = 'flex justify-end gap-2 mt-6';
+      buttonDiv.innerHTML = `
+        <button id="cancel-claim-btn" class="btn-secondary" style="padding: 0.75rem 1.5rem; border-radius: 0.75rem; font-weight: 600; cursor: pointer; background: var(--nav-hover); color: var(--text-color); border: none; margin-right: 0.5rem;">Cancel</button>
+        <button id="confirm-claim" class="btn-primary" disabled style="padding: 0.75rem 1.5rem; border-radius: 0.75rem; font-weight: 600; cursor: pointer; background: var(--accent-color); color: var(--background-color); border: none; opacity: 0.7;">Claim</button>
+      `;
+
+      // Assemble the modal
+      modalContent.appendChild(header);
+      modalContent.appendChild(preview);
+      modalContent.appendChild(trainerDiv);
+      modalContent.appendChild(nameDiv);
+      modalContent.appendChild(buttonDiv);
+      modal.appendChild(modalContent);
+
+      return modal;
     }
 
-    function renderPagination(pagination) {
-      if (pagination.totalPages <= 1) {
+    // Create and append the modal to the body
+    const claimModal = createClaimModal();
+    document.body.appendChild(claimModal);
+
+    // Get references to modal elements
+    const claimTrainerSelect = claimModal.querySelector('#claim-trainer-select');
+    const monsterNameInput = claimModal.querySelector('#monster-name-input');
+    const cancelClaimBtn = claimModal.querySelector('#cancel-claim-btn');
+    const closeBtn = claimModal.querySelector('#cancel-claim');
+    const confirmClaimBtn = claimModal.querySelector('#confirm-claim');
+    const daypassStatus = claimModal.querySelector('#daypass-status');
+
+    // Function to update button styles
+    function updateButtonStyles() {
+      const currentMonthBtn = document.getElementById('current-month-btn');
+      const allAdoptsBtn = document.getElementById('all-adopts-btn');
+
+      if (state.showCurrentMonthOnly) {
+        currentMonthBtn.classList.add('btn-primary');
+        currentMonthBtn.classList.remove('btn-secondary');
+        allAdoptsBtn.classList.add('btn-secondary');
+        allAdoptsBtn.classList.remove('btn-primary');
+      } else {
+        allAdoptsBtn.classList.add('btn-primary');
+        allAdoptsBtn.classList.remove('btn-secondary');
+        currentMonthBtn.classList.add('btn-secondary');
+        currentMonthBtn.classList.remove('btn-primary');
+      }
+    }
+
+    // Function to get month name from month number
+    function getMonthName(month) {
+      const monthNames = [
+        'January', 'February', 'March', 'April', 'May', 'June',
+        'July', 'August', 'September', 'October', 'November', 'December'
+      ];
+      return monthNames[month - 1]; // month is 1-based, array is 0-based
+    }
+
+    // Function to update pagination
+    function updatePagination() {
+      console.log('Updating pagination with months data:', state.monthsWithData);
+      const paginationContainer = document.getElementById('pagination');
+      let paginationHTML = '';
+
+      // If showing current month only, don't show pagination
+      if (state.showCurrentMonthOnly) {
         paginationContainer.innerHTML = '';
         return;
       }
 
-      let paginationHTML = '';
+      // If no months with data, don't show pagination
+      if (!state.monthsWithData || state.monthsWithData.length === 0) {
+        paginationContainer.innerHTML = '';
+        return;
+      }
+
+      // Calculate total pages based on months with data
+      const totalPages = state.monthsWithData.length;
+      console.log(`Using totalPages=${totalPages} for pagination based on months with data`);
 
       // Previous button
-      if (pagination.page > 1) {
-        paginationHTML += `<a href="#" class="pagination-link prev-page">Previous</a>`;
-      }
+      paginationHTML += `
+        <button
+          class="btn-secondary px-4 py-2 ${state.currentPage === 1 ? 'opacity-50 cursor-not-allowed' : ''}"
+          ${state.currentPage === 1 ? 'disabled' : ''}
+          onclick="window.changePage(${state.currentPage - 1})">
+          Previous
+        </button>
+      `;
 
-      // Page numbers
-      const startPage = Math.max(1, pagination.page - 2);
-      const endPage = Math.min(pagination.totalPages, startPage + 4);
+      // Month/Year buttons for each month with data
+      state.monthsWithData.forEach((monthData, index) => {
+        const year = monthData.year;
+        const month = monthData.month;
+        const monthName = getMonthName(month);
+        const pageNumber = index + 1; // 1-based page number
 
-      for (let i = startPage; i <= endPage; i++) {
-        paginationHTML += `<a href="#" class="pagination-link page-number ${pagination.page === i ? 'active' : ''}" data-page="${i}">${i}</a>`;
-      }
-
-      // Next button
-      if (pagination.page < pagination.totalPages) {
-        paginationHTML += `<a href="#" class="pagination-link next-page">Next</a>`;
-      }
-
-      paginationContainer.innerHTML = paginationHTML;
-
-      // Add event listeners to pagination links
-      document.querySelectorAll('.page-number').forEach(link => {
-        link.addEventListener('click', function(event) {
-          event.preventDefault();
-          currentPage = parseInt(this.dataset.page);
-          loadAdopts();
-        });
+        paginationHTML += `
+          <button
+            class="btn-${state.currentPage === pageNumber ? 'primary' : 'secondary'} px-4 py-2"
+            onclick="window.changePage(${pageNumber})">
+            ${monthName} ${year}
+          </button>
+        `;
       });
 
-      const prevPageBtn = document.querySelector('.prev-page');
-      if (prevPageBtn) {
-        prevPageBtn.addEventListener('click', function(event) {
-          event.preventDefault();
-          currentPage--;
-          loadAdopts();
-        });
-      }
+      // Next button
+      paginationHTML += `
+        <button
+          class="btn-secondary px-4 py-2 ${state.currentPage === totalPages ? 'opacity-50 cursor-not-allowed' : ''}"
+          ${state.currentPage === totalPages ? 'disabled' : ''}
+          onclick="window.changePage(${state.currentPage + 1})">
+          Next
+        </button>
+      `;
 
-      const nextPageBtn = document.querySelector('.next-page');
-      if (nextPageBtn) {
-        nextPageBtn.addEventListener('click', function(event) {
-          event.preventDefault();
-          currentPage++;
-          loadAdopts();
-        });
+      paginationContainer.innerHTML = paginationHTML;
+    }
+
+    // Function to fetch months with adoption data
+    async function fetchMonthsWithData() {
+      try {
+        console.log('Fetching months with adoption data');
+        const response = await fetch('/api/adoption/months');
+        const data = await response.json();
+
+        if (data.success && data.months) {
+          console.log('Months with adoption data:', data.months);
+          state.monthsWithData = data.months;
+          return data.months;
+        } else {
+          console.error('Error fetching months with adoption data:', data.message);
+          return [];
+        }
+      } catch (error) {
+        console.error('Error fetching months with adoption data:', error);
+        return [];
       }
     }
 
-    function openClaimModal(adopt) {
-      // Set adopt ID
-      adoptIdInput.value = adopt.id;
+    // Function to change page
+    window.changePage = function(newPage) {
+      console.log('Changing page from', state.currentPage, 'to', newPage);
+      state.currentPage = parseInt(newPage);
+      loadAdopts();
+    };
 
-      // Create monster preview using the same functions as the table
+    // Update the renderAdopts function to handle loading state
+    function renderAdopts(adopts, monthName, targetYear) {
+      const container = document.getElementById('adopts-container');
+
+      if (!adopts || adopts.length === 0) {
+        container.innerHTML = `
+          <table class="adoption-table" style="width: 100%; border-collapse: separate; border-spacing: 0 1rem; margin: 1.5rem 0;">
+            <thead>
+              <tr>
+                <th style="text-align: left; padding: 1rem 1.5rem; color: var(--accent-color); font-weight: 600; font-size: 1.1rem;">Species</th>
+                <th style="text-align: left; padding: 1rem 1.5rem; color: var(--accent-color); font-weight: 600; font-size: 1.1rem;">Types</th>
+                <th style="text-align: left; padding: 1rem 1.5rem; color: var(--accent-color); font-weight: 600; font-size: 1.1rem;">Attribute</th>
+                <th style="text-align: left; padding: 1rem 1.5rem; color: var(--accent-color); font-weight: 600; font-size: 1.1rem;">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td colspan="4" style="text-align: center; padding: 3rem; color: #d7ddf3;">
+                  No adopts available at this time.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        `;
+        return;
+      }
+
+      // Create table structure
+      let tableHTML = `
+        <table class="adoption-table" style="width: 100%; border-collapse: separate; border-spacing: 0 1rem; margin: 1.5rem 0;">
+          <thead>
+            <tr>
+              <th colspan="4" style="text-align: center; padding: 1rem; color: #d6a339; font-weight: 700; font-size: 1.3rem; border-bottom: 1px solid var(--divider-color);">
+                ${monthName} ${targetYear} Adoptions
+              </th>
+            </tr>
+            <tr>
+              <th style="text-align: left; padding: 1rem 1.5rem; color: var(--accent-color); font-weight: 600; font-size: 1.1rem;">Species</th>
+              <th style="text-align: left; padding: 1rem 1.5rem; color: var(--accent-color); font-weight: 600; font-size: 1.1rem;">Types</th>
+              <th style="text-align: left; padding: 1rem 1.5rem; color: var(--accent-color); font-weight: 600; font-size: 1.1rem;">Attribute</th>
+              <th style="text-align: left; padding: 1rem 1.5rem; color: var(--accent-color); font-weight: 600; font-size: 1.1rem;">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+      `;
+
+      // Add rows for each adopt
+      tableHTML += adopts.map(adopt => {
+        // Create type badges
+        const typeBadges = [adopt.type1, adopt.type2]
+          .filter(Boolean)
+          .map(type => {
+            const typeClass = type.toLowerCase();
+            return `<span class="type-badge ${typeClass}" style="display: inline-block; padding: 0.5rem 1rem; border-radius: 999px; font-size: 0.9rem; font-weight: 600; text-transform: uppercase; margin-right: 0.5rem;">${type}</span>`;
+          }).join('');
+
+        // Create attribute badge
+        const attributeBadge = adopt.attribute ?
+          `<span class="attribute-badge attribute-${adopt.attribute.toLowerCase()}" style="display: inline-block; padding: 0.5rem 1rem; border-radius: 999px; font-size: 0.9rem; font-weight: 600; text-transform: uppercase;">${adopt.attribute}</span>` :
+          'None';
+
+        // Create species list
+        const speciesList = [adopt.species1, adopt.species2, adopt.species3]
+          .filter(Boolean)
+          .join(', ');
+
+        // Create row HTML
+        return `
+          <tr>
+            <td style="padding: 1.25rem 1.5rem; background: var(--card-background); border: 1px solid var(--divider-color); vertical-align: middle; border-top-left-radius: 0.75rem; border-bottom-left-radius: 0.75rem;">
+              <div style="font-weight: 600; color: #d6a339; font-size: 1.1rem;">${adopt.species1}</div>
+              <div style="font-size: 0.9rem; color: var(--text-color); margin-top: 0.5rem;">${speciesList}</div>
+            </td>
+            <td style="padding: 1.25rem 1.5rem; background: var(--card-background); border: 1px solid var(--divider-color); vertical-align: middle;">
+              <div class="badge-container" style="display: flex; flex-wrap: wrap; gap: 0.5rem;">${typeBadges}</div>
+            </td>
+            <td style="padding: 1.25rem 1.5rem; background: var(--card-background); border: 1px solid var(--divider-color); vertical-align: middle;">
+              ${attributeBadge}
+            </td>
+            <td style="padding: 1.25rem 1.5rem; background: var(--card-background); border: 1px solid var(--divider-color); vertical-align: middle; text-align: right; border-top-right-radius: 0.75rem; border-bottom-right-radius: 0.75rem;">
+              <button
+                onclick="showClaimModal(${JSON.stringify(adopt).replace(/"/g, '&quot;')})"
+                class="btn-primary"
+                style="padding: 0.75rem 1.5rem; border-radius: 0.75rem; font-weight: 600; cursor: pointer; background: var(--accent-color); color: var(--background-color); border: none;"
+                ${adopt.claimed ? 'disabled style="opacity: 0.7; cursor: not-allowed;"' : ''}>
+                ${adopt.claimed ? 'Already Adopted' : 'Adopt'}
+              </button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+
+      // Close table structure
+      tableHTML += `
+          </tbody>
+        </table>
+      `;
+
+      // Set the container HTML
+      container.innerHTML = tableHTML;
+    }
+
+    // Add loading state handling
+    async function loadAdopts() {
+      // Get current date for month/year calculation
+      const now = new Date();
+      const currentYear = now.getFullYear();
+      const currentMonth = now.getMonth() + 1; // JavaScript months are 0-based
+
+      // Calculate month and year based on current page
+      let targetMonth = currentMonth;
+      let targetYear = currentYear;
+
+      // If showing all months and we have months with data
+      if (!state.showCurrentMonthOnly && state.monthsWithData.length > 0) {
+        // Get the month data for the current page (1-based index)
+        const pageIndex = state.currentPage - 1;
+        if (pageIndex >= 0 && pageIndex < state.monthsWithData.length) {
+          const monthData = state.monthsWithData[pageIndex];
+          targetYear = monthData.year;
+          targetMonth = monthData.month;
+        }
+      }
+
+      console.log('Loading adopts with state:', {
+        currentPage: state.currentPage,
+        itemsPerPage: state.itemsPerPage,
+        showCurrentMonthOnly: state.showCurrentMonthOnly,
+        targetMonth,
+        targetYear,
+        monthsWithData: state.monthsWithData.length
+      });
+
+      const container = document.getElementById('adopts-container');
+      const monthName = getMonthName(targetMonth);
+
+      // Show loading state
+      container.innerHTML = `
+        <table class="adoption-table" style="width: 100%; border-collapse: separate; border-spacing: 0 1rem; margin: 1.5rem 0;">
+          <thead>
+            <tr>
+              <th colspan="4" style="text-align: center; padding: 1rem; color: #d6a339; font-weight: 700; font-size: 1.3rem; border-bottom: 1px solid var(--divider-color);">
+                ${monthName} ${targetYear} Adoptions
+              </th>
+            </tr>
+            <tr>
+              <th style="text-align: left; padding: 1rem 1.5rem; color: var(--accent-color); font-weight: 600; font-size: 1.1rem;">Species</th>
+              <th style="text-align: left; padding: 1rem 1.5rem; color: var(--accent-color); font-weight: 600; font-size: 1.1rem;">Types</th>
+              <th style="text-align: left; padding: 1rem 1.5rem; color: var(--accent-color); font-weight: 600; font-size: 1.1rem;">Attribute</th>
+              <th style="text-align: left; padding: 1rem 1.5rem; color: var(--accent-color); font-weight: 600; font-size: 1.1rem;">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td colspan="4" style="text-align: center; padding: 3rem;">
+                <i class="fas fa-spinner fa-spin" style="font-size: 1.875rem; color: #d6a339;"></i>
+                <p style="margin-top: 1rem; color: #d7ddf3;">Loading monsters...</p>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      `;
+
+      try {
+        // Use the correct API endpoint from your router
+        let apiUrl;
+
+        if (state.showCurrentMonthOnly) {
+          // For current month, use the default endpoint
+          apiUrl = `/api/adoption?page=${state.currentPage}&limit=${state.itemsPerPage}&currentMonth=true`;
+        } else {
+          // For past months, use the year/month endpoint
+          apiUrl = `/api/adoption/${targetYear}/${targetMonth}?page=1&limit=${state.itemsPerPage}`;
+        }
+
+        console.log('Fetching from API:', apiUrl);
+        const response = await fetch(apiUrl);
+        const data = await response.json();
+
+        console.log('API response:', JSON.stringify(data, null, 2)); // Debug log with full structure
+
+        if (data.success) {
+          // Check if adopts are directly in the response or nested in data property
+          let adopts = data.adopts;
+          let totalPages = data.totalPages;
+
+          // If adopts are nested in data property
+          if (!adopts && data.data && data.data.adopts) {
+            adopts = data.data.adopts;
+            totalPages = data.data.pagination ? data.data.pagination.totalPages : 1;
+            console.log('Found adopts in data.data.adopts:', adopts.length);
+          }
+
+          // If pagination info is in a pagination object
+          if (data.pagination && data.pagination.totalPages) {
+            totalPages = data.pagination.totalPages;
+            console.log('Found pagination info:', data.pagination);
+          }
+
+          // If total is provided directly
+          if (data.total) {
+            const calculatedPages = Math.ceil(data.total / state.itemsPerPage);
+            if (calculatedPages > totalPages) {
+              totalPages = calculatedPages;
+              console.log(`Recalculated totalPages based on total=${data.total}: ${totalPages}`);
+            }
+          }
+
+          console.log('Processing API response with:', {
+            adoptsLength: adopts ? adopts.length : 0,
+            totalPages: totalPages,
+            currentPage: data.currentPage || state.currentPage
+          });
+
+          if (adopts && adopts.length > 0) {
+            renderAdopts(adopts, monthName, targetYear);
+            // Update pagination (function will handle current month vs all months)
+            updatePagination();
+          } else {
+            container.innerHTML = `
+              <table class="adoption-table" style="width: 100%; border-collapse: separate; border-spacing: 0 1rem; margin: 1.5rem 0;">
+                <thead>
+                  <tr>
+                    <th colspan="4" style="text-align: center; padding: 1rem; color: #d6a339; font-weight: 700; font-size: 1.3rem; border-bottom: 1px solid var(--divider-color);">
+                      ${monthName} ${targetYear} Adoptions
+                    </th>
+                  </tr>
+                  <tr>
+                    <th style="text-align: left; padding: 1rem 1.5rem; color: var(--accent-color); font-weight: 600; font-size: 1.1rem;">Species</th>
+                    <th style="text-align: left; padding: 1rem 1.5rem; color: var(--accent-color); font-weight: 600; font-size: 1.1rem;">Types</th>
+                    <th style="text-align: left; padding: 1rem 1.5rem; color: var(--accent-color); font-weight: 600; font-size: 1.1rem;">Attribute</th>
+                    <th style="text-align: left; padding: 1rem 1.5rem; color: var(--accent-color); font-weight: 600; font-size: 1.1rem;">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td colspan="4" style="text-align: center; padding: 3rem; color: #d7ddf3;">
+                      No adopts available for ${monthName} ${targetYear}. Please check back later.
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            `;
+          }
+        } else {
+          container.innerHTML = `
+            <table class="adoption-table" style="width: 100%; border-collapse: separate; border-spacing: 0 1rem; margin: 1.5rem 0;">
+              <thead>
+                <tr>
+                  <th colspan="4" style="text-align: center; padding: 1rem; color: #d6a339; font-weight: 700; font-size: 1.3rem; border-bottom: 1px solid var(--divider-color);">
+                    ${monthName} ${targetYear} Adoptions
+                  </th>
+                </tr>
+                <tr>
+                  <th style="text-align: left; padding: 1rem 1.5rem; color: var(--accent-color); font-weight: 600; font-size: 1.1rem;">Species</th>
+                  <th style="text-align: left; padding: 1rem 1.5rem; color: var(--accent-color); font-weight: 600; font-size: 1.1rem;">Types</th>
+                  <th style="text-align: left; padding: 1rem 1.5rem; color: var(--accent-color); font-weight: 600; font-size: 1.1rem;">Attribute</th>
+                  <th style="text-align: left; padding: 1rem 1.5rem; color: var(--accent-color); font-weight: 600; font-size: 1.1rem;">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td colspan="4" style="text-align: center; padding: 3rem; color: #e74c3c;">
+                    Error loading adopts: ${data.message || 'Unknown error'}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          `;
+        }
+      } catch (error) {
+        console.error('Error loading adopts:', error);
+        container.innerHTML = `
+          <table class="adoption-table" style="width: 100%; border-collapse: separate; border-spacing: 0 1rem; margin: 1.5rem 0;">
+            <thead>
+              <tr>
+                <th colspan="4" style="text-align: center; padding: 1rem; color: #d6a339; font-weight: 700; font-size: 1.3rem; border-bottom: 1px solid var(--divider-color);">
+                  ${monthName} ${targetYear} Adoptions
+                </th>
+              </tr>
+              <tr>
+                <th style="text-align: left; padding: 1rem 1.5rem; color: var(--accent-color); font-weight: 600; font-size: 1.1rem;">Species</th>
+                <th style="text-align: left; padding: 1rem 1.5rem; color: var(--accent-color); font-weight: 600; font-size: 1.1rem;">Types</th>
+                <th style="text-align: left; padding: 1rem 1.5rem; color: var(--accent-color); font-weight: 600; font-size: 1.1rem;">Attribute</th>
+                <th style="text-align: left; padding: 1rem 1.5rem; color: var(--accent-color); font-weight: 600; font-size: 1.1rem;">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td colspan="4" style="text-align: center; padding: 3rem; color: #e74c3c;">
+                  Error loading adopts. Please try again later.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        `;
+      }
+    }
+
+    // Function to show claim modal
+    window.showClaimModal = async function(adopt) {
+      if (!adopt) {
+        console.error('No adopt data provided');
+        return;
+      }
+
+      // Store the adopt ID for later use
+      window.currentAdoptId = adopt.id;
+      console.log('Setting currentAdoptId:', adopt.id);
+
+      // Reset the modal
+      resetClaimModal();
+
+      // Create species tags
       const speciesTags = [adopt.species1, adopt.species2, adopt.species3]
-        .filter(s => s)
-        .map(s => `<span class="species-tag">${s}</span>`)
+        .filter(species => species)
+        .map(species => `<span class="species-tag">${species}</span>`)
         .join('');
 
-      const typeColors = {
-        'normal': { bg: '#A8A878', text: '#000' },
-        'fire': { bg: '#F08030', text: '#fff' },
-        'water': { bg: '#6890F0', text: '#fff' },
-        'electric': { bg: '#F8D030', text: '#000' },
-        'grass': { bg: '#78C850', text: '#000' },
-        'ice': { bg: '#98D8D8', text: '#000' },
-        'fighting': { bg: '#C03028', text: '#fff' },
-        'poison': { bg: '#A040A0', text: '#fff' },
-        'ground': { bg: '#E0C068', text: '#000' },
-        'flying': { bg: '#A890F0', text: '#fff' },
-        'psychic': { bg: '#F85888', text: '#fff' },
-        'bug': { bg: '#A8B820', text: '#000' },
-        'rock': { bg: '#B8A038', text: '#fff' },
-        'ghost': { bg: '#705898', text: '#fff' },
-        'dragon': { bg: '#7038F8', text: '#fff' },
-        'dark': { bg: '#705848', text: '#fff' },
-        'steel': { bg: '#B8B8D0', text: '#000' },
-        'fairy': { bg: '#EE99AC', text: '#000' }
-      };
-
-      const typeTags = [adopt.type1, adopt.type2, adopt.type3, adopt.type4, adopt.type5]
-        .filter(t => t)
-        .map(t => {
-          const type = t.toLowerCase();
-          const colors = typeColors[type] || { bg: '#A8A878', text: '#000' };
-          return `<span class="type-badge" style="background-color: ${colors.bg}; color: ${colors.text};">${t}</span>`;
+      // Create type tags
+      const typeTags = [adopt.type1, adopt.type2]
+        .filter(type => type)
+        .map(type => {
+          const typeClass = type.toLowerCase();
+          return `<span class="type-badge ${typeClass}">${type}</span>`;
         })
         .join('');
 
-      const attributeColors = {
-        'data': { bg: '#3498db', text: '#fff' },
-        'vaccine': { bg: '#2ecc71', text: '#fff' },
-        'virus': { bg: '#e74c3c', text: '#fff' },
-        'free': { bg: '#9b59b6', text: '#fff' },
-        'variable': { bg: '#f1c40f', text: '#000' }
-      };
+      // Create attribute badge
+      const attributeBadge = adopt.attribute ?
+        `<span class="attribute-badge attribute-${adopt.attribute.toLowerCase()}">${adopt.attribute}</span>` :
+        'None';
 
-      const attributeTag = adopt.attribute ? (() => {
-        const attr = adopt.attribute.toLowerCase();
-        const colors = attributeColors[attr] || { bg: '#3498db', text: '#fff' };
-        return `<span class="attribute-badge" style="background-color: ${colors.bg}; color: ${colors.text};">${adopt.attribute}</span>`;
-      })() : 'None';
-
-      const previewHTML = `
-        <div class="bg-gray-800 p-5 rounded-lg" style="background-color: #1e2532; border: 1px solid #3d4b5d; border-radius: 0.75rem;">
-          <table class="w-full">
-            <tr>
-              <th class="text-left text-gray-300 pb-3 pr-4" style="padding-bottom: 1rem;">Species</th>
-              <td class="pb-3">${speciesTags}</td>
-            </tr>
-            <tr>
-              <th class="text-left text-gray-300 pb-3 pr-4" style="padding-bottom: 1rem;">Types</th>
-              <td class="pb-3">${typeTags}</td>
-            </tr>
-            <tr>
-              <th class="text-left text-gray-300 pr-4">Attribute</th>
-              <td>${attributeTag}</td>
-            </tr>
-          </table>
+      // Update preview
+      const preview = claimModal.querySelector('#claim-monster-preview');
+      preview.innerHTML = `
+        <div class="mb-2">
+          <p class="text-sm text-amber-400 mb-1">Species:</p>
+          <div class="badge-container">${speciesTags}</div>
+        </div>
+        <div class="mb-2">
+          <p class="text-sm text-amber-400 mb-1">Types:</p>
+          <div class="badge-container">${typeTags}</div>
+        </div>
+        <div class="mb-2">
+          <p class="text-sm text-amber-400 mb-1">Attribute:</p>
+          <div>${attributeBadge}</div>
         </div>
       `;
-
-      document.getElementById('claim-monster-preview').innerHTML = previewHTML;
 
       // Set default monster name
       monsterNameInput.value = `Adopted ${adopt.species1}`;
 
-      // Reset trainer select
-      trainerSelect.value = '';
-
-      // Reset daypass status
-      daypassStatus.innerHTML = '';
-
-      // Disable claim button
-      claimBtn.disabled = true;
+      // Populate trainer dropdown
+      await loadUserTrainers();
 
       // Show modal
       claimModal.style.display = 'block';
+    };
+
+    function resetClaimModal() {
+      claimTrainerSelect.innerHTML = '<option value="">-- Select a Trainer --</option>';
+      monsterNameInput.value = '';
+      daypassStatus.innerHTML = '';
+      confirmClaimBtn.disabled = true;
     }
 
-    async function checkDaypassAvailability() {
-      const trainerId = trainerSelect.value;
+    function closeClaimModal() {
+      claimModal.style.display = 'none';
+      resetClaimModal();
+    }
 
-      if (!trainerId) {
+    async function loadUserTrainers() {
+      try {
+        const response = await fetch('/api/trainers/user');
+        if (response.ok) {
+          const data = await response.json();
+          let trainers = Array.isArray(data) ? data : data.trainers || [];
+
+          claimTrainerSelect.innerHTML = '<option value="">-- Select a Trainer --</option>';
+          trainers.forEach(trainer => {
+            const option = document.createElement('option');
+            option.value = trainer.id;
+            option.textContent = `${trainer.name} (Level ${trainer.level || 1})`;
+            claimTrainerSelect.appendChild(option);
+          });
+        }
+      } catch (error) {
+        console.error('Error loading trainers:', error);
+      }
+    }
+
+    // Event Listeners
+    const currentMonthBtn = document.getElementById('current-month-btn');
+    const allAdoptsBtn = document.getElementById('all-adopts-btn');
+    const generateTestDataBtn = document.getElementById('generate-test-data-btn');
+
+    if (currentMonthBtn) {
+      currentMonthBtn.addEventListener('click', () => {
+        state.showCurrentMonthOnly = true;
+        state.currentPage = 1;
+        loadAdopts();
+        // Update pagination (function will handle hiding for current month)
+        updatePagination(1);
+        updateButtonStyles();
+      });
+    }
+
+    if (allAdoptsBtn) {
+      allAdoptsBtn.addEventListener('click', async () => {
+        state.showCurrentMonthOnly = false;
+        state.currentPage = 1;
+
+        // Fetch months with data before loading adopts
+        await fetchMonthsWithData();
+
+        loadAdopts();
+        updatePagination();
+        updateButtonStyles();
+      });
+    }
+
+    // Add event listener for generate test data button (admin only)
+    if (generateTestDataBtn) {
+      generateTestDataBtn.addEventListener('click', async () => {
+        try {
+          generateTestDataBtn.disabled = true;
+          generateTestDataBtn.textContent = 'Generating...';
+
+          const response = await fetch('/api/adoption/generate-test-data', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          });
+
+          const result = await response.json();
+
+          if (result.success) {
+            alert(`Successfully generated test data for ${result.data.length} past months!`);
+            // Reload adopts with all months view
+            state.showCurrentMonthOnly = false;
+            state.currentPage = 1;
+            loadAdopts();
+            updateButtonStyles();
+          } else {
+            alert(`Error: ${result.message || 'Failed to generate test data'}`);
+          }
+        } catch (error) {
+          console.error('Error generating test data:', error);
+          alert('An error occurred while generating test data');
+        } finally {
+          generateTestDataBtn.disabled = false;
+          generateTestDataBtn.textContent = 'Generate Test Data';
+        }
+      });
+    }
+
+    // Modal event listeners
+    cancelClaimBtn.addEventListener('click', closeClaimModal);
+    closeBtn.addEventListener('click', closeClaimModal);
+
+    claimTrainerSelect.addEventListener('change', async function() {
+      const trainerId = this.value;
+      if (trainerId) {
+        // Enable the confirm button if a trainer is selected
+        confirmClaimBtn.disabled = false;
+        daypassStatus.innerHTML = ''; // Clear any previous status
+      } else {
         daypassStatus.innerHTML = '';
-        claimBtn.disabled = true;
+        confirmClaimBtn.disabled = true;
+      }
+    });
+
+    confirmClaimBtn.addEventListener('click', async function() {
+      const trainerId = claimTrainerSelect.value;
+      const monsterName = monsterNameInput.value.trim();
+      const adoptId = window.currentAdoptId;
+
+      if (!trainerId || !monsterName || !adoptId) {
+        alert('Please fill in all required fields');
         return;
       }
 
       try {
-        // Check if we already have the inventory for this trainer
-        if (!trainerInventories[trainerId]) {
-          const response = await fetch(`/api/trainers/${trainerId}/inventory`);
-          const result = await response.json();
-
-          if (result.error) {
-            throw new Error(result.error || 'Failed to get trainer inventory');
-          }
-
-          trainerInventories[trainerId] = result.inventory;
-        }
-
-        const inventory = trainerInventories[trainerId];
-        let itemsInventory = {};
-
-        // Parse the inventory items if needed
-        if (inventory.inv_items) {
-          if (typeof inventory.inv_items === 'string') {
-            try {
-              itemsInventory = JSON.parse(inventory.inv_items);
-            } catch (e) {
-              console.error('Error parsing inventory items:', e);
-              itemsInventory = {};
-            }
-          } else {
-            itemsInventory = inventory.inv_items;
-          }
-        }
-
-        const daypassCount = itemsInventory['Daycare Daypass'] || 0;
-
-        if (daypassCount > 0) {
-          daypassStatus.innerHTML = `<p class="text-green-500">You have ${daypassCount} Daycare Daypass(es) available.</p>`;
-          claimBtn.disabled = false;
-        } else {
-          daypassStatus.innerHTML = `<p class="text-red-500">You don't have any Daycare Daypasses. You need at least one to adopt a monster.</p>`;
-          claimBtn.disabled = true;
-        }
-      } catch (error) {
-        console.error('Error checking daypass availability:', error);
-        daypassStatus.innerHTML = `<p class="text-red-500">Error checking Daycare Daypass availability: ${error.message}</p>`;
-        claimBtn.disabled = true;
-      }
-    }
-
-    async function claimAdopt() {
-      try {
-        // Disable form
-        claimBtn.disabled = true;
-        claimBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Adopting...';
-
-        // Get form data
-        const adoptId = adoptIdInput.value;
-        const trainerId = trainerSelect.value;
-        const monsterName = monsterNameInput.value;
-
-        // Validate form data
-        if (!adoptId) {
-          console.log('Missing adopt ID');
-          throw new Error('Missing adopt ID. Please select a monster to adopt.');
-        }
-
-        if (!trainerId) {
-          console.log('Missing trainer ID');
-          throw new Error('Please select a trainer.');
-        }
-
-        if (!monsterName) {
-          console.log('Missing monster name');
-          throw new Error('Please enter a name for your monster.');
-        }
-
-        console.log('Sending claim request with data:', { adoptId, trainerId, monsterName });
-
-        // Send claim request
         const response = await fetch('/api/adoption/claim', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
           },
           body: JSON.stringify({
-            adoptId: parseInt(adoptId),
-            trainerId: parseInt(trainerId),
+            adoptId,
+            trainerId,
             monsterName
           })
         });
 
         const result = await response.json();
-        console.log('Claim result:', result);
 
-        if (!result.success) {
-          throw new Error(result.message || 'Failed to claim adopt');
+        if (result.success) {
+          alert('Monster adopted successfully!');
+          closeClaimModal();
+          loadAdopts(); // Refresh the list
+        } else {
+          alert(`Failed to adopt monster: ${result.message}`);
         }
-
-        // Update trainer inventory
-        if (trainerInventories[trainerId]) {
-          let itemsInventory = {};
-
-          // Parse the inventory items if needed
-          if (trainerInventories[trainerId].inv_items) {
-            if (typeof trainerInventories[trainerId].inv_items === 'string') {
-              try {
-                itemsInventory = JSON.parse(trainerInventories[trainerId].inv_items);
-              } catch (e) {
-                console.error('Error parsing inventory items:', e);
-                itemsInventory = {};
-              }
-            } else {
-              itemsInventory = trainerInventories[trainerId].inv_items;
-            }
-          }
-
-          itemsInventory['Daycare Daypass'] = (itemsInventory['Daycare Daypass'] || 0) - 1;
-
-          // Update the inventory
-          if (typeof trainerInventories[trainerId].inv_items === 'string') {
-            trainerInventories[trainerId].inv_items = JSON.stringify(itemsInventory);
-          } else {
-            trainerInventories[trainerId].inv_items = itemsInventory;
-          }
-        }
-
-        // Show success message
-        alert('Monster adopted successfully!');
-
-        // Close modal
-        claimModal.style.display = 'none';
-
-        // Reload adopts
-        loadAdopts();
       } catch (error) {
-        console.error('Error claiming adopt:', error);
-        alert(`Error adopting monster: ${error.message}`);
-      } finally {
-        // Re-enable form
-        claimBtn.innerHTML = 'Adopt Monster';
-        checkDaypassAvailability();
+        console.error('Error claiming monster:', error);
+        alert('An error occurred while trying to adopt the monster');
       }
-    }
+    });
+
+    // Initialize
+    updateButtonStyles();
+
+    // Initial data load
+    (async function() {
+      // Fetch months with data
+      await fetchMonthsWithData();
+
+      // Load adopts
+      await loadAdopts();
+
+      // Update pagination
+      updatePagination();
+    })();
   });
 </script>
+
+
+
+
+
+

@@ -6,6 +6,9 @@
     <meta name="csrf-token" content="">
     <title><%= typeof title !== 'undefined' ? title : 'Dusk and Dawn' %></title>
     <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/dropdown-styles.css">
+    <link rel="stylesheet" href="/css/input-styles.css">
+    <link rel="stylesheet" href="/css/submission-forms.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <%- typeof style !== 'undefined' ? style : '' %>
 </head>
@@ -44,9 +47,8 @@
                     </span>
                     <div class="dropdown-content">
                         <a href="/my_trainers">View My Trainers</a>
-                        <a href="/submit_artwork">Submit Artwork</a>
-                        <a href="/submit_writing">Submit Writing</a>
-                        <a href="/submit_references">Submit References</a>
+                        <a href="/reference_todo">Reference To-Do List</a>
+                        <a href="/submissions">Process Submission</a>
                         <a href="/manage_schedule">Manage Schedule</a>
                         <a href="/add_trainer">Add New Trainer</a>
                     </div>
@@ -79,7 +81,7 @@
                         <a href="/town/visit/bakery">Bakery</a>
                         <a href="/town/visit/witchs_hut">Witch's Hut</a>
                         <a href="/town/visit/megamart">Mega Mart</a>
-                        <a href="/town/visit/antique_shop">Antique Store</a>
+                        <a href="/town/visit/antique">Antique Store</a>
                         <a href="/town/visit/game_corner">Pomodoro Game Corner</a>
                         <a href="/town/visit/adoption">Adoption Center</a>
                         <a href="/town/visit/trade">Trade Center</a>
@@ -166,9 +168,8 @@
                     </button>
                     <div class="mobile-dropdown-content" id="profileMobileDropdown">
                         <a href="/my_trainers" class="mobile-nav-link">View My Trainers</a>
-                        <a href="/submit_artwork" class="mobile-nav-link">Submit Artwork</a>
-                        <a href="/submit_writing" class="mobile-nav-link">Submit Writing</a>
-                        <a href="/submit_references" class="mobile-nav-link">Submit References</a>
+                        <a href="/reference_todo" class="mobile-nav-link">Reference To-Do List</a>
+                        <a href="/submissions" class="mobile-nav-link">Process Submission</a>
                         <a href="/manage_schedule" class="mobile-nav-link">Manage Schedule</a>
                         <a href="/add_trainer" class="mobile-nav-link">Add New Trainer</a>
                     </div>
@@ -257,6 +258,8 @@
     </main>
 
     <script src="/js/main.js"></script>
+    <script src="/js/modern-dropdowns.js"></script>
+    <script src="/js/modern-inputs.js"></script>
     <%- typeof script !== 'undefined' ? script : '' %>
 </body>
 </html>

@@ -1,7 +1,7 @@
 const app = require('./config/app');
 const { errorHandler, userToLocals } = require('./middleware');
 const viewHelpers = require('./utils/viewHelpers');
-const pool = require('./config/database');
+const pool = require('./db');
 const User = require('./models/User');
 const { ShopConfig, DailyShopItems } = require('./models/ShopSystem');
 const Item = require('./models/Item');
@@ -23,7 +23,7 @@ const statisticsRoutes = require('./routes/statistics');
 const apiRoutes = require('./routes/api');
 
 // Set port
-const PORT = process.env.PORT || 9000;
+const PORT = process.env.PORT || 4890;
 
 // Add view helpers to app.locals
 app.locals = {

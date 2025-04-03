@@ -5,6 +5,7 @@ const pgSession = require('connect-pg-simple')(session);
 const fs = require('fs');
 const multer = require('multer');
 const expressLayouts = require('express-ejs-layouts');
+const db = require('./db'); // Import database for direct queries
 const {
   loadMarkdownContent,
   getContentCategories,
@@ -56,12 +57,13 @@ const GardenHarvest = require('./models/GardenHarvest');
 const MonsterRoller = require('./utils/MonsterRoller');
 const MonsterInitializer = require('./utils/MonsterInitializer');
 const EvolutionService = require('./utils/EvolutionService');
+const RewardSystem = require('./utils/RewardSystem');
 const Trade = require('./models/Trade');
 require('dotenv').config();
 
 const app = express();
 
-const PORT = process.env.PORT || 9000;
+const PORT = process.env.PORT || 4890;
 
 // Initialize database tables
 async function initializeTables() {
@@ -72,6 +74,16 @@ async function initializeTables() {
     // Initialize adoption system tables
     const AdoptionService = require('./utils/AdoptionService');
     await AdoptionService.initialize();
+
+    // Initialize prompt system tables
+    const Prompt = require('./models/Prompt');
+    const PromptCompletion = require('./models/PromptCompletion');
+    await Prompt.createTableIfNotExists();
+    await PromptCompletion.createTableIfNotExists();
+
+    // Initialize trainer inventory table
+    const ItemService = require('./utils/ItemService');
+    await ItemService.createInventoryTableIfNotExists();
 
     console.log('Database tables initialized');
   } catch (error) {
@@ -1010,38 +1022,56 @@ app.get('/town/shop/:shopId', async (req, res) => {
       trainer = userTrainers[0];
     }
 
-    // Get shop items for today
-    console.log(`Getting shop items for shop ID: ${shopId}`);
+    // Get shop items for today with player-specific remaining quantities
+    console.log(`Getting shop items for shop ID: ${shopId} and player ${playerId}`);
+    // First get the shop items without player ID to get the max quantities
     let shopItems = await DailyShopItems.getShopItems(shopId);
     console.log(`Found ${shopItems ? shopItems.length : 0} items for shop ${shopId}:`, shopItems);
 
     // If no items are found, automatically restock the shop
     if (!shopItems || shopItems.length === 0) {
       console.log(`No items found for shop ${shopId}, automatically restocking...`);
-      await DailyShopItems.restockShop(shopId);
-      shopItems = await DailyShopItems.getShopItems(shopId);
-      console.log(`After restock: Found ${shopItems ? shopItems.length : 0} items for shop ${shopId}`);
+      try {
+        const restockResult = await DailyShopItems.restockShop(shopId);
+        console.log(`Restock result: ${restockResult ? 'Success' : 'Failed'}`);
+        if (restockResult) {
+          // Get shop items without player ID first to get max quantities
+          shopItems = await DailyShopItems.getShopItems(shopId);
+          console.log(`After restock: Found ${shopItems ? shopItems.length : 0} items for shop ${shopId}`);
+        } else {
+          console.log(`Restock failed for shop ${shopId}, continuing with empty shop`);
+          shopItems = [];
+        }
+      } catch (error) {
+        console.error(`Error restocking shop ${shopId}:`, error);
+        shopItems = [];
+      }
     }
 
-    // Get remaining quantities for each item
-    console.log('Getting remaining quantities for each item...');
-    const itemsWithQuantities = await Promise.all(
-      shopItems.map(async (item) => {
-        console.log(`Getting remaining quantity for item ${item.item_id}`);
-        const remainingQuantity = await DailyShopItems.getRemainingQuantity(
-          playerId,
-          shopId,
-          item.item_id
-        );
-        console.log(`Remaining quantity for item ${item.item_id}: ${remainingQuantity}`);
+    // Get fresh remaining quantities for each item
+    const itemsWithQuantities = await Promise.all(shopItems.map(async item => {
+      // Get the latest remaining quantity for this item
+      console.log(`Getting fresh remaining quantity for player ${playerId}, shop ${shopId}, item ${item.item_id}`);
+      const remainingQuantity = await DailyShopItems.getRemainingQuantity(
+        playerId,
+        shopId,
+        item.item_id
+      );
 
-        return {
-          ...item,
-          remaining_quantity: remainingQuantity
-        };
-      })
-    );
-    console.log('Items with quantities:', itemsWithQuantities);
+      // Get the max quantity directly from the item
+      const maxQuantity = parseInt(item.max_quantity) || 1;
+
+      console.log(`Item ${item.item_id} fresh remaining quantity: ${remainingQuantity}/${maxQuantity}`);
+
+      return {
+        ...item,
+        remaining_quantity: remainingQuantity,
+        remaining: remainingQuantity,
+        max_quantity: maxQuantity,
+        purchaseLimit: maxQuantity
+      };
+    }));
+    console.log('Items with fresh quantities:', itemsWithQuantities);
 
     // Determine if shop was automatically restocked
     const wasRestocked = req.query.message ? req.query.message :
@@ -1097,7 +1127,8 @@ app.get('/town/shop/:shopId/restock', async (req, res) => {
   }
 });
 
-app.get('/town/shop/:shopId/restock', async (req, res) => {
+// Simple route to fix prices with direct price generation
+app.get('/town/shop/:shopId/fix-prices', async (req, res) => {
   // Check if user is logged in
   if (!req.session.user) {
     return res.redirect('/login');
@@ -1105,19 +1136,293 @@ app.get('/town/shop/:shopId/restock', async (req, res) => {
 
   try {
     const { shopId } = req.params;
+    console.log(`Direct price generation for shop ${shopId}...`);
 
-    console.log(`Force restocking shop ${shopId}...`);
+    // Get today's date
+    const today = new Date().toISOString().split('T')[0];
 
-    // Restock the shop
-    const result = await DailyShopItems.restockShop(shopId);
+    // Define base prices for different item categories and rarities
+    const basePrices = {
+      // Common items by category
+      BERRIES: { min: 500, max: 1500 },
+      PASTRIES: { min: 800, max: 2000 },
+      ITEMS: { min: 1000, max: 3000 },
+      EVOLUTION: { min: 2000, max: 5000 },
+      ANTIQUE: { min: 3000, max: 8000 },
+      BALLS: { min: 1500, max: 4000 },
 
-    console.log(`Restock result:`, result);
+      // Rarity multipliers
+      common: 1.0,
+      uncommon: 1.5,
+      rare: 2.5,
+      'ultra rare': 4.0,
+      legendary: 8.0,
+
+      // Special items with fixed base prices
+      specialItems: {
+        'Daycare Daypass': 5000,
+        'Gold Bottle Cap': 7500,
+        'Z-Crystal': 6000,
+        'Charge Capsule': 3500,
+        'Scroll of Secrets': 8000,
+        'Legacy Leeway': 5000
+      }
+    };
+
+    // Shop-specific multipliers
+    const shopMultipliers = {
+      general: { min: 0.8, max: 1.2 },
+      apothecary: { min: 0.9, max: 1.3 },
+      bakery: { min: 0.7, max: 1.1 },
+      boutique: { min: 1.0, max: 1.5 },
+      nursery: { min: 1.1, max: 1.6 },
+      antiques: { min: 1.2, max: 1.8 }
+    };
+
+    // Get the shop multiplier range
+    const shopMultiplier = shopMultipliers[shopId] || { min: 0.9, max: 1.4 };
+
+    // Get all items in the shop for today
+    const itemsQuery = `
+      SELECT dsi.*, i.name, i.category, i.rarity
+      FROM daily_shop_items dsi
+      JOIN items i ON dsi.item_id = i.name
+      WHERE dsi.shop_id = $1 AND dsi.date = $2
+    `;
+
+    const itemsResult = await db.query(itemsQuery, [shopId, today]);
+    console.log(`Found ${itemsResult.rows.length} items in shop ${shopId} for ${today}`);
+
+    if (itemsResult.rows.length === 0) {
+      // No items found, try to restock first
+      console.log(`No items found, restocking shop ${shopId}...`);
+      await DailyShopItems.restockShop(shopId);
+
+      // Try again to get items
+      const newItemsResult = await db.query(itemsQuery, [shopId, today]);
+      console.log(`After restock: Found ${newItemsResult.rows.length} items`);
+
+      if (newItemsResult.rows.length === 0) {
+        return res.redirect(`/town/shop/${shopId}?message=${encodeURIComponent('No items found to fix prices even after restocking')}&messageType=warning`);
+      }
+
+      // Use the new items
+      itemsResult.rows = newItemsResult.rows;
+    }
+
+    // Update prices for each item
+    let updatedCount = 0;
+
+    for (const item of itemsResult.rows) {
+      try {
+        let basePrice;
+        const itemName = item.name || item.item_id;
+        const category = item.category || 'ITEMS';
+        const rarity = (item.rarity || 'common').toLowerCase();
+
+        // Check if it's a special item with a fixed base price
+        if (basePrices.specialItems[itemName]) {
+          basePrice = basePrices.specialItems[itemName];
+          console.log(`Using special item base price for ${itemName}: ${basePrice}`);
+        } else {
+          // Get base price range for the category
+          const categoryRange = basePrices[category] || basePrices.ITEMS;
+
+          // Generate a random base price within the category range
+          const randomBasePrice = Math.floor(Math.random() * (categoryRange.max - categoryRange.min + 1)) + categoryRange.min;
+
+          // Apply rarity multiplier
+          const rarityMultiplier = basePrices[rarity] || 1.0;
+          basePrice = Math.round(randomBasePrice * rarityMultiplier);
+
+          console.log(`Generated base price for ${itemName}: category=${category}, rarity=${rarity}, basePrice=${basePrice}`);
+        }
+
+        // Apply shop-specific multiplier
+        const multiplier = Math.random() * (shopMultiplier.max - shopMultiplier.min) + shopMultiplier.min;
+
+        // Calculate final price
+        const newPrice = Math.max(100, Math.round(basePrice * multiplier));
+
+        console.log(`Updating ${itemName}: basePrice=${basePrice}, shopMultiplier=${multiplier.toFixed(2)}, finalPrice=${newPrice}`);
+
+        // Update the price in the database
+        const updateQuery = `
+          UPDATE daily_shop_items
+          SET price = $1
+          WHERE id = $2
+          RETURNING *
+        `;
+
+        const updateResult = await db.query(updateQuery, [newPrice, item.id]);
+
+        if (updateResult.rows.length > 0) {
+          updatedCount++;
+        }
+      } catch (itemError) {
+        console.error(`Error updating price for item ${item.item_id || item.name}:`, itemError);
+      }
+    }
+
+    console.log(`Successfully updated prices for ${updatedCount} out of ${itemsResult.rows.length} items`);
 
     // Redirect back to the shop
-    return res.redirect(`/town/shop/${shopId}?message=${encodeURIComponent('Shop restocked successfully!')}&messageType=success`);
+    return res.redirect(`/town/shop/${shopId}?message=${encodeURIComponent(`Successfully updated prices for ${updatedCount} items`)}&messageType=success`);
   } catch (error) {
-    console.error(`Error restocking shop ${req.params.shopId}:`, error);
-    return res.redirect(`/town/shop/${req.params.shopId}?message=${encodeURIComponent('Error restocking shop: ' + error.message)}&messageType=error`);
+    console.error(`Error fixing prices for shop ${req.params.shopId}:`, error);
+    return res.redirect(`/town/shop/${req.params.shopId}?message=${encodeURIComponent('Error fixing prices: ' + error.message)}&messageType=error`);
+  }
+});
+
+// New route to fix prices for a shop - DIRECT METHOD
+app.get('/town/shop/:shopId/fix-prices-direct', async (req, res) => {
+  // Check if user is logged in
+  if (!req.session.user) {
+    return res.redirect('/login');
+  }
+
+  try {
+    const { shopId } = req.params;
+    console.log(`Fixing prices for shop ${shopId}...`);
+
+    // Get shop configuration
+    const shop = await ShopConfig.getById(shopId);
+    if (!shop) {
+      throw new Error(`Shop ${shopId} not found`);
+    }
+    console.log(`Shop details:`, shop);
+
+    // Get current shop items
+    const today = new Date().toISOString().split('T')[0];
+    console.log(`Today's date: ${today}`);
+
+    // First, check if there are any items in the shop for today
+    const checkQuery = `
+      SELECT COUNT(*) as count
+      FROM daily_shop_items
+      WHERE shop_id = $1 AND date = $2
+    `;
+    const checkResult = await db.query(checkQuery, [shopId, today]);
+    const itemCount = parseInt(checkResult.rows[0].count);
+    console.log(`Direct DB query found ${itemCount} items for shop ${shopId} on ${today}`);
+
+    // If no items, try to restock the shop first
+    if (itemCount === 0) {
+      console.log(`No items found for shop ${shopId}, restocking first...`);
+      await DailyShopItems.restockShop(shopId);
+      console.log(`Shop ${shopId} restocked, now getting items...`);
+    }
+
+    // Get shop items using the model method
+    const shopItems = await DailyShopItems.getShopItems(shopId, today);
+    console.log(`Found ${shopItems ? shopItems.length : 0} items for shop ${shopId} using model method`);
+
+    // If still no items, try a direct query
+    if (!shopItems || shopItems.length === 0) {
+      console.log(`Still no items found using model method, trying direct query...`);
+      const directQuery = `
+        SELECT dsi.*, i.name as item_name, i.effect as item_description,
+               COALESCE(i.icon, 'https://via.placeholder.com/150') as item_image,
+               i.rarity as item_rarity, i.category as item_type, i.base_price
+        FROM daily_shop_items dsi
+        JOIN items i ON dsi.item_id = i.name
+        WHERE dsi.shop_id = $1 AND dsi.date = $2
+      `;
+      const directResult = await db.query(directQuery, [shopId, today]);
+      console.log(`Direct query found ${directResult.rows.length} items`);
+
+      if (directResult.rows.length === 0) {
+        return res.redirect(`/town/shop/${shopId}?message=${encodeURIComponent('No items found to fix prices even after restocking')}&messageType=warning`);
+      }
+
+      // Use the direct query results
+      const directItems = directResult.rows;
+
+      // Update prices for each item from direct query
+      const directUpdatePromises = directItems.map(async (item) => {
+        try {
+          // Use the base_price from the joined query
+          const basePrice = item.base_price ? parseInt(item.base_price) : 1000;
+          const multiplier = Math.random() * (shop.price_multiplier_max - shop.price_multiplier_min) + shop.price_multiplier_min;
+          const newPrice = Math.max(100, Math.round(basePrice * multiplier));
+
+          console.log(`Updating price for ${item.item_id}: basePrice=${basePrice}, multiplier=${multiplier}, newPrice=${newPrice}`);
+
+          // Update the price in the database
+          const updateQuery = `
+            UPDATE daily_shop_items
+            SET price = $1
+            WHERE shop_id = $2 AND item_id = $3 AND date = $4
+            RETURNING *
+          `;
+
+          const updateResult = await db.query(updateQuery, [newPrice, shopId, item.item_id, today]);
+          console.log(`Update result:`, updateResult.rows[0]);
+          return updateResult.rows[0];
+        } catch (itemError) {
+          console.error(`Error updating price for item ${item.item_id}:`, itemError);
+          return null;
+        }
+      });
+
+      const directUpdateResults = await Promise.all(directUpdatePromises);
+      const directSuccessCount = directUpdateResults.filter(result => result !== null).length;
+
+      console.log(`Successfully updated prices for ${directSuccessCount} out of ${directItems.length} items using direct query`);
+
+      return res.redirect(`/town/shop/${shopId}?message=${encodeURIComponent(`Successfully updated prices for ${directSuccessCount} items`)}&messageType=success`);
+    }
+
+    // Update prices for each item using the model method results
+    const updatePromises = shopItems.map(async (item) => {
+      try {
+        console.log(`Processing item:`, item);
+
+        // Get the item details from the database
+        const itemDetails = await Item.getById(item.item_id);
+        console.log(`Item details for ${item.item_id}:`, itemDetails);
+
+        if (!itemDetails) {
+          console.warn(`No item details found for ${item.item_id}`);
+          return null;
+        }
+
+        // Use a default base price if none is found
+        const basePrice = itemDetails.base_price ? parseInt(itemDetails.base_price) : 1000;
+        console.log(`Base price for ${item.item_id}: ${basePrice} (type: ${typeof basePrice})`);
+
+        const multiplier = Math.random() * (shop.price_multiplier_max - shop.price_multiplier_min) + shop.price_multiplier_min;
+        const newPrice = Math.max(100, Math.round(basePrice * multiplier));
+
+        console.log(`Updating price for ${item.item_id}: basePrice=${basePrice}, multiplier=${multiplier}, newPrice=${newPrice}`);
+
+        // Update the price in the database
+        const updateQuery = `
+          UPDATE daily_shop_items
+          SET price = $1
+          WHERE shop_id = $2 AND item_id = $3 AND date = $4
+          RETURNING *
+        `;
+
+        const updateResult = await db.query(updateQuery, [newPrice, shopId, item.item_id, today]);
+        console.log(`Update result for ${item.item_id}:`, updateResult.rows[0]);
+        return updateResult.rows[0];
+      } catch (itemError) {
+        console.error(`Error updating price for item ${item.item_id}:`, itemError);
+        return null;
+      }
+    });
+
+    const updateResults = await Promise.all(updatePromises);
+    const successCount = updateResults.filter(result => result !== null).length;
+
+    console.log(`Successfully updated prices for ${successCount} out of ${shopItems.length} items`);
+
+    // Redirect back to the shop
+    return res.redirect(`/town/shop/${shopId}?message=${encodeURIComponent(`Successfully updated prices for ${successCount} items`)}&messageType=success`);
+  } catch (error) {
+    console.error(`Error fixing prices for shop ${req.params.shopId}:`, error);
+    return res.redirect(`/town/shop/${req.params.shopId}?message=${encodeURIComponent('Error fixing prices: ' + error.message)}&messageType=error`);
   }
 });
 
@@ -1204,21 +1509,28 @@ app.post('/town/shop/:shopId/purchase', async (req, res) => {
       return res.redirect(`/town/shop/${shopId}?messageType=error&message=${encodeURIComponent('Invalid trainer selected')}`);
     }
 
-    // Get item information
-    const shopItems = await DailyShopItems.getShopItems(shopId);
-    const item = shopItems.find(i => i.item_id === item_id);
+    // Get item information with player-specific remaining quantity
+    // First get the item details
+    const item = await DailyShopItems.getShopItem(shopId, item_id);
+    console.log(`Item details:`, item);
 
     if (!item) {
       return res.redirect(`/town/shop/${shopId}?messageType=error&message=${encodeURIComponent('Item not available in this shop')}`);
     }
 
-    // Check if the player has enough remaining quantity
+    // Get the max quantity from the item
+    const maxQuantity = parseInt(item.max_quantity) || 1;
+
+    // Get the latest remaining quantity directly to ensure it's up-to-date
+    console.log(`Getting remaining quantity for player ${playerId}, shop ${shopId}, item ${item_id}`);
     const remainingQuantity = await DailyShopItems.getRemainingQuantity(
       playerId,
       shopId,
       item_id
     );
+    console.log(`Current remaining quantity for ${item_id}: ${remainingQuantity}/${maxQuantity}`);
 
+    console.log(`Checking if ${parsedQuantity} <= ${remainingQuantity}`);
     if (remainingQuantity < parsedQuantity) {
       return res.redirect(`/town/shop/${shopId}?messageType=error&message=${encodeURIComponent(`Only ${remainingQuantity} of this item available for purchase`)}`);
     }
@@ -1322,12 +1634,14 @@ app.post('/town/shop/:shopId/purchase', async (req, res) => {
       return res.redirect(`/town/shop/${shopId}?messageType=error&message=${encodeURIComponent('Error updating trainer currency: ' + currencyError.message)}`);
     }
 
-    // Redirect back to the shop with success message
-    return res.redirect(`/town/shop/${shopId}?message=${encodeURIComponent(`Successfully purchased ${parsedQuantity} ${item.item_name}(s) for ${totalPrice} coins`)}`);
+    // Redirect back to the shop with success message and a timestamp to force a refresh
+    const timestamp = Date.now();
+    return res.redirect(`/town/shop/${shopId}?message=${encodeURIComponent(`Successfully purchased ${parsedQuantity} ${item.item_name}(s) for ${totalPrice} coins`)}&t=${timestamp}`);
   } catch (error) {
     console.error(`Error purchasing item from shop ${shopId}:`, error);
     // Always redirect back to the original shop ID, not the item ID
-    return res.redirect(`/town/shop/${shopId}?messageType=error&message=${encodeURIComponent('Error purchasing item: ' + error.message)}`);
+    const timestamp = Date.now();
+    return res.redirect(`/town/shop/${shopId}?messageType=error&message=${encodeURIComponent('Error purchasing item: ' + error.message)}&t=${timestamp}`);
   }
 });
 
@@ -1642,14 +1956,20 @@ app.get('/admin/test-rewards', async (req, res) => {
   }
 });
 
-// Import shop management routes
+// Import admin routes
 const shopRoutes = require('./routes/admin/shops');
+const bossRoutes = require('./routes/admin/bosses');
+const missionRoutes = require('./routes/admin/missions');
+const promptRoutes = require('./routes/admin/prompts');
 
 // Import API routes
 const apiRoutes = require('./routes/api');
 
-// Use shop management routes
+// Use admin routes
 app.use('/admin/shops', shopRoutes);
+app.use('/admin/bosses', bossRoutes);
+app.use('/admin/missions', missionRoutes);
+app.use('/admin/prompts', promptRoutes);
 
 // Use API routes
 app.use('/api', apiRoutes);
@@ -1658,6 +1978,21 @@ app.use('/api', apiRoutes);
 app.use('/api/trainers', require('./routes/api/trainers'));
 app.use('/api/items', require('./routes/api/items'));
 app.use('/api/nursery', require('./routes/api/nursery'));
+
+// Nurture routes - make sure this is registered correctly
+console.log('Registering nurture API routes');
+app.use('/api/nurture', require('./routes/api/nurture'));
+
+app.get('/town/visit/nursery', (req, res) => {
+  // Check if user is logged in
+  if (!req.session.user) {
+    return res.redirect('/login');
+  }
+
+  res.render('town/nursery', {
+    title: 'Nursery'
+  });
+});
 
 app.get('/town/visit/nursery/hatch', async (req, res) => {
   if (!req.session.user) {
@@ -1675,6 +2010,28 @@ app.get('/town/visit/nursery/hatch', async (req, res) => {
     console.error('Error loading egg hatching page:', error);
     res.status(500).render('error', {
       message: 'Error loading egg hatching page',
+      error: { status: 500, stack: error.stack }
+    });
+  }
+});
+
+app.get('/town/visit/nursery/nurture', async (req, res) => {
+  // Check if user is logged in
+  if (!req.session.user) {
+    return res.redirect('/login');
+  }
+
+  try {
+    const userTrainers = await Trainer.getByUserId(req.session.user.discord_id);
+
+    res.render('town/nursery/nurture', {
+      title: 'Nursery - Monster Nurturing',
+      trainers: userTrainers
+    });
+  } catch (error) {
+    console.error('Error loading nurture page:', error);
+    res.status(500).render('error', {
+      message: 'Error loading nurture page',
       error: { status: 500, stack: error.stack }
     });
   }
@@ -2099,12 +2456,16 @@ app.post('/admin/monster-claim', async (req, res) => {
   } catch (error) {
     console.error('Error claiming monster:', error);
     res.status(500).render('error', {
-      message: 'Error claiming monster',
+      message: 'Error claiming monster: ' + error.message,
       error: { status: 500, stack: error.stack },
       title: 'Error'
     });
   }
 });
+
+// API Routes
+const adoptionRoutes = require('./routes/api/adoption');
+app.use('/api/adoption', adoptionRoutes);
 
 // Starter Roller Routes
 app.get('/trainers/:id/roll-starters', async (req, res) => {
@@ -3428,8 +3789,8 @@ app.get('/town/rewards', async (req, res) => {
 
   try {
     // Get parameters from query
-    const source = req.query.source || 'game_corner';
-    const returnUrl = req.query.returnUrl || '/town/visit';
+    let source = req.query.source || 'game_corner';
+    let returnUrl = req.query.returnUrl || '/town/visit';
     const returnButtonText = req.query.returnButtonText || 'Go Back';
     const pageTitle = req.query.pageTitle || 'Rewards';
     const pageSubtitle = req.query.pageSubtitle || 'You\'ve earned the following rewards:';
@@ -3440,13 +3801,29 @@ app.get('/town/rewards', async (req, res) => {
     // Get the user's trainers
     const trainers = await Trainer.getByUserId(req.session.user.discord_id);
 
-    // Check if rewards are passed in the query
+    // Check if rewards are passed in the query or session
     let rewards = [];
     if (req.query.rewards) {
       try {
         rewards = JSON.parse(req.query.rewards);
       } catch (e) {
         console.error('Error parsing rewards JSON:', e);
+      }
+    } else if (req.session.rewards && req.session.rewards.length > 0) {
+      // Use rewards from session (set by API endpoints)
+      console.log('Using rewards from session');
+      rewards = req.session.rewards;
+
+      // If source is not specified in query but is in session, use that
+      if (!req.query.source && req.session.source) {
+        console.log(`Using source from session: ${req.session.source}`);
+        source = req.session.source;
+      }
+
+      // If returnUrl is not specified in query but is in session, use that
+      if (!req.query.returnUrl && req.session.returnUrl) {
+        console.log(`Using returnUrl from session: ${req.session.returnUrl}`);
+        returnUrl = req.session.returnUrl;
       }
     } else {
       // Generate rewards based on parameters if not provided directly
@@ -3570,32 +3947,6 @@ app.get('/town/rewards', async (req, res) => {
             itemRewards.push(itemReward);
             rewards.push(itemReward);
           }
-        } else {
-          // Fallback if no items in database
-          const fallbackItems = ['Potion', 'Super Potion', 'Pokeball', 'Great Ball', 'Rare Candy'];
-          const itemDescriptions = {
-            'Potion': 'Restores 20 HP to a monster',
-            'Super Potion': 'Restores 50 HP to a monster',
-            'Pokeball': 'Used to catch wild monsters',
-            'Great Ball': 'Better chance to catch wild monsters',
-            'Rare Candy': 'Increases a monster\'s level by 1'
-          };
-
-          // Add at least one item
-          const randomItem = fallbackItems[Math.floor(Math.random() * fallbackItems.length)];
-          const itemReward = {
-            id: 'item-' + Date.now(),
-            type: 'item',
-            rarity: 'uncommon',
-            data: {
-              name: randomItem,
-              description: itemDescriptions[randomItem],
-              quantity: Math.ceil(Math.random() * 3), // 1-3 of the item
-              category: 'general'
-            }
-          };
-          itemRewards.push(itemReward);
-          rewards.push(itemReward);
         }
       } catch (error) {
         console.error('Error getting items from database:', error);
@@ -3666,9 +4017,10 @@ app.get('/town/rewards', async (req, res) => {
             // Roll a monster using MonsterRoller
             const rolledMonster = await MonsterRoller.rollOne(monsterOptions);
 
+            let newMonsterReward;
             if (rolledMonster) {
               // Create monster reward
-              monsterReward = {
+              newMonsterReward = {
                 id: 'monster-' + Date.now(),
                 type: 'monster',
                 rarity: monsterRarity,
@@ -3687,7 +4039,7 @@ app.get('/town/rewards', async (req, res) => {
               };
             } else {
               // Fallback if monster rolling fails
-              monsterReward = {
+              newMonsterReward = {
                 id: 'monster-' + Date.now(),
                 type: 'monster',
                 rarity: monsterRarity,
@@ -3700,12 +4052,12 @@ app.get('/town/rewards', async (req, res) => {
               };
             }
 
-            monsterRewards.push(monsterReward);
-            rewards.push(monsterReward);
+            monsterRewards.push(newMonsterReward);
+            rewards.push(newMonsterReward);
           } catch (error) {
             console.error('Error rolling monster:', error);
             // Fallback monster if rolling fails
-            const monsterReward = {
+            const fallbackMonsterReward = {
               id: 'monster-' + Date.now(),
               type: 'monster',
               rarity: (productivityScore >= 95 && Math.random() <= 0.000002) ? 'legendary' : productivityScore >= 90 ? 'epic' : 'rare',
@@ -3716,8 +4068,8 @@ app.get('/town/rewards', async (req, res) => {
                 attribute: ['Vaccine', 'Data', 'Virus', 'Free'][Math.floor(Math.random() * 4)]
               }
             };
-            monsterRewards.push(monsterReward);
-            rewards.push(monsterReward);
+            monsterRewards.push(fallbackMonsterReward);
+            rewards.push(fallbackMonsterReward);
           }
         }
       }
@@ -3823,8 +4175,22 @@ app.get('/town/rewards', async (req, res) => {
       returnUrl,
       returnButtonText,
       allowTrainerSelection,
-      showClaimAllButton
+      showClaimAllButton,
+      session: req.session, // Pass the session to the view
+      message: req.session.message || null // Pass the message from session if available
     });
+
+    // Clear the rewards from the session after they're displayed
+    // This prevents them from being displayed again if the user refreshes the page
+    if (req.session.rewards) {
+      delete req.session.rewards;
+    }
+    if (req.session.gardenRewards) {
+      delete req.session.gardenRewards;
+    }
+    if (req.session.message) {
+      delete req.session.message;
+    }
   } catch (error) {
     console.error('Error generating rewards:', error);
     res.render('town/rewards', {
@@ -3837,8 +4203,21 @@ app.get('/town/rewards', async (req, res) => {
       returnUrl: '/town/visit',
       returnButtonText: 'Go Back',
       allowTrainerSelection: false,
-      showClaimAllButton: false
+      showClaimAllButton: false,
+      session: req.session, // Pass the session to the view
+      message: 'Error generating rewards: ' + error.message
     });
+
+    // Clear the rewards from the session in case of error
+    if (req.session.rewards) {
+      delete req.session.rewards;
+    }
+    if (req.session.gardenRewards) {
+      delete req.session.gardenRewards;
+    }
+    if (req.session.message) {
+      delete req.session.message;
+    }
   }
 });
 
@@ -3904,35 +4283,9 @@ app.get('/town/visit/antique/appraisal', async (req, res) => {
   }
 });
 
-// Adoption Center route
-app.get('/town/visit/adoption', async (req, res) => {
-  // Check if user is logged in
-  if (!req.session.user) {
-    return res.redirect('/login');
-  }
-
-  try {
-    // Get user's trainers
-    const trainers = await Trainer.getByUserId(req.session.user.discord_id);
-
-    // Ensure current month adopts exist
-    const MonthlyAdopt = require('./models/MonthlyAdopt');
-    await MonthlyAdopt.ensureCurrentMonthAdopts();
-
-    // Render the adoption center page
-    res.render('town/adoption_center', {
-      title: 'Adoption Center',
-      trainers
-    });
-  } catch (error) {
-    console.error('Error rendering adoption center:', error);
-    res.status(500).render('error', {
-      message: 'Error rendering adoption center',
-      error: { status: 500, stack: error.stack },
-      title: 'Error'
-    });
-  }
-});
+// Adoption Center routes
+const townAdoptionRoutes = require('./routes/town/adoption');
+app.use('/town/visit/adoption', townAdoptionRoutes);
 
 // Apothecary route
 app.get('/town/visit/apothecary', async (req, res) => {
@@ -4234,49 +4587,107 @@ app.get('/town/visit/garden/harvest', async (req, res) => {
   }
 
   try {
+    console.log('Garden harvest route accessed');
+
     // Initialize garden harvests table if needed
     await GardenHarvest.initTable();
 
     // Get the user's Discord ID
     const discordUserId = req.session.user.discord_id || req.session.user.id;
+    console.log(`Processing harvest for user ID: ${discordUserId}`);
 
     // Get the user's trainers
     const trainers = await Trainer.getByUserId(discordUserId);
     if (!trainers || trainers.length === 0) {
+      console.log('No trainers found for user');
       return res.redirect('/town/visit/garden?message=You need at least one trainer to harvest the garden!&messageType=error');
     }
+    console.log(`Found ${trainers.length} trainers for user`);
 
     // Check if the user has already harvested today
     const hasHarvestedToday = await GardenHarvest.hasHarvestedToday(discordUserId);
-    if (hasHarvestedToday) {
+    console.log(`Has user harvested today? ${hasHarvestedToday}`);
+
+    // Check if user is an admin
+    const isAdmin = req.session.user.is_admin === true;
+    console.log(`Is user an admin? ${isAdmin}`);
+
+    // Only enforce the daily harvest limit for non-admin users
+    // Skip this check if the user has already harvested via the API endpoint
+    // (which would have already enforced this check)
+    if (hasHarvestedToday && !isAdmin) {
       return res.redirect('/town/visit/garden?message=You have already harvested your garden today. Come back tomorrow!&messageType=info');
     }
 
-    // Set garden points (in a real implementation, this would be based on user's garden size/quality)
-    // For now, we'll generate a random number between 1 and 5
-    const gardenPoints = Math.floor(Math.random() * 5) + 1;
+    // If admin is harvesting again on the same day, log it and show a special message
+    if (hasHarvestedToday && isAdmin) {
+      console.log(`Admin user ${req.session.user.username} (${discordUserId}) is harvesting again on the same day`);
 
-    // Record the harvest in the database
-    await GardenHarvest.recordHarvest(discordUserId, gardenPoints);
+      // Add a special message to the rewards page title
+      req.session.adminRerollMessage = 'Admin Override: Harvesting garden again on the same day';
+    } else {
+      // Clear any previous admin reroll message
+      req.session.adminRerollMessage = null;
+    }
+
+    // Check if we're coming from the API endpoint (which would have already harvested)
+    // If so, we don't need to generate new garden points or record a new harvest
+    let gardenPoints;
+    let harvestResult;
+
+    if (hasHarvestedToday && !isAdmin) {
+      // We've already harvested today and we're not an admin, so just get the existing data
+      console.log('User has already harvested today, using existing data');
+      const harvestData = await GardenHarvest.getByDiscordUserId(discordUserId);
+      gardenPoints = harvestData ? harvestData.garden_points : 0;
+      harvestResult = harvestData;
+      console.log('Using existing garden data:', harvestData);
+    } else if (hasHarvestedToday && isAdmin) {
+      // Admin user harvesting again on the same day
+      console.log('Admin user', req.session.user.username, '(' + discordUserId + ') is harvesting again on the same day');
+
+      // Generate random garden points (1-5) for admin users
+      gardenPoints = Math.floor(Math.random() * 5) + 1;
+      console.log(`Generated ${gardenPoints} garden points for admin user`);
+
+      // Update the garden points
+      await GardenHarvest.updateGardenPoints(discordUserId, gardenPoints);
+
+      // Now harvest with the new points
+      harvestResult = await GardenHarvest.harvestGarden(discordUserId);
+      console.log('Admin harvest result:', harvestResult);
+    } else {
+      // First harvest of the day
+      // Generate random garden points (1-5) and record the harvest
+      gardenPoints = Math.floor(Math.random() * 5) + 1;
+      console.log(`Generated ${gardenPoints} garden points for harvest`);
+
+      // Record the harvest in the database
+      harvestResult = await GardenHarvest.recordHarvest(discordUserId, gardenPoints);
+      console.log('Harvest recorded:', harvestResult);
+    }
 
     // Generate rewards using the RewardSystem
+    console.log('Generating rewards...');
     const rewards = await RewardSystem.generateRewards('garden', {
       gardenPoints: gardenPoints,
       productivityScore: 100, // Default productivity score
       timeSpent: 30, // Default time spent in minutes
       difficulty: 'normal' // Default difficulty
     });
+    console.log(`Generated ${rewards.length} rewards`);
 
     // Store rewards in session for claiming later
     req.session.rewards = rewards;
 
     // Render the rewards view
-    res.render('rewards', {
+    res.render('town/rewards', {
       title: 'Garden Harvest Rewards',
       rewards: rewards,
       trainers: trainers,
       source: 'garden',
-      message: `You harvested your garden and earned ${gardenPoints} garden points!`,
+      message: req.session.adminRerollMessage || `You harvested your garden and earned ${gardenPoints} garden points!`,
+      adminReroll: isAdmin && hasHarvestedToday,
       returnUrl: '/town/visit/garden'
     });
   } catch (error) {
@@ -4443,74 +4854,15 @@ app.post('/api/monsters/:monsterId/evolve', async (req, res) => {
   }
 });
 
-// API routes for claiming rewards
-app.post('/api/claim-reward', async (req, res) => {
-  // Check if user is logged in
-  if (!req.session.user) {
-    return res.status(401).json({ success: false, message: 'You must be logged in to claim rewards' });
-  }
-
-  try {
-    const { rewardId, rewardType, trainerId, source } = req.body;
-
-    if (!rewardId || !rewardType || !trainerId || !source) {
-      return res.status(400).json({ success: false, message: 'Missing required parameters' });
-    }
-
-    // Get the user's Discord ID
-    const discordUserId = req.session.user.discord_id || req.session.user.id;
-
-    // Get the trainer
-    const trainer = await Trainer.getById(trainerId);
-    if (!trainer) {
-      return res.status(404).json({ success: false, message: 'Trainer not found' });
-    }
-
-    // Verify the trainer belongs to the user
-    if (trainer.player_user_id !== discordUserId) {
-      return res.status(403).json({ success: false, message: 'You do not own this trainer' });
-    }
-
-    // Get all trainers for the user (needed for RewardSystem)
-    const trainers = await Trainer.getByUserId(discordUserId);
-
-    // Find the reward in the session
-    const sessionRewards = req.session.rewards || [];
-    const reward = sessionRewards.find(r => r.id === rewardId && r.type === rewardType);
-
-    if (!reward) {
-      return res.status(404).json({ success: false, message: 'Reward not found' });
-    }
-
-    // Process the reward claim
-    const result = await RewardSystem.processRewardClaim(reward, trainerId, trainers, source);
-
-    if (result.success) {
-      // Mark the reward as claimed in the session
-      const rewardIndex = sessionRewards.findIndex(r => r.id === rewardId && r.type === rewardType);
-      if (rewardIndex !== -1) {
-        sessionRewards[rewardIndex].claimed = true;
-        sessionRewards[rewardIndex].assignedTo = {
-          id: trainer.id,
-          name: trainer.name
-        };
-        req.session.rewards = sessionRewards;
-      }
-
-      return res.json({
-        success: true,
-        message: result.message,
-        trainerId: result.trainerId,
-        trainerName: result.trainerName
-      });
-    } else {
-      return res.status(400).json({ success: false, message: result.message });
-    }
-  } catch (error) {
-    console.error('Error claiming reward:', error);
-    return res.status(500).json({ success: false, message: 'Error claiming reward: ' + error.message });
-  }
-});
+// API routes for claiming rewards - DEPRECATED, use the router instead
+// app.post('/api/claim-reward', async (req, res) => {
+//   // Check if user is logged in
+//   if (!req.session.user) {
+//     return res.status(401).json({ success: false, message: 'You must be logged in to claim rewards' });
+//   }
+//   // This route is now handled by the claim-reward router
+//
+// });
 
 app.post('/api/claim-all-rewards', async (req, res) => {
   // Check if user is logged in
@@ -4609,6 +4961,135 @@ app.post('/api/claim-all-rewards', async (req, res) => {
   }
 });
 
+// Antique Store route
+app.get('/town/visit/antique', async (req, res) => {
+  // Check if user is logged in
+  if (!req.session.user) {
+    return res.redirect('/login');
+  }
+
+  try {
+    // Get user's trainers
+    const trainers = await Trainer.getByUserId(req.session.user.discord_id);
+    console.log(`Found ${trainers?.length || 0} trainers for user`);
+
+    // Get antique inventory for each trainer using AntiqueAppraisalService
+    const trainersWithAntiques = [];
+
+    console.log('Processing trainers for antiques...');
+    for (const trainer of trainers) {
+      console.log(`Processing trainer: ${trainer.name} (ID: ${trainer.id})`);
+
+      try {
+        // Use the AntiqueAppraisalService to get trainer's antiques
+        const trainerAntiques = await AntiqueAppraisalService.getTrainerAntiques(trainer.id);
+        console.log(`Antiques for ${trainer.name}:`, trainerAntiques);
+
+        // Calculate total antiques count
+        const antiquesCount = trainerAntiques.reduce((sum, antique) => sum + (antique.quantity || 0), 0);
+        console.log(`Total antiques for ${trainer.name}: ${antiquesCount}`);
+
+        trainersWithAntiques.push({
+          id: trainer.id,
+          name: trainer.name,
+          antiquesCount
+        });
+      } catch (error) {
+        console.error(`Error getting antiques for trainer ${trainer.id}:`, error);
+      }
+    }
+
+    // Sort trainers by antique count (descending)
+    trainersWithAntiques.sort((a, b) => b.antiquesCount - a.antiquesCount);
+
+    // Take top 5 trainers
+    const topTrainers = trainersWithAntiques.slice(0, 5);
+
+    res.render('town/antique', {
+      title: 'Antique Store',
+      trainers: topTrainers,
+      message: req.query.message,
+      messageType: req.query.messageType
+    });
+  } catch (error) {
+    console.error('Error rendering antique store page:', error);
+    res.render('town/antique', {
+      title: 'Antique Store',
+      trainers: [],
+      message: 'An error occurred while loading trainer data.',
+      messageType: 'error'
+    });
+  }
+});
+
+// Antique Auction route
+app.get('/town/visit/antique/auction', async (req, res) => {
+  // Check if user is logged in
+  if (!req.session.user) {
+    return res.redirect('/login');
+  }
+
+  try {
+    // Create the antique_auctions table if it doesn't exist
+    const AntiqueAuction = require('./models/AntiqueAuction');
+    await AntiqueAuction.createTableIfNotExists();
+
+    res.render('town/antique_auction', {
+      title: 'Antique Auctions',
+      message: req.query.message,
+      messageType: req.query.messageType
+    });
+  } catch (error) {
+    console.error('Error rendering antique auction page:', error);
+    res.render('town/antique_auction', {
+      title: 'Antique Auctions',
+      message: 'An error occurred while loading auction data.',
+      messageType: 'error'
+    });
+  }
+});
+
+
+// Megamart routes
+app.get('/town/visit/megamart/item_use', (req, res) => {
+  // Check if user is logged in
+  if (!req.session.user) {
+    return res.redirect('/login');
+  }
+
+  res.render('town/megamart_item_use', {
+    title: 'Mega Mart - Item Use',
+    message: req.query.message,
+    messageType: req.query.messageType
+  });
+});
+
+app.get('/town/visit/megamart/ability_master', (req, res) => {
+  // Check if user is logged in
+  if (!req.session.user) {
+    return res.redirect('/login');
+  }
+
+  res.render('town/megamart_ability_master', {
+    title: 'Mega Mart - Ability Master',
+    message: req.query.message,
+    messageType: req.query.messageType
+  });
+});
+
+app.get('/town/visit/megamart/held_item_room', (req, res) => {
+  // Check if user is logged in
+  if (!req.session.user) {
+    return res.redirect('/login');
+  }
+
+  res.render('town/megamart_held_item_room', {
+    title: 'Mega Mart - Held Item Room',
+    message: req.query.message,
+    messageType: req.query.messageType
+  });
+});
+
 // Generic handler for other town locations
 app.get('/town/visit/:location', (req, res) => {
   // Check if user is logged in
@@ -4645,18 +5126,13 @@ app.get('/town/visit/:location', (req, res) => {
   }
 });
 
-// Adventures routes
-app.get('/adventures', (req, res) => {
-  // Check if user is logged in
-  if (!req.session.user) {
-    return res.redirect('/login');
-  }
+// Import adventures routes
+const adventuresRoutes = require('./routes/adventures');
 
-  res.render('adventures/index', {
-    title: 'Adventures'
-  });
-});
+// Use adventures routes
+app.use('/adventures', adventuresRoutes);
 
+// Keep these specific routes for backward compatibility
 app.get('/adventures/missions', (req, res) => {
   // Check if user is logged in
   if (!req.session.user) {
@@ -4686,7 +5162,7 @@ app.get('/adventures/event', (req, res) => {
   }
 
   const categories = getContentCategories();
-  
+
   res.render('adventures/event/index', {
     title: 'Lore Library',
     categories,
@@ -4733,16 +5209,419 @@ app.get('/adventures/competition/:type', (req, res) => {
   });
 });
 
-// Art Submission route
-app.get('/submit_artwork', (req, res) => {
+// Main Submissions route
+app.get('/submissions', (req, res) => {
   // Check if user is logged in
   if (!req.session.user) {
-    return res.redirect('/login?error=' + encodeURIComponent('You must be logged in to submit artwork'));
+    return res.redirect('/login?error=' + encodeURIComponent('You must be logged in to access submissions'));
   }
 
-  res.render('submit_artwork', {
-    title: 'Submit Artwork'
+  res.render('submissions/index', {
+    title: 'Process Submission'
   });
+});
+
+// Main submissions route
+app.get('/submissions', (req, res) => {
+  // Check if user is logged in
+  if (!req.session.user) {
+    return res.redirect('/login?error=' + encodeURIComponent('You must be logged in to access submissions'));
+  }
+
+  res.render('submissions/index', {
+    title: 'Process Submission'
+  });
+});
+
+// Artwork Submission routes are now handled by the submissions router
+
+// Writing Submission routes - Commented out in favor of the more detailed route below
+// app.get('/submissions/writing/:type', (req, res) => {
+//   // Check if user is logged in
+//   if (!req.session.user) {
+//     return res.redirect('/login?error=' + encodeURIComponent('You must be logged in to submit writing'));
+//   }
+//
+//   const types = {
+//     'game': 'Game Writing',
+//     'external': 'External Writing'
+//   };
+//
+//   const type = req.params.type;
+//   const title = types[type] || 'Writing Submission';
+//
+//   res.render('submissions/coming-soon', {
+//     title: title
+//   });
+// });
+
+// References Submission routes
+app.get('/submissions/references/:type', (req, res) => {
+  // Check if user is logged in
+  if (!req.session.user) {
+    return res.redirect('/login?error=' + encodeURIComponent('You must be logged in to submit references'));
+  }
+
+  const types = {
+    'trainer': 'Trainer Main Reference',
+    'monster': 'Monster Main Reference'
+  };
+
+  const type = req.params.type;
+  const title = types[type] || 'Reference Submission';
+
+  res.render('submissions/coming-soon', {
+    title: title
+  });
+});
+
+// Writing Submission routes
+app.get('/submissions/writing/:type', async (req, res) => {
+  // Check if user is logged in
+  if (!req.session.user) {
+    return res.redirect('/login?error=' + encodeURIComponent('You must be logged in to submit writing'));
+  }
+
+  const types = {
+    'game': 'Game Writing',
+    'external': 'External Writing'
+  };
+
+  const type = req.params.type;
+  const title = types[type] || 'Writing Submission';
+
+  // Get user's trainers for the form
+  let trainers = [];
+  try {
+    trainers = await Trainer.getByUserId(req.session.user.discord_id);
+  } catch (error) {
+    console.error('Error getting trainers:', error);
+  }
+
+  // Check if the view exists, otherwise render coming-soon
+  const viewPath = path.join(__dirname, 'views', 'submissions', 'writing', `${type}.ejs`);
+  if (fs.existsSync(viewPath)) {
+    res.render(`submissions/writing/${type}`, {
+      title: title,
+      trainers: trainers
+    });
+  } else {
+    res.render('submissions/coming-soon', {
+      title: title
+    });
+  }
+});
+
+// References Submission routes
+app.get('/submissions/references/:type', (req, res) => {
+  // Check if user is logged in
+  if (!req.session.user) {
+    return res.redirect('/login?error=' + encodeURIComponent('You must be logged in to submit references'));
+  }
+
+  const types = {
+    'trainer': 'Trainer Reference',
+    'monster': 'Monster Reference'
+  };
+
+  const type = req.params.type;
+  const title = types[type] || 'Reference Submission';
+
+  res.render('submissions/coming-soon', {
+    title: title
+  });
+});
+
+// Prompts Submission routes
+app.get('/submissions/prompts/:type', (req, res) => {
+  // Check if user is logged in
+  if (!req.session.user) {
+    return res.redirect('/login?error=' + encodeURIComponent('You must be logged in to access prompts'));
+  }
+
+  const types = {
+    'general': 'General Prompts',
+    'progression': 'Trainer Progression Prompts',
+    'legendary': 'Legendary Prompts',
+    'event': 'Event Prompts',
+    'monthly': 'Monthly Prompts'
+  };
+
+  const type = req.params.type;
+  const title = types[type] || 'Prompts';
+
+  // Check if the type is valid
+  if (!types[type]) {
+    return res.redirect('/submissions');
+  }
+
+  // Render the appropriate prompt view
+  res.render(`submissions/prompts/${type}`, {
+    title: title
+  });
+});
+
+// Legacy routes for backward compatibility
+app.get('/submit_artwork', (_, res) => {
+  res.redirect('/submissions/artwork/external');
+});
+
+app.get('/submit_writing', (_, res) => {
+  res.redirect('/submissions/writing/external');
+});
+
+app.get('/submit_references', (_, res) => {
+  res.redirect('/submissions/references/monster');
+});
+
+// Writing API routes
+app.post('/submit_writing/calculate', async (req, res) => {
+  try {
+    // Ensure user is authenticated
+    if (!req.session.user) {
+      return res.status(401).json({
+        success: false,
+        message: 'Not authenticated'
+      });
+    }
+
+    const { writingType, wordCount, difficultyModifier, participants } = req.body;
+
+    // Validate input
+    if (!writingType || !wordCount || difficultyModifier === undefined || !participants || !participants.length) {
+      return res.status(400).json({
+        success: false,
+        message: 'Missing required parameters'
+      });
+    }
+
+    // Calculate rewards
+    const calculation = {
+      wordCount,
+      difficultyModifier,
+      totalLevels: Math.floor(wordCount / 50) + difficultyModifier,
+      totalCoins: wordCount,
+      participantRewards: []
+    };
+
+    // Calculate rewards per participant
+    const participantCount = participants.length;
+    const levelsPerParticipant = writingType === 'game' ? calculation.totalLevels : Math.floor(calculation.totalLevels / participantCount);
+    const coinsPerParticipant = writingType === 'game' ? calculation.totalCoins : Math.floor(calculation.totalCoins / participantCount);
+
+    // Get participant details
+    for (const participant of participants) {
+      const { trainerId, monsterId } = participant;
+
+      // Get trainer details
+      let trainerName = `Trainer ${trainerId}`;
+      try {
+        const trainer = await Trainer.getById(trainerId);
+        if (trainer) {
+          trainerName = trainer.name;
+        }
+      } catch (error) {
+        console.error(`Error getting trainer ${trainerId}:`, error);
+      }
+
+      // Get monster details if provided
+      let monsterName = null;
+      if (monsterId) {
+        try {
+          const monster = await Monster.getById(monsterId);
+          if (monster) {
+            monsterName = monster.name;
+          }
+        } catch (error) {
+          console.error(`Error getting monster ${monsterId}:`, error);
+        }
+      }
+
+      calculation.participantRewards.push({
+        trainerId,
+        trainerName,
+        monsterId: monsterId || null,
+        monsterName,
+        levels: levelsPerParticipant,
+        coins: coinsPerParticipant
+      });
+    }
+
+    res.json({
+      success: true,
+      calculation
+    });
+  } catch (error) {
+    console.error('Error calculating writing rewards:', error);
+    res.status(500).json({
+      success: false,
+      message: error.message || 'Error calculating writing rewards'
+    });
+  }
+});
+
+app.post('/submit_writing/submit', async (req, res) => {
+  try {
+    // Ensure user is authenticated
+    if (!req.session.user) {
+      return res.status(401).json({
+        success: false,
+        message: 'Not authenticated'
+      });
+    }
+
+    const {
+      writingType,
+      title,
+      writingUrl,
+      wordCount,
+      difficultyModifier,
+      notes,
+      participants
+    } = req.body;
+
+    // Validate input
+    if (!writingType || !title || !writingUrl || !wordCount || difficultyModifier === undefined || !participants || !participants.length) {
+      return res.status(400).json({
+        success: false,
+        message: 'Missing required parameters'
+      });
+    }
+
+    // Calculate rewards
+    const calculation = {
+      wordCount,
+      difficultyModifier,
+      totalLevels: Math.floor(wordCount / 50) + difficultyModifier,
+      totalCoins: wordCount,
+      participantRewards: []
+    };
+
+    // Calculate rewards per participant
+    const participantCount = participants.length;
+    const levelsPerParticipant = writingType === 'game' ? calculation.totalLevels : Math.floor(calculation.totalLevels / participantCount);
+    const coinsPerParticipant = writingType === 'game' ? calculation.totalCoins : Math.floor(calculation.totalCoins / participantCount);
+
+    // Apply rewards to each participant
+    for (const participant of participants) {
+      const { trainerId, monsterId } = participant;
+
+      // Get trainer details
+      let trainerName = `Trainer ${trainerId}`;
+      try {
+        const trainer = await Trainer.getById(trainerId);
+        if (trainer) {
+          trainerName = trainer.name;
+        }
+      } catch (error) {
+        console.error(`Error getting trainer ${trainerId}:`, error);
+      }
+
+      // Get monster details if provided
+      let monsterName = null;
+      if (monsterId) {
+        try {
+          const monster = await Monster.getById(monsterId);
+          if (monster) {
+            monsterName = monster.name;
+          }
+        } catch (error) {
+          console.error(`Error getting monster ${monsterId}:`, error);
+        }
+      }
+
+      // Add reward to calculation
+      calculation.participantRewards.push({
+        trainerId,
+        trainerName,
+        monsterId: monsterId || null,
+        monsterName,
+        levels: levelsPerParticipant,
+        coins: coinsPerParticipant
+      });
+
+      // Apply rewards
+      try {
+        // Add coins to trainer
+        await Trainer.addCoins(trainerId, coinsPerParticipant);
+
+        // Add levels to trainer or monster
+        if (monsterId) {
+          await Monster.addLevels(monsterId, levelsPerParticipant);
+        } else {
+          await Trainer.addLevels(trainerId, levelsPerParticipant);
+        }
+      } catch (error) {
+        console.error(`Error applying rewards to trainer ${trainerId}:`, error);
+      }
+    }
+
+    res.json({
+      success: true,
+      message: 'Writing submission successful',
+      calculation
+    });
+  } catch (error) {
+    console.error('Error submitting writing:', error);
+    res.status(500).json({
+      success: false,
+      message: error.message || 'Error submitting writing'
+    });
+  }
+});
+
+app.get('/submit_writing/trainers', async (req, res) => {
+  try {
+    // Ensure user is authenticated
+    if (!req.session.user) {
+      return res.status(401).json({
+        success: false,
+        message: 'Not authenticated'
+      });
+    }
+
+    // Get trainers for the current user
+    const trainers = await Trainer.getByUserId(req.session.user.discord_id);
+
+    res.json({
+      success: true,
+      trainers
+    });
+  } catch (error) {
+    console.error('Error getting trainers:', error);
+    res.status(500).json({
+      success: false,
+      message: error.message || 'Error getting trainers'
+    });
+  }
+});
+
+app.get('/submit_writing/trainers/:trainerId/monsters', async (req, res) => {
+  try {
+    // Ensure user is authenticated
+    if (!req.session.user) {
+      return res.status(401).json({
+        success: false,
+        message: 'Not authenticated'
+      });
+    }
+
+    const trainerId = req.params.trainerId;
+
+    // Get monsters for the trainer
+    const monsters = await Monster.getByTrainerId(trainerId);
+
+    res.json({
+      success: true,
+      monsters
+    });
+  } catch (error) {
+    console.error('Error getting monsters:', error);
+    res.status(500).json({
+      success: false,
+      message: error.message || 'Error getting monsters'
+    });
+  }
 });
 
 // API route to get user's trainers
@@ -6042,6 +6921,66 @@ app.post('/admin/fakemon/delete/:number', (req, res) => {
   }
 });
 
+// Reference To-Do List route - shows monsters that need artwork
+app.get('/reference_todo', async (req, res) => {
+  try {
+    // Check if user is logged in
+    if (!req.session.user) {
+      return res.redirect('/login?error=' + encodeURIComponent('You must be logged in to view your reference to-do list'));
+    }
+
+    // Get the user's Discord ID
+    const userDiscordId = req.session.user.discord_id;
+    if (!userDiscordId) {
+      return res.status(403).render('error', {
+        message: 'You need to have a Discord ID linked to your account to view your reference to-do list',
+        error: { status: 403 }
+      });
+    }
+
+    // Get all trainers for the user
+    const trainers = await Trainer.getByUserId(userDiscordId);
+
+    // For each trainer, get monsters that need artwork
+    const trainersWithMonsters = [];
+
+    for (const trainer of trainers) {
+      // Get all monsters for this trainer
+      const allMonsters = await Monster.getByTrainerId(trainer.id);
+
+      // Filter monsters that need artwork (img_link is null or default_mon.png)
+      const monstersNeedingArtwork = allMonsters.filter(monster =>
+        !monster.img_link || monster.img_link === '' || monster.img_link === 'default_mon.png'
+      );
+
+      // Add to the list if there are monsters needing artwork
+      if (monstersNeedingArtwork.length > 0) {
+        trainersWithMonsters.push({
+          trainer: trainer,
+          monsters: monstersNeedingArtwork,
+          count: monstersNeedingArtwork.length
+        });
+      }
+    }
+
+    // Sort trainers by default (most references needed first)
+    trainersWithMonsters.sort((a, b) => b.count - a.count);
+
+    res.render('trainers/reference_todo', {
+      title: 'Reference To-Do List',
+      trainersWithMonsters,
+      sortOrder: 'most' // Default sort order
+    });
+  } catch (error) {
+    console.error('Error getting reference to-do list:', error);
+    res.status(500).render('error', {
+      message: 'Error getting reference to-do list',
+      error: { status: 500, stack: error.stack },
+      title: 'Error'
+    });
+  }
+});
+
 // Trainer routes
 app.get('/trainers', async (req, res) => {
   try {
@@ -6507,6 +7446,66 @@ app.get('/trainers/:id/pc', async (req, res) => {
   }
 });
 
+// Edit Boxes route - allows editing box assignments
+app.get('/trainers/:id/edit-boxes', async (req, res) => {
+  try {
+    const trainerId = parseInt(req.params.id, 10);
+
+    // Get the trainer
+    const trainer = await Trainer.getById(trainerId);
+    if (!trainer) {
+      return res.status(404).render('error', {
+        message: 'Trainer not found',
+        error: { status: 404 },
+        title: 'Error'
+      });
+    }
+
+    // Check if the user is authorized to view this trainer
+    const isOwnTrainer = req.session.user && req.session.user.discord_id &&
+                        req.session.user.discord_id.toString() === trainer.player_user_id;
+
+    // If not the owner, redirect to regular boxes view
+    if (!isOwnTrainer) {
+      return res.redirect(`/trainers/${trainerId}/boxes`);
+    }
+
+    // Get all box numbers for this trainer
+    const boxNumbers = await Monster.getBoxNumbersByTrainerId(trainerId);
+
+    // Get battle box monsters (box_number = -1)
+    const battleBoxMonsters = await Monster.getByTrainerIdAndBoxNumber(trainerId, -1);
+
+    // Get monsters for each regular box
+    const regularBoxes = [];
+    for (const boxNum of boxNumbers) {
+      // Skip battle box as we already got it separately
+      if (boxNum === -1) continue;
+
+      const monsters = await Monster.getByTrainerIdAndBoxNumber(trainerId, boxNum);
+      regularBoxes.push({
+        boxNumber: boxNum,
+        monsters
+      });
+    }
+
+    res.render('trainers/boxes', {
+      trainer,
+      battleBoxMonsters,
+      regularBoxes,
+      isOwnTrainer,
+      title: `${trainer.name} - Edit Boxes`
+    });
+  } catch (error) {
+    console.error('Error getting edit boxes page:', error);
+    res.status(500).render('error', {
+      message: 'Error loading edit boxes page',
+      error: { status: 500, stack: error.stack },
+      title: 'Error'
+    });
+  }
+});
+
 // Trainer stats route
 app.get('/trainers/:id/stats', async (req, res) => {
   try {
@@ -6780,11 +7779,57 @@ app.get('/trainers/:trainerId/monsters/:monsterId', async (req, res) => {
       }
     }
 
+    // Get move details for each move in the monster's moveset
+    let moveDetails = [];
+    if (monster.moveset) {
+      // Parse the moveset string into an array
+      let moves = [];
+      try {
+        // Try parsing as JSON first
+        moves = JSON.parse(monster.moveset);
+      } catch (e) {
+        // If not JSON, split by commas or newlines
+        moves = monster.moveset.split(/[,\n]/).map(move => move.trim()).filter(move => move);
+      }
+
+      // Fetch details for each move
+      for (const moveName of moves) {
+        try {
+          const moveData = await Move.getByName(moveName);
+          if (moveData) {
+            moveDetails.push(moveData);
+          } else {
+            // If move not found, add a placeholder with default values
+            moveDetails.push({
+              MoveName: moveName,
+              Type: 'normal',
+              Power: '?',
+              Accuracy: '?',
+              Effect: 'No description available.',
+              attribute: ''
+            });
+          }
+        } catch (moveError) {
+          console.error(`Error fetching details for move ${moveName}:`, moveError);
+          // Add a placeholder with default values
+          moveDetails.push({
+            MoveName: moveName,
+            Type: 'normal',
+            Power: '?',
+            Accuracy: '?',
+            Effect: 'No description available.',
+            attribute: ''
+          });
+        }
+      }
+    }
+
     res.render('monsters/detail', {  // Assuming you have a monster detail view
       trainer,
       monster,
       prev_mon_in_box,
       next_mon_in_box,
+      moveDetails,
       title: `${monster.name} - Monster Details`
     });
   } catch (error) {
@@ -7296,7 +8341,7 @@ app.get('/adventures/event', (req, res) => {
 
 app.get('/adventures/event/current', (req, res) => {
   const categories = getContentCategories();
-  const contentPath = path.join(__dirname, 'content', 'events', 'current', 'overview.md');
+  const contentPath = path.join(__dirname, 'content', 'events', 'current', 'current-events.md');
   const content = loadMarkdownContent(contentPath);
 
   res.render('adventures/event/view', {
@@ -7311,7 +8356,7 @@ app.get('/adventures/event/current', (req, res) => {
 
 app.get('/adventures/event/past', (req, res) => {
   const categories = getContentCategories();
-  const contentPath = path.join(__dirname, 'content', 'events', 'past', 'spring-bloom', 'overview.md');
+  const contentPath = path.join(__dirname, 'content', 'events', 'past', 'no-past-events.md');
   const content = loadMarkdownContent(contentPath);
 
   res.render('adventures/event/view', {
@@ -7364,11 +8409,17 @@ app.get('/content/:category/:path(*)', (req, res) => {
       // Determine if it's a current or past event based on the path
       const eventType = filePath.startsWith('current') ? 'current' : 'past';
 
+      // Extract the path relative to the event type directory
+      const pathWithoutEventType = filePath.replace(new RegExp(`^${eventType}/`), '');
+
+      // Set the current path to include the event type prefix
+      const currentPathWithType = pathWithoutEventType;
+
       res.render('adventures/event/view', {
         title: eventType === 'current' ? 'Current Event' : 'Past Events',
         categories,
         activeCategory: 'events',
-        currentPath: filePath,
+        currentPath: currentPathWithType,
         content,
         eventType
       });
@@ -7377,9 +8428,9 @@ app.get('/content/:category/:path(*)', (req, res) => {
   }
 
   const filePath = req.params.path;
-  // Prevent category duplication in the path
-  const contentPath = path.join(__dirname, 'content', filePath);
-  console.log('Corrected content path:', contentPath);
+  // Include the category in the path
+  const contentPath = path.join(__dirname, 'content', category, filePath);
+  console.log('Content path with category:', contentPath);
 
   console.log('Requested path:', filePath);
   console.log('Full content path:', contentPath);
@@ -7439,6 +8490,25 @@ app.get('/content/:category/:path(*)', (req, res) => {
 // Import and use location activity routes
 const locationActivityRoutes = require('./location_activity_routes');
 locationActivityRoutes(app);
+
+// New location activities system
+app.use('/town/activities', require('./location_activities/index'));
+
+// Submissions routes
+app.use('/submissions', require('./routes/submissions'));
+
+// API routes
+app.use('/api', require('./routes/api'));
+
+// API endpoint for claiming rewards
+app.use('/api/claim-reward', require('./routes/api/claim-reward'));
+
+// API endpoint for claiming all rewards
+app.use('/api/claim-all-rewards', require('./routes/api/claim-all-rewards'));
+
+// API endpoint for garden rewards
+app.use('/api/garden', require('./routes/api/garden-rewards'));
+
 
 // 404 handler - must be defined after all other routes
 app.use((req, res) => {

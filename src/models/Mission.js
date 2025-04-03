@@ -2,13 +2,13 @@ const pool = require('../db');
 
 class Mission {
   /**
-   * Create the mission_templates table if it doesn't exist
+   * Create the missions table if it doesn't exist
    * @returns {Promise<void>}
    */
   static async createTableIfNotExists() {
     try {
       const query = `
-        CREATE TABLE IF NOT EXISTS mission_templates (
+        CREATE TABLE IF NOT EXISTS missions (
           id SERIAL PRIMARY KEY,
           name VARCHAR(100) NOT NULL,
           description TEXT NOT NULL,
@@ -30,27 +30,29 @@ class Mission {
           item_reward_amount INTEGER DEFAULT 0, -- 0 means all items, otherwise random selection
           min_progress_needed INTEGER NOT NULL,
           max_progress_needed INTEGER, -- NULL means fixed at min_progress_needed
+          available_dates TEXT[], -- Array of dates in MM/DD format
+          available_days TEXT[], -- Array of days of the week
           is_active BOOLEAN DEFAULT TRUE,
           created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         );
       `;
 
       await pool.query(query);
-      console.log('Mission templates table created or already exists');
+      console.log('Missions table created or already exists');
     } catch (error) {
-      console.error('Error creating mission_templates table:', error);
+      console.error('Error creating missions table:', error);
       throw error;
     }
   }
 
   /**
-   * Get all mission templates
+   * Get all missions
    * @param {boolean} activeOnly - Whether to return only active missions
-   * @returns {Promise<Array>} - Array of mission templates
+   * @returns {Promise<Array>} - Array of missions
    */
   static async getAll(activeOnly = false) {
     try {
-      let query = 'SELECT * FROM mission_templates';
+      let query = 'SELECT * FROM missions';
 
       if (activeOnly) {
         query += ' WHERE is_active = TRUE';
@@ -61,32 +63,32 @@ class Mission {
       const result = await pool.query(query);
       return result.rows;
     } catch (error) {
-      console.error('Error getting all mission templates:', error);
+      console.error('Error getting all missions:', error);
       return [];
     }
   }
 
   /**
-   * Get a mission template by ID
-   * @param {number} id - Mission template ID
-   * @returns {Promise<Object|null>} - Mission template object or null if not found
+   * Get a mission by ID
+   * @param {number} id - Mission ID
+   * @returns {Promise<Object|null>} - Mission object or null if not found
    */
   static async getById(id) {
     try {
-      const query = 'SELECT * FROM mission_templates WHERE id = $1';
+      const query = 'SELECT * FROM missions WHERE id = $1';
       const result = await pool.query(query, [id]);
 
       return result.rows.length > 0 ? result.rows[0] : null;
     } catch (error) {
-      console.error(`Error getting mission template with ID ${id}:`, error);
+      console.error(`Error getting mission with ID ${id}:`, error);
       return null;
     }
   }
 
   /**
-   * Create a new mission template
-   * @param {Object} missionData - Mission template data
-   * @returns {Promise<Object|null>} - Created mission template or null if failed
+   * Create a new mission
+   * @param {Object} missionData - Mission data
+   * @returns {Promise<Object|null>} - Created mission or null if failed
    */
   static async create(missionData) {
     try {
@@ -96,7 +98,7 @@ class Mission {
       const itemRewards = this.parseArrayField(missionData.item_rewards);
 
       const query = `
-        INSERT INTO mission_templates (
+        INSERT INTO missions (
           name, description,
           progress_flavor_1, progress_flavor_2, progress_flavor_3, progress_flavor_4, progress_flavor_5,
           completion_message, completion_image_url, progress_image_url,
@@ -137,16 +139,16 @@ class Mission {
       const result = await pool.query(query, values);
       return result.rows[0];
     } catch (error) {
-      console.error('Error creating mission template:', error);
+      console.error('Error creating mission:', error);
       return null;
     }
   }
 
   /**
-   * Update a mission template
-   * @param {number} id - Mission template ID
-   * @param {Object} missionData - Updated mission template data
-   * @returns {Promise<Object|null>} - Updated mission template or null if failed
+   * Update a mission
+   * @param {number} id - Mission ID
+   * @param {Object} missionData - Updated mission data
+   * @returns {Promise<Object|null>} - Updated mission or null if failed
    */
   static async update(id, missionData) {
     try {
@@ -156,7 +158,7 @@ class Mission {
       const itemRewards = this.parseArrayField(missionData.item_rewards);
 
       const query = `
-        UPDATE mission_templates
+        UPDATE missions
         SET
           name = $1,
           description = $2,
@@ -211,42 +213,42 @@ class Mission {
       const result = await pool.query(query, values);
       return result.rows.length > 0 ? result.rows[0] : null;
     } catch (error) {
-      console.error(`Error updating mission template with ID ${id}:`, error);
+      console.error(`Error updating mission with ID ${id}:`, error);
       return null;
     }
   }
 
   /**
-   * Delete a mission template
-   * @param {number} id - Mission template ID
+   * Delete a mission
+   * @param {number} id - Mission ID
    * @returns {Promise<boolean>} - Whether the deletion was successful
    */
   static async delete(id) {
     try {
-      const query = 'DELETE FROM mission_templates WHERE id = $1 RETURNING id';
+      const query = 'DELETE FROM missions WHERE id = $1 RETURNING id';
       const result = await pool.query(query, [id]);
 
       return result.rows.length > 0;
     } catch (error) {
-      console.error(`Error deleting mission template with ID ${id}:`, error);
+      console.error(`Error deleting mission with ID ${id}:`, error);
       return false;
     }
   }
 
   /**
-   * Toggle the active status of a mission template
-   * @param {number} id - Mission template ID
+   * Toggle the active status of a mission
+   * @param {number} id - Mission ID
    * @param {boolean} isActive - New active status
    * @returns {Promise<boolean>} - Whether the update was successful
    */
   static async toggleActive(id, isActive) {
     try {
-      const query = 'UPDATE mission_templates SET is_active = $1 WHERE id = $2 RETURNING id';
+      const query = 'UPDATE missions SET is_active = $1 WHERE id = $2 RETURNING id';
       const result = await pool.query(query, [isActive, id]);
 
       return result.rows.length > 0;
     } catch (error) {
-      console.error(`Error toggling active status for mission template with ID ${id}:`, error);
+      console.error(`Error toggling active status for mission with ID ${id}:`, error);
       return false;
     }
   }

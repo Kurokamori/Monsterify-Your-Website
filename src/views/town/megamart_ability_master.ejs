@@ -1,0 +1,738 @@
+<% /* Set the title and other variables for the layout */ %>
+<% title = 'Mega Mart - Ability Master' %>
+
+<div class="container mx-auto px-4 py-8">
+  <% if (locals.bannerImage) { %>
+    <img src="<%= bannerImage %>" alt="Ability Master Banner" class="location-banner w-full rounded-xl mb-8">
+  <% } %>
+
+  <div class="location-card mb-8">
+    <div class="location-card-content">
+      <div class="mb-8 p-6 bg-gray-900 bg-opacity-50 rounded-lg">
+        <h3 class="text-2xl font-bold text-amber-400 mb-2 text-center">Monster Ability Workshop</h3>
+        <p class="text-sm text-gray-300 text-center max-w-3xl mx-auto">Check and modify your monsters' abilities with special items. Use Ability Capsules to switch between standard abilities or Scrolls of Secrets to select any ability!</p>
+
+        <div class="flex justify-center mt-8 mb-12">
+          <a href="/town/visit/megamart" class="btn-secondary py-2 px-6 rounded-lg text-sm flex items-center hover:scale-105 transition-transform duration-200">
+            <i class="fas fa-arrow-left mr-2"></i> Back to Mega Mart
+          </a>
+        </div>
+      </div>
+
+      <% if (locals.message) { %>
+        <div class="alert alert-<%= messageType || 'info' %> mb-4">
+          <%= message %>
+        </div>
+      <% } %>
+
+      <!-- Form section -->
+      <form id="ability-form" class="space-y-4">
+        <!-- Trainer Selection -->
+        <div class="mb-6">
+          <div class="flex items-center mb-2">
+            <i class="fas fa-user text-blue-400 mr-2"></i>
+            <label for="trainer-select" class="block text-sm text-amber-400 font-semibold">Select Trainer</label>
+          </div>
+          <select
+            id="trainer-select"
+            name="trainerId"
+            class="modern-select"
+            required
+          >
+            <option value="">-- Select a Trainer --</option>
+          </select>
+        </div>
+
+        <!-- Monster Selection -->
+        <div class="mb-6">
+          <div class="flex items-center mb-2">
+            <i class="fas fa-dragon text-purple-400 mr-2"></i>
+            <label for="monster-select" class="block text-sm text-amber-400 font-semibold">Select Monster</label>
+          </div>
+          <select
+            id="monster-select"
+            name="monsterId"
+            class="modern-select"
+            required
+            disabled
+          >
+            <option value="">-- Select a Monster --</option>
+          </select>
+        </div>
+
+        <!-- Item Selection -->
+        <div class="mb-6">
+          <div class="flex items-center mb-2">
+            <i class="fas fa-bolt text-amber-400 mr-2"></i>
+            <label for="item-select" class="block text-sm text-amber-400 font-semibold">Select Item</label>
+          </div>
+          <select
+            id="item-select"
+            name="itemName"
+            class="modern-select"
+            required
+            disabled
+          >
+            <option value="">-- Select an Item --</option>
+          </select>
+        </div>
+
+        <!-- Ability Preview -->
+        <div id="ability-preview" class="hidden mb-6">
+          <div id="ability-description" class="text-gray-300"></div>
+        </div>
+
+        <!-- Ability Selection (for Scroll of Secrets) -->
+        <div id="ability-selection-container" class="mb-6 hidden">
+          <div class="flex items-center mb-2">
+            <i class="fas fa-magic text-blue-400 mr-2"></i>
+            <label id="ability-selection-label" for="ability-select" class="block text-sm text-amber-400 font-semibold">Select New Ability</label>
+          </div>
+          <select
+            id="ability-select"
+            name="selectedAbility"
+            class="modern-select w-full"
+          >
+            <option value="">-- Select an Ability --</option>
+          </select>
+          <p id="ability-selection-help" class="mt-1 text-sm text-gray-400">Choose the ability you want to give your monster</p>
+        </div>
+
+        <!-- Submit Button -->
+        <div class="flex justify-center">
+          <button
+            type="submit"
+            id="use-button"
+            class="btn-primary px-6 py-3 rounded-lg flex items-center gap-2"
+            disabled
+          >
+            <i class="fas fa-bolt"></i>
+            Apply Item
+          </button>
+        </div>
+      </form>
+
+      <div id="current-abilities" class="mt-8 p-4 bg-gray-800/60 rounded-lg hidden">
+        <h4 class="text-lg font-bold text-amber-400 mb-4">Current Monster Abilities</h4>
+        <div id="abilities-container" class="space-y-3">
+          <!-- Abilities will be displayed here -->
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .location-card {
+    background-color: rgba(17, 24, 39, 0.8);
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    transition: transform 0.3s, box-shadow 0.3s;
+    border: 1px solid rgba(75, 85, 99, 0.3);
+    backdrop-filter: blur(10px);
+  }
+
+  .location-card:hover {
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+  }
+
+  .location-card-content {
+    padding: 1.5rem;
+    background-color: rgba(17, 24, 39, 0.6);
+  }
+
+  .btn-primary {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    color: #111827;
+    font-weight: 600;
+    transition: all 0.3s;
+    border: none;
+    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .btn-primary:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(245, 158, 11, 0.4);
+  }
+
+  .btn-primary:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  .btn-secondary {
+    background-color: rgba(31, 41, 55, 0.8);
+    color: #e5e7eb;
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    border-radius: 0.375rem;
+    transition: all 0.3s;
+    border: 1px solid rgba(75, 85, 99, 0.3);
+  }
+
+  .btn-secondary:hover {
+    background-color: rgba(31, 41, 55, 0.9);
+    transform: translateY(-2px);
+  }
+
+  /* Using modern-select class from dropdown-styles.css */
+  #trainer-select,
+  #monster-select,
+  #item-select,
+  #ability-select {
+    margin-bottom: 1.5rem !important;
+  }
+
+  /* Custom dropdown arrow for all select elements */
+  #trainer-select, #monster-select, #item-select, #ability-select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23d6a339'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E") !important;
+    background-repeat: no-repeat !important;
+    background-position: right 0.75rem center !important;
+    background-size: 1.5rem !important;
+  }
+
+  #trainer-select:focus, #monster-select:focus, #item-select:focus, #ability-select:focus {
+    outline: none !important;
+    border-color: rgb(217 119 6) !important;
+    box-shadow: 0 0 0 2px rgba(217, 119, 6, 0.2) !important;
+  }
+
+  /* Disabled state styling */
+  #trainer-select:disabled,
+  #monster-select:disabled,
+  #item-select:disabled,
+  #ability-select:disabled {
+    opacity: 0.6 !important;
+    cursor: not-allowed !important;
+  }
+
+  .text-shadow-lg {
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  }
+
+  .location-banner {
+    height: 200px;
+    object-fit: cover;
+  }
+
+  .ability-card {
+    background-color: rgba(31, 41, 55, 0.7);
+    border-radius: 0.5rem;
+    padding: 1rem;
+    border: 1px solid rgba(55, 65, 81, 0.3);
+    transition: all 0.2s;
+  }
+
+  .ability-card:hover {
+    background-color: rgba(31, 41, 55, 0.9);
+    transform: translateY(-2px);
+  }
+
+  .ability-name {
+    color: #f59e0b;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+  }
+
+  .ability-description {
+    color: #d1d5db;
+    font-size: 0.875rem;
+  }
+
+  .ability-badge {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    margin-right: 0.5rem;
+  }
+
+  .ability-badge-current {
+    background-color: rgba(245, 158, 11, 0.2);
+    color: #f59e0b;
+    border: 1px solid rgba(245, 158, 11, 0.3);
+  }
+
+  .ability-badge-available {
+    background-color: rgba(16, 185, 129, 0.2);
+    color: #10b981;
+    border: 1px solid rgba(16, 185, 129, 0.3);
+  }
+
+  .ability-badge-hidden {
+    background-color: rgba(99, 102, 241, 0.2);
+    color: #818cf8;
+    border: 1px solid rgba(99, 102, 241, 0.3);
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Define item effects
+    const ITEM_EFFECTS = {
+      'Ability Capsule': {
+        description: 'Switch between Ability 1 and Ability 2',
+        requiresAbilitySelection: false,
+        allowsAnyAbility: false
+      },
+      'Scroll of Secrets': {
+        description: 'Choose any ability for your monster',
+        requiresAbilitySelection: true,
+        allowsAnyAbility: true
+      }
+    };
+
+    const trainerSelect = document.getElementById('trainer-select');
+    const monsterSelect = document.getElementById('monster-select');
+    const itemSelect = document.getElementById('item-select');
+    const abilitySelect = document.getElementById('ability-select');
+    const useButton = document.getElementById('use-button');
+    const abilityPreview = document.getElementById('ability-preview');
+    const abilityDescription = document.getElementById('ability-description');
+    const abilityForm = document.getElementById('ability-form');
+    const abilitySelectionContainer = document.getElementById('ability-selection-container');
+    const currentAbilities = document.getElementById('current-abilities');
+    const abilitiesContainer = document.getElementById('abilities-container');
+
+    // Function to update the ability preview
+    function updateAbilityPreview(itemName) {
+      if (!itemName || !ITEM_EFFECTS[itemName]) {
+        abilityPreview.classList.add('hidden');
+        abilitySelectionContainer.classList.add('hidden');
+        return;
+      }
+
+      const effect = ITEM_EFFECTS[itemName];
+      abilityPreview.classList.remove('hidden');
+
+      // Update the effect description
+      abilityDescription.innerHTML = `
+        <div class="flex items-center gap-2 mb-2">
+          <i class="fas fa-info-circle text-amber-400"></i>
+          <span class="font-semibold text-amber-400">Effect:</span>
+        </div>
+        <div class="ml-6">
+          <p class="text-gray-300">${effect.description}</p>
+        </div>
+      `;
+
+      // Show/hide ability selection based on the item
+      if (effect.requiresAbilitySelection) {
+        abilitySelectionContainer.classList.remove('hidden');
+        loadAllAbilities();
+      } else {
+        abilitySelectionContainer.classList.add('hidden');
+      }
+    }
+
+    // Event listener for item selection
+    itemSelect.addEventListener('change', function() {
+      const selectedItem = this.value;
+      updateAbilityPreview(selectedItem);
+
+      // Enable/disable submit button based on selection
+      useButton.disabled = !selectedItem;
+      if (selectedItem) {
+        useButton.innerHTML = '<i class="fas fa-bolt mr-2"></i>Apply Item';
+      }
+    });
+
+    // Form submission handler
+    abilityForm.addEventListener('submit', async function(e) {
+      e.preventDefault();
+
+      const trainerId = trainerSelect.value;
+      const monsterId = monsterSelect.value;
+      const itemName = itemSelect.value;
+      const selectedAbility = abilitySelect.value;
+
+      if (!trainerId || !monsterId || !itemName) {
+        alert('Please select a trainer, monster, and item.');
+        return;
+      }
+
+      if (ITEM_EFFECTS[itemName].requiresAbilitySelection && !selectedAbility) {
+        alert('Please select an ability.');
+        return;
+      }
+
+      setFormDisabled(true);
+      useButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Applying...';
+
+      try {
+        const response = await fetch('/api/ability-master/apply', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            trainerId,
+            monsterId,
+            itemName,
+            selectedAbility
+          })
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+          window.location.href = `/town/visit/megamart/ability_master?message=${encodeURIComponent(result.message)}&messageType=success`;
+        } else {
+          alert(result.message || 'Failed to apply item. Please try again.');
+          setFormDisabled(false);
+        }
+      } catch (error) {
+        console.error('Error applying item:', error);
+        alert('An error occurred while applying the item. Please try again.');
+        setFormDisabled(false);
+      }
+    });
+
+    // Helper function to disable/enable form elements
+    function setFormDisabled(disabled) {
+      trainerSelect.disabled = disabled;
+      monsterSelect.disabled = disabled;
+      itemSelect.disabled = disabled;
+      abilitySelect.disabled = disabled;
+      useButton.disabled = disabled;
+    }
+
+    // Load trainers when the page loads
+    loadTrainers();
+
+    async function loadTrainers() {
+      if (!trainerSelect) {
+        console.error('Trainer select element not found in the DOM');
+        return;
+      }
+
+      try {
+        console.log('Fetching trainers from /api/trainers/user');
+        const response = await fetch('/api/trainers/user');
+        if (!response.ok) {
+          throw new Error(`Failed to fetch trainers: ${response.status} ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        console.log('Received trainer data:', data);
+
+        // Handle both response formats (direct array or object with trainers property)
+        let trainers = Array.isArray(data) ? data : (data.trainers || []);
+        console.log(`Processing ${trainers.length} trainers:`, trainers);
+
+        // Clear existing options
+        trainerSelect.innerHTML = '<option value="">-- Select a Trainer --</option>';
+
+        // Add trainer options
+        if (trainers && trainers.length > 0) {
+          trainers.forEach(trainer => {
+            const option = document.createElement('option');
+            option.value = trainer.id;
+            option.textContent = trainer.name;
+            trainerSelect.appendChild(option);
+          });
+        } else {
+          console.warn('No trainers found');
+        }
+      } catch (error) {
+        console.error('Error loading trainers:', error);
+        trainerSelect.innerHTML = '<option value="">Error loading trainers</option>';
+      }
+    }
+
+    // Event listener for trainer selection
+    trainerSelect.addEventListener('change', function() {
+      const trainerId = this.value;
+      if (trainerId) {
+        // Load monsters and items for the selected trainer
+        loadMonsters(trainerId);
+        loadItems(trainerId);
+      } else {
+        monsterSelect.innerHTML = '<option value="">-- Select a Monster --</option>';
+        monsterSelect.disabled = true;
+        itemSelect.innerHTML = '<option value="">-- Select an Item --</option>';
+        itemSelect.disabled = true;
+      }
+    });
+
+    async function loadMonsters(trainerId) {
+      if (!monsterSelect) {
+        console.error('Monster select element not found in the DOM');
+        return;
+      }
+
+      try {
+        console.log(`Fetching monsters for trainer ${trainerId}`);
+        monsterSelect.disabled = true;
+        monsterSelect.innerHTML = '<option value="">Loading monsters...</option>';
+
+        // Fetch monsters for the trainer
+        const response = await fetch(`/api/trainers/${trainerId}/monsters`);
+        if (!response.ok) {
+          throw new Error(`Failed to fetch monsters: ${response.status} ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        console.log('Received monster data:', data);
+
+        // Handle both response formats (direct array or object with monsters property)
+        let monsters = Array.isArray(data) ? data : (data.monsters || []);
+        console.log(`Processing ${monsters.length} monsters:`, monsters);
+
+        // Clear existing options
+        monsterSelect.innerHTML = '<option value="">-- Select a Monster --</option>';
+
+        // Add monster options
+        if (monsters && monsters.length > 0) {
+          monsters.forEach(monster => {
+            const option = document.createElement('option');
+            option.value = monster.mon_id;
+
+            // Format monster name with species and level
+            let displayName = monster.name;
+            if (monster.species1) {
+              displayName += ` (${monster.species1}`;
+              if (monster.species2) displayName += `/${monster.species2}`;
+              if (monster.species3) displayName += `/${monster.species3}`;
+              displayName += `, Lv.${monster.level})`;
+            } else {
+              displayName += ` (Lv.${monster.level})`;
+            }
+
+            option.textContent = displayName;
+            monsterSelect.appendChild(option);
+          });
+
+          monsterSelect.disabled = false;
+        } else {
+          monsterSelect.innerHTML = '<option value="">No monsters found</option>';
+        }
+      } catch (error) {
+        console.error('Error loading monsters:', error);
+        monsterSelect.innerHTML = '<option value="">Error loading monsters</option>';
+        monsterSelect.disabled = true;
+      }
+    }
+
+    // Event listener for monster selection
+    monsterSelect.addEventListener('change', function() {
+      const monsterId = this.value;
+      if (monsterId) {
+        // Check monster's current abilities
+        checkMonsterAbilities(monsterId);
+      } else {
+        currentAbilities.classList.add('hidden');
+      }
+    });
+
+    async function loadItems(trainerId) {
+      if (!itemSelect) {
+        console.error('Item select element not found in the DOM');
+        return;
+      }
+
+      try {
+        console.log(`Fetching items for trainer ${trainerId}`);
+        itemSelect.disabled = true;
+        itemSelect.innerHTML = '<option value="">Loading items...</option>';
+
+        // Fetch trainer inventory
+        const response = await fetch(`/api/trainers/${trainerId}/inventory`);
+        if (!response.ok) {
+          throw new Error(`Failed to fetch trainer inventory: ${response.status} ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        console.log('Trainer inventory data:', data);
+
+        // Clear existing options
+        itemSelect.innerHTML = '<option value="">-- Select an Item --</option>';
+
+        // Get items from inventory
+        const inventory = data.inventory || data;
+        const items = inventory.inv_items || {};
+
+        // Parse items if it's a string (JSON)
+        let itemsObj = items;
+        if (typeof items === 'string') {
+          try {
+            itemsObj = JSON.parse(items);
+          } catch (e) {
+            console.error('Error parsing items JSON:', e);
+            itemsObj = {};
+          }
+        }
+
+        console.log('Parsed items:', itemsObj);
+
+        // Filter for ability-related items
+        const abilityItems = ['Ability Capsule', 'Scroll of Secrets'];
+        let hasItems = false;
+
+        abilityItems.forEach(itemName => {
+          const quantity = itemsObj[itemName] || 0;
+          if (quantity > 0) {
+            hasItems = true;
+            const option = document.createElement('option');
+            option.value = itemName;
+            option.textContent = `${itemName} (${quantity})`;
+            itemSelect.appendChild(option);
+
+            // If this item doesn't have a defined effect, add a default one
+            if (!ITEM_EFFECTS[itemName]) {
+              ITEM_EFFECTS[itemName] = {
+                description: 'Use this item on your monster',
+                requiresAbilitySelection: false,
+                allowsAnyAbility: false
+              };
+              console.log(`Added default effect for ${itemName}`);
+            }
+          }
+        });
+
+        if (hasItems) {
+          itemSelect.disabled = false;
+        } else {
+          itemSelect.innerHTML = '<option value="">No ability items available</option>';
+        }
+
+        updateAbilityPreview(itemSelect.value);
+      } catch (error) {
+        console.error('Error loading items:', error);
+        itemSelect.innerHTML = '<option value="">Error loading items</option>';
+        itemSelect.disabled = true;
+      }
+    }
+
+    async function checkMonsterAbilities(monsterId) {
+      try {
+        console.log(`Checking abilities for monster ${monsterId}`);
+        currentAbilities.classList.add('hidden');
+        abilitiesContainer.innerHTML = '<div class="text-center text-gray-400 py-4"><i class="fas fa-spinner fa-spin mr-2"></i> Loading abilities...</div>';
+
+        // Fetch monster abilities
+        const url = `/api/ability-master/check-abilities/${monsterId}`;
+        console.log('Fetching from URL:', url);
+
+        const response = await fetch(url);
+        console.log('Response status:', response.status, response.statusText);
+
+        if (!response.ok) {
+          const errorText = await response.text();
+          console.error('Error response body:', errorText);
+          throw new Error(`Failed to fetch abilities: ${response.status} ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        console.log('Monster abilities data:', data);
+
+        if (data.success) {
+          // Display abilities
+          abilitiesContainer.innerHTML = '';
+
+          // Show current ability or a message if none is set
+          if (data.ability) {
+            // Current ability
+            const abilityCard = document.createElement('div');
+            abilityCard.className = 'ability-card';
+            abilityCard.innerHTML = `
+              <div class="flex items-center justify-between mb-2">
+                <div class="ability-name">${data.ability}</div>
+                <span class="ability-badge ability-badge-current">Current</span>
+              </div>
+              <div class="ability-description">${data.abilityDescription || 'No description available'}</div>
+            `;
+            abilitiesContainer.appendChild(abilityCard);
+          } else {
+            // No ability set
+            const noAbilityCard = document.createElement('div');
+            noAbilityCard.className = 'ability-card bg-gray-800/70';
+            noAbilityCard.innerHTML = `
+              <div class="flex items-center justify-between mb-2">
+                <div class="ability-name text-gray-400">No Ability Set</div>
+                <span class="ability-badge bg-gray-700 text-gray-400 border-gray-600">None</span>
+              </div>
+              <div class="ability-description text-gray-400">This monster doesn't have an ability set. Use an Ability Capsule or Scroll of Secrets to set one.</div>
+            `;
+            abilitiesContainer.appendChild(noAbilityCard);
+          }
+
+          if (data.ability1) {
+            // Ability 1
+            const ability1Card = document.createElement('div');
+            ability1Card.className = 'ability-card mt-3';
+            ability1Card.innerHTML = `
+              <div class="flex items-center justify-between mb-2">
+                <div class="ability-name">${data.ability1}</div>
+                <span class="ability-badge ability-badge-available">Ability 1</span>
+              </div>
+              <div class="ability-description">${data.ability1Description || 'No description available'}</div>
+            `;
+            abilitiesContainer.appendChild(ability1Card);
+          }
+
+          if (data.ability2) {
+            // Ability 2
+            const ability2Card = document.createElement('div');
+            ability2Card.className = 'ability-card mt-3';
+            ability2Card.innerHTML = `
+              <div class="flex items-center justify-between mb-2">
+                <div class="ability-name">${data.ability2}</div>
+                <span class="ability-badge ability-badge-available">Ability 2</span>
+              </div>
+              <div class="ability-description">${data.ability2Description || 'No description available'}</div>
+            `;
+            abilitiesContainer.appendChild(ability2Card);
+          }
+
+          currentAbilities.classList.remove('hidden');
+        } else {
+          abilitiesContainer.innerHTML = `<div class="text-center text-red-400 py-4">Failed to load abilities: ${data.message || 'Unknown error'}</div>`;
+        }
+      } catch (error) {
+        console.error('Error checking monster abilities:', error);
+        abilitiesContainer.innerHTML = `<div class="text-center text-red-400 py-4">Error loading abilities: ${error.message}</div>`;
+      }
+    }
+
+    async function loadAllAbilities() {
+      try {
+        console.log('Loading all abilities for selection');
+        abilitySelect.disabled = true;
+        abilitySelect.innerHTML = '<option value="">Loading abilities...</option>';
+
+        // Fetch all abilities
+        const response = await fetch('/api/ability-master/all-abilities');
+        if (!response.ok) {
+          throw new Error(`Failed to fetch abilities: ${response.status} ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        console.log('All abilities data:', data);
+
+        // Clear existing options
+        abilitySelect.innerHTML = '<option value="">-- Select an Ability --</option>';
+
+        if (data.success && data.abilities && data.abilities.length > 0) {
+          // Add ability options
+          data.abilities.forEach(ability => {
+            const option = document.createElement('option');
+            option.value = ability.name;
+            option.textContent = ability.name;
+            option.title = ability.effect || 'No description available';
+            abilitySelect.appendChild(option);
+          });
+
+          abilitySelect.disabled = false;
+        } else {
+          abilitySelect.innerHTML = '<option value="">No abilities available</option>';
+        }
+      } catch (error) {
+        console.error('Error loading all abilities:', error);
+        abilitySelect.innerHTML = '<option value="">Error loading abilities</option>';
+        abilitySelect.disabled = true;
+      }
+    }
+  });
+</script>

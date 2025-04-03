@@ -1,0 +1,146 @@
+<% /* Set the title and other variables for the layout */ %>
+<% title = 'Delete Boss' %>
+
+<style>
+.boss-details {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding: 1.5rem;
+    background-color: #f8fafc;
+    border-radius: 0.5rem;
+    border: 1px solid #e2e8f0;
+}
+
+.boss-image {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 0.5rem;
+    margin-right: 1.5rem;
+}
+
+.boss-info {
+    flex: 1;
+}
+
+.boss-name {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+
+.boss-health {
+    font-size: 1rem;
+    color: #6b7280;
+    margin-bottom: 0.5rem;
+}
+
+.boss-flavor {
+    font-style: italic;
+    color: #6b7280;
+    margin-bottom: 0.5rem;
+}
+
+.boss-status {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    font-size: 0.75rem;
+    font-weight: bold;
+    margin-top: 0.5rem;
+}
+
+.status-active {
+    background-color: #10b981;
+    color: white;
+}
+
+.status-inactive {
+    background-color: #6b7280;
+    color: white;
+}
+
+.status-defeated {
+    background-color: #ef4444;
+    color: white;
+}
+
+.warning-box {
+    background-color: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    border-radius: 0.5rem;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.warning-title {
+    color: #ef4444;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+}
+
+.warning-title i {
+    margin-right: 0.5rem;
+}
+
+.warning-text {
+    color: #6b7280;
+}
+</style>
+
+<div class="container mx-auto px-4 py-8">
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="text-3xl font-bold">Delete Boss</h1>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h2 class="text-xl font-bold">Confirm Deletion</h2>
+        </div>
+        <div class="card-body">
+            <div class="warning-box">
+                <div class="warning-title">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    Warning: This action cannot be undone
+                </div>
+                <p class="warning-text">
+                    Deleting this boss will permanently remove it from the system, including all damage records and rewards associated with it.
+                </p>
+            </div>
+
+            <div class="boss-details">
+                <img src="<%= boss.image_url %>" alt="<%= boss.name %>" class="boss-image" onerror="this.src='/images/default_boss.png'">
+                <div class="boss-info">
+                    <div class="boss-name"><%= boss.name %></div>
+                    <div class="boss-health"><%= boss.current_health %> / <%= boss.max_health %> HP</div>
+                    <div class="boss-flavor"><%= boss.flavor_text %></div>
+                    <div>
+                        <% if (boss.is_active && !boss.is_defeated) { %>
+                        <span class="boss-status status-active">Active</span>
+                        <% } else if (boss.is_defeated) { %>
+                        <span class="boss-status status-defeated">Defeated</span>
+                        <% } else { %>
+                        <span class="boss-status status-inactive">Inactive</span>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+
+            <form action="/admin/bosses/delete/<%= boss.boss_id %>" method="POST">
+                <div class="flex justify-end space-x-4 mt-6">
+                    <a href="/admin/bosses" class="btn-secondary">Cancel</a>
+                    <button type="submit" class="btn-danger">Delete Boss</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="mt-6">
+        <a href="/admin/bosses" class="btn-secondary">
+            <i class="fas fa-arrow-left mr-2"></i> Back to Boss Management
+        </a>
+    </div>
+</div>

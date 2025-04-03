@@ -673,3 +673,71 @@ create index if not exists idx_player_shop_purchases_player
 create index if not exists idx_player_shop_purchases_shop_date
     on player_shop_purchases (shop_id, date);
 
+-- Boss tables
+create table if not exists bosses
+(
+    boss_id              serial
+        primary key,
+    name                text not null,
+    flavor_text         text,
+    image_url           text,
+    max_health          integer not null,
+    current_health      integer not null,
+    is_active           boolean default true,
+    is_defeated         boolean default false,
+    month               integer,
+    year                integer,
+    created_at          timestamp default CURRENT_TIMESTAMP,
+    defeated_at         timestamp
+);
+
+alter table bosses
+    owner to u3f7f8n9i5oagn;
+
+create table if not exists boss_damage
+(
+    damage_id           serial
+        primary key,
+    boss_id             integer not null
+        references bosses (boss_id) on delete cascade,
+    trainer_id          integer not null
+        references trainers (id) on delete cascade,
+    damage_amount       integer not null,
+    total_damage        integer not null,
+    source              text,
+    created_at          timestamp default CURRENT_TIMESTAMP
+);
+
+alter table boss_damage
+    owner to u3f7f8n9i5oagn;
+
+create index if not exists idx_boss_damage_boss_id
+    on boss_damage (boss_id);
+
+create index if not exists idx_boss_damage_trainer_id
+    on boss_damage (trainer_id);
+
+create table if not exists boss_rewards
+(
+    reward_id           serial
+        primary key,
+    boss_id             integer not null
+        references bosses (boss_id) on delete cascade,
+    trainer_id          integer not null
+        references trainers (id) on delete cascade,
+    coins               integer,
+    items               jsonb,
+    monsters            jsonb,
+    is_claimed          boolean default false,
+    created_at          timestamp default CURRENT_TIMESTAMP,
+    claimed_at          timestamp
+);
+
+alter table boss_rewards
+    owner to u3f7f8n9i5oagn;
+
+create index if not exists idx_boss_rewards_boss_id
+    on boss_rewards (boss_id);
+
+create index if not exists idx_boss_rewards_trainer_id
+    on boss_rewards (trainer_id);

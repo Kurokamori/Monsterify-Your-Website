@@ -1,0 +1,181 @@
+
+<div class="container mx-auto px-4 py-8">
+  <h1 class="text-3xl font-bold mb-6">Mission History</h1>
+
+  <div class="mb-6">
+    <a href="/missions" class="inline-block px-4 py-2 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400">
+      <i class="fas fa-arrow-left mr-2"></i> Back to Missions
+    </a>
+  </div>
+
+  <div id="mission-history-container">
+    <div id="mission-history-list" class="grid grid-cols-1 gap-6"></div>
+    
+    <div id="pagination" class="mt-8 flex justify-center"></div>
+    
+    <div id="no-history" class="hidden">
+      <div class="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4">
+        <p>You haven't completed any missions yet. Go to the Missions page to start a new mission!</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Load mission history
+    loadMissionHistory(1);
+    
+    // Function to load mission history
+    async function loadMissionHistory(page = 1, limit = 10) {
+      try {
+        const response = await fetch(`/api/missions/history?page=${page}&limit=${limit}`);
+        const data = await response.json();
+        
+        if (data.success) {
+          if (data.history && data.history.length > 0) {
+            displayMissionHistory(data.history);
+            displayPagination(data.pagination);
+          } else {
+            showNoHistory();
+          }
+        } else {
+          showNoHistory();
+        }
+      } catch (error) {
+        console.error('Error loading mission history:', error);
+        showNoHistory();
+      }
+    }
+    
+    // Function to display mission history
+    function displayMissionHistory(history) {
+      const historyList = document.getElementById('mission-history-list');
+      historyList.innerHTML = '';
+      
+      history.forEach(mission => {
+        const missionCard = document.createElement('div');
+        missionCard.className = 'bg-white rounded-lg shadow-md overflow-hidden';
+        
+        // Format date
+        const completedDate = new Date(mission.completed_at);
+        const formattedDate = completedDate.toLocaleDateString('en-US', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit'
+        });
+        
+        missionCard.innerHTML = `
+          <div class="p-4">
+            <div class="flex justify-between items-start mb-4">
+              <h3 class="text-xl font-bold">${mission.name}</h3>
+              <span class="text-sm text-gray-600">${formattedDate}</span>
+            </div>
+            
+            <p class="text-sm text-gray-600 mb-4">${mission.description}</p>
+            
+            <div class="mb-4">
+              <h4 class="text-md font-semibold mb-2">Monsters:</h4>
+              <div class="flex flex-wrap gap-4">
+                ${mission.monsters && mission.monsters.length > 0 ? 
+                  mission.monsters.map(monster => `
+                    <div class="flex items-center">
+                      <img src="${monster.img_link}" alt="${monster.name}" class="w-12 h-12 object-contain mr-2">
+                      <div>
+                        <p class="font-semibold">${monster.name}</p>
+                        <p class="text-xs text-gray-600">Level ${monster.level}</p>
+                      </div>
+                    </div>
+                  `).join('') : 
+                  '<p class="text-sm text-gray-600">No monsters assigned to this mission.</p>'
+                }
+              </div>
+            </div>
+            
+            <div class="mb-4">
+              <h4 class="text-md font-semibold mb-2">Rewards:</h4>
+              <ul class="text-sm text-gray-600 pl-5 list-disc">
+                <li>${mission.level_rewards} levels</li>
+                <li>${mission.coin_rewards} coins</li>
+                ${mission.item_rewards && mission.item_rewards.length > 0 ? 
+                  `<li>Items: ${mission.item_rewards.join(', ')}</li>` : ''}
+              </ul>
+            </div>
+          </div>
+        `;
+        
+        historyList.appendChild(missionCard);
+      });
+      
+      document.getElementById('mission-history-list').classList.remove('hidden');
+      document.getElementById('no-history').classList.add('hidden');
+    }
+    
+    // Function to display pagination
+    function displayPagination(pagination) {
+      const paginationContainer = document.getElementById('pagination');
+      paginationContainer.innerHTML = '';
+      
+      if (pagination.totalPages <= 1) {
+        return;
+      }
+      
+      // Create pagination controls
+      const paginationNav = document.createElement('nav');
+      paginationNav.className = 'flex items-center space-x-2';
+      
+      // Previous button
+      const prevButton = document.createElement('button');
+      prevButton.className = `px-3 py-1 rounded-md ${pagination.page === 1 ? 'bg-gray-200 text-gray-400 cursor-not-allowed' : 'bg-gray-300 text-gray-800 hover:bg-gray-400'}`;
+      prevButton.textContent = 'Previous';
+      prevButton.disabled = pagination.page === 1;
+      
+      if (pagination.page > 1) {
+        prevButton.addEventListener('click', () => loadMissionHistory(pagination.page - 1, pagination.limit));
+      }
+      
+      paginationNav.appendChild(prevButton);
+      
+      // Page numbers
+      const startPage = Math.max(1, pagination.page - 2);
+      const endPage = Math.min(pagination.totalPages, pagination.page + 2);
+      
+      for (let i = startPage; i <= endPage; i++) {
+        const pageButton = document.createElement('button');
+        pageButton.className = `px-3 py-1 rounded-md ${i === pagination.page ? 'bg-blue-500 text-white' : 'bg-gray-300 text-gray-800 hover:bg-gray-400'}`;
+        pageButton.textContent = i;
+        
+        if (i !== pagination.page) {
+          pageButton.addEventListener('click', () => loadMissionHistory(i, pagination.limit));
+        }
+        
+        paginationNav.appendChild(pageButton);
+      }
+      
+      // Next button
+      const nextButton = document.createElement('button');
+      nextButton.className = `px-3 py-1 rounded-md ${pagination.page === pagination.totalPages ? 'bg-gray-200 text-gray-400 cursor-not-allowed' : 'bg-gray-300 text-gray-800 hover:bg-gray-400'}`;
+      nextButton.textContent = 'Next';
+      nextButton.disabled = pagination.page === pagination.totalPages;
+      
+      if (pagination.page < pagination.totalPages) {
+        nextButton.addEventListener('click', () => loadMissionHistory(pagination.page + 1, pagination.limit));
+      }
+      
+      paginationNav.appendChild(nextButton);
+      
+      paginationContainer.appendChild(paginationNav);
+    }
+    
+    // Function to show no history message
+    function showNoHistory() {
+      document.getElementById('mission-history-list').classList.add('hidden');
+      document.getElementById('no-history').classList.remove('hidden');
+      document.getElementById('pagination').innerHTML = '';
+    }
+  });
+</script>
+
+

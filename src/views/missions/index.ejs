@@ -1,0 +1,464 @@
+
+<div class="container mx-auto px-4 py-8">
+  <h1 class="text-3xl font-bold mb-6">Missions</h1>
+
+  <div id="mission-container">
+    <!-- Active mission will be displayed here -->
+    <div id="active-mission" class="hidden">
+      <div class="bg-gray-100 rounded-lg p-6 mb-8">
+        <h2 class="text-2xl font-bold mb-4" id="mission-name"></h2>
+        <p class="mb-4" id="mission-description"></p>
+        
+        <div class="mb-6">
+          <h3 class="text-lg font-semibold mb-2">Monsters on this mission:</h3>
+          <div id="mission-monsters" class="flex flex-wrap gap-4"></div>
+        </div>
+        
+        <div class="mb-6">
+          <h3 class="text-lg font-semibold mb-2">Progress:</h3>
+          <div class="w-full bg-gray-300 rounded-full h-4 mb-2">
+            <div id="progress-bar" class="bg-blue-500 h-4 rounded-full" style="width: 0%"></div>
+          </div>
+          <p id="progress-text" class="text-sm text-gray-600"></p>
+        </div>
+        
+        <div class="mb-4">
+          <img id="mission-image" src="" alt="Mission in progress" class="mx-auto max-w-full h-auto rounded-lg shadow-md">
+        </div>
+      </div>
+    </div>
+
+    <!-- Available missions will be displayed here -->
+    <div id="available-missions" class="hidden">
+      <h2 class="text-2xl font-bold mb-4">Available Missions</h2>
+      <div id="mission-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+    </div>
+
+    <!-- No missions available message -->
+    <div id="no-missions" class="hidden">
+      <div class="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 mb-8">
+        <p>No missions are currently available. Complete tasks, habits, or submit artwork/writing to progress your active mission.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mission selection modal -->
+  <div id="mission-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+    <div class="bg-white rounded-lg p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+      <h2 class="text-2xl font-bold mb-4" id="modal-mission-name"></h2>
+      <p class="mb-4" id="modal-mission-description"></p>
+      
+      <div class="mb-6">
+        <h3 class="text-lg font-semibold mb-2">Select up to 3 monsters for this mission:</h3>
+        <p class="text-sm text-gray-600 mb-4">Choose monsters that meet the mission requirements.</p>
+        
+        <div class="mb-4">
+          <label for="monster-1" class="block text-sm font-medium text-gray-700 mb-1">Monster 1:</label>
+          <select id="monster-1" class="w-full p-2 border border-gray-300 rounded-md">
+            <option value="">Select a monster</option>
+          </select>
+        </div>
+        
+        <div class="mb-4">
+          <label for="monster-2" class="block text-sm font-medium text-gray-700 mb-1">Monster 2 (optional):</label>
+          <select id="monster-2" class="w-full p-2 border border-gray-300 rounded-md">
+            <option value="">Select a monster</option>
+          </select>
+        </div>
+        
+        <div class="mb-4">
+          <label for="monster-3" class="block text-sm font-medium text-gray-700 mb-1">Monster 3 (optional):</label>
+          <select id="monster-3" class="w-full p-2 border border-gray-300 rounded-md">
+            <option value="">Select a monster</option>
+          </select>
+        </div>
+      </div>
+      
+      <div class="flex justify-end gap-4">
+        <button id="modal-cancel" class="px-4 py-2 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400">Cancel</button>
+        <button id="modal-start" class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">Start Mission</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mission completion modal -->
+  <div id="completion-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+    <div class="bg-white rounded-lg p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+      <h2 class="text-2xl font-bold mb-4">Mission Complete!</h2>
+      <p id="completion-message" class="mb-4"></p>
+      
+      <div class="mb-6">
+        <img id="completion-image" src="" alt="Mission completed" class="mx-auto max-w-full h-auto rounded-lg shadow-md">
+      </div>
+      
+      <div class="mb-6">
+        <h3 class="text-lg font-semibold mb-2">Rewards:</h3>
+        <ul id="reward-list" class="list-disc pl-5"></ul>
+      </div>
+      
+      <div class="flex justify-end">
+        <button id="completion-close" class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mission progress notification -->
+  <div id="progress-notification" class="fixed top-4 right-4 bg-blue-500 text-white px-4 py-2 rounded-lg shadow-lg z-50 transition-opacity duration-300 opacity-0 hidden">
+    <p id="progress-message"></p>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Check for active mission
+    checkActiveMission();
+    
+    // Event listeners
+    document.getElementById('modal-cancel').addEventListener('click', closeModal);
+    document.getElementById('modal-start').addEventListener('click', startMission);
+    document.getElementById('completion-close').addEventListener('click', closeCompletionModal);
+    
+    // Function to check for active mission
+    async function checkActiveMission() {
+      try {
+        const response = await fetch('/api/missions/active');
+        const data = await response.json();
+        
+        if (data.success && data.mission) {
+          // User has an active mission
+          displayActiveMission(data.mission);
+        } else {
+          // No active mission, show available missions
+          getAvailableMissions();
+        }
+      } catch (error) {
+        console.error('Error checking active mission:', error);
+        showNoMissions();
+      }
+    }
+    
+    // Function to get available missions
+    async function getAvailableMissions() {
+      try {
+        const response = await fetch('/api/missions/available');
+        const data = await response.json();
+        
+        if (data.success && data.missions && data.missions.length > 0) {
+          // Display available missions
+          displayAvailableMissions(data.missions);
+        } else {
+          // No missions available
+          showNoMissions();
+        }
+      } catch (error) {
+        console.error('Error getting available missions:', error);
+        showNoMissions();
+      }
+    }
+    
+    // Function to display active mission
+    function displayActiveMission(mission) {
+      document.getElementById('mission-name').textContent = mission.name;
+      document.getElementById('mission-description').textContent = mission.description;
+      
+      // Display monsters
+      const monstersContainer = document.getElementById('mission-monsters');
+      monstersContainer.innerHTML = '';
+      
+      if (mission.monsters && mission.monsters.length > 0) {
+        mission.monsters.forEach(monster => {
+          const monsterCard = document.createElement('div');
+          monsterCard.className = 'bg-white rounded-lg shadow-md p-4 flex flex-col items-center';
+          monsterCard.innerHTML = `
+            <img src="${monster.img_link}" alt="${monster.name}" class="w-24 h-24 object-contain mb-2">
+            <p class="font-semibold">${monster.name}</p>
+            <p class="text-sm text-gray-600">Level ${monster.level}</p>
+          `;
+          monstersContainer.appendChild(monsterCard);
+        });
+      } else {
+        monstersContainer.innerHTML = '<p>No monsters assigned to this mission.</p>';
+      }
+      
+      // Update progress bar
+      const progressPercent = Math.round((mission.current_progress / mission.total_progress) * 100);
+      document.getElementById('progress-bar').style.width = `${progressPercent}%`;
+      document.getElementById('progress-text').textContent = `${mission.current_progress} / ${mission.total_progress} (${progressPercent}%)`;
+      
+      // Set mission image
+      const missionImage = document.getElementById('mission-image');
+      if (mission.progress_image_url) {
+        missionImage.src = mission.progress_image_url;
+        missionImage.classList.remove('hidden');
+      } else {
+        missionImage.src = '/images/missions/default-progress.png';
+        missionImage.classList.remove('hidden');
+      }
+      
+      // Show active mission section
+      document.getElementById('active-mission').classList.remove('hidden');
+      document.getElementById('available-missions').classList.add('hidden');
+      document.getElementById('no-missions').classList.add('hidden');
+    }
+    
+    // Function to display available missions
+    function displayAvailableMissions(missions) {
+      const missionList = document.getElementById('mission-list');
+      missionList.innerHTML = '';
+      
+      missions.forEach(mission => {
+        const missionCard = document.createElement('div');
+        missionCard.className = 'bg-white rounded-lg shadow-md overflow-hidden';
+        
+        missionCard.innerHTML = `
+          <div class="p-4">
+            <h3 class="text-xl font-bold mb-2">${mission.name}</h3>
+            <p class="text-sm text-gray-600 mb-4">${mission.description}</p>
+            <div class="mb-4">
+              <p class="text-sm font-semibold">Rewards:</p>
+              <ul class="text-sm text-gray-600 pl-5 list-disc">
+                <li>${mission.level_rewards} levels</li>
+                <li>${mission.coin_rewards} coins</li>
+                ${mission.item_rewards && mission.item_rewards.length > 0 ? 
+                  `<li>${mission.item_reward_amount === 0 ? 'All' : mission.item_reward_amount} items: ${mission.item_rewards.join(', ')}</li>` : ''}
+              </ul>
+            </div>
+            <button class="start-mission-btn w-full px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600" 
+                    data-mission-id="${mission.id}" 
+                    data-mission-name="${mission.name}">
+              Start Mission
+            </button>
+          </div>
+        `;
+        
+        missionList.appendChild(missionCard);
+        
+        // Add event listener to the button
+        missionCard.querySelector('.start-mission-btn').addEventListener('click', function() {
+          openMissionModal(mission);
+        });
+      });
+      
+      // Show available missions section
+      document.getElementById('active-mission').classList.add('hidden');
+      document.getElementById('available-missions').classList.remove('hidden');
+      document.getElementById('no-missions').classList.add('hidden');
+    }
+    
+    // Function to show no missions message
+    function showNoMissions() {
+      document.getElementById('active-mission').classList.add('hidden');
+      document.getElementById('available-missions').classList.add('hidden');
+      document.getElementById('no-missions').classList.remove('hidden');
+    }
+    
+    // Function to open mission modal
+    function openMissionModal(mission) {
+      // Set mission details
+      document.getElementById('modal-mission-name').textContent = mission.name;
+      document.getElementById('modal-mission-description').textContent = mission.description;
+      
+      // Populate monster dropdowns
+      const monster1Select = document.getElementById('monster-1');
+      const monster2Select = document.getElementById('monster-2');
+      const monster3Select = document.getElementById('monster-3');
+      
+      // Clear previous options
+      monster1Select.innerHTML = '<option value="">Select a monster</option>';
+      monster2Select.innerHTML = '<option value="">Select a monster</option>';
+      monster3Select.innerHTML = '<option value="">Select a monster</option>';
+      
+      // Add eligible monsters
+      if (mission.eligibleMonsters && mission.eligibleMonsters.length > 0) {
+        // Group monsters by trainer
+        const monstersByTrainer = {};
+        
+        mission.eligibleMonsters.forEach(monster => {
+          if (!monstersByTrainer[monster.trainer_name]) {
+            monstersByTrainer[monster.trainer_name] = [];
+          }
+          monstersByTrainer[monster.trainer_name].push(monster);
+        });
+        
+        // Add options grouped by trainer
+        for (const trainerName in monstersByTrainer) {
+          const trainerGroup = document.createElement('optgroup');
+          trainerGroup.label = trainerName;
+          
+          monstersByTrainer[trainerName].forEach(monster => {
+            const option = document.createElement('option');
+            option.value = monster.mon_id;
+            option.textContent = `${monster.name} (Lv. ${monster.level})`;
+            trainerGroup.appendChild(option);
+          });
+          
+          monster1Select.appendChild(trainerGroup.cloneNode(true));
+          monster2Select.appendChild(trainerGroup.cloneNode(true));
+          monster3Select.appendChild(trainerGroup.cloneNode(true));
+        }
+      }
+      
+      // Store mission ID for later use
+      document.getElementById('modal-start').dataset.missionId = mission.id;
+      
+      // Show modal
+      document.getElementById('mission-modal').classList.remove('hidden');
+    }
+    
+    // Function to close mission modal
+    function closeModal() {
+      document.getElementById('mission-modal').classList.add('hidden');
+    }
+    
+    // Function to start mission
+    async function startMission() {
+      const missionId = document.getElementById('modal-start').dataset.missionId;
+      const monster1 = document.getElementById('monster-1').value;
+      const monster2 = document.getElementById('monster-2').value;
+      const monster3 = document.getElementById('monster-3').value;
+      
+      // Validate selection
+      if (!monster1) {
+        alert('Please select at least one monster for the mission.');
+        return;
+      }
+      
+      // Create array of selected monsters (filter out empty selections)
+      const monIds = [monster1, monster2, monster3].filter(id => id);
+      
+      try {
+        const response = await fetch('/api/missions/start', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            missionId,
+            monIds
+          })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+          // Close modal
+          closeModal();
+          
+          // Refresh to show active mission
+          checkActiveMission();
+        } else {
+          alert(data.message || 'Error starting mission');
+        }
+      } catch (error) {
+        console.error('Error starting mission:', error);
+        alert('Error starting mission. Please try again.');
+      }
+    }
+    
+    // Function to show mission progress notification
+    function showProgressNotification(message) {
+      const notification = document.getElementById('progress-notification');
+      document.getElementById('progress-message').textContent = message;
+      
+      notification.classList.remove('hidden');
+      
+      // Trigger fade-in animation
+      setTimeout(() => notification.classList.remove('opacity-0'), 10);
+      
+      // Auto-hide after 5 seconds
+      setTimeout(() => {
+        notification.classList.add('opacity-0');
+        setTimeout(() => notification.classList.add('hidden'), 300);
+      }, 5000);
+    }
+    
+    // Function to show mission completion modal
+    function showCompletionModal(completionData) {
+      document.getElementById('completion-message').textContent = completionData.completionMessage || 'Congratulations! You have completed the mission.';
+      
+      // Set completion image
+      const completionImage = document.getElementById('completion-image');
+      if (completionData.completionImageUrl) {
+        completionImage.src = completionData.completionImageUrl;
+        completionImage.classList.remove('hidden');
+      } else {
+        completionImage.src = '/images/missions/default-completion.png';
+        completionImage.classList.remove('hidden');
+      }
+      
+      // Display rewards
+      const rewardList = document.getElementById('reward-list');
+      rewardList.innerHTML = '';
+      
+      if (completionData.rewards) {
+        if (completionData.rewards.levels) {
+          const levelItem = document.createElement('li');
+          levelItem.textContent = `${completionData.rewards.levels} levels`;
+          rewardList.appendChild(levelItem);
+        }
+        
+        if (completionData.rewards.coins) {
+          const coinItem = document.createElement('li');
+          coinItem.textContent = `${completionData.rewards.coins} coins`;
+          rewardList.appendChild(coinItem);
+        }
+        
+        if (completionData.rewards.items && completionData.rewards.items.length > 0) {
+          const itemItem = document.createElement('li');
+          itemItem.textContent = `Items: ${completionData.rewards.items.join(', ')}`;
+          rewardList.appendChild(itemItem);
+        }
+      }
+      
+      // Show modal
+      document.getElementById('completion-modal').classList.remove('hidden');
+    }
+    
+    // Function to close completion modal
+    function closeCompletionModal() {
+      document.getElementById('completion-modal').classList.add('hidden');
+      
+      // Refresh to show available missions
+      checkActiveMission();
+    }
+    
+    // Listen for mission progress updates (via WebSocket or polling)
+    // This is a placeholder for the actual implementation
+    function setupMissionProgressListener() {
+      // Example implementation using polling
+      setInterval(async () => {
+        try {
+          const response = await fetch('/api/missions/active');
+          const data = await response.json();
+          
+          if (data.success && data.mission) {
+            // Update progress display
+            const progressPercent = Math.round((data.mission.current_progress / data.mission.total_progress) * 100);
+            document.getElementById('progress-bar').style.width = `${progressPercent}%`;
+            document.getElementById('progress-text').textContent = `${data.mission.current_progress} / ${data.mission.total_progress} (${progressPercent}%)`;
+            
+            // Check if mission is completed
+            if (data.mission.current_progress >= data.mission.total_progress) {
+              // Mission completed, show completion modal
+              showCompletionModal({
+                completionMessage: data.mission.completion_message,
+                completionImageUrl: data.mission.completion_image_url,
+                rewards: {
+                  levels: data.mission.level_rewards,
+                  coins: data.mission.coin_rewards,
+                  items: data.mission.item_rewards
+                }
+              });
+            }
+          }
+        } catch (error) {
+          console.error('Error checking mission progress:', error);
+        }
+      }, 30000); // Check every 30 seconds
+    }
+    
+    // Setup mission progress listener
+    setupMissionProgressListener();
+  });
+</script>
+

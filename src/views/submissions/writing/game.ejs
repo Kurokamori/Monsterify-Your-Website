@@ -1,0 +1,730 @@
+<div class="submission-container">
+    <div class="submission-card">
+        <h1 class="submission-title">Game Writing Submission</h1>
+        <form id="gameWritingForm" class="submission-form">
+                <div class="form-group">
+                    <label for="title" class="form-label">Title</label>
+                    <input type="text" id="title" name="title" class="modern-input" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="writingUrl" class="form-label">Writing URL (optional)</label>
+                    <input type="url" id="writingUrl" name="writingUrl" class="modern-input">
+                    <p class="form-help">Link to your writing if hosted elsewhere</p>
+                </div>
+
+                <div class="form-group">
+                    <label for="wordCount" class="form-label">Word Count</label>
+                    <input type="number" id="wordCount" name="wordCount" min="1" class="modern-input" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="difficultyModifier" class="form-label">Difficulty Modifier</label>
+                    <select id="difficultyModifier" name="difficultyModifier" class="modern-select" required>
+                        <option value="1">Standard (x1)</option>
+                        <option value="1.5">Challenging (x1.5)</option>
+                        <option value="2">Difficult (x2)</option>
+                    </select>
+                    <p class="form-help">Higher difficulty = more rewards, but requires admin approval</p>
+                </div>
+
+                <div class="form-group">
+                    <label for="content" class="form-label">Content</label>
+                    <textarea id="content" name="content" class="modern-input" rows="10" required></textarea>
+                    <p class="form-help">Enter your writing content here</p>
+                </div>
+
+                <div class="participants-section">
+                    <h2 class="submission-subtitle">Participants</h2>
+
+                    <!-- Trainer Participants -->
+                    <div class="form-group">
+                        <h3 class="form-label">Trainer Participants</h3>
+                        <div id="trainerParticipantsContainer" class="space-y-3">
+                            <!-- Trainer participants will be added here -->
+                        </div>
+                        <button type="button" id="addTrainerParticipant" class="add-participant-button">
+                            <i class="fas fa-plus"></i> Add Trainer Participant
+                        </button>
+                    </div>
+
+                    <!-- Monster Participants -->
+                    <div class="form-group">
+                        <h3 class="form-label">Monster Participants</h3>
+                        <div id="monsterParticipantsContainer" class="space-y-3">
+                            <!-- Monster participants will be added here -->
+                        </div>
+                        <button type="button" id="addMonsterParticipant" class="add-participant-button">
+                            <i class="fas fa-plus"></i> Add Monster Participant
+                        </button>
+                    </div>
+                </div>
+
+                <div class="form-buttons">
+                    <a href="/submissions" class="back-button">
+                        <i class="fas fa-arrow-left"></i> Back
+                    </a>
+                    <button type="submit" class="submit-button">
+                        <i class="fas fa-paper-plane"></i> Submit
+                    </button>
+                </div>
+            </form>
+    </div>
+
+    <!-- Results Section (Hidden by default) -->
+    <div id="resultsSection" class="hidden results-section">
+        <h2 class="results-title">Submission Results</h2>
+        <div id="calculationResults" class="results-content"></div>
+
+        <!-- Gift Recipient Form will be dynamically added here when needed -->
+        <div id="giftRecipientFormContainer"></div>
+
+        <div class="results-buttons">
+            <button id="backToForm" class="back-button">
+                <i class="fas fa-arrow-left"></i> Submit Another
+            </button>
+        </div>
+    </div>
+
+<!-- Include the reward summary modal -->
+<%- include('../../components/reward-summary-modal') %>
+
+<script>
+    // Include the reward summary script
+    document.write('<script src="/js/reward-summary.js"><\/script>');
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('gameWritingForm');
+        const resultsSection = document.getElementById('resultsSection');
+        const calculationResults = document.getElementById('calculationResults');
+        const backToFormBtn = document.getElementById('backToForm');
+        const addTrainerParticipantBtn = document.getElementById('addTrainerParticipant');
+        const addMonsterParticipantBtn = document.getElementById('addMonsterParticipant');
+        const trainerParticipantsContainer = document.getElementById('trainerParticipantsContainer');
+        const monsterParticipantsContainer = document.getElementById('monsterParticipantsContainer');
+
+        // Function to load all trainers
+        async function loadAllTrainers() {
+            try {
+                const response = await fetch('/api/trainers/all');
+                const data = await response.json();
+
+                if (data.success && data.trainers && data.trainers.length > 0) {
+                    // Store trainers for reuse
+                    window.allTrainers = data.trainers;
+
+                    // Populate all trainer selects
+                    populateTrainerSelects();
+                }
+            } catch (error) {
+                console.error('Error loading trainers:', error);
+            }
+        }
+
+        // Function to populate all trainer selects
+        function populateTrainerSelects() {
+            if (!window.allTrainers) return;
+
+            // Get all trainer selects
+            const trainerSelects = document.querySelectorAll('.trainer-select, .monster-trainer-select');
+
+            trainerSelects.forEach(select => {
+                // Skip if this select already has options (other than the default)
+                if (select.options.length > 1) return;
+
+                // Add trainer options
+                window.allTrainers.forEach(trainer => {
+                    const option = document.createElement('option');
+                    option.value = trainer.id;
+                    option.textContent = trainer.name;
+                    select.appendChild(option);
+                });
+            });
+        }
+
+        // Add trainer participant
+        addTrainerParticipantBtn.addEventListener('click', function() {
+            const newEntry = document.createElement('div');
+            newEntry.className = 'participant-entry p-4 rounded-lg';
+            newEntry.innerHTML = `
+                <div class="flex flex-wrap gap-4 items-center">
+                    <div class="w-full md:w-2/3">
+                        <label class="block text-sm text-amber-400 font-semibold mb-2">Select Trainer</label>
+                        <select class="trainer-select writing-select" required>
+                            <option value="">-- Select Trainer --</option>
+                        </select>
+                    </div>
+                    <div class="w-full md:w-1/4 flex items-center mt-4 md:mt-8">
+                        <label class="inline-flex items-center cursor-pointer">
+                            <input type="checkbox" class="gift-checkbox" value="gift">
+                            <span class="ml-3 text-sm font-medium">Gift</span>
+                        </label>
+                    </div>
+                    <button type="button" class="remove-participant btn-secondary px-2 py-1 rounded-md ml-auto" style="background-color: rgba(255, 255, 255, 0.1); color: #ef4444;">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            `;
+            trainerParticipantsContainer.appendChild(newEntry);
+
+            // Only populate the newly added select
+            const newSelect = newEntry.querySelector('.trainer-select');
+            if (window.allTrainers) {
+                window.allTrainers.forEach(trainer => {
+                    const option = document.createElement('option');
+                    option.value = trainer.id;
+                    option.textContent = trainer.name;
+                    newSelect.appendChild(option);
+                });
+            }
+        });
+
+        // Add monster participant
+        addMonsterParticipantBtn.addEventListener('click', function() {
+            const newEntry = document.createElement('div');
+            newEntry.className = 'participant-entry p-4 rounded-lg';
+            newEntry.innerHTML = `
+                <div class="flex flex-wrap gap-4">
+                    <div class="w-full md:w-1/3">
+                        <label class="block text-sm text-amber-400 font-semibold mb-2">Monster Name</label>
+                        <input type="text" class="monster-name writing-input" placeholder="Enter monster name" required>
+                    </div>
+                    <div class="w-full md:w-1/3">
+                        <label class="block text-sm text-amber-400 font-semibold mb-2">Monster's Trainer</label>
+                        <select class="monster-trainer-select writing-select" required>
+                            <option value="">-- Select Trainer --</option>
+                        </select>
+                    </div>
+                    <div class="w-full md:w-1/4 flex items-center mt-4 md:mt-8">
+                        <label class="inline-flex items-center cursor-pointer">
+                            <input type="checkbox" class="gift-checkbox" value="gift">
+                            <span class="ml-3 text-sm font-medium">Gift</span>
+                        </label>
+                    </div>
+                    <button type="button" class="remove-participant btn-secondary px-2 py-1 rounded-md ml-auto" style="background-color: rgba(255, 255, 255, 0.1); color: #ef4444;">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            `;
+            monsterParticipantsContainer.appendChild(newEntry);
+
+            // Only populate the newly added select
+            const newSelect = newEntry.querySelector('.monster-trainer-select');
+            if (window.allTrainers) {
+                window.allTrainers.forEach(trainer => {
+                    const option = document.createElement('option');
+                    option.value = trainer.id;
+                    option.textContent = trainer.name;
+                    newSelect.appendChild(option);
+                });
+            }
+        });
+
+        // Remove participant (for both trainer and monster participants)
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('remove-participant') || e.target.closest('.remove-participant')) {
+                const button = e.target.classList.contains('remove-participant') ? e.target : e.target.closest('.remove-participant');
+                const entry = button.closest('.participant-entry');
+                const container = entry.parentElement;
+
+                // Don't remove if it's the only entry in its container
+                if (container.querySelectorAll('.participant-entry').length > 1) {
+                    entry.remove();
+                }
+            }
+        });
+
+        // Form submission
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            // Collect form data
+            const formData = {
+                writingType: 'game',
+                title: document.getElementById('title').value,
+                writingUrl: document.getElementById('writingUrl').value,
+                wordCount: parseInt(document.getElementById('wordCount').value),
+                difficultyModifier: parseFloat(document.getElementById('difficultyModifier').value),
+                participants: []
+            };
+
+            // Collect trainer participants
+            const trainerEntries = trainerParticipantsContainer.querySelectorAll('.participant-entry');
+            trainerEntries.forEach(entry => {
+                const trainerSelect = entry.querySelector('.trainer-select');
+                const giftCheckbox = entry.querySelector('.gift-checkbox');
+
+                if (trainerSelect.value) {
+                    const participant = {
+                        type: 'trainer',
+                        trainerId: parseInt(trainerSelect.value),
+                        isGift: giftCheckbox.checked
+                    };
+                    formData.participants.push(participant);
+                }
+            });
+
+            // Collect monster participants
+            const monsterEntries = monsterParticipantsContainer.querySelectorAll('.participant-entry');
+            monsterEntries.forEach(entry => {
+                const monsterName = entry.querySelector('.monster-name').value;
+                const trainerSelect = entry.querySelector('.monster-trainer-select');
+                const giftCheckbox = entry.querySelector('.gift-checkbox');
+
+                if (monsterName && trainerSelect.value) {
+                    const participant = {
+                        type: 'monster',
+                        monsterName: monsterName,
+                        trainerId: parseInt(trainerSelect.value),
+                        isGift: giftCheckbox.checked
+                    };
+                    formData.participants.push(participant);
+                }
+            });
+
+            // Validate that at least one participant is selected
+            if (formData.participants.length === 0) {
+                alert('Please add at least one trainer or monster participant');
+                return;
+            }
+
+            try {
+                // Submit the form
+                const response = await fetch('/api/writing', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    // Display results
+                    form.classList.add('hidden');
+                    resultsSection.classList.remove('hidden');
+
+                    // Format calculation results
+                    let html = `<h3 class="font-semibold mb-2">Submission Details</h3>
+                                <p><strong>Title:</strong> ${formData.title}</p>
+                                <p><strong>Word Count:</strong> ${formData.wordCount}</p>
+                                <p><strong>Difficulty:</strong> x${formData.difficultyModifier}</p>`;
+
+                    if (result.calculation) {
+                        html += `<h3 class="font-semibold mt-4 mb-2">Rewards</h3>
+                                <p><strong>Total Levels:</strong> ${result.calculation.totalLevels}</p>
+                                <p><strong>Total Coins:</strong> ${result.calculation.totalCoins}</p>`;
+
+                        if (result.calculation.totalGiftLevels) {
+                            html += `<p><strong>Total Gift Levels:</strong> ${result.calculation.totalGiftLevels}</p>`;
+                        }
+
+                        if (result.calculation.participantRewards && result.calculation.participantRewards.length > 0) {
+                            html += `<h3 class="font-semibold mt-4 mb-2">Participant Rewards</h3>
+                                    <ul class="list-disc pl-5">`;
+
+                            // First show regular participants
+                            const regularParticipants = result.calculation.participantRewards.filter(r => !r.isGift);
+                            regularParticipants.forEach(reward => {
+                                let rewardText = '';
+                                if (reward.monsterName) {
+                                    rewardText = `${reward.trainerName}'s ${reward.monsterName}: ${reward.levels} levels`;
+                                    if (reward.giftLevels > 0) {
+                                        rewardText += ` + ${reward.giftLevels} gift levels`;
+                                    }
+                                    rewardText += `, ${reward.trainerName}: ${reward.coins} coins`;
+                                } else {
+                                    rewardText = `${reward.trainerName}: ${reward.levels} levels`;
+                                    if (reward.giftLevels > 0) {
+                                        rewardText += ` + ${reward.giftLevels} gift levels`;
+                                    }
+                                    rewardText += `, ${reward.coins} coins`;
+                                }
+                                html += `<li>${rewardText}</li>`;
+                            });
+
+                            // Then show gift participants
+                            const giftParticipants = result.calculation.participantRewards.filter(r => r.isGift);
+                            giftParticipants.forEach(reward => {
+                                let rewardText = '';
+                                if (reward.monsterName) {
+                                    rewardText = `Gift to ${reward.trainerName}'s ${reward.monsterName}: ${reward.levels} levels`;
+                                } else {
+                                    rewardText = `Gift to ${reward.trainerName}: ${reward.levels} levels`;
+                                }
+                                html += `<li>${rewardText}</li>`;
+                            });
+
+                            html += `</ul>`;
+                        }
+
+                        if (result.calculation.itemRewards && result.calculation.itemRewards.length > 0) {
+                            html += `<h3 class="font-semibold mt-4 mb-2">Gift Rewards</h3>
+                                    <ul class="list-disc pl-5">`;
+
+                            result.calculation.itemRewards.forEach(item => {
+                                html += `<li>${item.name} x${item.quantity}</li>`;
+                            });
+
+                            html += `</ul>`;
+                        }
+                    }
+
+                    calculationResults.innerHTML = html;
+
+                    // Check if we need to show the gift recipient form
+                    if (result.calculation.needGiftRecipient) {
+                        // Create the gift recipient form dynamically
+                        createGiftRecipientForm();
+                        // Store pending gift rewards data for later use
+                        window.pendingGiftRewards = result.calculation.pendingGiftRewards;
+                    } else {
+                        // Show reward summary modal if available
+                        if (typeof showRewardSummaryModal === 'function') {
+                            showRewardSummaryModal(result);
+                        }
+                    }
+                } else {
+                    alert('Error: ' + (result.message || 'Unknown error'));
+                }
+            } catch (error) {
+                console.error('Error submitting form:', error);
+                alert('Error submitting form. Please try again.');
+            }
+        });
+
+        // Back to form button
+        backToFormBtn.addEventListener('click', function() {
+            form.reset();
+            form.classList.remove('hidden');
+            resultsSection.classList.add('hidden');
+        });
+
+        // Load all trainers when the page loads
+        loadAllTrainers();
+
+        // Add a hint message to encourage adding participants
+        const participantsSection = document.querySelector('.mb-6');
+        if (participantsSection) {
+            const hintMessage = document.createElement('p');
+            hintMessage.className = 'text-amber-400 text-sm mt-2 mb-4';
+            hintMessage.innerHTML = '<i class="fas fa-info-circle mr-1"></i> Please add at least one trainer or monster participant using the buttons above.';
+            participantsSection.appendChild(hintMessage);
+        }
+
+        // Function to create the gift recipient form
+        function createGiftRecipientForm() {
+            const container = document.getElementById('giftRecipientFormContainer');
+
+            // Create the form HTML
+            const formHTML = `
+                <div id="giftRecipientForm" class="mt-4 p-4 rounded-md" style="background-color: #1f2937; border: 1px solid #374151;">
+                    <h3 class="text-lg font-semibold mb-3" style="color: #f59e0b;">Assign Gift Rewards</h3>
+                    <p class="mb-3">All participants in this submission are marked as gifts. Please select a trainer or monster to receive the gift levels and rewards.</p>
+
+                    <div class="mb-3">
+                        <label class="block text-sm font-semibold mb-2" style="color: #f59e0b;">Recipient Type</label>
+                        <select id="giftRecipientType" class="writing-select">
+                            <option value="trainer">Trainer</option>
+                            <option value="monster">Monster</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="block text-sm font-semibold mb-2" style="color: #f59e0b;">Select Trainer</label>
+                        <select id="giftRecipientTrainer" class="writing-select">
+                            <option value="">-- Select Trainer --</option>
+                        </select>
+                    </div>
+
+                    <div id="giftRecipientMonsterContainer" class="mb-3" style="display: none;">
+                        <label class="block text-sm font-semibold mb-2" style="color: #f59e0b;">Monster Name</label>
+                        <input type="text" id="giftRecipientMonster" class="writing-input" placeholder="Enter monster name">
+                    </div>
+
+                    <div class="flex justify-end">
+                        <button id="assignGiftRewards" class="px-4 py-2 rounded-md" style="background-color: #f97316; color: #1f2937; font-weight: 600;">
+                            <i class="fas fa-gift mr-1"></i> Assign Rewards
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            // Set the HTML content
+            container.innerHTML = formHTML;
+
+            // Populate trainer dropdown
+            populateGiftRecipientTrainers();
+
+            // Add event listeners
+            setupGiftRecipientFormEvents();
+        }
+
+        // Function to populate the gift recipient trainer dropdown
+        function populateGiftRecipientTrainers() {
+            const trainerSelect = document.getElementById('giftRecipientTrainer');
+            // Clear existing options
+            trainerSelect.innerHTML = '<option value="">-- Select Trainer --</option>';
+
+            // Add trainer options
+            if (window.allTrainers) {
+                window.allTrainers.forEach(trainer => {
+                    const option = document.createElement('option');
+                    option.value = trainer.id;
+                    option.textContent = trainer.name;
+                    trainerSelect.appendChild(option);
+                });
+            }
+        }
+
+        // Function to set up event listeners for the gift recipient form
+        function setupGiftRecipientFormEvents() {
+            // Toggle monster name input based on recipient type
+            document.getElementById('giftRecipientType').addEventListener('change', function() {
+                const monsterContainer = document.getElementById('giftRecipientMonsterContainer');
+                if (this.value === 'monster') {
+                    monsterContainer.style.display = 'block';
+                } else {
+                    monsterContainer.style.display = 'none';
+                }
+            });
+
+            // Handle assigning gift rewards
+            document.getElementById('assignGiftRewards').addEventListener('click', async function() {
+                const recipientType = document.getElementById('giftRecipientType').value;
+                const trainerId = document.getElementById('giftRecipientTrainer').value;
+                const monsterName = document.getElementById('giftRecipientMonster').value;
+
+                // Validate inputs
+                if (!trainerId) {
+                    alert('Please select a trainer');
+                    return;
+                }
+
+                if (recipientType === 'monster' && !monsterName) {
+                    alert('Please enter a monster name');
+                    return;
+                }
+
+                // Get pending gift rewards data
+                const { count, giftLevels } = window.pendingGiftRewards || { count: 1, giftLevels: 1 };
+
+                try {
+                    // Submit the request to assign gift rewards
+                    const response = await fetch('/api/gift-rewards/assign', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            recipientType,
+                            trainerId,
+                            monsterName,
+                            rewardCount: count,
+                            giftLevels
+                        })
+                    });
+
+                    const result = await response.json();
+
+                    if (result.success) {
+                        // Hide the gift recipient form
+                        document.getElementById('giftRecipientForm').style.display = 'none';
+
+                        // Display the results
+                        let html = '<h3 class="font-semibold mt-4 mb-2">Gift Rewards Assigned</h3>';
+
+                        if (result.recipientType === 'monster') {
+                            html += `<p>${result.trainerName}'s ${result.monsterName} received ${result.giftLevels} levels</p>`;
+                        } else {
+                            html += `<p>${result.trainerName} received ${result.giftLevels} levels</p>`;
+                        }
+
+                        if (result.itemRewards && result.itemRewards.length > 0) {
+                            html += `<h3 class="font-semibold mt-4 mb-2">Items Received</h3>
+                                    <ul class="list-disc pl-5">`;
+
+                            result.itemRewards.forEach(item => {
+                                html += `<li>${item.name} x${item.quantity}</li>`;
+                            });
+
+                            html += '</ul>';
+                        }
+
+                        // Append to existing results
+                        document.getElementById('calculationResults').innerHTML += html;
+
+                        // Show reward summary modal if available
+                        if (typeof showRewardSummaryModal === 'function') {
+                            showRewardSummaryModal(result);
+                        }
+                    } else {
+                        alert('Error: ' + (result.message || 'Unknown error'));
+                    }
+                } catch (error) {
+                    console.error('Error assigning gift rewards:', error);
+                    alert('Error assigning gift rewards. Please try again.');
+                }
+            });
+        }
+    });
+</script>
+
+<style>
+    /* General Styles */
+    .text-accent {
+        color: #f97316; /* Orange-500 */
+    }
+
+    .location-card {
+        background-color: var(--card-background);
+        border-radius: 0.75rem;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        transition: all 0.3s ease;
+    }
+
+    .location-card:hover {
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+    }
+
+    /* Form Elements */
+    .writing-input {
+        width: 100% !important;
+        height: 48px !important;
+        background-color: rgb(31 41 55 / 0.9) !important;
+        color: white !important;
+        border: 1px solid rgb(55 65 81) !important;
+        border-radius: 0.5rem !important;
+        padding: 0.75rem 1rem !important;
+        margin-bottom: 1rem !important;
+    }
+
+    .writing-input:focus {
+        outline: none !important;
+        border-color: rgb(217 119 6) !important;
+        box-shadow: 0 0 0 2px rgba(217, 119, 6, 0.2) !important;
+    }
+
+    .writing-select {
+        width: 100% !important;
+        height: 48px !important;
+        background-color: rgb(31 41 55 / 0.9) !important;
+        color: white !important;
+        border: 1px solid rgb(55 65 81) !important;
+        border-radius: 0.5rem !important;
+        padding: 0.75rem 1rem !important;
+        appearance: none !important;
+        cursor: pointer !important;
+        margin-bottom: 1rem !important;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23d6a339'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E") !important;
+        background-repeat: no-repeat !important;
+        background-position: right 0.75rem center !important;
+        background-size: 1.5rem !important;
+    }
+
+    .writing-select:focus {
+        outline: none !important;
+        border-color: rgb(217 119 6) !important;
+        box-shadow: 0 0 0 2px rgba(217, 119, 6, 0.2) !important;
+    }
+
+    .writing-textarea {
+        width: 100% !important;
+        background-color: rgb(31 41 55 / 0.9) !important;
+        color: white !important;
+        border: 1px solid rgb(55 65 81) !important;
+        border-radius: 0.5rem !important;
+        padding: 0.75rem 1rem !important;
+        min-height: 100px !important;
+    }
+
+    .writing-textarea:focus {
+        outline: none !important;
+        border-color: rgb(217 119 6) !important;
+        box-shadow: 0 0 0 2px rgba(217, 119, 6, 0.2) !important;
+    }
+
+    /* Participant Entry Styling */
+    .participant-entry {
+        background-color: rgba(55, 65, 81, 0.5);
+        border: 1px solid rgba(75, 85, 99, 0.5);
+        transition: all 0.3s;
+    }
+
+    .participant-entry:hover {
+        border-color: #f97316;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    /* Button Styles */
+    .farm-btn-sm {
+        background-color: #f97316; /* Orange-500 */
+        color: var(--background-color);
+        font-weight: 600;
+        transition: all 0.3s;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        border: none;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .farm-btn-sm:hover {
+        background-color: #ea580c; /* Orange-600 */
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        transform: translateY(-2px);
+    }
+
+    .btn-secondary {
+        background-color: rgba(255, 255, 255, 0.1);
+        color: var(--text-color);
+        padding: 0.5rem 1rem;
+        border-radius: 0.5rem;
+        transition: all 0.3s;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+    }
+
+    .btn-secondary:hover {
+        background-color: rgba(255, 255, 255, 0.2);
+        border-color: rgba(255, 255, 255, 0.1);
+    }
+    .text-accent-color {
+        color: var(--accent-color);
+    }
+
+    .bg-accent-color {
+        background-color: var(--accent-color);
+    }
+
+    .hover\:bg-accent-hover:hover {
+        background-color: var(--accent-hover);
+    }
+
+    .btn {
+        display: inline-block;
+        padding: 0.5rem 1rem;
+        border-radius: 0.25rem;
+        text-decoration: none;
+        transition: background-color 0.2s;
+    }
+
+    .btn-primary {
+        background-color: var(--accent-color);
+        color: #fff;
+    }
+
+    .btn-primary:hover {
+        background-color: var(--accent-hover);
+    }
+
+    .participant-entry {
+        background-color: rgba(55, 65, 81, 0.5);
+        padding: 1rem;
+        border-radius: 0.5rem;
+        border: 1px solid rgba(75, 85, 99, 0.5);
+    }
+</style>

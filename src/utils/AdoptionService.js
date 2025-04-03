@@ -1,6 +1,7 @@
 const MonthlyAdopt = require('../models/MonthlyAdopt');
 const Trainer = require('../models/Trainer');
 const MonsterService = require('./MonsterService');
+const TrainerInventoryChecker = require('./TrainerInventoryChecker');
 
 class AdoptionService {
   /**
@@ -17,19 +18,24 @@ class AdoptionService {
 
       const result = await MonthlyAdopt.getByYearAndMonth(year, month, page, limit);
 
+      const adopts = result.adopts.map(adopt => ({
+        id: adopt.id,
+        species1: adopt.species1,
+        species2: adopt.species2,
+        species3: adopt.species3,
+        type1: adopt.type1,
+        type2: adopt.type2,
+        type3: adopt.type3,
+        type4: adopt.type4,
+        type5: adopt.type5,
+        attribute: adopt.attribute,
+        claimed: adopt.claimed || false
+      }));
+
+      console.log('Processed adopts:', adopts);
+
       return {
-        adopts: result.adopts.map(adopt => ({
-          id: adopt.id,
-          species1: adopt.species1,
-          species2: adopt.species2,
-          species3: adopt.species3,
-          type1: adopt.type1,
-          type2: adopt.type2,
-          type3: adopt.type3,
-          type4: adopt.type4,
-          type5: adopt.type5,
-          attribute: adopt.attribute
-        })),
+        adopts: adopts,
         pagination: {
           currentPage: page,
           totalPages: Math.ceil(result.total / limit),
@@ -51,31 +57,109 @@ class AdoptionService {
    */
   static async getAllAdopts(page = 1, limit = 10) {
     try {
+      console.log(`AdoptionService.getAllAdopts called with page=${page}, limit=${limit}`);
+
       const result = await MonthlyAdopt.getAll(page, limit);
+      console.log('MonthlyAdopt.getAll returned:', {
+        adoptCount: result.adopts ? result.adopts.length : 0,
+        total: result.total,
+        pagination: result.pagination
+      });
+
+      const adopts = result.adopts.map(adopt => ({
+        id: adopt.id,
+        species1: adopt.species1,
+        species2: adopt.species2,
+        species3: adopt.species3,
+        type1: adopt.type1,
+        type2: adopt.type2,
+        type3: adopt.type3,
+        type4: adopt.type4,
+        type5: adopt.type5,
+        attribute: adopt.attribute,
+        claimed: adopt.claimed || false,
+        year: adopt.year,
+        month: adopt.month
+      }));
+
+      console.log('Processed all adopts:', adopts);
+
+      // Calculate total pages properly
+      const totalPages = result.pagination ? result.pagination.totalPages : Math.ceil(result.total / limit);
+      const total = result.total || (result.pagination ? result.pagination.total : 0);
+
+      console.log(`Calculated totalPages=${totalPages}, total=${total}`);
 
       return {
-        adopts: result.adopts.map(adopt => ({
-          id: adopt.id,
-          species1: adopt.species1,
-          species2: adopt.species2,
-          species3: adopt.species3,
-          type1: adopt.type1,
-          type2: adopt.type2,
-          type3: adopt.type3,
-          type4: adopt.type4,
-          type5: adopt.type5,
-          attribute: adopt.attribute
-        })),
+        adopts: adopts,
+        total: total,
         pagination: {
           currentPage: page,
-          totalPages: Math.ceil(result.total / limit),
-          total: result.total,
+          totalPages: totalPages,
+          total: total,
           limit
         }
       };
     } catch (error) {
       console.error('Error getting all adopts:', error);
       throw error;
+    }
+  }
+
+  /**
+   * Get monthly adopts for a specific year and month with pagination
+   * @param {number} year - Year
+   * @param {number} month - Month (1-12)
+   * @param {number} page - Page number (1-based)
+   * @param {number} limit - Number of adopts per page
+   * @returns {Promise<Object>} - Object containing adopts and pagination info
+   */
+  static async getAdoptsByYearAndMonth(year, month, page = 1, limit = 10) {
+    try {
+      console.log(`AdoptionService.getAdoptsByYearAndMonth called with year=${year}, month=${month}, page=${page}, limit=${limit}`);
+
+      const result = await MonthlyAdopt.getByYearAndMonth(year, month, page, limit);
+      console.log('MonthlyAdopt.getByYearAndMonth returned:', {
+        adoptCount: result.adopts ? result.adopts.length : 0,
+        total: result.total,
+        pagination: result.pagination
+      });
+
+      const adopts = result.adopts.map(adopt => ({
+        id: adopt.id,
+        species1: adopt.species1,
+        species2: adopt.species2,
+        species3: adopt.species3,
+        type1: adopt.type1,
+        type2: adopt.type2,
+        type3: adopt.type3,
+        type4: adopt.type4,
+        type5: adopt.type5,
+        attribute: adopt.attribute,
+        claimed: adopt.claimed || false,
+        year: adopt.year,
+        month: adopt.month
+      }));
+
+      console.log(`Processed ${adopts.length} adopts for ${year}-${month}`);
+
+      return {
+        adopts: adopts,
+        total: result.total,
+        pagination: result.pagination
+      };
+    } catch (error) {
+      console.error('Error getting monthly adopts by year and month:', error);
+      return {
+        adopts: [],
+        total: 0,
+        pagination: {
+          currentPage: page,
+          totalPages: 0,
+          total: 0,
+          limit
+        }
+      };
     }
   }
 
@@ -122,32 +206,7 @@ class AdoptionService {
         };
       }
 
-      // Check if trainer has a Daycare Daypass
-      const inventory = await Trainer.getInventory(trainerId);
-      let itemsInventory = {};
-
-      // Parse the inventory items if needed
-      if (inventory.inv_items) {
-        if (typeof inventory.inv_items === 'string') {
-          try {
-            itemsInventory = JSON.parse(inventory.inv_items);
-          } catch (e) {
-            console.error('Error parsing inventory items:', e);
-            itemsInventory = {};
-          }
-        } else {
-          itemsInventory = inventory.inv_items;
-        }
-      }
-
-      if (!itemsInventory['Daycare Daypass'] || itemsInventory['Daycare Daypass'] < 1) {
-        return {
-          success: false,
-          message: 'You need a Daycare Daypass to adopt a monster'
-        };
-      }
-
-      // Use the Daycare Daypass
+      // Use the Daycare Daypass directly without checking
       await Trainer.updateInventoryItem(trainerId, 'inv_items', 'Daycare Daypass', -1);
 
       // Create the monster
@@ -241,5 +300,7 @@ class AdoptionService {
 }
 
 module.exports = AdoptionService;
+
+
 
 

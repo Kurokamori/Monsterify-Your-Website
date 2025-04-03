@@ -1,26 +1,70 @@
-
-
-<div class='container mx-auto px-4 py-8'>
+<div class='container mx-auto px-4 py-8 location-activity-container'>
   <div class='max-w-4xl mx-auto'>
     <div class='mb-8 text-center'>
-      <h1 class='text-3xl font-display font-bold'>Task Completed!</h1>
-      <p class='text-gray-300 mt-2'>Great job! You've earned the following rewards:</p>
+      <h1 class='text-4xl font-display font-bold text-white mb-2'>Task Completed!</h1>
+      <div class="inline-flex items-center justify-center bg-green-900 text-green-300 px-4 py-2 rounded-full mb-4">
+        <i class="fas fa-check-circle mr-2"></i> Success
+      </div>
+      <p class='text-gray-300 text-lg'>Great job! You've earned the following rewards:</p>
     </div>
-    
-    <div class='bg-card rounded-lg p-6 shadow-lg mb-8'>
-      <div class='rewards-list'>
+
+    <div class='bg-gray-800 rounded-lg p-6 shadow-lg mb-8 border border-gray-700'>
+      <div class='rewards-list grid grid-cols-1 md:grid-cols-2 gap-6'>
         <% if (rewards && rewards.length > 0) { %>
           <% rewards.forEach(reward => { %>
             <div class='reward-item <%= reward.rarity %>'>
-              <% if (reward.reward_type === 'monster') { %>
+              <% if (reward.reward_type === 'monster' || reward.type === 'monster') { %>
                 <div class='monster-reward'>
                   <div class='reward-icon'>
-                    <i class='fas fa-dragon'></i>
+                    <i class='<%= reward.icon || "fas fa-dragon" %>'></i>
                   </div>
                   <div class='reward-details'>
-                    <h3 class='reward-title'><%= reward.reward_data.species %></h3>
-                    <p class='reward-description'>Level <%= reward.reward_data.level %></p>
-                    <button class='btn-primary claim-reward' data-reward-id='<%= reward.reward_id %>' data-reward-type='monster' <%= reward.claimed ? 'disabled' : '' %>>
+                    <%
+                      let monsterData = reward.reward_data || reward.data || {};
+                      let species = '';
+                      let level = 1;
+                      let types = [];
+
+                      if (monsterData.species) {
+                        if (Array.isArray(monsterData.species)) {
+                          species = monsterData.species.join('/');
+                        } else {
+                          species = monsterData.species;
+                        }
+                      } else if (monsterData.species1) {
+                        species = monsterData.species1;
+                        if (monsterData.species2) species += '/' + monsterData.species2;
+                        if (monsterData.species3) species += '/' + monsterData.species3;
+                      } else {
+                        species = 'Unknown';
+                      }
+
+                      if (monsterData.level) {
+                        level = monsterData.level;
+                      } else if (monsterData.minLevel && monsterData.maxLevel) {
+                        level = Math.floor(Math.random() * (monsterData.maxLevel - monsterData.minLevel + 1)) + monsterData.minLevel;
+                      }
+
+                      if (monsterData.types && Array.isArray(monsterData.types)) {
+                        types = monsterData.types;
+                      } else {
+                        if (monsterData.type1) types.push(monsterData.type1);
+                        if (monsterData.type2) types.push(monsterData.type2);
+                        if (monsterData.type3) types.push(monsterData.type3);
+                      }
+                    %>
+                    <h3 class='reward-title'><%= species %></h3>
+                    <p class='reward-description'>Level <%= level %></p>
+                    <% if (types.length > 0) { %>
+                      <div class="flex flex-wrap gap-1 mb-3">
+                        <% types.forEach(type => { %>
+                          <span class="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-gray-700 text-gray-200">
+                            <%= type %>
+                          </span>
+                        <% }); %>
+                      </div>
+                    <% } %>
+                    <button class='btn-primary claim-reward' data-reward-id='<%= reward.reward_id || reward.id %>' data-reward-type='monster' <%= reward.claimed ? 'disabled' : '' %>>
                       <% if (reward.claimed) { %>
                         <i class='fas fa-check mr-1'></i> Claimed
                       <% } else { %>
@@ -29,16 +73,25 @@
                     </button>
                   </div>
                 </div>
-              <% } else if (reward.reward_type === 'item') { %>
+              <% } else if (reward.reward_type === 'item' || reward.type === 'item') { %>
                 <div class='item-reward'>
                   <div class='reward-icon'>
-                    <i class='fas fa-box'></i>
+                    <i class='<%= reward.icon || "fas fa-box" %>'></i>
                   </div>
                   <div class='reward-details'>
-                    <h3 class='reward-title'><%= reward.reward_data.item_name %></h3>
-                    <p class='reward-description'><%= reward.reward_data.item_description %></p>
-                    <p class='reward-quantity'>Quantity: <%= reward.reward_data.quantity %></p>
-                    <button class='btn-primary claim-reward' data-reward-id='<%= reward.reward_id %>' data-reward-type='item' <%= reward.claimed ? 'disabled' : '' %>>
+                    <%
+                      let itemData = reward.reward_data || reward.data || {};
+                      let itemName = itemData.name || itemData.item_name || 'Unknown Item';
+                      let itemDesc = itemData.description || itemData.item_description || itemData.effect || 'No description available';
+                      let itemQuantity = itemData.quantity || 1;
+                      if (typeof itemQuantity === 'object' && itemQuantity.min && itemQuantity.max) {
+                        itemQuantity = Math.floor(Math.random() * (itemQuantity.max - itemQuantity.min + 1)) + itemQuantity.min;
+                      }
+                    %>
+                    <h3 class='reward-title'><%= itemName %></h3>
+                    <p class='reward-description'><%= itemDesc %></p>
+                    <p class='reward-quantity'>Quantity: <%= itemQuantity %></p>
+                    <button class='btn-primary claim-reward' data-reward-id='<%= reward.reward_id || reward.id %>' data-reward-type='item' <%= reward.claimed ? 'disabled' : '' %>>
                       <% if (reward.claimed) { %>
                         <i class='fas fa-check mr-1'></i> Claimed
                       <% } else { %>
@@ -47,15 +100,27 @@
                     </button>
                   </div>
                 </div>
-              <% } else if (reward.reward_type === 'coin') { %>
+              <% } else if (reward.reward_type === 'coin' || reward.type === 'coin') { %>
                 <div class='coin-reward'>
                   <div class='reward-icon'>
-                    <i class='fas fa-coins'></i>
+                    <i class='<%= reward.icon || "fas fa-coins" %>'></i>
                   </div>
                   <div class='reward-details'>
                     <h3 class='reward-title'>Coins</h3>
-                    <p class='reward-quantity'><%= reward.reward_data.amount %> coins</p>
-                    <button class='btn-primary claim-reward' data-reward-id='<%= reward.reward_id %>' data-reward-type='coin' <%= reward.claimed ? 'disabled' : '' %>>
+                    <p class='reward-quantity'>
+                      <%
+                        let coinAmount = 100;
+                        if (reward.amount) {
+                          coinAmount = reward.amount;
+                        } else if (reward.data && reward.data.amount) {
+                          coinAmount = reward.data.amount;
+                        } else if (reward.reward_data && reward.reward_data.amount) {
+                          coinAmount = reward.reward_data.amount;
+                        }
+                      %>
+                      <%= coinAmount %> coins
+                    </p>
+                    <button class='btn-primary claim-reward' data-reward-id='<%= reward.reward_id || reward.id %>' data-reward-type='coin' <%= reward.claimed ? 'disabled' : '' %>>
                       <% if (reward.claimed) { %>
                         <i class='fas fa-check mr-1'></i> Claimed
                       <% } else { %>
@@ -64,15 +129,47 @@
                     </button>
                   </div>
                 </div>
+              <% } else if (reward.reward_type === 'level' || reward.type === 'level') { %>
+                <div class='level-reward'>
+                  <div class='reward-icon'>
+                    <i class='<%= reward.icon || "fas fa-level-up-alt" %>'></i>
+                  </div>
+                  <div class='reward-details'>
+                    <h3 class='reward-title'>Level Up</h3>
+                    <p class='reward-quantity'>
+                      <%
+                        let levelAmount = 1;
+                        if (reward.amount) {
+                          levelAmount = reward.amount;
+                        } else if (reward.data && reward.data.levels) {
+                          levelAmount = reward.data.levels;
+                        } else if (reward.reward_data && reward.reward_data.levels) {
+                          levelAmount = reward.reward_data.levels;
+                        }
+                      %>
+                      <%= levelAmount %> level<%= levelAmount !== 1 ? 's' : '' %>
+                    </p>
+                    <button class='btn-primary claim-reward' data-reward-id='<%= reward.reward_id || reward.id %>' data-reward-type='level' <%= reward.claimed ? 'disabled' : '' %>>
+                      <% if (reward.claimed) { %>
+                        <i class='fas fa-check mr-1'></i> Claimed
+                      <% } else { %>
+                        <i class='fas fa-plus-circle mr-1'></i> Claim Levels
+                      <% } %>
+                    </button>
+                  </div>
+                </div>
               <% } %>
             </div>
           <% }); %>
         <% } else { %>
-          <p class='text-center'>No rewards found. Try again later!</p>
+          <div class="col-span-2 text-center py-8">
+            <i class="fas fa-exclamation-circle text-yellow-500 text-4xl mb-4"></i>
+            <p class='text-xl text-gray-300'>No rewards found. Try again later!</p>
+          </div>
         <% } %>
       </div>
     </div>
-    
+
     <div class='text-center'>
       <a href='<%= activityUrl %>' class='btn-secondary mr-4'>
         <i class='fas fa-redo mr-1'></i> Do Another Task
@@ -84,40 +181,267 @@
   </div>
 </div>
 
+<link rel="stylesheet" href="/css/location_activities.css">
+
 
 <script>
   document.addEventListener('DOMContentLoaded', function() {
     // Session data
     const sessionId = '<%= session.session_id %>';
-    
+
     // Handle claim reward buttons
     const claimButtons = document.querySelectorAll('.claim-reward');
-    
+
     claimButtons.forEach(button => {
       button.addEventListener('click', async function() {
         const rewardId = this.dataset.rewardId;
         const rewardType = this.dataset.rewardType;
-        
+
         try {
           // Disable the button to prevent multiple clicks
           this.disabled = true;
-          this.innerHTML = 'Claiming...';
-          
-          const response = await fetch('/api/claim-reward', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-              reward_id: rewardId,
-              reward_type: rewardType,
-              session_id: sessionId
-            })
+          this.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i> Processing...';
+
+          // Show a modal to collect additional information based on reward type
+          let trainerId = 'select_trainer';
+          let monsterName = '';
+          let targetMonsterId = null;
+
+          // Create a modal for collecting information
+          const modal = document.createElement('div');
+          modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
+          modal.id = 'claim-modal';
+
+          let modalContent = '';
+
+          if (rewardType === 'monster') {
+            // For monster rewards, ask for trainer and monster name
+            modalContent = `
+              <div class="bg-gray-800 rounded-lg p-6 max-w-md w-full mx-4 shadow-xl border border-gray-700">
+                <h3 class="text-xl font-bold text-white mb-4">Add Monster to Team</h3>
+                <div class="mb-4">
+                  <label class="block text-gray-300 mb-2">Select Trainer</label>
+                  <select id="trainer-select" class="w-full bg-gray-700 text-white rounded p-2 border border-gray-600">
+                    <option value="select_trainer">Select a trainer</option>
+                    <!-- Trainers will be loaded dynamically -->
+                  </select>
+                </div>
+                <div class="mb-6">
+                  <label class="block text-gray-300 mb-2">Monster Name</label>
+                  <input type="text" id="monster-name" class="w-full bg-gray-700 text-white rounded p-2 border border-gray-600" placeholder="Enter a name for your monster">
+                </div>
+                <div class="flex justify-end space-x-3">
+                  <button id="modal-cancel" class="px-4 py-2 bg-gray-700 text-white rounded hover:bg-gray-600">Cancel</button>
+                  <button id="modal-confirm" class="px-4 py-2 bg-yellow-600 text-white rounded hover:bg-yellow-500">Add to Team</button>
+                </div>
+              </div>
+            `;
+          } else if (rewardType === 'item' || rewardType === 'coin') {
+            // For item and coin rewards, just ask for trainer
+            modalContent = `
+              <div class="bg-gray-800 rounded-lg p-6 max-w-md w-full mx-4 shadow-xl border border-gray-700">
+                <h3 class="text-xl font-bold text-white mb-4">Claim ${rewardType === 'item' ? 'Item' : 'Coins'}</h3>
+                <div class="mb-6">
+                  <label class="block text-gray-300 mb-2">Select Trainer</label>
+                  <select id="trainer-select" class="w-full bg-gray-700 text-white rounded p-2 border border-gray-600">
+                    <option value="select_trainer">Select a trainer</option>
+                    <!-- Trainers will be loaded dynamically -->
+                  </select>
+                </div>
+                <div class="flex justify-end space-x-3">
+                  <button id="modal-cancel" class="px-4 py-2 bg-gray-700 text-white rounded hover:bg-gray-600">Cancel</button>
+                  <button id="modal-confirm" class="px-4 py-2 bg-yellow-600 text-white rounded hover:bg-yellow-500">Claim</button>
+                </div>
+              </div>
+            `;
+          } else if (rewardType === 'level') {
+            // For level rewards, ask for trainer or monster
+            modalContent = `
+              <div class="bg-gray-800 rounded-lg p-6 max-w-md w-full mx-4 shadow-xl border border-gray-700">
+                <h3 class="text-xl font-bold text-white mb-4">Apply Level Up</h3>
+                <div class="mb-4">
+                  <label class="block text-gray-300 mb-2">Apply to</label>
+                  <div class="flex space-x-4">
+                    <label class="inline-flex items-center">
+                      <input type="radio" name="level-target" value="trainer" class="mr-2" checked>
+                      <span class="text-white">Trainer</span>
+                    </label>
+                    <label class="inline-flex items-center">
+                      <input type="radio" name="level-target" value="monster" class="mr-2">
+                      <span class="text-white">Monster</span>
+                    </label>
+                  </div>
+                </div>
+                <div class="mb-4">
+                  <label class="block text-gray-300 mb-2">Select Trainer</label>
+                  <select id="trainer-select" class="w-full bg-gray-700 text-white rounded p-2 border border-gray-600">
+                    <option value="select_trainer">Select a trainer</option>
+                    <!-- Trainers will be loaded dynamically -->
+                  </select>
+                </div>
+                <div id="monster-select-container" class="mb-6 hidden">
+                  <label class="block text-gray-300 mb-2">Select Monster</label>
+                  <select id="monster-select" class="w-full bg-gray-700 text-white rounded p-2 border border-gray-600" disabled>
+                    <option value="">Select a monster</option>
+                    <!-- Monsters will be loaded dynamically -->
+                  </select>
+                </div>
+                <div class="flex justify-end space-x-3">
+                  <button id="modal-cancel" class="px-4 py-2 bg-gray-700 text-white rounded hover:bg-gray-600">Cancel</button>
+                  <button id="modal-confirm" class="px-4 py-2 bg-yellow-600 text-white rounded hover:bg-yellow-500">Apply Level Up</button>
+                </div>
+              </div>
+            `;
+          }
+
+          modal.innerHTML = modalContent;
+          document.body.appendChild(modal);
+
+          // Load trainers
+          const loadTrainers = async () => {
+            try {
+              const response = await fetch('/api/trainers');
+              const data = await response.json();
+
+              if (data.success && data.trainers && data.trainers.length > 0) {
+                const trainerSelect = document.getElementById('trainer-select');
+                trainerSelect.innerHTML = '<option value="select_trainer">Select a trainer</option>';
+
+                data.trainers.forEach(trainer => {
+                  const option = document.createElement('option');
+                  option.value = trainer.id;
+                  option.textContent = trainer.name;
+                  trainerSelect.appendChild(option);
+                });
+              }
+            } catch (error) {
+              console.error('Error loading trainers:', error);
+            }
+          };
+
+          // Load monsters for a trainer
+          const loadMonsters = async (trainerId) => {
+            try {
+              const response = await fetch(`/api/trainers/${trainerId}/monsters`);
+              const data = await response.json();
+
+              const monsterSelect = document.getElementById('monster-select');
+              monsterSelect.innerHTML = '<option value="">Select a monster</option>';
+              monsterSelect.disabled = true;
+
+              if (data.success && data.monsters && data.monsters.length > 0) {
+                data.monsters.forEach(monster => {
+                  const option = document.createElement('option');
+                  option.value = monster.id;
+                  option.textContent = `${monster.name} (Lv. ${monster.level})`;
+                  monsterSelect.appendChild(option);
+                });
+                monsterSelect.disabled = false;
+              }
+            } catch (error) {
+              console.error('Error loading monsters:', error);
+            }
+          };
+
+          // Load trainers immediately
+          loadTrainers();
+
+          // Set up event listeners
+          document.getElementById('modal-cancel').addEventListener('click', () => {
+            document.body.removeChild(modal);
+            this.disabled = false;
           });
-          
-          const data = await response.json();
-          
-          if (data.success) {
+
+          // For level rewards, handle radio button changes
+          if (rewardType === 'level') {
+            const radioButtons = document.querySelectorAll('input[name="level-target"]');
+            const monsterContainer = document.getElementById('monster-select-container');
+
+            radioButtons.forEach(radio => {
+              radio.addEventListener('change', () => {
+                if (radio.value === 'monster') {
+                  monsterContainer.classList.remove('hidden');
+                } else {
+                  monsterContainer.classList.add('hidden');
+                }
+              });
+            });
+
+            // When trainer changes, load monsters
+            document.getElementById('trainer-select').addEventListener('change', (e) => {
+              const selectedTrainerId = e.target.value;
+              if (selectedTrainerId && selectedTrainerId !== 'select_trainer') {
+                loadMonsters(selectedTrainerId);
+              }
+            });
+          }
+
+          // Handle confirm button
+          return new Promise((resolve, reject) => {
+            document.getElementById('modal-confirm').addEventListener('click', async () => {
+              // Get values from form
+              trainerId = document.getElementById('trainer-select').value;
+
+              if (rewardType === 'monster') {
+                monsterName = document.getElementById('monster-name').value || '';
+              } else if (rewardType === 'level') {
+                const levelTarget = document.querySelector('input[name="level-target"]:checked').value;
+                if (levelTarget === 'monster') {
+                  targetMonsterId = document.getElementById('monster-select').value;
+                  if (!targetMonsterId) {
+                    alert('Please select a monster');
+                    return;
+                  }
+                }
+              }
+
+              // Remove modal
+              document.body.removeChild(modal);
+
+              // Log all rewards for debugging
+              try {
+                console.log('All rewards:', <%= JSON.stringify(rewards || []) %>);
+              } catch (e) {
+                console.error('Error logging rewards:', e);
+              }
+
+              console.log('Claiming reward:', {
+                reward_id: rewardId,
+                reward_type: rewardType,
+                trainerId: trainerId,
+                monsterName: monsterName,
+                targetMonsterId: targetMonsterId,
+                session_id: sessionId
+              });
+
+              // Make API request
+              const requestBody = {
+                reward_id: rewardId,
+                reward_type: rewardType,
+                trainerId: trainerId,
+                session_id: sessionId
+              };
+
+              // Add additional parameters based on reward type
+              if (rewardType === 'monster' && monsterName) {
+                requestBody.monsterName = monsterName;
+              } else if (rewardType === 'level' && targetMonsterId) {
+                requestBody.targetMonsterId = targetMonsterId;
+              }
+
+              const response = await fetch('/api/claim-reward', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(requestBody)
+              });
+
+              const data = await response.json();
+              resolve(data);
+            });
+          }).then(data => {
+            if (data.success) {
             // Update the button to show claimed status
             this.innerHTML = 'Claimed';
             this.classList.add('btn-success');
@@ -125,7 +449,7 @@
           } else {
             alert('Error claiming reward: ' + data.message);
             this.disabled = false;
-            
+
             // Reset the button text based on reward type
             if (rewardType === 'monster') {
               this.innerHTML = 'Add to Team';
@@ -139,7 +463,7 @@
           console.error('Error claiming reward:', error);
           alert('Error claiming reward. Please try again.');
           this.disabled = false;
-          
+
           // Reset the button text based on reward type
           if (rewardType === 'monster') {
             this.innerHTML = 'Add to Team';
@@ -158,13 +482,13 @@
   .bg-card {
     background-color: var(--card-bg);
   }
-  
+
   .rewards-list {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: 1rem;
   }
-  
+
   .reward-item {
     background-color: var(--card-bg-light);
     border-radius: 0.5rem;
@@ -173,33 +497,33 @@
     flex-direction: column;
     border: 2px solid transparent;
   }
-  
+
   .reward-item.common {
     border-color: #9e9e9e;
   }
-  
+
   .reward-item.uncommon {
     border-color: #4caf50;
   }
-  
+
   .reward-item.rare {
     border-color: #2196f3;
   }
-  
+
   .reward-item.epic {
     border-color: #9c27b0;
   }
-  
+
   .reward-item.legendary {
     border-color: #ff9800;
     box-shadow: 0 0 10px rgba(255, 152, 0, 0.5);
   }
-  
+
   .monster-reward, .item-reward, .coin-reward {
     display: flex;
     gap: 1rem;
   }
-  
+
   .reward-icon {
     width: 80px;
     height: 80px;
@@ -210,28 +534,28 @@
     background-color: var(--card-bg);
     border-radius: 0.25rem;
   }
-  
+
   .reward-details {
     flex: 1;
   }
-  
+
   .reward-title {
     font-weight: bold;
     font-size: 1.1rem;
     margin-bottom: 0.25rem;
   }
-  
+
   .reward-description {
     font-size: 0.9rem;
     color: var(--text-muted);
     margin-bottom: 0.5rem;
   }
-  
+
   .reward-quantity {
     font-size: 0.9rem;
     margin-bottom: 0.5rem;
   }
-  
+
   .btn-primary {
     background-color: var(--accent-color);
     color: var(--background-color);
@@ -241,18 +565,18 @@
     border-radius: 0.25rem;
     display: inline-block;
   }
-  
+
   .btn-primary:hover {
     background-color: var(--accent-hover);
     transform: translateY(-2px);
   }
-  
+
   .btn-primary:disabled {
     opacity: 0.7;
     cursor: not-allowed;
     transform: none;
   }
-  
+
   .btn-success {
     background-color: #4caf50;
     color: white;
@@ -261,7 +585,7 @@
     border-radius: 0.25rem;
     display: inline-block;
   }
-  
+
   .btn-secondary {
     background-color: var(--card-bg-light);
     color: var(--text-color);
@@ -271,7 +595,7 @@
     transition: all 0.2s;
     display: inline-block;
   }
-  
+
   .btn-secondary:hover {
     background-color: var(--card-bg);
     transform: translateY(-2px);

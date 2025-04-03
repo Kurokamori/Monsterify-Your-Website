@@ -12,7 +12,7 @@ class PlayerMission {
         CREATE TABLE IF NOT EXISTS player_missions (
           id SERIAL PRIMARY KEY,
           player_id INTEGER NOT NULL,
-          template_id INTEGER NOT NULL REFERENCES mission_templates(id),
+          template_id INTEGER NOT NULL REFERENCES missions(id),
           current_progress INTEGER DEFAULT 0,
           target_progress INTEGER NOT NULL,
           status VARCHAR(20) DEFAULT 'active', -- active, completed, abandoned
@@ -39,13 +39,13 @@ class PlayerMission {
   static async getPlayerMissions(playerId, status = null) {
     try {
       let query = `
-        SELECT pm.*, mt.name, mt.description, 
-          mt.progress_flavor_1, mt.progress_flavor_2, mt.progress_flavor_3, 
+        SELECT pm.*, mt.name, mt.description,
+          mt.progress_flavor_1, mt.progress_flavor_2, mt.progress_flavor_3,
           mt.progress_flavor_4, mt.progress_flavor_5, mt.completion_message,
-          mt.completion_image_url, mt.progress_image_url, 
+          mt.completion_image_url, mt.progress_image_url,
           mt.level_rewards, mt.coin_rewards, mt.item_rewards
         FROM player_missions pm
-        JOIN mission_templates mt ON pm.template_id = mt.id
+        JOIN missions mt ON pm.template_id = mt.id
         WHERE pm.player_id = $1
       `;
 
@@ -83,18 +83,18 @@ class PlayerMission {
       // Determine target progress - random between min and max if max is provided
       const minProgress = template.min_progress_needed;
       const maxProgress = template.max_progress_needed;
-      const targetProgress = maxProgress 
+      const targetProgress = maxProgress
         ? Math.floor(Math.random() * (maxProgress - minProgress + 1)) + minProgress
         : minProgress;
-      
+
       // Check if player meets level requirements
       const playerQuery = `SELECT level FROM players WHERE id = $1`;
       const playerResult = await pool.query(playerQuery, [playerId]);
-      
+
       if (playerResult.rows.length === 0) {
         throw new Error(`Player ${playerId} not found`);
       }
-      
+
       const playerLevel = playerResult.rows[0].level;
       if (template.level_requirement && playerLevel < template.level_requirement) {
         throw new Error(`Player level ${playerLevel} is below requirement ${template.level_requirement}`);
@@ -132,18 +132,18 @@ class PlayerMission {
       `;
 
       const result = await pool.query(query, [progressToAdd, missionId]);
-      
+
       if (result.rows.length === 0) {
         return null;
       }
-      
+
       const mission = result.rows[0];
-      
+
       // Check if mission is completed
       if (mission.current_progress >= mission.target_progress) {
         return await this.completeMission(missionId);
       }
-      
+
       return mission;
     } catch (error) {
       console.error(`Error updating progress for mission ${missionId}:`, error);
@@ -160,7 +160,7 @@ class PlayerMission {
     try {
       // Begin transaction
       await pool.query('BEGIN');
-      
+
       // Get mission and template details
       const missionQuery = `
         SELECT pm.*, mt.level_rewards, mt.coin_rewards, mt.item_rewards, mt.item_reward_amount
@@ -168,17 +168,17 @@ class PlayerMission {
         JOIN mission_templates mt ON pm.template_id = mt.id
         WHERE pm.id = $1 AND pm.status = 'active'
       `;
-      
+
       const missionResult = await pool.query(missionQuery, [missionId]);
-      
+
       if (missionResult.rows.length === 0) {
         await pool.query('ROLLBACK');
         return null;
       }
-      
+
       const mission = missionResult.rows[0];
       const playerId = mission.player_id;
-      
+
       // Update mission status
       const updateQuery = `
         UPDATE player_missions
@@ -186,9 +186,9 @@ class PlayerMission {
         WHERE id = $1
         RETURNING *
       `;
-      
+
       const updateResult = await pool.query(updateQuery, [missionId]);
-      
+
       // Distribute rewards
       // 1. Add XP/Level rewards
       if (mission.level_rewards > 0) {
@@ -197,7 +197,7 @@ class PlayerMission {
           [mission.level_rewards, playerId]
         );
       }
-      
+
       // 2. Add coin rewards
       if (mission.coin_rewards > 0) {
         await pool.query(
@@ -205,11 +205,11 @@ class PlayerMission {
           [mission.coin_rewards, playerId]
         );
       }
-      
+
       // 3. Add item rewards
       if (mission.item_rewards && mission.item_rewards.length > 0) {
         let itemsToGive = [];
-        
+
         if (mission.item_reward_amount === 0) {
           // Give all items
           itemsToGive = mission.item_rewards;
@@ -219,30 +219,30 @@ class PlayerMission {
           const shuffled = [...mission.item_rewards].sort(() => 0.5 - Math.random());
           itemsToGive = shuffled.slice(0, count);
         }
-        
+
         for (const itemName of itemsToGive) {
           // Check if item exists
           const itemQuery = `SELECT id FROM items WHERE name = $1`;
           const itemResult = await pool.query(itemQuery, [itemName]);
-          
+
           if (itemResult.rows.length > 0) {
             const itemId = itemResult.rows[0].id;
-            
+
             // Add to player inventory
             await pool.query(
-              `INSERT INTO player_inventory (player_id, item_id, quantity) 
+              `INSERT INTO player_inventory (player_id, item_id, quantity)
                VALUES ($1, $2, 1)
-               ON CONFLICT (player_id, item_id) 
+               ON CONFLICT (player_id, item_id)
                DO UPDATE SET quantity = player_inventory.quantity + 1`,
               [playerId, itemId]
             );
           }
         }
       }
-      
+
       // Commit transaction
       await pool.query('COMMIT');
-      
+
       return updateResult.rows[0];
     } catch (error) {
       await pool.query('ROLLBACK');
@@ -265,7 +265,7 @@ class PlayerMission {
         WHERE id = $1 AND player_id = $2 AND status = 'active'
         RETURNING id
       `;
-      
+
       const result = await pool.query(query, [missionId, playerId]);
       return result.rows.length > 0;
     } catch (error) {
@@ -289,21 +289,21 @@ class PlayerMission {
         JOIN mission_templates mt ON pm.template_id = mt.id
         WHERE pm.id = $1
       `;
-      
+
       const result = await pool.query(query, [missionId]);
-      
+
       if (result.rows.length === 0) {
         return false;
       }
-      
+
       const requirements = result.rows[0];
-      
+
       // If no requirements, all monsters are eligible
-      if ((!requirements.type_requirements || requirements.type_requirements.length === 0) && 
+      if ((!requirements.type_requirements || requirements.type_requirements.length === 0) &&
           (!requirements.attribute_requirements || requirements.attribute_requirements.length === 0)) {
         return true;
       }
-      
+
       // Get monster details
       const monsterQuery = `
         SELECT type1, type2, type3, type4, type5, attribute
@@ -314,16 +314,16 @@ class PlayerMission {
         FROM pokemon
         WHERE id = $1
       `;
-      
+
       const monsterResult = await pool.query(monsterQuery, [monsterId]);
-      
+
       if (monsterResult.rows.length === 0) {
         return false;
       }
-      
+
       const monster = monsterResult.rows[0];
       const monsterTypes = [monster.type1, monster.type2, monster.type3, monster.type4, monster.type5].filter(Boolean);
-      
+
       // Check type requirements
       let typeMatch = false;
       if (requirements.type_requirements && requirements.type_requirements.length > 0) {
@@ -331,7 +331,7 @@ class PlayerMission {
       } else {
         typeMatch = true; // No type requirements
       }
-      
+
       // Check attribute requirements
       let attributeMatch = false;
       if (requirements.attribute_requirements && requirements.attribute_requirements.length > 0) {
@@ -339,7 +339,7 @@ class PlayerMission {
       } else {
         attributeMatch = true; // No attribute requirements
       }
-      
+
       // Determine if monster meets requirements based on requirements_type
       if (requirements.requirements_type === 'AND') {
         return typeMatch && attributeMatch;
@@ -360,18 +360,18 @@ class PlayerMission {
   static async getMissionWithDetails(missionId) {
     try {
       const query = `
-        SELECT pm.*, 
-          mt.name, mt.description, 
-          mt.progress_flavor_1, mt.progress_flavor_2, mt.progress_flavor_3, 
+        SELECT pm.*,
+          mt.name, mt.description,
+          mt.progress_flavor_1, mt.progress_flavor_2, mt.progress_flavor_3,
           mt.progress_flavor_4, mt.progress_flavor_5, mt.completion_message,
           mt.completion_image_url, mt.progress_image_url,
           mt.level_rewards, mt.coin_rewards, mt.item_rewards, mt.item_reward_amount,
           mt.type_requirements, mt.attribute_requirements, mt.requirements_type
         FROM player_missions pm
-        JOIN mission_templates mt ON pm.template_id = mt.id
+        JOIN missions mt ON pm.template_id = mt.id
         WHERE pm.id = $1
       `;
-      
+
       const result = await pool.query(query, [missionId]);
       return result.rows.length > 0 ? result.rows[0] : null;
     } catch (error) {
@@ -387,9 +387,9 @@ class PlayerMission {
    */
   static getProgressText(mission) {
     if (!mission) return '';
-    
+
     const progressPercent = Math.floor((mission.current_progress / mission.target_progress) * 100);
-    
+
     if (progressPercent >= 100) {
       return mission.completion_message || 'Mission complete!';
     } else if (progressPercent >= 80 && mission.progress_flavor_5) {
@@ -403,7 +403,7 @@ class PlayerMission {
     } else if (mission.progress_flavor_1) {
       return mission.progress_flavor_1;
     }
-    
+
     return `Progress: ${progressPercent}%`;
   }
 }

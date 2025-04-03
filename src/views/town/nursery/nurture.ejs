@@ -1,0 +1,1785 @@
+<div class="container mx-auto px-4 py-8" style="background-color: #121824; min-height: 100vh;">
+  <div class="mb-8" style="position: relative;">
+    <img src="https://i.imgur.com/IhtWUxD.png" alt="Nursery Banner" style="width: 100%; height: 200px; object-fit: cover; border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.5);">
+    <div style="position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(to top, rgba(0,0,0,0.8), transparent); padding: 20px; border-radius: 0 0 8px 8px;">
+      <div class="flex items-center mb-4 w-full">
+        <a href="/town/visit" style="background-color: rgba(60, 60, 70, 0.7); color: #e2e2e2; padding: 8px 16px; border-radius: 6px; display: inline-flex; align-items: center; margin-right: 16px; transition: all 0.2s; border: 1px solid rgba(255,255,255,0.1);" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+          <i class="fas fa-arrow-left mr-2"></i> Back to Town
+        </a>
+        <h2 style="font-size: 1.75rem; font-weight: bold; color: #ffc107; text-shadow: 0 2px 4px rgba(0,0,0,0.5); text-align: center; flex-grow: 1;">Nursery - Monster Nurturing</h2>
+      </div>
+      <p style="text-align: center; font-size: 0.875rem; color: #e2e2e2; max-width: 700px; margin: 0 auto;">Nurture your baby monsters to help them grow stronger and happier!</p>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+    <!-- Left Column: Trainer Selection and Item Selection -->
+    <div class="lg:col-span-1">
+      <div style="background-color: rgba(30, 35, 50, 0.8); border-radius: 10px; padding: 24px; box-shadow: 0 4px 20px rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.05);">
+        <h3 style="font-size: 1.25rem; font-weight: bold; color: #ffc107; margin-bottom: 16px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px;">Nurture an Egg</h3>
+
+        <div id="nurture-form">
+          <!-- Trainer Selection -->
+          <div class="mb-4">
+            <label for="trainer-select" style="display: block; font-size: 0.875rem; font-weight: 500; color: #d1d5db; margin-bottom: 8px;">Select Trainer</label>
+            <select id="trainer-select" style="width: 100%; background-color: rgba(55, 65, 81, 0.8); border: 1px solid rgba(75, 85, 99, 0.5); border-radius: 6px; padding: 8px 12px; color: #e2e2e2; outline: none; transition: all 0.2s;" onmouseover="this.style.borderColor='rgba(255, 193, 7, 0.5)'" onmouseout="this.style.borderColor='rgba(75, 85, 99, 0.5)'" onfocus="this.style.boxShadow='0 0 0 2px rgba(255, 193, 7, 0.25)'" onblur="this.style.boxShadow='none'">
+              <option value="">-- Select a Trainer --</option>
+              <% if (locals.trainers && trainers.length > 0) { %>
+                <% trainers.forEach(trainer => { %>
+                  <option value="<%= trainer.id %>"><%= trainer.name %></option>
+                <% }); %>
+              <% } %>
+            </select>
+          </div>
+
+          <!-- Egg Count Display -->
+          <div id="egg-count-container" class="mb-4" style="display: none;">
+            <div style="background-color: rgba(55, 65, 81, 0.6); border-radius: 6px; padding: 12px; border: 1px solid rgba(255,255,255,0.05); margin-top: 12px;">
+              <p style="font-size: 0.875rem; color: #d1d5db;">
+                <span id="trainer-name" style="font-weight: 500;"></span> has <span id="egg-count" style="font-weight: bold; color: #ffc107;"></span> Standard Eggs
+              </p>
+            </div>
+          </div>
+
+          <!-- Hatching Method -->
+          <div id="hatch-method-container" class="mb-4" style="display: none;">
+            <label style="display: block; font-size: 0.875rem; font-weight: 500; color: #d1d5db; margin-bottom: 8px; margin-top: 16px;">Hatching Method</label>
+
+            <div style="display: flex; flex-direction: column; gap: 12px;">
+              <div style="display: flex; align-items: center;">
+                <input type="radio" id="incubator-option" name="hatch-method" value="incubator" style="margin-right: 8px; accent-color: #ffc107;">
+                <label for="incubator-option" style="font-size: 0.875rem; color: #d1d5db;">Use Incubator</label>
+                <span id="incubator-status" style="margin-left: 8px; font-size: 0.75rem;"></span>
+              </div>
+
+              <div style="display: flex; align-items: center;">
+                <input type="radio" id="artwork-option" name="hatch-method" value="artwork" style="margin-right: 8px; accent-color: #ffc107;">
+                <label for="artwork-option" style="font-size: 0.875rem; color: #d1d5db;">Use Artwork</label>
+              </div>
+
+              <div id="artwork-url-container" class="mt-2" style="margin-left: 24px; display: none;">
+                <label for="artwork-url" style="display: block; font-size: 0.75rem; font-weight: 500; color: #9ca3af; margin-bottom: 4px;">Artwork URL</label>
+                <input type="text" id="artwork-url" style="width: 100%; background-color: rgba(55, 65, 81, 0.8); border: 1px solid rgba(75, 85, 99, 0.5); border-radius: 6px; padding: 8px 12px; color: #e2e2e2; font-size: 0.875rem; outline: none; transition: all 0.2s;" onmouseover="this.style.borderColor='rgba(255, 193, 7, 0.5)'" onmouseout="this.style.borderColor='rgba(75, 85, 99, 0.5)'" onfocus="this.style.boxShadow='0 0 0 2px rgba(255, 193, 7, 0.25)'" onblur="this.style.boxShadow='none'" placeholder="https://...">
+              </div>
+            </div>
+          </div>
+
+          <!-- Item Selection Accordion (Placeholder) -->
+          <div id="item-selection-container" style="margin-top: 24px; display: none;">
+            <h4 style="font-size: 1.1rem; font-weight: 600; color: #ffc107; margin-bottom: 12px;">Select Items to Use</h4>
+            <p style="font-size: 0.875rem; color: #d1d5db; margin-bottom: 16px;">Items can influence which monsters you'll get and their characteristics.</p>
+
+            <!-- Placeholder for item categories -->
+            <div style="background-color: rgba(55, 65, 81, 0.4); border-radius: 8px; padding: 12px; margin-bottom: 12px; border: 1px solid rgba(255,255,255,0.05);">
+              <div style="display: flex; justify-content: space-between; align-items: center; cursor: pointer;" onclick="toggleCategory('pool-items')">
+                <h5 style="font-size: 0.95rem; font-weight: 600; color: #e2e2e2;">Items that influence the monster pool</h5>
+                <i id="pool-items-icon" class="fas fa-chevron-down" style="color: #ffc107;"></i>
+              </div>
+              <div id="pool-items-content" style="display: none; margin-top: 12px;">
+                <p style="font-size: 0.875rem; color: #d1d5db; margin-bottom: 12px;">These items filter which monsters can appear in your rolls.</p>
+
+                <!-- Rank Incense Section -->
+                <div style="margin-bottom: 16px;">
+                  <h6 style="font-size: 0.9rem; font-weight: 600; color: #e2e2e2; margin-bottom: 8px;">Rank Incense (Yokai Ranks)</h6>
+                  <div id="rank-incense-container" style="display: flex; flex-wrap: wrap; gap: 8px;">
+                    <!-- Items will be added dynamically -->
+                  </div>
+                </div>
+
+                <!-- Color Incense Section -->
+                <div style="margin-bottom: 16px;">
+                  <h6 style="font-size: 0.9rem; font-weight: 600; color: #e2e2e2; margin-bottom: 8px;">Color Incense (Yokai Attributes)</h6>
+                  <div id="color-incense-container" style="display: flex; flex-wrap: wrap; gap: 8px;">
+                    <!-- Items will be added dynamically -->
+                  </div>
+                </div>
+
+                <!-- Type Poffins Section -->
+                <div style="margin-bottom: 16px;">
+                  <h6 style="font-size: 0.9rem; font-weight: 600; color: #e2e2e2; margin-bottom: 8px;">Type Poffins (Pokemon Types)</h6>
+                  <div id="type-poffins-container" style="display: flex; flex-wrap: wrap; gap: 8px;">
+                    <!-- Items will be added dynamically -->
+                  </div>
+                </div>
+
+                <!-- Species Filters Section -->
+                <div style="margin-bottom: 16px;">
+                  <h6 style="font-size: 0.9rem; font-weight: 600; color: #e2e2e2; margin-bottom: 8px;">Species Filters</h6>
+                  <div id="species-filters-container" style="display: flex; flex-wrap: wrap; gap: 8px;">
+                    <!-- Items will be added dynamically -->
+                  </div>
+                </div>
+
+                <!-- Digimon Attributes Section -->
+                <div style="margin-bottom: 16px;">
+                  <h6 style="font-size: 0.9rem; font-weight: 600; color: #e2e2e2; margin-bottom: 8px;">Digimon Attributes</h6>
+                  <div id="digimon-attributes-container" style="display: flex; flex-wrap: wrap; gap: 8px;">
+                    <!-- Items will be added dynamically -->
+                  </div>
+                </div>
+
+                <!-- Digimon Kinds Section -->
+                <div style="margin-bottom: 16px;">
+                  <h6 style="font-size: 0.9rem; font-weight: 600; color: #e2e2e2; margin-bottom: 8px;">Digimon Kinds</h6>
+                  <div id="digimon-kinds-container" style="display: flex; flex-wrap: wrap; gap: 8px;">
+                    <!-- Items will be added dynamically -->
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div style="background-color: rgba(55, 65, 81, 0.4); border-radius: 8px; padding: 12px; margin-bottom: 12px; border: 1px solid rgba(255,255,255,0.05);">
+              <div style="display: flex; justify-content: space-between; align-items: center; cursor: pointer;" onclick="toggleCategory('outcome-items')">
+                <h5 style="font-size: 0.95rem; font-weight: 600; color: #e2e2e2;">Items that influence monster outcomes</h5>
+                <i id="outcome-items-icon" class="fas fa-chevron-down" style="color: #ffc107;"></i>
+              </div>
+              <div id="outcome-items-content" style="display: none; margin-top: 12px;">
+                <p style="font-size: 0.875rem; color: #d1d5db; margin-bottom: 12px;">These items guarantee certain characteristics in your monsters.</p>
+
+                <!-- Nurture Kits Section -->
+                <div style="margin-bottom: 16px;">
+                  <h6 style="font-size: 0.9rem; font-weight: 600; color: #e2e2e2; margin-bottom: 8px;">Nurture Kits (Type Guarantees)</h6>
+                  <div id="nurture-kits-container" style="display: flex; flex-wrap: wrap; gap: 8px;">
+                    <!-- Items will be added dynamically -->
+                  </div>
+                </div>
+
+                <!-- Attribute Codes Section -->
+                <div style="margin-bottom: 16px;">
+                  <h6 style="font-size: 0.9rem; font-weight: 600; color: #e2e2e2; margin-bottom: 8px;">Attribute Codes</h6>
+                  <div id="attribute-codes-container" style="display: flex; flex-wrap: wrap; gap: 8px;">
+                    <!-- Items will be added dynamically -->
+                  </div>
+                </div>
+
+                <!-- Milk Items Section -->
+                <div style="margin-bottom: 16px;">
+                  <h6 style="font-size: 0.9rem; font-weight: 600; color: #e2e2e2; margin-bottom: 8px;">Milk Items</h6>
+                  <div id="milk-items-container" style="display: flex; flex-wrap: wrap; gap: 8px;">
+                    <!-- Items will be added dynamically -->
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div style="background-color: rgba(55, 65, 81, 0.4); border-radius: 8px; padding: 12px; margin-bottom: 12px; border: 1px solid rgba(255,255,255,0.05);">
+              <div style="display: flex; justify-content: space-between; align-items: center; cursor: pointer;" onclick="toggleCategory('ice-cream-items')">
+                <h5 style="font-size: 0.95rem; font-weight: 600; color: #e2e2e2;">Ice Creams (Type Guarantees)</h5>
+                <i id="ice-cream-items-icon" class="fas fa-chevron-down" style="color: #ffc107;"></i>
+              </div>
+              <div id="ice-cream-items-content" style="display: none; margin-top: 12px;">
+                <p style="font-size: 0.875rem; color: #d1d5db; margin-bottom: 12px;">These items guarantee specific types for your monsters.</p>
+
+                <!-- Vanilla Ice Cream Section -->
+                <div id="vanilla-ice-cream-section" style="margin-bottom: 16px;">
+                  <div style="display: flex; align-items: center; margin-bottom: 8px;">
+                    <div id="vanilla-ice-cream-item" style="margin-right: 12px;"><!-- Item will be added dynamically --></div>
+                    <h6 style="font-size: 0.9rem; font-weight: 600; color: #e2e2e2; margin: 0;">Vanilla Ice Cream (1st Type)</h6>
+                  </div>
+                  <div id="vanilla-ice-cream-input" style="display: none;">
+                    <label style="display: block; font-size: 0.8rem; color: #d1d5db; margin-bottom: 4px;">Select Type:</label>
+                    <select id="vanilla-type-select" style="width: 100%; background-color: rgba(55, 65, 81, 0.8); border: 1px solid rgba(75, 85, 99, 0.5); border-radius: 6px; padding: 6px 10px; color: #e2e2e2; font-size: 0.875rem; outline: none;">
+                      <option value="Fire">Fire</option>
+                      <!-- Types will be added dynamically -->
+                    </select>
+                  </div>
+                </div>
+
+                <!-- Strawberry Ice Cream Section -->
+                <div id="strawberry-ice-cream-section" style="margin-bottom: 16px;">
+                  <div style="display: flex; align-items: center; margin-bottom: 8px;">
+                    <div id="strawberry-ice-cream-item" style="margin-right: 12px;"><!-- Item will be added dynamically --></div>
+                    <h6 style="font-size: 0.9rem; font-weight: 600; color: #e2e2e2; margin: 0;">Strawberry Ice Cream (2nd Type)</h6>
+                  </div>
+                  <div id="strawberry-ice-cream-input" style="display: none;">
+                    <label style="display: block; font-size: 0.8rem; color: #d1d5db; margin-bottom: 4px;">Select Type:</label>
+                    <select id="strawberry-type-select" style="width: 100%; background-color: rgba(55, 65, 81, 0.8); border: 1px solid rgba(75, 85, 99, 0.5); border-radius: 6px; padding: 6px 10px; color: #e2e2e2; font-size: 0.875rem; outline: none;" disabled>
+                      <option value="Water">Water</option>
+                      <!-- Types will be added dynamically -->
+                    </select>
+                  </div>
+                </div>
+
+                <!-- Chocolate Ice Cream Section -->
+                <div id="chocolate-ice-cream-section" style="margin-bottom: 16px;">
+                  <div style="display: flex; align-items: center; margin-bottom: 8px;">
+                    <div id="chocolate-ice-cream-item" style="margin-right: 12px;"><!-- Item will be added dynamically --></div>
+                    <h6 style="font-size: 0.9rem; font-weight: 600; color: #e2e2e2; margin: 0;">Chocolate Ice Cream (3rd Type)</h6>
+                  </div>
+                  <div id="chocolate-ice-cream-input" style="display: none;">
+                    <label style="display: block; font-size: 0.8rem; color: #d1d5db; margin-bottom: 4px;">Select Type:</label>
+                    <select id="chocolate-type-select" style="width: 100%; background-color: rgba(55, 65, 81, 0.8); border: 1px solid rgba(75, 85, 99, 0.5); border-radius: 6px; padding: 6px 10px; color: #e2e2e2; font-size: 0.875rem; outline: none;" disabled>
+                      <option value="Grass">Grass</option>
+                      <!-- Types will be added dynamically -->
+                    </select>
+                  </div>
+                </div>
+
+                <!-- Mint Ice Cream Section -->
+                <div id="mint-ice-cream-section" style="margin-bottom: 16px;">
+                  <div style="display: flex; align-items: center; margin-bottom: 8px;">
+                    <div id="mint-ice-cream-item" style="margin-right: 12px;"><!-- Item will be added dynamically --></div>
+                    <h6 style="font-size: 0.9rem; font-weight: 600; color: #e2e2e2; margin: 0;">Mint Ice Cream (4th Type)</h6>
+                  </div>
+                  <div id="mint-ice-cream-input" style="display: none;">
+                    <label style="display: block; font-size: 0.8rem; color: #d1d5db; margin-bottom: 4px;">Select Type:</label>
+                    <select id="mint-type-select" style="width: 100%; background-color: rgba(55, 65, 81, 0.8); border: 1px solid rgba(75, 85, 99, 0.5); border-radius: 6px; padding: 6px 10px; color: #e2e2e2; font-size: 0.875rem; outline: none;" disabled>
+                      <option value="Electric">Electric</option>
+                      <!-- Types will be added dynamically -->
+                    </select>
+                  </div>
+                </div>
+
+                <!-- Pecan Ice Cream Section -->
+                <div id="pecan-ice-cream-section" style="margin-bottom: 16px;">
+                  <div style="display: flex; align-items: center; margin-bottom: 8px;">
+                    <div id="pecan-ice-cream-item" style="margin-right: 12px;"><!-- Item will be added dynamically --></div>
+                    <h6 style="font-size: 0.9rem; font-weight: 600; color: #e2e2e2; margin: 0;">Pecan Ice Cream (5th Type)</h6>
+                  </div>
+                  <div id="pecan-ice-cream-input" style="display: none;">
+                    <label style="display: block; font-size: 0.8rem; color: #d1d5db; margin-bottom: 4px;">Select Type:</label>
+                    <select id="pecan-type-select" style="width: 100%; background-color: rgba(55, 65, 81, 0.8); border: 1px solid rgba(75, 85, 99, 0.5); border-radius: 6px; padding: 6px 10px; color: #e2e2e2; font-size: 0.875rem; outline: none;" disabled>
+                      <option value="Ice">Ice</option>
+                      <!-- Types will be added dynamically -->
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div style="background-color: rgba(55, 65, 81, 0.4); border-radius: 8px; padding: 12px; margin-bottom: 12px; border: 1px solid rgba(255,255,255,0.05);">
+              <div style="display: flex; justify-content: space-between; align-items: center; cursor: pointer;" onclick="toggleCategory('species-items')">
+                <h5 style="font-size: 0.95rem; font-weight: 600; color: #e2e2e2;">Species Selection Items</h5>
+                <i id="species-items-icon" class="fas fa-chevron-down" style="color: #ffc107;"></i>
+              </div>
+              <div id="species-items-content" style="display: none; margin-top: 12px;">
+                <p style="font-size: 0.875rem; color: #d1d5db; margin-bottom: 12px;">These items let you specify which species your monsters will have.</p>
+
+                <!-- Input Field Section (Species 1) -->
+                <div id="input-field-section" style="margin-bottom: 16px;">
+                  <div style="display: flex; align-items: center; margin-bottom: 8px;">
+                    <div id="input-field-item" style="margin-right: 12px;"><!-- Item will be added dynamically --></div>
+                    <h6 style="font-size: 0.9rem; font-weight: 600; color: #e2e2e2; margin: 0;">Input Field (Species 1)</h6>
+                  </div>
+                  <div id="input-field-input" style="display: none;">
+                    <label style="display: block; font-size: 0.8rem; color: #d1d5db; margin-bottom: 4px;">Enter Species Name:</label>
+                    <input type="text" id="species1-input" style="width: 100%; background-color: rgba(55, 65, 81, 0.8); border: 1px solid rgba(75, 85, 99, 0.5); border-radius: 6px; padding: 6px 10px; color: #e2e2e2; font-size: 0.875rem; outline: none;" placeholder="Enter species name">
+                  </div>
+                </div>
+
+                <!-- Drop Down Section (Species 1 & 2) -->
+                <div id="drop-down-section" style="margin-bottom: 16px;">
+                  <div style="display: flex; align-items: center; margin-bottom: 8px;">
+                    <div id="drop-down-item" style="margin-right: 12px;"><!-- Item will be added dynamically --></div>
+                    <h6 style="font-size: 0.9rem; font-weight: 600; color: #e2e2e2; margin: 0;">Drop Down (Species 1 & 2)</h6>
+                  </div>
+                  <div id="drop-down-input" style="display: none;">
+                    <div style="margin-bottom: 8px;">
+                      <label style="display: block; font-size: 0.8rem; color: #d1d5db; margin-bottom: 4px;">Enter First Species:</label>
+                      <input type="text" id="species1-dropdown-input" style="width: 100%; background-color: rgba(55, 65, 81, 0.8); border: 1px solid rgba(75, 85, 99, 0.5); border-radius: 6px; padding: 6px 10px; color: #e2e2e2; font-size: 0.875rem; outline: none;" placeholder="Enter first species name">
+                    </div>
+                    <div>
+                      <label style="display: block; font-size: 0.8rem; color: #d1d5db; margin-bottom: 4px;">Enter Second Species:</label>
+                      <input type="text" id="species2-dropdown-input" style="width: 100%; background-color: rgba(55, 65, 81, 0.8); border: 1px solid rgba(75, 85, 99, 0.5); border-radius: 6px; padding: 6px 10px; color: #e2e2e2; font-size: 0.875rem; outline: none;" placeholder="Enter second species name">
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Radio Buttons Section (Species 1, 2 & 3) -->
+                <div id="radio-buttons-section" style="margin-bottom: 16px;">
+                  <div style="display: flex; align-items: center; margin-bottom: 8px;">
+                    <div id="radio-buttons-item" style="margin-right: 12px;"><!-- Item will be added dynamically --></div>
+                    <h6 style="font-size: 0.9rem; font-weight: 600; color: #e2e2e2; margin: 0;">Radio Buttons (Species 1, 2 & 3)</h6>
+                  </div>
+                  <div id="radio-buttons-input" style="display: none;">
+                    <div style="margin-bottom: 8px;">
+                      <label style="display: block; font-size: 0.8rem; color: #d1d5db; margin-bottom: 4px;">Enter First Species:</label>
+                      <input type="text" id="species1-radio-input" style="width: 100%; background-color: rgba(55, 65, 81, 0.8); border: 1px solid rgba(75, 85, 99, 0.5); border-radius: 6px; padding: 6px 10px; color: #e2e2e2; font-size: 0.875rem; outline: none;" placeholder="Enter first species name">
+                    </div>
+                    <div style="margin-bottom: 8px;">
+                      <label style="display: block; font-size: 0.8rem; color: #d1d5db; margin-bottom: 4px;">Enter Second Species:</label>
+                      <input type="text" id="species2-radio-input" style="width: 100%; background-color: rgba(55, 65, 81, 0.8); border: 1px solid rgba(75, 85, 99, 0.5); border-radius: 6px; padding: 6px 10px; color: #e2e2e2; font-size: 0.875rem; outline: none;" placeholder="Enter second species name">
+                    </div>
+                    <div>
+                      <label style="display: block; font-size: 0.8rem; color: #d1d5db; margin-bottom: 4px;">Enter Third Species:</label>
+                      <input type="text" id="species3-radio-input" style="width: 100%; background-color: rgba(55, 65, 81, 0.8); border: 1px solid rgba(75, 85, 99, 0.5); border-radius: 6px; padding: 6px 10px; color: #e2e2e2; font-size: 0.875rem; outline: none;" placeholder="Enter third species name">
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Nurture Button -->
+          <div style="margin-top: 24px;">
+            <button id="nurture-button" style="width: 100%; background-color: #ffc107; color: #1a1a1a; font-weight: bold; padding: 10px 16px; border-radius: 6px; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s;" onmouseover="this.style.backgroundColor='#ffca2c'" onmouseout="this.style.backgroundColor='#ffc107'" disabled>
+              <i class="fas fa-seedling mr-2"></i> Nurture Egg
+            </button>
+          </div>
+        </div>
+
+        <!-- Loading Indicator -->
+        <div id="loading-container" style="display: none;">
+          <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 32px 0;">
+            <div style="height: 48px; width: 48px; border-radius: 50%; border: 3px solid rgba(255, 193, 7, 0.3); border-top-color: #ffc107; animation: spin 1s linear infinite; margin-bottom: 16px;"></div>
+            <p style="color: #d1d5db;">Nurturing egg...</p>
+          </div>
+        </div>
+
+        <style>
+          @keyframes spin {
+            to { transform: rotate(360deg); }
+          }
+        </style>
+
+        <!-- Error Display -->
+        <div id="error-container" style="margin-top: 16px; display: none;">
+          <div style="background-color: rgba(185, 28, 28, 0.2); border: 1px solid rgba(220, 38, 38, 0.5); color: #fca5a5; padding: 12px 16px; border-radius: 6px;">
+            <p id="error-message" style="font-size: 0.875rem; margin: 0;"></p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Column: Monster Selection -->
+    <div class="lg:col-span-1">
+      <div id="monster-selection-container" style="background-color: rgba(30, 35, 50, 0.8); border-radius: 10px; padding: 24px; box-shadow: 0 4px 20px rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.05); display: none;">
+        <h3 style="font-size: 1.25rem; font-weight: bold; color: #ffc107; margin-bottom: 16px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px;">Select a Monster to Claim</h3>
+        <p style="font-size: 0.875rem; color: #d1d5db; margin-bottom: 24px;">Your egg has hatched into multiple possibilities! Choose one monster to add to your collection.</p>
+
+        <div id="monsters-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Monster cards will be added here dynamically -->
+        </div>
+
+        <div id="claim-form" class="mt-8" style="display: none;">
+          <div style="background-color: rgba(55, 65, 81, 0.6); border-radius: 8px; padding: 16px; border: 1px solid rgba(255,255,255,0.05);">
+            <h4 style="font-size: 1.125rem; font-weight: bold; color: #ffc107; margin-bottom: 12px;">Claim Your Monster</h4>
+
+            <div style="margin-bottom: 16px;">
+              <label for="monster-name" style="display: block; font-size: 0.875rem; font-weight: 500; color: #d1d5db; margin-bottom: 8px;">Monster Name</label>
+              <input type="text" id="monster-name" style="width: 100%; background-color: rgba(55, 65, 81, 0.8); border: 1px solid rgba(75, 85, 99, 0.5); border-radius: 6px; padding: 8px 12px; color: #e2e2e2; outline: none; transition: all 0.2s;" onmouseover="this.style.borderColor='rgba(255, 193, 7, 0.5)'" onmouseout="this.style.borderColor='rgba(75, 85, 99, 0.5)'" onfocus="this.style.boxShadow='0 0 0 2px rgba(255, 193, 7, 0.25)'" onblur="this.style.boxShadow='none'" placeholder="Enter a name for your monster">
+            </div>
+
+            <!-- Special Items Options -->
+            <div style="margin-bottom: 16px; background-color: rgba(55, 65, 81, 0.6); border-radius: 8px; padding: 12px; border: 1px solid rgba(255, 193, 7, 0.2);">
+              <label style="display: block; font-size: 1rem; font-weight: 600; color: #ffc107; margin-bottom: 12px;">Special Items</label>
+
+              <div style="display: flex; flex-direction: column; gap: 10px;">
+                <!-- DNA Splicer Option -->
+                <div id="dna-splicer-option" style="display: flex; align-items: center; padding: 8px; background-color: rgba(55, 65, 81, 0.4); border-radius: 6px; border: 1px solid rgba(255, 255, 255, 0.1);">
+                  <input type="checkbox" id="use-dna-splicer" style="margin-right: 8px; width: 16px; height: 16px; accent-color: #ffc107;">
+                  <div style="flex-grow: 1;">
+                    <label for="use-dna-splicer" style="font-size: 0.875rem; font-weight: 500; color: #e2e2e2; display: block;">DNA Splicer</label>
+                    <span style="font-size: 0.75rem; color: #9ca3af; display: block;">Claim an additional monster without using another egg</span>
+                  </div>
+                  <span id="dna-splicer-count" style="font-size: 0.75rem; color: #ffc107; font-weight: 600;"></span>
+                </div>
+
+                <!-- Edenwiess Option -->
+                <div id="edenwiess-option" style="display: flex; align-items: center; padding: 8px; background-color: rgba(55, 65, 81, 0.4); border-radius: 6px; border: 1px solid rgba(255, 255, 255, 0.1);">
+                  <input type="checkbox" id="use-edenwiess" style="margin-right: 8px; width: 16px; height: 16px; accent-color: #ffc107;">
+                  <div style="flex-grow: 1;">
+                    <label for="use-edenwiess" style="font-size: 0.875rem; font-weight: 500; color: #e2e2e2; display: block;">Edenwiess</label>
+                    <span style="font-size: 0.75rem; color: #9ca3af; display: block;">Claim an additional monster without using another egg</span>
+                  </div>
+                  <span id="edenwiess-count" style="font-size: 0.75rem; color: #ffc107; font-weight: 600;"></span>
+                </div>
+
+                <!-- Forget-Me-Not Option -->
+                <div id="forget-me-not-option" style="display: flex; align-items: center; padding: 8px; background-color: rgba(55, 65, 81, 0.4); border-radius: 6px; border: 1px solid rgba(255, 255, 255, 0.1);">
+                  <input type="checkbox" id="use-forget-me-not" style="margin-right: 8px; width: 16px; height: 16px; accent-color: #ffc107;">
+                  <div style="flex-grow: 1;">
+                    <label for="use-forget-me-not" style="font-size: 0.875rem; font-weight: 500; color: #e2e2e2; display: block;">Forget-Me-Not</label>
+                    <span style="font-size: 0.75rem; color: #9ca3af; display: block;">Reroll all monsters without using another egg</span>
+                  </div>
+                  <span id="forget-me-not-count" style="font-size: 0.75rem; color: #ffc107; font-weight: 600;"></span>
+                </div>
+              </div>
+            </div>
+
+            <button id="claim-button" style="width: 100%; background-color: #ffc107; color: #1a1a1a; font-weight: bold; padding: 10px 16px; border-radius: 6px; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s;" onmouseover="this.style.backgroundColor='#ffca2c'" onmouseout="this.style.backgroundColor='#ffc107'">
+              <i class="fas fa-check-circle mr-2"></i> Claim Monster
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div id="success-container" style="background-color: rgba(30, 35, 50, 0.8); border-radius: 10px; padding: 24px; box-shadow: 0 4px 20px rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.05); display: none;">
+        <div style="text-align: center;">
+          <div style="display: inline-block; padding: 16px; border-radius: 50%; background-color: rgba(16, 185, 129, 0.2); margin-bottom: 16px;">
+            <i class="fas fa-check-circle" style="color: #34d399; font-size: 2.5rem;"></i>
+          </div>
+          <h3 style="font-size: 1.5rem; font-weight: bold; color: #ffc107; margin-bottom: 8px;">Monster<span id="monsters-claimed-plural">s</span> Claimed Successfully!</h3>
+          <p style="color: #d1d5db; margin-bottom: 24px;">Your <span id="monsters-claimed-count">new monster has</span> been added to your collection.</p>
+
+          <div style="display: flex; justify-content: center; gap: 16px;">
+            <a href="/town/visit/nursery/nurture" style="background-color: rgba(60, 60, 70, 0.7); color: #e2e2e2; padding: 10px 16px; border-radius: 6px; display: inline-flex; align-items: center; transition: all 0.2s; border: 1px solid rgba(255,255,255,0.1); text-decoration: none;" onmouseover="this.style.backgroundColor='rgba(75, 75, 85, 0.7)'" onmouseout="this.style.backgroundColor='rgba(60, 60, 70, 0.7)'">
+              <i class="fas fa-seedling mr-2"></i> Nurture Another Egg
+            </a>
+            <a href="/my_trainers" style="background-color: #ffc107; color: #1a1a1a; font-weight: bold; padding: 10px 16px; border-radius: 6px; display: inline-flex; align-items: center; transition: all 0.2s; text-decoration: none;" onmouseover="this.style.backgroundColor='#ffca2c'" onmouseout="this.style.backgroundColor='#ffc107'">
+              <i class="fas fa-user mr-2"></i> View My Trainers
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- JavaScript for nurture functionality -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // DOM elements
+      const trainerSelect = document.getElementById('trainer-select');
+      const eggCountContainer = document.getElementById('egg-count-container');
+      const trainerNameSpan = document.getElementById('trainer-name');
+      const eggCountSpan = document.getElementById('egg-count');
+      const hatchMethodContainer = document.getElementById('hatch-method-container');
+      const incubatorOption = document.getElementById('incubator-option');
+      const artworkOption = document.getElementById('artwork-option');
+      const artworkUrlContainer = document.getElementById('artwork-url-container');
+      const artworkUrlInput = document.getElementById('artwork-url');
+      const itemSelectionContainer = document.getElementById('item-selection-container');
+      const nurtureButton = document.getElementById('nurture-button');
+      const loadingContainer = document.getElementById('loading-container');
+      const nurtureForm = document.getElementById('nurture-form');
+      const errorContainer = document.getElementById('error-container');
+      const errorMessage = document.getElementById('error-message');
+      const monsterSelectionContainer = document.getElementById('monster-selection-container');
+      const monstersGrid = document.getElementById('monsters-grid');
+      const claimForm = document.getElementById('claim-form');
+      const monsterNameInput = document.getElementById('monster-name');
+      const claimButton = document.getElementById('claim-button');
+      const successContainer = document.getElementById('success-container');
+      const incubatorStatus = document.getElementById('incubator-status');
+
+      // State variables
+      let selectedMonster = null;
+      let hasIncubator = false;
+      let currentTrainerId = null;
+      let selectedItems = {
+        rankIncense: [],
+        colorIncense: [],
+        typePoffins: [],
+        digimonFilters: [],
+        pokemonFilters: [],
+        digimonAttributes: [],
+        digimonKinds: [],
+        nurtureKits: [],
+        attributeCodes: [],
+        milks: [],
+        iceCreams: {},
+        speciesItems: {}
+      };
+
+      // Available types for type selection
+      const availableTypes = [
+        'Normal', 'Fire', 'Water', 'Electric', 'Grass', 'Ice', 'Fighting', 'Poison',
+        'Ground', 'Flying', 'Psychic', 'Bug', 'Rock', 'Ghost', 'Dragon', 'Dark',
+        'Steel', 'Fairy'
+      ];
+
+      // Helper function to create an item element
+      function createItemElement(itemName, count, selected = false) {
+        console.log(`Creating element for ${itemName} (count: ${count}, selected: ${selected})`);
+
+        // Set inline styles instead of classes for better compatibility
+        const bgColor = selected ? 'rgba(255, 193, 7, 0.2)' : 'rgba(75, 85, 99, 0.4)';
+        const borderColor = selected ? '#ffc107' : 'rgba(75, 85, 99, 0.5)';
+        const textColor = selected ? '#ffc107' : '#d1d5db';
+        const boxShadow = selected ? '0 0 5px rgba(255, 193, 7, 0.5)' : 'none';
+
+        const itemElement = document.createElement('div');
+        itemElement.className = `item-selector ${itemName.replace(/\s+/g, '-').toLowerCase()}`;
+        itemElement.dataset.item = itemName;
+        itemElement.style.display = 'inline-flex';
+        itemElement.style.alignItems = 'center';
+        itemElement.style.padding = '6px 10px';
+        itemElement.style.borderRadius = '6px';
+        itemElement.style.cursor = 'pointer';
+        itemElement.style.marginBottom = '6px';
+        itemElement.style.marginRight = '6px';
+        itemElement.style.border = `1px solid ${borderColor}`;
+        itemElement.style.backgroundColor = bgColor;
+        itemElement.style.boxShadow = boxShadow;
+        itemElement.style.transition = 'all 0.2s';
+
+        const nameSpan = document.createElement('span');
+        nameSpan.style.fontSize = '0.875rem';
+        nameSpan.style.fontWeight = '500';
+        nameSpan.style.color = textColor;
+        nameSpan.textContent = itemName;
+
+        const countSpan = document.createElement('span');
+        countSpan.style.marginLeft = '6px';
+        countSpan.style.fontSize = '0.75rem';
+        countSpan.style.padding = '2px 6px';
+        countSpan.style.borderRadius = '10px';
+        countSpan.style.backgroundColor = 'rgba(0,0,0,0.2)';
+        countSpan.style.color = textColor;
+        countSpan.textContent = count;
+
+        itemElement.appendChild(nameSpan);
+        itemElement.appendChild(countSpan);
+
+        return itemElement;
+      }
+
+      // Function to populate type selects
+      function populateTypeSelects() {
+        const typeSelects = [
+          document.getElementById('vanilla-type-select'),
+          document.getElementById('strawberry-type-select'),
+          document.getElementById('chocolate-type-select'),
+          document.getElementById('mint-type-select'),
+          document.getElementById('pecan-type-select')
+        ];
+
+        const iceCreamNames = [
+          'Vanilla Ice Cream',
+          'Strawberry Ice Cream',
+          'Chocolate Ice Cream',
+          'Mint Ice Cream',
+          'Pecan Ice Cream'
+        ];
+
+        typeSelects.forEach((select, index) => {
+          if (!select) return;
+
+          // Clear existing options except the first one
+          while (select.options.length > 1) {
+            select.remove(1);
+          }
+
+          // Add type options
+          availableTypes.forEach(type => {
+            const option = document.createElement('option');
+            option.value = type;
+            option.textContent = type;
+            select.appendChild(option);
+          });
+
+          // Add change event listener
+          select.addEventListener('change', function() {
+            const iceCreamName = iceCreamNames[index];
+            if (selectedItems.iceCreams[iceCreamName]) {
+              selectedItems.iceCreams[iceCreamName] = this.value;
+              console.log(`Updated ${iceCreamName} to ${this.value}`);
+            }
+          });
+        });
+      }
+
+      // Trainer selection change handler
+      trainerSelect.addEventListener('change', async function() {
+        const trainerId = this.value;
+
+        // Reset UI
+        eggCountContainer.style.display = 'none';
+        hatchMethodContainer.style.display = 'none';
+        itemSelectionContainer.style.display = 'none';
+        errorContainer.style.display = 'none';
+        nurtureButton.disabled = true;
+
+        if (!trainerId) return;
+
+        try {
+          // Fetch egg count and items for selected trainer
+          console.log('Fetching data for trainer ID:', trainerId);
+          const response = await fetch(`/api/nurture/eggs?trainerId=${trainerId}`);
+          console.log('Response status:', response.status);
+
+          if (!response.ok) {
+            throw new Error(`Server responded with status: ${response.status}`);
+          }
+
+          const data = await response.json();
+          console.log('Response data:', data);
+
+          if (data.success) {
+            // Update UI with egg count
+            trainerNameSpan.textContent = data.trainerName;
+            eggCountSpan.textContent = data.eggCount;
+            eggCountContainer.style.display = 'block';
+
+            // Store current trainer ID
+            currentTrainerId = trainerId;
+
+            // Show hatch method if trainer has eggs
+            if (data.eggCount > 0) {
+              hatchMethodContainer.style.display = 'block';
+
+              // Update incubator status
+              hasIncubator = data.hasIncubator;
+              if (hasIncubator) {
+                incubatorStatus.textContent = '(Available)';
+                incubatorStatus.style.color = '#34d399';
+                incubatorOption.disabled = false;
+              } else {
+                incubatorStatus.textContent = '(Not Available)';
+                incubatorStatus.style.color = '#f87171';
+                incubatorOption.disabled = true;
+                artworkOption.checked = true;
+                artworkUrlContainer.style.display = 'block';
+              }
+
+              // Populate item containers
+              if (data.nurtureItems) {
+                console.log('Received nurture items data:', data.nurtureItems);
+
+                // Check for items with count > 0
+                let hasItems = false;
+                Object.entries(data.nurtureItems).forEach(([category, items]) => {
+                  if (typeof items === 'object') {
+                    Object.entries(items).forEach(([itemName, count]) => {
+                      if (count > 0) {
+                        hasItems = true;
+                        console.log(`Found item: ${itemName} (${count}) in category ${category}`);
+                      }
+                    });
+                  }
+                });
+
+                if (!hasItems) {
+                  console.log('No items with count > 0 found in any category');
+                }
+
+                // Populate pool influence items
+                populateItemContainer('rank-incense-container', data.nurtureItems.rankIncense);
+                populateItemContainer('color-incense-container', data.nurtureItems.colorIncense);
+                populateItemContainer('type-poffins-container', data.nurtureItems.typePoffins);
+
+                // Combine digimon and pokemon filters
+                const speciesFilters = {};
+                if (data.nurtureItems.digimonFilters) {
+                  Object.entries(data.nurtureItems.digimonFilters).forEach(([key, value]) => {
+                    if (value > 0) {
+                      // Normalize DigiTofu/Digi Tofu
+                      if (key === 'DigiTofu' || key === 'Digi Tofu') {
+                        speciesFilters['Digi Tofu'] = (speciesFilters['Digi Tofu'] || 0) + value;
+                      } else if (key === 'DigiMeat' || key === 'Digi Meat') {
+                        speciesFilters['Digi Meat'] = (speciesFilters['Digi Meat'] || 0) + value;
+                      } else {
+                        speciesFilters[key] = value;
+                      }
+                    }
+                  });
+                }
+                if (data.nurtureItems.pokemonFilters) {
+                  Object.entries(data.nurtureItems.pokemonFilters).forEach(([key, value]) => {
+                    if (value > 0) {
+                      // Normalize SpellTag/Spell Tag
+                      if (key === 'SpellTag' || key === 'Spell Tag') {
+                        speciesFilters['Spell Tag'] = (speciesFilters['Spell Tag'] || 0) + value;
+                      } else if (key === 'BrokenBell' || key === 'Broken Bell') {
+                        speciesFilters['Broken Bell'] = (speciesFilters['Broken Bell'] || 0) + value;
+                      } else {
+                        speciesFilters[key] = value;
+                      }
+                    }
+                  });
+                }
+                console.log('Combined species filters:', speciesFilters);
+                populateItemContainer('species-filters-container', speciesFilters);
+
+                populateItemContainer('digimon-attributes-container', data.nurtureItems.digimonAttributes);
+                populateItemContainer('digimon-kinds-container', data.nurtureItems.digimonKinds);
+
+                // Normalize nurture kits
+                const nurtureKits = {};
+                if (data.nurtureItems.nurtureKits) {
+                  Object.entries(data.nurtureItems.nurtureKits).forEach(([key, value]) => {
+                    if (value > 0) {
+                      // Check for both spaced and no-space versions
+                      const normalizedKey = key.includes(' ') ? key : key.replace(/([A-Z])/g, ' $1').trim();
+                      nurtureKits[normalizedKey] = (nurtureKits[normalizedKey] || 0) + value;
+                    }
+                  });
+                }
+                console.log('Normalized nurture kits:', nurtureKits);
+                populateItemContainer('nurture-kits-container', nurtureKits);
+
+                // Normalize attribute codes
+                const attributeCodes = {};
+                if (data.nurtureItems.attributeCodes) {
+                  Object.entries(data.nurtureItems.attributeCodes).forEach(([key, value]) => {
+                    if (value > 0) {
+                      // Check for both spaced and no-space versions
+                      let normalizedKey;
+                      if (key.includes(' ')) {
+                        normalizedKey = key;
+                      } else {
+                        // Handle specific cases
+                        if (key === 'CorruptionCode') normalizedKey = 'Corruption Code';
+                        else if (key === 'RepairCode') normalizedKey = 'Repair Code';
+                        else if (key === 'ShinyNewCode') normalizedKey = 'Shiny New Code';
+                        else normalizedKey = key.replace(/([A-Z])/g, ' $1').trim();
+                      }
+                      attributeCodes[normalizedKey] = (attributeCodes[normalizedKey] || 0) + value;
+                    }
+                  });
+                }
+                console.log('Normalized attribute codes:', attributeCodes);
+                populateItemContainer('attribute-codes-container', attributeCodes);
+
+                // Normalize milk items
+                const milkItems = {};
+                if (data.nurtureItems.milks) {
+                  Object.entries(data.nurtureItems.milks).forEach(([key, value]) => {
+                    if (value > 0) {
+                      // Check for both spaced and no-space versions
+                      const normalizedKey = key.includes(' ') ? key : key.replace(/([A-Z])/g, ' $1').trim();
+                      milkItems[normalizedKey] = (milkItems[normalizedKey] || 0) + value;
+                    }
+                  });
+                }
+                console.log('Normalized milk items:', milkItems);
+                populateItemContainer('milk-items-container', milkItems);
+
+                // Normalize ice cream items
+                const iceCreams = {};
+                if (data.nurtureItems.iceCreams) {
+                  Object.entries(data.nurtureItems.iceCreams).forEach(([key, value]) => {
+                    if (value > 0) {
+                      // Check for both spaced and no-space versions
+                      const normalizedKey = key.includes(' ') ? key : key.replace(/([A-Z])/g, ' $1').trim();
+                      iceCreams[normalizedKey] = (iceCreams[normalizedKey] || 0) + value;
+                    }
+                  });
+                }
+                console.log('Normalized ice creams:', iceCreams);
+                populateIceCreamItems(iceCreams);
+
+                // Normalize species selection items
+                const speciesItems = {};
+                if (data.nurtureItems.speciesItems) {
+                  Object.entries(data.nurtureItems.speciesItems).forEach(([key, value]) => {
+                    if (value > 0) {
+                      // Check for both spaced and no-space versions
+                      const normalizedKey = key.includes(' ') ? key : key.replace(/([A-Z])/g, ' $1').trim();
+                      speciesItems[normalizedKey] = (speciesItems[normalizedKey] || 0) + value;
+                    }
+                  });
+                }
+                console.log('Normalized species items:', speciesItems);
+                populateSpeciesItems(speciesItems);
+
+                // Populate type selects
+                populateTypeSelects();
+              } else {
+                console.error('No nurture items data received');
+              }
+
+              // Show item selection
+              itemSelectionContainer.style.display = 'block';
+
+              // Enable nurture button
+              nurtureButton.disabled = false;
+            } else {
+              showError('This trainer has no eggs to hatch. Visit the shop to purchase eggs.');
+            }
+          } else {
+            showError(data.message || 'Error fetching egg count');
+          }
+        } catch (error) {
+          console.error('Error fetching egg count:', error);
+          showError(`Error connecting to server: ${error.message}. Please try again.`);
+        }
+      });
+
+      // Hatch method change handlers
+      incubatorOption.addEventListener('change', function() {
+        if (this.checked) {
+          artworkUrlContainer.style.display = 'none';
+        }
+      });
+
+      artworkOption.addEventListener('change', function() {
+        if (this.checked) {
+          artworkUrlContainer.style.display = 'block';
+        }
+      });
+
+      // Nurture button click handler
+      nurtureButton.addEventListener('click', async function() {
+        // Validate form
+        const trainerId = trainerSelect.value;
+        if (!trainerId) {
+          showError('Please select a trainer');
+          return;
+        }
+
+        // Check if using incubator or artwork
+        const useIncubator = incubatorOption.checked;
+        const useArtwork = artworkOption.checked;
+
+        // Validate that a hatch method is selected
+        if (!useIncubator && !useArtwork) {
+          showError('Please select a hatching method');
+          return;
+        }
+
+        // If using artwork, validate URL
+        let artworkUrl = '';
+        let useForgetMeNot = false;
+
+        if (useArtwork) {
+          artworkUrl = artworkUrlInput.value.trim();
+
+          if (!artworkUrl) {
+            // Check if we have Forget-Me-Not items
+            try {
+              const response = await fetch(`/api/nurture/special-items?trainerId=${trainerId}`);
+              const data = await response.json();
+
+              if (data.success && data.items.forgetMeNot > 0) {
+                // Ask if user wants to use Forget-Me-Not instead
+                if (confirm('You have Forget-Me-Not items available. Would you like to use one to reroll without providing a submission URL?')) {
+                  // Set useForgetMeNot flag
+                  useForgetMeNot = true;
+                  // Continue with the request
+                } else {
+                  showError('Please enter a submission URL');
+                  return;
+                }
+              } else {
+                showError('Please enter a submission URL');
+                return;
+              }
+            } catch (error) {
+              console.error('Error checking for Forget-Me-Not items:', error);
+              showError('Please enter a submission URL');
+              return;
+            }
+          } else {
+            // Basic URL validation
+            if (!artworkUrl.startsWith('http')) {
+              showError('Please enter a valid URL starting with http:// or https://');
+              return;
+            }
+          }
+        }
+
+        // Prepare data for API call
+        const requestData = {
+          trainerId,
+          useIncubator,
+          submissionUrl: artworkUrl,
+          useForgetMeNot,
+          // Pool influence items
+          rankIncense: selectedItems.rankIncense,
+          colorIncense: selectedItems.colorIncense,
+          typePoffins: selectedItems.typePoffins,
+          digimonFilters: selectedItems.digimonFilters,
+          pokemonFilters: selectedItems.pokemonFilters,
+          digimonAttributes: selectedItems.digimonAttributes,
+          digimonKinds: selectedItems.digimonKinds,
+
+          // Outcome influence items
+          nurtureKits: selectedItems.nurtureKits,
+          attributeCodes: selectedItems.attributeCodes,
+          milks: selectedItems.milks,
+
+          // Ice creams and their values
+          iceCreams: Object.keys(selectedItems.iceCreams),
+          iceCreamValues: {},
+
+          // Species selection items and their values
+          speciesItems: Object.keys(selectedItems.speciesItems),
+          speciesValues: {}
+        };
+
+        // Add ice cream values
+        requestData.iceCreamValues = {};
+
+        // Always use the current select values, not the stored values
+        if (selectedItems.iceCreams['Vanilla Ice Cream']) {
+          requestData.iceCreamValues['Vanilla Ice Cream'] = document.getElementById('vanilla-type-select').value || 'Fire';
+          console.log('Setting Vanilla Ice Cream type to:', requestData.iceCreamValues['Vanilla Ice Cream']);
+        }
+        if (selectedItems.iceCreams['Strawberry Ice Cream']) {
+          requestData.iceCreamValues['Strawberry Ice Cream'] = document.getElementById('strawberry-type-select').value || 'Water';
+          console.log('Setting Strawberry Ice Cream type to:', requestData.iceCreamValues['Strawberry Ice Cream']);
+        }
+        if (selectedItems.iceCreams['Chocolate Ice Cream']) {
+          requestData.iceCreamValues['Chocolate Ice Cream'] = document.getElementById('chocolate-type-select').value || 'Grass';
+          console.log('Setting Chocolate Ice Cream type to:', requestData.iceCreamValues['Chocolate Ice Cream']);
+        }
+        if (selectedItems.iceCreams['Mint Ice Cream']) {
+          requestData.iceCreamValues['Mint Ice Cream'] = document.getElementById('mint-type-select').value || 'Electric';
+          console.log('Setting Mint Ice Cream type to:', requestData.iceCreamValues['Mint Ice Cream']);
+        }
+        if (selectedItems.iceCreams['Pecan Ice Cream']) {
+          requestData.iceCreamValues['Pecan Ice Cream'] = document.getElementById('pecan-type-select').value || 'Ice';
+          console.log('Setting Pecan Ice Cream type to:', requestData.iceCreamValues['Pecan Ice Cream']);
+        }
+
+        // Add species values
+        requestData.speciesValues = {};
+
+        // Input Field (Species 1)
+        if (selectedItems.speciesItems['Input Field']) {
+          const inputValue = document.getElementById('species1-input').value.trim();
+          if (inputValue) {
+            requestData.speciesValues['Input Field'] = inputValue;
+            console.log('Setting Input Field species to:', inputValue);
+          }
+        }
+
+        // Drop Down (Species 1 & 2)
+        if (selectedItems.speciesItems['Drop Down']) {
+          const species1 = document.getElementById('species1-dropdown-input').value.trim();
+          const species2 = document.getElementById('species2-dropdown-input').value.trim();
+          if (species1 && species2) {
+            requestData.speciesValues['Drop Down'] = [species1, species2];
+            console.log('Setting Drop Down species to:', [species1, species2]);
+          }
+        }
+
+        // Radio Buttons (Species 1, 2 & 3)
+        if (selectedItems.speciesItems['Radio Buttons']) {
+          const species1 = document.getElementById('species1-radio-input').value.trim();
+          const species2 = document.getElementById('species2-radio-input').value.trim();
+          const species3 = document.getElementById('species3-radio-input').value.trim();
+          if (species1 && species2 && species3) {
+            requestData.speciesValues['Radio Buttons'] = [species1, species2, species3];
+            console.log('Setting Radio Buttons species to:', [species1, species2, species3]);
+          }
+        }
+
+
+
+
+
+
+        try {
+          // Show loading state
+          nurtureForm.style.display = 'none';
+          loadingContainer.style.display = 'block';
+          errorContainer.style.display = 'none';
+
+          // Send request to nurture egg
+          const response = await fetch('/api/nurture/hatch', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(requestData)
+          });
+
+          const data = await response.json();
+
+          if (data.success) {
+            // Display monsters for selection
+            displayMonsters(data.data.monsters, data.data.trainerId);
+          } else {
+            showError(data.message || 'Error nurturing egg');
+            nurtureForm.style.display = 'block';
+          }
+        } catch (error) {
+          console.error('Error nurturing egg:', error);
+          showError('Error connecting to server. Please try again.');
+          nurtureForm.style.display = 'block';
+        } finally {
+          loadingContainer.style.display = 'none';
+        }
+      });
+
+      // Function to display monsters for selection
+      function displayMonsters(monsters, trainerId) {
+        // Clear previous monsters
+        monstersGrid.innerHTML = '';
+
+        // Show the claim form container
+        document.getElementById('claim-form').style.display = 'block';
+
+        // Make sure special items options are visible and properly styled
+        const dnaSplicerOption = document.getElementById('dna-splicer-option');
+        const edenwiessOption = document.getElementById('edenwiess-option');
+        const forgetMeNotOption = document.getElementById('forget-me-not-option');
+
+        // Ensure options are visible
+        dnaSplicerOption.style.display = 'flex';
+        edenwiessOption.style.display = 'flex';
+        forgetMeNotOption.style.display = 'flex';
+
+        // Add a highlight animation to draw attention
+        const highlightAnimation = 'box-shadow 0.5s ease-in-out infinite alternate';
+        dnaSplicerOption.style.animation = highlightAnimation;
+        edenwiessOption.style.animation = highlightAnimation;
+        forgetMeNotOption.style.animation = highlightAnimation;
+
+        // Add box shadow for the animation
+        dnaSplicerOption.style.boxShadow = '0 0 5px rgba(255, 193, 7, 0.5)';
+        edenwiessOption.style.boxShadow = '0 0 5px rgba(255, 193, 7, 0.5)';
+        forgetMeNotOption.style.boxShadow = '0 0 5px rgba(255, 193, 7, 0.5)';
+
+        // Remove the animation after 3 seconds
+        setTimeout(() => {
+          dnaSplicerOption.style.animation = '';
+          edenwiessOption.style.animation = '';
+          forgetMeNotOption.style.animation = '';
+          dnaSplicerOption.style.boxShadow = '';
+          edenwiessOption.style.boxShadow = '';
+          forgetMeNotOption.style.boxShadow = '';
+        }, 3000);
+
+        // Get special items counts
+        fetch(`/api/nurture/special-items?trainerId=${trainerId}`)
+          .then(response => response.json())
+          .then(data => {
+            if (data.success) {
+              console.log('Special items data:', data.items);
+
+              // Update special items counts
+              document.getElementById('dna-splicer-count').textContent =
+                data.items.dnaSplicer > 0 ? `(${data.items.dnaSplicer} available)` : '(0 available)';
+              document.getElementById('edenwiess-count').textContent =
+                data.items.edenwiess > 0 ? `(${data.items.edenwiess} available)` : '(0 available)';
+              document.getElementById('forget-me-not-count').textContent =
+                data.items.forgetMeNot > 0 ? `(${data.items.forgetMeNot} available)` : '(0 available)';
+
+              // Enable/disable checkboxes based on availability
+              document.getElementById('use-dna-splicer').disabled = data.items.dnaSplicer <= 0;
+              document.getElementById('use-edenwiess').disabled = data.items.edenwiess <= 0;
+              document.getElementById('use-forget-me-not').disabled = data.items.forgetMeNot <= 0;
+
+              // Set checkbox colors based on availability
+              document.getElementById('use-dna-splicer').style.accentColor = data.items.dnaSplicer > 0 ? '#ffc107' : '#6b7280';
+              document.getElementById('use-edenwiess').style.accentColor = data.items.edenwiess > 0 ? '#ffc107' : '#6b7280';
+              document.getElementById('use-forget-me-not').style.accentColor = data.items.forgetMeNot > 0 ? '#ffc107' : '#6b7280';
+            }
+          })
+          .catch(error => {
+            console.error('Error fetching special items:', error);
+          });
+
+        // Create monster cards
+        monsters.forEach((monster, index) => {
+          const card = document.createElement('div');
+          card.style.backgroundColor = 'rgba(75, 85, 99, 0.4)';
+          card.style.borderRadius = '10px';
+          card.style.overflow = 'hidden';
+          card.style.cursor = 'pointer';
+          card.style.transition = 'all 0.2s';
+          card.style.border = '1px solid rgba(255,255,255,0.1)';
+          card.style.marginBottom = '12px';
+          card.style.boxShadow = '0 4px 6px rgba(0, 0, 0, 0.1)';
+          card.dataset.index = index;
+          card.dataset.monsterId = monster.id;
+
+          // Define type colors
+          const typeColors = {
+            'normal': { bg: '#A8A878', text: '#000' },
+            'fire': { bg: '#F08030', text: '#fff' },
+            'water': { bg: '#6890F0', text: '#fff' },
+            'electric': { bg: '#F8D030', text: '#000' },
+            'grass': { bg: '#78C850', text: '#000' },
+            'ice': { bg: '#98D8D8', text: '#000' },
+            'fighting': { bg: '#C03028', text: '#fff' },
+            'poison': { bg: '#A040A0', text: '#fff' },
+            'ground': { bg: '#E0C068', text: '#000' },
+            'flying': { bg: '#A890F0', text: '#000' },
+            'psychic': { bg: '#F85888', text: '#fff' },
+            'bug': { bg: '#A8B820', text: '#000' },
+            'rock': { bg: '#B8A038', text: '#000' },
+            'ghost': { bg: '#705898', text: '#fff' },
+            'dragon': { bg: '#7038F8', text: '#fff' },
+            'dark': { bg: '#705848', text: '#fff' },
+            'steel': { bg: '#B8B8D0', text: '#000' },
+            'fairy': { bg: '#EE99AC', text: '#000' },
+            };
+
+          // Define attribute colors
+          const attributeColors = {
+            'data': { bg: '#3498db', text: '#fff' },
+            'vaccine': { bg: '#2ecc71', text: '#fff' },
+            'virus': { bg: '#e74c3c', text: '#fff' },
+            'free': { bg: '#9b59b6', text: '#fff' },
+            'variable': { bg: '#f1c40f', text: '#000' }
+          };
+
+          // Determine species display
+          const speciesDisplay = [monster.species1, monster.species2, monster.species3]
+            .filter(Boolean)
+            .join('/');
+
+          // Create type badges
+          const typeBadges = [monster.type1, monster.type2, monster.type3, monster.type4, monster.type5]
+            .filter(Boolean)
+            .map(type => {
+              const typeKey = type.toLowerCase();
+              const colors = typeColors[typeKey] || { bg: '#A8A878', text: '#000' };
+              return `<span style="display: inline-block; padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; margin-right: 4px; margin-bottom: 4px; background-color: ${colors.bg}; color: ${colors.text}; box-shadow: 0 1px 2px rgba(0,0,0,0.2);">${type}</span>`;
+            })
+            .join('');
+
+          // Create attribute badge
+          const attributeBadge = monster.attribute ? (() => {
+            const attrKey = monster.attribute.toLowerCase();
+            const colors = attributeColors[attrKey] || { bg: '#3498db', text: '#fff' };
+            return `<span style="display: inline-block; padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; margin-top: 4px; background-color: ${colors.bg}; color: ${colors.text}; box-shadow: 0 1px 2px rgba(0,0,0,0.2);">${monster.attribute}</span>`;
+          })() : '';
+
+          card.innerHTML = `
+            <div style="padding: 16px;">
+              <h4 style="font-weight: bold; color: white; margin-bottom: 8px; font-size: 1rem;">${speciesDisplay}</h4>
+              <div style="display: flex; flex-wrap: wrap; margin-bottom: 4px;">
+                ${typeBadges}
+              </div>
+              ${monster.attribute ? `
+                <div style="display: flex; flex-wrap: wrap;">
+                  ${attributeBadge}
+                </div>
+              ` : ''}
+            </div>
+          `;
+
+          // Add click event to select monster
+          card.addEventListener('click', function() {
+            // Remove selection from all cards
+            document.querySelectorAll('#monsters-grid > div').forEach(c => {
+              c.style.boxShadow = '0 4px 6px rgba(0, 0, 0, 0.1)';
+              c.style.backgroundColor = 'rgba(75, 85, 99, 0.4)';
+              c.style.transform = 'scale(1)';
+              c.style.borderColor = 'rgba(255,255,255,0.1)';
+            });
+
+            // Add selection to clicked card
+            this.style.boxShadow = '0 0 10px rgba(255, 193, 7, 0.5)';
+            this.style.backgroundColor = 'rgba(75, 85, 99, 0.9)';
+            this.style.transform = 'scale(1.03)';
+            this.style.borderColor = '#ffc107';
+
+            // Store selected monster
+            selectedMonster = monsters[this.dataset.index];
+
+            // Show claim form
+            claimForm.style.display = 'block';
+
+            // Scroll to the claim form to make sure it's visible
+            document.getElementById('claim-form').scrollIntoView({ behavior: 'smooth' });
+
+            // Set default monster name
+            monsterNameInput.value = selectedMonster.species1;
+          });
+
+          monstersGrid.appendChild(card);
+        });
+
+        // Show monster selection container
+        monsterSelectionContainer.style.display = 'block';
+
+        // Store trainer ID for claim
+        claimButton.dataset.trainerId = trainerId;
+      }
+
+      // Claim button click handler
+      claimButton.addEventListener('click', async function() {
+        // Validate form
+        if (!selectedMonster) {
+          showError('Please select a monster');
+          return;
+        }
+
+        const monsterName = monsterNameInput.value.trim();
+        if (!monsterName) {
+          showError('Please enter a name for your monster');
+          return;
+        }
+
+        const trainerId = this.dataset.trainerId;
+
+        try {
+          // Show loading state
+          claimButton.disabled = true;
+          claimButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Claiming...';
+
+          // Send request to claim monster
+          const response = await fetch('/api/nurture/claim', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              trainerId,
+              monsterData: selectedMonster,
+              monsterName,
+              useDnaSplicer: document.getElementById('use-dna-splicer').checked,
+              useEdenwiess: document.getElementById('use-edenwiess').checked,
+              useForgetMeNot: document.getElementById('use-forget-me-not').checked
+            })
+          });
+
+          const data = await response.json();
+
+          if (data.success) {
+            // Show success message
+            monsterSelectionContainer.style.display = 'none';
+            successContainer.style.display = 'block';
+          } else {
+            showError(data.message || 'Error claiming monster');
+            claimButton.disabled = false;
+            claimButton.innerHTML = '<i class="fas fa-check-circle mr-2"></i> Claim Monster';
+          }
+        } catch (error) {
+          console.error('Error claiming monster:', error);
+          showError('Error connecting to server. Please try again.');
+          claimButton.disabled = false;
+          claimButton.innerHTML = '<i class="fas fa-check-circle mr-2"></i> Claim Monster';
+        }
+      });
+
+      // Function to populate item containers
+      function populateItemContainer(containerId, items) {
+        const container = document.getElementById(containerId);
+        if (!container) {
+          console.error(`Container not found: ${containerId}`);
+          return;
+        }
+
+        console.log(`Populating container ${containerId} with items:`, items);
+
+        // Clear container
+        container.innerHTML = '';
+
+        // Check if items is undefined or null
+        if (!items) {
+          console.error(`Items is undefined or null for container ${containerId}`);
+          container.innerHTML = '<p style="font-size: 0.875rem; color: #9ca3af; text-align: center; padding: 10px;">No items available</p>';
+          return;
+        }
+
+        // Add items
+        try {
+          // Debug: Log all items with counts > 0
+          console.log('Items with count > 0:');
+          Object.entries(items).forEach(([itemName, count]) => {
+            if (count > 0) {
+              console.log(`- ${itemName}: ${count}`);
+            }
+          });
+
+          // Count how many items we're adding
+          let itemsAdded = 0;
+
+          // Directly add items to the container
+          Object.entries(items).forEach(([itemName, count]) => {
+            console.log(`Processing item ${itemName} with count ${count}`);
+            if (count > 0) {
+              const isSelected = selectedItems.rankIncense.includes(itemName) ||
+                               selectedItems.colorIncense.includes(itemName) ||
+                               selectedItems.typePoffins.includes(itemName) ||
+                               selectedItems.digimonFilters.includes(itemName) ||
+                               selectedItems.pokemonFilters.includes(itemName) ||
+                               selectedItems.digimonAttributes.includes(itemName) ||
+                               selectedItems.digimonKinds.includes(itemName) ||
+                               selectedItems.nurtureKits.includes(itemName) ||
+                               selectedItems.attributeCodes.includes(itemName) ||
+                               selectedItems.milks.includes(itemName);
+
+              console.log(`Creating item element for ${itemName} (count: ${count})`);
+
+              // Create the item element directly without using a template
+              const bgColor = isSelected ? 'rgba(255, 193, 7, 0.2)' : 'rgba(75, 85, 99, 0.4)';
+              const borderColor = isSelected ? '#ffc107' : 'rgba(75, 85, 99, 0.5)';
+              const textColor = isSelected ? '#ffc107' : '#d1d5db';
+              const boxShadow = isSelected ? '0 0 5px rgba(255, 193, 7, 0.5)' : 'none';
+
+              const itemElement = document.createElement('div');
+              itemElement.className = `item-selector ${itemName.replace(/\s+/g, '-').toLowerCase()}`;
+              itemElement.dataset.item = itemName;
+              itemElement.style.display = 'inline-flex';
+              itemElement.style.alignItems = 'center';
+              itemElement.style.padding = '6px 10px';
+              itemElement.style.borderRadius = '6px';
+              itemElement.style.cursor = 'pointer';
+              itemElement.style.marginBottom = '6px';
+              itemElement.style.marginRight = '6px';
+              itemElement.style.border = `1px solid ${borderColor}`;
+              itemElement.style.backgroundColor = bgColor;
+              itemElement.style.boxShadow = boxShadow;
+              itemElement.style.transition = 'all 0.2s';
+
+              const nameSpan = document.createElement('span');
+              nameSpan.style.fontSize = '0.875rem';
+              nameSpan.style.fontWeight = '500';
+              nameSpan.style.color = textColor;
+              nameSpan.textContent = itemName;
+
+              const countSpan = document.createElement('span');
+              countSpan.style.marginLeft = '6px';
+              countSpan.style.fontSize = '0.75rem';
+              countSpan.style.padding = '2px 6px';
+              countSpan.style.borderRadius = '10px';
+              countSpan.style.backgroundColor = 'rgba(0,0,0,0.2)';
+              countSpan.style.color = textColor;
+              countSpan.textContent = count;
+
+              itemElement.appendChild(nameSpan);
+              itemElement.appendChild(countSpan);
+
+              // Add click event
+              itemElement.addEventListener('click', function() {
+                const item = this.dataset.item;
+                console.log(`Clicked on item: ${item}`);
+
+                // Determine which category this item belongs to
+                let category = '';
+                if (containerId === 'rank-incense-container') category = 'rankIncense';
+                else if (containerId === 'color-incense-container') category = 'colorIncense';
+                else if (containerId === 'type-poffins-container') category = 'typePoffins';
+                else if (containerId === 'species-filters-container') {
+                  // Normalize item names for consistent categorization
+                  const normalizedItem = item.replace(/\s+/g, '');
+
+                  if (normalizedItem === 'DigiMeat' || normalizedItem === 'DigiTofu') {
+                    category = 'digimonFilters';
+                  } else if (normalizedItem === 'SpellTag' || normalizedItem === 'BrokenBell') {
+                    category = 'pokemonFilters';
+                  }
+                }
+                else if (containerId === 'digimon-attributes-container') category = 'digimonAttributes';
+                else if (containerId === 'digimon-kinds-container') category = 'digimonKinds';
+                else if (containerId === 'nurture-kits-container') category = 'nurtureKits';
+                else if (containerId === 'attribute-codes-container') category = 'attributeCodes';
+                else if (containerId === 'milk-items-container') category = 'milks';
+
+                console.log(`Item ${item} belongs to category: ${category}`);
+
+                if (category) {
+                  // Toggle selection
+                  const index = selectedItems[category].indexOf(item);
+                  if (index === -1) {
+                    // Add to selected items
+                    selectedItems[category].push(item);
+                    this.style.backgroundColor = 'rgba(255, 193, 7, 0.2)';
+                    this.style.borderColor = '#ffc107';
+                    this.style.boxShadow = '0 0 5px rgba(255, 193, 7, 0.5)';
+                    this.querySelector('span:first-child').style.color = '#ffc107';
+                    this.querySelector('span:last-child').style.color = '#ffc107';
+                    console.log(`Added ${item} to ${category}`);
+                  } else {
+                    // Remove from selected items
+                    selectedItems[category].splice(index, 1);
+                    this.style.backgroundColor = 'rgba(55, 65, 81, 0.8)';
+                    this.style.borderColor = 'rgba(75, 85, 99, 0.5)';
+                    this.style.boxShadow = 'none';
+                    this.querySelector('span:first-child').style.color = '#d1d5db';
+                    this.querySelector('span:last-child').style.color = '#d1d5db';
+                    console.log(`Removed ${item} from ${category}`);
+                  }
+                }
+              });
+
+              container.appendChild(itemElement);
+              itemsAdded++;
+              console.log(`Added item ${itemName} to container ${containerId}`);
+            }
+          });
+
+          console.log(`Total items added to ${containerId}: ${itemsAdded}`);
+        } catch (error) {
+          console.error(`Error populating container ${containerId}:`, error);
+          container.innerHTML = `<p style="font-size: 0.875rem; color: #f87171; text-align: center; padding: 10px;">Error loading items: ${error.message}</p>`;
+          return;
+        }
+
+        // If no items, show message
+        if (container.children.length === 0) {
+          console.log(`No items added to container ${containerId}, showing empty message`);
+          container.innerHTML = '<p style="font-size: 0.875rem; color: #9ca3af; text-align: center; padding: 10px;">No items available</p>';
+        }
+      }
+
+      // Function to populate ice cream items
+      function populateIceCreamItems(iceCreams) {
+        // Vanilla Ice Cream
+        const vanillaContainer = document.getElementById('vanilla-ice-cream-item');
+        const vanillaInput = document.getElementById('vanilla-ice-cream-input');
+        if (vanillaContainer && iceCreams['Vanilla Ice Cream'] > 0) {
+          vanillaContainer.innerHTML = ''; // Clear container
+          const itemSelector = createItemElement('Vanilla Ice Cream', iceCreams['Vanilla Ice Cream']);
+          vanillaContainer.appendChild(itemSelector);
+
+          itemSelector.addEventListener('click', function() {
+            const isSelected = this.classList.contains('selected');
+            if (!isSelected) {
+              this.classList.add('selected');
+              this.style.backgroundColor = 'rgba(255, 193, 7, 0.2)';
+              this.style.borderColor = '#ffc107';
+              this.style.boxShadow = '0 0 5px rgba(255, 193, 7, 0.5)';
+              this.querySelector('span:first-child').style.color = '#ffc107';
+              this.querySelector('span:last-child').style.color = '#ffc107';
+              vanillaInput.style.display = 'block';
+              selectedItems.iceCreams['Vanilla Ice Cream'] = document.getElementById('vanilla-type-select').value;
+
+              // Enable Strawberry Ice Cream
+              document.getElementById('strawberry-type-select').disabled = false;
+            } else {
+              this.classList.remove('selected');
+              this.style.backgroundColor = 'rgba(55, 65, 81, 0.8)';
+              this.style.borderColor = 'rgba(75, 85, 99, 0.5)';
+              this.style.boxShadow = 'none';
+              this.querySelector('span:first-child').style.color = '#d1d5db';
+              this.querySelector('span:last-child').style.color = '#d1d5db';
+              vanillaInput.style.display = 'none';
+              delete selectedItems.iceCreams['Vanilla Ice Cream'];
+
+              // Disable other ice creams
+              document.getElementById('strawberry-type-select').disabled = true;
+              document.getElementById('chocolate-type-select').disabled = true;
+              document.getElementById('mint-type-select').disabled = true;
+              document.getElementById('pecan-type-select').disabled = true;
+
+              // Hide other ice cream inputs
+              document.getElementById('strawberry-ice-cream-input').style.display = 'none';
+              document.getElementById('chocolate-ice-cream-input').style.display = 'none';
+              document.getElementById('mint-ice-cream-input').style.display = 'none';
+              document.getElementById('pecan-ice-cream-input').style.display = 'none';
+
+              // Remove other ice creams from selected items
+              delete selectedItems.iceCreams['Strawberry Ice Cream'];
+              delete selectedItems.iceCreams['Chocolate Ice Cream'];
+              delete selectedItems.iceCreams['Mint Ice Cream'];
+              delete selectedItems.iceCreams['Pecan Ice Cream'];
+            }
+          });
+        }
+
+        // Strawberry Ice Cream
+        const strawberryContainer = document.getElementById('strawberry-ice-cream-item');
+        const strawberryInput = document.getElementById('strawberry-ice-cream-input');
+        if (strawberryContainer && iceCreams['Strawberry Ice Cream'] > 0) {
+          strawberryContainer.innerHTML = ''; // Clear container
+          const itemSelector = createItemElement('Strawberry Ice Cream', iceCreams['Strawberry Ice Cream']);
+          strawberryContainer.appendChild(itemSelector);
+
+          itemSelector.addEventListener('click', function() {
+            // Only allow if Vanilla is selected
+            if (!selectedItems.iceCreams['Vanilla Ice Cream']) {
+              showError('You must select Vanilla Ice Cream first');
+              return;
+            }
+
+            const isSelected = this.classList.contains('selected');
+            if (!isSelected) {
+              this.classList.add('selected');
+              this.style.backgroundColor = 'rgba(255, 193, 7, 0.2)';
+              this.style.borderColor = '#ffc107';
+              this.style.boxShadow = '0 0 5px rgba(255, 193, 7, 0.5)';
+              this.querySelector('span:first-child').style.color = '#ffc107';
+              this.querySelector('span:last-child').style.color = '#ffc107';
+              strawberryInput.style.display = 'block';
+              selectedItems.iceCreams['Strawberry Ice Cream'] = document.getElementById('strawberry-type-select').value;
+
+              // Enable Chocolate Ice Cream
+              document.getElementById('chocolate-type-select').disabled = false;
+            } else {
+              this.classList.remove('selected');
+              this.style.backgroundColor = 'rgba(55, 65, 81, 0.8)';
+              this.style.borderColor = 'rgba(75, 85, 99, 0.5)';
+              this.style.boxShadow = 'none';
+              this.querySelector('span:first-child').style.color = '#d1d5db';
+              this.querySelector('span:last-child').style.color = '#d1d5db';
+              strawberryInput.style.display = 'none';
+              delete selectedItems.iceCreams['Strawberry Ice Cream'];
+
+              // Disable other ice creams
+              document.getElementById('chocolate-type-select').disabled = true;
+              document.getElementById('mint-type-select').disabled = true;
+              document.getElementById('pecan-type-select').disabled = true;
+
+              // Hide other ice cream inputs
+              document.getElementById('chocolate-ice-cream-input').style.display = 'none';
+              document.getElementById('mint-ice-cream-input').style.display = 'none';
+              document.getElementById('pecan-ice-cream-input').style.display = 'none';
+
+              // Remove other ice creams from selected items
+              delete selectedItems.iceCreams['Chocolate Ice Cream'];
+              delete selectedItems.iceCreams['Mint Ice Cream'];
+              delete selectedItems.iceCreams['Pecan Ice Cream'];
+            }
+          });
+        }
+
+        // Chocolate Ice Cream
+        const chocolateContainer = document.getElementById('chocolate-ice-cream-item');
+        const chocolateInput = document.getElementById('chocolate-ice-cream-input');
+        if (chocolateContainer && iceCreams['Chocolate Ice Cream'] > 0) {
+          chocolateContainer.innerHTML = ''; // Clear container
+          const itemSelector = createItemElement('Chocolate Ice Cream', iceCreams['Chocolate Ice Cream']);
+          chocolateContainer.appendChild(itemSelector);
+
+          itemSelector.addEventListener('click', function() {
+            // Only allow if Vanilla and Strawberry are selected
+            if (!selectedItems.iceCreams['Vanilla Ice Cream'] || !selectedItems.iceCreams['Strawberry Ice Cream']) {
+              showError('You must select Vanilla and Strawberry Ice Cream first');
+              return;
+            }
+
+            const isSelected = this.classList.contains('selected');
+            if (!isSelected) {
+              this.classList.add('selected');
+              this.style.backgroundColor = 'rgba(255, 193, 7, 0.2)';
+              this.style.borderColor = '#ffc107';
+              this.style.boxShadow = '0 0 5px rgba(255, 193, 7, 0.5)';
+              this.querySelector('span:first-child').style.color = '#ffc107';
+              this.querySelector('span:last-child').style.color = '#ffc107';
+              chocolateInput.style.display = 'block';
+              selectedItems.iceCreams['Chocolate Ice Cream'] = document.getElementById('chocolate-type-select').value;
+
+              // Enable Mint Ice Cream
+              document.getElementById('mint-type-select').disabled = false;
+            } else {
+              this.classList.remove('selected');
+              this.style.backgroundColor = 'rgba(55, 65, 81, 0.8)';
+              this.style.borderColor = 'rgba(75, 85, 99, 0.5)';
+              this.style.boxShadow = 'none';
+              this.querySelector('span:first-child').style.color = '#d1d5db';
+              this.querySelector('span:last-child').style.color = '#d1d5db';
+              chocolateInput.style.display = 'none';
+              delete selectedItems.iceCreams['Chocolate Ice Cream'];
+
+              // Disable other ice creams
+              document.getElementById('mint-type-select').disabled = true;
+              document.getElementById('pecan-type-select').disabled = true;
+
+              // Hide other ice cream inputs
+              document.getElementById('mint-ice-cream-input').style.display = 'none';
+              document.getElementById('pecan-ice-cream-input').style.display = 'none';
+
+              // Remove other ice creams from selected items
+              delete selectedItems.iceCreams['Mint Ice Cream'];
+              delete selectedItems.iceCreams['Pecan Ice Cream'];
+            }
+          });
+        }
+
+        // Mint Ice Cream
+        const mintContainer = document.getElementById('mint-ice-cream-item');
+        const mintInput = document.getElementById('mint-ice-cream-input');
+        if (mintContainer && iceCreams['Mint Ice Cream'] > 0) {
+          mintContainer.innerHTML = ''; // Clear container
+          const itemSelector = createItemElement('Mint Ice Cream', iceCreams['Mint Ice Cream']);
+          mintContainer.appendChild(itemSelector);
+
+          itemSelector.addEventListener('click', function() {
+            // Only allow if Vanilla, Strawberry, and Chocolate are selected
+            if (!selectedItems.iceCreams['Vanilla Ice Cream'] ||
+                !selectedItems.iceCreams['Strawberry Ice Cream'] ||
+                !selectedItems.iceCreams['Chocolate Ice Cream']) {
+              showError('You must select Vanilla, Strawberry, and Chocolate Ice Cream first');
+              return;
+            }
+
+            const isSelected = this.classList.contains('selected');
+            if (!isSelected) {
+              this.classList.add('selected');
+              this.style.backgroundColor = 'rgba(255, 193, 7, 0.2)';
+              this.style.borderColor = '#ffc107';
+              this.style.boxShadow = '0 0 5px rgba(255, 193, 7, 0.5)';
+              this.querySelector('span:first-child').style.color = '#ffc107';
+              this.querySelector('span:last-child').style.color = '#ffc107';
+              mintInput.style.display = 'block';
+              selectedItems.iceCreams['Mint Ice Cream'] = document.getElementById('mint-type-select').value;
+
+              // Enable Pecan Ice Cream
+              document.getElementById('pecan-type-select').disabled = false;
+            } else {
+              this.classList.remove('selected');
+              this.style.backgroundColor = 'rgba(55, 65, 81, 0.8)';
+              this.style.borderColor = 'rgba(75, 85, 99, 0.5)';
+              this.style.boxShadow = 'none';
+              this.querySelector('span:first-child').style.color = '#d1d5db';
+              this.querySelector('span:last-child').style.color = '#d1d5db';
+              mintInput.style.display = 'none';
+              delete selectedItems.iceCreams['Mint Ice Cream'];
+
+              // Disable Pecan Ice Cream
+              document.getElementById('pecan-type-select').disabled = true;
+
+              // Hide Pecan Ice Cream input
+              document.getElementById('pecan-ice-cream-input').style.display = 'none';
+
+              // Remove Pecan Ice Cream from selected items
+              delete selectedItems.iceCreams['Pecan Ice Cream'];
+            }
+          });
+        }
+
+        // Pecan Ice Cream
+        const pecanContainer = document.getElementById('pecan-ice-cream-item');
+        const pecanInput = document.getElementById('pecan-ice-cream-input');
+        if (pecanContainer && iceCreams['Pecan Ice Cream'] > 0) {
+          pecanContainer.innerHTML = ''; // Clear container
+          const itemSelector = createItemElement('Pecan Ice Cream', iceCreams['Pecan Ice Cream']);
+          pecanContainer.appendChild(itemSelector);
+
+          itemSelector.addEventListener('click', function() {
+            // Only allow if Vanilla, Strawberry, Chocolate, and Mint are selected
+            if (!selectedItems.iceCreams['Vanilla Ice Cream'] ||
+                !selectedItems.iceCreams['Strawberry Ice Cream'] ||
+                !selectedItems.iceCreams['Chocolate Ice Cream'] ||
+                !selectedItems.iceCreams['Mint Ice Cream']) {
+              showError('You must select Vanilla, Strawberry, Chocolate, and Mint Ice Cream first');
+              return;
+            }
+
+            const isSelected = this.classList.contains('selected');
+            if (!isSelected) {
+              this.classList.add('selected');
+              this.style.backgroundColor = 'rgba(255, 193, 7, 0.2)';
+              this.style.borderColor = '#ffc107';
+              this.style.boxShadow = '0 0 5px rgba(255, 193, 7, 0.5)';
+              this.querySelector('span:first-child').style.color = '#ffc107';
+              this.querySelector('span:last-child').style.color = '#ffc107';
+              pecanInput.style.display = 'block';
+              selectedItems.iceCreams['Pecan Ice Cream'] = document.getElementById('pecan-type-select').value;
+            } else {
+              this.classList.remove('selected');
+              this.style.backgroundColor = 'rgba(55, 65, 81, 0.8)';
+              this.style.borderColor = 'rgba(75, 85, 99, 0.5)';
+              this.style.boxShadow = 'none';
+              this.querySelector('span:first-child').style.color = '#d1d5db';
+              this.querySelector('span:last-child').style.color = '#d1d5db';
+              pecanInput.style.display = 'none';
+              delete selectedItems.iceCreams['Pecan Ice Cream'];
+            }
+          });
+        }
+      }
+
+      // Function to populate species selection items
+      function populateSpeciesItems(speciesItems) {
+        // Input Field (Species 1)
+        const inputFieldContainer = document.getElementById('input-field-item');
+        const inputFieldInput = document.getElementById('input-field-input');
+        if (inputFieldContainer && speciesItems['Input Field'] > 0) {
+          inputFieldContainer.innerHTML = ''; // Clear container
+          const itemSelector = createItemElement('Input Field', speciesItems['Input Field']);
+          inputFieldContainer.appendChild(itemSelector);
+
+          itemSelector.addEventListener('click', function() {
+            const isSelected = this.classList.contains('selected');
+            if (!isSelected) {
+              this.classList.add('selected');
+              this.style.backgroundColor = 'rgba(255, 193, 7, 0.2)';
+              this.style.borderColor = '#ffc107';
+              this.style.boxShadow = '0 0 5px rgba(255, 193, 7, 0.5)';
+              this.querySelector('span:first-child').style.color = '#ffc107';
+              this.querySelector('span:last-child').style.color = '#ffc107';
+              inputFieldInput.style.display = 'block';
+              selectedItems.speciesItems['Input Field'] = true;
+
+              // Focus the input field
+              document.getElementById('species1-input').focus();
+            } else {
+              this.classList.remove('selected');
+              this.style.backgroundColor = 'rgba(55, 65, 81, 0.8)';
+              this.style.borderColor = 'rgba(75, 85, 99, 0.5)';
+              this.style.boxShadow = 'none';
+              this.querySelector('span:first-child').style.color = '#d1d5db';
+              this.querySelector('span:last-child').style.color = '#d1d5db';
+              inputFieldInput.style.display = 'none';
+              delete selectedItems.speciesItems['Input Field'];
+            }
+          });
+
+          // Add event listener to the input field
+          document.getElementById('species1-input').addEventListener('input', function() {
+            // Update the selected items value
+            if (selectedItems.speciesItems['Input Field']) {
+              console.log('Input Field value changed to:', this.value);
+            }
+          });
+        }
+
+        // Drop Down (Species 1 & 2)
+        const dropDownContainer = document.getElementById('drop-down-item');
+        const dropDownInput = document.getElementById('drop-down-input');
+        if (dropDownContainer && speciesItems['Drop Down'] > 0) {
+          dropDownContainer.innerHTML = ''; // Clear container
+          const itemSelector = createItemElement('Drop Down', speciesItems['Drop Down']);
+          dropDownContainer.appendChild(itemSelector);
+
+          itemSelector.addEventListener('click', function() {
+            const isSelected = this.classList.contains('selected');
+            if (!isSelected) {
+              this.classList.add('selected');
+              this.style.backgroundColor = 'rgba(255, 193, 7, 0.2)';
+              this.style.borderColor = '#ffc107';
+              this.style.boxShadow = '0 0 5px rgba(255, 193, 7, 0.5)';
+              this.querySelector('span:first-child').style.color = '#ffc107';
+              this.querySelector('span:last-child').style.color = '#ffc107';
+              dropDownInput.style.display = 'block';
+              selectedItems.speciesItems['Drop Down'] = true;
+            } else {
+              this.classList.remove('selected');
+              this.style.backgroundColor = 'rgba(55, 65, 81, 0.8)';
+              this.style.borderColor = 'rgba(75, 85, 99, 0.5)';
+              this.style.boxShadow = 'none';
+              this.querySelector('span:first-child').style.color = '#d1d5db';
+              this.querySelector('span:last-child').style.color = '#d1d5db';
+              dropDownInput.style.display = 'none';
+              delete selectedItems.speciesItems['Drop Down'];
+            }
+          });
+        }
+
+        // Radio Buttons (Species 1, 2 & 3)
+        const radioButtonsContainer = document.getElementById('radio-buttons-item');
+        const radioButtonsInput = document.getElementById('radio-buttons-input');
+        if (radioButtonsContainer && speciesItems['Radio Buttons'] > 0) {
+          radioButtonsContainer.innerHTML = ''; // Clear container
+          const itemSelector = createItemElement('Radio Buttons', speciesItems['Radio Buttons']);
+          radioButtonsContainer.appendChild(itemSelector);
+
+          itemSelector.addEventListener('click', function() {
+            const isSelected = this.classList.contains('selected');
+            if (!isSelected) {
+              this.classList.add('selected');
+              this.style.backgroundColor = 'rgba(255, 193, 7, 0.2)';
+              this.style.borderColor = '#ffc107';
+              this.style.boxShadow = '0 0 5px rgba(255, 193, 7, 0.5)';
+              this.querySelector('span:first-child').style.color = '#ffc107';
+              this.querySelector('span:last-child').style.color = '#ffc107';
+              radioButtonsInput.style.display = 'block';
+              selectedItems.speciesItems['Radio Buttons'] = true;
+            } else {
+              this.classList.remove('selected');
+              this.style.backgroundColor = 'rgba(55, 65, 81, 0.8)';
+              this.style.borderColor = 'rgba(75, 85, 99, 0.5)';
+              this.style.boxShadow = 'none';
+              this.querySelector('span:first-child').style.color = '#d1d5db';
+              this.querySelector('span:last-child').style.color = '#d1d5db';
+              radioButtonsInput.style.display = 'none';
+              delete selectedItems.speciesItems['Radio Buttons'];
+            }
+          });
+        }
+      }
+
+      // Helper function to show error message
+      function showError(message) {
+        errorMessage.textContent = message;
+        errorContainer.style.display = 'block';
+      }
+    });
+
+    // Accordion functionality
+    function toggleCategory(categoryId) {
+      const content = document.getElementById(`${categoryId}-content`);
+      const icon = document.getElementById(`${categoryId}-icon`);
+
+      if (content.style.display === 'none') {
+        content.style.display = 'block';
+        icon.classList.remove('fa-chevron-down');
+        icon.classList.add('fa-chevron-up');
+      } else {
+        content.style.display = 'none';
+        icon.classList.remove('fa-chevron-up');
+        icon.classList.add('fa-chevron-down');
+      }
+    }
+  </script>
+</div>

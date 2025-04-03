@@ -101,6 +101,7 @@ async function processReward(reward, trainerId, trainers, source = 'game_corner'
                   break;
                 case 'held items':
                 case 'held':
+                case 'helditems':
                   category = 'inv_helditems';
                   break;
                 case 'seals':

@@ -7,7 +7,7 @@ class MonsterService {
       minSpecies: 1,
       maxSpecies: 3,
       minType: 1,
-      maxType: 5
+      maxType: 3 // Limit to 3 types maximum
     },
     filters: {
       pokemon: {

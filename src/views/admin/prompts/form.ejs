@@ -1,0 +1,521 @@
+<% /* Set the title and other variables for the layout */ %>
+<% title = title || 'Prompt Form' %>
+
+<!-- Include Font Awesome for icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+<!-- Include custom roller styles -->
+<link rel="stylesheet" href="/css/admin-roller-styles.css">
+
+<style>
+    .admin-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+    }
+
+    .admin-title {
+        font-size: 2rem;
+        font-weight: bold;
+    }
+
+    .admin-actions {
+        display: flex;
+        gap: 1rem;
+    }
+
+    .btn-back {
+        background-color: #7f8c8d;
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 4px;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .btn-back:hover {
+        background-color: #95a5a6;
+    }
+
+    .form-container {
+        background-color: var(--card-background);
+        border-radius: 0.5rem;
+        padding: 2rem;
+        margin-bottom: 2rem;
+    }
+
+    .form-section {
+        margin-bottom: 2rem;
+        padding-bottom: 1.5rem;
+        border-bottom: 1px solid var(--divider-color);
+    }
+
+    .form-section:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+        padding-bottom: 0;
+    }
+
+    .form-section-title {
+        font-size: 1.25rem;
+        font-weight: bold;
+        margin-bottom: 1rem;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: bold;
+    }
+
+    /* Using modern-input class from input-styles.css */
+    .form-input {
+        width: 100%;
+    }
+
+    .form-textarea {
+        width: 100%;
+    }
+
+    /* Using modern-select class from dropdown-styles.css */
+    .form-select {
+        width: 100%;
+    }
+
+    .form-textarea {
+        min-height: 100px;
+        resize: vertical;
+    }
+
+    .form-checkbox-group {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .form-checkbox {
+        width: 1.25rem;
+        height: 1.25rem;
+    }
+
+    .form-help {
+        font-size: 0.875rem;
+        color: #94a3b8;
+        margin-top: 0.25rem;
+    }
+
+    .form-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+    }
+
+    .form-grid-3 {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1rem;
+    }
+
+    .form-full {
+        grid-column: 1 / -1;
+    }
+
+    .btn-submit {
+        background-color: #2ecc71;
+        color: white;
+        padding: 0.75rem 1.5rem;
+        border-radius: 0.25rem;
+        font-weight: bold;
+        cursor: pointer;
+        border: none;
+    }
+
+    .btn-submit:hover {
+        background-color: #27ae60;
+    }
+
+    .btn-cancel {
+        background-color: #e74c3c;
+        color: white;
+        padding: 0.75rem 1.5rem;
+        border-radius: 0.25rem;
+        font-weight: bold;
+        text-decoration: none;
+    }
+
+    .btn-cancel:hover {
+        background-color: #c0392b;
+    }
+
+    .alert {
+        padding: 1rem;
+        border-radius: 0.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .alert-error {
+        background-color: rgba(239, 68, 68, 0.2);
+        border: 1px solid rgba(239, 68, 68, 0.5);
+        color: #ef4444;
+    }
+
+    .random-items-container {
+        margin-top: 1rem;
+    }
+
+    .random-item-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr auto;
+        gap: 0.5rem;
+        margin-bottom: 0.5rem;
+        align-items: center;
+    }
+
+    .btn-add-row {
+        background-color: #3498db;
+        color: white;
+        padding: 0.25rem 0.5rem;
+        border-radius: 0.25rem;
+        font-size: 0.875rem;
+        cursor: pointer;
+        border: none;
+    }
+
+    .btn-remove-row {
+        background-color: #e74c3c;
+        color: white;
+        padding: 0.25rem 0.5rem;
+        border-radius: 0.25rem;
+        font-size: 0.875rem;
+        cursor: pointer;
+        border: none;
+    }
+</style>
+
+<div class="container mx-auto px-4 py-8">
+    <div class="admin-header">
+        <h1 class="admin-title"><%= isNew ? 'Create New Prompt' : 'Edit Prompt' %></h1>
+        <div class="admin-actions">
+            <a href="/admin/prompts" class="btn-back">
+                <i class="fas fa-arrow-left"></i> Back to Prompts
+            </a>
+        </div>
+    </div>
+
+    <% if (typeof message !== 'undefined' && message) { %>
+    <div class="alert alert-<%= messageType || 'error' %>">
+        <%= message %>
+    </div>
+    <% } %>
+
+    <form action="<%= isNew ? '/admin/prompts/create' : '/admin/prompts/edit/' + prompt.prompt_id %>" method="POST" class="form-container">
+        <!-- Basic Information Section -->
+        <div class="form-section">
+            <h2 class="form-section-title">Basic Information</h2>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="category" class="form-label">Category *</label>
+                    <select id="category" name="category" class="form-select modern-select" required>
+                        <option value="">-- Select Category --</option>
+                        <% categories.forEach(function(cat) { %>
+                            <option value="<%= cat %>" <%= prompt.category === cat ? 'selected' : '' %>><%= cat.charAt(0).toUpperCase() + cat.slice(1) %></option>
+                        <% }); %>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="title" class="form-label">Title *</label>
+                    <input type="text" id="title" name="title" class="form-input modern-input" value="<%= prompt.title || '' %>" required>
+                </div>
+
+                <div class="form-group form-full">
+                    <label for="description" class="form-label">Description *</label>
+                    <textarea id="description" name="description" class="form-textarea modern-input" required><%= prompt.description || '' %></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="image_url" class="form-label">Image URL</label>
+                    <input type="text" id="image_url" name="image_url" class="form-input modern-input" value="<%= prompt.image_url || '' %>">
+                    <p class="form-help">Optional image to display with the prompt</p>
+                </div>
+
+                <div class="form-group">
+                    <label for="min_trainer_level" class="form-label">Minimum Trainer Level</label>
+                    <input type="number" id="min_trainer_level" name="min_trainer_level" class="form-input modern-input" value="<%= prompt.min_trainer_level || 0 %>" min="0">
+                    <p class="form-help">Minimum trainer level required to access this prompt</p>
+                </div>
+
+                <div id="monthContainer" class="form-group" style="<%= prompt.category === 'monthly' ? '' : 'display: none;' %>">
+                    <label for="month" class="form-label">Month</label>
+                    <select id="month" name="month" class="form-select modern-select">
+                        <option value="">-- Select Month --</option>
+                        <% months.forEach(function(m) { %>
+                            <option value="<%= m %>" <%= prompt.month === m ? 'selected' : '' %>><%= m %></option>
+                        <% }); %>
+                    </select>
+                    <p class="form-help">Month when this prompt is available (for monthly prompts only)</p>
+                </div>
+
+                <div class="form-group">
+                    <div class="form-checkbox-group">
+                        <input type="checkbox" id="repeatable" name="repeatable" class="form-checkbox" <%= prompt.repeatable ? 'checked' : '' %>>
+                        <label for="repeatable" class="form-label">Repeatable</label>
+                    </div>
+                    <p class="form-help">If checked, trainers can complete this prompt multiple times</p>
+                </div>
+
+                <div class="form-group">
+                    <div class="form-checkbox-group">
+                        <input type="checkbox" id="active" name="active" class="form-checkbox" <%= prompt.active !== false ? 'checked' : '' %>>
+                        <label for="active" class="form-label">Active</label>
+                    </div>
+                    <p class="form-help">If checked, this prompt will be available to trainers</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Rewards Section -->
+        <div class="form-section">
+            <h2 class="form-section-title">Rewards</h2>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="reward_coins" class="form-label">Coins</label>
+                    <input type="number" id="reward_coins" name="reward_coins" class="form-input modern-input" value="<%= prompt.reward_coins || 0 %>" min="0">
+                    <p class="form-help">Number of coins to reward</p>
+                </div>
+
+                <div class="form-group">
+                    <label for="reward_levels" class="form-label">Levels</label>
+                    <input type="number" id="reward_levels" name="reward_levels" class="form-input modern-input" value="<%= prompt.reward_levels || 0 %>" min="0">
+                    <p class="form-help">Number of levels to reward</p>
+                </div>
+
+                <div class="form-group form-full">
+                    <label for="reward_items" class="form-label">Specific Items</label>
+                    <div class="mb-2">
+                        <div class="flex gap-2 mb-2">
+                            <input type="text" id="itemName" placeholder="Item Name" class="form-input modern-input">
+                            <select id="itemCategory" class="form-select modern-select">
+                                <option value="">-- Select Category --</option>
+                                <% itemCategories.forEach(function(cat) { %>
+                                    <option value="<%= cat.toLowerCase() %>"><%= cat %></option>
+                                <% }); %>
+                            </select>
+                            <input type="number" id="itemQuantity" placeholder="Quantity" class="form-input modern-input" value="1" min="1" style="width: 100px;">
+                            <button type="button" id="addItemBtn" class="btn-add-row">
+                                <i class="fas fa-plus"></i> Add
+                            </button>
+                        </div>
+                    </div>
+                    <textarea id="reward_items" name="reward_items" class="form-textarea modern-input"><%= typeof prompt.reward_items === 'object' ? JSON.stringify(prompt.reward_items, null, 2) : (prompt.reward_items || '') %></textarea>
+                    <p class="form-help">JSON array of specific items to reward. Format: [{"name": "Item Name", "category": "berries", "quantity": 1}] or simple format: ["Item Name;category;quantity"]</p>
+                </div>
+
+                <div class="form-group form-full">
+                    <label class="form-label">Random Items</label>
+                    <p class="form-help">Select categories and quantities of random items to reward</p>
+
+                    <div id="randomItemsContainer" class="random-items-container">
+                        <%
+                        let randomItems = {};
+                        if (prompt.reward_random_items) {
+                            if (typeof prompt.reward_random_items === 'string') {
+                                try {
+                                    randomItems = JSON.parse(prompt.reward_random_items);
+                                } catch (e) {
+                                    randomItems = {};
+                                }
+                            } else {
+                                randomItems = prompt.reward_random_items;
+                            }
+                        }
+
+                        // If we have random items, display them
+                        if (Object.keys(randomItems).length > 0) {
+                            Object.entries(randomItems).forEach(function([category, quantity], index) {
+                        %>
+                            <div class="random-item-row">
+                                <select name="reward_random_items_category" class="form-select modern-select">
+                                    <option value="">-- Select Category --</option>
+                                    <% itemCategories.forEach(function(cat) { %>
+                                        <option value="<%= cat %>" <%= category === cat ? 'selected' : '' %>><%= cat %></option>
+                                    <% }); %>
+                                </select>
+                                <input type="number" name="reward_random_items_quantity" class="form-input modern-input" value="<%= quantity %>" min="1">
+                                <button type="button" class="btn-remove-row" onclick="removeRandomItemRow(this)">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        <%
+                            });
+                        } else {
+                            // Display an empty row by default
+                        %>
+                            <div class="random-item-row">
+                                <select name="reward_random_items_category" class="form-select modern-select">
+                                    <option value="">-- Select Category --</option>
+                                    <% itemCategories.forEach(function(cat) { %>
+                                        <option value="<%= cat %>"><%= cat %></option>
+                                    <% }); %>
+                                </select>
+                                <input type="number" name="reward_random_items_quantity" class="form-input modern-input" value="1" min="1">
+                                <button type="button" class="btn-remove-row" onclick="removeRandomItemRow(this)">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        <% } %>
+                    </div>
+
+                    <button type="button" id="addRandomItemRow" class="btn-add-row mt-2">
+                        <i class="fas fa-plus"></i> Add Another Category
+                    </button>
+                </div>
+
+                <div class="form-group form-full">
+                    <label for="reward_monster_params" class="form-label">Monster Reward Parameters</label>
+                    <textarea id="reward_monster_params" name="reward_monster_params" class="form-textarea modern-input"><%= typeof prompt.reward_monster_params === 'object' ? JSON.stringify(prompt.reward_monster_params, null, 2) : (prompt.reward_monster_params || '') %></textarea>
+                    <p class="form-help">JSON object with parameters for MonsterRoller. Use the visual interface below to generate this JSON.</p>
+
+                    <!-- Monster Roller Visual Interface -->
+                    <div id="monster-roller-container" class="monster-roller-container"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Form Actions -->
+        <div class="flex justify-between mt-6">
+            <a href="/admin/prompts" class="btn-cancel">Cancel</a>
+            <button type="submit" class="btn-submit">
+                <%= isNew ? 'Create Prompt' : 'Update Prompt' %>
+            </button>
+        </div>
+    </form>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Show/hide month field based on category
+        const categorySelect = document.getElementById('category');
+        const monthContainer = document.getElementById('monthContainer');
+
+        categorySelect.addEventListener('change', function() {
+            if (this.value === 'monthly') {
+                monthContainer.style.display = '';
+            } else {
+                monthContainer.style.display = 'none';
+            }
+        });
+
+        // Add random item row
+        const addRandomItemRow = document.getElementById('addRandomItemRow');
+        const randomItemsContainer = document.getElementById('randomItemsContainer');
+
+        addRandomItemRow.addEventListener('click', function() {
+            const newRow = document.createElement('div');
+            newRow.className = 'random-item-row';
+
+            const categories = [
+                <% itemCategories.forEach(function(cat, index) { %>
+                    '<%= cat %>'<%= index < itemCategories.length - 1 ? ',' : '' %>
+                <% }); %>
+            ];
+
+            let categoryOptions = '<option value="">-- Select Category --</option>';
+            categories.forEach(function(cat) {
+                categoryOptions += `<option value="${cat}">${cat}</option>`;
+            });
+
+            newRow.innerHTML = `
+                <select name="reward_random_items_category" class="form-select modern-select">
+                    ${categoryOptions}
+                </select>
+                <input type="number" name="reward_random_items_quantity" class="form-input modern-input" value="1" min="1">
+                <button type="button" class="btn-remove-row" onclick="removeRandomItemRow(this)">
+                    <i class="fas fa-times"></i>
+                </button>
+            `;
+
+            randomItemsContainer.appendChild(newRow);
+        });
+
+        // Add specific item
+        const addItemBtn = document.getElementById('addItemBtn');
+        const itemNameInput = document.getElementById('itemName');
+        const itemCategorySelect = document.getElementById('itemCategory');
+        const itemQuantityInput = document.getElementById('itemQuantity');
+        const rewardItemsTextarea = document.getElementById('reward_items');
+
+        addItemBtn.addEventListener('click', function() {
+            const itemName = itemNameInput.value.trim();
+            const itemCategory = itemCategorySelect.value.trim();
+            const itemQuantity = parseInt(itemQuantityInput.value) || 1;
+
+            if (!itemName) {
+                alert('Please enter an item name');
+                return;
+            }
+
+            // Format the item as a string: "Item Name;category;quantity"
+            const itemString = `${itemName};${itemCategory || 'items'};${itemQuantity}`;
+
+            // Get current items from textarea
+            let currentItems = [];
+            try {
+                const currentValue = rewardItemsTextarea.value.trim();
+                if (currentValue) {
+                    currentItems = JSON.parse(currentValue);
+                    if (!Array.isArray(currentItems)) {
+                        currentItems = [];
+                    }
+                }
+            } catch (e) {
+                console.error('Error parsing current items:', e);
+                currentItems = [];
+            }
+
+            // Add the new item
+            currentItems.push(itemString);
+
+            // Update the textarea
+            rewardItemsTextarea.value = JSON.stringify(currentItems, null, 2);
+
+            // Clear the inputs
+            itemNameInput.value = '';
+            itemCategorySelect.value = '';
+            itemQuantityInput.value = '1';
+
+            // Focus back on the item name input
+            itemNameInput.focus();
+        });
+    });
+
+    // Remove random item row
+    function removeRandomItemRow(button) {
+        const row = button.closest('.random-item-row');
+        const container = document.getElementById('randomItemsContainer');
+
+        // Don't remove the last row
+        if (container.children.length > 1) {
+            row.remove();
+        } else {
+            // Clear the values instead
+            const select = row.querySelector('select');
+            const input = row.querySelector('input');
+
+            select.value = '';
+            input.value = '1';
+        }
+    }
+    // Initialize the enhanced item and monster rollers
+    // These scripts are loaded at the end of the page
+</script>
+
+<!-- Include the enhanced roller scripts -->
+<script src="/js/admin-monster-roller.js"></script>
+<script src="/js/admin-item-roller.js"></script>

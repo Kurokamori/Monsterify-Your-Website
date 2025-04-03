@@ -1,0 +1,816 @@
+<div class="container mx-auto px-4 py-8">
+  <div class="flex flex-col md:flex-row gap-6">
+    <!-- Left column - Boss info -->
+    <div class="w-full md:w-2/3">
+      <div class="bg-gray-800 rounded-lg shadow-lg overflow-hidden mb-6">
+        <div id="boss-container" class="p-6">
+          <div id="loading-boss" class="text-center py-12">
+            <div class="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-yellow-400"></div>
+            <p class="mt-4 text-lg text-gray-300">Loading boss data...</p>
+          </div>
+
+          <div id="boss-content" class="hidden">
+            <!-- Boss header -->
+            <div class="flex flex-col md:flex-row items-center mb-6">
+              <div class="boss-image-container w-full md:w-1/3 flex justify-center mb-4 md:mb-0">
+                <img id="boss-image" src="" alt="Boss" class="rounded-lg shadow-lg max-h-64 object-contain">
+              </div>
+              <div class="w-full md:w-2/3 md:pl-6">
+                <h1 id="boss-name" class="text-3xl font-bold text-yellow-400 mb-2"></h1>
+                <p id="boss-flavor-text" class="text-gray-300 italic mb-4"></p>
+
+                <!-- Health bar -->
+                <div class="mb-4">
+                  <div class="flex justify-between mb-1">
+                    <span class="text-gray-300">Health:</span>
+                    <span id="boss-health-text" class="text-gray-300"></span>
+                  </div>
+                  <div class="w-full bg-gray-700 rounded-full h-4">
+                    <div id="boss-health-bar" class="bg-red-600 h-4 rounded-full" style="width: 100%"></div>
+                  </div>
+                </div>
+
+                <!-- Status -->
+                <div id="boss-status" class="text-lg font-semibold"></div>
+              </div>
+            </div>
+
+            <!-- Boss damage section -->
+            <div class="mb-6">
+              <h2 class="text-2xl font-bold text-yellow-400 mb-4">Your Contribution</h2>
+              <div class="bg-gray-700 rounded-lg p-4">
+                <div class="flex justify-between mb-2">
+                  <span class="text-gray-300">Total Damage Dealt:</span>
+                  <span id="player-damage" class="text-white font-bold"></span>
+                </div>
+                <div class="w-full bg-gray-800 rounded-full h-3 mb-4">
+                  <div id="player-damage-bar" class="bg-yellow-400 h-3 rounded-full" style="width: 0%"></div>
+                </div>
+                <div id="damage-rank" class="text-center text-gray-300"></div>
+              </div>
+            </div>
+
+            <!-- Damage actions -->
+            <div id="damage-actions" class="mb-6">
+              <h2 class="text-2xl font-bold text-yellow-400 mb-4">Deal Damage</h2>
+              <p class="text-white mb-4">Submit content to deal damage to the boss!</p>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <a href="/submissions" class="bg-gray-700 hover:bg-gray-600 rounded-lg p-4 text-center transition duration-300">
+                  <i class="fas fa-paint-brush text-2xl text-yellow-400 mb-2"></i>
+                  <h3 class="text-lg font-semibold text-white">Submit Art</h3>
+                  <p class="text-sm text-white">Submit artwork to deal damage</p>
+                </a>
+
+                <a href="/submissions" class="bg-gray-700 hover:bg-gray-600 rounded-lg p-4 text-center transition duration-300">
+                  <i class="fas fa-pen-fancy text-2xl text-yellow-400 mb-2"></i>
+                  <h3 class="text-lg font-semibold text-white">Submit Writing</h3>
+                  <p class="text-sm text-white">Submit writing to deal damage</p>
+                </a>
+              </div>
+            </div>
+
+            <!-- Rewards section (hidden until boss is defeated) -->
+            <div id="rewards-section" class="hidden mb-6">
+              <h2 class="text-2xl font-bold text-yellow-400 mb-4">Rewards Available!</h2>
+              <div class="bg-gray-700 rounded-lg p-6">
+                <div id="rewards-content">
+                  <!-- Rewards will be populated here -->
+                </div>
+                <button id="claim-rewards-btn" class="mt-4 w-full bg-yellow-500 hover:bg-yellow-600 text-black font-bold py-2 px-4 rounded transition duration-300">
+                  Claim Rewards
+                </button>
+              </div>
+            </div>
+
+            <!-- No active boss message (hidden by default) -->
+            <div id="no-boss-message" class="hidden text-center py-12">
+              <i class="fas fa-dragon text-5xl text-gray-500 mb-4"></i>
+              <h2 class="text-2xl font-bold text-gray-300 mb-2">No Active Boss</h2>
+              <p class="text-gray-400">There is no active boss battle at the moment. Check back later!</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right column - Leaderboard -->
+    <div class="w-full md:w-1/3">
+      <div class="bg-gray-800 rounded-lg shadow-lg overflow-hidden">
+        <div class="p-6">
+          <h2 class="text-2xl font-bold text-yellow-400 mb-4">Top Damagers</h2>
+
+          <div id="loading-leaderboard" class="text-center py-8">
+            <div class="inline-block animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-yellow-400"></div>
+            <p class="mt-2 text-gray-300">Loading leaderboard...</p>
+          </div>
+
+          <div id="leaderboard-content" class="hidden">
+            <div class="overflow-x-auto">
+              <table class="min-w-full">
+                <thead>
+                  <tr>
+                    <th class="px-4 py-2 text-left text-gray-300">#</th>
+                    <th class="px-4 py-2 text-left text-gray-300">Trainer</th>
+                    <th class="px-4 py-2 text-right text-gray-300">Damage</th>
+                  </tr>
+                </thead>
+                <tbody id="leaderboard-table">
+                  <!-- Leaderboard entries will be populated here -->
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Empty leaderboard message -->
+            <div id="empty-leaderboard" class="hidden text-center py-4">
+              <p class="text-gray-400">No damage has been dealt to this boss yet. Be the first!</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Previous bosses section -->
+      <div class="bg-gray-800 rounded-lg shadow-lg overflow-hidden mt-6">
+        <div class="p-6">
+          <h2 class="text-2xl font-bold text-yellow-400 mb-4">Previous Bosses</h2>
+          <div id="previous-bosses" class="space-y-4">
+            <!-- This will be populated with previous bosses -->
+            <p class="text-gray-400 text-center">Previous boss information will appear here.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Boss Styling -->
+<style>
+/* Boss specific styles */
+:root {
+  --boss-primary: #e11d48; /* Red-600 */
+  --boss-secondary: #f97316; /* Orange-500 */
+  --boss-accent: #facc15; /* Yellow-400 */
+  --boss-text: #f8fafc; /* Slate-50 */
+  --boss-dark: #1e293b; /* Slate-800 */
+  --boss-card-bg: rgba(30, 41, 59, 0.8); /* Slate-800 with opacity */
+  --boss-hover: #b91c1c; /* Red-700 */
+}
+
+/* Utility classes */
+.hidden {
+  display: none !important;
+}
+
+/* Remove underlines from all links */
+a {
+  text-decoration: none;
+}
+
+/* Boss container and card styling */
+.bg-gray-800 {
+  background-color: var(--boss-card-bg);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+}
+
+/* Boss header styling */
+#boss-name {
+  color: var(--boss-accent);
+  text-shadow: 0 0 10px rgba(250, 204, 21, 0.5);
+  font-size: 2.25rem;
+  letter-spacing: 0.025em;
+}
+
+#boss-flavor-text {
+  color: var(--boss-text);
+  font-style: italic;
+  line-height: 1.6;
+}
+
+/* Boss image styling */
+.boss-image-container img {
+  border: 3px solid var(--boss-primary);
+  box-shadow: 0 0 20px rgba(225, 29, 72, 0.5);
+  transition: all 0.3s ease;
+}
+
+/* Health bar styling */
+#boss-health-bar {
+  background: linear-gradient(90deg, var(--boss-primary), var(--boss-secondary));
+  box-shadow: 0 0 10px rgba(225, 29, 72, 0.7);
+  transition: width 0.5s ease-in-out;
+}
+
+.bg-gray-700 {
+  background-color: rgba(51, 65, 85, 0.5);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Boss status styling */
+#boss-status {
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  display: inline-block;
+  font-weight: bold;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+#boss-status.text-green-500 {
+  background-color: rgba(34, 197, 94, 0.2);
+  color: rgb(34, 197, 94);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
+#boss-status.text-red-500 {
+  background-color: rgba(225, 29, 72, 0.2);
+  color: rgb(225, 29, 72);
+  border: 1px solid rgba(225, 29, 72, 0.3);
+}
+
+/* Damage section styling */
+#player-damage {
+  color: var(--boss-accent);
+  font-size: 1.25rem;
+}
+
+#player-damage-bar {
+  background: linear-gradient(90deg, var(--boss-accent), var(--boss-secondary));
+  box-shadow: 0 0 10px rgba(250, 204, 21, 0.5);
+  transition: width 0.5s ease-in-out;
+}
+
+#damage-rank {
+  font-style: italic;
+  color: var(--boss-text);
+  margin-top: 0.5rem;
+}
+
+/* Action buttons styling */
+#damage-actions a {
+  background-color: var(--boss-dark);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  transition: all 0.3s ease;
+  color: var(--boss-text);
+  text-decoration: none;
+}
+
+#damage-actions a:hover {
+  background-color: var(--boss-primary);
+  transform: translateY(-3px);
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2);
+}
+
+#damage-actions a i {
+  color: var(--boss-accent);
+  font-size: 1.75rem;
+  margin-bottom: 0.5rem;
+  transition: all 0.3s ease;
+}
+
+#damage-actions a:hover i {
+  transform: scale(1.1);
+}
+
+#damage-actions a p {
+  color: var(--boss-text);
+  opacity: 0.9;
+}
+
+#damage-actions a:hover p {
+  opacity: 1;
+}
+
+/* Leaderboard styling */
+#leaderboard-table tr {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  transition: all 0.2s ease;
+}
+
+#leaderboard-table tr:last-child {
+  border-bottom: none;
+}
+
+#leaderboard-table tr:hover {
+  background-color: rgba(225, 29, 72, 0.1);
+}
+
+#leaderboard-table tr.bg-gray-700 {
+  background-color: rgba(225, 29, 72, 0.2);
+  border-left: 3px solid var(--boss-primary);
+}
+
+/* Previous bosses section styling */
+#previous-bosses .previous-boss-card {
+  background-color: var(--boss-dark);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  transition: all 0.3s ease;
+}
+
+#previous-bosses .previous-boss-card:hover {
+  border-color: var(--boss-primary);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+#previous-bosses .previous-boss-name {
+  color: var(--boss-accent);
+  font-weight: bold;
+  font-size: 1.1rem;
+  margin-bottom: 0.25rem;
+}
+
+#previous-bosses .previous-boss-date {
+  color: var(--boss-text);
+  font-size: 0.875rem;
+  opacity: 0.7;
+}
+
+/* Rewards section styling */
+#rewards-section {
+  background: linear-gradient(135deg, rgba(225, 29, 72, 0.1), rgba(249, 115, 22, 0.1));
+  border-radius: 0.75rem;
+  border: 1px solid rgba(225, 29, 72, 0.3);
+  overflow: hidden;
+}
+
+#rewards-content {
+  padding: 1rem 0;
+}
+
+#claim-rewards-btn {
+  background: linear-gradient(90deg, var(--boss-secondary), var(--boss-accent));
+  color: var(--boss-dark);
+  font-weight: bold;
+  letter-spacing: 0.05em;
+  transition: all 0.3s ease;
+  border: none;
+  box-shadow: 0 4px 10px rgba(249, 115, 22, 0.3);
+}
+
+#claim-rewards-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(249, 115, 22, 0.4);
+}
+
+#claim-rewards-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* Loading animations */
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+#loading-boss, #loading-leaderboard {
+  background: linear-gradient(135deg, rgba(225, 29, 72, 0.05), rgba(249, 115, 22, 0.05));
+  border-radius: 0.75rem;
+  padding: 2rem;
+}
+
+/* No boss message styling */
+#no-boss-message i {
+  color: var(--boss-primary);
+  opacity: 0.5;
+  margin-bottom: 1rem;
+}
+
+/* Responsive design adjustments */
+@media (max-width: 768px) {
+  #boss-name {
+    font-size: 1.75rem;
+    text-align: center;
+  }
+
+  #boss-flavor-text {
+    text-align: center;
+  }
+
+  .boss-image-container {
+    margin-bottom: 1.5rem;
+  }
+
+  #damage-actions .grid {
+    grid-template-columns: 1fr;
+  }
+
+  #leaderboard-table td, #leaderboard-table th {
+    padding: 0.5rem 0.25rem;
+    font-size: 0.875rem;
+  }
+}
+
+</style>
+
+<!-- Boss JavaScript -->
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Fetch current boss data
+    fetchCurrentBoss();
+
+    // Set up event listeners
+    document.getElementById('claim-rewards-btn')?.addEventListener('click', claimRewards);
+  });
+
+  async function fetchCurrentBoss() {
+    try {
+      const response = await fetch('/api/boss/current');
+      const data = await response.json();
+
+      // First, hide all loading indicators
+      document.getElementById('loading-boss').classList.add('hidden');
+      document.getElementById('loading-leaderboard').classList.add('hidden');
+
+      // Show the boss content container
+      document.getElementById('boss-content').classList.remove('hidden');
+
+      if (data.success && data.boss) {
+        // Hide the no boss message if it's visible
+        document.getElementById('no-boss-message').classList.add('hidden');
+
+        // Render the boss data
+        renderBoss(data.boss, data.damage, data.topDamagers, data.rewards, data.trainerId);
+
+        // Fetch and render previous bosses
+        fetchPreviousBosses();
+
+        // Show leaderboard content
+        document.getElementById('leaderboard-content').classList.remove('hidden');
+
+        // Check if leaderboard is empty
+        if (!data.topDamagers || data.topDamagers.length === 0) {
+          document.getElementById('empty-leaderboard').classList.remove('hidden');
+        } else {
+          document.getElementById('empty-leaderboard').classList.add('hidden');
+        }
+      } else {
+        // Show no active boss message
+        document.getElementById('no-boss-message').classList.remove('hidden');
+
+        // Show empty leaderboard message
+        document.getElementById('leaderboard-content').classList.remove('hidden');
+        document.getElementById('empty-leaderboard').classList.remove('hidden');
+      }
+    } catch (error) {
+      console.error('Error fetching boss data:', error);
+
+      // Hide loading indicators
+      document.getElementById('loading-boss').classList.add('hidden');
+      document.getElementById('loading-leaderboard').classList.add('hidden');
+
+      // Show error state
+      document.getElementById('boss-content').classList.remove('hidden');
+      document.getElementById('no-boss-message').classList.remove('hidden');
+      document.getElementById('leaderboard-content').classList.remove('hidden');
+      document.getElementById('empty-leaderboard').classList.remove('hidden');
+    }
+  }
+
+  function renderBoss(boss, damage, topDamagers, rewards, trainerId) {
+    // Set boss details
+    document.getElementById('boss-name').textContent = boss.name;
+    document.getElementById('boss-flavor-text').textContent = boss.flavor_text || 'A powerful foe appears!';
+    document.getElementById('boss-image').src = boss.image_url || 'https://i.imgur.com/placeholder.png';
+
+    // Set health bar
+    const healthPercent = (boss.current_health / boss.max_health) * 100;
+    document.getElementById('boss-health-bar').style.width = `${healthPercent}%`;
+    document.getElementById('boss-health-text').textContent = `${boss.current_health} / ${boss.max_health}`;
+
+    // Set boss status
+    const statusElement = document.getElementById('boss-status');
+    // Clear any existing classes first
+    statusElement.classList.remove('text-red-500', 'text-green-500');
+
+    if (boss.is_defeated) {
+      statusElement.textContent = 'DEFEATED!';
+      statusElement.classList.add('text-red-500');
+
+      // Hide damage actions
+      document.getElementById('damage-actions').classList.add('hidden');
+    } else {
+      statusElement.textContent = 'ACTIVE';
+      statusElement.classList.add('text-green-500');
+    }
+
+    // Set player damage
+    const playerDamage = damage.total_damage || 0;
+    document.getElementById('player-damage').textContent = playerDamage.toLocaleString();
+
+    // Calculate player damage percentage
+    const damagePercent = boss.max_health > 0 ? (playerDamage / boss.max_health) * 100 : 0;
+    document.getElementById('player-damage-bar').style.width = `${Math.min(100, damagePercent)}%`;
+
+    // Render leaderboard
+    renderLeaderboard(topDamagers, trainerId);
+
+    // Check for rewards
+    if (boss.is_defeated) {
+      if (data.rewardStatus && data.rewardStatus.hasRewards) {
+        if (data.rewardStatus.isClaimed) {
+          // Show claimed message
+          showRewardsClaimed();
+        } else {
+          // Show rewards to claim
+          renderRewards(data.rewardStatus.rewards, boss.boss_id, trainerId);
+        }
+      } else {
+        // No rewards available
+        showNoRewards();
+      }
+    }
+  }
+
+  function renderLeaderboard(topDamagers, currentTrainerId) {
+    const leaderboardTable = document.getElementById('leaderboard-table');
+    const emptyLeaderboard = document.getElementById('empty-leaderboard');
+
+    // Clear existing entries
+    leaderboardTable.innerHTML = '';
+
+    if (!topDamagers || topDamagers.length === 0) {
+      // Show empty leaderboard message
+      emptyLeaderboard.classList.remove('hidden');
+      return;
+    }
+
+    // Hide empty leaderboard message
+    emptyLeaderboard.classList.add('hidden');
+
+    // Add entries to the leaderboard
+    topDamagers.forEach((damager, index) => {
+      const row = document.createElement('tr');
+
+      // Highlight current user's entry
+      if (damager.player_user_id === currentTrainerId) {
+        row.classList.add('bg-gray-700');
+      }
+
+      // Add medal for top 3
+      let rankDisplay = `${index + 1}`;
+      if (index === 0) {
+        rankDisplay = '<span class="text-yellow-400"><i class="fas fa-medal"></i> 1</span>';
+      } else if (index === 1) {
+        rankDisplay = '<span class="text-gray-400"><i class="fas fa-medal"></i> 2</span>';
+      } else if (index === 2) {
+        rankDisplay = '<span class="text-yellow-700"><i class="fas fa-medal"></i> 3</span>';
+      }
+
+      row.innerHTML = `
+        <td class="px-4 py-2 text-gray-300">${rankDisplay}</td>
+        <td class="px-4 py-2 text-white">${damager.trainer_name}</td>
+        <td class="px-4 py-2 text-right text-white">${parseInt(damager.total_damage).toLocaleString()}</td>
+      `;
+
+      leaderboardTable.appendChild(row);
+    });
+
+    // Show player's rank
+    const playerRank = topDamagers.findIndex(d => d.player_user_id === currentTrainerId);
+    const rankElement = document.getElementById('damage-rank');
+
+    if (playerRank !== -1) {
+      rankElement.textContent = `Your Rank: #${playerRank + 1}`;
+    } else if (parseInt(document.getElementById('player-damage').textContent.replace(/,/g, '')) > 0) {
+      rankElement.textContent = 'Your Rank: Outside top 10';
+    } else {
+      rankElement.textContent = 'Deal damage to appear on the leaderboard!';
+    }
+  }
+
+  function showRewardsClaimed() {
+    const rewardsSection = document.getElementById('rewards-section');
+    rewardsSection.classList.remove('hidden');
+
+    // Create a claimed message
+    rewardsSection.innerHTML = `
+      <h2 class="text-2xl font-bold text-yellow-400 mb-4">Rewards Claimed</h2>
+      <div class="bg-gray-700 rounded-lg p-6">
+        <div class="text-center">
+          <i class="fas fa-check-circle text-green-500 text-4xl mb-4"></i>
+          <p class="text-white text-lg">You have already claimed your rewards for this boss.</p>
+        </div>
+      </div>
+    `;
+  }
+
+  function showNoRewards() {
+    const rewardsSection = document.getElementById('rewards-section');
+    rewardsSection.classList.remove('hidden');
+
+    // Create a no rewards message
+    rewardsSection.innerHTML = `
+      <h2 class="text-2xl font-bold text-yellow-400 mb-4">No Rewards Available</h2>
+      <div class="bg-gray-700 rounded-lg p-6">
+        <div class="text-center">
+          <i class="fas fa-exclamation-circle text-yellow-500 text-4xl mb-4"></i>
+          <p class="text-white text-lg">You did not deal enough damage to earn rewards for this boss.</p>
+        </div>
+      </div>
+    `;
+  }
+
+  function renderRewards(rewards, bossId, trainerId) {
+    const rewardsSection = document.getElementById('rewards-section');
+    const rewardsContent = document.getElementById('rewards-content');
+    const claimButton = document.getElementById('claim-rewards-btn');
+
+    // Show rewards section
+    rewardsSection.classList.remove('hidden');
+
+    // Populate rewards content
+    let rewardsHtml = '';
+
+    // Add coins
+    if (rewards.coins) {
+      rewardsHtml += `
+        <div class="flex items-center mb-4">
+          <div class="bg-yellow-500 rounded-full p-2 mr-4">
+            <i class="fas fa-coins text-black text-xl"></i>
+          </div>
+          <div>
+            <h3 class="text-white font-bold">${rewards.coins.toLocaleString()} Coins</h3>
+            <p class="text-gray-300 text-sm">Currency to spend in shops</p>
+          </div>
+        </div>
+      `;
+    }
+
+    // Add items
+    if (rewards.items && rewards.items.items && rewards.items.items.length > 0) {
+      rewards.items.items.forEach(item => {
+        rewardsHtml += `
+          <div class="flex items-center mb-4">
+            <div class="bg-blue-500 rounded-full p-2 mr-4">
+              <i class="fas fa-box text-white text-xl"></i>
+            </div>
+            <div>
+              <h3 class="text-white font-bold">${item.name} x${item.quantity || 1}</h3>
+              <p class="text-gray-300 text-sm">${item.description || 'A special item'}</p>
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    // Add monsters
+    if (rewards.monsters && rewards.monsters.monsters && rewards.monsters.monsters.length > 0) {
+      rewards.monsters.monsters.forEach(monster => {
+        const isSpecial = monster.is_special ? 'bg-purple-600' : 'bg-green-600';
+        const icon = monster.is_special ? 'fa-dragon' : 'fa-paw';
+
+        rewardsHtml += `
+          <div class="flex items-center mb-4">
+            <div class="${isSpecial} rounded-full p-2 mr-4">
+              <i class="fas ${icon} text-white text-xl"></i>
+            </div>
+            <div>
+              <h3 class="text-white font-bold">${monster.name}</h3>
+              <p class="text-gray-300 text-sm">${monster.description || 'A monster reward'}</p>
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    // If no rewards, show a message
+    if (rewardsHtml === '') {
+      rewardsHtml = '<p class="text-gray-300 text-center">No rewards available.</p>';
+    }
+
+    rewardsContent.innerHTML = rewardsHtml;
+
+    // Update claim button state
+    if (rewards.is_claimed) {
+      claimButton.textContent = 'Rewards Claimed';
+      claimButton.disabled = true;
+      claimButton.classList.remove('bg-yellow-500', 'hover:bg-yellow-600');
+      claimButton.classList.add('bg-gray-500', 'cursor-not-allowed');
+    } else {
+      claimButton.textContent = 'Claim Rewards';
+      claimButton.disabled = false;
+      claimButton.classList.add('bg-yellow-500', 'hover:bg-yellow-600');
+      claimButton.classList.remove('bg-gray-500', 'cursor-not-allowed');
+
+      // Set up claim button with boss and trainer IDs
+      claimButton.setAttribute('data-boss-id', bossId);
+      claimButton.setAttribute('data-trainer-id', trainerId);
+    }
+  }
+
+  async function fetchPreviousBosses() {
+    try {
+      const response = await fetch('/api/boss/previous');
+      const data = await response.json();
+
+      const previousBossesContainer = document.getElementById('previous-bosses');
+
+      // Clear existing content
+      previousBossesContainer.innerHTML = '';
+
+      if (data.success && data.bosses && data.bosses.length > 0) {
+        // Render previous bosses
+        data.bosses.forEach(boss => {
+          const bossCard = document.createElement('div');
+          bossCard.className = 'previous-boss-card';
+
+          const defeatDate = new Date(boss.defeated_at || boss.end_date);
+          const formattedDate = defeatDate.toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric'
+          });
+
+          bossCard.innerHTML = `
+            <div class="previous-boss-name">${boss.name}</div>
+            <div class="previous-boss-date">Defeated: ${formattedDate}</div>
+          `;
+
+          previousBossesContainer.appendChild(bossCard);
+        });
+      } else {
+        // No previous bosses
+        previousBossesContainer.innerHTML = '<p class="text-gray-400 text-center">No previous bosses found.</p>';
+      }
+    } catch (error) {
+      console.error('Error fetching previous bosses:', error);
+      document.getElementById('previous-bosses').innerHTML =
+        '<p class="text-gray-400 text-center">Failed to load previous bosses.</p>';
+    }
+  }
+
+  async function claimRewards() {
+    const button = document.getElementById('claim-rewards-btn');
+    const bossId = button.getAttribute('data-boss-id');
+    const trainerId = button.getAttribute('data-trainer-id');
+
+    if (!bossId || !trainerId) {
+      console.error('Missing boss ID or trainer ID');
+      return;
+    }
+
+    // Disable button and show loading state
+    button.disabled = true;
+    button.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Claiming...';
+
+    try {
+      const response = await fetch('/api/boss/claim-rewards', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          bossId,
+          trainerId
+        })
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        // Update button to show claimed
+        button.textContent = 'Rewards Claimed';
+        button.classList.remove('bg-yellow-500', 'hover:bg-yellow-600');
+        button.classList.add('bg-gray-500', 'cursor-not-allowed');
+
+        // Show success message
+        alert('Rewards claimed successfully!');
+
+        // Refresh the page to update the UI
+        window.location.reload();
+      } else {
+        // Re-enable button
+        button.textContent = 'Claim Rewards';
+        button.disabled = false;
+
+        // Show error message
+        alert(`Error claiming rewards: ${data.message}`);
+      }
+    } catch (error) {
+      console.error('Error claiming rewards:', error);
+
+      // Re-enable button
+      button.textContent = 'Claim Rewards';
+      button.disabled = false;
+
+      // Show error message
+      alert('Error claiming rewards. Please try again.');
+    }
+  }
+</script>

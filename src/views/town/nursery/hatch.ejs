@@ -1,236 +1,808 @@
-<% /* Set the title and other variables for the layout */ %>
-<% title = 'Egg Hatching' %>
-
-<%- /* Add custom styles */ %>
-<% style = `
-<link rel="stylesheet" href="/css/egg-hatching.css">
-` %>
-
-<div class="container mx-auto px-4 py-8">
-  <!-- Header -->
-  <div class="mb-8">
-    <img src="https://i.imgur.com/IhtWUxD.png" alt="Nursery Banner" class="w-full h-48 object-cover rounded-lg shadow-lg mb-4">
-    <div class="flex items-center justify-between">
-      <a href="/town/visit" class="btn-secondary hover:scale-105 transition-transform">
-        <i class="fas fa-arrow-left mr-2"></i> Back to Town
-      </a>
-      <h2 class="text-2xl font-display font-bold text-amber-400 text-shadow-lg">Nursery - Egg Hatching</h2>
+<div class="container mx-auto px-4 py-8" style="background-color: #121824; min-height: 100vh;">
+  <div class="mb-8" style="position: relative;">
+    <img src="https://i.imgur.com/IhtWUxD.png" alt="Nursery Banner" style="width: 100%; height: 200px; object-fit: cover; border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.5);">
+    <div style="position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(to top, rgba(0,0,0,0.8), transparent); padding: 20px; border-radius: 0 0 8px 8px;">
+      <div class="flex items-center mb-4 w-full">
+        <a href="/town/visit" style="background-color: rgba(60, 60, 70, 0.7); color: #e2e2e2; padding: 8px 16px; border-radius: 6px; display: inline-flex; align-items: center; margin-right: 16px; transition: all 0.2s; border: 1px solid rgba(255,255,255,0.1);" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+          <i class="fas fa-arrow-left mr-2"></i> Back to Town
+        </a>
+        <h2 style="font-size: 1.75rem; font-weight: bold; color: #ffc107; text-shadow: 0 2px 4px rgba(0,0,0,0.5); text-align: center; flex-grow: 1;">Nursery - Egg Hatching</h2>
+      </div>
+      <p style="text-align: center; font-size: 0.875rem; color: #e2e2e2; max-width: 700px; margin: 0 auto;">Hatch eggs into new monsters for your collection. Each egg has the potential to become a unique monster!</p>
     </div>
   </div>
 
-  <!-- Main Form -->
-  <form id="egg-hatching-form" class="space-y-6 max-w-4xl mx-auto">
-    <!-- Step 1: Trainer Selection -->
-    <div id="step-trainer" class="step-container active">
-      <div class="step-header">
-        <h3 class="step-title"><i class="fas fa-user mr-2"></i>Select Trainer</h3>
-      </div>
-      <div class="step-content">
-        <div class="trainer-selector">
-          <label for="trainer-select" class="trainer-label">Select Trainer:</label>
-          <select id="trainer-select" name="trainer_id" class="trainer-select">
-            <option value="">-- Select a Trainer --</option>
-            <% trainers.forEach(trainer => { %>
-              <option value="<%= trainer.id %>">
-                <%= trainer.name %> (Level <%= trainer.level %>)
-              </option>
-            <% }); %>
-          </select>
-          <div id="trainer-egg-count" class="mt-3 hidden">
-            <span class="text-amber-400">Available Eggs: <span id="egg-count" class="font-bold">0</span></span>
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+    <!-- Left Column: Egg Hatching Form -->
+    <div class="lg:col-span-1">
+      <div style="background-color: rgba(30, 35, 50, 0.8); border-radius: 10px; padding: 24px; box-shadow: 0 4px 20px rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.05);">
+        <h3 style="font-size: 1.25rem; font-weight: bold; color: #ffc107; margin-bottom: 16px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px;">Hatch an Egg</h3>
+
+        <div id="egg-hatching-form">
+          <div class="mb-4">
+            <label for="trainer-select" style="display: block; font-size: 0.875rem; font-weight: 500; color: #d1d5db; margin-bottom: 8px;">Select Trainer</label>
+            <select id="trainer-select" style="width: 100%; background-color: rgba(55, 65, 81, 0.8); border: 1px solid rgba(75, 85, 99, 0.5); border-radius: 6px; padding: 8px 12px; color: #e2e2e2; outline: none; transition: all 0.2s;" onmouseover="this.style.borderColor='rgba(255, 193, 7, 0.5)'" onmouseout="this.style.borderColor='rgba(75, 85, 99, 0.5)'" onfocus="this.style.boxShadow='0 0 0 2px rgba(255, 193, 7, 0.25)'" onblur="this.style.boxShadow='none'">
+              <option value="">-- Select a Trainer --</option>
+              <% if (locals.trainers && trainers.length > 0) { %>
+                <% trainers.forEach(trainer => { %>
+                  <option value="<%= trainer.id %>"><%= trainer.name %></option>
+                <% }); %>
+              <% } %>
+            </select>
+          </div>
+
+          <div id="egg-count-container" class="mb-4" style="display: none;">
+            <div style="background-color: rgba(55, 65, 81, 0.6); border-radius: 6px; padding: 12px; border: 1px solid rgba(255,255,255,0.05); margin-top: 12px;">
+              <p style="font-size: 0.875rem; color: #d1d5db;">
+                <span id="trainer-name" style="font-weight: 500;"></span> has <span id="egg-count" style="font-weight: bold; color: #ffc107;"></span> Standard Eggs
+              </p>
+            </div>
+          </div>
+
+          <div id="hatch-method-container" class="mb-4" style="display: none;">
+            <label style="display: block; font-size: 0.875rem; font-weight: 500; color: #d1d5db; margin-bottom: 8px; margin-top: 16px;">Hatching Method</label>
+
+            <div style="display: flex; flex-direction: column; gap: 12px;">
+              <div style="display: flex; align-items: center;">
+                <input type="radio" id="incubator-option" name="hatch-method" value="incubator" style="margin-right: 8px; accent-color: #ffc107;">
+                <label for="incubator-option" style="font-size: 0.875rem; color: #d1d5db;">Use Incubator</label>
+                <span id="incubator-status" style="margin-left: 8px; font-size: 0.75rem;"></span>
+              </div>
+
+              <div style="display: flex; align-items: center;">
+                <input type="radio" id="artwork-option" name="hatch-method" value="artwork" style="margin-right: 8px; accent-color: #ffc107;">
+                <label for="artwork-option" style="font-size: 0.875rem; color: #d1d5db;">Use Artwork</label>
+              </div>
+
+              <div id="artwork-url-container" class="mt-2" style="margin-left: 24px; display: none;">
+                <label for="artwork-url" style="display: block; font-size: 0.75rem; font-weight: 500; color: #9ca3af; margin-bottom: 4px;">Artwork URL</label>
+                <input type="text" id="artwork-url" style="width: 100%; background-color: rgba(55, 65, 81, 0.8); border: 1px solid rgba(75, 85, 99, 0.5); border-radius: 6px; padding: 8px 12px; color: #e2e2e2; font-size: 0.875rem; outline: none; transition: all 0.2s;" onmouseover="this.style.borderColor='rgba(255, 193, 7, 0.5)'" onmouseout="this.style.borderColor='rgba(75, 85, 99, 0.5)'" onfocus="this.style.boxShadow='0 0 0 2px rgba(255, 193, 7, 0.25)'" onblur="this.style.boxShadow='none'" placeholder="https://...">
+              </div>
+            </div>
+          </div>
+
+          <div style="margin-top: 24px;">
+            <button id="hatch-button" style="width: 100%; background-color: #ffc107; color: #1a1a1a; font-weight: bold; padding: 10px 16px; border-radius: 6px; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s;" onmouseover="this.style.backgroundColor='#ffca2c'" onmouseout="this.style.backgroundColor='#ffc107'">
+              <i class="fas fa-egg mr-2"></i> Hatch Egg
+            </button>
+          </div>
+        </div>
+
+        <div id="loading-container" style="display: none;">
+          <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 32px 0;">
+            <div style="height: 48px; width: 48px; border-radius: 50%; border: 3px solid rgba(255, 193, 7, 0.3); border-top-color: #ffc107; animation: spin 1s linear infinite; margin-bottom: 16px;"></div>
+            <p style="color: #d1d5db;">Hatching egg...</p>
+          </div>
+        </div>
+
+        <style>
+          @keyframes spin {
+            to { transform: rotate(360deg); }
+          }
+        </style>
+
+        <div id="error-container" style="margin-top: 16px; display: none;">
+          <div style="background-color: rgba(185, 28, 28, 0.2); border: 1px solid rgba(220, 38, 38, 0.5); color: #fca5a5; padding: 12px 16px; border-radius: 6px;">
+            <p id="error-message" style="font-size: 0.875rem; margin: 0;"></p>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Step 2: Incubator Usage -->
-    <div id="step-incubator" class="step-container hidden">
-      <div class="step-header">
-        <h3 class="step-title"><i class="fas fa-flask mr-2"></i>Incubator Usage</h3>
-      </div>
-      <div class="step-content">
-        <div class="radio-group">
-          <label class="radio-option">
-            <input type="radio" name="useIncubator" value="yes" class="hidden">
-            <div class="radio-content">
-              <div class="radio-icon"><i class="fas fa-flask"></i></div>
-              <div class="radio-label">Use Incubator</div>
-              <div class="radio-description">Skip the art submission requirement</div>
-            </div>
-          </label>
-          <label class="radio-option">
-            <input type="radio" name="useIncubator" value="no" class="hidden">
-            <div class="radio-content">
-              <div class="radio-icon"><i class="fas fa-paint-brush"></i></div>
-              <div class="radio-label">Submit Art</div>
-              <div class="radio-description">Provide a URL to your egg hatching art</div>
-            </div>
-          </label>
-        </div>
-      </div>
-    </div>
+    <!-- Right Column: Monster Selection -->
+    <div class="lg:col-span-1">
+      <div id="monster-selection-container" style="background-color: rgba(30, 35, 50, 0.8); border-radius: 10px; padding: 24px; box-shadow: 0 4px 20px rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.05); display: none;">
+        <h3 style="font-size: 1.25rem; font-weight: bold; color: #ffc107; margin-bottom: 16px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px;">Select a Monster to Claim</h3>
+        <p style="font-size: 0.875rem; color: #d1d5db; margin-bottom: 16px;">Your egg has hatched into multiple possibilities! Choose one monster to add to your collection.</p>
 
-    <!-- Step 3: Submission URL (conditional) -->
-    <div id="step-submission" class="step-container hidden">
-      <div class="step-header">
-        <h3 class="step-title"><i class="fas fa-link mr-2"></i>Submission URL</h3>
-      </div>
-      <div class="step-content">
-        <div class="form-group">
-          <label for="submission-url" class="form-label">Enter your submission URL:</label>
-          <div class="input-with-icon">
-            <input type="url" id="submission-url" name="submission_url" class="form-input" placeholder="https://">
-            <i class="fas fa-link input-icon"></i>
+        <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px;">
+          <!-- DNA Splicer Container -->
+          <div id="dna-splicer-container" style="background-color: rgba(55, 65, 81, 0.4); border-radius: 8px; padding: 12px; border: 1px solid rgba(255,255,255,0.05);">
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+              <div>
+                <h4 style="font-size: 0.95rem; font-weight: 600; color: #ffc107; margin-bottom: 4px;">DNA Splicer</h4>
+                <p style="font-size: 0.8rem; color: #d1d5db; margin-bottom: 0;">Use DNA Splicers to claim additional monsters (<span id="dna-splicer-count" style="font-weight: 600; color: #ffc107;">0</span> available)</p>
+              </div>
+              <div style="display: flex; align-items: center;">
+                <button id="use-splicer-btn" style="background-color: rgba(55, 65, 81, 0.6); color: #d1d5db; padding: 6px 12px; border-radius: 4px; font-size: 0.8rem; border: 1px solid rgba(255,255,255,0.1); margin-right: 8px; cursor: pointer; transition: all 0.2s;" disabled>
+                  <i class="fas fa-plus-circle mr-1"></i> Use Splicer
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Edenwiess Container -->
+          <div id="edenwiess-container" style="background-color: rgba(55, 65, 81, 0.4); border-radius: 8px; padding: 12px; border: 1px solid rgba(255,255,255,0.05);">
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+              <div>
+                <h4 style="font-size: 0.95rem; font-weight: 600; color: #ffc107; margin-bottom: 4px;">Edenwiess</h4>
+                <p style="font-size: 0.8rem; color: #d1d5db; margin-bottom: 0;">Use Edenwiess to claim additional monsters (<span id="edenwiess-count" style="font-weight: 600; color: #ffc107;">0</span> available)</p>
+              </div>
+              <div style="display: flex; align-items: center;">
+                <button id="use-edenwiess-btn" style="background-color: rgba(55, 65, 81, 0.6); color: #d1d5db; padding: 6px 12px; border-radius: 4px; font-size: 0.8rem; border: 1px solid rgba(255,255,255,0.1); margin-right: 8px; cursor: pointer; transition: all 0.2s;" disabled>
+                  <i class="fas fa-plus-circle mr-1"></i> Use Edenwiess
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Extra Claims Counter -->
+          <div style="background-color: rgba(55, 65, 81, 0.4); border-radius: 8px; padding: 12px; border: 1px solid rgba(255,255,255,0.05);">
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+              <div>
+                <h4 style="font-size: 0.95rem; font-weight: 600; color: #ffc107; margin-bottom: 4px;">Extra Claims</h4>
+                <p style="font-size: 0.8rem; color: #d1d5db; margin-bottom: 0;">Number of additional monsters you can claim</p>
+              </div>
+              <div>
+                <span id="extra-claims-count" style="font-size: 1.2rem; font-weight: 600; color: #ffc107;">0</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Forget-Me-Not Container -->
+          <div id="forget-me-not-container" style="background-color: rgba(55, 65, 81, 0.4); border-radius: 8px; padding: 12px; border: 1px solid rgba(255,255,255,0.05);">
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+              <div>
+                <h4 style="font-size: 0.95rem; font-weight: 600; color: #ffc107; margin-bottom: 4px;">Forget-Me-Not</h4>
+                <p style="font-size: 0.8rem; color: #d1d5db; margin-bottom: 0;">Use to reroll all monsters without using an egg (<span id="forget-me-not-count" style="font-weight: 600; color: #ffc107;">0</span> available)</p>
+              </div>
+              <div>
+                <button id="use-forget-me-not-btn" style="background-color: rgba(55, 65, 81, 0.6); color: #d1d5db; padding: 6px 12px; border-radius: 4px; font-size: 0.8rem; border: 1px solid rgba(255,255,255,0.1); cursor: pointer; transition: all 0.2s;" disabled>
+                  <i class="fas fa-sync-alt mr-1"></i> Reroll
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="monsters-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Monster cards will be added here dynamically -->
+        </div>
+
+        <div id="claim-form" class="mt-8" style="display: none;">
+          <div style="background-color: rgba(55, 65, 81, 0.6); border-radius: 8px; padding: 16px; border: 1px solid rgba(255,255,255,0.05);">
+            <h4 style="font-size: 1.125rem; font-weight: bold; color: #ffc107; margin-bottom: 12px;">Claim Your Monster</h4>
+
+            <div style="margin-bottom: 16px;">
+              <label for="monster-name" style="display: block; font-size: 0.875rem; font-weight: 500; color: #d1d5db; margin-bottom: 8px;">Monster Name</label>
+              <input type="text" id="monster-name" style="width: 100%; background-color: rgba(55, 65, 81, 0.8); border: 1px solid rgba(75, 85, 99, 0.5); border-radius: 6px; padding: 8px 12px; color: #e2e2e2; outline: none; transition: all 0.2s;" onmouseover="this.style.borderColor='rgba(255, 193, 7, 0.5)'" onmouseout="this.style.borderColor='rgba(75, 85, 99, 0.5)'" onfocus="this.style.boxShadow='0 0 0 2px rgba(255, 193, 7, 0.25)'" onblur="this.style.boxShadow='none'" placeholder="Enter a name for your monster">
+            </div>
+
+            <button id="claim-button" style="width: 100%; background-color: #ffc107; color: #1a1a1a; font-weight: bold; padding: 10px 16px; border-radius: 6px; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s;" onmouseover="this.style.backgroundColor='#ffca2c'" onmouseout="this.style.backgroundColor='#ffc107'">
+              <i class="fas fa-check-circle mr-2"></i> Claim Monster
+            </button>
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- Step 4: Eggs Configuration -->
-    <div id="step-eggs" class="step-container hidden">
-      <div class="step-header">
-        <h3 class="step-title"><i class="fas fa-egg mr-2"></i>Configure Eggs</h3>
-        <button type="button" id="add-egg-btn" class="btn-primary-sm">
-          <i class="fas fa-plus mr-1"></i> Add Egg
-        </button>
-      </div>
-      <div class="step-content">
-        <div id="eggs-list" class="eggs-grid">
-          <!-- Eggs will be dynamically added here -->
+      <div id="success-container" style="background-color: rgba(30, 35, 50, 0.8); border-radius: 10px; padding: 24px; box-shadow: 0 4px 20px rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.05); display: none;">
+        <div style="text-align: center;">
+          <div style="display: inline-block; padding: 16px; border-radius: 50%; background-color: rgba(16, 185, 129, 0.2); margin-bottom: 16px;">
+            <i class="fas fa-check-circle" style="color: #34d399; font-size: 2.5rem;"></i>
+          </div>
+          <h3 style="font-size: 1.5rem; font-weight: bold; color: #ffc107; margin-bottom: 8px;">Monster<span id="monsters-claimed-plural">s</span> Claimed Successfully!</h3>
+          <p style="color: #d1d5db; margin-bottom: 24px;">Your <span id="monsters-claimed-count">new monster has</span> been added to your collection.</p>
+
+          <div style="display: flex; justify-content: center; gap: 16px;">
+            <a href="/town/visit/nursery/hatch" style="background-color: rgba(60, 60, 70, 0.7); color: #e2e2e2; padding: 10px 16px; border-radius: 6px; display: inline-flex; align-items: center; transition: all 0.2s; border: 1px solid rgba(255,255,255,0.1); text-decoration: none;" onmouseover="this.style.backgroundColor='rgba(75, 75, 85, 0.7)'" onmouseout="this.style.backgroundColor='rgba(60, 60, 70, 0.7)'">
+              <i class="fas fa-egg mr-2"></i> Hatch Another Egg
+            </a>
+            <a href="/my_trainers" style="background-color: #ffc107; color: #1a1a1a; font-weight: bold; padding: 10px 16px; border-radius: 6px; display: inline-flex; align-items: center; transition: all 0.2s; text-decoration: none;" onmouseover="this.style.backgroundColor='#ffca2c'" onmouseout="this.style.backgroundColor='#ffc107'">
+              <i class="fas fa-user mr-2"></i> View My Trainers
+            </a>
+          </div>
         </div>
-      </div>
-    </div>
-
-    <!-- Hatch Button -->
-    <div id="hatch-button-container" class="hidden">
-      <button type="submit" id="hatch-button" class="btn-primary w-full py-4 text-lg">
-        <i class="fas fa-egg mr-2"></i> Hatch Eggs
-      </button>
-    </div>
-  </form>
-
-  <!-- Results Section -->
-  <div id="results-section" class="hidden mt-8">
-    <div class="step-header mb-4">
-      <h3 class="step-title"><i class="fas fa-star mr-2"></i>Hatching Results</h3>
-    </div>
-    <div id="results-content" class="space-y-6">
-      <!-- Results will be dynamically added here -->
-    </div>
-    <div class="mt-6 text-center">
-      <p class="text-amber-400 mb-2">Select monsters to claim (max: <span id="max-claims">0</span>)</p>
-      <button id="claim-button" class="btn-primary py-3 px-8">
-        <i class="fas fa-check-circle mr-2"></i> Claim Selected Monsters
-      </button>
-    </div>
-  </div>
-
-  <!-- Success Section -->
-  <div id="success-section" class="hidden mt-8">
-    <div class="bg-gray-800/70 rounded-lg p-6 border border-green-700 text-center">
-      <i class="fas fa-check-circle text-green-500 text-5xl mb-4"></i>
-      <h3 class="text-xl font-semibold text-green-400 mb-2">Success!</h3>
-      <p id="success-message" class="text-gray-300 mb-4">Your monsters have been claimed successfully.</p>
-      <div class="flex justify-center space-x-4">
-        <a href="/town/nursery/hatch" class="btn-secondary">
-          <i class="fas fa-egg mr-2"></i> Hatch More Eggs
-        </a>
-        <a href="/trainers/monsters" class="btn-primary">
-          <i class="fas fa-paw mr-2"></i> View My Monsters
-        </a>
       </div>
     </div>
   </div>
 </div>
 
-<!-- Egg Template (hidden, used by JavaScript) -->
-<template id="egg-template">
-  <div class="egg-container" id="">
-    <div class="egg-header">
-      <h4 class="egg-title">Egg Settings</h4>
-      <button type="button" class="remove-egg-btn">
-        <i class="fas fa-times"></i>
-      </button>
-    </div>
-    <div class="egg-content">
-      <div class="hatch-type-buttons">
-        <button type="button" class="hatch-type-btn" data-type="simple">
-          <i class="fas fa-egg mr-1"></i> Simple Hatch
-        </button>
-        <button type="button" class="hatch-type-btn" data-type="complex">
-          <i class="fas fa-cogs mr-1"></i> Complex Nurture
-        </button>
-      </div>
-
-      <div class="complex-options hidden">
-        <div class="collapsible-header" data-target="items-section">
-          <h5><i class="fas fa-flask mr-1"></i> Configure Items</h5>
-          <i class="fas fa-chevron-down"></i>
-        </div>
-        <div class="items-section collapsible-content hidden">
-          <div class="items-grid">
-            <!-- Items will be loaded here -->
-            <div class="loading-spinner"><i class="fas fa-spinner fa-spin"></i> Loading items...</div>
-          </div>
-        </div>
-
-        <div class="dna-splicer-container mt-4">
-          <div class="flex items-center justify-between mb-2">
-            <label class="text-amber-400">Use DNA Splicer?</label>
-            <div class="toggle-switch">
-              <input type="checkbox" class="dna-splicer-toggle hidden">
-              <div class="toggle-slider"></div>
-            </div>
-          </div>
-          <div class="dna-splicer-amount hidden">
-            <label class="block text-sm text-gray-400 mb-2">Number of DNA Splicers:</label>
-            <input type="number" class="form-input w-24" min="1" max="9" value="1">
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</template>
-
-<!-- Monster Result Template (hidden, used by JavaScript) -->
-<template id="monster-result-template">
-  <div class="monster-result">
-    <div class="egg-header mb-4">
-      <h4 class="egg-title">Egg Results</h4>
-    </div>
-    <div class="monsters-grid">
-      <!-- Monster cards will be added here -->
-    </div>
-  </div>
-</template>
-
-<!-- Monster Card Template (hidden, used by JavaScript) -->
-<template id="monster-card-template">
-  <div class="monster-card" data-monster-id="">
-    <div class="monster-card-content">
-      <h5 class="monster-name"></h5>
-      <div class="monster-types"></div>
-      <div class="monster-attribute"></div>
-    </div>
-    <div class="monster-card-footer">
-      <button type="button" class="select-monster-btn">
-        <i class="far fa-circle"></i> Select
-      </button>
-    </div>
-  </div>
-</template>
-
-<% script = `
-<script src="/js/nursery/egg-hatching.js"></script>
 <script>
-  // Initialize after DOM is fully loaded
   document.addEventListener('DOMContentLoaded', function() {
-    console.log('DOM loaded, initializing egg hatching manager');
-    if (typeof EggHatchingManager === 'undefined') {
-      console.error('EggHatchingManager class not found!');
-    } else {
-      window.eggHatchingManager = new EggHatchingManager();
+    const trainerSelect = document.getElementById('trainer-select');
+    const eggCountContainer = document.getElementById('egg-count-container');
+    const trainerNameSpan = document.getElementById('trainer-name');
+    const eggCountSpan = document.getElementById('egg-count');
+    const hatchMethodContainer = document.getElementById('hatch-method-container');
+    const incubatorOption = document.getElementById('incubator-option');
+    const artworkOption = document.getElementById('artwork-option');
+    const artworkUrlContainer = document.getElementById('artwork-url-container');
+    const artworkUrlInput = document.getElementById('artwork-url');
+    const hatchButton = document.getElementById('hatch-button');
+    const loadingContainer = document.getElementById('loading-container');
+    const eggHatchingForm = document.getElementById('egg-hatching-form');
+    const errorContainer = document.getElementById('error-container');
+    const errorMessage = document.getElementById('error-message');
+    const monsterSelectionContainer = document.getElementById('monster-selection-container');
+    const monstersGrid = document.getElementById('monsters-grid');
+    const claimForm = document.getElementById('claim-form');
+    const monsterNameInput = document.getElementById('monster-name');
+    const claimButton = document.getElementById('claim-button');
+    const successContainer = document.getElementById('success-container');
+    const incubatorStatus = document.getElementById('incubator-status');
+    const dnaSplicerCountSpan = document.getElementById('dna-splicer-count');
+    const useSplicerBtn = document.getElementById('use-splicer-btn');
+    const edenwiessCountSpan = document.getElementById('edenwiess-count');
+    const useEdenwiessBtn = document.getElementById('use-edenwiess-btn');
+    const forgetMeNotCountSpan = document.getElementById('forget-me-not-count');
+    const useForgetMeNotBtn = document.getElementById('use-forget-me-not-btn');
+    const extraClaimsCountSpan = document.getElementById('extra-claims-count');
+
+    let selectedMonster = null;
+    let hasIncubator = false;
+    let dnaSplicerCount = 0;
+    let edenwiessCount = 0;
+    let forgetMeNotCount = 0;
+    let extraClaimsCount = 0;
+    let claimedMonsters = [];
+    let currentTrainerId = null;
+
+    // Trainer selection change handler
+    trainerSelect.addEventListener('change', async function() {
+      const trainerId = this.value;
+
+      // Reset UI
+      eggCountContainer.style.display = 'none';
+      hatchMethodContainer.style.display = 'none';
+      errorContainer.style.display = 'none';
+
+      if (!trainerId) return;
+
+      try {
+        // Fetch egg count for selected trainer
+        const response = await fetch(`/api/nursery/eggs?trainerId=${trainerId}`);
+        const data = await response.json();
+
+        if (data.success) {
+          // Update UI with egg count
+          trainerNameSpan.textContent = data.trainerName;
+          eggCountSpan.textContent = data.eggCount;
+          eggCountContainer.style.display = 'block';
+
+          // Update item counts
+          dnaSplicerCount = data.dnaSplicerCount || 0;
+          edenwiessCount = data.edenwiessCount || 0;
+          forgetMeNotCount = data.forgetMeNotCount || 0;
+
+          // Update UI with item counts
+          dnaSplicerCountSpan.textContent = dnaSplicerCount;
+          edenwiessCountSpan.textContent = edenwiessCount;
+          forgetMeNotCountSpan.textContent = forgetMeNotCount;
+
+          // Store current trainer ID
+          currentTrainerId = trainerId;
+
+          // Show hatch method if trainer has eggs
+          if (data.eggCount > 0) {
+            hatchMethodContainer.style.display = 'block';
+
+            // Update incubator status
+            hasIncubator = data.hasIncubator;
+            if (hasIncubator) {
+              incubatorStatus.textContent = '(Available)';
+              incubatorStatus.style.color = '#34d399';
+              incubatorOption.disabled = false;
+            } else {
+              incubatorStatus.textContent = '(Not Available)';
+              incubatorStatus.style.color = '#f87171';
+              incubatorOption.disabled = true;
+              artworkOption.checked = true;
+              artworkUrlContainer.style.display = 'block';
+            }
+          } else {
+            showError('This trainer has no eggs to hatch. Visit the shop to purchase eggs.');
+          }
+        } else {
+          showError(data.message || 'Error fetching egg count');
+        }
+      } catch (error) {
+        console.error('Error fetching egg count:', error);
+        showError('Error connecting to server. Please try again.');
+      }
+    });
+
+    // Hatch method change handlers
+    incubatorOption.addEventListener('change', function() {
+      if (this.checked) {
+        artworkUrlContainer.style.display = 'none';
+      }
+    });
+
+    artworkOption.addEventListener('change', function() {
+      if (this.checked) {
+        artworkUrlContainer.style.display = 'block';
+      }
+    });
+
+    // Hatch button click handler
+    hatchButton.addEventListener('click', async function() {
+      // Validate form
+      const trainerId = trainerSelect.value;
+      if (!trainerId) {
+        showError('Please select a trainer');
+        return;
+      }
+
+      // Store current trainer ID
+      currentTrainerId = trainerId;
+
+      // Check if using incubator or artwork
+      const useIncubator = incubatorOption.checked;
+      const useArtwork = artworkOption.checked;
+
+      // Validate that a hatch method is selected
+      if (!useIncubator && !useArtwork) {
+        showError('Please select a hatching method');
+        return;
+      }
+
+      // If using artwork, validate URL
+      let artworkUrl = '';
+      if (useArtwork) {
+        artworkUrl = artworkUrlInput.value.trim();
+        if (!artworkUrl) {
+          showError('Please enter an artwork URL');
+          return;
+        }
+
+        // Basic URL validation
+        if (!artworkUrl.startsWith('http')) {
+          showError('Please enter a valid URL starting with http:// or https://');
+          return;
+        }
+      }
+
+      // Prepare data for API call
+      const requestData = {
+        trainerId,
+        useIncubator,
+        submissionUrl: artworkUrl,
+        useForgetMeNot: false // Default to false for initial hatching
+      };
+
+      try {
+        // Show loading state
+        eggHatchingForm.style.display = 'none';
+        loadingContainer.style.display = 'block';
+        errorContainer.style.display = 'none';
+
+        // Send request to hatch egg
+        const response = await fetch('/api/nursery/hatch', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(requestData)
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          // Display monsters for selection
+          displayMonsters(data.data.monsters, data.data.trainerId);
+        } else {
+          showError(data.message || 'Error hatching egg');
+          eggHatchingForm.style.display = 'block';
+        }
+      } catch (error) {
+        console.error('Error hatching egg:', error);
+        showError('Error connecting to server. Please try again.');
+        eggHatchingForm.style.display = 'block';
+      } finally {
+        loadingContainer.style.display = 'none';
+      }
+    });
+
+    // Function to display monsters for selection
+    function displayMonsters(monsters, trainerId) {
+      // Clear previous monsters
+      monstersGrid.innerHTML = '';
+
+      // Create monster cards
+      monsters.forEach((monster, index) => {
+        const card = document.createElement('div');
+        card.style.backgroundColor = 'rgba(75, 85, 99, 0.4)';
+        card.style.borderRadius = '10px';
+        card.style.overflow = 'hidden';
+        card.style.cursor = 'pointer';
+        card.style.transition = 'all 0.2s';
+        card.style.border = '1px solid rgba(255,255,255,0.1)';
+        card.style.marginBottom = '12px';
+        card.style.boxShadow = '0 4px 6px rgba(0, 0, 0, 0.1)';
+        card.dataset.index = index;
+        card.dataset.monsterId = monster.id;
+
+        // Determine species display
+        const speciesDisplay = [monster.species1, monster.species2, monster.species3]
+          .filter(Boolean)
+          .join('/');
+
+        // Determine type display
+        const typeDisplay = [monster.type1, monster.type2, monster.type3]
+          .filter(Boolean)
+          .join('/');
+
+        // Define type colors
+        const typeColors = {
+          'normal': { bg: '#A8A878', text: '#000' },
+          'fire': { bg: '#F08030', text: '#fff' },
+          'water': { bg: '#6890F0', text: '#fff' },
+          'electric': { bg: '#F8D030', text: '#000' },
+          'grass': { bg: '#78C850', text: '#000' },
+          'ice': { bg: '#98D8D8', text: '#000' },
+          'fighting': { bg: '#C03028', text: '#fff' },
+          'poison': { bg: '#A040A0', text: '#fff' },
+          'ground': { bg: '#E0C068', text: '#000' },
+          'flying': { bg: '#A890F0', text: '#000' },
+          'psychic': { bg: '#F85888', text: '#fff' },
+          'bug': { bg: '#A8B820', text: '#000' },
+          'rock': { bg: '#B8A038', text: '#000' },
+          'ghost': { bg: '#705898', text: '#fff' },
+          'dragon': { bg: '#7038F8', text: '#fff' },
+          'dark': { bg: '#705848', text: '#fff' },
+          'steel': { bg: '#B8B8D0', text: '#000' },
+          'fairy': { bg: '#EE99AC', text: '#000' },
+         };
+
+        // Define attribute colors
+        const attributeColors = {
+          'data': { bg: '#3498db', text: '#fff' },
+          'vaccine': { bg: '#2ecc71', text: '#fff' },
+          'virus': { bg: '#e74c3c', text: '#fff' },
+          'free': { bg: '#9b59b6', text: '#fff' },
+          'variable': { bg: '#f1c40f', text: '#000' }
+        };
+
+        // Create type badges
+        const typeBadges = [monster.type1, monster.type2, monster.type3]
+          .filter(Boolean)
+          .map(type => {
+            const typeKey = type.toLowerCase();
+            const colors = typeColors[typeKey] || { bg: '#A8A878', text: '#000' };
+            return `<span style="display: inline-block; padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; margin-right: 4px; margin-bottom: 4px; background-color: ${colors.bg}; color: ${colors.text}; box-shadow: 0 1px 2px rgba(0,0,0,0.2);">${type}</span>`;
+          })
+          .join('');
+
+        // Create attribute badge
+        const attributeBadge = monster.attribute ? (() => {
+          const attrKey = monster.attribute.toLowerCase();
+          const colors = attributeColors[attrKey] || { bg: '#3498db', text: '#fff' };
+          return `<span style="display: inline-block; padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; margin-top: 4px; background-color: ${colors.bg}; color: ${colors.text}; box-shadow: 0 1px 2px rgba(0,0,0,0.2);">${monster.attribute}</span>`;
+        })() : '';
+
+        card.innerHTML = `
+          <div style="padding: 16px;">
+            <h4 style="font-weight: bold; color: white; margin-bottom: 8px; font-size: 1rem;">${speciesDisplay}</h4>
+            <div style="display: flex; flex-wrap: wrap; margin-bottom: 4px;">
+              ${typeBadges}
+            </div>
+            ${monster.attribute ? `
+              <div style="display: flex; flex-wrap: wrap;">
+                ${attributeBadge}
+              </div>
+            ` : ''}
+          </div>
+        `;
+
+        // Add click event to select monster
+        card.addEventListener('click', function() {
+          // Remove selection from all cards
+          document.querySelectorAll('#monsters-grid > div').forEach(c => {
+            c.style.boxShadow = '0 4px 6px rgba(0, 0, 0, 0.1)';
+            c.style.backgroundColor = 'rgba(75, 85, 99, 0.4)';
+            c.style.transform = 'scale(1)';
+            c.style.borderColor = 'rgba(255,255,255,0.1)';
+          });
+
+          // Add selection to clicked card
+          this.style.boxShadow = '0 0 10px rgba(255, 193, 7, 0.5)';
+          this.style.backgroundColor = 'rgba(75, 85, 99, 0.9)';
+          this.style.transform = 'scale(1.03)';
+          this.style.borderColor = '#ffc107';
+
+          // Store selected monster
+          selectedMonster = monsters[this.dataset.index];
+
+          // Show claim form
+          claimForm.style.display = 'block';
+
+          // Set default monster name
+          monsterNameInput.value = selectedMonster.species1;
+        });
+
+        monstersGrid.appendChild(card);
+      });
+
+      // Show monster selection container
+      monsterSelectionContainer.style.display = 'block';
+
+      // Reset claim state
+      claimedMonsters = [];
+      extraClaimsCount = 0;
+      extraClaimsCountSpan.textContent = '0';
+
+      // Update item button states
+      updateItemButtonStates();
+
+      // Store trainer ID for claim
+      claimButton.dataset.trainerId = trainerId;
+    }
+
+    // Claim button click handler
+    claimButton.addEventListener('click', async function() {
+      // Validate form
+      if (!selectedMonster) {
+        showError('Please select a monster');
+        return;
+      }
+
+      const monsterName = monsterNameInput.value.trim();
+      if (!monsterName) {
+        showError('Please enter a name for your monster');
+        return;
+      }
+
+      const trainerId = this.dataset.trainerId;
+
+      try {
+        // Show loading state
+        claimButton.disabled = true;
+        claimButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Claiming...';
+
+        // Determine if using DNA Splicer or Edenwiess
+        const useDnaSplicer = claimedMonsters.length > 0 && extraClaimsCount > 0 && dnaSplicerCount > 0;
+        const useEdenwiess = claimedMonsters.length > 0 && extraClaimsCount > 0 && !useDnaSplicer && edenwiessCount > 0;
+
+        // Send request to claim monster
+        const response = await fetch('/api/nursery/claim', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            trainerId,
+            monsterData: selectedMonster,
+            monsterName,
+            useDnaSplicer,
+            useEdenwiess
+          })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          // Add monster to claimed list
+          claimedMonsters.push({
+            monster: selectedMonster,
+            name: monsterName
+          });
+
+          // If we have extra claims, allow selecting another monster
+          if (extraClaimsCount > 0) {
+            // Decrement extra claims count
+            extraClaimsCount--;
+            extraClaimsCountSpan.textContent = extraClaimsCount;
+
+            // Update item counts
+            if (useDnaSplicer) {
+              dnaSplicerCount--;
+              dnaSplicerCountSpan.textContent = dnaSplicerCount;
+            } else if (useEdenwiess) {
+              edenwiessCount--;
+              edenwiessCountSpan.textContent = edenwiessCount;
+            }
+
+            // Update item button states
+            updateItemButtonStates();
+
+            // Reset claim form
+            claimForm.style.display = 'none';
+            selectedMonster = null;
+            monsterNameInput.value = '';
+
+            // Reset monster selection
+            document.querySelectorAll('#monsters-grid > div').forEach(c => {
+              c.style.boxShadow = '0 4px 6px rgba(0, 0, 0, 0.1)';
+              c.style.backgroundColor = 'rgba(75, 85, 99, 0.4)';
+              c.style.transform = 'scale(1)';
+              c.style.borderColor = 'rgba(255,255,255,0.1)';
+            });
+
+            // Show a temporary success message
+            const tempMessage = document.createElement('div');
+            tempMessage.style.backgroundColor = 'rgba(16, 185, 129, 0.2)';
+            tempMessage.style.border = '1px solid rgba(16, 185, 129, 0.5)';
+            tempMessage.style.color = '#34d399';
+            tempMessage.style.padding = '12px';
+            tempMessage.style.borderRadius = '6px';
+            tempMessage.style.marginBottom = '16px';
+            tempMessage.innerHTML = `<p style="margin: 0; font-size: 0.875rem;">Monster claimed successfully! You can claim ${extraClaimsCount} more monster${extraClaimsCount !== 1 ? 's' : ''}.</p>`;
+
+            // Insert at the top of the monsters grid
+            monstersGrid.insertBefore(tempMessage, monstersGrid.firstChild);
+
+            // Remove the message after 3 seconds
+            setTimeout(() => {
+              tempMessage.remove();
+            }, 3000);
+
+            // Re-enable claim button
+            claimButton.disabled = false;
+            claimButton.innerHTML = '<i class="fas fa-check-circle mr-2"></i> Claim Monster';
+          } else {
+            // Update success message based on number of monsters claimed
+            const monsterCount = claimedMonsters.length;
+            const monstersClaimedPlural = document.getElementById('monsters-claimed-plural');
+            const monstersClaimedCount = document.getElementById('monsters-claimed-count');
+
+            if (monsterCount === 1) {
+              monstersClaimedPlural.style.display = 'none';
+              monstersClaimedCount.textContent = 'new monster has';
+            } else {
+              monstersClaimedPlural.style.display = 'inline';
+              monstersClaimedCount.textContent = `${monsterCount} new monsters have`;
+            }
+
+            // Show success message
+            monsterSelectionContainer.style.display = 'none';
+            successContainer.style.display = 'block';
+          }
+        } else {
+          showError(data.message || 'Error claiming monster');
+          claimButton.disabled = false;
+          claimButton.innerHTML = '<i class="fas fa-check-circle mr-2"></i> Claim Monster';
+        }
+      } catch (error) {
+        console.error('Error claiming monster:', error);
+        showError('Error connecting to server. Please try again.');
+        claimButton.disabled = false;
+        claimButton.innerHTML = '<i class="fas fa-check-circle mr-2"></i> Claim Monster';
+      }
+    });
+
+    // Helper function to update item button states
+    function updateItemButtonStates() {
+      // Update DNA Splicer button
+      if (dnaSplicerCount > 0) {
+        useSplicerBtn.disabled = false;
+        useSplicerBtn.style.backgroundColor = 'rgba(255, 193, 7, 0.3)';
+        useSplicerBtn.style.color = '#ffc107';
+        useSplicerBtn.style.cursor = 'pointer';
+      } else {
+        useSplicerBtn.disabled = true;
+        useSplicerBtn.style.backgroundColor = 'rgba(55, 65, 81, 0.6)';
+        useSplicerBtn.style.color = '#d1d5db';
+        useSplicerBtn.style.cursor = 'not-allowed';
+      }
+
+      // Update Edenwiess button
+      if (edenwiessCount > 0) {
+        useEdenwiessBtn.disabled = false;
+        useEdenwiessBtn.style.backgroundColor = 'rgba(255, 193, 7, 0.3)';
+        useEdenwiessBtn.style.color = '#ffc107';
+        useEdenwiessBtn.style.cursor = 'pointer';
+      } else {
+        useEdenwiessBtn.disabled = true;
+        useEdenwiessBtn.style.backgroundColor = 'rgba(55, 65, 81, 0.6)';
+        useEdenwiessBtn.style.color = '#d1d5db';
+        useEdenwiessBtn.style.cursor = 'not-allowed';
+      }
+
+      // Update Forget-Me-Not button
+      if (forgetMeNotCount > 0) {
+        useForgetMeNotBtn.disabled = false;
+        useForgetMeNotBtn.style.backgroundColor = 'rgba(255, 193, 7, 0.3)';
+        useForgetMeNotBtn.style.color = '#ffc107';
+        useForgetMeNotBtn.style.cursor = 'pointer';
+      } else {
+        useForgetMeNotBtn.disabled = true;
+        useForgetMeNotBtn.style.backgroundColor = 'rgba(55, 65, 81, 0.6)';
+        useForgetMeNotBtn.style.color = '#d1d5db';
+        useForgetMeNotBtn.style.cursor = 'not-allowed';
+      }
+    }
+
+    // DNA Splicer button click handler
+    useSplicerBtn.addEventListener('click', function() {
+      if (dnaSplicerCount > 0) {
+        // Increment extra claims count
+        extraClaimsCount++;
+        extraClaimsCountSpan.textContent = extraClaimsCount;
+
+        // Update button states
+        updateItemButtonStates();
+      }
+    });
+
+    // Edenwiess button click handler
+    useEdenwiessBtn.addEventListener('click', function() {
+      if (edenwiessCount > 0) {
+        // Increment extra claims count
+        extraClaimsCount++;
+        extraClaimsCountSpan.textContent = extraClaimsCount;
+
+        // Update button states
+        updateItemButtonStates();
+      }
+    });
+
+    // Forget-Me-Not button click handler
+    useForgetMeNotBtn.addEventListener('click', async function() {
+      if (forgetMeNotCount > 0 && currentTrainerId) {
+        try {
+          // Show loading state
+          useForgetMeNotBtn.disabled = true;
+          useForgetMeNotBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i> Rerolling...';
+          monsterSelectionContainer.style.display = 'none';
+          loadingContainer.style.display = 'block';
+
+          // Send request to reroll monsters
+          const response = await fetch('/api/nursery/hatch', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              trainerId: currentTrainerId,
+              useForgetMeNot: true
+            })
+          });
+
+          const data = await response.json();
+
+          if (data.success) {
+            // Update Forget-Me-Not count
+            forgetMeNotCount--;
+            forgetMeNotCountSpan.textContent = forgetMeNotCount;
+
+            // Display new monsters
+            displayMonsters(data.data.monsters, currentTrainerId);
+
+            // Reset claim state
+            claimedMonsters = [];
+            extraClaimsCount = 0;
+            extraClaimsCountSpan.textContent = '0';
+
+            // Update button states
+            updateItemButtonStates();
+
+            // Show temporary success message
+            const tempMessage = document.createElement('div');
+            tempMessage.style.backgroundColor = 'rgba(16, 185, 129, 0.2)';
+            tempMessage.style.border = '1px solid rgba(16, 185, 129, 0.5)';
+            tempMessage.style.color = '#34d399';
+            tempMessage.style.padding = '12px';
+            tempMessage.style.borderRadius = '6px';
+            tempMessage.style.marginBottom = '16px';
+            tempMessage.innerHTML = `<p style=\"margin: 0; font-size: 0.875rem;\">Monsters rerolled successfully!</p>`;
+
+            // Insert at the top of the monsters grid
+            monstersGrid.insertBefore(tempMessage, monstersGrid.firstChild);
+
+            // Remove the message after 3 seconds
+            setTimeout(() => {
+              tempMessage.remove();
+            }, 3000);
+          } else {
+            showError(data.message || 'Error rerolling monsters');
+          }
+        } catch (error) {
+          console.error('Error rerolling monsters:', error);
+          showError('Error connecting to server. Please try again.');
+        } finally {
+          // Reset button state
+          useForgetMeNotBtn.disabled = forgetMeNotCount <= 0;
+          useForgetMeNotBtn.innerHTML = '<i class="fas fa-sync-alt mr-1"></i> Reroll';
+          loadingContainer.style.display = 'none';
+          monsterSelectionContainer.style.display = 'block';
+        }
+      }
+    });
+
+    // Helper function to show error message
+    function showError(message) {
+      errorMessage.textContent = message;
+      errorContainer.style.display = 'block';
     }
   });
 </script>
-` %>

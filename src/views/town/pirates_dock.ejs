@@ -69,11 +69,11 @@ document.addEventListener('DOMContentLoaded', function() {
       fishingButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-3"></i> <span class="dock-btn-text">Starting...</span>';
 
       // Send request to start activity
-      const response = await fetch('/town/visit/start-activity', {
+      const response = await fetch('/town/activities/start', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          location: 'pirates_dock',
+          location: 'pirates_dock_fishing',
           activity: 'fishing'
         })
       });
@@ -108,11 +108,11 @@ document.addEventListener('DOMContentLoaded', function() {
       swabButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-3"></i> <span class="dock-btn-text">Starting...</span>';
 
       // Send request to start activity
-      const response = await fetch('/town/visit/start-activity', {
+      const response = await fetch('/town/activities/start', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          location: 'pirates_dock',
+          location: 'pirates_dock_swab',
           activity: 'swab'
         })
       });

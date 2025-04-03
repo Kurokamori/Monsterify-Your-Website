@@ -2,40 +2,56 @@ const express = require('express');
 const router = express.Router();
 const AdoptionService = require('../../utils/AdoptionService');
 const MonthlyAdopt = require('../../models/MonthlyAdopt');
+const TrainerInventoryChecker = require('../../utils/TrainerInventoryChecker');
 
-/**
- * @route GET /api/adoption
- * @desc Get all monthly adopts with pagination
- * @access Public
- */
-router.get('/', async (req, res) => {
+router.get('/list', async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
+    const showCurrentMonth = req.query.currentMonth === 'true';
 
     // Ensure current month adopts exist first
     await MonthlyAdopt.ensureCurrentMonthAdopts();
-    
-    const result = await AdoptionService.getAllAdopts(page, limit);
+
+    const result = showCurrentMonth
+      ? await AdoptionService.getCurrentMonthAdopts(page, limit)
+      : await AdoptionService.getAllAdopts(page, limit);
+
+    // Get total and calculate total pages
+    const total = result.total || (result.pagination ? result.pagination.total : 0);
+    const totalPages = result.pagination ? result.pagination.totalPages : Math.ceil(total / limit);
+
+    // Log the pagination data for debugging
+    console.log('Sending adoption data with pagination:', {
+      totalPages,
+      currentPage: page,
+      total,
+      limit,
+      showCurrentMonth
+    });
 
     res.json({
       success: true,
-      data: result
+      adopts: result.adopts,
+      totalPages: totalPages,
+      currentPage: page,
+      total: total,
+      pagination: {
+        totalPages: totalPages,
+        currentPage: page,
+        total: total,
+        limit: limit
+      }
     });
   } catch (error) {
-    console.error('Error getting adopts:', error);
+    console.error('Error getting adopts list:', error);
     res.status(500).json({
       success: false,
-      message: error.message || 'Error getting adopts'
+      message: error.message || 'Error getting adopts list'
     });
   }
 });
 
-/**
- * @route GET /api/adoption/current
- * @desc Get current month adopts with pagination
- * @access Public
- */
 router.get('/current', async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
@@ -43,12 +59,24 @@ router.get('/current', async (req, res) => {
 
     // Ensure current month adopts exist first
     await MonthlyAdopt.ensureCurrentMonthAdopts();
-    
+
     const result = await AdoptionService.getCurrentMonthAdopts(page, limit);
+
+    // Log the pagination data for debugging
+    console.log('Sending current month adoption data:', result);
 
     res.json({
       success: true,
-      data: result
+      data: result,
+      adopts: result.adopts,
+      totalPages: result.pagination ? result.pagination.totalPages : Math.ceil(result.total / limit),
+      currentPage: page,
+      pagination: result.pagination || {
+        totalPages: Math.ceil(result.total / limit),
+        currentPage: page,
+        total: result.total,
+        limit: limit
+      }
     });
   } catch (error) {
     console.error('Error getting current month adopts:', error);
@@ -59,11 +87,6 @@ router.get('/current', async (req, res) => {
   }
 });
 
-/**
- * @route GET /api/adoption/trainer/:trainerId
- * @desc Get adoption claims for a specific trainer
- * @access Private
- */
 router.get('/trainer/:trainerId', async (req, res) => {
   try {
     // Ensure user is authenticated
@@ -101,11 +124,7 @@ router.get('/trainer/:trainerId', async (req, res) => {
   }
 });
 
-/**
- * @route GET /api/adoption/:year/:month
- * @desc Get adopts for a specific year and month with pagination
- * @access Public
- */
+// 2. Dynamic routes with parameters last
 router.get('/:year/:month', async (req, res) => {
   try {
     const year = parseInt(req.params.year);
@@ -121,24 +140,79 @@ router.get('/:year/:month', async (req, res) => {
       });
     }
 
-    // First check if adopts exist for the requested month
-    const existingAdopts = await MonthlyAdopt.getByYearAndMonth(year, month, page, limit);
-    
-    if (existingAdopts.adopts.length === 0) {
-      // If no adopts exist, generate them
-      await MonthlyAdopt.generateMonthlyAdopts(year, month, 10);
-      // Then fetch the newly generated adopts
-      const result = await MonthlyAdopt.getByYearAndMonth(year, month, page, limit);
-      return res.json({
-        success: true,
-        data: result
-      });
+    // Check if adopts exist for this month
+    const existingAdopts = await MonthlyAdopt.getByYearAndMonth(year, month, 1, 1);
+
+    // If no adopts exist, generate them only for the current month
+    if (!existingAdopts || !existingAdopts.adopts || existingAdopts.adopts.length === 0) {
+      // Get current date
+      const now = new Date();
+      const currentYear = now.getFullYear();
+      const currentMonth = now.getMonth() + 1; // JavaScript months are 0-based
+
+      // Only generate adopts for the current month
+      if (year === currentYear && month === currentMonth) {
+        console.log(`No adopts found for current month ${year}-${month}, generating...`);
+
+        // Generate adopts for this month
+        const generatedAdopts = await MonthlyAdopt.generateMonthlyAdopts(year, month, 10);
+        console.log(`Generated ${generatedAdopts.length} adopts for ${year}-${month}`);
+
+        // Now get the generated adopts with pagination using our service
+        const result = await AdoptionService.getAdoptsByYearAndMonth(year, month, page, limit);
+
+        // Log the pagination data for debugging
+        console.log('Sending newly generated adopts data:', {
+          adoptCount: result.adopts ? result.adopts.length : 0,
+          total: result.total,
+          pagination: result.pagination
+        });
+
+        return res.json({
+          success: true,
+          adopts: result.adopts,
+          totalPages: result.pagination ? result.pagination.totalPages : Math.ceil(result.total / limit),
+          currentPage: page,
+          total: result.total,
+          pagination: result.pagination
+        });
+      } else {
+        // For past months with no data, return empty result
+        console.log(`No adopts found for past month ${year}-${month}, returning empty result`);
+
+        return res.json({
+          success: true,
+          adopts: [],
+          totalPages: 0,
+          currentPage: page,
+          total: 0,
+          pagination: {
+            totalPages: 0,
+            currentPage: page,
+            total: 0,
+            limit
+          }
+        });
+      }
     }
 
-    // If adopts exist, return them
+    // If adopts exist, get them with pagination using our service
+    const result = await AdoptionService.getAdoptsByYearAndMonth(year, month, page, limit);
+
+    // Log the pagination data for debugging
+    console.log('Sending existing adopts data:', {
+      adoptCount: result.adopts ? result.adopts.length : 0,
+      total: result.total,
+      pagination: result.pagination
+    });
+
     res.json({
       success: true,
-      data: existingAdopts
+      adopts: result.adopts,
+      totalPages: result.pagination ? result.pagination.totalPages : Math.ceil(result.total / limit),
+      currentPage: page,
+      total: result.total,
+      pagination: result.pagination
     });
   } catch (error) {
     console.error('Error getting adopts for specific month:', error);
@@ -248,6 +322,92 @@ router.post('/init', async (req, res) => {
     res.status(500).json({
       success: false,
       message: 'Error initializing adoption system'
+    });
+  }
+});
+
+// Root route should be last
+router.get('/', async (req, res) => {
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const showCurrentMonth = req.query.currentMonth === 'true';
+
+    console.log('Query params:', { page, limit, showCurrentMonth });
+
+    // Ensure current month adopts exist first
+    await MonthlyAdopt.ensureCurrentMonthAdopts();
+
+    const result = showCurrentMonth
+      ? await AdoptionService.getCurrentMonthAdopts(page, limit)
+      : await AdoptionService.getAllAdopts(page, limit);
+
+    console.log('Database result:', result);
+
+    // Get total and calculate total pages
+    const total = result.total || (result.pagination ? result.pagination.total : 0);
+    const totalPages = result.pagination ? result.pagination.totalPages : Math.ceil(total / limit);
+
+    // Log the pagination data for debugging
+    console.log('Sending adoption data with pagination (root route):', {
+      totalPages,
+      currentPage: page,
+      total,
+      limit,
+      showCurrentMonth
+    });
+
+    res.json({
+      success: true,
+      adopts: result.adopts,
+      totalPages: totalPages,
+      currentPage: page,
+      total: total,
+      pagination: {
+        totalPages: totalPages,
+        currentPage: page,
+        total: total,
+        limit: limit
+      }
+    });
+  } catch (error) {
+    console.error('Error getting adopts:', error);
+    res.status(500).json({
+      success: false,
+      message: error.message || 'Error getting adopts'
+    });
+  }
+});
+
+/**
+ * @route GET /api/adoption/months
+ * @desc Get list of months with adoption data
+ * @access Private
+ */
+router.get('/months', async (req, res) => {
+  try {
+    // Ensure user is authenticated
+    if (!req.session.user) {
+      return res.status(401).json({
+        success: false,
+        message: 'Not authenticated'
+      });
+    }
+
+    // Get list of months with adoption data
+    const months = await MonthlyAdopt.getMonthsWithData();
+
+    console.log('Months with adoption data:', months);
+
+    res.json({
+      success: true,
+      months: months
+    });
+  } catch (error) {
+    console.error('Error getting months with adoption data:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error getting months with adoption data'
     });
   }
 });

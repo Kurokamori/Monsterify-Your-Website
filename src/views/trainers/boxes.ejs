@@ -22,7 +22,7 @@
                 <% if (locals.user && locals.user.discord_id && trainer.player_user_id && locals.user.discord_id.toString() === trainer.player_user_id) { %>
                 <div class="sidebar-divider"></div>
                 <a href="/trainers/<%= trainer.id %>/edit" class="sidebar-link owner-action">Edit Trainer</a>
-                <a href="/trainers/<%= trainer.id %>/edit-boxes" class="sidebar-link owner-action">Edit Boxes</a>
+                <a href="/trainers/<%= trainer.id %>/edit-boxes" id="sidebar-edit-boxes" class="sidebar-link owner-action">Edit Boxes</a>
 
                 <% if (typeof all_monsters !== 'undefined' && all_monsters && all_monsters.length < 3) { %>
                 <a href="/trainers/<%= trainer.id %>/roll-starters" class="sidebar-link owner-action highlight">Roll Starters</a>
@@ -143,6 +143,10 @@ document.addEventListener('DOMContentLoaded', function() {
     let isEditMode = false;
     let draggedElement = null;
     let originalBoxes = {};
+
+    // Check if we're on the edit-boxes page and automatically enable edit mode
+    const currentPath = window.location.pathname;
+    const isEditBoxesPage = currentPath.endsWith('/edit-boxes');
 
     // Store the original state of boxes
     function saveOriginalState() {
@@ -418,6 +422,14 @@ document.addEventListener('DOMContentLoaded', function() {
         disableEditMode();
         showStatusMessage('Edit cancelled. No changes were saved.', 'info');
     });
+
+    // Automatically enable edit mode if we're on the edit-boxes page
+    if (isEditBoxesPage) {
+        // Use setTimeout to ensure the DOM is fully loaded
+        setTimeout(() => {
+            enableEditMode();
+        }, 100);
+    }
 });
 </script>
 <% } %>

@@ -197,6 +197,26 @@ class MonsterRoller {
 
         // Take up to speciesCount species from the override list
         selectedSpecies = overrideSpecies.slice(0, speciesCount);
+      } else if (this.options.overrideParams.guaranteedSpecies) {
+        // Handle guaranteed species at a specific position
+        const guaranteedSpecies = this.options.overrideParams.guaranteedSpecies;
+        const position = this.options.overrideParams.guaranteedSpeciesPosition || 0;
+
+        // Generate random species for the other positions
+        const speciesPool = [];
+        for (let i = 0; i < speciesCount; i++) {
+          speciesPool.push(...eligibleSpecies);
+        }
+
+        // Shuffle the pool and select the required number of species
+        const shuffledPool = [...speciesPool].sort(() => 0.5 - Math.random());
+        selectedSpecies = shuffledPool.slice(0, speciesCount);
+
+        // Insert the guaranteed species at the specified position
+        if (position < selectedSpecies.length) {
+          selectedSpecies[position] = guaranteedSpecies;
+          console.log(`Using guaranteed species ${guaranteedSpecies} at position ${position}`);
+        }
       } else {
         // For random selection, we need to allow duplicates of the same species type
         // (e.g., multiple Pokemon, multiple Digimon, etc.)
@@ -217,18 +237,26 @@ class MonsterRoller {
       for (const species of selectedSpecies) {
         let monsterData;
 
-        switch (species) {
-          case 'Pokemon':
-            monsterData = await Pokemon.getRandom(this.options.filters.pokemon, 1);
-            break;
-          case 'Digimon':
-            monsterData = await Digimon.getRandom(this.options.filters.digimon, 1);
-            break;
-          case 'Yokai':
-            monsterData = await Yokai.getRandom(this.options.filters.yokai, 1);
-            break;
-          default:
-            throw new Error(`Unknown species: ${species}`);
+        // Get monster data based on species
+        try {
+          switch (species) {
+            case 'Pokemon':
+              monsterData = await Pokemon.getRandom(this.options.filters.pokemon, 1);
+              break;
+            case 'Digimon':
+              monsterData = await Digimon.getRandom(this.options.filters.digimon, 1);
+              break;
+            case 'Yokai':
+              monsterData = await Yokai.getRandom(this.options.filters.yokai, 1);
+              break;
+            default:
+              // For custom species inputs, just use the species name
+              monsterData = [{ name: species }];
+          }
+        } catch (error) {
+          console.error(`Error getting data for species ${species}:`, error);
+          // Fallback to using the species name directly
+          monsterData = [{ name: species }];
         }
 
         if (monsterData && monsterData.length > 0) {
@@ -246,26 +274,79 @@ class MonsterRoller {
       // Determine types - completely separate from the monster species
       let types = [];
 
-      // Use override types if provided
+      // Use override types if provided (ice cream items)
       if (this.options.overrideParams.types) {
+        console.log('Using override types:', this.options.overrideParams.types);
         const overrideTypes = Array.isArray(this.options.overrideParams.types)
           ? this.options.overrideParams.types
           : [this.options.overrideParams.types];
 
-        // Take up to typeCount types from the override list, ensuring no duplicates
-        const uniqueOverrideTypes = [...new Set(overrideTypes)];
-        types = uniqueOverrideTypes.slice(0, typeCount);
+        // Initialize types array with the correct length
+        types = new Array(typeCount).fill(null);
 
-        // If we need more types (because of duplicates being removed), add random ones
-        if (types.length < typeCount) {
-          const additionalTypes = this.getRandomUniqueTypes(typeCount - types.length);
-          // Filter out any types that are already in our list
-          const filteredAdditionalTypes = additionalTypes.filter(type => !types.includes(type));
-          types.push(...filteredAdditionalTypes);
+        // Apply override types to their specific positions
+        overrideTypes.forEach((type, index) => {
+          if (type && index < typeCount) {
+            types[index] = type;
+            console.log(`Setting type ${index + 1} to ${type}`);
+          }
+        });
+
+        // Fill in any remaining null types with random ones
+        for (let i = 0; i < types.length; i++) {
+          if (!types[i]) {
+            // Get a random type that's not already in the list
+            const usedTypes = types.filter(Boolean);
+
+            // Get all available types
+            const pokemonTypes = [
+              'Normal', 'Fire', 'Water', 'Electric', 'Grass', 'Ice', 'Fighting', 'Poison',
+              'Ground', 'Flying', 'Psychic', 'Bug', 'Rock', 'Ghost', 'Dragon', 'Dark',
+              'Steel', 'Fairy'
+            ];
+
+            // Filter out types that are already used
+            const availableTypes = pokemonTypes.filter(type => !usedTypes.includes(type));
+
+            // Pick a random type from the available ones
+            const randomType = availableTypes[Math.floor(Math.random() * availableTypes.length)];
+
+            types[i] = randomType;
+            console.log(`Setting random type ${i + 1} to ${randomType}`);
+          }
         }
       } else {
         // Get completely random types
         types = this.getRandomUniqueTypes(typeCount);
+      }
+
+      // Apply guaranteed types from nurture kits if specified
+      if (this.options.overrideParams.guaranteedTypes && this.options.overrideParams.guaranteedTypes.length > 0) {
+        const guaranteedTypes = this.options.overrideParams.guaranteedTypes;
+
+        // Check if we can apply the guaranteed types
+        // If all types are already set by ice creams, we can't apply nurture kits
+        const iceCreamTypes = this.options.overrideParams.types || [];
+        const nonIceCreamTypeIndices = [];
+
+        for (let i = 0; i < types.length; i++) {
+          // If this type wasn't set by an ice cream, we can replace it
+          if (!iceCreamTypes[i]) {
+            nonIceCreamTypeIndices.push(i);
+          }
+        }
+
+        // If we have non-ice cream types, ensure at least one guaranteed type is included
+        if (nonIceCreamTypeIndices.length > 0) {
+          // Pick a random guaranteed type
+          const randomGuaranteedType = guaranteedTypes[Math.floor(Math.random() * guaranteedTypes.length)];
+
+          // Pick a random non-ice cream type index to replace
+          const randomIndex = nonIceCreamTypeIndices[Math.floor(Math.random() * nonIceCreamTypeIndices.length)];
+
+          // Replace the type
+          types[randomIndex] = randomGuaranteedType;
+        }
       }
 
       // Determine attribute
@@ -312,9 +393,57 @@ class MonsterRoller {
     try {
       const monsters = [];
 
-      for (let i = 0; i < count; i++) {
+      // Check if we need to apply post-processing filters
+      const needsPostProcessing = this.options.postProcessFilters &&
+                                 (this.options.postProcessFilters.pokemonTypes ||
+                                  Object.keys(this.options.postProcessFilters).length > 0);
+
+      // If we need post-processing, we might need to roll more monsters than requested
+      // to ensure we have enough that pass the filters
+      const maxAttempts = needsPostProcessing ? count * 3 : count;
+
+      let attempts = 0;
+      while (monsters.length < count && attempts < maxAttempts) {
         const monster = await this.rollMonster();
+
+        // Apply post-processing filters if needed
+        if (needsPostProcessing) {
+          // Check Pokemon type filters
+          if (this.options.postProcessFilters.pokemonTypes && monster.species1) {
+            // Only apply Pokemon type filters to Pokemon
+            const isPokemon = monster.speciesData &&
+                            monster.speciesData[0] &&
+                            monster.speciesData[0].SpeciesName === 'Pokemon';
+
+            if (isPokemon) {
+              const requiredTypes = this.options.postProcessFilters.pokemonTypes;
+              const monsterTypes = [];
+
+              // Get the monster's types
+              if (monster.type1) monsterTypes.push(monster.type1);
+              if (monster.type2) monsterTypes.push(monster.type2);
+              if (monster.type3) monsterTypes.push(monster.type3);
+              if (monster.type4) monsterTypes.push(monster.type4);
+              if (monster.type5) monsterTypes.push(monster.type5);
+
+              // Check if the monster has at least one of the required types
+              const hasRequiredType = requiredTypes.some(type =>
+                monsterTypes.includes(type)
+              );
+
+              if (!hasRequiredType) {
+                // Skip this monster if it doesn't have any of the required types
+                console.log(`Skipping Pokemon ${monster.species1} because it doesn't have any of the required types: ${requiredTypes.join(', ')}`);
+                attempts++;
+                continue;
+              }
+            }
+          }
+        }
+
+        // If we get here, the monster passed all filters
         monsters.push(monster);
+        attempts++;
       }
 
       return monsters;

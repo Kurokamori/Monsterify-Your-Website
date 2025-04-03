@@ -111,7 +111,9 @@ function loadAllFakemon() {
     });
 
   const fakemonList = [];
+  const fakemonMap = {};
 
+  // First pass: Load all Fakemon
   for (const file of fakemonFiles) {
     try {
       const filePath = path.join(fakemonDir, file);
@@ -126,8 +128,20 @@ function loadAllFakemon() {
       fakemon.image_path = `/images/fakemon/${number}.png`;
 
       fakemonList.push(fakemon);
+      fakemonMap[number] = fakemon;
     } catch (error) {
       console.error(`Error loading Fakemon file ${file}:`, error);
+    }
+  }
+
+  // Second pass: Resolve evolution line names
+  for (const fakemon of fakemonList) {
+    if (fakemon.evolution_line && fakemon.evolution_line.length > 0) {
+      fakemon.evolution_line.forEach(evo => {
+        if (evo.number in fakemonMap) {
+          evo.name = fakemonMap[evo.number].name;
+        }
+      });
     }
   }
 
@@ -155,6 +169,39 @@ function getFakemonByNumber(number) {
     // Set number and add image path
     fakemon.number = paddedNumber;
     fakemon.image_path = `/images/fakemon/${paddedNumber}.png`;
+
+    // Resolve evolution line names
+    if (fakemon.evolution_line && fakemon.evolution_line.length > 0) {
+      // Create a map of all fakemon for quick lookup
+      const fakemonMap = {};
+
+      // Only load all fakemon if we need to resolve evolution names
+      const allFakemonFiles = fs.readdirSync(fakemonDir)
+        .filter(file => file.endsWith('.md'));
+
+      for (const file of allFakemonFiles) {
+        try {
+          const evoFilePath = path.join(fakemonDir, file);
+          const evoContent = fs.readFileSync(evoFilePath, 'utf8');
+          const evoFakemon = parseFakemonMarkdown(evoContent);
+
+          // Extract number from filename
+          const evoNumber = file.split('.')[0].padStart(3, '0');
+          evoFakemon.number = evoNumber;
+
+          fakemonMap[evoNumber] = evoFakemon;
+        } catch (error) {
+          console.error(`Error loading evolution Fakemon file ${file}:`, error);
+        }
+      }
+
+      // Update evolution line names
+      fakemon.evolution_line.forEach(evo => {
+        if (evo.number in fakemonMap) {
+          evo.name = fakemonMap[evo.number].name;
+        }
+      });
+    }
 
     return fakemon;
   } catch (error) {

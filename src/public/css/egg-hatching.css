@@ -1,14 +1,14 @@
-/* Egg Hatching Interface - Modern Dark Theme */
+/* Egg Hatching Styles */
 :root {
     --primary-bg: #121212;
     --card-bg: rgba(30, 30, 30, 0.8);
     --card-border: rgba(60, 60, 60, 0.8);
-    --accent-color: #d6a339;
-    --accent-hover: #e6b349;
+    --accent-color: #fbbf24;
+    --accent-hover: #f59e0b;
     --text-primary: #f0f0f0;
     --text-secondary: #a0a0a0;
-    --error-color: #e53e3e;
-    --success-color: #38a169;
+    --error-color: #ef4444;
+    --success-color: #10b981;
     --input-bg: rgba(20, 20, 20, 0.8);
     --input-border: rgba(80, 80, 80, 0.8);
     --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.2);
@@ -514,6 +514,48 @@ input[type="radio"]:checked + .radio-content {
     padding: 1.25rem;
 }
 
+/* Hatch Method */
+.hatch-method {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.method-option {
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+    background-color: var(--input-bg);
+    border: 1px solid var(--input-border);
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.method-option:hover {
+    border-color: var(--accent-color);
+    background-color: rgba(30, 30, 30, 0.9);
+}
+
+.method-radio {
+    margin-right: 0.75rem;
+}
+
+.method-label {
+    flex: 1;
+}
+
+.method-title {
+    color: var(--accent-color);
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+}
+
+.method-description {
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+}
+
 .trainer-label {
     display: block;
     font-size: 0.875rem;
@@ -540,6 +582,128 @@ input[type="radio"]:checked + .radio-content {
 .trainer-select:focus {
     outline: none;
     border-color: var(--accent-color);
-    box-shadow: 0 0 0 2px rgba(214, 163, 57, 0.2);
+    box-shadow: 0 0 0 2px rgba(251, 191, 36, 0.2);
 }
 
+/* Monster Grid */
+.monster-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.monster-card {
+    background-color: var(--card-bg);
+    border-radius: 0.5rem;
+    border: 1px solid var(--card-border);
+    overflow: hidden;
+    transition: all 0.2s ease;
+}
+
+.monster-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+    border-color: var(--accent-color);
+}
+
+.monster-card.selected {
+    border-color: var(--accent-color);
+    background-color: rgba(251, 191, 36, 0.1);
+    box-shadow: 0 0 10px rgba(251, 191, 36, 0.3);
+}
+
+.monster-card-content {
+    padding: 1rem;
+}
+
+.monster-name {
+    color: var(--accent-color);
+    font-weight: 600;
+    font-size: 1.125rem;
+    margin-bottom: 0.5rem;
+}
+
+.monster-types {
+    color: var(--text-primary);
+    font-size: 0.875rem;
+    margin-bottom: 0.25rem;
+}
+
+.monster-attribute {
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+    font-style: italic;
+}
+
+.monster-card-footer {
+    padding: 0.75rem;
+    background-color: rgba(30, 30, 30, 0.9);
+    border-top: 1px solid var(--card-border);
+}
+
+.select-monster-btn {
+    width: 100%;
+    padding: 0.5rem;
+    background-color: rgba(251, 191, 36, 0.1);
+    color: var(--accent-color);
+    border: 1px solid rgba(251, 191, 36, 0.3);
+    border-radius: 0.25rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.select-monster-btn:hover {
+    background-color: rgba(251, 191, 36, 0.2);
+    border-color: rgba(251, 191, 36, 0.5);
+}
+
+.monster-card.selected .select-monster-btn {
+    background-color: rgba(251, 191, 36, 0.3);
+    border-color: rgba(251, 191, 36, 0.8);
+}
+
+/* Loading and Error */
+.loading-indicator {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    color: var(--accent-color);
+}
+
+.loading-spinner {
+    animation: spin 1s linear infinite;
+    margin-right: 0.5rem;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.error-message {
+    background-color: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    color: var(--error-color);
+    padding: 0.75rem;
+    border-radius: 0.25rem;
+    margin-bottom: 1rem;
+}
+
+/* Utility Classes */
+.hidden {
+    display: none !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+    .monster-grid {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    }
+}

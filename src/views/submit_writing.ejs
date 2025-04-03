@@ -1,0 +1,634 @@
+
+<div class="container mx-auto px-4 py-8">
+    <div class="card bg-gray-800 border border-gray-700 rounded-lg overflow-hidden shadow-md">
+        <div class="card-header bg-gray-900 p-4 border-b border-gray-700">
+            <h1 class="text-2xl font-bold text-center">Submit Writing</h1>
+        </div>
+        <div class="card-body p-6">
+            <div class="mb-6">
+                <p class="text-gray-300">
+                    Writing levels are calculated based on word count (1 level per 50 words) and complexity (Difficulty Modifier).
+                    For game writing, each participant receives the full level output, whereas with other writing, the levels are split between the provided trainers/monsters.
+                    Each participant will also receive 1 coin per word.
+                </p>
+            </div>
+
+            <form id="writingSubmissionForm" class="space-y-6">
+                <div class="form-group">
+                    <label for="writingType" class="form-label">Writing Type</label>
+                    <select id="writingType" name="writingType" class="form-control" required>
+                        <option value="">Select Writing Type</option>
+                        <option value="game">Game Writing</option>
+                        <option value="other">Other Writing</option>
+                    </select>
+                    <div class="form-hint">
+                        Game writing: Writing created for the game (each participant gets full levels)
+                        <br>
+                        Other writing: Writing created for other purposes (levels are split between participants)
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="title" class="form-label">Title</label>
+                    <input type="text" id="title" name="title" class="form-control" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="writingUrl" class="form-label">Writing URL</label>
+                    <input type="url" id="writingUrl" name="writingUrl" class="form-control" required>
+                    <div class="form-hint">Link to your writing (Google Docs, etc.)</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="wordCount" class="form-label">Word Count</label>
+                    <input type="number" id="wordCount" name="wordCount" class="form-control" min="1" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="difficultyModifier" class="form-label">Difficulty Modifier (0-3)</label>
+                    <select id="difficultyModifier" name="difficultyModifier" class="form-control" required>
+                        <option value="0">0 - Standard</option>
+                        <option value="1">1 - Moderately Complex</option>
+                        <option value="2">2 - Complex</option>
+                        <option value="3">3 - Uniquely Difficult</option>
+                    </select>
+                    <div class="form-hint">
+                        By default, set this to 0. Only increase if the writing was uniquely difficult, complex, or worth note.
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Participants</label>
+                    <div id="participantsContainer" class="space-y-4">
+                        <div class="participant-entry flex flex-wrap gap-4 items-end">
+                            <div class="flex-1 min-w-[250px]">
+                                <label for="trainer1" class="form-label">Trainer</label>
+                                <select id="trainer1" name="participants[0].trainerId" class="form-control trainer-select" required>
+                                    <option value="">Select Trainer</option>
+                                </select>
+                            </div>
+                            <div class="flex-1 min-w-[250px]">
+                                <label for="monster1" class="form-label">Monster (Optional)</label>
+                                <select id="monster1" name="participants[0].monsterId" class="form-control monster-select" disabled>
+                                    <option value="">Select Monster</option>
+                                </select>
+                            </div>
+                            <div class="flex-none">
+                                <button type="button" class="btn-danger remove-participant" style="display: none;">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="button" id="addParticipantBtn" class="btn-secondary mt-2">
+                        <i class="fas fa-plus"></i> Add Participant
+                    </button>
+                </div>
+
+                <div class="form-group">
+                    <label for="notes" class="form-label">Notes (Optional)</label>
+                    <textarea id="notes" name="notes" class="form-control" rows="3"></textarea>
+                </div>
+
+                <div id="calculationPreview" class="p-4 bg-gray-900 rounded-lg mb-6 hidden">
+                    <h3 class="text-xl font-semibold mb-2">Reward Preview</h3>
+                    <div id="calculationDetails" class="space-y-2"></div>
+                </div>
+
+                <div class="flex justify-end space-x-4">
+                    <button type="button" id="previewBtn" class="btn-secondary">
+                        <i class="fas fa-calculator"></i> Preview Rewards
+                    </button>
+                    <button type="submit" class="btn-primary">
+                        <i class="fas fa-paper-plane"></i> Submit
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Load trainers
+        loadTrainers();
+
+        // Event listeners
+        document.getElementById('addParticipantBtn').addEventListener('click', addParticipant);
+        document.getElementById('previewBtn').addEventListener('click', previewCalculation);
+        document.getElementById('writingSubmissionForm').addEventListener('submit', submitForm);
+
+        // Initialize first trainer select
+        document.querySelectorAll('.trainer-select').forEach(select => {
+            select.addEventListener('change', function() {
+                const index = this.getAttribute('data-index') || 0;
+                loadMonsters(this.value, index);
+            });
+        });
+    });
+
+    // Load user's trainers
+    async function loadTrainers() {
+        try {
+            const response = await fetch('/submit_writing/trainers');
+            const data = await response.json();
+
+            if (data.success && data.trainers) {
+                const trainerSelects = document.querySelectorAll('.trainer-select');
+
+                trainerSelects.forEach(select => {
+                    // Clear existing options except the first one
+                    while (select.options.length > 1) {
+                        select.remove(1);
+                    }
+
+                    // Add trainer options
+                    data.trainers.forEach(trainer => {
+                        const option = document.createElement('option');
+                        option.value = trainer.id;
+                        option.textContent = trainer.name;
+                        select.appendChild(option);
+                    });
+                });
+            }
+        } catch (error) {
+            console.error('Error loading trainers:', error);
+            showMessage('Error loading trainers. Please try again.', 'error');
+        }
+    }
+
+    // Load monsters for a specific trainer
+    async function loadMonsters(trainerId, index) {
+        const monsterSelect = document.getElementById(`monster${parseInt(index) + 1}`) ||
+                             document.querySelector(`[name="participants[${index}].monsterId"]`);
+
+        if (!monsterSelect) return;
+
+        // Clear and disable monster select if no trainer selected
+        if (!trainerId) {
+            monsterSelect.innerHTML = '<option value="">Select Monster</option>';
+            monsterSelect.disabled = true;
+            return;
+        }
+
+        try {
+            const response = await fetch(`/submit_writing/trainers/${trainerId}/monsters`);
+            const data = await response.json();
+
+            // Clear existing options
+            monsterSelect.innerHTML = '<option value="">Select Monster</option>';
+
+            if (data.success && data.monsters) {
+                // Add monster options
+                data.monsters.forEach(monster => {
+                    const option = document.createElement('option');
+                    option.value = monster.id;
+                    option.textContent = monster.name;
+                    monsterSelect.appendChild(option);
+                });
+
+                monsterSelect.disabled = false;
+            }
+        } catch (error) {
+            console.error('Error loading monsters:', error);
+            showMessage('Error loading monsters. Please try again.', 'error');
+        }
+    }
+
+    // Add a new participant row
+    function addParticipant() {
+        const container = document.getElementById('participantsContainer');
+        const participantCount = container.children.length;
+
+        if (participantCount >= 5) {
+            showMessage('Maximum of 5 participants allowed.', 'warning');
+            return;
+        }
+
+        const newIndex = participantCount;
+        const newEntry = document.createElement('div');
+        newEntry.className = 'participant-entry flex flex-wrap gap-4 items-end';
+        newEntry.innerHTML = `
+            <div class="flex-1 min-w-[250px]">
+                <label for="trainer${newIndex + 1}" class="form-label">Trainer</label>
+                <select id="trainer${newIndex + 1}" name="participants[${newIndex}].trainerId" class="form-control trainer-select" data-index="${newIndex}" required>
+                    <option value="">Select Trainer</option>
+                </select>
+            </div>
+            <div class="flex-1 min-w-[250px]">
+                <label for="monster${newIndex + 1}" class="form-label">Monster (Optional)</label>
+                <select id="monster${newIndex + 1}" name="participants[${newIndex}].monsterId" class="form-control monster-select" disabled>
+                    <option value="">Select Monster</option>
+                </select>
+            </div>
+            <div class="flex-none">
+                <button type="button" class="btn-danger remove-participant">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>
+        `;
+
+        container.appendChild(newEntry);
+
+        // Add event listeners to new elements
+        const newTrainerSelect = newEntry.querySelector('.trainer-select');
+        newTrainerSelect.addEventListener('change', function() {
+            loadMonsters(this.value, newIndex);
+        });
+
+        newEntry.querySelector('.remove-participant').addEventListener('click', function() {
+            container.removeChild(newEntry);
+            updateParticipantIndices();
+
+            // Show first participant's remove button if there are multiple participants
+            if (container.children.length > 1) {
+                container.querySelector('.remove-participant').style.display = 'block';
+            }
+        });
+
+        // Load trainers for the new select
+        loadTrainers();
+
+        // Show all remove buttons if there are multiple participants
+        if (container.children.length > 1) {
+            container.querySelectorAll('.remove-participant').forEach(btn => {
+                btn.style.display = 'block';
+            });
+        }
+    }
+
+    // Update indices for all participants after removal
+    function updateParticipantIndices() {
+        const container = document.getElementById('participantsContainer');
+        const entries = container.querySelectorAll('.participant-entry');
+
+        entries.forEach((entry, index) => {
+            const trainerSelect = entry.querySelector('.trainer-select');
+            const monsterSelect = entry.querySelector('.monster-select');
+
+            trainerSelect.id = `trainer${index + 1}`;
+            trainerSelect.name = `participants[${index}].trainerId`;
+            trainerSelect.setAttribute('data-index', index);
+
+            monsterSelect.id = `monster${index + 1}`;
+            monsterSelect.name = `participants[${index}].monsterId`;
+        });
+    }
+
+    // Preview calculation
+    function previewCalculation() {
+        const form = document.getElementById('writingSubmissionForm');
+        const formData = new FormData(form);
+        const data = {
+            writingType: formData.get('writingType'),
+            wordCount: parseInt(formData.get('wordCount')),
+            difficultyModifier: parseInt(formData.get('difficultyModifier')),
+            participants: []
+        };
+
+        // Validate required fields
+        if (!data.writingType || !data.wordCount) {
+            showMessage('Please fill in all required fields.', 'error');
+            return;
+        }
+
+        // Collect participants
+        const participantEntries = document.querySelectorAll('.participant-entry');
+        let hasParticipants = false;
+
+        participantEntries.forEach((entry, index) => {
+            const trainerId = entry.querySelector('.trainer-select').value;
+            const monsterId = entry.querySelector('.monster-select').value;
+
+            if (trainerId) {
+                hasParticipants = true;
+                data.participants.push({
+                    trainerId,
+                    monsterId: monsterId || null
+                });
+            }
+        });
+
+        if (!hasParticipants) {
+            showMessage('Please select at least one trainer.', 'error');
+            return;
+        }
+
+        // Calculate rewards
+        calculateRewards(data);
+    }
+
+    // Calculate rewards based on form data
+    async function calculateRewards(data) {
+        try {
+            const response = await fetch('/submit_writing/calculate', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                displayCalculation(result.calculation);
+            } else {
+                showMessage(result.message || 'Error calculating rewards.', 'error');
+            }
+        } catch (error) {
+            console.error('Error calculating rewards:', error);
+            showMessage('Error calculating rewards. Please try again.', 'error');
+        }
+    }
+
+    // Display calculation results
+    function displayCalculation(calculation) {
+        const container = document.getElementById('calculationDetails');
+        container.innerHTML = '';
+
+        // Base calculation
+        const baseCalc = document.createElement('div');
+        baseCalc.innerHTML = `
+            <p><strong>Base Calculation:</strong></p>
+            <p>Word Count: ${calculation.wordCount}</p>
+            <p>Difficulty Modifier: +${calculation.difficultyModifier}</p>
+            <p>Total Levels: ${calculation.totalLevels}</p>
+            <p>Total Coins: ${calculation.totalCoins}</p>
+        `;
+        container.appendChild(baseCalc);
+
+        // Participant rewards
+        const participantRewards = document.createElement('div');
+        participantRewards.innerHTML = '<p><strong>Participant Rewards:</strong></p>';
+
+        calculation.participantRewards.forEach(reward => {
+            const participantDiv = document.createElement('div');
+            participantDiv.className = 'ml-4 mb-2';
+            participantDiv.innerHTML = `
+                <p><strong>${reward.trainerName}</strong>${reward.monsterName ? ` (${reward.monsterName})` : ''}:</p>
+                <p class="ml-4">Levels: ${reward.levels}</p>
+                <p class="ml-4">Coins: ${reward.coins}</p>
+            `;
+            participantRewards.appendChild(participantDiv);
+        });
+
+        container.appendChild(participantRewards);
+
+        // Show the calculation preview
+        document.getElementById('calculationPreview').classList.remove('hidden');
+    }
+
+    // Submit the form
+    async function submitForm(event) {
+        event.preventDefault();
+
+        const form = document.getElementById('writingSubmissionForm');
+        const formData = new FormData(form);
+
+        // Prepare data object
+        const data = {
+            writingType: formData.get('writingType'),
+            title: formData.get('title'),
+            writingUrl: formData.get('writingUrl'),
+            wordCount: parseInt(formData.get('wordCount')),
+            difficultyModifier: parseInt(formData.get('difficultyModifier')),
+            notes: formData.get('notes'),
+            participants: []
+        };
+
+        // Collect participants
+        const participantEntries = document.querySelectorAll('.participant-entry');
+        let hasParticipants = false;
+
+        participantEntries.forEach((entry, index) => {
+            const trainerId = entry.querySelector('.trainer-select').value;
+            const monsterId = entry.querySelector('.monster-select').value;
+
+            if (trainerId) {
+                hasParticipants = true;
+                data.participants.push({
+                    trainerId,
+                    monsterId: monsterId || null
+                });
+            }
+        });
+
+        // Validate
+        if (!data.writingType || !data.title || !data.writingUrl || !data.wordCount || !hasParticipants) {
+            showMessage('Please fill in all required fields and select at least one trainer.', 'error');
+            return;
+        }
+
+        try {
+            // Disable submit button and show loading state
+            const submitBtn = form.querySelector('button[type="submit"]');
+            const originalBtnText = submitBtn.innerHTML;
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
+
+            // Submit the form
+            const response = await fetch('/submit_writing/submit', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            });
+
+            const result = await response.json();
+
+            // Reset button state
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalBtnText;
+
+            if (result.success) {
+                showMessage('Writing submission successful!', 'success');
+
+                // Reset form after successful submission
+                setTimeout(() => {
+                    form.reset();
+                    document.getElementById('calculationPreview').classList.add('hidden');
+
+                    // Reset participants to just one
+                    const container = document.getElementById('participantsContainer');
+                    while (container.children.length > 1) {
+                        container.removeChild(container.lastChild);
+                    }
+
+                    // Reset monster select
+                    const monsterSelect = document.getElementById('monster1');
+                    monsterSelect.innerHTML = '<option value="">Select Monster</option>';
+                    monsterSelect.disabled = true;
+
+                    // Hide remove button for the first participant
+                    container.querySelector('.remove-participant').style.display = 'none';
+                }, 2000);
+            } else {
+                showMessage(result.message || 'Error submitting writing.', 'error');
+            }
+        } catch (error) {
+            console.error('Error submitting writing:', error);
+            showMessage('Error submitting writing. Please try again.', 'error');
+
+            // Reset button state
+            const submitBtn = form.querySelector('button[type="submit"]');
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Submit';
+        }
+    }
+
+    // Show message
+    function showMessage(message, type = 'info') {
+        // Check if message container exists, create if not
+        let messageContainer = document.getElementById('messageContainer');
+        if (!messageContainer) {
+            messageContainer = document.createElement('div');
+            messageContainer.id = 'messageContainer';
+            messageContainer.className = 'fixed top-4 right-4 z-50 max-w-md';
+            document.body.appendChild(messageContainer);
+        }
+
+        // Create message element
+        const messageElement = document.createElement('div');
+        messageElement.className = `message ${type} bg-opacity-90 rounded-lg shadow-lg p-4 mb-4 flex items-start`;
+
+        // Set background color based on type
+        switch (type) {
+            case 'success':
+                messageElement.classList.add('bg-green-700');
+                break;
+            case 'error':
+                messageElement.classList.add('bg-red-700');
+                break;
+            case 'warning':
+                messageElement.classList.add('bg-yellow-700');
+                break;
+            default:
+                messageElement.classList.add('bg-blue-700');
+        }
+
+        // Add icon based on type
+        let icon;
+        switch (type) {
+            case 'success':
+                icon = 'fa-check-circle';
+                break;
+            case 'error':
+                icon = 'fa-exclamation-circle';
+                break;
+            case 'warning':
+                icon = 'fa-exclamation-triangle';
+                break;
+            default:
+                icon = 'fa-info-circle';
+        }
+
+        messageElement.innerHTML = `
+            <div class="flex-shrink-0 mr-3">
+                <i class="fas ${icon} text-white text-xl"></i>
+            </div>
+            <div class="flex-grow text-white">
+                ${message}
+            </div>
+            <button class="ml-4 text-white hover:text-gray-300 focus:outline-none" onclick="this.parentElement.remove()">
+                <i class="fas fa-times"></i>
+            </button>
+        `;
+
+        // Add to container
+        messageContainer.appendChild(messageElement);
+
+        // Auto-remove after 5 seconds
+        setTimeout(() => {
+            if (messageElement.parentElement) {
+                messageElement.remove();
+            }
+        }, 5000);
+    }
+</script>
+
+<style>
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 600;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 0.75rem;
+        background: rgba(30, 37, 50, 0.8);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 4px;
+        color: #ffffff;
+    }
+
+    .form-control:focus {
+        outline: none;
+        border-color: #3498db;
+    }
+
+    .form-hint {
+        font-size: 0.875rem;
+        color: #9ca3af;
+        margin-top: 0.25rem;
+    }
+
+    .btn-primary {
+        background-color: #3498db;
+        color: white;
+        padding: 0.75rem 1.5rem;
+        border-radius: 4px;
+        border: none;
+        cursor: pointer;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+
+    .btn-primary:hover {
+        background-color: #2980b9;
+    }
+
+    .btn-secondary {
+        background-color: #7f8c8d;
+        color: white;
+        padding: 0.75rem 1.5rem;
+        border-radius: 4px;
+        border: none;
+        cursor: pointer;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+
+    .btn-secondary:hover {
+        background-color: #6c7a7d;
+    }
+
+    .btn-danger {
+        background-color: #e74c3c;
+        color: white;
+        padding: 0.5rem;
+        border-radius: 4px;
+        border: none;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .btn-danger:hover {
+        background-color: #c0392b;
+    }
+</style>
+

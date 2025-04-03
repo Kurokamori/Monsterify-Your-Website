@@ -1,0 +1,543 @@
+
+<div class="container mx-auto px-4 py-8">
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="text-3xl font-bold"><%= isEditing ? 'Edit' : 'Create' %> Boss Reward Template</h1>
+        <a href="/admin/bosses/reward-templates" class="btn-secondary">
+            <i class="fas fa-arrow-left mr-2"></i> Back to Templates
+        </a>
+    </div>
+
+    <% if (typeof message !== 'undefined' && message) { %>
+    <div class="alert alert-<%= messageType || 'success' %> mb-6">
+        <%= message %>
+    </div>
+    <% } %>
+
+    <div class="card">
+        <div class="card-header">
+            <h2 class="text-xl font-bold">Template Details</h2>
+        </div>
+        <div class="card-body">
+            <form action="<%= isEditing ? `/admin/bosses/reward-templates/edit/${template.template_id}` : '/admin/bosses/reward-templates/create' %>" method="POST" class="space-y-6">
+                <!-- Basic Information -->
+                <div class="form-group">
+                    <label for="name" class="form-label">Template Name</label>
+                    <input type="text" id="name" name="name" class="form-input" value="<%= template ? template.name : '' %>" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="description" class="form-label">Description</label>
+                    <textarea id="description" name="description" class="form-textarea" rows="3"><%= template ? template.description : '' %></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="is_top_damager" class="form-label">Is Top Damager Reward?</label>
+                    <div class="flex items-center mt-2">
+                        <input type="checkbox" id="is_top_damager" name="is_top_damager" class="form-checkbox" <%= template && template.is_top_damager ? 'checked' : '' %>>
+                        <label for="is_top_damager" class="ml-2 text-gray-300">This template is for the top damager</label>
+                    </div>
+                </div>
+
+                <!-- Reward Values -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="form-group">
+                        <label for="coins" class="form-label">Coins</label>
+                        <input type="number" id="coins" name="coins" class="form-input" value="<%= template ? template.coins : 0 %>" min="0">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="levels" class="form-label">Levels</label>
+                        <input type="number" id="levels" name="levels" class="form-input" value="<%= template ? template.levels : 0 %>" min="0">
+                    </div>
+                </div>
+
+                <!-- Items -->
+                <div class="form-group">
+                    <label class="form-label">Items</label>
+                    <div id="items-container" class="space-y-4 mt-2">
+                        <%
+                        let items = [];
+                        if (template && template.items && template.items.items) {
+                            items = template.items.items;
+                        }
+
+                        if (items.length === 0) {
+                            // Add an empty item by default
+                            items.push({ name: '', quantity: 1, description: '' });
+                        }
+
+                        items.forEach((item, index) => {
+                        %>
+                            <div class="item-entry bg-gray-800 p-4 rounded-lg">
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                    <div class="form-group">
+                                        <label class="form-label">Item Name</label>
+                                        <input type="text" name="item_name[]" class="form-input" value="<%= item.name %>" placeholder="e.g. Potion">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Quantity</label>
+                                        <input type="number" name="item_quantity[]" class="form-input" value="<%= item.quantity || 1 %>" min="1">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Category</label>
+                                        <select name="item_category[]" class="form-select">
+                                            <option value="BERRIES" <%= item.category === 'BERRIES' ? 'selected' : '' %>>Berries</option>
+                                            <option value="PASTRIES" <%= item.category === 'PASTRIES' ? 'selected' : '' %>>Pastries</option>
+                                            <option value="ITEMS" <%= item.category === 'ITEMS' ? 'selected' : '' %>>Items</option>
+                                            <option value="EVOLUTION" <%= item.category === 'EVOLUTION' ? 'selected' : '' %>>Evolution</option>
+                                            <option value="ANTIQUE" <%= item.category === 'ANTIQUE' ? 'selected' : '' %>>Antique</option>
+                                            <option value="BALLS" <%= item.category === 'BALLS' ? 'selected' : '' %>>Balls</option>
+                                            <option value="HELDITEMS" <%= item.category === 'HELDITEMS' ? 'selected' : '' %>>Held Items</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group mt-2">
+                                    <label class="form-label">Description</label>
+                                    <input type="text" name="item_description[]" class="form-input" value="<%= item.description || '' %>" placeholder="Item description">
+                                </div>
+                                <button type="button" class="remove-item mt-2 text-red-500 hover:text-red-700">
+                                    <i class="fas fa-trash mr-1"></i> Remove Item
+                                </button>
+                            </div>
+                        <% }); %>
+                    </div>
+                    <button type="button" id="add-item" class="btn-secondary mt-2">
+                        <i class="fas fa-plus mr-1"></i> Add Item
+                    </button>
+                </div>
+
+                <!-- Monsters -->
+                <div class="form-group">
+                    <label class="form-label">Monsters</label>
+                    <div id="monsters-container" class="space-y-4 mt-2">
+                        <%
+                        let monsters = [];
+                        if (template && template.monsters && template.monsters.monsters) {
+                            monsters = template.monsters.monsters;
+                        }
+
+                        if (monsters.length === 0) {
+                            // Add an empty monster by default
+                            monsters.push({ name: '', description: '', is_special: false });
+                        }
+
+                        monsters.forEach((monster, index) => {
+                        %>
+                            <div class="monster-entry bg-gray-800 p-4 rounded-lg">
+                                <div class="form-group mb-4">
+                                    <label class="form-label">Monster Type</label>
+                                    <div class="flex items-center space-x-4">
+                                        <div class="flex items-center">
+                                            <input type="radio" id="monster_type_roll_<%= index %>" name="monster_type[<%= index %>]" value="roll" class="monster-type-radio" <%= !monster.is_static ? 'checked' : '' %>>
+                                            <label for="monster_type_roll_<%= index %>" class="ml-2 text-gray-300">Monster Roll</label>
+                                        </div>
+                                        <div class="flex items-center">
+                                            <input type="radio" id="monster_type_static_<%= index %>" name="monster_type[<%= index %>]" value="static" class="monster-type-radio" <%= monster.is_static ? 'checked' : '' %>>
+                                            <label for="monster_type_static_<%= index %>" class="ml-2 text-gray-300">Static Monster</label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Common Fields -->
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div class="form-group">
+                                        <label class="form-label">Monster Name</label>
+                                        <input type="text" name="monster_name[]" class="form-input" value="<%= monster.name %>" placeholder="e.g. Pikachu">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Is Special?</label>
+                                        <div class="flex items-center mt-2">
+                                            <input type="checkbox" name="monster_is_special[]" class="form-checkbox" <%= monster.is_special ? 'checked' : '' %>>
+                                            <span class="ml-2 text-gray-300">Special monster (rare/unique)</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group mt-2">
+                                    <label class="form-label">Description</label>
+                                    <input type="text" name="monster_description[]" class="form-input" value="<%= monster.description || '' %>" placeholder="Monster description">
+                                </div>
+
+                                <!-- Static Monster Fields -->
+                                <div class="static-monster-fields <%= monster.is_static ? '' : 'hidden' %>">
+                                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Species 1</label>
+                                            <input type="text" name="monster_species1[]" class="form-input" value="<%= monster.species1 || '' %>" placeholder="Primary species">
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label">Species 2</label>
+                                            <input type="text" name="monster_species2[]" class="form-input" value="<%= monster.species2 || '' %>" placeholder="Secondary species (optional)">
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label">Species 3</label>
+                                            <input type="text" name="monster_species3[]" class="form-input" value="<%= monster.species3 || '' %>" placeholder="Tertiary species (optional)">
+                                        </div>
+                                    </div>
+
+                                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Type 1</label>
+                                            <input type="text" name="monster_type1[]" class="form-input" value="<%= monster.type1 || '' %>" placeholder="Primary type">
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label">Type 2</label>
+                                            <input type="text" name="monster_type2[]" class="form-input" value="<%= monster.type2 || '' %>" placeholder="Secondary type (optional)">
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label">Type 3</label>
+                                            <input type="text" name="monster_type3[]" class="form-input" value="<%= monster.type3 || '' %>" placeholder="Tertiary type (optional)">
+                                        </div>
+                                    </div>
+
+                                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+                                        <div class="form-group">
+                                            <label class="form-label">Type 4</label>
+                                            <input type="text" name="monster_type4[]" class="form-input" value="<%= monster.type4 || '' %>" placeholder="Quaternary type (optional)">
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label">Type 5</label>
+                                            <input type="text" name="monster_type5[]" class="form-input" value="<%= monster.type5 || '' %>" placeholder="Quinary type (optional)">
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label">Attribute</label>
+                                            <input type="text" name="monster_attribute[]" class="form-input" value="<%= monster.attribute || '' %>" placeholder="e.g. Data, Vaccine, Virus">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <button type="button" class="remove-monster mt-4 text-red-500 hover:text-red-700">
+                                    <i class="fas fa-trash mr-1"></i> Remove Monster
+                                </button>
+                            </div>
+                        <% }); %>
+                    </div>
+                    <button type="button" id="add-monster" class="btn-secondary mt-2">
+                        <i class="fas fa-plus mr-1"></i> Add Monster
+                    </button>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="form-group mt-8">
+                    <button type="submit" class="btn-primary w-full">
+                        <i class="fas fa-save mr-2"></i> <%= isEditing ? 'Update' : 'Create' %> Template
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    .form-group {
+        margin-bottom: 1rem;
+    }
+
+    .form-label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+        color: #d1d5db;
+    }
+
+    .form-input,
+    .form-textarea,
+    .form-select {
+        width: 100%;
+        padding: 0.5rem;
+        background-color: rgba(17, 24, 39, 0.8);
+        border: 1px solid rgba(75, 85, 99, 0.5);
+        border-radius: 0.375rem;
+        color: #e5e7eb;
+    }
+
+    .form-input:focus,
+    .form-textarea:focus,
+    .form-select:focus {
+        outline: none;
+        border-color: #6366f1;
+        box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.25);
+    }
+
+    .form-checkbox {
+        width: 1rem;
+        height: 1rem;
+        border-radius: 0.25rem;
+        border: 1px solid rgba(75, 85, 99, 0.5);
+        background-color: rgba(17, 24, 39, 0.8);
+        appearance: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        position: relative;
+        cursor: pointer;
+    }
+
+    .form-checkbox:checked {
+        background-color: #6366f1;
+        border-color: #6366f1;
+    }
+
+    .form-checkbox:checked::after {
+        content: '✓';
+        position: absolute;
+        top: -0.125rem;
+        left: 0.125rem;
+        font-size: 0.875rem;
+        color: white;
+    }
+
+    .btn-primary {
+        background-color: var(--accent-color, #d6a339);
+        color: var(--background-color, #111319);
+        padding: 0.5rem 1rem;
+        border-radius: 0.375rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: background-color 0.2s;
+        border: none;
+        text-align: center;
+        display: inline-block;
+    }
+
+    .btn-primary:hover {
+        background-color: var(--accent-hover, #b88a30);
+    }
+
+    .btn-secondary {
+        background-color: rgba(255, 255, 255, 0.1);
+        color: var(--text-color, #d7ddf3);
+        padding: 0.5rem 1rem;
+        border-radius: 0.375rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: background-color 0.2s;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        text-align: center;
+        display: inline-block;
+    }
+
+    .btn-secondary:hover {
+        background-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .alert {
+        padding: 1rem;
+        border-radius: 0.375rem;
+        margin-bottom: 1rem;
+    }
+
+    .alert-success {
+        background-color: rgba(16, 185, 129, 0.2);
+        border: 1px solid rgba(16, 185, 129, 0.5);
+        color: #10b981;
+    }
+
+    .alert-error {
+        background-color: rgba(239, 68, 68, 0.2);
+        border: 1px solid rgba(239, 68, 68, 0.5);
+        color: #ef4444;
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Function to toggle static monster fields visibility
+        function setupMonsterTypeRadios() {
+            document.querySelectorAll('.monster-type-radio').forEach(radio => {
+                radio.addEventListener('change', function() {
+                    const monsterEntry = this.closest('.monster-entry');
+                    const staticFields = monsterEntry.querySelector('.static-monster-fields');
+
+                    if (this.value === 'static') {
+                        staticFields.classList.remove('hidden');
+                    } else {
+                        staticFields.classList.add('hidden');
+                    }
+                });
+            });
+        }
+
+        // Initialize monster type radios
+        setupMonsterTypeRadios();
+
+        // Add Item Button
+        document.getElementById('add-item').addEventListener('click', function() {
+            const container = document.getElementById('items-container');
+            const newItem = document.createElement('div');
+            newItem.className = 'item-entry bg-gray-800 p-4 rounded-lg';
+            newItem.innerHTML = `
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="form-group">
+                        <label class="form-label">Item Name</label>
+                        <input type="text" name="item_name[]" class="form-input" placeholder="e.g. Potion">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Quantity</label>
+                        <input type="number" name="item_quantity[]" class="form-input" value="1" min="1">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Category</label>
+                        <select name="item_category[]" class="form-select">
+                            <option value="BERRIES">Berries</option>
+                            <option value="PASTRIES">Pastries</option>
+                            <option value="ITEMS">Items</option>
+                            <option value="EVOLUTION">Evolution</option>
+                            <option value="ANTIQUE">Antique</option>
+                            <option value="BALLS">Balls</option>
+                            <option value="HELDITEMS">Held Items</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group mt-2">
+                    <label class="form-label">Description</label>
+                    <input type="text" name="item_description[]" class="form-input" placeholder="Item description">
+                </div>
+                <button type="button" class="remove-item mt-2 text-red-500 hover:text-red-700">
+                    <i class="fas fa-trash mr-1"></i> Remove Item
+                </button>
+            `;
+            container.appendChild(newItem);
+
+            // Add event listener to the new remove button
+            newItem.querySelector('.remove-item').addEventListener('click', function() {
+                container.removeChild(newItem);
+            });
+        });
+
+        // Add Monster Button
+        document.getElementById('add-monster').addEventListener('click', function() {
+            const container = document.getElementById('monsters-container');
+            const newMonster = document.createElement('div');
+            newMonster.className = 'monster-entry bg-gray-800 p-4 rounded-lg';
+            newMonster.innerHTML = `
+                <div class="form-group mb-4">
+                    <label class="form-label">Monster Type</label>
+                    <div class="flex items-center space-x-4">
+                        <div class="flex items-center">
+                            <input type="radio" id="monster_type_roll_new" name="monster_type[new]" value="roll" class="monster-type-radio" checked>
+                            <label for="monster_type_roll_new" class="ml-2 text-gray-300">Monster Roll</label>
+                        </div>
+                        <div class="flex items-center">
+                            <input type="radio" id="monster_type_static_new" name="monster_type[new]" value="static" class="monster-type-radio">
+                            <label for="monster_type_static_new" class="ml-2 text-gray-300">Static Monster</label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Common Fields -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="form-group">
+                        <label class="form-label">Monster Name</label>
+                        <input type="text" name="monster_name[]" class="form-input" placeholder="e.g. Pikachu">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Is Special?</label>
+                        <div class="flex items-center mt-2">
+                            <input type="checkbox" name="monster_is_special[]" class="form-checkbox">
+                            <span class="ml-2 text-gray-300">Special monster (rare/unique)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group mt-2">
+                    <label class="form-label">Description</label>
+                    <input type="text" name="monster_description[]" class="form-input" placeholder="Monster description">
+                </div>
+
+                <!-- Static Monster Fields -->
+                <div class="static-monster-fields hidden">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+                        <div class="form-group">
+                            <label class="form-label">Species 1</label>
+                            <input type="text" name="monster_species1[]" class="form-input" placeholder="Primary species">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Species 2</label>
+                            <input type="text" name="monster_species2[]" class="form-input" placeholder="Secondary species (optional)">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Species 3</label>
+                            <input type="text" name="monster_species3[]" class="form-input" placeholder="Tertiary species (optional)">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+                        <div class="form-group">
+                            <label class="form-label">Type 1</label>
+                            <input type="text" name="monster_type1[]" class="form-input" placeholder="Primary type">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Type 2</label>
+                            <input type="text" name="monster_type2[]" class="form-input" placeholder="Secondary type (optional)">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Type 3</label>
+                            <input type="text" name="monster_type3[]" class="form-input" placeholder="Tertiary type (optional)">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+                        <div class="form-group">
+                            <label class="form-label">Type 4</label>
+                            <input type="text" name="monster_type4[]" class="form-input" placeholder="Quaternary type (optional)">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Type 5</label>
+                            <input type="text" name="monster_type5[]" class="form-input" placeholder="Quinary type (optional)">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Attribute</label>
+                            <input type="text" name="monster_attribute[]" class="form-input" placeholder="e.g. Data, Vaccine, Virus">
+                        </div>
+                    </div>
+                </div>
+
+                <button type="button" class="remove-monster mt-4 text-red-500 hover:text-red-700">
+                    <i class="fas fa-trash mr-1"></i> Remove Monster
+                </button>
+            `;
+            container.appendChild(newMonster);
+
+            // Add event listener to the new remove button
+            newMonster.querySelector('.remove-monster').addEventListener('click', function() {
+                container.removeChild(newMonster);
+            });
+
+            // Fix the radio button IDs and names to make them unique
+            const newIndex = Date.now(); // Use timestamp to ensure uniqueness
+            const rollRadio = newMonster.querySelector('input[value="roll"]');
+            const staticRadio = newMonster.querySelector('input[value="static"]');
+
+            rollRadio.id = `monster_type_roll_${newIndex}`;
+            rollRadio.name = `monster_type[${newIndex}]`;
+            newMonster.querySelector('label[for="monster_type_roll_new"]').setAttribute('for', `monster_type_roll_${newIndex}`);
+
+            staticRadio.id = `monster_type_static_${newIndex}`;
+            staticRadio.name = `monster_type[${newIndex}]`;
+            newMonster.querySelector('label[for="monster_type_static_new"]').setAttribute('for', `monster_type_static_${newIndex}`);
+
+            // Setup the radio button event listeners
+            setupMonsterTypeRadios();
+        });
+
+        // Remove Item Buttons
+        document.querySelectorAll('.remove-item').forEach(button => {
+            button.addEventListener('click', function() {
+                const itemEntry = this.closest('.item-entry');
+                const container = document.getElementById('items-container');
+                container.removeChild(itemEntry);
+            });
+        });
+
+        // Remove Monster Buttons
+        document.querySelectorAll('.remove-monster').forEach(button => {
+            button.addEventListener('click', function() {
+                const monsterEntry = this.closest('.monster-entry');
+                const container = document.getElementById('monsters-container');
+                container.removeChild(monsterEntry);
+            });
+        });
+    });
+</script>
+
+

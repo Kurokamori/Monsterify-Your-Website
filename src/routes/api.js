@@ -9,73 +9,47 @@ const EvolutionService = require('../utils/EvolutionService');
 const trainersRouter = require('./api/trainers');
 const farmRouter = require('./api/farm');
 const adoptionRouter = require('./api/adoption');
+const adoptionTableRouter = require('./api/adoption-table');
 const antiquesRouter = require('./api/antiques');
+const antiqueAuctionsRouter = require('./api/antique-auctions');
+const writingRouter = require('./api/writing');
+const artRouter = require('./api/art');
+const bossRouter = require('./api/boss');
+const missionsRouter = require('./api/missions');
+const adventuresRouter = require('./api/adventures');
+const adventureRewardsRouter = require('./api/adventure-rewards');
+const discordWebhookRouter = require('./api/discord-webhook');
+const giftRewardsRouter = require('./api/gift-rewards');
+const referenceRouter = require('./api/reference');
+const promptRouter = require('./api/prompt');
+const megamartRouter = require('./api/megamart');
+const abilityMasterRouter = require('./api/ability-master');
 
 // Use sub-routers
 router.use('/trainers', trainersRouter);
 router.use('/farm', farmRouter);
 router.use('/adoption', adoptionRouter);
+router.use('/adoption-table', adoptionTableRouter);
 router.use('/antiques', antiquesRouter);
+router.use('/antique-auctions', antiqueAuctionsRouter);
+router.use('/writing', writingRouter);
+router.use('/art', artRouter);
+router.use('/boss', bossRouter);
+router.use('/missions', missionsRouter);
+router.use('/adventures', adventuresRouter);
+router.use('/adventure-rewards', adventureRewardsRouter);
+router.use('/discord-webhook', discordWebhookRouter);
+router.use('/gift-rewards', giftRewardsRouter);
+router.use('/reference', referenceRouter);
+router.use('/prompt', promptRouter);
+router.use('/megamart', megamartRouter);
+router.use('/ability-master', abilityMasterRouter);
 
-// Get user's trainers
-router.get('/trainers/user', async (req, res) => {
-  try {
-    console.log('API route: /trainers/user called');
-    // Ensure user is authenticated
-    if (!req.session.user) {
-      return res.status(401).json({ success: false, message: 'Not authenticated' });
-    }
+// This route is now handled by the trainers router
+// router.get('/trainers/user', async (req, res) => { ... });
 
-    const discordUserId = req.session.user.discord_id;
-    console.log(`API route: Getting trainers for user with Discord ID: ${discordUserId}`);
-
-    // Fetch trainers for the logged-in user
-    const trainers = await Trainer.getByUserId(discordUserId);
-    console.log(`API route: Found ${trainers ? trainers.length : 0} trainers`);
-
-    // Return the trainers in a consistent format with the trainers.js route
-    res.json({
-      success: true,
-      trainers: trainers || []
-    });
-  } catch (error) {
-    console.error('Error fetching trainers:', error);
-    res.status(500).json({ success: false, message: 'Failed to fetch trainers' });
-  }
-});
-
-// Get monsters for a trainer
-router.get('/trainers/:trainerId/monsters', async (req, res) => {
-  try {
-    console.log(`API route: /trainers/${req.params.trainerId}/monsters called`);
-    // Ensure user is authenticated
-    if (!req.session.user) {
-      return res.status(401).json({ success: false, message: 'Not authenticated' });
-    }
-
-    const trainerId = req.params.trainerId;
-    const discordUserId = req.session.user.discord_id;
-
-    // Verify trainer belongs to user
-    const trainer = await Trainer.getById(trainerId);
-    if (!trainer || trainer.player_user_id !== discordUserId) {
-      return res.status(403).json({ success: false, message: 'You do not own this trainer' });
-    }
-
-    // Fetch monsters for the trainer
-    const monsters = await Monster.getByTrainerId(trainerId);
-    console.log(`API route: Found ${monsters ? monsters.length : 0} monsters for trainer ${trainerId}`);
-
-    // Return the monsters in a consistent format
-    res.json({
-      success: true,
-      monsters: monsters || []
-    });
-  } catch (error) {
-    console.error('Error fetching monsters:', error);
-    res.status(500).json({ success: false, message: 'Failed to fetch monsters' });
-  }
-});
+// This route is now handled by the trainers router
+// router.get('/trainers/:trainerId/monsters', async (req, res) => { ... });
 
 // Get evolution items
 router.get('/items/evolution', async (req, res) => {
@@ -179,6 +153,46 @@ router.get('/trainers/:trainerId/items/evolution', async (req, res) => {
   } catch (error) {
     console.error('Error fetching trainer evolution items:', error);
     res.status(500).json({ error: 'Failed to fetch trainer evolution items' });
+  }
+});
+
+// Get a monster by ID
+router.get('/monsters/:monsterId', async (req, res) => {
+  try {
+    console.log('API route: /monsters/:monsterId called');
+    // Ensure user is authenticated
+    if (!req.session.user) {
+      return res.status(401).json({ success: false, message: 'Not authenticated' });
+    }
+
+    const monsterId = req.params.monsterId;
+    console.log(`API route: Getting monster with ID: ${monsterId}`);
+
+    // Validate monsterId is a valid integer
+    if (!monsterId || isNaN(parseInt(monsterId))) {
+      console.error(`API route: Invalid monster ID: ${monsterId}`);
+      return res.status(400).json({ success: false, message: 'Invalid monster ID' });
+    }
+
+    const monsterIdInt = parseInt(monsterId);
+    console.log(`API route: Parsed monster ID as integer: ${monsterIdInt}`);
+
+    // Fetch monster
+    const monster = await Monster.getById(monsterIdInt);
+    console.log(`API route: Monster found:`, monster ? 'Yes' : 'No');
+
+    if (!monster) {
+      return res.status(404).json({ success: false, message: 'Monster not found' });
+    }
+
+    // Return the monster as JSON
+    res.json({
+      success: true,
+      monster: monster
+    });
+  } catch (error) {
+    console.error('Error fetching monster:', error);
+    res.status(500).json({ success: false, message: 'Failed to fetch monster' });
   }
 });
 

@@ -1,0 +1,208 @@
+<% /* Set the title and other variables for the layout */ %>
+<% title = 'Start a Custom Adventure' %>
+
+<div class="container mx-auto px-4 py-6">
+  <!-- Header Section -->
+  <div class="location-banner">
+    <img src="https://i.imgur.com/t7lEdWL.jpeg" alt="Custom Adventure Banner" class="w-full h-full object-cover">
+    <div class="location-banner-overlay">
+      <div class="flex items-center mb-4 w-full">
+        <a href="/adventures/regions" class="btn-secondary hover:scale-105 transition-transform">
+          <i class="fas fa-arrow-left mr-2"></i> Back to Regions
+        </a>
+      </div>
+      <h1 class="location-banner-title">Start a Custom Adventure</h1>
+      <p class="location-banner-subtitle max-w-2xl">
+        Create your own custom adventure without being tied to a specific region or area.
+      </p>
+    </div>
+  </div>
+
+  <!-- Adventure Creation Form -->
+  <div class="bg-gray-900 border border-purple-500 rounded-lg shadow-lg p-6 mt-8">
+    <h2 class="text-2xl font-bold text-white mb-6">Custom Adventure Details</h2>
+    
+    <form id="adventureForm" class="space-y-6">
+      <div class="form-group">
+        <label for="threadName" class="block text-gray-300 mb-2">Thread Name *</label>
+        <input type="text" id="threadName" name="threadName" class="w-full bg-gray-800 border border-gray-700 rounded-md py-2 px-4 text-white focus:outline-none focus:ring-2 focus:ring-purple-500" required>
+        <p class="text-gray-400 text-sm mt-1">This will be the name of your Discord thread.</p>
+      </div>
+      
+      <% if (isAdmin) { %>
+        <div class="form-group">
+          <label for="channelId" class="block text-gray-300 mb-2">Discord Channel ID</label>
+          <input type="text" id="channelId" name="channelId" value="<%= defaultChannelId %>" class="w-full bg-gray-800 border border-gray-700 rounded-md py-2 px-4 text-white focus:outline-none focus:ring-2 focus:ring-purple-500">
+          <p class="text-gray-400 text-sm mt-1">The Discord channel where the thread will be created. Leave default unless you know what you're doing.</p>
+        </div>
+      <% } %>
+      
+      <div class="form-group">
+        <div class="bg-purple-900/30 border border-purple-800 rounded-md p-4">
+          <h3 class="text-lg font-semibold text-purple-300 mb-2">Custom Adventure Information</h3>
+          <p class="text-gray-300">
+            Custom adventures allow you to create your own storyline without being tied to a specific region or area. This is perfect for free-form roleplaying or custom scenarios.
+          </p>
+          <div class="mt-4 p-3 bg-yellow-900/30 border border-yellow-800 rounded">
+            <p class="text-yellow-300 text-sm">
+              <i class="fas fa-exclamation-triangle mr-2"></i> Note: Custom adventures do not have pre-built encounters. You'll need to create your own content.
+            </p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <div class="bg-indigo-900/30 border border-indigo-800 rounded-md p-4">
+          <h3 class="text-lg font-semibold text-indigo-300 mb-2">What happens next?</h3>
+          <ol class="list-decimal list-inside text-gray-300 space-y-2">
+            <li>A new Discord thread will be created in the adventures channel.</li>
+            <li>You and other players can roleplay in the thread.</li>
+            <li>Only you (as the adventure starter) can end the adventure.</li>
+            <li>When the adventure ends, participants will earn rewards based on their activity.</li>
+          </ol>
+        </div>
+      </div>
+      
+      <div class="flex justify-end space-x-4">
+        <a href="/adventures/regions" class="btn-secondary">
+          Cancel
+        </a>
+        <button type="submit" class="btn-primary">
+          <i class="fas fa-magic mr-2"></i> Start Custom Adventure
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('adventureForm');
+    
+    form.addEventListener('submit', async function(e) {
+      e.preventDefault();
+      
+      const threadName = document.getElementById('threadName').value;
+      const channelIdInput = document.getElementById('channelId');
+      const channelId = channelIdInput ? channelIdInput.value : null;
+      
+      // Disable form elements during submission
+      const submitButton = form.querySelector('button[type="submit"]');
+      submitButton.disabled = true;
+      submitButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Starting...';
+      
+      try {
+        const response = await fetch('/api/adventures/start', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            threadName,
+            channelId
+          })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+          window.location.href = '/adventures/my?message=Custom adventure started successfully&messageType=success';
+        } else {
+          alert('Error: ' + (data.message || 'Failed to start adventure'));
+          submitButton.disabled = false;
+          submitButton.innerHTML = '<i class="fas fa-magic mr-2"></i> Start Custom Adventure';
+        }
+      } catch (error) {
+        console.error('Error starting adventure:', error);
+        alert('An error occurred while starting the adventure. Please try again.');
+        submitButton.disabled = false;
+        submitButton.innerHTML = '<i class="fas fa-magic mr-2"></i> Start Custom Adventure';
+      }
+    });
+  });
+</script>
+
+<style>
+  .text-shadow-lg {
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+  }
+  
+  .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem 1rem;
+    font-weight: 500;
+    color: white;
+    background-color: #4f46e5;
+    border-radius: 0.375rem;
+    transition: background-color 0.2s;
+    text-decoration: none;
+  }
+  
+  .btn-secondary:hover {
+    background-color: #4338ca;
+  }
+  
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem 1rem;
+    font-weight: 500;
+    color: white;
+    background-color: #8b5cf6;
+    border-radius: 0.375rem;
+    transition: background-color 0.2s;
+    text-decoration: none;
+  }
+  
+  .btn-primary:hover {
+    background-color: #7c3aed;
+  }
+  
+  .btn-primary:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+  
+  .location-banner {
+    position: relative;
+    height: 250px;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    margin-bottom: 2rem;
+  }
+  
+  .location-banner-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(0,0,0,0.8));
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 2rem;
+  }
+  
+  .location-banner-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 0.5rem;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+  }
+  
+  .location-banner-subtitle {
+    font-size: 1.1rem;
+    color: rgba(255, 255, 255, 0.9);
+    margin-bottom: 1rem;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+  }
+  
+  .form-group {
+    margin-bottom: 1.5rem;
+  }
+</style>

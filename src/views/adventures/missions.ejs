@@ -1,0 +1,1053 @@
+<div class="container mx-auto px-4 py-8">
+  <div class="flex flex-col md:flex-row gap-6">
+    <!-- Left column - Mission info -->
+    <div class="w-full md:w-2/3">
+      <div class="bg-gray-800 rounded-lg shadow-lg overflow-hidden mb-6">
+        <div id="mission-container" class="p-6">
+          <div id="loading-mission" class="text-center py-12">
+            <div class="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-400"></div>
+            <p class="mt-4 text-lg text-gray-300">Loading mission data...</p>
+          </div>
+
+          <div id="mission-content" class="hidden">
+            <!-- Active mission will be displayed here -->
+            <div id="active-mission" class="hidden">
+              <div class="bg-gray-700 rounded-lg p-6 mb-8 relative overflow-hidden">
+                <!-- Decorative elements -->
+                <div class="absolute top-0 right-0 w-32 h-32 -mt-10 -mr-10 bg-indigo-500 rounded-full opacity-10"></div>
+                <div class="absolute bottom-0 left-0 w-24 h-24 -mb-8 -ml-8 bg-indigo-600 rounded-full opacity-10"></div>
+
+                <!-- Mission header with glow effect -->
+                <div class="relative z-10">
+                  <h2 class="text-2xl font-bold mb-4" id="mission-name"></h2>
+                  <p class="mb-6 text-gray-300" id="mission-description"></p>
+                </div>
+
+                <!-- Mission image with frame effect -->
+                <div class="mb-6 relative z-10">
+                  <img id="mission-image" src="" alt="Mission in progress" class="mx-auto max-w-full h-auto rounded-lg shadow-lg border-2 border-indigo-500 transition-all duration-300 hover:border-indigo-300" style="max-height: 200px;">
+                </div>
+
+                <!-- Progress bar with animation -->
+                <div class="mb-6 relative z-10">
+                  <div class="flex justify-between items-center mb-2">
+                    <h3 class="text-lg font-semibold text-white">Progress:</h3>
+                    <p id="progress-text" class="text-sm text-indigo-200 font-medium"></p>
+                  </div>
+                  <div class="w-full bg-gray-800 rounded-full h-5 mb-2 p-1">
+                    <div id="progress-bar" class="h-3 rounded-full" style="width: 0%"></div>
+                  </div>
+                </div>
+
+                <!-- Monsters section with improved cards -->
+                <div class="relative z-10">
+                  <h3 class="text-lg font-semibold mb-3 text-white flex items-center">
+                    <i class="fas fa-dragon mr-2 text-indigo-400"></i> Monsters on this mission:
+                  </h3>
+                  <div id="mission-monsters" class="flex flex-wrap gap-4"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Available missions will be displayed here -->
+            <div id="available-missions" class="hidden">
+              <div class="flex items-center justify-between mb-6">
+                <h2 class="text-2xl font-bold text-indigo-400 flex items-center">
+                  <i class="fas fa-scroll mr-3 text-indigo-300"></i> Available Missions
+                </h2>
+                <div class="text-sm text-gray-400 bg-gray-800 bg-opacity-70 px-3 py-1 rounded-full">
+                  <i class="fas fa-info-circle mr-1"></i> Select monsters to send on missions
+                </div>
+              </div>
+              <div id="mission-list" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
+            </div>
+
+            <!-- No missions available message -->
+            <div id="no-missions" class="hidden">
+              <div class="p-6 mb-8 rounded-lg relative overflow-hidden">
+                <div class="absolute inset-0 bg-gradient-to-r from-amber-600 to-amber-800 opacity-20 rounded-lg"></div>
+                <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-amber-400 to-amber-600"></div>
+                <div class="relative z-10 flex items-start">
+                  <div class="mr-4 bg-amber-500 rounded-full p-3 text-white">
+                    <i class="fas fa-exclamation-triangle text-xl"></i>
+                  </div>
+                  <div>
+                    <h3 class="text-xl font-bold text-amber-400 mb-2">No Available Missions</h3>
+                    <p class="text-gray-300">No missions are currently available. This could be because:</p>
+                    <ul class="list-disc pl-5 mt-2 text-gray-300 space-y-1">
+                      <li>You don't have monsters that meet mission requirements</li>
+                      <li>All missions are currently inactive</li>
+                      <li>You've completed all available missions</li>
+                    </ul>
+                    <p class="mt-3 text-gray-300">Try leveling up your monsters or check back later for new missions!</p>
+                    <div id="debug-info" class="mt-4 p-3 bg-gray-900 rounded-lg text-xs text-gray-400 font-mono overflow-auto max-h-60">
+                      <h4 class="font-bold mb-2">Debug Information:</h4>
+                      <div id="debug-content">Loading debug information...</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right column - Mission History -->
+    <div class="w-full md:w-1/3">
+      <div class="bg-gray-800 rounded-lg shadow-lg overflow-hidden">
+        <div class="p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h2 class="text-2xl font-bold text-indigo-400 flex items-center">
+              <i class="fas fa-history mr-3 text-indigo-300"></i> Mission History
+            </h2>
+            <div class="text-xs text-gray-400 bg-gray-800 bg-opacity-70 px-3 py-1 rounded-full border border-gray-700">
+              Recent completions
+            </div>
+          </div>
+
+          <div id="loading-history" class="text-center py-8">
+            <div class="inline-block animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-indigo-400"></div>
+            <p class="mt-2 text-gray-300">Loading mission history...</p>
+          </div>
+
+          <div id="mission-history-container" class="hidden">
+            <div id="mission-history-list" class="space-y-4"></div>
+
+            <div id="pagination" class="mt-8 flex justify-center"></div>
+
+            <div id="no-history" class="hidden">
+              <div class="bg-gray-700 bg-opacity-50 p-5 rounded-lg border border-gray-600 text-center">
+                <div class="text-indigo-300 text-4xl mb-3">
+                  <i class="fas fa-scroll"></i>
+                </div>
+                <p class="text-gray-300">You haven't completed any missions yet.</p>
+                <p class="text-gray-400 text-sm mt-2">Start a new mission to begin your adventure!</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mission Info Section -->
+      <div class="bg-gray-800 rounded-lg shadow-lg overflow-hidden mt-6 relative">
+        <!-- Decorative elements -->
+        <div class="absolute top-0 right-0 w-24 h-24 -mt-8 -mr-8 bg-indigo-500 rounded-full opacity-10"></div>
+
+        <div class="p-6 relative z-10">
+          <h2 class="text-2xl font-bold text-indigo-400 mb-4 flex items-center">
+            <i class="fas fa-info-circle mr-3 text-indigo-300"></i> About Missions
+          </h2>
+          <div class="text-gray-300 space-y-3">
+            <p>Missions are passive gameplay elements that progress as you complete activities:</p>
+            <ul class="space-y-2 mt-3">
+              <li class="flex items-start">
+                <span class="inline-flex items-center justify-center bg-indigo-600 bg-opacity-30 text-indigo-300 rounded-full w-6 h-6 mr-2 mt-0.5 text-xs"><i class="fas fa-palette"></i></span>
+                <span>Submit artwork or writing</span>
+              </li>
+              <li class="flex items-start">
+                <span class="inline-flex items-center justify-center bg-green-600 bg-opacity-30 text-green-300 rounded-full w-6 h-6 mr-2 mt-0.5 text-xs"><i class="fas fa-tasks"></i></span>
+                <span>Complete tasks and habits</span>
+              </li>
+              <li class="flex items-start">
+                <span class="inline-flex items-center justify-center bg-yellow-600 bg-opacity-30 text-yellow-300 rounded-full w-6 h-6 mr-2 mt-0.5 text-xs"><i class="fas fa-star"></i></span>
+                <span>Participate in events</span>
+              </li>
+            </ul>
+            <div class="mt-4 p-3 bg-indigo-900 bg-opacity-30 border border-indigo-800 rounded-lg">
+              <p>You can select up to <span class="text-indigo-300 font-semibold">3 monsters</span> to participate in each mission. When completed, missions distribute rewards based on your contribution.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Mission Styling -->
+<style>
+/* Mission specific styles */
+:root {
+  --mission-primary: #4f46e5; /* Indigo-600 */
+  --mission-secondary: #818cf8; /* Indigo-400 */
+  --mission-accent: #c7d2fe; /* Indigo-200 */
+  --mission-text: #f8fafc; /* Slate-50 */
+  --mission-dark: #1e293b; /* Slate-800 */
+  --mission-card-bg: rgba(30, 41, 59, 0.85); /* Slate-800 with opacity */
+  --mission-hover: #4338ca; /* Indigo-700 */
+  --mission-gradient: linear-gradient(135deg, #4f46e5, #6366f1); /* Indigo gradient */
+  --mission-shadow: 0 10px 25px rgba(79, 70, 229, 0.2); /* Indigo shadow */
+  --mission-glow: 0 0 15px rgba(99, 102, 241, 0.5); /* Indigo glow */
+}
+
+/* Utility classes */
+.hidden {
+  display: none !important;
+}
+
+/* Remove underlines from all links */
+a {
+  text-decoration: none;
+}
+
+/* Container styling */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Mission container and card styling */
+.bg-gray-800 {
+  background-color: var(--mission-card-bg);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: var(--mission-shadow);
+  transition: all 0.3s ease;
+  backdrop-filter: blur(5px);
+  border-radius: 0.75rem;
+}
+
+.bg-gray-700 {
+  background-color: rgba(51, 65, 85, 0.6);
+  border-radius: 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(3px);
+}
+
+/* Mission header styling */
+#mission-name {
+  color: var(--mission-secondary);
+  text-shadow: var(--mission-glow);
+  font-size: 1.85rem;
+  letter-spacing: 0.025em;
+  font-weight: 700;
+}
+
+#mission-description {
+  color: var(--mission-text);
+  line-height: 1.7;
+  font-size: 1.05rem;
+}
+
+/* Mission monster styling */
+.mission-monster-card {
+  background-color: rgba(30, 41, 59, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 0.75rem;
+  padding: 0.85rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.mission-monster-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--mission-shadow);
+  border-color: var(--mission-primary);
+}
+
+.mission-monster-image {
+  width: 68px;
+  height: 68px;
+  object-fit: contain;
+  border-radius: 0.5rem;
+  border: 2px solid var(--mission-primary);
+  box-shadow: var(--mission-glow);
+  transition: all 0.3s ease;
+}
+
+.mission-monster-card:hover .mission-monster-image {
+  transform: scale(1.05);
+  border-color: var(--mission-secondary);
+}
+
+/* Progress bar styling */
+#progress-bar {
+  background: var(--mission-gradient);
+  box-shadow: var(--mission-glow);
+  transition: width 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+  border-radius: 1rem;
+  height: 0.6rem;
+}
+
+/* Mission card styling */
+.mission-card {
+  background-color: rgba(30, 41, 59, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 0.75rem;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.mission-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--mission-shadow);
+  border-color: var(--mission-primary);
+}
+
+.mission-card-header {
+  background: var(--mission-gradient);
+  padding: 1.25rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  position: relative;
+  overflow: hidden;
+}
+
+.mission-card-header::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0));
+  pointer-events: none;
+}
+
+.mission-card-header h3 {
+  position: relative;
+  z-index: 1;
+  color: white;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.mission-card-content {
+  padding: 1.25rem;
+  flex-grow: 1;
+}
+
+.mission-card-footer {
+  padding: 1.25rem;
+  background-color: rgba(30, 41, 59, 0.5);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Start mission button */
+.start-mission-btn {
+  background: var(--mission-gradient);
+  color: white;
+  font-weight: bold;
+  padding: 0.75rem 1.25rem;
+  border-radius: 0.5rem;
+  transition: all 0.3s ease;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.start-mission-btn::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: 0.5s;
+}
+
+.start-mission-btn:hover {
+  background-color: var(--mission-hover);
+  transform: translateY(-2px);
+  box-shadow: var(--mission-shadow);
+}
+
+.start-mission-btn:hover::after {
+  left: 100%;
+}
+
+/* Mission history styling */
+.mission-history-card {
+  background-color: rgba(30, 41, 59, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 0.75rem;
+  padding: 1.25rem;
+  transition: all 0.3s ease;
+  margin-bottom: 1rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.mission-history-card:hover {
+  border-color: var(--mission-primary);
+  transform: translateY(-3px);
+  box-shadow: var(--mission-shadow);
+}
+
+.mission-history-name {
+  color: var(--mission-secondary);
+  font-weight: bold;
+  font-size: 1.15rem;
+  margin-bottom: 0.35rem;
+  text-shadow: 0 0 5px rgba(99, 102, 241, 0.3);
+}
+
+.mission-history-date {
+  color: var(--mission-text);
+  font-size: 0.9rem;
+  opacity: 0.8;
+}
+
+/* Loading animations */
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.6;
+  }
+}
+
+#loading-mission, #loading-history {
+  background: linear-gradient(135deg, rgba(79, 70, 229, 0.1), rgba(99, 102, 241, 0.05));
+  border-radius: 0.75rem;
+  padding: 2rem;
+  animation: pulse 2s infinite;
+}
+
+/* No missions message styling */
+#no-missions {
+  border-radius: 0.75rem;
+  border-left: 4px solid #f59e0b;
+  background-color: rgba(245, 158, 11, 0.1);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+/* Responsive design adjustments */
+@media (max-width: 768px) {
+  #mission-name {
+    font-size: 1.5rem;
+    text-align: center;
+  }
+
+  #mission-description {
+    text-align: center;
+  }
+
+  #mission-monsters {
+    justify-content: center;
+  }
+
+  .mission-card {
+    margin-bottom: 1.5rem;
+  }
+
+  .mission-monster-image {
+    width: 60px;
+    height: 60px;
+  }
+}
+</style>
+
+<!-- Mission JavaScript -->
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Fetch mission data
+    fetchMissionData();
+
+    // Fetch mission history
+    fetchMissionHistory();
+  });
+
+  async function fetchMissionData() {
+    try {
+      console.log('Fetching mission data...');
+      let debugInfo = [];
+      debugInfo.push('Starting mission data fetch...');
+
+      // First, get the active mission if any
+      const activeResponse = await fetch('/api/missions/active');
+      const activeData = await activeResponse.json();
+      console.log('Active mission response:', activeData);
+      debugInfo.push(`Active mission check: ${activeData.success ? 'Success' : 'Failed'}, Has mission: ${activeData.mission ? 'Yes' : 'No'}`);
+
+      // Then, get available missions
+      const availableResponse = await fetch('/api/missions/available');
+      const availableData = await availableResponse.json();
+      console.log('Available missions response:', availableData);
+      debugInfo.push(`Available missions check: ${availableData.success ? 'Success' : 'Failed'}`);
+
+      if (availableData.success) {
+        debugInfo.push(`Total missions in database: ${availableData.totalMissions || 'Unknown'}`);
+        debugInfo.push(`Available missions for user: ${availableData.missions ? availableData.missions.length : 0}`);
+
+        // Get additional debug info if available
+        if (availableData.debugInfo) {
+          debugInfo.push('Server debug info:');
+          for (const info of availableData.debugInfo) {
+            debugInfo.push(`- ${info}`);
+          }
+        }
+      }
+
+      // Hide loading indicator
+      document.getElementById('loading-mission').classList.add('hidden');
+
+      // Show mission content container
+      document.getElementById('mission-content').classList.remove('hidden');
+
+      // Check if user has an active mission
+      if (activeData.success && activeData.mission) {
+        console.log('User has an active mission, rendering it');
+        debugInfo.push('User has an active mission, rendering it');
+        renderActiveMission(activeData.mission);
+        document.getElementById('active-mission').classList.remove('hidden');
+      } else {
+        // No active mission, show available missions
+        console.log('No active mission, checking available missions');
+        debugInfo.push('No active mission, checking available missions');
+
+        if (availableData.success) {
+          if (availableData.missions && availableData.missions.length > 0) {
+            console.log(`Found ${availableData.missions.length} available missions, rendering them`);
+            debugInfo.push(`Found ${availableData.missions.length} available missions, rendering them`);
+            renderAvailableMissions(availableData.missions);
+            document.getElementById('available-missions').classList.remove('hidden');
+          } else {
+            // No available missions
+            console.log('No available missions found');
+            debugInfo.push('No available missions found');
+            document.getElementById('no-missions').classList.remove('hidden');
+            document.getElementById('debug-content').innerHTML = debugInfo.join('<br>');
+          }
+        } else {
+          // Error in available missions response
+          const errorMsg = availableData.message || 'Unknown error';
+          console.error('Error in available missions response:', errorMsg);
+          debugInfo.push(`Error in available missions response: ${errorMsg}`);
+          document.getElementById('no-missions').classList.remove('hidden');
+          document.getElementById('debug-content').innerHTML = debugInfo.join('<br>');
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching mission data:', error);
+
+      // Hide loading indicator
+      document.getElementById('loading-mission').classList.add('hidden');
+
+      // Show mission content container with error
+      document.getElementById('mission-content').classList.remove('hidden');
+      document.getElementById('no-missions').classList.remove('hidden');
+      document.getElementById('debug-content').innerHTML = `Error fetching mission data: ${error.message}`;
+    }
+  }
+
+  function renderActiveMission(mission) {
+    // Set mission details
+    document.getElementById('mission-name').textContent = mission.name;
+    document.getElementById('mission-description').textContent = mission.description;
+
+    // Set progress bar
+    const progressPercent = (mission.current_progress / mission.total_progress) * 100;
+    document.getElementById('progress-bar').style.width = `${progressPercent}%`;
+    document.getElementById('progress-text').textContent = `${mission.current_progress} / ${mission.total_progress}`;
+
+    // Set mission image
+    if (mission.progress_image_url) {
+      document.getElementById('mission-image').src = mission.progress_image_url;
+      document.getElementById('mission-image').classList.remove('hidden');
+    } else {
+      document.getElementById('mission-image').classList.add('hidden');
+    }
+
+    // Hide available missions when a mission is in progress
+    document.getElementById('available-missions').classList.add('hidden');
+
+    // Render monsters
+    renderMissionMonsters(mission.mon_ids);
+  }
+
+  async function renderMissionMonsters(monIds) {
+    if (!monIds || monIds.length === 0) {
+      document.getElementById('mission-monsters').innerHTML = '<p class="text-gray-400 p-3 bg-gray-800 bg-opacity-50 rounded-lg">No monsters assigned to this mission.</p>';
+      return;
+    }
+
+    try {
+      // Fetch monster details
+      const monstersContainer = document.getElementById('mission-monsters');
+      monstersContainer.innerHTML = '<div class="text-center py-4"><div class="inline-block animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-indigo-400"></div><p class="mt-2 text-gray-300">Loading mission monsters...</p></div>';
+
+      // Create a container for the monster cards
+      const monsterCardsContainer = document.createElement('div');
+      monsterCardsContainer.className = 'flex flex-wrap gap-4';
+
+      // For each monster ID, fetch details and create a card
+      const monsterPromises = monIds.map(monId => {
+        return fetch(`/api/monsters/${monId}`)
+          .then(response => response.json())
+          .then(data => {
+            if (data.success && data.monster) {
+              return data.monster;
+            }
+            return null;
+          })
+          .catch(error => {
+            console.error(`Error fetching monster ${monId}:`, error);
+            return null;
+          });
+      });
+
+      // Wait for all monster data to be fetched
+      const monsters = await Promise.all(monsterPromises);
+      const validMonsters = monsters.filter(monster => monster !== null);
+
+      // Clear loading indicator
+      monstersContainer.innerHTML = '';
+
+      if (validMonsters.length === 0) {
+        monstersContainer.innerHTML = '<p class="text-gray-400 p-3 bg-gray-800 bg-opacity-50 rounded-lg">Could not load monster details.</p>';
+        return;
+      }
+
+      // Create cards for each monster
+      validMonsters.forEach(monster => {
+        // Determine type color for the monster card border
+        let typeColor = 'indigo';
+        if (monster.type1) {
+          const type = monster.type1.toLowerCase();
+          if (type === 'fire') typeColor = 'red';
+          else if (type === 'water') typeColor = 'blue';
+          else if (type === 'grass') typeColor = 'green';
+          else if (type === 'electric') typeColor = 'yellow';
+          else if (type === 'psychic') typeColor = 'purple';
+          else if (type === 'dark') typeColor = 'gray';
+          else if (type === 'fairy') typeColor = 'pink';
+        }
+
+        const monsterCard = document.createElement('div');
+        monsterCard.className = `mission-monster-card flex items-center border-${typeColor}-500`;
+
+        monsterCard.innerHTML = `
+          <div class="relative">
+            <div class="absolute inset-0 bg-${typeColor}-500 opacity-20 rounded-md"></div>
+            <img src="${monster.img_link}" alt="${monster.name}" class="mission-monster-image mr-3 relative z-10">
+          </div>
+          <div>
+            <div class="text-white font-semibold">${monster.name}</div>
+            <div class="text-${typeColor}-300 text-sm font-medium">Level ${monster.level}</div>
+            ${monster.type1 ? `<div class="text-gray-400 text-xs mt-1">${monster.type1}${monster.type2 ? ` / ${monster.type2}` : ''}</div>` : ''}
+          </div>
+        `;
+
+        monsterCardsContainer.appendChild(monsterCard);
+      });
+
+      // Add the monster cards container to the main container
+      monstersContainer.appendChild(monsterCardsContainer);
+    } catch (error) {
+      console.error('Error fetching monster details:', error);
+      document.getElementById('mission-monsters').innerHTML = '<p class="text-gray-400 p-3 bg-gray-800 bg-opacity-50 rounded-lg">Error loading monster details.</p>';
+    }
+  }
+
+  function renderAvailableMissions(missions) {
+    const missionList = document.getElementById('mission-list');
+    missionList.innerHTML = '';
+
+    missions.forEach(mission => {
+      const missionCard = document.createElement('div');
+      missionCard.className = 'mission-card';
+
+      // Calculate difficulty indicator based on progress needed
+      let difficultyText = 'Easy';
+      let difficultyClass = 'bg-green-500';
+
+      if (mission.min_progress_needed >= 20) {
+        difficultyText = 'Hard';
+        difficultyClass = 'bg-red-500';
+      } else if (mission.min_progress_needed >= 10) {
+        difficultyText = 'Medium';
+        difficultyClass = 'bg-yellow-500';
+      }
+
+      // Format item rewards for display
+      let itemRewardsHtml = '';
+      if (mission.item_rewards && mission.item_rewards.length > 0) {
+        const itemCount = mission.item_reward_amount === 0 ? 'All' : mission.item_reward_amount;
+        itemRewardsHtml = `<li class="flex items-center"><span class="inline-block w-5 h-5 mr-2 bg-purple-500 rounded-full flex items-center justify-center text-xs text-white"><i class="fas fa-gift"></i></span>${itemCount} items: ${mission.item_rewards.join(', ')}</li>`;
+      }
+
+      missionCard.innerHTML = `
+        <div class="mission-card-header">
+          <span class="absolute top-3 right-3 px-2 py-1 text-xs font-bold text-white rounded-full ${difficultyClass}">${difficultyText}</span>
+          <h3 class="text-xl font-bold text-white">${mission.name}</h3>
+        </div>
+        <div class="mission-card-content">
+          <p class="text-gray-300 mb-4">${mission.description}</p>
+          <div class="mb-4">
+            <p class="text-sm font-semibold text-white mb-2">Rewards:</p>
+            <ul class="text-sm text-gray-300 space-y-2">
+              <li class="flex items-center"><span class="inline-block w-5 h-5 mr-2 bg-green-500 rounded-full flex items-center justify-center text-xs text-white"><i class="fas fa-arrow-up"></i></span>${mission.level_rewards} levels</li>
+              <li class="flex items-center"><span class="inline-block w-5 h-5 mr-2 bg-yellow-500 rounded-full flex items-center justify-center text-xs text-white"><i class="fas fa-coins"></i></span>${mission.coin_rewards} coins</li>
+              ${itemRewardsHtml}
+            </ul>
+          </div>
+
+          ${mission.progress_image_url ? `<div class="mb-4 text-center">
+            <img src="${mission.progress_image_url}" alt="Mission preview" class="mx-auto max-w-full h-auto rounded-lg shadow-md border border-indigo-500 hover:border-indigo-300 transition-all duration-300" style="max-height: 120px;">
+          </div>` : ''}
+        </div>
+        <div class="mission-card-footer">
+          <button class="start-mission-btn"
+                  data-mission-id="${mission.id}"
+                  data-mission-name="${mission.name}">
+            <i class="fas fa-play-circle mr-2"></i> Start Mission
+          </button>
+        </div>
+      `;
+
+      missionList.appendChild(missionCard);
+    });
+
+    // Add event listeners to start mission buttons
+    document.querySelectorAll('.start-mission-btn').forEach(button => {
+      button.addEventListener('click', function() {
+        const missionId = this.getAttribute('data-mission-id');
+        const missionName = this.getAttribute('data-mission-name');
+
+        // Open monster selection modal
+        openMissionStartModal(missionId, missionName);
+      });
+    });
+  }
+
+  function openMissionStartModal(missionId, missionName) {
+    // Create modal overlay
+    const modalOverlay = document.createElement('div');
+    modalOverlay.className = 'fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50';
+    modalOverlay.style.position = 'fixed';
+    modalOverlay.style.top = '0';
+    modalOverlay.style.left = '0';
+    modalOverlay.style.width = '100vw';
+    modalOverlay.style.height = '100vh';
+    modalOverlay.style.display = 'flex';
+    modalOverlay.style.alignItems = 'center';
+    modalOverlay.style.justifyContent = 'center';
+    modalOverlay.style.zIndex = '9999';
+
+    // Create modal content - now 3 times wider
+    modalOverlay.innerHTML = `
+      <div class="bg-gray-800 rounded-lg p-6 mx-4" style="max-height: 80vh; overflow-y: auto; box-shadow: 0 0 20px rgba(0,0,0,0.5); width: 80vw; max-width: 1200px;">
+        <h2 class="text-2xl font-bold text-blue-400 mb-4">Start Mission: ${missionName}</h2>
+
+        <p class="text-gray-300 mb-4">Select up to 3 monsters to send on this mission:</p>
+
+        <div id="monster-selection" class="mb-6">
+          <div class="text-center py-4">
+            <div class="inline-block animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-400"></div>
+            <p class="mt-2 text-gray-300">Loading your monsters...</p>
+          </div>
+        </div>
+
+        <div class="flex justify-end space-x-4">
+          <button id="cancel-mission" class="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700">
+            Cancel
+          </button>
+          <button id="start-mission" class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600" disabled>
+            Start Mission
+          </button>
+        </div>
+      </div>
+    `;
+
+    // Add modal to body
+    document.body.appendChild(modalOverlay);
+
+    // Add event listeners
+    document.getElementById('cancel-mission').addEventListener('click', function() {
+      document.body.removeChild(modalOverlay);
+    });
+
+    // Add escape key listener
+    const escapeHandler = function(e) {
+      if (e.key === 'Escape') {
+        document.body.removeChild(modalOverlay);
+        document.removeEventListener('keydown', escapeHandler);
+      }
+    };
+    document.addEventListener('keydown', escapeHandler);
+
+    // Load trainer's monsters
+    loadTrainerMonsters(missionId, modalOverlay);
+  }
+
+  async function loadTrainerMonsters(missionId, modalOverlay) {
+    try {
+      const response = await fetch('/api/trainers/user/monsters');
+      const data = await response.json();
+
+      const monsterSelection = document.getElementById('monster-selection');
+
+      if (data.success && data.monsters && data.monsters.length > 0) {
+        // Clear loading indicator
+        monsterSelection.innerHTML = '';
+
+        // Create monster selection grid - now 6 columns wide
+        const monsterGrid = document.createElement('div');
+        monsterGrid.className = 'grid grid-cols-6 gap-2 max-h-80 overflow-y-auto';
+        monsterGrid.style.width = '100%'; // Ensure full width
+
+        // Selected monsters array
+        const selectedMonsters = [];
+
+        // Filter monsters to only include those with valid images
+        const validMonsters = data.monsters.filter(monster => monster.img_link && monster.img_link !== 'null');
+
+        // Add monsters to grid
+        validMonsters.forEach(monster => {
+          const monsterCard = document.createElement('div');
+          monsterCard.className = 'monster-select-card flex flex-col items-center p-2 border border-gray-700 rounded-md cursor-pointer hover:bg-gray-700 transition-colors';
+          monsterCard.setAttribute('data-mon-id', monster.mon_id);
+          monsterCard.style.height = '120px'; // Fixed height for consistency
+          monsterCard.style.width = '100%'; // Full width within grid cell
+
+          monsterCard.innerHTML = `
+            <img src="${monster.img_link}" alt="${monster.name}" class="w-16 h-16 object-contain rounded-md mb-1">
+            <div class="text-center w-full overflow-hidden">
+              <div class="text-white text-xs font-semibold truncate">${monster.name}</div>
+              <div class="text-gray-400 text-xs">Lv.${monster.level}</div>
+              ${monster.trainer_name ? `<div class="text-indigo-400 text-xs truncate">${monster.trainer_name}</div>` : ''}
+            </div>
+          `;
+
+          // Add click event to select/deselect
+          monsterCard.addEventListener('click', function() {
+            const monId = this.getAttribute('data-mon-id');
+
+            if (this.classList.contains('selected')) {
+              // Deselect
+              this.classList.remove('selected', 'border-blue-500', 'bg-blue-900', 'bg-opacity-20');
+              this.classList.add('border-gray-700');
+
+              // Remove from selected array
+              const index = selectedMonsters.indexOf(monId);
+              if (index > -1) {
+                selectedMonsters.splice(index, 1);
+              }
+            } else {
+              // Check if already have 3 selected
+              if (selectedMonsters.length >= 3) {
+                alert('You can only select up to 3 monsters for a mission.');
+                return;
+              }
+
+              // Select
+              this.classList.add('selected', 'border-blue-500', 'bg-blue-900', 'bg-opacity-20');
+              this.classList.remove('border-gray-700');
+
+              // Add to selected array
+              selectedMonsters.push(monId);
+            }
+
+            // Update start button state
+            const startButton = document.getElementById('start-mission');
+            startButton.disabled = selectedMonsters.length === 0;
+          });
+
+          monsterGrid.appendChild(monsterCard);
+        });
+
+        monsterSelection.appendChild(monsterGrid);
+
+        // Add a counter for selected monsters
+        const selectionCounter = document.createElement('div');
+        selectionCounter.className = 'text-center mt-4 text-sm text-gray-300';
+        selectionCounter.innerHTML = '<span id="selection-count">0</span>/3 monsters selected';
+        monsterSelection.appendChild(selectionCounter);
+
+        // Update counter when monsters are selected/deselected
+        const updateCounter = () => {
+          document.getElementById('selection-count').textContent = selectedMonsters.length;
+        };
+
+        // Update the click event for all monster cards to update counter
+        document.querySelectorAll('.monster-select-card').forEach(card => {
+          const originalClickListener = card.onclick;
+          card.addEventListener('click', function() {
+            // The original click handler is already attached via addEventListener above
+            // Just need to update the counter after a short delay to ensure the selection has been processed
+            setTimeout(updateCounter, 10);
+          });
+        });
+
+        // Update start mission button
+        document.getElementById('start-mission').addEventListener('click', function() {
+          startMission(missionId, selectedMonsters, modalOverlay);
+        });
+      } else {
+        monsterSelection.innerHTML = '<div class="bg-red-900 bg-opacity-30 p-4 rounded-lg border border-red-700"><p class="text-red-300 text-center">No monsters found. Please make sure you have at least one trainer with monsters.</p></div>';
+      }
+    } catch (error) {
+      console.error('Error loading trainer monsters:', error);
+      document.getElementById('monster-selection').innerHTML = '<div class="bg-red-900 bg-opacity-30 p-4 rounded-lg border border-red-700"><p class="text-red-300 text-center">Error loading your monsters: ' + error.message + '</p></div>';
+    }
+  }
+
+  async function startMission(missionId, monIds, modalOverlay) {
+    try {
+      // Disable start button and show loading
+      const startButton = document.getElementById('start-mission');
+      startButton.disabled = true;
+      startButton.innerHTML = '<div class="inline-block animate-spin rounded-full h-4 w-4 border-t-2 border-b-2 border-white mr-2"></div> Starting...';
+
+      // Call API to start mission
+      const response = await fetch('/api/missions/start', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          missionId,
+          monIds
+        })
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        // Close modal
+        document.body.removeChild(modalOverlay);
+
+        // Refresh mission data
+        fetchMissionData();
+      } else {
+        // Show error
+        alert(`Error starting mission: ${data.message}`);
+
+        // Reset button
+        startButton.disabled = false;
+        startButton.textContent = 'Start Mission';
+      }
+    } catch (error) {
+      console.error('Error starting mission:', error);
+
+      // Show error
+      alert('Error starting mission. Please try again.');
+
+      // Reset button
+      const startButton = document.getElementById('start-mission');
+      startButton.disabled = false;
+      startButton.textContent = 'Start Mission';
+    }
+  }
+
+  async function fetchMissionHistory() {
+    try {
+      const response = await fetch('/api/missions/history?limit=5');
+      const data = await response.json();
+
+      // Hide loading indicator
+      document.getElementById('loading-history').classList.add('hidden');
+
+      // Show history container
+      document.getElementById('mission-history-container').classList.remove('hidden');
+
+      if (data.success && data.history && data.history.length > 0) {
+        renderMissionHistory(data.history);
+      } else {
+        // No history
+        document.getElementById('no-history').classList.remove('hidden');
+      }
+    } catch (error) {
+      console.error('Error fetching mission history:', error);
+
+      // Hide loading indicator
+      document.getElementById('loading-history').classList.add('hidden');
+
+      // Show history container with error
+      document.getElementById('mission-history-container').classList.remove('hidden');
+      document.getElementById('no-history').classList.remove('hidden');
+      document.querySelector('#no-history p').textContent = 'Error loading mission history. Please try again later.';
+    }
+  }
+
+  function renderMissionHistory(history) {
+    const historyList = document.getElementById('mission-history-list');
+    historyList.innerHTML = '';
+
+    history.forEach(mission => {
+      const historyCard = document.createElement('div');
+      historyCard.className = 'mission-history-card';
+
+      const completedDate = new Date(mission.completed_at);
+      const formattedDate = completedDate.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric'
+      });
+
+      // Calculate time ago
+      const timeAgo = getTimeAgo(completedDate);
+
+      historyCard.innerHTML = `
+        <div class="flex justify-between items-start">
+          <div class="mission-history-name">${mission.name}</div>
+          <div class="bg-indigo-900 bg-opacity-50 text-xs text-indigo-300 px-2 py-1 rounded-full">${timeAgo}</div>
+        </div>
+        <div class="mission-history-date">Completed: ${formattedDate}</div>
+        <div class="flex items-center justify-between mt-3">
+          <div class="flex items-center space-x-3">
+            <div class="flex items-center text-yellow-400">
+              <i class="fas fa-coins mr-1"></i>
+              <span>${mission.coin_rewards}</span>
+            </div>
+            <div class="flex items-center text-green-400">
+              <i class="fas fa-arrow-up mr-1"></i>
+              <span>${mission.level_rewards} levels</span>
+            </div>
+          </div>
+          ${mission.item_rewards && mission.item_rewards.length > 0 ?
+            `<div class="text-xs text-purple-400 bg-purple-900 bg-opacity-30 px-2 py-1 rounded-full">
+              <i class="fas fa-gift mr-1"></i> Items received
+            </div>` : ''}
+        </div>
+      `;
+
+      historyList.appendChild(historyCard);
+    });
+  }
+
+  // Helper function to format time ago
+  function getTimeAgo(date) {
+    const now = new Date();
+    const diffMs = now - date;
+    const diffSecs = Math.floor(diffMs / 1000);
+    const diffMins = Math.floor(diffSecs / 60);
+    const diffHours = Math.floor(diffMins / 60);
+    const diffDays = Math.floor(diffHours / 24);
+
+    if (diffDays > 30) {
+      return 'over a month ago';
+    } else if (diffDays > 0) {
+      return diffDays === 1 ? 'yesterday' : `${diffDays} days ago`;
+    } else if (diffHours > 0) {
+      return diffHours === 1 ? '1 hour ago' : `${diffHours} hours ago`;
+    } else if (diffMins > 0) {
+      return diffMins === 1 ? '1 minute ago' : `${diffMins} minutes ago`;
+    } else {
+      return 'just now';
+    }
+  }
+</script>

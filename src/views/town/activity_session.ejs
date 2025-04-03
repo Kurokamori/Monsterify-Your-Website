@@ -1,58 +1,357 @@
-<div class='container mx-auto px-4 py-8'>
-  <div class='max-w-4xl mx-auto'>
-    <div class='mb-8 text-center'>
-      <h1 class='text-3xl font-display font-bold'><%= session.activity.charAt(0).toUpperCase() + session.activity.slice(1) %> Task</h1>
-      <p class='text-gray-300 mt-2'>Location: <%= session.location.replace('_', ' ').charAt(0).toUpperCase() + session.location.replace('_', ' ').slice(1) %></p>
+<%
+// Debug the session object
+console.log('Session in template:', JSON.stringify(session, null, 2));
+
+// Ensure location is properly formatted
+const locationClass = session.location ? `location-${session.location}` : '';
+%>
+<div class="container mx-auto px-4 py-8 location-activity-container <%= locationClass %>">
+  <div class="max-w-4xl mx-auto">
+    <div class="mb-8 text-center">
+      <h1 class="text-4xl font-display font-bold text-white">Activity Session</h1>
+      <p class="text-gray-300 mt-2 text-lg">Complete the task to earn rewards.</p>
     </div>
 
-    <div class='bg-card rounded-lg p-6 shadow-lg mb-8'>
-      <h2 class='text-xl font-bold mb-4'>Your Task:</h2>
-      <p class='text-lg mb-6'><%= session.prompt_text %></p>
-
-      <!-- Timer Circle -->
-      <div class='timer-circle-wrapper mb-6'>
-        <div class='timer-circle'>
-          <svg viewBox='0 0 100 100'>
-            <circle cx='50' cy='50' r='45' fill='none' stroke='rgba(255, 255, 255, 0.1)' stroke-width='8' />
-            <circle id='progress-circle' cx='50' cy='50' r='45' fill='none' stroke='#8b5cf6' stroke-width='8' stroke-dasharray='283' stroke-dashoffset='0' />
-          </svg>
-          <div class='timer-display'>
-            <span id='timer-display'>00:00</span>
-            <span id='timer-status' class='text-sm'>Loading...</span>
+    <div class="bg-gray-800 rounded-lg overflow-hidden shadow-xl border border-gray-700 p-6 transition-all hover:shadow-<%= typeof color !== 'undefined' ? color : 'blue' %>-glow">
+      <div class="mb-8">
+        <div class="flex items-center mb-4">
+          <div class="w-10 h-10 rounded-full bg-<%= typeof color !== 'undefined' ? color : 'blue' %>-600 flex items-center justify-center mr-3">
+            <i class="fas fa-tasks text-white"></i>
+          </div>
+          <h2 class="text-2xl font-display font-bold text-white">Your Task</h2>
+        </div>
+        <div class="task-card border-<%= typeof color !== 'undefined' ? color : 'blue' %>-500">
+          <p class="text-gray-200 text-lg leading-relaxed"><%= session.prompt?.text || 'Complete the assigned task.' %></p>
+          <div class="mt-4 flex items-center">
+            <span class="text-gray-400 mr-2">Difficulty:</span>
+            <%
+              const difficulty = session.prompt?.difficulty || 'normal';
+              if (difficulty === 'easy') {
+            %>
+              <span class="badge-difficulty badge-easy">Easy</span>
+            <% } else if (difficulty === 'normal') { %>
+              <span class="badge-difficulty badge-normal">Normal</span>
+            <% } else { %>
+              <span class="badge-difficulty badge-hard">Hard</span>
+            <% } %>
           </div>
         </div>
       </div>
 
-      <!-- Timer Controls -->
-      <div class='flex justify-center space-x-4 mb-4'>
-        <button id='pause-timer' class='btn-secondary opacity-50' disabled>
-          <i class='fas fa-pause mr-2'></i> Pause
-        </button>
-        <button id='resume-timer' class='btn-secondary opacity-50' disabled>
-          <i class='fas fa-play mr-2'></i> Resume
-        </button>
+      <div class="flex flex-col md:flex-row items-stretch justify-between gap-8 mb-8">
+        <div class="w-full md:w-1/2 flex flex-col items-center justify-center bg-gray-900 rounded-lg p-6 shadow-inner">
+          <div class="timer-circle-wrapper">
+            <div class="timer-circle">
+              <!-- Outer decorative ring -->
+              <div class="absolute inset-0 rounded-full border-4 border-gray-700 opacity-30 animate-pulse"></div>
+
+              <svg viewBox="0 0 100 100">
+                <!-- Background circle -->
+                <circle
+                  cx="50" cy="50" r="45"
+                  fill="transparent"
+                  stroke="#374151"
+                  stroke-width="8"
+                ></circle>
+
+                <!-- Progress circle -->
+                <circle
+                  id="progress-circle"
+                  cx="50" cy="50" r="45"
+                  fill="transparent"
+                  stroke="<%= typeof color !== 'undefined' ? (color === 'green' ? '#10B981' : (color === 'orange' ? '#F59E0B' : (color === 'pink' ? '#EC4899' : '#3B82F6'))) : '#3B82F6' %>"
+                  stroke-width="8"
+                  stroke-dasharray="282.7"
+                  stroke-dashoffset="0"
+                  transform="rotate(-90 50 50)"
+                  class="progress-circle"
+                ></circle>
+              </svg>
+
+              <div class="timer-display">
+                <div id="timer-display"></div>
+                <div id="timer-label" class="text-sm font-medium">remaining</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="text-center mt-6 w-full">
+            <div class="flex justify-between items-center mb-2 px-4">
+              <p class="text-gray-400">
+                <i class="far fa-clock mr-1"></i> End: <span id="end-time-display" class="font-medium text-white"></span>
+              </p>
+              <p class="text-gray-400">
+                <i class="fas fa-signal mr-1"></i> Status: <span id="timer-status" class="font-medium text-white">In progress</span>
+              </p>
+            </div>
+
+            <div class="flex justify-center gap-3 mt-4">
+              <button id="pause-button" class="py-2 px-4 bg-gray-700 hover:bg-gray-600 text-white rounded-md transition-colors shadow-md">
+                <i class="fas fa-pause mr-1"></i> Pause
+              </button>
+              <button id="resume-button" class="py-2 px-4 bg-gray-700 hover:bg-gray-600 text-white rounded-md transition-colors opacity-50 shadow-md" disabled>
+                <i class="fas fa-play mr-1"></i> Resume
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="w-full md:w-1/2 flex flex-col">
+          <div class="activity-details mb-6 flex-grow">
+            <div class="flex items-center mb-4">
+              <div class="w-8 h-8 rounded-full bg-<%= typeof color !== 'undefined' ? color : 'blue' %>-600 flex items-center justify-center mr-3">
+                <i class="fas fa-info-circle text-white"></i>
+              </div>
+              <h3 class="text-xl font-display font-bold text-white">Activity Details</h3>
+            </div>
+
+            <ul class="space-y-3">
+              <li class="activity-details-item">
+                <span class="activity-details-label">Location:</span>
+                <span class="activity-details-value">
+                  <%
+                  let locationDisplay = '';
+                  if (session.location) {
+                    locationDisplay = session.location.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+
+                    // Add specific location names
+                    if (session.location === 'garden') {
+                      locationDisplay = 'Garden';
+                    } else if (session.location === 'farm') {
+                      locationDisplay = 'Farm';
+                    } else if (session.location === 'pirates_dock_fishing') {
+                      locationDisplay = 'Pirate\'s Dock - Fishing';
+                    } else if (session.location === 'pirates_dock_swab') {
+                      locationDisplay = 'Pirate\'s Dock - Swabbing';
+                    }
+                  }
+                  %>
+                  <%= locationDisplay %>
+                </span>
+              </li>
+              <li class="activity-details-item">
+                <span class="activity-details-label">Activity:</span>
+                <span class="activity-details-value">
+                  <%
+                  let activityDisplay = '';
+                  if (session.activity) {
+                    activityDisplay = session.activity.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+
+                    // Add specific activity names
+                    if (session.activity === 'tend') {
+                      activityDisplay = 'Tend the Garden';
+                    } else if (session.activity === 'work') {
+                      activityDisplay = 'Work the Farm';
+                    } else if (session.activity === 'fish') {
+                      activityDisplay = 'Go Fishing';
+                    } else if (session.activity === 'swab') {
+                      activityDisplay = 'Swab the Deck';
+                    }
+                  }
+                  %>
+                  <%= activityDisplay %>
+                </span>
+              </li>
+              <li class="activity-details-item">
+                <span class="activity-details-label">Duration:</span>
+                <span class="activity-details-value">
+                  <%= session.durationMinutes || 60 %> minutes
+                </span>
+              </li>
+              <li class="activity-details-item">
+                <span class="activity-details-label">Start Time:</span>
+                <span class="activity-details-value">
+                  <%= new Date(session.startTime || Date.now()).toLocaleTimeString() %>
+                </span>
+              </li>
+            </ul>
+          </div>
+
+          <form id="complete-form" action="/town/activities/complete" method="POST">
+            <!-- Add location and activity as hidden fields -->
+            <input type="hidden" name="location" value="<%= session.location %>">
+            <input type="hidden" name="activity" value="<%= session.activity %>">
+            <button
+              id="complete-button"
+              type="submit"
+              class="w-full py-4 px-6 bg-yellow-600 hover:bg-yellow-700 text-white text-lg font-bold rounded-md transition-all duration-300 shadow-lg flex items-center justify-center relative overflow-hidden group"
+            >
+              <span class="absolute inset-0 w-full h-full bg-gradient-to-r from-yellow-500 to-yellow-700 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
+              <span class="absolute -inset-1 rounded-lg bg-yellow-500 opacity-0 group-hover:opacity-20 group-active:opacity-30 transition-opacity duration-300"></span>
+              <span class="relative flex items-center justify-center z-10">
+                <i class="fas fa-check-circle mr-2"></i> Complete Activity
+              </span>
+
+              <!-- Animated border effect -->
+              <span class="absolute inset-0 border-2 border-transparent rounded-md group-hover:border-yellow-400 transition-all duration-300"></span>
+            </button>
+          </form>
+        </div>
       </div>
-
-      <p class='text-center text-sm mt-2'>Complete this task by <span id='end-time-display'></span></p>
-    </div>
-
-    <div class='text-center'>
-      <button id='complete-task' class='btn-primary text-lg py-3 px-6 rounded-lg'>
-        <i class='fas fa-check-circle mr-2'></i> I've Completed This Task
-      </button>
     </div>
   </div>
 </div>
 
-<!-- Hidden session data -->
-<div id='session-data'
-  data-session-id='<%= session.session_id %>'
-  data-end-time='<%= endTime %>'
-  data-duration='<%= session.duration_minutes %>'
-  data-location='<%= session.location %>'
-  data-activity='<%= session.activity %>'
-  style='display: none;'>
+<!-- Hidden data for JavaScript -->
+<div id="session-data"
+  data-session-id="<%= session.id %>"
+  data-end-time="<%= session.endTime %>"
+  data-duration="<%= session.durationMinutes || 60 %>"
+  data-location="<%= session.location %>"
+  data-activity="<%= session.activity %>"
+  style="display: none;">
 </div>
 
-<link rel='stylesheet' href='/css/activity_session.css'>
-<script src='/js/activity_session.js'></script>
+<link rel="stylesheet" href="/css/location_activities.css">
+<link rel="stylesheet" href="/css/activity_session.css">
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Timer variables
+    let endTime, durationMinutes, totalDuration;
+
+    try {
+      const endTimeStr = '<%= session.endTime ? session.endTime : new Date(Date.now() + 60 * 60 * 1000).toISOString() %>';
+      endTime = new Date(endTimeStr);
+      durationMinutes = parseInt('<%= session.durationMinutes || 60 %>');
+      totalDuration = durationMinutes * 60; // in seconds
+    } catch (error) {
+      console.error('Error parsing session data:', error);
+      // Default values
+      endTime = new Date(Date.now() + 60 * 60 * 1000);
+      durationMinutes = 60;
+      totalDuration = durationMinutes * 60;
+    }
+    let remainingSeconds = 0;
+    let timerInterval = null;
+    let isPaused = false;
+
+    // DOM elements
+    const timerDisplay = document.getElementById('timer-display');
+    const endTimeDisplay = document.getElementById('end-time-display');
+    const timerStatus = document.getElementById('timer-status');
+    const timerProgress = document.getElementById('timer-progress');
+    const pauseButton = document.getElementById('pause-button');
+    const resumeButton = document.getElementById('resume-button');
+    const completeButton = document.getElementById('complete-button');
+
+    // Format time as MM:SS
+    function formatTime(seconds) {
+      const minutes = Math.floor(seconds / 60);
+      const secs = seconds % 60;
+      return `${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    }
+
+    // Update the timer display
+    function updateTimerDisplay() {
+      timerDisplay.textContent = formatTime(remainingSeconds);
+
+      // Update progress circle
+      const circumference = 2 * Math.PI * 45; // 2πr
+      const offset = circumference - (remainingSeconds / totalDuration) * circumference;
+      timerProgress.style.strokeDasharray = `${circumference} ${circumference}`;
+      timerProgress.style.strokeDashoffset = offset;
+    }
+
+    // Initialize the timer
+    function initializeTimer() {
+      // Format the end time for display
+      const options = {
+        hour: 'numeric',
+        minute: 'numeric',
+        hour12: true
+      };
+      endTimeDisplay.textContent = endTime.toLocaleTimeString([], options);
+
+      // Calculate initial remaining time
+      const now = new Date();
+      const timeDiff = endTime - now;
+
+      // If time is up or negative, set to 0
+      remainingSeconds = Math.max(0, Math.floor(timeDiff / 1000));
+
+      // Update the display
+      updateTimerDisplay();
+
+      // Start the timer
+      startTimer();
+    }
+
+    // Start the timer
+    function startTimer() {
+      // Clear any existing interval
+      if (timerInterval) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+      }
+
+      // Enable pause button, disable resume button
+      pauseButton.disabled = false;
+      pauseButton.classList.remove('opacity-50');
+      resumeButton.disabled = true;
+      resumeButton.classList.add('opacity-50');
+
+      // Set timer status
+      timerStatus.textContent = 'In progress';
+      isPaused = false;
+
+      // Only start a new interval if we don't already have one and time isn't up
+      if (!timerInterval && remainingSeconds > 0) {
+        // Start the interval
+        timerInterval = setInterval(() => {
+          // Decrement the remaining seconds directly
+          remainingSeconds = Math.max(0, remainingSeconds - 1);
+
+          // Update the display
+          updateTimerDisplay();
+
+          // If time is up, stop the timer
+          if (remainingSeconds <= 0) {
+            clearInterval(timerInterval);
+            timerInterval = null;
+            timerStatus.textContent = 'Time\'s up!';
+
+            // Disable pause/resume buttons
+            pauseButton.disabled = true;
+            pauseButton.classList.add('opacity-50');
+            resumeButton.disabled = true;
+            resumeButton.classList.add('opacity-50');
+
+            // Highlight the complete button
+            completeButton.classList.add('animate-pulse');
+          }
+        }, 1000);
+      }
+    }
+
+    // Pause the timer
+    function pauseTimer() {
+      if (timerInterval) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+      }
+
+      // Enable resume button, disable pause button
+      resumeButton.disabled = false;
+      resumeButton.classList.remove('opacity-50');
+      pauseButton.disabled = true;
+      pauseButton.classList.add('opacity-50');
+
+      // Set timer status
+      timerStatus.textContent = 'Paused';
+      isPaused = true;
+    }
+
+    // Resume the timer
+    function resumeTimer() {
+      startTimer();
+    }
+
+    // Add event listeners
+    pauseButton.addEventListener('click', pauseTimer);
+    resumeButton.addEventListener('click', resumeTimer);
+
+    // Initialize the timer
+    initializeTimer();
+  });
+</script>

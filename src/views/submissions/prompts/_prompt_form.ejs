@@ -1,0 +1,540 @@
+<!-- Shared Prompt Submission Form Partial -->
+<style>
+  /* Prompt card styling */
+  .prompt-card {
+    height: 180px;
+    min-width: 100px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    position: relative;
+  }
+
+  .prompt-card h3 {
+    font-size: 1rem;
+    line-height: 1.2;
+    max-height: 2.4rem;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+  }
+
+  .prompt-card p.description {
+    font-size: 0.85rem;
+    line-height: 1.3;
+    max-height: 5.2rem;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    opacity: 0.8;
+  }
+
+  .selection-indicator {
+    z-index: 5;
+    pointer-events: none;
+  }
+
+  /* Ensure the prompt container has a minimum height */
+  #promptsContainer {
+    min-height: 150px;
+  }
+</style>
+<div class="submission-container">
+<div class="submission-card">
+  <h1 class="submission-title">Submit Artwork for Prompt</h1>
+  <form id="promptSubmissionForm" class="submission-form">
+    <div class="form-group">
+      <label class="form-label">Select Trainer</label>
+      <select id="trainerSelect" class="modern-select" required>
+        <option value="">-- Select Trainer --</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Select Prompt</label>
+      <div id="promptsContainer" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+        <!-- Prompts will be loaded here -->
+        <div class="text-center py-4 text-gray-400 col-span-full">
+          <i class="fas fa-spinner fa-spin text-2xl mb-2"></i>
+          <p>Loading available prompts...</p>
+        </div>
+      </div>
+    </div>
+
+    <div id="selectedPromptDetails" class="form-group hidden">
+      <div class="participant-entry">
+        <h3 id="selectedPromptTitle" class="submission-subtitle mb-2"></h3>
+        <p id="selectedPromptDescription" class="text-gray-300 mb-4"></p>
+
+        <div class="mb-4">
+          <h4 class="form-label mb-1">Rewards</h4>
+          <ul id="selectedPromptRewards" class="list-disc pl-5 text-gray-300">
+            <!-- Rewards will be listed here -->
+          </ul>
+        </div>
+
+        <div class="form-group mb-0">
+          <label class="form-label">Artwork URL</label>
+          <input type="url" id="submissionUrl" class="modern-input w-full" placeholder="Enter URL to your artwork" required>
+          <p class="form-help">Please provide a direct link to your artwork submission</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-buttons">
+      <a href="/submissions" class="back-button">
+        <i class="fas fa-arrow-left"></i> Back to Submissions
+      </a>
+
+      <button type="submit" id="submitButton" class="submit-button hidden">
+        <i class="fas fa-paper-plane"></i> Submit
+      </button>
+    </div>
+  </form>
+</div>
+</div>
+
+<!-- Results Section (Hidden by Default) -->
+<div id="resultsSection" class="hidden submission-container">
+  <div class="results-section">
+    <h2 class="results-title">Submission Results</h2>
+
+    <div id="calculationResults" class="results-content">
+      <!-- Results will be displayed here -->
+    </div>
+
+    <div class="results-buttons">
+      <button id="backToForm" class="back-button">
+        <i class="fas fa-arrow-left"></i> Submit Another Prompt
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Form elements
+    const promptSubmissionForm = document.getElementById('promptSubmissionForm');
+    const trainerSelect = document.getElementById('trainerSelect');
+    const promptsContainer = document.getElementById('promptsContainer');
+    const selectedPromptDetails = document.getElementById('selectedPromptDetails');
+    const selectedPromptTitle = document.getElementById('selectedPromptTitle');
+    const selectedPromptDescription = document.getElementById('selectedPromptDescription');
+    const selectedPromptRewards = document.getElementById('selectedPromptRewards');
+    const submissionUrl = document.getElementById('submissionUrl');
+    const submitButton = document.getElementById('submitButton');
+    const resultsSection = document.getElementById('resultsSection');
+    const calculationResults = document.getElementById('calculationResults');
+    const backToForm = document.getElementById('backToForm');
+
+    // Current prompt category
+    const promptCategory = '<%= category %>';
+
+    // Selected prompt ID
+    let selectedPromptId = null;
+
+    // Helper function to get category icon
+    function getCategoryIcon(category) {
+      const icons = {
+        'general': 'star',
+        'progression': 'trophy',
+        'legendary': 'crown',
+        'event': 'calendar-alt',
+        'monthly': 'calendar-day'
+      };
+      return icons[category] || 'question';
+    }
+
+    // Helper function to get category color
+    function getCategoryColor(category) {
+      const colors = {
+        'general': 'yellow-400',
+        'progression': 'blue-400',
+        'legendary': 'purple-400',
+        'event': 'red-400',
+        'monthly': 'green-400'
+      };
+      return colors[category] || 'gray-400';
+    }
+
+    // Load all trainers
+    async function loadAllTrainers() {
+      try {
+        const response = await fetch('/api/trainers/user');
+        const data = await response.json();
+
+        // Clear existing options
+        trainerSelect.innerHTML = '<option value="">-- Select Trainer --</option>';
+
+        // Check if data is an array (direct array response) or has a trainers property
+        const trainers = Array.isArray(data) ? data : (data.trainers || []);
+
+        console.log('Trainers loaded:', trainers);
+
+        if (trainers.length > 0) {
+          // Add trainer options
+          trainers.forEach(trainer => {
+            const option = document.createElement('option');
+            option.value = trainer.id;
+            option.textContent = `${trainer.name} (Level ${trainer.level || 1})`;
+            trainerSelect.appendChild(option);
+          });
+        } else {
+          console.error('No trainers found for this user');
+          promptsContainer.innerHTML = `
+            <div class="text-center py-4 text-gray-400 col-span-full">
+              <i class="fas fa-exclamation-circle text-2xl mb-2"></i>
+              <p>No trainers found for your account. Please create a trainer first.</p>
+            </div>
+          `;
+        }
+      } catch (error) {
+        console.error('Error loading trainers:', error);
+        promptsContainer.innerHTML = `
+          <div class="text-center py-4 text-gray-400 col-span-full">
+            <i class="fas fa-exclamation-circle text-2xl mb-2"></i>
+            <p>Error loading trainers: ${error.message || 'Unknown error'}</p>
+          </div>
+        `;
+      }
+    }
+
+    // Load available prompts for the selected trainer
+    async function loadAvailablePrompts(trainerId) {
+      try {
+        promptsContainer.innerHTML = `
+          <div class="text-center py-4 text-gray-400 col-span-full">
+            <i class="fas fa-spinner fa-spin text-2xl mb-2"></i>
+            <p>Loading available prompts...</p>
+          </div>
+        `;
+
+        const response = await fetch(`/api/prompt/available/${trainerId}/${promptCategory}`);
+        const data = await response.json();
+
+        if (data.success && data.prompts) {
+          // Clear container
+          promptsContainer.innerHTML = '';
+
+          if (data.prompts.length === 0) {
+            promptsContainer.innerHTML = `
+              <div class="text-center py-4 text-gray-400 col-span-full">
+                <i class="fas fa-exclamation-circle text-2xl mb-2"></i>
+                <p>No available prompts found for this trainer.</p>
+              </div>
+            `;
+            return;
+          }
+
+          // Add prompt cards
+          data.prompts.forEach(prompt => {
+            const card = document.createElement('div');
+            card.className = 'prompt-card relative p-3 bg-gray-700 hover:bg-gray-600 rounded-lg cursor-pointer transition-all transform hover:scale-105 flex flex-col';
+            card.dataset.promptId = prompt.prompt_id;
+
+            // Create a badge for repeatable prompts
+            const repeatableBadge = prompt.repeatable ?
+              `<div class="absolute top-1 right-1 bg-blue-500 text-xs text-white px-1 rounded-sm">↻</div>` : '';
+
+            // Create a badge for monthly prompts
+            const monthlyBadge = prompt.category === 'monthly' ?
+              `<div class="absolute top-1 left-1 bg-green-500 text-xs text-white px-1 rounded-sm">${prompt.month?.substring(0, 3) || ''}</div>` : '';
+
+            // Create a level requirement badge if applicable
+            const levelBadge = prompt.min_trainer_level > 0 ?
+              `<div class="absolute bottom-1 right-1 bg-purple-500 text-xs text-white px-1 rounded-sm">Lvl ${prompt.min_trainer_level}+</div>` : '';
+
+            // Create the selection indicator (hidden by default)
+            const selectionIndicator = `<div class="absolute inset-0 bg-amber-500 bg-opacity-20 rounded-lg border-2 border-amber-500 hidden selection-indicator"></div>`;
+
+            card.innerHTML = `
+              ${selectionIndicator}
+              ${repeatableBadge}
+              ${monthlyBadge}
+              ${levelBadge}
+              <div class="flex items-center mb-2">
+                <div class="w-6 h-6 rounded-full bg-gray-800 flex items-center justify-center mr-2">
+                  <i class="fas fa-${getCategoryIcon(prompt.category)} text-${getCategoryColor(prompt.category)} text-xs"></i>
+                </div>
+                <h3 class="font-medium text-amber-400">${prompt.title}</h3>
+              </div>
+              <p class="description text-gray-300 mb-2">${prompt.description}</p>
+            `;
+
+            // Add click event to select this prompt
+            card.addEventListener('click', () => selectPrompt(prompt));
+
+            promptsContainer.appendChild(card);
+          });
+        } else {
+          promptsContainer.innerHTML = `
+            <div class="text-center py-4 text-gray-400 col-span-full">
+              <i class="fas fa-exclamation-circle text-2xl mb-2"></i>
+              <p>Error loading prompts: ${data.message || 'Unknown error'}</p>
+            </div>
+          `;
+        }
+      } catch (error) {
+        console.error('Error loading prompts:', error);
+        promptsContainer.innerHTML = `
+          <div class="text-center py-4 text-gray-400 col-span-full">
+            <i class="fas fa-exclamation-circle text-2xl mb-2"></i>
+            <p>Error loading prompts. Please try again.</p>
+          </div>
+        `;
+      }
+    }
+
+    // Select a prompt
+    function selectPrompt(prompt) {
+      // Update selected prompt ID
+      selectedPromptId = prompt.prompt_id;
+
+      // Update prompt details
+      selectedPromptTitle.textContent = prompt.title;
+      selectedPromptDescription.textContent = prompt.description;
+
+      // Format rewards list
+      selectedPromptRewards.innerHTML = '';
+
+      if (prompt.reward_coins > 0) {
+        const li = document.createElement('li');
+        li.textContent = `${prompt.reward_coins} coins`;
+        selectedPromptRewards.appendChild(li);
+      }
+
+      if (prompt.reward_levels > 0) {
+        const li = document.createElement('li');
+        li.textContent = `${prompt.reward_levels} levels`;
+        selectedPromptRewards.appendChild(li);
+      }
+
+      if (prompt.reward_items) {
+        let items;
+        try {
+          items = typeof prompt.reward_items === 'string' ? JSON.parse(prompt.reward_items) : prompt.reward_items;
+
+          if (Array.isArray(items) && items.length > 0) {
+            const li = document.createElement('li');
+
+            // Process each item, handling both object and string formats
+            const itemTexts = items.map(item => {
+              // Handle string format: "Item Name;category;quantity"
+              if (typeof item === 'string') {
+                const parts = item.split(';');
+                if (parts.length >= 3) {
+                  return `${parts[2].trim()}x ${parts[0].trim()} (${parts[1].trim()})`;
+                } else if (parts.length === 2) {
+                  return `1x ${parts[0].trim()} (${parts[1].trim()})`;
+                } else {
+                  return `1x ${parts[0].trim()}`;
+                }
+              }
+              // Handle object format
+              else if (item.name) {
+                const quantity = item.quantity || 1;
+                const category = item.category ? ` (${item.category})` : '';
+                return `${quantity}x ${item.name}${category}`;
+              }
+              return '';
+            }).filter(text => text); // Remove empty strings
+
+            li.textContent = `Items: ${itemTexts.join(', ')}`;
+            selectedPromptRewards.appendChild(li);
+          }
+        } catch (e) {
+          console.error('Error parsing reward items:', e);
+        }
+      }
+
+      if (prompt.reward_random_items) {
+        let randomItems;
+        try {
+          randomItems = typeof prompt.reward_random_items === 'string' ? JSON.parse(prompt.reward_random_items) : prompt.reward_random_items;
+
+          if (randomItems && Object.keys(randomItems).length > 0) {
+            const li = document.createElement('li');
+            li.textContent = `Random items: ${Object.entries(randomItems).map(([category, quantity]) => `${quantity}x ${category}`).join(', ')}`;
+            selectedPromptRewards.appendChild(li);
+          }
+        } catch (e) {
+          console.error('Error parsing random reward items:', e);
+        }
+      }
+
+      if (prompt.reward_monster_params) {
+        const li = document.createElement('li');
+        li.textContent = 'Random monster';
+        selectedPromptRewards.appendChild(li);
+      }
+
+      // Show prompt details and submit button
+      selectedPromptDetails.classList.remove('hidden');
+      submitButton.classList.remove('hidden');
+
+      // Update selection indicators on prompt cards
+      document.querySelectorAll('.prompt-card').forEach(card => {
+        // Find the selection indicator in this card
+        const indicator = card.querySelector('.selection-indicator');
+
+        if (parseInt(card.dataset.promptId) === selectedPromptId) {
+          // Show the selection indicator
+          if (indicator) indicator.classList.remove('hidden');
+          // Add a subtle scale effect
+          card.classList.add('scale-105');
+          card.classList.add('shadow-lg');
+          card.classList.add('z-10');
+        } else {
+          // Hide the selection indicator
+          if (indicator) indicator.classList.add('hidden');
+          // Remove the scale effect
+          card.classList.remove('scale-105');
+          card.classList.remove('shadow-lg');
+          card.classList.remove('z-10');
+        }
+      });
+    }
+
+    // Trainer select change event
+    trainerSelect.addEventListener('change', function() {
+      const trainerId = this.value;
+
+      if (trainerId) {
+        loadAvailablePrompts(trainerId);
+      } else {
+        promptsContainer.innerHTML = `
+          <div class="text-center py-4 text-gray-400 col-span-full">
+            <p>Please select a trainer to view available prompts.</p>
+          </div>
+        `;
+        selectedPromptDetails.classList.add('hidden');
+        submitButton.classList.add('hidden');
+      }
+    });
+
+    // Form submission
+    promptSubmissionForm.addEventListener('submit', async function(e) {
+      e.preventDefault();
+
+      // Get form data
+      const trainerId = trainerSelect.value;
+      const promptId = selectedPromptId;
+      const artworkUrl = submissionUrl.value;
+
+      // Validate form data
+      if (!trainerId || !promptId || !artworkUrl) {
+        alert('Please fill in all required fields');
+        return;
+      }
+
+      try {
+        // Submit the form
+        const response = await fetch('/api/prompt/submit', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            trainerId: parseInt(trainerId),
+            promptId: parseInt(promptId),
+            submissionUrl: artworkUrl
+          })
+        });
+
+        const result = await response.json();
+        console.log('Prompt submission result:', result);
+
+        if (result.success) {
+          // Hide form and show results
+          promptSubmissionForm.classList.add('hidden');
+          resultsSection.classList.remove('hidden');
+
+          // Display results
+          let html = `<h3 class="font-semibold mb-2">Submission Successful!</h3>`;
+
+          // Display rewards
+          html += `<div class="p-4 bg-gray-700 rounded-lg mb-4">`;
+
+          if (result.calculation.coins > 0) {
+            html += `<p class="mb-2"><i class="fas fa-coins text-yellow-400 mr-2"></i> ${result.calculation.coins} coins added to your balance</p>`;
+          }
+
+          if (result.calculation.levels > 0) {
+            html += `<p class="mb-2"><i class="fas fa-arrow-up text-green-400 mr-2"></i> ${result.calculation.levels} levels gained</p>`;
+          }
+
+          // Check for items
+          if (result.calculation.items && result.calculation.items.length > 0) {
+            html += `<p class="mb-2"><i class="fas fa-box-open text-purple-400 mr-2"></i> Items received:</p>`;
+            html += `<ul class="list-disc pl-5 mb-2">`;
+
+            // Process each item
+            result.calculation.items.forEach(item => {
+              // Make sure item has a name and quantity
+              const itemName = item.name || 'Unknown Item';
+              const itemQuantity = item.quantity || 1;
+
+              html += `<li>${itemQuantity}x ${itemName}</li>`;
+            });
+
+            html += `</ul>`;
+          }
+
+          // Check for monster
+          if (result.calculation.monster) {
+            const monsterName = result.calculation.monster.name || result.calculation.monster.species || 'New Monster';
+            const monsterType = result.calculation.monster.type1 || '';
+            const monsterType2 = result.calculation.monster.type2 ? `/${result.calculation.monster.type2}` : '';
+
+            html += `<p class="mb-2"><i class="fas fa-dragon text-blue-400 mr-2"></i> New monster received: `;
+            html += `<span class="font-semibold">${monsterName}</span>`;
+
+            if (monsterType) {
+              html += ` <span class="text-sm text-gray-300">(${monsterType}${monsterType2})</span>`;
+            }
+
+            html += `</p>`;
+          }
+
+          html += `</div>`;
+
+          calculationResults.innerHTML = html;
+        } else {
+          alert('Error: ' + (result.message || 'Unknown error'));
+        }
+      } catch (error) {
+        console.error('Error submitting prompt:', error);
+        alert('Error submitting prompt. Please try again.');
+      }
+    });
+
+    // Back to form button
+    backToForm.addEventListener('click', function() {
+      // Reset form
+      promptSubmissionForm.reset();
+      selectedPromptDetails.classList.add('hidden');
+      submitButton.classList.add('hidden');
+      selectedPromptId = null;
+
+      // Clear prompt selection
+      document.querySelectorAll('.prompt-card').forEach(card => {
+        // Hide the selection indicator
+        const indicator = card.querySelector('.selection-indicator');
+        if (indicator) indicator.classList.add('hidden');
+
+        // Remove the scale effect
+        card.classList.remove('scale-105');
+        card.classList.remove('shadow-lg');
+        card.classList.remove('z-10');
+      });
+
+      // Show form and hide results
+      promptSubmissionForm.classList.remove('hidden');
+      resultsSection.classList.add('hidden');
+    });
+
+    // Load all trainers when the page loads
+    loadAllTrainers();
+  });
+</script>

@@ -1,0 +1,152 @@
+<% /* Set the title and other variables for the layout */ %>
+<% title = 'Mission History' %>
+
+<style>
+.mission-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+}
+
+.mission-table th, .mission-table td {
+    padding: 0.75rem;
+    text-align: left;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.mission-table th {
+    background-color: #f8fafc;
+    font-weight: bold;
+}
+
+.mission-table tr:hover {
+    background-color: #f1f5f9;
+}
+
+.mission-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.btn-view {
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    text-decoration: none;
+    font-size: 0.875rem;
+    background-color: #3b82f6;
+    color: white;
+}
+
+.status-claimed {
+    background-color: #10b981;
+    color: white;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    font-size: 0.75rem;
+    font-weight: bold;
+}
+
+.status-unclaimed {
+    background-color: #f59e0b;
+    color: white;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    font-size: 0.75rem;
+    font-weight: bold;
+}
+
+.alert {
+    padding: 1rem;
+    border-radius: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.alert-success {
+    background-color: rgba(52, 211, 153, 0.2);
+    border: 1px solid rgba(52, 211, 153, 0.5);
+    color: #10b981;
+}
+
+.alert-error {
+    background-color: rgba(239, 68, 68, 0.2);
+    border: 1px solid rgba(239, 68, 68, 0.5);
+    color: #ef4444;
+}
+</style>
+
+<div class="container mx-auto px-4 py-8">
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="text-3xl font-bold">Mission History</h1>
+        <a href="/admin/missions" class="btn-primary">
+            <i class="fas fa-arrow-left mr-2"></i> Back to Missions
+        </a>
+    </div>
+
+    <% if (typeof message !== 'undefined' && message) { %>
+    <div class="alert alert-<%= messageType %> mb-6">
+        <%= message %>
+    </div>
+    <% } %>
+
+    <div class="card">
+        <div class="card-header">
+            <h2 class="text-xl font-bold">Completed Missions</h2>
+        </div>
+        <div class="card-body">
+            <% if (missionHistory && missionHistory.length > 0) { %>
+            <table class="mission-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Trainer</th>
+                        <th>Mission</th>
+                        <th>Completed</th>
+                        <th>Rewards</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% missionHistory.forEach(function(mission) { %>
+                    <tr>
+                        <td><%= mission.id %></td>
+                        <td><%= mission.trainer_name %></td>
+                        <td><%= mission.name %></td>
+                        <td><%= new Date(mission.completed_at).toLocaleDateString() %></td>
+                        <td>
+                            <div>Levels: <%= mission.level_rewards %></div>
+                            <div>Coins: <%= mission.coin_rewards %></div>
+                            <% if (mission.item_rewards && mission.item_rewards.length > 0) { %>
+                            <div>Items: <%= mission.item_rewards.length %></div>
+                            <% } %>
+                        </td>
+                        <td>
+                            <% if (mission.rewards_claimed) { %>
+                            <span class="status-claimed">Claimed</span>
+                            <% } else { %>
+                            <span class="status-unclaimed">Unclaimed</span>
+                            <% } %>
+                        </td>
+                        <td class="mission-actions">
+                            <a href="/trainers/<%= mission.user_id %>" class="btn-view" target="_blank">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    <% }); %>
+                </tbody>
+            </table>
+            <% } else { %>
+            <div class="text-center py-8">
+                <p class="text-gray-500">No mission history found.</p>
+            </div>
+            <% } %>
+        </div>
+    </div>
+
+    <div class="mt-6">
+        <a href="/admin/missions" class="btn-secondary">
+            <i class="fas fa-arrow-left mr-2"></i> Back to Mission Management
+        </a>
+    </div>
+</div>

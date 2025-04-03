@@ -317,6 +317,27 @@ function getContentCategories() {
       name: 'Locations',
       path: 'locations',
       structure: getDirectoryStructure(path.join(contentPath, 'locations'), '')
+    },
+    events: {
+      name: 'Events',
+      path: 'events',
+      structure: {
+        directories: [
+          {
+            name: 'Current Events',
+            path: 'current',
+            url: 'current',
+            children: getDirectoryStructure(path.join(contentPath, 'events', 'current'), 'current')
+          },
+          {
+            name: 'Past Events',
+            path: 'past',
+            url: 'past',
+            children: getDirectoryStructure(path.join(contentPath, 'events', 'past'), 'past')
+          }
+        ],
+        files: []
+      }
     }
   };
 

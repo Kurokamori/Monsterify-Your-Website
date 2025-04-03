@@ -69,7 +69,7 @@ document.addEventListener('DOMContentLoaded', function() {
       tendButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-3"></i> <span class="garden-btn-text">Starting...</span>';
 
       // Send request to start activity
-      const response = await fetch('/town/visit/start-activity', {
+      const response = await fetch('/town/activities/start', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -107,8 +107,41 @@ document.addEventListener('DOMContentLoaded', function() {
       harvestButton.classList.add('opacity-70');
       harvestButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-3"></i> <span class="garden-btn-text">Harvesting...</span>';
 
-      // Navigate to the harvest route
-      window.location.href = '/town/visit/garden/harvest';
+      // Call the new API endpoint
+      const response = await fetch('/api/garden/harvest', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        // Show success message
+        showNotification(`Garden harvested successfully! You received ${data.rewards.length} rewards.`, 'success');
+
+        // Log the rewards for debugging
+        console.log('Garden rewards:', data.rewards);
+
+        // Store rewards in localStorage for backup
+        console.log('Storing rewards in localStorage:', data.rewards);
+        localStorage.setItem('gardenRewards', JSON.stringify(data.rewards));
+        localStorage.setItem('gardenPointsHarvested', data.pointsHarvested || 0);
+
+        // Also store individual reward IDs for easier lookup
+        if (data.rewards && data.rewards.length > 0) {
+          data.rewards.forEach(reward => {
+            if (reward.id) {
+              localStorage.setItem(`garden_reward_${reward.id}`, JSON.stringify(reward));
+            }
+          });
+        }
+
+        // Instead of redirecting to /town/rewards, redirect to the direct garden harvest route
+        // This will ensure the rewards are properly generated and displayed
+        window.location.href = '/town/visit/garden/harvest';
+      } else {
+        throw new Error(data.message || 'Error harvesting garden');
+      }
     } catch (error) {
       console.error('Error harvesting garden:', error);
 

@@ -1,0 +1,189 @@
+
+<div class="container mx-auto px-4 py-8">
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="text-3xl font-bold">Boss Reward Templates</h1>
+        <a href="/admin/bosses/reward-templates/create" class="btn-primary">
+            <i class="fas fa-plus mr-2"></i> Create New Template
+        </a>
+    </div>
+
+    <% if (typeof message !== 'undefined' && message) { %>
+    <div class="alert alert-<%= messageType || 'success' %> mb-6">
+        <%= message %>
+    </div>
+    <% } %>
+
+    <div class="card">
+        <div class="card-header">
+            <h2 class="text-xl font-bold">All Reward Templates</h2>
+        </div>
+        <div class="card-body">
+            <% if (templates && templates.length > 0) { %>
+            <table class="template-table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Description</th>
+                        <th>Coins</th>
+                        <th>Levels</th>
+                        <th>Items</th>
+                        <th>Monsters</th>
+                        <th>Top Damager</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% templates.forEach(function(template) { %>
+                    <tr>
+                        <td><%= template.name %></td>
+                        <td><%= template.description || 'No description' %></td>
+                        <td><%= template.coins || 0 %></td>
+                        <td><%= template.levels || 0 %></td>
+                        <td>
+                            <% if (template.items && template.items.items && template.items.items.length > 0) { %>
+                                <%= template.items.items.length %> items
+                            <% } else { %>
+                                No items
+                            <% } %>
+                        </td>
+                        <td>
+                            <% if (template.monsters && template.monsters.monsters && template.monsters.monsters.length > 0) { %>
+                                <%= template.monsters.monsters.length %> monsters
+                            <% } else { %>
+                                No monsters
+                            <% } %>
+                        </td>
+                        <td>
+                            <% if (template.is_top_damager) { %>
+                                <span class="status-active">Yes</span>
+                            <% } else { %>
+                                <span class="status-inactive">No</span>
+                            <% } %>
+                        </td>
+                        <td class="template-actions">
+                            <a href="/admin/bosses/reward-templates/edit/<%= template.template_id %>" class="btn-edit">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <a href="/admin/bosses/reward-templates/delete/<%= template.template_id %>" class="btn-delete">
+                                <i class="fas fa-trash"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    <% }); %>
+                </tbody>
+            </table>
+            <% } else { %>
+            <div class="text-center py-8">
+                <p class="text-gray-500">No reward templates found. Create your first template!</p>
+            </div>
+            <% } %>
+        </div>
+    </div>
+</div>
+
+<style>
+    .template-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .template-table th,
+    .template-table td {
+        padding: 0.75rem;
+        text-align: left;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .template-table th {
+        background-color: rgba(0, 0, 0, 0.2);
+        font-weight: 600;
+    }
+
+    .template-table tr:hover {
+        background-color: rgba(255, 255, 255, 0.05);
+    }
+
+    .template-actions {
+        display: flex;
+        gap: 0.5rem;
+    }
+
+    .btn-edit,
+    .btn-delete,
+    .btn-view {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 2rem;
+        height: 2rem;
+        border-radius: 0.25rem;
+        transition: background-color 0.2s;
+    }
+
+    .btn-edit {
+        background-color: rgba(59, 130, 246, 0.2);
+        color: #3b82f6;
+    }
+
+    .btn-edit:hover {
+        background-color: rgba(59, 130, 246, 0.3);
+    }
+
+    .btn-delete {
+        background-color: rgba(239, 68, 68, 0.2);
+        color: #ef4444;
+    }
+
+    .btn-delete:hover {
+        background-color: rgba(239, 68, 68, 0.3);
+    }
+
+    .btn-view {
+        background-color: rgba(16, 185, 129, 0.2);
+        color: #10b981;
+    }
+
+    .btn-view:hover {
+        background-color: rgba(16, 185, 129, 0.3);
+    }
+
+    .status-active {
+        display: inline-block;
+        padding: 0.25rem 0.5rem;
+        background-color: rgba(16, 185, 129, 0.2);
+        color: #10b981;
+        border-radius: 0.25rem;
+        font-size: 0.75rem;
+        font-weight: 600;
+    }
+
+    .status-inactive {
+        display: inline-block;
+        padding: 0.25rem 0.5rem;
+        background-color: rgba(107, 114, 128, 0.2);
+        color: #9ca3af;
+        border-radius: 0.25rem;
+        font-size: 0.75rem;
+        font-weight: 600;
+    }
+
+    .alert {
+        padding: 1rem;
+        border-radius: 0.375rem;
+        margin-bottom: 1rem;
+    }
+
+    .alert-success {
+        background-color: rgba(16, 185, 129, 0.2);
+        border: 1px solid rgba(16, 185, 129, 0.5);
+        color: #10b981;
+    }
+
+    .alert-error {
+        background-color: rgba(239, 68, 68, 0.2);
+        border: 1px solid rgba(239, 68, 68, 0.5);
+        color: #ef4444;
+    }
+</style>
+
+

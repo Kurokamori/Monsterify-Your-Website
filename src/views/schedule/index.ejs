@@ -262,7 +262,7 @@
                                             <div class="template-tasks">
                                                 <h4 class="text-sm font-semibold mb-2">Tasks in this template:</h4>
                                                 <ul class="template-task-list">
-                                                    <% const tasks = JSON.parse(template.tasks); %>
+                                                    <% const tasks = typeof template.tasks === 'string' ? JSON.parse(template.tasks) : template.tasks; %>
                                                     <% if (tasks && tasks.length > 0) { %>
                                                         <% tasks.forEach(task => { %>
                                                             <li class="template-task-item">
@@ -312,6 +312,7 @@
 </div>
 
 <!-- Modals -->
+<%- include('./reward-summary-modal.ejs') %>
 <!-- Task Modal -->
 <div id="taskModal" class="modal">
     <div class="modal-content">
@@ -1180,6 +1181,76 @@ console.log('Schedule page script loading...');
 document.addEventListener('DOMContentLoaded', function() {
     console.log('DOM content loaded');
     try {
+    // Helper function to show reward summary modal
+    function showRewardSummaryModal(result) {
+        const rewardSummaryModal = document.getElementById('rewardSummaryModal');
+        const closeSummaryBtn = document.getElementById('closeSummaryBtn');
+
+        if (result.rewards) {
+            // Update main rewards
+            document.getElementById('reward-summary-coins').textContent = result.rewards.coin_reward > 0 ? `+${result.rewards.coin_reward}` : '+0';
+            document.getElementById('reward-summary-levels').textContent = result.rewards.level_reward > 0 ? `+${result.rewards.level_reward}` : '+0';
+
+            // Update additional rewards if available
+            if (result.additionalRewards) {
+                // Mission progress
+                if (result.additionalRewards.missionProgress) {
+                    const missionPoints = result.additionalRewards.missionProgress.progressAdded || 0;
+                    document.getElementById('reward-summary-mission-points').textContent = `+${missionPoints} points`;
+                    document.getElementById('reward-summary-mission-text').textContent = result.additionalRewards.flavorText.split('(+')[0] || '';
+                } else {
+                    document.getElementById('reward-summary-mission-points').textContent = '+0 points';
+                    document.getElementById('reward-summary-mission-text').textContent = 'No active mission.';
+                }
+
+                // Garden points
+                if (result.additionalRewards.gardenPoints) {
+                    document.getElementById('reward-summary-garden-points').textContent = `+${result.additionalRewards.gardenPoints} points`;
+
+                    // Extract garden flavor text
+                    const flavorText = result.additionalRewards.flavorText;
+                    const gardenTextMatch = flavorText.match(/Your garden.*?\(\+\d+ garden points\)/i);
+                    document.getElementById('reward-summary-garden-text').textContent = gardenTextMatch ? gardenTextMatch[0].split('(+')[0].trim() : '';
+                } else {
+                    document.getElementById('reward-summary-garden-points').textContent = '+0 points';
+                    document.getElementById('reward-summary-garden-text').textContent = '';
+                }
+
+                // Boss damage
+                if (result.additionalRewards.bossDamage && result.additionalRewards.bossDamage.success) {
+                    const bossDamage = result.additionalRewards.bossDamage.damageDealt || 0;
+                    document.getElementById('reward-summary-boss-damage').textContent = `+${bossDamage} damage`;
+
+                    // Extract boss flavor text
+                    const flavorText = result.additionalRewards.flavorText;
+                    const bossTextMatch = flavorText.match(/[^.]*boss[^.]*\./i);
+                    document.getElementById('reward-summary-boss-text').textContent = bossTextMatch ? bossTextMatch[0].trim() : '';
+                } else {
+                    document.getElementById('reward-summary-boss-damage').textContent = '+0 damage';
+                    document.getElementById('reward-summary-boss-text').textContent = 'No active boss event.';
+                }
+            } else {
+                // No additional rewards
+                document.getElementById('reward-summary-mission-points').textContent = '+0 points';
+                document.getElementById('reward-summary-garden-points').textContent = '+0 points';
+                document.getElementById('reward-summary-boss-damage').textContent = '+0 damage';
+                document.getElementById('reward-summary-mission-text').textContent = '';
+                document.getElementById('reward-summary-garden-text').textContent = '';
+                document.getElementById('reward-summary-boss-text').textContent = '';
+            }
+
+            // Show the modal
+            rewardSummaryModal.style.display = 'block';
+
+            // Add event listener to close button
+            if (closeSummaryBtn) {
+                closeSummaryBtn.addEventListener('click', () => {
+                    rewardSummaryModal.style.display = 'none';
+                });
+            }
+        }
+    }
+
     // DOM Elements
     const trainerSelect = document.getElementById('trainerSelect');
     const dateSelect = document.getElementById('dateSelect');
@@ -1623,8 +1694,13 @@ document.addEventListener('DOMContentLoaded', function() {
                         });
 
                         if (response.ok) {
+                            const result = await response.json();
+
                             // Mark task as completed in UI
                             taskItem.classList.add('completed');
+
+                            // Show reward summary modal
+                            showRewardSummaryModal(result);
                         } else {
                             checkbox.checked = false;
                             alert('Failed to complete task');
@@ -1807,6 +1883,9 @@ document.addEventListener('DOMContentLoaded', function() {
                                 streakElement.innerHTML = `<i class="fas fa-fire" title="Current Streak"></i> ${result.habit.streak}
                                     <span class="text-xs ml-1">(Best: ${result.habit.longest_streak})</span>`;
                             }
+
+                            // Show reward summary modal
+                            showRewardSummaryModal(result);
                         }
                     } else {
                         alert('Failed to complete habit');
@@ -2511,18 +2590,8 @@ document.addEventListener('DOMContentLoaded', function() {
                         }
                     }
 
-                    // Show reward notification
-                    if (result.rewards) {
-                        let rewardMessage = 'Rewards: ';
-                        if (result.rewards.level_reward > 0) {
-                            rewardMessage += `+${result.rewards.level_reward} XP`;
-                        }
-                        if (result.rewards.coin_reward > 0) {
-                            rewardMessage += `${result.rewards.level_reward > 0 ? ', ' : ''}+${result.rewards.coin_reward} coins`;
-                        }
-
-                        alert(`${itemType.charAt(0).toUpperCase() + itemType.slice(1)} completed! ${rewardMessage}`);
-                    }
+                    // Show reward summary modal
+                    showRewardSummaryModal(result);
                 } else {
                     const error = await response.json();
                     alert(`Error: ${error.error || `Failed to complete ${itemType}`}`);

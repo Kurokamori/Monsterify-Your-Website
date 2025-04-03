@@ -1,4 +1,4 @@
-const pool = require('../config/database');
+const pool = require('../db');
 const Pokemon = require('./Pokemon');
 const Digimon = require('./Digimon');
 const Yokai = require('./Yokai');
@@ -15,30 +15,57 @@ class MonthlyAdopt {
    */
   static async getByYearAndMonth(year, month, page = 1, limit = 10) {
     try {
+      console.log(`MonthlyAdopt.getByYearAndMonth called with year=${year}, month=${month}, page=${page}, limit=${limit}`);
+
       const offset = (page - 1) * limit;
-      
+
       // Get total count
       const countQuery = 'SELECT COUNT(*) FROM monthly_adopts WHERE year = $1 AND month = $2';
       const countResult = await pool.query(countQuery, [year, month]);
       const total = parseInt(countResult.rows[0].count);
 
+      console.log(`Total count for ${year}-${month}: ${total}`);
+
       // Get adopts with pagination
       const query = `
-        SELECT * FROM monthly_adopts 
-        WHERE year = $1 AND month = $2 
+        SELECT a.*,
+        (SELECT COUNT(*) FROM adoption_claims WHERE adopt_id = a.id) AS adoption_count
+        FROM monthly_adopts a
+        WHERE year = $1 AND month = $2
         ORDER BY id ASC
         LIMIT $3 OFFSET $4
       `;
-      
+
       const result = await pool.query(query, [year, month, limit, offset]);
+
+      console.log(`Retrieved ${result.rows.length} adopts for ${year}-${month}`);
+
+      // Calculate total pages
+      const totalPages = Math.ceil(total / limit);
+      console.log(`Total pages calculated: ${totalPages}`);
 
       return {
         adopts: result.rows,
-        total
+        total,
+        pagination: {
+          currentPage: page,
+          totalPages: totalPages,
+          total: total,
+          limit
+        }
       };
     } catch (error) {
       console.error('Error getting adopts by year and month:', error);
-      throw error;
+      return {
+        adopts: [],
+        total: 0,
+        pagination: {
+          currentPage: page,
+          totalPages: 0,
+          total: 0,
+          limit
+        }
+      };
     }
   }
 
@@ -50,6 +77,8 @@ class MonthlyAdopt {
    */
   static async getAll(page = 1, limit = 10) {
     try {
+      console.log(`MonthlyAdopt.getAll called with page=${page}, limit=${limit}`);
+
       // Calculate offset
       const offset = (page - 1) * limit;
 
@@ -57,6 +86,8 @@ class MonthlyAdopt {
       const countQuery = 'SELECT COUNT(*) FROM monthly_adopts';
       const countResult = await pool.query(countQuery);
       const totalCount = parseInt(countResult.rows[0].count);
+
+      console.log(`Total count of all monthly adopts: ${totalCount}`);
 
       // Get adopts for the current page
       const query = `
@@ -68,11 +99,16 @@ class MonthlyAdopt {
       `;
       const result = await pool.query(query, [limit, offset]);
 
+      console.log(`Retrieved ${result.rows.length} adopts for page ${page}`);
+
       // Calculate total pages
       const totalPages = Math.ceil(totalCount / limit);
 
+      console.log(`Total pages calculated: ${totalPages}`);
+
       return {
         adopts: result.rows,
+        total: totalCount,
         pagination: {
           total: totalCount,
           page,
@@ -84,6 +120,7 @@ class MonthlyAdopt {
       console.error('Error getting all monthly adopts:', error);
       return {
         adopts: [],
+        total: 0,
         pagination: {
           total: 0,
           page,
@@ -124,12 +161,12 @@ class MonthlyAdopt {
   static async create(adoptData) {
     try {
       const query = `
-        INSERT INTO monthly_adopts 
+        INSERT INTO monthly_adopts
         (year, month, species1, species2, species3, type1, type2, type3, type4, type5, attribute)
         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
         RETURNING *
       `;
-      
+
       const values = [
         adoptData.year,
         adoptData.month,
@@ -246,12 +283,12 @@ class MonthlyAdopt {
   static async generateMonthlyAdopts(year, month, count = 10) {
     try {
       console.log(`Checking for existing adopts for ${year}-${month}`);
-      
+
       // Check if adopts already exist for this month
       const existingQuery = 'SELECT COUNT(*) FROM monthly_adopts WHERE year = $1 AND month = $2';
       const existingResult = await pool.query(existingQuery, [year, month]);
       const existingCount = parseInt(existingResult.rows[0].count);
-      
+
       console.log(`Found ${existingCount} existing adopts`);
 
       if (existingCount >= count) {
@@ -408,6 +445,29 @@ class MonthlyAdopt {
     } catch (error) {
       console.error('Error initializing monthly adopts tables:', error);
       return false;
+    }
+  }
+
+  /**
+   * Get list of months with adoption data
+   * @returns {Promise<Array>} - Array of objects with year and month
+   */
+  static async getMonthsWithData() {
+    try {
+      // Query to get distinct year and month combinations
+      const query = `
+        SELECT DISTINCT year, month
+        FROM monthly_adopts
+        ORDER BY year DESC, month DESC
+      `;
+
+      const result = await pool.query(query);
+      console.log(`Found ${result.rows.length} months with adoption data`);
+
+      return result.rows;
+    } catch (error) {
+      console.error('Error getting months with adoption data:', error);
+      return [];
     }
   }
 }

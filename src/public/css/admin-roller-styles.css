@@ -1,0 +1,363 @@
+/**
+ * Admin Roller Styles
+ * Styles for the monster and item roller interfaces
+ */
+
+/* Common Styles */
+.form-section-subtitle {
+  font-size: 1.1rem;
+  font-weight: bold;
+  margin-bottom: 0.75rem;
+  color: #3498db;
+}
+
+.config-group {
+  margin-bottom: 1rem;
+}
+
+.config-label, .filter-label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: bold;
+}
+
+.filter-label {
+  font-size: 0.9rem;
+}
+
+.range-with-value {
+  display: flex;
+  align-items: center;
+}
+
+.range-slider {
+  flex: 1;
+  margin-right: 0.5rem;
+}
+
+.checkbox-group {
+  display: flex;
+  gap: 1rem;
+}
+
+.checkbox-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.filter-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+/* Multi-select styles */
+select[multiple] {
+  height: auto;
+  min-height: 120px;
+  padding: 0.5rem;
+  overflow-y: auto;
+}
+
+select[multiple] option {
+  padding: 0.5rem;
+  margin-bottom: 0.25rem;
+  border-radius: 0.25rem;
+}
+
+select[multiple] option:checked {
+  background-color: #3498db;
+  color: white;
+}
+
+select[multiple] option:hover {
+  background-color: #f0f0f0;
+}
+
+.btn-toggle, .btn-refresh {
+  background-color: #7f8c8d;
+  color: white;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  font-size: 0.875rem;
+  cursor: pointer;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.btn-toggle:hover, .btn-refresh:hover {
+  background-color: #95a5a6;
+}
+
+.btn-preview, .btn-generate {
+  background-color: #3498db;
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 0.25rem;
+  font-size: 0.875rem;
+  cursor: pointer;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-right: 0.5rem;
+}
+
+.btn-preview:hover {
+  background-color: #2980b9;
+}
+
+.btn-generate {
+  background-color: #2ecc71;
+}
+
+.btn-generate:hover {
+  background-color: #27ae60;
+}
+
+.preview-section {
+  margin: 1.5rem 0;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.preview-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  background-color: rgba(0, 0, 0, 0.05);
+  border-radius: 0.5rem;
+  color: #7f8c8d;
+}
+
+.preview-placeholder i {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.preview-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  background-color: rgba(0, 0, 0, 0.05);
+  border-radius: 0.5rem;
+}
+
+.preview-loading i {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+  color: #3498db;
+}
+
+.preview-note {
+  font-size: 0.8rem;
+  color: #7f8c8d;
+  font-style: italic;
+  margin-top: 0.5rem;
+  text-align: center;
+}
+
+.advanced-options {
+  margin-top: 1rem;
+  padding: 1rem;
+  background-color: rgba(0, 0, 0, 0.03);
+  border-radius: 0.5rem;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+/* Monster Roller Specific Styles */
+.monster-roller-ui {
+  margin-bottom: 2rem;
+}
+
+.monster-config-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+.monster-preview {
+  margin-top: 1rem;
+  min-height: 150px;
+}
+
+.preview-monster {
+  background-color: rgba(0, 0, 0, 0.05);
+  border-radius: 0.5rem;
+  padding: 1rem;
+}
+
+.preview-monster-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.preview-monster-header h3 {
+  margin: 0;
+  font-size: 1.25rem;
+}
+
+.preview-monster-type {
+  background-color: #3498db;
+  color: white;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  font-size: 0.75rem;
+}
+
+.preview-monster-details {
+  margin-top: 0.5rem;
+}
+
+.preview-monster-details p {
+  margin: 0.25rem 0;
+}
+
+/* Item Roller Specific Styles */
+.random-item-row.enhanced {
+  display: grid;
+  grid-template-columns: auto 1fr 1fr auto;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+  align-items: center;
+}
+
+.category-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  background-color: rgba(0, 0, 0, 0.05);
+  border-radius: 50%;
+}
+
+.category-icon i {
+  font-size: 1rem;
+  color: #3498db;
+}
+
+.quick-templates {
+  margin-bottom: 1rem;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+.templates-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  background-color: rgba(0, 0, 0, 0.05);
+  font-weight: bold;
+}
+
+.templates-content {
+  padding: 1rem;
+}
+
+.template-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.template-button {
+  background-color: #3498db;
+  color: white;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.25rem;
+  font-size: 0.875rem;
+  cursor: pointer;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.template-button:hover {
+  background-color: #2980b9;
+}
+
+.template-button[data-template="clear"] {
+  background-color: #e74c3c;
+}
+
+.template-button[data-template="clear"]:hover {
+  background-color: #c0392b;
+}
+
+.item-preview-container {
+  margin-top: 1.5rem;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+.preview-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  background-color: rgba(0, 0, 0, 0.05);
+  font-weight: bold;
+}
+
+.item-preview {
+  padding: 1rem;
+  min-height: 100px;
+}
+
+.preview-items {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.preview-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  background-color: rgba(0, 0, 0, 0.03);
+  border-radius: 0.5rem;
+}
+
+.preview-item-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  background-color: rgba(0, 0, 0, 0.05);
+  border-radius: 50%;
+}
+
+.preview-item-icon i {
+  font-size: 1.25rem;
+  color: #3498db;
+}
+
+.preview-item-details {
+  flex: 1;
+}
+
+.preview-item-name {
+  font-weight: bold;
+  margin-bottom: 0.25rem;
+}
+
+.preview-item-rarity {
+  font-size: 0.8rem;
+  color: #7f8c8d;
+}

@@ -1,0 +1,128 @@
+
+<div class="container mx-auto px-4 py-8">
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="text-3xl font-bold">Delete Boss Reward Template</h1>
+        <a href="/admin/bosses/reward-templates" class="btn-secondary">
+            <i class="fas fa-arrow-left mr-2"></i> Back to Templates
+        </a>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h2 class="text-xl font-bold">Confirm Deletion</h2>
+        </div>
+        <div class="card-body">
+            <div class="alert alert-warning mb-6">
+                <i class="fas fa-exclamation-triangle mr-2"></i>
+                <span>Warning: This action cannot be undone. The template will be permanently deleted.</span>
+            </div>
+
+            <div class="template-details mb-6">
+                <h3 class="text-lg font-bold mb-2"><%= template.name %></h3>
+                <p class="text-gray-300 mb-4"><%= template.description || 'No description' %></p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <h4 class="font-bold text-sm uppercase text-gray-400">Coins</h4>
+                        <p><%= template.coins || 0 %></p>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-sm uppercase text-gray-400">Levels</h4>
+                        <p><%= template.levels || 0 %></p>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <h4 class="font-bold text-sm uppercase text-gray-400 mb-2">Items</h4>
+                    <% if (template.items && template.items.items && template.items.items.length > 0) { %>
+                        <ul class="list-disc list-inside">
+                            <% template.items.items.forEach(function(item) { %>
+                                <li><%= item.name %> (x<%= item.quantity || 1 %>)</li>
+                            <% }); %>
+                        </ul>
+                    <% } else { %>
+                        <p class="text-gray-500">No items</p>
+                    <% } %>
+                </div>
+
+                <div>
+                    <h4 class="font-bold text-sm uppercase text-gray-400 mb-2">Monsters</h4>
+                    <% if (template.monsters && template.monsters.monsters && template.monsters.monsters.length > 0) { %>
+                        <ul class="list-disc list-inside">
+                            <% template.monsters.monsters.forEach(function(monster) { %>
+                                <li><%= monster.name %> <%= monster.is_special ? '(Special)' : '' %></li>
+                            <% }); %>
+                        </ul>
+                    <% } else { %>
+                        <p class="text-gray-500">No monsters</p>
+                    <% } %>
+                </div>
+            </div>
+
+            <form action="/admin/bosses/reward-templates/delete/<%= template.template_id %>" method="POST" class="flex justify-end space-x-4">
+                <a href="/admin/bosses/reward-templates" class="btn-secondary">
+                    Cancel
+                </a>
+                <button type="submit" class="btn-danger">
+                    <i class="fas fa-trash mr-2"></i> Delete Template
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    .alert {
+        padding: 1rem;
+        border-radius: 0.375rem;
+    }
+
+    .alert-warning {
+        background-color: rgba(245, 158, 11, 0.2);
+        border: 1px solid rgba(245, 158, 11, 0.5);
+        color: #f59e0b;
+    }
+
+    .template-details {
+        background-color: rgba(31, 41, 55, 0.5);
+        border-radius: 0.5rem;
+        padding: 1.5rem;
+        border: 1px solid rgba(75, 85, 99, 0.5);
+    }
+
+    .btn-secondary {
+        background-color: rgba(255, 255, 255, 0.1);
+        color: var(--text-color, #d7ddf3);
+        padding: 0.5rem 1rem;
+        border-radius: 0.375rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: background-color 0.2s;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        text-align: center;
+        display: inline-block;
+    }
+
+    .btn-secondary:hover {
+        background-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .btn-danger {
+        background-color: rgba(239, 68, 68, 0.8);
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 0.375rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: background-color 0.2s;
+        border: none;
+        text-align: center;
+        display: inline-block;
+    }
+
+    .btn-danger:hover {
+        background-color: rgba(239, 68, 68, 1);
+    }
+</style>
+
+

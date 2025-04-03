@@ -1,0 +1,323 @@
+<% /* Set the title and other variables for the layout */ %>
+<% title = 'Reference To-Do List' %>
+
+<div class="mt-20 mb-12">
+    <h1 class="text-4xl font-display font-bold text-center mb-8">Reference To-Do List</h1>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <p class="text-[#9ca3af]">Track monsters that need artwork references.</p>
+    </div>
+    <div class="card-body">
+        <div class="mb-4 flex justify-between items-center">
+            <div class="flex items-center">
+                <input type="text" id="searchInput" class="input" placeholder="Search monsters...">
+                <div class="ml-4">
+                    <label class="inline-flex items-center">
+                        <input type="checkbox" id="hideCompleted" class="form-checkbox">
+                        <span class="ml-2 text-[#9ca3af]">Hide completed</span>
+                    </label>
+                </div>
+            </div>
+            <div class="flex items-center">
+                <span class="mr-2 text-[#9ca3af]">Sort by:</span>
+                <select id="sortOrder" class="select">
+                    <option value="most" <%= sortOrder === 'most' ? 'selected' : '' %>>Most references needed</option>
+                    <option value="least" <%= sortOrder === 'least' ? 'selected' : '' %>>Least references needed</option>
+                </select>
+            </div>
+        </div>
+
+        <% if (trainersWithMonsters && trainersWithMonsters.length > 0) { %>
+            <div id="trainersContainer">
+                <% trainersWithMonsters.forEach(trainerData => { %>
+                    <div class="trainer-section mb-8" data-count="<%= trainerData.count %>">
+                        <h2 class="text-2xl font-bold mb-4 flex items-center">
+                            <span><%= trainerData.trainer.name %></span>
+                            <span class="ml-2 text-sm bg-red-600 text-white px-2 py-1 rounded-full"><%= trainerData.count %> needed</span>
+                        </h2>
+                        
+                        <div class="overflow-x-auto">
+                            <table class="w-full monster-table">
+                                <thead>
+                                    <tr>
+                                        <th class="w-12"></th>
+                                        <th>Name</th>
+                                        <th>Species</th>
+                                        <th>Types</th>
+                                        <th>Attribute</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% trainerData.monsters.forEach(monster => { %>
+                                        <tr class="monster-row" data-id="<%= monster.mon_id %>" data-name="<%= monster.name %>">
+                                            <td>
+                                                <input type="checkbox" class="complete-checkbox form-checkbox" data-monster-id="<%= monster.mon_id %>">
+                                            </td>
+                                            <td><%= monster.name %></td>
+                                            <td>
+                                                <div class="species-list">
+                                                    <% if (monster.species1) { %><span class="species-badge"><%= monster.species1 %></span><% } %>
+                                                    <% if (monster.species2) { %><span class="species-badge"><%= monster.species2 %></span><% } %>
+                                                    <% if (monster.species3) { %><span class="species-badge"><%= monster.species3 %></span><% } %>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="type-list">
+                                                    <% if (monster.type1) { %><span class="type-badge type-<%= monster.type1.toLowerCase() %>"><%= monster.type1 %></span><% } %>
+                                                    <% if (monster.type2) { %><span class="type-badge type-<%= monster.type2.toLowerCase() %>"><%= monster.type2 %></span><% } %>
+                                                    <% if (monster.type3) { %><span class="type-badge type-<%= monster.type3.toLowerCase() %>"><%= monster.type3 %></span><% } %>
+                                                    <% if (monster.type4) { %><span class="type-badge type-<%= monster.type4.toLowerCase() %>"><%= monster.type4 %></span><% } %>
+                                                    <% if (monster.type5) { %><span class="type-badge type-<%= monster.type5.toLowerCase() %>"><%= monster.type5 %></span><% } %>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <% if (monster.attribute) { %>
+                                                    <span class="attribute-badge attribute-<%= monster.attribute.toLowerCase() %>"><%= monster.attribute %></span>
+                                                <% } else { %>
+                                                    <span class="text-gray-400">None</span>
+                                                <% } %>
+                                            </td>
+                                            <td class="actions">
+                                                <a href="/trainers/<%= trainerData.trainer.id %>/monsters/<%= monster.mon_id %>" class="action-btn view-btn" title="View Monster">
+                                                    <i class="fas fa-eye"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    <% }) %>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                <% }) %>
+            </div>
+        <% } else { %>
+            <div class="text-center py-8">
+                <p class="text-xl mb-4">No monsters need artwork references</p>
+                <p class="text-[#9ca3af]">All your monsters have artwork references!</p>
+            </div>
+        <% } %>
+    </div>
+</div>
+
+<style>
+    .species-list, .type-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.25rem;
+    }
+    
+    .species-badge {
+        background-color: #4b5563;
+        color: white;
+        padding: 0.25rem 0.5rem;
+        border-radius: 0.25rem;
+        font-size: 0.75rem;
+    }
+    
+    .type-badge {
+        color: white;
+        padding: 0.25rem 0.5rem;
+        border-radius: 0.25rem;
+        font-size: 0.75rem;
+    }
+    
+    .attribute-badge {
+        color: white;
+        padding: 0.25rem 0.5rem;
+        border-radius: 0.25rem;
+        font-size: 0.75rem;
+    }
+    
+    /* Type colors */
+    .type-normal { background-color: #A8A878; }
+    .type-fire { background-color: #F08030; }
+    .type-water { background-color: #6890F0; }
+    .type-grass { background-color: #78C850; }
+    .type-electric { background-color: #F8D030; }
+    .type-ice { background-color: #98D8D8; }
+    .type-fighting { background-color: #C03028; }
+    .type-poison { background-color: #A040A0; }
+    .type-ground { background-color: #E0C068; }
+    .type-flying { background-color: #A890F0; }
+    .type-psychic { background-color: #F85888; }
+    .type-bug { background-color: #A8B820; }
+    .type-rock { background-color: #B8A038; }
+    .type-ghost { background-color: #705898; }
+    .type-dragon { background-color: #7038F8; }
+    .type-dark { background-color: #705848; }
+    .type-steel { background-color: #B8B8D0; }
+    .type-fairy { background-color: #EE99AC; }
+    
+    /* Attribute colors */
+    .attribute-data { background-color: #3B82F6; }
+    .attribute-vaccine { background-color: #10B981; }
+    .attribute-virus { background-color: #EF4444; }
+    .attribute-free { background-color: #8B5CF6; }
+    
+    /* Completed row styling */
+    tr.completed {
+        opacity: 0.5;
+        text-decoration: line-through;
+        background-color: rgba(16, 185, 129, 0.1);
+    }
+    
+    .monster-table th {
+        padding: 0.75rem;
+        text-align: left;
+        border-bottom: 1px solid #374151;
+    }
+    
+    .monster-table td {
+        padding: 0.75rem;
+        border-bottom: 1px solid #1F2937;
+    }
+    
+    .actions {
+        display: flex;
+        gap: 0.5rem;
+    }
+    
+    .action-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 2rem;
+        height: 2rem;
+        border-radius: 0.25rem;
+        transition: background-color 0.2s;
+    }
+    
+    .view-btn {
+        background-color: #3B82F6;
+        color: white;
+    }
+    
+    .view-btn:hover {
+        background-color: #2563EB;
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Load completed monsters from localStorage
+        const completedMonsters = JSON.parse(localStorage.getItem('completedMonsters') || '[]');
+        
+        // Mark completed monsters
+        completedMonsters.forEach(monsterId => {
+            const checkbox = document.querySelector(`.complete-checkbox[data-monster-id="${monsterId}"]`);
+            if (checkbox) {
+                checkbox.checked = true;
+                checkbox.closest('tr').classList.add('completed');
+            }
+        });
+        
+        // Handle checkbox changes
+        document.querySelectorAll('.complete-checkbox').forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                const monsterId = this.dataset.monsterId;
+                const row = this.closest('tr');
+                
+                if (this.checked) {
+                    // Add to completed list
+                    if (!completedMonsters.includes(monsterId)) {
+                        completedMonsters.push(monsterId);
+                    }
+                    row.classList.add('completed');
+                } else {
+                    // Remove from completed list
+                    const index = completedMonsters.indexOf(monsterId);
+                    if (index > -1) {
+                        completedMonsters.splice(index, 1);
+                    }
+                    row.classList.remove('completed');
+                }
+                
+                // Save to localStorage
+                localStorage.setItem('completedMonsters', JSON.stringify(completedMonsters));
+                
+                // Update counts
+                updateTrainerCounts();
+            });
+        });
+        
+        // Handle search
+        const searchInput = document.getElementById('searchInput');
+        searchInput.addEventListener('input', filterMonsters);
+        
+        // Handle hide completed checkbox
+        const hideCompletedCheckbox = document.getElementById('hideCompleted');
+        hideCompletedCheckbox.addEventListener('change', filterMonsters);
+        
+        // Handle sort order
+        const sortOrderSelect = document.getElementById('sortOrder');
+        sortOrderSelect.addEventListener('change', function() {
+            sortTrainers(this.value);
+        });
+        
+        // Initial update of counts
+        updateTrainerCounts();
+        
+        // Function to filter monsters
+        function filterMonsters() {
+            const searchTerm = searchInput.value.toLowerCase();
+            const hideCompleted = hideCompletedCheckbox.checked;
+            
+            document.querySelectorAll('.monster-row').forEach(row => {
+                const monsterName = row.dataset.name.toLowerCase();
+                const isCompleted = row.classList.contains('completed');
+                
+                // Check if monster matches search and completion criteria
+                const matchesSearch = monsterName.includes(searchTerm);
+                const matchesCompletion = !hideCompleted || !isCompleted;
+                
+                // Show/hide row
+                row.style.display = (matchesSearch && matchesCompletion) ? '' : 'none';
+            });
+            
+            // Hide empty trainer sections
+            document.querySelectorAll('.trainer-section').forEach(section => {
+                const visibleRows = section.querySelectorAll('.monster-row[style=""]').length;
+                section.style.display = visibleRows > 0 ? '' : 'none';
+            });
+        }
+        
+        // Function to update trainer counts
+        function updateTrainerCounts() {
+            document.querySelectorAll('.trainer-section').forEach(section => {
+                const totalRows = section.querySelectorAll('.monster-row').length;
+                const completedRows = section.querySelectorAll('.monster-row.completed').length;
+                const remainingCount = totalRows - completedRows;
+                
+                // Update count badge
+                const countBadge = section.querySelector('h2 .rounded-full');
+                countBadge.textContent = `${remainingCount} needed`;
+                
+                // Update data-count attribute for sorting
+                section.dataset.count = remainingCount;
+            });
+        }
+        
+        // Function to sort trainers
+        function sortTrainers(order) {
+            const trainersContainer = document.getElementById('trainersContainer');
+            const trainerSections = Array.from(trainersContainer.querySelectorAll('.trainer-section'));
+            
+            // Sort trainer sections
+            trainerSections.sort((a, b) => {
+                const countA = parseInt(a.dataset.count);
+                const countB = parseInt(b.dataset.count);
+                
+                return order === 'most' ? countB - countA : countA - countB;
+            });
+            
+            // Reorder trainer sections
+            trainerSections.forEach(section => {
+                trainersContainer.appendChild(section);
+            });
+        }
+    });
+</script>
+

@@ -44,7 +44,7 @@
               workButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Starting...';
 
               // Start the activity session
-              const response = await fetch('/town/visit/start-activity', {
+              const response = await fetch('/town/activities/start', {
                 method: 'POST',
                 headers: {
                   'Content-Type': 'application/json'
@@ -109,7 +109,7 @@ document.addEventListener('DOMContentLoaded', function() {
       workButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-3"></i> <span class="farm-btn-text">Starting...</span>';
 
       // Start the activity session
-      const response = await fetch('/town/visit/start-activity', {
+      const response = await fetch('/town/activities/start', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

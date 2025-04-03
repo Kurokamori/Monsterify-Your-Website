@@ -1,0 +1,464 @@
+
+<div class="container mx-auto px-4 py-8">
+    <div class="location-card p-6 mb-6">
+        <h1 class="text-2xl font-bold text-center text-accent mb-6">Reference Submission</h1>
+
+        <!-- Tabs -->
+        <div class="mb-6 flex border-b border-gray-700">
+            <button id="trainerTabBtn" class="tab-btn px-4 py-2 border-b-2 border-amber-400 text-amber-400 font-semibold">Trainer References</button>
+            <button id="monsterTabBtn" class="tab-btn px-4 py-2 border-b-2 border-transparent text-gray-400 hover:text-amber-400">Monster References</button>
+        </div>
+
+        <!-- Trainer Reference Form -->
+        <div id="trainerReferenceForm" class="tab-content">
+            <form id="trainerForm" class="space-y-6">
+                <div id="trainerReferencesContainer" class="space-y-6">
+                    <!-- Trainer references will be added here -->
+                </div>
+
+                <div class="flex justify-between">
+                    <button type="button" id="addTrainerReference" class="btn-secondary px-4 py-2 rounded-md" style="background-color: rgba(255, 255, 255, 0.1); color: var(--text-color);">
+                        <i class="fas fa-plus mr-1"></i> Add Trainer Reference
+                    </button>
+
+                    <button type="submit" class="farm-btn-sm px-4 py-2 rounded-md" style="background-color: #f97316; color: var(--background-color);">
+                        <i class="fas fa-paper-plane mr-1"></i> Submit
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Monster Reference Form -->
+        <div id="monsterReferenceForm" class="tab-content hidden">
+            <form id="monsterForm" class="space-y-6">
+                <div id="monsterReferencesContainer" class="space-y-6">
+                    <!-- Monster references will be added here -->
+                </div>
+
+                <div class="flex justify-between">
+                    <button type="button" id="addMonsterReference" class="btn-secondary px-4 py-2 rounded-md" style="background-color: rgba(255, 255, 255, 0.1); color: var(--text-color);">
+                        <i class="fas fa-plus mr-1"></i> Add Monster Reference
+                    </button>
+
+                    <button type="submit" class="farm-btn-sm px-4 py-2 rounded-md" style="background-color: #f97316; color: var(--background-color);">
+                        <i class="fas fa-paper-plane mr-1"></i> Submit
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Results Section (Hidden by default) -->
+        <div id="resultsSection" class="mt-8 hidden">
+            <h2 class="text-xl font-semibold mb-4 text-accent border-b border-gray-700 pb-2">Submission Results</h2>
+            <div id="calculationResults" class="bg-gray-700 p-4 rounded-md"></div>
+
+            <div class="mt-4 flex justify-center">
+                <button id="backToForm" class="btn-secondary px-4 py-2 rounded-md" style="background-color: rgba(255, 255, 255, 0.1); color: var(--text-color);">
+                    <i class="fas fa-redo mr-1"></i> Submit Another
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Include the reward summary script
+    document.write('<script src="/js/reward-summary.js"><\/script>');
+    document.addEventListener('DOMContentLoaded', function() {
+        // Tab switching
+        const trainerTabBtn = document.getElementById('trainerTabBtn');
+        const monsterTabBtn = document.getElementById('monsterTabBtn');
+        const trainerReferenceForm = document.getElementById('trainerReferenceForm');
+        const monsterReferenceForm = document.getElementById('monsterReferenceForm');
+
+        trainerTabBtn.addEventListener('click', function() {
+            trainerTabBtn.classList.add('border-amber-400', 'text-amber-400');
+            trainerTabBtn.classList.remove('border-transparent', 'text-gray-400');
+            monsterTabBtn.classList.remove('border-amber-400', 'text-amber-400');
+            monsterTabBtn.classList.add('border-transparent', 'text-gray-400');
+
+            trainerReferenceForm.classList.remove('hidden');
+            monsterReferenceForm.classList.add('hidden');
+        });
+
+        monsterTabBtn.addEventListener('click', function() {
+            monsterTabBtn.classList.add('border-amber-400', 'text-amber-400');
+            monsterTabBtn.classList.remove('border-transparent', 'text-gray-400');
+            trainerTabBtn.classList.remove('border-amber-400', 'text-amber-400');
+            trainerTabBtn.classList.add('border-transparent', 'text-gray-400');
+
+            monsterReferenceForm.classList.remove('hidden');
+            trainerReferenceForm.classList.add('hidden');
+        });
+
+        // Form elements
+        const trainerForm = document.getElementById('trainerForm');
+        const monsterForm = document.getElementById('monsterForm');
+        const trainerReferencesContainer = document.getElementById('trainerReferencesContainer');
+        const monsterReferencesContainer = document.getElementById('monsterReferencesContainer');
+        const addTrainerReferenceBtn = document.getElementById('addTrainerReference');
+        const addMonsterReferenceBtn = document.getElementById('addMonsterReference');
+        const resultsSection = document.getElementById('resultsSection');
+        const calculationResults = document.getElementById('calculationResults');
+        const backToFormBtn = document.getElementById('backToForm');
+
+        // Function to load all trainers
+        async function loadAllTrainers() {
+            try {
+                const response = await fetch('/api/trainers/all');
+                const data = await response.json();
+
+                // Check if data is an array or has a trainers property
+                const trainers = Array.isArray(data) ? data : (data.trainers || []);
+
+                if (trainers.length > 0) {
+                    // Store trainers for reuse
+                    window.allTrainers = trainers;
+
+                    // Add initial reference entries
+                    addTrainerReference();
+                    addMonsterReference();
+                } else {
+                    console.error('No trainers found');
+                    document.getElementById('trainer-references').innerHTML = '<div class="alert alert-warning">No trainers found. Please create a trainer first.</div>';
+                    document.getElementById('monster-references').innerHTML = '<div class="alert alert-warning">No trainers found. Please create a trainer first.</div>';
+                }
+            } catch (error) {
+                console.error('Error loading trainers:', error);
+                document.getElementById('trainer-references').innerHTML = `<div class="alert alert-danger">Error loading trainers: ${error.message || 'Unknown error'}</div>`;
+                document.getElementById('monster-references').innerHTML = `<div class="alert alert-danger">Error loading trainers: ${error.message || 'Unknown error'}</div>`;
+            }
+        }
+
+        // Function to populate trainer selects
+        function populateTrainerSelect(select) {
+            if (!window.allTrainers) return;
+
+            // Clear existing options
+            select.innerHTML = '<option value="">-- Select Trainer --</option>';
+
+            // Add trainer options
+            window.allTrainers.forEach(trainer => {
+                const option = document.createElement('option');
+                option.value = trainer.id;
+                option.textContent = trainer.name;
+                select.appendChild(option);
+            });
+        }
+
+        // Add trainer reference
+        function addTrainerReference() {
+            const referenceEntry = document.createElement('div');
+            referenceEntry.className = 'reference-entry p-4 rounded-lg bg-gray-800';
+            referenceEntry.innerHTML = `
+                <div class="flex flex-wrap gap-4">
+                    <div class="w-full md:w-1/3">
+                        <label class="block text-sm text-amber-400 font-semibold mb-2">Select Trainer</label>
+                        <select class="trainer-select writing-select" required>
+                            <option value="">-- Select Trainer --</option>
+                        </select>
+                    </div>
+                    <div class="w-full md:w-1/2">
+                        <label class="block text-sm text-amber-400 font-semibold mb-2">Reference URL</label>
+                        <input type="url" class="reference-url writing-input" placeholder="Enter reference URL" required>
+                    </div>
+                    <button type="button" class="remove-reference btn-secondary px-2 py-1 rounded-md ml-auto" style="background-color: rgba(255, 255, 255, 0.1); color: #ef4444;">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            `;
+
+            trainerReferencesContainer.appendChild(referenceEntry);
+
+            // Populate trainer select
+            const trainerSelect = referenceEntry.querySelector('.trainer-select');
+            populateTrainerSelect(trainerSelect);
+
+            // Add remove event listener
+            const removeBtn = referenceEntry.querySelector('.remove-reference');
+            removeBtn.addEventListener('click', function() {
+                referenceEntry.remove();
+            });
+        }
+
+        // Add monster reference
+        function addMonsterReference() {
+            const referenceEntry = document.createElement('div');
+            referenceEntry.className = 'reference-entry p-4 rounded-lg bg-gray-800';
+            referenceEntry.innerHTML = `
+                <div class="flex flex-wrap gap-4">
+                    <div class="w-full md:w-1/4">
+                        <label class="block text-sm text-amber-400 font-semibold mb-2">Monster Name</label>
+                        <input type="text" class="monster-name writing-input" placeholder="Enter monster name" required>
+                    </div>
+                    <div class="w-full md:w-1/4">
+                        <label class="block text-sm text-amber-400 font-semibold mb-2">Monster's Trainer</label>
+                        <select class="monster-trainer-select writing-select" required>
+                            <option value="">-- Select Trainer --</option>
+                        </select>
+                    </div>
+                    <div class="w-full md:w-1/3">
+                        <label class="block text-sm text-amber-400 font-semibold mb-2">Reference URL</label>
+                        <input type="url" class="reference-url writing-input" placeholder="Enter reference URL" required>
+                    </div>
+                    <button type="button" class="remove-reference btn-secondary px-2 py-1 rounded-md ml-auto" style="background-color: rgba(255, 255, 255, 0.1); color: #ef4444;">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            `;
+
+            monsterReferencesContainer.appendChild(referenceEntry);
+
+            // Populate trainer select
+            const trainerSelect = referenceEntry.querySelector('.monster-trainer-select');
+            populateTrainerSelect(trainerSelect);
+
+            // Add remove event listener
+            const removeBtn = referenceEntry.querySelector('.remove-reference');
+            removeBtn.addEventListener('click', function() {
+                referenceEntry.remove();
+            });
+        }
+
+        // Add reference button event listeners
+        addTrainerReferenceBtn.addEventListener('click', addTrainerReference);
+        addMonsterReferenceBtn.addEventListener('click', addMonsterReference);
+
+        // Trainer form submission
+        trainerForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            // Collect form data
+            const formData = {
+                referenceType: 'trainer',
+                references: []
+            };
+
+            // Collect trainer references
+            const referenceEntries = trainerReferencesContainer.querySelectorAll('.reference-entry');
+
+            if (referenceEntries.length === 0) {
+                alert('Please add at least one trainer reference');
+                return;
+            }
+
+            referenceEntries.forEach(entry => {
+                const trainerSelect = entry.querySelector('.trainer-select');
+                const referenceUrl = entry.querySelector('.reference-url');
+
+                if (trainerSelect.value && referenceUrl.value) {
+                    const reference = {
+                        trainerId: parseInt(trainerSelect.value),
+                        referenceUrl: referenceUrl.value
+                    };
+                    formData.references.push(reference);
+                }
+            });
+
+            if (formData.references.length === 0) {
+                alert('Please complete all reference entries');
+                return;
+            }
+
+            try {
+                // Submit the form
+                const response = await fetch('/api/reference/submit', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    // Hide the form and show results
+                    trainerReferenceForm.classList.add('hidden');
+                    monsterReferenceForm.classList.add('hidden');
+                    resultsSection.classList.remove('hidden');
+
+                    // Display the results
+                    let html = `<h3 class="font-semibold mt-4 mb-2">Rewards</h3>
+                            <p><strong>Total References:</strong> ${result.calculation.totalReferences}</p>
+                            <p><strong>Total Levels:</strong> ${result.calculation.totalLevels}</p>
+                            <p><strong>Total Coins:</strong> ${result.calculation.totalCoins}</p>`;
+
+                    if (result.calculation.referenceRewards && result.calculation.referenceRewards.length > 0) {
+                        html += `<h3 class="font-semibold mt-4 mb-2">References Updated</h3>
+                                <ul class="list-disc pl-5">`;
+
+                        result.calculation.referenceRewards.forEach(reward => {
+                            html += `<li>${reward.trainerName}: ${reward.levels} levels, ${reward.coins} coins</li>`;
+                        });
+
+                        html += `</ul>`;
+                    }
+
+                    calculationResults.innerHTML = html;
+
+                    // Show reward summary modal if available
+                    if (typeof showRewardSummaryModal === 'function') {
+                        showRewardSummaryModal(result);
+                    }
+                } else {
+                    alert('Error: ' + (result.message || 'Unknown error'));
+                }
+            } catch (error) {
+                console.error('Error submitting trainer references:', error);
+                alert('Error submitting trainer references. Please try again.');
+            }
+        });
+
+        // Monster form submission
+        monsterForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            // Collect form data
+            const formData = {
+                referenceType: 'monster',
+                references: []
+            };
+
+            // Collect monster references
+            const referenceEntries = monsterReferencesContainer.querySelectorAll('.reference-entry');
+
+            if (referenceEntries.length === 0) {
+                alert('Please add at least one monster reference');
+                return;
+            }
+
+            referenceEntries.forEach(entry => {
+                const monsterName = entry.querySelector('.monster-name');
+                const trainerSelect = entry.querySelector('.monster-trainer-select');
+                const referenceUrl = entry.querySelector('.reference-url');
+
+                if (monsterName.value && trainerSelect.value && referenceUrl.value) {
+                    const reference = {
+                        monsterName: monsterName.value,
+                        trainerId: parseInt(trainerSelect.value),
+                        referenceUrl: referenceUrl.value
+                    };
+                    formData.references.push(reference);
+                }
+            });
+
+            if (formData.references.length === 0) {
+                alert('Please complete all reference entries');
+                return;
+            }
+
+            try {
+                // Submit the form
+                const response = await fetch('/api/reference/submit', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    // Hide the form and show results
+                    trainerReferenceForm.classList.add('hidden');
+                    monsterReferenceForm.classList.add('hidden');
+                    resultsSection.classList.remove('hidden');
+
+                    // Display the results
+                    let html = `<h3 class="font-semibold mt-4 mb-2">Rewards</h3>
+                            <p><strong>Total References:</strong> ${result.calculation.totalReferences}</p>
+                            <p><strong>Total Levels:</strong> ${result.calculation.totalLevels}</p>
+                            <p><strong>Total Coins:</strong> ${result.calculation.totalCoins}</p>`;
+
+                    if (result.calculation.referenceRewards && result.calculation.referenceRewards.length > 0) {
+                        html += `<h3 class="font-semibold mt-4 mb-2">References Updated</h3>
+                                <ul class="list-disc pl-5">`;
+
+                        result.calculation.referenceRewards.forEach(reward => {
+                            html += `<li>${reward.trainerName}'s ${reward.monsterName}: ${reward.levels} levels, ${reward.trainerName}: ${reward.coins} coins</li>`;
+                        });
+
+                        html += `</ul>`;
+                    }
+
+                    calculationResults.innerHTML = html;
+
+                    // Show reward summary modal if available
+                    if (typeof showRewardSummaryModal === 'function') {
+                        showRewardSummaryModal(result);
+                    }
+                } else {
+                    alert('Error: ' + (result.message || 'Unknown error'));
+                }
+            } catch (error) {
+                console.error('Error submitting monster references:', error);
+                alert('Error submitting monster references. Please try again.');
+            }
+        });
+
+        // Back to form button
+        backToFormBtn.addEventListener('click', function() {
+            // Reset forms
+            trainerForm.reset();
+            monsterForm.reset();
+
+            // Clear reference containers
+            trainerReferencesContainer.innerHTML = '';
+            monsterReferencesContainer.innerHTML = '';
+
+            // Add initial reference entries
+            addTrainerReference();
+            addMonsterReference();
+
+            // Show trainer form by default
+            trainerReferenceForm.classList.remove('hidden');
+            monsterReferenceForm.classList.add('hidden');
+            resultsSection.classList.add('hidden');
+
+            // Reset tab buttons
+            trainerTabBtn.classList.add('border-amber-400', 'text-amber-400');
+            trainerTabBtn.classList.remove('border-transparent', 'text-gray-400');
+            monsterTabBtn.classList.remove('border-amber-400', 'text-amber-400');
+            monsterTabBtn.classList.add('border-transparent', 'text-gray-400');
+        });
+
+        // Load all trainers when the page loads
+        loadAllTrainers();
+    });
+</script>
+
+<style>
+    .writing-input {
+        width: 100%;
+        padding: 0.5rem;
+        background-color: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 0.25rem;
+        color: var(--text-color);
+    }
+
+    .writing-input:focus {
+        outline: none;
+        border-color: #f59e0b;
+    }
+
+    .writing-select {
+        width: 100%;
+        padding: 0.5rem;
+        background-color: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 0.25rem;
+        color: var(--text-color);
+    }
+
+    .writing-select:focus {
+        outline: none;
+        border-color: #f59e0b;
+    }
+</style>
+
+<!-- Include the reward summary modal -->
+<%- include('../../components/reward-summary-modal') %>
+

@@ -1,0 +1,245 @@
+<% /* Set the title and other variables for the layout */ %>
+<% title = 'Create New Mission' %>
+
+<style>
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+
+.form-input {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.25rem;
+    background-color: #f8fafc;
+}
+
+.form-textarea {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.25rem;
+    background-color: #f8fafc;
+    min-height: 100px;
+}
+
+.form-input:focus, .form-textarea:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+}
+
+.form-checkbox {
+    margin-right: 0.5rem;
+}
+
+.alert {
+    padding: 1rem;
+    border-radius: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.alert-error {
+    background-color: rgba(239, 68, 68, 0.2);
+    border: 1px solid rgba(239, 68, 68, 0.5);
+    color: #ef4444;
+}
+
+.required-field::after {
+    content: "*";
+    color: #ef4444;
+    margin-left: 0.25rem;
+}
+
+.form-section {
+    border: 1px solid #e2e8f0;
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    background-color: #f8fafc;
+}
+
+.form-section-title {
+    font-size: 1.25rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #e2e8f0;
+}
+</style>
+
+<div class="container mx-auto px-4 py-8">
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="text-3xl font-bold">Create New Mission</h1>
+    </div>
+
+    <% if (typeof message !== 'undefined' && message) { %>
+    <div class="alert alert-<%= messageType %> mb-6">
+        <%= message %>
+    </div>
+    <% } %>
+
+    <form action="/admin/missions/create" method="POST">
+        <div class="form-section">
+            <div class="form-section-title">Basic Information</div>
+            
+            <div class="form-group">
+                <label for="name" class="form-label required-field">Mission Name</label>
+                <input type="text" id="name" name="name" class="form-input" required value="<%= typeof formData !== 'undefined' ? formData.name : '' %>">
+            </div>
+
+            <div class="form-group">
+                <label for="description" class="form-label required-field">Description</label>
+                <textarea id="description" name="description" class="form-textarea" required><%= typeof formData !== 'undefined' ? formData.description : '' %></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="level_requirement" class="form-label">Level Requirement</label>
+                <input type="number" id="level_requirement" name="level_requirement" class="form-input" min="1" value="<%= typeof formData !== 'undefined' ? formData.level_requirement : '' %>">
+                <p class="text-sm text-gray-500 mt-1">Minimum trainer level required to start this mission (leave blank for no requirement)</p>
+            </div>
+
+            <div class="form-group">
+                <div class="flex items-center">
+                    <input type="checkbox" id="is_active" name="is_active" class="form-checkbox" <%= typeof formData !== 'undefined' && formData.is_active ? 'checked' : '' %>>
+                    <label for="is_active" class="form-label mb-0 ml-2">Active</label>
+                </div>
+                <p class="text-sm text-gray-500 mt-1">If checked, this mission will be available to players</p>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <div class="form-section-title">Monster Requirements</div>
+            
+            <div class="form-group">
+                <label for="type_requirements" class="form-label">Type Requirements</label>
+                <input type="text" id="type_requirements" name="type_requirements" class="form-input" value="<%= typeof formData !== 'undefined' ? formData.type_requirements : '' %>">
+                <p class="text-sm text-gray-500 mt-1">Comma-separated list of monster types (e.g., Fire, Water, Grass)</p>
+            </div>
+
+            <div class="form-group">
+                <label for="attribute_requirements" class="form-label">Attribute Requirements</label>
+                <input type="text" id="attribute_requirements" name="attribute_requirements" class="form-input" value="<%= typeof formData !== 'undefined' ? formData.attribute_requirements : '' %>">
+                <p class="text-sm text-gray-500 mt-1">Comma-separated list of monster attributes (e.g., Cute, Fierce, Clever)</p>
+            </div>
+
+            <div class="form-group">
+                <label for="requirements_type" class="form-label">Requirements Type</label>
+                <select id="requirements_type" name="requirements_type" class="form-input">
+                    <option value="OR" <%= typeof formData !== 'undefined' && formData.requirements_type === 'OR' ? 'selected' : '' %>>OR (Any requirement matches)</option>
+                    <option value="AND" <%= typeof formData !== 'undefined' && formData.requirements_type === 'AND' ? 'selected' : '' %>>AND (All requirements must match)</option>
+                </select>
+                <p class="text-sm text-gray-500 mt-1">How to apply the type and attribute requirements</p>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <div class="form-section-title">Progress & Completion</div>
+            
+            <div class="form-group">
+                <label for="min_progress_needed" class="form-label required-field">Minimum Progress Needed</label>
+                <input type="number" id="min_progress_needed" name="min_progress_needed" class="form-input" required min="1" value="<%= typeof formData !== 'undefined' ? formData.min_progress_needed : '100' %>">
+                <p class="text-sm text-gray-500 mt-1">Minimum progress points needed to complete the mission</p>
+            </div>
+
+            <div class="form-group">
+                <label for="max_progress_needed" class="form-label">Maximum Progress Needed</label>
+                <input type="number" id="max_progress_needed" name="max_progress_needed" class="form-input" min="1" value="<%= typeof formData !== 'undefined' ? formData.max_progress_needed : '' %>">
+                <p class="text-sm text-gray-500 mt-1">Maximum progress points needed (for random range, leave blank to use minimum only)</p>
+            </div>
+
+            <div class="form-group">
+                <label for="progress_image_url" class="form-label">Progress Image URL</label>
+                <input type="text" id="progress_image_url" name="progress_image_url" class="form-input" value="<%= typeof formData !== 'undefined' ? formData.progress_image_url : '' %>">
+                <p class="text-sm text-gray-500 mt-1">Image to show while the mission is in progress</p>
+            </div>
+
+            <div class="form-group">
+                <label for="completion_image_url" class="form-label">Completion Image URL</label>
+                <input type="text" id="completion_image_url" name="completion_image_url" class="form-input" value="<%= typeof formData !== 'undefined' ? formData.completion_image_url : '' %>">
+                <p class="text-sm text-gray-500 mt-1">Image to show when the mission is completed</p>
+            </div>
+
+            <div class="form-group">
+                <label for="completion_message" class="form-label">Completion Message</label>
+                <textarea id="completion_message" name="completion_message" class="form-textarea"><%= typeof formData !== 'undefined' ? formData.completion_message : '' %></textarea>
+                <p class="text-sm text-gray-500 mt-1">Message to show when the mission is completed</p>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <div class="form-section-title">Progress Flavor Text</div>
+            <p class="text-sm text-gray-500 mb-4">These messages will be shown at different progress milestones (20%, 40%, 60%, 80%, 100%)</p>
+            
+            <div class="form-group">
+                <label for="progress_flavor_1" class="form-label">Progress Flavor 1 (20%)</label>
+                <textarea id="progress_flavor_1" name="progress_flavor_1" class="form-textarea"><%= typeof formData !== 'undefined' ? formData.progress_flavor_1 : '' %></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="progress_flavor_2" class="form-label">Progress Flavor 2 (40%)</label>
+                <textarea id="progress_flavor_2" name="progress_flavor_2" class="form-textarea"><%= typeof formData !== 'undefined' ? formData.progress_flavor_2 : '' %></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="progress_flavor_3" class="form-label">Progress Flavor 3 (60%)</label>
+                <textarea id="progress_flavor_3" name="progress_flavor_3" class="form-textarea"><%= typeof formData !== 'undefined' ? formData.progress_flavor_3 : '' %></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="progress_flavor_4" class="form-label">Progress Flavor 4 (80%)</label>
+                <textarea id="progress_flavor_4" name="progress_flavor_4" class="form-textarea"><%= typeof formData !== 'undefined' ? formData.progress_flavor_4 : '' %></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="progress_flavor_5" class="form-label">Progress Flavor 5 (100%)</label>
+                <textarea id="progress_flavor_5" name="progress_flavor_5" class="form-textarea"><%= typeof formData !== 'undefined' ? formData.progress_flavor_5 : '' %></textarea>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <div class="form-section-title">Rewards</div>
+            
+            <div class="form-group">
+                <label for="level_rewards" class="form-label required-field">Level Rewards</label>
+                <input type="number" id="level_rewards" name="level_rewards" class="form-input" required min="1" value="<%= typeof formData !== 'undefined' ? formData.level_rewards : '5' %>">
+                <p class="text-sm text-gray-500 mt-1">Number of levels to reward upon completion</p>
+            </div>
+
+            <div class="form-group">
+                <label for="coin_rewards" class="form-label required-field">Coin Rewards</label>
+                <input type="number" id="coin_rewards" name="coin_rewards" class="form-input" required min="0" value="<%= typeof formData !== 'undefined' ? formData.coin_rewards : '500' %>">
+                <p class="text-sm text-gray-500 mt-1">Number of coins to reward upon completion</p>
+            </div>
+
+            <div class="form-group">
+                <label for="item_rewards" class="form-label">Item Rewards</label>
+                <input type="text" id="item_rewards" name="item_rewards" class="form-input" value="<%= typeof formData !== 'undefined' ? formData.item_rewards : '' %>">
+                <p class="text-sm text-gray-500 mt-1">Comma-separated list of items to reward (e.g., Potion, Rare Candy, Evolution Stone)</p>
+            </div>
+
+            <div class="form-group">
+                <label for="item_reward_amount" class="form-label">Item Reward Amount</label>
+                <input type="number" id="item_reward_amount" name="item_reward_amount" class="form-input" min="0" value="<%= typeof formData !== 'undefined' ? formData.item_reward_amount : '0' %>">
+                <p class="text-sm text-gray-500 mt-1">Number of items to reward (0 means all items listed above, otherwise random selection)</p>
+            </div>
+        </div>
+
+        <div class="flex justify-end space-x-4 mt-6">
+            <a href="/admin/missions" class="btn-secondary">Cancel</a>
+            <button type="submit" class="btn-primary">Create Mission</button>
+        </div>
+    </form>
+
+    <div class="mt-6">
+        <a href="/admin/missions" class="btn-secondary">
+            <i class="fas fa-arrow-left mr-2"></i> Back to Mission Management
+        </a>
+    </div>
+</div>

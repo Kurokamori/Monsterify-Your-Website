@@ -26,7 +26,7 @@
   <div class="page-layout">
     <div class="page-sidebar">
       <div class="sidebar-nav">
-        <div class="sidebar-nav-title"><%= categories[activeCategory]?.name || 'Navigation' %></div>
+        <div class="sidebar-nav-title"><%= eventType === 'current' ? 'Current Events' : 'Past Events' %></div>
 
         <% if (categories[activeCategory] && categories[activeCategory].structure) { %>
           <% function renderDirectories(structure, currentPath = '') { %>
@@ -52,7 +52,7 @@
             <% if (structure.files && structure.files.length > 0) { %>
               <% structure.files.forEach(file => { %>
                 <div class="file-item <%= currentPath === file.path ? 'active' : '' %>">
-                  <a href="/content/events/<%= eventType %>/<%= file.url.replace(/\\/g, '/') %>" class="block w-full h-full">
+                  <a href="/content/events/<%= eventType %>/<%= file.url.replace(/\\/g, '/').replace(eventType + '/', '') %>" class="block w-full h-full">
                     <%= file.name %>
                   </a>
                 </div>
@@ -60,7 +60,17 @@
             <% } %>
           <% } %>
 
-          <% renderDirectories(categories[activeCategory].structure, currentPath); %>
+          <%
+            // Only render the current event type directory
+            const eventTypeDir = categories[activeCategory].structure.directories.find(dir =>
+              (eventType === 'current' && dir.path === 'current') ||
+              (eventType === 'past' && dir.path === 'past')
+            );
+
+            if (eventTypeDir && eventTypeDir.children) {
+              renderDirectories(eventTypeDir.children, currentPath);
+            }
+          %>
         <% } %>
       </div>
     </div>

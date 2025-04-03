@@ -4,7 +4,7 @@ class LocationActivitySession {
   /**
    * Create a new activity session
    * @param {Object} sessionData - Session data
-   * @param {number} sessionData.trainer_id - Trainer ID
+   * @param {string} [sessionData.player_id] - Player ID (Discord user ID, required)
    * @param {string} sessionData.location - Location identifier
    * @param {string} sessionData.activity - Activity identifier
    * @param {number} sessionData.prompt_id - Prompt ID
@@ -12,7 +12,7 @@ class LocationActivitySession {
    * @returns {Promise<Object>} - Created session
    */
   static async create({
-    trainer_id,
+    player_id,
     location,
     activity,
     prompt_id,
@@ -21,16 +21,16 @@ class LocationActivitySession {
     try {
       const query = `
         INSERT INTO location_activity_sessions (
-          trainer_id, location, activity, prompt_id, duration_minutes
+          player_id, location, activity, prompt_id, duration_minutes
         )
         VALUES ($1, $2, $3, $4, $5)
         RETURNING *
       `;
-      
+
       const values = [
-        trainer_id, location, activity, prompt_id, duration_minutes
+        player_id, location, activity, prompt_id, duration_minutes
       ];
-      
+
       const result = await pool.query(query, values);
       return result.rows[0];
     } catch (error) {
@@ -52,9 +52,22 @@ class LocationActivitySession {
         LEFT JOIN location_task_prompts p ON s.prompt_id = p.prompt_id
         WHERE s.session_id = $1
       `;
-      
+
       const result = await pool.query(query, [sessionId]);
-      return result.rows[0] || null;
+
+      // Parse rewards if they exist
+      const session = result.rows[0] || null;
+
+      if (session && session.rewards && typeof session.rewards === 'string') {
+        try {
+          session.rewards = JSON.parse(session.rewards);
+        } catch (error) {
+          console.error(`Error parsing rewards for session ${sessionId}:`, error);
+          // Keep the original string if parsing fails
+        }
+      }
+
+      return session;
     } catch (error) {
       console.error(`Error getting activity session by ID ${sessionId}:`, error);
       throw error;
@@ -62,49 +75,72 @@ class LocationActivitySession {
   }
 
   /**
-   * Get active sessions for a trainer
-   * @param {number} trainerId - Trainer ID
+   * Get active sessions for a trainer (using player_id)
+   * @param {string} discordUserId - Discord User ID
    * @returns {Promise<Array>} - Array of active sessions
    */
-  static async getActiveForTrainer(trainerId) {
+  static async getActiveForTrainer(discordUserId) {
     try {
       const query = `
         SELECT s.*, p.prompt_text, p.difficulty
         FROM location_activity_sessions s
         LEFT JOIN location_task_prompts p ON s.prompt_id = p.prompt_id
-        WHERE s.trainer_id = $1 AND s.completed = false
+        WHERE s.player_id = $1 AND s.completed = false
         ORDER BY s.start_time DESC
       `;
-      
-      const result = await pool.query(query, [trainerId]);
+
+      const result = await pool.query(query, [discordUserId]);
       return result.rows;
     } catch (error) {
-      console.error(`Error getting active sessions for trainer ${trainerId}:`, error);
+      console.error(`Error getting active sessions for player ${discordUserId}:`, error);
       throw error;
     }
   }
 
   /**
-   * Get completed sessions for a trainer
-   * @param {number} trainerId - Trainer ID
+   * Get completed sessions for a trainer (using player_id)
+   * @param {string} discordUserId - Discord User ID
    * @param {number} limit - Limit (default: 10)
    * @returns {Promise<Array>} - Array of completed sessions
    */
-  static async getCompletedForTrainer(trainerId, limit = 10) {
+  static async getCompletedForTrainer(discordUserId, limit = 10) {
     try {
       const query = `
         SELECT s.*, p.prompt_text, p.difficulty
         FROM location_activity_sessions s
         LEFT JOIN location_task_prompts p ON s.prompt_id = p.prompt_id
-        WHERE s.trainer_id = $1 AND s.completed = true
+        WHERE s.player_id = $1 AND s.completed = true
         ORDER BY s.end_time DESC
         LIMIT $2
       `;
-      
-      const result = await pool.query(query, [trainerId, limit]);
+
+      const result = await pool.query(query, [discordUserId, limit]);
       return result.rows;
     } catch (error) {
-      console.error(`Error getting completed sessions for trainer ${trainerId}:`, error);
+      console.error(`Error getting completed sessions for player ${discordUserId}:`, error);
+      throw error;
+    }
+  }
+
+  /**
+   * Get active sessions for a player (user)
+   * @param {string} discordUserId - Discord User ID
+   * @returns {Promise<Array>} - Array of active sessions
+   */
+  static async getActiveForPlayer(discordUserId) {
+    try {
+      const query = `
+        SELECT s.*, p.prompt_text, p.difficulty
+        FROM location_activity_sessions s
+        LEFT JOIN location_task_prompts p ON s.prompt_id = p.prompt_id
+        WHERE s.player_id = $1 AND s.completed = false
+        ORDER BY s.start_time DESC
+      `;
+
+      const result = await pool.query(query, [discordUserId]);
+      return result.rows;
+    } catch (error) {
+      console.error(`Error getting active sessions for player ${discordUserId}:`, error);
       throw error;
     }
   }
@@ -123,31 +159,63 @@ class LocationActivitySession {
       // Update the session
       const query = `
         UPDATE location_activity_sessions
-        SET 
-          completed = true, 
-          end_time = CURRENT_TIMESTAMP, 
+        SET
+          completed = true,
+          end_time = CURRENT_TIMESTAMP,
           rewards = $2,
           updated_at = CURRENT_TIMESTAMP
         WHERE session_id = $1
         RETURNING *
       `;
-      
+
+      // Format rewards for storage
+      const formattedRewards = rewards.map(reward => {
+        // Ensure reward has an ID
+        if (!reward.reward_id && !reward.id) {
+          reward.reward_id = Date.now() + Math.floor(Math.random() * 1000);
+        }
+
+        // Ensure reward has a type
+        if (!reward.type && reward.reward_type) {
+          reward.type = reward.reward_type;
+        } else if (!reward.reward_type && reward.type) {
+          reward.reward_type = reward.type;
+        } else if (!reward.type && !reward.reward_type) {
+          reward.type = 'generic';
+          reward.reward_type = 'generic';
+        }
+
+        // Ensure reward has data
+        if (!reward.data && reward.reward_data) {
+          reward.data = reward.reward_data;
+        } else if (!reward.reward_data && reward.data) {
+          reward.reward_data = reward.data;
+        } else if (!reward.data && !reward.reward_data) {
+          reward.data = {};
+          reward.reward_data = {};
+        }
+
+        return reward;
+      });
+
+      console.log('Formatted rewards for storage:', JSON.stringify(formattedRewards, null, 2));
+
       const values = [
         sessionId,
-        JSON.stringify(rewards)
+        JSON.stringify(formattedRewards)
       ];
-      
+
       const result = await pool.query(query, values);
       const updatedSession = result.rows[0];
-      
+
       if (!updatedSession) {
         await pool.query("ROLLBACK");
         throw new Error(`Session with ID ${sessionId} not found`);
       }
-      
+
       // Commit the transaction
       await pool.query("COMMIT");
-      
+
       return updatedSession;
     } catch (error) {
       // Rollback the transaction on error
@@ -169,7 +237,7 @@ class LocationActivitySession {
         WHERE session_id = $1
         RETURNING session_id
       `;
-      
+
       const result = await pool.query(query, [sessionId]);
       return result.rowCount > 0;
     } catch (error) {

@@ -335,9 +335,30 @@
     font-weight: 600;
 }
 
+.move-stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.2rem;
+}
+
+.move-stat {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 0.2rem 0.6rem;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    color: #eee;
+}
+
 .move-description {
     font-size: 0.95rem;
     line-height: 1.5;
+}
+
+.move-attribute {
+    margin-top: 0.5rem;
+    display: flex;
+    justify-content: flex-end;
 }
 
 /* Evolution Section */
@@ -963,7 +984,30 @@
             <div id="moves" class="moves-section">
                 <h2 class="text-3xl font-display font-bold mb-4">Moves</h2>
                 <div class="moves-grid">
-                    <% if (monster.moveset) {
+                    <% if (typeof moveDetails !== 'undefined' && moveDetails && moveDetails.length > 0) { %>
+                        <% for (let move of moveDetails) { %>
+                        <div class="move-card">
+                            <div class="move-header">
+                                <h3 class="move-name"><%= move.MoveName %></h3>
+                                <span class="move-type <%= move.Type ? move.Type.toLowerCase() : 'normal' %>"><%= move.Type ? move.Type.charAt(0).toUpperCase() + move.Type.slice(1) : 'Normal' %></span>
+                            </div>
+                            <div class="move-stats">
+                                <% if (move.Power) { %><span class="move-stat">Power: <%= move.Power %></span><% } %>
+                                <% if (move.Accuracy) { %><span class="move-stat">Accuracy: <%= move.Accuracy %></span><% } %>
+                                <% if (move.PP) { %><span class="move-stat">PP: <%= move.PP %></span><% } %>
+                            </div>
+                            <div class="move-description">
+                                <%= move.Effect || 'No description available.' %>
+                            </div>
+                            <% if (move.attribute) { %>
+                            <div class="move-attribute">
+                                <span class="attribute-badge attribute-<%= move.attribute.toLowerCase() %>"><%= move.attribute %></span>
+                            </div>
+                            <% } %>
+                        </div>
+                        <% } %>
+                    <% } else if (monster.moveset) { %>
+                        <%
                         // Parse the moveset string into an array
                         let moves = [];
                         try {
@@ -976,20 +1020,18 @@
 
                         // Display each move
                         for (let move of moves) {
-                            // Default values if move data isn't available
-                            let moveType = 'normal';
-                            let moveDescription = 'No description available.';
-                    %>
-                    <div class="move-card">
-                        <div class="move-header">
-                            <h3 class="move-name"><%= move %></h3>
-                            <span class="move-type <%= moveType %>"><%= moveType.charAt(0).toUpperCase() + moveType.slice(1) %></span>
+                        %>
+                        <div class="move-card">
+                            <div class="move-header">
+                                <h3 class="move-name"><%= move %></h3>
+                                <span class="move-type normal">Normal</span>
+                            </div>
+                            <div class="move-description">
+                                No description available.
+                            </div>
                         </div>
-                        <div class="move-description">
-                            <%= moveDescription %>
-                        </div>
-                    </div>
-                    <% } } else { %>
+                        <% } %>
+                    <% } else { %>
                     <div class="move-card">
                         <div class="move-header">
                             <h3 class="move-name">No Moves</h3>

@@ -1,0 +1,692 @@
+<div class="submission-container">
+    <div class="submission-card">
+        <h1 class="submission-title">Complex Art Calculator</h1>
+        <form id="complexArtForm" class="submission-form">
+            <div class="form-group">
+                <label for="title" class="form-label">Title</label>
+                <input type="text" id="title" name="title" class="modern-input" required>
+            </div>
+
+            <div class="form-group">
+                <label for="artUrl" class="form-label">Art URL</label>
+                <input type="url" id="artUrl" name="artUrl" class="modern-input" required>
+                <p class="form-help">Link to your artwork (e.g., DeviantArt, Twitter, etc.)</p>
+            </div>
+
+            <div class="form-group">
+                <label for="numGroups" class="form-label">Number of Groups</label>
+                <input type="number" id="numGroups" name="numGroups" min="1" value="1" class="modern-input">
+                <p class="form-help">Enter the number of groups (e.g., 'Tayler and her pokemon', 'Mal and his pokemon')</p>
+            </div>
+
+            <div class="form-group">
+                <label for="background" class="form-label">Background Complexity</label>
+                <select id="background" name="background" class="modern-select" required>
+                    <option value="">-- Select Background --</option>
+                    <option value="none">None</option>
+                    <option value="prop">Prop</option>
+                    <option value="simple">Simple</option>
+                    <option value="complex">Complex</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <div class="flex items-center">
+                    <input type="checkbox" id="bgSplit" name="bgSplit" class="mr-2">
+                    <label for="bgSplit" class="form-label mb-0">Is the background split by groups?</label>
+                </div>
+                <p class="form-help">Check if each group has its own background</p>
+            </div>
+
+            <div class="form-group">
+                <div class="flex items-center">
+                    <input type="checkbox" id="sameRankAll" name="sameRankAll" class="mr-2" checked>
+                    <label for="sameRankAll" class="form-label mb-0">Are all characters the same rank?</label>
+                </div>
+                <p class="form-help">Check if all characters have the same size, linework, and color type</p>
+            </div>
+
+            <div id="universalRankSection" class="form-section">
+                <h3 class="submission-subtitle">Universal Rank Details</h3>
+
+                <div class="form-group">
+                    <label for="artSize" class="form-label">Art Size</label>
+                    <select id="artSize" name="artSize" class="modern-select" required>
+                        <option value="">-- Select Size --</option>
+                        <option value="fullbody">Fullbody</option>
+                        <option value="halfbody">Halfbody</option>
+                        <option value="bust">Bust</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="linework" class="form-label">Linework</label>
+                    <select id="linework" name="linework" class="modern-select" required>
+                        <option value="">-- Select Linework --</option>
+                        <option value="clean">Clean</option>
+                        <option value="sketch">Sketch</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="colorType" class="form-label">Color Type</label>
+                    <select id="colorType" name="colorType" class="modern-select" required>
+                        <option value="">-- Select Color Type --</option>
+                        <option value="no_color">No Color</option>
+                        <option value="flat">Flat Color</option>
+                        <option value="simple">Simple Shading</option>
+                        <option value="complex">Complex Shading</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="groupsContainer" class="form-section">
+                <h3 class="submission-subtitle">Groups</h3>
+                <!-- Groups will be added here dynamically -->
+            </div>
+
+            <div class="form-group">
+                <label for="giftLevels" class="form-label">Gift Levels</label>
+                <input type="number" id="giftLevels" name="giftLevels" min="0" value="0" class="modern-input">
+                <p class="form-help">Enter the number of gift levels earned (for gift reward rolling, 1 roll per 5 levels)</p>
+            </div>
+
+            <div id="giftRecipientContainer" class="form-group hidden">
+                <label for="giftRecipientSelect" class="form-label">Gift Recipient</label>
+                <select id="giftRecipientSelect" name="giftRecipientId" class="modern-select">
+                    <option value="">-- Select Gift Recipient --</option>
+                    <!-- Options will be populated via JavaScript -->
+                </select>
+                <p class="form-help">Select the trainer who will receive the gift rewards</p>
+            </div>
+
+            <div class="form-buttons">
+                <a href="/submissions" class="back-button">
+                    <i class="fas fa-arrow-left"></i> Back
+                </a>
+                <button type="submit" class="submit-button">
+                    <i class="fas fa-paper-plane"></i> Calculate
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Results Section (Hidden by default) -->
+    <div id="resultsSection" class="hidden results-section">
+        <h2 class="results-title">Calculation Results</h2>
+        <div id="calculationResults" class="results-content"></div>
+
+        <div class="results-buttons">
+            <button id="backToForm" class="back-button">
+                <i class="fas fa-arrow-left"></i> Calculate Another
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('complexArtForm');
+        const resultsSection = document.getElementById('resultsSection');
+        const calculationResults = document.getElementById('calculationResults');
+        const backToForm = document.getElementById('backToForm');
+        const groupsContainer = document.getElementById('groupsContainer');
+        const numGroupsInput = document.getElementById('numGroups');
+        const sameRankAllCheckbox = document.getElementById('sameRankAll');
+        const universalRankSection = document.getElementById('universalRankSection');
+        const giftLevelsInput = document.getElementById('giftLevels');
+        const giftRecipientContainer = document.getElementById('giftRecipientContainer');
+        const giftRecipientSelect = document.getElementById('giftRecipientSelect');
+
+        // Art size base points
+        const sizeBasePoints = {
+            'fullbody': {
+                'clean': 3,
+                'sketch': 2
+            },
+            'halfbody': {
+                'clean': 2,
+                'sketch': 1
+            },
+            'bust': {
+                'clean': 1,
+                'sketch': 0
+            }
+        };
+
+        // Color type points
+        const colorPoints = {
+            'no_color': 0,
+            'flat': 1,
+            'simple': 3,
+            'complex': 4
+        };
+
+        // Complexity base points
+        const complexityBasePoints = {
+            'no_evolution': 2,
+            'base_stage': 0,
+            'middle_stage': 1,
+            'final': 2,
+            'final_evo': 3,
+            'trainer': 3
+        };
+
+        // Modifier points
+        const modifierPoints = {
+            'paradox': 2,
+            'ultra_beast': 2,
+            'mega': 2
+        };
+
+        // Background points
+        const backgroundPoints = {
+            'none': 0,
+            'prop': 1,
+            'simple': 2,
+            'complex': 3
+        };
+
+        // Show/hide gift recipient based on gift levels
+        giftLevelsInput.addEventListener('input', function() {
+            if (parseInt(this.value) > 0) {
+                giftRecipientContainer.classList.remove('hidden');
+                // Load trainers for the gift recipient select if not already loaded
+                if (giftRecipientSelect.options.length <= 1) {
+                    loadTrainers(giftRecipientSelect);
+                }
+            } else {
+                giftRecipientContainer.classList.add('hidden');
+            }
+        });
+
+        // Show/hide universal rank section based on sameRankAll checkbox
+        sameRankAllCheckbox.addEventListener('change', function() {
+            if (this.checked) {
+                universalRankSection.classList.remove('hidden');
+            } else {
+                universalRankSection.classList.add('hidden');
+            }
+            updateGroups();
+        });
+
+        // Update groups when number of groups changes
+        numGroupsInput.addEventListener('input', function() {
+            updateGroups();
+        });
+
+        // Update groups
+        function updateGroups() {
+            const numGroups = parseInt(numGroupsInput.value) || 1;
+            const sameRankAll = sameRankAllCheckbox.checked;
+
+            // Clear groups container
+            groupsContainer.innerHTML = '';
+
+            // Add groups
+            for (let i = 0; i < numGroups; i++) {
+                const groupId = `group-${i}`;
+                const groupHtml = `
+                    <div id="${groupId}" class="participant-entry mb-4">
+                        <div class="participant-header">
+                            <span class="participant-title">Group ${i + 1}</span>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Group Name</label>
+                            <input type="text" name="group_name" class="modern-input" placeholder="e.g., Tayler and her pokemon" required>
+                        </div>
+
+                        ${!sameRankAll ? `
+                            <div class="form-group">
+                                <h4 class="form-label">Group Rank Details</h4>
+
+                                <div class="form-group">
+                                    <label class="form-label">Art Size</label>
+                                    <select name="art_size" class="modern-select" required>
+                                        <option value="">-- Select Size --</option>
+                                        <option value="fullbody">Fullbody</option>
+                                        <option value="halfbody">Halfbody</option>
+                                        <option value="bust">Bust</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Linework</label>
+                                    <select name="linework" class="modern-select" required>
+                                        <option value="">-- Select Linework --</option>
+                                        <option value="clean">Clean</option>
+                                        <option value="sketch">Sketch</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Color Type</label>
+                                    <select name="color_type" class="modern-select" required>
+                                        <option value="">-- Select Color Type --</option>
+                                        <option value="no_color">No Color</option>
+                                        <option value="flat">Flat Color</option>
+                                        <option value="simple">Simple Shading</option>
+                                        <option value="complex">Complex Shading</option>
+                                    </select>
+                                </div>
+                            </div>
+                        ` : ''}
+
+                        <div class="form-group">
+                            <label class="form-label">Number of Characters</label>
+                            <input type="number" name="num_characters" class="modern-input" min="1" value="1" required>
+                        </div>
+
+                        <div class="characters-container">
+                            <!-- Characters will be added here dynamically -->
+                        </div>
+
+                        <button type="button" class="update-characters-button add-participant-button">
+                            <i class="fas fa-sync"></i> Update Characters
+                        </button>
+                    </div>
+                `;
+
+                groupsContainer.insertAdjacentHTML('beforeend', groupHtml);
+
+                // Add event listener to update characters button
+                const updateCharactersButton = document.querySelector(`#${groupId} .update-characters-button`);
+                updateCharactersButton.addEventListener('click', function() {
+                    updateCharacters(groupId);
+                });
+            }
+        }
+
+        // Update characters for a group
+        function updateCharacters(groupId) {
+            const group = document.getElementById(groupId);
+            const numCharacters = parseInt(group.querySelector('input[name="num_characters"]').value) || 1;
+            const charactersContainer = group.querySelector('.characters-container');
+
+            // Clear characters container
+            charactersContainer.innerHTML = '';
+
+            // Add characters
+            for (let i = 0; i < numCharacters; i++) {
+                const characterId = `${groupId}-character-${i}`;
+                const characterHtml = `
+                    <div id="${characterId}" class="participant-entry mt-3">
+                        <div class="participant-header">
+                            <span class="participant-title">Character ${i + 1}</span>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Character Name</label>
+                            <input type="text" name="character_name" class="modern-input" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Complexity</label>
+                            <select name="complexity" class="modern-select" required>
+                                <option value="">-- Select Complexity --</option>
+                                <option value="no_evolution">Doesn't Evolve</option>
+                                <option value="base_stage">Base Stage</option>
+                                <option value="middle_stage">Middle Stage</option>
+                                <option value="final">Final</option>
+                                <option value="final_evo">Final Evo</option>
+                                <option value="trainer">Trainer</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Modifiers</label>
+                            <div class="flex flex-wrap gap-3">
+                                <label class="modern-checkbox">
+                                    <input type="checkbox" name="modifiers" value="paradox">
+                                    <span class="modern-checkbox-mark"></span>
+                                    Paradox
+                                </label>
+                                <label class="modern-checkbox">
+                                    <input type="checkbox" name="modifiers" value="ultra_beast">
+                                    <span class="modern-checkbox-mark"></span>
+                                    Ultra Beast
+                                </label>
+                                <label class="modern-checkbox">
+                                    <input type="checkbox" name="modifiers" value="mega">
+                                    <span class="modern-checkbox-mark"></span>
+                                    Mega
+                                </label>
+                                <label class="modern-checkbox">
+                                    <input type="checkbox" name="modifiers" value="capped">
+                                    <span class="modern-checkbox-mark"></span>
+                                    Capped (+100)
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="flex items-center">
+                                <input type="checkbox" name="is_gift" class="mr-2">
+                                <label class="form-label mb-0">Gift Art</label>
+                            </div>
+                            <p class="form-help">Check if this character is for gift art</p>
+                        </div>
+                    </div>
+                `;
+
+                charactersContainer.insertAdjacentHTML('beforeend', characterHtml);
+            }
+        }
+
+        // Load trainers for a select element
+        async function loadTrainers(selectElement) {
+            try {
+                const response = await fetch('/api/trainers/user');
+                const data = await response.json();
+
+                // Clear existing options
+                selectElement.innerHTML = '<option value="">-- Select Trainer --</option>';
+
+                // Check if data is an array (direct array response) or has a trainers property
+                const trainers = Array.isArray(data) ? data : (data.trainers || []);
+
+                console.log('Trainers loaded:', trainers);
+
+                if (trainers.length > 0) {
+                    // Add trainer options
+                    trainers.forEach(trainer => {
+                        const option = document.createElement('option');
+                        option.value = trainer.id;
+                        option.textContent = `${trainer.name} (Level ${trainer.level || 1})`;
+                        selectElement.appendChild(option);
+                    });
+                } else {
+                    console.error('No trainers found for this user');
+                    selectElement.innerHTML = '<option value="">No trainers found</option>';
+                }
+            } catch (error) {
+                console.error('Error loading trainers:', error);
+                selectElement.innerHTML = '<option value="">Error loading trainers</option>';
+            }
+        }
+
+        // Calculate levels for a character
+        function calculateCharacterLevels(character, rankDetails) {
+            const complexity = character.querySelector('select[name="complexity"]').value;
+
+            // Get selected modifiers
+            const selectedModifiers = Array.from(character.querySelectorAll('input[name="modifiers"]:checked'))
+                .map(checkbox => checkbox.value);
+
+            // Check if capped
+            const isCapped = selectedModifiers.includes('capped');
+
+            // Calculate base points
+            const basePoints = sizeBasePoints[rankDetails.size]?.[rankDetails.linework] || 0;
+
+            // Calculate color points
+            const colorPointValue = colorPoints[rankDetails.colorType] || 0;
+
+            // Calculate complexity points
+            let complexityPointValue = complexityBasePoints[complexity] || 0;
+
+            // If there are modifiers, they override the base complexity points
+            if (selectedModifiers.length > 0 && selectedModifiers.some(m => m !== 'capped')) {
+                // Reset complexity points if using modifiers
+                complexityPointValue = 0;
+
+                // Add modifier points
+                selectedModifiers.forEach(modifier => {
+                    if (modifier !== 'capped' && modifierPoints[modifier]) {
+                        complexityPointValue += modifierPoints[modifier];
+                    }
+                });
+            }
+
+            // Calculate total levels
+            const totalLevels = basePoints + colorPointValue + complexityPointValue;
+
+            // Calculate trainer/gift bonus
+            let trainerBonus = 0;
+            let giftBonus = 0;
+
+            const isGift = character.querySelector('input[name="is_gift"]').checked;
+
+            if (isGift) {
+                giftBonus = Math.floor((totalLevels + 1) / 2);
+            } else if (complexity === 'trainer' || isCapped) {
+                trainerBonus = Math.floor((totalLevels + 1) / 2);
+            }
+
+            return {
+                basePoints,
+                colorPointValue,
+                complexityPointValue,
+                totalLevels,
+                trainerBonus,
+                giftBonus,
+                isCapped,
+                isTrainer: complexity === 'trainer',
+                isGift
+            };
+        }
+
+        // Form submission
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            // Get form values
+            const title = document.getElementById('title').value;
+            const artUrl = document.getElementById('artUrl').value;
+            const background = document.getElementById('background').value;
+            const bgSplit = document.getElementById('bgSplit').checked;
+            const sameRankAll = document.getElementById('sameRankAll').checked;
+            const giftLevels = parseInt(giftLevelsInput.value) || 0;
+
+            // Get universal rank details if same rank for all
+            let universalRankDetails = null;
+            if (sameRankAll) {
+                universalRankDetails = {
+                    size: document.getElementById('artSize').value,
+                    linework: document.getElementById('linework').value,
+                    colorType: document.getElementById('colorType').value
+                };
+            }
+
+            // Calculate background points
+            const backgroundPointValue = backgroundPoints[background] || 0;
+
+            // Get groups
+            const groups = [];
+            const groupElements = document.querySelectorAll('#groupsContainer > .participant-entry');
+
+            groupElements.forEach(groupElement => {
+                const groupName = groupElement.querySelector('input[name="group_name"]').value;
+                const numCharacters = parseInt(groupElement.querySelector('input[name="num_characters"]').value) || 1;
+
+                // Get group rank details if not same rank for all
+                let groupRankDetails = universalRankDetails;
+                if (!sameRankAll) {
+                    groupRankDetails = {
+                        size: groupElement.querySelector('select[name="art_size"]').value,
+                        linework: groupElement.querySelector('select[name="linework"]').value,
+                        colorType: groupElement.querySelector('select[name="color_type"]').value
+                    };
+                }
+
+                // Get characters
+                const characters = [];
+                const characterElements = groupElement.querySelectorAll('.characters-container > .participant-entry');
+
+                characterElements.forEach(characterElement => {
+                    const characterName = characterElement.querySelector('input[name="character_name"]').value;
+                    const calculation = calculateCharacterLevels(characterElement, groupRankDetails);
+
+                    characters.push({
+                        name: characterName,
+                        ...calculation
+                    });
+                });
+
+                groups.push({
+                    name: groupName,
+                    rankDetails: groupRankDetails,
+                    characters
+                });
+            });
+
+            // Calculate total background bonus
+            let totalBackgroundBonus = 0;
+            if (bgSplit) {
+                totalBackgroundBonus = backgroundPointValue * groups.length;
+            } else {
+                totalBackgroundBonus = backgroundPointValue;
+            }
+
+            // Calculate total bonus levels and gift levels
+            let totalBonusLevels = 0;
+            let totalGiftLevels = 0;
+
+            groups.forEach(group => {
+                group.characters.forEach(character => {
+                    totalBonusLevels += character.trainerBonus;
+                    totalGiftLevels += character.giftBonus;
+                });
+            });
+
+            // Add gift levels from input
+            totalGiftLevels += giftLevels;
+
+            // Add gift recipient if gift levels > 0
+            let giftRecipientId = null;
+            if (totalGiftLevels > 0) {
+                giftRecipientId = giftRecipientSelect.value;
+
+                if (!giftRecipientId) {
+                    alert('Please select a gift recipient for the gift levels');
+                    return;
+                }
+            }
+
+            // Create form data
+            const formData = {
+                title,
+                artUrl,
+                background,
+                bgSplit,
+                sameRankAll,
+                universalRankDetails,
+                groups,
+                totalBackgroundBonus,
+                totalBonusLevels,
+                totalGiftLevels,
+                giftRecipientId
+            };
+
+            // Display calculation results
+            displayResults(formData);
+        });
+
+        // Display calculation results
+        function displayResults(formData) {
+            // Hide form and show results
+            form.classList.add('hidden');
+            resultsSection.classList.remove('hidden');
+
+            // Format calculation results
+            let html = `
+                <h3 class="font-semibold mb-4">Art Calculation Results</h3>
+
+                <div class="bg-gray-700 p-4 rounded-md mb-4">
+                    <h4 class="font-semibold mb-2">Background</h4>
+                    <p><strong>Type:</strong> ${document.getElementById('background').options[document.getElementById('background').selectedIndex].text}</p>
+                    <p><strong>Split by Groups:</strong> ${formData.bgSplit ? 'Yes' : 'No'}</p>
+                    <p class="mt-2 font-semibold">Total Background Bonus: ${formData.totalBackgroundBonus}</p>
+                </div>
+            `;
+
+            // Add groups
+            html += `<h4 class="font-semibold mb-2 mt-4">Level Breakdowns by Group</h4>`;
+
+            formData.groups.forEach(group => {
+                html += `
+                    <div class="bg-gray-700 p-4 rounded-md mb-4">
+                        <h5 class="font-semibold mb-2">${group.name}</h5>
+                `;
+
+                if (formData.sameRankAll) {
+                    html += `
+                        <p><strong>Rank:</strong> ${group.rankDetails.size} ${group.rankDetails.linework}, ${document.getElementById('colorType').options[document.getElementById('colorType').selectedIndex].text}</p>
+                    `;
+                } else {
+                    const colorTypeText = {
+                        'no_color': 'No Color',
+                        'flat': 'Flat Color',
+                        'simple': 'Simple Shading',
+                        'complex': 'Complex Shading'
+                    }[group.rankDetails.colorType] || group.rankDetails.colorType;
+
+                    html += `
+                        <p><strong>Rank:</strong> ${group.rankDetails.size} ${group.rankDetails.linework}, ${colorTypeText}</p>
+                    `;
+                }
+
+                html += `<div class="mt-2">`;
+
+                group.characters.forEach(character => {
+                    html += `
+                        <div class="border-t border-gray-600 pt-2 mt-2">
+                            <p><strong>${character.name}:</strong> ${character.basePoints} (size/linework) + ${character.colorPointValue} (color) + ${character.complexityPointValue} (complexity) = ${character.totalLevels} levels</p>
+                    `;
+
+                    if (character.trainerBonus > 0) {
+                        html += `<p class="text-amber-400">Trainer/Capped Bonus: ${character.trainerBonus} levels</p>`;
+                    }
+
+                    if (character.giftBonus > 0) {
+                        html += `<p class="text-green-400">Gift Bonus: ${character.giftBonus} levels</p>`;
+                    }
+
+                    html += `</div>`;
+                });
+
+                html += `</div></div>`;
+            });
+
+            // Add summary
+            html += `
+                <div class="bg-gray-700 p-4 rounded-md mb-4">
+                    <h4 class="font-semibold mb-2">Summary</h4>
+                    <p><strong>Total Background Bonus:</strong> ${formData.totalBackgroundBonus} levels</p>
+                    <p><strong>Total Trainer/Capped Bonus:</strong> ${formData.totalBonusLevels} levels</p>
+                    <p><strong>Total Gift Levels:</strong> ${formData.totalGiftLevels} levels</p>
+                </div>
+
+                <div class="bg-gray-700 p-4 rounded-md">
+                    <h4 class="font-semibold mb-2">Next Steps</h4>
+                    <p>To submit this artwork and distribute the calculated levels, use the <a href="/submissions/art/manual" class="text-amber-400 hover:underline">Manual Art Submission</a> form with the appropriate level distribution for each character.</p>
+                </div>
+            `;
+
+            calculationResults.innerHTML = html;
+        }
+
+        // Back to form button
+        backToForm.addEventListener('click', function() {
+            // Reset form
+            form.reset();
+
+            // Clear groups
+            groupsContainer.innerHTML = '';
+
+            // Hide gift recipient
+            giftRecipientContainer.classList.add('hidden');
+
+            // Show form and hide results
+            form.classList.remove('hidden');
+            resultsSection.classList.add('hidden');
+
+            // Update groups
+            updateGroups();
+        });
+
+        // Initialize groups
+        updateGroups();
+    });
+</script>

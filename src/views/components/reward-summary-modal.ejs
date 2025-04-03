@@ -1,0 +1,161 @@
+<!-- Reward Summary Modal -->
+<div id="rewardSummaryModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Rewards Earned</h2>
+            <span class="close">&times;</span>
+        </div>
+        <div class="modal-body">
+            <div class="reward-summary-container">
+                <!-- Main rewards section -->
+                <div class="main-rewards mb-4">
+                    <div class="flex items-center mb-3">
+                        <div class="bg-amber-500/20 p-2 rounded-full mr-2">
+                            <i class="fas fa-coins text-amber-400"></i>
+                        </div>
+                        <div>
+                            <h6 class="text-xs text-gray-300">Coins</h6>
+                            <p class="text-amber-400 font-bold" id="reward-summary-coins">+0</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center">
+                        <div class="bg-green-500/20 p-2 rounded-full mr-2">
+                            <i class="fas fa-star text-green-400"></i>
+                        </div>
+                        <div>
+                            <h6 class="text-xs text-gray-300">Levels</h6>
+                            <p class="text-green-400 font-bold" id="reward-summary-levels">+0</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Additional rewards section -->
+                <div class="additional-rewards bg-gray-800/50 p-4 rounded-lg mb-4">
+                    <h3 class="text-white text-lg mb-3">Additional Rewards</h3>
+
+                    <!-- Mission progress -->
+                    <div class="mb-3 pb-3 border-b border-gray-700">
+                        <div class="flex items-center mb-2">
+                            <div class="bg-blue-500/20 p-2 rounded-full mr-2">
+                                <i class="fas fa-tasks text-blue-400"></i>
+                            </div>
+                            <div>
+                                <h6 class="text-sm text-white">Mission Progress</h6>
+                                <p class="text-blue-400" id="reward-summary-mission-points">+0 points</p>
+                            </div>
+                        </div>
+                        <p class="text-gray-400 text-sm" id="reward-summary-mission-text"></p>
+                    </div>
+
+                    <!-- Garden points -->
+                    <div class="mb-3 pb-3 border-b border-gray-700">
+                        <div class="flex items-center mb-2">
+                            <div class="bg-green-500/20 p-2 rounded-full mr-2">
+                                <i class="fas fa-seedling text-green-400"></i>
+                            </div>
+                            <div>
+                                <h6 class="text-sm text-white">Garden Harvest</h6>
+                                <p class="text-green-400" id="reward-summary-garden-points">+0 points</p>
+                            </div>
+                        </div>
+                        <p class="text-gray-400 text-sm" id="reward-summary-garden-text"></p>
+                    </div>
+
+                    <!-- Boss damage -->
+                    <div class="mb-3 pb-3 border-b border-gray-700">
+                        <div class="flex items-center mb-2">
+                            <div class="bg-red-500/20 p-2 rounded-full mr-2">
+                                <i class="fas fa-dragon text-red-400"></i>
+                            </div>
+                            <div>
+                                <h6 class="text-sm text-white">Boss Damage</h6>
+                                <p class="text-red-400" id="reward-summary-boss-damage">+0 damage</p>
+                            </div>
+                        </div>
+                        <p class="text-gray-400 text-sm" id="reward-summary-boss-text"></p>
+                    </div>
+
+                    <!-- Gift Items -->
+                    <div class="mb-3" id="reward-summary-gift-items-container">
+                        <div class="flex items-center mb-2">
+                            <div class="bg-purple-500/20 p-2 rounded-full mr-2">
+                                <i class="fas fa-gift text-purple-400"></i>
+                            </div>
+                            <div>
+                                <h6 class="text-sm text-white">Gift Items</h6>
+                            </div>
+                        </div>
+                        <div id="reward-summary-gift-items" class="pl-4">
+                            <p class="text-gray-400 text-sm">No gift items received.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-actions text-center">
+                    <button type="button" class="btn-primary" id="closeSummaryBtn">Awesome!</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal styles -->
+<style>
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+    background-color: #2d3748;
+    margin: 5% auto;
+    padding: 0;
+    border-radius: 0.5rem;
+    width: 90%;
+    max-width: 600px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    animation: modalFadeIn 0.3s;
+}
+
+@keyframes modalFadeIn {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.modal-header {
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid #4a5568;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-header h2 {
+    margin: 0;
+    font-size: 1.5rem;
+    color: white;
+}
+
+.modal-body {
+    padding: 1.5rem;
+    color: #e2e8f0;
+}
+
+.close {
+    color: #a0aec0;
+    font-size: 1.5rem;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close:hover {
+    color: white;
+}
+</style>

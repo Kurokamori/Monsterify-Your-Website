@@ -133,7 +133,7 @@
     <!-- Appraise Antiques Section -->
     <div class="location-card overflow-hidden">
       <div class="relative">
-        <img src="https://i.imgur.com/Yg6BWUm.jpeg" alt="Appraise Antiques" class="w-full h-48 object-cover">
+        <img src="https://i.imgur.com/rIhLZBr.png" alt="Appraise Antiques" class="w-full h-48 object-cover">
         <div class="absolute inset-0 bg-gradient-to-t from-black/90 to-transparent"></div>
         <div class="absolute bottom-0 left-0 right-0 p-4">
           <h3 class="text-xl font-bold text-white text-shadow-lg">Appraise Antiques</h3>
@@ -143,54 +143,35 @@
         <p class="text-sm text-gray-300 mb-4">Have your antiques appraised to determine their value and rarity.</p>
 
         <div class="bg-gray-800/50 p-4 rounded-lg mb-4">
-          <h4 class="text-amber-400 mb-2 font-medium">Your Antiques</h4>
-          <div class="space-y-2">
-            <div class="flex items-center justify-between p-2 bg-gray-700/50 rounded-lg">
-              <div class="flex items-center">
-                <div class="w-8 h-8 bg-amber-600/20 rounded-full flex items-center justify-center mr-2">
-                  <i class="fas fa-coins text-amber-400"></i>
-                </div>
-                <div>
-                  <div class="text-xs text-gray-300">Ancient Coin</div>
-                  <div class="text-xs text-blue-400">Rarity: 4</div>
-                </div>
-              </div>
-              <button class="text-xs text-amber-400 hover:text-amber-300">
-                <i class="fas fa-search-dollar"></i> Appraise
-              </button>
+          <h4 class="text-amber-400 mb-2 font-medium">Top Trainers with Antiques</h4>
+          <% if (typeof trainers !== 'undefined' && trainers.length > 0) { %>
+            <div class="overflow-hidden rounded-lg border border-gray-700">
+              <table class="min-w-full divide-y divide-gray-700">
+                <thead class="bg-gray-800">
+                  <tr>
+                    <th scope="col" class="px-4 py-2 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Trainer</th>
+                    <th scope="col" class="px-4 py-2 text-right text-xs font-medium text-gray-300 uppercase tracking-wider">Antiques</th>
+                  </tr>
+                </thead>
+                <tbody class="bg-gray-800 divide-y divide-gray-700">
+                  <% trainers.forEach(function(trainer) { %>
+                    <tr class="hover:bg-gray-700/50 transition-colors">
+                      <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-200"><%= trainer.name %></td>
+                      <td class="px-4 py-2 whitespace-nowrap text-sm text-right text-amber-400 font-medium"><%= trainer.antiquesCount %></td>
+                    </tr>
+                  <% }); %>
+                </tbody>
+              </table>
             </div>
-            <div class="flex items-center justify-between p-2 bg-gray-700/50 rounded-lg">
-              <div class="flex items-center">
-                <div class="w-8 h-8 bg-purple-600/20 rounded-full flex items-center justify-center mr-2">
-                  <i class="fas fa-paint-brush text-purple-400"></i>
-                </div>
-                <div>
-                  <div class="text-xs text-gray-300">Old Painting</div>
-                  <div class="text-xs text-purple-400">Rarity: 5</div>
-                </div>
-              </div>
-              <button class="text-xs text-amber-400 hover:text-amber-300">
-                <i class="fas fa-search-dollar"></i> Appraise
-              </button>
+          <% } else { %>
+            <div class="text-center p-4 bg-gray-700/50 rounded-lg">
+              <p class="text-gray-300 text-sm">No trainers with antiques found.</p>
+              <p class="text-gray-400 text-xs mt-1">Visit the shops to acquire some antiques!</p>
             </div>
-            <div class="flex items-center justify-between p-2 bg-gray-700/50 rounded-lg">
-              <div class="flex items-center">
-                <div class="w-8 h-8 bg-gray-600/20 rounded-full flex items-center justify-center mr-2">
-                  <i class="fas fa-bone text-gray-400"></i>
-                </div>
-                <div>
-                  <div class="text-xs text-gray-300">Fossil Fragment</div>
-                  <div class="text-xs text-green-400">Rarity: 3</div>
-                </div>
-              </div>
-              <button class="text-xs text-amber-400 hover:text-amber-300">
-                <i class="fas fa-search-dollar"></i> Appraise
-              </button>
-            </div>
-          </div>
+          <% } %>
         </div>
 
-        <a href="/town/visit/antique/appraise" class="btn-primary w-full text-center py-2 px-4 rounded text-sm">
+        <a href="/town/visit/antique/appraisal" class="btn-primary w-full text-center py-2 px-4 rounded text-sm">
           <i class="fas fa-search-dollar mr-1"></i> Appraise All Antiques
         </a>
       </div>
@@ -199,7 +180,7 @@
     <!-- Auction Antiques Section -->
     <div class="location-card overflow-hidden">
       <div class="relative">
-        <img src="https://i.imgur.com/RmKySNO.png" alt="Auction Antiques" class="w-full h-48 object-cover">
+        <img src="https://i.imgur.com/wX9iPwP.png" alt="Auction Antiques" class="w-full h-48 object-cover">
         <div class="absolute inset-0 bg-gradient-to-t from-black/90 to-transparent"></div>
         <div class="absolute bottom-0 left-0 right-0 p-4">
           <h3 class="text-xl font-bold text-white text-shadow-lg">Auction Antiques</h3>
@@ -239,7 +220,7 @@
         </div>
 
         <a href="/town/visit/antique/auction" class="btn-primary w-full text-center py-2 px-4 rounded text-sm">
-          <i class="fas fa-gavel mr-1"></i> Start New Auction
+          <i class="fas fa-gavel mr-1"></i> Auction Antiques
         </a>
       </div>
     </div>

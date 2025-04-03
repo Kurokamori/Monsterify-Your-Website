@@ -1,4 +1,5 @@
 const pool = require('../db');
+const RewardSystem = require('../utils/RewardSystem');
 
 class Task {
   /**
@@ -262,6 +263,34 @@ class Task {
           task.coin_reward,
           trainerId
         ]);
+      }
+
+      // Process additional rewards (mission progress, garden points, boss damage)
+      try {
+        // Get the user ID from the trainer ID
+        const trainerQuery = `
+          SELECT player_user_id FROM trainers
+          WHERE id = $1
+          LIMIT 1
+        `;
+        const trainerResult = await pool.query(trainerQuery, [task.trainer_id]);
+
+        if (trainerResult.rows.length > 0) {
+          const playerUserId = trainerResult.rows[0].player_user_id;
+
+          // Process additional rewards
+          const additionalRewards = await RewardSystem.processAdditionalRewards(playerUserId, 'task', {
+            difficulty: task.difficulty,
+            levels: task.level_reward,
+            coins: task.coin_reward
+          });
+
+          // Add the additional rewards to the task object
+          updatedTask.additionalRewards = additionalRewards;
+        }
+      } catch (error) {
+        console.error('Error processing additional rewards:', error);
+        // Continue with the task completion even if additional rewards fail
       }
 
       // Commit the transaction

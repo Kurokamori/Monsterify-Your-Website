@@ -1,0 +1,165 @@
+<% /* Set the title and other variables for the layout */ %>
+<% title = 'Active Missions' %>
+
+<style>
+.mission-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+}
+
+.mission-table th, .mission-table td {
+    padding: 0.75rem;
+    text-align: left;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.mission-table th {
+    background-color: #f8fafc;
+    font-weight: bold;
+}
+
+.mission-table tr:hover {
+    background-color: #f1f5f9;
+}
+
+.progress-bar {
+    height: 8px;
+    background-color: #e2e8f0;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.progress-bar-fill {
+    height: 100%;
+    background-color: #3b82f6;
+    border-radius: 4px;
+}
+
+.mission-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.btn-view, .btn-complete, .btn-delete {
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    text-decoration: none;
+    font-size: 0.875rem;
+}
+
+.btn-view {
+    background-color: #3b82f6;
+    color: white;
+}
+
+.btn-complete {
+    background-color: #10b981;
+    color: white;
+}
+
+.btn-delete {
+    background-color: #ef4444;
+    color: white;
+}
+
+.alert {
+    padding: 1rem;
+    border-radius: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.alert-success {
+    background-color: rgba(52, 211, 153, 0.2);
+    border: 1px solid rgba(52, 211, 153, 0.5);
+    color: #10b981;
+}
+
+.alert-error {
+    background-color: rgba(239, 68, 68, 0.2);
+    border: 1px solid rgba(239, 68, 68, 0.5);
+    color: #ef4444;
+}
+</style>
+
+<div class="container mx-auto px-4 py-8">
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="text-3xl font-bold">Active Missions</h1>
+        <a href="/admin/missions" class="btn-primary">
+            <i class="fas fa-arrow-left mr-2"></i> Back to Missions
+        </a>
+    </div>
+
+    <% if (typeof message !== 'undefined' && message) { %>
+    <div class="alert alert-<%= messageType %> mb-6">
+        <%= message %>
+    </div>
+    <% } %>
+
+    <div class="card">
+        <div class="card-header">
+            <h2 class="text-xl font-bold">Currently Active Missions</h2>
+        </div>
+        <div class="card-body">
+            <% if (activeMissions && activeMissions.length > 0) { %>
+            <table class="mission-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Trainer</th>
+                        <th>Mission</th>
+                        <th>Progress</th>
+                        <th>Started</th>
+                        <th>Last Updated</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% activeMissions.forEach(function(mission) { %>
+                    <tr>
+                        <td><%= mission.id %></td>
+                        <td><%= mission.trainer_name %></td>
+                        <td><%= mission.name %></td>
+                        <td>
+                            <div class="progress-bar">
+                                <div class="progress-bar-fill" style="width: <%= (mission.current_progress / mission.total_progress) * 100 %>%"></div>
+                            </div>
+                            <div class="text-xs text-gray-500 mt-1">
+                                <%= mission.current_progress %> / <%= mission.total_progress %> (<%= Math.round((mission.current_progress / mission.total_progress) * 100) %>%)
+                            </div>
+                        </td>
+                        <td><%= new Date(mission.start_time).toLocaleDateString() %></td>
+                        <td><%= new Date(mission.last_updated).toLocaleDateString() %></td>
+                        <td class="mission-actions">
+                            <a href="/trainers/<%= mission.user_id %>" class="btn-view" target="_blank">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                            <form action="/admin/missions/complete/<%= mission.id %>" method="POST" onsubmit="return confirm('Are you sure you want to force complete this mission?');">
+                                <button type="submit" class="btn-complete">
+                                    <i class="fas fa-check"></i>
+                                </button>
+                            </form>
+                            <form action="/admin/missions/cancel/<%= mission.id %>" method="POST" onsubmit="return confirm('Are you sure you want to cancel this mission?');">
+                                <button type="submit" class="btn-delete">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    <% }); %>
+                </tbody>
+            </table>
+            <% } else { %>
+            <div class="text-center py-8">
+                <p class="text-gray-500">No active missions found.</p>
+            </div>
+            <% } %>
+        </div>
+    </div>
+
+    <div class="mt-6">
+        <a href="/admin/missions" class="btn-secondary">
+            <i class="fas fa-arrow-left mr-2"></i> Back to Mission Management
+        </a>
+    </div>
+</div>

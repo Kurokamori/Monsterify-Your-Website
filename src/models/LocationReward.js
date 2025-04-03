@@ -14,17 +14,28 @@ class LocationReward {
       const query = `
         SELECT * FROM location_rewards
         WHERE location = $1
-        ORDER BY 
-          CASE 
-            WHEN random() < (weight::float / 1000) THEN 1 
-            ELSE 0 
-          END DESC, 
-          random() 
+        ORDER BY
+          CASE
+            WHEN random() < (weight::float / 1000) THEN 1
+            ELSE 0
+          END DESC,
+          random()
         LIMIT $2
       `;
-      
+
       const result = await pool.query(query, [location, count]);
-      return result.rows;
+
+      // Parse reward_data for each reward
+      return result.rows.map(reward => {
+        try {
+          if (reward.reward_data && typeof reward.reward_data === 'string') {
+            reward.reward_data = JSON.parse(reward.reward_data);
+          }
+        } catch (error) {
+          console.error(`Error parsing reward_data for reward ${reward.reward_id}:`, error);
+        }
+        return reward;
+      });
     } catch (error) {
       console.error(`Error getting random rewards for location ${location}:`, error);
       throw error;
@@ -43,9 +54,20 @@ class LocationReward {
         WHERE location = $1
         ORDER BY rarity, reward_type, reward_id
       `;
-      
+
       const result = await pool.query(query, [location]);
-      return result.rows;
+
+      // Parse reward_data for each reward
+      return result.rows.map(reward => {
+        try {
+          if (reward.reward_data && typeof reward.reward_data === 'string') {
+            reward.reward_data = JSON.parse(reward.reward_data);
+          }
+        } catch (error) {
+          console.error(`Error parsing reward_data for reward ${reward.reward_id}:`, error);
+        }
+        return reward;
+      });
     } catch (error) {
       console.error(`Error getting all rewards for location ${location}:`, error);
       throw error;
@@ -63,7 +85,7 @@ class LocationReward {
         SELECT * FROM location_rewards
         WHERE reward_id = $1
       `;
-      
+
       const result = await pool.query(query, [rewardId]);
       return result.rows[0] || null;
     } catch (error) {
@@ -97,15 +119,15 @@ class LocationReward {
         VALUES ($1, $2, $3, $4, $5)
         RETURNING *
       `;
-      
+
       const values = [
-        location, 
-        reward_type, 
+        location,
+        reward_type,
         typeof reward_data === "object" ? JSON.stringify(reward_data) : reward_data,
         rarity,
         weight
       ];
-      
+
       const result = await pool.query(query, values);
       return result.rows[0];
     } catch (error) {
@@ -137,52 +159,52 @@ class LocationReward {
       const updates = [];
       const values = [rewardId];
       let valueIndex = 2;
-      
+
       if (location !== undefined) {
         updates.push(`location = $${valueIndex}`);
         values.push(location);
         valueIndex++;
       }
-      
+
       if (reward_type !== undefined) {
         updates.push(`reward_type = $${valueIndex}`);
         values.push(reward_type);
         valueIndex++;
       }
-      
+
       if (reward_data !== undefined) {
         updates.push(`reward_data = $${valueIndex}`);
         values.push(typeof reward_data === "object" ? JSON.stringify(reward_data) : reward_data);
         valueIndex++;
       }
-      
+
       if (rarity !== undefined) {
         updates.push(`rarity = $${valueIndex}`);
         values.push(rarity);
         valueIndex++;
       }
-      
+
       if (weight !== undefined) {
         updates.push(`weight = $${valueIndex}`);
         values.push(weight);
         valueIndex++;
       }
-      
+
       // Add updated_at timestamp
       updates.push("updated_at = CURRENT_TIMESTAMP");
-      
+
       // If no fields to update, return the existing reward
       if (updates.length === 1) {
         return this.getById(rewardId);
       }
-      
+
       const query = `
         UPDATE location_rewards
         SET ${updates.join(", ")}
         WHERE reward_id = $1
         RETURNING *
       `;
-      
+
       const result = await pool.query(query, values);
       return result.rows[0];
     } catch (error) {
@@ -203,7 +225,7 @@ class LocationReward {
         WHERE reward_id = $1
         RETURNING reward_id
       `;
-      
+
       const result = await pool.query(query, [rewardId]);
       return result.rowCount > 0;
     } catch (error) {

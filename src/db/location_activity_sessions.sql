@@ -2,6 +2,7 @@
 CREATE TABLE IF NOT EXISTS location_activity_sessions (
     session_id SERIAL PRIMARY KEY,
     trainer_id INTEGER NULL, -- Make trainer_id nullable
+    player_id TEXT NULL, -- Discord user ID for player-based activities
     location VARCHAR(100) NOT NULL,
     activity VARCHAR(100) NOT NULL,
     prompt_id INTEGER REFERENCES location_task_prompts(prompt_id),
@@ -16,4 +17,5 @@ CREATE TABLE IF NOT EXISTS location_activity_sessions (
 
 -- Create indexes
 CREATE INDEX IF NOT EXISTS idx_location_activity_sessions_trainer_id ON location_activity_sessions(trainer_id);
+CREATE INDEX IF NOT EXISTS idx_location_activity_sessions_player_id ON location_activity_sessions(player_id);
 CREATE INDEX IF NOT EXISTS idx_location_activity_sessions_location ON location_activity_sessions(location);

@@ -1,0 +1,175 @@
+/* Modern Sleek Dropdown Styles */
+
+/* Base select styling */
+select.modern-select {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background-color: rgba(30, 30, 40, 0.95);
+  border: 1px solid rgba(80, 80, 100, 0.5);
+  border-radius: 0.5rem;
+  color: rgba(255, 255, 255, 0.95);
+  font-size: 0.95rem;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23d6a339'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  background-size: 1.25rem;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+select.modern-select:hover {
+  border-color: rgba(120, 120, 150, 0.7);
+  background-color: rgba(40, 40, 50, 0.95);
+}
+
+select.modern-select:focus {
+  outline: none;
+  border-color: var(--accent-color, #d6a339);
+  box-shadow: 0 0 0 2px rgba(214, 163, 57, 0.25);
+}
+
+select.modern-select option {
+  background-color: rgba(30, 30, 40, 0.95);
+  color: rgba(255, 255, 255, 0.95);
+  padding: 0.75rem;
+}
+
+/* Disabled state */
+select.modern-select:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background-color: rgba(20, 20, 30, 0.8);
+}
+
+/* Custom dropdown container */
+.modern-dropdown {
+  position: relative;
+  width: 100%;
+}
+
+.modern-dropdown-toggle {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background-color: rgba(30, 30, 40, 0.95);
+  border: 1px solid rgba(80, 80, 100, 0.5);
+  border-radius: 0.5rem;
+  color: rgba(255, 255, 255, 0.95);
+  font-size: 0.95rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.modern-dropdown-toggle:hover {
+  border-color: rgba(120, 120, 150, 0.7);
+  background-color: rgba(40, 40, 50, 0.95);
+}
+
+.modern-dropdown-toggle:focus {
+  outline: none;
+  border-color: var(--accent-color, #d6a339);
+  box-shadow: 0 0 0 2px rgba(214, 163, 57, 0.25);
+}
+
+.modern-dropdown-toggle i {
+  color: var(--accent-color, #d6a339);
+  transition: transform 0.2s ease;
+}
+
+.modern-dropdown.open .modern-dropdown-toggle i {
+  transform: rotate(180deg);
+}
+
+.modern-dropdown-menu {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  left: 0;
+  width: 100%;
+  background-color: rgba(30, 30, 40, 0.98);
+  border: 1px solid rgba(80, 80, 100, 0.5);
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  z-index: 1000;
+  max-height: 250px;
+  overflow-y: auto;
+  display: none;
+  backdrop-filter: blur(4px);
+}
+
+.modern-dropdown.open .modern-dropdown-menu {
+  display: block;
+  animation: fadeIn 0.2s ease;
+}
+
+.modern-dropdown-item {
+  padding: 0.75rem 1rem;
+  color: rgba(255, 255, 255, 0.9);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.modern-dropdown-item:hover {
+  background-color: rgba(60, 60, 80, 0.7);
+  color: rgba(255, 255, 255, 1);
+}
+
+.modern-dropdown-item.active {
+  background-color: rgba(214, 163, 57, 0.2);
+  color: var(--accent-color, #d6a339);
+}
+
+/* Scrollbar styling for dropdown menus */
+.modern-dropdown-menu::-webkit-scrollbar {
+  width: 6px;
+}
+
+.modern-dropdown-menu::-webkit-scrollbar-track {
+  background: rgba(20, 20, 30, 0.5);
+  border-radius: 3px;
+}
+
+.modern-dropdown-menu::-webkit-scrollbar-thumb {
+  background-color: rgba(80, 80, 100, 0.7);
+  border-radius: 3px;
+}
+
+.modern-dropdown-menu::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(100, 100, 120, 0.8);
+}
+
+/* Animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Label styling */
+.modern-label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.95rem;
+}
+
+/* Form group styling */
+.modern-form-group {
+  margin-bottom: 1.25rem;
+}
+
+/* Helper text */
+.modern-helper-text {
+  margin-top: 0.5rem;
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.7);
+}

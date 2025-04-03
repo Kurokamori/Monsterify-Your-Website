@@ -1,4 +1,4 @@
-const pool = require('../config/database');
+const pool = require('../db');
 
 class Trainer {
   /**
@@ -712,6 +712,93 @@ class Trainer {
     } catch (error) {
       console.error('Error recalculating monster counts:', error);
       return false;
+    }
+  }
+
+  /**
+   * Add coins to a trainer
+   * @param {number} trainerId - Trainer ID
+   * @param {number} amount - Amount of coins to add
+   * @returns {Promise<boolean>} - Success status
+   */
+  static async addCoins(trainerId, amount) {
+    try {
+      // Get the trainer
+      const trainer = await this.getById(trainerId);
+      if (!trainer) {
+        throw new Error(`Trainer with ID ${trainerId} not found`);
+      }
+
+      // Update trainer coins
+      const updatedTrainer = {
+        ...trainer,
+        currency_amount: (trainer.currency_amount || 0) + amount,
+        total_earned_currency: (trainer.total_earned_currency || 0) + amount
+      };
+
+      // Save the updated trainer
+      await this.update(trainerId, updatedTrainer);
+      return true;
+    } catch (error) {
+      console.error(`Error adding coins to trainer ${trainerId}:`, error);
+      return false;
+    }
+  }
+
+  /**
+   * Add levels to a trainer
+   * @param {number} trainerId - Trainer ID
+   * @param {number} levels - Number of levels to add
+   * @returns {Promise<boolean>} - Success status
+   */
+  static async addLevels(trainerId, levels) {
+    try {
+      // Get the trainer
+      const trainer = await this.getById(trainerId);
+      if (!trainer) {
+        throw new Error(`Trainer with ID ${trainerId} not found`);
+      }
+
+      // Update trainer levels
+      const updatedTrainer = {
+        ...trainer,
+        level: (trainer.level || 0) + levels
+      };
+
+      // Save the updated trainer
+      await this.update(trainerId, updatedTrainer);
+      return true;
+    } catch (error) {
+      console.error(`Error adding levels to trainer ${trainerId}:`, error);
+      return false;
+    }
+  }
+
+  /**
+   * Get trainers by Discord ID
+   * @param {string} discordId - Discord user ID
+   * @returns {Promise<Array>} - Array of trainers
+   */
+  static async getByDiscordId(discordId) {
+    try {
+      console.log(`Getting trainers for Discord ID: ${discordId}`);
+
+      const query = `
+        SELECT *
+        FROM trainers
+        WHERE player_user_id = $1
+        ORDER BY name
+      `;
+
+      const result = await pool.query(query, [discordId]);
+      const trainers = result.rows;
+
+      console.log(`Found ${trainers.length} trainers for Discord ID ${discordId}`);
+
+      return trainers;
+    } catch (error) {
+      console.error(`Error getting trainers for Discord ID ${discordId}:`, error);
+      return [];
     }
   }
 }

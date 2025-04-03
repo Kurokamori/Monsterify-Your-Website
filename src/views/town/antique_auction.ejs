@@ -1,0 +1,414 @@
+<%- include('../partials/header') %>
+
+<div class="container mx-auto px-4 py-8">
+  <div>
+    <img src="https://i.imgur.com/Yg6BWUm.jpeg" alt="Antique Store Banner" class="location-banner w-full h-48 object-cover rounded-lg shadow-lg">
+    <div class="flex flex-col items-center">
+      <div class="flex items-center mb-4 w-full">
+        <a href="/town/visit/antique" class="btn-secondary mr-4 hover:scale-105 transition-transform">
+          <i class="fas fa-arrow-left mr-2"></i> Back to Antique Store
+        </a>
+        <h2 class="text-2xl font-display font-bold text-center text-amber-400 text-shadow-lg">Antique Auctions</h2>
+      </div>
+      <p class="text-center text-sm text-gray-200 mb-4">Spend your antiques to claim rare monsters.</p>
+    </div>
+  </div>
+
+  <div class="bg-gray-800/70 rounded-lg p-6 mb-8 shadow-lg">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+      <!-- Trainer Selection -->
+      <div>
+        <label for="trainerSelect" class="block text-sm font-medium text-gray-300 mb-2">Select Trainer</label>
+        <select id="trainerSelect" class="w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-3 text-gray-300 focus:outline-none focus:ring-2 focus:ring-amber-500">
+          <option value="">Select a trainer</option>
+          <!-- Trainers will be loaded dynamically -->
+        </select>
+      </div>
+
+      <!-- Antique Selection -->
+      <div>
+        <label for="antiqueSelect" class="block text-sm font-medium text-gray-300 mb-2">Select Antique</label>
+        <select id="antiqueSelect" class="w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-3 text-gray-300 focus:outline-none focus:ring-2 focus:ring-amber-500" disabled>
+          <option value="">Select a trainer first</option>
+          <!-- Antiques will be loaded dynamically -->
+        </select>
+      </div>
+    </div>
+
+    <!-- Monster Grid -->
+    <div id="monsterGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+      <!-- Monsters will be loaded dynamically -->
+      <div class="text-center text-gray-400 col-span-full py-8">
+        Select a trainer and an antique to view available monsters
+      </div>
+    </div>
+  </div>
+
+  <!-- Claim Modal -->
+  <div id="claimModal" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 hidden">
+    <div class="bg-gray-800 rounded-lg p-6 max-w-md w-full">
+      <h3 class="text-xl font-bold text-amber-400 mb-4">Claim Monster</h3>
+      
+      <div id="monsterPreview" class="mb-4 text-center">
+        <!-- Monster preview will be loaded dynamically -->
+      </div>
+      
+      <div class="mb-4">
+        <label for="monsterName" class="block text-sm font-medium text-gray-300 mb-2">Name your monster</label>
+        <input type="text" id="monsterName" class="w-full bg-gray-700 border border-gray-600 rounded-md py-2 px-3 text-gray-300 focus:outline-none focus:ring-2 focus:ring-amber-500" placeholder="Enter a name">
+      </div>
+      
+      <div class="flex justify-end space-x-3">
+        <button id="cancelClaimBtn" class="px-4 py-2 bg-gray-700 text-gray-300 rounded-md hover:bg-gray-600">Cancel</button>
+        <button id="confirmClaimBtn" class="px-4 py-2 bg-amber-500 text-gray-900 rounded-md hover:bg-amber-400">Claim</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // DOM elements
+    const trainerSelect = document.getElementById('trainerSelect');
+    const antiqueSelect = document.getElementById('antiqueSelect');
+    const monsterGrid = document.getElementById('monsterGrid');
+    const claimModal = document.getElementById('claimModal');
+    const monsterPreview = document.getElementById('monsterPreview');
+    const monsterNameInput = document.getElementById('monsterName');
+    const cancelClaimBtn = document.getElementById('cancelClaimBtn');
+    const confirmClaimBtn = document.getElementById('confirmClaimBtn');
+    
+    // State variables
+    let selectedTrainerId = null;
+    let selectedAntique = null;
+    let selectedAuctionId = null;
+    
+    // Load trainers
+    async function loadTrainers() {
+      try {
+        const response = await fetch('/api/trainers/user');
+        const data = await response.json();
+        
+        if (data && data.length > 0) {
+          trainerSelect.innerHTML = '<option value="">Select a trainer</option>';
+          
+          data.forEach(trainer => {
+            const option = document.createElement('option');
+            option.value = trainer.id;
+            option.textContent = trainer.name;
+            trainerSelect.appendChild(option);
+          });
+        }
+      } catch (error) {
+        console.error('Error loading trainers:', error);
+        showMessage('Error loading trainers', 'error');
+      }
+    }
+    
+    // Load antiques for a trainer
+    async function loadAntiques(trainerId) {
+      try {
+        const response = await fetch(`/api/trainers/${trainerId}/inventory`);
+        const data = await response.json();
+        
+        if (data && data.inv_antiques) {
+          antiqueSelect.innerHTML = '<option value="">Select an antique</option>';
+          
+          let antiques = {};
+          try {
+            antiques = typeof data.inv_antiques === 'string' 
+              ? JSON.parse(data.inv_antiques) 
+              : data.inv_antiques;
+          } catch (e) {
+            console.error('Error parsing antiques:', e);
+            antiques = {};
+          }
+          
+          // Add options for each antique with quantity > 0
+          Object.entries(antiques).forEach(([name, quantity]) => {
+            if (quantity > 0) {
+              const option = document.createElement('option');
+              option.value = name;
+              option.textContent = `${name} (${quantity})`;
+              antiqueSelect.appendChild(option);
+            }
+          });
+          
+          // Enable/disable the select based on whether there are antiques
+          antiqueSelect.disabled = Object.keys(antiques).filter(key => antiques[key] > 0).length === 0;
+          
+          if (antiqueSelect.disabled) {
+            antiqueSelect.innerHTML = '<option value="">No antiques available</option>';
+          }
+        }
+      } catch (error) {
+        console.error('Error loading antiques:', error);
+        showMessage('Error loading antiques', 'error');
+      }
+    }
+    
+    // Load auction monsters for an antique
+    async function loadAuctionMonsters(antique) {
+      try {
+        const response = await fetch(`/api/antique-auctions/${encodeURIComponent(antique)}`);
+        const data = await response.json();
+        
+        if (data && data.success) {
+          const monsters = data.data;
+          
+          if (monsters.length === 0) {
+            monsterGrid.innerHTML = `
+              <div class="text-center text-gray-400 col-span-full py-8">
+                No monsters available for ${antique}
+              </div>
+            `;
+            return;
+          }
+          
+          monsterGrid.innerHTML = '';
+          
+          monsters.forEach(monster => {
+            // Create types badges
+            const typesBadges = [];
+            [monster.type1, monster.type2, monster.type3, monster.type4, monster.type5]
+              .filter(Boolean)
+              .forEach(type => {
+                const typeColor = getTypeColor(type);
+                typesBadges.push(`
+                  <span class="inline-block px-2 py-1 rounded-full text-xs font-semibold mr-1 mb-1" 
+                        style="background-color: ${typeColor.bg}; color: ${typeColor.text};">
+                    ${type}
+                  </span>
+                `);
+              });
+            
+            // Create species list
+            const speciesList = [monster.species1, monster.species2, monster.species3]
+              .filter(Boolean)
+              .join(' / ');
+            
+            // Create card
+            const card = document.createElement('div');
+            card.className = 'bg-gray-700 rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow';
+            card.innerHTML = `
+              <div class="relative">
+                <img src="${monster.image_link || 'https://via.placeholder.com/300x200?text=No+Image'}" 
+                     alt="${monster.name || 'Monster'}" 
+                     class="w-full h-48 object-cover">
+                <div class="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 p-2">
+                  <h3 class="text-white font-semibold truncate">${monster.name || 'Unnamed Monster'}</h3>
+                </div>
+              </div>
+              <div class="p-3">
+                <p class="text-gray-300 text-sm mb-2">${speciesList}</p>
+                <div class="flex flex-wrap mb-2">
+                  ${typesBadges.join('')}
+                </div>
+                ${monster.attribute ? `
+                  <p class="text-gray-300 text-sm">
+                    <span class="font-semibold">Attribute:</span> ${monster.attribute}
+                  </p>
+                ` : ''}
+                <button class="claim-btn w-full mt-3 py-1 px-3 bg-amber-500 text-gray-900 rounded hover:bg-amber-400 transition-colors"
+                        data-auction-id="${monster.id}">
+                  Claim
+                </button>
+              </div>
+            `;
+            
+            monsterGrid.appendChild(card);
+          });
+          
+          // Add event listeners to claim buttons
+          document.querySelectorAll('.claim-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+              selectedAuctionId = this.getAttribute('data-auction-id');
+              openClaimModal(selectedAuctionId);
+            });
+          });
+        }
+      } catch (error) {
+        console.error('Error loading auction monsters:', error);
+        showMessage('Error loading auction monsters', 'error');
+      }
+    }
+    
+    // Open claim modal
+    function openClaimModal(auctionId) {
+      // Find the monster data
+      fetch(`/api/antique-auctions/${encodeURIComponent(selectedAntique)}`)
+        .then(response => response.json())
+        .then(data => {
+          if (data && data.success) {
+            const monster = data.data.find(m => m.id === parseInt(auctionId));
+            
+            if (monster) {
+              // Create types badges
+              const typesBadges = [];
+              [monster.type1, monster.type2, monster.type3, monster.type4, monster.type5]
+                .filter(Boolean)
+                .forEach(type => {
+                  const typeColor = getTypeColor(type);
+                  typesBadges.push(`
+                    <span class="inline-block px-2 py-1 rounded-full text-xs font-semibold mr-1 mb-1" 
+                          style="background-color: ${typeColor.bg}; color: ${typeColor.text};">
+                      ${type}
+                    </span>
+                  `);
+                });
+              
+              // Create species list
+              const speciesList = [monster.species1, monster.species2, monster.species3]
+                .filter(Boolean)
+                .join(' / ');
+              
+              // Set preview content
+              monsterPreview.innerHTML = `
+                <div class="mb-3">
+                  <img src="${monster.image_link || 'https://via.placeholder.com/300x200?text=No+Image'}" 
+                       alt="${monster.name || 'Monster'}" 
+                       class="w-full max-h-48 object-contain mx-auto">
+                </div>
+                <h4 class="text-white font-semibold mb-1">${monster.name || 'Unnamed Monster'}</h4>
+                <p class="text-gray-300 text-sm mb-2">${speciesList}</p>
+                <div class="flex flex-wrap justify-center mb-2">
+                  ${typesBadges.join('')}
+                </div>
+                ${monster.attribute ? `
+                  <p class="text-gray-300 text-sm">
+                    <span class="font-semibold">Attribute:</span> ${monster.attribute}
+                  </p>
+                ` : ''}
+              `;
+              
+              // Set default name
+              monsterNameInput.value = monster.name || '';
+              
+              // Show modal
+              claimModal.classList.remove('hidden');
+            }
+          }
+        })
+        .catch(error => {
+          console.error('Error getting monster details:', error);
+          showMessage('Error getting monster details', 'error');
+        });
+    }
+    
+    // Close claim modal
+    function closeClaimModal() {
+      claimModal.classList.add('hidden');
+      monsterNameInput.value = '';
+    }
+    
+    // Claim monster
+    async function claimMonster() {
+      if (!selectedTrainerId || !selectedAuctionId || !monsterNameInput.value.trim()) {
+        showMessage('Please fill in all fields', 'error');
+        return;
+      }
+      
+      try {
+        const response = await fetch('/api/antique-auctions/claim', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            trainerId: selectedTrainerId,
+            auctionId: selectedAuctionId,
+            monsterName: monsterNameInput.value.trim()
+          })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+          showMessage('Monster claimed successfully!', 'success');
+          closeClaimModal();
+          
+          // Reload antiques and monsters
+          loadAntiques(selectedTrainerId);
+          loadAuctionMonsters(selectedAntique);
+        } else {
+          showMessage(data.message || 'Error claiming monster', 'error');
+        }
+      } catch (error) {
+        console.error('Error claiming monster:', error);
+        showMessage('Error claiming monster', 'error');
+      }
+    }
+    
+    // Show message
+    function showMessage(message, type = 'info') {
+      // You can implement a toast notification system here
+      alert(message);
+    }
+    
+    // Get color for type badge
+    function getTypeColor(type) {
+      const typeColors = {
+        'Normal': { bg: '#A8A878', text: '#212121' },
+        'Fire': { bg: '#F08030', text: '#FFFFFF' },
+        'Water': { bg: '#6890F0', text: '#FFFFFF' },
+        'Electric': { bg: '#F8D030', text: '#212121' },
+        'Grass': { bg: '#78C850', text: '#212121' },
+        'Ice': { bg: '#98D8D8', text: '#212121' },
+        'Fighting': { bg: '#C03028', text: '#FFFFFF' },
+        'Poison': { bg: '#A040A0', text: '#FFFFFF' },
+        'Ground': { bg: '#E0C068', text: '#212121' },
+        'Flying': { bg: '#A890F0', text: '#212121' },
+        'Psychic': { bg: '#F85888', text: '#FFFFFF' },
+        'Bug': { bg: '#A8B820', text: '#212121' },
+        'Rock': { bg: '#B8A038', text: '#212121' },
+        'Ghost': { bg: '#705898', text: '#FFFFFF' },
+        'Dragon': { bg: '#7038F8', text: '#FFFFFF' },
+        'Dark': { bg: '#705848', text: '#FFFFFF' },
+        'Steel': { bg: '#B8B8D0', text: '#212121' },
+        'Fairy': { bg: '#EE99AC', text: '#212121' },
+        // Add more types as needed
+      };
+      
+      return typeColors[type] || { bg: '#68A090', text: '#FFFFFF' };
+    }
+    
+    // Event listeners
+    trainerSelect.addEventListener('change', function() {
+      selectedTrainerId = this.value;
+      
+      if (selectedTrainerId) {
+        loadAntiques(selectedTrainerId);
+      } else {
+        antiqueSelect.innerHTML = '<option value="">Select a trainer first</option>';
+        antiqueSelect.disabled = true;
+        monsterGrid.innerHTML = `
+          <div class="text-center text-gray-400 col-span-full py-8">
+            Select a trainer and an antique to view available monsters
+          </div>
+        `;
+      }
+    });
+    
+    antiqueSelect.addEventListener('change', function() {
+      selectedAntique = this.value;
+      
+      if (selectedAntique) {
+        loadAuctionMonsters(selectedAntique);
+      } else {
+        monsterGrid.innerHTML = `
+          <div class="text-center text-gray-400 col-span-full py-8">
+            Select an antique to view available monsters
+          </div>
+        `;
+      }
+    });
+    
+    cancelClaimBtn.addEventListener('click', closeClaimModal);
+    confirmClaimBtn.addEventListener('click', claimMonster);
+    
+    // Initialize
+    loadTrainers();
+  });
+</script>
+
+<%- include('../partials/footer') %>

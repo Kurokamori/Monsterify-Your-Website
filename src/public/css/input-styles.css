@@ -1,0 +1,335 @@
+/* Modern Sleek Input Field Styles */
+
+/* Base input styling */
+input.modern-input,
+textarea.modern-input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background-color: rgba(30, 30, 40, 0.95);
+  border: 1px solid rgba(80, 80, 100, 0.5);
+  border-radius: 0.5rem;
+  color: rgba(255, 255, 255, 0.95);
+  font-size: 0.95rem;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+input.modern-input:hover,
+textarea.modern-input:hover {
+  border-color: rgba(120, 120, 150, 0.7);
+  background-color: rgba(40, 40, 50, 0.95);
+}
+
+input.modern-input:focus,
+textarea.modern-input:focus {
+  outline: none;
+  border-color: var(--accent-color, #d6a339);
+  box-shadow: 0 0 0 2px rgba(214, 163, 57, 0.25);
+}
+
+/* Specific input types */
+input[type="text"].modern-input,
+input[type="email"].modern-input,
+input[type="password"].modern-input,
+input[type="url"].modern-input,
+input[type="search"].modern-input {
+  height: 2.75rem;
+}
+
+input[type="number"].modern-input {
+  height: 2.75rem;
+  padding-right: 0.5rem;
+}
+
+/* Textarea specific styling */
+textarea.modern-input {
+  min-height: 100px;
+  resize: vertical;
+  line-height: 1.5;
+}
+
+/* Placeholder styling */
+input.modern-input::placeholder,
+textarea.modern-input::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+  opacity: 1;
+}
+
+/* Disabled state */
+input.modern-input:disabled,
+textarea.modern-input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background-color: rgba(20, 20, 30, 0.8);
+}
+
+/* Input with icon */
+.modern-input-with-icon {
+  position: relative;
+}
+
+.modern-input-with-icon input.modern-input {
+  padding-left: 2.5rem;
+}
+
+.modern-input-with-icon .input-icon {
+  position: absolute;
+  left: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: rgba(255, 255, 255, 0.6);
+  pointer-events: none;
+}
+
+/* Input with button */
+.modern-input-with-button {
+  position: relative;
+}
+
+.modern-input-with-button input.modern-input {
+  padding-right: 3rem;
+}
+
+.modern-input-with-button .input-button {
+  position: absolute;
+  right: 0.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: var(--accent-color, #d6a339);
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  transition: all 0.2s ease;
+}
+
+.modern-input-with-button .input-button:hover {
+  background-color: rgba(214, 163, 57, 0.1);
+}
+
+/* Input sizes */
+input.modern-input-sm,
+textarea.modern-input-sm {
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+  border-radius: 0.375rem;
+}
+
+input.modern-input-lg,
+textarea.modern-input-lg {
+  padding: 0.875rem 1.25rem;
+  font-size: 1.05rem;
+  border-radius: 0.625rem;
+}
+
+/* Input validation states */
+input.modern-input-error,
+textarea.modern-input-error {
+  border-color: rgba(239, 68, 68, 0.7);
+}
+
+input.modern-input-error:focus,
+textarea.modern-input-error:focus {
+  box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.25);
+}
+
+input.modern-input-success,
+textarea.modern-input-success {
+  border-color: rgba(16, 185, 129, 0.7);
+}
+
+input.modern-input-success:focus,
+textarea.modern-input-success:focus {
+  box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.25);
+}
+
+/* Error message */
+.modern-input-error-message {
+  margin-top: 0.5rem;
+  font-size: 0.875rem;
+  color: rgba(239, 68, 68, 0.9);
+}
+
+/* Helper text */
+.modern-input-helper {
+  margin-top: 0.5rem;
+  font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* Label styling */
+.modern-label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.95rem;
+}
+
+/* Form group styling */
+.modern-form-group {
+  margin-bottom: 1.25rem;
+}
+
+/* File input styling */
+.modern-file-input {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+}
+
+.modern-file-input input[type="file"] {
+  position: absolute;
+  left: 0;
+  top: 0;
+  opacity: 0;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+}
+
+.modern-file-input-label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1rem;
+  background-color: rgba(30, 30, 40, 0.95);
+  border: 1px dashed rgba(80, 80, 100, 0.7);
+  border-radius: 0.5rem;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.95rem;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.modern-file-input:hover .modern-file-input-label {
+  border-color: var(--accent-color, #d6a339);
+  background-color: rgba(40, 40, 50, 0.95);
+}
+
+.modern-file-input-icon {
+  margin-right: 0.5rem;
+  color: var(--accent-color, #d6a339);
+}
+
+/* Checkbox and radio styling */
+.modern-checkbox,
+.modern-radio {
+  position: relative;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+  padding: 0.25rem 0;
+}
+
+.modern-checkbox input,
+.modern-radio input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+.modern-checkbox-mark,
+.modern-radio-mark {
+  position: relative;
+  display: inline-block;
+  height: 1.25rem;
+  width: 1.25rem;
+  background-color: rgba(30, 30, 40, 0.95);
+  border: 1px solid rgba(80, 80, 100, 0.7);
+  margin-right: 0.5rem;
+  transition: all 0.2s ease;
+}
+
+.modern-checkbox-mark {
+  border-radius: 0.25rem;
+}
+
+.modern-radio-mark {
+  border-radius: 50%;
+}
+
+.modern-checkbox:hover input ~ .modern-checkbox-mark,
+.modern-radio:hover input ~ .modern-radio-mark {
+  background-color: rgba(40, 40, 50, 0.95);
+  border-color: rgba(120, 120, 150, 0.7);
+}
+
+.modern-checkbox input:checked ~ .modern-checkbox-mark,
+.modern-radio input:checked ~ .modern-radio-mark {
+  background-color: var(--accent-color, #d6a339);
+  border-color: var(--accent-color, #d6a339);
+}
+
+.modern-checkbox-mark:after,
+.modern-radio-mark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+.modern-checkbox input:checked ~ .modern-checkbox-mark:after,
+.modern-radio input:checked ~ .modern-radio-mark:after {
+  display: block;
+}
+
+.modern-checkbox .modern-checkbox-mark:after {
+  left: 0.4rem;
+  top: 0.2rem;
+  width: 0.3rem;
+  height: 0.6rem;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+.modern-radio .modern-radio-mark:after {
+  left: 0.35rem;
+  top: 0.35rem;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: white;
+}
+
+/* Input group */
+.modern-input-group {
+  display: flex;
+  align-items: stretch;
+}
+
+.modern-input-group input.modern-input {
+  border-radius: 0;
+}
+
+.modern-input-group > *:first-child {
+  border-top-left-radius: 0.5rem;
+  border-bottom-left-radius: 0.5rem;
+}
+
+.modern-input-group > *:last-child {
+  border-top-right-radius: 0.5rem;
+  border-bottom-right-radius: 0.5rem;
+}
+
+.modern-input-group-prepend,
+.modern-input-group-append {
+  display: flex;
+  align-items: center;
+  padding: 0 0.75rem;
+  background-color: rgba(20, 20, 30, 0.95);
+  border: 1px solid rgba(80, 80, 100, 0.5);
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.modern-input-group-prepend {
+  border-right: none;
+}
+
+.modern-input-group-append {
+  border-left: none;
+}

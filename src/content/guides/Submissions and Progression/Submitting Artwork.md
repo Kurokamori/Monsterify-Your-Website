@@ -1,4 +1,6 @@
 # Submitting Artwork
+! This guide is currently somewhat out of date, using the calculations in here is fine, but if you're confused about why some numbers aren't lining up, I still need to update this guide!
+
 The core of the game - submitting your own artwork to be used in the game.
 Both artwork featuring characters from the game (game art) and artwork made outside of the game can be submit for levels and coins.
 
@@ -6,17 +8,15 @@ The two types of artwork are graded differently however, and award levels differ
 
 Coins are always Levels Earned \* 50
 
-Art Calculator : A planned feature that replaces the need for doing the level calculations yourself, and allows for the answering of some questions and getting the total levels earned automatically.
+Art Calculator : Now available! This feature replaces the need for doing the level calculations yourself, and allows for the answering of some questions and getting the total levels earned automatically. You can access it through the Submissions menu.
 
 ## How to Submit Artwork
 
-Currently, artwork submission is bot-only. Post your artwork in a chat channel, and then right click it for the link. Go to \!menu \-\> Submissions \-\> Art Submissions \-\> Enter Levels at which point you will be prompted for a link (paste the link you copied) and the ability to enter ‘Name’:Level pairs. Do the math explained bellow, and enter the information.  
-Once the form is submitted, levels and coins should be submitted and added to each character listed.   
-(Like with all bot features, there’s still some instability, please let me know if you run into any issues)
+Artwork Submission is now available through both the bot and the website; there are multiple ways to submit your artwork, depending on whether you want to submit game art or other art and whether you'd like to do the calculations manually or have the program do them for you. There is still some instability and need for testing with the art calculators especially, so please let me know if you run into any issues.
 
 ## Level Calculation \- Game Artwork
 
-Game Artwork, or more simply, any artwork made for the game featuring game characters is graded in the following manner :  
+Game Artwork, or more simply, any artwork made for the game featuring game characters is graded in the following manner :
 
 |           | Linework : | Pick One                        |             | Colors :       | Pick One        |
 |-----------|------------|---------------------------------|-------------|----------------|-----------------|
@@ -25,27 +25,41 @@ Game Artwork, or more simply, any artwork made for the game featuring game chara
 | Half-Body | 1          | 2                               | 1           | 3              | 6               |
 | Full-Body | 2          | 3                               | 1           | 4              | 8               |
 
-##### Complexity Bonuses :  
+### Complexity Bonuses
 Pick One Per Species
-Pokemon :
 
-| Species That Don't Evolve | Species That | Evolve Once |            | Species That Evolve | More Than Once   |
-|---------------------------|--------------|-------------|------------|---------------------|------------------|
-|                           | Base Stage   | Final Stage | Base Stage | First Evolution     | Second Evolution |
-| 3                         | 0            | 2           | 0          | 1                   | 3                |
+#### Pokémon
+- Base Stage: +0 levels
+- First Evolution: +1 level
+- Final Stage: +2 levels
+- Second Evolution: +3 levels
+- Doesn't Evolve: +3 levels
 
-#### Yokai : Yokai never evolve, so they get 3 complexity bonus levels.
+#### Digimon
+- Baby/Fresh: +0 levels
+- Rookie: +1 level
+- Champion: +3 levels
+- Above Champion: +5 levels
 
-Digimon :
+#### Other
+- Trainer/Human: +3 levels
+- Yokai: +3 levels
 
-| Stage                 | Level Bonus |
-|-----------------------|-------------|
-| Training/ Baby/ Fresh | 0           |
-| Rookie                | 1           |
-| Champion              | 3           |
-| Above Champion        | 5           |
+### Modifiers
+The following modifiers can be applied to characters for additional levels:
 
-### Human / Alter / Trainer Bonus : All Humans and Humanoids receive a +3 level bonus in complexity.
+- Paradox: +2 levels
+- Ultra Beast: +2 levels
+- Mega: +2 levels
+- Legendary: +3 levels
+- Mythical: +3 levels
+- Regional: +1 level
+- Fusion: +2 levels
+- Gigantamax: +2 levels
+- Dynamax: +1 level
+- Alpha: +1 level
+
+
 #### For Player Characters and Official NPCs there is an additional 'trainer bonus' of +4 levels that can be added to any of mon that belongs to them (in the case of player characters) or any mon of your choosing (in the case of NPCs)
 
 Bonuses
@@ -56,23 +70,23 @@ Bonuses
 |             |                   |                    |   | Simple Animation such as hair or blinking. | Complex animation, each frame is treated as a separate image. |
 
 
-You should pick a value for each pertaining category such as :  
-Inked (or equivalent), flat color, half-body, trainer, simple background \= 13 levels  
-So the trainer in the level would earn 13 levels.  
-Background applies to each monster/trainer.  
+You should pick a value for each pertaining category such as :
+Inked (or equivalent), flat color, half-body, trainer, simple background \= 13 levels
+So the trainer in the level would earn 13 levels.
+Background applies to each monster/trainer.
 Complexity Bonuses Stack, and are added for each species. So a 3 monster fusion gets 3 complexity bonuses.
 
 #### Levels Over 100 :
 
-Levels over 100 are automatically converted to coins, and earn you bonus levels for other monsters, which have to be manually calculated.  
+Levels over 100 are automatically converted to coins, and earn you bonus levels for other monsters, which have to be manually calculated.
 For every 2 levels over 100, 1 level can be added to any monster/trainer of the same trainer as the level 100\.
 
 ##### You should enter both the Level 100’s levels and the awarded bonus levels (folded into whomever’s levels) to receive proper bonuses.
 
 ## Level Calculation \- Other Art
 
-You can submit other artwork, made for external reasons, be it commissions, other doodles, personal artwork, etc.  
-For these, you get a flat amount of levels, per character in the artwork, depending on finish level as :  
+You can submit other artwork, made for external reasons, be it commissions, other doodles, personal artwork, etc.
+For these, you get a flat amount of levels, per character in the artwork, depending on finish level as :
 
 | Finish             | Levels Per Character |
 |--------------------|----------------------|

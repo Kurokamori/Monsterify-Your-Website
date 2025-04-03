@@ -1,0 +1,302 @@
+<% /* Set the title and other variables for the layout */ %>
+<% title = 'My Adventures' %>
+
+<div class="container mx-auto px-4 py-6">
+  <!-- Header Section -->
+  <div class="location-banner">
+    <img src="https://i.imgur.com/t7lEdWL.jpeg" alt="My Adventures Banner" class="w-full h-full object-cover">
+    <div class="location-banner-overlay">
+      <div class="flex items-center mb-4 w-full">
+        <a href="/adventures" class="btn-secondary hover:scale-105 transition-transform">
+          <i class="fas fa-arrow-left mr-2"></i> Back to Adventures
+        </a>
+      </div>
+      <h1 class="location-banner-title">My Adventures</h1>
+      <p class="location-banner-subtitle max-w-2xl">
+        View and manage your ongoing and completed adventures.
+      </p>
+    </div>
+  </div>
+
+  <!-- Message Display -->
+  <% if (typeof message !== 'undefined' && message) { %>
+    <div class="alert alert-<%= messageType || 'info' %> my-4">
+      <%= message %>
+    </div>
+  <% } %>
+
+  <!-- Start New Adventure Button -->
+  <div class="flex justify-end mb-6">
+    <a href="/adventures/regions" class="btn-primary">
+      <i class="fas fa-plus mr-2"></i> Start New Adventure
+    </a>
+  </div>
+
+  <!-- Active Adventures Section -->
+  <div class="mb-10">
+    <h2 class="text-2xl font-bold text-white mb-4 border-b border-purple-500 pb-2">Active Adventures</h2>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+      <% 
+      const activeAdventures = adventures.filter(adv => adv.status === 'active');
+      if (activeAdventures && activeAdventures.length > 0) { 
+      %>
+        <% activeAdventures.forEach(adventure => { %>
+          <div class="adventure-card" style="border: 2px solid #8b5cf6; border-radius: 0.5rem; overflow: hidden; background-color: rgba(30, 41, 59, 0.8);">
+            <div class="relative">
+              <% if (adventure.area_image) { %>
+                <img src="<%= adventure.area_image %>" alt="Adventure" class="w-full h-48 object-cover">
+              <% } else { %>
+                <img src="https://via.placeholder.com/400x200?text=Adventure" alt="Adventure" class="w-full h-48 object-cover">
+              <% } %>
+              <div class="absolute inset-0 bg-gradient-to-t from-black/90 to-transparent"></div>
+              <div class="absolute top-0 right-0 m-2">
+                <span class="bg-green-600 text-white text-xs px-2 py-1 rounded-full">Active</span>
+              </div>
+              <div class="absolute bottom-0 left-0 right-0 p-4">
+                <h3 class="text-xl font-bold text-white text-shadow-lg">
+                  <%= adventure.area_name ? `${adventure.area_name}` : 'Custom Adventure' %>
+                </h3>
+                <% if (adventure.region_name) { %>
+                  <p class="text-gray-300 text-sm">
+                    <i class="fas fa-map-marker-alt mr-1"></i> <%= adventure.region_name %>
+                  </p>
+                <% } %>
+              </div>
+            </div>
+            <div class="p-4">
+              <p class="text-gray-300 mb-2">
+                <i class="fas fa-calendar-alt mr-2"></i> Started: <%= new Date(adventure.started_at).toLocaleDateString() %>
+              </p>
+              <p class="text-gray-300 mb-4">
+                <i class="fas fa-comment-alt mr-2"></i> Thread ID: <%= adventure.thread_id %>
+              </p>
+              <div class="flex justify-between">
+                <a href="/adventures/view/<%= adventure.adventure_id %>" class="btn-secondary text-sm">
+                  <i class="fas fa-eye mr-1"></i> View Details
+                </a>
+                <button class="btn-danger text-sm" onclick="endAdventure(<%= adventure.adventure_id %>)">
+                  <i class="fas fa-flag-checkered mr-1"></i> End Adventure
+                </button>
+              </div>
+            </div>
+          </div>
+        <% }); %>
+      <% } else { %>
+        <div class="col-span-full text-center py-8 bg-gray-800/50 rounded-lg border border-gray-700">
+          <p class="text-gray-400">You don't have any active adventures. Start a new one!</p>
+        </div>
+      <% } %>
+    </div>
+  </div>
+
+  <!-- Completed Adventures Section -->
+  <div>
+    <h2 class="text-2xl font-bold text-white mb-4 border-b border-purple-500 pb-2">Completed Adventures</h2>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+      <% 
+      const completedAdventures = adventures.filter(adv => adv.status === 'completed');
+      if (completedAdventures && completedAdventures.length > 0) { 
+      %>
+        <% completedAdventures.forEach(adventure => { %>
+          <div class="adventure-card" style="border: 2px solid #6b7280; border-radius: 0.5rem; overflow: hidden; background-color: rgba(30, 41, 59, 0.8);">
+            <div class="relative">
+              <% if (adventure.area_image) { %>
+                <img src="<%= adventure.area_image %>" alt="Adventure" class="w-full h-48 object-cover opacity-70">
+              <% } else { %>
+                <img src="https://via.placeholder.com/400x200?text=Adventure" alt="Adventure" class="w-full h-48 object-cover opacity-70">
+              <% } %>
+              <div class="absolute inset-0 bg-gradient-to-t from-black/90 to-transparent"></div>
+              <div class="absolute top-0 right-0 m-2">
+                <span class="bg-gray-600 text-white text-xs px-2 py-1 rounded-full">Completed</span>
+              </div>
+              <div class="absolute bottom-0 left-0 right-0 p-4">
+                <h3 class="text-xl font-bold text-white text-shadow-lg">
+                  <%= adventure.area_name ? `${adventure.area_name}` : 'Custom Adventure' %>
+                </h3>
+                <% if (adventure.region_name) { %>
+                  <p class="text-gray-300 text-sm">
+                    <i class="fas fa-map-marker-alt mr-1"></i> <%= adventure.region_name %>
+                  </p>
+                <% } %>
+              </div>
+            </div>
+            <div class="p-4">
+              <p class="text-gray-300 mb-2">
+                <i class="fas fa-calendar-alt mr-2"></i> Started: <%= new Date(adventure.started_at).toLocaleDateString() %>
+              </p>
+              <p class="text-gray-300 mb-2">
+                <i class="fas fa-flag-checkered mr-2"></i> Ended: <%= adventure.ended_at ? new Date(adventure.ended_at).toLocaleDateString() : 'N/A' %>
+              </p>
+              <div class="flex justify-end">
+                <a href="/adventures/view/<%= adventure.adventure_id %>" class="btn-secondary text-sm">
+                  <i class="fas fa-eye mr-1"></i> View Details
+                </a>
+              </div>
+            </div>
+          </div>
+        <% }); %>
+      <% } else { %>
+        <div class="col-span-full text-center py-8 bg-gray-800/50 rounded-lg border border-gray-700">
+          <p class="text-gray-400">You don't have any completed adventures yet.</p>
+        </div>
+      <% } %>
+    </div>
+  </div>
+</div>
+
+<script>
+  async function endAdventure(adventureId) {
+    if (!confirm('Are you sure you want to end this adventure? This action cannot be undone.')) {
+      return;
+    }
+    
+    try {
+      const response = await fetch(`/api/adventures/${adventureId}/end`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      const data = await response.json();
+      
+      if (data.success) {
+        window.location.reload();
+      } else {
+        alert('Error: ' + (data.message || 'Failed to end adventure'));
+      }
+    } catch (error) {
+      console.error('Error ending adventure:', error);
+      alert('An error occurred while ending the adventure. Please try again.');
+    }
+  }
+</script>
+
+<style>
+  .adventure-card {
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  
+  .adventure-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px -5px rgba(139, 92, 246, 0.4);
+  }
+  
+  .text-shadow-lg {
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+  }
+  
+  .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem 1rem;
+    font-weight: 500;
+    color: white;
+    background-color: #4f46e5;
+    border-radius: 0.375rem;
+    transition: background-color 0.2s;
+    text-decoration: none;
+  }
+  
+  .btn-secondary:hover {
+    background-color: #4338ca;
+  }
+  
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem 1rem;
+    font-weight: 500;
+    color: white;
+    background-color: #8b5cf6;
+    border-radius: 0.375rem;
+    transition: background-color 0.2s;
+    text-decoration: none;
+  }
+  
+  .btn-primary:hover {
+    background-color: #7c3aed;
+  }
+  
+  .btn-danger {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem 1rem;
+    font-weight: 500;
+    color: white;
+    background-color: #ef4444;
+    border-radius: 0.375rem;
+    transition: background-color 0.2s;
+    text-decoration: none;
+    cursor: pointer;
+  }
+  
+  .btn-danger:hover {
+    background-color: #dc2626;
+  }
+  
+  .location-banner {
+    position: relative;
+    height: 250px;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    margin-bottom: 2rem;
+  }
+  
+  .location-banner-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(0,0,0,0.8));
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 2rem;
+  }
+  
+  .location-banner-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 0.5rem;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+  }
+  
+  .location-banner-subtitle {
+    font-size: 1.1rem;
+    color: rgba(255, 255, 255, 0.9);
+    margin-bottom: 1rem;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+  }
+  
+  .alert {
+    padding: 1rem;
+    border-radius: 0.375rem;
+    margin-bottom: 1rem;
+  }
+  
+  .alert-success {
+    background-color: rgba(16, 185, 129, 0.2);
+    border: 1px solid rgba(16, 185, 129, 0.4);
+    color: #10b981;
+  }
+  
+  .alert-error {
+    background-color: rgba(239, 68, 68, 0.2);
+    border: 1px solid rgba(239, 68, 68, 0.4);
+    color: #ef4444;
+  }
+  
+  .alert-info {
+    background-color: rgba(59, 130, 246, 0.2);
+    border: 1px solid rgba(59, 130, 246, 0.4);
+    color: #3b82f6;
+  }
+</style>

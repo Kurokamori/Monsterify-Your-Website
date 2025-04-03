@@ -1,0 +1,522 @@
+<div class="submission-container">
+    <div class="submission-card">
+        <h1 class="submission-title">External Art Submission</h1>
+        <form id="externalArtForm" class="submission-form">
+            <div class="form-group">
+                <label for="title" class="form-label">Title</label>
+                <input type="text" id="title" name="title" class="modern-input" required>
+            </div>
+
+            <div class="form-group">
+                <label for="artUrl" class="form-label">Art URL</label>
+                <input type="url" id="artUrl" name="artUrl" class="modern-input" required>
+                <p class="form-help">Link to your artwork (e.g., DeviantArt, Twitter, etc.)</p>
+            </div>
+
+            <div class="form-group">
+                <label for="artType" class="form-label">Art Type</label>
+                <select id="artType" name="artType" class="modern-select" required>
+                    <option value="">-- Select Art Type --</option>
+                    <option value="sketch">Sketch (1 level)</option>
+                    <option value="sketch_set">Sketch Set (3 levels)</option>
+                    <option value="line_art">Line Art (3 levels)</option>
+                    <option value="rendered">Rendered (5 levels)</option>
+                    <option value="polished">Polished (7 levels)</option>
+                </select>
+                <p class="form-help">Select the type of artwork you're submitting</p>
+            </div>
+
+            <div class="participants-section">
+                <h2 class="submission-subtitle">Participants</h2>
+
+                <!-- Trainer Participants -->
+                <div class="form-group">
+                    <h3 class="form-label">Trainer Participants</h3>
+                    <div id="trainerParticipantsContainer" class="space-y-3">
+                        <!-- Trainer participants will be added here -->
+                    </div>
+                    <button type="button" id="addTrainerParticipant" class="add-participant-button">
+                        <i class="fas fa-plus"></i> Add Trainer Participant
+                    </button>
+                </div>
+
+                <!-- Monster Participants -->
+                <div class="form-group">
+                    <h3 class="form-label">Monster Participants</h3>
+                    <div id="monsterParticipantsContainer" class="space-y-3">
+                        <!-- Monster participants will be added here -->
+                    </div>
+                    <button type="button" id="addMonsterParticipant" class="add-participant-button">
+                        <i class="fas fa-plus"></i> Add Monster Participant
+                    </button>
+                </div>
+            </div>
+
+            <div class="form-buttons">
+                <a href="/submissions" class="back-button">
+                    <i class="fas fa-arrow-left"></i> Back
+                </a>
+                <button type="submit" class="submit-button">
+                    <i class="fas fa-paper-plane"></i> Submit
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Results Section (Hidden by default) -->
+    <div id="resultsSection" class="hidden results-section">
+        <h2 class="results-title">Submission Results</h2>
+        <div id="calculationResults" class="results-content"></div>
+
+        <!-- Gift Recipient Form will be dynamically added here when needed -->
+        <div id="giftRecipientFormContainer"></div>
+
+        <div class="results-buttons">
+            <button id="backToForm" class="back-button">
+                <i class="fas fa-arrow-left"></i> Submit Another
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Include the reward summary modal -->
+<%- include('../../components/reward-summary-modal') %>
+
+<script>
+    // Include the reward summary script
+    document.write('<script src="/js/reward-summary.js"><\/script>');
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('externalArtForm');
+        const resultsSection = document.getElementById('resultsSection');
+        const calculationResults = document.getElementById('calculationResults');
+        const backToForm = document.getElementById('backToForm');
+        const trainerParticipantsContainer = document.getElementById('trainerParticipantsContainer');
+        const monsterParticipantsContainer = document.getElementById('monsterParticipantsContainer');
+        const addTrainerParticipant = document.getElementById('addTrainerParticipant');
+        const addMonsterParticipant = document.getElementById('addMonsterParticipant');
+        const giftRecipientFormContainer = document.getElementById('giftRecipientFormContainer');
+        const artTypeSelect = document.getElementById('artType');
+
+        // Art type level values
+        const artTypeLevels = {
+            'sketch': 1,
+            'sketch_set': 3,
+            'line_art': 3,
+            'rendered': 5,
+            'polished': 7
+        };
+
+        // Track participant entries
+        let trainerParticipantCount = 0;
+        let monsterParticipantCount = 0;
+
+        // Add trainer participant
+        addTrainerParticipant.addEventListener('click', function() {
+            const participantId = 'trainer-' + Date.now();
+            const participantHtml = `
+                <div id="${participantId}" class="participant-entry">
+                    <div class="participant-header">
+                        <span class="participant-title">Trainer Participant</span>
+                        <button type="button" class="remove-participant" data-id="${participantId}">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Select Trainer</label>
+                        <select name="trainer_id" class="trainer-select modern-select" required>
+                            <option value="">-- Select Trainer --</option>
+                            <!-- Options will be populated via JavaScript -->
+                        </select>
+                    </div>
+                    <div class="form-group mb-0">
+                        <div class="flex items-center">
+                            <input type="checkbox" name="is_gift" class="gift-checkbox mr-2">
+                            <label class="form-label mb-0">Gift Participant</label>
+                        </div>
+                        <p class="form-help">Check if this participant is a gift for another trainer</p>
+                    </div>
+                </div>
+            `;
+
+            trainerParticipantsContainer.insertAdjacentHTML('beforeend', participantHtml);
+            trainerParticipantCount++;
+
+            // Load trainers for the new dropdown
+            const trainerSelect = document.querySelector(`#${participantId} .trainer-select`);
+            loadTrainers(trainerSelect);
+
+            // Add remove event listener
+            document.querySelector(`#${participantId} .remove-participant`).addEventListener('click', function() {
+                document.getElementById(this.dataset.id).remove();
+                trainerParticipantCount--;
+            });
+        });
+
+        // Add monster participant
+        addMonsterParticipant.addEventListener('click', function() {
+            const participantId = 'monster-' + Date.now();
+            const participantHtml = `
+                <div id="${participantId}" class="participant-entry">
+                    <div class="participant-header">
+                        <span class="participant-title">Monster Participant</span>
+                        <button type="button" class="remove-participant" data-id="${participantId}">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Select Trainer</label>
+                        <select name="trainer_id" class="trainer-select modern-select" required>
+                            <option value="">-- Select Trainer --</option>
+                            <!-- Options will be populated via JavaScript -->
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Select Monster</label>
+                        <select name="monster_id" class="monster-select modern-select" required disabled>
+                            <option value="">-- Select Monster --</option>
+                            <!-- Options will be populated via JavaScript -->
+                        </select>
+                    </div>
+                    <div class="form-group mb-0">
+                        <div class="flex items-center">
+                            <input type="checkbox" name="is_gift" class="gift-checkbox mr-2">
+                            <label class="form-label mb-0">Gift Participant</label>
+                        </div>
+                        <p class="form-help">Check if this participant is a gift for another trainer</p>
+                    </div>
+                </div>
+            `;
+
+            monsterParticipantsContainer.insertAdjacentHTML('beforeend', participantHtml);
+            monsterParticipantCount++;
+
+            // Load trainers for the new dropdown
+            const trainerSelect = document.querySelector(`#${participantId} .trainer-select`);
+            const monsterSelect = document.querySelector(`#${participantId} .monster-select`);
+
+            loadTrainers(trainerSelect);
+
+            // Add trainer change event to load monsters
+            trainerSelect.addEventListener('change', function() {
+                const trainerId = this.value;
+                if (trainerId) {
+                    loadMonsters(trainerId, monsterSelect);
+                    monsterSelect.disabled = false;
+                } else {
+                    monsterSelect.disabled = true;
+                    monsterSelect.innerHTML = '<option value="">-- Select Monster --</option>';
+                }
+            });
+
+            // Add remove event listener
+            document.querySelector(`#${participantId} .remove-participant`).addEventListener('click', function() {
+                document.getElementById(this.dataset.id).remove();
+                monsterParticipantCount--;
+            });
+        });
+
+        // Load trainers for a select element
+        async function loadTrainers(selectElement) {
+            try {
+                const response = await fetch('/api/trainers/all');
+                const data = await response.json();
+
+                // Clear existing options
+                selectElement.innerHTML = '<option value="">-- Select Trainer --</option>';
+
+                // Check if data is an array (direct array response) or has a trainers property
+                const trainers = Array.isArray(data) ? data : (data.trainers || []);
+
+                if (trainers.length > 0) {
+                    // Add trainer options
+                    trainers.forEach(trainer => {
+                        const option = document.createElement('option');
+                        option.value = trainer.id;
+                        option.textContent = `${trainer.name} (Level ${trainer.level || 1})`;
+                        selectElement.appendChild(option);
+                    });
+                } else {
+                    console.error('No trainers found');
+                }
+            } catch (error) {
+                console.error('Error loading trainers:', error);
+            }
+        }
+
+        // Load monsters for a select element
+        async function loadMonsters(trainerId, selectElement) {
+            try {
+                const response = await fetch(`/api/trainers/${trainerId}/monsters`);
+                const data = await response.json();
+
+                if (data.success && data.monsters) {
+                    // Clear existing options
+                    selectElement.innerHTML = '<option value="">-- Select Monster --</option>';
+
+                    // Add monster options
+                    data.monsters.forEach(monster => {
+                        const option = document.createElement('option');
+                        option.value = monster.id;
+                        option.textContent = `${monster.name} (Level ${monster.level})`;
+                        selectElement.appendChild(option);
+                    });
+                } else {
+                    console.error('Error loading monsters:', data.message || 'Unknown error');
+                }
+            } catch (error) {
+                console.error('Error loading monsters:', error);
+            }
+        }
+
+        // Form submission
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            // Get art type and levels
+            const artType = artTypeSelect.value;
+            const totalLevels = artTypeLevels[artType] || 0;
+
+            if (!artType || totalLevels === 0) {
+                alert('Please select a valid art type');
+                return;
+            }
+
+            // Collect form data
+            const formData = {
+                submissionType: 'art',
+                artType: artType,
+                title: document.getElementById('title').value,
+                artUrl: document.getElementById('artUrl').value,
+                totalLevels: totalLevels,
+                participants: []
+            };
+
+            // Collect trainer participants
+            document.querySelectorAll('#trainerParticipantsContainer .participant-entry').forEach(entry => {
+                const trainerId = entry.querySelector('.trainer-select').value;
+                const isGift = entry.querySelector('.gift-checkbox').checked;
+
+                if (trainerId) {
+                    formData.participants.push({
+                        trainerId,
+                        monsterId: null,
+                        isGift
+                    });
+                }
+            });
+
+            // Collect monster participants
+            document.querySelectorAll('#monsterParticipantsContainer .participant-entry').forEach(entry => {
+                const trainerId = entry.querySelector('.trainer-select').value;
+                const monsterId = entry.querySelector('.monster-select').value;
+                const isGift = entry.querySelector('.gift-checkbox').checked;
+
+                if (trainerId && monsterId) {
+                    formData.participants.push({
+                        trainerId,
+                        monsterId,
+                        isGift
+                    });
+                }
+            });
+
+            // Validate form data
+            if (!formData.title || !formData.artUrl || formData.participants.length === 0) {
+                alert('Please fill in all required fields and add at least one participant');
+                return;
+            }
+
+            // Check if all participants are gifts
+            const allGifts = formData.participants.length > 0 && formData.participants.every(p => p.isGift);
+
+            if (allGifts) {
+                // Show gift recipient form
+                showGiftRecipientForm(formData);
+                return;
+            }
+
+            // Submit the form
+            submitForm(formData);
+        });
+
+        // Show gift recipient form
+        function showGiftRecipientForm(formData) {
+            // Hide the main form
+            form.classList.add('hidden');
+
+            // Show the gift recipient form
+            giftRecipientFormContainer.innerHTML = `
+                <div class="participant-entry">
+                    <h3 class="submission-subtitle">Select Gift Recipient</h3>
+                    <p class="mb-4">All participants in this submission are marked as gifts. Please select a trainer to receive the gift levels.</p>
+
+                    <div class="form-group">
+                        <label class="form-label">Select Trainer</label>
+                        <select id="giftRecipientSelect" class="modern-select">
+                            <option value="">-- Select Trainer --</option>
+                            <!-- Options will be populated via JavaScript -->
+                        </select>
+                    </div>
+
+                    <div class="form-buttons">
+                        <button type="button" id="cancelGiftRecipient" class="back-button">
+                            <i class="fas fa-arrow-left"></i> Back
+                        </button>
+                        <button type="button" id="confirmGiftRecipient" class="submit-button">
+                            <i class="fas fa-check"></i> Confirm
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            // Show the results section (which contains the gift recipient form)
+            resultsSection.classList.remove('hidden');
+
+            // Load trainers for the gift recipient select
+            const giftRecipientSelect = document.getElementById('giftRecipientSelect');
+            loadTrainers(giftRecipientSelect);
+
+            // Add event listeners
+            document.getElementById('cancelGiftRecipient').addEventListener('click', function() {
+                // Hide the results section
+                resultsSection.classList.add('hidden');
+
+                // Show the main form
+                form.classList.remove('hidden');
+
+                // Clear the gift recipient form
+                giftRecipientFormContainer.innerHTML = '';
+            });
+
+            document.getElementById('confirmGiftRecipient').addEventListener('click', function() {
+                const giftRecipientId = giftRecipientSelect.value;
+
+                if (!giftRecipientId) {
+                    alert('Please select a gift recipient');
+                    return;
+                }
+
+                // Add gift recipient to form data
+                formData.giftRecipientId = giftRecipientId;
+
+                // Submit the form
+                submitForm(formData);
+
+                // Clear the gift recipient form
+                giftRecipientFormContainer.innerHTML = '';
+            });
+        }
+
+        // Submit the form
+        async function submitForm(formData) {
+            try {
+                // Submit the form
+                const response = await fetch('/api/art', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    // Display results
+                    form.classList.add('hidden');
+                    giftRecipientFormContainer.innerHTML = '';
+                    resultsSection.classList.remove('hidden');
+
+                    // Format calculation results
+                    let html = `<h3 class="font-semibold mb-2">Submission Details</h3>
+                                <p><strong>Title:</strong> ${formData.title}</p>
+                                <p><strong>Art Type:</strong> ${artTypeSelect.options[artTypeSelect.selectedIndex].text}</p>
+                                <p><strong>Total Levels:</strong> ${formData.totalLevels}</p>`;
+
+                    // Display participant rewards
+                    if (result.calculation && result.calculation.participants) {
+                        html += `<h3 class="font-semibold mt-4 mb-2">Participant Rewards</h3>`;
+
+                        result.calculation.participants.forEach(participant => {
+                            html += `<div class="bg-gray-700 p-3 rounded-md mb-2">`;
+
+                            if (participant.monster) {
+                                html += `<p><strong>${participant.monster.name}</strong> (${participant.trainer.name}'s monster)</p>`;
+                            } else {
+                                html += `<p><strong>${participant.trainer.name}</strong></p>`;
+                            }
+
+                            if (participant.levels > 0) {
+                                html += `<p>+${participant.levels} levels</p>`;
+                            }
+
+                            if (participant.coins > 0) {
+                                html += `<p>+${participant.coins} coins</p>`;
+                            }
+
+                            html += `</div>`;
+                        });
+                    }
+
+                    // Display gift rewards
+                    if (result.calculation && result.calculation.giftRewards) {
+                        const giftRewards = result.calculation.giftRewards;
+
+                        html += `<h3 class="font-semibold mt-4 mb-2">Gift Rewards</h3>`;
+                        html += `<div class="bg-gray-700 p-3 rounded-md mb-2">`;
+
+                        if (giftRewards.recipient) {
+                            html += `<p><strong>Recipient:</strong> ${giftRewards.recipient.name}</p>`;
+                        }
+
+                        if (giftRewards.levels > 0) {
+                            html += `<p>+${giftRewards.levels} gift levels</p>`;
+                        }
+
+                        if (giftRewards.items && giftRewards.items.length > 0) {
+                            html += `<p><strong>Items:</strong></p><ul class="list-disc pl-5">`;
+                            giftRewards.items.forEach(item => {
+                                html += `<li>${item.name}</li>`;
+                            });
+                            html += `</ul>`;
+                        }
+
+                        if (giftRewards.monster) {
+                            html += `<p><strong>Monster:</strong> ${giftRewards.monster.name}</p>`;
+                        }
+
+                        html += `</div>`;
+                    }
+
+                    calculationResults.innerHTML = html;
+
+                    // Show reward summary modal if available
+                    if (typeof showRewardSummaryModal === 'function') {
+                        showRewardSummaryModal(result);
+                    }
+                } else {
+                    alert('Error: ' + (result.message || 'Unknown error'));
+                }
+            } catch (error) {
+                console.error('Error submitting art:', error);
+                alert('Error submitting art. Please try again.');
+            }
+        }
+
+        // Back to form button
+        backToForm.addEventListener('click', function() {
+            // Reset form
+            form.reset();
+
+            // Clear participants
+            trainerParticipantsContainer.innerHTML = '';
+            monsterParticipantsContainer.innerHTML = '';
+            trainerParticipantCount = 0;
+            monsterParticipantCount = 0;
+
+            // Show form and hide results
+            form.classList.remove('hidden');
+            resultsSection.classList.add('hidden');
+        });
+    });
+</script>

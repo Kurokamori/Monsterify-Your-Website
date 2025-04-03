@@ -1,0 +1,206 @@
+<% /* Set the title and other variables for the layout */ %>
+<% title = 'Edit Boss' %>
+
+<style>
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+
+.form-input {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.25rem;
+    background-color: #f8fafc;
+}
+
+.form-textarea {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.25rem;
+    background-color: #f8fafc;
+    min-height: 100px;
+}
+
+.form-input:focus, .form-textarea:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+}
+
+.form-checkbox {
+    margin-right: 0.5rem;
+}
+
+.alert {
+    padding: 1rem;
+    border-radius: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.alert-error {
+    background-color: rgba(239, 68, 68, 0.2);
+    border: 1px solid rgba(239, 68, 68, 0.5);
+    color: #ef4444;
+}
+
+.required-field::after {
+    content: "*";
+    color: #ef4444;
+    margin-left: 0.25rem;
+}
+
+.boss-preview {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    background-color: #f8fafc;
+    border-radius: 0.5rem;
+    border: 1px solid #e2e8f0;
+}
+
+.boss-preview-image {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 0.5rem;
+    margin-right: 1rem;
+}
+
+.boss-preview-details {
+    flex: 1;
+}
+
+.boss-preview-name {
+    font-size: 1.25rem;
+    font-weight: bold;
+    margin-bottom: 0.25rem;
+}
+
+.boss-preview-health {
+    font-size: 0.875rem;
+    color: #6b7280;
+    margin-bottom: 0.5rem;
+}
+
+.boss-preview-status {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    font-size: 0.75rem;
+    font-weight: bold;
+}
+
+.status-active {
+    background-color: #10b981;
+    color: white;
+}
+
+.status-inactive {
+    background-color: #6b7280;
+    color: white;
+}
+
+.status-defeated {
+    background-color: #ef4444;
+    color: white;
+}
+</style>
+
+<div class="container mx-auto px-4 py-8">
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="text-3xl font-bold">Edit Boss</h1>
+    </div>
+
+    <% if (typeof message !== 'undefined' && message) { %>
+    <div class="alert alert-<%= messageType %> mb-6">
+        <%= message %>
+    </div>
+    <% } %>
+
+    <div class="card">
+        <div class="card-header">
+            <h2 class="text-xl font-bold">Boss Details</h2>
+        </div>
+        <div class="card-body">
+            <div class="boss-preview">
+                <img src="<%= boss.image_url %>" alt="<%= boss.name %>" class="boss-preview-image" onerror="this.src='/images/default_boss.png'">
+                <div class="boss-preview-details">
+                    <div class="boss-preview-name"><%= boss.name %></div>
+                    <div class="boss-preview-health"><%= boss.current_health %> / <%= boss.max_health %> HP</div>
+                    <div>
+                        <% if (boss.is_active && !boss.is_defeated) { %>
+                        <span class="boss-preview-status status-active">Active</span>
+                        <% } else if (boss.is_defeated) { %>
+                        <span class="boss-preview-status status-defeated">Defeated</span>
+                        <% } else { %>
+                        <span class="boss-preview-status status-inactive">Inactive</span>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+
+            <form action="/admin/bosses/edit/<%= boss.boss_id %>" method="POST">
+                <div class="form-group">
+                    <label for="name" class="form-label required-field">Name</label>
+                    <input type="text" id="name" name="name" class="form-input" required value="<%= boss.name %>">
+                </div>
+
+                <div class="form-group">
+                    <label for="flavor_text" class="form-label">Flavor Text</label>
+                    <textarea id="flavor_text" name="flavor_text" class="form-textarea"><%= boss.flavor_text %></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="image_url" class="form-label">Image URL</label>
+                    <input type="text" id="image_url" name="image_url" class="form-input" value="<%= boss.image_url %>">
+                </div>
+
+                <div class="form-group">
+                    <label for="max_health" class="form-label required-field">Max Health</label>
+                    <input type="number" id="max_health" name="max_health" class="form-input" required min="1" value="<%= boss.max_health %>">
+                </div>
+
+                <div class="form-group">
+                    <label for="current_health" class="form-label required-field">Current Health</label>
+                    <input type="number" id="current_health" name="current_health" class="form-input" required min="0" max="<%= boss.max_health %>" value="<%= boss.current_health %>">
+                </div>
+
+                <div class="form-group">
+                    <div class="flex items-center">
+                        <input type="checkbox" id="is_active" name="is_active" class="form-checkbox" <%= boss.is_active ? 'checked' : '' %>>
+                        <label for="is_active" class="form-label mb-0">Active Boss</label>
+                    </div>
+                    <p class="text-sm text-gray-500 mt-1">If checked, this will be the current active boss. Only one boss can be active at a time.</p>
+                </div>
+
+                <div class="form-group">
+                    <div class="flex items-center">
+                        <input type="checkbox" id="is_defeated" name="is_defeated" class="form-checkbox" <%= boss.is_defeated ? 'checked' : '' %>>
+                        <label for="is_defeated" class="form-label mb-0">Defeated</label>
+                    </div>
+                    <p class="text-sm text-gray-500 mt-1">If checked, this boss is marked as defeated and rewards will be available.</p>
+                </div>
+
+                <div class="flex justify-end space-x-4 mt-6">
+                    <a href="/admin/bosses" class="btn-secondary">Cancel</a>
+                    <button type="submit" class="btn-primary">Update Boss</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="mt-6">
+        <a href="/admin/bosses" class="btn-secondary">
+            <i class="fas fa-arrow-left mr-2"></i> Back to Boss Management
+        </a>
+    </div>
+</div>

@@ -1,0 +1,987 @@
+<div class="submission-container">
+    <div class="submission-card">
+        <h1 class="submission-title">Simple Art Calculator</h1>
+        <form id="simpleArtForm" class="submission-form">
+            <div class="form-group">
+                <label for="title" class="form-label">Title</label>
+                <input type="text" id="title" name="title" class="modern-input" required>
+            </div>
+
+            <div class="form-group">
+                <label for="artUrl" class="form-label">Art URL</label>
+                <input type="url" id="artUrl" name="artUrl" class="modern-input" required>
+                <p class="form-help">Link to your artwork (e.g., DeviantArt, Twitter, etc.)</p>
+            </div>
+
+            <div class="form-group">
+                <label for="artSize" class="form-label">Art Size</label>
+                <select id="artSize" name="artSize" class="modern-select" required>
+                    <option value="">-- Select Size --</option>
+                    <option value="fullbody">Fullbody</option>
+                    <option value="halfbody">Halfbody</option>
+                    <option value="bust">Bust</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="linework" class="form-label">Linework</label>
+                <select id="linework" name="linework" class="modern-select" required>
+                    <option value="">-- Select Linework --</option>
+                    <option value="clean">Clean</option>
+                    <option value="sketch">Sketch</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="colorType" class="form-label">Color Type</label>
+                <select id="colorType" name="colorType" class="modern-select" required>
+                    <option value="">-- Select Color Type --</option>
+                    <option value="no_color">No Color</option>
+                    <option value="flat">Flat Color</option>
+                    <option value="simple_shading">Simple Shading</option>
+                    <option value="complex_shading">Complex Shading</option>
+                </select>
+            </div>
+
+
+
+            <div class="form-group">
+                <label for="background" class="form-label">Background</label>
+                <select id="background" name="background" class="modern-select" required>
+                    <option value="">-- Select Background --</option>
+                    <option value="none">None</option>
+                    <option value="prop">Prop</option>
+                    <option value="simple">Simple</option>
+                    <option value="complex">Complex</option>
+                </select>
+            </div>
+
+            <div class="participants-section">
+                <h2 class="submission-subtitle">Participants</h2>
+
+                <!-- Trainer Participants -->
+                <div class="form-group">
+                    <h3 class="form-label">Trainer Participants</h3>
+                    <div id="trainerParticipantsContainer" class="space-y-3">
+                        <!-- Trainer participants will be added here -->
+                    </div>
+                    <button type="button" id="addTrainerParticipant" class="add-participant-button">
+                        <i class="fas fa-plus"></i> Add Trainer Participant
+                    </button>
+                </div>
+
+                <!-- Monster Participants -->
+                <div class="form-group">
+                    <h3 class="form-label">Monster Participants</h3>
+                    <div id="monsterParticipantsContainer" class="space-y-3">
+                        <!-- Monster participants will be added here -->
+                    </div>
+                    <button type="button" id="addMonsterParticipant" class="add-participant-button">
+                        <i class="fas fa-plus"></i> Add Monster Participant
+                    </button>
+                </div>
+            </div>
+
+            <div id="giftRecipientContainer" class="form-group hidden">
+                <label for="giftRecipientSelect" class="form-label">Gift Recipient</label>
+                <select id="giftRecipientSelect" name="giftRecipientId" class="modern-select">
+                    <option value="">-- Select Gift Recipient --</option>
+                    <!-- Options will be populated via JavaScript -->
+                </select>
+                <p class="form-help">Select the trainer who will receive the gift rewards</p>
+            </div>
+
+            <div class="form-buttons">
+                <a href="/submissions" class="back-button">
+                    <i class="fas fa-arrow-left"></i> Back
+                </a>
+                <button type="submit" class="submit-button">
+                    <i class="fas fa-paper-plane"></i> Submit
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Results Section (Hidden by default) -->
+    <div id="resultsSection" class="hidden results-section">
+        <h2 class="results-title">Calculation Results</h2>
+        <div id="calculationResults" class="results-content"></div>
+
+        <div class="results-buttons">
+            <button id="backToForm" class="back-button">
+                <i class="fas fa-arrow-left"></i> Calculate Another
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Include the reward summary modal -->
+<%- include('../../components/reward-summary-modal') %>
+
+<script>
+    // Include the reward summary script
+    document.write('<script src="/js/reward-summary.js"><\/script>');
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('simpleArtForm');
+        const resultsSection = document.getElementById('resultsSection');
+        const calculationResults = document.getElementById('calculationResults');
+        const backToForm = document.getElementById('backToForm');
+        const trainerParticipantsContainer = document.getElementById('trainerParticipantsContainer');
+        const monsterParticipantsContainer = document.getElementById('monsterParticipantsContainer');
+        const addTrainerParticipant = document.getElementById('addTrainerParticipant');
+        const addMonsterParticipant = document.getElementById('addMonsterParticipant');
+        const giftLevelsInput = document.getElementById('giftLevels');
+        const giftRecipientContainer = document.getElementById('giftRecipientContainer');
+        const giftRecipientSelect = document.getElementById('giftRecipientSelect');
+
+        // Art size base points
+        const sizeBasePoints = {
+            'fullbody': {
+                'clean': 3,
+                'sketch': 2
+            },
+            'halfbody': {
+                'clean': 2,
+                'sketch': 1
+            },
+            'bust': {
+                'clean': 1,
+                'sketch': 1
+            }
+        };
+
+        // Color type points
+        const colorPoints = {
+            'no_color': 0,
+            'flat': 1,
+            'simple_shading': {
+                'bust': 2,
+                'halfbody': 3,
+                'fullbody': 4
+            },
+            'complex_shading': {
+                'bust': 3,
+                'halfbody': 6,
+                'fullbody': 8
+            }
+        };
+
+        // Complexity base points
+        const complexityBasePoints = {
+            'no_evolution': 3,
+            'base_stage': 0,
+            'middle_stage': 1,
+            'final_stage': 2,
+            'second_evolution': 3,
+            'trainer': 3,
+            'yokai': 3,
+            'digimon_baby': 0,
+            'digimon_rookie': 1,
+            'digimon_champion': 3,
+            'digimon_above_champion': 5
+        };
+
+        // Modifier points
+        const modifierPoints = {
+            'paradox': 2,
+            'ultra_beast': 2,
+            'mega': 2,
+            'legendary': 3,
+            'mythical': 3,
+            'regional': 1,
+            'fusion': 2,
+            'gigantamax': 2,
+            'dynamax': 1,
+            'alpha': 1,
+            'noble': 2,
+            'hisuian': 1,
+            'paldean': 1,
+            'galarian': 1,
+            'alolan': 1
+        };
+
+        // Background points
+        const backgroundPoints = {
+            'none': 0,
+            'prop': 1,
+            'simple': 2,
+            'complex': 6
+        };
+
+        // Check for gift participants and show/hide gift recipient
+        function checkGiftParticipants() {
+            // Check if any participants are marked as gifts
+            const giftCheckboxes = document.querySelectorAll('.gift-checkbox:checked');
+
+            if (giftCheckboxes.length > 0) {
+                giftRecipientContainer.classList.remove('hidden');
+                // Load trainers for the gift recipient select if not already loaded
+                if (giftRecipientSelect.options.length <= 1) {
+                    loadTrainers(giftRecipientSelect);
+                }
+            } else {
+                giftRecipientContainer.classList.add('hidden');
+            }
+        }
+
+        // Set up a mutation observer to watch for changes to the participants containers
+        const participantsObserver = new MutationObserver(checkGiftParticipants);
+        participantsObserver.observe(trainerParticipantsContainer, { childList: true, subtree: true });
+        participantsObserver.observe(monsterParticipantsContainer, { childList: true, subtree: true });
+
+        // Add trainer participant
+        addTrainerParticipant.addEventListener('click', function() {
+            const participantId = 'trainer-' + Date.now();
+            const participantHtml = `
+                <div id="${participantId}" class="participant-entry">
+                    <div class="participant-header">
+                        <span class="participant-title">Trainer Participant</span>
+                        <button type="button" class="remove-participant" data-id="${participantId}">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Select Trainer</label>
+                        <select name="trainer_id" class="trainer-select modern-select" required>
+                            <option value="">-- Select Trainer --</option>
+                            <!-- Options will be populated via JavaScript -->
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Complexity</label>
+                        <select name="complexity" class="complexity-select modern-select" required>
+                            <option value="">-- Select Complexity --</option>
+                            <option value="trainer" selected>Trainer/Human (+3)</option>
+                            <option value="yokai">Yokai (+3)</option>
+                            <option value="no_evolution">Pokémon - Doesn't Evolve (+3)</option>
+                            <option value="base_stage">Pokémon - Base Stage (+0)</option>
+                            <option value="middle_stage">Pokémon - First Evolution (+1)</option>
+                            <option value="final_stage">Pokémon - Final Stage (+2)</option>
+                            <option value="second_evolution">Pokémon - Second Evolution (+3)</option>
+                            <option value="digimon_baby">Digimon - Baby/Fresh (+0)</option>
+                            <option value="digimon_rookie">Digimon - Rookie (+1)</option>
+                            <option value="digimon_champion">Digimon - Champion (+3)</option>
+                            <option value="digimon_above_champion">Digimon - Above Champion (+5)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Modifiers</label>
+                        <div class="flex flex-wrap gap-3">
+                            <label class="modern-checkbox">
+                                <input type="checkbox" name="modifiers" value="capped">
+                                <span class="modern-checkbox-mark"></span>
+                                Capped (+100)
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="flex items-center">
+                            <input type="checkbox" name="is_gift" class="gift-checkbox mr-2">
+                            <label class="form-label mb-0">Gift Participant</label>
+                        </div>
+                        <p class="form-help">Check if this participant is a gift for another trainer</p>
+                    </div>
+                </div>
+            `;
+
+            trainerParticipantsContainer.insertAdjacentHTML('beforeend', participantHtml);
+
+            // Load trainers for the new dropdown
+            const trainerSelect = document.querySelector(`#${participantId} .trainer-select`);
+            loadTrainers(trainerSelect);
+
+            // Add remove event listener
+            document.querySelector(`#${participantId} .remove-participant`).addEventListener('click', function() {
+                document.getElementById(this.dataset.id).remove();
+            });
+        });
+
+        // Add monster participant
+        addMonsterParticipant.addEventListener('click', function() {
+            const participantId = 'monster-' + Date.now();
+            const participantHtml = `
+                <div id="${participantId}" class="participant-entry">
+                    <div class="participant-header">
+                        <span class="participant-title">Monster Participant</span>
+                        <button type="button" class="remove-participant" data-id="${participantId}">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Monster Name</label>
+                        <input type="text" name="monster_name" class="modern-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Select Trainer</label>
+                        <select name="trainer_id" class="trainer-select modern-select" required>
+                            <option value="">-- Select Trainer --</option>
+                            <!-- Options will be populated via JavaScript -->
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Select Monster</label>
+                        <select name="monster_id" class="monster-select modern-select" required disabled>
+                            <option value="">-- Select Monster --</option>
+                            <!-- Options will be populated via JavaScript -->
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Complexity</label>
+                        <select name="complexity" class="complexity-select modern-select" required>
+                            <option value="">-- Select Complexity --</option>
+                            <option value="yokai">Yokai (+3)</option>
+                            <option value="no_evolution">Pokémon - Doesn't Evolve (+3)</option>
+                            <option value="base_stage">Pokémon - Base Stage (+0)</option>
+                            <option value="middle_stage">Pokémon - First Evolution (+1)</option>
+                            <option value="final_stage">Pokémon - Final Stage (+2)</option>
+                            <option value="second_evolution">Pokémon - Second Evolution (+3)</option>
+                            <option value="digimon_baby">Digimon - Baby/Fresh (+0)</option>
+                            <option value="digimon_rookie">Digimon - Rookie (+1)</option>
+                            <option value="digimon_champion">Digimon - Champion (+3)</option>
+                            <option value="digimon_above_champion">Digimon - Above Champion (+5)</option>
+                            <option value="trainer">Trainer/Human (+3)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Modifiers</label>
+                        <div class="flex flex-wrap gap-3">
+                            <label class="modern-checkbox">
+                                <input type="checkbox" name="modifiers" value="paradox">
+                                <span class="modern-checkbox-mark"></span>
+                                Paradox (+2)
+                            </label>
+                            <label class="modern-checkbox">
+                                <input type="checkbox" name="modifiers" value="ultra_beast">
+                                <span class="modern-checkbox-mark"></span>
+                                Ultra Beast (+2)
+                            </label>
+                            <label class="modern-checkbox">
+                                <input type="checkbox" name="modifiers" value="mega">
+                                <span class="modern-checkbox-mark"></span>
+                                Mega (+2)
+                            </label>
+                            <label class="modern-checkbox">
+                                <input type="checkbox" name="modifiers" value="legendary">
+                                <span class="modern-checkbox-mark"></span>
+                                Legendary (+3)
+                            </label>
+                            <label class="modern-checkbox">
+                                <input type="checkbox" name="modifiers" value="mythical">
+                                <span class="modern-checkbox-mark"></span>
+                                Mythical (+3)
+                            </label>
+                            <label class="modern-checkbox">
+                                <input type="checkbox" name="modifiers" value="regional">
+                                <span class="modern-checkbox-mark"></span>
+                                Regional (+1)
+                            </label>
+                            <label class="modern-checkbox">
+                                <input type="checkbox" name="modifiers" value="fusion">
+                                <span class="modern-checkbox-mark"></span>
+                                Fusion (+2)
+                            </label>
+                            <label class="modern-checkbox">
+                                <input type="checkbox" name="modifiers" value="gigantamax">
+                                <span class="modern-checkbox-mark"></span>
+                                Gigantamax (+2)
+                            </label>
+                            <label class="modern-checkbox">
+                                <input type="checkbox" name="modifiers" value="dynamax">
+                                <span class="modern-checkbox-mark"></span>
+                                Dynamax (+1)
+                            </label>
+                            <label class="modern-checkbox">
+                                <input type="checkbox" name="modifiers" value="alpha">
+                                <span class="modern-checkbox-mark"></span>
+                                Alpha (+1)
+                            </label>
+                            <label class="modern-checkbox">
+                                <input type="checkbox" name="modifiers" value="noble">
+                                <span class="modern-checkbox-mark"></span>
+                                Noble (+2)
+                            </label>
+                            <label class="modern-checkbox">
+                                <input type="checkbox" name="modifiers" value="hisuian">
+                                <span class="modern-checkbox-mark"></span>
+                                Hisuian (+1)
+                            </label>
+                            <label class="modern-checkbox">
+                                <input type="checkbox" name="modifiers" value="paldean">
+                                <span class="modern-checkbox-mark"></span>
+                                Paldean (+1)
+                            </label>
+                            <label class="modern-checkbox">
+                                <input type="checkbox" name="modifiers" value="galarian">
+                                <span class="modern-checkbox-mark"></span>
+                                Galarian (+1)
+                            </label>
+                            <label class="modern-checkbox">
+                                <input type="checkbox" name="modifiers" value="alolan">
+                                <span class="modern-checkbox-mark"></span>
+                                Alolan (+1)
+                            </label>
+                            <label class="modern-checkbox">
+                                <input type="checkbox" name="modifiers" value="capped">
+                                <span class="modern-checkbox-mark"></span>
+                                Capped (+100)
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="flex items-center">
+                            <input type="checkbox" name="is_gift" class="gift-checkbox mr-2">
+                            <label class="form-label mb-0">Gift Participant</label>
+                        </div>
+                        <p class="form-help">Check if this participant is a gift for another trainer</p>
+                    </div>
+                </div>
+            `;
+
+            monsterParticipantsContainer.insertAdjacentHTML('beforeend', participantHtml);
+
+            // Load trainers for the new dropdown
+            const trainerSelect = document.querySelector(`#${participantId} .trainer-select`);
+            const monsterSelect = document.querySelector(`#${participantId} .monster-select`);
+
+            loadTrainers(trainerSelect);
+
+            // Add trainer change event to load monsters
+            trainerSelect.addEventListener('change', function() {
+                const trainerId = this.value;
+                if (trainerId) {
+                    loadMonsters(trainerId, monsterSelect);
+                    monsterSelect.disabled = false;
+                } else {
+                    monsterSelect.disabled = true;
+                    monsterSelect.innerHTML = '<option value="">-- Select Monster --</option>';
+                }
+            });
+
+            // Add remove event listener
+            document.querySelector(`#${participantId} .remove-participant`).addEventListener('click', function() {
+                document.getElementById(this.dataset.id).remove();
+            });
+        });
+
+        // Load trainers for a select element
+        async function loadTrainers(selectElement) {
+            try {
+                const response = await fetch('/api/trainers/all');
+                const data = await response.json();
+
+                // Clear existing options
+                selectElement.innerHTML = '<option value="">-- Select Trainer --</option>';
+
+                // Check if data is an array (direct array response) or has a trainers property
+                const trainers = Array.isArray(data) ? data : (data.trainers || []);
+
+                if (trainers.length > 0) {
+                    // Add trainer options
+                    trainers.forEach(trainer => {
+                        const option = document.createElement('option');
+                        option.value = trainer.id;
+                        option.textContent = `${trainer.name} (Level ${trainer.level || 1})`;
+                        selectElement.appendChild(option);
+                    });
+                } else {
+                    console.error('No trainers found');
+                }
+            } catch (error) {
+                console.error('Error loading trainers:', error);
+            }
+        }
+
+        // Load monsters for a select element
+        async function loadMonsters(trainerId, selectElement) {
+            try {
+                const response = await fetch(`/api/trainers/${trainerId}/monsters`);
+                const data = await response.json();
+
+                if (data.success && data.monsters) {
+                    // Clear existing options
+                    selectElement.innerHTML = '<option value="">-- Select Monster --</option>';
+
+                    // Add monster options
+                    data.monsters.forEach(monster => {
+                        const option = document.createElement('option');
+                        option.value = monster.id;
+                        option.textContent = `${monster.name} (Level ${monster.level})`;
+                        selectElement.appendChild(option);
+                    });
+                } else {
+                    console.error('Error loading monsters:', data.message || 'Unknown error');
+                }
+            } catch (error) {
+                console.error('Error loading monsters:', error);
+            }
+        }
+
+        // Calculate levels for a participant
+        function calculateLevelsForParticipant(participant) {
+            const artSize = document.getElementById('artSize').value;
+            const linework = document.getElementById('linework').value;
+            const colorType = document.getElementById('colorType').value;
+            const background = document.getElementById('background').value;
+
+            // Get complexity from the participant
+            const complexity = participant.querySelector('select[name="complexity"]').value;
+
+            // Get selected modifiers from the participant
+            const selectedModifiers = Array.from(participant.querySelectorAll('input[name="modifiers"]:checked'))
+                .map(checkbox => checkbox.value);
+
+            // Check if capped
+            const isCapped = selectedModifiers.includes('capped');
+
+            // Calculate base points
+            const basePoints = sizeBasePoints[artSize]?.[linework] || 0;
+
+            // Calculate color points
+            let colorPointValue = 0;
+            if (colorType === 'no_color' || colorType === 'flat') {
+                colorPointValue = colorPoints[colorType] || 0;
+            } else if (colorType === 'simple_shading' || colorType === 'complex_shading') {
+                colorPointValue = colorPoints[colorType]?.[artSize] || 0;
+            }
+
+            // Calculate complexity points
+            let complexityPointValue = complexityBasePoints[complexity] || 0;
+
+            // If there are modifiers, they override the base complexity points
+            if (selectedModifiers.length > 0 && selectedModifiers.some(m => m !== 'capped')) {
+                // Reset complexity points if using modifiers
+                complexityPointValue = 0;
+
+                // Add modifier points
+                selectedModifiers.forEach(modifier => {
+                    if (modifier !== 'capped' && modifierPoints[modifier]) {
+                        complexityPointValue += modifierPoints[modifier];
+                    }
+                });
+            }
+
+            // Calculate background points
+            const backgroundPointValue = backgroundPoints[background] || 0;
+
+            // Calculate total levels
+            const totalLevels = basePoints + colorPointValue + complexityPointValue + backgroundPointValue;
+
+            // Calculate trainer/gift bonus
+            let trainerBonus = 0;
+            if (complexity === 'trainer' || isCapped) {
+                trainerBonus = Math.floor((totalLevels + 1) / 2);
+            }
+
+            return {
+                basePoints,
+                colorPointValue,
+                complexityPointValue,
+                backgroundPointValue,
+                totalLevels,
+                trainerBonus,
+                isCapped,
+                isTrainer: complexity === 'trainer'
+            };
+        }
+
+        // Calculate total levels for all participants
+        function calculateTotalLevels() {
+            const artSize = document.getElementById('artSize').value;
+            const linework = document.getElementById('linework').value;
+            const colorType = document.getElementById('colorType').value;
+            const background = document.getElementById('background').value;
+
+            // Calculate base points
+            const basePoints = sizeBasePoints[artSize]?.[linework] || 0;
+
+            // Calculate color points
+            let colorPointValue = 0;
+            if (colorType === 'no_color' || colorType === 'flat') {
+                colorPointValue = colorPoints[colorType] || 0;
+            } else if (colorType === 'simple_shading' || colorType === 'complex_shading') {
+                colorPointValue = colorPoints[colorType]?.[artSize] || 0;
+            }
+
+            // Calculate background points
+            const backgroundPointValue = backgroundPoints[background] || 0;
+
+            // Get all participants
+            const participants = document.querySelectorAll('#trainerParticipantsContainer .participant-entry, #monsterParticipantsContainer .participant-entry');
+
+            // Calculate levels for each participant
+            let totalLevels = 0;
+            let totalTrainerBonus = 0;
+
+            participants.forEach(participant => {
+                const calculation = calculateLevelsForParticipant(participant);
+                totalLevels += calculation.totalLevels;
+                totalTrainerBonus += calculation.trainerBonus;
+            });
+
+            return {
+                basePoints,
+                colorPointValue,
+                backgroundPointValue,
+                totalLevels,
+                totalTrainerBonus
+            };
+        }
+
+        // Form submission
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            // Get form values
+            const title = document.getElementById('title').value;
+            const artUrl = document.getElementById('artUrl').value;
+            const artSize = document.getElementById('artSize').value;
+            const linework = document.getElementById('linework').value;
+            const colorType = document.getElementById('colorType').value;
+            const background = document.getElementById('background').value;
+
+            // Calculate total levels (for summary only)
+            const totalCalculation = calculateTotalLevels();
+
+            // Collect form data
+            const formData = {
+                submissionType: 'art',
+                calculatorType: 'simple',
+                title,
+                artUrl,
+                artSize,
+                linework,
+                colorType,
+                background,
+                totalLevels: totalCalculation.totalLevels,
+                totalTrainerBonus: totalCalculation.totalTrainerBonus,
+                participants: [],
+                giftParticipants: []
+            };
+
+            // Calculate total gift levels
+            let totalGiftLevels = 0;
+
+            // Collect trainer participants
+            document.querySelectorAll('#trainerParticipantsContainer .participant-entry').forEach(entry => {
+                const trainerId = entry.querySelector('.trainer-select').value;
+                const isGift = entry.querySelector('input[name="is_gift"]').checked;
+
+                if (trainerId) {
+                    // Calculate levels for this participant
+                    const calculation = calculateLevelsForParticipant(entry);
+
+                    const participantData = {
+                        trainerId,
+                        monsterId: null,
+                        isTrainer: true,
+                        isGift,
+                        complexity: entry.querySelector('select[name="complexity"]').value,
+                        modifiers: Array.from(entry.querySelectorAll('input[name="modifiers"]:checked')).map(cb => cb.value),
+                        levels: calculation.totalLevels,
+                        coins: calculation.totalLevels * 50, // 50 coins per level
+                        trainerBonus: calculation.trainerBonus
+                    };
+
+                    if (isGift) {
+                        formData.giftParticipants.push(participantData);
+                        totalGiftLevels += calculation.totalLevels; // Gift levels are the same as total levels
+                    } else {
+                        formData.participants.push(participantData);
+                    }
+                }
+            });
+
+            // Collect monster participants
+            document.querySelectorAll('#monsterParticipantsContainer .participant-entry').forEach(entry => {
+                const trainerId = entry.querySelector('.trainer-select').value;
+                const monsterId = entry.querySelector('.monster-select').value;
+                const monsterName = entry.querySelector('input[name="monster_name"]').value;
+                const isGift = entry.querySelector('input[name="is_gift"]').checked;
+
+                if (trainerId && monsterId) {
+                    // Calculate levels for this participant
+                    const calculation = calculateLevelsForParticipant(entry);
+
+                    const participantData = {
+                        trainerId,
+                        monsterId,
+                        monsterName,
+                        isTrainer: false,
+                        isGift,
+                        complexity: entry.querySelector('select[name="complexity"]').value,
+                        modifiers: Array.from(entry.querySelectorAll('input[name="modifiers"]:checked')).map(cb => cb.value),
+                        levels: calculation.totalLevels,
+                        coins: calculation.totalLevels * 50, // 50 coins per level
+                        trainerBonus: calculation.trainerBonus
+                    };
+
+                    if (isGift) {
+                        formData.giftParticipants.push(participantData);
+                        totalGiftLevels += calculation.totalLevels; // Gift levels are the same as total levels
+                    } else {
+                        formData.participants.push(participantData);
+                    }
+                }
+            });
+
+            // Validate form data
+            if (!formData.title || !formData.artUrl || (formData.participants.length === 0 && formData.giftParticipants.length === 0)) {
+                alert('Please fill in all required fields and add at least one participant');
+                return;
+            }
+
+            // Add gift recipient if there are gift participants
+            if (formData.giftParticipants.length > 0) {
+                formData.giftRecipientId = giftRecipientSelect.value;
+                formData.totalGiftLevels = totalGiftLevels;
+
+                if (!formData.giftRecipientId) {
+                    alert('Please select a gift recipient for the gift participants');
+                    return;
+                }
+            }
+
+            // Display calculation results
+            displayResults(formData, totalCalculation);
+
+            // Submit the form to apply levels directly
+            if (confirm('Do you want to apply these levels and coins directly to the participants?')) {
+                try {
+                    const response = await fetch('/api/art', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(formData)
+                    });
+
+                    const result = await response.json();
+
+                    if (result.success) {
+                        // Show reward summary modal if available
+                        if (typeof showRewardSummaryModal === 'function') {
+                            showRewardSummaryModal(result);
+                        } else {
+                            alert('Levels and coins have been applied successfully!');
+                        }
+                    } else {
+                        alert('Error: ' + (result.message || 'Unknown error'));
+                    }
+                } catch (error) {
+                    console.error('Error submitting art:', error);
+                    alert('Error submitting art. Please try again.');
+                }
+            }
+        });
+
+        // Display calculation results
+        function displayResults(formData, calculation) {
+            // Hide form and show results
+            form.classList.add('hidden');
+            resultsSection.classList.remove('hidden');
+
+            // Format calculation results
+            let html = `
+                <h3 class="font-semibold mb-4">Art Calculation Results</h3>
+
+                <div class="bg-gray-700 p-4 rounded-md mb-4">
+                    <h4 class="font-semibold mb-2">Common Elements</h4>
+                    <p><strong>Size & Linework:</strong> ${formData.artSize} ${formData.linework} (${calculation.basePoints} points)</p>
+                    <p><strong>Color:</strong> ${document.getElementById('colorType').options[document.getElementById('colorType').selectedIndex].text} (${calculation.colorPointValue} points)</p>
+                    <p><strong>Background:</strong> ${document.getElementById('background').options[document.getElementById('background').selectedIndex].text} (${calculation.backgroundPointValue} points)</p>
+                </div>
+
+                <div class="bg-gray-700 p-4 rounded-md mb-4">
+                    <h4 class="font-semibold mb-2">Regular Participants</h4>
+                    ${formData.participants.length > 0 ? `
+                        <ul class="list-disc pl-5 mt-2">
+                    ` : '<p>No regular participants.</p>'}
+            `;
+
+            // Add regular participants
+            if (formData.participants.length > 0) {
+                formData.participants.forEach(participant => {
+                    const participantElement = participant.monsterId
+                        ? document.querySelector(`[id^="monster-"] .monster-select option[value="${participant.monsterId}"]:checked`)
+                        : document.querySelector(`[id^="trainer-"] .trainer-select option[value="${participant.trainerId}"]:checked`);
+
+                    const participantName = participantElement
+                        ? participantElement.textContent
+                        : (participant.monsterId ? (participant.monsterName || 'Selected Monster') : 'Selected Trainer');
+
+                    // Get complexity text
+                    let complexityText = '';
+                    switch(participant.complexity) {
+                        case 'no_evolution':
+                            complexityText = 'Pokémon - Doesn\'t Evolve (+3)';
+                            break;
+                        case 'base_stage':
+                            complexityText = 'Pokémon - Base Stage (+0)';
+                            break;
+                        case 'middle_stage':
+                            complexityText = 'Pokémon - First Evolution (+1)';
+                            break;
+                        case 'final_stage':
+                            complexityText = 'Pokémon - Final Stage (+2)';
+                            break;
+                        case 'second_evolution':
+                            complexityText = 'Pokémon - Second Evolution (+3)';
+                            break;
+                        case 'trainer':
+                            complexityText = 'Trainer/Human (+3)';
+                            break;
+                        case 'yokai':
+                            complexityText = 'Yokai (+3)';
+                            break;
+                        case 'digimon_baby':
+                            complexityText = 'Digimon - Baby/Fresh (+0)';
+                            break;
+                        case 'digimon_rookie':
+                            complexityText = 'Digimon - Rookie (+1)';
+                            break;
+                        case 'digimon_champion':
+                            complexityText = 'Digimon - Champion (+3)';
+                            break;
+                        case 'digimon_above_champion':
+                            complexityText = 'Digimon - Above Champion (+5)';
+                            break;
+                        default:
+                            complexityText = participant.complexity;
+                    }
+
+                    // Format modifiers
+                    const modifiersText = participant.modifiers && participant.modifiers.length > 0
+                        ? ` with modifiers: ${participant.modifiers.map(m => m.replace('_', ' ')).join(', ')}`
+                        : '';
+
+                    html += `
+                        <li>
+                            <strong>${participantName}</strong> (${complexityText}${modifiersText})<br>
+                            <span class="ml-4">+${participant.levels} levels, +${participant.coins} coins</span>
+                            ${participant.trainerBonus > 0 ? `<br><span class="ml-4 text-amber-400">+${participant.trainerBonus} trainer/capped bonus</span>` : ''}
+                        </li>
+                    `;
+                });
+
+                html += `</ul>`;
+            }
+
+            // Add gift participants section
+            html += `
+                <h4 class="font-semibold mb-2 mt-4">Gift Participants</h4>
+                ${formData.giftParticipants.length > 0 ? `
+                    <p>Each gift participant contributes to gift levels for the recipient.</p>
+                    <ul class="list-disc pl-5 mt-2">
+                ` : '<p>No gift participants.</p>'}
+            `;
+
+            // Add gift participants
+            if (formData.giftParticipants.length > 0) {
+                formData.giftParticipants.forEach(participant => {
+                    const participantElement = participant.monsterId
+                        ? document.querySelector(`[id^="monster-"] .monster-select option[value="${participant.monsterId}"]:checked`)
+                        : document.querySelector(`[id^="trainer-"] .trainer-select option[value="${participant.trainerId}"]:checked`);
+
+                    const participantName = participantElement
+                        ? participantElement.textContent
+                        : (participant.monsterId ? (participant.monsterName || 'Selected Monster') : 'Selected Trainer');
+
+                    // Get complexity text
+                    let complexityText = '';
+                    switch(participant.complexity) {
+                        case 'no_evolution':
+                            complexityText = 'Pokémon - Doesn\'t Evolve (+3)';
+                            break;
+                        case 'base_stage':
+                            complexityText = 'Pokémon - Base Stage (+0)';
+                            break;
+                        case 'middle_stage':
+                            complexityText = 'Pokémon - First Evolution (+1)';
+                            break;
+                        case 'final_stage':
+                            complexityText = 'Pokémon - Final Stage (+2)';
+                            break;
+                        case 'second_evolution':
+                            complexityText = 'Pokémon - Second Evolution (+3)';
+                            break;
+                        case 'trainer':
+                            complexityText = 'Trainer/Human (+3)';
+                            break;
+                        case 'yokai':
+                            complexityText = 'Yokai (+3)';
+                            break;
+                        case 'digimon_baby':
+                            complexityText = 'Digimon - Baby/Fresh (+0)';
+                            break;
+                        case 'digimon_rookie':
+                            complexityText = 'Digimon - Rookie (+1)';
+                            break;
+                        case 'digimon_champion':
+                            complexityText = 'Digimon - Champion (+3)';
+                            break;
+                        case 'digimon_above_champion':
+                            complexityText = 'Digimon - Above Champion (+5)';
+                            break;
+                        default:
+                            complexityText = participant.complexity;
+                    }
+
+                    // Format modifiers
+                    const modifiersText = participant.modifiers && participant.modifiers.length > 0
+                        ? ` with modifiers: ${participant.modifiers.map(m => m.replace('_', ' ')).join(', ')}`
+                        : '';
+
+                    html += `
+                        <li>
+                            <strong>${participantName}</strong> (${complexityText}${modifiersText})<br>
+                            <span class="ml-4">+${participant.levels} levels</span>
+                        </li>
+                    `;
+                });
+
+                html += `</ul>`;
+
+                // Add gift recipient
+                const recipientElement = document.querySelector(`#giftRecipientSelect option[value="${formData.giftRecipientId}"]:checked`);
+                const recipientName = recipientElement ? recipientElement.textContent : 'Selected Recipient';
+
+                html += `
+                    <p class="mt-2"><strong>Gift Recipient:</strong> ${recipientName}</p>
+                    <p class="font-semibold text-green-400">Total Gift Levels: ${formData.totalGiftLevels}</p>
+                `;
+            }
+
+            html += `</div>`;
+
+            // Add summary section
+            html += `
+                <div class="bg-gray-700 p-4 rounded-md">
+                    <h4 class="font-semibold mb-2">Summary</h4>
+                    <p><strong>Total Participants:</strong> ${formData.participants.length + formData.giftParticipants.length}</p>
+                    <p><strong>Total Levels Awarded:</strong> ${formData.participants.reduce((sum, p) => sum + p.levels, 0)}</p>
+                    <p><strong>Total Coins Awarded:</strong> ${formData.participants.reduce((sum, p) => sum + p.coins, 0)}</p>
+                    ${formData.totalGiftLevels > 0 ? `<p><strong>Total Gift Levels:</strong> ${formData.totalGiftLevels}</p>` : ''}
+                </div>
+            `;
+
+            calculationResults.innerHTML = html;
+        }
+
+        // Back to form button
+        backToForm.addEventListener('click', function() {
+            // Reset form
+            form.reset();
+
+            // Clear participants
+            trainerParticipantsContainer.innerHTML = '';
+            monsterParticipantsContainer.innerHTML = '';
+
+            // Hide gift recipient
+            giftRecipientContainer.classList.add('hidden');
+
+            // Show form and hide results
+            form.classList.remove('hidden');
+            resultsSection.classList.add('hidden');
+        });
+    });
+</script>

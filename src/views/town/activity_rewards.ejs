@@ -1,0 +1,229 @@
+<div class="container mx-auto px-4 py-8">
+  <div class="max-w-4xl mx-auto">
+    <div class="mb-8 text-center">
+      <h1 class="text-4xl font-display font-bold text-white mb-2">Activity Completed!</h1>
+      <div class="inline-flex items-center justify-center bg-green-900 text-green-300 px-4 py-2 rounded-full mb-4">
+        <i class="fas fa-check-circle mr-2"></i> Success
+      </div>
+      <p class="text-gray-300 text-lg">Great job! You've earned the following rewards:</p>
+    </div>
+
+    <div class="bg-gray-800 rounded-lg overflow-hidden shadow-xl border border-gray-700 p-6 mb-8">
+      <div class="mb-8">
+        <div class="flex items-center mb-4">
+          <div class="w-10 h-10 rounded-full bg-purple-600 flex items-center justify-center mr-3">
+            <i class="fas fa-clipboard-list text-white"></i>
+          </div>
+          <h2 class="text-2xl font-display font-bold text-white">Activity Summary</h2>
+        </div>
+
+        <div class="bg-gray-900 rounded-lg p-5">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="bg-gray-800 rounded-lg p-4 flex items-center">
+              <div class="w-10 h-10 rounded-full bg-blue-900 flex items-center justify-center mr-3">
+                <i class="fas fa-map-marker-alt text-blue-300"></i>
+              </div>
+              <div>
+                <div class="text-gray-400 text-sm">Location</div>
+                <div class="text-white font-medium"><%= session.location.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase()) %></div>
+              </div>
+            </div>
+
+            <div class="bg-gray-800 rounded-lg p-4 flex items-center">
+              <div class="w-10 h-10 rounded-full bg-green-900 flex items-center justify-center mr-3">
+                <i class="fas fa-tasks text-green-300"></i>
+              </div>
+              <div>
+                <div class="text-gray-400 text-sm">Activity</div>
+                <div class="text-white font-medium"><%= session.activity.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase()) %></div>
+              </div>
+            </div>
+
+            <div class="bg-gray-800 rounded-lg p-4 flex items-center">
+              <div class="w-10 h-10 rounded-full bg-yellow-900 flex items-center justify-center mr-3">
+                <i class="fas fa-star text-yellow-300"></i>
+              </div>
+              <div>
+                <div class="text-gray-400 text-sm">Productivity Score</div>
+                <div class="font-medium <%= productivityScore >= 100 ? 'text-green-400' : (productivityScore >= 75 ? 'text-yellow-400' : 'text-red-400') %>">
+                  <%= productivityScore %>%
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-gray-800 rounded-lg p-4">
+              <div class="text-gray-400 text-sm mb-1">Task</div>
+              <div class="text-white"><%= session.prompt.text %></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex items-center mb-6">
+        <div class="w-10 h-10 rounded-full bg-yellow-600 flex items-center justify-center mr-3">
+          <i class="fas fa-gift text-white"></i>
+        </div>
+        <h2 class="text-2xl font-display font-bold text-white">Your Rewards</h2>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <% rewards.forEach(reward => { %>
+          <div class="bg-gray-900 rounded-lg p-4 border border-gray-700 <%= reward.claimed ? 'opacity-50' : '' %>">
+            <div class="flex items-start">
+              <div class="flex-shrink-0 w-12 h-12 flex items-center justify-center rounded-full bg-gray-800 mr-4">
+                <i class="<%= reward.icon %> text-xl <%= reward.type === 'coin' ? 'text-yellow-500' : (reward.type === 'monster' ? 'text-purple-500' : (reward.type === 'item' ? 'text-blue-500' : 'text-green-500')) %>"></i>
+              </div>
+
+              <div class="flex-grow">
+                <% if (reward.type === 'monster') { %>
+                  <h3 class="text-lg font-bold">
+                    <%
+                      let species = '';
+                      if (reward.data.species) {
+                        if (Array.isArray(reward.data.species)) {
+                          species = reward.data.species.join('/');
+                        } else {
+                          species = reward.data.species;
+                        }
+                      } else if (reward.data.species1) {
+                        species = reward.data.species1;
+                        if (reward.data.species2) species += '/' + reward.data.species2;
+                        if (reward.data.species3) species += '/' + reward.data.species3;
+                      } else {
+                        species = 'Monster';
+                      }
+                    %>
+                    <%= species %>
+                  </h3>
+
+                  <p class="text-gray-400">
+                    <%
+                      let level = reward.data.level || reward.data.minLevel || 1;
+                      if (!reward.data.level && reward.data.minLevel && reward.data.maxLevel) {
+                        level = `${reward.data.minLevel}-${reward.data.maxLevel}`;
+                      }
+                    %>
+                    Level: <%= level %>
+                  </p>
+
+                  <% if (reward.data.types && reward.data.types.length > 0) { %>
+                    <p class="text-gray-400">Types: <%= Array.isArray(reward.data.types) ? reward.data.types.join(', ') : reward.data.types %></p>
+                  <% } else if (reward.data.type1) { %>
+                    <p class="text-gray-400">
+                      Types: <%= reward.data.type1 %>
+                      <%= reward.data.type2 ? ', ' + reward.data.type2 : '' %>
+                      <%= reward.data.type3 ? ', ' + reward.data.type3 : '' %>
+                    </p>
+                  <% } %>
+
+                <% } else if (reward.type === 'item') { %>
+                  <h3 class="text-lg font-bold"><%= reward.data.name || 'Item' %></h3>
+                  <p class="text-gray-400"><%= reward.data.description || reward.data.effect || '' %></p>
+                  <p class="text-gray-400">Quantity: <%= reward.data.quantity || 1 %></p>
+
+                <% } else if (reward.type === 'coin') { %>
+                  <h3 class="text-lg font-bold">Coins</h3>
+                  <p class="text-yellow-500 font-bold"><%= reward.data.amount || 100 %> coins</p>
+
+                <% } else if (reward.type === 'level') { %>
+                  <h3 class="text-lg font-bold">Level Up</h3>
+                  <p class="text-gray-400">
+                    <%= reward.data.levels || 1 %> level(s) for
+                    <%= reward.data.target === 'trainer' ? 'trainer' : 'monster' %>
+                  </p>
+
+                <% } else { %>
+                  <h3 class="text-lg font-bold"><%= reward.data.title || 'Reward' %></h3>
+                  <p class="text-gray-400"><%= reward.data.description || '' %></p>
+                <% } %>
+
+                <div class="mt-3">
+                  <% if (reward.claimed) { %>
+                    <span class="inline-block py-1 px-3 bg-gray-700 text-gray-400 rounded-md">
+                      <i class="fas fa-check-circle mr-1"></i> Claimed
+                    </span>
+                  <% } else { %>
+                    <button
+                      class="claim-reward-btn btn-location"
+                      data-reward-id="<%= reward.id %>"
+                    >
+                      Claim Reward
+                    </button>
+                  <% } %>
+                </div>
+              </div>
+            </div>
+          </div>
+        <% }) %>
+      </div>
+    </div>
+
+    <div class="text-center">
+      <a href="/town/activities" class="inline-block py-2 px-4 bg-gray-700 hover:bg-gray-600 text-white font-bold rounded-md transition-colors">
+        <i class="fas fa-arrow-left mr-1"></i> Back to Activities
+      </a>
+    </div>
+  </div>
+</div>
+
+
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // DOM elements
+    const claimButtons = document.querySelectorAll('.claim-reward-btn');
+
+    // Claim reward
+    async function claimReward(rewardId) {
+      try {
+        const response = await fetch('/town/activities/claim-reward', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            rewardId
+          })
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+          // Find the reward element and mark it as claimed
+          const rewardButton = document.querySelector(`.claim-reward-btn[data-reward-id="${rewardId}"]`);
+          if (rewardButton) {
+            const rewardCard = rewardButton.closest('.bg-gray-900');
+            rewardCard.classList.add('opacity-50');
+
+            // Replace button with claimed text
+            rewardButton.outerHTML = `
+              <span class="inline-block py-1 px-3 bg-gray-700 text-gray-400 rounded-md">
+                <i class="fas fa-check-circle mr-1"></i> Claimed
+              </span>
+            `;
+          }
+
+          // Show success message
+          alert(result.message);
+        } else {
+          // Show error message
+          alert('Error: ' + (result.message || 'Failed to claim reward'));
+        }
+      } catch (error) {
+        console.error('Error claiming reward:', error);
+        alert('Error claiming reward. Please try again.');
+      }
+    }
+
+    // Add event listeners
+    claimButtons.forEach(button => {
+      button.addEventListener('click', function() {
+        const rewardId = this.dataset.rewardId;
+        // Directly claim the reward
+        claimReward(rewardId);
+      });
+    });
+  });
+</script>
+
+

@@ -36,7 +36,7 @@
           <select
             id="trainer-select"
             name="trainerId"
-            class="block w-full h-12 pl-3 pr-10 py-2 bg-gray-800/90 text-white placeholder-gray-400 border border-gray-700 rounded-lg focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400"
+            class="modern-select"
             required
           >
             <option value="">-- Select a Trainer --</option>
@@ -52,7 +52,7 @@
           <select
             id="monster-select"
             name="monsterId"
-            class="block w-full h-12 pl-3 pr-10 py-2 bg-gray-800/90 text-white placeholder-gray-400 border border-gray-700 rounded-lg focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400"
+            class="modern-select"
             required
             disabled
           >
@@ -69,7 +69,7 @@
           <select
             id="pastry-select"
             name="pastryName"
-            class="block w-full h-12 pl-3 pr-10 py-2 bg-gray-800/90 text-white placeholder-gray-400 border border-gray-700 rounded-lg focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400"
+            class="modern-select"
             required
             disabled
           >
@@ -92,7 +92,7 @@
             type="text"
             id="custom-value-input"
             name="customValue"
-            class="block w-full h-12 pl-3 pr-10 py-2 bg-gray-800/90 text-white placeholder-gray-400 border border-gray-700 rounded-lg focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400"
+            class="modern-input w-full"
             placeholder="Enter value..."
           >
           <p id="custom-value-help" class="mt-1 text-sm text-gray-400"></p>
@@ -173,82 +173,16 @@
     transform: translateY(-2px);
   }
 
-  /* Trainer select dropdown styling */
-  #trainer-select {
-    width: 100% !important;
-    height: 48px !important;
-    background-color: rgb(31 41 55 / 0.9) !important;
-    color: white !important;
-    border: 1px solid rgb(55 65 81) !important;
-    border-radius: 0.5rem !important;
-    padding: 0.75rem 1rem !important;
-    appearance: none !important;
-    cursor: pointer !important;
-    margin-bottom: 1.5rem !important;
-  }
-
-  #trainer-select:focus {
-    outline: none !important;
-    border-color: rgb(217 119 6) !important;
-    box-shadow: 0 0 0 2px rgba(217, 119, 6, 0.2) !important;
-  }
-
-  /* Monster select dropdown styling */
-  #monster-select {
-    width: 100% !important;
-    height: 48px !important;
-    background-color: rgb(31 41 55 / 0.9) !important;
-    color: white !important;
-    border: 1px solid rgb(55 65 81) !important;
-    border-radius: 0.5rem !important;
-    padding: 0.75rem 1rem !important;
-    appearance: none !important;
-    cursor: pointer !important;
-    margin-bottom: 1.5rem !important;
-  }
-
-  #monster-select:focus {
-    outline: none !important;
-    border-color: rgb(217 119 6) !important;
-    box-shadow: 0 0 0 2px rgba(217, 119, 6, 0.2) !important;
-  }
-
-  /* Pastry select dropdown styling */
+  /* Using modern-select class from dropdown-styles.css */
+  #trainer-select,
+  #monster-select,
   #pastry-select {
-    width: 100% !important;
-    height: 48px !important;
-    background-color: rgb(31 41 55 / 0.9) !important;
-    color: white !important;
-    border: 1px solid rgb(55 65 81) !important;
-    border-radius: 0.5rem !important;
-    padding: 0.75rem 1rem !important;
-    appearance: none !important;
-    cursor: pointer !important;
     margin-bottom: 1.5rem !important;
   }
 
-  #pastry-select:focus {
-    outline: none !important;
-    border-color: rgb(217 119 6) !important;
-    box-shadow: 0 0 0 2px rgba(217, 119, 6, 0.2) !important;
-  }
-
-  /* Custom value input styling */
+  /* Using modern-input class from input-styles.css */
   #custom-value-input {
-    width: 100% !important;
-    height: 48px !important;
-    background-color: rgb(31 41 55 / 0.9) !important;
-    color: white !important;
-    border: 1px solid rgb(55 65 81) !important;
-    border-radius: 0.5rem !important;
-    padding: 0.75rem 1rem !important;
     margin-bottom: 1.5rem !important;
-  }
-
-  #custom-value-input:focus {
-    outline: none !important;
-    border-color: rgb(217 119 6) !important;
-    box-shadow: 0 0 0 2px rgba(217, 119, 6, 0.2) !important;
   }
 
   /* Custom dropdown arrow for all select elements */

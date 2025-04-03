@@ -251,7 +251,7 @@
             <form action="/admin/inventory-manager" method="GET" class="mb-8">
                 <div class="form-group">
                     <label for="trainer_id">Trainer</label>
-                    <select id="trainer_id" name="trainer_id" class="form-control" required onchange="this.form.submit()">
+                    <select id="trainer_id" name="trainer_id" class="form-control modern-select" required onchange="this.form.submit()">
                         <option value="">Select a Trainer</option>
                         <% trainers.forEach(trainer => { %>
                             <option value="<%= trainer.id %>" <%= selectedTrainer && selectedTrainer.id == trainer.id ? 'selected' : '' %>>
@@ -266,7 +266,7 @@
         <% if (selectedTrainer) { %>
         <div class="form-section">
             <h2 class="form-section-title">Manage Inventory for <%= selectedTrainer.name %></h2>
-            
+
             <div class="tab-container">
                 <div class="tab-buttons">
                     <button type="button" class="tab-button active" data-tab="add-item">Add/Remove Items</button>
@@ -285,7 +285,7 @@
                 <div id="add-item" class="tab-content active">
                     <form action="/admin/inventory-manager/update" method="POST">
                         <input type="hidden" name="trainer_id" value="<%= selectedTrainer.id %>">
-                        
+
                         <div class="form-grid">
                             <div class="form-group">
                                 <label for="category">Category</label>
@@ -337,7 +337,7 @@
                 <% categories.forEach(category => { %>
                 <div id="<%= category.id %>" class="tab-content">
                     <h3 class="text-xl font-bold mb-4"><%= category.title %></h3>
-                    
+
                     <% if (inventory && inventory[category.name] && Object.keys(inventory[category.name]).length > 0) { %>
                         <table class="inventory-table">
                             <thead>
@@ -388,11 +388,11 @@
         tabButtons.forEach(button => {
             button.addEventListener('click', function() {
                 const tabId = this.getAttribute('data-tab');
-                
+
                 // Remove active class from all buttons and contents
                 tabButtons.forEach(btn => btn.classList.remove('active'));
                 tabContents.forEach(content => content.classList.remove('active'));
-                
+
                 // Add active class to current button and content
                 this.classList.add('active');
                 document.getElementById(tabId).classList.add('active');

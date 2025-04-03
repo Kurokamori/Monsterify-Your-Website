@@ -1,4 +1,8 @@
-router.get('/town/witchs_hut', async (req, res) => {
+const express = require('express');
+const router = express.Router();
+const Trainer = require('../models/Trainer');
+
+router.get('/witchs_hut', async (req, res) => {
   try {
     // Ensure user is authenticated
     if (!req.session.user) {
@@ -19,3 +23,5 @@ router.get('/town/witchs_hut', async (req, res) => {
     });
   }
 });
+
+module.exports = router;

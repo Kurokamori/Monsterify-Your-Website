@@ -1,4 +1,4 @@
-const pool = require('../config/database');
+const pool = require('../db');
 
 class Monster {
   /**
@@ -44,6 +44,23 @@ class Monster {
       return result.rows;
     } catch (error) {
       console.error('Error getting monsters by trainer ID:', error);
+      return [];
+    }
+  }
+
+  /**
+   * Get monsters by trainer ID and name
+   * @param {number} trainerId - Trainer ID
+   * @param {string} name - Monster name
+   * @returns {Promise<Array>} - Array of monsters
+   */
+  static async getByTrainerIdAndName(trainerId, name) {
+    try {
+      const query = 'SELECT * FROM mons WHERE trainer_id = $1 AND name = $2';
+      const result = await pool.query(query, [trainerId, name]);
+      return result.rows;
+    } catch (error) {
+      console.error('Error getting monsters by trainer ID and name:', error);
       return [];
     }
   }
@@ -474,6 +491,87 @@ class Monster {
       return true;
     } catch (error) {
       console.error('Error reorganizing boxes:', error);
+      return false;
+    }
+  }
+
+  /**
+   * Add levels to a monster
+   * @param {number} monsterId - Monster ID
+   * @param {number} levels - Number of levels to add
+   * @returns {Promise<boolean>} - Success status
+   */
+  static async addLevels(monsterId, levels) {
+    try {
+      // Get the monster
+      const monster = await this.getById(monsterId);
+      if (!monster) {
+        throw new Error(`Monster with ID ${monsterId} not found`);
+      }
+
+      // Calculate new level (capped at 100)
+      let newLevel = (monster.level || 1) + levels;
+
+      // If the monster would exceed level 100, convert excess levels to coins
+      let excessLevels = 0;
+      if (newLevel > 100) {
+        excessLevels = newLevel - 100;
+        newLevel = 100;
+
+        // Convert excess levels to coins (25 coins per level)
+        if (excessLevels > 0) {
+          const Trainer = require('./Trainer');
+          await Trainer.addCoins(monster.trainer_id, excessLevels * 25);
+          console.log(`Monster ${monsterId} reached level cap. Converted ${excessLevels} excess levels to ${excessLevels * 25} coins for trainer ${monster.trainer_id}`);
+        }
+      }
+
+      // Get the MonsterInitializer to calculate new stats
+      const MonsterInitializer = require('../utils/MonsterInitializer');
+      const baseStats = MonsterInitializer.calculateBaseStats(newLevel);
+
+      // Parse current moveset
+      let currentMoves = [];
+      try {
+        if (monster.moveset) {
+          currentMoves = JSON.parse(monster.moveset);
+        }
+      } catch (error) {
+        console.error(`Error parsing moveset for monster ${monsterId}:`, error);
+      }
+
+      // Calculate how many moves the monster should have based on new level
+      const oldMoveCount = Math.max(1, Math.floor(monster.level / 5) + 1);
+      const newMoveCount = Math.max(1, Math.floor(newLevel / 5) + 1);
+
+      // If the monster should learn new moves, get them
+      let updatedMoves = [...currentMoves];
+      if (newMoveCount > oldMoveCount) {
+        try {
+          // Get new moves
+          const newMoves = await MonsterInitializer.getMovesForMonster(monster, newMoveCount - oldMoveCount);
+
+          // Add new moves to the moveset
+          updatedMoves = [...currentMoves, ...newMoves];
+        } catch (moveError) {
+          console.error(`Error getting new moves for monster ${monsterId}:`, moveError);
+          // Continue with current moves if there's an error
+        }
+      }
+
+      // Update monster with new level, stats, and moves
+      const updatedMonster = {
+        ...monster,
+        level: newLevel,
+        ...baseStats,
+        moveset: JSON.stringify(updatedMoves)
+      };
+
+      // Save the updated monster
+      await this.update(monsterId, updatedMonster);
+      return true;
+    } catch (error) {
+      console.error(`Error adding levels to monster ${monsterId}:`, error);
       return false;
     }
   }

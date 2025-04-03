@@ -279,7 +279,7 @@
 
             <div class="form-group">
                 <label for="path" class="form-label">File Name</label>
-                <input type="text" id="path" name="path" class="form-control" value="<%= content.path %>" <%= isNew ? 'required' : 'readonly' %>>
+                <input type="text" id="path" name="path" class="form-control modern-input" value="<%= content.path %>" <%= isNew ? 'required' : 'readonly' %>>
                 <div class="form-hint">
                     <% if (isNew) { %>
                         File name with .md extension (e.g., my-page.md)
@@ -315,7 +315,7 @@
                                 <button type="button" class="editor-btn" onclick="insertMarkdown('---\n', '')">Horizontal Rule</button>
                                 <button type="button" class="editor-btn" onclick="insertTable()">Table</button>
                             </div>
-                            <textarea id="content" name="content" class="form-control" rows="15" oninput="updatePreview()"><%= content.content %></textarea>
+                            <textarea id="content" name="content" class="form-control modern-input" rows="15" oninput="updatePreview()"><%= content.content %></textarea>
                         </div>
                     </div>
                 </div>
