@@ -20,6 +20,7 @@ const tasksRoutes = require('./routes/tasks');
 const contentPagesRoutes = require('./routes/content-pages');
 const tradeRoutes = require('./routes/trade');
 const statisticsRoutes = require('./routes/statistics');
+const battlesRoutes = require('./routes/battles');
 const apiRoutes = require('./routes/api');
 
 // Set port
@@ -75,8 +76,8 @@ async function initializeApp() {
 initializeApp();
 
 // Use routes in correct order - more specific routes first
-app.use('/admin', adminRoutes);
 app.use('/admin/content', contentRoutes);
+app.use('/admin', adminRoutes);
 app.use('/api', apiRoutes);
 app.use('/town/visit/trade', tradeRoutes);
 app.use('/town', townRoutes);
@@ -86,6 +87,7 @@ app.use('/monsters', monstersRoutes);
 app.use('/fakedex', fakemonRoutes);
 app.use('/statistics', statisticsRoutes);
 app.use('/tasks', tasksRoutes);
+app.use('/battles', battlesRoutes);
 
 // Content pages routes
 app.use('/', contentPagesRoutes);

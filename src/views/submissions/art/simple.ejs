@@ -13,48 +13,7 @@
                 <p class="form-help">Link to your artwork (e.g., DeviantArt, Twitter, etc.)</p>
             </div>
 
-            <div class="form-group">
-                <label for="artSize" class="form-label">Art Size</label>
-                <select id="artSize" name="artSize" class="modern-select" required>
-                    <option value="">-- Select Size --</option>
-                    <option value="fullbody">Fullbody</option>
-                    <option value="halfbody">Halfbody</option>
-                    <option value="bust">Bust</option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label for="linework" class="form-label">Linework</label>
-                <select id="linework" name="linework" class="modern-select" required>
-                    <option value="">-- Select Linework --</option>
-                    <option value="clean">Clean</option>
-                    <option value="sketch">Sketch</option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label for="colorType" class="form-label">Color Type</label>
-                <select id="colorType" name="colorType" class="modern-select" required>
-                    <option value="">-- Select Color Type --</option>
-                    <option value="no_color">No Color</option>
-                    <option value="flat">Flat Color</option>
-                    <option value="simple_shading">Simple Shading</option>
-                    <option value="complex_shading">Complex Shading</option>
-                </select>
-            </div>
-
-
-
-            <div class="form-group">
-                <label for="background" class="form-label">Background</label>
-                <select id="background" name="background" class="modern-select" required>
-                    <option value="">-- Select Background --</option>
-                    <option value="none">None</option>
-                    <option value="prop">Prop</option>
-                    <option value="simple">Simple</option>
-                    <option value="complex">Complex</option>
-                </select>
-            </div>
+            <!-- Art size fields moved to participant level -->
 
             <div class="participants-section">
                 <h2 class="submission-subtitle">Participants</h2>
@@ -247,6 +206,51 @@
                             <!-- Options will be populated via JavaScript -->
                         </select>
                     </div>
+
+                    <!-- Art Size Fields (per participant) -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="form-group">
+                            <label class="form-label">Art Size</label>
+                            <select name="art_size" class="art-size-select modern-select" required>
+                                <option value="">-- Select Size --</option>
+                                <option value="fullbody">Fullbody</option>
+                                <option value="halfbody">Halfbody</option>
+                                <option value="bust">Bust</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Linework</label>
+                            <select name="linework" class="linework-select modern-select" required>
+                                <option value="">-- Select Linework --</option>
+                                <option value="clean">Clean</option>
+                                <option value="sketch">Sketch</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="form-group">
+                            <label class="form-label">Color Type</label>
+                            <select name="color_type" class="color-type-select modern-select" required>
+                                <option value="">-- Select Color Type --</option>
+                                <option value="no_color">No Color</option>
+                                <option value="flat">Flat Color</option>
+                                <option value="simple_shading">Simple Shading</option>
+                                <option value="complex_shading">Complex Shading</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Background</label>
+                            <select name="background" class="background-select modern-select" required>
+                                <option value="">-- Select Background --</option>
+                                <option value="none">None</option>
+                                <option value="prop">Prop</option>
+                                <option value="simple">Simple</option>
+                                <option value="complex">Complex</option>
+                            </select>
+                        </div>
+                    </div>
+
                     <div class="form-group">
                         <label class="form-label">Complexity</label>
                         <select name="complexity" class="complexity-select modern-select" required>
@@ -325,6 +329,51 @@
                             <!-- Options will be populated via JavaScript -->
                         </select>
                     </div>
+
+                    <!-- Art Size Fields (per participant) -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="form-group">
+                            <label class="form-label">Art Size</label>
+                            <select name="art_size" class="art-size-select modern-select" required>
+                                <option value="">-- Select Size --</option>
+                                <option value="fullbody">Fullbody</option>
+                                <option value="halfbody">Halfbody</option>
+                                <option value="bust">Bust</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Linework</label>
+                            <select name="linework" class="linework-select modern-select" required>
+                                <option value="">-- Select Linework --</option>
+                                <option value="clean">Clean</option>
+                                <option value="sketch">Sketch</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="form-group">
+                            <label class="form-label">Color Type</label>
+                            <select name="color_type" class="color-type-select modern-select" required>
+                                <option value="">-- Select Color Type --</option>
+                                <option value="no_color">No Color</option>
+                                <option value="flat">Flat Color</option>
+                                <option value="simple_shading">Simple Shading</option>
+                                <option value="complex_shading">Complex Shading</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Background</label>
+                            <select name="background" class="background-select modern-select" required>
+                                <option value="">-- Select Background --</option>
+                                <option value="none">None</option>
+                                <option value="prop">Prop</option>
+                                <option value="simple">Simple</option>
+                                <option value="complex">Complex</option>
+                            </select>
+                        </div>
+                    </div>
+
                     <div class="form-group">
                         <label class="form-label">Complexity</label>
                         <select name="complexity" class="complexity-select modern-select" required>
@@ -518,10 +567,11 @@
 
         // Calculate levels for a participant
         function calculateLevelsForParticipant(participant) {
-            const artSize = document.getElementById('artSize').value;
-            const linework = document.getElementById('linework').value;
-            const colorType = document.getElementById('colorType').value;
-            const background = document.getElementById('background').value;
+            // Get art size values from the participant
+            const artSize = participant.querySelector('select[name="art_size"]').value;
+            const linework = participant.querySelector('select[name="linework"]').value;
+            const colorType = participant.querySelector('select[name="color_type"]').value;
+            const background = participant.querySelector('select[name="background"]').value;
 
             // Get complexity from the participant
             const complexity = participant.querySelector('select[name="complexity"]').value;
@@ -573,6 +623,10 @@
             }
 
             return {
+                artSize,
+                linework,
+                colorType,
+                background,
                 basePoints,
                 colorPointValue,
                 complexityPointValue,
@@ -586,25 +640,6 @@
 
         // Calculate total levels for all participants
         function calculateTotalLevels() {
-            const artSize = document.getElementById('artSize').value;
-            const linework = document.getElementById('linework').value;
-            const colorType = document.getElementById('colorType').value;
-            const background = document.getElementById('background').value;
-
-            // Calculate base points
-            const basePoints = sizeBasePoints[artSize]?.[linework] || 0;
-
-            // Calculate color points
-            let colorPointValue = 0;
-            if (colorType === 'no_color' || colorType === 'flat') {
-                colorPointValue = colorPoints[colorType] || 0;
-            } else if (colorType === 'simple_shading' || colorType === 'complex_shading') {
-                colorPointValue = colorPoints[colorType]?.[artSize] || 0;
-            }
-
-            // Calculate background points
-            const backgroundPointValue = backgroundPoints[background] || 0;
-
             // Get all participants
             const participants = document.querySelectorAll('#trainerParticipantsContainer .participant-entry, #monsterParticipantsContainer .participant-entry');
 
@@ -619,9 +654,6 @@
             });
 
             return {
-                basePoints,
-                colorPointValue,
-                backgroundPointValue,
                 totalLevels,
                 totalTrainerBonus
             };
@@ -634,10 +666,6 @@
             // Get form values
             const title = document.getElementById('title').value;
             const artUrl = document.getElementById('artUrl').value;
-            const artSize = document.getElementById('artSize').value;
-            const linework = document.getElementById('linework').value;
-            const colorType = document.getElementById('colorType').value;
-            const background = document.getElementById('background').value;
 
             // Calculate total levels (for summary only)
             const totalCalculation = calculateTotalLevels();
@@ -648,10 +676,6 @@
                 calculatorType: 'simple',
                 title,
                 artUrl,
-                artSize,
-                linework,
-                colorType,
-                background,
                 totalLevels: totalCalculation.totalLevels,
                 totalTrainerBonus: totalCalculation.totalTrainerBonus,
                 participants: [],
@@ -675,6 +699,10 @@
                         monsterId: null,
                         isTrainer: true,
                         isGift,
+                        artSize: calculation.artSize,
+                        linework: calculation.linework,
+                        colorType: calculation.colorType,
+                        background: calculation.background,
                         complexity: entry.querySelector('select[name="complexity"]').value,
                         modifiers: Array.from(entry.querySelectorAll('input[name="modifiers"]:checked')).map(cb => cb.value),
                         levels: calculation.totalLevels,
@@ -708,6 +736,10 @@
                         monsterName,
                         isTrainer: false,
                         isGift,
+                        artSize: calculation.artSize,
+                        linework: calculation.linework,
+                        colorType: calculation.colorType,
+                        background: calculation.background,
                         complexity: entry.querySelector('select[name="complexity"]').value,
                         modifiers: Array.from(entry.querySelectorAll('input[name="modifiers"]:checked')).map(cb => cb.value),
                         levels: calculation.totalLevels,
@@ -785,13 +817,6 @@
                 <h3 class="font-semibold mb-4">Art Calculation Results</h3>
 
                 <div class="bg-gray-700 p-4 rounded-md mb-4">
-                    <h4 class="font-semibold mb-2">Common Elements</h4>
-                    <p><strong>Size & Linework:</strong> ${formData.artSize} ${formData.linework} (${calculation.basePoints} points)</p>
-                    <p><strong>Color:</strong> ${document.getElementById('colorType').options[document.getElementById('colorType').selectedIndex].text} (${calculation.colorPointValue} points)</p>
-                    <p><strong>Background:</strong> ${document.getElementById('background').options[document.getElementById('background').selectedIndex].text} (${calculation.backgroundPointValue} points)</p>
-                </div>
-
-                <div class="bg-gray-700 p-4 rounded-md mb-4">
                     <h4 class="font-semibold mb-2">Regular Participants</h4>
                     ${formData.participants.length > 0 ? `
                         <ul class="list-disc pl-5 mt-2">
@@ -808,6 +833,48 @@
                     const participantName = participantElement
                         ? participantElement.textContent
                         : (participant.monsterId ? (participant.monsterName || 'Selected Monster') : 'Selected Trainer');
+
+                    // Get art size text
+                    const artSizeText = participant.artSize.charAt(0).toUpperCase() + participant.artSize.slice(1);
+                    const lineworkText = participant.linework.charAt(0).toUpperCase() + participant.linework.slice(1);
+
+                    // Get color type text
+                    let colorTypeText = '';
+                    switch(participant.colorType) {
+                        case 'no_color':
+                            colorTypeText = 'No Color';
+                            break;
+                        case 'flat':
+                            colorTypeText = 'Flat Color';
+                            break;
+                        case 'simple_shading':
+                            colorTypeText = 'Simple Shading';
+                            break;
+                        case 'complex_shading':
+                            colorTypeText = 'Complex Shading';
+                            break;
+                        default:
+                            colorTypeText = participant.colorType;
+                    }
+
+                    // Get background text
+                    let backgroundText = '';
+                    switch(participant.background) {
+                        case 'none':
+                            backgroundText = 'None';
+                            break;
+                        case 'prop':
+                            backgroundText = 'Prop';
+                            break;
+                        case 'simple':
+                            backgroundText = 'Simple';
+                            break;
+                        case 'complex':
+                            backgroundText = 'Complex';
+                            break;
+                        default:
+                            backgroundText = participant.background;
+                    }
 
                     // Get complexity text
                     let complexityText = '';
@@ -857,6 +924,7 @@
                     html += `
                         <li>
                             <strong>${participantName}</strong> (${complexityText}${modifiersText})<br>
+                            <span class="ml-4"><strong>Art:</strong> ${artSizeText} ${lineworkText}, ${colorTypeText}, Background: ${backgroundText}</span><br>
                             <span class="ml-4">+${participant.levels} levels, +${participant.coins} coins</span>
                             ${participant.trainerBonus > 0 ? `<br><span class="ml-4 text-amber-400">+${participant.trainerBonus} trainer/capped bonus</span>` : ''}
                         </li>
@@ -886,6 +954,48 @@
                         ? participantElement.textContent
                         : (participant.monsterId ? (participant.monsterName || 'Selected Monster') : 'Selected Trainer');
 
+                    // Get art size text
+                    const artSizeText = participant.artSize.charAt(0).toUpperCase() + participant.artSize.slice(1);
+                    const lineworkText = participant.linework.charAt(0).toUpperCase() + participant.linework.slice(1);
+
+                    // Get color type text
+                    let colorTypeText = '';
+                    switch(participant.colorType) {
+                        case 'no_color':
+                            colorTypeText = 'No Color';
+                            break;
+                        case 'flat':
+                            colorTypeText = 'Flat Color';
+                            break;
+                        case 'simple_shading':
+                            colorTypeText = 'Simple Shading';
+                            break;
+                        case 'complex_shading':
+                            colorTypeText = 'Complex Shading';
+                            break;
+                        default:
+                            colorTypeText = participant.colorType;
+                    }
+
+                    // Get background text
+                    let backgroundText = '';
+                    switch(participant.background) {
+                        case 'none':
+                            backgroundText = 'None';
+                            break;
+                        case 'prop':
+                            backgroundText = 'Prop';
+                            break;
+                        case 'simple':
+                            backgroundText = 'Simple';
+                            break;
+                        case 'complex':
+                            backgroundText = 'Complex';
+                            break;
+                        default:
+                            backgroundText = participant.background;
+                    }
+
                     // Get complexity text
                     let complexityText = '';
                     switch(participant.complexity) {
@@ -934,6 +1044,7 @@
                     html += `
                         <li>
                             <strong>${participantName}</strong> (${complexityText}${modifiersText})<br>
+                            <span class="ml-4"><strong>Art:</strong> ${artSizeText} ${lineworkText}, ${colorTypeText}, Background: ${backgroundText}</span><br>
                             <span class="ml-4">+${participant.levels} levels</span>
                         </li>
                     `;

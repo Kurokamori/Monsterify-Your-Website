@@ -9,27 +9,8 @@
 <div class="full-width-content">
     <div class="trainer-page-layout">
         <!-- Side Navigation -->
-        <div class="trainer-sidebar">
-            <div class="sidebar-nav">
-                <a href="/trainers/<%= trainer.id %>" class="sidebar-link">Profile</a>
-                <a href="/trainers/<%= trainer.id %>/pc" class="sidebar-link">PC Boxes</a>
-                <a href="/trainers/<%= trainer.id %>/boxes" class="sidebar-link">All Boxes</a>
-                <a href="/trainers/<%= trainer.id %>/inventory" class="sidebar-link">Inventory</a>
-                <a href="/trainers/<%= trainer.id %>/stats" class="sidebar-link active">Stats</a>
-                <a href="/trainers/<%= trainer.id %>/achievements" class="sidebar-link">Achievements</a>
-                <a href="/trainers/<%= trainer.id %>/additional-references" class="sidebar-link">Additional References</a>
-
-                <% if (locals.user && locals.user.discord_id && trainer.player_user_id && locals.user.discord_id.toString() === trainer.player_user_id) { %>
-                <div class="sidebar-divider"></div>
-                <a href="/trainers/<%= trainer.id %>/edit" class="sidebar-link owner-action">Edit Trainer</a>
-                <a href="/trainers/<%= trainer.id %>/edit-boxes" class="sidebar-link owner-action">Edit Boxes</a>
-
-                <% if (typeof all_monsters !== 'undefined' && all_monsters && all_monsters.length < 3) { %>
-                <a href="/trainers/<%= trainer.id %>/roll-starters" class="sidebar-link owner-action highlight">Roll Starters</a>
-                <% } %>
-                <% } %>
-            </div>
-        </div>
+        <% const active = 'stats'; %>
+        <%- include('../partials/trainer_sidebar', { trainer, active }) %>
 
         <!-- Main Content -->
         <div class="trainer-main-content">

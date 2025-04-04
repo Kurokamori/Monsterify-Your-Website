@@ -440,6 +440,24 @@ class Trainer {
   }
 
   /**
+   * Get all monsters for a trainer
+   * @param {number} trainerId - Trainer ID
+   * @returns {Promise<Array>} - Array of all monsters for the trainer
+   */
+  static async getMonsters(trainerId) {
+    try {
+      console.log('Getting all monsters for trainer ID:', trainerId);
+      const query = 'SELECT * FROM mons WHERE trainer_id = $1 ORDER BY level DESC, name';
+      const result = await pool.query(query, [trainerId]);
+      console.log(`Found ${result.rows.length} monsters for trainer ID ${trainerId}`);
+      return result.rows;
+    } catch (error) {
+      console.error('Error getting monsters for trainer:', error);
+      return [];
+    }
+  }
+
+  /**
    * Update monster counts for a trainer
    * @param {number} trainerId - Trainer ID
    * @param {number} monsterCount - Total monster count

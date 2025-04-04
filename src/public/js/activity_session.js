@@ -54,7 +54,40 @@ document.addEventListener('DOMContentLoaded', function() {
     let remainingSeconds;
 
     // Initialize timer
-    initializeTimer();
+    function initializeTimer() {
+      console.log('Initializing timer');
+
+      // Format the end time for display
+      if (endTimeDisplay) {
+        const options = {
+          hour: 'numeric',
+          minute: 'numeric',
+          hour12: true
+        };
+        endTimeDisplay.textContent = new Date(endTime).toLocaleTimeString([], options);
+      }
+
+      // Set the total seconds based on duration
+      totalSeconds = durationMinutes * 60;
+
+      // For a new session, start with the full duration
+      remainingSeconds = totalSeconds;
+
+      console.log('Initial timer values:', {
+        remainingSeconds,
+        totalSeconds,
+        endTime: endTime.toISOString(),
+        now: new Date().toISOString(),
+        timeDiff: endTime - new Date()
+      });
+
+      // Update the display immediately
+      updateTimerDisplay();
+      updateProgressCircle();
+
+      // Start the timer immediately
+      startTimer();
+    }
 
     // Set up event listeners
     if (pauseButton) {
@@ -77,118 +110,58 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
 
-  // Initialize the timer
-  function initializeTimer() {
-    console.log('Initializing timer');
+  // Start the timer
+  function startTimer() {
+    console.log('Starting timer with remaining seconds:', remainingSeconds);
 
-    // Format the end time for display
-    if (endTimeDisplay) {
-      const options = {
-        hour: 'numeric',
-        minute: 'numeric',
-        hour12: true
-      };
-      endTimeDisplay.textContent = new Date(endTime).toLocaleTimeString([], options);
+    // Clear any existing interval
+    if (timerInterval) {
+      clearInterval(timerInterval);
     }
 
-    // Calculate initial remaining time
-    const now = new Date();
-    const timeDiff = endTime - now;
-
-    // If time is up or negative, set to 0
-    remainingSeconds = Math.max(0, Math.floor(timeDiff / 1000));
-    totalSeconds = Math.max(totalSeconds, remainingSeconds); // Ensure totalSeconds is at least as large as remainingSeconds
-
-    console.log('Initial timer values:', {
-      remainingSeconds,
-      totalSeconds,
-      endTime: endTime.toISOString(),
-      now: now.toISOString(),
-      timeDiff
-    });
-
-    // Update the display immediately
-    if (timerDisplay) {
-      const minutes = Math.floor(remainingSeconds / 60);
-      const seconds = remainingSeconds % 60;
-      timerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    // Enable pause button, disable resume button
+    if (pauseButton) {
+      pauseButton.disabled = false;
+      pauseButton.classList.remove('opacity-50');
     }
 
-    // Update progress circle
-    updateProgressCircle();
+    if (resumeButton) {
+      resumeButton.disabled = true;
+      resumeButton.classList.add('opacity-50');
+    }
 
-    // Start the timer with a slight delay to ensure DOM is ready
-    setTimeout(() => {
-      startTimer();
-    }, 100);
+    // Set timer status
+    if (timerStatus) {
+      timerStatus.textContent = 'In progress';
+    }
+
+    // Start the interval if time remains
+    if (remainingSeconds > 0) {
+      timerInterval = setInterval(() => {
+        remainingSeconds--;
+        updateTimerDisplay();
+        updateProgressCircle();
+
+        if (remainingSeconds <= 0) {
+          clearInterval(timerInterval);
+          if (timerStatus) {
+            timerStatus.textContent = 'Time\'s up!';
+          }
+          if (typeof handleTimerComplete === 'function') {
+            handleTimerComplete();
+          }
+        }
+      }, 1000);
+    }
   }
 
-  // Function to manually refresh the timer (can be called if needed)
-  function refreshTimer() {
-    const now = new Date();
-    const timeDiff = endTime - now;
-
-    // If time is up or negative, set to 0
-    remainingSeconds = Math.max(0, Math.floor(timeDiff / 1000));
-
-    // Update the display
-    updateTimerDisplay();
-
-    return remainingSeconds;
-  }
-
-  // Make the refresh function and session info available globally
-  window.activitySession = {
-    refreshTimer,
-    sessionInfo
-  };
-
-  // Update the timer display
+  // Update timer display
   function updateTimerDisplay() {
-    console.log('Updating timer display, remaining seconds:', remainingSeconds);
+    if (!timerDisplay) return;
 
     const minutes = Math.floor(remainingSeconds / 60);
     const seconds = remainingSeconds % 60;
-
-    // Format as MM:SS
-    if (timerDisplay) {
-      timerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-    } else {
-      console.error('Timer display element not found');
-    }
-
-    // Update progress circle
-    updateProgressCircle();
-
-    // Update status text
-    if (remainingSeconds === 0) {
-      if (timerStatus) {
-        timerStatus.textContent = 'Time\'s up!';
-      }
-
-      if (pauseButton) {
-        pauseButton.disabled = true;
-        pauseButton.classList.add('opacity-50');
-      }
-
-      if (resumeButton) {
-        resumeButton.disabled = true;
-        resumeButton.classList.add('opacity-50');
-      }
-
-      // Highlight the complete button
-      if (completeButton) {
-        completeButton.classList.add('animate-pulse');
-      }
-    } else if (isPaused) {
-      if (timerStatus) {
-        timerStatus.textContent = 'Paused';
-      }
-    } else {
-      if (timerStatus) {
-        timerStatus.textContent = 'In progress';
-      }
-    }
+    timerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
   }
 
   // Update the progress circle
@@ -216,82 +189,6 @@ document.addEventListener('DOMContentLoaded', function() {
       });
     } catch (error) {
       console.error('Error updating progress circle:', error);
-    }
-  }
-
-  // Start the timer
-  function startTimer() {
-    console.log('Starting timer with remaining seconds:', remainingSeconds);
-
-    // Clear any existing interval
-    if (timerInterval) {
-      clearInterval(timerInterval);
-      timerInterval = null;
-    }
-
-    // Enable pause button, disable resume button
-    if (pauseButton) {
-      pauseButton.disabled = false;
-      pauseButton.classList.remove('opacity-50');
-    }
-
-    if (resumeButton) {
-      resumeButton.disabled = true;
-      resumeButton.classList.add('opacity-50');
-    }
-
-    // Set timer status
-    if (timerStatus) {
-      timerStatus.textContent = 'In progress';
-    }
-
-    // Only start a new interval if we don't already have one and time isn't up
-    if (!timerInterval && remainingSeconds > 0) {
-      console.log('Creating new timer interval');
-
-      // Start with an immediate update
-      updateTimerDisplay();
-
-      // Start the interval
-      timerInterval = setInterval(() => {
-        // Decrement the remaining seconds directly
-        remainingSeconds = Math.max(0, remainingSeconds - 1);
-
-        // Update the display
-        updateTimerDisplay();
-
-        // If time is up, stop the timer
-        if (remainingSeconds <= 0) {
-          console.log('Timer completed');
-          clearInterval(timerInterval);
-          timerInterval = null;
-
-          if (timerStatus) {
-            timerStatus.textContent = 'Time\'s up!';
-          }
-
-          // Disable pause/resume buttons
-          if (pauseButton) {
-            pauseButton.disabled = true;
-            pauseButton.classList.add('opacity-50');
-          }
-
-          if (resumeButton) {
-            resumeButton.disabled = true;
-            resumeButton.classList.add('opacity-50');
-          }
-
-          // Call the timer complete handler
-          if (typeof handleTimerComplete === 'function') {
-            handleTimerComplete();
-          }
-        }
-      }, 1000);
-    } else {
-      console.log('Not starting timer interval:', {
-        hasInterval: !!timerInterval,
-        remainingSeconds
-      });
     }
   }
 
@@ -467,7 +364,38 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }
 
+  // Fetch tasks for the current activity
+  async function fetchActivityTasks() {
+    try {
+      const response = await fetch(`/api/activities/${location}/${activity}/tasks`);
+      const data = await response.json();
+
+      if (data.success) {
+        // Update the tasks display
+        const tasksContainer = document.getElementById('activity-tasks');
+        if (tasksContainer && data.tasks.length > 0) {
+          tasksContainer.innerHTML = data.tasks.map(task => `
+            <div class="task-item p-3 border-b border-gray-700">
+              <p class="text-white">${task.description}</p>
+            </div>
+          `).join('');
+        } else if (tasksContainer) {
+          tasksContainer.innerHTML = '<p class="text-gray-400 p-3">No tasks available.</p>';
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching tasks:', error);
+    }
+  }
+
+  // Call initialization functions
+  initializeTimer();
+  fetchActivityTasks();
+
   } catch (error) {
     console.error('Error in activity session initialization:', error);
   }
 });
+
+
+

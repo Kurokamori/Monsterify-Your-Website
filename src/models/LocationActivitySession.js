@@ -58,12 +58,71 @@ class LocationActivitySession {
       // Parse rewards if they exist
       const session = result.rows[0] || null;
 
-      if (session && session.rewards && typeof session.rewards === 'string') {
-        try {
-          session.rewards = JSON.parse(session.rewards);
-        } catch (error) {
-          console.error(`Error parsing rewards for session ${sessionId}:`, error);
-          // Keep the original string if parsing fails
+      if (session) {
+        if (session.rewards) {
+          try {
+            // Parse rewards if they're a string
+            if (typeof session.rewards === 'string') {
+              session.rewards = JSON.parse(session.rewards);
+            }
+
+            // Ensure each reward has all required fields
+            if (Array.isArray(session.rewards)) {
+              session.rewards = session.rewards.map(reward => {
+                // Ensure reward has both id and reward_id
+                if (!reward.id && reward.reward_id) {
+                  reward.id = reward.reward_id;
+                } else if (!reward.reward_id && reward.id) {
+                  reward.reward_id = reward.id;
+                }
+
+                // Ensure reward has both type and reward_type
+                if (!reward.type && reward.reward_type) {
+                  reward.type = reward.reward_type;
+                } else if (!reward.reward_type && reward.type) {
+                  reward.reward_type = reward.type;
+                }
+
+                // Ensure reward has both data and reward_data
+                if (!reward.data && reward.reward_data) {
+                  reward.data = reward.reward_data;
+                } else if (!reward.reward_data && reward.data) {
+                  reward.reward_data = reward.data;
+                }
+
+                // Add icon based on reward type
+                switch (reward.type) {
+                  case 'monster':
+                    reward.icon = 'fas fa-dragon';
+                    break;
+                  case 'item':
+                    reward.icon = 'fas fa-box';
+                    break;
+                  case 'coin':
+                    reward.icon = 'fas fa-coins';
+                    break;
+                  case 'level':
+                    reward.icon = 'fas fa-level-up-alt';
+                    break;
+                  default:
+                    reward.icon = 'fas fa-gift';
+                }
+
+                // Set a default rarity if not present
+                if (!reward.rarity) {
+                  reward.rarity = 'common';
+                }
+
+                return reward;
+              });
+            }
+          } catch (error) {
+            console.error(`Error parsing rewards for session ${sessionId}:`, error);
+            // Keep the original rewards if parsing fails
+          }
+        } else {
+          // Initialize empty rewards array if none exists
+          session.rewards = [];
         }
       }
 
@@ -174,6 +233,9 @@ class LocationActivitySession {
         if (!reward.reward_id && !reward.id) {
           reward.reward_id = Date.now() + Math.floor(Math.random() * 1000);
         }
+        if (!reward.id) {
+          reward.id = reward.reward_id;
+        }
 
         // Ensure reward has a type
         if (!reward.type && reward.reward_type) {
@@ -193,6 +255,46 @@ class LocationActivitySession {
         } else if (!reward.data && !reward.reward_data) {
           reward.data = {};
           reward.reward_data = {};
+        }
+
+        // Add icon based on reward type
+        switch (reward.type) {
+          case 'monster':
+            reward.icon = 'fas fa-dragon';
+            break;
+          case 'item':
+            reward.icon = 'fas fa-box';
+            break;
+          case 'coin':
+            reward.icon = 'fas fa-coins';
+            break;
+          case 'level':
+            reward.icon = 'fas fa-level-up-alt';
+            break;
+          default:
+            reward.icon = 'fas fa-gift';
+        }
+
+        // Set a default rarity if not present
+        if (!reward.rarity) {
+          reward.rarity = 'common';
+        }
+
+        // For coin rewards, ensure amount is properly set
+        if (reward.type === 'coin') {
+          const coinData = reward.data || {};
+          if (typeof coinData.amount === 'number') {
+            // Make sure amount is accessible directly
+            reward.amount = coinData.amount;
+          } else if (coinData.amount && typeof coinData.amount === 'object') {
+            // If amount is a range, pick a random value
+            const min = coinData.amount.min || 50;
+            const max = coinData.amount.max || 150;
+            const randomAmount = Math.floor(Math.random() * (max - min + 1)) + min;
+            reward.amount = randomAmount;
+            reward.data.amount = randomAmount;
+            reward.reward_data.amount = randomAmount;
+          }
         }
 
         return reward;

@@ -1,46 +1,21 @@
-<div class="bg-gray-800 rounded-lg shadow-lg overflow-hidden">
-  <div class="p-4 bg-gray-700">
-    <div class="flex items-center space-x-3">
-      <img src="<%= trainer.image || '/images/default_trainer.png' %>" alt="<%= trainer.name %>" class="w-12 h-12 rounded-full object-cover border-2 border-gray-600">
-      <div>
-        <h3 class="text-white font-bold"><%= trainer.name %></h3>
-        <p class="text-gray-300 text-sm">Level <%= trainer.level || 1 %></p>
-      </div>
-    </div>
-  </div>
+<div class="trainer-sidebar">
+    <div class="sidebar-nav">
+        <a href="/trainers/<%= trainer.id %>" class="sidebar-link <%= active === 'profile' ? 'active' : '' %>">Profile</a>
+        <a href="/trainers/<%= trainer.id %>/pc" class="sidebar-link <%= active === 'pc' ? 'active' : '' %>">PC Boxes</a>
+        <a href="/trainers/<%= trainer.id %>/boxes" class="sidebar-link <%= active === 'boxes' ? 'active' : '' %>">All Boxes</a>
+        <a href="/trainers/<%= trainer.id %>/inventory" class="sidebar-link <%= active === 'inventory' ? 'active' : '' %>">Inventory</a>
+        <a href="/trainers/<%= trainer.id %>/stats" class="sidebar-link <%= active === 'stats' ? 'active' : '' %>">Stats</a>
+        <a href="/trainers/<%= trainer.id %>/achievements" class="sidebar-link <%= active === 'achievements' ? 'active' : '' %>">Achievements</a>
+        <a href="/trainers/<%= trainer.id %>/additional-references" class="sidebar-link <%= active === 'additional-references' ? 'active' : '' %>">Additional References</a>
 
-  <nav class="p-2">
-    <ul class="space-y-1">
-      <li>
-        <a href="/trainers/<%= trainer.id %>" class="flex items-center px-4 py-2 text-gray-300 rounded-lg hover:bg-gray-700 <%= active === 'profile' ? 'bg-gray-700 text-white' : '' %>">
-          <i class="fas fa-user-circle w-5 h-5 mr-2"></i>
-          <span>Profile</span>
-        </a>
-      </li>
-      <li>
-        <a href="/trainers/<%= trainer.id %>/monsters" class="flex items-center px-4 py-2 text-gray-300 rounded-lg hover:bg-gray-700 <%= active === 'monsters' ? 'bg-gray-700 text-white' : '' %>">
-          <i class="fas fa-dragon w-5 h-5 mr-2"></i>
-          <span>Monsters</span>
-        </a>
-      </li>
-      <li>
-        <a href="/trainers/<%= trainer.id %>/items" class="flex items-center px-4 py-2 text-gray-300 rounded-lg hover:bg-gray-700 <%= active === 'items' ? 'bg-gray-700 text-white' : '' %>">
-          <i class="fas fa-box w-5 h-5 mr-2"></i>
-          <span>Items</span>
-        </a>
-      </li>
-      <li>
-        <a href="/trainers/<%= trainer.id %>/additional-references" class="flex items-center px-4 py-2 text-gray-300 rounded-lg hover:bg-gray-700 <%= active === 'additional-references' ? 'bg-gray-700 text-white' : '' %>">
-          <i class="fas fa-bookmark w-5 h-5 mr-2"></i>
-          <span>Additional References</span>
-        </a>
-      </li>
-      <li>
-        <a href="/trainers/<%= trainer.id %>/edit" class="flex items-center px-4 py-2 text-gray-300 rounded-lg hover:bg-gray-700 <%= active === 'edit' ? 'bg-gray-700 text-white' : '' %>">
-          <i class="fas fa-edit w-5 h-5 mr-2"></i>
-          <span>Edit Trainer</span>
-        </a>
-      </li>
-    </ul>
-  </nav>
+        <% if (locals.user && locals.user.discord_id && trainer.player_user_id && locals.user.discord_id.toString() === trainer.player_user_id) { %>
+        <div class="sidebar-divider"></div>
+        <a href="/trainers/<%= trainer.id %>/edit" class="sidebar-link owner-action <%= active === 'edit' ? 'active' : '' %>">Edit Trainer</a>
+        <a href="/trainers/<%= trainer.id %>/edit-boxes" class="sidebar-link owner-action <%= active === 'edit-boxes' ? 'active' : '' %>">Edit Boxes</a>
+
+        <% if (typeof all_monsters !== 'undefined' && all_monsters && all_monsters.length < 3) { %>
+        <a href="/trainers/<%= trainer.id %>/roll-starters" class="sidebar-link owner-action highlight">Roll Starters</a>
+        <% } %>
+        <% } %>
+    </div>
 </div>

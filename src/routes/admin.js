@@ -5,6 +5,7 @@ const router = express.Router();
 const regionsRoutes = require('./admin/regions');
 const areasRoutes = require('./admin/areas');
 const bossRoutes = require('./admin/bosses');
+const battlesRoutes = require('./admin/battles');
 
 // Middleware to check if user is admin
 const isAdmin = (req, res, next) => {
@@ -26,5 +27,6 @@ router.get('/dashboard', isAdmin, (req, res) => {
 router.use('/regions', regionsRoutes);
 router.use('/areas', areasRoutes);
 router.use('/bosses', bossRoutes);
+router.use('/battles', battlesRoutes);
 
 module.exports = router;

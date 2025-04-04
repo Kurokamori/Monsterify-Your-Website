@@ -1961,6 +1961,11 @@ const shopRoutes = require('./routes/admin/shops');
 const bossRoutes = require('./routes/admin/bosses');
 const missionRoutes = require('./routes/admin/missions');
 const promptRoutes = require('./routes/admin/prompts');
+const achievementRoutes = require('./routes/admin/achievements');
+const adminBattlesRoutes = require('./routes/admin/battles');
+
+// Import trainer routes
+const trainerAchievementsRoutes = require('./routes/trainer/achievements');
 
 // Import API routes
 const apiRoutes = require('./routes/api');
@@ -1970,6 +1975,11 @@ app.use('/admin/shops', shopRoutes);
 app.use('/admin/bosses', bossRoutes);
 app.use('/admin/missions', missionRoutes);
 app.use('/admin/prompts', promptRoutes);
+app.use('/admin/achievements', achievementRoutes);
+app.use('/admin/battles', adminBattlesRoutes);
+
+// Use trainer routes
+app.use('/trainers', trainerAchievementsRoutes);
 
 // Use API routes
 app.use('/api', apiRoutes);
@@ -5129,8 +5139,14 @@ app.get('/town/visit/:location', (req, res) => {
 // Import adventures routes
 const adventuresRoutes = require('./routes/adventures');
 
+// Import battles routes
+const battlesRoutes = require('./routes/battles');
+
 // Use adventures routes
 app.use('/adventures', adventuresRoutes);
+
+// Use battles routes
+app.use('/battles', battlesRoutes);
 
 // Keep these specific routes for backward compatibility
 app.get('/adventures/missions', (req, res) => {
@@ -7158,25 +7174,51 @@ app.get('/api/trainers/:id', async (req, res) => {
     const trainerId = parseInt(req.params.id, 10);
 
     if (isNaN(trainerId)) {
-      return res.status(400).json({ error: 'Invalid trainer ID format' });
+      return res.status(400).json({ success: false, message: 'Invalid trainer ID format' });
     }
 
     const trainer = await Trainer.getById(trainerId);
     if (!trainer) {
-      return res.status(404).json({ error: 'Trainer not found' });
+      return res.status(404).json({ success: false, message: 'Trainer not found' });
     }
 
-    const battle_box_mons = await Trainer.getBattleBoxMonsters(trainerId);
-
     return res.json({
-      trainer,
-      battle_box_mons
+      success: true,
+      trainer
     });
   } catch (error) {
     console.error('Error in /api/trainers/:id:', error);
     return res.status(500).json({
-      error: 'Server error',
-      message: error.message
+      success: false,
+      message: error.message || 'Server error'
+    });
+  }
+});
+
+app.get('/api/trainers/:id/battle-box', async (req, res) => {
+  try {
+    const trainerId = parseInt(req.params.id, 10);
+
+    if (isNaN(trainerId)) {
+      return res.status(400).json({ success: false, message: 'Invalid trainer ID format' });
+    }
+
+    const trainer = await Trainer.getById(trainerId);
+    if (!trainer) {
+      return res.status(404).json({ success: false, message: 'Trainer not found' });
+    }
+
+    const monsters = await Trainer.getBattleBoxMonsters(trainerId);
+
+    return res.json({
+      success: true,
+      monsters
+    });
+  } catch (error) {
+    console.error('Error in /api/trainers/:id/battle-box:', error);
+    return res.status(500).json({
+      success: false,
+      message: error.message || 'Server error'
     });
   }
 });

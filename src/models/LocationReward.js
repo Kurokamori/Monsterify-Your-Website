@@ -25,14 +25,61 @@ class LocationReward {
 
       const result = await pool.query(query, [location, count]);
 
-      // Parse reward_data for each reward
+      // Parse reward_data for each reward and ensure all required fields are present
       return result.rows.map(reward => {
         try {
+          // Parse reward_data if it's a string
           if (reward.reward_data && typeof reward.reward_data === 'string') {
             reward.reward_data = JSON.parse(reward.reward_data);
           }
+
+          // Ensure reward has both id and reward_id
+          if (!reward.id) {
+            reward.id = reward.reward_id;
+          }
+
+          // Ensure reward has both type and reward_type
+          if (!reward.type) {
+            reward.type = reward.reward_type;
+          }
+          if (!reward.reward_type) {
+            reward.reward_type = reward.type;
+          }
+
+          // Ensure reward has both data and reward_data
+          if (!reward.data) {
+            reward.data = reward.reward_data;
+          }
+          if (!reward.reward_data) {
+            reward.reward_data = reward.data;
+          }
+
+          // Add icon based on reward type
+          switch (reward.type) {
+            case 'monster':
+              reward.icon = 'fas fa-dragon';
+              break;
+            case 'item':
+              reward.icon = 'fas fa-box';
+              break;
+            case 'coin':
+              reward.icon = 'fas fa-coins';
+              break;
+            case 'level':
+              reward.icon = 'fas fa-level-up-alt';
+              break;
+            default:
+              reward.icon = 'fas fa-gift';
+          }
+
+          // Set a default rarity if not present
+          if (!reward.rarity) {
+            reward.rarity = 'common';
+          }
+
+          console.log(`Processed reward ${reward.reward_id}:`, JSON.stringify(reward, null, 2));
         } catch (error) {
-          console.error(`Error parsing reward_data for reward ${reward.reward_id}:`, error);
+          console.error(`Error processing reward ${reward.reward_id}:`, error);
         }
         return reward;
       });
@@ -57,14 +104,59 @@ class LocationReward {
 
       const result = await pool.query(query, [location]);
 
-      // Parse reward_data for each reward
+      // Parse reward_data for each reward and ensure all required fields are present
       return result.rows.map(reward => {
         try {
+          // Parse reward_data if it's a string
           if (reward.reward_data && typeof reward.reward_data === 'string') {
             reward.reward_data = JSON.parse(reward.reward_data);
           }
+
+          // Ensure reward has both id and reward_id
+          if (!reward.id) {
+            reward.id = reward.reward_id;
+          }
+
+          // Ensure reward has both type and reward_type
+          if (!reward.type) {
+            reward.type = reward.reward_type;
+          }
+          if (!reward.reward_type) {
+            reward.reward_type = reward.type;
+          }
+
+          // Ensure reward has both data and reward_data
+          if (!reward.data) {
+            reward.data = reward.reward_data;
+          }
+          if (!reward.reward_data) {
+            reward.reward_data = reward.data;
+          }
+
+          // Add icon based on reward type
+          switch (reward.type) {
+            case 'monster':
+              reward.icon = 'fas fa-dragon';
+              break;
+            case 'item':
+              reward.icon = 'fas fa-box';
+              break;
+            case 'coin':
+              reward.icon = 'fas fa-coins';
+              break;
+            case 'level':
+              reward.icon = 'fas fa-level-up-alt';
+              break;
+            default:
+              reward.icon = 'fas fa-gift';
+          }
+
+          // Set a default rarity if not present
+          if (!reward.rarity) {
+            reward.rarity = 'common';
+          }
         } catch (error) {
-          console.error(`Error parsing reward_data for reward ${reward.reward_id}:`, error);
+          console.error(`Error processing reward ${reward.reward_id}:`, error);
         }
         return reward;
       });
@@ -87,7 +179,64 @@ class LocationReward {
       `;
 
       const result = await pool.query(query, [rewardId]);
-      return result.rows[0] || null;
+      const reward = result.rows[0] || null;
+
+      if (reward) {
+        try {
+          // Parse reward_data if it's a string
+          if (reward.reward_data && typeof reward.reward_data === 'string') {
+            reward.reward_data = JSON.parse(reward.reward_data);
+          }
+
+          // Ensure reward has both id and reward_id
+          if (!reward.id) {
+            reward.id = reward.reward_id;
+          }
+
+          // Ensure reward has both type and reward_type
+          if (!reward.type) {
+            reward.type = reward.reward_type;
+          }
+          if (!reward.reward_type) {
+            reward.reward_type = reward.type;
+          }
+
+          // Ensure reward has both data and reward_data
+          if (!reward.data) {
+            reward.data = reward.reward_data;
+          }
+          if (!reward.reward_data) {
+            reward.reward_data = reward.data;
+          }
+
+          // Add icon based on reward type
+          switch (reward.type) {
+            case 'monster':
+              reward.icon = 'fas fa-dragon';
+              break;
+            case 'item':
+              reward.icon = 'fas fa-box';
+              break;
+            case 'coin':
+              reward.icon = 'fas fa-coins';
+              break;
+            case 'level':
+              reward.icon = 'fas fa-level-up-alt';
+              break;
+            default:
+              reward.icon = 'fas fa-gift';
+          }
+
+          // Set a default rarity if not present
+          if (!reward.rarity) {
+            reward.rarity = 'common';
+          }
+        } catch (error) {
+          console.error(`Error processing reward ${reward.reward_id}:`, error);
+        }
+      }
+
+      return reward;
     } catch (error) {
       console.error(`Error getting reward by ID ${rewardId}:`, error);
       throw error;

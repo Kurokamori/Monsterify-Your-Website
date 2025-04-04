@@ -215,8 +215,10 @@ class Monster {
     } catch (error) {
       console.error('Error creating monster:', error);
       // Don't try to access query or values here as they might not be defined in this scope
-      console.error('Monster data that failed:', monsterData);
-      return null;
+      console.error('Monster data that failed:', JSON.stringify(monsterData, null, 2));
+
+      // Throw the error instead of returning null
+      throw new Error(`Failed to create monster: ${error.message}`);
     }
   }
 

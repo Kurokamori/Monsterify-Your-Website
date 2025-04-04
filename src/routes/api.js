@@ -24,6 +24,9 @@ const referenceRouter = require('./api/reference');
 const promptRouter = require('./api/prompt');
 const megamartRouter = require('./api/megamart');
 const abilityMasterRouter = require('./api/ability-master');
+const achievementsRouter = require('./api/achievements');
+const battlesRouter = require('./api/battles');
+const activitiesRouter = require('./api/activities');
 
 // Use sub-routers
 router.use('/trainers', trainersRouter);
@@ -44,6 +47,9 @@ router.use('/reference', referenceRouter);
 router.use('/prompt', promptRouter);
 router.use('/megamart', megamartRouter);
 router.use('/ability-master', abilityMasterRouter);
+router.use('/battles', battlesRouter);
+router.use('/activities', activitiesRouter);
+router.use('/', achievementsRouter);
 
 // This route is now handled by the trainers router
 // router.get('/trainers/user', async (req, res) => { ... });

@@ -647,3 +647,4 @@ class LocationActivityController {
 
 module.exports = LocationActivityController;
 
+

@@ -103,6 +103,8 @@ class RewardSystem {
       return [];
     }
 
+    console.log('Formatting rewards for view:', JSON.stringify(rewards, null, 2));
+
     return rewards.map(reward => {
       if (!reward) {
         console.error('Null or undefined reward object found in rewards array');
@@ -131,8 +133,10 @@ class RewardSystem {
       const formattedReward = {
         id: reward.reward_id || reward.id || `reward-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`,
         type: reward.reward_type || reward.type || 'generic',
+        reward_type: reward.reward_type || reward.type || 'generic', // Ensure both type and reward_type are set
         rarity: reward.rarity || 'common',
-        data: rewardData // Always defined, at minimum an empty object
+        data: rewardData, // Always defined, at minimum an empty object
+        reward_data: rewardData // Ensure both data and reward_data are set
       };
 
       // Add icon based on reward type
@@ -153,6 +157,38 @@ class RewardSystem {
           formattedReward.icon = 'fas fa-gift';
       }
 
+      // For coin rewards, ensure amount is properly set
+      if (formattedReward.type === 'coin') {
+        if (typeof rewardData.amount === 'number') {
+          formattedReward.amount = rewardData.amount;
+        } else if (rewardData.amount && typeof rewardData.amount === 'object') {
+          const min = rewardData.amount.min || 50;
+          const max = rewardData.amount.max || 150;
+          const randomAmount = Math.floor(Math.random() * (max - min + 1)) + min;
+          formattedReward.amount = randomAmount;
+          formattedReward.data.amount = randomAmount;
+          formattedReward.reward_data.amount = randomAmount;
+        } else {
+          // Default amount if none is specified
+          formattedReward.amount = 50;
+          formattedReward.data.amount = 50;
+          formattedReward.reward_data.amount = 50;
+        }
+      }
+
+      // For level rewards, ensure levels is properly set
+      if (formattedReward.type === 'level') {
+        if (typeof rewardData.levels === 'number') {
+          formattedReward.levels = rewardData.levels;
+        } else {
+          // Default level amount if none is specified
+          formattedReward.levels = 1;
+          formattedReward.data.levels = 1;
+          formattedReward.reward_data.levels = 1;
+        }
+      }
+
+      console.log('Formatted reward:', JSON.stringify(formattedReward, null, 2));
       return formattedReward;
     }).filter(Boolean); // Remove any null entries
   }
