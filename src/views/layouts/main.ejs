@@ -38,7 +38,6 @@
 
         /* Mobile menu styles */
         .mobile-nav {
-            display: none;
             position: fixed;
             top: 0;
             left: 0;
@@ -48,10 +47,14 @@
             z-index: 9999;
             padding: 1rem;
             overflow-y: auto;
+            transform: translateX(-100%);
+            transition: transform 0.3s ease-in-out;
+            pointer-events: none; /* Prevent interaction when hidden */
         }
 
         .mobile-nav.active {
-            display: block;
+            transform: translateX(0);
+            pointer-events: auto; /* Enable interaction when visible */
         }
 
         /* Mobile menu button */
@@ -130,13 +133,66 @@
     <%- typeof style !== 'undefined' ? style : '' %>
 </head>
 <body class="bg-[#111319] text-[#d7ddf3]">
+<!-- Immediate mobile menu script to ensure functionality -->
+<script>
+    // This script runs immediately to ensure mobile menu functionality
+    window.addEventListener('load', function () {
+        console.log('Window loaded - immediate script');
+
+        // Setup mobile menu functionality
+        function setupMobileMenu() {
+            const mobileMenuButton = document.getElementById('mobileMenuButton');
+            const mobileNav = document.getElementById('mobileNav');
+            const mobileNavClose = document.getElementById('mobileNavClose');
+
+            if (mobileMenuButton && mobileNav) {
+                console.log('Setting up mobile menu button click handler');
+
+                // Direct click handler for mobile menu button
+                mobileMenuButton.onclick = function (e) {
+                    console.log('Mobile menu button clicked (direct)');
+                    if (e) e.preventDefault();
+
+                    // Show mobile menu
+                    mobileNav.classList.add('active');
+                    mobileNav.style.transform = 'translateX(0)';
+                    mobileNav.style.visibility = 'visible';
+                    mobileNav.style.pointerEvents = 'auto';
+                    document.body.style.overflow = 'hidden';
+                };
+
+                // Direct click handler for close button
+                if (mobileNavClose) {
+                    mobileNavClose.onclick = function (e) {
+                        console.log('Mobile menu close button clicked (direct)');
+                        if (e) e.preventDefault();
+
+                        // Hide mobile menu
+                        mobileNav.classList.remove('active');
+                        mobileNav.style.transform = 'translateX(-100%)';
+                        mobileNav.style.visibility = 'visible';
+                        mobileNav.style.pointerEvents = 'none';
+                        document.body.style.overflow = '';
+                    };
+                }
+            }
+        }
+
+        // Run setup immediately
+        setupMobileMenu();
+
+        // Also run after a short delay to ensure DOM is fully processed
+        setTimeout(setupMobileMenu, 500);
+    });
+</script>
 
     <nav class="top-nav">
         <div class="nav-left">
             <a href="/">
                 <img src="/images/logo.png" alt="Logo" class="logo" onerror="this.src='https://via.placeholder.com/160x40/1e2532/d6a339?text=Dusk+and+Dawn'">
             </a>
-            <button type="button" class="mobile-menu-button" id="mobileMenuButton">
+            <button type="button" class="mobile-menu-button" id="mobileMenuButton"
+                    style="cursor: pointer; color: var(--accent-color); background: transparent; border: none; font-size: 1.5rem; padding: 0.5rem;">
                 <i class="fas fa-bars"></i>
             </button>
             <a href="/trainers" class="top-nav-link">Trainers</a>
@@ -251,7 +307,8 @@
     </nav>
 
     <!-- Mobile Navigation Menu -->
-    <div class="mobile-nav" id="mobileNav">
+<div class="mobile-nav" id="mobileNav"
+     style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: var(--nav-background); z-index: 9999; padding: 1rem; overflow-y: auto; transform: translateX(-100%); transition: transform 0.3s ease-in-out; pointer-events: none;">
         <div class="mobile-nav-header">
             <a href="/">
                 <img src="/images/logo.png" alt="Logo" class="logo" onerror="this.src='https://via.placeholder.com/160x40/1e2532/d6a339?text=Dusk+and+Dawn'">
@@ -372,13 +429,44 @@
     </div>
 
     <main class="pt-16 pb-12 mt-8">
+        <!-- Debug button for mobile menu (only visible in development) -->
+        <div style="position: fixed; bottom: 20px; right: 20px; z-index: 10000;">
+            <button id="debugMobileMenuBtn"
+                    style="background-color: #ff5722; color: white; padding: 10px; border-radius: 5px; border: none; cursor: pointer;">
+                Debug Mobile Menu
+            </button>
+        </div>
+
         <%- body %>
     </main>
 
-    <script src="/js/main.js"></script>
+<script>
+    // Debug functionality for mobile menu
+    document.addEventListener('DOMContentLoaded', function () {
+        const debugBtn = document.getElementById('debugMobileMenuBtn');
+        const mobileNav = document.getElementById('mobileNav');
+
+        if (debugBtn && mobileNav) {
+            debugBtn.addEventListener('click', function () {
+                console.log('Debug button clicked');
+
+                // Force show the mobile menu with inline styles
+                mobileNav.classList.add('active');
+                mobileNav.style.transform = 'translateX(0)';
+                mobileNav.style.visibility = 'visible';
+                mobileNav.style.pointerEvents = 'auto';
+                document.body.style.overflow = 'hidden';
+
+                console.log('Mobile menu should now be visible (debug)');
+            });
+        }
+    });
+</script>
+
+<script src="/js/main.js"></script>
     <script src="/js/modern-dropdowns.js"></script>
     <script src="/js/modern-inputs.js"></script>
-    <script src="/js/mobile-menu.js"></script>
+<script src="/js/mobile-menu-test.js"></script>
     <%- typeof script !== 'undefined' ? script : '' %>
 </body>
 </html>
