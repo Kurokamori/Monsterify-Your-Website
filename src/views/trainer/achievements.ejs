@@ -1,0 +1,753 @@
+<% title = trainer.name + ' - Achievements' %>
+<div class="full-width-section">
+    <div class="full-width-content">
+        <h1 class="trainer-name"><%= trainer.name %></h1>
+        <div class="trainer-level">Level <%= trainer.level %></div>
+    </div>
+</div>
+
+<style>
+    :root {
+        --text-color: #ffffff;
+        --accent-color: #fbbf24;
+        --nav-hover: rgba(255, 255, 255, 0.1);
+        --nav-active: rgba(251, 191, 36, 0.2);
+        --divider-color: rgba(255, 255, 255, 0.1);
+    }
+
+    /* Main layout containers */
+    .full-width-section {
+        width: 100vw;
+        position: relative;
+        left: 50%;
+        right: 50%;
+        margin-left: -50vw;
+        margin-right: -50vw;
+        padding: 3rem 0;
+        background-image: linear-gradient(to bottom, rgba(30, 37, 50, 0.8), rgba(17, 19, 25, 0.9));
+    }
+
+    .full-width-content {
+        max-width: 1600px;
+        margin: 0 auto;
+        padding: 0 2rem;
+    }
+
+    /* Trainer Page Layout */
+    .trainer-page-layout {
+        display: flex;
+        gap: 1.5rem;
+        position: relative;
+    }
+
+    /* Sidebar Styling */
+    .trainer-sidebar {
+        flex: 0 0 180px;
+        align-self: flex-start;
+    }
+
+    .trainer-main-content {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .sidebar-nav {
+        background: rgba(30, 37, 50, 0.7);
+        border-radius: 12px;
+        padding: 1rem;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        display: flex;
+        flex-direction: column;
+        gap: 0.3rem;
+    }
+
+    .sidebar-link {
+        padding: 0.5rem 0.75rem;
+        border-radius: 8px;
+        color: var(--text-color);
+        text-decoration: none;
+        transition: all 0.2s ease;
+        font-weight: 500;
+        font-size: 0.95rem;
+    }
+
+    .sidebar-link:hover {
+        background: var(--nav-hover);
+    }
+
+    .sidebar-link.active {
+        background: var(--nav-active);
+        color: var(--accent-color);
+    }
+
+    .sidebar-divider {
+        height: 1px;
+        background: var(--divider-color);
+        margin: 0.75rem 0;
+    }
+
+    .owner-action {
+        border-left: 3px solid var(--accent-color);
+    }
+
+    /* Trainer Header Styles */
+    .trainer-name {
+        font-size: 2.5rem;
+        font-weight: bold;
+        color: var(--text-color, #ffffff);
+        margin-bottom: 0.5rem;
+    }
+
+    .trainer-level {
+        font-size: 1.2rem;
+        color: var(--accent-color, #fbbf24);
+    }
+
+    /* Responsive Design */
+    @media (max-width: 1024px) {
+        .trainer-page-layout {
+            flex-direction: column;
+        }
+
+        .trainer-sidebar {
+            flex: 0 0 auto;
+            position: static;
+            height: auto;
+            margin-bottom: 1.5rem;
+        }
+
+        .sidebar-nav {
+            flex-direction: row;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 0.4rem;
+            padding: 0.75rem;
+        }
+
+        .sidebar-link {
+            padding: 0.4rem 0.75rem;
+            font-size: 0.9rem;
+        }
+
+        .sidebar-divider {
+            display: none;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .sidebar-link {
+            font-size: 0.85rem;
+            padding: 0.35rem 0.6rem;
+        }
+
+        .full-width-content {
+            padding: 0 1rem;
+        }
+    }
+
+    /* Achievement Page Styles */
+    .achievement-container {
+        background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        border-radius: 1rem;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .achievement-header {
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        padding-bottom: 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .achievement-category {
+        margin-bottom: 2rem;
+        padding-bottom: 1.5rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .achievement-category:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+        padding-bottom: 0;
+    }
+
+    .category-header {
+        display: flex;
+        align-items: center;
+        padding: 1rem;
+        border-radius: 0.5rem;
+        background: rgba(255, 255, 255, 0.05);
+        cursor: pointer;
+        transition: all 0.2s ease;
+        margin-bottom: 1rem;
+    }
+
+    .category-header:hover {
+        background: rgba(255, 255, 255, 0.1);
+    }
+
+    .category-header .category-title {
+        flex-grow: 1;
+        margin: 0;
+    }
+
+    .category-toggle {
+        transition: transform 0.3s ease;
+    }
+
+    .category-toggle.open {
+        transform: rotate(180deg);
+    }
+
+    .category-content {
+        display: none;
+        padding: 0.5rem 0 1.5rem 0;
+    }
+
+    .category-icon {
+        margin-right: 0.75rem;
+        font-size: 1.5rem;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.1);
+    }
+
+    .achievement-card {
+        background: linear-gradient(135deg, #2d3748 0%, #1a202c 100%) !important;
+        border-radius: 0.75rem !important;
+        border: 1px solid rgba(255, 255, 255, 0.05) !important;
+        overflow: hidden !important;
+        transition: all 0.3s ease !important;
+        height: 100% !important;
+        display: flex !important;
+        flex-direction: column !important;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
+    }
+
+    .achievement-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2) !important;
+        border-color: rgba(255, 255, 255, 0.1) !important;
+    }
+
+    .card-header {
+        padding: 1rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+    }
+
+    .card-body {
+        padding: 1rem;
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .card-footer {
+        padding: 1rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .badge {
+        padding: 0.25rem 0.75rem;
+        border-radius: 9999px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        display: inline-block;
+    }
+
+    .bg-gray-700 {
+        background: linear-gradient(135deg, #4b5563 0%, #374151 100%) !important;
+    }
+
+    .bg-yellow-700 {
+        background: linear-gradient(135deg, #d97706 0%, #b45309 100%) !important;
+    }
+
+    .bg-green-700 {
+        background: linear-gradient(135deg, #059669 0%, #047857 100%) !important;
+    }
+
+    .progress-bar-bg {
+        height: 8px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 4px;
+        overflow: hidden;
+    }
+
+    .progress-bar {
+        height: 100%;
+        border-radius: 4px;
+        background: linear-gradient(90deg, #3b82f6 0%, #2563eb 100%);
+        transition: width 0.5s ease;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #fbbf24 0%, #d97706 100%) !important;
+        color: #ffffff !important;
+        font-weight: 600 !important;
+        padding: 0.5rem 1rem !important;
+        border-radius: 0.375rem !important;
+        transition: all 0.2s ease !important;
+        border: none !important;
+        cursor: pointer !important;
+        font-size: 0.875rem !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+
+    .btn-primary:hover {
+        background: linear-gradient(135deg, #f59e0b 0%, #b45309 100%) !important;
+        transform: translateY(-2px) !important;
+    }
+
+    .btn-secondary {
+        background: linear-gradient(135deg, #4b5563 0%, #374151 100%) !important;
+        color: #ffffff !important;
+        font-weight: 600 !important;
+        padding: 0.5rem 1rem !important;
+        border-radius: 0.375rem !important;
+        transition: all 0.2s ease !important;
+        border: none !important;
+        cursor: pointer !important;
+        font-size: 0.875rem !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+
+    .btn-secondary:hover {
+        background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%) !important;
+        transform: translateY(-2px) !important;
+    }
+
+    .btn-secondary i {
+        margin-right: 0.375rem;
+    }
+
+    .btn-sm {
+        padding: 0.375rem 0.75rem !important;
+        font-size: 0.75rem !important;
+    }
+
+    /* Modal Styles */
+    #reward-modal {
+        backdrop-filter: blur(5px);
+        z-index: 1000;
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0, 0, 0, 0.7);
+        align-items: center;
+        justify-content: center;
+    }
+
+    #reward-modal.show {
+        display: flex;
+    }
+
+    #reward-modal > div {
+        background: linear-gradient(135deg, #1f2937 0%, #111827 100%) !important;
+        border-radius: 1rem !important;
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5) !important;
+        max-height: 80vh;
+        overflow-y: auto;
+        width: 100%;
+        max-width: 500px;
+        animation: modalFadeIn 0.3s ease;
+    }
+
+    @keyframes modalFadeIn {
+        from { opacity: 0; transform: translateY(-20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+</style>
+
+<div class="full-width-content">
+    <div class="trainer-page-layout">
+        <!-- Side Navigation -->
+        <% const active = 'achievements'; %>
+        <%- include('../partials/trainer_sidebar', { trainer, active }) %>
+
+        <!-- Main Content -->
+        <div class="trainer-main-content">
+            <div class="achievement-container p-6 mb-8">
+                <div class="achievement-header">
+                    <h2 class="text-2xl font-bold">Achievements</h2>
+                </div>
+
+                <div id="achievements-container" class="space-y-8">
+                    <div class="text-center py-8">
+                        <div class="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-yellow-400"></div>
+                        <p class="mt-2 text-gray-400">Loading achievements...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Achievement Reward Modal -->
+<div id="reward-modal">
+    <div class="w-full max-w-md p-6">
+        <div class="modal-header flex justify-between items-center mb-4">
+            <h2 id="modal-title" class="text-2xl font-bold">Achievement Rewards</h2>
+            <button id="close-modal" class="text-gray-400 hover:text-white transition-colors duration-200">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <div id="modal-content" class="space-y-4 py-4">
+            <!-- Reward content will be added here -->
+        </div>
+
+        <div class="modal-footer flex justify-end pt-4">
+            <button id="close-reward-btn" class="btn-primary">
+                <i class="fas fa-check mr-2"></i> Close
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const achievementsContainer = document.getElementById('achievements-container');
+        const rewardModal = document.getElementById('reward-modal');
+        const modalTitle = document.getElementById('modal-title');
+        const modalContent = document.getElementById('modal-content');
+        const closeModal = document.getElementById('close-modal');
+        const closeRewardBtn = document.getElementById('close-reward-btn');
+
+        // Load achievements
+        loadAchievements();
+
+        // Event listeners
+        closeModal.addEventListener('click', hideModal);
+        closeRewardBtn.addEventListener('click', hideModal);
+
+        function loadAchievements() {
+            fetch('/api/trainers/<%= trainer.id %>/achievements')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        renderAchievements(data.achievements);
+                    } else {
+                        achievementsContainer.innerHTML = `
+                            <div class="text-center py-8">
+                                <p class="text-red-500">${data.message || 'Failed to load achievements'}</p>
+                            </div>
+                        `;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading achievements:', error);
+                    achievementsContainer.innerHTML = `
+                        <div class="text-center py-8">
+                            <p class="text-red-500">Error loading achievements</p>
+                        </div>
+                    `;
+                });
+        }
+
+        function renderAchievements(achievementsByCategory) {
+            if (Object.keys(achievementsByCategory).length === 0) {
+                achievementsContainer.innerHTML = `
+                    <div class="text-center py-8">
+                        <p class="text-gray-400">No achievements found</p>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = '';
+
+            // Render each category
+            for (const [category, data] of Object.entries(achievementsByCategory)) {
+                const achievements = data.achievements;
+
+                if (achievements.length === 0) continue;
+
+                // Get category icon
+                let categoryIcon = 'fas fa-trophy';
+                switch(category) {
+                    case 'level': categoryIcon = 'fas fa-level-up-alt'; break;
+                    case 'type_collector': categoryIcon = 'fas fa-fire'; break;
+                    case 'monster_collector': categoryIcon = 'fas fa-dragon'; break;
+                    case 'attribute_collector': categoryIcon = 'fas fa-shield-alt'; break;
+                    case 'currency_earned': categoryIcon = 'fas fa-coins'; break;
+                    case 'currency_spent': categoryIcon = 'fas fa-shopping-cart'; break;
+                }
+
+                html += `
+                    <div class="achievement-category" data-category="${category}">
+                        <div class="category-header" onclick="toggleCategory('${category}')">
+                            <div class="category-icon">
+                                <i class="${categoryIcon}"></i>
+                            </div>
+                            <h2 class="text-2xl font-bold category-title">${data.name}</h2>
+                            <div class="category-toggle">
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
+                        </div>
+                        <div class="category-content">
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                `;
+
+                // Render achievements in this category
+                achievements.forEach(achievement => {
+                    const progressPercent = Math.min(100, Math.round((achievement.progress / achievement.requirement_value) * 100));
+                    const isComplete = achievement.is_complete;
+                    const isClaimed = achievement.is_claimed;
+
+                    let statusClass = 'bg-gray-700';
+                    let statusText = 'In Progress';
+
+                    if (isComplete && isClaimed) {
+                        statusClass = 'bg-green-700';
+                        statusText = 'Claimed';
+                    } else if (isComplete) {
+                        statusClass = 'bg-yellow-700';
+                        statusText = 'Complete';
+                    }
+
+                    html += `
+                        <div class="achievement-card">
+                            <div class="card-header">
+                                <h3 class="text-lg font-bold">${achievement.name}</h3>
+                                <span class="badge ${statusClass}">${statusText}</span>
+                            </div>
+
+                            <div class="card-body">
+                                <p class="text-gray-400 mb-4">${achievement.description}</p>
+
+                                <div class="progress-container mt-auto">
+                                    <div class="flex justify-between text-sm mb-1">
+                                        <span>Progress</span>
+                                        <span>${achievement.progress} / ${achievement.requirement_value}</span>
+                                    </div>
+                                    <div class="progress-bar-bg">
+                                        <div class="progress-bar" style="width: ${progressPercent}%"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card-footer">
+                                <button class="btn-secondary btn-sm" onclick="showRewards(${JSON.stringify(achievement).replace(/"/g, '&quot;')})">
+                                    <i class="fas fa-gift"></i> View Rewards
+                                </button>
+
+                                ${isComplete && !isClaimed ? `
+                                    <button class="btn-primary btn-sm" onclick="claimReward(${achievement.id})">
+                                        <i class="fas fa-check"></i> Claim
+                                    </button>
+                                ` : ''}
+                            </div>
+                        </div>
+                    `;
+                });
+
+                html += `
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            achievementsContainer.innerHTML = html;
+
+            // Initialize all categories as collapsed
+            document.querySelectorAll('.achievement-category').forEach(category => {
+                const content = category.querySelector('.category-content');
+                content.style.display = 'none';
+            });
+        }
+
+        function hideModal() {
+            rewardModal.classList.remove('show');
+        }
+
+        // Function to toggle category visibility
+        window.toggleCategory = function(categoryId) {
+            const category = document.querySelector(`.achievement-category[data-category="${categoryId}"]`);
+            const content = category.querySelector('.category-content');
+            const toggle = category.querySelector('.category-toggle');
+
+            if (content.style.display === 'block') {
+                content.style.display = 'none';
+                toggle.classList.remove('open');
+            } else {
+                content.style.display = 'block';
+                toggle.classList.add('open');
+            }
+        };
+
+        // Global functions
+        window.showRewards = function(achievement) {
+            modalTitle.textContent = `${achievement.name} Rewards`;
+
+            let rewardsHtml = '';
+
+            if (!achievement.rewards || !Array.isArray(achievement.rewards) || achievement.rewards.length === 0) {
+                rewardsHtml = '<p class="text-gray-400">No rewards available</p>';
+            } else {
+                rewardsHtml = '<div class="space-y-3">';
+
+                achievement.rewards.forEach(reward => {
+                    let rewardText = '';
+                    let rewardIcon = '';
+                    let rewardColor = '';
+
+                    switch (reward.type) {
+                        case 'coin':
+                            rewardIcon = 'fas fa-coins';
+                            rewardColor = 'from-yellow-500 to-yellow-700';
+                            rewardText = `${reward.value} Coins`;
+                            break;
+                        case 'level':
+                            rewardIcon = 'fas fa-level-up-alt';
+                            rewardColor = 'from-blue-500 to-blue-700';
+                            rewardText = `${reward.value} Trainer Levels`;
+                            break;
+                        case 'item':
+                            rewardIcon = 'fas fa-box';
+                            rewardColor = 'from-purple-500 to-purple-700';
+                            if (typeof reward.value === 'object') {
+                                rewardText = `${reward.value.amount || 1} ${reward.value.name}`;
+                            } else if (typeof reward.value === 'string' && reward.value.includes(';')) {
+                                const [name, category, amount] = reward.value.split(';');
+                                rewardText = `${amount || 1} ${name}`;
+                            } else {
+                                rewardText = `${reward.value}`;
+                            }
+                            break;
+                        case 'monster_static':
+                            rewardIcon = 'fas fa-dragon';
+                            rewardColor = 'from-green-500 to-green-700';
+                            rewardText = `Monster (Static)`;
+                            if (reward.value && reward.value.name) {
+                                rewardText = `${reward.value.name} (Level ${reward.value.level || 1})`;
+                            }
+                            break;
+                        case 'monster_set':
+                            rewardIcon = 'fas fa-dragon';
+                            rewardColor = 'from-green-500 to-green-700';
+                            rewardText = `Monster (Set)`;
+                            if (reward.value && reward.value.name) {
+                                rewardText = `${reward.value.name} (Level ${reward.value.level || 1})`;
+                            }
+                            break;
+                        case 'monster_random':
+                            rewardIcon = 'fas fa-dragon';
+                            rewardColor = 'from-green-500 to-green-700';
+                            rewardText = `Monster (Random)`;
+                            if (reward.value && reward.value.name) {
+                                rewardText = `${reward.value.name} (Level ${reward.value.level || 1})`;
+                            }
+                            break;
+                        default:
+                            rewardIcon = 'fas fa-gift';
+                            rewardColor = 'from-red-500 to-red-700';
+                            rewardText = `${reward.type}`;
+                    }
+
+                    rewardsHtml += `
+                        <div class="reward-item p-3 flex items-center">
+                            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-gradient-to-br ${rewardColor} flex items-center justify-center mr-3">
+                                <i class="${rewardIcon} text-white"></i>
+                            </div>
+                            <div class="flex-grow">
+                                <p class="font-medium">${rewardText}</p>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                rewardsHtml += '</div>';
+            }
+
+            modalContent.innerHTML = rewardsHtml;
+            rewardModal.classList.add('show');
+        };
+
+        window.claimReward = function(achievementId) {
+            if (confirm('Are you sure you want to claim this achievement reward?')) {
+                fetch(`/api/trainers/<%= trainer.id %>/achievements/${achievementId}/claim`, {
+                    method: 'POST'
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Show reward details
+                        let rewardHtml = '<div class="text-center mb-4">';
+                        rewardHtml += '<div class="w-20 h-20 mx-auto bg-gradient-to-br from-green-500 to-green-700 rounded-full flex items-center justify-center mb-4"><i class="fas fa-trophy text-white text-3xl"></i></div>';
+                        rewardHtml += '<h3 class="text-xl font-bold mb-2">Rewards Claimed!</h3>';
+                        rewardHtml += '<p class="text-gray-400 mb-6">The following rewards have been added to your account:</p>';
+                        rewardHtml += '</div>';
+
+                        if (data.rewards && Array.isArray(data.rewards)) {
+                            rewardHtml += '<div class="space-y-3">';
+
+                            data.rewards.forEach(reward => {
+                                if (reward.success) {
+                                    rewardHtml += `
+                                        <div class="reward-item p-3 flex items-center bg-opacity-20 bg-green-900 border border-green-800">
+                                            <div class="flex-shrink-0 w-8 h-8 rounded-full bg-gradient-to-br from-green-500 to-green-700 flex items-center justify-center mr-3">
+                                                <i class="fas fa-check text-white text-sm"></i>
+                                            </div>
+                                            <div class="flex-grow">
+                                                <p class="font-medium">${reward.message}</p>
+                                            </div>
+                                        </div>
+                                    `;
+                                } else {
+                                    rewardHtml += `
+                                        <div class="reward-item p-3 flex items-center bg-opacity-20 bg-red-900 border border-red-800">
+                                            <div class="flex-shrink-0 w-8 h-8 rounded-full bg-gradient-to-br from-red-500 to-red-700 flex items-center justify-center mr-3">
+                                                <i class="fas fa-times text-white text-sm"></i>
+                                            </div>
+                                            <div class="flex-grow">
+                                                <p class="font-medium">${reward.message}</p>
+                                            </div>
+                                        </div>
+                                    `;
+                                }
+                            });
+
+                            rewardHtml += '</div>';
+                        }
+
+                        modalTitle.textContent = 'Achievement Claimed';
+                        modalContent.innerHTML = rewardHtml;
+                        rewardModal.classList.add('show');
+
+                        // Reload achievements
+                        loadAchievements();
+                    } else {
+                        alert(data.message || 'Failed to claim reward');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error claiming reward:', error);
+                    alert('Error claiming reward');
+                });
+            }
+        };
+    });
+</script>
+

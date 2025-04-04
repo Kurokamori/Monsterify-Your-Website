@@ -1,0 +1,98 @@
+<%- include('./battle-styles') %>
+
+<div class="container mx-auto px-4 py-8">
+  <div class="flex items-center mb-8">
+    <a href="/admin/dashboard" class="text-blue-400 hover:text-blue-300 mr-4">
+      <i class="fas fa-arrow-left"></i> Back to Dashboard
+    </a>
+    <h1 class="text-3xl font-bold text-yellow-400">Battle System Management</h1>
+  </div>
+
+  <% if (typeof message !== 'undefined' && message) { %>
+    <div class="bg-<%= messageType === 'error' ? 'red' : 'green' %>-800 text-white p-4 rounded-lg mb-6">
+      <%= message %>
+      <% if (messageType === 'error' && message.includes('migration')) { %>
+        <div class="mt-4">
+          <a href="/admin/battles/run-migration" class="bg-yellow-500 hover:bg-yellow-600 text-black font-bold py-2 px-4 rounded">
+            Run Battle System Migration
+          </a>
+        </div>
+      <% } %>
+    </div>
+  <% } %>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+    <!-- Opponent Management -->
+    <div class="bg-gray-800 rounded-lg p-6 shadow-lg">
+      <div class="flex items-center mb-4">
+        <i class="fas fa-users text-yellow-400 text-3xl mr-4"></i>
+        <h2 class="text-2xl font-bold text-white">Opponent Management</h2>
+      </div>
+      <p class="text-gray-300 mb-6">Create and manage battle opponents and their monster teams.</p>
+      <div class="flex justify-between">
+        <a href="/admin/battles/opponents" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+          View Opponents
+        </a>
+        <a href="/admin/battles/opponents/new" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
+          Create Opponent
+        </a>
+      </div>
+    </div>
+
+    <!-- Battle Statistics -->
+    <div class="bg-gray-800 rounded-lg p-6 shadow-lg">
+      <div class="flex items-center mb-4">
+        <i class="fas fa-chart-bar text-yellow-400 text-3xl mr-4"></i>
+        <h2 class="text-2xl font-bold text-white">Battle Statistics</h2>
+      </div>
+      <p class="text-gray-300 mb-6">View battle statistics and recent battle history.</p>
+      <a href="/admin/battles/stats" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded block text-center">
+        View Statistics
+      </a>
+    </div>
+
+    <!-- Battle Testing -->
+    <div class="bg-gray-800 rounded-lg p-6 shadow-lg">
+      <div class="flex items-center mb-4">
+        <i class="fas fa-gamepad text-yellow-400 text-3xl mr-4"></i>
+        <h2 class="text-2xl font-bold text-white">Battle Testing</h2>
+      </div>
+      <p class="text-gray-300 mb-6">Test the battle system with any trainer and opponent.</p>
+      <a href="/admin/battles/test" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded block text-center">
+        Test Battle System
+      </a>
+    </div>
+  </div>
+
+  <!-- Battle System Overview -->
+  <div class="bg-gray-800 rounded-lg p-6 shadow-lg mt-8">
+    <h2 class="text-2xl font-bold text-yellow-400 mb-4">Battle System Overview</h2>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+      <div class="bg-gray-700 p-4 rounded-lg text-center">
+        <p class="text-gray-400 text-sm">Total Battles</p>
+        <p class="text-white text-2xl font-bold"><%= stats.total_battles || 0 %></p>
+      </div>
+      <div class="bg-gray-700 p-4 rounded-lg text-center">
+        <p class="text-gray-400 text-sm">Total Opponents</p>
+        <p class="text-white text-2xl font-bold"><%= stats.total_opponents || 0 %></p>
+      </div>
+      <div class="bg-gray-700 p-4 rounded-lg text-center">
+        <p class="text-gray-400 text-sm">Average WPM</p>
+        <p class="text-white text-2xl font-bold"><%= Math.round(stats.avg_wpm || 0) %></p>
+      </div>
+    </div>
+
+    <div class="bg-gray-700 p-4 rounded-lg">
+      <h3 class="text-xl font-semibold text-white mb-3">Battle System Features</h3>
+      <ul class="text-gray-300 space-y-2 list-disc pl-6">
+        <li>Typing-based battle system with real-time damage calculation</li>
+        <li>Type effectiveness system based on Pokémon types</li>
+        <li>Attribute effectiveness system based on Digimon attributes</li>
+        <li>Customizable opponents with difficulty levels</li>
+        <li>Battle rewards including coins, levels, items, and monsters</li>
+        <li>Battle statistics tracking for trainers</li>
+      </ul>
+    </div>
+  </div>
+</div>

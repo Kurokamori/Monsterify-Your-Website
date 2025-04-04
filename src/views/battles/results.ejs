@@ -1,0 +1,186 @@
+<div class="container mx-auto px-4 py-8">
+  <div class="flex items-center mb-8">
+    <a href="/battles/trainer/<%= trainer.id %>" class="text-blue-400 hover:text-blue-300 mr-4">
+      <i class="fas fa-arrow-left"></i> Back to Battles
+    </a>
+    <h1 class="text-3xl font-bold text-yellow-400">Battle Results</h1>
+  </div>
+
+  <div class="bg-gray-800 rounded-lg p-6 shadow-lg mb-8">
+    <div class="text-center mb-8">
+      <% if (battle.status === 'won') { %>
+        <h2 class="text-4xl font-bold text-green-400 mb-4">VICTORY!</h2>
+        <p class="text-gray-300 text-lg">You defeated <%= opponent.name %>!</p>
+      <% } else if (battle.status === 'lost') { %>
+        <h2 class="text-4xl font-bold text-red-400 mb-4">DEFEAT</h2>
+        <p class="text-gray-300 text-lg">You were defeated by <%= opponent.name %>.</p>
+      <% } else if (battle.status === 'abandoned') { %>
+        <h2 class="text-4xl font-bold text-gray-400 mb-4">BATTLE ABANDONED</h2>
+        <p class="text-gray-300 text-lg">You abandoned the battle against <%= opponent.name %>.</p>
+      <% } %>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+      <div class="bg-gray-700 p-4 rounded-lg text-center">
+        <p class="text-gray-400 text-sm">Words Per Minute</p>
+        <p class="text-white text-2xl font-bold"><%= battle.wpm || 0 %></p>
+      </div>
+      <div class="bg-gray-700 p-4 rounded-lg text-center">
+        <p class="text-gray-400 text-sm">Accuracy</p>
+        <p class="text-white text-2xl font-bold"><%= battle.accuracy ? battle.accuracy + '%' : '0%' %></p>
+      </div>
+      <div class="bg-gray-700 p-4 rounded-lg text-center">
+        <p class="text-gray-400 text-sm">Battle Duration</p>
+        <% 
+          let duration = 0;
+          if (battle.started_at && battle.ended_at) {
+            duration = Math.floor((new Date(battle.ended_at) - new Date(battle.started_at)) / 1000);
+          }
+          const minutes = Math.floor(duration / 60);
+          const seconds = duration % 60;
+        %>
+        <p class="text-white text-2xl font-bold"><%= minutes %>:<%= seconds < 10 ? '0' : '' %><%= seconds %></p>
+      </div>
+    </div>
+
+    <div class="flex justify-between items-center">
+      <div class="text-center">
+        <img src="<%= trainer.main_ref || '/images/default_trainer.png' %>" alt="<%= trainer.name %>" class="w-24 h-24 rounded-full object-cover mx-auto mb-2">
+        <h3 class="text-xl font-semibold text-white"><%= trainer.name %></h3>
+      </div>
+      
+      <div class="text-center">
+        <div class="text-3xl font-bold text-yellow-400">VS</div>
+      </div>
+      
+      <div class="text-center">
+        <img src="<%= opponent.image_url || '/images/default_opponent.png' %>" alt="<%= opponent.name %>" class="w-24 h-24 rounded-full object-cover mx-auto mb-2">
+        <h3 class="text-xl font-semibold text-white"><%= opponent.name %></h3>
+      </div>
+    </div>
+  </div>
+
+  <% if (battle.status === 'won' && rewards) { %>
+    <div class="bg-gray-800 rounded-lg p-6 shadow-lg mb-8">
+      <h2 class="text-2xl font-bold text-yellow-400 mb-4">Battle Rewards</h2>
+      
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+        <div class="bg-gray-700 p-4 rounded-lg text-center">
+          <i class="fas fa-coins text-yellow-400 text-2xl mb-2"></i>
+          <p class="text-gray-400 text-sm">Coins</p>
+          <p class="text-white text-2xl font-bold"><%= rewards.coins || 0 %></p>
+        </div>
+        <div class="bg-gray-700 p-4 rounded-lg text-center">
+          <i class="fas fa-star text-yellow-400 text-2xl mb-2"></i>
+          <p class="text-gray-400 text-sm">Levels</p>
+          <p class="text-white text-2xl font-bold"><%= rewards.levels || 0 %></p>
+        </div>
+        <div class="bg-gray-700 p-4 rounded-lg text-center">
+          <i class="fas fa-gift text-yellow-400 text-2xl mb-2"></i>
+          <p class="text-gray-400 text-sm">Items</p>
+          <p class="text-white text-2xl font-bold"><%= rewards.items && rewards.items.items ? rewards.items.items.length : 0 %></p>
+        </div>
+      </div>
+      
+      <% if (rewards.items && rewards.items.items && rewards.items.items.length > 0) { %>
+        <div class="mb-6">
+          <h3 class="text-xl font-semibold text-white mb-3">Items</h3>
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <% rewards.items.items.forEach(item => { %>
+              <div class="bg-gray-700 p-3 rounded-lg text-center">
+                <p class="text-white font-semibold"><%= item.name %></p>
+                <p class="text-gray-400 text-sm">x<%= item.quantity %></p>
+                <p class="text-xs text-gray-500"><%= item.category %></p>
+              </div>
+            <% }); %>
+          </div>
+        </div>
+      <% } %>
+      
+      <% if (rewards.monsters && rewards.monsters.monsters && rewards.monsters.monsters.length > 0) { %>
+        <div class="mb-6">
+          <h3 class="text-xl font-semibold text-white mb-3">Monsters</h3>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <% rewards.monsters.monsters.forEach(monster => { %>
+              <div class="bg-gray-700 p-4 rounded-lg">
+                <h4 class="text-white font-semibold mb-1"><%= monster.name %></h4>
+                <p class="text-gray-400 text-sm">Level <%= monster.level || 5 %></p>
+                <% if (monster.is_special) { %>
+                  <span class="inline-block px-2 py-1 bg-purple-600 text-white text-xs rounded mt-2">Special</span>
+                <% } %>
+              </div>
+            <% }); %>
+          </div>
+        </div>
+      <% } %>
+      
+      <div class="text-center mt-6">
+        <% if (rewards.is_claimed) { %>
+          <button disabled class="bg-gray-600 text-white font-bold py-3 px-6 rounded-lg opacity-50 cursor-not-allowed">
+            Rewards Claimed
+          </button>
+        <% } else { %>
+          <button id="claim-rewards-btn" class="bg-yellow-500 hover:bg-yellow-600 text-black font-bold py-3 px-6 rounded-lg">
+            Claim Rewards
+          </button>
+        <% } %>
+      </div>
+    </div>
+  <% } %>
+
+  <div class="flex justify-between">
+    <a href="/battles/trainer/<%= trainer.id %>" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+      Back to Battles
+    </a>
+    
+    <a href="/battles/history/<%= trainer.id %>" class="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
+      View Battle History
+    </a>
+  </div>
+</div>
+
+<% if (battle.status === 'won' && rewards && !rewards.is_claimed) { %>
+<script>
+  document.getElementById('claim-rewards-btn').addEventListener('click', function() {
+    // Disable button
+    this.disabled = true;
+    this.classList.add('opacity-50');
+    this.textContent = 'Claiming...';
+    
+    // Make API request to claim rewards
+    fetch('/api/battles/<%= battle.battle_id %>/claim-rewards', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        // Show success message
+        alert('Rewards claimed successfully!');
+        
+        // Reload page to show updated state
+        window.location.reload();
+      } else {
+        // Show error
+        alert(data.message || 'Failed to claim rewards');
+        
+        // Re-enable button
+        this.disabled = false;
+        this.classList.remove('opacity-50');
+        this.textContent = 'Claim Rewards';
+      }
+    })
+    .catch(error => {
+      console.error('Error claiming rewards:', error);
+      alert('Error claiming rewards. Please try again.');
+      
+      // Re-enable button
+      this.disabled = false;
+      this.classList.remove('opacity-50');
+      this.textContent = 'Claim Rewards';
+    });
+  });
+</script>
+<% } %>

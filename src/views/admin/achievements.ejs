@@ -1,0 +1,1508 @@
+
+<div class="container mx-auto px-4 py-8">
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+        <div>
+            <h1 class="text-3xl font-bold text-white">Achievement Management</h1>
+            <p class="text-gray-400 mt-1">Create and manage achievements for trainers to earn rewards</p>
+        </div>
+        <button id="create-achievement-btn" class="btn-primary flex items-center transition-all duration-300 hover:scale-105 shadow-lg">
+            <i class="fas fa-plus mr-2"></i> Create New Achievement
+        </button>
+    </div>
+
+    <div class="bg-gray-800 rounded-lg shadow-lg p-6 mb-8 border border-gray-700">
+        <div class="flex items-center mb-4 pb-3 border-b border-gray-700">
+            <i class="fas fa-filter text-yellow-500 mr-2 text-lg"></i>
+            <h2 class="text-xl font-semibold text-white">Filters</h2>
+        </div>
+
+        <div class="flex flex-col md:flex-row gap-4 mb-4">
+            <div class="md:w-1/3">
+                <label for="category-filter" class="block text-sm font-medium text-gray-300 mb-2">Filter by Category</label>
+                <div class="relative">
+                    <select id="category-filter" class="form-select w-full pl-10 bg-gray-700 border-gray-600 text-white">
+                        <option value="">All Categories</option>
+                        <option value="level">Trainer Level</option>
+                        <option value="type_collector">Type Collector</option>
+                        <option value="monster_collector">Monster Collector</option>
+                        <option value="attribute_collector">Attribute Collector</option>
+                        <option value="currency_earned">Currency Earned</option>
+                        <option value="currency_spent">Currency Spent</option>
+                        <option value="custom">Custom</option>
+                    </select>
+                    <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                        <i class="fas fa-layer-group text-gray-400"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="md:w-1/3">
+                <label for="status-filter" class="block text-sm font-medium text-gray-300 mb-2">Filter by Status</label>
+                <div class="relative">
+                    <select id="status-filter" class="form-select w-full pl-10 bg-gray-700 border-gray-600 text-white">
+                        <option value="">All Statuses</option>
+                        <option value="active">Active</option>
+                        <option value="hidden">Hidden</option>
+                        <option value="secret">Secret</option>
+                    </select>
+                    <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                        <i class="fas fa-eye text-gray-400"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="md:w-1/3">
+                <label for="search-input" class="block text-sm font-medium text-gray-300 mb-2">Search</label>
+                <div class="relative">
+                    <input type="text" id="search-input" class="form-input w-full pl-10 bg-gray-700 border-gray-600 text-white" placeholder="Search by name or description...">
+                    <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                        <i class="fas fa-search text-gray-400"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="achievements-table-container" class="overflow-x-auto mt-6 rounded-lg border border-gray-700">
+            <table id="achievements-table" class="w-full table-auto">
+                <thead>
+                    <tr class="bg-gray-700 text-gray-200 border-b border-gray-600">
+                        <th class="px-4 py-3 text-left font-semibold">ID</th>
+                        <th class="px-4 py-3 text-left font-semibold">Name</th>
+                        <th class="px-4 py-3 text-left font-semibold">Category</th>
+                        <th class="px-4 py-3 text-left font-semibold">Requirement</th>
+                        <th class="px-4 py-3 text-left font-semibold">Rewards</th>
+                        <th class="px-4 py-3 text-left font-semibold">Status</th>
+                        <th class="px-4 py-3 text-left font-semibold">Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="achievements-list" class="divide-y divide-gray-700">
+                    <tr>
+                        <td colspan="7" class="px-4 py-6 text-center">
+                            <div class="flex justify-center items-center">
+                                <div class="animate-spin rounded-full h-6 w-6 border-t-2 border-b-2 border-yellow-500 mr-3"></div>
+                                <span>Loading achievements...</span>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div id="no-results" class="hidden mt-4 p-8 text-center bg-gray-800 rounded-lg border border-gray-700">
+            <i class="fas fa-search text-gray-500 text-4xl mb-3"></i>
+            <p class="text-gray-400">No achievements found matching your filters.</p>
+            <button id="clear-filters" class="mt-4 px-4 py-2 bg-gray-700 text-white rounded hover:bg-gray-600 transition-colors">
+                <i class="fas fa-times mr-2"></i> Clear Filters
+            </button>
+        </div>
+    </div>
+
+    <!-- Achievement Form Modal -->
+    <div id="achievement-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
+        <div class="bg-gray-800 rounded-lg shadow-lg p-6 w-full max-w-4xl max-h-screen overflow-y-auto">
+            <div class="flex justify-between items-center mb-4">
+                <h2 id="modal-title" class="text-2xl font-bold">Create Achievement</h2>
+                <button id="close-modal" class="text-gray-400 hover:text-white">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <form id="achievement-form" class="space-y-6">
+                <input type="hidden" id="achievement-id">
+
+                <!-- Tabs -->
+                <div class="border-b border-gray-700">
+                    <nav class="-mb-px flex space-x-6" aria-label="Tabs">
+                        <button type="button" id="tab-basic" class="tab-btn active border-b-2 border-yellow-500 py-2 px-1 text-sm font-medium text-yellow-500">
+                            <i class="fas fa-info-circle mr-2"></i> Basic Info
+                        </button>
+                        <button type="button" id="tab-requirements" class="tab-btn py-2 px-1 text-sm font-medium text-gray-400 hover:text-gray-300 hover:border-gray-300">
+                            <i class="fas fa-tasks mr-2"></i> Requirements
+                        </button>
+                        <button type="button" id="tab-rewards" class="tab-btn py-2 px-1 text-sm font-medium text-gray-400 hover:text-gray-300 hover:border-gray-300">
+                            <i class="fas fa-gift mr-2"></i> Rewards
+                        </button>
+                        <button type="button" id="tab-display" class="tab-btn py-2 px-1 text-sm font-medium text-gray-400 hover:text-gray-300 hover:border-gray-300">
+                            <i class="fas fa-eye mr-2"></i> Display Options
+                        </button>
+                    </nav>
+                </div>
+
+                <!-- Tab Content -->
+                <div id="tab-content-basic" class="tab-content">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label for="name" class="block text-sm font-medium text-gray-300 mb-1">Achievement Name <span class="text-red-500">*</span></label>
+                            <input type="text" id="name" name="name" class="form-input w-full" required>
+                            <p class="text-xs text-gray-500 mt-1">The name displayed to trainers</p>
+                        </div>
+
+                        <div>
+                            <label for="category" class="block text-sm font-medium text-gray-300 mb-1">Category <span class="text-red-500">*</span></label>
+                            <select id="category" name="category" class="form-select w-full" required>
+                                <option value="level">Trainer Level</option>
+                                <option value="type_collector">Type Collector</option>
+                                <option value="monster_collector">Monster Collector</option>
+                                <option value="attribute_collector">Attribute Collector</option>
+                                <option value="currency_earned">Currency Earned</option>
+                                <option value="currency_spent">Currency Spent</option>
+                                <option value="custom">Custom</option>
+                            </select>
+                            <p class="text-xs text-gray-500 mt-1">Determines how achievements are grouped</p>
+                        </div>
+                    </div>
+
+                    <div class="mt-4">
+                        <label for="description" class="block text-sm font-medium text-gray-300 mb-1">Description <span class="text-red-500">*</span></label>
+                        <textarea id="description" name="description" class="form-textarea w-full" rows="3" required></textarea>
+                        <p class="text-xs text-gray-500 mt-1">Explain what the trainer needs to do to earn this achievement</p>
+                    </div>
+                </div>
+
+                <div id="tab-content-requirements" class="tab-content hidden">
+                    <div class="bg-gray-900 p-4 rounded-lg mb-4">
+                        <h3 class="text-lg font-medium mb-2">Achievement Requirements</h3>
+                        <p class="text-sm text-gray-400 mb-4">Define what trainers need to accomplish to earn this achievement</p>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label for="requirement_type" class="block text-sm font-medium text-gray-300 mb-1">Requirement Type <span class="text-red-500">*</span></label>
+                                <select id="requirement_type" name="requirement_type" class="form-select w-full" required>
+                                    <option value="level">Trainer Level</option>
+                                    <option value="type_count">Type Collection</option>
+                                    <option value="monster_count">Monster Collection</option>
+                                    <option value="attribute_count">Attribute Collection</option>
+                                    <option value="currency_earned">Currency Earned</option>
+                                    <option value="currency_spent">Currency Spent</option>
+                                    <option value="custom">Custom</option>
+                                </select>
+                                <p class="text-xs text-gray-500 mt-1">The type of requirement to track</p>
+                            </div>
+
+                            <div>
+                                <label for="requirement_value" class="block text-sm font-medium text-gray-300 mb-1">Target Value <span class="text-red-500">*</span></label>
+                                <input type="number" id="requirement_value" name="requirement_value" class="form-input w-full" min="1" required>
+                                <p class="text-xs text-gray-500 mt-1">The amount needed to complete this achievement</p>
+                            </div>
+                        </div>
+
+                        <div id="requirement_subtype_container" class="hidden mt-4">
+                            <label for="requirement_subtype" class="block text-sm font-medium text-gray-300 mb-1">Specific Type/Attribute</label>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <select id="requirement_subtype" name="requirement_subtype" class="form-select w-full">
+                                        <!-- For Type Collection -->
+                                        <option value="">Any Type</option>
+                                        <option value="Normal">Normal</option>
+                                        <option value="Fire">Fire</option>
+                                        <option value="Water">Water</option>
+                                        <option value="Electric">Electric</option>
+                                        <option value="Grass">Grass</option>
+                                        <option value="Ice">Ice</option>
+                                        <option value="Fighting">Fighting</option>
+                                        <option value="Poison">Poison</option>
+                                        <option value="Ground">Ground</option>
+                                        <option value="Flying">Flying</option>
+                                        <option value="Psychic">Psychic</option>
+                                        <option value="Bug">Bug</option>
+                                        <option value="Rock">Rock</option>
+                                        <option value="Ghost">Ghost</option>
+                                        <option value="Dragon">Dragon</option>
+                                        <option value="Dark">Dark</option>
+                                        <option value="Steel">Steel</option>
+                                        <option value="Fairy">Fairy</option>
+                                    </select>
+                                </div>
+                                <div id="attribute_subtype_container" class="hidden">
+                                    <select id="attribute_subtype" class="form-select w-full">
+                                        <!-- For Attribute Collection -->
+                                        <option value="">Any Attribute</option>
+                                        <option value="Data">Data</option>
+                                        <option value="Vaccine">Vaccine</option>
+                                        <option value="Virus">Virus</option>
+                                        <option value="Variable">Variable</option>
+                                        <option value="Free">Free</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <p class="text-xs text-gray-500 mt-1">Specify which type or attribute to collect (leave empty for any)</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="tab-content-rewards" class="tab-content hidden">
+                    <div class="bg-gray-900 p-4 rounded-lg mb-4">
+                        <div class="flex justify-between items-center mb-4">
+                            <div>
+                                <h3 class="text-lg font-medium">Achievement Rewards</h3>
+                                <p class="text-sm text-gray-400">Define what trainers will receive when claiming this achievement</p>
+                            </div>
+                            <button type="button" id="add-reward-btn" class="btn-secondary flex items-center">
+                                <i class="fas fa-plus mr-2"></i> Add Reward
+                            </button>
+                        </div>
+
+                        <div id="rewards-container" class="space-y-6">
+                            <!-- Rewards will be added here -->
+                        </div>
+
+                        <div id="no-rewards-message" class="text-center py-8 text-gray-500">
+                            <i class="fas fa-gift text-4xl mb-2"></i>
+                            <p>No rewards added yet. Click "Add Reward" to add rewards for this achievement.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="tab-content-display" class="tab-content hidden">
+                    <div class="bg-gray-900 p-4 rounded-lg mb-4">
+                        <h3 class="text-lg font-medium mb-2">Display Options</h3>
+                        <p class="text-sm text-gray-400 mb-4">Configure how this achievement appears to trainers</p>
+
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div>
+                                <label for="icon" class="block text-sm font-medium text-gray-300 mb-1">Icon (FontAwesome)</label>
+                                <div class="relative">
+                                    <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                        <i id="icon-preview" class="fas fa-trophy text-yellow-500"></i>
+                                    </div>
+                                    <input type="text" id="icon" name="icon" class="form-input w-full pl-10" placeholder="fas fa-trophy">
+                                </div>
+                                <p class="text-xs text-gray-500 mt-1">FontAwesome icon class (e.g., fas fa-trophy)</p>
+                            </div>
+
+                            <div>
+                                <label for="is_hidden" class="block text-sm font-medium text-gray-300 mb-1">Hidden Achievement</label>
+                                <select id="is_hidden" name="is_hidden" class="form-select w-full">
+                                    <option value="false">No - Show in achievement list</option>
+                                    <option value="true">Yes - Hide from achievement list</option>
+                                </select>
+                                <p class="text-xs text-gray-500 mt-1">Hidden achievements don't appear in the list</p>
+                            </div>
+
+                            <div>
+                                <label for="is_secret" class="block text-sm font-medium text-gray-300 mb-1">Secret Achievement</label>
+                                <select id="is_secret" name="is_secret" class="form-select w-full">
+                                    <option value="false">No - Show details</option>
+                                    <option value="true">Yes - Hide details until discovered</option>
+                                </select>
+                                <p class="text-xs text-gray-500 mt-1">Secret achievements show as "???" until progress is made</p>
+                            </div>
+                        </div>
+
+                        <div class="mt-4">
+                            <label for="order" class="block text-sm font-medium text-gray-300 mb-1">Display Order</label>
+                            <input type="number" id="order" name="order" class="form-input w-full" min="0" value="0">
+                            <p class="text-xs text-gray-500 mt-1">Lower numbers appear first within the same category</p>
+                        </div>
+
+                        <div class="mt-6">
+                            <h4 class="text-md font-medium mb-2">Achievement Preview</h4>
+                            <div class="bg-gray-800 rounded-lg p-4 border border-gray-700">
+                                <div id="achievement-preview" class="flex items-start">
+                                    <div class="flex-shrink-0 w-12 h-12 rounded-full bg-yellow-500 bg-opacity-20 flex items-center justify-center mr-4">
+                                        <i id="preview-icon" class="fas fa-trophy text-yellow-500 text-xl"></i>
+                                    </div>
+                                    <div class="flex-grow">
+                                        <h3 id="preview-name" class="text-lg font-bold">Achievement Name</h3>
+                                        <p id="preview-description" class="text-gray-400 text-sm mb-2">Achievement description will appear here.</p>
+                                        <div class="flex items-center">
+                                            <div class="w-full bg-gray-700 rounded-full h-2.5">
+                                                <div class="bg-yellow-500 h-2.5 rounded-full" style="width: 45%"></div>
+                                            </div>
+                                            <span class="text-xs text-gray-400 ml-2">0/100</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex justify-between pt-4 border-t border-gray-700">
+                    <div>
+                        <span id="form-status" class="text-sm text-gray-400"></span>
+                    </div>
+                    <div class="flex space-x-2">
+                        <button type="button" id="cancel-btn" class="btn-secondary">Cancel</button>
+                        <button type="submit" class="btn-primary flex items-center">
+                            <i class="fas fa-save mr-2"></i> Save Achievement
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Reward Template (hidden) -->
+    <template id="reward-template">
+        <div class="reward-item border border-gray-700 rounded-lg p-4 relative bg-gray-800 shadow-md">
+            <div class="flex justify-between items-center mb-3 pb-2 border-b border-gray-700">
+                <h4 class="reward-title text-md font-medium text-yellow-500">Reward</h4>
+                <button type="button" class="remove-reward-btn text-red-500 hover:text-red-400 p-1">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-300 mb-1">Reward Type</label>
+                    <select class="reward-type form-select w-full" required>
+                        <option value="coin">Coins</option>
+                        <option value="level">Levels</option>
+                        <option value="item">Item</option>
+                        <option value="monster_static">Static Monster</option>
+                        <option value="monster_set">Set Monster</option>
+                        <option value="monster_random">Random Monster</option>
+                    </select>
+                    <p class="text-xs text-gray-500 mt-1 reward-type-description">Give coins to the trainer</p>
+                </div>
+
+                <div class="reward-value-container">
+                    <!-- Value fields will be dynamically added based on reward type -->
+                </div>
+            </div>
+
+            <!-- Additional fields for monster rewards -->
+            <div class="monster-fields hidden">
+                <div class="monster-static-fields hidden">
+                    <h5 class="text-sm font-medium text-gray-300 mb-2 mt-2 pb-1 border-b border-gray-700">Monster Properties</h5>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                        <div>
+                            <label class="block text-xs font-medium text-gray-400 mb-1">Species 1</label>
+                            <input type="text" class="reward-monster-species1 form-input w-full" placeholder="Pokemon">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-400 mb-1">Species 2</label>
+                            <input type="text" class="reward-monster-species2 form-input w-full" placeholder="Optional">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-400 mb-1">Species 3</label>
+                            <input type="text" class="reward-monster-species3 form-input w-full" placeholder="Optional">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                        <div>
+                            <label class="block text-xs font-medium text-gray-400 mb-1">Type 1</label>
+                            <select class="reward-monster-type1 form-select w-full">
+                                <option value="Normal">Normal</option>
+                                <option value="Fire">Fire</option>
+                                <option value="Water">Water</option>
+                                <option value="Electric">Electric</option>
+                                <option value="Grass">Grass</option>
+                                <option value="Ice">Ice</option>
+                                <option value="Fighting">Fighting</option>
+                                <option value="Poison">Poison</option>
+                                <option value="Ground">Ground</option>
+                                <option value="Flying">Flying</option>
+                                <option value="Psychic">Psychic</option>
+                                <option value="Bug">Bug</option>
+                                <option value="Rock">Rock</option>
+                                <option value="Ghost">Ghost</option>
+                                <option value="Dragon">Dragon</option>
+                                <option value="Dark">Dark</option>
+                                <option value="Steel">Steel</option>
+                                <option value="Fairy">Fairy</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-400 mb-1">Type 2</label>
+                            <select class="reward-monster-type2 form-select w-full">
+                                <option value="">None</option>
+                                <option value="Normal">Normal</option>
+                                <option value="Fire">Fire</option>
+                                <option value="Water">Water</option>
+                                <option value="Electric">Electric</option>
+                                <option value="Grass">Grass</option>
+                                <option value="Ice">Ice</option>
+                                <option value="Fighting">Fighting</option>
+                                <option value="Poison">Poison</option>
+                                <option value="Ground">Ground</option>
+                                <option value="Flying">Flying</option>
+                                <option value="Psychic">Psychic</option>
+                                <option value="Bug">Bug</option>
+                                <option value="Rock">Rock</option>
+                                <option value="Ghost">Ghost</option>
+                                <option value="Dragon">Dragon</option>
+                                <option value="Dark">Dark</option>
+                                <option value="Steel">Steel</option>
+                                <option value="Fairy">Fairy</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-400 mb-1">Type 3</label>
+                            <select class="reward-monster-type3 form-select w-full">
+                                <option value="">None</option>
+                                <option value="Normal">Normal</option>
+                                <option value="Fire">Fire</option>
+                                <option value="Water">Water</option>
+                                <option value="Electric">Electric</option>
+                                <option value="Grass">Grass</option>
+                                <option value="Ice">Ice</option>
+                                <option value="Fighting">Fighting</option>
+                                <option value="Poison">Poison</option>
+                                <option value="Ground">Ground</option>
+                                <option value="Flying">Flying</option>
+                                <option value="Psychic">Psychic</option>
+                                <option value="Bug">Bug</option>
+                                <option value="Rock">Rock</option>
+                                <option value="Ghost">Ghost</option>
+                                <option value="Dragon">Dragon</option>
+                                <option value="Dark">Dark</option>
+                                <option value="Steel">Steel</option>
+                                <option value="Fairy">Fairy</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-medium text-gray-400 mb-1">Attribute</label>
+                            <select class="reward-monster-attribute form-select w-full">
+                                <option value="Data">Data</option>
+                                <option value="Vaccine">Vaccine</option>
+                                <option value="Virus">Virus</option>
+                                <option value="Variable">Variable</option>
+                                <option value="Free">Free</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="monster-random-fields hidden mt-4">
+                    <h5 class="text-sm font-medium text-gray-300 mb-2 pb-1 border-b border-gray-700">Random Monster Options</h5>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                        <div>
+                            <label class="block text-xs font-medium text-gray-400 mb-1">Min Species</label>
+                            <input type="number" class="reward-monster-min-species form-input w-full" min="1" max="3" value="1">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-400 mb-1">Max Species</label>
+                            <input type="number" class="reward-monster-max-species form-input w-full" min="1" max="3" value="3">
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-medium text-gray-400 mb-1">Min Types</label>
+                            <input type="number" class="reward-monster-min-type form-input w-full" min="1" max="5" value="1">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-400 mb-1">Max Types</label>
+                            <input type="number" class="reward-monster-max-type form-input w-full" min="1" max="5" value="3">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="reward-preview mt-4 pt-3 border-t border-gray-700 hidden">
+                <h5 class="text-sm font-medium text-gray-300 mb-2">Reward Preview</h5>
+                <div class="bg-gray-900 rounded p-3 flex items-center">
+                    <div class="reward-icon-preview w-8 h-8 rounded-full bg-yellow-500 bg-opacity-20 flex items-center justify-center mr-3">
+                        <i class="fas fa-coins text-yellow-500"></i>
+                    </div>
+                    <div class="reward-text-preview">100 Coins</div>
+                </div>
+            </div>
+        </div>
+    </template>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // DOM elements
+        const achievementsList = document.getElementById('achievements-list');
+        const categoryFilter = document.getElementById('category-filter');
+        const statusFilter = document.getElementById('status-filter');
+        const searchInput = document.getElementById('search-input');
+        const createBtn = document.getElementById('create-achievement-btn');
+        const modal = document.getElementById('achievement-modal');
+        const modalTitle = document.getElementById('modal-title');
+        const closeModal = document.getElementById('close-modal');
+        const cancelBtn = document.getElementById('cancel-btn');
+        const achievementForm = document.getElementById('achievement-form');
+        const achievementIdInput = document.getElementById('achievement-id');
+        const requirementTypeSelect = document.getElementById('requirement_type');
+        const requirementSubtypeContainer = document.getElementById('requirement_subtype_container');
+        const attributeSubtypeContainer = document.getElementById('attribute_subtype_container');
+        const addRewardBtn = document.getElementById('add-reward-btn');
+        const rewardsContainer = document.getElementById('rewards-container');
+        const noRewardsMessage = document.getElementById('no-rewards-message');
+        const rewardTemplate = document.getElementById('reward-template');
+        const formStatus = document.getElementById('form-status');
+
+        // Tab elements
+        const tabButtons = document.querySelectorAll('.tab-btn');
+        const tabContents = document.querySelectorAll('.tab-content');
+
+        // Preview elements
+        const nameInput = document.getElementById('name');
+        const descriptionInput = document.getElementById('description');
+        const iconInput = document.getElementById('icon');
+        const previewIcon = document.getElementById('preview-icon');
+        const iconPreview = document.getElementById('icon-preview');
+        const previewName = document.getElementById('preview-name');
+        const previewDescription = document.getElementById('preview-description');
+
+        // Load achievements
+        loadAchievements();
+
+        // Event listeners for filters
+        categoryFilter.addEventListener('change', loadAchievements);
+        statusFilter.addEventListener('change', loadAchievements);
+        searchInput.addEventListener('input', debounce(loadAchievements, 300));
+
+        // Clear filters button
+        document.getElementById('clear-filters').addEventListener('click', function() {
+            categoryFilter.value = '';
+            statusFilter.value = '';
+            searchInput.value = '';
+            loadAchievements();
+        });
+
+        // Event listeners for modal
+        createBtn.addEventListener('click', showCreateForm);
+        closeModal.addEventListener('click', hideModal);
+        cancelBtn.addEventListener('click', hideModal);
+        achievementForm.addEventListener('submit', saveAchievement);
+
+        // Event listeners for form fields
+        requirementTypeSelect.addEventListener('change', toggleRequirementSubtype);
+        addRewardBtn.addEventListener('click', addReward);
+
+        // Event listeners for preview
+        nameInput.addEventListener('input', updatePreview);
+        descriptionInput.addEventListener('input', updatePreview);
+        iconInput.addEventListener('input', updateIconPreview);
+
+        // Tab navigation
+        tabButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                // Remove active class from all tabs
+                tabButtons.forEach(btn => {
+                    btn.classList.remove('active', 'border-yellow-500', 'text-yellow-500');
+                    btn.classList.add('text-gray-400', 'hover:text-gray-300', 'hover:border-gray-300');
+                });
+
+                // Hide all tab contents
+                tabContents.forEach(content => {
+                    content.classList.add('hidden');
+                });
+
+                // Add active class to clicked tab
+                button.classList.add('active', 'border-b-2', 'border-yellow-500', 'text-yellow-500');
+                button.classList.remove('text-gray-400', 'hover:text-gray-300', 'hover:border-gray-300');
+
+                // Show corresponding tab content
+                const tabId = button.id.replace('tab-', 'tab-content-');
+                document.getElementById(tabId).classList.remove('hidden');
+            });
+        });
+
+        // Helper function for debouncing
+        function debounce(func, wait) {
+            let timeout;
+            return function(...args) {
+                clearTimeout(timeout);
+                timeout = setTimeout(() => func.apply(this, args), wait);
+            };
+        }
+
+        // Functions
+        function loadAchievements() {
+            const category = categoryFilter.value;
+            const status = statusFilter.value;
+            const searchTerm = searchInput.value.toLowerCase().trim();
+
+            // Show loading state
+            achievementsList.innerHTML = '<tr><td colspan="7" class="px-4 py-2 text-center"><div class="flex justify-center"><div class="animate-spin rounded-full h-6 w-6 border-t-2 border-b-2 border-yellow-500"></div><span class="ml-2">Loading achievements...</span></div></td></tr>';
+
+            // Fetch achievements from API
+            fetch('/api/admin/achievements')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        let achievements = data.achievements;
+
+                        // Apply filters
+                        if (category) {
+                            achievements = achievements.filter(a => a.category === category);
+                        }
+
+                        if (status) {
+                            if (status === 'active') {
+                                achievements = achievements.filter(a => !a.is_hidden && !a.is_secret);
+                            } else if (status === 'hidden') {
+                                achievements = achievements.filter(a => a.is_hidden);
+                            } else if (status === 'secret') {
+                                achievements = achievements.filter(a => a.is_secret);
+                            }
+                        }
+
+                        if (searchTerm) {
+                            achievements = achievements.filter(a =>
+                                a.name.toLowerCase().includes(searchTerm) ||
+                                a.description.toLowerCase().includes(searchTerm)
+                            );
+                        }
+
+                        // Sort achievements
+                        achievements.sort((a, b) => {
+                            if (a.category !== b.category) {
+                                return a.category.localeCompare(b.category);
+                            }
+                            return a.order - b.order;
+                        });
+
+                        // Render achievements
+                        renderAchievements(achievements);
+                    } else {
+                        achievementsList.innerHTML = `<tr><td colspan="7" class="px-4 py-2 text-center text-red-500">${data.message || 'Failed to load achievements'}</td></tr>`;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading achievements:', error);
+                    achievementsList.innerHTML = '<tr><td colspan="7" class="px-4 py-2 text-center text-red-500">Error loading achievements</td></tr>';
+                });
+        }
+
+        function renderAchievements(achievements) {
+            // Show/hide no results message
+            const noResultsElement = document.getElementById('no-results');
+            if (achievements.length === 0) {
+                achievementsList.innerHTML = '';
+                noResultsElement.classList.remove('hidden');
+                return;
+            } else {
+                noResultsElement.classList.add('hidden');
+            }
+
+            let html = '';
+
+            achievements.forEach(achievement => {
+                const categoryDisplay = getCategoryDisplay(achievement.category);
+                const requirementDisplay = getRequirementDisplay(achievement);
+                const rewardsDisplay = getRewardsDisplay(achievement.rewards);
+                const statusDisplay = getStatusDisplay(achievement);
+
+                // Get icon based on category
+                const categoryIcon = getCategoryIcon(achievement.category);
+
+                html += `
+                    <tr class="hover:bg-gray-750 transition-colors duration-150">
+                        <td class="px-4 py-3 text-gray-300">${achievement.id}</td>
+                        <td class="px-4 py-3">
+                            <div class="flex items-center">
+                                <div class="flex-shrink-0 w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center mr-3">
+                                    <i class="${achievement.icon || 'fas fa-trophy'} text-yellow-500"></i>
+                                </div>
+                                <div>
+                                    <div class="font-medium text-white">${achievement.name}</div>
+                                    <div class="text-xs text-gray-400 truncate max-w-xs">${achievement.description || ''}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-4 py-3">
+                            <div class="flex items-center">
+                                <i class="${categoryIcon} text-gray-400 mr-2"></i>
+                                <span>${categoryDisplay}</span>
+                            </div>
+                        </td>
+                        <td class="px-4 py-3">${requirementDisplay}</td>
+                        <td class="px-4 py-3">${rewardsDisplay}</td>
+                        <td class="px-4 py-3">${statusDisplay}</td>
+                        <td class="px-4 py-3">
+                            <div class="flex space-x-2">
+                                <button class="p-1 rounded-full bg-blue-500 bg-opacity-20 text-blue-400 hover:bg-opacity-30 transition-colors"
+                                        onclick="editAchievement(${achievement.id})" title="Edit Achievement">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="p-1 rounded-full bg-red-500 bg-opacity-20 text-red-400 hover:bg-opacity-30 transition-colors"
+                                        onclick="deleteAchievement(${achievement.id})" title="Delete Achievement">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            achievementsList.innerHTML = html;
+        }
+
+        function getCategoryDisplay(category) {
+            const categories = {
+                'level': 'Trainer Level',
+                'type_collector': 'Type Collector',
+                'monster_collector': 'Monster Collector',
+                'attribute_collector': 'Attribute Collector',
+                'currency_earned': 'Currency Earned',
+                'currency_spent': 'Currency Spent',
+                'custom': 'Custom'
+            };
+
+            return categories[category] || category;
+        }
+
+        function getCategoryIcon(category) {
+            const icons = {
+                'level': 'fas fa-level-up-alt',
+                'type_collector': 'fas fa-layer-group',
+                'monster_collector': 'fas fa-dragon',
+                'attribute_collector': 'fas fa-tag',
+                'currency_earned': 'fas fa-coins',
+                'currency_spent': 'fas fa-shopping-cart',
+                'custom': 'fas fa-star'
+            };
+
+            return icons[category] || 'fas fa-award';
+        }
+
+        function getRequirementDisplay(achievement) {
+            let display = '';
+
+            switch (achievement.requirement_type) {
+                case 'level':
+                    display = `Reach level ${achievement.requirement_value}`;
+                    break;
+                case 'type_count':
+                    display = `Collect ${achievement.requirement_value} ${achievement.requirement_subtype} type monsters`;
+                    break;
+                case 'monster_count':
+                    display = `Collect ${achievement.requirement_value} monsters`;
+                    break;
+                case 'attribute_count':
+                    display = `Collect ${achievement.requirement_value} ${achievement.requirement_subtype} attribute monsters`;
+                    break;
+                case 'currency_earned':
+                    display = `Earn ${achievement.requirement_value} coins`;
+                    break;
+                case 'currency_spent':
+                    display = `Spend ${achievement.requirement_value} coins`;
+                    break;
+                default:
+                    display = `${achievement.requirement_type}: ${achievement.requirement_value}`;
+            }
+
+            return display;
+        }
+
+        function getRewardsDisplay(rewards) {
+            if (!rewards || !Array.isArray(rewards) || rewards.length === 0) {
+                return '<span class="text-gray-500 italic">No rewards</span>';
+            }
+
+            return rewards.map(reward => {
+                let icon, color, text;
+
+                switch (reward.type) {
+                    case 'coin':
+                        icon = 'fas fa-coins';
+                        color = 'text-yellow-500';
+                        text = `${reward.value} Coins`;
+                        break;
+                    case 'level':
+                        icon = 'fas fa-level-up-alt';
+                        color = 'text-blue-500';
+                        text = `${reward.value} Levels`;
+                        break;
+                    case 'item':
+                        icon = 'fas fa-box';
+                        color = 'text-purple-500';
+                        if (typeof reward.value === 'object') {
+                            text = `${reward.value.amount || 1} ${reward.value.name}`;
+                        } else {
+                            text = reward.value;
+                        }
+                        break;
+                    case 'monster_static':
+                        icon = 'fas fa-dragon';
+                        color = 'text-green-500';
+                        text = `Static Monster`;
+                        break;
+                    case 'monster_set':
+                        icon = 'fas fa-dragon';
+                        color = 'text-teal-500';
+                        text = `Set Monster`;
+                        break;
+                    case 'monster_random':
+                        icon = 'fas fa-dragon';
+                        color = 'text-indigo-500';
+                        text = `Random Monster`;
+                        break;
+                    default:
+                        icon = 'fas fa-gift';
+                        color = 'text-gray-500';
+                        text = reward.type;
+                }
+
+                return `<span class="inline-flex items-center mr-2 mb-1"><i class="${icon} ${color} mr-1"></i> ${text}</span>`;
+            }).join('');
+        }
+
+        function getStatusDisplay(achievement) {
+            if (achievement.is_hidden && achievement.is_secret) {
+                return '<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-900 text-purple-200"><i class="fas fa-eye-slash mr-1"></i> Hidden & Secret</span>';
+            } else if (achievement.is_hidden) {
+                return '<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-700 text-gray-200"><i class="fas fa-eye-slash mr-1"></i> Hidden</span>';
+            } else if (achievement.is_secret) {
+                return '<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-700 text-purple-200"><i class="fas fa-mask mr-1"></i> Secret</span>';
+            } else {
+                return '<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-700 text-green-200"><i class="fas fa-check-circle mr-1"></i> Active</span>';
+            }
+        }
+
+        function showCreateForm() {
+            // Reset form
+            achievementForm.reset();
+            achievementIdInput.value = '';
+            modalTitle.textContent = 'Create Achievement';
+
+            // Clear rewards
+            rewardsContainer.innerHTML = '';
+
+            // Add default reward
+            addReward();
+
+            // Show modal
+            modal.classList.remove('hidden');
+        }
+
+        function hideModal() {
+            modal.classList.add('hidden');
+        }
+
+        function toggleRequirementSubtype() {
+            const requirementType = requirementTypeSelect.value;
+
+            // Hide both containers by default
+            requirementSubtypeContainer.classList.add('hidden');
+            attributeSubtypeContainer.classList.add('hidden');
+
+            if (requirementType === 'type_count') {
+                // Show type dropdown for type collection
+                requirementSubtypeContainer.classList.remove('hidden');
+
+                // Update the label
+                const label = requirementSubtypeContainer.previousElementSibling;
+                if (label && label.tagName === 'LABEL') {
+                    label.textContent = 'Specific Type';
+                }
+            } else if (requirementType === 'attribute_count') {
+                // Show both containers for attribute collection
+                requirementSubtypeContainer.classList.remove('hidden');
+                attributeSubtypeContainer.classList.remove('hidden');
+
+                // Update the label
+                const label = requirementSubtypeContainer.previousElementSibling;
+                if (label && label.tagName === 'LABEL') {
+                    label.textContent = 'Specific Attribute';
+                }
+            }
+        }
+
+        function addReward() {
+            // Clone the template
+            const rewardItem = rewardTemplate.content.cloneNode(true);
+
+            // Add event listeners
+            const removeBtn = rewardItem.querySelector('.remove-reward-btn');
+            removeBtn.addEventListener('click', function() {
+                this.closest('.reward-item').remove();
+            });
+
+            const rewardTypeSelect = rewardItem.querySelector('.reward-type');
+            rewardTypeSelect.addEventListener('change', function() {
+                updateRewardValueField(this);
+            });
+
+            // Add to container
+            rewardsContainer.appendChild(rewardItem);
+
+            // Initialize value field
+            updateRewardValueField(rewardsContainer.lastElementChild.querySelector('.reward-type'));
+        }
+
+        // Update preview functions
+        function updatePreview() {
+            previewName.textContent = nameInput.value || 'Achievement Name';
+            previewDescription.textContent = descriptionInput.value || 'Achievement description will appear here.';
+        }
+
+        function updateIconPreview() {
+            const iconClass = iconInput.value || 'fas fa-trophy';
+            previewIcon.className = iconClass + ' text-yellow-500 text-xl';
+            iconPreview.className = iconClass + ' text-yellow-500';
+        }
+
+        function updateRewardValueField(rewardTypeSelect) {
+            const rewardItem = rewardTypeSelect.closest('.reward-item');
+            const rewardType = rewardTypeSelect.value;
+            const valueContainer = rewardItem.querySelector('.reward-value-container');
+            const monsterFields = rewardItem.querySelector('.monster-fields');
+            const monsterStaticFields = rewardItem.querySelector('.monster-static-fields');
+            const monsterRandomFields = rewardItem.querySelector('.monster-random-fields');
+            const rewardPreview = rewardItem.querySelector('.reward-preview');
+            const rewardIconPreview = rewardItem.querySelector('.reward-icon-preview i');
+            const rewardTextPreview = rewardItem.querySelector('.reward-text-preview');
+            const rewardTitle = rewardItem.querySelector('.reward-title');
+            const rewardTypeDescription = rewardItem.querySelector('.reward-type-description');
+
+            // Set reward title and description based on type
+            switch (rewardType) {
+                case 'coin':
+                    rewardTitle.textContent = 'Coin Reward';
+                    rewardTypeDescription.textContent = 'Give coins to the trainer';
+                    break;
+                case 'level':
+                    rewardTitle.textContent = 'Level Reward';
+                    rewardTypeDescription.textContent = 'Give trainer levels to the trainer';
+                    break;
+                case 'item':
+                    rewardTitle.textContent = 'Item Reward';
+                    rewardTypeDescription.textContent = 'Give an item to the trainer';
+                    break;
+                case 'monster_static':
+                    rewardTitle.textContent = 'Static Monster Reward';
+                    rewardTypeDescription.textContent = 'Give a specific monster with predefined attributes';
+                    break;
+                case 'monster_set':
+                    rewardTitle.textContent = 'Set Monster Reward';
+                    rewardTypeDescription.textContent = 'Give a monster with specific species but random types';
+                    break;
+                case 'monster_random':
+                    rewardTitle.textContent = 'Random Monster Reward';
+                    rewardTypeDescription.textContent = 'Give a completely random monster';
+                    break;
+            }
+
+            // Hide all monster fields by default
+            if (monsterFields) monsterFields.classList.add('hidden');
+            if (monsterStaticFields) monsterStaticFields.classList.add('hidden');
+            if (monsterRandomFields) monsterRandomFields.classList.add('hidden');
+
+            // Show reward preview
+            if (rewardPreview) rewardPreview.classList.remove('hidden');
+
+            let valueField = '';
+
+            switch (rewardType) {
+                case 'coin':
+                    valueField = `
+                        <label class="block text-sm font-medium text-gray-300 mb-1">Amount</label>
+                        <input type="number" class="reward-value form-input w-full bg-gray-700 border-gray-600 text-white" min="1" value="100" required>
+                        <p class="text-xs text-gray-500 mt-1">Number of coins to award</p>
+                    `;
+                    if (rewardIconPreview) rewardIconPreview.className = 'fas fa-coins text-yellow-500';
+                    if (rewardTextPreview) rewardTextPreview.textContent = '100 Coins';
+                    break;
+                case 'level':
+                    valueField = `
+                        <label class="block text-sm font-medium text-gray-300 mb-1">Amount</label>
+                        <input type="number" class="reward-value form-input w-full bg-gray-700 border-gray-600 text-white" min="1" value="1" required>
+                        <p class="text-xs text-gray-500 mt-1">Number of levels to award</p>
+                    `;
+                    if (rewardIconPreview) rewardIconPreview.className = 'fas fa-level-up-alt text-blue-500';
+                    if (rewardTextPreview) rewardTextPreview.textContent = '1 Level';
+                    break;
+                case 'item':
+                    valueField = `
+                        <div class="space-y-2">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-300 mb-1">Item Name</label>
+                                <input type="text" class="reward-item-name form-input w-full bg-gray-700 border-gray-600 text-white" required>
+                                <p class="text-xs text-gray-500 mt-1">Name of the item</p>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-300 mb-1">Category</label>
+                                <select class="reward-item-category form-select w-full bg-gray-700 border-gray-600 text-white" required>
+                                    <option value="ITEMS">ITEMS</option>
+                                    <option value="BALLS">BALLS</option>
+                                    <option value="BERRIES">BERRIES</option>
+                                    <option value="PASTRIES">PASTRIES</option>
+                                    <option value="EVOLUTION">EVOLUTION</option>
+                                    <option value="ANTIQUE">ANTIQUE</option>
+                                    <option value="HELDITEMS">HELDITEMS</option>
+                                </select>
+                                <p class="text-xs text-gray-500 mt-1">Category the item belongs to</p>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-300 mb-1">Amount</label>
+                                <input type="number" class="reward-item-amount form-input w-full bg-gray-700 border-gray-600 text-white" min="1" value="1" required>
+                                <p class="text-xs text-gray-500 mt-1">Number of items to award</p>
+                            </div>
+                        </div>
+                    `;
+                    if (rewardIconPreview) rewardIconPreview.className = 'fas fa-box text-purple-500';
+                    if (rewardTextPreview) rewardTextPreview.textContent = 'Item Reward';
+                    break;
+                case 'monster_static':
+                case 'monster_set':
+                case 'monster_random':
+                    valueField = `
+                        <div class="space-y-2">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-300 mb-1">Monster Name</label>
+                                <input type="text" class="reward-monster-name form-input w-full bg-gray-700 border-gray-600 text-white" placeholder="Achievement Monster" value="Achievement Monster" required>
+                                <p class="text-xs text-gray-500 mt-1">Default name for the monster</p>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-300 mb-1">Level</label>
+                                <input type="number" class="reward-monster-level form-input w-full bg-gray-700 border-gray-600 text-white" min="1" value="1" required>
+                                <p class="text-xs text-gray-500 mt-1">Starting level for the monster</p>
+                            </div>
+                        </div>
+                    `;
+                    if (rewardIconPreview) rewardIconPreview.className = 'fas fa-dragon text-green-500';
+                    if (rewardTextPreview) rewardTextPreview.textContent = 'Monster Reward';
+
+                    // Show additional monster fields
+                    if (monsterFields) {
+                        monsterFields.classList.remove('hidden');
+
+                        if (rewardType === 'monster_static') {
+                            if (monsterStaticFields) monsterStaticFields.classList.remove('hidden');
+                            if (monsterRandomFields) monsterRandomFields.classList.add('hidden');
+                        } else if (rewardType === 'monster_random') {
+                            if (monsterRandomFields) monsterRandomFields.classList.remove('hidden');
+                            if (monsterStaticFields) monsterStaticFields.classList.add('hidden');
+                        } else if (rewardType === 'monster_set') {
+                            // For set monsters, we only need species fields
+                            if (monsterStaticFields) {
+                                monsterStaticFields.classList.remove('hidden');
+
+                                // Hide type fields for set monsters
+                                const typeFields = monsterStaticFields.querySelectorAll('.reward-monster-type1, .reward-monster-type2, .reward-monster-type3');
+                                typeFields.forEach(field => {
+                                    const fieldContainer = field.closest('div');
+                                    if (fieldContainer) fieldContainer.style.display = 'none';
+                                });
+                            }
+                            if (monsterRandomFields) monsterRandomFields.classList.add('hidden');
+                        }
+                    }
+                    break;
+            }
+
+            valueContainer.innerHTML = valueField;
+
+            // Add event listeners to update preview
+            if (rewardType === 'coin' && rewardTextPreview) {
+                const valueInput = valueContainer.querySelector('.reward-value');
+                if (valueInput) {
+                    valueInput.addEventListener('input', function() {
+                        rewardTextPreview.textContent = `${this.value} Coins`;
+                    });
+                }
+            } else if (rewardType === 'level' && rewardTextPreview) {
+                const valueInput = valueContainer.querySelector('.reward-value');
+                if (valueInput) {
+                    valueInput.addEventListener('input', function() {
+                        rewardTextPreview.textContent = `${this.value} ${this.value > 1 ? 'Levels' : 'Level'}`;
+                    });
+                }
+            } else if (rewardType === 'item' && rewardTextPreview) {
+                const nameInput = valueContainer.querySelector('.reward-item-name');
+                const amountInput = valueContainer.querySelector('.reward-item-amount');
+
+                if (nameInput && amountInput) {
+                    const updateItemPreview = function() {
+                        const name = nameInput.value || 'Item';
+                        const amount = amountInput.value || 1;
+                        rewardTextPreview.textContent = `${amount} ${name}`;
+                    };
+
+                    nameInput.addEventListener('input', updateItemPreview);
+                    amountInput.addEventListener('input', updateItemPreview);
+                }
+            } else if (rewardType.startsWith('monster_') && rewardTextPreview) {
+                const nameInput = valueContainer.querySelector('.reward-monster-name');
+                const levelInput = valueContainer.querySelector('.reward-monster-level');
+
+                if (nameInput && levelInput) {
+                    const updateMonsterPreview = function() {
+                        const name = nameInput.value || 'Monster';
+                        const level = levelInput.value || 1;
+                        rewardTextPreview.textContent = `${name} (Level ${level})`;
+                    };
+
+                    nameInput.addEventListener('input', updateMonsterPreview);
+                    levelInput.addEventListener('input', updateMonsterPreview);
+                    updateMonsterPreview();
+                }
+            }
+        }
+
+        function saveAchievement(e) {
+            e.preventDefault();
+
+            // Get form data
+            const formData = {
+                name: document.getElementById('name').value,
+                description: document.getElementById('description').value,
+                category: document.getElementById('category').value,
+                requirement_type: document.getElementById('requirement_type').value,
+                requirement_value: parseInt(document.getElementById('requirement_value').value),
+                icon: document.getElementById('icon').value || 'fas fa-trophy',
+                is_hidden: document.getElementById('is_hidden').value === 'true',
+                is_secret: document.getElementById('is_secret').value === 'true',
+                order: parseInt(document.getElementById('order').value) || 0,
+                rewards: getRewardsData()
+            };
+
+            // Add requirement subtype if needed
+            if (formData.requirement_type === 'type_count' || formData.requirement_type === 'attribute_count') {
+                formData.requirement_subtype = document.getElementById('requirement_subtype').value;
+            }
+
+            const achievementId = achievementIdInput.value;
+            const isUpdate = !!achievementId;
+
+            // API endpoint and method
+            const url = isUpdate ? `/api/admin/achievements/${achievementId}` : '/api/admin/achievements';
+            const method = isUpdate ? 'PUT' : 'POST';
+
+            // Save achievement
+            fetch(url, {
+                method: method,
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(formData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Hide modal and reload achievements
+                    hideModal();
+                    loadAchievements();
+
+                    // Show success message
+                    alert(isUpdate ? 'Achievement updated successfully' : 'Achievement created successfully');
+                } else {
+                    alert(data.message || 'Failed to save achievement');
+                }
+            })
+            .catch(error => {
+                console.error('Error saving achievement:', error);
+                alert('Error saving achievement');
+            });
+        }
+
+        function getRewardsData() {
+            const rewards = [];
+            const rewardItems = rewardsContainer.querySelectorAll('.reward-item');
+
+            // Check if there are any rewards
+            if (rewardItems.length === 0) {
+                // Show no rewards message
+                noRewardsMessage.classList.remove('hidden');
+            } else {
+                // Hide no rewards message
+                noRewardsMessage.classList.add('hidden');
+            }
+
+            rewardItems.forEach(item => {
+                const rewardType = item.querySelector('.reward-type').value;
+                let rewardValue;
+
+                switch (rewardType) {
+                    case 'coin':
+                    case 'level':
+                        rewardValue = parseInt(item.querySelector('.reward-value').value);
+                        break;
+                    case 'item':
+                        rewardValue = {
+                            name: item.querySelector('.reward-item-name').value,
+                            category: item.querySelector('.reward-item-category').value,
+                            amount: parseInt(item.querySelector('.reward-item-amount').value)
+                        };
+                        break;
+                    case 'monster_static':
+                        rewardValue = {
+                            name: item.querySelector('.reward-monster-name').value,
+                            level: parseInt(item.querySelector('.reward-monster-level').value),
+                            species1: item.querySelector('.reward-monster-species1').value || 'Pokemon',
+                            species2: item.querySelector('.reward-monster-species2').value || null,
+                            species3: item.querySelector('.reward-monster-species3').value || null,
+                            type1: item.querySelector('.reward-monster-type1').value || 'Normal',
+                            type2: item.querySelector('.reward-monster-type2').value || null,
+                            type3: item.querySelector('.reward-monster-type3').value || null,
+                            attribute: item.querySelector('.reward-monster-attribute').value || 'Data'
+                        };
+                        break;
+                    case 'monster_set':
+                        rewardValue = {
+                            name: item.querySelector('.reward-monster-name').value,
+                            level: parseInt(item.querySelector('.reward-monster-level').value),
+                            species: [
+                                item.querySelector('.reward-monster-species1').value || 'Pokemon',
+                                item.querySelector('.reward-monster-species2').value,
+                                item.querySelector('.reward-monster-species3').value
+                            ].filter(Boolean) // Remove empty values
+                        };
+                        break;
+                    case 'monster_random':
+                        rewardValue = {
+                            name: item.querySelector('.reward-monster-name').value,
+                            level: parseInt(item.querySelector('.reward-monster-level').value),
+                            minSpecies: parseInt(item.querySelector('.reward-monster-min-species').value) || 1,
+                            maxSpecies: parseInt(item.querySelector('.reward-monster-max-species').value) || 3,
+                            minType: parseInt(item.querySelector('.reward-monster-min-type').value) || 1,
+                            maxType: parseInt(item.querySelector('.reward-monster-max-type').value) || 3
+                        };
+                        break;
+                }
+
+                rewards.push({
+                    type: rewardType,
+                    value: rewardValue
+                });
+            });
+
+            return rewards;
+        }
+
+        // Global functions for edit and delete
+        window.editAchievement = function(id) {
+            // Reset form and show loading state
+            formStatus.textContent = 'Loading achievement data...';
+            formStatus.classList.add('text-blue-500');
+            formStatus.classList.remove('text-red-500', 'text-green-500');
+
+            // Show first tab
+            document.getElementById('tab-basic').click();
+
+            // Fetch achievement data
+            fetch(`/api/admin/achievements/${id}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        const achievement = data.achievement;
+
+                        // Set form values
+                        document.getElementById('achievement-id').value = achievement.id;
+                        document.getElementById('name').value = achievement.name;
+                        document.getElementById('description').value = achievement.description;
+                        document.getElementById('category').value = achievement.category;
+                        document.getElementById('requirement_type').value = achievement.requirement_type;
+                        document.getElementById('requirement_value').value = achievement.requirement_value;
+                        document.getElementById('icon').value = achievement.icon || 'fas fa-trophy';
+                        document.getElementById('is_hidden').value = achievement.is_hidden ? 'true' : 'false';
+                        document.getElementById('is_secret').value = achievement.is_secret ? 'true' : 'false';
+                        document.getElementById('order').value = achievement.order || 0;
+
+                        // Update previews
+                        updatePreview();
+                        updateIconPreview();
+
+                        // Set requirement subtype if needed
+                        toggleRequirementSubtype();
+                        if (achievement.requirement_type === 'type_count' || achievement.requirement_type === 'attribute_count') {
+                            document.getElementById('requirement_subtype').value = achievement.requirement_subtype || '';
+
+                            // For attribute collection, show the attribute dropdown
+                            if (achievement.requirement_type === 'attribute_count') {
+                                attributeSubtypeContainer.classList.remove('hidden');
+                                if (document.getElementById('attribute_subtype')) {
+                                    document.getElementById('attribute_subtype').value = achievement.requirement_subtype || '';
+                                }
+                            }
+                        }
+
+                        // Clear rewards
+                        rewardsContainer.innerHTML = '';
+
+                        // Add rewards
+                        if (achievement.rewards && Array.isArray(achievement.rewards) && achievement.rewards.length > 0) {
+                            // Hide no rewards message
+                            noRewardsMessage.classList.add('hidden');
+
+                            achievement.rewards.forEach(reward => {
+                                addReward();
+                                const rewardItem = rewardsContainer.lastElementChild;
+                                const rewardTypeSelect = rewardItem.querySelector('.reward-type');
+                                rewardTypeSelect.value = reward.type;
+                                updateRewardValueField(rewardTypeSelect);
+
+                                // Set reward value
+                                switch (reward.type) {
+                                    case 'coin':
+                                    case 'level':
+                                        rewardItem.querySelector('.reward-value').value = reward.value;
+                                        // Update preview
+                                        const rewardTextPreview = rewardItem.querySelector('.reward-text-preview');
+                                        if (reward.type === 'coin') {
+                                            rewardTextPreview.textContent = `${reward.value} Coins`;
+                                        } else {
+                                            rewardTextPreview.textContent = `${reward.value} ${reward.value > 1 ? 'Levels' : 'Level'}`;
+                                        }
+                                        break;
+                                    case 'item':
+                                        if (typeof reward.value === 'object') {
+                                            rewardItem.querySelector('.reward-item-name').value = reward.value.name;
+                                            rewardItem.querySelector('.reward-item-category').value = reward.value.category || 'ITEMS';
+                                            rewardItem.querySelector('.reward-item-amount').value = reward.value.amount || 1;
+
+                                            // Update preview
+                                            rewardItem.querySelector('.reward-text-preview').textContent =
+                                                `${reward.value.amount || 1} ${reward.value.name}`;
+                                        } else if (typeof reward.value === 'string' && reward.value.includes(';')) {
+                                            const [name, category, amount] = reward.value.split(';');
+                                            rewardItem.querySelector('.reward-item-name').value = name;
+                                            rewardItem.querySelector('.reward-item-category').value = category || 'ITEMS';
+                                            rewardItem.querySelector('.reward-item-amount').value = parseInt(amount) || 1;
+
+                                            // Update preview
+                                            rewardItem.querySelector('.reward-text-preview').textContent =
+                                                `${parseInt(amount) || 1} ${name}`;
+                                        } else {
+                                            rewardItem.querySelector('.reward-item-name').value = reward.value;
+
+                                            // Update preview
+                                            rewardItem.querySelector('.reward-text-preview').textContent =
+                                                `1 ${reward.value}`;
+                                        }
+                                        break;
+                                    case 'monster_static':
+                                        if (typeof reward.value === 'object') {
+                                            // Basic monster fields
+                                            rewardItem.querySelector('.reward-monster-name').value = reward.value.name || 'Achievement Monster';
+                                            rewardItem.querySelector('.reward-monster-level').value = reward.value.level || 1;
+
+                                            // Species fields
+                                            if (rewardItem.querySelector('.reward-monster-species1')) {
+                                                rewardItem.querySelector('.reward-monster-species1').value = reward.value.species1 || reward.value.species && reward.value.species[0] || 'Pokemon';
+                                            }
+                                            if (rewardItem.querySelector('.reward-monster-species2')) {
+                                                rewardItem.querySelector('.reward-monster-species2').value = reward.value.species2 || reward.value.species && reward.value.species[1] || '';
+                                            }
+                                            if (rewardItem.querySelector('.reward-monster-species3')) {
+                                                rewardItem.querySelector('.reward-monster-species3').value = reward.value.species3 || reward.value.species && reward.value.species[2] || '';
+                                            }
+
+                                            // Type fields
+                                            if (rewardItem.querySelector('.reward-monster-type1')) {
+                                                rewardItem.querySelector('.reward-monster-type1').value = reward.value.type1 || reward.value.types && reward.value.types[0] || 'Normal';
+                                            }
+                                            if (rewardItem.querySelector('.reward-monster-type2')) {
+                                                rewardItem.querySelector('.reward-monster-type2').value = reward.value.type2 || reward.value.types && reward.value.types[1] || '';
+                                            }
+                                            if (rewardItem.querySelector('.reward-monster-type3')) {
+                                                rewardItem.querySelector('.reward-monster-type3').value = reward.value.type3 || reward.value.types && reward.value.types[2] || '';
+                                            }
+
+                                            // Attribute field
+                                            if (rewardItem.querySelector('.reward-monster-attribute')) {
+                                                rewardItem.querySelector('.reward-monster-attribute').value = reward.value.attribute || 'Data';
+                                            }
+
+                                            // Update preview
+                                            rewardItem.querySelector('.reward-text-preview').textContent =
+                                                `${reward.value.name || 'Achievement Monster'} (Level ${reward.value.level || 1})`;
+                                        }
+                                        break;
+                                    case 'monster_set':
+                                        if (typeof reward.value === 'object') {
+                                            // Basic monster fields
+                                            rewardItem.querySelector('.reward-monster-name').value = reward.value.name || 'Achievement Monster';
+                                            rewardItem.querySelector('.reward-monster-level').value = reward.value.level || 1;
+
+                                            // Species fields (for set monsters)
+                                            if (rewardItem.querySelector('.reward-monster-species1')) {
+                                                rewardItem.querySelector('.reward-monster-species1').value =
+                                                    Array.isArray(reward.value.species) && reward.value.species[0] ?
+                                                    reward.value.species[0] : (reward.value.species1 || 'Pokemon');
+                                            }
+                                            if (rewardItem.querySelector('.reward-monster-species2')) {
+                                                rewardItem.querySelector('.reward-monster-species2').value =
+                                                    Array.isArray(reward.value.species) && reward.value.species[1] ?
+                                                    reward.value.species[1] : (reward.value.species2 || '');
+                                            }
+                                            if (rewardItem.querySelector('.reward-monster-species3')) {
+                                                rewardItem.querySelector('.reward-monster-species3').value =
+                                                    Array.isArray(reward.value.species) && reward.value.species[2] ?
+                                                    reward.value.species[2] : (reward.value.species3 || '');
+                                            }
+
+                                            // Update preview
+                                            rewardItem.querySelector('.reward-text-preview').textContent =
+                                                `${reward.value.name || 'Achievement Monster'} (Level ${reward.value.level || 1})`;
+                                        }
+                                        break;
+                                    case 'monster_random':
+                                        if (typeof reward.value === 'object') {
+                                            // Basic monster fields
+                                            rewardItem.querySelector('.reward-monster-name').value = reward.value.name || 'Achievement Monster';
+                                            rewardItem.querySelector('.reward-monster-level').value = reward.value.level || 1;
+
+                                            // Random monster options
+                                            if (rewardItem.querySelector('.reward-monster-min-species')) {
+                                                rewardItem.querySelector('.reward-monster-min-species').value = reward.value.minSpecies || 1;
+                                            }
+                                            if (rewardItem.querySelector('.reward-monster-max-species')) {
+                                                rewardItem.querySelector('.reward-monster-max-species').value = reward.value.maxSpecies || 3;
+                                            }
+                                            if (rewardItem.querySelector('.reward-monster-min-type')) {
+                                                rewardItem.querySelector('.reward-monster-min-type').value = reward.value.minType || 1;
+                                            }
+                                            if (rewardItem.querySelector('.reward-monster-max-type')) {
+                                                rewardItem.querySelector('.reward-monster-max-type').value = reward.value.maxType || 3;
+                                            }
+
+                                            // Update preview
+                                            rewardItem.querySelector('.reward-text-preview').textContent =
+                                                `${reward.value.name || 'Achievement Monster'} (Level ${reward.value.level || 1})`;
+                                        }
+                                        break;
+                                }
+                            });
+                        } else {
+                            // Show no rewards message
+                            noRewardsMessage.classList.remove('hidden');
+                        }
+
+                        // Update modal title and status
+                        modalTitle.textContent = 'Edit Achievement';
+                        formStatus.textContent = 'Achievement loaded successfully';
+                        formStatus.classList.add('text-green-500');
+                        formStatus.classList.remove('text-blue-500', 'text-red-500');
+
+                        // Show modal
+                        modal.classList.remove('hidden');
+                    } else {
+                        alert(data.message || 'Failed to load achievement');
+                        formStatus.textContent = data.message || 'Failed to load achievement';
+                        formStatus.classList.add('text-red-500');
+                        formStatus.classList.remove('text-blue-500', 'text-green-500');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading achievement:', error);
+                    alert('Error loading achievement');
+                    formStatus.textContent = 'Error loading achievement';
+                    formStatus.classList.add('text-red-500');
+                    formStatus.classList.remove('text-blue-500', 'text-green-500');
+                });
+        };
+
+        window.deleteAchievement = function(id) {
+            if (confirm('Are you sure you want to delete this achievement? This action cannot be undone.')) {
+                fetch(`/api/admin/achievements/${id}`, {
+                    method: 'DELETE'
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        loadAchievements();
+                        alert('Achievement deleted successfully');
+                    } else {
+                        alert(data.message || 'Failed to delete achievement');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error deleting achievement:', error);
+                    alert('Error deleting achievement');
+                });
+            }
+        };
+    });
+</script>
+

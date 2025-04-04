@@ -1,0 +1,441 @@
+<%- include('./battle-styles') %>
+
+<div class="container mx-auto px-4 py-8">
+  <div class="flex items-center mb-8">
+    <a href="/admin/dashboard" class="text-blue-400 hover:text-blue-300 mr-4">
+      <i class="fas fa-arrow-left"></i> Back to Dashboard
+    </a>
+    <h1 class="text-3xl font-bold text-yellow-400">Battle System Testing</h1>
+  </div>
+
+  <% if (typeof message !== 'undefined' && message) { %>
+    <div class="bg-<%= messageType === 'error' ? 'red' : 'green' %>-800 text-white p-4 rounded-lg mb-6">
+      <%= message %>
+      <% if (messageType === 'error' && message.includes('migration')) { %>
+        <div class="mt-4">
+          <a href="/admin/battles/run-migration" class="bg-yellow-500 hover:bg-yellow-600 text-black font-bold py-2 px-4 rounded">
+            Run Battle System Migration
+          </a>
+        </div>
+      <% } %>
+    </div>
+  <% } %>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+    <!-- Trainer Selection -->
+    <div class="bg-gray-800 rounded-lg p-6 shadow-lg">
+      <h2 class="text-2xl font-bold text-yellow-400 mb-4">Select Trainer</h2>
+
+      <% if (trainers && trainers.length > 0) { %>
+        <div class="mb-4">
+          <label for="trainer-select" class="block text-gray-300 mb-2">Trainer</label>
+          <select id="trainer-select" class="w-full bg-gray-700 text-white border border-gray-600 rounded-lg p-3 focus:outline-none focus:border-yellow-500">
+            <option value="">-- Select Trainer --</option>
+            <% trainers.forEach(trainer => { %>
+              <option value="<%= trainer.id %>"><%= trainer.name %> (Level <%= trainer.level || 1 %>)</option>
+            <% }); %>
+          </select>
+        </div>
+
+        <div id="trainer-details" class="hidden">
+          <div class="flex items-center mb-4">
+            <img id="trainer-image" src="" alt="Trainer" class="w-8 h-8 rounded-full object-cover mr-2">
+            <div>
+              <h3 id="trainer-name" class="text-md font-semibold text-white"></h3>
+              <p id="trainer-level" class="text-gray-400 text-xs"></p>
+            </div>
+          </div>
+
+          <div class="mt-4">
+            <h4 class="text-lg font-semibold text-white mb-2">Battle Box</h4>
+            <div id="battle-box-monsters" class="grid grid-cols-3 gap-2"></div>
+
+            <div id="no-battle-box" class="hidden text-center py-4">
+              <p class="text-gray-400 mb-2">No monsters in battle box</p>
+              <a id="manage-battle-box-link" href="#" class="text-blue-400 hover:text-blue-300">
+                Manage Battle Box
+              </a>
+            </div>
+          </div>
+        </div>
+      <% } else { %>
+        <div class="text-center py-8">
+          <p class="text-gray-400 mb-4">No trainers found.</p>
+          <a href="/trainers/new" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+            Create a Trainer
+          </a>
+        </div>
+      <% } %>
+    </div>
+
+    <!-- Opponent Selection -->
+    <div class="bg-gray-800 rounded-lg p-6 shadow-lg">
+      <h2 class="text-2xl font-bold text-yellow-400 mb-4">Select Opponent</h2>
+
+      <% if (opponents && opponents.length > 0) { %>
+        <div class="mb-4">
+          <label for="opponent-select" class="block text-gray-300 mb-2">Opponent</label>
+          <select id="opponent-select" class="w-full bg-gray-700 text-white border border-gray-600 rounded-lg p-3 focus:outline-none focus:border-yellow-500">
+            <option value="">-- Select Opponent --</option>
+            <% opponents.forEach(opponent => { %>
+              <option value="<%= opponent.opponent_id %>"><%= opponent.name %> (<%= opponent.difficulty.toUpperCase() %>, Level <%= opponent.level %>)</option>
+            <% }); %>
+          </select>
+        </div>
+
+        <div id="opponent-details" class="hidden">
+          <div class="flex items-center mb-4">
+            <img id="opponent-image" src="" alt="Opponent" class="w-8 h-8 rounded-full object-cover mr-2">
+            <div>
+              <h3 id="opponent-name" class="text-md font-semibold text-white"></h3>
+              <p id="opponent-level" class="text-gray-400 text-xs"></p>
+              <span id="opponent-difficulty" class="px-2 py-1 rounded text-xs font-bold"></span>
+            </div>
+          </div>
+
+          <div class="mt-4">
+            <h4 class="text-lg font-semibold text-white mb-2">Team</h4>
+            <div id="opponent-monsters" class="grid grid-cols-3 gap-2"></div>
+
+            <div id="no-opponent-monsters" class="hidden text-center py-4">
+              <p class="text-gray-400 mb-2">No monsters in team</p>
+              <a id="add-opponent-monster-link" href="#" class="text-blue-400 hover:text-blue-300">
+                Add Monster
+              </a>
+            </div>
+          </div>
+        </div>
+      <% } else { %>
+        <div class="text-center py-8">
+          <p class="text-gray-400 mb-4">No opponents found.</p>
+          <a href="/admin/battles/opponents/new" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+            Create an Opponent
+          </a>
+        </div>
+      <% } %>
+    </div>
+  </div>
+
+  <!-- Start Battle Button -->
+  <div class="text-center mb-8">
+    <button id="start-battle-btn" class="bg-yellow-500 hover:bg-yellow-600 text-black font-bold py-3 px-8 rounded-lg opacity-50 cursor-not-allowed" disabled>
+      Start Battle
+    </button>
+  </div>
+
+  <!-- Recent Battles -->
+  <div class="bg-gray-800 rounded-lg p-6 shadow-lg">
+    <h2 class="text-2xl font-bold text-yellow-400 mb-4">Recent Battles</h2>
+
+    <% if (recentBattles && recentBattles.length > 0) { %>
+      <div class="overflow-x-auto">
+        <table class="min-w-full bg-gray-700 rounded-lg">
+          <thead>
+            <tr>
+              <th class="px-4 py-2 text-left text-gray-300">Date</th>
+              <th class="px-4 py-2 text-left text-gray-300">Trainer</th>
+              <th class="px-4 py-2 text-left text-gray-300">Opponent</th>
+              <th class="px-4 py-2 text-left text-gray-300">Result</th>
+              <th class="px-4 py-2 text-left text-gray-300">WPM</th>
+              <th class="px-4 py-2 text-left text-gray-300">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% recentBattles.forEach(battle => { %>
+              <tr class="border-t border-gray-600">
+                <td class="px-4 py-2 text-gray-300">
+                  <%= new Date(battle.started_at).toLocaleDateString() %>
+                  <div class="text-xs text-gray-500">
+                    <%= new Date(battle.started_at).toLocaleTimeString() %>
+                  </div>
+                </td>
+                <td class="px-4 py-2 text-white"><%= battle.trainer_name %></td>
+                <td class="px-4 py-2 text-white"><%= battle.opponent_name %></td>
+                <td class="px-4 py-2">
+                  <% if (battle.status === 'won') { %>
+                    <span class="text-green-400">Victory</span>
+                  <% } else if (battle.status === 'lost') { %>
+                    <span class="text-red-400">Defeat</span>
+                  <% } else if (battle.status === 'abandoned') { %>
+                    <span class="text-gray-400">Abandoned</span>
+                  <% } else { %>
+                    <span class="text-yellow-400">In Progress</span>
+                  <% } %>
+                </td>
+                <td class="px-4 py-2 text-gray-300"><%= battle.wpm || '-' %></td>
+                <td class="px-4 py-2">
+                  <% if (battle.status === 'in_progress') { %>
+                    <a href="/battles/arena/<%= battle.battle_id %>" class="text-blue-400 hover:text-blue-300">
+                      Continue
+                    </a>
+                  <% } else { %>
+                    <a href="/battles/results/<%= battle.battle_id %>" class="text-blue-400 hover:text-blue-300">
+                      View Results
+                    </a>
+                  <% } %>
+                </td>
+              </tr>
+            <% }); %>
+          </tbody>
+        </table>
+      </div>
+    <% } else { %>
+      <div class="text-center py-8">
+        <p class="text-gray-400">No recent battles found.</p>
+      </div>
+    <% } %>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const trainerSelect = document.getElementById('trainer-select');
+    const opponentSelect = document.getElementById('opponent-select');
+    const startBattleBtn = document.getElementById('start-battle-btn');
+
+    // Trainer details elements
+    const trainerDetails = document.getElementById('trainer-details');
+    const trainerImage = document.getElementById('trainer-image');
+    const trainerName = document.getElementById('trainer-name');
+    const trainerLevel = document.getElementById('trainer-level');
+    const battleBoxMonsters = document.getElementById('battle-box-monsters');
+    const noBattleBox = document.getElementById('no-battle-box');
+    const manageBattleBoxLink = document.getElementById('manage-battle-box-link');
+
+    // Opponent details elements
+    const opponentDetails = document.getElementById('opponent-details');
+    const opponentImage = document.getElementById('opponent-image');
+    const opponentName = document.getElementById('opponent-name');
+    const opponentLevel = document.getElementById('opponent-level');
+    const opponentDifficulty = document.getElementById('opponent-difficulty');
+    const opponentMonsters = document.getElementById('opponent-monsters');
+    const noOpponentMonsters = document.getElementById('no-opponent-monsters');
+    const addOpponentMonsterLink = document.getElementById('add-opponent-monster-link');
+
+    // Event listeners
+    trainerSelect.addEventListener('change', handleTrainerChange);
+    opponentSelect.addEventListener('change', handleOpponentChange);
+    startBattleBtn.addEventListener('click', startBattle);
+
+    // Check if both trainer and opponent are selected
+    function checkSelections() {
+      if (trainerSelect.value && opponentSelect.value) {
+        startBattleBtn.disabled = false;
+        startBattleBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+      } else {
+        startBattleBtn.disabled = true;
+        startBattleBtn.classList.add('opacity-50', 'cursor-not-allowed');
+      }
+    }
+
+    // Handle trainer selection change
+    async function handleTrainerChange() {
+      const trainerId = trainerSelect.value;
+
+      if (!trainerId) {
+        trainerDetails.classList.add('hidden');
+        return;
+      }
+
+      try {
+        // Fetch trainer details
+        const response = await fetch(`/api/trainers/${trainerId}`);
+        const data = await response.json();
+
+        if (!data.success) {
+          throw new Error(data.message || 'Failed to fetch trainer details');
+        }
+
+        const trainer = data.trainer;
+        console.log('Trainer data:', trainer);
+
+        // Update trainer details
+        trainerImage.src = trainer.main_ref || '/images/default_trainer.png';
+        trainerName.textContent = trainer.name;
+        trainerLevel.textContent = `Level ${trainer.level || 1}`;
+
+        // Fetch battle box monsters
+        let monsters = [];
+        try {
+          const battleBoxResponse = await fetch(`/api/trainers/${trainerId}/battle-box`);
+          const battleBoxData = await battleBoxResponse.json();
+
+          if (!battleBoxData.success) {
+            console.warn('Battle box API returned error:', battleBoxData.message);
+            // Continue with empty monsters array
+          } else {
+            monsters = battleBoxData.monsters || [];
+            console.log('Battle box monsters:', monsters);
+          }
+        } catch (error) {
+          console.warn('Error fetching battle box:', error.message);
+          // Continue with empty monsters array
+        }
+
+        // Update battle box monsters
+        battleBoxMonsters.innerHTML = '';
+
+        if (monsters.length > 0) {
+          monsters.forEach(monster => {
+            const monsterElement = document.createElement('div');
+            monsterElement.className = 'p-2 rounded-lg text-center bg-gray-700';
+
+            monsterElement.innerHTML = `
+              <img src="${monster.img_link || '/images/default_mon.png'}" alt="${monster.name}" class="w-6 h-6 object-contain mx-auto mb-1">
+              <p class="text-white text-xs truncate">${monster.name}</p>
+              <p class="text-gray-400 text-xs">Lv. ${monster.level || 1}</p>
+            `;
+
+            battleBoxMonsters.appendChild(monsterElement);
+          });
+
+          battleBoxMonsters.classList.remove('hidden');
+          noBattleBox.classList.add('hidden');
+        } else {
+          battleBoxMonsters.classList.add('hidden');
+          noBattleBox.classList.remove('hidden');
+          manageBattleBoxLink.href = `/trainers/${trainerId}/boxes`;
+        }
+
+        // Show trainer details
+        trainerDetails.classList.remove('hidden');
+
+        // Check if both selections are made
+        checkSelections();
+      } catch (error) {
+        console.error('Error fetching trainer details:', error);
+        alert('Error fetching trainer details: ' + error.message);
+      }
+    }
+
+    // Handle opponent selection change
+    async function handleOpponentChange() {
+      const opponentId = opponentSelect.value;
+
+      if (!opponentId) {
+        opponentDetails.classList.add('hidden');
+        return;
+      }
+
+      try {
+        // Fetch opponent details
+        const response = await fetch(`/api/battles/opponents/${opponentId}`);
+        const data = await response.json();
+
+        if (!data.success) {
+          throw new Error(data.message || 'Failed to fetch opponent details');
+        }
+
+        const opponent = data.opponent;
+        console.log('Opponent data:', opponent);
+
+        const monsters = data.monsters || [];
+        console.log('Opponent monsters:', monsters);
+
+        // Update opponent details
+        opponentImage.src = opponent.image_url || '/images/default_opponent.png';
+        opponentName.textContent = opponent.name;
+        opponentLevel.textContent = `Level ${opponent.level}`;
+
+        // Set difficulty badge
+        opponentDifficulty.textContent = opponent.difficulty.toUpperCase();
+        opponentDifficulty.className = 'px-2 py-1 rounded text-xs font-bold';
+
+        if (opponent.difficulty === 'easy') {
+          opponentDifficulty.classList.add('bg-green-600', 'text-white');
+        } else if (opponent.difficulty === 'normal') {
+          opponentDifficulty.classList.add('bg-blue-600', 'text-white');
+        } else if (opponent.difficulty === 'hard') {
+          opponentDifficulty.classList.add('bg-orange-600', 'text-white');
+        } else if (opponent.difficulty === 'elite') {
+          opponentDifficulty.classList.add('bg-red-600', 'text-white');
+        }
+
+        // Update opponent monsters
+        opponentMonsters.innerHTML = '';
+
+        if (monsters.length > 0) {
+          monsters.forEach(monster => {
+            const monsterElement = document.createElement('div');
+            monsterElement.className = 'p-2 rounded-lg text-center bg-gray-700';
+
+            monsterElement.innerHTML = `
+              <img src="${monster.image_url || '/images/default_mon.png'}" alt="${monster.name}" class="w-6 h-6 object-contain mx-auto mb-1">
+              <p class="text-white text-xs truncate">${monster.name}</p>
+              <p class="text-gray-400 text-xs">Lv. ${monster.level || 1}</p>
+            `;
+
+            opponentMonsters.appendChild(monsterElement);
+          });
+
+          opponentMonsters.classList.remove('hidden');
+          noOpponentMonsters.classList.add('hidden');
+        } else {
+          opponentMonsters.classList.add('hidden');
+          noOpponentMonsters.classList.remove('hidden');
+          addOpponentMonsterLink.href = `/admin/battles/opponents/${opponentId}/add-monster`;
+        }
+
+        // Show opponent details
+        opponentDetails.classList.remove('hidden');
+
+        // Check if both selections are made
+        checkSelections();
+      } catch (error) {
+        console.error('Error fetching opponent details:', error);
+        alert('Error fetching opponent details: ' + error.message);
+      }
+    }
+
+    // Start battle
+    async function startBattle() {
+      const trainerId = trainerSelect.value;
+      const opponentId = opponentSelect.value;
+
+      if (!trainerId || !opponentId) {
+        alert('Please select both a trainer and an opponent');
+        return;
+      }
+
+      try {
+        // Disable button
+        startBattleBtn.disabled = true;
+        startBattleBtn.classList.add('opacity-50', 'cursor-not-allowed');
+        startBattleBtn.textContent = 'Starting battle...';
+
+        console.log('Starting battle with trainerId:', trainerId, 'opponentId:', opponentId);
+
+        // Make API request to start battle
+        const response = await fetch('/api/battles/start', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            trainerId,
+            opponentId
+          })
+        });
+
+        console.log('Battle start response status:', response.status);
+        const data = await response.json();
+        console.log('Battle start response data:', data);
+
+        if (!data.success) {
+          throw new Error(data.message || 'Failed to start battle');
+        }
+
+        // Redirect to battle arena
+        window.location.href = `/battles/arena/${data.battle.battle_id}`;
+      } catch (error) {
+        console.error('Error starting battle:', error);
+        alert('Error starting battle: ' + error.message);
+
+        // Re-enable button
+        startBattleBtn.disabled = false;
+        startBattleBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+        startBattleBtn.textContent = 'Start Battle';
+      }
+    }
+  });
+</script>

@@ -1,0 +1,129 @@
+<%- include('./battle-styles') %>
+
+<div class="container mx-auto px-4 py-8">
+  <div class="flex items-center mb-8">
+    <a href="/admin/battles/opponents" class="text-blue-400 hover:text-blue-300 mr-4">
+      <i class="fas fa-arrow-left"></i> Back to Opponents
+    </a>
+    <h1 class="text-3xl font-bold text-yellow-400">
+      <%= isNew ? 'Create New Opponent' : `Edit Opponent: ${opponent.name}` %>
+    </h1>
+  </div>
+
+  <% if (typeof message !== 'undefined' && message) { %>
+    <div class="bg-<%= messageType === 'error' ? 'red' : 'green' %>-800 text-white p-4 rounded-lg mb-6">
+      <%= message %>
+      <% if (messageType === 'error' && message.includes('migration')) { %>
+        <div class="mt-4">
+          <a href="/admin/battles/run-migration" class="bg-yellow-500 hover:bg-yellow-600 text-black font-bold py-2 px-4 rounded">
+            Run Battle System Migration
+          </a>
+        </div>
+      <% } %>
+    </div>
+  <% } %>
+
+  <div class="bg-gray-800 rounded-lg p-6 shadow-lg">
+    <form action="<%= isNew ? '/admin/battles/opponents/new' : `/admin/battles/opponents/${opponent.opponent_id}/edit` %>" method="POST">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+        <div>
+          <label for="name" class="block text-gray-300 mb-2">Name *</label>
+          <input
+            type="text"
+            id="name"
+            name="name"
+            value="<%= opponent.name || '' %>"
+            class="w-full bg-gray-700 text-white border border-gray-600 rounded-lg p-3 focus:outline-none focus:border-yellow-500"
+            required
+          >
+        </div>
+
+        <div>
+          <label for="difficulty" class="block text-gray-300 mb-2">Difficulty *</label>
+          <select
+            id="difficulty"
+            name="difficulty"
+            class="w-full bg-gray-700 text-white border border-gray-600 rounded-lg p-3 focus:outline-none focus:border-yellow-500"
+            required
+          >
+            <option value="easy" <%= opponent.difficulty === 'easy' ? 'selected' : '' %>>Easy</option>
+            <option value="normal" <%= opponent.difficulty === 'normal' ? 'selected' : '' %>>Normal</option>
+            <option value="hard" <%= opponent.difficulty === 'hard' ? 'selected' : '' %>>Hard</option>
+            <option value="elite" <%= opponent.difficulty === 'elite' ? 'selected' : '' %>>Elite</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="level" class="block text-gray-300 mb-2">Level *</label>
+          <input
+            type="number"
+            id="level"
+            name="level"
+            value="<%= opponent.level || 10 %>"
+            min="1"
+            max="100"
+            class="w-full bg-gray-700 text-white border border-gray-600 rounded-lg p-3 focus:outline-none focus:border-yellow-500"
+            required
+          >
+        </div>
+
+        <div>
+          <label for="type" class="block text-gray-300 mb-2">Type</label>
+          <input
+            type="text"
+            id="type"
+            name="type"
+            value="<%= opponent.type || '' %>"
+            class="w-full bg-gray-700 text-white border border-gray-600 rounded-lg p-3 focus:outline-none focus:border-yellow-500"
+            placeholder="e.g., Trainer, Gym Leader, Elite Four"
+          >
+        </div>
+
+        <div>
+          <label for="image_url" class="block text-gray-300 mb-2">Image URL</label>
+          <input
+            type="text"
+            id="image_url"
+            name="image_url"
+            value="<%= opponent.image_url || '' %>"
+            class="w-full bg-gray-700 text-white border border-gray-600 rounded-lg p-3 focus:outline-none focus:border-yellow-500"
+            placeholder="https://example.com/image.png"
+          >
+        </div>
+
+        <div>
+          <label for="is_active" class="flex items-center text-gray-300">
+            <input
+              type="checkbox"
+              id="is_active"
+              name="is_active"
+              <%= opponent.is_active !== false ? 'checked' : '' %>
+              class="mr-2"
+            >
+            Active
+          </label>
+        </div>
+      </div>
+
+      <div class="mb-6">
+        <label for="description" class="block text-gray-300 mb-2">Description</label>
+        <textarea
+          id="description"
+          name="description"
+          rows="4"
+          class="w-full bg-gray-700 text-white border border-gray-600 rounded-lg p-3 focus:outline-none focus:border-yellow-500"
+          placeholder="Enter a description for this opponent"
+        ><%= opponent.description || '' %></textarea>
+      </div>
+
+      <div class="flex justify-between">
+        <a href="/admin/battles/opponents" class="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
+          Cancel
+        </a>
+        <button type="submit" class="bg-yellow-500 hover:bg-yellow-600 text-black font-bold py-2 px-4 rounded">
+          <%= isNew ? 'Create Opponent' : 'Update Opponent' %>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

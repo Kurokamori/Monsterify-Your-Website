@@ -1,0 +1,88 @@
+<div class="container mx-auto px-4 py-8">
+  <div class="text-center mb-8">
+    <h1 class="text-4xl font-bold text-yellow-400 mb-4">Battle Arena</h1>
+    <p class="text-gray-300 text-lg">Test your typing skills in monster battles!</p>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+    <!-- Trainer Selection -->
+    <div class="bg-gray-800 rounded-lg p-6 shadow-lg">
+      <h2 class="text-2xl font-bold text-yellow-400 mb-4">Select Your Trainer</h2>
+
+      <% if (trainers && trainers.length > 0) { %>
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+          <% trainers.forEach(trainer => { %>
+            <div class="trainer-card bg-gray-700 hover:bg-gray-600 rounded-lg p-4 transition-all duration-200 transform hover:scale-105 hover:shadow-lg cursor-pointer" data-trainer-id="<%= trainer.id %>">
+              <div class="flex flex-col items-center text-center">
+                <div class="w-16 h-16 rounded-full overflow-hidden mb-3 border-2 border-yellow-500">
+                  <img src="<%= trainer.main_ref || '/images/default_trainer.png' %>" alt="<%= trainer.name %>" class="w-full h-full object-cover">
+                </div>
+                <div>
+                  <h3 class="text-lg font-semibold text-white"><%= trainer.name %></h3>
+                  <p class="text-gray-400 text-sm">Level <%= trainer.level || 1 %></p>
+                </div>
+              </div>
+            </div>
+          <% }); %>
+        </div>
+      <% } else { %>
+        <div class="text-center py-8">
+          <p class="text-gray-400 mb-4">You don't have any trainers yet.</p>
+          <a href="/trainers/new" class="bg-yellow-500 hover:bg-yellow-600 text-black font-bold py-2 px-4 rounded">
+            Create a Trainer
+          </a>
+        </div>
+      <% } %>
+    </div>
+
+    <!-- Battle Info -->
+    <div class="bg-gray-800 rounded-lg p-6 shadow-lg">
+      <h2 class="text-2xl font-bold text-yellow-400 mb-4">How Battles Work</h2>
+
+      <div class="text-gray-300 space-y-4">
+        <p>
+          <span class="text-yellow-400 font-bold">1.</span> Select a trainer with monsters in their battle box.
+        </p>
+        <p>
+          <span class="text-yellow-400 font-bold">2.</span> Choose up to 6 monsters to battle with.
+        </p>
+        <p>
+          <span class="text-yellow-400 font-bold">3.</span> Type the displayed text as quickly and accurately as possible to attack.
+        </p>
+        <p>
+          <span class="text-yellow-400 font-bold">4.</span> If you stop typing for more than 5 seconds, the opponent will attack!
+        </p>
+        <p>
+          <span class="text-yellow-400 font-bold">5.</span> Defeat all opponent monsters to win and earn rewards.
+        </p>
+      </div>
+
+      <div class="mt-6 p-4 bg-gray-700 rounded-lg">
+        <h3 class="text-xl font-bold text-yellow-400 mb-2">Battle Box</h3>
+        <p class="text-gray-300">
+          To battle, you need monsters in your battle box. Visit your trainer's page and add monsters to the battle box.
+        </p>
+        <div class="mt-4">
+          <a href="/trainers" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+            Manage Trainers
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Add click event listeners to trainer cards
+    const trainerCards = document.querySelectorAll('.trainer-card');
+    trainerCards.forEach(card => {
+      card.addEventListener('click', function() {
+        const trainerId = this.dataset.trainerId;
+        if (trainerId) {
+          window.location.href = `/battles/trainer/${trainerId}`;
+        }
+      });
+    });
+  });
+</script>
+</div>

@@ -1,0 +1,669 @@
+<div class="container mx-auto px-4 py-8">
+  <div class="flex items-center justify-between mb-8">
+    <h1 class="text-3xl font-bold text-yellow-400">Battle Arena</h1>
+    <button id="abandon-battle" class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
+      Abandon Battle
+    </button>
+  </div>
+
+  <div class="bg-gray-800 rounded-lg p-6 shadow-lg mb-8">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <!-- Player Side (Left) -->
+      <div class="flex flex-col items-center">
+        <h2 class="text-2xl font-bold text-blue-400 mb-4"><%= trainer.name %></h2>
+        <div id="player-monster-container" class="relative w-full">
+          <img id="player-monster-image" src="" alt="Player Monster" class="w-48 h-48 object-contain mx-auto mb-4">
+          <h3 id="player-monster-name" class="text-xl font-bold text-white text-center mb-2"></h3>
+
+          <!-- Health Bar -->
+          <div class="w-full bg-gray-700 rounded-full h-6 mb-1 overflow-hidden">
+            <div id="player-health-bar" class="bg-green-500 h-6 rounded-full transition-all duration-500" style="width: 100%">
+              <div class="flex justify-between items-center h-full px-3">
+                <span id="player-health-text" class="text-white text-xs font-bold"></span>
+                <span id="player-max-health-text" class="text-white text-xs font-bold"></span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Types -->
+          <div id="player-types" class="flex flex-wrap justify-center mb-2"></div>
+
+          <!-- Attribute -->
+          <div id="player-attribute" class="text-center mb-4"></div>
+        </div>
+      </div>
+
+      <!-- Opponent Side (Right) -->
+      <div class="flex flex-col items-center">
+        <h2 class="text-2xl font-bold text-red-400 mb-4"><%= opponent.name %></h2>
+        <div id="opponent-monster-container" class="relative w-full">
+          <img id="opponent-monster-image" src="" alt="Opponent Monster" class="w-48 h-48 object-contain mx-auto mb-4">
+          <h3 id="opponent-monster-name" class="text-xl font-bold text-white text-center mb-2"></h3>
+
+          <!-- Health Bar -->
+          <div class="w-full bg-gray-700 rounded-full h-6 mb-1 overflow-hidden">
+            <div id="opponent-health-bar" class="bg-red-500 h-6 rounded-full transition-all duration-500" style="width: 100%">
+              <div class="flex justify-between items-center h-full px-3">
+                <span id="opponent-health-text" class="text-white text-xs font-bold"></span>
+                <span id="opponent-max-health-text" class="text-white text-xs font-bold"></span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Types -->
+          <div id="opponent-types" class="flex flex-wrap justify-center mb-2"></div>
+
+          <!-- Attribute -->
+          <div id="opponent-attribute" class="text-center mb-4"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Battle Messages -->
+  <div id="battle-messages" class="bg-gray-700 rounded-lg p-4 mb-8 h-32 overflow-y-auto">
+    <p class="text-yellow-400">Battle started! Type your story to attack! Type at least 20 characters to launch an attack.</p>
+  </div>
+
+  <!-- Typing Area -->
+  <div class="bg-gray-800 rounded-lg p-6 shadow-lg mb-8">
+    <div class="mb-4">
+      <!-- Prompt suggestions removed as requested -->
+      <textarea
+        id="typing-input"
+        class="w-full bg-gray-700 text-white border border-gray-600 rounded-lg p-4 focus:outline-none focus:border-yellow-500"
+        placeholder="Type your story here... (20+ characters to attack)"
+        rows="3"
+        autocomplete="off"
+      ></textarea>
+      <div class="text-right text-gray-400 text-sm mt-1">
+        <span id="character-count">0</span>/20 characters
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
+      <div class="bg-gray-700 p-3 rounded-lg">
+        <p class="text-gray-400 text-sm">Words Per Minute</p>
+        <p id="wpm-counter" class="text-white text-xl font-bold">0</p>
+      </div>
+      <div class="bg-gray-700 p-3 rounded-lg">
+        <p class="text-gray-400 text-sm">Accuracy</p>
+        <p id="accuracy-counter" class="text-white text-xl font-bold">0%</p>
+      </div>
+      <div class="bg-gray-700 p-3 rounded-lg">
+        <p class="text-gray-400 text-sm">Time</p>
+        <p id="time-counter" class="text-white text-xl font-bold">0:00</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Team Overview -->
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+    <!-- Player Team (Left) -->
+    <div class="bg-gray-800 rounded-lg p-6 shadow-lg">
+      <h2 class="text-xl font-bold text-blue-400 mb-4">Your Team</h2>
+      <div id="player-team" class="grid grid-cols-3 gap-2"></div>
+    </div>
+
+    <!-- Opponent Team (Right) -->
+    <div class="bg-gray-800 rounded-lg p-6 shadow-lg">
+      <h2 class="text-xl font-bold text-red-400 mb-4">Opponent Team</h2>
+      <div id="opponent-team" class="grid grid-cols-3 gap-2"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Monster Selection Modal -->
+<div id="monster-selection-modal" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50" style="display: none;">
+  <div class="bg-gray-800 rounded-lg p-6 max-w-4xl w-full max-h-screen overflow-y-auto">
+    <h2 class="text-2xl font-bold text-yellow-400 mb-4">Select Your Battle Team (Choose up to 6)</h2>
+
+    <div class="mb-4 text-gray-300">Select up to 6 monsters to use in this battle.</div>
+
+    <div id="monster-selection-grid" class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+      <!-- Monsters will be populated here -->
+    </div>
+
+    <div class="flex justify-between">
+      <div>
+        <span class="text-gray-300">Selected: </span>
+        <span id="selected-count" class="text-yellow-400 font-bold">0</span>
+        <span class="text-gray-300">/6</span>
+      </div>
+      <button id="start-battle-btn" class="bg-yellow-500 hover:bg-yellow-600 text-black font-bold py-2 px-6 rounded disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+        Start Battle
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Battle data
+  const battleId = <%= battle.battle_id %>;
+  let allTrainerMonsters = <%- JSON.stringify(trainerMonsters) %>;
+  let selectedTrainerMonsters = [];
+  let trainerMonsters = [];
+  let opponentMonsters = <%- JSON.stringify(opponentMonsters) %>;
+
+  // Battle state
+  let battleState = {
+    battle: <%- JSON.stringify(battle) %>,
+    trainerMonsters: trainerMonsters,
+    opponentMonsters: opponentMonsters,
+    activeTrainerMonsterIndex: 0,
+    activeOpponentMonsterIndex: 0,
+    trainerMonsterHealth: trainerMonsters.map(monster => monster.hp_total),
+    opponentMonsterHealth: opponentMonsters.map(monster => monster.hp_total),
+    isOver: false
+  };
+
+  // Typing game state
+  let typingState = {
+    currentPrompt: '',
+    startTime: null,
+    totalCharacters: 0,
+    correctCharacters: 0,
+    wpm: 0,
+    accuracy: 0,
+    isTyping: false,
+    lastTypingTime: Date.now(),
+    defendingTimeout: null,
+    lastAttackCharCount: 0 // Track the character count at the last attack
+  };
+
+  // No typing prompts needed
+
+  // DOM elements
+  const typingInputElement = document.getElementById('typing-input');
+  const wpmCounterElement = document.getElementById('wpm-counter');
+  const accuracyCounterElement = document.getElementById('accuracy-counter');
+  const timeCounterElement = document.getElementById('time-counter');
+  const battleMessagesElement = document.getElementById('battle-messages');
+  const characterCountElement = document.getElementById('character-count');
+  const abandonBattleButton = document.getElementById('abandon-battle');
+
+  // Initialize battle
+  document.addEventListener('DOMContentLoaded', function() {
+    // Show monster selection modal first
+    showMonsterSelectionModal();
+
+    // Set up event listeners
+    typingInputElement.addEventListener('input', handleTypingInput);
+    abandonBattleButton.addEventListener('click', confirmAbandonBattle);
+    document.getElementById('start-battle-btn').addEventListener('click', startBattleWithSelectedMonsters);
+  });
+
+  function showMonsterSelectionModal() {
+    const modal = document.getElementById('monster-selection-modal');
+    const grid = document.getElementById('monster-selection-grid');
+    const selectedCountElement = document.getElementById('selected-count');
+    const startBattleBtn = document.getElementById('start-battle-btn');
+
+    // Clear grid
+    grid.innerHTML = '';
+
+    // Populate grid with all trainer monsters
+    allTrainerMonsters.forEach(monster => {
+      const monsterCard = document.createElement('div');
+      monsterCard.className = 'bg-gray-700 rounded-lg p-3 cursor-pointer hover:bg-gray-600 transition-colors';
+      monsterCard.dataset.monsterId = monster.id;
+
+      // Create monster card content
+      monsterCard.innerHTML = `
+        <div class="flex flex-col items-center">
+          <img src="${monster.img_link || '/images/default_mon.png'}" alt="${monster.name}" class="w-16 h-16 object-contain mb-2">
+          <h3 class="text-white font-semibold text-center">${monster.name}</h3>
+          <p class="text-gray-400 text-sm">Lv. ${monster.level || 1}</p>
+          <div class="flex flex-wrap justify-center mt-1">
+            ${monster.type1 ? `<span class="text-xs px-2 py-1 rounded bg-gray-600 text-white m-1">${monster.type1}</span>` : ''}
+            ${monster.type2 ? `<span class="text-xs px-2 py-1 rounded bg-gray-600 text-white m-1">${monster.type2}</span>` : ''}
+            ${monster.type3 ? `<span class="text-xs px-2 py-1 rounded bg-gray-600 text-white m-1">${monster.type3}</span>` : ''}
+          </div>
+        </div>
+      `;
+
+      // Add click event to select/deselect monster
+      monsterCard.addEventListener('click', function() {
+        const monsterId = parseInt(this.dataset.monsterId);
+        const monster = allTrainerMonsters.find(m => m.id === monsterId);
+
+        if (!monster) return;
+
+        // Check if already selected
+        const index = selectedTrainerMonsters.findIndex(m => m.id === monsterId);
+
+        if (index === -1) {
+          // Add to selection if not already at 6
+          if (selectedTrainerMonsters.length >= 6) {
+            alert('You can only select up to 6 monsters for your battle team.');
+            return;
+          }
+
+          selectedTrainerMonsters.push(monster);
+          this.classList.add('border-2', 'border-yellow-500');
+        } else {
+          // Remove from selection
+          selectedTrainerMonsters.splice(index, 1);
+          this.classList.remove('border-2', 'border-yellow-500');
+        }
+
+        // Update selected count
+        selectedCountElement.textContent = selectedTrainerMonsters.length;
+
+        // Enable/disable start button
+        startBattleBtn.disabled = selectedTrainerMonsters.length === 0;
+      });
+
+      grid.appendChild(monsterCard);
+    });
+
+    // Show modal
+    modal.style.display = 'flex';
+  }
+
+  function startBattleWithSelectedMonsters() {
+    // Check if we have at least one monster selected
+    if (selectedTrainerMonsters.length === 0) {
+      alert('Please select at least one monster for your battle team.');
+      return;
+    }
+
+    // Set the selected monsters as the trainer monsters for the battle
+    trainerMonsters = [...selectedTrainerMonsters];
+
+    // Update battle state
+    battleState.trainerMonsters = trainerMonsters;
+    battleState.trainerMonsterHealth = trainerMonsters.map(monster => monster.hp_total);
+
+    // Hide modal
+    document.getElementById('monster-selection-modal').style.display = 'none';
+
+    // Initialize battle
+    initializeBattle();
+    initializeTypingGame();
+  }
+
+  function initializeBattle() {
+    // Render initial battle state
+    renderBattleState();
+
+    // Render team overviews
+    renderTeamOverviews();
+
+    // Add initial battle message
+    addBattleMessage(`Battle between ${trainerMonsters[0].name} and ${opponentMonsters[0].name} has begun!`);
+  }
+
+  function renderBattleState() {
+    // Check if monsters are defined
+    if (!trainerMonsters || !trainerMonsters.length || !opponentMonsters || !opponentMonsters.length) {
+      console.error('Monsters not properly initialized:', { trainerMonsters, opponentMonsters });
+      return;
+    }
+
+    // Make sure indices are valid
+    if (battleState.activeTrainerMonsterIndex >= trainerMonsters.length) {
+      battleState.activeTrainerMonsterIndex = 0;
+    }
+    if (battleState.activeOpponentMonsterIndex >= opponentMonsters.length) {
+      battleState.activeOpponentMonsterIndex = 0;
+    }
+
+    const activeTrainerMonster = trainerMonsters[battleState.activeTrainerMonsterIndex] || {};
+    const activeOpponentMonster = opponentMonsters[battleState.activeOpponentMonsterIndex] || {};
+
+    // Render player monster
+    document.getElementById('player-monster-image').src = activeTrainerMonster.img_link || '/images/default_mon.png';
+    document.getElementById('player-monster-name').textContent = activeTrainerMonster.name || 'Unknown Monster';
+
+    const playerCurrentHealth = battleState.trainerMonsterHealth[battleState.activeTrainerMonsterIndex];
+    const playerMaxHealth = activeTrainerMonster.hp_total;
+    const playerHealthPercent = (playerCurrentHealth / playerMaxHealth) * 100;
+
+    document.getElementById('player-health-bar').style.width = `${playerHealthPercent}%`;
+    document.getElementById('player-health-text').textContent = playerCurrentHealth;
+    document.getElementById('player-max-health-text').textContent = playerMaxHealth;
+
+    // Render player types
+    const playerTypesElement = document.getElementById('player-types');
+    playerTypesElement.innerHTML = '';
+
+    [activeTrainerMonster.type1, activeTrainerMonster.type2, activeTrainerMonster.type3,
+     activeTrainerMonster.type4, activeTrainerMonster.type5].filter(Boolean).forEach(type => {
+      const typeElement = document.createElement('span');
+      typeElement.className = 'text-xs px-2 py-1 rounded bg-gray-600 text-white m-1';
+      typeElement.textContent = type;
+      playerTypesElement.appendChild(typeElement);
+    });
+
+    // Render player attribute
+    const playerAttributeElement = document.getElementById('player-attribute');
+    if (activeTrainerMonster.attribute) {
+      playerAttributeElement.innerHTML = `<span class="text-xs px-2 py-1 rounded bg-purple-600 text-white">${activeTrainerMonster.attribute}</span>`;
+    } else {
+      playerAttributeElement.innerHTML = '';
+    }
+
+    // Render opponent monster
+    document.getElementById('opponent-monster-image').src = activeOpponentMonster.image_url || '/images/default_mon.png';
+    document.getElementById('opponent-monster-name').textContent = activeOpponentMonster.name || 'Unknown Opponent';
+
+    const opponentCurrentHealth = battleState.opponentMonsterHealth[battleState.activeOpponentMonsterIndex];
+    const opponentMaxHealth = activeOpponentMonster.hp_total;
+    const opponentHealthPercent = (opponentCurrentHealth / opponentMaxHealth) * 100;
+
+    document.getElementById('opponent-health-bar').style.width = `${opponentHealthPercent}%`;
+    document.getElementById('opponent-health-text').textContent = opponentCurrentHealth;
+    document.getElementById('opponent-max-health-text').textContent = opponentMaxHealth;
+
+    // Render opponent types
+    const opponentTypesElement = document.getElementById('opponent-types');
+    opponentTypesElement.innerHTML = '';
+
+    [activeOpponentMonster.type1, activeOpponentMonster.type2, activeOpponentMonster.type3,
+     activeOpponentMonster.type4, activeOpponentMonster.type5].filter(Boolean).forEach(type => {
+      const typeElement = document.createElement('span');
+      typeElement.className = 'text-xs px-2 py-1 rounded bg-gray-600 text-white m-1';
+      typeElement.textContent = type;
+      opponentTypesElement.appendChild(typeElement);
+    });
+
+    // Render opponent attribute
+    const opponentAttributeElement = document.getElementById('opponent-attribute');
+    if (activeOpponentMonster.attribute) {
+      opponentAttributeElement.innerHTML = `<span class="text-xs px-2 py-1 rounded bg-purple-600 text-white">${activeOpponentMonster.attribute}</span>`;
+    } else {
+      opponentAttributeElement.innerHTML = '';
+    }
+  }
+
+  function renderTeamOverviews() {
+    // Render player team
+    const playerTeamElement = document.getElementById('player-team');
+    playerTeamElement.innerHTML = '';
+
+    trainerMonsters.forEach((monster, index) => {
+      const isActive = index === battleState.activeTrainerMonsterIndex;
+      const isFainted = battleState.trainerMonsterHealth[index] <= 0;
+
+      const monsterElement = document.createElement('div');
+      monsterElement.className = `p-2 rounded-lg text-center ${isActive ? 'bg-blue-700' : 'bg-gray-700'} ${isFainted ? 'opacity-50' : ''}`;
+
+      monsterElement.innerHTML = `
+        <img src="${monster.img_link || '/images/default_mon.png'}" alt="${monster.name}" class="w-12 h-12 object-contain mx-auto mb-1">
+        <p class="text-white text-xs truncate">${monster.name}</p>
+        <div class="w-full bg-gray-800 rounded-full h-1 mt-1">
+          <div class="bg-green-500 h-1 rounded-full" style="width: ${(battleState.trainerMonsterHealth[index] / monster.hp_total) * 100}%"></div>
+        </div>
+      `;
+
+      playerTeamElement.appendChild(monsterElement);
+    });
+
+    // Render opponent team
+    const opponentTeamElement = document.getElementById('opponent-team');
+    opponentTeamElement.innerHTML = '';
+
+    opponentMonsters.forEach((monster, index) => {
+      const isActive = index === battleState.activeOpponentMonsterIndex;
+      const isFainted = battleState.opponentMonsterHealth[index] <= 0;
+
+      const monsterElement = document.createElement('div');
+      monsterElement.className = `p-2 rounded-lg text-center ${isActive ? 'bg-red-700' : 'bg-gray-700'} ${isFainted ? 'opacity-50' : ''}`;
+
+      monsterElement.innerHTML = `
+        <img src="${monster.image_url || '/images/default_mon.png'}" alt="${monster.name}" class="w-12 h-12 object-contain mx-auto mb-1">
+        <p class="text-white text-xs truncate">${monster.name}</p>
+        <div class="w-full bg-gray-800 rounded-full h-1 mt-1">
+          <div class="bg-red-500 h-1 rounded-full" style="width: ${(battleState.opponentMonsterHealth[index] / monster.hp_total) * 100}%"></div>
+        </div>
+      `;
+
+      opponentTeamElement.appendChild(monsterElement);
+    });
+  }
+
+  function initializeTypingGame() {
+    // Initialize typing state
+    resetTypingState();
+
+    // Focus on input
+    typingInputElement.focus();
+  }
+
+  function resetTypingState() {
+    // Reset typing state without clearing input
+    if (!typingState.startTime) {
+      typingState.startTime = Date.now();
+    }
+    typingState.isTyping = false;
+  }
+
+  function handleTypingInput(event) {
+    // Start timer if first character
+    if (!typingState.startTime) {
+      typingState.startTime = Date.now();
+      startTimer();
+    }
+
+    // Mark as typing
+    typingState.isTyping = true;
+    typingState.lastTypingTime = Date.now();
+
+    // Clear defending timeout if exists
+    if (typingState.defendingTimeout) {
+      clearTimeout(typingState.defendingTimeout);
+    }
+
+    // Set new defending timeout
+    typingState.defendingTimeout = setTimeout(() => {
+      if (Date.now() - typingState.lastTypingTime >= 5000) {
+        typingState.isTyping = false;
+        handleDefending();
+      }
+    }, 5000);
+
+    // Get current input
+    const currentInput = event.target.value;
+
+    // Count characters typed
+    typingState.totalCharacters = currentInput.length;
+
+    // Update character count display
+    characterCountElement.textContent = typingState.totalCharacters;
+
+    // In the new system, all characters are considered correct as long as the user is typing something
+    typingState.correctCharacters = typingState.totalCharacters;
+
+    // Calculate accuracy (always 100% since we're not checking against a specific prompt)
+    typingState.accuracy = 100;
+
+    // Update accuracy display
+    accuracyCounterElement.textContent = `${typingState.accuracy}%`;
+
+    // Calculate WPM
+    const timeElapsed = (Date.now() - typingState.startTime) / 1000 / 60; // in minutes
+    const wordsTyped = typingState.totalCharacters / 5; // 5 characters = 1 word
+    typingState.wpm = timeElapsed > 0 ? Math.round(wordsTyped / timeElapsed) : 0;
+
+    // Update WPM display
+    wpmCounterElement.textContent = typingState.wpm;
+
+    // Track characters for attack threshold
+    const charactersForAttack = typingState.totalCharacters - typingState.lastAttackCharCount;
+
+    // Process attack after every 20 characters
+    if (charactersForAttack >= 20) {
+      // Process attack
+      handleAttack();
+
+      // Update last attack character count
+      typingState.lastAttackCharCount = typingState.totalCharacters;
+
+      // Don't clear input, just update the character count display
+      characterCountElement.textContent = '0';
+
+      // No need to show a new suggestion
+
+      // Add a message to indicate the attack
+      addBattleMessage('You attacked! Continue your story...');
+    } else {
+      // Update the character count display to show progress towards next attack
+      characterCountElement.textContent = charactersForAttack;
+    }
+  }
+
+  function startTimer() {
+    let seconds = 0;
+    const timerInterval = setInterval(() => {
+      if (battleState.isOver) {
+        clearInterval(timerInterval);
+        return;
+      }
+
+      seconds++;
+      const minutes = Math.floor(seconds / 60);
+      const remainingSeconds = seconds % 60;
+      timeCounterElement.textContent = `${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
+    }, 1000);
+  }
+
+  function handleAttack() {
+    // Process player attack
+    processTurn(true);
+  }
+
+  function handleDefending() {
+    // Process opponent attack
+    processTurn(false);
+  }
+
+  function processTurn(isPlayerAttacking) {
+    // Prepare turn data
+    const turnData = {
+      isPlayerAttacking,
+      wpm: typingState.wpm,
+      accuracy: typingState.accuracy
+    };
+
+    // Make API request to process turn
+    fetch(`/api/battles/${battleId}/turn`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        battleState,
+        ...turnData
+      })
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        // Update battle state
+        battleState = data.battleState;
+
+        // Handle damage results
+        if (isPlayerAttacking && battleState.playerDamageResult) {
+          const result = battleState.playerDamageResult;
+
+          // Add battle message
+          addBattleMessage(`${trainerMonsters[battleState.activeTrainerMonsterIndex].name} attacks for ${result.damage} damage!`);
+
+          // Add effectiveness message if applicable
+          if (result.effectivenessDescription) {
+            addBattleMessage(result.effectivenessDescription);
+          }
+
+          // Add critical hit message if applicable
+          if (result.isCritical) {
+            addBattleMessage("Critical hit!");
+          }
+        } else if (!isPlayerAttacking && battleState.opponentDamageResult) {
+          const result = battleState.opponentDamageResult;
+
+          // Add battle message
+          addBattleMessage(`${opponentMonsters[battleState.activeOpponentMonsterIndex].name} attacks for ${result.damage} damage!`);
+
+          // Add effectiveness message if applicable
+          if (result.effectivenessDescription) {
+            addBattleMessage(result.effectivenessDescription);
+          }
+
+          // Add critical hit message if applicable
+          if (result.isCritical) {
+            addBattleMessage("Critical hit!");
+          }
+        }
+
+        // Handle battle result
+        if (battleState.battleResult) {
+          if (battleState.battleResult.isOver) {
+            // Battle is over
+            battleState.isOver = true;
+
+            // Add battle message
+            addBattleMessage(battleState.battleResult.message);
+
+            // Redirect to results page after a delay
+            setTimeout(() => {
+              window.location.href = `/battles/results/${battleId}`;
+            }, 3000);
+          } else {
+            // Add battle message
+            addBattleMessage(battleState.battleResult.message);
+          }
+        }
+
+        // Update UI
+        renderBattleState();
+        renderTeamOverviews();
+      } else {
+        // Show error
+        addBattleMessage(`Error: ${data.message || 'Failed to process turn'}`);
+      }
+    })
+    .catch(error => {
+      console.error('Error processing turn:', error);
+      addBattleMessage('Error processing turn. Please try again.');
+    });
+  }
+
+  function addBattleMessage(message) {
+    const messageElement = document.createElement('p');
+    messageElement.className = 'text-white mb-1';
+    messageElement.textContent = message;
+
+    battleMessagesElement.appendChild(messageElement);
+
+    // Scroll to bottom
+    battleMessagesElement.scrollTop = battleMessagesElement.scrollHeight;
+  }
+
+  function confirmAbandonBattle() {
+    if (confirm('Are you sure you want to abandon this battle? You will lose all progress.')) {
+      // Make API request to abandon battle
+      fetch(`/api/battles/${battleId}/abandon`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          // Redirect to trainer battle page
+          window.location.href = `/battles/trainer/<%= trainer.id %>`;
+        } else {
+          // Show error
+          alert(data.message || 'Failed to abandon battle');
+        }
+      })
+      .catch(error => {
+        console.error('Error abandoning battle:', error);
+        alert('Error abandoning battle. Please try again.');
+      });
+    }
+  }
+</script>
+

@@ -1,0 +1,109 @@
+<div class="container mx-auto px-4 py-8">
+  <div class="flex items-center mb-8">
+    <a href="/battles/trainer/<%= trainer.id %>" class="text-blue-400 hover:text-blue-300 mr-4">
+      <i class="fas fa-arrow-left"></i> Back to Battles
+    </a>
+    <h1 class="text-3xl font-bold text-yellow-400"><%= trainer.name %>'s Battle History</h1>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+    <div class="bg-gray-800 p-4 rounded-lg text-center">
+      <p class="text-gray-400 text-sm">Total Battles</p>
+      <p class="text-white text-2xl font-bold"><%= stats.total_battles || 0 %></p>
+    </div>
+    <div class="bg-gray-800 p-4 rounded-lg text-center">
+      <p class="text-gray-400 text-sm">Wins</p>
+      <p class="text-green-400 text-2xl font-bold"><%= stats.wins || 0 %></p>
+    </div>
+    <div class="bg-gray-800 p-4 rounded-lg text-center">
+      <p class="text-gray-400 text-sm">Losses</p>
+      <p class="text-red-400 text-2xl font-bold"><%= stats.losses || 0 %></p>
+    </div>
+    <div class="bg-gray-800 p-4 rounded-lg text-center">
+      <p class="text-gray-400 text-sm">Win Rate</p>
+      <p class="text-blue-400 text-2xl font-bold">
+        <%= stats.total_battles > 0 ? Math.round((stats.wins / stats.total_battles) * 100) : 0 %>%
+      </p>
+    </div>
+  </div>
+
+  <div class="bg-gray-800 rounded-lg p-6 shadow-lg">
+    <h2 class="text-2xl font-bold text-yellow-400 mb-4">Battle Records</h2>
+    
+    <% if (battles && battles.length > 0) { %>
+      <div class="overflow-x-auto">
+        <table class="min-w-full bg-gray-700 rounded-lg">
+          <thead>
+            <tr>
+              <th class="px-4 py-2 text-left text-gray-300">Date</th>
+              <th class="px-4 py-2 text-left text-gray-300">Opponent</th>
+              <th class="px-4 py-2 text-left text-gray-300">Result</th>
+              <th class="px-4 py-2 text-left text-gray-300">WPM</th>
+              <th class="px-4 py-2 text-left text-gray-300">Accuracy</th>
+              <th class="px-4 py-2 text-left text-gray-300">Duration</th>
+              <th class="px-4 py-2 text-left text-gray-300">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% battles.forEach(battle => { %>
+              <tr class="border-t border-gray-600">
+                <td class="px-4 py-2 text-gray-300">
+                  <%= new Date(battle.started_at).toLocaleDateString() %>
+                  <div class="text-xs text-gray-500">
+                    <%= new Date(battle.started_at).toLocaleTimeString() %>
+                  </div>
+                </td>
+                <td class="px-4 py-2 text-white">
+                  <%= battle.opponent_name || 'Unknown Opponent' %>
+                </td>
+                <td class="px-4 py-2">
+                  <% if (battle.status === 'won') { %>
+                    <span class="text-green-400">Victory</span>
+                  <% } else if (battle.status === 'lost') { %>
+                    <span class="text-red-400">Defeat</span>
+                  <% } else if (battle.status === 'abandoned') { %>
+                    <span class="text-gray-400">Abandoned</span>
+                  <% } else { %>
+                    <span class="text-yellow-400">In Progress</span>
+                  <% } %>
+                </td>
+                <td class="px-4 py-2 text-gray-300">
+                  <%= battle.wpm || '-' %>
+                </td>
+                <td class="px-4 py-2 text-gray-300">
+                  <%= battle.accuracy ? battle.accuracy + '%' : '-' %>
+                </td>
+                <td class="px-4 py-2 text-gray-300">
+                  <% 
+                    let duration = 0;
+                    if (battle.started_at && battle.ended_at) {
+                      duration = Math.floor((new Date(battle.ended_at) - new Date(battle.started_at)) / 1000);
+                    }
+                    const minutes = Math.floor(duration / 60);
+                    const seconds = duration % 60;
+                  %>
+                  <%= battle.ended_at ? `${minutes}:${seconds < 10 ? '0' : ''}${seconds}` : '-' %>
+                </td>
+                <td class="px-4 py-2">
+                  <% if (battle.status === 'in_progress') { %>
+                    <a href="/battles/arena/<%= battle.battle_id %>" class="text-blue-400 hover:text-blue-300">
+                      Continue
+                    </a>
+                  <% } else { %>
+                    <a href="/battles/results/<%= battle.battle_id %>" class="text-blue-400 hover:text-blue-300">
+                      View Results
+                    </a>
+                  <% } %>
+                </td>
+              </tr>
+            <% }); %>
+          </tbody>
+        </table>
+      </div>
+    <% } else { %>
+      <div class="text-center py-8">
+        <p class="text-gray-400">No battle history yet.</p>
+      </div>
+    <% } %>
+  </div>
+</div>

@@ -1,0 +1,175 @@
+<%- include('./battle-styles') %>
+
+<div class="container mx-auto px-4 py-8">
+  <div class="flex items-center mb-8">
+    <a href="/admin/battles/opponents" class="text-blue-400 hover:text-blue-300 mr-4">
+      <i class="fas fa-arrow-left"></i> Back to Opponents
+    </a>
+    <h1 class="text-3xl font-bold text-yellow-400">Opponent: <%= opponent.name %></h1>
+  </div>
+
+  <% if (typeof message !== 'undefined' && message) { %>
+    <div class="bg-<%= messageType === 'error' ? 'red' : 'green' %>-800 text-white p-4 rounded-lg mb-6">
+      <%= message %>
+      <% if (messageType === 'error' && message.includes('migration')) { %>
+        <div class="mt-4">
+          <a href="/admin/battles/run-migration" class="bg-yellow-500 hover:bg-yellow-600 text-black font-bold py-2 px-4 rounded">
+            Run Battle System Migration
+          </a>
+        </div>
+      <% } %>
+    </div>
+  <% } %>
+
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+    <!-- Opponent Details -->
+    <div class="bg-gray-800 rounded-lg p-6 shadow-lg">
+      <div class="flex flex-col items-center mb-6">
+        <img src="<%= opponent.image_url || '/images/default_opponent.png' %>" alt="<%= opponent.name %>" class="w-32 h-32 object-contain mb-4">
+        <h2 class="text-2xl font-bold text-white"><%= opponent.name %></h2>
+        <div class="mt-2">
+          <span class="px-3 py-1 rounded text-xs font-bold
+            <% if (opponent.difficulty === 'easy') { %>bg-green-600 text-white<% } %>
+            <% if (opponent.difficulty === 'normal') { %>bg-blue-600 text-white<% } %>
+            <% if (opponent.difficulty === 'hard') { %>bg-orange-600 text-white<% } %>
+            <% if (opponent.difficulty === 'elite') { %>bg-red-600 text-white<% } %>
+          ">
+            <%= opponent.difficulty.toUpperCase() %>
+          </span>
+        </div>
+      </div>
+
+      <div class="space-y-4">
+        <div>
+          <p class="text-gray-400 text-sm">Level</p>
+          <p class="text-white"><%= opponent.level %></p>
+        </div>
+
+        <div>
+          <p class="text-gray-400 text-sm">Type</p>
+          <p class="text-white"><%= opponent.type || 'None' %></p>
+        </div>
+
+        <div>
+          <p class="text-gray-400 text-sm">Status</p>
+          <p class="<%= opponent.is_active ? 'text-green-400' : 'text-red-400' %>">
+            <%= opponent.is_active ? 'Active' : 'Inactive' %>
+          </p>
+        </div>
+
+        <div>
+          <p class="text-gray-400 text-sm">Description</p>
+          <p class="text-white"><%= opponent.description || 'No description' %></p>
+        </div>
+      </div>
+
+      <div class="mt-6 flex space-x-4">
+        <a href="/admin/battles/opponents/<%= opponent.opponent_id %>/edit" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+          <i class="fas fa-edit mr-2"></i> Edit
+        </a>
+        <button onclick="confirmDelete(<%= opponent.opponent_id %>, '<%= opponent.name %>')" class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
+          <i class="fas fa-trash mr-2"></i> Delete
+        </button>
+      </div>
+    </div>
+
+    <!-- Monster Team -->
+    <div class="bg-gray-800 rounded-lg p-6 shadow-lg md:col-span-2">
+      <div class="flex justify-between items-center mb-6">
+        <h2 class="text-2xl font-bold text-yellow-400">Monster Team</h2>
+        <a href="/admin/battles/opponents/<%= opponent.opponent_id %>/add-monster" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
+          <i class="fas fa-plus mr-2"></i> Add Monster
+        </a>
+      </div>
+
+      <% if (monsters && monsters.length > 0) { %>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <% monsters.forEach((monster, index) => { %>
+            <div class="bg-gray-700 rounded-lg p-4">
+              <div class="flex items-start">
+                <div class="bg-gray-800 rounded-full w-8 h-8 flex items-center justify-center mr-3 flex-shrink-0">
+                  <span class="text-yellow-400 font-bold"><%= index + 1 %></span>
+                </div>
+                <div class="flex-grow">
+                  <h3 class="text-xl font-semibold text-white"><%= monster.name %></h3>
+                  <p class="text-gray-400">Level <%= monster.level %></p>
+
+                  <div class="mt-2 flex flex-wrap">
+                    <% [monster.type1, monster.type2, monster.type3, monster.type4, monster.type5].filter(Boolean).forEach(type => { %>
+                      <span class="text-xs px-2 py-1 rounded bg-gray-600 text-white mr-1 mb-1"><%= type %></span>
+                    <% }); %>
+
+                    <% if (monster.attribute) { %>
+                      <span class="text-xs px-2 py-1 rounded bg-purple-600 text-white mr-1 mb-1"><%= monster.attribute %></span>
+                    <% } %>
+                  </div>
+
+                  <div class="mt-2">
+                    <p class="text-gray-400 text-sm">Species:</p>
+                    <p class="text-white">
+                      <%= [monster.species1, monster.species2, monster.species3].filter(Boolean).join(', ') %>
+                    </p>
+                  </div>
+
+                  <div class="mt-2 grid grid-cols-3 gap-2">
+                    <div>
+                      <p class="text-gray-400 text-xs">HP</p>
+                      <p class="text-white"><%= monster.hp_total %></p>
+                    </div>
+                    <div>
+                      <p class="text-gray-400 text-xs">ATK</p>
+                      <p class="text-white"><%= monster.atk_total %></p>
+                    </div>
+                    <div>
+                      <p class="text-gray-400 text-xs">DEF</p>
+                      <p class="text-white"><%= monster.def_total %></p>
+                    </div>
+                    <div>
+                      <p class="text-gray-400 text-xs">SPA</p>
+                      <p class="text-white"><%= monster.spa_total %></p>
+                    </div>
+                    <div>
+                      <p class="text-gray-400 text-xs">SPD</p>
+                      <p class="text-white"><%= monster.spd_total %></p>
+                    </div>
+                    <div>
+                      <p class="text-gray-400 text-xs">SPE</p>
+                      <p class="text-white"><%= monster.spe_total %></p>
+                    </div>
+                  </div>
+
+                  <div class="mt-4 flex justify-end">
+                    <button onclick="confirmDeleteMonster(<%= monster.monster_id %>, '<%= monster.name %>')" class="text-red-400 hover:text-red-300">
+                      <i class="fas fa-trash"></i> Remove
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          <% }); %>
+        </div>
+      <% } else { %>
+        <div class="text-center py-8">
+          <p class="text-gray-400 mb-4">No monsters in team.</p>
+          <a href="/admin/battles/opponents/<%= opponent.opponent_id %>/add-monster" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
+            <i class="fas fa-plus mr-2"></i> Add First Monster
+          </a>
+        </div>
+      <% } %>
+    </div>
+  </div>
+</div>
+
+<script>
+  function confirmDelete(opponentId, opponentName) {
+    if (confirm(`Are you sure you want to delete the opponent "${opponentName}"? This action cannot be undone.`)) {
+      window.location.href = `/admin/battles/opponents/${opponentId}/delete`;
+    }
+  }
+
+  function confirmDeleteMonster(monsterId, monsterName) {
+    if (confirm(`Are you sure you want to remove "${monsterName}" from this team? This action cannot be undone.`)) {
+      window.location.href = `/admin/battles/opponents/<%= opponent.opponent_id %>/monsters/${monsterId}/delete`;
+    }
+  }
+</script>
