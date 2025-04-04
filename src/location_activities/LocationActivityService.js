@@ -7,6 +7,7 @@ const pool = require('../db');
 const MonsterRoller = require('../utils/MonsterRoller');
 const RewardSystem = require('../utils/RewardSystem');
 const Item = require('../models/Item');
+const LocationTaskPrompt = require('../models/LocationTaskPrompt');
 
 class LocationActivityService {
   /**
@@ -16,53 +17,36 @@ class LocationActivityService {
    * @returns {Object} - Random prompt
    */
   static async getRandomPrompt(location, activity) {
-    // Define prompts for each location
-    const prompts = {
-      garden: [
-        { text: 'Plant new seeds in the garden.', difficulty: 'easy' },
-        { text: 'Water all the plants in the garden.', difficulty: 'easy' },
-        { text: 'Remove weeds from the garden beds.', difficulty: 'normal' },
-        { text: 'Harvest ripe berries from the garden.', difficulty: 'normal' },
-        { text: 'Prepare the soil for new plantings.', difficulty: 'normal' },
-        { text: 'Prune overgrown plants and shrubs.', difficulty: 'hard' },
-        { text: 'Deal with a garden pest infestation.', difficulty: 'hard' }
-      ],
-      farm: [
-        { text: 'Feed the farm animals.', difficulty: 'easy' },
-        { text: 'Clean the animal pens.', difficulty: 'easy' },
-        { text: 'Harvest crops from the fields.', difficulty: 'normal' },
-        { text: 'Repair fences around the farm.', difficulty: 'normal' },
-        { text: 'Milk the cows and collect eggs.', difficulty: 'normal' },
-        { text: 'Train the farm Pokémon to help with chores.', difficulty: 'hard' },
-        { text: 'Prepare for an incoming storm.', difficulty: 'hard' }
-      ],
-      pirates_dock_fishing: [
-        { text: 'Cast your line and catch some common fish for the crew\'s dinner.', difficulty: 'easy' },
-        { text: 'Try to catch some of the more elusive fish species in deeper waters.', difficulty: 'normal' },
-        { text: 'Brave the rough seas to catch rare and valuable fish species.', difficulty: 'normal' },
-        { text: 'Hunt for the legendary sea monster that sailors have been talking about.', difficulty: 'hard' }
-      ],
-      pirates_dock_swab: [
-        { text: 'Swab the main deck and make it shine.', difficulty: 'easy' },
-        { text: 'Clean the entire ship, including the captain\'s quarters.', difficulty: 'normal' },
-        { text: 'Repair damaged parts of the ship while cleaning.', difficulty: 'normal' },
-        { text: 'Completely overhaul the ship\'s cleanliness during a storm.', difficulty: 'hard' }
-      ]
-    };
+      try {
+          // Get a random prompt from the database for this location
+          const dbPrompt = await LocationTaskPrompt.getRandomForLocation(location);
 
-    // Get prompts for the location
-    const locationPrompts = prompts[location] || [];
+          // If a prompt was found in the database, return it with the expected format
+          if (dbPrompt) {
+              console.log(`Found database prompt for ${location}:`, dbPrompt.prompt_text);
+              return {
+                  id: dbPrompt.prompt_id,
+                  text: dbPrompt.prompt_text,
+                  difficulty: dbPrompt.difficulty
+              };
+          }
 
-    if (locationPrompts.length === 0) {
-      // Return a default prompt if none found
+          // If no prompt was found in the database, use a default prompt
+          console.log(`No database prompts found for ${location}, using default prompt`);
+          return {
+              text: `Perform tasks at the ${location}.`,
+              difficulty: 'normal'
+          };
+      } catch (error) {
+          // Log the error but don't crash the application
+          console.error(`Error getting random prompt for ${location}:`, error);
+
+          // Fallback to a default prompt in case of error
       return {
         text: `Perform tasks at the ${location}.`,
         difficulty: 'normal'
       };
     }
-
-    // Return a random prompt
-    return locationPrompts[Math.floor(Math.random() * locationPrompts.length)];
   }
 
   /**

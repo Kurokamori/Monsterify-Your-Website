@@ -127,7 +127,7 @@ class LocationActivityController {
         player_id: req.session.user.discord_id,
         location,
         activity,
-        prompt_id: prompt.id,
+          prompt_id: prompt.id || null, // Handle case where prompt.id might not exist
         duration_minutes: durationMinutes
       });
 
@@ -395,7 +395,7 @@ class LocationActivityController {
             player_id: req.session.user.discord_id,
             location,
             activity,
-            prompt_id: prompt.id || 1, // Use a default prompt ID if none exists
+              prompt_id: prompt?.id || null, // Use null if prompt ID doesn't exist
             duration_minutes: session.durationMinutes || 60
           });
 

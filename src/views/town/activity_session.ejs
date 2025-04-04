@@ -215,14 +215,34 @@ const locationClass = session.location ? `location-${session.location}` : '';
       endTime = new Date(endTimeStr);
       durationMinutes = parseInt('<%= session.durationMinutes || 60 %>');
       totalDuration = durationMinutes * 60; // in seconds
+        console.log('Session data parsed successfully:', {endTime, durationMinutes, totalDuration});
     } catch (error) {
       console.error('Error parsing session data:', error);
       // Default values
       endTime = new Date(Date.now() + 60 * 60 * 1000);
       durationMinutes = 60;
       totalDuration = durationMinutes * 60;
+        console.log('Using default values:', {endTime, durationMinutes, totalDuration});
     }
-    let remainingSeconds = 0;
+
+      // Calculate initial remaining time based on end time
+      const now = new Date();
+      const timeDiff = endTime - now;
+      let remainingSeconds = Math.max(0, Math.floor(timeDiff / 1000));
+
+      // If remaining seconds is 0 or negative, set a default value
+      if (remainingSeconds <= 0) {
+          remainingSeconds = totalDuration;
+          console.log('Timer already expired, using total duration as fallback:', totalDuration);
+      }
+
+      console.log('Initial timer values:', {
+          remainingSeconds,
+          totalDuration,
+          now: now.toISOString(),
+          endTime: endTime.toISOString()
+      });
+
     let timerInterval = null;
     let isPaused = false;
 
@@ -230,10 +250,20 @@ const locationClass = session.location ? `location-${session.location}` : '';
     const timerDisplay = document.getElementById('timer-display');
     const endTimeDisplay = document.getElementById('end-time-display');
     const timerStatus = document.getElementById('timer-status');
-    const timerProgress = document.getElementById('timer-progress');
+      const timerProgress = document.getElementById('progress-circle'); // Fixed ID reference
     const pauseButton = document.getElementById('pause-button');
     const resumeButton = document.getElementById('resume-button');
     const completeButton = document.getElementById('complete-button');
+
+      console.log('Timer elements found:', {
+          timerDisplay: !!timerDisplay,
+          endTimeDisplay: !!endTimeDisplay,
+          timerStatus: !!timerStatus,
+          timerProgress: !!timerProgress,
+          pauseButton: !!pauseButton,
+          resumeButton: !!resumeButton,
+          completeButton: !!completeButton
+      });
 
     // Format time as MM:SS
     function formatTime(seconds) {
@@ -244,13 +274,18 @@ const locationClass = session.location ? `location-${session.location}` : '';
 
     // Update the timer display
     function updateTimerDisplay() {
-      timerDisplay.textContent = formatTime(remainingSeconds);
+        if (timerDisplay) {
+            timerDisplay.textContent = formatTime(remainingSeconds);
+        }
 
       // Update progress circle
-      const circumference = 2 * Math.PI * 45; // 2πr
-      const offset = circumference - (remainingSeconds / totalDuration) * circumference;
-      timerProgress.style.strokeDasharray = `${circumference} ${circumference}`;
-      timerProgress.style.strokeDashoffset = offset;
+        if (timerProgress) {
+            const circumference = 2 * Math.PI * 45; // 2πr
+            const offset = circumference - (remainingSeconds / totalDuration) * circumference;
+            timerProgress.setAttribute('stroke-dasharray', `${circumference} ${circumference}`);
+            timerProgress.setAttribute('stroke-dashoffset', offset);
+            console.log(`Updating progress: ${remainingSeconds}/${totalDuration}, offset: ${offset}`);
+        }
     }
 
     // Initialize the timer
@@ -261,7 +296,10 @@ const locationClass = session.location ? `location-${session.location}` : '';
         minute: 'numeric',
         hour12: true
       };
-      endTimeDisplay.textContent = endTime.toLocaleTimeString([], options);
+
+        if (endTimeDisplay) {
+            endTimeDisplay.textContent = endTime.toLocaleTimeString([], options);
+        }
 
       // Calculate initial remaining time
       const now = new Date();
@@ -269,6 +307,13 @@ const locationClass = session.location ? `location-${session.location}` : '';
 
       // If time is up or negative, set to 0
       remainingSeconds = Math.max(0, Math.floor(timeDiff / 1000));
+        console.log(`Initial remaining seconds: ${remainingSeconds}, total duration: ${totalDuration}`);
+
+        // Initialize the progress circle
+        if (timerProgress) {
+            const circumference = 2 * Math.PI * 45; // 2πr
+            timerProgress.setAttribute('stroke-dasharray', `${circumference} ${circumference}`);
+        }
 
       // Update the display
       updateTimerDisplay();
@@ -286,17 +331,29 @@ const locationClass = session.location ? `location-${session.location}` : '';
       }
 
       // Enable pause button, disable resume button
-      pauseButton.disabled = false;
-      pauseButton.classList.remove('opacity-50');
-      resumeButton.disabled = true;
-      resumeButton.classList.add('opacity-50');
+        if (pauseButton) {
+            pauseButton.disabled = false;
+            pauseButton.classList.remove('opacity-50');
+        }
+
+        if (resumeButton) {
+            resumeButton.disabled = true;
+            resumeButton.classList.add('opacity-50');
+        }
 
       // Set timer status
-      timerStatus.textContent = 'In progress';
+        if (timerStatus) {
+            timerStatus.textContent = 'In progress';
+        }
+
       isPaused = false;
 
-      // Only start a new interval if we don't already have one and time isn't up
-      if (!timerInterval && remainingSeconds > 0) {
+        // Only start a new interval if time isn't up
+        if (remainingSeconds > 0) {
+            // Immediately decrement by 1 second to start the countdown
+            remainingSeconds = Math.max(0, remainingSeconds - 1);
+            updateTimerDisplay();
+
         // Start the interval
         timerInterval = setInterval(() => {
           // Decrement the remaining seconds directly
@@ -309,16 +366,26 @@ const locationClass = session.location ? `location-${session.location}` : '';
           if (remainingSeconds <= 0) {
             clearInterval(timerInterval);
             timerInterval = null;
-            timerStatus.textContent = 'Time\'s up!';
+
+              if (timerStatus) {
+                  timerStatus.textContent = 'Time\'s up!';
+              }
 
             // Disable pause/resume buttons
-            pauseButton.disabled = true;
-            pauseButton.classList.add('opacity-50');
-            resumeButton.disabled = true;
-            resumeButton.classList.add('opacity-50');
+              if (pauseButton) {
+                  pauseButton.disabled = true;
+                  pauseButton.classList.add('opacity-50');
+              }
+
+              if (resumeButton) {
+                  resumeButton.disabled = true;
+                  resumeButton.classList.add('opacity-50');
+              }
 
             // Highlight the complete button
-            completeButton.classList.add('animate-pulse');
+              if (completeButton) {
+                  completeButton.classList.add('animate-pulse');
+              }
           }
         }, 1000);
       }
@@ -332,14 +399,23 @@ const locationClass = session.location ? `location-${session.location}` : '';
       }
 
       // Enable resume button, disable pause button
-      resumeButton.disabled = false;
-      resumeButton.classList.remove('opacity-50');
-      pauseButton.disabled = true;
-      pauseButton.classList.add('opacity-50');
+        if (resumeButton) {
+            resumeButton.disabled = false;
+            resumeButton.classList.remove('opacity-50');
+        }
+
+        if (pauseButton) {
+            pauseButton.disabled = true;
+            pauseButton.classList.add('opacity-50');
+        }
 
       // Set timer status
-      timerStatus.textContent = 'Paused';
+        if (timerStatus) {
+            timerStatus.textContent = 'Paused';
+        }
+
       isPaused = true;
+        console.log('Timer paused at', remainingSeconds, 'seconds');
     }
 
     // Resume the timer
@@ -348,10 +424,24 @@ const locationClass = session.location ? `location-${session.location}` : '';
     }
 
     // Add event listeners
-    pauseButton.addEventListener('click', pauseTimer);
-    resumeButton.addEventListener('click', resumeTimer);
+      if (pauseButton) {
+          pauseButton.addEventListener('click', pauseTimer);
+      }
+
+      if (resumeButton) {
+          resumeButton.addEventListener('click', resumeTimer);
+      }
 
     // Initialize the timer
+      console.log('Initializing timer...');
+
+      // Set initial timer display before starting the timer
+      if (timerDisplay) {
+          timerDisplay.textContent = formatTime(remainingSeconds);
+      }
+
+      // Initialize and start the timer
     initializeTimer();
+      console.log('Timer initialization complete.');
   });
 </script>
