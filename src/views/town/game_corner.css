@@ -1,4 +1,4 @@
-<style>
+
  .grid-cols-4 {
   grid-template-columns: repeat(4, minmax(0, 1fr));
 }
@@ -213,5 +213,3 @@ input[type="number"] {
 .reward-item, .monster-card {
   animation: fadeInUp 0.3s ease-out forwards;
 }
-
-</style>
