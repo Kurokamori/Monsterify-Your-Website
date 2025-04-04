@@ -1,4 +1,5 @@
 const pool = require('../../db');
+const ITEM_BASE_PRICES = require('../../utils/ItemPriceConstants');
 
 class DailyShopItems {
   /**
@@ -454,15 +455,34 @@ class DailyShopItems {
         if (selectedItems.length >= itemCount) break;
         if (selectedItemIds.has(item.name)) continue;
 
-        // Calculate base price based on rarity
+          // Calculate base price based on item name, or fallback to rarity
         let basePrice;
-        switch (item.rarity?.toLowerCase()) {
-          case 'common': basePrice = 500; break;
-          case 'uncommon': basePrice = 1000; break;
-          case 'rare': basePrice = 2000; break;
-          case 'epic': basePrice = 4000; break;
-          case 'legendary': basePrice = 8000; break;
-          default: basePrice = 1000;
+          if (ITEM_BASE_PRICES[item.name]) {
+              // Use the predefined base price from our constants
+              basePrice = ITEM_BASE_PRICES[item.name];
+              console.log(`Using predefined base price for ${item.name}: ${basePrice}`);
+          } else {
+              // Fallback to rarity-based pricing if item not in our dictionary
+              switch (item.rarity?.toLowerCase()) {
+                  case 'common':
+                      basePrice = 500;
+                      break;
+                  case 'uncommon':
+                      basePrice = 1000;
+                      break;
+                  case 'rare':
+                      basePrice = 2000;
+                      break;
+                  case 'epic':
+                      basePrice = 4000;
+                      break;
+                  case 'legendary':
+                      basePrice = 8000;
+                      break;
+                  default:
+                      basePrice = 1000;
+              }
+              console.log(`Using fallback price for ${item.name}: ${basePrice}`);
         }
 
         // Apply shop multiplier

@@ -1141,9 +1141,12 @@ app.get('/town/shop/:shopId/fix-prices', async (req, res) => {
     // Get today's date
     const today = new Date().toISOString().split('T')[0];
 
-    // Define base prices for different item categories and rarities
+      // Import item base prices from constants
+      const ITEM_BASE_PRICES = require('./utils/ItemPriceConstants');
+
+      // Define category ranges and rarity multipliers for fallback pricing
     const basePrices = {
-      // Common items by category
+        // Common items by category (used as fallback)
       BERRIES: { min: 500, max: 1500 },
       PASTRIES: { min: 800, max: 2000 },
       ITEMS: { min: 1000, max: 3000 },
@@ -1158,15 +1161,8 @@ app.get('/town/shop/:shopId/fix-prices', async (req, res) => {
       'ultra rare': 4.0,
       legendary: 8.0,
 
-      // Special items with fixed base prices
-      specialItems: {
-        'Daycare Daypass': 5000,
-        'Gold Bottle Cap': 7500,
-        'Z-Crystal': 6000,
-        'Charge Capsule': 3500,
-        'Scroll of Secrets': 8000,
-        'Legacy Leeway': 5000
-      }
+        // Special items reference (now using ItemPriceConstants)
+        specialItems: ITEM_BASE_PRICES
     };
 
     // Shop-specific multipliers
@@ -1220,8 +1216,12 @@ app.get('/town/shop/:shopId/fix-prices', async (req, res) => {
         const category = item.category || 'ITEMS';
         const rarity = (item.rarity || 'common').toLowerCase();
 
-        // Check if it's a special item with a fixed base price
-        if (basePrices.specialItems[itemName]) {
+          // Check if we have a predefined base price for this item
+          if (ITEM_BASE_PRICES[itemName]) {
+              basePrice = ITEM_BASE_PRICES[itemName];
+              console.log(`Using predefined base price for ${itemName}: ${basePrice}`);
+          } else if (basePrices.specialItems[itemName]) {
+              // Fallback to specialItems if not in ITEM_BASE_PRICES (should be the same)
           basePrice = basePrices.specialItems[itemName];
           console.log(`Using special item base price for ${itemName}: ${basePrice}`);
         } else {
@@ -1341,8 +1341,15 @@ app.get('/town/shop/:shopId/fix-prices-direct', async (req, res) => {
       // Update prices for each item from direct query
       const directUpdatePromises = directItems.map(async (item) => {
         try {
-          // Use the base_price from the joined query
-          const basePrice = item.base_price ? parseInt(item.base_price) : 1000;
+            // Check if we have a predefined base price for this item
+            let basePrice;
+            if (ITEM_BASE_PRICES[item.item_id]) {
+                basePrice = ITEM_BASE_PRICES[item.item_id];
+                console.log(`Using predefined base price for ${item.item_id}: ${basePrice}`);
+            } else {
+                // Fallback to database base_price or default
+                basePrice = item.base_price ? parseInt(item.base_price) : 1000;
+            }
           const multiplier = Math.random() * (shop.price_multiplier_max - shop.price_multiplier_min) + shop.price_multiplier_min;
           const newPrice = Math.max(100, Math.round(basePrice * multiplier));
 
@@ -1387,8 +1394,15 @@ app.get('/town/shop/:shopId/fix-prices-direct', async (req, res) => {
           return null;
         }
 
-        // Use a default base price if none is found
-        const basePrice = itemDetails.base_price ? parseInt(itemDetails.base_price) : 1000;
+          // Check if we have a predefined base price for this item
+          let basePrice;
+          if (ITEM_BASE_PRICES[item.item_id]) {
+              basePrice = ITEM_BASE_PRICES[item.item_id];
+              console.log(`Using predefined base price for ${item.item_id}: ${basePrice}`);
+          } else {
+              // Fallback to database base_price or default
+              basePrice = itemDetails.base_price ? parseInt(itemDetails.base_price) : 1000;
+          }
         console.log(`Base price for ${item.item_id}: ${basePrice} (type: ${typeof basePrice})`);
 
         const multiplier = Math.random() * (shop.price_multiplier_max - shop.price_multiplier_min) + shop.price_multiplier_min;

@@ -1,6 +1,7 @@
 const pool = require('../config/database');
 const ShopConfig = require('./shops/ShopConfig');
 const ShopItemsManager = require('./shops/ShopItemsManager');
+const ITEM_BASE_PRICES = require('../utils/ItemPriceConstants');
 
 /**
  * Shop System
@@ -311,7 +312,7 @@ const ShopSystem = {
             const currentItem = items[randomIndex];
             const currentItemId = currentItem.name;
             if (selectedItemIds.has(currentItemId)) {
-              continue;
+
             } else {
               break;
             }
@@ -322,8 +323,17 @@ const ShopSystem = {
           const itemId = item.name; // Use name as the item ID
           selectedItemIds.add(itemId);
 
-          // Calculate price based on rarity and shop multiplier
-          const basePrice = item.price || this._getBasePriceByRarity(item.rarity);
+            // Calculate price based on item name, or fallback to rarity
+            let basePrice;
+            if (ITEM_BASE_PRICES[itemId]) {
+                // Use the predefined base price from our constants
+                basePrice = ITEM_BASE_PRICES[itemId];
+                console.log(`Using predefined base price for ${itemId}: ${basePrice}`);
+            } else {
+                // Fallback to rarity-based pricing if item not in our dictionary
+                basePrice = item.price || this._getBasePriceByRarity(item.rarity);
+                console.log(`Using fallback price for ${itemId}: ${basePrice}`);
+            }
 
           // Apply shop multiplier
           let shopMultiplierValue;
