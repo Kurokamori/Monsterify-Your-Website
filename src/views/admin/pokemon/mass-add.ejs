@@ -1,0 +1,618 @@
+<% /* Set the title and other variables for the layout */ %>
+<% title = 'Mass Add Pokémon' %>
+
+<style>
+    .form-container {
+        background-color: rgba(0, 0, 0, 0.2);
+        border-radius: 8px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+    }
+    
+    .form-row {
+        display: grid;
+        grid-template-columns: repeat(1, 1fr);
+        gap: 1rem;
+        margin-bottom: 1rem;
+    }
+    
+    @media (min-width: 640px) {
+        .form-row {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+    
+    @media (min-width: 768px) {
+        .form-row.three-cols {
+            grid-template-columns: repeat(3, 1fr);
+        }
+    }
+    
+    .form-group {
+        margin-bottom: 1rem;
+    }
+    
+    .form-label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: bold;
+    }
+    
+    .form-control {
+        width: 100%;
+        padding: 0.5rem;
+        border-radius: 4px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        background-color: rgba(0, 0, 0, 0.2);
+        color: white;
+    }
+    
+    .form-control:focus {
+        outline: none;
+        border-color: #3498db;
+    }
+    
+    .form-hint {
+        font-size: 0.8rem;
+        color: rgba(255, 255, 255, 0.7);
+        margin-top: 0.25rem;
+    }
+    
+    .form-section {
+        margin-bottom: 2rem;
+    }
+    
+    .form-section-title {
+        font-size: 1.25rem;
+        font-weight: bold;
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    .btn-submit {
+        background-color: #f1c40f;
+        color: #000;
+        padding: 0.5rem 1rem;
+        border-radius: 4px;
+        border: none;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+    
+    .btn-submit:hover {
+        background-color: #f39c12;
+    }
+    
+    .btn-submit:disabled {
+        background-color: #7f8c8d;
+        cursor: not-allowed;
+    }
+    
+    .btn-back {
+        background-color: rgba(255, 255, 255, 0.1);
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 4px;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: background-color 0.3s;
+    }
+    
+    .btn-back:hover {
+        background-color: rgba(255, 255, 255, 0.2);
+    }
+    
+    .admin-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+    }
+    
+    .admin-title {
+        font-size: 1.75rem;
+        font-weight: bold;
+    }
+    
+    .admin-actions {
+        display: flex;
+        gap: 0.5rem;
+    }
+    
+    .file-drop-area {
+        border: 2px dashed rgba(255, 255, 255, 0.3);
+        border-radius: 8px;
+        padding: 2rem;
+        text-align: center;
+        cursor: pointer;
+        transition: border-color 0.3s;
+    }
+    
+    .file-drop-area:hover, .file-drop-area.active {
+        border-color: #3498db;
+    }
+    
+    .file-drop-icon {
+        font-size: 2rem;
+        margin-bottom: 1rem;
+        color: rgba(255, 255, 255, 0.7);
+    }
+    
+    .file-drop-text {
+        margin-bottom: 1rem;
+    }
+    
+    .file-input {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        opacity: 0;
+        cursor: pointer;
+    }
+    
+    .preview-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 1rem;
+        margin-top: 1.5rem;
+    }
+    
+    .preview-item {
+        background-color: rgba(0, 0, 0, 0.3);
+        border-radius: 8px;
+        padding: 1rem;
+        position: relative;
+    }
+    
+    .preview-image {
+        width: 100%;
+        height: 150px;
+        object-fit: contain;
+        margin-bottom: 1rem;
+        background-color: rgba(0, 0, 0, 0.2);
+        border-radius: 4px;
+    }
+    
+    .preview-remove {
+        position: absolute;
+        top: 0.5rem;
+        right: 0.5rem;
+        background-color: rgba(231, 76, 60, 0.8);
+        color: white;
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        font-size: 0.8rem;
+    }
+    
+    .preview-remove:hover {
+        background-color: #e74c3c;
+    }
+    
+    .preview-form {
+        display: grid;
+        gap: 0.5rem;
+    }
+    
+    .preview-form input, .preview-form select {
+        width: 100%;
+        padding: 0.25rem 0.5rem;
+        border-radius: 4px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        background-color: rgba(0, 0, 0, 0.2);
+        color: white;
+        font-size: 0.9rem;
+    }
+</style>
+
+<div class="mt-20 mb-8">
+    <div class="admin-header">
+        <h1 class="admin-title">Mass Add Pokémon</h1>
+        <div class="admin-actions">
+            <a href="/admin/pokemon" class="btn-back">
+                <i class="fas fa-arrow-left"></i> Back to List
+            </a>
+        </div>
+    </div>
+
+    <div class="form-container">
+        <form action="/admin/pokemon/mass-add" method="POST" enctype="multipart/form-data" id="massAddForm">
+            <div class="form-section">
+                <h2 class="form-section-title">Common Settings</h2>
+                <p class="form-hint mb-4">These settings will be applied to all Pokémon unless overridden individually.</p>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="startingNumber" class="form-label">Starting Pokédex Number</label>
+                        <input type="number" id="startingNumber" name="startingNumber" class="form-control" value="1" min="1">
+                        <div class="form-hint">First Pokémon will have this number, others will increment</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="commonRegion" class="form-label">Region</label>
+                        <select id="commonRegion" name="commonRegion" class="form-control">
+                            <option value="inherit">Select for each Pokémon</option>
+                            <option value="Kanto">Kanto</option>
+                            <option value="Johto">Johto</option>
+                            <option value="Hoenn">Hoenn</option>
+                            <option value="Sinnoh">Sinnoh</option>
+                            <option value="Unova">Unova</option>
+                            <option value="Kalos">Kalos</option>
+                            <option value="Alola">Alola</option>
+                            <option value="Galar">Galar</option>
+                            <option value="Paldea">Paldea</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="commonType1" class="form-label">Type 1</label>
+                        <select id="commonType1" name="commonType1" class="form-control">
+                            <option value="inherit">Select for each Pokémon</option>
+                            <option value="Normal">Normal</option>
+                            <option value="Fire">Fire</option>
+                            <option value="Water">Water</option>
+                            <option value="Electric">Electric</option>
+                            <option value="Grass">Grass</option>
+                            <option value="Ice">Ice</option>
+                            <option value="Fighting">Fighting</option>
+                            <option value="Poison">Poison</option>
+                            <option value="Ground">Ground</option>
+                            <option value="Flying">Flying</option>
+                            <option value="Psychic">Psychic</option>
+                            <option value="Bug">Bug</option>
+                            <option value="Rock">Rock</option>
+                            <option value="Ghost">Ghost</option>
+                            <option value="Dragon">Dragon</option>
+                            <option value="Dark">Dark</option>
+                            <option value="Steel">Steel</option>
+                            <option value="Fairy">Fairy</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="commonType2" class="form-label">Type 2</label>
+                        <select id="commonType2" name="commonType2" class="form-control">
+                            <option value="">None</option>
+                            <option value="inherit">Select for each Pokémon</option>
+                            <option value="Normal">Normal</option>
+                            <option value="Fire">Fire</option>
+                            <option value="Water">Water</option>
+                            <option value="Electric">Electric</option>
+                            <option value="Grass">Grass</option>
+                            <option value="Ice">Ice</option>
+                            <option value="Fighting">Fighting</option>
+                            <option value="Poison">Poison</option>
+                            <option value="Ground">Ground</option>
+                            <option value="Flying">Flying</option>
+                            <option value="Psychic">Psychic</option>
+                            <option value="Bug">Bug</option>
+                            <option value="Rock">Rock</option>
+                            <option value="Ghost">Ghost</option>
+                            <option value="Dragon">Dragon</option>
+                            <option value="Dark">Dark</option>
+                            <option value="Steel">Steel</option>
+                            <option value="Fairy">Fairy</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="commonStage" class="form-label">Stage</label>
+                        <select id="commonStage" name="commonStage" class="form-control">
+                            <option value="inherit">Select for each Pokémon</option>
+                            <option value="Basic">Basic</option>
+                            <option value="Stage 1">Stage 1</option>
+                            <option value="Stage 2">Stage 2</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="commonRarity" class="form-label">Rarity</label>
+                        <select id="commonRarity" name="commonRarity" class="form-control">
+                            <option value="inherit">Select for each Pokémon</option>
+                            <option value="Common">Common</option>
+                            <option value="Uncommon">Uncommon</option>
+                            <option value="Rare">Rare</option>
+                            <option value="Very Rare">Very Rare</option>
+                            <option value="Ultra Rare">Ultra Rare</option>
+                            <option value="Legendary">Legendary</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Upload Multiple Pokémon Data</label>
+                <div class="file-drop-area" id="dropArea">
+                    <div class="file-drop-icon">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                    </div>
+                    <div class="file-drop-text">
+                        Enter Pokémon names below, one per line
+                    </div>
+                    <textarea id="pokemonNames" class="form-control" rows="5" placeholder="Bulbasaur&#10;Ivysaur&#10;Venusaur"></textarea>
+                </div>
+                <div class="form-hint">Enter one Pokémon name per line. Each will be created with the common settings above.</div>
+            </div>
+
+            <div class="preview-container" id="previewContainer">
+                <!-- Preview items will be added here dynamically -->
+            </div>
+
+            <div class="form-group" style="margin-top: 2rem;">
+                <button type="submit" class="btn-submit" id="submitBtn" disabled>
+                    <i class="fas fa-save"></i> Create Pokémon
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    // DOM elements
+    const pokemonNamesInput = document.getElementById('pokemonNames');
+    const previewContainer = document.getElementById('previewContainer');
+    const submitBtn = document.getElementById('submitBtn');
+    const startingNumberInput = document.getElementById('startingNumber');
+    const commonType1Select = document.getElementById('commonType1');
+    const commonType2Select = document.getElementById('commonType2');
+    const commonRegionSelect = document.getElementById('commonRegion');
+    const commonStageSelect = document.getElementById('commonStage');
+    const commonRaritySelect = document.getElementById('commonRarity');
+    
+    // Store Pokémon names
+    let pokemonNames = [];
+    
+    // Initialize
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add event listeners
+        pokemonNamesInput.addEventListener('input', handlePokemonNamesInput);
+        startingNumberInput.addEventListener('change', updatePreviews);
+    });
+    
+    function handlePokemonNamesInput(e) {
+        const text = e.target.value.trim();
+        if (text) {
+            pokemonNames = text.split('\n').filter(name => name.trim() !== '');
+            submitBtn.disabled = pokemonNames.length === 0;
+            updatePreviews();
+        } else {
+            pokemonNames = [];
+            submitBtn.disabled = true;
+            previewContainer.innerHTML = '';
+        }
+    }
+    
+    function updatePreviews() {
+        // Clear preview container
+        previewContainer.innerHTML = '';
+        
+        // Get starting number
+        const startingNumber = parseInt(startingNumberInput.value) || 1;
+        
+        // Create preview for each Pokémon
+        pokemonNames.forEach((name, index) => {
+            if (!name.trim()) return;
+            
+            const pokedexNumber = startingNumber + index;
+            
+            // Create preview item
+            const previewItem = document.createElement('div');
+            previewItem.className = 'preview-item';
+            
+            // Create preview content
+            previewItem.innerHTML = `
+                <div class="preview-form">
+                    <input type="text" id="name_${index}" name="name_${index}" value="${name.trim()}" placeholder="Name" required>
+                    <input type="number" id="number_${index}" name="number_${index}" value="${pokedexNumber}" placeholder="Pokédex #" required>
+                    
+                    <select id="type1_${index}" name="type1_${index}">
+                        <option value="inherit">Inherit Type 1</option>
+                        <option value="Normal">Normal</option>
+                        <option value="Fire">Fire</option>
+                        <option value="Water">Water</option>
+                        <option value="Electric">Electric</option>
+                        <option value="Grass">Grass</option>
+                        <option value="Ice">Ice</option>
+                        <option value="Fighting">Fighting</option>
+                        <option value="Poison">Poison</option>
+                        <option value="Ground">Ground</option>
+                        <option value="Flying">Flying</option>
+                        <option value="Psychic">Psychic</option>
+                        <option value="Bug">Bug</option>
+                        <option value="Rock">Rock</option>
+                        <option value="Ghost">Ghost</option>
+                        <option value="Dragon">Dragon</option>
+                        <option value="Dark">Dark</option>
+                        <option value="Steel">Steel</option>
+                        <option value="Fairy">Fairy</option>
+                    </select>
+                    
+                    <select id="type2_${index}" name="type2_${index}">
+                        <option value="">None</option>
+                        <option value="inherit">Inherit Type 2</option>
+                        <option value="Normal">Normal</option>
+                        <option value="Fire">Fire</option>
+                        <option value="Water">Water</option>
+                        <option value="Electric">Electric</option>
+                        <option value="Grass">Grass</option>
+                        <option value="Ice">Ice</option>
+                        <option value="Fighting">Fighting</option>
+                        <option value="Poison">Poison</option>
+                        <option value="Ground">Ground</option>
+                        <option value="Flying">Flying</option>
+                        <option value="Psychic">Psychic</option>
+                        <option value="Bug">Bug</option>
+                        <option value="Rock">Rock</option>
+                        <option value="Ghost">Ghost</option>
+                        <option value="Dragon">Dragon</option>
+                        <option value="Dark">Dark</option>
+                        <option value="Steel">Steel</option>
+                        <option value="Fairy">Fairy</option>
+                    </select>
+                    
+                    <select id="region_${index}" name="region_${index}">
+                        <option value="inherit">Inherit Region</option>
+                        <option value="Kanto">Kanto</option>
+                        <option value="Johto">Johto</option>
+                        <option value="Hoenn">Hoenn</option>
+                        <option value="Sinnoh">Sinnoh</option>
+                        <option value="Unova">Unova</option>
+                        <option value="Kalos">Kalos</option>
+                        <option value="Alola">Alola</option>
+                        <option value="Galar">Galar</option>
+                        <option value="Paldea">Paldea</option>
+                        <option value="Other">Other</option>
+                    </select>
+                    
+                    <select id="stage_${index}" name="stage_${index}">
+                        <option value="inherit">Inherit Stage</option>
+                        <option value="Basic">Basic</option>
+                        <option value="Stage 1">Stage 1</option>
+                        <option value="Stage 2">Stage 2</option>
+                    </select>
+                    
+                    <select id="rarity_${index}" name="rarity_${index}">
+                        <option value="inherit">Inherit Rarity</option>
+                        <option value="Common">Common</option>
+                        <option value="Uncommon">Uncommon</option>
+                        <option value="Rare">Rare</option>
+                        <option value="Very Rare">Very Rare</option>
+                        <option value="Ultra Rare">Ultra Rare</option>
+                        <option value="Legendary">Legendary</option>
+                    </select>
+                </div>
+            `;
+            
+            // Add remove button
+            const removeBtn = document.createElement('div');
+            removeBtn.className = 'preview-remove';
+            removeBtn.innerHTML = '<i class="fas fa-times"></i>';
+            removeBtn.addEventListener('click', () => {
+                // Remove this Pokémon from the list
+                pokemonNames.splice(index, 1);
+                pokemonNamesInput.value = pokemonNames.join('\n');
+                updatePreviews();
+                submitBtn.disabled = pokemonNames.length === 0;
+            });
+            
+            previewItem.appendChild(removeBtn);
+            previewContainer.appendChild(previewItem);
+        });
+    }
+    
+    // Update number sequence when a number is manually changed
+    function updateNumberSequence() {
+        // Get all number inputs
+        const numberInputs = document.querySelectorAll('[id^="number_"]');
+        
+        // Check if any numbers conflict
+        const numbers = Array.from(numberInputs).map(input => input.value);
+        const uniqueNumbers = new Set(numbers);
+        
+        if (uniqueNumbers.size !== numbers.length) {
+            alert('Warning: Some Pokémon have duplicate numbers. Please ensure each Pokémon has a unique number.');
+        }
+    }
+    
+    // Add event listener to the preview container to catch changes to number inputs
+    previewContainer.addEventListener('change', function(e) {
+        if (e.target && e.target.id && e.target.id.startsWith('number_')) {
+            updateNumberSequence();
+        }
+    });
+    
+    // Handle form submission
+    document.getElementById('massAddForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        if (pokemonNames.length === 0) {
+            alert('Please enter at least one Pokémon name.');
+            return;
+        }
+        
+        // Create FormData object
+        const formData = new FormData();
+        
+        // Add starting number
+        formData.append('startingNumber', startingNumberInput.value);
+        
+        // Add common attributes
+        formData.append('commonRegion', commonRegionSelect.value);
+        formData.append('commonStage', commonStageSelect.value);
+        formData.append('commonRarity', commonRaritySelect.value);
+        
+        // Add common types
+        const commonType1 = commonType1Select.value;
+        const commonType2 = commonType2Select.value;
+        const commonTypes = [];
+        if (commonType1 && commonType1 !== 'inherit') {
+            commonTypes.push(commonType1);
+        }
+        if (commonType2 && commonType2 !== 'inherit' && commonType2 !== '') {
+            commonTypes.push(commonType2);
+        }
+        formData.append('commonTypes', JSON.stringify(commonTypes));
+        
+        // Add Pokémon data
+        pokemonNames.forEach((name, index) => {
+            if (!name.trim()) return;
+            
+            formData.append(`name_${index}`, document.getElementById(`name_${index}`).value);
+            formData.append(`number_${index}`, document.getElementById(`number_${index}`).value);
+            formData.append(`type1_${index}`, document.getElementById(`type1_${index}`).value);
+            formData.append(`type2_${index}`, document.getElementById(`type2_${index}`).value);
+            formData.append(`region_${index}`, document.getElementById(`region_${index}`).value);
+            formData.append(`stage_${index}`, document.getElementById(`stage_${index}`).value);
+            formData.append(`rarity_${index}`, document.getElementById(`rarity_${index}`).value);
+        });
+        
+        // Add total Pokémon count
+        formData.append('pokemonCount', pokemonNames.length);
+        
+        // Log the form data for debugging
+        console.log('Form data:');
+        for (let [key, value] of formData.entries()) {
+            console.log(key, value);
+        }
+        
+        // Submit the form
+        fetch('/admin/pokemon/mass-add', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => {
+            if (!response.ok) {
+                return response.text().then(text => {
+                    throw new Error(`Server error: ${text}`);
+                });
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                window.location.href = `/admin/pokemon?message=${encodeURIComponent(data.message)}&messageType=success`;
+            } else {
+                alert(`Error: ${data.message}`);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert(`An error occurred while adding Pokémon: ${error.message}`);
+        });
+    });
+</script>

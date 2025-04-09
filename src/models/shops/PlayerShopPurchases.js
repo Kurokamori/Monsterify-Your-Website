@@ -2,6 +2,27 @@ const pool = require('../../db');
 
 class PlayerShopPurchases {
   /**
+   * Check if a column exists in a table
+   * @param {string} tableName - The table name
+   * @param {string} columnName - The column name
+   * @returns {Promise<boolean>} True if the column exists, false otherwise
+   */
+  static async columnExists(tableName, columnName) {
+    try {
+      const query = `
+        SELECT column_name
+        FROM information_schema.columns
+        WHERE table_name = $1 AND column_name = $2
+      `;
+      const result = await pool.query(query, [tableName, columnName]);
+      return result.rows.length > 0;
+    } catch (error) {
+      console.error(`Error checking if column ${columnName} exists in table ${tableName}:`, error);
+      return false;
+    }
+  }
+
+  /**
    * Record a player purchase from a shop
    * @param {string} playerId - The player ID
    * @param {string} shopId - The shop ID
@@ -33,23 +54,46 @@ class PlayerShopPurchases {
         const newQuantity = parseInt(existingRecord.quantity) + parseInt(quantity);
         console.log(`Updating existing purchase record: id=${existingRecord.id}, current quantity=${existingRecord.quantity}, new quantity=${newQuantity}`);
 
-        const updateQuery = `
-          UPDATE player_shop_purchases
-          SET quantity = $1, updated_at = CURRENT_TIMESTAMP
-          WHERE id = $2
-          RETURNING *
-        `;
+        // Check if updated_at column exists in the table
+        const hasUpdatedAtColumn = await this.columnExists('player_shop_purchases', 'updated_at');
+
+        // Use different update query based on whether updated_at column exists
+        const updateQuery = hasUpdatedAtColumn ?
+          `
+            UPDATE player_shop_purchases
+            SET quantity = $1, updated_at = CURRENT_TIMESTAMP
+            WHERE id = $2
+            RETURNING *
+          ` :
+          `
+            UPDATE player_shop_purchases
+            SET quantity = $1
+            WHERE id = $2
+            RETURNING *
+          `;
 
         const updateResult = await pool.query(updateQuery, [newQuantity, existingRecord.id]);
         return updateResult.rows[0];
       } else {
         // Create new record
         console.log(`Creating new purchase record for player ${playerId}, shop ${shopId}, item ${itemId}, quantity ${quantity}`);
-        const insertQuery = `
-          INSERT INTO player_shop_purchases (player_id, shop_id, item_id, quantity, date)
-          VALUES ($1, $2, $3, $4, $5)
-          RETURNING *
-        `;
+
+        // Check if timestamp columns exist in the table
+        const hasUpdatedAtColumn = await this.columnExists('player_shop_purchases', 'updated_at');
+        const hasCreatedAtColumn = await this.columnExists('player_shop_purchases', 'created_at');
+
+        // Use different insert query based on whether updated_at column exists
+        const insertQuery = hasUpdatedAtColumn ?
+          `
+            INSERT INTO player_shop_purchases (player_id, shop_id, item_id, quantity, date, created_at, updated_at)
+            VALUES ($1, $2, $3, $4, $5, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+            RETURNING *
+          ` :
+          `
+            INSERT INTO player_shop_purchases (player_id, shop_id, item_id, quantity, date)
+            VALUES ($1, $2, $3, $4, $5)
+            RETURNING *
+          `;
 
         const insertResult = await pool.query(insertQuery, [playerId, shopId, itemId, quantity, targetDate]);
         return insertResult.rows[0];

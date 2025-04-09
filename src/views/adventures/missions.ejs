@@ -642,7 +642,7 @@ a {
         monsterCard.innerHTML = `
           <div class="relative">
             <div class="absolute inset-0 bg-${typeColor}-500 opacity-20 rounded-md"></div>
-            <img src="${monster.img_link}" alt="${monster.name}" class="mission-monster-image mr-3 relative z-10">
+            <img src="${monster.img_link || '/images/default_mon.png'}" alt="${monster.name}" class="mission-monster-image mr-3 relative z-10" onerror="this.src='/images/default_mon.png'">
           </div>
           <div>
             <div class="text-white font-semibold">${monster.name}</div>
@@ -754,6 +754,54 @@ a {
 
         <p class="text-gray-300 mb-4">Select up to 3 monsters to send on this mission:</p>
 
+        <!-- Search and filter controls -->
+        <div id="monster-search-filter" class="mb-4 bg-gray-700 p-4 rounded-lg">
+          <div class="flex flex-col md:flex-row gap-4">
+            <!-- Search box -->
+            <div class="flex-grow">
+              <label for="monster-search" class="block text-sm font-medium text-gray-300 mb-1">Search monsters:</label>
+              <input type="text" id="monster-search" class="w-full bg-gray-800 border border-gray-600 rounded-md px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Enter monster name...">
+            </div>
+
+            <!-- Type filter -->
+            <div class="w-full md:w-1/4">
+              <label for="type-filter" class="block text-sm font-medium text-gray-300 mb-1">Filter by type:</label>
+              <select id="type-filter" class="w-full bg-gray-800 border border-gray-600 rounded-md px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <option value="">All types</option>
+                <option value="Normal">Normal</option>
+                <option value="Fire">Fire</option>
+                <option value="Water">Water</option>
+                <option value="Electric">Electric</option>
+                <option value="Grass">Grass</option>
+                <option value="Ice">Ice</option>
+                <option value="Fighting">Fighting</option>
+                <option value="Poison">Poison</option>
+                <option value="Ground">Ground</option>
+                <option value="Flying">Flying</option>
+                <option value="Psychic">Psychic</option>
+                <option value="Bug">Bug</option>
+                <option value="Rock">Rock</option>
+                <option value="Ghost">Ghost</option>
+                <option value="Dragon">Dragon</option>
+                <option value="Dark">Dark</option>
+                <option value="Steel">Steel</option>
+                <option value="Fairy">Fairy</option>
+              </select>
+            </div>
+
+            <!-- Level filter -->
+            <div class="w-full md:w-1/4">
+              <label for="level-filter" class="block text-sm font-medium text-gray-300 mb-1">Sort by:</label>
+              <select id="level-filter" class="w-full bg-gray-800 border border-gray-600 rounded-md px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <option value="name-asc">Name (A-Z)</option>
+                <option value="name-desc">Name (Z-A)</option>
+                <option value="level-desc">Level (High-Low)</option>
+                <option value="level-asc">Level (Low-High)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
         <div id="monster-selection" class="mb-6">
           <div class="text-center py-4">
             <div class="inline-block animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-400"></div>
@@ -804,10 +852,18 @@ a {
         // Clear loading indicator
         monsterSelection.innerHTML = '';
 
-        // Create monster selection grid - now 6 columns wide
+        // Create monster selection grid with fixed 4 columns using inline CSS
         const monsterGrid = document.createElement('div');
-        monsterGrid.className = 'grid grid-cols-6 gap-2 max-h-80 overflow-y-auto';
-        monsterGrid.style.width = '100%'; // Ensure full width
+        monsterGrid.id = 'monster-grid';
+        // Apply explicit grid styling with inline CSS
+        monsterGrid.style.display = 'grid';
+        monsterGrid.style.gridTemplateColumns = 'repeat(4, 1fr)';
+        monsterGrid.style.gap = '16px';
+        monsterGrid.style.maxHeight = '400px';
+        monsterGrid.style.overflowY = 'auto';
+        monsterGrid.style.width = '100%';
+        monsterGrid.style.padding = '8px';
+        monsterGrid.style.boxSizing = 'border-box';
 
         // Selected monsters array
         const selectedMonsters = [];
@@ -815,60 +871,13 @@ a {
         // Filter monsters to only include those with valid images
         const validMonsters = data.monsters.filter(monster => monster.img_link && monster.img_link !== 'null');
 
-        // Add monsters to grid
-        validMonsters.forEach(monster => {
-          const monsterCard = document.createElement('div');
-          monsterCard.className = 'monster-select-card flex flex-col items-center p-2 border border-gray-700 rounded-md cursor-pointer hover:bg-gray-700 transition-colors';
-          monsterCard.setAttribute('data-mon-id', monster.mon_id);
-          monsterCard.style.height = '120px'; // Fixed height for consistency
-          monsterCard.style.width = '100%'; // Full width within grid cell
+        // Store all valid monsters for filtering
+        window.allMissionMonsters = validMonsters;
 
-          monsterCard.innerHTML = `
-            <img src="${monster.img_link}" alt="${monster.name}" class="w-16 h-16 object-contain rounded-md mb-1">
-            <div class="text-center w-full overflow-hidden">
-              <div class="text-white text-xs font-semibold truncate">${monster.name}</div>
-              <div class="text-gray-400 text-xs">Lv.${monster.level}</div>
-              ${monster.trainer_name ? `<div class="text-indigo-400 text-xs truncate">${monster.trainer_name}</div>` : ''}
-            </div>
-          `;
+        // Render the initial monster grid
+        renderMonsterGrid(validMonsters, monsterGrid, selectedMonsters);
 
-          // Add click event to select/deselect
-          monsterCard.addEventListener('click', function() {
-            const monId = this.getAttribute('data-mon-id');
-
-            if (this.classList.contains('selected')) {
-              // Deselect
-              this.classList.remove('selected', 'border-blue-500', 'bg-blue-900', 'bg-opacity-20');
-              this.classList.add('border-gray-700');
-
-              // Remove from selected array
-              const index = selectedMonsters.indexOf(monId);
-              if (index > -1) {
-                selectedMonsters.splice(index, 1);
-              }
-            } else {
-              // Check if already have 3 selected
-              if (selectedMonsters.length >= 3) {
-                alert('You can only select up to 3 monsters for a mission.');
-                return;
-              }
-
-              // Select
-              this.classList.add('selected', 'border-blue-500', 'bg-blue-900', 'bg-opacity-20');
-              this.classList.remove('border-gray-700');
-
-              // Add to selected array
-              selectedMonsters.push(monId);
-            }
-
-            // Update start button state
-            const startButton = document.getElementById('start-mission');
-            startButton.disabled = selectedMonsters.length === 0;
-          });
-
-          monsterGrid.appendChild(monsterCard);
-        });
-
+        // Add the grid to the selection container
         monsterSelection.appendChild(monsterGrid);
 
         // Add a counter for selected monsters
@@ -877,20 +886,8 @@ a {
         selectionCounter.innerHTML = '<span id="selection-count">0</span>/3 monsters selected';
         monsterSelection.appendChild(selectionCounter);
 
-        // Update counter when monsters are selected/deselected
-        const updateCounter = () => {
-          document.getElementById('selection-count').textContent = selectedMonsters.length;
-        };
-
-        // Update the click event for all monster cards to update counter
-        document.querySelectorAll('.monster-select-card').forEach(card => {
-          const originalClickListener = card.onclick;
-          card.addEventListener('click', function() {
-            // The original click handler is already attached via addEventListener above
-            // Just need to update the counter after a short delay to ensure the selection has been processed
-            setTimeout(updateCounter, 10);
-          });
-        });
+        // Set up search and filter functionality
+        setupSearchAndFilter(selectedMonsters);
 
         // Update start mission button
         document.getElementById('start-mission').addEventListener('click', function() {
@@ -903,6 +900,234 @@ a {
       console.error('Error loading trainer monsters:', error);
       document.getElementById('monster-selection').innerHTML = '<div class="bg-red-900 bg-opacity-30 p-4 rounded-lg border border-red-700"><p class="text-red-300 text-center">Error loading your monsters: ' + error.message + '</p></div>';
     }
+  }
+
+  // Function to render the monster grid based on filtered monsters
+  function renderMonsterGrid(monsters, grid, selectedMonsters) {
+    // Clear the grid first
+    grid.innerHTML = '';
+
+    if (monsters.length === 0) {
+      const noResults = document.createElement('div');
+      // Apply inline styling for the no results message
+      noResults.style.gridColumn = 'span 4';
+      noResults.style.padding = '16px';
+      noResults.style.textAlign = 'center';
+      noResults.style.color = '#9CA3AF'; // text-gray-400
+      noResults.style.backgroundColor = 'rgba(31, 41, 55, 0.5)';
+      noResults.style.borderRadius = '6px';
+      noResults.style.margin = '16px 0';
+      noResults.textContent = 'No monsters match your search criteria';
+      grid.appendChild(noResults);
+      return;
+    }
+
+    // Add monsters to grid
+    monsters.forEach(monster => {
+      const monsterCard = document.createElement('div');
+      monsterCard.setAttribute('data-mon-id', monster.mon_id);
+
+      // Apply comprehensive inline styling for consistent card appearance
+      monsterCard.style.display = 'flex';
+      monsterCard.style.flexDirection = 'column';
+      monsterCard.style.alignItems = 'center';
+      monsterCard.style.justifyContent = 'center';
+      monsterCard.style.padding = '12px';
+      monsterCard.style.border = '1px solid #374151'; // gray-700
+      monsterCard.style.borderRadius = '6px';
+      monsterCard.style.cursor = 'pointer';
+      monsterCard.style.transition = 'all 0.2s ease';
+      monsterCard.style.backgroundColor = 'rgba(31, 41, 55, 0.8)'; // gray-800 with opacity
+      monsterCard.style.height = '150px';
+      monsterCard.style.width = '100%';
+      monsterCard.style.overflow = 'hidden';
+      monsterCard.style.position = 'relative';
+      monsterCard.style.boxSizing = 'border-box';
+
+      // Add hover effect
+      monsterCard.addEventListener('mouseenter', function() {
+        this.style.backgroundColor = 'rgba(55, 65, 81, 0.8)'; // gray-700 with opacity
+        this.style.transform = 'translateY(-2px)';
+        this.style.boxShadow = '0 4px 6px rgba(0, 0, 0, 0.1)';
+      });
+
+      monsterCard.addEventListener('mouseleave', function() {
+        if (!this.hasAttribute('data-selected')) {
+          this.style.backgroundColor = 'rgba(31, 41, 55, 0.8)';
+          this.style.transform = 'translateY(0)';
+          this.style.boxShadow = 'none';
+        }
+      });
+
+      // Create image element with inline styles
+      const monsterImg = document.createElement('img');
+      monsterImg.src = monster.img_link;
+      monsterImg.alt = monster.name;
+      monsterImg.style.width = '80px';
+      monsterImg.style.height = '80px';
+      monsterImg.style.objectFit = 'contain';
+      monsterImg.style.borderRadius = '6px';
+      monsterImg.style.marginBottom = '8px';
+      monsterImg.onerror = function() { this.src = '/images/default_mon.png'; };
+
+      // Create text container
+      const textContainer = document.createElement('div');
+      textContainer.style.textAlign = 'center';
+      textContainer.style.width = '100%';
+      textContainer.style.overflow = 'hidden';
+      textContainer.style.padding = '0 4px';
+
+      // Monster name
+      const nameDiv = document.createElement('div');
+      nameDiv.textContent = monster.name;
+      nameDiv.style.color = 'white';
+      nameDiv.style.fontSize = '0.875rem';
+      nameDiv.style.fontWeight = '600';
+      nameDiv.style.whiteSpace = 'nowrap';
+      nameDiv.style.overflow = 'hidden';
+      nameDiv.style.textOverflow = 'ellipsis';
+
+      // Monster level
+      const levelDiv = document.createElement('div');
+      levelDiv.textContent = `Lv.${monster.level}`;
+      levelDiv.style.color = '#9CA3AF'; // gray-400
+      levelDiv.style.fontSize = '0.75rem';
+
+      // Add elements to container
+      textContainer.appendChild(nameDiv);
+      textContainer.appendChild(levelDiv);
+
+      // Add trainer name if available
+      if (monster.trainer_name) {
+        const trainerDiv = document.createElement('div');
+        trainerDiv.textContent = monster.trainer_name;
+        trainerDiv.style.color = '#818CF8'; // indigo-400
+        trainerDiv.style.fontSize = '0.75rem';
+        trainerDiv.style.whiteSpace = 'nowrap';
+        trainerDiv.style.overflow = 'hidden';
+        trainerDiv.style.textOverflow = 'ellipsis';
+        textContainer.appendChild(trainerDiv);
+      }
+
+      // Add elements to card
+      monsterCard.appendChild(monsterImg);
+      monsterCard.appendChild(textContainer);
+
+      // Add click event to select/deselect
+      monsterCard.addEventListener('click', function() {
+        const monId = this.getAttribute('data-mon-id');
+
+        if (this.hasAttribute('data-selected')) {
+          // Deselect
+          this.removeAttribute('data-selected');
+          this.style.border = '1px solid #374151'; // gray-700
+          this.style.backgroundColor = 'rgba(31, 41, 55, 0.8)'; // gray-800 with opacity
+          this.style.boxShadow = 'none';
+
+          // Remove from selected array
+          const index = selectedMonsters.indexOf(monId);
+          if (index > -1) {
+            selectedMonsters.splice(index, 1);
+          }
+        } else {
+          // Check if already have 3 selected
+          if (selectedMonsters.length >= 3) {
+            alert('You can only select up to 3 monsters for a mission.');
+            return;
+          }
+
+          // Select
+          this.setAttribute('data-selected', 'true');
+          this.style.border = '2px solid #3B82F6'; // blue-500
+          this.style.backgroundColor = 'rgba(30, 58, 138, 0.2)'; // blue-900 with opacity
+          this.style.boxShadow = '0 0 8px rgba(59, 130, 246, 0.5)'; // blue glow
+
+          // Add to selected array
+          selectedMonsters.push(monId);
+        }
+
+        // Update start button state
+        const startButton = document.getElementById('start-mission');
+        startButton.disabled = selectedMonsters.length === 0;
+
+        // Update counter
+        const selectionCount = document.getElementById('selection-count');
+        if (selectionCount) {
+          selectionCount.textContent = selectedMonsters.length;
+        }
+      });
+
+      grid.appendChild(monsterCard);
+    });
+
+  }
+
+  // Function to set up search and filter functionality
+  function setupSearchAndFilter(selectedMonsters) {
+    const searchInput = document.getElementById('monster-search');
+    const typeFilter = document.getElementById('type-filter');
+    const levelFilter = document.getElementById('level-filter');
+
+    // Function to apply filters and update the grid
+    const applyFilters = () => {
+      const searchTerm = searchInput.value.toLowerCase();
+      const typeValue = typeFilter.value;
+      const sortValue = levelFilter.value;
+
+      // Get all monsters
+      let filteredMonsters = [...window.allMissionMonsters];
+
+      // Apply search filter
+      if (searchTerm) {
+        filteredMonsters = filteredMonsters.filter(monster =>
+          monster.name.toLowerCase().includes(searchTerm)
+        );
+      }
+
+      // Apply type filter
+      if (typeValue) {
+        filteredMonsters = filteredMonsters.filter(monster =>
+          monster.type1 === typeValue ||
+          monster.type2 === typeValue ||
+          monster.type3 === typeValue ||
+          monster.type4 === typeValue ||
+          monster.type5 === typeValue
+        );
+      }
+
+      // Apply sorting
+      if (sortValue === 'name-asc') {
+        filteredMonsters.sort((a, b) => a.name.localeCompare(b.name));
+      } else if (sortValue === 'name-desc') {
+        filteredMonsters.sort((a, b) => b.name.localeCompare(a.name));
+      } else if (sortValue === 'level-desc') {
+        filteredMonsters.sort((a, b) => b.level - a.level);
+      } else if (sortValue === 'level-asc') {
+        filteredMonsters.sort((a, b) => a.level - b.level);
+      }
+
+      // Update the grid with filtered monsters
+      const monsterGrid = document.getElementById('monster-grid');
+      renderMonsterGrid(filteredMonsters, monsterGrid, selectedMonsters);
+
+      // Restore selected state for monsters
+      if (selectedMonsters.length > 0) {
+        document.querySelectorAll('#monster-grid > div').forEach(card => {
+          const monId = card.getAttribute('data-mon-id');
+          if (selectedMonsters.includes(monId)) {
+            card.setAttribute('data-selected', 'true');
+            card.style.border = '2px solid #3B82F6'; // blue-500
+            card.style.backgroundColor = 'rgba(30, 58, 138, 0.2)'; // blue-900 with opacity
+            card.style.boxShadow = '0 0 8px rgba(59, 130, 246, 0.5)'; // blue glow
+          }
+        });
+      }
+    };
+
+    // Add event listeners to search and filter controls
+    searchInput.addEventListener('input', applyFilters);
+    typeFilter.addEventListener('change', applyFilters);
+    levelFilter.addEventListener('change', applyFilters);
   }
 
   async function startMission(missionId, monIds, modalOverlay) {

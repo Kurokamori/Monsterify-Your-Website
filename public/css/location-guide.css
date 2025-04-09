@@ -1,0 +1,59 @@
+.location-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border: 1px solid rgba(0, 0, 0, 0.125);
+}
+
+.location-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.location-card .card-img-top {
+  height: 200px;
+  object-fit: cover;
+}
+
+.location-card .card-title {
+  font-weight: 600;
+}
+
+.location-card .card-text {
+  color: #6c757d;
+}
+
+.markdown-content {
+  line-height: 1.6;
+}
+
+.markdown-content h2 {
+  color: #343a40;
+  border-bottom: 1px solid #dee2e6;
+  padding-bottom: 0.5rem;
+}
+
+.markdown-content ul {
+  padding-left: 1.5rem;
+}
+
+.markdown-content ul li {
+  margin-bottom: 0.5rem;
+}
+
+.breadcrumb {
+  background-color: #f8f9fa;
+  padding: 0.75rem 1rem;
+  border-radius: 0.25rem;
+}
+
+.badge {
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.badge.bg-success {
+  background-color: #28a745 !important;
+}
+
+.badge.bg-primary {
+  background-color: #007bff !important;
+}

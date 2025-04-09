@@ -103,13 +103,19 @@ router.post('/', async (req, res) => {
 
       // Determine which trainer to use
       let selectedTrainer;
-      if (trainerId === 'random') {
-        // Randomly select a trainer
+      // For game corner, always use random trainer regardless of trainerId
+      if (source === 'game_corner') {
+        // Randomly select a trainer for game corner rewards
+        const randomIndex = Math.floor(Math.random() * trainers.length);
+        selectedTrainer = trainers[randomIndex];
+        console.log(`Game corner reward - randomly assigned to ${selectedTrainer.name} (${selectedTrainer.id})`);
+      } else if (trainerId === 'random') {
+        // Randomly select a trainer for other sources when explicitly requested
         const randomIndex = Math.floor(Math.random() * trainers.length);
         selectedTrainer = trainers[randomIndex];
         console.log(`Randomly selected trainer: ${selectedTrainer.name} (${selectedTrainer.id})`);
       } else {
-        // Find the specified trainer
+        // Find the specified trainer for non-game corner rewards
         selectedTrainer = trainers.find(t => t.id == trainerId);
         if (!selectedTrainer) {
           console.log(`Trainer not found: ${trainerId}, using random trainer`);

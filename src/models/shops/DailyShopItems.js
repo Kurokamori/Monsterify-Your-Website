@@ -60,9 +60,10 @@ class DailyShopItems {
 
   /**
    * Get a specific item from a shop
-   * @param {string} itemId - The item ID
    * @param {string} shopId - The shop ID
+   * @param {string} itemId - The item ID
    * @param {string} date - The date in YYYY-MM-DD format
+   * @param {string} playerId - The player ID
    * @returns {Promise<Object>} Shop item
    */
   static async getShopItem(shopId, itemId, date = null, playerId = null) {

@@ -424,7 +424,8 @@ class LocationActivityController {
         source: 'location_activity',
         returnUrl: '/town/activities',
         productivityScore,
-        sessionId: sessionId // Pass the session ID to the view
+        sessionId: sessionId, // Pass the session ID to the view
+        session: { session_id: sessionId } // Also pass as session object for consistency
       });
 
       // Store the session ID in the user session for later use
@@ -440,10 +441,15 @@ class LocationActivityController {
    */
   static async claimReward(req, res) {
     try {
-      const { rewardId, rewardType, trainerId } = req.body;
+      const { rewardId, rewardType, trainerId, session_id } = req.body;
 
       if (!rewardId || !rewardType || !trainerId) {
         return res.status(400).json({ success: false, message: 'Reward ID, type, and trainer ID are required' });
+      }
+
+      // Log the session_id if provided
+      if (session_id) {
+        console.log('Session ID provided:', session_id);
       }
 
       // Get the rewards from the session

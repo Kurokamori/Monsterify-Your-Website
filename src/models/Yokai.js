@@ -17,6 +17,85 @@ class Yokai {
   }
 
   /**
+   * Create a new Yokai
+   * @param {Object} yokai - Yokai data
+   * @returns {Promise<Object>} - Created Yokai
+   */
+  static async create(yokai) {
+    try {
+      const query = `
+        INSERT INTO yokai (
+          id, "Name", "Rank", "Tribe", "Attribute"
+        ) VALUES ($1, $2, $3, $4, $5)
+        RETURNING *
+      `;
+
+      const values = [
+        yokai.id,
+        yokai.Name,
+        yokai.Rank,
+        yokai.Tribe,
+        yokai.Attribute
+      ];
+
+      const result = await pool.query(query, values);
+      return result.rows[0];
+    } catch (error) {
+      console.error('Error creating Yokai:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Update an existing Yokai
+   * @param {Object} yokai - Yokai data
+   * @returns {Promise<Object>} - Updated Yokai
+   */
+  static async update(yokai) {
+    try {
+      const query = `
+        UPDATE yokai SET
+          id = $1,
+          "Rank" = $3,
+          "Tribe" = $4,
+          "Attribute" = $5
+        WHERE "Name" = $2
+        RETURNING *
+      `;
+
+      const values = [
+        yokai.id,
+        yokai.Name,
+        yokai.Rank,
+        yokai.Tribe,
+        yokai.Attribute
+      ];
+
+      const result = await pool.query(query, values);
+      return result.rows[0];
+    } catch (error) {
+      console.error('Error updating Yokai:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Delete a Yokai
+   * @param {string} name - Yokai name
+   * @returns {Promise<boolean>} - Success status
+   */
+  static async delete(name) {
+    try {
+      const query = 'DELETE FROM yokai WHERE "Name" = $1';
+      const result = await pool.query(query, [name]);
+      return result.rowCount > 0;
+    } catch (error) {
+      console.error('Error deleting Yokai:', error);
+      throw error;
+    }
+  }
+
+  /**
    * Get Yokai by name
    * @param {string} name - Yokai name
    * @returns {Promise<Object>} - Yokai object
@@ -106,7 +185,7 @@ class Yokai {
   static async getRandom(filters = {}, count = 1) {
     try {
       const filteredYokai = await this.getFiltered(filters);
-      
+
       if (filteredYokai.length === 0) {
         return [];
       }

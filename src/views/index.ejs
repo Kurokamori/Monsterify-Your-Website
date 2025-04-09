@@ -371,7 +371,7 @@
     /* Fakemon Gallery Styles */
     .fakemon-gallery {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        grid-template-columns: repeat(4, 1fr);
         gap: 1rem;
     }
 
@@ -510,7 +510,11 @@
         }
 
         .fakemon-gallery {
-            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            grid-template-columns: repeat(4, 1fr);
+        }
+
+        .fakemon-card img {
+            height: 120px;
         }
     }
 </style>

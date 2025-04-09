@@ -1,0 +1,154 @@
+<%- include('../../partials/admin-header') %>
+
+<div class="container mx-auto px-4 py-8" style="max-width: 800px;">
+  <div class="flex items-center mb-6">
+    <a href="/admin/locations/area/<%= regionSlug %>/<%= areaSlug %>" class="text-accent hover:text-accent-hover mr-4">
+      <i class="fas fa-arrow-left mr-1"></i> Back to Area
+    </a>
+    <h1 class="text-3xl font-bold"><%= title %></h1>
+  </div>
+
+  <div class="bg-card-background rounded-lg p-6">
+    <form action="<%= location ? `/admin/locations/location/${regionSlug}/${areaSlug}/${location.slug}/edit` : `/admin/locations/location/${regionSlug}/${areaSlug}/new` %>" method="POST" enctype="multipart/form-data">
+      <div class="form-group mb-4">
+        <label for="regionSlug" class="block text-sm font-medium text-gray-300 mb-1">Region</label>
+        <select id="regionSlug" name="regionSlug" class="form-select w-full" required onchange="updateAreaOptions()">
+          <% regions.forEach(region => { %>
+            <option value="<%= region.slug %>" <%= region.slug === regionSlug ? 'selected' : '' %>><%= region.name %></option>
+          <% }); %>
+        </select>
+      </div>
+      
+      <div class="form-group mb-4">
+        <label for="areaSlug" class="block text-sm font-medium text-gray-300 mb-1">Area</label>
+        <select id="areaSlug" name="areaSlug" class="form-select w-full" required>
+          <% Object.entries(areas).forEach(([region, areaList]) => { %>
+            <% areaList.forEach(area => { %>
+              <option value="<%= area.slug %>" 
+                      data-region="<%= region %>" 
+                      <%= area.slug === areaSlug ? 'selected' : '' %>
+                      <%= region !== regionSlug ? 'style="display:none;"' : '' %>>
+                <%= area.name %>
+              </option>
+            <% }); %>
+          <% }); %>
+        </select>
+      </div>
+      
+      <div class="form-group mb-4">
+        <label for="name" class="block text-sm font-medium text-gray-300 mb-1">Location Name</label>
+        <input type="text" id="name" name="name" class="form-input w-full" value="<%= location ? location.name : '' %>" required>
+        <p class="text-xs text-gray-400 mt-1">The display name for this location.</p>
+      </div>
+      
+      <div class="form-group mb-4">
+        <label for="slug" class="block text-sm font-medium text-gray-300 mb-1">Slug</label>
+        <input type="text" id="slug" name="slug" class="form-input w-full" value="<%= location ? location.slug : '' %>" required>
+        <p class="text-xs text-gray-400 mt-1">URL-friendly identifier (e.g., "trade-center"). Use only lowercase letters, numbers, and hyphens.</p>
+      </div>
+      
+      <div class="form-group mb-4">
+        <label for="description" class="block text-sm font-medium text-gray-300 mb-1">Description</label>
+        <textarea id="description" name="description" class="form-textarea w-full" rows="3" required><%= location ? location.description : '' %></textarea>
+        <p class="text-xs text-gray-400 mt-1">A brief description of this location.</p>
+      </div>
+      
+      <div class="form-group mb-6">
+        <label for="image" class="block text-sm font-medium text-gray-300 mb-1">Location Image</label>
+        <div class="flex items-start">
+          <div class="flex-grow">
+            <input type="file" id="image" name="image" class="form-input w-full" accept="image/*">
+            <p class="text-xs text-gray-400 mt-1">Recommended size: 1280x720px (16:9 ratio). Max 5MB.</p>
+          </div>
+          <% if (location && location.image) { %>
+            <div class="ml-4 flex-shrink-0">
+              <img src="<%= location.image %>" alt="Current image" class="h-20 w-auto rounded">
+              <p class="text-xs text-gray-400 mt-1 text-center">Current</p>
+            </div>
+          <% } %>
+        </div>
+      </div>
+      
+      <div class="form-group mt-8 flex justify-between">
+        <a href="/admin/locations/area/<%= regionSlug %>/<%= areaSlug %>" class="btn btn-secondary">Cancel</a>
+        <button type="submit" class="btn btn-primary">
+          <%= location ? 'Update Location' : 'Create Location' %>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<style>
+  .form-input, .form-textarea, .form-select {
+    background-color: rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: white;
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.375rem;
+    width: 100%;
+  }
+  
+  .form-input:focus, .form-textarea:focus, .form-select:focus {
+    border-color: var(--accent-color, #ffc107);
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(255, 193, 7, 0.2);
+  }
+  
+  .form-textarea {
+    min-height: 100px;
+    resize: vertical;
+  }
+</style>
+
+<script>
+  // Auto-generate slug from name
+  const nameInput = document.getElementById('name');
+  const slugInput = document.getElementById('slug');
+  
+  // Only auto-generate if slug is empty
+  nameInput.addEventListener('input', function() {
+    if (!slugInput.value || slugInput.dataset.autoGenerated === 'true') {
+      const slug = this.value
+        .toLowerCase()
+        .replace(/[^\w\s-]/g, '') // Remove special chars
+        .replace(/\s+/g, '-')     // Replace spaces with hyphens
+        .replace(/-+/g, '-');     // Replace multiple hyphens with single hyphen
+      
+      slugInput.value = slug;
+      slugInput.dataset.autoGenerated = 'true';
+    }
+  });
+  
+  // Once user manually edits slug, stop auto-generating
+  slugInput.addEventListener('input', function() {
+    this.dataset.autoGenerated = 'false';
+  });
+  
+  // Update area options based on selected region
+  function updateAreaOptions() {
+    const regionSelect = document.getElementById('regionSlug');
+    const areaSelect = document.getElementById('areaSlug');
+    const selectedRegion = regionSelect.value;
+    
+    // Hide all options first
+    Array.from(areaSelect.options).forEach(option => {
+      option.style.display = 'none';
+    });
+    
+    // Show only options for the selected region
+    Array.from(areaSelect.options).forEach(option => {
+      if (option.dataset.region === selectedRegion) {
+        option.style.display = '';
+      }
+    });
+    
+    // Select the first visible option
+    const firstVisibleOption = Array.from(areaSelect.options).find(option => option.style.display !== 'none');
+    if (firstVisibleOption) {
+      firstVisibleOption.selected = true;
+    }
+  }
+</script>
+
+<%- include('../../partials/admin-footer') %>

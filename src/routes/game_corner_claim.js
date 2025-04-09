@@ -12,15 +12,26 @@ const Item = require('../models/Item');
  * @param {string} source - Source of the reward
  * @returns {Object} - Result object with success status and details
  */
-async function processReward(reward, trainerId, trainers, source = 'game_corner') {
+async function processReward(reward, trainerId, trainers, source) {
+  // Always use 'game_corner' as the source for this file
+  const rewardSource = 'game_corner';
+  console.log(`Processing reward with source: ${source}, forcing to: ${rewardSource}`);
+
+  // Override the source parameter to ensure it's always 'game_corner'
+  source = rewardSource;
   try {
     // Select a trainer
     let selectedTrainer;
-    if (trainerId === 'random') {
-      // Random assignment
+    // For game corner, always use random assignment regardless of trainerId
+    if (source === 'game_corner') {
+      // Random assignment for game corner
+      selectedTrainer = trainers[Math.floor(Math.random() * trainers.length)];
+      console.log(`Game corner reward - randomly assigned to ${selectedTrainer.name}`);
+    } else if (trainerId === 'random') {
+      // Random assignment for other sources when explicitly requested
       selectedTrainer = trainers[Math.floor(Math.random() * trainers.length)];
     } else {
-      // Specific trainer
+      // Specific trainer for non-game corner rewards
       selectedTrainer = trainers.find(t => t.id.toString() === trainerId.toString());
       if (!selectedTrainer) {
         return {
@@ -377,7 +388,18 @@ router.post('/claim-reward', async (req, res) => {
       return res.status(401).json({ success: false, message: 'You must be logged in to claim rewards' });
     }
 
-    const { rewardId, rewardType, trainerId = 'random', source = 'game_corner' } = req.body;
+    const { rewardId, rewardType, trainerId = 'random', source } = req.body;
+
+    // Always use 'game_corner' as the source for this endpoint
+    const rewardSource = 'game_corner';
+
+    console.log('Game Corner Claim Request:', {
+      rewardId,
+      rewardType,
+      trainerId,
+      originalSource: source,
+      forcedSource: rewardSource
+    });
 
     if (!rewardId || !rewardType) {
       return res.status(400).json({ success: false, message: 'Invalid request parameters' });
@@ -398,7 +420,7 @@ router.post('/claim-reward', async (req, res) => {
     };
 
     // Process the reward
-    const result = await processReward(reward, trainerId, trainers, source);
+    const result = await processReward(reward, trainerId, trainers, rewardSource);
 
     res.json(result);
   } catch (error) {
@@ -417,7 +439,17 @@ router.post('/claim-all-rewards', async (req, res) => {
       return res.status(401).json({ success: false, message: 'You must be logged in to claim rewards' });
     }
 
-    const { rewards, trainerId = 'random', source = 'game_corner' } = req.body;
+    const { rewards, trainerId = 'random', source } = req.body;
+
+    // Always use 'game_corner' as the source for this endpoint
+    const rewardSource = 'game_corner';
+
+    console.log('Game Corner Claim All Request:', {
+      rewardsCount: rewards?.length || 0,
+      trainerId,
+      originalSource: source,
+      forcedSource: rewardSource
+    });
 
     if (!rewards || !Array.isArray(rewards) || rewards.length === 0) {
       return res.status(400).json({ success: false, message: 'Invalid rewards data' });
@@ -433,7 +465,7 @@ router.post('/claim-all-rewards', async (req, res) => {
     // Process each reward
     const results = [];
     for (const reward of rewards) {
-      const result = await processReward(reward, trainerId, trainers, source);
+      const result = await processReward(reward, trainerId, trainers, rewardSource);
       results.push({
         id: reward.id,
         type: reward.type,

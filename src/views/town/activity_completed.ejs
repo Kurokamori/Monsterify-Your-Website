@@ -422,6 +422,12 @@
                 session_id: sessionId
               };
 
+              // Ensure session_id is always included
+              if (!requestBody.session_id) {
+                console.log('No session_id found, using fallback from session data');
+                requestBody.session_id = '<%= session.session_id %>';
+              }
+
               // Add additional parameters based on reward type
               if (rewardType === 'monster' && monsterName) {
                 requestBody.monsterName = monsterName;

@@ -2,7 +2,7 @@
   <div class='max-w-4xl mx-auto'>
     <div class='mb-8 text-center'>
       <h1 class='text-3xl font-display font-bold'><%= title || 'Rewards' %></h1>
-      <p class='text-gray-300 mt-2'><%= message || (locals.session && locals.session.message) || 'You\'ve earned the following rewards:' %></p>
+      <p class='text-gray-300 mt-2'><%= typeof message !== 'undefined' ? message : ((locals.session && locals.session.message) || 'You\'ve earned the following rewards:') %></p>
 
       <% if (locals.user && locals.user.is_admin && source === 'garden') { %>
         <div class='mt-4'>
@@ -323,9 +323,15 @@
                     <!-- Level -->
                     <p class='reward-description'>Level <%= monsterData.level || monsterData.minLevel || 1 %></p>
 
-                    <button class='btn-primary mt-3 w-full claim-reward' data-reward-id='<%= reward.id %>' data-reward-type='monster'>
-                      <i class='fas fa-plus-circle mr-1'></i> Claim Monster
-                    </button>
+                    <% if (reward.assigned) { %>
+                      <div class='assigned-badge mt-3'>
+                        <p>Assigned to <span class='trainer-name'><%= reward.assignedTo?.name || "Unknown Trainer" %></span></p>
+                      </div>
+                    <% } else { %>
+                      <button class='btn-primary mt-3 w-full claim-reward' data-reward-id='<%= reward.id %>' data-reward-type='monster'>
+                        <i class='fas fa-plus-circle mr-1'></i> Claim Monster
+                      </button>
+                    <% } %>
                   </div>
                 </div>
               <% } else if (reward.type === 'item') { %>
@@ -344,9 +350,15 @@
                     <p class='reward-description'><%= itemDesc %></p>
                     <p class='reward-quantity'>Quantity: <%= itemQuantity %></p>
 
-                    <button class='btn-primary mt-3 w-full claim-reward' data-reward-id='<%= reward.id %>' data-reward-type='item'>
-                      <i class='fas fa-plus-circle mr-1'></i> Claim Item
-                    </button>
+                    <% if (reward.assigned) { %>
+                      <div class='assigned-badge mt-3'>
+                        <p>Assigned to <span class='trainer-name'><%= reward.assignedTo?.name || "Unknown Trainer" %></span></p>
+                      </div>
+                    <% } else { %>
+                      <button class='btn-primary mt-3 w-full claim-reward' data-reward-id='<%= reward.id %>' data-reward-type='item'>
+                        <i class='fas fa-plus-circle mr-1'></i> Claim Item
+                      </button>
+                    <% } %>
                   </div>
                 </div>
               <% } else if (reward.type === 'coin') { %>
@@ -363,9 +375,15 @@
                     <h3 class='reward-title'><%= coinTitle %></h3>
                     <p class='reward-description'><%= coinAmount %> coins</p>
 
-                    <button class='btn-primary mt-3 w-full claim-reward' data-reward-id='<%= reward.id %>' data-reward-type='coin'>
-                      <i class='fas fa-plus-circle mr-1'></i> Claim Coins
-                    </button>
+                    <% if (reward.assigned) { %>
+                      <div class='assigned-badge mt-3'>
+                        <p>Assigned to <span class='trainer-name'><%= reward.assignedTo?.name || "Unknown Trainer" %></span></p>
+                      </div>
+                    <% } else { %>
+                      <button class='btn-primary mt-3 w-full claim-reward' data-reward-id='<%= reward.id %>' data-reward-type='coin'>
+                        <i class='fas fa-plus-circle mr-1'></i> Claim Coins
+                      </button>
+                    <% } %>
                   </div>
                 </div>
               <% } else if (reward.type === 'level') { %>
@@ -382,9 +400,15 @@
                     <h3 class='reward-title'><%= levelTitle %></h3>
                     <p class='reward-description'><%= levelAmount %> level(s)</p>
 
-                    <button class='btn-primary mt-3 w-full claim-reward' data-reward-id='<%= reward.id %>' data-reward-type='level'>
-                      <i class='fas fa-plus-circle mr-1'></i> Claim Level
-                    </button>
+                    <% if (reward.assigned) { %>
+                      <div class='assigned-badge mt-3'>
+                        <p>Assigned to <span class='trainer-name'><%= reward.assignedTo?.name || "Unknown Trainer" %></span></p>
+                      </div>
+                    <% } else { %>
+                      <button class='btn-primary mt-3 w-full claim-reward' data-reward-id='<%= reward.id %>' data-reward-type='level'>
+                        <i class='fas fa-plus-circle mr-1'></i> Claim Level
+                      </button>
+                    <% } %>
                   </div>
                 </div>
               <% } else { %>
@@ -401,9 +425,15 @@
                     <h3 class='reward-title'><%= genericTitle %></h3>
                     <p class='reward-description'><%= genericDesc %></p>
 
-                    <button class='btn-primary mt-3 w-full claim-reward' data-reward-id='<%= reward.id %>' data-reward-type='<%= reward.type %>'>
-                      <i class='fas fa-plus-circle mr-1'></i> Claim Reward
-                    </button>
+                    <% if (reward.assigned) { %>
+                      <div class='assigned-badge mt-3'>
+                        <p>Assigned to <span class='trainer-name'><%= reward.assignedTo?.name || "Unknown Trainer" %></span></p>
+                      </div>
+                    <% } else { %>
+                      <button class='btn-primary mt-3 w-full claim-reward' data-reward-id='<%= reward.id %>' data-reward-type='<%= reward.type %>'>
+                        <i class='fas fa-plus-circle mr-1'></i> Claim Reward
+                      </button>
+                    <% } %>
                   </div>
                 </div>
               <% } %>
@@ -770,16 +800,27 @@
           type: rewardType
         };
 
-        // Reset selection
-        selectedTrainerId = null;
-        trainerOptions.forEach(option => option.classList.remove('selected'));
-        confirmButton.disabled = true;
+        // Check if this is a game corner reward
+        const isGameCorner = '<%= source %>' === 'game_corner';
 
-        // Show modal
-        console.log('Showing trainer selection modal');
-        trainerModal.classList.remove('hidden');
-        trainerModal.style.display = 'flex';
-        console.log('Modal display style:', trainerModal.style.display);
+        if (isGameCorner) {
+          // For game corner, skip trainer selection and claim with 'random'
+          console.log('Game corner reward - claiming with random trainer assignment');
+          console.log('Source:', '<%= source %>');
+          claimReward(rewardId, rewardType, 'random');
+        } else {
+          // For other sources, show trainer selection modal
+          // Reset selection
+          selectedTrainerId = null;
+          trainerOptions.forEach(option => option.classList.remove('selected'));
+          confirmButton.disabled = true;
+
+          // Show modal
+          console.log('Showing trainer selection modal');
+          trainerModal.classList.remove('hidden');
+          trainerModal.style.display = 'flex';
+          console.log('Modal display style:', trainerModal.style.display);
+        }
       });
     });
 
@@ -808,25 +849,27 @@
       selectedTrainerId = null;
     });
 
-    // Process reward claim when confirm button is clicked
-    confirmButton.addEventListener('click', async function() {
-      if (!currentReward || !selectedTrainerId) return;
-
+    // Function to claim a reward
+    async function claimReward(rewardId, rewardType, trainerId) {
       try {
-        // Disable button to prevent multiple clicks
-        confirmButton.disabled = true;
-        confirmButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
-
         // Prepare request data
         const requestData = {
-          rewardId: currentReward.id,
-          rewardType: currentReward.type,
-          trainerId: selectedTrainerId,
+          rewardId: rewardId,
+          rewardType: rewardType,
+          trainerId: trainerId,
           source: '<%= source || "garden" %>'
         };
 
+        // For game corner rewards, ensure the source is set correctly
+        if ('<%= source %>' === 'game_corner') {
+          console.log('Setting source to game_corner for reward claim');
+          requestData.source = 'game_corner';
+          // Force trainerId to be 'random' for game corner rewards
+          requestData.trainerId = 'random';
+        }
+
         // Add session ID if available
-        <% if (typeof sessionId !== 'undefined' && sessionId) { %>
+        <% if (locals.sessionId) { %>
           requestData.sessionId = '<%= sessionId %>';
           console.log('Including session ID in request:', '<%= sessionId %>');
         <% } %>
@@ -848,9 +891,164 @@
           apiEndpoint = '/api/game-corner/claim-reward';
         }
 
-        console.log('Using API endpoint:', apiEndpoint);
+        // Send the request
+        const response = await fetch(apiEndpoint, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(requestData)
+        });
 
-        // Call API to process reward
+        const result = await response.json();
+
+        if (result.success) {
+          console.log('Reward claimed successfully:', result);
+
+          // Find the button for this reward
+          const button = document.querySelector(`.claim-reward[data-reward-id="${rewardId}"][data-reward-type="${rewardType}"]`);
+
+          if (button) {
+            // Update button to show claimed status
+            button.disabled = true;
+            button.innerHTML = '<i class="fas fa-check-circle mr-1"></i> Claimed';
+            button.classList.remove('btn-primary');
+            button.classList.add('btn-success');
+
+            // Add claimed class to parent reward item
+            const rewardItem = button.closest('.reward-item');
+            if (rewardItem) {
+              rewardItem.classList.add('claimed');
+            }
+          }
+
+          // Show success message
+          const messageElement = document.createElement('div');
+          messageElement.className = 'fixed top-4 right-4 bg-green-600 text-white px-4 py-2 rounded-lg shadow-lg z-50';
+          messageElement.innerHTML = `<i class="fas fa-check-circle mr-2"></i> ${result.message}`;
+          document.body.appendChild(messageElement);
+
+          // Remove message after 3 seconds
+          setTimeout(() => {
+            messageElement.remove();
+          }, 3000);
+        } else {
+          throw new Error(result.message || 'Failed to claim reward');
+        }
+      } catch (error) {
+        console.error('Error claiming reward:', error);
+
+        // Show error message
+        const messageElement = document.createElement('div');
+        messageElement.className = 'fixed top-4 right-4 bg-red-600 text-white px-4 py-2 rounded-lg shadow-lg z-50';
+        messageElement.innerHTML = `<i class="fas fa-exclamation-circle mr-2"></i> ${error.message || 'Error claiming reward'}`;
+        document.body.appendChild(messageElement);
+
+        // Remove message after 3 seconds
+        setTimeout(() => {
+          messageElement.remove();
+        }, 3000);
+      }
+    }
+
+    // Process reward claim when confirm button is clicked
+    confirmButton.addEventListener('click', async function() {
+      if (!currentReward || !selectedTrainerId) return;
+
+      try {
+        // Disable button to prevent multiple clicks
+        confirmButton.disabled = true;
+        confirmButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+
+        // Close the modal
+        trainerModal.classList.add('hidden');
+        trainerModal.style.display = 'none';
+
+        // Claim the reward
+        await claimReward(currentReward.id, currentReward.type, selectedTrainerId);
+
+        // Reset the current reward
+        currentReward = null;
+        selectedTrainerId = null;
+
+        // Reset the confirm button
+        confirmButton.disabled = false;
+        confirmButton.innerHTML = 'Confirm';
+      } catch (error) {
+        console.error('Error in confirm button handler:', error);
+
+        // Reset the confirm button
+        confirmButton.disabled = false;
+        confirmButton.innerHTML = 'Confirm';
+      }
+    });
+
+    // Claim all rewards
+    claimAllButton.addEventListener('click', async function() {
+      try {
+        // Disable button to prevent multiple clicks
+        claimAllButton.disabled = true;
+        claimAllButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Processing...';
+
+        // Get all unclaimed rewards
+        const unclaimedRewards = [];
+        document.querySelectorAll('.claim-reward:not([disabled])').forEach(button => {
+          unclaimedRewards.push({
+            id: button.dataset.rewardId,
+            type: button.dataset.rewardType
+          });
+        });
+
+        if (unclaimedRewards.length === 0) {
+          alert('No unclaimed rewards found');
+          claimAllButton.disabled = false;
+          claimAllButton.innerHTML = '<i class="fas fa-check-circle mr-2"></i> Claim All Rewards';
+          return;
+        }
+
+        console.log('Unclaimed rewards:', unclaimedRewards);
+
+        // Prepare request data
+        const requestData = {
+          rewards: unclaimedRewards,
+          trainerId: 'random',  // Always use random for game corner
+          source: '<%= source || "garden" %>'
+        };
+
+        // For game corner rewards, ensure the source is set correctly
+        if ('<%= source %>' === 'game_corner') {
+          console.log('Setting source to game_corner for claim-all request');
+          requestData.source = 'game_corner';
+          // Force trainerId to be 'random' for game corner rewards
+          requestData.trainerId = 'random';
+        }
+
+        // Add session ID if available
+        <% if (locals.sessionId) { %>
+          requestData.sessionId = '<%= sessionId %>';
+          console.log('Including session ID in claim-all request:', '<%= sessionId %>');
+        <% } %>
+
+        console.log('Sending claim-all request with data:', JSON.stringify(requestData, null, 2));
+
+        // Determine the API endpoint based on the source
+        let apiEndpoint = '/api/claim-all-rewards';
+
+        if ('<%= source %>' === 'activity') {
+          apiEndpoint = '/api/activity/claim-all-rewards';
+        } else if ('<%= source %>' === 'garden') {
+          apiEndpoint = '/api/garden/claim-all-rewards';
+          console.log('DEBUG: Garden reward detected, using garden API endpoint:', apiEndpoint);
+        } else if ('<%= source %>' === 'farm') {
+          apiEndpoint = '/api/claim-all-rewards';
+          console.log('DEBUG: Farm reward detected, using claim-all-rewards API endpoint:', apiEndpoint);
+        } else if ('<%= source %>' === 'game_corner') {
+          apiEndpoint = '/api/game-corner/claim-all-rewards';
+        }
+
+        console.log('Using API endpoint for claim-all:', apiEndpoint);
+
+        // Call API to process all rewards
         const response = await fetch(apiEndpoint, {
           method: 'POST',
           headers: {
@@ -862,40 +1060,56 @@
         const data = await response.json();
 
         if (data.success) {
-          // Close modal
-          trainerModal.classList.add('hidden');
-          trainerModal.style.display = 'none';
+          console.log('All rewards claimed successfully:', data);
 
-          // Update UI to show claimed status
-          const claimButton = document.querySelector(`[data-reward-id="${currentReward.id}"]`);
-          if (claimButton) {
-            const rewardItem = claimButton.closest('.reward-item');
+          // Update UI for each claimed reward
+          if (data.claimedRewards && Array.isArray(data.claimedRewards)) {
+            data.claimedRewards.forEach(reward => {
+              if (reward.success) {
+                // Find the button for this reward
+                const button = document.querySelector(`.claim-reward[data-reward-id="${reward.id}"][data-reward-type="${reward.type}"]`);
 
-            // Replace button with assigned badge
-            const assignedBadge = document.createElement('div');
-            assignedBadge.className = 'assigned-badge';
-            assignedBadge.innerHTML = `<p>Assigned to <span class="trainer-name">${data.trainerName}</span></p>`;
+                if (button) {
+                  // Update button to show claimed status
+                  button.disabled = true;
+                  button.innerHTML = '<i class="fas fa-check-circle mr-1"></i> Claimed';
+                  button.classList.remove('btn-primary');
+                  button.classList.add('btn-success');
 
-            claimButton.replaceWith(assignedBadge);
+                  // Add claimed class to parent reward item
+                  const rewardItem = button.closest('.reward-item');
+                  if (rewardItem) {
+                    rewardItem.classList.add('claimed');
 
-            // Add a subtle animation to highlight the change
-            rewardItem.style.transition = 'transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease';
-            rewardItem.style.backgroundColor = 'rgba(34, 197, 94, 0.1)';
-            setTimeout(() => {
-              rewardItem.style.backgroundColor = 'rgba(31, 41, 55, 0.5)';
-            }, 1000);
+                    // Add trainer info if available
+                    if (reward.trainerName) {
+                      const trainerInfo = document.createElement('div');
+                      trainerInfo.className = 'trainer-info mt-2 text-xs text-gray-400';
+                      trainerInfo.innerHTML = `Assigned to: <span class="font-medium text-yellow-400">${reward.trainerName}</span>`;
+
+                      // Check if trainer info already exists
+                      const existingInfo = rewardItem.querySelector('.trainer-info');
+                      if (existingInfo) {
+                        existingInfo.replaceWith(trainerInfo);
+                      } else {
+                        rewardItem.appendChild(trainerInfo);
+                      }
+                    }
+                  }
+                }
+              }
+            });
           }
 
           // Show success message
-          const successMessage = document.createElement('div');
-          successMessage.className = 'fixed top-4 right-4 bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg z-50 transition-opacity duration-300';
-          successMessage.innerHTML = `<i class="fas fa-check-circle mr-2"></i> ${data.message}`;
-          document.body.appendChild(successMessage);
+          const messageElement = document.createElement('div');
+          messageElement.className = 'fixed top-4 right-4 bg-green-600 text-white px-4 py-2 rounded-lg shadow-lg z-50';
+          messageElement.innerHTML = `<i class="fas fa-check-circle mr-2"></i> ${data.message}`;
+          document.body.appendChild(messageElement);
 
           // Remove message after 3 seconds
           setTimeout(() => {
-            successMessage.style.opacity = '0';
-            setTimeout(() => successMessage.remove(), 300);
+            messageElement.remove();
           }, 3000);
         } else {
           throw new Error(data.message || 'Failed to claim reward');
@@ -927,40 +1141,7 @@
       }
     });
 
-    // Claim all rewards
-    claimAllButton.addEventListener('click', async function() {
-      try {
-        // Get all unclaimed rewards
-        const unclaimedButtons = document.querySelectorAll('.claim-reward:not(:disabled)');
-        if (unclaimedButtons.length === 0) {
-          throw new Error('No rewards to claim');
-        }
-
-        // Disable button to prevent multiple clicks
-        claimAllButton.disabled = true;
-        claimAllButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Processing...';
-
-        // Get all rewards
-        const rewards = Array.from(unclaimedButtons).map(button => ({
-          id: button.dataset.rewardId,
-          type: button.dataset.rewardType
-        }));
-
-        // Call API to process all rewards
-        const requestData = {
-          rewards,
-          source: '<%= source || "garden" %>'
-        };
-
-        // Add session ID if available
-        <% if (typeof sessionId !== 'undefined' && sessionId) { %>
-          requestData.sessionId = '<%= sessionId %>';
-          console.log('Including session ID in claim-all request:', '<%= sessionId %>');
-        <% } %>
-
-        console.log('Sending claim-all request with data:', JSON.stringify(requestData, null, 2));
-
-        const response = await fetch('/api/claim-all-rewards', {
+    // This is a duplicate event listener that was removed
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'

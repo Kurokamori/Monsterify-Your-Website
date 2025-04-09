@@ -212,7 +212,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const productivityValue = parseInt(this.getAttribute('data-value'));
 
         // Redirect to rewards page with session data
-        window.location.href = `/town/rewards?sessions=${window.completedSessions}&minutes=${window.totalFocusMinutes}&productivity=${productivityValue}&source=game_corner&pageTitle=Pomodoro+Session+Complete!&returnUrl=/town/game_corner&returnButtonText=New+Session&allowTrainerSelection=false&showClaimAllButton=false`;
+        window.location.href = `/town/rewards?sessions=${window.completedSessions}&minutes=${window.totalFocusMinutes}&productivity=${productivityValue}&source=game_corner&pageTitle=Pomodoro+Session+Complete!&returnUrl=/town/visit/game_corner&returnButtonText=New+Session&allowTrainerSelection=false&showClaimAllButton=false&message=You've+completed+${window.completedSessions}+pomodoro+sessions+with+${productivityValue}%25+productivity!`;
       });
     });
   }
@@ -359,8 +359,15 @@ document.addEventListener('DOMContentLoaded', function() {
       loadVideo(this.value);
     });
 
-    // Load initial video
-    if (videoSelector.value) {
+    // Load a random video from the preset list
+    if (videoSelector.options.length > 0) {
+      // Get a random index between 0 and the number of options
+      const randomIndex = Math.floor(Math.random() * videoSelector.options.length);
+
+      // Set the selected index to the random index
+      videoSelector.selectedIndex = randomIndex;
+
+      // Load the randomly selected video
       loadVideo(videoSelector.value);
     }
   }

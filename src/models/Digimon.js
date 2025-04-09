@@ -17,6 +17,98 @@ class Digimon {
   }
 
   /**
+   * Create a new Digimon
+   * @param {Object} digimon - Digimon data
+   * @returns {Promise<Object>} - Created Digimon
+   */
+  static async create(digimon) {
+    try {
+      const query = `
+        INSERT INTO digimon (
+          id, name, "xAntibody", "Stage", types, attributes, fields,
+          "priorEvolutions", "nextEvolutions"
+        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+        RETURNING *
+      `;
+
+      const values = [
+        digimon.id,
+        digimon.name,
+        digimon.xAntibody,
+        digimon.Stage,
+        digimon.types,
+        digimon.attributes,
+        digimon.fields,
+        digimon.priorEvolutions,
+        digimon.nextEvolutions
+      ];
+
+      const result = await pool.query(query, values);
+      return result.rows[0];
+    } catch (error) {
+      console.error('Error creating Digimon:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Update an existing Digimon
+   * @param {Object} digimon - Digimon data
+   * @returns {Promise<Object>} - Updated Digimon
+   */
+  static async update(digimon) {
+    try {
+      const query = `
+        UPDATE digimon SET
+          id = $1,
+          "xAntibody" = $3,
+          "Stage" = $4,
+          types = $5,
+          attributes = $6,
+          fields = $7,
+          "priorEvolutions" = $8,
+          "nextEvolutions" = $9
+        WHERE name = $2
+        RETURNING *
+      `;
+
+      const values = [
+        digimon.id,
+        digimon.name,
+        digimon.xAntibody,
+        digimon.Stage,
+        digimon.types,
+        digimon.attributes,
+        digimon.fields,
+        digimon.priorEvolutions,
+        digimon.nextEvolutions
+      ];
+
+      const result = await pool.query(query, values);
+      return result.rows[0];
+    } catch (error) {
+      console.error('Error updating Digimon:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Delete a Digimon
+   * @param {string} name - Digimon name
+   * @returns {Promise<boolean>} - Success status
+   */
+  static async delete(name) {
+    try {
+      const query = 'DELETE FROM digimon WHERE name = $1';
+      const result = await pool.query(query, [name]);
+      return result.rowCount > 0;
+    } catch (error) {
+      console.error('Error deleting Digimon:', error);
+      throw error;
+    }
+  }
+
+  /**
    * Get Digimon by name
    * @param {string} name - Digimon name
    * @returns {Promise<Object>} - Digimon object
@@ -65,7 +157,7 @@ class Digimon {
       if (filters.attribute) {
         if (Array.isArray(filters.attribute)) {
           // For array of attributes, check if any of them are in the attributes field
-          const attributeConditions = filters.attribute.map((_, i) => 
+          const attributeConditions = filters.attribute.map((_, i) =>
             `attributes LIKE $${paramIndex + i}`
           ).join(' OR ');
           query += ` AND (${attributeConditions})`;
@@ -84,7 +176,7 @@ class Digimon {
       if (filters.kind) {
         if (Array.isArray(filters.kind)) {
           // For array of kinds, check if any of them are in the types field
-          const kindConditions = filters.kind.map((_, i) => 
+          const kindConditions = filters.kind.map((_, i) =>
             `types LIKE $${paramIndex + i}`
           ).join(' OR ');
           query += ` AND (${kindConditions})`;
@@ -117,7 +209,7 @@ class Digimon {
   static async getRandom(filters = {}, count = 1) {
     try {
       const filteredDigimon = await this.getFiltered(filters);
-      
+
       if (filteredDigimon.length === 0) {
         return [];
       }

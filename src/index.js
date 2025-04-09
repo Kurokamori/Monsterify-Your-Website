@@ -48,6 +48,8 @@ const { ShopConfig, DailyShopItems, PlayerShopPurchases } = require('./models/Sh
 const Pokemon = require('./models/Pokemon');
 const Digimon = require('./models/Digimon');
 const Yokai = require('./models/Yokai');
+const LocationGuideController = require('./controllers/LocationGuideController');
+const AdminLocationController = require('./controllers/AdminLocationController');
 const Move = require('./models/Move');
 const Task = require('./models/Task');
 const Habit = require('./models/Habit');
@@ -306,11 +308,11 @@ app.get('/', async (req, res) => {
     // Get all fakemon for the main page
     const allFakemon = loadAllFakemon();
 
-    // Randomly select 8 fakemon to display
+    // Randomly select 4 fakemon to display (exactly one row)
     const randomFakemon = [];
     if (allFakemon.length > 0) {
       const shuffled = [...allFakemon].sort(() => 0.5 - Math.random());
-      randomFakemon.push(...shuffled.slice(0, 8));
+      randomFakemon.push(...shuffled.slice(0, 4));
     }
 
     // Get content categories for guides, locations, and factions
@@ -1525,24 +1527,38 @@ app.post('/town/shop/:shopId/purchase', async (req, res) => {
 
     // Get item information with player-specific remaining quantity
     // First get the item details
-    const item = await DailyShopItems.getShopItem(shopId, item_id);
+    console.log(`Attempting to get item details for shopId=${shopId}, item_id=${item_id}`);
+    let item = await DailyShopItems.getShopItem(shopId, item_id);
     console.log(`Item details:`, item);
 
     if (!item) {
-      return res.redirect(`/town/shop/${shopId}?messageType=error&message=${encodeURIComponent('Item not available in this shop')}`);
+      console.error(`Item not found in shop: shopId=${shopId}, item_id=${item_id}`);
+
+      // Try to get all items in the shop to see what's available
+      const allShopItems = await DailyShopItems.getShopItems(shopId);
+      console.log(`All items in shop ${shopId}:`, allShopItems.map(i => i.item_id));
+
+      // Try to find the item in the shop items
+      const matchingItem = allShopItems.find(i => i.item_id === item_id);
+      if (matchingItem) {
+        console.log(`Found matching item in shop items:`, matchingItem);
+        item = matchingItem;
+      } else {
+        return res.redirect(`/town/shop/${shopId}?messageType=error&message=${encodeURIComponent('Item not available in this shop')}`);
+      }
     }
 
     // Get the max quantity from the item
     const maxQuantity = parseInt(item.max_quantity) || 1;
 
     // Get the latest remaining quantity directly to ensure it's up-to-date
-    console.log(`Getting remaining quantity for player ${playerId}, shop ${shopId}, item ${item_id}`);
+    console.log(`Getting remaining quantity for player ${playerId}, shop ${shopId}, item ${item.item_id}`);
     const remainingQuantity = await DailyShopItems.getRemainingQuantity(
       playerId,
       shopId,
-      item_id
+      item.item_id
     );
-    console.log(`Current remaining quantity for ${item_id}: ${remainingQuantity}/${maxQuantity}`);
+    console.log(`Current remaining quantity for ${item.item_id}: ${remainingQuantity}/${maxQuantity}`);
 
     console.log(`Checking if ${parsedQuantity} <= ${remainingQuantity}`);
     if (remainingQuantity < parsedQuantity) {
@@ -1558,12 +1574,12 @@ app.post('/town/shop/:shopId/purchase', async (req, res) => {
     }
 
     // Record the purchase
-    console.log(`Recording purchase: player=${playerId}, shop=${shopId}, item=${item_id}, quantity=${parsedQuantity}`);
+    console.log(`Recording purchase: player=${playerId}, shop=${shopId}, item=${item.item_id}, quantity=${parsedQuantity}`);
     try {
       await PlayerShopPurchases.recordPurchase(
         playerId,
         shopId,
-        item_id,
+        item.item_id,
         parsedQuantity
       );
       console.log('Purchase recorded successfully');
@@ -1604,14 +1620,14 @@ app.post('/town/shop/:shopId/purchase', async (req, res) => {
     }
 
     console.log(`Using inventory category ${inventoryCategory} for shop ${shopId}`);
-    console.log(`Adding ${parsedQuantity} ${item_id} to ${trainer.name}'s ${inventoryCategory}`);
+    console.log(`Adding ${parsedQuantity} ${item.item_id} to ${trainer.name}'s ${inventoryCategory}`);
 
-    // Update the trainer's inventory with the correct category using the direct method
+    // Update the trainer's inventory with the correct category
     try {
-      const success = await Trainer.addItemDirectly(
+      const success = await Trainer.updateInventoryItem(
         trainer.id,
         inventoryCategory,
-        item_id,
+        item.item_id,
         parsedQuantity
       );
 
@@ -1650,7 +1666,8 @@ app.post('/town/shop/:shopId/purchase', async (req, res) => {
 
     // Redirect back to the shop with success message and a timestamp to force a refresh
     const timestamp = Date.now();
-    return res.redirect(`/town/shop/${shopId}?message=${encodeURIComponent(`Successfully purchased ${parsedQuantity} ${item.item_name}(s) for ${totalPrice} coins`)}&t=${timestamp}`);
+    const itemName = item.item_name || item.name || item.item_id;
+    return res.redirect(`/town/shop/${shopId}?message=${encodeURIComponent(`Successfully purchased ${parsedQuantity} ${itemName}(s) for ${totalPrice} coins`)}&t=${timestamp}`);
   } catch (error) {
     console.error(`Error purchasing item from shop ${shopId}:`, error);
     // Always redirect back to the original shop ID, not the item ID
@@ -1977,6 +1994,9 @@ const missionRoutes = require('./routes/admin/missions');
 const promptRoutes = require('./routes/admin/prompts');
 const achievementRoutes = require('./routes/admin/achievements');
 const adminBattlesRoutes = require('./routes/admin/battles');
+const pokemonRoutes = require('./routes/admin/pokemon');
+const digimonRoutes = require('./routes/admin/digimon');
+const yokaiRoutes = require('./routes/admin/yokai');
 
 // Import trainer routes
 const trainerAchievementsRoutes = require('./routes/trainer/achievements');
@@ -1991,6 +2011,9 @@ app.use('/admin/missions', missionRoutes);
 app.use('/admin/prompts', promptRoutes);
 app.use('/admin/achievements', achievementRoutes);
 app.use('/admin/battles', adminBattlesRoutes);
+app.use('/admin/pokemon', pokemonRoutes);
+app.use('/admin/digimon', digimonRoutes);
+app.use('/admin/yokai', yokaiRoutes);
 
 // Use trainer routes
 app.use('/trainers', trainerAchievementsRoutes);
@@ -4174,7 +4197,8 @@ app.get('/town/rewards', async (req, res) => {
         returnUrl,
         returnButtonText,
         allowTrainerSelection,
-        showClaimAllButton
+        showClaimAllButton,
+        message: req.query.message || req.session.message || null // Always include message, even if null
       });
     }
 
@@ -4229,7 +4253,7 @@ app.get('/town/rewards', async (req, res) => {
       allowTrainerSelection: false,
       showClaimAllButton: false,
       session: req.session, // Pass the session to the view
-      message: 'Error generating rewards: ' + error.message
+      message: 'Error generating rewards: ' + error.message // This is already set correctly
     });
 
     // Clear the rewards from the session in case of error
@@ -6400,8 +6424,107 @@ app.get('/guides', (req, res) => {
   });
 });
 
-// Add redirect for old guide URLs to new content prefix pattern
-app.get('/guides/:path(*)', (req, res) => {
+// Location guide routes with visual card navigation
+app.get('/guides/locations', LocationGuideController.showRegions);
+app.get('/guides/locations/region/:regionSlug', LocationGuideController.showAreas);
+app.get('/guides/locations/area/:regionSlug/:areaSlug', LocationGuideController.showLocations);
+app.get('/guides/locations/detail/:regionSlug/:areaSlug/:locationSlug', LocationGuideController.showLocation);
+
+// Admin location management routes
+app.get('/admin/locations', AdminLocationController.showDashboard);
+
+// Region routes
+app.get('/admin/locations/region/new', AdminLocationController.showRegionForm);
+app.post('/admin/locations/region/new', AdminLocationController.processRegionForm);
+app.get('/admin/locations/region/:slug', (req, res) => {
+  const locationData = AdminLocationController.getLocationData();
+  const region = locationData.regions.find(r => r.slug === req.params.slug);
+  if (!region) return res.redirect('/admin/locations');
+
+  // Apply default image to region and areas
+  const regionWithImage = {
+    ...region,
+    image: AdminLocationController.getImagePath(region.image)
+  };
+
+  const areasWithImages = (locationData.areas[req.params.slug] || []).map(area => ({
+    ...area,
+    image: AdminLocationController.getImagePath(area.image)
+  }));
+
+  res.render('admin/locations/region-view', {
+    title: `${region.name} - Areas`,
+    region: regionWithImage,
+    areas: areasWithImages
+  });
+});
+app.get('/admin/locations/region/:slug/edit', AdminLocationController.showRegionForm);
+app.post('/admin/locations/region/:slug/edit', AdminLocationController.processRegionForm);
+app.delete('/admin/locations/region/:slug/delete', AdminLocationController.deleteRegion);
+
+// Area routes
+app.get('/admin/locations/area/:region/new', AdminLocationController.showAreaForm);
+app.post('/admin/locations/area/:region/new', AdminLocationController.processAreaForm);
+app.get('/admin/locations/area/:region/:slug', (req, res) => {
+  const locationData = AdminLocationController.getLocationData();
+  const region = locationData.regions.find(r => r.slug === req.params.region);
+  if (!region) return res.redirect('/admin/locations');
+
+  const areas = locationData.areas[req.params.region] || [];
+  const area = areas.find(a => a.slug === req.params.slug);
+  if (!area) return res.redirect(`/admin/locations/region/${req.params.region}`);
+
+  // Apply default image to area and locations
+  const areaWithImage = {
+    ...area,
+    image: AdminLocationController.getImagePath(area.image)
+  };
+
+  const locationsWithImages = (locationData.locations[req.params.slug] || []).map(location => ({
+    ...location,
+    image: AdminLocationController.getImagePath(location.image)
+  }));
+
+  res.render('admin/locations/area-view', {
+    title: `${area.name} - Locations`,
+    regionSlug: req.params.region,
+    regionName: region.name,
+    area: areaWithImage,
+    locations: locationsWithImages
+  });
+});
+app.get('/admin/locations/area/:region/:slug/edit', AdminLocationController.showAreaForm);
+app.post('/admin/locations/area/:region/:slug/edit', AdminLocationController.processAreaForm);
+app.delete('/admin/locations/area/:region/:slug/delete', AdminLocationController.deleteArea);
+
+// Location routes
+app.get('/admin/locations/location/:region/:area/new', AdminLocationController.showLocationForm);
+app.post('/admin/locations/location/:region/:area/new', AdminLocationController.processLocationForm);
+app.get('/admin/locations/location/:region/:area/:slug/edit', AdminLocationController.showLocationForm);
+app.post('/admin/locations/location/:region/:area/:slug/edit', AdminLocationController.processLocationForm);
+app.delete('/admin/locations/location/:area/:slug/delete', AdminLocationController.deleteLocation);
+
+// Legacy location routes - redirect to new visual card system
+app.get('/locations', (req, res) => {
+  res.redirect('/guides/locations');
+});
+
+// Add redirect for old location URLs to new content prefix pattern
+app.get('/locations/:path(*)', (req, res) => {
+  res.redirect('/guides/locations');
+});
+
+// Redirect old content/locations URLs to new visual card system
+app.get('/content/locations/:path(*)', (req, res) => {
+  res.redirect('/guides/locations');
+});
+
+// Add redirect for old guide URLs to new content prefix pattern, but exclude our new locations routes
+app.get('/guides/:path(*)', (req, res, next) => {
+  // Skip this middleware if the path starts with 'locations'
+  if (req.params.path.startsWith('locations')) {
+    return next();
+  }
   res.redirect(`/content/guides/${req.params.path}`);
 });
 
@@ -6462,24 +6585,7 @@ app.get('/npcs/:path(*)', (req, res) => {
   res.redirect(`/content/npcs/${req.params.path}`);
 });
 
-app.get('/locations', (req, res) => {
-  const categories = getContentCategories();
-  const contentPath = path.join(__dirname, 'content', 'locations', 'overview.md');
-  const content = loadMarkdownContent(contentPath);
 
-  res.render('guides/index', {
-    title: 'Locations',
-    categories,
-    activeCategory: 'locations',
-    currentPath: '',
-    content
-  });
-});
-
-// Add redirect for old location URLs to new content prefix pattern
-app.get('/locations/:path(*)', (req, res) => {
-  res.redirect(`/content/locations/${req.params.path}`);
-});
 
 // Statistics routes
 app.get('/statistics', async (req, res) => {
@@ -6825,6 +6931,24 @@ app.get('/admin/fakemon/add', (req, res) => {
   });
 });
 
+app.get('/admin/fakemon/mass-add', (req, res) => {
+  // Check if user is logged in and is an admin
+  if (!req.session.user || !req.session.user.is_admin) {
+    return res.redirect('/');
+  }
+
+  const nextNumber = getNextFakemonNumber();
+
+  // Render the view with proper layout
+  res.render('admin/fakemon/mass-add', {
+    title: 'Mass Add Fakemon',
+    nextNumber,
+    message: req.query.message,
+    messageType: req.query.messageType || 'success',
+    layout: 'layouts/main'
+  });
+});
+
 app.get('/admin/fakemon/edit/:number', (req, res) => {
   // Check if user is logged in and is an admin
   if (!req.session.user || !req.session.user.is_admin) {
@@ -6948,6 +7072,228 @@ app.post('/admin/fakemon/delete/:number', (req, res) => {
   } catch (error) {
     console.error('Error deleting Fakemon:', error);
     res.redirect('/admin/fakemon?messageType=error&message=' + encodeURIComponent('Error: ' + error.message));
+  }
+});
+
+// Configure multer for mass uploads
+const massUploadStorage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    const uploadDir = path.join(__dirname, 'public', 'uploads', 'fakemon-mass');
+    if (!fs.existsSync(uploadDir)) {
+      fs.mkdirSync(uploadDir, { recursive: true });
+    }
+    cb(null, uploadDir);
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + '-' + file.originalname);
+  }
+});
+
+const massUpload = multer({ storage: massUploadStorage });
+
+app.post('/admin/fakemon/mass-add', (req, res) => {
+  // Check if user is logged in and is an admin
+  if (!req.session.user || !req.session.user.is_admin) {
+    return res.status(403).json({ success: false, message: 'Unauthorized' });
+  }
+
+  try {
+    // Create a temporary directory for file uploads
+    const tempDir = path.join(__dirname, 'public', 'uploads', 'fakemon-mass');
+    if (!fs.existsSync(tempDir)) {
+      fs.mkdirSync(tempDir, { recursive: true });
+    }
+
+    // Use multer to handle the file uploads
+    const upload = massUpload.any(); // Accept any field name for files
+
+    upload(req, res, async function(err) {
+      if (err) {
+        console.error('Multer error:', err);
+        return res.status(500).json({ success: false, message: 'Error uploading files: ' + err.message });
+      }
+
+      try {
+        // Log the request body and files for debugging
+        console.log('Request body keys:', Object.keys(req.body));
+        console.log('Files:', req.files ? req.files.length : 'No files');
+
+        // Get the starting number and common attributes
+        const startingNumber = parseInt(req.body.startingNumber) || 1;
+        const commonAttribute = req.body.commonAttribute || 'Data';
+        const commonTypes = req.body.commonTypes ? JSON.parse(req.body.commonTypes) : ['Normal'];
+        const fileCount = parseInt(req.body.fileCount) || 0;
+
+        console.log('Starting number:', startingNumber);
+        console.log('Common attribute:', commonAttribute);
+        console.log('Common types:', commonTypes);
+        console.log('File count:', fileCount);
+
+        // Process each file
+        const results = [];
+        const errors = [];
+        const usedNumbers = new Set();
+
+        for (let i = 0; i < fileCount; i++) {
+          try {
+            // Find the file with fieldname file_i
+            const file = req.files.find(f => f.fieldname === `file_${i}`);
+            if (!file) {
+              console.log(`No file found for index ${i}`);
+              continue;
+            }
+
+            console.log(`Found file with fieldname: ${file.fieldname}`);
+
+            console.log(`Processing file ${i}: ${file.originalname}`);
+
+            // Get metadata for this file
+            // Use the user-provided number or generate one based on the starting number
+            let number = req.body[`number_${i}`];
+            if (!number || number.trim() === '') {
+              number = (startingNumber + i).toString().padStart(3, '0');
+            } else {
+              // Ensure the number is padded with leading zeros
+              number = number.padStart(3, '0');
+            }
+
+            console.log(`Number for file ${i}: ${number}`);
+
+            const name = req.body[`name_${i}`] || `Fakemon ${number}`;
+            console.log(`Name for file ${i}: ${name}`);
+
+            // Handle types
+            let types = [];
+            const type1 = req.body[`types1_${i}`];
+            const type2 = req.body[`types2_${i}`];
+
+            console.log(`Type1 for file ${i}: ${type1}`);
+            console.log(`Type2 for file ${i}: ${type2}`);
+
+            if (type1 === 'inherit') {
+              // Inherit type 1 from common types
+              if (commonTypes.length > 0) {
+                types.push(commonTypes[0]);
+              } else {
+                types.push('Normal'); // Default if no common type
+              }
+            } else if (type1) {
+              types.push(type1);
+            } else {
+              types.push('Normal'); // Default if no type selected
+            }
+
+            if (type2 === 'inherit') {
+              // Inherit type 2 from common types if available
+              if (commonTypes.length > 1) {
+                types.push(commonTypes[1]);
+              }
+            } else if (type2) {
+              types.push(type2);
+            }
+
+            console.log(`Final types for file ${i}: ${types.join(', ')}`);
+
+            const attribute = req.body[`attribute_${i}`] === 'inherit' ? commonAttribute : req.body[`attribute_${i}`];
+            console.log(`Attribute for file ${i}: ${attribute}`);
+
+            // Check for duplicate numbers
+            const paddedNumber = number.padStart(3, '0');
+            if (usedNumbers.has(paddedNumber)) {
+              const errorMsg = `Duplicate number ${paddedNumber} found. Skipping this Fakemon.`;
+              console.error(errorMsg);
+              errors.push(errorMsg);
+              continue;
+            }
+            usedNumbers.add(paddedNumber);
+
+            // Create a basic fakemon object
+            const fakemon = {
+              number: paddedNumber,
+              name,
+              species_class: 'The Something Pokemon',
+              types,
+              attribute,
+              abilities: ['Ability1'],
+              height: '1.0 m',
+              weight: '20.0 kg',
+              stats: {
+                hp: '45',
+                atk: '49',
+                def: '49',
+                spatk: '65',
+                spdef: '65',
+                spe: '45'
+              },
+              pokedex_entry: '',
+              evolution_line: [],
+              artist_caption: ''
+            };
+
+            console.log(`Created fakemon object for ${name} (${paddedNumber})`);
+
+            // Save fakemon to markdown file
+            const saveResult = saveFakemon(fakemon);
+
+            if (!saveResult) {
+              const errorMsg = `Error saving Fakemon #${paddedNumber}`;
+              console.error(errorMsg);
+              errors.push(errorMsg);
+              continue;
+            }
+
+            console.log(`Saved fakemon ${name} (${paddedNumber}) to markdown file`);
+
+            // Move the uploaded file to the fakemon images directory
+            const imagePath = path.join(__dirname, 'public', 'images', 'fakemon', `${paddedNumber}.png`);
+            fs.renameSync(file.path, imagePath);
+            console.log(`Moved image for ${name} (${paddedNumber}) to ${imagePath}`);
+
+            results.push(paddedNumber);
+            console.log(`Successfully processed fakemon ${name} (${paddedNumber})`);
+          } catch (error) {
+            console.error(`Error processing file ${i}:`, error);
+            errors.push(`Error processing file ${i}: ${error.message}`);
+          }
+        }
+
+        // Clean up the temporary directory
+        try {
+          const remainingFiles = fs.readdirSync(tempDir);
+          for (const file of remainingFiles) {
+            fs.unlinkSync(path.join(tempDir, file));
+          }
+        } catch (cleanupError) {
+          console.error('Error cleaning up temporary files:', cleanupError);
+        }
+
+        // Return the results
+        if (errors.length > 0) {
+          const responseMsg = `Added ${results.length} Fakemon. Errors: ${errors.join(', ')}`;
+          console.log(responseMsg);
+          return res.json({
+            success: results.length > 0,
+            message: responseMsg,
+            results,
+            errors
+          });
+        } else {
+          const responseMsg = `Successfully added ${results.length} Fakemon`;
+          console.log(responseMsg);
+          return res.json({
+            success: true,
+            message: responseMsg,
+            results
+          });
+        }
+      } catch (error) {
+        console.error('Error processing mass add:', error);
+        return res.status(500).json({ success: false, message: 'Error processing mass add: ' + error.message });
+      }
+    });
+  } catch (error) {
+    console.error('Error setting up mass add:', error);
+    return res.status(500).json({ success: false, message: 'Error setting up mass add: ' + error.message });
   }
 });
 

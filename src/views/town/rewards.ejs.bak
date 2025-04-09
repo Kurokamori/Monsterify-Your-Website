@@ -1,0 +1,1182 @@
+<div class='container mx-auto px-4 py-8'>
+  <div class='max-w-4xl mx-auto'>
+    <div class='mb-8 text-center'>
+      <h1 class='text-3xl font-display font-bold'><%= title || 'Rewards' %></h1>
+      <p class='text-gray-300 mt-2'><%= typeof message !== 'undefined' ? message : ((locals.session && locals.session.message) || 'You\'ve earned the following rewards:') %></p>
+
+      <% if (locals.user && locals.user.is_admin && source === 'garden') { %>
+        <div class='mt-4'>
+          <button id='reroll-rewards' class='btn-primary py-2 px-4 rounded'>
+            <i class='fas fa-dice mr-2'></i> Reroll Rewards (Admin Only)
+          </button>
+        </div>
+
+        <% if (adminReroll) { %>
+          <div class='mt-2 p-2 bg-yellow-800 text-white rounded text-sm'>
+            <i class='fas fa-exclamation-triangle mr-1'></i>
+            Admin Override: You are harvesting again on the same day
+          </div>
+        <% } %>
+      <% } %>
+    </div>
+
+    <div class='bg-gray-800 rounded-lg p-6 shadow-lg mb-8'>
+      <!-- Rewards Grid -->
+      <div class='rewards-list'>
+        <% if (rewards && rewards.length > 0) { %>
+          <% rewards.forEach(reward => { %>
+            <div class='reward-item <%= reward.rarity %>'>
+              <% if (reward.type === 'monster') { %>
+                <div class='monster-reward'>
+                  <div class='reward-icon'>
+                    <i class='<%= reward.icon || "fas fa-dragon" %>'></i>
+                  </div>
+                  <div class='reward-details'>
+                    <h3 class='reward-title' style="line-height: 1.3;">
+                      <%
+                        // Get monster data from different possible structures
+                        let monsterData = {};
+
+                        if (reward.data && typeof reward.data === 'object') {
+                          monsterData = reward.data;
+                        } else if (reward.reward_data && typeof reward.reward_data === 'object') {
+                          monsterData = reward.reward_data;
+                        }
+
+                        console.log('Monster data:', JSON.stringify(monsterData, null, 2));
+
+                        // Extract species information
+                        let speciesDisplay = "";
+                        let speciesParts = [];
+
+                        // Special handling for garden monsters
+                        if (monsterData.name === 'Garden Monster') {
+                          console.log('Detected garden monster');
+
+                          // Determine which monster type to generate (Pokemon, Digimon, or Yokai)
+                          const monsterTypes = ['Pokemon', 'Digimon', 'Yokai'];
+                          let selectedMonsterType;
+
+                          // If species is specified in the data, use that
+                          if (monsterData.species && Array.isArray(monsterData.species) && monsterData.species.length > 0) {
+                            // Filter to only valid monster types
+                            const validSpecies = monsterData.species.filter(s => monsterTypes.includes(s));
+                            if (validSpecies.length > 0) {
+                              // Randomly select one of the valid species types
+                              selectedMonsterType = validSpecies[Math.floor(Math.random() * validSpecies.length)];
+                            } else {
+                              // Default to Pokemon if no valid species
+                              selectedMonsterType = 'Pokemon';
+                            }
+                          } else {
+                            // Randomly select a monster type with weighted probability
+                            // 60% Pokemon, 25% Digimon, 15% Yokai
+                            const rand = Math.random();
+                            if (rand < 0.6) {
+                              selectedMonsterType = 'Pokemon';
+                            } else if (rand < 0.85) {
+                              selectedMonsterType = 'Digimon';
+                            } else {
+                              selectedMonsterType = 'Yokai';
+                            }
+                          }
+
+                          console.log('Selected monster type:', selectedMonsterType);
+
+                          if (selectedMonsterType === 'Pokemon') {
+                            // Get garden-themed Pokemon species based on the types
+                            const gardenPokemon = {
+                              'Grass': ['Bulbasaur', 'Oddish', 'Bellsprout', 'Chikorita', 'Sunkern', 'Hoppip', 'Seedot', 'Turtwig', 'Budew', 'Rowlet', 'Skiddo', 'Applin', 'Shroomish', 'Foongus', 'Morelull', 'Bounsweet'],
+                              'Bug': ['Caterpie', 'Weedle', 'Paras', 'Venonat', 'Scyther', 'Ledyba', 'Spinarak', 'Wurmple', 'Kricketot', 'Sewaddle', 'Joltik', 'Grubbin', 'Cutiefly', 'Venipede', 'Sizzlipede', 'Blipbug'],
+                              'Flying': ['Pidgey', 'Spearow', 'Hoothoot', 'Natu', 'Taillow', 'Starly', 'Pidove', 'Fletchling', 'Pikipek', 'Rookidee', 'Ducklett', 'Rufflet', 'Vullaby', 'Noibat', 'Emolga', 'Oricorio'],
+                              'Ground': ['Diglett', 'Sandshrew', 'Phanpy', 'Trapinch', 'Gligar', 'Hippopotas', 'Drilbur', 'Sandile', 'Stunfisk', 'Mudbray', 'Silicobra', 'Wooper', 'Barboach', 'Baltoy', 'Golett', 'Palpitoad'],
+                              'Rock': ['Geodude', 'Onix', 'Rhyhorn', 'Larvitar', 'Nosepass', 'Roggenrola', 'Dwebble', 'Rockruff', 'Rolycoly', 'Bonsly', 'Carbink', 'Amaura', 'Tirtouga', 'Archen', 'Lileep', 'Anorith'],
+                              'Normal': ['Rattata', 'Sentret', 'Zigzagoon', 'Bidoof', 'Patrat', 'Lillipup', 'Skwovet', 'Wooloo', 'Minccino', 'Buneary', 'Eevee', 'Meowth', 'Teddiursa', 'Aipom', 'Dunsparce', 'Audino'],
+                              'Water': ['Squirtle', 'Poliwag', 'Slowpoke', 'Shellder', 'Krabby', 'Horsea', 'Goldeen', 'Magikarp', 'Totodile', 'Marill', 'Wooper', 'Mudkip', 'Lotad', 'Corphish', 'Feebas', 'Tympole']
+                            };
+
+                            // Get the primary type from the monster data
+                            const primaryType = monsterData.type1 || 'Grass';
+                            console.log('Primary type:', primaryType);
+
+                            // Get Pokemon species for this type
+                            const typeSpecies = gardenPokemon[primaryType] || gardenPokemon['Grass'];
+
+                            // Select a random species from the type
+                            const randomIndex = Math.floor(Math.random() * typeSpecies.length);
+                            const selectedSpecies = typeSpecies[randomIndex];
+
+                            speciesParts = [selectedSpecies];
+                            console.log('Selected garden Pokemon species:', selectedSpecies);
+
+                            // If we should have multiple species, add more
+                            if (monsterData.maxSpecies > 1) {
+                              // Get a second type
+                              const secondaryTypes = monsterData.types.filter(t => t !== primaryType);
+                              if (secondaryTypes.length > 0) {
+                                const secondaryType = secondaryTypes[Math.floor(Math.random() * secondaryTypes.length)];
+                                const secondarySpecies = gardenPokemon[secondaryType] || gardenPokemon['Grass'];
+                                const secondRandomIndex = Math.floor(Math.random() * secondarySpecies.length);
+                                speciesParts.push(secondarySpecies[secondRandomIndex]);
+                                console.log('Added secondary Pokemon species:', secondarySpecies[secondRandomIndex]);
+                              }
+                            }
+                          } else if (selectedMonsterType === 'Digimon') {
+                            // Garden-themed Digimon species
+                            const gardenDigimon = [
+                              'Palmon', 'Floramon', 'Mushroomon', 'Alraumon', 'Vegiemon', 'Woodmon', 'Togemon', 'Weedmon',
+                              'Ninjamon', 'RedVegiemon', 'Cherrymon', 'Blossomon', 'Lillymon', 'Deramon', 'Jagamon', 'MudFrigimon',
+                              'Mamemon', 'Gotsumon', 'Icemon', 'Rockmon', 'Monochromon', 'Tortomon', 'Ankylomon', 'Digmon',
+                              'Tentomon', 'Kabuterimon', 'Kuwagamon', 'Flymon', 'Snimon', 'Stingmon', 'JewelBeemon', 'HerculesKabuterimon',
+                              'Biyomon', 'Hawkmon', 'Falcomon', 'Peckmon', 'Aquilamon', 'Swanmon', 'Hououmon', 'Kokatorimon'
+                            ];
+
+                            // Select 1-2 random Digimon species
+                            const randomIndex = Math.floor(Math.random() * gardenDigimon.length);
+                            const selectedSpecies = gardenDigimon[randomIndex];
+
+                            speciesParts = [selectedSpecies];
+                            console.log('Selected garden Digimon species:', selectedSpecies);
+
+                            // If we should have multiple species, add another Digimon
+                            if (monsterData.maxSpecies > 1) {
+                              // Make sure we don't select the same species twice
+                              const remainingDigimon = gardenDigimon.filter(d => d !== selectedSpecies);
+                              const secondRandomIndex = Math.floor(Math.random() * remainingDigimon.length);
+                              speciesParts.push(remainingDigimon[secondRandomIndex]);
+                              console.log('Added secondary Digimon species:', remainingDigimon[secondRandomIndex]);
+                            }
+                          } else if (selectedMonsterType === 'Yokai') {
+                            // Garden-themed Yokai species
+                            const gardenYokai = [
+                              'Walkappa', 'Buhu', 'Dazzabel', 'Wiglin', 'Steppa', 'Rhyth', 'Hungramps', 'Tattletell',
+                              'Noko', 'Bloominoko', 'Draggie', 'Bunshin', 'Jibanyan', 'Komasan', 'Komajiro', 'Baku',
+                              'Manjimutt', 'Dismarelda', 'Happierre', 'Sandmeh', 'Negatibuzz', 'Signibble', 'Gnomey', 'Mochismo',
+                              'Wazzat', 'Dummkap', 'Lodo', 'Duchoo', 'Wotchagot', 'Pandle', 'Undy', 'Tantroni'
+                            ];
+
+                            // Select 1-2 random Yokai species
+                            const randomIndex = Math.floor(Math.random() * gardenYokai.length);
+                            const selectedSpecies = gardenYokai[randomIndex];
+
+                            speciesParts = [selectedSpecies];
+                            console.log('Selected garden Yokai species:', selectedSpecies);
+
+                            // If we should have multiple species, add another Yokai
+                            if (monsterData.maxSpecies > 1) {
+                              // Make sure we don't select the same species twice
+                              const remainingYokai = gardenYokai.filter(y => y !== selectedSpecies);
+                              const secondRandomIndex = Math.floor(Math.random() * remainingYokai.length);
+                              speciesParts.push(remainingYokai[secondRandomIndex]);
+                              console.log('Added secondary Yokai species:', remainingYokai[secondRandomIndex]);
+                            }
+                          }
+                        } else if (monsterData.species1) {
+                          // Direct species fields (from MonsterRoller)
+                          speciesParts.push(monsterData.species1);
+                          if (monsterData.species2) speciesParts.push(monsterData.species2);
+                          if (monsterData.species3) speciesParts.push(monsterData.species3);
+                        } else if (monsterData.speciesData && Array.isArray(monsterData.speciesData)) {
+                          // SpeciesData array (from MonsterRoller)
+                          speciesParts = monsterData.speciesData.map(s => {
+                            if (s.species === 'Pokemon' && s.data) return s.data.SpeciesName;
+                            if (s.species === 'Digimon' && s.data) return s.data.name;
+                            if (s.species === 'Yokai' && s.data) return s.data.Name;
+                            return s.species || 'Unknown';
+                          }).filter(Boolean);
+                        } else if (monsterData.species && Array.isArray(monsterData.species)) {
+                          // If species is an array of species types (e.g., ['Pokemon'])
+                          console.log('Species is an array:', monsterData.species);
+
+                          // Check if we have filters with specific Pokemon types
+                          if (monsterData.filters && monsterData.filters.pokemon) {
+                            console.log('Found Pokemon filters:', monsterData.filters.pokemon);
+
+                            // Use a default Pokemon species if we can't determine the actual one
+                            // This is a fallback for garden monsters
+                            const defaultSpecies = ['Bulbasaur', 'Oddish', 'Bellsprout', 'Caterpie', 'Weedle', 'Pidgey', 'Spearow'];
+                            const randomIndex = Math.floor(Math.random() * defaultSpecies.length);
+                            speciesParts = [defaultSpecies[randomIndex]];
+                            console.log('Using default garden Pokemon species:', speciesParts);
+                          } else {
+                            // Fallback to the first species type
+                            speciesParts = [monsterData.species[0] || 'Monster'];
+                            console.log('Using first species from array:', speciesParts);
+                          }
+                        } else if (monsterData.species) {
+                          // Single species field
+                          speciesParts = [monsterData.species];
+                        } else if (monsterData.name) {
+                          // Name field
+                          speciesParts = [monsterData.name];
+                        } else {
+                          // Fallback
+                          speciesParts = ["Monster"];
+                        }
+
+                        // Replace any 'Pokemon' species with actual Pokemon species
+                        speciesParts = speciesParts.map(species => {
+                          if (species === 'Pokemon') {
+                            const defaultSpecies = ['Bulbasaur', 'Oddish', 'Bellsprout', 'Caterpie', 'Weedle', 'Pidgey', 'Spearow'];
+                            const randomIndex = Math.floor(Math.random() * defaultSpecies.length);
+                            console.log('Replacing generic Pokemon with:', defaultSpecies[randomIndex]);
+                            return defaultSpecies[randomIndex];
+                          }
+                          return species;
+                        });
+
+                        // Join species parts with slashes
+                        speciesDisplay = speciesParts.join('/');
+                        console.log('Species display:', speciesDisplay);
+
+                        // Set the name property for the monster to be the species display
+                        // This ensures when the monster is created, it will have the correct name
+                        if (monsterData) {
+                          monsterData.name = speciesDisplay;
+
+                          // Also set individual species fields for compatibility with MonsterRoller format
+                          if (speciesParts.length > 0) {
+                            monsterData.species1 = speciesParts[0] || '';
+                            if (speciesParts.length > 1) monsterData.species2 = speciesParts[1];
+                            if (speciesParts.length > 2) monsterData.species3 = speciesParts[2];
+                          }
+                        }
+
+                        // Store the species display in the reward object for later use
+                        if (reward.data) reward.data.speciesDisplay = speciesDisplay;
+                        if (reward.reward_data) reward.reward_data.speciesDisplay = speciesDisplay;
+                        reward.speciesDisplay = speciesDisplay;
+
+                        // Force the name to be the species display
+                        reward.name = speciesDisplay;
+                      %>
+                      <%= speciesDisplay %>
+                    </h3>
+
+                    <!-- Type Badges -->
+                    <div class="mt-2 mb-2">
+                      <%
+                        // Collect all types from the monster data
+                        const typesList = [];
+
+                        // First try to get individual type fields (from MonsterRoller)
+                        if (monsterData.type1) typesList.push(monsterData.type1);
+                        if (monsterData.type2) typesList.push(monsterData.type2);
+                        if (monsterData.type3) typesList.push(monsterData.type3);
+
+                        // If no types found, try the type field (single type)
+                        if (typesList.length === 0 && monsterData.type) {
+                          typesList.push(monsterData.type);
+                        }
+
+                        // If still no types, check the types array
+                        let types = typesList.length > 0 ? typesList : (monsterData.types || []);
+
+                        // If still no types but we have speciesData, try to extract types from there
+                        if (types.length === 0 && monsterData.speciesData && Array.isArray(monsterData.speciesData)) {
+                          monsterData.speciesData.forEach(s => {
+                            if (s.data && s.data.Type) typesList.push(s.data.Type);
+                            if (s.data && s.data.Type2) typesList.push(s.data.Type2);
+                          });
+                          types = typesList;
+                        }
+
+                        // Limit to 3 types maximum
+                        const limitedTypes = types.slice(0, 3);
+
+                        if (limitedTypes.length > 0) {
+                      %>
+                        <div class="flex flex-wrap gap-1 mt-1">
+                          <% limitedTypes.forEach(type => { %>
+                            <% if (type) { %>
+                              <span class="type-badge <%= type.toLowerCase() %>"><%= type %></span>
+                            <% } %>
+                          <% }); %>
+                        </div>
+                      <% } else { %>
+                        <!-- Default type if none found -->
+                        <div class="flex flex-wrap gap-1 mt-1">
+                          <span class="type-badge normal">Normal</span>
+                        </div>
+                      <% } %>
+                    </div>
+
+                    <!-- Attribute -->
+                    <%
+                      // Extract attribute information
+                      let attributeDisplay = "";
+                      let attributeClass = "";
+
+                      if (monsterData.attribute) {
+                        attributeDisplay = monsterData.attribute;
+                        attributeClass = monsterData.attribute.toLowerCase();
+                      } else {
+                        // Default to Data attribute
+                        attributeDisplay = "Data";
+                        attributeClass = "data";
+                      }
+                    %>
+                    <p class='reward-description mb-2'>
+                      <span class="attribute-badge attribute-<%= attributeClass %>"><%= attributeDisplay %></span>
+                    </p>
+
+                    <!-- Level -->
+                    <p class='reward-description'>Level <%= monsterData.level || monsterData.minLevel || 1 %></p>
+
+                    <button class='btn-primary mt-3 w-full claim-reward' data-reward-id='<%= reward.id %>' data-reward-type='monster'>
+                      <i class='fas fa-plus-circle mr-1'></i> Claim Monster
+                    </button>
+                  </div>
+                </div>
+              <% } else if (reward.type === 'item') { %>
+                <div class='item-reward'>
+                  <div class='reward-icon'>
+                    <i class='<%= reward.icon || "fas fa-box" %>'></i>
+                  </div>
+                  <div class='reward-details'>
+                    <%
+                      const itemData = reward.data || reward.reward_data || {};
+                      const itemName = itemData.name || "Item";
+                      const itemDesc = itemData.description || "";
+                      const itemQuantity = itemData.quantity || 1;
+                    %>
+                    <h3 class='reward-title'><%= itemName %></h3>
+                    <p class='reward-description'><%= itemDesc %></p>
+                    <p class='reward-quantity'>Quantity: <%= itemQuantity %></p>
+
+                    <button class='btn-primary mt-3 w-full claim-reward' data-reward-id='<%= reward.id %>' data-reward-type='item'>
+                      <i class='fas fa-plus-circle mr-1'></i> Claim Item
+                    </button>
+                  </div>
+                </div>
+              <% } else if (reward.type === 'coin') { %>
+                <div class='coin-reward'>
+                  <div class='reward-icon'>
+                    <i class='<%= reward.icon || "fas fa-coins" %>'></i>
+                  </div>
+                  <div class='reward-details'>
+                    <%
+                      const coinData = reward.data || reward.reward_data || {};
+                      const coinTitle = coinData.title || "Coins";
+                      const coinAmount = coinData.amount || 0;
+                    %>
+                    <h3 class='reward-title'><%= coinTitle %></h3>
+                    <p class='reward-description'><%= coinAmount %> coins</p>
+
+                    <button class='btn-primary mt-3 w-full claim-reward' data-reward-id='<%= reward.id %>' data-reward-type='coin'>
+                      <i class='fas fa-plus-circle mr-1'></i> Claim Coins
+                    </button>
+                  </div>
+                </div>
+              <% } else if (reward.type === 'level') { %>
+                <div class='level-reward'>
+                  <div class='reward-icon'>
+                    <i class='<%= reward.icon || "fas fa-level-up-alt" %>'></i>
+                  </div>
+                  <div class='reward-details'>
+                    <%
+                      const levelData = reward.data || reward.reward_data || {};
+                      const levelTitle = levelData.title || "Level Up";
+                      const levelAmount = levelData.levels || 1;
+                    %>
+                    <h3 class='reward-title'><%= levelTitle %></h3>
+                    <p class='reward-description'><%= levelAmount %> level(s)</p>
+
+                    <button class='btn-primary mt-3 w-full claim-reward' data-reward-id='<%= reward.id %>' data-reward-type='level'>
+                      <i class='fas fa-plus-circle mr-1'></i> Claim Level
+                    </button>
+                  </div>
+                </div>
+              <% } else { %>
+                <div class='generic-reward'>
+                  <div class='reward-icon'>
+                    <i class='<%= reward.icon || "fas fa-gift" %>'></i>
+                  </div>
+                  <div class='reward-details'>
+                    <%
+                      const genericData = reward.data || reward.reward_data || {};
+                      const genericTitle = genericData.title || genericData.name || "Reward";
+                      const genericDesc = genericData.description || "";
+                    %>
+                    <h3 class='reward-title'><%= genericTitle %></h3>
+                    <p class='reward-description'><%= genericDesc %></p>
+
+                    <button class='btn-primary mt-3 w-full claim-reward' data-reward-id='<%= reward.id %>' data-reward-type='<%= reward.type %>'>
+                      <i class='fas fa-plus-circle mr-1'></i> Claim Reward
+                    </button>
+                  </div>
+                </div>
+              <% } %>
+            </div>
+          <% }); %>
+        <% } else { %>
+          <p class='text-center text-gray-400'>No rewards found. Try again later!</p>
+        <% } %>
+      </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="flex justify-center space-x-4">
+      <% if (typeof returnUrl !== 'undefined' && returnUrl) { %>
+        <a href="<%= returnUrl %>" class="btn-secondary">
+          <i class="fas fa-arrow-left mr-2"></i> Back to <%= source === 'garden' ? 'Garden' : source === 'farm' ? 'Farm' : source === 'pirates_dock' ? 'Pirate\'s Dock' : 'Town' %>
+        </a>
+      <% } else if (locals.session && locals.session.returnUrl) { %>
+        <a href="<%= locals.session.returnUrl %>" class="btn-secondary">
+          <i class="fas fa-arrow-left mr-2"></i> Back to <%= locals.session.source === 'garden' ? 'Garden' : locals.session.source === 'farm' ? 'Farm' : locals.session.source === 'pirates_dock' ? 'Pirate\'s Dock' : 'Town' %>
+        </a>
+      <% } %>
+
+      <button id="claim-all-rewards" class="btn-primary">
+        <i class="fas fa-check-circle mr-2"></i> Claim All Rewards
+      </button>
+
+      <a href="/town/visit" class="btn-primary">
+        <i class="fas fa-home mr-2"></i> Return to Town
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- Trainer Selection Modal -->
+<div id="trainer-selection-modal" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 hidden">
+  <div class="bg-gray-800 rounded-lg p-6 max-w-md w-full">
+    <h2 class="text-xl font-bold mb-4">Select a Trainer</h2>
+    <p class="text-gray-300 mb-4">Choose which trainer should receive this reward:</p>
+
+    <div class="trainer-list space-y-2 max-h-60 overflow-y-auto mb-4">
+      <% if (trainers && trainers.length > 0) { %>
+        <% trainers.forEach(trainer => { %>
+          <div class="trainer-option p-2 rounded-lg cursor-pointer hover:bg-gray-700" data-trainer-id="<%= trainer.id %>">
+            <div class="flex items-center">
+              <div class="w-10 h-10 rounded-full bg-gray-600 flex items-center justify-center mr-3">
+                <i class="fas fa-user"></i>
+              </div>
+              <div>
+                <h3 class="font-medium"><%= trainer.name %></h3>
+                <p class="text-xs text-gray-400">Level <%= trainer.level || 1 %></p>
+              </div>
+            </div>
+          </div>
+        <% }); %>
+      <% } else { %>
+        <p class="text-center text-gray-400">No trainers available</p>
+      <% } %>
+    </div>
+
+    <div class="flex justify-end space-x-3">
+      <button id="cancel-trainer-selection" class="btn-secondary">Cancel</button>
+      <button id="confirm-trainer-selection" class="btn-primary" disabled>Confirm</button>
+    </div>
+  </div>
+</div>
+
+<style>
+  .rewards-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .reward-item {
+    background-color: rgba(31, 41, 55, 0.5);
+    border-radius: 0.5rem;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    border: 2px solid transparent;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    height: auto;
+    min-height: 100%;
+    width: 100%;
+    overflow: visible;
+    word-wrap: break-word;
+  }
+
+  .reward-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  }
+
+  .reward-item.common {
+    border-color: #9e9e9e;
+  }
+
+  .reward-item.uncommon {
+    border-color: #4caf50;
+  }
+
+  .reward-item.rare {
+    border-color: #2196f3;
+  }
+
+  .reward-item.epic {
+    border-color: #9c27b0;
+  }
+
+  .reward-item.legendary {
+    border-color: #ff9800;
+    box-shadow: 0 0 10px rgba(255, 152, 0, 0.5);
+    animation: legendaryPulse 2s infinite;
+  }
+
+  @keyframes legendaryPulse {
+    0% { box-shadow: 0 0 10px rgba(255, 152, 0, 0.5); }
+    50% { box-shadow: 0 0 20px rgba(255, 152, 0, 0.8); }
+    100% { box-shadow: 0 0 10px rgba(255, 152, 0, 0.5); }
+  }
+
+  .monster-reward, .item-reward, .coin-reward, .level-reward, .generic-reward {
+    display: flex;
+    gap: 1rem;
+    height: 100%;
+    min-width: 0; /* Allows flex children to shrink below their minimum content size */
+  }
+
+  .reward-icon {
+    width: 50px;
+    height: 50px;
+    min-width: 50px;
+    background-color: rgba(139, 92, 246, 0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    color: #8b5cf6;
+  }
+
+  .reward-details {
+    flex: 1;
+    min-width: 0; /* Allows text to wrap properly */
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .reward-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    word-break: break-word;
+  }
+
+  .reward-description {
+    color: #d1d5db;
+    margin-bottom: 0.5rem;
+    font-size: 0.875rem;
+  }
+
+  .reward-quantity {
+    font-size: 0.875rem;
+    color: #9ca3af;
+  }
+
+  .btn-primary {
+    background-color: var(--accent-color, #d6a339);
+    color: var(--background-color, #111319);
+    padding: 0.5rem 1rem;
+    border-radius: 0.375rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    border: none;
+    text-align: center;
+    display: inline-block;
+  }
+
+  .btn-primary:hover {
+    background-color: var(--accent-hover, #b88a30);
+  }
+
+  .btn-primary:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .btn-secondary {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: var(--text-color, #d7ddf3);
+    padding: 0.5rem 1rem;
+    border-radius: 0.375rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    text-align: center;
+    display: inline-block;
+  }
+
+  .btn-secondary:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+  }
+
+  /* Type badges */
+  .type-badge {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: white;
+    margin-right: 0.25rem;
+    margin-bottom: 0.25rem;
+  }
+
+  /* Type colors */
+  .normal { background-color: #A8A878; color: #000; }
+  .fire { background-color: #F08030; color: #fff; }
+  .water { background-color: #6890F0; color: #fff; }
+  .electric { background-color: #F8D030; color: #000; }
+  .grass { background-color: #78C850; color: #000; }
+  .ice { background-color: #98D8D8; color: #000; }
+  .fighting { background-color: #C03028; color: #fff; }
+  .poison { background-color: #A040A0; color: #fff; }
+  .ground { background-color: #E0C068; color: #000; }
+  .flying { background-color: #A890F0; color: #fff; }
+  .psychic { background-color: #F85888; color: #fff; }
+  .bug { background-color: #A8B820; color: #000; }
+  .rock { background-color: #B8A038; color: #fff; }
+  .ghost { background-color: #705898; color: #fff; }
+  .dragon { background-color: #7038F8; color: #fff; }
+  .dark { background-color: #705848; color: #fff; }
+  .steel { background-color: #B8B8D0; color: #000; }
+  .fairy { background-color: #EE99AC; color: #000; }
+
+  /* Attribute badges */
+  .attribute-badge {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: white;
+    margin-right: 0.25rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .attribute-vaccine { background-color: #4CAF50; color: #fff; }
+  .attribute-data { background-color: #2196F3; color: #fff; }
+  .attribute-virus { background-color: #F44336; color: #fff; }
+  .attribute-free { background-color: #9C27B0; color: #fff; }
+  .attribute-variable { background-color: #FF9800; color: #000; }
+
+  /* Trainer selection modal */
+  .trainer-option {
+    transition: background-color 0.2s;
+  }
+
+  .trainer-option.selected {
+    background-color: rgba(139, 92, 246, 0.3);
+    border: 1px solid rgba(139, 92, 246, 0.5);
+  }
+
+  /* Assigned badge */
+  .assigned-badge {
+    background-color: rgba(34, 197, 94, 0.2);
+    border: 1px solid rgba(34, 197, 94, 0.3);
+    padding: 0.5rem;
+    border-radius: 0.375rem;
+    text-align: center;
+    margin-top: 0.5rem;
+  }
+
+  .trainer-name {
+    font-weight: 600;
+    color: #22c55e;
+  }
+
+  /* Ensure hidden class works properly */
+  .hidden {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const rerollButton = document.getElementById('reroll-rewards');
+
+    if (rerollButton) {
+      rerollButton.addEventListener('click', async function() {
+        try {
+          // Disable button and show loading state
+          rerollButton.disabled = true;
+          rerollButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Rerolling...';
+
+          // Send request to reroll rewards
+          const response = await fetch('/api/garden/reroll-rewards', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' }
+          });
+
+          const data = await response.json();
+
+          if (data.success) {
+            // Reload the page to show new rewards
+            window.location.reload();
+          } else {
+            throw new Error(data.message || 'Failed to reroll rewards');
+          }
+        } catch (error) {
+          console.error('Error rerolling rewards:', error);
+
+          // Show error message
+          alert('Error rerolling rewards: ' + (error.message || 'Please try again'));
+
+          // Reset button
+          rerollButton.disabled = false;
+          rerollButton.innerHTML = '<i class="fas fa-dice mr-2"></i> Reroll Rewards (Admin Only)';
+        }
+      });
+    }
+  });
+</script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const claimButtons = document.querySelectorAll('.claim-reward');
+    const trainerModal = document.getElementById('trainer-selection-modal');
+    const cancelButton = document.getElementById('cancel-trainer-selection');
+    const confirmButton = document.getElementById('confirm-trainer-selection');
+    const trainerOptions = document.querySelectorAll('.trainer-option');
+    const claimAllButton = document.getElementById('claim-all-rewards');
+
+    console.log('DOM loaded, elements found:', {
+      claimButtons: claimButtons.length,
+      trainerModal: !!trainerModal,
+      cancelButton: !!cancelButton,
+      confirmButton: !!confirmButton,
+      trainerOptions: trainerOptions.length,
+      claimAllButton: !!claimAllButton
+    });
+
+    let currentReward = null;
+    let selectedTrainerId = null;
+
+    // Show trainer selection modal when claim button is clicked
+    claimButtons.forEach(button => {
+      button.addEventListener('click', function() {
+        const rewardId = this.dataset.rewardId;
+        const rewardType = this.dataset.rewardType;
+
+        console.log('Claim button clicked for reward:', rewardId, rewardType);
+
+        currentReward = {
+          id: rewardId,
+          type: rewardType
+        };
+
+        // Check if this is a game corner reward
+        const isGameCorner = '<%= source %>' === 'game_corner';
+
+        if (isGameCorner) {
+          // For game corner, skip trainer selection and claim with 'random'
+          console.log('Game corner reward - claiming with random trainer assignment');
+          console.log('Source:', '<%= source %>');
+          claimReward(rewardId, rewardType, 'random');
+        } else {
+          // For other sources, show trainer selection modal
+          // Reset selection
+          selectedTrainerId = null;
+          trainerOptions.forEach(option => option.classList.remove('selected'));
+          confirmButton.disabled = true;
+
+          // Show modal
+          console.log('Showing trainer selection modal');
+          trainerModal.classList.remove('hidden');
+          trainerModal.style.display = 'flex';
+          console.log('Modal display style:', trainerModal.style.display);
+        }
+      });
+    });
+
+    // Handle trainer selection
+    trainerOptions.forEach(option => {
+      option.addEventListener('click', function() {
+        // Remove selected class from all options
+        trainerOptions.forEach(opt => opt.classList.remove('selected'));
+
+        // Add selected class to clicked option
+        this.classList.add('selected');
+
+        // Store selected trainer ID
+        selectedTrainerId = this.dataset.trainerId;
+
+        // Enable confirm button
+        confirmButton.disabled = false;
+      });
+    });
+
+    // Close modal when cancel button is clicked
+    cancelButton.addEventListener('click', function() {
+      trainerModal.classList.add('hidden');
+      trainerModal.style.display = 'none';
+      currentReward = null;
+      selectedTrainerId = null;
+    });
+
+    // Function to claim a reward
+    async function claimReward(rewardId, rewardType, trainerId) {
+      try {
+        // Prepare request data
+        const requestData = {
+          rewardId: rewardId,
+          rewardType: rewardType,
+          trainerId: trainerId,
+          source: '<%= source || "garden" %>'
+        };
+
+        // For game corner rewards, ensure the source is set correctly
+        if ('<%= source %>' === 'game_corner') {
+          console.log('Setting source to game_corner for reward claim');
+          requestData.source = 'game_corner';
+        }
+
+        // Add session ID if available
+        <% if (locals.sessionId) { %>
+          requestData.sessionId = '<%= sessionId %>';
+          console.log('Including session ID in request:', '<%= sessionId %>');
+        <% } %>
+
+        console.log('Sending claim request with data:', JSON.stringify(requestData, null, 2));
+
+        // Determine the API endpoint based on the source
+        let apiEndpoint = '/api/claim-reward';
+
+        if ('<%= source %>' === 'activity') {
+          apiEndpoint = '/api/activity/claim-reward';
+        } else if ('<%= source %>' === 'garden') {
+          apiEndpoint = '/api/garden/claim-reward';
+          console.log('DEBUG: Garden reward detected, using garden API endpoint:', apiEndpoint);
+        } else if ('<%= source %>' === 'farm') {
+          apiEndpoint = '/api/claim-reward';
+          console.log('DEBUG: Farm reward detected, using claim-reward API endpoint:', apiEndpoint);
+        } else if ('<%= source %>' === 'game_corner') {
+          apiEndpoint = '/api/game-corner/claim-reward';
+        }
+
+        // Send the request
+        const response = await fetch(apiEndpoint, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(requestData)
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+          console.log('Reward claimed successfully:', result);
+
+          // Find the button for this reward
+          const button = document.querySelector(`.claim-reward[data-reward-id="${rewardId}"][data-reward-type="${rewardType}"]`);
+
+          if (button) {
+            // Update button to show claimed status
+            button.disabled = true;
+            button.innerHTML = '<i class="fas fa-check-circle mr-1"></i> Claimed';
+            button.classList.remove('btn-primary');
+            button.classList.add('btn-success');
+
+            // Add claimed class to parent reward item
+            const rewardItem = button.closest('.reward-item');
+            if (rewardItem) {
+              rewardItem.classList.add('claimed');
+            }
+          }
+
+          // Show success message
+          const messageElement = document.createElement('div');
+          messageElement.className = 'fixed top-4 right-4 bg-green-600 text-white px-4 py-2 rounded-lg shadow-lg z-50';
+          messageElement.innerHTML = `<i class="fas fa-check-circle mr-2"></i> ${result.message}`;
+          document.body.appendChild(messageElement);
+
+          // Remove message after 3 seconds
+          setTimeout(() => {
+            messageElement.remove();
+          }, 3000);
+        } else {
+          throw new Error(result.message || 'Failed to claim reward');
+        }
+      } catch (error) {
+        console.error('Error claiming reward:', error);
+
+        // Show error message
+        const messageElement = document.createElement('div');
+        messageElement.className = 'fixed top-4 right-4 bg-red-600 text-white px-4 py-2 rounded-lg shadow-lg z-50';
+        messageElement.innerHTML = `<i class="fas fa-exclamation-circle mr-2"></i> ${error.message || 'Error claiming reward'}`;
+        document.body.appendChild(messageElement);
+
+        // Remove message after 3 seconds
+        setTimeout(() => {
+          messageElement.remove();
+        }, 3000);
+      }
+    }
+
+    // Process reward claim when confirm button is clicked
+    confirmButton.addEventListener('click', async function() {
+      if (!currentReward || !selectedTrainerId) return;
+
+      try {
+        // Disable button to prevent multiple clicks
+        confirmButton.disabled = true;
+        confirmButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+
+        // Close the modal
+        trainerModal.classList.add('hidden');
+        trainerModal.style.display = 'none';
+
+        // Claim the reward
+        await claimReward(currentReward.id, currentReward.type, selectedTrainerId);
+
+        // Reset the current reward
+        currentReward = null;
+        selectedTrainerId = null;
+
+        // Reset the confirm button
+        confirmButton.disabled = false;
+        confirmButton.innerHTML = 'Confirm';
+      } catch (error) {
+        console.error('Error in confirm button handler:', error);
+
+        // Reset the confirm button
+        confirmButton.disabled = false;
+        confirmButton.innerHTML = 'Confirm';
+      }
+    });
+
+    // Claim all rewards
+    claimAllButton.addEventListener('click', async function() {
+      try {
+        // Disable button to prevent multiple clicks
+        claimAllButton.disabled = true;
+        claimAllButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Processing...';
+
+        // Get all unclaimed rewards
+        const unclaimedRewards = [];
+        document.querySelectorAll('.claim-reward:not([disabled])').forEach(button => {
+          unclaimedRewards.push({
+            id: button.dataset.rewardId,
+            type: button.dataset.rewardType
+          });
+        });
+
+        if (unclaimedRewards.length === 0) {
+          alert('No unclaimed rewards found');
+          claimAllButton.disabled = false;
+          claimAllButton.innerHTML = '<i class="fas fa-check-circle mr-2"></i> Claim All Rewards';
+          return;
+        }
+
+        console.log('Unclaimed rewards:', unclaimedRewards);
+
+        // Prepare request data
+        const requestData = {
+          rewards: unclaimedRewards,
+          trainerId: 'random',  // Always use random for game corner
+          source: '<%= source || "garden" %>'
+        };
+
+        // For game corner rewards, ensure the source is set correctly
+        if ('<%= source %>' === 'game_corner') {
+          console.log('Setting source to game_corner for claim-all request');
+          requestData.source = 'game_corner';
+        }
+
+        // Add session ID if available
+        <% if (locals.sessionId) { %>
+          requestData.sessionId = '<%= sessionId %>';
+          console.log('Including session ID in claim-all request:', '<%= sessionId %>');
+        <% } %>
+
+        console.log('Sending claim-all request with data:', JSON.stringify(requestData, null, 2));
+
+        // Determine the API endpoint based on the source
+        let apiEndpoint = '/api/claim-all-rewards';
+
+        if ('<%= source %>' === 'activity') {
+          apiEndpoint = '/api/activity/claim-all-rewards';
+        } else if ('<%= source %>' === 'garden') {
+          apiEndpoint = '/api/garden/claim-all-rewards';
+          console.log('DEBUG: Garden reward detected, using garden API endpoint:', apiEndpoint);
+        } else if ('<%= source %>' === 'farm') {
+          apiEndpoint = '/api/claim-all-rewards';
+          console.log('DEBUG: Farm reward detected, using claim-all-rewards API endpoint:', apiEndpoint);
+        } else if ('<%= source %>' === 'game_corner') {
+          apiEndpoint = '/api/game-corner/claim-all-rewards';
+        }
+
+        console.log('Using API endpoint for claim-all:', apiEndpoint);
+
+        // Call API to process all rewards
+        const response = await fetch(apiEndpoint, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(requestData)
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          console.log('All rewards claimed successfully:', data);
+
+          // Update UI for each claimed reward
+          if (data.claimedRewards && Array.isArray(data.claimedRewards)) {
+            data.claimedRewards.forEach(reward => {
+              if (reward.success) {
+                // Find the button for this reward
+                const button = document.querySelector(`.claim-reward[data-reward-id="${reward.id}"][data-reward-type="${reward.type}"]`);
+
+                if (button) {
+                  // Update button to show claimed status
+                  button.disabled = true;
+                  button.innerHTML = '<i class="fas fa-check-circle mr-1"></i> Claimed';
+                  button.classList.remove('btn-primary');
+                  button.classList.add('btn-success');
+
+                  // Add claimed class to parent reward item
+                  const rewardItem = button.closest('.reward-item');
+                  if (rewardItem) {
+                    rewardItem.classList.add('claimed');
+
+                    // Add trainer info if available
+                    if (reward.trainerName) {
+                      const trainerInfo = document.createElement('div');
+                      trainerInfo.className = 'trainer-info mt-2 text-xs text-gray-400';
+                      trainerInfo.innerHTML = `Assigned to: <span class="font-medium text-yellow-400">${reward.trainerName}</span>`;
+
+                      // Check if trainer info already exists
+                      const existingInfo = rewardItem.querySelector('.trainer-info');
+                      if (existingInfo) {
+                        existingInfo.replaceWith(trainerInfo);
+                      } else {
+                        rewardItem.appendChild(trainerInfo);
+                      }
+                    }
+                  }
+                }
+              }
+            });
+          }
+
+          // Show success message
+          const messageElement = document.createElement('div');
+          messageElement.className = 'fixed top-4 right-4 bg-green-600 text-white px-4 py-2 rounded-lg shadow-lg z-50';
+          messageElement.innerHTML = `<i class="fas fa-check-circle mr-2"></i> ${data.message}`;
+          document.body.appendChild(messageElement);
+
+          // Remove message after 3 seconds
+          setTimeout(() => {
+            messageElement.remove();
+          }, 3000);
+        } else {
+          throw new Error(data.message || 'Failed to claim reward');
+        }
+      } catch (error) {
+        // Show error message
+        const errorMessage = document.createElement('div');
+        errorMessage.className = 'fixed top-4 right-4 bg-red-500 text-white px-4 py-2 rounded-lg shadow-lg z-50 transition-opacity duration-300';
+        errorMessage.innerHTML = `<i class="fas fa-exclamation-circle mr-2"></i> ${error.message || 'Error claiming reward'}`;
+        document.body.appendChild(errorMessage);
+
+        // Remove message after 3 seconds
+        setTimeout(() => {
+          errorMessage.style.opacity = '0';
+          setTimeout(() => errorMessage.remove(), 300);
+        }, 3000);
+
+        // Close modal
+        trainerModal.classList.add('hidden');
+        trainerModal.style.display = 'none';
+      } finally {
+        // Reset button state
+        confirmButton.disabled = false;
+        confirmButton.innerHTML = 'Confirm';
+
+        // Reset current reward
+        currentReward = null;
+        selectedTrainerId = null;
+      }
+    });
+
+    // This is a duplicate event listener that was removed
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(requestData)
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          // Update UI to show claimed status for all rewards
+          data.results.forEach(result => {
+            if (result.success) {
+              const claimButton = document.querySelector(`[data-reward-id="${result.rewardId}"]`);
+              if (claimButton) {
+                const rewardItem = claimButton.closest('.reward-item');
+
+                // Replace button with assigned badge
+                const assignedBadge = document.createElement('div');
+                assignedBadge.className = 'assigned-badge';
+                assignedBadge.innerHTML = `<p>Assigned to <span class="trainer-name">${result.trainerName}</span></p>`;
+
+                claimButton.replaceWith(assignedBadge);
+
+                // Add a subtle animation to highlight the change
+                rewardItem.style.transition = 'transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease';
+                rewardItem.style.backgroundColor = 'rgba(34, 197, 94, 0.1)';
+                setTimeout(() => {
+                  rewardItem.style.backgroundColor = 'rgba(31, 41, 55, 0.5)';
+                }, 1000);
+              }
+            }
+          });
+
+          // Show success message
+          const successMessage = document.createElement('div');
+          successMessage.className = 'fixed top-4 right-4 bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg z-50 transition-opacity duration-300';
+          successMessage.innerHTML = `<i class="fas fa-check-circle mr-2"></i> All rewards claimed successfully!`;
+          document.body.appendChild(successMessage);
+
+          // Remove message after 3 seconds
+          setTimeout(() => {
+            successMessage.style.opacity = '0';
+            setTimeout(() => successMessage.remove(), 300);
+          }, 3000);
+
+          // Disable claim all button
+          claimAllButton.disabled = true;
+          claimAllButton.innerHTML = '<i class="fas fa-check-circle mr-2"></i> All Claimed';
+        } else {
+          throw new Error(data.message || 'Failed to claim rewards');
+        }
+      } catch (error) {
+        // Show error message
+        const errorMessage = document.createElement('div');
+        errorMessage.className = 'fixed top-4 right-4 bg-red-500 text-white px-4 py-2 rounded-lg shadow-lg z-50 transition-opacity duration-300';
+        errorMessage.innerHTML = `<i class="fas fa-exclamation-circle mr-2"></i> ${error.message || 'Error claiming rewards'}`;
+        document.body.appendChild(errorMessage);
+
+        // Remove message after 3 seconds
+        setTimeout(() => {
+          errorMessage.style.opacity = '0';
+          setTimeout(() => errorMessage.remove(), 300);
+        }, 3000);
+      } finally {
+        // Reset button state
+        claimAllButton.disabled = false;
+        claimAllButton.innerHTML = '<i class="fas fa-check-circle mr-2"></i> Claim All Rewards';
+      }
+    });
+  });
+</script>

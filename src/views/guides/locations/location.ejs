@@ -1,0 +1,92 @@
+<div class="container mt-4">
+  <div class="row mb-4">
+    <div class="col">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="/guides/locations">Regions</a></li>
+          <li class="breadcrumb-item"><a href="/guides/locations/<%= region.slug %>"><%= region.name %></a></li>
+          <li class="breadcrumb-item"><a href="/guides/locations/<%= region.slug %>/<%= area.slug %>"><%= area.name %></a></li>
+          <li class="breadcrumb-item active" aria-current="page"><%= location.name %></li>
+        </ol>
+      </nav>
+    </div>
+  </div>
+
+  <div class="row mb-4">
+    <div class="col-md-8">
+      <h1 class="display-4"><%= location.name %></h1>
+      <% 
+        // Add a badge for towns and cities
+        let badge = '';
+        if (location.slug.startsWith('town-')) {
+          badge = '<span class="badge bg-success me-2">Town</span>';
+        } else if (location.slug.startsWith('city-')) {
+          badge = '<span class="badge bg-primary me-2">City</span>';
+        }
+      %>
+      <div class="mb-3"><%- badge %></div>
+      <p class="lead"><%= location.description %></p>
+      <a href="/guides/locations/<%= region.slug %>/<%= area.slug %>" class="btn btn-secondary mb-4">← Back to <%= area.name %></a>
+    </div>
+    <div class="col-md-4">
+      <div class="card">
+        <% if (location.image) { %>
+          <img src="<%= location.image %>" class="card-img-top" alt="<%= location.name %>">
+        <% } else { %>
+          <div class="card-img-top bg-secondary text-white d-flex align-items-center justify-content-center" style="height: 200px;">
+            <span><%= location.name %></span>
+          </div>
+        <% } %>
+        <div class="card-body">
+          <h5 class="card-title">Location Information</h5>
+          <p class="card-text">
+            <strong>Region:</strong> <%= region.name %><br>
+            <strong>Area:</strong> <%= area.name %><br>
+            <% if (location.slug.startsWith('town-')) { %>
+              <strong>Type:</strong> Town<br>
+            <% } else if (location.slug.startsWith('city-')) { %>
+              <strong>Type:</strong> City<br>
+            <% } else { %>
+              <strong>Type:</strong> Point of Interest<br>
+            <% } %>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="card">
+        <div class="card-body">
+          <div class="markdown-content">
+            <%- content %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .markdown-content h1 {
+    display: none; /* Hide the first h1 as we already show it above */
+  }
+  .markdown-content h2 {
+    margin-top: 1.5rem;
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+  }
+  .markdown-content h3 {
+    margin-top: 1.2rem;
+    margin-bottom: 0.8rem;
+    font-size: 1.2rem;
+  }
+  .markdown-content ul, .markdown-content ol {
+    margin-bottom: 1rem;
+  }
+  .markdown-content p {
+    margin-bottom: 1rem;
+  }
+</style>
+

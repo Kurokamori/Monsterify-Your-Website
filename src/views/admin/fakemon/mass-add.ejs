@@ -1,0 +1,651 @@
+<% /* Set the title and other variables for the layout */ %>
+<% title = 'Mass Add Fakemon' %>
+
+<style>
+    .admin-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+    }
+
+    .admin-title {
+        font-size: 2rem;
+        font-weight: bold;
+    }
+
+    .admin-actions {
+        display: flex;
+        gap: 1rem;
+    }
+
+    .btn-back {
+        background-color: #7f8c8d;
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 4px;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .btn-back:hover {
+        background-color: #95a5a6;
+    }
+
+    .form-container {
+        background: rgba(0, 0, 0, 0.2);
+        padding: 2rem;
+        border-radius: 8px;
+        margin-bottom: 2rem;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: bold;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 0.75rem;
+        background: rgba(0, 0, 0, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 4px;
+        color: #ffffff;
+    }
+
+    .form-control:focus {
+        outline: none;
+        border-color: #3498db;
+    }
+
+    .form-hint {
+        font-size: 0.875rem;
+        color: #7f8c8d;
+        margin-top: 0.25rem;
+    }
+
+    .btn-submit {
+        background-color: #2ecc71;
+        color: white;
+        padding: 0.75rem 1.5rem;
+        border-radius: 4px;
+        text-decoration: none;
+        border: none;
+        cursor: pointer;
+        font-size: 1rem;
+        font-weight: bold;
+    }
+
+    .btn-submit:hover {
+        background-color: #27ae60;
+    }
+
+    .alert {
+        padding: 1rem;
+        border-radius: 0.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .alert-success {
+        background-color: rgba(52, 211, 153, 0.2);
+        border: 1px solid rgba(52, 211, 153, 0.5);
+        color: #10b981;
+    }
+
+    .alert-error {
+        background-color: rgba(239, 68, 68, 0.2);
+        border: 1px solid rgba(239, 68, 68, 0.5);
+        color: #ef4444;
+    }
+
+    .preview-container {
+        margin-top: 1.5rem;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 1rem;
+    }
+
+    .preview-item {
+        background: rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+        padding: 1rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .preview-image {
+        width: 100%;
+        height: 150px;
+        object-fit: contain;
+        border-radius: 4px;
+        background: rgba(0, 0, 0, 0.2);
+    }
+
+    .preview-info {
+        font-size: 0.875rem;
+    }
+
+    .preview-filename {
+        font-weight: bold;
+        word-break: break-all;
+    }
+
+    .file-drop-area {
+        border: 2px dashed rgba(255, 255, 255, 0.2);
+        border-radius: 8px;
+        padding: 2rem;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .file-drop-area:hover, .file-drop-area.active {
+        border-color: #3498db;
+        background: rgba(52, 152, 219, 0.1);
+    }
+
+    .file-drop-icon {
+        font-size: 2rem;
+        margin-bottom: 1rem;
+        color: rgba(255, 255, 255, 0.5);
+    }
+
+    .file-drop-text {
+        margin-bottom: 1rem;
+    }
+
+    .file-input {
+        display: none;
+    }
+
+    .starting-number-container {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .starting-number-container .form-control {
+        width: 100px;
+    }
+
+    .common-attributes {
+        background: rgba(0, 0, 0, 0.1);
+        padding: 1rem;
+        border-radius: 4px;
+        margin-bottom: 1rem;
+    }
+
+    .common-attributes-title {
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+    }
+
+    .attribute-row {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .attribute-row .form-group {
+        flex: 1;
+        margin-bottom: 0.5rem;
+    }
+
+    .remove-preview {
+        background-color: #e74c3c;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        padding: 0.25rem 0.5rem;
+        cursor: pointer;
+        font-size: 0.75rem;
+        align-self: flex-end;
+    }
+
+    .remove-preview:hover {
+        background-color: #c0392b;
+    }
+
+    .preview-form {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .preview-form input, .preview-form select {
+        font-size: 0.75rem;
+        padding: 0.25rem;
+    }
+
+    .preview-form label {
+        font-size: 0.75rem;
+        margin-bottom: 0.125rem;
+    }
+</style>
+
+<div class="container">
+    <div class="admin-header">
+        <h1 class="admin-title">Mass Add Fakemon</h1>
+        <div class="admin-actions">
+            <a href="/admin/fakemon" class="btn-back">
+                <i class="fas fa-arrow-left"></i> Back to List
+            </a>
+        </div>
+    </div>
+
+    <% if (typeof message !== 'undefined' && message) { %>
+    <div class="alert alert-<%= messageType %>">
+        <%= message %>
+    </div>
+    <% } %>
+
+    <div class="form-container">
+        <form action="/admin/fakemon/mass-add" method="POST" enctype="multipart/form-data" id="massAddForm">
+            <div class="form-group">
+                <label class="form-label">Upload Multiple Fakemon Images</label>
+                <div class="file-drop-area" id="dropArea">
+                    <div class="file-drop-icon">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                    </div>
+                    <div class="file-drop-text">
+                        Drag & drop images here or click to browse
+                    </div>
+                    <input type="file" id="fileInput" name="images" class="file-input" multiple accept="image/*">
+                </div>
+                <div class="form-hint">PNG format recommended. Each image will be assigned a sequential number.</div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Starting Number</label>
+                <div class="starting-number-container">
+                    <input type="number" id="startingNumber" name="startingNumber" class="form-control" value="<%= nextNumber %>" min="1" required>
+                    <div class="form-hint">The first image will be assigned this number, and subsequent images will increment from here.</div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Common Attributes (applied to all uploads)</label>
+                <div class="common-attributes">
+                    <div class="attribute-row">
+                        <div class="form-group">
+                            <label for="commonAttribute" class="form-label">Attribute</label>
+                            <select id="commonAttribute" name="commonAttribute" class="form-control">
+                                <option value="Data">Data</option>
+                                <option value="Vaccine">Vaccine</option>
+                                <option value="Virus">Virus</option>
+                                <option value="Free">Free</option>
+                                <option value="Variable">Variable</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="commonType1" class="form-label">Type 1</label>
+                            <select id="commonType1" name="commonType1" class="form-control">
+                                <option value="Normal">Normal</option>
+                                <option value="Fire">Fire</option>
+                                <option value="Water">Water</option>
+                                <option value="Grass">Grass</option>
+                                <option value="Electric">Electric</option>
+                                <option value="Ice">Ice</option>
+                                <option value="Fighting">Fighting</option>
+                                <option value="Poison">Poison</option>
+                                <option value="Ground">Ground</option>
+                                <option value="Flying">Flying</option>
+                                <option value="Psychic">Psychic</option>
+                                <option value="Bug">Bug</option>
+                                <option value="Rock">Rock</option>
+                                <option value="Ghost">Ghost</option>
+                                <option value="Dragon">Dragon</option>
+                                <option value="Dark">Dark</option>
+                                <option value="Steel">Steel</option>
+                                <option value="Fairy">Fairy</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="commonType2" class="form-label">Type 2 (Optional)</label>
+                            <select id="commonType2" name="commonType2" class="form-control">
+                                <option value="">None</option>
+                                <option value="Normal">Normal</option>
+                                <option value="Fire">Fire</option>
+                                <option value="Water">Water</option>
+                                <option value="Grass">Grass</option>
+                                <option value="Electric">Electric</option>
+                                <option value="Ice">Ice</option>
+                                <option value="Fighting">Fighting</option>
+                                <option value="Poison">Poison</option>
+                                <option value="Ground">Ground</option>
+                                <option value="Flying">Flying</option>
+                                <option value="Psychic">Psychic</option>
+                                <option value="Bug">Bug</option>
+                                <option value="Rock">Rock</option>
+                                <option value="Ghost">Ghost</option>
+                                <option value="Dragon">Dragon</option>
+                                <option value="Dark">Dark</option>
+                                <option value="Steel">Steel</option>
+                                <option value="Fairy">Fairy</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="preview-container" id="previewContainer">
+                <!-- Preview items will be added here dynamically -->
+            </div>
+
+            <div class="form-group" style="margin-top: 2rem;">
+                <button type="submit" class="btn-submit" id="submitBtn" disabled>
+                    <i class="fas fa-save"></i> Create Fakemon
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    const dropArea = document.getElementById('dropArea');
+    const fileInput = document.getElementById('fileInput');
+    const previewContainer = document.getElementById('previewContainer');
+    const submitBtn = document.getElementById('submitBtn');
+    const startingNumberInput = document.getElementById('startingNumber');
+    const commonAttributeSelect = document.getElementById('commonAttribute');
+    const commonTypesSelect = document.getElementById('commonTypes');
+
+    let files = [];
+
+    // Prevent default drag behaviors
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+        dropArea.addEventListener(eventName, preventDefaults, false);
+        document.body.addEventListener(eventName, preventDefaults, false);
+    });
+
+    // Highlight drop area when item is dragged over it
+    ['dragenter', 'dragover'].forEach(eventName => {
+        dropArea.addEventListener(eventName, highlight, false);
+    });
+
+    ['dragleave', 'drop'].forEach(eventName => {
+        dropArea.addEventListener(eventName, unhighlight, false);
+    });
+
+    // Handle dropped files
+    dropArea.addEventListener('drop', handleDrop, false);
+
+    // Handle selected files from file input
+    fileInput.addEventListener('change', handleFiles);
+
+    // Click on drop area to trigger file input
+    dropArea.addEventListener('click', () => {
+        fileInput.click();
+    });
+
+    function preventDefaults(e) {
+        e.preventDefault();
+        e.stopPropagation();
+    }
+
+    function highlight() {
+        dropArea.classList.add('active');
+    }
+
+    function unhighlight() {
+        dropArea.classList.remove('active');
+    }
+
+    function handleDrop(e) {
+        const dt = e.dataTransfer;
+        const newFiles = [...dt.files];
+        handleFiles({ target: { files: newFiles } });
+    }
+
+    function handleFiles(e) {
+        const newFiles = [...e.target.files];
+
+        // Filter for only image files
+        const imageFiles = newFiles.filter(file => file.type.startsWith('image/'));
+
+        if (imageFiles.length === 0) return;
+
+        // Add new files to our files array
+        files = [...files, ...imageFiles];
+
+        // Update preview
+        updatePreviews();
+
+        // Enable submit button if we have files
+        submitBtn.disabled = files.length === 0;
+    }
+
+    function updatePreviews() {
+        // Clear preview container
+        previewContainer.innerHTML = '';
+
+        // Get starting number
+        const startingNumber = parseInt(startingNumberInput.value) || 1;
+
+        // Create preview for each file
+        files.forEach((file, index) => {
+            const number = (startingNumber + index).toString().padStart(3, '0');
+            const reader = new FileReader();
+
+            reader.onload = function(e) {
+                const previewItem = document.createElement('div');
+                previewItem.className = 'preview-item';
+                previewItem.dataset.index = index;
+
+                // Get file name without extension
+                const fileName = file.name.replace(/\.[^/.]+$/, "");
+
+                // Create preview content
+                previewItem.innerHTML = `
+                    <img src="${e.target.result}" alt="${file.name}" class="preview-image">
+                    <div class="preview-info">
+                        <div class="preview-filename">${file.name}</div>
+                        <div>Size: ${formatFileSize(file.size)}</div>
+                    </div>
+                    <div class="preview-form">
+                        <input type="hidden" name="fileIndex_${index}" value="${index}">
+
+                        <label for="number_${index}">Number:</label>
+                        <input type="text" id="number_${index}" name="number_${index}" value="${number}" class="form-control">
+
+                        <label for="name_${index}">Name:</label>
+                        <input type="text" id="name_${index}" name="name_${index}" value="${fileName}" class="form-control" required>
+
+                        <label for="types1_${index}">Type 1:</label>
+                        <select id="types1_${index}" name="types1_${index}" class="form-control">
+                            <option value="inherit">Inherit from Common</option>
+                            <option value="Normal">Normal</option>
+                            <option value="Fire">Fire</option>
+                            <option value="Water">Water</option>
+                            <option value="Grass">Grass</option>
+                            <option value="Electric">Electric</option>
+                            <option value="Ice">Ice</option>
+                            <option value="Fighting">Fighting</option>
+                            <option value="Poison">Poison</option>
+                            <option value="Ground">Ground</option>
+                            <option value="Flying">Flying</option>
+                            <option value="Psychic">Psychic</option>
+                            <option value="Bug">Bug</option>
+                            <option value="Rock">Rock</option>
+                            <option value="Ghost">Ghost</option>
+                            <option value="Dragon">Dragon</option>
+                            <option value="Dark">Dark</option>
+                            <option value="Steel">Steel</option>
+                            <option value="Fairy">Fairy</option>
+                        </select>
+
+                        <label for="types2_${index}">Type 2 (Optional):</label>
+                        <select id="types2_${index}" name="types2_${index}" class="form-control">
+                            <option value="">None</option>
+                            <option value="inherit">Inherit from Common</option>
+                            <option value="Normal">Normal</option>
+                            <option value="Fire">Fire</option>
+                            <option value="Water">Water</option>
+                            <option value="Grass">Grass</option>
+                            <option value="Electric">Electric</option>
+                            <option value="Ice">Ice</option>
+                            <option value="Fighting">Fighting</option>
+                            <option value="Poison">Poison</option>
+                            <option value="Ground">Ground</option>
+                            <option value="Flying">Flying</option>
+                            <option value="Psychic">Psychic</option>
+                            <option value="Bug">Bug</option>
+                            <option value="Rock">Rock</option>
+                            <option value="Ghost">Ghost</option>
+                            <option value="Dragon">Dragon</option>
+                            <option value="Dark">Dark</option>
+                            <option value="Steel">Steel</option>
+                            <option value="Fairy">Fairy</option>
+                        </select>
+
+                        <label for="attribute_${index}">Attribute:</label>
+                        <select id="attribute_${index}" name="attribute_${index}" class="form-control">
+                            <option value="inherit">Inherit from Common</option>
+                            <option value="Data">Data</option>
+                            <option value="Vaccine">Vaccine</option>
+                            <option value="Virus">Virus</option>
+                            <option value="Free">Free</option>
+                            <option value="Variable">Variable</option>
+                        </select>
+                    </div>
+                    <button type="button" class="remove-preview" data-index="${index}">Remove</button>
+                `;
+
+                previewContainer.appendChild(previewItem);
+
+                // Add event listener to remove button
+                previewItem.querySelector('.remove-preview').addEventListener('click', function() {
+                    const index = parseInt(this.dataset.index);
+                    removeFile(index);
+                });
+            };
+
+            reader.readAsDataURL(file);
+        });
+    }
+
+    function removeFile(index) {
+        files.splice(index, 1);
+        updatePreviews();
+        submitBtn.disabled = files.length === 0;
+    }
+
+    function formatFileSize(bytes) {
+        if (bytes === 0) return '0 Bytes';
+        const k = 1024;
+        const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    }
+
+    // Update previews when starting number changes
+    startingNumberInput.addEventListener('change', updatePreviews);
+
+    // Function to update numbers when a number is manually changed
+    function updateNumberSequence() {
+        // Get all number inputs
+        const numberInputs = document.querySelectorAll('[id^="number_"]');
+
+        // Check if any numbers conflict
+        const numbers = Array.from(numberInputs).map(input => input.value);
+        const uniqueNumbers = new Set(numbers);
+
+        if (uniqueNumbers.size !== numbers.length) {
+            alert('Warning: Some Fakemon have duplicate numbers. Please ensure each Fakemon has a unique number.');
+        }
+    }
+
+    // Add event listener to the preview container to catch changes to number inputs
+    previewContainer.addEventListener('change', function(e) {
+        if (e.target && e.target.id && e.target.id.startsWith('number_')) {
+            // Ensure the number is padded with leading zeros
+            e.target.value = e.target.value.padStart(3, '0');
+            updateNumberSequence();
+        }
+    });
+
+    // Handle form submission
+    document.getElementById('massAddForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        if (files.length === 0) {
+            alert('Please select at least one image file.');
+            return;
+        }
+
+        // Create FormData object
+        const formData = new FormData();
+
+        // Add starting number
+        formData.append('startingNumber', startingNumberInput.value);
+
+        // Add common attributes
+        formData.append('commonAttribute', commonAttributeSelect.value);
+
+        // Add common types
+        const commonType1 = document.getElementById('commonType1').value;
+        const commonType2 = document.getElementById('commonType2').value;
+        const commonTypes = [commonType1];
+        if (commonType2) {
+            commonTypes.push(commonType2);
+        }
+        formData.append('commonTypes', JSON.stringify(commonTypes));
+
+        // Add files and their metadata
+        files.forEach((file, index) => {
+            formData.append(`file_${index}`, file);
+            formData.append(`number_${index}`, document.getElementById(`number_${index}`).value);
+            formData.append(`name_${index}`, document.getElementById(`name_${index}`).value);
+            formData.append(`types1_${index}`, document.getElementById(`types1_${index}`).value);
+            formData.append(`types2_${index}`, document.getElementById(`types2_${index}`).value);
+            formData.append(`attribute_${index}`, document.getElementById(`attribute_${index}`).value);
+        });
+
+        // Add total file count
+        formData.append('fileCount', files.length);
+
+        // Log the form data for debugging
+        console.log('Form data:');
+        for (let [key, value] of formData.entries()) {
+            if (key.startsWith('file_')) {
+                console.log(key, 'File object');
+            } else {
+                console.log(key, value);
+            }
+        }
+
+        // Submit the form
+        fetch('/admin/fakemon/mass-add', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => {
+            if (!response.ok) {
+                return response.text().then(text => {
+                    throw new Error(`Server error: ${text}`);
+                });
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                window.location.href = `/admin/fakemon?message=${encodeURIComponent(data.message)}&messageType=success`;
+            } else {
+                alert(`Error: ${data.message}`);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert(`An error occurred while uploading the files: ${error.message}`);
+        });
+    });
+</script>

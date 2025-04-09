@@ -1,0 +1,228 @@
+<% /* Set the title and other variables for the layout */ %>
+<% title = isNew ? 'Add New Digimon' : `Edit Digimon: ${digimon.name}` %>
+
+<style>
+  .form-container {
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+  }
+  
+  .form-row {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+  
+  @media (min-width: 640px) {
+    .form-row {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  
+  @media (min-width: 768px) {
+    .form-row.three-cols {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+  
+  .form-group {
+    margin-bottom: 1rem;
+  }
+  
+  .form-label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: bold;
+  }
+  
+  .form-control {
+    width: 100%;
+    padding: 0.5rem;
+    border-radius: 4px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background-color: rgba(0, 0, 0, 0.2);
+    color: white;
+  }
+  
+  .form-control:focus {
+    outline: none;
+    border-color: #3498db;
+  }
+  
+  .form-hint {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.6);
+    margin-top: 0.25rem;
+  }
+  
+  .form-check {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.5rem;
+  }
+  
+  .form-check-input {
+    margin-right: 0.5rem;
+  }
+  
+  .form-check-label {
+    font-size: 0.875rem;
+  }
+  
+  .form-section {
+    margin-bottom: 1.5rem;
+  }
+  
+  .form-section-title {
+    font-size: 1.25rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  .btn-submit {
+    background-color: #f1c40f;
+    color: black;
+    padding: 0.75rem 1.5rem;
+    border-radius: 4px;
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 1rem;
+  }
+  
+  .btn-submit:hover {
+    background-color: #f39c12;
+  }
+  
+  .btn-back {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  .btn-back:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+  }
+  
+  .admin-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+  }
+  
+  .admin-title {
+    font-size: 1.75rem;
+    font-weight: bold;
+  }
+  
+  .admin-actions {
+    display: flex;
+    gap: 0.5rem;
+  }
+</style>
+
+<div class="mt-20 mb-8">
+  <div class="admin-header">
+    <h1 class="admin-title"><%= isNew ? 'Add New Digimon' : `Edit Digimon: ${digimon.name}` %></h1>
+    <div class="admin-actions">
+      <a href="/admin/digimon" class="btn-back">
+        <i class="fas fa-arrow-left"></i> Back to List
+      </a>
+    </div>
+  </div>
+  
+  <div class="form-container">
+    <form action="/admin/digimon/save" method="POST">
+      <input type="hidden" name="isNew" value="<%= isNew %>">
+      
+      <div class="form-section">
+        <h2 class="form-section-title">Basic Information</h2>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label for="id" class="form-label">ID</label>
+            <input type="number" id="id" name="id" class="form-control" value="<%= digimon.id || '' %>">
+            <div class="form-hint">Numeric ID (optional)</div>
+          </div>
+          
+          <div class="form-group">
+            <label for="name" class="form-label">Name</label>
+            <input type="text" id="name" name="name" class="form-control" value="<%= digimon.name %>" <%= !isNew ? 'readonly' : '' %> required>
+          </div>
+        </div>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label for="Stage" class="form-label">Stage</label>
+            <select id="Stage" name="Stage" class="form-control" required>
+              <option value="" disabled <%= !digimon.Stage ? 'selected' : '' %>>Select Stage</option>
+              <% ['Baby I', 'Baby II', 'Child', 'Adult', 'Perfect', 'Ultimate', 'Super Ultimate', 'Armor', 'Hybrid', 'Unknown'].forEach(function(stage) { %>
+              <option value="<%= stage %>" <%= digimon.Stage === stage ? 'selected' : '' %>><%= stage %></option>
+              <% }); %>
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label for="attributes" class="form-label">Attributes</label>
+            <input type="text" id="attributes" name="attributes" class="form-control" value="<%= digimon.attributes || '' %>">
+            <div class="form-hint">Comma-separated list (e.g., "Vaccine, Free")</div>
+          </div>
+        </div>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label for="types" class="form-label">Types</label>
+            <input type="text" id="types" name="types" class="form-control" value="<%= digimon.types || '' %>">
+            <div class="form-hint">Comma-separated list (e.g., "Holy Beast, Dragon")</div>
+          </div>
+          
+          <div class="form-group">
+            <label for="fields" class="form-label">Fields</label>
+            <input type="text" id="fields" name="fields" class="form-control" value="<%= digimon.fields || '' %>">
+            <div class="form-hint">Comma-separated list (e.g., "Nature Spirits, Virus Busters")</div>
+          </div>
+        </div>
+        
+        <div class="form-check">
+          <input type="checkbox" id="xAntibody" name="xAntibody" class="form-check-input" <%= digimon.xAntibody ? 'checked' : '' %>>
+          <label for="xAntibody" class="form-check-label">X-Antibody</label>
+        </div>
+      </div>
+      
+      <div class="form-section">
+        <h2 class="form-section-title">Evolution Chain</h2>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label for="priorEvolutions" class="form-label">Prior Evolutions</label>
+            <input type="text" id="priorEvolutions" name="priorEvolutions" class="form-control" value="<%= digimon.priorEvolutions || '' %>">
+            <div class="form-hint">Comma-separated list of Digimon this evolves from</div>
+          </div>
+          
+          <div class="form-group">
+            <label for="nextEvolutions" class="form-label">Next Evolutions</label>
+            <input type="text" id="nextEvolutions" name="nextEvolutions" class="form-control" value="<%= digimon.nextEvolutions || '' %>">
+            <div class="form-hint">Comma-separated list of Digimon this evolves into</div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="text-center mt-6">
+        <button type="submit" class="btn-submit">
+          <i class="fas fa-save"></i> <%= isNew ? 'Create Digimon' : 'Update Digimon' %>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

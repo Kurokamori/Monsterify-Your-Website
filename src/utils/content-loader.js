@@ -11,15 +11,48 @@ function loadMarkdownContent(filePath) {
     console.log(`Attempting to load markdown file: ${filePath}`);
     if (!fs.existsSync(filePath)) {
       console.error(`File does not exist: ${filePath}`);
-      return `<p class="error">Content not found: File does not exist</p>`;
+      return { content: `<p class="error">Content not found: File does not exist</p>` };
     }
 
-    const content = fs.readFileSync(filePath, 'utf8');
+    const rawContent = fs.readFileSync(filePath, 'utf8');
     console.log(`Successfully loaded file: ${filePath}`);
-    return simpleMarkdownToHtml(content);
+
+    // Extract metadata if present (YAML front matter)
+    let content = rawContent;
+    let metadata = {};
+
+    // Check for YAML front matter
+    const frontMatterMatch = rawContent.match(/^---\n([\s\S]*?)\n---\n([\s\S]*)$/);
+    if (frontMatterMatch) {
+      try {
+        // This is a simple YAML parser - in a real app you'd use a proper YAML library
+        const yamlLines = frontMatterMatch[1].split('\n');
+        yamlLines.forEach(line => {
+          const parts = line.split(':');
+          if (parts.length >= 2) {
+            const key = parts[0].trim();
+            const value = parts.slice(1).join(':').trim();
+            metadata[key] = value;
+          }
+        });
+        content = frontMatterMatch[2];
+      } catch (e) {
+        console.error('Error parsing front matter:', e);
+        // If parsing fails, use the original content
+        content = rawContent;
+      }
+    }
+
+    return {
+      content: simpleMarkdownToHtml(content),
+      metadata
+    };
   } catch (error) {
     console.error(`Error loading markdown file ${filePath}:`, error);
-    return `<p class="error">Content not found: ${error.message}</p>`;
+    return {
+      content: `<p class="error">Content not found: ${error.message}</p>`,
+      metadata: {}
+    };
   }
 }
 

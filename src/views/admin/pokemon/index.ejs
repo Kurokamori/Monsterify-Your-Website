@@ -1,0 +1,321 @@
+<% /* Set the title and other variables for the layout */ %>
+<% title = 'Manage Pokémon' %>
+
+<style>
+  .pokemon-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+  }
+
+  .pokemon-table th, .pokemon-table td {
+    padding: 0.75rem;
+    text-align: left;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .pokemon-table th {
+    background-color: rgba(0, 0, 0, 0.2);
+    font-weight: bold;
+  }
+
+  .pokemon-table tr:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+  }
+
+  .pokemon-actions {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .btn-edit, .btn-delete {
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    text-decoration: none;
+    font-size: 0.875rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+  }
+
+  .btn-edit {
+    background-color: #3498db;
+    color: white;
+  }
+
+  .btn-delete {
+    background-color: #e74c3c;
+    color: white;
+  }
+
+  .btn-edit:hover {
+    background-color: #2980b9;
+  }
+
+  .btn-delete:hover {
+    background-color: #c0392b;
+  }
+
+  .admin-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+  }
+
+  .admin-title {
+    font-size: 1.75rem;
+    font-weight: bold;
+  }
+
+  .admin-actions {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .btn-add {
+    background-color: #2ecc71;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    text-decoration: none;
+    font-weight: bold;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .btn-add:hover {
+    background-color: #27ae60;
+  }
+
+  .alert {
+    padding: 1rem;
+    border-radius: 0.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .alert-success {
+    background-color: rgba(46, 204, 113, 0.2);
+    border: 1px solid rgba(46, 204, 113, 0.5);
+    color: #2ecc71;
+  }
+
+  .alert-error {
+    background-color: rgba(231, 76, 60, 0.2);
+    border: 1px solid rgba(231, 76, 60, 0.5);
+    color: #e74c3c;
+  }
+
+  .badge {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: bold;
+    text-transform: uppercase;
+  }
+
+  .badge-starter {
+    background-color: #3498db;
+    color: white;
+  }
+
+  .badge-fossil {
+    background-color: #795548;
+    color: white;
+  }
+
+  .badge-legendary {
+    background-color: #f39c12;
+    color: white;
+  }
+
+  .badge-mythical {
+    background-color: #9b59b6;
+    color: white;
+  }
+
+  .badge-pseudo {
+    background-color: #e67e22;
+    color: white;
+  }
+
+  .badge-baby {
+    background-color: #1abc9c;
+    color: white;
+  }
+
+  .type-badge {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: bold;
+    margin-right: 0.25rem;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
+  }
+
+  .type-normal { background-color: #A8A878; color: white; }
+  .type-fire { background-color: #F08030; color: white; }
+  .type-water { background-color: #6890F0; color: white; }
+  .type-grass { background-color: #78C850; color: white; }
+  .type-electric { background-color: #F8D030; color: black; }
+  .type-ice { background-color: #98D8D8; color: black; }
+  .type-fighting { background-color: #C03028; color: white; }
+  .type-poison { background-color: #A040A0; color: white; }
+  .type-ground { background-color: #E0C068; color: black; }
+  .type-flying { background-color: #A890F0; color: white; }
+  .type-psychic { background-color: #F85888; color: white; }
+  .type-bug { background-color: #A8B820; color: white; }
+  .type-rock { background-color: #B8A038; color: white; }
+  .type-ghost { background-color: #705898; color: white; }
+  .type-dragon { background-color: #7038F8; color: white; }
+  .type-dark { background-color: #705848; color: white; }
+  .type-steel { background-color: #B8B8D0; color: black; }
+  .type-fairy { background-color: #EE99AC; color: black; }
+
+  .pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 1.5rem;
+    gap: 0.5rem;
+  }
+
+  .pagination-item {
+    padding: 0.5rem 0.75rem;
+    border-radius: 4px;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: white;
+    text-decoration: none;
+  }
+
+  .pagination-item.active {
+    background-color: #3498db;
+    font-weight: bold;
+  }
+
+  .pagination-item:hover:not(.active) {
+    background-color: rgba(255, 255, 255, 0.2);
+  }
+
+  .search-form {
+    margin-bottom: 1.5rem;
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .search-input {
+    flex: 1;
+    padding: 0.5rem;
+    border-radius: 4px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background-color: rgba(0, 0, 0, 0.2);
+    color: white;
+  }
+
+  .btn-search {
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    cursor: pointer;
+  }
+
+  .btn-search:hover {
+    background-color: #2980b9;
+  }
+</style>
+
+<div class="mt-20 mb-8">
+  <div class="admin-header">
+    <h1 class="admin-title">Manage Pokémon</h1>
+    <div class="admin-actions">
+      <a href="/admin/pokemon/new" class="btn-add">
+        <i class="fas fa-plus"></i> Add New Pokémon
+      </a>
+      <a href="/admin/pokemon/mass-add" class="btn-add" style="background-color: #9b59b6;">
+        <i class="fas fa-upload"></i> Mass Add
+      </a>
+    </div>
+  </div>
+
+  <% if (typeof message !== 'undefined' && message) { %>
+  <div class="alert alert-<%= messageType %>">
+    <%= message %>
+  </div>
+  <% } %>
+
+  <form class="search-form" action="/admin/pokemon" method="GET">
+    <input type="text" name="search" class="search-input" placeholder="Search by name, type, or region..." value="<%= typeof search !== 'undefined' ? search : '' %>">
+    <button type="submit" class="btn-search">
+      <i class="fas fa-search"></i> Search
+    </button>
+  </form>
+
+  <% if (pokemon.length === 0) { %>
+  <p class="text-center my-8">No Pokémon found.</p>
+  <% } else { %>
+  <div class="overflow-x-auto">
+    <table class="pokemon-table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Region</th>
+          <th>Stage</th>
+          <th>Rarity</th>
+          <th>Flags</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% pokemon.forEach(function(poke) { %>
+        <tr>
+          <td><%= poke.SpeciesName %></td>
+          <td>
+            <span class="type-badge type-<%= poke.Type1.toLowerCase() %>"><%= poke.Type1 %></span>
+            <% if (poke.Type2) { %>
+            <span class="type-badge type-<%= poke.Type2.toLowerCase() %>"><%= poke.Type2 %></span>
+            <% } %>
+          </td>
+          <td><%= poke.region %></td>
+          <td><%= poke.Stage %></td>
+          <td><%= poke.Rarity %></td>
+          <td>
+            <% if (poke.is_starter) { %>
+            <span class="badge badge-starter" title="Starter">S</span>
+            <% } %>
+            <% if (poke.is_fossil) { %>
+            <span class="badge badge-fossil" title="Fossil">F</span>
+            <% } %>
+            <% if (poke.is_psuedolegendary) { %>
+            <span class="badge badge-pseudo" title="Pseudo-Legendary">P</span>
+            <% } %>
+            <% if (poke.is_sublegendary) { %>
+            <span class="badge badge-legendary" title="Sub-Legendary">L</span>
+            <% } %>
+            <% if (poke.is_baby) { %>
+            <span class="badge badge-baby" title="Baby">B</span>
+            <% } %>
+          </td>
+          <td class="pokemon-actions">
+            <a href="/admin/pokemon/edit/<%= poke.SpeciesName %>" class="btn-edit">
+              <i class="fas fa-edit"></i> Edit
+            </a>
+            <form action="/admin/pokemon/delete/<%= poke.SpeciesName %>" method="POST" onsubmit="return confirm('Are you sure you want to delete this Pokémon?');" style="display: inline;">
+              <button type="submit" class="btn-delete">
+                <i class="fas fa-trash"></i> Delete
+              </button>
+            </form>
+          </td>
+        </tr>
+        <% }); %>
+      </tbody>
+    </table>
+  </div>
+  <% } %>
+
+  <!-- Pagination would go here if needed -->
+</div>

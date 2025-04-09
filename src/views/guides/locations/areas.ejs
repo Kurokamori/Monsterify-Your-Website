@@ -1,0 +1,31 @@
+<div class="container mt-4">
+  <div class="row mb-4">
+    <div class="col">
+      <h1 class="display-4"><%= region.name %></h1>
+      <p class="lead">Explore the areas within this region.</p>
+      <a href="/guides/locations" class="btn btn-secondary mb-3">← Back to Regions</a>
+    </div>
+  </div>
+
+  <div class="row">
+    <% areas.forEach(area => { %>
+      <div class="col-md-4 mb-4">
+        <div class="card h-100 location-card">
+          <% if (area.image) { %>
+            <img src="<%= area.image %>" class="card-img-top" alt="<%= area.name %>">
+          <% } else { %>
+            <div class="card-img-top bg-secondary text-white d-flex align-items-center justify-content-center" style="height: 200px;">
+              <span><%= area.name %></span>
+            </div>
+          <% } %>
+          <div class="card-body">
+            <h5 class="card-title"><%= area.name %></h5>
+            <p class="card-text"><%= area.description %></p>
+            <a href="<%= area.url %>" class="btn btn-primary">Explore Area</a>
+          </div>
+        </div>
+      </div>
+    <% }) %>
+  </div>
+</div>
+

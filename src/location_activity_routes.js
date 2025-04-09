@@ -971,7 +971,8 @@ app.get('/town/rewards', async (req, res) => {
         showClaimAllButton: true,
         source: 'activity',
         returnUrl: `/town/visit`,
-        returnButtonText: 'Return to Town'
+        returnButtonText: 'Return to Town',
+        message: req.query.message || req.session.message || null // Always include message, even if null
       });
     }
 
@@ -985,7 +986,8 @@ app.get('/town/rewards', async (req, res) => {
       allowTrainerSelection: true,
       showClaimAllButton: false,
       returnUrl: '/town/visit',
-      returnButtonText: 'Return to Town'
+      returnButtonText: 'Return to Town',
+      message: req.query.message || req.session.message || null // Always include message, even if null
     });
   } catch (error) {
     console.error('Error loading rewards page:', error);

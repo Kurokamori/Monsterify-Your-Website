@@ -1,0 +1,30 @@
+<div class="container mt-4">
+  <div class="row mb-4">
+    <div class="col">
+      <h1 class="display-4">Location Guide</h1>
+      <p class="lead">Explore the regions of Conocoo Island and beyond.</p>
+    </div>
+  </div>
+
+  <div class="row">
+    <% regions.forEach(region => { %>
+      <div class="col-md-4 mb-4">
+        <div class="card h-100 location-card">
+          <% if (region.image) { %>
+            <img src="<%= region.image %>" class="card-img-top" alt="<%= region.name %>">
+          <% } else { %>
+            <div class="card-img-top bg-secondary text-white d-flex align-items-center justify-content-center" style="height: 200px;">
+              <span><%= region.name %></span>
+            </div>
+          <% } %>
+          <div class="card-body">
+            <h5 class="card-title"><%= region.name %></h5>
+            <p class="card-text"><%= region.description %></p>
+            <a href="<%= region.url %>" class="btn btn-primary">Explore Region</a>
+          </div>
+        </div>
+      </div>
+    <% }) %>
+  </div>
+</div>
+

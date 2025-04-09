@@ -1,0 +1,41 @@
+<div class="container mt-4">
+  <div class="row mb-4">
+    <div class="col">
+      <h1 class="display-4"><%= area.name %></h1>
+      <p class="lead">Explore the locations within this area.</p>
+      <a href="/guides/locations/<%= region.slug %>" class="btn btn-secondary mb-3">← Back to <%= region.name %></a>
+    </div>
+  </div>
+
+  <div class="row">
+    <% locations.forEach(location => { %>
+      <div class="col-md-4 mb-4">
+        <div class="card h-100 location-card">
+          <% if (location.image) { %>
+            <img src="<%= location.image %>" class="card-img-top" alt="<%= location.name %>">
+          <% } else { %>
+            <div class="card-img-top bg-secondary text-white d-flex align-items-center justify-content-center" style="height: 200px;">
+              <span><%= location.name %></span>
+            </div>
+          <% } %>
+          <div class="card-body">
+            <h5 class="card-title"><%= location.name %></h5>
+            <% 
+              // Add a badge for towns and cities
+              let badge = '';
+              if (location.slug.startsWith('town-')) {
+                badge = '<span class="badge bg-success me-2">Town</span>';
+              } else if (location.slug.startsWith('city-')) {
+                badge = '<span class="badge bg-primary me-2">City</span>';
+              }
+            %>
+            <div class="mb-2"><%- badge %></div>
+            <p class="card-text"><%= location.description %></p>
+            <a href="<%= location.url %>" class="btn btn-primary">View Details</a>
+          </div>
+        </div>
+      </div>
+    <% }) %>
+  </div>
+</div>
+

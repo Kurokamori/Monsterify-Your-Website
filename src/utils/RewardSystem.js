@@ -217,11 +217,19 @@ class RewardSystem {
 
       // Select a trainer
       let selectedTrainer;
-      // For game corner, always select random trainer
-      if (source === 'game_corner' || trainerId === 'random') {
+      // For game corner, always select random trainer regardless of trainerId
+      if (source === 'game_corner') {
         const randomIndex = Math.floor(Math.random() * trainers.length);
         selectedTrainer = trainers[randomIndex];
-        console.log('Randomly selected trainer:', {
+        console.log('Randomly selected trainer for game corner reward:', {
+          index: randomIndex,
+          totalTrainers: trainers.length
+        });
+      } else if (trainerId === 'random') {
+        // For other sources, only use random if explicitly requested
+        const randomIndex = Math.floor(Math.random() * trainers.length);
+        selectedTrainer = trainers[randomIndex];
+        console.log('Randomly selected trainer (explicit random):', {
           index: randomIndex,
           totalTrainers: trainers.length
         });
