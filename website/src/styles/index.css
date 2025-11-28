@@ -1,0 +1,99 @@
+/* Base styles */
+:root {
+  --background-color: #111319;
+  --text-color: #d7ddf3;
+  --nav-background: #1e2532;
+  --nav-hover: #2b3645;
+  --nav-active: #3d4b5d;
+  --accent-color: #d6a339;
+  --accent-hover: #b88a30;
+  --accent-hover-color: #b88a30;
+  --divider-color: #3d4b5d;
+  --border-color: #3d4b5d;
+  --card-background: #1e2532;
+  --input-background: #2b3645;
+  --error-color: #ef4444;
+  --success-color: #10b981;
+
+  /* Font sizes */
+  --font-size-xs: 0.875rem;
+  --font-size-base: 1.125rem;
+  --font-size-sm: 1rem;
+  --font-size-lg: 1.25rem;
+  --font-size-xl: 1.5rem;
+  --font-size-2xl: 1.75rem;
+  --font-size-3xl: 2rem;
+  --font-size-4xl: 2.5rem;
+
+  /* Layout */
+  --sidebar-width: 280px;
+  --container-max-width: 1400px;
+  --content-padding: 2rem;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', Arial, sans-serif;
+  font-size: var(--font-size-base);
+  line-height: 1.6;
+  background-color: var(--background-color);
+  color: var(--text-color);
+  min-height: 100vh;
+}
+
+a {
+  color: var(--accent-color);
+  text-decoration: none;
+}
+
+a:hover {
+  color: var(--accent-hover);
+}
+
+button {
+  cursor: pointer;
+}
+
+/* Container */
+.container {
+  width: 100%;
+  padding: 0 var(--content-padding);
+}
+
+
+/* Page Layout */
+
+
+.page-content {
+  flex: 1;
+  min-width: 0;
+}
+
+
+/* Responsive design */
+@media (max-width: 1024px) {
+  :root {
+    --sidebar-width: 240px;
+    --content-padding: 1.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  :root {
+    --font-size-base: 1rem;
+    --font-size-sm: 0.875rem;
+    --font-size-lg: 1.125rem;
+    --font-size-xl: 1.25rem;
+    --font-size-2xl: 1.5rem;
+    --font-size-3xl: 1.75rem;
+    --font-size-4xl: 2rem;
+    --content-padding: 1rem;
+  }
+
+  
+  }

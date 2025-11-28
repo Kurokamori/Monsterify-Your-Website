@@ -1,0 +1,461 @@
+.prompt-submission-modal {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+/* Modal Loading State */
+.modal-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  text-align: center;
+}
+
+.modal-loading p {
+  margin-top: 15px;
+  color: #4a5568;
+  font-size: 1rem;
+}
+
+/* Prompt Info Section */
+.prompt-info-section {
+  background: #f7fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 25px;
+}
+
+.prompt-summary h3 {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #2d3748;
+  margin: 0 0 10px 0;
+}
+
+.prompt-description {
+  color: #4a5568;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  margin-bottom: 15px;
+}
+
+.prompt-details {
+  background: #edf2f7;
+  border-left: 4px solid #4299e1;
+  padding: 12px 15px;
+  margin: 15px 0;
+  border-radius: 0 6px 6px 0;
+}
+
+.prompt-details h4 {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #2d3748;
+  margin: 0 0 8px 0;
+}
+
+.prompt-details p {
+  font-size: 0.9rem;
+  color: #4a5568;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.prompt-rewards-info {
+  background: #f0fff4;
+  border-left: 4px solid #48bb78;
+  padding: 12px 15px;
+  margin: 15px 0;
+  border-radius: 0 6px 6px 0;
+}
+
+.prompt-rewards-info h4 {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #276749;
+  margin: 0 0 8px 0;
+}
+
+.prompt-rewards-info p {
+  font-size: 0.9rem;
+  color: #22543d;
+  margin: 0;
+  font-weight: 500;
+}
+
+.prompt-requirements-info {
+  background: #fffaf0;
+  border-left: 4px solid #ed8936;
+  padding: 12px 15px;
+  margin: 15px 0;
+  border-radius: 0 6px 6px 0;
+}
+
+.prompt-requirements-info h4 {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #c05621;
+  margin: 0 0 8px 0;
+}
+
+.prompt-requirements-info p {
+  font-size: 0.9rem;
+  color: #744210;
+  margin: 0;
+}
+
+/* Availability Error */
+.availability-error {
+  background: #fed7d7;
+  border: 1px solid #fc8181;
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.availability-error p {
+  color: #c53030;
+  margin: 0;
+  font-weight: 500;
+}
+
+/* Submission Form */
+.submission-form {
+  background: white;
+  border-radius: 8px;
+  padding: 0;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #2d3748;
+  margin-bottom: 6px;
+}
+
+.form-select,
+.form-textarea,
+.form-file {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #cbd5e0;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  background-color: white;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-select:focus,
+.form-textarea:focus,
+.form-file:focus {
+  outline: none;
+  border-color: #4299e1;
+  box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.1);
+}
+
+.form-textarea {
+  resize: vertical;
+  min-height: 100px;
+  font-family: inherit;
+  line-height: 1.5;
+}
+
+.form-file {
+  padding: 8px 12px;
+  cursor: pointer;
+}
+
+.form-help {
+  display: block;
+  font-size: 0.8rem;
+  color: #718096;
+  margin-top: 4px;
+  font-style: italic;
+}
+
+/* Error Message */
+.error-message {
+  background: #fed7d7;
+  border: 1px solid #fc8181;
+  border-radius: 6px;
+  padding: 12px 15px;
+  margin-bottom: 20px;
+}
+
+.error-message p {
+  color: #c53030;
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+/* Form Actions */
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid #e2e8f0;
+}
+
+/* Loading Spinner in Button */
+.btn .loading-spinner {
+  width: 16px;
+  height: 16px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .prompt-submission-modal {
+    max-width: 100%;
+  }
+  
+  .prompt-info-section {
+    padding: 15px;
+    margin-bottom: 20px;
+  }
+  
+  .prompt-summary h3 {
+    font-size: 1.2rem;
+  }
+  
+  .form-group {
+    margin-bottom: 18px;
+  }
+  
+  .form-select,
+  .form-textarea,
+  .form-file {
+    padding: 12px;
+    font-size: 16px; /* Prevents zoom on iOS */
+  }
+  
+  .form-actions {
+    flex-direction: column-reverse;
+    gap: 10px;
+  }
+  
+  .btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .prompt-info-section {
+    padding: 12px;
+  }
+  
+  .prompt-details,
+  .prompt-rewards-info,
+  .prompt-requirements-info {
+    padding: 10px 12px;
+    margin: 12px 0;
+  }
+  
+  .form-textarea {
+    min-height: 80px;
+  }
+}
+
+/* Focus styles for accessibility */
+.form-select:focus,
+.form-textarea:focus,
+.form-file:focus,
+.btn:focus {
+  outline: 2px solid #4299e1;
+  outline-offset: 2px;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .prompt-info-section,
+  .availability-error,
+  .error-message {
+    border-width: 2px;
+  }
+  
+  .form-select,
+  .form-textarea,
+  .form-file {
+    border-width: 2px;
+  }
+  
+  .btn {
+    border-width: 2px;
+  }
+  
+  .btn-primary {
+    border: 2px solid #2b6cb0;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .btn,
+  .form-select,
+  .form-textarea,
+  .form-file {
+    transition: none;
+  }
+  
+  .btn-primary:hover:not(:disabled) {
+    transform: none;
+  }
+}
+
+/* Rewards Display */
+.rewards-display {
+  text-align: center;
+  padding: 20px 0;
+}
+
+.rewards-display h3 {
+  color: #2d3748;
+  font-size: 1.5rem;
+  margin-bottom: 30px;
+  font-weight: 600;
+}
+
+.basic-rewards,
+.item-rewards,
+.special-item-rewards,
+.monster-rewards {
+  margin-bottom: 25px;
+  padding: 20px;
+  background: #f7fafc;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+}
+
+.basic-rewards {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  flex-wrap: wrap;
+}
+
+.reward-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 15px;
+  background: white;
+  border-radius: 6px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.reward-icon {
+  font-size: 1.5rem;
+}
+
+.reward-text {
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: #2d3748;
+}
+
+.item-rewards h4,
+.special-item-rewards h4,
+.monster-rewards h4 {
+  font-size: 1.2rem;
+  color: #2d3748;
+  margin-bottom: 15px;
+  font-weight: 600;
+}
+
+.monster-reward-card {
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.monster-info h5 {
+  font-size: 1.2rem;
+  color: #2d3748;
+  margin: 0 0 8px 0;
+  font-weight: 600;
+}
+
+.monster-info p {
+  color: #4a5568;
+  margin: 0 0 4px 0;
+  font-size: 0.9rem;
+}
+
+.reroll-btn {
+  background-color: #ed8936;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.reroll-btn:hover:not(:disabled) {
+  background-color: #dd6b20;
+}
+
+.reroll-btn:disabled {
+  background-color: #cbd5e0;
+  color: #a0aec0;
+  cursor: not-allowed;
+}
+
+.rewards-actions {
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid #e2e8f0;
+}
+
+.rewards-actions .btn {
+  min-width: 150px;
+  padding: 12px 24px;
+  font-size: 1rem;
+}
+
+/* Responsive Design for Rewards */
+@media (max-width: 768px) {
+  .basic-rewards {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .monster-reward-card {
+    flex-direction: column;
+    gap: 15px;
+    text-align: center;
+  }
+
+  .reroll-btn {
+    width: 100%;
+  }
+}
+
+/* Print styles */
+@media print {
+  .form-actions {
+    display: none;
+  }
+
+  .prompt-submission-modal {
+    box-shadow: none;
+    border: 1px solid #000;
+  }
+}

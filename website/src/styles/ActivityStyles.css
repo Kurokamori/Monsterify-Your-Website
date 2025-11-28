@@ -1,0 +1,726 @@
+/* Activity-Specific Styles */
+
+/* Activity Container */
+
+
+.activity-section {
+  margin-bottom: 2rem;
+}
+
+
+.activity-section h3 {
+  font-size: var(--font-size-xl);
+  color: var(--accent-color);
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--divider-color);
+}
+
+
+/* Activity Image */
+
+.activity-image {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: cover;
+  margin-bottom: 15px;
+  border-radius: 0.5rem;
+}
+
+.activity-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+
+/* Activity Session Styles */
+.activity-session-container {
+  max-width: 1200px;
+  margin: 0 auto;
+
+  padding: 20px;
+}
+
+.activity-session-content {
+    display: flex;
+    flex-direction: column;
+  align-items: center;
+}
+
+.activity-session-container {
+  background-color: var(--card-background);
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.activity-session-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+
+.activity-session-header h2 {
+  margin: 0;
+  color: var(--text-color);
+  text-transform: capitalize;
+}
+
+
+.activity-flavor {
+  background-color: var(--nav-background);
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 30px;
+  font-style: italic;
+  color: var(--text-color);
+  opacity: 0.9;
+}
+
+
+.activity-prompt {
+  margin-bottom: 30px;
+  padding: 25px;
+  background: linear-gradient(135deg, rgba(214, 163, 57, 0.1), rgba(214, 163, 57, 0.05));
+  border-radius: 12px;
+  border: 2px solid rgba(214, 163, 57, 0.2);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.activity-prompt h3 {
+  margin-top: 0;
+  margin-bottom: 20px;
+  color: var(--accent-color);
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: bold;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.activity-prompt p {
+  line-height: 1.8;
+  margin-bottom: 0;
+  color: var(--text-color);
+  font-size: 1.1rem;
+}
+
+.activity-prompt strong {
+  color: var(--accent-color);
+  font-weight: 600;
+}
+
+.creative-instructions {
+  margin-top: 20px;
+  padding: 20px;
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  border-left: 4px solid var(--accent-color);
+}
+
+.creative-instructions p {
+  margin-bottom: 15px;
+  font-size: 1rem;
+}
+
+.creative-instructions p:last-child {
+  margin-bottom: 0;
+  font-style: italic;
+  text-align: center;
+  color: var(--accent-color);
+  opacity: 0.9;
+}
+
+.activity-prompt-notice {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.3), rgba(59, 130, 246, 0.15));
+  border: 2px solid rgba(59, 130, 246, 0.4);
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin: 12px 0;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  backdrop-filter: blur(4px);
+}
+
+.activity-prompt-notice strong {
+  color: #60a5fa;
+  font-weight: 600;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+.activity-completion {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  align-items: center;
+  padding: 20px;
+  background-color: rgba(255, 255, 255, 0.03);
+  border-radius: 8px;
+  border: 1px solid rgba(214, 163, 57, 0.1);
+}
+
+.cooldown-notice {
+  background: linear-gradient(135deg, rgba(249, 115, 22, 0.1), rgba(249, 115, 22, 0.05));
+  border: 2px solid rgba(249, 115, 22, 0.3);
+  border-radius: 8px;
+  padding: 15px 20px;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.cooldown-notice p {
+  margin: 5px 0;
+  color: var(--text-color);
+  line-height: 1.4;
+}
+
+.cooldown-notice p:first-child {
+  font-weight: 600;
+  color: #f97316;
+}
+
+.cooldown-notice p:last-child {
+  font-size: 0.9rem;
+  font-style: italic;
+  opacity: 0.8;
+}
+
+/* Activity Timer */
+
+
+.timer-background {
+  fill: transparent;
+  stroke: #374151;
+  stroke-width: 8;
+}
+
+
+.timer-progress {
+  fill: transparent;
+  stroke-width: 8;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 0.5s;
+  stroke: #3b82f6;
+}
+
+
+.timer-display {
+  position: relative;
+  top: 0;
+  left: 0;
+  width: 250px;
+  height: 250px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+
+.timer-time {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: var(--text-color);
+  margin-bottom: 5px;
+}
+
+
+.timer-label {
+  font-size: 1rem;
+  color: #9ca3af;
+  opacity: 0.7;
+  margin-bottom: 5px;
+}
+
+
+
+/* Garden Activity Styles */
+.garden-plots {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+
+.garden-plot {
+  background-color: var(--card-background);
+  border-radius: 0.5rem;
+  overflow: hidden;
+  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+
+.garden-plot:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.plot-image-container {
+  height: 150px;
+  background-color: var(--card-background-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  padding: 1rem;
+}
+
+
+.plot-image {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+
+
+.plot-info {
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  flex: 1;
+}
+
+
+.plot-name {
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: var(--text-color);
+  margin: 0;
+}
+
+
+
+/* Farm Activity Styles */
+
+
+/* Pirate's Dock Activity Styles */
+
+
+.task-title {
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+
+
+.task-content {
+  padding: 1.25rem;
+}
+
+
+.task-description {
+  margin-bottom: 1.5rem;
+  font-size: var(--font-size-sm);
+  line-height: 1.5;
+}
+
+
+
+.task-rewards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+
+
+.task-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+
+
+.location-activities {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+  gap: 25px;
+  justify-content: center;
+  padding: 20px 0;
+}
+
+.location-activity-card {
+  background: linear-gradient(135deg, rgba(214, 163, 57, 0.08), rgba(214, 163, 57, 0.04));
+  border: 2px solid rgba(214, 163, 57, 0.2);
+  border-radius: 16px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  position: relative;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
+  display: flex;
+  flex-direction: column;
+}
+
+.location-activity-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 25px rgba(214, 163, 57, 0.2), 0 6px 12px rgba(0, 0, 0, 0.15);
+  border-color: rgba(214, 163, 57, 0.4);
+}
+
+.location-activity-card.disabled {
+  opacity: 0.6;
+  transform: none;
+  filter: grayscale(50%);
+}
+
+.location-activity-card.disabled:hover {
+  transform: none;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.activity-image {
+  width: 100%;
+  height: 600px;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+  border-bottom: 2px solid rgba(214, 163, 57, 0.2);
+}
+
+.location-activity-card:hover .activity-image {
+  transform: scale(1.05);
+}
+
+.activity-info {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 20px 25px 25px 25px;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.7) 60%, transparent);
+  backdrop-filter: blur(8px);
+  max-height: 60%;
+  overflow: hidden;
+}
+
+.activity-info h3 {
+  margin-top: 0;
+  margin-bottom: 15px;
+  color: white;
+  font-size: 1.4rem;
+  font-weight: 700;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.activity-info h3::before {
+  content: "✨";
+  font-size: 1.2rem;
+}
+
+.activity-info p {
+  color: rgba(255, 255, 255, 0.95);
+  margin-bottom: 20px;
+  line-height: 1.6;
+  font-size: 0.95rem;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+}
+
+.activity-info .btn-primary {
+  width: 100%;
+  padding: 12px 24px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  border-radius: 10px;
+  transition: all 0.3s ease;
+  border: none;
+  background: linear-gradient(135deg, var(--accent-color), #b8860b);
+  color: white;
+  box-shadow: 0 4px 12px rgba(214, 163, 57, 0.3);
+}
+
+.activity-info .btn-primary:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(214, 163, 57, 0.4);
+  background: linear-gradient(135deg, #daa520, var(--accent-color));
+}
+
+.activity-info .btn-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: 0 2px 6px rgba(214, 163, 57, 0.2);
+}
+
+.cooldown-indicator {
+  background: linear-gradient(135deg, rgba(249, 115, 22, 0.1), rgba(249, 115, 22, 0.05));
+  border: 2px solid rgba(249, 115, 22, 0.3);
+  border-radius: 8px;
+  padding: 12px 16px;
+  text-align: center;
+  color: #f97316;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.active-session-message {
+  background-color: var(--card-background);
+  border-radius: 8px;
+  padding: 30px;
+  text-align: center;
+}
+
+
+.active-session-message h2 {
+  color: var(--text-color);
+  margin-bottom: 15px;
+}
+
+.active-session-message p {
+  color: var(--text-color);
+  opacity: 0.8;
+  margin-bottom: 20px;
+}
+
+/* Rewards Styles */
+.activity-rewards {
+  text-align: center;
+  padding: 20px;
+  min-width: 90%;
+}
+
+
+.activity-rewards h3 {
+  color: var(--accent-color);
+  margin-bottom: 10px;
+  font-size: 24px;
+}
+
+.activity-rewards p {
+  margin-bottom: 20px;
+  font-size: 16px;
+}
+
+.rewards-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+
+.rewards-header {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+
+.rewards-header h1 {
+  color: var(--text-color);
+  margin-bottom: 10px;
+}
+
+.rewards-header p {
+  color: var(--text-color);
+  opacity: 0.8;
+  font-size: 1.1rem;
+}
+
+.rewards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.monster-rewards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1rem;
+  margin: 1.5rem 0;
+  justify-items: center;
+}
+
+.monster-rewards-grid .monster-reward-card {
+  max-width : 450px;
+}
+
+.monster-reward-buttons {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+}
+
+.rewards-section {
+  margin-bottom: 2rem;
+}
+
+.rewards-section-title {
+  color: var(--accent-color);
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  text-align: center;
+  font-weight: bold;
+}
+
+.other-rewards-section {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  
+}
+
+.reward-card {
+  min-height: 250px;
+  height: auto;
+  background-color: #374151;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  padding: 15px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  transition: transform 0.2s, box-shadow 0.2s;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.1);
+  margin-bottom: 20px;
+  border: 1px solid rgba(214, 163, 57, 0.3);
+  justify-content: space-between;
+}
+
+
+.reward-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+}
+
+.reward-card.claimed {
+  opacity: 0.6;
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.reward-icon {
+  font-size: 1.2rem;
+  margin-bottom: 10px;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 2.5rem;
+  width: 2.5rem;
+  border-radius: 50%;
+  background-color: var(--accent-color);
+  flex-shrink: 0;
+  background: linear-gradient(135deg, var(--warning-color), #ff9500);
+}
+
+
+.reward-title {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-bottom: 5px;
+  color: var(--text-color);
+}
+
+
+.reward-description {
+  font-size: 0.875rem;
+  color: #9ca3af;
+  opacity: 0.8;
+  margin-bottom: 1rem;
+}
+
+
+.reward-actions {
+  margin-top: auto;
+  padding-top: 15px;
+  width: 100%;
+}
+
+
+.claimed-badge {
+  background-color: #10b981;
+  color: white;
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+.rewards-actions {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-top: 1.5rem;
+}
+
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  
+  .activity-session-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .activity-session-header h2 {
+    margin-bottom: 10px;
+  }
+
+  .location-activities {
+    grid-template-columns: 1fr;
+    gap: 20px;
+    padding: 15px 0;
+  }
+
+  .location-activity-card {
+    border-radius: 12px;
+  }
+
+  .activity-image {
+    height: 400px;
+  }
+
+  .activity-info {
+    padding: 20px;
+  }
+
+  .activity-info h3 {
+    font-size: 1.3rem;
+  }
+
+  .activity-info p {
+    font-size: 0.95rem;
+    line-height: 1.6;
+  }
+
+  .activity-info .btn-primary {
+    padding: 10px 20px;
+    font-size: 1rem;
+  }
+
+  .rewards-grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  }
+
+  .garden-plots {
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  }
+
+  .activity-prompt {
+    padding: 20px;
+    margin-bottom: 25px;
+  }
+
+  .creative-instructions {
+    padding: 15px;
+  }
+}

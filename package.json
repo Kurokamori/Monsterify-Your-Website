@@ -1,0 +1,38 @@
+{
+  "name": "monsterify-your-website",
+  "version": "1.0.0",
+  "description": "Dusk and Dawn Art Role Playing Game - Full Stack Application",
+  "main": "backend/server.js",
+  "engines": {
+    "node": "18.x",
+    "npm": "9.x"
+  },
+  "scripts": {
+    "start": "node backend/server.js",
+    "build": "npm run install-backend && npm run install-discord && cd website && npm install && cross-env REACT_APP_API_URL=/api npm run build",
+    "heroku-postbuild": "npm run build",
+    "dev": "concurrently \"cd backend && npm run dev\" \"cd website && npm start\"",
+    "install-backend": "cd backend && npm install",
+    "install-frontend": "cd website && npm install",
+    "install-discord": "cd discord-bot && npm install",
+    "install-all": "npm run install-backend && npm run install-frontend && npm run install-discord"
+  },
+  "dependencies": {
+    "concurrently": "^7.6.0",
+    "cross-env": "^7.0.3",
+    "dotenv": "^17.2.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/abagaild/Monsterify-Your-Website.git"
+  },
+  "keywords": [
+    "nodejs",
+    "react",
+    "heroku",
+    "postgresql",
+    "role-playing-game"
+  ],
+  "author": "Dusk and Dawn Team",
+  "license": "MIT"
+}
