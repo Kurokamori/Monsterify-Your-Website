@@ -125,17 +125,16 @@ const SessionDisplay = ({
       if (reward && reward.type === 'monster') {
         monsterName = monsterNames[rewardId];
 
-        // If no name is provided, use the default species name
+        // If no name is provided, use the species name if available
+        // For Mystery Rolls, use "Mystery Monster" as placeholder (backend will handle actual naming)
         if (!monsterName || monsterName.trim() === '') {
           if (reward.reward_data.species) {
             monsterName = reward.reward_data.species;
-          } else if (reward.reward_data.params && reward.reward_data.params.types && reward.reward_data.params.types.length > 0) {
-            // Get a default species for the first type
-            const type = reward.reward_data.params.types[0];
-            const typeSpecies = getDefaultSpeciesForType(type);
-            monsterName = typeSpecies[0] || 'Monster';
+          } else if (reward.reward_data.species1) {
+            monsterName = reward.reward_data.species1;
           } else {
-            monsterName = 'Monster';
+            // Mystery Roll - use placeholder, will be updated after roll
+            monsterName = 'Mystery Monster';
           }
 
           // Update the monster name state
@@ -300,21 +299,14 @@ const SessionDisplay = ({
     setSpeciesImages(newSpeciesImages);
   };
 
-  // Helper function to get default species for a type
-  const getDefaultSpeciesForType = (type) => {
-    const typeMap = {
-      'water': ['Squirtle', 'Totodile', 'Mudkip', 'Froakie', 'Piplup'],
-      'fire': ['Charmander', 'Cyndaquil', 'Torchic', 'Chimchar', 'Fennekin'],
-      'grass': ['Bulbasaur', 'Chikorita', 'Treecko', 'Turtwig', 'Snivy'],
-      'electric': ['Pikachu', 'Elekid', 'Mareep', 'Shinx', 'Helioptile'],
-      'ice': ['Spheal', 'Snorunt', 'Swinub', 'Vanillite', 'Bergmite'],
-      'dark': ['Poochyena', 'Houndour', 'Zorua', 'Pawniard', 'Deino'],
-      'bug': ['Caterpie', 'Weedle', 'Scyther', 'Heracross', 'Larvesta'],
-      'ground': ['Diglett', 'Sandshrew', 'Cubone', 'Phanpy', 'Trapinch'],
-      'normal': ['Eevee', 'Teddiursa', 'Aipom', 'Meowth', 'Rattata']
-    };
+  // Mystery Roll constant for fallback
+  const MYSTERY_ROLL = 'Mystery Roll';
 
-    return typeMap[type.toLowerCase()] || ['Eevee'];
+  // Helper function - no longer used for fallback species, but kept for compatibility
+  // Mystery Rolls will be shown instead of defaulting to specific species
+  const getDefaultSpeciesForType = (type) => {
+    // Return Mystery Roll - the actual species will be determined when claimed
+    return [MYSTERY_ROLL];
   };
 
   const handleComplete = async () => {
@@ -344,6 +336,7 @@ const SessionDisplay = ({
         });
 
         // Initialize monster names with default species names
+        // For Mystery Rolls (no species data), leave name empty for user to fill in
         const initialMonsterNames = {};
         initializedRewards.forEach(reward => {
           if (reward.type === 'monster') {
@@ -352,14 +345,10 @@ const SessionDisplay = ({
 
             if (reward.reward_data.species) {
               defaultName = reward.reward_data.species;
-            } else if (reward.reward_data.params && reward.reward_data.params.types && reward.reward_data.params.types.length > 0) {
-              // Get a default species for the first type
-              const type = reward.reward_data.params.types[0];
-              const typeSpecies = getDefaultSpeciesForType(type);
-              defaultName = typeSpecies[0] || 'Monster';
-            } else {
-              defaultName = 'Monster';
+            } else if (reward.reward_data.species1) {
+              defaultName = reward.reward_data.species1;
             }
+            // For Mystery Rolls (no species data), leave name empty
 
             initialMonsterNames[reward.id] = defaultName;
           }

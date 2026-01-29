@@ -17,6 +17,8 @@ const digimonMonsterRoutes = require('./digimonMonsterRoutes');
 const yokaiMonsterRoutes = require('./yokaiMonsterRoutes');
 const nexomonMonsterRoutes = require('./nexomonMonsterRoutes');
 const palsMonsterRoutes = require('./palsMonsterRoutes');
+const finalfantasyMonsterRoutes = require('./finalfantasyMonsterRoutes');
+const monsterhunterMonsterRoutes = require('./monsterhunterMonsterRoutes');
 const adminRoutes = require('./adminRoutes');
 const evolutionRoutes = require('./evolutionRoutes');
 
@@ -121,6 +123,8 @@ router.use('/digimon-monsters', digimonMonsterRoutes);
 router.use('/yokai-monsters', yokaiMonsterRoutes);
 router.use('/nexomon-monsters', nexomonMonsterRoutes);
 router.use('/pals-monsters', palsMonsterRoutes);
+router.use('/finalfantasy-monsters', finalfantasyMonsterRoutes);
+router.use('/monsterhunter-monsters', monsterhunterMonsterRoutes);
 
 // Use shop, item roller, monster roller, starter roller, and species routes
 router.use('/shops', shopRoutes);

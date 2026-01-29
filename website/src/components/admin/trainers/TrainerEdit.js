@@ -390,6 +390,23 @@ const TrainerEdit = () => {
                     onChange={handleChange}
                   />
                 </div>
+
+                <div className="form-group">
+                  <label htmlFor="race">Race</label>
+                  <select
+                    id="race"
+                    name="race"
+                    value={formData.race || 'Human'}
+                    onChange={handleChange}
+                  >
+                    <option value="Human">Human</option>
+                    <option value="Alter">Alter</option>
+                    <option value="Ultra Beast">Ultra Beast</option>
+                    <option value="Alter (Faller)">Alter (Faller)</option>
+                    <option value="Human (Faller)">Human (Faller)</option>
+                    <option value="Catfolk">Catfolk</option>
+                  </select>
+                </div>
               </div>
             </div>
           )}

@@ -367,7 +367,9 @@ class PromptRewardService {
         yokai_enabled: true,
         nexomon_enabled: true,
         pals_enabled: true,
-        fakemon_enabled: true
+        fakemon_enabled: true,
+        finalfantasy_enabled: true,
+        monsterhunter_enabled: true
       };
       
       if (trainer?.player_user_id) {

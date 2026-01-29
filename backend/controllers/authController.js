@@ -38,7 +38,8 @@ const registerUser = async (req, res) => {
         username: user.username,
         display_name: user.display_name,
         discord_id: user.discord_id,
-        is_admin: user.is_admin
+        is_admin: user.is_admin,
+        monster_roller_settings: user.monster_roller_settings
       },
       token,
       refreshToken
@@ -111,7 +112,8 @@ const loginUser = async (req, res) => {
         username: user.username,
         display_name: user.display_name,
         discord_id: user.discord_id,
-        is_admin: user.is_admin
+        is_admin: user.is_admin,
+        monster_roller_settings: user.monster_roller_settings
       },
       token,
       refreshToken
@@ -361,7 +363,8 @@ const discordCallback = (req, res, next) => {
         username: user.username,
         display_name: user.display_name,
         discord_id: user.discord_id,
-        is_admin: user.is_admin
+        is_admin: user.is_admin,
+        monster_roller_settings: user.monster_roller_settings
       };
       
       const redirectUrl = `${frontendUrl}/auth/discord/success?token=${encodeURIComponent(token)}&refreshToken=${encodeURIComponent(refreshToken)}&user=${encodeURIComponent(JSON.stringify(userData))}`;

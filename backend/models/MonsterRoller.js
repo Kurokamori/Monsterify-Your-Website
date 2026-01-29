@@ -25,14 +25,16 @@ class MonsterRoller {
 
     this.seed = options.seed || Date.now().toString();
     this.rng = seedrandom(this.seed);
-    this.enabledTables = options.enabledTables || ['pokemon', 'digimon', 'yokai', 'nexomon', 'pals', 'fakemon'];
+    this.enabledTables = options.enabledTables || ['pokemon', 'digimon', 'yokai', 'nexomon', 'pals', 'fakemon', 'finalfantasy', 'monsterhunter'];
     this.userSettings = options.userSettings || {
       pokemon_enabled: true,
       digimon_enabled: true,
       yokai_enabled: true,
       nexomon_enabled: true,
       pals_enabled: true,
-      fakemon_enabled: true
+      fakemon_enabled: true,
+      finalfantasy_enabled: true,
+      monsterhunter_enabled: true
     };
 
     console.log('MonsterRoller - Received userSettings:', this.userSettings);
@@ -104,6 +106,28 @@ class MonsterRoller {
         stageField: 'stage',
         imageField: 'image_url',
         additionalFields: ['breeding_results']
+      },
+      finalfantasy: {
+        idField: 'id',
+        nameField: 'name',
+        typeFields: [],
+        attributeField: null,
+        rarityFields: [],
+        evolutionFields: ['evolves_from', 'evolves_to'],
+        stageField: 'stage',
+        imageField: 'image_url',
+        additionalFields: ['breeding_results']
+      },
+      monsterhunter: {
+        idField: 'id',
+        nameField: 'name',
+        typeFields: [],
+        attributeField: 'element',
+        rarityFields: ['rank'],
+        evolutionFields: [],
+        stageField: null,
+        imageField: 'image_url',
+        additionalFields: []
       }
     };
 
@@ -526,6 +550,30 @@ class MonsterRoller {
           '' as digimon_type, '' as natural_attributes, 0 as level_required,
           '' as tribe,
           'fakemon' as monster_type
+        `;
+      } else if (table === 'finalfantasy') {
+        selectFields = `
+          id, name,
+          '' as type_primary, '' as type_secondary, '' as type3, '' as type4, '' as type5,
+          evolves_from, evolves_to, breeding_results, stage,
+          ${isPostgreSQL ? 'false' : '0'} as is_legendary, ${isPostgreSQL ? 'false' : '0'} as is_mythical, 0 as ndex, image_url,
+          '' as species2, '' as species3,
+          '' as attribute, ${isPostgreSQL ? 'NULL::text' : 'NULL'} as rank, '' as families,
+          '' as digimon_type, '' as natural_attributes, 0 as level_required,
+          '' as tribe,
+          'finalfantasy' as monster_type
+        `;
+      } else if (table === 'monsterhunter') {
+        selectFields = `
+          id, name,
+          '' as type_primary, '' as type_secondary, '' as type3, '' as type4, '' as type5,
+          '' as evolves_from, '' as evolves_to, '' as breeding_results, '' as stage,
+          ${isPostgreSQL ? 'false' : '0'} as is_legendary, ${isPostgreSQL ? 'false' : '0'} as is_mythical, 0 as ndex, image_url,
+          '' as species2, '' as species3,
+          element as attribute, ${isPostgreSQL ? 'rank::text' : 'CAST(rank AS TEXT)'} as rank, '' as families,
+          '' as digimon_type, '' as natural_attributes, 0 as level_required,
+          '' as tribe,
+          'monsterhunter' as monster_type
         `;
       }
 

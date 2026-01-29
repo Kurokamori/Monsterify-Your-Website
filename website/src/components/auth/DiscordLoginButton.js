@@ -1,6 +1,6 @@
 import React from 'react';
 
-const DiscordLoginButton = ({ disabled = false }) => {
+const DiscordLoginButton = ({ disabled = false, showNote = false }) => {
   const handleDiscordLogin = () => {
     // Redirect to backend Discord OAuth endpoint
     // REACT_APP_API_URL already includes /api, so we don't need to add it again
@@ -34,6 +34,11 @@ const DiscordLoginButton = ({ disabled = false }) => {
           Continue with Discord
         </div>
       </button>
+      {showNote && (
+        <div className="auth-discord-button-text">
+          <p>Note: Logging in with Discord allows you to easily connect your Discord ID to your account, however, this means you won't be able to set up your Monster Roller Settings or Display Name until later in your user settings, accessed by clicking your name in the top right and selecting 'Profile Settings'</p>
+        </div>
+      )}
     </div>
   );
 };

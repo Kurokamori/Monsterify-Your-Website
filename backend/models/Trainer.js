@@ -185,13 +185,6 @@ static async getById(id) {
       const placeholders = fields.map((_, index) => `$${index + 1}`).join(', ');
       const values = fields.map(field => {
         const value = data[field];
-
-        // Convert boolean fields to integers (0 or 1)
-        const booleanFields = ['alter_human'];
-        if (booleanFields.includes(field)) {
-          return value === true || value === 'true' || value === 1 || value === '1' ? 1 : 0;
-        }
-
         return value;
       });
 
@@ -248,13 +241,6 @@ static async getById(id) {
       const setClause = fields.map((field, index) => `${field} = $${index + 1}`).join(', ');
       const values = fields.map(field => {
         const value = filteredData[field];
-
-        // Convert boolean fields to integers (0 or 1)
-        const booleanFields = ['alter_human'];
-        if (booleanFields.includes(field)) {
-          return value === true || value === 'true' || value === 1 || value === '1' ? 1 : 0;
-        }
-
         return value;
       });
       values.push(id);

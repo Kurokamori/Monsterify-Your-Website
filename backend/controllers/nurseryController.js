@@ -24,6 +24,8 @@ const getUserSettings = (user) => {
     nexomon_enabled: true,
     pals_enabled: true,
     fakemon_enabled: true,
+    finalfantasy_enabled: true,
+    monsterhunter_enabled: true,
     species_min: 1,
     species_max: 2, // Default to max 2 species
     types_min: 1,
@@ -928,7 +930,7 @@ const rerollHatchingResults = asyncHandler(async (req, res) => {
     const hatcher = new EggHatcher({
       seed: Date.now().toString(), // New seed for reroll
       userSettings: session.userSettings || {},
-      enabledTables: ['pokemon', 'digimon', 'yokai', 'nexomon', 'pals', 'fakemon']
+      enabledTables: ['pokemon', 'digimon', 'yokai', 'nexomon', 'pals', 'fakemon', 'finalfantasy', 'monsterhunter']
     });
 
     // Regenerate hatching results with same parameters, preserving all settings and overrides

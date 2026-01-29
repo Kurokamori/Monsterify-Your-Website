@@ -19,6 +19,8 @@ const getUserSettings = (user) => {
     nexomon_enabled: true,
     pals_enabled: true,
     fakemon_enabled: true,
+    finalfantasy_enabled: true,
+    monsterhunter_enabled: true,
     species_min: 1,
     species_max: 2, // Default to max 2 species
     types_min: 1,
@@ -45,6 +47,24 @@ const getUserSettings = (user) => {
 };
 
 /**
+ * Get default table filters for rolling monsters
+ * These filters apply species-appropriate defaults for each monster franchise
+ * @returns {Object} Table-specific filters
+ */
+const getDefaultTableFilters = () => {
+  return {
+    // Final Fantasy: Only roll 'base stage' or "doesn't evolve" by default
+    finalfantasy: {
+      includeStages: ['base stage', "doesn't evolve"]
+    },
+    // Monster Hunter: Only roll rank 1-3 by default (lower rarity)
+    monsterhunter: {
+      includeRanks: [1, 2, 3]
+    }
+  };
+};
+
+/**
  * @desc    Roll a monster
  * @route   POST /api/monster-roller/roll
  * @access  Private/Admin
@@ -60,8 +80,15 @@ const rollMonster = asyncHandler(async (req, res) => {
       userSettings
     });
 
+    // Get default table filters and merge with any provided filters
+    const defaultFilters = getDefaultTableFilters();
+    const rollParams = {
+      ...req.body,
+      tableFilters: { ...defaultFilters, ...(req.body.tableFilters || {}) }
+    };
+
     // Roll monster with parameters
-    const monster = await monsterRoller.rollMonster(req.body);
+    const monster = await monsterRoller.rollMonster(rollParams);
 
     if (!monster) {
       return res.status(404).json({
@@ -111,8 +138,15 @@ const rollMany = asyncHandler(async (req, res) => {
       userSettings
     });
 
+    // Get default table filters and merge with any provided filters
+    const defaultFilters = getDefaultTableFilters();
+    const rollParams = {
+      ...req.body,
+      tableFilters: { ...defaultFilters, ...(req.body.tableFilters || {}) }
+    };
+
     // Roll monsters with parameters
-    const monsters = await monsterRoller.rollMany(req.body, count);
+    const monsters = await monsterRoller.rollMany(rollParams, count);
 
     if (!monsters || monsters.length === 0) {
       return res.status(404).json({
@@ -180,8 +214,15 @@ const rollForTrainer = asyncHandler(async (req, res) => {
       userSettings
     });
 
+    // Get default table filters and merge with any provided filters
+    const defaultFilters = getDefaultTableFilters();
+    const rollParams = {
+      ...req.body,
+      tableFilters: { ...defaultFilters, ...(req.body.tableFilters || {}) }
+    };
+
     // Roll monsters with parameters
-    const monsters = await monsterRoller.rollMany(req.body, count);
+    const monsters = await monsterRoller.rollMany(rollParams, count);
 
     if (!monsters || monsters.length === 0) {
       return res.status(404).json({

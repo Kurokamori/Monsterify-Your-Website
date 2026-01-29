@@ -2695,7 +2695,9 @@ const getUserSettings = (user) => {
     yokai_enabled: true,
     nexomon_enabled: true,
     pals_enabled: true,
-    fakemon_enabled: true
+    fakemon_enabled: true,
+    finalfantasy_enabled: true,
+    monsterhunter_enabled: true
   };
 
   // If user has monster_roller_settings, parse them

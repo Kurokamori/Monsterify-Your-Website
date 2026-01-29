@@ -63,7 +63,7 @@ class User {
           user.monster_roller_settings = JSON.parse(user.monster_roller_settings);
         } catch (e) {
           console.error('Error parsing monster_roller_settings:', e);
-          user.monster_roller_settings = { pokemon_enabled: true, digimon_enabled: true, yokai_enabled: true, pals_enabled: true, nexomon_enabled: true, fakemon_enabled: true };
+          user.monster_roller_settings = { pokemon_enabled: true, digimon_enabled: true, yokai_enabled: true, pals_enabled: true, nexomon_enabled: true, fakemon_enabled: true, finalfantasy_enabled: true, monsterhunter_enabled: true };
         }
       }
 
@@ -416,7 +416,7 @@ class User {
       }
 
       // Return monster_roller_settings or default if not set
-      return user.monster_roller_settings || { pokemon_enabled: true, digimon_enabled: true, yokai_enabled: true, pals_enabled: true, nexomon_enabled: true, fakemon_enabled: true };
+      return user.monster_roller_settings || { pokemon_enabled: true, digimon_enabled: true, yokai_enabled: true, pals_enabled: true, nexomon_enabled: true, fakemon_enabled: true, finalfantasy_enabled: true, monsterhunter_enabled: true };
     } catch (error) {
       console.error(`Error getting monster roller settings for user with ID ${id}:`, error);
       throw error;

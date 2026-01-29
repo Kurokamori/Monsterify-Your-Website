@@ -21,7 +21,9 @@ const ProfileSettings = () => {
     yokai: true,
     pals: true,
     nexomon: true,
-    fakemon: true
+    fakemon: true,
+    finalfantasy: true,
+    monsterhunter: true
   });
 
   // Load user data on component mount
@@ -46,7 +48,9 @@ const ProfileSettings = () => {
               yokai: true,
               pals: true,
               nexomon: true,
-              fakemon: true
+              fakemon: true,
+              finalfantasy: true,
+              monsterhunter: true
             };
           }
         }
@@ -212,6 +216,32 @@ const ProfileSettings = () => {
               <label htmlFor="fakemon">
                 <span className="monster-type-icon">⭐</span>
                 Fakemon
+              </label>
+            </div>
+
+            <div className="monster-type-toggle">
+              <input
+                type="checkbox"
+                id="finalfantasy"
+                checked={monsterSettings.finalfantasy}
+                onChange={() => handleMonsterTypeToggle('finalfantasy')}
+              />
+              <label htmlFor="finalfantasy">
+                <span className="monster-type-icon">🔮</span>
+                Final Fantasy
+              </label>
+            </div>
+
+            <div className="monster-type-toggle">
+              <input
+                type="checkbox"
+                id="monsterhunter"
+                checked={monsterSettings.monsterhunter}
+                onChange={() => handleMonsterTypeToggle('monsterhunter')}
+              />
+              <label htmlFor="monsterhunter">
+                <span className="monster-type-icon">🗡️</span>
+                Monster Hunter
               </label>
             </div>
           </div>

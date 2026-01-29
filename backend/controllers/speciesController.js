@@ -110,6 +110,34 @@ const getSpeciesImages = asyncHandler(async (req, res) => {
         continue; // Skip to next species if found
       }
 
+      // Query Final Fantasy monsters
+      const finalfantasyResult = await db.asyncGet(
+        `SELECT name, image_url FROM finalfantasy_monsters WHERE name =$1`,
+        [speciesName]
+      );
+
+      if (finalfantasyResult && finalfantasyResult.image_url) {
+        images.push({
+          species: speciesName,
+          url: finalfantasyResult.image_url
+        });
+        continue; // Skip to next species if found
+      }
+
+      // Query Monster Hunter monsters
+      const monsterhunterResult = await db.asyncGet(
+        `SELECT name, image_url FROM monsterhunter_monsters WHERE name =$1`,
+        [speciesName]
+      );
+
+      if (monsterhunterResult && monsterhunterResult.image_url) {
+        images.push({
+          species: speciesName,
+          url: monsterhunterResult.image_url
+        });
+        continue; // Skip to next species if found
+      }
+
       // If no image found, add a null URL
       images.push({
         species: speciesName,
@@ -150,7 +178,9 @@ const getRandomSpecies = asyncHandler(async (req, res) => {
         yokai: true,
         nexomon: true,
         pals: true,
-        fakemon: true
+        fakemon: true,
+        finalfantasy: true,
+        monsterhunter: true
       };
 
       // If user has monster_roller_settings, parse them
@@ -179,7 +209,9 @@ const getRandomSpecies = asyncHandler(async (req, res) => {
       yokai: true,
       nexomon: true,
       pals: true,
-      fakemon: true
+      fakemon: true,
+      finalfantasy: true,
+      monsterhunter: true
     };
 
     if (req.user && req.user.discord_id) {
@@ -286,6 +318,20 @@ const getRandomSpecies = asyncHandler(async (req, res) => {
       }
     }
 
+    if (userSettings.finalfantasy) {
+      queryParts.push(`
+        SELECT name FROM finalfantasy_monsters
+        WHERE stage = 'base stage' OR stage = 'doesn''t evolve'
+      `);
+    }
+
+    if (userSettings.monsterhunter) {
+      queryParts.push(`
+        SELECT name FROM monsterhunter_monsters
+        WHERE rank IN (1, 2, 3)
+      `);
+    }
+
     // If no tables are enabled, return error
     if (queryParts.length === 0) {
       return res.status(400).json({
@@ -341,6 +387,10 @@ const getSpeciesList = asyncHandler(async (req, res) => {
         SELECT name FROM pals_monsters
         UNION
         SELECT name FROM fakemon
+        UNION
+        SELECT name FROM finalfantasy_monsters
+        UNION
+        SELECT name FROM monsterhunter_monsters
       ) AS all_species
     `;
 
@@ -404,6 +454,10 @@ const searchSpecies = asyncHandler(async (req, res) => {
         SELECT name FROM pals_monsters
         UNION
         SELECT name FROM fakemon
+        UNION
+        SELECT name FROM finalfantasy_monsters
+        UNION
+        SELECT name FROM monsterhunter_monsters
       ) AS all_species WHERE name ILIKE $1 ORDER BY name`;
 
     const params = [`%${search}%`];

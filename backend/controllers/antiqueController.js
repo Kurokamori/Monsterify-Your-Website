@@ -21,6 +21,9 @@ const getUserSettings = (user) => {
     yokai_enabled: true,
     nexomon_enabled: true,
     pals_enabled: true,
+    fakemon_enabled: true,
+    finalfantasy_enabled: true,
+    monsterhunter_enabled: true,
     species_min: 1,
     species_max: 2, // Default to max 2 species
     types_min: 1,

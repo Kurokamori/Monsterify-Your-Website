@@ -15,6 +15,8 @@ const getUserSettings = (user) => {
     nexomon_enabled: true,
     pals_enabled: true,
     fakemon_enabled: true,
+    finalfantasy_enabled: true,
+    monsterhunter_enabled: true,
     species_min: 1,
     species_max: 2, // Default to max 2 species
     types_min: 1,
@@ -44,6 +46,8 @@ const getUserSettings = (user) => {
       if (settings.pals !== undefined) convertedSettings.pals_enabled = settings.pals;
       if (settings.nexomon !== undefined) convertedSettings.nexomon_enabled = settings.nexomon;
       if (settings.fakemon !== undefined) convertedSettings.fakemon_enabled = settings.fakemon;
+      if (settings.finalfantasy !== undefined) convertedSettings.finalfantasy_enabled = settings.finalfantasy;
+      if (settings.monsterhunter !== undefined) convertedSettings.monsterhunter_enabled = settings.monsterhunter;
       
       console.log('GardenPoint - After conversion mapping:', convertedSettings);
       
@@ -54,6 +58,8 @@ const getUserSettings = (user) => {
       if (settings.pals_enabled !== undefined) convertedSettings.pals_enabled = settings.pals_enabled;
       if (settings.nexomon_enabled !== undefined) convertedSettings.nexomon_enabled = settings.nexomon_enabled;
       if (settings.fakemon_enabled !== undefined) convertedSettings.fakemon_enabled = settings.fakemon_enabled;
+      if (settings.finalfantasy_enabled !== undefined) convertedSettings.finalfantasy_enabled = settings.finalfantasy_enabled;
+      if (settings.monsterhunter_enabled !== undefined) convertedSettings.monsterhunter_enabled = settings.monsterhunter_enabled;
       
       // Copy other settings (species_min, species_max, types_min, types_max)
       if (settings.species_min !== undefined) convertedSettings.species_min = settings.species_min;
@@ -343,9 +349,18 @@ class GardenPoint {
               },
               pals: {
                 // Pals don't have evolution stages or ranks, no restrictions needed
+              },
+              finalfantasy: {
+                includeStages: ['Base Stage', 'Doesn\'t Evolve'],
+                excludeStages: ['Stage 1', 'Stage 2', 'Stage 3', 'Middle Stage', 'Final Stage']
+              },
+              monsterhunter: {
+                // Monster Hunter monsters use numeric ranks (1-3 are lower tier)
+                includeRanks: [1, 2, 3],
+                excludeRanks: [4, 5, 6, 7, 8, 9, 10]
               }
             },
-            
+
             legendary: false,  // NEVER allow legendary monsters from garden
             mythical: false,   // NEVER allow mythical monsters from garden
             
@@ -365,14 +380,15 @@ class GardenPoint {
           // Roll the monster (without assigning to a trainer yet)
           const rolledMonster = await monsterRoller.rollMonster(rollerParams);
 
-          if (rolledMonster && rolledMonster.id) {
-            console.log(`Successfully pre-rolled garden monster: ${rolledMonster.id} (${rolledMonster.name || 'Unnamed'})`);
+          // Check for species1 or name since id may be null for pre-rolled monsters
+          if (rolledMonster && (rolledMonster.species1 || rolledMonster.name)) {
+            console.log(`Successfully pre-rolled garden monster: ${rolledMonster.species1 || rolledMonster.name}`);
 
             // Apply garden types to the rolled monster
-            const gardenTypes = ['grass', 'bug', 'ground', 'normal', 'water', 'rock'];
+            const gardenTypes = ['Grass', 'Bug', 'Ground', 'Normal', 'Water', 'Rock'];
             const numTypes = Math.floor(Math.random() * 3) + 1; // 1-3 types
             const selectedTypes = [];
-            
+
             // Select random garden types
             for (let t = 0; t < numTypes; t++) {
               const availableTypes = gardenTypes.filter(type => !selectedTypes.includes(type));
@@ -381,9 +397,9 @@ class GardenPoint {
                 selectedTypes.push(randomType);
               }
             }
-            
+
             // Override the monster's types with garden types
-            rolledMonster.type1 = selectedTypes[0] || 'normal';
+            rolledMonster.type1 = selectedTypes[0] || 'Normal';
             rolledMonster.type2 = selectedTypes[1] || null;
             rolledMonster.type3 = selectedTypes[2] || null;
             rolledMonster.type4 = null; // Garden monsters only get max 3 types
@@ -416,10 +432,13 @@ class GardenPoint {
                 monster_id: rolledMonster.id,
                 monster_name: rolledMonster.name || 'Garden Monster',
                 monster_species: rolledMonster.species1 || 'Unknown',
-                monster_image: rolledMonster.img_link || null,
+                monster_image: rolledMonster.species1_image || rolledMonster.image_url || null,
                 species1: rolledMonster.species1,
+                species1_image: rolledMonster.species1_image || rolledMonster.image_url || null,
                 species2: rolledMonster.species2,
+                species2_image: rolledMonster.species2_image || null,
                 species3: rolledMonster.species3,
+                species3_image: rolledMonster.species3_image || null,
                 type1: rolledMonster.type1,
                 type2: rolledMonster.type2,
                 type3: rolledMonster.type3,
@@ -482,9 +501,18 @@ class GardenPoint {
               },
               pals: {
                 // Pals don't have evolution stages or ranks, no restrictions needed
+              },
+              finalfantasy: {
+                includeStages: ['Base Stage', 'Doesn\'t Evolve'],
+                excludeStages: ['Stage 1', 'Stage 2', 'Stage 3', 'Middle Stage', 'Final Stage']
+              },
+              monsterhunter: {
+                // Monster Hunter monsters use numeric ranks (1-3 are lower tier)
+                includeRanks: [1, 2, 3],
+                excludeRanks: [4, 5, 6, 7, 8, 9, 10]
               }
             },
-            
+
             legendary: false,  // NEVER allow legendary monsters from garden
             mythical: false,   // NEVER allow mythical monsters from garden
             

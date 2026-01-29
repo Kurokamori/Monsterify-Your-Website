@@ -1,6 +1,31 @@
 const db = require('../config/db');
 const { isPostgreSQL } = require('../utils/dbUtils');
 
+/**
+ * Normalize a type string to title case (e.g., 'bug' -> 'Bug')
+ * @param {string} type The type string to normalize
+ * @returns {string|null} The normalized type or null if input is falsy
+ */
+function normalizeType(type) {
+  if (!type) return null;
+  return type.charAt(0).toUpperCase() + type.slice(1).toLowerCase();
+}
+
+/**
+ * Normalize all type fields on a monster object
+ * @param {Object} monster The monster object to normalize
+ * @returns {Object} The monster with normalized types
+ */
+function normalizeMonsterTypes(monster) {
+  if (!monster) return monster;
+  if (monster.type1) monster.type1 = normalizeType(monster.type1);
+  if (monster.type2) monster.type2 = normalizeType(monster.type2);
+  if (monster.type3) monster.type3 = normalizeType(monster.type3);
+  if (monster.type4) monster.type4 = normalizeType(monster.type4);
+  if (monster.type5) monster.type5 = normalizeType(monster.type5);
+  return monster;
+}
+
 class Monster {
   /**
    * Get all monsters
@@ -14,7 +39,8 @@ class Monster {
         JOIN trainers t ON m.trainer_id = t.id
         ORDER BY m.name
       `;
-      return await db.asyncAll(query);
+      const monsters = await db.asyncAll(query);
+      return monsters.map(normalizeMonsterTypes);
     } catch (error) {
       console.error('Error getting all monsters:', error);
       throw error;
@@ -34,7 +60,8 @@ class Monster {
         JOIN trainers t ON m.trainer_id = t.id
         WHERE m.id = $1
       `;
-      return await db.asyncGet(query, [id]);
+      const monster = await db.asyncGet(query, [id]);
+      return normalizeMonsterTypes(monster);
     } catch (error) {
       console.error(`Error getting monster with ID ${id}:`, error);
       throw error;
@@ -62,8 +89,9 @@ class Monster {
           COALESCE(m.trainer_index, 999999) ASC,
           m.id ASC
       `;
-      
-      return await db.asyncAll(query, [trainerId]);
+
+      const monsters = await db.asyncAll(query, [trainerId]);
+      return monsters.map(normalizeMonsterTypes);
     } catch (error) {
       console.error(`Error getting monsters for trainer ${trainerId}:`, error);
       throw error;
@@ -349,7 +377,8 @@ class Monster {
         WHERE m.player_user_id = $1
         ORDER BY m.name
       `;
-      return await db.asyncAll(query, [userId]);
+      const monsters = await db.asyncAll(query, [userId]);
+      return monsters.map(normalizeMonsterTypes);
     } catch (error) {
       console.error(`Error getting monsters for user ${userId}:`, error);
       throw error;

@@ -19,7 +19,10 @@ const getUserSettings = (user) => {
     digimon: true,
     yokai: true,
     nexomon: true,
-    pals: true
+    pals: true,
+    fakemon: true,
+    finalfantasy: true,
+    monsterhunter: true
   };
 
   // If user has monster_roller_settings, parse them

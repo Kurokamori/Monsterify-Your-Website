@@ -32,6 +32,8 @@ const getUserSettings = (user) => {
     nexomon_enabled: true,
     pals_enabled: true,
     fakemon_enabled: true,
+    finalfantasy_enabled: true,
+    monsterhunter_enabled: true,
     species_min: 1,
     species_max: 2, // Default to max 2 species
     types_min: 1,
@@ -61,7 +63,9 @@ const getUserSettings = (user) => {
       if (settings.pals !== undefined) convertedSettings.pals_enabled = settings.pals;
       if (settings.nexomon !== undefined) convertedSettings.nexomon_enabled = settings.nexomon;
       if (settings.fakemon !== undefined) convertedSettings.fakemon_enabled = settings.fakemon;
-      
+      if (settings.finalfantasy !== undefined) convertedSettings.finalfantasy_enabled = settings.finalfantasy;
+      if (settings.monsterhunter !== undefined) convertedSettings.monsterhunter_enabled = settings.monsterhunter;
+
       // Also support if they're already in the expected format
       if (settings.pokemon_enabled !== undefined) convertedSettings.pokemon_enabled = settings.pokemon_enabled;
       if (settings.digimon_enabled !== undefined) convertedSettings.digimon_enabled = settings.digimon_enabled;
@@ -69,6 +73,8 @@ const getUserSettings = (user) => {
       if (settings.pals_enabled !== undefined) convertedSettings.pals_enabled = settings.pals_enabled;
       if (settings.nexomon_enabled !== undefined) convertedSettings.nexomon_enabled = settings.nexomon_enabled;
       if (settings.fakemon_enabled !== undefined) convertedSettings.fakemon_enabled = settings.fakemon_enabled;
+      if (settings.finalfantasy_enabled !== undefined) convertedSettings.finalfantasy_enabled = settings.finalfantasy_enabled;
+      if (settings.monsterhunter_enabled !== undefined) convertedSettings.monsterhunter_enabled = settings.monsterhunter_enabled;
       
       // Copy other settings (species_min, species_max, types_min, types_max)
       if (settings.species_min !== undefined) convertedSettings.species_min = settings.species_min;
@@ -141,6 +147,19 @@ const checkSpeciesEligibility = async (species) => {
         result.eligible = false;
         result.reason = `${species} is not in its final evolution stage`;
       }
+    }
+    // Check if it's a Final Fantasy monster
+    else if (await isFinalFantasySpecies(species)) {
+      const stage = await getFinalFantasyStage(species);
+      if (stage && (stage !== 'Final Stage' && stage !== 'Doesn\'t Evolve' && stage.toLowerCase() !== "doesn't evolve")) {
+        result.eligible = false;
+        result.reason = `${species} is not in its final evolution stage`;
+      }
+    }
+    // Check if it's a Monster Hunter monster - all are always eligible (no evolution)
+    else if (await isMonsterHunterSpecies(species)) {
+      // Monster Hunter monsters don't evolve, so all are eligible
+      return result;
     }
 
     return result;
@@ -305,6 +324,42 @@ const isFakemonSpecies = async (species) => {
 };
 
 /**
+ * Check if a species is a Final Fantasy monster
+ * @param {string} species - Species name
+ * @returns {Promise<boolean>} True if species is a Final Fantasy monster
+ */
+const isFinalFantasySpecies = async (species) => {
+  try {
+    let query = 'SELECT * FROM finalfantasy_monsters WHERE name = $1';
+    const params = [species];
+    query += buildLimit(1, params);
+    const ff = await db.asyncGet(query, params);
+    return !!ff;
+  } catch (error) {
+    console.error('Error checking if species is Final Fantasy:', error);
+    return false;
+  }
+};
+
+/**
+ * Check if a species is a Monster Hunter monster
+ * @param {string} species - Species name
+ * @returns {Promise<boolean>} True if species is a Monster Hunter monster
+ */
+const isMonsterHunterSpecies = async (species) => {
+  try {
+    let query = 'SELECT * FROM monsterhunter_monsters WHERE name = $1';
+    const params = [species];
+    query += buildLimit(1, params);
+    const mh = await db.asyncGet(query, params);
+    return !!mh;
+  } catch (error) {
+    console.error('Error checking if species is Monster Hunter:', error);
+    return false;
+  }
+};
+
+/**
  * Generate breeding results
  * @param {Object} parent1 - First parent monster
  * @param {Object} parent2 - Second parent monster
@@ -329,10 +384,12 @@ const generateBreedingResults = async (parent1, parent2, userSettings) => {
     if (userSettings.nexomon_enabled) enabledTables.push('nexomon');
     if (userSettings.pals_enabled) enabledTables.push('pals');
     if (userSettings.fakemon_enabled) enabledTables.push('fakemon');
+    if (userSettings.finalfantasy_enabled) enabledTables.push('finalfantasy');
+    if (userSettings.monsterhunter_enabled) enabledTables.push('monsterhunter');
 
     // If no tables are enabled, enable all tables
     if (enabledTables.length === 0) {
-      enabledTables.push('pokemon', 'digimon', 'yokai', 'nexomon', 'pals', 'fakemon');
+      enabledTables.push('pokemon', 'digimon', 'yokai', 'nexomon', 'pals', 'fakemon', 'finalfantasy', 'monsterhunter');
     }
 
     console.log(`Enabled tables: ${enabledTables.join(', ')}`);
@@ -485,6 +542,18 @@ const determineOffspringSpecies = async (parent1, parent2, enabledTables) => {
         if (result && result.breeding_results) {
           breedingResults = result.breeding_results;
         }
+      } else if (await isFinalFantasySpecies(selectedParentSpecies)) {
+        // Final Fantasy uses breeding_results like Pokemon
+        let query = 'SELECT breeding_results FROM finalfantasy_monsters WHERE name = $1';
+        const params = [selectedParentSpecies];
+        query += buildLimit(1, params);
+        const result = await db.asyncGet(query, params);
+        if (result && result.breeding_results) {
+          breedingResults = result.breeding_results;
+        }
+      } else if (await isMonsterHunterSpecies(selectedParentSpecies)) {
+        // Monster Hunter monsters always breed true - return the same species
+        breedingResults = selectedParentSpecies;
       }
 
       // If we found breeding results, process them as a comma-separated string
@@ -565,6 +634,18 @@ const determineOffspringSpecies = async (parent1, parent2, enabledTables) => {
           if (result && result.breeding_results) {
             breedingResults = result.breeding_results;
           }
+        } else if (await isFinalFantasySpecies(selectedParentSpecies)) {
+          // Final Fantasy uses breeding_results like Pokemon
+          let query = 'SELECT breeding_results FROM finalfantasy_monsters WHERE name = $1';
+          const params = [selectedParentSpecies];
+          query += buildLimit(1, params);
+          const result = await db.asyncGet(query, params);
+          if (result && result.breeding_results) {
+            breedingResults = result.breeding_results;
+          }
+        } else if (await isMonsterHunterSpecies(selectedParentSpecies)) {
+          // Monster Hunter monsters always breed true - return the same species
+          breedingResults = selectedParentSpecies;
         }
 
         // Process breeding results
@@ -752,6 +833,24 @@ const getFakemonStage = async (species) => {
     return fakemon ? fakemon.stage : null;
   } catch (error) {
     console.error('Error getting Fakemon stage:', error);
+    return null;
+  }
+};
+
+/**
+ * Get Final Fantasy monster stage by name
+ * @param {string} species - Final Fantasy species name
+ * @returns {Promise<string|null>} Final Fantasy stage or null if not found
+ */
+const getFinalFantasyStage = async (species) => {
+  try {
+    let query = 'SELECT stage FROM finalfantasy_monsters WHERE name = $1';
+    const params = [species];
+    query += buildLimit(1, params);
+    const ff = await db.asyncGet(query, params);
+    return ff ? ff.stage : null;
+  } catch (error) {
+    console.error('Error getting Final Fantasy stage:', error);
     return null;
   }
 };

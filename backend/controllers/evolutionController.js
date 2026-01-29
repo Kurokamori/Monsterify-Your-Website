@@ -400,7 +400,9 @@ const getEvolutionOptions = asyncHandler(async (req, res) => {
      'digimon_monsters',
      'yokai_monsters',
      'nexomon_monsters',
-     'pals_monsters'
+     'pals_monsters',
+     'finalfantasy_monsters',
+     'monsterhunter_monsters'
    ];
    for (const tableName of tables) {
      const query = `SELECT name FROM ${tableName} WHERE name = $1`;
@@ -496,6 +498,31 @@ const getEvolutionOptions = asyncHandler(async (req, res) => {
           evolutionOptions = evolutions.map(evo => ({ name: evo, type: 'nexomon' }));
         }
       }
+
+      // For Final Fantasy, check the finalfantasy_monsters table
+      else if (monsterType === 'finalfantasy_monsters') {
+        const query = `
+          SELECT evolves_to FROM finalfantasy_monsters
+          WHERE name = $1 AND evolves_to IS NOT NULL
+        `;
+
+        console.log(`Executing query for Final Fantasy: ${query} with params [${speciesName}]`);
+        const result = await db.asyncGet(query, [speciesName]);
+        console.log(`Query result:`, result);
+
+        if (result && result.evolves_to) {
+          // Split by comma if it's a comma-separated list
+          const evolutions = result.evolves_to.split(',').map(e => e.trim());
+          evolutionOptions = evolutions.map(evo => ({ name: evo, type: 'finalfantasy' }));
+        }
+      }
+
+      // For Monster Hunter, monsters don't evolve
+      else if (monsterType === 'monsterhunter_monsters') {
+        console.log(`Monster Hunter monsters do not evolve`);
+        // Return empty array - Monster Hunter monsters don't have evolutions
+        evolutionOptions = [];
+      }
     } catch (dbError) {
       console.error('Database error when fetching evolution options:', dbError);
       // Continue with empty evolution options
@@ -532,12 +559,14 @@ const getEvolutionOptionsBySpecies = asyncHandler(async (req, res) => {
     let monsterType = 'none';
     const tables = [
       'pokemon_monsters',
-      'digimon_monsters', 
+      'digimon_monsters',
       'yokai_monsters',
       'nexomon_monsters',
-      'pals_monsters'
+      'pals_monsters',
+      'finalfantasy_monsters',
+      'monsterhunter_monsters'
     ];
-    
+
     for (const tableName of tables) {
       const query = `SELECT name FROM ${tableName} WHERE name = $1`;
       const result = await db.asyncGet(query, [speciesName]);
@@ -603,11 +632,27 @@ const getEvolutionOptionsBySpecies = asyncHandler(async (req, res) => {
           WHERE name = $1 AND evolves_to IS NOT NULL
         `;
         const result = await db.asyncGet(query, [speciesName]);
-        
+
         if (result && result.evolves_to) {
           const evolutions = result.evolves_to.split(',').map(e => e.trim());
           evolutionOptions = evolutions.map(evo => ({ name: evo, type: 'nexomon' }));
         }
+      }
+      else if (monsterType === 'finalfantasy_monsters') {
+        const query = `
+          SELECT evolves_to FROM finalfantasy_monsters
+          WHERE name = $1 AND evolves_to IS NOT NULL
+        `;
+        const result = await db.asyncGet(query, [speciesName]);
+
+        if (result && result.evolves_to) {
+          const evolutions = result.evolves_to.split(',').map(e => e.trim());
+          evolutionOptions = evolutions.map(evo => ({ name: evo, type: 'finalfantasy' }));
+        }
+      }
+      else if (monsterType === 'monsterhunter_monsters') {
+        // Monster Hunter monsters do not evolve
+        evolutionOptions = [];
       }
     } catch (dbError) {
       console.error('Database error when fetching evolution options:', dbError);
@@ -697,12 +742,27 @@ const getReverseEvolutionOptions = asyncHandler(async (req, res) => {
         WHERE evolves_to IS NOT NULL AND evolves_to != ''
       `;
       const nexomonResults = await db.asyncAll(nexomonQuery);
-      
+
       nexomonResults.forEach(result => {
         if (result.name !== speciesName && checkEvolutionMatch(result.evolves_to, speciesName)) {
           reverseEvolutionOptions.push({ name: result.name, type: 'nexomon' });
         }
       });
+
+      // Check Final Fantasy monsters
+      const finalfantasyQuery = `
+        SELECT name, evolves_to FROM finalfantasy_monsters
+        WHERE evolves_to IS NOT NULL AND evolves_to != ''
+      `;
+      const finalfantasyResults = await db.asyncAll(finalfantasyQuery);
+
+      finalfantasyResults.forEach(result => {
+        if (result.name !== speciesName && checkEvolutionMatch(result.evolves_to, speciesName)) {
+          reverseEvolutionOptions.push({ name: result.name, type: 'finalfantasy' });
+        }
+      });
+
+      // Note: Monster Hunter monsters do not evolve, so no reverse evolution check needed
 
     } catch (dbError) {
       console.error('Database error when fetching reverse evolution options:', dbError);

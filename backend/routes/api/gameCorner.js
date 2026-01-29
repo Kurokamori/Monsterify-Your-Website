@@ -22,7 +22,9 @@ const getUserSettings = (user) => {
     yokai_enabled: true,
     nexomon_enabled: true,
     pals_enabled: true,
-    fakemon_enabled: true
+    fakemon_enabled: true,
+    finalfantasy_enabled: true,
+    monsterhunter_enabled: true
   };
 
   // If user has monster_roller_settings, parse them
@@ -46,7 +48,9 @@ const getUserSettings = (user) => {
       if (settings.pals !== undefined) convertedSettings.pals_enabled = settings.pals;
       if (settings.nexomon !== undefined) convertedSettings.nexomon_enabled = settings.nexomon;
       if (settings.fakemon !== undefined) convertedSettings.fakemon_enabled = settings.fakemon;
-      
+      if (settings.finalfantasy !== undefined) convertedSettings.finalfantasy_enabled = settings.finalfantasy;
+      if (settings.monsterhunter !== undefined) convertedSettings.monsterhunter_enabled = settings.monsterhunter;
+
       // Also support if they're already in the expected format
       if (settings.pokemon_enabled !== undefined) convertedSettings.pokemon_enabled = settings.pokemon_enabled;
       if (settings.digimon_enabled !== undefined) convertedSettings.digimon_enabled = settings.digimon_enabled;
@@ -54,6 +58,8 @@ const getUserSettings = (user) => {
       if (settings.pals_enabled !== undefined) convertedSettings.pals_enabled = settings.pals_enabled;
       if (settings.nexomon_enabled !== undefined) convertedSettings.nexomon_enabled = settings.nexomon_enabled;
       if (settings.fakemon_enabled !== undefined) convertedSettings.fakemon_enabled = settings.fakemon_enabled;
+      if (settings.finalfantasy_enabled !== undefined) convertedSettings.finalfantasy_enabled = settings.finalfantasy_enabled;
+      if (settings.monsterhunter_enabled !== undefined) convertedSettings.monsterhunter_enabled = settings.monsterhunter_enabled;
       
       return { ...defaultSettings, ...convertedSettings };
     } catch (error) {
@@ -651,6 +657,8 @@ async function generateMonsterReward(rewards, getRandomTrainerId, userSettings =
     if (userSettings.pals_enabled === true || userSettings.pals === true) enabledTables.push('pals');
     if (userSettings.nexomon_enabled === true || userSettings.nexomon === true) enabledTables.push('nexomon');
     if (userSettings.fakemon_enabled === true || userSettings.fakemon === true) enabledTables.push('fakemon');
+    if (userSettings.finalfantasy_enabled === true || userSettings.finalfantasy === true) enabledTables.push('finalfantasy');
+    if (userSettings.monsterhunter_enabled === true || userSettings.monsterhunter === true) enabledTables.push('monsterhunter');
 
     // If no tables are enabled, fall back to pokemon only to prevent empty results
     if (enabledTables.length === 0) {

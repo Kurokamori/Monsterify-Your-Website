@@ -92,7 +92,7 @@ const EditTrainerPage = () => {
     mega_ability: '',
 
     // Other
-    alter_human: false,
+    race: 'Human',
 
     // New character fields
     strengths: '',
@@ -1241,16 +1241,21 @@ const EditTrainerPage = () => {
               />
             </div>
 
-            <div className="form-group checkbox-group">
-              <label className="checkbox-label">
-                <input
-                  type="checkbox"
-                  name="alter_human"
-                  checked={formData.alter_human}
-                  onChange={handleChange}
-                />
-                Alter Human
-              </label>
+            <div className="form-group">
+              <label htmlFor="race">Race</label>
+              <select
+                id="race"
+                name="race"
+                value={formData.race || 'Human'}
+                onChange={handleChange}
+              >
+                <option value="Human">Human</option>
+                <option value="Alter">Alter</option>
+                <option value="Ultra Beast">Ultra Beast</option>
+                <option value="Alter (Faller)">Alter (Faller)</option>
+                <option value="Human (Faller)">Human (Faller)</option>
+                <option value="Catfolk">Catfolk</option>
+              </select>
             </div>
           </div>
         </div>

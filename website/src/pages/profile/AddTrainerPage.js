@@ -84,7 +84,7 @@ const AddTrainerPage = () => {
     quirks: '',
 
     // Other
-    alter_human: false
+    race: 'Human'
   });
 
   // File uploads for multer
@@ -934,16 +934,22 @@ const AddTrainerPage = () => {
             </div>
 
             <div className="form-group">
-              <label className="checkbox-label">
-                <input
-                  type="checkbox"
-                  name="alter_human"
-                  checked={formData.alter_human}
-                  onChange={handleInputChange}
-                />
-                Alter Human
-              </label>
-              <small className="field-note">Check if your trainer is an altered human</small>
+              <label htmlFor="race">Race</label>
+              <select
+                id="race"
+                name="race"
+                value={formData.race}
+                onChange={handleInputChange}
+                className="form-input"
+              >
+                <option value="Human">Human</option>
+                <option value="Alter">Alter</option>
+                <option value="Ultra Beast">Ultra Beast</option>
+                <option value="Alter (Faller)">Alter (Faller)</option>
+                <option value="Human (Faller)">Human (Faller)</option>
+                <option value="Catfolk">Catfolk</option>
+              </select>
+              <small className="field-note">Select your trainer's race</small>
             </div>
         </div>
 </div>

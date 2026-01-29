@@ -9,8 +9,8 @@ class EggHatcher {
   constructor(options = {}) {
     this.seed = options.seed || Date.now().toString();
     this.userSettings = options.userSettings || {};
-    this.enabledTables = options.enabledTables || ['pokemon', 'digimon', 'yokai', 'nexomon', 'pals', 'fakemon'];
-    
+    this.enabledTables = options.enabledTables || ['pokemon', 'digimon', 'yokai', 'nexomon', 'pals', 'fakemon', 'finalfantasy', 'monsterhunter'];
+
     // Apply user settings to enabled tables
     this.applyUserSettings();
   }
@@ -23,11 +23,13 @@ class EggHatcher {
     // Convert from user settings format (pokemon: true/false) to table names
     const settingsToTables = {
       pokemon: 'pokemon',
-      digimon: 'digimon', 
+      digimon: 'digimon',
       yokai: 'yokai',
       nexomon: 'nexomon',
       pals: 'pals',
-      fakemon: 'fakemon'
+      fakemon: 'fakemon',
+      finalfantasy: 'finalfantasy',
+      monsterhunter: 'monsterhunter'
     };
 
     this.enabledTables = this.enabledTables.filter(table => {

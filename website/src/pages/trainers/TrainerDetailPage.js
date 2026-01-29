@@ -1608,7 +1608,7 @@ const TrainerDetailPage = () => {
               )}
 
               {/* Personal Information Panel */}
-              {(trainer.full_name || trainer.title || trainer.nickname || trainer.age || trainer.gender || trainer.pronouns || trainer.sexuality || trainer.height || trainer.weight || trainer.height_ft || trainer.height_in) && (
+              {(trainer.full_name || trainer.title || trainer.nickname || trainer.age || trainer.gender || trainer.pronouns || trainer.sexuality || trainer.race || trainer.height || trainer.weight || trainer.height_ft || trainer.height_in) && (
                 <div className="trainer-panel">
                   <h2>Personal Information</h2>
                   
@@ -1637,7 +1637,7 @@ const TrainerDetailPage = () => {
                   )}
                   
                   {/* Identity Row */}
-                  {(trainer.gender || trainer.pronouns || trainer.sexuality) && (
+                  {(trainer.gender || trainer.pronouns || trainer.sexuality || trainer.race) && (
                     <div className="personal-info-row">
                       {trainer.gender && (
                         <div className="trainer-detail-item">
@@ -1655,6 +1655,12 @@ const TrainerDetailPage = () => {
                         <div className="trainer-detail-item">
                           <span className="detail-label">Sexuality</span>
                           <span className="detail-value">{trainer.sexuality}</span>
+                        </div>
+                      )}
+                      {trainer.race && (
+                        <div className="trainer-detail-item">
+                          <span className="detail-label">Race</span>
+                          <span className="detail-value">{trainer.race}</span>
                         </div>
                       )}
                     </div>

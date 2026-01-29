@@ -501,6 +501,16 @@
 .type-random { background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #f9ca24); }
 .type-light { background-color: #8db8e4; }
 .type-cosmic { background-color: #342f3d; }
+.type-mystery,
+.type-\?\?\? {
+  background: linear-gradient(135deg, #6b7280 0%, #9ca3af 50%, #6b7280 100%);
+  animation: mystery-shimmer 2s ease-in-out infinite;
+}
+
+@keyframes mystery-shimmer {
+  0%, 100% { opacity: 0.9; }
+  50% { opacity: 1; }
+}
 
 
 .attribute-badge {

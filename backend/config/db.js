@@ -51,7 +51,7 @@ console.log('DB Config:', dbConfig);
 console.log('Database URL:', process.env.DATABASE_URL);
 
 // Get environment from NODE_ENV or default to development
-const environment = process.env.NODE_ENV || 'production';
+const environment = 'production';
 const config = dbConfig[environment];
 
 let db;

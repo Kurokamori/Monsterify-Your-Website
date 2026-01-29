@@ -1035,32 +1035,50 @@ const getLeaderboardStats = async (req, res) => {
       };
     });
 
-    // Get real type specialists data
+    // Get real type specialists data - count all 5 type fields (type1-type5)
+    // Normalize types with TRIM and LOWER for consistent grouping
     const typeSpecialists = {};
     const typeQuery = `
-      SELECT 
+      SELECT
+        t.id as trainer_id,
         t.name as trainer_name,
         t.title,
         t.faction,
         t.main_ref,
         u.display_name as player_display_name,
         u.username as player_username,
-        m.type1 as type,
-        COUNT(*) as count
-      FROM monsters m
-      JOIN trainers t ON m.trainer_id = t.id
+        type_counts.normalized_type,
+        type_counts.count
+      FROM (
+        SELECT trainer_id, normalized_type, SUM(cnt) as count
+        FROM (
+          SELECT trainer_id, LOWER(TRIM(type1)) as normalized_type, COUNT(*) as cnt FROM monsters WHERE type1 IS NOT NULL AND TRIM(type1) != '' GROUP BY trainer_id, LOWER(TRIM(type1))
+          UNION ALL
+          SELECT trainer_id, LOWER(TRIM(type2)) as normalized_type, COUNT(*) as cnt FROM monsters WHERE type2 IS NOT NULL AND TRIM(type2) != '' GROUP BY trainer_id, LOWER(TRIM(type2))
+          UNION ALL
+          SELECT trainer_id, LOWER(TRIM(type3)) as normalized_type, COUNT(*) as cnt FROM monsters WHERE type3 IS NOT NULL AND TRIM(type3) != '' GROUP BY trainer_id, LOWER(TRIM(type3))
+          UNION ALL
+          SELECT trainer_id, LOWER(TRIM(type4)) as normalized_type, COUNT(*) as cnt FROM monsters WHERE type4 IS NOT NULL AND TRIM(type4) != '' GROUP BY trainer_id, LOWER(TRIM(type4))
+          UNION ALL
+          SELECT trainer_id, LOWER(TRIM(type5)) as normalized_type, COUNT(*) as cnt FROM monsters WHERE type5 IS NOT NULL AND TRIM(type5) != '' GROUP BY trainer_id, LOWER(TRIM(type5))
+        ) all_types
+        GROUP BY trainer_id, normalized_type
+      ) type_counts
+      JOIN trainers t ON type_counts.trainer_id = t.id
       LEFT JOIN users u ON t.player_user_id = u.discord_id
-      WHERE m.type1 IS NOT NULL AND m.type1 != ''
-      GROUP BY t.id, t.name, t.title, t.faction, t.main_ref, u.display_name, u.username, m.type1
-      ORDER BY count DESC
+      ORDER BY type_counts.normalized_type, type_counts.count DESC
     `;
-    
+
     const typeResults = await db.asyncAll(typeQuery);
-    
-    // Group by type and find the trainer with most of each type
+
+    // Group by type and find the trainer with most of each type (first occurrence per type is highest due to ORDER BY)
     typeResults.forEach(result => {
-      if (!typeSpecialists[result.type] || typeSpecialists[result.type].count < result.count) {
-        typeSpecialists[result.type] = {
+      // Normalize the type key and create display version (capitalize first letter)
+      const typeKey = result.normalized_type;
+      const displayType = typeKey.charAt(0).toUpperCase() + typeKey.slice(1);
+
+      if (!typeSpecialists[displayType]) {
+        typeSpecialists[displayType] = {
           trainer_name: result.trainer_name,
           title: result.title,
           faction: result.faction,

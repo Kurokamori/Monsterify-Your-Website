@@ -19,6 +19,17 @@ const MonsterRewardCard = ({
   onForfeit,
   isForfeiting,
 }) => {
+  // Mystery Roll constant for fallback display
+  const MYSTERY_ROLL = 'Mystery Roll';
+  const MYSTERY_TYPE = '???';
+
+  // Check if this is a mystery roll (no species data available)
+  const isMysteryRoll = () => {
+    const data = reward.reward_data;
+    return !data.species1 && !data.species2 && !data.species3 &&
+           !data.species && !data.monster_species;
+  };
+
   // Get the species list from the reward data
   const getSpeciesList = () => {
     const speciesList = [];
@@ -42,38 +53,11 @@ const MonsterRewardCard = ({
         speciesList.push(reward.reward_data.species);
       } else if (reward.reward_data.monster_species) {
         speciesList.push(reward.reward_data.monster_species);
-      } else if (reward.reward_data.params && reward.reward_data.params.types && reward.reward_data.params.types.length > 0) {
-        // Get default species for each type
-        const types = reward.reward_data.params.types;
-
-        types.forEach(type => {
-          const typeSpecies = getDefaultSpeciesForType(type);
-          if (typeSpecies && typeSpecies.length > 0) {
-            // Add one species per type
-            speciesList.push(typeSpecies[0]);
-          }
-        });
       }
     }
 
-    return speciesList.length > 0 ? speciesList : ['Eevee']; // Default to Eevee if no species found
-  };
-
-  // Helper function to get default species for a type
-  const getDefaultSpeciesForType = (type) => {
-    const typeMap = {
-      'water': ['Squirtle', 'Totodile', 'Mudkip', 'Froakie', 'Piplup'],
-      'fire': ['Charmander', 'Cyndaquil', 'Torchic', 'Chimchar', 'Fennekin'],
-      'grass': ['Bulbasaur', 'Chikorita', 'Treecko', 'Turtwig', 'Snivy'],
-      'electric': ['Pikachu', 'Elekid', 'Mareep', 'Shinx', 'Helioptile'],
-      'ice': ['Spheal', 'Snorunt', 'Swinub', 'Vanillite', 'Bergmite'],
-      'dark': ['Poochyena', 'Houndour', 'Zorua', 'Pawniard', 'Deino'],
-      'bug': ['Caterpie', 'Weedle', 'Scyther', 'Heracross', 'Larvesta'],
-      'ground': ['Diglett', 'Sandshrew', 'Cubone', 'Phanpy', 'Trapinch'],
-      'normal': ['Eevee', 'Teddiursa', 'Aipom', 'Meowth', 'Rattata']
-    };
-
-    return typeMap[type.toLowerCase()] || ['Eevee'];
+    // Return Mystery Roll if no species found (will be rerolled on claim)
+    return speciesList.length > 0 ? speciesList : [MYSTERY_ROLL];
   };
 
   // Get the species list
@@ -100,9 +84,9 @@ const MonsterRewardCard = ({
       );
     }
 
-    // If still no types, use default
+    // If still no types, return mystery type (will be determined on claim)
     if (types.length === 0) {
-      return ['Normal'];
+      return [MYSTERY_TYPE];
     }
 
     return types;
@@ -114,10 +98,11 @@ const MonsterRewardCard = ({
   };
 
   // Initialize monster name with species1 if not provided
+  // For Mystery Rolls, leave name empty so users can name after claiming
   React.useEffect(() => {
     if (!monsterName && reward.reward_data.species1) {
       onNameChange(reward.id, reward.reward_data.species1);
-    } else if (!monsterName && speciesList.length > 0) {
+    } else if (!monsterName && speciesList.length > 0 && speciesList[0] !== MYSTERY_ROLL) {
       onNameChange(reward.id, speciesList[0]);
     }
   }, [reward.id, reward.reward_data.species1, monsterName, speciesList, onNameChange]);
@@ -144,7 +129,16 @@ const MonsterRewardCard = ({
         {speciesList.map((species, index) => (
           <div key={index} className="monster-species-item">
             <div className="monster-species-image">
-              {speciesImages && speciesImages[species] ? (
+              {species === MYSTERY_ROLL ? (
+                <img
+                  src="/images/mystery.png"
+                  alt="Mystery Roll"
+                  onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.src = '/images/default_mon.png';
+                  }}
+                />
+              ) : speciesImages && speciesImages[species] ? (
                 <img
                   src={speciesImages[species].image_url}
                   alt={species}
@@ -168,7 +162,7 @@ const MonsterRewardCard = ({
       <div className="monster-types-container">
         <div className="monster-types">
           {getTypes().map((type, typeIndex) => (
-            <span key={typeIndex} className={`type-badge type-${type.toLowerCase()}`}>
+            <span key={typeIndex} className={`type-badge ${type === MYSTERY_TYPE ? 'type-mystery' : `type-${type.toLowerCase()}`}`}>
               {type}
             </span>
           ))}
