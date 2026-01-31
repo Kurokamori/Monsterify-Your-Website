@@ -952,13 +952,51 @@
 }
 
 .admin-table th,
-.admin-table td { padding: 0.75rem 1rem; text-align: left; border-bottom: 1px solid var(--admin-border-color); }
+.admin-table td { padding: 0.75rem 1rem; text-align: center; border-bottom: 1px solid var(--admin-border-color); }
 .admin-table th {
   background-color: var(--admin-card-header-bg);
   color: var(--admin-accent-color);
   font-weight: 700;
 }
 .admin-table tr:hover { background-color: var(--admin-hover-bg); }
+
+.fakemon-types-cell {
+  min-width: 40vh;
+}
+
+.admin-search-form {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.admin-search-input {
+  width: 90%;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--admin-border-color);
+  border-radius: var(--admin-radius-md);
+  background-color: var(--admin-input-bg);
+  color: var(--admin-text-primary);
+  font-size: var(--admin-font-size-base);
+  transition: all 0.3s ease;
+}
+
+.admin-filter-group {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.admin-filter-select {
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--admin-border-color);
+  border-radius: var(--admin-radius-md);
+  background-color: var(--admin-input-bg);
+  color: var(--admin-text-primary);
+  font-size: var(--admin-font-size-base);
+  transition: all 0.3s ease;
+}
 
 .admin-actions {
   display: flex;
@@ -968,6 +1006,7 @@
 
 .admin-actions-cell {
   white-space: nowrap;
+  align-items: center;
 }
 
 .admin-action-button {
@@ -1032,7 +1071,7 @@
 .admin-form-group {
   display: flex;
   flex-direction: column;
-  gap: var(--admin-space-sm);
+  padding-top: var(--admin-space-sm);
 }
 
 .admin-form-label {
@@ -1055,7 +1094,7 @@
 .admin-form-textarea,
 .admin-form-select {
   width: 100%; 
-  padding: var(--admin-space-md);
+  padding: var(--admin-space-sm);
   border: 2px solid var(--admin-input-border);
   border-radius: var(--admin-radius-md);
   background-color: var(--admin-input-bg);
@@ -1063,6 +1102,7 @@
   font-size: var(--admin-font-size-base);
   transition: all 0.3s ease;
   box-shadow: var(--admin-shadow-sm);
+  height: 2.5rem;
 }
 
 .admin-form-input:focus,
@@ -1134,6 +1174,200 @@
   border-top: 1px solid var(--admin-border-color);
 }
 
+.admin-form-image-preview{
+  margin-top: var(--admin-space-sm);
+  max-width: 200px;
+  max-height: 200px;
+  border-radius: var(--admin-radius-md);
+  object-fit: contain;
+  border: 1px solid var(--admin-border-color);
+}
+
+.admin-form-image-preview img {
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.mass-upload-area {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.5rem;
+  border: 2px dashed var(--admin-border-color);
+  border-radius: 8px;
+  background: var(--admin-input-bg);
+}
+
+.upload-progress-container {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.upload-progress-bar {
+  flex: 1;
+  height: 8px;
+  background: var(--admin-bg-color);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.upload-progress-fill {
+  height: 100%;
+  background: var(--admin-accent-color);
+  transition: width 0.3s ease;
+}
+
+.upload-progress-text {
+  font-size: 0.875rem;
+  color: var(--text-secondary, #666);
+}
+
+.mass-fakemon-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.mass-fakemon-card {
+  background: var(--bg-secondary, #fff);
+  border: 1px solid var(--border-color, #ddd);
+  border-radius: 8px;
+  padding: 1rem;
+  position: relative;
+}
+
+.mass-fakemon-card-header {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  z-index: 1;
+}
+
+.mass-fakemon-card-header .admin-button.small {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+}
+
+.mass-fakemon-image {
+  width: 100%;
+  height: 150px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-tertiary, #f0f0f0);
+  border-radius: 4px;
+  margin-bottom: 1rem;
+  overflow: hidden;
+}
+
+.mass-fakemon-image img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.mass-fakemon-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.mass-fakemon-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.mass-fakemon-field label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-secondary, #666);
+}
+
+.mass-fakemon-field input,
+.mass-fakemon-field select {
+  padding: 0.5rem;
+  border: 1px solid var(--border-color, #ddd);
+  border-radius: 4px;
+  font-size: 0.875rem;
+}
+
+.mass-fakemon-field.has-error input,
+.mass-fakemon-field.has-error select {
+  border-color: var(--error-color, #e74c3c);
+}
+
+.field-error {
+  font-size: 0.75rem;
+  color: var(--error-color, #e74c3c);
+}
+
+.types-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.type-row {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.type-row select {
+  flex: 1;
+}
+
+.type-remove-btn,
+.type-add-btn {
+  padding: 0.5rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.75rem;
+}
+
+.type-remove-btn {
+  background: var(--error-color, #e74c3c);
+  color: white;
+}
+
+.type-add-btn {
+  background: var(--primary-color, #4a90d9);
+  color: white;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.type-remove-btn:hover {
+  opacity: 0.9;
+}
+
+.type-add-btn:hover {
+  opacity: 0.9;
+}
+
+.admin-empty-state {
+  text-align: center;
+  padding: 3rem;
+  color: var(--text-secondary, #666);
+}
+
+.admin-empty-state i {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  opacity: 0.5;
+}
+
+.admin-empty-state h3 {
+  margin-bottom: 0.5rem;
+}
+
+.admin-empty-state p {
+  font-size: 0.875rem;
+}
 
 /* Scoped 3rd-party: React Select (admin only) */
 .admin-layout .react-select__control {
@@ -1593,6 +1827,11 @@
   border-top: 1px solid var(--admin-border-color);
 }
 
+.admin-fakemon-thumbnail {
+  width : 20%;
+  max-height: 200px;
+}
+
 /* =========================
    Admin: Faction People
    ========================= */
@@ -1984,7 +2223,7 @@
 
 .world-map-admin .name-cell { max-width: 200px; }
 .world-map-admin .name-content { display: flex; align-items: center; gap: 12px; }
-.world-map-admin .table-thumbnail {
+.world-map-admin .table-thumbnail{
   width: 40px; height: 40px; object-fit: cover; border-radius: 6px; border: 2px solid var(--admin-border-color);
 }
 .world-map-admin .description-cell { max-width: 300px; color: var(--admin-text-secondary); line-height: 1.4; }

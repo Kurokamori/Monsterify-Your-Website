@@ -12,6 +12,7 @@ import AdminFeatures from './AdminFeatures';
 import ContentManagementPage from './ContentManagementPage';
 import FakemonListPage from './FakemonListPage';
 import FakemonFormPage from './FakemonFormPage';
+import MassFakemonAddPage from './MassFakemonAddPage';
 import MonsterListPage from './MonsterListPage';
 import MonsterFormPage from './MonsterFormPage';
 import ShopManagerRoutes from './ShopManager';
@@ -69,6 +70,7 @@ const AdminDashboardPage = () => {
         {/* Fakemon Management Routes */}
         <Route path="fakemon" element={<FakemonListPage />} />
         <Route path="fakemon/add" element={<FakemonFormPage />} />
+        <Route path="fakemon/mass-add" element={<MassFakemonAddPage />} />
         <Route path="fakemon/edit/:number" element={<FakemonFormPage />} />
 
         {/* Content Management Routes */}

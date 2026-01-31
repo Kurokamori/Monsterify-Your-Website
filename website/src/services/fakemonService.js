@@ -168,6 +168,52 @@ const fakemonService = {
       console.error(`Error deleting fakemon ${number}:`, error);
       throw error;
     }
+  },
+
+  /**
+   * Get all fakemon categories
+   * @returns {Promise<Object>} - Response with categories
+   */
+  getAllCategories: async () => {
+    try {
+      const response = await api.get('/fakedex/categories');
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching fakemon categories:', error);
+      throw error;
+    }
+  },
+
+  /**
+   * Get numbers used within a category
+   * @param {string} category - Category name
+   * @returns {Promise<Object>} - Response with numbers
+   */
+  getNumbersByCategory: async (category) => {
+    try {
+      const response = await api.get('/fakedex/admin/numbers-by-category', {
+        params: { category }
+      });
+      return response.data;
+    } catch (error) {
+      console.error(`Error fetching numbers for category ${category}:`, error);
+      throw error;
+    }
+  },
+
+  /**
+   * Bulk create fakemon
+   * @param {Array} fakemonList - Array of fakemon data
+   * @returns {Promise<Object>} - Response with created fakemon and errors
+   */
+  bulkCreateFakemon: async (fakemonList) => {
+    try {
+      const response = await api.post('/fakedex/admin/bulk', { fakemonList });
+      return response.data;
+    } catch (error) {
+      console.error('Error bulk creating fakemon:', error);
+      throw error;
+    }
   }
 };
 

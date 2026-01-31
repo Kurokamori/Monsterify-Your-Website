@@ -245,6 +245,9 @@ const FakemonListPage = () => {
           <Link to="/admin/fakemon/add" className="admin-button">
             <i className="fas fa-plus"></i> Add New Fakemon
           </Link>
+          <Link to="/admin/fakemon/mass-add" className="admin-button">
+            <i className="fas fa-images"></i> Mass Addition
+          </Link>
         </div>
 
         {/* Search and Filter */}
@@ -290,7 +293,7 @@ const FakemonListPage = () => {
                     <th>Number</th>
                     <th>Image</th>
                     <th>Name</th>
-                    <th>Types</th>
+                    <th className="fakemon-types-cell">Types</th>
                     <th>Category</th>
                     <th>Actions</th>
                   </tr>
@@ -316,9 +319,9 @@ const FakemonListPage = () => {
                           />
                         </td>
                         <td>{mon.name}</td>
-                        <td>
+                        <td className="fakemon-types-cell">
                           {mon.types.map(type => (
-                            <span key={type} className={`fakemon-type type-${type.toLowerCase()}`}>
+                            <span key={type} className={`fakemon-type type-badge type-${type.toLowerCase()}`}>
                               {type}
                             </span>
                           ))}

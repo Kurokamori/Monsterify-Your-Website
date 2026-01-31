@@ -740,13 +740,21 @@ class MonsterRoller {
         if (tableFilter && tableFilter.includeRanks) {
           includeRanks = tableFilter.includeRanks;
         }
-        
+
         if (includeRanks && includeRanks.length > 0) {
           const rankFields = schema.rarityFields.filter(field => field === 'rank');
           if (rankFields.length > 0) {
-            // Only add rank filtering if this table actually uses ranks
-            const placeholders = addParams(includeRanks);
-            tableQuery += ` AND rank IN (${placeholders})`;
+            // Monster Hunter uses integer ranks, so skip string rank filters for it
+            // Check if ALL rank values are numeric for monsterhunter compatibility
+            const allNumeric = includeRanks.every(r => !isNaN(parseInt(r)) && String(parseInt(r)) === String(r));
+
+            if (table === 'monsterhunter' && !allNumeric) {
+              // Skip rank filtering for monsterhunter when ranks are strings like "Baby I"
+              // This avoids PostgreSQL type mismatch errors
+            } else {
+              const placeholders = addParams(includeRanks);
+              tableQuery += ` AND rank IN (${placeholders})`;
+            }
           }
         }
 
@@ -755,13 +763,19 @@ class MonsterRoller {
         if (tableFilter && tableFilter.excludeRanks) {
           excludeRanks = tableFilter.excludeRanks;
         }
-        
+
         if (excludeRanks && excludeRanks.length > 0) {
           const rankFields = schema.rarityFields.filter(field => field === 'rank');
           if (rankFields.length > 0) {
-            // Only add rank filtering if this table actually uses ranks
-            const placeholders = addParams(excludeRanks);
-            tableQuery += ` AND (rank IS NULL OR rank NOT IN (${placeholders}))`;
+            // Monster Hunter uses integer ranks, so skip string rank filters for it
+            const allNumeric = excludeRanks.every(r => !isNaN(parseInt(r)) && String(parseInt(r)) === String(r));
+
+            if (table === 'monsterhunter' && !allNumeric) {
+              // Skip rank filtering for monsterhunter when ranks are strings
+            } else {
+              const placeholders = addParams(excludeRanks);
+              tableQuery += ` AND (rank IS NULL OR rank NOT IN (${placeholders}))`;
+            }
           }
         }
       }
@@ -943,12 +957,19 @@ class MonsterRoller {
           if (tableFilter && tableFilter.includeRanks) {
             includeRanks = tableFilter.includeRanks;
           }
-          
+
           if (includeRanks && includeRanks.length > 0) {
             const rankFields = schema.rarityFields.filter(field => field === 'rank');
             if (rankFields.length > 0) {
-              const placeholders = addParams(includeRanks);
-              tableQuery += ` AND rank IN (${placeholders})`;
+              // Monster Hunter uses integer ranks, so skip string rank filters for it
+              const allNumeric = includeRanks.every(r => !isNaN(parseInt(r)) && String(parseInt(r)) === String(r));
+
+              if (table === 'monsterhunter' && !allNumeric) {
+                // Skip rank filtering for monsterhunter when ranks are strings like "Baby I"
+              } else {
+                const placeholders = addParams(includeRanks);
+                tableQuery += ` AND rank IN (${placeholders})`;
+              }
             }
           }
 
@@ -957,12 +978,19 @@ class MonsterRoller {
           if (tableFilter && tableFilter.excludeRanks) {
             excludeRanks = tableFilter.excludeRanks;
           }
-          
+
           if (excludeRanks && excludeRanks.length > 0) {
             const rankFields = schema.rarityFields.filter(field => field === 'rank');
             if (rankFields.length > 0) {
-              const placeholders = addParams(excludeRanks);
-              tableQuery += ` AND (rank IS NULL OR rank NOT IN (${placeholders}))`;
+              // Monster Hunter uses integer ranks, so skip string rank filters for it
+              const allNumeric = excludeRanks.every(r => !isNaN(parseInt(r)) && String(parseInt(r)) === String(r));
+
+              if (table === 'monsterhunter' && !allNumeric) {
+                // Skip rank filtering for monsterhunter when ranks are strings
+              } else {
+                const placeholders = addParams(excludeRanks);
+                tableQuery += ` AND (rank IS NULL OR rank NOT IN (${placeholders}))`;
+              }
             }
           }
         }

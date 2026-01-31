@@ -3,6 +3,7 @@ import { Link, useParams, useNavigate } from 'react-router-dom';
 import fakemonService from '../../services/fakemonService';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
 import ErrorMessage from '../../components/common/ErrorMessage';
+import BackendFileUpload from '../../components/common/BackendFileUpload';
 
 /**
  * Fakemon Form Page
@@ -305,8 +306,30 @@ const FakemonFormPage = () => {
                   
                   <div className="admin-form-group">
                     <label htmlFor="image_url" className="admin-form-label">
-                      Image URL
+                      Image
                     </label>
+                    <BackendFileUpload
+                      uploadEndpoint="/fakedex/admin/upload"
+                      initialImageUrl={formData.image_url}
+                      onUploadSuccess={(result) => {
+                        if (result && result.secure_url) {
+                          setFormData(prev => ({
+                            ...prev,
+                            image_url: result.secure_url
+                          }));
+                        } else {
+                          setFormData(prev => ({
+                            ...prev,
+                            image_url: ''
+                          }));
+                        }
+                      }}
+                      onUploadError={(error) => {
+                        setError(`Image upload failed: ${error}`);
+                      }}
+                      buttonText="Upload Fakemon Image"
+                      disabled={saving}
+                    />
                     <input
                       type="text"
                       id="image_url"
@@ -314,21 +337,10 @@ const FakemonFormPage = () => {
                       value={formData.image_url}
                       onChange={handleChange}
                       className="admin-form-input"
-                      placeholder="https://example.com/image.png"
+                      placeholder="Or enter image URL directly"
                       disabled={saving}
+                      style={{ marginTop: '10px' }}
                     />
-                    {formData.image_url && (
-                      <div className="admin-form-image-preview">
-                        <img
-                          src={formData.image_url}
-                          alt="Fakemon preview"
-                          onError={(e) => {
-                            e.target.onerror = null;
-                            e.target.src = 'https://via.placeholder.com/100?text=Invalid+URL';
-                          }}
-                        />
-                      </div>
-                    )}
                   </div>
                 </div>
                 

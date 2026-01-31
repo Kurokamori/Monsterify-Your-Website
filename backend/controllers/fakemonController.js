@@ -1,5 +1,6 @@
 const db = require('../config/db');
 const { buildLimitOffset, buildRandomLimit } = require('../utils/dbUtils');
+const cloudinary = require('../utils/cloudinary');
 
 /**
  * Table creation removed for PostgreSQL compatibility
@@ -730,14 +731,238 @@ const getNextFakemonNumber = async (req, res) => {
   }
 };
 
+/**
+ * Upload image to Cloudinary
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ */
+const uploadImage = async (req, res) => {
+  if (!req.file) {
+    return res.status(400).json({
+      success: false,
+      message: 'Please upload an image'
+    });
+  }
+
+  try {
+    // Upload image to Cloudinary
+    const result = await cloudinary.uploader.upload(req.file.path, {
+      folder: 'fakemon',
+      use_filename: true
+    });
+
+    res.json({
+      success: true,
+      data: {
+        url: result.secure_url,
+        public_id: result.public_id
+      },
+      message: 'Image uploaded successfully'
+    });
+  } catch (error) {
+    console.error('Error uploading fakemon image:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to upload image'
+    });
+  }
+};
+
+/**
+ * Get all unique categories
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ */
+const getAllCategories = async (req, res) => {
+  try {
+    await ensureFakemonTableExists();
+
+    const result = await db.asyncAll(
+      'SELECT DISTINCT category FROM fakemon WHERE category IS NOT NULL ORDER BY category'
+    );
+
+    const categories = result.map(row => row.category);
+
+    res.json({
+      success: true,
+      categories
+    });
+  } catch (error) {
+    console.error('Error fetching fakemon categories:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch categories'
+    });
+  }
+};
+
+/**
+ * Get numbers used within a category
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ */
+const getNumbersByCategory = async (req, res) => {
+  try {
+    await ensureFakemonTableExists();
+
+    const { category } = req.query;
+
+    if (!category) {
+      return res.status(400).json({
+        success: false,
+        message: 'Category is required'
+      });
+    }
+
+    const result = await db.asyncAll(
+      'SELECT number FROM fakemon WHERE category = $1 ORDER BY number',
+      [category]
+    );
+
+    const numbers = result.map(row => row.number);
+
+    res.json({
+      success: true,
+      numbers
+    });
+  } catch (error) {
+    console.error('Error fetching numbers by category:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch numbers'
+    });
+  }
+};
+
+/**
+ * Bulk create fakemon
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ */
+const bulkCreateFakemon = async (req, res) => {
+  try {
+    await ensureFakemonTableExists();
+
+    const { fakemonList } = req.body;
+
+    if (!fakemonList || !Array.isArray(fakemonList) || fakemonList.length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: 'Please provide a list of fakemon to create'
+      });
+    }
+
+    const results = [];
+    const errors = [];
+
+    for (const fakemon of fakemonList) {
+      const {
+        number,
+        name,
+        category,
+        type1,
+        type2,
+        type3,
+        type4,
+        type5,
+        attribute,
+        image_url
+      } = fakemon;
+
+      // Validate required fields
+      if (!number || !name || !category || !type1) {
+        errors.push({
+          fakemon,
+          error: 'Number, name, category, and at least one type are required'
+        });
+        continue;
+      }
+
+      // Check if number already exists within this category
+      const existingFakemon = await db.asyncGet(
+        'SELECT * FROM fakemon WHERE number = $1 AND category = $2',
+        [number, category]
+      );
+
+      if (existingFakemon) {
+        errors.push({
+          fakemon,
+          error: `Number ${number} already exists in category "${category}"`
+        });
+        continue;
+      }
+
+      try {
+        // Insert new fakemon with default stats
+        await db.asyncRun(`
+          INSERT INTO fakemon (
+            number, name, category, type1, type2, type3, type4, type5,
+            attribute, image_url,
+            hp, attack, defense, special_attack, special_defense, speed,
+            created_by, created_at, updated_at
+          ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, NOW(), NOW())
+        `, [
+          number,
+          name,
+          category,
+          type1,
+          type2 || null,
+          type3 || null,
+          type4 || null,
+          type5 || null,
+          attribute || null,
+          image_url || null,
+          50, // default hp
+          50, // default attack
+          50, // default defense
+          50, // default special_attack
+          50, // default special_defense
+          50, // default speed
+          req.user?.id || null
+        ]);
+
+        results.push({
+          number,
+          name,
+          category,
+          success: true
+        });
+      } catch (insertError) {
+        console.error(`Error inserting fakemon ${name}:`, insertError);
+        errors.push({
+          fakemon,
+          error: insertError.message
+        });
+      }
+    }
+
+    res.status(201).json({
+      success: true,
+      message: `Created ${results.length} fakemon successfully${errors.length > 0 ? `, ${errors.length} failed` : ''}`,
+      created: results,
+      errors
+    });
+  } catch (error) {
+    console.error('Error bulk creating fakemon:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to bulk create fakemon'
+    });
+  }
+};
+
 module.exports = {
   getAllFakemon,
   getFakemonByNumber,
   getEvolutionChain,
   getAllTypes,
+  getAllCategories,
+  getNumbersByCategory,
   getRandomFakemon,
   createFakemon,
   updateFakemon,
   deleteFakemon,
-  getNextFakemonNumber
+  getNextFakemonNumber,
+  uploadImage,
+  bulkCreateFakemon
 };

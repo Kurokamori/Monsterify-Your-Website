@@ -64,8 +64,8 @@
 
 
 .preview-image {
-  width: 80px;
-  height: 80px;
+  width: 200px;
+  height: auto;
   display: block;
   object-fit: cover;
   border-radius: 0.25rem;
