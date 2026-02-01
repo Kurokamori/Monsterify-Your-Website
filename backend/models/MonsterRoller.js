@@ -139,11 +139,27 @@ class MonsterRoller {
    * Apply user settings to enabled tables
    */
   applyUserSettings() {
+    // Store original tables for fallback
+    const allTables = [...this.enabledTables];
+
     // Filter enabled tables based on user settings
+    // Check both key formats: 'pokemon_enabled' and 'pokemon'
     this.enabledTables = this.enabledTables.filter(table => {
-      const settingKey = `${table}_enabled`;
-      return this.userSettings[settingKey] === true;
+      const settingKeyWithSuffix = `${table}_enabled`;
+      const settingKeySimple = table;
+
+      // Check if either key exists and is truthy (handles both true and "true")
+      const isEnabledWithSuffix = this.userSettings[settingKeyWithSuffix] === true || this.userSettings[settingKeyWithSuffix] === 'true';
+      const isEnabledSimple = this.userSettings[settingKeySimple] === true || this.userSettings[settingKeySimple] === 'true';
+
+      return isEnabledWithSuffix || isEnabledSimple;
     });
+
+    // Fallback: if no tables are enabled, use all tables
+    if (this.enabledTables.length === 0) {
+      console.log('No tables enabled after filtering, using all tables as fallback');
+      this.enabledTables = allTables;
+    }
 
     console.log('Enabled tables after applying user settings:', this.enabledTables);
   }
