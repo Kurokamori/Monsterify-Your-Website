@@ -19,6 +19,7 @@ const getArtGallery = async (req, res) => {
     const userId = req.query.userId;
     const monsterId = req.query.monsterId;
     const sortBy = req.query.sort || 'newest';
+    const search = req.query.search;
 
     // Build the query
     let query = `
@@ -115,6 +116,13 @@ const getArtGallery = async (req, res) => {
       paramIndex++;
     }
 
+    // Add search filter (title search)
+    if (search) {
+      query += ` AND LOWER(s.title) LIKE LOWER($${paramIndex})`;
+      queryParams.push(`%${search}%`);
+      paramIndex++;
+    }
+
     // Add sorting
     if (sortBy === 'oldest') {
       query += ` ORDER BY s.submission_date ASC`;
@@ -170,6 +178,13 @@ const getArtGallery = async (req, res) => {
     if (monsterId) {
       countQuery += ` AND EXISTS (SELECT 1 FROM submission_monsters WHERE submission_id = s.id AND monster_id = $${paramIndex})`;
       countParams.push(monsterId);
+      paramIndex++;
+    }
+
+    // Add search filter to count query (title search)
+    if (search) {
+      countQuery += ` AND LOWER(s.title) LIKE LOWER($${paramIndex})`;
+      countParams.push(`%${search}%`);
       paramIndex++;
     }
 

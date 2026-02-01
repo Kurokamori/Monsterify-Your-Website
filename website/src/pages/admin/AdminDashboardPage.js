@@ -18,6 +18,8 @@ import MonsterFormPage from './MonsterFormPage';
 import ShopManagerRoutes from './ShopManager';
 import ItemRoller from './ItemRoller';
 import MonsterRoller from './MonsterRoller/MonsterRoller';
+import RerollerPage from './Reroller/RerollerPage';
+import RerollerSessionsPage from './Reroller/RerollerSessionsPage';
 import BirthdayRoller from './BirthdayRoller';
 import UserListPage from './UserListPage';
 import UserFormPage from './UserFormPage';
@@ -124,6 +126,11 @@ const AdminDashboardPage = () => {
 
         {/* Monster Roller Routes */}
         <Route path="monster-roller" element={<MonsterRoller />} />
+
+        {/* Reroller Routes */}
+        <Route path="reroller" element={<RerollerPage />} />
+        <Route path="reroller/sessions" element={<RerollerSessionsPage />} />
+        <Route path="reroller/sessions/:id" element={<RerollerPage />} />
 
         {/* Birthday Roller Routes */}
         <Route path="birthday-roller" element={<BirthdayRoller />} />

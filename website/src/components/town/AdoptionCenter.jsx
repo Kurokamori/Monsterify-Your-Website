@@ -1,7 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
+import ReactDOM from 'react-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import adoptionService from '../../services/adoptionService';
 import trainerService from '../../services/trainerService';
+import speciesService from '../../services/speciesService';
+import evolutionCacheService from '../../services/evolutionCacheService';
+import submissionService from '../../services/submissionService';
 import LoadingSpinner from '../common/LoadingSpinner';
 import ErrorMessage from '../common/ErrorMessage';
 import Modal from '../common/Modal';
@@ -58,6 +62,25 @@ const AdoptionCenter = () => {
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
   const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1);
 
+  // State for species images
+  const [speciesImages, setSpeciesImages] = useState({});
+
+  // State for image popout modal
+  const [showImagePopout, setShowImagePopout] = useState(false);
+  const [popoutImage, setPopoutImage] = useState({ url: '', species: '' });
+
+  // State for artwork selector
+  const [selectedArtwork, setSelectedArtwork] = useState(null);
+  const [userArtworks, setUserArtworks] = useState([]);
+  const [artworksLoading, setArtworksLoading] = useState(false);
+  const [artworksPagination, setArtworksPagination] = useState({
+    page: 1,
+    totalPages: 1,
+    total: 0,
+    limit: 8
+  });
+  const [artworkSearchQuery, setArtworkSearchQuery] = useState('');
+
   // Load adopts and user trainers on component mount
   useEffect(() => {
     fetchData();
@@ -100,12 +123,15 @@ const AdoptionCenter = () => {
       }
 
       if (response.success) {
-        setAdopts(response.adopts || []);
+        const adoptsList = response.adopts || [];
+        setAdopts(adoptsList);
         setPagination({
           ...pagination,
           total: response.total || 0,
           totalPages: response.pagination?.totalPages || 1
         });
+        // Fetch species images for the adopts
+        fetchSpeciesImages(adoptsList);
       } else {
         setError('Failed to load adoption data');
       }
@@ -128,6 +154,82 @@ const AdoptionCenter = () => {
       console.error('Error fetching months with data:', err);
     }
   };
+
+  // Fetch and cache species images for adopts
+  const fetchSpeciesImages = useCallback(async (adoptsList) => {
+    if (!adoptsList || adoptsList.length === 0) return;
+
+    // Collect all unique species names from adopts
+    const speciesNames = new Set();
+    adoptsList.forEach(adopt => {
+      if (adopt.species1) speciesNames.add(adopt.species1);
+      if (adopt.species2) speciesNames.add(adopt.species2);
+      if (adopt.species3) speciesNames.add(adopt.species3);
+    });
+
+    // Check cache first and find which species need to be fetched
+    const cachedImages = {};
+    const speciesToFetch = [];
+
+    speciesNames.forEach(species => {
+      const cached = evolutionCacheService.getImageData(species);
+      if (cached) {
+        cachedImages[species] = cached;
+      } else {
+        speciesToFetch.push(species);
+      }
+    });
+
+    // Update state with cached images first
+    if (Object.keys(cachedImages).length > 0) {
+      setSpeciesImages(prev => ({ ...prev, ...cachedImages }));
+    }
+
+    // Fetch uncached species images
+    if (speciesToFetch.length > 0) {
+      try {
+        const response = await speciesService.getSpeciesImages(speciesToFetch);
+        if (response.success && response.speciesImages) {
+          const newImages = {};
+          Object.entries(response.speciesImages).forEach(([species, data]) => {
+            const imageUrl = data.image_url || data.imageUrl;
+            if (imageUrl) {
+              newImages[species] = imageUrl;
+              // Cache the image for future use
+              evolutionCacheService.setImageData(species, imageUrl);
+            }
+          });
+          setSpeciesImages(prev => ({ ...prev, ...newImages }));
+        }
+      } catch (err) {
+        console.error('Error fetching species images:', err);
+      }
+    }
+  }, []);
+
+  // Open image popout modal
+  const openImagePopout = useCallback((imageUrl, speciesName) => {
+    if (!imageUrl) return;
+    setPopoutImage({ url: imageUrl, species: speciesName });
+    setShowImagePopout(true);
+    document.body.style.overflow = 'hidden';
+  }, []);
+
+  // Close image popout modal
+  const closeImagePopout = useCallback(() => {
+    setShowImagePopout(false);
+    setPopoutImage({ url: '', species: '' });
+    document.body.style.overflow = '';
+  }, []);
+
+  // Cleanup effect for image popout
+  useEffect(() => {
+    return () => {
+      if (showImagePopout) {
+        document.body.style.overflow = '';
+      }
+    };
+  }, [showImagePopout]);
 
   // Fetch user trainers
   const fetchUserTrainers = async (userId) => {
@@ -206,6 +308,54 @@ const AdoptionCenter = () => {
     }
   };
 
+  // Fetch user artworks for artwork selector
+  const fetchUserArtworks = useCallback(async (page = 1, searchQuery = '') => {
+    if (!currentUser?.discord_id) return;
+
+    try {
+      setArtworksLoading(true);
+
+      const params = {
+        page,
+        limit: artworksPagination.limit,
+        userId: currentUser.discord_id,
+        sort: 'newest'
+      };
+
+      // Add search filter if provided
+      if (searchQuery.trim()) {
+        params.search = searchQuery.trim();
+      }
+
+      const response = await submissionService.getArtGallery(params);
+
+      setUserArtworks(response.submissions || []);
+      setArtworksPagination(prev => ({
+        ...prev,
+        page,
+        totalPages: response.totalPages || 1,
+        total: response.totalSubmissions || 0
+      }));
+    } catch (err) {
+      console.error('Error fetching user artworks:', err);
+      setUserArtworks([]);
+    } finally {
+      setArtworksLoading(false);
+    }
+  }, [currentUser?.discord_id, artworksPagination.limit]);
+
+  // Handle artwork page change
+  const handleArtworkPageChange = (newPage) => {
+    fetchUserArtworks(newPage, artworkSearchQuery);
+  };
+
+  // Handle artwork search
+  const handleArtworkSearch = (e) => {
+    e.preventDefault();
+    setArtworksPagination(prev => ({ ...prev, page: 1 }));
+    fetchUserArtworks(1, artworkSearchQuery);
+  };
+
   // Handle page change
   const handlePageChange = (newPage) => {
     setPagination({
@@ -240,7 +390,11 @@ const AdoptionCenter = () => {
     setMonsterName(adopt.species1);
     setAdoptionSuccess(false);
     setAdoptionError('');
+    setSelectedArtwork(null);
+    setArtworkSearchQuery('');
     setShowAdoptModal(true);
+    // Fetch user artworks when modal opens
+    fetchUserArtworks(1, '');
   };
 
   // Handle adopt submit
@@ -252,6 +406,11 @@ const AdoptionCenter = () => {
 
     if (!monsterName.trim()) {
       setAdoptionError('Please enter a name for your new monster');
+      return;
+    }
+
+    if (!selectedArtwork) {
+      setAdoptionError('Please select an artwork to proceed');
       return;
     }
 
@@ -303,6 +462,10 @@ const AdoptionCenter = () => {
     setAdoptionSuccess(false);
     setAdoptionError('');
     setAdoptedMonster(null);
+    setSelectedArtwork(null);
+    setArtworkSearchQuery('');
+    setUserArtworks([]);
+    setArtworksPagination(prev => ({ ...prev, page: 1, totalPages: 1, total: 0 }));
   };
 
   // Open berry modal
@@ -462,39 +625,108 @@ const AdoptionCenter = () => {
       ) : (
         <>
           <div className="adopts-grid">
-            {adopts.map((adopt) => (
-              <div
-                key={adopt.id}
-                className="adopt-card"
-                onClick={() => handleAdoptClick(adopt)}
-              >
-                <div className="adopt-species">
-                  <h3>{adopt.species1}</h3>
-                  {adopt.species2 && <h4>+ {adopt.species2}</h4>}
-                  {adopt.species3 && <h4>+ {adopt.species3}</h4>}
-                </div>
-
-                <div className="adopt-types">
-                  <TypeBadge type={adopt.type1} />
-                  {adopt.type2 && <TypeBadge type={adopt.type2} />}
-                  {adopt.type3 && <TypeBadge type={adopt.type3} />}
-                  {adopt.type4 && <TypeBadge type={adopt.type4} />}
-                  {adopt.type5 && <TypeBadge type={adopt.type5} />}
-                </div>
-
-                {adopt.attribute && (
-                  <div className="adopt-attribute">
-                    <AttributeBadge attribute={adopt.attribute} />
+            {adopts.map((adopt) => {
+              const speciesCount = [adopt.species1, adopt.species2, adopt.species3].filter(Boolean).length;
+              return (
+                <div
+                  key={adopt.id}
+                  className="adopt-card"
+                  onClick={() => handleAdoptClick(adopt)}
+                >
+                  <div className="adopt-name">
+                    <h3>{adopt.species1} {adopt.species2 ? `+ ${adopt.species2}` : ''} {adopt.species3 ? `+ ${adopt.species3}` : ''}</h3>
                   </div>
-                )}
+                  <div className="adopt-description">
+                    {/* Species Images */}
+                  <div className={`adopt-species-images species-count-${speciesCount}`}>
+                    {adopt.species1 && (
+                      <div className="species-image-wrapper" title={adopt.species1}>
+                        {speciesImages[adopt.species1] ? (
+                          <img
+                            src={speciesImages[adopt.species1]}
+                            alt={adopt.species1}
+                            className="species-image"
+                            onError={(e) => {
+                              e.target.onerror = null;
+                              e.target.style.display = 'none';
+                            }}
+                          />
+                        ) : (
+                          <div className="species-image-placeholder">
+                            <span>{adopt.species1.charAt(0)}</span>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                    {adopt.species2 && (
+                      <div className="species-image-wrapper fusion-species" title={adopt.species2}>
+                        <span className="fusion-plus">+</span>
+                        {speciesImages[adopt.species2] ? (
+                          <img
+                            src={speciesImages[adopt.species2]}
+                            alt={adopt.species2}
+                            className="species-image"
+                            onError={(e) => {
+                              e.target.onerror = null;
+                              e.target.style.display = 'none';
+                            }}
+                          />
+                        ) : (
+                          <div className="species-image-placeholder">
+                            <span>{adopt.species2.charAt(0)}</span>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                    {adopt.species3 && (
+                      <div className="species-image-wrapper fusion-species" title={adopt.species3}>
+                        <span className="fusion-plus">+</span>
+                        {speciesImages[adopt.species3] ? (
+                          <img
+                            src={speciesImages[adopt.species3]}
+                            alt={adopt.species3}
+                            className="species-image"
+                            onError={(e) => {
+                              e.target.onerror = null;
+                              e.target.style.display = 'none';
+                            }}
+                          />
+                        ) : (
+                          <div className="species-image-placeholder">
+                            <span>{adopt.species3.charAt(0)}</span>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
 
-                <div className="adopt-action">
-                  <button className="adopt-button">
-                    Adopt
-                  </button>
+                  {/* Types and Attributes */}
+                  <div className="adopt-types-attributes">
+                  <div className="adopt-types">
+                    <TypeBadge type={adopt.type1} context={'adopt'} />
+                    {adopt.type2 && <TypeBadge type={adopt.type2} context={'adopt'} />}
+                    {adopt.type3 && <TypeBadge type={adopt.type3} context={'adopt'} />}
+                    {adopt.type4 && <TypeBadge type={adopt.type4} context={'adopt'} />}
+                    {adopt.type5 && <TypeBadge type={adopt.type5} context={'adopt'} />}
+                  </div>
+
+                  {adopt.attribute && (
+                    <div className="adopt-attribute">
+                      <AttributeBadge attribute={adopt.attribute} context={'adopt'} />
+                    </div>
+                  )}
+                  </div>
+                  </div>
+                  
+
+                  <div className="adopt-action">
+                    <button className="adopt-button">
+                      Adopt
+                    </button>
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
 
           <Pagination
@@ -554,10 +786,71 @@ const AdoptionCenter = () => {
               <>
                 <div className="adopt-details">
                   <h3>Monster Details</h3>
-                  <div className="adopt-species-details">
-                    <p><strong>Species:</strong> {selectedAdopt.species1}</p>
-                    {selectedAdopt.species2 && <p><strong>+ Species:</strong> {selectedAdopt.species2}</p>}
-                    {selectedAdopt.species3 && <p><strong>+ Species:</strong> {selectedAdopt.species3}</p>}
+
+                  {/* Species Images in Modal - Clickable for Popout */}
+                  <div className="modal-species-images">
+                    {selectedAdopt.species1 && (
+                      <div
+                        className={`modal-species-image-container ${speciesImages[selectedAdopt.species1] ? 'clickable' : ''}`}
+                        onClick={() => openImagePopout(speciesImages[selectedAdopt.species1], selectedAdopt.species1)}
+                        title={speciesImages[selectedAdopt.species1] ? `Click to view ${selectedAdopt.species1}` : selectedAdopt.species1}
+                      >
+                        {speciesImages[selectedAdopt.species1] ? (
+                          <img
+                            src={speciesImages[selectedAdopt.species1]}
+                            alt={selectedAdopt.species1}
+                            className="modal-species-image"
+                          />
+                        ) : (
+                          <div className="modal-species-placeholder">
+                            <span>{selectedAdopt.species1.charAt(0)}</span>
+                          </div>
+                        )}
+                        <span className="modal-species-name">{selectedAdopt.species1}</span>
+                      </div>
+                    )}
+                    {selectedAdopt.species2 && (
+                      <div
+                        className={`modal-species-image-container fusion ${speciesImages[selectedAdopt.species2] ? 'clickable' : ''}`}
+                        onClick={() => openImagePopout(speciesImages[selectedAdopt.species2], selectedAdopt.species2)}
+                        title={speciesImages[selectedAdopt.species2] ? `Click to view ${selectedAdopt.species2}` : selectedAdopt.species2}
+                      >
+                        <span className="modal-fusion-indicator">+</span>
+                        {speciesImages[selectedAdopt.species2] ? (
+                          <img
+                            src={speciesImages[selectedAdopt.species2]}
+                            alt={selectedAdopt.species2}
+                            className="modal-species-image"
+                          />
+                        ) : (
+                          <div className="modal-species-placeholder">
+                            <span>{selectedAdopt.species2.charAt(0)}</span>
+                          </div>
+                        )}
+                        <span className="modal-species-name">{selectedAdopt.species2}</span>
+                      </div>
+                    )}
+                    {selectedAdopt.species3 && (
+                      <div
+                        className={`modal-species-image-container fusion ${speciesImages[selectedAdopt.species3] ? 'clickable' : ''}`}
+                        onClick={() => openImagePopout(speciesImages[selectedAdopt.species3], selectedAdopt.species3)}
+                        title={speciesImages[selectedAdopt.species3] ? `Click to view ${selectedAdopt.species3}` : selectedAdopt.species3}
+                      >
+                        <span className="modal-fusion-indicator">+</span>
+                        {speciesImages[selectedAdopt.species3] ? (
+                          <img
+                            src={speciesImages[selectedAdopt.species3]}
+                            alt={selectedAdopt.species3}
+                            className="modal-species-image"
+                          />
+                        ) : (
+                          <div className="modal-species-placeholder">
+                            <span>{selectedAdopt.species3.charAt(0)}</span>
+                          </div>
+                        )}
+                        <span className="modal-species-name">{selectedAdopt.species3}</span>
+                      </div>
+                    )}
                   </div>
 
                   <div className="adopt-types-details">
@@ -605,6 +898,101 @@ const AdoptionCenter = () => {
                     />
                   </div>
 
+                  {/* Artwork Selector */}
+                  <div className="form-group artwork-selector-section">
+                    <label>Select Artwork <span className="required-indicator">*</span></label>
+
+                    {/* Selected artwork preview */}
+                    {selectedArtwork && (
+                      <div className="selected-artwork-preview">
+                        <img
+                          src={selectedArtwork.image_url}
+                          alt={selectedArtwork.title}
+                          className="selected-artwork-thumbnail"
+                        />
+                        <div className="selected-artwork-info">
+                          <span className="selected-artwork-title">{selectedArtwork.title}</span>
+                          <button
+                            type="button"
+                            className="clear-artwork-btn"
+                            onClick={() => setSelectedArtwork(null)}
+                          >
+                            Change
+                          </button>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Artwork search */}
+                    <form className="artwork-search-form" onSubmit={handleArtworkSearch}>
+                      <input
+                        type="text"
+                        placeholder="Search by title..."
+                        value={artworkSearchQuery}
+                        onChange={(e) => setArtworkSearchQuery(e.target.value)}
+                        className="artwork-search-input"
+                      />
+                      <button type="submit" className="artwork-search-btn">
+                        Search
+                      </button>
+                    </form>
+
+                    {/* Artwork grid */}
+                    <div className="artwork-selector-grid-container">
+                      {artworksLoading ? (
+                        <div className="artwork-loading">
+                          <LoadingSpinner message="Loading artworks..." />
+                        </div>
+                      ) : userArtworks.length === 0 ? (
+                        <div className="no-artworks-message">
+                          <p>No artworks found.</p>
+                          {artworkSearchQuery && (
+                            <button
+                              type="button"
+                              className="clear-search-btn"
+                              onClick={() => {
+                                setArtworkSearchQuery('');
+                                fetchUserArtworks(1, '');
+                              }}
+                            >
+                              Clear search
+                            </button>
+                          )}
+                        </div>
+                      ) : (
+                        <>
+                          <div className="artwork-selector-grid">
+                            {userArtworks.map(artwork => (
+                              <div
+                                key={artwork.id}
+                                className={`artwork-selector-item ${selectedArtwork?.id === artwork.id ? 'selected' : ''}`}
+                                onClick={() => setSelectedArtwork(artwork)}
+                                title={artwork.title}
+                              >
+                                <img
+                                  src={artwork.image_url}
+                                  alt={artwork.title}
+                                  className="artwork-thumbnail"
+                                />
+                                <span className="artwork-title">{artwork.title}</span>
+                              </div>
+                            ))}
+                          </div>
+
+                          {artworksPagination.totalPages > 1 && (
+                            <div className="artwork-pagination">
+                              <Pagination
+                                currentPage={artworksPagination.page}
+                                totalPages={artworksPagination.totalPages}
+                                onPageChange={handleArtworkPageChange}
+                              />
+                            </div>
+                          )}
+                        </>
+                      )}
+                    </div>
+                  </div>
+
                   {adoptionError && (
                     <div className="adoption-error">
                       {adoptionError}
@@ -621,7 +1009,7 @@ const AdoptionCenter = () => {
                     <button
                       className="modal-button primary"
                       onClick={handleAdoptSubmit}
-                      disabled={adoptionLoading || !selectedTrainer || !monsterName.trim()}
+                      disabled={adoptionLoading || !selectedTrainer || !monsterName.trim() || !selectedArtwork}
                     >
                       {adoptionLoading ? 'Adopting...' : 'Adopt Monster'}
                     </button>
@@ -742,6 +1130,27 @@ const AdoptionCenter = () => {
           </div>
         </div>
       </Modal>
+
+      {/* Image Popout Modal - Rendered via Portal */}
+      {showImagePopout && ReactDOM.createPortal(
+        <div
+          className="image-popout-overlay"
+          onClick={closeImagePopout}
+        >
+          <div className="image-popout-content" onClick={e => e.stopPropagation()}>
+            <button className="image-popout-close" onClick={closeImagePopout}>
+              &times;
+            </button>
+            <img
+              src={popoutImage.url}
+              alt={popoutImage.species}
+              className="image-popout-image"
+            />
+            <p className="image-popout-caption">{popoutImage.species}</p>
+          </div>
+        </div>,
+        document.body
+      )}
     </div>
   );
 };

@@ -413,6 +413,21 @@ const BreedMonsters = ({ onBreedingComplete, onCancel }) => {
     <div className="breed-monsters-container">
       <h2>Breed Monsters</h2>
 
+      {/* Top action buttons for convenience */}
+      <div className="breeding-actions breeding-actions-top">
+        <button
+          className="btn-primary"
+          onClick={handleBreed}
+          disabled={!userTrainer || !selectedMonster1 || !selectedMonster2 || loading}
+        >
+          <i className="fas fa-egg"></i> Breed Monsters
+        </button>
+
+        <button className="btn-secondary" onClick={onCancel}>
+          <i className="fas fa-times"></i> Cancel
+        </button>
+      </div>
+
       <div className="breeding-form">
         <div className="trainer-selection">
           <div className="trainer-select-container">
@@ -456,17 +471,17 @@ const BreedMonsters = ({ onBreedingComplete, onCancel }) => {
           </div>
         </div>
 
-        <div className="breeding-actions">
+        <div className="breeding-actions breeding-actions-bottom">
           <button
             className="btn-primary"
             onClick={handleBreed}
             disabled={!userTrainer || !selectedMonster1 || !selectedMonster2 || loading}
           >
-            Breed Monsters
+            <i className="fas fa-egg"></i> Breed Monsters
           </button>
 
           <button className="btn-secondary" onClick={onCancel}>
-            Cancel
+            <i className="fas fa-times"></i> Cancel
           </button>
         </div>
       </div>

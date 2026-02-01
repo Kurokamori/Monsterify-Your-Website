@@ -110,6 +110,11 @@ const AdminLayout = ({ children }) => {
                 <i className="fas fa-dragon"></i> Monster Roller
               </Link>
             </li>
+            <li className={isActive('/admin/reroller') ? 'active' : ''}>
+              <Link to="/admin/reroller">
+                <i className="fas fa-gift"></i> Reroller
+              </Link>
+            </li>
             <li className={isActive('/admin/features') ? 'active' : ''}>
               <Link to="/admin/features">
                 <i className="fas fa-tools"></i> Admin Features

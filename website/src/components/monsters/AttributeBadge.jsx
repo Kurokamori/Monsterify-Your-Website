@@ -7,20 +7,21 @@ import PropTypes from 'prop-types';
  * @param {string} props.attribute - The monster attribute
  * @returns {JSX.Element} - Rendered component
  */
-const AttributeBadge = ({ attribute }) => {
+const AttributeBadge = ({ attribute, context }) => {
   if (!attribute) return null;
   
   const formattedAttribute = attribute.toLowerCase();
   
   return (
-    <span className={`attribute-badge attribute-${formattedAttribute}`}>
+    <span className={`attribute-badge attribute-${formattedAttribute} ${context && `attribute-badge-${context}`}`}>
       {attribute}
     </span>
   );
 };
 
 AttributeBadge.propTypes = {
-  attribute: PropTypes.string.isRequired
+  attribute: PropTypes.string.isRequired,
+  context: PropTypes.string,
 };
 
 export default AttributeBadge;

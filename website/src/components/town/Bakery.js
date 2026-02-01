@@ -46,6 +46,57 @@ const Bakery = () => {
   const [speciesSearchTerm, setSpeciesSearchTerm] = useState('');
   const [filteredValueOptions, setFilteredValueOptions] = useState([]);
 
+  // State for pastry filtering
+  const [pastryFilters, setPastryFilters] = useState({
+    type: false,
+    species: false,
+    set: false,
+    add: false,
+    misc: false
+  });
+
+  // Pastry categorization
+  const pastryCategories = {
+    type: [
+      'Miraca Pastry', 'Cocon Pastry', 'Durian Pastry', 'Monel Pastry', 'Perep Pastry',
+      'Addish Pastry', 'Sky Carrot Pastry', 'Kembre Pastry', 'Espara Pastry'
+    ],
+    species: [
+      'Patama Pastry', 'Bluk Pastry', 'Nuevo Pastry', 'Azzuk Pastry', 'Mangus Pastry'
+    ],
+    set: [
+      'Patama Pastry', 'Bluk Pastry', 'Nuevo Pastry',
+      'Miraca Pastry', 'Cocon Pastry', 'Durian Pastry', 'Monel Pastry', 'Perep Pastry',
+      'Datei Pastry'
+    ],
+    add: [
+      'Azzuk Pastry', 'Mangus Pastry',
+      'Addish Pastry', 'Sky Carrot Pastry', 'Kembre Pastry', 'Espara Pastry'
+    ],
+    misc: [
+      'Datei Pastry'
+    ]
+  };
+
+  // Helper function to check if pastry matches current filters
+  const matchesFilters = (pastryName) => {
+    const activeFilters = Object.keys(pastryFilters).filter(key => pastryFilters[key]);
+
+    if (activeFilters.length === 0) return true;
+
+    return activeFilters.every(filter =>
+      pastryCategories[filter] && pastryCategories[filter].includes(pastryName)
+    );
+  };
+
+  // Handle filter toggle
+  const toggleFilter = (filterName) => {
+    setPastryFilters(prev => ({
+      ...prev,
+      [filterName]: !prev[filterName]
+    }));
+  };
+
   // Fetch available pastries for a trainer
   const fetchAvailablePastries = async (trainerId) => {
     try {
@@ -482,6 +533,55 @@ const Bakery = () => {
 
                 <div className="pastry-selection">
                   <h3>Select a Pastry</h3>
+
+                  <div className="pastry-filters">
+                    <h4>Filter by Category (stackable)</h4>
+                    <div className="filter-buttons">
+                      <button
+                        className={`filter-button ${pastryFilters.type ? 'active' : ''}`}
+                        onClick={() => toggleFilter('type')}
+                      >
+                        Type
+                      </button>
+                      <button
+                        className={`filter-button ${pastryFilters.species ? 'active' : ''}`}
+                        onClick={() => toggleFilter('species')}
+                      >
+                        Species
+                      </button>
+                      <button
+                        className={`filter-button ${pastryFilters.set ? 'active' : ''}`}
+                        onClick={() => toggleFilter('set')}
+                      >
+                        Set
+                      </button>
+                      <button
+                        className={`filter-button ${pastryFilters.add ? 'active' : ''}`}
+                        onClick={() => toggleFilter('add')}
+                      >
+                        Add
+                      </button>
+                      <button
+                        className={`filter-button ${pastryFilters.misc ? 'active' : ''}`}
+                        onClick={() => toggleFilter('misc')}
+                      >
+                        Misc
+                      </button>
+                      <button
+                        className="filter-button clear"
+                        onClick={() => setPastryFilters({
+                          type: false,
+                          species: false,
+                          set: false,
+                          add: false,
+                          misc: false
+                        })}
+                      >
+                        Clear All
+                      </button>
+                    </div>
+                  </div>
+
                   <div className="pastry-categories">
                     <div className="pastry-category">
                       <h4>Species Modification</h4>
@@ -490,6 +590,7 @@ const Bakery = () => {
                           className="pastry-item"
                           onClick={() => setSelectedPastry('Patama Pastry')}
                           disabled={!isPastryAvailable('Patama Pastry')}
+                          style={{ display: matchesFilters('Patama Pastry') ? 'flex' : 'none' }}
                         >
                           <span className="pastry-name">Patama Pastry</span>
                           <span className="pastry-desc">Sets species 1</span>
@@ -499,6 +600,7 @@ const Bakery = () => {
                           className="pastry-item"
                           onClick={() => setSelectedPastry('Bluk Pastry')}
                           disabled={!selectedMonster?.species2 || !isPastryAvailable('Bluk Pastry')}
+                          style={{ display: matchesFilters('Bluk Pastry') ? 'flex' : 'none' }}
                         >
                           <span className="pastry-name">Bluk Pastry</span>
                           <span className="pastry-desc">Sets species 2 (if present)</span>
@@ -508,6 +610,7 @@ const Bakery = () => {
                           className="pastry-item"
                           onClick={() => setSelectedPastry('Nuevo Pastry')}
                           disabled={!selectedMonster?.species3 || !isPastryAvailable('Nuevo Pastry')}
+                          style={{ display: matchesFilters('Nuevo Pastry') ? 'flex' : 'none' }}
                         >
                           <span className="pastry-name">Nuevo Pastry</span>
                           <span className="pastry-desc">Sets species 3 (if present)</span>
@@ -517,6 +620,7 @@ const Bakery = () => {
                           className="pastry-item"
                           onClick={() => setSelectedPastry('Azzuk Pastry')}
                           disabled={selectedMonster?.species2 || !isPastryAvailable('Azzuk Pastry')}
+                          style={{ display: matchesFilters('Azzuk Pastry') ? 'flex' : 'none' }}
                         >
                           <span className="pastry-name">Azzuk Pastry</span>
                           <span className="pastry-desc">Adds a new species to species 2 (if not present)</span>
@@ -526,6 +630,7 @@ const Bakery = () => {
                           className="pastry-item"
                           onClick={() => setSelectedPastry('Mangus Pastry')}
                           disabled={selectedMonster?.species3 || !selectedMonster?.species2 || !isPastryAvailable('Mangus Pastry')}
+                          style={{ display: matchesFilters('Mangus Pastry') ? 'flex' : 'none' }}
                         >
                           <span className="pastry-name">Mangus Pastry</span>
                           <span className="pastry-desc">Adds a new species to species 3 (if not present)</span>
@@ -541,6 +646,7 @@ const Bakery = () => {
                           className="pastry-item"
                           onClick={() => setSelectedPastry('Miraca Pastry')}
                           disabled={!isPastryAvailable('Miraca Pastry')}
+                          style={{ display: matchesFilters('Miraca Pastry') ? 'flex' : 'none' }}
                         >
                           <span className="pastry-name">Miraca Pastry</span>
                           <span className="pastry-desc">Sets type 1</span>
@@ -550,6 +656,7 @@ const Bakery = () => {
                           className="pastry-item"
                           onClick={() => setSelectedPastry('Cocon Pastry')}
                           disabled={!selectedMonster?.type2 || !isPastryAvailable('Cocon Pastry')}
+                          style={{ display: matchesFilters('Cocon Pastry') ? 'flex' : 'none' }}
                         >
                           <span className="pastry-name">Cocon Pastry</span>
                           <span className="pastry-desc">Sets type 2 (if present)</span>
@@ -559,6 +666,7 @@ const Bakery = () => {
                           className="pastry-item"
                           onClick={() => setSelectedPastry('Durian Pastry')}
                           disabled={!selectedMonster?.type3 || !isPastryAvailable('Durian Pastry')}
+                          style={{ display: matchesFilters('Durian Pastry') ? 'flex' : 'none' }}
                         >
                           <span className="pastry-name">Durian Pastry</span>
                           <span className="pastry-desc">Sets type 3 (if present)</span>
@@ -568,6 +676,7 @@ const Bakery = () => {
                           className="pastry-item"
                           onClick={() => setSelectedPastry('Monel Pastry')}
                           disabled={!selectedMonster?.type4 || !isPastryAvailable('Monel Pastry')}
+                          style={{ display: matchesFilters('Monel Pastry') ? 'flex' : 'none' }}
                         >
                           <span className="pastry-name">Monel Pastry</span>
                           <span className="pastry-desc">Sets type 4 (if present)</span>
@@ -577,6 +686,7 @@ const Bakery = () => {
                           className="pastry-item"
                           onClick={() => setSelectedPastry('Perep Pastry')}
                           disabled={!selectedMonster?.type5 || !isPastryAvailable('Perep Pastry')}
+                          style={{ display: matchesFilters('Perep Pastry') ? 'flex' : 'none' }}
                         >
                           <span className="pastry-name">Perep Pastry</span>
                           <span className="pastry-desc">Sets type 5 (if present)</span>
@@ -586,6 +696,7 @@ const Bakery = () => {
                           className="pastry-item"
                           onClick={() => setSelectedPastry('Addish Pastry')}
                           disabled={selectedMonster?.type2 || !isPastryAvailable('Addish Pastry')}
+                          style={{ display: matchesFilters('Addish Pastry') ? 'flex' : 'none' }}
                         >
                           <span className="pastry-name">Addish Pastry</span>
                           <span className="pastry-desc">Adds type 2 (if not present)</span>
@@ -595,6 +706,7 @@ const Bakery = () => {
                           className="pastry-item"
                           onClick={() => setSelectedPastry('Sky Carrot Pastry')}
                           disabled={selectedMonster?.type3 || !selectedMonster?.type2 || !isPastryAvailable('Sky Carrot Pastry')}
+                          style={{ display: matchesFilters('Sky Carrot Pastry') ? 'flex' : 'none' }}
                         >
                           <span className="pastry-name">Sky Carrot Pastry</span>
                           <span className="pastry-desc">Adds type 3 (if not present)</span>
@@ -604,6 +716,7 @@ const Bakery = () => {
                           className="pastry-item"
                           onClick={() => setSelectedPastry('Kembre Pastry')}
                           disabled={selectedMonster?.type4 || !selectedMonster?.type3 || !isPastryAvailable('Kembre Pastry')}
+                          style={{ display: matchesFilters('Kembre Pastry') ? 'flex' : 'none' }}
                         >
                           <span className="pastry-name">Kembre Pastry</span>
                           <span className="pastry-desc">Adds type 4 (if not present)</span>
@@ -613,6 +726,7 @@ const Bakery = () => {
                           className="pastry-item"
                           onClick={() => setSelectedPastry('Espara Pastry')}
                           disabled={selectedMonster?.type5 || !selectedMonster?.type4 || !isPastryAvailable('Espara Pastry')}
+                          style={{ display: matchesFilters('Espara Pastry') ? 'flex' : 'none' }}
                         >
                           <span className="pastry-name">Espara Pastry</span>
                           <span className="pastry-desc">Adds type 5 (if not present)</span>
@@ -628,6 +742,7 @@ const Bakery = () => {
                           className="pastry-item"
                           onClick={() => setSelectedPastry('Datei Pastry')}
                           disabled={!isPastryAvailable('Datei Pastry')}
+                          style={{ display: matchesFilters('Datei Pastry') ? 'flex' : 'none' }}
                         >
                           <span className="pastry-name">Datei Pastry</span>
                           <span className="pastry-desc">Sets attribute</span>

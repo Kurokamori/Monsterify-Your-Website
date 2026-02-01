@@ -38,6 +38,13 @@ const ShopPage = () => {
     remove: false,
     misc: false
   });
+  const [pastryFilters, setPastryFilters] = useState({
+    type: false,
+    species: false,
+    set: false,
+    add: false,
+    misc: false
+  });
   const [sortByPrice, setSortByPrice] = useState('off');
 
   // Berry categorization
@@ -64,6 +71,29 @@ const ShopPage = () => {
     ]
   };
 
+  // Pastry categorization
+  const pastryCategories = {
+    type: [
+      'Miraca Pastry', 'Cocon Pastry', 'Durian Pastry', 'Monel Pastry', 'Perep Pastry',
+      'Addish Pastry', 'Sky Carrot Pastry', 'Kembre Pastry', 'Espara Pastry'
+    ],
+    species: [
+      'Patama Pastry', 'Bluk Pastry', 'Nuevo Pastry', 'Azzuk Pastry', 'Mangus Pastry'
+    ],
+    set: [
+      'Patama Pastry', 'Bluk Pastry', 'Nuevo Pastry',
+      'Miraca Pastry', 'Cocon Pastry', 'Durian Pastry', 'Monel Pastry', 'Perep Pastry',
+      'Datei Pastry'
+    ],
+    add: [
+      'Azzuk Pastry', 'Mangus Pastry',
+      'Addish Pastry', 'Sky Carrot Pastry', 'Kembre Pastry', 'Espara Pastry'
+    ],
+    misc: [
+      'Datei Pastry'
+    ]
+  };
+
   // Helper function to check if berry matches current filters
   const matchesBerryFilters = (itemName) => {
     const activeFilters = Object.keys(berryFilters).filter(key => berryFilters[key]);
@@ -83,8 +113,29 @@ const ShopPage = () => {
     }));
   };
 
+  // Helper function to check if pastry matches current filters
+  const matchesPastryFilters = (itemName) => {
+    const activeFilters = Object.keys(pastryFilters).filter(key => pastryFilters[key]);
+
+    if (activeFilters.length === 0) return true;
+
+    return activeFilters.every(filter =>
+      pastryCategories[filter] && pastryCategories[filter].includes(itemName)
+    );
+  };
+
+  // Handle pastry filter toggle
+  const togglePastryFilter = (filterName) => {
+    setPastryFilters(prev => ({
+      ...prev,
+      [filterName]: !prev[filterName]
+    }));
+  };
+
   // Check if this is the apothecary shop (for showing berry filters)
   const isApothecaryShop = shopId === 'apothecary';
+  // Check if this is the bakery shop (for showing pastry filters)
+  const isBakeryShop = shopId === 'bakery';
 
   // Clear search term when shop changes
   useEffect(() => {
@@ -122,10 +173,10 @@ const ShopPage = () => {
     }
   }, [shopId, isAuthenticated, navigate]);
 
-  // Filter items based on search term and berry filters
+  // Filter items based on search term and berry/pastry filters
   useEffect(() => {
     let filtered = items;
-    
+
     // Apply search term filter
     if (searchTerm) {
       filtered = filtered.filter(item =>
@@ -133,21 +184,26 @@ const ShopPage = () => {
         (item.description && item.description.toLowerCase().includes(searchTerm.toLowerCase()))
       );
     }
-    
+
     // Apply berry filters if this is the apothecary shop
     if (isApothecaryShop) {
       filtered = filtered.filter(item => matchesBerryFilters(item.name));
     }
-    
+
+    // Apply pastry filters if this is the bakery shop
+    if (isBakeryShop) {
+      filtered = filtered.filter(item => matchesPastryFilters(item.name));
+    }
+
     // Apply price sorting
     if (sortByPrice === 'asc') {
       filtered = [...filtered].sort((a, b) => a.price - b.price);
     } else if (sortByPrice === 'desc') {
       filtered = [...filtered].sort((a, b) => b.price - a.price);
     }
-    
+
     setFilteredItems(filtered);
-  }, [items, searchTerm, berryFilters, isApothecaryShop, sortByPrice]);
+  }, [items, searchTerm, berryFilters, pastryFilters, isApothecaryShop, isBakeryShop, sortByPrice]);
 
   // Fetch trainer currency when trainer is selected
   useEffect(() => {
@@ -365,6 +421,57 @@ const ShopPage = () => {
                 species: false,
                 randomize: false,
                 remove: false,
+                misc: false
+              })}
+            >
+              Clear All
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Pastry filters - only show for bakery shop */}
+      {isBakeryShop && (
+        <div className="pastry-filters">
+          <h4>Filter Pastries by Type (stackable)</h4>
+          <div className="filter-buttons">
+            <button
+              className={`filter-button ${pastryFilters.type ? 'active' : ''}`}
+              onClick={() => togglePastryFilter('type')}
+            >
+              Type
+            </button>
+            <button
+              className={`filter-button ${pastryFilters.species ? 'active' : ''}`}
+              onClick={() => togglePastryFilter('species')}
+            >
+              Species
+            </button>
+            <button
+              className={`filter-button ${pastryFilters.set ? 'active' : ''}`}
+              onClick={() => togglePastryFilter('set')}
+            >
+              Set
+            </button>
+            <button
+              className={`filter-button ${pastryFilters.add ? 'active' : ''}`}
+              onClick={() => togglePastryFilter('add')}
+            >
+              Add
+            </button>
+            <button
+              className={`filter-button ${pastryFilters.misc ? 'active' : ''}`}
+              onClick={() => togglePastryFilter('misc')}
+            >
+              Misc
+            </button>
+            <button
+              className="filter-button clear"
+              onClick={() => setPastryFilters({
+                type: false,
+                species: false,
+                set: false,
+                add: false,
                 misc: false
               })}
             >

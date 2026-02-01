@@ -121,7 +121,7 @@
   color: var(--text-color);
   margin-bottom: 4px;
 }
-.type-badge,
+
 .category-badge,
 .difficulty-badge,
 .status-badge {
@@ -297,7 +297,6 @@
     padding: 6px 2px;
   }
   
-  .type-badge,
   .category-badge,
   .difficulty-badge,
   .status-badge {

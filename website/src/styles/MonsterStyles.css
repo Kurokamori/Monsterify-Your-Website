@@ -3375,7 +3375,6 @@
   .monster-image { width: 50px; height: 50px; }
   .monster-name h5 { font-size: 1rem; }
   .species-tag, .type-tag { padding: .25rem .5rem; font-size: .75rem; }
-  .attribute-badge { padding: .35rem .7rem; font-size: .75rem; }
 }
 @media (max-width: 480px) {
   .monster-team-card { padding: .75rem; }

@@ -52,6 +52,8 @@ const factionRoutes = require('./factionRoutes');
 const eventsRoutes = require('./eventsRoutes');
 const promptRoutes = require('./promptRoutes');
 const areaRoutes = require('./areaRoutes');
+const abilityRoutes = require('./abilityRoutes');
+const rerollerRoutes = require('./rerollerRoutes');
 
 // Use routes
 router.use('/auth', authRoutes);
@@ -162,5 +164,7 @@ router.use('/factions', factionRoutes);
 router.use('/events', eventsRoutes);
 router.use('/prompts', promptRoutes);
 router.use('/areas', areaRoutes);
+router.use('/abilities', abilityRoutes);
+router.use('/reroller', rerollerRoutes);
 
 module.exports = router;

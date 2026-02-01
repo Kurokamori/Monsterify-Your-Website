@@ -3217,6 +3217,5 @@
   font-weight: 600;
   text-transform: uppercase;
   color: #fff;
-  background-color: var(--trainer-type-color, #6c757d);
   width:100px;
 }

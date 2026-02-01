@@ -1,20 +1,33 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import trainerService from '../../services/trainerService';
+import abilityService from '../../services/abilityService';
 import { useAuth } from '../../contexts/AuthContext';
 import useDocumentTitle from '../../hooks/useDocumentTitle';
 import { calculateZodiac, calculateChineseZodiac } from '../../utils/zodiacUtils';
+import AutocompleteInput from '../../components/common/AutocompleteInput';
+import { TYPES, FACTIONS, NATURES, CHARACTERISTICS, BERRIES } from '../../data/trainerFormOptions';
 
 
 const EditTrainerPage = () => {
   const { id } = useParams();
   useDocumentTitle('Edit Trainer');
-  
+
   const { currentUser } = useAuth();
   const navigate = useNavigate();
 
   const [trainer, setTrainer] = useState(null);
   const [additionalRefs, setAdditionalRefs] = useState([]);
+  const [abilities, setAbilities] = useState([]);
+
+  // Load abilities from backend
+  useEffect(() => {
+    const loadAbilities = async () => {
+      const abilityData = await abilityService.getAbilityNames();
+      setAbilities(abilityData);
+    };
+    loadAbilities();
+  }, []);
   const [formData, setFormData] = useState({
     // Basic Information
     name: '',
@@ -656,27 +669,15 @@ const EditTrainerPage = () => {
             </div>
 
             <div className="form-group">
-              <label htmlFor="faction">Faction</label>
-              <select
+              <AutocompleteInput
                 id="faction"
                 name="faction"
+                label="Faction"
                 value={formData.faction || ''}
                 onChange={handleChange}
-              >
-                    <option value="">Select Faction</option>
-                    <option value="Nyakuza">Nyakuza</option>
-                    <option value="Digital Dawn">Digital Dawn</option>
-                    <option value="Ranchers">Ranchers</option>
-                    <option value="Tamers">Tamers</option>
-                    <option value="Rangers">Rangers</option>
-                    <option value="League">The League</option>
-                    <option value="Koa's Laboratory">Koa's Laboratory</option>
-                    <option value="Project Obsidian">Project Obsidian</option>
-                    <option value="Spirit Keepers">Spirit Keepers</option>
-                    <option value="The Tribes">The Tribes</option>
-                    <option value="Twilight Order">Twilight Order</option>
-                    <option value="Unknown">Unknown</option>
-              </select>
+                options={FACTIONS}
+                placeholder="Select or type faction"
+              />
             </div>
 
             <div className="form-group">
@@ -748,68 +749,74 @@ const EditTrainerPage = () => {
             </div>
 
             <div className="form-group">
-              <label htmlFor="type1">Primary Type</label>
-              <input
-                type="text"
+              <AutocompleteInput
                 id="type1"
                 name="type1"
+                label="Primary Type"
                 value={formData.type1 || ''}
                 onChange={handleChange}
+                options={TYPES}
+                placeholder="Primary type"
               />
             </div>
 
             <div className="form-group">
-              <label htmlFor="type2">Secondary Type</label>
-              <input
-                type="text"
+              <AutocompleteInput
                 id="type2"
                 name="type2"
+                label="Secondary Type"
                 value={formData.type2 || ''}
                 onChange={handleChange}
+                options={TYPES}
+                placeholder="Secondary type"
               />
             </div>
 
             <div className="form-group">
-              <label htmlFor="type3">Tertiary Type</label>
-              <input
-                type="text"
+              <AutocompleteInput
                 id="type3"
                 name="type3"
+                label="Tertiary Type"
                 value={formData.type3 || ''}
                 onChange={handleChange}
+                options={TYPES}
+                placeholder="Tertiary type"
               />
             </div>
 
             <div className="form-group">
-              <label htmlFor="type4">Fourth Type</label>
-              <input
-                type="text"
+              <AutocompleteInput
                 id="type4"
                 name="type4"
+                label="Fourth Type"
                 value={formData.type4 || ''}
                 onChange={handleChange}
+                options={TYPES}
+                placeholder="Fourth type"
               />
             </div>
 
             <div className="form-group">
-              <label htmlFor="type5">Fifth Type</label>
-              <input
-                type="text"
+              <AutocompleteInput
                 id="type5"
                 name="type5"
+                label="Fifth Type"
                 value={formData.type5 || ''}
                 onChange={handleChange}
+                options={TYPES}
+                placeholder="Fifth type"
               />
             </div>
 
             <div className="form-group">
-              <label htmlFor="type6">Sixth Type</label>
-              <input
-                type="text"
+              <AutocompleteInput
                 id="type6"
                 name="type6"
+                label="Sixth Type"
                 value={formData.type6 || ''}
                 onChange={handleChange}
+                options={TYPES}
+                placeholder="Sixth type"
               />
             </div>
           </div>
@@ -820,35 +827,39 @@ const EditTrainerPage = () => {
           <h2>Abilities and Characteristics</h2>
           <div className="form-grid">
             <div className="form-group">
-              <label htmlFor="ability">Ability</label>
-              <input
-                type="text"
+              <AutocompleteInput
                 id="ability"
                 name="ability"
+                label="Ability"
                 value={formData.ability || ''}
                 onChange={handleChange}
+                options={abilities}
+                placeholder="Trainer ability"
+                showDescriptionBelow={true}
               />
             </div>
 
             <div className="form-group">
-              <label htmlFor="nature">Nature</label>
-              <input
-                type="text"
+              <AutocompleteInput
                 id="nature"
                 name="nature"
+                label="Nature"
                 value={formData.nature || ''}
                 onChange={handleChange}
+                options={NATURES}
+                placeholder="e.g. Brave, Timid, Jolly"
               />
             </div>
 
             <div className="form-group">
-              <label htmlFor="characteristic">Characteristic</label>
-              <input
-                type="text"
+              <AutocompleteInput
                 id="characteristic"
                 name="characteristic"
+                label="Characteristic"
                 value={formData.characteristic || ''}
                 onChange={handleChange}
+                options={CHARACTERISTICS}
+                placeholder="Trainer characteristic"
               />
             </div>
           </div>
@@ -859,68 +870,74 @@ const EditTrainerPage = () => {
           <h2>Favorite Types</h2>
           <div className="form-grid">
             <div className="form-group">
-              <label htmlFor="fav_type1">Primary Favorite Type</label>
-              <input
-                type="text"
+              <AutocompleteInput
                 id="fav_type1"
                 name="fav_type1"
+                label="Primary Favorite Type"
                 value={formData.fav_type1 || ''}
                 onChange={handleChange}
+                options={TYPES}
+                placeholder="Favorite type 1"
               />
             </div>
 
             <div className="form-group">
-              <label htmlFor="fav_type2">Secondary Favorite Type</label>
-              <input
-                type="text"
+              <AutocompleteInput
                 id="fav_type2"
                 name="fav_type2"
+                label="Secondary Favorite Type"
                 value={formData.fav_type2 || ''}
                 onChange={handleChange}
+                options={TYPES}
+                placeholder="Favorite type 2"
               />
             </div>
 
             <div className="form-group">
-              <label htmlFor="fav_type3">Tertiary Favorite Type</label>
-              <input
-                type="text"
+              <AutocompleteInput
                 id="fav_type3"
                 name="fav_type3"
+                label="Tertiary Favorite Type"
                 value={formData.fav_type3 || ''}
                 onChange={handleChange}
+                options={TYPES}
+                placeholder="Favorite type 3"
               />
             </div>
 
             <div className="form-group">
-              <label htmlFor="fav_type4">Fourth Favorite Type</label>
-              <input
-                type="text"
+              <AutocompleteInput
                 id="fav_type4"
                 name="fav_type4"
+                label="Fourth Favorite Type"
                 value={formData.fav_type4 || ''}
                 onChange={handleChange}
+                options={TYPES}
+                placeholder="Favorite type 4"
               />
             </div>
 
             <div className="form-group">
-              <label htmlFor="fav_type5">Fifth Favorite Type</label>
-              <input
-                type="text"
+              <AutocompleteInput
                 id="fav_type5"
                 name="fav_type5"
+                label="Fifth Favorite Type"
                 value={formData.fav_type5 || ''}
                 onChange={handleChange}
+                options={TYPES}
+                placeholder="Favorite type 5"
               />
             </div>
 
             <div className="form-group">
-              <label htmlFor="fav_type6">Sixth Favorite Type</label>
-              <input
-                type="text"
+              <AutocompleteInput
                 id="fav_type6"
                 name="fav_type6"
+                label="Sixth Favorite Type"
                 value={formData.fav_type6 || ''}
                 onChange={handleChange}
+                options={TYPES}
+                placeholder="Favorite type 6"
               />
             </div>
           </div>
@@ -1231,13 +1248,14 @@ const EditTrainerPage = () => {
             </div>
 
             <div className="form-group">
-              <label htmlFor="fav_berry">Favorite Berry</label>
-              <input
-                type="text"
+              <AutocompleteInput
                 id="fav_berry"
                 name="fav_berry"
+                label="Favorite Berry"
                 value={formData.fav_berry || ''}
                 onChange={handleChange}
+                options={BERRIES}
+                placeholder="Favorite berry"
               />
             </div>
 
@@ -1672,35 +1690,39 @@ const EditTrainerPage = () => {
             </div>
 
             <div className="form-group">
-              <label htmlFor="mega_type1">Mega Primary Type</label>
-              <input
-                type="text"
+              <AutocompleteInput
                 id="mega_type1"
                 name="mega_type1"
+                label="Mega Primary Type"
                 value={formData.mega_type1 || ''}
                 onChange={handleChange}
+                options={TYPES}
+                placeholder="Mega primary type"
               />
             </div>
 
             <div className="form-group">
-              <label htmlFor="mega_type2">Mega Secondary Type</label>
-              <input
-                type="text"
+              <AutocompleteInput
                 id="mega_type2"
                 name="mega_type2"
+                label="Mega Secondary Type"
                 value={formData.mega_type2 || ''}
                 onChange={handleChange}
+                options={TYPES}
+                placeholder="Mega secondary type"
               />
             </div>
 
             <div className="form-group">
-              <label htmlFor="mega_ability">Mega Ability</label>
-              <input
-                type="text"
+              <AutocompleteInput
                 id="mega_ability"
                 name="mega_ability"
+                label="Mega Ability"
                 value={formData.mega_ability || ''}
                 onChange={handleChange}
+                options={abilities}
+                placeholder="Mega ability"
+                showDescriptionBelow={true}
               />
             </div>
           </div>

@@ -273,7 +273,7 @@ const HomePage = () => {
                   </div>
                   <h3>Join Discord</h3>
                   <p>Connect with our vibrant community</p>
-                  <a href="https://discord.gg/ZAqmcyG4" className="step-button" target="_blank" rel="noopener noreferrer">
+                  <a href="https://discord.gg/YrF74RWA6v" className="step-button" target="_blank" rel="noopener noreferrer">
                     Join Server
                   </a>
                 </div>

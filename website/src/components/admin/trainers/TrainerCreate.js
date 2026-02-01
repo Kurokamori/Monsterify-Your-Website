@@ -1,13 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import adminApi from '../../../services/adminApi';
 import ErrorMessage from '../../common/ErrorMessage';
+import AutocompleteInput from '../../common/AutocompleteInput';
+import abilityService from '../../../services/abilityService';
+import { TYPES, FACTIONS, NATURES } from '../../../data/trainerFormOptions';
 
 const TrainerCreate = () => {
   const navigate = useNavigate();
   const [activeSection, setActiveSection] = useState('basic');
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState(null);
+  const [abilities, setAbilities] = useState([]);
   const [formData, setFormData] = useState({
     name: '',
     level: 1,
@@ -15,6 +19,15 @@ const TrainerCreate = () => {
     total_earned_currency: 500,
     player_user_id: '', // This will need to be set to a valid user ID
   });
+
+  // Load abilities from backend
+  useEffect(() => {
+    const loadAbilities = async () => {
+      const abilityData = await abilityService.getAbilityNames();
+      setAbilities(abilityData);
+    };
+    loadAbilities();
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -163,27 +176,15 @@ const TrainerCreate = () => {
                 </div>
 
                 <div className="form-group">
-                  <label htmlFor="faction">Faction</label>
-                  <select
+                  <AutocompleteInput
                     id="faction"
                     name="faction"
+                    label="Faction"
                     value={formData.faction || ''}
                     onChange={handleChange}
-                  >
-                    <option value="">Select Faction</option>
-                    <option value="Nyakuza">Nyakuza</option>
-                    <option value="Digital Dawn">Digital Dawn</option>
-                    <option value="Ranchers">Ranchers</option>
-                    <option value="Tamers">Tamers</option>
-                    <option value="Rangers">Rangers</option>
-                    <option value="League">The League</option>
-                    <option value="Koa's Laboratory">Koa's Laboratory</option>
-                    <option value="Project Obsidian">Project Obsidian</option>
-                    <option value="Spirit Keepers">Spirit Keepers</option>
-                    <option value="The Tribes">The Tribes</option>
-                    <option value="Twilight Order">Twilight Order</option>
-                    <option value="Unknown">Unknown</option>
-                  </select>
+                    options={FACTIONS}
+                    placeholder="Select or type faction"
+                  />
                 </div>
 
                 <div className="form-group">
@@ -395,61 +396,62 @@ const TrainerCreate = () => {
                 </div>
 
                 <div className="form-group">
-                  <label htmlFor="type1">Type 1</label>
-                  <input
-                    type="text"
+                  <AutocompleteInput
                     id="type1"
                     name="type1"
+                    label="Type 1"
                     value={formData.type1 || ''}
                     onChange={handleChange}
+                    options={TYPES}
                     placeholder="Primary type"
                   />
                 </div>
 
                 <div className="form-group">
-                  <label htmlFor="type2">Type 2</label>
-                  <input
-                    type="text"
+                  <AutocompleteInput
                     id="type2"
                     name="type2"
+                    label="Type 2"
                     value={formData.type2 || ''}
                     onChange={handleChange}
+                    options={TYPES}
                     placeholder="Secondary type (optional)"
                   />
                 </div>
 
                 <div className="form-group">
-                  <label htmlFor="type3">Type 3</label>
-                  <input
-                    type="text"
+                  <AutocompleteInput
                     id="type3"
                     name="type3"
+                    label="Type 3"
                     value={formData.type3 || ''}
                     onChange={handleChange}
+                    options={TYPES}
                     placeholder="Additional type (optional)"
                   />
                 </div>
 
                 <div className="form-group">
-                  <label htmlFor="ability">Ability</label>
-                  <input
-                    type="text"
+                  <AutocompleteInput
                     id="ability"
                     name="ability"
+                    label="Ability"
                     value={formData.ability || ''}
                     onChange={handleChange}
+                    options={abilities}
                     placeholder="Trainer ability"
+                    showDescriptionBelow={true}
                   />
                 </div>
 
                 <div className="form-group">
-                  <label htmlFor="nature">Nature</label>
-                  <input
-                    type="text"
+                  <AutocompleteInput
                     id="nature"
                     name="nature"
+                    label="Nature"
                     value={formData.nature || ''}
                     onChange={handleChange}
+                    options={NATURES}
                     placeholder="e.g. Brave, Timid, Jolly"
                   />
                 </div>

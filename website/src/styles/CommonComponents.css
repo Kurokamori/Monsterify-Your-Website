@@ -479,24 +479,24 @@
   width: max-content;
 }
 
-.type-normal { background-color: #A8A878; }
-.type-fire { background-color: #F08030; }
-.type-water { background-color: #6890F0; }
-.type-electric { background-color: #F8D030; }
-.type-grass { background-color: #78C850; }
-.type-ice { background-color: #98D8D8; }
-.type-fighting { background-color: #C03028; }
+.type-normal { background-color: #919172; }
+.type-fire { background-color: #d64d17; }
+.type-water { background-color: #4164b7; }
+.type-electric { background-color: #dfb127; }
+.type-grass { background-color: #6fb14e; }
+.type-ice { background-color: #89b6b6; }
+.type-fighting { background-color: #a55538; }
 .type-poison { background-color: #A040A0; }
-.type-ground { background-color: #E0C068; }
-.type-flying { background-color: #A890F0; }
-.type-psychic { background-color: #F85888; }
+.type-ground { background-color: #805f41; }
+.type-flying { background-color: #9786c7; }
+.type-psychic { background-color: #c7496f; }
 .type-bug { background-color: #A8B820; }
-.type-rock { background-color: #B8A038; }
+.type-rock { background-color: #9e8546; }
 .type-ghost { background-color: #705898; }
-.type-dragon { background-color: #7038F8; }
-.type-dark { background-color: #705848; }
-.type-steel { background-color: #B8B8D0; }
-.type-fairy { background-color: #EE99AC; }
+.type-dragon { background-color: #5126b5; }
+.type-dark { background-color: #39304d; }
+.type-steel { background-color: #8e8ea0; }
+.type-fairy { background-color: #d78899; }
 .type-custom { background-color: #8b5cf6; }
 .type-random { background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #f9ca24); }
 .type-light { background-color: #8db8e4; }
@@ -506,6 +506,13 @@
   background: linear-gradient(135deg, #6b7280 0%, #9ca3af 50%, #6b7280 100%);
   animation: mystery-shimmer 2s ease-in-out infinite;
 }
+
+/* Attribute-specific colors */
+.attribute-data { background: #53c4a1; color: white; }
+.attribute-virus { background: #ae442a; color: white; }
+.attribute-vaccine { background: #4cc8d5; color: white; }
+.attribute-variable { background: #483e94; color: white; }
+.attribute-free { background: #cf79ca; color: #2d3436; }
 
 @keyframes mystery-shimmer {
   0%, 100% { opacity: 0.9; }
@@ -525,7 +532,6 @@
   letter-spacing: 0.5px;
   color: white;
   text-shadow: 0 1px 2px rgba(0,0,0,0.2);
-  background-color: #9370DB;
 }
 
 

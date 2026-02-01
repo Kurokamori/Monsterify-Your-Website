@@ -316,20 +316,44 @@ class MonthlyAdopt {
       // Generate new adopts
       const adopts = [];
       const rollerOptions = {
-        allowedTypes: ['pokemon', 'digimon', 'yokai', 'nexomon'],
-        maxSpecies: 2,
-        maxTypes: 3,
-        allowLegendary: false,
-        allowMythical: false,
-        allowedStages: ['base stage', 'doesn\'t evolve'],
-        allowedDigimonRanks: ['Baby I', 'Baby II', 'Child', 'E', 'D', 'C']
+        enabledTables: ['pokemon', 'digimon', 'yokai', 'nexomon'],
+        userSettings: {
+          pokemon_enabled: true,
+          digimon_enabled: true,
+          yokai_enabled: true,
+          nexomon_enabled: true,
+          pals_enabled: false,
+          fakemon_enabled: false,
+          finalfantasy_enabled: false,
+          monsterhunter_enabled: false
+        }
+      };
+
+      // Roll parameters for the monster
+      const rollParams = {
+        tables: ['pokemon', 'digimon', 'yokai', 'nexomon'],
+        species_min: 1,
+        species_max: 3,  // Allow up to 3 species for fusions
+        types_min: 1,
+        types_max: 3,
+        legendary: false,
+        mythical: false,
+        includeStages: ['base stage', "doesn't evolve"],
+        tableFilters: {
+          digimon: {
+            includeRanks: ['Baby I', 'Baby II', 'Child', 'E', 'D', 'C']
+          },
+          yokai: {
+            includeRanks: ['E', 'D', 'C']
+          }
+        }
       };
 
       for (let i = 0; i < neededCount; i++) {
         console.log(`Generating adopt #${i + 1}`);
 
         const roller = new MonsterRoller(rollerOptions);
-        const monster = await roller.rollMonster();
+        const monster = await roller.rollMonster(rollParams);
 
         const adoptData = {
           year,
@@ -393,11 +417,91 @@ class MonthlyAdopt {
   }
 
   /**
+   * Get the earliest month with adoption data
+   * @returns {Promise<Object|null>} - Object with year and month, or null if no data
+   */
+  static async getEarliestMonth() {
+    try {
+      const query = `
+        SELECT year, month
+        FROM monthly_adopts
+        ORDER BY year ASC, month ASC
+        LIMIT 1
+      `;
+      const result = await db.asyncGet(query);
+      return result || null;
+    } catch (error) {
+      console.error('Error getting earliest month:', error);
+      return null;
+    }
+  }
+
+  /**
+   * Fill any gaps in monthly adoption data between the earliest month and current month
+   * This ensures there are no missing months in the adoption history
+   * @returns {Promise<void>}
+   */
+  static async fillMonthlyGaps() {
+    try {
+      // Get the earliest month with data
+      const earliest = await this.getEarliestMonth();
+      if (!earliest) {
+        console.log('No existing adoption data found, nothing to fill');
+        return;
+      }
+
+      // Get the current month
+      const now = new Date();
+      const currentYear = now.getFullYear();
+      const currentMonth = now.getMonth() + 1;
+
+      // Get all existing months
+      const existingQuery = `
+        SELECT DISTINCT year, month
+        FROM monthly_adopts
+      `;
+      const existingMonths = await db.asyncAll(existingQuery);
+
+      // Create a Set of existing year-month combinations for quick lookup
+      const existingSet = new Set(
+        (existingMonths || []).map(m => `${m.year}-${m.month}`)
+      );
+
+      // Iterate through all months from earliest to current and fill gaps
+      let year = earliest.year;
+      let month = earliest.month;
+
+      while (year < currentYear || (year === currentYear && month <= currentMonth)) {
+        const key = `${year}-${month}`;
+
+        if (!existingSet.has(key)) {
+          console.log(`Filling gap: generating adopts for ${year}-${month}`);
+          await this.generateMonthlyAdopts(year, month, 10);
+        }
+
+        // Move to next month
+        month++;
+        if (month > 12) {
+          month = 1;
+          year++;
+        }
+      }
+    } catch (error) {
+      console.error('Error filling monthly gaps:', error);
+      // Don't throw - this is a silent operation
+    }
+  }
+
+  /**
    * Get list of months with adoption data
+   * Also fills any gaps in the data between the earliest month and current month
    * @returns {Promise<Array>} - Array of objects with year and month
    */
   static async getMonthsWithData() {
     try {
+      // First, fill any gaps in the monthly data
+      await this.fillMonthlyGaps();
+
       // Query to get distinct year and month combinations
       const query = `
         SELECT DISTINCT year, month

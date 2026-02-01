@@ -152,49 +152,11 @@
   display: none;
 }
 
-.type-badge,
-.attribute-badge {
-  padding: 4px 8px;
-  border-radius: 12px;
-  font-size: 0.8rem;
-  font-weight: 500;
-  text-transform: capitalize;
-  border: 2px solid transparent;
-  transition: all 0.2s ease;
-}
-
 .type-checkbox input[type="checkbox"]:checked + .type-badge,
 .attribute-checkbox input[type="checkbox"]:checked + .attribute-badge {
   border-color: var(--accent-color);
   box-shadow: 0 0 0 2px rgba(214, 163, 57, 0.2);
 }
-
-/* Type-specific colors */
-.type-fire { background: #ff6b6b; color: white; }
-.type-water { background: #4ecdc4; color: white; }
-.type-grass { background: #45b7d1; color: white; }
-.type-electric { background: #f9ca24; color: #2d3436; }
-.type-psychic { background: #a29bfe; color: white; }
-.type-ice { background: #74b9ff; color: white; }
-.type-dragon { background: #6c5ce7; color: white; }
-.type-dark { background: #2d3436; color: white; }
-.type-fairy { background: #fd79a8; color: white; }
-.type-fighting { background: #e17055; color: white; }
-.type-poison { background: #a29bfe; color: white; }
-.type-ground { background: #fdcb6e; color: #2d3436; }
-.type-flying { background: #81ecec; color: #2d3436; }
-.type-bug { background: #00b894; color: white; }
-.type-rock { background: #636e72; color: white; }
-.type-ghost { background: #6c5ce7; color: white; }
-.type-steel { background: #b2bec3; color: #2d3436; }
-.type-normal { background: #ddd; color: #2d3436; }
-
-/* Attribute-specific colors */
-.attribute-data { background: #74b9ff; color: white; }
-.attribute-virus { background: #e17055; color: white; }
-.attribute-vaccine { background: #00b894; color: white; }
-.attribute-variable { background: #6c5ce7; color: white; }
-.attribute-free { background: #fdcb6e; color: #2d3436; }
 
 .config-summary {
   margin-top: 25px;
@@ -260,11 +222,6 @@
     grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
   }
   
-  .type-badge,
-  .attribute-badge {
-    font-size: 0.7rem;
-    padding: 3px 6px;
-  }
 }
 
 /* Focus styles for accessibility */
@@ -291,9 +248,4 @@
     border-width: 2px;
   }
   
-  .type-badge,
-  .attribute-badge {
-    border-width: 2px;
-    border-color: currentColor;
-  }
 }

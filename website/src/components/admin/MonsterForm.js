@@ -54,8 +54,7 @@ const MonsterForm = ({ monster, personId, position, onSave, onCancel }) => {
   const commonTypes = [
     'Normal', 'Fire', 'Water', 'Electric', 'Grass', 'Ice', 'Fighting', 'Poison',
     'Ground', 'Flying', 'Psychic', 'Bug', 'Rock', 'Ghost', 'Dragon', 'Dark',
-    'Steel', 'Fairy', 'Light', 'Shadow', 'Beast', 'Bird', 'Aquan', 'Machine',
-    'Holy', 'Plant', 'Insect', 'Neutral'
+    'Steel', 'Fairy'
   ];
 
   useEffect(() => {

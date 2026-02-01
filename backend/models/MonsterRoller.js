@@ -410,11 +410,12 @@ class MonsterRoller {
 
       
 
-      // Set attribute if not already set
-      if (!processedMonster.attribute) {
-        // Digimon attributes - only use these specific values
-        const digimonAttributes = ['Data', 'Virus', 'Vaccine', 'Variable', 'Free'];
-        processedMonster.attribute = this.rollFromArray(digimonAttributes);
+      // Digimon attributes - only use these specific values
+      const validDigimonAttributes = ['Data', 'Virus', 'Vaccine', 'Variable', 'Free'];
+
+      // Set attribute if not already set OR if current attribute is not valid
+      if (!processedMonster.attribute || !validDigimonAttributes.includes(processedMonster.attribute)) {
+        processedMonster.attribute = this.rollFromArray(validDigimonAttributes);
       }
 
       console.log('Final processed monster:', processedMonster);

@@ -54,6 +54,7 @@ import SchedulePage from './pages/schedule/SchedulePage';
 import StarterSelectionPage from './pages/StarterSelectionPage';
 import HatchSessionPage from './pages/nursery/HatchSessionPage';
 import BossViewPage from './pages/boss/BossViewPage';
+import RerollClaimPage from './pages/claim/RerollClaimPage';
 import NotFoundPage from './pages/NotFoundPage';
 
 // Admin Pages
@@ -118,6 +119,9 @@ function App() {
         <Route path="library" element={<SubmissionPage />} />
         <Route path="gallery/:id" element={<SubmissionDetailPage type="art" />} />
         <Route path="library/:id" element={<SubmissionDetailPage type="writing" />} />
+
+        {/* Claim Routes */}
+        <Route path="claim/:token" element={<RerollClaimPage />} />
 
         {/* Interactive Map Routes - Must come before the catch-all guides route */}
         <Route path="guides/interactive-map" element={<InteractiveMap />} />
