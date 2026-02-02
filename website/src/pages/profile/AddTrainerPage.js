@@ -271,9 +271,9 @@ const AddTrainerPage = () => {
       // Always use FormData for file uploads (even if no files, for consistency)
       const submitFormData = new FormData();
 
-      // Add all trainer data fields
+      // Add all trainer data fields (excluding theme and voice_claim which are handled separately)
       Object.keys(formData).forEach(key => {
-        if (formData[key] !== undefined && formData[key] !== null) {
+        if (key !== 'theme' && key !== 'voice_claim' && formData[key] !== undefined && formData[key] !== null) {
           submitFormData.append(key, formData[key]);
         }
       });

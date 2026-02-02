@@ -131,10 +131,10 @@ const createSession = asyncHandler(async (req, res) => {
   } = req.body;
 
   // Validate roll type
-  const validRollTypes = ['monster', 'item', 'combined', 'gift'];
+  const validRollTypes = ['monster', 'item', 'combined', 'gift', 'birthday'];
   if (!validRollTypes.includes(rollType)) {
     res.status(400);
-    throw new Error('Invalid roll type. Must be monster, item, combined, or gift.');
+    throw new Error('Invalid roll type. Must be monster, item, combined, gift, or birthday.');
   }
 
   // Validate target user exists
@@ -189,6 +189,28 @@ const createSession = asyncHandler(async (req, res) => {
         categories: ['berries', 'pastries', 'evolution', 'balls', 'antiques', 'helditems']
       }, giftItemCount);
     }
+  } else if (rollType === 'birthday') {
+    // Birthday preset: 10 items + 10 monsters with specific parameters
+    // Monsters: Only Base Stage / Doesn't Evolve / Baby I / Baby II, max 2 species, max 3 types
+    const birthdayMonsterParams = {
+      includeStages: ['base stage', "doesn't evolve", 'Baby I', 'Baby II'],
+      legendary: false,
+      mythical: false,
+      tableFilters: {
+        digimon: { includeRanks: ['Baby I', 'Baby II', 'In-Training', 'Rookie'] },
+        yokai: { includeRanks: ['E', 'D', 'C'] },
+        finalfantasy: { includeStages: ['base stage', "doesn't evolve"] },
+        monsterhunter: { includeRanks: [1, 2, 3] }
+      }
+    };
+
+    // Roll 10 monsters with birthday parameters
+    rolledMonsters = await rollMonsters(birthdayMonsterParams, 10, targetUserSettings);
+
+    // Roll 10 items (all default categories)
+    rolledItems = await rollItems({
+      categories: ['berries', 'pastries', 'evolution', 'balls', 'antiques', 'helditems']
+    }, 10);
   }
 
   // Create session
@@ -200,8 +222,8 @@ const createSession = asyncHandler(async (req, res) => {
     giftLevels: giftLevels || 0,
     rolledMonsters,
     rolledItems,
-    monsterClaimLimit: rollType === 'gift' ? null : (monsterClaimLimit !== undefined ? monsterClaimLimit : null),
-    itemClaimLimit: rollType === 'gift' ? null : (itemClaimLimit !== undefined ? itemClaimLimit : null),
+    monsterClaimLimit: (rollType === 'gift' || rollType === 'birthday') ? null : (monsterClaimLimit !== undefined ? monsterClaimLimit : null),
+    itemClaimLimit: (rollType === 'gift' || rollType === 'birthday') ? null : (itemClaimLimit !== undefined ? itemClaimLimit : null),
     createdBy: req.user.id,
     notes
   });
@@ -477,6 +499,23 @@ const rerollAll = asyncHandler(async (req, res) => {
         categories: ['berries', 'pastries', 'evolution', 'balls', 'antiques', 'helditems']
       }, itemCount);
     }
+  } else if (session.rollType === 'birthday') {
+    // Birthday preset: reroll with same parameters
+    const birthdayMonsterParams = {
+      includeStages: ['base stage', "doesn't evolve", 'Baby I', 'Baby II'],
+      legendary: false,
+      mythical: false,
+      tableFilters: {
+        digimon: { includeRanks: ['Baby I', 'Baby II', 'In-Training', 'Rookie'] },
+        yokai: { includeRanks: ['E', 'D', 'C'] },
+        finalfantasy: { includeStages: ['base stage', "doesn't evolve"] },
+        monsterhunter: { includeRanks: [1, 2, 3] }
+      }
+    };
+    rolledMonsters = await rollMonsters(birthdayMonsterParams, 10, targetUserSettings);
+    rolledItems = await rollItems({
+      categories: ['berries', 'pastries', 'evolution', 'balls', 'antiques', 'helditems']
+    }, 10);
   }
 
   const updatedSession = await RerollSession.update(req.params.id, {

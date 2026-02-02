@@ -71,6 +71,20 @@ const ThemeSection = ({ theme }) => {
   );
 };
 
+// Helper function to calculate age from birth year or return original value
+const calculateDisplayAge = (ageValue) => {
+  if (!ageValue) return null;
+  const ageStr = String(ageValue).trim();
+  // Check if it's a 4-digit year (between 1900 and current year)
+  const currentYear = new Date().getFullYear();
+  const yearNum = parseInt(ageStr, 10);
+  if (/^\d{4}$/.test(ageStr) && yearNum >= 1900 && yearNum <= currentYear) {
+    return currentYear - yearNum;
+  }
+  // If it's not a birth year, return the original value as-is
+  return ageStr;
+};
+
 const TrainerDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -294,7 +308,7 @@ const TrainerDetails = () => {
                     </div>
                     <div className="trainer-info-item">
                       <span className="info-label">Age</span>
-                      <span className="info-value">{trainer.age || 'Not specified'}</span>
+                      <span className="info-value">{calculateDisplayAge(trainer.age) || 'Not specified'}</span>
                     </div>
                     <div className="trainer-info-item">
                       <span className="info-label">Height</span>

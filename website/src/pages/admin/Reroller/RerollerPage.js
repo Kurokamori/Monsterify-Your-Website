@@ -346,6 +346,12 @@ const RerollerPage = () => {
         >
           Gift
         </button>
+        <button
+          className={`roll-type-tab ${rollType === 'birthday' ? 'active' : ''}`}
+          onClick={() => setRollType('birthday')}
+        >
+          Birthday
+        </button>
       </div>
 
       {error && <div className="message error">{error}</div>}
@@ -484,8 +490,27 @@ const RerollerPage = () => {
             </div>
           )}
 
-          {/* Claim Limits - show for non-gift */}
-          {rollType !== 'gift' && (
+          {/* Birthday Config - show for birthday */}
+          {rollType === 'birthday' && (
+            <div className="config-section">
+              <h3><i className="fas fa-birthday-cake"></i> Birthday Settings</h3>
+              <div className="birthday-info">
+                <p style={{ color: 'var(--admin-text-secondary)', marginBottom: '0.5rem' }}>
+                  Birthday preset automatically rolls:
+                </p>
+                <ul style={{ color: 'var(--admin-text-secondary)', marginLeft: '1.5rem', fontSize: '0.9rem' }}>
+                  <li><strong>10 Items</strong> - Random from all categories</li>
+                  <li><strong>10 Monsters</strong> - Base stage only, no legendaries</li>
+                </ul>
+                <p style={{ color: 'var(--admin-text-muted)', fontSize: '0.85rem', marginTop: '0.5rem' }}>
+                  Uses the target user's monster table preferences.
+                </p>
+              </div>
+            </div>
+          )}
+
+          {/* Claim Limits - show for non-gift and non-birthday */}
+          {rollType !== 'gift' && rollType !== 'birthday' && (
             <div className="config-section">
               <h3><i className="fas fa-lock"></i> Claim Limits</h3>
               <div className="claim-limits">

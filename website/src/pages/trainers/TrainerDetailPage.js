@@ -187,6 +187,20 @@ const TrainerDetailPage = () => {
       .join(' ');
   };
 
+  // Helper function to calculate age from birth year or return original value
+  const calculateDisplayAge = (ageValue) => {
+    if (!ageValue) return null;
+    const ageStr = String(ageValue).trim();
+    // Check if it's a 4-digit year (between 1900 and current year)
+    const currentYear = new Date().getFullYear();
+    const yearNum = parseInt(ageStr, 10);
+    if (/^\d{4}$/.test(ageStr) && yearNum >= 1900 && yearNum <= currentYear) {
+      return currentYear - yearNum;
+    }
+    // If it's not a birth year, return the original value as-is
+    return ageStr;
+  };
+
   // Helper function to format monster data with proper title case
   const formatMonsterData = (monster) => {
     if (!monster) return monster;
@@ -1631,7 +1645,7 @@ const TrainerDetailPage = () => {
                         <span className="nickname">"{trainer.nickname}"</span>
                       )}
                       {trainer.age && (
-                        <span className="age">Age: {trainer.age}</span>
+                        <span className="age">Age: {calculateDisplayAge(trainer.age)}</span>
                       )}
                     </div>
                   )}

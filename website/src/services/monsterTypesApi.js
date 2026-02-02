@@ -382,6 +382,158 @@ const monsterTypesApi = {
       console.error(`Error deleting Pals monster with ID ${id}:`, error);
       throw error;
     }
+  },
+
+  /**
+   * Get all Monster Hunter monsters with pagination and filtering
+   * @param {Object} params - Query parameters
+   * @returns {Promise<Object>} Paginated Monster Hunter monsters
+   */
+  getMonsterHunterMonsters: async (params = {}) => {
+    try {
+      const response = await api.get('/monsterhunter-monsters', { params });
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching Monster Hunter monsters:', error);
+      throw error;
+    }
+  },
+
+  /**
+   * Get Monster Hunter monster by ID
+   * @param {number} id - Monster Hunter monster ID
+   * @returns {Promise<Object>} Monster Hunter monster
+   */
+  getMonsterHunterMonsterById: async (id) => {
+    try {
+      const response = await api.get(`/monsterhunter-monsters/${id}`);
+      return response.data;
+    } catch (error) {
+      console.error(`Error fetching Monster Hunter monster with ID ${id}:`, error);
+      throw error;
+    }
+  },
+
+  /**
+   * Create a new Monster Hunter monster
+   * @param {Object} monster - Monster Hunter monster data
+   * @returns {Promise<Object>} Created Monster Hunter monster
+   */
+  createMonsterHunterMonster: async (monster) => {
+    try {
+      const response = await api.post('/monsterhunter-monsters', monster);
+      return response.data;
+    } catch (error) {
+      console.error('Error creating Monster Hunter monster:', error);
+      throw error;
+    }
+  },
+
+  /**
+   * Update a Monster Hunter monster
+   * @param {number} id - Monster Hunter monster ID
+   * @param {Object} monster - Monster Hunter monster data
+   * @returns {Promise<Object>} Updated Monster Hunter monster
+   */
+  updateMonsterHunterMonster: async (id, monster) => {
+    try {
+      const response = await api.put(`/monsterhunter-monsters/${id}`, monster);
+      return response.data;
+    } catch (error) {
+      console.error(`Error updating Monster Hunter monster with ID ${id}:`, error);
+      throw error;
+    }
+  },
+
+  /**
+   * Delete a Monster Hunter monster
+   * @param {number} id - Monster Hunter monster ID
+   * @returns {Promise<Object>} Success message
+   */
+  deleteMonsterHunterMonster: async (id) => {
+    try {
+      const response = await api.delete(`/monsterhunter-monsters/${id}`);
+      return response.data;
+    } catch (error) {
+      console.error(`Error deleting Monster Hunter monster with ID ${id}:`, error);
+      throw error;
+    }
+  },
+
+  /**
+   * Get all Final Fantasy monsters with pagination and filtering
+   * @param {Object} params - Query parameters
+   * @returns {Promise<Object>} Paginated Final Fantasy monsters
+   */
+  getFinalFantasyMonsters: async (params = {}) => {
+    try {
+      const response = await api.get('/finalfantasy-monsters', { params });
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching Final Fantasy monsters:', error);
+      throw error;
+    }
+  },
+
+  /**
+   * Get Final Fantasy monster by ID
+   * @param {number} id - Final Fantasy monster ID
+   * @returns {Promise<Object>} Final Fantasy monster
+   */
+  getFinalFantasyMonsterById: async (id) => {
+    try {
+      const response = await api.get(`/finalfantasy-monsters/${id}`);
+      return response.data;
+    } catch (error) {
+      console.error(`Error fetching Final Fantasy monster with ID ${id}:`, error);
+      throw error;
+    }
+  },
+
+  /**
+   * Create a new Final Fantasy monster
+   * @param {Object} monster - Final Fantasy monster data
+   * @returns {Promise<Object>} Created Final Fantasy monster
+   */
+  createFinalFantasyMonster: async (monster) => {
+    try {
+      const response = await api.post('/finalfantasy-monsters', monster);
+      return response.data;
+    } catch (error) {
+      console.error('Error creating Final Fantasy monster:', error);
+      throw error;
+    }
+  },
+
+  /**
+   * Update a Final Fantasy monster
+   * @param {number} id - Final Fantasy monster ID
+   * @param {Object} monster - Final Fantasy monster data
+   * @returns {Promise<Object>} Updated Final Fantasy monster
+   */
+  updateFinalFantasyMonster: async (id, monster) => {
+    try {
+      const response = await api.put(`/finalfantasy-monsters/${id}`, monster);
+      return response.data;
+    } catch (error) {
+      console.error(`Error updating Final Fantasy monster with ID ${id}:`, error);
+      throw error;
+    }
+  },
+
+  /**
+   * Delete a Final Fantasy monster
+   * @param {number} id - Final Fantasy monster ID
+   * @returns {Promise<Object>} Success message
+   */
+  deleteFinalFantasyMonster: async (id) => {
+    try {
+      const response = await api.delete(`/finalfantasy-monsters/${id}`);
+      return response.data;
+    } catch (error) {
+      console.error(`Error deleting Final Fantasy monster with ID ${id}:`, error);
+      throw error;
+    }
   }
 };
 

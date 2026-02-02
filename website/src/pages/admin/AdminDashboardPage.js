@@ -20,7 +20,6 @@ import ItemRoller from './ItemRoller';
 import MonsterRoller from './MonsterRoller/MonsterRoller';
 import RerollerPage from './Reroller/RerollerPage';
 import RerollerSessionsPage from './Reroller/RerollerSessionsPage';
-import BirthdayRoller from './BirthdayRoller';
 import UserListPage from './UserListPage';
 import UserFormPage from './UserFormPage';
 
@@ -35,6 +34,10 @@ import NexomonMonsterListPage from './NexomonMonsterListPage';
 import NexomonMonsterFormPage from './NexomonMonsterFormPage';
 import PalsMonsterListPage from './PalsMonsterListPage';
 import PalsMonsterFormPage from './PalsMonsterFormPage';
+import FinalFantasyMonsterListPage from './FinalFantasyMonsterListPage';
+import FinalFantasyMonsterFormPage from './FinalFantasyMonsterFormPage';
+import MonsterHunterMonsterListPage from './MonsterHunterMonsterListPage';
+import MonsterHunterMonsterFormPage from './MonsterHunterMonsterFormPage';
 import ItemListPage from './ItemListPage';
 import ItemFormPage from './ItemFormPage';
 import ItemBulkFormPage from './ItemBulkFormPage';
@@ -112,6 +115,14 @@ const AdminDashboardPage = () => {
         <Route path="pals-monsters/add" element={<PalsMonsterFormPage />} />
         <Route path="pals-monsters/edit/:id" element={<PalsMonsterFormPage />} />
 
+        <Route path="finalfantasy-monsters" element={<FinalFantasyMonsterListPage />} />
+        <Route path="finalfantasy-monsters/add" element={<FinalFantasyMonsterFormPage />} />
+        <Route path="finalfantasy-monsters/edit/:id" element={<FinalFantasyMonsterFormPage />} />
+
+        <Route path="monsterhunter-monsters" element={<MonsterHunterMonsterListPage />} />
+        <Route path="monsterhunter-monsters/add" element={<MonsterHunterMonsterFormPage />} />
+        <Route path="monsterhunter-monsters/edit/:id" element={<MonsterHunterMonsterFormPage />} />
+
         {/* Shop Management Routes */}
         <Route path="items" element={<ItemListPage />} />
         <Route path="items/add" element={<ItemFormPage />} />
@@ -131,9 +142,6 @@ const AdminDashboardPage = () => {
         <Route path="reroller" element={<RerollerPage />} />
         <Route path="reroller/sessions" element={<RerollerSessionsPage />} />
         <Route path="reroller/sessions/:id" element={<RerollerPage />} />
-
-        {/* Birthday Roller Routes */}
-        <Route path="birthday-roller" element={<BirthdayRoller />} />
 
         <Route path="*" element={<Navigate to="/admin" replace />} />
       </Routes>
