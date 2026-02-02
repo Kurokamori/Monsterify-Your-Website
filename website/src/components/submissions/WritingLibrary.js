@@ -18,12 +18,18 @@ const WritingLibrary = () => {
   const [tagFilter, setTagFilter] = useState('');
   const [availableTags, setAvailableTags] = useState([]);
   const [sortBy, setSortBy] = useState('newest');
+  const [showBooksOnly, setShowBooksOnly] = useState(false);
+  const [viewingBook, setViewingBook] = useState(null);
+  const [bookChapters, setBookChapters] = useState([]);
+  const [loadingChapters, setLoadingChapters] = useState(false);
 
   // Fetch writings
   useEffect(() => {
-    fetchWritings();
+    if (!viewingBook) {
+      fetchWritings();
+    }
     fetchTags();
-  }, [page, contentTypeFilter, tagFilter, sortBy]);
+  }, [page, contentTypeFilter, tagFilter, sortBy, showBooksOnly, viewingBook]);
 
   const fetchWritings = async () => {
     try {
@@ -43,6 +49,14 @@ const WritingLibrary = () => {
         params.tag = tagFilter;
       }
 
+      // Filter by books only or exclude chapters
+      if (showBooksOnly) {
+        params.booksOnly = true;
+      } else {
+        // By default, hide chapters (they should be viewed within their books)
+        params.excludeChapters = true;
+      }
+
       const response = await submissionService.getWritingLibrary(params);
 
       setWritings(response.submissions || []);
@@ -53,6 +67,20 @@ const WritingLibrary = () => {
       setError('Failed to load writings. Please try again later.');
     } finally {
       setLoading(false);
+    }
+  };
+
+  // Fetch book chapters
+  const fetchBookChapters = async (bookId) => {
+    try {
+      setLoadingChapters(true);
+      const response = await submissionService.getBookChapters(bookId);
+      setBookChapters(response.chapters || []);
+    } catch (err) {
+      console.error('Error fetching book chapters:', err);
+      setError('Failed to load chapters. Please try again.');
+    } finally {
+      setLoadingChapters(false);
     }
   };
 
@@ -67,7 +95,24 @@ const WritingLibrary = () => {
 
   // Handle writing click
   const handleWritingClick = (writing) => {
-    navigate(`/library/${writing.id}`);
+    // If it's a book, show chapters view
+    if (writing.is_book) {
+      setViewingBook(writing);
+      fetchBookChapters(writing.id);
+    } else {
+      navigate(`/library/${writing.id}`);
+    }
+  };
+
+  // Handle back from book view
+  const handleBackFromBook = () => {
+    setViewingBook(null);
+    setBookChapters([]);
+  };
+
+  // Handle chapter click
+  const handleChapterClick = (chapter) => {
+    navigate(`/library/${chapter.id}`);
   };
 
   // Handle like
@@ -286,6 +331,17 @@ const WritingLibrary = () => {
           </select>
         </div>
 
+        <div className="filter-group filter-checkbox">
+          <label className="checkbox-label">
+            <input
+              type="checkbox"
+              checked={showBooksOnly}
+              onChange={(e) => setShowBooksOnly(e.target.checked)}
+            />
+            Books Only
+          </label>
+        </div>
+
         <div className="filter-actions">
           <button
             className="filter-button apply"
@@ -302,43 +358,120 @@ const WritingLibrary = () => {
         </div>
       </div>
 
-      {/* Library Grid */}
-      <div className="gallery-grid library-grid">
-        {displayWritings.map(writing => (
-          <div
-            key={writing.id}
-            className="gallery-item library-item"
-            onClick={() => handleWritingClick(writing)}
-          >
-            <div className="gallery-item-image-container library-item-cover-container">
-              <img
-                src={writing.cover_image_url}
-                alt={writing.title}
-                className="gallery-item-image library-item-cover"
-                onError={(e) => {
-                  e.target.onerror = null;
-                  e.target.src = '/images/default_book.png';
-                }}
-              />
-              <div className="library-item-word-count">
-                {formatWordCount(writing.word_count)}
+      {/* Book View */}
+      {viewingBook && (
+        <div className="book-view">
+          <div className="book-view-header">
+            <button className="btn-back" onClick={handleBackFromBook}>
+              <i className="fas fa-arrow-left"></i> Back to Library
+            </button>
+            <div className="book-view-info">
+              <div className="book-view-cover">
+                <img
+                  src={viewingBook.cover_image_url || '/images/default_book.png'}
+                  alt={viewingBook.title}
+                  onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.src = '/images/default_book.png';
+                  }}
+                />
               </div>
-            </div>
-            <div className="gallery-item-info">
-              <h3 className="gallery-item-title">{writing.title}</h3>
-              <div className="gallery-item-meta">
-                <span className="gallery-item-artist">
-                  By {writing.user?.display_name || writing.display_name || writing.username || 'Unknown'}
-                </span>
+              <div className="book-view-details">
+                <h2>{viewingBook.title}</h2>
+                <p className="book-author">By {viewingBook.user?.display_name || viewingBook.display_name || viewingBook.username || 'Unknown'}</p>
+                {viewingBook.description && (
+                  <p className="book-description">{viewingBook.description}</p>
+                )}
+                <div className="book-stats">
+                  <span className="book-chapter-count">
+                    <i className="fas fa-book-open"></i> {bookChapters.length} Chapters
+                  </span>
+                </div>
               </div>
-              <p className="library-item-description">{writing.description}</p>
             </div>
           </div>
-        ))}
-      </div>
+
+          {loadingChapters ? (
+            <LoadingSpinner message="Loading chapters..." />
+          ) : (
+            <div className="chapters-list">
+              <h3>Chapters</h3>
+              {bookChapters.length === 0 ? (
+                <p className="no-chapters">No chapters have been added to this book yet.</p>
+              ) : (
+                <div className="chapters-grid">
+                  {bookChapters.map((chapter, index) => (
+                    <div
+                      key={chapter.id}
+                      className="chapter-item"
+                      onClick={() => handleChapterClick(chapter)}
+                    >
+                      <div className="chapter-number">
+                        Chapter {chapter.chapter_number || index + 1}
+                      </div>
+                      <div className="chapter-title">{chapter.title}</div>
+                      {chapter.word_count && (
+                        <div className="chapter-word-count">
+                          {formatWordCount(chapter.word_count)}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Library Grid */}
+      {!viewingBook && (
+        <div className="gallery-grid library-grid">
+          {displayWritings.map(writing => (
+            <div
+              key={writing.id}
+              className={`gallery-item library-item ${writing.is_book ? 'is-book' : ''}`}
+              onClick={() => handleWritingClick(writing)}
+            >
+              <div className="gallery-item-image-container library-item-cover-container">
+                <img
+                  src={writing.cover_image_url}
+                  alt={writing.title}
+                  className="gallery-item-image library-item-cover"
+                  onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.src = '/images/default_book.png';
+                  }}
+                />
+                {writing.is_book ? (
+                  <div className="library-item-book-badge">
+                    <i className="fas fa-book"></i> {writing.chapter_count || 0} Chapters
+                  </div>
+                ) : (
+                  <div className="library-item-word-count">
+                    {formatWordCount(writing.word_count)}
+                  </div>
+                )}
+              </div>
+              <div className="gallery-item-info">
+                <h3 className="gallery-item-title">
+                  {writing.is_book && <i className="fas fa-book book-icon"></i>}
+                  {writing.title}
+                </h3>
+                <div className="gallery-item-meta">
+                  <span className="gallery-item-artist">
+                    By {writing.user?.display_name || writing.display_name || writing.username || 'Unknown'}
+                  </span>
+                </div>
+                <p className="library-item-description">{writing.description}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
 
       {/* Pagination */}
-      {totalPages > 1 && (
+      {!viewingBook && totalPages > 1 && (
         <div className="gallery-pagination">
           <button
             className="pagination-button"

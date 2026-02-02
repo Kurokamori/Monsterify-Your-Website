@@ -50,12 +50,18 @@ const Garden = () => {
         
       } catch (err) {
         console.error('Error fetching garden data:', err);
-        setError('Failed to load garden data. Please try again later.');
+        let errorMessage = 'Failed to load garden data. Please try again later.';
+        if (err.response?.data?.message) {
+          errorMessage = err.response.data.message;
+        } else if (err.message) {
+          errorMessage = err.message;
+        }
+        setError(errorMessage);
       } finally {
         setLoading(false);
       }
     };
-    
+
     fetchData();
   }, [isAuthenticated, trainerService]);
   
@@ -73,12 +79,18 @@ const Garden = () => {
       
     } catch (err) {
       console.error('Error fetching garden data:', err);
-      setError('Failed to load garden data. Please try again later.');
+      let errorMessage = 'Failed to load garden data. Please try again later.';
+      if (err.response?.data?.message) {
+        errorMessage = err.response.data.message;
+      } else if (err.message) {
+        errorMessage = err.message;
+      }
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
   };
-  
+
   // Handle tend garden
   const handleTendGarden = async () => {
     if (!selectedTrainer) return;

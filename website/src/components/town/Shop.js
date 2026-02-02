@@ -60,7 +60,13 @@ const Shop = ({ shopId, shopName, shopDescription }) => {
 
       } catch (err) {
         console.error('Error fetching shop data:', err);
-        setError('Failed to load shop data. Please try again later.');
+        let errorMessage = 'Failed to load shop data. Please try again later.';
+        if (err.response?.data?.message) {
+          errorMessage = err.response.data.message;
+        } else if (err.message) {
+          errorMessage = err.message;
+        }
+        setError(errorMessage);
       } finally {
         setLoading(false);
       }

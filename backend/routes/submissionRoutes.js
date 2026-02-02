@@ -14,6 +14,19 @@ router.get('/library', submissionController.getWritingLibrary);
 // Get submission tags
 router.get('/tags', submissionController.getSubmissionTags);
 
+// Book routes (must be before /:id to avoid matching)
+// Get user's books
+router.get('/user/books', authenticateJWT, submissionController.getUserBooks);
+
+// Get chapters for a book
+router.get('/books/:bookId/chapters', submissionController.getBookChapters);
+
+// Update chapter order in a book
+router.put('/books/:bookId/chapters/order', authenticateJWT, submissionController.updateChapterOrder);
+
+// Create a new book
+router.post('/books', authenticateJWT, upload.single('coverImage'), submissionController.createBook);
+
 // Get submission by ID
 router.get('/:id', submissionController.getSubmissionById);
 

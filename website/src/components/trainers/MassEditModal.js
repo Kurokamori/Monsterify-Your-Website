@@ -3,6 +3,14 @@ import LoadingSpinner from '../common/LoadingSpinner';
 import api from '../../services/api';
 import adoptionService from '../../services/adoptionService';
 import speciesService from '../../services/speciesService';
+import {
+  getBerryDescription,
+  getPastryDescription,
+  berryRequiresSpeciesSelection,
+  getSpeciesSlotAffected,
+  canBerryBeUsedOnMonster,
+  canPastryBeUsedOnMonster
+} from '../../utils/itemHelpers';
 
 const MassEditModal = ({ 
   isOpen, 
@@ -69,177 +77,9 @@ const MassEditModal = ({
     return filtered;
   })();
 
-  // Helper function to check if a berry requires species selection
-  const berryRequiresSpeciesSelection = (berryName) => {
-    const speciesRollingBerries = [
-      'Patama Berry', 'Bluk Berry', 'Nuevo Berry', 
-      'Azzuk Berry', 'Mangus Berry'
-    ];
-    return speciesRollingBerries.includes(berryName);
-  };
-
-  // Helper function to get berry descriptions
-  const getBerryDescription = (berryName) => {
-    const descriptions = {
-      'Bugger Berry': 'Removes the first species of a mon with more than 1 species',
-      'Mala Berry': 'Removes species 2 (if present)',
-      'Merco Berry': 'Removes species 3 (if present)',
-      'Patama Berry': 'Randomizes species 1',
-      'Bluk Berry': 'Randomizes species 2 (if present)',
-      'Nuevo Berry': 'Randomizes species 3 (if present)',
-      'Azzuk Berry': 'Adds a new random species to species 2 (if not present)',
-      'Mangus Berry': 'Adds a new random species to species 3 (if not present)',
-      'Lilan Berry': 'Removes type 2 (if present)',
-      'Kham Berry': 'Removes type 3 (if present)',
-      'Maizi Berry': 'Removes type 4 (if present)',
-      'Fani Berry': 'Removes type 5 (if present)',
-      'Miraca Berry': 'Randomizes type 1',
-      'Cocon Berry': 'Randomizes type 2 (if present)',
-      'Durian Berry': 'Randomizes type 3 (if present)',
-      'Monel Berry': 'Randomizes type 4 (if present)',
-      'Perep Berry': 'Randomizes type 5 (if present)',
-      'Addish Berry': 'Adds type 2 (if not present)',
-      'Sky Carrot Berry': 'Adds type 3 (if not present)',
-      'Kembre Berry': 'Adds type 4 (if not present)',
-      'Espara Berry': 'Adds type 5 (if not present)',
-      'Datei Berry': 'Randomizes attribute',
-      'Divest Berry': 'Splits a monster with multiple species into two monsters'
-    };
-    return descriptions[berryName] || 'Unknown effect';
-  };
-
-  // Helper function to get which species slot is affected by a berry
-  const getSpeciesSlotAffected = (berryName) => {
-    const slotMap = {
-      'Patama Berry': 1,
-      'Bluk Berry': 2,
-      'Nuevo Berry': 3,
-      'Azzuk Berry': 2, // Adds to species 2
-      'Mangus Berry': 3  // Adds to species 3
-    };
-    return slotMap[berryName] || 1;
-  };
-
-  // Helper function to check if a berry can be used on a specific monster
-  const canBerryBeUsedOnMonster = (berryName, monster) => {
-    // Filter out Edenweiss and Forget-Me-Not
-    if (berryName === 'Edenweiss' || berryName === 'Forget-Me-Not' || berryName === 'Edenwiess') {
-      return false;
-    }
-
-    switch (berryName) {
-      // Species removal berries - need multiple species
-      case 'Bugger Berry':
-        return !!monster.species2; // Needs species 2 to exist
-      case 'Mala Berry':
-        return !!monster.species2; // Needs species 2 to exist
-      case 'Merco Berry':
-        return !!monster.species3; // Needs species 3 to exist
-      
-      // Species modification berries
-      case 'Bluk Berry':
-        return !!monster.species2; // Needs species 2 to exist
-      case 'Nuevo Berry':
-        return !!monster.species3; // Needs species 3 to exist
-      
-      // Species addition berries - proper progression
-      case 'Azzuk Berry':
-        return !monster.species2; // Can only add species 2 if it doesn't exist
-      case 'Mangus Berry':
-        return !monster.species3 && !!monster.species2; // Can only add species 3 if species 2 exists but species 3 doesn't
-      
-      // Type removal berries - need the specific type to exist
-      case 'Siron Berry':
-        return !!(monster.type2 || monster.type3 || monster.type4 || monster.type5); // Needs more than one type
-      case 'Lilan Berry':
-        return !!monster.type2;
-      case 'Kham Berry':
-        return !!monster.type3;
-      case 'Maizi Berry':
-        return !!monster.type4;
-      case 'Fani Berry':
-        return !!monster.type5;
-      
-      // Type modification berries - need the specific type to exist
-      case 'Cocon Berry':
-        return !!monster.type2;
-      case 'Durian Berry':
-        return !!monster.type3;
-      case 'Monel Berry':
-        return !!monster.type4;
-      case 'Perep Berry':
-        return !!monster.type5;
-      
-      // Type addition berries - proper progression
-      case 'Addish Berry':
-        return !monster.type2; // Can only add type 2 if it doesn't exist
-      case 'Sky Carrot Berry':
-        return !monster.type3 && !!monster.type2; // Can only add type 3 if type 2 exists but type 3 doesn't
-      case 'Kembre Berry':
-        return !monster.type4 && !!monster.type3; // Can only add type 4 if type 3 exists but type 4 doesn't
-      case 'Espara Berry':
-        return !monster.type5 && !!monster.type4; // Can only add type 5 if type 4 exists but type 5 doesn't
-      
-      // Other berries that can be used on any monster
-      case 'Patama Berry':
-      case 'Miraca Berry':
-      case 'Datei Berry':
-        return true;
-      
-      // Split berry - needs multiple species
-      case 'Divest Berry':
-        return !!monster.species2;
-      
-      default:
-        return true; // Unknown berries default to usable
-    }
-  };
-
-  // Helper function to check if a pastry can be used on a specific monster
-  const canPastryBeUsedOnMonster = (pastryName, monster) => {
-    switch (pastryName) {
-      // Species modification pastries
-      case 'Bluk Pastry':
-        return !!monster.species2; // Needs species 2 to exist
-      case 'Nuevo Pastry':
-        return !!monster.species3; // Needs species 3 to exist
-      
-      // Species addition pastries - proper progression
-      case 'Azzuk Pastry':
-        return !monster.species2; // Can only add species 2 if it doesn't exist
-      case 'Mangus Pastry':
-        return !monster.species3 && !!monster.species2; // Can only add species 3 if species 2 exists but species 3 doesn't
-      
-      // Type modification pastries - need the specific type to exist
-      case 'Cocon Pastry':
-        return !!monster.type2;
-      case 'Durian Pastry':
-        return !!monster.type3;
-      case 'Monel Pastry':
-        return !!monster.type4;
-      case 'Perep Pastry':
-        return !!monster.type5;
-      
-      // Type addition pastries - proper progression
-      case 'Addish Pastry':
-        return !monster.type2; // Can only add type 2 if it doesn't exist
-      case 'Sky Carrot Pastry':
-        return !monster.type3 && !!monster.type2; // Can only add type 3 if type 2 exists but type 3 doesn't
-      case 'Kembre Pastry':
-        return !monster.type4 && !!monster.type3; // Can only add type 4 if type 3 exists but type 4 doesn't
-      case 'Espara Pastry':
-        return !monster.type5 && !!monster.type4; // Can only add type 5 if type 4 exists but type 5 doesn't
-      
-      // Pastries that can be used on any monster
-      case 'Patama Pastry':
-      case 'Miraca Pastry':
-      case 'Datei Pastry':
-        return true;
-      
-      default:
-        return true; // Unknown pastries default to usable
-    }
-  };
+  // Note: Helper functions (berryRequiresSpeciesSelection, getBerryDescription,
+  // getSpeciesSlotAffected, canBerryBeUsedOnMonster, canPastryBeUsedOnMonster)
+  // are now imported from '../../utils/itemHelpers'
 
   // Calculate remaining berries taking into account selected berries
   const getRemainingBerries = () => {
@@ -257,27 +97,7 @@ const MassEditModal = ({
     return remaining;
   };
 
-  // Helper function to get pastry descriptions
-  const getPastryDescription = (pastryName) => {
-    const descriptions = {
-      'Patama Pastry': 'Sets species 1',
-      'Bluk Pastry': 'Sets species 2 (if present)',
-      'Nuevo Pastry': 'Sets species 3 (if present)',
-      'Azzuk Pastry': 'Adds a new species to species 2 (if not present)',
-      'Mangus Pastry': 'Adds a new species to species 3 (if not present)',
-      'Miraca Pastry': 'Sets type 1',
-      'Cocon Pastry': 'Sets type 2 (if present)',
-      'Durian Pastry': 'Sets type 3 (if present)',
-      'Monel Pastry': 'Sets type 4 (if present)',
-      'Perep Pastry': 'Sets type 5 (if present)',
-      'Addish Pastry': 'Adds type 2 (if not present)',
-      'Sky Carrot Pastry': 'Adds type 3 (if not present)',
-      'Kembre Pastry': 'Adds type 4 (if not present)',
-      'Espara Pastry': 'Adds type 5 (if not present)',
-      'Datei Pastry': 'Sets attribute'
-    };
-    return descriptions[pastryName] || 'Unknown effect';
-  };
+  // Note: getPastryDescription is now imported from '../../utils/itemHelpers'
 
   // Debug inventory changes
   useEffect(() => {

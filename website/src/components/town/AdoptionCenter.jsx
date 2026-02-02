@@ -13,6 +13,7 @@ import Pagination from '../common/Pagination';
 import TypeBadge from '../monsters/TypeBadge';
 import AttributeBadge from '../monsters/AttributeBadge';
 import TrainerSelector from '../common/TrainerSelector';
+import AdoptionItemModal from './AdoptionItemModal';
 
 
 const AdoptionCenter = () => {
@@ -44,15 +45,8 @@ const AdoptionCenter = () => {
   const [adoptionError, setAdoptionError] = useState('');
   const [adoptedMonster, setAdoptedMonster] = useState(null);
 
-  // State for berry and pastry modals
-  const [showBerryModal, setShowBerryModal] = useState(false);
-  const [showPastryModal, setShowPastryModal] = useState(false);
-  const [selectedBerry, setSelectedBerry] = useState('');
-  const [selectedPastry, setSelectedPastry] = useState('');
-  const [berryLoading, setBerryLoading] = useState(false);
-  const [pastryLoading, setPastryLoading] = useState(false);
-  const [berryError, setBerryError] = useState('');
-  const [pastryError, setPastryError] = useState('');
+  // State for item modal (berries and pastries)
+  const [showItemModal, setShowItemModal] = useState(false);
   const [availableBerries, setAvailableBerries] = useState({});
   const [availablePastries, setAvailablePastries] = useState({});
 
@@ -133,11 +127,17 @@ const AdoptionCenter = () => {
         // Fetch species images for the adopts
         fetchSpeciesImages(adoptsList);
       } else {
-        setError('Failed to load adoption data');
+        setError(response.message || 'Failed to load adoption data');
       }
     } catch (err) {
       console.error('Error fetching adoption center data:', err);
-      setError('Failed to load adoption center data. Please try again later.');
+      let errorMessage = 'Failed to load adoption center data. Please try again later.';
+      if (err.response?.data?.message) {
+        errorMessage = err.response.data.message;
+      } else if (err.message) {
+        errorMessage = err.message;
+      }
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -270,40 +270,24 @@ const AdoptionCenter = () => {
     }
   };
 
-  // Fetch available berries for a trainer
-  const fetchAvailableBerries = async (trainerId) => {
+  // Fetch available berries and pastries for a trainer
+  const fetchTrainerInventory = async (trainerId) => {
     try {
-      const response = await fetch(`/api/adoption/berries/${trainerId}`);
-      const data = await response.json();
-
-      if (data.success) {
-        setAvailableBerries(data.berries || {});
-        return data.berries || {};
+      const response = await trainerService.getTrainerInventory(trainerId);
+      if (response.success && response.data) {
+        setAvailableBerries(response.data.berries || {});
+        setAvailablePastries(response.data.pastries || {});
+        return response.data;
       } else {
-        console.error('Error fetching berries:', data.message);
+        console.error('Error fetching inventory:', response.message);
+        setAvailableBerries({});
+        setAvailablePastries({});
         return {};
       }
     } catch (err) {
-      console.error('Error fetching berries:', err);
-      return {};
-    }
-  };
-
-  // Fetch available pastries for a trainer
-  const fetchAvailablePastries = async (trainerId) => {
-    try {
-      const response = await fetch(`/api/adoption/pastries/${trainerId}`);
-      const data = await response.json();
-
-      if (data.success) {
-        setAvailablePastries(data.pastries || {});
-        return data.pastries || {};
-      } else {
-        console.error('Error fetching pastries:', data.message);
-        return {};
-      }
-    } catch (err) {
-      console.error('Error fetching pastries:', err);
+      console.error('Error fetching inventory:', err);
+      setAvailableBerries({});
+      setAvailablePastries({});
       return {};
     }
   };
@@ -438,8 +422,7 @@ const AdoptionCenter = () => {
         setAdoptedMonster(response.monster || null);
 
         // Fetch available berries and pastries for the selected trainer
-        await fetchAvailableBerries(selectedTrainer);
-        await fetchAvailablePastries(selectedTrainer);
+        await fetchTrainerInventory(selectedTrainer);
 
         fetchData();
         fetchUserTrainers(currentUserId);
@@ -468,96 +451,35 @@ const AdoptionCenter = () => {
     setArtworksPagination(prev => ({ ...prev, page: 1, totalPages: 1, total: 0 }));
   };
 
-  // Open berry modal
-  const openBerryModal = () => {
+  // Open item modal (berries and pastries)
+  const openItemModal = () => {
     if (!adoptedMonster) return;
-    setShowBerryModal(true);
-    setSelectedBerry('');
-    setBerryError('');
+    setShowItemModal(true);
   };
 
-  // Close berry modal
-  const closeBerryModal = () => {
-    setShowBerryModal(false);
-    setSelectedBerry('');
-    setBerryError('');
+  // Close item modal
+  const closeItemModal = () => {
+    setShowItemModal(false);
   };
 
-  // Open pastry modal
-  const openPastryModal = () => {
-    if (!adoptedMonster) return;
-    setShowPastryModal(true);
-    setSelectedPastry('');
-    setPastryError('');
-  };
-
-  // Close pastry modal
-  const closePastryModal = () => {
-    setShowPastryModal(false);
-    setSelectedPastry('');
-    setPastryError('');
-  };
-
-  // Handle using a berry
-  const handleUseBerry = async () => {
-    if (!selectedBerry || !adoptedMonster) {
-      setBerryError('Please select a berry to use.');
-      return;
-    }
-
-    try {
-      setBerryLoading(true);
-      setBerryError('');
-
-      const response = await adoptionService.useBerry(
-        adoptedMonster.id,
-        selectedBerry,
-        parseInt(selectedTrainer)
-      );
-
-      if (response.success && response.monster) {
-        setAdoptedMonster(response.monster);
-        closeBerryModal();
-      } else {
-        setBerryError(response.message || 'Failed to apply berry.');
-      }
-    } catch (error) {
-      console.error('Error using berry:', error);
-      setBerryError('An error occurred while applying the berry.');
-    } finally {
-      setBerryLoading(false);
+  // Handle inventory update from item modal
+  const handleInventoryUpdate = (itemType, itemName) => {
+    if (itemType === 'berry') {
+      setAvailableBerries(prev => ({
+        ...prev,
+        [itemName]: Math.max(0, (prev[itemName] || 0) - 1)
+      }));
+    } else if (itemType === 'pastry') {
+      setAvailablePastries(prev => ({
+        ...prev,
+        [itemName]: Math.max(0, (prev[itemName] || 0) - 1)
+      }));
     }
   };
 
-  // Handle using a pastry
-  const handleUsePastry = async () => {
-    if (!selectedPastry || !adoptedMonster) {
-      setPastryError('Please select a pastry to use.');
-      return;
-    }
-
-    try {
-      setPastryLoading(true);
-      setPastryError('');
-
-      const response = await adoptionService.usePastry(
-        adoptedMonster.id,
-        selectedPastry,
-        parseInt(selectedTrainer)
-      );
-
-      if (response.success && response.monster) {
-        setAdoptedMonster(response.monster);
-        closePastryModal();
-      } else {
-        setPastryError(response.message || 'Failed to apply pastry.');
-      }
-    } catch (error) {
-      console.error('Error using pastry:', error);
-      setPastryError('An error occurred while applying the pastry.');
-    } finally {
-      setPastryLoading(false);
-    }
+  // Handle monster update from item modal
+  const handleMonsterUpdate = (updatedMonster) => {
+    setAdoptedMonster(updatedMonster);
   };
 
   // Get month name
@@ -757,18 +679,13 @@ const AdoptionCenter = () => {
               <div className="adoption-actions">
                 <button
                   className="berry-button"
-                  onClick={openBerryModal}
-                  disabled={Object.keys(availableBerries).length === 0}
+                  onClick={openItemModal}
+                  disabled={
+                    !Object.values(availableBerries).some(count => count > 0) &&
+                    !Object.values(availablePastries).some(count => count > 0)
+                  }
                 >
-                  <i className="fas fa-apple-alt"></i> Use Berries
-                </button>
-
-                <button
-                  className="pastry-button"
-                  onClick={openPastryModal}
-                  disabled={Object.keys(availablePastries).length === 0}
-                >
-                  <i className="fas fa-cookie"></i> Use Pastries
+                  <i className="fas fa-utensils"></i> Use Pastries and Berries
                 </button>
               </div>
             )}
@@ -1021,115 +938,16 @@ const AdoptionCenter = () => {
         )}
       </Modal>
 
-      {/* Berry Modal */}
-      <Modal
-        isOpen={showBerryModal}
-        onClose={closeBerryModal}
-        title="Use Berries"
-      >
-        <div className="berry-modal-content">
-          <p>Select a berry to use on your monster:</p>
-
-          <div className="berry-list">
-            <div className="berry-category">
-              <h4>Species Modification</h4>
-              <div className="berry-items">
-                {Object.keys(availableBerries).map(berry => (
-                  <button
-                    key={berry}
-                    className={`berry-item ${selectedBerry === berry ? 'selected' : ''}`}
-                    onClick={() => setSelectedBerry(berry)}
-                  >
-                    <span className="berry-name">{berry}</span>
-                    <span className="berry-count">x{availableBerries[berry]}</span>
-                  </button>
-                ))}
-
-                {Object.keys(availableBerries).length === 0 && (
-                  <p className="no-items-message">No berries available</p>
-                )}
-              </div>
-            </div>
-          </div>
-
-          {berryError && (
-            <div className="berry-error">
-              {berryError}
-            </div>
-          )}
-
-          <div className="berry-actions">
-            <button
-              className="modal-button secondary"
-              onClick={closeBerryModal}
-            >
-              Cancel
-            </button>
-            <button
-              className="modal-button primary"
-              onClick={handleUseBerry}
-              disabled={berryLoading || !selectedBerry}
-            >
-              {berryLoading ? 'Applying...' : 'Use Berry'}
-            </button>
-          </div>
-        </div>
-      </Modal>
-
-      {/* Pastry Modal */}
-      <Modal
-        isOpen={showPastryModal}
-        onClose={closePastryModal}
-        title="Use Pastries"
-      >
-        <div className="pastry-modal-content">
-          <p>Select a pastry to use on your monster:</p>
-
-          <div className="pastry-list">
-            <div className="pastry-category">
-              <h4>Species Modification</h4>
-              <div className="pastry-items">
-                {Object.keys(availablePastries).map(pastry => (
-                  <button
-                    key={pastry}
-                    className={`pastry-item ${selectedPastry === pastry ? 'selected' : ''}`}
-                    onClick={() => setSelectedPastry(pastry)}
-                  >
-                    <span className="pastry-name">{pastry}</span>
-                    <span className="pastry-count">x{availablePastries[pastry]}</span>
-                  </button>
-                ))}
-
-                {Object.keys(availablePastries).length === 0 && (
-                  <p className="no-items-message">No pastries available</p>
-                )}
-              </div>
-            </div>
-          </div>
-
-          {pastryError && (
-            <div className="pastry-error">
-              {pastryError}
-            </div>
-          )}
-
-          <div className="pastry-actions">
-            <button
-              className="modal-button secondary"
-              onClick={closePastryModal}
-            >
-              Cancel
-            </button>
-            <button
-              className="modal-button primary"
-              onClick={handleUsePastry}
-              disabled={pastryLoading || !selectedPastry}
-            >
-              {pastryLoading ? 'Applying...' : 'Use Pastry'}
-            </button>
-          </div>
-        </div>
-      </Modal>
+      {/* Item Modal (Berries and Pastries) */}
+      <AdoptionItemModal
+        isOpen={showItemModal}
+        onClose={closeItemModal}
+        monster={adoptedMonster}
+        trainerId={parseInt(selectedTrainer)}
+        availableBerries={availableBerries}
+        availablePastries={availablePastries}
+        onInventoryUpdate={handleInventoryUpdate}
+      />
 
       {/* Image Popout Modal - Rendered via Portal */}
       {showImagePopout && ReactDOM.createPortal(

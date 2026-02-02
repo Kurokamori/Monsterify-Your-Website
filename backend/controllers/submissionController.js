@@ -238,6 +238,8 @@ const getWritingLibrary = async (req, res) => {
     const userId = req.query.userId;
     const monsterId = req.query.monsterId;
     const sortBy = req.query.sort || 'newest';
+    const booksOnly = req.query.booksOnly === 'true';
+    const excludeChapters = req.query.excludeChapters === 'true';
 
     // Build the query
     let query = `
@@ -335,6 +337,16 @@ const getWritingLibrary = async (req, res) => {
       paramIndex++;
     }
 
+    // Add books only filter
+    if (booksOnly) {
+      query += ` AND s.is_book = 1`;
+    }
+
+    // Exclude chapters (items with a parent_id) from main listing
+    if (excludeChapters) {
+      query += ` AND s.parent_id IS NULL`;
+    }
+
     // Add sorting
     if (sortBy === 'oldest') {
       query += ` ORDER BY s.submission_date ASC`;
@@ -391,6 +403,16 @@ const getWritingLibrary = async (req, res) => {
       countQuery += ` AND EXISTS (SELECT 1 FROM submission_monsters WHERE submission_id = s.id AND monster_id = $${paramIndex})`;
       countParams.push(monsterId);
       paramIndex++;
+    }
+
+    // Add books only filter to count
+    if (booksOnly) {
+      countQuery += ` AND s.is_book = 1`;
+    }
+
+    // Exclude chapters from count
+    if (excludeChapters) {
+      countQuery += ` AND s.parent_id IS NULL`;
     }
 
     // Execute the queries
@@ -1300,6 +1322,21 @@ const submitWriting = async (req, res) => {
 
     // Create submission first
     console.log('Creating writing submission...');
+
+    // Handle chapter number assignment
+    let chapterNumber = req.body.chapterNumber ? parseInt(req.body.chapterNumber) : null;
+
+    // If this is a chapter but no chapter number provided, auto-assign next chapter number
+    if (req.body.parentId && !chapterNumber) {
+      const maxChapterQuery = `
+        SELECT COALESCE(MAX(chapter_number), 0) as max_chapter
+        FROM submissions
+        WHERE parent_id = $1
+      `;
+      const maxResult = await db.asyncAll(maxChapterQuery, [req.body.parentId]);
+      chapterNumber = (maxResult[0]?.max_chapter || 0) + 1;
+    }
+
     const submissionData = {
       userId,
       trainerId: trainersArray.length > 0 ? trainersArray[0].trainerId : null,
@@ -1310,7 +1347,8 @@ const submitWriting = async (req, res) => {
       submissionType: 'writing',
       status: 'approved', // Auto-approve for now
       isBook: req.body.isBook || 0,
-      parentId: req.body.parentId || null
+      parentId: req.body.parentId || null,
+      chapterNumber: chapterNumber
     };
 
     const submission = await Submission.create(submissionData);
@@ -3330,6 +3368,195 @@ const claimSubmissionMonster = async (req, res) => {
 };
 
 
+/**
+ * Get user's books for chapter assignment
+ */
+const getUserBooks = async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    const query = `
+      SELECT
+        s.id,
+        s.title,
+        s.description,
+        s.submission_date,
+        (SELECT image_url FROM submission_images WHERE submission_id = s.id AND is_main = 1 LIMIT 1) as cover_image_url,
+        (SELECT COUNT(*) FROM submissions WHERE parent_id = s.id) as chapter_count
+      FROM submissions s
+      WHERE s.submission_type = 'writing'
+        AND s.is_book = 1
+        AND s.user_id = $1
+      ORDER BY s.submission_date DESC
+    `;
+
+    const books = await db.asyncAll(query, [userId]);
+
+    res.json({
+      success: true,
+      books
+    });
+  } catch (error) {
+    console.error('Error fetching user books:', error);
+    res.status(500).json({ error: 'Failed to fetch user books' });
+  }
+};
+
+/**
+ * Get chapters for a book
+ */
+const getBookChapters = async (req, res) => {
+  try {
+    const bookId = parseInt(req.params.bookId);
+
+    // First verify the book exists
+    const bookQuery = `
+      SELECT id, title, is_book FROM submissions WHERE id = $1
+    `;
+    const bookResult = await db.asyncAll(bookQuery, [bookId]);
+
+    if (!bookResult.length) {
+      return res.status(404).json({ error: 'Book not found' });
+    }
+
+    if (!bookResult[0].is_book) {
+      return res.status(400).json({ error: 'This submission is not a book' });
+    }
+
+    // Get chapters ordered by chapter_number or submission_date
+    const query = `
+      SELECT
+        s.id,
+        s.title,
+        s.description,
+        s.submission_date,
+        s.chapter_number,
+        (SELECT SUM(LENGTH(content) - LENGTH(REPLACE(content, ' ', '')) + 1)
+         FROM submissions WHERE id = s.id) as word_count,
+        (SELECT image_url FROM submission_images WHERE submission_id = s.id AND is_main = 1 LIMIT 1) as cover_image_url
+      FROM submissions s
+      WHERE s.parent_id = $1
+      ORDER BY
+        CASE WHEN s.chapter_number IS NOT NULL THEN s.chapter_number ELSE 999999 END ASC,
+        s.submission_date ASC
+    `;
+
+    const chapters = await db.asyncAll(query, [bookId]);
+
+    res.json({
+      success: true,
+      bookId,
+      bookTitle: bookResult[0].title,
+      chapters
+    });
+  } catch (error) {
+    console.error('Error fetching book chapters:', error);
+    res.status(500).json({ error: 'Failed to fetch book chapters' });
+  }
+};
+
+/**
+ * Update chapter order in a book
+ */
+const updateChapterOrder = async (req, res) => {
+  try {
+    const bookId = parseInt(req.params.bookId);
+    const { chapterOrder } = req.body;
+    const userId = req.user.id;
+
+    // Verify the user owns this book
+    const bookQuery = `
+      SELECT id, user_id FROM submissions WHERE id = $1 AND is_book = 1
+    `;
+    const bookResult = await db.asyncAll(bookQuery, [bookId]);
+
+    if (!bookResult.length) {
+      return res.status(404).json({ error: 'Book not found' });
+    }
+
+    if (bookResult[0].user_id !== userId) {
+      return res.status(403).json({ error: 'You do not have permission to modify this book' });
+    }
+
+    // Update chapter numbers
+    for (let i = 0; i < chapterOrder.length; i++) {
+      const chapterId = chapterOrder[i];
+      await db.asyncRun(
+        `UPDATE submissions SET chapter_number = $1 WHERE id = $2 AND parent_id = $3`,
+        [i + 1, chapterId, bookId]
+      );
+    }
+
+    res.json({
+      success: true,
+      message: 'Chapter order updated successfully'
+    });
+  } catch (error) {
+    console.error('Error updating chapter order:', error);
+    res.status(500).json({ error: 'Failed to update chapter order' });
+  }
+};
+
+/**
+ * Create a new book (without content, just metadata)
+ */
+const createBook = async (req, res) => {
+  try {
+    const { title, description, tags } = req.body;
+    const userId = req.user.id;
+
+    // Create the book submission
+    const submission = await Submission.create({
+      userId,
+      trainerId: null,
+      title,
+      description: description || '',
+      contentType: 'book',
+      content: null,
+      submissionType: 'writing',
+      isBook: 1,
+      parentId: null,
+      status: 'approved'
+    });
+
+    // Handle cover image upload
+    if (req.file) {
+      const result = await cloudinary.uploader.upload(req.file.path, {
+        folder: 'submissions/covers'
+      });
+
+      await db.asyncRun(
+        `INSERT INTO submission_images (submission_id, image_url, is_main, order_index) VALUES ($1, $2, 1, 0)`,
+        [submission.id, result.secure_url]
+      );
+    } else if (req.body.coverImageUrl) {
+      await db.asyncRun(
+        `INSERT INTO submission_images (submission_id, image_url, is_main, order_index) VALUES ($1, $2, 1, 0)`,
+        [submission.id, req.body.coverImageUrl]
+      );
+    }
+
+    // Handle tags
+    if (tags) {
+      const tagArray = typeof tags === 'string' ? JSON.parse(tags) : tags;
+      for (const tag of tagArray) {
+        await db.asyncRun(
+          `INSERT INTO submission_tags (submission_id, tag) VALUES ($1, $2)`,
+          [submission.id, tag]
+        );
+      }
+    }
+
+    res.json({
+      success: true,
+      book: submission
+    });
+  } catch (error) {
+    console.error('Error creating book:', error);
+    res.status(500).json({ error: 'Failed to create book' });
+  }
+};
+
 module.exports = {
   getArtGallery,
   getWritingLibrary,
@@ -3355,7 +3582,11 @@ module.exports = {
   finalizeGiftRewards,
   rerollSubmissionItems,
   rerollSubmissionMonsters,
-  claimSubmissionMonster
+  claimSubmissionMonster,
+  getUserBooks,
+  getBookChapters,
+  updateChapterOrder,
+  createBook
 };
 
 /**

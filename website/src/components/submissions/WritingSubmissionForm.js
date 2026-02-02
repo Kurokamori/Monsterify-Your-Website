@@ -28,6 +28,13 @@ const WritingSubmissionForm = ({ onSubmissionComplete }) => {
   const [coverImagePreview, setCoverImagePreview] = useState('');
   const [coverImageUrl, setCoverImageUrl] = useState('');
   const [useCoverImageUrl, setUseCoverImageUrl] = useState(false);
+
+  // Book/Chapter state
+  const [isBook, setIsBook] = useState(false);
+  const [belongsToBook, setBelongsToBook] = useState(false);
+  const [selectedBookId, setSelectedBookId] = useState('');
+  const [chapterNumber, setChapterNumber] = useState('');
+  const [userBooks, setUserBooks] = useState([]);
   // Reward calculation state
   const [calculatorValues, setCalculatorValues] = useState({
     wordCount: 0,
@@ -90,6 +97,22 @@ const WritingSubmissionForm = ({ onSubmissionComplete }) => {
     };
 
     fetchTrainers();
+  }, [currentUser]);
+
+  // Fetch user's books for chapter assignment
+  useEffect(() => {
+    const fetchUserBooks = async () => {
+      try {
+        const response = await submissionService.getUserBooks();
+        setUserBooks(response.books || []);
+      } catch (err) {
+        console.error('Error fetching user books:', err);
+      }
+    };
+
+    if (currentUser) {
+      fetchUserBooks();
+    }
   }, [currentUser]);
 
   // Fetch all trainers for monster selection
@@ -292,6 +315,9 @@ const WritingSubmissionForm = ({ onSubmissionComplete }) => {
         description,
         contentType,
         tags,
+        isBook: isBook ? 1 : 0,
+        parentId: belongsToBook && selectedBookId ? parseInt(selectedBookId) : null,
+        chapterNumber: belongsToBook && chapterNumber ? parseInt(chapterNumber) : null,
         ...dataToSend
       };
 
@@ -390,6 +416,11 @@ const WritingSubmissionForm = ({ onSubmissionComplete }) => {
     setUseCoverImageUrl(false);
     setRewardEstimate(null);
     setShowRewardEstimate(false);
+    // Reset book/chapter fields
+    setIsBook(false);
+    setBelongsToBook(false);
+    setSelectedBookId('');
+    setChapterNumber('');
 
     // Notify parent component
     if (onSubmissionComplete) {
@@ -578,6 +609,82 @@ const WritingSubmissionForm = ({ onSubmissionComplete }) => {
 
 
           </div>
+
+          {/* Book/Chapter Options */}
+          <div className="form-group">
+            <label>Book Organization</label>
+            <div className="book-options">
+              <label className="checkbox-label">
+                <input
+                  type="checkbox"
+                  checked={isBook}
+                  onChange={(e) => {
+                    setIsBook(e.target.checked);
+                    if (e.target.checked) {
+                      setBelongsToBook(false);
+                      setSelectedBookId('');
+                      setChapterNumber('');
+                    }
+                  }}
+                  disabled={belongsToBook}
+                />
+                This is a Book (can contain chapters)
+              </label>
+
+              <label className="checkbox-label">
+                <input
+                  type="checkbox"
+                  checked={belongsToBook}
+                  onChange={(e) => {
+                    setBelongsToBook(e.target.checked);
+                    if (e.target.checked) {
+                      setIsBook(false);
+                    } else {
+                      setSelectedBookId('');
+                      setChapterNumber('');
+                    }
+                  }}
+                  disabled={isBook}
+                />
+                This is a Chapter (belongs to an existing book)
+              </label>
+            </div>
+          </div>
+
+          {/* Book Selection (for chapters) */}
+          {belongsToBook && (
+            <div className="form-row">
+              <div className="form-group">
+                <label htmlFor="book-select">Select Book *</label>
+                <select
+                  id="book-select"
+                  value={selectedBookId}
+                  onChange={(e) => setSelectedBookId(e.target.value)}
+                  required={belongsToBook}
+                >
+                  <option value="">-- Select a Book --</option>
+                  {userBooks.map(book => (
+                    <option key={book.id} value={book.id}>
+                      {book.title} ({book.chapter_count || 0} chapters)
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="chapter-number">Chapter Number (Optional)</label>
+                <input
+                  id="chapter-number"
+                  type="number"
+                  min="1"
+                  value={chapterNumber}
+                  onChange={(e) => setChapterNumber(e.target.value)}
+                  placeholder="Auto-assign if empty"
+                />
+                <small className="form-hint">Leave empty to auto-assign the next chapter number</small>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Tags */}

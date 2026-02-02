@@ -67,7 +67,13 @@ const WitchsHut = () => {
         setLoading(false);
       } catch (error) {
         console.error('Error fetching user trainers:', error);
-        setError('Failed to load trainers. Please try again.');
+        let errorMessage = 'Failed to load trainers. Please try again.';
+        if (error.response?.data?.message) {
+          errorMessage = error.response.data.message;
+        } else if (error.message) {
+          errorMessage = error.message;
+        }
+        setError(errorMessage);
         setLoading(false);
       }
     };
@@ -103,7 +109,13 @@ const WitchsHut = () => {
         setLoadingInventory(false);
       } catch (error) {
         console.error('Error fetching trainer data:', error);
-        setError('Failed to load trainer data. Please try again.');
+        let errorMessage = 'Failed to load trainer data. Please try again.';
+        if (error.response?.data?.message) {
+          errorMessage = error.response.data.message;
+        } else if (error.message) {
+          errorMessage = error.message;
+        }
+        setError(errorMessage);
         setLoading(false);
         setLoadingInventory(false);
       }
@@ -196,7 +208,13 @@ const WitchsHut = () => {
       setLoadingEvolutionOptions(false);
     } catch (error) {
       console.error('Error fetching evolution options:', error);
-      setEvolutionError('Failed to fetch evolution options.');
+      let errorMessage = 'Failed to fetch evolution options.';
+      if (error.response?.data?.message) {
+        errorMessage = error.response.data.message;
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+      setEvolutionError(errorMessage);
       setEvolutionOptions([]);
       setLoadingEvolutionOptions(false);
     }

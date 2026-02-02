@@ -57,7 +57,13 @@ const BreedMonsters = ({ onBreedingComplete, onCancel }) => {
         }
       } catch (err) {
         console.error('Error fetching user trainers:', err);
-        setError('Failed to load trainers. Please try again.');
+        let errorMessage = 'Failed to load trainers. Please try again.';
+        if (err.response?.data?.message) {
+          errorMessage = err.response.data.message;
+        } else if (err.message) {
+          errorMessage = err.message;
+        }
+        setError(errorMessage);
       } finally {
         setLoading(false);
       }
@@ -80,7 +86,13 @@ const BreedMonsters = ({ onBreedingComplete, onCancel }) => {
         }
       } catch (err) {
         console.error(`Error fetching monsters for trainer ${userTrainer}:`, err);
-        setError('Failed to load monsters. Please try again.');
+        let errorMessage = 'Failed to load monsters. Please try again.';
+        if (err.response?.data?.message) {
+          errorMessage = err.response.data.message;
+        } else if (err.message) {
+          errorMessage = err.message;
+        }
+        setError(errorMessage);
       } finally {
         setLoading(false);
       }
@@ -103,7 +115,13 @@ const BreedMonsters = ({ onBreedingComplete, onCancel }) => {
         }
       } catch (err) {
         console.error(`Error fetching monsters for trainer ${anyTrainer}:`, err);
-        setError('Failed to load monsters. Please try again.');
+        let errorMessage = 'Failed to load monsters. Please try again.';
+        if (err.response?.data?.message) {
+          errorMessage = err.response.data.message;
+        } else if (err.message) {
+          errorMessage = err.message;
+        }
+        setError(errorMessage);
       } finally {
         setLoading(false);
       }

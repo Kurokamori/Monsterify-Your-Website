@@ -5,6 +5,7 @@ import { useModalManager } from '../../hooks/useModalManager';
 import submissionService from '../../services/submissionService';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
 import ErrorMessage from '../../components/common/ErrorMessage';
+import MarkdownRenderer from '../../components/common/MarkdownRenderer';
 import useDocumentTitle from '../../hooks/useDocumentTitle';
 
 const SubmissionDetailPage = ({ type }) => {
@@ -19,6 +20,8 @@ const SubmissionDetailPage = ({ type }) => {
   const [selectedImage, setSelectedImage] = useState(null);
   const [imageModalOpen, setImageModalOpen] = useState(false);
   const [relatedSubmissions, setRelatedSubmissions] = useState([]);
+  const [bookChapters, setBookChapters] = useState([]);
+  const [parentBook, setParentBook] = useState(null);
 
   // Set document title based on submission title
   useDocumentTitle(submission ? submission.title : (type === 'art' ? 'Gallery' : 'Library'));
@@ -36,11 +39,37 @@ const SubmissionDetailPage = ({ type }) => {
       try {
         setLoading(true);
         setError(null);
+        setBookChapters([]);
+        setParentBook(null);
 
         const response = await submissionService.getSubmissionById(id);
 
         if (response.success && response.submission) {
           setSubmission(response.submission);
+
+          // If this is a book, fetch its chapters
+          if (response.submission.is_book) {
+            try {
+              const chaptersResponse = await submissionService.getBookChapters(id);
+              if (chaptersResponse.chapters) {
+                setBookChapters(chaptersResponse.chapters);
+              }
+            } catch (chaptersErr) {
+              console.error('Error fetching book chapters:', chaptersErr);
+            }
+          }
+
+          // If this is a chapter, fetch the parent book info
+          if (response.submission.parent_id) {
+            try {
+              const parentResponse = await submissionService.getSubmissionById(response.submission.parent_id);
+              if (parentResponse.success && parentResponse.submission) {
+                setParentBook(parentResponse.submission);
+              }
+            } catch (parentErr) {
+              console.error('Error fetching parent book:', parentErr);
+            }
+          }
 
           // Fetch related submissions if available
           if (response.submission.user_id) {
@@ -195,13 +224,43 @@ const SubmissionDetailPage = ({ type }) => {
             </div>
           )}
 
+          {/* Parent Book Navigation (for chapters) */}
+          {isWriting && parentBook && (
+            <div className="parent-book-nav">
+              <Link to={`/library/${parentBook.id}`} className="parent-book-link">
+                <i className="fas fa-book"></i>
+                Part of: <strong>{parentBook.title}</strong>
+              </Link>
+            </div>
+          )}
+
+          {/* Book Chapters (if this is a book) */}
+          {isWriting && submission.is_book && bookChapters.length > 0 && (
+            <div className="book-chapters-section">
+              <h2><i className="fas fa-list"></i> Chapters</h2>
+              <div className="chapters-list-compact">
+                {bookChapters.map((chapter, index) => (
+                  <Link
+                    key={chapter.id}
+                    to={`/library/${chapter.id}`}
+                    className="chapter-link"
+                  >
+                    <span className="chapter-num">Chapter {chapter.chapter_number || index + 1}</span>
+                    <span className="chapter-title">{chapter.title}</span>
+                    {chapter.word_count && (
+                      <span className="chapter-words">{chapter.word_count.toLocaleString()} words</span>
+                    )}
+                  </Link>
+                ))}
+              </div>
+            </div>
+          )}
+
           {isWriting && submission.content && (
             <div className="submission-writing-content">
               <h2>Content</h2>
-              <div className="writing-text">
-                {submission.content.split('\n').map((paragraph, index) => (
-                  <p key={index}>{paragraph}</p>
-                ))}
+              <div className="writing-text markdown-writing">
+                <MarkdownRenderer content={submission.content} />
               </div>
             </div>
           )}

@@ -246,6 +246,17 @@ const submissionService = {
         formData.append('tags', JSON.stringify(writingData.tags));
       }
 
+      // Add book/chapter data
+      if (writingData.isBook !== undefined) {
+        formData.append('isBook', writingData.isBook);
+      }
+      if (writingData.parentId) {
+        formData.append('parentId', writingData.parentId);
+      }
+      if (writingData.chapterNumber) {
+        formData.append('chapterNumber', writingData.chapterNumber);
+      }
+
       // Add content or file
       if (writingData.content) {
         formData.append('content', writingData.content);
@@ -366,7 +377,7 @@ const submissionService = {
 
   /**
    * Get writing library
-   * @param {Object} params - Query parameters (contentType, tags, page, limit)
+   * @param {Object} params - Query parameters (contentType, tags, page, limit, booksOnly, excludeChapters)
    * @returns {Promise<Object>} - Response with library data
    */
   getWritingLibrary: async (params = {}) => {
@@ -375,6 +386,87 @@ const submissionService = {
       return response.data;
     } catch (error) {
       console.error('Error fetching writing library:', error);
+      throw error;
+    }
+  },
+
+  /**
+   * Get user's books (for chapter assignment)
+   * @returns {Promise<Object>} - Response with user's books
+   */
+  getUserBooks: async () => {
+    try {
+      const response = await api.get('/submissions/user/books');
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching user books:', error);
+      throw error;
+    }
+  },
+
+  /**
+   * Get chapters for a book
+   * @param {number} bookId - Book submission ID
+   * @returns {Promise<Object>} - Response with chapters
+   */
+  getBookChapters: async (bookId) => {
+    try {
+      const response = await api.get(`/submissions/books/${bookId}/chapters`);
+      return response.data;
+    } catch (error) {
+      console.error(`Error fetching chapters for book ${bookId}:`, error);
+      throw error;
+    }
+  },
+
+  /**
+   * Update chapter order in a book
+   * @param {number} bookId - Book submission ID
+   * @param {Array} chapterOrder - Array of chapter IDs in order
+   * @returns {Promise<Object>} - Response with updated chapters
+   */
+  updateChapterOrder: async (bookId, chapterOrder) => {
+    try {
+      const response = await api.put(`/submissions/books/${bookId}/chapters/order`, {
+        chapterOrder
+      });
+      return response.data;
+    } catch (error) {
+      console.error(`Error updating chapter order for book ${bookId}:`, error);
+      throw error;
+    }
+  },
+
+  /**
+   * Create a new book
+   * @param {Object} bookData - Book data (title, description, coverImage)
+   * @returns {Promise<Object>} - Response with created book
+   */
+  createBook: async (bookData) => {
+    try {
+      const formData = new FormData();
+      formData.append('title', bookData.title);
+      formData.append('description', bookData.description || '');
+      formData.append('isBook', '1');
+
+      if (bookData.coverImage) {
+        formData.append('coverImage', bookData.coverImage);
+      } else if (bookData.coverImageUrl) {
+        formData.append('coverImageUrl', bookData.coverImageUrl);
+      }
+
+      if (bookData.tags && bookData.tags.length > 0) {
+        formData.append('tags', JSON.stringify(bookData.tags));
+      }
+
+      const response = await api.post('/submissions/books', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+      return response.data;
+    } catch (error) {
+      console.error('Error creating book:', error);
       throw error;
     }
   },

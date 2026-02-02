@@ -375,11 +375,400 @@
 .chapter-item h4 { color: var(--accent-color, #d6a339); margin-bottom: 0.25rem; }
 .chapter-item p { color: #8a8d98; margin-bottom: 0; }
 
+/* ================================
+   Book/Chapter System Styles
+   ================================ */
+
+/* Book View (when viewing a book's chapters) */
+.book-view {
+  padding: 1.5rem;
+  background-color: var(--card-background-light);
+  border-radius: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.book-view-header {
+  margin-bottom: 2rem;
+}
+
+.book-view-header .btn-back {
+  margin-bottom: 1rem;
+  background: transparent;
+  border: 1px solid var(--border-color);
+  color: var(--text-color);
+  padding: 0.5rem 1rem;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.book-view-header .btn-back:hover {
+  background: var(--accent-color);
+  color: var(--nav-background);
+}
+
+.book-view-info {
+  display: flex;
+  gap: 2rem;
+  align-items: flex-start;
+}
+
+.book-view-cover {
+  flex-shrink: 0;
+  width: 200px;
+  height: 280px;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.book-view-cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.book-view-details {
+  flex: 1;
+}
+
+.book-view-details h2 {
+  color: var(--accent-color, #d6a339);
+  margin-bottom: 0.5rem;
+  font-size: 1.8rem;
+}
+
+.book-author {
+  color: #8a8d98;
+  font-size: 1rem;
+  margin-bottom: 1rem;
+}
+
+.book-description {
+  color: var(--text-color);
+  line-height: 1.6;
+  margin-bottom: 1rem;
+}
+
+.book-stats {
+  display: flex;
+  gap: 1rem;
+}
+
+.book-chapter-count {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(214, 163, 57, 0.1);
+  color: var(--accent-color);
+  padding: 0.5rem 1rem;
+  border-radius: 0.25rem;
+  font-weight: 500;
+}
+
+/* Chapters Grid */
+.chapters-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1rem;
+}
+
+.chapter-item {
+  background: linear-gradient(135deg, #1e2532 0%, #2a3142 100%);
+  border: 1px solid var(--border-color);
+  border-radius: 0.5rem;
+  padding: 1.25rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.chapter-item:hover {
+  transform: translateY(-2px);
+  border-color: var(--accent-color);
+  box-shadow: 0 4px 12px rgba(214, 163, 57, 0.15);
+}
+
+.chapter-number {
+  color: var(--accent-color);
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.chapter-title {
+  color: #fff;
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+
+.chapter-word-count {
+  color: #8a8d98;
+  font-size: 0.85rem;
+}
+
+.no-chapters {
+  color: #8a8d98;
+  text-align: center;
+  padding: 2rem;
+  font-style: italic;
+}
+
+/* Library Item Book Badge */
+.library-item.is-book {
+  border: 2px solid var(--accent-color);
+}
+
+.library-item-book-badge {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  padding: 0.35rem 0.75rem;
+  background: linear-gradient(135deg, var(--accent-color) 0%, #c7942d 100%);
+  color: var(--nav-background);
+  font-size: 0.75rem;
+  font-weight: 600;
+  border-top-left-radius: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.book-icon {
+  color: var(--accent-color);
+  margin-right: 0.35rem;
+}
+
+/* Parent Book Navigation (for chapter detail page) */
+.parent-book-nav {
+  margin-bottom: 1.5rem;
+}
+
+.parent-book-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  background: rgba(214, 163, 57, 0.1);
+  border: 1px solid var(--accent-color);
+  border-radius: 0.5rem;
+  color: var(--accent-color);
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.parent-book-link:hover {
+  background: rgba(214, 163, 57, 0.2);
+  text-decoration: none;
+}
+
+/* Book Chapters Section (in submission detail) */
+.book-chapters-section {
+  margin: 2rem 0;
+  padding: 1.5rem;
+  background: rgba(30, 37, 50, 0.5);
+  border-radius: 0.5rem;
+  border: 1px solid var(--border-color);
+}
+
+.book-chapters-section h2 {
+  color: var(--accent-color);
+  font-size: 1.3rem;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.chapters-list-compact {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.chapter-link {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem 1rem;
+  background: var(--nav-background);
+  border-radius: 0.25rem;
+  text-decoration: none;
+  transition: all 0.2s;
+  border: 1px solid transparent;
+}
+
+.chapter-link:hover {
+  background: #2a3142;
+  border-color: var(--accent-color);
+  text-decoration: none;
+}
+
+.chapter-link .chapter-num {
+  color: var(--accent-color);
+  font-weight: 600;
+  font-size: 0.85rem;
+  min-width: 80px;
+}
+
+.chapter-link .chapter-title {
+  color: #fff;
+  flex: 1;
+}
+
+.chapter-link .chapter-words {
+  color: #8a8d98;
+  font-size: 0.85rem;
+}
+
+/* Markdown Writing Content */
+.markdown-writing {
+  line-height: 1.8;
+  color: var(--text-color);
+}
+
+.markdown-writing h1,
+.markdown-writing h2,
+.markdown-writing h3,
+.markdown-writing h4,
+.markdown-writing h5,
+.markdown-writing h6 {
+  color: var(--accent-color);
+  margin-top: 1.5em;
+  margin-bottom: 0.5em;
+}
+
+.markdown-writing p {
+  margin-bottom: 1em;
+}
+
+.markdown-writing blockquote {
+  border-left: 3px solid var(--accent-color);
+  padding-left: 1rem;
+  margin: 1rem 0;
+  font-style: italic;
+  color: #b0b0b0;
+}
+
+.markdown-writing code {
+  background: rgba(0, 0, 0, 0.3);
+  padding: 0.2em 0.4em;
+  border-radius: 0.25rem;
+  font-size: 0.9em;
+}
+
+.markdown-writing pre {
+  background: rgba(0, 0, 0, 0.3);
+  padding: 1rem;
+  border-radius: 0.5rem;
+  overflow-x: auto;
+}
+
+.markdown-writing pre code {
+  background: transparent;
+  padding: 0;
+}
+
+.markdown-writing hr {
+  border: none;
+  height: 1px;
+  background: var(--border-color);
+  margin: 2rem 0;
+}
+
+.markdown-writing a {
+  color: var(--accent-color);
+}
+
+.markdown-writing ul,
+.markdown-writing ol {
+  margin: 1rem 0;
+  padding-left: 1.5rem;
+}
+
+.markdown-writing li {
+  margin-bottom: 0.5rem;
+}
+
+/* Filter checkbox for books */
+.filter-checkbox {
+  display: flex;
+  align-items: center;
+}
+
+.filter-checkbox .checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  color: var(--text-color);
+  font-size: 0.9rem;
+}
+
+.filter-checkbox input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--accent-color);
+}
+
+/* Book Options in Submission Form */
+.book-options {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.book-options .checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  color: var(--text-color);
+}
+
+.book-options input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--accent-color);
+}
+
+.book-options input[type="checkbox"]:disabled {
+  opacity: 0.5;
+}
+
 /* ---------- Responsive ---------- */
 @media (max-width: 768px) {
   .gallery-filters { flex-direction: column; }
   .filter-actions { flex-direction: column; width: 100%; }
 
   .gallery-grid { grid-template-columns: 1fr; }
-    
+
+  .book-view-info {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
   }
+
+  .book-view-cover {
+    width: 150px;
+    height: 210px;
+  }
+
+  .chapters-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .chapter-link {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
+  }
+
+  .chapter-link .chapter-num {
+    min-width: auto;
+  }
+}

@@ -142,7 +142,13 @@ const Apothecary = () => {
         setLoading(false);
       } catch (error) {
         console.error('Error fetching user trainers:', error);
-        setError('Failed to load trainers. Please try again.');
+        let errorMessage = 'Failed to load trainers. Please try again.';
+        if (error.response?.data?.message) {
+          errorMessage = error.response.data.message;
+        } else if (error.message) {
+          errorMessage = error.message;
+        }
+        setError(errorMessage);
         setLoading(false);
       }
     };
@@ -174,7 +180,13 @@ const Apothecary = () => {
         setLoading(false);
       } catch (error) {
         console.error('Error fetching trainer monsters:', error);
-        setError('Failed to load monsters. Please try again.');
+        let errorMessage = 'Failed to load monsters. Please try again.';
+        if (error.response?.data?.message) {
+          errorMessage = error.response.data.message;
+        } else if (error.message) {
+          errorMessage = error.message;
+        }
+        setError(errorMessage);
         setLoading(false);
       }
     };
@@ -264,7 +276,13 @@ const Apothecary = () => {
         setShowSpeciesModal(true);
       } catch (error) {
         console.error('Error rolling species:', error);
-        setBerryError('Failed to roll species. Please try again.');
+        let errorMessage = 'Failed to roll species. Please try again.';
+        if (error.response?.data?.message) {
+          errorMessage = error.response.data.message;
+        } else if (error.message) {
+          errorMessage = error.message;
+        }
+        setBerryError(errorMessage);
         setBerryLoading(false);
       }
       return;
@@ -315,7 +333,13 @@ const Apothecary = () => {
       }
     } catch (error) {
       console.error('Error using berry:', error);
-      setBerryError('An error occurred while applying the berry.');
+      let errorMessage = 'An error occurred while applying the berry.';
+      if (error.response?.data?.message) {
+        errorMessage = error.response.data.message;
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+      setBerryError(errorMessage);
     } finally {
       setBerryLoading(false);
       setShowSpeciesModal(false);

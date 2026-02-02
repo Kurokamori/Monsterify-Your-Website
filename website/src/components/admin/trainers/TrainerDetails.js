@@ -71,17 +71,32 @@ const ThemeSection = ({ theme }) => {
   );
 };
 
-// Helper function to calculate age from birth year or return original value
-const calculateDisplayAge = (ageValue) => {
+// Helper function to calculate age from birthday or return original age value
+const calculateDisplayAge = (ageValue, birthday) => {
   if (!ageValue) return null;
   const ageStr = String(ageValue).trim();
-  // Check if it's a 4-digit year (between 1900 and current year)
-  const currentYear = new Date().getFullYear();
-  const yearNum = parseInt(ageStr, 10);
-  if (/^\d{4}$/.test(ageStr) && yearNum >= 1900 && yearNum <= currentYear) {
-    return currentYear - yearNum;
+
+  // If age is not numeric (like "???"), just return it as-is
+  if (!/^\d+$/.test(ageStr)) {
+    return ageStr;
   }
-  // If it's not a birth year, return the original value as-is
+
+  // If we have a birthday, calculate age from it
+  if (birthday) {
+    const birthDate = new Date(birthday);
+    if (!isNaN(birthDate.getTime())) {
+      const today = new Date();
+      let age = today.getFullYear() - birthDate.getFullYear();
+      const monthDiff = today.getMonth() - birthDate.getMonth();
+      // Adjust if birthday hasn't occurred yet this year
+      if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+        age--;
+      }
+      return age;
+    }
+  }
+
+  // Fallback to the original numeric age value
   return ageStr;
 };
 
@@ -308,7 +323,7 @@ const TrainerDetails = () => {
                     </div>
                     <div className="trainer-info-item">
                       <span className="info-label">Age</span>
-                      <span className="info-value">{calculateDisplayAge(trainer.age) || 'Not specified'}</span>
+                      <span className="info-value">{calculateDisplayAge(trainer.age, trainer.birthday) || 'Not specified'}</span>
                     </div>
                     <div className="trainer-info-item">
                       <span className="info-label">Height</span>

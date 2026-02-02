@@ -142,7 +142,13 @@ const Bakery = () => {
         setLoading(false);
       } catch (error) {
         console.error('Error fetching user trainers:', error);
-        setError('Failed to load trainers. Please try again.');
+        let errorMessage = 'Failed to load trainers. Please try again.';
+        if (error.response?.data?.message) {
+          errorMessage = error.response.data.message;
+        } else if (error.message) {
+          errorMessage = error.message;
+        }
+        setError(errorMessage);
         setLoading(false);
       }
     };
@@ -174,7 +180,13 @@ const Bakery = () => {
         setLoading(false);
       } catch (error) {
         console.error('Error fetching trainer monsters:', error);
-        setError('Failed to load monsters. Please try again.');
+        let errorMessage = 'Failed to load monsters. Please try again.';
+        if (error.response?.data?.message) {
+          errorMessage = error.response.data.message;
+        } else if (error.message) {
+          errorMessage = error.message;
+        }
+        setError(errorMessage);
         setLoading(false);
       }
     };
@@ -262,7 +274,13 @@ const Bakery = () => {
         setPastryLoading(false);
       } catch (error) {
         console.error('Error fetching species list:', error);
-        setPastryError('Failed to fetch species list. Please try again.');
+        let errorMessage = 'Failed to fetch species list. Please try again.';
+        if (error.response?.data?.message) {
+          errorMessage = error.response.data.message;
+        } else if (error.message) {
+          errorMessage = error.message;
+        }
+        setPastryError(errorMessage);
         setPastryLoading(false);
         return;
       }
@@ -322,13 +340,15 @@ const Bakery = () => {
       }
     } catch (error) {
       console.error('Error using pastry:', error);
-      
+
       // Extract error message from response if available
       let errorMessage = 'An error occurred while applying the pastry.';
-      if (error.message) {
+      if (error.response?.data?.message) {
+        errorMessage = error.response.data.message;
+      } else if (error.message) {
         errorMessage = error.message;
       }
-      
+
       setPastryError(errorMessage);
     } finally {
       setPastryLoading(false);

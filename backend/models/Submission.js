@@ -30,6 +30,7 @@ class Submission {
         submissionType,
         isBook = 0,
         parentId = null,
+        chapterNumber = null,
         status = 'pending'
       } = submissionData;
 
@@ -43,6 +44,7 @@ class Submission {
         submissionType,
         isBook,
         parentId,
+        chapterNumber,
         status
       });
 
@@ -57,6 +59,7 @@ class Submission {
         submissionType,
         isBook,
         parentId,
+        chapterNumber,
         status
       ];
 
@@ -65,8 +68,8 @@ class Submission {
         query = `
           INSERT INTO submissions (
             user_id, trainer_id, title, description, content_type,
-            content, submission_type, is_book, parent_id, status, submission_date
-          ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, CURRENT_TIMESTAMP)
+            content, submission_type, is_book, parent_id, chapter_number, status, submission_date
+          ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, CURRENT_TIMESTAMP)
           RETURNING id
         `;
         result = await db.asyncRun(query, params);
@@ -76,8 +79,8 @@ class Submission {
         query = `
           INSERT INTO submissions (
             user_id, trainer_id, title, description, content_type,
-            content, submission_type, is_book, parent_id, status, submission_date
-          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
+            content, submission_type, is_book, parent_id, chapter_number, status, submission_date
+          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
         `;
         result = await db.asyncRun(query, params);
         submissionId = result.lastID;
