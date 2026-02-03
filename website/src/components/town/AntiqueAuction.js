@@ -1,11 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
+import ReactDOM from 'react-dom';
 import LoadingSpinner from '../common/LoadingSpinner';
 import ErrorMessage from '../common/ErrorMessage';
+import TrainerSelector from '../common/TrainerSelector';
+import TypeBadge from '../monsters/TypeBadge';
+import AttributeBadge from '../monsters/AttributeBadge';
 import antiqueService from '../../services/antiqueService';
 import trainerService from '../../services/trainerService';
 
-
-const AntiqueAuction = ({ trainerId, antique, onClose }) => {
+const AntiqueAuction = ({ trainerId, antique, onClose, userTrainers = [] }) => {
   const [trainer, setTrainer] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -15,6 +18,13 @@ const AntiqueAuction = ({ trainerId, antique, onClose }) => {
   const [adoptSuccess, setAdoptSuccess] = useState(false);
   const [adoptLoading, setAdoptLoading] = useState(false);
   const [adoptError, setAdoptError] = useState(null);
+
+  // Target trainer selection state
+  const [targetTrainerId, setTargetTrainerId] = useState(trainerId);
+
+  // Image popout state
+  const [showImagePopout, setShowImagePopout] = useState(false);
+  const [popoutImage, setPopoutImage] = useState({ url: '', name: '' });
 
   // Fetch trainer data when trainerId changes
   useEffect(() => {
@@ -53,14 +63,20 @@ const AntiqueAuction = ({ trainerId, antique, onClose }) => {
         // Select the first option by default if available
         if (response.data.length > 0) {
           setSelectedOption(response.data[0]);
-          setMonsterName(response.data[0].species1 || '');
+          setMonsterName(response.data[0].name || response.data[0].species1 || '');
         }
       } else {
-        setError(response.message || 'Failed to fetch auction options');
+        // No options available - this is OK, we'll show the close button
+        setAuctionOptions([]);
       }
     } catch (err) {
       console.error('Error fetching auction options:', err);
-      setError(err.response?.data?.message || 'Failed to fetch auction options');
+      // If it's a 404, just show no options message
+      if (err.response?.status === 404) {
+        setAuctionOptions([]);
+      } else {
+        setError(err.response?.data?.message || 'Failed to fetch auction options');
+      }
     } finally {
       setLoading(false);
     }
@@ -69,13 +85,33 @@ const AntiqueAuction = ({ trainerId, antique, onClose }) => {
   // Handle option selection
   const handleOptionSelect = (option) => {
     setSelectedOption(option);
-    setMonsterName(option.species1 || '');
+    setMonsterName(option.name || option.species1 || '');
   };
 
   // Handle monster name change
   const handleNameChange = (e) => {
     setMonsterName(e.target.value);
   };
+
+  // Handle target trainer change
+  const handleTargetTrainerChange = (newTrainerId) => {
+    setTargetTrainerId(newTrainerId);
+  };
+
+  // Open image popout
+  const openImagePopout = useCallback((imageUrl, name) => {
+    if (!imageUrl) return;
+    setPopoutImage({ url: imageUrl, name });
+    setShowImagePopout(true);
+    document.body.style.overflow = 'hidden';
+  }, []);
+
+  // Close image popout
+  const closeImagePopout = useCallback(() => {
+    setShowImagePopout(false);
+    setPopoutImage({ url: '', name: '' });
+    document.body.style.overflow = '';
+  }, []);
 
   // Handle auction button click
   const handleAuction = async () => {
@@ -93,12 +129,16 @@ const AntiqueAuction = ({ trainerId, antique, onClose }) => {
       setAdoptLoading(true);
       setAdoptError(null);
 
+      // Get the target trainer to get the discord_user_id
+      const targetTrainer = userTrainers.find(t => t.id.toString() === targetTrainerId.toString()) || trainer;
+
       const response = await antiqueService.auctionAntique(
-        trainerId,
+        trainerId, // Source trainer (who has the antique)
         antique,
         selectedOption.id,
         monsterName,
-        trainer.discord_user_id
+        targetTrainer.discord_user_id || trainer.discord_user_id,
+        parseInt(targetTrainerId) // Target trainer (where monster goes)
       );
 
       if (response.success) {
@@ -114,12 +154,30 @@ const AntiqueAuction = ({ trainerId, antique, onClose }) => {
     }
   };
 
+  // Get species display string
+  const getSpeciesDisplay = (option) => {
+    const species = [option.species1, option.species2, option.species3].filter(Boolean);
+    return species.join(' + ');
+  };
+
+  // Get types array from option
+  const getTypes = (option) => {
+    return [option.type1, option.type2, option.type3, option.type4, option.type5].filter(Boolean);
+  };
+
   // Render auction options
   const renderAuctionOptions = () => {
     if (auctionOptions.length === 0) {
       return (
         <div className="no-options-message">
           <p>No auction options available for this antique.</p>
+          <p>This antique can only be used for appraisal (random roll).</p>
+          <button
+            className="btn btn-primary"
+            onClick={onClose}
+          >
+            Close
+          </button>
         </div>
       );
     }
@@ -129,25 +187,73 @@ const AntiqueAuction = ({ trainerId, antique, onClose }) => {
         {auctionOptions.map((option) => (
           <div
             key={option.id}
-            className={`auction-option ${selectedOption?.id === option.id ? 'selected' : ''}`}
+            className={`auction-option-card ${selectedOption?.id === option.id ? 'selected' : ''}`}
             onClick={() => handleOptionSelect(option)}
           >
+            {/* Monster Image */}
+            {option.image && (
+              <div
+                className="auction-option-image-container"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  openImagePopout(option.image, option.name || option.species1);
+                }}
+                title="Click to enlarge"
+              >
+                <img
+                  src={option.image}
+                  alt={option.name || option.species1}
+                  className="auction-option-image"
+                  onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.style.display = 'none';
+                  }}
+                />
+                <span className="image-zoom-hint">Click to enlarge</span>
+              </div>
+            )}
+
+            {/* Monster Name */}
+            <div className="auction-option-name">
+              <h4>{option.name || getSpeciesDisplay(option)}</h4>
+            </div>
+
+            {/* Species */}
             <div className="auction-option-species">
-              <h4>{option.species1}</h4>
-              {option.species2 && <h4>+ {option.species2}</h4>}
-              {option.species3 && <h4>+ {option.species3}</h4>}
+              <span className="label">Species:</span> {getSpeciesDisplay(option)}
             </div>
+
+            {/* Types */}
             <div className="auction-option-types">
-              {option.type1 && <span className={`type-badge type-${option.type1.toLowerCase()}`}>{option.type1}</span>}
-              {option.type2 && <span className={`type-badge type-${option.type2.toLowerCase()}`}>{option.type2}</span>}
-              {option.type3 && <span className={`type-badge type-${option.type3.toLowerCase()}`}>{option.type3}</span>}
-              {option.type4 && <span className={`type-badge type-${option.type4.toLowerCase()}`}>{option.type4}</span>}
-              {option.type5 && <span className={`type-badge type-${option.type5.toLowerCase()}`}>{option.type5}</span>}
+              {getTypes(option).map((type, index) => (
+                <TypeBadge key={index} type={type} />
+              ))}
             </div>
+
+            {/* Attribute */}
             {option.attribute && (
               <div className="auction-option-attribute">
-                <span className="attribute-badge">{option.attribute}</span>
+                <AttributeBadge attribute={option.attribute} />
               </div>
+            )}
+
+            {/* Creator */}
+            {option.creator && (
+              <div className="auction-option-creator">
+                <span className="label">Artist:</span> {option.creator}
+              </div>
+            )}
+
+            {/* Description/Flavor Text */}
+            {option.description && (
+              <div className="auction-option-description">
+                <p>{option.description}</p>
+              </div>
+            )}
+
+            {/* Selection indicator */}
+            {selectedOption?.id === option.id && (
+              <div className="selected-indicator">Selected</div>
             )}
           </div>
         ))}
@@ -160,7 +266,7 @@ const AntiqueAuction = ({ trainerId, antique, onClose }) => {
       <div className="antique-auction-content">
         <div className="antique-auction-header">
           <h2>Auction Antique: {antique}</h2>
-          <button className="close-button" onClick={onClose}>×</button>
+          <button className="close-button" onClick={onClose}>&times;</button>
         </div>
 
         <div className="antique-auction-body">
@@ -170,8 +276,12 @@ const AntiqueAuction = ({ trainerId, antique, onClose }) => {
             <LoadingSpinner />
           ) : adoptSuccess ? (
             <div className="adoption-success">
+              <div className="success-icon">
+                <i className="fas fa-check-circle"></i>
+              </div>
               <h3>Congratulations!</h3>
-              <p>You've successfully adopted {monsterName}!</p>
+              <p>You've successfully adopted <strong>{monsterName}</strong>!</p>
+              <p>Your new monster has been added to your team.</p>
               <button
                 className="btn btn-primary"
                 onClick={onClose}
@@ -183,16 +293,27 @@ const AntiqueAuction = ({ trainerId, antique, onClose }) => {
             <>
               <div className="auction-description">
                 <p>
-                  You're about to auction your <strong>{antique}</strong>.
-                  This will consume the antique and give you one of the following monsters.
-                  Select an option to continue.
+                  Select a monster from the options below to adopt using your <strong>{antique}</strong>.
+                </p>
+                <p className="auction-warning">
+                  The antique will only be consumed after successful adoption.
                 </p>
               </div>
 
               {renderAuctionOptions()}
 
-              {selectedOption && (
+              {selectedOption && auctionOptions.length > 0 && (
                 <div className="monster-adoption-form">
+                  {/* Target Trainer Selection */}
+                  <div className="form-group">
+                    <label>Send monster to:</label>
+                    <TrainerSelector
+                      selectedTrainerId={targetTrainerId}
+                      onChange={handleTargetTrainerChange}
+                      trainers={userTrainers}
+                    />
+                  </div>
+
                   <div className="form-group">
                     <label htmlFor="monster-name">Name your new monster:</label>
                     <input
@@ -217,7 +338,7 @@ const AntiqueAuction = ({ trainerId, antique, onClose }) => {
                           onClick={handleAuction}
                           disabled={!monsterName.trim() || !selectedOption}
                         >
-                          Auction Antique
+                          Claim Monster
                         </button>
                         <button
                           className="btn btn-secondary"
@@ -234,6 +355,27 @@ const AntiqueAuction = ({ trainerId, antique, onClose }) => {
           )}
         </div>
       </div>
+
+      {/* Image Popout Modal */}
+      {showImagePopout && ReactDOM.createPortal(
+        <div
+          className="image-popout-overlay"
+          onClick={closeImagePopout}
+        >
+          <div className="image-popout-content" onClick={e => e.stopPropagation()}>
+            <button className="image-popout-close" onClick={closeImagePopout}>
+              &times;
+            </button>
+            <img
+              src={popoutImage.url}
+              alt={popoutImage.name}
+              className="image-popout-image"
+            />
+            <p className="image-popout-caption">{popoutImage.name}</p>
+          </div>
+        </div>,
+        document.body
+      )}
     </div>
   );
 };

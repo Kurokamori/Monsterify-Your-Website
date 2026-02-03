@@ -253,9 +253,12 @@ export const AuthProvider = ({ children }) => {
 
       if (response.data.success) {
         // Update user data in localStorage with new settings
-        const updatedUser = { ...currentUser, monster_roller_settings: response.data.settings };
-        localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(updatedUser));
-        setCurrentUser(updatedUser);
+        // Use functional setState to get the latest currentUser value (avoids stale closure)
+        setCurrentUser(prevUser => {
+          const updatedUser = { ...prevUser, monster_roller_settings: response.data.settings };
+          localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(updatedUser));
+          return updatedUser;
+        });
       }
 
       return true;

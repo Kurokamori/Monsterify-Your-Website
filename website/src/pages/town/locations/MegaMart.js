@@ -133,7 +133,7 @@ const MegaMart = () => {
       setFilteredAbilities(allAbilities);
     } else {
       const filtered = allAbilities.filter(ability =>
-        ability.abilityname.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        ability.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         (ability.effect && ability.effect.toLowerCase().includes(searchTerm.toLowerCase()))
       );
       setFilteredAbilities(filtered);
@@ -530,11 +530,11 @@ const MegaMart = () => {
               ) : (
                 filteredAbilities.map(ability => (
                   <div
-                    key={ability.abilityname}
-                    className={`ability-option ${selectedAbility === ability.abilityname ? 'selected' : ''}`}
-                    onClick={() => setSelectedAbility(ability.abilityname)}
+                    key={ability.name}
+                    className={`ability-option ${selectedAbility === ability.name ? 'selected' : ''}`}
+                    onClick={() => setSelectedAbility(ability.name)}
                   >
-                    <h4>{ability.abilityname}</h4>
+                    <h4>{ability.name}</h4>
                     <p>{ability.effect}</p>
                   </div>
                 ))

@@ -215,6 +215,15 @@ const AdminDashboard = () => {
       implemented: true
     },
     {
+      id: 'starter-roller',
+      name: 'Starter Roller',
+      description: 'Roll starter monsters without creating a trainer (admin preview)',
+      icon: 'fa-egg',
+      category: 'rollers',
+      path: '/admin/starter-roller',
+      implemented: true
+    },
+    {
       id: 'reroller',
       name: 'Reroller',
       description: 'Create custom rolls with claim links (Monster, Item, Gift, Birthday)',

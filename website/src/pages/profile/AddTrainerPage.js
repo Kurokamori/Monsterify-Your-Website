@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
@@ -25,7 +25,7 @@ const AddTrainerPage = () => {
   // Load abilities from backend
   useEffect(() => {
     const loadAbilities = async () => {
-      const abilityData = await abilityService.getAbilityNames();
+      const abilityData = await abilityService.getNames();
       setAbilities(abilityData);
     };
     loadAbilities();
@@ -103,6 +103,13 @@ const AddTrainerPage = () => {
   // File uploads for multer
   const [mainRefFile, setMainRefFile] = useState(null);
   const [mainRefPreview, setMainRefPreview] = useState('');
+
+  // Ref for scrolling to submit
+  const submitRef = useRef(null);
+
+  const handleJumpToSubmit = () => {
+    submitRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  };
 
   // Theme and voice claim fields
   const [themeDisplay, setThemeDisplay] = useState('');
@@ -342,6 +349,14 @@ const AddTrainerPage = () => {
         </Link>
       </div>
 
+      <button
+        type="button"
+        className="jump-to-submit-btn"
+        onClick={handleJumpToSubmit}
+      >
+        <i className="fas fa-arrow-down"></i> Jump to Submit
+      </button>
+
       {error && (
         <div className="form-error-message">
           <i className="fas fa-exclamation-circle"></i> {error}
@@ -380,7 +395,8 @@ const AddTrainerPage = () => {
               {errors.name && <div className="input-error">{errors.name}</div>}
               <small className="field-note">The primary name of your trainer</small>
             </div>
-
+          </div>
+          <div className="form-grid">
             <div className="form-group">
               <label htmlFor="nickname">Nickname</label>
               <input
@@ -390,7 +406,7 @@ const AddTrainerPage = () => {
                 value={formData.nickname}
                 onChange={handleInputChange}
                 className="form-input"
-                placeholder="Enter nickname (optional)"
+                placeholder="Enter nickname "
               />
               <small className="field-note">A shorter or informal name</small>
             </div>
@@ -404,11 +420,12 @@ const AddTrainerPage = () => {
                 value={formData.full_name}
                 onChange={handleInputChange}
                 className="form-input"
-                placeholder="Enter full name (optional)"
+                placeholder="Enter full name "
               />
               <small className="field-note">The complete name of your trainer</small>
             </div>
-
+          </div>
+          <div className="form-grid">
             <div className="form-group">
               <label htmlFor="title">Title</label>
               <input
@@ -418,40 +435,74 @@ const AddTrainerPage = () => {
                 value={formData.title}
                 onChange={handleInputChange}
                 className="form-input"
-                placeholder="Enter title (optional)"
+                placeholder="Enter title "
               />
               <small className="field-note">A title or honorific for your trainer</small>
             </div>
 
             <div className="form-group">
+              <label htmlFor="faction">Faction</label>
               <AutocompleteInput
                 id="faction"
                 name="faction"
-                label="Faction"
                 value={formData.faction}
                 onChange={handleInputChange}
                 options={FACTIONS}
                 placeholder="Select or type faction"
-                helpText="The faction your trainer belongs to"
               />
+              <small className="field-note">The faction your trainer belongs to</small>
             </div>
+          </div>
+        </div>
 
-            <div className="form-group full-width">
-              <label htmlFor="main_ref">Main Reference Image</label>
+        {/* Main Reference Image Section */}
+        <div className="form-section">
+          <h2 className="section-title">Main Reference Image</h2>
+          <p className="section-description">
+            Upload a reference image for your trainer. This will be the main image displayed on your trainer's profile.
+          </p>
+
+          <div className="main-ref-upload-area">
+            <div className="upload-zone">
               <input
                 type="file"
                 id="main_ref"
                 name="main_ref"
                 accept="image/*"
                 onChange={(e) => handleMainRefFileUpload(e.target.files[0])}
-                className="form-input"
+                className="file-input-hidden"
               />
-              {mainRefPreview && (
-                <div className="image-preview">
-                  <img src={mainRefPreview} alt="Main reference preview" style={{ maxWidth: '200px', maxHeight: '200px', marginTop: '10px' }} />
+
+              {mainRefPreview ? (
+                <div className="main-ref-preview">
+                  <img src={mainRefPreview} alt="Main reference preview" />
+                  <div className="preview-overlay">
+                    <label htmlFor="main_ref" className="change-image-btn">
+                      <i className="fas fa-camera"></i> Change Image
+                    </label>
+                    <button
+                      type="button"
+                      className="remove-image-btn"
+                      onClick={() => {
+                        setMainRefFile(null);
+                        setMainRefPreview('');
+                      }}
+                    >
+                      <i className="fas fa-trash"></i> Remove
+                    </button>
+                  </div>
                 </div>
+              ) : (
+                <label htmlFor="main_ref" className="upload-placeholder">
+                  <div className="upload-icon">
+                    <i className="fas fa-cloud-upload-alt"></i>
+                  </div>
+                  <div className="upload-text">
+                    <span className="upload-main-text">Click to upload trainer image</span>
+                    <span className="upload-sub-text">PNG, JPG, or GIF (Recommended: 800x800px)</span>
+                  </div>
+                </label>
               )}
-              <small className="field-note">Upload an image of your trainer. Recommended size: 800x800 pixels.</small>
             </div>
           </div>
         </div>
@@ -459,7 +510,14 @@ const AddTrainerPage = () => {
         {/* Species and Types Section */}
         <div className="form-section">
           <h2 className="section-title">Species and Types</h2>
+          <p className="section-description">
+            Here you can specify the species and types of your trainer. These are both optional. 
+          </p>
 
+          <h3 className="subsection-title">Species</h3>
+          <p className="subsection-description">
+            Species can be any species of a valid monster from the game (Pokemon, Digimon, Yokai, Nexomon, Pals, Fakemon, Final Fantasy, Monster Hunter). Yes, this includes mythicals, legendaries, etc.
+          </p>
           <div className="form-grid">
             <div className="form-group">
               <label htmlFor="species1">Primary Species</label>
@@ -472,7 +530,7 @@ const AddTrainerPage = () => {
                 className="form-input"
                 placeholder="Enter primary species"
               />
-              <small className="field-note">The main species of your trainer (e.g., Human, Elf, etc.)</small>
+              <small className="field-note">The main species of your trainer.</small>
             </div>
 
             <div className="form-group">
@@ -484,7 +542,7 @@ const AddTrainerPage = () => {
                 value={formData.species2}
                 onChange={handleInputChange}
                 className="form-input"
-                placeholder="Enter secondary species (optional)"
+                placeholder="Enter secondary species "
               />
               <small className="field-note">A secondary species if applicable</small>
             </div>
@@ -498,11 +556,17 @@ const AddTrainerPage = () => {
                 value={formData.species3}
                 onChange={handleInputChange}
                 className="form-input"
-                placeholder="Enter tertiary species (optional)"
+                placeholder="Enter tertiary species "
               />
               <small className="field-note">A tertiary species if applicable</small>
             </div>
+          </div>
 
+            <h3 className="subsection-title">Types</h3>
+          <p className="subsection-description">
+            Types are the same as the types of monsters. You can choose up to 6 types for your trainer. Types are not required, and Humans cannot have types (only Alters and Catfolk can). 
+          </p>
+          <div className="form-grid">
             <div className="form-group">
               <AutocompleteInput
                 id="type1"
@@ -511,8 +575,7 @@ const AddTrainerPage = () => {
                 value={formData.type1}
                 onChange={handleInputChange}
                 options={TYPES}
-                placeholder="Enter primary type (optional)"
-                helpText="The main type of your trainer (e.g., Normal, Fire, etc.)"
+                placeholder="Enter primary type "
               />
             </div>
 
@@ -520,12 +583,11 @@ const AddTrainerPage = () => {
               <AutocompleteInput
                 id="type2"
                 name="type2"
-                label="Secondary Type"
+                label="Type 2"
                 value={formData.type2}
                 onChange={handleInputChange}
                 options={TYPES}
-                placeholder="Enter secondary type (optional)"
-                helpText="A secondary type if applicable"
+                placeholder="Enter type 2"
               />
             </div>
 
@@ -533,12 +595,11 @@ const AddTrainerPage = () => {
               <AutocompleteInput
                 id="type3"
                 name="type3"
-                label="Tertiary Type"
+                label="Type 3"
                 value={formData.type3}
                 onChange={handleInputChange}
                 options={TYPES}
-                placeholder="Enter tertiary type (optional)"
-                helpText="A tertiary type if applicable"
+                placeholder="Enter type 3"
               />
             </div>
 
@@ -550,7 +611,7 @@ const AddTrainerPage = () => {
                 value={formData.type4}
                 onChange={handleInputChange}
                 options={TYPES}
-                placeholder="Enter type 4 (optional)"
+                placeholder="Enter type 4 "
               />
             </div>
 
@@ -562,7 +623,7 @@ const AddTrainerPage = () => {
                 value={formData.type5}
                 onChange={handleInputChange}
                 options={TYPES}
-                placeholder="Enter type 5 (optional)"
+                placeholder="Enter type 5 "
               />
             </div>
 
@@ -574,7 +635,7 @@ const AddTrainerPage = () => {
                 value={formData.type6}
                 onChange={handleInputChange}
                 options={TYPES}
-                placeholder="Enter type 6 (optional)"
+                placeholder="Enter type 6 "
               />
             </div>
           </div>
@@ -653,7 +714,7 @@ const AddTrainerPage = () => {
                 value={formData.fav_type2}
                 onChange={handleInputChange}
                 options={TYPES}
-                placeholder="Enter favorite type 2 (optional)"
+                placeholder="Enter favorite type 2 "
               />
             </div>
 
@@ -665,7 +726,7 @@ const AddTrainerPage = () => {
                 value={formData.fav_type3}
                 onChange={handleInputChange}
                 options={TYPES}
-                placeholder="Enter favorite type 3 (optional)"
+                placeholder="Enter favorite type 3 "
               />
             </div>
 
@@ -677,7 +738,7 @@ const AddTrainerPage = () => {
                 value={formData.fav_type4}
                 onChange={handleInputChange}
                 options={TYPES}
-                placeholder="Enter favorite type 4 (optional)"
+                placeholder="Enter favorite type 4 "
               />
             </div>
 
@@ -689,7 +750,7 @@ const AddTrainerPage = () => {
                 value={formData.fav_type5}
                 onChange={handleInputChange}
                 options={TYPES}
-                placeholder="Enter favorite type 5 (optional)"
+                placeholder="Enter favorite type 5 "
               />
             </div>
 
@@ -701,7 +762,7 @@ const AddTrainerPage = () => {
                 value={formData.fav_type6}
                 onChange={handleInputChange}
                 options={TYPES}
-                placeholder="Enter favorite type 6 (optional)"
+                placeholder="Enter favorite type 6 "
               />
             </div>
           </div>
@@ -740,6 +801,25 @@ const AddTrainerPage = () => {
               <small className="field-note">Your trainer's preferred pronouns</small>
             </div>
 
+                        <div className="form-group">
+              <label htmlFor="race">Race</label>
+              <select
+                id="race"
+                name="race"
+                value={formData.race}
+                onChange={handleInputChange}
+                className="form-input"
+              >
+                <option value="Human">Human</option>
+                <option value="Alter">Alter</option>
+                <option value="Ultra Beast">Ultra Beast</option>
+                <option value="Alter (Faller)">Alter (Faller)</option>
+                <option value="Human (Faller)">Human (Faller)</option>
+                <option value="Catfolk">Catfolk</option>
+              </select>
+              <small className="field-note">Select your trainer's race</small>
+            </div>
+
             <div className="form-group">
               <label htmlFor="sexuality">Sexuality</label>
               <input
@@ -749,7 +829,7 @@ const AddTrainerPage = () => {
                 value={formData.sexuality}
                 onChange={handleInputChange}
                 className="form-input"
-                placeholder="Enter sexuality (optional)"
+                placeholder="Enter sexuality "
               />
               <small className="field-note">Your trainer's sexual orientation</small>
             </div>
@@ -797,7 +877,7 @@ const AddTrainerPage = () => {
             </div>
             
           </div>
-                    <div className="form-grid">
+          <div className="form-grid">
             <div className="form-group">
               <label htmlFor="height">Height</label>
               <input
@@ -825,7 +905,8 @@ const AddTrainerPage = () => {
               />
               <small className="field-note">Your trainer's weight</small>
             </div>
-
+          </div>
+          <div className="form-grid">
             <div className="form-group">
               <label htmlFor="theme_display">Theme Display Text</label>
               <input
@@ -841,7 +922,7 @@ const AddTrainerPage = () => {
             </div>
 
             <div className="form-group">
-              <label htmlFor="theme_link">Theme YouTube Link (Optional)</label>
+              <label htmlFor="theme_link">Theme YouTube Link </label>
               <input
                 type="url"
                 id="theme_link"
@@ -853,7 +934,8 @@ const AddTrainerPage = () => {
               />
               <small className="field-note">If provided, users will be able to expand and play the theme music</small>
             </div>
-
+          </div>
+          <div className="form-grid">
             <div className="form-group">
               <label htmlFor="voice_claim_display">Voice Claim Display Text</label>
               <input
@@ -869,7 +951,7 @@ const AddTrainerPage = () => {
             </div>
 
             <div className="form-group">
-              <label htmlFor="voice_claim_link">Voice Claim Video Link (Optional)</label>
+              <label htmlFor="voice_claim_link">Voice Claim Video Link </label>
               <input
                 type="url"
                 id="voice_claim_link"
@@ -881,7 +963,8 @@ const AddTrainerPage = () => {
               />
               <small className="field-note">If provided, users will be able to expand and view the voice claim video</small>
             </div>
-
+          </div>
+          <div className="form-grid">
             <div className="form-group">
               <label htmlFor="occupation">Occupation</label>
               <input
@@ -895,7 +978,8 @@ const AddTrainerPage = () => {
               />
               <small className="field-note">Your trainer's occupation</small>
             </div>
-
+          </div>
+          <div className="form-grid">
             <div className="form-group">
               <label htmlFor="birthday">Birthday</label>
               <input
@@ -935,25 +1019,6 @@ const AddTrainerPage = () => {
                 placeholder="Will be calculated from birth year"
               />
               <small className="field-note">Automatically calculated from birth year</small>
-            </div>
-
-            <div className="form-group">
-              <label htmlFor="race">Race</label>
-              <select
-                id="race"
-                name="race"
-                value={formData.race}
-                onChange={handleInputChange}
-                className="form-input"
-              >
-                <option value="Human">Human</option>
-                <option value="Alter">Alter</option>
-                <option value="Ultra Beast">Ultra Beast</option>
-                <option value="Alter (Faller)">Alter (Faller)</option>
-                <option value="Human (Faller)">Human (Faller)</option>
-                <option value="Catfolk">Catfolk</option>
-              </select>
-              <small className="field-note">Select your trainer's race</small>
             </div>
         </div>
 </div>
@@ -1337,7 +1402,7 @@ const AddTrainerPage = () => {
           </div>
         </div>
 
-        <div className="form-actions">
+        <div className="form-actions" ref={submitRef}>
           <Link to="/profile/trainers" className="cancel-button">
             Cancel
           </Link>

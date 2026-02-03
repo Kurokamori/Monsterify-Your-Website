@@ -3,6 +3,10 @@ const router = express.Router();
 const { protect, admin } = require('../middleware/authMiddleware');
 const antiqueController = require('../controllers/antiqueController');
 
+// Public catalogue routes (no auth required to browse)
+router.get('/catalogue', antiqueController.getAuctionCatalogue);
+router.get('/catalogue/filters', antiqueController.getCatalogueFilters);
+
 // Get antique roll settings (admin only)
 router.get('/settings', protect, admin, antiqueController.getAntiqueRollSettings);
 

@@ -363,10 +363,17 @@ class User {
       if (existingUser) {
         console.log('Updating existing user...');
         // Update user with latest Discord info
-        const updatedUser = await this.update(existingUser.id, {
-          display_name: profile.global_name || profile.username,
+        // Only update display_name if the user hasn't set one (empty or null)
+        const updateData = {
           discord_id: profile.id
-        });
+        };
+
+        // Only set display_name if user doesn't already have one
+        if (!existingUser.display_name || existingUser.display_name.trim() === '') {
+          updateData.display_name = profile.global_name || profile.username;
+        }
+
+        const updatedUser = await this.update(existingUser.id, updateData);
         console.log('User updated successfully:', updatedUser.id);
         return updatedUser;
       }

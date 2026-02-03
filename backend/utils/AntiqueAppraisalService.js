@@ -17,7 +17,8 @@ class AntiqueAppraisalService {
         "force_fusion": true,
         "attribute": ["Future Paradox", "Past Paradox"]
       },
-      "category": "American Holidays"
+      "category": "American Holidays",
+      "holiday": "New Year's"
     },
     {
       "name": "Love Velvet Cake",
@@ -33,7 +34,8 @@ class AntiqueAppraisalService {
         "type2": ["Fairy", "Psychic", "Normal", "Flying"],
         "type3": ["Fairy", "Psychic", "Normal", "Flying"]
       },
-      "category": "American Holidays"
+      "category": "American Holidays",
+      "holiday": "Valentine's Day"
     },
     {
       "name": "Lucky Leprechaun's Loot",
@@ -42,7 +44,8 @@ class AntiqueAppraisalService {
         "type1": ["Grass"],
         "attribute": ["Lucky"]
       },
-      "category": "American Holidays"
+      "category": "American Holidays",
+      "holiday": "St. Patrick's Day"
     },
     {
       "name": "Can't Believe It's Not Butter",
@@ -51,7 +54,8 @@ class AntiqueAppraisalService {
       "override_parameters": {
         "attribute": ["Trash", "Raccoon", "Snake", "Shoe", "Artist", "Silly", "Mongoose", "Architecture", "Water Bottle", "Oppression", "Vile", "Cute", "Prank", "Organic", "Geometric", "Illegal"]
       },
-      "category": "American Holidays"
+      "category": "American Holidays",
+      "holiday": "April Fool's Day"
     },
     {
       "name": "Bunny's Basket Bonanza",
@@ -66,14 +70,16 @@ class AntiqueAppraisalService {
           "Shaymin (Sky Form)", "Swanna"
         ]
       },
-      "category": "American Holidays"
+      "category": "American Holidays",
+      "holiday": "Easter"
     },
     {
       "name": "Star-Spangled Sparkler",
       "roll_count": 1,
       "force_no_fusion": true,
       "override_parameters": {},
-      "category": "American Holidays"
+      "category": "American Holidays",
+      "holiday": "Independence Day"
     },
     {
       "name": "Fright Night Fudge",
@@ -83,7 +89,8 @@ class AntiqueAppraisalService {
         "species1": ["Pumpkinmon", "Gotsumon", "Wizardmon"],
         "attribute": ["Spooky"]
       },
-      "category": "American Holidays"
+      "category": "American Holidays",
+      "holiday": "Halloween"
     },
     {
       "name": "Turkey Trot Tonic",
@@ -98,7 +105,8 @@ class AntiqueAppraisalService {
         ],
         "attribute": ["Thankful"]
       },
-      "category": "American Holidays"
+      "category": "American Holidays",
+      "holiday": "Thanksgiving"
     },
     {
       "name": "Jolly Holly Jamboree",
@@ -113,7 +121,8 @@ class AntiqueAppraisalService {
         "attribute": ["Vaccine"],
         "type": ["Ice", "Fire", "Grass"]
       },
-      "category": "American Holidays"
+      "category": "American Holidays",
+      "holiday": "Christmas"
     },
     {
       "name": "Sweet Shofar Surprise",
@@ -122,7 +131,8 @@ class AntiqueAppraisalService {
       "override_parameters": {
         "species_all": ["Applin", "Sigh-Durr", "Appak"]
       },
-      "category": "Jewish Holidays"
+      "category": "Jewish Holidays",
+      "holiday": "Rosh Hashanah"
     },
     {
       "name": "Day of Atonement Amulet",
@@ -132,7 +142,8 @@ class AntiqueAppraisalService {
         "type1": ["Normal"],
         "max_types": 1
       },
-      "category": "Jewish Holidays"
+      "category": "Jewish Holidays",
+      "holiday": "Yom Kippur"
     },
     {
       "name": "Harvest Haven Hummus",
@@ -140,7 +151,8 @@ class AntiqueAppraisalService {
       "override_parameters": {
         "type1": ["Ground", "Rock"]
       },
-      "category": "Jewish Holidays"
+      "category": "Jewish Holidays",
+      "holiday": "Sukkot"
     },
     {
       "name": "Latke Lightning in a Jar",
@@ -148,7 +160,8 @@ class AntiqueAppraisalService {
       "override_parameters": {
         "type1": ["Electric"]
       },
-      "category": "Jewish Holidays"
+      "category": "Jewish Holidays",
+      "holiday": "Hanukkah"
     },
     {
       "name": "Sectored Cookie",
@@ -156,7 +169,8 @@ class AntiqueAppraisalService {
       "force_fusion": true,
       "force_min_types": 3,
       "override_parameters": {},
-      "category": "Jewish Holidays"
+      "category": "Jewish Holidays",
+      "holiday": "Purim"
     },
     {
       "name": "Matzah Marvel",
@@ -165,7 +179,8 @@ class AntiqueAppraisalService {
       "override_parameters": {
         "type1": ["Fire"]
       },
-      "category": "Jewish Holidays"
+      "category": "Jewish Holidays",
+      "holiday": "Passover"
     },
     {
       "name": "Frosty Czar's Confection",
@@ -174,7 +189,8 @@ class AntiqueAppraisalService {
       "override_parameters": {
         "type1": ["Ice"]
       },
-      "category": "Russian Holidays"
+      "category": "Russian Holidays",
+      "holiday": "New Year's"
     },
     {
       "name": "Snowflake Samovar",
@@ -187,7 +203,8 @@ class AntiqueAppraisalService {
           "Polteageist", "Sinistea", "Alcremie", "Fidough", "Dachsbun", "Heatmor", "Ponyta", "Rapidash"
         ]
       },
-      "category": "Russian Holidays"
+      "category": "Russian Holidays",
+      "holiday": "Old New Year"
     },
     {
       "name": "Brave Bear Barrel",
@@ -200,7 +217,8 @@ class AntiqueAppraisalService {
           "Teddiursa", "Ursaring", "Pancham", "Pangoro", "Stufful", "Bewear", "Cubchoo", "Beartic"
         ]
       },
-      "category": "Russian Holidays"
+      "category": "Russian Holidays",
+      "holiday": "Defender of the Fatherland Day"
     },
     {
       "name": "Victory Vodka Vortex",
@@ -209,7 +227,8 @@ class AntiqueAppraisalService {
       "override_parameters": {
         "type": ["Fire"]
       },
-      "category": "Russian Holidays"
+      "category": "Russian Holidays",
+      "holiday": "Victory Day"
     },
     {
       "name": "Pancake Palooza",
@@ -219,7 +238,8 @@ class AntiqueAppraisalService {
         "species1": ["Pancake"],
         "attribute": ["Syrupy"]
       },
-      "category": "Russian Holidays"
+      "category": "Russian Holidays",
+      "holiday": "Maslenitsa"
     },
     {
       "name": "Diwali Dazzle Diyas",
@@ -229,7 +249,8 @@ class AntiqueAppraisalService {
         "attribute": ["Radiant"],
         "type1": ["Fire", "Fairy"]
       },
-      "category": "Indian Holidays"
+      "category": "Indian Holidays",
+      "holiday": "Diwali"
     },
     {
       "name": "Color Carnival Concoction",
@@ -243,7 +264,8 @@ class AntiqueAppraisalService {
         "type4": ["Red", "Blue", "Green", "Yellow", "Purple"],
         "type5": ["Red", "Blue", "Green", "Yellow", "Purple"]
       },
-      "category": "Indian Holidays"
+      "category": "Indian Holidays",
+      "holiday": "Holi"
     },
     {
       "name": "Raksha Rhapsody",
@@ -255,7 +277,8 @@ class AntiqueAppraisalService {
           "Tandemaus", "Maushold", "Falinks", "Dugtrio", "Dodrio", "Exeggcute", "Exeggutor"
         ]
       },
-      "category": "Indian Holidays"
+      "category": "Indian Holidays",
+      "holiday": "Raksha Bandhan"
     },
     {
       "name": "Ganesh's Glorious Goodie",
@@ -266,7 +289,8 @@ class AntiqueAppraisalService {
         "species2": ["Phanpy"],
         "attribute": ["Lucky", "Wise"]
       },
-      "category": "Indian Holidays"
+      "category": "Indian Holidays",
+      "holiday": "Ganesh Chaturthi"
     },
     {
       "name": "Tricolor Triumph Tonic",
@@ -274,7 +298,8 @@ class AntiqueAppraisalService {
       "override_parameters": {
         "attribute": ["Tricolor"]
       },
-      "category": "Indian Holidays"
+      "category": "Indian Holidays",
+      "holiday": "Independence Day"
     },
     {
       "name": "Lunar Lantern Loot",
@@ -289,7 +314,8 @@ class AntiqueAppraisalService {
           "Serperior", "Bouffalant", "Pyroar"
         ]
       },
-      "category": "Chinese Holidays"
+      "category": "Chinese Holidays",
+      "holiday": "Lunar New Year"
     },
     {
       "name": "Dragon Dance Delight",
@@ -298,7 +324,8 @@ class AntiqueAppraisalService {
       "override_parameters": {
         "type": ["Dragon"]
       },
-      "category": "Chinese Holidays"
+      "category": "Chinese Holidays",
+      "holiday": "Lunar New Year"
     },
     {
       "name": "Fortune Cookie Fusions",
@@ -307,7 +334,8 @@ class AntiqueAppraisalService {
       "override_parameters": {
         "attribute": ["Fortunate"]
       },
-      "category": "Chinese Holidays"
+      "category": "Chinese Holidays",
+      "holiday": "Lunar New Year"
     }
   ];
 
@@ -327,6 +355,23 @@ class AntiqueAppraisalService {
    */
   static getAntiquesByCategory(category) {
     return this.ANTIQUES.filter(antique => antique.category === category);
+  }
+
+  /**
+   * Get all antiques by holiday
+   * @param {string} holiday - Holiday name
+   * @returns {Array} - Array of antiques for the holiday
+   */
+  static getAntiquesByHoliday(holiday) {
+    return this.ANTIQUES.filter(antique => antique.holiday === holiday);
+  }
+
+  /**
+   * Get all unique holidays
+   * @returns {Array} - Array of unique holiday names
+   */
+  static getHolidays() {
+    return [...new Set(this.ANTIQUES.map(antique => antique.holiday))];
   }
 
   /**
@@ -380,14 +425,21 @@ class AntiqueAppraisalService {
           // Handle type arrays for all type slots
           params.includeTypes = value;
         } else if (key.startsWith('species') && Array.isArray(value)) {
-          // For specific species slots with arrays, pick a random one
-          params[key] = this.getRandomFromArray(value);
+          // For specific species slots with arrays, use includeSpecies for that slot
+          // This allows the query to use IN (...) instead of exact match
+          const slotNumber = key.slice(7); // Extract the slot number (e.g., '1' from 'species1')
+          if (slotNumber) {
+            params[`includeSpecies${slotNumber}`] = value;
+          } else {
+            params.includeSpecies = value;
+          }
         } else if (key.startsWith('type') && Array.isArray(value)) {
           // For specific type slots with arrays, pick a random one
           params[key] = this.getRandomFromArray(value);
         } else if (key === 'attribute' && Array.isArray(value)) {
-          // For attribute arrays, pick a random one
-          params.attribute = this.getRandomFromArray(value);
+          // For attribute arrays, pick a random one and set as override
+          // This will be applied to the monster AFTER rolling, not used as a filter
+          params.override_attribute = this.getRandomFromArray(value);
         } else {
           // Default case: just copy the value
           params[key] = value;
@@ -527,7 +579,7 @@ class AntiqueAppraisalService {
       case "Resolution Rocket":
         // Future Paradox or Past Paradox attribute with forced fusion
         params.fusion_forced = true;
-        params.attribute = this.getRandomFromArray(["Future Paradox", "Past Paradox"]);
+        params.override_attribute = this.getRandomFromArray(["Future Paradox", "Past Paradox"]);
         break;
 
       case "Sweet Shofar Surprise":
@@ -552,7 +604,7 @@ class AntiqueAppraisalService {
       case "Color Carnival Concoction":
         // Vibrant attribute with colorful types
         params.fusion_forced = true;
-        params.attribute = "Vibrant";
+        params.override_attribute = "Vibrant";
         // Assign random colors to each type slot
         const colors = ["Red", "Blue", "Green", "Yellow", "Purple"];
         for (let i = 1; i <= 5; i++) {
@@ -565,7 +617,7 @@ class AntiqueAppraisalService {
         params.fusion_forced = true;
         params.species1 = "Milcery";
         params.species2 = "Phanpy";
-        params.attribute = this.getRandomFromArray(["Lucky", "Wise"]);
+        params.override_attribute = this.getRandomFromArray(["Lucky", "Wise"]);
         break;
 
       default:

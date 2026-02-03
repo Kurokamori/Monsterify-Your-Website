@@ -20,6 +20,7 @@ import ItemRoller from './ItemRoller';
 import MonsterRoller from './MonsterRoller/MonsterRoller';
 import RerollerPage from './Reroller/RerollerPage';
 import RerollerSessionsPage from './Reroller/RerollerSessionsPage';
+import AdminStarterRoller from './AdminStarterRoller';
 import UserListPage from './UserListPage';
 import UserFormPage from './UserFormPage';
 
@@ -137,6 +138,9 @@ const AdminDashboardPage = () => {
 
         {/* Monster Roller Routes */}
         <Route path="monster-roller" element={<MonsterRoller />} />
+
+        {/* Starter Roller Routes */}
+        <Route path="starter-roller" element={<AdminStarterRoller />} />
 
         {/* Reroller Routes */}
         <Route path="reroller" element={<RerollerPage />} />

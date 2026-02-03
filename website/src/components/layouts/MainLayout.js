@@ -76,6 +76,7 @@ const MainLayout = () => {
               <Link to="/guides/interactive-map">Interactive Map</Link>
               <Link to="/guides/type-calculator">Type Calculator</Link>
               <Link to="/guides/evolution-explorer">Evolution Explorer</Link>
+              <Link to="/guides/ability-database">Ability Database</Link>
             </div>
           </div>
           <Link to="/gallery" className="top-nav-link">Gallery</Link>
@@ -162,6 +163,7 @@ const MainLayout = () => {
               <Link to="/guides/interactive-map" className="mobile-nav-link" onClick={toggleMobileMenu}>Interactive Map</Link>
               <Link to="/guides/type-calculator" className="mobile-nav-link" onClick={toggleMobileMenu}>Type Calculator</Link>
               <Link to="/guides/evolution-explorer" className="mobile-nav-link" onClick={toggleMobileMenu}>Evolution Explorer</Link>
+              <Link to="/guides/ability-database" className="mobile-nav-link" onClick={toggleMobileMenu}>Ability Database</Link>
               <Link to="/guides/lore" className="mobile-nav-link" onClick={toggleMobileMenu}>Lore</Link>
               <Link to="/guides/factions" className="mobile-nav-link" onClick={toggleMobileMenu}>Factions</Link>
               <Link to="/guides/npcs" className="mobile-nav-link" onClick={toggleMobileMenu}>NPCs</Link>

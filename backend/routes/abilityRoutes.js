@@ -4,24 +4,57 @@ const Ability = require('../models/Ability');
 
 /**
  * @route   GET /api/abilities
- * @desc    Get all abilities with optional search
+ * @desc    Get all abilities with advanced filtering
  * @access  Public
+ * @query   search - Search term for name/effect/description
+ * @query   monsterSearch - Search term for signature monsters
+ * @query   types - Comma-separated list of types to filter by
+ * @query   typeLogic - 'AND' or 'OR' for type filtering (default: OR)
+ * @query   page - Page number (default: 1)
+ * @query   limit - Items per page (default: 100)
+ * @query   sortBy - Field to sort by (default: name)
+ * @query   sortOrder - Sort order: asc or desc (default: asc)
  */
 router.get('/', async (req, res) => {
   try {
-    const { search = '', page = 1, limit = 100 } = req.query;
+    const {
+      search = '',
+      monsterSearch = '',
+      types = '',
+      typeLogic = 'OR',
+      page = 1,
+      limit = 100,
+      sortBy = 'name',
+      sortOrder = 'asc'
+    } = req.query;
+
+    // Parse types from comma-separated string to array
+    const typesArray = types ? types.split(',').map(t => t.trim()).filter(t => t) : [];
 
     const result = await Ability.getAll({
       search,
+      monsterSearch,
+      types: typesArray,
+      typeLogic: typeLogic.toUpperCase() === 'AND' ? 'AND' : 'OR',
       page: parseInt(page),
       limit: parseInt(limit),
-      sortBy: 'abilityname',
-      sortOrder: 'asc'
+      sortBy,
+      sortOrder
     });
+
+    // Map abilities to include all fields with normalized names
+    // PostgreSQL text[] arrays are returned as JavaScript arrays
+    const abilities = result.data.map(ability => ({
+      name: ability.name,
+      effect: ability.effect || '',
+      description: ability.description || '',
+      commonTypes: ability.common_types || [],
+      signatureMonsters: ability.signature_monsters || []
+    }));
 
     res.json({
       success: true,
-      abilities: result.data,
+      abilities,
       total: result.total,
       page: result.page,
       totalPages: result.totalPages
@@ -36,6 +69,28 @@ router.get('/', async (req, res) => {
 });
 
 /**
+ * @route   GET /api/abilities/types
+ * @desc    Get all unique types from abilities
+ * @access  Public
+ */
+router.get('/types', async (req, res) => {
+  try {
+    const types = await Ability.getAllTypes();
+
+    res.json({
+      success: true,
+      types
+    });
+  } catch (error) {
+    console.error('Error fetching ability types:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch ability types'
+    });
+  }
+});
+
+/**
  * @route   GET /api/abilities/names
  * @desc    Get all ability names (for autocomplete)
  * @access  Public
@@ -45,14 +100,14 @@ router.get('/names', async (req, res) => {
     const result = await Ability.getAll({
       page: 1,
       limit: 1000,
-      sortBy: 'abilityname',
+      sortBy: 'name',
       sortOrder: 'asc'
     });
 
     // Return just names and descriptions for autocomplete
     const abilities = result.data.map(ability => ({
-      name: ability.abilityname,
-      description: ability.effect
+      name: ability.name,
+      description: ability.effect || ability.description || ''
     }));
 
     res.json({
@@ -87,8 +142,11 @@ router.get('/:name', async (req, res) => {
     res.json({
       success: true,
       ability: {
-        name: ability.abilityname,
-        description: ability.effect
+        name: ability.name,
+        effect: ability.effect || '',
+        description: ability.description || '',
+        commonTypes: ability.common_types || [],
+        signatureMonsters: ability.signature_monsters || []
       }
     });
   } catch (error) {

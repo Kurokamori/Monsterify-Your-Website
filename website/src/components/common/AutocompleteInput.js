@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import './AutocompleteInput.css';
 
 /**
@@ -43,9 +43,11 @@ const AutocompleteInput = ({
   const dropdownRef = useRef(null);
 
   // Normalize options to always have { name, description } format
-  const normalizedOptions = options.map(opt =>
-    typeof opt === 'string' ? { name: opt, description: '' } : opt
-  );
+  // Memoize to prevent infinite re-render loops
+  const normalizedOptions = useMemo(() =>
+    options.map(opt =>
+      typeof opt === 'string' ? { name: opt, description: '' } : opt
+    ), [options]);
 
   // Check if current value matches any option (case-insensitive)
   const checkValidity = useCallback((val) => {

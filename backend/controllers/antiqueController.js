@@ -92,6 +92,79 @@ const getAntiqueAuctions = asyncHandler(async (req, res) => {
 });
 
 /**
+ * @desc    Get auction catalogue with filtering
+ * @route   GET /api/antiques/catalogue
+ * @access  Public
+ */
+const getAuctionCatalogue = asyncHandler(async (req, res) => {
+  try {
+    const { antique, species, type, creator, search, page, limit } = req.query;
+
+    const filters = {
+      antique,
+      species,
+      type,
+      creator,
+      search,
+      page: parseInt(page) || 1,
+      limit: parseInt(limit) || 20
+    };
+
+    const result = await AntiqueAuction.getCatalogue(filters);
+
+    res.json({
+      success: true,
+      data: result.auctions,
+      pagination: result.pagination
+    });
+  } catch (error) {
+    console.error('Error getting auction catalogue:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to get auction catalogue'
+    });
+  }
+});
+
+/**
+ * @desc    Get catalogue filter options (unique antiques, types, creators)
+ * @route   GET /api/antiques/catalogue/filters
+ * @access  Public
+ */
+const getCatalogueFilters = asyncHandler(async (req, res) => {
+  try {
+    // Get unique antiques and map them to their holidays
+    const antiques = await AntiqueAuction.getUniqueAntiques();
+    const types = await AntiqueAuction.getUniqueTypes();
+    const creators = await AntiqueAuction.getUniqueCreators();
+
+    // Map antiques to their holiday categories using AntiqueAppraisalService
+    const antiquesWithHolidays = antiques.map(antique => {
+      const antiqueData = AntiqueAppraisalService.getAntiqueByName(antique);
+      return {
+        name: antique,
+        holiday: antiqueData?.holiday || 'Unknown'
+      };
+    });
+
+    res.json({
+      success: true,
+      data: {
+        antiques: antiquesWithHolidays,
+        types,
+        creators
+      }
+    });
+  } catch (error) {
+    console.error('Error getting catalogue filters:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to get catalogue filters'
+    });
+  }
+});
+
+/**
  * @desc    Get trainer's antiques
  * @route   GET /api/antiques/trainer/:trainerId
  * @access  Private
@@ -310,7 +383,10 @@ const getAuctionOptions = asyncHandler(async (req, res) => {
  */
 const auctionAntique = asyncHandler(async (req, res) => {
   try {
-    const { trainerId, antique, auctionId, monsterName, discordUserId } = req.body;
+    const { trainerId, targetTrainerId, antique, auctionId, monsterName, discordUserId } = req.body;
+
+    // Use targetTrainerId if provided, otherwise fall back to trainerId
+    const actualTrainerId = targetTrainerId || trainerId;
 
     if (!trainerId || !antique || !auctionId) {
       return res.status(400).json({
@@ -319,7 +395,7 @@ const auctionAntique = asyncHandler(async (req, res) => {
       });
     }
 
-    // Check if trainer has the antique
+    // Check if trainer has the antique (check the source trainer's inventory)
     const inventory = await Trainer.getInventory(trainerId);
     if (!inventory || !inventory.antiques || !inventory.antiques[antique]) {
       return res.status(400).json({
@@ -337,12 +413,12 @@ const auctionAntique = asyncHandler(async (req, res) => {
       });
     }
 
-    // Get the trainer
-    const trainer = await Trainer.getById(trainerId);
-    if (!trainer) {
+    // Get the target trainer (where the monster will go)
+    const targetTrainer = await Trainer.getById(actualTrainerId);
+    if (!targetTrainer) {
       return res.status(404).json({
         success: false,
-        message: 'Trainer not found'
+        message: 'Target trainer not found'
       });
     }
 
@@ -357,10 +433,10 @@ const auctionAntique = asyncHandler(async (req, res) => {
       type4: auction.type4,
       type5: auction.type5,
       attribute: auction.attribute,
-      name: monsterName || auction.species1,
+      name: monsterName || auction.name || auction.species1,
       level: 1,
-      trainer_id: trainerId,
-      player_user_id: discordUserId || trainer.player_user_id
+      trainer_id: actualTrainerId,
+      player_user_id: discordUserId || targetTrainer.player_user_id
     };
 
     // Create the monster
@@ -373,16 +449,32 @@ const auctionAntique = asyncHandler(async (req, res) => {
     }
 
     // Initialize the monster with proper stats and moves
-    const initializedMonster = await MonsterInitializer.initializeMonster(monster.id);
+    let initializedMonster;
+    try {
+      initializedMonster = await MonsterInitializer.initializeMonster(monster.id);
+    } catch (initError) {
+      // If initialization fails, delete the monster and return error
+      console.error('Failed to initialize monster, rolling back:', initError);
+      await Monster.delete(monster.id);
+      return res.status(500).json({
+        success: false,
+        message: 'Failed to initialize monster'
+      });
+    }
 
     // Record the auction claim
-    await AntiqueAuction.recordAuctionClaim(auctionId, trainerId, monster.id);
+    try {
+      await AntiqueAuction.recordAuctionClaim(auctionId, actualTrainerId, monster.id);
+    } catch (claimError) {
+      console.error('Failed to record claim, but monster was created:', claimError);
+      // Continue - the monster was already created successfully
+    }
 
-    // Use the antique (remove from inventory)
+    // ONLY consume the antique AFTER successful monster creation
     await Trainer.updateInventoryItem(trainerId, 'antiques', antique, -1);
 
-    // Update trainer's monster count
-    await Trainer.updateMonsterCount(trainerId);
+    // Update target trainer's monster count
+    await Trainer.updateMonsterCount(actualTrainerId);
 
     res.json({
       success: true,
@@ -403,6 +495,8 @@ const auctionAntique = asyncHandler(async (req, res) => {
 module.exports = {
   getAntiqueRollSettings,
   getAntiqueAuctions,
+  getAuctionCatalogue,
+  getCatalogueFilters,
   getTrainerAntiques,
   appraiseAntique,
   getAuctionOptions,

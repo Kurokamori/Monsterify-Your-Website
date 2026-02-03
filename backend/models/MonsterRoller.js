@@ -426,12 +426,18 @@ class MonsterRoller {
 
       
 
-      // Digimon attributes - only use these specific values
-      const validDigimonAttributes = ['Data', 'Virus', 'Vaccine', 'Variable', 'Free'];
+      // Handle attribute assignment
+      // If override_attribute is provided (e.g., from antiques), use that
+      if (params.override_attribute) {
+        processedMonster.attribute = params.override_attribute;
+      } else {
+        // Digimon attributes - only use these specific values
+        const validDigimonAttributes = ['Data', 'Virus', 'Vaccine', 'Variable', 'Free'];
 
-      // Set attribute if not already set OR if current attribute is not valid
-      if (!processedMonster.attribute || !validDigimonAttributes.includes(processedMonster.attribute)) {
-        processedMonster.attribute = this.rollFromArray(validDigimonAttributes);
+        // Set attribute if not already set OR if current attribute is not valid
+        if (!processedMonster.attribute || !validDigimonAttributes.includes(processedMonster.attribute)) {
+          processedMonster.attribute = this.rollFromArray(validDigimonAttributes);
+        }
       }
 
       console.log('Final processed monster:', processedMonster);

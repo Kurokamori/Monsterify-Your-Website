@@ -1009,6 +1009,47 @@
 }
 
 .add-trainer-header h1{ font-size:var(--font-size-3xl); color:var(--accent-color); }
+
+/* Jump to Submit Button */
+.jump-to-submit-btn {
+  position: sticky;
+  top: 3.5rem;
+  z-index: 100;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1rem;
+  background: var(--accent-hover);
+  color: var(--button-text);
+  border: none;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  transition: all 0.2s ease;
+  /* Position outside central content on larger screens */
+  margin-left: calc(-200px - 1rem);
+  width: fit-content;
+}
+
+.jump-to-submit-btn:hover {
+  background: var(--accent-color-dark, var(--accent-color));
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.jump-to-submit-btn i {
+  font-size: 0.8rem;
+}
+
+/* Mobile: keep button in central content area */
+@media (max-width: 1400px) {
+  .jump-to-submit-btn {
+    margin-left: 0;
+  }
+}
+
 .trainer-form {
   margin-bottom: 3rem;
 }
@@ -3093,6 +3134,22 @@
   box-shadow: 0 0 0 3px rgba(214,163,57,.3);
 }
 
+/* Style dropdown options to match site theme */
+.trainer-select option,
+.trainer-selector select option {
+  background-color: var(--input-background, #2b3645);
+  color: var(--text-color, #d7ddf3);
+  padding: 0.5rem;
+}
+
+.trainer-select option:hover,
+.trainer-selector select option:hover,
+.trainer-select option:checked,
+.trainer-selector select option:checked {
+  background-color: var(--nav-hover, #3d4b5d);
+  color: var(--text-color, #d7ddf3);
+}
+
 /* ===== Assignment block ===== */
 .trainer-assignment { margin-top: 15px; }
 .trainer-assignment label {
@@ -3120,7 +3177,6 @@
 
 /* When a hero section is placed inside .trainer-selection, enhance it */
 .trainer-selection-section {
-  padding: 2.5rem;
   background: linear-gradient(135deg, rgba(42,53,69,.8) 0%, rgba(26,35,50,.6) 100%);
   border-bottom: 1px solid rgba(214,163,57,.2);
   display: flex;
@@ -3150,6 +3206,20 @@
   border-color: #d6a339;
   box-shadow: 0 0 0 3px rgba(214,163,57,.3), 0 8px 25px rgba(0,0,0,.3);
   transform: translateY(-2px);
+}
+
+/* Style dropdown options inside trainer-selection-section */
+.trainer-selection-section .trainer-select option,
+.trainer-selection-section select option {
+  background-color: var(--input-background, #2b3645);
+  color: var(--text-color, #d7ddf3);
+  padding: 0.5rem;
+}
+
+.trainer-selection-section .trainer-select option:checked,
+.trainer-selection-section select option:checked {
+  background-color: var(--nav-hover, #3d4b5d);
+  color: var(--text-color, #d7ddf3);
 }
 
 /* ===== Empty state ===== */

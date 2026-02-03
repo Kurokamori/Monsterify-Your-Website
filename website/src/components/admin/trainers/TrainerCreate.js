@@ -23,7 +23,7 @@ const TrainerCreate = () => {
   // Load abilities from backend
   useEffect(() => {
     const loadAbilities = async () => {
-      const abilityData = await abilityService.getAbilityNames();
+      const abilityData = await abilityService.getNames();
       setAbilities(abilityData);
     };
     loadAbilities();
