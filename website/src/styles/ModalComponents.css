@@ -71,7 +71,7 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  max-width: 90vh;
+  max-width: 90%;
 }
 
 .modal-footer {
