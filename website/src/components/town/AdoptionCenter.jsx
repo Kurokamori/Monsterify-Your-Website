@@ -622,8 +622,7 @@ const AdoptionCenter = () => {
                     )}
                   </div>
 
-                  {/* Types and Attributes */}
-                  <div className="adopt-types-attributes">
+                  {/* Types */}
                   <div className="adopt-types">
                     <TypeBadge type={adopt.type1} context={'adopt'} />
                     {adopt.type2 && <TypeBadge type={adopt.type2} context={'adopt'} />}
@@ -632,11 +631,11 @@ const AdoptionCenter = () => {
                     {adopt.type5 && <TypeBadge type={adopt.type5} context={'adopt'} />}
                   </div>
 
-                  {adopt.attribute && (
-                    <div className="adopt-attribute">
+                  {/* Attribute */}
+                  <div className="adopt-attribute">
+                    {adopt.attribute && (
                       <AttributeBadge attribute={adopt.attribute} context={'adopt'} />
-                    </div>
-                  )}
+                    )}
                   </div>
                   </div>
                   

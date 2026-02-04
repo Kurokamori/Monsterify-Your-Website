@@ -1,94 +1,99 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import trainerService from '../../services/trainerService';
 import useDocumentTitle from '../../hooks/useDocumentTitle';
 
 const TrainersPage = () => {
   useDocumentTitle('Trainers');
-  
+
   const [trainers, setTrainers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
+  const [debouncedSearch, setDebouncedSearch] = useState('');
   const [factionFilter, setFactionFilter] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [sortBy, setSortBy] = useState('name');
   const [sortOrder, setSortOrder] = useState('asc');
+  const [retryCount, setRetryCount] = useState(0);
+  const isFirstRender = useRef(true);
 
-  useEffect(() => {
-    fetchTrainers();
-  }, [currentPage, sortBy, sortOrder]);
-
-  // Debounced search effect
+  // Debounce the search term into a separate state
   useEffect(() => {
     const timeoutId = setTimeout(() => {
-      setCurrentPage(1); // Reset to first page when searching
-      fetchTrainers();
-    }, 500); // 500ms delay
+      setDebouncedSearch(searchTerm);
+    }, 500);
 
     return () => clearTimeout(timeoutId);
   }, [searchTerm]);
 
-  // Faction filter effect
+  // Reset to page 1 when search or faction filter changes
   useEffect(() => {
-    setCurrentPage(1); // Reset to first page when filtering
-    fetchTrainers();
-  }, [factionFilter]);
-
-  const fetchTrainers = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-
-      const params = {
-        page: currentPage,
-        limit: 50,
-        sort_by: sortBy,
-        sort_order: sortOrder
-      };
-
-      // Combine search term and faction filter into search parameter
-      let searchParam = '';
-      if (searchTerm && searchTerm.trim() !== '') {
-        searchParam = searchTerm.trim();
-      }
-      if (factionFilter && factionFilter.trim() !== '') {
-        // If we have both search term and faction filter, combine them
-        if (searchParam) {
-          searchParam += ' ' + factionFilter.trim();
-        } else {
-          searchParam = factionFilter.trim();
-        }
-      }
-      
-      if (searchParam) {
-        params.search = searchParam;
-      }
-
-      console.log('Fetching trainers with params:', params);
-      const response = await trainerService.getTrainersPaginated(params);
-
-      setTrainers(response.trainers || []);
-      setTotalPages(response.totalPages || 1);
-
-      // If no trainers found with search, show a message but don't treat as error
-      if (response.trainers.length === 0 && searchTerm) {
-        console.log('No trainers found matching search criteria');
-      }
-    } catch (err) {
-      console.error('Error fetching trainers:', err);
-      setError('Failed to load trainers. Please try again later.');
-      setTrainers([]);
-    } finally {
-      setLoading(false);
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
     }
-  };
+    setCurrentPage(1);
+  }, [debouncedSearch, factionFilter]);
+
+  // Single effect that fetches trainers whenever any relevant param changes
+  useEffect(() => {
+    const fetchTrainers = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+
+        const params = {
+          page: currentPage,
+          limit: 50,
+          sort_by: sortBy,
+          sort_order: sortOrder
+        };
+
+        // Combine search term and faction filter into search parameter
+        let searchParam = '';
+        if (debouncedSearch && debouncedSearch.trim() !== '') {
+          searchParam = debouncedSearch.trim();
+        }
+        if (factionFilter && factionFilter.trim() !== '') {
+          if (searchParam) {
+            searchParam += ' ' + factionFilter.trim();
+          } else {
+            searchParam = factionFilter.trim();
+          }
+        }
+
+        if (searchParam) {
+          params.search = searchParam;
+        }
+
+        console.log('Fetching trainers with params:', params);
+        const response = await trainerService.getTrainersPaginated(params);
+
+        setTrainers(response.trainers || []);
+        setTotalPages(response.totalPages || 1);
+
+        if (response.trainers.length === 0 && debouncedSearch) {
+          console.log('No trainers found matching search criteria');
+        }
+      } catch (err) {
+        console.error('Error fetching trainers:', err);
+        setError('Failed to load trainers. Please try again later.');
+        setTrainers([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTrainers();
+  }, [currentPage, sortBy, sortOrder, debouncedSearch, factionFilter, retryCount]);
 
   const handleSearch = (e) => {
     e.preventDefault();
-    // Search is now handled automatically by the debounced useEffect
-    // This just prevents the default form submission behavior
+    // When form is submitted (e.g. mobile keyboard "Go" button),
+    // immediately flush the debounced search
+    setDebouncedSearch(searchTerm);
   };
 
   const handleSort = (field) => {
@@ -195,7 +200,7 @@ const TrainersPage = () => {
         <div className="error-container">
           <i className="fas fa-exclamation-circle"></i>
           <p>{error}</p>
-          <button onClick={fetchTrainers} className="retry-button">
+          <button onClick={() => setRetryCount(c => c + 1)} className="retry-button">
             Try Again
           </button>
         </div>

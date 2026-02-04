@@ -1100,32 +1100,6 @@
 }
 
 
-.filter-button {
-  padding: 0.4rem 0.8rem;
-  border: none;
-  border-radius: 6px;
-  font-size: 0.8rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  background-color: #252525;
-  color: #f5f5f5;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-  white-space: nowrap;
-  flex-shrink: 0;
-}
-
-
-.filter-button.apply {
-  background-color: var(--accent-color);
-  color: white;
-}
-
-.filter-button.apply:hover {
-  background-color: var(--accent-hover);
-}
 
 /* Adventure Detail Layout */
 .adventure-title-section {
@@ -1139,8 +1113,6 @@
 .adventure-content {
   gap: 1.5rem;
 }
-
-
 
 /* Sections */
 .section-header {
@@ -4300,10 +4272,6 @@
   }
   
   .filter-actions {
-    width: 100%;
-  }
-  
-  .filter-button {
     width: 100%;
   }
   

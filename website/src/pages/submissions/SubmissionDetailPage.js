@@ -235,7 +235,7 @@ const SubmissionDetailPage = ({ type }) => {
           )}
 
           {/* Book Chapters (if this is a book) */}
-          {isWriting && submission.is_book && bookChapters.length > 0 && (
+          {isWriting && !!submission.is_book && bookChapters.length > 0 && (
             <div className="book-chapters-section">
               <h2><i className="fas fa-list"></i> Chapters</h2>
               <div className="chapters-list-compact">
@@ -247,7 +247,7 @@ const SubmissionDetailPage = ({ type }) => {
                   >
                     <span className="chapter-num">Chapter {chapter.chapter_number || index + 1}</span>
                     <span className="chapter-title">{chapter.title}</span>
-                    {chapter.word_count && (
+                    {chapter.word_count > 0 && (
                       <span className="chapter-words">{chapter.word_count.toLocaleString()} words</span>
                     )}
                   </Link>
@@ -258,9 +258,11 @@ const SubmissionDetailPage = ({ type }) => {
 
           {isWriting && submission.content && (
             <div className="submission-writing-content">
-              <h2>Content</h2>
+              {(submission.description || parentBook || (!!submission.is_book && bookChapters.length > 0)) && (
+                <h2>Content</h2>
+              )}
               <div className="writing-text markdown-writing">
-                <MarkdownRenderer content={submission.content} />
+                <MarkdownRenderer content={submission.content} disableCodeBlocks />
               </div>
             </div>
           )}

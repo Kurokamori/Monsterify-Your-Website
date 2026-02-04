@@ -82,7 +82,7 @@ const SubmissionDetail = () => {
   }
 
   const isArt = submission.submission_type === 'art';
-  const isBook = submission.is_book;
+  const isBook = !!submission.is_book;
   const hasChapters = isBook && submission.chapters && submission.chapters.length > 0;
   const hasMonsters = submission.monsters && submission.monsters.length > 0;
   const hasImages = submission.images && submission.images.length > 0;

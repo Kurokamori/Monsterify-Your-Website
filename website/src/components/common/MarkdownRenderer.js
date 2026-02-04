@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { marked } from 'marked';
+import { marked, Marked } from 'marked';
 import DOMPurify from 'dompurify';
 
 // Configure marked options for safe rendering
@@ -11,6 +11,32 @@ marked.setOptions({
   pedantic: false
 });
 
+// Separate marked instance for writing content that ignores indented code blocks.
+// Creative writing often has indented paragraphs (from Google Docs, Word, etc.)
+// that should not be rendered as <pre><code> blocks.
+const writingMarked = new Marked({
+  gfm: true,
+  breaks: true,
+  headerIds: true,
+  mangle: false,
+  pedantic: false
+});
+
+// Override the indented code block tokenizer to return undefined (no match).
+// In marked v15, returning `false` falls back to the original tokenizer,
+// so we must return `undefined` to truly skip indented code block detection.
+// Fenced code blocks (``` / ~~~) are handled separately by the fences() tokenizer
+// and will continue to work.
+writingMarked.use({
+  tokenizer: {
+    code() {
+      // Return undefined to signal "no match" — do NOT return false,
+      // as marked treats false as "fall back to the default tokenizer"
+      return undefined;
+    }
+  }
+});
+
 /**
  * Reusable component to render markdown content
  * Uses marked for parsing and DOMPurify for sanitization
@@ -20,7 +46,7 @@ marked.setOptions({
  * @param {string} props.className - Optional additional CSS class
  * @param {boolean} props.inline - If true, renders without wrapper div
  */
-const MarkdownRenderer = ({ content, className = '', inline = false }) => {
+const MarkdownRenderer = ({ content, className = '', inline = false, disableCodeBlocks = false }) => {
   // Parse and sanitize markdown content
   const htmlContent = useMemo(() => {
     if (!content) {
@@ -29,7 +55,21 @@ const MarkdownRenderer = ({ content, className = '', inline = false }) => {
 
     try {
       // Parse markdown to HTML
-      const rawHtml = marked.parse(content);
+      // Use writingMarked for creative writing content to preserve indentation
+      const parser = disableCodeBlocks ? writingMarked : marked;
+      let textToParse = content;
+
+      // When code blocks are disabled, preserve leading whitespace by converting
+      // leading spaces/tabs to &nbsp; so they survive HTML rendering.
+      // Without this, HTML collapses leading whitespace. Tabs are converted to
+      // 4 non-breaking spaces each to approximate standard tab width.
+      if (disableCodeBlocks) {
+        textToParse = content.replace(/^([\t ]+)/gm, (match) => {
+          return match.replace(/\t/g, '\u00a0\u00a0\u00a0\u00a0').replace(/ /g, '\u00a0');
+        });
+      }
+
+      const rawHtml = parser.parse(textToParse);
 
       // Sanitize HTML to prevent XSS attacks
       // Configure DOMPurify to allow safe HTML tags
@@ -61,7 +101,7 @@ const MarkdownRenderer = ({ content, className = '', inline = false }) => {
       console.error('Error parsing markdown:', error);
       return content; // Return raw content if parsing fails
     }
-  }, [content]);
+  }, [content, disableCodeBlocks]);
 
   if (!content) {
     return <div className={`markdown-empty ${className}`}>No content available</div>;

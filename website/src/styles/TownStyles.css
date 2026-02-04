@@ -128,12 +128,12 @@
 
 
 .adopt-card {
-  background-color: var(--card-background);
+  background-color: var(--nav-active);
   border-radius: 0.5rem;
   padding: 1.5rem;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   display: grid;
-  grid-row: span 4;
+  grid-row: span 5;
   grid-template-rows: subgrid;
   row-gap: 0.5rem;
   cursor: pointer;
@@ -157,7 +157,7 @@
 
 .adopt-description {
   display: grid;
-  grid-row: span 2;
+  grid-row: span 3;
   grid-template-rows: subgrid;
   row-gap: 0.5rem;
 }
@@ -179,18 +179,20 @@
   opacity: 0.8;
 }
 
-.adopt-types-attributes {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
-
 .adopt-types {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
   justify-content: center;
+  align-items: center;
+  margin-top: 0.75rem;
+}
+
+.adopt-attribute {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 0.5rem;
 }
 
 .type-badge-adopt {
@@ -768,6 +770,7 @@
   justify-content: center;
   gap: 0.5rem;
   width: 100%;
+  margin-top: 1rem;
 }
 
 
@@ -5764,40 +5767,6 @@
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
-}
-
-.filter-button {
-  padding: 0.5rem 1rem;
-  border: 2px solid var(--border-color);
-  background-color: var(--background-color);
-  color: var(--text-color);
-  border-radius: 0.25rem;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  font-size: 0.9rem;
-  font-weight: 500;
-}
-
-.filter-button:hover {
-  background-color: var(--hover-background);
-  border-color: var(--accent-color);
-}
-
-.filter-button.active {
-  background-color: var(--accent-color);
-  color: var(--background-color);
-  border-color: var(--accent-color);
-}
-
-.filter-button.clear {
-  background-color: var(--error-color);
-  color: white;
-  border-color: var(--error-color);
-}
-
-.filter-button.clear:hover {
-  background-color: #dc3545;
-  border-color: #dc3545;
 }
 
 .berry-categories {

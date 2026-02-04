@@ -128,7 +128,8 @@ const AdoptionItemModal = ({
         fetchItemImages();
       }
     }
-  }, [isOpen, availableBerries, availablePastries, imagesLoaded]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOpen]);
 
   // Fetch berry and pastry images
   const fetchItemImages = async () => {
@@ -534,8 +535,8 @@ const AdoptionItemModal = ({
           <h3>{monsterData.name}</h3>
           <div className="monster-species-list">
             {monsterData.species1 && <span className="species-badge">{monsterData.species1}</span>}
-            {monsterData.species2 && <span className="species-badge">+ {monsterData.species2}</span>}
-            {monsterData.species3 && <span className="species-badge">+ {monsterData.species3}</span>}
+            {monsterData.species2 && <span className="species-badge"> {monsterData.species2}</span>}
+            {monsterData.species3 && <span className="species-badge"> {monsterData.species3}</span>}
           </div>
         </div>
       </div>
