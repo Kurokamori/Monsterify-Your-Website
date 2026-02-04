@@ -645,7 +645,8 @@ const EditTrainerPage = () => {
                 required
               />
             </div>
-
+            </div>
+          <div className="form-grid">
             <div className="form-group">
               <label htmlFor="nickname">Nickname</label>
               <input
@@ -667,7 +668,8 @@ const EditTrainerPage = () => {
                 onChange={handleChange}
               />
             </div>
-
+          </div>
+          <div className="form-grid">
             <div className="form-group">
               <AutocompleteInput
                 id="faction"
@@ -678,35 +680,6 @@ const EditTrainerPage = () => {
                 options={FACTIONS}
                 placeholder="Select or type faction"
               />
-            </div>
-
-            <div className="form-group">
-              <label htmlFor="level">Level</label>
-              <input
-                type="number"
-                id="level"
-                name="level"
-                min="1"
-                max="100"
-                value={formData.level || 1}
-                onChange={handleChange}
-                disabled
-              />
-              <small className="field-note">Level cannot be changed directly</small>
-            </div>
-
-            <div className="form-group">
-              <label htmlFor="currency_amount">Currency</label>
-              <input
-                type="number"
-                id="currency_amount"
-                name="currency_amount"
-                min="0"
-                value={formData.currency_amount || 0}
-                onChange={handleChange}
-                disabled
-              />
-              <small className="field-note">Currency cannot be changed directly</small>
             </div>
           </div>
         </div>
@@ -747,6 +720,8 @@ const EditTrainerPage = () => {
                 onChange={handleChange}
               />
             </div>
+            </div>
+            <div className="form-grid-x3">
 
             <div className="form-group">
               <AutocompleteInput
@@ -868,7 +843,7 @@ const EditTrainerPage = () => {
         {/* Favorite Types Section */}
         <div className="form-section">
           <h2>Favorite Types</h2>
-          <div className="form-grid">
+          <div className="form-grid-x3">
             <div className="form-group">
               <AutocompleteInput
                 id="fav_type1"
@@ -969,6 +944,34 @@ const EditTrainerPage = () => {
               />
             </div>
 
+                        <div className="form-group">
+              <label htmlFor="race">Race</label>
+              <select
+                id="race"
+                name="race"
+                value={formData.race || 'Human'}
+                onChange={handleChange}
+              >
+                <option value="Human">Human</option>
+                <option value="Alter">Alter</option>
+                <option value="Ultra Beast">Ultra Beast</option>
+                <option value="Alter (Faller)">Alter (Faller)</option>
+                <option value="Human (Faller)">Human (Faller)</option>
+                <option value="Catfolk">Catfolk</option>
+              </select>
+            </div>
+
+                        <div className="form-group">
+              <label htmlFor="age">Age</label>
+              <input
+                type="text"
+                id="age"
+                name="age"
+                value={formData.age || ''}
+                onChange={handleChange}
+              />
+            </div>
+
             <div className="form-group">
               <label htmlFor="sexuality">Sexuality</label>
               <input
@@ -979,17 +982,8 @@ const EditTrainerPage = () => {
                 onChange={handleChange}
               />
             </div>
-
-            <div className="form-group">
-              <label htmlFor="age">Age</label>
-              <input
-                type="text"
-                id="age"
-                name="age"
-                value={formData.age || ''}
-                onChange={handleChange}
-              />
             </div>
+            <div className="form-grid">
 
             <div className="form-group">
               <label htmlFor="height">Height</label>
@@ -1012,6 +1006,8 @@ const EditTrainerPage = () => {
                 onChange={handleChange}
               />
             </div>
+            </div>
+            <div className="form-grid">
 
             <div className="form-group theme-fields">
               <label htmlFor="theme_display">Theme Display Text</label>
@@ -1039,6 +1035,8 @@ const EditTrainerPage = () => {
                 If provided, users will be able to expand and play the theme music on your trainer profile.
               </small>
             </div>
+            </div>
+            <div className="form-grid">
 
             <div className="form-group">
               <label htmlFor="voice_claim_display">Voice Claim Display Text</label>
@@ -1205,6 +1203,8 @@ const EditTrainerPage = () => {
                 onChange={handleChange}
               />
             </div>
+            </div>
+            <div className="form-grid">
 
             <div className="form-group">
               <label htmlFor="birthday">Birthday</label>
@@ -1246,6 +1246,8 @@ const EditTrainerPage = () => {
               />
               <small className="field-note">Automatically calculated from birth year</small>
             </div>
+          </div>
+          <div className="form-grid">
 
             <div className="form-group">
               <AutocompleteInput
@@ -1257,23 +1259,6 @@ const EditTrainerPage = () => {
                 options={BERRIES}
                 placeholder="Favorite berry"
               />
-            </div>
-
-            <div className="form-group">
-              <label htmlFor="race">Race</label>
-              <select
-                id="race"
-                name="race"
-                value={formData.race || 'Human'}
-                onChange={handleChange}
-              >
-                <option value="Human">Human</option>
-                <option value="Alter">Alter</option>
-                <option value="Ultra Beast">Ultra Beast</option>
-                <option value="Alter (Faller)">Alter (Faller)</option>
-                <option value="Human (Faller)">Human (Faller)</option>
-                <option value="Catfolk">Catfolk</option>
-              </select>
             </div>
           </div>
         </div>
@@ -1396,7 +1381,7 @@ const EditTrainerPage = () => {
                     <h3>Relation #{index + 1}</h3>
                     <button
                       type="button"
-                      className="remove-relation-button"
+                      className="icon-button"
                       onClick={() => handleRemoveRelation(relation.id)}
                     >
                       <i className="fas fa-trash-alt"></i>
@@ -1655,6 +1640,8 @@ const EditTrainerPage = () => {
                 onChange={handleChange}
               />
             </div>
+            </div>
+            <div className="form-grid">
 
             <div className="form-group">
               <label htmlFor="mega_species1">Mega Primary Species</label>
@@ -1688,7 +1675,8 @@ const EditTrainerPage = () => {
                 onChange={handleChange}
               />
             </div>
-
+            </div>
+            <div className="form-grid-x3">
             <div className="form-group">
               <AutocompleteInput
                 id="mega_type1"
@@ -1712,6 +1700,56 @@ const EditTrainerPage = () => {
                 placeholder="Mega secondary type"
               />
             </div>
+
+                        <div className="form-group">
+              <AutocompleteInput
+                id="mega_type3"
+                name="mega_type3"
+                label="Mega 3rd Type"
+                value={formData.mega_type3 || ''}
+                onChange={handleChange}
+                options={TYPES}
+                placeholder="Mega 3rd type"
+              />
+            </div>
+
+                        <div className="form-group">
+              <AutocompleteInput
+                id="mega_type4"
+                name="mega_type4"
+                label="Mega 4th Type"
+                value={formData.mega_type4 || ''}
+                onChange={handleChange}
+                options={TYPES}
+                placeholder="Mega 4th type"
+              />
+            </div>
+
+                        <div className="form-group">
+              <AutocompleteInput
+                id="mega_type5"
+                name="mega_type5"
+                label="Mega 5th Type"
+                value={formData.mega_type5 || ''}
+                onChange={handleChange}
+                options={TYPES}
+                placeholder="Mega 5th type"
+              />
+            </div>
+
+                        <div className="form-group">
+              <AutocompleteInput
+                id="mega_type6"
+                name="mega_type6"
+                label="Mega 6th Type"
+                value={formData.mega_type6 || ''}
+                onChange={handleChange}
+                options={TYPES}
+                placeholder="Mega 6th type"
+              />
+            </div>
+            </div>
+            <div className="form-grid">
 
             <div className="form-group">
               <AutocompleteInput

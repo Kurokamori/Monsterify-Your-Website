@@ -6,6 +6,43 @@ import trainerService from '../../services/trainerService';
 import monsterService from '../../services/monsterService';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
 
+// Strip markdown formatting and return first ~40 words with ellipsis
+const getContentPreview = (rawContent, wordLimit = 40) => {
+  if (!rawContent) return '';
+  let text = rawContent
+    .replace(/^#{1,6}\s+/gm, '')        // headers
+    .replace(/!\[[^\]]*\]\([^)]*\)/g, '') // images
+    .replace(/\[([^\]]*)\]\([^)]*\)/g, '$1') // links -> text
+    .replace(/(`{3}[\s\S]*?`{3}|`[^`]+`)/g, '') // code blocks/inline code
+    .replace(/(\*{1,3}|_{1,3})(.*?)\1/g, '$2')  // bold/italic
+    .replace(/~~(.*?)~~/g, '$1')         // strikethrough
+    .replace(/^[-*>]+\s?/gm, '')         // list markers, blockquotes
+    .replace(/^---+$/gm, '')             // horizontal rules
+    .replace(/\|/g, '')                  // table pipes
+    .trim();
+
+  const words = text.split(/\s+/).filter(Boolean);
+  if (words.length <= wordLimit) return text;
+  let count = 0;
+  let result = '';
+  for (const char of text) {
+    if (/\s/.test(char)) {
+      if (char === '\n') {
+        result += char;
+      } else if (result.length > 0 && !/\s$/.test(result)) {
+        result += ' ';
+      }
+      continue;
+    }
+    if (result.length === 0 || /\s$/.test(result)) {
+      count++;
+      if (count > wordLimit) break;
+    }
+    result += char;
+  }
+  return result.trim() + '...';
+};
+
 const Library = () => {
   const [submissions, setSubmissions] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -302,25 +339,68 @@ const Library = () => {
             {Array.isArray(submissions) && submissions.map(submission => (
               <Col key={submission.id} md={4} sm={6} className="mb-4">
                 <Card className="submission-card h-100" onClick={() => handleSubmissionClick(submission.id)}>
-                  <div className="card-img-container">
-                    <Card.Img
-                      variant="top"
-                      src={submission.cover_image_url || 'https://via.placeholder.com/300/1e2532/d6a339?text=No+Cover'}
-                      alt={submission.title}
-                    />
-                    {submission.is_book && (
-                      <Badge bg="primary" className="book-badge">
-                        Book ({submission.chapter_count} {submission.chapter_count === 1 ? 'chapter' : 'chapters'})
-                      </Badge>
-                    )}
-                  </div>
-                  <Card.Body>
-                    <Card.Title>{submission.title}</Card.Title>
-                    <Card.Text className="submission-description">{submission.description}</Card.Text>
-                    <div className="submission-meta">
-                      <small>By: {submission.trainer_name || submission.display_name || 'Unknown'}</small>
-                      <small>{new Date(submission.submission_date).toLocaleDateString()}</small>
+                  {submission.cover_image_url ? (
+                    <div className="card-img-container">
+                      <Card.Img
+                        variant="top"
+                        src={submission.cover_image_url}
+                        alt={submission.title}
+                      />
+                      {submission.is_book && (
+                        <Badge bg="primary" className="book-badge">
+                          Book ({submission.chapter_count} {submission.chapter_count === 1 ? 'chapter' : 'chapters'})
+                        </Badge>
+                      )}
                     </div>
+                  ) : (
+                    <div className="library-item-text-cover">
+                      <div className="library-item-text-cover-icon">
+                        <i className={`fas ${submission.is_book ? 'fa-book' : 'fa-feather-alt'}`}></i>
+                      </div>
+                      <h4 className="library-item-text-cover-title">{submission.title}</h4>
+                      <p className="library-item-text-cover-author">
+                        By: {submission.trainer_name || submission.display_name || 'Unknown'}
+                      </p>
+                      {(submission.description || submission.content_preview) && (
+                        <p className="library-item-text-cover-description">
+                          {submission.description || getContentPreview(submission.content_preview)}
+                        </p>
+                      )}
+                      {submission.tags && Array.isArray(submission.tags) && submission.tags.length > 0 && (
+                        <>
+                          <div className="library-item-text-cover-divider" />
+                          <div className="library-item-text-cover-tags">
+                            {submission.tags.map(tag => (
+                              <span key={tag} className="library-item-text-cover-tag">{tag}</span>
+                            ))}
+                          </div>
+                        </>
+                      )}
+                      {submission.is_book && (
+                        <Badge bg="primary" className="book-badge">
+                          Book ({submission.chapter_count} {submission.chapter_count === 1 ? 'chapter' : 'chapters'})
+                        </Badge>
+                      )}
+                    </div>
+                  )}
+                  <Card.Body>
+                    {submission.cover_image_url && (
+                      <>
+                        <Card.Title>{submission.title}</Card.Title>
+                        <Card.Text className="submission-description">
+                          {submission.description || getContentPreview(submission.content_preview)}
+                        </Card.Text>
+                        <div className="submission-meta">
+                          <small>By: {submission.trainer_name || submission.display_name || 'Unknown'}</small>
+                          <small>{new Date(submission.submission_date).toLocaleDateString()}</small>
+                        </div>
+                      </>
+                    )}
+                    {!submission.cover_image_url && (
+                      <div className="submission-meta">
+                        <small>{new Date(submission.submission_date).toLocaleDateString()}</small>
+                      </div>
+                    )}
                     {submission.tags && Array.isArray(submission.tags) && submission.tags.length > 0 && (
                       <div className="submission-tags">
                         {submission.tags.map(tag => (

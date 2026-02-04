@@ -109,29 +109,36 @@ const SubmissionPage = () => {
             <h2>Create a New Submission</h2>
             <p>Choose a submission type below to get started. Each type offers different rewards and opportunities.</p>
 
-            <div className="submission-types-grid">
-              <div className="submission-type-card" onClick={() => navigateToSubmission('art')}>
-                <div className="submission-type-icon">
-                  <i className="fas fa-paint-brush"></i>
+            <div className="submission-types-grid-row">
+              <div className="submission-types-section">
+                <h2 className="submission-types-heading">Generic Submissions</h2>
+              <div className="submission-types-grid-column">
+                <div className="submission-type-card" onClick={() => navigateToSubmission('art')}>
+                  <div className="submission-type-icon">
+                    <i className="fas fa-paint-brush"></i>
+                  </div>
+                  <h3>Art Submission</h3>
+                  <p>Submit your artwork and earn rewards based on quality and complexity.</p>
+                  <button className="submission-type-button">
+                    <i className="fas fa-arrow-right"></i> Submit Art
+                  </button>
                 </div>
-                <h3>Art Submission</h3>
-                <p>Submit your artwork and earn rewards based on quality and complexity.</p>
-                <button className="submission-type-button">
-                  <i className="fas fa-arrow-right"></i> Submit Art
-                </button>
-              </div>
 
-              <div className="submission-type-card" onClick={() => navigateToSubmission('writing')}>
-                <div className="submission-type-icon">
-                  <i className="fas fa-pen-fancy"></i>
+                <div className="submission-type-card" onClick={() => navigateToSubmission('writing')}>
+                  <div className="submission-type-icon">
+                    <i className="fas fa-pen-fancy"></i>
+                  </div>
+                  <h3>Writing Submission</h3>
+                  <p>Submit stories, poems, and other written works to earn rewards based on word count.</p>
+                  <button className="submission-type-button">
+                    <i className="fas fa-arrow-right"></i> Submit Writing
+                  </button>
                 </div>
-                <h3>Writing Submission</h3>
-                <p>Submit stories, poems, and other written works to earn rewards based on word count.</p>
-                <button className="submission-type-button">
-                  <i className="fas fa-arrow-right"></i> Submit Writing
-                </button>
               </div>
-
+              </div>
+              <div className="submission-types-section">
+                <h2 className="submission-types-heading">Reference Submissions</h2>
+              <div className="submission-types-grid-column">
               <div className="submission-type-card" onClick={() => navigateToSubmission('trainer-reference')}>
                 <div className="submission-type-icon">
                   <i className="fas fa-user"></i>
@@ -175,6 +182,11 @@ const SubmissionPage = () => {
                   <i className="fas fa-arrow-right"></i> Submit Trainer Mega
                 </button>
               </div>
+              </div>
+              </div>
+
+              <div className="submission-types-section">
+                <h2 className="submission-types-heading">Prompt Submissions</h2>
 
               <div className="submission-type-card prompt-card">
                 <div className="submission-type-icon">
@@ -197,6 +209,7 @@ const SubmissionPage = () => {
                   </button>
                 </div>
               </div>
+              </div>
             </div>
           </div>
         )}
@@ -216,126 +229,6 @@ const SubmissionPage = () => {
           </div>
         )}
       </div>
-
-      {/* Prompt submissions now use dedicated pages */}
-
-      {/* Reward Information - only show on main submissions page */}
-      {location.pathname !== '/gallery' && location.pathname !== '/library' && (
-        <div className="reward-info-container">
-          <h2>Submission Rewards</h2>
-          <p>
-            Share your creativity and earn rewards for your trainers and monsters! Each submission type offers different rewards,
-            and all submissions contribute to your garden points, mission progress, and boss damage.
-          </p>
-
-        <div className="reward-categories">
-          <div className="reward-category">
-            <div className="reward-category-icon">
-              <i className="fas fa-paint-brush"></i>
-            </div>
-            <h3>Art Submissions</h3>
-            <p>
-              Submit your artwork and earn rewards based on quality and complexity.
-              Higher quality submissions earn more rewards!
-            </p>
-            <div className="reward-examples">
-              <div className="reward-example">
-                <span className="reward-type">Sketch:</span>
-                <span className="reward-value">2 Lvls, 100 coins</span>
-              </div>
-              <div className="reward-example">
-                <span className="reward-type">Rendered:</span>
-                <span className="reward-value">5 lvls, 250 coins</span>
-              </div>
-              <div className="reward-example">
-                <span className="reward-type">Polished:</span>
-                <span className="reward-value">7 lvls, 350 coins</span>
-              </div>
-            </div>
-          </div>
-
-          <div className="reward-category">
-            <div className="reward-category-icon">
-              <i className="fas fa-pen-fancy"></i>
-            </div>
-            <h3>Writing Submissions</h3>
-            <p>
-              Submit your stories, poems, and other written works to earn rewards based on
-              word count and quality.
-            </p>
-            <div className="reward-examples">
-              <div className="reward-example">
-                <span className="reward-type">Short (500-1000 words):</span>
-                <span className="reward-value">10-20 lvls, 500-1000 coins</span>
-              </div>
-              <div className="reward-example">
-                <span className="reward-type">Medium (1000-3000 words):</span>
-                <span className="reward-value">20-60 lvls, 1000-3000 coins</span>
-              </div>
-              <div className="reward-example">
-                <span className="reward-type">Long (3000+ words):</span>
-                <span className="reward-value">60+ lvls, 3000+ coins</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="reward-categories">
-          <div className="reward-category">
-            <div className="reward-category-icon">
-              <i className="fas fa-user"></i>
-            </div>
-            <h3>Reference Submissions</h3>
-            <p>
-              Submit reference images for your trainers and monsters to help artists draw them accurately.
-            </p>
-            <div className="reward-examples">
-              <div className="reward-example">
-                <span className="reward-type">Trainer Reference:</span>
-                <span className="reward-value">6 lvls, 200 coins</span>
-              </div>
-              <div className="reward-example">
-                <span className="reward-type">Monster Reference:</span>
-                <span className="reward-value">6 lvls, 200 coins</span>
-              </div>
-              <div className="reward-example">
-                <span className="reward-type">Monster Mega Image:</span>
-                <span className="reward-value">6 lvls, 200 coins</span>
-              </div>
-              <div className="reward-example">
-                <span className="reward-type">Trainer Mega Image:</span>
-                <span className="reward-value">9 lvls, 200 coins</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="reward-bonus">
-          <h3>Additional Rewards</h3>
-          <p>
-            All submissions also provide additional benefits to your trainers and the community!
-          </p>
-          <ul className="bonus-list">
-            <li>
-              <i className="fas fa-seedling"></i>
-              <span>Garden Points: +5-20 points per submission</span>
-            </li>
-            <li>
-              <i className="fas fa-tasks"></i>
-              <span>Mission Progress: +1-3 progress per submission</span>
-            </li>
-            <li>
-              <i className="fas fa-dragon"></i>
-              <span>Boss Damage: +5-15 damage per submission</span>
-            </li>
-            <li>
-              <i className="fas fa-gift"></i>
-              <span>Special Items: Chance to earn rare items</span>
-            </li>
-          </ul>
-        </div>
-      </div>
-      )}
     </div>
   );
 };

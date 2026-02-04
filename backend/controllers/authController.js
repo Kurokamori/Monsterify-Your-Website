@@ -39,7 +39,8 @@ const registerUser = async (req, res) => {
         display_name: user.display_name,
         discord_id: user.discord_id,
         is_admin: user.is_admin,
-        monster_roller_settings: user.monster_roller_settings
+        monster_roller_settings: user.monster_roller_settings,
+        theme: user.theme || 'dusk'
       },
       token,
       refreshToken
@@ -113,7 +114,8 @@ const loginUser = async (req, res) => {
         display_name: user.display_name,
         discord_id: user.discord_id,
         is_admin: user.is_admin,
-        monster_roller_settings: user.monster_roller_settings
+        monster_roller_settings: user.monster_roller_settings,
+        theme: user.theme || 'dusk'
       },
       token,
       refreshToken
@@ -198,7 +200,8 @@ const getUserProfile = async (req, res) => {
         display_name: user.display_name,
         discord_id: user.discord_id,
         is_admin: user.is_admin,
-        monster_roller_settings: user.monster_roller_settings
+        monster_roller_settings: user.monster_roller_settings,
+        theme: user.theme || 'dusk'
       }
     });
   } catch (error) {
@@ -233,7 +236,8 @@ const updateUserProfile = async (req, res) => {
         display_name: updatedUser.display_name,
         discord_id: updatedUser.discord_id,
         is_admin: updatedUser.is_admin,
-        monster_roller_settings: updatedUser.monster_roller_settings
+        monster_roller_settings: updatedUser.monster_roller_settings,
+        theme: updatedUser.theme || 'dusk'
       }
     });
   } catch (error) {
@@ -296,6 +300,37 @@ const updateMonsterRollerSettings = async (req, res) => {
     res.status(500).json({
       success: false,
       message: 'Server error while updating monster roller settings'
+    });
+  }
+};
+
+/**
+ * Update user's theme preference
+ * @route PUT /api/auth/theme
+ * @access Private
+ */
+const updateUserTheme = async (req, res) => {
+  try {
+    const { theme } = req.body;
+
+    if (!theme || typeof theme !== 'string') {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid theme value'
+      });
+    }
+
+    const updatedUser = await User.updateTheme(req.user.id, theme);
+
+    res.status(200).json({
+      success: true,
+      theme: updatedUser.theme || 'dusk'
+    });
+  } catch (error) {
+    console.error('Update theme error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error while updating theme'
     });
   }
 };
@@ -364,7 +399,8 @@ const discordCallback = (req, res, next) => {
         display_name: user.display_name,
         discord_id: user.discord_id,
         is_admin: user.is_admin,
-        monster_roller_settings: user.monster_roller_settings
+        monster_roller_settings: user.monster_roller_settings,
+        theme: user.theme || 'dusk'
       };
       
       const redirectUrl = `${frontendUrl}/auth/discord/success?token=${encodeURIComponent(token)}&refreshToken=${encodeURIComponent(refreshToken)}&user=${encodeURIComponent(JSON.stringify(userData))}`;
@@ -387,6 +423,7 @@ module.exports = {
   updateUserProfile,
   getMonsterRollerSettings,
   updateMonsterRollerSettings,
+  updateUserTheme,
   testDiscordConfig,
   discordAuth,
   discordCallback

@@ -202,8 +202,7 @@
 .shop-items-header h1,
 .shop-form-header h1{margin:0;color:#fff;}
 
-.add-shop-button,
-.back-button{
+.add-shop-button {
   display:flex; align-items:center; gap:8px;
   border:none; border-radius:var(--radius-sm); padding:8px 15px;
   font-weight:700; color:#fff; text-decoration:none; transition:background-color var(--ease);
@@ -219,9 +218,7 @@
 .save-button:hover:not(:disabled),
 .shop-action-button.activate:hover{ background:var(--shop-green-dark); }
 
-.back-button,
 .shop-action-button.edit{ background:var(--shop-blue); }
-.back-button:hover,
 .shop-action-button.edit:hover{ background:var(--shop-blue-dark); }
 
 .shop-action-button.items{ background:var(--shop-orange); }

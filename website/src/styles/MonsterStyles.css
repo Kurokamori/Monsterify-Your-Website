@@ -2646,14 +2646,13 @@
   text-overflow: ellipsis;
 }
 
-.view-all-button, .retry-button, .back-button { cursor: pointer; }
-.retry-button, .back-button { padding: .75rem 1.5rem; border: none; border-radius: .375rem; font-weight: 600; transition: all .2s; }
+.view-all-button, .retry-button { cursor: pointer; }
+.retry-button { padding: .75rem 1.5rem; border: none; border-radius: .375rem; font-weight: 600; transition: all .2s; }
 .retry-button {
   background-color: var(--accent-color);
   color: #000;
 }
  .retry-button:hover { background-color: var(--accent-hover); }
- .back-button:hover { background-color: var(--nav-hover); }
 
 /* ---- Animations ---- */
 @keyframes cardFadeIn { from { opacity: 0; transform: translateY(20px);} to { opacity: 1; transform: translateY(0);} }

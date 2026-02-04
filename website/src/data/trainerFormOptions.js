@@ -34,6 +34,18 @@ export const ATTRIBUTES = [
   'Variable'
 ];
 
+// Fakemon universe categories
+export const FAKEMON_CATEGORIES = [
+  'Pokemon',
+  'Digimon',
+  'Yokai',
+  'Palmon',
+  'Nexomon',
+  'Fakemon',
+  'Final Fantasy',
+  'Monster Hunter'
+];
+
 // Berry types
 export const BERRIES = [
   'Cheri Berry',

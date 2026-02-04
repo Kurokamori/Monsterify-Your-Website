@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
+import { useTheme, THEMES } from '../../contexts/ThemeContext';
 import ErrorMessage from '../../components/common/ErrorMessage';
 
 const ProfileSettings = () => {
   const { currentUser, updateProfile, updateMonsterRollerSettings } = useAuth();
+  const { theme, setTheme } = useTheme();
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -132,6 +134,26 @@ const ProfileSettings = () => {
               placeholder="Enter your Discord ID (e.g., username#1234)"
             />
             <small>Your Discord ID is used for notifications and community features.</small>
+          </div>
+        </div>
+
+        <div className="form-section">
+          <h3>Theme</h3>
+          <p>Choose how the site looks:</p>
+          <div className="theme-options">
+            {THEMES.map(t => (
+              <label key={t.id} className={`theme-option${theme === t.id ? ' active' : ''}`}>
+                <input
+                  type="radio"
+                  name="theme"
+                  value={t.id}
+                  checked={theme === t.id}
+                  onChange={() => setTheme(t.id)}
+                />
+                <span className="theme-option-label">{t.label}</span>
+                <small>{t.description}</small>
+              </label>
+            ))}
           </div>
         </div>
 

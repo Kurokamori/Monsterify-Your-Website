@@ -5,6 +5,45 @@ import LoadingSpinner from '../common/LoadingSpinner';
 import ErrorMessage from '../common/ErrorMessage';
 
 
+// Strip markdown formatting and return first ~40 words with ellipsis
+const getContentPreview = (rawContent, wordLimit = 40) => {
+  if (!rawContent) return '';
+  let text = rawContent
+    .replace(/^#{1,6}\s+/gm, '')        // headers
+    .replace(/!\[[^\]]*\]\([^)]*\)/g, '') // images
+    .replace(/\[([^\]]*)\]\([^)]*\)/g, '$1') // links -> text
+    .replace(/(`{3}[\s\S]*?`{3}|`[^`]+`)/g, '') // code blocks/inline code
+    .replace(/(\*{1,3}|_{1,3})(.*?)\1/g, '$2')  // bold/italic
+    .replace(/~~(.*?)~~/g, '$1')         // strikethrough
+    .replace(/^[-*>]+\s?/gm, '')         // list markers, blockquotes
+    .replace(/^---+$/gm, '')             // horizontal rules
+    .replace(/\|/g, '')                  // table pipes
+    .trim();
+
+  const words = text.split(/\s+/).filter(Boolean);
+  if (words.length <= wordLimit) return text;
+  // Rebuild from original text, preserving line breaks, up to word limit
+  let count = 0;
+  let result = '';
+  for (const char of text) {
+    if (/\s/.test(char)) {
+      if (char === '\n') {
+        result += char;
+      } else if (result.length > 0 && !/\s$/.test(result)) {
+        result += ' ';
+      }
+      continue;
+    }
+    // Start of a new word
+    if (result.length === 0 || /\s$/.test(result)) {
+      count++;
+      if (count > wordLimit) break;
+    }
+    result += char;
+  }
+  return result.trim() + '...';
+};
+
 const WritingLibrary = () => {
   const navigate = useNavigate();
 
@@ -433,38 +472,79 @@ const WritingLibrary = () => {
               className={`gallery-item library-item ${writing.is_book ? 'is-book' : ''}`}
               onClick={() => handleWritingClick(writing)}
             >
-              <div className="gallery-item-image-container library-item-cover-container">
-                <img
-                  src={writing.cover_image_url}
-                  alt={writing.title}
-                  className="gallery-item-image library-item-cover"
-                  onError={(e) => {
-                    e.target.onerror = null;
-                    e.target.src = '/images/default_book.png';
-                  }}
-                />
-                {writing.is_book ? (
-                  <div className="library-item-book-badge">
-                    <i className="fas fa-book"></i> {writing.chapter_count || 0} Chapters
-                  </div>
-                ) : (
-                  <div className="library-item-word-count">
-                    {formatWordCount(writing.word_count)}
-                  </div>
-                )}
-              </div>
-              <div className="gallery-item-info">
-                <h3 className="gallery-item-title">
-                  {writing.is_book && <i className="fas fa-book book-icon"></i>}
-                  {writing.title}
-                </h3>
-                <div className="gallery-item-meta">
-                  <span className="gallery-item-artist">
-                    By {writing.user?.display_name || writing.display_name || writing.username || 'Unknown'}
-                  </span>
+              {writing.cover_image_url ? (
+                <div className="gallery-item-image-container library-item-cover-container">
+                  <img
+                    src={writing.cover_image_url}
+                    alt={writing.title}
+                    className="gallery-item-image library-item-cover"
+                    onError={(e) => {
+                      e.target.onerror = null;
+                      e.target.src = '/images/default_book.png';
+                    }}
+                  />
+                  {writing.is_book ? (
+                    <div className="library-item-book-badge">
+                      <i className="fas fa-book"></i> {writing.chapter_count || 0} Chapters
+                    </div>
+                  ) : (
+                    <div className="library-item-word-count">
+                      {formatWordCount(writing.word_count)}
+                    </div>
+                  )}
                 </div>
-                <p className="library-item-description">{writing.description}</p>
-              </div>
+              ) : (
+                <div className="library-item-text-cover">
+                  <div className="library-item-text-cover-icon">
+                    <i className={`fas ${writing.is_book ? 'fa-book' : 'fa-feather-alt'}`}></i>
+                  </div>
+                  <h4 className="library-item-text-cover-title">{writing.title}</h4>
+                  <p className="library-item-text-cover-author">
+                    By {writing.user?.display_name || writing.display_name || writing.username || 'Unknown'}
+                  </p>
+                  {(writing.description || writing.content_preview) && (
+                    <p className="library-item-text-cover-description">
+                      {writing.description || getContentPreview(writing.content_preview)}
+                    </p>
+                  )}
+                  {writing.tags && Array.isArray(writing.tags) && writing.tags.length > 0 && (
+                    <>
+                      <div className="library-item-text-cover-divider" />
+                      <div className="library-item-text-cover-tags">
+                        {writing.tags.map(tag => (
+                          <span key={tag} className="library-item-text-cover-tag">{tag}</span>
+                        ))}
+                      </div>
+                    </>
+                  )}
+                  {writing.is_book ? (
+                    <div className="library-item-book-badge">
+                      <i className="fas fa-book"></i> {writing.chapter_count || 0} Chapters
+                    </div>
+                  ) : (
+                    <div className="library-item-word-count-inline">
+                      {formatWordCount(writing.word_count)}
+                    </div>
+                  )}
+                </div>
+              )}
+              {writing.cover_image_url && (
+                <div className="gallery-item-info">
+                  <h3 className="gallery-item-title">
+                    {writing.title}
+                  </h3>
+                  <div className="gallery-item-meta">
+                    <span className="gallery-item-artist">
+                      By {writing.user?.display_name || writing.display_name || writing.username || 'Unknown'}
+                    </span>
+                  </div>
+                  {(writing.description || writing.content_preview) && (
+                    <p className="library-item-description">
+                      {writing.description || getContentPreview(writing.content_preview)}
+                    </p>
+                  )}
+                </div>
+              )}
             </div>
           ))}
         </div>

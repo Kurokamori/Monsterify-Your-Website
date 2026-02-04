@@ -271,6 +271,26 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  // Update user's theme preference
+  const updateTheme = async (theme) => {
+    try {
+      const response = await api.put('/auth/theme', { theme });
+
+      if (response.data.success) {
+        setCurrentUser(prevUser => {
+          const updatedUser = { ...prevUser, theme: response.data.theme };
+          localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(updatedUser));
+          return updatedUser;
+        });
+      }
+
+      return true;
+    } catch (err) {
+      console.error('Theme update error:', err);
+      return false;
+    }
+  };
+
   // Change password
   const changePassword = async (currentPassword, newPassword) => {
     try {
@@ -354,6 +374,7 @@ export const AuthProvider = ({ children }) => {
     logout,
     updateProfile,
     updateMonsterRollerSettings,
+    updateTheme,
     changePassword,
     requestPasswordReset,
     resetPassword,

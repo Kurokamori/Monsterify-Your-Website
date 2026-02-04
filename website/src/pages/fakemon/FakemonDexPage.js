@@ -4,6 +4,7 @@ import fakemonService from '../../services/fakemonService';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
 import ErrorMessage from '../../components/common/ErrorMessage';
 import useDocumentTitle from '../../hooks/useDocumentTitle';
+import { FAKEMON_CATEGORIES } from '../../data/trainerFormOptions';
 
 const FakemonDexPage = () => {
   useDocumentTitle('Fakedex');
@@ -150,7 +151,7 @@ const FakemonDexPage = () => {
     'Rock', 'Ghost', 'Dragon', 'Dark', 'Steel', 'Fairy'
   ];
 
-  const categories = ['Digimon', 'Pokemon', 'Yokai', 'Palmon', 'Nexomon'];
+  const categories = FAKEMON_CATEGORIES;
   const attributes = ['Data', 'Vaccine', 'Variable', 'Free', 'Virus'];
 
   // Process fakemon data to ensure each has a types array and formatted number
@@ -341,6 +342,11 @@ const FakemonDexPage = () => {
                   {mon.category && (
                     <div className="fakemon-category">
                       <span className="category-label">Category:</span> {mon.category}
+                    </div>
+                  )}
+                  {mon.classification && (
+                    <div className="fakemon-classification">
+                      {mon.classification}
                     </div>
                   )}
                   {mon.attribute && (

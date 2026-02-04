@@ -8,6 +8,7 @@ const {
   updateUserProfile,
   getMonsterRollerSettings,
   updateMonsterRollerSettings,
+  updateUserTheme,
   testDiscordConfig,
   discordAuth,
   discordCallback
@@ -48,5 +49,8 @@ router.get('/roller-settings', protect, getMonsterRollerSettings);
 
 // Update monster roller settings
 router.put('/roller-settings', protect, updateMonsterRollerSettings);
+
+// Update theme preference
+router.put('/theme', protect, updateUserTheme);
 
 module.exports = router;

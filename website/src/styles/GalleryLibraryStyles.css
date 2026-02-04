@@ -136,19 +136,6 @@
   backdrop-filter: blur(10px);
 }
 
-.gallery-item-title {
-  font-size: 1.1rem;
-  font-weight: 700;
-  color: #fff;
-  margin: 0 0 0.5rem 0;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  display: block;
-  margin-bottom: 0.5rem;
-  line-height: 1.2;
-}
-
 .gallery-item-meta {
   display: flex;
   justify-content: space-between;
@@ -156,16 +143,6 @@
   font-size: var(--font-size-sm);
   color: var(--text-color);
   opacity: 0.8;
-}
-
-.gallery-item-artist {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 60%;
-  font-size: 0.9rem;
-  color: #b0b0b0;
-  font-weight: 500;
 }
 
 
@@ -242,6 +219,123 @@
   line-height: 1.4;
 }
 
+/* Text Cover Fallback (no cover image) */
+.library-item-text-cover {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 1.5rem 1.25rem;
+  min-height: 200px;
+  position: relative;
+  background: linear-gradient(145deg, #1a2030 0%, #252e42 50%, #1e2838 100%);
+  border-bottom: 1px solid var(--border-color, #3a4156);
+  overflow: hidden;
+}
+
+.library-item-text-cover::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 20% 20%, rgba(214, 163, 57, 0.06) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(214, 163, 57, 0.04) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+.library-item-text-cover-icon {
+  font-size: 2rem;
+  color: var(--accent-color, #d6a339);
+  opacity: 0.5;
+  margin-bottom: 0.75rem;
+}
+
+.library-item-text-cover-title,
+.gallery-item-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--accent-color, #d6a339);
+  margin: 0 0 0.4rem 0;
+  line-height: 1.3;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.library-item-text-cover-author,
+.gallery-item-artist {
+  font-size: 0.85rem;
+  color: var(--text-color, #d6d6d6);
+  opacity: 0.7;
+  margin: 0 0 0.5rem 0;
+  font-style: italic;
+}
+
+.library-item-text-cover-description,
+.library-item-description {
+  font-size: 0.8rem;
+  color: var(--text-color, #d6d6d6);
+  opacity: 0.6;
+  margin: 0;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  white-space: pre-line;
+}
+
+.library-item-text-cover-divider {
+  width: 60%;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(214, 163, 57, 0.3) 30%,
+    rgba(214, 163, 57, 0.3) 70%,
+    transparent 100%
+  );
+  margin: 0.5rem 0;
+}
+
+.library-item-text-cover-tags {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.3rem;
+  max-width: 100%;
+}
+
+.library-item-text-cover-tag {
+  font-size: 0.65rem;
+  padding: 0.1rem 0.45rem;
+  border-radius: 10px;
+  background: rgba(214, 163, 57, 0.12);
+  color: var(--accent-color, #d6a339);
+  opacity: 0.75;
+  white-space: nowrap;
+}
+
+.library-item-word-count-inline {
+  margin-top: 0.5rem;
+  font-size: 0.75rem;
+  color: var(--text-color, #d6d6d6);
+  opacity: 0.5;
+}
+
+/* Text cover inside Bootstrap submission cards (Library.js page) */
+.submission-card .library-item-text-cover {
+  min-height: 200px;
+  border-bottom: none;
+}
+
+.submission-card .library-item-text-cover .book-badge {
+  position: static;
+  margin-top: 0.5rem;
+}
+
 
 /* Writing Modal (uses common modal base) */
 
@@ -274,9 +368,10 @@
   text-overflow: ellipsis;
 }
 .submission-description {
-  color: #fff;
+  color: var(--text-color);
   display: -webkit-box;
   -webkit-line-clamp: 3;
+  line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -287,19 +382,43 @@
 .submission-meta {
   display: flex;
   justify-content: space-between;
-  color: #a0a8c0;
+  align-items: flex-end;
+  color: var(--text-secondary);
   margin-bottom: 0.5rem;
   margin: 0.5rem 0 1rem;
   font-size: 0.9rem;
+}
+
+.submission-header-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+}
+
+.submission-author {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-color);
 }
 
 .submission-tags {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
-  margin-top: 1rem;
 }
 
+.submission-tag {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.25rem 0.75rem;
+    border-radius: 16px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--text-muted);
+    background-color: var(--background-color);
+}
 
 .submission-detail {
   background-color: var(--nav-background, #1e2532);

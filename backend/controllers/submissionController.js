@@ -292,7 +292,9 @@ const getWritingLibrary = async (req, res) => {
          FROM submission_monsters sm
          JOIN monsters m ON sm.monster_id = m.id
          WHERE sm.submission_id = s.id) as monsters,
-        (SELECT COUNT(*) FROM submissions WHERE parent_id = s.id) as chapter_count
+        (SELECT COUNT(*) FROM submissions WHERE parent_id = s.id) as chapter_count,
+        (LENGTH(s.content) - LENGTH(REPLACE(s.content, ' ', '')) + 1) as word_count,
+        LEFT(s.content, 400) as content_preview
       FROM submissions s
       LEFT JOIN users u ON (s.user_id::text = u.discord_id OR s.user_id = u.id)
       LEFT JOIN trainers t ON s.trainer_id = t.id
@@ -345,6 +347,23 @@ const getWritingLibrary = async (req, res) => {
     // Exclude chapters (items with a parent_id) from main listing
     if (excludeChapters) {
       query += ` AND s.parent_id IS NULL`;
+    }
+
+    // Hide empty books (0 chapters) from non-owners
+    if (req.user) {
+      const currentUserId = req.user.discord_id || req.user.id;
+      query += ` AND (
+        s.is_book = 0 OR s.is_book IS NULL
+        OR (SELECT COUNT(*) FROM submissions WHERE parent_id = s.id) > 0
+        OR s.user_id::text = $${paramIndex}::text
+      )`;
+      queryParams.push(currentUserId);
+      paramIndex++;
+    } else {
+      query += ` AND (
+        s.is_book = 0 OR s.is_book IS NULL
+        OR (SELECT COUNT(*) FROM submissions WHERE parent_id = s.id) > 0
+      )`;
     }
 
     // Add sorting
@@ -413,6 +432,23 @@ const getWritingLibrary = async (req, res) => {
     // Exclude chapters from count
     if (excludeChapters) {
       countQuery += ` AND s.parent_id IS NULL`;
+    }
+
+    // Hide empty books (0 chapters) from non-owners in count
+    if (req.user) {
+      const currentUserIdForCount = req.user.discord_id || req.user.id;
+      countQuery += ` AND (
+        s.is_book = 0 OR s.is_book IS NULL
+        OR (SELECT COUNT(*) FROM submissions WHERE parent_id = s.id) > 0
+        OR s.user_id::text = $${paramIndex}::text
+      )`;
+      countParams.push(currentUserIdForCount);
+      paramIndex++;
+    } else {
+      countQuery += ` AND (
+        s.is_book = 0 OR s.is_book IS NULL
+        OR (SELECT COUNT(*) FROM submissions WHERE parent_id = s.id) > 0
+      )`;
     }
 
     // Execute the queries
@@ -1108,6 +1144,26 @@ const submitArt = async (req, res) => {
       }
     }
 
+    // Add submission trainers
+    if (trainersArray && trainersArray.length > 0) {
+      for (const trainer of trainersArray) {
+        try {
+          const tId = trainer.trainerId || trainer.id;
+          if (tId) {
+            console.log(`Adding trainer to submission: trainer ID ${tId}`);
+            await db.asyncRun(
+              'INSERT INTO submission_trainers (submission_id, trainer_id) VALUES ($1, $2)',
+              [submission.id, tId]
+            );
+          } else {
+            console.error('Trainer missing trainerId/id:', trainer);
+          }
+        } catch (err) {
+          console.error(`Error adding trainer ${trainer.trainerId || trainer.id} to submission:`, err);
+        }
+      }
+    }
+
     // Check for level caps after submission creation
     const levelCapInfo = await Submission.checkLevelCaps(rewards.monsterRewards || []);
     console.log('Art submission level cap check:', {
@@ -1375,6 +1431,51 @@ const submitWriting = async (req, res) => {
           'INSERT INTO submission_tags (submission_id, tag) VALUES ($1, $2)',
           [submission.id, tag]
         );
+      }
+    }
+
+    // Add submission monsters
+    if (monstersArray && monstersArray.length > 0) {
+      for (const monster of monstersArray) {
+        try {
+          const monsterQuery = `
+            SELECT id FROM monsters
+            WHERE name = $1 AND trainer_id = $2
+          `;
+          const monsterData = await db.asyncGet(monsterQuery, [monster.name, monster.trainerId]);
+
+          if (monsterData && monsterData.id) {
+            console.log(`Found monster in database: ${monster.name} (ID: ${monsterData.id}) for trainer ${monster.trainerId}`);
+            await db.asyncRun(
+              'INSERT INTO submission_monsters (submission_id, monster_id) VALUES ($1, $2)',
+              [submission.id, monsterData.id]
+            );
+          } else {
+            console.error(`Could not find monster in database: ${monster.name} for trainer ${monster.trainerId}`);
+          }
+        } catch (err) {
+          console.error(`Error adding monster ${monster.name} to submission:`, err);
+        }
+      }
+    }
+
+    // Add submission trainers
+    if (trainersArray && trainersArray.length > 0) {
+      for (const trainer of trainersArray) {
+        try {
+          const tId = trainer.trainerId || trainer.id;
+          if (tId) {
+            console.log(`Adding trainer to submission: trainer ID ${tId}`);
+            await db.asyncRun(
+              'INSERT INTO submission_trainers (submission_id, trainer_id) VALUES ($1, $2)',
+              [submission.id, tId]
+            );
+          } else {
+            console.error('Trainer missing trainerId/id:', trainer);
+          }
+        } catch (err) {
+          console.error(`Error adding trainer ${trainer.trainerId || trainer.id} to submission:`, err);
+        }
       }
     }
 

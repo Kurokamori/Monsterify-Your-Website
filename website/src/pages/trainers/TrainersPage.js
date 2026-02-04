@@ -18,6 +18,7 @@ const TrainersPage = () => {
   const [sortOrder, setSortOrder] = useState('asc');
   const [retryCount, setRetryCount] = useState(0);
   const isFirstRender = useRef(true);
+  const fetchIdRef = useRef(0);
 
   // Debounce the search term into a separate state
   useEffect(() => {
@@ -39,6 +40,8 @@ const TrainersPage = () => {
 
   // Single effect that fetches trainers whenever any relevant param changes
   useEffect(() => {
+    const currentFetchId = ++fetchIdRef.current;
+
     const fetchTrainers = async () => {
       try {
         setLoading(true);
@@ -71,6 +74,9 @@ const TrainersPage = () => {
         console.log('Fetching trainers with params:', params);
         const response = await trainerService.getTrainersPaginated(params);
 
+        // Only update state if this is still the latest request
+        if (currentFetchId !== fetchIdRef.current) return;
+
         setTrainers(response.trainers || []);
         setTotalPages(response.totalPages || 1);
 
@@ -78,11 +84,14 @@ const TrainersPage = () => {
           console.log('No trainers found matching search criteria');
         }
       } catch (err) {
+        if (currentFetchId !== fetchIdRef.current) return;
         console.error('Error fetching trainers:', err);
         setError('Failed to load trainers. Please try again later.');
         setTrainers([]);
       } finally {
-        setLoading(false);
+        if (currentFetchId === fetchIdRef.current) {
+          setLoading(false);
+        }
       }
     };
 
@@ -118,10 +127,14 @@ const TrainersPage = () => {
         <form className="search-form" onSubmit={handleSearch}>
           <div className="search-input">
             <input
-              type="text"
+              type="search"
               placeholder="Search trainers..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
+              autoComplete="off"
+              autoCorrect="off"
+              autoCapitalize="off"
+              spellCheck={false}
             />
             <button type="submit">
               <i className="fas fa-search"></i>

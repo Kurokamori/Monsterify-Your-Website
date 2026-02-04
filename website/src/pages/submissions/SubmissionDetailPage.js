@@ -186,23 +186,17 @@ const SubmissionDetailPage = ({ type }) => {
           <button className="btn-back" onClick={handleBack}>
             <i className="fas fa-arrow-left"></i> Back to {isArt ? 'Gallery' : isWriting ? 'Library' : 'Submissions'}
           </button>
-          <h1 className="submission-title">{submission.title}</h1>
-          <div className="submission-meta">
+          <div className="submission-header-content">
+            <h1 className="submission-title">{submission.title}</h1>
             <div className="submission-author">
-              By: {submission.display_name || submission.username || 'Unknown'}
+              Created By: {submission.display_name || submission.username || 'Unknown'}
             </div>
+          </div>
+          <div className="submission-meta">
             <div className="submission-date">
               {new Date(submission.submission_date).toLocaleDateString()}
             </div>
           </div>
-
-          {submission.tags && Array.isArray(submission.tags) && submission.tags.length > 0 && (
-            <div className="submission-tags">
-              {submission.tags.map(tag => (
-                <span key={tag} className="tag">{tag}</span>
-              ))}
-            </div>
-          )}
         </div>
 
         <div className="submission-detail-content">
@@ -283,6 +277,15 @@ const SubmissionDetailPage = ({ type }) => {
                   </div>
                 ))}
               </div>
+            </div>
+          )}
+
+          {/* Tags */}
+          {submission.tags && Array.isArray(submission.tags) && submission.tags.length > 0 && (
+            <div className="submission-tags">
+              {submission.tags.map(tag => (
+                <span key={tag} className="submission-tag">{tag}</span>
+              ))}
             </div>
           )}
 

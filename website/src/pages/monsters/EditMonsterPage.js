@@ -1046,7 +1046,7 @@ const EditMonsterPage = () => {
                     <h3>Relation #{index + 1}</h3>
                     <button
                       type="button"
-                      className="remove-relation-button"
+                      className="icon-button"
                       onClick={() => handleRemoveRelation(relation.id)}
                     >
                       <i className="fas fa-trash-alt"></i>

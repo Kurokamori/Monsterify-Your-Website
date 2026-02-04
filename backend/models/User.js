@@ -54,7 +54,7 @@ class User {
    */
   static async findById(id) {
     try {
-      const query = 'SELECT id, username, display_name, discord_id, is_admin, monster_roller_settings, created_at FROM users WHERE id = $1';
+      const query = 'SELECT id, username, display_name, discord_id, is_admin, monster_roller_settings, theme, created_at FROM users WHERE id = $1';
       const user = await db.asyncGet(query, [id]);
 
       // Parse monster_roller_settings if it exists
@@ -238,7 +238,7 @@ class User {
    * @param {Object} userData.monster_roller_settings - Monster roller settings (optional)
    * @returns {Promise<Object>} - Updated user
    */
-  static async update(id, { username, display_name, discord_id, password, is_admin, monster_roller_settings }) {
+  static async update(id, { username, display_name, discord_id, password, is_admin, monster_roller_settings, theme }) {
     try {
       // Check if user exists
       const user = await this.findById(id);
@@ -299,6 +299,12 @@ class User {
           ? monster_roller_settings
           : JSON.stringify(monster_roller_settings);
         values.push(settingsJson);
+        paramIndex++;
+      }
+
+      if (theme !== undefined) {
+        updates.push(`theme = $${paramIndex}`);
+        values.push(theme);
         paramIndex++;
       }
 
@@ -441,6 +447,21 @@ class User {
       return await this.update(id, { monster_roller_settings: settings });
     } catch (error) {
       console.error(`Error updating monster roller settings for user with ID ${id}:`, error);
+      throw error;
+    }
+  }
+
+  /**
+   * Update user's theme preference
+   * @param {number} id - User ID
+   * @param {string} theme - Theme ID (e.g. 'dusk', 'dawn', 'high-contrast')
+   * @returns {Promise<Object>} - Updated user
+   */
+  static async updateTheme(id, theme) {
+    try {
+      return await this.update(id, { theme });
+    } catch (error) {
+      console.error(`Error updating theme for user with ID ${id}:`, error);
       throw error;
     }
   }

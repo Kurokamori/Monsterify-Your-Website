@@ -5,16 +5,71 @@ import LoadingSpinner from '../../components/common/LoadingSpinner';
 import ErrorMessage from '../../components/common/ErrorMessage';
 import useDocumentTitle from '../../hooks/useDocumentTitle';
 
+// --- Helper functions ---
+
+const getStatTotal = (stats) => {
+  if (!stats) return 0;
+  return (stats.hp || 0) + (stats.attack || 0) + (stats.defense || 0) +
+    (stats.spAttack || 0) + (stats.spDefense || 0) + (stats.speed || 0);
+};
+
+const getStatColorClass = (value) => {
+  if (value >= 150) return 'stat-legendary';
+  if (value >= 120) return 'stat-excellent';
+  if (value >= 90) return 'stat-great';
+  if (value >= 60) return 'stat-good';
+  if (value >= 30) return 'stat-average';
+  return 'stat-low';
+};
+
+const buildEvolutionTree = (chain) => {
+  if (!chain || chain.length === 0) return [];
+
+  // Find root(s) - entries with no evolves_from
+  const roots = chain.filter(evo =>
+    evo.evolves_from === null || evo.evolves_from === undefined || evo.evolves_from === ''
+  );
+
+  // If no explicit root found (legacy data), treat first entry as root
+  if (roots.length === 0 && chain.length > 0) {
+    roots.push(chain[0]);
+  }
+
+  const buildNode = (entry) => {
+    const children = chain.filter(evo =>
+      String(evo.evolves_from) === String(entry.number) && String(evo.number) !== String(entry.number)
+    );
+    return {
+      ...entry,
+      children: children.map(child => buildNode(child))
+    };
+  };
+
+  return roots.map(root => buildNode(root));
+};
+
+const STAT_CONFIG = [
+  { key: 'hp', label: 'HP', barClass: 'hp-bar' },
+  { key: 'attack', label: 'Atk', barClass: 'attack-bar' },
+  { key: 'defense', label: 'Def', barClass: 'defense-bar' },
+  { key: 'spAttack', label: 'SpA', barClass: 'sp-attack-bar' },
+  { key: 'spDefense', label: 'SpD', barClass: 'sp-defense-bar' },
+  { key: 'speed', label: 'Spe', barClass: 'speed-bar' },
+];
+
+// --- Component ---
+
 const FakemonDetailPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
 
   const [fakemon, setFakemon] = useState(null);
   const [evolutionChain, setEvolutionChain] = useState([]);
+  const [prevFakemon, setPrevFakemon] = useState(null);
+  const [nextFakemon, setNextFakemon] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Set document title based on fakemon name
   useDocumentTitle(fakemon ? fakemon.name : 'Fakemon');
 
   useEffect(() => {
@@ -24,15 +79,13 @@ const FakemonDetailPage = () => {
   const fetchFakemonData = async () => {
     try {
       setLoading(true);
-
-      // Fetch fakemon details
       const fakemonResponse = await fakemonService.getFakemonByNumber(id);
       setFakemon(fakemonResponse.fakemon || null);
+      setPrevFakemon(fakemonResponse.prevFakemon || null);
+      setNextFakemon(fakemonResponse.nextFakemon || null);
 
-      // Fetch evolution chain
       const evolutionResponse = await fakemonService.getEvolutionChain(id);
       setEvolutionChain(evolutionResponse.evolutionChain || []);
-
     } catch (err) {
       console.error(`Error fetching fakemon ${id}:`, err);
       setError('Failed to load fakemon data. Please try again later.');
@@ -41,128 +94,143 @@ const FakemonDetailPage = () => {
     }
   };
 
-  // Fallback data for development
-  const fallbackFakemon = {
-    number: id,
-    name: 'Leafeon',
-    image_path: 'https://via.placeholder.com/300/1e2532/d6a339?text=Fakemon',
-    types: ['Grass'],
-    description: 'A leafy evolution of Eevee that thrives in forests and gardens.',
-    height: '1.0 m',
-    weight: '25.5 kg',
-    category: 'Verdant Pokémon',
-    abilities: ['Leaf Guard', 'Chlorophyll (Hidden)'],
-    stats: {
-      hp: 65,
-      attack: 110,
-      defense: 130,
-      spAttack: 60,
-      spDefense: 65,
-      speed: 95
-    },
-    evolutions: ['Eevee', 'Leafeon'],
-    habitat: 'Forests and lush gardens',
-    rarity: 'Uncommon',
-    artist: 'Jane Doe',
-    artist_caption: 'Art by Jane Doe'
-  };
-
-
-  // Process fakemon data to ensure it has the required structure
   const processFakemon = (mon) => {
-    if (!mon) return fallbackFakemon;
+    if (!mon) return null;
 
-    // Create types array from type1, type2, etc. fields if needed
     const types = mon.types || [mon.type1, mon.type2, mon.type3, mon.type4, mon.type5]
-      .filter(Boolean); // Remove null/undefined values
+      .filter(Boolean);
 
-    // Create abilities array from ability1, ability2, hidden_ability fields
     const abilities = [];
     if (mon.ability1) abilities.push(mon.ability1);
     if (mon.ability2) abilities.push(mon.ability2);
     if (mon.hidden_ability) abilities.push(`${mon.hidden_ability} (Hidden)`);
 
-    // Handle stats - use individual columns if available, otherwise parse JSON
     let stats;
     if (mon.hp !== undefined && mon.attack !== undefined) {
-      // Use individual stat columns
       stats = {
-        hp: mon.hp || 50,
-        attack: mon.attack || 50,
-        defense: mon.defense || 50,
-        spAttack: mon.special_attack || 50,
-        spDefense: mon.special_defense || 50,
-        speed: mon.speed || 50
+        hp: parseInt(mon.hp, 10) || 50,
+        attack: parseInt(mon.attack, 10) || 50,
+        defense: parseInt(mon.defense, 10) || 50,
+        spAttack: parseInt(mon.special_attack, 10) || 50,
+        spDefense: parseInt(mon.special_defense, 10) || 50,
+        speed: parseInt(mon.speed, 10) || 50
       };
     } else if (typeof mon.stats === 'string') {
-      // Parse JSON stats (legacy support)
       try {
-        stats = JSON.parse(mon.stats);
-      } catch (e) {
-        console.error('Error parsing stats:', e);
+        const parsed = JSON.parse(mon.stats);
         stats = {
-          hp: 50,
-          attack: 50,
-          defense: 50,
-          spAttack: 50,
-          spDefense: 50,
-          speed: 50
+          hp: parseInt(parsed.hp, 10) || 50,
+          attack: parseInt(parsed.attack, 10) || 50,
+          defense: parseInt(parsed.defense, 10) || 50,
+          spAttack: parseInt(parsed.spAttack || parsed.special_attack, 10) || 50,
+          spDefense: parseInt(parsed.spDefense || parsed.special_defense, 10) || 50,
+          speed: parseInt(parsed.speed, 10) || 50
         };
+      } catch (e) {
+        stats = { hp: 50, attack: 50, defense: 50, spAttack: 50, spDefense: 50, speed: 50 };
       }
     } else if (mon.stats && typeof mon.stats === 'object') {
-      stats = mon.stats;
-    } else {
       stats = {
-        hp: 50,
-        attack: 50,
-        defense: 50,
-        spAttack: 50,
-        spDefense: 50,
-        speed: 50
+        hp: parseInt(mon.stats.hp, 10) || 50,
+        attack: parseInt(mon.stats.attack, 10) || 50,
+        defense: parseInt(mon.stats.defense, 10) || 50,
+        spAttack: parseInt(mon.stats.spAttack || mon.stats.special_attack, 10) || 50,
+        spDefense: parseInt(mon.stats.spDefense || mon.stats.special_defense, 10) || 50,
+        speed: parseInt(mon.stats.speed, 10) || 50
       };
+    } else {
+      stats = { hp: 50, attack: 50, defense: 50, spAttack: 50, spDefense: 50, speed: 50 };
     }
 
     return {
       ...mon,
       types: types.length > 0 ? types : ['Normal'],
       abilities: abilities.length > 0 ? abilities : ['Unknown'],
-      stats: stats,
-      // Format number with leading zeros
+      stats,
       displayNumber: String(mon.number || 0).padStart(3, '0'),
-      // Use image_url if available, otherwise use image_path
       image_path: mon.image_url || mon.image_path || 'https://via.placeholder.com/300/1e2532/d6a339?text=No+Image'
     };
   };
 
-  // Process evolution chain data
   const processEvolutionChain = (chain) => {
     if (!chain || chain.length === 0) return [];
-
     return chain.map(evo => {
-      // Create types array from type1, type2, etc. fields if needed
       const types = evo.types || [evo.type1, evo.type2, evo.type3, evo.type4, evo.type5]
-        .filter(Boolean); // Remove null/undefined values
-
+        .filter(Boolean);
       return {
         ...evo,
         types: types.length > 0 ? types : ['Normal'],
-        // Use image_url if available, otherwise use image_path
-        image_path: evo.image_url || evo.image_path || 'https://via.placeholder.com/100/1e2532/d6a339?text=No+Image'
+        image_path: evo.image_url || evo.image_path || 'https://via.placeholder.com/100/1e2532/d6a339?text=No+Image',
+        method: evo.method || null,
+        method_detail: evo.method_detail || null,
+        evolves_from: evo.evolves_from !== undefined ? evo.evolves_from : null
       };
     });
   };
 
   const displayFakemon = processFakemon(fakemon);
   const displayEvolutionChain = processEvolutionChain(evolutionChain);
+  const evolutionTree = buildEvolutionTree(displayEvolutionChain);
+
+  // Recursive evolution tree renderer
+  const renderEvolutionNode = (node, isRoot = false) => {
+    const isCurrent = node.number === displayFakemon?.number;
+
+    return (
+      <div className="evo-tree-node" key={node.number}>
+        <Link
+          to={`/fakedex/${node.number}`}
+          className={`evo-tree-entry ${isCurrent ? 'evo-current' : ''}`}
+        >
+          <div className="evo-tree-image-wrap">
+            <img
+              src={node.image_path}
+              alt={node.name}
+              className="evo-tree-image"
+              onError={(e) => {
+                e.target.onerror = null;
+                e.target.src = '/images/default_mon.png';
+              }}
+            />
+          </div>
+          <span className="evo-tree-name">{node.name}</span>
+        </Link>
+
+        {node.children && node.children.length > 0 && (
+          <div className={`evo-tree-branches ${node.children.length > 1 ? 'evo-branching' : ''}`}>
+            {node.children.map(child => (
+              <div className="evo-tree-branch" key={child.number}>
+                <div className="evo-tree-connector">
+                  <div className="evo-tree-arrow-line">
+                    <div className="evo-tree-line"></div>
+                    <div className="evo-tree-arrow">
+                      <i className="fas fa-chevron-right"></i>
+                    </div>
+                  </div>
+                  <span className="evo-tree-method">
+                    {child.method === 'item' && <i className="fas fa-gem"></i>}
+                    {child.method === 'level' && <i className="fas fa-arrow-up"></i>}
+                    {child.method === 'condition' && <i className="fas fa-star"></i>}
+                    {child.method_detail || (child.level > 1 ? `Lv. ${child.level}` : '???')}
+                  </span>
+                </div>
+                {renderEvolutionNode(child)}
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    );
+  };
 
   if (loading) {
     return <LoadingSpinner message="Loading fakemon data..." />;
   }
 
-  if (error) {
+  if (error || !displayFakemon) {
     return (
       <ErrorMessage
-        message={error}
+        message={error || 'Fakemon not found.'}
         onRetry={fetchFakemonData}
         backButton={{
           text: 'Back to Fakemon Dex',
@@ -174,233 +242,163 @@ const FakemonDetailPage = () => {
 
   return (
     <div className="fakemon-detail-container">
-      <div className="fakemon-detail-header">
-        <div className="fakemon-image-container">
+      {/* Hero Section */}
+      <div className="fakemon-hero">
+        <div className="fakemon-hero-image-wrap">
+          <div className="fakemon-hero-glow"></div>
           <img
             src={displayFakemon.image_path}
             alt={displayFakemon.name}
-            className="fakemon-detail-image"
+            className="fakemon-hero-image"
             onError={(e) => {
               e.target.onerror = null;
               e.target.src = '/images/default_mon.png';
             }}
           />
           {displayFakemon.artist_caption && (
-            <div className="artist-caption">
-              {displayFakemon.artist_caption}
-            </div>
+            <div className="artist-caption">{displayFakemon.artist_caption}</div>
           )}
         </div>
-        <div className="fakemon-header-info">
-          <div className="fakemon-number-name">
-            <span className="fakemon-number">#{displayFakemon.displayNumber || String(displayFakemon.number || 0).padStart(3, '0')}</span>
-            <h1 className="fakemon-name">{displayFakemon.name}</h1>
-          </div>
+        <div className="fakemon-hero-info">
+          <span className="fakemon-number">#{displayFakemon.displayNumber}</span>
+          <h1 className="fakemon-name">{displayFakemon.name}</h1>
+          {displayFakemon.classification && (
+            <p className="fakemon-category-subtitle">{displayFakemon.classification}</p>
+          )}
+          {displayFakemon.category && (
+            <div className="fakemon-universe-tag">
+              <span className={`category-tag category-${displayFakemon.category.toLowerCase().replace(/\s+/g, '-')}`}>
+                {displayFakemon.category}
+              </span>
+            </div>
+          )}
           <div className="fakemon-types">
-            {displayFakemon.types && displayFakemon.types.length > 0 ? (
-              displayFakemon.types.map((type, index) => (
-                <span className={`type-badge type-${type.toLowerCase()}`} key={index}>
-                  {type}
-                </span>
-              ))
-            ) : (
-              <span className="type-badge type-normal">Normal</span>
-            )}
-          </div>
-          <p className="fakemon-description">{displayFakemon.description}</p>
-          <div className="fakemon-basic-info">
-            {displayFakemon.category && (
-              <div className="info-item">
-                <span className="info-label">Category</span>
-                <span className="info-value">{displayFakemon.category}</span>
-              </div>
-            )}
-            {displayFakemon.height && (
-              <div className="info-item">
-                <span className="info-label">Height</span>
-                <span className="info-value">{displayFakemon.height}</span>
-              </div>
-            )}
-            {displayFakemon.weight && (
-              <div className="info-item">
-                <span className="info-label">Weight</span>
-                <span className="info-value">{displayFakemon.weight}</span>
-              </div>
-            )}
-            {displayFakemon.habitat && (
-              <div className="info-item">
-                <span className="info-label">Habitat</span>
-                <span className="info-value">{displayFakemon.habitat}</span>
-              </div>
-            )}
-            {displayFakemon.rarity && (
-              <div className="info-item">
-                <span className="info-label">Rarity</span>
-                <span className="info-value">{displayFakemon.rarity}</span>
-              </div>
-            )}
+            {displayFakemon.types.map((type, index) => (
+              <span className={`type-badge type-${type.toLowerCase()}`} key={index}>
+                {type}
+              </span>
+            ))}
           </div>
         </div>
       </div>
 
-      <div className="fakemon-detail-content">
-        <div className="fakemon-info-section">
-          <div className="info-section">
-            <h2>Abilities</h2>
-            <div className="abilities-list">
-              {displayFakemon.abilities && displayFakemon.abilities.map((ability, index) => (
-                <div className="ability-item" key={index}>
-                  {ability.includes('(Hidden)') ? (
-                    <>
-                      <span className="ability-name">{ability.replace('(Hidden)', '')}</span>
-                      <span className="ability-hidden">Hidden</span>
-                    </>
-                  ) : (
-                    <span className="ability-name">{ability}</span>
-                  )}
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="info-section">
-            <h2>Details</h2>
-            <p className="fakemon-full-description">
-              {displayFakemon.full_description || displayFakemon.description}
-            </p>
+      {/* Info Panel */}
+      <div className="fakemon-info-panel">
+        <div className="fakemon-panel-section">
+          <h2 className="panel-heading">Abilities</h2>
+          <div className="abilities-pills">
+            {displayFakemon.abilities.map((ability, index) => (
+              <span
+                className={`ability-pill ${ability.includes('(Hidden)') ? 'ability-hidden-pill' : ''}`}
+                key={index}
+              >
+                {ability.includes('(Hidden)')
+                  ? ability.replace(' (Hidden)', '')
+                  : ability}
+                {ability.includes('(Hidden)') && (
+                  <span className="hidden-tag">Hidden</span>
+                )}
+              </span>
+            ))}
           </div>
         </div>
-
-        <div className="fakemon-stats-section">
-          <h2>Base Stats</h2>
-          <div className="stats-container">
-            <div className="stat-item">
-              <span className="stat-label">HP</span>
-              <div className="stat-bar-container">
-                <div
-                  className="stat-bar hp-bar"
-                  style={{ width: `${((displayFakemon.stats?.hp || 50) / 255) * 100}%` }}
-                ></div>
+        <div className="fakemon-panel-section">
+          <h2 className="panel-heading">Details</h2>
+          <div className="detail-pairs">
+            {displayFakemon.height && (
+              <div className="detail-pair">
+                <span className="detail-key">Height</span>
+                <span className="detail-val">{displayFakemon.height}</span>
               </div>
-              <span className="stat-value">{displayFakemon.stats?.hp || 50}</span>
-            </div>
-            <div className="stat-item">
-              <span className="stat-label">Attack</span>
-              <div className="stat-bar-container">
-                <div
-                  className="stat-bar attack-bar"
-                  style={{ width: `${((displayFakemon.stats?.attack || 50) / 255) * 100}%` }}
-                ></div>
+            )}
+            {displayFakemon.weight && (
+              <div className="detail-pair">
+                <span className="detail-key">Weight</span>
+                <span className="detail-val">{displayFakemon.weight}</span>
               </div>
-              <span className="stat-value">{displayFakemon.stats?.attack || 50}</span>
-            </div>
-            <div className="stat-item">
-              <span className="stat-label">Defense</span>
-              <div className="stat-bar-container">
-                <div
-                  className="stat-bar defense-bar"
-                  style={{ width: `${((displayFakemon.stats?.defense || 50) / 255) * 100}%` }}
-                ></div>
+            )}
+            {displayFakemon.habitat && (
+              <div className="detail-pair">
+                <span className="detail-key">Habitat</span>
+                <span className="detail-val">{displayFakemon.habitat}</span>
               </div>
-              <span className="stat-value">{displayFakemon.stats?.defense || 50}</span>
-            </div>
-            <div className="stat-item">
-              <span className="stat-label">Sp. Attack</span>
-              <div className="stat-bar-container">
-                <div
-                  className="stat-bar sp-attack-bar"
-                  style={{ width: `${((displayFakemon.stats?.spAttack || 50) / 255) * 100}%` }}
-                ></div>
+            )}
+            {displayFakemon.rarity && (
+              <div className="detail-pair">
+                <span className="detail-key">Rarity</span>
+                <span className="detail-val">{displayFakemon.rarity}</span>
               </div>
-              <span className="stat-value">{displayFakemon.stats?.spAttack || 50}</span>
-            </div>
-            <div className="stat-item">
-              <span className="stat-label">Sp. Defense</span>
-              <div className="stat-bar-container">
-                <div
-                  className="stat-bar sp-defense-bar"
-                  style={{ width: `${((displayFakemon.stats?.spDefense || 50) / 255) * 100}%` }}
-                ></div>
-              </div>
-              <span className="stat-value">{displayFakemon.stats?.spDefense || 50}</span>
-            </div>
-            <div className="stat-item">
-              <span className="stat-label">Speed</span>
-              <div className="stat-bar-container">
-                <div
-                  className="stat-bar speed-bar"
-                  style={{ width: `${((displayFakemon.stats?.speed || 50) / 255) * 100}%` }}
-                ></div>
-              </div>
-              <span className="stat-value">{displayFakemon.stats?.speed || 50}</span>
-            </div>
+            )}
           </div>
         </div>
-
-        {displayEvolutionChain && displayEvolutionChain.length > 0 && (
-          <div className="fakemon-evolution-section">
-            <h2>Evolution Chain</h2>
-            <div className="evolution-chain">
-              {displayEvolutionChain.map((evo, index) => (
-                <React.Fragment key={evo.number}>
-                  <Link
-                    to={`/fakedex/${evo.number}`}
-                    className={`evolution-item ${evo.number === displayFakemon.number ? 'current' : ''}`}
-                  >
-                    <div className="evolution-image-container">
-                      <img
-                        src={evo.image_path}
-                        alt={evo.name}
-                        className="evolution-image"
-                        onError={(e) => {
-                          e.target.onerror = null;
-                          e.target.src = '/images/default_mon.png';
-                        }}
-                      />
-                    </div>
-                    <div className="evolution-info">
-                      <span className="evolution-number">#{evo.number}</span>
-                      <span className="evolution-name">{evo.name}</span>
-                      <div className="evolution-types">
-                        {evo.types && evo.types.length > 0 ? (
-                          evo.types.map((type, typeIndex) => (
-                            <span className={`type-badge type-${type.toLowerCase()}`} key={typeIndex}>
-                              {type}
-                            </span>
-                          ))
-                        ) : (
-                          <span className="type-badge type-normal">Normal</span>
-                        )}
-                      </div>
-                    </div>
-                  </Link>
-                  {index < displayEvolutionChain.length - 1 && (
-                    <div className="evolution-arrow">
-                      <i className="fas fa-arrow-right"></i>
-                    </div>
-                  )}
-                </React.Fragment>
-              ))}
-            </div>
+        {(displayFakemon.full_description || displayFakemon.description) && (
+          <div className="fakemon-description-full">
+            <h2 className="panel-heading">Description</h2>
+            <p>{displayFakemon.full_description || displayFakemon.description}</p>
           </div>
         )}
       </div>
 
+      {/* Compact Stats */}
+      <div className="fakemon-stats-compact">
+        <h2 className="panel-heading">Base Stats</h2>
+        <div className="stats-grid">
+          {STAT_CONFIG.map(stat => {
+            const value = displayFakemon.stats?.[stat.key] || 0;
+            return (
+              <div className="stat-row" key={stat.key}>
+                <span className="stat-label">{stat.label}</span>
+                <span className={`stat-value ${getStatColorClass(value)}`}>{value}</span>
+                <div className="stat-bar-track">
+                  <div
+                    className={`stat-bar-fill ${stat.barClass}`}
+                    style={{ width: `${(value / 255) * 100}%` }}
+                  ></div>
+                </div>
+              </div>
+            );
+          })}
+          <div className="stat-row stat-total-row">
+            <span className="stat-label">Total</span>
+            <span className="stat-value stat-total-value">{getStatTotal(displayFakemon.stats)}</span>
+            <div className="stat-bar-track stat-total-track"></div>
+          </div>
+        </div>
+      </div>
+
+      {/* Evolution Section - Always Visible */}
+      <div className="fakemon-evolution-section">
+        <h2 className="panel-heading">Evolution</h2>
+        {displayEvolutionChain.length === 0 ? (
+          <div className="evo-none">
+            <i className="fas fa-ban"></i>
+            <span>This Fakemon does not evolve.</span>
+          </div>
+        ) : (
+          <div className="evo-tree">
+            {evolutionTree.map(root => renderEvolutionNode(root, true))}
+          </div>
+        )}
+      </div>
+
+      {/* Navigation */}
       <div className="fakemon-navigation">
-        {parseInt(id) > 1 && (
-          <Link to={`/fakedex/${parseInt(id) - 1}`} className="nav-button prev-button">
+        {prevFakemon && (
+          <Link to={`/fakedex/${prevFakemon.number}`} className="nav-button prev-button">
             <i className="fas fa-chevron-left"></i>
-            <span>#{parseInt(id) - 1}</span>
+            <span>#{String(prevFakemon.number).padStart(3, '0')} {prevFakemon.name}</span>
           </Link>
         )}
         <Link to="/fakedex" className="nav-button back-button">
           <i className="fas fa-th"></i>
           <span>Fakemon Dex</span>
         </Link>
-        <Link to={`/fakedex/${parseInt(id) + 1}`} className="nav-button next-button">
-          <span>#{parseInt(id) + 1}</span>
-          <i className="fas fa-chevron-right"></i>
-        </Link>
+        {nextFakemon && (
+          <Link to={`/fakedex/${nextFakemon.number}`} className="nav-button next-button">
+            <span>#{String(nextFakemon.number).padStart(3, '0')} {nextFakemon.name}</span>
+            <i className="fas fa-chevron-right"></i>
+          </Link>
+        )}
       </div>
     </div>
   );

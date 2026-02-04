@@ -35,6 +35,23 @@ const WritingSubmissionForm = ({ onSubmissionComplete }) => {
   const [selectedBookId, setSelectedBookId] = useState('');
   const [chapterNumber, setChapterNumber] = useState('');
   const [userBooks, setUserBooks] = useState([]);
+
+  // Book mode chapter management state
+  const [chapters, setChapters] = useState([]);
+  const [showAddChapter, setShowAddChapter] = useState(false);
+  const [editingChapterIndex, setEditingChapterIndex] = useState(null);
+  const [chapterTitle, setChapterTitle] = useState('');
+  const [chapterContent, setChapterContent] = useState('');
+  const [chapterContentFile, setChapterContentFile] = useState(null);
+  const [chapterContentUrl, setChapterContentUrl] = useState('');
+  const [chapterInputMethod, setChapterInputMethod] = useState('direct');
+  const [chapterWordCount, setChapterWordCount] = useState(0);
+  const [chapterCalculatorValues, setChapterCalculatorValues] = useState({
+    wordCount: 0,
+    trainers: [],
+    monsters: [],
+    giftParticipants: []
+  });
   // Reward calculation state
   const [calculatorValues, setCalculatorValues] = useState({
     wordCount: 0,
@@ -201,20 +218,9 @@ const WritingSubmissionForm = ({ onSubmissionComplete }) => {
 
   // Calculate reward estimate
   const calculateRewardEstimate = async () => {
-    if (!title || (inputMethod === 'direct' && !content) || (inputMethod === 'file' && !contentFile) || (inputMethod === 'url' && !contentUrl)) {
-      setError('Please provide a title and content to calculate rewards.');
-      return;
-    }
-
-    if (calculatorValues.wordCount <= 0) {
-      setError('Please provide a valid word count to calculate rewards.');
-      return;
-    }
-
-    if (calculatorValues.trainers.length === 0 && calculatorValues.monsters.length === 0) {
-      setError('Please add at least one trainer or monster to this submission.');
-      return;
-    }
+    // Silently skip if not enough data yet — errors only shown on actual submit
+    if (calculatorValues.wordCount <= 0) return;
+    if (calculatorValues.trainers.length === 0 && calculatorValues.monsters.length === 0) return;
 
     try {
       setLoading(true);
@@ -421,6 +427,8 @@ const WritingSubmissionForm = ({ onSubmissionComplete }) => {
     setBelongsToBook(false);
     setSelectedBookId('');
     setChapterNumber('');
+    setChapters([]);
+    resetChapterForm();
 
     // Notify parent component
     if (onSubmissionComplete) {
@@ -525,6 +533,232 @@ const WritingSubmissionForm = ({ onSubmissionComplete }) => {
     setShowLevelCapReallocation(false);
   };
 
+  // --- Book mode chapter management ---
+
+  // Auto-count chapter words
+  useEffect(() => {
+    if (chapterInputMethod === 'direct' && chapterContent) {
+      const words = chapterContent.trim().split(/\s+/);
+      setChapterWordCount(words.length);
+    }
+  }, [chapterContent, chapterInputMethod]);
+
+  // Reset chapter form fields
+  const resetChapterForm = () => {
+    setChapterTitle('');
+    setChapterContent('');
+    setChapterContentFile(null);
+    setChapterContentUrl('');
+    setChapterInputMethod('direct');
+    setChapterWordCount(0);
+    setChapterCalculatorValues({
+      wordCount: 0,
+      trainers: [],
+      monsters: [],
+      giftParticipants: []
+    });
+    setEditingChapterIndex(null);
+    setShowAddChapter(false);
+  };
+
+  // Handle chapter content file
+  const handleChapterContentFileChange = async (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setChapterContentFile(file);
+      if (file.type === 'text/plain') {
+        const text = await file.text();
+        const words = text.trim().split(/\s+/);
+        setChapterWordCount(words.length);
+      } else {
+        setChapterWordCount(0);
+      }
+    }
+  };
+
+  // Save chapter (add new or update existing)
+  const handleSaveChapter = () => {
+    if (!chapterTitle.trim()) {
+      setError('Please provide a title for the chapter.');
+      return;
+    }
+
+    const hasContent =
+      (chapterInputMethod === 'direct' && chapterContent.trim()) ||
+      (chapterInputMethod === 'file' && chapterContentFile) ||
+      (chapterInputMethod === 'url' && chapterContentUrl.trim());
+
+    if (!hasContent) {
+      setError('Please provide content for the chapter.');
+      return;
+    }
+
+    if (chapterCalculatorValues.wordCount <= 0 && chapterWordCount <= 0) {
+      setError('Please provide a valid word count for the chapter.');
+      return;
+    }
+
+    if (chapterCalculatorValues.trainers.length === 0 && chapterCalculatorValues.monsters.length === 0) {
+      setError('Please add at least one trainer or monster to the chapter.');
+      return;
+    }
+
+    const chapterData = {
+      title: chapterTitle.trim(),
+      content: chapterInputMethod === 'direct' ? chapterContent : '',
+      contentFile: chapterInputMethod === 'file' ? chapterContentFile : null,
+      contentUrl: chapterInputMethod === 'url' ? chapterContentUrl : '',
+      inputMethod: chapterInputMethod,
+      wordCount: chapterCalculatorValues.wordCount || chapterWordCount,
+      calculatorValues: { ...chapterCalculatorValues },
+      trainers: [...(chapterCalculatorValues.trainers || [])],
+      monsters: [...(chapterCalculatorValues.monsters || [])]
+    };
+
+    if (editingChapterIndex !== null) {
+      // Update existing chapter
+      const updated = [...chapters];
+      updated[editingChapterIndex] = chapterData;
+      setChapters(updated);
+    } else {
+      // Add new chapter
+      setChapters(prev => [...prev, chapterData]);
+    }
+
+    setError('');
+    resetChapterForm();
+  };
+
+  // Edit an existing chapter
+  const handleEditChapter = (index) => {
+    const ch = chapters[index];
+    setChapterTitle(ch.title);
+    setChapterContent(ch.content || '');
+    setChapterContentFile(ch.contentFile || null);
+    setChapterContentUrl(ch.contentUrl || '');
+    setChapterInputMethod(ch.inputMethod || 'direct');
+    setChapterWordCount(ch.wordCount || 0);
+    setChapterCalculatorValues(ch.calculatorValues || {
+      wordCount: 0,
+      trainers: [],
+      monsters: [],
+      giftParticipants: []
+    });
+    setEditingChapterIndex(index);
+    setShowAddChapter(true);
+  };
+
+  // Remove a chapter
+  const handleRemoveChapter = (index) => {
+    setChapters(prev => prev.filter((_, i) => i !== index));
+  };
+
+  // Handle book submission
+  const handleBookSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!title.trim()) {
+      setError('Please provide a title for your book.');
+      return;
+    }
+
+    // Validate chapters if any
+    for (let i = 0; i < chapters.length; i++) {
+      const ch = chapters[i];
+      if (!ch.title.trim()) {
+        setError(`Chapter ${i + 1} needs a title.`);
+        return;
+      }
+      const hasContent =
+        (ch.inputMethod === 'direct' && ch.content?.trim()) ||
+        (ch.inputMethod === 'file' && ch.contentFile) ||
+        (ch.inputMethod === 'url' && ch.contentUrl?.trim());
+      if (!hasContent) {
+        setError(`Chapter ${i + 1} needs content.`);
+        return;
+      }
+      if ((ch.wordCount || 0) <= 0) {
+        setError(`Chapter ${i + 1} needs a valid word count.`);
+        return;
+      }
+      if ((ch.trainers?.length || 0) === 0 && (ch.monsters?.length || 0) === 0) {
+        setError(`Chapter ${i + 1} needs at least one trainer or monster.`);
+        return;
+      }
+    }
+
+    try {
+      setLoading(true);
+      setError('');
+
+      // 1. Create the book
+      const bookData = {
+        title,
+        description,
+        tags,
+      };
+
+      if (useCoverImageUrl && coverImageUrl) {
+        bookData.coverImageUrl = coverImageUrl;
+      } else if (coverImage) {
+        bookData.coverImage = coverImage;
+      }
+
+      const bookResult = await submissionService.createBook(bookData);
+      const bookId = bookResult.book?.id || bookResult.id;
+
+      if (!bookId) {
+        setError('Failed to create book. No book ID returned.');
+        setLoading(false);
+        return;
+      }
+
+      // 2. Submit each chapter with parentId = bookId
+      for (let i = 0; i < chapters.length; i++) {
+        const ch = chapters[i];
+        const writingData = {
+          title: ch.title,
+          description: '',
+          contentType: 'chapter',
+          tags: [],
+          isBook: 0,
+          parentId: bookId,
+          chapterNumber: i + 1,
+          wordCount: ch.wordCount,
+          trainers: ch.trainers || [],
+          monsters: ch.monsters || [],
+        };
+
+        if (ch.inputMethod === 'direct') {
+          writingData.content = ch.content;
+        } else if (ch.inputMethod === 'file') {
+          writingData.contentFile = ch.contentFile;
+        } else if (ch.inputMethod === 'url') {
+          writingData.contentUrl = ch.contentUrl;
+        }
+
+        await submissionService.submitWriting(writingData);
+      }
+
+      // 3. Success
+      const result = {
+        success: true,
+        message: chapters.length > 0
+          ? `Book "${title}" created with ${chapters.length} chapter(s)!`
+          : `Book "${title}" created! You can add chapters later.`,
+        bookId
+      };
+
+      handleSubmissionComplete(result);
+
+    } catch (err) {
+      console.error('Error creating book:', err);
+      setError('Failed to create book. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // Show level cap reallocation interface if needed
   if (showLevelCapReallocation) {
     return (
@@ -562,7 +796,7 @@ const WritingSubmissionForm = ({ onSubmissionComplete }) => {
         />
       )}
 
-      <form className="submission-form" onSubmit={handleSubmit}>
+      <form className="submission-form" onSubmit={isBook ? handleBookSubmit : handleSubmit}>
         {/* Basic Information */}
         <div className="form-section">
           <h3>Basic Information</h3>
@@ -624,6 +858,7 @@ const WritingSubmissionForm = ({ onSubmissionComplete }) => {
                       setBelongsToBook(false);
                       setSelectedBookId('');
                       setChapterNumber('');
+                      setContentType('book');
                     }
                   }}
                   disabled={belongsToBook}
@@ -631,25 +866,34 @@ const WritingSubmissionForm = ({ onSubmissionComplete }) => {
                 This is a Book (can contain chapters)
               </label>
 
-              <label className="checkbox-label">
-                <input
-                  type="checkbox"
-                  checked={belongsToBook}
-                  onChange={(e) => {
-                    setBelongsToBook(e.target.checked);
-                    if (e.target.checked) {
-                      setIsBook(false);
-                    } else {
-                      setSelectedBookId('');
-                      setChapterNumber('');
-                    }
-                  }}
-                  disabled={isBook}
-                />
-                This is a Chapter (belongs to an existing book)
-              </label>
+              {!isBook && (
+                <label className="checkbox-label">
+                  <input
+                    type="checkbox"
+                    checked={belongsToBook}
+                    onChange={(e) => {
+                      setBelongsToBook(e.target.checked);
+                      if (e.target.checked) {
+                        setIsBook(false);
+                      } else {
+                        setSelectedBookId('');
+                        setChapterNumber('');
+                      }
+                    }}
+                    disabled={isBook}
+                  />
+                  This is a Chapter (belongs to an existing book)
+                </label>
+              )}
             </div>
           </div>
+
+          {isBook && (
+            <div className="book-mode-notice">
+              <strong>Book Mode:</strong> You are creating a book. Add a title, description, and cover image.
+              You can add chapters below, or create the book first and add chapters later.
+            </div>
+          )}
 
           {/* Book Selection (for chapters) */}
           {belongsToBook && (
@@ -730,102 +974,104 @@ const WritingSubmissionForm = ({ onSubmissionComplete }) => {
           )}
         </div>
 
-        {/* Content */}
-        <div className="form-section">
-          <h3>Content</h3>
+        {/* Content - hidden in book mode */}
+        {!isBook && (
+          <div className="form-section">
+            <h3>Content</h3>
 
-          <div className="form-group">
-            <label>Input Method</label>
-            <div className="input-method-options">
-              <label className="radio-label">
-                <input
-                  type="radio"
-                  name="input-method"
-                  value="direct"
-                  checked={inputMethod === 'direct'}
-                  onChange={() => setInputMethod('direct')}
-                />
-                Direct Input
-              </label>
-              <label className="radio-label">
-                <input
-                  type="radio"
-                  name="input-method"
-                  value="file"
-                  checked={inputMethod === 'file'}
-                  onChange={() => setInputMethod('file')}
-                />
-                Upload File
-              </label>
-              <label className="radio-label">
-                <input
-                  type="radio"
-                  name="input-method"
-                  value="url"
-                  checked={inputMethod === 'url'}
-                  onChange={() => setInputMethod('url')}
-                />
-                External URL
-              </label>
-            </div>
-          </div>
-
-          {inputMethod === 'direct' && (
             <div className="form-group">
-              <label htmlFor="writing-content">Content *</label>
-              <textarea
-                id="writing-content"
-                value={content}
-                onChange={(e) => setContent(e.target.value)}
-                placeholder="Enter your writing content here"
-                rows={10}
-                required={inputMethod === 'direct'}
-              />
-              <div className="word-count">
-                Word Count: {wordCount}
-              </div>
-            </div>
-          )}
-
-          {inputMethod === 'file' && (
-            <div className="form-group">
-              <label htmlFor="writing-file">Content File *</label>
-              <div className="file-upload-container">
-                <input
-                  id="writing-file"
-                  type="file"
-                  accept=".txt,.doc,.docx,.pdf,.rtf,.md"
-                  onChange={handleContentFileChange}
-                  required={inputMethod === 'file'}
-                />
-                <label htmlFor="writing-file" className="file-upload-label">
-                  Choose File
+              <label>Input Method</label>
+              <div className="input-method-options">
+                <label className="radio-label">
+                  <input
+                    type="radio"
+                    name="input-method"
+                    value="direct"
+                    checked={inputMethod === 'direct'}
+                    onChange={() => setInputMethod('direct')}
+                  />
+                  Direct Input
                 </label>
-                <span className="file-name">
-                  {contentFile ? contentFile.name : 'No file chosen'}
-                </span>
+                <label className="radio-label">
+                  <input
+                    type="radio"
+                    name="input-method"
+                    value="file"
+                    checked={inputMethod === 'file'}
+                    onChange={() => setInputMethod('file')}
+                  />
+                  Upload File
+                </label>
+                <label className="radio-label">
+                  <input
+                    type="radio"
+                    name="input-method"
+                    value="url"
+                    checked={inputMethod === 'url'}
+                    onChange={() => setInputMethod('url')}
+                  />
+                  External URL
+                </label>
               </div>
-
             </div>
-          )}
 
-          {inputMethod === 'url' && (
-            <>
+            {inputMethod === 'direct' && (
               <div className="form-group">
-                <label htmlFor="writing-url">Content URL *</label>
-                <input
-                  id="writing-url"
-                  type="url"
-                  value={contentUrl}
-                  onChange={(e) => setContentUrl(e.target.value)}
-                  placeholder="Enter the URL where your writing is hosted"
-                  required={inputMethod === 'url'}
+                <label htmlFor="writing-content">Content *</label>
+                <textarea
+                  id="writing-content"
+                  value={content}
+                  onChange={(e) => setContent(e.target.value)}
+                  placeholder="Enter your writing content here"
+                  rows={10}
+                  required={inputMethod === 'direct'}
                 />
+                <div className="word-count">
+                  Word Count: {wordCount}
+                </div>
               </div>
+            )}
 
-            </>
-          )}
-        </div>
+            {inputMethod === 'file' && (
+              <div className="form-group">
+                <label htmlFor="writing-file">Content File *</label>
+                <div className="file-upload-container">
+                  <input
+                    id="writing-file"
+                    type="file"
+                    accept=".txt,.doc,.docx,.pdf,.rtf,.md"
+                    onChange={handleContentFileChange}
+                    required={inputMethod === 'file'}
+                  />
+                  <label htmlFor="writing-file" className="file-upload-label">
+                    Choose File
+                  </label>
+                  <span className="file-name">
+                    {contentFile ? contentFile.name : 'No file chosen'}
+                  </span>
+                </div>
+
+              </div>
+            )}
+
+            {inputMethod === 'url' && (
+              <>
+                <div className="form-group">
+                  <label htmlFor="writing-url">Content URL *</label>
+                  <input
+                    id="writing-url"
+                    type="url"
+                    value={contentUrl}
+                    onChange={(e) => setContentUrl(e.target.value)}
+                    placeholder="Enter the URL where your writing is hosted"
+                    required={inputMethod === 'url'}
+                  />
+                </div>
+
+              </>
+            )}
+          </div>
+        )}
 
         {/* Cover Image */}
         <div className="form-section">
@@ -885,85 +1131,284 @@ const WritingSubmissionForm = ({ onSubmissionComplete }) => {
           )}
         </div>
 
-        {/* Reward Calculator */}
-        <div className="form-section">
-          <h3>Reward Calculator</h3>
+        {/* Chapter Management - shown in book mode */}
+        {isBook && (
+          <div className="form-section">
+            <h3>Chapters</h3>
 
-          <WritingSubmissionCalculator
-            onCalculate={(values) => {
-              console.log('WritingSubmissionCalculator values received:', values);
+            {chapters.length === 0 && !showAddChapter && (
+              <div className="empty-chapters-notice">
+                No chapters yet. You can add chapters now or create the book first and add them later.
+              </div>
+            )}
 
-              // Ensure trainers and monsters are valid arrays
-              const updatedValues = {
-                ...values,
-                trainers: Array.isArray(values.trainers) ? values.trainers : [],
-                monsters: Array.isArray(values.monsters) ? values.monsters : []
-              };
-
-              // Update state with the validated values
-              setCalculatorValues(updatedValues);
-
-              // Calculate rewards with the updated values
-              calculateRewardEstimate();
-            }}
-            trainers={allTrainers.length > 0 ? allTrainers : userTrainers}
-            monsters={userMonsters}
-            content={content}
-            inputMethod={inputMethod}
-          />
-        </div>
-
-        {/* Reward Estimate */}
-        <div className="form-section">
-          <h3>Reward Estimate</h3>
-
-          <button
-            type="button"
-            className="estimate-button"
-            onClick={calculateRewardEstimate}
-            disabled={loading}
-          >
-            {loading ? 'Calculating...' : 'Calculate Rewards'}
-          </button>
-
-          {showRewardEstimate && rewardEstimate && (
-            <div className="reward-estimate">
-              <h4>Estimated Rewards:</h4>
-
-              <div className="reward-section">
-                <h5>Trainer Rewards</h5>
-                <div className="reward-items">
-                  <div className="reward-item">
-                    <span className="reward-label">Levels:</span>
-                    <span className="reward-value">{rewardEstimate.levels}</span>
+            {chapters.length > 0 && (
+              <div className="chapter-list">
+                {chapters.map((ch, index) => (
+                  <div key={index} className="chapter-card">
+                    <div className="chapter-card-header">
+                      <div className="chapter-card-info">
+                        <span className="chapter-card-number">Chapter {index + 1}</span>
+                        <span className="chapter-card-title">{ch.title}</span>
+                      </div>
+                      <div className="chapter-card-actions">
+                        <button
+                          type="button"
+                          className="chapter-edit-button"
+                          onClick={() => handleEditChapter(index)}
+                        >
+                          Edit
+                        </button>
+                        <button
+                          type="button"
+                          className="chapter-remove-button"
+                          onClick={() => handleRemoveChapter(index)}
+                        >
+                          &times;
+                        </button>
+                      </div>
+                    </div>
+                    <div className="chapter-card-meta">
+                      <span>{ch.wordCount} words</span>
+                      <span>{(ch.trainers?.length || 0) + (ch.monsters?.length || 0)} participants</span>
+                    </div>
                   </div>
-                  <div className="reward-item">
-                    <span className="reward-label">Coins:</span>
-                    <span className="reward-value">{rewardEstimate.coins} <i className="fas fa-coins"></i></span>
+                ))}
+              </div>
+            )}
+
+            {!showAddChapter && (
+              <button
+                type="button"
+                className="add-chapter-button"
+                onClick={() => {
+                  resetChapterForm();
+                  setShowAddChapter(true);
+                }}
+              >
+                + Add Chapter
+              </button>
+            )}
+
+            {showAddChapter && (
+              <div className="chapter-form">
+                <h4>{editingChapterIndex !== null ? `Edit Chapter ${editingChapterIndex + 1}` : 'New Chapter'}</h4>
+
+                <div className="form-group">
+                  <label htmlFor="chapter-title">Chapter Title *</label>
+                  <input
+                    id="chapter-title"
+                    type="text"
+                    value={chapterTitle}
+                    onChange={(e) => setChapterTitle(e.target.value)}
+                    placeholder="Enter chapter title"
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label>Input Method</label>
+                  <div className="input-method-options">
+                    <label className="radio-label">
+                      <input
+                        type="radio"
+                        name="chapter-input-method"
+                        value="direct"
+                        checked={chapterInputMethod === 'direct'}
+                        onChange={() => setChapterInputMethod('direct')}
+                      />
+                      Direct Input
+                    </label>
+                    <label className="radio-label">
+                      <input
+                        type="radio"
+                        name="chapter-input-method"
+                        value="file"
+                        checked={chapterInputMethod === 'file'}
+                        onChange={() => setChapterInputMethod('file')}
+                      />
+                      Upload File
+                    </label>
+                    <label className="radio-label">
+                      <input
+                        type="radio"
+                        name="chapter-input-method"
+                        value="url"
+                        checked={chapterInputMethod === 'url'}
+                        onChange={() => setChapterInputMethod('url')}
+                      />
+                      External URL
+                    </label>
+                  </div>
+                </div>
+
+                {chapterInputMethod === 'direct' && (
+                  <div className="form-group">
+                    <label htmlFor="chapter-content">Content *</label>
+                    <textarea
+                      id="chapter-content"
+                      value={chapterContent}
+                      onChange={(e) => setChapterContent(e.target.value)}
+                      placeholder="Enter chapter content"
+                      rows={8}
+                    />
+                    <div className="word-count">Word Count: {chapterWordCount}</div>
+                  </div>
+                )}
+
+                {chapterInputMethod === 'file' && (
+                  <div className="form-group">
+                    <label htmlFor="chapter-file">Content File *</label>
+                    <div className="file-upload-container">
+                      <input
+                        id="chapter-file"
+                        type="file"
+                        accept=".txt,.doc,.docx,.pdf,.rtf,.md"
+                        onChange={handleChapterContentFileChange}
+                      />
+                      <label htmlFor="chapter-file" className="file-upload-label">
+                        Choose File
+                      </label>
+                      <span className="file-name">
+                        {chapterContentFile ? chapterContentFile.name : 'No file chosen'}
+                      </span>
+                    </div>
+                  </div>
+                )}
+
+                {chapterInputMethod === 'url' && (
+                  <div className="form-group">
+                    <label htmlFor="chapter-url">Content URL *</label>
+                    <input
+                      id="chapter-url"
+                      type="url"
+                      value={chapterContentUrl}
+                      onChange={(e) => setChapterContentUrl(e.target.value)}
+                      placeholder="Enter the URL where the chapter is hosted"
+                    />
+                  </div>
+                )}
+
+                <div className="form-group">
+                  <label>Chapter Rewards</label>
+                  <WritingSubmissionCalculator
+                    onCalculate={(values) => {
+                      setChapterCalculatorValues({
+                        ...values,
+                        trainers: Array.isArray(values.trainers) ? values.trainers : [],
+                        monsters: Array.isArray(values.monsters) ? values.monsters : []
+                      });
+                    }}
+                    trainers={allTrainers.length > 0 ? allTrainers : userTrainers}
+                    monsters={userMonsters}
+                    content={chapterContent}
+                    inputMethod={chapterInputMethod}
+                  />
+                </div>
+
+                <div className="chapter-form-actions">
+                  <button
+                    type="button"
+                    className="chapter-save-button"
+                    onClick={handleSaveChapter}
+                  >
+                    {editingChapterIndex !== null ? 'Update Chapter' : 'Save Chapter'}
+                  </button>
+                  <button
+                    type="button"
+                    className="chapter-cancel-button"
+                    onClick={resetChapterForm}
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Reward Calculator - hidden in book mode */}
+        {!isBook && (
+          <div className="form-section">
+            <h3>Reward Calculator</h3>
+
+            <WritingSubmissionCalculator
+              onCalculate={(values) => {
+                console.log('WritingSubmissionCalculator values received:', values);
+
+                // Ensure trainers and monsters are valid arrays
+                const updatedValues = {
+                  ...values,
+                  trainers: Array.isArray(values.trainers) ? values.trainers : [],
+                  monsters: Array.isArray(values.monsters) ? values.monsters : []
+                };
+
+                // Update state with the validated values
+                setCalculatorValues(updatedValues);
+
+                // Calculate rewards with the updated values
+                calculateRewardEstimate();
+              }}
+              trainers={allTrainers.length > 0 ? allTrainers : userTrainers}
+              monsters={userMonsters}
+              content={content}
+              inputMethod={inputMethod}
+            />
+          </div>
+        )}
+
+        {/* Reward Estimate - hidden in book mode */}
+        {!isBook && (
+          <div className="form-section">
+            <h3>Reward Estimate</h3>
+
+            <button
+              type="button"
+              className="estimate-button"
+              onClick={calculateRewardEstimate}
+              disabled={loading}
+            >
+              {loading ? 'Calculating...' : 'Calculate Rewards'}
+            </button>
+
+            {showRewardEstimate && rewardEstimate && (
+              <div className="reward-estimate">
+                <h4>Estimated Rewards:</h4>
+
+                <div className="reward-section">
+                  <h5>Trainer Rewards</h5>
+                  <div className="reward-items">
+                    <div className="reward-item">
+                      <span className="reward-label">Levels:</span>
+                      <span className="reward-value">{rewardEstimate.levels}</span>
+                    </div>
+                    <div className="reward-item">
+                      <span className="reward-label">Coins:</span>
+                      <span className="reward-value">{rewardEstimate.coins} <i className="fas fa-coins"></i></span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="reward-section">
+                  <h5>Additional Rewards</h5>
+                  <div className="reward-items">
+                    <div className="reward-item">
+                      <span className="reward-label">Garden Points:</span>
+                      <span className="reward-value">{rewardEstimate.gardenPoints}</span>
+                    </div>
+                    <div className="reward-item">
+                      <span className="reward-label">Mission Progress:</span>
+                      <span className="reward-value">{rewardEstimate.missionProgress}</span>
+                    </div>
+                    <div className="reward-item">
+                      <span className="reward-label">Boss Damage:</span>
+                      <span className="reward-value">{rewardEstimate.bossDamage}</span>
+                    </div>
                   </div>
                 </div>
               </div>
-
-              <div className="reward-section">
-                <h5>Additional Rewards</h5>
-                <div className="reward-items">
-                  <div className="reward-item">
-                    <span className="reward-label">Garden Points:</span>
-                    <span className="reward-value">{rewardEstimate.gardenPoints}</span>
-                  </div>
-                  <div className="reward-item">
-                    <span className="reward-label">Mission Progress:</span>
-                    <span className="reward-value">{rewardEstimate.missionProgress}</span>
-                  </div>
-                  <div className="reward-item">
-                    <span className="reward-label">Boss Damage:</span>
-                    <span className="reward-value">{rewardEstimate.bossDamage}</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
+            )}
+          </div>
+        )}
 
         {/* Submit Button */}
         <div className="form-actions">
@@ -975,10 +1420,10 @@ const WritingSubmissionForm = ({ onSubmissionComplete }) => {
             {loading ? (
               <>
                 <LoadingSpinner size="small" />
-                Submitting...
+                {isBook ? 'Creating Book...' : 'Submitting...'}
               </>
             ) : (
-              'Submit Writing'
+              isBook ? 'Create Book' : 'Submit Writing'
             )}
           </button>
         </div>

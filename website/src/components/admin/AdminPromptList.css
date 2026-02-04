@@ -28,18 +28,6 @@
   align-items: end;
 }
 
-.filter-group {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-}
-
-.filter-group label {
-  font-size: 0.9rem;
-  font-weight: 500;
-  color: var(--text-color);
-}
-
 .filter-select {
   padding: 8px 10px;
   border: 1px solid var(--border-color);

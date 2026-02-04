@@ -1171,22 +1171,6 @@
   gap: 2rem;
 }
 
-
-.form-section {
-  display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
-  margin-bottom: 2rem;
-  padding-bottom: 2rem;
-  border-bottom: 1px solid var(--divider-color);
-  background: var(--card-background);
-  padding: 1.5rem;
-  border-radius: 12px;
-  border: 1px solid var(--border-color);
-  position: relative;
-}
-
-
 .form-section h3 {
   font-size: var(--font-size-lg);
   color: var(--text-color);

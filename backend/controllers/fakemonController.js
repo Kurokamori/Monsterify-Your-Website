@@ -21,7 +21,8 @@ async function ensureFakemonTableExists() {
       { name: 'defense', type: 'INTEGER' },
       { name: 'special_attack', type: 'INTEGER' },
       { name: 'special_defense', type: 'INTEGER' },
-      { name: 'speed', type: 'INTEGER' }
+      { name: 'speed', type: 'INTEGER' },
+      { name: 'classification', type: 'TEXT' }
     ];
 
     for (const column of columnsToAdd) {
@@ -289,7 +290,17 @@ const getFakemonByNumber = async (req, res) => {
       return res.status(404).json({ error: 'Fakemon not found' });
     }
 
-    res.json({ fakemon });
+    // Get previous and next fakemon for navigation
+    const prevFakemon = await db.asyncGet(
+      'SELECT number, name FROM fakemon WHERE number < $1 ORDER BY number DESC LIMIT 1',
+      [number]
+    );
+    const nextFakemon = await db.asyncGet(
+      'SELECT number, name FROM fakemon WHERE number > $1 ORDER BY number ASC LIMIT 1',
+      [number]
+    );
+
+    res.json({ fakemon, prevFakemon: prevFakemon || null, nextFakemon: nextFakemon || null });
   } catch (error) {
     console.error(`Error fetching fakemon ${req.params.number}:`, error);
     res.status(500).json({ error: 'Failed to fetch fakemon' });
@@ -327,28 +338,72 @@ const getEvolutionChain = async (req, res) => {
         // Fetch all fakemon in the evolution chain
         const evolutionNumbers = evolutionData.map(evo => evo.number);
         if (evolutionNumbers.length > 0) {
-          const placeholders = evolutionNumbers.map(() => '$1').join(',');
+          const placeholders = evolutionNumbers.map((_, i) => `$${i + 1}`).join(',');
           const evolutionFakemon = await db.asyncAll(
             `SELECT * FROM fakemon WHERE number IN (${placeholders})`,
             evolutionNumbers
           );
 
-          // Map evolution data with fakemon details
-          evolutionChain = evolutionData.map(evo => {
-            const fakemonDetails = evolutionFakemon.find(f => f.number === evo.number) || {};
+          // Map evolution data with fakemon details, including evolution method info
+          evolutionChain = evolutionData.map((evo, index) => {
+            // Use parseInt to normalize numbers (handles zero-padded strings like "001" vs integer 1)
+            const fakemonDetails = evolutionFakemon.find(f => parseInt(f.number, 10) === parseInt(evo.number, 10)) || {};
+
+            // Backward compatibility: infer method from level if method not present
+            let method = evo.method || null;
+            let method_detail = evo.method_detail || null;
+            if (!method && evo.level && evo.level > 1) {
+              method = 'level';
+              method_detail = `Level ${evo.level}`;
+            }
+
+            // Backward compatibility: infer evolves_from from array order if not present
+            // Treat empty string as null so the fallback inference can work
+            let evolves_from = (evo.evolves_from !== undefined && evo.evolves_from !== null && evo.evolves_from !== '') ? evo.evolves_from : null;
+            if (evolves_from === null && index > 0) {
+              evolves_from = evolutionData[index - 1].number;
+            }
+
             return {
               ...evo,
               name: fakemonDetails.name || evo.name,
-              image_url: fakemonDetails.image_url,
+              image_url: fakemonDetails.image_url || null,
               types: [
                 fakemonDetails.type1,
                 fakemonDetails.type2,
                 fakemonDetails.type3,
                 fakemonDetails.type4,
                 fakemonDetails.type5
-              ].filter(Boolean)
+              ].filter(Boolean),
+              method,
+              method_detail,
+              evolves_from
             };
           });
+
+          // Ensure the current fakemon is included in the evolution chain
+          const currentInChain = evolutionChain.some(evo => String(evo.number) === String(number));
+          if (!currentInChain) {
+            // Add the current fakemon as a base entry at the start
+            evolutionChain.unshift({
+              number: fakemon.number,
+              name: fakemon.name,
+              image_url: fakemon.image_url || null,
+              types: [fakemon.type1, fakemon.type2, fakemon.type3, fakemon.type4, fakemon.type5].filter(Boolean),
+              method: null,
+              method_detail: null,
+              evolves_from: null
+            });
+            // Update any entries that have no evolves_from to point to the current fakemon
+            // (only if they aren't roots themselves)
+            evolutionChain.forEach((evo, idx) => {
+              if (idx > 0 && evo.evolves_from === null && !evo.method) {
+                // This is probably the first evolution from the current mon
+              } else if (idx > 0 && evo.evolves_from === null) {
+                evo.evolves_from = fakemon.number;
+              }
+            });
+          }
         }
       } catch (e) {
         console.error('Error parsing evolution line:', e);
@@ -436,6 +491,7 @@ const createFakemon = async (req, res) => {
       number,
       name,
       category,
+      classification,
       type1,
       type2,
       type3,
@@ -480,16 +536,17 @@ const createFakemon = async (req, res) => {
     // Insert new fakemon
     const result = await db.asyncRun(`
       INSERT INTO fakemon (
-        number, name, category, type1, type2, type3, type4, type5,
+        number, name, category, classification, type1, type2, type3, type4, type5,
         attribute, description, image_url, evolution_line,
         ability1, ability2, hidden_ability,
         hp, attack, defense, special_attack, special_defense, speed,
         created_by
-      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22)
+      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23)
     `, [
       number,
       name,
       category,
+      classification || null,
       type1,
       type2 || null,
       type3 || null,
@@ -559,6 +616,7 @@ const updateFakemon = async (req, res) => {
     const {
       name,
       category,
+      classification,
       type1,
       type2,
       type3,
@@ -592,28 +650,30 @@ const updateFakemon = async (req, res) => {
       UPDATE fakemon SET
         name = $1,
         category = $2,
-        type1 = $3,
-        type2 = $4,
-        type3 = $5,
-        type4 = $6,
-        type5 = $7,
-        attribute = $8,
-        description = $9,
-        image_url = $10,
-        evolution_line = $11,
-        ability1 = $12,
-        ability2 = $13,
-        hidden_ability = $14,
-        hp = $15,
-        attack = $16,
-        defense = $17,
-        special_attack = $18,
-        special_defense = $19,
-        speed = $20
-      WHERE number = $21
+        classification = $3,
+        type1 = $4,
+        type2 = $5,
+        type3 = $6,
+        type4 = $7,
+        type5 = $8,
+        attribute = $9,
+        description = $10,
+        image_url = $11,
+        evolution_line = $12,
+        ability1 = $13,
+        ability2 = $14,
+        hidden_ability = $15,
+        hp = $16,
+        attack = $17,
+        defense = $18,
+        special_attack = $19,
+        special_defense = $20,
+        speed = $21
+      WHERE number = $22
     `, [
       name,
       category,
+      classification || null,
       type1,
       type2 || null,
       type3 || null,
@@ -860,6 +920,7 @@ const bulkCreateFakemon = async (req, res) => {
         number,
         name,
         category,
+        classification,
         type1,
         type2,
         type3,
@@ -896,15 +957,16 @@ const bulkCreateFakemon = async (req, res) => {
         // Insert new fakemon with default stats
         await db.asyncRun(`
           INSERT INTO fakemon (
-            number, name, category, type1, type2, type3, type4, type5,
+            number, name, category, classification, type1, type2, type3, type4, type5,
             attribute, image_url,
             hp, attack, defense, special_attack, special_defense, speed,
             created_by, created_at, updated_at
-          ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, NOW(), NOW())
+          ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, NOW(), NOW())
         `, [
           number,
           name,
           category,
+          classification || null,
           type1,
           type2 || null,
           type3 || null,
@@ -951,6 +1013,32 @@ const bulkCreateFakemon = async (req, res) => {
   }
 };
 
+/**
+ * Search fakemon by name (for autocomplete)
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ */
+const searchFakemon = async (req, res) => {
+  try {
+    await ensureFakemonTableExists();
+
+    const { query } = req.query;
+    if (!query) {
+      return res.json({ success: true, results: [] });
+    }
+
+    const results = await db.asyncAll(
+      'SELECT number, name, image_url FROM fakemon WHERE name ILIKE $1 ORDER BY number LIMIT 20',
+      [`%${query}%`]
+    );
+
+    res.json({ success: true, results });
+  } catch (error) {
+    console.error('Error searching fakemon:', error);
+    res.status(500).json({ success: false, message: 'Failed to search fakemon' });
+  }
+};
+
 module.exports = {
   getAllFakemon,
   getFakemonByNumber,
@@ -959,6 +1047,7 @@ module.exports = {
   getAllCategories,
   getNumbersByCategory,
   getRandomFakemon,
+  searchFakemon,
   createFakemon,
   updateFakemon,
   deleteFakemon,

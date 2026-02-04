@@ -69,29 +69,6 @@
   font-weight: 600;
 }
 
-/* ---------- Back Button ---------- */
-.back-button {
-  background: var(--accent-color);
-  color: var(--text-color);
-  border: none;
-  padding: 8px 16px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: var(--font-size-sm);
-  margin-bottom: 1.25rem;
-  transition: background-color 0.2s;
-  font-weight: bold;
-  background-color: var(--nav-background);
-  display: inline-flex;
-  align-items: center;
-  text-decoration: none;
-  margin-left: .5rem;
-}
-
-.back-button:hover {
-  background: var(--accent-hover);
-}
-
 /* ---------- Content Layout ---------- */
 .area-content,
 .region-content,

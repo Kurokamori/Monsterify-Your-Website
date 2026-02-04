@@ -8,6 +8,7 @@ const {
   getAllCategories,
   getNumbersByCategory,
   getRandomFakemon,
+  searchFakemon,
   createFakemon,
   updateFakemon,
   deleteFakemon,
@@ -32,6 +33,9 @@ router.get('/categories', getAllCategories);
 
 // Get random fakemon
 router.get('/random', getRandomFakemon);
+
+// Search fakemon by name (for autocomplete)
+router.get('/search', searchFakemon);
 
 // Get fakemon by number
 router.get('/:number', getFakemonByNumber);

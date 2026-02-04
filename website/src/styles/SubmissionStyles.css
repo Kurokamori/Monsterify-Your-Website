@@ -973,8 +973,8 @@
 
 
 .submission-main-image {
-  max-width: 100%;
-  max-height: 1000px;
+  max-width: 90%;
+  max-height: 80vh;
   border-radius: 8px;
   cursor: pointer;
   transition: transform 0.2s;
@@ -1189,9 +1189,12 @@
 
 
 .image-modal-img {
-  max-width: 100%;
+  max-width: 90vw;
+  width: 100%;
   max-height: 90vh;
+  height: 100%;
   object-fit: contain;
+  display: block;
 }
 
 
@@ -1215,11 +1218,6 @@
   
   .submission-title {
     font-size: 1.5rem;
-  }
-  
-  .submission-meta {
-    flex-direction: column;
-    gap: 0.5rem;
   }
   
   .featured-entities-grid,
@@ -1619,6 +1617,29 @@
 }
 
 .submission-types-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.submission-types-grid-row {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.submission-types-section {
+  display: inline-block;
+}
+
+.submission-types-heading {
+  font-size: var(--font-size-lg);
+  color: var(--accent-color);
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.submission-types-grid-column {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 1.5rem;
@@ -3737,4 +3758,409 @@
   .reallocation-actions {
     flex-direction: column;
   }
+}
+
+/* ================================
+   Book Creation Mode
+   ================================ */
+
+.book-mode-notice {
+  background-color: var(--card-background-light);
+  border-left: 4px solid var(--accent-color);
+  padding: 1rem 1.25rem;
+  margin-bottom: 1.5rem;
+  border-radius: 0 0.5rem 0.5rem 0;
+  color: var(--text-color);
+  font-size: var(--font-size-sm);
+  line-height: 1.5;
+}
+
+.book-mode-notice strong {
+  color: var(--accent-color);
+}
+
+/* Chapter List */
+.chapter-list {
+  margin-top: 1rem;
+}
+
+.chapter-list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.chapter-list-header h4 {
+  margin: 0;
+  color: var(--heading-color);
+  font-size: var(--font-size-base);
+}
+
+.chapter-count-badge {
+  background-color: var(--accent-color);
+  color: var(--nav-background);
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  padding: 0.2rem 0.6rem;
+  border-radius: 1rem;
+  margin-left: 0.5rem;
+}
+
+/* Chapter Card */
+.chapter-card {
+  background-color: var(--card-background-light);
+  border: 1px solid var(--border-color);
+  border-radius: 0.5rem;
+  padding: 1rem 1.25rem;
+  margin-bottom: 0.75rem;
+  transition: all 0.2s ease;
+}
+
+.chapter-card:hover {
+  border-color: var(--accent-color);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.chapter-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.chapter-card-info {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.chapter-card-number {
+  font-weight: 700;
+  color: var(--accent-color);
+  font-size: var(--font-size-sm);
+  white-space: nowrap;
+  min-width: 2rem;
+}
+
+.chapter-card-title {
+  font-weight: 500;
+  color: var(--text-color);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.chapter-card-meta {
+  display: flex;
+  gap: 1rem;
+  margin-top: 0.5rem;
+  font-size: var(--font-size-xs);
+  color: var(--text-secondary);
+  padding-left: 2.75rem;
+}
+
+.chapter-card-meta span {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.chapter-remove-button {
+  background: none;
+  border: none;
+  color: var(--danger-color);
+  cursor: pointer;
+  font-size: 1.25rem;
+  padding: 0.25rem 0.5rem;
+  line-height: 1;
+  transition: transform 0.2s;
+  flex-shrink: 0;
+}
+
+.chapter-remove-button:hover {
+  transform: scale(1.2);
+}
+
+/* Chapter Form */
+.chapter-form {
+  background-color: var(--card-background-light);
+  border: 2px dashed var(--border-color);
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+  margin-top: 1rem;
+}
+
+.chapter-form-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.25rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.chapter-form-header h4 {
+  color: var(--accent-color);
+  margin: 0;
+  font-size: var(--font-size-base);
+}
+
+.chapter-form .form-group {
+  margin-bottom: 1rem;
+}
+
+.chapter-form .form-group label {
+  display: block;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  color: var(--text-color);
+  font-size: var(--font-size-sm);
+}
+
+.chapter-form .form-group input,
+.chapter-form .form-group textarea,
+.chapter-form .form-group select {
+  width: 100%;
+  padding: 0.625rem;
+  border-radius: 0.375rem;
+  border: 1px solid var(--border-color);
+  background-color: var(--input-background);
+  color: var(--text-color);
+  font-size: var(--font-size-base);
+}
+
+.chapter-form-actions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-color);
+}
+
+.chapter-save-button {
+  padding: 0.625rem 1.5rem;
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 0.5rem;
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.chapter-save-button:hover {
+  background-color: var(--accent-color);
+  transform: translateY(-1px);
+}
+
+.chapter-save-button:disabled {
+  background-color: var(--disabled-color);
+  cursor: not-allowed;
+  transform: none;
+}
+
+.chapter-cancel-button {
+  padding: 0.625rem 1.5rem;
+  background-color: var(--nav-background);
+  color: var(--text-color);
+  border: 1px solid var(--border-color);
+  border-radius: 0.5rem;
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.chapter-cancel-button:hover {
+  background-color: var(--nav-hover);
+}
+
+/* Add Chapter Button */
+.add-chapter-button {
+  background-color: var(--card-background-light);
+  color: var(--primary-color);
+  border: 2px dashed var(--border-color);
+  border-radius: 0.5rem;
+  padding: 0.875rem 1.5rem;
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+  margin-top: 0.75rem;
+}
+
+.add-chapter-button:hover {
+  background-color: rgba(var(--primary-color-rgb), 0.1);
+  border-color: var(--primary-color);
+  transform: translateY(-1px);
+}
+
+/* Empty Chapters Notice */
+.empty-chapters-notice {
+  text-align: center;
+  padding: 2rem 1rem;
+  color: var(--text-secondary);
+  font-style: italic;
+  font-size: var(--font-size-sm);
+}
+
+/* Chapter progress indicator during book submission */
+.book-submit-progress {
+  margin-top: 1rem;
+  padding: 1rem;
+  background-color: var(--card-background-light);
+  border-radius: 0.5rem;
+  border: 1px solid var(--border-color);
+}
+
+.book-submit-progress .progress-text {
+  font-size: var(--font-size-sm);
+  color: var(--text-color);
+  margin-bottom: 0.5rem;
+}
+
+.book-submit-progress .progress-bar {
+  height: 6px;
+  background-color: var(--nav-background);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.book-submit-progress .progress-bar-fill {
+  height: 100%;
+  background-color: var(--accent-color);
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .chapter-card-meta {
+    padding-left: 0;
+    flex-wrap: wrap;
+  }
+
+  .chapter-form {
+    padding: 1rem;
+  }
+
+  .chapter-form-actions {
+    flex-direction: column;
+  }
+
+  .chapter-save-button,
+  .chapter-cancel-button {
+    width: 100%;
+    text-align: center;
+    justify-content: center;
+  }
+}
+
+/* ================================
+   Writing Submission Form - Missing Classes
+   ================================ */
+
+/* Chapter Card Actions */
+.chapter-card-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.chapter-edit-button {
+  background: none;
+  border: 1px solid var(--border-color);
+  color: var(--text-color);
+  cursor: pointer;
+  font-size: var(--font-size-xs);
+  font-weight: 500;
+  padding: 0.25rem 0.75rem;
+  border-radius: 0.375rem;
+  transition: all 0.2s ease;
+}
+
+.chapter-edit-button:hover {
+  background-color: var(--accent-color);
+  color: white;
+  border-color: var(--accent-color);
+}
+
+/* File Upload (submission forms) */
+.file-upload-container {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.file-upload-label {
+  display: inline-block;
+  padding: 0.625rem 1.25rem;
+  background-color: var(--nav-background);
+  color: var(--text-color);
+  border-radius: 0.375rem;
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.file-name {
+  font-size: var(--font-size-sm);
+  color: var(--text-color);
+  opacity: 0.8;
+}
+
+/* Reward Item (label + value row) */
+.reward-estimate .reward-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0;
+}
+
+.reward-estimate .reward-item + .reward-item {
+  border-top: 1px solid var(--border-color);
+}
+
+.reward-value {
+  font-weight: 600;
+  color: var(--accent-color);
+}
+
+/* Book Options (submission form) */
+.book-options {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  background-color: var(--card-background-light);
+  border-radius: 0.5rem;
+  border: 1px solid var(--border-color);
+}
+
+.book-options .checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  font-size: var(--font-size-sm);
+}
+
+.book-options input[type="checkbox"] {
+  accent-color: var(--accent-color);
+}
+
+.book-options input[type="checkbox"]:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }

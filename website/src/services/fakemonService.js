@@ -66,6 +66,21 @@ const fakemonService = {
   },
 
   /**
+   * Search fakemon by name (for autocomplete)
+   * @param {string} query - Search query
+   * @returns {Promise<Object>} - Response with matching fakemon
+   */
+  searchFakemonByName: async (query) => {
+    try {
+      const response = await api.get('/fakedex/search', { params: { query } });
+      return response.data;
+    } catch (error) {
+      console.error('Error searching fakemon by name:', error);
+      throw error;
+    }
+  },
+
+  /**
    * Get fakemon by type
    * @param {string} type - Fakemon type
    * @returns {Promise<Object>} - Response with fakemon of the specified type

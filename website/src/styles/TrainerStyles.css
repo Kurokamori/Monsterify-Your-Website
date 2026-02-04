@@ -2063,13 +2063,11 @@
 }
 
 .error-container i{ font-size:3rem; color:var(--error-color); margin-bottom:1rem; }
-.retry-button, .back-button{
+.retry-button {
   margin-top:1rem; padding:.5rem 1rem; background-color:var(--accent-color); color:#fff; border:none; border-radius:.375rem;
   cursor:pointer; transition:background-color .2s;
 }
-.retry-button:hover, .back-button:hover{ background-color:var(--accent-hover); }
-
-.back-button:hover{ background-color:var(--nav-hover); }
+.retry-button:hover{ background-color:var(--accent-hover); }
 
 /* ===== Responsive ===== */
 @media (max-width:1200px){
@@ -2369,9 +2367,12 @@
 
 .relation-header {
   padding: .5rem 1rem;
-  background: var(--nav-background);
+  background: var(--card-background-secondary);
   border-bottom: 2px solid var(--divider-color);
   border-radius: 1rem;
+  margin-bottom: 0.5rem;
+  display: flex;
+  justify-content: space-between;
 }
 
 .relation-details {
