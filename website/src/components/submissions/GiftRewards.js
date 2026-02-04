@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import LoadingSpinner from '../common/LoadingSpinner';
+import TrainerAutocomplete from '../common/TrainerAutocomplete';
+import MonsterAutocomplete from '../common/MonsterAutocomplete';
 import api from '../../services/api';
 
 
@@ -353,53 +355,41 @@ const GiftRewards = ({
                 {/* For monster selection, show trainer selection first */}
                 {selectedEntityType === 'monster' && (
                   <div className="form-row">
-                    <select
-                      value={selectedTrainerId}
-                      onChange={(e) => {
-                        setSelectedTrainerId(e.target.value);
+                    <TrainerAutocomplete
+                      trainers={userTrainers}
+                      selectedTrainerId={selectedTrainerId}
+                      onSelect={(id) => {
+                        setSelectedTrainerId(id);
                         setSelectedEntityId(''); // Reset monster selection when trainer changes
                       }}
+                      label="Select Trainer First"
+                      placeholder="Type to search trainers..."
                       className="trainer-select"
-                    >
-                      <option value="">Select Trainer First</option>
-                      {userTrainers.map((trainer) => (
-                        <option key={trainer.id} value={trainer.id}>
-                          {trainer.name}
-                        </option>
-                      ))}
-                    </select>
+                    />
                   </div>
                 )}
 
                 <div className="form-row">
-                  <select
-                    value={selectedEntityId}
-                    onChange={(e) => setSelectedEntityId(e.target.value)}
-                    className="entity-select"
-                    disabled={selectedEntityType === 'monster' && !selectedTrainerId}
-                  >
-                    <option value="">
-                      {selectedEntityType === 'trainer' 
-                        ? 'Select Trainer' 
-                        : !selectedTrainerId 
-                          ? 'Select Trainer First'
-                          : 'Select Monster'}
-                    </option>
-                    {selectedEntityType === 'trainer' 
-                      ? userTrainers.map((trainer) => (
-                          <option key={trainer.id} value={trainer.id}>
-                            {trainer.name}
-                          </option>
-                        ))
-                      : selectedTrainerId && userMonsters
-                          .filter(monster => monster.trainer_id === parseInt(selectedTrainerId))
-                          .map((monster) => (
-                            <option key={monster.id} value={monster.id}>
-                              {monster.name}
-                            </option>
-                          ))
-                    }
-                  </select>
+                  {selectedEntityType === 'trainer' ? (
+                    <TrainerAutocomplete
+                      trainers={userTrainers}
+                      selectedTrainerId={selectedEntityId}
+                      onSelect={(id) => setSelectedEntityId(id)}
+                      label="Select Trainer"
+                      placeholder="Type to search trainers..."
+                      className="entity-select"
+                    />
+                  ) : (
+                    <MonsterAutocomplete
+                      monsters={selectedTrainerId ? userMonsters.filter(monster => monster.trainer_id === parseInt(selectedTrainerId)) : []}
+                      selectedMonsterId={selectedEntityId}
+                      onSelect={(id) => setSelectedEntityId(id)}
+                      label="Select Monster"
+                      placeholder={!selectedTrainerId ? 'Select Trainer First' : 'Type to search monsters...'}
+                      disabled={!selectedTrainerId}
+                      className="entity-select"
+                    />
+                  )}
                 </div>
                 <div className="form-row">
                   <input
@@ -472,18 +462,14 @@ const GiftRewards = ({
                     </td>
                     <td className="item-category">{item.category}</td>
                     <td>
-                      <select
-                        value={itemAssignments[index] || ''}
-                        onChange={(e) => handleItemAssignment(index, e.target.value)}
+                      <TrainerAutocomplete
+                        trainers={userTrainers}
+                        selectedTrainerId={itemAssignments[index] || ''}
+                        onSelect={(id) => handleItemAssignment(index, id)}
+                        label=""
+                        placeholder="Select Trainer..."
                         className="trainer-select"
-                      >
-                        <option value="">Select Trainer</option>
-                        {userTrainers.map((trainer) => (
-                          <option key={trainer.id} value={trainer.id}>
-                            {trainer.name}
-                          </option>
-                        ))}
-                      </select>
+                      />
                     </td>
                   </tr>
                 ))}
@@ -622,19 +608,14 @@ const GiftRewards = ({
                   </div>
 
                   <div className="form-group">
-                    <label>Assign to Trainer:</label>
-                    <select
-                      value={monsterAssignments[index] || ''}
-                      onChange={(e) => handleMonsterAssignment(index, e.target.value)}
+                    <TrainerAutocomplete
+                      trainers={userTrainers}
+                      selectedTrainerId={monsterAssignments[index] || ''}
+                      onSelect={(id) => handleMonsterAssignment(index, id)}
+                      label="Assign to Trainer"
+                      placeholder="Select Trainer..."
                       className="trainer-select"
-                    >
-                      <option value="">Select Trainer</option>
-                      {userTrainers.map((trainer) => (
-                        <option key={trainer.id} value={trainer.id}>
-                          {trainer.name}
-                        </option>
-                      ))}
-                    </select>
+                    />
                   </div>
                 </div>
               </div>

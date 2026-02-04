@@ -86,12 +86,10 @@ const AdminStarterRoller = () => {
 
       if (!currentSet || !currentSet.monsters) {
         return (
-          <div className="text-center py-8">
-            <h2 className="text-xl font-semibold mb-6">
-              Loading starter monsters...
-            </h2>
-            <div className="flex justify-center">
-              <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-blue-500"></div>
+          <div className="starter-empty-state">
+            <h2>Loading starter monsters...</h2>
+            <div className="starter-spinner-container">
+              <div className="starter-spinner"></div>
             </div>
           </div>
         );
@@ -99,7 +97,7 @@ const AdminStarterRoller = () => {
 
       return (
         <div>
-          <h2 className="text-2xl font-semibold mb-6 text-center">
+          <h2 className="starter-step-title">
             Set {currentStep + 1}: Choose your {getOrdinal(currentStep + 1)} starter
           </h2>
 
@@ -107,10 +105,10 @@ const AdminStarterRoller = () => {
             {currentSet.monsters.map((monster, index) => (
               <div
                 key={`${currentSet.setId}-${index}`}
-                className={`starter-card cursor-pointer ${
+                className={`starter-card ${
                   selectedStarters[currentStep] === monster
-                    ? 'selected shadow-lg'
-                    : 'hover:shadow-md'
+                    ? 'selected'
+                    : ''
                 }`}
                 onClick={() => handleSelectMonster(currentStep, monster)}
               >
@@ -124,14 +122,14 @@ const AdminStarterRoller = () => {
       // Review step
       if (selectedStarters.length < 3 || selectedStarters.some(starter => !starter)) {
         return (
-          <div className="text-center py-8">
-            <h2 className="text-xl font-semibold mb-6">Please select all three starters first</h2>
-            <div className="flex justify-center mt-4">
+          <div className="starter-empty-state">
+            <h2>Please select all three starters first</h2>
+            <div className="starter-spinner-container">
               <button
-                className="px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 shadow-md transition-all duration-200"
+                className="starter-back-button"
                 onClick={() => setCurrentStep(0)}
               >
-                <i className="fas fa-arrow-left mr-2"></i>
+                <i className="fas fa-arrow-left"></i>
                 Go back to selection
               </button>
             </div>
@@ -141,23 +139,23 @@ const AdminStarterRoller = () => {
 
       return (
         <div>
-          <h2 className="text-2xl font-semibold mb-6 text-center">Review Your Selected Starters</h2>
+          <h2 className="starter-step-title">Review Your Selected Starters</h2>
 
           <div className="starter-cards-grid">
             {selectedStarters.map((monster, index) => (
-              <div key={index} className="border rounded-lg shadow-md overflow-hidden bg-white transition-all duration-300 hover:shadow-lg">
-                <div className="p-4 bg-gradient-to-r from-blue-50 to-indigo-50">
+              <div key={index} className="starter-review-card">
+                <div className="starter-review-card-header">
                   <StarterMonsterCard monster={monster} />
                 </div>
 
-                <div className="p-4">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                <div className="starter-review-card-body">
+                  <label className="starter-name-label">
                     Name for {getOrdinal(index + 1)} starter:
                   </label>
                   <div className="relative">
                     <input
                       type="text"
-                      className="name-input w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="starter-name-input"
                       placeholder={monster.name || `New Monster ${index + 1}`}
                       value={starterNames[index]}
                       onChange={(e) => handleNameChange(index, e.target.value)}
@@ -173,6 +171,14 @@ const AdminStarterRoller = () => {
                       </button>
                     )}
                   </div>
+                  <button
+                    className="starter-return-button"
+                    onClick={() => setCurrentStep(index)}
+                    type="button"
+                  >
+                    <i className="fas fa-arrow-left"></i>
+                    Return to roll
+                  </button>
                 </div>
               </div>
             ))}
@@ -189,7 +195,7 @@ const AdminStarterRoller = () => {
 
   // Navigation buttons component
   const NavigationButtons = () => (
-    <div className="flex justify-between my-4">
+    <div className="starter-nav-buttons">
       <button
         className="nav-button nav-button-secondary btn"
         onClick={() => setCurrentStep(prev => Math.max(0, prev - 1))}
@@ -211,10 +217,10 @@ const AdminStarterRoller = () => {
 
       {currentStep === 3 && (
         <button
-          className="nav-button btn px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 shadow-md"
+          className="nav-button nav-button-success btn"
           onClick={rollStarters}
         >
-          <i className="fas fa-redo mr-2"></i>
+          <i className="fas fa-redo"></i>
           Roll Again
         </button>
       )}
@@ -262,7 +268,7 @@ const AdminStarterRoller = () => {
   if (loading) {
     return (
       <div className="admin-starter-roller">
-        <h1 className="text-2xl font-bold mb-4">Admin Starter Roller</h1>
+        <h1 className="starter-loading-title">Admin Starter Roller</h1>
         <LoadingSpinner />
       </div>
     );
@@ -270,9 +276,9 @@ const AdminStarterRoller = () => {
 
   // Render roller interface
   return (
-    <div className="starter-selection-container container mx-auto p-4 max-w-6xl">
+    <div className="starter-selection-container">
       <div className="admin-starter-header-inline">
-        <h1 className="text-3xl font-bold mb-2 text-center">Admin Starter Roller</h1>
+        <h1 className="starter-page-title">Admin Starter Roller</h1>
         <button
           className="reroll-header-btn"
           onClick={rollStarters}
@@ -282,21 +288,40 @@ const AdminStarterRoller = () => {
         </button>
       </div>
 
-      {/* Progress indicator */}
-      <div className="mb-6">
-        <div className="flex justify-between">
-          {['First Starter', 'Second Starter', 'Third Starter', 'Review'].map((step, index) => (
-            <div
-              key={index}
-              className={`text-center ${currentStep >= index ? 'text-blue-600 font-semibold' : 'text-gray-400'}`}
-            >
-              {step}
-            </div>
-          ))}
+      {/* Progress tabs */}
+      <div className="starter-progress">
+        <div className="starter-progress-tabs">
+          {[
+            { label: 'First Starter', short: '1st' },
+            { label: 'Second Starter', short: '2nd' },
+            { label: 'Third Starter', short: '3rd' },
+            { label: 'Review', short: 'Review' }
+          ].map((step, index) => {
+            const isReviewTab = index === 3;
+            const allSelected = selectedStarters.length === 3 && selectedStarters.every(s => s);
+            const isDisabled = isReviewTab && !allSelected;
+            const hasSelection = index < 3 && selectedStarters[index];
+            const isCompleted = index < currentStep && hasSelection;
+
+            return (
+              <button
+                key={index}
+                className={`starter-progress-tab ${currentStep === index ? 'active' : ''} ${isCompleted ? 'completed' : ''}`}
+                onClick={() => setCurrentStep(index)}
+                disabled={isDisabled}
+              >
+                {isCompleted && (
+                  <i className="fas fa-check tab-icon"></i>
+                )}
+                <span className="tab-label">{step.label}</span>
+                <span className="tab-label-short">{step.short}</span>
+              </button>
+            );
+          })}
         </div>
-        <div className="w-full bg-gray-200 h-2 mt-2 rounded-full">
+        <div className="starter-progress-track">
           <div
-            className="progress-bar bg-blue-600 h-2 rounded-full"
+            className="progress-bar"
             style={{ width: `${(currentStep / 3) * 100}%` }}
           ></div>
         </div>
@@ -306,7 +331,7 @@ const AdminStarterRoller = () => {
       <NavigationButtons />
 
       {/* Card container */}
-      <div className="card-container bg-white rounded-lg shadow-lg p-6 mb-6">
+      <div className="card-container">
         {renderCurrentStep()}
       </div>
 

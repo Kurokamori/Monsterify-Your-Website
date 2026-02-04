@@ -4,6 +4,7 @@ import submissionService from '../../services/submissionService';
 import trainerService from '../../services/trainerService';
 import LoadingSpinner from '../common/LoadingSpinner';
 import ErrorMessage from '../common/ErrorMessage';
+import TrainerAutocomplete from '../common/TrainerAutocomplete';
 import GiftRewards from './GiftRewards';
 
 
@@ -276,20 +277,15 @@ const TrainerReferenceSubmissionForm = ({ onSubmissionComplete }) => {
               </div>
 
               <div className="form-group">
-                <label htmlFor={`trainer-${index}`}>Trainer</label>
-                <select
+                <TrainerAutocomplete
                   id={`trainer-${index}`}
-                  value={reference.trainerId}
-                  onChange={(e) => handleReferenceChange(index, 'trainerId', e.target.value)}
+                  trainers={userTrainers}
+                  selectedTrainerId={reference.trainerId}
+                  onSelect={(id) => handleReferenceChange(index, 'trainerId', id)}
+                  label="Trainer"
+                  placeholder="Type to search trainers..."
                   required
-                >
-                  <option value="">Select a trainer</option>
-                  {userTrainers.map(trainer => (
-                    <option key={trainer.id} value={trainer.id}>
-                      {trainer.name} (Lv. {trainer.level})
-                    </option>
-                  ))}
-                </select>
+                />
               </div>
 
               <div className="form-row">

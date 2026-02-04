@@ -8,7 +8,7 @@ import SuccessMessage from '../../components/common/SuccessMessage';
 import PageHeader from '../../components/layout/PageHeader';
 import MonsterCard from '../../components/monsters/MonsterCard';
 import MonsterRewardCard from '../../components/town/activities/MonsterRewardCard';
-import TrainerSelector from '../../components/common/TrainerSelector';
+import TrainerAutocomplete from '../../components/common/TrainerAutocomplete';
 import submissionService from '../../services/submissionService';
 import trainerService from '../../services/trainerService';
 
@@ -440,10 +440,12 @@ const PromptSubmissionPage = () => {
                                   </div>
 
                                   <div className="monster-trainer-select">
-                                    <TrainerSelector
+                                    <TrainerAutocomplete
                                       trainers={userTrainers}
                                       selectedTrainerId={selectedTrainers[index]}
-                                      onChange={(trainerId) => handleTrainerSelect(index, trainerId)}
+                                      onSelect={(trainerId) => handleTrainerSelect(index, trainerId)}
+                                      label="Trainer"
+                                      placeholder="Type to search trainers..."
                                     />
                                   </div>
 

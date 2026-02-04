@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import TrainerAutocomplete from '../common/TrainerAutocomplete';
+import MonsterAutocomplete from '../common/MonsterAutocomplete';
 
 
 /**
@@ -279,28 +281,16 @@ const WritingSubmissionCalculator = ({
         {showAddTrainer && (
           <div className="add-entity-form">
             <div className="form-row">
-              <select
-                value={selectedTrainerId}
-                onChange={(e) => setSelectedTrainerId(e.target.value)}
+              <TrainerAutocomplete
+                trainers={trainers}
+                selectedTrainerId={selectedTrainerId}
+                onSelect={(id) => setSelectedTrainerId(id)}
+                label="Select Trainer"
+                placeholder="Type to search trainers..."
+                showOwnership={true}
                 className="entity-select"
                 required
-              >
-                <option value="">Select Trainer</option>
-                <optgroup label="Your Trainers">
-                  {trainers.filter(trainer => trainer.is_owned).map((trainer) => (
-                    <option key={trainer.id} value={trainer.id}>
-                      {trainer.name} (Your Trainer)
-                    </option>
-                  ))}
-                </optgroup>
-                <optgroup label="All Trainers">
-                  {trainers.filter(trainer => !trainer.is_owned).map((trainer) => (
-                    <option key={trainer.id} value={trainer.id}>
-                      {trainer.name}
-                    </option>
-                  ))}
-                </optgroup>
-              </select>
+              />
             </div>
 
 
@@ -355,45 +345,29 @@ const WritingSubmissionCalculator = ({
         {showAddMonster && (
           <div className="add-entity-form">
             <div className="form-row">
-              <select
-                value={monsterTrainerId || ''}
-                onChange={(e) => handleTrainerSelection(e.target.value)}
+              <TrainerAutocomplete
+                trainers={trainers}
+                selectedTrainerId={monsterTrainerId}
+                onSelect={(id) => handleTrainerSelection(id)}
+                label="Select Trainer First"
+                placeholder="Type to search trainers..."
+                showOwnership={true}
                 className="entity-select"
                 required
-              >
-                <option value="">Select Trainer First</option>
-                <optgroup label="Your Trainers">
-                  {trainers.filter(trainer => trainer.is_owned).map((trainer) => (
-                    <option key={trainer.id} value={trainer.id}>
-                      {trainer.name} (Your Trainer)
-                    </option>
-                  ))}
-                </optgroup>
-                <optgroup label="All Trainers">
-                  {trainers.filter(trainer => !trainer.is_owned).map((trainer) => (
-                    <option key={trainer.id} value={trainer.id}>
-                      {trainer.name}
-                    </option>
-                  ))}
-                </optgroup>
-              </select>
+              />
             </div>
 
             {monsterTrainerId && (
               <div className="form-row">
-                <select
-                  value={selectedMonsterId || ''}
-                  onChange={(e) => setSelectedMonsterId(e.target.value)}
+                <MonsterAutocomplete
+                  monsters={availableMonsters}
+                  selectedMonsterId={selectedMonsterId}
+                  onSelect={(id) => setSelectedMonsterId(id)}
+                  label="Select Monster"
+                  placeholder="Type to search monsters..."
                   className="entity-select"
                   required
-                >
-                  <option value="">Select Monster</option>
-                  {availableMonsters.map((monster) => (
-                    <option key={monster.id} value={monster.id}>
-                      {monster.name} (Level {monster.level})
-                    </option>
-                  ))}
-                </select>
+                />
               </div>
             )}
 

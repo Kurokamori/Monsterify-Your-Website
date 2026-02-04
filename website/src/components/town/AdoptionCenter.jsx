@@ -12,7 +12,7 @@ import Modal from '../common/Modal';
 import Pagination from '../common/Pagination';
 import TypeBadge from '../monsters/TypeBadge';
 import AttributeBadge from '../monsters/AttributeBadge';
-import TrainerSelector from '../common/TrainerSelector';
+import TrainerAutocomplete from '../common/TrainerAutocomplete';
 import AdoptionItemModal from './AdoptionItemModal';
 
 
@@ -784,7 +784,9 @@ const AdoptionCenter = () => {
                   {selectedAdopt.attribute && (
                     <div className="adopt-attribute-details">
                       <p><strong>Attribute:</strong></p>
-                      <AttributeBadge attribute={selectedAdopt.attribute} />
+                      <div className="adopt-attribute-badge-container">
+                        <AttributeBadge attribute={selectedAdopt.attribute} />
+                      </div>
                     </div>
                   )}
                 </div>
@@ -802,16 +804,18 @@ const AdoptionCenter = () => {
                   </div>
 
                   <div className="form-group">
-                    <TrainerSelector
-                      selectedTrainerId={selectedTrainer}
-                      onChange={setSelectedTrainer}
+                    <TrainerAutocomplete
                       trainers={userTrainers.map(trainer => ({
                         ...trainer,
-                        disabled: !trainerDaypasses[trainer.id]?.hasDaypass,
-                        name: `${trainer.name} (${trainerDaypasses[trainer.id]?.hasDaypass
+                        level: undefined,
+                        displaySuffix: trainerDaypasses[trainer.id]?.hasDaypass
                           ? `${trainerDaypasses[trainer.id]?.daypassCount} Daypass(es)`
-                          : 'No Daypasses'})`
+                          : 'No Daypasses'
                       }))}
+                      selectedTrainerId={selectedTrainer}
+                      onSelect={(id) => setSelectedTrainer(id ? id.toString() : '')}
+                      label="Trainer"
+                      placeholder="Type to search trainers..."
                     />
                   </div>
 

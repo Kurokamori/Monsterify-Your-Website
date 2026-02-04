@@ -324,14 +324,6 @@
   box-shadow: 0 0 0 2px rgba(214, 163, 57, 0.25);
 }
 
-.form-actions {
-  display: flex;
-  gap: 12px;
-  justify-content: flex-end;
-  padding-top: 16px;
-  border-top: 1px solid var(--border-color);
-}
-
 .add-button,
 .update-button,
 .cancel-edit-button {

@@ -5,6 +5,8 @@ import ErrorMessage from '../../../components/common/ErrorMessage';
 import Modal from '../../../components/common/Modal';
 import api from '../../../services/api';
 import tradeService from '../../../services/tradeService';
+import TrainerAutocomplete from '../../../components/common/TrainerAutocomplete';
+import MonsterAutocomplete from '../../../components/common/MonsterAutocomplete';
 
 const TradeCenter = () => {
   const { currentUser } = useAuth();
@@ -436,37 +438,27 @@ const TradeCenter = () => {
             </div>
 
             <div className="form-group">
-              <label htmlFor="trade-monster">Monster to Trade:</label>
-              <select
+              <MonsterAutocomplete
                 id="trade-monster"
-                value={selectedMonsterToTrade || ''}
-                onChange={(e) => setSelectedMonsterToTrade(e.target.value)}
+                monsters={displayMonsters}
+                selectedMonsterId={selectedMonsterToTrade || ''}
+                onSelect={(id) => setSelectedMonsterToTrade(id)}
+                label="Monster to Trade"
+                placeholder="Type to search monsters..."
                 className="form-select"
-              >
-                <option value="">Select a monster</option>
-                {displayMonsters.map((monster) => (
-                  <option key={monster.id} value={monster.id}>
-                    {monster.name} (Lv. {monster.level}, {monster.types.join('/')})
-                  </option>
-                ))}
-              </select>
+              />
             </div>
 
             <div className="form-group">
-              <label htmlFor="trade-trainer">Trainer:</label>
-              <select
+              <TrainerAutocomplete
                 id="trade-trainer"
-                value={selectedTrainer}
-                onChange={(e) => setSelectedTrainer(e.target.value)}
+                trainers={displayTrainers}
+                selectedTrainerId={selectedTrainer}
+                onSelect={(id) => setSelectedTrainer(id)}
+                label="Trainer"
+                placeholder="Type to search trainers..."
                 className="form-select"
-              >
-                <option value="">Select a trainer</option>
-                {displayTrainers.map((trainer) => (
-                  <option key={trainer.id} value={trainer.id}>
-                    {trainer.name}
-                  </option>
-                ))}
-              </select>
+              />
             </div>
 
             <div className="form-group">
@@ -568,37 +560,27 @@ const TradeCenter = () => {
                 </div>
 
                 <div className="form-group">
-                  <label htmlFor="offer-monster">Monster to Offer:</label>
-                  <select
+                  <MonsterAutocomplete
                     id="offer-monster"
-                    value={selectedMonsterToOffer || ''}
-                    onChange={(e) => setSelectedMonsterToOffer(e.target.value)}
+                    monsters={displayMonsters}
+                    selectedMonsterId={selectedMonsterToOffer || ''}
+                    onSelect={(id) => setSelectedMonsterToOffer(id)}
+                    label="Monster to Offer"
+                    placeholder="Type to search monsters..."
                     className="form-select"
-                  >
-                    <option value="">Select a monster</option>
-                    {displayMonsters.map((monster) => (
-                      <option key={monster.id} value={monster.id}>
-                        {monster.name} (Lv. {monster.level}, {monster.types.join('/')})
-                      </option>
-                    ))}
-                  </select>
+                  />
                 </div>
 
                 <div className="form-group">
-                  <label htmlFor="offer-trainer">Trainer:</label>
-                  <select
+                  <TrainerAutocomplete
                     id="offer-trainer"
-                    value={selectedTrainer}
-                    onChange={(e) => setSelectedTrainer(e.target.value)}
+                    trainers={displayTrainers}
+                    selectedTrainerId={selectedTrainer}
+                    onSelect={(id) => setSelectedTrainer(id)}
+                    label="Trainer"
+                    placeholder="Type to search trainers..."
                     className="form-select"
-                  >
-                    <option value="">Select a trainer</option>
-                    {displayTrainers.map((trainer) => (
-                      <option key={trainer.id} value={trainer.id}>
-                        {trainer.name}
-                      </option>
-                    ))}
-                  </select>
+                  />
                 </div>
 
                 {tradeError && (

@@ -11,9 +11,11 @@
   --divider-color: #3d4b5d;
   --border-color: #3d4b5d;
   --card-background: #1e2532;
+  --card-background-secondary: #1b1f24;
   --input-background: #2b3645;
   --error-color: #ef4444;
   --success-color: #10b981;
+  --success-dark: #094d3a;
 
   /* Font sizes */
   --font-size-xs: 0.875rem;

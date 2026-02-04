@@ -132,12 +132,26 @@ const StarterMonsterCard = ({ monster }) => {
   const hasImage = imageUrl && imageUrl !== 'null' && imageUrl !== '';
 
   return (
-    <div className="monster-card">
-      <div className="monster-card-header">
-        <h3 className="monster-name">{monster.name || 'Unnamed Monster'}</h3>
+    <div className="monster-card starter-monster-card">
+      <div className="starter-monster-card-header">
+        <h3 className="monster-name">        {monster.species1 && (
+            <span className="monster-name">{monster.species1}</span>
+          )}
+          {monster.species2 && (
+            <>
+              <span className="species-separator"> / </span>
+              <span className="monster-name">{monster.species2}</span>
+            </>
+          )}
+          {monster.species3 && (
+            <>
+              <span className="species-separator"> / </span>
+              <span className="monster-name">{monster.species3}</span>
+            </>
+          )}</h3>
       </div>
 
-      <div className="monster-card-image">
+      <div className="starter-monster-card-image">
         <img
           src={imageUrl || '/images/default_mon.png'}
           alt={monster.name}
@@ -149,25 +163,6 @@ const StarterMonsterCard = ({ monster }) => {
       </div>
 
       <div className="monster-card-info">
-        {/* Display species if available */}
-        <div className="monster-species">
-          {monster.species1 && (
-            <span className="species-name">{monster.species1}</span>
-          )}
-          {monster.species2 && (
-            <>
-              <span className="species-separator"> / </span>
-              <span className="species-name">{monster.species2}</span>
-            </>
-          )}
-          {monster.species3 && (
-            <>
-              <span className="species-separator"> / </span>
-              <span className="species-name">{monster.species3}</span>
-            </>
-          )}
-        </div>
-
         <div className="monster-types">
           {renderTypes()}
         </div>

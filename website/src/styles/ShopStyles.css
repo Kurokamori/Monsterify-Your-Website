@@ -905,33 +905,6 @@
   border-top: 1px solid var(--shop-border);
 }
 
-.cancel-button,
-.save-button,
-.confirm-button{
-  padding:10px 20px; border-radius:var(--radius-sm); font-weight:700; border:none; cursor:pointer; transition:background-color var(--ease);
-}
-.cancel-button {
-  background: var(--danger-color);
-  border: 1px solid var(--border-color);
-  color: var(--text-color);
-  padding: 0.5rem 1rem;
-  background-color: rgba(255,255,255,.1);
-  border-radius: 0.25rem;
-  font-size: var(--font-size-base);
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.cancel-button:hover:not(:disabled){ background:rgba(140,140,140,.1); }
-.confirm-button {
-  background: var(--shop-gold);
-  color: var(--shop-bg);
-}
-
-.confirm-button:hover:not(:disabled){ background:#e6b349; }
-.cancel-button:disabled,
-.confirm-button:disabled,
-.save-button:disabled{ opacity:.5; cursor:not-allowed; }
 
 @media (max-width:480px){
   .item-preview{ flex-direction:column; align-items:center; text-align:center; }

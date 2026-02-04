@@ -1326,34 +1326,6 @@
   opacity: 0.8;
 }
 
-
-/* Form Actions */
-.form-actions {
-  display: flex;
-  justify-content: flex-end;
-  margin-top: 20px;
-  gap: 0.5rem;
-  padding: 1.5rem 2rem;
-  background: var(--card-background);
-  border-top: 1px solid var(--border-color);
-  border-radius: 0 0 16px 16px;
-  margin-left: -2rem;
-  margin-right: -2rem;
-  text-align: center;
-}
-
-
-
-
-.submit-button:hover {
-  background-color: var(--accent-hover);
-}
-
-.submit-button:disabled {
-  background-color: var(--disabled-color);
-  cursor: not-allowed;
-}
-
 /* Adventure Type Selection */
 .adventure-type-selection {
   display: grid;
@@ -4309,15 +4281,6 @@
     
   .tips-list {
     grid-template-columns: 1fr;
-  }
-  
-  .form-actions {
-    justify-content: center;
-  }
-
-  .submit-button {
-    width: 100%;
-    justify-content: center;
   }
 
   .adventure-type-selection {

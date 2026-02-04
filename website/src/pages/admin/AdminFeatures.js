@@ -136,6 +136,15 @@ const AdminFeatures = () => {
       path: '/admin/world-map',
       implemented: true
     },
+    {
+      id: 'seasonal-adopts',
+      name: 'Seasonal Adopts',
+      description: 'Manage seasonal adopt monsters for antique auctions',
+      icon: 'fa-gift',
+      category: 'management',
+      path: '/admin/seasonal-adopts',
+      implemented: true
+    },
 
     // === DATABASES ===
     {

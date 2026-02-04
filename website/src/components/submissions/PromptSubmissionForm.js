@@ -4,6 +4,7 @@ import submissionService from '../../services/submissionService';
 import trainerService from '../../services/trainerService';
 import LoadingSpinner from '../common/LoadingSpinner';
 import ErrorMessage from '../common/ErrorMessage';
+import TrainerAutocomplete from '../common/TrainerAutocomplete';
 
 
 const PromptSubmissionForm = ({ onSubmissionComplete, category = 'general' }) => {
@@ -179,20 +180,15 @@ const PromptSubmissionForm = ({ onSubmissionComplete, category = 'general' }) =>
           <h3>Basic Information</h3>
 
           <div className="form-group">
-            <label htmlFor="prompt-trainer">Trainer</label>
-            <select
+            <TrainerAutocomplete
               id="prompt-trainer"
-              value={trainerId}
-              onChange={(e) => setTrainerId(e.target.value)}
+              trainers={userTrainers}
+              selectedTrainerId={trainerId}
+              onSelect={(id) => setTrainerId(id)}
+              label="Trainer"
+              placeholder="Type to search trainers..."
               required
-            >
-              <option value="">Select a trainer</option>
-              {userTrainers.map(trainer => (
-                <option key={trainer.id} value={trainer.id}>
-                  {trainer.name} (Lv. {trainer.level})
-                </option>
-              ))}
-            </select>
+            />
           </div>
         </div>
 

@@ -18,6 +18,7 @@ import './AutocompleteInput.css';
  * @param {string} props.className - Additional class names
  * @param {boolean} props.showDescriptionBelow - For abilities: show description below the selected value
  * @param {Function} props.onDescriptionFound - Callback when description is found for current value
+ * @param {Function} props.onSelect - Callback when a valid option is selected (receives the full option object with name, description, value)
  */
 const AutocompleteInput = ({
   id,
@@ -32,7 +33,8 @@ const AutocompleteInput = ({
   disabled = false,
   className = '',
   showDescriptionBelow = false,
-  onDescriptionFound
+  onDescriptionFound,
+  onSelect
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [filteredOptions, setFilteredOptions] = useState([]);
@@ -41,25 +43,37 @@ const AutocompleteInput = ({
   const [currentDescription, setCurrentDescription] = useState('');
   const inputRef = useRef(null);
   const dropdownRef = useRef(null);
+  const justSelectedRef = useRef(false);
 
-  // Normalize options to always have { name, description } format
+  // Normalize options to always have { name, description, value } format
   // Memoize to prevent infinite re-render loops
   const normalizedOptions = useMemo(() =>
     options.map(opt =>
-      typeof opt === 'string' ? { name: opt, description: '' } : opt
+      typeof opt === 'string'
+        ? { name: opt, description: '', value: undefined, matchNames: [] }
+        : { description: '', value: undefined, matchNames: [], ...opt }
     ), [options]);
 
   // Check if current value matches any option (case-insensitive)
+  // Also checks matchNames (aliases) so base names validate without decorators
   const checkValidity = useCallback((val) => {
     if (!val || val.trim() === '') {
       setIsValid(true);
       setCurrentDescription('');
-      return;
+      return null;
     }
 
-    const match = normalizedOptions.find(
+    // First try exact match on display name
+    let match = normalizedOptions.find(
       opt => opt.name.toLowerCase() === val.toLowerCase()
     );
+
+    // If no exact match, try matchNames (aliases like base trainer/monster name)
+    if (!match) {
+      match = normalizedOptions.find(
+        opt => opt.matchNames?.some(alias => alias.toLowerCase() === val.toLowerCase())
+      );
+    }
 
     setIsValid(!!match);
 
@@ -74,17 +88,21 @@ const AutocompleteInput = ({
         onDescriptionFound('');
       }
     }
+
+    return match || null;
   }, [normalizedOptions, onDescriptionFound]);
 
-  // Filter options based on input value
+  // Filter options based on input value (searches display name and matchNames)
   useEffect(() => {
     if (!value || value.trim() === '') {
-      setFilteredOptions(normalizedOptions.slice(0, 10)); // Show first 10 when empty
+      setFilteredOptions(normalizedOptions.slice(0, 20)); // Show first 20 when empty
     } else {
+      const lowerVal = value.toLowerCase();
       const filtered = normalizedOptions.filter(opt =>
-        opt.name.toLowerCase().includes(value.toLowerCase())
+        opt.name.toLowerCase().includes(lowerVal) ||
+        opt.matchNames?.some(alias => alias.toLowerCase().includes(lowerVal))
       );
-      setFilteredOptions(filtered.slice(0, 10)); // Limit to 10 suggestions
+      setFilteredOptions(filtered.slice(0, 20)); // Limit to 20 suggestions
     }
     checkValidity(value);
   }, [value, normalizedOptions, checkValidity]);
@@ -108,6 +126,7 @@ const AutocompleteInput = ({
 
   const handleInputChange = (e) => {
     const newValue = e.target.value;
+    justSelectedRef.current = false;
     onChange({ target: { name, value: newValue } });
     setIsOpen(true);
     setHighlightedIndex(-1);
@@ -121,15 +140,32 @@ const AutocompleteInput = ({
     // Delay closing to allow click on dropdown item
     setTimeout(() => {
       setIsOpen(false);
-      checkValidity(value);
+      // Skip if an option was just selected via click/keyboard
+      if (justSelectedRef.current) {
+        justSelectedRef.current = false;
+        return;
+      }
+      const match = checkValidity(value);
+      // If matched via alias (matchNames), auto-fill with full display name
+      if (match && match.name.toLowerCase() !== value.toLowerCase()) {
+        onChange({ target: { name, value: match.name } });
+      }
+      // If value matches an option on blur, fire onSelect
+      if (onSelect && match) {
+        onSelect(match);
+      }
     }, 200);
   };
 
   const handleOptionClick = (option) => {
+    justSelectedRef.current = true;
     onChange({ target: { name, value: option.name } });
     setIsOpen(false);
     setHighlightedIndex(-1);
     checkValidity(option.name);
+    if (onSelect) {
+      onSelect(option);
+    }
   };
 
   const handleKeyDown = (e) => {

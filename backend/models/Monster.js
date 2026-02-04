@@ -84,10 +84,7 @@ class Monster {
         FROM monsters m
         JOIN trainers t ON m.trainer_id = t.id
         WHERE m.trainer_id = $1
-        ORDER BY
-          COALESCE(m.box_number, 0) ASC,
-          COALESCE(m.trainer_index, 999999) ASC,
-          m.id ASC
+        ORDER BY m.name ASC
       `;
 
       const monsters = await db.asyncAll(query, [trainerId]);

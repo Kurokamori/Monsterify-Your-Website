@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import LoadingSpinner from '../common/LoadingSpinner';
+import TrainerAutocomplete from '../common/TrainerAutocomplete';
+import MonsterAutocomplete from '../common/MonsterAutocomplete';
 import api from '../../services/api';
 
 
@@ -298,20 +300,25 @@ const GiftRewards = ({
                   </select>
                 </div>
                 <div className="form-row">
-                  <select
-                    value={selectedEntityId}
-                    onChange={(e) => setSelectedEntityId(e.target.value)}
-                    className="entity-select"
-                  >
-                    <option value="">
-                      Select {selectedEntityType === 'trainer' ? 'Trainer' : 'Monster'}
-                    </option>
-                    {(selectedEntityType === 'trainer' ? userTrainers : userMonsters).map((entity) => (
-                      <option key={entity.id} value={entity.id}>
-                        {entity.name}
-                      </option>
-                    ))}
-                  </select>
+                  {selectedEntityType === 'trainer' ? (
+                    <TrainerAutocomplete
+                      trainers={userTrainers}
+                      selectedTrainerId={selectedEntityId}
+                      onSelect={(id) => setSelectedEntityId(id)}
+                      label="Select Trainer"
+                      placeholder="Type to search trainers..."
+                      className="entity-select"
+                    />
+                  ) : (
+                    <MonsterAutocomplete
+                      monsters={userMonsters}
+                      selectedMonsterId={selectedEntityId}
+                      onSelect={(id) => setSelectedEntityId(id)}
+                      label="Select Monster"
+                      placeholder="Type to search monsters..."
+                      className="entity-select"
+                    />
+                  )}
                 </div>
                 <div className="form-row">
                   <input
@@ -378,18 +385,14 @@ const GiftRewards = ({
                     </td>
                     <td className="item-category">{item.category}</td>
                     <td>
-                      <select
-                        value={itemAssignments[index] || ''}
-                        onChange={(e) => handleItemAssignment(index, e.target.value)}
+                      <TrainerAutocomplete
+                        trainers={userTrainers}
+                        selectedTrainerId={itemAssignments[index] || ''}
+                        onSelect={(id) => handleItemAssignment(index, id)}
+                        label=""
+                        placeholder="Select Trainer..."
                         className="trainer-select"
-                      >
-                        <option value="">Select Trainer</option>
-                        {userTrainers.map((trainer) => (
-                          <option key={trainer.id} value={trainer.id}>
-                            {trainer.name}
-                          </option>
-                        ))}
-                      </select>
+                      />
                     </td>
                   </tr>
                 ))}
@@ -447,19 +450,14 @@ const GiftRewards = ({
                   </div>
 
                   <div className="form-group">
-                    <label>Assign to Trainer:</label>
-                    <select
-                      value={monsterAssignments[index] || ''}
-                      onChange={(e) => handleMonsterAssignment(index, e.target.value)}
+                    <TrainerAutocomplete
+                      trainers={userTrainers}
+                      selectedTrainerId={monsterAssignments[index] || ''}
+                      onSelect={(id) => handleMonsterAssignment(index, id)}
+                      label="Assign to Trainer"
+                      placeholder="Select Trainer..."
                       className="trainer-select"
-                    >
-                      <option value="">Select Trainer</option>
-                      {userTrainers.map((trainer) => (
-                        <option key={trainer.id} value={trainer.id}>
-                          {trainer.name}
-                        </option>
-                      ))}
-                    </select>
+                    />
                   </div>
                 </div>
               </div>

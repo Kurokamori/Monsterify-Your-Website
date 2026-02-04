@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import TrainerAutocomplete from '../common/TrainerAutocomplete';
+import MonsterAutocomplete from '../common/MonsterAutocomplete';
 
 
 /**
@@ -634,20 +636,21 @@ const ArtSubmissionCalculator = ({
                   {/* Show gift recipient dropdown if this is a gift */}
                   {trainer.isGift && (
                     <div className="gift-recipient">
-                      <select
-                        value={giftParticipants.find(p => p.participantId === trainer.trainerId)?.recipientId || ''}
-                        onChange={(e) => {
+                      <TrainerAutocomplete
+                        trainers={trainers.filter(t => t.is_owned && t.id !== trainer.trainerId)}
+                        selectedTrainerId={giftParticipants.find(p => p.participantId === trainer.trainerId)?.recipientId || ''}
+                        onSelect={(recipientId) => {
                           // Remove old gift participant
                           const filteredParticipants = giftParticipants.filter(p => p.participantId !== trainer.trainerId);
 
                           // Add new gift participant with updated recipient
-                          if (e.target.value) {
-                            const recipient = trainers.find(t => t.id === parseInt(e.target.value));
+                          if (recipientId) {
+                            const recipient = trainers.find(t => t.id === parseInt(recipientId));
                             if (recipient) {
                               filteredParticipants.push({
                                 participantId: trainer.trainerId,
                                 participantName: trainer.name,
-                                recipientId: parseInt(e.target.value),
+                                recipientId: parseInt(recipientId),
                                 recipientName: recipient.name
                               });
                             }
@@ -655,13 +658,10 @@ const ArtSubmissionCalculator = ({
 
                           setGiftParticipants(filteredParticipants);
                         }}
+                        label=""
+                        placeholder="Select Gift Recipient..."
                         className="gift-recipient-select"
-                      >
-                        <option value="">Select Gift Recipient</option>
-                        {trainers.filter(t => t.is_owned && t.id !== trainer.trainerId).map(t => (
-                          <option key={t.id} value={t.id}>{t.name}</option>
-                        ))}
-                      </select>
+                      />
                     </div>
                   )}
                 </div>
@@ -672,27 +672,15 @@ const ArtSubmissionCalculator = ({
         {showAddTrainer ? (
           <div className="add-entity-form">
             <div className="form-row">
-              <select
-                value={selectedTrainerId}
-                onChange={(e) => setSelectedTrainerId(e.target.value)}
+              <TrainerAutocomplete
+                trainers={trainers}
+                selectedTrainerId={selectedTrainerId}
+                onSelect={(id) => setSelectedTrainerId(id)}
+                label="Select Trainer"
+                placeholder="Type to search trainers..."
+                showOwnership={true}
                 className="entity-select"
-              >
-                <option value="">Select Trainer</option>
-                <optgroup label="Your Trainers">
-                  {trainers.filter(trainer => trainer.is_owned).map((trainer) => (
-                    <option key={trainer.id} value={trainer.id}>
-                      {trainer.name} (Your Trainer)
-                    </option>
-                  ))}
-                </optgroup>
-                <optgroup label="All Trainers">
-                  {trainers.filter(trainer => !trainer.is_owned).map((trainer) => (
-                    <option key={trainer.id} value={trainer.id}>
-                      {trainer.name}
-                    </option>
-                  ))}
-                </optgroup>
-              </select>
+              />
             </div>
             <div className="form-row">
               <select
@@ -728,16 +716,14 @@ const ArtSubmissionCalculator = ({
                 </label>
 
                 {isTrainerGift && (
-                  <select
-                    value={giftRecipientId}
-                    onChange={(e) => setGiftRecipientId(e.target.value)}
+                  <TrainerAutocomplete
+                    trainers={trainers.filter(t => t.is_owned && t.id !== parseInt(selectedTrainerId))}
+                    selectedTrainerId={giftRecipientId}
+                    onSelect={(id) => setGiftRecipientId(id)}
+                    label=""
+                    placeholder="Select Gift Recipient..."
                     className="gift-recipient-select"
-                  >
-                    <option value="">Select Gift Recipient</option>
-                    {trainers.filter(t => t.is_owned && t.id !== parseInt(selectedTrainerId)).map(t => (
-                      <option key={t.id} value={t.id}>{t.name}</option>
-                    ))}
-                  </select>
+                  />
                 )}
               </div>
             )}
@@ -823,20 +809,21 @@ const ArtSubmissionCalculator = ({
                   {/* Show gift recipient dropdown if this is a gift */}
                   {monster.isGift && (
                     <div className="gift-recipient">
-                      <select
-                        value={giftParticipants.find(p => p.participantId === monster.monsterId)?.recipientId || ''}
-                        onChange={(e) => {
+                      <TrainerAutocomplete
+                        trainers={trainers.filter(t => t.is_owned && t.id !== monster.trainerId)}
+                        selectedTrainerId={giftParticipants.find(p => p.participantId === monster.monsterId)?.recipientId || ''}
+                        onSelect={(recipientId) => {
                           // Remove old gift participant
                           const filteredParticipants = giftParticipants.filter(p => p.participantId !== monster.monsterId);
 
                           // Add new gift participant with updated recipient
-                          if (e.target.value) {
-                            const recipient = trainers.find(t => t.id === parseInt(e.target.value));
+                          if (recipientId) {
+                            const recipient = trainers.find(t => t.id === parseInt(recipientId));
                             if (recipient) {
                               filteredParticipants.push({
                                 participantId: monster.monsterId,
                                 participantName: `${monster.name} (${monster.trainerName}'s monster)`,
-                                recipientId: parseInt(e.target.value),
+                                recipientId: parseInt(recipientId),
                                 recipientName: recipient.name,
                                 isMonster: true
                               });
@@ -845,13 +832,10 @@ const ArtSubmissionCalculator = ({
 
                           setGiftParticipants(filteredParticipants);
                         }}
+                        label=""
+                        placeholder="Select Gift Recipient..."
                         className="gift-recipient-select"
-                      >
-                        <option value="">Select Gift Recipient</option>
-                        {trainers.filter(t => t.is_owned && t.id !== monster.trainerId).map(t => (
-                          <option key={t.id} value={t.id}>{t.name}</option>
-                        ))}
-                      </select>
+                      />
                     </div>
                   )}
                 </div>
@@ -862,45 +846,29 @@ const ArtSubmissionCalculator = ({
         {showAddMonster ? (
           <div className="add-entity-form">
             <div className="form-row">
-              <select
-                value={monsterTrainerId || ''}
-                onChange={(e) => handleMonsterTrainerSelection(e.target.value)}
+              <TrainerAutocomplete
+                trainers={trainers}
+                selectedTrainerId={monsterTrainerId}
+                onSelect={(id) => handleMonsterTrainerSelection(id)}
+                label="Select Trainer First"
+                placeholder="Type to search trainers..."
+                showOwnership={true}
                 className="entity-select"
                 required
-              >
-                <option value="">Select Trainer First</option>
-                <optgroup label="Your Trainers">
-                  {trainers.filter(trainer => trainer.is_owned).map((trainer) => (
-                    <option key={trainer.id} value={trainer.id}>
-                      {trainer.name} (Your Trainer)
-                    </option>
-                  ))}
-                </optgroup>
-                <optgroup label="All Trainers">
-                  {trainers.filter(trainer => !trainer.is_owned).map((trainer) => (
-                    <option key={trainer.id} value={trainer.id}>
-                      {trainer.name}
-                    </option>
-                  ))}
-                </optgroup>
-              </select>
+              />
             </div>
 
             {monsterTrainerId && (
               <div className="form-row">
-                <select
-                  value={selectedMonsterId || ''}
-                  onChange={(e) => setSelectedMonsterId(e.target.value)}
+                <MonsterAutocomplete
+                  monsters={availableMonsters}
+                  selectedMonsterId={selectedMonsterId}
+                  onSelect={(id) => setSelectedMonsterId(id)}
+                  label="Select Monster"
+                  placeholder="Type to search monsters..."
                   className="entity-select"
                   required
-                >
-                  <option value="">Select Monster</option>
-                  {availableMonsters.map((monster) => (
-                    <option key={monster.id} value={monster.id}>
-                      {monster.name} (Level {monster.level})
-                    </option>
-                  ))}
-                </select>
+                />
               </div>
             )}
             <div className="form-row">

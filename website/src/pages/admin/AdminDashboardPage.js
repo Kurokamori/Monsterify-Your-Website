@@ -47,6 +47,8 @@ import WorldMapAdmin from './WorldMapAdmin';
 import BossAdmin from './BossAdmin';
 import PromptManagement from '../../components/admin/PromptManagement';
 import BulkMonsterAddPage from './BulkMonsterAddPage';
+import AntiqueAuctionListPage from './AntiqueAuctionListPage';
+import AntiqueAuctionFormPage from './AntiqueAuctionFormPage';
 
 const AdminDashboardPage = () => {
   return (
@@ -146,6 +148,11 @@ const AdminDashboardPage = () => {
         <Route path="reroller" element={<RerollerPage />} />
         <Route path="reroller/sessions" element={<RerollerSessionsPage />} />
         <Route path="reroller/sessions/:id" element={<RerollerPage />} />
+
+        {/* Seasonal Adopts (Antique Auctions) Routes */}
+        <Route path="seasonal-adopts" element={<AntiqueAuctionListPage />} />
+        <Route path="seasonal-adopts/add" element={<AntiqueAuctionFormPage />} />
+        <Route path="seasonal-adopts/edit/:id" element={<AntiqueAuctionFormPage />} />
 
         <Route path="*" element={<Navigate to="/admin" replace />} />
       </Routes>

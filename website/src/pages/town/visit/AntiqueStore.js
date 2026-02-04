@@ -344,19 +344,6 @@ const AntiqueStore = () => {
           </div>
 
           <div className="filter-group">
-            <label>Holiday:</label>
-            <select
-              value={selectedFilters.holiday}
-              onChange={(e) => handleFilterChange('holiday', e.target.value)}
-            >
-              <option value="">All Holidays</option>
-              {catalogueFilters.holidays.map((holiday, index) => (
-                <option key={index} value={holiday}>{holiday}</option>
-              ))}
-            </select>
-          </div>
-
-          <div className="filter-group">
             <label>Species:</label>
             <input
               type="text"

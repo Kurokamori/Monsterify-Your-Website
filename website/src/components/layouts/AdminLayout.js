@@ -123,6 +123,11 @@ const AdminLayout = ({ children }) => {
 
             {/* Tools */}
             <li className="nav-section-title">Tools</li>
+            <li className={isActive('/admin/seasonal-adopts') ? 'active' : ''}>
+              <Link to="/admin/seasonal-adopts">
+                <i className="fas fa-snowflake"></i> Seasonal Adopts
+              </Link>
+            </li>
             <li className={isActive('/admin/items') ? 'active' : ''}>
               <Link to="/admin/items">
                 <i className="fas fa-shopping-bag"></i> Items

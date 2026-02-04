@@ -1973,7 +1973,6 @@
 
 .save-button:hover{ background-color:var(--accent-hover); transform:translateY(-2px); }
 
-.cancel-button:hover{ background-color:rgba(255,255,255,.2); transform:translateY(-2px); }
 .edit-boxes-instructions {
   background-color: rgba(var(--accent-color-rgb,214,163,57), .1);
   border-left: 3px solid var(--accent-color);

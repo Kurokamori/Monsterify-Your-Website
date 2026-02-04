@@ -3,6 +3,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import api from '../../services/api';
 import TrainerSelector from '../common/TrainerSelector';
 import AdminTrainerSelector from '../admin/AdminTrainerSelector';
+import TrainerAutocomplete from '../common/TrainerAutocomplete';
 import LoadingSpinner from '../common/LoadingSpinner';
 import ErrorMessage from '../common/ErrorMessage';
 import MonsterCard from '../monsters/MonsterCard';
@@ -19,6 +20,7 @@ const BreedMonsters = ({ onBreedingComplete, onCancel }) => {
   const [userTrainer, setUserTrainer] = useState(null);
   const [anyTrainer, setAnyTrainer] = useState(null);
   const [userTrainers, setUserTrainers] = useState([]);
+  const [allTrainers, setAllTrainers] = useState([]);
 
   // State for monster selection
   const [userTrainerMonsters, setUserTrainerMonsters] = useState([]);
@@ -70,6 +72,23 @@ const BreedMonsters = ({ onBreedingComplete, onCancel }) => {
     };
 
     fetchUserTrainers();
+  }, []);
+
+  // Fetch all trainers for the "Any Trainer" autocomplete
+  useEffect(() => {
+    const fetchAllTrainers = async () => {
+      try {
+        const response = await api.get('/trainers/all');
+        if (response.data && Array.isArray(response.data)) {
+          setAllTrainers(response.data);
+        } else if (response.data && Array.isArray(response.data.data)) {
+          setAllTrainers(response.data.data);
+        }
+      } catch (err) {
+        console.error('Error fetching all trainers:', err);
+      }
+    };
+    fetchAllTrainers();
   }, []);
 
   // Fetch user trainer monsters when user trainer changes
@@ -450,17 +469,23 @@ const BreedMonsters = ({ onBreedingComplete, onCancel }) => {
         <div className="trainer-selection">
           <div className="trainer-select-container">
             <h3>Your Trainer</h3>
-            <TrainerSelector
+            <TrainerAutocomplete
+              trainers={userTrainers}
               selectedTrainerId={userTrainer}
-              onChange={setUserTrainer}
+              onSelect={setUserTrainer}
+              label=""
+              placeholder="Type to search your trainers..."
             />
           </div>
 
           <div className="trainer-select-container">
             <h3>Any Trainer</h3>
-            <AdminTrainerSelector
+            <TrainerAutocomplete
+              trainers={allTrainers}
               selectedTrainerId={anyTrainer}
-              onChange={setAnyTrainer}
+              onSelect={setAnyTrainer}
+              label=""
+              placeholder="Type to search all trainers..."
             />
           </div>
         </div>

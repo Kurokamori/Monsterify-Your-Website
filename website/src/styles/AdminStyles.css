@@ -223,16 +223,6 @@
   background: var(--admin-secondary-button-hover);
 }
 
-/* Form Actions */
-.form-actions {
-  display: flex;
-  gap: 1rem;
-  justify-content: flex-end;
-  padding-top: 1.5rem;
-  border-top: 1px solid var(--admin-border-color);
-  margin-top: 1.5rem;
-}
-
 /* Delete Confirmation */
 .delete-confirmation {
   text-align: center;
@@ -292,10 +282,6 @@
 @media (max-width: 768px) {
   .form-grid {
     grid-template-columns: 1fr;
-  }
-  
-  .form-actions {
-    flex-direction: column;
   }
   
   .admin-actions {
@@ -1818,15 +1804,6 @@
   letter-spacing: 0.5px;
 }
 
-.form-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: var(--admin-space-md);
-  margin-top: var(--admin-space-xl);
-  padding-top: var(--admin-space-xl);
-  border-top: 1px solid var(--admin-border-color);
-}
-
 .admin-fakemon-thumbnail {
   width : 20%;
   max-height: 200px;
@@ -2141,10 +2118,6 @@
 .level-management .checkbox-group { display: flex; align-items: center; }
 .level-management .checkbox-group input[type="checkbox"] { margin-right: 10px; }
 .level-management .checkbox-group label { margin-bottom: 0; cursor: pointer; }
-
-
-.submit-button:hover { background-color: var(--admin-accent-color-hover); }
-.submit-button:disabled { background-color: var(--admin-secondary-button-bg); cursor: not-allowed; }
 
 /* =========================
    Admin: World Map (scoped)

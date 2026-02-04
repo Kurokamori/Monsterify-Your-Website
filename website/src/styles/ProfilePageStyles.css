@@ -179,6 +179,7 @@
 .add-item-btn,
 .create-first-list-btn,
 .modal-button.primary,
+.form-button.primary,
 .quick-action-btn:not(.secondary),
 .item-action-btn:not(.secondary):not(.danger),
 .task-button,
@@ -192,6 +193,7 @@
 .add-item-btn:hover,
 .create-first-list-btn:hover,
 .modal-button.primary:hover,
+.form-button.primary:hover,
 .btn-primary:hover,
 .quick-action-btn:not(.secondary):hover,
 .item-action-btn:not(.secondary):not(.danger):hover,
@@ -717,7 +719,6 @@ input:checked + .toggle-slider:before { transform: translateX(26px); background:
   .tab-header { flex-direction: column; gap: 1rem; align-items: stretch; }
   .profile-content { flex-direction: column; }
   .profile-sidebar { width: 100%; }
-  .form-actions, .modal-actions, .complete-actions { flex-direction: column; }
   .form-button, .modal-button { width: 100%; }
   .image-viewer-main { min-height: 300px; }
   

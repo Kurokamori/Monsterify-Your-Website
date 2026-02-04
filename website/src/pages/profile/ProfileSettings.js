@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
-import LoadingSpinner from '../../components/common/LoadingSpinner';
 import ErrorMessage from '../../components/common/ErrorMessage';
 
 const ProfileSettings = () => {
@@ -253,7 +252,13 @@ const ProfileSettings = () => {
             className="primary-button"
             disabled={loading}
           >
-            {loading ? <LoadingSpinner size="small" /> : 'Save Changes'}
+            {loading ? (
+              <>
+                <i className="fas fa-spinner fa-spin"></i> Saving...
+              </>
+            ) : (
+              'Save Changes'
+            )}
           </button>
         </div>
       </form>

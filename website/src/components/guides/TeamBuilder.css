@@ -316,15 +316,6 @@
   line-height: 1.2;
 }
 
-.monster-name {
-  font-size: 0.6rem;
-  font-weight: 600;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 100%;
-  white-space: nowrap;
-}
-
 .monster-types-small {
   display: flex;
   gap: 0.0625rem;
@@ -659,10 +650,7 @@
     padding: 0.25rem 0.375rem;
     font-size: 0.55rem;
   }
-  
-  .monster-name {
-    font-size: 0.5rem;
-  }
+
   
   .type-badge-mini {
     font-size: 0.4rem;

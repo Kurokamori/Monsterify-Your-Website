@@ -141,6 +141,106 @@ const antiqueService = {
       console.error('Error auctioning antique:', error);
       throw error;
     }
+  },
+
+  // ========== Admin CRUD Methods ==========
+
+  /**
+   * Get all antiques for dropdown (admin only)
+   * @returns {Promise<Object>} - Response with antiques list with holidays
+   */
+  getAllAntiquesDropdown: async () => {
+    try {
+      const response = await api.get('/antiques/all-antiques');
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching antiques dropdown:', error);
+      throw error;
+    }
+  },
+
+  /**
+   * Get antique auction by ID (admin only)
+   * @param {number} id - Auction ID
+   * @returns {Promise<Object>} - Response with auction data
+   */
+  getAntiqueAuctionById: async (id) => {
+    try {
+      const response = await api.get(`/antiques/auctions/${id}`);
+      return response.data;
+    } catch (error) {
+      console.error(`Error fetching antique auction with ID ${id}:`, error);
+      throw error;
+    }
+  },
+
+  /**
+   * Create a new antique auction (admin only)
+   * @param {Object} auctionData - Auction data
+   * @returns {Promise<Object>} - Response with created auction
+   */
+  createAntiqueAuction: async (auctionData) => {
+    try {
+      const response = await api.post('/antiques/auctions', auctionData);
+      return response.data;
+    } catch (error) {
+      console.error('Error creating antique auction:', error);
+      throw error;
+    }
+  },
+
+  /**
+   * Update an antique auction (admin only)
+   * @param {number} id - Auction ID
+   * @param {Object} auctionData - Auction data
+   * @returns {Promise<Object>} - Response with updated auction
+   */
+  updateAntiqueAuction: async (id, auctionData) => {
+    try {
+      const response = await api.put(`/antiques/auctions/${id}`, auctionData);
+      return response.data;
+    } catch (error) {
+      console.error(`Error updating antique auction with ID ${id}:`, error);
+      throw error;
+    }
+  },
+
+  /**
+   * Delete an antique auction (admin only)
+   * @param {number} id - Auction ID
+   * @returns {Promise<Object>} - Response with deletion result
+   */
+  deleteAntiqueAuction: async (id) => {
+    try {
+      const response = await api.delete(`/antiques/auctions/${id}`);
+      return response.data;
+    } catch (error) {
+      console.error(`Error deleting antique auction with ID ${id}:`, error);
+      throw error;
+    }
+  },
+
+  /**
+   * Upload an image for antique auction (admin only)
+   * @param {File} image - Image file
+   * @returns {Promise<Object>} - Response with uploaded image URL
+   */
+  uploadImage: async (image) => {
+    try {
+      const formData = new FormData();
+      formData.append('image', image);
+
+      const response = await api.post('/antiques/upload', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+
+      return response.data;
+    } catch (error) {
+      console.error('Error uploading antique image:', error);
+      throw error;
+    }
   }
 };
 

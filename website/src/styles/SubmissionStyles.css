@@ -637,11 +637,6 @@
 }
 
 
-
-.cancel-button:hover {
-  background-color: var(--nav-hover);
-}
-
 .add-button {
   padding: 0.75rem 1.5rem;
   background-color: var(--primary-color);
@@ -894,10 +889,6 @@
   .input-method-options {
     flex-direction: column;
     gap: 0.5rem;
-  }
-
-  .form-actions {
-    justify-content: center;
   }
 
   .selected-entities {
@@ -2895,16 +2886,6 @@
   }
 }
 
-@media (max-width: 480px) {
-  .form-actions {
-    flex-direction: column;
-  }
-  
-  .cancel-button, .add-button {
-    width: 100%;
-  }
-}
-
 .gift-rewards-container {
   max-width: 1200px;
   margin: 0 auto;
@@ -3194,15 +3175,6 @@
   margin-top: 2rem;
   padding-top: 2rem;
   border-top: 1px solid var(--border-color);
-}
-
-
-
-
-
-
-.cancel-button:hover:not(:disabled) {
-  background: var(--secondary-hover);
 }
 
 /* Responsive Design */
@@ -3721,25 +3693,6 @@
   border-top: 1px solid var(--border-color);
 }
 
-
-.cancel-button,
-.complete-button {
-  padding: 0.75rem 2rem;
-  border: none;
-  border-radius: 6px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s;
-  font-size: 1rem;
-}
-
-
-
-.cancel-button:hover {
-  background: var(--danger-color-dark);
-  transform: translateY(-1px);
-}
-
 .complete-button {
   background: var(--success-color);
   color: white;
@@ -3783,10 +3736,5 @@
 
   .reallocation-actions {
     flex-direction: column;
-  }
-
-  .cancel-button,
-  .complete-button {
-    width: 100%;
   }
 }

@@ -4,6 +4,8 @@ import submissionService from '../../services/submissionService';
 import trainerService from '../../services/trainerService';
 import LoadingSpinner from '../common/LoadingSpinner';
 import ErrorMessage from '../common/ErrorMessage';
+import TrainerAutocomplete from '../common/TrainerAutocomplete';
+import MonsterAutocomplete from '../common/MonsterAutocomplete';
 import GiftRewards from './GiftRewards';
 
 
@@ -465,20 +467,15 @@ const MonsterReferenceSubmissionForm = ({ onSubmissionComplete }) => {
 
               <div className="form-row">
                 <div className="form-group">
-                  <label htmlFor="bulk-trainer">Trainer (for all uploads)</label>
-                  <select
+                  <TrainerAutocomplete
                     id="bulk-trainer"
-                    value={bulkTrainerId}
-                    onChange={(e) => setBulkTrainerId(e.target.value)}
+                    trainers={userTrainers}
+                    selectedTrainerId={bulkTrainerId}
+                    onSelect={(id) => setBulkTrainerId(id)}
+                    label="Trainer (for all uploads)"
+                    placeholder="Type to search trainers..."
                     required
-                  >
-                    <option value="">Select a trainer</option>
-                    {userTrainers.map(trainer => (
-                      <option key={trainer.id} value={trainer.id}>
-                        {trainer.name} (Lv. {trainer.level})
-                      </option>
-                    ))}
-                  </select>
+                  />
                 </div>
               </div>
 
@@ -563,65 +560,29 @@ const MonsterReferenceSubmissionForm = ({ onSubmissionComplete }) => {
               {!showBulkUpload && (
                 <div className="form-row">
                   <div className="form-group">
-                    <label htmlFor={`trainer-${index}`}>Trainer</label>
-                    <select
+                    <TrainerAutocomplete
                       id={`trainer-${index}`}
-                      value={reference.trainerId}
-                      onChange={(e) => handleReferenceChange(index, 'trainerId', e.target.value)}
+                      trainers={userTrainers}
+                      selectedTrainerId={reference.trainerId}
+                      onSelect={(id) => handleReferenceChange(index, 'trainerId', id)}
+                      label="Trainer"
+                      placeholder="Type to search trainers..."
                       required
-                    >
-                      <option value="">Select a trainer</option>
-                      {userTrainers.map(trainer => (
-                        <option key={trainer.id} value={trainer.id}>
-                          {trainer.name} (Lv. {trainer.level})
-                        </option>
-                      ))}
-                    </select>
+                    />
                   </div>
 
                   <div className="form-group">
-                    <div className="monster-name-header">
-                      <label htmlFor={`monster-name-${index}`}>Monster Name</label>
-                      <button
-                        type="button"
-                        className={`toggle-button small ${reference.useDropdown ? 'active' : ''}`}
-                        onClick={() => toggleMonsterNameInput(index)}
-                        title={reference.useDropdown ? 'Switch to text input' : 'Switch to monster dropdown'}
-                      >
-                        {reference.useDropdown ? 'Text Input' : 'Dropdown'}
-                      </button>
-                    </div>
-                    
-                    {reference.useDropdown ? (
-                      <select
-                        id={`monster-name-${index}`}
-                        value={reference.monsterName}
-                        onChange={(e) => handleReferenceChange(index, 'monsterName', e.target.value)}
-                        required
-                        disabled={!reference.trainerId}
-                      >
-                        <option value="">
-                          {!reference.trainerId 
-                            ? 'Select a trainer first' 
-                            : 'Select a monster'}
-                        </option>
-                        {reference.trainerId && trainerMonsters[reference.trainerId] && 
-                          trainerMonsters[reference.trainerId].map(monster => (
-                            <option key={monster.id} value={monster.name}>
-                              {monster.name} (Lv. {monster.level})
-                            </option>
-                          ))}
-                      </select>
-                    ) : (
-                      <input
-                        id={`monster-name-${index}`}
-                        type="text"
-                        value={reference.monsterName}
-                        onChange={(e) => handleReferenceChange(index, 'monsterName', e.target.value)}
-                        placeholder="Enter monster name"
-                        required
-                      />
-                    )}
+                    <MonsterAutocomplete
+                      id={`monster-name-${index}`}
+                      monsters={reference.trainerId && trainerMonsters[reference.trainerId] ? trainerMonsters[reference.trainerId] : []}
+                      onSelect={(name) => handleReferenceChange(index, 'monsterName', name)}
+                      label="Monster Name"
+                      placeholder={!reference.trainerId ? 'Select a trainer first' : 'Type to search monsters...'}
+                      required
+                      disabled={!reference.trainerId}
+                      returnName={true}
+                      allowFreeText={true}
+                    />
                   </div>
                 </div>
               )}
@@ -630,48 +591,17 @@ const MonsterReferenceSubmissionForm = ({ onSubmissionComplete }) => {
               {showBulkUpload && (
                 <div className="form-row">
                   <div className="form-group">
-                    <div className="monster-name-header">
-                      <label htmlFor={`monster-name-${index}`}>Monster Name</label>
-                      <button
-                        type="button"
-                        className={`toggle-button small ${reference.useDropdown ? 'active' : ''}`}
-                        onClick={() => toggleMonsterNameInput(index)}
-                        title={reference.useDropdown ? 'Switch to text input' : 'Switch to monster dropdown'}
-                      >
-                        {reference.useDropdown ? 'Text Input' : 'Dropdown'}
-                      </button>
-                    </div>
-                    
-                    {reference.useDropdown ? (
-                      <select
-                        id={`monster-name-${index}`}
-                        value={reference.monsterName}
-                        onChange={(e) => handleReferenceChange(index, 'monsterName', e.target.value)}
-                        required
-                        disabled={!reference.trainerId}
-                      >
-                        <option value="">
-                          {!reference.trainerId 
-                            ? 'Select a trainer first' 
-                            : 'Select a monster'}
-                        </option>
-                        {reference.trainerId && trainerMonsters[reference.trainerId] && 
-                          trainerMonsters[reference.trainerId].map(monster => (
-                            <option key={monster.id} value={monster.name}>
-                              {monster.name} (Lv. {monster.level})
-                            </option>
-                          ))}
-                      </select>
-                    ) : (
-                      <input
-                        id={`monster-name-${index}`}
-                        type="text"
-                        value={reference.monsterName}
-                        onChange={(e) => handleReferenceChange(index, 'monsterName', e.target.value)}
-                        placeholder="Enter monster name"
-                        required
-                      />
-                    )}
+                    <MonsterAutocomplete
+                      id={`monster-name-${index}`}
+                      monsters={reference.trainerId && trainerMonsters[reference.trainerId] ? trainerMonsters[reference.trainerId] : []}
+                      onSelect={(name) => handleReferenceChange(index, 'monsterName', name)}
+                      label="Monster Name"
+                      placeholder={!reference.trainerId ? 'Select a trainer first' : 'Type to search monsters...'}
+                      required
+                      disabled={!reference.trainerId}
+                      returnName={true}
+                      allowFreeText={true}
+                    />
                   </div>
                   <div className="bulk-info">
                     <span>Trainer: {userTrainers.find(t => t.id == reference.trainerId)?.name || 'Unknown'}</span>

@@ -7,6 +7,7 @@ const MonsterRoller = require('../models/MonsterRoller');
 const MonsterInitializer = require('../utils/MonsterInitializer');
 const AntiqueAppraisalService = require('../utils/AntiqueAppraisalService');
 const User = require('../models/User');
+const cloudinary = require('../utils/cloudinary');
 
 /**
  * Get user settings for monster roller
@@ -492,6 +493,212 @@ const auctionAntique = asyncHandler(async (req, res) => {
   }
 });
 
+/**
+ * @desc    Get all antiques list (for dropdown)
+ * @route   GET /api/antiques/all-antiques
+ * @access  Private/Admin
+ */
+const getAllAntiquesDropdown = asyncHandler(async (req, res) => {
+  try {
+    // Get all antiques from the AppraisalService with their holidays
+    const antiques = AntiqueAppraisalService.ANTIQUES.map(antique => ({
+      name: antique.name,
+      holiday: antique.holiday,
+      category: antique.category
+    }));
+
+    res.json({
+      success: true,
+      data: antiques
+    });
+  } catch (error) {
+    console.error('Error getting antiques dropdown:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to get antiques list'
+    });
+  }
+});
+
+/**
+ * @desc    Get antique auction by ID (admin)
+ * @route   GET /api/antiques/auctions/:id
+ * @access  Private/Admin
+ */
+const getAntiqueAuctionById = asyncHandler(async (req, res) => {
+  try {
+    const { id } = req.params;
+    const auction = await AntiqueAuction.getById(id);
+
+    if (!auction) {
+      return res.status(404).json({
+        success: false,
+        message: 'Antique auction not found'
+      });
+    }
+
+    res.json({
+      success: true,
+      data: auction
+    });
+  } catch (error) {
+    console.error(`Error getting antique auction with ID ${req.params.id}:`, error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to get antique auction'
+    });
+  }
+});
+
+/**
+ * @desc    Create a new antique auction
+ * @route   POST /api/antiques/auctions
+ * @access  Private/Admin
+ */
+const createAntiqueAuction = asyncHandler(async (req, res) => {
+  try {
+    const auctionData = req.body;
+
+    // Validate required fields
+    if (!auctionData.name || !auctionData.antique || !auctionData.species1 || !auctionData.type1 || !auctionData.attribute || !auctionData.creator) {
+      return res.status(400).json({
+        success: false,
+        message: 'Name, antique, species1, type1, attribute, and creator are required'
+      });
+    }
+
+    const auction = await AntiqueAuction.create(auctionData);
+
+    res.status(201).json({
+      success: true,
+      data: auction,
+      message: 'Antique auction created successfully'
+    });
+  } catch (error) {
+    console.error('Error creating antique auction:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to create antique auction'
+    });
+  }
+});
+
+/**
+ * @desc    Update an antique auction
+ * @route   PUT /api/antiques/auctions/:id
+ * @access  Private/Admin
+ */
+const updateAntiqueAuction = asyncHandler(async (req, res) => {
+  try {
+    const { id } = req.params;
+    const auctionData = req.body;
+
+    // Check if auction exists
+    const existingAuction = await AntiqueAuction.getById(id);
+    if (!existingAuction) {
+      return res.status(404).json({
+        success: false,
+        message: 'Antique auction not found'
+      });
+    }
+
+    // Validate required fields
+    if (!auctionData.name || !auctionData.antique || !auctionData.species1 || !auctionData.type1 || !auctionData.attribute || !auctionData.creator) {
+      return res.status(400).json({
+        success: false,
+        message: 'Name, antique, species1, type1, attribute, and creator are required'
+      });
+    }
+
+    const auction = await AntiqueAuction.update(id, auctionData);
+
+    res.json({
+      success: true,
+      data: auction,
+      message: 'Antique auction updated successfully'
+    });
+  } catch (error) {
+    console.error(`Error updating antique auction with ID ${req.params.id}:`, error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to update antique auction'
+    });
+  }
+});
+
+/**
+ * @desc    Delete an antique auction
+ * @route   DELETE /api/antiques/auctions/:id
+ * @access  Private/Admin
+ */
+const deleteAntiqueAuction = asyncHandler(async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // Check if auction exists
+    const existingAuction = await AntiqueAuction.getById(id);
+    if (!existingAuction) {
+      return res.status(404).json({
+        success: false,
+        message: 'Antique auction not found'
+      });
+    }
+
+    const deleted = await AntiqueAuction.delete(id);
+
+    if (!deleted) {
+      return res.status(500).json({
+        success: false,
+        message: 'Failed to delete antique auction'
+      });
+    }
+
+    res.json({
+      success: true,
+      message: 'Antique auction deleted successfully'
+    });
+  } catch (error) {
+    console.error(`Error deleting antique auction with ID ${req.params.id}:`, error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to delete antique auction'
+    });
+  }
+});
+
+/**
+ * @desc    Upload an image for antique auction
+ * @route   POST /api/antiques/upload
+ * @access  Private/Admin
+ */
+const uploadAntiqueImage = asyncHandler(async (req, res) => {
+  if (!req.file) {
+    res.status(400);
+    throw new Error('Please upload an image');
+  }
+
+  try {
+    // Upload image to Cloudinary
+    const result = await cloudinary.uploader.upload(req.file.path, {
+      folder: 'seasonal-adopts',
+      use_filename: true
+    });
+
+    res.json({
+      success: true,
+      data: {
+        url: result.secure_url,
+        public_id: result.public_id
+      },
+      message: 'Image uploaded successfully'
+    });
+  } catch (error) {
+    console.error('Error uploading image to Cloudinary:', error);
+    res.status(500);
+    throw new Error('Error uploading image');
+  }
+});
+
 module.exports = {
   getAntiqueRollSettings,
   getAntiqueAuctions,
@@ -500,5 +707,11 @@ module.exports = {
   getTrainerAntiques,
   appraiseAntique,
   getAuctionOptions,
-  auctionAntique
+  auctionAntique,
+  getAllAntiquesDropdown,
+  getAntiqueAuctionById,
+  createAntiqueAuction,
+  updateAntiqueAuction,
+  deleteAntiqueAuction,
+  uploadAntiqueImage
 };

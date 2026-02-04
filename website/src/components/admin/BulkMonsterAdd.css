@@ -81,6 +81,7 @@
   color: var(--admin-text-primary);
   font-size: var(--admin-font-size-base);
   transition: all 0.3s ease;
+  appearance: default;
 }
 
 .trainer-select:focus {
@@ -116,60 +117,6 @@
 }
 
 /* Form Actions */
-.form-actions {
-  display: flex;
-  gap: var(--admin-space-md);
-  justify-content: flex-end;
-  margin-top: var(--admin-space-xl);
-  padding-top: var(--admin-space-xl);
-  border-top: 1px solid var(--admin-border-color);
-}
-
-.submit-button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--admin-space-sm);
-  padding: var(--admin-space-md) var(--admin-space-xl);
-  background: var(--admin-accent-gradient);
-  color: var(--admin-bg-color);
-  border: none;
-  border-radius: var(--admin-radius-md);
-  font-weight: 600;
-  font-size: var(--admin-font-size-base);
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: var(--admin-shadow-sm);
-  position: relative;
-  overflow: hidden;
-}
-
-.submit-button::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-  transition: left 0.5s ease;
-}
-
-.submit-button:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--admin-shadow-md);
-}
-
-.submit-button:hover::before {
-  left: 100%;
-}
-
-.submit-button:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-  transform: none;
-  box-shadow: none;
-}
 
 .clear-button {
   display: inline-flex;
@@ -291,11 +238,6 @@
   color: var(--admin-text-primary);
 }
 
-.monster-name {
-  font-weight: 600;
-  color: var(--admin-accent-color);
-}
-
 .monster-level {
   text-align: center;
   font-weight: 600;
@@ -407,11 +349,6 @@
     padding: var(--admin-space-lg);
   }
   
-  .form-actions {
-    flex-direction: column;
-    align-items: stretch;
-  }
-  
   .results-summary {
     grid-template-columns: 1fr;
   }
@@ -421,8 +358,5 @@
     gap: var(--admin-space-xs);
     text-align: center;
   }
-  
-  .monster-name {
-    font-size: var(--admin-font-size-base);
-  }
+
 }

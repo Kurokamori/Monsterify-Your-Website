@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import AutocompleteInput from '../common/AutocompleteInput';
 
 /**
  * Component for handling level 100 cap reallocation
@@ -161,35 +162,35 @@ const LevelCapReallocation = ({
 
                   {/* Add new allocation */}
                   <div className="add-allocation">
-                    <select
+                    <AutocompleteInput
+                      name={`add-target-${monster.monsterId}`}
                       value=""
-                      onChange={(e) => {
-                        if (e.target.value) {
-                          const [targetType, targetId] = e.target.value.split('_');
+                      onChange={() => {}}
+                      onSelect={(option) => {
+                        if (option.value) {
+                          const [targetType, targetId] = option.value.split('_');
                           handleAllocation(monster.monsterId, parseInt(targetId), targetType, 1);
                         }
                       }}
-                    >
-                      <option value="">+ Add target...</option>
-
-                      {/* Show user-owned trainers */}
-                      {availableTargets
-                        .filter(target => target.trainerId && !target.monsterId) // This indicates it's a trainer entry
-                        .map(target => (
-                          <option key={`trainer_${target.trainerId}`} value={`trainer_${target.trainerId}`}>
-                            Trainer {target.name}
-                          </option>
-                        ))}
-
-                      {/* Show user-owned monsters (exclude the capped monster itself) */}
-                      {availableTargets
-                        .filter(target => target.monsterId && target.monsterId !== monster.monsterId)
-                        .map(target => (
-                          <option key={target.monsterId} value={`monster_${target.monsterId}`}>
-                            {target.name} (Level {target.level})
-                          </option>
-                        ))}
-                    </select>
+                      options={[
+                        ...availableTargets
+                          .filter(target => target.trainerId && !target.monsterId)
+                          .map(target => ({
+                            name: `Trainer ${target.name}`,
+                            value: `trainer_${target.trainerId}`,
+                            description: ''
+                          })),
+                        ...availableTargets
+                          .filter(target => target.monsterId && target.monsterId !== monster.monsterId)
+                          .map(target => ({
+                            name: `${target.name} (Level ${target.level})`,
+                            value: `monster_${target.monsterId}`,
+                            description: ''
+                          }))
+                      ]}
+                      placeholder="Type to search targets..."
+                      label="Add target"
+                    />
                   </div>
                 </div>
               )}
