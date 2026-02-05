@@ -160,7 +160,7 @@ const ImageUploader = ({ images = [], onChange, maxImages = 4, required = false 
                     {index > 0 && (
                       <button
                         type="button"
-                        className="btn-icon move-up"
+                        className="btn btn-icon move-up"
                         onClick={() => handleMoveImage(index, index - 1)}
                         title="Move up"
                       >
@@ -171,7 +171,7 @@ const ImageUploader = ({ images = [], onChange, maxImages = 4, required = false 
                     {index < images.length - 1 && (
                       <button
                         type="button"
-                        className="btn-icon move-down"
+                        className="btn btn-icon move-down"
                         onClick={() => handleMoveImage(index, index + 1)}
                         title="Move down"
                       >
@@ -181,7 +181,7 @@ const ImageUploader = ({ images = [], onChange, maxImages = 4, required = false 
                     
                     <button
                       type="button"
-                      className="btn-icon remove"
+                      className="btn btn-icon remove"
                       onClick={() => handleRemoveImage(index)}
                       title="Remove image"
                     >

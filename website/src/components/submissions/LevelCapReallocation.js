@@ -151,7 +151,7 @@ const LevelCapReallocation = ({
                         <span>levels</span>
                         <button
                           type="button"
-                          className="remove-allocation"
+                          className="button button-icon button-danger"
                           onClick={() => handleAllocation(monster.monsterId, parseInt(targetId), targetType, 0)}
                         >
                           Remove
@@ -203,14 +203,14 @@ const LevelCapReallocation = ({
         <button
           type="button"
           onClick={onCancel}
-          className="cancel-button"
+          className="button button-secondary"
         >
           Cancel
         </button>
         <button
           type="button"
           onClick={handleComplete}
-          className="complete-button"
+          className="button button-primary"
           disabled={remainingLevels > 0}
         >
           {remainingLevels > 0 ? `Allocate ${remainingLevels} more levels` : 'Complete Allocation'}

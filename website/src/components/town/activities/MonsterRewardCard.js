@@ -221,7 +221,7 @@ const MonsterRewardCard = ({
 
             <div className="monster-reward-buttons">
               <button
-                className="btn-primary mt-2"
+                className="btn btn-primary mt-2"
                 onClick={() => onClaim(reward.id, selectedTrainerId)}
                 disabled={isClaiming || !selectedTrainerId || isForfeiting}
                 style={{ flex: 1, marginRight: '8px' }}
@@ -238,7 +238,7 @@ const MonsterRewardCard = ({
               </button>
               
               <button
-                className="btn-danger mt-2"
+                className="btn btn-danger mt-2"
                 onClick={() => handleForfeit()}
                 disabled={isClaiming || isForfeiting}
                 style={{ flex: 1 }}

@@ -1,0 +1,298 @@
+/* ==============================
+   Trainer Core Styles
+
+   Basic trainer elements: inventory hints,
+   containers, names, avatars, and base styles.
+   ============================== */
+
+.trainer-inventory {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  flex-shrink: 0;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0,0,0,.05);
+  padding: 20px;
+}
+
+.select-trainer-hint {
+  color: var(--text-color);
+  opacity: .7;
+  font-size: .85rem;
+  font-style: italic;
+  text-align: center;
+  margin-top: .5rem;
+  padding: .5rem;
+  background: rgba(212,175,55,.05);
+  border-radius: 4px;
+}
+
+
+/* ===== Subtype trainers list ===== */
+
+.subtype-trainer .rank{ min-width:1.5rem; font-size:.875rem; }
+.subtype-trainer .trainer-name{ flex:1; text-align:center; font-weight:500; }
+.subtype-trainer .count{
+  font-weight:600; color:var(--accent-color); min-width:2rem; text-align:right;
+}
+
+
+/* ===== Containers ===== */
+
+.trainers-container {
+  width: 100%;
+  max-width: var(--container-max-width);
+  margin: 0 auto;
+  padding: .5rem var(--content-padding);
+}
+
+.trainers-controls-compact {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding: .75rem;
+  background-color: var(--card-background);
+  border-radius: .5rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,.1);
+}
+
+@media (max-width: 768px) {
+  .trainers-controls-compact {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+  }
+}
+
+
+/* ===== Avatar ===== */
+
+.trainer-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin: 10px auto 15px;
+  overflow: hidden;
+  background: var(--background-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  object-fit: cover;
+  border: 2px solid var(--accent-color);
+}
+
+.trainer-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.avatar-placeholder {
+  font-size: 2rem;
+  color: var(--text-color);
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: .5;
+}
+
+
+/* ===== Name ===== */
+
+.trainer-name {
+  font-weight: 600;
+  color: var(--text-color);
+  font-size: var(--font-size-base);
+}
+
+.trainer-name-heading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.trainer-name-heading .trainer-name {
+  color: var(--accent-color);
+  font-size: var(--font-size-lg);
+}
+
+
+/* ===== Base trainer info elements ===== */
+
+.trainer-player i{ color:var(--accent-color); flex-shrink:0; }
+
+.trainer-level, .trainer-monsters, .trainer-region{
+  display:flex; align-items:center; gap:.35rem; font-size:var(--font-size-sm);
+  color:var(--text-color); opacity:.8;
+}
+
+.trainer-level i, .trainer-monsters i, .trainer-region i{
+  color:var(--accent-color); font-size:var(--font-size-sm);
+}
+
+.trainer-monsters {
+  margin-top: .25rem;
+  margin-bottom: .25rem;
+}
+
+
+/* ===== Empty states ===== */
+
+.no-trainers-message {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 0;
+  text-align: center;
+  background-color: var(--card-background);
+  border-radius: .5rem;
+  min-height: 200px;
+  color: var(--text-color);
+  box-shadow: 0 2px 10px rgba(0,0,0,.05);
+}
+
+.no-trainers-message i{ font-size:3rem; color:var(--accent-color); margin-bottom:1rem; opacity:.7; }
+.no-trainers-message p{ font-size:var(--font-size-lg); color:var(--text-color); opacity:.8; }
+
+.no-monsters-message, .no-inventory-message{
+  text-align:center; padding:40px 20px; color:var(--text-muted);
+}
+.no-monsters-message i, .no-inventory-message i{ font-size:3rem; margin-bottom:15px; color:var(--text-muted); }
+
+
+/* ===== Misc trainer utilities ===== */
+
+.trainer-details {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: .5rem;
+}
+
+.trainer-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  font-size: .9em;
+  color: var(--text-color);
+  font-weight: normal;
+}
+
+.search-results-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.faction-select {
+  border: none;
+  color: var(--text-color);
+  background-color: var(--nav-active);
+  border-radius: .375rem;
+  padding: .5rem 1rem;
+}
+
+@media (max-width: 768px) {
+  .faction-select {
+    width: 100%;
+  }
+}
+
+.clear-search-button {
+  background-color: var(--nav-hover);
+  color: var(--text-color);
+  border: 1px solid var(--boarder-color);
+  border-radius: .375rem;
+  padding: .5rem 1rem;
+  cursor: pointer;
+  font-size: var(--font-size-sm);
+  transition: background-color .2s, color .2s;
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+}
+
+.clear-search-button:hover {
+  background-color: var(--nav-active);
+  color: var(--text-color);
+}
+
+
+/* ===== Trainer type badge ===== */
+
+.trainer-type-badge {
+  display: inline-block;
+  padding: .25rem .75rem;
+  border-radius: .375rem;
+  font-size: .875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--text-color);
+  width:100%;
+}
+
+
+/* ===== Loading & Error states ===== */
+
+.loading-container {
+  display:flex; flex-direction:column; align-items:center; justify-content:center; padding:3rem 0; text-align:center;
+}
+
+/* ===== Status messages ===== */
+
+.status-message {
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  border-radius: .375rem;
+  font-weight: 500;
+  text-align: center;
+}
+
+.status-message.success{
+  background-color:rgba(46,204,113,.2); border:1px solid rgba(46,204,113,.5); color:#2ecc71;
+}
+.status-message.error{
+  background-color:rgba(231,76,60,.2); border:1px solid rgba(231,76,60,.5); color:#e74c3c;
+}
+.status-message.info{
+  background-color:rgba(52,152,219,.2); border:1px solid rgba(52,152,219,.5); color:#3498db;
+}
+.status-message.warning{
+  background-color:rgba(241,196,15,.2); border:1px solid rgba(241,196,15,.5); color:#f1c40f;
+}
+
+
+/* ===== Monster level badge ===== */
+
+.monster-level {
+  font-weight: 500;
+  color: var(--gold-color);
+}
+
+.view-monster-btn {
+  display: block;
+  width: 100%;
+  padding: 8px 0;
+  text-align: center;
+  background-color: var(--card-background);
+  color: var(--text-color);
+  border-radius: 4px;
+  text-decoration: none;
+  font-size: .9rem;
+  transition: background-color .2s;
+}
+
+.view-monster-btn:hover{ background-color:var(--nav-hover); }
+
+.monster-ref-stats {
+  color: var(--text-muted);
+  font-size: .9em;
+}

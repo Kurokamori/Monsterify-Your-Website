@@ -589,10 +589,10 @@ const EditTrainerPage = () => {
       <div className="error-container">
         <i className="fas fa-exclamation-circle"></i>
         <p>{error}</p>
-        <button onClick={fetchTrainerData} className="retry-button">
+        <button onClick={fetchTrainerData} className="button button-primary">
           Try Again
         </button>
-        <button onClick={() => navigate(-1)} className="back-button">
+        <button onClick={() => navigate(-1)} className="button button-secondary">
           Go Back
         </button>
       </div>
@@ -604,7 +604,7 @@ const EditTrainerPage = () => {
       <div className="error-container">
         <i className="fas fa-lock"></i>
         <p>You are not authorized to edit this trainer.</p>
-        <button onClick={() => navigate(`/trainers/${id}`)} className="back-button">
+        <button onClick={() => navigate(`/trainers/${id}`)} className="button button-secondary">
           View Trainer
         </button>
       </div>
@@ -1319,7 +1319,7 @@ const EditTrainerPage = () => {
                     <h3>Secret #{index + 1}</h3>
                     <button
                       type="button"
-                      className="remove-secret-button"
+                      className="button button-icon button-danger"
                       onClick={() => handleRemoveSecret(secret.id)}
                     >
                       <i className="fas fa-trash-alt"></i>
@@ -1360,7 +1360,7 @@ const EditTrainerPage = () => {
           <div className="add-secret-button-container">
             <button
               type="button"
-              className="add-secret-button"
+              className="button button-primary"
               onClick={handleAddSecret}
             >
               <i className="fas fa-plus"></i> Add Secret
@@ -1381,7 +1381,7 @@ const EditTrainerPage = () => {
                     <h3>Relation #{index + 1}</h3>
                     <button
                       type="button"
-                      className="icon-button"
+                      className="button button-icon button-danger"
                       onClick={() => handleRemoveRelation(relation.id)}
                     >
                       <i className="fas fa-trash-alt"></i>
@@ -1476,7 +1476,7 @@ const EditTrainerPage = () => {
           <div className="add-relation-button-container">
             <button
               type="button"
-              className="add-relation-button"
+              className="button button-primary"
               onClick={handleAddRelation}
             >
               <i className="fas fa-plus"></i> Add Relation
@@ -1497,7 +1497,7 @@ const EditTrainerPage = () => {
                   onChange={(e) => handleImageUpload(e.target.files[0])}
                   id="main-ref-upload"
                 />
-                <label htmlFor="main-ref-upload" className="file-upload-button">
+                <label htmlFor="main-ref-upload" className="button button-primary">
                   {formData.main_ref_file ? formData.main_ref_file.name : 'Upload Trainer Image'}
                 </label>
                 {(formData.main_ref || formData.main_ref_file) && (
@@ -1528,7 +1528,7 @@ const EditTrainerPage = () => {
                     <h3>Reference #{index + 1}</h3>
                     <button
                       type="button"
-                      className="remove-ref-button"
+                      className="button button-icon button-danger"
                       onClick={() => handleRemoveAdditionalRef(ref.id)}
                     >
                       <i className="fas fa-trash-alt"></i>
@@ -1565,7 +1565,7 @@ const EditTrainerPage = () => {
                           onChange={(e) => handleAdditionalRefImageUpload(ref.id, e.target.files[0])}
                           id={`additional-ref-upload-${ref.id}`}
                         />
-                        <label htmlFor={`additional-ref-upload-${ref.id}`} className="file-upload-button">
+                        <label htmlFor={`additional-ref-upload-${ref.id}`} className="button button-primary">
                           {ref.image_file ? ref.image_file.name : 'Upload Reference Image'}
                         </label>
                         {(ref.image_url || ref.image_file) && (
@@ -1593,7 +1593,7 @@ const EditTrainerPage = () => {
           <div className="add-ref-button-container">
             <button
               type="button"
-              className="add-ref-button"
+              className="button button-primary"
               onClick={handleAddAdditionalRef}
             >
               <i className="fas fa-plus"></i> Add Reference
@@ -1614,7 +1614,7 @@ const EditTrainerPage = () => {
                   onChange={(e) => handleMegaImageUpload(e.target.files[0])}
                   id="mega-ref-upload"
                 />
-                <label htmlFor="mega-ref-upload" className="file-upload-button">
+                <label htmlFor="mega-ref-upload" className="button button-primary">
                   {formData.mega_ref_file ? formData.mega_ref_file.name : 'Upload Mega Evolution Image'}
                 </label>
                 {(formData.mega_ref || formData.mega_ref_file) && (
@@ -1767,10 +1767,10 @@ const EditTrainerPage = () => {
         </div>
 
         <div className="form-actions">
-          <button type="button" className="cancel-button" onClick={() => navigate(`/trainers/${id}`)}>
+          <button type="button" className="button button-danger" onClick={() => navigate(`/trainers/${id}`)}>
             Cancel
           </button>
-          <button type="submit" className="save-button" disabled={saving}>
+          <button type="submit" className="button button-primary" disabled={saving}>
             {saving ? <i className="fas fa-spinner fa-spin"></i> : 'Save Changes'}
           </button>
         </div>

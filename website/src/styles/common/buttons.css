@@ -1,0 +1,289 @@
+/* ==============================
+   Button Styles
+   ============================== */
+
+/* ---------- Base Button Styles ---------- */
+
+.btn-primary,
+.btn-secondary {
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.375rem;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background-color: var(--accent-color);
+  color: var(--background-color);
+}
+
+.btn-primary:hover {
+  background-color: var(--accent-hover);
+  color: var(--background-color);
+  text-decoration: none;
+}
+
+.btn-secondary {
+  background-color: var(--nav-background);
+  color: var(--text-color);
+  border: 1px solid var(--border-color);
+}
+
+.btn-secondary:hover {
+  background-color: var(--nav-hover);
+  color: var(--text-color);
+  text-decoration: none;
+}
+
+/* ---------- Generic Button Classes ---------- */
+
+.btn,
+.button {
+  padding: 0.5rem 1rem;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s, opacity 0.2s, transform 0.1s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  text-decoration: none;
+  margin: 0.4rem;
+  border: none;
+  font-size: var(--font-size-base);
+}
+
+.btn:disabled,
+.button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ---------- Button Primary ---------- */
+
+.btn-primary,
+.button-primary {
+  background-color: var(--accent-color);
+  color: var(--text-color);
+  border: none;
+}
+
+.btn-primary:hover,
+.button-primary:hover {
+  background-color: var(--accent-hover);
+}
+
+/* ---------- Button Secondary ---------- */
+
+.btn-secondary,
+.button-secondary {
+  background-color: var(--nav-active);
+  color: var(--text-color);
+  border: none;
+}
+
+.btn-secondary:hover,
+.button-secondary:hover {
+  background-color: var(--nav-hover);
+}
+
+/* ---------- Button Danger/Success ---------- */
+
+.btn-danger,
+.button-danger {
+  background-color: var(--error-dark)!important;
+  color: var(--text-color);
+  border: none;
+}
+
+.btn-danger:hover,
+.button-danger:hover {
+  background-color: var(--error-color)!important;
+}
+
+.btn-success,
+.button-success {
+  background-color: var(--success-color);
+  color: var(--text-color);
+  border: none;
+}
+
+.btn-success:hover,
+.button-success:hover {
+  background-color: var(--success-hover);
+}
+
+/* ---------- Icon Button ---------- */
+
+.btn-icon,
+.button-icon {
+  background-color: var(--nav-active);
+  color: var(--text-color);
+  border-radius: 1rem;
+  transition: all 0.2s;
+}
+
+.btn-icon:hover,
+.button-icon:hover {
+  transform: scale(1.1);
+}
+
+.btn-icon:hover,
+.button-icon:hover {
+  background: var(--background-color);
+  transform: scale(1.1);
+}
+
+.btn-icon.move-up,
+.button-icon.move-up,
+.btn-icon.move-down,
+.button-icon.move-down {
+  background: var(--accent-color);
+}
+
+.btn-icon.move-up:hover,
+.button-icon.move-up:hover,
+.btn-icon.move-down:hover,
+.button-icon.move-down:hover {
+  background: var(--accent-hover);
+}
+
+.btn-icon.remove,
+.button-icon.remove {
+  background: var(--error-dark);
+}
+
+.btn-icon.remove:hover,
+.button-icon.remove:hover {
+  background: var(--error-color);
+}
+
+/* ---------- Filter Button ---------- */
+
+.btn-filter,
+.button-filter {
+  background-color: var(--nav-active);
+  color: var(--text-color);
+}
+
+.btn-filter.selected,
+.button-filter.selected {
+  background-color: var(--nav-hover);
+  color: var(--text-color);
+  border: 2px solid var(--accent-color);
+}
+
+.btn-filter:hover,
+.button-filter:hover {
+  background-color: var(--nav-hover);
+}
+
+.btn-filter.apply,
+.button-filter.apply {
+  background-color: var(--accent-color);
+  color: var(--text-color);
+}
+
+.btn-filter.reset,
+.button-filter.reset {
+  background-color: var(--error-dark);
+  color: var(--text-color);
+}
+
+.btn-filter.active,
+.button-filter.active {
+  background-color: var(--accent-color);
+  color: var(--text-color);
+}
+
+/* ---------- Special Button ---------- */
+
+.btn-special {
+  padding: 10px 15px;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  text-transform: none;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.btn-special:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.btn-special:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.btn-special i {
+  font-size: 16px;
+}
+
+.btn-special:active {
+  animation: berryConsume 0.2s ease;
+}
+
+/* Tooltip pattern */
+.btn-special[title] { position: relative; }
+
+.btn-special[title]:hover::after {
+  content: attr(title);
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0,0,0,0.8);
+  color: var(--text-color);
+  padding: 5px 10px;
+  border-radius: 4px;
+  font-size: 12px;
+  white-space: nowrap;
+  z-index: 1000;
+  margin-bottom: 5px;
+}
+
+.btn-special[title]:hover::before {
+  content: '';
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 5px solid transparent;
+  border-top-color: rgba(0,0,0,0.8);
+  z-index: 1000;
+}
+
+/* ---------- Clear Selection Button ---------- */
+
+.clear-selection {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 0.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: background-color 0.2s;
+}
+
+.clear-selection:hover {
+  background-color: rgba(0,0,0,0.1);
+  color: var(--error-color);
+}

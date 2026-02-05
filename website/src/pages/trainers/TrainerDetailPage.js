@@ -1281,10 +1281,10 @@ const TrainerDetailPage = () => {
       <div className="error-container">
         <i className="fas fa-exclamation-circle"></i>
         <p>{error}</p>
-        <button onClick={fetchTrainerData} className="retry-button">
+        <button onClick={fetchTrainerData} className="button button-primary">
           Try Again
         </button>
-        <button onClick={() => navigate('/trainers')} className="back-button">
+        <button onClick={() => navigate('/trainers')} className="button button-secondary">
           Back to Trainers
         </button>
       </div>
@@ -1296,7 +1296,7 @@ const TrainerDetailPage = () => {
       <div className="error-container">
         <i className="fas fa-user-slash"></i>
         <p>Trainer not found. The trainer you're looking for might not exist or has been removed.</p>
-        <button onClick={() => navigate('/trainers')} className="back-button">
+        <button onClick={() => navigate('/trainers')} className="button button-secondary">
           Back to Trainers
         </button>
       </div>
@@ -2316,7 +2316,7 @@ const TrainerDetailPage = () => {
                   )}
                   {isOwner && monsters.length > 0 && (
                     <button 
-                      className="mass-edit-button"
+                      className="button button-primary"
                       onClick={handleOpenMassEdit}
                       title="Mass edit your monsters - rename, use berries, and use pastries in bulk"
                     >
@@ -2345,7 +2345,7 @@ const TrainerDetailPage = () => {
                       <div className="search-results-info">
                         <p>{filteredMonsters.length} monsters found</p>
                         <button 
-                          className="clear-search-button"
+                          className="button button-danger"
                           onClick={() => setSearchTerm('')}
                         >
                           <i className="fas fa-times"></i> Clear Search
@@ -3117,7 +3117,7 @@ const TrainerDetailPage = () => {
                 {/* Claim All Button */}
                 {isOwner && achievementStats && achievementStats.unclaimed > 0 && (
                   <button 
-                    className="claim-all-btn"
+                    className="claim-all-btn button button-primary"
                     onClick={handleClaimAllAchievements}
                     disabled={isClaimingAll}
                   >
@@ -3295,7 +3295,7 @@ const TrainerDetailPage = () => {
                             )}
                             {achievement.canClaim && (
                               <button 
-                                className="claim-btn"
+                                className="claim-btn button button-primary"
                                 onClick={() => {
                                   console.log(`Claiming achievement: ${achievement.id} - ${achievement.name}`);
                                   handleClaimAchievement(achievement.id);
@@ -3624,7 +3624,7 @@ const TrainerDetailPage = () => {
                 <h2>Edit Boxes</h2>
                 <div className="edit-boxes-actions">
                   <button
-                    className="edit-boxes-button save-button"
+                    className="edit-boxes-button button button-primary"
                     onClick={handleSaveBoxes}
                     disabled={isSaving}
                   >
@@ -3639,7 +3639,7 @@ const TrainerDetailPage = () => {
                     )}
                   </button>
                   <button
-                    className="edit-boxes-button cancel-button"
+                    className="edit-boxes-button button button-secondary"
                     onClick={() => setActiveTab('boxes')}
                   >
                     <i className="fas fa-times"></i> Cancel
@@ -3659,7 +3659,7 @@ const TrainerDetailPage = () => {
                   <h3>Featured Monsters</h3>
                   <span>{featuredMonsters.length}/6</span>
                   <button
-                    className="featured-monsters-save-button"
+                    className="featured-monsters-save-button button button-primary"
                     onClick={handleSaveFeaturedMonsters}
                     disabled={isSaving}
                     title="Save featured monsters"
@@ -3723,7 +3723,7 @@ const TrainerDetailPage = () => {
                               {featuredMonster.name.length > 8 ? featuredMonster.name.substring(0, 8) + '...' : featuredMonster.name}
                             </div>
                             <button
-                              className="remove-featured-button"
+                              className="button button-icon button-danger"
                               style={{
                                 position: 'absolute',
                                 top: '2px',
@@ -3779,7 +3779,7 @@ const TrainerDetailPage = () => {
 
               <div className="edit-boxes-controls">
                 <button
-                  className="add-box-button"
+                  className="button button-primary"
                   onClick={handleAddBox}
                   title="Add a new empty box for better organization"
                 >
@@ -3959,7 +3959,7 @@ const TrainerDetailPage = () => {
             
             <div className="popup-footer">
               <button 
-                className="popup-ok-btn"
+                className="popup-ok-btn button button-primary"
                 onClick={() => setShowRewardPopup(false)}
               >
                 Awesome! 🎉

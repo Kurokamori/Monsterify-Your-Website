@@ -1,0 +1,333 @@
+/* ==============================
+   Trainer Stats Tab Styles
+
+   Stats sections, stat cards, type distribution,
+   favorite species, special status, and level distribution.
+   ============================== */
+
+/* ===== Stats section ===== */
+
+.stats-section {
+  margin-bottom: 2rem;
+  background-color: var(--card-background);
+  border-radius: .5rem;
+  padding: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,.1);
+}
+
+.stats-section h3{
+  font-size:var(--font-size-lg); color:var(--accent-color); margin-bottom:1.5rem; padding-bottom:.5rem;
+  border-bottom:1px solid var(--divider-color);
+}
+
+
+/* ===== Stat card ===== */
+
+.stat-card:hover{ transform:translateY(-3px); box-shadow:0 4px 12px rgba(0,0,0,.15); }
+
+.stat-icon {
+  width: 3rem;
+  height: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(var(--accent-color-rgb,214,163,57), .1);
+  border-radius: 50%;
+  color: var(--accent-color);
+  font-size: 1.5rem;
+}
+
+.stat-content {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+}
+
+.stat-progress {
+  height: .5rem;
+  background-color: rgba(255,255,255,.1);
+  border-radius: 1rem;
+  margin-top: .5rem;
+  overflow: hidden;
+}
+
+.stat-progress-bar {
+  height: 100%;
+  background-color: var(--accent-color);
+  border-radius: 1rem;
+}
+
+
+/* ===== Type Distribution ===== */
+
+.type-distribution {
+  margin-top: 1.5rem;
+}
+
+.type-bars {
+  display: flex;
+  flex-direction: column;
+  gap: .75rem;
+}
+
+.type-bar-container {
+  display: flex;
+  flex-direction: column;
+  gap: .25rem;
+}
+
+.type-bar-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.type-bar-label .type-badge{ width:auto; min-width:5rem; text-align:center; }
+
+.type-count {
+  font-weight: 600;
+  font-size: var(--font-size-sm);
+}
+
+.type-bar-wrapper {
+  height: .75rem;
+  background-color: rgba(255,255,255,.1);
+  border-radius: 1rem;
+  overflow: hidden;
+}
+
+.type-bar {
+  height: 100%;
+  border-radius: 1rem;
+}
+
+
+/* ===== Favorite Species ===== */
+
+.favorite-species {
+  margin-top: 1.5rem;
+}
+
+.favorite-species-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px,1fr));
+  gap: 1.5rem;
+}
+
+.favorite-species-card {
+  background-color: var(--nav-background);
+  border-radius: .5rem;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,.1);
+  transition: transform .2s;
+}
+
+.favorite-species-card:hover{ transform:translateY(-3px); box-shadow:0 4px 12px rgba(0,0,0,.15); }
+
+.favorite-species-header {
+  padding: 1rem;
+  background-color: rgba(var(--accent-color-rgb,214,163,57), .1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.favorite-species-header h4{ margin:0; font-size:var(--font-size-base); color:var(--accent-color); }
+
+.species-count {
+  font-size: var(--font-size-sm);
+  color: var(--text-muted);
+}
+
+.favorite-species-examples {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: .5rem;
+  padding: 1rem;
+}
+
+.species-example {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .5rem;
+  text-decoration: none;
+  color: var(--text-color);
+  transition: transform .2s;
+  padding: .5rem;
+  border-radius: .25rem;
+}
+
+.species-example:hover{ background-color:rgba(255,255,255,.05); transform:translateY(-2px); }
+
+.species-example img{
+  width:100%; height:80px; object-fit:contain; border-radius:.25rem; background-color:rgba(0,0,0,.1);
+}
+
+.species-example span{
+  font-size:var(--font-size-sm); text-align:center; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; width:100%;
+}
+
+
+/* ===== Special Status ===== */
+
+.special-status-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px,1fr));
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.special-status-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background-color: var(--nav-background);
+  border-radius: .5rem;
+  transition: transform .2s, box-shadow .2s;
+}
+
+.special-status-card:hover{ transform:translateY(-3px); box-shadow:0 4px 12px rgba(0,0,0,.15); }
+
+.special-status-icon {
+  width: 2.5rem;
+  height: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(var(--accent-color-rgb,214,163,57), .1);
+  border-radius: 50%;
+  color: var(--accent-color);
+  font-size: 1.25rem;
+}
+
+.special-status-content {
+  flex: 1;
+}
+
+.special-status-name {
+  font-size: var(--font-size-sm);
+  color: var(--text-muted);
+}
+
+.special-status-count {
+  font-size: var(--font-size-lg);
+  font-weight: 700;
+  color: var(--text-color);
+}
+
+
+/* ===== Attribute Distribution ===== */
+
+.attribute-distribution {
+  margin-top: 1.5rem;
+}
+
+.attribute-chart {
+  display: flex;
+  flex-direction: column;
+  gap: .75rem;
+}
+
+.attribute-name {
+  font-weight: 600;
+  font-size: var(--font-size-sm);
+}
+
+.attribute-bar-wrapper {
+  height: 1.5rem;
+  background-color: rgba(255,255,255,.1);
+  border-radius: .25rem;
+  overflow: hidden;
+  position: relative;
+}
+
+.attribute-bar {
+  height: 100%;
+  background-color: var(--accent-color);
+  border-radius: .25rem;
+}
+
+.attribute-count {
+  position: absolute;
+  right: .5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--background-color);
+}
+
+
+/* ===== Level Distribution ===== */
+
+.level-distribution {
+  margin-top: 1.5rem;
+}
+
+.level-bars {
+  display: flex;
+  flex-direction: column;
+  gap: .75rem;
+}
+
+.level-bar-container {
+  display: flex;
+  flex-direction: column;
+  gap: .25rem;
+}
+
+.level-bar-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.level-range, .level-count{ font-weight:600; font-size:var(--font-size-sm); }
+
+.level-bar-wrapper {
+  height: .75rem;
+  background-color: rgba(255,255,255,.1);
+  border-radius: 1rem;
+  overflow: hidden;
+}
+
+.level-bar {
+  height: 100%;
+  background-color: var(--accent-color);
+  border-radius: 1rem;
+}
+
+
+/* ===== No Data Messages ===== */
+
+.no-stats-message {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 0;
+  text-align: center;
+  background-color: var(--nav-background);
+  border-radius: .5rem;
+  min-height: 200px;
+}
+
+.no-stats-message i{ font-size:3rem; color:var(--accent-color); margin-bottom:1rem; opacity:.7; }
+.no-stats-message p{ font-size:var(--font-size-lg); color:var(--text-color); opacity:.8; }
+
+
+/* ===== Responsive ===== */
+
+@media (max-width:480px){
+  .stats-grid{ grid-template-columns:1fr; }
+  .favorite-species-grid{ grid-template-columns:1fr; }
+  .special-status-grid{ grid-template-columns:repeat(2,1fr); }
+  .type-bar-label .type-badge{ min-width:4rem; }
+  .species-example img{ height:60px; }
+}
+
+@media (max-width:480px){
+  .special-status-grid{ grid-template-columns:1fr; }
+}

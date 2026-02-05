@@ -1,0 +1,43 @@
+/* ==============================
+   Pagination Styles
+   ============================== */
+
+.pagination-ellipsis {
+  min-width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-color);
+}
+
+.gallery-pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.pagination-info {
+  font-size: var(--font-size-base);
+  color: var(--text-color);
+}
+
+.pagination .page-link {
+  background-color: var(--nav-background);
+  border-color: var(--border-color);
+  color: var(--gold-color);
+}
+
+.pagination .page-link:hover {
+  background-color: var(--nav-hover);
+  border-color: var(--gold-color);
+  color: var(--text-color);
+}
+
+.pagination .page-item.active .page-link {
+  background-color: var(--gold-color);
+  border-color: var(--gold-color);
+  color: var(--nav-background);
+}

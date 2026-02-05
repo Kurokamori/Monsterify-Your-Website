@@ -679,7 +679,7 @@ const ArtSubmissionForm = ({ onSubmissionComplete }) => {
               />
               <button
                 type="button"
-                className="tag-add-button"
+                className="tag-button button-primary button-icon"
                 onClick={addTag}
               >
                 Add
@@ -694,7 +694,7 @@ const ArtSubmissionForm = ({ onSubmissionComplete }) => {
                   <span>{tag}</span>
                   <button
                     type="button"
-                    className="tag-remove-button"
+                    className="button button-icon button-danger"
                     onClick={() => removeTag(tag)}
                   >
                     &times;
@@ -853,7 +853,7 @@ const ArtSubmissionForm = ({ onSubmissionComplete }) => {
         <div className="form-actions">
           <button
             type="submit"
-            className="submit-button"
+            className="button button-success"
             disabled={loading}
           >
             {loading ? (

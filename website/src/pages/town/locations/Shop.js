@@ -277,41 +277,41 @@ const Shop = () => {
 
         {/* Berry filters - only show when berries category is selected */}
         {(selectedCategory === 'berries' || true) && (
-          <div className="berry-filters" style={{border: '2px solid red', background: 'rgba(255,0,0,0.1)'}}>
+          <div className="berry-filters">
             <h4>Filter Berries by Type (stackable) - Debug: {selectedCategory}</h4>
             <div className="filter-buttons">
               <button
-                className={`filter-button ${berryFilters.type ? 'active' : ''}`}
+                className={`button button-filter ${berryFilters.type ? 'active' : ''}`}
                 onClick={() => toggleBerryFilter('type')}
               >
                 Type
               </button>
               <button
-                className={`filter-button ${berryFilters.species ? 'active' : ''}`}
+                className={`button button-filter ${berryFilters.species ? 'active' : ''}`}
                 onClick={() => toggleBerryFilter('species')}
               >
                 Species
               </button>
               <button
-                className={`filter-button ${berryFilters.randomize ? 'active' : ''}`}
+                className={`button button-filter ${berryFilters.randomize ? 'active' : ''}`}
                 onClick={() => toggleBerryFilter('randomize')}
               >
                 Randomize
               </button>
               <button
-                className={`filter-button ${berryFilters.remove ? 'active' : ''}`}
+                className={`button button-filter ${berryFilters.remove ? 'active' : ''}`}
                 onClick={() => toggleBerryFilter('remove')}
               >
                 Remove
               </button>
               <button
-                className={`filter-button ${berryFilters.misc ? 'active' : ''}`}
+                className={`button button-filter ${berryFilters.misc ? 'active' : ''}`}
                 onClick={() => toggleBerryFilter('misc')}
               >
                 Misc
               </button>
               <button
-                className="filter-button clear"
+                className="button button-filter reset"
                 onClick={() => setBerryFilters({
                   type: false,
                   species: false,

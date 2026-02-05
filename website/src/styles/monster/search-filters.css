@@ -1,0 +1,178 @@
+/* =============================================================================
+   MONSTER SEARCH & FILTERS
+   ============================================================================= */
+
+.monster-search {
+  display: flex;
+  margin-bottom: 1.5rem;
+}
+
+.monster-search input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background-color: var(--input-background);
+  border: 1px solid var(--border-color);
+  border-radius: 0.375rem;
+  color: var(--text-color);
+  font-size: 1rem;
+  transition: border-color 0.2s ease;
+}
+
+.monster-search input:focus {
+  outline: none;
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 3px rgba(214, 163, 57, 0.1);
+}
+
+.monster-search input::placeholder {
+  color: var(--text-color);
+  opacity: 0.6;
+}
+
+.monsters-filters {
+  background: var(--hover-background);
+  padding: 1rem;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+}
+
+/* Monster Selector Search */
+.monster-selector-search {
+  position: relative;
+}
+
+.monster-selector-search-input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  padding-right: 2.5rem;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background-color: rgba(0, 0, 0, 0.2);
+  color: var(--text-color, #d7ddf3);
+  font-size: 0.95rem;
+  transition: all 0.2s ease;
+}
+
+.monster-selector-search-input:focus {
+  outline: none;
+  border-color: var(--accent-color, #d6a339);
+  box-shadow: 0 0 0 2px rgba(214, 163, 57, 0.2);
+}
+
+.monster-selector-search-clear {
+  position: absolute;
+  right: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: var(--text-color, #d7ddf3);
+  font-size: 1.25rem;
+  cursor: pointer;
+  opacity: 0.6;
+  transition: opacity 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+}
+
+.monster-selector-search-clear:hover {
+  opacity: 1;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Search Icon */
+.search-icon {
+  position: absolute;
+  left: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #bdc3c7;
+}
+
+/* Filter Rows */
+.search-filters-section {
+  margin-bottom: 20px;
+}
+
+.additional-filters {
+  margin-top: 15px;
+}
+
+.filter-row {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.filter-row .search-bar {
+  flex: 1;
+  min-width: 200px;
+  position: relative;
+}
+
+.species-search,
+.type-search {
+  flex: 1;
+}
+
+.filter-row.toggles {
+  justify-content: flex-start;
+  gap: 30px;
+}
+
+.toggle-filter {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.toggle-filter input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--accent-color);
+  cursor: pointer;
+}
+
+.toggle-label {
+  color: var(--text-color);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.toggle-filter:hover .toggle-label {
+  color: var(--accent-color);
+}
+
+/* =============================================================================
+   RESPONSIVE STYLES
+   ============================================================================= */
+
+/* Tablet screens (768px and below) */
+@media (max-width: 768px) {
+  .monster-search-bar {
+    flex-direction: column;
+  }
+
+  .monster-search-input {
+    width: 100%;
+  }
+
+  .monster-filter-group {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+
+  .monster-filter-select {
+    flex: 1 1 45%;
+    min-width: 120px;
+  }
+}

@@ -7196,7 +7196,7 @@ const AreaPage = () => {
           <span className="breadcrumb-separator">›</span>
           <span className="breadcrumb-current">{areaData.name}</span>
         </div>
-        <button onClick={handleBack} className="back-button">
+        <button onClick={handleBack} className="button button-secondary">
           ← Back to {breadcrumbData.regionName}
         </button>
         <div className="area-title-section">

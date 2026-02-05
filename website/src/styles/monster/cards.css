@@ -1,0 +1,723 @@
+/* =============================================================================
+   MONSTER CARDS - Base styles, variants, headers, images, and body/info
+   ============================================================================= */
+
+/* =============================================================================
+   1. BASE CARD STYLES
+   ============================================================================= */
+
+.monster-card {
+  display: flex;
+  flex-direction: column;
+  background: var(--nav-active);
+  border-radius: 10px;
+  overflow: hidden;
+  text-decoration: none;
+  color: var(--text-color);
+  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  height: max-content;
+  width: 30vh;
+  border: 1px solid var(--border-color);
+  cursor: pointer;
+  padding: 1.5rem;
+}
+
+.monster-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  border-color: var(--accent-color);
+}
+
+.monster-card.selected {
+  border-color: var(--accent-color);
+  background-color: var(--accent-color-light, rgba(214, 163, 57, 0.08));
+}
+
+.monster-card.full-height {
+  height: 80vh;
+}
+
+.monster-card.full-height .monster-card-image {
+  height: 220px;
+}
+
+/* =============================================================================
+   2. CARD VARIANTS
+   ============================================================================= */
+
+/* Bazar Monster Card */
+.bazzar-monster-card {
+  display: flex;
+  background-color: var(--nav-active);
+  flex-direction: column;
+  padding: 1.5rem;
+  border-radius: 8%;
+  cursor: pointer;
+  color: var(--text-color);
+  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  height: max-content;
+}
+
+.bazzar-monster-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+.bazzar-monster-card.selected {
+  border-color: var(--accent-color);
+  background-color: var(--accent-color-light, rgba(214, 163, 57, 0.08));
+}
+
+.bazzar-monster-types {
+  display: inline-block;
+  color: var(--type-color);
+  border-radius: 4px;
+  padding: 0.25rem 0.5rem;
+  margin-right: 0.5rem;
+  font-size: var(--font-size-xs);
+}
+
+/* Team Monster Card */
+.monster-team-card {
+  background: var(--card-background);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border: 2px solid var(--border-color);
+  transition: all 0.3s ease;
+  overflow: hidden;
+  animation: cardFadeIn 0.5s ease-out;
+}
+
+.monster-team-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  border-color: var(--accent-color);
+}
+
+/* Team Card Attribute Variants */
+.monster-team-card[data-attribute="virus"] { border-left: 4px solid #8B4513; }
+.monster-team-card[data-attribute="vaccine"] { border-left: 4px solid #4CAF50; }
+.monster-team-card[data-attribute="data"] { border-left: 4px solid #2196F3; }
+.monster-team-card[data-attribute="free"] { border-left: 4px solid #9C27B0; }
+.monster-team-card[data-attribute="variable"] { border-left: 4px solid #FF9800; }
+
+/* Reward Monster Card */
+.monster-reward-card {
+  min-height: 550px;
+  height: auto;
+  background-color: var(--card-background);
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s, box-shadow 0.2s;
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+.monster-reward-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+}
+
+.monster-reward-card.claimed {
+  opacity: 0.8;
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+/* Reward Card Rarity Variants */
+.monster-reward-card.epic,
+.special-feature-card.epic {
+  border: 2px solid #8b5cf6;
+  box-shadow: 0 4px 20px rgba(139, 92, 246, 0.2);
+}
+
+.monster-reward-card.mythical,
+.special-feature-card.mythical {
+  border: 2px solid var(--warning-color);
+  box-shadow: 0 4px 25px rgba(245, 158, 11, 0.3);
+  animation: mythical-card-glow 3s ease-in-out infinite alternate;
+}
+
+.monster-reward-card.legendary,
+.special-feature-card.legendary {
+  border: 2px solid #fbbf24;
+  box-shadow: 0 4px 30px rgba(251, 191, 36, 0.4);
+  animation: legendary-card-glow 2s ease-in-out infinite alternate;
+}
+
+/* Special Feature Card */
+.special-feature-card {
+  background-color: var(--card-background);
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s, box-shadow 0.2s;
+  overflow: hidden;
+  margin-bottom: 20px;
+  align-items: center;
+}
+
+.special-feature-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+}
+
+.special-feature-card.claimed {
+  opacity: 0.8;
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+/* Monster Option Card */
+.monster-option {
+  position: relative;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border-radius: 12px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.1);
+  border: 2px solid transparent;
+}
+
+.monster-option:hover:not(.disabled) {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.monster-option.selected {
+  border-color: var(--success-light);
+  box-shadow: 0 0 20px rgba(76, 175, 80, 0.4);
+  transform: translateY(-5px);
+}
+
+.monster-option.disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Lineage Monster Card */
+.lineage-monster-card {
+  position: relative;
+  background-color: var(--card-background);
+  border-radius: 0.5rem;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s;
+}
+
+.lineage-monster-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Monster Edit Card */
+.monster-edit-card {
+  border: 2px solid var(--border-color);
+  border-radius: 12px;
+  padding: 20px;
+  background: var(--card-background);
+  transition: all 0.2s;
+}
+
+.monster-edit-card:hover {
+  border-color: var(--blue-color);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.1);
+}
+
+/* Monster Selector Card */
+.monster-selector-card {
+  background-color: rgba(20, 27, 40, 0.7);
+  border-radius: 8px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  border: 2px solid transparent;
+  height: 100%;
+  min-height: 160px;
+}
+
+.monster-selector-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+  background-color: rgba(30, 37, 50, 0.9);
+}
+
+.monster-selector-card.selected {
+  border-color: var(--gold-color);
+  background-color: rgba(214, 163, 57, 0.1);
+  transform: translateY(-4px);
+  box-shadow: 0 6px 12px rgba(214, 163, 57, 0.2);
+}
+
+/* Result Card */
+.result-card {
+  margin-bottom: 15px;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.result-card.success {
+  background: #3b6946;
+  border: 1px solid #c3e6cb;
+}
+
+.result-card.error {
+  background: #66272c;
+  border: 1px solid #f5c2c7;
+}
+
+/* =============================================================================
+   3. CARD HEADERS & META
+   ============================================================================= */
+
+.monster-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid var(--border-color);
+}
+
+.monster-header h3 {
+  font-size: var(--font-size-xl);
+  color: var(--accent-color);
+  margin: 0;
+}
+
+.monster-header .placeholder-image {
+  color: var(--text-muted);
+  font-size: 1.5rem;
+}
+
+.item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.monster-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 15px;
+  background-color: var(--nav-background);
+  border-bottom: 1px solid var(--divider-color);
+}
+
+.monster-card-header .monster-level {
+  background: transparent;
+  color: var(--text-color-secondary);
+  padding: 0;
+}
+
+.monster-reward-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.monster-reward-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+/* =============================================================================
+   4. CARD IMAGES & MEDIA
+   ============================================================================= */
+
+.monster-image-container {
+  position: relative;
+  overflow: hidden;
+  max-height: 200px;
+  height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.monster-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transition: transform 0.3s;
+  flex-shrink: 0;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 2px solid var(--border-color);
+}
+
+.monster-card:hover .monster-image {
+  transform: scale(1.05);
+}
+
+.monster-card-image {
+  position: relative;
+  width: 100%;
+  height: 180px;
+  overflow: hidden;
+  background-color: var(--nav-hover);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.monster-card-image img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  transition: transform 0.3s;
+}
+
+.result-image {
+  width: 200px;
+  height: 100%;
+  object-fit: contain;
+}
+
+.selected-badge {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  width: 1.5rem;
+  height: 1.5rem;
+  background-color: var(--accent-color);
+  color: var(--text-color);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--font-size-sm);
+}
+
+.monster-level-badge {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  background-color: var(--accent-color);
+  color: var(--text-color);
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+/* Monster Selector Card Image */
+.monster-selector-card-image {
+  height: 100px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.3);
+  min-height: 80px;
+}
+
+.monster-selector-card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transition: transform 0.3s ease;
+}
+
+.monster-selector-card:hover .monster-selector-card-image img {
+  transform: scale(1.05);
+}
+
+/* Species/Reward Images */
+.species-image,
+.monster-species-image {
+  width: 100px;
+  height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 10px;
+  border-radius: 1rem;
+  overflow: hidden;
+}
+
+.monster-species-image img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.monster-species-placeholder {
+  font-size: 40px;
+  color: var(--text-muted);
+}
+
+/* Monster References Grid */
+.monster-references {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 5px;
+  margin-top: 10px;
+}
+
+/* =============================================================================
+   5. CARD BODY & INFO
+   ============================================================================= */
+
+.monster-info {
+  flex: 1;
+  padding: 1.25rem;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  background: transparent;
+  border-radius: 0;
+  margin-bottom: 1.5rem;
+  align-items: flex-start;
+}
+
+.monster-card-info {
+  padding: 15px;
+}
+
+.monster-card-info h4 {
+  color: var(--gold-color);
+  margin-bottom: 0.25rem;
+}
+
+.monster-card-info p {
+  color: var(--text-muted);
+  margin-bottom: 0;
+}
+
+.monster-species {
+  font-size: 1.1rem;
+  font-weight: 500;
+  margin-bottom: 10px;
+  color: var(--text-color);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.monster-name {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+.monster-description {
+  font-size: var(--font-size-sm);
+  line-height: 1.5;
+  color: var(--text-color);
+  margin: 0;
+}
+
+/* Monster Selector Card Content */
+.monster-selector-card-content {
+  padding: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  flex: 1;
+  min-height: 40px;
+}
+
+.monster-selector-card-name {
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--text-color);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.monster-selector-level {
+  font-size: 0.8rem;
+  background-color: rgba(214, 163, 57, 0.2);
+  color: var(--gold-color);
+  padding: 0.15rem 0.4rem;
+  border-radius: 4px;
+  font-weight: 700;
+}
+
+.monster-selector-species {
+  font-size: 0.8rem;
+  color: var(--text-color);
+  opacity: 0.8;
+  font-style: italic;
+}
+
+.monster-selector-attribute {
+  font-size: 0.75rem;
+  color: var(--gold-color);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Monster Info Sections */
+.monster-info-section,
+.item-info-section {
+  background-color: var(--card-background);
+  border-radius: 0.5rem;
+  padding: 1.25rem;
+  border: 1px solid var(--border-color);
+}
+
+.monster-info-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.75rem;
+}
+
+/* Species Name (consolidated) */
+.species-name {
+  font-weight: 600;
+  margin-bottom: 8px;
+  text-align: center;
+  color: var(--text-color);
+  word-break: break-word;
+  display: inline-block;
+}
+
+.species-slot {
+  font-weight: 600;
+  margin-bottom: 8px;
+  text-align: center;
+  color: var(--text-color);
+}
+
+.monster-species-name {
+  font-weight: 600;
+  margin-bottom: 8px;
+  text-align: center;
+}
+
+/* Reward Details */
+.monster-reward-details {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  padding: 10px;
+  background-color: rgba(0, 0, 0, 0.03);
+  border-radius: 8px;
+}
+
+.monster-reward-actions {
+  margin-top: auto;
+  padding-top: 15px;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+/* Species Grid */
+.monster-species-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 15px;
+  margin-bottom: 15px;
+}
+
+.monster-species-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.03);
+  border-radius: 8px;
+  padding: 10px;
+  transition: transform 0.2s;
+}
+
+.monster-species-item:hover {
+  transform: scale(1.05);
+}
+
+.monster-types-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 15px;
+  padding: 10px;
+  background-color: rgba(0, 0, 0, 0.03);
+  border-radius: 8px;
+}
+
+/* More/Overflow Tags */
+.species-more,
+.types-more {
+  display: inline-block;
+  padding: 0.3rem 0.7rem;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  background: var(--text-muted);
+  color: var(--text-color);
+}
+
+/* =============================================================================
+   6. RESPONSIVE STYLES
+   ============================================================================= */
+
+/* Tablet screens (768px and below) */
+@media (max-width: 768px) {
+  .monster-card {
+    min-width: unset;
+    max-width: 100%;
+  }
+}
+
+/* Mobile screens (480px and below) */
+@media (max-width: 480px) {
+  .monster-card {
+    padding: 0.75rem;
+  }
+
+  .monster-card-image {
+    height: 120px;
+  }
+
+  .monster-card-name {
+    font-size: 1rem;
+  }
+}
+
+/* Print styles */
+@media print {
+  .monster-card {
+    break-inside: avoid;
+    box-shadow: none;
+    border: 1px solid #ccc;
+  }
+
+  .monster-card {
+    display: inline-block;
+    width: 45%;
+    margin: 2%;
+    page-break-inside: avoid;
+  }
+}
+
+/* Reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  .monster-card {
+    transition: none;
+  }
+
+  .monster-card:hover {
+    transform: none;
+  }
+}

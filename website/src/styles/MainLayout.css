@@ -325,7 +325,7 @@
 .mobile-nav-link:active,
 .mobile-dropdown-toggle:active {
   background-color: var(--accent-color);
-  color: white;
+  color: var(--text-color);
   transform: scale(0.98);
 }
 

@@ -435,7 +435,7 @@ const RewardsDisplay = ({
                         onChange={(trainerId) => handleTrainerSelect(reward.id, trainerId)}
                       />
                       <button
-                        className="btn-primary mt-2 w-full"
+                        className="btn btn-primary mt-2 w-full"
                         onClick={() => claimReward(reward.id)}
                         disabled={claimingReward === reward.id || !selectedTrainers[reward.id]}
                       >
@@ -488,7 +488,7 @@ const RewardsDisplay = ({
       {anyUnclaimed && userTrainers.length > 0 && (
         <div className="rewards-actions">
           <button
-            className="btn-primary"
+            className="btn btn-primary"
             onClick={claimAllRewards}
             disabled={loading}
           >

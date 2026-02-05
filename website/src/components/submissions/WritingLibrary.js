@@ -347,13 +347,13 @@ const WritingLibrary = () => {
 
         <div className="filter-actions">
           <button
-            className="filter-button apply"
+            className="button button-filter apply"
             onClick={applyFilters}
           >
             Apply Filters
           </button>
           <button
-            className="filter-button reset"
+            className="button button-filter reset"
             onClick={resetFilters}
           >
             Reset
@@ -450,7 +450,7 @@ const WritingLibrary = () => {
       {totalPages > 1 && (
         <div className="gallery-pagination">
           <button
-            className="pagination-button"
+            className="button button-secondary"
             onClick={() => handlePageChange(page - 1)}
             disabled={page === 1}
           >
@@ -462,7 +462,7 @@ const WritingLibrary = () => {
           </div>
 
           <button
-            className="pagination-button"
+            className="button button-secondary"
             onClick={() => handlePageChange(page + 1)}
             disabled={page === totalPages}
           >

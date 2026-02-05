@@ -268,7 +268,7 @@ const TrainerReferenceSubmissionForm = ({ onSubmissionComplete }) => {
                 {index > 0 && (
                   <button
                     type="button"
-                    className="remove-button"
+                    className="button button-danger button-icon"
                     onClick={() => removeReference(index)}
                   >
                     Remove
@@ -359,7 +359,7 @@ const TrainerReferenceSubmissionForm = ({ onSubmissionComplete }) => {
 
           <button
             type="button"
-            className="add-button"
+            className="button button-primary"
             onClick={addReference}
           >
             Add Another Reference
@@ -372,7 +372,7 @@ const TrainerReferenceSubmissionForm = ({ onSubmissionComplete }) => {
 
           <button
             type="button"
-            className="estimate-button"
+            className="button button-secondary"
             onClick={calculateRewardEstimate}
             disabled={loading}
           >
@@ -404,7 +404,7 @@ const TrainerReferenceSubmissionForm = ({ onSubmissionComplete }) => {
         <div className="form-actions">
           <button
             type="submit"
-            className="submit-button"
+            className="button button-success"
             disabled={loading}
           >
             {loading ? (

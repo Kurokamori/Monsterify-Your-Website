@@ -513,10 +513,10 @@ const MonsterDetailPage = () => {
       <div className="error-container">
         <i className="fas fa-exclamation-circle"></i>
         <p>{error}</p>
-        <button onClick={fetchMonsterData} className="retry-button">
+        <button onClick={fetchMonsterData} className="btn btn-primary">
           Try Again
         </button>
-        <button onClick={() => navigate(-1)} className="back-button">
+        <button onClick={() => navigate(-1)} className="button button-secondary">
           Go Back
         </button>
       </div>
@@ -528,7 +528,7 @@ const MonsterDetailPage = () => {
       <div className="error-container">
         <i className="fas fa-dragon-slash"></i>
         <p>Monster not found. The monster you're looking for might not exist or has been removed.</p>
-        <button onClick={() => navigate(-1)} className="back-button">
+        <button onClick={() => navigate(-1)} className="button button-secondary">
           Go Back
         </button>
       </div>
@@ -1711,7 +1711,7 @@ const MonsterDetailPage = () => {
                               )}
                               {showEditLineage && isOwner && (
                                 <button 
-                                  className="remove-relationship-button"
+                                  className="button button-icon button-danger"
                                   onClick={() => removeLineageRelationship(parent.id, 'parent')}
                                   title="Remove parent relationship"
                                 >
@@ -1845,7 +1845,7 @@ const MonsterDetailPage = () => {
                               )}
                               {showEditLineage && isOwner && (
                                 <button 
-                                  className="remove-relationship-button"
+                                  className="button button-icon button-danger"
                                   onClick={() => removeLineageRelationship(child.id, 'child')}
                                   title="Remove child relationship"
                                 >
@@ -2007,7 +2007,7 @@ const MonsterDetailPage = () => {
                           </div>
                         </div>
                         <button 
-                          className="add-relationship-button"
+                          className="button button-primary"
                           onClick={addLineageRelationship}
                           disabled={!selectedMonster}
                         >

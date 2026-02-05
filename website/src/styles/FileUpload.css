@@ -114,8 +114,8 @@
 }
 
 .remove-image-button {
-  background-color: var(--danger-color);
-  color: white;
+  background-color: var(--error-color);
+  color: var(--text-color);
   position: absolute;
   top: -0.5rem;
   right: -0.5rem;
@@ -193,7 +193,7 @@
 }
 
 .image-uploader {
-  background: white;
+  background: var(--text-color);
   border-radius: 8px;
   padding: 1.5rem;
   border: 1px solid #e9ecef;
@@ -226,7 +226,7 @@
   border-radius: 8px;
   border: none;
   background: var(--success-color);
-  color: white;
+  color: var(--text-color);
   cursor: pointer;
   transition: all 0.2s;
 }
@@ -274,12 +274,6 @@
   margin-top: 0.1rem;
 }
 
-
-
-.error-message i {
-  color: #dc3545;
-}
-
 .images-preview h5 {
   margin: 0 0 1rem 0;
   color: #2c3e50;
@@ -303,7 +297,7 @@
 
 
 .image-item {
-  background: white;
+  background: var(--text-color);
   border: 2px solid #e9ecef;
   border-radius: 12px;
   overflow: hidden;
@@ -370,7 +364,7 @@
   top: 0.5rem;
   left: 0.5rem;
   background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
-  color: white;
+  color: var(--text-color);
   padding: 0.3rem 0.6rem;
   border-radius: 12px;
   font-size: 0.8rem;
@@ -395,31 +389,6 @@
 
 .image-item:hover .image-actions {
   opacity: 1;
-}
-
-
-
-.btn-icon:hover {
-  background: rgba(0, 0, 0, 0.9);
-  transform: scale(1.1);
-}
-
-.btn-icon.move-up,
-.btn-icon.move-down {
-  background: rgba(0, 123, 255, 0.8);
-}
-
-.btn-icon.move-up:hover,
-.btn-icon.move-down:hover {
-  background: rgba(0, 123, 255, 1);
-}
-
-.btn-icon.remove {
-  background: rgba(220, 53, 69, 0.8);
-}
-
-.btn-icon.remove:hover {
-  background: rgba(220, 53, 69, 1);
 }
 
 .image-url {
@@ -461,7 +430,7 @@
   border-radius: 4px;
   font-size: 1rem;
   transition: all 0.2s;
-  background: white;
+  background: var(--text-color);
 }
 
 
@@ -497,20 +466,6 @@
     background: #f8f9fa;
     padding: 0.5rem;
     border-top: 1px solid #e9ecef;
-  }
-  
-  .btn-icon {
-    position: static;
-    background: #6c757d;
-  }
-  
-  .btn-icon.move-up,
-  .btn-icon.move-down {
-    background: #007bff;
-  }
-  
-  .btn-icon.remove {
-    background: #dc3545;
   }
 }
 

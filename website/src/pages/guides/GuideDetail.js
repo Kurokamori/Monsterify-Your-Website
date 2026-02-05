@@ -171,7 +171,7 @@ const GuideDetail = () => {
   return (
     <div className="guide-detail-container">
       <button 
-        className="back-button"
+        className="button button-secondary"
         onClick={() => navigate('/guides')}
       >
         <i className="fas fa-arrow-left"></i> Back to Guides

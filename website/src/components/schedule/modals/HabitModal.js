@@ -296,10 +296,10 @@ const HabitModal = ({ isOpen, onClose, onSuccess, trainers = [], habit = null })
           </div>
 
           <div className="modal-actions">
-            <button type="button" onClick={onClose} className="btn-secondary">
+            <button type="button" onClick={onClose} className="btn btn-secondary">
               Cancel
             </button>
-            <button type="submit" disabled={loading} className="btn-primary">
+            <button type="submit" disabled={loading} className="btn btn-primary">
               {loading ? (
                 <>
                   <i className="fas fa-spinner fa-spin"></i>

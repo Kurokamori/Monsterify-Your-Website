@@ -1,0 +1,45 @@
+/* ==============================
+   Trainer Styles Index
+
+   This file imports all trainer-related styles.
+   Import this file to get all trainer styles.
+   ============================== */
+
+/* Core trainer elements */
+@import './trainer-core.css';
+
+/* Card grid and listing */
+@import './trainer-card.css';
+
+/* Table list styles */
+@import './trainer-list.css';
+
+/* Detail page styles */
+@import './trainer-detail.css';
+
+/* Profile info, quote, bio, attributes */
+@import './trainer-profile.css';
+
+/* Create/Edit form styles */
+@import './trainer-form.css';
+
+/* My Trainers page */
+@import './trainer-my-trainers.css';
+
+/* PC boxes and edit boxes */
+@import './trainer-pc-boxes.css';
+
+/* Inventory styles */
+@import './trainer-inventory.css';
+
+/* Stats tab styles */
+@import './trainer-stats.css';
+
+/* Achievements tab styles */
+@import './trainer-achievements.css';
+
+/* Trainer selection/selector */
+@import './trainer-selection.css';
+
+/* Additional references */
+@import './trainer-references.css';

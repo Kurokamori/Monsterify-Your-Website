@@ -79,8 +79,22 @@ const MainLayout = () => {
               <Link to="/guides/ability-database">Ability Database</Link>
             </div>
           </div>
-          <Link to="/gallery" className="top-nav-link">Gallery</Link>
-          <Link to="/library" className="top-nav-link">Library</Link>
+          <div className="dropdown">
+            <Link to="/submissions" className="top-nav-link">
+              Submissions
+              <span className="dropdown-arrow"></span>
+            </Link>
+            <div className="dropdown-content">
+              <Link to="/submissions?tab=gallery">Gallery</Link>
+              <Link to="/submissions?tab=library">Library</Link>
+              {isAuthenticated && (
+                <>
+                  <Link to="/submissions?tab=submit">Submit</Link>
+                  <Link to="/submissions?tab=my-submissions">My Submissions</Link>
+                </>
+              )}
+            </div>
+          </div>
           <div className="nav-divider"></div>
           {isAuthenticated && (
             <>
@@ -170,8 +184,24 @@ const MainLayout = () => {
             </div>
           </div>
 
-          <Link to="/gallery" className="mobile-nav-link" onClick={toggleMobileMenu}>Gallery</Link>
-          <Link to="/library" className="mobile-nav-link" onClick={toggleMobileMenu}>Library</Link>
+          <div className="mobile-dropdown">
+            <button
+              className="mobile-dropdown-toggle"
+              onClick={() => toggleDropdown('submissions')}
+            >
+              Submissions <i className={`fas fa-chevron-${dropdownOpen.submissions ? 'up' : 'down'}`}></i>
+            </button>
+            <div className={`mobile-dropdown-content ${dropdownOpen.submissions ? 'active' : ''}`}>
+              <Link to="/submissions?tab=gallery" className="mobile-nav-link" onClick={toggleMobileMenu}>Gallery</Link>
+              <Link to="/submissions?tab=library" className="mobile-nav-link" onClick={toggleMobileMenu}>Library</Link>
+              {isAuthenticated && (
+                <>
+                  <Link to="/submissions?tab=submit" className="mobile-nav-link" onClick={toggleMobileMenu}>Submit</Link>
+                  <Link to="/submissions?tab=my-submissions" className="mobile-nav-link" onClick={toggleMobileMenu}>My Submissions</Link>
+                </>
+              )}
+            </div>
+          </div>
 
           {isAuthenticated && (
             <>
@@ -258,8 +288,7 @@ const MainLayout = () => {
               <Link to="/guides">Guides</Link>
               <Link to="/guides/locations">Locations</Link>
               <Link to="/guides/lore">Lore</Link>
-              <Link to="/gallery">Gallery</Link>
-              <Link to="/library">Library</Link>
+              <Link to="/submissions">Submissions</Link>
             </div>
           </div>
           <div className="footer-section" style={{ flex: '2' }}>

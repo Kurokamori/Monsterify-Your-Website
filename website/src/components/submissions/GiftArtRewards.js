@@ -263,7 +263,7 @@ const GiftRewards = ({
                 </span>
                 <button
                   type="button"
-                  className="remove-allocation"
+                  className="button button-icon button-danger"
                   onClick={() => handleRemoveAllocation(allocation.id)}
                 >
                   <i className="fas fa-times"></i>
@@ -278,7 +278,7 @@ const GiftRewards = ({
             {!showAddAllocation ? (
               <button
                 type="button"
-                className="add-allocation-btn"
+                className="button button-primary"
                 onClick={() => setShowAddAllocation(true)}
               >
                 <i className="fas fa-plus"></i>
@@ -334,7 +334,7 @@ const GiftRewards = ({
                 <div className="form-actions">
                   <button
                     type="button"
-                    className="add-btn"
+                    className="button button-primary"
                     onClick={handleAddAllocation}
                     disabled={!selectedEntityId || allocationLevels < 1 || allocationLevels > availableLevels}
                   >
@@ -342,7 +342,7 @@ const GiftRewards = ({
                   </button>
                   <button
                     type="button"
-                    className="cancel-btn"
+                    className="button button-secondary"
                     onClick={() => {
                       setShowAddAllocation(false);
                       setSelectedEntityId('');
@@ -470,7 +470,7 @@ const GiftRewards = ({
       <div className="gift-rewards-actions">
         <button
           type="button"
-          className="cancel-button"
+          className="button button-secondary"
           onClick={onCancel}
           disabled={loading}
         >
@@ -478,7 +478,7 @@ const GiftRewards = ({
         </button>
         <button
           type="button"
-          className="submit-button"
+          className="button button-success"
           onClick={handleSubmit}
           disabled={loading || availableLevels > 0}
         >

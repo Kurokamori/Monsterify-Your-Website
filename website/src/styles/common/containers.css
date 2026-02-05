@@ -1,0 +1,65 @@
+/* ==============================
+   Page Containers & Headers
+   ============================== */
+
+.page-container,
+.guides-container,
+.guide-detail-container,
+.lore-container,
+.npcs-container {
+  width: 100%;
+  max-width: var(--container-max-width);
+  margin: 0 auto;
+  padding: 0 var(--content-padding);
+}
+
+.page-header,
+.guides-header,
+.lore-header,
+.npcs-header {
+  text-align: center;
+  margin-bottom: 2rem;
+  display: grid;
+}
+
+.page-header h1,
+.guides-header h1,
+.lore-header h1,
+.npcs-header h1 {
+  font-size: var(--font-size-4xl);
+  color: var(--accent-color);
+  margin-bottom: 0.5rem;
+}
+
+.page-header p,
+.guides-header p,
+.lore-header p,
+.npcs-header p {
+  font-size: var(--font-size-lg);
+  color: var(--text-color);
+  opacity: 0.8;
+}
+
+/* ---------- Section Title ---------- */
+
+.section-title {
+  font-size: var(--font-size-lg);
+  color: var(--accent-color);
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--divider-color);
+}
+
+.npc-section .section-title {
+  font-size: var(--font-size-lg);
+}
+
+/* ---------- Card Container ---------- */
+
+.card-container {
+  background-color: var(--card-background);
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}

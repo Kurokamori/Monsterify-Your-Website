@@ -341,11 +341,11 @@ const FactionSubmissionModal = ({ faction, trainerId, onClose, onSubmit }) => {
         <div className="modal-footer">
           {step === 1 && (
             <>
-              <button className="btn-secondary" onClick={onClose}>
+              <button className="btn btn-secondary" onClick={onClose}>
                 Cancel
               </button>
               <button
-                className="btn-primary"
+                className="btn btn-primary"
                 onClick={() => setStep(2)}
                 disabled={!formData.submissionId || availableSubmissions.length === 0}
               >
@@ -356,11 +356,11 @@ const FactionSubmissionModal = ({ faction, trainerId, onClose, onSubmit }) => {
           
           {step === 2 && (
             <>
-              <button className="btn-secondary" onClick={() => setStep(1)}>
+              <button className="btn btn-secondary" onClick={() => setStep(1)}>
                 Back
               </button>
               <button
-                className="btn-primary"
+                className="btn btn-primary"
                 onClick={handleSubmit}
                 disabled={loading || !formData.submissionId}
               >
@@ -370,7 +370,7 @@ const FactionSubmissionModal = ({ faction, trainerId, onClose, onSubmit }) => {
           )}
           
           {step === 3 && (
-            <button className="btn-primary" onClick={onClose}>
+            <button className="btn btn-primary" onClick={onClose}>
               Close
             </button>
           )}

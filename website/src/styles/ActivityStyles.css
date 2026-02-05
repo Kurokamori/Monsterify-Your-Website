@@ -144,7 +144,7 @@
 }
 
 .activity-prompt-notice strong {
-  color: #60a5fa;
+  color: var(--blue-color);
   font-weight: 600;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
 }
@@ -177,7 +177,7 @@
 
 .cooldown-notice p:first-child {
   font-weight: 600;
-  color: #f97316;
+  color: var(--warning-color);
 }
 
 .cooldown-notice p:last-child {
@@ -191,7 +191,7 @@
 
 .timer-background {
   fill: transparent;
-  stroke: #374151;
+  stroke: var(--nav-hover);
   stroke-width: 8;
 }
 
@@ -201,7 +201,7 @@
   stroke-width: 8;
   stroke-linecap: round;
   transition: stroke-dashoffset 0.5s;
-  stroke: #3b82f6;
+  stroke: var(--blue-color);
 }
 
 
@@ -229,7 +229,7 @@
 
 .timer-label {
   font-size: 1rem;
-  color: #9ca3af;
+  color: var(--text-muted);
   opacity: 0.7;
   margin-bottom: 5px;
 }
@@ -408,7 +408,7 @@
 .activity-info h3 {
   margin-top: 0;
   margin-bottom: 15px;
-  color: white;
+  color: var(--text-color);
   font-size: 1.4rem;
   font-weight: 700;
   text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
@@ -439,7 +439,7 @@
   transition: all 0.3s ease;
   border: none;
   background: linear-gradient(135deg, var(--accent-color), #b8860b);
-  color: white;
+  color: var(--text-color);
   box-shadow: 0 4px 12px rgba(214, 163, 57, 0.3);
 }
 
@@ -462,7 +462,7 @@
   border-radius: 8px;
   padding: 12px 16px;
   text-align: center;
-  color: #f97316;
+  color: var(--warning-color);
   font-weight: 600;
   font-size: 0.95rem;
 }
@@ -607,7 +607,7 @@
 .reward-icon {
   font-size: 1.2rem;
   margin-bottom: 10px;
-  color: white;
+  color: var(--text-color);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -630,7 +630,7 @@
 
 .reward-description {
   font-size: 0.875rem;
-  color: #9ca3af;
+  color: var(--text-muted);
   opacity: 0.8;
   margin-bottom: 1rem;
 }
@@ -644,8 +644,8 @@
 
 
 .claimed-badge {
-  background-color: #10b981;
-  color: white;
+  background-color: var(--success-color);
+  color: var(--text-color);
   padding: 8px 12px;
   border-radius: 4px;
   font-weight: 500;
@@ -663,16 +663,65 @@
 }
 
 
-/* Responsive Design */
+/* ===== COMPREHENSIVE RESPONSIVE DESIGN FOR ACTIVITIES ===== */
+
+/* Tablet (768px - 1024px) */
+@media (max-width: 1024px) {
+  .activity-session-container {
+    padding: 15px;
+  }
+
+  .location-activities {
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 20px;
+  }
+
+  .activity-image {
+    height: 500px;
+  }
+
+  .timer-display {
+    width: 220px;
+    height: 220px;
+  }
+
+  .timer-time {
+    font-size: 2.2rem;
+  }
+
+  .garden-plots {
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 1.25rem;
+  }
+
+  .activity-prompt {
+    padding: 20px;
+  }
+
+  .activity-prompt h3 {
+    font-size: 1.3rem;
+  }
+
+  .activity-prompt p {
+    font-size: 1rem;
+  }
+}
+
+/* Mobile (max-width: 768px) */
 @media (max-width: 768px) {
-  
+  .activity-session-container {
+    padding: 12px;
+  }
+
   .activity-session-header {
     flex-direction: column;
     align-items: flex-start;
+    gap: 0.5rem;
   }
 
   .activity-session-header h2 {
     margin-bottom: 10px;
+    font-size: 1.25rem;
   }
 
   .location-activities {
@@ -686,20 +735,22 @@
   }
 
   .activity-image {
-    height: 400px;
+    height: 350px;
   }
 
   .activity-info {
-    padding: 20px;
+    padding: 15px 20px 20px 20px;
   }
 
   .activity-info h3 {
-    font-size: 1.3rem;
+    font-size: 1.2rem;
+    margin-bottom: 12px;
   }
 
   .activity-info p {
-    font-size: 0.95rem;
-    line-height: 1.6;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    margin-bottom: 15px;
   }
 
   .activity-info .btn-primary {
@@ -707,20 +758,407 @@
     font-size: 1rem;
   }
 
+  .timer-display {
+    width: 200px;
+    height: 200px;
+    margin-bottom: 15px;
+  }
+
+  .timer-time {
+    font-size: 2rem;
+  }
+
+  .timer-label {
+    font-size: 0.9rem;
+  }
+
   .rewards-grid {
     grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 0.75rem;
   }
 
   .garden-plots {
     grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 1rem;
+  }
+
+  .garden-plot {
+    border-radius: 0.375rem;
+  }
+
+  .plot-image-container {
+    height: 130px;
+    padding: 0.75rem;
+  }
+
+  .plot-info {
+    padding: 0.75rem;
+  }
+
+  .plot-name {
+    font-size: 0.95rem;
   }
 
   .activity-prompt {
-    padding: 20px;
+    padding: 18px;
     margin-bottom: 25px;
+  }
+
+  .activity-prompt h3 {
+    font-size: 1.25rem;
+    margin-bottom: 15px;
+  }
+
+  .activity-prompt p {
+    font-size: 0.95rem;
+    line-height: 1.6;
   }
 
   .creative-instructions {
     padding: 15px;
+    margin-top: 15px;
+  }
+
+  .creative-instructions p {
+    font-size: 0.9rem;
+  }
+
+  .activity-flavor {
+    padding: 12px;
+    margin-bottom: 25px;
+  }
+
+  .activity-completion {
+    padding: 15px;
+  }
+
+  .cooldown-notice {
+    padding: 12px 15px;
+  }
+
+  .cooldown-indicator {
+    padding: 10px 14px;
+    font-size: 0.9rem;
+  }
+
+  .activity-rewards {
+    padding: 15px;
+  }
+
+  .activity-rewards h3 {
+    font-size: 1.25rem;
+  }
+
+  .rewards-actions {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .rewards-actions button {
+    width: 100%;
+  }
+
+  .task-content {
+    padding: 1rem;
+  }
+
+  .task-title {
+    font-size: 1.1rem;
+  }
+
+  .task-description {
+    font-size: 0.85rem;
+  }
+
+  .task-rewards {
+    gap: 0.375rem;
+  }
+
+  .task-actions {
+    flex-direction: column;
+    gap: 0.375rem;
+  }
+
+  .task-actions button {
+    width: 100%;
+  }
+
+  .active-session-message {
+    padding: 20px;
+  }
+
+  .active-session-message h2 {
+    font-size: 1.25rem;
+  }
+}
+
+/* Small Mobile (max-width: 480px) */
+@media (max-width: 480px) {
+  .activity-session-container {
+    padding: 10px;
+  }
+
+  .activity-session-header h2 {
+    font-size: 1.1rem;
+  }
+
+  .location-activities {
+    gap: 15px;
+    padding: 10px 0;
+  }
+
+  .activity-image {
+    height: 280px;
+  }
+
+  .activity-info {
+    padding: 12px 15px 18px 15px;
+  }
+
+  .activity-info h3 {
+    font-size: 1.1rem;
+    margin-bottom: 10px;
+    gap: 8px;
+  }
+
+  .activity-info h3::before {
+    font-size: 1rem;
+  }
+
+  .activity-info p {
+    font-size: 0.85rem;
+    margin-bottom: 12px;
+  }
+
+  .activity-info .btn-primary {
+    padding: 8px 16px;
+    font-size: 0.9rem;
+    border-radius: 8px;
+  }
+
+  .timer-display {
+    width: 180px;
+    height: 180px;
+  }
+
+  .timer-time {
+    font-size: 1.75rem;
+  }
+
+  .timer-label {
+    font-size: 0.85rem;
+  }
+
+  .rewards-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.5rem;
+  }
+
+  .garden-plots {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+  }
+
+  .plot-image-container {
+    height: 100px;
+  }
+
+  .plot-info {
+    padding: 0.625rem;
+    gap: 0.375rem;
+  }
+
+  .plot-name {
+    font-size: 0.9rem;
+  }
+
+  .activity-prompt {
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 10px;
+  }
+
+  .activity-prompt h3 {
+    font-size: 1.1rem;
+    margin-bottom: 12px;
+  }
+
+  .activity-prompt p {
+    font-size: 0.9rem;
+  }
+
+  .creative-instructions {
+    padding: 12px;
+    border-left-width: 3px;
+  }
+
+  .creative-instructions p {
+    font-size: 0.85rem;
+    margin-bottom: 10px;
+  }
+
+  .activity-flavor {
+    padding: 10px;
+    border-radius: 6px;
+    font-size: 0.9rem;
+  }
+
+  .activity-completion {
+    padding: 12px;
+    gap: 0.75rem;
+  }
+
+  .cooldown-notice {
+    padding: 10px 12px;
+    border-radius: 6px;
+  }
+
+  .cooldown-notice p {
+    font-size: 0.9rem;
+  }
+
+  .cooldown-notice p:first-child {
+    font-size: 0.95rem;
+  }
+
+  .cooldown-notice p:last-child {
+    font-size: 0.8rem;
+  }
+
+  .cooldown-indicator {
+    padding: 8px 12px;
+    font-size: 0.85rem;
+    border-radius: 6px;
+  }
+
+  .activity-rewards h3 {
+    font-size: 1.1rem;
+  }
+
+  .active-session-message {
+    padding: 15px;
+    border-radius: 6px;
+  }
+
+  .active-session-message h2 {
+    font-size: 1.1rem;
+  }
+
+  .active-session-message p {
+    font-size: 0.9rem;
+  }
+
+  .task-content {
+    padding: 0.75rem;
+  }
+
+  .task-title {
+    font-size: 1rem;
+  }
+
+  .task-description {
+    font-size: 0.8rem;
+    margin-bottom: 1rem;
+  }
+}
+
+/* Ultra Small (max-width: 320px) */
+@media (max-width: 320px) {
+  .activity-session-container {
+    padding: 8px;
+  }
+
+  .activity-session-header h2 {
+    font-size: 1rem;
+  }
+
+  .location-activities {
+    gap: 12px;
+  }
+
+  .activity-image {
+    height: 220px;
+  }
+
+  .activity-info {
+    padding: 10px 12px 15px 12px;
+  }
+
+  .activity-info h3 {
+    font-size: 1rem;
+    margin-bottom: 8px;
+  }
+
+  .activity-info p {
+    font-size: 0.8rem;
+  }
+
+  .activity-info .btn-primary {
+    padding: 7px 14px;
+    font-size: 0.85rem;
+  }
+
+  .timer-display {
+    width: 150px;
+    height: 150px;
+  }
+
+  .timer-time {
+    font-size: 1.5rem;
+  }
+
+  .timer-label {
+    font-size: 0.8rem;
+  }
+
+  .rewards-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 0.375rem;
+  }
+
+  .garden-plots {
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+  }
+
+  .plot-image-container {
+    height: 80px;
+  }
+
+  .plot-info {
+    padding: 0.5rem;
+  }
+
+  .plot-name {
+    font-size: 0.85rem;
+  }
+
+  .activity-prompt {
+    padding: 12px;
+  }
+
+  .activity-prompt h3 {
+    font-size: 1rem;
+  }
+
+  .activity-prompt p {
+    font-size: 0.85rem;
+  }
+
+  .creative-instructions {
+    padding: 10px;
+  }
+
+  .creative-instructions p {
+    font-size: 0.8rem;
+  }
+
+  .activity-rewards h3 {
+    font-size: 1rem;
+  }
+
+  .cooldown-indicator {
+    padding: 6px 10px;
+    font-size: 0.8rem;
   }
 }

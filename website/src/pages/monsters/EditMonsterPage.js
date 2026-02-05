@@ -394,10 +394,10 @@ const EditMonsterPage = () => {
       <div className="error-container">
         <i className="fas fa-exclamation-circle"></i>
         <p>{error}</p>
-        <button onClick={fetchMonsterData} className="retry-button">
+        <button onClick={fetchMonsterData} className="btn btn-primary">
           Try Again
         </button>
-        <button onClick={() => navigate(-1)} className="back-button">
+        <button onClick={() => navigate(-1)} className="button button-secondary">
           Go Back
         </button>
       </div>
@@ -430,7 +430,7 @@ const EditMonsterPage = () => {
       <div className="error-container">
         <i className="fas fa-lock"></i>
         <p>You are not authorized to edit this monster.</p>
-        <button onClick={() => navigate(`/monsters/${id}`)} className="back-button">
+        <button onClick={() => navigate(`/monsters/${id}`)} className="button button-secondary">
           View Monster
         </button>
       </div>
@@ -984,7 +984,7 @@ const EditMonsterPage = () => {
                     <h3>Fun Fact #{index + 1}</h3>
                     <button
                       type="button"
-                      className="remove-fun-fact-button"
+                      className="button button-icon button-danger"
                       onClick={() => handleRemoveFunFact(fact.id)}
                     >
                       <i className="fas fa-trash-alt"></i>
@@ -1025,7 +1025,7 @@ const EditMonsterPage = () => {
           <div className="add-fun-fact-button-container">
             <button
               type="button"
-              className="add-fun-fact-button"
+              className="button button-primary"
               onClick={handleAddFunFact}
             >
               <i className="fas fa-plus"></i> Add Fun Fact
@@ -1046,7 +1046,7 @@ const EditMonsterPage = () => {
                     <h3>Relation #{index + 1}</h3>
                     <button
                       type="button"
-                      className="icon-button"
+                      className="button button-icon button-danger"
                       onClick={() => handleRemoveRelation(relation.id)}
                     >
                       <i className="fas fa-trash-alt"></i>
@@ -1140,7 +1140,7 @@ const EditMonsterPage = () => {
           <div className="add-relation-button-container">
             <button
               type="button"
-              className="add-relation-button"
+              className="button button-primary"
               onClick={handleAddRelation}
             >
               <i className="fas fa-plus"></i> Add Relation
@@ -1149,10 +1149,10 @@ const EditMonsterPage = () => {
         </div>
 
         <div className="form-actions">
-          <button type="button" className="cancel-button" onClick={() => navigate(`/monsters/${id}`)}>
+          <button type="button" className="button button-secondary" onClick={() => navigate(`/monsters/${id}`)}>
             Cancel
           </button>
-          <button type="submit" className="save-button" disabled={saving}>
+          <button type="submit" className="button button-primary" disabled={saving}>
             {saving ? <i className="fas fa-spinner fa-spin"></i> : 'Save Changes'}
           </button>
         </div>

@@ -1,0 +1,94 @@
+/* ==============================
+   Badge Styles
+   ============================== */
+
+/* ---------- Status Badges ---------- */
+
+.status-badge {
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  color: var(--text-color);
+}
+
+.status-badge.empty { background-color: var(--text-muted); }
+.status-badge.growing,
+.status-badge.needs-attention { background-color: var(--warning-color); }
+.status-badge.ready,
+.status-badge.tended { background-color: var(--success-color); }
+
+/* ---------- Rarity Badges ---------- */
+
+.rarity-badge.common { background-color: #e0e0e0; color: #616161; }
+.rarity-badge.uncommon { background-color: #81c784; color: #1b5e20; }
+.rarity-badge.rare { background-color: #64b5f6; color: #0d47a1; }
+.rarity-badge.epic { background-color: #ba68c8; color: #4a148c; }
+.rarity-badge.legendary { background-color: #ffd54f; color: #ff6f00; }
+
+/* ---------- Type Badges ---------- */
+
+.type-badge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 1rem;
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  color: var(--text-color);
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+  text-transform: uppercase;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+  letter-spacing: 0.05em;
+  width: max-content;
+}
+
+.type-normal { background-color: #919172; }
+.type-fire { background-color: #d64d17; }
+.type-water { background-color: #4164b7; }
+.type-electric { background-color: #dfb127; }
+.type-grass { background-color: #6fb14e; }
+.type-ice { background-color: #89b6b6; }
+.type-fighting { background-color: #a55538; }
+.type-poison { background-color: #A040A0; }
+.type-ground { background-color: #805f41; }
+.type-flying { background-color: #9786c7; }
+.type-psychic { background-color: #c7496f; }
+.type-bug { background-color: #A8B820; }
+.type-rock { background-color: #9e8546; }
+.type-ghost { background-color: #705898; }
+.type-dragon { background-color: #5126b5; }
+.type-dark { background-color: #39304d; }
+.type-steel { background-color: #8e8ea0; }
+.type-fairy { background-color: #d78899; }
+.type-custom { background-color: #8b5cf6; }
+.type-random { background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #f9ca24); }
+.type-light { background-color: #8db8e4; }
+.type-cosmic { background-color: #342f3d; }
+
+.type-mystery,
+.type-\?\?\? {
+  background: linear-gradient(135deg, #6b7280 0%, #9ca3af 50%, #6b7280 100%);
+  animation: mystery-shimmer 2s ease-in-out infinite;
+}
+
+/* ---------- Attribute Badges ---------- */
+
+.attribute-data { background: #53c4a1; color: var(--text-color); }
+.attribute-virus { background: #ae442a; color: var(--text-color); }
+.attribute-vaccine { background: #4cc8d5; color: var(--text-color); }
+.attribute-variable { background: #483e94; color: var(--text-color); }
+.attribute-free { background: #cf79ca; color: var(--background-color); }
+
+.attribute-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 3px 8px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-color);
+  text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+}

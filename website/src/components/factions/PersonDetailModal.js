@@ -142,7 +142,7 @@ const PersonDetailModal = ({ person, trainerId, onClose, onPersonMet }) => {
             </div>
 
             <div className="form-actions">
-              <button type="button" onClick={onClose} className="cancel-button">
+              <button type="button" onClick={onClose} className="button button-secondary">
                 Cancel
               </button>
               <button 

@@ -138,7 +138,7 @@
 
 .current-badge {
   background: linear-gradient(135deg, var(--accent-color), var(--accent-hover));
-  color: white;
+  color: var(--text-color);
   padding: 6px 12px;
   border-radius: 20px;
   font-size: 0.8rem;
@@ -223,7 +223,7 @@
   font-size: 0.8rem;
   font-weight: bold;
   text-transform: uppercase;
-  color: white;
+  color: var(--text-color);
   text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
   letter-spacing: 0.02em;
 }
@@ -238,7 +238,7 @@
   border-radius: 4px;
   font-size: 0.75rem;
   font-weight: bold;
-  color: white;
+  color: var(--text-color);
   text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
 }
 
@@ -377,12 +377,6 @@
   font-weight: 600;
   color: var(--text-color);
   font-size: 0.9rem;
-}
-
-.stat-value {
-  font-weight: bold;
-  color: var(--accent-color);
-  font-size: 1.1rem;
 }
 
 /* Responsive Design */

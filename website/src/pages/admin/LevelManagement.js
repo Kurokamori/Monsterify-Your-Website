@@ -374,7 +374,7 @@ const LevelManagement = () => {
                     />
                   </div>
 
-                  <button type="submit" className="submit-button" disabled={loading}>
+                  <button type="submit" className="button button-success" disabled={loading}>
                     {loading ? 'Processing...' : 'Add Levels to Trainer'}
                   </button>
                 </form>
@@ -415,7 +415,7 @@ const LevelManagement = () => {
                     />
                   </div>
 
-                  <button type="submit" className="submit-button" disabled={loading}>
+                  <button type="submit" className="button button-success" disabled={loading}>
                     {loading ? 'Processing...' : 'Add Levels to Monster'}
                   </button>
                 </form>
@@ -492,7 +492,7 @@ const LevelManagement = () => {
                     />
                   </div>
 
-                  <button type="submit" className="submit-button" disabled={loading}>
+                  <button type="submit" className="button button-success" disabled={loading}>
                     {loading ? 'Processing...' : 'Add Levels to Selected Trainers'}
                   </button>
                 </form>
@@ -534,7 +534,7 @@ const LevelManagement = () => {
                     />
                   </div>
 
-                  <button type="submit" className="submit-button" disabled={loading}>
+                  <button type="submit" className="button button-success" disabled={loading}>
                     {loading ? 'Processing...' : 'Add Levels to Selected Monsters'}
                   </button>
                 </form>

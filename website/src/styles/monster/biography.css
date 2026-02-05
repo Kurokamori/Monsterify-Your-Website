@@ -1,0 +1,496 @@
+/* =============================================================================
+   MONSTER BIOGRAPHY & LINEAGE
+   ============================================================================= */
+
+/* =============================================================================
+   1. BIOGRAPHY & PREFERENCES
+   ============================================================================= */
+
+.preferences-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
+}
+
+.preference-card {
+  background: var(--nav-background);
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  transition: all 0.2s ease;
+  border: 1px solid transparent;
+}
+
+.preference-card:hover {
+  background: var(--nav-hover);
+  transform: translateY(-1px);
+  border-color: rgba(var(--accent-color-rgb, 214, 163, 57), 0.2);
+}
+
+.preference-icon {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  flex-shrink: 0;
+}
+
+.likes-card .preference-icon {
+  background: linear-gradient(135deg, #e74c3c, #c0392b);
+  color: #fff;
+}
+
+.dislikes-card .preference-icon {
+  background: linear-gradient(135deg, #34495e, #2c3e50);
+  color: #fff;
+}
+
+.preference-content {
+  flex: 1;
+}
+
+.preference-label {
+  font-size: var(--font-size-sm);
+  color: var(--text-color);
+  opacity: 0.7;
+  margin-bottom: 0.25rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.preference-value {
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  color: var(--text-color);
+  line-height: 1.4;
+}
+
+/* Fun Facts */
+.enhanced-fun-facts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.25rem;
+}
+
+.enhanced-fun-fact-card {
+  background: var(--nav-background);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  transition: all 0.3s ease;
+  border: 1px solid transparent;
+  position: relative;
+  overflow: hidden;
+}
+
+.enhanced-fun-fact-card:hover {
+  background: var(--nav-hover);
+  transform: translateY(-2px);
+  border-color: rgba(var(--accent-color-rgb, 214, 163, 57), 0.2);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.fact-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 0.75rem;
+  background: linear-gradient(135deg, var(--accent-color), rgba(var(--accent-color-rgb, 214, 163, 57), 0.7));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #000;
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+.fact-title {
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  color: var(--text-color);
+  margin-bottom: 0.5rem;
+}
+
+.fact-text {
+  font-size: var(--font-size-sm);
+  color: var(--text-color);
+  opacity: 0.9;
+  line-height: 1.5;
+}
+
+.fact-number {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: rgba(var(--accent-color-rgb, 214, 163, 57), 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  color: var(--accent-color);
+}
+
+/* Relations */
+.enhanced-relations-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 1.25rem;
+}
+
+.enhanced-relation-card {
+  background: var(--nav-background);
+  border-radius: 1rem;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  border: 1px solid transparent;
+  transition: all 0.3s ease;
+}
+
+.enhanced-relation-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  border-color: rgba(var(--accent-color-rgb, 214, 163, 57), 0.2);
+}
+
+.relation-header-section {
+  background: linear-gradient(135deg, var(--nav-hover), var(--nav-background));
+  padding: 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  border-bottom: 1px solid rgba(var(--accent-color-rgb, 214, 163, 57), 0.1);
+}
+
+.relation-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent-color), rgba(var(--accent-color-rgb, 214, 163, 57), 0.7));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #000;
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+.relation-title {
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  color: var(--text-color);
+  margin: 0 0 0.25rem;
+}
+
+.relation-type {
+  font-size: var(--font-size-sm);
+  color: var(--text-color);
+  opacity: 0.7;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.entity-link-section {
+  padding: 1rem 1.25rem;
+  background: var(--card-background);
+}
+
+.enhanced-entity-link {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+}
+
+.entity-preview-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background: var(--nav-background);
+  border-radius: 0.5rem;
+  transition: all 0.2s ease;
+}
+
+.entity-preview-card:hover {
+  background: var(--nav-hover);
+  transform: translateX(4px);
+}
+
+.entity-avatar {
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  background: rgba(var(--accent-color-rgb, 214, 163, 57), 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent-color);
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+
+.entity-name {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--heading-color);
+  margin-bottom: 0.125rem;
+}
+
+.entity-type {
+  font-size: var(--font-size-xs);
+  color: var(--accent-color);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.link-arrow {
+  color: var(--accent-color);
+  font-size: 0.875rem;
+  opacity: 0.7;
+  transition: all 0.2s ease;
+}
+
+.entity-preview-card:hover .link-arrow {
+  opacity: 1;
+  transform: translateX(2px);
+}
+
+.relation-description {
+  padding: 1.25rem;
+  background: rgba(var(--accent-color-rgb, 214, 163, 57), 0.03);
+  border-top: 1px solid rgba(var(--accent-color-rgb, 214, 163, 57), 0.1);
+}
+
+.description-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.description-header i {
+  color: var(--accent-color);
+  font-size: 0.875rem;
+}
+
+.description-header span {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--text-color);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.relation-text {
+  font-size: var(--font-size-sm);
+  line-height: 1.6;
+  color: var(--text-color);
+  opacity: 0.9;
+  margin: 0;
+  font-style: italic;
+}
+
+/* Bio Summary */
+.summary-highlight {
+  position: relative;
+  padding: 2rem;
+  background: rgba(var(--accent-color-rgb, 214, 163, 57), 0.05);
+  border-left: 4px solid var(--accent-color);
+  border-radius: 0.75rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.highlight-icon {
+  color: var(--accent-color);
+  opacity: 0.4;
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.summary-text {
+  font-size: var(--font-size-lg);
+  line-height: 1.6;
+  color: var(--text-color);
+  margin: 0;
+  flex: 1;
+  font-style: italic;
+}
+
+/* Full Bio */
+.bio-text-container {
+  position: relative;
+  padding: 1.5rem;
+  background: rgba(var(--accent-color-rgb, 214, 163, 57), 0.02);
+  border-radius: 0.75rem;
+  border: 1px solid rgba(var(--accent-color-rgb, 214, 163, 57), 0.1);
+}
+
+.bio-decoration {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  color: var(--accent-color);
+  opacity: 0.2;
+  font-size: 1.5rem;
+}
+
+.bio-text {
+  font-size: var(--font-size-base);
+  line-height: 1.8;
+  color: var(--text-color);
+  white-space: pre-line;
+  position: relative;
+  z-index: 1;
+}
+
+/* =============================================================================
+   2. LINEAGE
+   ============================================================================= */
+
+.monster-lineage-tab {
+  padding: 1.5rem;
+}
+
+.lineage-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.lineage-header h2 {
+  margin: 0;
+  color: var(--text-color);
+}
+
+.lineage-edit-button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.25rem;
+  background-color: var(--accent-color);
+  color: #fff;
+  border: none;
+  border-radius: 0.375rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-weight: 500;
+}
+
+.lineage-edit-button:hover {
+  background-color: var(--accent-color-dark);
+  transform: translateY(-1px);
+}
+
+.lineage-edit-button.active {
+  background-color: var(--error-color);
+}
+
+.lineage-edit-button.active:hover {
+  background-color: var(--error-dark);
+}
+
+.lineage-section {
+  margin-bottom: 2.5rem;
+}
+
+.lineage-section h3 {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  color: var(--text-color);
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+
+.lineage-section h3 i {
+  color: var(--accent-color);
+}
+
+.relationship-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  color: var(--accent-color);
+  margin-top: 0.5rem;
+}
+
+.relationship-info i {
+  font-size: 0.875rem;
+}
+
+.remove-relationship-button {
+  position: absolute;
+  top: 0.5rem;
+  left: 0.5rem;
+  background-color: var(--error-color);
+  color: var(--text-color);
+  border: none;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 0.75rem;
+}
+
+.remove-relationship-button:hover {
+  background-color: var(--error-dark);
+  transform: scale(1.1);
+}
+
+.no-lineage-message {
+  text-align: center;
+  padding: 3rem 2rem;
+  color: var(--text-muted);
+}
+
+.no-lineage-message i {
+  font-size: 3rem;
+  color: var(--accent-color);
+  margin-bottom: 1rem;
+}
+
+.no-lineage-message p {
+  font-size: 1.125rem;
+  margin-bottom: 0.5rem;
+}
+
+/* =============================================================================
+   3. RESPONSIVE STYLES
+   ============================================================================= */
+
+/* Tablet screens (768px and below) */
+@media (max-width: 768px) {
+  .lineage-tree {
+    flex-direction: column;
+  }
+
+  .lineage-connector {
+    width: 2px;
+    height: 30px;
+  }
+
+  .biography-section {
+    padding: 1rem;
+  }
+}

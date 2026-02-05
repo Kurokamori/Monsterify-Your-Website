@@ -558,37 +558,37 @@ const Bakery = () => {
                     <h4>Filter by Category (stackable)</h4>
                     <div className="filter-buttons">
                       <button
-                        className={`filter-button ${pastryFilters.type ? 'active' : ''}`}
+                        className={`button button-filter ${pastryFilters.type ? 'active' : ''}`}
                         onClick={() => toggleFilter('type')}
                       >
                         Type
                       </button>
                       <button
-                        className={`filter-button ${pastryFilters.species ? 'active' : ''}`}
+                        className={`button button-filter ${pastryFilters.species ? 'active' : ''}`}
                         onClick={() => toggleFilter('species')}
                       >
                         Species
                       </button>
                       <button
-                        className={`filter-button ${pastryFilters.set ? 'active' : ''}`}
+                        className={`button button-filter ${pastryFilters.set ? 'active' : ''}`}
                         onClick={() => toggleFilter('set')}
                       >
                         Set
                       </button>
                       <button
-                        className={`filter-button ${pastryFilters.add ? 'active' : ''}`}
+                        className={`button button-filter ${pastryFilters.add ? 'active' : ''}`}
                         onClick={() => toggleFilter('add')}
                       >
                         Add
                       </button>
                       <button
-                        className={`filter-button ${pastryFilters.misc ? 'active' : ''}`}
+                        className={`button button-filter ${pastryFilters.misc ? 'active' : ''}`}
                         onClick={() => toggleFilter('misc')}
                       >
                         Misc
                       </button>
                       <button
-                        className="filter-button clear"
+                        className="button button-filter reset"
                         onClick={() => setPastryFilters({
                           type: false,
                           species: false,

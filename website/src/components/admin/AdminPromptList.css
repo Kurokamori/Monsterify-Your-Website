@@ -38,8 +38,8 @@
 
 .filter-select:focus {
   outline: none;
-  border-color: var(--admin-accent-color);
-  box-shadow: 0 0 0 2px rgba(var(--admin-accent-color), 0.1);
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 2px rgba(var(--accent-color), 0.1);
 }
 
 .bulk-actions {
@@ -136,7 +136,7 @@
 
 .category-badge {
   background: #e2e8f0;
-  color: #4a5568;
+  color: var(--text-muted);
 }
 
 .difficulty-easy { background: #3d8f57; }
@@ -152,7 +152,7 @@
 .rewards-cell {
   font-family: monospace;
   font-size: 0.8rem;
-  color: #4a5568;
+  color: var(--text-muted);
 }
 
 .submissions-cell {
@@ -161,18 +161,18 @@
 
 .submission-stats .total {
   font-weight: 600;
-  color: #2d3748;
+  color: var(--text-color);
 }
 
 .submission-stats .approved {
   font-size: 0.8rem;
-  color: #22543d;
+  color: var(--success-color);
   display: block;
 }
 
 .date-cell {
   font-size: 0.8rem;
-  color: #718096;
+  color: var(--text-muted);
   white-space: nowrap;
 }
 
@@ -185,24 +185,9 @@
   gap: 5px;
 }
 
-.btn {
-  padding: 6px 12px;
-  border-radius: 4px;
-  font-size: 0.8rem;
-  font-weight: 500;
-  border: none;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.btn-sm {
-  padding: 4px 8px;
-  font-size: 0.75rem;
-}
-
 .no-prompts {
   text-align: center;
-  color: #718096;
+  color: var(--text-muted);
   font-style: italic;
   padding: 40px 20px;
 }
@@ -227,15 +212,8 @@
 .stat-label {
   display: block;
   font-size: 0.8rem;
-  color: #718096;
+  color: var(--text-muted);
   margin-bottom: 4px;
-}
-
-.stat-value {
-  display: block;
-  font-size: 1.2rem;
-  font-weight: 600;
-  color: #2d3748;
 }
 
 /* Responsive Design */

@@ -1,0 +1,157 @@
+/* ==============================
+   Feedback Styles (Loading, Errors, Alerts, Empty States)
+   ============================== */
+
+/* ---------- Loading & Error Containers ---------- */
+
+.loading-container,
+.error-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  padding: 3rem;
+  text-align: center;
+}
+
+.loading-message {
+  font-size: var(--font-size-lg);
+  color: var(--text-secondary);
+  opacity: 0.8;
+  text-align: center;
+  padding: 3rem;
+}
+
+/* ---------- Loading Spinner ---------- */
+
+.loading-spinner {
+  width: auto !important;
+  height: auto !important;
+  border: none !important;
+  border-radius: 0 !important;
+  animation: none !important;
+  background: transparent !important;
+}
+
+.spinner-dots {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  margin: 20px auto;
+}
+
+.spinner-dot {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background-color: var(--accent-color);
+  border-radius: 50%;
+  opacity: 0.3;
+  animation: spinner-fade 1.2s linear infinite;
+}
+
+.spinner-dot:nth-child(1) { top: 0; left: 50%; transform: translateX(-50%); animation-delay: 0s; }
+.spinner-dot:nth-child(2) { top: 3px; right: 3px; animation-delay: 0.15s; }
+.spinner-dot:nth-child(3) { top: 50%; right: 0; transform: translateY(-50%); animation-delay: 0.3s; }
+.spinner-dot:nth-child(4) { bottom: 3px; right: 3px; animation-delay: 0.45s; }
+.spinner-dot:nth-child(5) { bottom: 0; left: 50%; transform: translateX(-50%); animation-delay: 0.6s; }
+.spinner-dot:nth-child(6) { bottom: 3px; left: 3px; animation-delay: 0.75s; }
+.spinner-dot:nth-child(7) { top: 50%; left: 0; transform: translateY(-50%); animation-delay: 0.9s; }
+.spinner-dot:nth-child(8) { top: 3px; left: 3px; animation-delay: 1.05s; }
+
+/* ---------- Panel Variants ---------- */
+
+.loading-panel,
+.error-box {
+  text-align: center;
+  padding: 40px;
+  border-radius: 10px;
+  margin: 20px 0;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.loading-panel i,
+.error-box i {
+  font-size: 2rem;
+  margin-bottom: 15px;
+  display: block;
+}
+
+.loading-panel i { color: var(--accent-color); }
+.error-box i { color: var(--error-color); }
+
+/* ---------- Error Message ---------- */
+
+.error-message {
+  font-size: var(--font-size-lg);
+  color: var(--text-color);
+  background: var(--error-dark);
+  border: 1px solid var(--error-color);
+  border-radius: 6px;
+  padding: 15px;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 20px;
+}
+
+/* ---------- Error Helpers ---------- */
+
+.error-container i {
+  font-size: 3rem;
+  color: var(--error-color);
+}
+
+.error-actions {
+  display: flex;
+  gap: 1rem;
+}
+
+@media (max-width: 768px) {
+  .error-actions {
+    flex-direction: column;
+    width: 100%;
+    max-width: 300px;
+  }
+}
+
+/* ---------- Alerts ---------- */
+
+.alert-danger {
+  background: var(--error-dark);
+  border: 1px solid var(--error-color);
+  color: var(--error-color);
+}
+
+.alert-success {
+  background-color: var(--success-dark);
+  color: var(--success-light);
+  border: 1px solid var(--success-color);
+}
+
+/* ---------- Empty States ---------- */
+
+.empty-state,
+.no-guides,
+.no-entries,
+.no-npcs {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem;
+  background-color: var(--card-background);
+  border-radius: 0.5rem;
+  text-align: center;
+  gap: 1rem;
+}
+
+.empty-state i,
+.no-guides i,
+.no-entries i,
+.no-npcs i {
+  font-size: 3rem;
+  color: var(--accent-color);
+  opacity: 0.5;
+}

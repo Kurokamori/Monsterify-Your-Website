@@ -61,7 +61,7 @@
 }
 
 .page-actions .action-button .primary {
-  color: white;
+  color: var(--text-color);
 }
 
 .page-actions .action-button .secondary {
@@ -104,7 +104,7 @@
 
 .bosses-nav-link.active {
   background: var(--accent-color);
-  color: white;
+  color: var(--text-color);
   border-color: var(--accent-color);
 }
 
@@ -134,13 +134,13 @@
 }
 
 .battle-status.defeated {
-  background: #4caf50;
-  color: white;
+  background: var(--success-light);
+  color: var(--text-color);
 }
 
 .battle-status.in-progress {
-  background: #ff9800;
-  color: white;
+  background: var(--warning-color);
+  color: var(--text-color);
 }
 
 /* Defeated Boss Specific Styles */
@@ -154,7 +154,7 @@
 .defeated-boss-card {
   background: linear-gradient(135deg, var(--card-background) 0%, var(--nav-background) 100%);
   border: 2px solid var(--border-color);
-  border-left: 6px solid #4caf50;
+  border-left: 6px solid var(--success-light);
   border-radius: 16px;
   padding: 2rem;
   transition: all 0.3s ease;
@@ -178,7 +178,7 @@
 .defeated-boss-card:hover {
   transform: translateY(-6px);
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
-  border-color: #4caf50;
+  border-color: var(--success-light);
 }
 
 .defeated-boss-card:hover::before {
@@ -208,7 +208,7 @@
 }
 
 .defeated-boss-card:hover .boss-image {
-  border-color: #4caf50;
+  border-color: var(--success-light);
   transform: scale(1.05);
   box-shadow: 0 6px 20px rgba(76, 175, 80, 0.3);
 }
@@ -348,17 +348,17 @@
 }
 
 .winner.rank-1 {
-  border-color: #ffd700;
+  border-color: var(--gold-light);
   background: linear-gradient(135deg, rgba(255, 215, 0, 0.1), var(--card-background));
 }
 
 .winner.rank-2 {
-  border-color: #c0c0c0;
+  border-color: var(--text-muted);
   background: linear-gradient(135deg, rgba(192, 192, 192, 0.1), var(--card-background));
 }
 
 .winner.rank-3 {
-  border-color: #cd7f32;
+  border-color: var(--warning-color);
   background: linear-gradient(135deg, rgba(205, 127, 50, 0.1), var(--card-background));
 }
 
@@ -428,17 +428,17 @@
 }
 
 .top-user.rank-first {
-  border-color: #ffd700;
+  border-color: var(--gold-light);
   background: linear-gradient(135deg, #fff9e6, #ffeaa7);
 }
 
 .top-user.rank-second {
-  border-color: #c0c0c0;
+  border-color: var(--text-muted);
   background: linear-gradient(135deg, #f5f5f5, #e6e6e6);
 }
 
 .top-user.rank-third {
-  border-color: #cd7f32;
+  border-color: var(--warning-color);
   background: linear-gradient(135deg, #fff5e6, #ffeaa7);
 }
 
@@ -490,7 +490,7 @@
 }
 
 .first-place-prize {
-  border-color: #ffd700;
+  border-color: var(--gold-light);
   background: linear-gradient(135deg, #fff9e6, #ffeaa7);
 }
 
@@ -520,7 +520,7 @@
   gap: 0.75rem;
   padding: 0.875rem 2rem;
   background: linear-gradient(135deg, var(--accent-color), var(--accent-hover));
-  color: white;
+  color: var(--text-color);
   text-decoration: none;
   border-radius: 12px;
   font-weight: 600;
@@ -534,7 +534,7 @@
   transform: translateY(-2px);
   box-shadow: 0 8px 20px rgba(214, 163, 57, 0.4);
   background: linear-gradient(135deg, var(--accent-hover), var(--accent-color));
-  color: white;
+  color: var(--text-color);
   text-decoration: none;
 }
 
@@ -599,7 +599,7 @@
 
 .boss-button.primary {
   background: var(--accent-color);
-  color: white;
+  color: var(--text-color);
 }
 
 .boss-button.primary:hover {
@@ -732,7 +732,7 @@
 
 .reward.grunt-reward {
   background: var(--accent-color);
-  color: white;
+  color: var(--text-color);
 }
 
 .modal-actions {
@@ -755,7 +755,7 @@
 
 .modal-button.primary {
   background: var(--accent-color);
-  color: white;
+  color: var(--text-color);
 }
 
 .modal-button.primary:hover {
@@ -825,51 +825,6 @@
   gap: 1rem;
 }
 
-
-.action-button {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem 1rem;
-  border: none;
-  border-radius: 0.25rem;
-  font-size: var(--font-size-base);
-  font-weight: 600;
-  cursor: pointer;
-  transition: background-color 0.2s;
-  text-decoration: none;
-  flex-direction: column;
-  background: linear-gradient(145deg, rgba(20, 25, 35, 0.8) 0%, rgba(30, 37, 50, 0.8) 100%);
-  color: #fff;
-  background-color: #2a3142;
-  flex: 1;
-}
-
-.action-button.secondary {
-  background-color: var(--nav-background);
-  color: var(--text-color);
-}
-
-.action-button.secondary:hover {
-  background-color: var(--nav-hover);
-}
-
-.action-button.danger {
-  background-color: var(--danger-color-light);
-  color: var(--danger-color);
-}
-
-.action-button.danger:hover:not(:disabled) {
-  background-color: var(--danger-color);
-  color: white;
-}
-
-.action-button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-
 /* Sub-tabs */
 
 
@@ -894,7 +849,7 @@
 }
 
 .adventure-card.cancelled {
-  border-top-color: var(--danger-color);
+  border-top-color: var(--error-color);
 }
 
 .adventure-link {
@@ -947,8 +902,8 @@
 }
 
 .adventure-status.cancelled {
-  background-color: var(--danger-color-light);
-  color: var(--danger-color);
+  background-color: var(--error-color);
+  color: var(--error-color);
 }
 
 .adventure-description {
@@ -1236,7 +1191,7 @@
   width: 1rem;
   height: 1rem;
   border-radius: 50%;
-  background-color: white;
+  background-color: var(--text-color);
   top: 0.125rem;
   left: 0.125rem;
   transition: transform 0.2s;
@@ -1456,7 +1411,7 @@
 .req-item {
   display: inline-block;
   background: var(--accent-color);
-  color: white;
+  color: var(--text-color);
   padding: 0.15rem 0.4rem;
   border-radius: 3px;
   font-size: 0.7rem;
@@ -1604,19 +1559,19 @@
 
 
 .inventory-count.has-item {
-  color: #22c55e;
-  border-color: #22c55e;
+  color: var(--success-color);
+  border-color: var(--success-color);
   background: rgba(34, 197, 94, 0.1);
 }
 
 .inventory-count.missing-item {
-  color: #ef4444;
-  border-color: #ef4444;
+  color: var(--error-color);
+  border-color: var(--error-color);
   background: rgba(239, 68, 68, 0.1);
 }
 
 .inventory-unknown {
-  color: #f59e0b;
+  color: var(--warning-color);
   font-size: 0.85rem;
   font-style: italic;
   padding: 0.25rem 0.5rem;
@@ -1635,7 +1590,7 @@
 
 
 .inventory-error {
-  color: #ef4444;
+  color: var(--error-color);
   font-size: 0.9rem;
   margin-top: 0.5rem;
   text-align: center;
@@ -1768,7 +1723,7 @@
   justify-content: center;
   background: linear-gradient(135deg, var(--accent-color) 0%, var(--accent-hover) 100%);
   border-radius: 50%;
-  color: #000;
+  color: var(--background-color);
   font-size: 1.8rem;
   box-shadow: 0 4px 16px rgba(214, 163, 57, 0.3);
   animation: bounce 2s ease-in-out infinite;
@@ -1815,7 +1770,7 @@
 
 .claim-rewards-button {
   background: linear-gradient(135deg, var(--accent-color) 0%, var(--accent-hover) 100%);
-  color: #000;
+  color: var(--background-color);
   border: none;
   border-radius: 12px;
   padding: 1rem 1.5rem;
@@ -1923,7 +1878,7 @@
 
 .view-full-button {
   background: var(--primary-color);
-  color: white;
+  color: var(--text-color);
   padding: 8px 16px;
   border-radius: 6px;
   text-decoration: none;
@@ -2087,18 +2042,6 @@
 }
 
 
-.stat-value {
-  font-size: var(--font-size-xl);
-  color: var(--text-color);
-  font-weight: 700;
-  width: 2.5rem;
-  text-align: right;
-  display: block;
-  margin-bottom: 0.5rem;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-}
-
-
 
 /* Health Bar */
 .boss-health {
@@ -2187,7 +2130,7 @@
 }
 
 .leaderboard-title i {
-  color: #ffd700;
+  color: var(--gold-light);
   font-size: 1.25em;
   text-shadow: 0 2px 8px rgba(255, 215, 0, 0.4);
 }
@@ -2235,7 +2178,7 @@
 }
 
 .rank-1 {
-  border-color: #ffd700;
+  border-color: var(--gold-light);
   background: linear-gradient(135deg, rgba(255, 215, 0, 0.15), var(--input-background));
   position: relative;
   transform: scale(1.05);
@@ -2264,7 +2207,7 @@
 }
 
 .rank-2 {
-  border-color: #c0c0c0;
+  border-color: var(--text-muted);
   background: linear-gradient(135deg, rgba(192, 192, 192, 0.12), var(--input-background));
 }
 
@@ -2273,7 +2216,7 @@
 }
 
 .rank-3 {
-  border-color: #cd7f32;
+  border-color: var(--warning-color);
   background: linear-gradient(135deg, rgba(205, 127, 50, 0.12), var(--input-background));
 }
 
@@ -2293,11 +2236,11 @@
   align-items: center;
   justify-content: center;
   font-weight: 900;
-  color: white;
+  color: var(--text-color);
   font-size: 1.1rem;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
   transition: all 0.3s ease;
-  border: 3px solid white;
+  border: 3px solid var(--text-color);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
@@ -2328,7 +2271,7 @@
 
 .rank-3 .rank-badge {
   background: linear-gradient(135deg, #cd7f32, #e6a85c);
-  color: white;
+  color: var(--text-color);
 }
 
 
@@ -2345,7 +2288,7 @@
   align-items: center;
   justify-content: center;
   font-weight: bold;
-  color: white;
+  color: var(--text-color);
   font-size: 0.9rem;
 }
 
@@ -2537,7 +2480,7 @@
 
 .events-nav-link.active {
   background-color: var(--accent-color);
-  color: #fff;
+  color: var(--text-color);
   border-color: var(--accent-color);
 }
 
@@ -2604,7 +2547,7 @@
   top: 1rem;
   left: 0;
   background-color: var(--accent-color);
-  color: #fff;
+  color: var(--text-color);
   padding: 0.25rem 0.75rem;
   font-size: var(--font-size-sm);
   font-weight: 500;
@@ -2613,11 +2556,11 @@
 }
 
 .event-badge.past {
-  background-color: #6b7280;
+  background-color: var(--text-muted);
 }
 
 .event-badge.upcoming {
-  background-color: #10b981;
+  background-color: var(--success-color);
 }
 
 .event-info {
@@ -2663,7 +2606,7 @@
   align-self: flex-start;
   padding: 0.75rem 1.25rem;
   background-color: var(--accent-color);
-  color: #fff;
+  color: var(--text-color);
   border: none;
   border-radius: 0.375rem;
   font-weight: 500;
@@ -2674,7 +2617,7 @@
 
 .event-button:hover {
   background-color: var(--accent-hover);
-  color: #fff;
+  color: var(--text-color);
 }
 
 .event-button.secondary {
@@ -2736,7 +2679,7 @@
   right: 0;
   padding: 2rem;
   background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
-  color: #fff;
+  color: var(--text-color);
 }
 
 .event-detail-title {
@@ -2799,7 +2742,7 @@
 }
 
 .challenge-card.completed {
-  border-left: 4px solid #10b981;
+  border-left: 4px solid var(--success-color);
 }
 
 .challenge-header {
@@ -2821,7 +2764,7 @@
 }
 
 .challenge-status.completed {
-  color: #10b981;
+  color: var(--success-color);
 }
 
 .challenge-description {
@@ -3065,7 +3008,7 @@
   border-radius: 8px;
   color: var(--text-color);
   font-style: italic;
-  border-left: 4px solid #f59e0b;
+  border-left: 4px solid var(--warning-color);
 }
 
 /* ========== Mission Cards ========== */
@@ -3108,7 +3051,7 @@
 
 /* Mission Card States */
 .mission-card.active-mission {
-  border: 2px solid #f59e0b;
+  border: 2px solid var(--warning-color);
   background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, var(--card-background) 100%);
 }
 
@@ -3155,7 +3098,7 @@
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  color: white;
+  color: var(--text-color);
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   flex-shrink: 0;
@@ -3244,7 +3187,7 @@
   align-items: center;
   padding: 0.375rem 0.75rem;
   background: linear-gradient(135deg, var(--accent-color), var(--accent-hover));
-  color: white;
+  color: var(--text-color);
   border-radius: 16px;
   font-size: var(--font-size-sm);
   font-weight: 500;
@@ -3321,7 +3264,7 @@
   gap: 0.5rem;
   padding: 0.875rem 1.5rem;
   background: linear-gradient(135deg, var(--accent-color), var(--accent-hover));
-  color: white;
+  color: var(--text-color);
   border: none;
   border-radius: 12px;
   font-size: var(--font-size-base);
@@ -3340,7 +3283,7 @@
 .start-mission-btn:hover {
   transform: translateY(-2px);
   box-shadow: 0 6px 20px rgba(214, 163, 57, 0.4);
-  color: white;
+  color: var(--text-color);
 }
 
 .mission-button.secondary {
@@ -3457,7 +3400,7 @@
 }
 
 .status.active {
-  color: #f59e0b;
+  color: var(--warning-color);
   font-weight: 600;
 }
 
@@ -3692,7 +3635,7 @@
 
 .start-success .success-icon {
   font-size: 3rem;
-  color: #10b981;
+  color: var(--success-color);
   margin-bottom: 1rem;
 }
 
@@ -4047,7 +3990,7 @@
 .claim-button,
 .claim-btn {
   background: var(--primary-color);
-  color: #fff;
+  color: var(--text-color);
   border: none;
   padding: .5rem 1rem;
   border-radius: .5rem;
@@ -4124,7 +4067,7 @@
   width: 60px;
   height: 60px;
   background-color: var(--accent-color-light);
-  color: var(--accent-color);
+  color: var(--text-color);
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -4261,11 +4204,6 @@
   .adventure-pagination {
     flex-direction: column;
     gap: 0.5rem;
-  }
-  
-  .pagination-button {
-    width: 100%;
-    justify-content: center;
   }
   
   .modal-actions {

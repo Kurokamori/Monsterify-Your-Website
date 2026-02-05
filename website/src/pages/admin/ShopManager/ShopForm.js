@@ -492,7 +492,7 @@ const ShopForm = () => {
         <div className="form-actions">
           <button
             type="button"
-            className="cancel-button"
+            className="button button-secondary"
             onClick={() => navigate('/admin/shop-manager')}
             disabled={loading}
           >
@@ -500,7 +500,7 @@ const ShopForm = () => {
           </button>
           <button
             type="submit"
-            className="save-button"
+            className="button button-primary"
             disabled={loading || success}
           >
             {loading ? 'Saving...' : 'Save Shop'}

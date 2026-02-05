@@ -145,18 +145,6 @@
   opacity: 0.8;
 }
 
-
-/* Pagination block (container + info; the buttons use common .pagination-button/.btn) */
-.gallery-pagination {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 1rem;
-  margin-top: 1.5rem;
-}
-
-
-
 /* Artwork Modal (uses common .modal-content, .modal-image-container, .modal-image) */
 .artwork-image-container {
   text-align: center;
@@ -203,7 +191,7 @@
   right: 0;
   padding: 0.25rem 0.5rem;
   background-color: rgba(0, 0, 0, 0.7);
-  color: white;
+  color: var(--text-color);
   font-size: var(--font-size-xs);
   border-top-left-radius: 0.25rem;
 }

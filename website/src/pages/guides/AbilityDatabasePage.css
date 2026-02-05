@@ -195,7 +195,7 @@
   border-radius: 1rem;
   font-size: var(--font-size-xs);
   font-weight: 600;
-  color: white;
+  color: var(--text-color);
   text-transform: uppercase;
   border: 2px solid transparent;
   cursor: pointer;
@@ -211,7 +211,7 @@
 
 .type-filter-btn.selected {
   opacity: 1;
-  border-color: white;
+  border-color: var(--text-color);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
   transform: translateY(-2px);
 }
@@ -500,19 +500,6 @@
   color: var(--text-color);
   opacity: 0.7;
   margin: 0;
-}
-
-/* Error State */
-.error-message {
-  background: rgba(220, 38, 38, 0.1);
-  border: 1px solid rgba(220, 38, 38, 0.3);
-  border-radius: 0.5rem;
-  padding: 1rem;
-  color: #f87171;
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  margin-bottom: 1.5rem;
 }
 
 /* Pagination */

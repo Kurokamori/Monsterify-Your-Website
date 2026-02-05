@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import ArtGallery from '../../components/submissions/ArtGallery';
 import WritingLibrary from '../../components/submissions/WritingLibrary';
 import useDocumentTitle from '../../hooks/useDocumentTitle';
@@ -9,33 +9,56 @@ const SubmissionPage = () => {
   const { currentUser, isAuthenticated } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
 
-  // Set document title based on current path
-  const getPageTitle = () => {
-    if (location.pathname === '/gallery') return 'Gallery';
-    if (location.pathname === '/library') return 'Library';
-    return 'Submissions';
+  // Get tab from URL query param or path
+  const getTabFromUrl = () => {
+    const tabParam = searchParams.get('tab');
+    if (tabParam) {
+      switch (tabParam) {
+        case 'gallery': return 'art-gallery';
+        case 'library': return 'writing-library';
+        case 'submit': return 'submission-types';
+        case 'my-submissions': return 'my-submissions';
+        default: return 'submission-types';
+      }
+    }
+    // Handle legacy routes
+    if (location.pathname === '/gallery') return 'art-gallery';
+    if (location.pathname === '/library') return 'writing-library';
+    return 'submission-types';
   };
-  
+
+  // Set document title based on current tab
+  const getPageTitle = () => {
+    const tab = getTabFromUrl();
+    switch (tab) {
+      case 'art-gallery': return 'Gallery';
+      case 'writing-library': return 'Library';
+      case 'my-submissions': return 'My Submissions';
+      default: return 'Submissions';
+    }
+  };
+
   useDocumentTitle(getPageTitle());
 
   // State
-  const [activeTab, setActiveTab] = useState(location.pathname === '/submissions' ? 'submission-types' : 'art-gallery');
+  const [activeTab, setActiveTab] = useState(getTabFromUrl());
 
-  // Set active tab based on URL path
+  // Set active tab based on URL
   useEffect(() => {
-    if (location.pathname === '/gallery') {
-      setActiveTab('art-gallery');
-    } else if (location.pathname === '/library') {
-      setActiveTab('writing-library');
-    } else if (location.pathname === '/submissions') {
-      setActiveTab('submission-types');
-    }
-  }, [location.pathname]);
+    setActiveTab(getTabFromUrl());
+  }, [location.pathname, searchParams]);
 
-  // Handle tab change
+  // Handle tab change - navigate via URL
   const handleTabChange = (tab) => {
-    setActiveTab(tab);
+    const tabMap = {
+      'submission-types': 'submit',
+      'art-gallery': 'gallery',
+      'writing-library': 'library',
+      'my-submissions': 'my-submissions'
+    };
+    navigate(`/submissions?tab=${tabMap[tab]}`);
   };
 
   // Navigate to submission page
@@ -58,50 +81,56 @@ const SubmissionPage = () => {
 
   // All submission types now use dedicated pages
 
+  // Get page header text based on active tab
+  const getHeaderText = () => {
+    switch (activeTab) {
+      case 'art-gallery': return { title: 'Art Gallery', subtitle: 'Browse artwork from the community' };
+      case 'writing-library': return { title: 'Writing Library', subtitle: 'Explore stories and written works' };
+      case 'my-submissions': return { title: 'My Submissions', subtitle: 'View and manage your submissions' };
+      default: return { title: 'Submissions', subtitle: 'Share your creativity and earn rewards' };
+    }
+  };
+
+  const headerText = getHeaderText();
+
   return (
     <div className="page-container">
 
         <div className="page-title">
-          <h1>
-            {location.pathname === '/gallery' ? 'Art Gallery' :
-             location.pathname === '/library' ? 'Writing Library' :
-             'Submissions'}
-          </h1>
-          <p>
-            {location.pathname === '/gallery' ? 'Browse artwork from the community' :
-             location.pathname === '/library' ? 'Explore stories and written works' :
-             'Share your creativity and earn rewards'}
-          </p>
+          <h1>{headerText.title}</h1>
+          <p>{headerText.subtitle}</p>
         </div>
 
-      {location.pathname !== '/gallery' && location.pathname !== '/library' && (
         <div className="submission-tabs">
-          <button
-            className={`tab-button ${activeTab === 'submission-types' ? 'active' : ''}`}
-            onClick={() => handleTabChange('submission-types')}
-          >
-            <i className="fas fa-plus-circle"></i> Create Submission
-          </button>
           <button
             className={`tab-button ${activeTab === 'art-gallery' ? 'active' : ''}`}
             onClick={() => handleTabChange('art-gallery')}
           >
-            <i className="fas fa-images"></i> Art Gallery
+            <i className="fas fa-images"></i> Gallery
           </button>
           <button
             className={`tab-button ${activeTab === 'writing-library' ? 'active' : ''}`}
             onClick={() => handleTabChange('writing-library')}
           >
-            <i className="fas fa-book"></i> Writing Library
+            <i className="fas fa-book"></i> Library
           </button>
-          <button
-            className={`tab-button ${activeTab === 'my-submissions' ? 'active' : ''}`}
-            onClick={() => handleTabChange('my-submissions')}
-          >
-            <i className="fas fa-user"></i> My Submissions
-          </button>
+          {isAuthenticated && (
+            <>
+              <button
+                className={`tab-button ${activeTab === 'submission-types' ? 'active' : ''}`}
+                onClick={() => handleTabChange('submission-types')}
+              >
+                <i className="fas fa-plus-circle"></i> Submit
+              </button>
+              <button
+                className={`tab-button ${activeTab === 'my-submissions' ? 'active' : ''}`}
+                onClick={() => handleTabChange('my-submissions')}
+              >
+                <i className="fas fa-user"></i> My Submissions
+              </button>
+            </>
+          )}
         </div>
-      )}
 
       <div className="submission-content">
         {activeTab === 'submission-types' && (

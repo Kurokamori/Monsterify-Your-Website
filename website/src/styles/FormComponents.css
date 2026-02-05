@@ -79,7 +79,7 @@
   font-weight: 600;
   color: var(--text-color);
 }
-.required { color: #dc3545; font-weight: bold; }
+.required { color: var(--error-color); font-weight: bold; }
 
 /* ========== Inputs (Unified) ========== */
 .form-input,
@@ -158,8 +158,8 @@
 .form-error {
   padding: 0.75rem;
   background-color: rgba(239, 68, 68, 0.1);
-  border-left: 3px solid #ef4444;
-  color: #ef4444;
+  border-left: 3px solid var(--error-color);
+  color: var(--error-color);
   margin-bottom: 1.5rem;
   border-radius: 0.25rem;
   display: flex;
@@ -195,8 +195,8 @@
 
 .radio-option:hover { background: rgba(42,49,66,0.5); border-color: rgba(214,163,57,0.3); }
 .radio-option input[type="radio"] { width: 18px; height: 18px; margin: 0; cursor: pointer; }
-.radio-option input[type="radio"]:checked + span { color: #d6a339; font-weight: 500; }
-.radio-option span { color: #e0e0e0; font-size: 1rem; }
+.radio-option input[type="radio"]:checked + span { color: var(--gold-color); font-weight: 500; }
+.radio-option span { color: var(--text-color); font-size: 1rem; }
 
 .checkbox-option {
   display: flex !important;
@@ -212,7 +212,7 @@
 
 .checkbox-option:hover { background: rgba(214,163,57,0.15); border-color: rgba(214,163,57,0.5); }
 .checkbox-option input[type="checkbox"] { width: 18px; height: 18px; margin: 0; cursor: pointer; }
-.checkbox-option span { color: #d6a339; font-weight: 500; font-size: 1rem; }
+.checkbox-option span { color: var(--gold-color); font-weight: 500; font-size: 1rem; }
 
 /* ========== Theme Picker ========== */
 .theme-options {
@@ -256,7 +256,7 @@
 }
 
 .theme-option small {
-  color: var(--admin-text-muted, #718096);
+  color: var(--text-muted, #718096);
   font-size: var(--font-size-xs);
 }
 
@@ -301,7 +301,7 @@
 
 /* Section headings (create/edit) */
 .create-section h2,
-.edit-section h2 { margin: 0 0 20px 0; color: #1e2532; font-size: 1.3rem; }
+.edit-section h2 { margin: 0 0 20px 0; color: var(--text-color); font-size: 1.3rem; }
 
 .subsection-description {
   margin: 0 0 15px 0;
@@ -434,7 +434,7 @@
 
 .change-image-btn {
   background: var(--accent-color);
-  color: white;
+  color: var(--text-color);
 }
 
 .change-image-btn:hover {
@@ -444,11 +444,11 @@
 
 .remove-image-btn {
   background: rgba(239, 68, 68, 0.9);
-  color: white;
+  color: var(--text-color);
 }
 
 .remove-image-btn:hover {
-  background: #dc2626;
+  background: var(--error-light);
   transform: translateY(-1px);
 }
 

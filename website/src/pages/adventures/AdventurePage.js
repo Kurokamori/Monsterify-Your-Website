@@ -48,7 +48,7 @@ const AdventurePage = () => {
 
           <div className="page-actions">
             <button
-              className="action-button secondary"
+              className="button button-secondary"
               onClick={() => navigate('/adventures')}
             >
               <i className="fas fa-arrow-left"></i> Back to Adventures
@@ -72,7 +72,7 @@ const AdventurePage = () => {
 
         <div className="page-actions">
           <button
-            className="action-button primary"
+            className="button button-primary"
             onClick={openCreateModal}
           >
             <i className="fas fa-plus"></i> Create Adventure

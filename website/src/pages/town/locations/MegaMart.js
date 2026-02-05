@@ -371,7 +371,7 @@ const MegaMart = () => {
 
             <div className="ability-actions">
               <button
-                className="action-button"
+                className="button button-primary"
                 onClick={handleUseAbilityCapsule}
                 disabled={!monsterAbilities.ability1 || !monsterAbilities.ability2}
               >
@@ -382,7 +382,7 @@ const MegaMart = () => {
               </button>
 
               <button
-                className="action-button"
+                className="button button-primary"
                 onClick={handleUseScrollOfSecrets}
               >
                 Use Scroll of Secrets

@@ -132,7 +132,7 @@
   border-radius: 4px;
   font-size: 0.8rem;
   font-weight: 600;
-  color: white;
+  color: var(--text-color);
   text-transform: uppercase;
   display: inline-block;
 }
@@ -389,7 +389,7 @@
   border-radius: 4px;
   font-size: 0.75rem;
   font-weight: 500;
-  color: white;
+  color: var(--text-color);
   text-transform: uppercase;
   display: inline-block;
 }

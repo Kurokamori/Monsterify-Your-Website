@@ -134,12 +134,12 @@
 .set-item .btn {
   padding: 4px 8px;
   font-size: 0.7rem;
-  background: var(--danger-color);
+  background: var(--error-color);
   color: var(--card-background);
 }
 
 .set-item .btn:hover {
-  background: var(--danger-color-dark);
+  background: var(--error-dark);
 }
 
 .form-help {
@@ -178,7 +178,7 @@
 
 .remove-btn {
   padding: 6px 10px;
-  background: var(--danger-color);
+  background: var(--error-color);
   color: var(--card-background);
   border: none;
   border-radius: 4px;
@@ -188,7 +188,7 @@
 }
 
 .remove-btn:hover {
-  background: var(--danger-color-dark);
+  background: var(--error-dark);
 }
 
 .btn {

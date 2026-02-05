@@ -89,7 +89,7 @@ const TributeSubmissionModal = ({ faction, trainerId, standing, onClose, onSubmi
       <div className="tribute-modal" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
           <h2>Submit Tribute to {faction.name}</h2>
-          <button className="close-button" onClick={onClose}>×</button>
+          <button className="button button-icon button-danger" onClick={onClose}>×</button>
         </div>
 
         <div className="modal-content">
@@ -252,12 +252,12 @@ const TributeSubmissionModal = ({ faction, trainerId, standing, onClose, onSubmi
               )}
 
               <div className="form-actions">
-                <button type="button" onClick={onClose} className="cancel-button">
+                <button type="button" onClick={onClose} className="button button-secondary">
                   Cancel
                 </button>
                 <button 
                   type="submit" 
-                  className="submit-button"
+                  className="button button-success"
                   disabled={loading}
                 >
                   {loading ? (

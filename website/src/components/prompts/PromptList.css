@@ -16,12 +16,12 @@
 .prompt-list-header h2 {
   font-size: 2rem;
   font-weight: 700;
-  color: #2d3748;
+  color: var(--text-color);
   margin: 0;
 }
 
 .prompt-count {
-  color: #718096;
+  color: var(--text-muted);
   font-size: 0.9rem;
   margin: 0;
 }
@@ -51,7 +51,7 @@
 .filter-group label {
   font-size: 0.9rem;
   font-weight: 500;
-  color: #4a5568;
+  color: var(--text-muted);
 }
 
 .filter-input,
@@ -60,7 +60,7 @@
   border: 1px solid #cbd5e0;
   border-radius: 6px;
   font-size: 0.9rem;
-  background-color: white;
+  background-color: var(--text-color);
   transition: border-color 0.2s ease;
 }
 
@@ -76,7 +76,7 @@
   align-items: center;
   gap: 8px;
   font-size: 0.9rem;
-  color: #4a5568;
+  color: var(--text-muted);
   cursor: pointer;
   margin-top: 20px;
 }
@@ -88,23 +88,9 @@
 }
 
 /* Error and Loading States */
-.error-message {
-  background: #fed7d7;
-  border: 1px solid #fc8181;
-  border-radius: 8px;
-  padding: 15px;
-  margin-bottom: 20px;
-  text-align: center;
-}
-
-.error-message p {
-  color: #c53030;
-  margin: 0 0 10px 0;
-}
-
 .retry-btn {
-  background-color: #e53e3e;
-  color: white;
+  background-color: var(--error-color);
+  color: var(--text-color);
   border: none;
   padding: 8px 16px;
   border-radius: 6px;
@@ -114,7 +100,7 @@
 }
 
 .retry-btn:hover {
-  background-color: #c53030;
+  background-color: var(--error-light);
 }
 
 .no-prompts {
@@ -126,14 +112,14 @@
 }
 
 .no-prompts p {
-  color: #718096;
+  color: var(--text-muted);
   font-size: 1.1rem;
   margin: 0 0 15px 0;
 }
 
 .clear-filters-btn {
-  background-color: #4299e1;
-  color: white;
+  background-color: var(--blue-color);
+  color: var(--text-color);
   border: none;
   padding: 10px 20px;
   border-radius: 6px;
@@ -165,8 +151,8 @@
 }
 
 .pagination-btn {
-  background-color: #4299e1;
-  color: white;
+  background-color: var(--blue-color);
+  color: var(--text-color);
   border: none;
   padding: 10px 20px;
   border-radius: 6px;
@@ -189,7 +175,7 @@
 
 .pagination-info {
   font-size: 0.9rem;
-  color: #4a5568;
+  color: var(--text-muted);
   font-weight: 500;
   min-width: 120px;
   text-align: center;

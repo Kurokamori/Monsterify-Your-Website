@@ -1,0 +1,332 @@
+/* Seasonal Adopts / Antique Auction Admin Styles */
+
+.seasonal-adopts-page {
+  padding: 20px;
+}
+
+.seasonal-adopts-page .stats-bar {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 20px;
+  padding: 10px 15px;
+  background: var(--bg-secondary);
+  border-radius: 8px;
+}
+
+.seasonal-adopts-page .stats-bar .stat-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-secondary);
+}
+
+.seasonal-adopts-page .stats-bar .stat-item i {
+  color: var(--primary-color);
+}
+
+.seasonal-adopts-page .view-toggle {
+  display: flex;
+  gap: 4px;
+  background: var(--bg-tertiary);
+  padding: 4px;
+  border-radius: 6px;
+}
+
+.seasonal-adopts-page .view-toggle-btn {
+  padding: 6px 12px;
+  border: none;
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.seasonal-adopts-page .view-toggle-btn:hover {
+  background: var(--bg-hover);
+}
+
+.seasonal-adopts-page .view-toggle-btn.active {
+  background: var(--primary-color);
+  color: var(--text-color);
+}
+
+.seasonal-adopts-grouped {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.antique-group {
+  background: var(--bg-secondary);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.antique-group-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  background: var(--bg-tertiary);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.antique-group-header h2 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  font-size: 1.25rem;
+}
+
+.antique-group-header h2 i {
+  color: var(--primary-color);
+}
+
+.holiday-badge {
+  font-size: 0.75rem;
+  padding: 4px 10px;
+  background: var(--primary-color);
+  color: var(--text-color);
+  border-radius: 12px;
+  font-weight: normal;
+}
+
+.holiday-text {
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+.antique-group-header .count {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+.antique-group-content {
+  padding: 20px;
+}
+
+.family-group {
+  margin-bottom: 25px;
+}
+
+.family-group:last-child {
+  margin-bottom: 0;
+}
+
+.family-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 15px 0;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border-color);
+  font-size: 1rem;
+  color: var(--text-secondary);
+}
+
+.family-header i {
+  color: var(--secondary-color);
+}
+
+.family-count {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  font-weight: normal;
+}
+
+.seasonal-adopts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.seasonal-adopt-card {
+  background: var(--bg-primary);
+  border-radius: 10px;
+  border: 1px solid var(--border-color);
+  overflow: hidden;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.seasonal-adopt-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.seasonal-adopt-image {
+  height: 180px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-tertiary);
+  overflow: hidden;
+}
+
+.seasonal-adopt-image img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.seasonal-adopt-image .no-image {
+  color: var(--text-muted);
+  font-size: 3rem;
+}
+
+.seasonal-adopt-info {
+  padding: 15px;
+}
+
+.seasonal-adopt-name {
+  margin: 0 0 10px 0;
+  font-size: 1.1rem;
+}
+
+.seasonal-adopt-species {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-bottom: 10px;
+}
+
+.seasonal-adopts-page .species-tag {
+  font-size: 0.8rem;
+  padding: 2px 8px;
+  background: var(--bg-tertiary);
+  border-radius: 4px;
+  color: var(--text-secondary);
+}
+
+.seasonal-adopt-types {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-bottom: 8px;
+}
+
+.seasonal-adopts-page .type-badge {
+  font-size: 0.75rem;
+  padding: 3px 8px;
+  border-radius: 4px;
+  color: var(--text-color);
+  text-transform: capitalize;
+}
+
+.seasonal-adopts-page .type-badge-small {
+  font-size: 0.65rem;
+  padding: 2px 6px;
+  border-radius: 3px;
+  color: var(--text-color);
+  text-transform: capitalize;
+  display: inline-block;
+  margin: 1px;
+}
+
+.seasonal-adopts-page .types-cell {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+}
+
+.seasonal-adopt-attribute .attribute-badge {
+  font-size: 0.8rem;
+  padding: 3px 10px;
+  background: var(--primary-color);
+  color: var(--text-color);
+  border-radius: 4px;
+  display: inline-block;
+}
+
+.seasonal-adopts-page .attribute-badge-small {
+  font-size: 0.7rem;
+  padding: 2px 6px;
+  background: var(--primary-color);
+  color: var(--text-color);
+  border-radius: 3px;
+}
+
+.seasonal-adopt-description {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin: 10px 0;
+  font-style: italic;
+}
+
+.seasonal-adopt-meta {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border-color);
+}
+
+.seasonal-adopt-meta i {
+  margin-right: 5px;
+}
+
+.seasonal-adopt-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 10px 15px;
+  background: var(--bg-tertiary);
+  border-top: 1px solid var(--border-color);
+}
+
+.seasonal-adopts-page .no-image-small {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-tertiary);
+  border-radius: 4px;
+  color: var(--text-muted);
+}
+
+.seasonal-adopts-page .antique-name {
+  font-weight: 500;
+}
+
+.seasonal-adopts-page .admin-empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  background: var(--bg-secondary);
+  border-radius: 12px;
+}
+
+.seasonal-adopts-page .admin-empty-state i {
+  font-size: 4rem;
+  color: var(--text-muted);
+  margin-bottom: 20px;
+}
+
+.seasonal-adopts-page .admin-empty-state p {
+  color: var(--text-secondary);
+  margin-bottom: 20px;
+}
+
+/* Type colors */
+.seasonal-adopts-page .type-normal { background: #A8A878; }
+.seasonal-adopts-page .type-fire { background: #F08030; }
+.seasonal-adopts-page .type-water { background: #6890F0; }
+.seasonal-adopts-page .type-electric { background: #F8D030; color: #333; }
+.seasonal-adopts-page .type-grass { background: #78C850; }
+.seasonal-adopts-page .type-ice { background: #98D8D8; color: #333; }
+.seasonal-adopts-page .type-fighting { background: #C03028; }
+.seasonal-adopts-page .type-poison { background: #A040A0; }
+.seasonal-adopts-page .type-ground { background: #E0C068; color: #333; }
+.seasonal-adopts-page .type-flying { background: #A890F0; }
+.seasonal-adopts-page .type-psychic { background: #F85888; }
+.seasonal-adopts-page .type-bug { background: #A8B820; }
+.seasonal-adopts-page .type-rock { background: #B8A038; }
+.seasonal-adopts-page .type-ghost { background: #705898; }
+.seasonal-adopts-page .type-dragon { background: #7038F8; }
+.seasonal-adopts-page .type-dark { background: #705848; }
+.seasonal-adopts-page .type-steel { background: #B8B8D0; color: #333; }
+.seasonal-adopts-page .type-fairy { background: #EE99AC; color: #333; }

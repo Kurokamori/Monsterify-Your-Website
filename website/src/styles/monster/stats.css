@@ -1,0 +1,282 @@
+/* =============================================================================
+   MONSTER STATS - Regular stats & Pokemon-style stats
+   ============================================================================= */
+
+/* =============================================================================
+   1. BASIC STATS
+   ============================================================================= */
+
+.monster-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.stat-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 5px;
+  font-size: 0.9rem;
+}
+
+.stat-group {
+  display: flex;
+  gap: 1rem;
+}
+
+.stat-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.monster-stat-value {
+  font-size: var(--font-size-base);
+  font-weight: 700;
+  color: var(--text-color);
+}
+
+/* =============================================================================
+   2. POKEMON-STYLE STATS
+   ============================================================================= */
+
+.pokemon-stats-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.pokemon-stat-row {
+  display: grid;
+  grid-template-columns: 140px 1fr 120px;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem 1rem;
+  background: var(--nav-background);
+  border-radius: 0.5rem;
+  border: 1px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.pokemon-stat-row:hover {
+  background: var(--nav-hover);
+  border-color: rgba(var(--accent-color-rgb, 214, 163, 57), 0.2);
+  transform: translateX(2px);
+}
+
+.pokemon-stat-row:has(.main-stat-bar[style*="width: 0%"]) {
+  opacity: 0.6;
+}
+
+.pokemon-stat-row:has(.main-stat-bar[style*="width: 100%"]) {
+  background: rgba(255, 215, 0, 0.1);
+  border-color: rgba(255, 215, 0, 0.3);
+}
+
+.pokemon-stat-row:has(.main-stat-bar[style*="width: 100%"]) .stat-total-value {
+  color: #FFD700;
+  text-shadow: 0 0 8px rgba(255, 215, 0, 0.3);
+}
+
+.stat-info-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.stat-label-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+}
+
+.stat-name-full {
+  font-weight: 600;
+  font-size: var(--font-size-base);
+  color: var(--text-color);
+  line-height: 1;
+}
+
+.stat-name-short {
+  font-weight: 500;
+  font-size: var(--font-size-xs);
+  color: var(--text-color);
+  opacity: 0.7;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.stat-value-display {
+  text-align: right;
+}
+
+.stat-total-value {
+  font-weight: 700;
+  font-size: var(--font-size-lg);
+  color: var(--text-color);
+  min-width: 50px;
+  display: inline-block;
+  text-align: right;
+}
+
+.stat-bar-section {
+  flex: 1;
+  padding: 0 0.5rem;
+}
+
+.main-stat-bar-container {
+  width: 100%;
+  height: 20px;
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  overflow: hidden;
+  position: relative;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.main-stat-bar {
+  height: 100%;
+  border-radius: 10px;
+  position: relative;
+  transition: width 1s ease-out;
+  background: linear-gradient(45deg, currentColor 0%, currentColor 70%, rgba(255, 255, 255, 0.2) 100%);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.3), inset 0 -1px 0 rgba(0, 0, 0, 0.2);
+}
+
+.stat-bar-shine {
+  position: absolute;
+  top: 2px;
+  left: 0;
+  right: 0;
+  height: 6px;
+  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.4) 50%, transparent 100%);
+  border-radius: 4px;
+  animation: shine 3s ease-in-out infinite;
+}
+
+/* IV/EV Indicators */
+.iv-ev-indicators {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  min-width: 120px;
+}
+
+.iv-indicator,
+.ev-indicator {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.iv-label,
+.ev-label {
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  color: var(--text-color);
+  opacity: 0.7;
+  width: 18px;
+  text-align: left;
+}
+
+.iv-bar-mini,
+.ev-bar-mini {
+  flex: 1;
+  height: 6px;
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 3px;
+  overflow: hidden;
+  position: relative;
+}
+
+.iv-fill-mini,
+.ev-fill-mini {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.8s ease-out;
+  position: relative;
+  background: linear-gradient(90deg, currentColor 0%, rgba(255, 255, 255, 0.2) 100%);
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.3);
+}
+
+.iv-value,
+.ev-value {
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  color: var(--text-color);
+  min-width: 20px;
+  text-align: right;
+}
+
+/* Stats Summary */
+.stats-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  padding: 1.5rem;
+  background: rgba(var(--accent-color-rgb, 214, 163, 57), 0.05);
+  border-radius: 0.75rem;
+  border: 1px solid rgba(var(--accent-color-rgb, 214, 163, 57), 0.1);
+}
+
+.summary-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  background: var(--nav-background);
+  border-radius: 0.5rem;
+  transition: all 0.2s ease;
+}
+
+.summary-item:hover {
+  background: var(--nav-hover);
+  transform: translateY(-1px);
+}
+
+.summary-label {
+  font-weight: 600;
+  font-size: var(--font-size-sm);
+  color: var(--text-color);
+}
+
+.summary-value {
+  font-weight: 700;
+  font-size: var(--font-size-base);
+  color: var(--accent-color);
+}
+
+/* =============================================================================
+   3. RESPONSIVE STYLES
+   ============================================================================= */
+
+/* Medium screens (1024px and below) */
+@media (max-width: 1024px) {
+  .pokemon-stats-container {
+    flex-direction: column;
+  }
+
+  .pokemon-stat-bar-container {
+    width: 100%;
+  }
+}
+
+/* Mobile screens (480px and below) */
+@media (max-width: 480px) {
+  .pokemon-stat-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
+  }
+
+  .pokemon-stat-name {
+    min-width: unset;
+    font-size: 0.75rem;
+  }
+
+  .pokemon-stat-bar-container {
+    width: 100%;
+  }
+}

@@ -62,7 +62,7 @@
   transition: background-color 0.2s, color 0.2s;
 }
 .modal-close:hover,
-.close-button:hover { background: rgba(255,255,255,0.1); color: #fff; }
+.close-button:hover { background: rgba(255,255,255,0.1); color: var(--text-color); }
 
 /* Body & Footer */
 .modal-body {
@@ -122,12 +122,12 @@
   gap: 0.5rem;
 }
 
-.modal-button.primary { background-color: var(--accent-color); color: #fff; }
+.modal-button.primary { background-color: var(--accent-color); color: var(--text-color); }
 .modal-button.primary:hover:not(:disabled) { background-color: var(--accent-hover); }
 .modal-button.secondary { background-color: var(--nav-background); color: var(--text-color); }
 .modal-button.secondary:hover:not(:disabled) { background-color: var(--nav-hover); }
-.modal-button.danger { background-color: var(--danger-color, #ef4444); color: #fff; }
-.modal-button.danger:hover:not(:disabled) { background-color: var(--danger-hover, #dc2626); }
+.modal-button.danger { background-color: var(--error-color); color: var(--text-color); }
+.modal-button.danger:hover:not(:disabled) { background-color: var(--error-light); }
 .modal-button:disabled { opacity: 0.5; cursor: not-allowed; }
 
 /* Success states often used inside modals */
@@ -142,7 +142,7 @@
   margin: 2rem 0;
 }
 
-.success-details p { font-size: 1.1rem; color: #4CAF50; font-weight: 500; margin-bottom: 1.5rem; }
+.success-details p { font-size: 1.1rem; color: var(--success-light); font-weight: 500; margin-bottom: 1.5rem; }
 
 /* ==============================
    Witch's Hut Modal Styles
@@ -209,6 +209,6 @@
 }
 .modal .close-button {
   position: absolute; top: 10px; right: 10px;
-  background-color: var(--accent-color); color: #fff; border: none; border-radius: 50%;
+  background-color: var(--accent-color); color: var(--text-color); border: none; border-radius: 50%;
   width: 30px; height: 30px; font-size: 16px; cursor: pointer; display: flex; justify-content: center; align-items: center;
 }

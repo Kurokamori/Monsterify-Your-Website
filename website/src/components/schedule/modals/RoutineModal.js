@@ -325,7 +325,7 @@ const RoutineModal = ({ isOpen, onClose, onSuccess, trainers = [], routine = nul
               <button
                 type="button"
                 onClick={() => setShowAddItem(true)}
-                className="btn-secondary add-item-btn"
+                className="btn btn-secondary add-item-btn"
               >
                 <i className="fas fa-plus"></i>
                 Add Routine Item
@@ -419,14 +419,14 @@ const RoutineModal = ({ isOpen, onClose, onSuccess, trainers = [], routine = nul
                   <button
                     type="button"
                     onClick={() => setShowAddItem(false)}
-                    className="btn-secondary"
+                    className="btn btn-secondary"
                   >
                     Cancel
                   </button>
                   <button
                     type="button"
                     onClick={addItem}
-                    className="btn-primary"
+                    className="btn btn-primary"
                   >
                     <i className="fas fa-plus"></i>
                     Add Item
@@ -437,10 +437,10 @@ const RoutineModal = ({ isOpen, onClose, onSuccess, trainers = [], routine = nul
           </div>
 
           <div className="modal-actions">
-            <button type="button" onClick={onClose} className="btn-secondary">
+            <button type="button" onClick={onClose} className="btn btn-secondary">
               Cancel
             </button>
-            <button type="submit" disabled={loading} className="btn-primary">
+            <button type="submit" disabled={loading} className="btn btn-primary">
               {loading ? (
                 <>
                   <i className="fas fa-spinner fa-spin"></i>

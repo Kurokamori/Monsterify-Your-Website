@@ -389,7 +389,7 @@ const FakemonDetailPage = () => {
             <span>#{String(prevFakemon.number).padStart(3, '0')} {prevFakemon.name}</span>
           </Link>
         )}
-        <Link to="/fakedex" className="nav-button back-button">
+        <Link to="/fakedex" className="nav-button button button-secondary">
           <i className="fas fa-th"></i>
           <span>Fakemon Dex</span>
         </Link>

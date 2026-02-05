@@ -400,7 +400,7 @@ const BreedMonsters = ({ onBreedingComplete, onCancel }) => {
           <div className="special-berry-actions">
             {breedingResults.specialBerries['Forget-Me-Not'] > 0 && (
               <button
-                className="btn-special forget-me-not"
+                className="btn btn-special forget-me-not"
                 onClick={handleRerollOffspring}
                 disabled={loading}
                 title="Reroll all offspring using a Forget-Me-Not berry"
@@ -423,7 +423,7 @@ const BreedMonsters = ({ onBreedingComplete, onCancel }) => {
 
               <div className="offspring-actions">
                 <button
-                  className="btn-primary"
+                  className="btn btn-primary"
                   onClick={() => handleClaimOffspring(offspring)}
                   disabled={offspring.claimed || loading}
                 >
@@ -435,7 +435,7 @@ const BreedMonsters = ({ onBreedingComplete, onCancel }) => {
         </div>
 
         <div className="breeding-actions">
-          <button className="btn-secondary" onClick={handleComplete}>
+          <button className="btn btn-secondary" onClick={handleComplete}>
             Done
           </button>
         </div>
@@ -453,14 +453,14 @@ const BreedMonsters = ({ onBreedingComplete, onCancel }) => {
       {/* Top action buttons for convenience */}
       <div className="breeding-actions breeding-actions-top">
         <button
-          className="btn-primary"
+          className="btn btn-primary"
           onClick={handleBreed}
           disabled={!userTrainer || !selectedMonster1 || !selectedMonster2 || loading}
         >
           <i className="fas fa-egg"></i> Breed Monsters
         </button>
 
-        <button className="btn-secondary" onClick={onCancel}>
+        <button className="btn btn-secondary" onClick={onCancel}>
           <i className="fas fa-times"></i> Cancel
         </button>
       </div>
@@ -516,14 +516,14 @@ const BreedMonsters = ({ onBreedingComplete, onCancel }) => {
 
         <div className="breeding-actions breeding-actions-bottom">
           <button
-            className="btn-primary"
+            className="btn btn-primary"
             onClick={handleBreed}
             disabled={!userTrainer || !selectedMonster1 || !selectedMonster2 || loading}
           >
             <i className="fas fa-egg"></i> Breed Monsters
           </button>
 
-          <button className="btn-secondary" onClick={onCancel}>
+          <button className="btn btn-secondary" onClick={onCancel}>
             <i className="fas fa-times"></i> Cancel
           </button>
         </div>

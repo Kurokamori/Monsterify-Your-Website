@@ -94,14 +94,14 @@ const PiratesDock = () => {
     return (
       <div className="location-activity-container">
         <div className="location-activity-header">
-          <Link to="/town" className="btn-secondary">
+          <Link to="/town" className="btn btn-secondary">
             <i className="fas fa-arrow-left mr-2"></i> Back to Town
           </Link>
           <h1>Pirate's Dock</h1>
         </div>
         <div className="auth-message">
           <p>Please log in to access the pirate's dock.</p>
-          <Link to="/login" className="btn-primary">Log In</Link>
+          <Link to="/login" className="btn btn-primary">Log In</Link>
         </div>
       </div>
     );
@@ -170,7 +170,7 @@ const PiratesDock = () => {
     return (
       <div className="location-activity-container">
         <div className="location-activity-header">
-          <button onClick={returnToActivity} className="btn-secondary">
+          <button onClick={returnToActivity} className="btn btn-secondary">
             <i className="fas fa-arrow-left mr-2"></i> Back to Pirate's Dock
           </button>
           <h1>Pirate's Dock - {sessionData.activity.replace(/_/g, ' ')}</h1>
@@ -193,7 +193,7 @@ const PiratesDock = () => {
     return (
       <div className="location-activity-container">
         <div className="location-activity-header">
-          <Link to="/town" className="btn-secondary">
+          <Link to="/town" className="btn btn-secondary">
             <i className="fas fa-arrow-left mr-2"></i> Back to Town
           </Link>
           <h1>Pirate's Dock</h1>
@@ -201,7 +201,7 @@ const PiratesDock = () => {
         <div className="active-session-message">
           <h2>Active Session</h2>
           <p>You have an active pirate's dock session in progress.</p>
-          <button onClick={continueSession} className="btn-primary">
+          <button onClick={continueSession} className="btn btn-primary">
             Continue Session
           </button>
         </div>
@@ -212,7 +212,7 @@ const PiratesDock = () => {
   return (
     <div className="location-activity-container">
       <div className="location-activity-header">
-        <Link to="/town" className="btn-secondary">
+        <Link to="/town" className="btn btn-secondary">
           <i className="fas fa-arrow-left mr-2"></i> Back to Town
         </Link>
         <h1>Pirate's Dock</h1>
@@ -248,7 +248,7 @@ const PiratesDock = () => {
                 </div>
               ) : (
                 <button
-                  className="btn-primary"
+                  className="btn btn-primary"
                   onClick={() => startActivity('swab')}
                 >
                   <i className="fas fa-broom mr-2"></i> Swab the Deck
@@ -274,7 +274,7 @@ const PiratesDock = () => {
                 </div>
               ) : (
                 <button
-                  className="btn-primary"
+                  className="btn btn-primary"
                   onClick={() => startActivity('fishing')}
                 >
                   <i className="fas fa-fish mr-2"></i> Go Fishing

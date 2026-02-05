@@ -446,7 +446,7 @@ const EvolutionEditor = ({ monsterId, evolutionData, onSave, onCancel, isOwner }
               <>
                 <button
                   type="button"
-                  className="update-button"
+                  className="button button-primary"
                   onClick={handleUpdateEntry}
                 >
                   <i className="fas fa-save"></i>
@@ -454,7 +454,7 @@ const EvolutionEditor = ({ monsterId, evolutionData, onSave, onCancel, isOwner }
                 </button>
                 <button
                   type="button"
-                  className="cancel-edit-button"
+                  className="button button-secondary"
                   onClick={() => {
                     setEditingIndex(null);
                     resetForm();
@@ -467,7 +467,7 @@ const EvolutionEditor = ({ monsterId, evolutionData, onSave, onCancel, isOwner }
             ) : (
               <button
                 type="button"
-                className="add-button"
+                className="button button-primary"
                 onClick={handleAddEntry}
               >
                 <i className="fas fa-plus"></i>
@@ -481,7 +481,7 @@ const EvolutionEditor = ({ monsterId, evolutionData, onSave, onCancel, isOwner }
       {/* Editor Actions */}
       <div className="evolution-editor-actions">
         <button
-          className="save-evolution-button"
+          className="button button-primary"
           onClick={handleSave}
         >
           <i className="fas fa-save"></i>

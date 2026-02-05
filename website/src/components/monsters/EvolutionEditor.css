@@ -193,7 +193,7 @@
 
 .delete-button {
   background: var(--error-color);
-  color: white;
+  color: var(--text-color);
 }
 
 .delete-button:hover {
@@ -310,41 +310,6 @@
   box-shadow: 0 0 0 2px rgba(214, 163, 57, 0.25);
 }
 
-.add-button,
-.update-button,
-.cancel-edit-button {
-  padding: 10px 20px;
-  border: none;
-  border-radius: 8px;
-  font-size: var(--font-size-sm);
-  font-weight: 600;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  transition: all 0.2s ease;
-}
-
-.add-button,
-.update-button {
-  background: var(--success-color);
-  color: white;
-}
-
-.add-button:hover,
-.update-button:hover {
-  background: #059669;
-}
-
-.cancel-edit-button {
-  background: #6b7280;
-  color: white;
-}
-
-.cancel-edit-button:hover {
-  background: #4b5563;
-}
-
 /* Evolution Editor Actions */
 .evolution-editor-actions {
   display: flex;
@@ -372,7 +337,7 @@
 
 .save-evolution-button {
   background: #4338ca;
-  color: white;
+  color: var(--text-color);
 }
 
 .save-evolution-button:hover {
@@ -381,7 +346,7 @@
 
 .cancel-evolution-button {
   background: #ef4444;
-  color: white;
+  color: var(--text-color);
 }
 
 .cancel-evolution-button:hover {

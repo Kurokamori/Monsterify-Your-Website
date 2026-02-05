@@ -296,10 +296,10 @@ const WritingSubmissionCalculator = ({
 
 
             <div className="form-actions">
-              <button type="button" onClick={handleAddTrainer} className="add-button">
+              <button type="button" onClick={handleAddTrainer} className="button button-primary">
                 Add Trainer
               </button>
-              <button type="button" onClick={() => setShowAddTrainer(false)} className="cancel-button">
+              <button type="button" onClick={() => setShowAddTrainer(false)} className="button button-secondary">
                 Cancel
               </button>
             </div>
@@ -377,7 +377,7 @@ const WritingSubmissionCalculator = ({
               <button
                 type="button"
                 onClick={handleAddMonster}
-                className="add-button"
+                className="button button-primary"
                 disabled={!selectedMonsterId || !monsterTrainerId}
               >
                 Add Monster
@@ -390,7 +390,7 @@ const WritingSubmissionCalculator = ({
                   setSelectedMonsterId('');
                   setAvailableMonsters([]);
                 }}
-                className="cancel-button"
+                className="button button-secondary"
               >
                 Cancel
               </button>
@@ -457,7 +457,7 @@ const WritingSubmissionCalculator = ({
             <div className="form-actions">
               <button
                 type="button"
-                className="cancel-button"
+                className="button button-secondary"
                 onClick={() => {
                   setShowAddNPC(false);
                   setNpcName('');
@@ -468,7 +468,7 @@ const WritingSubmissionCalculator = ({
               </button>
               <button
                 type="button"
-                className="add-button"
+                className="button button-primary"
                 onClick={handleAddNPC}
                 disabled={!npcWordCount || npcWordCount < 1}
               >

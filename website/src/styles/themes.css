@@ -15,7 +15,6 @@
    DAWN (LIGHT) THEME
    ========================================================================== */
 :root[data-theme="dawn"] {
-  /* ---- Global (index.css) ---- */
   --background-color: #f5f3ef;
   --text-color: #2c2c2c;
   --text-muted: #666666;
@@ -34,59 +33,12 @@
   --success-color: #059669;
   --success-dark: #d1fae5;
   --accent-gradient: linear-gradient(135deg, #b8862d 0%, #c99a3a 100%);
-
-  /* ---- Admin (AdminStyles.css) ---- */
-  --admin-bg-color: #f0ede7;
-  --admin-bg-gradient: linear-gradient(135deg, #f0ede7 0%, #e8e4de 50%, #ddd8d0 100%);
-  --admin-card-bg: #e8e4de;
-  --admin-card-bg-hover: #ddd8d0;
-  --admin-card-header-bg: #d8d3cb;
-  --admin-border-color: #cfc9bf;
-  --admin-border-color-light: #bfb8ad;
-  --admin-text-primary: #1a1a1a;
-  --admin-text-secondary: #555555;
-  --admin-text-muted: #777777;
-  --admin-accent-color: #b8862d;
-  --admin-accent-color-hover: #9a7025;
-  --admin-accent-gradient: linear-gradient(135deg, #b8862d 0%, #c99a3a 100%);
-  --admin-hover-bg: #ddd8d0;
-  --admin-input-bg: #ede9e3;
-  --admin-input-border: #cfc9bf;
-  --admin-secondary-button-bg: #bfb8ad;
-  --admin-secondary-button-hover: #aca59a;
-  --admin-secondary-button-text: #1a1a1a;
-  --admin-danger-color: #dc2626;
-  --admin-danger-color-hover: #b91c1c;
-  --admin-success-color: #059669;
-  --admin-warning-color: #d97706;
-  --admin-info-color: #2563eb;
-
-  /* ---- Shop (ShopStyles.css) ---- */
-  --shop-bg: #e8e4de;
-  --shop-surface: #ddd8d0;
-  --shop-surface-2: #d0cbc3;
-  --shop-border: #cfc9bf;
-  --shop-gold: #b8862d;
-  --shop-gold-2: #d4a23a;
-  --shop-text: #1a1a1a;
-  --shop-muted: #666666;
-  --shop-blue: #2563eb;
-  --shop-blue-dark: #1d4ed8;
-  --shop-green: #059669;
-  --shop-green-dark: #047857;
-  --shop-red: #dc2626;
-  --shop-red-dark: #b91c1c;
-  --shop-orange: #d97706;
-  --shop-orange-dark: #b45309;
-  --shadow-1: 0 2px 4px rgba(0,0,0,.06);
-  --shadow-2: 0 5px 15px rgba(0,0,0,.1);
 }
 
 /* ==========================================================================
    HIGH CONTRAST THEME
    ========================================================================== */
 :root[data-theme="high-contrast"] {
-  /* ---- Global (index.css) ---- */
   --background-color: #000000;
   --text-color: #ffffff;
   --text-muted: #cccccc;
@@ -105,50 +57,4 @@
   --success-color: #00ff7f;
   --success-dark: #003d1f;
   --accent-gradient: linear-gradient(135deg, #ffd700 0%, #ffed4a 100%);
-
-  /* ---- Admin (AdminStyles.css) ---- */
-  --admin-bg-color: #000000;
-  --admin-bg-gradient: linear-gradient(135deg, #000000 0%, #0d0d0d 50%, #1a1a1a 100%);
-  --admin-card-bg: #1a1a1a;
-  --admin-card-bg-hover: #2a2a2a;
-  --admin-card-header-bg: #262626;
-  --admin-border-color: #ffffff;
-  --admin-border-color-light: #cccccc;
-  --admin-text-primary: #ffffff;
-  --admin-text-secondary: #e0e0e0;
-  --admin-text-muted: #bbbbbb;
-  --admin-accent-color: #ffd700;
-  --admin-accent-color-hover: #ffed4a;
-  --admin-accent-gradient: linear-gradient(135deg, #ffd700 0%, #ffed4a 100%);
-  --admin-hover-bg: #333333;
-  --admin-input-bg: #1a1a1a;
-  --admin-input-border: #ffffff;
-  --admin-secondary-button-bg: #4d4d4d;
-  --admin-secondary-button-hover: #666666;
-  --admin-secondary-button-text: #ffffff;
-  --admin-danger-color: #ff4444;
-  --admin-danger-color-hover: #ff6666;
-  --admin-success-color: #00ff7f;
-  --admin-warning-color: #ffaa00;
-  --admin-info-color: #00bfff;
-
-  /* ---- Shop (ShopStyles.css) ---- */
-  --shop-bg: #1a1a1a;
-  --shop-surface: #2a2a2a;
-  --shop-surface-2: #333333;
-  --shop-border: #ffffff;
-  --shop-gold: #ffd700;
-  --shop-gold-2: #ffed4a;
-  --shop-text: #ffffff;
-  --shop-muted: #cccccc;
-  --shop-blue: #00bfff;
-  --shop-blue-dark: #0099cc;
-  --shop-green: #00ff7f;
-  --shop-green-dark: #00cc66;
-  --shop-red: #ff4444;
-  --shop-red-dark: #ff6666;
-  --shop-orange: #ffaa00;
-  --shop-orange-dark: #cc8800;
-  --shadow-1: 0 2px 4px rgba(255,255,255,.05);
-  --shadow-2: 0 5px 15px rgba(255,255,255,.1);
 }

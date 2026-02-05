@@ -235,7 +235,7 @@ const FakemonDexPage = () => {
               <div className="filter-section">
                 <div className="filter-buttons">
                   <button
-                    className={`filter-button ${selectedCategory === '' ? 'active' : ''}`}
+                    className={`button button-filter ${selectedCategory === '' ? 'active' : ''}`}
                     onClick={() => handleCategoryChange('')}
                   >
                     All Categories
@@ -243,7 +243,7 @@ const FakemonDexPage = () => {
                   {categories.map((category) => (
                     <button
                       key={category}
-                      className={`filter-button category-${category.toLowerCase()} ${selectedCategory === category ? 'active' : ''}`}
+                      className={`button button-filter category-${category.toLowerCase()} ${selectedCategory === category ? 'active' : ''}`}
                       onClick={() => handleCategoryChange(category)}
                     >
                       {category}
@@ -258,7 +258,7 @@ const FakemonDexPage = () => {
               <div className="filter-section">
                 <div className="filter-buttons">
                   <button
-                    className={`filter-button ${selectedAttribute === '' ? 'active' : ''}`}
+                    className={`button button-filter ${selectedAttribute === '' ? 'active' : ''}`}
                     onClick={() => handleAttributeChange('')}
                   >
                     All Attributes
@@ -266,7 +266,7 @@ const FakemonDexPage = () => {
                   {attributes.map((attribute) => (
                     <button
                       key={attribute}
-                      className={`filter-button attribute-${attribute.toLowerCase()} ${selectedAttribute === attribute ? 'active' : ''}`}
+                      className={`button button-filter attribute-${attribute.toLowerCase()} ${selectedAttribute === attribute ? 'active' : ''}`}
                       onClick={() => handleAttributeChange(attribute)}
                     >
                       {attribute}
@@ -281,7 +281,7 @@ const FakemonDexPage = () => {
               <div className="filter-section">
                 <div className="filter-buttons type-filters">
                   <button
-                    className={`filter-button ${selectedType === '' ? 'active' : ''}`}
+                    className={`button button-filter ${selectedType === '' ? 'active' : ''}`}
                     onClick={() => handleTypeChange('')}
                   >
                     All Types
@@ -289,7 +289,7 @@ const FakemonDexPage = () => {
                   {displayTypes.map((type) => (
                     <button
                       key={type}
-                      className={`filter-button type-${type.toLowerCase()} ${selectedType === type ? 'active' : ''}`}
+                      className={`button button-filter type-${type.toLowerCase()} ${selectedType === type ? 'active' : ''}`}
                       onClick={() => handleTypeChange(type)}
                     >
                       {type}
@@ -362,7 +362,7 @@ const FakemonDexPage = () => {
           {totalPages > 1 && (
             <div className="pagination">
               <button
-                className="pagination-button"
+                className="button button-secondary"
                 disabled={currentPage === 1}
                 onClick={() => handlePageChange(currentPage - 1)}
               >
@@ -372,7 +372,7 @@ const FakemonDexPage = () => {
               {[...Array(totalPages).keys()].map((page) => (
                 <button
                   key={page + 1}
-                  className={`pagination-button ${currentPage === page + 1 ? 'active' : ''}`}
+                  className={`button button-secondary ${currentPage === page + 1 ? 'active' : ''}`}
                   onClick={() => handlePageChange(page + 1)}
                 >
                   {page + 1}
@@ -380,7 +380,7 @@ const FakemonDexPage = () => {
               ))}
 
               <button
-                className="pagination-button"
+                className="button button-secondary"
                 disabled={currentPage === totalPages}
                 onClick={() => handlePageChange(currentPage + 1)}
               >

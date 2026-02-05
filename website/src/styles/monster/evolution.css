@@ -1,0 +1,117 @@
+/* =============================================================================
+   MONSTER EVOLUTION
+   ============================================================================= */
+
+.monster-evolution-tab h2 {
+  font-size: var(--font-size-xl);
+  color: var(--accent-color);
+  margin-bottom: 1.5rem;
+}
+
+.evolution-tab-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid var(--border-color, #e0e7ff);
+}
+
+.evolution-tab-header h2 {
+  margin: 0;
+  color: var(--text-color);
+  font-size: 1.8rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.evolution-edit-button {
+  background: linear-gradient(135deg, #4f46e5, #7c3aed);
+  color: var(--text-color);
+  border: none;
+  border-radius: 8px;
+  padding: 10px 20px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(79, 70, 229, 0.3);
+}
+
+.evolution-edit-button:hover {
+  background: linear-gradient(135deg, #4338ca, #6d28d9);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.4);
+}
+
+.evolution-edit-button.active {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
+}
+
+.evolution-edit-button.active:hover {
+  background: linear-gradient(135deg, #dc2626, #b91c1c);
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+}
+
+.evolution-edit-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.no-evolution-message {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 3rem;
+  text-align: center;
+  color: var(--text-color);
+  opacity: 0.7;
+}
+
+.no-evolution-message i {
+  font-size: 3rem;
+}
+
+.evolution-item.current {
+  background-color: var(--nav-active);
+  border: 2px solid var(--accent-color);
+}
+
+.evolution-method {
+  font-size: var(--font-size-sm);
+  color: var(--text-color);
+  opacity: 0.8;
+  margin-top: 0.5rem;
+  text-align: center;
+}
+
+/* =============================================================================
+   RESPONSIVE STYLES
+   ============================================================================= */
+
+/* Tablet screens (768px and below) */
+@media (max-width: 768px) {
+  .evolution-chain {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .evolution-arrow {
+    transform: rotate(90deg);
+    margin: 1rem 0;
+  }
+}
+
+/* Reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  .evolution-card {
+    transition: none;
+  }
+}

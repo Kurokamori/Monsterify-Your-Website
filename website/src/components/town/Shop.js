@@ -262,7 +262,7 @@ const Shop = ({ shopId, shopName, shopDescription }) => {
         {displayCategories.map(category => (
           <button
             key={category.id}
-            className={`category-button ${selectedCategory === category.id ? 'active' : ''}`}
+            className={`button button-secondary ${selectedCategory === category.id ? 'active' : ''}`}
             onClick={() => handleCategoryChange(category.id)}
           >
             {category.name}
@@ -313,7 +313,7 @@ const Shop = ({ shopId, shopName, shopDescription }) => {
       {totalPages > 1 && (
         <div className="shop-pagination">
           <button
-            className="pagination-button"
+            className="button button-secondary"
             onClick={() => handlePageChange(page - 1)}
             disabled={page === 1}
           >
@@ -325,7 +325,7 @@ const Shop = ({ shopId, shopName, shopDescription }) => {
           </div>
 
           <button
-            className="pagination-button"
+            className="button button-secondary"
             onClick={() => handlePageChange(page + 1)}
             disabled={page === totalPages}
           >
@@ -487,7 +487,7 @@ const Shop = ({ shopId, shopName, shopDescription }) => {
                       )}
 
                       <button
-                        className="purchase-button"
+                        className="button button-primary"
                         onClick={handlePurchase}
                         disabled={
                           purchaseLoading ||

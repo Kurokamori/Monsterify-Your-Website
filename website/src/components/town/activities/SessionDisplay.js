@@ -390,7 +390,7 @@ const SessionDisplay = ({
       <div className="activity-session-container">
         <ErrorMessage message={error} />
         <div className="debug-actions">
-          <button onClick={onReturnToActivity} className="btn-secondary">Return to Activity</button>
+          <button onClick={onReturnToActivity} className="btn btn-secondary">Return to Activity</button>
         </div>
       </div>
     );
@@ -478,7 +478,7 @@ const SessionDisplay = ({
                                 onChange={(trainerId) => handleTrainerSelect(reward.id, trainerId)}
                               />
                               <button
-                                className="btn-primary mt-2 w-full"
+                                className="btn btn-primary mt-2 w-full"
                                 onClick={() => claimReward(reward.id, reward.assigned_to)}
                                 disabled={claimingReward === reward.id || !reward.assigned_to}
                               >
@@ -504,7 +504,7 @@ const SessionDisplay = ({
             {claimError && <ErrorMessage message={claimError} />}
 
             <div className="rewards-actions">
-              <button onClick={onReturnToActivity} className="btn-primary">
+              <button onClick={onReturnToActivity} className="btn btn-primary">
                 <i className="fas fa-arrow-left mr-2"></i> Start New Activity
               </button>
             </div>
@@ -519,7 +519,7 @@ const SessionDisplay = ({
       <div className="activity-session-container">
         <ErrorMessage message="Session data not found. Please try starting a new activity." />
         <div className="debug-actions">
-          <button onClick={onReturnToActivity} className="btn-secondary">Return to Activity</button>
+          <button onClick={onReturnToActivity} className="btn btn-secondary">Return to Activity</button>
         </div>
       </div>
     );
@@ -560,7 +560,7 @@ const SessionDisplay = ({
           )}
           
           <button
-            className="submit-button"
+            className="button button-success"
             onClick={handleComplete}
             disabled={submitting || (!canSubmit && !(currentUser && currentUser.is_admin))}
           >

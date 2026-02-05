@@ -209,7 +209,7 @@ const StarterSelectionPage = () => {
             <h2>Please select all three starters first</h2>
             <div className="starter-spinner-container">
               <button
-                className="starter-back-button"
+                className="starter-button button-secondary"
                 onClick={() => setCurrentStep(0)}
               >
                 <i className="fas fa-arrow-left"></i>
@@ -245,7 +245,7 @@ const StarterSelectionPage = () => {
                     />
                     {starterNames[index] && (
                       <button
-                        className="clear-button"
+                        className="button button-danger"
                         onClick={() => handleNameChange(index, '')}
                         type="button"
                         aria-label="Clear name"

@@ -274,7 +274,7 @@ const ArtGallery = () => {
 
         <div className="filter-actions">
           <button
-            className="filter-button reset"
+            className="button button-filter reset"
             onClick={resetFilters}
           >
             Reset
@@ -317,7 +317,7 @@ const ArtGallery = () => {
       {totalPages > 1 && (
         <div className="gallery-pagination">
           <button
-            className="pagination-button"
+            className="button button-secondary"
             onClick={() => handlePageChange(page - 1)}
             disabled={page === 1}
           >
@@ -329,7 +329,7 @@ const ArtGallery = () => {
           </div>
 
           <button
-            className="pagination-button"
+            className="button button-secondary"
             onClick={() => handlePageChange(page + 1)}
             disabled={page === totalPages}
           >

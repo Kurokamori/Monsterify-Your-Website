@@ -31,7 +31,7 @@ const MegaImageReferenceSubmissionPage = () => {
       <div className="submission-container">
         <div className="submission-header">
           <button 
-            className="back-button"
+            className="button button-secondary"
             onClick={() => navigate('/submissions')}
           >
             <i className="fas fa-arrow-left"></i> Back to Submissions

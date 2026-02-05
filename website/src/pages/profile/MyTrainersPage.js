@@ -272,8 +272,20 @@ const MyTrainersPage = () => {
       {displayTrainers.length > 0 ? (
         <div className="trainers-grid">
           {displayTrainers.map(trainer => (
-            <div className="trainer-card" key={trainer.id}>
-              
+            <div
+              className="trainer-card clickable"
+              key={trainer.id}
+              onClick={() => navigate(`/trainers/${trainer.id}`)}
+              role="link"
+              tabIndex={0}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  navigate(`/trainers/${trainer.id}`);
+                }
+              }}
+            >
+
                 <div className="trainer-header">
                   <div className="trainer-info">
                     <h2 className="trainer-name">{trainer.name}</h2>
@@ -283,7 +295,7 @@ const MyTrainersPage = () => {
                     </div>
                   </div>
                 </div>
-              
+
               <div className="trainer-avatar-and-info">
               <div className="trainer-avatar">
                 <img
@@ -296,7 +308,7 @@ const MyTrainersPage = () => {
                 />
               </div>
               <div className="trainer-content">
-                
+
 
               <div className="my-trainer-stats">
                 <div className="my-trainer-stat-item">
@@ -335,18 +347,18 @@ const MyTrainersPage = () => {
               </div>
               </div>
 </div>
-                <div className="trainer-actions">
+                <div className="trainer-actions" onClick={(e) => e.stopPropagation()}>
                   <div className="trainer-actions-row primary">
-                    <Link to={`/trainers/${trainer.id}`} className="trainer-button primary">
+                    <Link to={`/trainers/${trainer.id}`} className="btn btn-primary">
                       <i className="fas fa-eye"></i> View
                     </Link>
-                    <Link to={`/trainers/${trainer.id}/edit`} className="trainer-button secondary">
+                    <Link to={`/trainers/${trainer.id}/edit`} className="btn btn-primary">
                       <i className="fas fa-edit"></i> Edit
                     </Link>
                   </div>
                   <div className="trainer-actions-row secondary">
                     <button
-                      className="trainer-action-button delete"
+                      className="btn btn-danger"
                       onClick={() => {
                         setSelectedTrainer(trainer);
                         setIsDeleteModalOpen(true);
@@ -354,7 +366,7 @@ const MyTrainersPage = () => {
                     >
                       <i className="fas fa-trash-alt"></i> Delete
                     </button>
-                  
+
                 </div>
               </div>
             </div>

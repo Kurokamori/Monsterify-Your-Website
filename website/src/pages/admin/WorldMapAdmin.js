@@ -674,13 +674,13 @@ const WorldMapAdmin = () => {
           
           <div className="modal-footer">
             <button 
-              className="btn-secondary"
+              className="btn btn-secondary"
               onClick={() => setShowModal(false)}
             >
               Cancel
             </button>
             <button 
-              className="btn-primary"
+              className="btn btn-primary"
               onClick={handleSave}
             >
               Save Changes

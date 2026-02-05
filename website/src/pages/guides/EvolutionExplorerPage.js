@@ -629,7 +629,7 @@ const EvolutionExplorerPage = () => {
       {!showSearch && (
         <div className="evolution-tree-section">
           <div className="tree-header">
-            <button className="back-button" onClick={resetToSearch}>
+            <button className="button button-secondary" onClick={resetToSearch}>
               ← Back to Search
             </button>
             <h2>Evolution tree for {selectedSpecies}</h2>

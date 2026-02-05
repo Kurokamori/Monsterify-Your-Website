@@ -1,0 +1,199 @@
+/* ==============================
+   Trainer PC Boxes Styles
+
+   PC boxes, box grids, edit boxes,
+   mass edit, and box controls.
+   ============================== */
+
+/* ===== Boxes header ===== */
+
+.boxes-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding-bottom: .5rem;
+  border-bottom: 1px solid var(--divider-color);
+}
+
+.boxes-header h2{ margin:0; padding:0; border:none; }
+
+
+/* ===== Mass edit button ===== */
+
+.mass-edit-button {
+  background: linear-gradient(135deg, var(--blue-color), var(--blue-dark));
+  color: var(--text-color);
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all .2s ease;
+  box-shadow: 0 2px 4px rgba(0,123,255,.2);
+}
+
+.mass-edit-button:hover{
+  background:linear-gradient(135deg, var(--blue-dark), var(--blue-dark)); transform:translateY(-1px);
+  box-shadow:0 4px 8px rgba(0,123,255,.3);
+}
+.mass-edit-button:active{ transform:translateY(0); }
+.mass-edit-button i{ font-size:16px; }
+
+
+/* ===== Add Box Controls ===== */
+
+.edit-boxes-controls {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+}
+
+.add-box-button {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  padding: .75rem 1.5rem;
+  background: linear-gradient(135deg, var(--success-light), var(--success-color));
+  color: var(--text-color);
+  border: none;
+  border-radius: .5rem;
+  font-size: .9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all .2s ease;
+  box-shadow: 0 2px 4px rgba(40,167,69,.2);
+}
+
+.add-box-button:hover{
+  background:linear-gradient(135deg, var(--success-color), var(--success-light)); transform:translateY(-2px);
+  box-shadow:0 4px 8px rgba(40,167,69,.3);
+}
+.add-box-button:active{ transform:translateY(0); }
+.add-box-button i{ font-size:1rem; }
+
+
+/* ===== Edit boxes grid ===== */
+
+.edit-boxes-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.edit-boxes-actions {
+  display: flex;
+  gap: .75rem;
+}
+
+.edit-boxes-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: .5rem 1rem;
+  border-radius: .375rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all .2s;
+  border: none;
+}
+
+.edit-boxes-instructions {
+  background-color: rgba(var(--accent-color-rgb,214,163,57), .1);
+  border-left: 3px solid var(--accent-color);
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  border-radius: .25rem;
+}
+
+.edit-boxes-instructions p{ margin:0; font-size:var(--font-size-sm); }
+
+.edit-boxes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px,1fr));
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.edit-box-container {
+  background-color: var(--nav-background);
+  border-radius: .5rem;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,.1);
+  transition: all .2s;
+}
+
+.edit-box-container:hover{ transform:translateY(-3px); box-shadow:0 4px 12px rgba(0,0,0,.15); }
+
+.edit-box-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: .75rem 1rem;
+  background-color: var(--accent-color);
+  color: var(--background-color);
+}
+
+.edit-box-header h3{ font-size:var(--font-size-base); font-weight:600; margin:0; }
+.edit-box-header span{ font-size:var(--font-size-sm); opacity:.8; }
+
+.edit-box-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  grid-template-rows: repeat(5, 1fr);
+  gap: .25rem;
+  padding: .75rem;
+  background-color: rgba(0,0,0,.2);
+}
+
+.edit-box-slot {
+  aspect-ratio: 1;
+  background-color: rgba(255,255,255,.05);
+  border-radius: .25rem;
+  overflow: hidden;
+  position: relative;
+  transition: all .2s;
+  cursor: move;
+}
+
+.edit-box-slot.empty{ background-color:rgba(255,255,255,.02); border:1px dashed rgba(255,255,255,.1); }
+
+.edit-box-slot.dragging{
+  opacity:.6; transform:scale(1.05); z-index:10; box-shadow:0 0 10px rgba(var(--accent-color-rgb,214,163,57), .5);
+  border:2px dashed var(--accent-color);
+}
+
+.edit-box-slot.drag-over{ background-color:rgba(var(--accent-color-rgb,214,163,57), .2); border:2px solid var(--accent-color); }
+
+
+/* ===== Responsive ===== */
+
+@media (max-width:768px){
+  .pc-box-navigation{ flex-direction:column; gap:1rem; }
+  .pc-box-info{ text-align:center; }
+  .pc-box-grid{ grid-template-columns:repeat(4,1fr); grid-template-rows:repeat(8,1fr); padding:1rem; gap:.5rem; }
+  .all-boxes-grid{ grid-template-columns:repeat(auto-fill, minmax(200px,1fr)); }
+}
+
+@media (max-width:480px){
+  .pc-box-grid{
+    grid-template-columns:repeat(3,1fr); grid-template-rows:repeat(10,1fr);
+    padding:.75rem; gap:.5rem; min-height:1000px;
+  }
+  .pc-box-monster-name{ font-size:.7rem; }
+  .pc-box-monster-level{ font-size:.6rem; padding:.1rem .25rem; }
+  .box-preview-grid{
+    grid-template-columns:repeat(6,1fr); grid-template-rows:repeat(5,1fr); gap:.375rem; min-height:280px;
+  }
+  .box-preview-slot{ aspect-ratio:1; min-height:50px; }
+  .box-preview-monster-image{ height:30px; max-width:100%; max-height:100%; }
+  .box-preview-monster-name{ font-size:.65rem; min-height:1.5rem; }
+  .all-boxes-grid{ grid-template-columns:1fr; gap:1.5rem; }
+  .box-preview{ padding:1rem; }
+}

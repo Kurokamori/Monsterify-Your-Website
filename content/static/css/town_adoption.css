@@ -34,7 +34,7 @@
 .month-link:hover,
 .month-link.active {
     background: #3d4b63;
-    color: white;
+    color: var(--text-color);
 }
 
 .trainer-selection select {
@@ -42,7 +42,7 @@
     border-radius: 4px;
     margin-left: 1rem;
     background: #1e2532;
-    color: white;
+    color: var(--text-color);
     border: 1px solid #3d4b63;
 }
 
@@ -86,7 +86,7 @@
 
 .adoption-table th {
     background: #3d4b63;
-    color: white;
+    color: var(--text-color);
     font-weight: 600;
 }
 
@@ -134,7 +134,7 @@
     padding: 0.75rem 1.5rem;
     border-radius: 4px;
     background: #4CAF50;
-    color: white;
+    color: var(--text-color);
     border: none;
     cursor: pointer;
     font-weight: 600;
@@ -196,7 +196,7 @@
     border: 1px solid #3d4b63;
     border-radius: 4px;
     background: #1e2532;
-    color: white;
+    color: var(--text-color);
 }
 
 .modal-actions {
@@ -204,32 +204,6 @@
     justify-content: flex-end;
     gap: 1rem;
     margin-top: 1.5rem;
-}
-
-.submit-btn, .cancel-btn {
-    padding: 0.75rem 1.5rem;
-    border-radius: 4px;
-    border: none;
-    cursor: pointer;
-    font-weight: 600;
-}
-
-.submit-btn {
-    background: #4CAF50;
-    color: white;
-}
-
-.submit-btn:hover {
-    background: #45a049;
-}
-
-.cancel-btn {
-    background: #2b3645;
-    color: white;
-}
-
-.cancel-btn:hover {
-    background: #3d4b63;
 }
 
 .adoption-summary {

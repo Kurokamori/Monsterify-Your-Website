@@ -88,23 +88,23 @@ const RerollerSessionsPage = () => {
       <div className="reroller-header">
         <h1>Reroller Sessions</h1>
         <p>View and manage all reroll sessions</p>
-        <Link to="/admin/reroller" className="btn-primary" style={{ marginTop: '1rem', display: 'inline-block' }}>
+        <Link to="/admin/reroller" className="btn btn-primary" style={{ marginTop: '1rem', display: 'inline-block' }}>
           <i className="fas fa-plus"></i> Create New Session
         </Link>
       </div>
 
       {/* Filters */}
       <div style={{ marginBottom: '1.5rem', display: 'flex', gap: '1rem', alignItems: 'center' }}>
-        <label style={{ color: 'var(--admin-text-secondary)' }}>Filter by Status:</label>
+        <label style={{ color: 'var(--accent-color)' }}>Filter by Status:</label>
         <select
           value={statusFilter}
           onChange={(e) => { setStatusFilter(e.target.value); setPage(1); }}
           style={{
             padding: '0.5rem 1rem',
-            background: 'var(--admin-input-bg)',
-            border: '1px solid var(--admin-border-color)',
+            background: 'var(--input-background)',
+            border: '1px solid var(--border-color)',
             borderRadius: '6px',
-            color: 'var(--admin-text-primary)'
+            color: 'var(--text-color)'
           }}
         >
           <option value="">All</option>
@@ -129,26 +129,26 @@ const RerollerSessionsPage = () => {
           <div style={{ overflowX: 'auto' }}>
             <table style={{ width: '100%', borderCollapse: 'collapse' }}>
               <thead>
-                <tr style={{ borderBottom: '2px solid var(--admin-border-color)' }}>
-                  <th style={{ padding: '1rem', textAlign: 'left', color: 'var(--admin-text-secondary)' }}>ID</th>
-                  <th style={{ padding: '1rem', textAlign: 'left', color: 'var(--admin-text-secondary)' }}>Type</th>
-                  <th style={{ padding: '1rem', textAlign: 'left', color: 'var(--admin-text-secondary)' }}>Target User</th>
-                  <th style={{ padding: '1rem', textAlign: 'left', color: 'var(--admin-text-secondary)' }}>Rewards</th>
-                  <th style={{ padding: '1rem', textAlign: 'left', color: 'var(--admin-text-secondary)' }}>Claims</th>
-                  <th style={{ padding: '1rem', textAlign: 'left', color: 'var(--admin-text-secondary)' }}>Status</th>
-                  <th style={{ padding: '1rem', textAlign: 'left', color: 'var(--admin-text-secondary)' }}>Created</th>
-                  <th style={{ padding: '1rem', textAlign: 'left', color: 'var(--admin-text-secondary)' }}>Actions</th>
+                <tr style={{ borderBottom: '2px solid var(--border-color)' }}>
+                  <th style={{ padding: '1rem', textAlign: 'left', color: 'var(--accent-color)' }}>ID</th>
+                  <th style={{ padding: '1rem', textAlign: 'left', color: 'var(--accent-color)' }}>Type</th>
+                  <th style={{ padding: '1rem', textAlign: 'left', color: 'var(--accent-color)' }}>Target User</th>
+                  <th style={{ padding: '1rem', textAlign: 'left', color: 'var(--accent-color)' }}>Rewards</th>
+                  <th style={{ padding: '1rem', textAlign: 'left', color: 'var(--accent-color)' }}>Claims</th>
+                  <th style={{ padding: '1rem', textAlign: 'left', color: 'var(--accent-color)' }}>Status</th>
+                  <th style={{ padding: '1rem', textAlign: 'left', color: 'var(--accent-color)' }}>Created</th>
+                  <th style={{ padding: '1rem', textAlign: 'left', color: 'var(--accent-color)' }}>Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {sessions.map(session => (
-                  <tr key={session.id} style={{ borderBottom: '1px solid var(--admin-border-color)' }}>
-                    <td style={{ padding: '1rem', color: 'var(--admin-text-primary)' }}>#{session.id}</td>
+                  <tr key={session.id} style={{ borderBottom: '1px solid var(--border-color)' }}>
+                    <td style={{ padding: '1rem', color: 'var(--text-color)' }}>#{session.id}</td>
                     <td style={{ padding: '1rem' }}>
                       <span style={{
                         padding: '0.25rem 0.75rem',
                         borderRadius: '4px',
-                        background: 'var(--admin-accent-color)',
+                        background: 'var(--accent-color)',
                         color: '#000',
                         fontSize: '0.8rem',
                         fontWeight: '500'
@@ -156,10 +156,10 @@ const RerollerSessionsPage = () => {
                         {getRollTypeLabel(session.rollType)}
                       </span>
                     </td>
-                    <td style={{ padding: '1rem', color: 'var(--admin-text-primary)' }}>
+                    <td style={{ padding: '1rem', color: 'var(--text-color)' }}>
                       {session.targetDisplayName || session.targetUsername || `User #${session.targetUserId}`}
                     </td>
-                    <td style={{ padding: '1rem', color: 'var(--admin-text-secondary)' }}>
+                    <td style={{ padding: '1rem', color: 'var(--accent-color)' }}>
                       {session.rolledMonsters?.length > 0 && (
                         <span>{session.rolledMonsters.length} monster{session.rolledMonsters.length !== 1 ? 's' : ''}</span>
                       )}
@@ -168,7 +168,7 @@ const RerollerSessionsPage = () => {
                         <span>{session.rolledItems.length} item{session.rolledItems.length !== 1 ? 's' : ''}</span>
                       )}
                     </td>
-                    <td style={{ padding: '1rem', color: 'var(--admin-text-secondary)' }}>
+                    <td style={{ padding: '1rem', color: 'var(--accent-color)' }}>
                       {session.claimCount || 0}
                     </td>
                     <td style={{ padding: '1rem' }}>
@@ -176,7 +176,7 @@ const RerollerSessionsPage = () => {
                         {session.status}
                       </span>
                     </td>
-                    <td style={{ padding: '1rem', color: 'var(--admin-text-muted)', fontSize: '0.85rem' }}>
+                    <td style={{ padding: '1rem', color: 'var(--text-muted)', fontSize: '0.85rem' }}>
                       {formatDate(session.createdAt)}
                     </td>
                     <td style={{ padding: '1rem' }}>
@@ -185,10 +185,10 @@ const RerollerSessionsPage = () => {
                           onClick={() => copyLink(session.token)}
                           style={{
                             padding: '0.4rem 0.75rem',
-                            background: 'var(--admin-input-bg)',
-                            border: '1px solid var(--admin-border-color)',
+                            background: 'var(--input-background)',
+                            border: '1px solid var(--border-color)',
                             borderRadius: '4px',
-                            color: 'var(--admin-text-secondary)',
+                            color: 'var(--accent-color)',
                             cursor: 'pointer',
                             fontSize: '0.8rem'
                           }}
@@ -200,10 +200,10 @@ const RerollerSessionsPage = () => {
                           to={`/admin/reroller/sessions/${session.id}`}
                           style={{
                             padding: '0.4rem 0.75rem',
-                            background: 'var(--admin-input-bg)',
-                            border: '1px solid var(--admin-border-color)',
+                            background: 'var(--input-background)',
+                            border: '1px solid var(--border-color)',
                             borderRadius: '4px',
-                            color: 'var(--admin-text-secondary)',
+                            color: 'var(--accent-color)',
                             textDecoration: 'none',
                             fontSize: '0.8rem'
                           }}
@@ -215,10 +215,10 @@ const RerollerSessionsPage = () => {
                           onClick={() => setDeleteConfirm(session.id)}
                           style={{
                             padding: '0.4rem 0.75rem',
-                            background: 'var(--admin-input-bg)',
-                            border: '1px solid var(--admin-danger-color)',
+                            background: 'var(--input-background)',
+                            border: '1px solid var(--error-color)',
                             borderRadius: '4px',
-                            color: 'var(--admin-danger-color)',
+                            color: 'var(--error-color)',
                             cursor: 'pointer',
                             fontSize: '0.8rem'
                           }}
@@ -240,18 +240,18 @@ const RerollerSessionsPage = () => {
               <button
                 onClick={() => setPage(p => Math.max(1, p - 1))}
                 disabled={page === 1}
-                className="btn-secondary"
+                className="btn btn-secondary"
                 style={{ padding: '0.5rem 1rem' }}
               >
                 Previous
               </button>
-              <span style={{ padding: '0.5rem 1rem', color: 'var(--admin-text-secondary)' }}>
+              <span style={{ padding: '0.5rem 1rem', color: 'var(--accent-color)' }}>
                 Page {page} of {totalPages}
               </span>
               <button
                 onClick={() => setPage(p => Math.min(totalPages, p + 1))}
                 disabled={page === totalPages}
-                className="btn-secondary"
+                className="btn btn-secondary"
                 style={{ padding: '0.5rem 1rem' }}
               >
                 Next
@@ -266,14 +266,14 @@ const RerollerSessionsPage = () => {
         <div className="edit-modal-overlay" onClick={() => setDeleteConfirm(null)}>
           <div className="edit-modal" onClick={(e) => e.stopPropagation()}>
             <h3>Delete Session</h3>
-            <p style={{ color: 'var(--admin-text-secondary)', margin: '1rem 0' }}>
+            <p style={{ color: 'var(--accent-color)', margin: '1rem 0' }}>
               Are you sure you want to delete this session? This will also delete all associated claims and cannot be undone.
             </p>
             <div className="edit-modal-actions">
-              <button className="btn-secondary" onClick={() => setDeleteConfirm(null)}>
+              <button className="btn btn-secondary" onClick={() => setDeleteConfirm(null)}>
                 Cancel
               </button>
-              <button className="btn-danger" onClick={() => handleDelete(deleteConfirm)}>
+              <button className="btn btn-danger" onClick={() => handleDelete(deleteConfirm)}>
                 Delete
               </button>
             </div>

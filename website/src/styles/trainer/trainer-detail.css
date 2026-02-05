@@ -1,0 +1,282 @@
+/* ==============================
+   Trainer Detail Page Styles
+
+   Detail page containers, headers, sidebars,
+   tabs, panels, and content sections.
+   ============================== */
+
+/* ===== Detail page container ===== */
+
+.trainer-detail-container {
+  width: 100%;
+  max-width: var(--container-max-width);
+  margin: 0 auto;
+  padding: 2rem var(--content-padding);
+}
+
+.trainer-details-container {
+  width: 100%;
+  background: var(--background-color);
+  min-height: 100vh;
+  padding: 20px;
+}
+
+
+/* ===== Detail page header ===== */
+
+.trainer-detail-header {
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+  padding: 0;
+  background-color: transparent;
+  border-radius: 0;
+  box-shadow: none;
+  align-items: flex-start;
+}
+
+.trainer-details-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.trainer-details-title {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.trainer-details-title h1{ margin:0; color:var(--text-color); }
+.trainer-details-title .trainer-nickname{ font-style:italic; color:var(--text-muted); font-size:1.1rem; }
+
+.trainer-details-actions {
+  display: flex;
+  gap: 10px;
+}
+
+
+/* ===== Detail page content ===== */
+
+.trainer-detail-content {
+  display: flex;
+  gap: 2rem;
+  margin-top: 3rem;
+}
+
+.trainer-sidebar {
+  width: var(--sidebar-width);
+  flex-shrink: 0;
+}
+
+.trainer-main-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.trainer-profile-tab {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+
+/* ===== Panels ===== */
+
+.trainer-panel, .trainer-monsters-section{
+  background-color:var(--card-background); border-radius:.5rem; padding:1.5rem;
+  box-shadow:0 2px 4px rgba(0,0,0,.1); margin-bottom:1.5rem;
+  overflow: hidden;
+}
+
+.trainer-panel h2, .trainer-monsters-section h2, .trainer-pc-tab h2, .trainer-boxes-tab h2,
+.trainer-inventory-tab h2, .trainer-stats-tab h2{
+  font-size:var(--font-size-xl); color:var(--accent-color); margin-bottom:1.5rem;
+  padding-bottom:.5rem; border-bottom:1px solid var(--divider-color);
+}
+
+
+/* ===== Tabs ===== */
+
+.trainer-pc-tab, .trainer-boxes-tab, .trainer-inventory-tab, .trainer-stats-tab{
+  background-color:var(--card-background); border-radius:.5rem; padding:1.5rem; box-shadow:0 2px 4px rgba(0,0,0,.1);
+}
+
+.trainer-edit-boxes-tab {
+  background-color: var(--card-background);
+  border-radius: .5rem;
+  padding: 1.5rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,.1);
+}
+
+.trainer-mega-tab {
+  padding: 1.5rem;
+  background-color: var(--card-background);
+  border-radius: .5rem;
+}
+
+
+/* ===== Details page tabs ===== */
+
+.trainer-details-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--border-color);
+  margin-bottom: 20px;
+}
+
+.trainer-tab {
+  padding: 16px 24px;
+  background: none;
+  border: none;
+  border-bottom: 3px solid transparent;
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: all .3s ease;
+  border-radius: 8px 8px 0 0;
+}
+
+.trainer-tab:hover{
+  color:var(--text-color);
+  background:linear-gradient(135deg, rgba(214,163,57,.1) 0%, rgba(244,208,63,.05) 100%);
+  transform:translateY(-2px);
+}
+
+.trainer-tab.active{
+  color:var(--gold-color); border-bottom-color:var(--gold-color); font-weight:600;
+  background:linear-gradient(135deg, rgba(214,163,57,.15) 0%, rgba(244,208,63,.08) 100%);
+}
+
+
+/* ===== Details buttons ===== */
+
+.trainer-details-btn {
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-size: .95rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all .2s ease;
+  border: none;
+  box-shadow: 0 2px 8px rgba(0,0,0,.1);
+}
+
+.trainer-details-btn:hover{ transform:translateY(-1px); box-shadow:0 4px 16px rgba(0,0,0,.2); }
+.trainer-details-btn.edit{ background-color:var(--gold-color); color:var(--text-color); }
+.trainer-details-btn.edit:hover{ background-color:var(--gold-dark); }
+.trainer-details-btn.delete{ background-color:var(--error-color); color:var(--text-color); }
+.trainer-details-btn.delete:hover{ background-color:var(--error-light); }
+.trainer-details-btn.back{ background-color:var(--nav-background); color:var(--text-color); border:1px solid var(--border-color); }
+.trainer-details-btn.back:hover{ background-color:var(--nav-hover); }
+
+
+/* ===== Sidebar navigation ===== */
+
+.sidebar-link:hover{ background-color:var(--nav-hover); }
+.sidebar-link.active{ background-color:var(--nav-active); border-left-color:var(--accent-color); font-weight:600; }
+
+.sidebar-divider::before, .sidebar-divider::after{
+  content:''; flex:1; height:1px; background-color:var(--divider-color);
+}
+.sidebar-divider::before{ margin-right:.5rem; }
+.sidebar-divider::after{ margin-left:.5rem; }
+
+
+/* ===== Collapsible header ===== */
+
+.collapsible-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  padding: .5rem 0;
+  border-bottom: 1px solid var(--border-color);
+  margin-bottom: 1rem;
+  transition: all .2s ease;
+}
+
+.collapsible-header:hover{ color:var(--primary-color); }
+.collapsible-header i{ font-size:1.2rem; transition:transform .2s ease; }
+
+
+/* ===== Info sections ===== */
+
+.trainer-info-section {
+  background: var(--card-background);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0,0,0,.08);
+  padding: 30px;
+  margin-bottom: 24px;
+  border: 1px solid var(--border-color);
+  backdrop-filter: blur(10px);
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+
+.trainer-info-section:hover{ transform:translateY(-2px); box-shadow:0 12px 48px rgba(0,0,0,.12); }
+
+.trainer-info-section h3{
+  margin-top:0; margin-bottom:20px; color:var(--text-color); font-size:1.4rem; font-weight:600;
+  border-bottom:3px solid var(--gold-color); padding-bottom:12px; position:relative;
+}
+
+.trainer-info-section h3::after{
+  content:''; position:absolute; bottom:-3px; left:0; width:60px; height:3px;
+  background:linear-gradient(90deg, var(--gold-color), var(--gold-light)); border-radius:2px;
+}
+
+.trainer-info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px,1fr));
+  gap: 20px;
+}
+
+.trainer-info-item {
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+  background: rgba(255,255,255,.6);
+  border-radius: 12px;
+  border: 1px solid rgba(214,163,57,.1);
+  transition: all .2s ease;
+}
+
+.trainer-info-item:hover{
+  background:rgba(255,255,255,.8); border-color:rgba(214,163,57,.2); transform:translateY(-1px);
+  box-shadow:0 4px 16px rgba(0,0,0,.08);
+}
+
+
+/* ===== Responsive ===== */
+
+@media (max-width:1200px){
+  .trainer-detail-header{ gap:1.5rem; }
+}
+
+@media (max-width:1024px){
+  .trainer-detail-header{ flex-direction:column; align-items:center; gap:2rem; }
+}
+
+@media (max-width:768px){
+  .trainer-detail-content{ flex-direction:column; }
+  .trainer-sidebar{ width:100%; }
+  .sidebar-nav{ position:static; display:flex; flex-wrap:wrap; }
+  .sidebar-link{ flex:1; min-width:120px; text-align:center; padding:.75rem; border-left:none; border-bottom:3px solid transparent; }
+  .sidebar-link.active{ border-left-color:transparent; border-bottom-color:var(--accent-color); }
+}
+
+@media (max-width:480px){
+  .trainer-panel h2, .trainer-monsters-section h2, .trainer-pc-tab h2, .trainer-boxes-tab h2,
+  .trainer-inventory-tab h2, .trainer-stats-tab h2, .stats-section h3{ font-size:1.25rem; }
+  .trainer-panel, .trainer-monsters-section, .stats-section{ padding:1rem; margin-bottom:1rem; }
+}

@@ -272,13 +272,13 @@ const FactionDetailPage = () => {
               <div className="overview-content">
                 <div className="action-buttons">
                   <button
-                    className="action-button submission-button"
+                    className="button button-primary submission-button"
                     onClick={() => handleSubmissionClick('submission')}
                   >
                     Make Submission
                   </button>
                   <button
-                    className="action-button tribute-button"
+                    className="button button-primary tribute-button"
                     onClick={() => handleSubmissionClick('tribute')}
                   >
                     Make Tribute

@@ -1,0 +1,52 @@
+/* ==============================
+   Input & Form Element Styles
+   ============================== */
+
+.name-input {
+  color: var(--text-color);
+  transition: all 0.2s ease;
+  width: 100%;
+  border: 1px solid var(--border-color);
+  border-radius: 0.25rem;
+  padding: 0.5rem;
+  background-color: var(--input-background);
+  margin-top: 0.5rem;
+}
+
+.name-input:focus {
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+}
+
+.special-input {
+  background: var(--input-background);
+  border: 1px solid var(--border-color);
+  color: var(--text-color);
+  padding: 0.5rem;
+  border-radius: 0.375rem;
+  transition: border-color 0.2s;
+  margin-left: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.special-input:focus {
+  border-color: var(--accent-color);
+  outline: none;
+}
+
+/* ---------- Progress Bar ---------- */
+
+.progress-bar {
+  background-color: var(--accent-color);
+  height: 0.5rem;
+  border-radius: 9999px;
+  transition: width 0.3s ease;
+}
+
+/* ---------- Stat Value ---------- */
+
+.stat-value {
+  font-weight: bold;
+  color: var(--text-color);
+  font-size: 1.1rem;
+}

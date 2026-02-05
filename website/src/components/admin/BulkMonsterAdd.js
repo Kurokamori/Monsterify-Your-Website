@@ -132,14 +132,14 @@ Blaze | 10 | Charmander | Fire | Data`;
           <button 
             type="submit" 
             disabled={loading || !selectedTrainerId || !monstersText.trim()}
-            className="submit-button"
+            className="button button-success"
           >
             {loading ? 'Adding Monsters...' : 'Add Monsters'}
           </button>
           <button 
             type="button" 
             onClick={handleClear}
-            className="clear-button"
+            className="button button-danger"
           >
             Clear
           </button>

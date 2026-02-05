@@ -143,7 +143,7 @@ const ShopItems = () => {
     <div className="shop-items-container">
       <div className="shop-items-header">
         <h1>Manage Items: {shop.name}</h1>
-        <Link to="/admin/shop-manager" className="back-button">
+        <Link to="/admin/shop-manager" className="button button-secondary">
           <i className="fas fa-arrow-left"></i> Back to Shops
         </Link>
       </div>
@@ -275,7 +275,7 @@ const ShopItems = () => {
                       </td>
                       <td className="actions-cell">
                         <button
-                          className="remove-button"
+                          className="button button-danger"
                           onClick={() => handleRemoveItem(item.id)}
                         >
                           <i className="fas fa-trash"></i>

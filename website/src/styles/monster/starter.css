@@ -1,0 +1,368 @@
+/* =============================================================================
+   MONSTER STARTER SELECTION
+   ============================================================================= */
+
+.starter-selection-container {
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+.starter-page-title {
+  font-size: 1.875rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.starter-step-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.starter-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1rem;
+}
+
+.starter-card {
+  transition: transform 0.2s, box-shadow 0.2s;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  display: flex;
+  background-color: var(--nav-background);
+  padding: 1.5rem;
+  cursor: pointer;
+  position: relative;
+}
+
+.starter-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+.starter-card.selected {
+  border: 3px solid var(--accent-color);
+  transform: scale(1.05);
+}
+
+.starter-monster-card {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  height: auto;
+}
+
+.starter-monster-card .starter-monster-card-image {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.starter-monster-card-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 5px 15px;
+  background-color: var(--nav-background);
+  border-radius: 0.5rem 0.5rem 1rem 1rem;
+  margin-bottom: 0.5rem;
+  text-align: center;
+}
+
+.starter-monster-card-image {
+  position: relative;
+  width: 100%;
+  height: 180px;
+  overflow: hidden;
+  background-color: var(--nav-hover);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 8px;
+  padding: 10px;
+}
+
+.starter-monster-card-image img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  transition: transform 0.3s;
+  border-radius: 8px;
+}
+
+.starter-loading-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.starter-empty-state {
+  text-align: center;
+  padding: 2rem 0;
+}
+
+.starter-empty-state h2 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+}
+
+.starter-spinner-container {
+  display: flex;
+  justify-content: center;
+}
+
+.starter-spinner {
+  width: 4rem;
+  height: 4rem;
+  border-radius: 50%;
+  border-top: 4px solid var(--accent-color);
+  border-bottom: 4px solid var(--accent-color);
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  animation: starter-spin 1s linear infinite;
+}
+
+.starter-back-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background-color: var(--accent-color);
+  color: #fff;
+  border: none;
+  border-radius: 0.375rem;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+}
+
+.starter-back-button:hover {
+  background-color: var(--accent-hover);
+}
+
+.starter-review-card {
+  border: 1px solid var(--border-color);
+  border-radius: 0.5rem;
+  overflow: hidden;
+  background-color: var(--card-background-secondary);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.starter-review-card:hover {
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+}
+
+.starter-review-card-header {
+  padding: 1rem;
+  background-color: var(--card-background-secondary);
+  flex: 1;
+  display: flex;
+}
+
+.starter-review-card-body {
+  padding: 1rem;
+}
+
+.starter-name-label {
+  display: block;
+  font-size: 1rem;
+  font-weight: 750;
+  color: var(--text-color-secondary);
+  margin-bottom: 0.5rem;
+  text-align: center;
+}
+
+.starter-name-input {
+  width: 100%;
+  padding: 0.5rem;
+  font-size: 1rem;
+  border: 1px solid var(--accent-color);
+  border-radius: 0.375rem;
+  background-color: var(--input-background);
+  color: var(--text-color);
+  transition: border-color 0.2s ease;
+}
+
+.starter-progress {
+  margin-bottom: 1.5rem;
+}
+
+.starter-progress-tabs {
+  display: flex;
+  gap: 0.25rem;
+  border-bottom: 2px solid var(--divider-color);
+}
+
+.starter-progress-tab {
+  flex: 1;
+  padding: 0.625rem 0.5rem;
+  text-align: center;
+  background: none;
+  border: none;
+  border-bottom: 3px solid transparent;
+  margin-bottom: -2px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+}
+
+.starter-progress-tab:hover:not(:disabled) {
+  color: var(--text-color);
+  background-color: var(--nav-hover, rgba(255, 255, 255, 0.05));
+}
+
+.starter-progress-tab.active {
+  color: var(--accent-color);
+  font-weight: 600;
+  border-bottom-color: var(--accent-color);
+}
+
+.starter-progress-tab.completed:not(.active) {
+  color: var(--text-color);
+}
+
+.starter-progress-tab:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.starter-progress-tab .tab-icon {
+  font-size: 0.75rem;
+}
+
+.starter-progress-track {
+  width: 100%;
+  background-color: var(--divider-color);
+  height: 0.5rem;
+  margin-top: 0.5rem;
+  border-radius: 9999px;
+}
+
+.starter-return-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 0.75rem;
+  padding: 0.375rem 0.75rem;
+  background: none;
+  border: 1px solid var(--border-color);
+  border-radius: 0.375rem;
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.starter-return-button:hover {
+  color: var(--accent-color);
+  border-color: var(--accent-color);
+}
+
+.starter-nav-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin: 1rem 0;
+}
+
+/* =============================================================================
+   RESPONSIVE STYLES
+   ============================================================================= */
+
+/* Large screens (1200px and below) */
+@media (max-width: 1200px) {
+  .starter-grid {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  }
+}
+
+/* Tablet screens (768px and below) */
+@media (max-width: 768px) {
+  .starter-container {
+    padding: 1rem;
+  }
+
+  .starter-grid {
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 0.75rem;
+  }
+
+  .starter-card {
+    padding: 0.75rem;
+  }
+
+  .starter-card-image {
+    width: 100px;
+    height: 100px;
+  }
+}
+
+/* Mobile screens (480px and below) */
+@media (max-width: 480px) {
+  .starter-container {
+    padding: 0.5rem;
+  }
+
+  .starter-header h1 {
+    font-size: 1.5rem;
+  }
+
+  .starter-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+  }
+
+  .starter-card {
+    padding: 0.5rem;
+  }
+
+  .starter-card-image {
+    width: 80px;
+    height: 80px;
+  }
+
+  .starter-card-name {
+    font-size: 0.9rem;
+  }
+
+  .starter-progress-tab {
+    padding: 0.5rem 0.25rem;
+    font-size: 0.75rem;
+  }
+
+  .starter-progress-tab .tab-icon {
+    display: none;
+  }
+}
+
+/* Extra small screens (360px and below) */
+@media (max-width: 360px) {
+  .starter-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  .starter-card {
+    transition: none;
+  }
+
+  .starter-card:hover {
+    transform: none;
+  }
+}

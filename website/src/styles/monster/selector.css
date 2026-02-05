@@ -1,0 +1,78 @@
+/* =============================================================================
+   MONSTER SELECTOR
+   ============================================================================= */
+
+.monster-selector {
+  background-color: var(--card-background);
+  border-radius: 12px;
+  padding: 1.25rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  height: 100%;
+  width: 100%;
+}
+
+.monster-selector-title {
+  margin: 0;
+  color: var(--gold-color);
+  font-size: 1.25rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  position: relative;
+  padding-bottom: 0.5rem;
+}
+
+.monster-selector-title::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 40px;
+  height: 3px;
+  background-color: var(--gold-color);
+  border-radius: 1.5px;
+}
+
+.monster-selector-error {
+  color: var(--error-color);
+  font-size: 0.9rem;
+  padding: 0.5rem;
+  background-color: rgba(239, 68, 68, 0.1);
+  border-radius: 6px;
+  border-left: 3px solid var(--error-color);
+}
+
+.monster-selector-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 0.75rem;
+  overflow-y: auto;
+  padding-right: 0.5rem;
+  scrollbar-width: thin;
+  scrollbar-color: var(--gold-color) rgba(0, 0, 0, 0.2);
+}
+
+.monster-selector-grid::-webkit-scrollbar {
+  width: 6px;
+}
+
+.monster-selector-grid::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 3px;
+}
+
+.monster-selector-grid::-webkit-scrollbar-thumb {
+  background-color: var(--gold-color);
+  border-radius: 3px;
+}
+
+.monster-selector-empty {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 2rem 1rem;
+  color: var(--text-color);
+  opacity: 0.7;
+  font-style: italic;
+}

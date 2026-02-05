@@ -619,14 +619,14 @@ const AdoptionItemModal = ({
           {Object.keys(berryFilters).map(filter => (
             <button
               key={filter}
-              className={`filter-button ${berryFilters[filter] ? 'active' : ''}`}
+              className={`button button-filter ${berryFilters[filter] ? 'active' : ''}`}
               onClick={() => setBerryFilters(prev => ({ ...prev, [filter]: !prev[filter] }))}
             >
               {filter.charAt(0).toUpperCase() + filter.slice(1)}
             </button>
           ))}
           <button
-            className="filter-button clear"
+            className="button button-filter reset"
             onClick={() => setBerryFilters({
               species: false, type: false, randomize: false, add: false, remove: false, misc: false
             })}
@@ -688,14 +688,14 @@ const AdoptionItemModal = ({
           {Object.keys(pastryFilters).map(filter => (
             <button
               key={filter}
-              className={`filter-button ${pastryFilters[filter] ? 'active' : ''}`}
+              className={`button button-filter ${pastryFilters[filter] ? 'active' : ''}`}
               onClick={() => setPastryFilters(prev => ({ ...prev, [filter]: !prev[filter] }))}
             >
               {filter.charAt(0).toUpperCase() + filter.slice(1)}
             </button>
           ))}
           <button
-            className="filter-button clear"
+            className="button button-filter reset"
             onClick={() => setPastryFilters({
               species: false, type: false, set: false, add: false, misc: false
             })}

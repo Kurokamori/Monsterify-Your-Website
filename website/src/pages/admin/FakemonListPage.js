@@ -160,7 +160,7 @@ const FakemonListPage = () => {
       <button
         key="first"
         onClick={() => handlePageChange(1)}
-        className={`admin-pagination-button ${currentPage === 1 ? 'active' : ''}`}
+        className={`admin-button button-secondary ${currentPage === 1 ? 'active' : ''}`}
         disabled={currentPage === 1}
       >
         1

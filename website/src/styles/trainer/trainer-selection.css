@@ -1,0 +1,227 @@
+/* ==============================
+   Trainer Selection Styles
+
+   Trainer selection components, selectors,
+   assignment blocks, and empty states.
+   ============================== */
+
+/* ===== Trainer selection ===== */
+
+.trainer-selection {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 2.5rem;
+  width: 100%;
+  max-width: 400px;
+  margin: 1rem auto 20px;
+  padding: 1rem;
+  backdrop-filter: blur(15px);
+  border-radius: 0.5rem;
+  box-sizing: border-box;
+  white-space: nowrap;
+}
+
+.trainer-selection label {
+  display: block;
+  font-weight: 600;
+  color: var(--text-color);
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+
+/* ===== Trainer select ===== */
+
+.trainer-select,
+.trainer-selection select {
+  padding: .75rem;
+  border-radius: 8px;
+  border: 2px solid var(--border-color);
+  background-color: var(--input-background);
+  color: var(--text-color);
+  font-size: 1rem;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  min-width: 200px;
+  background: var(--background-secondary, var(--card-background));
+  cursor: pointer;
+  transition: border-color .2s ease;
+}
+
+.trainer-select:hover{ border-color:var(--accent-color); }
+
+.trainer-select:focus {
+  outline: none;
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 3px rgba(214,163,57,.3);
+}
+
+
+/* ===== Dropdown options ===== */
+
+.trainer-select option,
+.trainer-selector select option {
+  background-color: var(--input-background);
+  color: var(--text-color);
+  padding: 0.5rem;
+}
+
+.trainer-select option:hover,
+.trainer-selector select option:hover,
+.trainer-select option:checked,
+.trainer-selector select option:checked {
+  background-color: var(--nav-hover);
+  color: var(--text-color);
+}
+
+
+/* ===== Assignment block ===== */
+
+.trainer-assignment { margin-top: 15px; }
+
+.trainer-assignment label {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--text-muted);
+  font-weight: 700;
+}
+
+
+/* ===== Card-y selection wrapper ===== */
+
+.trainer-selection-section {
+  background-color: var(--card-background);
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,.1);
+}
+
+
+/* ===== Fancy selection "hero" variant ===== */
+
+.trainer-selection-section label {
+  font-weight: 600;
+  color: var(--gold-color);
+  font-size: 1.2rem;
+  text-shadow: 1px 1px 3px rgba(0,0,0,.5);
+}
+
+.trainer-selection-section {
+  background: linear-gradient(135deg, rgba(42,53,69,.8) 0%, rgba(26,35,50,.6) 100%);
+  border-bottom: 1px solid rgba(214,163,57,.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  backdrop-filter: blur(20px);
+  position: relative;
+  z-index: 2;
+}
+
+
+/* ===== Fancy select in hero section ===== */
+
+.trainer-selection-section .trainer-select {
+  padding: 1rem 1.5rem;
+  background: linear-gradient(135deg, rgba(42,53,69,.9) 0%, rgba(26,35,50,.9) 100%);
+  border: 2px solid rgba(214,163,57,.3);
+  border-radius: 12px;
+  color: var(--text-color);
+  min-width: 280px;
+  font-size: 1.05rem;
+  transition: all .3s ease;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 15px rgba(0,0,0,.2);
+}
+
+.trainer-selection-section .trainer-select:focus {
+  outline: none;
+  border-color: var(--gold-color);
+  box-shadow: 0 0 0 3px rgba(214,163,57,.3), 0 8px 25px rgba(0,0,0,.3);
+  transform: translateY(-2px);
+}
+
+
+/* ===== Dropdown options in hero section ===== */
+
+.trainer-selection-section .trainer-select option,
+.trainer-selection-section select option {
+  background-color: var(--input-background);
+  color: var(--text-color);
+  padding: 0.5rem;
+}
+
+.trainer-selection-section .trainer-select option:checked,
+.trainer-selection-section select option:checked {
+  background-color: var(--nav-hover);
+  color: var(--text-color);
+}
+
+
+/* ===== Empty state ===== */
+
+.no-trainer-selected {
+  text-align: center;
+  padding: 3rem 2rem;
+  background: linear-gradient(135deg, rgba(255,152,0,.15) 0%, rgba(255,152,0,.05) 100%);
+  backdrop-filter: blur(15px);
+  border-radius: 16px;
+  margin: 2rem;
+  border: 1px solid rgba(255,152,0,.3);
+}
+
+.no-trainer-selected p {
+  color: var(--warning-color);
+  font-size: 1.2rem;
+  font-weight: 500;
+  margin: 0;
+}
+
+
+/* ===== Selector widget ===== */
+
+.trainer-selector label { font-weight: 600; color: var(--text-color); }
+
+.trainer-selector-loading,
+.trainer-selector-error,
+.trainer-selector-empty {
+  padding: 10px; border-radius: 4px; font-size: .9rem;
+}
+
+.trainer-selector-loading { background-color: rgba(33,150,243,.1); color: var(--blue-color); }
+.trainer-selector-error { background-color: rgba(244,67,54,.1); color: var(--error-color); }
+.trainer-selector-empty { background-color: rgba(255,152,0,.1); color: var(--warning-color); }
+
+
+/* ===== Responsive ===== */
+
+@media (max-width: 480px) {
+  .trainer-selection {
+    padding: .75rem;
+    white-space: normal;
+    align-items: stretch;
+  }
+
+  .trainer-selection .trainer-selection-section {
+    flex-direction: row;
+    gap: 1rem;
+    padding: 1.5rem;
+  }
+
+  .trainer-selection-section .trainer-select {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .trainer-selection label { font-size: 1rem; }
+}
+
+@media (min-width: 768px) {
+  .trainer-selection { padding: 1.5rem; }
+  .trainer-selection label { font-size: 1.05rem; }
+  .trainer-selection-section label { font-size: 1.25rem; }
+}

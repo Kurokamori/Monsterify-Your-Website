@@ -13,7 +13,7 @@
   justify-content: center;
   font-size: 2rem;
   font-weight: bold;
-  color: var(--faction-color, #d6a339);
+  color: var(--faction-color, var(--gold-color));
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
 }
 
@@ -29,7 +29,7 @@
 
 
 .faction-name {
-  color: #e8eaed;
+  color: var(--text-color);
   font-size: var(--font-size-xl);
   font-weight: 700;
   margin: 0 0 0.5rem 0;
@@ -41,12 +41,12 @@
 
 
 .faction-prism:hover .faction-name {
-  color: #f4d03f;
+  color: var(--gold-light);
   transform: translateX(5px);
 }
 
 .faction-description-preview {
-  color: #c4c7ca;
+  color: var(--text-muted);
   font-size: 1rem;
   margin: 0;
   opacity: 0.8;
@@ -57,7 +57,7 @@
 
 .faction-prism:hover .faction-description-preview {
   opacity: 1;
-  color: #d6d6d6;
+  color: var(--text-color);
 }
 
 /* Faction Info Sections */
@@ -75,7 +75,7 @@
   background: linear-gradient(135deg, rgba(42, 53, 69, 0.8) 0%, rgba(26, 35, 50, 0.6) 100%);
   padding: 2.5rem;
   border-radius: 16px;
-  border-left: 4px solid #d6a339;
+  border-left: 4px solid var(--gold-color);
   backdrop-filter: blur(20px);
   border: 1px solid rgba(214, 163, 57, 0.2);
   position: relative;
@@ -103,7 +103,7 @@
 }
 
 .info-section h3 {
-  color: #d6a339;
+  color: var(--gold-color);
   margin-bottom: 1.5rem;
   font-size: 1.6rem;
   font-weight: 700;
@@ -113,7 +113,7 @@
 
 .info-section p {
   line-height: 1.7;
-  color: #d0d3d6;
+  color: var(--text-muted);
   font-size: 1.1rem;
   position: relative;
   z-index: 1;
@@ -129,7 +129,7 @@
 .info-section li {
   padding: 0.75rem 0;
   border-bottom: 1px solid rgba(214, 163, 57, 0.2);
-  color: #c4c7ca;
+  color: var(--text-muted);
   position: relative;
   padding-left: 2rem;
   font-size: 1.05rem;
@@ -137,7 +137,7 @@
 }
 
 .info-section li:hover {
-  color: #e8eaed;
+  color: var(--text-color);
   padding-left: 2.5rem;
 }
 
@@ -145,13 +145,13 @@
   content: "▶";
   position: absolute;
   left: 0;
-  color: #d6a339;
+  color: var(--gold-color);
   font-size: 1rem;
   transition: all 0.3s ease;
 }
 
 .info-section li:hover:before {
-  color: #f4d03f;
+  color: var(--gold-light);
   transform: scale(1.1);
 }
 
@@ -164,7 +164,7 @@
   background: linear-gradient(135deg, rgba(42, 53, 69, 0.8) 0%, rgba(26, 35, 50, 0.6) 100%);
   padding: 2.5rem;
   border-radius: 16px;
-  border-left: 4px solid #d6a339;
+  border-left: 4px solid var(--gold-color);
   backdrop-filter: blur(20px);
   border: 1px solid rgba(214, 163, 57, 0.2);
   position: relative;
@@ -185,7 +185,7 @@
 }
 
 .faction-info h3 {
-  color: #d6a339;
+  color: var(--gold-color);
   margin-bottom: 1.5rem;
   font-size: 1.8rem;
   font-weight: 700;
@@ -195,7 +195,7 @@
 
 .faction-info p {
   line-height: 1.7;
-  color: #d0d3d6;
+  color: var(--text-muted);
   margin-bottom: 2rem;
   font-size: 1.1rem;
   position: relative;
@@ -211,7 +211,7 @@
 
 
 .relationships-section h4 {
-  color: #d6a339;
+  color: var(--gold-color);
   margin-bottom: 1.5rem;
   font-size: 1.4rem;
   font-weight: 600;
@@ -243,27 +243,27 @@
 
 .relationship-item.allied {
   background: rgba(76, 175, 80, 0.15);
-  border-left-color: #4CAF50;
+  border-left-color: var(--success-light);
 }
 
 .relationship-item.neutral {
   background: rgba(158, 158, 158, 0.15);
-  border-left-color: #9e9e9e;
+  border-left-color: var(--text-muted);
 }
 
 .relationship-item.rival {
   background: rgba(255, 152, 0, 0.15);
-  border-left-color: #ff9800;
+  border-left-color: var(--warning-color);
 }
 
 .relationship-item.enemy {
   background: rgba(244, 67, 54, 0.15);
-  border-left-color: #f44336;
+  border-left-color: var(--error-color);
 }
 
 .relationship-faction {
   font-weight: bold;
-  color: #e8eaed;
+  color: var(--text-color);
   font-size: 1.05rem;
 }
 
@@ -294,7 +294,7 @@
 .standing-gain {
   font-size: 1.2rem;
   font-weight: 700;
-  color: #4CAF50;
+  color: var(--success-light);
 }
 
 
@@ -319,7 +319,7 @@
 
 
 .standing-header h3 {
-  color: #d6a339;
+  color: var(--gold-color);
   margin: 0;
   font-size: 1.5rem;
 }
@@ -375,22 +375,22 @@
 
 .marker {
   font-size: 0.8rem;
-  color: #b0b0b0;
+  color: var(--text-muted);
   position: absolute;
   transform: translateX(-50%);
 }
 
 
 .marker.negative {
-  color: #f44336;
+  color: var(--error-color);
 }
 
 .marker.neutral {
-  color: #9e9e9e;
+  color: var(--text-muted);
 }
 
 .marker.positive {
-  color: #4caf50;
+  color: var(--success-light);
 }
 
 /* Standing Details */
@@ -411,7 +411,7 @@
 .title-badge {
   padding: 0.5rem 1rem;
   border-radius: 20px;
-  color: white;
+  color: var(--text-color);
   font-weight: bold;
   font-size: 0.9rem;
   text-transform: uppercase;
@@ -421,7 +421,7 @@
 
 
 .title-description {
-  color: #c0c0c0;
+  color: var(--text-muted);
   font-style: italic;
   flex: 1;
 }
@@ -431,19 +431,19 @@
   background: rgba(214, 163, 57, 0.1);
   padding: 1.5rem;
   border-radius: 8px;
-  border-left: 4px solid #d6a339;
+  border-left: 4px solid var(--gold-color);
   margin-bottom: 1.5rem;
 }
 
 
 .next-title h4 {
-  color: #d6a339;
+  color: var(--gold-color);
   margin: 0 0 0.5rem 0;
   font-size: 1.2rem;
 }
 
 .next-title p {
-  color: #c0c0c0;
+  color: var(--text-muted);
   margin: 0 0 1rem 0;
   line-height: 1.4;
 }
@@ -483,7 +483,7 @@
   display: flex;
   flex-direction: column;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.1);
-  color: #d6d6d6;
+  color: var(--text-color);
   overflow: hidden;
 }
 
@@ -494,13 +494,13 @@
 
 
 .submission-step h3 {
-  color: #d6a339;
+  color: var(--gold-color);
   margin-bottom: 1rem;
   font-size: 1.3rem;
 }
 
 .submission-step p {
-  color: #b0b0b0;
+  color: var(--text-muted);
   margin-bottom: 1.5rem;
   line-height: 1.6;
 }
@@ -523,7 +523,7 @@
 
 
 .no-submissions p {
-  color: #ff9800;
+  color: var(--warning-color);
   font-style: italic;
 }
 
@@ -558,7 +558,7 @@
 }
 
 .submission-card.selected {
-  border-color: #d6a339;
+  border-color: var(--gold-color);
   background: rgba(214, 163, 57, 0.1);
   box-shadow: 0 0 20px rgba(214, 163, 57, 0.2);
 }
@@ -566,7 +566,7 @@
 .submission-type {
   display: inline-block;
   background: rgba(214, 163, 57, 0.2);
-  color: #fff;
+  color: var(--text-color);
   padding: 0.25rem 0.75rem;
   border-radius: 20px;
   font-size: 0.85rem;
@@ -580,13 +580,13 @@
 
 
 .submission-card h4 {
-  color: #e0e0e0;
+  color: var(--text-color);
   margin: 0 0 0.5rem 0;
   font-size: 1.1rem;
 }
 
 .submission-card p {
-  color: #b0b0b0;
+  color: var(--text-muted);
   margin: 0 0 1rem 0;
   font-size: 0.9rem;
   line-height: 1.4;
@@ -617,7 +617,7 @@
 
 
 .selected-submission-info h4 {
-  color: #d6a339;
+  color: var(--gold-color);
   margin: 0 0 0.5rem 0;
   font-size: 1rem;
 }
@@ -626,7 +626,7 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  color: #e0e0e0;
+  color: var(--text-color);
   font-weight: 500;
 }
 
@@ -636,10 +636,10 @@
   padding: 0.75rem;
   background: rgba(42, 49, 66, 0.3);
   border-radius: 6px;
-  color: #b0b0b0;
+  color: var(--text-muted);
   font-style: italic;
   font-size: 0.9rem;
-  border-left: 3px solid #d6a339;
+  border-left: 3px solid var(--gold-color);
 }
 
 
@@ -654,7 +654,7 @@
 
 
 .score-calculation h4 {
-  color: #d6a339;
+  color: var(--gold-color);
   margin: 0 0 1rem 0;
   font-size: 1.3rem;
   display: flex;
@@ -665,7 +665,7 @@
 .score-value {
   font-size: 1.5rem;
   font-weight: 700;
-  color: #f4d03f;
+  color: var(--gold-light);
   text-shadow: 0 0 10px rgba(244, 208, 63, 0.3);
 }
 
@@ -678,7 +678,7 @@
 
 
 .score-breakdown div {
-  color: #c0c0c0;
+  color: var(--text-muted);
   font-size: 0.9rem;
   display: flex;
   justify-content: space-between;
@@ -694,8 +694,8 @@
 /* Special Buttons */
 .submission-button {
   background: linear-gradient(135deg, #4CAF50, #66BB6A, #4CAF50);
-  border-color: #4CAF50;
-  color: white;
+  border-color: var(--success-light);
+  color: var(--text-color);
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
 }
 
@@ -710,13 +710,13 @@
   background-position: right center;
   transform: translateY(-3px) scale(1.02);
   box-shadow: 0 8px 25px rgba(76, 175, 80, 0.4);
-  border-color: #66BB6A;
+  border-color: var(--success-color);
 }
 
 .tribute-button {
   background: linear-gradient(135deg, #d6a339, #f4d03f, #d6a339);
-  border-color: #d6a339;
-  color: #1a1f2e;
+  border-color: var(--gold-color);
+  color: var(--background-color);
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
 }
 
@@ -731,8 +731,8 @@
   background-position: right center;
   transform: translateY(-3px) scale(1.02);
   box-shadow: 0 8px 25px rgba(214, 163, 57, 0.4);
-  border-color: #f4d03f;
-  color: #1a1f2e;
+  border-color: var(--gold-light);
+  color: var(--background-color);
 }
 
 /* People/Individuals System */
@@ -809,12 +809,12 @@
 }
 
 .person-card.met {
-  border-color: #28a745;
+  border-color: var(--success-light);
   background: linear-gradient(135deg, var(--card-background) 0%, rgba(40, 167, 69, 0.05) 100%);
 }
 
 .person-card.can-meet {
-  border-color: #ffc107;
+  border-color: var(--warning-color);
   background: linear-gradient(135deg, var(--card-background) 0%, rgba(255, 193, 7, 0.05) 100%);
 }
 
@@ -838,17 +838,17 @@
   align-items: center;
   justify-content: center;
   font-size: 0.8rem;
-  color: white;
+  color: var(--text-color);
   z-index: 2;
 }
 
 .met-badge {
-  background: #28a745;
+  background: var(--success-light);
 }
 
 
 .can-meet-badge {
-  background: #ffc107;
+  background: var(--warning-color);
 }
 
 
@@ -892,11 +892,11 @@
 
 
 .person-card.met .person-subtitle {
-  color: #155724;
+  color: var(--success-color);
 }
 
 .person-card.can-meet .person-subtitle {
-  color: #856404;
+  color: var(--gold-dark);
 }
 
 /* Person Detail/Form Modals */
@@ -927,7 +927,7 @@
 .faction-quests-container {
   min-height: 100vh;
   background: linear-gradient(135deg, #0a0f1e 0%, #1a2332 25%, #2a3545 50%, #1e2a3a 75%, #0f1419 100%);
-  color: #e8eaed;
+  color: var(--text-color);
   position: relative;
   overflow-x: hidden;
 }
@@ -1031,7 +1031,7 @@
 
 .faction-quests-header p {
   font-size: 1.3rem;
-  color: #c4c7ca;
+  color: var(--text-muted);
   max-width: 800px;
   margin: 0 auto;
   line-height: 1.6;
@@ -1100,7 +1100,7 @@
 .faction-description {
   font-size: 1.3rem;
   line-height: 1.6;
-  color: #f0f2f5;
+  color: var(--text-color);
   margin: 0 auto;
   max-width: 900px;
   text-shadow: 1px 1px 6px rgba(0, 0, 0, 0.8);

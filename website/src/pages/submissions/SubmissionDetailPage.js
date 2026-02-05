@@ -155,7 +155,7 @@ const SubmissionDetailPage = ({ type }) => {
       <div className="submission-detail-page">
         <div className="submission-detail-container">
           <ErrorMessage message={error} />
-          <button className="btn-secondary" onClick={handleBack}>
+          <button className="btn btn-secondary" onClick={handleBack}>
             Back
           </button>
         </div>
@@ -168,7 +168,7 @@ const SubmissionDetailPage = ({ type }) => {
       <div className="submission-detail-page">
         <div className="submission-detail-container">
           <div className="error-message">Submission not found</div>
-          <button className="btn-secondary" onClick={handleBack}>
+          <button className="btn btn-secondary" onClick={handleBack}>
             Back
           </button>
         </div>
@@ -183,7 +183,7 @@ const SubmissionDetailPage = ({ type }) => {
     <div className="submission-detail-page">
       <div className="submission-detail-container">
         <div className="submission-detail-header">
-          <button className="btn-back" onClick={handleBack}>
+          <button className="btn btn-secondary" onClick={handleBack}>
             <i className="fas fa-arrow-left"></i> Back to {isArt ? 'Gallery' : isWriting ? 'Library' : 'Submissions'}
           </button>
           <div className="submission-header-content">

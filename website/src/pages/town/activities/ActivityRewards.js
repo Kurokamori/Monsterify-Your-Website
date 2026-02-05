@@ -412,7 +412,7 @@ const ActivityRewards = () => {
     return (
       <div className="rewards-container">
         <div className="activity-session-header">
-          <Link to="/town" className="btn-secondary">
+          <Link to="/town" className="btn btn-secondary">
             <i className="fas fa-arrow-left mr-2"></i> Back to Town
           </Link>
           <h1>Activity Rewards</h1>
@@ -430,14 +430,14 @@ const ActivityRewards = () => {
     return (
       <div className="rewards-container">
         <div className="activity-session-header">
-          <Link to="/town" className="btn-secondary">
+          <Link to="/town" className="btn btn-secondary">
             <i className="fas fa-arrow-left mr-2"></i> Back to Town
           </Link>
           <h1>Activity Rewards</h1>
         </div>
         <div className="auth-message">
           <p>Please log in to access your rewards.</p>
-          <Link to="/login" className="btn-primary">Log In</Link>
+          <Link to="/login" className="btn btn-primary">Log In</Link>
         </div>
       </div>
     );
@@ -448,7 +448,7 @@ const ActivityRewards = () => {
     return (
       <div className="rewards-container">
         <div className="activity-session-header">
-          <Link to="/town" className="btn-secondary">
+          <Link to="/town" className="btn btn-secondary">
             <i className="fas fa-arrow-left mr-2"></i> Back to Town
           </Link>
           <h1>Activity Rewards</h1>
@@ -458,10 +458,10 @@ const ActivityRewards = () => {
           <p>Session ID: {sessionId}</p>
           <p>This may happen if the server was restarted since the session was created.</p>
           <div style={{ marginTop: '20px', display: 'flex', gap: '10px', justifyContent: 'center' }}>
-            <Link to="/town" className="btn-primary">Return to Town</Link>
-            <Link to="/town/activities/garden" className="btn-secondary">Start New Garden Activity</Link>
-            <Link to="/town/activities/farm" className="btn-secondary">Start New Farm Activity</Link>
-            <Link to="/town/activities/pirates-dock" className="btn-secondary">Start New Pirate's Dock Activity</Link>
+            <Link to="/town" className="btn btn-primary">Return to Town</Link>
+            <Link to="/town/activities/garden" className="btn btn-secondary">Start New Garden Activity</Link>
+            <Link to="/town/activities/farm" className="btn btn-secondary">Start New Farm Activity</Link>
+            <Link to="/town/activities/pirates-dock" className="btn btn-secondary">Start New Pirate's Dock Activity</Link>
           </div>
         </div>
       </div>
@@ -546,7 +546,7 @@ const ActivityRewards = () => {
                         onChange={(trainerId) => handleTrainerSelect(reward.id, trainerId)}
                       />
                       <button
-                        className="btn-primary mt-2 w-full"
+                        className="btn btn-primary mt-2 w-full"
                         onClick={() => claimReward(reward.id)}
                         disabled={claimingReward === reward.id}
                       >
@@ -769,7 +769,7 @@ const ActivityRewards = () => {
                           onChange={(trainerId) => handleTrainerSelect(reward.id, trainerId)}
                         />
                         <button
-                          className="btn-primary mt-2 w-full"
+                          className="btn btn-primary mt-2 w-full"
                           onClick={() => claimReward(reward.id)}
                           disabled={claimingReward === reward.id}
                         >
@@ -794,13 +794,13 @@ const ActivityRewards = () => {
       )}
 
       <div className="rewards-actions">
-        <Link to="/town" className="btn-secondary">
+        <Link to="/town" className="btn btn-secondary">
           <i className="fas fa-arrow-left mr-2"></i> Back to Town
         </Link>
 
         {rewards.some(reward => !reward.claimed) && (
           <button
-            className="btn-primary"
+            className="btn btn-primary"
             onClick={claimAllRewards}
             disabled={loading}
           >
@@ -816,7 +816,7 @@ const ActivityRewards = () => {
           </button>
         )}
 
-        <Link to={`/town/activities/${session.location}`} className="btn-primary">
+        <Link to={`/town/activities/${session.location}`} className="btn btn-primary">
           <i className="fas fa-redo mr-2"></i> Do Another Task
         </Link>
       </div>

@@ -605,7 +605,7 @@ const AdventureCreationForm = ({ onAdventureCreated }) => {
         <div className="form-actions">
           <button
             type="submit"
-            className="submit-button"
+            className="button button-success"
             disabled={loading || (adventureType === 'prebuilt' && (!selectedRegion || !selectedArea))}
           >
             {loading ? (

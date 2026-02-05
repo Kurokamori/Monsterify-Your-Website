@@ -325,7 +325,7 @@ const AdventureRewards = () => {
           {error}
         </div>
         <button 
-          className="retry-button"
+          className="btn btn-primary"
           onClick={loadUnclaimedRewards}
         >
           Try Again
@@ -373,7 +373,7 @@ const AdventureRewards = () => {
                     </span>
                     <button
                       type="button"
-                      className="remove-allocation"
+                      className="button button-icon button-danger"
                       onClick={() => handleRemoveAllocation(allocation.id)}
                     >
                       <i className="fas fa-times"></i>
@@ -388,7 +388,7 @@ const AdventureRewards = () => {
                 {!showAddAllocation ? (
                   <button
                     type="button"
-                    className="add-allocation-btn"
+                    className="button button-primary"
                     onClick={() => setShowAddAllocation(true)}
                   >
                     <i className="fas fa-plus"></i> Add Level Allocation
@@ -485,7 +485,7 @@ const AdventureRewards = () => {
                     <div className="form-actions">
                       <button
                         type="button"
-                        className="add-btn"
+                        className="button button-primary"
                         onClick={handleAddAllocation}
                         disabled={!selectedEntityId || allocationLevels < 1 || allocationLevels > availableLevels}
                       >
@@ -493,7 +493,7 @@ const AdventureRewards = () => {
                       </button>
                       <button
                         type="button"
-                        className="cancel-btn"
+                        className="button button-secondary"
                         onClick={() => {
                           setShowAddAllocation(false);
                           setSelectedEntityId('');
@@ -575,7 +575,7 @@ const AdventureRewards = () => {
                     </div>
                     <button
                       type="button"
-                      className="remove-allocation-btn"
+                      className="button button-icon button-danger"
                       onClick={() => removeCoinAllocation(index)}
                     >
                       <i className="fas fa-times"></i>
@@ -586,7 +586,7 @@ const AdventureRewards = () => {
                 {availableCoins > 0 && (
                   <button
                     type="button"
-                    className="add-allocation-btn"
+                    className="button button-primary"
                     onClick={() => setShowAddCoinAllocation(true)}
                   >
                     <i className="fas fa-plus"></i>
@@ -632,7 +632,7 @@ const AdventureRewards = () => {
                   <div className="form-actions">
                     <button
                       type="button"
-                      className="add-btn"
+                      className="button button-primary"
                       onClick={handleAddCoinAllocation}
                       disabled={!selectedEntityId || allocationCoins < 1 || allocationCoins > availableCoins}
                     >
@@ -640,7 +640,7 @@ const AdventureRewards = () => {
                     </button>
                     <button
                       type="button"
-                      className="cancel-btn"
+                      className="button button-secondary"
                       onClick={() => {
                         setShowAddCoinAllocation(false);
                         setSelectedEntityId('');
@@ -659,7 +659,7 @@ const AdventureRewards = () => {
           <div className="claim-actions">
             <button
               type="button"
-              className="claim-button"
+              className="button button-primary"
               onClick={handleClaimRewards}
               disabled={claiming || availableLevels > 0 || availableCoins > 0}
             >
@@ -677,7 +677,7 @@ const AdventureRewards = () => {
             </button>
             <button
               type="button"
-              className="cancel-button"
+              className="button button-secondary"
               onClick={handleCancel}
               disabled={claiming}
             >
@@ -734,7 +734,7 @@ const AdventureRewards = () => {
               </div>
               <div className="reward-actions">
                 <button
-                  className="claim-btn"
+                  className="button button-primary"
                   onClick={() => handleSelectReward(reward)}
                 >
                   <i className="fas fa-hand-holding-heart"></i>

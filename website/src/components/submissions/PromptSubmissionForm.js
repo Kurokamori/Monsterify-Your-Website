@@ -311,7 +311,7 @@ const PromptSubmissionForm = ({ onSubmissionComplete, category = 'general' }) =>
 
             <button
               type="button"
-              className="estimate-button"
+              className="button button-secondary"
               onClick={calculateRewardEstimate}
               disabled={loading}
             >
@@ -344,7 +344,7 @@ const PromptSubmissionForm = ({ onSubmissionComplete, category = 'general' }) =>
         <div className="form-actions">
           <button
             type="submit"
-            className="submit-button"
+            className="button button-success"
             disabled={loading || !selectedPrompt}
           >
             {loading ? (

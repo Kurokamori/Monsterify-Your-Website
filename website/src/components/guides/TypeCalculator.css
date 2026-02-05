@@ -65,7 +65,7 @@
 
 .remove-type-btn {
   background: var(--error-color);
-  color: white;
+  color: var(--text-color);
   border: none;
   border-radius: 0.5rem;
   width: 2.5rem;

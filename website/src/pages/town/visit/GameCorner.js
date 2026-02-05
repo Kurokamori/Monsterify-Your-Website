@@ -506,7 +506,7 @@ const GameCorner = () => {
   return (
     <div className="game-corner-container">
       <div className="game-corner-header">
-        <Link to="/town" className="btn-secondary">
+        <Link to="/town" className="btn btn-secondary">
           <i className="fas fa-arrow-left mr-2"></i> Back to Town
         </Link>
         <h1>Game Corner</h1>
@@ -517,7 +517,7 @@ const GameCorner = () => {
           <div className="video-header">
             <h2>Pomodoro Videos</h2>
             <button
-              className="btn-secondary"
+              className="btn btn-secondary"
               onClick={() => setShowVideoForm(!showVideoForm)}
             >
               {showVideoForm ? 'Cancel' : 'Add Custom Video'}
@@ -533,7 +533,7 @@ const GameCorner = () => {
                 onChange={(e) => setCustomVideoUrl(e.target.value)}
                 className="form-input"
               />
-              <button type="submit" className="btn-primary">Add Video</button>
+              <button type="submit" className="btn btn-primary">Add Video</button>
             </form>
           )}
 
@@ -553,7 +553,7 @@ const GameCorner = () => {
                   <p>This video cannot be played due to restrictions or connectivity issues.</p>
                   <div className="error-actions">
                     <button 
-                      className="btn-secondary"
+                      className="btn btn-secondary"
                       onClick={() => handleVideoSelect(selectedVideo)}
                     >
                       <i className="fas fa-redo mr-2"></i>Try Again
@@ -562,7 +562,7 @@ const GameCorner = () => {
                       href={`https://youtube.com/watch?v=${selectedVideo.videoId || selectedVideo.url.split('/').pop().split('?')[0]}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="btn-primary"
+                      className="btn btn-primary"
                     >
                       <i className="fas fa-external-link-alt mr-2"></i>Watch on YouTube
                     </a>
@@ -628,15 +628,15 @@ const GameCorner = () => {
           <div className="timer-controls">
             <div className="timer-buttons">
               {!timerActive ? (
-                <button className="btn-primary" onClick={startTimer}>
+                <button className="btn btn-primary" onClick={startTimer}>
                   <i className="fas fa-play mr-2"></i> Start
                 </button>
               ) : (
-                <button className="btn-secondary" onClick={pauseTimer}>
+                <button className="btn btn-secondary" onClick={pauseTimer}>
                   <i className="fas fa-pause mr-2"></i> Pause
                 </button>
               )}
-              <button className="btn-danger" onClick={resetTimer}>
+              <button className="btn btn-danger" onClick={resetTimer}>
                 <i className="fas fa-redo mr-2"></i> Reset
               </button>
             </div>
@@ -834,7 +834,7 @@ const GameCorner = () => {
             )}
 
             <button
-              className="btn-primary"
+              className="btn btn-primary"
               onClick={() => {
                 setShowRewards(false);
                 resetTimer();
