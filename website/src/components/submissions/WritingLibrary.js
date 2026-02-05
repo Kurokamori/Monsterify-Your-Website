@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import submissionService from '../../services/submissionService';
 import LoadingSpinner from '../common/LoadingSpinner';
 import ErrorMessage from '../common/ErrorMessage';
@@ -58,17 +58,12 @@ const WritingLibrary = () => {
   const [availableTags, setAvailableTags] = useState([]);
   const [sortBy, setSortBy] = useState('newest');
   const [showBooksOnly, setShowBooksOnly] = useState(false);
-  const [viewingBook, setViewingBook] = useState(null);
-  const [bookChapters, setBookChapters] = useState([]);
-  const [loadingChapters, setLoadingChapters] = useState(false);
 
   // Fetch writings
   useEffect(() => {
-    if (!viewingBook) {
-      fetchWritings();
-    }
+    fetchWritings();
     fetchTags();
-  }, [page, contentTypeFilter, tagFilter, sortBy, showBooksOnly, viewingBook]);
+  }, [page, contentTypeFilter, tagFilter, sortBy, showBooksOnly]);
 
   const fetchWritings = async () => {
     try {
@@ -109,20 +104,6 @@ const WritingLibrary = () => {
     }
   };
 
-  // Fetch book chapters
-  const fetchBookChapters = async (bookId) => {
-    try {
-      setLoadingChapters(true);
-      const response = await submissionService.getBookChapters(bookId);
-      setBookChapters(response.chapters || []);
-    } catch (err) {
-      console.error('Error fetching book chapters:', err);
-      setError('Failed to load chapters. Please try again.');
-    } finally {
-      setLoadingChapters(false);
-    }
-  };
-
   const fetchTags = async () => {
     try {
       const response = await submissionService.getSubmissionTags();
@@ -134,24 +115,7 @@ const WritingLibrary = () => {
 
   // Handle writing click
   const handleWritingClick = (writing) => {
-    // If it's a book, show chapters view
-    if (writing.is_book) {
-      setViewingBook(writing);
-      fetchBookChapters(writing.id);
-    } else {
-      navigate(`/library/${writing.id}`);
-    }
-  };
-
-  // Handle back from book view
-  const handleBackFromBook = () => {
-    setViewingBook(null);
-    setBookChapters([]);
-  };
-
-  // Handle chapter click
-  const handleChapterClick = (chapter) => {
-    navigate(`/library/${chapter.id}`);
+    navigate(`/library/${writing.id}`);
   };
 
   // Handle like
@@ -397,75 +361,8 @@ const WritingLibrary = () => {
         </div>
       </div>
 
-      {/* Book View */}
-      {viewingBook && (
-        <div className="book-view">
-          <div className="book-view-header">
-            <button className="btn-back" onClick={handleBackFromBook}>
-              <i className="fas fa-arrow-left"></i> Back to Library
-            </button>
-            <div className="book-view-info">
-              <div className="book-view-cover">
-                <img
-                  src={viewingBook.cover_image_url || '/images/default_book.png'}
-                  alt={viewingBook.title}
-                  onError={(e) => {
-                    e.target.onerror = null;
-                    e.target.src = '/images/default_book.png';
-                  }}
-                />
-              </div>
-              <div className="book-view-details">
-                <h2>{viewingBook.title}</h2>
-                <p className="book-author">By {viewingBook.user?.display_name || viewingBook.display_name || viewingBook.username || 'Unknown'}</p>
-                {viewingBook.description && (
-                  <p className="book-description">{viewingBook.description}</p>
-                )}
-                <div className="book-stats">
-                  <span className="book-chapter-count">
-                    <i className="fas fa-book-open"></i> {bookChapters.length} Chapters
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {loadingChapters ? (
-            <LoadingSpinner message="Loading chapters..." />
-          ) : (
-            <div className="chapters-list">
-              <h3>Chapters</h3>
-              {bookChapters.length === 0 ? (
-                <p className="no-chapters">No chapters have been added to this book yet.</p>
-              ) : (
-                <div className="chapters-grid">
-                  {bookChapters.map((chapter, index) => (
-                    <div
-                      key={chapter.id}
-                      className="chapter-item"
-                      onClick={() => handleChapterClick(chapter)}
-                    >
-                      <div className="chapter-number">
-                        Chapter {chapter.chapter_number || index + 1}
-                      </div>
-                      <div className="chapter-title">{chapter.title}</div>
-                      {chapter.word_count && (
-                        <div className="chapter-word-count">
-                          {formatWordCount(chapter.word_count)}
-                        </div>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          )}
-        </div>
-      )}
-
       {/* Library Grid */}
-      {!viewingBook && (
-        <div className="gallery-grid library-grid">
+      <div className="gallery-grid library-grid">
           {displayWritings.map(writing => (
             <div
               key={writing.id}
@@ -548,10 +445,9 @@ const WritingLibrary = () => {
             </div>
           ))}
         </div>
-      )}
 
       {/* Pagination */}
-      {!viewingBook && totalPages > 1 && (
+      {totalPages > 1 && (
         <div className="gallery-pagination">
           <button
             className="pagination-button"

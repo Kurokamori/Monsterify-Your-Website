@@ -1322,10 +1322,15 @@ const TrainerDetailPage = () => {
         </div>
         <div className="trainer-profile-info">
           <div className="trainer-profile-info-header">
+          <div className="trainer-profile-name-container">
           <h1 className="trainer-profile-name">
             {trainer.name}
             {trainer.nickname && <span className="trainer-nickname">({trainer.nickname})</span>}
           </h1>
+          <h3 className="trainer-profile-age">
+            {trainer.age ? `Age: ${trainer.age}` : 'Age: Unknown'}
+          </h3>
+          </div>
 
           <div className="trainer-player-info">
             <div>

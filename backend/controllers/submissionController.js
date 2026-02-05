@@ -3474,7 +3474,7 @@ const claimSubmissionMonster = async (req, res) => {
  */
 const getUserBooks = async (req, res) => {
   try {
-    const userId = req.user.id;
+    const userId = req.user.discord_id || req.user.id;
 
     const query = `
       SELECT
@@ -3563,7 +3563,7 @@ const updateChapterOrder = async (req, res) => {
   try {
     const bookId = parseInt(req.params.bookId);
     const { chapterOrder } = req.body;
-    const userId = req.user.id;
+    const userId = req.user.discord_id || req.user.id;
 
     // Verify the user owns this book
     const bookQuery = `
@@ -3604,7 +3604,7 @@ const updateChapterOrder = async (req, res) => {
 const createBook = async (req, res) => {
   try {
     const { title, description, tags } = req.body;
-    const userId = req.user.id;
+    const userId = req.user.discord_id || req.user.id;
 
     // Create the book submission
     const submission = await Submission.create({

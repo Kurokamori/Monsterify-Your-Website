@@ -232,6 +232,7 @@
   background: linear-gradient(145deg, #1a2030 0%, #252e42 50%, #1e2838 100%);
   border-bottom: 1px solid var(--border-color, #3a4156);
   overflow: hidden;
+  height: 100%;
 }
 
 .library-item-text-cover::before {
@@ -638,12 +639,12 @@
 
 /* Library Item Book Badge */
 .library-item.is-book {
-  border: 2px solid var(--accent-color);
+  border: 2px solid var(--nav-active);
 }
 
 .library-item-book-badge {
   position: absolute;
-  bottom: 0;
+  bottom: 0.4rem;
   right: 0;
   padding: 0.35rem 0.75rem;
   background: linear-gradient(135deg, var(--accent-color) 0%, #c7942d 100%);

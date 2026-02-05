@@ -17,6 +17,13 @@
   padding: 1.5rem;
 }
 
+@media (max-width: 768px) {
+  .monster-card {
+    width: 100%;
+    padding: 0.5rem;
+  }
+}
+
 .monster-card:hover, .bazzar-monster-card:hover { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(0,0,0,.15); }
 .monster-card.selected, .bazzar-monster-card.selected { border-color: var(--accent-color); background-color: var(--accent-color-light, rgba(214,163,57,.08)); }
 .monster-card.full-height { height: 80vh; }
@@ -3436,9 +3443,9 @@
   border-radius: 15px;
   font-size: 0.8rem;
   font-weight: 500;
-  background: #6c757d;
-  color: #fff;
-  background-color: #3a4152;
+  background: var(--nav-active);
+  color: var(--text-color);
+  background-color: var(--nav-active);
 }
 
 .species-single {

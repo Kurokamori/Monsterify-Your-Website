@@ -19,6 +19,7 @@ const TrainersPage = () => {
   const [retryCount, setRetryCount] = useState(0);
   const isFirstRender = useRef(true);
   const fetchIdRef = useRef(0);
+  const searchInputRef = useRef(null);
 
   // Debounce the search term into a separate state
   useEffect(() => {
@@ -101,8 +102,15 @@ const TrainersPage = () => {
   const handleSearch = (e) => {
     e.preventDefault();
     // When form is submitted (e.g. mobile keyboard "Go" button),
-    // immediately flush the debounced search
-    setDebouncedSearch(searchTerm);
+    // immediately flush the debounced search.
+    // Use ref value as fallback since some mobile browsers (iOS Safari)
+    // clear the input before the submit event fires, causing searchTerm to be empty.
+    const currentValue = searchInputRef.current?.value ?? searchTerm;
+    setDebouncedSearch(currentValue);
+    // Sync the state in case it got out of sync
+    if (currentValue !== searchTerm) {
+      setSearchTerm(currentValue);
+    }
   };
 
   const handleSort = (field) => {
@@ -127,6 +135,7 @@ const TrainersPage = () => {
         <form className="search-form" onSubmit={handleSearch}>
           <div className="search-input">
             <input
+              ref={searchInputRef}
               type="search"
               placeholder="Search trainers..."
               value={searchTerm}
@@ -228,6 +237,12 @@ const TrainersPage = () => {
             ) : (
               trainers.map((trainer) => (
                 <Link to={`/trainers/${trainer.id}`} className="trainer-card" key={trainer.id}>
+                  <div className="trainer-name-heading">
+                    <h3 className="trainer-name">{trainer.name}</h3>
+                    <div className="trainer-player">
+                      <i className="fas fa-user"></i> {trainer.player_display_name || trainer.player_username || 'Unknown Player'}
+                    </div>
+                  </div>
                   <div className="trainer-image-container">
                     <img
                       src={trainer.main_ref || '/images/default_trainer.png'}
@@ -240,10 +255,6 @@ const TrainersPage = () => {
                     />
                   </div>
                   <div className="trainer-info">
-                    <h3 className="trainer-name">{trainer.name}</h3>
-                    <div className="trainer-player">
-                      <i className="fas fa-user"></i> {trainer.player_display_name || trainer.player_username || 'Unknown Player'}
-                    </div>
                     <div className="trainer-details">
                       <span className="trainer-level">
                         <i className="fas fa-star"></i> Level {trainer.level || 1}

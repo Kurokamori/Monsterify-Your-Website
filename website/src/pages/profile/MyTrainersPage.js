@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
@@ -10,7 +10,7 @@ import useDocumentTitle from '../../hooks/useDocumentTitle';
 
 const MyTrainersPage = () => {
   useDocumentTitle('My Trainers');
-  
+
   const { isAuthenticated, currentUser } = useAuth();
   const navigate = useNavigate();
 
@@ -20,6 +20,11 @@ const MyTrainersPage = () => {
   const [selectedTrainer, setSelectedTrainer] = useState(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [deleteError, setDeleteError] = useState(null);
+
+  // Sorting and filtering state
+  const [sortBy, setSortBy] = useState('alphabet');
+  const [sortOrder, setSortOrder] = useState('asc');
+  const [filterFaction, setFilterFaction] = useState('');
 
   // Define fetchTrainers inside useEffect to avoid dependency issues
   useEffect(() => {
@@ -122,8 +127,62 @@ const MyTrainersPage = () => {
     }
   };
 
-  // No fallback data - use real data from API
-  const displayTrainers = trainers;
+  // Get unique factions for filter dropdown
+  const uniqueFactions = useMemo(() => {
+    const factions = trainers
+      .map(t => t.faction)
+      .filter(f => f && f.trim() !== '');
+    return [...new Set(factions)].sort();
+  }, [trainers]);
+
+  // Filter and sort trainers
+  const displayTrainers = useMemo(() => {
+    let result = [...trainers];
+
+    // Apply faction filter
+    if (filterFaction) {
+      result = result.filter(t => t.faction === filterFaction);
+    }
+
+    // Apply sorting
+    result.sort((a, b) => {
+      let comparison = 0;
+
+      switch (sortBy) {
+        case 'alphabet':
+          comparison = (a.name || '').localeCompare(b.name || '');
+          break;
+        case 'level':
+          comparison = (a.level || 0) - (b.level || 0);
+          break;
+        case 'monster_count':
+          const aCount = a.monsters_count || a.monster_count || 0;
+          const bCount = b.monsters_count || b.monster_count || 0;
+          comparison = aCount - bCount;
+          break;
+        case 'ref_percent':
+          const aMonsters = a.monsters_count || a.monster_count || 0;
+          const bMonsters = b.monsters_count || b.monster_count || 0;
+          const aRefs = a.monster_ref_count || 0;
+          const bRefs = b.monster_ref_count || 0;
+          const aPercent = aMonsters > 0 ? (aRefs / aMonsters) * 100 : 0;
+          const bPercent = bMonsters > 0 ? (bRefs / bMonsters) * 100 : 0;
+          comparison = aPercent - bPercent;
+          break;
+        case 'currency':
+          const aCurrency = a.coins || a.currency_amount || 0;
+          const bCurrency = b.coins || b.currency_amount || 0;
+          comparison = aCurrency - bCurrency;
+          break;
+        default:
+          comparison = 0;
+      }
+
+      return sortOrder === 'asc' ? comparison : -comparison;
+    });
+
+    return result;
+  }, [trainers, filterFaction, sortBy, sortOrder]);
 
   if (loading) {
     return <LoadingSpinner message="Loading trainers..." />;
@@ -146,6 +205,69 @@ const MyTrainersPage = () => {
           <i className="fas fa-plus"></i> New Trainer
         </Link>
       </div>
+
+      {trainers.length > 0 && (
+        <div className="trainers-filter-sort">
+          <div className="filter-group">
+            <label htmlFor="faction-filter">
+              <i className="fas fa-filter"></i> Faction
+            </label>
+            <select
+              id="faction-filter"
+              value={filterFaction}
+              onChange={(e) => setFilterFaction(e.target.value)}
+            >
+              <option value="">All Factions</option>
+              {uniqueFactions.map(faction => (
+                <option key={faction} value={faction}>{faction}</option>
+              ))}
+            </select>
+          </div>
+
+          <div className="sort-group">
+            <label htmlFor="sort-by">
+              <i className="fas fa-sort"></i> Sort By
+            </label>
+            <select
+              id="sort-by"
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value)}
+            >
+              <option value="alphabet">Name</option>
+              <option value="level">Level</option>
+              <option value="monster_count">Monster Count</option>
+              <option value="ref_percent">Ref %</option>
+              <option value="currency">Currency</option>
+            </select>
+          </div>
+
+          <div className="order-group">
+            <button
+              className={`order-button ${sortOrder === 'asc' ? 'active' : ''}`}
+              onClick={() => setSortOrder('asc')}
+              title="Ascending"
+            >
+              <i className="fas fa-sort-amount-up-alt"></i>
+            </button>
+            <button
+              className={`order-button ${sortOrder === 'desc' ? 'active' : ''}`}
+              onClick={() => setSortOrder('desc')}
+              title="Descending"
+            >
+              <i className="fas fa-sort-amount-down"></i>
+            </button>
+          </div>
+
+          {filterFaction && (
+            <button
+              className="clear-filter-button"
+              onClick={() => setFilterFaction('')}
+            >
+              <i className="fas fa-times"></i> Clear Filter
+            </button>
+          )}
+        </div>
+      )}
 
       {displayTrainers.length > 0 ? (
         <div className="trainers-grid">
@@ -237,6 +359,20 @@ const MyTrainersPage = () => {
               </div>
             </div>
           ))}
+        </div>
+      ) : trainers.length > 0 ? (
+        <div className="no-trainers">
+          <div className="no-trainers-icon">
+            <i className="fas fa-filter"></i>
+          </div>
+          <h2>No Trainers Match Filter</h2>
+          <p>No trainers found for the selected faction "{filterFaction}".</p>
+          <button
+            className="create-trainer-button"
+            onClick={() => setFilterFaction('')}
+          >
+            Clear Filter
+          </button>
         </div>
       ) : (
         <div className="no-trainers">
