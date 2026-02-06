@@ -1065,7 +1065,7 @@ const MonsterRoller = () => {
             <button type="submit" className="button success" disabled={loading}>
               {loading ? 'Rolling...' : 'Roll Monsters'}
             </button>
-            <button type="button" className="reset-button" onClick={handleReset} disabled={loading}>
+            <button type="button" className="button secondary" onClick={handleReset} disabled={loading}>
               Reset Form
             </button>
           </div>

@@ -328,7 +328,7 @@ def format_report(
             lines.append(f"DUPLICATES IN: {context}")
         lines.append("-" * 70)
 
-        for class_name, defs in sorted(by_context[context], key=lambda x: x[0]):
+        for class_name, defs in sorted(by_context[context], key=lambda x: (-len(x[1]), x[0])):
             lines.append(f"\n  .{class_name} ({len(defs)} definitions):")
 
             for defn in sorted(defs, key=lambda d: (str(d.filepath), d.line_number)):

@@ -340,14 +340,14 @@ const AvailableBosses = () => {
               
               <div className="boss-actions">
                 <button 
-                  className="boss-button"
+                  className="button primary"
                   onClick={() => handleChallengeClick(boss)}
                 >
                   <i className="fas fa-dragon"></i> Challenge Boss
                 </button>
                 <Link 
                   to={`/adventures/boss/${boss.id}`} 
-                  className="boss-button secondary"
+                  className="button secondary"
                 >
                   <i className="fas fa-info-circle"></i> View Details
                 </Link>
@@ -576,7 +576,7 @@ const ActiveBosses = () => {
               </div>
             </div>
             <div className="battle-actions">
-              <button className="boss-button">
+              <button className="button primary">
                 <i className="fas fa-gamepad"></i> Continue Battle
               </button>
             </div>
@@ -763,14 +763,14 @@ const DefeatedBosses = () => {
 
             <div className="defeated-boss-actions">
               <button 
-                className="boss-button primary"
+                className="button primary"
                 onClick={() => handleViewRankings(boss)}
               >
                 <i className="fas fa-trophy"></i> View Full Rankings
               </button>
               <Link 
                 to={`/adventures/boss/${boss.id}`} 
-                className="boss-button secondary"
+                className="button secondary"
               >
                 <i className="fas fa-info-circle"></i> View Boss Details
               </Link>

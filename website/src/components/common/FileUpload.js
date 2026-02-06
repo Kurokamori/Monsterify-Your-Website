@@ -168,14 +168,14 @@ const FileUpload = ({
             <div className="preview-actions">
               <button
                 type="button"
-                className="change-image-button"
+                className="button primary"
                 onClick={handleButtonClick}
               >
                 <i className="fas fa-exchange-alt"></i> Change
               </button>
               <button
                 type="button"
-                className="remove-image-button"
+                className="button danger"
                 onClick={handleRemoveImage}
               >
                 <i className="fas fa-trash-alt"></i> Remove
@@ -186,7 +186,7 @@ const FileUpload = ({
       ) : (
         <button
           type="button"
-          className="upload-button"
+          className="button primary"
           onClick={handleButtonClick}
           disabled={disabled || isUploading}
         >

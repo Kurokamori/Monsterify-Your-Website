@@ -160,7 +160,7 @@ const FakemonListPage = () => {
       <button
         key="first"
         onClick={() => handlePageChange(1)}
-        className={`admin-button secondary ${currentPage === 1 ? 'active' : ''}`}
+        className={`button secondary ${currentPage === 1 ? 'active' : ''}`}
         disabled={currentPage === 1}
       >
         1
@@ -182,7 +182,7 @@ const FakemonListPage = () => {
         <button
           key={i}
           onClick={() => handlePageChange(i)}
-          className={`admin-pagination-button ${currentPage === i ? 'active' : ''}`}
+          className={`button secondary ${currentPage === i ? 'active' : ''}`}
         >
           {i}
         </button>
@@ -202,7 +202,7 @@ const FakemonListPage = () => {
         <button
           key="last"
           onClick={() => handlePageChange(totalPages)}
-          className={`admin-pagination-button ${currentPage === totalPages ? 'active' : ''}`}
+          className={`button secondary ${currentPage === totalPages ? 'active' : ''}`}
           disabled={currentPage === totalPages}
         >
           {totalPages}
@@ -365,7 +365,7 @@ const FakemonListPage = () => {
                 <button
                   onClick={() => handlePageChange(currentPage - 1)}
                   disabled={currentPage === 1}
-                  className="admin-pagination-button"
+                  className="button secondary sm"
                 >
                   <i className="fas fa-chevron-left"></i>
                 </button>
@@ -375,7 +375,7 @@ const FakemonListPage = () => {
                 <button
                   onClick={() => handlePageChange(currentPage + 1)}
                   disabled={currentPage === totalPages}
-                  className="admin-pagination-button"
+                  className="button secondary sm"
                 >
                   <i className="fas fa-chevron-right"></i>
                 </button>

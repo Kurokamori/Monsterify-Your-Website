@@ -201,7 +201,7 @@ const MyTrainersPage = () => {
     <div className="my-trainers-container">
       <div className="my-trainers-header">
         <h1>My Trainers</h1>
-        <Link to="/add_trainer" className="add-trainer-button">
+        <Link to="/add_trainer" className="button primary">
           <i className="fas fa-plus"></i> New Trainer
         </Link>
       </div>
@@ -243,14 +243,14 @@ const MyTrainersPage = () => {
 
           <div className="order-group">
             <button
-              className={`order-button ${sortOrder === 'asc' ? 'active' : ''}`}
+              className={`button filter ${sortOrder === 'asc' ? 'active' : ''}`}
               onClick={() => setSortOrder('asc')}
               title="Ascending"
             >
               <i className="fas fa-sort-amount-up-alt"></i>
             </button>
             <button
-              className={`order-button ${sortOrder === 'desc' ? 'active' : ''}`}
+              className={`button filter ${sortOrder === 'desc' ? 'active' : ''}`}
               onClick={() => setSortOrder('desc')}
               title="Descending"
             >
@@ -260,7 +260,7 @@ const MyTrainersPage = () => {
 
           {filterFaction && (
             <button
-              className="clear-filter-button"
+              className="button secondary sm"
               onClick={() => setFilterFaction('')}
             >
               <i className="fas fa-times"></i> Clear Filter
@@ -380,7 +380,7 @@ const MyTrainersPage = () => {
           <h2>No Trainers Match Filter</h2>
           <p>No trainers found for the selected faction "{filterFaction}".</p>
           <button
-            className="create-trainer-button"
+            className="button primary lg"
             onClick={() => setFilterFaction('')}
           >
             Clear Filter
@@ -393,7 +393,7 @@ const MyTrainersPage = () => {
           </div>
           <h2>No Trainers Found</h2>
           <p>You don't have any trainers yet. Create your first trainer to start your adventure!</p>
-          <Link to="/add_trainer" className="create-trainer-button">
+          <Link to="/add_trainer" className="button primary lg">
             Create Your First Trainer
           </Link>
         </div>

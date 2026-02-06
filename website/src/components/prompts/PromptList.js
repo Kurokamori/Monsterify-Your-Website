@@ -224,7 +224,7 @@ const PromptList = ({
       {error && (
         <div className="error-message">
           <p>Error: {error}</p>
-          <button onClick={fetchPrompts} className="retry-btn">
+          <button onClick={fetchPrompts} className="button secondary">
             Retry
           </button>
         </div>

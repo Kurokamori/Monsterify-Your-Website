@@ -218,7 +218,7 @@ const Gallery = () => {
           aria-controls="gallery-filter-collapse"
           aria-expanded={showFilters}
           variant="outline-primary"
-          className="w-100 mb-2 button toggle-btn"
+          className="button toggle block"
         >
           {showFilters ? 'Hide Filters' : 'Show Filters'}
           {(selectedTag || selectedTrainer || selectedMonster || sortBy !== 'newest') &&

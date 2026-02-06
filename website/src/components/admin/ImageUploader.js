@@ -160,28 +160,28 @@ const ImageUploader = ({ images = [], onChange, maxImages = 4, required = false 
                     {index > 0 && (
                       <button
                         type="button"
-                        className="btn icon move-up"
+                        className="button secondary icon sm"
                         onClick={() => handleMoveImage(index, index - 1)}
                         title="Move up"
                       >
                         <i className="fas fa-arrow-up"></i>
                       </button>
                     )}
-                    
+
                     {index < images.length - 1 && (
                       <button
                         type="button"
-                        className="btn icon move-down"
+                        className="button secondary icon sm"
                         onClick={() => handleMoveImage(index, index + 1)}
                         title="Move down"
                       >
                         <i className="fas fa-arrow-down"></i>
                       </button>
                     )}
-                    
+
                     <button
                       type="button"
-                      className="btn icon remove"
+                      className="button danger icon sm"
                       onClick={() => handleRemoveImage(index)}
                       title="Remove image"
                     >

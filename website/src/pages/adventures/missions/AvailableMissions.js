@@ -113,7 +113,7 @@ const AvailableMissions = () => {
                 </div>
                 <div className="mission-actions">
                   <button
-                    className="mission-button secondary"
+                    className="button secondary"
                     onClick={() => navigate('/adventures/missions/active')}
                   >
                     View Details

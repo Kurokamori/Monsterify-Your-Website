@@ -153,7 +153,7 @@ const LocationsPage = () => {
             onChange={(e) => setSearchQuery(e.target.value)}
             className="search-input"
           />
-          <button className="search-button">
+          <button className="button primary">
             <i className="fas fa-search"></i>
           </button>
         </div>
@@ -215,7 +215,7 @@ const LocationsPage = () => {
                 </div>
               </div>
               
-              <Link to={`/interactive_map?location=${location.id}`} className="location-button">
+              <Link to={`/interactive_map?location=${location.id}`} className="button primary outline">
                 <i className="fas fa-map"></i> View on Map
               </Link>
             </div>
@@ -228,7 +228,7 @@ const LocationsPage = () => {
           <i className="fas fa-map-marked-alt"></i>
           <p>No locations found matching your search criteria.</p>
           <button 
-            className="reset-button"
+            className="button secondary"
             onClick={() => {
               setSelectedRegion('all');
               setSearchQuery('');

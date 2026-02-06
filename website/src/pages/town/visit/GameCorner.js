@@ -718,7 +718,7 @@ const GameCorner = () => {
               {[0, 20, 40, 60, 80, 100].map(rating => (
                 <button
                   key={rating}
-                  className="productivity-rating-btn"
+                  className="button secondary"
                   onClick={() => handleProductivityRating(rating)}
                 >
                   {rating}%

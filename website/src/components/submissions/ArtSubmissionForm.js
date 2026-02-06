@@ -794,7 +794,7 @@ const ArtSubmissionForm = ({ onSubmissionComplete }) => {
                   />
                   <button
                     type="button"
-                    className="remove-image-button"
+                    className="button icon danger"
                     onClick={() => removeAdditionalImage(index)}
                   >
                     &times;

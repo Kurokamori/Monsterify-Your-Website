@@ -236,14 +236,14 @@ const EvolutionEditor = ({ monsterId, evolutionData, onSave, onCancel, isOwner }
 
                 <div className="entry-actions">
                   <button
-                    className="edit-button"
+                    className="button secondary icon sm"
                     onClick={() => handleEditEntry(index)}
                     title="Edit this entry"
                   >
                     <i className="fas fa-edit"></i>
                   </button>
                   <button
-                    className="delete-button"
+                    className="button danger icon sm"
                     onClick={() => handleDeleteEntry(index)}
                     title="Delete this entry"
                   >

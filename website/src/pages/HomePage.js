@@ -273,7 +273,7 @@ const HomePage = () => {
                   </div>
                   <h3>Join Discord</h3>
                   <p>Connect with our vibrant community</p>
-                  <a href="https://discord.gg/YrF74RWA6v" className="step-button" target="_blank" rel="noopener noreferrer">
+                  <a href="https://discord.gg/YrF74RWA6v" className="button primary" target="_blank" rel="noopener noreferrer">
                     Join Server
                   </a>
                 </div>
@@ -285,7 +285,7 @@ const HomePage = () => {
                   </div>
                   <h3>Register Account</h3>
                   <p>Create your profile and get started</p>
-                  <Link to="/register" className="step-button">
+                  <Link to="/register" className="button primary">
                     Sign Up
                   </Link>
                 </div>
@@ -297,7 +297,7 @@ const HomePage = () => {
                   </div>
                   <h3>Create Trainer</h3>
                   <p>Design your character and start your adventure</p>
-                  <Link to="/profile/trainers/add" className="step-button">
+                  <Link to="/profile/trainers/add" className="button primary">
                     Create Trainer
                   </Link>
                 </div>
@@ -407,20 +407,20 @@ const HomePage = () => {
               <div className="dashboard-row">
                 <div className="dashboard-card quick-actions">
                   <h3>Quick Actions</h3>
-                  <div className="action-buttons">
-                    <Link to="/submissions/art" className="button primary art">
+                  <div className="quick-action-buttons">
+                    <Link to="/submissions/art" className="quick-action-button art">
                       <i className="fas fa-palette"></i>
                       <span>Submit Art</span>
                     </Link>
-                    <Link to="/submissions/writing" className="button primary writing">
+                    <Link to="/submissions/writing" className="quick-action-button writing">
                       <i className="fas fa-feather-alt"></i>
                       <span>Submit Writing</span>
                     </Link>
-                    <Link to="/town/farm" className="button primary farm">
+                    <Link to="/town/farm" className="quick-action-button farm">
                       <i className="fas fa-seedling"></i>
                       <span>Visit Farm</span>
                     </Link>
-                    <Link to="/town/adoption" className="button primary adoption">
+                    <Link to="/town/adoption" className="quick-action-button adoption">
                       <i className="fas fa-heart"></i>
                       <span>Adoption Center</span>
                     </Link>

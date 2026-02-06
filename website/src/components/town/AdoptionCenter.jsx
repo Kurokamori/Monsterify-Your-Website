@@ -511,13 +511,13 @@ const AdoptionCenter = () => {
       <div className="adoption-center-controls">
         <div className="view-options">
           <button
-            className={`view-option-button ${showCurrentMonthOnly ? 'active' : ''}`}
+            className={`button filter ${showCurrentMonthOnly ? 'active' : ''}`}
             onClick={() => handleViewOptionChange(true)}
           >
             Current Month
           </button>
           <button
-            className={`view-option-button ${!showCurrentMonthOnly ? 'active' : ''}`}
+            className={`button filter ${!showCurrentMonthOnly ? 'active' : ''}`}
             onClick={() => handleViewOptionChange(false)}
           >
             All Months
@@ -641,7 +641,7 @@ const AdoptionCenter = () => {
                   
 
                   <div className="adopt-action">
-                    <button className="adopt-button">
+                    <button className="button primary">
                       Adopt
                     </button>
                   </div>
@@ -834,7 +834,7 @@ const AdoptionCenter = () => {
                           <span className="selected-artwork-title">{selectedArtwork.title}</span>
                           <button
                             type="button"
-                            className="clear-artwork-btn"
+                            className="button secondary"
                             onClick={() => setSelectedArtwork(null)}
                           >
                             Change
@@ -852,7 +852,7 @@ const AdoptionCenter = () => {
                         onChange={(e) => setArtworkSearchQuery(e.target.value)}
                         className="artwork-search-input"
                       />
-                      <button type="submit" className="artwork-search-btn">
+                      <button type="submit" className="button primary">
                         Search
                       </button>
                     </form>
@@ -869,7 +869,7 @@ const AdoptionCenter = () => {
                           {artworkSearchQuery && (
                             <button
                               type="button"
-                              className="clear-search-btn"
+                              className="button secondary"
                               onClick={() => {
                                 setArtworkSearchQuery('');
                                 fetchUserArtworks(1, '');

@@ -282,7 +282,7 @@ const RoutineModal = ({ isOpen, onClose, onSuccess, trainers = [], routine = nul
                           type="button"
                           onClick={() => moveItem(index, 'up')}
                           disabled={index === 0}
-                          className="order-btn"
+                          className="button secondary icon sm"
                         >
                           <i className="fas fa-chevron-up"></i>
                         </button>
@@ -291,7 +291,7 @@ const RoutineModal = ({ isOpen, onClose, onSuccess, trainers = [], routine = nul
                           type="button"
                           onClick={() => moveItem(index, 'down')}
                           disabled={index === formData.items.length - 1}
-                          className="order-btn"
+                          className="button secondary icon sm"
                         >
                           <i className="fas fa-chevron-down"></i>
                         </button>
@@ -311,7 +311,7 @@ const RoutineModal = ({ isOpen, onClose, onSuccess, trainers = [], routine = nul
                       <button
                         type="button"
                         onClick={() => removeItem(index)}
-                        className="remove-btn"
+                        className="button danger icon sm"
                       >
                         <i className="fas fa-trash"></i>
                       </button>
@@ -325,7 +325,7 @@ const RoutineModal = ({ isOpen, onClose, onSuccess, trainers = [], routine = nul
               <button
                 type="button"
                 onClick={() => setShowAddItem(true)}
-                className="button secondary add-item-btn"
+                className="button secondary"
               >
                 <i className="fas fa-plus"></i>
                 Add Routine Item

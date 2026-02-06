@@ -55,7 +55,7 @@ const MainLayout = () => {
           </Link>
           <button
             type="button"
-            className="button ghost"
+            className="button ghost mobile-menu-button"
             onClick={toggleMobileMenu}
           >
             <i className="fas fa-bars"></i>

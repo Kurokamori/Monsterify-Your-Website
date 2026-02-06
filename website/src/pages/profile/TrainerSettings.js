@@ -235,7 +235,7 @@ const TrainerSettings = () => {
         <div className="settings-section-header">
           <h2 className="settings-section-title">Your Trainers</h2>
           <button 
-            className="form-button primary"
+            className="button primary"
             onClick={() => setIsNewTrainerModalOpen(true)}
           >
             <i className="fas fa-plus"></i> New Trainer
@@ -279,17 +279,17 @@ const TrainerSettings = () => {
                   </div>
                 </div>
                 <div className="trainer-card-actions">
-                  <Link to={`/trainers/${trainer.id}`} className="trainer-action-button">
+                  <Link to={`/trainers/${trainer.id}`} className="button primary sm">
                     <i className="fas fa-eye"></i> View
                   </Link>
                   <button 
-                    className="trainer-action-button secondary"
+                    className="button secondary sm"
                     onClick={() => openEditTrainerModal(trainer)}
                   >
                     <i className="fas fa-edit"></i> Edit
                   </button>
                   <button
-                    className="trainer-action-button secondary danger"
+                    className="button danger icon sm"
                     onClick={() => openDeleteTrainerModal(trainer)}
                   >
                     <i className="fas fa-trash-alt"></i>

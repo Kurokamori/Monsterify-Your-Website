@@ -158,7 +158,7 @@ const GardenHarvest = () => {
 
           <div className="garden-harvest-actions">
             <button
-              className="harvest-button"
+              className="button success lg"
               onClick={handleHarvest}
               disabled={harvestLoading || gardenPoints?.points <= 0}
             >

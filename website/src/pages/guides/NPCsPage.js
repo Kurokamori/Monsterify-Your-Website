@@ -216,7 +216,7 @@ const NPCsPage = () => {
             onChange={(e) => setSearchQuery(e.target.value)}
             className="search-input"
           />
-          <button className="search-button">
+          <button className="button primary">
             <i className="fas fa-search"></i>
           </button>
         </div>
@@ -344,7 +344,7 @@ const NPCsPage = () => {
           <i className="fas fa-user-slash"></i>
           <p>No characters found matching your search criteria.</p>
           <button 
-            className="reset-button"
+            className="button secondary"
             onClick={() => {
               setSelectedCategory('all');
               setSearchQuery('');

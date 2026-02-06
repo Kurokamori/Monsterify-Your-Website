@@ -119,7 +119,7 @@ const TrainerEdit = () => {
       <div className="trainer-edit-header">
         <h1>Edit Trainer: {trainer.name}</h1>
         <div className="trainer-edit-actions">
-          <Link to={`/admin/dashboard/trainers/${id}`} className="trainer-edit-btn cancel">
+          <Link to={`/admin/dashboard/trainers/${id}`} className="button secondary">
             <i className="fas fa-times"></i> Cancel
           </Link>
         </div>
@@ -611,14 +611,14 @@ const TrainerEdit = () => {
         <div className="trainer-edit-footer">
           <button
             type="button"
-            className="trainer-edit-btn cancel"
+            className="button secondary"
             onClick={() => navigate(`/admin/dashboard/trainers/${id}`)}
           >
             Cancel
           </button>
           <button
             type="submit"
-            className="trainer-edit-btn save"
+            className="button primary"
             disabled={saving}
           >
             {saving ? (

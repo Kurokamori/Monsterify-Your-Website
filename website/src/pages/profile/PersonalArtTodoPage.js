@@ -385,7 +385,7 @@ const PersonalArtTodoPage = () => {
       <div className="art-todo-header">
         <h1>My Art To-Do Lists</h1>
         <button
-          className="create-list-btn"
+          className="button primary"
           onClick={() => setIsCreateListModalOpen(true)}
         >
           <i className="fas fa-plus"></i> Create New List
@@ -400,7 +400,7 @@ const PersonalArtTodoPage = () => {
           <h2>No Art Todo Lists</h2>
           <p>Create your first art todo list to start organizing your art projects!</p>
           <button
-            className="create-first-list-btn"
+            className="button primary lg"
             onClick={() => setIsCreateListModalOpen(true)}
           >
             Create Your First List
@@ -414,14 +414,14 @@ const PersonalArtTodoPage = () => {
                 <h3 className="list-title">{list.title}</h3>
                 <div className="list-actions">
                   <button
-                    className="action-btn edit"
+                    className="button secondary icon sm"
                     onClick={() => openEditListModal(list)}
                     title="Edit List"
                   >
                     <i className="fas fa-edit"></i>
                   </button>
                   <button
-                    className="action-btn delete"
+                    className="button danger icon sm"
                     onClick={() => handleDeleteList(list.id)}
                     title="Delete List"
                   >
@@ -445,13 +445,13 @@ const PersonalArtTodoPage = () => {
 
               <div className="list-actions-bottom">
                 <button
-                  className="add-item-btn"
+                  className="button primary sm"
                   onClick={() => openCreateItemModal(list)}
                 >
                   <i className="fas fa-plus"></i> Add Item
                 </button>
                 <button
-                  className="view-items-btn"
+                  className="button secondary sm"
                   onClick={() => fetchListWithItems(list.id)}
                 >
                   View Items
@@ -469,13 +469,13 @@ const PersonalArtTodoPage = () => {
             <h2>{selectedList.title} - Items</h2>
             <div className="items-actions">
               <button
-                className="add-item-btn"
+                className="button primary sm"
                 onClick={() => openCreateItemModal(selectedList)}
               >
                 <i className="fas fa-plus"></i> Add Item
               </button>
               <button
-                className="back-btn"
+                className="button secondary"
                 onClick={() => setSelectedList(null)}
               >
                 <i className="fas fa-arrow-left"></i> Back to Lists
@@ -490,21 +490,21 @@ const PersonalArtTodoPage = () => {
                   <h4 className="item-title">{item.title}</h4>
                   <div className="item-actions">
                     <button
-                      className="action-btn reference"
+                      className="button info icon sm"
                       onClick={() => openReferenceModal(item)}
                       title="Manage References"
                     >
                       <i className="fas fa-image"></i>
                     </button>
                     <button
-                      className="action-btn edit"
+                      className="button secondary icon sm"
                       onClick={() => openEditItemModal(item)}
                       title="Edit Item"
                     >
                       <i className="fas fa-edit"></i>
                     </button>
                     <button
-                      className="action-btn delete"
+                      className="button danger icon sm"
                       onClick={() => handleDeleteItem(item.id)}
                       title="Delete Item"
                     >
@@ -541,7 +541,7 @@ const PersonalArtTodoPage = () => {
                       </span>
                       {item.steps_completed < item.steps_total && (
                         <button
-                          className="increment-step-btn"
+                          className="button primary icon sm"
                           onClick={(e) => {
                             e.stopPropagation();
                             handleIncrementStep(item);
@@ -566,7 +566,7 @@ const PersonalArtTodoPage = () => {
                     <div className="references-header">
                       <span className="references-label">References:</span>
                       <button
-                        className="view-matrix-btn"
+                        className="button secondary icon sm"
                         onClick={(e) => {
                           e.stopPropagation();
                           openFullScreenReference(item);
@@ -957,7 +957,7 @@ const PersonalArtTodoPage = () => {
                       <span className="reference-type">{ref.reference_type}</span>
                     </div>
                     <button
-                      className="remove-reference-btn"
+                      className="button danger icon sm"
                       onClick={() => handleRemoveReference(ref.id)}
                       title="Remove Reference"
                     >
@@ -1025,7 +1025,7 @@ const PersonalArtTodoPage = () => {
                                   </span>
                                 </div>
                                 <button
-                                  className="add-reference-btn"
+                                  className="button primary icon sm"
                                   onClick={() => handleAddReference('trainer', trainer.id)}
                                   title="Add as Reference"
                                 >
@@ -1092,7 +1092,7 @@ const PersonalArtTodoPage = () => {
                             </span>
                           </div>
                           <button
-                            className="add-reference-btn"
+                            className="button primary icon sm"
                             onClick={() => handleAddReference('monster', monster.id)}
                             title="Add as Reference"
                           >

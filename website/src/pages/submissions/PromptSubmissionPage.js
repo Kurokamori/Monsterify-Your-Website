@@ -450,7 +450,7 @@ const PromptSubmissionPage = () => {
                                   </div>
 
                                   <button
-                                    className="button primary monster-claim-button"
+                                    className="button primary"
                                     onClick={() => handleMonsterClaim(index)}
                                     disabled={claimingMonster === index || !selectedTrainers[index] || !monsterNames[index]?.trim()}
                                   >

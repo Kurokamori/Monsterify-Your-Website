@@ -231,14 +231,14 @@ const RoutinesTab = ({ trainers, onRefresh }) => {
 
                 <div className="item-actions">
                   <button
-                    className="item-action-btn secondary"
+                    className="button secondary sm"
                     onClick={() => handleEditRoutine(routine)}
                   >
                     <i className="fas fa-edit"></i>
                     Edit
                   </button>
                   <button
-                    className="item-action-btn danger"
+                    className="button danger sm"
                     onClick={() => handleDeleteRoutine(routine.id)}
                   >
                     <i className="fas fa-trash"></i>

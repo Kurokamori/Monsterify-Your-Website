@@ -310,7 +310,7 @@ const MonsterRoller = ({ context = 'adoption', onMonsterSelected, trainerId }) =
             {/* Roll Button */}
             <div className="roller-actions">
               <button 
-                className="roll-button"
+                className="button primary lg"
                 onClick={handleRoll}
                 disabled={loading || selectedSources.length === 0 || !selectedTrainer}
               >
@@ -384,7 +384,7 @@ const MonsterRoller = ({ context = 'adoption', onMonsterSelected, trainerId }) =
             
             <div className="monster-actions">
               <button 
-                className="adopt-button"
+                className="button success"
                 onClick={handleAdopt}
                 disabled={loading}
               >
@@ -393,7 +393,7 @@ const MonsterRoller = ({ context = 'adoption', onMonsterSelected, trainerId }) =
               
               {rollCount < maxRolls && (
                 <button 
-                  className="reroll-button"
+                  className="button info"
                   onClick={handleRoll}
                   disabled={loading}
                 >
@@ -402,7 +402,7 @@ const MonsterRoller = ({ context = 'adoption', onMonsterSelected, trainerId }) =
               )}
               
               <button 
-                className="reset-button"
+                className="button secondary"
                 onClick={handleReset}
                 disabled={loading}
               >

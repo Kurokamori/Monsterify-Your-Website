@@ -354,7 +354,7 @@ const MassFakemonAddPage = () => {
 
         {/* Action Buttons */}
         <div className="admin-actions">
-          <Link to="/admin/fakemon" className="admin-button secondary">
+          <Link to="/admin/fakemon" className="button secondary">
             <i className="fas fa-arrow-left"></i> Back to Fakemon List
           </Link>
         </div>
@@ -381,7 +381,7 @@ const MassFakemonAddPage = () => {
 
             <button
               type="button"
-              className="admin-button"
+              className="button primary"
               onClick={() => fileInputRef.current?.click()}
               disabled={uploading || submitting}
             >
@@ -416,7 +416,7 @@ const MassFakemonAddPage = () => {
                   <div className="mass-fakemon-card-header">
                     <button
                       type="button"
-                      className="admin-button delete small"
+                      className="button danger sm"
                       onClick={() => removeCard(card.id)}
                       disabled={submitting}
                       title="Remove this card"
@@ -509,7 +509,7 @@ const MassFakemonAddPage = () => {
                             {card.types.length > 1 && (
                               <button
                                 type="button"
-                                className="type-remove-btn"
+                                className="button danger icon sm"
                                 onClick={() => removeTypeSlot(card.id, typeIndex)}
                                 disabled={submitting}
                                 title="Remove type"
@@ -522,7 +522,7 @@ const MassFakemonAddPage = () => {
                         {card.types.length < 5 && (
                           <button
                             type="button"
-                            className="type-add-btn"
+                            className="button primary sm"
                             onClick={() => addTypeSlot(card.id)}
                             disabled={submitting}
                           >
@@ -561,7 +561,7 @@ const MassFakemonAddPage = () => {
           <div className="admin-form-actions">
             <button
               type="button"
-              className="admin-button secondary"
+              className="button secondary"
               onClick={() => setFakemonCards([])}
               disabled={submitting}
             >
@@ -569,7 +569,7 @@ const MassFakemonAddPage = () => {
             </button>
             <button
               type="button"
-              className="admin-button"
+              className="button primary"
               onClick={handleSubmit}
               disabled={submitting || fakemonCards.length === 0}
             >

@@ -243,7 +243,7 @@ const GuideDetail = () => {
                       <i className="fas fa-clock"></i> {relatedGuide.read_time}
                     </span>
                   </div>
-                  <Link to={`/guides/${relatedGuide.id}`} className="guide-button">
+                  <Link to={`/guides/${relatedGuide.id}`} className="button primary">
                     Read Guide
                   </Link>
                 </div>

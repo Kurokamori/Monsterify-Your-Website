@@ -193,7 +193,7 @@ const HabitsTab = ({ trainers, onRefresh }) => {
               <div className="item-actions">
                 {habit.status === 'active' && (
                   <button
-                    className="item-action-btn"
+                    className="button primary sm"
                     onClick={() => handleTrackHabit(habit.id)}
                   >
                     <i className="fas fa-check"></i>
@@ -201,14 +201,14 @@ const HabitsTab = ({ trainers, onRefresh }) => {
                   </button>
                 )}
                 <button
-                  className="item-action-btn secondary"
+                  className="button secondary sm"
                   onClick={() => handleEditHabit(habit)}
                 >
                   <i className="fas fa-edit"></i>
                   Edit
                 </button>
                 <button
-                  className="item-action-btn danger"
+                  className="button danger sm"
                   onClick={() => handleDeleteHabit(habit.id)}
                 >
                   <i className="fas fa-trash"></i>

@@ -259,7 +259,7 @@ const FactionsPage = () => {
           onChange={(e) => setSearchQuery(e.target.value)}
           className="search-input"
         />
-        <button className="search-button">
+        <button className="button primary">
           <i className="fas fa-search"></i>
         </button>
       </div>
@@ -363,7 +363,7 @@ const FactionsPage = () => {
           <i className="fas fa-users"></i>
           <p>No factions found matching your search criteria.</p>
           <button 
-            className="reset-button"
+            className="button secondary"
             onClick={() => setSearchQuery('')}
           >
             Reset Search

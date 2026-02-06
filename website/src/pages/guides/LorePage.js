@@ -192,7 +192,7 @@ const LorePage = () => {
             onChange={(e) => setSearchQuery(e.target.value)}
             className="search-input"
           />
-          <button className="search-button">
+          <button className="button primary">
             <i className="fas fa-search"></i>
           </button>
         </div>
@@ -280,7 +280,7 @@ const LorePage = () => {
           <i className="fas fa-book"></i>
           <p>No lore entries found matching your search criteria.</p>
           <button 
-            className="reset-button"
+            className="button secondary"
             onClick={() => {
               setSelectedCategory('all');
               setSearchQuery('');

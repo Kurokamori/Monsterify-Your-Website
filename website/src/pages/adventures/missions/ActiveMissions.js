@@ -149,7 +149,7 @@ const ActiveMissions = () => {
                 {isCompleted && !mission.reward_claimed && (
                   <div className="mission-actions">
                     <button
-                      className="claim-rewards-btn"
+                      className="button primary"
                       onClick={() => handleClaimRewards(mission.id)}
                     >
                       Claim Rewards

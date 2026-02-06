@@ -266,7 +266,7 @@ const Shop = () => {
           {displayCategories.map((category) => (
             <button
               key={category.id}
-              className={`category-button ${selectedCategory === category.id ? 'active' : ''}`}
+              className={`button filter ${selectedCategory === category.id ? 'active' : ''}`}
               onClick={() => setSelectedCategory(category.id)}
             >
               {category.name}
@@ -347,7 +347,7 @@ const Shop = () => {
                   <span className="price-amount">{item.price} <i className="fas fa-coins"></i></span>
                 </div>
                 <button 
-                  className="buy-button"
+                  className="button primary"
                   onClick={() => handleBuyClick(item)}
                   disabled={item.stock <= 0}
                 >
@@ -410,7 +410,7 @@ const Shop = () => {
                     <label htmlFor="quantity">Quantity:</label>
                     <div className="quantity-controls">
                       <button 
-                        className="quantity-button"
+                        className="button icon"
                         onClick={() => setQuantity(Math.max(1, quantity - 1))}
                       >
                         <i className="fas fa-minus"></i>
@@ -424,7 +424,7 @@ const Shop = () => {
                         onChange={(e) => setQuantity(Math.min(selectedItem.stock, Math.max(1, parseInt(e.target.value) || 1)))}
                       />
                       <button 
-                        className="quantity-button"
+                        className="button icon"
                         onClick={() => setQuantity(Math.min(selectedItem.stock, quantity + 1))}
                       >
                         <i className="fas fa-plus"></i>

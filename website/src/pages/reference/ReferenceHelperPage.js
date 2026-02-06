@@ -316,7 +316,7 @@ const ReferenceHelperPage = () => {
         <h1>Reference Helper</h1>
         {selectedTrainerData && (
           <button 
-            className="image-size-toggle"
+            className="button secondary toggle"
             onClick={cycleImageSize}
             title={`Current: ${getImageSizeDisplayName(imageSize)}. Click to cycle.`}
           >
@@ -380,7 +380,7 @@ const ReferenceHelperPage = () => {
                       <td>{monster.attribute}</td>
                       <td>
                         <button 
-                          className="show-references-button"
+                          className="button secondary sm"
                           onClick={() => toggleMonsterExpanded(monster.id)}
                         >
                           {expandedMonsters[monster.id] ? 'Hide References' : 'Show References'}

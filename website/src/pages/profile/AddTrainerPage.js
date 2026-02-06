@@ -351,7 +351,7 @@ const AddTrainerPage = () => {
 
       <button
         type="button"
-        className="jump-to-submit-btn"
+        className="button secondary sm"
         onClick={handleJumpToSubmit}
       >
         <i className="fas fa-arrow-down"></i> Jump to Submit
@@ -477,12 +477,12 @@ const AddTrainerPage = () => {
                 <div className="main-ref-preview">
                   <img src={mainRefPreview} alt="Main reference preview" />
                   <div className="preview-overlay">
-                    <label htmlFor="main_ref" className="change-image-btn">
+                    <label htmlFor="main_ref" className="button secondary sm">
                       <i className="fas fa-camera"></i> Change Image
                     </label>
                     <button
                       type="button"
-                      className="remove-image-btn"
+                      className="button danger sm"
                       onClick={() => {
                         setMainRefFile(null);
                         setMainRefPreview('');
@@ -1200,7 +1200,7 @@ const AddTrainerPage = () => {
                     <h3>Secret #{index + 1}</h3>
                     <button
                       type="button"
-                      className="remove-secret-button"
+                      className="button danger sm"
                       onClick={() => handleRemoveSecret(secret.id)}
                     >
                       <i className="fas fa-trash-alt"></i> Remove
@@ -1242,7 +1242,7 @@ const AddTrainerPage = () => {
 
           <button
             type="button"
-            className="add-secret-button"
+            className="button secondary"
             onClick={handleAddSecret}
           >
             <i className="fas fa-plus"></i> Add Secret
@@ -1317,7 +1317,7 @@ const AddTrainerPage = () => {
 
           <button
             type="button"
-            className="add-relation-button"
+            className="button secondary"
             onClick={handleAddRelation}
           >
             <i className="fas fa-plus"></i> Add Relation
@@ -1335,7 +1335,7 @@ const AddTrainerPage = () => {
                 {index > 0 && (
                   <button
                     type="button"
-                    className="remove-ref-button"
+                    className="button danger sm"
                     onClick={() => handleRemoveAdditionalRef(index)}
                   >
                     <i className="fas fa-trash"></i> Remove
@@ -1385,7 +1385,7 @@ const AddTrainerPage = () => {
 
           <button
             type="button"
-            className="add-ref-button"
+            className="button secondary"
             onClick={handleAddAdditionalRef}
           >
             <i className="fas fa-plus"></i> Add Another Reference

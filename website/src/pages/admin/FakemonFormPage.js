@@ -391,7 +391,7 @@ const FakemonFormPage = () => {
         )}
 
         <div className="admin-actions">
-          <Link to="/admin/fakemon" className="admin-button secondary">
+          <Link to="/admin/fakemon" className="button secondary">
             <i className="fas fa-arrow-left"></i> Back to Fakemon List
           </Link>
         </div>
@@ -670,7 +670,7 @@ const FakemonFormPage = () => {
                     </div>
                     <button
                       type="button"
-                      className="admin-button secondary fit-content"
+                      className="button secondary"
                       onClick={handleRollStats}
                       disabled={!statPowerLevel}
                     >
@@ -818,7 +818,7 @@ const FakemonFormPage = () => {
                         <button
                           type="button"
                           onClick={() => removeEvolution(index)}
-                          className="admin-button delete"
+                          className="button danger sm"
                           disabled={saving}
                         >
                           <i className="fas fa-times"></i>
@@ -831,7 +831,7 @@ const FakemonFormPage = () => {
                 <button
                   type="button"
                   onClick={addEvolution}
-                  className="admin-button secondary"
+                  className="button secondary"
                   disabled={saving}
                 >
                   <i className="fas fa-plus"></i> Add Evolution
@@ -850,10 +850,10 @@ const FakemonFormPage = () => {
 
               {/* Form Actions */}
               <div className="admin-form-actions">
-                <Link to="/admin/fakemon" className="admin-button secondary" disabled={saving}>
+                <Link to="/admin/fakemon" className="button secondary" disabled={saving}>
                   Cancel
                 </Link>
-                <button type="submit" className="admin-button" disabled={saving}>
+                <button type="submit" className="button primary" disabled={saving}>
                   {saving ? (
                     <>
                       <i className="fas fa-spinner fa-spin"></i> {isEditMode ? 'Updating...' : 'Creating...'}

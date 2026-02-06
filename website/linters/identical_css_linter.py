@@ -321,10 +321,10 @@ def format_report(
     lines.append(f"Potential consolidation savings: {potential_savings} class definitions")
     lines.append("")
 
-    # Sort groups by number of properties (more properties = more impactful duplication)
+    # Sort groups by number of occurrences (most duplicates first), then by property count
     sorted_groups = sorted(
         identical.items(),
-        key=lambda x: (-len(x[1][0].properties), -len(x[1]))
+        key=lambda x: (-len(x[1]), -len(x[1][0].properties))
     )
 
     for signature, group in sorted_groups:

@@ -87,7 +87,7 @@ const RerollerSessionsPage = () => {
       <div className="reroller-header">
         <h1>Reroller Sessions</h1>
         <p>View and manage all reroll sessions</p>
-        <Link to="/admin/reroller" className="button primary reroller-create-btn">
+        <Link to="/admin/reroller" className="button primary">
           <i className="fas fa-plus"></i> Create New Session
         </Link>
       </div>
@@ -169,21 +169,21 @@ const RerollerSessionsPage = () => {
                       <div className="session-actions">
                         <button
                           onClick={() => copyLink(session.token)}
-                          className="session-action-btn"
+                          className="button secondary icon sm"
                           title="Copy claim link"
                         >
                           <i className="fas fa-link"></i>
                         </button>
                         <Link
                           to={`/admin/reroller/sessions/${session.id}`}
-                          className="session-action-btn"
+                          className="button secondary icon sm"
                           title="View details"
                         >
                           <i className="fas fa-eye"></i>
                         </Link>
                         <button
                           onClick={() => setDeleteConfirm(session.id)}
-                          className="session-action-btn delete"
+                          className="button danger icon sm"
                           title="Delete session"
                         >
                           <i className="fas fa-trash"></i>
@@ -202,7 +202,7 @@ const RerollerSessionsPage = () => {
               <button
                 onClick={() => setPage(p => Math.max(1, p - 1))}
                 disabled={page === 1}
-                className="button secondary sessions-button secondary"
+                className="button secondary"
               >
                 Previous
               </button>
@@ -212,7 +212,7 @@ const RerollerSessionsPage = () => {
               <button
                 onClick={() => setPage(p => Math.min(totalPages, p + 1))}
                 disabled={page === totalPages}
-                className="button secondary sessions-button secondary"
+                className="button secondary"
               >
                 Next
               </button>

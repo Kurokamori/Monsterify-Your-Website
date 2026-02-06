@@ -144,7 +144,7 @@ const FactionStore = ({ factionId, trainerId, faction }) => {
         <div className="purchase-error">
           <i className="fas fa-exclamation-triangle"></i>
           {purchaseError}
-          <button onClick={() => setPurchaseError(null)} className="dismiss-button">×</button>
+          <button onClick={() => setPurchaseError(null)} className="button close sm">×</button>
         </div>
       )}
 

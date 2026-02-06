@@ -240,13 +240,13 @@ const InteractiveMapPage = () => {
         </div>
         
         <div className="zoom-controls">
-          <button className="zoom-button" onClick={handleZoomIn}>
+          <button className="button secondary icon" onClick={handleZoomIn}>
             <i className="fas fa-plus"></i>
           </button>
-          <button className="zoom-button" onClick={handleZoomOut}>
+          <button className="button secondary icon" onClick={handleZoomOut}>
             <i className="fas fa-minus"></i>
           </button>
-          <button className="zoom-button" onClick={handleResetView}>
+          <button className="button secondary icon" onClick={handleResetView}>
             <i className="fas fa-home"></i>
           </button>
         </div>
@@ -303,7 +303,7 @@ const InteractiveMapPage = () => {
               <span>{displayMapData.regions.find(r => r.id === selectedLocation.region)?.name || selectedLocation.region}</span>
             </div>
             
-            <button className="view-details-button">
+            <button className="button primary">
               <i className="fas fa-info-circle"></i> View Full Details
             </button>
           </div>

@@ -114,7 +114,7 @@ const VoiceClaimSection = ({ voice_claim }) => {
           <span className="detail-value">{displayText}</span>
           {hasLink && videoId && (
             <button 
-              className="voice-claim-expand-btn"
+              className="button secondary icon sm"
               onClick={() => setIsExpanded(!isExpanded)}
               title={isExpanded ? 'Hide voice claim player' : 'Show voice claim player'}
             >
@@ -2195,7 +2195,7 @@ const TrainerDetailPage = () => {
                       <div className="search-results-info">
                         <p>{filteredMonsters.length} monsters found</p>
                         <button 
-                          className="clear-search-button"
+                          className="button danger"
                           onClick={() => setSearchTerm('')}
                         >
                           <i className="fas fa-times"></i> Clear Search
@@ -3295,7 +3295,7 @@ const TrainerDetailPage = () => {
                             )}
                             {achievement.canClaim && (
                               <button 
-                                className="claim-btn button primary"
+                                className="button primary"
                                 onClick={() => {
                                   console.log(`Claiming achievement: ${achievement.id} - ${achievement.name}`);
                                   handleClaimAchievement(achievement.id);

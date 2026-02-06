@@ -193,7 +193,7 @@ const ItemBulkFormPage = () => {
     <div>
       <div className="admin-page-header">
         <h1>Bulk Add Items</h1>
-        <button className="admin-button" onClick={handlePasteFromCsv}>
+        <button className="button primary" onClick={handlePasteFromCsv}>
           <i className="fas fa-paste"></i> Paste from CSV
         </button>
       </div>
@@ -206,7 +206,7 @@ const ItemBulkFormPage = () => {
                 <h3>Item #{index + 1}</h3>
                 <button
                   type="button"
-                  className="admin-button danger"
+                  className="button danger"
                   onClick={() => removeItem(index)}
                 >
                   <i className="fas fa-trash"></i> Remove
@@ -328,7 +328,7 @@ const ItemBulkFormPage = () => {
           <div className="admin-form-actions" style={{ marginTop: '1rem' }}>
             <button
               type="button"
-              className="admin-button"
+              className="button primary"
               onClick={addItem}
             >
               <i className="fas fa-plus"></i> Add Another Item
@@ -338,7 +338,7 @@ const ItemBulkFormPage = () => {
           <div className="admin-form-actions">
             <button
               type="button"
-              className="admin-button secondary"
+              className="button secondary"
               onClick={handleCancel}
               disabled={submitting}
             >
@@ -346,7 +346,7 @@ const ItemBulkFormPage = () => {
             </button>
             <button
               type="submit"
-              className="admin-button primary"
+              className="button primary"
               disabled={submitting}
             >
               {submitting ? (

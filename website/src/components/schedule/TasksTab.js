@@ -191,7 +191,7 @@ const TasksTab = ({ trainers, onRefresh }) => {
               <div className="item-actions">
                 {task.status === 'pending' && (
                   <button
-                    className="item-action-btn"
+                    className="button primary sm"
                     onClick={() => handleCompleteTask(task.id)}
                   >
                     <i className="fas fa-check"></i>
@@ -199,14 +199,14 @@ const TasksTab = ({ trainers, onRefresh }) => {
                   </button>
                 )}
                 <button
-                  className="item-action-btn secondary"
+                  className="button secondary sm"
                   onClick={() => handleEditTask(task)}
                 >
                   <i className="fas fa-edit"></i>
                   Edit
                 </button>
                 <button
-                  className="item-action-btn danger"
+                  className="button danger sm"
                   onClick={() => handleDeleteTask(task.id)}
                 >
                   <i className="fas fa-trash"></i>

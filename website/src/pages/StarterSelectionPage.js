@@ -209,7 +209,7 @@ const StarterSelectionPage = () => {
             <h2>Please select all three starters first</h2>
             <div className="starter-spinner-container">
               <button
-                className="starter-button secondary"
+                className="button secondary"
                 onClick={() => setCurrentStep(0)}
               >
                 <i className="fas fa-arrow-left"></i>
@@ -255,7 +255,7 @@ const StarterSelectionPage = () => {
                     )}
                   </div>
                   <button
-                    className="starter-return-button"
+                    className="button secondary"
                     onClick={() => setCurrentStep(index)}
                     type="button"
                   >
@@ -282,7 +282,7 @@ const StarterSelectionPage = () => {
   const NavigationButtons = () => (
     <div className="starter-nav-buttons">
       <button
-        className="nav-button nav-secondary btn"
+        className="button secondary"
         onClick={() => setCurrentStep(prev => Math.max(0, prev - 1))}
         disabled={currentStep === 0 || submitting}
       >
@@ -292,7 +292,7 @@ const StarterSelectionPage = () => {
 
       {currentStep < 3 && selectedStarters[currentStep] && (
         <button
-          className="nav-button nav-primary btn"
+          className="button primary"
           onClick={() => setCurrentStep(prev => Math.min(3, prev + 1))}
           disabled={submitting}
         >
@@ -303,7 +303,7 @@ const StarterSelectionPage = () => {
 
       {currentStep === 3 && (
         <button
-          className="nav-button nav-success btn"
+          className="button success"
           onClick={handleSubmit}
           disabled={submitting}
         >

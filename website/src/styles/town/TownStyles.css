@@ -5657,8 +5657,6 @@
   padding-bottom: 0.5rem;
 }
 
-/* Antique store tab button styles removed - use "button tab" */
-
 /* Catalogue Styles */
 .catalogue-container {
   display: flex;
@@ -6657,7 +6655,6 @@
     text-align: center;
   }
 
-/* Responsive location-action-button styles removed - use "button primary block" */
 
   .adoption-actions {
     flex-direction: column;
@@ -9248,7 +9245,6 @@
     font-size: 0.7rem;
   }
   
-  /* Responsive location-action-button styles removed - use unified button classes */
 }
 
 /* Landscape orientation optimizations for mobile */

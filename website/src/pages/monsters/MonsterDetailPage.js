@@ -541,7 +541,7 @@ const MonsterDetailPage = () => {
       {(prevMonster || nextMonster) && (
         <div className="monster-box-navigation">
           {prevMonster ? (
-            <Link to={`/monsters/${prevMonster.id}`} className="box-nav-button prev-monster">
+            <Link to={`/monsters/${prevMonster.id}`} className="button secondary">
               <i className="fas fa-chevron-left"></i>
               <span>{prevMonster.name}</span>
             </Link>
@@ -554,7 +554,7 @@ const MonsterDetailPage = () => {
           </div>
 
           {nextMonster ? (
-            <Link to={`/monsters/${nextMonster.id}`} className="box-nav-button next-monster">
+            <Link to={`/monsters/${nextMonster.id}`} className="button secondary">
               <span>{nextMonster.name}</span>
               <i className="fas fa-chevron-right"></i>
             </Link>
@@ -1647,7 +1647,7 @@ const MonsterDetailPage = () => {
                 <h2>Monster Lineage</h2>
                 {isOwner && (
                   <button 
-                    className={`lineage-edit-button ${showEditLineage ? 'active' : ''}`}
+                    className={`button primary ${showEditLineage ? 'active' : ''}`}
                     onClick={() => setShowEditLineage(!showEditLineage)}
                   >
                     <i className={`fas ${showEditLineage ? 'fa-times' : 'fa-edit'}`}></i>
@@ -1778,7 +1778,7 @@ const MonsterDetailPage = () => {
                               )}
                               {showEditLineage && isOwner && (
                                 <button 
-                                  className="remove-relationship-button"
+                                  className="button danger icon sm"
                                   onClick={() => removeLineageRelationship(sibling.id, 'sibling')}
                                   title="Remove sibling relationship"
                                 >

@@ -46,6 +46,11 @@
   align-items: center;
 }
 
+/* Mobile Menu Button - Hidden by default, shown on mobile */
+.mobile-menu-button {
+  display: none;
+}
+
 .top-nav-link {
   display: flex;
   align-items: center;
@@ -208,7 +213,7 @@
   position: relative;
   min-width: 220px;
   max-height: 80vh;
-  overflow-y: auto;
+  overflow-y: hide;
   box-shadow: 0 8px 16px var(--overlay-light);
   z-index: 1;
   border-radius: 0.25rem;
@@ -573,6 +578,10 @@
   .nav-left .dropdown,
   .nav-left .nav-divider {
     display: none;
+  }
+
+  .mobile-menu-button {
+    display: flex;
   }
   
   .top-nav {

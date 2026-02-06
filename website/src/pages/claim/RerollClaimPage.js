@@ -239,7 +239,7 @@ const RerollClaimPage = () => {
             <i className="fas fa-exclamation-circle"></i>
             <h2>Unable to Load Rewards</h2>
             <p>{error}</p>
-            <Link to="/" className="home-btn home-btn-inline">
+            <Link to="/" className="button primary">
               Return Home
             </Link>
           </div>
@@ -257,7 +257,7 @@ const RerollClaimPage = () => {
             <i className="fas fa-gift"></i>
             <h2>Claim Your Rewards</h2>
             <p>Please log in to claim your rewards from this link.</p>
-            <button className="login-btn" onClick={handleLogin}>
+            <button className="button primary" onClick={handleLogin}>
               <i className="fas fa-sign-in-alt"></i> Log In to Continue
             </button>
           </div>
@@ -306,7 +306,7 @@ const RerollClaimPage = () => {
               )}
             </div>
 
-            <Link to="/my_trainers" className="home-btn">
+            <Link to="/my_trainers" className="button primary lg">
               View My Trainers
             </Link>
           </div>
@@ -518,7 +518,7 @@ const RerollClaimPage = () => {
                         </span>
                       </div>
                       <button
-                        className="remove-btn"
+                        className="button danger icon sm"
                         onClick={() => {
                           const newSelections = { ...monsterSelections };
                           delete newSelections[index];
@@ -541,7 +541,7 @@ const RerollClaimPage = () => {
                         </span>
                       </div>
                       <button
-                        className="remove-btn"
+                        className="button danger icon sm"
                         onClick={() => {
                           const newSelections = { ...itemSelections };
                           delete newSelections[index];
@@ -555,7 +555,7 @@ const RerollClaimPage = () => {
                 </div>
 
                 <button
-                  className="claim-submit-btn"
+                  className="button primary lg"
                   onClick={handleSubmit}
                   disabled={submitting || !allSelectionsHaveTrainers()}
                 >

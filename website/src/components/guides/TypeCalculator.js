@@ -152,7 +152,7 @@ const TypeCalculator = () => {
               {type && (
                 <button 
                   onClick={() => removeType(index)}
-                  className="remove-type-btn"
+                  className="button danger icon sm"
                   title="Remove Type"
                 >
                   ×

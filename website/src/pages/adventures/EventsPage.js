@@ -42,7 +42,7 @@ const EventCard = ({ event }) => {
           </span>
         </div>
         <p className="event-description">{event.description}</p>
-        <Link to={`/adventures/event/${event.id}`} className="event-button">
+        <Link to={`/adventures/event/${event.id}`} className="button primary">
           View Event
         </Link>
       </div>
@@ -257,7 +257,7 @@ const EventDetail = () => {
         <div className="no-events">
           <i className="fas fa-exclamation-triangle"></i>
           <p>Event not found.</p>
-          <Link to="/adventures/event/current" className="event-button">
+          <Link to="/adventures/event/current" className="button primary">
             Back to Events
           </Link>
         </div>
@@ -279,7 +279,7 @@ const EventDetail = () => {
           <div className="event-navigation">
             <button 
               onClick={() => navigateToEvent('prev')}
-              className="nav-button"
+              className="button secondary"
               title="Previous Event"
             >
               <i className="fas fa-chevron-left"></i>
@@ -289,7 +289,7 @@ const EventDetail = () => {
             </span>
             <button 
               onClick={() => navigateToEvent('next')}
-              className="nav-button"
+              className="button secondary"
               title="Next Event"
             >
               <i className="fas fa-chevron-right"></i>

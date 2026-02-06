@@ -141,7 +141,7 @@ const AdventuresOverview = () => {
               <p className="event-description">
                 Join the Summer Festival and catch special summer-themed monsters! Complete event challenges to earn exclusive rewards.
               </p>
-              <Link to="/adventures/event/summer-festival" className="event-button">
+              <Link to="/adventures/event/summer-festival" className="button primary">
                 View Event
               </Link>
             </div>

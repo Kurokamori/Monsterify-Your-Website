@@ -121,48 +121,82 @@ def extract_js_class_references(js_content: str) -> tuple[set[str], set[str]]:
     dynamic_prefixes = set()
 
     # Remove comments - but be careful not to match /* inside strings
-    # First, protect string contents by replacing /* and */ inside strings
-    # This handles cases like accept="image/*" or content="/* comment */"
+    # We use a state-machine approach to properly handle string context
 
-    def protect_strings(content: str) -> tuple[str, dict]:
-        """Replace string contents with placeholders to protect them from comment removal.
+    def remove_comments_safely(content: str) -> str:
+        """Remove JS comments while respecting string boundaries.
 
-        Note: We only protect single and double quoted strings, NOT template literals.
-        Template literals need to be analyzed for dynamic class patterns like `prefix-${var}`.
+        This handles cases like accept="image/*" where /* is inside a string.
         """
-        placeholders = {}
-        counter = [0]
+        result = []
+        i = 0
+        n = len(content)
 
-        def replace_string(match):
-            placeholder = f"__STRING_PLACEHOLDER_{counter[0]}__"
-            placeholders[placeholder] = match.group(0)
-            counter[0] += 1
-            return placeholder
+        while i < n:
+            # Check for string starts
+            if content[i] == '"':
+                # Double-quoted string
+                j = i + 1
+                while j < n:
+                    if content[j] == '\\' and j + 1 < n:
+                        j += 2  # Skip escaped character
+                    elif content[j] == '"':
+                        j += 1
+                        break
+                    else:
+                        j += 1
+                result.append(content[i:j])
+                i = j
+            elif content[i] == "'":
+                # Single-quoted string
+                j = i + 1
+                while j < n:
+                    if content[j] == '\\' and j + 1 < n:
+                        j += 2  # Skip escaped character
+                    elif content[j] == "'":
+                        j += 1
+                        break
+                    else:
+                        j += 1
+                result.append(content[i:j])
+                i = j
+            elif content[i] == '`':
+                # Template literal - preserve for dynamic class detection
+                j = i + 1
+                while j < n:
+                    if content[j] == '\\' and j + 1 < n:
+                        j += 2  # Skip escaped character
+                    elif content[j] == '`':
+                        j += 1
+                        break
+                    else:
+                        j += 1
+                result.append(content[i:j])
+                i = j
+            elif content[i:i+2] == '//':
+                # Single-line comment - skip to end of line
+                j = i + 2
+                while j < n and content[j] != '\n':
+                    j += 1
+                i = j
+            elif content[i:i+2] == '/*':
+                # Multi-line comment - skip to */
+                j = i + 2
+                while j < n - 1:
+                    if content[j:j+2] == '*/':
+                        j += 2
+                        break
+                    j += 1
+                else:
+                    j = n  # Unclosed comment, skip to end
+                i = j
+            else:
+                result.append(content[i])
+                i += 1
 
-        # Match double-quoted strings (handling escaped quotes)
-        content = re.sub(r'"(?:[^"\\]|\\.)*"', replace_string, content)
-        # Match single-quoted strings (handling escaped quotes)
-        content = re.sub(r"'(?:[^'\\]|\\.)*'", replace_string, content)
-        # NOTE: We intentionally do NOT protect template literals here because
-        # we need to analyze them for dynamic class patterns like `prefix-${var}`
+        return ''.join(result)
 
-        return content, placeholders
-
-    def restore_strings(content: str, placeholders: dict) -> str:
-        """Restore string contents from placeholders."""
-        for placeholder, original in placeholders.items():
-            content = content.replace(placeholder, original)
-        return content
-
-    # Protect strings first
-    protected_content, string_placeholders = protect_strings(js_content)
-
-    # Now safely remove comments
-    protected_content = re.sub(r'//.*$', '', protected_content, flags=re.MULTILINE)
-    protected_content = re.sub(r'/\*.*?\*/', '', protected_content, flags=re.DOTALL)
-
-    # Restore strings
-    js_content = restore_strings(protected_content, string_placeholders)
+    js_content = remove_comments_safely(js_content)
 
     # Pattern 1: className="class1 class2" or class="class1 class2"
     string_class_pattern = re.compile(r'(?:className|class)\s*=\s*["\']([^"\']+)["\']')

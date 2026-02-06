@@ -196,7 +196,7 @@ const FactionDetailPage = () => {
         <div className="banner-overlay">
           <div className="faction-navigation">
             <button 
-              className="nav-button nav-left"
+              className="button icon"
               onClick={() => navigateToFaction('left')}
               title="Previous Faction"
             >
@@ -206,7 +206,7 @@ const FactionDetailPage = () => {
               {faction.name}
             </h1>
             <button 
-              className="nav-button nav-right"
+              className="button icon"
               onClick={() => navigateToFaction('right')}
               title="Next Faction"
             >
@@ -272,13 +272,13 @@ const FactionDetailPage = () => {
               <div className="overview-content">
                 <div className="action-buttons">
                   <button
-                    className="button primary submission-button"
+                    className="button primary"
                     onClick={() => handleSubmissionClick('submission')}
                   >
                     Make Submission
                   </button>
                   <button
-                    className="button primary tribute-button"
+                    className="button primary"
                     onClick={() => handleSubmissionClick('tribute')}
                   >
                     Make Tribute

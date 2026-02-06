@@ -527,7 +527,7 @@ const EvolutionExplorerPage = () => {
           </div>
           {hasChildren && (
             <button 
-              className="nested-collapse-button"
+              className="button icon sm"
               onClick={() => toggleNodeCollapse(nodeId)}
               title={isCollapsed ? "Expand to show evolutions" : "Collapse to hide evolutions"}
             >
@@ -612,7 +612,7 @@ const EvolutionExplorerPage = () => {
                 {searchResults.map(species => (
                   <button
                     key={species}
-                    className="species-result-button"
+                    className="button secondary sm"
                     onClick={() => handleSpeciesSelect(species)}
                   >
                     {species}

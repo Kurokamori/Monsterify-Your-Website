@@ -228,7 +228,7 @@ const AccountSettings = () => {
           <div className="form-actions">
             <button 
               type="submit" 
-              className="form-button primary"
+              className="button primary"
               disabled={loading}
             >
               {loading ? (
@@ -307,7 +307,7 @@ const AccountSettings = () => {
           <div className="form-actions">
             <button 
               type="submit" 
-              className="form-button primary"
+              className="button primary"
               disabled={loading}
             >
               {loading ? (
@@ -331,7 +331,7 @@ const AccountSettings = () => {
         </p>
         
         <button
-          className="form-button secondary danger"
+          className="button danger"
           onClick={() => setIsDeleteModalOpen(true)}
         >
           <i className="fas fa-trash-alt"></i> Delete Account

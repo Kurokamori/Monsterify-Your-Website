@@ -516,7 +516,7 @@ const WitchsHut = () => {
                     />
                     {searchTerm && (
                       <button 
-                        className="search-clear-btn"
+                        className="button secondary icon sm"
                         onClick={() => setSearchTerm('')}
                       >
                         <i className="fas fa-times"></i>

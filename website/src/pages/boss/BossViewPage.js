@@ -231,7 +231,7 @@ const BossViewPage = () => {
               </div>
               <div className="banner-actions">
                 <button 
-                  className="claim-rewards-button"
+                  className="button success"
                   onClick={() => handleClaimReward(unclaimedRewards[0])}
                 >
                   <i className="fas fa-trophy"></i>
@@ -496,7 +496,7 @@ const BossViewPage = () => {
             </div>
             <div className="banner-actions">
               <button 
-                className="claim-rewards-button"
+                className="button success"
                 onClick={() => handleClaimReward(unclaimedRewards[0])}
               >
                 <i className="fas fa-trophy"></i>

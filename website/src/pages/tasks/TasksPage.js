@@ -329,12 +329,12 @@ const TasksPage = () => {
                 
                 <div className="task-actions">
                   {task.completed ? (
-                    <button className="task-button completed" disabled>
+                    <button className="button secondary" disabled>
                       <i className="fas fa-check-circle"></i> Completed
                     </button>
                   ) : (
                     <button 
-                      className="task-button"
+                      className="button primary"
                       onClick={() => handleCompleteClick(task)}
                       disabled={task.progress < task.total}
                     >
@@ -393,12 +393,12 @@ const TasksPage = () => {
                 
                 <div className="task-actions">
                   {task.completed ? (
-                    <button className="task-button completed" disabled>
+                    <button className="button secondary" disabled>
                       <i className="fas fa-check-circle"></i> Completed
                     </button>
                   ) : (
                     <button 
-                      className="task-button"
+                      className="button primary"
                       onClick={() => handleCompleteClick(task)}
                       disabled={task.progress < task.total}
                     >

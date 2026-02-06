@@ -207,7 +207,7 @@ const RewardDisplay = ({
             {onAllocate && rewards.totalGiftLevels > 0 && (
               <button
                 type="button"
-                className="allocate-button"
+                className="button primary"
                 onClick={() => handleAllocateClick('giftLevels')}
               >
                 Allocate
@@ -243,7 +243,7 @@ const RewardDisplay = ({
             {onAllocate && (
               <button
                 type="button"
-                className="allocate-button"
+                className="button primary"
                 onClick={() => handleAllocateClick('cappedLevels')}
               >
                 Allocate

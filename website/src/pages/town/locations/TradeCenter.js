@@ -309,7 +309,7 @@ const TradeCenter = () => {
             <div className="section-header">
               <h3>Trade Listings</h3>
               <button
-                className="location-action-button"
+                className="button primary"
                 onClick={handleCreateTradeClick}
               >
                 <i className="fas fa-plus"></i> Create Listing
@@ -331,7 +331,7 @@ const TradeCenter = () => {
               <div className="empty-state">
                 <p>There are no trade listings at the moment.</p>
                 <button
-                  className="location-action-button"
+                  className="button primary"
                   onClick={handleCreateTradeClick}
                 >
                   <i className="fas fa-plus"></i> Create First Listing
@@ -386,7 +386,7 @@ const TradeCenter = () => {
 
                       <div className="trade-listing-actions">
                         <button
-                          className="trade-action-button"
+                          className="button primary"
                           onClick={() => handleOfferTradeClick(listing)}
                         >
                           <i className="fas fa-handshake"></i> Offer Trade

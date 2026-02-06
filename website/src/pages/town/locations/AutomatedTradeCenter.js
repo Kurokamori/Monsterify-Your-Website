@@ -443,7 +443,7 @@ const AutomatedTradeCenter = () => {
             <div className="section-header">
               <h3>Setup Trade</h3>
               <button
-                className="location-action-button"
+                className="button primary"
                 onClick={openTradeModal}
                 disabled={!fromTrainerId || !toTrainerId}
               >
@@ -454,15 +454,15 @@ const AutomatedTradeCenter = () => {
             {/* Trade Type Selection */}
             <div className="trade-type-selection">
               <label>Trade Type:</label>
-              <div className="trade-button filters">
+              <div className="trade-type-buttons">
                 <button
-                  className={`trade-button filter ${tradeType === 'monsters' ? 'active' : ''}`}
+                  className={`button filter ${tradeType === 'monsters' ? 'active' : ''}`}
                   onClick={() => handleTradeTypeChange('monsters')}
                 >
                   <i className="fas fa-dragon"></i> Trade Monsters
                 </button>
                 <button
-                  className={`trade-button filter ${tradeType === 'items' ? 'active' : ''}`}
+                  className={`button filter ${tradeType === 'items' ? 'active' : ''}`}
                   onClick={() => handleTradeTypeChange('items')}
                 >
                   <i className="fas fa-box"></i> Trade Items

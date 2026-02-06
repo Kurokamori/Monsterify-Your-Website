@@ -598,7 +598,7 @@ const ArtSubmissionCalculator = ({
                 <span className="entity-name">{trainer.name}</span>
                 <button
                   type="button"
-                  className="remove-entity"
+                  className="button danger icon sm"
                   onClick={() => handleRemoveTrainer(trainer.trainerId)}
                 >
                   &times;
@@ -766,7 +766,7 @@ const ArtSubmissionCalculator = ({
                 <span className="entity-name">{monster.name}</span>
                 <button
                   type="button"
-                  className="remove-entity"
+                  className="button danger icon sm"
                   onClick={() => handleRemoveMonster(monster.monsterId)}
                 >
                   &times;

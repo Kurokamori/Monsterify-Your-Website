@@ -126,7 +126,7 @@ const AdminStarterRoller = () => {
             <h2>Please select all three starters first</h2>
             <div className="starter-spinner-container">
               <button
-                className="starter-button secondary"
+                className="button secondary"
                 onClick={() => setCurrentStep(0)}
               >
                 <i className="fas fa-arrow-left"></i>
@@ -172,7 +172,7 @@ const AdminStarterRoller = () => {
                     )}
                   </div>
                   <button
-                    className="starter-return-button"
+                    className="button secondary sm"
                     onClick={() => setCurrentStep(index)}
                     type="button"
                   >
@@ -197,7 +197,7 @@ const AdminStarterRoller = () => {
   const NavigationButtons = () => (
     <div className="starter-nav-buttons">
       <button
-        className="nav-button nav-secondary btn"
+        className="button secondary"
         onClick={() => setCurrentStep(prev => Math.max(0, prev - 1))}
         disabled={currentStep === 0}
       >
@@ -207,7 +207,7 @@ const AdminStarterRoller = () => {
 
       {currentStep < 3 && selectedStarters[currentStep] && (
         <button
-          className="nav-button nav-primary btn"
+          className="button primary"
           onClick={() => setCurrentStep(prev => Math.min(3, prev + 1))}
         >
           Next
@@ -217,7 +217,7 @@ const AdminStarterRoller = () => {
 
       {currentStep === 3 && (
         <button
-          className="nav-button nav-success btn"
+          className="button success"
           onClick={rollStarters}
         >
           <i className="fas fa-redo"></i>
@@ -244,7 +244,7 @@ const AdminStarterRoller = () => {
             <h2>Roll Starter Monsters</h2>
             <p>Click the button below to roll a set of starter monsters. You'll get 3 sets of 3 monsters to choose from.</p>
             <button
-              className="roll-button"
+              className="button primary lg"
               onClick={rollStarters}
               disabled={loading}
             >
@@ -280,7 +280,7 @@ const AdminStarterRoller = () => {
       <div className="admin-starter-header-inline">
         <h1 className="starter-page-title">Admin Starter Roller</h1>
         <button
-          className="reroll-header-btn"
+          className="button primary"
           onClick={rollStarters}
           disabled={loading}
         >

@@ -827,7 +827,7 @@ const Nursery = () => {
                               <div className="item-quantity-selector">
                                 <button 
                                   type="button" 
-                                  className="quantity-btn minus"
+                                  className="button quantity"
                                   onClick={() => handleItemQuantityChange(itemName, Math.max(0, (selectedItems[itemName] || 0) - 1))}
                                   disabled={!selectedItems[itemName] || selectedItems[itemName] <= 0}
                                 >
@@ -843,7 +843,7 @@ const Nursery = () => {
                                 />
                                 <button 
                                   type="button" 
-                                  className="quantity-btn plus"
+                                  className="button quantity"
                                   onClick={() => handleItemQuantityChange(itemName, Math.min(quantity, (selectedItems[itemName] || 0) + 1))}
                                   disabled={(selectedItems[itemName] || 0) >= quantity}
                                 >

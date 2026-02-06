@@ -147,7 +147,7 @@ const PersonDetailModal = ({ person, trainerId, onClose, onPersonMet }) => {
               </button>
               <button 
                 type="submit" 
-                className="meet-button"
+                className="button primary"
                 disabled={loading || !selectedSubmission}
               >
                 {loading ? (

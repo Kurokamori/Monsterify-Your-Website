@@ -467,14 +467,14 @@ const WorldMapAdmin = () => {
                 )}
                 <td className="actions-cell">
                   <button
-                    className="edit-btn"
+                    className="button secondary icon sm"
                     onClick={() => handleEdit(item)}
                     title="Edit"
                   >
                     <i className="fas fa-edit"></i>
                   </button>
                   <button
-                    className="delete-btn"
+                    className="button danger icon sm"
                     onClick={() => handleDelete(item.id)}
                     title="Delete"
                   >
@@ -723,7 +723,7 @@ const WorldMapAdmin = () => {
         </div>
         
         <button
-          className="add-new-btn"
+          className="button primary"
           onClick={handleAddNew}
         >
           <i className="fas fa-plus"></i>

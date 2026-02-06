@@ -162,16 +162,16 @@ const PromptCard = ({
         
         {showSubmissionButton && isAvailable && trainerId && (
           <button 
-            className="button primary submit-btn"
+            className="button primary"
             onClick={() => onSubmit && onSubmit(prompt)}
           >
             Submit to Prompt
           </button>
         )}
         
-        <Link 
-          to={`/prompts/${prompt.id}`} 
-          className="btn btn-outline-secondary view-details-btn"
+        <Link
+          to={`/prompts/${prompt.id}`}
+          className="button secondary outline"
         >
           View Details
         </Link>

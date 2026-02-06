@@ -252,19 +252,19 @@ const RerollerPage = () => {
       </div>
       <div className="result-card-actions">
         <button
-          className="result-action-btn"
+          className="button primary"
           onClick={() => handleEditResult('monster', index, monster)}
         >
           Edit
         </button>
         <button
-          className="result-action-btn"
+          className="button primary"
           onClick={() => handleRerollResult('monster', index)}
         >
           Reroll
         </button>
         <button
-          className="result-action-btn delete"
+          className="button danger"
           onClick={() => handleDeleteResult('monster', index)}
         >
           Delete
@@ -288,19 +288,19 @@ const RerollerPage = () => {
       </div>
       <div className="result-card-actions">
         <button
-          className="result-action-btn"
+          className="button primary"
           onClick={() => handleEditResult('item', index, item)}
         >
           Edit
         </button>
         <button
-          className="result-action-btn"
+          className="button primary"
           onClick={() => handleRerollResult('item', index)}
         >
           Reroll
         </button>
         <button
-          className="result-action-btn delete"
+          className="button danger"
           onClick={() => handleDeleteResult('item', index)}
         >
           Delete
@@ -395,7 +395,7 @@ const RerollerPage = () => {
               <h3><i className="fas fa-dragon"></i> Monster Settings</h3>
               <div className="quantity-control">
                 <button
-                  className="quantity-btn"
+                  className="button primary"
                   onClick={() => setMonsterCount(Math.max(1, monsterCount - 1))}
                 >
                   -
@@ -409,7 +409,7 @@ const RerollerPage = () => {
                   max="20"
                 />
                 <button
-                  className="quantity-btn"
+                  className="button primary"
                   onClick={() => setMonsterCount(Math.min(20, monsterCount + 1))}
                 >
                   +
@@ -425,7 +425,7 @@ const RerollerPage = () => {
               <h3><i className="fas fa-box"></i> Item Settings</h3>
               <div className="quantity-control quantity-control-block">
                 <button
-                  className="quantity-btn"
+                  className="button primary"
                   onClick={() => setItemCount(Math.max(1, itemCount - 1))}
                 >
                   -
@@ -439,7 +439,7 @@ const RerollerPage = () => {
                   max="20"
                 />
                 <button
-                  className="quantity-btn"
+                  className="button primary"
                   onClick={() => setItemCount(Math.min(20, itemCount + 1))}
                 >
                   +
@@ -452,7 +452,7 @@ const RerollerPage = () => {
               </label>
               <div className="category-buttons">
                 <button
-                  className={`category-btn ${selectedCategories.length === itemCategories.filter(c => c.default).length ? 'selected' : ''}`}
+                  className={`button filter ${selectedCategories.length === itemCategories.filter(c => c.default).length ? 'selected' : ''}`}
                   onClick={toggleAllCategories}
                 >
                   All Default
@@ -460,7 +460,7 @@ const RerollerPage = () => {
                 {itemCategories.map(cat => (
                   <button
                     key={cat.value}
-                    className={`category-btn ${selectedCategories.includes(cat.value) ? 'selected' : ''}`}
+                    className={`button filter ${selectedCategories.includes(cat.value) ? 'selected' : ''}`}
                     onClick={() => toggleCategory(cat.value)}
                   >
                     {cat.label}
@@ -639,7 +639,7 @@ const RerollerPage = () => {
                     value={rerollerService.buildClaimUrl(session.token)}
                     readOnly
                   />
-                  <button className="copy-btn" onClick={copyLink}>
+                  <button className="button success" onClick={copyLink}>
                     <i className={copiedLink ? 'fas fa-check' : 'fas fa-copy'}></i>
                     {copiedLink ? 'Copied!' : 'Copy'}
                   </button>

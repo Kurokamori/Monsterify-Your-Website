@@ -384,17 +384,17 @@ const FakemonDetailPage = () => {
       {/* Navigation */}
       <div className="fakemon-navigation">
         {prevFakemon && (
-          <Link to={`/fakedex/${prevFakemon.number}`} className="nav-button prev-button">
+          <Link to={`/fakedex/${prevFakemon.number}`} className="button secondary">
             <i className="fas fa-chevron-left"></i>
             <span>#{String(prevFakemon.number).padStart(3, '0')} {prevFakemon.name}</span>
           </Link>
         )}
-        <Link to="/fakedex" className="nav-button button secondary">
+        <Link to="/fakedex" className="button secondary">
           <i className="fas fa-th"></i>
           <span>Fakemon Dex</span>
         </Link>
         {nextFakemon && (
-          <Link to={`/fakedex/${nextFakemon.number}`} className="nav-button next-button">
+          <Link to={`/fakedex/${nextFakemon.number}`} className="button secondary">
             <span>#{String(nextFakemon.number).padStart(3, '0')} {nextFakemon.name}</span>
             <i className="fas fa-chevron-right"></i>
           </Link>

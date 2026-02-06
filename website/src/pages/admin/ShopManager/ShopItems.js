@@ -208,7 +208,7 @@ const ShopItems = () => {
             </div>
             
             <button
-              className="stock-button"
+              className="button primary"
               onClick={handleStockShop}
               disabled={stockLoading}
             >
@@ -259,14 +259,14 @@ const ShopItems = () => {
                       <td className="quantity-cell">
                         <div className="quantity-control">
                           <button
-                            className="quantity-button"
+                            className="button quantity"
                             onClick={() => handleUpdateQuantity(item.id, Math.max(0, item.current_quantity - 1))}
                           >
                             -
                           </button>
                           <span className="quantity-value">{item.current_quantity}</span>
                           <button
-                            className="quantity-button"
+                            className="button quantity"
                             onClick={() => handleUpdateQuantity(item.id, item.current_quantity + 1)}
                           >
                             +

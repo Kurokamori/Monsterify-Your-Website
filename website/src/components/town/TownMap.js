@@ -237,7 +237,7 @@ const TownMap = () => {
                   </div>
                 ) : (
                   <button
-                    className="visit-button"
+                    className="button primary"
                     onClick={() => handleVisitLocation(activeLocation.id)}
                   >
                     <i className="fas fa-walking"></i> Visit Location

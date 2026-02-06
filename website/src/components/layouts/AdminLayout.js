@@ -162,7 +162,7 @@ const AdminLayout = ({ children }) => {
         </nav>
 
         <div className="admin-sidebar-footer">
-          <button className="admin-logout-button" onClick={handleLogout}>
+          <button className="button danger" onClick={handleLogout}>
             <i className="fas fa-sign-out-alt"></i> Logout
           </button>
         </div>

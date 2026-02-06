@@ -74,7 +74,7 @@ const ProfilePage = () => {
 
           <nav className="profile-nav">
             <button
-              className="nav-link logout-button"
+              className="button danger"
               onClick={() => setIsLogoutModalOpen(true)}
             >
               <i className="fas fa-sign-out-alt"></i> Logout

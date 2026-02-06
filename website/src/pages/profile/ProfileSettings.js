@@ -271,7 +271,7 @@ const ProfileSettings = () => {
         <div className="form-actions">
           <button
             type="submit"
-            className="primary-button"
+            className="button primary"
             disabled={loading}
           >
             {loading ? (

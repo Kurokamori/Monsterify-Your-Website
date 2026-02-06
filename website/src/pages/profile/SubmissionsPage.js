@@ -197,7 +197,7 @@ const SubmissionsPage = () => {
       <div className="submissions-header">
         <h1>My Submissions</h1>
         <button 
-          className="new-submission-button"
+          className="button primary"
           onClick={() => setIsNewSubmissionModalOpen(true)}
         >
           <i className="fas fa-plus"></i> New Submission
@@ -277,7 +277,7 @@ const SubmissionsPage = () => {
           <h2>No Submissions Found</h2>
           <p>You haven't submitted any content yet. Create your first submission to contribute to the game!</p>
           <button 
-            className="create-submission-button"
+            className="button primary lg"
             onClick={() => setIsNewSubmissionModalOpen(true)}
           >
             Create Your First Submission

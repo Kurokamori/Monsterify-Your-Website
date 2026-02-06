@@ -267,7 +267,7 @@ const ReferenceTodoPage = () => {
       <div className="reference-todo-header">
         <h1>Reference To-Do List</h1>
         <button 
-          className="image-size-toggle"
+          className="button secondary toggle"
           onClick={cycleImageSize}
           title={`Current: ${getImageSizeDisplayName(imageSize)}. Click to cycle.`}
         >
@@ -321,7 +321,7 @@ const ReferenceTodoPage = () => {
                       <td>{monster.attribute}</td>
                       <td>
                         <button 
-                          className="show-references-button"
+                          className="button secondary sm"
                           onClick={() => toggleMonsterExpanded(monster.id)}
                         >
                           {expandedMonsters[monster.id] ? 'Hide References' : 'Show References'}

@@ -250,7 +250,7 @@ const WritingSubmissionCalculator = ({
           <button
             type="button"
             onClick={() => setShowAddTrainer(!showAddTrainer)}
-            className="add-entity-button"
+            className="button secondary block"
           >
             {showAddTrainer ? 'Cancel' : 'Add Trainer'}
           </button>
@@ -264,7 +264,7 @@ const WritingSubmissionCalculator = ({
                 <button
                   type="button"
                   onClick={() => handleRemoveTrainer(trainer.trainerId)}
-                  className="remove-entity"
+                  className="button danger"
                 >
                   &times;
                 </button>
@@ -314,7 +314,7 @@ const WritingSubmissionCalculator = ({
           <button
             type="button"
             onClick={() => setShowAddMonster(!showAddMonster)}
-            className="add-entity-button"
+            className="button secondary block"
           >
             {showAddMonster ? 'Cancel' : 'Add Monster'}
           </button>
@@ -328,7 +328,7 @@ const WritingSubmissionCalculator = ({
                 <button
                   type="button"
                   onClick={() => handleRemoveMonster(monster.monsterId)}
-                  className="remove-entity"
+                  className="button danger"
                 >
                   &times;
                 </button>
@@ -409,7 +409,7 @@ const WritingSubmissionCalculator = ({
                 <span className="entity-name">{npc.name}</span>
                 <button
                   type="button"
-                  className="remove-entity"
+                  className="button icon danger"
                   onClick={() => handleRemoveNPC(npc.id)}
                 >
                   &times;
@@ -479,7 +479,7 @@ const WritingSubmissionCalculator = ({
         ) : (
           <button
             type="button"
-            className="add-entity-button"
+            className="button secondary"
             onClick={() => setShowAddNPC(true)}
           >
             + Add NPC
@@ -495,7 +495,7 @@ const WritingSubmissionCalculator = ({
 
       {/* Calculate Button */}
       <div className="calculator-actions">
-        <button type="button" onClick={handleCalculate} className="calculate-button">
+        <button type="button" onClick={handleCalculate} className="button secondary">
           Calculate Rewards
         </button>
       </div>

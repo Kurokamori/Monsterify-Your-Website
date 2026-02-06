@@ -598,7 +598,7 @@ const AdoptionItemModal = ({
           })}
         </div>
         <button
-          className="button primary apply-all-button"
+          className="button primary"
           onClick={processQueue}
           disabled={loading}
         >
@@ -713,7 +713,7 @@ const AdoptionItemModal = ({
               return (
                 <button
                   key={pastryName}
-                  className="item-button pastry"
+                  className="button item pastry"
                   onClick={() => handlePastryClick(pastryName)}
                   disabled={loading}
                 >

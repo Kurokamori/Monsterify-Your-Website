@@ -417,7 +417,7 @@ const Shop = ({ shopId, shopName, shopDescription }) => {
                         <div className="quantity-input">
                           <button
                             type="button"
-                            className="quantity-button"
+                            className="button quantity"
                             onClick={() => purchaseQuantity > 1 && setPurchaseQuantity(purchaseQuantity - 1)}
                           >
                             -
@@ -432,7 +432,7 @@ const Shop = ({ shopId, shopName, shopDescription }) => {
                           />
                           <button
                             type="button"
-                            className="quantity-button"
+                            className="button quantity"
                             onClick={() => {
                               if (selectedItem.is_limited) {
                                 purchaseQuantity < selectedItem.stock && setPurchaseQuantity(purchaseQuantity + 1);

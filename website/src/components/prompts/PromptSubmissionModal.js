@@ -299,7 +299,7 @@ const PromptSubmissionModal = ({ prompt, trainerId, onClose, onSuccess }) => {
                     <button
                       onClick={() => handleRerollMonster(monster, prompt.rewards?.monster_roll?.parameters)}
                       disabled={rerolling}
-                      className="button secondary reroll-btn"
+                      className="button secondary"
                     >
                       {rerolling ? 'Rerolling...' : 'Reroll with Forget-Me-Not'}
                     </button>

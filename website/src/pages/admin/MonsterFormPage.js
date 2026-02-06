@@ -365,7 +365,7 @@ const MonsterFormPage = () => {
 
         {/* Action Buttons */}
         <div className="admin-actions">
-          <Link to="/admin/monsters" className="admin-button secondary">
+          <Link to="/admin/monsters" className="button secondary">
             <i className="fas fa-arrow-left"></i> Back to Monster List
           </Link>
         </div>
@@ -989,7 +989,7 @@ const MonsterFormPage = () => {
                           <button
                             type="button"
                             onClick={() => removeMove(index)}
-                            className="admin-button delete"
+                            className="button danger sm"
                             disabled={saving}
                           >
                             <i className="fas fa-times"></i>
@@ -1002,7 +1002,7 @@ const MonsterFormPage = () => {
                   <button
                     type="button"
                     onClick={addMove}
-                    className="admin-button secondary"
+                    className="button secondary"
                     disabled={saving || formData.moveset.length >= 4}
                   >
                     <i className="fas fa-plus"></i> Add Move
@@ -1480,14 +1480,14 @@ const MonsterFormPage = () => {
               <div className="admin-form-actions">
                 <Link
                   to="/admin/monsters"
-                  className="admin-button secondary"
+                  className="button secondary"
                   disabled={saving}
                 >
                   Cancel
                 </Link>
                 <button
                   type="submit"
-                  className="admin-button"
+                  className="button primary"
                   disabled={saving}
                 >
                   {saving ? (
