@@ -41,16 +41,17 @@
 .image-url-input:focus {
   outline: none;
   border-color: var(--blue-color);
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  box-shadow: 0 0 0 3px var(--blue-glow);
 }
 
 .search-bar-input:focus {
-  border-color: var(--gold-color);
+  border-color: var(--accent-color);
   outline: 0;
-  box-shadow: 0 0 0 0.2rem rgba(214,163,57,0.25);
+  box-shadow: 0 0 0 0.2rem var(--accent-glow);
 }
 
 /* ---------- Generic Paired Search Input/Button ---------- */
+/* For buttons, use unified button system: className="button primary" (see buttons.css) */
 
 .search-bar,
 .guides-search,
@@ -74,19 +75,4 @@
   width: 100%;
   border-radius: var(--radius-sm);
   background: var(--shop-surface);
-}
-
-.search-button {
-  padding: 0.75rem 1rem;
-  background-color: var(--accent-color);
-  color: var(--text-color);
-  border: none;
-  border-top-right-radius: 0.375rem;
-  border-bottom-right-radius: 0.375rem;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.search-button:hover {
-  background-color: var(--accent-hover);
 }

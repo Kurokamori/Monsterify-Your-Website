@@ -290,7 +290,7 @@ const InteractiveMapPage = () => {
         <div className="location-info-panel">
           <div className="panel-header">
             <h3>{selectedLocation.name}</h3>
-            <button className="close-button" onClick={() => setSelectedLocation(null)}>
+            <button className="button close" onClick={() => setSelectedLocation(null)}>
               <i className="fas fa-times"></i>
             </button>
           </div>

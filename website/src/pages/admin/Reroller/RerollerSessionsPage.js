@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import rerollerService from '../../../services/rerollerService';
 import LoadingSpinner from '../../../components/common/LoadingSpinner';
-import './RerollerPage.css';
 
 const RerollerSessionsPage = () => {
   const [sessions, setSessions] = useState([]);
@@ -88,24 +87,18 @@ const RerollerSessionsPage = () => {
       <div className="reroller-header">
         <h1>Reroller Sessions</h1>
         <p>View and manage all reroll sessions</p>
-        <Link to="/admin/reroller" className="btn btn-primary" style={{ marginTop: '1rem', display: 'inline-block' }}>
+        <Link to="/admin/reroller" className="button primary reroller-create-btn">
           <i className="fas fa-plus"></i> Create New Session
         </Link>
       </div>
 
       {/* Filters */}
-      <div style={{ marginBottom: '1.5rem', display: 'flex', gap: '1rem', alignItems: 'center' }}>
-        <label style={{ color: 'var(--accent-color)' }}>Filter by Status:</label>
+      <div className="sessions-filter">
+        <label className="sessions-filter-label">Filter by Status:</label>
         <select
           value={statusFilter}
           onChange={(e) => { setStatusFilter(e.target.value); setPage(1); }}
-          style={{
-            padding: '0.5rem 1rem',
-            background: 'var(--input-background)',
-            border: '1px solid var(--border-color)',
-            borderRadius: '6px',
-            color: 'var(--text-color)'
-          }}
+          className="sessions-filter-select"
         >
           <option value="">All</option>
           <option value="active">Active</option>
@@ -126,40 +119,33 @@ const RerollerSessionsPage = () => {
       ) : (
         <>
           {/* Sessions Table */}
-          <div style={{ overflowX: 'auto' }}>
-            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+          <div className="sessions-table-wrapper">
+            <table className="sessions-table">
               <thead>
-                <tr style={{ borderBottom: '2px solid var(--border-color)' }}>
-                  <th style={{ padding: '1rem', textAlign: 'left', color: 'var(--accent-color)' }}>ID</th>
-                  <th style={{ padding: '1rem', textAlign: 'left', color: 'var(--accent-color)' }}>Type</th>
-                  <th style={{ padding: '1rem', textAlign: 'left', color: 'var(--accent-color)' }}>Target User</th>
-                  <th style={{ padding: '1rem', textAlign: 'left', color: 'var(--accent-color)' }}>Rewards</th>
-                  <th style={{ padding: '1rem', textAlign: 'left', color: 'var(--accent-color)' }}>Claims</th>
-                  <th style={{ padding: '1rem', textAlign: 'left', color: 'var(--accent-color)' }}>Status</th>
-                  <th style={{ padding: '1rem', textAlign: 'left', color: 'var(--accent-color)' }}>Created</th>
-                  <th style={{ padding: '1rem', textAlign: 'left', color: 'var(--accent-color)' }}>Actions</th>
+                <tr className="sessions-table-header-row">
+                  <th>ID</th>
+                  <th>Type</th>
+                  <th>Target User</th>
+                  <th>Rewards</th>
+                  <th>Claims</th>
+                  <th>Status</th>
+                  <th>Created</th>
+                  <th>Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {sessions.map(session => (
-                  <tr key={session.id} style={{ borderBottom: '1px solid var(--border-color)' }}>
-                    <td style={{ padding: '1rem', color: 'var(--text-color)' }}>#{session.id}</td>
-                    <td style={{ padding: '1rem' }}>
-                      <span style={{
-                        padding: '0.25rem 0.75rem',
-                        borderRadius: '4px',
-                        background: 'var(--accent-color)',
-                        color: '#000',
-                        fontSize: '0.8rem',
-                        fontWeight: '500'
-                      }}>
+                  <tr key={session.id} className="sessions-table-row">
+                    <td>#{session.id}</td>
+                    <td>
+                      <span className="roll-type-badge">
                         {getRollTypeLabel(session.rollType)}
                       </span>
                     </td>
-                    <td style={{ padding: '1rem', color: 'var(--text-color)' }}>
+                    <td>
                       {session.targetDisplayName || session.targetUsername || `User #${session.targetUserId}`}
                     </td>
-                    <td style={{ padding: '1rem', color: 'var(--accent-color)' }}>
+                    <td className="accent">
                       {session.rolledMonsters?.length > 0 && (
                         <span>{session.rolledMonsters.length} monster{session.rolledMonsters.length !== 1 ? 's' : ''}</span>
                       )}
@@ -168,60 +154,36 @@ const RerollerSessionsPage = () => {
                         <span>{session.rolledItems.length} item{session.rolledItems.length !== 1 ? 's' : ''}</span>
                       )}
                     </td>
-                    <td style={{ padding: '1rem', color: 'var(--accent-color)' }}>
+                    <td className="accent">
                       {session.claimCount || 0}
                     </td>
-                    <td style={{ padding: '1rem' }}>
+                    <td>
                       <span className={getStatusClass(session.status)}>
                         {session.status}
                       </span>
                     </td>
-                    <td style={{ padding: '1rem', color: 'var(--text-muted)', fontSize: '0.85rem' }}>
+                    <td className="muted">
                       {formatDate(session.createdAt)}
                     </td>
-                    <td style={{ padding: '1rem' }}>
-                      <div style={{ display: 'flex', gap: '0.5rem' }}>
+                    <td>
+                      <div className="session-actions">
                         <button
                           onClick={() => copyLink(session.token)}
-                          style={{
-                            padding: '0.4rem 0.75rem',
-                            background: 'var(--input-background)',
-                            border: '1px solid var(--border-color)',
-                            borderRadius: '4px',
-                            color: 'var(--accent-color)',
-                            cursor: 'pointer',
-                            fontSize: '0.8rem'
-                          }}
+                          className="session-action-btn"
                           title="Copy claim link"
                         >
                           <i className="fas fa-link"></i>
                         </button>
                         <Link
                           to={`/admin/reroller/sessions/${session.id}`}
-                          style={{
-                            padding: '0.4rem 0.75rem',
-                            background: 'var(--input-background)',
-                            border: '1px solid var(--border-color)',
-                            borderRadius: '4px',
-                            color: 'var(--accent-color)',
-                            textDecoration: 'none',
-                            fontSize: '0.8rem'
-                          }}
+                          className="session-action-btn"
                           title="View details"
                         >
                           <i className="fas fa-eye"></i>
                         </Link>
                         <button
                           onClick={() => setDeleteConfirm(session.id)}
-                          style={{
-                            padding: '0.4rem 0.75rem',
-                            background: 'var(--input-background)',
-                            border: '1px solid var(--error-color)',
-                            borderRadius: '4px',
-                            color: 'var(--error-color)',
-                            cursor: 'pointer',
-                            fontSize: '0.8rem'
-                          }}
+                          className="session-action-btn delete"
                           title="Delete session"
                         >
                           <i className="fas fa-trash"></i>
@@ -236,23 +198,21 @@ const RerollerSessionsPage = () => {
 
           {/* Pagination */}
           {totalPages > 1 && (
-            <div style={{ display: 'flex', justifyContent: 'center', gap: '0.5rem', marginTop: '2rem' }}>
+            <div className="sessions-pagination">
               <button
                 onClick={() => setPage(p => Math.max(1, p - 1))}
                 disabled={page === 1}
-                className="btn btn-secondary"
-                style={{ padding: '0.5rem 1rem' }}
+                className="button secondary sessions-button secondary"
               >
                 Previous
               </button>
-              <span style={{ padding: '0.5rem 1rem', color: 'var(--accent-color)' }}>
+              <span className="sessions-pagination-info">
                 Page {page} of {totalPages}
               </span>
               <button
                 onClick={() => setPage(p => Math.min(totalPages, p + 1))}
                 disabled={page === totalPages}
-                className="btn btn-secondary"
-                style={{ padding: '0.5rem 1rem' }}
+                className="button secondary sessions-button secondary"
               >
                 Next
               </button>
@@ -266,14 +226,14 @@ const RerollerSessionsPage = () => {
         <div className="edit-modal-overlay" onClick={() => setDeleteConfirm(null)}>
           <div className="edit-modal" onClick={(e) => e.stopPropagation()}>
             <h3>Delete Session</h3>
-            <p style={{ color: 'var(--accent-color)', margin: '1rem 0' }}>
+            <p className="delete-modal-message">
               Are you sure you want to delete this session? This will also delete all associated claims and cannot be undone.
             </p>
             <div className="edit-modal-actions">
-              <button className="btn btn-secondary" onClick={() => setDeleteConfirm(null)}>
+              <button className="button secondary" onClick={() => setDeleteConfirm(null)}>
                 Cancel
               </button>
-              <button className="btn btn-danger" onClick={() => handleDelete(deleteConfirm)}>
+              <button className="button danger" onClick={() => handleDelete(deleteConfirm)}>
                 Delete
               </button>
             </div>

@@ -365,7 +365,7 @@ const PromptSubmissionPage = () => {
                               </span>
                               {availableBerries['Forget-Me-Not'] > 0 && (
                                 <button
-                                  className="button button-secondary ml-2"
+                                  className="button secondary ml-2"
                                   onClick={handleItemReroll}
                                   disabled={isRerolling}
                                   title={`Use 1 Forget-Me-Not berry to reroll items`}
@@ -398,7 +398,7 @@ const PromptSubmissionPage = () => {
                               </span>
                               {availableBerries['Forget-Me-Not'] > 0 && submissionResult.rewards.monsters.some(monster => !monster.claimed) && (
                                 <button
-                                  className="button button-secondary ml-2"
+                                  className="button secondary ml-2"
                                   onClick={handleMonsterReroll}
                                   disabled={isRerolling}
                                   title={`Use 1 Forget-Me-Not berry to reroll unclaimed monsters`}
@@ -450,7 +450,7 @@ const PromptSubmissionPage = () => {
                                   </div>
 
                                   <button
-                                    className="button button-primary monster-claim-button"
+                                    className="button primary monster-claim-button"
                                     onClick={() => handleMonsterClaim(index)}
                                     disabled={claimingMonster === index || !selectedTrainers[index] || !monsterNames[index]?.trim()}
                                   >
@@ -497,13 +497,13 @@ const PromptSubmissionPage = () => {
           
           <div className="action-buttons">
             <button 
-              className="button button-primary"
+              className="button primary"
               onClick={handleReset}
             >
               Submit Another Prompt
             </button>
             <button
-              className="button button-secondary"
+              className="button secondary"
               onClick={() => navigate('/gallery')}
             >
               View Gallery

@@ -118,7 +118,7 @@ const FactionPeopleAdmin = () => {
           Faction People Management
         </h1>
         <button 
-          className="btn btn-primary create-btn"
+          className="button primary"
           onClick={handleCreatePerson}
         >
           <i className="fas fa-plus"></i>
@@ -164,7 +164,7 @@ const FactionPeopleAdmin = () => {
               }
             </p>
             <button 
-              className="btn btn-primary"
+              className="button primary"
               onClick={handleCreatePerson}
             >
               Create First Person
@@ -218,7 +218,7 @@ const FactionPeopleAdmin = () => {
 
               <div className="person-actions">
                 <button
-                  className="btn btn-sm btn-secondary"
+                  className="button secondary sm"
                   onClick={() => handleManageTeam(person)}
                   title="Manage Monster Team"
                 >
@@ -226,7 +226,7 @@ const FactionPeopleAdmin = () => {
                   Team
                 </button>
                 <button
-                  className="btn btn-sm btn-primary"
+                  className="button primary sm"
                   onClick={() => handleEditPerson(person)}
                   title="Edit Person"
                 >
@@ -234,7 +234,7 @@ const FactionPeopleAdmin = () => {
                   Edit
                 </button>
                 <button
-                  className="btn btn-sm btn-danger"
+                  className="button danger sm"
                   onClick={() => handleDeletePerson(person.id)}
                   title="Delete Person"
                 >

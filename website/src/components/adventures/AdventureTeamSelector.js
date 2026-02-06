@@ -243,13 +243,13 @@ const AdventureTeamSelector = ({ adventureId, trainerId, onTeamUpdate, onCancel 
       
       <div className="team-selector-actions">
         <button 
-          className="button button-secondary"
+          className="button secondary"
           onClick={onCancel}
         >
           Cancel
         </button>
         <button 
-          className="button button-primary"
+          className="button primary"
           onClick={handleSaveTeam}
           disabled={selectedMonsters.length === 0}
         >

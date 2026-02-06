@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import api from '../../../services/api';
 import rerollerService from '../../../services/rerollerService';
 import LoadingSpinner from '../../../components/common/LoadingSpinner';
-import './RerollerPage.css';
 
 const RerollerPage = () => {
   // Roll type state
@@ -315,7 +314,7 @@ const RerollerPage = () => {
       <div className="reroller-header">
         <h1>Reroller</h1>
         <p>Create custom rolls for players and generate claim links</p>
-        <Link to="/admin/reroller/sessions" className="btn btn-secondary" style={{ marginTop: '1rem', display: 'inline-block' }}>
+        <Link to="/admin/reroller/sessions" className="button secondary reroller-sessions-link">
           View All Sessions
         </Link>
       </div>
@@ -415,7 +414,7 @@ const RerollerPage = () => {
                 >
                   +
                 </button>
-                <span style={{ marginLeft: '1rem', color: 'var(--accent-color)' }}>monsters</span>
+                <span className="quantity-suffix">monsters</span>
               </div>
             </div>
           )}
@@ -424,7 +423,7 @@ const RerollerPage = () => {
           {(rollType === 'item' || rollType === 'combined') && (
             <div className="config-section">
               <h3><i className="fas fa-box"></i> Item Settings</h3>
-              <div className="quantity-control" style={{ marginBottom: '1rem' }}>
+              <div className="quantity-control quantity-control-block">
                 <button
                   className="quantity-btn"
                   onClick={() => setItemCount(Math.max(1, itemCount - 1))}
@@ -445,10 +444,10 @@ const RerollerPage = () => {
                 >
                   +
                 </button>
-                <span style={{ marginLeft: '1rem', color: 'var(--accent-color)' }}>items</span>
+                <span className="quantity-suffix">items</span>
               </div>
 
-              <label style={{ color: 'var(--accent-color)', fontSize: '0.85rem', marginBottom: '0.5rem', display: 'block' }}>
+              <label className="reroller-field-label">
                 Categories
               </label>
               <div className="category-buttons">
@@ -495,14 +494,14 @@ const RerollerPage = () => {
             <div className="config-section">
               <h3><i className="fas fa-birthday-cake"></i> Birthday Settings</h3>
               <div className="birthday-info">
-                <p style={{ color: 'var(--accent-color)', marginBottom: '0.5rem' }}>
+                <p className="reroller-help-text">
                   Birthday preset automatically rolls:
                 </p>
-                <ul style={{ color: 'var(--accent-color)', marginLeft: '1.5rem', fontSize: '0.9rem' }}>
+                <ul className="reroller-help-list">
                   <li><strong>10 Items</strong> - Random from all categories</li>
                   <li><strong>10 Monsters</strong> - Base stage only, no legendaries</li>
                 </ul>
-                <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', marginTop: '0.5rem' }}>
+                <p className="reroller-help-note">
                   Uses the target user's monster table preferences.
                 </p>
               </div>
@@ -560,7 +559,7 @@ const RerollerPage = () => {
           {/* Generate Button */}
           <div className="action-buttons">
             <button
-              className="btn btn-primary"
+              className="button primary"
               onClick={handleGenerateRoll}
               disabled={loading || !targetUserId}
             >
@@ -568,7 +567,7 @@ const RerollerPage = () => {
             </button>
             {session && (
               <button
-                className="btn btn-secondary"
+                className="button secondary"
                 onClick={handleRerollAll}
                 disabled={loading}
               >
@@ -583,7 +582,7 @@ const RerollerPage = () => {
           <div className="panel-header">
             <h2>Results</h2>
             {session && (
-              <button className="btn btn-secondary" onClick={handleUpdateClaimLimits}>
+              <button className="button secondary" onClick={handleUpdateClaimLimits}>
                 Update Limits
               </button>
             )}
@@ -602,7 +601,7 @@ const RerollerPage = () => {
                   <h3>
                     Monsters ({rolledMonsters.length})
                     {session.monsterClaimLimit && (
-                      <span style={{ fontWeight: 'normal', color: 'var(--accent-color)' }}>
+                      <span className="reroller-info-value">
                         - Limit: {session.monsterClaimLimit}
                       </span>
                     )}
@@ -619,7 +618,7 @@ const RerollerPage = () => {
                   <h3>
                     Items ({rolledItems.length})
                     {session.itemClaimLimit && (
-                      <span style={{ fontWeight: 'normal', color: 'var(--accent-color)' }}>
+                      <span className="reroller-info-value">
                         - Limit: {session.itemClaimLimit}
                       </span>
                     )}
@@ -645,7 +644,7 @@ const RerollerPage = () => {
                     {copiedLink ? 'Copied!' : 'Copy'}
                   </button>
                 </div>
-                <p style={{ marginTop: '0.5rem', color: 'var(--accent-color)', fontSize: '0.85rem' }}>
+                <p className="reroller-info-note">
                   Send this link to {users.find(u => u.id === parseInt(targetUserId))?.display_name || 'the player'} to claim their rewards.
                 </p>
               </div>
@@ -758,10 +757,10 @@ const RerollerPage = () => {
             )}
 
             <div className="edit-modal-actions">
-              <button className="btn btn-secondary" onClick={() => setEditModal(null)}>
+              <button className="button secondary" onClick={() => setEditModal(null)}>
                 Cancel
               </button>
-              <button className="btn btn-primary" onClick={handleSaveEdit}>
+              <button className="button primary" onClick={handleSaveEdit}>
                 Save Changes
               </button>
             </div>

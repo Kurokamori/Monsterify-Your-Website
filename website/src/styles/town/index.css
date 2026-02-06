@@ -1,0 +1,21 @@
+/* ==============================
+   Town Styles Index
+
+   This file imports all town location styles.
+   Import this file to get all town styles.
+   ============================== */
+
+/* Core town styles */
+@import './TownStyles.css';
+
+/* Activities */
+@import './ActivityStyles.css';
+
+/* Adventures */
+@import './AdventureStyles.css';
+
+/* Antique auction */
+@import './AntiqueAuctionStyles.css';
+
+/* Adoption center */
+@import './AdoptionItemModal.css';

@@ -111,10 +111,10 @@ const UserListPage = () => {
 
         {/* Action Buttons */}
         <div className="admin-actions">
-          <Link to="/admin" className="admin-button secondary">
+          <Link to="/admin" className="button secondary">
             <i className="fas fa-arrow-left"></i> Back to Dashboard
           </Link>
-          <Link to="/admin/users/add" className="admin-button">
+          <Link to="/admin/users/add" className="button primary">
             <i className="fas fa-plus"></i> Add New User
           </Link>
         </div>
@@ -159,7 +159,7 @@ const UserListPage = () => {
                       <td className="admin-actions-cell">
                         <Link
                           to={`/admin/users/edit/${user.id}`}
-                          className="admin-action-button edit"
+                          className="button info sm"
                           title="Edit User"
                         >
                           <i className="fas fa-edit"></i>
@@ -167,7 +167,7 @@ const UserListPage = () => {
                         {user.id !== currentUser?.id && (
                           <button
                             onClick={() => openDeleteModal(user)}
-                            className="admin-action-button delete"
+                            className="button danger sm"
                             title="Delete User"
                           >
                             <i className="fas fa-trash-alt"></i>
@@ -197,13 +197,13 @@ const UserListPage = () => {
             <div className="admin-modal-footer">
               <button
                 onClick={closeDeleteModal}
-                className="admin-button secondary"
+                className="button secondary"
               >
                 Cancel
               </button>
               <button
                 onClick={handleDeleteUser}
-                className="admin-button delete"
+                className="button danger"
               >
                 Delete User
               </button>

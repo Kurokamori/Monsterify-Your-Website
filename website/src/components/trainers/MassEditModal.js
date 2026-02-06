@@ -689,7 +689,7 @@ const MassEditModal = ({
       <div className="mass-edit-modal">
         <div className="mass-edit-header">
           <h2>Mass Edit Monsters</h2>
-          <button className="close-button" onClick={handleClose}>
+          <button className="button close" onClick={handleClose}>
             <i className="fas fa-times"></i>
           </button>
         </div>
@@ -835,7 +835,7 @@ const MassEditModal = ({
                           <button
                             type="button"
                             onClick={() => addBerryDropdown(monster.id)}
-                            className="add-dropdown-button"
+                            className="button secondary"
                             title="Add another berry"
                           >
                             <i className="fas fa-plus"></i>
@@ -872,7 +872,7 @@ const MassEditModal = ({
                               <button
                                 type="button"
                                 onClick={() => removeBerryDropdown(monster.id, index)}
-                                className="remove-dropdown-button"
+                                className="button danger"
                                 title="Remove this berry"
                               >
                                 <i className="fas fa-times"></i>
@@ -888,7 +888,7 @@ const MassEditModal = ({
                           <button
                             type="button"
                             onClick={() => addPastryDropdown(monster.id)}
-                            className="add-dropdown-button"
+                            className="button secondary"
                             title="Add another pastry"
                           >
                             <i className="fas fa-plus"></i>
@@ -926,7 +926,7 @@ const MassEditModal = ({
                               <button
                                 type="button"
                                 onClick={() => removePastryDropdown(monster.id, index)}
-                                className="remove-dropdown-button"
+                                className="button danger"
                                 title="Remove this pastry"
                               >
                                 <i className="fas fa-times"></i>
@@ -944,13 +944,13 @@ const MassEditModal = ({
                 <button
                   onClick={handleSubmit}
                   disabled={isProcessing}
-                  className="submit-mass-edit-button"
+                  className="button success"
                 >
                   Process All Changes
                 </button>
                 <button
                   onClick={handleClose}
-                  className="cancel-mass-edit-button"
+                  className="button secondary"
                 >
                   Cancel
                 </button>
@@ -1147,7 +1147,7 @@ const MassEditModal = ({
               <div className="results-actions">
                 <button
                   onClick={handleClose}
-                  className="close-results-button"
+                  className="button primary"
                 >
                   Close
                 </button>
@@ -1266,14 +1266,14 @@ const MassEditModal = ({
                 <div className="species-selection-actions">
                   <button
                     onClick={() => setShowSpeciesSelectionModal(false)}
-                    className="cancel-mass-edit-button"
+                    className="button secondary"
                   >
                     Cancel
                   </button>
                   <button
                     onClick={completeSpeciesBerryProcessing}
                     disabled={pendingBerryOperations.some(op => !selectedSpeciesForOperations[op.operationId])}
-                    className="submit-mass-edit-button"
+                    className="button primary"
                   >
                     Apply Selected Species
                   </button>

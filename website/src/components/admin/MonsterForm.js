@@ -297,7 +297,7 @@ const MonsterForm = ({ monster, personId, position, onSave, onCancel }) => {
             <i className="fas fa-dragon"></i>
             {monster ? 'Edit Monster' : 'Add New Monster'}
           </h3>
-          <button className="close-button" onClick={onCancel}>×</button>
+          <button className="button close" onClick={onCancel}>×</button>
         </div>
 
         <form onSubmit={handleSubmit} className="monster-form">
@@ -402,7 +402,7 @@ const MonsterForm = ({ monster, personId, position, onSave, onCancel }) => {
                 />
                 <button
                   type="button"
-                  className="btn btn-sm btn-primary"
+                  className="button primary sm"
                   onClick={handleAddSpecies}
                   disabled={formData.species.length >= 3}
                 >
@@ -471,7 +471,7 @@ const MonsterForm = ({ monster, personId, position, onSave, onCancel }) => {
                     />
                     <button
                       type="button"
-                      className="btn btn-sm btn-primary"
+                      className="button primary sm"
                       onClick={handleAddCustomType}
                       disabled={formData.types.length >= 5}
                     >
@@ -516,7 +516,7 @@ const MonsterForm = ({ monster, personId, position, onSave, onCancel }) => {
           <div className="form-actions">
             <button
               type="button"
-              className="btn btn-secondary"
+              className="button secondary"
               onClick={onCancel}
               disabled={loading}
             >
@@ -524,7 +524,7 @@ const MonsterForm = ({ monster, personId, position, onSave, onCancel }) => {
             </button>
             <button
               type="submit"
-              className="btn btn-primary"
+              className="button primary"
               disabled={loading}
             >
               {loading ? (

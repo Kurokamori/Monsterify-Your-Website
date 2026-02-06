@@ -104,7 +104,7 @@ const RoutinesTab = ({ trainers, onRefresh }) => {
       <div className="tab-header">
         <h2>Daily Routines</h2>
         <button
-          className="quick-action-btn"
+          className="button primary"
           onClick={() => setShowCreateForm(true)}
         >
           <i className="fas fa-plus"></i>
@@ -114,13 +114,13 @@ const RoutinesTab = ({ trainers, onRefresh }) => {
 
       <div className="tab-filters">
         <button
-          className={`filter-btn ${activeView === 'today' ? 'active' : ''}`}
+          className={`button filter ${activeView === 'today' ? 'active' : ''}`}
           onClick={() => setActiveView('today')}
         >
           Today's Routines ({todaysRoutines.length})
         </button>
         <button
-          className={`filter-btn ${activeView === 'all' ? 'active' : ''}`}
+          className={`button filter ${activeView === 'all' ? 'active' : ''}`}
           onClick={() => setActiveView('all')}
         >
           All Routines ({routines.length})
@@ -135,7 +135,7 @@ const RoutinesTab = ({ trainers, onRefresh }) => {
             <h3>No routines for today</h3>
             <p>You don't have any active routines scheduled for today.</p>
             <button
-              className="quick-action-btn"
+              className="button primary"
               onClick={() => setShowCreateForm(true)}
             >
               <i className="fas fa-plus"></i>
@@ -199,7 +199,7 @@ const RoutinesTab = ({ trainers, onRefresh }) => {
             <h3>No routines found</h3>
             <p>You haven't created any routines yet. Create your first routine to organize your daily activities!</p>
             <button
-              className="quick-action-btn"
+              className="button primary"
               onClick={() => setShowCreateForm(true)}
             >
               <i className="fas fa-plus"></i>

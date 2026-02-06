@@ -1,6 +1,5 @@
 import React, { useState, useCallback } from 'react';
 import MonsterRollConfigurator from './MonsterRollConfigurator';
-import './RewardConfigurator.css';
 
 const RewardConfigurator = ({ rewards, onChange, availableItems, isBonus = false }) => {
   const [showMonsterRoll, setShowMonsterRoll] = useState(
@@ -141,7 +140,7 @@ const RewardConfigurator = ({ rewards, onChange, availableItems, isBonus = false
           <button
             type="button"
             onClick={handleItemAdd}
-            className="btn btn-sm btn-secondary"
+            className="button secondary sm"
           >
             Add Item
           </button>
@@ -270,7 +269,7 @@ const RewardConfigurator = ({ rewards, onChange, availableItems, isBonus = false
                                       items: updatedItems
                                     });
                                   }}
-                                  className="btn btn-sm btn-danger"
+                                  className="button danger sm"
                                 >
                                   ×
                                 </button>
@@ -292,7 +291,7 @@ const RewardConfigurator = ({ rewards, onChange, availableItems, isBonus = false
                               items: updatedItems
                             });
                           }}
-                          className="btn btn-sm btn-secondary"
+                          className="button secondary sm"
                         >
                           Add Item to Set
                         </button>
@@ -382,7 +381,7 @@ const RewardConfigurator = ({ rewards, onChange, availableItems, isBonus = false
                   <button
                     type="button"
                     onClick={() => handleItemRemove(index)}
-                    className="btn btn-sm btn-danger remove-btn"
+                    className="button danger sm"
                   >
                     Remove
                   </button>

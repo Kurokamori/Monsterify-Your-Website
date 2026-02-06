@@ -677,7 +677,7 @@ const AdoptionCenter = () => {
             {adoptedMonster && (
               <div className="adoption-actions">
                 <button
-                  className="berry-button"
+                  className="button primary"
                   onClick={openItemModal}
                   disabled={
                     !Object.values(availableBerries).some(count => count > 0) &&
@@ -690,7 +690,7 @@ const AdoptionCenter = () => {
             )}
 
             <button
-              className="modal-button primary"
+              className="button primary"
               onClick={closeAdoptModal}
             >
               Close
@@ -921,13 +921,13 @@ const AdoptionCenter = () => {
 
                   <div className="adoption-actions">
                     <button
-                      className="modal-button secondary"
+                      className="button secondary"
                       onClick={closeAdoptModal}
                     >
                       Cancel
                     </button>
                     <button
-                      className="modal-button primary"
+                      className="button primary"
                       onClick={handleAdoptSubmit}
                       disabled={adoptionLoading || !selectedTrainer || !monsterName.trim() || !selectedArtwork}
                     >

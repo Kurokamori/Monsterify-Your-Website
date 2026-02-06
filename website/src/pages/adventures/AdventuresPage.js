@@ -66,31 +66,31 @@ const AdventuresPage = () => {
       <div className="adventures-tabs">
         <Link
           to="/adventures/create"
-          className={`tab-button ${activeTab === 'adventures' ? 'active' : ''}`}
+          className={`button tab ${activeTab === 'adventures' ? 'active' : ''}`}
         >
           Adventures
         </Link>
         <Link
           to="/adventures/event/current"
-          className={`tab-button ${activeTab === 'events' ? 'active' : ''}`}
+          className={`button tab ${activeTab === 'events' ? 'active' : ''}`}
         >
           Events
         </Link>
         <Link
           to="/adventures/mission/available"
-          className={`tab-button ${activeTab === 'missions' ? 'active' : ''}`}
+          className={`button tab ${activeTab === 'missions' ? 'active' : ''}`}
         >
           Missions
         </Link>
         <Link
           to="/adventures/faction-quests"
-          className={`tab-button ${activeTab === 'faction-quests' ? 'active' : ''}`}
+          className={`button tab ${activeTab === 'faction-quests' ? 'active' : ''}`}
         >
           Faction Quests
         </Link>
         <Link
           to="/boss"
-          className={`tab-button ${activeTab === 'boss' ? 'active' : ''}`}
+          className={`button tab ${activeTab === 'boss' ? 'active' : ''}`}
         >
           Current Boss
         </Link>

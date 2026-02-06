@@ -416,7 +416,7 @@ const Landmasses = {
   return (
     <div className="landmass-page">
       <div className="landmass-header">
-        <button onClick={handleBack} className="button button-secondary">
+        <button onClick={handleBack} className="button secondary">
           ← Back to World Map
         </button>
         <h1>{landmassData.name}</h1>

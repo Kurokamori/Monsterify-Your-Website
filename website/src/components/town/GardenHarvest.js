@@ -197,7 +197,7 @@ const GardenHarvest = () => {
 
           <div className="garden-harvest-actions">
             <button
-              className="btn btn-secondary"
+              className="button secondary"
               onClick={() => setShowRewards(false)}
             >
               <i className="fas fa-arrow-left mr-2"></i>

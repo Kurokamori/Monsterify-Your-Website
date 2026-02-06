@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import RewardConfigurator from './RewardConfigurator';
 import MonsterRollConfigurator from './MonsterRollConfigurator';
 import api from '../../services/api';
-import './PromptForm.css';
 
 const PromptForm = ({ prompt, onSuccess, onCancel }) => {
   const [formData, setFormData] = useState({
@@ -434,14 +433,14 @@ const PromptForm = ({ prompt, onSuccess, onCancel }) => {
           <button
             type="button"
             onClick={onCancel}
-            className="btn btn-secondary"
+            className="button secondary"
             disabled={loading}
           >
             Cancel
           </button>
           <button
             type="submit"
-            className="btn btn-primary"
+            className="button primary"
             disabled={loading}
           >
             {loading ? 'Saving...' : (prompt ? 'Update Prompt' : 'Create Prompt')}

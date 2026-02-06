@@ -116,7 +116,7 @@ const MissionStart = () => {
     return (
       <div className="mission-start-container">
         <div className="error">Error: {error}</div>
-        <button onClick={() => navigate('/adventures/missions/available')}>
+        <button className="button secondary" onClick={() => navigate('/adventures/missions/available')}>
           Back to Available Missions
         </button>
       </div>
@@ -127,7 +127,7 @@ const MissionStart = () => {
     return (
       <div className="mission-start-container">
         <div className="error">Mission not found</div>
-        <button onClick={() => navigate('/adventures/missions/available')}>
+        <button className="button secondary" onClick={() => navigate('/adventures/missions/available')}>
           Back to Available Missions
         </button>
       </div>
@@ -140,7 +140,7 @@ const MissionStart = () => {
     <div className="mission-start-container">
       <div className="mission-start-header">
         <button 
-          className="back-btn"
+          className="button secondary"
           onClick={() => navigate('/adventures/missions/available')}
         >
           ← Back to Available Missions
@@ -247,7 +247,7 @@ const MissionStart = () => {
       {eligibleMonsters.length > 0 && (
         <div className="mission-actions">
           <button
-            className="start-mission-btn"
+            className="button primary"
             onClick={handleStartMission}
             disabled={selectedMonsters.length === 0 || starting}
           >

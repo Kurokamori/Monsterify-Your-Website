@@ -296,10 +296,10 @@ const WritingSubmissionCalculator = ({
 
 
             <div className="form-actions">
-              <button type="button" onClick={handleAddTrainer} className="button button-primary">
+              <button type="button" onClick={handleAddTrainer} className="button primary">
                 Add Trainer
               </button>
-              <button type="button" onClick={() => setShowAddTrainer(false)} className="button button-secondary">
+              <button type="button" onClick={() => setShowAddTrainer(false)} className="button secondary">
                 Cancel
               </button>
             </div>
@@ -377,7 +377,7 @@ const WritingSubmissionCalculator = ({
               <button
                 type="button"
                 onClick={handleAddMonster}
-                className="button button-primary"
+                className="button primary"
                 disabled={!selectedMonsterId || !monsterTrainerId}
               >
                 Add Monster
@@ -390,7 +390,7 @@ const WritingSubmissionCalculator = ({
                   setSelectedMonsterId('');
                   setAvailableMonsters([]);
                 }}
-                className="button button-secondary"
+                className="button secondary"
               >
                 Cancel
               </button>
@@ -457,7 +457,7 @@ const WritingSubmissionCalculator = ({
             <div className="form-actions">
               <button
                 type="button"
-                className="button button-secondary"
+                className="button secondary"
                 onClick={() => {
                   setShowAddNPC(false);
                   setNpcName('');
@@ -468,7 +468,7 @@ const WritingSubmissionCalculator = ({
               </button>
               <button
                 type="button"
-                className="button button-primary"
+                className="button primary"
                 onClick={handleAddNPC}
                 disabled={!npcWordCount || npcWordCount < 1}
               >

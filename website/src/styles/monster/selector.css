@@ -6,7 +6,7 @@
   background-color: var(--card-background);
   border-radius: 12px;
   padding: 1.25rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 4px 12px var(--overlay-medium);
   display: flex;
   flex-direction: column;
   gap: 1rem;
@@ -16,7 +16,7 @@
 
 .monster-selector-title {
   margin: 0;
-  color: var(--gold-color);
+  color: var(--accent-color);
   font-size: 1.25rem;
   font-weight: 600;
   letter-spacing: 0.5px;
@@ -31,7 +31,7 @@
   left: 0;
   width: 40px;
   height: 3px;
-  background-color: var(--gold-color);
+  background-color: var(--accent-color);
   border-radius: 1.5px;
 }
 
@@ -39,7 +39,7 @@
   color: var(--error-color);
   font-size: 0.9rem;
   padding: 0.5rem;
-  background-color: rgba(239, 68, 68, 0.1);
+  background-color: var(--error-glow);
   border-radius: 6px;
   border-left: 3px solid var(--error-color);
 }
@@ -51,7 +51,7 @@
   overflow-y: auto;
   padding-right: 0.5rem;
   scrollbar-width: thin;
-  scrollbar-color: var(--gold-color) rgba(0, 0, 0, 0.2);
+  scrollbar-color: var(--accent-color) var(--overlay-medium);
 }
 
 .monster-selector-grid::-webkit-scrollbar {
@@ -59,12 +59,12 @@
 }
 
 .monster-selector-grid::-webkit-scrollbar-track {
-  background: rgba(0, 0, 0, 0.2);
+  background: var(--overlay-medium);
   border-radius: 3px;
 }
 
 .monster-selector-grid::-webkit-scrollbar-thumb {
-  background-color: var(--gold-color);
+  background-color: var(--accent-color);
   border-radius: 3px;
 }
 

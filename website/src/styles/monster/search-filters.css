@@ -21,7 +21,7 @@
 .monster-search input:focus {
   outline: none;
   border-color: var(--accent-color);
-  box-shadow: 0 0 0 3px rgba(214, 163, 57, 0.1);
+  box-shadow: 0 0 0 3px var(--accent-glow);
 }
 
 .monster-search input::placeholder {
@@ -46,17 +46,17 @@
   padding: 0.75rem 1rem;
   padding-right: 2.5rem;
   border-radius: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  background-color: rgba(0, 0, 0, 0.2);
-  color: var(--text-color, #d7ddf3);
+  border: 1px solid var(--highlight-light);
+  background-color: var(--overlay-medium);
+  color: var(--text-color, var(--text-color));
   font-size: 0.95rem;
   transition: all 0.2s ease;
 }
 
 .monster-selector-search-input:focus {
   outline: none;
-  border-color: var(--accent-color, #d6a339);
-  box-shadow: 0 0 0 2px rgba(214, 163, 57, 0.2);
+  border-color: var(--accent-color, var(--accent-color));
+  box-shadow: 0 0 0 2px var(--accent-glow);
 }
 
 .monster-selector-search-clear {
@@ -66,7 +66,7 @@
   transform: translateY(-50%);
   background: none;
   border: none;
-  color: var(--text-color, #d7ddf3);
+  color: var(--text-color, var(--text-color));
   font-size: 1.25rem;
   cursor: pointer;
   opacity: 0.6;
@@ -81,7 +81,7 @@
 
 .monster-selector-search-clear:hover {
   opacity: 1;
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: var(--highlight-light);
 }
 
 /* Search Icon */
@@ -90,7 +90,7 @@
   left: 15px;
   top: 50%;
   transform: translateY(-50%);
-  color: #bdc3c7;
+  color: var(--text-muted);
 }
 
 /* Filter Rows */

@@ -135,7 +135,7 @@ const ForfeitMonster = ({ userTrainers }) => {
               <>
                 <div className="form-actions">
                   <button
-                    className="btn btn-primary"
+                    className="button primary"
                     onClick={handleConfirm}
                     disabled={selectedMonsters.length === 0}
                   >
@@ -151,7 +151,7 @@ const ForfeitMonster = ({ userTrainers }) => {
                     >
                       <MonsterCard monster={monster} />
                       <button
-                        className={`btn ${selectedMonsters.some(m => m.id === monster.id) ? 'btn-success' : 'btn-secondary'} monster-select-btn`}
+                        className={`button ${selectedMonsters.some(m => m.id === monster.id) ? 'success' : 'secondary'} monster-select-btn`}
                         onClick={() => handleMonsterSelect(monster)}
                       >
                         {selectedMonsters.some(m => m.id === monster.id) ? '✓ Selected' : 'Select Monster'}
@@ -187,14 +187,14 @@ const ForfeitMonster = ({ userTrainers }) => {
           </div>
           <div className="modal-actions">
             <button
-              className="btn btn-secondary"
+              className="button secondary"
               onClick={() => setShowConfirmModal(false)}
               disabled={submitting}
             >
               Cancel
             </button>
             <button
-              className="btn btn-danger"
+              className="button danger"
               onClick={handleSubmit}
               disabled={submitting}
             >

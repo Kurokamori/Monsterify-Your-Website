@@ -412,14 +412,14 @@ const ActivityRewards = () => {
     return (
       <div className="rewards-container">
         <div className="activity-session-header">
-          <Link to="/town" className="btn btn-secondary">
+          <Link to="/town" className="button secondary">
             <i className="fas fa-arrow-left mr-2"></i> Back to Town
           </Link>
           <h1>Activity Rewards</h1>
         </div>
-        <div style={{ padding: '20px', textAlign: 'center' }}>
+        <div className="rewards-loading">
           <LoadingSpinner />
-          <p style={{ marginTop: '10px' }}>Loading activity rewards...</p>
+          <p>Loading activity rewards...</p>
         </div>
       </div>
     );
@@ -430,14 +430,14 @@ const ActivityRewards = () => {
     return (
       <div className="rewards-container">
         <div className="activity-session-header">
-          <Link to="/town" className="btn btn-secondary">
+          <Link to="/town" className="button secondary">
             <i className="fas fa-arrow-left mr-2"></i> Back to Town
           </Link>
           <h1>Activity Rewards</h1>
         </div>
         <div className="auth-message">
           <p>Please log in to access your rewards.</p>
-          <Link to="/login" className="btn btn-primary">Log In</Link>
+          <Link to="/login" className="button primary">Log In</Link>
         </div>
       </div>
     );
@@ -448,7 +448,7 @@ const ActivityRewards = () => {
     return (
       <div className="rewards-container">
         <div className="activity-session-header">
-          <Link to="/town" className="btn btn-secondary">
+          <Link to="/town" className="button secondary">
             <i className="fas fa-arrow-left mr-2"></i> Back to Town
           </Link>
           <h1>Activity Rewards</h1>
@@ -457,11 +457,11 @@ const ActivityRewards = () => {
           <p>Session not found or has expired.</p>
           <p>Session ID: {sessionId}</p>
           <p>This may happen if the server was restarted since the session was created.</p>
-          <div style={{ marginTop: '20px', display: 'flex', gap: '10px', justifyContent: 'center' }}>
-            <Link to="/town" className="btn btn-primary">Return to Town</Link>
-            <Link to="/town/activities/garden" className="btn btn-secondary">Start New Garden Activity</Link>
-            <Link to="/town/activities/farm" className="btn btn-secondary">Start New Farm Activity</Link>
-            <Link to="/town/activities/pirates-dock" className="btn btn-secondary">Start New Pirate's Dock Activity</Link>
+          <div className="error-not-found-actions">
+            <Link to="/town" className="button primary">Return to Town</Link>
+            <Link to="/town/activities/garden" className="button secondary">Start New Garden Activity</Link>
+            <Link to="/town/activities/farm" className="button secondary">Start New Farm Activity</Link>
+            <Link to="/town/activities/pirates-dock" className="button secondary">Start New Pirate's Dock Activity</Link>
           </div>
         </div>
       </div>
@@ -491,15 +491,10 @@ const ActivityRewards = () => {
       {/* Other rewards grid (coins, items, levels) */}
       {otherRewards.length > 0 && (
         <>
-          <div className="rewards-section-header" style={{ marginBottom: '1rem' }}>
-            <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#333' }}>Items & Rewards</h2>
+          <div className="rewards-section-header">
+            <h2>Items & Rewards</h2>
           </div>
-          <div className="rewards-grid" style={{ 
-            display: 'grid', 
-            gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', 
-            gap: '1rem', 
-            marginBottom: '2rem' 
-          }}>
+          <div className="rewards-grid">
             {otherRewards.map(reward => (
               <div
                 key={reward.id}
@@ -546,7 +541,7 @@ const ActivityRewards = () => {
                         onChange={(trainerId) => handleTrainerSelect(reward.id, trainerId)}
                       />
                       <button
-                        className="btn btn-primary mt-2 w-full"
+                        className="button primary mt-2 w-full"
                         onClick={() => claimReward(reward.id)}
                         disabled={claimingReward === reward.id}
                       >
@@ -572,43 +567,14 @@ const ActivityRewards = () => {
       {/* Monster rewards grid */}
       {monsterRewards.length > 0 && (
         <>
-          <div className="rewards-section-header" style={{ marginBottom: '1rem' }}>
-            <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#333' }}>Monsters Caught</h2>
+          <div className="rewards-section-header">
+            <h2>Monsters Caught</h2>
           </div>
-          <div className="town-reward-monster-grid" style={{ 
-            display: 'grid', 
-            gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', 
-            gap: '1.5rem', 
-            marginBottom: '2rem',
-            padding: '1rem',
-            background: 'rgba(0,0,0,0.05)',
-            borderRadius: '8px',
-            border: '2px solid #ddd'
-          }}>
+          <div className="town-reward-monster-grid">
             {monsterRewards.map(reward => (
               <div
                 key={reward.id}
                 className={`monster-reward-card ${reward.claimed ? 'claimed' : ''}`}
-                style={{
-                  background: 'white',
-                  border: '2px solid #4CAF50',
-                  borderRadius: '12px',
-                  padding: '1.5rem',
-                  boxShadow: '0 4px 8px rgba(0,0,0,0.15)',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  textAlign: 'center',
-                  opacity: reward.claimed ? 0.7 : 1,
-                  transition: 'transform 0.2s ease',
-                  minHeight: '400px'
-                }}
-                onMouseEnter={(e) => {
-                  e.target.style.transform = 'translateY(-2px)';
-                }}
-                onMouseLeave={(e) => {
-                  e.target.style.transform = 'translateY(0)';
-                }}
               >
                 <div className="monster-reward-image-container">
                   {(() => {
@@ -640,14 +606,12 @@ const ActivityRewards = () => {
                     console.log('Final selected image URL:', imageUrl);
                     
                     return imageUrl ? (
-                      <img 
-                        src={imageUrl} 
-                        alt={reward.reward_data.monster_species || reward.reward_data.species1 || 'Monster'} 
+                      <img
+                        src={imageUrl}
+                        alt={reward.reward_data.monster_species || reward.reward_data.species1 || 'Monster'}
                         className="monster-reward-image"
-                        style={{ width: '120px', height: '120px', objectFit: 'contain' }}
                         onError={(e) => {
                           console.log('Image failed to load:', imageUrl);
-                          // Fallback to dragon icon if image fails to load
                           e.target.style.display = 'none';
                           e.target.nextElementSibling.style.display = 'block';
                         }}
@@ -657,95 +621,45 @@ const ActivityRewards = () => {
                       />
                     ) : null;
                   })()}
-                  <i 
-                    className="fas fa-dragon monster-fallback-icon"
-                    style={{ 
-                      display: (() => {
-                        const rolledMonster = reward.reward_data.rolled_monster;
-                        const hasImage = rolledMonster?.image_url || reward.reward_data.species1_image || reward.reward_data.species_image_url || reward.reward_data.monster_image;
-                        return hasImage ? 'none' : 'block';
-                      })(),
-                      fontSize: '80px',
-                      color: '#4CAF50',
-                      margin: '20px 0'
-                    }}
+                  <i
+                    className={`fas fa-dragon monster-fallback-icon ${(() => {
+                      const rolledMonster = reward.reward_data.rolled_monster;
+                      const hasImage = rolledMonster?.image_url || reward.reward_data.species1_image || reward.reward_data.species_image_url || reward.reward_data.monster_image;
+                      return hasImage ? 'hidden' : '';
+                    })()}`}
                   ></i>
                 </div>
                 
-                <div className="monster-reward-info" style={{ width: '100%', marginTop: '1rem' }}>
-                  <div className="monster-reward-title" style={{ 
-                    fontSize: '1.3rem', 
-                    fontWeight: 'bold', 
-                    color: '#2E7D32',
-                    marginBottom: '0.5rem',
-                    borderBottom: '2px solid #4CAF50',
-                    paddingBottom: '0.5rem'
-                  }}>
+                <div className="monster-reward-info">
+                  <div className="monster-reward-title">
                     {reward.reward_data.monster_species || reward.reward_data.species1 || reward.reward_data.species || 'Monster'}
                   </div>
-                  
-                  <div className="monster-reward-details" style={{ marginBottom: '1rem' }}>
-                    <div className="monster-level" style={{ 
-                      fontSize: '1.1rem', 
-                      fontWeight: '600', 
-                      color: '#1976D2', 
-                      marginBottom: '0.75rem' 
-                    }}>
+
+                  <div className="monster-reward-details">
+                    <div className="monster-reward-level">
                       Level {reward.reward_data.level}
                     </div>
-                    
+
                     {reward.reward_data.type1 && (
-                      <div className="monster-types" style={{ 
-                        display: 'flex', 
-                        flexWrap: 'wrap', 
-                        gap: '0.5rem', 
-                        justifyContent: 'center',
-                        marginBottom: '0.75rem'
-                      }}>
-                        <span className={`type-badge ${reward.reward_data.type1.toLowerCase()}`} style={{
-                          padding: '0.25rem 0.75rem',
-                          borderRadius: '15px',
-                          fontSize: '0.9rem',
-                          fontWeight: 'bold',
-                          color: 'white',
-                          background: '#666'
-                        }}>
+                      <div className="monster-reward-types">
+                        <span className={`type-badge monster-reward-type-badge ${reward.reward_data.type1.toLowerCase()}`}>
                           {reward.reward_data.type1}
                         </span>
                         {reward.reward_data.type2 && (
-                          <span className={`type-badge ${reward.reward_data.type2.toLowerCase()}`} style={{
-                            padding: '0.25rem 0.75rem',
-                            borderRadius: '15px',
-                            fontSize: '0.9rem',
-                            fontWeight: 'bold',
-                            color: 'white',
-                            background: '#666'
-                          }}>
+                          <span className={`type-badge monster-reward-type-badge ${reward.reward_data.type2.toLowerCase()}`}>
                             {reward.reward_data.type2}
                           </span>
                         )}
                         {reward.reward_data.type3 && (
-                          <span className={`type-badge ${reward.reward_data.type3.toLowerCase()}`} style={{
-                            padding: '0.25rem 0.75rem',
-                            borderRadius: '15px',
-                            fontSize: '0.9rem',
-                            fontWeight: 'bold',
-                            color: 'white',
-                            background: '#666'
-                          }}>
+                          <span className={`type-badge monster-reward-type-badge ${reward.reward_data.type3.toLowerCase()}`}>
                             {reward.reward_data.type3}
                           </span>
                         )}
                       </div>
                     )}
-                    
+
                     {reward.reward_data.monster_type && (
-                      <div className="monster-game" style={{
-                        fontSize: '0.9rem',
-                        color: '#666',
-                        fontStyle: 'italic',
-                        marginBottom: '0.5rem'
-                      }}>
+                      <div className="monster-reward-game">
                         {reward.reward_data.monster_type.charAt(0).toUpperCase() + reward.reward_data.monster_type.slice(1)}
                       </div>
                     )}
@@ -769,7 +683,7 @@ const ActivityRewards = () => {
                           onChange={(trainerId) => handleTrainerSelect(reward.id, trainerId)}
                         />
                         <button
-                          className="btn btn-primary mt-2 w-full"
+                          className="button primary mt-2 w-full"
                           onClick={() => claimReward(reward.id)}
                           disabled={claimingReward === reward.id}
                         >
@@ -794,13 +708,13 @@ const ActivityRewards = () => {
       )}
 
       <div className="rewards-actions">
-        <Link to="/town" className="btn btn-secondary">
+        <Link to="/town" className="button secondary">
           <i className="fas fa-arrow-left mr-2"></i> Back to Town
         </Link>
 
         {rewards.some(reward => !reward.claimed) && (
           <button
-            className="btn btn-primary"
+            className="button primary"
             onClick={claimAllRewards}
             disabled={loading}
           >
@@ -816,7 +730,7 @@ const ActivityRewards = () => {
           </button>
         )}
 
-        <Link to={`/town/activities/${session.location}`} className="btn btn-primary">
+        <Link to={`/town/activities/${session.location}`} className="button primary">
           <i className="fas fa-redo mr-2"></i> Do Another Task
         </Link>
       </div>
@@ -824,7 +738,7 @@ const ActivityRewards = () => {
       {error && (
         <div className="error-container">
           <ErrorMessage message={error} />
-          <div className="debug-info" style={{ marginTop: '10px', padding: '10px', background: '#333', color: '#fff', borderRadius: '4px' }}>
+          <div className="debug-info">
             <h4>Debug Information:</h4>
             <p>Session ID: {sessionId}</p>
             <p>API URL: {`/town/activities/session/${sessionId}`}</p>

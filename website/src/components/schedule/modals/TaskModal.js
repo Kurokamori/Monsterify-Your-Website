@@ -150,7 +150,7 @@ const TaskModal = ({ isOpen, onClose, onSuccess, trainers = [], task = null }) =
       <div className="modal-content large" onClick={e => e.stopPropagation()}>
         <div className="modal-header">
           <h3>{task ? 'Edit Task' : 'Create New Task'}</h3>
-          <button className="modal-close" onClick={onClose}>
+          <button className="button close" onClick={onClose}>
             <i className="fas fa-times"></i>
           </button>
         </div>
@@ -263,7 +263,7 @@ const TaskModal = ({ isOpen, onClose, onSuccess, trainers = [], task = null }) =
                 placeholder="Add a tag"
                 onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addTag())}
               />
-              <button type="button" onClick={addTag} className="btn btn-secondary">
+              <button type="button" onClick={addTag} className="button secondary">
                 <i className="fas fa-plus"></i>
               </button>
             </div>
@@ -294,7 +294,7 @@ const TaskModal = ({ isOpen, onClose, onSuccess, trainers = [], task = null }) =
                 placeholder="Add a step"
                 onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addStep())}
               />
-              <button type="button" onClick={addStep} className="btn btn-secondary">
+              <button type="button" onClick={addStep} className="button secondary">
                 <i className="fas fa-plus"></i>
               </button>
             </div>
@@ -466,10 +466,10 @@ const TaskModal = ({ isOpen, onClose, onSuccess, trainers = [], task = null }) =
           </div>
 
           <div className="modal-actions">
-            <button type="button" onClick={onClose} className="btn btn-secondary">
+            <button type="button" onClick={onClose} className="button secondary">
               Cancel
             </button>
-            <button type="submit" disabled={loading} className="btn btn-primary">
+            <button type="submit" disabled={loading} className="button primary">
               {loading ? (
                 <>
                   <i className="fas fa-spinner fa-spin"></i>

@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import './MonsterRollConfigurator.css';
 
 const MonsterRollConfigurator = ({ parameters = {}, onChange }) => {
   const isInitialMount = useRef(true);
@@ -239,7 +238,7 @@ const MonsterRollConfigurator = ({ parameters = {}, onChange }) => {
               key={index}
               type="button"
               onClick={() => applyPreset(preset.config)}
-              className="preset-btn"
+              className="button secondary"
               title={preset.description}
             >
               {preset.name}

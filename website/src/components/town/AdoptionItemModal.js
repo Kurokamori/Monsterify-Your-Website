@@ -20,7 +20,6 @@ import {
   BERRY_CATEGORIES,
   PASTRY_CATEGORIES
 } from '../../utils/itemHelpers';
-import './AdoptionItemModal.css';
 
 /**
  * AdoptionItemModal - Modal for using berries and pastries on a newly adopted monster
@@ -599,7 +598,7 @@ const AdoptionItemModal = ({
           })}
         </div>
         <button
-          className="modal-button primary apply-all-button"
+          className="button primary apply-all-button"
           onClick={processQueue}
           disabled={loading}
         >
@@ -619,14 +618,14 @@ const AdoptionItemModal = ({
           {Object.keys(berryFilters).map(filter => (
             <button
               key={filter}
-              className={`button button-filter ${berryFilters[filter] ? 'active' : ''}`}
+              className={`button filter ${berryFilters[filter] ? 'active' : ''}`}
               onClick={() => setBerryFilters(prev => ({ ...prev, [filter]: !prev[filter] }))}
             >
               {filter.charAt(0).toUpperCase() + filter.slice(1)}
             </button>
           ))}
           <button
-            className="button button-filter reset"
+            className="button filter reset"
             onClick={() => setBerryFilters({
               species: false, type: false, randomize: false, add: false, remove: false, misc: false
             })}
@@ -645,7 +644,7 @@ const AdoptionItemModal = ({
               return (
                 <button
                   key={berryName}
-                  className="item-button berry"
+                  className="button item berry"
                   onClick={() => handleBerryClick(berryName)}
                   disabled={loading}
                 >
@@ -688,14 +687,14 @@ const AdoptionItemModal = ({
           {Object.keys(pastryFilters).map(filter => (
             <button
               key={filter}
-              className={`button button-filter ${pastryFilters[filter] ? 'active' : ''}`}
+              className={`button filter ${pastryFilters[filter] ? 'active' : ''}`}
               onClick={() => setPastryFilters(prev => ({ ...prev, [filter]: !prev[filter] }))}
             >
               {filter.charAt(0).toUpperCase() + filter.slice(1)}
             </button>
           ))}
           <button
-            className="button button-filter reset"
+            className="button filter reset"
             onClick={() => setPastryFilters({
               species: false, type: false, set: false, add: false, misc: false
             })}
@@ -779,11 +778,11 @@ const AdoptionItemModal = ({
       {error && <div className="error-message">{error}</div>}
 
       <div className="modal-actions">
-        <button className="modal-button secondary" onClick={cancelSelection}>
+        <button className="button secondary" onClick={cancelSelection}>
           Cancel
         </button>
         <button
-          className="modal-button primary"
+          className="button primary"
           onClick={confirmValueSelection}
           disabled={!selectedValue || loading}
         >
@@ -897,7 +896,7 @@ const AdoptionItemModal = ({
 
       <div className="species-selection-actions">
         <button
-          className="modal-button secondary"
+          className="button secondary"
           onClick={() => {
             // Skip species berries and go to results
             setQueuedItems([]);
@@ -908,7 +907,7 @@ const AdoptionItemModal = ({
           Skip Species Berries
         </button>
         <button
-          className="modal-button primary"
+          className="button primary"
           onClick={completeSpeciesBerryProcessing}
           disabled={pendingBerryOperations.some(op => !selectedSpeciesForOperations[op.operationId])}
         >
@@ -986,10 +985,10 @@ const AdoptionItemModal = ({
         )}
 
         <div className="modal-actions">
-          <button className="modal-button secondary" onClick={onClose}>
+          <button className="button secondary" onClick={onClose}>
             Done
           </button>
-          <button className="modal-button primary" onClick={handleUseMore}>
+          <button className="button primary" onClick={handleUseMore}>
             Use More Items
           </button>
         </div>
@@ -1017,15 +1016,15 @@ const AdoptionItemModal = ({
           <>
             {renderMonsterDisplay(monster)}
 
-            <div className="tab-buttons">
+            <div className="button tabs">
               <button
-                className={`tab-button ${activeTab === 'berries' ? 'active' : ''}`}
+                className={`button tab ${activeTab === 'berries' ? 'active' : ''}`}
                 onClick={() => setActiveTab('berries')}
               >
                 Berries
               </button>
               <button
-                className={`tab-button ${activeTab === 'pastries' ? 'active' : ''}`}
+                className={`button tab ${activeTab === 'pastries' ? 'active' : ''}`}
                 onClick={() => setActiveTab('pastries')}
               >
                 Pastries
@@ -1039,7 +1038,7 @@ const AdoptionItemModal = ({
             {renderQueuedItems()}
 
             <div className="modal-actions">
-              <button className="modal-button secondary" onClick={onClose}>
+              <button className="button secondary" onClick={onClose}>
                 {queuedItems.length > 0 ? 'Cancel' : 'Close'}
               </button>
             </div>

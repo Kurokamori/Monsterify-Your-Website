@@ -11,12 +11,12 @@ const ErrorMessage = ({
       <p className="error-message">{message}</p>
       <div className="error-actions">
         {onRetry && (
-          <button onClick={onRetry} className="btn btn-primary">
+          <button onClick={onRetry} className="button primary">
             <i className="fas fa-redo"></i> Try Again
           </button>
         )}
         {backButton && (
-          <button onClick={backButton.onClick} className="button button-secondary">
+          <button onClick={backButton.onClick} className="button secondary">
             <i className="fas fa-arrow-left"></i> {backButton.text}
           </button>
         )}

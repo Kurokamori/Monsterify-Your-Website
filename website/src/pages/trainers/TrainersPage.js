@@ -173,7 +173,7 @@ const TrainersPage = () => {
 
         <div className="sort-controls">
           <button
-            className={`button button-filter ${sortBy === 'name' ? 'active' : ''}`}
+            className={`button filter ${sortBy === 'name' ? 'active' : ''}`}
             onClick={() => handleSort('name')}
           >
             <i className="fas fa-font"></i>
@@ -182,7 +182,7 @@ const TrainersPage = () => {
             )}
           </button>
           <button
-            className={`button button-filter ${sortBy === 'level' ? 'active' : ''}`}
+            className={`button filter ${sortBy === 'level' ? 'active' : ''}`}
             onClick={() => handleSort('level')}
           >
             <i className="fas fa-star"></i>
@@ -191,7 +191,7 @@ const TrainersPage = () => {
             )}
           </button>
           <button
-            className={`button button-filter ${sortBy === 'monster_count' ? 'active' : ''}`}
+            className={`button filter ${sortBy === 'monster_count' ? 'active' : ''}`}
             onClick={() => handleSort('monster_count')}
           >
             <i className="fas fa-dragon"></i>
@@ -200,7 +200,7 @@ const TrainersPage = () => {
             )}
           </button>
           <button
-            className={`button button-filter ${sortBy === 'faction' ? 'active' : ''}`}
+            className={`button filter ${sortBy === 'faction' ? 'active' : ''}`}
             onClick={() => handleSort('faction')}
           >
             <i className="fas fa-flag"></i>
@@ -222,7 +222,7 @@ const TrainersPage = () => {
         <div className="error-container">
           <i className="fas fa-exclamation-circle"></i>
           <p>{error}</p>
-          <button onClick={() => setRetryCount(c => c + 1)} className="button button-primary">
+          <button onClick={() => setRetryCount(c => c + 1)} className="button primary">
             Try Again
           </button>
         </div>
@@ -282,7 +282,7 @@ const TrainersPage = () => {
           {totalPages > 1 && (
             <div className="pagination">
               <button
-                className="button button-secondary"
+                className="button secondary"
                 disabled={currentPage === 1}
                 onClick={() => handlePageChange(currentPage - 1)}
               >
@@ -292,7 +292,7 @@ const TrainersPage = () => {
               {[...Array(totalPages).keys()].map((page) => (
                 <button
                   key={page + 1}
-                  className={`button button-secondary ${currentPage === page + 1 ? 'active' : ''}`}
+                  className={`button secondary ${currentPage === page + 1 ? 'active' : ''}`}
                   onClick={() => handlePageChange(page + 1)}
                 >
                   {page + 1}
@@ -300,7 +300,7 @@ const TrainersPage = () => {
               ))}
 
               <button
-                className="button button-secondary"
+                className="button secondary"
                 disabled={currentPage === totalPages}
                 onClick={() => handlePageChange(currentPage + 1)}
               >

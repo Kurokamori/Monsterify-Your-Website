@@ -63,7 +63,7 @@ const ItemDetailModal = ({ isOpen, onClose, item }) => {
         </div>
         
         <div className="item-detail-actions">
-          <button className="modal-button primary" onClick={onClose}>
+          <button className="button primary" onClick={onClose}>
             Close
           </button>
         </div>

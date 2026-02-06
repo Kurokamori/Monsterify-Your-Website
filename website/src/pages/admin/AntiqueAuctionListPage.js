@@ -4,7 +4,6 @@ import antiqueService from '../../services/antiqueService';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
 import SearchBar from '../../components/common/SearchBar';
 import { toast } from 'react-toastify';
-import '../../styles/AntiqueAuctionStyles.css';
 
 const AntiqueAuctionListPage = () => {
   const [auctions, setAuctions] = useState([]);
@@ -166,13 +165,13 @@ const AntiqueAuctionListPage = () => {
       <div className="seasonal-adopt-actions">
         <Link
           to={`/admin/seasonal-adopts/edit/${auction.id}`}
-          className="admin-action-button edit"
+          className="button info sm"
           title="Edit"
         >
           <i className="fas fa-edit"></i>
         </Link>
         <button
-          className="admin-action-button delete"
+          className="button danger sm"
           title="Delete"
           onClick={() => handleDelete(auction.id, auction.name)}
         >
@@ -186,7 +185,7 @@ const AntiqueAuctionListPage = () => {
     <div className="seasonal-adopts-page">
       <div className="admin-page-header">
         <h1>Seasonal Adopts Management</h1>
-        <Link to="/admin/seasonal-adopts/add" className="admin-button">
+        <Link to="/admin/seasonal-adopts/add" className="button primary">
           <i className="fas fa-plus"></i> Add Seasonal Adopt
         </Link>
       </div>
@@ -233,7 +232,7 @@ const AntiqueAuctionListPage = () => {
             </div>
           </div>
 
-          <button className="admin-button secondary" onClick={resetFilters}>
+          <button className="button secondary" onClick={resetFilters}>
             Reset Filters
           </button>
         </div>
@@ -256,7 +255,7 @@ const AntiqueAuctionListPage = () => {
         <div className="admin-empty-state">
           <i className="fas fa-box-open"></i>
           <p>No seasonal adopts found</p>
-          <Link to="/admin/seasonal-adopts/add" className="admin-button">
+          <Link to="/admin/seasonal-adopts/add" className="button primary">
             Add your first seasonal adopt
           </Link>
         </div>
@@ -367,13 +366,13 @@ const AntiqueAuctionListPage = () => {
                     <td className="admin-actions-cell">
                       <Link
                         to={`/admin/seasonal-adopts/edit/${auction.id}`}
-                        className="admin-action-button edit"
+                        className="button info sm"
                         title="Edit"
                       >
                         <i className="fas fa-edit"></i>
                       </Link>
                       <button
-                        className="admin-action-button delete"
+                        className="button danger sm"
                         title="Delete"
                         onClick={() => handleDelete(auction.id, auction.name)}
                       >

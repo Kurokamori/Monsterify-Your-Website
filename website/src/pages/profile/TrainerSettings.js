@@ -288,10 +288,9 @@ const TrainerSettings = () => {
                   >
                     <i className="fas fa-edit"></i> Edit
                   </button>
-                  <button 
-                    className="trainer-action-button secondary"
+                  <button
+                    className="trainer-action-button secondary danger"
                     onClick={() => openDeleteTrainerModal(trainer)}
-                    style={{ backgroundColor: 'rgba(239, 68, 68, 0.1)', color: '#ef4444' }}
                   >
                     <i className="fas fa-trash-alt"></i>
                   </button>
@@ -322,11 +321,11 @@ const TrainerSettings = () => {
             </div>
             <div className="avatar-upload-controls">
               <label className="avatar-upload-button">
-                <input 
-                  type="file" 
-                  accept="image/*" 
-                  onChange={handleNewTrainerAvatarChange} 
-                  style={{ display: 'none' }}
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleNewTrainerAvatarChange}
+                  className="hidden"
                 />
                 Choose Avatar
               </label>
@@ -349,20 +348,20 @@ const TrainerSettings = () => {
           </div>
           
           {newTrainerError && (
-            <div className="form-error" style={{ marginBottom: '1rem' }}>
+            <div className="form-error mb-1">
               <i className="fas fa-exclamation-circle"></i> {newTrainerError}
             </div>
           )}
           
           <div className="modal-actions">
             <button 
-              className="modal-button secondary"
+              className="button secondary"
               onClick={() => setIsNewTrainerModalOpen(false)}
             >
               Cancel
             </button>
             <button 
-              className="modal-button primary"
+              className="button primary"
               onClick={handleCreateTrainer}
               disabled={loading}
             >
@@ -399,11 +398,11 @@ const TrainerSettings = () => {
               </div>
               <div className="avatar-upload-controls">
                 <label className="avatar-upload-button">
-                  <input 
-                    type="file" 
-                    accept="image/*" 
-                    onChange={handleEditTrainerAvatarChange} 
-                    style={{ display: 'none' }}
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleEditTrainerAvatarChange}
+                    className="hidden"
                   />
                   Change Avatar
                 </label>
@@ -426,20 +425,20 @@ const TrainerSettings = () => {
             </div>
             
             {editTrainerError && (
-              <div className="form-error" style={{ marginBottom: '1rem' }}>
+              <div className="form-error mb-1">
                 <i className="fas fa-exclamation-circle"></i> {editTrainerError}
               </div>
             )}
             
             <div className="modal-actions">
               <button 
-                className="modal-button secondary"
+                className="button secondary"
                 onClick={() => setIsEditTrainerModalOpen(false)}
               >
                 Cancel
               </button>
               <button 
-                className="modal-button primary"
+                className="button primary"
                 onClick={handleEditTrainer}
                 disabled={loading}
               >
@@ -471,23 +470,22 @@ const TrainerSettings = () => {
             </p>
             
             {deleteTrainerError && (
-              <div className="form-error" style={{ marginTop: '1rem' }}>
+              <div className="form-error mt-1">
                 <i className="fas fa-exclamation-circle"></i> {deleteTrainerError}
               </div>
             )}
             
             <div className="modal-actions">
               <button 
-                className="modal-button secondary"
+                className="button secondary"
                 onClick={() => setIsDeleteTrainerModalOpen(false)}
               >
                 Cancel
               </button>
-              <button 
-                className="modal-button primary"
+              <button
+                className="button danger"
                 onClick={handleDeleteTrainer}
                 disabled={loading}
-                style={{ backgroundColor: '#ef4444' }}
               >
                 {loading ? (
                   <>

@@ -15,7 +15,7 @@
   text-decoration: none;
   color: var(--text-color);
   transition: transform 0.2s, box-shadow 0.2s;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 12px var(--overlay-light);
   height: max-content;
   width: 30vh;
   border: 1px solid var(--border-color);
@@ -25,13 +25,13 @@
 
 .monster-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 8px 24px var(--overlay-medium);
   border-color: var(--accent-color);
 }
 
 .monster-card.selected {
   border-color: var(--accent-color);
-  background-color: var(--accent-color-light, rgba(214, 163, 57, 0.08));
+  background-color: var(--accent-color-light, var(--accent-glow-light));
 }
 
 .monster-card.full-height {
@@ -56,18 +56,18 @@
   cursor: pointer;
   color: var(--text-color);
   transition: transform 0.2s, box-shadow 0.2s;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 12px var(--overlay-light);
   height: max-content;
 }
 
 .bazzar-monster-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 8px 24px var(--overlay-medium);
 }
 
 .bazzar-monster-card.selected {
   border-color: var(--accent-color);
-  background-color: var(--accent-color-light, rgba(214, 163, 57, 0.08));
+  background-color: var(--accent-color-light, var(--accent-glow-light));
 }
 
 .bazzar-monster-types {
@@ -84,7 +84,7 @@
   background: var(--card-background);
   border-radius: 12px;
   padding: 1.5rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 12px var(--overlay-light);
   border: 2px solid var(--border-color);
   transition: all 0.3s ease;
   overflow: hidden;
@@ -93,16 +93,16 @@
 
 .monster-team-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 8px 24px var(--overlay-medium);
   border-color: var(--accent-color);
 }
 
 /* Team Card Attribute Variants */
-.monster-team-card[data-attribute="virus"] { border-left: 4px solid #8B4513; }
-.monster-team-card[data-attribute="vaccine"] { border-left: 4px solid #4CAF50; }
-.monster-team-card[data-attribute="data"] { border-left: 4px solid #2196F3; }
-.monster-team-card[data-attribute="free"] { border-left: 4px solid #9C27B0; }
-.monster-team-card[data-attribute="variable"] { border-left: 4px solid #FF9800; }
+.monster-team-card[data-attribute="virus"] { border-left: 4px solid var(--virus-attribute); }
+.monster-team-card[data-attribute="vaccine"] { border-left: 4px solid var(--success-light); }
+.monster-team-card[data-attribute="data"] { border-left: 4px solid var(--blue-color); }
+.monster-team-card[data-attribute="free"] { border-left: 4px solid var(--free-attribute); }
+.monster-team-card[data-attribute="variable"] { border-left: 4px solid var(--warning-color); }
 
 /* Reward Monster Card */
 .monster-reward-card {
@@ -110,7 +110,7 @@
   height: auto;
   background-color: var(--card-background);
   border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 8px var(--overlay-light);
   padding: 20px;
   position: relative;
   display: flex;
@@ -122,32 +122,32 @@
 
 .monster-reward-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 5px 15px var(--overlay-medium);
 }
 
 .monster-reward-card.claimed {
   opacity: 0.8;
-  background-color: rgba(0, 0, 0, 0.05);
+  background-color: var(--overlay-light);
 }
 
 /* Reward Card Rarity Variants */
 .monster-reward-card.epic,
 .special-feature-card.epic {
-  border: 2px solid #8b5cf6;
-  box-shadow: 0 4px 20px rgba(139, 92, 246, 0.2);
+  border: 2px solid var(--custom-type);
+  box-shadow: 0 4px 20px var(--accent-glow);
 }
 
 .monster-reward-card.mythical,
 .special-feature-card.mythical {
   border: 2px solid var(--warning-color);
-  box-shadow: 0 4px 25px rgba(245, 158, 11, 0.3);
+  box-shadow: 0 4px 25px var(--warning-glow);
   animation: mythical-card-glow 3s ease-in-out infinite alternate;
 }
 
 .monster-reward-card.legendary,
 .special-feature-card.legendary {
-  border: 2px solid #fbbf24;
-  box-shadow: 0 4px 30px rgba(251, 191, 36, 0.4);
+  border: 2px solid var(--warning-color);
+  box-shadow: 0 4px 30px var(--accent-glow);
   animation: legendary-card-glow 2s ease-in-out infinite alternate;
 }
 
@@ -155,7 +155,7 @@
 .special-feature-card {
   background-color: var(--card-background);
   border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 8px var(--overlay-light);
   padding: 20px;
   position: relative;
   display: flex;
@@ -168,12 +168,12 @@
 
 .special-feature-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 5px 15px var(--overlay-medium);
 }
 
 .special-feature-card.claimed {
   opacity: 0.8;
-  background-color: rgba(0, 0, 0, 0.05);
+  background-color: var(--overlay-light);
 }
 
 /* Monster Option Card */
@@ -183,19 +183,19 @@
   transition: all 0.3s ease;
   border-radius: 12px;
   overflow: hidden;
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--highlight-light);
   border: 2px solid transparent;
 }
 
 .monster-option:hover:not(.disabled) {
   transform: translateY(-5px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
-  border-color: rgba(255, 255, 255, 0.3);
+  box-shadow: 0 8px 25px var(--overlay-medium);
+  border-color: var(--highlight-medium);
 }
 
 .monster-option.selected {
   border-color: var(--success-light);
-  box-shadow: 0 0 20px rgba(76, 175, 80, 0.4);
+  box-shadow: 0 0 20px var(--success-glow);
   transform: translateY(-5px);
 }
 
@@ -210,13 +210,13 @@
   background-color: var(--card-background);
   border-radius: 0.5rem;
   overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 8px var(--overlay-light);
   transition: all 0.2s;
 }
 
 .lineage-monster-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 4px 12px var(--overlay-medium);
 }
 
 /* Monster Edit Card */
@@ -230,12 +230,12 @@
 
 .monster-edit-card:hover {
   border-color: var(--blue-color);
-  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.1);
+  box-shadow: 0 4px 12px var(--blue-glow);
 }
 
 /* Monster Selector Card */
 .monster-selector-card {
-  background-color: rgba(20, 27, 40, 0.7);
+  background-color: var(--overlay-solid);
   border-radius: 8px;
   overflow: hidden;
   cursor: pointer;
@@ -249,15 +249,15 @@
 
 .monster-selector-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
-  background-color: rgba(30, 37, 50, 0.9);
+  box-shadow: 0 6px 12px var(--overlay-medium);
+  background-color: var(--overlay-solid);
 }
 
 .monster-selector-card.selected {
-  border-color: var(--gold-color);
-  background-color: rgba(214, 163, 57, 0.1);
+  border-color: var(--accent-color);
+  background-color: var(--accent-glow);
   transform: translateY(-4px);
-  box-shadow: 0 6px 12px rgba(214, 163, 57, 0.2);
+  box-shadow: 0 6px 12px var(--accent-glow);
 }
 
 /* Result Card */
@@ -265,17 +265,17 @@
   margin-bottom: 15px;
   border-radius: 8px;
   overflow: hidden;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 4px var(--overlay-light);
 }
 
 .result-card.success {
-  background: #3b6946;
-  border: 1px solid #c3e6cb;
+  background: var(--success-dark);
+  border: 1px solid var(--success-light);
 }
 
 .result-card.error {
-  background: #66272c;
-  border: 1px solid #f5c2c7;
+  background: var(--error-dark);
+  border: 1px solid var(--error-light);
 }
 
 /* =============================================================================
@@ -425,7 +425,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: rgba(0, 0, 0, 0.3);
+  background-color: var(--overlay-dark);
   min-height: 80px;
 }
 
@@ -494,7 +494,7 @@
 }
 
 .monster-card-info h4 {
-  color: var(--gold-color);
+  color: var(--accent-color);
   margin-bottom: 0.25rem;
 }
 
@@ -547,8 +547,8 @@
 
 .monster-selector-level {
   font-size: 0.8rem;
-  background-color: rgba(214, 163, 57, 0.2);
-  color: var(--gold-color);
+  background-color: var(--accent-glow);
+  color: var(--accent-color);
   padding: 0.15rem 0.4rem;
   border-radius: 4px;
   font-weight: 700;
@@ -563,7 +563,7 @@
 
 .monster-selector-attribute {
   font-size: 0.75rem;
-  color: var(--gold-color);
+  color: var(--accent-color);
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -614,14 +614,14 @@
   align-items: center;
   margin-bottom: 15px;
   padding: 10px;
-  background-color: rgba(0, 0, 0, 0.03);
+  background-color: var(--overlay-light);
   border-radius: 8px;
 }
 
 .monster-reward-actions {
   margin-top: auto;
   padding-top: 15px;
-  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  border-top: 1px solid var(--overlay-light);
 }
 
 /* Species Grid */
@@ -636,7 +636,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-color: rgba(0, 0, 0, 0.03);
+  background-color: var(--overlay-light);
   border-radius: 8px;
   padding: 10px;
   transition: transform 0.2s;
@@ -652,7 +652,7 @@
   align-items: center;
   margin-bottom: 15px;
   padding: 10px;
-  background-color: rgba(0, 0, 0, 0.03);
+  background-color: var(--overlay-light);
   border-radius: 8px;
 }
 
@@ -700,7 +700,7 @@
   .monster-card {
     break-inside: avoid;
     box-shadow: none;
-    border: 1px solid #ccc;
+    border: 1px solid var(--text-muted);
   }
 
   .monster-card {

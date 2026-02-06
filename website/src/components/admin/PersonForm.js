@@ -108,7 +108,7 @@ const PersonForm = ({ person, factions, onSave, onCancel }) => {
             <i className="fas fa-user-edit"></i>
             {person ? 'Edit Person' : 'Create New Person'}
           </h2>
-          <button className="close-button" onClick={onCancel}>×</button>
+          <button className="button close" onClick={onCancel}>×</button>
         </div>
 
         <form onSubmit={handleSubmit} className="person-form">
@@ -325,7 +325,7 @@ const PersonForm = ({ person, factions, onSave, onCancel }) => {
           <div className="form-actions">
             <button
               type="button"
-              className="btn btn-secondary"
+              className="button secondary"
               onClick={onCancel}
               disabled={loading}
             >
@@ -333,7 +333,7 @@ const PersonForm = ({ person, factions, onSave, onCancel }) => {
             </button>
             <button
               type="submit"
-              className="btn btn-primary"
+              className="button primary"
               disabled={loading}
             >
               {loading ? (

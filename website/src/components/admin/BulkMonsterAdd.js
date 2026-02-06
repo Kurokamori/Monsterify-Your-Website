@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import adminService from '../../services/adminService';
 import api from '../../services/api';
-import './BulkMonsterAdd.css';
 
 const BulkMonsterAdd = () => {
   const [trainers, setTrainers] = useState([]);
@@ -132,14 +131,14 @@ Blaze | 10 | Charmander | Fire | Data`;
           <button 
             type="submit" 
             disabled={loading || !selectedTrainerId || !monstersText.trim()}
-            className="button button-success"
+            className="button success"
           >
             {loading ? 'Adding Monsters...' : 'Add Monsters'}
           </button>
           <button 
             type="button" 
             onClick={handleClear}
-            className="button button-danger"
+            className="button danger"
           >
             Clear
           </button>

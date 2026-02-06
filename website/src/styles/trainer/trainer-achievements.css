@@ -50,22 +50,6 @@
   margin-bottom: 2rem;
   flex-wrap: wrap;
 }
-
-.filter-btn {
-  padding: .5rem 1rem;
-  border: 1px solid var(--border-color);
-  background: var(--background-secondary);
-  color: var(--text-primary);
-  border-radius: .5rem;
-  cursor: pointer;
-  transition: all .2s ease;
-  font-size: .875rem;
-}
-
-.filter-btn:hover{ background:var(--background-tertiary); border-color:var(--primary-color); }
-.filter-btn.active{ background:var(--primary-color); color:var(--text-color); border-color:var(--primary-color); }
-
-
 /* ===== Achievements grid ===== */
 
 .achievements-grid {
@@ -77,7 +61,7 @@
 
 /* ===== Achievement card states ===== */
 
-.achievement-card:hover{ transform:translateY(-2px); box-shadow:0 8px 24px rgba(0,0,0,.1); }
+.achievement-card:hover{ transform:translateY(-2px); box-shadow:0 8px 24px var(--overlay-light); }
 .achievement-card.unlocked{ border-color:var(--success-color); }
 
 .achievement-card.claimed{
@@ -149,33 +133,6 @@
   color: var(--text-color);
 }
 
-
-/* ===== Claim buttons ===== */
-
-.claim-btn:hover{ background:var(--primary-dark); transform:translateY(-1px); box-shadow:0 4px 12px rgba(0,0,0,.15); }
-.claim-btn:disabled{ opacity:.6; cursor:not-allowed; transform:none; }
-
-.claim-all-btn {
-  background: linear-gradient(135deg, var(--primary-color) 0%, var(--success-color) 100%);
-  color: var(--text-color);
-  border: none;
-  padding: .75rem 1.5rem;
-  border-radius: .75rem;
-  cursor: pointer;
-  transition: all .3s ease;
-  font-weight: 600;
-  font-size: 1rem;
-  display: flex;
-  align-items: center;
-  gap: .5rem;
-  margin: 1rem 0;
-  box-shadow: 0 4px 12px rgba(92,139,255,.3);
-}
-
-.claim-all-btn:hover{ transform:translateY(-2px); box-shadow:0 6px 20px rgba(92,139,255,.4); }
-.claim-all-btn:disabled{ opacity:.7; cursor:not-allowed; transform:none; box-shadow:0 2px 8px rgba(92,139,255,.2); }
-
-
 /* ===== Loading and empty messages ===== */
 
 .loading-message i{ font-size:2rem; margin-bottom:1rem; color:var(--primary-color); }
@@ -197,7 +154,7 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0,0,0,.7);
+  background: var(--overlay-solid);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -208,7 +165,7 @@
 .achievement-reward-popup {
   background: var(--background-primary);
   border-radius: 1rem;
-  box-shadow: 0 20px 40px rgba(0,0,0,.3);
+  box-shadow: 0 20px 40px var(--overlay-dark);
   max-width: 500px;
   width: 90%;
   max-height: 80vh;
@@ -227,25 +184,6 @@
 }
 
 .popup-header h2{ margin:0; font-size:1.5rem; font-weight:600; }
-
-.popup-close-btn {
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
-  background: rgba(255,255,255,.2);
-  border: none;
-  color: var(--text-color);
-  width: 2rem;
-  height: 2rem;
-  border-radius: 50%;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all .2s ease;
-}
-
-.popup-close-btn:hover{ background:rgba(255,255,255,.3); transform:scale(1.1); }
 
 .popup-content {
   padding: 2rem;
@@ -267,7 +205,7 @@
   justify-content: center;
   font-size: 2rem;
   margin: 0 auto 1rem auto;
-  box-shadow: 0 8px 16px rgba(0,0,0,.2);
+  box-shadow: 0 8px 16px var(--overlay-medium);
 }
 
 .achievement-name-popup {
@@ -297,7 +235,7 @@
   transition: all .2s ease;
 }
 
-.reward-item-popup:hover{ transform:translateY(-1px); box-shadow:0 4px 12px rgba(0,0,0,.1); }
+.reward-item-popup:hover{ transform:translateY(-1px); box-shadow:0 4px 12px var(--overlay-light); }
 
 .reward-text {
   font-size: 1rem;
@@ -310,22 +248,6 @@
   text-align: center;
   border-top: 1px solid var(--border-color);
 }
-
-.popup-ok-btn {
-  background: linear-gradient(135deg, var(--success-color), var(--success-light));
-  color: var(--text-color);
-  border: none;
-  padding: .75rem 2rem;
-  border-radius: .5rem;
-  font-size: 1rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all .2s ease;
-  box-shadow: 0 4px 12px rgba(40,167,69,.3);
-}
-
-.popup-ok-btn:hover{ transform:translateY(-2px); box-shadow:0 6px 16px rgba(40,167,69,.4); }
-
 
 /* ===== Bulk claim ===== */
 
@@ -405,7 +327,6 @@
   .achievements-header{ flex-direction:column; align-items:flex-start; }
   .achievements-grid{ grid-template-columns:1fr; }
   .achievement-filters{ gap:.25rem; }
-  .filter-btn{ font-size:.75rem; padding:.375rem .75rem; }
   .achievement-card{ padding:1rem; }
   .achievement-content{ padding-right:2.5rem; }
   .achievement-icon{ font-size:1.25rem; top:.75rem; right:.75rem; }

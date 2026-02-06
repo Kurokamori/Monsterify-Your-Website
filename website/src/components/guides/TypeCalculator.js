@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import './TypeCalculator.css';
 
 const TypeCalculator = () => {
   const [selectedTypes, setSelectedTypes] = useState(['', '', '', '', '', '']);
@@ -165,7 +164,7 @@ const TypeCalculator = () => {
       </div>
 
       <div className="calculator-actions">
-        <button onClick={clearAll} className="clear-all-btn">
+        <button onClick={clearAll} className="button secondary">
           Clear All Types
         </button>
       </div>

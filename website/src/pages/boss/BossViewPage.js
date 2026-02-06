@@ -292,7 +292,7 @@ const BossViewPage = () => {
         </div>
 
         <div className="boss-actions">
-          <a href="/adventures/boss/defeated" className="view-all-button">
+          <a href="/adventures/boss/defeated" className="button primary">
             View All Defeated Bosses
           </a>
         </div>
@@ -431,14 +431,14 @@ const BossViewPage = () => {
 
                 <div className="modal-actions">
                   <button 
-                    className="modal-button secondary"
+                    className="button secondary"
                     onClick={closeRewardModal}
                     disabled={claimingReward}
                   >
                     Cancel
                   </button>
                   <button 
-                    className="modal-button primary"
+                    className="button primary"
                     onClick={submitRewardClaim}
                     disabled={claimingReward || !monsterName.trim() || !selectedTrainer}
                   >
@@ -811,14 +811,14 @@ const BossViewPage = () => {
 
               <div className="modal-actions">
                 <button 
-                  className="modal-button secondary"
+                  className="button secondary"
                   onClick={closeRewardModal}
                   disabled={claimingReward}
                 >
                   Cancel
                 </button>
                 <button 
-                  className="modal-button primary"
+                  className="button primary"
                   onClick={submitRewardClaim}
                   disabled={claimingReward || !monsterName.trim() || !selectedTrainer}
                 >

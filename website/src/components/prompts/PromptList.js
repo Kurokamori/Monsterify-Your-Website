@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import PromptCard from './PromptCard';
 import PromptSubmissionModal from './PromptSubmissionModal';
 import LoadingSpinner from '../common/LoadingSpinner';
-import './PromptList.css';
 
 const PromptList = ({ 
   trainerId, 
@@ -237,7 +236,7 @@ const PromptList = ({
           {filters.search || filters.type || filters.category || filters.difficulty ? (
             <button 
               onClick={() => setFilters({ ...filters, search: '', type: '', category: '', difficulty: '' })}
-              className="clear-filters-btn"
+              className="button danger"
             >
               Clear Filters
             </button>
@@ -262,7 +261,7 @@ const PromptList = ({
               <button
                 onClick={() => handlePageChange(pagination.page - 1)}
                 disabled={pagination.page === 1}
-                className="pagination-btn"
+                className="button secondary"
               >
                 Previous
               </button>
@@ -274,7 +273,7 @@ const PromptList = ({
               <button
                 onClick={() => handlePageChange(pagination.page + 1)}
                 disabled={pagination.page === totalPages}
-                className="pagination-btn"
+                className="button secondary"
               >
                 Next
               </button>

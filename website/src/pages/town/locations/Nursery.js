@@ -415,7 +415,7 @@ const Nursery = () => {
                       <div className="number-input-container">
                         <button 
                           type="button" 
-                          className="number-btn minus"
+                          className="button primary minus"
                           onClick={() => setEggCount(Math.max(1, eggCount - 1))}
                           disabled={eggCount <= 1}
                         >
@@ -431,7 +431,7 @@ const Nursery = () => {
                         />
                         <button 
                           type="button" 
-                          className="number-btn plus"
+                          className="button primary plus"
                           onClick={() => setEggCount(Math.min(10, eggCount + 1))}
                           disabled={eggCount >= 10}
                         >
@@ -542,11 +542,11 @@ const Nursery = () => {
 
                     <div className="action-section">
                       <button
-                        className="nursery-action-button primary"
+                        className="button primary"
                         onClick={handleHatch}
                         disabled={loading || !selectedTrainer}
                       >
-                        <span className="button-icon">
+                        <span className="icon">
                           {loading ? (
                             <i className="fas fa-spinner fa-spin"></i>
                           ) : (
@@ -584,7 +584,7 @@ const Nursery = () => {
                       <div className="number-input-container">
                         <button 
                           type="button" 
-                          className="number-btn minus"
+                          className="button primary minus"
                           onClick={() => setEggCount(Math.max(1, eggCount - 1))}
                           disabled={eggCount <= 1}
                         >
@@ -600,7 +600,7 @@ const Nursery = () => {
                         />
                         <button 
                           type="button" 
-                          className="number-btn plus"
+                          className="button primary plus"
                           onClick={() => setEggCount(Math.min(10, eggCount + 1))}
                           disabled={eggCount >= 10}
                         >
@@ -860,11 +860,11 @@ const Nursery = () => {
 
                     <div className="action-section">
                       <button
-                        className="nursery-action-button primary"
+                        className="button primary"
                         onClick={handleNurture}
                         disabled={loading || !selectedTrainer}
                       >
-                        <span className="button-icon">
+                        <span className="icon">
                           {loading ? (
                             <i className="fas fa-spinner fa-spin"></i>
                           ) : (

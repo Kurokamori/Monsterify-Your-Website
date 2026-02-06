@@ -673,11 +673,11 @@ const AdminDashboard = () => {
                 </div>
                 <div className="admin-feature-actions">
                   {feature.implemented ? (
-                    <Link to={feature.path} className="admin-feature-button">
+                    <Link to={feature.path} className="button primary block">
                       <i className="fas fa-arrow-right"></i> Open
                     </Link>
                   ) : (
-                    <button className="admin-feature-button disabled" disabled>
+                    <button className="button primary block" disabled>
                       <i className="fas fa-clock"></i> Coming Soon
                     </button>
                   )}

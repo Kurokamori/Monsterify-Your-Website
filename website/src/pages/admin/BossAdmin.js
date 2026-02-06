@@ -269,8 +269,8 @@ const BossAdmin = () => {
     <div className="admin-page">
       <div className="admin-header">
         <h1>Boss Management</h1>
-        <button 
-          className="admin-button primary"
+        <button
+          className="button primary"
           onClick={handleCreate}
         >
           <i className="fas fa-plus"></i> Create New Boss
@@ -346,21 +346,21 @@ const BossAdmin = () => {
                   <td>{boss.total_participants || 0}</td>
                   <td>
                     <div className="admin-actions">
-                      <button 
-                        className="admin-button secondary small"
+                      <button
+                        className="button secondary sm"
                         onClick={() => handleEdit(boss)}
                       >
                         <i className="fas fa-edit"></i>
                       </button>
-                      <button 
-                        className="admin-button danger small"
+                      <button
+                        className="button danger sm"
                         onClick={() => handleDelete(boss)}
                       >
                         <i className="fas fa-trash"></i>
                       </button>
-                      <Link 
+                      <Link
                         to={`/boss`}
-                        className="admin-button info small"
+                        className="button info sm"
                       >
                         <i className="fas fa-eye"></i>
                       </Link>
@@ -507,7 +507,7 @@ const BossAdmin = () => {
                   <button 
                     type="button" 
                     onClick={() => removeSpecies('reward_monster_data', index)}
-                    className="button button-danger"
+                    className="button danger"
                   >
                     ×
                   </button>
@@ -517,7 +517,7 @@ const BossAdmin = () => {
                 <button 
                   type="button" 
                   onClick={() => addSpecies('reward_monster_data')}
-                  className="button button-primary"
+                  className="button primary"
                 >
                   + Add Species
                 </button>
@@ -536,7 +536,7 @@ const BossAdmin = () => {
                   <button 
                     type="button" 
                     onClick={() => removeType('reward_monster_data', index)}
-                    className="button button-danger"
+                    className="button danger"
                   >
                     ×
                   </button>
@@ -546,7 +546,7 @@ const BossAdmin = () => {
                 <button 
                   type="button" 
                   onClick={() => addType('reward_monster_data')}
-                  className="button button-primary"
+                  className="button primary"
                 >
                   + Add Type
                 </button>
@@ -588,7 +588,7 @@ const BossAdmin = () => {
                   <button 
                     type="button" 
                     onClick={() => removeSpecies('grunt_monster_data', index)}
-                    className="button button-danger"
+                    className="button danger"
                   >
                     ×
                   </button>
@@ -598,7 +598,7 @@ const BossAdmin = () => {
                 <button 
                   type="button" 
                   onClick={() => addSpecies('grunt_monster_data')}
-                  className="button button-primary"
+                  className="button primary"
                 >
                   + Add Species
                 </button>
@@ -617,7 +617,7 @@ const BossAdmin = () => {
                   <button 
                     type="button" 
                     onClick={() => removeType('grunt_monster_data', index)}
-                    className="button button-danger"
+                    className="button danger"
                   >
                     ×
                   </button>
@@ -627,7 +627,7 @@ const BossAdmin = () => {
                 <button 
                   type="button" 
                   onClick={() => addType('grunt_monster_data')}
-                  className="button button-primary"
+                  className="button primary"
                 >
                   + Add Type
                 </button>
@@ -636,9 +636,9 @@ const BossAdmin = () => {
           </div>
 
           <div className="form-actions">
-            <button 
-              type="button" 
-              className="admin-button secondary"
+            <button
+              type="button"
+              className="button secondary"
               onClick={() => {
                 setShowCreateModal(false);
                 setShowEditModal(false);
@@ -648,9 +648,9 @@ const BossAdmin = () => {
             >
               Cancel
             </button>
-            <button 
-              type="submit" 
-              className="admin-button primary"
+            <button
+              type="submit"
+              className="button primary"
               disabled={loading}
             >
               {loading ? 'Saving...' : (selectedBoss ? 'Update Boss' : 'Create Boss')}
@@ -673,8 +673,8 @@ const BossAdmin = () => {
           <p className="warning">This action cannot be undone and will also delete all related damage data.</p>
           
           <div className="form-actions">
-            <button 
-              className="admin-button secondary"
+            <button
+              className="button secondary"
               onClick={() => {
                 setShowDeleteModal(false);
                 setSelectedBoss(null);
@@ -682,8 +682,8 @@ const BossAdmin = () => {
             >
               Cancel
             </button>
-            <button 
-              className="admin-button danger"
+            <button
+              className="button danger"
               onClick={handleDeleteConfirm}
               disabled={loading}
             >

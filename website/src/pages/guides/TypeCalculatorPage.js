@@ -2,7 +2,6 @@ import React from 'react';
 import TypeCalculator from '../../components/guides/TypeCalculator';
 import TeamBuilder from '../../components/guides/TeamBuilder';
 import useDocumentTitle from '../../hooks/useDocumentTitle';
-import './TypeCalculatorPage.css';
 
 const TypeCalculatorPage = () => {
   useDocumentTitle('Type Calculator - Guides');

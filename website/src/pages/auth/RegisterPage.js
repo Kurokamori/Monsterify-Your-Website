@@ -303,7 +303,7 @@ const RegisterPage = () => {
             <div className="register-actions">
               <button
                 type="submit"
-                className="auth-button-register"
+                className="button primary lg block"
                 disabled={loading}
               >
                 {loading ? (

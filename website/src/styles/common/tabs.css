@@ -2,37 +2,7 @@
    Tabs & Tab Button Styles
    ============================== */
 
-.tab-button {
-  padding: 0.75rem 1.25rem;
-  background-color: var(--nav-background);
-  border: none;
-  border-bottom: 3px solid transparent;
-  color: var(--text-color);
-  font-size: var(--font-size-base);
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s;
-  white-space: nowrap;
-  text-decoration: none;
-  border-radius: 0.375rem;
-  display: flex;
-  align-items: center;
-  position: relative;
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
-  margin-bottom: -2px;
-  background: none;
-  gap: 0.5rem;
-}
-
-.tab-button:hover {
-  background-color: var(--nav-hover);
-}
-
-.tab-button.active {
-  background-color: var(--accent-color);
-  color: var(--text-color);
-}
+/* For tab buttons, use unified button system: className="button tab" (see buttons.css) */
 
 /* ---------- Cooldown Indicator ---------- */
 
@@ -41,7 +11,7 @@
   align-items: center;
   gap: 0.75rem;
   padding: 0.75rem 1rem;
-  background-color: rgba(239, 68, 68, 0.1);
+  background-color: var(--error-glow);
   border-radius: 0.375rem;
 }
 

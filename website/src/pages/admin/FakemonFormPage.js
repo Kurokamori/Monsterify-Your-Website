@@ -59,11 +59,11 @@ const buildEvolutionTree = (chain) => {
 };
 
 const renderEvoPreviewNode = (node, depth = 0) => (
-  <div key={node.number} style={{ marginLeft: depth * 24 }}>
-    <span style={{ opacity: 0.7 }}>
-      {depth > 0 && <><i className="fas fa-arrow-right" style={{ fontSize: '0.7rem', marginRight: 6 }}></i></>}
+  <div key={node.number} className="evo-preview-node" style={{ marginLeft: depth * 24 }}>
+    <span className="evo-preview-node-content">
+      {depth > 0 && <><i className="fas fa-arrow-right evo-preview-arrow"></i></>}
       <strong>#{node.number}</strong> {node.name || '???'}
-      {node.method && <span style={{ fontSize: '0.75rem', opacity: 0.6 }}> ({node.method}{node.method_detail ? `: ${node.method_detail}` : ''})</span>}
+      {node.method && <span className="evo-preview-method"> ({node.method}{node.method_detail ? `: ${node.method_detail}` : ''})</span>}
     </span>
     {node.children && node.children.map(child => renderEvoPreviewNode(child, depth + 1))}
   </div>
@@ -491,10 +491,9 @@ const FakemonFormPage = () => {
                       name="image_url"
                       value={formData.image_url}
                       onChange={handleChange}
-                      className="admin-form-input"
                       placeholder="Or enter image URL directly"
                       disabled={saving}
-                      style={{ marginTop: '10px' }}
+                      className="admin-form-input with-margin-top"
                     />
                   </div>
                 </div>
@@ -637,11 +636,11 @@ const FakemonFormPage = () => {
 
                 {/* Stat Generator */}
                 <div className="admin-stat-generator">
-                  <h3 style={{ margin: '0 0 1rem 0', fontSize: '1rem', color: 'var(--accent-color, #d6a339)' }}>
+                  <h3 className="admin-stat-generator-title">
                     <i className="fas fa-dice"></i> Stat Generator
                   </h3>
-                  <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', alignItems: 'flex-end' }}>
-                    <div className="admin-form-group" style={{ flex: '1', minWidth: '200px' }}>
+                  <div className="admin-stat-generator-row">
+                    <div className="admin-form-group power-level-group">
                       <label className="admin-form-label">Power Level</label>
                       <select
                         value={statPowerLevel}
@@ -654,7 +653,7 @@ const FakemonFormPage = () => {
                         ))}
                       </select>
                     </div>
-                    <div className="admin-form-group" style={{ flex: '2', minWidth: '300px' }}>
+                    <div className="admin-form-group specialty-group">
                       <label className="admin-form-label">Specialty Stats</label>
                       <div className="specialty-checkboxes">
                         {SPECIALTY_OPTIONS.map(opt => (
@@ -671,10 +670,9 @@ const FakemonFormPage = () => {
                     </div>
                     <button
                       type="button"
-                      className="admin-button secondary"
+                      className="admin-button secondary fit-content"
                       onClick={handleRollStats}
                       disabled={!statPowerLevel}
-                      style={{ height: 'fit-content' }}
                     >
                       <i className="fas fa-dice"></i> Roll Stats
                     </button>
@@ -712,7 +710,7 @@ const FakemonFormPage = () => {
                     );
                   })}
                 </div>
-                <div style={{ textAlign: 'right', opacity: 0.7, fontSize: '0.85rem', marginTop: '0.5rem' }}>
+                <div className="admin-bst-display">
                   <strong>BST Total: {bstTotal}</strong>
                 </div>
               </div>

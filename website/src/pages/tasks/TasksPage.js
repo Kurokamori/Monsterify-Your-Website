@@ -275,13 +275,13 @@ const TasksPage = () => {
 
       <div className="tasks-tabs">
         <button 
-          className={`tab-button ${activeTab === 'daily' ? 'active' : ''}`}
+          className={`button tab ${activeTab === 'daily' ? 'active' : ''}`}
           onClick={() => setActiveTab('daily')}
         >
           Daily Tasks
         </button>
         <button 
-          className={`tab-button ${activeTab === 'weekly' ? 'active' : ''}`}
+          className={`button tab ${activeTab === 'weekly' ? 'active' : ''}`}
           onClick={() => setActiveTab('weekly')}
         >
           Weekly Tasks
@@ -455,7 +455,7 @@ const TasksPage = () => {
             </div>
             
             <button 
-              className="modal-button primary"
+              className="button primary"
               onClick={closeCompleteModal}
             >
               Close
@@ -510,13 +510,13 @@ const TasksPage = () => {
                 
                 <div className="complete-actions">
                   <button 
-                    className="modal-button secondary"
+                    className="button secondary"
                     onClick={closeCompleteModal}
                   >
                     Cancel
                   </button>
                   <button 
-                    className="modal-button primary"
+                    className="button primary"
                     onClick={handleCompleteTask}
                     disabled={loading}
                   >

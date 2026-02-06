@@ -199,7 +199,7 @@ const TownMap = () => {
       {showLocationInfo && activeLocation && (
         <div className="location-info-overlay">
           <div className="location-info-container">
-            <button className="close-button" onClick={closeLocationInfo}>
+            <button className="button close" onClick={closeLocationInfo}>
               <i className="fas fa-times"></i>
             </button>
             

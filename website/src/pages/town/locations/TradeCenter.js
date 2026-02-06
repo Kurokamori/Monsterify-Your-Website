@@ -417,7 +417,7 @@ const TradeCenter = () => {
               Other trainers can now see your listing and offer trades.
             </p>
             <button
-              className="modal-button primary"
+              className="button primary"
               onClick={closeCreateTradeModal}
             >
               Close
@@ -482,13 +482,13 @@ const TradeCenter = () => {
 
             <div className="trade-modal-actions">
               <button
-                className="modal-button secondary"
+                className="button secondary"
                 onClick={closeCreateTradeModal}
               >
                 Cancel
               </button>
               <button
-                className="modal-button primary"
+                className="button primary"
                 onClick={handleCreateTrade}
                 disabled={loading}
               >
@@ -521,7 +521,7 @@ const TradeCenter = () => {
               The other trainer will be notified of your offer.
             </p>
             <button
-              className="modal-button primary"
+              className="button primary"
               onClick={closeOfferTradeModal}
             >
               Close
@@ -592,13 +592,13 @@ const TradeCenter = () => {
 
                 <div className="trade-modal-actions">
                   <button
-                    className="modal-button secondary"
+                    className="button secondary"
                     onClick={closeOfferTradeModal}
                   >
                     Cancel
                   </button>
                   <button
-                    className="modal-button primary"
+                    className="button primary"
                     onClick={handleOfferTrade}
                     disabled={loading}
                   >

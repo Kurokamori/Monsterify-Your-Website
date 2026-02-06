@@ -42,7 +42,7 @@ const MainLayout = () => {
       {/* Top Navigation */}
       <nav className="top-nav">
         <div className="nav-left">
-          <Link to="/" style={{ display: 'flex', alignItems: 'center' }}>
+          <Link to="/" className="logo-link">
             <img
               src="/images/logo.png"
               alt="Logo"
@@ -55,7 +55,7 @@ const MainLayout = () => {
           </Link>
           <button
             type="button"
-            className="mobile-menu-button"
+            className="button ghost"
             onClick={toggleMobileMenu}
           >
             <i className="fas fa-bars"></i>
@@ -67,16 +67,23 @@ const MainLayout = () => {
               Guides
               <span className="dropdown-arrow"></span>
             </Link>
-            <div className="dropdown-content">
+            <div className="dropdown-content dropdown-sectioned">
               <Link to="/guides">All Guides</Link>
-              <Link to="/guides/guides">Game Guides</Link>
-              <Link to="/guides/lore">Lore</Link>
-              <Link to="/guides/factions">Factions</Link>
-              <Link to="/guides/npcs">NPCs</Link>
-              <Link to="/guides/interactive-map">Interactive Map</Link>
-              <Link to="/guides/type-calculator">Type Calculator</Link>
-              <Link to="/guides/evolution-explorer">Evolution Explorer</Link>
-              <Link to="/guides/ability-database">Ability Database</Link>
+              <div className="dropdown-section-header">Game Guides</div>
+              <Link to="/guides/guides/Creating%20a%20Trainer/!Creating%20a%20Trainer.md" className="dropdown-sub-item">Creating a Trainer</Link>
+              <Link to="/guides/guides/Monster%20Creation/Monster%20Design%20Guide.md" className="dropdown-sub-item">Monster Creation</Link>
+              <Link to="/guides/guides/Submissions%20and%20Progression/!!Submitting%20Artwork.md" className="dropdown-sub-item">Submissions and Progression</Link>
+              <Link to="/guides/guides/Table%20of%20Items/Items.md" className="dropdown-sub-item">Table of Items</Link>
+              <Link to="/guides/guides/The%20Town%20Square/!index.md" className="dropdown-sub-item">Town Square</Link>
+              <Link to="/guides/guides/General%20Rules.md" className="dropdown-sub-item">General Rules</Link>
+              <Link to="/guides/lore" className="dropdown-mid-item">Lore</Link>
+              <Link to="/guides/factions" className="dropdown-mid-item">Factions</Link>
+              <Link to="/guides/npcs" className="dropdown-mid-item">NPCs</Link>
+              <div className="dropdown-section-header">Tools</div>
+              <Link to="/guides/type-calculator" className="dropdown-sub-item">Type Calculator</Link>
+              <Link to="/guides/evolution-explorer" className="dropdown-sub-item">Evolution Explorer</Link>
+              <Link to="/guides/ability-database" className="dropdown-sub-item">Ability Database</Link>
+              <Link to="/guides/interactive-map" className="dropdown-sub-item">Interactive Map</Link>
             </div>
           </div>
           <div className="dropdown">
@@ -145,7 +152,7 @@ const MainLayout = () => {
       {/* Mobile Navigation Menu */}
       <div className={`mobile-nav ${mobileMenuOpen ? 'active' : ''}`}>
         <div className="mobile-nav-header">
-          <Link to="/" style={{ display: 'flex', alignItems: 'center' }}>
+          <Link to="/" className="logo-link">
             <img
               src="/images/logo.png"
               alt="Logo"
@@ -156,7 +163,7 @@ const MainLayout = () => {
               }}
             />
           </Link>
-          <button type="button" className="mobile-nav-close" onClick={toggleMobileMenu}>
+          <button type="button" className="button primary" onClick={toggleMobileMenu}>
             <i className="fas fa-times"></i>
           </button>
         </div>
@@ -173,14 +180,21 @@ const MainLayout = () => {
             </button>
             <div className={`mobile-dropdown-content ${dropdownOpen.guides ? 'active' : ''}`}>
               <Link to="/guides" className="mobile-nav-link" onClick={toggleMobileMenu}>All Guides</Link>
-              <Link to="/guides/guides" className="mobile-nav-link" onClick={toggleMobileMenu}>Game Guides</Link>
-              <Link to="/guides/interactive-map" className="mobile-nav-link" onClick={toggleMobileMenu}>Interactive Map</Link>
-              <Link to="/guides/type-calculator" className="mobile-nav-link" onClick={toggleMobileMenu}>Type Calculator</Link>
-              <Link to="/guides/evolution-explorer" className="mobile-nav-link" onClick={toggleMobileMenu}>Evolution Explorer</Link>
-              <Link to="/guides/ability-database" className="mobile-nav-link" onClick={toggleMobileMenu}>Ability Database</Link>
+              <div className="mobile-dropdown-section-header">Game Guides</div>
+              <Link to="/guides/guides/Creating%20a%20Trainer/!Creating%20a%20Trainer.md" className="mobile-nav-link mobile-sub-item" onClick={toggleMobileMenu}>Creating a Trainer</Link>
+              <Link to="/guides/guides/Monster%20Creation/Monster%20Design%20Guide.md" className="mobile-nav-link mobile-sub-item" onClick={toggleMobileMenu}>Monster Creation</Link>
+              <Link to="/guides/guides/Submissions%20and%20Progression/!!Submitting%20Artwork.md" className="mobile-nav-link mobile-sub-item" onClick={toggleMobileMenu}>Submissions and Progression</Link>
+              <Link to="/guides/guides/Table%20of%20Items/Items.md" className="mobile-nav-link mobile-sub-item" onClick={toggleMobileMenu}>Table of Items</Link>
+              <Link to="/guides/guides/The%20Town%20Square/!index.md" className="mobile-nav-link mobile-sub-item" onClick={toggleMobileMenu}>Town Square</Link>
+              <Link to="/guides/guides/General%20Rules.md" className="mobile-nav-link mobile-sub-item" onClick={toggleMobileMenu}>General Rules</Link>
               <Link to="/guides/lore" className="mobile-nav-link" onClick={toggleMobileMenu}>Lore</Link>
               <Link to="/guides/factions" className="mobile-nav-link" onClick={toggleMobileMenu}>Factions</Link>
               <Link to="/guides/npcs" className="mobile-nav-link" onClick={toggleMobileMenu}>NPCs</Link>
+              <div className="mobile-dropdown-section-header">Tools</div>
+              <Link to="/guides/type-calculator" className="mobile-nav-link mobile-sub-item" onClick={toggleMobileMenu}>Type Calculator</Link>
+              <Link to="/guides/evolution-explorer" className="mobile-nav-link mobile-sub-item" onClick={toggleMobileMenu}>Evolution Explorer</Link>
+              <Link to="/guides/ability-database" className="mobile-nav-link mobile-sub-item" onClick={toggleMobileMenu}>Ability Database</Link>
+              <Link to="/guides/interactive-map" className="mobile-nav-link mobile-sub-item" onClick={toggleMobileMenu}>Interactive Map</Link>
             </div>
           </div>
 
@@ -274,14 +288,14 @@ const MainLayout = () => {
 
       {/* Footer */}
       <footer className="footer">
-        <div className="footer-content" style={{ gap: '1rem' }}>
-          <div className="footer-section" style={{ flex: '2' }}>
+        <div className="footer-content">
+          <div className="footer-section about">
             <h3>Dusk and Dawn</h3>
-            <p style={{ fontSize: '0.85rem', margin: '0' }}>A monster collecting art roleplaying game</p>
+            <p className="tagline">A monster collecting art roleplaying game</p>
           </div>
-          <div className="footer-section" style={{ flex: '3' }}>
+          <div className="footer-section links">
             <h3>Quick Links</h3>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem 1rem' }}>
+            <div className="footer-links-grid">
               <Link to="/">Home</Link>
               <Link to="/trainers">Trainers</Link>
               <Link to="/fakedex">Fakedex</Link>
@@ -291,11 +305,11 @@ const MainLayout = () => {
               <Link to="/submissions">Submissions</Link>
             </div>
           </div>
-          <div className="footer-section" style={{ flex: '2' }}>
-                      </div>
+          <div className="footer-section social">
+          </div>
         </div>
         <div className="footer-bottom">
-          <p style={{ margin: '0' }}>&copy; {new Date().getFullYear()} Dusk and Dawn. All rights reserved.</p>
+          <p>&copy; {new Date().getFullYear()} Dusk and Dawn. All rights reserved.</p>
         </div>
       </footer>
     </div>

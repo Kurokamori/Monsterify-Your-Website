@@ -252,7 +252,7 @@ const Library = () => {
           aria-controls="library-filter-collapse"
           aria-expanded={showFilters}
           variant="outline-primary"
-          className="w-100 mb-2 filter-toggle-btn"
+          className="w-100 mb-2 button toggle-btn"
         >
           {showFilters ? 'Hide Filters' : 'Show Filters'}
           {(selectedTag || selectedTrainer || selectedMonster || sortBy !== 'newest') &&

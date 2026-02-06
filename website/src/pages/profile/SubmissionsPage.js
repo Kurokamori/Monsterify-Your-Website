@@ -337,7 +337,7 @@ const SubmissionsPage = () => {
             
             <div className="modal-actions">
               <button 
-                className="modal-button secondary"
+                className="button secondary"
                 onClick={() => setIsSubmissionModalOpen(false)}
               >
                 Close
@@ -431,14 +431,14 @@ const SubmissionsPage = () => {
             <div className="modal-actions">
               <button 
                 type="button" 
-                className="modal-button secondary"
+                className="button secondary"
                 onClick={() => setIsNewSubmissionModalOpen(false)}
               >
                 Cancel
               </button>
               <button 
                 type="submit" 
-                className="modal-button primary"
+                className="button primary"
                 disabled={loading}
               >
                 {loading ? (

@@ -270,7 +270,7 @@ const EventDetail = () => {
       <div className="event-detail-nav">
         <button 
           onClick={() => navigate('/adventures/event/current')}
-          className="button button-secondary"
+          className="button secondary"
         >
           <i className="fas fa-arrow-left"></i> Back to Events
         </button>

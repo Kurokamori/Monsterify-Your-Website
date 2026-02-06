@@ -290,7 +290,7 @@ const Garden = () => {
         
         <div className="garden-actions">
           <button
-            className="button button-primary"
+            className="button primary"
             onClick={handleTendGarden}
             disabled={actionLoading || !displayGarden.can_tend}
           >
@@ -307,7 +307,7 @@ const Garden = () => {
           </button>
           
           <button
-            className="button button-primary"
+            className="button primary"
             onClick={handleHarvestGarden}
             disabled={actionLoading || !displayGarden.can_harvest}
           >
@@ -463,7 +463,7 @@ const Garden = () => {
             
             <div className="modal-actions">
               <button
-                className="modal-button primary"
+                className="button primary"
                 onClick={closeHarvestModal}
               >
                 Close

@@ -77,7 +77,7 @@ const TrainerCreate = () => {
       <div className="trainer-create-header">
         <h1>Create New Trainer</h1>
         <div className="trainer-create-actions">
-          <Link to="/admin/dashboard/trainers" className="trainer-create-btn cancel">
+          <Link to="/admin/dashboard/trainers" className="button secondary">
             <i className="fas fa-times"></i> Cancel
           </Link>
         </div>
@@ -505,14 +505,14 @@ const TrainerCreate = () => {
         <div className="trainer-create-footer">
           <button
             type="button"
-            className="trainer-create-btn cancel"
+            className="button secondary"
             onClick={() => navigate('/admin/dashboard/trainers')}
           >
             Cancel
           </button>
           <button
             type="submit"
-            className="trainer-create-btn save"
+            className="button primary"
             disabled={saving}
           >
             {saving ? (

@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import './AdminPromptList.css';
 
 const AdminPromptList = ({ 
   prompts, 
@@ -126,7 +125,7 @@ const AdminPromptList = ({
             </select>
           </div>
 
-          <button onClick={onRefresh} className="btn btn-secondary">
+          <button onClick={onRefresh} className="button secondary">
             Refresh
           </button>
         </div>
@@ -141,19 +140,19 @@ const AdminPromptList = ({
           <div className="bulk-buttons">
             <button
               onClick={() => handleBulkAction('activate')}
-              className="btn btn-sm btn-success"
+              className="button success sm"
             >
               Activate
             </button>
             <button
               onClick={() => handleBulkAction('deactivate')}
-              className="btn btn-sm btn-warning"
+              className="button warning sm"
             >
               Deactivate
             </button>
             <button
               onClick={() => handleBulkAction('delete')}
-              className="btn btn-sm btn-danger"
+              className="button danger sm"
             >
               Delete
             </button>
@@ -235,14 +234,14 @@ const AdminPromptList = ({
                       <div className="admin-action-buttons">
                         <button
                           onClick={() => onEdit(prompt)}
-                          className="btn btn-primary"
+                          className="button primary"
                           title="Edit prompt"
                         >
                           Edit
                         </button>
                         <button
                           onClick={() => onDelete(prompt.id)}
-                          className="btn btn-danger"
+                          className="button danger"
                           title="Delete prompt"
                         >
                           Delete

@@ -88,7 +88,7 @@ const PalsMonsterListPage = () => {
     <div>
       <div className="admin-page-header">
         <h1>Pals Monsters</h1>
-        <Link to="/admin/pals-monsters/add" className="admin-button">
+        <Link to="/admin/pals-monsters/add" className="button primary">
           <i className="fas fa-plus"></i> Add Pals Monster
         </Link>
       </div>
@@ -103,7 +103,7 @@ const PalsMonsterListPage = () => {
         </div>
 
         <div className="admin-filter-group">
-          <button className="admin-button secondary" onClick={resetFilters}>
+          <button className="button secondary" onClick={resetFilters}>
             Reset Filters
           </button>
         </div>
@@ -151,13 +151,13 @@ const PalsMonsterListPage = () => {
                       <td className="admin-actions-cell">
                         <Link
                           to={`/admin/pals-monsters/edit/${monster.id}`}
-                          className="admin-action-button edit"
+                          className="button info sm"
                           title="Edit Pals Monster"
                         >
                           <i className="fas fa-edit"></i>
                         </Link>
                         <button
-                          className="admin-action-button delete"
+                          className="button danger sm"
                           title="Delete Pals Monster"
                           onClick={() => handleDelete(monster.id)}
                         >

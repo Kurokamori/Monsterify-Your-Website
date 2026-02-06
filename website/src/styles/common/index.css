@@ -55,3 +55,27 @@
 
 /* Navigation buttons */
 @import './navigation.css';
+
+/* Types */
+@import './types.css';
+
+/* Form components */
+@import './FormComponents.css';
+
+/* File upload */
+@import './FileUpload.css';
+
+/* Autocomplete */
+@import './AutocompleteInput.css';
+
+/* Items */
+@import './ItemStyles.css';
+
+/* Markdown renderer */
+@import './MarkdownRenderer.css';
+
+/* Messages */
+@import './Messages.css';
+
+/* Modal components */
+@import './ModalComponents.css';

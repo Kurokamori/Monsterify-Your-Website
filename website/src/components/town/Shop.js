@@ -262,7 +262,7 @@ const Shop = ({ shopId, shopName, shopDescription }) => {
         {displayCategories.map(category => (
           <button
             key={category.id}
-            className={`button button-secondary ${selectedCategory === category.id ? 'active' : ''}`}
+            className={`button secondary ${selectedCategory === category.id ? 'active' : ''}`}
             onClick={() => handleCategoryChange(category.id)}
           >
             {category.name}
@@ -313,7 +313,7 @@ const Shop = ({ shopId, shopName, shopDescription }) => {
       {totalPages > 1 && (
         <div className="shop-pagination">
           <button
-            className="button button-secondary"
+            className="button secondary"
             onClick={() => handlePageChange(page - 1)}
             disabled={page === 1}
           >
@@ -325,7 +325,7 @@ const Shop = ({ shopId, shopName, shopDescription }) => {
           </div>
 
           <button
-            className="button button-secondary"
+            className="button secondary"
             onClick={() => handlePageChange(page + 1)}
             disabled={page === totalPages}
           >
@@ -353,13 +353,13 @@ const Shop = ({ shopId, shopName, shopDescription }) => {
                 </p>
                 <div className="modal-actions">
                   <button
-                    className="modal-button secondary"
+                    className="button secondary"
                     onClick={closeItemModal}
                   >
                     Close
                   </button>
                   <button
-                    className="modal-button primary"
+                    className="button primary"
                     onClick={() => {
                       setPurchaseSuccess(false);
                       setPurchaseQuantity(1);
@@ -487,7 +487,7 @@ const Shop = ({ shopId, shopName, shopDescription }) => {
                       )}
 
                       <button
-                        className="button button-primary"
+                        className="button primary"
                         onClick={handlePurchase}
                         disabled={
                           purchaseLoading ||

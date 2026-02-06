@@ -14,7 +14,7 @@
   align-items: center;
   margin-bottom: 2rem;
   padding-bottom: 1rem;
-  border-bottom: 2px solid var(--border-color, #e0e7ff);
+  border-bottom: 2px solid var(--border-color, var(--blue-light));
 }
 
 .evolution-tab-header h2 {
@@ -26,43 +26,8 @@
   gap: 0.5rem;
 }
 
-.evolution-edit-button {
-  background: linear-gradient(135deg, #4f46e5, #7c3aed);
-  color: var(--text-color);
-  border: none;
-  border-radius: 8px;
-  padding: 10px 20px;
-  font-size: 0.9rem;
-  font-weight: 600;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  transition: all 0.2s ease;
-  box-shadow: 0 2px 8px rgba(79, 70, 229, 0.3);
-}
-
-.evolution-edit-button:hover {
-  background: linear-gradient(135deg, #4338ca, #6d28d9);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.4);
-}
-
-.evolution-edit-button.active {
-  background: linear-gradient(135deg, #ef4444, #dc2626);
-  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
-}
-
-.evolution-edit-button.active:hover {
-  background: linear-gradient(135deg, #dc2626, #b91c1c);
-  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
-}
-
-.evolution-edit-button:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-  transform: none;
-}
+/* Evolution edit button: Use unified button system from common/buttons.css
+   Example: className="button primary" or "button danger" for active state */
 
 .no-evolution-message {
   display: flex;

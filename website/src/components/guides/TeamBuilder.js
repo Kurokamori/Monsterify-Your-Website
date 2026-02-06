@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import './TeamBuilder.css';
 
 const TeamBuilder = () => {
   const [team, setTeam] = useState([
@@ -182,7 +181,7 @@ const TeamBuilder = () => {
       <div className="team-builder-header">
         <h2>Team Builder</h2>
         <p>Build a team of up to 6 monsters and analyze their combined type effectiveness</p>
-        <button onClick={clearAllMonsters} className="clear-team-btn">
+        <button onClick={clearAllMonsters} className="button secondary">
           Clear All Monsters
         </button>
       </div>
@@ -245,7 +244,7 @@ const TeamBuilder = () => {
                     {type && (
                       <button
                         onClick={() => removeMonsterType(monster.id, typeIndex)}
-                        className="remove-type-btn-small"
+                        className="button secondary"
                         title="Remove Type"
                       >
                         ×
@@ -274,7 +273,7 @@ const TeamBuilder = () => {
             <div className="monster-actions-col">
               <button 
                 onClick={() => clearMonster(monster.id)}
-                className="clear-monster-btn"
+                className="button secondary"
                 title="Clear Monster"
               >
                 ×

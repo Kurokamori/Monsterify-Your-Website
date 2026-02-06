@@ -62,7 +62,7 @@ const SearchBar = ({
         {searchTerm && (
           <button
             type="button"
-            className="button button-icon button-danger"
+            className="button icon danger"
             onClick={handleClear}
             aria-label="Clear search"
           >

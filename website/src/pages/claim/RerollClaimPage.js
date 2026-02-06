@@ -3,7 +3,6 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import rerollerService from '../../services/rerollerService';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
-import './RerollClaimPage.css';
 
 const RerollClaimPage = () => {
   const { token } = useParams();
@@ -240,7 +239,7 @@ const RerollClaimPage = () => {
             <i className="fas fa-exclamation-circle"></i>
             <h2>Unable to Load Rewards</h2>
             <p>{error}</p>
-            <Link to="/" className="home-btn" style={{ marginTop: '1rem', display: 'inline-block' }}>
+            <Link to="/" className="home-btn home-btn-inline">
               Return Home
             </Link>
           </div>
@@ -329,7 +328,7 @@ const RerollClaimPage = () => {
         </div>
 
         {error && (
-          <div className="claim-info" style={{ borderColor: '#e53e3e', color: '#e53e3e', marginBottom: '1rem' }}>
+          <div className="claim-info error">
             {error}
           </div>
         )}
@@ -344,7 +343,7 @@ const RerollClaimPage = () => {
                   <i className="fas fa-dragon"></i>
                   Monsters
                   {sessionData.monsterClaimLimit && (
-                    <span style={{ fontWeight: 'normal', fontSize: '0.85rem', color: '#a0aec0', marginLeft: '0.5rem' }}>
+                    <span className="claim-count-info">
                       (Select up to {sessionData.remaining.monstersRemaining})
                     </span>
                   )}
@@ -432,7 +431,7 @@ const RerollClaimPage = () => {
                   <i className="fas fa-box"></i>
                   Items
                   {sessionData.itemClaimLimit && (
-                    <span style={{ fontWeight: 'normal', fontSize: '0.85rem', color: '#a0aec0', marginLeft: '0.5rem' }}>
+                    <span className="claim-count-info">
                       (Select up to {sessionData.remaining.itemsRemaining})
                     </span>
                   )}
@@ -510,7 +509,7 @@ const RerollClaimPage = () => {
                   {Object.entries(monsterSelections).map(([index, selection]) => (
                     <div key={`monster-${index}`} className="selected-item">
                       <div className="selected-item-info">
-                        <i className="fas fa-dragon" style={{ color: '#d6a339', marginRight: '0.5rem' }}></i>
+                        <i className="fas fa-dragon category-icon"></i>
                         <span className="selected-item-name">
                           {selection.name || sessionData.monsters[index].species1}
                         </span>
@@ -533,7 +532,7 @@ const RerollClaimPage = () => {
                   {Object.entries(itemSelections).map(([index, selection]) => (
                     <div key={`item-${index}`} className="selected-item">
                       <div className="selected-item-info">
-                        <i className="fas fa-box" style={{ color: '#d6a339', marginRight: '0.5rem' }}></i>
+                        <i className="fas fa-box category-icon"></i>
                         <span className="selected-item-name">
                           {sessionData.items[index].name}
                         </span>

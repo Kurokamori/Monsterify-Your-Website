@@ -132,7 +132,7 @@ const LoginPage = () => {
 
           <button
             type="submit"
-            className="auth-button"
+            className="button primary lg block"
             disabled={loading}
           >
             {loading ? (

@@ -96,7 +96,7 @@ const TasksTab = ({ trainers, onRefresh }) => {
       <div className="tab-header">
         <h2>Tasks</h2>
         <button
-          className="quick-action-btn"
+          className="button primary"
           onClick={() => setShowCreateForm(true)}
         >
           <i className="fas fa-plus"></i>
@@ -106,19 +106,19 @@ const TasksTab = ({ trainers, onRefresh }) => {
 
       <div className="tab-filters">
         <button
-          className={`filter-btn ${filter === 'all' ? 'active' : ''}`}
+          className={`button filter ${filter === 'all' ? 'active' : ''}`}
           onClick={() => setFilter('all')}
         >
           All ({tasks.length})
         </button>
         <button
-          className={`filter-btn ${filter === 'pending' ? 'active' : ''}`}
+          className={`button filter ${filter === 'pending' ? 'active' : ''}`}
           onClick={() => setFilter('pending')}
         >
           Pending ({tasks.filter(t => t.status === 'pending').length})
         </button>
         <button
-          className={`filter-btn ${filter === 'completed' ? 'active' : ''}`}
+          className={`button filter ${filter === 'completed' ? 'active' : ''}`}
           onClick={() => setFilter('completed')}
         >
           Completed ({tasks.filter(t => t.status === 'completed').length})
@@ -136,7 +136,7 @@ const TasksTab = ({ trainers, onRefresh }) => {
             }
           </p>
           <button
-            className="quick-action-btn"
+            className="button primary"
             onClick={() => setShowCreateForm(true)}
           >
             <i className="fas fa-plus"></i>

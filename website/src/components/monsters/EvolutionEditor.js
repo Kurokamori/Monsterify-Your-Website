@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import BackendFileUpload from '../common/BackendFileUpload';
-import './EvolutionEditor.css';
 
 const EvolutionEditor = ({ monsterId, evolutionData, onSave, onCancel, isOwner }) => {
   const [evolutionEntries, setEvolutionEntries] = useState([]);
@@ -446,7 +445,7 @@ const EvolutionEditor = ({ monsterId, evolutionData, onSave, onCancel, isOwner }
               <>
                 <button
                   type="button"
-                  className="button button-primary"
+                  className="button primary"
                   onClick={handleUpdateEntry}
                 >
                   <i className="fas fa-save"></i>
@@ -454,7 +453,7 @@ const EvolutionEditor = ({ monsterId, evolutionData, onSave, onCancel, isOwner }
                 </button>
                 <button
                   type="button"
-                  className="button button-secondary"
+                  className="button secondary"
                   onClick={() => {
                     setEditingIndex(null);
                     resetForm();
@@ -467,7 +466,7 @@ const EvolutionEditor = ({ monsterId, evolutionData, onSave, onCancel, isOwner }
             ) : (
               <button
                 type="button"
-                className="button button-primary"
+                className="button primary"
                 onClick={handleAddEntry}
               >
                 <i className="fas fa-plus"></i>
@@ -481,14 +480,14 @@ const EvolutionEditor = ({ monsterId, evolutionData, onSave, onCancel, isOwner }
       {/* Editor Actions */}
       <div className="evolution-editor-actions">
         <button
-          className="button button-primary"
+          className="button primary"
           onClick={handleSave}
         >
           <i className="fas fa-save"></i>
           Save Evolution Data
         </button>
         <button
-          className="cancel-evolution-button"
+          className="button secondary"
           onClick={onCancel}
         >
           <i className="fas fa-times"></i>

@@ -1,6 +1,5 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import './PromptCard.css';
 
 const PromptCard = ({ 
   prompt, 
@@ -163,7 +162,7 @@ const PromptCard = ({
         
         {showSubmissionButton && isAvailable && trainerId && (
           <button 
-            className="btn btn-primary submit-btn"
+            className="button primary submit-btn"
             onClick={() => onSubmit && onSubmit(prompt)}
           >
             Submit to Prompt

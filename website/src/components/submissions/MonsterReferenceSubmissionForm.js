@@ -548,7 +548,7 @@ const MonsterReferenceSubmissionForm = ({ onSubmissionComplete }) => {
                 {index > 0 && (
                   <button
                     type="button"
-                    className="button button-danger"
+                    className="button danger"
                     onClick={() => removeReference(index)}
                   >
                     Remove
@@ -742,7 +742,7 @@ const MonsterReferenceSubmissionForm = ({ onSubmissionComplete }) => {
           {!showBulkUpload && (
             <button
               type="button"
-              className="button button-primary"
+              className="button primary"
               onClick={addReference}
             >
               Add Another Reference
@@ -756,7 +756,7 @@ const MonsterReferenceSubmissionForm = ({ onSubmissionComplete }) => {
 
           <button
             type="button"
-            className="button button-secondary"
+            className="button secondary"
             onClick={calculateRewardEstimate}
             disabled={loading}
           >
@@ -788,7 +788,7 @@ const MonsterReferenceSubmissionForm = ({ onSubmissionComplete }) => {
         <div className="form-actions">
           <button
             type="submit"
-            className="button button-success"
+            className="button success"
             disabled={loading}
           >
             {loading ? (

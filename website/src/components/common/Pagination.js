@@ -57,7 +57,7 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
   return (
     <div className="pagination">
       <button
-        className="button button-secondary"
+        className="button secondary"
         onClick={() => onPageChange(currentPage - 1)}
         disabled={currentPage === 1}
       >
@@ -70,7 +70,7 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
         ) : (
           <button
             key={page}
-            className={`button button-secondary ${currentPage === page ? 'active' : ''}`}
+            className={`button secondary ${currentPage === page ? 'active' : ''}`}
             onClick={() => onPageChange(page)}
           >
             {page}
@@ -79,7 +79,7 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
       ))}
       
       <button
-        className="button button-secondary"
+        className="button secondary"
         onClick={() => onPageChange(currentPage + 1)}
         disabled={currentPage === totalPages}
       >

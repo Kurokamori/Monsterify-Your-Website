@@ -51,25 +51,25 @@ const AchievementsStats = () => {
 
         <div className="achievement-tabs">
           <button 
-            className={`tab-button ${activeTab === 'overview' ? 'active' : ''}`}
+            className={`button tab ${activeTab === 'overview' ? 'active' : ''}`}
             onClick={() => setActiveTab('overview')}
           >
             <i className="fas fa-chart-pie"></i> Overview
           </button>
           <button 
-            className={`tab-button ${activeTab === 'leaderboards' ? 'active' : ''}`}
+            className={`button tab ${activeTab === 'leaderboards' ? 'active' : ''}`}
             onClick={() => setActiveTab('leaderboards')}
           >
             <i className="fas fa-trophy"></i> Leaderboards
           </button>
           <button 
-            className={`tab-button ${activeTab === 'categories' ? 'active' : ''}`}
+            className={`button tab ${activeTab === 'categories' ? 'active' : ''}`}
             onClick={() => setActiveTab('categories')}
           >
             <i className="fas fa-tags"></i> Categories
           </button>
           <button 
-            className={`tab-button ${activeTab === 'subtypes' ? 'active' : ''}`}
+            className={`button tab ${activeTab === 'subtypes' ? 'active' : ''}`}
             onClick={() => setActiveTab('subtypes')}
           >
             <i className="fas fa-list"></i> Subtypes

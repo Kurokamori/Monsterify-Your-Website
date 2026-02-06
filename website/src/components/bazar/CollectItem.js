@@ -129,7 +129,7 @@ const CollectItem = ({ userTrainers }) => {
         
         <div className="item-actions">
           <button
-            className="btn btn-primary"
+            className="button primary"
             onClick={() => handleCollectClick(item)}
           >
             Collect
@@ -235,14 +235,14 @@ const CollectItem = ({ userTrainers }) => {
           </div>
           <div className="modal-actions">
             <button
-              className="btn btn-secondary"
+              className="button secondary"
               onClick={() => setShowCollectModal(false)}
               disabled={submitting}
             >
               Cancel
             </button>
             <button
-              className="btn btn-primary"
+              className="button primary"
               onClick={handleCollect}
               disabled={submitting || !selectedTrainer || collectQuantity <= 0 || collectQuantity > selectedItem.quantity}
             >

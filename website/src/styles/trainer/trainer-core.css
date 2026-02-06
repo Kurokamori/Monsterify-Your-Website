@@ -11,7 +11,7 @@
   gap: .5rem;
   flex-shrink: 0;
   border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0,0,0,.05);
+  box-shadow: 0 2px 10px var(--overlay-light);
   padding: 20px;
 }
 
@@ -23,7 +23,7 @@
   text-align: center;
   margin-top: .5rem;
   padding: .5rem;
-  background: rgba(212,175,55,.05);
+  background: var(--accent-glow);
   border-radius: 4px;
 }
 
@@ -54,7 +54,7 @@
   padding: .75rem;
   background-color: var(--card-background);
   border-radius: .5rem;
-  box-shadow: 0 2px 8px rgba(0,0,0,.1);
+  box-shadow: 0 2px 8px var(--overlay-light);
 }
 
 @media (max-width: 768px) {
@@ -154,7 +154,7 @@
   border-radius: .5rem;
   min-height: 200px;
   color: var(--text-color);
-  box-shadow: 0 2px 10px rgba(0,0,0,.05);
+  box-shadow: 0 2px 10px var(--overlay-light);
 }
 
 .no-trainers-message i{ font-size:3rem; color:var(--accent-color); margin-bottom:1rem; opacity:.7; }
@@ -206,24 +206,8 @@
   }
 }
 
-.clear-search-button {
-  background-color: var(--nav-hover);
-  color: var(--text-color);
-  border: 1px solid var(--boarder-color);
-  border-radius: .375rem;
-  padding: .5rem 1rem;
-  cursor: pointer;
-  font-size: var(--font-size-sm);
-  transition: background-color .2s, color .2s;
-  display: flex;
-  align-items: center;
-  gap: .5rem;
-}
-
-.clear-search-button:hover {
-  background-color: var(--nav-active);
-  color: var(--text-color);
-}
+/* Clear search button: Use unified button system from common/buttons.css
+   Example: className="button secondary sm" */
 
 
 /* ===== Trainer type badge ===== */
@@ -257,16 +241,16 @@
 }
 
 .status-message.success{
-  background-color:rgba(46,204,113,.2); border:1px solid rgba(46,204,113,.5); color:#2ecc71;
+  background-color:var(--success-glow); border:1px solid var(--success-color); color:var(--success-color);
 }
 .status-message.error{
-  background-color:rgba(231,76,60,.2); border:1px solid rgba(231,76,60,.5); color:#e74c3c;
+  background-color:var(--error-glow); border:1px solid var(--error-color); color:var(--error-color);
 }
 .status-message.info{
-  background-color:rgba(52,152,219,.2); border:1px solid rgba(52,152,219,.5); color:#3498db;
+  background-color:var(--blue-glow); border:1px solid var(--blue-color); color:var(--blue-color);
 }
 .status-message.warning{
-  background-color:rgba(241,196,15,.2); border:1px solid rgba(241,196,15,.5); color:#f1c40f;
+  background-color:var(--warning-glow); border:1px solid var(--warning-color); color:var(--warning-color);
 }
 
 
@@ -274,23 +258,11 @@
 
 .monster-level {
   font-weight: 500;
-  color: var(--gold-color);
+  color: var(--accent-color);
 }
 
-.view-monster-btn {
-  display: block;
-  width: 100%;
-  padding: 8px 0;
-  text-align: center;
-  background-color: var(--card-background);
-  color: var(--text-color);
-  border-radius: 4px;
-  text-decoration: none;
-  font-size: .9rem;
-  transition: background-color .2s;
-}
-
-.view-monster-btn:hover{ background-color:var(--nav-hover); }
+/* View monster button: Use unified button system from common/buttons.css
+   Example: className="button secondary block" */
 
 .monster-ref-stats {
   color: var(--text-muted);

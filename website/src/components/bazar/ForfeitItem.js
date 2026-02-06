@@ -235,7 +235,7 @@ const ForfeitItem = ({ userTrainers }) => {
           <div className="form-actions">
             <button
               type="submit"
-              className="btn btn-primary"
+              className="button primary"
               disabled={!selectedTrainer || !selectedCategory || !selectedItem || quantity <= 0 || submitting}
             >
               {submitting ? 'Forfeiting...' : 'Forfeit Item'}

@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
-import './AutocompleteInput.css';
 
 /**
  * AutocompleteInput component with suggestions dropdown and validation indicator

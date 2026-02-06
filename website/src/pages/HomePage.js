@@ -408,19 +408,19 @@ const HomePage = () => {
                 <div className="dashboard-card quick-actions">
                   <h3>Quick Actions</h3>
                   <div className="action-buttons">
-                    <Link to="/submissions/art" className="button button-primary art">
+                    <Link to="/submissions/art" className="button primary art">
                       <i className="fas fa-palette"></i>
                       <span>Submit Art</span>
                     </Link>
-                    <Link to="/submissions/writing" className="button button-primary writing">
+                    <Link to="/submissions/writing" className="button primary writing">
                       <i className="fas fa-feather-alt"></i>
                       <span>Submit Writing</span>
                     </Link>
-                    <Link to="/town/farm" className="button button-primary farm">
+                    <Link to="/town/farm" className="button primary farm">
                       <i className="fas fa-seedling"></i>
                       <span>Visit Farm</span>
                     </Link>
-                    <Link to="/town/adoption" className="button button-primary adoption">
+                    <Link to="/town/adoption" className="button primary adoption">
                       <i className="fas fa-heart"></i>
                       <span>Adoption Center</span>
                     </Link>
@@ -431,7 +431,7 @@ const HomePage = () => {
                 <div className="dashboard-card user-trainers">
                   <div className="card-header">
                     <h3>Your Trainers</h3>
-                    <Link to="/my_trainers" className="button button-primary view-all">View All</Link>
+                    <Link to="/my_trainers" className="button primary view-all">View All</Link>
                   </div>
                   <div className="compact-trainers">
                     {(userTrainers.length > 0 ? userTrainers : fallbackTrainers).slice(0, 5).map((trainer) => (
@@ -470,7 +470,7 @@ const HomePage = () => {
                   <div className="dashboard-card recent-tasks">
                     <div className="card-header">
                       <h3>Recent Tasks</h3>
-                      <Link to="/tasks" className="button button-primary view-all">View All</Link>
+                      <Link to="/tasks" className="button primary view-all">View All</Link>
                     </div>
                     <div className="task-list">
                       {recentTasks.map((task, index) => (
@@ -493,7 +493,7 @@ const HomePage = () => {
                   <div className="dashboard-card art-todos">
                     <div className="card-header">
                       <h3>Art Todo List</h3>
-                      <Link to="/profile/art-todo" className="button button-primary view-all">View All</Link>
+                      <Link to="/profile/art-todo" className="button primary view-all">View All</Link>
                     </div>
                     <div className="todo-list">
                       {artTodos.map((todo, index) => (
@@ -572,7 +572,7 @@ const HomePage = () => {
         <div className="discover-section">
           <div className="section-header">
             <h2>Discover Creatures</h2>
-            <Link to="/fakedex" className="button button-primary view-all-button">
+            <Link to="/fakedex" className="button primary button primary">
               <span>Explore Fakedex</span>
               <i className="fas fa-arrow-right"></i>
             </Link>

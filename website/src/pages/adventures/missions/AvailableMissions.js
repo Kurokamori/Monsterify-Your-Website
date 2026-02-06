@@ -248,7 +248,7 @@ const AvailableMissions = () => {
 
                 <div className="mission-actions">
                   <button
-                    className="start-mission-btn"
+                    className="button primary"
                     onClick={(e) => {
                       e.stopPropagation(); // Prevent card click
                       handleStartMission(mission.id);

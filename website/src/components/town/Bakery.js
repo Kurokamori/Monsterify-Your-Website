@@ -535,7 +535,7 @@ const Bakery = () => {
                 />
                 <div className="modal-actions">
                   <button
-                    className="modal-button primary"
+                    className="button primary"
                     onClick={closeMonsterModal}
                   >
                     Close
@@ -558,37 +558,37 @@ const Bakery = () => {
                     <h4>Filter by Category (stackable)</h4>
                     <div className="filter-buttons">
                       <button
-                        className={`button button-filter ${pastryFilters.type ? 'active' : ''}`}
+                        className={`button filter ${pastryFilters.type ? 'active' : ''}`}
                         onClick={() => toggleFilter('type')}
                       >
                         Type
                       </button>
                       <button
-                        className={`button button-filter ${pastryFilters.species ? 'active' : ''}`}
+                        className={`button filter ${pastryFilters.species ? 'active' : ''}`}
                         onClick={() => toggleFilter('species')}
                       >
                         Species
                       </button>
                       <button
-                        className={`button button-filter ${pastryFilters.set ? 'active' : ''}`}
+                        className={`button filter ${pastryFilters.set ? 'active' : ''}`}
                         onClick={() => toggleFilter('set')}
                       >
                         Set
                       </button>
                       <button
-                        className={`button button-filter ${pastryFilters.add ? 'active' : ''}`}
+                        className={`button filter ${pastryFilters.add ? 'active' : ''}`}
                         onClick={() => toggleFilter('add')}
                       >
                         Add
                       </button>
                       <button
-                        className={`button button-filter ${pastryFilters.misc ? 'active' : ''}`}
+                        className={`button filter ${pastryFilters.misc ? 'active' : ''}`}
                         onClick={() => toggleFilter('misc')}
                       >
                         Misc
                       </button>
                       <button
-                        className="button button-filter reset"
+                        className="button filter reset"
                         onClick={() => setPastryFilters({
                           type: false,
                           species: false,
@@ -607,50 +607,45 @@ const Bakery = () => {
                       <h4>Species Modification</h4>
                       <div className="pastry-items">
                         <button
-                          className="pastry-item"
+                          className={`pastry-item ${!matchesFilters('Patama Pastry') ? 'filtered-out' : ''}`}
                           onClick={() => setSelectedPastry('Patama Pastry')}
                           disabled={!isPastryAvailable('Patama Pastry')}
-                          style={{ display: matchesFilters('Patama Pastry') ? 'flex' : 'none' }}
                         >
                           <span className="pastry-name">Patama Pastry</span>
                           <span className="pastry-desc">Sets species 1</span>
                           {isPastryAvailable('Patama Pastry') && <span className="pastry-count">x{getPastryCount('Patama Pastry')}</span>}
                         </button>
                         <button
-                          className="pastry-item"
+                          className={`pastry-item ${!matchesFilters('Bluk Pastry') ? 'filtered-out' : ''}`}
                           onClick={() => setSelectedPastry('Bluk Pastry')}
                           disabled={!selectedMonster?.species2 || !isPastryAvailable('Bluk Pastry')}
-                          style={{ display: matchesFilters('Bluk Pastry') ? 'flex' : 'none' }}
                         >
                           <span className="pastry-name">Bluk Pastry</span>
                           <span className="pastry-desc">Sets species 2 (if present)</span>
                           {isPastryAvailable('Bluk Pastry') && <span className="pastry-count">x{getPastryCount('Bluk Pastry')}</span>}
                         </button>
                         <button
-                          className="pastry-item"
+                          className={`pastry-item ${!matchesFilters('Nuevo Pastry') ? 'filtered-out' : ''}`}
                           onClick={() => setSelectedPastry('Nuevo Pastry')}
                           disabled={!selectedMonster?.species3 || !isPastryAvailable('Nuevo Pastry')}
-                          style={{ display: matchesFilters('Nuevo Pastry') ? 'flex' : 'none' }}
                         >
                           <span className="pastry-name">Nuevo Pastry</span>
                           <span className="pastry-desc">Sets species 3 (if present)</span>
                           {isPastryAvailable('Nuevo Pastry') && <span className="pastry-count">x{getPastryCount('Nuevo Pastry')}</span>}
                         </button>
                         <button
-                          className="pastry-item"
+                          className={`pastry-item ${!matchesFilters('Azzuk Pastry') ? 'filtered-out' : ''}`}
                           onClick={() => setSelectedPastry('Azzuk Pastry')}
                           disabled={selectedMonster?.species2 || !isPastryAvailable('Azzuk Pastry')}
-                          style={{ display: matchesFilters('Azzuk Pastry') ? 'flex' : 'none' }}
                         >
                           <span className="pastry-name">Azzuk Pastry</span>
                           <span className="pastry-desc">Adds a new species to species 2 (if not present)</span>
                           {isPastryAvailable('Azzuk Pastry') && <span className="pastry-count">x{getPastryCount('Azzuk Pastry')}</span>}
                         </button>
                         <button
-                          className="pastry-item"
+                          className={`pastry-item ${!matchesFilters('Mangus Pastry') ? 'filtered-out' : ''}`}
                           onClick={() => setSelectedPastry('Mangus Pastry')}
                           disabled={selectedMonster?.species3 || !selectedMonster?.species2 || !isPastryAvailable('Mangus Pastry')}
-                          style={{ display: matchesFilters('Mangus Pastry') ? 'flex' : 'none' }}
                         >
                           <span className="pastry-name">Mangus Pastry</span>
                           <span className="pastry-desc">Adds a new species to species 3 (if not present)</span>
@@ -663,90 +658,81 @@ const Bakery = () => {
                       <h4>Type Modification</h4>
                       <div className="pastry-items">
                         <button
-                          className="pastry-item"
+                          className={`pastry-item ${!matchesFilters('Miraca Pastry') ? 'filtered-out' : ''}`}
                           onClick={() => setSelectedPastry('Miraca Pastry')}
                           disabled={!isPastryAvailable('Miraca Pastry')}
-                          style={{ display: matchesFilters('Miraca Pastry') ? 'flex' : 'none' }}
                         >
                           <span className="pastry-name">Miraca Pastry</span>
                           <span className="pastry-desc">Sets type 1</span>
                           {isPastryAvailable('Miraca Pastry') && <span className="pastry-count">x{getPastryCount('Miraca Pastry')}</span>}
                         </button>
                         <button
-                          className="pastry-item"
+                          className={`pastry-item ${!matchesFilters('Cocon Pastry') ? 'filtered-out' : ''}`}
                           onClick={() => setSelectedPastry('Cocon Pastry')}
                           disabled={!selectedMonster?.type2 || !isPastryAvailable('Cocon Pastry')}
-                          style={{ display: matchesFilters('Cocon Pastry') ? 'flex' : 'none' }}
                         >
                           <span className="pastry-name">Cocon Pastry</span>
                           <span className="pastry-desc">Sets type 2 (if present)</span>
                           {isPastryAvailable('Cocon Pastry') && <span className="pastry-count">x{getPastryCount('Cocon Pastry')}</span>}
                         </button>
                         <button
-                          className="pastry-item"
+                          className={`pastry-item ${!matchesFilters('Durian Pastry') ? 'filtered-out' : ''}`}
                           onClick={() => setSelectedPastry('Durian Pastry')}
                           disabled={!selectedMonster?.type3 || !isPastryAvailable('Durian Pastry')}
-                          style={{ display: matchesFilters('Durian Pastry') ? 'flex' : 'none' }}
                         >
                           <span className="pastry-name">Durian Pastry</span>
                           <span className="pastry-desc">Sets type 3 (if present)</span>
                           {isPastryAvailable('Durian Pastry') && <span className="pastry-count">x{getPastryCount('Durian Pastry')}</span>}
                         </button>
                         <button
-                          className="pastry-item"
+                          className={`pastry-item ${!matchesFilters('Monel Pastry') ? 'filtered-out' : ''}`}
                           onClick={() => setSelectedPastry('Monel Pastry')}
                           disabled={!selectedMonster?.type4 || !isPastryAvailable('Monel Pastry')}
-                          style={{ display: matchesFilters('Monel Pastry') ? 'flex' : 'none' }}
                         >
                           <span className="pastry-name">Monel Pastry</span>
                           <span className="pastry-desc">Sets type 4 (if present)</span>
                           {isPastryAvailable('Monel Pastry') && <span className="pastry-count">x{getPastryCount('Monel Pastry')}</span>}
                         </button>
                         <button
-                          className="pastry-item"
+                          className={`pastry-item ${!matchesFilters('Perep Pastry') ? 'filtered-out' : ''}`}
                           onClick={() => setSelectedPastry('Perep Pastry')}
                           disabled={!selectedMonster?.type5 || !isPastryAvailable('Perep Pastry')}
-                          style={{ display: matchesFilters('Perep Pastry') ? 'flex' : 'none' }}
                         >
                           <span className="pastry-name">Perep Pastry</span>
                           <span className="pastry-desc">Sets type 5 (if present)</span>
                           {isPastryAvailable('Perep Pastry') && <span className="pastry-count">x{getPastryCount('Perep Pastry')}</span>}
                         </button>
                         <button
-                          className="pastry-item"
+                          className={`pastry-item ${!matchesFilters('Addish Pastry') ? 'filtered-out' : ''}`}
                           onClick={() => setSelectedPastry('Addish Pastry')}
                           disabled={selectedMonster?.type2 || !isPastryAvailable('Addish Pastry')}
-                          style={{ display: matchesFilters('Addish Pastry') ? 'flex' : 'none' }}
                         >
                           <span className="pastry-name">Addish Pastry</span>
                           <span className="pastry-desc">Adds type 2 (if not present)</span>
                           {isPastryAvailable('Addish Pastry') && <span className="pastry-count">x{getPastryCount('Addish Pastry')}</span>}
                         </button>
                         <button
-                          className="pastry-item"
+                          className={`pastry-item ${!matchesFilters('Sky Carrot Pastry') ? 'filtered-out' : ''}`}
                           onClick={() => setSelectedPastry('Sky Carrot Pastry')}
                           disabled={selectedMonster?.type3 || !selectedMonster?.type2 || !isPastryAvailable('Sky Carrot Pastry')}
-                          style={{ display: matchesFilters('Sky Carrot Pastry') ? 'flex' : 'none' }}
                         >
                           <span className="pastry-name">Sky Carrot Pastry</span>
                           <span className="pastry-desc">Adds type 3 (if not present)</span>
                           {isPastryAvailable('Sky Carrot Pastry') && <span className="pastry-count">x{getPastryCount('Sky Carrot Pastry')}</span>}
                         </button>
                         <button
-                          className="pastry-item"
+                          className={`pastry-item ${!matchesFilters('Kembre Pastry') ? 'filtered-out' : ''}`}
                           onClick={() => setSelectedPastry('Kembre Pastry')}
                           disabled={selectedMonster?.type4 || !selectedMonster?.type3 || !isPastryAvailable('Kembre Pastry')}
-                          style={{ display: matchesFilters('Kembre Pastry') ? 'flex' : 'none' }}
                         >
                           <span className="pastry-name">Kembre Pastry</span>
                           <span className="pastry-desc">Adds type 4 (if not present)</span>
                           {isPastryAvailable('Kembre Pastry') && <span className="pastry-count">x{getPastryCount('Kembre Pastry')}</span>}
                         </button>
                         <button
-                          className="pastry-item"
+                          className={`pastry-item ${!matchesFilters('Espara Pastry') ? 'filtered-out' : ''}`}
                           onClick={() => setSelectedPastry('Espara Pastry')}
                           disabled={selectedMonster?.type5 || !selectedMonster?.type4 || !isPastryAvailable('Espara Pastry')}
-                          style={{ display: matchesFilters('Espara Pastry') ? 'flex' : 'none' }}
                         >
                           <span className="pastry-name">Espara Pastry</span>
                           <span className="pastry-desc">Adds type 5 (if not present)</span>
@@ -759,10 +745,9 @@ const Bakery = () => {
                       <h4>Attribute Modification</h4>
                       <div className="pastry-items">
                         <button
-                          className="pastry-item"
+                          className={`pastry-item ${!matchesFilters('Datei Pastry') ? 'filtered-out' : ''}`}
                           onClick={() => setSelectedPastry('Datei Pastry')}
                           disabled={!isPastryAvailable('Datei Pastry')}
-                          style={{ display: matchesFilters('Datei Pastry') ? 'flex' : 'none' }}
                         >
                           <span className="pastry-name">Datei Pastry</span>
                           <span className="pastry-desc">Sets attribute</span>
@@ -780,13 +765,13 @@ const Bakery = () => {
 
                   <div className="pastry-actions">
                     <button
-                      className="modal-button secondary"
+                      className="button secondary"
                       onClick={closeMonsterModal}
                     >
                       Cancel
                     </button>
                     <button
-                      className="modal-button primary"
+                      className="button primary"
                       onClick={handleUsePastry}
                       disabled={pastryLoading || !selectedPastry}
                     >
@@ -843,13 +828,13 @@ const Bakery = () => {
 
           <div className="value-actions">
             <button
-              className="modal-button secondary"
+              className="button secondary"
               onClick={() => setShowValueModal(false)}
             >
               Cancel
             </button>
             <button
-              className="modal-button primary"
+              className="button primary"
               onClick={confirmValueSelection}
               disabled={!selectedValue}
             >

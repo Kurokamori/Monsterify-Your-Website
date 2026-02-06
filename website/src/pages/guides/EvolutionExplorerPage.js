@@ -6,7 +6,6 @@ import api from '../../services/api';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
 import ErrorMessage from '../../components/common/ErrorMessage';
 import useDocumentTitle from '../../hooks/useDocumentTitle';
-import './EvolutionExplorerPage.css';
 
 const EvolutionExplorerPage = () => {
   useDocumentTitle('Evolution Explorer - Guides');
@@ -629,7 +628,7 @@ const EvolutionExplorerPage = () => {
       {!showSearch && (
         <div className="evolution-tree-section">
           <div className="tree-header">
-            <button className="button button-secondary" onClick={resetToSearch}>
+            <button className="button secondary" onClick={resetToSearch}>
               ← Back to Search
             </button>
             <h2>Evolution tree for {selectedSpecies}</h2>

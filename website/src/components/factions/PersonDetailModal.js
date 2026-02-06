@@ -54,7 +54,7 @@ const PersonDetailModal = ({ person, trainerId, onClose, onPersonMet }) => {
       <div className="person-detail-modal" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
           <h2>Meet {person.alias}</h2>
-          <button className="close-button" onClick={onClose}>×</button>
+          <button className="button close" onClick={onClose}>×</button>
         </div>
 
         <div className="modal-content">
@@ -142,7 +142,7 @@ const PersonDetailModal = ({ person, trainerId, onClose, onPersonMet }) => {
             </div>
 
             <div className="form-actions">
-              <button type="button" onClick={onClose} className="button button-secondary">
+              <button type="button" onClick={onClose} className="button secondary">
                 Cancel
               </button>
               <button 

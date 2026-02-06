@@ -173,7 +173,7 @@ const AntiqueAuction = ({ trainerId, antique, onClose, userTrainers = [] }) => {
           <p>No auction options available for this antique.</p>
           <p>This antique can only be used for appraisal (random roll).</p>
           <button
-            className="btn btn-primary"
+            className="button primary"
             onClick={onClose}
           >
             Close
@@ -266,7 +266,7 @@ const AntiqueAuction = ({ trainerId, antique, onClose, userTrainers = [] }) => {
       <div className="antique-auction-content">
         <div className="antique-auction-header">
           <h2>Auction Antique: {antique}</h2>
-          <button className="close-button" onClick={onClose}>&times;</button>
+          <button className="button close" onClick={onClose}>&times;</button>
         </div>
 
         <div className="antique-auction-body">
@@ -283,7 +283,7 @@ const AntiqueAuction = ({ trainerId, antique, onClose, userTrainers = [] }) => {
               <p>You've successfully adopted <strong>{monsterName}</strong>!</p>
               <p>Your new monster has been added to your team.</p>
               <button
-                className="btn btn-primary"
+                className="button primary"
                 onClick={onClose}
               >
                 Close
@@ -334,14 +334,14 @@ const AntiqueAuction = ({ trainerId, antique, onClose, userTrainers = [] }) => {
                     ) : (
                       <>
                         <button
-                          className="btn btn-primary"
+                          className="button primary"
                           onClick={handleAuction}
                           disabled={!monsterName.trim() || !selectedOption}
                         >
                           Claim Monster
                         </button>
                         <button
-                          className="btn btn-secondary"
+                          className="button secondary"
                           onClick={onClose}
                         >
                           Cancel

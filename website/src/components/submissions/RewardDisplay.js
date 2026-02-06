@@ -317,14 +317,14 @@ const RewardDisplay = ({
           <div className="form-actions">
             <button
               type="button"
-              className="button button-secondary"
+              className="button secondary"
               onClick={() => setShowAllocateForm(false)}
             >
               Cancel
             </button>
             <button
               type="button"
-              className="button button-primary"
+              className="button primary"
               onClick={handleAllocateSubmit}
               disabled={!selectedRecipientId || allocateAmount <= 0 || allocateAmount > getAvailableAmount()}
             >

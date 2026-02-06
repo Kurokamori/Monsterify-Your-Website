@@ -948,7 +948,7 @@ const WritingSubmissionForm = ({ onSubmissionComplete }) => {
               />
               <button
                 type="button"
-                className="button button-primary"
+                className="button primary"
                 onClick={addTag}
               >
                 Add
@@ -963,7 +963,7 @@ const WritingSubmissionForm = ({ onSubmissionComplete }) => {
                   <span>{tag}</span>
                   <button
                     type="button"
-                    className="button button-icon button-danger"
+                    className="button icon danger"
                     onClick={() => removeTag(tag)}
                   >
                     &times;
@@ -1154,14 +1154,14 @@ const WritingSubmissionForm = ({ onSubmissionComplete }) => {
                       <div className="chapter-card-actions">
                         <button
                           type="button"
-                          className="chapter-edit-button"
+                          className="button primary"
                           onClick={() => handleEditChapter(index)}
                         >
                           Edit
                         </button>
                         <button
                           type="button"
-                          className="chapter-button button-danger"
+                          className="button danger"
                           onClick={() => handleRemoveChapter(index)}
                         >
                           &times;
@@ -1180,7 +1180,7 @@ const WritingSubmissionForm = ({ onSubmissionComplete }) => {
             {!showAddChapter && (
               <button
                 type="button"
-                className="add-chapter-button"
+                className="button primary"
                 onClick={() => {
                   resetChapterForm();
                   setShowAddChapter(true);
@@ -1308,14 +1308,14 @@ const WritingSubmissionForm = ({ onSubmissionComplete }) => {
                 <div className="chapter-form-actions">
                   <button
                     type="button"
-                    className="button button-primary"
+                    className="button primary"
                     onClick={handleSaveChapter}
                   >
                     {editingChapterIndex !== null ? 'Update Chapter' : 'Save Chapter'}
                   </button>
                   <button
                     type="button"
-                    className="button button-secondary"
+                    className="button secondary"
                     onClick={resetChapterForm}
                   >
                     Cancel
@@ -1363,7 +1363,7 @@ const WritingSubmissionForm = ({ onSubmissionComplete }) => {
 
             <button
               type="button"
-              className="button button-primary"
+              className="button secondary"
               onClick={calculateRewardEstimate}
               disabled={loading}
             >
@@ -1414,7 +1414,7 @@ const WritingSubmissionForm = ({ onSubmissionComplete }) => {
         <div className="form-actions">
           <button
             type="submit"
-            className="button button-success"
+            className="button success"
             disabled={loading}
           >
             {loading ? (

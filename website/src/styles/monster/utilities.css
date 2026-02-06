@@ -67,7 +67,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: var(--placeholder-bg, #e5e7eb);
+  background-color: var(--placeholder-bg, var(--text-color));
   color: var(--text-muted);
   font-size: 2rem;
   border-radius: 0.5rem;
@@ -136,23 +136,23 @@
 
 @keyframes mythical-card-glow {
   0%, 100% {
-    box-shadow: 0 0 10px rgba(219, 39, 119, 0.4),
-                0 0 20px rgba(219, 39, 119, 0.2);
+    box-shadow: 0 0 10px var(--error-glow),
+                0 0 20px var(--error-glow);
   }
   50% {
-    box-shadow: 0 0 20px rgba(219, 39, 119, 0.6),
-                0 0 40px rgba(219, 39, 119, 0.3);
+    box-shadow: 0 0 20px var(--error-glow),
+                0 0 40px var(--error-glow);
   }
 }
 
 @keyframes legendary-card-glow {
   0%, 100% {
-    box-shadow: 0 0 10px rgba(245, 158, 11, 0.4),
-                0 0 20px rgba(245, 158, 11, 0.2);
+    box-shadow: 0 0 10px var(--warning-glow),
+                0 0 20px var(--warning-glow);
   }
   50% {
-    box-shadow: 0 0 20px rgba(245, 158, 11, 0.6),
-                0 0 40px rgba(245, 158, 11, 0.3);
+    box-shadow: 0 0 20px var(--warning-glow),
+                0 0 40px var(--warning-glow);
   }
 }
 

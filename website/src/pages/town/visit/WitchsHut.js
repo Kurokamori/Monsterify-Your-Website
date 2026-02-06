@@ -27,8 +27,8 @@ const WitchsHutPage = () => {
       <div className="witchs-hut-page error">
         <ErrorMessage message="You must be logged in to access the Witch's Hut." />
         <div className="auth-actions">
-          <Link to="/login" className="btn btn-primary">Login</Link>
-          <Link to="/register" className="btn btn-secondary">Register</Link>
+          <Link to="/login" className="button primary">Login</Link>
+          <Link to="/register" className="button secondary">Register</Link>
         </div>
       </div>
     );
@@ -37,7 +37,7 @@ const WitchsHutPage = () => {
   return (
     <div className="witchs-hut-page">
       <div className="page-header">
-        <Link to="/town" className="button button-secondary">
+        <Link to="/town" className="button secondary">
           <i className="fas fa-arrow-left"></i> Back to Town
         </Link>
         <h1>Witch's Hut</h1>

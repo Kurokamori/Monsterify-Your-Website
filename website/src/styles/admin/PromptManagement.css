@@ -1,0 +1,80 @@
+.prompt-management {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 20px;
+  background: var(--background-color);
+  color: var(--text-color);
+  min-height: 100vh;
+}
+
+.prompt-management-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  padding-bottom: 15px;
+  border-bottom: 2px solid var(--border-color);
+}
+
+.prompt-management-header h2 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--text-color);
+  margin: 0;
+}
+
+.header-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.prompt-management-tabs {
+  display: flex;
+  gap: 2px;
+  margin-bottom: 30px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.prompt-management-content {
+  min-height: 400px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .prompt-management {
+    padding: 15px;
+  }
+
+  .prompt-management-header {
+    flex-direction: column;
+    gap: 15px;
+    align-items: flex-start;
+  }
+
+  .prompt-management-header h2 {
+    font-size: 1.5rem;
+  }
+
+  .prompt-management-tabs {
+    flex-direction: column;
+    gap: 0;
+  }
+}
+
+/* Loading States */
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px;
+  color: var(--text-muted);
+}
+
+/* Focus styles moved to unified button system in common/buttons.css */
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .prompt-management-tabs {
+    border-bottom-width: 2px;
+  }
+}

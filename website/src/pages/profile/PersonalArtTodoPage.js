@@ -653,12 +653,12 @@ const PersonalArtTodoPage = () => {
           <div className="modal-actions">
             <button
               type="button"
-              className="modal-button secondary"
+              className="button secondary"
               onClick={() => setIsCreateListModalOpen(false)}
             >
               Cancel
             </button>
-            <button type="submit" className="modal-button primary">
+            <button type="submit" className="button primary">
               Create List
             </button>
           </div>
@@ -698,12 +698,12 @@ const PersonalArtTodoPage = () => {
           <div className="modal-actions">
             <button
               type="button"
-              className="modal-button secondary"
+              className="button secondary"
               onClick={() => setIsEditListModalOpen(false)}
             >
               Cancel
             </button>
-            <button type="submit" className="modal-button primary">
+            <button type="submit" className="button primary">
               Update List
             </button>
           </div>
@@ -805,12 +805,12 @@ const PersonalArtTodoPage = () => {
           <div className="modal-actions">
             <button
               type="button"
-              className="modal-button secondary"
+              className="button secondary"
               onClick={() => setIsCreateItemModalOpen(false)}
             >
               Cancel
             </button>
-            <button type="submit" className="modal-button primary">
+            <button type="submit" className="button primary">
               Create Item
             </button>
           </div>
@@ -912,12 +912,12 @@ const PersonalArtTodoPage = () => {
           <div className="modal-actions">
             <button
               type="button"
-              className="modal-button secondary"
+              className="button secondary"
               onClick={() => setIsEditItemModalOpen(false)}
             >
               Cancel
             </button>
-            <button type="submit" className="modal-button primary">
+            <button type="submit" className="button primary">
               Update Item
             </button>
           </div>
@@ -973,15 +973,15 @@ const PersonalArtTodoPage = () => {
             <h3>Add References</h3>
 
             <div className="reference-tabs">
-              <div className="tab-buttons">
+              <div className="button tabs">
                 <button
-                  className={`tab-button ${selectedTab === 'trainers' ? 'active' : ''}`}
+                  className={`button tab ${selectedTab === 'trainers' ? 'active' : ''}`}
                   onClick={() => setSelectedTab('trainers')}
                 >
                   Trainers
                 </button>
                 <button
-                  className={`tab-button ${selectedTab === 'monsters' ? 'active' : ''}`}
+                  className={`button tab ${selectedTab === 'monsters' ? 'active' : ''}`}
                   onClick={() => setSelectedTab('monsters')}
                 >
                   Monsters
@@ -1109,7 +1109,7 @@ const PersonalArtTodoPage = () => {
 
           <div className="modal-actions">
             <button
-              className="modal-button primary"
+              className="button primary"
               onClick={() => setIsReferenceModalOpen(false)}
             >
               Done
@@ -1192,7 +1192,7 @@ const PersonalArtTodoPage = () => {
             </div>
             <div className="image-viewer-actions">
               <button
-                className="modal-button primary"
+                className="button primary"
                 onClick={() => {
                   const detailPath = selectedReference.reference_type === 'trainer'
                     ? `/trainers/${selectedReference.reference_id}`
@@ -1203,7 +1203,7 @@ const PersonalArtTodoPage = () => {
                 <i className="fas fa-external-link-alt"></i> Visit Details
               </button>
               <button
-                className="modal-button secondary"
+                className="button secondary"
                 onClick={() => setIsImageViewerOpen(false)}
               >
                 Close

@@ -103,13 +103,13 @@ const SubmissionPage = () => {
 
         <div className="submission-tabs">
           <button
-            className={`tab-button ${activeTab === 'art-gallery' ? 'active' : ''}`}
+            className={`button tab ${activeTab === 'art-gallery' ? 'active' : ''}`}
             onClick={() => handleTabChange('art-gallery')}
           >
             <i className="fas fa-images"></i> Gallery
           </button>
           <button
-            className={`tab-button ${activeTab === 'writing-library' ? 'active' : ''}`}
+            className={`button tab ${activeTab === 'writing-library' ? 'active' : ''}`}
             onClick={() => handleTabChange('writing-library')}
           >
             <i className="fas fa-book"></i> Library
@@ -117,13 +117,13 @@ const SubmissionPage = () => {
           {isAuthenticated && (
             <>
               <button
-                className={`tab-button ${activeTab === 'submission-types' ? 'active' : ''}`}
+                className={`button tab ${activeTab === 'submission-types' ? 'active' : ''}`}
                 onClick={() => handleTabChange('submission-types')}
               >
                 <i className="fas fa-plus-circle"></i> Submit
               </button>
               <button
-                className={`tab-button ${activeTab === 'my-submissions' ? 'active' : ''}`}
+                className={`button tab ${activeTab === 'my-submissions' ? 'active' : ''}`}
                 onClick={() => handleTabChange('my-submissions')}
               >
                 <i className="fas fa-user"></i> My Submissions
@@ -148,7 +148,7 @@ const SubmissionPage = () => {
                   </div>
                   <h3>Art Submission</h3>
                   <p>Submit your artwork and earn rewards based on quality and complexity.</p>
-                  <button className="submission-type-button">
+                  <button className="button primary">
                     <i className="fas fa-arrow-right"></i> Submit Art
                   </button>
                 </div>
@@ -159,7 +159,7 @@ const SubmissionPage = () => {
                   </div>
                   <h3>Writing Submission</h3>
                   <p>Submit stories, poems, and other written works to earn rewards based on word count.</p>
-                  <button className="submission-type-button">
+                  <button className="button primary">
                     <i className="fas fa-arrow-right"></i> Submit Writing
                   </button>
                 </div>
@@ -174,7 +174,7 @@ const SubmissionPage = () => {
                 </div>
                 <h3>Trainer Reference</h3>
                 <p>Submit reference images for your trainers to help artists draw your characters accurately.</p>
-                <button className="submission-type-button">
+                <button className="button primary">
                   <i className="fas fa-arrow-right"></i> Submit Reference
                 </button>
               </div>
@@ -185,7 +185,7 @@ const SubmissionPage = () => {
                 </div>
                 <h3>Monster Reference</h3>
                 <p>Submit reference images for your monsters to help artists draw them accurately.</p>
-                <button className="submission-type-button">
+                <button className="button primary">
                   <i className="fas fa-arrow-right"></i> Submit Reference
                 </button>
               </div>
@@ -196,7 +196,7 @@ const SubmissionPage = () => {
                 </div>
                 <h3>Mega Image Reference</h3>
                 <p>Submit mega evolution images for your monsters to display their mega forms.</p>
-                <button className="submission-type-button">
+                <button className="button primary">
                   <i className="fas fa-arrow-right"></i> Submit Mega Image
                 </button>
               </div>
@@ -207,7 +207,7 @@ const SubmissionPage = () => {
                 </div>
                 <h3>Trainer Mega Reference</h3>
                 <p>Submit mega evolution images for your trainers with optional mega information.</p>
-                <button className="submission-type-button">
+                <button className="button primary">
                   <i className="fas fa-arrow-right"></i> Submit Trainer Mega
                 </button>
               </div>
@@ -223,17 +223,17 @@ const SubmissionPage = () => {
                 </div>
                 <h3>Prompt Submissions</h3>
                 <p>Complete specific prompts to earn special rewards and participate in events.</p>
-                <div className="prompt-buttons">
-                  <button className="prompt-button" onClick={() => navigateToSubmission('prompt', 'general')}>
+                <div className="button primarys">
+                  <button className="button primary" onClick={() => navigateToSubmission('prompt', 'general')}>
                     General
                   </button>
-                  <button className="prompt-button" onClick={() => navigateToSubmission('prompt', 'progression')}>
+                  <button className="button primary" onClick={() => navigateToSubmission('prompt', 'progression')}>
                     Progression
                   </button>
-                  <button className="prompt-button" onClick={() => navigateToSubmission('prompt', 'monthly')}>
+                  <button className="button primary" onClick={() => navigateToSubmission('prompt', 'monthly')}>
                     Monthly
                   </button>
-                  <button className="prompt-button" onClick={() => navigateToSubmission('prompt', 'event')}>
+                  <button className="button primary" onClick={() => navigateToSubmission('prompt', 'event')}>
                     Event
                   </button>
                 </div>

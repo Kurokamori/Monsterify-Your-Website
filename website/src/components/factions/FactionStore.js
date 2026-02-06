@@ -189,7 +189,7 @@ const FactionStore = ({ factionId, trainerId, faction }) => {
 
               <div className="item-actions">
                 <button
-                  className={`purchase-button ${
+                  className={`button primary ${
                     !canAfford(item.price) ? 'cannot-afford' :
                     !isInStock(item) ? 'out-of-stock' :
                     purchaseLoading === item.id ? 'loading' : ''

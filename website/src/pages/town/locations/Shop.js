@@ -4,7 +4,6 @@ import LoadingSpinner from '../../../components/common/LoadingSpinner';
 import ErrorMessage from '../../../components/common/ErrorMessage';
 import Modal from '../../../components/common/Modal';
 import api from '../../../services/api';
-import '../../../styles/ShopStyles.css';
 const Shop = () => {
   const { currentUser } = useAuth();
   
@@ -281,37 +280,37 @@ const Shop = () => {
             <h4>Filter Berries by Type (stackable) - Debug: {selectedCategory}</h4>
             <div className="filter-buttons">
               <button
-                className={`button button-filter ${berryFilters.type ? 'active' : ''}`}
+                className={`button filter ${berryFilters.type ? 'active' : ''}`}
                 onClick={() => toggleBerryFilter('type')}
               >
                 Type
               </button>
               <button
-                className={`button button-filter ${berryFilters.species ? 'active' : ''}`}
+                className={`button filter ${berryFilters.species ? 'active' : ''}`}
                 onClick={() => toggleBerryFilter('species')}
               >
                 Species
               </button>
               <button
-                className={`button button-filter ${berryFilters.randomize ? 'active' : ''}`}
+                className={`button filter ${berryFilters.randomize ? 'active' : ''}`}
                 onClick={() => toggleBerryFilter('randomize')}
               >
                 Randomize
               </button>
               <button
-                className={`button button-filter ${berryFilters.remove ? 'active' : ''}`}
+                className={`button filter ${berryFilters.remove ? 'active' : ''}`}
                 onClick={() => toggleBerryFilter('remove')}
               >
                 Remove
               </button>
               <button
-                className={`button button-filter ${berryFilters.misc ? 'active' : ''}`}
+                className={`button filter ${berryFilters.misc ? 'active' : ''}`}
                 onClick={() => toggleBerryFilter('misc')}
               >
                 Misc
               </button>
               <button
-                className="button button-filter reset"
+                className="button filter reset"
                 onClick={() => setBerryFilters({
                   type: false,
                   species: false,
@@ -376,7 +375,7 @@ const Shop = () => {
               The item(s) have been added to your inventory.
             </p>
             <button 
-              className="modal-button primary"
+              className="button primary"
               onClick={closeBuyModal}
             >
               Close
@@ -464,13 +463,13 @@ const Shop = () => {
                 
                 <div className="purchase-actions">
                   <button 
-                    className="modal-button secondary"
+                    className="button secondary"
                     onClick={closeBuyModal}
                   >
                     Cancel
                   </button>
                   <button 
-                    className="modal-button primary"
+                    className="button primary"
                     onClick={handleBuy}
                     disabled={loading}
                   >

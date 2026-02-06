@@ -334,7 +334,7 @@ const MonsterCard = ({ monster, linkToDetail = true, fullHeight = false }) => {
       onClick={closeModal}
     >
       <div className="modal-content" onClick={e => e.stopPropagation()}>
-        <button className="close-button" onClick={closeModal}>×</button>
+        <button className="button close" onClick={closeModal}>×</button>
         <img src={selectedImage} alt="Reference" className="modal-image" />
       </div>
     </div>,

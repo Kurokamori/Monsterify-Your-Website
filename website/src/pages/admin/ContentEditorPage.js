@@ -267,12 +267,12 @@ const ContentEditorPage = () => {
 
         {/* Action Buttons */}
         <div className="admin-actions">
-          <Link 
-            to={parentPath 
-              ? `/admin/content/${category}?path=${parentPath}` 
+          <Link
+            to={parentPath
+              ? `/admin/content/${category}?path=${parentPath}`
               : `/admin/content/${category}`
-            } 
-            className="admin-button secondary"
+            }
+            className="button secondary"
           >
             <i className="fas fa-arrow-left"></i> Back to Content
           </Link>
@@ -348,17 +348,17 @@ const ContentEditorPage = () => {
                     Content (Markdown)
                   </label>
                   <div className="admin-editor-toolbar">
-                    <button type="button" className="admin-editor-btn" onClick={() => insertMarkdown('# ')}>H1</button>
-                    <button type="button" className="admin-editor-btn" onClick={() => insertMarkdown('## ')}>H2</button>
-                    <button type="button" className="admin-editor-btn" onClick={() => insertMarkdown('### ')}>H3</button>
-                    <button type="button" className="admin-editor-btn" onClick={() => insertMarkdown('**', '**')}>Bold</button>
-                    <button type="button" className="admin-editor-btn" onClick={() => insertMarkdown('*', '*')}>Italic</button>
-                    <button type="button" className="admin-editor-btn" onClick={() => insertMarkdown('[', '](url)')}>Link</button>
-                    <button type="button" className="admin-editor-btn" onClick={() => insertMarkdown('- ')}>List</button>
-                    <button type="button" className="admin-editor-btn" onClick={() => insertMarkdown('1. ')}>Numbered</button>
-                    <button type="button" className="admin-editor-btn" onClick={() => insertMarkdown('> ')}>Quote</button>
-                    <button type="button" className="admin-editor-btn" onClick={() => insertMarkdown('```\n', '\n```')}>Code</button>
-                    <button type="button" className="admin-editor-btn" onClick={() => insertMarkdown('---\n')}>Divider</button>
+                    <button type="button" className="button primary" onClick={() => insertMarkdown('# ')}>H1</button>
+                    <button type="button" className="button primary" onClick={() => insertMarkdown('## ')}>H2</button>
+                    <button type="button" className="button primary" onClick={() => insertMarkdown('### ')}>H3</button>
+                    <button type="button" className="button primary" onClick={() => insertMarkdown('**', '**')}>Bold</button>
+                    <button type="button" className="button primary" onClick={() => insertMarkdown('*', '*')}>Italic</button>
+                    <button type="button" className="button primary" onClick={() => insertMarkdown('[', '](url)')}>Link</button>
+                    <button type="button" className="button primary" onClick={() => insertMarkdown('- ')}>List</button>
+                    <button type="button" className="button primary" onClick={() => insertMarkdown('1. ')}>Numbered</button>
+                    <button type="button" className="button primary" onClick={() => insertMarkdown('> ')}>Quote</button>
+                    <button type="button" className="button primary" onClick={() => insertMarkdown('```\n', '\n```')}>Code</button>
+                    <button type="button" className="button primary" onClick={() => insertMarkdown('---\n')}>Divider</button>
                   </div>
                   <textarea
                     id="content"
@@ -382,19 +382,19 @@ const ContentEditorPage = () => {
               </div>
 
               <div className="admin-form-actions">
-                <Link 
-                  to={parentPath 
-                    ? `/admin/content/${category}?path=${parentPath}` 
+                <Link
+                  to={parentPath
+                    ? `/admin/content/${category}?path=${parentPath}`
                     : `/admin/content/${category}`
                   }
-                  className="admin-button secondary"
+                  className="button secondary"
                   disabled={saving}
                 >
                   Cancel
                 </Link>
-                <button 
-                  type="submit" 
-                  className="admin-button"
+                <button
+                  type="submit"
+                  className="button primary"
                   disabled={saving}
                 >
                   {saving ? (

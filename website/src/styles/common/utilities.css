@@ -41,3 +41,35 @@
 .ml-2 {
   margin-left: 0.5rem;
 }
+
+/* ==============================
+   Display Utilities
+   ============================== */
+
+.hidden {
+  display: none !important;
+}
+
+.filtered-out {
+  display: none !important;
+}
+
+/* ==============================
+   Spacing Utilities
+   ============================== */
+
+.mb-1 {
+  margin-bottom: 1rem;
+}
+
+.mb-1-5 {
+  margin-bottom: 1.5rem;
+}
+
+.mt-1-5 {
+  margin-top: 1.5rem;
+}
+
+.mt-1 {
+  margin-top: 1rem;
+}

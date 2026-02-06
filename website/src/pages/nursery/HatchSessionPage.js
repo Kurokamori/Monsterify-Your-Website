@@ -288,13 +288,13 @@ const HatchSessionPage = () => {
           </div>
           <div className="success-actions">
             <button
-              className="nursery-action-button primary large"
+              className="button primary large"
               onClick={() => navigate('/town/nursery')}
             >
-              <span className="button-icon">
+              <span className="icon">
                 <i className="fas fa-home"></i>
               </span>
-              <span className="button-text">Return to Nursery</span>
+              <span className="button">Return to Nursery</span>
             </button>
           </div>
         </div>
@@ -451,12 +451,12 @@ const HatchSessionPage = () => {
             <div className="special-actions-grid">
               {session.specialBerries['Forget-Me-Not'] > 0 && (
                 <button
-                  className="special-action-button forget-me-not"
+                  className="button decorative forget-me-not"
                   onClick={handleRerollEgg}
                   disabled={submitting}
                   title="Reroll this egg using a Forget-Me-Not berry"
                 >
-                  <div className="special-button-icon">
+                  <div className="special-icon">
                     <i className="fas fa-dice"></i>
                   </div>
                   <div className="special-button-content">
@@ -468,12 +468,12 @@ const HatchSessionPage = () => {
 
               {selectedMonsters[currentEggData.eggId] !== undefined && session.specialBerries['Edenwiess'] > 0 && (
                 <button
-                  className="special-action-button edenwiess"
+                  className="button decorative edenwiess"
                   onClick={() => handleClaimWithEdenwiess(currentEggData.eggId)}
                   disabled={submitting}
                   title="Claim this monster as an extra using an Edenwiess berry"
                 >
-                  <div className="special-button-icon">
+                  <div className="special-icon">
                     <i className="fas fa-plus-circle"></i>
                   </div>
                   <div className="special-button-content">
@@ -501,11 +501,11 @@ const HatchSessionPage = () => {
         {!isEggSelected && (
           <div className="egg-actions-modern">
             <button
-              className="nursery-action-button primary large"
+              className="button primary large"
               onClick={() => handleSelectMonster(currentEggData.eggId)}
               disabled={submitting || selectedMonsters[currentEggData.eggId] === undefined}
             >
-              <span className="button-icon">
+              <span className="icon">
                 {submitting ? (
                   <i className="fas fa-spinner fa-spin"></i>
                 ) : (

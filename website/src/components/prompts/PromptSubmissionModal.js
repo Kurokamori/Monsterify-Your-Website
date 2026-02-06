@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Modal from '../common/Modal';
 import LoadingSpinner from '../common/LoadingSpinner';
-import './PromptSubmissionModal.css';
 
 const PromptSubmissionModal = ({ prompt, trainerId, onClose, onSuccess }) => {
   const [formData, setFormData] = useState({
@@ -300,7 +299,7 @@ const PromptSubmissionModal = ({ prompt, trainerId, onClose, onSuccess }) => {
                     <button
                       onClick={() => handleRerollMonster(monster, prompt.rewards?.monster_roll?.parameters)}
                       disabled={rerolling}
-                      className="btn btn-secondary reroll-btn"
+                      className="button secondary reroll-btn"
                     >
                       {rerolling ? 'Rerolling...' : 'Reroll with Forget-Me-Not'}
                     </button>
@@ -310,7 +309,7 @@ const PromptSubmissionModal = ({ prompt, trainerId, onClose, onSuccess }) => {
             )}
 
             <div className="rewards-actions">
-              <button onClick={handleCloseRewards} className="btn btn-primary">
+              <button onClick={handleCloseRewards} className="button primary">
                 Continue
               </button>
             </div>
@@ -461,14 +460,14 @@ const PromptSubmissionModal = ({ prompt, trainerId, onClose, onSuccess }) => {
               <button
                 type="button"
                 onClick={onClose}
-                className="btn btn-secondary"
+                className="button secondary"
                 disabled={loading}
               >
                 Cancel
               </button>
               <button
                 type="submit"
-                className="btn btn-primary"
+                className="button primary"
                 disabled={loading || !availability?.available}
               >
                 {loading ? (

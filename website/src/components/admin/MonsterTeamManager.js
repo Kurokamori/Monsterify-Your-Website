@@ -144,7 +144,7 @@ const MonsterTeamManager = ({ person, onClose, onTeamUpdated }) => {
             <i className="fas fa-dragon"></i>
             {person.name}'s Monster Team
           </h2>
-          <button className="close-button" onClick={onClose}>×</button>
+          <button className="button close" onClick={onClose}>×</button>
         </div>
 
         <div className="team-info">
@@ -168,7 +168,7 @@ const MonsterTeamManager = ({ person, onClose, onTeamUpdated }) => {
           </div>
 
           <button
-            className="btn btn-primary add-monster-btn"
+            className="button primary lg lift"
             onClick={handleAddMonster}
             disabled={team.length >= 4}
           >
@@ -191,7 +191,7 @@ const MonsterTeamManager = ({ person, onClose, onTeamUpdated }) => {
               <h3>No Monsters Yet</h3>
               <p>{person.name} doesn't have any team monsters yet.</p>
               <button 
-                className="btn btn-primary"
+                className="button primary"
                 onClick={handleAddMonster}
               >
                 Add First Monster
@@ -271,7 +271,7 @@ const MonsterTeamManager = ({ person, onClose, onTeamUpdated }) => {
 
                 <div className="monster-actions">
                   <button
-                    className="btn btn-sm btn-primary"
+                    className="button primary sm"
                     onClick={() => handleEditMonster(monster)}
                     title="Edit Monster"
                   >
@@ -279,7 +279,7 @@ const MonsterTeamManager = ({ person, onClose, onTeamUpdated }) => {
                     Edit
                   </button>
                   <button
-                    className="btn btn-sm btn-danger"
+                    className="button danger sm"
                     onClick={() => handleDeleteMonster(monster.id)}
                     title="Delete Monster"
                   >

@@ -380,7 +380,7 @@ const AvailableBosses = () => {
               Head to Active Battles to track your progress.
             </p>
             <button 
-              className="modal-button primary"
+              className="button primary"
               onClick={closeChallengeModal}
             >
               Go to Active Battles
@@ -487,13 +487,13 @@ const AvailableBosses = () => {
                 
                 <div className="challenge-actions">
                   <button 
-                    className="modal-button secondary"
+                    className="button secondary"
                     onClick={closeChallengeModal}
                   >
                     Cancel
                   </button>
                   <button 
-                    className="modal-button primary"
+                    className="button primary"
                     onClick={handleChallengeBoss}
                     disabled={loading || selectedMonsters.length === 0}
                   >
@@ -836,7 +836,7 @@ const DefeatedBosses = () => {
 
             <div className="modal-actions">
               <button 
-                className="modal-button primary"
+                className="button primary"
                 onClick={closeRankingsModal}
               >
                 Close

@@ -86,7 +86,7 @@ const CurrentBossView = () => {
     <div className="current-boss-view">
       <div className="boss-header">
         <h2>Current Boss Battle</h2>
-        <Link to="/boss" className="button button-primary">
+        <Link to="/boss" className="button primary">
           View Full Details
         </Link>
       </div>
@@ -188,10 +188,10 @@ const CurrentBossView = () => {
       </div>
 
       <div className="boss-actions">
-        <Link to="/submissions/art" className="button button-primary">
+        <Link to="/submissions/art" className="button primary">
           <i className="fas fa-palette"></i> Submit Art to Deal Damage
         </Link>
-        <Link to="/boss" className="button button-secondary">
+        <Link to="/boss" className="button secondary">
           <i className="fas fa-info-circle"></i> View Full Boss Details
         </Link>
       </div>

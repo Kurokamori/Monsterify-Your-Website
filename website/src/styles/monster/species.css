@@ -70,12 +70,12 @@
 .species-option:hover {
   border-color: var(--accent-color);
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 4px 12px var(--overlay-medium);
 }
 
 .species-option.selected {
   border-color: var(--accent-color);
-  background-color: var(--accent-color-light, rgba(var(--accent-color-rgb), 0.1));
+  background-color: var(--accent-color-light, rgba(var(--accent-color), 0.1));
 }
 
 .species-option-image {

@@ -262,7 +262,7 @@ const AdventureList = ({
           
           <div className="filter-actions">
             <button 
-              className="button button-filter apply"
+              className="button filter apply"
               onClick={applyFilters}
             >
               Apply Filters
@@ -320,7 +320,7 @@ const AdventureList = ({
       {showPagination && totalPages > 1 && (
         <div className="adventure-pagination">
           <button
-            className="button button-secondary"
+            className="button secondary"
             onClick={() => handlePageChange(page - 1)}
             disabled={page === 1}
           >
@@ -332,7 +332,7 @@ const AdventureList = ({
           </div>
           
           <button
-            className="button button-secondary"
+            className="button secondary"
             onClick={() => handlePageChange(page + 1)}
             disabled={page === totalPages}
           >

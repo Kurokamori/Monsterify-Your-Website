@@ -305,7 +305,7 @@ const MonsterHunterMonsterFormPage = () => {
           <div className="admin-form-actions">
             <button
               type="button"
-              className="admin-button secondary"
+              className="button secondary"
               onClick={handleCancel}
               disabled={submitting || uploadingImage}
             >
@@ -313,7 +313,7 @@ const MonsterHunterMonsterFormPage = () => {
             </button>
             <button
               type="submit"
-              className="admin-button primary"
+              className="button primary"
               disabled={submitting || uploadingImage}
             >
               {(submitting || uploadingImage) ? (

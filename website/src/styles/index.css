@@ -13,9 +13,7 @@
   /* Accent/Gold colors */
   --accent-color: #c78f15;
   --accent-hover: #a67617;
-  --gold-color: #d6a339;
-  --gold-dark: #c49232;
-  --gold-light: #ffd700;
+  --accent-light: #ffd666;
 
   /* UI elements */
   --divider-color: #3d4b5d;
@@ -36,6 +34,38 @@
   --blue-color: #3b82f6;
   --blue-dark: #1e40af;
   --blue-light: #4299e1;
+
+  --normal-type:   #A8A878;
+  --fire-type:     #db6a19;
+  --water-type:    #405ea7;
+  --electric-type: #d3a01e;
+  --grass-type:    #599c38;
+  --ice-type:      #7ebdbd;
+  --fighting-type: #853530;
+  --poison-type:   #7e4086;
+  --ground-type:   #866b54;
+  --flying-type:   #7787a6;
+  --psychic-type:  #cc4870;
+  --bug-type:      #A8B820;
+  --rock-type:     #69613e;
+  --ghost-type:    #645380;
+  --dragon-type:   #4d26a9;
+  --dark-type:     #38364d;
+  --steel-type:    #7f7fb2;
+  --fairy-type:    #f07691;
+
+  --custom-type: #8b5cf6;
+  --random-type: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #f9ca24);
+  --light-type: #8db8e4;
+  --cosmic-type: #342f3d;
+  
+
+  --vaccine-attribute: #6381ad;
+  --data-attribute: #58aa90;
+  --virus-attribute: #8B4513;
+  --free-attribute: #ab54ba;
+  --variable-attribute: #493ead;
+
 
   --accent-gradient: linear-gradient(90deg, #c78f15, #e74c3c);
 
@@ -59,6 +89,21 @@
   --shadow-1:0 2px 4px rgba(0,0,0,.1);
   --shadow-2:0 5px 15px rgba(0,0,0,.3);
   --ease:.2s ease;
+
+  /* Alpha overlays */
+  --overlay-light:rgba(0,0,0,.1); 
+  --overlay-medium:rgba(0,0,0,.2); 
+  --overlay-dark:rgba(0,0,0,.3);
+  --overlay-heavy:rgba(0,0,0,.5); 
+  --overlay-solid:rgba(0,0,0,.8);
+  --highlight-light:rgba(255,255,255,.1); 
+  --highlight-medium:rgba(255,255,255,.3); 
+  --highlight-heavy:rgba(255,255,255,.5);
+  --accent-glow:rgba(214,163,57,.2); 
+  --error-glow:rgba(239,68,68,.2);
+  --success-glow:rgba(16,185,129,.2); 
+  --warning-glow:rgba(245,158,11,.2); 
+  --blue-glow:rgba(59,130,246,.2);
 }
 
 * {

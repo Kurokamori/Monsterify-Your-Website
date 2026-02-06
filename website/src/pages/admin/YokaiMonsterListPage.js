@@ -129,7 +129,7 @@ const YokaiMonsterListPage = () => {
     <div>
       <div className="admin-page-header">
         <h1>Yokai Monsters</h1>
-        <Link to="/admin/yokai-monsters/add" className="admin-button">
+        <Link to="/admin/yokai-monsters/add" className="button primary">
           <i className="fas fa-plus"></i> Add Yokai Monster
         </Link>
       </div>
@@ -180,7 +180,7 @@ const YokaiMonsterListPage = () => {
             </select>
           </div>
 
-          <button className="admin-button secondary" onClick={resetFilters}>
+          <button className="button secondary" onClick={resetFilters}>
             Reset Filters
           </button>
         </div>
@@ -242,13 +242,13 @@ const YokaiMonsterListPage = () => {
                       <td className="admin-actions-cell">
                         <Link
                           to={`/admin/yokai-monsters/edit/${monster.id}`}
-                          className="admin-action-button edit"
+                          className="button info sm"
                           title="Edit Yokai Monster"
                         >
                           <i className="fas fa-edit"></i>
                         </Link>
                         <button
-                          className="admin-action-button delete"
+                          className="button danger sm"
                           title="Delete Yokai Monster"
                           onClick={() => handleDelete(monster.id)}
                         >

@@ -169,7 +169,7 @@ const RoutineModal = ({ isOpen, onClose, onSuccess, trainers = [], routine = nul
       <div className="modal-content large" onClick={e => e.stopPropagation()}>
         <div className="modal-header">
           <h3>{routine ? 'Edit Routine' : 'Create New Routine'}</h3>
-          <button className="modal-close" onClick={onClose}>
+          <button className="button close" onClick={onClose}>
             <i className="fas fa-times"></i>
           </button>
         </div>
@@ -325,7 +325,7 @@ const RoutineModal = ({ isOpen, onClose, onSuccess, trainers = [], routine = nul
               <button
                 type="button"
                 onClick={() => setShowAddItem(true)}
-                className="btn btn-secondary add-item-btn"
+                className="button secondary add-item-btn"
               >
                 <i className="fas fa-plus"></i>
                 Add Routine Item
@@ -419,14 +419,14 @@ const RoutineModal = ({ isOpen, onClose, onSuccess, trainers = [], routine = nul
                   <button
                     type="button"
                     onClick={() => setShowAddItem(false)}
-                    className="btn btn-secondary"
+                    className="button secondary"
                   >
                     Cancel
                   </button>
                   <button
                     type="button"
                     onClick={addItem}
-                    className="btn btn-primary"
+                    className="button primary"
                   >
                     <i className="fas fa-plus"></i>
                     Add Item
@@ -437,10 +437,10 @@ const RoutineModal = ({ isOpen, onClose, onSuccess, trainers = [], routine = nul
           </div>
 
           <div className="modal-actions">
-            <button type="button" onClick={onClose} className="btn btn-secondary">
+            <button type="button" onClick={onClose} className="button secondary">
               Cancel
             </button>
-            <button type="submit" disabled={loading} className="btn btn-primary">
+            <button type="submit" disabled={loading} className="button primary">
               {loading ? (
                 <>
                   <i className="fas fa-spinner fa-spin"></i>

@@ -105,7 +105,7 @@ const HabitsTab = ({ trainers, onRefresh }) => {
       <div className="tab-header">
         <h2>Habits</h2>
         <button
-          className="quick-action-btn"
+          className="button primary"
           onClick={() => setShowCreateForm(true)}
         >
           <i className="fas fa-plus"></i>
@@ -115,19 +115,19 @@ const HabitsTab = ({ trainers, onRefresh }) => {
 
       <div className="tab-filters">
         <button
-          className={`filter-btn ${filter === 'all' ? 'active' : ''}`}
+          className={`button filter ${filter === 'all' ? 'active' : ''}`}
           onClick={() => setFilter('all')}
         >
           All ({habits.length})
         </button>
         <button
-          className={`filter-btn ${filter === 'active' ? 'active' : ''}`}
+          className={`button filter ${filter === 'active' ? 'active' : ''}`}
           onClick={() => setFilter('active')}
         >
           Active ({habits.filter(h => h.status === 'active').length})
         </button>
         <button
-          className={`filter-btn ${filter === 'paused' ? 'active' : ''}`}
+          className={`button filter ${filter === 'paused' ? 'active' : ''}`}
           onClick={() => setFilter('paused')}
         >
           Paused ({habits.filter(h => h.status === 'paused').length})
@@ -145,7 +145,7 @@ const HabitsTab = ({ trainers, onRefresh }) => {
             }
           </p>
           <button
-            className="quick-action-btn"
+            className="button primary"
             onClick={() => setShowCreateForm(true)}
           >
             <i className="fas fa-plus"></i>

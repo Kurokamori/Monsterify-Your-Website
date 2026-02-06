@@ -1620,7 +1620,7 @@ const Regions = {
           <span className="breadcrumb-separator">›</span>
           <span className="breadcrumb-current">{regionData.name}</span>
         </div>
-        <button onClick={handleBack} className="button button-secondary">
+        <button onClick={handleBack} className="button secondary">
           ← Back to {landmassData?.name}
         </button>
         <h1 align="center">{regionData.name}</h1>

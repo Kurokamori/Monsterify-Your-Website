@@ -45,7 +45,7 @@ const TrainerMegaReferenceSubmissionPage = () => {
     <div className="page-container">
       <div className="submission-page-header">
         <button 
-          className="button button-secondary"
+          className="button secondary"
           onClick={() => navigate('/submissions')}
         >
           <i className="fas fa-arrow-left"></i> Back to Submissions

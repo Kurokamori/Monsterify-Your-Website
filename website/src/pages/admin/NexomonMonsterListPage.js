@@ -124,7 +124,7 @@ const NexomonMonsterListPage = () => {
     <div>
       <div className="admin-page-header">
         <h1>Nexomon Monsters</h1>
-        <Link to="/admin/nexomon-monsters/add" className="admin-button">
+        <Link to="/admin/nexomon-monsters/add" className="button primary">
           <i className="fas fa-plus"></i> Add Nexomon Monster
         </Link>
       </div>
@@ -172,7 +172,7 @@ const NexomonMonsterListPage = () => {
             </select>
           </div>
 
-          <button className="admin-button secondary" onClick={resetFilters}>
+          <button className="button secondary" onClick={resetFilters}>
             Reset Filters
           </button>
         </div>
@@ -248,13 +248,13 @@ const NexomonMonsterListPage = () => {
                       <td className="admin-actions-cell">
                         <Link
                           to={`/admin/nexomon-monsters/edit/${monster.nr}`}
-                          className="admin-action-button edit"
+                          className="button info sm"
                           title="Edit Nexomon Monster"
                         >
                           <i className="fas fa-edit"></i>
                         </Link>
                         <button
-                          className="admin-action-button delete"
+                          className="button danger sm"
                           title="Delete Nexomon Monster"
                           onClick={() => handleDelete(monster.nr)}
                         >

@@ -1,0 +1,320 @@
+/* =========================
+   Bulk Monster Add Component
+   ========================= */
+.bulk-monster-add {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.bulk-monster-add-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.bulk-monster-add-header h2 {
+  font-size: 1.875rem;
+  font-weight: 700;
+  color: var(--text-color);
+  margin-bottom: 1rem;
+  background: linear-gradient(135deg, var(--text-color) 0%, var(--accent-color) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.bulk-monster-add-header p {
+  color: var(--accent-color);
+  font-size: 1.125rem;
+  line-height: 1.6;
+}
+
+/* Form Styles */
+.bulk-monster-add-form {
+  background: var(--admin-card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: .75rem;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  box-shadow: var(--admin-shadow-md);
+  position: relative;
+  overflow: hidden;
+}
+
+.bulk-monster-add-form::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--accent-gradient);
+}
+
+.form-group {
+  margin-bottom: 2rem;
+}
+
+.form-group label {
+  display: block;
+  font-weight: 600;
+  color: var(--text-color);
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
+}
+
+.format-hint {
+  display: block;
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  font-weight: 400;
+  margin-top: 0.25rem;
+  font-style: italic;
+}
+
+.trainer-select {
+  width: 100%;
+  padding: 1rem;
+  border: 2px solid var(--border-color);
+  border-radius: .5rem;
+  background: var(--input-background);
+  color: var(--text-color);
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  appearance: default;
+}
+
+.trainer-select:focus {
+  outline: none;
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 3px var(--accent-glow);
+}
+
+.monsters-textarea {
+  width: 100%;
+  min-height: 300px;
+  padding: 1rem;
+  border: 2px solid var(--border-color);
+  border-radius: .5rem;
+  background: var(--input-background);
+  color: var(--text-color);
+  font-size: 0.875rem;
+  font-family: 'Courier New', monospace;
+  resize: vertical;
+  transition: all 0.3s ease;
+  line-height: 1.5;
+}
+
+.monsters-textarea:focus {
+  outline: none;
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 3px var(--accent-glow);
+}
+
+.monsters-textarea::placeholder {
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+
+/* Results Section */
+.results-section {
+  background: var(--admin-card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: .75rem;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  box-shadow: var(--admin-shadow-md);
+}
+
+.results-section h3 {
+  color: var(--accent-color);
+  font-size: 1.25rem;
+  margin: 0 0 1.5rem 0;
+  font-weight: 700;
+}
+
+.results-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.results-summary p {
+  margin: 0;
+  padding: 1rem;
+  background: var(--input-background);
+  border-radius: .5rem;
+  border: 1px solid var(--border-color);
+  color: var(--text-color);
+}
+
+.results-summary p strong {
+  color: var(--accent-color);
+}
+
+.results-summary .errors {
+  background: var(--error-glow);
+  border-color: var(--error-color);
+}
+
+.results-summary .errors strong {
+  color: var(--error-color);
+}
+
+/* Success Results */
+.success-results {
+  margin-bottom: 2rem;
+}
+
+.success-results h4 {
+  color: var(--success-color);
+  font-size: 1.125rem;
+  margin: 0 0 1rem 0;
+  font-weight: 600;
+}
+
+.monster-list {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.monster-item {
+  display: grid;
+  grid-template-columns: 2fr 1fr 2fr 2fr 1fr;
+  gap: 1rem;
+  padding: 1rem;
+  border-radius: .5rem;
+  align-items: center;
+  font-size: 0.875rem;
+}
+
+.monster-item.success {
+  background: var(--success-glow);
+  border: 1px solid var(--success-color);
+  color: var(--text-color);
+}
+
+.monster-level {
+  text-align: center;
+  font-weight: 600;
+}
+
+.monster-species,
+.monster-types,
+.monster-attribute {
+  font-size: 0.75rem;
+  color: var(--accent-color);
+}
+
+.monster-attribute {
+  text-align: center;
+  font-weight: 600;
+  background: var(--input-background);
+  padding: 0.25rem 0.5rem;
+  border-radius: .375rem;
+}
+
+/* Error Results */
+.error-results h4 {
+  color: var(--error-color);
+  font-size: 1.125rem;
+  margin: 0 0 1rem 0;
+  font-weight: 600;
+}
+
+.error-list {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.error-item {
+  padding: 0.5rem 1rem;
+  background: var(--error-glow);
+  border: 1px solid var(--error-color);
+  border-radius: .375rem;
+  color: var(--error-color);
+  font-size: 0.875rem;
+  font-family: 'Courier New', monospace;
+}
+
+/* Format Guide */
+.format-guide {
+  background: var(--admin-card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: .75rem;
+  padding: 2rem;
+  box-shadow: var(--admin-shadow-md);
+}
+
+.format-guide h3 {
+  color: var(--accent-color);
+  font-size: 1.25rem;
+  margin: 0 0 1.5rem 0;
+  font-weight: 700;
+}
+
+.guide-content p {
+  color: var(--text-color);
+  margin-bottom: 1rem;
+}
+
+.guide-content ul {
+  color: var(--accent-color);
+  margin: 0 0 1.5rem 1.5rem;
+  line-height: 1.6;
+}
+
+.guide-content li {
+  margin-bottom: 0.5rem;
+}
+
+.guide-content strong {
+  color: var(--accent-color);
+}
+
+.example-section h4 {
+  color: var(--text-color);
+  font-size: 1.125rem;
+  margin: 1.5rem 0 1rem 0;
+  font-weight: 600;
+}
+
+.example-section pre {
+  background: var(--input-background);
+  border: 1px solid var(--border-color);
+  border-radius: .5rem;
+  padding: 1.5rem;
+  font-family: 'Courier New', monospace;
+  font-size: 0.875rem;
+  color: var(--text-color);
+  overflow-x: auto;
+  line-height: 1.5;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .bulk-monster-add {
+    padding: 1.5rem;
+  }
+  
+  .bulk-monster-add-header h2 {
+    font-size: 1.25rem;
+  }
+  
+  .bulk-monster-add-form {
+    padding: 1.5rem;
+  }
+  
+  .results-summary {
+    grid-template-columns: 1fr;
+  }
+  
+  .monster-item {
+    grid-template-columns: 1fr;
+    gap: 0.25rem;
+    text-align: center;
+  }
+
+}

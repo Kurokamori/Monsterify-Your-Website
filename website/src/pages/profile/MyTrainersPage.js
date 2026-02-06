@@ -349,16 +349,16 @@ const MyTrainersPage = () => {
 </div>
                 <div className="trainer-actions" onClick={(e) => e.stopPropagation()}>
                   <div className="trainer-actions-row primary">
-                    <Link to={`/trainers/${trainer.id}`} className="btn btn-primary">
+                    <Link to={`/trainers/${trainer.id}`} className="button primary">
                       <i className="fas fa-eye"></i> View
                     </Link>
-                    <Link to={`/trainers/${trainer.id}/edit`} className="btn btn-primary">
+                    <Link to={`/trainers/${trainer.id}/edit`} className="button primary">
                       <i className="fas fa-edit"></i> Edit
                     </Link>
                   </div>
                   <div className="trainer-actions-row secondary">
                     <button
-                      className="btn btn-danger"
+                      className="button danger"
                       onClick={() => {
                         setSelectedTrainer(trainer);
                         setIsDeleteModalOpen(true);
@@ -421,13 +421,13 @@ const MyTrainersPage = () => {
 
             <div className="modal-actions">
               <button
-                className="modal-button secondary"
+                className="button secondary"
                 onClick={() => setIsDeleteModalOpen(false)}
               >
                 Cancel
               </button>
               <button
-                className="modal-button danger"
+                className="button danger"
                 onClick={handleDeleteTrainer}
                 disabled={loading}
               >

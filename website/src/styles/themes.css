@@ -15,46 +15,178 @@
    DAWN (LIGHT) THEME
    ========================================================================== */
 :root[data-theme="dawn"] {
+  /* Core colors */
   --background-color: #f5f3ef;
-  --text-color: #2c2c2c;
-  --text-muted: #666666;
+  --text-color: #0c0b0b;
+  --text-muted: #312f2f;
+
+  /* Navigation */
   --nav-background: #e8e4de;
   --nav-hover: #ddd8d0;
   --nav-active: #cfc9bf;
+
+  /* Accent/Gold colors */
   --accent-color: #b8862d;
   --accent-hover: #9a7025;
   --accent-hover-color: #9a7025;
+  --accent-light: #d4a84a;
+
+  /* UI elements */
   --divider-color: #d0cbc3;
   --border-color: #d0cbc3;
   --card-background: #e8e4de;
   --card-background-secondary: #ede9e3;
   --input-background: #ede9e3;
+
+  /* Status colors */
   --error-color: #dc2626;
+  --error-dark: #991b1b;
+  --error-light: #ef4444;
   --success-color: #059669;
   --success-dark: #d1fae5;
-  --accent-gradient: linear-gradient(135deg, #b8862d 0%, #c99a3a 100%);
+  --success-light: #34d399;
+  --warning-color: #d97706;
+  --warning-dark: #b45309;
+  --blue-color: #2563eb;
+  --blue-dark: #1e40af;
+  --blue-light: #3b82f6;
+
+  /* Type colors */
+  --normal-type: #9a9a6e;
+  --fire-type: #c55a12;
+  --water-type: #3a5494;
+  --electric-type: #b8891a;
+  --grass-type: #4e8a31;
+  --ice-type: #6ba8a8;
+  --fighting-type: #752d29;
+  --poison-type: #6e3875;
+  --ground-type: #745c48;
+  --flying-type: #687594;
+  --psychic-type: #b33d62;
+  --bug-type: #949c1c;
+  --rock-type: #5c5436;
+  --ghost-type: #574970;
+  --dragon-type: #432196;
+  --dark-type: #2d2b3d;
+  --steel-type: #6e6e9e;
+  --fairy-type: #d66882;
+
+  --custom-type: #7c4ee0;
+  --random-type: linear-gradient(45deg, #e05a5a, #43b8aa, #3ca3bd, #ddb520);
+  --light-type: #7aa4cc;
+  --cosmic-type: #2a2632;
+
+  /* Attribute colors */
+  --vaccine-attribute: #567099;
+  --data-attribute: #4d9680;
+  --virus-attribute: #7a3e10;
+  --free-attribute: #9849a6;
+  --variable-attribute: #3f359a;
+
+  --accent-gradient: linear-gradient(90deg, #b8862d, #c74038);
+
+  /* Alpha overlays (inverted for light theme) */
+  --overlay-light: rgba(0, 0, 0, 0.05);
+  --overlay-medium: rgba(0, 0, 0, 0.1);
+  --overlay-dark: rgba(0, 0, 0, 0.15);
+  --overlay-heavy: rgba(0, 0, 0, 0.3);
+  --overlay-solid: rgba(0, 0, 0, 0.6);
+  --highlight-light: rgba(0, 0, 0, 0.05);
+  --highlight-medium: rgba(0, 0, 0, 0.1);
+  --highlight-heavy: rgba(0, 0, 0, 0.2);
+  --accent-glow: rgba(184, 134, 45, 0.15);
+  --error-glow: rgba(220, 38, 38, 0.15);
+  --success-glow: rgba(5, 150, 105, 0.15);
+  --warning-glow: rgba(217, 119, 6, 0.15);
+  --blue-glow: rgba(37, 99, 235, 0.15);
 }
 
 /* ==========================================================================
    HIGH CONTRAST THEME
    ========================================================================== */
 :root[data-theme="high-contrast"] {
+  /* Core colors */
   --background-color: #000000;
   --text-color: #ffffff;
   --text-muted: #cccccc;
+
+  /* Navigation */
   --nav-background: #1a1a1a;
   --nav-hover: #333333;
   --nav-active: #4d4d4d;
+
+  /* Accent/Gold colors */
   --accent-color: #ffd700;
   --accent-hover: #ffed4a;
   --accent-hover-color: #ffed4a;
-  --divider-color: #ffffff;
-  --border-color: #ffffff;
+  --accent-light: #fff066;
+
+  /* UI elements */
+  --divider-color: #3c466e;
+  --border-color: #3c466e;
   --card-background: #1a1a1a;
   --card-background-secondary: #0d0d0d;
   --input-background: #1a1a1a;
+
+  /* Status colors */
   --error-color: #ff4444;
-  --success-color: #00ff7f;
+  --error-dark: #cc0000;
+  --error-light: #ff6666;
+  --success-color: #1fb369;
   --success-dark: #003d1f;
+  --success-light: #25ea88;
+  --warning-color: #ffaa00;
+  --warning-dark: #cc8800;
+  --blue-color: #00aaff;
+  --blue-dark: #0066cc;
+  --blue-light: #33bbff;
+
+  /* Type colors (high saturation for visibility) */
+  --normal-type: #c8c896;
+  --fire-type: #ff6622;
+  --water-type: #5588cc;
+  --electric-type: #ffcc00;
+  --grass-type: #66bb44;
+  --ice-type: #99dddd;
+  --fighting-type: #bb4444;
+  --poison-type: #aa55aa;
+  --ground-type: #bb9966;
+  --flying-type: #99aacc;
+  --psychic-type: #ff5588;
+  --bug-type: #ccdd33;
+  --rock-type: #aa9955;
+  --ghost-type: #8866aa;
+  --dragon-type: #7744dd;
+  --dark-type: #665577;
+  --steel-type: #aaaacc;
+  --fairy-type: #ff88aa;
+
+  --custom-type: #aa77ff;
+  --random-type: linear-gradient(45deg, #ff5555, #55ddcc, #55ccee, #ffdd33);
+  --light-type: #aaccee;
+  --cosmic-type: #554466;
+
+  /* Attribute colors (high saturation for visibility) */
+  --vaccine-attribute: #7799cc;
+  --data-attribute: #66bbaa;
+  --virus-attribute: #bb6622;
+  --free-attribute: #cc66dd;
+  --variable-attribute: #6655cc;
+
   --accent-gradient: linear-gradient(135deg, #ffd700 0%, #ffed4a 100%);
+
+  /* Alpha overlays (stronger for high contrast) */
+  --overlay-light: rgba(255, 255, 255, 0.1);
+  --overlay-medium: rgba(255, 255, 255, 0.2);
+  --overlay-dark: rgba(255, 255, 255, 0.3);
+  --overlay-heavy: rgba(255, 255, 255, 0.5);
+  --overlay-solid: rgba(255, 255, 255, 0.8);
+  --highlight-light: rgba(255, 255, 255, 0.15);
+  --highlight-medium: rgba(255, 255, 255, 0.35);
+  --highlight-heavy: rgba(255, 255, 255, 0.55);
+  --accent-glow: rgba(255, 215, 0, 0.3);
+  --error-glow: rgba(255, 68, 68, 0.3);
+  --success-glow: rgba(0, 255, 127, 0.3);
+  --warning-glow: rgba(255, 170, 0, 0.3);
+  --blue-glow: rgba(0, 170, 255, 0.3);
 }

@@ -2,8 +2,6 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import fakemonService from '../../services/fakemonService';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
-import '../../styles/AdminStyles.css';
-
 /**
  * Mass Fakemon Add Page
  * Allows bulk uploading of fakemon with image uploads

@@ -247,19 +247,19 @@ const FactionDetailPage = () => {
           {/* Action Tabs */}
           <div className="faction-tabs">
             <button
-              className={`tab-button ${activeTab === 'overview' ? 'active' : ''}`}
+              className={`button tab ${activeTab === 'overview' ? 'active' : ''}`}
               onClick={() => setActiveTab('overview')}
             >
               Overview
             </button>
             <button
-              className={`tab-button ${activeTab === 'store' ? 'active' : ''}`}
+              className={`button tab ${activeTab === 'store' ? 'active' : ''}`}
               onClick={() => setActiveTab('store')}
             >
               Faction Store
             </button>
             <button
-              className={`tab-button ${activeTab === 'individuals' ? 'active' : ''}`}
+              className={`button tab ${activeTab === 'individuals' ? 'active' : ''}`}
               onClick={() => setActiveTab('individuals')}
             >
               Known Individuals
@@ -272,13 +272,13 @@ const FactionDetailPage = () => {
               <div className="overview-content">
                 <div className="action-buttons">
                   <button
-                    className="button button-primary submission-button"
+                    className="button primary submission-button"
                     onClick={() => handleSubmissionClick('submission')}
                   >
                     Make Submission
                   </button>
                   <button
-                    className="button button-primary tribute-button"
+                    className="button primary tribute-button"
                     onClick={() => handleSubmissionClick('tribute')}
                   >
                     Make Tribute

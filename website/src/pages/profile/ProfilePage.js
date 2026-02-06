@@ -101,13 +101,13 @@ const ProfilePage = () => {
           <p>Are you sure you want to log out?</p>
           <div className="modal-actions">
             <button
-              className="modal-button secondary"
+              className="button secondary"
               onClick={() => setIsLogoutModalOpen(false)}
             >
               Cancel
             </button>
             <button
-              className="modal-button primary"
+              className="button primary"
               onClick={handleLogout}
               disabled={loading}
             >

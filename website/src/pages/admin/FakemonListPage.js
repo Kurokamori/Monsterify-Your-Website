@@ -160,7 +160,7 @@ const FakemonListPage = () => {
       <button
         key="first"
         onClick={() => handlePageChange(1)}
-        className={`admin-button button-secondary ${currentPage === 1 ? 'active' : ''}`}
+        className={`admin-button secondary ${currentPage === 1 ? 'active' : ''}`}
         disabled={currentPage === 1}
       >
         1
@@ -239,13 +239,13 @@ const FakemonListPage = () => {
 
         {/* Action Buttons */}
         <div className="admin-actions">
-          <Link to="/admin" className="admin-button secondary">
+          <Link to="/admin" className="button secondary">
             <i className="fas fa-arrow-left"></i> Back to Dashboard
           </Link>
-          <Link to="/admin/fakemon/add" className="admin-button">
+          <Link to="/admin/fakemon/add" className="button primary">
             <i className="fas fa-plus"></i> Add New Fakemon
           </Link>
-          <Link to="/admin/fakemon/mass-add" className="admin-button">
+          <Link to="/admin/fakemon/mass-add" className="button primary">
             <i className="fas fa-images"></i> Mass Addition
           </Link>
         </div>
@@ -260,7 +260,7 @@ const FakemonListPage = () => {
               onChange={(e) => setSearchTerm(e.target.value)}
               className="admin-search-input"
             />
-            <button type="submit" className="admin-button">
+            <button type="submit" className="button primary">
               <i className="fas fa-search"></i> Search
             </button>
           </form>
@@ -330,7 +330,7 @@ const FakemonListPage = () => {
                         <td className="admin-actions-cell">
                           <Link
                             to={`/fakedex/${mon.number}`}
-                            className="admin-action-button view"
+                            className="button secondary sm"
                             title="View Fakemon"
                             target="_blank"
                             rel="noopener noreferrer"
@@ -339,14 +339,14 @@ const FakemonListPage = () => {
                           </Link>
                           <Link
                             to={`/admin/fakemon/edit/${mon.number}`}
-                            className="admin-action-button edit"
+                            className="button info sm"
                             title="Edit Fakemon"
                           >
                             <i className="fas fa-edit"></i>
                           </Link>
                           <button
                             onClick={() => openDeleteModal(mon)}
-                            className="admin-action-button delete"
+                            className="button danger sm"
                             title="Delete Fakemon"
                           >
                             <i className="fas fa-trash-alt"></i>
@@ -403,13 +403,13 @@ const FakemonListPage = () => {
             <div className="admin-modal-footer">
               <button
                 onClick={closeDeleteModal}
-                className="admin-button secondary"
+                className="button secondary"
               >
                 Cancel
               </button>
               <button
                 onClick={handleDeleteFakemon}
-                className="admin-button delete"
+                className="button danger"
               >
                 Delete Fakemon
               </button>

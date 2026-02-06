@@ -493,7 +493,7 @@ const Apothecary = () => {
                 )}
                 <div className="modal-actions">
                   <button
-                    className="modal-button primary"
+                    className="button primary"
                     onClick={closeMonsterModal}
                   >
                     Close
@@ -516,37 +516,37 @@ const Apothecary = () => {
                     <h4>Filter by Category (stackable)</h4>
                     <div className="filter-buttons">
                       <button
-                        className={`button button-filter ${berryFilters.type ? 'active' : ''}`}
+                        className={`button filter ${berryFilters.type ? 'active' : ''}`}
                         onClick={() => toggleFilter('type')}
                       >
                         Type
                       </button>
                       <button
-                        className={`button button-filter ${berryFilters.species ? 'active' : ''}`}
+                        className={`button filter ${berryFilters.species ? 'active' : ''}`}
                         onClick={() => toggleFilter('species')}
                       >
                         Species
                       </button>
                       <button
-                        className={`button button-filter ${berryFilters.randomize ? 'active' : ''}`}
+                        className={`button filter ${berryFilters.randomize ? 'active' : ''}`}
                         onClick={() => toggleFilter('randomize')}
                       >
                         Randomize
                       </button>
                       <button
-                        className={`button button-filter ${berryFilters.remove ? 'active' : ''}`}
+                        className={`button filter ${berryFilters.remove ? 'active' : ''}`}
                         onClick={() => toggleFilter('remove')}
                       >
                         Remove
                       </button>
                       <button
-                        className={`button button-filter ${berryFilters.misc ? 'active' : ''}`}
+                        className={`button filter ${berryFilters.misc ? 'active' : ''}`}
                         onClick={() => toggleFilter('misc')}
                       >
                         Misc
                       </button>
                       <button
-                        className="button button-filter reset"
+                        className="button filter reset"
                         onClick={() => setBerryFilters({
                           type: false,
                           species: false,
@@ -565,79 +565,71 @@ const Apothecary = () => {
                       <h4>Species Modification</h4>
                       <div className="berry-items">
                         <button
-                          className="berry-item"
+                          className={`berry-item ${!matchesFilters('Bugger Berry') ? 'filtered-out' : ''}`}
                           onClick={() => setSelectedBerry('Bugger Berry')}
                           disabled={!selectedMonster.species2 || !isBerryAvailable('Bugger Berry')}
-                          style={{ display: matchesFilters('Bugger Berry') ? 'flex' : 'none' }}
                         >
                           <span className="berry-name">Bugger Berry</span>
                           <span className="berry-desc">Removes the first species of a mon with more than 1 species</span>
                           {isBerryAvailable('Bugger Berry') && <span className="berry-count">x{getBerryCount('Bugger Berry')}</span>}
                         </button>
                         <button
-                          className="berry-item"
+                          className={`berry-item ${!matchesFilters('Mala Berry') ? 'filtered-out' : ''}`}
                           onClick={() => setSelectedBerry('Mala Berry')}
                           disabled={!selectedMonster.species2 || !isBerryAvailable('Mala Berry')}
-                          style={{ display: matchesFilters('Mala Berry') ? 'flex' : 'none' }}
                         >
                           <span className="berry-name">Mala Berry</span>
                           <span className="berry-desc">Removes species 2 (if present)</span>
                           {isBerryAvailable('Mala Berry') && <span className="berry-count">x{getBerryCount('Mala Berry')}</span>}
                         </button>
                         <button
-                          className="berry-item"
+                          className={`berry-item ${!matchesFilters('Merco Berry') ? 'filtered-out' : ''}`}
                           onClick={() => setSelectedBerry('Merco Berry')}
                           disabled={!selectedMonster.species3 || !isBerryAvailable('Merco Berry')}
-                          style={{ display: matchesFilters('Merco Berry') ? 'flex' : 'none' }}
                         >
                           <span className="berry-name">Merco Berry</span>
                           <span className="berry-desc">Removes species 3 (if present)</span>
                         </button>
                         <button
-                          className="berry-item"
+                          className={`berry-item ${!matchesFilters('Patama Berry') ? 'filtered-out' : ''}`}
                           onClick={() => setSelectedBerry('Patama Berry')}
                           disabled={!isBerryAvailable('Patama Berry')}
-                          style={{ display: matchesFilters('Patama Berry') ? 'flex' : 'none' }}
                         >
                           <span className="berry-name">Patama Berry</span>
                           <span className="berry-desc">Randomizes species 1</span>
                           {isBerryAvailable('Patama Berry') && <span className="berry-count">x{getBerryCount('Patama Berry')}</span>}
                         </button>
                         <button
-                          className="berry-item"
+                          className={`berry-item ${!matchesFilters('Bluk Berry') ? 'filtered-out' : ''}`}
                           onClick={() => setSelectedBerry('Bluk Berry')}
                           disabled={!selectedMonster.species2 || !isBerryAvailable('Bluk Berry')}
-                          style={{ display: matchesFilters('Bluk Berry') ? 'flex' : 'none' }}
                         >
                           <span className="berry-name">Bluk Berry</span>
                           <span className="berry-desc">Randomizes species 2 (if present)</span>
                           {isBerryAvailable('Bluk Berry') && <span className="berry-count">x{getBerryCount('Bluk Berry')}</span>}
                         </button>
                         <button
-                          className="berry-item"
+                          className={`berry-item ${!matchesFilters('Nuevo Berry') ? 'filtered-out' : ''}`}
                           onClick={() => setSelectedBerry('Nuevo Berry')}
                           disabled={!selectedMonster.species3 || !isBerryAvailable('Nuevo Berry')}
-                          style={{ display: matchesFilters('Nuevo Berry') ? 'flex' : 'none' }}
                         >
                           <span className="berry-name">Nuevo Berry</span>
                           <span className="berry-desc">Randomizes species 3 (if present)</span>
                           {isBerryAvailable('Nuevo Berry') && <span className="berry-count">x{getBerryCount('Nuevo Berry')}</span>}
                         </button>
                         <button
-                          className="berry-item"
+                          className={`berry-item ${!matchesFilters('Azzuk Berry') ? 'filtered-out' : ''}`}
                           onClick={() => setSelectedBerry('Azzuk Berry')}
                           disabled={selectedMonster.species2 || !isBerryAvailable('Azzuk Berry')}
-                          style={{ display: matchesFilters('Azzuk Berry') ? 'flex' : 'none' }}
                         >
                           <span className="berry-name">Azzuk Berry</span>
                           <span className="berry-desc">Adds a new random species to species 2 (if not present)</span>
                           {isBerryAvailable('Azzuk Berry') && <span className="berry-count">x{getBerryCount('Azzuk Berry')}</span>}
                         </button>
                         <button
-                          className="berry-item"
+                          className={`berry-item ${!matchesFilters('Mangus Berry') ? 'filtered-out' : ''}`}
                           onClick={() => setSelectedBerry('Mangus Berry')}
                           disabled={selectedMonster.species3 || !selectedMonster.species2 || !isBerryAvailable('Mangus Berry')}
-                          style={{ display: matchesFilters('Mangus Berry') ? 'flex' : 'none' }}
                         >
                           <span className="berry-name">Mangus Berry</span>
                           <span className="berry-desc">Adds a new random species to species 3 (if not present)</span>
@@ -650,140 +642,126 @@ const Apothecary = () => {
                       <h4>Type Modification</h4>
                       <div className="berry-items">
                         <button
-                          className="berry-item"
+                          className={`berry-item ${!matchesFilters('Siron Berry') ? 'filtered-out' : ''}`}
                           onClick={() => setSelectedBerry('Siron Berry')}
                           disabled={!selectedMonster.type2 && !selectedMonster.type3 && !selectedMonster.type4 && !selectedMonster.type5 || !isBerryAvailable('Siron Berry')}
-                          style={{ display: matchesFilters('Siron Berry') ? 'flex' : 'none' }}
                         >
                           <span className="berry-name">Siron Berry</span>
                           <span className="berry-desc">Removes first type and shifts remaining types (if more than one type)</span>
                           {isBerryAvailable('Siron Berry') && <span className="berry-count">x{getBerryCount('Siron Berry')}</span>}
                         </button>
                         <button
-                          className="berry-item"
+                          className={`berry-item ${!matchesFilters('Lilan Berry') ? 'filtered-out' : ''}`}
                           onClick={() => setSelectedBerry('Lilan Berry')}
                           disabled={!selectedMonster.type2 || !availableBerries['Lilan Berry'] || availableBerries['Lilan Berry'] < 1}
-                          style={{ display: matchesFilters('Lilan Berry') ? 'flex' : 'none' }}
                         >
                           <span className="berry-name">Lilan Berry</span>
                           <span className="berry-desc">Removes type 2 (if present)</span>
                           {availableBerries['Lilan Berry'] && <span className="berry-count">x{availableBerries['Lilan Berry']}</span>}
                         </button>
                         <button
-                          className="berry-item"
+                          className={`berry-item ${!matchesFilters('Kham Berry') ? 'filtered-out' : ''}`}
                           onClick={() => setSelectedBerry('Kham Berry')}
                           disabled={!selectedMonster.type3 || !availableBerries['Kham Berry'] || availableBerries['Kham Berry'] < 1}
-                          style={{ display: matchesFilters('Kham Berry') ? 'flex' : 'none' }}
                         >
                           <span className="berry-name">Kham Berry</span>
                           <span className="berry-desc">Removes type 3 (if present)</span>
                           {availableBerries['Kham Berry'] && <span className="berry-count">x{availableBerries['Kham Berry']}</span>}
                         </button>
                         <button
-                          className="berry-item"
+                          className={`berry-item ${!matchesFilters('Maizi Berry') ? 'filtered-out' : ''}`}
                           onClick={() => setSelectedBerry('Maizi Berry')}
                           disabled={!selectedMonster.type4 || !isBerryAvailable('Maizi Berry')}
-                          style={{ display: matchesFilters('Maizi Berry') ? 'flex' : 'none' }}
                         >
                           <span className="berry-name">Maizi Berry</span>
                           <span className="berry-desc">Removes type 4 (if present)</span>
                           {isBerryAvailable('Maizi Berry') && <span className="berry-count">x{getBerryCount('Maizi Berry')}</span>}
                         </button>
                         <button
-                          className="berry-item"
+                          className={`berry-item ${!matchesFilters('Fani Berry') ? 'filtered-out' : ''}`}
                           onClick={() => setSelectedBerry('Fani Berry')}
                           disabled={!selectedMonster.type5 || !isBerryAvailable('Fani Berry')}
-                          style={{ display: matchesFilters('Fani Berry') ? 'flex' : 'none' }}
                         >
                           <span className="berry-name">Fani Berry</span>
                           <span className="berry-desc">Removes type 5 (if present)</span>
                           {isBerryAvailable('Fani Berry') && <span className="berry-count">x{getBerryCount('Fani Berry')}</span>}
                         </button>
                         <button
-                          className="berry-item"
+                          className={`berry-item ${!matchesFilters('Miraca Berry') ? 'filtered-out' : ''}`}
                           onClick={() => setSelectedBerry('Miraca Berry')}
                           disabled={!isBerryAvailable('Miraca Berry')}
-                          style={{ display: matchesFilters('Miraca Berry') ? 'flex' : 'none' }}
                         >
                           <span className="berry-name">Miraca Berry</span>
                           <span className="berry-desc">Randomizes type 1</span>
                           {isBerryAvailable('Miraca Berry') && <span className="berry-count">x{getBerryCount('Miraca Berry')}</span>}
                         </button>
                         <button
-                          className="berry-item"
+                          className={`berry-item ${!matchesFilters('Cocon Berry') ? 'filtered-out' : ''}`}
                           onClick={() => setSelectedBerry('Cocon Berry')}
                           disabled={!selectedMonster.type2 || !isBerryAvailable('Cocon Berry')}
-                          style={{ display: matchesFilters('Cocon Berry') ? 'flex' : 'none' }}
                         >
                           <span className="berry-name">Cocon Berry</span>
                           <span className="berry-desc">Randomizes type 2 (if present)</span>
                           {isBerryAvailable('Cocon Berry') && <span className="berry-count">x{getBerryCount('Cocon Berry')}</span>}
                         </button>
                         <button
-                          className="berry-item"
+                          className={`berry-item ${!matchesFilters('Durian Berry') ? 'filtered-out' : ''}`}
                           onClick={() => setSelectedBerry('Durian Berry')}
                           disabled={!selectedMonster.type3 || !isBerryAvailable('Durian Berry')}
-                          style={{ display: matchesFilters('Durian Berry') ? 'flex' : 'none' }}
                         >
                           <span className="berry-name">Durian Berry</span>
                           <span className="berry-desc">Randomizes type 3 (if present)</span>
                           {isBerryAvailable('Durian Berry') && <span className="berry-count">x{getBerryCount('Durian Berry')}</span>}
                         </button>
                         <button
-                          className="berry-item"
+                          className={`berry-item ${!matchesFilters('Monel Berry') ? 'filtered-out' : ''}`}
                           onClick={() => setSelectedBerry('Monel Berry')}
                           disabled={!selectedMonster.type4 || !isBerryAvailable('Monel Berry')}
-                          style={{ display: matchesFilters('Monel Berry') ? 'flex' : 'none' }}
                         >
                           <span className="berry-name">Monel Berry</span>
                           <span className="berry-desc">Randomizes type 4 (if present)</span>
                           {isBerryAvailable('Monel Berry') && <span className="berry-count">x{getBerryCount('Monel Berry')}</span>}
                         </button>
                         <button
-                          className="berry-item"
+                          className={`berry-item ${!matchesFilters('Perep Berry') ? 'filtered-out' : ''}`}
                           onClick={() => setSelectedBerry('Perep Berry')}
                           disabled={!selectedMonster.type5 || !isBerryAvailable('Perep Berry')}
-                          style={{ display: matchesFilters('Perep Berry') ? 'flex' : 'none' }}
                         >
                           <span className="berry-name">Perep Berry</span>
                           <span className="berry-desc">Randomizes type 5 (if present)</span>
                           {isBerryAvailable('Perep Berry') && <span className="berry-count">x{getBerryCount('Perep Berry')}</span>}
                         </button>
                         <button
-                          className="berry-item"
+                          className={`berry-item ${!matchesFilters('Addish Berry') ? 'filtered-out' : ''}`}
                           onClick={() => setSelectedBerry('Addish Berry')}
                           disabled={selectedMonster.type2 || !availableBerries['Addish Berry'] || availableBerries['Addish Berry'] < 1}
-                          style={{ display: matchesFilters('Addish Berry') ? 'flex' : 'none' }}
                         >
                           <span className="berry-name">Addish Berry</span>
                           <span className="berry-desc">Adds type 2 (if not present)</span>
                           {availableBerries['Addish Berry'] && <span className="berry-count">x{availableBerries['Addish Berry']}</span>}
                         </button>
                         <button
-                          className="berry-item"
+                          className={`berry-item ${!matchesFilters('Sky Carrot Berry') ? 'filtered-out' : ''}`}
                           onClick={() => setSelectedBerry('Sky Carrot Berry')}
                           disabled={selectedMonster.type3 || !selectedMonster.type2 || !isBerryAvailable('Sky Carrot Berry')}
-                          style={{ display: matchesFilters('Sky Carrot Berry') ? 'flex' : 'none' }}
                         >
                           <span className="berry-name">Sky Carrot Berry</span>
                           <span className="berry-desc">Adds type 3 (if not present)</span>
                           {isBerryAvailable('Sky Carrot Berry') && <span className="berry-count">x{getBerryCount('Sky Carrot Berry')}</span>}
                         </button>
                         <button
-                          className="berry-item"
+                          className={`berry-item ${!matchesFilters('Kembre Berry') ? 'filtered-out' : ''}`}
                           onClick={() => setSelectedBerry('Kembre Berry')}
                           disabled={selectedMonster.type4 || !selectedMonster.type3 || !isBerryAvailable('Kembre Berry')}
-                          style={{ display: matchesFilters('Kembre Berry') ? 'flex' : 'none' }}
                         >
                           <span className="berry-name">Kembre Berry</span>
                           <span className="berry-desc">Adds type 4 (if not present)</span>
                           {isBerryAvailable('Kembre Berry') && <span className="berry-count">x{getBerryCount('Kembre Berry')}</span>}
                         </button>
                         <button
-                          className="berry-item"
+                          className={`berry-item ${!matchesFilters('Espara Berry') ? 'filtered-out' : ''}`}
                           onClick={() => setSelectedBerry('Espara Berry')}
                           disabled={selectedMonster.type5 || !selectedMonster.type4 || !isBerryAvailable('Espara Berry')}
-                          style={{ display: matchesFilters('Espara Berry') ? 'flex' : 'none' }}
                         >
                           <span className="berry-name">Espara Berry</span>
                           <span className="berry-desc">Adds type 5 (if not present)</span>
@@ -796,10 +774,9 @@ const Apothecary = () => {
                       <h4>Attribute Modification</h4>
                       <div className="berry-items">
                         <button
-                          className="berry-item"
+                          className={`berry-item ${!matchesFilters('Datei Berry') ? 'filtered-out' : ''}`}
                           onClick={() => setSelectedBerry('Datei Berry')}
                           disabled={!isBerryAvailable('Datei Berry')}
-                          style={{ display: matchesFilters('Datei Berry') ? 'flex' : 'none' }}
                         >
                           <span className="berry-name">Datei Berry</span>
                           <span className="berry-desc">Randomizes attribute</span>
@@ -812,10 +789,9 @@ const Apothecary = () => {
                       <h4>Species Splitting</h4>
                       <div className="berry-items">
                         <button
-                          className="berry-item"
+                          className={`berry-item ${!matchesFilters('Divest Berry') ? 'filtered-out' : ''}`}
                           onClick={() => setSelectedBerry('Divest Berry')}
                           disabled={!selectedMonster.species2 || !isBerryAvailable('Divest Berry')}
-                          style={{ display: matchesFilters('Divest Berry') ? 'flex' : 'none' }}
                         >
                           <span className="berry-name">Divest Berry</span>
                           <span className="berry-desc">Splits a monster with multiple species into two monsters</span>
@@ -833,13 +809,13 @@ const Apothecary = () => {
                   
                   <div className="berry-actions">
                     <button
-                      className="modal-button secondary"
+                      className="button secondary"
                       onClick={closeMonsterModal}
                     >
                       Cancel
                     </button>
                     <button
-                      className="modal-button primary"
+                      className="button primary"
                       onClick={handleUseBerry}
                       disabled={berryLoading || !selectedBerry}
                     >
@@ -904,7 +880,7 @@ const Apothecary = () => {
           
           <div className="species-actions">
             <button
-              className="modal-button secondary"
+              className="button secondary"
               onClick={() => {
                 setShowSpeciesModal(false);
                 setSpeciesImages({});
@@ -914,7 +890,7 @@ const Apothecary = () => {
               Cancel
             </button>
             <button
-              className="modal-button primary"
+              className="button primary"
               onClick={confirmSpeciesSelection}
               disabled={!selectedSpecies}
             >

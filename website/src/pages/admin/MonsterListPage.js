@@ -269,10 +269,10 @@ const MonsterListPage = () => {
 
         {/* Action Buttons */}
         <div className="admin-actions">
-          <Link to="/admin" className="admin-button secondary">
+          <Link to="/admin" className="button secondary">
             <i className="fas fa-arrow-left"></i> Back to Dashboard
           </Link>
-          <Link to="/admin/monsters/add" className="admin-button">
+          <Link to="/admin/monsters/add" className="button primary">
             <i className="fas fa-plus"></i> Add New Monster
           </Link>
         </div>
@@ -287,7 +287,7 @@ const MonsterListPage = () => {
               onChange={(e) => setSearchTerm(e.target.value)}
               className="admin-search-input"
             />
-            <button type="submit" className="admin-button">
+            <button type="submit" className="button primary">
               <i className="fas fa-search"></i> Search
             </button>
           </form>
@@ -376,7 +376,7 @@ const MonsterListPage = () => {
                         <td className="admin-actions-cell">
                           <Link
                             to={`/monsters/${monster.id}`}
-                            className="admin-action-button view"
+                            className="button secondary sm"
                             title="View Monster"
                             target="_blank"
                             rel="noopener noreferrer"
@@ -385,14 +385,14 @@ const MonsterListPage = () => {
                           </Link>
                           <Link
                             to={`/admin/monsters/edit/${monster.id}`}
-                            className="admin-action-button edit"
+                            className="button info sm"
                             title="Edit Monster"
                           >
                             <i className="fas fa-edit"></i>
                           </Link>
                           <button
                             onClick={() => openDeleteModal(monster)}
-                            className="admin-action-button delete"
+                            className="button danger sm"
                             title="Delete Monster"
                           >
                             <i className="fas fa-trash-alt"></i>
@@ -449,13 +449,13 @@ const MonsterListPage = () => {
             <div className="admin-modal-footer">
               <button
                 onClick={closeDeleteModal}
-                className="admin-button secondary"
+                className="button secondary"
               >
                 Cancel
               </button>
               <button
                 onClick={handleDeleteMonster}
-                className="admin-button delete"
+                className="button danger"
               >
                 Delete Monster
               </button>

@@ -59,7 +59,7 @@ const Modal = ({
             <h2 className="modal-title">{title}</h2>
             <button
               type="button"
-              className="modal-close"
+              className="button close"
               onClick={onClose}
               aria-label="Close"
             >

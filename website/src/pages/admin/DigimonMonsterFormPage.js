@@ -266,7 +266,7 @@ const DigimonMonsterFormPage = () => {
           <div className="admin-form-actions">
             <button
               type="button"
-              className="admin-button secondary"
+              className="button secondary"
               onClick={handleCancel}
               disabled={submitting}
             >
@@ -274,7 +274,7 @@ const DigimonMonsterFormPage = () => {
             </button>
             <button
               type="submit"
-              className="admin-button primary"
+              className="button primary"
               disabled={submitting}
             >
               {submitting ? (

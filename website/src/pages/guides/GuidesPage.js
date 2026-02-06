@@ -74,6 +74,40 @@ const GuideCategoryIndex = () => {
             <p>{getCategoryDescription(key)}</p>
           </Link>
         ))}
+        <Link to="/guides/interactive-map" className="guide-category-card" key="map">
+          <div className="guide-category-icon">
+            <i className="fas fa-map-marked-alt"></i>
+          </div>
+          <h2>Map</h2>
+          <p>Navigate through the world with our interactive map system.</p>
+        </Link>
+      </div>
+
+      <div className="guides-tools-section">
+        <h2>Tools</h2>
+        <div className="guide-categories-grid">
+          <Link to="/guides/type-calculator" className="guide-category-card">
+            <div className="guide-category-icon">
+              <i className="fas fa-calculator"></i>
+            </div>
+            <h2>Type Calculator</h2>
+            <p>Calculate type effectiveness and damage multipliers.</p>
+          </Link>
+          <Link to="/guides/evolution-explorer" className="guide-category-card">
+            <div className="guide-category-icon">
+              <i className="fas fa-dna"></i>
+            </div>
+            <h2>Evolution Explorer</h2>
+            <p>Explore evolution chains and requirements.</p>
+          </Link>
+          <Link to="/guides/ability-database" className="guide-category-card">
+            <div className="guide-category-icon">
+              <i className="fas fa-bolt"></i>
+            </div>
+            <h2>Ability Database</h2>
+            <p>Browse and search all available abilities.</p>
+          </Link>
+        </div>
       </div>
     </div>
   );

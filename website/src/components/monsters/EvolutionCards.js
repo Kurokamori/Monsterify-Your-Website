@@ -1,5 +1,4 @@
 import React from 'react';
-import './EvolutionCards.css';
 
 const EvolutionCards = ({ evolutionData, currentMonsterId }) => {
   if (!evolutionData || !Array.isArray(evolutionData) || evolutionData.length === 0) {

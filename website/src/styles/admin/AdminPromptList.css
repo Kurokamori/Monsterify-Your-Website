@@ -1,0 +1,263 @@
+.admin-prompt-list {
+  background: var(--card-background);
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 8px var(--overlay-light);
+}
+
+.admin-prompt-list.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px;
+  color: var(--text-color);
+}
+
+.list-filters {
+  margin-bottom: 20px;
+  padding: 15px;
+  background: var(--card-background);
+  border-radius: 6px;
+  border: 1px solid var(--border-color);
+}
+
+.filter-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 15px;
+  align-items: end;
+}
+
+.filter-select {
+  padding: 8px 10px;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  font-size: 0.9rem;
+  background: var(--card-background);
+}
+
+.filter-select:focus {
+  outline: none;
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 2px var(--accent-glow);
+}
+
+.bulk-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 15px;
+  background: var(--card-background);
+  border-radius: 6px;
+  margin-bottom: 15px;
+}
+
+.selection-count {
+  font-size: 0.9rem;
+  color: var(--text-color);
+  font-weight: 500;
+}
+
+.prompts-table-container {
+  overflow-x: auto;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  margin-bottom: 20px;
+}
+
+.prompts-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.prompts-table th,
+.prompts-table td {
+  padding: 12px 8px;
+  text-align: left;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.prompts-table th {
+  background: var(--card-background);
+  font-weight: 600;
+  color: var(--text-color);
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.prompts-table tr:hover {
+  background: var(--card-background);
+}
+
+.prompts-table tr.selected {
+  background: var(--card-background);
+}
+
+.title-cell {
+  max-width: 200px;
+}
+
+.prompt-title {
+  font-weight: 500;
+  color: var(--text-color);
+  margin-bottom: 4px;
+}
+
+.category-badge,
+.difficulty-badge,
+.status-badge {
+  padding: 3px 8px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: capitalize;
+}
+
+.admin-action-buttons {
+  display: flex;
+  flex-direction: column;
+}
+
+.type-general { background: var(--blue-color); }
+.type-monthly { background: var(--success-light); }
+.type-progress { background: var(--accent-color); }
+.type-event { background: var(--error-light); }
+
+.category-badge {
+  background: var(--border-color);
+  color: var(--text-muted);
+}
+
+.difficulty-easy { background: var(--success-color); }
+.difficulty-medium { background: var(--warning-color); }
+.difficulty-hard { background: var(--error-color); }
+.difficulty-expert { background: var(--custom-type); }
+
+.status-active { background: var(--success-color); }
+.status-inactive { background: var(--border-color); color: var(--text-muted); }
+.status-expired { background: var(--error-color); }
+.status-scheduled { background: var(--blue-color); }
+
+.rewards-cell {
+  font-family: monospace;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.submissions-cell {
+  text-align: center;
+}
+
+.submission-stats .total {
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+.submission-stats .approved {
+  font-size: 0.8rem;
+  color: var(--success-color);
+  display: block;
+}
+
+.date-cell {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.actions-cell {
+  white-space: nowrap;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 5px;
+}
+
+.no-prompts {
+  text-align: center;
+  color: var(--text-muted);
+  font-style: italic;
+  padding: 40px 20px;
+}
+
+.list-summary {
+  padding: 15px;
+  background: var(--card-background);
+  border-radius: 6px;
+  border: 1px solid var(--border-color) ;
+}
+
+.summary-stats {
+  display: flex;
+  justify-content: space-around;
+  gap: 20px;
+}
+
+.stat-item {
+  text-align: center;
+}
+
+.stat-label {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .admin-prompt-list {
+    padding: 15px;
+  }
+  
+  .filter-row {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  
+  .bulk-actions {
+    flex-direction: column;
+    gap: 10px;
+    align-items: stretch;
+  }
+  
+  .prompts-table {
+    font-size: 0.8rem;
+  }
+  
+  .prompts-table th,
+  .prompts-table td {
+    padding: 8px 4px;
+  }
+  
+  .title-cell {
+    max-width: 150px;
+  }
+  
+  .action-buttons {
+    flex-direction: column;
+    gap: 3px;
+  }
+  
+  .summary-stats {
+    flex-direction: column;
+    gap: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .prompts-table th,
+  .prompts-table td {
+    padding: 6px 2px;
+  }
+  
+  .category-badge,
+  .difficulty-badge,
+  .status-badge {
+    font-size: 0.7rem;
+    padding: 2px 6px;
+  }
+}

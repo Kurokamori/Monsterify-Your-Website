@@ -36,12 +36,12 @@ const AuthButtons = ({ onLogout }) => {
       <div className="auth-buttons">
         <div>
           {Boolean(currentUser?.is_admin) && (
-            <Link to="/admin/dashboard" className="auth-button">Admin</Link>
+            <Link to="/admin/dashboard" className="button primary lg block">Admin</Link>
           )}
         </div>
 
         <div className="user-dropdown" ref={dropdownRef}>
-          <button className="user-dropdown-toggle" onClick={toggleDropdown}>
+          <button className="button primary tall lg between" onClick={toggleDropdown}>
             <span className="user-name">{currentUser?.display_name || currentUser?.username || 'User'}</span>
             <i className={`fas fa-chevron-${dropdownOpen ? 'up' : 'down'}`}></i>
           </button>
@@ -93,8 +93,8 @@ const AuthButtons = ({ onLogout }) => {
 
   return (
     <div className="auth-buttons">
-      <Link to="/login" className="auth-button">Login</Link>
-      <Link to="/register" className="auth-button">Register</Link>
+      <Link to="/login" className="button primary lg block">Login</Link>
+      <Link to="/register" className="button primary lg block">Register</Link>
     </div>
   );
 };

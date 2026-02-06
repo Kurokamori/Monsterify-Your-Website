@@ -50,7 +50,7 @@ const ThemeSection = ({ theme }) => {
           <span className="detail-value">{displayText}</span>
           {hasLink && videoId && (
             <button 
-              className="theme-expand-btn"
+              className="button secondary"
               onClick={() => setIsExpanded(!isExpanded)}
               title={isExpanded ? 'Hide theme player' : 'Show theme player'}
             >
@@ -1281,10 +1281,10 @@ const TrainerDetailPage = () => {
       <div className="error-container">
         <i className="fas fa-exclamation-circle"></i>
         <p>{error}</p>
-        <button onClick={fetchTrainerData} className="button button-primary">
+        <button onClick={fetchTrainerData} className="button primary">
           Try Again
         </button>
-        <button onClick={() => navigate('/trainers')} className="button button-secondary">
+        <button onClick={() => navigate('/trainers')} className="button secondary">
           Back to Trainers
         </button>
       </div>
@@ -1296,7 +1296,7 @@ const TrainerDetailPage = () => {
       <div className="error-container">
         <i className="fas fa-user-slash"></i>
         <p>Trainer not found. The trainer you're looking for might not exist or has been removed.</p>
-        <button onClick={() => navigate('/trainers')} className="button button-secondary">
+        <button onClick={() => navigate('/trainers')} className="button secondary">
           Back to Trainers
         </button>
       </div>
@@ -1482,7 +1482,7 @@ const TrainerDetailPage = () => {
 
           {isOwner && (
             <div className="trainer-actions">
-              <Link to={`/trainers/${trainer.id}/edit`} className="trainer-action-button">
+              <Link to={`/trainers/${trainer.id}/edit`} className="button primary">
                 <i className="fas fa-edit"></i> Edit Trainer
               </Link>
             </div>
@@ -1620,7 +1620,7 @@ const TrainerDetailPage = () => {
                     {monsters.length > 0 && (
                       <div className="view-all-container">
                         <button
-                          className="view-all-button"
+                          className="button primary"
                           onClick={() => setActiveTab('pc')}
                         >
                           View All {monsters.length} Monsters
@@ -2160,14 +2160,14 @@ const TrainerDetailPage = () => {
                 {monsters.length > 0 && (
                   <div className="view-toggle">
                     <button
-                      className={`view-toggle-button ${viewMode === 'grid' ? 'active' : ''}`}
+                      className={`button toggle ${viewMode === 'grid' ? 'active' : ''}`}
                       onClick={() => setViewMode('grid')}
                       title="Grid View"
                     >
                       <i className="fas fa-th"></i>
                     </button>
                     <button
-                      className={`view-toggle-button ${viewMode === 'list' ? 'active' : ''}`}
+                      className={`button toggle ${viewMode === 'list' ? 'active' : ''}`}
                       onClick={() => setViewMode('list')}
                       title="Detailed List View"
                     >
@@ -2221,7 +2221,7 @@ const TrainerDetailPage = () => {
                         </div>
                         <div className="pc-box-controls">
                           <button
-                            className="pc-box-nav-button"
+                            className="button primary"
                             onClick={() => setCurrentPCBox(prev => Math.max(0, prev - 1))}
                             disabled={currentPCBox === 0}
                           >
@@ -2229,7 +2229,7 @@ const TrainerDetailPage = () => {
                           </button>
                           <span className="pc-box-number">Box {currentPCBox + 1} of {getMaxBoxNumber()}</span>
                           <button
-                            className="pc-box-nav-button"
+                            className="button primary"
                             onClick={() => setCurrentPCBox(prev => Math.min(getMaxBoxNumber() - 1, prev + 1))}
                             disabled={currentPCBox >= getMaxBoxNumber() - 1}
                           >
@@ -2299,14 +2299,14 @@ const TrainerDetailPage = () => {
                   {monsters.length > 0 && (
                     <div className="view-toggle">
                       <button
-                        className={`view-toggle-button ${viewMode === 'grid' ? 'active' : ''}`}
+                        className={`button toggle ${viewMode === 'grid' ? 'active' : ''}`}
                         onClick={() => setViewMode('grid')}
                         title="Grid View"
                       >
                         <i className="fas fa-th"></i>
                       </button>
                       <button
-                        className={`view-toggle-button ${viewMode === 'list' ? 'active' : ''}`}
+                        className={`button toggle ${viewMode === 'list' ? 'active' : ''}`}
                         onClick={() => setViewMode('list')}
                         title="Detailed List View"
                       >
@@ -2316,7 +2316,7 @@ const TrainerDetailPage = () => {
                   )}
                   {isOwner && monsters.length > 0 && (
                     <button 
-                      className="button button-primary"
+                      className="button secondary"
                       onClick={handleOpenMassEdit}
                       title="Mass edit your monsters - rename, use berries, and use pastries in bulk"
                     >
@@ -2345,7 +2345,7 @@ const TrainerDetailPage = () => {
                       <div className="search-results-info">
                         <p>{filteredMonsters.length} monsters found</p>
                         <button 
-                          className="button button-danger"
+                          className="button danger"
                           onClick={() => setSearchTerm('')}
                         >
                           <i className="fas fa-times"></i> Clear Search
@@ -3117,7 +3117,7 @@ const TrainerDetailPage = () => {
                 {/* Claim All Button */}
                 {isOwner && achievementStats && achievementStats.unclaimed > 0 && (
                   <button 
-                    className="claim-all-btn button button-primary"
+                    className="button primary"
                     onClick={handleClaimAllAchievements}
                     disabled={isClaimingAll}
                   >
@@ -3145,50 +3145,50 @@ const TrainerDetailPage = () => {
                 <>
                   <div className="achievement-filters">
                     <button
-                      className={`filter-btn ${achievementFilter === 'all' ? 'active' : ''}`}
+                      className={`button filter ${achievementFilter === 'all' ? 'active' : ''}`}
                       onClick={() => setAchievementFilter('all')}
                     >
                       All ({achievements.length})
                     </button>
                     <button
-                      className={`filter-btn ${achievementFilter === 'unlocked' ? 'active' : ''}`}
+                      className={`button filter ${achievementFilter === 'unlocked' ? 'active' : ''}`}
                       onClick={() => setAchievementFilter('unlocked')}
                     >
                       Unlocked ({achievements.filter(a => a.unlocked).length})
                     </button>
                     <button
-                      className={`filter-btn ${achievementFilter === 'type' ? 'active' : ''}`}
+                      className={`button filter ${achievementFilter === 'type' ? 'active' : ''}`}
                       onClick={() => setAchievementFilter('type')}
                     >
                       Type ({achievements.filter(a => a.category === 'type').length})
                     </button>
                     <button
-                      className={`filter-btn ${achievementFilter === 'attribute' ? 'active' : ''}`}
+                      className={`button filter ${achievementFilter === 'attribute' ? 'active' : ''}`}
                       onClick={() => setAchievementFilter('attribute')}
                     >
                       Attribute ({achievements.filter(a => a.category === 'attribute').length})
                     </button>
                     <button
-                      className={`filter-btn ${achievementFilter === 'level100' ? 'active' : ''}`}
+                      className={`button filter ${achievementFilter === 'level100' ? 'active' : ''}`}
                       onClick={() => setAchievementFilter('level100')}
                     >
                       Level 100 ({achievements.filter(a => a.category === 'level100').length})
                     </button>
                     <button
-                      className={`filter-btn ${achievementFilter === 'trainer_level' ? 'active' : ''}`}
+                      className={`button filter ${achievementFilter === 'trainer_level' ? 'active' : ''}`}
                       onClick={() => setAchievementFilter('trainer_level')}
                     >
                       Trainer Level ({achievements.filter(a => a.category === 'trainer_level').length})
                     </button>
                     <button
-                      className={`filter-btn ${achievementFilter === 'special' ? 'active' : ''}`}
+                      className={`button filter ${achievementFilter === 'special' ? 'active' : ''}`}
                       onClick={() => setAchievementFilter('special')}
                     >
                       Special ({achievements.filter(a => a.category === 'special').length})
                     </button>
                     {isOwner && (
                       <button
-                        className={`filter-btn ${achievementFilter === 'claimable' ? 'active' : ''}`}
+                        className={`button filter ${achievementFilter === 'claimable' ? 'active' : ''}`}
                         onClick={() => setAchievementFilter('claimable')}
                       >
                         Claimable ({achievements.filter(a => a.canClaim).length})
@@ -3295,7 +3295,7 @@ const TrainerDetailPage = () => {
                             )}
                             {achievement.canClaim && (
                               <button 
-                                className="claim-btn button button-primary"
+                                className="claim-btn button primary"
                                 onClick={() => {
                                   console.log(`Claiming achievement: ${achievement.id} - ${achievement.name}`);
                                   handleClaimAchievement(achievement.id);
@@ -3624,7 +3624,7 @@ const TrainerDetailPage = () => {
                 <h2>Edit Boxes</h2>
                 <div className="edit-boxes-actions">
                   <button
-                    className="edit-boxes-button button button-primary"
+                    className="button primary"
                     onClick={handleSaveBoxes}
                     disabled={isSaving}
                   >
@@ -3639,7 +3639,7 @@ const TrainerDetailPage = () => {
                     )}
                   </button>
                   <button
-                    className="edit-boxes-button button button-secondary"
+                    className="button secondary"
                     onClick={() => setActiveTab('boxes')}
                   >
                     <i className="fas fa-times"></i> Cancel
@@ -3659,7 +3659,7 @@ const TrainerDetailPage = () => {
                   <h3>Featured Monsters</h3>
                   <span>{featuredMonsters.length}/6</span>
                   <button
-                    className="featured-monsters-save-button button button-primary"
+                    className="button primary"
                     onClick={handleSaveFeaturedMonsters}
                     disabled={isSaving}
                     title="Save featured monsters"
@@ -3673,14 +3673,6 @@ const TrainerDetailPage = () => {
                 </div>
                 <div
                   className="edit-box-grid featured-monsters-grid featured-monsters-compact"
-                  style={{
-                    display: 'grid',
-                    gridTemplateColumns: 'repeat(6, 1fr)',
-                    gridTemplateRows: '1fr',
-                    gap: '8px',
-                    maxWidth: '600px',
-                    margin: '0 auto'
-                  }}
                 >
                   {Array.from({ length: 6 }).map((_, slotIndex) => {
                     const featuredMonster = featuredMonsters[slotIndex];
@@ -3690,11 +3682,6 @@ const TrainerDetailPage = () => {
                         className={`edit-box-slot featured-monster-slot ${featuredMonster ? 'filled' : 'empty'}`}
                         key={slotIndex}
                         data-slot={slotIndex}
-                        style={{
-                          width: '80px',
-                          height: '80px',
-                          fontSize: '10px'
-                        }}
                         onDragOver={handleFeaturedDragOver}
                         onDragEnter={handleFeaturedDragEnter}
                         onDragLeave={handleFeaturedDragLeave}
@@ -3702,42 +3689,26 @@ const TrainerDetailPage = () => {
                       >
                         {featuredMonster ? (
                           <div
-                            className="edit-box-monster"
-                            style={{ position: 'relative', width: '100%', height: '100%' }}
+                            className="edit-box-monster edit-box-monster-full"
                             draggable={true}
                             onDragStart={(e) => handleDragStart(e, featuredMonster, -1, slotIndex)}
                             onDragEnd={handleDragEnd}
                           >
-                            <div className="edit-box-monster-image" style={{ width: '50px', height: '50px' }}>
+                            <div className="edit-box-monster-image compact">
                               <img
                                 src={featuredMonster.img_link || '/images/default_mon.png'}
                                 alt={featuredMonster.name}
-                                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                                 onError={(e) => {
                                   e.target.onerror = null;
                                   e.target.src = '/images/default_mon.png';
                                 }}
                               />
                             </div>
-                            <div className="edit-box-monster-info" style={{ fontSize: '8px', padding: '2px' }}>
+                            <div className="edit-box-monster-info compact">
                               {featuredMonster.name.length > 8 ? featuredMonster.name.substring(0, 8) + '...' : featuredMonster.name}
                             </div>
                             <button
-                              className="button button-icon button-danger"
-                              style={{
-                                position: 'absolute',
-                                top: '2px',
-                                right: '2px',
-                                width: '16px',
-                                height: '16px',
-                                fontSize: '8px',
-                                padding: '0',
-                                border: 'none',
-                                borderRadius: '50%',
-                                backgroundColor: 'rgba(255, 0, 0, 0.7)',
-                                color: 'white',
-                                cursor: 'pointer'
-                              }}
+                              className="button danger icon sm"
                               onClick={(e) => {
                                 e.stopPropagation();
                                 const updatedFeatured = [...featuredMonsters];
@@ -3752,9 +3723,9 @@ const TrainerDetailPage = () => {
                             </button>
                           </div>
                         ) : (
-                          <div className="featured-monster-empty" style={{ fontSize: '8px', padding: '4px' }}>
-                            <i className="fas fa-star" style={{ fontSize: '12px', marginBottom: '2px' }}></i>
-                            <span style={{ display: 'block', lineHeight: '1' }}>Drop Here</span>
+                          <div className="featured-monster-empty compact">
+                            <i className="fas fa-star"></i>
+                            <span>Drop Here</span>
                           </div>
                         )}
                       </div>
@@ -3779,7 +3750,7 @@ const TrainerDetailPage = () => {
 
               <div className="edit-boxes-controls">
                 <button
-                  className="button button-primary"
+                  className="button primary"
                   onClick={handleAddBox}
                   title="Add a new empty box for better organization"
                 >
@@ -3867,7 +3838,7 @@ const TrainerDetailPage = () => {
             <div className="popup-header">
               <h2>{rewardPopupData.isBulk ? '🎉 Achievements Claimed!' : '🎉 Achievement Unlocked!'}</h2>
               <button 
-                className="popup-close-btn"
+                className="button danger icon sm"
                 onClick={() => setShowRewardPopup(false)}
               >
                 <i className="fas fa-times"></i>
@@ -3959,7 +3930,7 @@ const TrainerDetailPage = () => {
             
             <div className="popup-footer">
               <button 
-                className="popup-ok-btn button button-primary"
+                className="button primary"
                 onClick={() => setShowRewardPopup(false)}
               >
                 Awesome! 🎉
@@ -3983,7 +3954,7 @@ const TrainerDetailPage = () => {
       {showImageModal && (
         <div className="image-modal-overlay" onClick={closeImageModal}>
           <div className="image-modal-content" onClick={(e) => e.stopPropagation()}>
-            <button className="image-modal-close" onClick={closeImageModal}>
+            <button className="button danger icon sm" onClick={closeImageModal}>
               <i className="fas fa-times"></i>
             </button>
             <img

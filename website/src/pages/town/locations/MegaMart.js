@@ -298,7 +298,7 @@ const MegaMart = () => {
       {actionError && (
         <div className="action-error">
           <p>{actionError}</p>
-          <button onClick={() => setActionError(null)}>Dismiss</button>
+          <button className="button danger" onClick={() => setActionError(null)}>Dismiss</button>
         </div>
       )}
 
@@ -371,7 +371,7 @@ const MegaMart = () => {
 
             <div className="ability-actions">
               <button
-                className="button button-primary"
+                className="button primary"
                 onClick={handleUseAbilityCapsule}
                 disabled={!monsterAbilities.ability1 || !monsterAbilities.ability2}
               >
@@ -382,7 +382,7 @@ const MegaMart = () => {
               </button>
 
               <button
-                className="button button-primary"
+                className="button primary"
                 onClick={handleUseScrollOfSecrets}
               >
                 Use Scroll of Secrets
@@ -414,7 +414,7 @@ const MegaMart = () => {
             <p>The Ability Capsule has been used successfully!</p>
             <p>The monster's abilities have been swapped.</p>
             <button
-              className="modal-button primary"
+              className="button primary"
               onClick={closeAbilityCapsuleModal}
             >
               Close
@@ -445,14 +445,14 @@ const MegaMart = () => {
 
             <div className="modal-actions">
               <button
-                className="modal-button secondary"
+                className="button secondary"
                 onClick={closeAbilityCapsuleModal}
               >
                 Cancel
               </button>
 
               <button
-                className="modal-button primary"
+                className="button primary"
                 onClick={confirmUseAbilityCapsule}
                 disabled={loading}
               >
@@ -474,7 +474,7 @@ const MegaMart = () => {
             <p>The Scroll of Secrets has been used successfully!</p>
             <p>The monster's ability has been changed.</p>
             <button
-              className="modal-button primary"
+              className="button primary"
               onClick={closeScrollOfSecretsModal}
             >
               Close
@@ -543,14 +543,14 @@ const MegaMart = () => {
 
             <div className="modal-actions">
               <button
-                className="modal-button secondary"
+                className="button secondary"
                 onClick={closeScrollOfSecretsModal}
               >
                 Cancel
               </button>
 
               <button
-                className="modal-button primary"
+                className="button primary"
                 onClick={confirmUseScrollOfSecrets}
                 disabled={loading || !selectedAbility}
               >

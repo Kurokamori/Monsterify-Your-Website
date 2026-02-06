@@ -18,33 +18,6 @@
 
 .boxes-header h2{ margin:0; padding:0; border:none; }
 
-
-/* ===== Mass edit button ===== */
-
-.mass-edit-button {
-  background: linear-gradient(135deg, var(--blue-color), var(--blue-dark));
-  color: var(--text-color);
-  border: none;
-  padding: 10px 20px;
-  border-radius: 8px;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  transition: all .2s ease;
-  box-shadow: 0 2px 4px rgba(0,123,255,.2);
-}
-
-.mass-edit-button:hover{
-  background:linear-gradient(135deg, var(--blue-dark), var(--blue-dark)); transform:translateY(-1px);
-  box-shadow:0 4px 8px rgba(0,123,255,.3);
-}
-.mass-edit-button:active{ transform:translateY(0); }
-.mass-edit-button i{ font-size:16px; }
-
-
 /* ===== Add Box Controls ===== */
 
 .edit-boxes-controls {
@@ -53,30 +26,6 @@
   margin-bottom: 1.5rem;
   padding: 1rem;
 }
-
-.add-box-button {
-  display: flex;
-  align-items: center;
-  gap: .5rem;
-  padding: .75rem 1.5rem;
-  background: linear-gradient(135deg, var(--success-light), var(--success-color));
-  color: var(--text-color);
-  border: none;
-  border-radius: .5rem;
-  font-size: .9rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all .2s ease;
-  box-shadow: 0 2px 4px rgba(40,167,69,.2);
-}
-
-.add-box-button:hover{
-  background:linear-gradient(135deg, var(--success-color), var(--success-light)); transform:translateY(-2px);
-  box-shadow:0 4px 8px rgba(40,167,69,.3);
-}
-.add-box-button:active{ transform:translateY(0); }
-.add-box-button i{ font-size:1rem; }
-
 
 /* ===== Edit boxes grid ===== */
 
@@ -92,20 +41,11 @@
   gap: .75rem;
 }
 
-.edit-boxes-button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: .5rem 1rem;
-  border-radius: .375rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all .2s;
-  border: none;
-}
+/* Button styles: Use unified button system from common/buttons.css
+   Example: className="button primary" */
 
 .edit-boxes-instructions {
-  background-color: rgba(var(--accent-color-rgb,214,163,57), .1);
+  background-color: rgba(var(--accent-color), .1);
   border-left: 3px solid var(--accent-color);
   padding: 1rem;
   margin-bottom: 1.5rem;
@@ -125,11 +65,11 @@
   background-color: var(--nav-background);
   border-radius: .5rem;
   overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0,0,0,.1);
+  box-shadow: 0 2px 8px var(--overlay-light);
   transition: all .2s;
 }
 
-.edit-box-container:hover{ transform:translateY(-3px); box-shadow:0 4px 12px rgba(0,0,0,.15); }
+.edit-box-container:hover{ transform:translateY(-3px); box-shadow:0 4px 12px var(--overlay-medium); }
 
 .edit-box-header {
   display: flex;
@@ -149,12 +89,12 @@
   grid-template-rows: repeat(5, 1fr);
   gap: .25rem;
   padding: .75rem;
-  background-color: rgba(0,0,0,.2);
+  background-color: var(--overlay-medium);
 }
 
 .edit-box-slot {
   aspect-ratio: 1;
-  background-color: rgba(255,255,255,.05);
+  background-color: var(--highlight-light);
   border-radius: .25rem;
   overflow: hidden;
   position: relative;
@@ -162,14 +102,71 @@
   cursor: move;
 }
 
-.edit-box-slot.empty{ background-color:rgba(255,255,255,.02); border:1px dashed rgba(255,255,255,.1); }
+.edit-box-slot.empty{ background-color:var(--highlight-subtle); border:1px dashed var(--highlight-light); }
 
 .edit-box-slot.dragging{
-  opacity:.6; transform:scale(1.05); z-index:10; box-shadow:0 0 10px rgba(var(--accent-color-rgb,214,163,57), .5);
+  opacity:.6; transform:scale(1.05); z-index:10; box-shadow:0 0 10px rgba(var(--accent-color), .5);
   border:2px dashed var(--accent-color);
 }
 
-.edit-box-slot.drag-over{ background-color:rgba(var(--accent-color-rgb,214,163,57), .2); border:2px solid var(--accent-color); }
+.edit-box-slot.drag-over{ background-color:rgba(var(--accent-color), .2); border:2px solid var(--accent-color); }
+
+/* ===== Featured Monsters Grid ===== */
+
+.featured-monsters-compact {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  grid-template-rows: 1fr;
+  gap: 8px;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.featured-monster-slot {
+  width: 80px;
+  height: 80px;
+  font-size: 10px;
+}
+
+.edit-box-monster-full {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.edit-box-monster-image.compact {
+  width: 50px;
+  height: 50px;
+}
+
+.edit-box-monster-image.compact img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.edit-box-monster-info.compact {
+  font-size: 8px;
+  padding: 2px;
+}
+
+/* Featured remove button: Use unified button system from common/buttons.css
+   Example: className="button danger icon sm" with position:absolute styling */
+
+.featured-monster-empty.compact {
+  font-size: 8px;
+  padding: 4px;
+}
+
+.featured-monster-empty.compact i {
+  font-size: 12px;
+  margin-bottom: 2px;
+}
+
+.featured-monster-empty.compact span {
+  display: block;
+  line-height: 1;
+}
 
 
 /* ===== Responsive ===== */

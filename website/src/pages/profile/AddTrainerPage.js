@@ -344,7 +344,7 @@ const AddTrainerPage = () => {
     <div className="add-trainer-container">
       <div className="add-trainer-header">
         <h1>Create New Trainer</h1>
-        <Link to="/profile/trainers" className="button button-secondary">
+        <Link to="/profile/trainers" className="button secondary">
           <i className="fas fa-arrow-left"></i> Back to Trainers
         </Link>
       </div>
@@ -1262,7 +1262,7 @@ const AddTrainerPage = () => {
                     <h3>Relation #{index + 1}</h3>
                     <button
                       type="button"
-                      className="button button-icon button-danger"
+                      className="button icon danger"
                       onClick={() => handleRemoveRelation(relation.id)}
                     >
                       <i className="fas fa-trash-alt"></i> Remove
@@ -1403,12 +1403,12 @@ const AddTrainerPage = () => {
         </div>
 
         <div className="form-actions" ref={submitRef}>
-          <Link to="/profile/trainers" className="button button-secondary">
+          <Link to="/profile/trainers" className="button secondary">
             Cancel
           </Link>
           <button
             type="submit"
-            className="button button-success"
+            className="button success"
             disabled={loading}
           >
             {loading ? (

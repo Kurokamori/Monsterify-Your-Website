@@ -51,7 +51,7 @@ const PersonFullView = ({ person, trainerId, onClose }) => {
           <div className="error-message">
             <i className="fas fa-exclamation-triangle"></i>
             <p>Failed to load person details</p>
-            <button onClick={onClose} className="close-button">Close</button>
+            <button onClick={onClose} className="button close">Close</button>
           </div>
         </div>
       </div>
@@ -71,7 +71,7 @@ const PersonFullView = ({ person, trainerId, onClose }) => {
       <div className="person-full-view" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
           <h2>{fullPersonData.name}</h2>
-          <button className="close-button" onClick={onClose}>×</button>
+          <button className="button close" onClick={onClose}>×</button>
         </div>
 
         <div className="modal-content">

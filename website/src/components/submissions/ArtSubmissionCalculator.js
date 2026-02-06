@@ -521,7 +521,7 @@ const ArtSubmissionCalculator = ({
               {backgrounds.length > 1 && (
                 <button
                   type="button"
-                  className="button button-icon button-danger"
+                  className="button icon danger"
                   onClick={() => handleRemoveBackground(index)}
                 >
                   &times;
@@ -547,14 +547,14 @@ const ArtSubmissionCalculator = ({
             <div className="form-actions">
               <button
                 type="button"
-                className="button button-secondary"
+                className="button secondary"
                 onClick={() => setShowAddBackground(false)}
               >
                 Cancel
               </button>
               <button
                 type="button"
-                className="button button-primary"
+                className="button primary"
                 onClick={handleAddBackground}
               >
                 Add Background
@@ -564,7 +564,7 @@ const ArtSubmissionCalculator = ({
         ) : (
           <button
             type="button"
-            className="button button-primary"
+            className="button primary"
             onClick={() => setShowAddBackground(true)}
           >
             + Add Background
@@ -731,14 +731,14 @@ const ArtSubmissionCalculator = ({
             <div className="form-actions">
               <button
                 type="button"
-                className="button button-secondary"
+                className="button secondary"
                 onClick={() => setShowAddTrainer(false)}
               >
                 Cancel
               </button>
               <button
                 type="button"
-                className="button button-primary"
+                className="button primary"
                 onClick={handleAddTrainer}
                 disabled={!selectedTrainerId || (isTrainerGift && !giftRecipientId)}
               >
@@ -749,7 +749,7 @@ const ArtSubmissionCalculator = ({
         ) : (
           <button
             type="button"
-            className="button button-primary"
+            className="button primary"
             onClick={() => setShowAddTrainer(true)}
           >
             + Add Trainer
@@ -924,7 +924,7 @@ const ArtSubmissionCalculator = ({
             <div className="form-actions">
               <button
                 type="button"
-                className="button button-secondary"
+                className="button secondary"
                 onClick={() => {
                   setShowAddMonster(false);
                   setMonsterTrainerId('');
@@ -936,7 +936,7 @@ const ArtSubmissionCalculator = ({
               </button>
               <button
                 type="button"
-                className="button button-primary"
+                className="button primary"
                 onClick={handleAddMonster}
                 disabled={!selectedMonsterId || !monsterTrainerId}
               >
@@ -947,7 +947,7 @@ const ArtSubmissionCalculator = ({
         ) : (
           <button
             type="button"
-            className="button button-primary"
+            className="button primary"
             onClick={() => setShowAddMonster(true)}
           >
             + Add Monster
@@ -965,7 +965,7 @@ const ArtSubmissionCalculator = ({
                 <span className="entity-name">{npc.name}</span>
                 <button
                   type="button"
-                  className="button button-icon button-danger"
+                  className="button icon danger"
                   onClick={() => handleRemoveNPC(npc.id)}
                 >
                   &times;
@@ -1031,7 +1031,7 @@ const ArtSubmissionCalculator = ({
             <div className="form-actions">
               <button
                 type="button"
-                className="button button-secondary"
+                className="button secondary"
                 onClick={() => {
                   setShowAddNPC(false);
                   setNpcName('');
@@ -1043,7 +1043,7 @@ const ArtSubmissionCalculator = ({
               </button>
               <button
                 type="button"
-                className="button button-primary"
+                className="button primary"
                 onClick={handleAddNPC}
               >
                 Add NPC
@@ -1053,7 +1053,7 @@ const ArtSubmissionCalculator = ({
         ) : (
           <button
             type="button"
-            className="button button-primary"
+            className="button primary"
             onClick={() => setShowAddNPC(true)}
           >
             + Add NPC
@@ -1085,7 +1085,7 @@ const ArtSubmissionCalculator = ({
       <div className="calculator-actions">
         <button
           type="button"
-          className="calculate-button"
+          className="button primary"
           onClick={handleCalculate}
         >
           Calculate Rewards

@@ -504,7 +504,7 @@ const WorldMapAdmin = () => {
           <div className="modal-header">
             <h2>Edit {activeTab.slice(0, -1)}</h2>
             <button 
-              className="modal-close"
+              className="button close"
               onClick={() => setShowModal(false)}
             >
               <i className="fas fa-times"></i>
@@ -673,14 +673,14 @@ const WorldMapAdmin = () => {
           </div>
           
           <div className="modal-footer">
-            <button 
-              className="btn btn-secondary"
+            <button
+              className="button secondary"
               onClick={() => setShowModal(false)}
             >
               Cancel
             </button>
-            <button 
-              className="btn btn-primary"
+            <button
+              className="button primary"
               onClick={handleSave}
             >
               Save Changes
@@ -702,7 +702,7 @@ const WorldMapAdmin = () => {
         {tabs.map(tab => (
           <button
             key={tab.id}
-            className={`tab-button ${activeTab === tab.id ? 'active' : ''}`}
+            className={`button tab ${activeTab === tab.id ? 'active' : ''}`}
             onClick={() => setActiveTab(tab.id)}
           >
             <i className={tab.icon}></i>

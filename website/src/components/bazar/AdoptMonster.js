@@ -129,7 +129,7 @@ const AdoptMonster = ({ userTrainers }) => {
         
         <div className="monster-actions">
           <button
-            className="btn btn-success"
+            className="button success"
             onClick={() => handleAdoptClick(monster)}
           >
             Adopt
@@ -205,14 +205,14 @@ const AdoptMonster = ({ userTrainers }) => {
           </div>
           <div className="modal-actions">
             <button
-              className="btn btn-secondary"
+              className="button secondary"
               onClick={() => setShowAdoptModal(false)}
               disabled={submitting}
             >
               Cancel
             </button>
             <button
-              className="btn btn-success"
+              className="button success"
               onClick={handleAdopt}
               disabled={submitting || !selectedTrainer || !newName.trim()}
             >

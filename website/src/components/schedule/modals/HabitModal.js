@@ -101,7 +101,7 @@ const HabitModal = ({ isOpen, onClose, onSuccess, trainers = [], habit = null })
       <div className="modal-content" onClick={e => e.stopPropagation()}>
         <div className="modal-header">
           <h3>{habit ? 'Edit Habit' : 'Create New Habit'}</h3>
-          <button className="modal-close" onClick={onClose}>
+          <button className="button close" onClick={onClose}>
             <i className="fas fa-times"></i>
           </button>
         </div>
@@ -296,10 +296,10 @@ const HabitModal = ({ isOpen, onClose, onSuccess, trainers = [], habit = null })
           </div>
 
           <div className="modal-actions">
-            <button type="button" onClick={onClose} className="btn btn-secondary">
+            <button type="button" onClick={onClose} className="button secondary">
               Cancel
             </button>
-            <button type="submit" disabled={loading} className="btn btn-primary">
+            <button type="submit" disabled={loading} className="button primary">
               {loading ? (
                 <>
                   <i className="fas fa-spinner fa-spin"></i>

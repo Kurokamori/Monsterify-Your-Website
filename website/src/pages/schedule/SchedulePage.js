@@ -62,28 +62,28 @@ const SchedulePage = () => {
 
       <div className="schedule-tabs">
         <button
-          className={`tab-button ${activeTab === 'dashboard' ? 'active' : ''}`}
+          className={`button tab ${activeTab === 'dashboard' ? 'active' : ''}`}
           onClick={() => handleTabChange('dashboard')}
         >
           <i className="fas fa-tachometer-alt"></i>
           Dashboard
         </button>
         <button
-          className={`tab-button ${activeTab === 'tasks' ? 'active' : ''}`}
+          className={`button tab ${activeTab === 'tasks' ? 'active' : ''}`}
           onClick={() => handleTabChange('tasks')}
         >
           <i className="fas fa-tasks"></i>
           Tasks
         </button>
         <button
-          className={`tab-button ${activeTab === 'habits' ? 'active' : ''}`}
+          className={`button tab ${activeTab === 'habits' ? 'active' : ''}`}
           onClick={() => handleTabChange('habits')}
         >
           <i className="fas fa-chart-line"></i>
           Habits
         </button>
         <button
-          className={`tab-button ${activeTab === 'routines' ? 'active' : ''}`}
+          className={`button tab ${activeTab === 'routines' ? 'active' : ''}`}
           onClick={() => handleTabChange('routines')}
         >
           <i className="fas fa-calendar-day"></i>

@@ -155,7 +155,7 @@ const UserFormPage = () => {
 
         {/* Action Buttons */}
         <div className="admin-actions">
-          <Link to="/admin/users" className="admin-button secondary">
+          <Link to="/admin/users" className="button secondary">
             <i className="fas fa-arrow-left"></i> Back to Users
           </Link>
         </div>
@@ -262,16 +262,16 @@ const UserFormPage = () => {
             </div>
 
             <div className="admin-form-actions">
-              <Link 
-                to="/admin/users" 
-                className="admin-button secondary"
+              <Link
+                to="/admin/users"
+                className="button secondary"
                 disabled={loading}
               >
                 Cancel
               </Link>
-              <button 
-                type="submit" 
-                className="admin-button"
+              <button
+                type="submit"
+                className="button primary"
                 disabled={loading}
               >
                 {loading ? (

@@ -88,7 +88,7 @@
 
 .trainer-panel, .trainer-monsters-section{
   background-color:var(--card-background); border-radius:.5rem; padding:1.5rem;
-  box-shadow:0 2px 4px rgba(0,0,0,.1); margin-bottom:1.5rem;
+  box-shadow:0 2px 4px var(--overlay-light); margin-bottom:1.5rem;
   overflow: hidden;
 }
 
@@ -102,14 +102,14 @@
 /* ===== Tabs ===== */
 
 .trainer-pc-tab, .trainer-boxes-tab, .trainer-inventory-tab, .trainer-stats-tab{
-  background-color:var(--card-background); border-radius:.5rem; padding:1.5rem; box-shadow:0 2px 4px rgba(0,0,0,.1);
+  background-color:var(--card-background); border-radius:.5rem; padding:1.5rem; box-shadow:0 2px 4px var(--overlay-light);
 }
 
 .trainer-edit-boxes-tab {
   background-color: var(--card-background);
   border-radius: .5rem;
   padding: 1.5rem;
-  box-shadow: 0 2px 4px rgba(0,0,0,.1);
+  box-shadow: 0 2px 4px var(--overlay-light);
 }
 
 .trainer-mega-tab {
@@ -145,41 +145,14 @@
 
 .trainer-tab:hover{
   color:var(--text-color);
-  background:linear-gradient(135deg, rgba(214,163,57,.1) 0%, rgba(244,208,63,.05) 100%);
+  background:linear-gradient(135deg, var(--accent-glow-light) 0%, var(--accent-glow) 100%);
   transform:translateY(-2px);
 }
 
 .trainer-tab.active{
-  color:var(--gold-color); border-bottom-color:var(--gold-color); font-weight:600;
-  background:linear-gradient(135deg, rgba(214,163,57,.15) 0%, rgba(244,208,63,.08) 100%);
+  color:var(--accent-color); border-bottom-color:var(--accent-color); font-weight:600;
+  background:linear-gradient(135deg, var(--accent-glow-soft) 0%, var(--accent-glow) 100%);
 }
-
-
-/* ===== Details buttons ===== */
-
-.trainer-details-btn {
-  padding: 12px 20px;
-  border-radius: 8px;
-  font-size: .95rem;
-  font-weight: 600;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  cursor: pointer;
-  text-decoration: none;
-  transition: all .2s ease;
-  border: none;
-  box-shadow: 0 2px 8px rgba(0,0,0,.1);
-}
-
-.trainer-details-btn:hover{ transform:translateY(-1px); box-shadow:0 4px 16px rgba(0,0,0,.2); }
-.trainer-details-btn.edit{ background-color:var(--gold-color); color:var(--text-color); }
-.trainer-details-btn.edit:hover{ background-color:var(--gold-dark); }
-.trainer-details-btn.delete{ background-color:var(--error-color); color:var(--text-color); }
-.trainer-details-btn.delete:hover{ background-color:var(--error-light); }
-.trainer-details-btn.back{ background-color:var(--nav-background); color:var(--text-color); border:1px solid var(--border-color); }
-.trainer-details-btn.back:hover{ background-color:var(--nav-hover); }
-
 
 /* ===== Sidebar navigation ===== */
 
@@ -215,7 +188,7 @@
 .trainer-info-section {
   background: var(--card-background);
   border-radius: 16px;
-  box-shadow: 0 8px 32px rgba(0,0,0,.08);
+  box-shadow: 0 8px 32px var(--overlay-light);
   padding: 30px;
   margin-bottom: 24px;
   border: 1px solid var(--border-color);
@@ -223,16 +196,16 @@
   transition: transform .2s ease, box-shadow .2s ease;
 }
 
-.trainer-info-section:hover{ transform:translateY(-2px); box-shadow:0 12px 48px rgba(0,0,0,.12); }
+.trainer-info-section:hover{ transform:translateY(-2px); box-shadow:0 12px 48px var(--overlay-light); }
 
 .trainer-info-section h3{
   margin-top:0; margin-bottom:20px; color:var(--text-color); font-size:1.4rem; font-weight:600;
-  border-bottom:3px solid var(--gold-color); padding-bottom:12px; position:relative;
+  border-bottom:3px solid var(--accent-color); padding-bottom:12px; position:relative;
 }
 
 .trainer-info-section h3::after{
   content:''; position:absolute; bottom:-3px; left:0; width:60px; height:3px;
-  background:linear-gradient(90deg, var(--gold-color), var(--gold-light)); border-radius:2px;
+  background:linear-gradient(90deg, var(--accent-color), var(--accent-light)); border-radius:2px;
 }
 
 .trainer-info-grid {
@@ -245,15 +218,15 @@
   display: flex;
   flex-direction: column;
   padding: 16px;
-  background: rgba(255,255,255,.6);
+  background: var(--highlight-strong);
   border-radius: 12px;
-  border: 1px solid rgba(214,163,57,.1);
+  border: 1px solid var(--accent-glow-light);
   transition: all .2s ease;
 }
 
 .trainer-info-item:hover{
-  background:rgba(255,255,255,.8); border-color:rgba(214,163,57,.2); transform:translateY(-1px);
-  box-shadow:0 4px 16px rgba(0,0,0,.08);
+  background:var(--highlight-intense); border-color:var(--accent-glow); transform:translateY(-1px);
+  box-shadow:0 4px 16px var(--overlay-light);
 }
 
 

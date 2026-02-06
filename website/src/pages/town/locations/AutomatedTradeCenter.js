@@ -454,15 +454,15 @@ const AutomatedTradeCenter = () => {
             {/* Trade Type Selection */}
             <div className="trade-type-selection">
               <label>Trade Type:</label>
-              <div className="trade-type-buttons">
+              <div className="trade-button filters">
                 <button
-                  className={`trade-type-button ${tradeType === 'monsters' ? 'active' : ''}`}
+                  className={`trade-button filter ${tradeType === 'monsters' ? 'active' : ''}`}
                   onClick={() => handleTradeTypeChange('monsters')}
                 >
                   <i className="fas fa-dragon"></i> Trade Monsters
                 </button>
                 <button
-                  className={`trade-type-button ${tradeType === 'items' ? 'active' : ''}`}
+                  className={`trade-button filter ${tradeType === 'items' ? 'active' : ''}`}
                   onClick={() => handleTradeTypeChange('items')}
                 >
                   <i className="fas fa-box"></i> Trade Items
@@ -823,7 +823,7 @@ const AutomatedTradeCenter = () => {
               The trade has been executed successfully! All items and monsters have been transferred automatically.
             </p>
             <button
-              className="modal-button primary"
+              className="button primary"
               onClick={closeTradeModal}
             >
               Close
@@ -842,13 +842,13 @@ const AutomatedTradeCenter = () => {
 
             <div className="trade-modal-actions">
               <button
-                className="modal-button secondary"
+                className="button secondary"
                 onClick={closeTradeModal}
               >
                 Cancel
               </button>
               <button
-                className="modal-button primary"
+                className="button primary"
                 onClick={handleExecuteTrade}
                 disabled={executing}
               >

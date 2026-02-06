@@ -2,7 +2,6 @@ import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import useDocumentTitle from '../../hooks/useDocumentTitle';
 import abilityService from '../../services/abilityService';
 import TypeBadge from '../../components/monsters/TypeBadge';
-import './AbilityDatabasePage.css';
 
 // All 18 standard types for the filter
 const ALL_TYPES = [
@@ -193,7 +192,7 @@ const AbilityDatabasePage = () => {
         <div className="filter-header">
           <h2>Search & Filter</h2>
           {hasActiveFilters && (
-            <button className="clear-filters-btn" onClick={clearFilters}>
+            <button className="button danger" onClick={clearFilters}>
               <i className="fas fa-times"></i> Clear Filters
             </button>
           )}
@@ -235,14 +234,14 @@ const AbilityDatabasePage = () => {
             <div className="type-logic-toggle">
               <span className="logic-label">Match:</span>
               <button
-                className={`logic-btn ${typeLogic === 'OR' ? 'active' : ''}`}
+                className={`button filter ${typeLogic === 'OR' ? 'active' : ''}`}
                 onClick={() => setTypeLogic('OR')}
                 title="Match any selected type"
               >
                 Any (OR)
               </button>
               <button
-                className={`logic-btn ${typeLogic === 'AND' ? 'active' : ''}`}
+                className={`button filter ${typeLogic === 'AND' ? 'active' : ''}`}
                 onClick={() => setTypeLogic('AND')}
                 title="Match all selected types"
               >
@@ -255,7 +254,7 @@ const AbilityDatabasePage = () => {
             {ALL_TYPES.map(type => (
               <button
                 key={type}
-                className={`type-filter-btn type-${type.toLowerCase()} ${selectedTypes.includes(type) ? 'selected' : ''}`}
+                className={`button filter type-${type.toLowerCase()} ${selectedTypes.includes(type) ? 'selected' : ''}`}
                 onClick={() => toggleType(type)}
               >
                 {type}
@@ -293,7 +292,7 @@ const AbilityDatabasePage = () => {
           <div className="sort-controls">
             <span className="sort-label">Sort by:</span>
             <button
-              className={`sort-btn ${sortBy === 'name' ? 'active' : ''}`}
+              className={`button filter ${sortBy === 'name' ? 'active' : ''}`}
               onClick={() => handleSort('name')}
             >
               Name {sortBy === 'name' && <i className={`fas fa-arrow-${sortOrder === 'asc' ? 'up' : 'down'}`}></i>}
@@ -328,14 +327,14 @@ const AbilityDatabasePage = () => {
         {totalPages > 1 && (
           <div className="pagination">
             <button
-              className="pagination-btn"
+              className="button secondary"
               onClick={() => setPage(1)}
               disabled={page === 1}
             >
               <i className="fas fa-angle-double-left"></i>
             </button>
             <button
-              className="pagination-btn"
+              className="button secondary"
               onClick={() => setPage(prev => Math.max(1, prev - 1))}
               disabled={page === 1}
             >
@@ -347,14 +346,14 @@ const AbilityDatabasePage = () => {
             </div>
 
             <button
-              className="pagination-btn"
+              className="button secondary"
               onClick={() => setPage(prev => Math.min(totalPages, prev + 1))}
               disabled={page === totalPages}
             >
               <i className="fas fa-angle-right"></i>
             </button>
             <button
-              className="pagination-btn"
+              className="button secondary"
               onClick={() => setPage(totalPages)}
               disabled={page === totalPages}
             >

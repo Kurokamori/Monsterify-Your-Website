@@ -134,7 +134,7 @@ const PokemonMonsterListPage = () => {
     <div>
       <div className="admin-page-header">
         <h1>Pokemon Monsters</h1>
-        <Link to="/admin/pokemon-monsters/add" className="admin-button">
+        <Link to="/admin/pokemon-monsters/add" className="button primary">
           <i className="fas fa-plus"></i> Add Pokemon Monster
         </Link>
       </div>
@@ -191,7 +191,7 @@ const PokemonMonsterListPage = () => {
             </select>
           </div>
 
-          <button className="admin-button secondary" onClick={resetFilters}>
+          <button className="button secondary" onClick={resetFilters}>
             Reset Filters
           </button>
         </div>
@@ -264,13 +264,13 @@ const PokemonMonsterListPage = () => {
                       <td className="admin-actions-cell">
                         <Link
                           to={`/admin/pokemon-monsters/edit/${monster.id}`}
-                          className="admin-action-button edit"
+                          className="button info sm"
                           title="Edit Pokemon Monster"
                         >
                           <i className="fas fa-edit"></i>
                         </Link>
                         <button
-                          className="admin-action-button delete"
+                          className="button danger sm"
                           title="Delete Pokemon Monster"
                           onClick={() => handleDelete(monster.id)}
                         >

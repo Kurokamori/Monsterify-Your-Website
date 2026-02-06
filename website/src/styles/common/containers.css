@@ -59,7 +59,7 @@
 .card-container {
   background-color: var(--card-background);
   border-radius: 0.5rem;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 4px 6px -1px var(--overlay-light), 0 2px 4px -1px var(--overlay-light);
   padding: 1.5rem;
   margin-bottom: 1.5rem;
 }

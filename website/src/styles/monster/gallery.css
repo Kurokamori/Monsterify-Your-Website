@@ -12,7 +12,7 @@
   position: relative;
   border-radius: 0.5rem;
   overflow: hidden;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 4px var(--overlay-light);
 }
 
 .gallery-image {
@@ -27,8 +27,8 @@
   bottom: 0;
   left: 0;
   right: 0;
-  background-color: rgba(0, 0, 0, 0.7);
-  color: #fff;
+  background-color: var(--overlay-solid);
+  color: var(--text-color);
   padding: 0.5rem;
   font-size: var(--font-size-sm);
   text-align: center;

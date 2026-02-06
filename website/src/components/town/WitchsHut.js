@@ -643,7 +643,7 @@ const WitchsHut = () => {
                 </div>
                 <div className="modal-actions">
                   <button
-                    className="modal-button primary"
+                    className="button primary"
                     onClick={closeMonsterModal}
                   >
                     Close
@@ -855,14 +855,14 @@ const WitchsHut = () => {
                       <div className="image-options">
                         <div className="image-input-tabs">
                           <button 
-                            className={`tab-button ${!useVoidStone ? 'active' : ''}`}
+                            className={`button tab ${!useVoidStone ? 'active' : ''}`}
                             onClick={() => setUseVoidStone(false)}
                           >
                             <i className="fas fa-image"></i>
                             Upload Image
                           </button>
                           <button 
-                            className={`tab-button ${useVoidStone ? 'active' : ''} ${(trainerInventory?.evolution?.['Void Evolution Stone'] || 0) === 0 ? 'disabled' : ''}`}
+                            className={`button tab ${useVoidStone ? 'active' : ''} ${(trainerInventory?.evolution?.['Void Evolution Stone'] || 0) === 0 ? 'disabled' : ''}`}
                             onClick={() => {
                               const voidStoneCount = trainerInventory?.evolution?.['Void Evolution Stone'] || 0;
                               if (voidStoneCount > 0) {
@@ -1067,14 +1067,14 @@ const WitchsHut = () => {
 
                   <div className="evolution-actions">
                     <button
-                      className="modal-button secondary"
+                      className="button secondary"
                       onClick={closeMonsterModal}
                     >
                       <i className="fas fa-times"></i>
                       Cancel
                     </button>
                     <button
-                      className="modal-button primary"
+                      className="button primary"
                       onClick={handleEvolve}
                       disabled={evolutionLoading}
                     >

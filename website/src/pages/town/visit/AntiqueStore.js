@@ -304,13 +304,13 @@ const AntiqueStore = () => {
             </div>
             <div className="antique-item-actions">
               <button
-                className="btn btn-primary"
+                className="button primary"
                 onClick={() => handleAppraiseClick(antique)}
               >
                 Appraise
               </button>
               <button
-                className="btn btn-secondary"
+                className="button secondary"
                 onClick={() => handleAuctionClick(antique)}
               >
                 Auction
@@ -379,7 +379,7 @@ const AntiqueStore = () => {
             </select>
           </div>
 
-          <button className="btn btn-secondary clear-filters-btn" onClick={clearFilters}>
+          <button className="button secondary button danger" onClick={clearFilters}>
             Clear Filters
           </button>
         </div>
@@ -491,13 +491,13 @@ const AntiqueStore = () => {
       {/* View Toggle */}
       <div className="antique-store-tabs">
         <button
-          className={`tab-button ${activeView === 'inventory' ? 'active' : ''}`}
+          className={`button tab ${activeView === 'inventory' ? 'active' : ''}`}
           onClick={() => setActiveView('inventory')}
         >
           My Inventory
         </button>
         <button
-          className={`tab-button ${activeView === 'catalogue' ? 'active' : ''}`}
+          className={`button tab ${activeView === 'catalogue' ? 'active' : ''}`}
           onClick={() => setActiveView('catalogue')}
         >
           Explore Catalogue

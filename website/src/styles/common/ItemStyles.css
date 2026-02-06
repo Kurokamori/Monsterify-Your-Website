@@ -1,0 +1,402 @@
+.item-card {
+  background-color: var(--card-background);
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+  transition: transform 0.2s;
+  display: flex;
+  flex-direction: column;
+}
+.item-card:hover { transform: translateY(-5px); }
+.item-card.common { border-color: var(--text-muted); }
+.item-card.uncommon { border-color: var(--success-light); }
+.item-card.rare { border-color: var(--blue-color); }
+.item-card.ultra-rare { border-color: var(--custom-type); }
+.item-card.legendary { border-color: var(--warning-color); }
+
+.item-image-container {
+  height: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+  background: var(--card-background-light);
+  position: relative;
+  width: 100%;
+  border-radius: 0.25rem;
+}
+
+.item-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: var(--shop-bg);
+  border-radius: var(--radius-sm);
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.item-details {
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin: 15px 0;
+  border-radius: 6px;
+}
+
+.item-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.item-name {
+  margin: 0;
+  font-size: 1rem;
+  color: var(--text-color);
+  font-weight: 600;
+  white-space: wrap;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex: 1;
+}
+
+.item-meta {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  font-size: 0.8rem;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.item-category {
+  color: var(--text-color);
+  text-transform: capitalize;
+  font-size: 0.9rem;
+  background-color: var(--nav-active);
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-weight: 600;
+}
+
+.item-rarity {
+  color: var(--border-color);
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  background-color: var(--overlay-solid);
+  border: 1px solid var(--border-color);
+}
+
+.item-quantity {
+  font-size: var(--font-size-sm);
+  color: var(--accent-color);
+  margin-bottom: 10px;
+  margin-left: auto;
+  font-weight: 600;
+  opacity: 0.7;
+}
+
+.item-description {
+  font-size: 0.9rem;
+  color: var(--text-color);
+  margin: 0;
+  line-height: 1.6;
+}
+
+/* Items Section */
+.items-section {
+  background: var(--nav-background);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 1.5rem;
+}
+
+.items-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1rem;
+}
+
+.item-selection-card {
+  background: var(--background-color);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 1rem;
+  transition: all 0.3s ease;
+}
+.item-selection-card:hover {
+  border-color: var(--accent-color);
+  background: var(--overlay-solid);
+}
+
+.item-icon {
+  font-size: 2.2rem;
+  width: 60px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--accent-glow-soft) 0%, var(--accent-glow-faint) 100%);
+  border-radius: 12px;
+  border: 2px solid var(--accent-glow-strong);
+  backdrop-filter: blur(10px);
+  transition: all .3s ease;
+  color: var(--background-color);
+  flex-shrink: 0;
+}
+
+.item-icon img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.item-count {
+  font-size: 0.8rem;
+  color: var(--accent-color);
+  margin-top: 5px;
+}
+
+.item-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  flex: 1;
+}
+
+.item-available {
+  font-size: 0.85rem;
+  color: var(--highlight-heavy);
+}
+
+.item-quantity-selector {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* For quantity buttons, use unified button system: className="button quantity" (see buttons.css) */
+
+.quantity-input {
+  flex: 1;
+  padding: 0.5rem;
+  background: var(--nav-background);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  color: var(--text-color);
+  text-align: center;
+  font-size: 0.9rem;
+  max-width: 80px;
+}
+.quantity-input:focus {
+  outline: none;
+  border-color: var(--accent-color);
+}
+
+.item-card {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  background: var(--background-primary);
+  transition: all 0.3s ease;
+}
+
+
+.item-card.rarity-common,
+.item-card.rarity-uncommon,
+.item-card.rarity-rare,
+.item-card.rarity-ultra-rare,
+.item-card.rarity-legendary { border-color: var(--border-color); }
+
+/* Card body */
+.item-card .item-content { padding: 15px; display: flex; flex-direction: column; flex-grow: 1; }
+.item-card .item-name { word-wrap: break-word; font-size: 1.2rem; margin: 0 0 5px 0; color: var(--text-color); }
+.item-card .item-category { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 10px; text-transform: uppercase; }
+.item-card .item-description { font-size: 0.9rem; color: var(--text-color); margin-bottom: 15px; flex-grow: 1; }
+
+.item-card .item-price {
+  display: flex; align-items: center; gap: 5px; margin-bottom: 10px;
+  font-weight: bold; color: var(--accent-color);
+}
+.item-card .item-price i { font-size: 0.9rem; }
+
+.item-card .item-quantity {
+  display: flex; justify-content: space-between; font-size: 0.9rem; color: var(--text-muted); margin-bottom: 15px;
+}
+
+/* For purchase buttons, use unified button system: className="button success lg block" (see buttons.css) */
+
+/* Detail modal content (not the generic modal controls) */
+.item-detail-modal {
+  padding: 0;
+  max-width: 600px;
+  width: 100%;
+}
+
+
+.item-detail-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background: linear-gradient(135deg, var(--background-secondary) 0%, var(--background-tertiary) 100%);
+  border-radius: 12px;
+}
+
+.item-detail-image-container {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.item-detail-image {
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 2px solid var(--border-color);
+  background: var(--background-primary);
+}
+
+.item-detail-rarity {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  border-radius: 12px;
+  border: 1px solid var(--highlight-medium);
+  background: var(--rarity-pill-bg);
+  color: var(--text-color);
+}
+
+
+.item-detail-title-section {
+  flex: 1;
+  min-width: 0;
+}
+
+.item-detail-name {
+  font-size: 1.75rem;
+  font-weight: bold;
+  color: var(--text-primary);
+  margin: 0 0 0.5rem 0;
+  word-wrap: break-word;
+}
+
+.item-detail-category {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  background: var(--accent-color);
+  color: var(--text-color);
+  border-radius: 20px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-transform: capitalize;
+}
+
+
+.item-detail-content {
+  padding: 0 1.5rem;
+}
+
+.item-detail-section {
+  margin-bottom: 1.5rem;
+}
+
+.item-detail-section h3 {
+  font-size: 1.125rem; font-weight: 600; color: var(--text-primary); margin: 0 0 0.5rem 0;
+  border-bottom: 2px solid var(--accent-color); padding-bottom: 0.25rem; display: inline-block;
+}
+.item-detail-section p { color: var(--text-secondary); line-height: 1.6; margin: 0; }
+
+/* Intentionally NOT redefining .info-label/.info-value globally here to avoid duplicate class declarations */
+.item-detail-info-item .info-label { font-weight: 600; color: var(--text-secondary); white-space: nowrap; }
+
+.item-detail-actions {
+  padding: 1.5rem;
+  border-top: 1px solid var(--border-color);
+  display: flex;
+  justify-content: center;
+  margin-top: 1rem;
+}
+
+
+/* Special Berry Actions - for buttons use unified button system (see buttons.css) */
+.special-berry-actions {
+  display: flex;
+  gap: 10px;
+  margin: 15px 0;
+  flex-wrap: wrap;
+}
+
+/* Breeding / Nursery contexts - for buttons use unified button system: className="button sm" (see buttons.css) */
+.offspring-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+
+.egg-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 2rem;
+  flex-wrap: wrap;
+  flex-direction: column;
+  text-align: center;
+}
+
+/* Claimed monster (typo preserved for compatibility) */
+.monster-option.claimed-with-edenweiss,
+.monster-option.claimed-with-edenwiess { opacity: 0.6; position: relative; }
+.monster-option.claimed-with-edenweiss::after,
+.monster-option.claimed-with-edenwiess::after {
+  content: ''; position: absolute; inset: 0; background: var(--success-glow);
+  border: 2px solid var(--success-color); border-radius: 8px; pointer-events: none;
+}
+.claimed-indicator {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: var(--success-color);
+  color: var(--text-color);
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  z-index: 10;
+}
+
+
+/* Edenweiss tooltip (typo preserved) */
+
+/* Responsive (feature-specific) */
+@media (max-width: 768px) {
+  .item-detail-header { flex-direction: column; align-items: center; text-align: center; gap: 1rem; }
+  .item-detail-image { width: 100px; height: 100px; }
+  .item-detail-name { font-size: 1.5rem; }
+    .item-detail-content { padding: 0 1rem; }
+  .item-detail-actions { padding: 1rem; }
+
+  .special-berry-actions { flex-direction: column; }
+  .breeding-offspring .offspring-actions { flex-direction: column; }
+  .egg-actions { flex-direction: column; }
+}

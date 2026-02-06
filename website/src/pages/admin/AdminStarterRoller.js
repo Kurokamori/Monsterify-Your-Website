@@ -126,7 +126,7 @@ const AdminStarterRoller = () => {
             <h2>Please select all three starters first</h2>
             <div className="starter-spinner-container">
               <button
-                className="starter-button button-secondary"
+                className="starter-button secondary"
                 onClick={() => setCurrentStep(0)}
               >
                 <i className="fas fa-arrow-left"></i>
@@ -162,7 +162,7 @@ const AdminStarterRoller = () => {
                     />
                     {starterNames[index] && (
                       <button
-                        className="button button-danger"
+                        className="button danger"
                         onClick={() => handleNameChange(index, '')}
                         type="button"
                         aria-label="Clear name"
@@ -197,7 +197,7 @@ const AdminStarterRoller = () => {
   const NavigationButtons = () => (
     <div className="starter-nav-buttons">
       <button
-        className="nav-button nav-button-secondary btn"
+        className="nav-button nav-secondary btn"
         onClick={() => setCurrentStep(prev => Math.max(0, prev - 1))}
         disabled={currentStep === 0}
       >
@@ -207,7 +207,7 @@ const AdminStarterRoller = () => {
 
       {currentStep < 3 && selectedStarters[currentStep] && (
         <button
-          className="nav-button nav-button-primary btn"
+          className="nav-button nav-primary btn"
           onClick={() => setCurrentStep(prev => Math.min(3, prev + 1))}
         >
           Next
@@ -217,7 +217,7 @@ const AdminStarterRoller = () => {
 
       {currentStep === 3 && (
         <button
-          className="nav-button nav-button-success btn"
+          className="nav-button nav-success btn"
           onClick={rollStarters}
         >
           <i className="fas fa-redo"></i>

@@ -16,7 +16,7 @@ const DiscordLoginButton = ({ disabled = false, showNote = false }) => {
       
       <button 
         type="button" 
-        className="discord-login-button"
+        className="button info lg block"
         onClick={handleDiscordLogin}
         disabled={disabled}
       >

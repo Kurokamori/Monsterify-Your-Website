@@ -45,7 +45,7 @@ const ThemeSection = ({ theme }) => {
           <span className="info-value">{displayText}</span>
           {hasLink && videoId && (
             <button 
-              className="theme-expand-btn"
+              className="button secondary"
               onClick={() => setIsExpanded(!isExpanded)}
               title={isExpanded ? 'Hide theme player' : 'Show theme player'}
             >
@@ -189,13 +189,13 @@ const TrainerDetails = () => {
         </div>
 
         <div className="trainer-details-actions">
-          <Link to={`/admin/dashboard/trainers/${id}/edit`} className="trainer-details-btn edit">
+          <Link to={`/admin/dashboard/trainers/${id}/edit`} className="button primary">
             <i className="fas fa-edit"></i> Edit
           </Link>
-          <button className="trainer-details-btn delete" onClick={handleDelete}>
+          <button className="button danger" onClick={handleDelete}>
             <i className="fas fa-trash-alt"></i> Delete
           </button>
-          <Link to="/admin/dashboard/trainers" className="trainer-details-btn back">
+          <Link to="/admin/dashboard/trainers" className="button secondary">
             <i className="fas fa-arrow-left"></i> Back to List
           </Link>
         </div>
@@ -203,25 +203,25 @@ const TrainerDetails = () => {
 
       <div className="trainer-details-tabs">
         <button
-          className={`trainer-tab ${activeTab === 'profile' ? 'active' : ''}`}
+          className={`button tab ${activeTab === 'profile' ? 'active' : ''}`}
           onClick={() => setActiveTab('profile')}
         >
           <i className="fas fa-user"></i> Profile
         </button>
         <button
-          className={`trainer-tab ${activeTab === 'monsters' ? 'active' : ''}`}
+          className={`button tab ${activeTab === 'monsters' ? 'active' : ''}`}
           onClick={() => setActiveTab('monsters')}
         >
           <i className="fas fa-dragon"></i> Monsters ({monsters.length})
         </button>
         <button
-          className={`trainer-tab ${activeTab === 'inventory' ? 'active' : ''}`}
+          className={`button tab ${activeTab === 'inventory' ? 'active' : ''}`}
           onClick={() => setActiveTab('inventory')}
         >
           <i className="fas fa-box-open"></i> Inventory
         </button>
         <button
-          className={`trainer-tab ${activeTab === 'references' ? 'active' : ''}`}
+          className={`button tab ${activeTab === 'references' ? 'active' : ''}`}
           onClick={() => setActiveTab('references')}
         >
           <i className="fas fa-images"></i> References
@@ -456,7 +456,7 @@ const TrainerDetails = () => {
                         <span className="monster-species">{monster.species}</span>
                         <span className="monster-level">Lv. {monster.level}</span>
                       </div>
-                      <Link to={`/admin/dashboard/monsters/${monster.id}`} className="view-monster-btn">
+                      <Link to={`/admin/dashboard/monsters/${monster.id}`} className="button secondary">
                         View Details
                       </Link>
                     </div>

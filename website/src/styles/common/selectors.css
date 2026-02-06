@@ -43,7 +43,7 @@
   height: 2.5rem;
   border-radius: 0.25rem;
   overflow: hidden;
-  background-color: rgba(255,255,255,0.1);
+  background-color: var(--highlight-light);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -89,7 +89,7 @@
   background-color: var(--card-background);
   border: 1px solid var(--divider-color);
   border-radius: 0.375rem;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 6px var(--overlay-light);
   z-index: 10;
   overflow: hidden;
   display: flex;
@@ -124,7 +124,7 @@
 }
 
 .item-option.selected {
-  background-color: rgba(var(--accent-color-rgb, 214, 163, 57), 0.1);
+  background-color: rgba(var(--accent-color), 0.1);
 }
 
 .item-option .item-image {
@@ -132,7 +132,7 @@
   height: 2.5rem;
   border-radius: 0.25rem;
   overflow: hidden;
-  background-color: rgba(255,255,255,0.1);
+  background-color: var(--highlight-light);
   display: flex;
   align-items: center;
   justify-content: center;

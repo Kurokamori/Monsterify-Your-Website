@@ -217,19 +217,19 @@ const ContentCategoryPage = () => {
 
         {/* Action Buttons */}
         <div className="admin-actions">
-          <Link to="/admin/content" className="admin-button secondary">
+          <Link to="/admin/content" className="button secondary">
             <i className="fas fa-arrow-left"></i> Back to Categories
           </Link>
           <div>
-            <button 
-              className="admin-button secondary mr-2"
+            <button
+              className="button secondary mr-2"
               onClick={() => setShowNewDirModal(true)}
             >
               <i className="fas fa-folder-plus"></i> New Directory
             </button>
-            <Link 
+            <Link
               to={`/admin/content/${category}/add${currentPath ? `?parent=${currentPath}` : ''}`}
-              className="admin-button"
+              className="button primary"
             >
               <i className="fas fa-file-plus"></i> New File
             </Link>
@@ -293,7 +293,7 @@ const ContentCategoryPage = () => {
                 </div>
                 <div className="admin-content-actions">
                   <button 
-                    className="admin-action-button delete"
+                    className="button danger sm"
                     onClick={() => openDeleteModal(dir, true)}
                     title="Delete Directory"
                   >
@@ -315,13 +315,13 @@ const ContentCategoryPage = () => {
                 <div className="admin-content-actions">
                   <Link 
                     to={`/admin/content/${category}/edit/${currentPath ? `${currentPath}/` : ''}${file.path}`}
-                    className="admin-action-button edit"
+                    className="button info sm"
                     title="Edit File"
                   >
                     <i className="fas fa-edit"></i>
                   </Link>
                   <button 
-                    className="admin-action-button delete"
+                    className="button danger sm"
                     onClick={() => openDeleteModal(file, false)}
                     title="Delete File"
                   >
@@ -368,16 +368,16 @@ const ContentCategoryPage = () => {
               </div>
             </div>
             <div className="admin-modal-footer">
-              <button 
-                onClick={() => setShowNewDirModal(false)} 
-                className="admin-button secondary"
+              <button
+                onClick={() => setShowNewDirModal(false)}
+                className="button secondary"
                 disabled={creatingDir}
               >
                 Cancel
               </button>
-              <button 
-                onClick={handleCreateDirectory} 
-                className="admin-button"
+              <button
+                onClick={handleCreateDirectory}
+                className="button primary"
                 disabled={!newDirName.trim() || creatingDir}
               >
                 {creatingDir ? (
@@ -415,16 +415,16 @@ const ContentCategoryPage = () => {
               </p>
             </div>
             <div className="admin-modal-footer">
-              <button 
-                onClick={() => setShowDeleteModal(false)} 
-                className="admin-button secondary"
+              <button
+                onClick={() => setShowDeleteModal(false)}
+                className="button secondary"
                 disabled={deleting}
               >
                 Cancel
               </button>
-              <button 
-                onClick={handleDeleteContent} 
-                className="admin-button delete"
+              <button
+                onClick={handleDeleteContent}
+                className="button danger"
                 disabled={deleting}
               >
                 {deleting ? (

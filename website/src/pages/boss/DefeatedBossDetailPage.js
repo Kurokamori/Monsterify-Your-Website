@@ -223,7 +223,7 @@ const DefeatedBossDetailPage = () => {
             {!userReward.is_claimed && (
               <div className="reward-status-actions">
                 <button 
-                  className="claim-reward-button"
+                  className="button primary"
                   onClick={handleClaimReward}
                 >
                   <i className="fas fa-trophy"></i>
@@ -368,7 +368,7 @@ const DefeatedBossDetailPage = () => {
                           )}
                           {currentUser && entry.user_id === currentUser.id && entry.reward_claim && !entry.reward_claim.is_claimed && (
                             <button 
-                              className="claim-button-small"
+                              className="button primary sm"
                               onClick={handleClaimReward}
                             >
                               Claim
@@ -514,14 +514,14 @@ const DefeatedBossDetailPage = () => {
 
               <div className="modal-actions">
                 <button 
-                  className="modal-button secondary"
+                  className="button secondary"
                   onClick={closeRewardModal}
                   disabled={claimingReward}
                 >
                   Cancel
                 </button>
                 <button 
-                  className="modal-button primary"
+                  className="button primary"
                   onClick={submitRewardClaim}
                   disabled={claimingReward || !monsterName.trim() || !selectedTrainer}
                 >

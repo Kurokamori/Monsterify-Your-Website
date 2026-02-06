@@ -440,7 +440,7 @@ const AntiqueAuctionFormPage = () => {
                   <img src={imagePreview} alt="Preview" className="admin-form-image-preview" />
                   <button
                     type="button"
-                    className="admin-button secondary small"
+                    className="button secondary sm"
                     onClick={() => {
                       setImageFile(null);
                       setImagePreview('');
@@ -457,7 +457,7 @@ const AntiqueAuctionFormPage = () => {
           <div className="admin-form-actions">
             <button
               type="button"
-              className="admin-button secondary"
+              className="button secondary"
               onClick={handleCancel}
               disabled={submitting || uploadingImage}
             >
@@ -465,7 +465,7 @@ const AntiqueAuctionFormPage = () => {
             </button>
             <button
               type="submit"
-              className="admin-button primary"
+              className="button primary"
               disabled={submitting || uploadingImage}
             >
               {(submitting || uploadingImage) ? (
