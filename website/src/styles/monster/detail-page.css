@@ -8,13 +8,15 @@
 
 .monster-details,
 .enhanced-monster-details {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
   background-color: var(--nav-background);
   border-radius: 0.5rem;
-  padding: 1.5rem;
+  color: var(--text-secondary);
+  display: flex;
+  flex-direction: column;
+  font-size: 0.9rem;
+  gap: 1.5rem;
   margin-bottom: 2rem;
+  padding: 1.5rem;
 }
 
 .monster-details h3 {
@@ -186,6 +188,7 @@
 
 .sidebar-link.active {
   background-color: var(--nav-active);
+  border-left-color: var(--accent-color);
   color: var(--accent-color);
   font-weight: 600;
 }

@@ -6,13 +6,26 @@
   position: relative;
   overflow: hidden;
   border-radius: 8px;
-  aspect-ratio: 16/9;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: auto;
+  margin-right: auto;
 }
 
-.image-container img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+.image-container.small {
+  width: 100px;
+  height: 100px;
+}
+
+.image-container.medium {
+  width: 200px;
+  height: 200px;
+}
+
+.image-container.large {
+  width: 300px;
+  height: 300px;
 }
 
 .image-placeholder {
@@ -64,13 +77,14 @@
 }
 
 .species-image-container {
-  width: 60px;
-  height: 60px;
-  overflow: hidden;
-  border-radius: 0.25rem;
-  border: 1px solid var(--divider-color);
-  background-color: var(--card-background);
-  display: flex;
-  justify-content: center;
   align-items: center;
+  background: var(--hover-background);
+  background-color: var(--card-background);
+  border: 1px solid var(--divider-color);
+  border-radius: var(--radius-sm);
+  display: flex;
+  height: 60px;
+  justify-content: center;
+  overflow: hidden;
+  width: 60px;
 }

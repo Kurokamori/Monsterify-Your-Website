@@ -103,7 +103,7 @@ const KnownPeople = ({ faction, trainerId, standing, onStandingChange }) => {
               className={`person-card ${displayInfo.canClick ? 'clickable' : 'locked'} ${person.has_met ? 'met' : person.can_meet ? 'can-meet' : 'locked'}`}
               onClick={() => displayInfo.canClick && handlePersonClick(person)}
             >
-              <div className="person-image">
+              <div className="image-container">
                 <img src={displayInfo.image} alt={displayInfo.name} />
                 {person.has_met && (
                   <div className="met-badge">

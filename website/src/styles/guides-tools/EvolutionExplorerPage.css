@@ -6,37 +6,6 @@
   min-height: 100vh;
 }
 
-.page-header {
-  text-align: center;
-  margin-bottom: 2rem;
-  padding: 2rem;
-  background: var(--card-background);
-  border-radius: 0.75rem;
-  border: 1px solid var(--border-color);
-  box-shadow: 0 4px 6px var(--overlay-dark);
-}
-
-.page-header h1 {
-  margin: 0 0 0.75rem 0;
-  font-size: var(--font-size-4xl);
-  font-weight: bold;
-  color: var(--accent-color);
-}
-
-.page-header p {
-  margin: 0 0 1.5rem 0;
-  font-size: var(--font-size-lg);
-  opacity: 0.9;
-  color: var(--text-color);
-}
-
-.toggle-switch {
-  position: relative;
-  display: inline-block;
-  width: 60px;
-  height: 34px;
-}
-
 .toggle-switch input {
   opacity: 0;
   width: 0;
@@ -44,28 +13,30 @@
 }
 
 .toggle-slider {
-  position: absolute;
-  cursor: pointer;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: var(--input-background);
-  transition: .4s;
-  border-radius: 34px;
+  background-color: var(--nav-background);
   border: 1px solid var(--border-color);
+  border-radius: 24px;
+  bottom: 0;
+  cursor: pointer;
+  inset: 0;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  transition: .4s;
 }
 
 .toggle-slider:before {
-  position: absolute;
-  content: "";
-  height: 26px;
-  width: 26px;
-  left: 4px;
-  bottom: 4px;
+  background: var(--text-color);
   background-color: var(--text-color);
-  transition: .4s;
   border-radius: 50%;
+  bottom: 4px;
+  content: "";
+  height: 16px;
+  left: 4px;
+  position: absolute;
+  transition: .4s;
+  width: 16px;
 }
 
 input:checked + .toggle-slider {
@@ -90,18 +61,24 @@ input:checked + .toggle-slider:before {
 }
 
 .search-input-container {
+  margin: 0 auto 1.5rem;
   margin-bottom: 20px;
+  max-width: 500px;
+  position: relative;
+  width: 100%;
 }
 
 .species-search-input {
-  width: 100%;
-  padding: 1rem 1.25rem;
-  font-size: var(--font-size-lg);
-  border: 2px solid var(--border-color);
-  border-radius: 0.5rem;
-  transition: all 0.3s ease;
   background: var(--input-background);
+  background-color: var(--input-background);
+  border: 1px solid var(--border-color);
+  border-radius: 0.5rem;
   color: var(--text-color);
+  flex: 1;
+  font-size: 1rem;
+  padding: 0.75rem 1rem;
+  transition: all 0.3s ease;
+  width: 100%;
 }
 
 .species-search-input::placeholder {
@@ -127,8 +104,8 @@ input:checked + .toggle-slider:before {
 
 .results-grid {
   display: grid;
+  gap: 1rem;
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 10px;
 }
 
 /* Species result buttons: Use unified button system from common/buttons.css
@@ -415,13 +392,6 @@ input:checked + .toggle-slider:before {
   padding-bottom: 1rem;
 }
 
-.evolution-chain {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-  min-width: fit-content;
-}
-
 .evolution-row {
   display: flex;
   flex-direction: column;
@@ -588,8 +558,9 @@ input:checked + .toggle-slider:before {
   }
   
   .page-header h1 {
-    font-size: var(--font-size-3xl);
-  }
+  font-size: var(--font-size-3xl);
+  order: -1;
+}
   
   
   
@@ -712,6 +683,6 @@ input:checked + .toggle-slider:before {
   }
   
   .page-header {
-    padding: 1.5rem;
-  }
+  padding: 1.5rem 1rem;
+}
 }

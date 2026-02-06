@@ -2,10 +2,6 @@
    GUIDES
    ================================ */
 
-.guides-container {
-  padding-bottom: 3rem;
-}
-
 .guide-sidebar {
   width: 100%;
   background-color: var(--nav-background);
@@ -458,26 +454,6 @@
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   gap: 1rem;
-}
-
-.reward-item {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 1rem;
-  background-color: var(--background-color);
-  border-radius: 0.5rem;
-  text-align: center;
-  flex-direction: column;
-}
-
-.reward-info {
-  flex: 1;
-}
-
-.reward-name {
-  font-weight: 500;
-  margin-bottom: 0.25rem;
 }
 
 /* Empty state (uses common .empty-state) */

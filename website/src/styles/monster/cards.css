@@ -24,9 +24,9 @@
 }
 
 .monster-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 24px var(--overlay-medium);
   border-color: var(--accent-color);
+  box-shadow: 0 4px 12px var(--overlay-medium);
+  transform: translateY(-2px);
 }
 
 .monster-card.selected {
@@ -105,30 +105,6 @@
 .monster-team-card[data-attribute="variable"] { border-left: 4px solid var(--warning-color); }
 
 /* Reward Monster Card */
-.monster-reward-card {
-  min-height: 550px;
-  height: auto;
-  background-color: var(--card-background);
-  border-radius: 8px;
-  box-shadow: 0 2px 8px var(--overlay-light);
-  padding: 20px;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  transition: transform 0.2s, box-shadow 0.2s;
-  overflow: hidden;
-  margin-bottom: 20px;
-}
-
-.monster-reward-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 5px 15px var(--overlay-medium);
-}
-
-.monster-reward-card.claimed {
-  opacity: 0.8;
-  background-color: var(--overlay-light);
-}
 
 /* Reward Card Rarity Variants */
 
@@ -257,10 +233,15 @@
 
 /* Result Card */
 .result-card {
-  margin-bottom: 15px;
+  background: var(--input-background);
+  border: 1px solid var(--border-color);
   border-radius: 8px;
-  overflow: hidden;
   box-shadow: 0 2px 4px var(--overlay-light);
+  margin-bottom: 15px;
+  overflow: hidden;
+  padding: 1rem;
+  position: relative;
+  transition: all 0.2s ease;
 }
 
 .result-card.success {
@@ -278,13 +259,13 @@
    ============================================================================= */
 
 .monster-header {
-  display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  margin-bottom: 1.5rem;
-  padding-bottom: 1rem;
   border-bottom: 2px solid var(--border-color);
+  display: flex;
+  gap: 0.5rem;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+  padding-bottom: 1rem;
 }
 
 .monster-header h3 {
@@ -296,13 +277,6 @@
 .monster-header .placeholder-image {
   color: var(--text-muted);
   font-size: 1.5rem;
-}
-
-.item-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 15px;
 }
 
 .monster-card-header {
@@ -325,12 +299,6 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 15px;
-}
-
-.monster-reward-title {
-  font-size: 18px;
-  font-weight: 600;
-  color: var(--text-color);
 }
 
 /* =============================================================================
@@ -387,18 +355,21 @@
 }
 
 .selected-badge {
-  position: absolute;
-  top: 0.5rem;
-  right: 0.5rem;
-  width: 1.5rem;
-  height: 1.5rem;
-  background-color: var(--accent-color);
-  color: var(--text-color);
-  border-radius: 50%;
-  display: flex;
   align-items: center;
+  background: var(--accent-color);
+  background-color: var(--accent-color);
+  border-radius: 4px;
+  color: var(--background-color);
+  display: inline-block;
+  font-size: 0.75rem;
+  height: 1.5rem;
   justify-content: center;
-  font-size: var(--font-size-sm);
+  margin-top: 0.5rem;
+  padding: 0.25rem 0.5rem;
+  position: absolute;
+  right: 0.5rem;
+  top: 0.5rem;
+  width: 1.5rem;
 }
 
 .monster-level-badge {
@@ -438,14 +409,16 @@
 /* Species/Reward Images */
 .species-image,
 .monster-species-image {
-  width: 100px;
-  height: 100px;
-  display: flex;
   align-items: center;
+  border-radius: 1rem;
+  display: flex;
+  height: 100%;
   justify-content: center;
   margin-bottom: 10px;
-  border-radius: 1rem;
+  object-fit: contain;
   overflow: hidden;
+  padding: 4px;
+  width: 100%;
 }
 
 .monster-species-image img {
@@ -472,16 +445,16 @@
    ============================================================================= */
 
 .monster-info {
-  flex: 1;
-  padding: 1.25rem;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
+  align-items: flex-start;
   background: transparent;
   border-radius: 0;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 0.5rem;
   margin-bottom: 1.5rem;
-  align-items: flex-start;
+  min-width: 0;
+  padding: 1.25rem;
 }
 
 .monster-card-info {
@@ -496,16 +469,6 @@
 .monster-card-info p {
   color: var(--text-muted);
   margin-bottom: 0;
-}
-
-.monster-species {
-  font-size: 1.1rem;
-  font-weight: 500;
-  margin-bottom: 10px;
-  color: var(--text-color);
-  display: flex;
-  flex-wrap: wrap;
-  gap: 5px;
 }
 
 .monster-name {
@@ -581,19 +544,26 @@
 
 /* Species Name (consolidated) */
 .species-name {
-  font-weight: 600;
-  margin-bottom: 8px;
-  text-align: center;
-  color: var(--text-color);
-  word-break: break-word;
+  color: var(--text-primary);
   display: inline-block;
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0 0 12px 0;
+  margin-bottom: 8px;
+  min-width: 120px;
+  text-align: center;
+  word-break: break-word;
 }
 
 .species-slot {
-  font-weight: 600;
-  margin-bottom: 8px;
-  text-align: center;
   color: var(--text-color);
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  margin-bottom: 0.25rem;
+  opacity: 0.8;
+  text-align: center;
+  text-transform: uppercase;
 }
 
 .monster-species-name {
@@ -603,15 +573,6 @@
 }
 
 /* Reward Details */
-.monster-reward-details {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 15px;
-  padding: 10px;
-  background-color: var(--overlay-light);
-  border-radius: 8px;
-}
 
 .monster-reward-actions {
   margin-top: auto;
@@ -696,9 +657,6 @@
     break-inside: avoid;
     box-shadow: none;
     border: 1px solid var(--text-muted);
-  }
-
-  .monster-card {
     display: inline-block;
     width: 45%;
     margin: 2%;

@@ -20,7 +20,6 @@
   border-bottom:1px solid var(--border-color);
 }
 
-
 /* ===== Stat card ===== */
 
 .stat-card:hover{ transform:translateY(-3px); box-shadow:0 4px 12px var(--overlay-medium); }
@@ -56,7 +55,6 @@
   background-color: var(--accent-color);
   border-radius: 1rem;
 }
-
 
 /* ===== Type Distribution ===== */
 
@@ -100,7 +98,6 @@
   height: 100%;
   border-radius: 1rem;
 }
-
 
 /* ===== Favorite Species ===== */
 
@@ -168,7 +165,6 @@
   font-size:var(--font-size-sm); text-align:center; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; width:100%;
 }
 
-
 /* ===== Special Status ===== */
 
 .special-status-grid {
@@ -217,7 +213,6 @@
   color: var(--text-color);
 }
 
-
 /* ===== Attribute Distribution ===== */
 
 .attribute-distribution {
@@ -259,7 +254,6 @@
   color: var(--background-color);
 }
 
-
 /* ===== Level Distribution ===== */
 
 .level-distribution {
@@ -299,7 +293,6 @@
   border-radius: 1rem;
 }
 
-
 /* ===== No Data Messages ===== */
 
 .no-stats-message {
@@ -317,17 +310,11 @@
 .no-stats-message i{ font-size:3rem; color:var(--accent-color); margin-bottom:1rem; opacity:.7; }
 .no-stats-message p{ font-size:var(--font-size-lg); color:var(--text-color); opacity:.8; }
 
-
 /* ===== Responsive ===== */
 
 @media (max-width:480px){
   .stats-grid{ grid-template-columns:1fr; }
   .favorite-species-grid{ grid-template-columns:1fr; }
-  .special-status-grid{ grid-template-columns:repeat(2,1fr); }
-  .type-bar-label .type-badge{ min-width:4rem; }
-  .species-example img{ height:60px; }
-}
-
-@media (max-width:480px){
   .special-status-grid{ grid-template-columns:1fr; }
+  .type-bar-label .type-badge{ min-width:4rem; }
 }

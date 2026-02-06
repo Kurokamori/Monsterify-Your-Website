@@ -278,7 +278,7 @@ const FactionsPage = () => {
                 borderColor: faction.color
               }}
             >
-              <div className="faction-logo">
+              <div className="image-container medium">
                 <img
                   src={faction.image_url}
                   alt={faction.name}

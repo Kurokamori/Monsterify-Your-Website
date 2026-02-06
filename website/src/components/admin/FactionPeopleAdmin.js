@@ -174,7 +174,7 @@ const FactionPeopleAdmin = () => {
           people.map(person => (
             <div key={person.id} className="person-card">
               <div className="person-header">
-                <div className="person-image">
+                <div className="image-container">
                   {person.images && person.images.length > 0 ? (
                     <img src={person.images[0]} alt={person.name} />
                   ) : (

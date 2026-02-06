@@ -7,12 +7,6 @@
 
 /* ===== Card grid / listing ===== */
 
-.trainers-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 1.5rem;
-}
-
 .trainer-card {
   display: grid;
   background-color: var(--card-background);
@@ -24,6 +18,8 @@
   color: var(--text-color);
   position: relative;
   height: 100%;
+  padding: .9rem;
+  flex-direction: column;
 }
 
 .trainer-card:hover{ transform:translateY(-5px); box-shadow:0 8px 20px var(--overlay-light); }
@@ -45,7 +41,6 @@
 }
 
 .trainer-card:hover .trainer-image{ transform:scale(1.08); }
-
 
 /* ===== Card variant (compact list cards) ===== */
 
@@ -94,10 +89,7 @@
   gap: .75rem;
 }
 
-
 /* ===== Contextual card overrides ===== */
-
-.trainer-card { padding:.9rem; flex-direction:column; }
 .trainer-card-header .trainer-avatar{ width:60px; height:60px; overflow:hidden; background-color:var(--nav-background); }
 .trainer-card-header .trainer-name{ font-size:var(--font-size-lg); }
 

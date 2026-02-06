@@ -90,16 +90,6 @@
   color: var(--accent-color);
 }
 
-.search-input {
-  background: var(--nav-background);
-  border: 1px solid var(--border-color);
-  border-radius: 0.5rem;
-  padding: 0.75rem 1rem;
-  color: var(--text-color);
-  font-size: var(--font-size-base);
-  transition: all 0.2s ease;
-}
-
 .search-input:focus {
   outline: none;
   border-color: var(--accent-color);
@@ -222,20 +212,22 @@
 /* Ability Grid */
 .ability-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 1.5rem;
+  gap: .5rem;
+  grid-template-columns: 1fr;
 }
 
 /* Ability Card */
 .ability-card {
   background: var(--nav-background);
+  background-color: var(--overlay-solid);
   border: 1px solid var(--border-color);
-  border-radius: 0.75rem;
-  padding: 1.25rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px var(--overlay-medium);
   cursor: pointer;
-  transition: all 0.3s ease;
-  position: relative;
   overflow: hidden;
+  padding: 15px;
+  position: relative;
+  transition: all 0.3s ease;
 }
 
 .ability-card:hover {
@@ -284,17 +276,21 @@
 .ability-effect,
 .ability-description,
 .ability-monsters {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  line-height: 1.4;
   margin-bottom: 0.75rem;
 }
 
 .ability-label {
   color: var(--accent-color);
+  display: block;
   font-size: var(--font-size-xs);
   font-weight: 600;
-  text-transform: uppercase;
   letter-spacing: 0.05em;
-  display: block;
   margin-bottom: 0.25rem;
+  margin-right: 0.25rem;
+  text-transform: uppercase;
 }
 
 .ability-effect p,
@@ -345,23 +341,6 @@
 }
 
 /* Loading State */
-.loading-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 4rem 2rem;
-  gap: 1rem;
-}
-
-.loading-spinner {
-  width: 50px;
-  height: 50px;
-  border: 3px solid var(--border-color);
-  border-top-color: var(--accent-color);
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-}
 
 @keyframes spin {
   to {
@@ -370,17 +349,26 @@
 }
 
 .loading-container p {
-  color: var(--text-color);
+  color: var(--text-muted);
+  margin-top: 16px;
   opacity: 0.8;
 }
 
 /* No Results State */
 .no-results {
+  align-items: center;
+  background-color: var(--accent-glow);
+  border: 1px solid var(--accent-color);
+  border-radius: 12px;
+  color: var(--text-color);
   display: flex;
   flex-direction: column;
-  align-items: center;
+  font-size: var(--font-size-sm);
+  font-style: italic;
   justify-content: center;
-  padding: 4rem 2rem;
+  margin: 1rem 0;
+  opacity: 0.6;
+  padding: 2rem;
   text-align: center;
 }
 
@@ -405,23 +393,19 @@
 
 /* Pagination */
 .pagination {
-  display: flex;
-  justify-content: center;
   align-items: center;
-  gap: 0.75rem;
-  margin-top: 2rem;
-  padding-top: 1.5rem;
   border-top: 1px solid var(--border-color);
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  margin: 20px 0;
+  margin-top: 30px;
+  padding: 20px 0;
+  padding-top: 1.5rem;
 }
 
 /* Pagination buttons: Use unified button system from common/buttons.css
    Example: className="button secondary icon" */
-
-.pagination-info {
-  color: var(--text-color);
-  font-size: var(--font-size-sm);
-  padding: 0 1rem;
-}
 
 .pagination-info strong {
   color: var(--accent-color);
@@ -482,8 +466,10 @@
   }
 
   .pagination {
-    flex-wrap: wrap;
-  }
+  flex-direction: column;
+  flex-wrap: wrap;
+  gap: 10px;
+}
 }
 
 @media (max-width: 480px) {

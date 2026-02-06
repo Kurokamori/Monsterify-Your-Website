@@ -35,10 +35,14 @@
 }
 
 .evolution-method {
-  font-size: var(--font-size-sm);
+  background: var(--nav-background);
+  border: 1px solid var(--border-color);
+  border-radius: 0.75rem;
   color: var(--text-color);
-  opacity: 0.8;
+  font-size: var(--font-size-sm);
   margin-top: 0.5rem;
+  opacity: 0.8;
+  padding: 1.5rem;
   text-align: center;
 }
 
@@ -54,9 +58,12 @@
   }
 
   .evolution-arrow {
-    transform: rotate(90deg);
-    margin: 1rem 0;
-  }
+  font-size: 1rem;
+  height: 36px;
+  margin: 1rem 0;
+  transform: rotate(90deg);
+  width: 36px;
+}
 }
 
 /* Reduced motion preference */

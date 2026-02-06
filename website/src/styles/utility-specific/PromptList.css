@@ -35,66 +35,13 @@
   margin-bottom: 30px;
 }
 
-.filter-row {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 15px;
-  align-items: end;
-}
-
 .filter-group {
   display: flex;
   flex-direction: column;
   gap: 5px;
 }
 
-.filter-group label {
-  font-size: 0.9rem;
-  font-weight: 500;
-  color: var(--text-muted);
-}
-
-.filter-input,
-.filter-select {
-  padding: 8px 12px;
-  border: 1px solid var(--border-color);
-  border-radius: 6px;
-  font-size: 0.9rem;
-  background-color: var(--text-color);
-  transition: border-color 0.2s ease;
-}
-
-.filter-input:focus,
-.filter-select:focus {
-  outline: none;
-  border-color: var(--blue-color);
-  box-shadow: 0 0 0 3px var(--blue-glow);
-}
-
-.checkbox-label {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 0.9rem;
-  color: var(--text-muted);
-  cursor: pointer;
-  margin-top: 20px;
-}
-
-.checkbox-label input[type="checkbox"] {
-  width: 16px;
-  height: 16px;
-  accent-color: var(--blue-color);
-}
-
 /* Error and Loading States */
-.no-prompts {
-  text-align: center;
-  padding: 40px 20px;
-  background: var(--card-background);
-  border-radius: 8px;
-  border: 1px solid var(--border-color);
-}
 
 .no-prompts p {
   color: var(--text-muted);
@@ -111,22 +58,6 @@
 }
 
 /* Pagination */
-.pagination {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 15px;
-  margin-top: 30px;
-  padding: 20px 0;
-}
-
-.pagination-info {
-  font-size: 0.9rem;
-  color: var(--text-muted);
-  font-weight: 500;
-  min-width: 120px;
-  text-align: center;
-}
 
 /* Loading Overlay */
 .loading-overlay {
@@ -158,19 +89,9 @@
     font-size: 1.5rem;
   }
   
-  .filter-row {
-    grid-template-columns: 1fr;
-    gap: 15px;
-  }
-  
   .prompt-grid {
     grid-template-columns: 1fr;
     gap: 15px;
-  }
-  
-  .pagination {
-    flex-direction: column;
-    gap: 10px;
   }
 }
 
@@ -207,11 +128,6 @@
 }
 
 /* Focus styles for accessibility */
-.filter-input:focus,
-.filter-select:focus{
-  outline: 2px solid var(--blue-color);
-  outline-offset: 2px;
-}
 
 /* High contrast mode support */
 @media (prefers-contrast: high) {

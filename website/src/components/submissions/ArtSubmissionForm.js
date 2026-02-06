@@ -755,11 +755,10 @@ const ArtSubmissionForm = ({ onSubmissionComplete }) => {
           )}
 
           {mainImagePreview && (
-            <div className="image-preview-container">
+            <div className="image-container medium">
               <img
                 src={mainImagePreview}
                 alt="Preview"
-                className="image-preview"
               />
             </div>
           )}

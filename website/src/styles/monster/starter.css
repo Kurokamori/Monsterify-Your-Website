@@ -40,12 +40,14 @@
 }
 
 .starter-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 15px -3px var(--overlay-light), 0 4px 6px -2px var(--overlay-light);
+  box-shadow: 0 6px 12px var(--overlay-medium);
+  transform: translateY(-4px);
 }
 
 .starter-card.selected {
-  border: 3px solid var(--accent-color);
+  background-color: rgba(var(--accent-color), .05);
+  border: 2px solid var(--accent-color);
+  color: var(--accent-color);
   transform: scale(1.05);
 }
 

@@ -377,7 +377,7 @@ const ShopForm = () => {
               />
             </div>
             {imagePreview && (
-              <div className="image-preview">
+              <div className="image-container medium">
                 <img src={imagePreview} alt="Banner preview" />
               </div>
             )}

@@ -1501,7 +1501,7 @@ const EditTrainerPage = () => {
                   {formData.main_ref_file ? formData.main_ref_file.name : 'Upload Trainer Image'}
                 </label>
                 {(formData.main_ref || formData.main_ref_file) && (
-                  <div className="image-preview">
+                  <div className="image-container medium">
                     <img 
                       src={formData.main_ref_file ? URL.createObjectURL(formData.main_ref_file) : formData.main_ref} 
                       alt="Main reference preview" 
@@ -1569,7 +1569,7 @@ const EditTrainerPage = () => {
                           {ref.image_file ? ref.image_file.name : 'Upload Reference Image'}
                         </label>
                         {(ref.image_url || ref.image_file) && (
-                          <div className="image-preview">
+                          <div className="image-container medium">
                             <img 
                               src={ref.image_file ? URL.createObjectURL(ref.image_file) : ref.image_url} 
                               alt="Additional reference preview" 
@@ -1618,7 +1618,7 @@ const EditTrainerPage = () => {
                   {formData.mega_ref_file ? formData.mega_ref_file.name : 'Upload Mega Evolution Image'}
                 </label>
                 {(formData.mega_ref || formData.mega_ref_file) && (
-                  <div className="image-preview">
+                  <div className="image-container medium">
                     <img 
                       src={formData.mega_ref_file ? URL.createObjectURL(formData.mega_ref_file) : formData.mega_ref} 
                       alt="Mega reference preview" 

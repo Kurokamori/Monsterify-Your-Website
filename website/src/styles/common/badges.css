@@ -5,11 +5,12 @@
 /* ---------- Status Badges ---------- */
 
 .status-badge {
-  padding: 0.25rem 0.5rem;
-  border-radius: 0.25rem;
-  font-size: var(--font-size-sm);
-  font-weight: 500;
+  border-radius: 20px;
   color: var(--text-color);
+  font-size: .8rem;
+  font-weight: 600;
+  padding: .25rem .75rem;
+  text-transform: capitalize;
 }
 
 .status-badge.empty { background-color: var(--text-muted); }
@@ -18,11 +19,20 @@
 
 /* ---------- Rarity Badges ---------- */
 
-.rarity-badge.common { background-color: var(--text-muted); color: var(--background-color); }
+.rarity-badge.common {
+  background: var(--secondary-color);
+  background-color: var(--text-muted);
+  color: var(--text-primary);
+}
 .rarity-badge.uncommon { background-color: var(--success-light); color: var(--success-dark); }
 .rarity-badge.rare { background-color: var(--blue-light); color: var(--blue-dark); }
 
-.rarity-badge.legendary { background-color: var(--accent-light); color: var(--warning-dark); }
+.rarity-badge.legendary {
+  background: linear-gradient(135deg, var(--accent-light), var(--accent-light));
+  background-color: var(--accent-light);
+  box-shadow: 0 2px 4px var(--accent-glow);
+  color: var(--virus-attribute);
+}
 
 /* ---------- Type Badges ---------- */
 

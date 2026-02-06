@@ -203,10 +203,6 @@
 
 /* ===== Starter cards ===== */
 
-.starter-card:hover{ transform:translateY(-4px); box-shadow:0 6px 12px var(--overlay-medium); }
-.starter-card.selected{ border:2px solid var(--accent-color); background-color:rgba(var(--accent-color), .05); }
-.starter-card.selected { color:var(--accent-color); }
-
 /* ===== Additional References (Add page) ===== */
 
 .additional-ref-item {
@@ -267,8 +263,6 @@
 
 /* Add ref button container: Use unified button system from common/buttons.css
    Example: className="button primary" */
-
-.form-group.full-width{ grid-column:1 / -1; }
 
 /* ===== Responsive ===== */
 

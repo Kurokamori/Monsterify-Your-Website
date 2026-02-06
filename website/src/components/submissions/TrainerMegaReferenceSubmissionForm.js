@@ -350,7 +350,7 @@ const TrainerMegaReferenceSubmissionForm = ({ onSubmissionComplete }) => {
 
                 {/* Image Preview */}
                 {reference.referencePreview && (
-                  <div className="image-preview">
+                  <div className="image-container medium">
                     <img src={reference.referencePreview} alt="Trainer mega reference preview" />
                     <div className="image-preview-overlay">
                       <span className="image-preview-label">Preview</span>

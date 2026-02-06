@@ -38,14 +38,6 @@
   flex: 1;
 }
 
-.prompt-title {
-  font-size: 1.4rem;
-  font-weight: 600;
-  color: var(--text-color);
-  margin: 0 0 10px 0;
-  line-height: 1.3;
-}
-
 .prompt-badges {
   display: flex;
   flex-wrap: wrap;
@@ -95,13 +87,6 @@
   margin-bottom: 20px;
 }
 
-.prompt-description {
-  color: var(--text-muted);
-  font-size: 0.95rem;
-  line-height: 1.5;
-  margin-bottom: 15px;
-}
-
 .prompt-text {
   background: var(--card-background);
   border-left: 4px solid var(--blue-color);
@@ -148,9 +133,12 @@
 .prompt-rewards {
   background: var(--success-light);
   border-left: 4px solid var(--success-color);
-  padding: 12px 15px;
-  margin: 15px 0;
   border-radius: 0 6px 6px 0;
+  display: flex;
+  flex-direction: row;
+  gap: 0.5rem;
+  margin: 15px 0;
+  padding: 1rem;
 }
 
 .prompt-rewards h4 {
@@ -198,19 +186,6 @@
   margin: 15px 0;
 }
 
-.stat-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  min-width: 80px;
-}
-
-.stat-label {
-  font-size: 0.75rem;
-  color: var(--text-muted);
-  margin-bottom: 2px;
-}
-
 .prompt-limits {
   margin-top: 10px;
 }
@@ -246,15 +221,6 @@
   margin-top: 15px;
   padding-top: 15px;
   border-top: 1px solid var(--border-color);
-}
-
-.tag {
-  background-color: var(--nav-hover);
-  color: var(--text-muted);
-  padding: 4px 8px;
-  border-radius: 12px;
-  font-size: 0.75rem;
-  font-weight: 500;
 }
 
 /* Responsive Design */

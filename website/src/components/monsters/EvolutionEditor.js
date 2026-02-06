@@ -191,7 +191,7 @@ const EvolutionEditor = ({ monsterId, evolutionData, onSave, onCancel, isOwner }
 
                 <div className="entry-preview">
                   {entry.image && (
-                    <div className="entry-image">
+                    <div className="image-container small">
                       <img
                         src={entry.image}
                         alt="Evolution"

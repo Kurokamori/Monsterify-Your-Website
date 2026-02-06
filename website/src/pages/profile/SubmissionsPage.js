@@ -404,7 +404,7 @@ const SubmissionsPage = () => {
             <div className="form-group">
               <label>Image</label>
               <div className="image-upload">
-                <div className="image-preview">
+                <div className="image-container medium">
                   {submissionImagePreview ? (
                     <img src={submissionImagePreview} alt="Preview" />
                   ) : (

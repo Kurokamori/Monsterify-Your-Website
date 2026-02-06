@@ -79,15 +79,6 @@
   border: 1px solid var(--border-color);
 }
 
-.panel-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1.5rem;
-  padding-bottom: 1rem;
-  border-bottom: 1px solid var(--border-color);
-}
-
 .panel-header h2 {
   color: var(--text-color);
   font-size: 1.25rem;
@@ -95,9 +86,6 @@
 }
 
 /* Form Sections */
-.config-section {
-  margin-bottom: 1.5rem;
-}
 
 .config-section h3 {
   color: var(--text-color);
@@ -113,9 +101,6 @@
 }
 
 /* User Selector */
-.user-selector {
-  width: 100%;
-}
 
 .user-selector select {
   width: 100%;
@@ -150,22 +135,6 @@
 }
 
 /* Quantity Controls - Use unified button system: className="button quantity" */
-.quantity-control {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.quantity-input {
-  width: 80px;
-  padding: 0.5rem;
-  text-align: center;
-  background: var(--input-background);
-  border: 1px solid var(--border-color);
-  border-radius: 6px;
-  color: var(--text-color);
-  font-size: 1rem;
-}
 
 /* Gift Level Input */
 .gift-level-input {
@@ -220,40 +189,8 @@
 }
 
 /* Action Buttons */
-.action-buttons {
-  display: flex;
-  gap: 1rem;
-  margin-top: 1.5rem;
-}
 
 /* Results Panel */
-.results-section {
-  margin-bottom: 1.5rem;
-}
-
-.results-section h3 {
-  color: var(--text-color);
-  font-size: 1rem;
-  margin-bottom: 1rem;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.results-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 1rem;
-}
-
-.result-card {
-  background: var(--input-background);
-  border: 1px solid var(--border-color);
-  border-radius: 8px;
-  padding: 1rem;
-  position: relative;
-  transition: all 0.2s ease;
-}
 
 .result-card:hover {
   border-color: var(--accent-color);
@@ -292,12 +229,6 @@
 }
 
 /* Type Badges */
-.type-badges {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.25rem;
-  margin-top: 0.5rem;
-}
 
 /* Generated Link Section */
 .link-section {

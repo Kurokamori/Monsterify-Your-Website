@@ -249,31 +249,6 @@
   font-size: 1.2rem;
 }
 
-.leaderboard-table {
-  width: 100%;
-  border-collapse: collapse;
-  background: var(--input-background);
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 2px 8px var(--overlay-light);
-}
-
-.leaderboard-table th,
-.leaderboard-table td {
-  padding: 1rem;
-  text-align: left;
-  border-bottom: 1px solid var(--border-color);
-}
-
-.leaderboard-table th {
-  background: linear-gradient(135deg, var(--nav-background), var(--nav-hover));
-  color: var(--text-color);
-  font-weight: 700;
-  font-size: var(--font-size-base);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
 .leaderboard-table tr:hover {
   background-color: var(--accent-glow);
 }
@@ -285,25 +260,6 @@
   font-size: 1.25rem;
   color: var(--accent-color);
   text-align: center;
-}
-
-.leaderboard-row,
-.category-row {
-  display: flex;
-  align-items: center;
-  padding: 1rem;
-  background: linear-gradient(135deg, var(--input-background) 0%, var(--nav-background) 100%);
-  border-radius: 12px;
-  transition: all 0.3s ease;
-  margin-bottom: 0.75rem;
-  border: 1px solid var(--border-color);
-}
-
-.leaderboard-row:hover,
-.category-row:hover {
-  transform: translateX(6px);
-  box-shadow: 0 6px 16px var(--overlay-medium);
-  border-color: var(--accent-color);
 }
 
 /* =============================
@@ -650,7 +606,10 @@
   box-shadow: 0 2px 4px var(--overlay-light);
   transition: all .3s ease;
 }
-.achievement-card:hover { transform: translateY(-4px); box-shadow: 0 6px 12px var(--overlay-medium); }
+.achievement-card:hover {
+  box-shadow: 0 8px 24px var(--overlay-light);
+  transform: translateY(-2px);
+}
 .achievement-card.completed { border-left: 4px solid var(--success-color); }
 .achievement-card.in-progress { border-left: 4px solid var(--warning-color); }
 
@@ -731,18 +690,23 @@
    Charts & Progress
    ============================= */
 .chart-container {
-  background-color: var(--card-background);
-  border-radius: .5rem;
-  padding: 1.5rem;
-  box-shadow: 0 2px 4px var(--overlay-light);
-  margin-bottom: 1.5rem;
+  background: linear-gradient(135deg, var(--card-background) 0%, var(--nav-background) 100%);
+  border-radius: 16px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  border: 1px solid var(--border-color);
+  box-shadow: 0 4px 12px var(--overlay-light);
   height: 300px;
 }
 
-.chart-title { margin: 0; font-size: var(--font-size-lg, 1rem); font-weight: 700; color: var(--text-color); }
+.chart-title {
+  font-size: var(--font-size-xl);
+  font-weight: 700;
+  color: var(--text-color);
+  margin: 0;
+}
 
 .progress-container { margin-bottom: 1.5rem; }
-.progress-header { display: flex; justify-content: space-between; margin-bottom: .5rem; }
 .progress-label { font-weight: 500; font-size: var(--font-size-sm); color: var(--text-color); opacity: .8; }
 .progress-value { font-weight: 500; }
 .progress-bar-container {
@@ -750,31 +714,10 @@
   background-color: var(--card-background);
   border-radius: .375rem; overflow: hidden; margin-bottom: .5rem;
 }
-.progress-bar {
-  height: 100%; background-color: var(--accent-color);
-  border-radius: .375rem; transition: width .3s ease;
-}
-.progress-percentage { font-size: var(--font-size-2xl); font-weight: 700; color: var(--accent-color); }
 
 /* =============================
    Utilities & States
    ============================= */
-.empty-state {
-  text-align: center;
-  padding: 4rem 2rem;
-  background: linear-gradient(135deg, var(--card-background) 0%, var(--nav-background) 100%);
-  border-radius: 16px;
-  border: 2px dashed var(--border-color);
-  margin: 2rem 0;
-}
-
-.empty-state i {
-  font-size: 3rem;
-  color: var(--accent-color);
-  display: block;
-  margin-bottom: 1rem;
-  opacity: 0.6;
-}
 
 .no-data-message {
   text-align: center;
@@ -813,9 +756,6 @@
 }
 
 /* Utility Classes */
-.text-center {
-  text-align: center;
-}
 
 /* Animations */
 @keyframes fadeIn {
@@ -843,21 +783,6 @@
 /* =============================
    Charts & Filters
    ============================= */
-.chart-container {
-  background: linear-gradient(135deg, var(--card-background) 0%, var(--nav-background) 100%);
-  border-radius: 16px;
-  padding: 2rem;
-  margin-bottom: 2rem;
-  border: 1px solid var(--border-color);
-  box-shadow: 0 4px 12px var(--overlay-light);
-}
-
-.chart-title {
-  font-size: var(--font-size-xl);
-  font-weight: 700;
-  color: var(--text-color);
-  margin: 0;
-}
 
 /* Type Distribution */
 .type-distribution-header {
@@ -908,7 +833,8 @@
 .monster-stats {
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
 }
 
 .monster-types-chart {
@@ -1037,10 +963,6 @@
 
   .leaderboard-section {
     padding: 1.5rem 1rem;
-  }
-
-  .leaderboard-table {
-    font-size: var(--font-size-sm);
   }
 
   .leaderboard-table th,
@@ -1185,6 +1107,7 @@
     var(--nav-background) 100%);
   box-shadow: 0 12px 36px var(--accent-glow);
   z-index: 10;
+  animation: goldShimmer 3s ease-in-out infinite;
 }
 
 .podium-card.first-place::before {
@@ -1204,10 +1127,6 @@
   50% {
     box-shadow: 0 16px 48px var(--accent-glow);
   }
-}
-
-.podium-card.first-place {
-  animation: goldShimmer 3s ease-in-out infinite;
 }
 
 /* Rank styling */

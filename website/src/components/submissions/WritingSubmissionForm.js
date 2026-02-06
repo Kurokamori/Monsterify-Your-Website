@@ -1121,11 +1121,10 @@ const WritingSubmissionForm = ({ onSubmissionComplete }) => {
           )}
 
           {coverImagePreview && (
-            <div className="image-preview-container">
+            <div className="image-container medium">
               <img
                 src={coverImagePreview}
                 alt="Cover Preview"
-                className="image-preview"
               />
             </div>
           )}

@@ -23,43 +23,9 @@
   white-space: nowrap;
 }
 
-.trainer-selection label {
-  display: block;
-  font-weight: 600;
-  color: var(--text-color);
-  font-size: 1rem;
-  margin-bottom: 0.5rem;
-}
-
-
 /* ===== Trainer select ===== */
 
-.trainer-select,
-.trainer-selection select {
-  padding: .75rem;
-  border-radius: 8px;
-  border: 2px solid var(--border-color);
-  background-color: var(--input-background);
-  color: var(--text-color);
-  font-size: 1rem;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  min-width: 200px;
-  background: var(--background-secondary, var(--card-background));
-  cursor: pointer;
-  transition: border-color .2s ease;
-}
-
 .trainer-select:hover{ border-color:var(--accent-color); }
-
-.trainer-select:focus {
-  outline: none;
-  border-color: var(--accent-color);
-  box-shadow: 0 0 0 3px var(--accent-glow-medium);
-}
-
 
 /* ===== Dropdown options ===== */
 
@@ -78,7 +44,6 @@
   color: var(--text-color);
 }
 
-
 /* ===== Assignment block ===== */
 
 .trainer-assignment { margin-top: 15px; }
@@ -90,28 +55,13 @@
   font-weight: 700;
 }
 
-
 /* ===== Card-y selection wrapper ===== */
 
 .trainer-selection-section {
-  background-color: var(--card-background);
+  background: linear-gradient(135deg, var(--overlay-solid) 0%, var(--overlay-heavy) 100%);
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 2px 4px var(--overlay-light);
-}
-
-
-/* ===== Fancy selection "hero" variant ===== */
-
-.trainer-selection-section label {
-  font-weight: 600;
-  color: var(--accent-color);
-  font-size: 1.2rem;
-  text-shadow: 1px 1px 3px var(--overlay-heavy);
-}
-
-.trainer-selection-section {
-  background: linear-gradient(135deg, var(--overlay-solid) 0%, var(--overlay-heavy) 100%);
   border-bottom: 1px solid var(--accent-glow);
   display: flex;
   align-items: center;
@@ -122,6 +72,12 @@
   z-index: 2;
 }
 
+.trainer-selection-section label {
+  font-weight: 600;
+  color: var(--accent-color);
+  font-size: 1.2rem;
+  text-shadow: 1px 1px 3px var(--overlay-heavy);
+}
 
 /* ===== Fancy select in hero section ===== */
 
@@ -145,7 +101,6 @@
   transform: translateY(-2px);
 }
 
-
 /* ===== Dropdown options in hero section ===== */
 
 .trainer-selection-section .trainer-select option,
@@ -160,7 +115,6 @@
   background-color: var(--nav-hover);
   color: var(--text-color);
 }
-
 
 /* ===== Empty state ===== */
 
@@ -181,21 +135,17 @@
   margin: 0;
 }
 
-
 /* ===== Selector widget ===== */
-
-.trainer-selector label { font-weight: 600; color: var(--text-color); }
 
 .trainer-selector-loading,
 .trainer-selector-error,
 .trainer-selector-empty {
-  padding: 10px; border-radius: 4px; font-size: .9rem;
+  background-color: var(--overlay-medium);
+  border-radius: 4px;
+  color: var(--blue-color);
+  font-size: .9rem;
+  padding: 10px;
 }
-
-.trainer-selector-loading { background-color: var(--overlay-medium); color: var(--blue-color); }
-.trainer-selector-error { background-color: var(--error-glow); color: var(--error-color); }
-.trainer-selector-empty { background-color: var(--warning-glow); color: var(--warning-color); }
-
 
 /* ===== Responsive ===== */
 

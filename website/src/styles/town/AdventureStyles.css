@@ -1,12 +1,6 @@
 /* Adventure-Specific Styles */
 
 /* Base Adventure Containers */
-.page-container {
-  width: 100%;
-  max-width: var(--container-max-width);
-  margin: 0 auto;
-  padding: 0 var(--content-padding);
-}
 
 .adventures-container {
   width: 100%;
@@ -28,15 +22,6 @@
 }
 
 /* Page Headers */
-.page-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-  margin-top: 20px;
-  padding-bottom: 1rem;
-  border-bottom: 1px solid var(--divider-color);
-}
 
 .adventures-tabs {
   display: grid;
@@ -174,28 +159,6 @@
   opacity: 1;
 }
 
-.boss-info-header {
-  display: flex;
-  align-items: center;
-  gap: 2rem;
-  margin-bottom: 2rem;
-}
-
-.boss-image-container {
-  position: relative;
-  flex-shrink: 0;
-}
-
-.boss-image {
-  width: 120px;
-  height: 120px;
-  border-radius: 12px;
-  object-fit: cover;
-  border: 3px solid var(--border-color);
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 16px var(--overlay-medium);
-}
-
 .defeated-boss-card:hover .boss-image {
   border-color: var(--success-light);
   transform: scale(1.05);
@@ -240,15 +203,6 @@
 .boss-meta span:hover {
   background: var(--nav-hover);
   transform: translateY(-2px);
-}
-
-.boss-details {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
-  margin-top: 0.5rem;
-  font-size: 0.875rem;
-  color: var(--text-secondary);
 }
 
 .boss-details span {
@@ -351,14 +305,6 @@
   background: linear-gradient(135deg, var(--warning-glow), var(--card-background));
 }
 
-.rank-badge {
-  font-size: 1.75rem;
-  min-width: 3rem;
-  text-align: center;
-  text-shadow: 0 2px 4px var(--overlay-dark);
-  transition: transform 0.3s ease;
-}
-
 .winner:hover .rank-badge {
   transform: scale(1.1);
 }
@@ -396,8 +342,9 @@
 
 .top-three {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 0.75rem;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+  margin-bottom: 30px;
 }
 
 .top-user {
@@ -408,12 +355,6 @@
   background: var(--card-background);
   border-radius: var(--border-radius);
   border: 1px solid var(--border-color);
-}
-
-.rank-badge {
-  font-size: 1.5rem;
-  min-width: 2rem;
-  text-align: center;
 }
 
 .top-user.rank-first {
@@ -432,9 +373,15 @@
 }
 
 .user-info {
+  background: var(--card-background);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-1);
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
+  margin: 0.5rem;
+  transition: transform var(--ease), box-shadow var(--ease), border-color var(--ease);
 }
 
 .username {
@@ -469,18 +416,14 @@
 
 .first-place-prize,
 .other-prizes {
+  align-items: center;
+  background: linear-gradient(135deg, var(--accent-glow), var(--accent-glow));
+  border: 1px solid var(--border-color);
+  border-color: var(--accent-light);
+  border-radius: var(--border-radius);
   display: flex;
   justify-content: space-between;
-  align-items: center;
   padding: 0.75rem;
-  background: var(--card-background);
-  border-radius: var(--border-radius);
-  border: 1px solid var(--border-color);
-}
-
-.first-place-prize {
-  border-color: var(--accent-light);
-  background: linear-gradient(135deg, var(--accent-glow), var(--accent-glow));
 }
 
 .prize-label {
@@ -509,46 +452,6 @@
   margin-top: 1rem;
 }
 
-/* Boss Header Improvements */
-.boss-header {
-  text-align: center;
-  margin-bottom: 2.5rem;
-  padding: 2rem;
-  background: linear-gradient(135deg, var(--card-background) 0%, var(--nav-background) 100%);
-  border-radius: 16px;
-  border: 1px solid var(--border-color);
-  position: relative;
-  overflow: hidden;
-  box-shadow: 0 4px 12px var(--overlay-light);
-}
-
-.boss-header::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 3px;
-  background: linear-gradient(90deg, var(--accent-color), var(--accent-hover));
-}
-
-.boss-header h1 {
-  font-size: var(--font-size-3xl);
-  font-weight: 700;
-  margin-bottom: 1rem;
-  color: var(--text-color);
-  text-shadow: 0 2px 4px var(--overlay-light);
-}
-
-.boss-subtitle {
-  font-size: var(--font-size-lg);
-  color: var(--text-color);
-  opacity: 0.8;
-  line-height: 1.6;
-  max-width: 600px;
-  margin: 0 auto;
-}
-
 /* REMOVED: .boss-button styles - Use unified button system:
    - Primary: className="button primary"
    - Secondary: className="button secondary"
@@ -558,19 +461,6 @@
 .boss-rankings-modal {
   max-width: 800px;
   width: 100%;
-}
-
-.boss-info-header {
-  text-align: center;
-  margin-bottom: 2rem;
-  padding-bottom: 1rem;
-  border-bottom: 1px solid var(--border-color);
-}
-
-.boss-info-header h3 {
-  margin: 0 0 1rem 0;
-  color: var(--text-primary);
-  font-size: 1.5rem;
 }
 
 .boss-battle-stats {
@@ -595,6 +485,10 @@
 }
 
 .leaderboard-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 12px;
   max-height: 400px;
   overflow-y: auto;
   border: 1px solid var(--border-color);
@@ -602,12 +496,13 @@
 }
 
 .leaderboard-entry {
-  display: grid;
-  grid-template-columns: auto 1fr auto;
-  gap: 1rem;
+  display: flex;
   align-items: center;
-  padding: 1rem;
-  border-bottom: 1px solid var(--border-color);
+  gap: 12px;
+  padding: 8px;
+  background: var(--background-primary);
+  border-radius: 6px;
+  border: 1px solid var(--border-color);
   transition: all 0.3s ease;
 }
 
@@ -649,6 +544,8 @@
 }
 
 .reward-info {
+  flex: 1;
+  padding: 1.25rem;
   text-align: right;
 }
 
@@ -670,15 +567,6 @@
 .reward.grunt-reward {
   background: var(--accent-color);
   color: var(--text-color);
-}
-
-.modal-actions {
-  display: flex;
-  justify-content: center;
-  gap: 1rem;
-  margin-top: 2rem;
-  padding-top: 1rem;
-  border-top: 1px solid var(--border-color);
 }
 
 /* REMOVED: .modal-button styles - Use unified button system: className="button primary" */
@@ -727,16 +615,18 @@
 
 .adventures-header h1,
 .page-title h1 {
-  font-size: var(--font-size-3xl);
   color: var(--accent-color);
+  font-size: var(--font-size-3xl);
   margin-bottom: 0.5rem;
+  text-align: center;
 }
 
 .adventures-header p,
 .page-title p {
-  font-size: var(--font-size-lg);
   color: var(--text-color);
+  font-size: var(--font-size-lg);
   opacity: 0.8;
+  text-align: center;
 }
 
 .page-actions {
@@ -781,15 +671,11 @@
 
 .adventure-title,
 .adventure-title-section h2 {
-  font-size: var(--font-size-lg);
-  font-weight: 600;
   color: var(--accent-color);
-  margin: 0;
   flex: 1;
-}
-
-.adventure-title-section h2 {
   font-size: var(--font-size-2xl);
+  font-weight: 600;
+  margin: 0;
 }
 
 .adventure-status {
@@ -841,24 +727,6 @@
   gap: 0.25rem;
 }
 
-.stat-item {
-  display: flex;
-  align-items: center;
-  gap: .25rem;
-  font-size: var(--font-size-sm);
-  color: var(--text-color);
-  min-width: max-content;
-  width: 33.33%;
-  position: relative;
-  text-align: center;
-  padding: .5rem 1rem;
-  background: var(--background-secondary);
-  border-radius: .5rem;
-  border: 1px solid var(--border-color);
-  transition: all 0.3s ease;
-  flex-direction: column;
-}
-
 .stat-item i {
   color: var(--accent-color);
   min-width: max-content;
@@ -892,9 +760,9 @@
 }
 
 .filter-group label {
-  font-size: var(--font-size-sm);
-  font-weight: 600;
-  color: var(--text-color);
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  font-weight: 500;
 }
 
 .filter-group select {
@@ -926,15 +794,21 @@
 
 /* Sections */
 .section-header {
+  align-items: center;
+  border-bottom: 2px solid var(--divider-color);
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  margin-bottom: 8px;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
 }
 
 .section-header h3 {
-  font-size: var(--font-size-xl);
+  align-items: center;
   color: var(--accent-color);
+  display: flex;
+  font-size: 1.5rem;
+  font-weight: 600;
+  gap: 0.5rem;
   margin: 0;
 }
 
@@ -973,80 +847,55 @@
   gap: 2rem;
 }
 
-.form-section h3 {
-  font-size: var(--font-size-lg);
-  color: var(--text-color);
-  margin-bottom: 0.5rem;
-}
-
 .section-description {
-  font-size: var(--font-size-base);
-  color: var(--text-color);
-  opacity: 0.8;
+  color: var(--text-color-secondary);
+  font-size: 0.9rem;
+  line-height: 1.5;
+  margin-bottom: 20px;
   margin-top: -0.5rem;
-  margin-bottom: 0.5rem;
-}
-
-.form-group input[type="text"],
-.form-group input[type="url"],
-.form-group input[type="number"],
-.form-group textarea,
-.form-group select {
-  padding: 0.75rem;
-  border-radius: 0.25rem;
-  border: 1px solid var(--border-color);
-  background-color: var(--input-background);
-  color: var(--text-color);
-  font-size: var(--font-size-base);
-  width: 100%;
-}
-
-.form-group textarea {
-  resize: vertical;
-  min-height: 100px;
-}
-
-.form-help-text {
-  font-size: var(--font-size-sm);
-  color: var(--text-color);
-  opacity: 0.7;
-  margin-top: 0.25rem;
+  opacity: 0.8;
 }
 
 /* Toggle Switch */
 .toggle-switch {
-  display: flex;
   align-items: center;
-  gap: 0.5rem;
+  color: var(--text-color);
+  cursor: pointer;
+  display: flex;
+  font-size: 0.9rem;
+  gap: 10px;
+  height: 34px;
   position: relative;
-  width: 50px;
-  height: 24px;
+  width: 60px;
 }
 
 .toggle-switch input[type="checkbox"] {
   appearance: none;
-  width: 2.5rem;
-  height: 1.25rem;
+  background: var(--border-color);
   background-color: var(--nav-background);
   border-radius: 1rem;
-  position: relative;
   cursor: pointer;
+  height: 1.25rem;
+  position: relative;
   transition: background-color 0.2s;
+  width: 2.5rem;
 }
 
 .toggle-switch input[type="checkbox"]::before {
-  content: '';
-  position: absolute;
-  width: 1rem;
-  height: 1rem;
-  border-radius: 50%;
+  background: var(--card-background);
   background-color: var(--text-color);
-  top: 0.125rem;
+  border-radius: 50%;
+  content: '';
+  height: 1rem;
   left: 0.125rem;
+  position: absolute;
+  top: 0.125rem;
   transition: transform 0.2s;
+  width: 1rem;
 }
 
 .toggle-switch input[type="checkbox"]:checked {
+  background: var(--accent-color);
   background-color: var(--accent-color);
 }
 
@@ -1060,16 +909,13 @@
 }
 
 /* File Upload */
-.form-group input[type="file"] {
-  display: none;
-}
 
 .file-upload-container {
-  display: flex;
   align-items: center;
-  gap: 10px;
-  flex-wrap: wrap;
+  display: flex;
   flex-direction: column;
+  flex-wrap: wrap;
+  gap: 0.75rem;
 }
 
 .file-name {
@@ -1135,17 +981,21 @@
 }
 
 .region-card {
+  align-items: center;
   background: var(--background-secondary, var(--card-background));
   border: 1px solid var(--divider-color);
-  border-radius: 0.5rem;
-  padding: 0.9rem;
+  border-radius: 0.375rem;
+  color: inherit;
   cursor: pointer;
-  transition: all 0.3s ease;
   display: flex;
-  gap: 0.9rem;
+  gap: 1rem;
+  padding: 0.9rem;
+  text-decoration: none;
+  transition: all 0.3s ease;
 }
 
 .region-card:hover {
+  background: var(--nav-hover);
   border-color: var(--accent-color);
   transform: translateY(-2px);
 }
@@ -1200,17 +1050,20 @@
 
 .area-card {
   background: var(--background-secondary, var(--card-background));
-  border: 1px solid var(--border-color);
-  border-radius: 8px;
-  padding: 0.75rem;
+  border: 1px solid var(--divider-color);
+  border-radius: 0.375rem;
+  color: inherit;
   cursor: pointer;
-  transition: all 0.3s ease;
   overflow: hidden;
+  padding: 0.75rem;
+  text-decoration: none;
+  transition: all 0.3s ease;
 }
 
 .area-card:hover {
-  border-color: var(--accent-color);
-  transform: translateY(-1px);
+  border-color: var(--success-color);
+  box-shadow: 0 4px 12px var(--overlay-light);
+  transform: translateY(-2px);
 }
 
 .area-card.selected {
@@ -1294,8 +1147,8 @@
 
 .landmass-card:hover {
   border-color: var(--accent-color);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px var(--overlay-light);
+  box-shadow: 0 6px 12px var(--overlay-heavy);
+  transform: translateY(-4px);
 }
 
 .landmass-card.selected {
@@ -1338,14 +1191,14 @@
 }
 
 .requirement-item {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  padding: 0.75rem;
-  background: var(--nav-background, var(--highlight-heavy));
+  align-items: center;
+  background: var(--card-background);
   border: 1px solid var(--border-color);
   border-radius: 6px;
+  display: flex;
   gap: 1rem;
+  justify-content: space-between;
+  padding: 8px 12px;
 }
 
 .requirement-details {
@@ -1766,18 +1619,6 @@
 
 /* Boss Card */
 
-.stat-label {
-  font-weight: 500;
-  color: var(--text-secondary);
-  font-size: .875rem;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  min-width: max-content;
-  opacity: .8;
-  display: block;
-  margin-top: .25rem;
-}
-
 /* Health Bar */
 .boss-health {
   display: flex;
@@ -1866,12 +1707,6 @@
 }
 
 /* Top 3 */
-.top-three {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 20px;
-  margin-bottom: 30px;
-}
 
 .top-rank {
   background: linear-gradient(135deg, var(--input-background) 0%, var(--nav-background) 100%);
@@ -1911,6 +1746,7 @@
   background: linear-gradient(135deg, var(--highlight-light), var(--input-background));
   position: relative;
   transform: scale(1.05);
+  animation: goldGlow 3s ease-in-out infinite;
 }
 
 .rank-1::before {
@@ -1929,10 +1765,6 @@
   50% {
     box-shadow: 0 8px 24px var(--accent-glow);
   }
-}
-
-.rank-1 {
-  animation: goldGlow 3s ease-in-out infinite;
 }
 
 .rank-2 {
@@ -2003,22 +1835,6 @@
   color: var(--text-color);
 }
 
-.rank-badge {
-  position: absolute;
-  top: -10px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: bold;
-  color: var(--text-color);
-  font-size: 0.9rem;
-}
-
 .damage-amount {
   color: var(--primary-color);
   font-weight: 600;
@@ -2032,12 +1848,13 @@
 
 /* Enhanced Leaderboard Table */
 .leaderboard-table {
+  background: var(--input-background);
+  border: 1px solid var(--border-color);
+  border-collapse: collapse;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px var(--overlay-light);
   overflow: hidden;
   width: 100%;
-  border-radius: 12px;
-  box-shadow: 0 4px 16px var(--overlay-light);
-  border: 1px solid var(--border-color);
-  background: var(--card-background);
 }
 
 .leaderboard-table table {
@@ -2047,22 +1864,18 @@
 
 .leaderboard-table th,
 .leaderboard-table td {
-  padding: 1rem;
-  text-align: left;
-  border-bottom: 1px solid var(--border-color);
-  transition: all 0.3s ease;
-}
-
-.leaderboard-table th {
   background: linear-gradient(135deg, var(--nav-background), var(--nav-hover));
-  font-weight: 700;
+  border-bottom: 1px solid var(--border-color);
   color: var(--text-color);
-  position: sticky;
-  top: 0;
-  text-transform: uppercase;
+  font-size: var(--font-size-base);
+  font-weight: 700;
   letter-spacing: 0.5px;
-  font-size: var(--font-size-sm);
-  border-bottom: 2px solid var(--accent-color);
+  padding: 1rem;
+  position: sticky;
+  text-align: left;
+  text-transform: uppercase;
+  top: 0;
+  transition: all 0.3s ease;
 }
 
 .leaderboard-table tbody tr {
@@ -2109,16 +1922,13 @@
   color: var(--text-primary);
 }
 
-.submissions-cell {
-  color: var(--text-secondary);
-}
-
 /* No data states */
 .no-boss-message,
 .no-leaderboard {
-  text-align: center;
-  padding: 40px;
   color: var(--text-secondary);
+  font-style: italic;
+  padding: 20px;
+  text-align: center;
 }
 
 .no-boss-message h2 {
@@ -2151,14 +1961,10 @@
   .boss-stats {
     grid-template-columns: 1fr;
   }
-  
-  .top-three {
-    grid-template-columns: 1fr;
-  }
-  
+
   .leaderboard-table {
-    font-size: 0.9rem;
-  }
+  font-size: var(--font-size-sm);
+}
 }
 
 .events-page {
@@ -2345,6 +2151,9 @@
   display: flex;
   flex-direction: column;
   gap: 2rem;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 0 1rem;
 }
 .event-detail-header {
   position: relative;
@@ -2387,50 +2196,35 @@
 }
 
 .rewards-list {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 1.5rem;
-}
-
-.reward-card {
-  background-color: var(--nav-background);
-  border-radius: 0.5rem;
-  overflow: hidden;
-  transition: transform 0.2s, box-shadow 0.2s;
-}
-
-.reward-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 6px 12px var(--overlay-medium);
+  display: flex;
+  flex-direction: column;
+  gap: .75rem;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  margin: 20px 0;
+  max-height: 60vh;
+  overflow-y: auto;
+  padding: 10px;
 }
 
 .reward-image {
-  max-width: 100%;
+  background: var(--overlay-medium);
+  border-radius: 6px;
+  height: 120px;
+  margin-bottom: 0.75rem;
   max-height: 100%;
+  max-width: 100%;
   object-fit: contain;
-}
-
-.reward-info {
-  padding: 1.25rem;
+  width: 100%;
 }
 
 .reward-name {
-  font-size: var(--font-size-lg);
-  margin-bottom: 0.5rem;
-}
-
-.reward-description {
-  margin-bottom: 1rem;
-  font-size: var(--font-size-sm);
-  line-height: 1.5;
+  color: var(--text-color);
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
 }
 
 /* Event Detail Page Styles */
-.event-detail-page {
-  max-width: 1000px;
-  margin: 0 auto;
-  padding: 0 1rem;
-}
 
 .event-detail-nav {
   display: flex;
@@ -2668,20 +2462,6 @@
 }
 
 /* Difficulty Badges */
-.difficulty-badge {
-  display: inline-flex;
-  align-items: center;
-  padding: 0.5rem 1rem;
-  border-radius: 20px;
-  font-size: var(--font-size-sm);
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  color: var(--text-color);
-  text-shadow: 0 1px 2px var(--overlay-dark);
-  box-shadow: 0 2px 4px var(--overlay-medium);
-  flex-shrink: 0;
-}
 
 .difficulty-badge.active {
   background: linear-gradient(135deg, var(--warning-color), var(--warning-dark));
@@ -2716,12 +2496,6 @@
   background-color: var(--overlay-light);
   border-top: 1px solid var(--border-color);
   border-bottom: 1px solid var(--border-color);
-}
-
-.detail-row {
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
 }
 
 .detail-row .label {
@@ -2760,20 +2534,6 @@
   gap: 0.5rem;
 }
 
-.type-tag,
-.attribute-tag {
-  display: inline-flex;
-  align-items: center;
-  padding: 0.375rem 0.75rem;
-  background: linear-gradient(135deg, var(--accent-color), var(--accent-hover));
-  color: var(--text-color);
-  border-radius: 16px;
-  font-size: var(--font-size-sm);
-  font-weight: 500;
-  text-transform: capitalize;
-  box-shadow: 0 2px 4px var(--overlay-medium);
-}
-
 /* Mission Rewards */
 .mission-rewards {
   padding: 1rem 1.5rem;
@@ -2806,21 +2566,26 @@
 }
 
 .reward-item {
-  display: flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem 0.75rem;
-  background-color: var(--card-background);
-  border-radius: 8px;
-  font-size: var(--font-size-sm);
-  font-weight: 500;
-  color: var(--text-color);
+  background: var(--text-color);
+  background-color: var(--background-color);
   border: 1px solid var(--border-color);
+  border-radius: 6px;
+  box-shadow: 0 2px 4px var(--overlay-light);
+  color: var(--warning-color);
+  display: flex;
+  flex-direction: column;
+  font-size: .875rem;
+  font-weight: 500;
+  gap: .25rem;
+  padding: 10px 15px;
+  text-align: center;
 }
 
 .reward-item i {
-  color: var(--success-color);
-  font-size: 1rem;
+  color: var(--accent-color);
+  font-size: .75rem;
+  margin-bottom: 0.5rem;
 }
 
 /* Mission Actions */
@@ -2842,32 +2607,22 @@
 }
 
 .progress-header {
-  display: flex;
-  justify-content: space-between;
   align-items: center;
-  margin-bottom: 1rem;
-  font-weight: 600;
   color: var(--text-color);
-}
-
-.progress-bar {
-  width: 100%;
-  height: 12px;
-  background-color: var(--input-background);
-  border-radius: 20px;
-  overflow: hidden;
-  margin-bottom: 0.75rem;
-  box-shadow: inset 0 2px 4px var(--overlay-medium);
-  position: relative;
+  display: flex;
+  font-weight: 600;
+  justify-content: space-between;
+  margin-bottom: .5rem;
 }
 
 .progress-fill {
+  background: linear-gradient(90deg, var(--primary-color) 0%, var(--success-color) 100%);
+  border-radius: .25rem;
+  display: block;
   height: 100%;
-  background: linear-gradient(90deg, var(--accent-color), var(--accent-hover));
-  border-radius: 20px;
-  transition: width 0.6s ease;
-  position: relative;
   overflow: hidden;
+  position: relative;
+  transition: width .3s ease;
 }
 
 .progress-fill::after {
@@ -2887,18 +2642,10 @@
 }
 
 .progress-percentage {
-  text-align: center;
-  font-weight: 600;
   color: var(--accent-color);
-  font-size: var(--font-size-base);
-}
-
-.progress-text {
+  font-size: var(--font-size-2xl);
+  font-weight: 700;
   text-align: center;
-  font-size: var(--font-size-sm);
-  color: var(--text-color);
-  opacity: 0.8;
-  margin: 0.5rem 0 0 0;
 }
 
 /* Mission Status */
@@ -2980,16 +2727,19 @@
 
 /* ========== Loading States ========== */
 .loading {
-  display: flex;
   align-items: center;
-  justify-content: center;
-  padding: 4rem 2rem;
   background: linear-gradient(135deg, var(--card-background) 0%, var(--nav-background) 100%);
   border-radius: 16px;
-  text-align: center;
-  color: var(--text-color);
-  font-size: var(--font-size-lg);
+  color: var(--text-muted);
+  display: flex;
+  flex-direction: column;
+  font-size: 1.2rem;
   font-weight: 500;
+  height: 400px;
+  justify-content: center;
+  min-height: 200px;
+  padding: 3rem;
+  text-align: center;
 }
 
 .loading::before {
@@ -3009,16 +2759,18 @@
 }
 
 .error {
-  display: flex;
   align-items: center;
-  justify-content: center;
-  padding: 2rem;
   background: linear-gradient(135deg, var(--error-glow) 0%, var(--error-glow) 100%);
-  border-radius: 16px;
-  border: 2px solid var(--error-glow);
-  color: var(--error-color);
-  font-size: var(--font-size-lg);
+  background-color: var(--error-glow);
+  border: 1px solid var(--error-glow);
+  border-radius: 12px;
+  color: var(--error-light);
+  display: flex;
+  font-size: 1.1rem;
   font-weight: 500;
+  justify-content: center;
+  margin: 2rem 0;
+  padding: 2rem;
   text-align: center;
 }
 
@@ -3029,9 +2781,6 @@
 }
 
 /* ========== Utility Classes ========== */
-.text-center {
-  text-align: center;
-}
 
 /* ========== Animations ========== */
 @keyframes fadeIn {
@@ -3193,11 +2942,6 @@
   .mission-actions {
     padding: 1rem;
   }
-
-  .difficulty-badge {
-    padding: 0.375rem 0.75rem;
-    font-size: var(--font-size-xs);
-  }
 }
 
 /* Mini Leaderboard */
@@ -3212,23 +2956,6 @@
   margin: 0 0 12px 0;
   color: var(--text-primary);
   font-size: 1.1rem;
-}
-
-.leaderboard-list {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin-bottom: 12px;
-}
-
-.leaderboard-entry {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 8px;
-  background: var(--background-primary);
-  border-radius: 6px;
-  border: 1px solid var(--border-color);
 }
 
 .leaderboard-entry .rank {
@@ -3249,13 +2976,6 @@
   font-size: 0.9rem;
 }
 
-.no-leaderboard {
-  text-align: center;
-  padding: 20px;
-  color: var(--text-secondary);
-  font-style: italic;
-}
-
 .view-full-leaderboard {
   display: block;
   text-align: center;
@@ -3270,19 +2990,6 @@
 
 .view-full-leaderboard:hover {
   background: var(--background-tertiary);
-}
-
-.boss-actions {
-  display: flex;
-  gap: 12px;
-  justify-content: center;
-  flex-wrap: wrap;
-}
-
-.no-boss-message {
-  text-align: center;
-  padding: 40px 20px;
-  color: var(--text-secondary);
 }
 
 .no-boss-message h3 {
@@ -3303,18 +3010,6 @@
   background: linear-gradient(135deg, var(--card-background) 0%, var(--nav-hover) 100%);
   min-height: 100vh;
   color: var(--text-color);
-}
-
-.rewards-header h1 {
-  color: var(--accent-color);
-  font-size: 2.5rem;
-  margin-bottom: 10px;
-  text-shadow: 2px 2px 4px var(--overlay-heavy);
-}
-
-.rewards-header p {
-  color: var(--text-muted);
-  font-size: 1.1rem;
 }
 
 .no-rewards-message {
@@ -3345,12 +3040,6 @@
   color: var(--accent-color);
   margin-bottom: 20px;
   font-size: 1.8rem;
-}
-
-.reward-card:hover {
-  background: var(--highlight-light);
-  border-color: var(--accent-color);
-  transform: translateY(-2px);
 }
 
 .reward-info h3 {
@@ -3403,12 +3092,17 @@
 /* Leaderboard Placeholder */
 
 .leaderboard-row {
-  display: grid;
-  grid-template-columns: 0.5fr 2fr 1fr 1fr 1fr;
-  gap: 1rem;
-  padding: 1rem;
+  align-items: center;
+  background: linear-gradient(135deg, var(--input-background) 0%, var(--nav-background) 100%);
+  border: 1px solid var(--border-color);
   border-bottom: 1px solid var(--border-color);
-  transition: background-color 0.2s;
+  border-radius: 12px;
+  display: flex;
+  gap: 1rem;
+  grid-template-columns: 0.5fr 2fr 1fr 1fr 1fr;
+  margin-bottom: 0.75rem;
+  padding: 1rem;
+  transition: all 0.3s ease;
 }
 
 .leaderboard-row:last-child {
@@ -3417,6 +3111,9 @@
 
 .leaderboard-row:hover {
   background-color: var(--card-background-light);
+  border-color: var(--accent-color);
+  box-shadow: 0 6px 16px var(--overlay-medium);
+  transform: translateX(6px);
 }
 
 /* Adventure Features */
@@ -3456,7 +3153,9 @@
 
 .feature-item p {
   color: var(--text-color);
+  font-size: var(--font-size-base);
   line-height: 1.5;
+  margin-bottom: 0;
 }
 
 .tips-list {
@@ -3501,14 +3200,17 @@
 
 @media (max-width: 768px) {
   .page-header {
-    flex-direction: column;
-    gap: 1rem;
-    align-items: flex-start;
-  }
+  align-items: flex-start;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 2rem;
+  padding: 2rem 1.5rem;
+}
   
   .page-actions {
-    width: 100%;
-  }
+  flex-wrap: wrap;
+  width: 100%;
+}
 
   /* REMOVED: .action-button responsive override - Use unified button system */
 
@@ -3524,10 +3226,11 @@
   }
   
   .section-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.75rem;
-  }
+  align-items: stretch;
+  flex-direction: column;
+  gap: 10px;
+  text-align: center;
+}
 
   /* REMOVED: .action-button responsive override - Use unified button system */
 
@@ -3552,8 +3255,9 @@
   }
   
   .filter-actions {
-    width: 100%;
-  }
+  flex-direction: column;
+  width: 100%;
+}
   
   .adventures-grid {
     grid-template-columns: 1fr;
@@ -3587,23 +3291,14 @@
   .monster-preview-section {
     margin-top: 15px;
   }
-  
-  .monster-preview-card {
-    padding: 15px;
-  }
-  
+
   .attribute-section {
     margin-bottom: 15px;
   }
-  
+
   .attribute-tags {
     flex-wrap: wrap;
     gap: 8px;
-  }
-  
-  .attribute-tag {
-    padding: 6px 12px;
-    font-size: 0.8rem;
   }
 }
 
@@ -3644,23 +3339,14 @@
 }
 
 .rarity-badge {
-  padding: 0.25rem 0.75rem;
-  border-radius: 20px;
-  font-size: 0.875rem;
-  font-weight: 600;
-  text-transform: uppercase;
+  border-radius: 4px;
+  color: var(--text-color);
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 500;
   letter-spacing: 0.05em;
-}
-
-.rarity-badge.legendary {
-  background: linear-gradient(135deg, var(--accent-light), var(--accent-light));
-  color: var(--virus-attribute);
-  box-shadow: 0 2px 4px var(--accent-glow);
-}
-
-.rarity-badge.common {
-  background: var(--secondary-color);
-  color: var(--text-primary);
+  padding: 4px 8px;
+  text-transform: uppercase;
 }
 
 .monster-attributes {
@@ -3682,34 +3368,6 @@
 .attribute-section h5 i {
   color: var(--accent-color);
   font-size: 0.9rem;
-}
-
-.attribute-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-}
-
-.attribute-tag {
-  padding: 0.4rem 0.8rem;
-  border-radius: 20px;
-  font-size: 0.875rem;
-  font-weight: 500;
-  text-transform: capitalize;
-  border: 1px solid var(--border-color);
-  transition: all 0.3s ease;
-}
-
-.species-tag {
-  background: linear-gradient(135deg, var(--success-glow), var(--success-glow));
-  color: var(--success-color);
-  border-color: var(--success-dark);
-}
-
-.type-tag {
-  background: linear-gradient(135deg, var(--blue-glow), var(--blue-glow));
-  color: var(--blue-color);
-  border-color: var(--blue-dark);
 }
 
 .primary-attribute-tag {

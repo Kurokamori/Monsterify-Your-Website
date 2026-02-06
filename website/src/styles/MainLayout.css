@@ -207,10 +207,6 @@
 /* User Dropdown*/
 .user-dropdown {
   position: relative;
-}
-
-.user-dropdown {
-  position: relative;
   min-width: 220px;
   max-height: 80vh;
   overflow-y: hide;
@@ -416,7 +412,6 @@
   }
 }
 
-
 .mobile-nav-auth {
   display: flex;
   flex-direction: column;
@@ -603,14 +598,20 @@
   }
   
   .mobile-nav-link {
-    padding: 0.6rem 0.8rem;
-    font-size: 1rem;
-  }
+  align-items: center;
+  display: flex;
+  font-size: 1rem;
+  min-height: 44px;
+  padding: 0.6rem 0.8rem;
+}
   
   .mobile-dropdown-toggle {
-    padding: 0.6rem 0.8rem;
-    font-size: 1rem;
-  }
+  align-items: center;
+  display: flex;
+  font-size: 1rem;
+  min-height: 44px;
+  padding: 0.6rem 0.8rem;
+}
   
   .footer-content {
     flex-direction: column;
@@ -757,12 +758,6 @@
 /* Touch-friendly improvements for all mobile devices */
 @media (max-width: 767px) {
   /* Ensure touch targets are at least 44px */
-  .mobile-nav-link,
-  .mobile-dropdown-toggle {
-    min-height: 44px;
-    display: flex;
-    align-items: center;
-  }
   
   .mobile-dropdown-toggle i {
     margin-left: auto;

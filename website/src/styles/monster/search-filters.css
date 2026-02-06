@@ -5,6 +5,7 @@
 .monster-search {
   display: flex;
   margin-bottom: 1.5rem;
+  position: relative;
 }
 
 .monster-search input {
@@ -86,11 +87,12 @@
 
 /* Search Icon */
 .search-icon {
+  color: var(--text-color);
+  left: 1rem;
+  opacity: 0.5;
   position: absolute;
-  left: 15px;
   top: 50%;
   transform: translateY(-50%);
-  color: var(--text-muted);
 }
 
 /* Filter Rows */
@@ -100,14 +102,6 @@
 
 .additional-filters {
   margin-top: 15px;
-}
-
-.filter-row {
-  display: flex;
-  gap: 15px;
-  margin-bottom: 10px;
-  align-items: center;
-  flex-wrap: wrap;
 }
 
 .filter-row .search-bar {

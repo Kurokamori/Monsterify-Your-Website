@@ -326,7 +326,7 @@ const MegaImageReferenceSubmissionForm = ({ onSubmissionComplete }) => {
 
                   {/* Image Preview */}
                   {reference.referencePreview && (
-                    <div className="image-preview">
+                    <div className="image-container medium">
                       <img src={reference.referencePreview} alt="Mega evolution preview" />
                     </div>
                   )}

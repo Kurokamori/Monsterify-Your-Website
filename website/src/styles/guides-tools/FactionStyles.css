@@ -1,7 +1,7 @@
 .faction-icon img {
-  max-width: 70%;
-  max-height: 70%;
-  object-fit: contain;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
   filter: drop-shadow(2px 2px 4px var(--overlay-solid));
 }
 
@@ -482,6 +482,8 @@
 .no-submissions p {
   color: var(--warning-color);
   font-style: italic;
+  line-height: 1.6;
+  max-width: 500px;
 }
 
 .submissions-grid {
@@ -507,9 +509,10 @@
 }
 
 .submission-card:hover {
-  border-color: var(--accent-glow);
   background: var(--overlay-solid);
-  transform: translateY(-2px);
+  border-color: var(--accent-glow);
+  box-shadow: 0 6px 12px var(--overlay-medium);
+  transform: translateY(-4px);
 }
 
 .submission-card.selected {
@@ -519,18 +522,19 @@
 }
 
 .submission-type {
-  display: inline-block;
   background: var(--accent-glow);
-  color: var(--text-color);
-  padding: 0.25rem 0.75rem;
-  border-radius: 20px;
-  font-size: 0.85rem;
-  font-weight: 500;
-  text-transform: capitalize;
-  margin-bottom: 1rem;
-  top: 1rem;
-  left: 1rem;
   background-color: var(--accent-color);
+  border-radius: 0.25rem;
+  color: var(--text-color);
+  display: inline-block;
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  left: 1rem;
+  margin-bottom: 1rem;
+  padding: 0.25rem 0.75rem;
+  position: absolute;
+  text-transform: capitalize;
+  top: 1rem;
 }
 
 .submission-card h4 {
@@ -583,14 +587,16 @@
 }
 
 .prompt-description {
-  margin-top: 0.5rem;
-  padding: 0.75rem;
   background: var(--overlay-dark);
+  border-left: 3px solid var(--accent-color);
   border-radius: 6px;
   color: var(--text-muted);
+  font-size: 0.95rem;
   font-style: italic;
-  font-size: 0.9rem;
-  border-left: 3px solid var(--accent-color);
+  line-height: 1.5;
+  margin-bottom: 15px;
+  margin-top: 0.5rem;
+  padding: 0.75rem;
 }
 
 /* Score Calculation */
@@ -666,27 +672,19 @@
 
 .known-people-loading,
 .known-people-empty {
-  text-align: center;
-  padding: 2rem;
+  align-items: center;
   color: var(--text-color);
-  opacity: 0.7;
-}
-
-.known-people-loading {
   display: flex;
   flex-direction: column;
-  align-items: center;
   gap: 1rem;
+  opacity: 0.7;
+  padding: 2rem;
+  text-align: center;
 }
 
 .known-people-loading i {
   font-size: 2rem;
   color: var(--accent-color);
-}
-
-.person-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 20px var(--overlay-medium);
 }
 
 .person-card.clickable {
@@ -717,34 +715,21 @@
   background: linear-gradient(135deg, var(--card-background) 0%, var(--highlight-medium) 100%);
 }
 
-.person-image img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
 .met-badge,
 .can-meet-badge {
-  position: absolute;
-  top: -5px;
-  right: -5px;
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  display: flex;
   align-items: center;
-  justify-content: center;
-  font-size: 0.8rem;
-  color: var(--text-color);
-  z-index: 2;
-}
-
-.met-badge {
   background: var(--success-light);
-}
-
-.can-meet-badge {
-  background: var(--warning-color);
+  border-radius: 50%;
+  color: var(--text-color);
+  display: flex;
+  font-size: 0.8rem;
+  height: 24px;
+  justify-content: center;
+  position: absolute;
+  right: -5px;
+  top: -5px;
+  width: 24px;
+  z-index: 2;
 }
 
 .locked-overlay {
@@ -1262,8 +1247,3 @@
   box-shadow: 0 0 20px var(--faction-color, var(--accent-glow-medium));
 }
 
-.faction-icon img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}

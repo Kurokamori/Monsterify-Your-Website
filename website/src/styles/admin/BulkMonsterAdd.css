@@ -52,15 +52,10 @@
 }
 
 .form-group {
-  margin-bottom: 2rem;
-}
-
-.form-group label {
-  display: block;
-  font-weight: 600;
-  color: var(--text-color);
-  margin-bottom: 0.5rem;
-  font-size: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 20px;
 }
 
 .format-hint {
@@ -73,21 +68,27 @@
 }
 
 .trainer-select {
-  width: 100%;
-  padding: 1rem;
-  border: 2px solid var(--border-color);
-  border-radius: .5rem;
-  background: var(--input-background);
-  color: var(--text-color);
-  font-size: 1rem;
-  transition: all 0.3s ease;
   appearance: default;
+  background: var(--background-secondary, var(--card-background));
+  background-color: var(--input-background);
+  border: 2px solid var(--border-color);
+  border-radius: 8px;
+  color: var(--text-color);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  font-size: 1rem;
+  gap: 0.5rem;
+  min-width: 200px;
+  padding: .75rem;
+  transition: border-color .2s ease;
+  width: 100%;
 }
 
 .trainer-select:focus {
-  outline: none;
   border-color: var(--accent-color);
-  box-shadow: 0 0 0 3px var(--accent-glow);
+  box-shadow: 0 0 0 3px var(--accent-glow-medium);
+  outline: none;
 }
 
 .monsters-textarea {
@@ -116,38 +117,36 @@
   font-style: italic;
 }
 
-
 /* Results Section */
 .results-section {
-  background: var(--admin-card-bg);
+  background: var(--card-background);
   border: 1px solid var(--border-color);
-  border-radius: .75rem;
+  border-radius: 1rem;
+  box-shadow: 0 8px 25px var(--overlay-medium);
+  margin-bottom: 1.5rem;
+  margin-top: 2rem;
   padding: 2rem;
-  margin-bottom: 2rem;
-  box-shadow: var(--admin-shadow-md);
 }
 
 .results-section h3 {
-  color: var(--accent-color);
-  font-size: 1.25rem;
-  margin: 0 0 1.5rem 0;
+  align-items: center;
+  color: var(--text-color);
+  display: flex;
+  font-size: 1rem;
   font-weight: 700;
-}
-
-.results-summary {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 1rem;
-  margin-bottom: 2rem;
+  justify-content: space-between;
+  margin: 0 0 1.5rem 0;
+  margin-bottom: 1rem;
 }
 
 .results-summary p {
-  margin: 0;
-  padding: 1rem;
   background: var(--input-background);
-  border-radius: .5rem;
   border: 1px solid var(--border-color);
+  border-radius: .5rem;
   color: var(--text-color);
+  font-weight: 600;
+  margin: 5px 0;
+  padding: 1rem;
 }
 
 .results-summary p strong {
@@ -177,17 +176,28 @@
 
 .monster-list {
   display: grid;
+  flex: 1;
   gap: 0.5rem;
+  max-height: 400px;
+  overflow-y: auto;
+  scrollbar-color: var(--accent-color) var(--nav-background);
+  scrollbar-width: thin;
 }
 
 .monster-item {
-  display: grid;
-  grid-template-columns: 2fr 1fr 2fr 2fr 1fr;
-  gap: 1rem;
-  padding: 1rem;
-  border-radius: .5rem;
   align-items: center;
+  background: var(--card-background);
+  background-color: var(--card-background-light);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  display: grid;
   font-size: 0.875rem;
+  gap: 1rem;
+  grid-template-columns: 2fr 1fr 2fr 2fr 1fr;
+  margin-bottom: 0.75rem;
+  overflow: hidden;
+  padding: 1rem;
+  transition: all 0.3s ease;
 }
 
 .monster-item.success {
@@ -197,23 +207,14 @@
 }
 
 .monster-level {
-  text-align: center;
-  font-weight: 600;
-}
-
-.monster-species,
-.monster-types,
-.monster-attribute {
-  font-size: 0.75rem;
+  background: var(--accent-glow);
+  border: 1px solid var(--accent-glow);
+  border-radius: 12px;
   color: var(--accent-color);
-}
-
-.monster-attribute {
-  text-align: center;
-  font-weight: 600;
-  background: var(--input-background);
+  font-size: 0.9rem;
+  font-weight: 500;
   padding: 0.25rem 0.5rem;
-  border-radius: .375rem;
+  text-align: center;
 }
 
 /* Error Results */

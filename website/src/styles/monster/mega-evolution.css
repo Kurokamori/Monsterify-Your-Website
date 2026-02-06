@@ -161,12 +161,6 @@
   font-size: var(--font-size-sm);
 }
 
-.ability-label {
-  font-weight: 600;
-  margin-right: 0.25rem;
-  color: var(--accent-color);
-}
-
 .mega-stat-bonus {
   background-color: var(--nav-background);
   border-radius: 0.5rem;

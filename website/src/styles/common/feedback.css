@@ -6,11 +6,12 @@
 
 .loading-container,
 .error-container {
+  align-items: center;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  gap: 1rem;
   justify-content: center;
-  gap: 1.5rem;
+  min-height: 200px;
   padding: 3rem;
   text-align: center;
 }
@@ -26,12 +27,21 @@
 /* ---------- Loading Spinner ---------- */
 
 .loading-spinner {
-  width: auto !important;
-  height: auto !important;
-  border: none !important;
-  border-radius: 0 !important;
-  animation: none !important;
+  align-items: center;
+  animation: spin 1s linear infinite;
   background: transparent !important;
+  border: 3px solid var(--divider-color);
+  border-radius: 50%;
+  border-top: 3px solid var(--accent-color);
+  border-top-color: var(--accent-color);
+  color: var(--accent-color);
+  display: flex;
+  font-size: 2rem;
+  height: 40px;
+  justify-content: center;
+  margin-bottom: 1rem;
+  text-align: center;
+  width: 40px;
 }
 
 .spinner-dots {
@@ -65,16 +75,17 @@
 /* ---------- Error Message ---------- */
 
 .error-message {
-  font-size: var(--font-size-lg);
-  color: var(--text-color);
+  align-items: center;
   background: var(--error-dark);
   border: 1px solid var(--error-color);
   border-radius: 6px;
-  padding: 15px;
+  color: var(--text-color);
   display: flex;
-  align-items: center;
+  font-size: var(--font-size-lg);
+  font-weight: 500;
   gap: 0.5rem;
-  margin-bottom: 20px;
+  margin-bottom: 1rem;
+  padding: 15px;
 }
 
 /* ---------- Error Helpers ---------- */
@@ -114,19 +125,28 @@
 /* ---------- Empty States ---------- */
 
 .empty-state, .no-entries, .no-npcs {
+  align-items: center;
+  background: linear-gradient(135deg, var(--card-background) 0%, var(--nav-background) 100%);
+  background-color: var(--card-background);
+  border: 2px dashed var(--border-color);
+  border-radius: 16px;
+  box-shadow: 0 2px 8px var(--overlay-light);
+  color: var(--text-color);
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 3rem;
-  background-color: var(--card-background);
-  border-radius: 0.5rem;
-  text-align: center;
   gap: 1rem;
+  grid-column: 1/-1;
+  justify-content: center;
+  margin: 2rem 0;
+  opacity: .85;
+  padding: 4rem 2rem;
+  text-align: center;
 }
 
 .empty-state i, .no-entries i, .no-npcs i {
-  font-size: 3rem;
   color: var(--accent-color);
-  opacity: 0.5;
+  display: block;
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  opacity: 0.6;
 }

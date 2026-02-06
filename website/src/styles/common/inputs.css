@@ -20,13 +20,6 @@
 
 /* ---------- Progress Bar ---------- */
 
-.progress-bar {
-  background-color: var(--accent-color);
-  height: 0.5rem;
-  border-radius: 9999px;
-  transition: width 0.3s ease;
-}
-
 /* ---------- Stat Value ---------- */
 
 .stat-value {

@@ -41,7 +41,6 @@
 .stat-item.highlight .stat-number{ color:var(--text-color); }
 .stat-item.highlight .stat-label{ color:var(--text-color); opacity:.9; }
 
-
 /* ===== Achievement filters ===== */
 
 .achievement-filters {
@@ -58,10 +57,7 @@
   gap: 1.5rem;
 }
 
-
 /* ===== Achievement card states ===== */
-
-.achievement-card:hover{ transform:translateY(-2px); box-shadow:0 8px 24px var(--overlay-light); }
 .achievement-card.unlocked{ border-color:var(--success-color); }
 
 .achievement-card.claimed{
@@ -80,16 +76,7 @@
   margin: 0 0 .5rem 0;
 }
 
-
 /* ===== Progress fill ===== */
-
-.progress-fill {
-  height: 100%;
-  background: linear-gradient(90deg, var(--primary-color) 0%, var(--success-color) 100%);
-  border-radius: .25rem;
-  transition: width .3s ease;
-}
-
 
 /* ===== Achievement reward ===== */
 
@@ -100,12 +87,6 @@
   flex-wrap: wrap;
 }
 
-.reward-currency, .reward-item{
-  display:flex; align-items:center; gap:.25rem; font-size:.875rem; color:var(--warning-color); font-weight:500;
-}
-.reward-currency i, .reward-item i{ font-size:.75rem; }
-
-
 /* ===== Achievement status ===== */
 
 .achievement-status {
@@ -115,22 +96,15 @@
 }
 
 .status-claimed, .status-unlocked, .status-locked{
-  display:flex; align-items:center; gap:.5rem; font-size:.875rem; font-weight:500; padding:.25rem .75rem; border-radius:.5rem;
-}
-
-.status-claimed {
-  background: var(--success-color);
-  color: var(--text-color);
-}
-
-.status-unlocked {
+  align-items: center;
   background: var(--warning-color);
+  border-radius: .5rem;
   color: var(--text-color);
-}
-
-.status-locked {
-  background: var(--text-secondary);
-  color: var(--text-color);
+  display: flex;
+  font-size: .875rem;
+  font-weight: 500;
+  gap: .5rem;
+  padding: .25rem .75rem;
 }
 
 /* ===== Loading and empty messages ===== */
@@ -144,7 +118,6 @@
 }
 
 .no-achievements-message i{ font-size:3rem; margin-bottom:1rem; color:var(--text-secondary); }
-
 
 /* ===== Achievement popup ===== */
 
@@ -237,12 +210,6 @@
 
 .reward-item-popup:hover{ transform:translateY(-1px); box-shadow:0 4px 12px var(--overlay-light); }
 
-.reward-text {
-  font-size: 1rem;
-  font-weight: 500;
-  color: var(--text-primary);
-}
-
 .popup-footer {
   padding: 1.5rem;
   text-align: center;
@@ -319,7 +286,6 @@
   color: var(--text-primary);
   font-size: .9rem;
 }
-
 
 /* ===== Responsive ===== */
 

@@ -7,15 +7,6 @@
 
 /* ===== Boxes header ===== */
 
-.boxes-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1.5rem;
-  padding-bottom: .5rem;
-  border-bottom: 1px solid var(--divider-color);
-}
-
 .boxes-header h2{ margin:0; padding:0; border:none; }
 
 /* ===== Add Box Controls ===== */
@@ -167,7 +158,6 @@
   display: block;
   line-height: 1;
 }
-
 
 /* ===== Responsive ===== */
 

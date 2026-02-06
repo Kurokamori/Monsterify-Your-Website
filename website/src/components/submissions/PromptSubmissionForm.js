@@ -293,11 +293,10 @@ const PromptSubmissionForm = ({ onSubmissionComplete, category = 'general' }) =>
             )}
 
             {submissionPreview && (
-              <div className="image-preview-container">
+              <div className="image-container medium">
                 <img
                   src={submissionPreview}
                   alt="Submission Preview"
-                  className="image-preview"
                 />
               </div>
             )}

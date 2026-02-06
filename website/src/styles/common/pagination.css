@@ -20,7 +20,11 @@
 }
 
 .pagination-info {
-  font-size: var(--font-size-base);
-  color: var(--text-color);
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  font-weight: 500;
+  min-width: 120px;
+  padding: 0 1rem;
+  text-align: center;
 }
 

@@ -22,24 +22,37 @@
 }
 
 .tag {
-  display: flex;
   align-items: center;
-  gap: 0.25rem;
-  padding: 0.25rem 0.75rem;
-  border-radius: 16px;
-  font-size: 0.8rem;
+  background-color: var(--nav-hover);
+  border-radius: 12px;
+  color: var(--text-muted);
+  display: flex;
+  font-size: 0.75rem;
   font-weight: 500;
-  color: var(--text-color);
+  gap: 0.25rem;
+  padding: 4px 8px;
   text-transform: capitalize;
-  background-color: var(--nav-background);
 }
 
 .species-tag {
-  background: linear-gradient(135deg, var(--data-attribute) 0%, var(--success-dark) 100%);
+  background: linear-gradient(135deg, var(--success-glow), var(--success-glow));
+  border-color: var(--success-dark);
+  color: var(--success-color);
 }
 
 .type-tag {
+  align-items: center;
+  background: linear-gradient(135deg, var(--blue-glow), var(--blue-glow));
+  border-color: var(--blue-dark);
+  border-radius: 16px;
+  box-shadow: 0 2px 4px var(--overlay-medium);
+  color: var(--blue-color);
+  display: inline-flex;
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  padding: 0.375rem 0.75rem;
   text-shadow: 0 1px 2px var(--overlay-dark);
+  text-transform: capitalize;
 }
 
 .tag-remove {

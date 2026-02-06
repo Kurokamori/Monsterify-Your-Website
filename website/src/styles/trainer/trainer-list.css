@@ -23,7 +23,6 @@
 /* Create trainer button: Use unified button system from common/buttons.css
    Example: className="button primary" */
 
-
 /* ===== Filters ===== */
 
 .trainer-list-filters {
@@ -72,7 +71,6 @@
   min-width: 120px;
 }
 
-
 /* ===== Table ===== */
 
 .trainer-table-container {
@@ -88,9 +86,13 @@
 }
 
 .trainer-table th, .trainer-table td{
-  padding:15px; text-align:left; border-bottom:1px solid var(--border-color);
+  background-color: var(--nav-background);
+  border-bottom: 1px solid var(--border-color);
+  color: var(--text-color);
+  font-weight: 600;
+  padding: 15px;
+  text-align: left;
 }
-.trainer-table th{ background-color:var(--nav-background); font-weight:600; color:var(--text-color); }
 .trainer-table tr:last-child td{ border-bottom:none; }
 .trainer-table tr:hover{ background-color:var(--nav-hover); }
 
@@ -100,7 +102,6 @@
 }
 
 .trainer-table .trainer-avatar{ width:40px; height:40px; margin-right:10px; }
-
 
 /* ===== Actions ===== */
 
@@ -124,30 +125,20 @@
    Example: className="button danger icon" for delete
    Example: className="button secondary" or "button danger" for action buttons */
 
-
 /* ===== Detailed list view ===== */
 
 .detailed-list-header, .detailed-list-row{
-  display:grid; grid-template-columns:repeat(9,1fr); gap:.75rem; padding:.75rem;
-  border-bottom:1px solid var(--border-color); align-items:center;
-}
-
-.detailed-list-header {
-  background-color: var(--surface-color);
-  font-weight: 600;
-  color: var(--text-secondary);
-  text-transform: uppercase;
-  font-size: .75rem;
-  letter-spacing: .05em;
-  border-radius: .5rem .5rem 0 0;
-}
-
-.detailed-list-row {
+  align-items: center;
   background-color: var(--background-color);
-  text-decoration: none;
-  color: var(--text-color);
-  transition: all .2s ease;
+  border-bottom: 1px solid var(--border-color);
   border-left: 3px solid transparent;
+  color: var(--text-color);
+  display: grid;
+  gap: .75rem;
+  grid-template-columns: repeat(9, 1fr);
+  padding: .75rem;
+  text-decoration: none;
+  transition: all .2s ease;
 }
 
 .detailed-list-row:hover{ background-color:var(--hover-color); border-left-color:var(--primary-color); transform:translateX(2px); }
@@ -158,10 +149,16 @@
   overflow: hidden;
 }
 
-
 /* ===== View toggles ===== */
 
-.pc-header, .boxes-header{ display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem; }
+.pc-header, .boxes-header{
+  align-items: center;
+  border-bottom: 1px solid var(--divider-color);
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+  padding-bottom: .5rem;
+}
 
 .boxes-header-controls {
   display: flex;

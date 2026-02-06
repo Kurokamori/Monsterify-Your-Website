@@ -2,11 +2,9 @@
 
 /* Activity Container */
 
-
 .activity-section {
   margin-bottom: 2rem;
 }
-
 
 .activity-section h3 {
   font-size: var(--font-size-xl);
@@ -16,15 +14,14 @@
   border-bottom: 1px solid var(--divider-color);
 }
 
-
 /* Activity Image */
 
 .activity-image {
-  max-width: 100%;
-  max-height: 100%;
+  width: 100%;
+  height: 600px;
   object-fit: cover;
-  margin-bottom: 15px;
-  border-radius: 0.5rem;
+  transition: transform 0.3s ease;
+  border-bottom: 2px solid var(--accent-glow);
 }
 
 .activity-image img {
@@ -33,25 +30,20 @@
   object-fit: cover;
 }
 
-
 /* Activity Session Styles */
 .activity-session-container {
   max-width: 1200px;
   margin: 0 auto;
-
   padding: 20px;
-}
-
-.activity-session-content {
-    display: flex;
-    flex-direction: column;
-  align-items: center;
-}
-
-.activity-session-container {
   background-color: var(--card-background);
   border-radius: 0.5rem;
   box-shadow: 0 2px 4px var(--overlay-light);
+}
+
+.activity-session-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .activity-session-header {
@@ -61,13 +53,11 @@
   margin-bottom: 20px;
 }
 
-
 .activity-session-header h2 {
   margin: 0;
   color: var(--text-color);
   text-transform: capitalize;
 }
-
 
 .activity-flavor {
   background-color: var(--nav-background);
@@ -78,7 +68,6 @@
   color: var(--text-color);
   opacity: 0.9;
 }
-
 
 .activity-prompt {
   margin-bottom: 30px;
@@ -188,13 +177,11 @@
 
 /* Activity Timer */
 
-
 .timer-background {
   fill: transparent;
   stroke: var(--nav-hover);
   stroke-width: 8;
 }
-
 
 .timer-progress {
   fill: transparent;
@@ -203,7 +190,6 @@
   transition: stroke-dashoffset 0.5s;
   stroke: var(--blue-color);
 }
-
 
 .timer-display {
   position: relative;
@@ -218,14 +204,12 @@
   margin-bottom: 20px;
 }
 
-
 .timer-time {
   font-size: 2.5rem;
   font-weight: bold;
   color: var(--text-color);
   margin-bottom: 5px;
 }
-
 
 .timer-label {
   font-size: 1rem;
@@ -234,8 +218,6 @@
   margin-bottom: 5px;
 }
 
-
-
 /* Garden Activity Styles */
 .garden-plots {
   display: grid;
@@ -243,7 +225,6 @@
   gap: 1.5rem;
   margin-top: 1.5rem;
 }
-
 
 .garden-plot {
   background-color: var(--card-background);
@@ -255,7 +236,6 @@
   display: flex;
   flex-direction: column;
 }
-
 
 .garden-plot:hover {
   transform: translateY(-4px);
@@ -272,14 +252,11 @@
   padding: 1rem;
 }
 
-
 .plot-image {
   max-width: 100%;
   max-height: 100%;
   object-fit: contain;
 }
-
-
 
 .plot-info {
   padding: 1rem;
@@ -289,7 +266,6 @@
   flex: 1;
 }
 
-
 .plot-name {
   font-size: var(--font-size-base);
   font-weight: 600;
@@ -298,13 +274,9 @@
   margin: 0;
 }
 
-
-
 /* Farm Activity Styles */
 
-
 /* Pirate's Dock Activity Styles */
-
 
 .task-title {
   font-size: var(--font-size-lg);
@@ -312,20 +284,19 @@
   margin-bottom: 0.25rem;
 }
 
-
-
 .task-content {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 0.25rem;
   padding: 1.25rem;
 }
-
 
 .task-description {
   margin-bottom: 1.5rem;
   font-size: var(--font-size-sm);
   line-height: 1.5;
 }
-
-
 
 .task-rewards {
   display: flex;
@@ -334,14 +305,10 @@
   margin-bottom: 1.5rem;
 }
 
-
-
 .task-actions {
   display: flex;
   gap: 0.5rem;
 }
-
-
 
 .location-activities {
   display: grid;
@@ -379,14 +346,6 @@
 .location-activity-card.disabled:hover {
   transform: none;
   box-shadow: 0 4px 12px var(--overlay-light);
-}
-
-.activity-image {
-  width: 100%;
-  height: 600px;
-  object-fit: cover;
-  transition: transform 0.3s ease;
-  border-bottom: 2px solid var(--accent-glow);
 }
 
 .location-activity-card:hover .activity-image {
@@ -430,24 +389,12 @@
   text-shadow: 0 1px 3px var(--overlay-solid);
 }
 
-.cooldown-indicator {
-  background: linear-gradient(135deg, var(--warning-glow), var(--warning-glow));
-  border: 2px solid var(--warning-glow);
-  border-radius: 8px;
-  padding: 12px 16px;
-  text-align: center;
-  color: var(--warning-color);
-  font-weight: 600;
-  font-size: 0.95rem;
-}
-
 .active-session-message {
   background-color: var(--card-background);
   border-radius: 8px;
   padding: 30px;
   text-align: center;
 }
-
 
 .active-session-message h2 {
   color: var(--text-color);
@@ -466,7 +413,6 @@
   padding: 20px;
   min-width: 90%;
 }
-
 
 .activity-rewards h3 {
   color: var(--accent-color);
@@ -529,25 +475,33 @@
 
 /* Monster Reward Card */
 .monster-reward-card {
-  background: var(--card-background);
-  border: 2px solid var(--success-color);
-  border-radius: 12px;
-  padding: 1.5rem;
-  box-shadow: 0 4px 8px var(--overlay-light);
+  align-items: center;
+  background: var(--text-color);
+  background-color: var(--card-background);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  box-shadow: 0 2px 8px var(--overlay-light);
   display: flex;
   flex-direction: column;
-  align-items: center;
+  height: auto;
+  justify-content: space-between;
+  margin-bottom: 15px;
+  min-height: 550px;
+  overflow: hidden;
+  padding: 20px;
+  position: relative;
   text-align: center;
-  transition: transform 0.2s ease;
-  min-height: 400px;
+  transition: transform 0.2s, box-shadow 0.2s;
 }
 
 .monster-reward-card:hover {
-  transform: translateY(-2px);
+  box-shadow: 0 5px 15px var(--overlay-medium);
+  transform: translateY(-5px);
 }
 
 .monster-reward-card.claimed {
-  opacity: 0.7;
+  background-color: var(--overlay-light);
+  opacity: 0.8;
 }
 
 /* Monster Reward Image */
@@ -574,16 +528,22 @@
 }
 
 .monster-reward-title {
-  font-size: 1.3rem;
-  font-weight: bold;
-  color: var(--success-color);
-  margin-bottom: 0.5rem;
   border-bottom: 2px solid var(--success-color);
+  color: var(--text-color);
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
   padding-bottom: 0.5rem;
 }
 
 .monster-reward-details {
-  margin-bottom: 1rem;
+  align-items: center;
+  background-color: var(--overlay-light);
+  border-radius: 8px;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 15px;
+  padding: 10px;
 }
 
 .monster-reward-level {
@@ -627,41 +587,42 @@
   border: 1px solid var(--border-color);
 }
 
-
 .rewards-header {
   text-align: center;
   margin-bottom: 1.5rem;
 }
 
-
 .rewards-header h1 {
-  color: var(--text-color);
+  color: var(--accent-color);
+  font-size: 2.5rem;
   margin-bottom: 10px;
-}
-
-.rewards-header p {
-  color: var(--text-color);
-  opacity: 0.8;
-  font-size: 1.1rem;
+  text-shadow: 2px 2px 4px var(--overlay-heavy);
 }
 
 .rewards-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   margin-bottom: 1.5rem;
 }
 
 .monster-rewards-grid {
+  background-color: var(--overlay-light);
+  border: 1px solid var(--border-color);
+  border-radius: 0.5rem;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 1rem;
-  margin: 1.5rem 0;
+  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
   justify-items: center;
+  margin: 1.5rem 0;
+  padding: 1rem;
 }
 
 .monster-rewards-grid .monster-reward-card {
-  max-width : 450px;
+  height: auto;
+  max-height: none;
+  max-width: 450px;
+  min-height: auto;
 }
 
 .monster-reward-buttons {
@@ -671,7 +632,11 @@
 }
 
 .rewards-section {
+  background: var(--nav-background);
+  border: 1px solid var(--card-background);
+  border-radius: 12px;
   margin-bottom: 2rem;
+  padding: 1.5rem;
 }
 
 .rewards-section-title {
@@ -686,55 +651,44 @@
   display: flex;
   flex-direction: column;
   gap: 2rem;
-  
+  margin: 1.5rem 0;
 }
 
 .reward-card {
-  min-height: 250px;
-  height: auto;
-  background-color: var(--nav-hover);
+  align-items: center;
+  background: var(--card-background);
+  background-color: var(--nav-background);
+  border: 2px solid var(--nav-hover);
   border-radius: 8px;
   box-shadow: 0 2px 8px var(--overlay-light);
-  padding: 15px;
-  position: relative;
+  cursor: pointer;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  text-align: center;
-  transition: transform 0.2s, box-shadow 0.2s;
-  overflow: hidden;
-  background: var(--highlight-light);
-  margin-bottom: 20px;
-  border: 1px solid var(--accent-glow);
+  height: auto;
   justify-content: space-between;
-}
-
-
-.reward-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 5px 15px var(--overlay-medium);
-}
-
-.reward-card.claimed {
-  opacity: 0.6;
-  background-color: var(--overlay-light);
+  margin-bottom: 20px;
+  min-height: 250px;
+  overflow: hidden;
+  padding: 1rem;
+  position: relative;
+  text-align: center;
+  transition: all 0.2s ease;
 }
 
 .reward-icon {
-  font-size: 1.2rem;
-  margin-bottom: 10px;
+  align-items: center;
+  background: linear-gradient(135deg, var(--warning-color), var(--warning-color));
+  background-color: var(--accent-color);
+  border-radius: 50%;
   color: var(--text-color);
   display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 2.5rem;
-  width: 2.5rem;
-  border-radius: 50%;
-  background-color: var(--accent-color);
   flex-shrink: 0;
-  background: linear-gradient(135deg, var(--warning-color), var(--warning-color));
+  font-size: 1.5rem;
+  height: 2.5rem;
+  justify-content: center;
+  margin-bottom: 10px;
+  width: 2.5rem;
 }
-
 
 .reward-title {
   font-size: 1.2rem;
@@ -743,14 +697,13 @@
   color: var(--text-color);
 }
 
-
 .reward-description {
-  font-size: 0.875rem;
   color: var(--text-muted);
-  opacity: 0.8;
+  font-size: var(--font-size-sm);
+  line-height: 1.5;
   margin-bottom: 1rem;
+  opacity: 0.8;
 }
-
 
 .reward-actions {
   margin-top: auto;
@@ -758,26 +711,29 @@
   width: 100%;
 }
 
-
 .claimed-badge {
-  background-color: var(--success-color);
-  color: var(--text-color);
-  padding: 8px 12px;
-  border-radius: 4px;
-  font-weight: 500;
-  display: flex;
   align-items: center;
+  background: var(--highlight-heavy);
+  background-color: var(--success-color);
+  border-radius: 20px;
+  color: var(--custom-type);
+  display: flex;
+  font-size: 1rem;
+  font-weight: 600;
+  gap: 0.5rem;
   justify-content: center;
+  margin-top: 0.5rem;
+  padding: 0.75rem 1.5rem;
 }
-
 
 .rewards-actions {
+  border-top: 1px solid var(--border-color);
   display: flex;
-  justify-content: center;
   gap: 15px;
-  margin-top: 1.5rem;
+  justify-content: center;
+  margin-top: 30px;
+  padding-top: 20px;
 }
-
 
 /* ===== COMPREHENSIVE RESPONSIVE DESIGN FOR ACTIVITIES ===== */
 
@@ -883,15 +839,10 @@
     font-size: 0.9rem;
   }
 
-  .rewards-grid {
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-    gap: 0.75rem;
-  }
-
   .garden-plots {
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-    gap: 1rem;
-  }
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+}
 
   .garden-plot {
     border-radius: 0.375rem;

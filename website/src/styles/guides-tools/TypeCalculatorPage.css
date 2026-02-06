@@ -5,42 +5,6 @@
   min-height: calc(100vh - 200px);
 }
 
-.page-header {
-  text-align: center;
-  margin-bottom: 3rem;
-  background: var(--card-background);
-  padding: 3rem 2rem;
-  border-radius: 1rem;
-  border: 1px solid var(--border-color);
-  box-shadow: 0 8px 25px var(--overlay-medium);
-}
-
-.page-header h1 {
-  color: var(--accent-color);
-  font-size: var(--font-size-4xl);
-  margin-bottom: 1rem;
-  font-weight: 700;
-  letter-spacing: -0.025em;
-}
-
-.page-header p {
-  color: var(--text-color);
-  opacity: 0.8;
-  font-size: var(--font-size-lg);
-  margin: 0;
-  max-width: 600px;
-  margin: 0 auto;
-}
-
-.calculator-section {
-  background: var(--card-background);
-  border-radius: 1rem;
-  padding: 2rem;
-  margin-bottom: 3rem;
-  border: 1px solid var(--border-color);
-  box-shadow: 0 8px 25px var(--overlay-medium);
-}
-
 .team-builder-section {
   background: var(--card-background);
   border-radius: 1rem;
@@ -55,30 +19,12 @@
     padding: 1rem;
   }
   
-  .page-header {
-    padding: 2rem 1.5rem;
-    margin-bottom: 2rem;
-  }
-  
-  .page-header h1 {
-    font-size: var(--font-size-3xl);
-  }
-  
   .page-header p {
     font-size: var(--font-size-base);
-  }
-  
-  .calculator-section,
-  .team-builder-section {
-    padding: 1.5rem;
-    margin-bottom: 2rem;
   }
 }
 
 @media (max-width: 480px) {
-  .page-header {
-    padding: 1.5rem 1rem;
-  }
   
   .calculator-section,
   .team-builder-section {

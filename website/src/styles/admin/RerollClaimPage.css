@@ -28,13 +28,15 @@
 
 /* Login Prompt */
 .login-prompt {
-  background: var(--nav-background);
+  background: var(--card-background-light);
+  background-color: var(--card-background);
   border: 1px solid var(--card-background);
-  border-radius: 12px;
-  padding: 3rem;
-  text-align: center;
-  max-width: 500px;
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 4px var(--overlay-light);
   margin: 0 auto;
+  max-width: 500px;
+  padding: 2rem;
+  text-align: center;
 }
 
 .login-prompt i {
@@ -49,7 +51,8 @@
 }
 
 .login-prompt p {
-  color: var(--text-muted);
+  color: var(--text-color);
+  margin: 0;
   margin-bottom: 1.5rem;
 }
 
@@ -86,13 +89,6 @@
   gap: 2rem;
 }
 
-.rewards-section {
-  background: var(--nav-background);
-  border: 1px solid var(--card-background);
-  border-radius: 12px;
-  padding: 1.5rem;
-}
-
 .rewards-section h2 {
   color: var(--text-color);
   font-size: 1.25rem;
@@ -117,20 +113,6 @@
 }
 
 /* Reward Cards */
-.rewards-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 1rem;
-}
-
-.reward-card {
-  background: var(--card-background);
-  border: 2px solid var(--nav-hover);
-  border-radius: 8px;
-  padding: 1rem;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
 
 .reward-card:hover:not(.claimed):not(.disabled) {
   border-color: var(--accent-color);
@@ -142,30 +124,9 @@
   background: var(--accent-glow);
 }
 
-.reward-card.claimed {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
 .reward-card.disabled {
   opacity: 0.6;
   cursor: not-allowed;
-}
-
-.reward-image {
-  width: 100%;
-  height: 120px;
-  object-fit: contain;
-  border-radius: 6px;
-  background: var(--overlay-medium);
-  margin-bottom: 0.75rem;
-}
-
-.reward-name {
-  color: var(--text-color);
-  font-weight: 600;
-  font-size: 0.95rem;
-  margin-bottom: 0.25rem;
 }
 
 .reward-details {
@@ -188,26 +149,6 @@
   text-transform: uppercase;
   background: var(--accent-color);
   color: var(--background-color);
-}
-
-.claimed-badge {
-  display: inline-block;
-  padding: 0.25rem 0.5rem;
-  background: var(--nav-hover);
-  border-radius: 4px;
-  color: var(--text-muted);
-  font-size: 0.75rem;
-  margin-top: 0.5rem;
-}
-
-.selected-badge {
-  display: inline-block;
-  padding: 0.25rem 0.5rem;
-  background: var(--accent-color);
-  border-radius: 4px;
-  color: var(--background-color);
-  font-size: 0.75rem;
-  margin-top: 0.5rem;
 }
 
 /* Reward Config (Nickname + Trainer per card) */
@@ -252,26 +193,6 @@
 }
 
 /* Legacy name input - keeping for backwards compat */
-.monster-name-input {
-  margin-top: 0.75rem;
-}
-
-.monster-name-input label {
-  display: block;
-  color: var(--text-muted);
-  font-size: 0.75rem;
-  margin-bottom: 0.25rem;
-}
-
-.monster-name-input input {
-  width: 100%;
-  padding: 0.5rem;
-  background: var(--nav-background);
-  border: 1px solid var(--nav-hover);
-  border-radius: 4px;
-  color: var(--text-color);
-  font-size: 0.85rem;
-}
 
 .monster-name-input input:focus {
   outline: none;
@@ -330,33 +251,8 @@
   margin-bottom: 0.75rem;
 }
 
-.selected-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0.5rem 0;
-  border-bottom: 1px solid var(--nav-hover);
-  color: var(--text-muted);
-  font-size: 0.85rem;
-  gap: 0.5rem;
-}
-
 .selected-item:last-child {
   border-bottom: none;
-}
-
-.selected-item-info {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.25rem;
-  flex: 1;
-  min-width: 0;
-}
-
-.selected-item-name {
-  color: var(--text-color);
-  font-weight: 500;
 }
 
 .selected-item-trainer {
@@ -485,9 +381,5 @@
 @media (max-width: 768px) {
   .claim-page {
     padding: 1rem;
-  }
-
-  .rewards-grid {
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
   }
 }

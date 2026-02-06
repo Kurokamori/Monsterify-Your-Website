@@ -59,7 +59,7 @@ const PersonDetailModal = ({ person, trainerId, onClose, onPersonMet }) => {
 
         <div className="modal-content">
           <div className="person-preview">
-            <div className="person-image">
+            <div className="image-container">
               <img 
                 src={person.images && person.images.length > 0 ? person.images[0] : '/images/placeholder-person.png'} 
                 alt={person.name || person.alias} 

@@ -320,11 +320,10 @@ const TrainerReferenceSubmissionForm = ({ onSubmissionComplete }) => {
               </div>
 
               {reference.referencePreview && (
-                <div className="image-preview-container">
+                <div className="image-container medium">
                   <img
                     src={reference.referencePreview}
                     alt="Reference Preview"
-                    className="image-preview"
                   />
                 </div>
               )}

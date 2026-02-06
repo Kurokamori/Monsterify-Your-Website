@@ -20,8 +20,9 @@
 .schedule-page,
 .tasks-container,
 .profile-container {
-  max-width: var(--container-max-width, 1200px);
   margin: 0 auto;
+  max-width: var(--container-max-width, 1200px);
+  padding: 0 var(--content-padding);
 }
 
 .reference-todo-container h1 {
@@ -30,107 +31,23 @@
   justify-content: space-between;
 }
 
-.art-todo-container,
-.schedule-page { padding: 2rem; }
-.reference-todo-container {
-  padding: 20px;
-}
-
-.tasks-container,
-.profile-container { padding: 0 var(--content-padding); }
-
 /* ---- Section headers (title + actions) ---- */
-.art-todo-header,
-.items-header,
-.tasks-header,
-.schedule-header,
-.tab-header,
-.settings-section-header,
-.modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 1rem;
-}
-.art-todo-header,
-.items-header,
-.tab-header { margin-bottom: 2rem; }
 
 /* ---- Grids ---- */
-.lists-grid,
-.items-grid,
-.dashboard-grid,
-.references-grid,
-.trainers-grid,
-.reference-matrix-grid {
-  display: grid;
-  gap: 1.5rem;
-}
-.lists-grid {
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-}
-
-.references-grid {
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-}
-
-.trainers-grid {
-  grid-template-columns: repeat(auto-fill, minmax(240px,1fr));
-  display: grid;
-  gap: 1rem;
-  margin-bottom: 2rem;
-}
-
-.reference-matrix-grid {
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-}
 
 @media (max-width: 768px) {
   .lists-grid,
   .items-grid,
   .references-grid,
   .trainers-grid,
-  .reference-matrix-grid { grid-template-columns: 1fr; }
+  .reference-matrix-grid {
+  gap: 0.75rem;
+  grid-template-columns: 1fr;
+  padding: 0.75rem;
+}
 }
 
 /* ---- Cards (base) ---- */
-.list-card,
-.item-card,
-.dashboard-card,
-.user-info,
-.profile-nav,
-.settings-section,
-.trainer-section,
-.reference-option,
-.reference-item,
-.reference-matrix-item,
-.routine-item,
-.progress-card {
-  background: var(--card-background);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-1);
-  transition: transform var(--ease), box-shadow var(--ease), border-color var(--ease);
-  margin: 0.5rem;
-  }
-
-.list-card {
-  min-width: max-content;
-}
-
-.list-card,
-.item-card,
-.dashboard-card,
-.settings-section,
-.trainer-section,
-.progress-card { padding: 1.5rem; }
-.list-card:hover,
-.item-card:hover,
-.dashboard-card:hover,
-.reference-matrix-item:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-2);
-}
 
 /* Accent-left variants (status stripes) */
 .item-card.status-pending { border-left: 4px solid var(--warning-color); }
@@ -143,18 +60,6 @@
 .item-card.priority-low    { box-shadow: 0 0 0 2px var(--overlay-medium); }
 
 /* ---- Badges / Pills ---- */
-.status-badge,
-.priority-badge,
-.item-status,
-.streak-badge,
-.completion-badge,
-.reference-type-badge {
-  padding: .25rem .75rem;
-  border-radius: 20px;
-  font-size: .8rem;
-  font-weight: 600;
-  text-transform: capitalize;
-}
 .status-badge.status-pending,
 .priority-badge.priority-medium,
 .streak-badge.warning { background: var(--warning-glow); color: var(--warning-color); }
@@ -165,40 +70,10 @@
 .item-status.pending { background: var(--warning-light); color: var(--warning-dark); }
 .item-status.completed { background: var(--success-light); color: var(--success-dark); }
 .item-status.active { background: var(--primary-light); color: var(--primary-dark); }
-.reference-type-badge {
-  background: var(--primary-color);
-  color: var(--text-color);
-}
 
 /* ---- Progress Bars ---- */
-.progress-bar,
-.task-progress-bar,
-.progress-fill { height: 8px; border-radius: 4px; overflow: hidden; }
-.progress-bar,
-.task-progress-bar { width: 100%; background: var(--border-color); }
-.progress-fill,
-.task-progress .task-progress-bar > span,
-.progress-bar .progress-fill {
-  display: block; height: 100%;
-  background: var(--success-color);
-  transition: width .3s ease;
-}
 
 /* ---- Thumbnails / Reference Tiles ---- */
-.reference-thumbnail,
-.reference-item,
-.reference-option,
-.reference-matrix-image {
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-sm);
-  overflow: hidden;
-  background: var(--hover-background);
-}
-.reference-thumbnail {
-  width: 32px;
-  height: 32px;
-  transition: transform var(--ease), box-shadow var(--ease), border-color var(--ease);
-}
 
 .reference-thumbnail.clickable { cursor: pointer; }
 .reference-thumbnail.clickable:hover {
@@ -206,117 +81,30 @@
   border-color: var(--primary-color);
   box-shadow: 0 2px 8px var(--overlay-medium);
 }
-.reference-matrix-image {
-  width: 100%;
-  height: 150px;
-  border-radius: var(--radius);
-}
 
 /* ---- Forms (unified) ---- */
 .list-form, .item-form, .complete-form, .form {
   display: flex; flex-direction: column; gap: 1.5rem;
 }
 
-.form-label { font-weight: 600; color: var(--text-primary, var(--text-color)); }
-.form-group input,
-.form-group textarea,
-.form-group select,
-.form-input,
-.search-box input,
-.trainer-filter {
-  padding: .75rem;
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-sm);
-  background: var(--input-background);
-  color: var(--text-primary, var(--text-color));
-  font-size: .95rem;
-  transition: border-color var(--ease), box-shadow var(--ease);
-}
-.form-group input:focus,
-.form-group textarea:focus,
-.form-group select:focus,
-.form-input:focus,
-.search-box input:focus,
-.trainer-filter:focus {
-  outline: none;
-  border-color: var(--primary-color);
-  box-shadow: 0 0 0 3px rgba(var(--primary-rgb), .1);
-}
-
-@media (max-width: 768px) { .form-row { grid-template-columns: 1fr; } }
-
 /* Checkboxes / Radios */
-.checkbox-label,
-.radio-label,
-.checkbox-group .checkbox-label {
-  display: flex; align-items: center; gap: .75rem;
-  cursor: pointer; font-weight: 400;
-}
-.checkbox-label input[type="checkbox"],
-.radio-label input[type="radio"] { width: auto; margin: 0; }
 
 /* Toggle Switch */
-
-.toggle-switch input { opacity: 0; width: 0; height: 0; }
-.toggle-slider {
-  position: absolute;
-  inset: 0;
-  cursor: pointer;
-  background-color: var(--nav-background);
-  transition: .4s;
-  border-radius: 24px;
-}
-
-.toggle-slider:before {
-  content: ""; position: absolute; left: 4px; bottom: 4px;
-  width: 16px; height: 16px; border-radius: 50%;
-  background: var(--text-color); transition: .4s;
-}
 input:checked + .toggle-slider { background: var(--accent-color); }
 input:checked + .toggle-slider:before { transform: translateX(26px); background: var(--text-color); }
 
 /* ---- Tabs (shared) ---- */
 .schedule-tabs,
-.tasks-tabs { display: flex; gap: .5rem; border-bottom: 2px solid var(--border-color); }
-.schedule-tabs {
+.tasks-tabs {
+  border-bottom: 2px solid var(--border-color);
+  display: flex;
+  gap: .5rem;
   justify-content: center;
 }
 
 /* ---- Empty / No-content states ---- */
-.no-lists,
-.auth-required,
-.no-references-needed,
-.empty-state,
-.no-references-fullscreen {
-  text-align: center;
-  padding: 3.5rem 2rem;
-  background: var(--card-background);
-  border-radius: var(--radius-lg);
-  border: 1px solid var(--border-color);
-}
-.no-lists {
-  border-style: dashed;
-  border-width: 2px;
-}
-
-.no-lists-icon,
-.empty-state i,
-.no-references-fullscreen i { font-size: 3.5rem; opacity: .5; color: var(--text-muted); margin-bottom: 1rem; }
 
 /* ---- Modals (unified) ---- */
-.modal-overlay,
-.image-modal { position: fixed; inset: 0; background: var(--overlay-heavy);
-  display: flex; align-items: center; justify-content: center; z-index: 1000; }
-.modal-content,
-.image-modal-content,
-.modal-container .modal-content {
-  background: var(--card-background);
-  border-radius: 12px;
-  width: 90%; 
-  max-width: 1000px;
-  max-height: 80vh; overflow-y: auto;
-  box-shadow: 0 10px 30px var(--overlay-dark);
-}
 .modal-content.large { max-width: 800px; max-height: 90vh; }
 .modal-container:has(.reference-matrix-fullscreen) { max-width: 90vw !important; width: 90vw !important; }
 
@@ -371,9 +159,6 @@ input:checked + .toggle-slider:before { transform: translateX(26px); background:
 /* ====================================================================== */
 
 /* Schedule page only */
-.schedule-page {
-  min-height: calc(100vh - 120px);
-}
 
 .schedule-content {
   background: var(--card-background);
@@ -417,7 +202,6 @@ input:checked + .toggle-slider:before { transform: translateX(26px); background:
   position: absolute; left: .75rem; top: 50%; transform: translateY(-50%);
   color: var(--text-muted); font-size: .9rem;
 }
-.search-box input { padding-left: 2.5rem; }
 
 /* Reference management specifics */
 .reference-management {
@@ -426,15 +210,6 @@ input:checked + .toggle-slider:before { transform: translateX(26px); background:
   gap: 2rem;
   max-height: 70vh;
   overflow-y: auto;
-}
-
-.reference-item {
-  position: relative;
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  padding: 1rem;
-  border-radius: 8px;
 }
 
 .reference-item .reference-info,
@@ -476,10 +251,6 @@ input:checked + .toggle-slider:before { transform: translateX(26px); background:
 .streak-badge.success { background: var(--success-light); color: var(--success-dark); }
 .streak-badge.danger  { background: var(--danger-light);  color: var(--danger-dark); }
 .streak-badge.muted   { background: var(--background-light); color: var(--text-muted); }
-.completion-badge {
-  background: var(--primary-light);
-  color: var(--primary-dark);
-}
 
 /* Routine list */
 .routine-items {
@@ -492,13 +263,6 @@ input:checked + .toggle-slider:before { transform: translateX(26px); background:
   padding: 0;
 }
 
-.routine-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: .5rem;
-}
-
 .routine-item.completed { background: var(--success-light); border-color: var(--success-color); opacity: .8; }
 .routine-item-content {
   display: flex;
@@ -507,12 +271,6 @@ input:checked + .toggle-slider:before { transform: translateX(26px); background:
 }
 
 /* Image modal specifics */
-.image-modal {
-  background: var(--overlay-solid);
-}
-
-.image-modal .modal-image,
-.modal-image { max-width: 100%; max-height: 80vh; display: block; margin: 0 auto; }
 
 /* Enhanced Mobile Responsiveness for Profile Pages */
 @media (max-width: 1024px) {
@@ -544,148 +302,35 @@ input:checked + .toggle-slider:before { transform: translateX(26px); background:
 /* Schedule + Tasks responsiveness */
 @media (max-width: 768px) {
   .schedule-page { padding: 1rem; }
-  .schedule-tabs { flex-wrap: wrap; gap: .25rem; }
-  .schedule-content { padding: 1rem; }
-  .dashboard-grid { grid-template-columns: 1fr; gap: 1rem; }
   .quick-actions { flex-direction: column; }
-  .item-header { flex-direction: column; gap: .75rem; align-items: stretch; }
+  .item-header {
+  align-items: flex-start;
+  flex-direction: column;
+  gap: 10px;
+}
   .item-meta { flex-direction: column; gap: .25rem; }
   .tab-header { flex-direction: column; gap: 1rem; align-items: stretch; }
-  .profile-content { flex-direction: column; }
-  .profile-sidebar { width: 100%; }
-  .image-viewer-main { min-height: 300px; }
-  
-  /* Enhanced Reference Todo Mobile Styles */
-  .reference-todo-container {
-    padding: .75rem;
-    margin: 0;
-  }
-  
+
+  /* Enhanced Reference Todo Mobile Styles - unique selectors */
   .art-todo-header,
   .items-header,
-  .tasks-header,
-  .tab-header {
+  .tasks-header {
     flex-direction: column;
     gap: 1rem;
     align-items: stretch;
     text-align: center;
   }
-  
-  .references-grid,
-  .reference-matrix-grid {
-    grid-template-columns: 1fr;
-    gap: .75rem;
-  }
-  
-  .reference-item,
-  .reference-option {
-    padding: 1rem;
-    flex-direction: column;
-    text-align: center;
-    gap: .75rem;
-  }
-  
-  .reference-thumbnail {
-    width: 60px;
-    height: 60px;
-    margin: 0 auto;
-  }
-  
-  .reference-info {
-    align-items: center;
-    text-align: center;
-  }
-  
-  .reference-name {
-    font-size: 1rem;
-    font-weight: 600;
-  }
-  
-  .reference-type {
-    font-size: .85rem;
-    margin-top: .25rem;
-  }
-  
+
   .reference-type-badge {
     margin-top: .5rem;
     padding: .5rem 1rem;
     font-size: .9rem;
     border-radius: 20px;
   }
-  
+
   .reference-matrix-image {
     height: 120px;
   }
-  
-  .modal-content {
-    width: 95%;
-    margin: 1rem;
-    max-height: 85vh;
-  }
-  
-  .reference-management {
-    max-height: 60vh;
-    padding: .5rem;
-  }
-}
-
-@media (max-width: 480px) {
-  .reference-todo-container {
-    padding: .5rem;
-  }
-  
-  .reference-todo-description {
-    font-size: .9rem;
-    margin-bottom: 1rem;
-  }
-  
-  .reference-item,
-  .reference-option {
-    padding: .75rem;
-    gap: .5rem;
-  }
-  
-  .reference-thumbnail {
-    width: 50px;
-    height: 50px;
-  }
-  
-  .reference-name {
-    font-size: .9rem;
-  }
-  
-  .reference-type {
-    font-size: .8rem;
-  }
-  
-  .reference-type-badge {
-    padding: .4rem .8rem;
-    font-size: .8rem;
-  }
-  
-  /* Button sizing handled by unified button system in common/buttons.css */
-
-  .modal-content {
-    width: 98%;
-    margin: .5rem;
-    max-height: 90vh;
-  }
-  
-  .reference-matrix-image {
-    height: 100px;
-  }
-  
-  .art-todo-header h1,
-  .items-header h2,
-  .tasks-header h1 {
-    font-size: 1.25rem;
-  }
-}
-
-.reference-todo-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 20px;
 }
 
 .reference-todo-description {
@@ -767,13 +412,16 @@ input:checked + .toggle-slider:before { transform: translateX(26px); background:
 }
 
 .group-title {
-  margin: 0;
-  display: flex;
   align-items: center;
-  gap: 0.75rem;
-  color: var(--text-primary);
-  font-size: 1rem;
+  border-bottom: 2px solid var(--accent-glow);
+  color: var(--accent-color);
+  display: flex;
+  font-size: 1.1rem;
   font-weight: 600;
+  gap: 0.75rem;
+  margin: 0 0 1rem 0;
+  padding-bottom: 0.5rem;
+  text-align: center;
 }
 
 .group-title i {
@@ -820,21 +468,6 @@ input:checked + .toggle-slider:before { transform: translateX(26px); background:
   border: 1px solid var(--border-color);
   border-radius: var(--radius);
   background: var(--card-background);
-}
-
-.species-name {
-  font-weight: 600;
-  color: var(--text-primary);
-  min-width: 120px;
-}
-
-.species-image-container {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  border-radius: var(--radius-sm);
-  background: var(--hover-background);
 }
 
 .reference-species-image {
@@ -1025,10 +658,6 @@ input:checked + .toggle-slider:before { transform: translateX(26px); background:
 
 /* Mobile (max-width: 768px) - Enhanced Reference Todo */
 @media (max-width: 768px) {
-  .art-todo-container,
-  .schedule-page {
-    padding: 1rem;
-  }
 
   /* Profile Layout */
   .profile-content {
@@ -1094,9 +723,9 @@ input:checked + .toggle-slider:before { transform: translateX(26px); background:
   }
 
   .group-title {
-    font-size: 0.95rem;
-    gap: 0.5rem;
-  }
+  font-size: 1rem;
+  gap: 0.5rem;
+}
 
   .trainer-header {
     flex-direction: column;
@@ -1115,22 +744,6 @@ input:checked + .toggle-slider:before { transform: translateX(26px); background:
   }
 
   /* Grids */
-  .lists-grid {
-    grid-template-columns: 1fr;
-    gap: 0.75rem;
-  }
-
-  .trainers-grid {
-    grid-template-columns: 1fr;
-    gap: 0.75rem;
-    padding: 0.75rem;
-  }
-
-  .references-grid,
-  .reference-matrix-grid {
-    grid-template-columns: 1fr;
-    gap: 0.75rem;
-  }
 
   /* Cards */
   .list-card,
@@ -1153,11 +766,6 @@ input:checked + .toggle-slider:before { transform: translateX(26px); background:
     text-align: center;
     padding: 0.75rem;
     gap: 0.5rem;
-  }
-
-  .species-name {
-    min-width: unset;
-    font-size: 0.95rem;
   }
 
   /* Image Size Variants - Mobile Adjustments */
@@ -1236,9 +844,6 @@ input:checked + .toggle-slider:before { transform: translateX(26px); background:
   }
 
   /* Forms */
-  .form-row {
-    grid-template-columns: 1fr;
-  }
 
   /* User Info */
   .user-info {
@@ -1268,6 +873,7 @@ input:checked + .toggle-slider:before { transform: translateX(26px); background:
 
   .reference-todo-description {
     font-size: 0.85rem;
+    margin-bottom: 1rem;
   }
 
   .total-needed-container {
@@ -1307,14 +913,6 @@ input:checked + .toggle-slider:before { transform: translateX(26px); background:
   }
 
   /* Cards */
-  .list-card,
-  .item-card,
-  .dashboard-card,
-  .settings-section,
-  .trainer-section,
-  .progress-card {
-    padding: 0.75rem;
-  }
 
   /* Species References */
   .species-reference-item {
@@ -1348,6 +946,7 @@ input:checked + .toggle-slider:before { transform: translateX(26px); background:
   .reference-item,
   .reference-option {
     padding: 0.625rem;
+    gap: 0.5rem;
   }
 
   .reference-thumbnail {
@@ -1372,6 +971,7 @@ input:checked + .toggle-slider:before { transform: translateX(26px); background:
   .modal-content {
     width: 98%;
     margin: 0.25rem;
+    max-height: 90vh;
   }
 
   .reference-matrix-image {
