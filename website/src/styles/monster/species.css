@@ -16,20 +16,6 @@
   padding: 1rem;
 }
 
-.species-selection-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1rem;
-  border-bottom: 1px solid var(--divider-color);
-}
-
-.species-search-container {
-  display: flex;
-  gap: 1rem;
-  margin-bottom: 1rem;
-}
-
 .species-search-input {
   flex: 1;
   padding: 0.75rem 1rem;
@@ -38,15 +24,6 @@
   background-color: var(--input-background);
   color: var(--text-color);
   font-size: 1rem;
-}
-
-.species-filter-select {
-  padding: 0.75rem 1rem;
-  border: 1px solid var(--border-color);
-  border-radius: 0.5rem;
-  background-color: var(--input-background);
-  color: var(--text-color);
-  min-width: 150px;
 }
 
 .species-grid {
@@ -78,25 +55,6 @@
   background-color: var(--accent-color-light, rgba(var(--accent-color), 0.1));
 }
 
-.species-option-image {
-  width: 80px;
-  height: 80px;
-  object-fit: contain;
-  margin-bottom: 0.5rem;
-}
-
-.species-option-name {
-  font-weight: 600;
-  color: var(--text-color);
-  text-align: center;
-}
-
-.species-option-types {
-  display: flex;
-  gap: 0.25rem;
-  margin-top: 0.5rem;
-}
-
 /* =============================================================================
    RESPONSIVE STYLES
    ============================================================================= */
@@ -113,15 +71,6 @@
 }
 
 /* Tablet screens (768px and below) */
-@media (max-width: 768px) {
-  .species-search-container {
-    flex-direction: column;
-  }
-
-  .species-filter-select {
-    width: 100%;
-  }
-}
 
 /* Mobile screens (480px and below) */
 @media (max-width: 480px) {
@@ -132,15 +81,6 @@
 
   .species-option {
     padding: 0.75rem;
-  }
-
-  .species-option-image {
-    width: 60px;
-    height: 60px;
-  }
-
-  .species-option-name {
-    font-size: 0.85rem;
   }
 }
 

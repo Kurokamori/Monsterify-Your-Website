@@ -1,6 +1,5 @@
 /* Town Page Styles */
 
-
 /* Location Header */
 .location-header {
   margin-bottom: 1.5rem;
@@ -12,7 +11,6 @@
   padding-bottom: 1rem;
   border-bottom: 1px solid var(--divider-color);
 }
-
 
 .location-header h1 {
   font-size: var(--font-size-2xl);
@@ -29,7 +27,6 @@
   box-shadow: 0 2px 4px var(--overlay-light);
 }
 
-
 .location-image {
   width: 100%;
   height: auto;
@@ -39,15 +36,7 @@
   display: block;
 }
 
-
-
-
 /* Town Info */
-
-
-
-
-
 
 .feature-item h3 {
   font-size: var(--font-size-lg);
@@ -61,10 +50,7 @@
   margin-bottom: 0;
 }
 
-
-
 /* Town Square */
-
 
 /* Adoption Center Styles */
 .adoption-center-container {
@@ -72,8 +58,6 @@
   flex-direction: column;
   gap: 1.5rem;
 }
-
-
 
 /* Controls */
 .adoption-center-controls {
@@ -85,12 +69,10 @@
   gap: 1rem;
 }
 
-
 .view-options {
   display: flex;
   gap: 0.5rem;
 }
-
 
 /* BUTTON STYLES REMOVED - Use unified button system from common/buttons.css
    Pattern: className="button [type] [modifiers]"
@@ -122,7 +104,6 @@
   gap: 1.5rem;
   margin-bottom: 1.5rem;
 }
-
 
 .adopt-card {
   background-color: var(--nav-active);
@@ -190,7 +171,6 @@
   justify-content: center;
   width: 100%;
 }
-
 
 .adopt-action {
   display: flex;
@@ -431,11 +411,6 @@
   text-align: center;
 }
 
-
-
-
-
-
 /* No Adopts Message */
 .no-adopts-message {
   text-align: center;
@@ -445,7 +420,6 @@
   box-shadow: 0 2px 4px var(--overlay-light);
 }
 
-
 /* Berry and Pastry Styles */
 .adoption-actions {
   display: flex;
@@ -454,7 +428,6 @@
   margin-top: 1rem;
   justify-content: flex-end;
 }
-
 
 /* Berry/Pastry button styles removed - use "button primary" or "button info" */
 
@@ -564,7 +537,6 @@
 }
 /* Adoption Section */
 
-
 /* Adoption Modal */
 .adoption-form {
   display: flex;
@@ -573,22 +545,18 @@
   max-width: 90%;
 }
 
-
 .adopt-details {
   background-color: var(--overlay-light);
   padding: 1rem;
   border-radius: 0.5rem;
 }
 
-
 .adopt-details h3 {
   margin-bottom: 1rem;
   color: var(--accent-color);
 }
 
-.adopt-species-details,
-.adopt-types-details,
-.adopt-attribute-details {
+.adopt-types-details, .adopt-attribute-details {
   margin-bottom: 1rem;
 }
 
@@ -621,21 +589,15 @@
   margin-top: 0.5rem;
 }
 
-
 .adoption-inputs {
   display: flex;
   flex-direction: column;
   gap: 1rem;
 }
 
-
-
-
-
 .balance-label {
   color: var(--text-color);
 }
-
 
 .balance-value {
   color: var(--text-color);
@@ -643,7 +605,6 @@
   align-items: center;
   gap: 0.25rem;
 }
-
 
 .adoption-error {
   color: var(--error-color);
@@ -658,7 +619,6 @@
   border-left: 3px solid var(--error-color);
   margin-bottom: 1.5rem;
 }
-
 
 /* Adopt button styles removed - use "button primary block" */
 
@@ -843,7 +803,6 @@
 
 /* Login Prompt */
 
-
 .login-prompt p {
   margin: 0;
   color: var(--text-color);
@@ -858,9 +817,6 @@
   text-align: center;
   padding: 30px;
 }
-
-
-
 
 .adoption-success h3 {
   font-size: var(--font-size-lg);
@@ -916,8 +872,6 @@
   margin-top: 1.5rem;
 }
 
-
-
 /* ==============================
    Witch's Hut Styles
    ============================== */
@@ -931,28 +885,6 @@
 }
 
 /* Banner Section */
-.witchs-hut-banner {
-  background: linear-gradient(135deg, var(--accent-color) 0%, var(--accent-hover) 100%);
-  color: var(--text-color);
-  text-align: center;
-  padding: 2rem;
-  border-radius: 0.75rem;
-  margin-bottom: 2rem;
-  box-shadow: 0 4px 12px var(--overlay-medium);
-}
-
-.witchs-hut-banner h2 {
-  font-size: 2.5rem;
-  margin-bottom: 0.5rem;
-  text-shadow: 0 2px 4px var(--overlay-dark);
-}
-
-.witchs-hut-banner p {
-  font-size: 1.1rem;
-  opacity: 0.9;
-  max-width: 600px;
-  margin: 0 auto;
-}
 
 /* Content Layout */
 .witchs-hut-content {
@@ -985,9 +917,6 @@
   margin-bottom: 0;
 }
 
-
-
-
 /* Evolution Form */
 .evolution-form {
   display: flex;
@@ -1002,33 +931,6 @@
 }
 
 /* Species Slot Selection */
-.species-slot-selection {
-  background-color: var(--nav-background);
-  border-radius: 0.5rem;
-  padding: 1.5rem;
-}
-
-.species-slot-selection h4 {
-  color: var(--accent-color);
-  margin-bottom: 0.75rem;
-  font-size: 1.1rem;
-}
-
-.species-slot-selection p {
-  color: var(--text-color);
-  margin-bottom: 1rem;
-  opacity: 0.8;
-}
-
-.species-slot-select {
-  width: 100%;
-  padding: 0.75rem;
-  background-color: var(--input-background);
-  border: 1px solid var(--border-color);
-  border-radius: 0.375rem;
-  color: var(--text-color);
-  font-size: 1rem;
-}
 
 /* Evolution Options */
 .evolution-options {
@@ -1041,27 +943,6 @@
   color: var(--accent-color);
   margin-bottom: 1rem;
   font-size: 1.1rem;
-}
-
-.loading-evolution-options {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 2rem;
-  color: var(--text-color);
-  opacity: 0.7;
-}
-
-.no-evolution-options {
-  text-align: center;
-  padding: 1.5rem;
-  color: var(--text-color);
-  opacity: 0.7;
-}
-
-.no-evolution-options p {
-  margin-bottom: 0.5rem;
 }
 
 .evolution-options-list {
@@ -1165,15 +1046,6 @@
   font-size: 1.1rem;
 }
 
-.preview-details p {
-  color: var(--text-color);
-  margin-bottom: 0.5rem;
-}
-
-.preview-details strong {
-  color: var(--accent-color);
-}
-
 .preview-image {
   margin-top: 1rem;
   text-align: center;
@@ -1187,34 +1059,6 @@
 }
 
 /* Image Submission */
-.image-submission {
-  background-color: var(--nav-background);
-  border-radius: 0.5rem;
-  padding: 1.5rem;
-}
-
-.image-submission h4 {
-  color: var(--accent-color);
-  margin-bottom: 0.75rem;
-  font-size: 1.1rem;
-}
-
-.image-submission p {
-  color: var(--text-color);
-  margin-bottom: 1.5rem;
-  opacity: 0.8;
-}
-
-.image-input-group {
-  margin-bottom: 1rem;
-}
-
-.image-input-group label {
-  display: block;
-  font-weight: 600;
-  color: var(--text-color);
-  margin-bottom: 0.5rem;
-}
 
 .image-url-input {
   width: 100%;
@@ -1235,23 +1079,6 @@
 .image-url-input:disabled {
   opacity: 0.6;
   cursor: not-allowed;
-}
-
-.void-stone-option {
-  margin-top: 1rem;
-}
-
-.void-stone-option label {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-weight: 500;
-  color: var(--text-color);
-  cursor: pointer;
-}
-
-.void-stone-option input[type="checkbox"] {
-  margin: 0;
 }
 
 .image-preview {
@@ -1289,16 +1116,6 @@
   color: var(--text-color);
   margin-bottom: 1.5rem;
   opacity: 0.8;
-}
-
-.loading-inventory {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 2rem;
-  color: var(--text-color);
-  opacity: 0.7;
 }
 
 .evolution-items-grid {
@@ -2002,19 +1819,6 @@
   background: var(--nav-background);
 }
 
-.evolution-item-full.special-item {
-  border-color: var(--custom-type);
-}
-
-.evolution-item-full.special-item:hover:not(.unavailable) {
-  border-color: var(--custom-type);
-  box-shadow: 0 2px 8px var(--accent-glow);
-}
-
-.evolution-item-full.special-item.selected {
-  background: linear-gradient(135deg, var(--custom-type), var(--custom-type));
-}
-
 .evolution-item-full .evolution-item-image {
   width: 50px;
   height: 50px;
@@ -2200,17 +2004,11 @@
     padding: 1rem;
   }
   
-  .witchs-hut-banner {
-    padding: 1.5rem 1rem;
-  }
   
-  .witchs-hut-banner h2 {
-    font-size: 2rem;
-  }
   
-  .witchs-hut-banner p {
-    font-size: 1rem;
-  }
+  
+  
+  
   
   .monsters-grid {
     grid-template-columns: 1fr;
@@ -2302,14 +2100,9 @@
     padding: 0.75rem;
   }
   
-  .witchs-hut-banner {
-    padding: 1rem 0.75rem;
-    margin-bottom: 1.5rem;
-  }
   
-  .witchs-hut-banner h2 {
-    font-size: 1.75rem;
-  }
+  
+  
   
   
   .evolution-form h3 {
@@ -2326,18 +2119,11 @@
   max-width: 160vh;
 }
 
-
-
-
 .location-header h2 {
   font-size: 2rem;
   margin-bottom: 10px;
   color: var(--accent-color);
 }
-
-
-
-
 
 .action-error {
   background-color: var(--error-glow);
@@ -2350,7 +2136,6 @@
   align-items: center;
 }
 
-
 .action-error p {
   margin: 0;
   color: var(--error-color);
@@ -2361,7 +2146,6 @@
   flex-direction: row;
   gap: 20px;
 }
-
 
 .monster-display {
   background-color: var(--overlay-solid);
@@ -2374,7 +2158,6 @@
   display: flex;
   flex-direction: column;
 }
-
 
 .monster-display h3 {
   margin-top: 0;
@@ -2390,13 +2173,11 @@
   height: 100%
 }
 
-
 .empty-display-message {
   text-align: center;
   color: var(--highlight-heavy);
   padding: 2rem;
 }
-
 
 .empty-display-message i {
   font-size: 3rem;
@@ -2415,14 +2196,11 @@
   margin: 0 auto;
 }
 
-
-
 .monster-info-header {
   display: flex;
   align-items: center;
   gap: 15px;
 }
-
 
 .monster-info-header h4 {
   margin: 0;
@@ -2437,21 +2215,12 @@
   margin-top: 10px;
 }
 
-
-
-
-
-
-
-
-
 .abilities-container {
   display: grid;
   grid-template-columns: 1fr;
   gap: 15px;
   margin-bottom: 20px;
 }
-
 
 @media (min-width: 992px) {
   .abilities-container {
@@ -2466,7 +2235,6 @@
   box-shadow: 0 2px 4px var(--overlay-medium);
 }
 
-
 .ability-card h4 {
   margin-top: 0;
   margin-bottom: 10px;
@@ -2474,14 +2242,11 @@
   font-size: 1.2rem;
 }
 
-
-
 .ability-description {
   color: var(--text-muted);
   font-size: 0.9rem;
   line-height: 1.4;
 }
-
 
 .ability-card.hidden {
   background-color: var(--overlay-medium);
@@ -2494,19 +2259,13 @@
   gap: 10px;
 }
 
-
 @media (min-width: 768px) {
   .ability-actions {
     flex-direction: row;
   }
 }
 
-
-
 /* Action button styles removed - use "button primary" or "button secondary" */
-
-
-
 
 /* Modal Styles */
 .ability-capsule-modal,
@@ -2524,12 +2283,10 @@
   padding: 15px;
 }
 
-
 .ability-preview {
   text-align: center;
   flex: 1;
 }
-
 
 .ability-preview h4 {
   margin-top: 0;
@@ -2543,11 +2300,6 @@
   color: var(--accent-color);
   margin: 0 20px;
 }
-
-
-
-
-
 
 /* Modal button styles removed - use "button primary" and "button secondary outline" */
 
@@ -2567,7 +2319,6 @@
   margin-bottom: 20px;
 }
 
-
 .success-message p {
   margin-bottom: 15px;
 }
@@ -2575,9 +2326,6 @@
 .ability-slot-selection {
   margin-bottom: 20px;
 }
-
-
-
 
 .radio-group label {
   display: flex;
@@ -2589,7 +2337,6 @@
 .ability-search {
   margin-bottom: 15px;
 }
-
 
 .ability-search label {
   display: block;
@@ -2614,7 +2361,6 @@
   background-color: var(--overlay-solid);
 }
 
-
 .ability-option {
   padding: 10px;
   border-radius: 5px;
@@ -2622,7 +2368,6 @@
   margin-bottom: 10px;
   transition: background-color 0.2s;
 }
-
 
 .ability-option:hover {
   background-color: var(--overlay-heavy);
@@ -2653,14 +2398,6 @@
   margin-top: 5px;
 }
 
-
-.image-mode-selector {
-  display: flex;
-  gap: 5px;
-  margin-bottom: 10px;
-}
-
-
 /* Mode button styles removed - use "button toggle" */
 
 .file-info {
@@ -2674,22 +2411,15 @@
   font-size: 14px;
 }
 
-
 .file-size {
   color: var(--text-muted);
   font-size: 12px;
 }
 
-
 /* Remove file button styles removed - use "button danger icon sm" */
 
 /* Responsive adjustments */
-@media (max-width: 768px) {
-  .image-mode-selector {
-    flex-direction: column;
-  }
-  /* Responsive mode-button styles removed - use "button toggle" */
-}
+
 /* Locations Page Styles */
 .locations-container {
   width: 100%;
@@ -2698,12 +2428,10 @@
   padding: 0 var(--content-padding);
 }
 
-
 .locations-header {
   text-align: center;
   margin-bottom: 2rem;
 }
-
 
 .locations-header h1 {
   font-size: var(--font-size-3xl);
@@ -2725,17 +2453,11 @@
   gap: 1rem;
 }
 
-
 .locations-search {
   display: flex;
   flex: 1;
   max-width: 500px;
 }
-
-
-
-
-
 
 /* Search button hover removed - use "button primary" */
 
@@ -2745,9 +2467,6 @@
   gap: 0.75rem;
 }
 
-
-
-
 /* Locations Grid */
 .locations-grid {
   display: flex;
@@ -2755,7 +2474,6 @@
   gap: 2rem;
   margin-bottom: 3rem;
 }
-
 
 .location-card {
   display: flex;
@@ -2766,13 +2484,10 @@
   transition: transform 0.2s, box-shadow 0.2s;
 }
 
-
 .location-card:hover {
   transform: translateY(-4px);
   box-shadow: 0 6px 12px var(--overlay-medium);
 }
-
-
 
 .location-image img {
   width: 100%;
@@ -2794,13 +2509,11 @@
   border-bottom-right-radius: 0.25rem;
 }
 
-
 .location-content {
   padding: 1.5rem;
   margin-bottom: 1.5rem;
   min-width: 90%;
 }
-
 
 .location-name {
   font-size: var(--font-size-sm);
@@ -2813,7 +2526,6 @@
   white-space: nowrap;
 }
 
-
 .location-region {
   display: flex;
   align-items: center;
@@ -2824,15 +2536,12 @@
   margin-bottom: 1rem;
 }
 
-
-
 .town-location-description {
   font-size: var(--font-size-md);
   color: var(--text-color);
   margin-bottom: 1rem;
   align-items: center;
 }
-
 
 .location-details {
   display: flex;
@@ -2842,11 +2551,9 @@
   flex-direction: column;
 }
 
-
 .location-section {
   flex: 1;
 }
-
 
 .location-section h4 {
   font-size: var(--font-size-base);
@@ -2858,7 +2565,6 @@
   list-style-type: none;
   padding: 0;
 }
-
 
 .location-list li {
   padding: 0.375rem 0;
@@ -2885,14 +2591,11 @@
   gap: 1rem;
 }
 
-
 .no-locations i {
   font-size: 3rem;
   color: var(--accent-color);
   opacity: 0.5;
 }
-
-
 
 /* Reset button hover removed - use "button secondary" */
 
@@ -2960,11 +2663,7 @@
 
 /* Adoption Center */
 
-
 /* Adoption Modal */
-
-
-
 
 .trainer-select label {
   display: block;
@@ -2981,12 +2680,6 @@
   color: var(--text-color);
 }
 
-
-
-
-
-
-
 .adoption-success .success-icon {
   font-size: 3rem;
   color: var(--success-color);
@@ -3001,15 +2694,12 @@
 
 /* Category button styles removed - use "button filter" */
 
-
-
 .shop-item-card {
   background-color: var(--nav-background);
   border-radius: 0.5rem;
   overflow: hidden;
   transition: transform 0.2s, box-shadow 0.2s;
 }
-
 
 .shop-item-card:hover {
   transform: translateY(-4px);
@@ -3067,13 +2757,6 @@
 
 /* Nursery */
 
-
-
-
-
-
-
-
 /* Breeding Actions */
 .breeding-actions {
   display: flex;
@@ -3110,7 +2793,6 @@
   margin-right: 0.5rem;
 }
 
-
 /* Trade Center */
 .trade-listings {
   display: grid;
@@ -3118,14 +2800,12 @@
   gap: 1.5rem;
 }
 
-
 .trade-listing-card {
   background-color: var(--nav-background);
   border-radius: 0.5rem;
   overflow: hidden;
   transition: transform 0.2s, box-shadow 0.2s;
 }
-
 
 .trade-listing-card:hover {
   transform: translateY(-4px);
@@ -3138,12 +2818,10 @@
   border-bottom: 1px solid var(--divider-color);
 }
 
-
 .trade-listing-title {
   font-weight: 600;
   margin-bottom: 0.25rem;
 }
-
 
 .trade-listing-trainer {
   font-size: var(--font-size-sm);
@@ -3151,16 +2829,13 @@
   opacity: 0.8;
 }
 
-
 .trade-listing-content {
   padding: 1.25rem;
 }
 
-
 .trade-offer {
   margin-bottom: 1.5rem;
 }
-
 
 .trade-offer-label {
   font-size: var(--font-size-sm);
@@ -3168,7 +2843,6 @@
   margin-bottom: 0.5rem;
   color: var(--accent-color);
 }
-
 
 .trade-monster {
   display: flex;
@@ -3179,7 +2853,6 @@
   border-radius: 0.375rem;
 }
 
-
 .trade-monster-image {
   width: 60px;
   height: 60px;
@@ -3188,17 +2861,14 @@
   border-radius: 0.25rem;
 }
 
-
 .trade-monster-info {
   flex: 1;
 }
-
 
 .trade-monster-name {
   font-weight: 500;
   margin-bottom: 0.25rem;
 }
-
 
 .trade-monster-details {
   display: flex;
@@ -3206,26 +2876,14 @@
   font-size: var(--font-size-sm);
 }
 
-
 .trade-listing-actions {
   display: flex;
   gap: 0.5rem;
 }
 
-
 /* Trade action button styles removed - use "button primary" or "button secondary" */
 
 /* Nursery Tabs */
-.nursery-tabs {
-  display: flex;
-  gap: 1rem;
-  margin-bottom: 2rem;
-  border-bottom: 2px solid var(--divider-color);
-}
-
-
-
-
 
 .trainer-selection label {
   display: block;
@@ -3234,18 +2892,6 @@
 }
 
 /* Hatch/Nurture Forms */
-.hatch-content,
-.nurture-content {
-  background-color: var(--nav-background);
-  border-radius: 0.5rem;
-  padding: 2rem;
-}
-
-.hatch-content h3,
-.nurture-content h3 {
-  margin-bottom: 1rem;
-  color: var(--accent-color);
-}
 
 .egg-info {
   background-color: var(--card-background);
@@ -3254,28 +2900,16 @@
   margin-bottom: 1.5rem;
 }
 
-
 .egg-info p {
   margin: 0.25rem 0;
   font-weight: 500;
 }
-
-.hatch-form,
-.nurture-form {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-}
-
-
-
 
 .item-selection {
   background-color: var(--card-background);
   padding: 1.5rem;
   border-radius: 0.375rem;
 }
-
 
 .item-selection h4 {
   margin-bottom: 1rem;
@@ -3292,14 +2926,9 @@
   min-width: max-content;
 }
 
-
 .item-row:last-child {
   border-bottom: none;
 }
-
-
-
-
 
 .item-row input[type="number"] {
   width: 80px;
@@ -3314,7 +2943,6 @@
 .trade-type-selection {
   margin: 1rem 0;
 }
-
 
 .trade-type-selection label {
   font-weight: bold;
@@ -3331,9 +2959,6 @@
   margin: 1.5rem 0;
 }
 
-
-
-
 .trainer-selection label {
   font-weight: bold;
   margin-bottom: 0.5rem;
@@ -3345,7 +2970,6 @@
   color: var(--accent-color);
 }
 
-
 .trade-content {
   margin-top: 2rem;
   border: 1px solid var(--divider-color);
@@ -3354,13 +2978,11 @@
   background: var(--nav-background);
 }
 
-
 .trade-sides {
   display: flex;
   gap: 2rem;
   align-items: flex-start;
 }
-
 
 .trade-side {
   flex: 1;
@@ -3370,7 +2992,6 @@
   border: 1px solid var(--divider-color);
   min-width: max-content;
 }
-
 
 .trade-side h4 {
   margin: 0 0 1rem 0;
@@ -3388,17 +3009,11 @@
   min-width: 40px;
 }
 
-
 /* Monster Trade Styles */
 .monster-list {
   max-height: 400px;
   overflow-y: auto;
 }
-
-
-
-
-
 
 .monster-checkbox:hover {
   background: var(--nav-hover);
@@ -3414,11 +3029,9 @@
   overflow-y: auto;
 }
 
-
 .inventory-category {
   margin-bottom: 1rem;
 }
-
 
 .inventory-category h5 {
   margin: 0 0 0.5rem 0;
@@ -3433,87 +3046,12 @@
   padding: 0.5rem;
 }
 
-
-
-
 .item-row:last-child {
   border-bottom: none;
 }
 
-
-
-
-
-
-.hatch-session-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 2rem;
-  background: linear-gradient(135deg, var(--custom-type) 0%, var(--free-attribute) 100%);
-  min-height: 100vh;
-  color: var(--text-color);
-}
-
-
-.hatch-header {
-  text-align: center;
-  margin-bottom: 2rem;
-}
-
-
-.hatch-header h1 {
-  font-size: 2.5rem;
-  margin-bottom: 1rem;
-  text-shadow: 2px 2px 4px var(--overlay-dark);
-}
-
-.session-info {
-  display: flex;
-  justify-content: center;
-  gap: 2rem;
-  font-size: 1.1rem;
-  opacity: 0.9;
-}
-
-
 .egg-progress {
   margin-bottom: 3rem;
-}
-
-
-
-
-.progress-step {
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: bold;
-  font-size: 1.2rem;
-  transition: all 0.3s ease;
-  position: relative;
-}
-
-
-.progress-step.completed {
-  background: var(--success-light);
-  color: var(--text-color);
-  box-shadow: 0 4px 8px var(--success-glow);
-}
-
-.progress-step.active {
-  background: var(--warning-color);
-  color: var(--text-color);
-  box-shadow: 0 4px 8px var(--warning-glow);
-  animation: pulse 2s infinite;
-}
-
-.progress-step.pending {
-  background: var(--highlight-medium);
-  color: var(--highlight-heavy);
-  border: 2px solid var(--highlight-medium);
 }
 
 @keyframes pulse {
@@ -3522,73 +3060,17 @@
   100% { transform: scale(1); }
 }
 
-.current-egg {
-  background: var(--highlight-light);
-  border-radius: 15px;
-  padding: 2rem;
-  backdrop-filter: blur(10px);
-  border: 1px solid var(--highlight-medium);
-}
-
-
-.current-egg h2 {
-  text-align: center;
-  margin-bottom: 2rem;
-  font-size: 1.8rem;
-}
-
-
-.selection-indicator {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  background: var(--success-light);
-  color: var(--text-color);
-  border-radius: 50%;
-  width: 30px;
-  height: 30px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.2rem;
-  box-shadow: 0 2px 8px var(--overlay-dark);
-}
-
 .egg-selected {
   text-align: center;
   margin-top: 2rem;
 }
 
-.hatch-complete {
-  text-align: center;
-  padding: 4rem 2rem;
-}
-
-.hatch-complete h2 {
-  font-size: 2.5rem;
-  margin-bottom: 1rem;
-}
-
-.hatch-complete p {
-  font-size: 1.2rem;
-  margin-bottom: 2rem;
-  opacity: 0.9;
-}
-
 /* Responsive design */
 @media (max-width: 768px) {
-  .hatch-session-container {
-    padding: 1rem;
-  }
   
-  .hatch-header h1 {
-    font-size: 2rem;
-  }
   
-  .session-info {
-    flex-direction: column;
-    gap: 0.5rem;
-  }
+  
+  
   
   .monster-options {
     grid-template-columns: 1fr;
@@ -3598,15 +3080,9 @@
     gap: 0.5rem;
   }
   
-  .progress-step {
-    width: 40px;
-    height: 40px;
-    font-size: 1rem;
-  }
   
-  .current-egg {
-    padding: 1rem;
-  }
+  
+  
   
   .monster-name-input input {
     width: 100%;
@@ -3622,12 +3098,10 @@
   box-shadow: 0 2px 8px var(--overlay-light);
 }
 
-
 .garden-harvest-header {
   text-align: center;
   margin-bottom: 1rem;
 }
-
 
 .garden-harvest-header h2 {
   font-size: 1.8rem;
@@ -3640,7 +3114,6 @@
   font-size: 1rem;
 }
 
-
 .garden-points-display {
   display: flex;
   align-items: center;
@@ -3650,7 +3123,6 @@
   border-radius: 0.5rem;
   border-left: 4px solid var(--success-color);
 }
-
 
 .garden-points-icon {
   font-size: 2rem;
@@ -3664,7 +3136,6 @@
   border-radius: 50%;
 }
 
-
 .garden-points-info h3 {
   font-size: 1.2rem;
   margin-bottom: 0.25rem;
@@ -3676,13 +3147,11 @@
   color: var(--text-secondary);
 }
 
-
 .garden-harvest-info {
   padding: 1rem;
   background-color: var(--background-light);
   border-radius: 0.5rem;
 }
-
 
 .garden-harvest-info h3 {
   font-size: 1.2rem;
@@ -3697,7 +3166,6 @@
   flex-direction: column;
   gap: 0.75rem;
 }
-
 
 .harvest-rewards-list li {
   display: flex;
@@ -3720,7 +3188,6 @@
   margin-top: 1rem;
 }
 
-
 /* Harvest button styles removed - use "button success" */
 
 .no-points-message {
@@ -3737,12 +3204,10 @@
   gap: 1.5rem;
 }
 
-
 .garden-header {
   text-align: center;
   margin-bottom: 1rem;
 }
-
 
 .garden-header h2 {
   font-size: var(--font-size-2xl);
@@ -3757,9 +3222,7 @@
   margin: 0 auto;
 }
 
-
 /* Login Prompt */
-
 
 .login-prompt p {
   margin: 0;
@@ -3779,13 +3242,11 @@
   box-shadow: 0 2px 4px var(--overlay-light);
 }
 
-
 .trainer-selector {
   display: flex;
   align-items: center;
   gap: 10px;
 }
-
 
 .trainer-selector label {
   font-size: var(--font-size-base);
@@ -3798,9 +3259,6 @@
   gap: 0.5rem;
 }
 
-
-
-
 /* Action button tend/harvest styles removed - use "button primary" or "button success" */
 
 /* Action Message */
@@ -3810,7 +3268,6 @@
   font-size: var(--font-size-base);
   text-align: center;
 }
-
 
 .action-message.success {
   background-color: var(--success-color-light);
@@ -3833,17 +3290,7 @@
   box-shadow: 0 2px 4px var(--overlay-light);
 }
 
-
-
-
-
-
-
-
 /* Garden Plots */
-
-
-
 
 .garden-plot.planted:hover {
   transform: translateY(-4px);
@@ -3857,10 +3304,6 @@
 .garden-plot.needs-tending {
   border: 2px solid var(--warning-color);
 }
-
-
-
-
 
 .ready-badge {
   position: absolute;
@@ -3877,7 +3320,6 @@
   gap: 0.25rem;
 }
 
-
 .needs-tending-badge {
   position: absolute;
   top: 0.5rem;
@@ -3893,17 +3335,11 @@
   gap: 0.25rem;
 }
 
-
-
-
-
-
 .plot-growth {
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
 }
-
 
 .growth-bar-container {
   height: 0.5rem;
@@ -3912,20 +3348,17 @@
   overflow: hidden;
 }
 
-
 .growth-bar-fill {
   height: 100%;
   background-color: var(--accent-color);
   border-radius: 0.25rem;
 }
 
-
 .growth-text {
   font-size: var(--font-size-sm);
   color: var(--text-color);
   opacity: 0.8;
 }
-
 
 .plot-time {
   font-size: var(--font-size-sm);
@@ -3935,7 +3368,6 @@
   gap: 0.25rem;
   margin-top: auto;
 }
-
 
 .empty-plot {
   height: 100%;
@@ -3948,7 +3380,6 @@
   color: var(--text-color);
   opacity: 0.5;
 }
-
 
 .empty-plot i {
   font-size: 2rem;
@@ -3963,29 +3394,22 @@
   text-align: center;
 }
 
-
-
-
 .harvest-message {
   font-size: var(--font-size-base);
   color: var(--text-color);
   margin: 0;
 }
 
-
 .harvested-items {
   width: 100%;
   text-align: left;
 }
-
 
 .harvested-items h3 {
   font-size: var(--font-size-base);
   color: var(--text-color);
   margin: 0 0 1rem 0;
 }
-
-
 
 .harvested-item {
   display: flex;
@@ -3996,17 +3420,6 @@
   border-radius: 0.25rem;
 }
 
-
-
-
-
-
-
-
-
-
-
-
 .harvest-reward {
   display: flex;
   align-items: center;
@@ -4014,12 +3427,6 @@
   font-size: var(--font-size-base);
   font-weight: 600;
 }
-
-
-
-
-
-
 
 /* Modal button styles removed - use "button primary" */
 
@@ -4044,7 +3451,6 @@
   padding: 20px;
 }
 
-
 .game-corner-header {
   display: flex;
   justify-content: space-between;
@@ -4052,14 +3458,12 @@
   margin-bottom: 20px;
 }
 
-
 .game-corner-content {
   display: grid;
   grid-template-columns: 3fr 1fr;
   gap: 20px;
   min-height: 600px;
 }
-
 
 /* Video Section */
 .video-section {
@@ -4071,7 +3475,6 @@
   height: 100%;
 }
 
-
 .video-header {
   display: flex;
   justify-content: space-between;
@@ -4079,13 +3482,11 @@
   margin-bottom: 15px;
 }
 
-
 .video-form {
   display: flex;
   gap: 10px;
   margin-bottom: 15px;
 }
-
 
 .video-form input {
   flex: 1;
@@ -4104,7 +3505,6 @@
   overflow: hidden;
   margin-bottom: 15px;
 }
-
 
 .video-player iframe {
   position: absolute;
@@ -4189,7 +3589,6 @@
   margin-top: 10px;
 }
 
-
 .video-item {
   padding: 8px 12px;
   background-color: var(--nav-hover);
@@ -4199,7 +3598,6 @@
   cursor: pointer;
   transition: background-color 0.2s;
 }
-
 
 .video-item:hover {
   background-color: var(--nav-active);
@@ -4220,18 +3618,10 @@
   justify-content: space-between;
 }
 
-
-
-
 .timer-display svg {
   transform: rotate(-90deg);
   overflow: visible;
-  
 }
-
-
-
-
 
 .timer-text {
   position: absolute;
@@ -4246,21 +3636,14 @@
   text-align: center;
 }
 
-
-
-
-
-
 .timer-session {
   font-size: 0.875rem;
   color: var(--text-muted);
 }
 
-
 .timer-controls {
   width: 100%;
 }
-
 
 .timer-buttons {
   display: flex;
@@ -4269,20 +3652,17 @@
   margin-bottom: 20px;
 }
 
-
 .timer-settings {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 15px;
 }
 
-
 .setting-group {
   display: flex;
   flex-direction: column;
   gap: 5px;
 }
-
 
 .setting-group label {
   font-size: 0.875rem;
@@ -4323,7 +3703,6 @@
 
 /* Modal */
 
-
 .modal-content {
   background-color: var(--card-background);
   border-radius: 10px;
@@ -4334,7 +3713,6 @@
   background: var(--card-background);
 }
 
-
 .productivity-ratings {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -4344,15 +3722,12 @@
 
 /* Rewards Modal */
 
-
-
 .reward-stat {
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
 }
-
 
 .reward-stat span:first-child {
   font-size: 0.875rem;
@@ -4376,17 +3751,6 @@
   flex-direction: column;
 }
 
-
-
-
-
-
-
-
-
-
-
-
 .reward-icon.coin i {
   color: var(--accent-color); /* Gold */
 }
@@ -4407,26 +3771,6 @@
   margin-top: 10px;
   width: 100%;
 }
-
-
-.assigned-to-trainer {
-  background-color: var(--nav-background);
-  color: var(--text-color);
-  padding: 8px 12px;
-  border-radius: 4px;
-  font-weight: 500;
-  margin-bottom: 10px;
-  text-align: center;
-}
-
-
-
-
-
-
-
-
-
 
 /* Responsive */
 @media (max-width: 768px) {
@@ -4452,7 +3796,6 @@
 
 /* Rarity styles for rewards */
 
-
 .reward-rarity.common {
   background-color: var(--text-muted);
   color: var(--text-color);
@@ -4466,12 +3809,6 @@
 .reward-rarity.rare {
   background-color: var(--blue-color);
   color: var(--text-color);
-}
-
-.reward-rarity.epic {
-  background-color: var(--custom-type);
-  color: var(--text-color);
-  box-shadow: 0 0 10px var(--accent-glow);
 }
 
 .reward-rarity.mythical {
@@ -4506,7 +3843,6 @@
   }
 }
 
-
 @keyframes mythical-card-glow {
   from {
     box-shadow: 0 4px 25px var(--warning-glow);
@@ -4525,15 +3861,11 @@
   }
 }
 
-
 .breeding-form {
   display: flex;
   flex-direction: column;
   gap: 20px;
 }
-
-
-
 
 .trainer-select-container {
   flex: 1;
@@ -4542,11 +3874,6 @@
   padding: 15px;
   box-shadow: 0 2px 4px var(--overlay-light);
 }
-
-
-
-
-
 
 /* ===========================
    Breeding Results Styles
@@ -4779,7 +4106,6 @@
     flex-direction: column;
     align-items: center;
   }
-
 }
 .bazar-container {
   max-width: 1200px;
@@ -4787,12 +4113,10 @@
   padding: 20px;
 }
 
-
 .bazar-header {
   text-align: center;
   margin-bottom: 30px;
 }
-
 
 .bazar-header h1 {
   color: var(--accent-color);
@@ -4814,14 +4138,9 @@
   border-bottom: 2px solid var(--divider-color);
 }
 
-
-
-
-
 .bazar-content {
   min-height: 500px;
 }
-
 
 /* Form styles */
 .bazar-form {
@@ -4832,16 +4151,8 @@
   margin-bottom: 20px;
 }
 
-
-
-
-
-
-
-
 @media (max-width: 768px) {
-  .form-row,
-  .form-row-three {
+  .form-row{
     grid-template-columns: 1fr;
   }
 }
@@ -4890,21 +4201,17 @@
   gap: 1.5rem;
 }
 
-
 .bakery-content {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
 }
 
-
-
 .pastry-selection {
   display: flex;
   flex-direction: column;
   gap: 1rem;
 }
-
 
 .pastry-selection h3 {
   margin-bottom: 0.5rem;
@@ -4919,13 +4226,11 @@
   padding-right: 0.5rem;
 }
 
-
 .pastry-category {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
 }
-
 
 .pastry-category h4 {
   font-size: 1rem;
@@ -4939,7 +4244,6 @@
   gap: 0.5rem;
 }
 
-
 .pastry-item {
   display: flex;
   flex-direction: column;
@@ -4951,7 +4255,6 @@
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   text-align: left;
 }
-
 
 .pastry-item:hover:not(:disabled) {
   transform: translateY(-2px);
@@ -4970,12 +4273,10 @@
   margin-bottom: 0.25rem;
 }
 
-
 .pastry-desc {
   font-size: var(--font-size-xs);
   color: var(--text-color);
 }
-
 
 .pastry-error {
   color: var(--error-color);
@@ -4985,14 +4286,12 @@
   border-radius: 0.25rem;
 }
 
-
 .pastry-actions {
   display: flex;
   justify-content: flex-end;
   gap: 0.5rem;
   margin-top: 1rem;
 }
-
 
 .pastry-success {
   display: flex;
@@ -5002,10 +4301,6 @@
   padding: 1rem;
 }
 
-
-
-
-
 /* Value Selection Modal Styles */
 .value-modal-content {
   display: flex;
@@ -5013,12 +4308,10 @@
   gap: 1rem;
 }
 
-
 .value-search {
   display: flex;
   margin-bottom: 1rem;
 }
-
 
 .value-search input {
   flex: 1;
@@ -5037,7 +4330,6 @@
   overflow-y: auto;
 }
 
-
 .value-item {
   padding: 0.75rem;
   border-radius: 0.25rem;
@@ -5047,7 +4339,6 @@
   transition: all 0.2s ease;
   color: var(--text-color);
 }
-
 
 .value-item:hover {
   border-color: var(--accent-color);
@@ -5066,7 +4357,6 @@
   margin-top: 1rem;
 }
 
-
 /* Responsive Styles */
 @media (max-width: 768px) {
   .pastry-items {
@@ -5084,21 +4374,17 @@
   gap: 1.5rem;
 }
 
-
 .apothecary-content {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
 }
 
-
-
 .berry-selection {
   display: flex;
   flex-direction: column;
   gap: 1rem;
 }
-
 
 .berry-selection h3 {
   margin-bottom: 0.5rem;
@@ -5136,13 +4422,11 @@
   padding-right: 0.5rem;
 }
 
-
 .berry-category {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
 }
-
 
 .berry-category h4 {
   font-size: 1rem;
@@ -5156,7 +4440,6 @@
   gap: 0.5rem;
 }
 
-
 .berry-item {
   display: flex;
   flex-direction: column;
@@ -5168,7 +4451,6 @@
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   text-align: left;
 }
-
 
 .berry-item:hover:not(:disabled) {
   transform: translateY(-2px);
@@ -5187,12 +4469,10 @@
   margin-bottom: 0.25rem;
 }
 
-
 .berry-desc {
   font-size: var(--font-size-xs);
   color: var(--text-color);
 }
-
 
 .berry-error {
   color: var(--error-color);
@@ -5202,14 +4482,12 @@
   border-radius: 0.25rem;
 }
 
-
 .berry-actions {
   display: flex;
   justify-content: flex-end;
   gap: 0.5rem;
   margin-top: 1rem;
 }
-
 
 .berry-success {
   display: flex;
@@ -5219,21 +4497,12 @@
   padding: 1rem;
 }
 
-
-
-
-
 /* Species Selection Modal Styles */
 .species-modal-content {
   display: flex;
   flex-direction: column;
   gap: 1rem;
 }
-
-
-
-
-
 
 .species-item:hover {
   border-color: var(--primary-color);
@@ -5251,7 +4520,6 @@
   gap: 0.5rem;
   margin-top: 1rem;
 }
-
 
 /* Responsive Styles */
 @media (max-width: 768px) {
@@ -5276,7 +4544,6 @@
   z-index: 1000;
 }
 
-
 .antique-appraisal-content {
   background-color: var(--card-background);
   border-radius: 8px;
@@ -5289,7 +4556,6 @@
   flex-direction: column;
 }
 
-
 .antique-appraisal-header {
   display: flex;
   justify-content: space-between;
@@ -5301,14 +4567,11 @@
   border-top-right-radius: 8px;
 }
 
-
 .antique-appraisal-header h2 {
   margin: 0;
   font-size: 1.5rem;
   color: var(--accent-color);
 }
-
-
 
 /* Close button hover removed - use "button close" */
 
@@ -5317,12 +4580,10 @@
   flex-grow: 1;
 }
 
-
 .appraisal-start {
   text-align: center;
   padding: 20px;
 }
-
 
 .appraisal-start p {
   margin-bottom: 15px;
@@ -5359,7 +4620,6 @@
   z-index: 1000;
 }
 
-
 .antique-auction-content {
   background-color: var(--card-background);
   border-radius: 8px;
@@ -5372,7 +4632,6 @@
   flex-direction: column;
 }
 
-
 .antique-auction-header {
   display: flex;
   justify-content: space-between;
@@ -5384,14 +4643,11 @@
   border-top-right-radius: 8px;
 }
 
-
 .antique-auction-header h2 {
   margin: 0;
   font-size: 1.5rem;
   color: var(--accent-color);
 }
-
-
 
 /* Close button hover removed - use "button close" */
 
@@ -5400,12 +4656,10 @@
   flex-grow: 1;
 }
 
-
 .auction-description {
   text-align: center;
   margin-bottom: 20px;
 }
-
 
 .auction-description p {
   font-size: 1.1rem;
@@ -5419,35 +4673,10 @@
   margin-bottom: 20px;
 }
 
-
-.auction-option {
-  background-color: var(--card-background);
-  border: 2px solid var(--divider-color);
-  border-radius: 8px;
-  padding: 15px;
-  cursor: pointer;
-  transition: transform 0.2s, border-color 0.2s;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-
-.auction-option:hover {
-  transform: translateY(-5px);
-  border-color: var(--accent-color);
-}
-
-.auction-option.selected {
-  border-color: var(--accent-color);
-  box-shadow: 0 0 10px var(--blue-glow);
-}
-
 .auction-option-species {
   text-align: center;
   margin-bottom: 10px;
 }
-
 
 .auction-option-species h4 {
   margin: 5px 0;
@@ -5463,11 +4692,7 @@
   margin-bottom: 10px;
 }
 
-
-
-
 /* Type badge colors */
-
 
 .auction-option-attribute {
   margin-top: 5px;
@@ -5497,12 +4722,10 @@
   margin: 0 auto;
 }
 
-
 .antique-store-header {
   text-align: center;
   margin-bottom: 30px;
 }
-
 
 .antique-store-description {
   font-size: 1.1rem;
@@ -5511,14 +4734,11 @@
   margin: 0 auto;
 }
 
-
 .antique-store-content {
   display: flex;
   flex-direction: column;
   gap: 30px;
 }
-
-
 
 .antiques-section {
   background-color: var(--card-background);
@@ -5527,14 +4747,12 @@
   box-shadow: 0 2px 4px var(--overlay-light);
 }
 
-
 .antique-items-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   gap: 20px;
   margin-top: 20px;
 }
-
 
 .antique-item {
   background-color: var(--card-background);
@@ -5546,7 +4764,6 @@
   display: flex;
   flex-direction: column;
 }
-
 
 .antique-item:hover {
   transform: translateY(-5px);
@@ -5580,7 +4797,6 @@
   margin-bottom: 15px;
 }
 
-
 .antique-evolution-item-image img {
   max-height: 100%;
   max-width: 100%;
@@ -5590,7 +4806,6 @@
 .antique-item-info {
   flex-grow: 1;
 }
-
 
 .antique-item-info h4 {
   margin: 0 0 10px 0;
@@ -5608,7 +4823,6 @@
   gap: 10px;
   margin-top: 15px;
 }
-
 
 .antique-item-actions button {
   flex: 1;
@@ -6105,7 +5319,6 @@
   box-shadow: 0 2px 4px var(--overlay-light);
 }
 
-
 .town-map {
   width: 100%;
   border-radius: 0.5rem;
@@ -6118,20 +5331,17 @@
   justify-content: center;
 }
 
-
 .map-background {
   width: 100%;
   height: 100%;
   position: relative;
 }
 
-
 .map-image {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
-
 
 .map-location {
   position: absolute;
@@ -6143,7 +5353,6 @@
   transition: transform 0.2s, filter 0.2s;
   z-index: 10;
 }
-
 
 .map-location:hover {
   transform: translate(-50%, -50%) scale(1.1);
@@ -6169,12 +5378,9 @@
   transition: all 0.2s;
 }
 
-
 .map-location.locked .location-icon {
   background-color: var(--text-color);
 }
-
-
 
 /* Location Info Overlay */
 .location-info-overlay {
@@ -6191,7 +5397,6 @@
   padding: 1rem;
 }
 
-
 .location-info-container {
   background-color: var(--card-background);
   border-radius: 0.5rem;
@@ -6203,9 +5408,6 @@
   box-shadow: 0 4px 12px var(--overlay-medium);
 }
 
-
-
-
 /* Close button hover removed - use "button close" */
 
 .location-info-header {
@@ -6215,7 +5417,6 @@
   align-items: center;
   justify-content: space-between;
 }
-
 
 .location-info-header h2 {
   font-size: var(--font-size-xl);
@@ -6235,7 +5436,6 @@
   gap: 0.5rem;
 }
 
-
 .location-info-content {
   padding: 1.5rem;
   display: flex;
@@ -6243,14 +5443,11 @@
   gap: 1.5rem;
 }
 
-
 @media (min-width: 768px) {
   .location-info-content {
     flex-direction: row;
   }
 }
-
-
 
 @media (min-width: 768px) {
   .location-image-container {
@@ -6258,18 +5455,11 @@
   }
 }
 
-
-
-
-
-
-
 .location-requirements {
   background-color: var(--card-background-light);
   padding: 1rem;
   border-radius: 0.5rem;
 }
-
 
 .location-requirements h3 {
   font-size: var(--font-size-base);
@@ -6317,12 +5507,7 @@
   padding: 0 var(--content-padding);
 }
 
-
-
 /* Town Map */
-
-
-
 
 .town-location {
   display: flex;
@@ -6334,7 +5519,6 @@
   transition: transform 0.2s;
 }
 
-
 .town-location:hover {
   transform: translateY(-4px);
 }
@@ -6344,8 +5528,6 @@
   color: var(--text-color);
   box-shadow: 0 0 0 3px var(--accent-glow);
 }
-
-
 
 .location-icon:hover {
   background-color: var(--nav-hover);
@@ -6385,14 +5567,12 @@
   gap: 2rem;
 }
 
-
 .town-welcome {
   background-color: var(--card-background);
   border-radius: 0.5rem;
   padding: 2rem;
   box-shadow: 0 2px 4px var(--overlay-light);
 }
-
 
 .town-welcome h2 {
   font-size: var(--font-size-2xl);
@@ -6410,14 +5590,12 @@
   gap: 2rem;
 }
 
-
 .town-section {
   background-color: var(--card-background);
   border-radius: 0.5rem;
   padding: 2rem;
   box-shadow: 0 2px 4px var(--overlay-light);
 }
-
 
 .town-section h3 {
   font-size: var(--font-size-xl);
@@ -6433,7 +5611,6 @@
   gap: 1.5rem;
 }
 
-
 .town-place-card {
   display: flex;
   align-items: center;
@@ -6445,7 +5622,6 @@
   color: var(--text-color);
   transition: all 0.2s;
 }
-
 
 .town-place-card:hover {
   background-color: var(--nav-hover);
@@ -6466,11 +5642,9 @@
   flex-shrink: 0;
 }
 
-
 .place-info {
   flex: 1;
 }
-
 
 .place-info h4 {
   font-size: var(--font-size-base);
@@ -6493,9 +5667,6 @@
   width: 100%;
 }
 
-
-
-
 .location-icon-large {
   display: flex;
   align-items: center;
@@ -6509,11 +5680,9 @@
   flex-shrink: 0;
 }
 
-
 .location-title {
   flex: 1;
 }
-
 
 .location-title h2 {
   font-size: var(--font-size-2xl);
@@ -6527,23 +5696,13 @@
   opacity: 0.8;
 }
 
-
-
-
-
-
 /* Location action button styles removed - use "button primary" or "button secondary" */
 
 /* Tab Navigation */
 
-
-
-
-
 .tab-content {
   margin-top: 1.5rem;
 }
-
 
 /* Monster Roller Container */
 .monster-roller-container {
@@ -6553,60 +5712,21 @@
   margin-bottom: 1.5rem;
 }
 
-
 /* Adoption Center */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 /* Adopt button hover removed - use "button primary" */
 
 /* Adoption Modal */
 
-
-
-
 .preview-info {
   flex: 1;
 }
-
 
 .preview-info h3 {
   font-size: var(--font-size-lg);
   color: var(--accent-color);
   margin: 0 0 0.25rem 0;
 }
-
-.preview-details {
-  display: flex;
-  gap: 1rem;
-  font-size: var(--font-size-sm);
-  color: var(--text-color);
-  opacity: 0.8;
-  margin-bottom: 0.5rem;
-}
-
-
-
-
 
 .trainer-select label {
   font-size: var(--font-size-sm);
@@ -6621,14 +5741,6 @@
   color: var(--text-color);
   font-size: var(--font-size-base);
 }
-
-
-
-
-
-
-
-
 
 /* Responsive Styles */
 @media (max-width: 768px) {
@@ -6655,7 +5767,6 @@
     text-align: center;
   }
 
-
   .adoption-actions {
     flex-direction: column;
   }
@@ -6668,8 +5779,6 @@
   gap: 1rem;
 }
 
-
-
 .evolution-item-selection:last-child {
   border-bottom: none;
 }
@@ -6677,19 +5786,6 @@
 .evolution-item-selection:hover {
   background-color: var(--nav-hover);
 }
-
-.image-submission {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  align-items: center;
-  justify-content: center;
-  padding: 1rem;
-  border: 2px dashed var(--border-color);
-  border-radius: 0.5rem;
-  background-color: var(--nav-background);
-}
-
 
 .evolution-item {
   display: flex;
@@ -8068,11 +7164,6 @@
   .success-title {
     font-size: 2rem;
   }
-  
-  .nursery-action-button.large {
-    padding: 1rem 1.5rem;
-    font-size: 1.1rem;
-  }
 }
 
 /* ===== ENHANCED AUTOMATED TRADE CENTER STYLES ===== */
@@ -9244,7 +8335,6 @@
   .monster-details {
     font-size: 0.7rem;
   }
-  
 }
 
 /* Landscape orientation optimizations for mobile */
@@ -9273,14 +8363,8 @@
 
 /* High contrast mode support */
 @media (prefers-contrast: high) {
-  .trade-type-button,
-  .monster-item,
-  .inventory-category {
+  .monster-item, .inventory-category{
     border-width: 2px;
-  }
-  
-  .trade-type-button.active {
-    border-width: 3px;
   }
 }
 
@@ -9503,9 +8587,7 @@
   }
 
   /* Nursery styles */
-  .nursery-container {
-    padding: 1rem;
-  }
+  
 
   /* Antique store styles */
   .antique-grid {
@@ -9514,10 +8596,6 @@
   }
 
   /* Bakery styles */
-  .bakery-items-grid {
-    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-    gap: 0.75rem;
-  }
 }
 
 /* Small Mobile (max-width: 480px) */
@@ -9542,7 +8620,6 @@
   .adopt-name {
     font-size: 1rem;
   }
-
 
   .adopt-species-images {
     min-height: 50px;

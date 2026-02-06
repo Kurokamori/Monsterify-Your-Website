@@ -118,9 +118,6 @@
 /* Box nav button: Use unified button system from common/buttons.css
    Example: className="button secondary sm" */
 
-.prev-monster i { margin-right: 0.5rem; }
-.next-monster i { margin-left: 0.5rem; }
-
 .box-nav-placeholder {
   width: 100px;
 }

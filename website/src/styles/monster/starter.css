@@ -249,60 +249,31 @@
    ============================================================================= */
 
 /* Large screens (1200px and below) */
-@media (max-width: 1200px) {
-  .starter-grid {
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  }
-}
 
 /* Tablet screens (768px and below) */
 @media (max-width: 768px) {
-  .starter-container {
-    padding: 1rem;
-  }
+  
 
-  .starter-grid {
-    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-    gap: 0.75rem;
-  }
-
+  
   .starter-card {
     padding: 0.75rem;
-  }
-
-  .starter-card-image {
-    width: 100px;
-    height: 100px;
   }
 }
 
 /* Mobile screens (480px and below) */
 @media (max-width: 480px) {
-  .starter-container {
-    padding: 0.5rem;
-  }
+  
 
-  .starter-header h1 {
-    font-size: 1.5rem;
-  }
+  
 
-  .starter-grid {
-    grid-template-columns: 1fr 1fr;
-    gap: 0.5rem;
-  }
-
+  
   .starter-card {
     padding: 0.5rem;
   }
 
-  .starter-card-image {
-    width: 80px;
-    height: 80px;
-  }
+  
 
-  .starter-card-name {
-    font-size: 0.9rem;
-  }
+  
 
   .starter-progress-tab {
     padding: 0.5rem 0.25rem;
@@ -315,11 +286,6 @@
 }
 
 /* Extra small screens (360px and below) */
-@media (max-width: 360px) {
-  .starter-grid {
-    grid-template-columns: 1fr;
-  }
-}
 
 /* Reduced motion preference */
 @media (prefers-reduced-motion: reduce) {

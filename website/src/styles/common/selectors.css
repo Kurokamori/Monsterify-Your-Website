@@ -168,8 +168,7 @@
 
 /* ---------- Monster Selector ---------- */
 
-.monster-selector,
-.species-slot-select {
+.monster-selector {
   background: var(--nav-active);
   border: 1px solid var(--border-color);
   color: var(--text-color);
@@ -179,14 +178,6 @@
 }
 
 /* ---------- User Selector ---------- */
-
-.user-selection {
-  display: flex;
-  flex-direction: column;
-  justify-self: start;
-  justify-content: center;
-  align-items: center;
-}
 
 .user-selector {
   background: var(--nav-active);

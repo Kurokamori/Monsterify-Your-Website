@@ -42,7 +42,6 @@
   border: 1px solid var(--border-color);
 }
 
-
 .filter-group label {
   font-size: var(--font-size-sm);
   font-weight: 600;
@@ -56,7 +55,6 @@
   color: var(--text-color);
   font-size: var(--font-size-base);
 }
-
 
 /* Filter Section (toggle wrapper) */
 
@@ -78,7 +76,6 @@
   margin-top: 0.5rem;
   box-shadow: 0 4px 8px var(--overlay-medium);
 }
-
 
 /* Gallery Grid */
 .gallery-grid {
@@ -131,12 +128,6 @@
 }
 
 /* Artwork Modal (uses common .modal-content, .modal-image-container, .modal-image) */
-.artwork-image-container {
-  text-align: center;
-  max-height: 500px;
-  overflow: hidden;
-  border-radius: 0.25rem;
-}
 
 .meta-label {
   font-size: var(--font-size-sm);
@@ -153,17 +144,11 @@
   gap: .25rem;
 }
 
-
 /* Actions row (buttons themselves are common) */
 
 /* Library Specific */
 .library-container { /* placeholder for library-only container tweaks */ }
 .library-grid { /* placeholder for library grid overrides */ }
-.library-item {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-}
 
 .library-item-cover-container {
   position: relative;
@@ -310,7 +295,6 @@
   margin-top: 0.5rem;
 }
 
-
 /* Writing Modal (uses common modal base) */
 
 /* Submission Cards / Detail (page-specific) */
@@ -333,14 +317,6 @@
   z-index: 1;
 }
 
-.submission-card .card-title {
-  color: var(--accent-color);
-  font-size: 1.2rem;
-  margin-bottom: 0.5rem;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
 .submission-description {
   color: var(--text-color);
   display: -webkit-box;
@@ -473,82 +449,8 @@
    ================================ */
 
 /* Book View (when viewing a book's chapters) */
-.book-view {
-  padding: 1.5rem;
-  background-color: var(--card-background-light);
-  border-radius: 0.5rem;
-  margin-bottom: 1.5rem;
-}
-
-.book-view-header {
-  margin-bottom: 2rem;
-}
-
-.book-view-info {
-  display: flex;
-  gap: 2rem;
-  align-items: flex-start;
-}
-
-.book-view-cover {
-  flex-shrink: 0;
-  width: 200px;
-  height: 280px;
-  border-radius: 0.5rem;
-  overflow: hidden;
-  box-shadow: 0 4px 12px var(--overlay-dark);
-}
-
-.book-view-cover img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.book-view-details {
-  flex: 1;
-}
-
-.book-view-details h2 {
-  color: var(--accent-color);
-  margin-bottom: 0.5rem;
-  font-size: 1.8rem;
-}
-
-.book-author {
-  color: var(--text-muted);
-  font-size: 1rem;
-  margin-bottom: 1rem;
-}
-
-.book-description {
-  color: var(--text-color);
-  line-height: 1.6;
-  margin-bottom: 1rem;
-}
-
-.book-stats {
-  display: flex;
-  gap: 1rem;
-}
-
-.book-chapter-count {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  background: var(--accent-glow);
-  color: var(--accent-color);
-  padding: 0.5rem 1rem;
-  border-radius: 0.25rem;
-  font-weight: 500;
-}
 
 /* Chapters Grid */
-.chapters-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 1rem;
-}
 
 .chapter-item {
   background: linear-gradient(135deg, var(--card-background) 0%, var(--nav-hover) 100%);
@@ -582,22 +484,7 @@
   font-weight: 500;
 }
 
-.chapter-word-count {
-  color: var(--text-muted);
-  font-size: 0.85rem;
-}
-
-.no-chapters {
-  color: var(--text-muted);
-  text-align: center;
-  padding: 2rem;
-  font-style: italic;
-}
-
 /* Library Item Book Badge */
-.library-item.is-book {
-  border: 2px solid var(--nav-active);
-}
 
 .library-item-book-badge {
   position: absolute;
@@ -612,11 +499,6 @@
   display: flex;
   align-items: center;
   gap: 0.35rem;
-}
-
-.book-icon {
-  color: var(--accent-color);
-  margin-right: 0.35rem;
 }
 
 /* Parent Book Navigation (for chapter detail page) */
@@ -824,20 +706,11 @@
 
   .gallery-grid { grid-template-columns: 1fr; }
 
-  .book-view-info {
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-  }
+  
 
-  .book-view-cover {
-    width: 150px;
-    height: 210px;
-  }
+  
 
-  .chapters-grid {
-    grid-template-columns: 1fr;
-  }
+  
 
   .chapter-link {
     flex-direction: column;

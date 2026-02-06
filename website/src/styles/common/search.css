@@ -53,10 +53,7 @@
 /* ---------- Generic Paired Search Input/Button ---------- */
 /* For buttons, use unified button system: className="button primary" (see buttons.css) */
 
-.search-bar,
-.guides-search,
-.lore-search,
-.npcs-search {
+.search-bar, .lore-search, .npcs-search {
   display: flex;
   flex: 1;
   max-width: 500px;

@@ -413,11 +413,6 @@
 
 /* Remove relationship button: Use unified button system from common/buttons.css
    Example: className="button danger icon sm" with custom positioning */
-.remove-relationship-button {
-  position: absolute;
-  top: 0.5rem;
-  left: 0.5rem;
-}
 
 .no-lineage-message {
   text-align: center;
@@ -444,14 +439,5 @@
 @media (max-width: 768px) {
   .lineage-tree {
     flex-direction: column;
-  }
-
-  .lineage-connector {
-    width: 2px;
-    height: 30px;
-  }
-
-  .biography-section {
-    padding: 1rem;
   }
 }

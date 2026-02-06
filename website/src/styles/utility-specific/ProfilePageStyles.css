@@ -70,8 +70,6 @@
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
 }
 
-
-
 .references-grid {
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
 }
@@ -172,7 +170,6 @@
   color: var(--text-color);
 }
 
-
 /* ---- Progress Bars ---- */
 .progress-bar,
 .task-progress-bar,
@@ -215,12 +212,10 @@
   border-radius: var(--radius);
 }
 
-
 /* ---- Forms (unified) ---- */
-.list-form, .item-form, .complete-form, .form, .mass-form {
+.list-form, .item-form, .complete-form, .form {
   display: flex; flex-direction: column; gap: 1.5rem;
 }
-
 
 .form-label { font-weight: 600; color: var(--text-primary, var(--text-color)); }
 .form-group input,
@@ -287,7 +282,6 @@ input:checked + .toggle-slider:before { transform: translateX(26px); background:
   justify-content: center;
 }
 
-
 /* ---- Empty / No-content states ---- */
 .no-lists,
 .auth-required,
@@ -335,7 +329,6 @@ input:checked + .toggle-slider:before { transform: translateX(26px); background:
 .modal-close:hover,
 .close-modal:hover { color: var(--text-color); background: var(--background-light); }
 
-
 /* ---- Image Viewer ---- */
 .image-viewer {
   display: flex;
@@ -363,7 +356,6 @@ input:checked + .toggle-slider:before { transform: translateX(26px); background:
   box-shadow: 0 4px 20px var(--overlay-medium);
 }
 
-
 /* ---- Shared titles / text colors ---- */
 .art-todo-header h1,
 .items-header h2,
@@ -390,7 +382,6 @@ input:checked + .toggle-slider:before { transform: translateX(26px); background:
   box-shadow: var(--card-shadow);
   min-height: 500px;
 }
-
 
 /* Profile page snips */
 .profile-header {
@@ -459,7 +450,6 @@ input:checked + .toggle-slider:before { transform: translateX(26px); background:
   text-transform: capitalize;
 }
 
-
 /* Task steps list icons */
 .task-steps {
   margin-top: 1rem;
@@ -491,7 +481,6 @@ input:checked + .toggle-slider:before { transform: translateX(26px); background:
   color: var(--primary-dark);
 }
 
-
 /* Routine list */
 .routine-items {
   margin-top: 1rem;
@@ -516,7 +505,6 @@ input:checked + .toggle-slider:before { transform: translateX(26px); background:
   flex-direction: column;
   gap: .25rem;
 }
-
 
 /* Image modal specifics */
 .image-modal {
@@ -981,9 +969,7 @@ input:checked + .toggle-slider:before { transform: translateX(26px); background:
     text-align: center;
   }
 
-  .image-size-toggle {
-    align-self: center;
-  }
+  
 
   .species-references--max-width {
     flex-direction: column;
@@ -1096,10 +1082,7 @@ input:checked + .toggle-slider:before { transform: translateX(26px); background:
     font-size: 1rem;
   }
 
-  .image-size-toggle {
-    padding: 0.5rem 0.875rem;
-    font-size: 0.85rem;
-  }
+  
 
   /* Trainer Groups */
   .trainers-grouped {
@@ -1295,10 +1278,7 @@ input:checked + .toggle-slider:before { transform: translateX(26px); background:
     font-size: 0.95rem;
   }
 
-  .image-size-toggle {
-    padding: 0.4rem 0.75rem;
-    font-size: 0.8rem;
-  }
+  
 
   /* Trainer Groups */
   .trainer-group-header {
@@ -1465,10 +1445,7 @@ input:checked + .toggle-slider:before { transform: translateX(26px); background:
     font-size: 0.9rem;
   }
 
-  .image-size-toggle {
-    padding: 0.35rem 0.625rem;
-    font-size: 0.75rem;
-  }
+  
 
   /* Trainer Groups */
   .trainer-group-header {

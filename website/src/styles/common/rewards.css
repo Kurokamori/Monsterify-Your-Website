@@ -56,7 +56,7 @@
 .reward-rarity.common { background-color: var(--text-muted); color: var(--background-color); }
 .reward-rarity.uncommon { background-color: var(--success-light); color: var(--success-dark); }
 .reward-rarity.rare { background-color: var(--blue-light); color: var(--blue-dark); }
-.reward-rarity.epic { background-color: var(--custom-type); color: var(--background-color); }
+
 .reward-rarity.legendary { background-color: var(--accent-light); color: var(--warning-dark); }
 
 /* ---------- All Claimed Message ---------- */

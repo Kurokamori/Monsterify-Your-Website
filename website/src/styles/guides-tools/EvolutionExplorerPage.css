@@ -30,14 +30,6 @@
   color: var(--text-color);
 }
 
-.mode-toggle {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 15px;
-  margin-top: 20px;
-}
-
 .toggle-switch {
   position: relative;
   display: inline-block;
@@ -83,34 +75,6 @@ input:checked + .toggle-slider {
 input:checked + .toggle-slider:before {
   transform: translateX(26px);
   background-color: var(--background-color);
-}
-
-.mode-label {
-  font-weight: 500;
-  font-size: var(--font-size-base);
-  color: var(--text-color);
-}
-
-.cache-info {
-  margin-top: 1rem;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 1rem;
-  flex-wrap: wrap;
-}
-
-.cache-badge {
-  background: var(--input-background);
-  border: 1px solid var(--border-color);
-  border-radius: 1rem;
-  padding: 0.5rem 1rem;
-  font-size: var(--font-size-sm);
-  color: var(--text-color);
-  opacity: 0.8;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
 }
 
 /* Clear cache button: Use unified button system from common/buttons.css
@@ -383,39 +347,6 @@ input:checked + .toggle-slider:before {
   padding: 0.5rem;
 }
 
-.child-species-wrapper {
-  flex-shrink: 0;
-}
-
-.nested-sub-evolutions {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  margin-left: 2rem;
-  border-left: 3px solid var(--border-color);
-  padding-left: 1.5rem;
-}
-
-.sub-evolution-container {
-  background: var(--overlay-medium);
-  border: 1px solid var(--border-color);
-  border-radius: 0.75rem;
-  padding: 1rem;
-}
-
-.sub-evolution-header {
-  margin-bottom: 0.75rem;
-  padding-bottom: 0.5rem;
-  border-bottom: 1px solid var(--border-color);
-}
-
-.sub-evolution-label {
-  font-size: var(--font-size-sm);
-  font-weight: 600;
-  color: var(--accent-color);
-  opacity: 0.9;
-}
-
 /* Legacy group styles kept for compatibility */
 .evolution-groups-container {
   width: 100%;
@@ -660,15 +591,9 @@ input:checked + .toggle-slider:before {
     font-size: var(--font-size-3xl);
   }
   
-  .mode-toggle {
-    flex-direction: column;
-    gap: 0.75rem;
-  }
   
-  .cache-info {
-    flex-direction: column;
-    gap: 0.5rem;
-  }
+  
+  
   
   .tree-header {
     flex-direction: column;
@@ -725,14 +650,9 @@ input:checked + .toggle-slider:before {
     gap: 0.75rem;
   }
   
-  .nested-sub-evolutions {
-    margin-left: 1rem;
-    padding-left: 1rem;
-  }
   
-  .sub-evolution-container {
-    padding: 0.75rem;
-  }
+  
+  
   
   /* Evolution groups responsive styles */
   .evolution-groups {

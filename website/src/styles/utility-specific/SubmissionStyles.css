@@ -27,7 +27,6 @@
   margin-top: 1rem;
 }
 
-
 .bulk-upload-section h4 {
   color: var(--accent-color);
   margin-bottom: 0.5rem;
@@ -40,7 +39,6 @@
   padding: 1rem 2rem !important;
   border-radius: 0.5rem !important;
 }
-
 
 .bulk-upload-label:hover {
   background-color: var(--accent-dark) !important;
@@ -58,7 +56,6 @@
   border-radius: 0.25rem;
 }
 
-
 .form-hint {
   font-size: var(--font-size-xs);
   color: var(--text-secondary);
@@ -75,7 +72,6 @@
   transition: all 0.3s ease;
 }
 
-
 .submission-form-container h2 {
   font-size: var(--font-size-xl);
   color: var(--accent-color);
@@ -90,23 +86,16 @@
   gap: 2.5rem;
 }
 
-
-
-
-
-
 /* Tags */
 .tag-input-container {
   display: flex;
   gap: 0.5rem;
 }
 
-
 .tag-input-container input {
   flex: 1;
 }
 /* Toggle Switch */
-
 
 .toggle-switch input[type="checkbox"] {
   appearance: none;
@@ -155,9 +144,6 @@
   transition: all 0.2s ease;
 }
 
-
-
-
 .additional-images-preview {
   display: flex;
   flex-wrap: wrap;
@@ -165,13 +151,11 @@
   margin-top: 0.5rem;
 }
 
-
 .additional-image-item {
   position: relative;
   width: 100px;
   height: 100px;
 }
-
 
 .additional-image-preview {
   width: 100%;
@@ -181,9 +165,6 @@
   border: 1px solid var(--border-color);
 }
 
-
-
-
 /* Input Method Options */
 .input-method-options {
   display: flex;
@@ -191,14 +172,12 @@
   margin-top: 0.25rem;
 }
 
-
 .radio-label {
   display: flex;
   align-items: center;
   gap: 0.5rem;
   cursor: pointer;
 }
-
 
 .radio-label input[type="radio"] {
   cursor: pointer;
@@ -212,7 +191,6 @@
   text-align: right;
 }
 
-
 /* Checkbox Container */
 .checkbox-container {
   display: flex;
@@ -221,7 +199,6 @@
   margin-top: 0.5rem;
   margin: 0.5rem 0;
 }
-
 
 .checkbox-container input[type="checkbox"] {
   width: 1.25rem;
@@ -245,7 +222,6 @@
   margin: 1rem 0;
 }
 
-
 .instance-appearance-row {
   display: flex;
   align-items: center;
@@ -253,7 +229,6 @@
   gap: 0.5rem;
   flex-wrap: wrap;
 }
-
 
 .instance-appearance-row label {
   min-width: 150px;
@@ -277,7 +252,6 @@
   border: 1px solid var(--border-color);
 }
 
-
 .reward-estimate h4 {
   font-size: var(--font-size-base);
   color: var(--accent-color);
@@ -291,7 +265,6 @@
   padding: 1.5rem;
   border: 1px solid var(--border-color);
 }
-
 
 .reward-section h5 {
   font-size: var(--font-size-base);
@@ -307,19 +280,11 @@
   gap: 0.5rem;
 }
 
-
-
-
-
 .reward-label {
   font-weight: 600;
   min-width: 100px;
   color: var(--text-color);
 }
-
-
-
-
 
 /* Form Actions */
 
@@ -337,7 +302,6 @@
   transition: all 0.3s ease;
 }
 
-
 .calculator-section {
   display: flex;
   flex-direction: column;
@@ -348,7 +312,6 @@
   transition: all 0.3s ease;
 }
 
-
 .calculator-section h3 {
   font-size: var(--font-size-base);
   font-weight: 600;
@@ -358,16 +321,13 @@
   border-bottom: 1px solid var(--border-color);
 }
 
-.quality-options,
-.background-options {
+.quality-options {
   display: flex;
   flex-wrap: wrap;
   gap: 1rem;
 }
 
-.quality-options label,
-.background-options label,
-.difficulty-option {
+.quality-options label, .difficulty-option {
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -378,15 +338,11 @@
   transition: background-color 0.2s;
 }
 
-.quality-options label:hover,
-.background-options label:hover,
-.difficulty-option:hover {
+.quality-options label:hover, .difficulty-option:hover {
   background-color: var(--nav-hover);
 }
 
-.quality-options input[type="radio"],
-.background-options input[type="radio"],
-.difficulty-option input[type="checkbox"] {
+.quality-options input[type="radio"], .difficulty-option input[type="checkbox"] {
   cursor: pointer;
 }
 
@@ -397,7 +353,6 @@
   margin-bottom: 1.25rem;
 }
 
-
 .selected-entity {
   padding: 1.25rem;
   border-radius: 0.5rem;
@@ -407,29 +362,12 @@
   box-shadow: 0 2px 6px var(--overlay-light);
 }
 
-
 .entity-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 0.75rem;
 }
-
-
-
-
-.remove-entity {
-  background: none;
-  border: none;
-  color: var(--error-color);
-  cursor: pointer;
-  font-size: 1.25rem;
-  line-height: 1;
-  padding: 0;
-  transition: transform 0.2s;
-}
-
-
 
 .entity-appearances {
   display: flex;
@@ -442,7 +380,6 @@
   border-radius: 0.375rem;
 }
 
-
 .entity-appearance {
   font-size: 0.9rem;
   padding: 0.25rem 0.5rem;
@@ -454,7 +391,6 @@
   justify-content: space-between;
 }
 
-
 .entity-bonus {
   font-size: var(--font-size-sm);
   color: var(--accent-color);
@@ -464,7 +400,6 @@
   border-top: 1px dashed var(--border-color);
 }
 
-
 .add-entity-form {
   padding: 1.25rem;
   background-color: var(--card-background-light);
@@ -473,7 +408,6 @@
   margin-bottom: 1rem;
   box-shadow: 0 4px 12px var(--overlay-light);
 }
-
 
 .entity-select,
 .appearance-select,
@@ -489,9 +423,6 @@
   width: 100%;
 }
 
-
-
-
 .appearance-count-input {
   width: 80px;
   padding: 0.75rem;
@@ -502,14 +433,12 @@
   font-size: 1rem;
 }
 
-
 .complexity-label {
   display: flex;
   align-items: center;
   gap: 0.75rem;
   width: 100%;
 }
-
 
 .same-appearance-label {
   display: flex;
@@ -519,7 +448,6 @@
   cursor: pointer;
 }
 
-
 /* .add-entity-button - use unified button system: className="button primary" */
 
 .calculator-actions {
@@ -527,7 +455,6 @@
   justify-content: center;
   margin-top: 2.5rem;
 }
-
 
 /* .calculate-button - use unified button system: className="button primary lg" */
 
@@ -540,7 +467,6 @@
   margin-top: 2rem;
 }
 
-
 .reward-display h3 {
   font-size: var(--font-size-lg);
   color: var(--accent-color);
@@ -548,8 +474,6 @@
   padding-bottom: 0.5rem;
   border-bottom: 1px solid var(--border-color);
 }
-
-
 
 .reward-section h4 {
   font-size: var(--font-size-base);
@@ -567,7 +491,6 @@
   margin-bottom: 1rem;
 }
 
-
 .reward-entity-header {
   display: flex;
   justify-content: space-between;
@@ -577,12 +500,10 @@
   border-bottom: 1px solid var(--border-color);
 }
 
-
 .reward-entity-name {
   font-weight: 600;
   color: var(--accent-color);
 }
-
 
 .reward-entity-trainer {
   font-size: 0.9rem;
@@ -590,31 +511,21 @@
   color: var(--text-color);
 }
 
-
 .reward-entity-details {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
 }
 
-
-
-
-
-
-
-
 .capped-levels {
   color: var(--accent-color);
 }
-
 
 .gift-rewards {
   background-color: var(--card-background);
   padding: 1rem;
   border-radius: 0.25rem;
 }
-
 
 .gift-items h5 {
   font-size: var(--font-size-base);
@@ -628,7 +539,6 @@
   margin: 0;
 }
 
-
 .gift-item {
   display: flex;
   align-items: center;
@@ -639,26 +549,17 @@
   margin-bottom: 0.5rem;
 }
 
-
-
-
-
-
-
-
 .capped-levels-section {
   background-color: var(--card-background);
   padding: 1rem;
   border-radius: 0.25rem;
 }
 
-
 .capped-levels-info {
   font-size: var(--font-size-sm);
   color: var(--text-color-light);
   margin-top: 0.5rem;
 }
-
 
 /* .allocate-button - use unified button system: className="button primary sm" */
 
@@ -669,7 +570,6 @@
   border: 1px solid var(--border-color);
   margin-top: 1rem;
 }
-
 
 .allocate-form h4 {
   font-size: var(--font-size-base);
@@ -684,7 +584,6 @@
   color: var(--text-color-light);
   margin-left: 0.5rem;
 }
-
 
 /* Responsive Styles */
 @media (max-width: 768px) {
@@ -702,8 +601,7 @@
     grid-template-columns: 1fr;
   }
 
-  .quality-options,
-  .background-options {
+  .quality-options{
     flex-direction: column;
     gap: 0.5rem;
   }
@@ -713,7 +611,6 @@
   width: 100%;
   padding: 2rem 0;
 }
-
 
 .submission-detail-container {
   max-width: 1200px;
@@ -740,12 +637,10 @@
   color: var(--accent-hover);
 }
 
-
 .submission-image-container {
   margin-bottom: 2rem;
   text-align: center;
 }
-
 
 .submission-main-image {
   max-width: 90%;
@@ -754,7 +649,6 @@
   cursor: pointer;
   transition: transform 0.2s;
 }
-
 
 .submission-main-image:hover {
   transform: scale(1.02);
@@ -782,7 +676,6 @@
   white-space: pre-line;
 }
 
-
 .writing-text p {
   margin-bottom: 1.5rem;
 }
@@ -794,12 +687,10 @@
   margin-top: 1rem;
 }
 
-
 .additional-image-container {
   overflow: hidden;
   border-radius: 8px;
 }
-
 
 .additional-image {
   width: 100%;
@@ -808,7 +699,6 @@
   cursor: pointer;
   transition: transform 0.2s;
 }
-
 
 .additional-image:hover {
   transform: scale(1.05);
@@ -820,7 +710,6 @@
   gap: 1rem;
   margin-top: 1rem;
 }
-
 
 .featured-entity-card {
   background: var(--nav-active);
@@ -881,7 +770,6 @@
   text-align: center;
 }
 
-
 .featured-entity-species {
   padding: 0 0.75rem 0.75rem;
   font-size: 0.8rem;
@@ -906,7 +794,6 @@
   margin-top: 1rem;
 }
 
-
 .related-submission-card {
   background-color: var(--nav-background);
   border-radius: 8px;
@@ -914,7 +801,6 @@
   cursor: pointer;
   transition: transform 0.2s;
 }
-
 
 .related-submission-card:hover {
   transform: scale(1.05);
@@ -924,7 +810,6 @@
   height: 100px;
   overflow: hidden;
 }
-
 
 .related-submission-image img {
   width: 100%;
@@ -941,7 +826,6 @@
   text-overflow: ellipsis;
 }
 
-
 /* Image Modal */
 .image-modal-overlay {
   position: fixed;
@@ -955,13 +839,11 @@
   align-items: center;
 }
 
-
 .image-modal-content {
   position: relative;
   max-width: 90vw;
   max-height: 90vh;
 }
-
 
 .image-modal-img {
   max-width: 90vw;
@@ -971,7 +853,6 @@
   object-fit: contain;
   display: block;
 }
-
 
 .image-modal-close {
   position: absolute;
@@ -983,7 +864,6 @@
   font-size: 1.5rem;
   cursor: pointer;
 }
-
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
@@ -1018,7 +898,6 @@
 }
 /* Enhanced Submission Forms Styles */
 
-
 .submission-form-container h2 {
   font-size: var(--font-size-xl);
   color: var(--accent-color);
@@ -1038,10 +917,6 @@
   background-color: var(--accent-color);
   border-radius: 3px;
 }
-
-
-
-
 
 .form-section h3 {
   font-size: var(--font-size-lg);
@@ -1070,8 +945,6 @@
   line-height: 1.5;
 }
 
-
-
 /* Reference Entry */
 .reference-entry {
   background-color: var(--card-background-light);
@@ -1082,7 +955,6 @@
   transition: all 0.2s ease;
   box-shadow: 0 2px 6px var(--overlay-light);
 }
-
 
 .reference-entry:hover {
   box-shadow: 0 4px 12px var(--overlay-light);
@@ -1099,7 +971,6 @@
   border-bottom: 1px solid var(--border-color);
 }
 
-
 .reference-header h4 {
   font-size: var(--font-size-base);
   color: var(--heading-color);
@@ -1108,7 +979,6 @@
 }
 
 /* Checkbox Container */
-
 
 .checkbox-container input[type="checkbox"] {
   width: 1.25rem;
@@ -1124,7 +994,6 @@
 
 /* Instance Appearances */
 
-
 .instance-appearances h5 {
   font-size: var(--font-size-base);
   color: var(--heading-color);
@@ -1132,8 +1001,6 @@
   margin-bottom: 1rem;
   font-weight: 600;
 }
-
-
 
 .instance-appearance-row label {
   min-width: 180px;
@@ -1154,12 +1021,10 @@
 
 /* Image Preview */
 
-
 .image-preview-container:hover {
   transform: scale(1.02);
   box-shadow: 0 6px 12px var(--overlay-medium);
 }
-
 
 /* Responsive Adjustments */
 @media (max-width: 768px) {
@@ -1218,12 +1083,10 @@
   padding: 2rem var(--content-padding);
 }
 
-
 .submission-page-header {
   margin-bottom: 2rem;
   text-align: center;
 }
-
 
 .submission-page-header h1 {
   font-size: var(--font-size-3xl);
@@ -1246,11 +1109,7 @@
   padding: 2rem;
 }
 
-
 /* Instance Appearances */
-
-
-
 
 .instance-appearance-row label {
   min-width: 150px;
@@ -1266,9 +1125,6 @@
   background-color: var(--card-background);
   color: var(--text-color);
 }
-
-
-
 
 .page-title h1 {
   font-size: var(--font-size-3xl);
@@ -1291,12 +1147,9 @@
   gap: 0.5rem;
 }
 
-
-
 /* .action-button.primary/.secondary - use unified button system: className="button primary" or "button secondary" */
 
 /* Dropdown Menu */
-
 
 /* Tabs */
 .submission-tabs {
@@ -1307,7 +1160,6 @@
   padding-bottom: 0.5rem;
 }
 
-
 /* Submission Types */
 .submission-types-container {
   background-color: var(--card-background);
@@ -1316,7 +1168,6 @@
   padding: 2rem;
   margin-bottom: 2rem;
 }
-
 
 .submission-types-container h2 {
   font-size: var(--font-size-xl);
@@ -1362,7 +1213,6 @@
   gap: 1.5rem;
 }
 
-
 .submission-type-card {
   background-color: var(--card-background-light);
   border-radius: 0.5rem;
@@ -1376,7 +1226,6 @@
   overflow: hidden;
   box-shadow: 0 2px 4px var(--overlay-light);
 }
-
 
 .submission-type-card:hover {
   transform: translateY(-5px);
@@ -1406,7 +1255,6 @@
   margin-bottom: 0.5rem;
 }
 
-
 .submission-type-card h3 {
   font-size: var(--font-size-lg);
   color: var(--accent-color);
@@ -1420,13 +1268,6 @@
   flex-grow: 1;
 }
 
-.prompt-buttons {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-top: 0.5rem;
-}
-
 /* .prompt-button - use unified button system: className="button secondary sm" */
 
 /* My Submissions */
@@ -1438,7 +1279,6 @@
   margin-bottom: 2rem;
   text-align: center;
 }
-
 
 .my-submissions-container h2 {
   font-size: var(--font-size-xl);
@@ -1463,9 +1303,6 @@
   padding: 1rem;
 }
 
-
-
-
 .submission-success p {
   font-size: var(--font-size-base);
   line-height: 1.5;
@@ -1486,17 +1323,12 @@
   gap: 15px;
 }
 
-
 .rewards-summary h3 {
   font-size: var(--font-size-lg);
   color: var(--accent-color);
   margin-bottom: 1rem;
   text-align: center;
 }
-
-
-
-
 
 .reward-item i {
   font-size: 2rem;
@@ -1521,143 +1353,9 @@
 }
 
 /* Reward Information */
-.reward-info-container {
-  background-color: var(--card-background);
-  border-radius: 0.5rem;
-  box-shadow: 0 2px 4px var(--overlay-light);
-  padding: 2rem;
-  margin-bottom: 2rem;
-}
-
-
-.reward-info-container h2 {
-  font-size: var(--font-size-xl);
-  color: var(--accent-color);
-  margin-bottom: 1rem;
-  text-align: center;
-}
-
-.reward-info-container > p {
-  text-align: center;
-  max-width: 800px;
-  margin: 0 auto 2rem;
-  color: var(--text-color);
-  line-height: 1.5;
-}
-
-.reward-categories {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 2rem;
-  margin-bottom: 2rem;
-}
-
-
-.reward-category {
-  background-color: var(--card-background-light);
-  border-radius: 0.5rem;
-  padding: 1.5rem;
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-
-.reward-category-icon {
-  width: 60px;
-  height: 60px;
-  background-color: var(--accent-color-light);
-  color: var(--accent-color);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.5rem;
-  margin-bottom: 0.5rem;
-}
-
-
-.reward-category h3 {
-  font-size: var(--font-size-lg);
-  color: var(--accent-color);
-  margin: 0;
-}
-
-.reward-category p {
-  color: var(--text-color);
-  line-height: 1.5;
-  margin: 0;
-}
-
-.reward-examples {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  margin-top: 0.5rem;
-}
-
-
-.reward-example {
-  display: flex;
-  justify-content: space-between;
-  font-size: var(--font-size-sm);
-  padding: 0.5rem;
-  background-color: var(--card-background);
-  border-radius: 0.25rem;
-}
-
 
 .reward-type {
   font-weight: 600;
-}
-
-
-
-
-.reward-bonus {
-  background-color: var(--card-background-light);
-  border-radius: 0.5rem;
-  padding: 1.5rem;
-}
-
-
-.reward-bonus h3 {
-  font-size: var(--font-size-lg);
-  color: var(--accent-color);
-  margin: 0 0 1rem 0;
-  text-align: center;
-}
-
-.reward-bonus p {
-  text-align: center;
-  max-width: 800px;
-  margin: 0 auto 1.5rem;
-  color: var(--text-color);
-  line-height: 1.5;
-}
-
-.bonus-list {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 1rem;
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-
-.bonus-list li {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 0.75rem;
-  background-color: var(--card-background);
-  border-radius: 0.25rem;
-}
-
-.bonus-list li i {
-  color: var(--accent-color);
-  font-size: 1.25rem;
 }
 
 /* Responsive Styles */
@@ -1679,16 +1377,7 @@
     gap: 0.5rem;
   }
 
-
   .submission-types-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .reward-categories {
-    grid-template-columns: 1fr;
-  }
-
-  .bonus-list {
     grid-template-columns: 1fr;
   }
 }
@@ -1697,9 +1386,6 @@
   margin: 0 auto;
   padding: 20px;
 }
-
-
-
 
 .submission-success-container {
   background-color: var(--card-background);
@@ -1710,7 +1396,6 @@
   text-align: center;
 }
 
-
 .submission-details {
   margin-top: 24px;
   padding: 16px;
@@ -1719,15 +1404,12 @@
   text-align: left;
 }
 
-
 .submission-details h3 {
   margin-top: 0;
   margin-bottom: 16px;
   font-size: 18px;
   color: var(--text-color);
 }
-
-
 
 .rewards-summary h4 {
   margin-top: 0;
@@ -1747,11 +1429,7 @@
   color: var(--text-color);
 }
 
-
-
 /* .primary-button/.secondary-button - use unified button system: className="button primary" or "button secondary" */
-
-
 
 .loading-container p {
   margin-top: 16px;
@@ -1765,7 +1443,6 @@
   margin-top: 4px;
   font-style: italic;
 }
-
 
 .mission-updates,
 .mission-completions {
@@ -1790,7 +1467,6 @@
   margin-top: 8px;
 }
 
-
 .boss-result {
   margin-bottom: 8px;
   padding: 8px;
@@ -1798,12 +1474,10 @@
   border-radius: 4px;
 }
 
-
 .boss-defeated {
   color: var(--error-color);
   font-weight: bold;
 }
-
 
 @media (max-width: 768px) {
   .submission-page {
@@ -1827,14 +1501,12 @@
   padding: 0 var(--content-padding);
 }
 
-
 .submissions-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 2rem;
 }
-
 
 .submissions-header h1 {
   font-size: var(--font-size-3xl);
@@ -1850,9 +1522,6 @@
   margin-bottom: 2rem;
 }
 
-
-
-
 .filter-group label {
   font-weight: 500;
 }
@@ -1865,23 +1534,17 @@
   color: var(--text-color);
 }
 
-
 /* Submissions Grid */
-
-
-
 
 .submission-card:hover {
   transform: translateY(-4px);
   box-shadow: 0 6px 12px var(--overlay-medium);
 }
 
-
 .submission-image {
   height: 200px;
   position: relative;
 }
-
 
 .submission-image img {
   width: 100%;
@@ -1898,33 +1561,22 @@
   border-radius: 0.25rem;
 }
 
-
-
 .submission-status {
   top: 1rem;
   right: 1rem;
   text-transform: capitalize;
 }
 
-
-
 .submission-content {
   padding: 1.5rem;
 }
-
 
 .submission-name {
   font-size: var(--font-size-lg);
   margin-bottom: 0.75rem;
 }
 
-
-
-
-
-
 /* No Submissions */
-
 
 .no-submissions-icon {
   width: 5rem;
@@ -1937,7 +1589,6 @@
   font-size: 2rem;
   color: var(--accent-color);
 }
-
 
 .no-submissions h2 {
   font-size: var(--font-size-2xl);
@@ -1956,9 +1607,6 @@
   padding: 1rem 0;
 }
 
-
-
-
 .submission-detail-image img {
   width: 100%;
   height: 100%;
@@ -1969,14 +1617,10 @@
   margin-bottom: 1.5rem;
 }
 
-
-
-
 .submission-detail-name {
   font-size: var(--font-size-xl);
   margin: 0;
 }
-
 
 .submission-detail-status {
   padding: 0.375rem 0.75rem;
@@ -1985,8 +1629,6 @@
   font-weight: 500;
   text-transform: capitalize;
 }
-
-
 
 .submission-detail-type,
 .submission-detail-date {
@@ -1997,7 +1639,6 @@
   font-weight: 500;
   margin-right: 0.5rem;
 }
-
 
 .submission-detail-description,
 .submission-detail-feedback {
@@ -2021,16 +1662,10 @@
   border-radius: 0.5rem;
 }
 
-
 /* New Submission Modal */
 .new-submission-modal {
   padding: 1rem 0;
 }
-
-
-
-
-
 
 /* .upload-button, .modal-button.primary/.secondary - use unified button system: className="button primary" or "button secondary" */
 
@@ -2069,10 +1704,6 @@
   --primary-color-rgb: 65, 105, 225;
 }
 
-
-
-
-
 .calculator-section h3 {
   font-size: 1.35rem;
   margin-bottom: 1.25rem;
@@ -2100,7 +1731,6 @@
   gap: 1rem;
 }
 
-
 .quality-options label {
   flex: 1;
   min-width: 150px;
@@ -2121,15 +1751,12 @@
   box-shadow: 0 4px 8px var(--overlay-light);
 }
 
-.quality-options input[type="radio"]:checked + span,
-.background-options input[type="radio"]:checked + span {
+.quality-options input[type="radio"]:checked + span {
   color: var(--primary-color);
   font-weight: 600;
 }
 
-.quality-options input[type="radio"],
-.background-options input[type="radio"],
-.difficulty-option input[type="checkbox"] {
+.quality-options input[type="radio"], .difficulty-option input[type="checkbox"] {
   margin: 0;
   accent-color: var(--primary-color);
   width: 18px;
@@ -2144,7 +1771,6 @@
   margin-bottom: 1rem;
 }
 
-
 .selected-background {
   display: flex;
   align-items: center;
@@ -2155,26 +1781,8 @@
   border: 1px solid var(--border-color);
 }
 
-
 .background-type {
   color: var(--text-color);
-}
-
-
-.remove-background {
-  background: none;
-  border: none;
-  color: var(--error-color);
-  font-size: 1.25rem;
-  cursor: pointer;
-  padding: 0;
-  line-height: 1;
-  transition: transform 0.2s;
-}
-
-
-.remove-background:hover {
-  transform: scale(1.2);
 }
 
 .add-background-form {
@@ -2185,7 +1793,6 @@
   margin-top: 1rem;
 }
 
-
 .background-select {
   width: 100%;
   padding: 0.75rem;
@@ -2195,7 +1802,6 @@
   color: var(--text-color);
   font-size: 1rem;
 }
-
 
 /* Difficulty Option */
 .difficulty-option {
@@ -2211,15 +1817,11 @@
   width: fit-content;
 }
 
-
 .difficulty-option:hover {
   border-color: var(--primary-color-light);
 }
 
 /* Entities (Trainers & Monsters) */
-
-
-
 
 .selected-entity:hover {
   transform: translateY(-3px);
@@ -2227,39 +1829,18 @@
   border-color: var(--primary-color-light);
 }
 
-
-
-
-
-
-
-.remove-entity:hover {
-  transform: scale(1.2);
-}
-
 .entity-trainer {
   margin-bottom: 0.75rem;
 }
-
-
-
-
-
-
-
 
 .appearance-type {
   color: var(--text-color);
 }
 
-
 .appearance-count {
   color: var(--accent-color);
   font-weight: 600;
 }
-
-
-
 
 .bonus-label {
   font-size: 0.9rem;
@@ -2267,14 +1848,12 @@
   font-weight: 600;
 }
 
-
 /* Gift Options */
 .gift-option {
   margin-top: 0.75rem;
   padding-top: 0.75rem;
   border-top: 1px dashed var(--border-color);
 }
-
 
 .gift-checkbox-label {
   display: flex;
@@ -2284,7 +1863,6 @@
   font-size: 0.9rem;
   color: var(--text-color);
 }
-
 
 .gift-checkbox-label input[type="checkbox"] {
   accent-color: var(--primary-color);
@@ -2296,7 +1874,6 @@
   margin-top: 0.5rem;
 }
 
-
 .gift-recipient-select {
   width: 100%;
   padding: 0.5rem;
@@ -2307,7 +1884,6 @@
   font-size: 0.9rem;
 }
 
-
 /* Gift Participants Section */
 .gift-participants-section {
   background-color: rgba(var(--primary-color-rgb), 0.05);
@@ -2316,14 +1892,12 @@
   border: 1px solid rgba(var(--primary-color-rgb), 0.2);
 }
 
-
 .gift-participants-list {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 1rem;
   margin-bottom: 1rem;
 }
-
 
 .gift-participant-item {
   background-color: var(--card-background);
@@ -2332,14 +1906,12 @@
   border: 1px solid var(--border-color);
 }
 
-
 .gift-participant-info {
   display: flex;
   align-items: center;
   gap: 0.5rem;
   font-size: 0.9rem;
 }
-
 
 .gift-participant-name, .gift-recipient-name {
   font-weight: 500;
@@ -2350,7 +1922,6 @@
   font-weight: bold;
 }
 
-
 .gift-explanation {
   font-size: 0.9rem;
   color: var(--text-color-secondary);
@@ -2358,12 +1929,7 @@
   margin-top: 0.75rem;
 }
 
-
 /* .add-entity-button - removed, use unified button system */
-
-
-
-
 
 .form-row:last-child {
   margin-bottom: 0;
@@ -2435,12 +2001,10 @@
   box-shadow: 0 4px 6px var(--overlay-light);
 }
 
-
 .gift-rewards-header {
   text-align: center;
   margin-bottom: 2rem;
 }
-
 
 .gift-rewards-header h2 {
   color: var(--primary-color);
@@ -2453,8 +2017,6 @@
   font-size: 1.1rem;
 }
 
-
-
 .warning-message {
   background: var(--warning-background);
   color: var(--warning-color);
@@ -2465,9 +2027,6 @@
   align-items: center;
   gap: 0.5rem;
 }
-
-
-
 
 .reward-section h3 {
   color: var(--primary-color);
@@ -2488,7 +2047,6 @@
   margin-bottom: 1rem;
 }
 
-
 .allocation-item {
   display: flex;
   justify-content: space-between;
@@ -2500,7 +2058,6 @@
   border: 1px solid var(--border-color);
 }
 
-
 .allocation-info {
   display: flex;
   align-items: center;
@@ -2508,28 +2065,9 @@
   color: var(--text-primary);
 }
 
-
-.remove-allocation {
-  background: var(--error-color);
-  color: var(--text-color);
-  border: none;
-  border-radius: 4px;
-  padding: 0.25rem 0.5rem;
-  cursor: pointer;
-  transition: background-color 0.2s;
-  background-color: var(--error-color);
-  font-size: 0.8rem;
-}
-
-
-.remove-allocation:hover {
-  background: var(--error-hover);
-}
-
 .add-allocation-section {
   margin-top: 1rem;
 }
-
 
 .add-allocation-form {
   background: var(--input-background);
@@ -2537,9 +2075,6 @@
   border-radius: 8px;
   border: 1px solid var(--border-color);
 }
-
-
-
 
 .form-row:last-child {
   margin-bottom: 0;
@@ -2567,12 +2102,10 @@
   box-shadow: 0 0 0 2px rgba(var(--primary-rgb), 0.2);
 }
 
-
 /* Item Rewards Styles */
 .items-table {
   overflow-x: auto;
 }
-
 
 .items-table table {
   width: 100%;
@@ -2603,8 +2136,6 @@
   transform: translateY(-2px);
   box-shadow: 0 4px 12px var(--overlay-medium);
 }
-
-
 
 .monster-species,
 .monster-types,
@@ -2640,7 +2171,6 @@
 .type {
   background: var(--secondary-color);
 }
-
 
 .monster-assignment .form-group {
   margin-bottom: 1rem;
@@ -2693,10 +2223,6 @@
   }
 }
 
-
-
-
-
 .gift-rewards-header h2 {
   color: var(--primary-color);
   margin-bottom: 0.5rem;
@@ -2707,12 +2233,6 @@
   color: var(--text-secondary);
   font-size: 1.1rem;
 }
-
-
-
-
-
-
 
 .reward-section h3 {
   color: var(--primary-color);
@@ -2729,10 +2249,6 @@
 }
 
 /* Level Distribution Styles */
-
-.remove-allocation:hover {
-  background: var(--error-hover);
-}
 
 .form-row:last-child {
   margin-bottom: 0;
@@ -2777,7 +2293,6 @@
 
 /* Item Rewards Styles */
 
-
 .items-table table {
   width: 100%;
   border-collapse: collapse;
@@ -2803,12 +2318,7 @@
   border-bottom: none;
 }
 
-
-
-
-
 /* Monster Rewards Styles */
-
 
 /* Gift Monster Card - styled like MonsterCard */
 .gift-monster-card {
@@ -2822,7 +2332,6 @@
   color: var(--text-color);
   width: 100%;
 }
-
 
 .gift-monster-card:hover {
   transform: translateY(-5px);
@@ -2838,7 +2347,6 @@
   border-bottom: 1px solid var(--divider-color);
 }
 
-
 .gift-monster-name {
   margin: 0;
   font-size: 1.1rem;
@@ -2848,7 +2356,6 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-
 
 .gift-monster-card-image {
   position: relative;
@@ -2860,7 +2367,6 @@
   justify-content: center;
   align-items: center;
 }
-
 
 .gift-monster-card-image img {
   max-width: 100%;
@@ -2877,7 +2383,6 @@
   padding: 15px;
 }
 
-
 .gift-monster-species {
   font-size: 0.9rem;
   font-weight: 500;
@@ -2889,13 +2394,11 @@
   gap: 0.25rem;
 }
 
-
 .species-with-image {
   display: flex;
   align-items: center;
   gap: 0.25rem;
 }
-
 
 .species-reference-image {
   width: 20px;
@@ -2904,13 +2407,9 @@
   border-radius: 2px;
 }
 
-
-
-
 .species-separator {
   color: var(--text-color-secondary);
 }
-
 
 .gift-monster-types {
   display: flex;
@@ -2918,9 +2417,6 @@
   gap: 5px;
   margin-bottom: 10px;
 }
-
-
-
 
 .gift-monster-attribute {
   font-size: 0.9rem;
@@ -2994,12 +2490,10 @@
   box-shadow: 0 4px 12px var(--overlay-light);
 }
 
-
 .reallocation-header {
   text-align: center;
   margin-bottom: 2rem;
 }
-
 
 .reallocation-header h2 {
   color: var(--primary-color);
@@ -3023,7 +2517,6 @@
   border: 1px solid var(--border-color);
 }
 
-
 .level-summary span {
   font-weight: 600;
   color: var(--heading-color);
@@ -3036,7 +2529,6 @@
   margin-bottom: 2rem;
 }
 
-
 .capped-monster-card {
   background: var(--input-background);
   border: 1px solid var(--border-color);
@@ -3045,15 +2537,10 @@
   transition: border-color 0.2s, box-shadow 0.2s;
 }
 
-
 .capped-monster-card:hover {
   border-color: var(--primary-color);
   box-shadow: 0 2px 8px var(--overlay-light);
 }
-
-
-
-
 
 .monster-image img {
   width: 100%;
@@ -3061,20 +2548,16 @@
   object-fit: contain;
 }
 
-
-
 .allocation-targets {
   border-top: 1px solid var(--border-color);
   padding-top: 1.5rem;
 }
-
 
 .allocation-targets h4 {
   color: var(--heading-color);
   margin-bottom: 1rem;
   font-size: 1rem;
 }
-
 
 /* New allocation entry styles */
 .allocation-entry {
@@ -3088,13 +2571,11 @@
   border-radius: 4px;
 }
 
-
 .target-name {
   flex: 1;
   font-weight: 500;
   color: var(--text-color);
 }
-
 
 .allocation-entry input[type="number"] {
   width: 60px;
@@ -3106,16 +2587,9 @@
   text-align: center;
 }
 
-
-
-.remove-allocation:hover {
-  background-color: var(--error-light);
-}
-
 .add-allocation {
   margin-top: 0.5rem;
 }
-
 
 .add-allocation select {
   width: 100%;
@@ -3190,29 +2664,6 @@
   margin-top: 1rem;
 }
 
-.chapter-list-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1rem;
-}
-
-.chapter-list-header h4 {
-  margin: 0;
-  color: var(--heading-color);
-  font-size: var(--font-size-base);
-}
-
-.chapter-count-badge {
-  background-color: var(--accent-color);
-  color: var(--nav-background);
-  font-size: var(--font-size-xs);
-  font-weight: 700;
-  padding: 0.2rem 0.6rem;
-  border-radius: 1rem;
-  margin-left: 0.5rem;
-}
-
 /* Chapter Card */
 .chapter-card {
   background-color: var(--card-background-light);
@@ -3284,21 +2735,6 @@
   margin-top: 1rem;
 }
 
-.chapter-form-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1.25rem;
-  padding-bottom: 0.75rem;
-  border-bottom: 1px solid var(--border-color);
-}
-
-.chapter-form-header h4 {
-  color: var(--accent-color);
-  margin: 0;
-  font-size: var(--font-size-base);
-}
-
 .chapter-form .form-group {
   margin-bottom: 1rem;
 }
@@ -3344,33 +2780,6 @@
 }
 
 /* Chapter progress indicator during book submission */
-.book-submit-progress {
-  margin-top: 1rem;
-  padding: 1rem;
-  background-color: var(--card-background-light);
-  border-radius: 0.5rem;
-  border: 1px solid var(--border-color);
-}
-
-.book-submit-progress .progress-text {
-  font-size: var(--font-size-sm);
-  color: var(--text-color);
-  margin-bottom: 0.5rem;
-}
-
-.book-submit-progress .progress-bar {
-  height: 6px;
-  background-color: var(--nav-background);
-  border-radius: 3px;
-  overflow: hidden;
-}
-
-.book-submit-progress .progress-bar-fill {
-  height: 100%;
-  background-color: var(--accent-color);
-  border-radius: 3px;
-  transition: width 0.3s ease;
-}
 
 /* Responsive */
 @media (max-width: 768px) {
@@ -3600,9 +3009,7 @@
     justify-content: space-between;
   }
 
-  .remove-allocation {
-    align-self: flex-end;
-  }
+  
 
   .add-allocation-form {
     padding: 0.75rem;
@@ -3901,10 +3308,7 @@
     font-size: 0.9rem;
   }
 
-  .remove-allocation {
-    padding: 0.2rem 0.375rem;
-    font-size: 0.75rem;
-  }
+  
 
   /* Submission Detail */
   .submission-title {
@@ -3993,14 +3397,9 @@
     padding: 0.75rem;
   }
 
-  .chapter-form-header {
-    margin-bottom: 1rem;
-    padding-bottom: 0.5rem;
-  }
+  
 
-  .chapter-form-header h4 {
-    font-size: 0.95rem;
-  }
+  
 
   .chapter-form-actions {
     margin-top: 1rem;

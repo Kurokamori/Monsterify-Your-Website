@@ -260,12 +260,6 @@
   transform: none;
 }
 
-.button.close.positioned {
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
-}
-
 /* ---------- Tab Button ---------- */
 
 .button.tab {
@@ -349,6 +343,3 @@
   box-shadow: 0 4px 12px var(--overlay-medium);
 }
 
-.button.glow:hover:not(:disabled) {
-  box-shadow: 0 0 12px var(--accent-glow);
-}

@@ -90,12 +90,6 @@
 
 /* Tab Buttons: Use unified button system from common/buttons.css
    Example: className="button tab" with .active class */
-.tab-buttons {
-  display: flex;
-  gap: 0;
-  margin-bottom: 1rem;
-  border-bottom: 2px solid var(--border-color);
-}
 
 /* Items Grid */
 .item-selection-section {
@@ -598,18 +592,6 @@
   min-width: 1.5rem;
 }
 
-.queued-item-type {
-  font-size: 1rem;
-}
-
-.queued-item-type.berry {
-  color: var(--accent-color);
-}
-
-.queued-item-type.pastry {
-  color: var(--warning-color);
-}
-
 .queued-item-image {
   width: 28px;
   height: 28px;
@@ -649,10 +631,6 @@
 
 .queued-item-remove:hover {
   color: var(--error-color);
-}
-
-.apply-all-button {
-  width: 100%;
 }
 
 /* Processing Section */

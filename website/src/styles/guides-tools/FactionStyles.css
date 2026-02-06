@@ -17,7 +17,6 @@
   text-shadow: 2px 2px 4px var(--overlay-solid);
 }
 
-
 .faction-content {
   flex: 1;
   display: flex;
@@ -26,7 +25,6 @@
   padding: 1.5rem;
   padding-top: 3rem;
 }
-
 
 .faction-name {
   color: var(--text-color);
@@ -38,7 +36,6 @@
   transition: all 0.3s ease;
   margin-bottom: 0.5rem;
 }
-
 
 .faction-prism:hover .faction-name {
   color: var(--accent-light);
@@ -53,7 +50,6 @@
   line-height: 1.4;
   transition: all 0.3s ease;
 }
-
 
 .faction-prism:hover .faction-description-preview {
   opacity: 1;
@@ -70,7 +66,6 @@
   gap: 2rem;
 }
 
-
 .info-section {
   background: linear-gradient(135deg, var(--overlay-solid) 0%, var(--overlay-heavy) 100%);
   padding: 2.5rem;
@@ -83,7 +78,6 @@
   transition: all 0.3s ease;
   margin-bottom: 3rem;
 }
-
 
 .info-section::before {
   content: '';
@@ -172,7 +166,6 @@
   margin-bottom: 1.5rem;
 }
 
-
 .faction-info::before {
   content: '';
   position: absolute;
@@ -209,7 +202,6 @@
   z-index: 1;
 }
 
-
 .relationships-section h4 {
   color: var(--accent-color);
   margin-bottom: 1.5rem;
@@ -223,7 +215,6 @@
   gap: 1.25rem;
 }
 
-
 .relationship-item {
   padding: 1.25rem;
   border-radius: 12px;
@@ -235,15 +226,9 @@
   transition: all 0.3s ease;
 }
 
-
 .relationship-item:hover {
   transform: translateY(-2px);
   box-shadow: 0 8px 20px var(--overlay-dark);
-}
-
-.relationship-item.allied {
-  background: var(--success-glow);
-  border-left-color: var(--success-light);
 }
 
 .relationship-item.neutral {
@@ -251,22 +236,11 @@
   border-left-color: var(--text-muted);
 }
 
-.relationship-item.rival {
-  background: var(--warning-glow);
-  border-left-color: var(--warning-color);
-}
-
-.relationship-item.enemy {
-  background: var(--error-glow);
-  border-left-color: var(--error-color);
-}
-
 .relationship-faction {
   font-weight: bold;
   color: var(--text-color);
   font-size: 1.05rem;
 }
-
 
 .relationship-type {
   font-size: 0.9rem;
@@ -276,7 +250,6 @@
   background: var(--highlight-light);
   font-weight: 500;
 }
-
 
 /* Standing and Progress */
 .standing-preview {
@@ -290,13 +263,11 @@
   border-radius: 12px;
 }
 
-
 .standing-gain {
   font-size: 1.2rem;
   font-weight: 700;
   color: var(--success-light);
 }
-
 
 .standing-display {
   background: var(--overlay-solid);
@@ -307,7 +278,6 @@
   box-shadow: 0 4px 12px var(--overlay-dark);
 }
 
-
 .standing-header {
   display: flex;
   justify-content: space-between;
@@ -317,14 +287,11 @@
   gap: 1rem;
 }
 
-
 .standing-header h3 {
   color: var(--accent-color);
   margin: 0;
   font-size: 1.5rem;
 }
-
-
 
 .standing-number {
   font-size: 2rem;
@@ -332,14 +299,12 @@
   line-height: 1;
 }
 
-
 .standing-label {
   font-size: 1rem;
   opacity: 0.9;
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
-
 
 .standing-bar {
   position: relative;
@@ -351,7 +316,6 @@
   border: 1px solid var(--highlight-light);
 }
 
-
 .standing-progress {
   height: 100%;
   background: linear-gradient(90deg, var(--text-muted), var(--success-light));
@@ -359,7 +323,6 @@
   transition: width 0.5s ease, background-color 0.3s ease;
   position: relative;
 }
-
 
 .standing-markers {
   position: absolute;
@@ -372,14 +335,12 @@
   align-items: center;
 }
 
-
 .marker {
   font-size: 0.8rem;
   color: var(--text-muted);
   position: absolute;
   transform: translateX(-50%);
 }
-
 
 .marker.negative {
   color: var(--error-color);
@@ -405,7 +366,6 @@
   margin: 2rem 0;
 }
 
-
 .current-title {
   display: flex;
   align-items: center;
@@ -413,7 +373,6 @@
   margin-bottom: 1.5rem;
   flex-wrap: wrap;
 }
-
 
 .title-badge {
   padding: 0.5rem 1rem;
@@ -426,13 +385,11 @@
   box-shadow: 0 2px 4px var(--overlay-dark);
 }
 
-
 .title-description {
   color: var(--text-muted);
   font-style: italic;
   flex: 1;
 }
-
 
 .next-title {
   background: var(--accent-glow);
@@ -441,7 +398,6 @@
   border-left: 4px solid var(--accent-color);
   margin-bottom: 1.5rem;
 }
-
 
 .next-title h4 {
   color: var(--accent-color);
@@ -462,7 +418,6 @@
   flex-wrap: wrap;
 }
 
-
 .title-progress-bar {
   flex: 1;
   height: 8px;
@@ -472,13 +427,11 @@
   min-width: 100px;
 }
 
-
 .title-progress-fill {
   height: 100%;
   border-radius: 4px;
   transition: width 0.5s ease;
 }
-
 
 /* Faction Submission Modal */
 .faction-submission-modal {
@@ -494,11 +447,9 @@
   overflow: hidden;
 }
 
-
 .submission-step {
   animation: fadeIn 0.3s ease-in-out;
 }
-
 
 .submission-step h3 {
   color: var(--accent-color);
@@ -528,7 +479,6 @@
   margin-bottom: 3rem;
 }
 
-
 .no-submissions p {
   color: var(--warning-color);
   font-style: italic;
@@ -541,7 +491,6 @@
   margin-top: 1rem;
   margin-bottom: 3rem;
 }
-
 
 .submission-card {
   background: var(--overlay-heavy);
@@ -556,7 +505,6 @@
   height: 100%;
   box-shadow: 0 2px 4px var(--overlay-light);
 }
-
 
 .submission-card:hover {
   border-color: var(--accent-glow);
@@ -585,7 +533,6 @@
   background-color: var(--accent-color);
 }
 
-
 .submission-card h4 {
   color: var(--text-color);
   margin: 0 0 0.5rem 0;
@@ -613,7 +560,6 @@
   gap: 0.5rem;
 }
 
-
 .selected-submission-info {
   background: var(--accent-glow);
   border: 1px solid var(--accent-glow);
@@ -621,7 +567,6 @@
   padding: 1rem;
   margin-bottom: 2rem;
 }
-
 
 .selected-submission-info h4 {
   color: var(--accent-color);
@@ -637,7 +582,6 @@
   font-weight: 500;
 }
 
-
 .prompt-description {
   margin-top: 0.5rem;
   padding: 0.75rem;
@@ -649,7 +593,6 @@
   border-left: 3px solid var(--accent-color);
 }
 
-
 /* Score Calculation */
 .score-calculation {
   background: linear-gradient(135deg, var(--accent-glow), var(--accent-glow));
@@ -658,7 +601,6 @@
   padding: 1.5rem;
   margin-top: 2rem;
 }
-
 
 .score-calculation h4 {
   color: var(--accent-color);
@@ -676,13 +618,11 @@
   text-shadow: 0 0 10px var(--accent-glow-medium);
 }
 
-
 .score-breakdown {
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
 }
-
 
 .score-breakdown div {
   color: var(--text-muted);
@@ -697,7 +637,6 @@
   padding: 2rem;
 }
 
-
 /* Special Buttons: Use unified button system from common/buttons.css
    Example: className="button success lift" for submission, className="button primary lift" for tribute */
 
@@ -709,7 +648,6 @@
   border-radius: 12px;
   box-shadow: 0 2px 10px var(--overlay-light);
 }
-
 
 .known-people h3 {
   margin: 0 0 1.5rem 0;
@@ -741,15 +679,10 @@
   gap: 1rem;
 }
 
-
 .known-people-loading i {
   font-size: 2rem;
   color: var(--accent-color);
 }
-
-
-
-
 
 .person-card:hover {
   transform: translateY(-2px);
@@ -784,8 +717,6 @@
   background: linear-gradient(135deg, var(--card-background) 0%, var(--highlight-medium) 100%);
 }
 
-
-
 .person-image img {
   width: 100%;
   height: 100%;
@@ -812,11 +743,9 @@
   background: var(--success-light);
 }
 
-
 .can-meet-badge {
   background: var(--warning-color);
 }
-
 
 .locked-overlay {
   position: absolute;
@@ -831,14 +760,11 @@
   border-radius: 50%;
 }
 
-
 .locked-overlay i {
   color: var(--text-color);
   opacity: 0.7;
   font-size: 1.5rem;
 }
-
-
 
 .person-name {
   margin: 0 0 0.5rem 0;
@@ -847,7 +773,6 @@
   font-weight: 600;
 }
 
-
 .person-subtitle {
   margin: 0;
   color: var(--text-color);
@@ -855,7 +780,6 @@
   font-size: 0.9rem;
   line-height: 1.3;
 }
-
 
 .person-card.met .person-subtitle {
   color: var(--success-color);
@@ -887,7 +811,6 @@
   margin: 0 auto;
   padding: 0 var(--content-padding);
 }
-
 
 .faction-detail-container,
 .faction-quests-container {
@@ -933,7 +856,6 @@
   margin-bottom: 2rem;
 }
 
-
 .factions-header h1 {
   font-size: var(--font-size-3xl);
   color: var(--accent-color);
@@ -954,7 +876,6 @@
   margin-bottom: 0;
   border-bottom: 1px solid var(--accent-glow);
 }
-
 
 .faction-quests-header h1 {
   font-size: 4rem;
@@ -1020,7 +941,6 @@
   background-attachment: fixed;
 }
 
-
 .banner-overlay {
   background: linear-gradient(135deg, var(--overlay-solid) 0%, var(--overlay-heavy) 50%, var(--overlay-solid) 100%);
   padding: 0;
@@ -1034,7 +954,6 @@
   backdrop-filter: blur(15px);
 }
 
-
 .faction-navigation {
   display: flex;
   align-items: center;
@@ -1042,7 +961,6 @@
   gap: 4rem;
   margin-bottom: 2.5rem;
 }
-
 
 .faction-title {
   font-size: 4rem;
@@ -1056,7 +974,6 @@
   background-clip: text;
   animation: title-shimmer 4s ease-in-out infinite;
 }
-
 
 @keyframes title-shimmer {
   0%, 100% { background-position: 0% 50%; }
@@ -1075,7 +992,6 @@
   margin-bottom: 1.5rem;
 }
 
-
 /* Faction Tabs */
 .faction-tabs {
   display: flex;
@@ -1085,7 +1001,6 @@
   position: relative;
   box-shadow: 0 4px 20px var(--overlay-dark);
 }
-
 
 .faction-tabs::before {
   content: '';
@@ -1104,7 +1019,6 @@
   margin: 0 auto 2rem;
 }
 
-
 /* Faction Cards and Grids */
 .factions-grid {
   display: flex;
@@ -1116,7 +1030,6 @@
   padding: 2rem;
 }
 
-
 .faction-card {
   background-color: var(--card-background);
   border-radius: 0.5rem;
@@ -1125,7 +1038,6 @@
   transition: transform 0.2s, box-shadow 0.2s;
   cursor: pointer;
 }
-
 
 .faction-card:hover {
   transform: translateY(-4px);
@@ -1136,8 +1048,6 @@
   transform: translateY(-4px);
   box-shadow: 0 6px 12px var(--overlay-medium);
 }
-
-
 
 .faction-logo {
   position: absolute;
@@ -1152,16 +1062,11 @@
   box-shadow: 0 2px 4px var(--overlay-medium);
 }
 
-
 .faction-logo img {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
-
-
-
-
 
 .faction-alignment {
   display: inline-block;
@@ -1172,16 +1077,10 @@
   margin-bottom: 1rem;
 }
 
-
-
-
-
-
 .faction-info-item {
   display: flex;
   margin-bottom: 0.5rem;
 }
-
 
 /* Faction toggle: Use unified button system from common/buttons.css
    Example: className="button toggle" or className="button toggle active" */
@@ -1192,19 +1091,14 @@
   border-top: 1px solid var(--divider-color);
 }
 
-
 .faction-section {
   margin-bottom: 1.5rem;
 }
-
-
-
 
 .faction-history {
   line-height: 1.8;
   margin-bottom: 1.5rem;
 }
-
 
 .faction-history p {
   margin-bottom: 1rem;
@@ -1215,7 +1109,6 @@
   padding-left: 1.5rem;
   margin-bottom: 1.5rem;
 }
-
 
 .faction-goals li {
   margin-bottom: 0.5rem;
@@ -1228,7 +1121,6 @@
   gap: 1rem;
 }
 
-
 .faction-member {
   display: flex;
   align-items: center;
@@ -1238,7 +1130,6 @@
   border-radius: 0.375rem;
 }
 
-
 .member-avatar {
   width: 50px;
   height: 50px;
@@ -1246,7 +1137,6 @@
   overflow: hidden;
   background-color: var(--card-background);
 }
-
 
 .member-avatar img {
   width: 100%;
@@ -1258,12 +1148,10 @@
   flex: 1;
 }
 
-
 .member-name {
   font-weight: 500;
   margin-bottom: 0.25rem;
 }
-
 
 .member-role {
   font-size: var(--font-size-sm);
@@ -1271,9 +1159,7 @@
   opacity: 0.8;
 }
 
-
 /* Faction Quest Prisms */
-
 
 .faction-prism {
   position: relative;
@@ -1291,7 +1177,6 @@
   align-items: center;
   padding: 0;
 }
-
 
 .faction-prism::before {
   content: '';
@@ -1336,7 +1221,6 @@
   transition: opacity 0.4s ease;
 }
 
-
 .faction-prism:hover .faction-card-background {
   opacity: 0.25;
 }
@@ -1352,12 +1236,10 @@
   z-index: 2;
 }
 
-
 .faction-card-icon {
   margin-right: 2rem;
   flex-shrink: 0;
 }
-
 
 .faction-icon {
   position: relative;
@@ -1372,7 +1254,6 @@
   backdrop-filter: blur(10px);
   transition: all 0.4s ease;
 }
-
 
 .faction-prism:hover .faction-icon {
   border-color: var(--faction-color, var(--accent-color));

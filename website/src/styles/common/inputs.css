@@ -2,22 +2,6 @@
    Input & Form Element Styles
    ============================== */
 
-.name-input {
-  color: var(--text-color);
-  transition: all 0.2s ease;
-  width: 100%;
-  border: 1px solid var(--border-color);
-  border-radius: 0.25rem;
-  padding: 0.5rem;
-  background-color: var(--input-background);
-  margin-top: 0.5rem;
-}
-
-.name-input:focus {
-  border-color: var(--accent-color);
-  box-shadow: 0 0 0 3px var(--blue-glow);
-}
-
 .special-input {
   background: var(--input-background);
   border: 1px solid var(--border-color);

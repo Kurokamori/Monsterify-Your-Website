@@ -29,21 +29,6 @@
 /* Evolution edit button: Use unified button system from common/buttons.css
    Example: className="button primary" or "button danger" for active state */
 
-.no-evolution-message {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1rem;
-  padding: 3rem;
-  text-align: center;
-  color: var(--text-color);
-  opacity: 0.7;
-}
-
-.no-evolution-message i {
-  font-size: 3rem;
-}
-
 .evolution-item.current {
   background-color: var(--nav-active);
   border: 2px solid var(--accent-color);

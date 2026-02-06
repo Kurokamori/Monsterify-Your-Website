@@ -72,7 +72,6 @@
   gap: 10px;
 }
 
-
 /* ===== Edit Trainer ===== */
 
 .edit-trainer-container {
@@ -95,7 +94,6 @@
 
 /* Add relation/secret buttons: Use unified button system from common/buttons.css
    Example: className="button primary" */
-
 
 /* ===== Trainer edit shells ===== */
 
@@ -166,7 +164,6 @@
   gap: 10px;
 }
 
-
 /* ===== Add Trainer Page ===== */
 
 .add-trainer-container {
@@ -189,11 +186,9 @@
   margin-bottom: 3rem;
 }
 
-
 /* Jump to submit button: Use unified button system from common/buttons.css
    Example: className="button primary sm" with position:sticky styling
    Add custom positioning via inline styles or a wrapper class */
-
 
 /* ===== Avatar Upload ===== */
 
@@ -206,13 +201,11 @@
 /* Upload button: Use unified button system from common/buttons.css
    Example: className="button secondary" */
 
-
 /* ===== Starter cards ===== */
 
 .starter-card:hover{ transform:translateY(-4px); box-shadow:0 6px 12px var(--overlay-medium); }
 .starter-card.selected{ border:2px solid var(--accent-color); background-color:rgba(var(--accent-color), .05); }
 .starter-card.selected { color:var(--accent-color); }
-
 
 /* ===== Additional References (Add page) ===== */
 
@@ -234,7 +227,6 @@
 /* Reference buttons: Use unified button system from common/buttons.css
    Example: className="button danger outline sm" for remove
    Example: className="button primary outline block" for add */
-
 
 /* ===== Edit page specific additional refs ===== */
 
@@ -278,7 +270,6 @@
 
 .form-group.full-width{ grid-column:1 / -1; }
 
-
 /* ===== Responsive ===== */
 
 @media (max-width:768px){
@@ -287,5 +278,4 @@
   .radio-group{ flex-direction:column; gap:.75rem; }
   .starter-card{ flex-direction:column; align-items:center; text-align:center; }
   .additional-ref-header{ flex-direction:column; align-items:flex-start; gap:.75rem; }
-  .remove-ref-button{ width:100%; justify-content:center; }
 }

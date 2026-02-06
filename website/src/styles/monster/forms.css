@@ -599,50 +599,22 @@
   gap: 6px;
 }
 
-
 /* =============================================================================
    3. RESPONSIVE STYLES
    ============================================================================= */
 
 /* Large screens (1200px and below) */
-@media (max-width: 1200px) {
-  .mass-edit-monsters-grid {
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-  }
-}
 
 /* Tablet screens (768px and below) */
-@media (max-width: 768px) {
-  .mass-edit-modal-content {
-    padding: 1rem;
-    max-width: 95vw;
-  }
-
-  .mass-edit-monsters-grid {
-    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-    gap: 0.5rem;
-  }
-}
 
 /* Mobile screens (480px and below) */
 @media (max-width: 480px) {
-  .mass-edit-modal-content {
-    padding: 0.75rem;
-  }
-
+  
   .mass-edit-header {
     flex-direction: column;
     gap: 0.75rem;
   }
-
-  .mass-edit-monsters-grid {
-    grid-template-columns: 1fr 1fr;
-  }
 }
 
 /* Extra small screens (360px and below) */
-@media (max-width: 360px) {
-  .mass-edit-monsters-grid {
-    grid-template-columns: 1fr;
-  }
-}
+

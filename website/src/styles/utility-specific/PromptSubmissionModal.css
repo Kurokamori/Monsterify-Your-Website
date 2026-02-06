@@ -178,10 +178,6 @@
 }
 
 /* Loading Spinner in Button */
-.btn .loading-spinner {
-  width: 16px;
-  height: 16px;
-}
 
 /* Responsive Design */
 @media (max-width: 768px) {
@@ -247,22 +243,13 @@
   .form-file {
     border-width: 2px;
   }
-  
-  .btn {
-    border-width: 2px;
-  }
-  
 }
 
 /* Reduced motion support */
 @media (prefers-reduced-motion: reduce) {
-  .btn,
-  .form-select,
-  .form-textarea,
-  .form-file {
+  .form-select, .form-textarea, .form-file{
     transition: none;
   }
-  
 }
 
 /* Rewards Display */

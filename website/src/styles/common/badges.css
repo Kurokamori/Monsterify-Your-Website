@@ -13,17 +13,15 @@
 }
 
 .status-badge.empty { background-color: var(--text-muted); }
-.status-badge.growing,
-.status-badge.needs-attention { background-color: var(--warning-color); }
-.status-badge.ready,
-.status-badge.tended { background-color: var(--success-color); }
+
+.status-badge.ready { background-color: var(--success-color); }
 
 /* ---------- Rarity Badges ---------- */
 
 .rarity-badge.common { background-color: var(--text-muted); color: var(--background-color); }
 .rarity-badge.uncommon { background-color: var(--success-light); color: var(--success-dark); }
 .rarity-badge.rare { background-color: var(--blue-light); color: var(--blue-dark); }
-.rarity-badge.epic { background-color: var(--custom-type); color: var(--background-color); }
+
 .rarity-badge.legendary { background-color: var(--accent-light); color: var(--warning-dark); }
 
 /* ---------- Type Badges ---------- */

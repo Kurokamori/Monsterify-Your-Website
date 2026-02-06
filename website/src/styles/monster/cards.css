@@ -131,11 +131,6 @@
 }
 
 /* Reward Card Rarity Variants */
-.monster-reward-card.epic,
-.special-feature-card.epic {
-  border: 2px solid var(--custom-type);
-  box-shadow: 0 4px 20px var(--accent-glow);
-}
 
 .monster-reward-card.mythical,
 .special-feature-card.mythical {

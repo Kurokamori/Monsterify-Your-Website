@@ -108,10 +108,6 @@
   letter-spacing: 0.5px;
 }
 
-.stat-value-display {
-  text-align: right;
-}
-
 .stat-total-value {
   font-weight: 700;
   font-size: var(--font-size-lg);
@@ -257,10 +253,6 @@
   .pokemon-stats-container {
     flex-direction: column;
   }
-
-  .pokemon-stat-bar-container {
-    width: 100%;
-  }
 }
 
 /* Mobile screens (480px and below) */
@@ -269,14 +261,5 @@
     flex-direction: column;
     align-items: flex-start;
     gap: 0.25rem;
-  }
-
-  .pokemon-stat-name {
-    min-width: unset;
-    font-size: 0.75rem;
-  }
-
-  .pokemon-stat-bar-container {
-    width: 100%;
   }
 }

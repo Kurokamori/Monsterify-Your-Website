@@ -103,12 +103,6 @@
   letter-spacing: 0.5px;
 }
 
-.move-stat-value {
-  font-size: var(--font-size-base);
-  font-weight: 700;
-  color: var(--text-color);
-}
-
 .move-description-section {
   display: flex;
   align-items: flex-start;
@@ -182,26 +176,13 @@
    ============================================================================= */
 
 /* Tablet screens (768px and below) */
-@media (max-width: 768px) {
-  .moves-panel-grid {
-    grid-template-columns: 1fr;
-  }
-}
 
 /* Mobile screens (480px and below) */
 @media (max-width: 480px) {
   .moves-panel {
     padding: 0.75rem;
   }
-
-  .move-card {
-    padding: 0.5rem;
-  }
 }
 
 /* Reduced motion preference */
-@media (prefers-reduced-motion: reduce) {
-  .move-card {
-    transition: none;
-  }
-}
+

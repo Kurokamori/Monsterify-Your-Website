@@ -39,12 +39,10 @@
   min-width: 30dvw;
 }
 
-
 .auth-header {
   text-align: center;
   margin-bottom: 1rem;
 }
-
 
 .auth-header h1 {
   font-size: var(--font-size-2xl);
@@ -56,7 +54,6 @@
   color: var(--text-color);
   opacity: 0.8;
 }
-
 
 .auth-error {
   background-color: var(--error-glow);
@@ -70,13 +67,11 @@
   gap: 0.5rem;
 }
 
-
 .auth-loading {
   display: flex;
   justify-content: center;
   padding: 2rem;
 }
-
 
 .loading-spinner {
   width: 40px;
@@ -93,7 +88,6 @@
   text-align: center;
   margin-bottom: 1rem;
 }
-
 
 @keyframes spin {
   0% { transform: rotate(0deg); }
@@ -118,7 +112,6 @@
 .auth-form .form-group label {
   margin-bottom: 0.25rem;
   font-size: var(--font-size-sm);
-  
 }
 
 .auth-form-group {
@@ -170,13 +163,11 @@
   align-items: center;
 }
 
-
 .checkbox-group {
   display: flex;
   align-items: center;
   gap: 0.5rem;
 }
-
 
 .checkbox-group input[type="checkbox"] {
   width: 1rem;
@@ -194,7 +185,6 @@
   text-decoration: none;
   transition: color 0.2s;
 }
-
 
 .forgot-password:hover {
   color: var(--accent-hover);
@@ -215,7 +205,6 @@
   font-size: var(--font-size-sm);
 }
 
-
 .auth-link {
   color: var(--accent-color);
   text-decoration: none;
@@ -223,28 +212,12 @@
   transition: color 0.2s;
 }
 
-
 .auth-link:hover {
   color: var(--accent-hover);
   text-decoration: underline;
 }
 
 /* Register Page Specific Styles */
-.terms-checkbox {
-  margin-top: 0.5rem;
-}
-
-
-.terms-checkbox a {
-  color: var(--accent-color);
-  text-decoration: none;
-  transition: color 0.2s;
-}
-
-.terms-checkbox a:hover {
-  color: var(--accent-hover);
-  text-decoration: underline;
-}
 
 /* Monster Fandom Panel */
 .fandom-panel {

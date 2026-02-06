@@ -6,8 +6,6 @@
   padding-bottom: 3rem;
 }
 
-
-
 .guide-sidebar {
   width: 100%;
   background-color: var(--nav-background);
@@ -110,7 +108,6 @@
   }
 }
 
-
 /* All Guides */
 .guide-card {
   display: flex;
@@ -127,7 +124,6 @@
 }
 
 /* Empty state (uses common .empty-state) */
-.no-guides {}
 
 /* Guide Detail */
 .guide-detail-header {
@@ -154,7 +150,6 @@
   color: var(--text-color);
 }
 
-
 .guide-detail-title {
   font-size: var(--font-size-3xl);
   margin-bottom: 0.75rem;
@@ -167,7 +162,6 @@
   font-size: var(--font-size-base);
 }
 
-
 .guide-detail-content {
   background-color: var(--card-background);
   border-radius: 0.5rem;
@@ -175,7 +169,6 @@
   margin-bottom: 2rem;
   box-shadow: 0 2px 4px var(--overlay-light);
 }
-
 
 .guide-content-body {
   line-height: 1.8;
@@ -221,7 +214,6 @@
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   gap: 1.5rem;
 }
-
 
 /* Categories grid */
 .guide-categories-grid {
@@ -314,7 +306,6 @@
   }
 }
 
-
 /* Content layout + sidebar (sidebar styles are in common) */
 .guide-content-layout {
   display: grid;
@@ -336,7 +327,6 @@
   box-shadow: 0 2px 4px var(--overlay-light);
 }
 
-
 /* Responsive */
 @media (max-width: 992px) {
   .guide-content-layout { grid-template-columns: 250px 1fr; gap: 1.5rem; }
@@ -348,7 +338,6 @@
   .guide-content-layout { grid-template-columns: 1fr; }
   .guide-sidebar-container { position: static; margin-bottom: 1.5rem; }
 }
-
 
 /* ================================
    LORE
@@ -369,7 +358,6 @@
   .related-link { width: 100%; text-align: left; }
 }
 
-
 /* ================================
    NPCs
    ================================ */
@@ -380,7 +368,6 @@
   gap: 1.5rem;
   margin-bottom: 3rem;
 }
-
 
 .npc-basic-info {
   display: flex; padding: 1.5rem; cursor: pointer; transition: background-color 0.2s;
@@ -417,7 +404,6 @@
   margin-bottom: 1.5rem;
 }
 
-
 .npc-bio {
   line-height: 1.8;
 }
@@ -443,8 +429,6 @@
   flex-direction: column;
   gap: 0.25rem;
 }
-
-
 
 .npc-quests {
   list-style-type: disc;
@@ -487,7 +471,6 @@
   flex-direction: column;
 }
 
-
 .reward-info {
   flex: 1;
 }
@@ -496,8 +479,6 @@
   font-weight: 500;
   margin-bottom: 0.25rem;
 }
-
-
 
 /* Empty state (uses common .empty-state) */
 .no-npcs {}

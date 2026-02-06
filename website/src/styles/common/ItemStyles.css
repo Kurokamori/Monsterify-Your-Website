@@ -11,7 +11,7 @@
 .item-card.common { border-color: var(--text-muted); }
 .item-card.uncommon { border-color: var(--success-light); }
 .item-card.rare { border-color: var(--blue-color); }
-.item-card.ultra-rare { border-color: var(--custom-type); }
+
 .item-card.legendary { border-color: var(--warning-color); }
 
 .item-image-container {
@@ -213,7 +213,6 @@
   transition: all 0.3s ease;
 }
 
-
 .item-card.rarity-common,
 .item-card.rarity-uncommon,
 .item-card.rarity-rare,
@@ -244,7 +243,6 @@
   max-width: 600px;
   width: 100%;
 }
-
 
 .item-detail-header {
   display: flex;
@@ -284,7 +282,6 @@
   color: var(--text-color);
 }
 
-
 .item-detail-title-section {
   flex: 1;
   min-width: 0;
@@ -308,7 +305,6 @@
   font-weight: 500;
   text-transform: capitalize;
 }
-
 
 .item-detail-content {
   padding: 0 1.5rem;
@@ -334,7 +330,6 @@
   justify-content: center;
   margin-top: 1rem;
 }
-
 
 /* Special Berry Actions - for buttons use unified button system (see buttons.css) */
 .special-berry-actions {
@@ -362,29 +357,11 @@
 }
 
 /* Claimed monster (typo preserved for compatibility) */
-.monster-option.claimed-with-edenweiss,
 .monster-option.claimed-with-edenwiess { opacity: 0.6; position: relative; }
-.monster-option.claimed-with-edenweiss::after,
 .monster-option.claimed-with-edenwiess::after {
   content: ''; position: absolute; inset: 0; background: var(--success-glow);
   border: 2px solid var(--success-color); border-radius: 8px; pointer-events: none;
 }
-.claimed-indicator {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  background: var(--success-color);
-  color: var(--text-color);
-  padding: 4px 8px;
-  border-radius: 4px;
-  font-size: 12px;
-  font-weight: bold;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  z-index: 10;
-}
-
 
 /* Edenweiss tooltip (typo preserved) */
 

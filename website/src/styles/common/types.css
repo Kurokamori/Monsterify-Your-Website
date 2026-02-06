@@ -8,31 +8,31 @@
 .water, .type-water { 
     background-color: var(--water-type); 
 }
-.electric, .type-electric { 
+.type-electric { 
     background-color: var(--electric-type); 
 }
-.grass, .type-grass { 
+.type-grass { 
     background-color: var(--grass-type); 
 }
-.ice, .type-ice { 
+.type-ice { 
     background-color: var(--ice-type); 
 }
-.fighting, .type-fighting { 
+.type-fighting { 
     background-color: var(--fighting-type); 
 }
-.poison, .type-poison { 
+.type-poison { 
     background-color: var(--poison-type); 
 }
-.ground, .type-ground { 
+.type-ground { 
     background-color: var(--ground-type); 
 }
-.flying, .type-flying { 
+.type-flying { 
     background-color: var(--flying-type); 
 }
-.psychic, .type-psychic { 
+.type-psychic { 
     background-color: var(--psychic-type); 
 }
-.bug, .type-bug { 
+.type-bug { 
     background-color: var(--bug-type); 
 }
 .rock, .type-rock { 
@@ -41,16 +41,16 @@
 .ghost, .type-ghost { 
     background-color: var(--ghost-type); 
 }
-.dragon, .type-dragon { 
+.type-dragon { 
     background-color: var(--dragon-type); 
 }
-.dark, .type-dark { 
+.type-dark { 
     background-color: var(--dark-type); 
 }
-.steel, .type-steel { 
+.type-steel { 
     background-color: var(--steel-type); 
 }
-.fairy, .type-fairy { 
+.type-fairy { 
     background-color: var(--fairy-type); 
 }
 

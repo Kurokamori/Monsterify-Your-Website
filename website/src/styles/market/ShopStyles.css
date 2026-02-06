@@ -51,7 +51,6 @@
   margin: 0 auto;
 }
 
-
 .shop-flavor-text {
   background: var(--card-background);
   padding: 15px;
@@ -61,7 +60,6 @@
   color: var(--accent-color);
   text-align: center;
 }
-
 
 /* ---- Controls / search ---- */
 .shop-controls {
@@ -118,8 +116,6 @@
   font-weight: bold;
 }
 
-
-
 /* ---- Grids ---- */
 .shop-items-grid {
   display: grid;
@@ -154,7 +150,6 @@
 /* Shop action buttons: Use unified button system from common/buttons.css
    Example: className="button success" for add, className="button icon info" for edit, etc. */
 
-
 /* Manager cards & tables */
 .shop-manager-content,
 .shop-items-list,
@@ -181,7 +176,6 @@
   opacity: .7;
 }
 
-
 .shop-status {
   display: inline-block;
   padding: 4px 8px;
@@ -197,8 +191,6 @@
   width: 60px;
 }
 
-
-
 /* Quantity controls (tables & modals share) */
 .quantity-control,
 .quantity-input-group{ display:flex; align-items:center; gap:5px; }
@@ -208,7 +200,6 @@
   min-width: 30px;
   text-align: center;
 }
-
 
 /* Responsive trims for tables */
 @media (max-width:768px){
@@ -230,9 +221,7 @@
   gap: 1.5rem;
 }
 
-
 .shop-header h2{ font-size:var(--font-size-2xl); color:var(--accent-color); margin-bottom:.5rem; }
-
 
 .shop-categories {
   display: flex;
@@ -243,7 +232,6 @@
   overflow-x: auto;
   padding-bottom: 0.5rem;
 }
-
 
 /* Category buttons: Use unified button system - className="button filter" or className="button filter active" */
 
@@ -259,8 +247,6 @@
 
 .shop-item:hover:not(.out-of-stock){ transform:translateY(-4px); box-shadow:0 4px 8px var(--overlay-light); }
 .shop-item.out-of-stock{ opacity:.6; cursor:not-allowed; }
-
-
 
 .limited-badge {
   position: absolute;
@@ -280,7 +266,6 @@
   flex-direction: column;
   gap: .5rem;
 }
-
 
 .item-price {
   display: flex;
@@ -304,7 +289,6 @@
   opacity: .8;
 }
 
-
 /* Pagination */
 .shop-pagination {
   display: flex;
@@ -320,7 +304,6 @@
   flex-direction: column;
   gap: 1.5rem;
 }
-
 
 @media (min-width:768px){ .item-details{ flex-direction:row; } }
 .item-image-large-container {
@@ -347,15 +330,10 @@
   gap: 1rem;
 }
 
-
-
 .meta-item {
   display: flex;
   justify-content: space-between;
 }
-
-
-
 
 /* Purchase section (token-based) */
 .purchase-section {
@@ -433,7 +411,6 @@
   font-size: var(--font-size-sm);
 }
 
-
 /* Purchase buttons: Use unified button system - className="button primary lg block" */
 
 /* Login prompt */
@@ -446,9 +423,7 @@
   box-shadow: 0 2px 4px var(--overlay-light);
 }
 
-
 /* Modal buttons (token-based) */
-
 
 /* Modal buttons: Use unified button system - className="button primary" or className="button secondary" */
 @media (max-width:768px){ .modal-actions{ flex-direction:column; } }
@@ -503,7 +478,6 @@
   font-weight: 600;
 }
 
-
 .currency-amount i{ color:var(--accent-color); margin-left:.5rem; font-size:1.2rem; filter:drop-shadow(1px 1px 2px var(--overlay-dark)); }
 
 /* Alerts (base) */
@@ -529,7 +503,6 @@
   border-radius: 16px;
   backdrop-filter: blur(15px);
 }
-
 
 /* Store grid + cards */
 .store-items-grid {
@@ -565,7 +538,6 @@
 
 /* Scoped item internals to avoid global clashes */
 .store-item-card .item-header{ display:flex; align-items:center; gap:1.25rem; margin-bottom:1.5rem; position:relative; z-index:1; }
-
 
 .store-item-card:hover .item-icon{ border-color:var(--accent-color); box-shadow:0 4px 15px var(--accent-glow-medium); }
 .store-item-card .item-info{ flex:1; position:relative; z-index:1; }
@@ -613,34 +585,7 @@
   display: inline-block;
 }
 
-
 /* Purchase CTA (fancy) */
-
-
-.purchase-button::before{
-  content:""; position:absolute; inset:0; left:-100%;
-  background:linear-gradient(90deg, transparent, var(--highlight-light), transparent);
-  transition:left .6s ease;
-}
-.purchase-button:hover::before{ left:100%; }
-.purchase-button:hover:not(:disabled){
-  background:linear-gradient(135deg, var(--success-light) 0%, var(--success-light) 50%, var(--success-light) 100%);
-  transform:translateY(-3px) scale(1.02);
-  box-shadow:0 8px 25px var(--success-glow-medium); border-color:var(--success-light);
-}
-.purchase-button.cannot-afford{
-  background:linear-gradient(135deg, var(--error-color) 0%, var(--error-color) 50%, var(--error-color) 100%);
-  border-color:var(--error-color); cursor:not-allowed; box-shadow:0 4px 15px var(--error-glow-medium);
-}
-.purchase-button.out-of-stock{
-  background:linear-gradient(135deg, var(--text-muted) 0%, var(--text-muted) 50%, var(--text-muted) 100%);
-  border-color:var(--text-muted); cursor:not-allowed; box-shadow:0 4px 15px var(--overlay-dark);
-}
-.purchase-button.loading{
-  background:linear-gradient(135deg, var(--blue-color) 0%, var(--blue-light) 50%, var(--blue-color) 100%);
-  border-color:var(--blue-color); cursor:not-allowed; box-shadow:0 4px 15px var(--blue-glow);
-}
-.purchase-button:disabled{ opacity:.6; cursor:not-allowed; transform:none; box-shadow:0 2px 8px var(--overlay-medium); }
 
 /* Faction store responsive tweaks */
 @media (max-width:768px){
@@ -651,7 +596,6 @@
   .store-item-card .item-header{ flex-direction:column; align-items:center; gap:1rem; text-align:center; }
   .item-icon{ align-self:center; }
   .store-item-card .item-details{ text-align:center; }
-  .purchase-button{ padding:.875rem 1.25rem; font-size:1rem; }
 }
 @media (max-width:480px){
   .faction-store{ padding:0 1rem; }
@@ -739,13 +683,11 @@
   color: var(--text-color);
 }
 
-
 .purchase-details {
   background: var(--card-background);
   padding: 15px;
   border-radius: var(--radius-sm);
 }
-
 
 .quantity-control label{ font-weight:700; color:var(--text-color); }
 .quantity-input-group input{
@@ -786,7 +728,6 @@
   padding: 15px 20px;
   border-top: 1px solid var(--border-color);
 }
-
 
 @media (max-width:480px){
   .item-preview{ flex-direction:column; align-items:center; text-align:center; }

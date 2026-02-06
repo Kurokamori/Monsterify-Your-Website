@@ -24,20 +24,3 @@
   color: var(--text-color);
 }
 
-.pagination .page-link {
-  background-color: var(--nav-background);
-  border-color: var(--border-color);
-  color: var(--accent-color);
-}
-
-.pagination .page-link:hover {
-  background-color: var(--nav-hover);
-  border-color: var(--accent-color);
-  color: var(--text-color);
-}
-
-.pagination .page-item.active .page-link {
-  background-color: var(--accent-color);
-  border-color: var(--accent-color);
-  color: var(--nav-background);
-}
