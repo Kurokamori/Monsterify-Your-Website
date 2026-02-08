@@ -173,7 +173,7 @@ const TypeCalculator = () => {
         <div className="results-section">
           <div className="effectiveness-chart">
             <h3>Selected Types:</h3>
-            <div className="type-badges">
+            <div className="container vertical gap-md">
               {results.types.map((type, index) => (
                 <span key={index} className={`type-badge type-${type.toLowerCase()}`}>
                   {type}

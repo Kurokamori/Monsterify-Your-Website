@@ -245,7 +245,7 @@ const RerollerPage = () => {
       {monster.species2 && (
         <div className="result-card-details">+ {monster.species2}</div>
       )}
-      <div className="type-badges">
+      <div className="container vertical gap-md">
         {monster.type1 && <span className="type-badge">{monster.type1}</span>}
         {monster.type2 && <span className="type-badge">{monster.type2}</span>}
         {monster.type3 && <span className="type-badge">{monster.type3}</span>}

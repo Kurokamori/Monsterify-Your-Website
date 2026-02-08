@@ -108,7 +108,7 @@ const AdoptMonster = ({ userTrainers }) => {
         
         <div className="bazzar-monster-types">
           <strong>Types:</strong>
-          <div className="type-badges">
+          <div className="container vertical gap-md">
             {types.map((type, index) => (
               <TypeBadge key={index} type={type} />
             ))}

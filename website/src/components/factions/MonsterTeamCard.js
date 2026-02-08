@@ -83,7 +83,7 @@ const MonsterTeamCard = ({ monster }) => {
         {monster.species && monster.species.length > 0 && (
           <div className="monster-types">
             <label>Species:</label>
-            <div className="type-badges">
+            <div className="container vertical gap-md">
               {monster.species.slice(0, 3).map((species, index) => (
                 <span key={index} className="species-tag">
                   {species}

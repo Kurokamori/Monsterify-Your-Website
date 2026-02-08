@@ -417,7 +417,7 @@ const GiftRewards = ({
                 <div className="monster-info">
                   <div className="monster-types">
                     <strong>Species:</strong>
-                    <div className="type-badges">
+                    <div className="container vertical gap-md">
                       {monster.species1 && <span className="type">{monster.species1}</span>}
                       {monster.species2 && <span className="type">{monster.species2}</span>}
                     </div>
