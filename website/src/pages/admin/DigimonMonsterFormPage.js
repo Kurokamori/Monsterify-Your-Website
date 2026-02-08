@@ -150,9 +150,9 @@ const DigimonMonsterFormPage = () => {
         <h1>{isEditMode ? 'Edit Digimon Monster' : 'Add Digimon Monster'}</h1>
       </div>
 
-      <div className="admin-form-container">
-        <form onSubmit={handleSubmit} className="admin-form">
-          <div className="admin-form-grid">
+      <div className="bulk-monster-add-form">
+        <form onSubmit={handleSubmit} className="reroller-content">
+          <div className="reroller-content">
             <div className="admin-form-column">
               <FormInput
                 label="Name"

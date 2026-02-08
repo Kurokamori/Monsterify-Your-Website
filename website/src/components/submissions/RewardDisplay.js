@@ -92,9 +92,9 @@ const RewardDisplay = ({
             return (
               <div key={index} className="reward-entity">
                 <div className="reward-entity-header">
-                  <span className="reward-entity-name">{trainerName}</span>
+                  <span className="appearance-count">{trainerName}</span>
                 </div>
-                <div className="reward-entity-details">
+                <div className="fandom-grid">
                   <div className="reward-item">
                     <span className="reward-label">Levels:</span>
                     <span className="reward-value">{formatLevelText(reward.levels)}</span>
@@ -125,14 +125,14 @@ const RewardDisplay = ({
             return (
               <div key={index} className="reward-entity">
                 <div className="reward-entity-header">
-                  <span className="reward-entity-name">
+                  <span className="appearance-count">
                     {monster ? monster.name : `Monster #${reward.monsterId}`}
                     {reward.trainerName && (
                       <span className="reward-entity-trainer"> (Trainer: {reward.trainerName})</span>
                     )}
                   </span>
                 </div>
-                <div className="reward-entity-details">
+                <div className="fandom-grid">
                   <div className="reward-item">
                     <span className="reward-label">Levels:</span>
                     <span className="reward-value">{formatLevelText(reward.levels)}</span>
@@ -235,7 +235,7 @@ const RewardDisplay = ({
 
       {/* Capped Levels */}
       {rewards.cappedLevels > 0 && (
-        <div className="reward-section capped-levels-section">
+        <div className="reward-section gift-rewards">
           <h4>Capped Levels</h4>
           <div className="reward-item">
             <span className="reward-label">Available Capped Levels:</span>

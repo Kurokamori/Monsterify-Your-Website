@@ -280,7 +280,7 @@ const MegaMart = () => {
         </p>
       </div>
 
-      <div className="trainer-selection">
+      <div className="shop-search">
         <TrainerSelector
           trainers={userTrainers}
           selectedTrainerId={selectedTrainer}
@@ -322,11 +322,11 @@ const MegaMart = () => {
                 <h4>{selectedMonster.name}</h4>
               </div>
 
-              <div className="monster-info-details">
+              <div className="video-list">
                 {selectedMonster.species && selectedMonster.species.length > 0 && (
-                  <div className="monster-species">
+                  <div className="monster-types">
                     {selectedMonster.species.slice(0, 3).map((species, index) => (
-                      <span key={index} className="species-badge">{species}</span>
+                      <span key={index} className="type-badge">{species}</span>
                     ))}
                   </div>
                 )}
@@ -340,7 +340,7 @@ const MegaMart = () => {
                 )}
 
                 {selectedMonster.attribute && (
-                  <div className="monster-attribute">
+                  <div className="monster-types">
                     <AttributeBadge attribute={selectedMonster.attribute} />
                   </div>
                 )}
@@ -351,25 +351,25 @@ const MegaMart = () => {
               <div className="ability-card">
                 <h4>Primary Ability</h4>
                 <p className="ability-name">{monsterAbilities.ability1?.name || 'None'}</p>
-                <p className="ability-description">{monsterAbilities.ability1?.effect || 'No description available'}</p>
+                <p className="ability-effect">{monsterAbilities.ability1?.effect || 'No description available'}</p>
               </div>
 
               <div className="ability-card">
                 <h4>Secondary Ability</h4>
                 <p className="ability-name">{monsterAbilities.ability2?.name || 'None'}</p>
-                <p className="ability-description">{monsterAbilities.ability2?.effect || 'No description available'}</p>
+                <p className="ability-effect">{monsterAbilities.ability2?.effect || 'No description available'}</p>
               </div>
 
               {monsterAbilities.hidden_ability && (
                 <div className="ability-card hidden">
                   <h4>Hidden Ability</h4>
                   <p className="ability-name">{monsterAbilities.hidden_ability.name}</p>
-                  <p className="ability-description">{monsterAbilities.hidden_ability.effect}</p>
+                  <p className="ability-effect">{monsterAbilities.hidden_ability.effect}</p>
                 </div>
               )}
             </div>
 
-            <div className="ability-actions">
+            <div className="rarity-options">
               <button
                 className="button primary"
                 onClick={handleUseAbilityCapsule}
@@ -531,7 +531,7 @@ const MegaMart = () => {
                 filteredAbilities.map(ability => (
                   <div
                     key={ability.name}
-                    className={`ability-option ${selectedAbility === ability.name ? 'selected' : ''}`}
+                    className={`ability-option${selectedAbility === ability.name ? 'selected' : ''}`}
                     onClick={() => setSelectedAbility(ability.name)}
                   >
                     <h4>{ability.name}</h4>

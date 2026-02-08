@@ -203,7 +203,7 @@ const AutocompleteInput = ({
   };
 
   return (
-    <div className={`autocomplete-input-container ${className}`}>
+    <div className={`autocomplete-input-container${className}`}>
       {label && (
         <label htmlFor={id} className="autocomplete-label">
           {label}
@@ -225,7 +225,7 @@ const AutocompleteInput = ({
           placeholder={placeholder}
           disabled={disabled}
           required={required}
-          className={`autocomplete-input ${!isValid && value ? 'invalid' : ''}`}
+          className={`form-input${!isValid && value ? 'invalid' : ''}`}
           autoComplete="off"
         />
 
@@ -248,9 +248,9 @@ const AutocompleteInput = ({
             {filteredOptions.map((option, index) => (
               <div
                 key={option.name}
-                className={`autocomplete-option ${
+                className={`autocomplete-option${
                   highlightedIndex === index ? 'highlighted' : ''
-                } ${value.toLowerCase() === option.name.toLowerCase() ? 'selected' : ''}`}
+                }${value.toLowerCase() === option.name.toLowerCase() ? 'selected' : ''}`}
                 onClick={() => handleOptionClick(option)}
                 onMouseEnter={() => setHighlightedIndex(index)}
               >
@@ -283,7 +283,7 @@ const AutocompleteInput = ({
 
       {/* Help text */}
       {helpText && (
-        <small className="autocomplete-help-text">{helpText}</small>
+        <small className="field-note">{helpText}</small>
       )}
     </div>
   );

@@ -187,7 +187,7 @@ const AntiqueAuction = ({ trainerId, antique, onClose, userTrainers = [] }) => {
         {auctionOptions.map((option) => (
           <div
             key={option.id}
-            className={`auction-option-card ${selectedOption?.id === option.id ? 'selected' : ''}`}
+            className={`area-card ${selectedOption?.id === option.id ? 'selected' : ''}`}
             onClick={() => handleOptionSelect(option)}
           >
             {/* Monster Image */}
@@ -219,7 +219,7 @@ const AntiqueAuction = ({ trainerId, antique, onClose, userTrainers = [] }) => {
             </div>
 
             {/* Species */}
-            <div className="auction-option-species">
+            <div className="auction-option-creator">
               <span className="label">Species:</span> {getSpeciesDisplay(option)}
             </div>
 
@@ -232,7 +232,7 @@ const AntiqueAuction = ({ trainerId, antique, onClose, userTrainers = [] }) => {
 
             {/* Attribute */}
             {option.attribute && (
-              <div className="auction-option-attribute">
+              <div className="evolution-attribute">
                 <AttributeBadge attribute={option.attribute} />
               </div>
             )}
@@ -264,7 +264,7 @@ const AntiqueAuction = ({ trainerId, antique, onClose, userTrainers = [] }) => {
   return (
     <div className="antique-auction-modal">
       <div className="antique-auction-content">
-        <div className="antique-auction-header">
+        <div className="panel-header">
           <h2>Auction Antique: {antique}</h2>
           <button className="button close" onClick={onClose}>&times;</button>
         </div>
@@ -291,7 +291,7 @@ const AntiqueAuction = ({ trainerId, antique, onClose, userTrainers = [] }) => {
             </div>
           ) : (
             <>
-              <div className="auction-description">
+              <div className="auth-header">
                 <p>
                   Select a monster from the options below to adopt using your <strong>{antique}</strong>.
                 </p>
@@ -322,13 +322,13 @@ const AntiqueAuction = ({ trainerId, antique, onClose, userTrainers = [] }) => {
                       value={monsterName}
                       onChange={handleNameChange}
                       placeholder="Enter monster name"
-                      className="form-control"
+                      className="form-input"
                     />
                   </div>
 
                   {adoptError && <ErrorMessage message={adoptError} />}
 
-                  <div className="adoption-actions">
+                  <div className="type-tags">
                     {adoptLoading ? (
                       <LoadingSpinner />
                     ) : (

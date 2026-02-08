@@ -79,3 +79,12 @@
 
 /* Modal components */
 @import './ModalComponents.css';
+
+/* Layout */
+@import './layout.css';
+
+/* Page header */
+@import './page-header.css';
+
+/* Auth pages */
+@import './auth-pages.css';

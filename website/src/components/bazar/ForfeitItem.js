@@ -150,6 +150,7 @@ const ForfeitItem = ({ userTrainers }) => {
             <label htmlFor="trainer-select">Select Trainer:</label>
             <select
               id="trainer-select"
+              className="trainer-select"
               value={selectedTrainer}
               onChange={handleTrainerChange}
               required

@@ -45,7 +45,7 @@ const PurchaseModal = ({
           <button className="button icon danger" onClick={onCancel}>×</button>
         </div>
         
-        <div className="purchase-modal-content">
+        <div className="antique-appraisal-body">
           <div className="item-preview">
             <img
               src={getItemImageUrl(item)}

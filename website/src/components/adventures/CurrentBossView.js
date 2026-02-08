@@ -72,7 +72,7 @@ const CurrentBossView = () => {
   if (!bossData || !bossData.boss) {
     return (
       <div className="current-boss-view">
-        <div className="no-boss-message">
+        <div className="no-leaderboard">
           <h3>No Active Boss</h3>
           <p>There is currently no active boss battle. Check back later!</p>
         </div>
@@ -120,20 +120,20 @@ const CurrentBossView = () => {
             )}
             
             <div className="boss-stats">
-              <div className="boss-stat">
+              <div className="set-item">
                 <span className="stat-label">Status:</span>
                 <span className={`stat-value status-${boss.status}`}>
                   {boss.status.charAt(0).toUpperCase() + boss.status.slice(1)}
                 </span>
               </div>
               
-              <div className="boss-stat">
+              <div className="set-item">
                 <span className="stat-label">Month:</span>
                 <span className="stat-value">{boss.month}/{boss.year}</span>
               </div>
               
               {boss.start_date && (
-                <div className="boss-stat">
+                <div className="set-item">
                   <span className="stat-label">Started:</span>
                   <span className="stat-value">{formatDate(boss.start_date)}</span>
                 </div>

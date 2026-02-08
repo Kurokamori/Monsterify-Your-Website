@@ -504,8 +504,8 @@ const GameCorner = () => {
   }
 
   return (
-    <div className="game-corner-container">
-      <div className="game-corner-header">
+    <div className="bazar-container">
+      <div className="adopt-card">
         <Link to="/town" className="button secondary">
           <i className="fas fa-arrow-left mr-2"></i> Back to Town
         </Link>
@@ -551,7 +551,7 @@ const GameCorner = () => {
                   <i className="fas fa-exclamation-triangle"></i>
                   <h3>Video Unavailable</h3>
                   <p>This video cannot be played due to restrictions or connectivity issues.</p>
-                  <div className="error-actions">
+                  <div className="stat-group">
                     <button 
                       className="button secondary"
                       onClick={() => handleVideoSelect(selectedVideo)}
@@ -588,7 +588,7 @@ const GameCorner = () => {
             {defaultVideos.map(video => (
               <button
                 key={video.id}
-                className={`video-item ${selectedVideo.id === video.id ? 'active' : ''}`}
+                className={`video-item${selectedVideo.id === video.id ? 'active' : ''}`}
                 onClick={() => handleVideoSelect(video)}
               >
                 {video.title}
@@ -642,7 +642,7 @@ const GameCorner = () => {
             </div>
 
             <div className="timer-settings">
-              <div className="setting-group">
+              <div className="set-item">
                 <label>Session Length (min)</label>
                 <input
                   type="number"
@@ -654,7 +654,7 @@ const GameCorner = () => {
                 />
               </div>
 
-              <div className="setting-group">
+              <div className="set-item">
                 <label>Break Length (min)</label>
                 <input
                   type="number"
@@ -666,7 +666,7 @@ const GameCorner = () => {
                 />
               </div>
 
-              <div className="setting-group">
+              <div className="set-item">
                 <label>Long Break Length (min)</label>
                 <input
                   type="number"
@@ -678,7 +678,7 @@ const GameCorner = () => {
                 />
               </div>
 
-              <div className="setting-group">
+              <div className="set-item">
                 <label>Number of Sessions</label>
                 <input
                   type="number"
@@ -751,9 +751,9 @@ const GameCorner = () => {
 
             {/* Monster Rewards - Separate Grid */}
             {rewards.rewards && rewards.rewards.filter(reward => reward.type === 'monster').length > 0 && (
-              <div className="monster-rewards-section">
+              <div className="other-rewards-section">
                 <h3>Monster Rewards</h3>
-                <div className="monster-rewards-grid">
+                <div className="button">
                   {rewards.rewards.filter(reward => reward.type === 'monster').map((reward, index) => (
                     <MonsterRewardCard
                       key={reward.id || index}
@@ -783,8 +783,8 @@ const GameCorner = () => {
                 <h3>Other Rewards</h3>
                 <div className="rewards-list">
                   {rewards.rewards.filter(reward => reward.type !== 'monster').map((reward, index) => (
-                    <div key={index} className="reward-card claimed">
-                    <div className={`reward-icon ${reward.type}`}>
+                    <div key={index} className="area-card claimed">
+                    <div className={`reward-icon${reward.type}`}>
                       <i className={
                         reward.type === 'coin' ? 'fas fa-coins' :
                         reward.type === 'item' ? 'fas fa-box' :
@@ -805,7 +805,7 @@ const GameCorner = () => {
                        reward.type === 'level' ? `${reward.reward_data.levels} level${reward.reward_data.levels > 1 ? 's' : ''}` :
                        'Mystery reward'}
                     </div>
-                    <div className={`reward-rarity ${reward.rarity}`}>
+                    <div className={`reward-rarity${reward.rarity}`}>
                       {reward.rarity.charAt(0).toUpperCase() + reward.rarity.slice(1)}
                     </div>
                     <div className="reward-assigned">

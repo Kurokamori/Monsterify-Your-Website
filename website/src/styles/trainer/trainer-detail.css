@@ -7,13 +7,6 @@
 
 /* ===== Detail page container ===== */
 
-.trainer-detail-container {
-  width: 100%;
-  max-width: var(--container-max-width);
-  margin: 0 auto;
-  padding: 2rem var(--content-padding);
-}
-
 .trainer-details-container {
   width: 100%;
   background: var(--background-color);
@@ -42,20 +35,7 @@
   flex-wrap: wrap;
   gap: 15px;
 }
-
-.trainer-details-title {
-  display: flex;
-  align-items: baseline;
-  gap: 10px;
-}
-
-.trainer-details-title h1{ margin:0; color:var(--text-color); }
-.trainer-details-title .trainer-nickname{ font-style:italic; color:var(--text-muted); font-size:1.1rem; }
-
-.trainer-details-actions {
-  display: flex;
-  gap: 10px;
-}
+.adopt-card .trainer-nickname{ font-style:italic; color:var(--text-muted); font-size:1.1rem; }
 
 /* ===== Detail page content ===== */
 
@@ -70,43 +50,34 @@
   flex-shrink: 0;
 }
 
-.trainer-main-content {
-  flex: 1;
-  min-width: 0;
-}
-
-.trainer-profile-tab {
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-}
-
 /* ===== Panels ===== */
 
-.trainer-panel, .trainer-monsters-section{
-  background-color:var(--card-background); border-radius:.5rem; padding:1.5rem;
-  box-shadow:0 2px 4px var(--overlay-light); margin-bottom:1.5rem;
-  overflow: hidden;
-}
-
-.trainer-panel h2, .trainer-monsters-section h2, .trainer-pc-tab h2, .trainer-boxes-tab h2,
-.trainer-inventory-tab h2, .trainer-stats-tab h2{
-  font-size:var(--font-size-xl); color:var(--accent-color); margin-bottom:1.5rem;
-  padding-bottom:.5rem; border-bottom:1px solid var(--divider-color);
-}
-
-/* ===== Tabs ===== */
-
-.trainer-pc-tab, .trainer-boxes-tab, .trainer-inventory-tab, .trainer-stats-tab{
-  background-color:var(--card-background); border-radius:.5rem; padding:1.5rem; box-shadow:0 2px 4px var(--overlay-light);
-}
-
-.trainer-edit-boxes-tab {
+.stats-section{ 
   background-color: var(--card-background);
   border-radius: .5rem;
   padding: 1.5rem;
-  box-shadow: 0 2px 4px var(--overlay-light);
+  box-shadow: 0 2px 8px var(--overlay-medium);
+  margin-bottom: 2rem;
+ }
+
+ .stats-section h2 {
+  color: var(--accent-color);
+  font-size: var(--font-size-2xl);
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border-color);
+ }
+
+.inventory-item .detail-label {
+  color: var(--accent-color);
+  font-size: var(--font-size-lg);
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  display: block;
 }
+
+/* ===== Tabs ===== */
 
 .trainer-mega-tab {
   padding: 1.5rem;
@@ -177,7 +148,7 @@
 
 /* ===== Info sections ===== */
 
-.trainer-info-section {
+.trainer-bio-section {
   background: var(--card-background);
   border-radius: 16px;
   box-shadow: 0 8px 32px var(--overlay-light);
@@ -188,14 +159,20 @@
   transition: transform .2s ease, box-shadow .2s ease;
 }
 
-.trainer-info-section:hover{ transform:translateY(-2px); box-shadow:0 12px 48px var(--overlay-light); }
+.trainer-bio-section:hover{ transform:translateY(-2px); box-shadow:0 12px 48px var(--overlay-light); }
 
-.trainer-info-section h3{
-  margin-top:0; margin-bottom:20px; color:var(--text-color); font-size:1.4rem; font-weight:600;
-  border-bottom:3px solid var(--accent-color); padding-bottom:12px; position:relative;
+.trainer-bio-section h3{
+  border-bottom: 1px solid var(--border-color);
+  color: var(--text-color);
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 15px;
+  margin-top: 0;
+  padding-bottom: 10px;
+  position: relative;
 }
 
-.trainer-info-section h3::after{
+.trainer-bio-section h3::after{
   content:''; position:absolute; bottom:-3px; left:0; width:60px; height:3px;
   background:linear-gradient(90deg, var(--accent-color), var(--accent-light)); border-radius:2px;
 }
@@ -221,6 +198,23 @@
   box-shadow:0 4px 16px var(--overlay-light);
 }
 
+.trainer-stats {
+  box-sizing: border-box;
+  display: grid;
+  gap: 2rem;
+  grid-template-columns: 1fr 1fr;
+  margin-bottom: 2rem;
+  position: relative;
+  width: 100%;
+}
+
+.theme-display{
+  align-items: center;
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+}
+
 /* ===== Responsive ===== */
 
 @media (max-width:1200px){
@@ -240,7 +234,4 @@
 }
 
 @media (max-width:480px){
-  .trainer-panel h2, .trainer-monsters-section h2, .trainer-pc-tab h2, .trainer-boxes-tab h2,
-  .trainer-inventory-tab h2, .trainer-stats-tab h2, .stats-section h3{ font-size:1.25rem; }
-  .trainer-panel, .trainer-monsters-section, .stats-section{ padding:1rem; margin-bottom:1rem; }
 }

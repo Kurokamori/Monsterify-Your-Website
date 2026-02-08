@@ -1,6 +1,7 @@
 .file-upload {
-  width: 100%;
   font-family: var(--font-family);
+  position: relative;
+  width: 100%;
 }
 
 
@@ -132,7 +133,7 @@
 }
 
 
-.add-image-group .form-control {
+.add-image-group .form-input {
   flex: 1;
 }
 
@@ -317,34 +318,11 @@
   color: var(--warning-color);
 }
 
-.form-control {
-  background: var(--admin-card-bg);
-  background-color: var(--input-background);
-  border: 2px solid var(--border-color);
-  border-radius: .5rem;
-  color: var(--text-color);
-  font-size: 1rem;
-  padding: 1rem;
-  transition: all 0.3s ease;
-  width: 100%;
-}
-
-
-.form-control:focus {
-  border-color: var(--accent-color);
-  box-shadow: 0 0 0 3px var(--accent-glow);
-  outline: none;
-}
-
-.form-control:hover {
-  border-color: var(--border-color);
-}
-
 /* Responsive Design */
 @media (max-width: 768px) {
   .images-grid {
-    grid-template-columns: 1fr;
-  }
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+}
   
   .add-image-group {
     flex-direction: column;

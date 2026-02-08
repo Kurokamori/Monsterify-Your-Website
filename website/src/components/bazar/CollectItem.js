@@ -192,7 +192,7 @@ const CollectItem = ({ userTrainers }) => {
 
       {showCollectModal && selectedItem && (
         <Modal isOpen={showCollectModal} onClose={() => setShowCollectModal(false)}>
-          <div className="modal-header">
+          <div className="tree-header">
             <h3>Collect {selectedItem.item_name}</h3>
           </div>
           <div className="modal-body">
@@ -200,6 +200,7 @@ const CollectItem = ({ userTrainers }) => {
               <label htmlFor="trainer-select">Select Trainer:</label>
               <select
                 id="trainer-select"
+                className="trainer-select"
                 value={selectedTrainer}
                 onChange={(e) => setSelectedTrainer(e.target.value)}
                 required

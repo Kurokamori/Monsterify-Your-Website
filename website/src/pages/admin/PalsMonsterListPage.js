@@ -102,7 +102,7 @@ const PalsMonsterListPage = () => {
           />
         </div>
 
-        <div className="admin-filter-group">
+        <div className="form-input">
           <button className="button secondary" onClick={resetFilters}>
             Reset Filters
           </button>

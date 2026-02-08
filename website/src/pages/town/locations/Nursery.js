@@ -331,8 +331,8 @@ const Nursery = () => {
                 <h3><i className="fas fa-inventory"></i> Your Resources</h3>
               </div>
               <div className="nursery-card-body">
-                <div className="resources-grid">
-                  <div className="resource-item">
+                <div className="wildlife-grid">
+                  <div className="logo-link">
                     <div className="resource-icon standard-egg">
                       <i className="fas fa-egg"></i>
                     </div>
@@ -341,7 +341,7 @@ const Nursery = () => {
                       <span className="resource-count">{trainerEggs['Standard Egg'] || 0}</span>
                     </div>
                   </div>
-                  <div className="resource-item">
+                  <div className="logo-link">
                     <div className="resource-icon incubator">
                       <i className="fas fa-fire"></i>
                     </div>
@@ -350,7 +350,7 @@ const Nursery = () => {
                       <span className="resource-count">{trainerEggs['Incubator'] || 0}</span>
                     </div>
                   </div>
-                  <div className="resource-item">
+                  <div className="logo-link">
                     <div className="resource-icon void-stone">
                       <i className="fas fa-gem"></i>
                     </div>
@@ -365,9 +365,9 @@ const Nursery = () => {
 
             {/* Method Selection */}
             <div className="nursery-methods-container">
-              <div className="method-selector">
+              <div className="button">
                 <button
-                  className={`method-tab ${activeTab === 'hatch' ? 'active' : ''}`}
+                  className={`area-card ${activeTab === 'hatch' ? 'active' : ''}`}
                   onClick={() => setActiveTab('hatch')}
                 >
                   <div className="method-icon">
@@ -380,7 +380,7 @@ const Nursery = () => {
                 </button>
 
                 <button
-                  className={`method-tab ${activeTab === 'nurture' ? 'active' : ''}`}
+                  className={`area-card ${activeTab === 'nurture' ? 'active' : ''}`}
                   onClick={() => setActiveTab('nurture')}
                 >
                   <div className="method-icon">
@@ -399,7 +399,7 @@ const Nursery = () => {
               <div className="nursery-card method-card">
                 <div className="nursery-card-header">
                   <h3><i className="fas fa-magic"></i> Simple Hatching Process</h3>
-                  <span className="method-badge hatch">Quick Method</span>
+                  <span className="card-badge hatch">Quick Method</span>
                 </div>
                 <div className="nursery-card-body">
                   <div className="method-description">
@@ -407,7 +407,7 @@ const Nursery = () => {
                   </div>
 
                   <div className="form-section">
-                    <div className="form-group modern-form-group">
+                    <div className="form-group naming-card">
                       <label className="form-label">
                         <i className="fas fa-hashtag"></i>
                         Number of Eggs
@@ -423,7 +423,7 @@ const Nursery = () => {
                         </button>
                         <input
                           type="number"
-                          className="modern-number-input"
+                          className="form-input"
                           min="1"
                           max="10"
                           value={eggCount}
@@ -440,8 +440,8 @@ const Nursery = () => {
                       </div>
                     </div>
 
-                    <div className="options-section">
-                      <div className="checkbox-option modern-checkbox">
+                    <div className="form">
+                      <div className="radio-option modern-checkbox">
                         <input
                           type="checkbox"
                           id="use-incubator"
@@ -452,15 +452,15 @@ const Nursery = () => {
                           <span className="checkbox-icon">
                             <i className="fas fa-fire"></i>
                           </span>
-                          <div className="checkbox-text">
-                            <span className="checkbox-title">Use Incubator</span>
+                          <div className="stat-info">
+                            <span className="upload-title">Use Incubator</span>
                             <span className="checkbox-description">Bypass artwork requirements (uses {eggCount} incubator{eggCount > 1 ? 's' : ''})</span>
                           </div>
                         </label>
                       </div>
 
                       {!useIncubator && (
-                        <div className="artwork-section">
+                        <div className="naming-card">
                           <h5 className="section-title">
                             <i className="fas fa-palette"></i>
                             Artwork Inspiration
@@ -468,7 +468,7 @@ const Nursery = () => {
                           <div className="artwork-tabs">
                             <button
                               type="button"
-                              className={`artwork-tab ${imageMode === 'url' ? 'active' : ''}`}
+                              className={`artwork-tab${imageMode === 'url' ? 'active' : ''}`}
                               onClick={() => handleImageModeChange('url')}
                             >
                               <i className="fas fa-link"></i>
@@ -476,7 +476,7 @@ const Nursery = () => {
                             </button>
                             <button
                               type="button"
-                              className={`artwork-tab ${imageMode === 'upload' ? 'active' : ''}`}
+                              className={`artwork-tab${imageMode === 'upload' ? 'active' : ''}`}
                               onClick={() => handleImageModeChange('upload')}
                             >
                               <i className="fas fa-upload"></i>
@@ -490,7 +490,7 @@ const Nursery = () => {
                                 <i className="fas fa-globe input-icon"></i>
                                 <input
                                   type="url"
-                                  className="modern-text-input"
+                                  className="form-input"
                                   value={imageUrl}
                                   onChange={(e) => setImageUrl(e.target.value)}
                                   placeholder="https://example.com/your-artwork.jpg"
@@ -568,7 +568,7 @@ const Nursery = () => {
               <div className="nursery-card method-card">
                 <div className="nursery-card-header">
                   <h3><i className="fas fa-seedling"></i> Advanced Nurturing Process</h3>
-                  <span className="method-badge nurture">Complex Method</span>
+                  <span className="card-badge nurture">Complex Method</span>
                 </div>
                 <div className="nursery-card-body">
                   <div className="method-description">
@@ -576,7 +576,7 @@ const Nursery = () => {
                   </div>
 
                   <div className="form-section">
-                    <div className="form-group modern-form-group">
+                    <div className="form-group naming-card">
                       <label className="form-label">
                         <i className="fas fa-hashtag"></i>
                         Number of Eggs
@@ -592,7 +592,7 @@ const Nursery = () => {
                         </button>
                         <input
                           type="number"
-                          className="modern-number-input"
+                          className="form-input"
                           min="1"
                           max="10"
                           value={eggCount}
@@ -609,8 +609,8 @@ const Nursery = () => {
                       </div>
                     </div>
 
-                    <div className="options-section">
-                      <div className="checkbox-option modern-checkbox">
+                    <div className="form">
+                      <div className="radio-option modern-checkbox">
                         <input
                           type="checkbox"
                           id="use-incubator-nurture"
@@ -621,15 +621,15 @@ const Nursery = () => {
                           <span className="checkbox-icon">
                             <i className="fas fa-fire"></i>
                           </span>
-                          <div className="checkbox-text">
-                            <span className="checkbox-title">Use Incubator</span>
+                          <div className="stat-info">
+                            <span className="upload-title">Use Incubator</span>
                             <span className="checkbox-description">Bypass artwork requirements (uses {eggCount} incubator{eggCount > 1 ? 's' : ''})</span>
                           </div>
                         </label>
                       </div>
 
                       {!useIncubator && (
-                        <div className="artwork-section">
+                        <div className="naming-card">
                           <h5 className="section-title">
                             <i className="fas fa-palette"></i>
                             Artwork Inspiration
@@ -637,7 +637,7 @@ const Nursery = () => {
                           <div className="artwork-tabs">
                             <button
                               type="button"
-                              className={`artwork-tab ${imageMode === 'url' ? 'active' : ''}`}
+                              className={`artwork-tab${imageMode === 'url' ? 'active' : ''}`}
                               onClick={() => handleImageModeChange('url')}
                             >
                               <i className="fas fa-link"></i>
@@ -645,7 +645,7 @@ const Nursery = () => {
                             </button>
                             <button
                               type="button"
-                              className={`artwork-tab ${imageMode === 'upload' ? 'active' : ''}`}
+                              className={`artwork-tab${imageMode === 'upload' ? 'active' : ''}`}
                               onClick={() => handleImageModeChange('upload')}
                             >
                               <i className="fas fa-upload"></i>
@@ -659,7 +659,7 @@ const Nursery = () => {
                                 <i className="fas fa-globe input-icon"></i>
                                 <input
                                   type="url"
-                                  className="modern-text-input"
+                                  className="form-input"
                                   value={imageUrl}
                                   onChange={(e) => setImageUrl(e.target.value)}
                                   placeholder="https://example.com/your-artwork.jpg"
@@ -710,7 +710,7 @@ const Nursery = () => {
                     </div>
 
                     {/* Item Selection */}
-                    <div className="items-section">
+                    <div className="help-content">
                       <h5 className="section-title">
                         <i className="fas fa-flask"></i>
                         Nurturing Items
@@ -814,7 +814,7 @@ const Nursery = () => {
                             return null;
                           };
                           return (
-                            <div key={itemName} className="item-selection-card">
+                            <div key={itemName} className="modern-checkbox">
                               <div className="item-header">
                                 <div className="item-icon">
                                   <i className="fas fa-vial"></i>
@@ -824,7 +824,7 @@ const Nursery = () => {
                                   <span className="item-available">Available: {quantity}</span>
                                 </div>
                               </div>
-                              <div className="item-quantity-selector">
+                              <div className="event-date">
                                 <button 
                                   type="button" 
                                   className="button quantity"
@@ -835,7 +835,7 @@ const Nursery = () => {
                                 </button>
                                 <input
                                   type="number"
-                                  className="quantity-input"
+                                  className="form-input"
                                   min="0"
                                   max={quantity}
                                   value={selectedItems[itemName] || 0}

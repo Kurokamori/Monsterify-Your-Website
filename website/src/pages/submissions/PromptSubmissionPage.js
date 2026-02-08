@@ -316,9 +316,9 @@ const PromptSubmissionPage = () => {
 
   if (loading) {
     return (
-      <div className="submission-page">
+      <div className="bazar-container">
         <PageHeader title={`${formatCategoryName(category)} Prompt Submission`} />
-        <div className="loading-container">
+        <div className="error-container">
           <LoadingSpinner />
           <p>Loading submission form...</p>
         </div>
@@ -327,13 +327,13 @@ const PromptSubmissionPage = () => {
   }
 
   return (
-    <div className="submission-page">
+    <div className="bazar-container">
       <PageHeader title={`${formatCategoryName(category)} Prompt Submission`} />
       
       {error && <ErrorMessage message={error} onClose={() => setError('')} />}
       
       {success ? (
-        <div className="submission-success-container">
+        <div className="submission-form-container">
           <SuccessMessage 
             title="Submission Successful!" 
             message="Your prompt submission has been received successfully!"
@@ -416,7 +416,7 @@ const PromptSubmissionPage = () => {
                             </div>
                           )}
                         </div>
-                        <div className="monster-rewards-grid">
+                        <div className="button">
                           {submissionResult.rewards.monsters.map((monster, index) => (
                             <div key={index} className="monster-submission-reward">
                               <MonsterCard 
@@ -427,7 +427,7 @@ const PromptSubmissionPage = () => {
                               
                               {!monster.claimed ? (
                                 <div className="monster-claim-section">
-                                  <div className="monster-name-input">
+                                  <div className="form-input">
                                     <label htmlFor={`monster-name-${index}`}>Monster Name:</label>
                                     <input
                                       id={`monster-name-${index}`}
@@ -435,7 +435,7 @@ const PromptSubmissionPage = () => {
                                       value={monsterNames[index] || ''}
                                       onChange={(e) => handleMonsterNameChange(index, e.target.value)}
                                       placeholder="Enter monster name"
-                                      className="form-control"
+                                      className="form-input"
                                     />
                                   </div>
 

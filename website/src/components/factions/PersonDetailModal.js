@@ -50,9 +50,9 @@ const PersonDetailModal = ({ person, trainerId, onClose, onPersonMet }) => {
   };
 
   return (
-    <div className="person-detail-modal-overlay" onClick={onClose}>
+    <div className="person-form-overlay" onClick={onClose}>
       <div className="person-detail-modal" onClick={(e) => e.stopPropagation()}>
-        <div className="modal-header">
+        <div className="tree-header">
           <h2>Meet {person.alias}</h2>
           <button className="button close" onClick={onClose}>×</button>
         </div>
@@ -75,7 +75,7 @@ const PersonDetailModal = ({ person, trainerId, onClose, onPersonMet }) => {
             </div>
           </div>
 
-          <div className="person-blurb">
+          <div className="task-steps">
             <h4>About</h4>
             <p>{person.blurb}</p>
           </div>

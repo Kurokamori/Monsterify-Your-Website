@@ -186,7 +186,7 @@ const PromptForm = ({ prompt, onSuccess, onCancel }) => {
                 value={formData.type}
                 onChange={handleInputChange}
                 required
-                className="form-select"
+                className="form-input"
               >
                 <option value="general">General</option>
                 <option value="monthly">Monthly</option>
@@ -205,7 +205,7 @@ const PromptForm = ({ prompt, onSuccess, onCancel }) => {
                 value={formData.category}
                 onChange={handleInputChange}
                 required
-                className="form-select"
+                className="form-input"
               >
                 <option value="art">Art</option>
                 <option value="writing">Writing</option>
@@ -227,7 +227,7 @@ const PromptForm = ({ prompt, onSuccess, onCancel }) => {
                 value={formData.difficulty}
                 onChange={handleInputChange}
                 required
-                className="form-select"
+                className="form-input"
               >
                 <option value="easy">Easy</option>
                 <option value="medium">Medium</option>
@@ -246,7 +246,7 @@ const PromptForm = ({ prompt, onSuccess, onCancel }) => {
               onChange={handleInputChange}
               required
               rows={3}
-              className="form-textarea"
+              className="form-input"
               placeholder="Brief description of the prompt"
             />
           </div>
@@ -259,7 +259,7 @@ const PromptForm = ({ prompt, onSuccess, onCancel }) => {
               value={formData.prompt_text}
               onChange={handleInputChange}
               rows={5}
-              className="form-textarea"
+              className="form-input"
               placeholder="Detailed instructions for participants"
             />
           </div>
@@ -342,7 +342,7 @@ const PromptForm = ({ prompt, onSuccess, onCancel }) => {
                 name="is_active"
                 value={formData.is_active ? 'active' : 'inactive'}
                 onChange={(e) => setFormData({ ...formData, is_active: e.target.value === 'active' })}
-                className="form-select"
+                className="form-input"
               >
                 <option value="active">Active (Available Now)</option>
                 <option value="inactive">Inactive (Hidden from Users)</option>

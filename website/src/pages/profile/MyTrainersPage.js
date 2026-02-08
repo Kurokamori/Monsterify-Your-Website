@@ -207,8 +207,8 @@ const MyTrainersPage = () => {
       </div>
 
       {trainers.length > 0 && (
-        <div className="trainers-filter-sort">
-          <div className="filter-group">
+        <div className="option-row">
+          <div className="set-item">
             <label htmlFor="faction-filter">
               <i className="fas fa-filter"></i> Faction
             </label>
@@ -270,7 +270,7 @@ const MyTrainersPage = () => {
       )}
 
       {displayTrainers.length > 0 ? (
-        <div className="trainers-grid">
+        <div className="items-grid">
           {displayTrainers.map(trainer => (
             <div
               className="trainer-card clickable"
@@ -286,7 +286,7 @@ const MyTrainersPage = () => {
               }}
             >
 
-                <div className="trainer-header">
+                <div className="adopt-card">
                   <div className="trainer-info">
                     <h2 className="trainer-name">{trainer.name}</h2>
                     {trainer.title && <div className="trainer-title">{trainer.title}</div>}
@@ -297,7 +297,7 @@ const MyTrainersPage = () => {
                 </div>
 
               <div className="trainer-avatar-and-info">
-              <div className="trainer-avatar">
+              <div className="npc-avatar">
                 <img
                   src={trainer.avatar_url || trainer.main_ref || '/images/default_trainer.png'}
                   alt={trainer.name}

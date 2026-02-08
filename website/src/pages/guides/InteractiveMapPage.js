@@ -194,7 +194,7 @@ const InteractiveMapPage = () => {
     <div className="interactive-map-container">
       <div className="map-controls">
         <div className="map-filters">
-          <div className="region-filter">
+          <div className="detail-row">
             <label htmlFor="region-select">Region:</label>
             <select
               id="region-select"
@@ -211,7 +211,7 @@ const InteractiveMapPage = () => {
             </select>
           </div>
           
-          <div className="layer-toggles">
+          <div className="fandom-grid">
             <label className="layer-toggle">
               <input
                 type="checkbox"
@@ -239,7 +239,7 @@ const InteractiveMapPage = () => {
           </div>
         </div>
         
-        <div className="zoom-controls">
+        <div className="type-row">
           <button className="button secondary icon" onClick={handleZoomIn}>
             <i className="fas fa-plus"></i>
           </button>
@@ -270,14 +270,14 @@ const InteractiveMapPage = () => {
           {showLocations && filteredLocations.map(location => (
             <div 
               key={location.id}
-              className={`map-marker ${selectedLocation?.id === location.id ? 'selected' : ''}`}
+              className={`map-marker${selectedLocation?.id === location.id ? 'selected' : ''}`}
               style={{
                 left: `${location.position.x}px`,
                 top: `${location.position.y}px`
               }}
               onClick={() => handleLocationClick(location)}
             >
-              <div className={`marker-icon ${location.icon}`}>
+              <div className={`marker-icon${location.icon}`}>
                 <i className={`fas fa-${getIconForLocationType(location.type)}`}></i>
               </div>
               <div className="marker-label">{location.name}</div>
@@ -298,7 +298,7 @@ const InteractiveMapPage = () => {
             <div className="location-type-badge">{selectedLocation.type}</div>
             <p className="location-description">{selectedLocation.description}</p>
             
-            <div className="location-region-info">
+            <div className="location-region">
               <i className="fas fa-map-marker-alt"></i>
               <span>{displayMapData.regions.find(r => r.id === selectedLocation.region)?.name || selectedLocation.region}</span>
             </div>

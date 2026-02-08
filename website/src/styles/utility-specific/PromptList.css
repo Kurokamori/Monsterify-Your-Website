@@ -1,19 +1,6 @@
-.prompt-list-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 20px;
-}
 
-.prompt-list-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 30px;
-  padding-bottom: 15px;
-  border-bottom: 2px solid var(--border-color);
-}
 
-.prompt-list-header h2 {
+.item-header h2 {
   font-size: 2rem;
   font-weight: 700;
   color: var(--text-color);
@@ -35,12 +22,6 @@
   margin-bottom: 30px;
 }
 
-.filter-group {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-}
-
 /* Error and Loading States */
 
 .no-prompts p {
@@ -50,12 +31,6 @@
 }
 
 /* Grid Layout */
-.prompt-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
-  gap: 20px;
-  margin-bottom: 30px;
-}
 
 /* Pagination */
 
@@ -75,23 +50,12 @@
 
 /* Responsive Design */
 @media (max-width: 768px) {
-  .prompt-list-container {
-    padding: 15px;
-  }
+  .bazar-container {
+  padding: 10px;
+}
   
-  .prompt-list-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 10px;
-  }
-  
-  .prompt-list-header h2 {
+  .item-header h2 {
     font-size: 1.5rem;
-  }
-  
-  .prompt-grid {
-    grid-template-columns: 1fr;
-    gap: 15px;
   }
 }
 
@@ -100,14 +64,8 @@
     padding: 15px;
   }
   
-  .filter-group {
+  .set-item {
     gap: 3px;
-  }
-  
-  .filter-input,
-  .filter-select {
-    padding: 10px;
-    font-size: 16px; /* Prevents zoom on iOS */
   }
 }
 
@@ -123,7 +81,7 @@
   }
 }
 
-.prompt-grid > * {
+.form-row > * {
   animation: fadeIn 0.3s ease-out;
 }
 
@@ -135,19 +93,8 @@
     border-width: 2px;
   }
   
-  .filter-input,
-  .filter-select {
-    border-width: 2px;
-  }
-  
 }
 
 /* Reduced motion support */
 @media (prefers-reduced-motion: reduce) {
-  .prompt-grid > *,
-  .filter-input,
-  .filter-select {
-    animation: none;
-    transition: none;
-  }
 }

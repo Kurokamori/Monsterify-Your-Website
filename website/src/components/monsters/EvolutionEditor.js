@@ -161,7 +161,7 @@ const EvolutionEditor = ({ monsterId, evolutionData, onSave, onCancel, isOwner }
 
   return (
     <div className="evolution-editor-container">
-      <div className="evolution-editor-header">
+      <div className="info-card">
         <h3>
           <i className="fas fa-dna"></i>
           Edit Evolution Information
@@ -173,7 +173,7 @@ const EvolutionEditor = ({ monsterId, evolutionData, onSave, onCancel, isOwner }
       {evolutionEntries.length > 0 && (
         <div className="evolution-entries-list">
           <h4>Current Evolution Chain ({evolutionEntries.length} entries)</h4>
-          <div className="entries-container">
+          <div className="change-details">
             {evolutionEntries.map((entry, index) => (
               <div
                 key={entry.id}
@@ -268,7 +268,7 @@ const EvolutionEditor = ({ monsterId, evolutionData, onSave, onCancel, isOwner }
           {editingIndex !== null ? 'Edit Evolution Entry' : 'Add New Evolution Entry'}
         </h4>
         
-        <form className="evolution-form" onSubmit={(e) => e.preventDefault()}>
+        <form className="town-square" onSubmit={(e) => e.preventDefault()}>
           <div className="form-row">
             <div className="form-group image-upload-group">
               <label>Evolution Image:</label>
@@ -299,7 +299,7 @@ const EvolutionEditor = ({ monsterId, evolutionData, onSave, onCancel, isOwner }
                   value={formData.image}
                   onChange={handleInputChange}
                   placeholder="https://example.com/image.png"
-                  className="image-url-input"
+                  className="form-input"
                 />
               </div>
             </div>

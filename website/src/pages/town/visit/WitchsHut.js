@@ -36,7 +36,7 @@ const WitchsHutPage = () => {
   
   return (
     <div className="witchs-hut-page">
-      <div className="page-header">
+      <div className="lore-header">
         <Link to="/town" className="button secondary">
           <i className="fas fa-arrow-left"></i> Back to Town
         </Link>

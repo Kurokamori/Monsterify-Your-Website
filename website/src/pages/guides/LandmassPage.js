@@ -414,30 +414,30 @@ const Landmasses = {
   }
 
   return (
-    <div className="landmass-page">
-      <div className="landmass-header">
+    <div className="area-page">
+      <div className="area-header">
         <button onClick={handleBack} className="button secondary">
           ← Back to World Map
         </button>
         <h1>{landmassData.name}</h1>
-        <p className="landmass-subtitle">{landmassData.description}</p>
+        <p className="area-subtitle">{landmassData.description}</p>
       </div>
 
-      <div className="landmass-content">
-        <div className="landmass-top-section">
-          <div className="landmass-map-section">
-            <div className="landmass-map-container">
+      <div className="area-content">
+        <div className="region-top-section">
+          <div className="region-map-section">
+            <div className="region-map-container">
               <img 
                 src={landmassData.image} 
                 alt={landmassData.name}
-                className="landmass-map-image"
+                className="world-map-image"
                 onError={(e) => handleMapImageError(e, 'map')}
               />
               
               {landmassData.regions.map((region) => (
                 <div
                   key={region.id}
-                  className="region-hotspot"
+                  className="area-hotspot"
                   style={{
                     left: `${region.coordinates.x}%`,
                     top: `${region.coordinates.y}%`,
@@ -451,15 +451,15 @@ const Landmasses = {
               ))}
 
               {hoveredRegion && (
-                <div className="region-tooltip">
-                  <div className="tooltip-content">
+                <div className="map-tooltip">
+                  <div className="npc-basic-info">
                     <img 
                       src={hoveredRegion.image} 
                       alt={hoveredRegion.name}
                       className="tooltip-image"
                       onError={(e) => handleMapImageError(e, 'map')}
                     />
-                    <div className="tooltip-info">
+                    <div className="area-card">
                       <h3>{hoveredRegion.name}</h3>
                       <p>{hoveredRegion.description}</p>
                       <div className="area-count">
@@ -472,7 +472,7 @@ const Landmasses = {
             </div>
           </div>
 
-          <div className="landmass-sidebar">
+          <div className="breeding-form">
             <div className="info-card">
               <h3>Description</h3>
               <p>{landmassData.description}</p>
@@ -494,19 +494,19 @@ const Landmasses = {
           </div>
         </div>
 
-        <div className="landmass-bottom-section">
-          <div className="lore-section">
+        <div className="area-details">
+          <div className="tips">
             <h3>Lore & History</h3>
             <p>{landmassData.lore}</p>
           </div>
 
-          <div className="regions-section">
+          <div className="tips">
             <h3>Regions ({landmassData.regions.length})</h3>
             <div className="regions-grid">
               {landmassData.regions.map((region) => (
                 <div 
                   key={region.id} 
-                  className="region-card"
+                  className="area-card"
                   onClick={() => handleRegionClick(region)}
                 >
                   <img 

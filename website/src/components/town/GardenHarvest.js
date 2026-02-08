@@ -100,7 +100,7 @@ const GardenHarvest = () => {
 
   return (
     <div className="garden-harvest-container">
-      <div className="garden-harvest-header">
+      <div className="auth-header">
         <h2>Garden Harvest</h2>
         <p className="garden-harvest-description">
           Harvest your garden to collect berries and possibly find monsters!

@@ -292,7 +292,7 @@ const MonsterForm = ({ monster, personId, position, onSave, onCancel }) => {
   return (
     <div className="monster-form-overlay">
       <div className="monster-form-modal">
-        <div className="modal-header">
+        <div className="tree-header">
           <h3>
             <i className="fas fa-dragon"></i>
             {monster ? 'Edit Monster' : 'Add New Monster'}
@@ -317,7 +317,7 @@ const MonsterForm = ({ monster, personId, position, onSave, onCancel }) => {
                     name="name"
                     value={formData.name}
                     onChange={handleInputChange}
-                    className="form-control"
+                    className="form-input"
                     placeholder="Enter monster name"
                     required
                   />
@@ -330,7 +330,7 @@ const MonsterForm = ({ monster, personId, position, onSave, onCancel }) => {
                     name="position"
                     value={formData.position}
                     onChange={handleInputChange}
-                    className="form-control"
+                    className="form-input"
                   >
                     <option value={1}>Position 1</option>
                     <option value={2}>Position 2</option>
@@ -348,7 +348,7 @@ const MonsterForm = ({ monster, personId, position, onSave, onCancel }) => {
                   name="image"
                   value={formData.image}
                   onChange={handleInputChange}
-                  className="form-control"
+                  className="form-input"
                   placeholder="https://example.com/monster-image.jpg"
                 />
               </div>
@@ -364,7 +364,7 @@ const MonsterForm = ({ monster, personId, position, onSave, onCancel }) => {
                 {attributes.map(attr => (
                   <label
                     key={attr.value}
-                    className={`attribute-option ${formData.attribute === attr.value ? 'selected' : ''}`}
+                    className={`attribute-option${formData.attribute === attr.value ? 'selected' : ''}`}
                   >
                     <input
                       type="radio"
@@ -374,7 +374,7 @@ const MonsterForm = ({ monster, personId, position, onSave, onCancel }) => {
                       onChange={handleInputChange}
                     />
                     <div 
-                      className="attribute-card"
+                      className="ability-pill"
                       style={{ borderColor: attr.color }}
                     >
                       <i className={attr.icon} style={{ color: attr.color }}></i>
@@ -396,7 +396,7 @@ const MonsterForm = ({ monster, personId, position, onSave, onCancel }) => {
                   type="text"
                   value={newSpecies}
                   onChange={(e) => setNewSpecies(e.target.value)}
-                  className="form-control"
+                  className="form-input"
                   placeholder="Enter species name"
                   onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddSpecies())}
                 />
@@ -441,7 +441,7 @@ const MonsterForm = ({ monster, personId, position, onSave, onCancel }) => {
                       <button
                         key={type}
                         type="button"
-                        className={`type-btn ${formData.types.includes(type) ? 'selected' : ''}`}
+                        className={`type-btn${formData.types.includes(type) ? 'selected' : ''}`}
                         style={{ 
                           backgroundColor: formData.types.includes(type) ? getTypeColor(type) : '#f8f9fa',
                           color: formData.types.includes(type) ? 'white' : '#333'
@@ -465,7 +465,7 @@ const MonsterForm = ({ monster, personId, position, onSave, onCancel }) => {
                       type="text"
                       value={newType}
                       onChange={(e) => setNewType(e.target.value)}
-                      className="form-control"
+                      className="form-input"
                       placeholder="Enter custom type"
                       onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddCustomType())}
                     />

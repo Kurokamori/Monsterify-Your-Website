@@ -382,7 +382,7 @@ const BreedMonsters = ({ onBreedingComplete, onCancel }) => {
   // Render breeding results
   if (breedingResults) {
     return (
-      <div className="breeding-results">
+      <div className="area-page">
         <h2>Breeding Results</h2>
 
         <div className="breeding-parents">
@@ -397,7 +397,7 @@ const BreedMonsters = ({ onBreedingComplete, onCancel }) => {
 
         {/* Special Berry Actions */}
         {breedingResults.specialBerries && (
-          <div className="special-berry-actions">
+          <div className="image-upload">
             {breedingResults.specialBerries['Forget-Me-Not'] > 0 && (
               <button
                 className="button special forget-me-not"
@@ -412,7 +412,7 @@ const BreedMonsters = ({ onBreedingComplete, onCancel }) => {
         )}
 
         <h3>Offspring ({breedingResults.offspring.length})</h3>
-        <div className="breeding-offspring">
+        <div className="button">
           {breedingResults.offspring.map((offspring, index) => (
             <div key={index} className="offspring-card">
               <div className="offspring-details">
@@ -434,7 +434,7 @@ const BreedMonsters = ({ onBreedingComplete, onCancel }) => {
           ))}
         </div>
 
-        <div className="breeding-actions">
+        <div className="image-upload">
           <button className="button secondary" onClick={handleComplete}>
             Done
           </button>
@@ -447,11 +447,11 @@ const BreedMonsters = ({ onBreedingComplete, onCancel }) => {
   }
 
   return (
-    <div className="breed-monsters-container">
+    <div className="bazar-container">
       <h2>Breed Monsters</h2>
 
       {/* Top action buttons for convenience */}
-      <div className="breeding-actions breeding-actions-top">
+      <div className="image-upload breeding-actions-top">
         <button
           className="button primary"
           onClick={handleBreed}
@@ -466,7 +466,7 @@ const BreedMonsters = ({ onBreedingComplete, onCancel }) => {
       </div>
 
       <div className="breeding-form">
-        <div className="trainer-selection">
+        <div className="shop-search">
           <div className="trainer-select-container">
             <h3>Your Trainer</h3>
             <TrainerAutocomplete
@@ -514,7 +514,7 @@ const BreedMonsters = ({ onBreedingComplete, onCancel }) => {
           </div>
         </div>
 
-        <div className="breeding-actions breeding-actions-bottom">
+        <div className="image-upload breeding-actions-bottom">
           <button
             className="button primary"
             onClick={handleBreed}

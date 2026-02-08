@@ -286,7 +286,7 @@ const TradeCenter = () => {
         <div className="location-icon-large">
           <i className="fas fa-exchange-alt"></i>
         </div>
-        <div className="location-title">
+        <div className="no-adventures">
           <h2>Trade Center</h2>
           <p>Trade monsters with other trainers</p>
         </div>
@@ -316,19 +316,19 @@ const TradeCenter = () => {
               </button>
             </div>
 
-            <div className="trade-search">
+            <div className="form-input">
               <input
                 type="text"
                 placeholder="Search by monster name, trainer, type, or description..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="search-input"
+                className="form-input"
               />
               <i className="fas fa-search search-icon"></i>
             </div>
 
             {displayListings.length === 0 ? (
-              <div className="empty-state">
+              <div className="no-npcs">
                 <p>There are no trade listings at the moment.</p>
                 <button
                   className="button primary"
@@ -338,12 +338,12 @@ const TradeCenter = () => {
                 </button>
               </div>
             ) : (
-              <div className="trade-listings">
+              <div className="refs-grid">
                 {displayListings.map((listing) => (
-                  <div className="trade-listing-card" key={listing.id}>
+                  <div className="guide-card" key={listing.id}>
                     <div className="trade-listing-header">
-                      <h4 className="trade-listing-title">{listing.title}</h4>
-                      <div className="trade-listing-trainer">
+                      <h4 className="evolution-name">{listing.title}</h4>
+                      <div className="file-name">
                         <span>Posted by: {listing.trainer.name}</span>
                       </div>
                     </div>
@@ -362,7 +362,7 @@ const TradeCenter = () => {
                             }}
                           />
                           <div className="trade-monster-info">
-                            <div className="trade-monster-name">{listing.monster.name}</div>
+                            <div className="member-name">{listing.monster.name}</div>
                             <div className="trade-monster-details">
                               <span>Lv. {listing.monster.level}</span>
                               <span>
@@ -384,7 +384,7 @@ const TradeCenter = () => {
                         </div>
                       )}
 
-                      <div className="trade-listing-actions">
+                      <div className="type-row">
                         <button
                           className="button primary"
                           onClick={() => handleOfferTradeClick(listing)}
@@ -408,7 +408,7 @@ const TradeCenter = () => {
         title={tradeSuccess ? "Trade Listing Created!" : "Create Trade Listing"}
       >
         {tradeSuccess ? (
-          <div className="trade-success">
+          <div className="success-step">
             <div className="success-icon">
               <i className="fas fa-check-circle"></i>
             </div>
@@ -445,7 +445,7 @@ const TradeCenter = () => {
                 onSelect={(id) => setSelectedMonsterToTrade(id)}
                 label="Monster to Trade"
                 placeholder="Type to search monsters..."
-                className="form-select"
+                className="form-input"
               />
             </div>
 
@@ -457,7 +457,7 @@ const TradeCenter = () => {
                 onSelect={(id) => setSelectedTrainer(id)}
                 label="Trainer"
                 placeholder="Type to search trainers..."
-                className="form-select"
+                className="form-input"
               />
             </div>
 
@@ -468,7 +468,7 @@ const TradeCenter = () => {
                 value={tradeNotes}
                 onChange={(e) => setTradeNotes(e.target.value)}
                 placeholder="Describe what you're looking for in return"
-                className="form-textarea"
+                className="form-input"
                 rows={4}
               ></textarea>
             </div>
@@ -512,7 +512,7 @@ const TradeCenter = () => {
         title={tradeSuccess ? "Trade Offer Sent!" : "Offer Trade"}
       >
         {tradeSuccess ? (
-          <div className="trade-success">
+          <div className="success-step">
             <div className="success-icon">
               <i className="fas fa-check-circle"></i>
             </div>
@@ -544,7 +544,7 @@ const TradeCenter = () => {
                       }}
                     />
                     <div className="trade-monster-info">
-                      <div className="trade-monster-name">{selectedListing.monster.name}</div>
+                      <div className="member-name">{selectedListing.monster.name}</div>
                       <div className="trade-monster-details">
                         <span>Lv. {selectedListing.monster.level}</span>
                         <span>
@@ -567,7 +567,7 @@ const TradeCenter = () => {
                     onSelect={(id) => setSelectedMonsterToOffer(id)}
                     label="Monster to Offer"
                     placeholder="Type to search monsters..."
-                    className="form-select"
+                    className="form-input"
                   />
                 </div>
 
@@ -579,7 +579,7 @@ const TradeCenter = () => {
                     onSelect={(id) => setSelectedTrainer(id)}
                     label="Trainer"
                     placeholder="Type to search trainers..."
-                    className="form-select"
+                    className="form-input"
                   />
                 </div>
 

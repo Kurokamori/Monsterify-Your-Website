@@ -7,45 +7,9 @@
 
 /* ===== No refs message ===== */
 
-.no-refs-message {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 3rem 0;
-  text-align: center;
-  background-color: var(--nav-background);
-  border-radius: .5rem;
-  min-height: 200px;
-}
-
-.no-refs-message i{ font-size:3rem; color:var(--accent-color); margin-bottom:1rem; opacity:.7; }
-.no-refs-message p{ font-size:var(--font-size-lg); color:var(--text-color); opacity:.8; }
-
-
 /* ===== Refs grid ===== */
 
-.refs-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px,1fr));
-  gap: 1.5rem;
-}
-
-
 /* ===== Ref item ===== */
-
-.ref-item {
-  background-color: var(--card-background);
-  border-radius: .5rem;
-  overflow: hidden;
-  box-shadow: 0 2px 8px var(--overlay-light);
-  transition: transform .2s;
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-}
-
-.ref-item:hover{ transform:translateY(-3px); box-shadow:0 4px 12px var(--overlay-medium); }
 
 .ref-header {
   padding: 1rem;
@@ -60,7 +24,6 @@
   display: flex;
   flex-direction: column;
 }
-
 
 /* ===== Ref image container ===== */
 
@@ -93,7 +56,6 @@
   border-top-left-radius: .25rem;
 }
 
-
 /* ===== Ref text ===== */
 
 .ref-text {
@@ -124,35 +86,13 @@
 
 .ref-description p{ margin:0; line-height:1.5; }
 
-
 /* ===== Additional refs grid ===== */
 
 .additional-refs-container {
   margin-top: 1rem;
 }
 
-.additional-refs-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px,1fr));
-  gap: 1.5rem;
-  margin-top: 1rem;
-}
-
-
 /* ===== Additional ref card ===== */
-
-.additional-ref-card {
-  background-color: var(--card-background);
-  border-radius: .5rem;
-  overflow: hidden;
-  box-shadow: 0 2px 4px var(--overlay-light);
-  transition: transform .2s, box-shadow .2s;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-}
-
-.additional-ref-card:hover{ transform:translateY(-5px); box-shadow:0 5px 15px var(--overlay-light); }
 
 .additional-ref-image {
   width: 100%;
@@ -161,7 +101,7 @@
 }
 
 .additional-ref-image img{ width:100%; height:100%; object-fit:cover; transition:transform .3s; }
-.additional-ref-card:hover .additional-ref-image img{ transform:scale(1.05); }
+.adopt-card:hover .additional-ref-image img{ transform:scale(1.05); }
 
 .additional-ref-info {
   padding: 1rem;
@@ -173,7 +113,6 @@
 
 .additional-ref-info h3{ margin:0; font-size:var(--font-size-md); color:var(--accent-color); }
 .additional-ref-info p{ margin:0; font-size:var(--font-size-sm); color:var(--text-muted); line-height:1.5; }
-
 
 /* ===== Responsive ===== */
 

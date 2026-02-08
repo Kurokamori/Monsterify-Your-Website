@@ -396,7 +396,7 @@ const MassFakemonAddPage = () => {
                     style={{ width: `${uploadProgress}%` }}
                   ></div>
                 </div>
-                <span className="upload-progress-text">{uploadProgress}% Uploading...</span>
+                <span className="timer-session">{uploadProgress}% Uploading...</span>
               </div>
             )}
           </div>
@@ -409,7 +409,7 @@ const MassFakemonAddPage = () => {
               <i className="fas fa-list"></i> Fakemon Cards ({fakemonCards.length})
             </h2>
 
-            <div className="mass-fakemon-grid">
+            <div className="refs-grid">
               {fakemonCards.map((card) => (
                 <div key={card.id} className="mass-fakemon-card">
                   {/* Card Header with Remove Button */}
@@ -426,7 +426,7 @@ const MassFakemonAddPage = () => {
                   </div>
 
                   {/* Image Preview */}
-                  <div className="mass-fakemon-image">
+                  <div className="item-icon">
                     <img
                       src={card.image_url}
                       alt={card.name || 'Fakemon'}
@@ -438,9 +438,9 @@ const MassFakemonAddPage = () => {
                   </div>
 
                   {/* Form Fields */}
-                  <div className="mass-fakemon-fields">
+                  <div className="auth-form">
                     {/* Number */}
-                    <div className={`mass-fakemon-field ${card.errors.number ? 'has-error' : ''}`}>
+                    <div className={`stat-info${card.errors.number ? 'has-error' : ''}`}>
                       <label>Number *</label>
                       <input
                         type="text"
@@ -455,7 +455,7 @@ const MassFakemonAddPage = () => {
                     </div>
 
                     {/* Name */}
-                    <div className={`mass-fakemon-field ${card.errors.name ? 'has-error' : ''}`}>
+                    <div className={`stat-info${card.errors.name ? 'has-error' : ''}`}>
                       <label>Name *</label>
                       <input
                         type="text"
@@ -470,7 +470,7 @@ const MassFakemonAddPage = () => {
                     </div>
 
                     {/* Category */}
-                    <div className={`mass-fakemon-field ${card.errors.category ? 'has-error' : ''}`}>
+                    <div className={`stat-info${card.errors.category ? 'has-error' : ''}`}>
                       <label>Category *</label>
                       <input
                         type="text"
@@ -491,7 +491,7 @@ const MassFakemonAddPage = () => {
                     </div>
 
                     {/* Types */}
-                    <div className={`mass-fakemon-field ${card.errors.types ? 'has-error' : ''}`}>
+                    <div className={`stat-info${card.errors.types ? 'has-error' : ''}`}>
                       <label>Types * (min 1, max 5)</label>
                       <div className="types-container">
                         {card.types.map((type, typeIndex) => (
@@ -536,7 +536,7 @@ const MassFakemonAddPage = () => {
                     </div>
 
                     {/* Attribute */}
-                    <div className="mass-fakemon-field">
+                    <div className="stat-info">
                       <label>Attribute</label>
                       <select
                         value={card.attribute}
@@ -588,7 +588,7 @@ const MassFakemonAddPage = () => {
 
         {/* Empty State */}
         {fakemonCards.length === 0 && !uploading && (
-          <div className="admin-empty-state">
+          <div className="empty-results">
             <i className="fas fa-images"></i>
             <h3>No Images Uploaded</h3>
             <p>Upload images to start creating fakemon entries</p>

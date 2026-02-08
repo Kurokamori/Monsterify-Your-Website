@@ -31,9 +31,3 @@
 
 /* Utility-specific page styles */
 @import './utility-specific/index.css';
-
-/* Root-level page styles */
-@import './AuthPages.css';
-@import './HomePage.css';
-@import './MainLayout.css';
-@import './PageHeader.css';

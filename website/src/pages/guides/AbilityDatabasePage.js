@@ -131,7 +131,7 @@ const AbilityDatabasePage = () => {
         className={`ability-card ${isExpanded ? 'expanded' : ''}`}
         onClick={() => toggleExpanded(ability.name)}
       >
-        <div className="ability-card-header">
+        <div className="type-tags">
           <h3 className="ability-name">{ability.name}</h3>
           {hasTypes && (
             <div className="ability-types">
@@ -151,16 +151,16 @@ const AbilityDatabasePage = () => {
           )}
 
           {hasDescription && (
-            <div className="ability-description">
+            <div className="ability-effect">
               <span className="ability-label">Description:</span>
               <p>{ability.description}</p>
             </div>
           )}
 
           {hasMonsters && (
-            <div className="ability-monsters">
+            <div className="ability-effect">
               <span className="ability-label">Signature Monsters:</span>
-              <div className="monster-tags">
+              <div className="type-tags">
                 {ability.signatureMonsters.map(monster => (
                   <span key={monster} className="monster-tag">{monster}</span>
                 ))}
@@ -181,15 +181,15 @@ const AbilityDatabasePage = () => {
   };
 
   return (
-    <div className="ability-database-page">
-      <div className="page-header">
+    <div className="type-calculator-page">
+      <div className="lore-header">
         <h1>Ability Database</h1>
         <p>Browse and search all available abilities, filter by type, and find abilities used by specific monsters</p>
       </div>
 
       {/* Search and Filter Section */}
       <div className="ability-filter-section">
-        <div className="filter-header">
+        <div className="tree-header">
           <h2>Search & Filter</h2>
           {hasActiveFilters && (
             <button className="button danger" onClick={clearFilters}>
@@ -198,8 +198,8 @@ const AbilityDatabasePage = () => {
           )}
         </div>
 
-        <div className="search-row">
-          <div className="search-input-group">
+        <div className="button">
+          <div className="fandom-grid">
             <label htmlFor="ability-search">
               <i className="fas fa-search"></i> Search by Name
             </label>
@@ -209,11 +209,11 @@ const AbilityDatabasePage = () => {
               placeholder="Search abilities..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="search-input"
+              className="form-input"
             />
           </div>
 
-          <div className="search-input-group">
+          <div className="fandom-grid">
             <label htmlFor="monster-search">
               <i className="fas fa-dragon"></i> Search by Monster
             </label>
@@ -223,16 +223,16 @@ const AbilityDatabasePage = () => {
               placeholder="Find abilities by monster..."
               value={monsterSearch}
               onChange={(e) => setMonsterSearch(e.target.value)}
-              className="search-input"
+              className="form-input"
             />
           </div>
         </div>
 
-        <div className="type-filter-section">
-          <div className="type-filter-header">
+        <div className="allocation-targets">
+          <div className="option-row">
             <h3>Filter by Type</h3>
-            <div className="type-logic-toggle">
-              <span className="logic-label">Match:</span>
+            <div className="event-date">
+              <span className="file-name">Match:</span>
               <button
                 className={`button filter ${typeLogic === 'OR' ? 'active' : ''}`}
                 onClick={() => setTypeLogic('OR')}
@@ -250,11 +250,11 @@ const AbilityDatabasePage = () => {
             </div>
           </div>
 
-          <div className="type-buttons">
+          <div className="type-tags">
             {ALL_TYPES.map(type => (
               <button
                 key={type}
-                className={`button filter type-${type.toLowerCase()} ${selectedTypes.includes(type) ? 'selected' : ''}`}
+                className={`button filter type-${type.toLowerCase()}${selectedTypes.includes(type) ? 'selected' : ''}`}
                 onClick={() => toggleType(type)}
               >
                 {type}
@@ -279,8 +279,8 @@ const AbilityDatabasePage = () => {
       </div>
 
       {/* Results Section */}
-      <div className="ability-results-section">
-        <div className="results-header">
+      <div className="team-builder-section">
+        <div className="option-row">
           <div className="results-count">
             {loading ? (
               <span>Loading...</span>
@@ -289,8 +289,8 @@ const AbilityDatabasePage = () => {
             )}
           </div>
 
-          <div className="sort-controls">
-            <span className="sort-label">Sort by:</span>
+          <div className="detail-row">
+            <span className="file-name">Sort by:</span>
             <button
               className={`button filter ${sortBy === 'name' ? 'active' : ''}`}
               onClick={() => handleSort('name')}
@@ -307,7 +307,7 @@ const AbilityDatabasePage = () => {
         )}
 
         {loading ? (
-          <div className="loading-container">
+          <div className="error-container">
             <div className="loading-spinner"></div>
             <p>Loading abilities...</p>
           </div>
@@ -318,7 +318,7 @@ const AbilityDatabasePage = () => {
             <p>Try adjusting your search or filters</p>
           </div>
         ) : (
-          <div className="ability-grid">
+          <div className="button">
             {abilities.map(renderAbilityCard)}
           </div>
         )}

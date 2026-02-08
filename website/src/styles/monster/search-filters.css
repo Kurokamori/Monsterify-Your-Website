@@ -2,34 +2,6 @@
    MONSTER SEARCH & FILTERS
    ============================================================================= */
 
-.monster-search {
-  display: flex;
-  margin-bottom: 1.5rem;
-  position: relative;
-}
-
-.monster-search input {
-  width: 100%;
-  padding: 0.75rem 1rem;
-  background-color: var(--input-background);
-  border: 1px solid var(--border-color);
-  border-radius: 0.375rem;
-  color: var(--text-color);
-  font-size: 1rem;
-  transition: border-color 0.2s ease;
-}
-
-.monster-search input:focus {
-  outline: none;
-  border-color: var(--accent-color);
-  box-shadow: 0 0 0 3px var(--accent-glow);
-}
-
-.monster-search input::placeholder {
-  color: var(--text-color);
-  opacity: 0.6;
-}
-
 .monsters-filters {
   background: var(--hover-background);
   padding: 1rem;
@@ -104,7 +76,7 @@
   margin-top: 15px;
 }
 
-.filter-row .search-bar {
+.form-row .search-bar {
   flex: 1;
   min-width: 200px;
   position: relative;
@@ -115,7 +87,7 @@
   flex: 1;
 }
 
-.filter-row.toggles {
+.form-row.toggles {
   justify-content: flex-start;
   gap: 30px;
 }
@@ -158,11 +130,6 @@
 
   .monster-search-input {
     width: 100%;
-  }
-
-  .monster-filter-group {
-    width: 100%;
-    flex-wrap: wrap;
   }
 
   .monster-filter-select {

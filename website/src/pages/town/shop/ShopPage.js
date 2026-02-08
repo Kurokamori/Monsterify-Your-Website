@@ -339,7 +339,7 @@ const ShopPage = () => {
       </div>
 
       <div className="shop-controls">
-        <div className="trainer-selection">
+        <div className="shop-search">
           <TrainerSelector
             userId={currentUser?.discord_id}
             selectedTrainerId={selectedTrainer}
@@ -360,7 +360,7 @@ const ShopPage = () => {
             placeholder="Search items..."
             value={searchTerm}
             onChange={handleSearchChange}
-            className="search-input"
+            className="form-input"
           />
           <button
             className={`button filter ${sortByPrice}`}
@@ -382,7 +382,7 @@ const ShopPage = () => {
       {isApothecaryShop && (
         <div className="berry-filters">
           <h4>Filter Berries by Type (stackable)</h4>
-          <div className="filter-buttons">
+          <div className="type-tags">
             <button
               className={`button filter ${berryFilters.type ? 'active' : ''}`}
               onClick={() => toggleBerryFilter('type')}
@@ -431,9 +431,9 @@ const ShopPage = () => {
 
       {/* Pastry filters - only show for bakery shop */}
       {isBakeryShop && (
-        <div className="pastry-filters">
+        <div className="berry-filters">
           <h4>Filter Pastries by Type (stackable)</h4>
-          <div className="filter-buttons">
+          <div className="type-tags">
             <button
               className={`button filter ${pastryFilters.type ? 'active' : ''}`}
               onClick={() => togglePastryFilter('type')}
@@ -485,7 +485,7 @@ const ShopPage = () => {
           <p>No items available in this shop at the moment.</p>
         </div>
       ) : (
-        <div className="shop-items-grid">
+        <div className="town-places">
           {filteredItems.map(item => (
             <ItemCard
               key={item.id}

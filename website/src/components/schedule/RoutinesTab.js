@@ -101,7 +101,7 @@ const RoutinesTab = ({ trainers, onRefresh }) => {
 
   return (
     <div className="routines-tab">
-      <div className="tab-header">
+      <div className="option-row">
         <h2>Daily Routines</h2>
         <button
           className="button primary"
@@ -130,7 +130,7 @@ const RoutinesTab = ({ trainers, onRefresh }) => {
       {activeView === 'today' ? (
         // Today's Routines View
         todaysRoutines.length === 0 ? (
-          <div className="empty-state">
+          <div className="no-npcs">
             <i className="fas fa-calendar-day"></i>
             <h3>No routines for today</h3>
             <p>You don't have any active routines scheduled for today.</p>
@@ -160,13 +160,13 @@ const RoutinesTab = ({ trainers, onRefresh }) => {
                 <div className="routine-items">
                   <h4>Items ({routine.items?.filter(i => i.completed_today).length || 0}/{routine.items?.length || 0})</h4>
                   {routine.items && routine.items.length > 0 ? (
-                    <ul className="routine-item-list">
+                    <ul className="gift-item-list">
                       {routine.items.map(item => (
                         <li
                           key={item.id}
-                          className={`routine-item ${item.completed_today ? 'completed' : ''}`}
+                          className={`routine-item${item.completed_today ? 'completed' : ''}`}
                         >
-                          <div className="routine-item-content">
+                          <div className="type-bar-container">
                             <span className="routine-item-title">{item.title}</span>
                             {item.scheduled_time && (
                               <span className="routine-item-time">{item.scheduled_time}</span>
@@ -194,7 +194,7 @@ const RoutinesTab = ({ trainers, onRefresh }) => {
       ) : (
         // All Routines View
         routines.length === 0 ? (
-          <div className="empty-state">
+          <div className="no-npcs">
             <i className="fas fa-calendar-alt"></i>
             <h3>No routines found</h3>
             <p>You haven't created any routines yet. Create your first routine to organize your daily activities!</p>
@@ -212,7 +212,7 @@ const RoutinesTab = ({ trainers, onRefresh }) => {
               <div key={routine.id} className="item-card">
                 <div className="item-header">
                   <h3 className="item-title">{routine.name}</h3>
-                  <span className={`item-status ${routine.is_active ? 'active' : 'inactive'}`}>
+                  <span className={`item-status${routine.is_active ? 'active' : 'inactive'}`}>
                     {routine.is_active ? 'Active' : 'Inactive'}
                   </span>
                 </div>

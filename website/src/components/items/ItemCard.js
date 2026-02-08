@@ -37,7 +37,7 @@ const ItemCard = ({
 
   return (
     <div 
-      className={`item-card ${getRarityClass()} ${disabled ? 'disabled' : ''} ${onItemClick ? 'clickable' : ''}`}
+      className={`item-card ${getRarityClass()} ${disabled ? 'disabled' : ''}${onItemClick ? 'clickable' : ''}`}
       onClick={handleCardClick}
     >
       <div className="item-image-container">
@@ -48,7 +48,7 @@ const ItemCard = ({
           onError={(e) => handleItemImageError(e, item.category)}
         />
         {item.rarity && (
-          <div className={`item-rarity ${getRarityClass()}`}>
+          <div className={`item-rarity${getRarityClass()}`}>
             {item.rarity}
           </div>
         )}

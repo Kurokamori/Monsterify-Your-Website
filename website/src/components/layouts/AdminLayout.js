@@ -33,7 +33,7 @@ const AdminLayout = ({ children }) => {
           </div>
         </div>
 
-        <nav className="admin-nav">
+        <nav className="task-steps">
           <ul>
             {/* Return to Site */}
             <li className="return-to-site">

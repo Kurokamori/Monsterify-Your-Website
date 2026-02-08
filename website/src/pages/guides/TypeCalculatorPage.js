@@ -8,7 +8,7 @@ const TypeCalculatorPage = () => {
 
   return (
     <div className="type-calculator-page">
-      <div className="page-header">
+      <div className="lore-header">
         <h1>Type Effectiveness Calculator</h1>
         <p>Calculate combined type effectiveness for trainers and creatures with multiple types</p>
       </div>

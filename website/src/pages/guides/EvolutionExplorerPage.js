@@ -385,7 +385,7 @@ const EvolutionExplorerPage = () => {
         }
       }}
     >
-      <div className="evolution-explorer-species-image-container">
+      <div className="pc-box-slot">
         {species.image ? (
           <img 
             src={species.image} 
@@ -425,11 +425,11 @@ const EvolutionExplorerPage = () => {
       <div key={`bidirectional-${species.name}`} className="bidirectional-evolution-container">
         {/* Reverse evolutions (pre-evolutions) */}
         {reverseEvolutions && reverseEvolutions.length > 0 && (
-          <div className="reverse-evolutions-section">
-            <div className="evolution-section-header">
+          <div className="forward-evolutions-section">
+            <div className="auth-header">
               <span className="evolution-section-label">Pre-evolutions</span>
             </div>
-            <div className="evolution-columns-container">
+            <div className="evolution-children-row">
               {renderEvolutionTree(reverseEvolutions, 'reverse')}
             </div>
           </div>
@@ -445,10 +445,10 @@ const EvolutionExplorerPage = () => {
         {/* Forward evolutions */}
         {forwardEvolutions && forwardEvolutions.length > 0 && (
           <div className="forward-evolutions-section">
-            <div className="evolution-section-header">
+            <div className="auth-header">
               <span className="evolution-section-label">Evolutions</span>
             </div>
-            <div className="evolution-columns-container">
+            <div className="evolution-children-row">
               {renderEvolutionTree(forwardEvolutions, 'forward')}
             </div>
           </div>
@@ -462,7 +462,7 @@ const EvolutionExplorerPage = () => {
     return evolutions.map((evolutionNode, index) => (
       <div key={`${direction}-${evolutionNode.species.name}-${index}`} className="evolution-column">
         <div className="evolution-level">
-          <div className="evolution-column-species">
+          <div className="attribute-badge-adopt">
             {renderSpeciesCard(evolutionNode.species, false)}
           </div>
         </div>
@@ -519,9 +519,9 @@ const EvolutionExplorerPage = () => {
     const maxDepth = hasChildren ? calculateMaxDepth({ children: node.children }) : 0;
 
     return (
-      <div key={nodeId} className="nested-evolution-node" data-depth={node.depth}>
+      <div key={nodeId} className="reward-section" data-depth={node.depth}>
         {/* Parent species */}
-        <div className="evolution-node-header">
+        <div className="modal-species-images">
           <div className="parent-species-container">
             {renderSpeciesCard(node.species, isRoot)}
           </div>
@@ -539,7 +539,7 @@ const EvolutionExplorerPage = () => {
         {/* Column-based evolution display */}
         {hasChildren && !isCollapsed && (
           <div 
-            className="evolution-columns-container"
+            className="evolution-children-row"
             ref={(el) => {
               if (el && isRoot) {
                 // Scroll to center horizontally when the container is first rendered
@@ -566,7 +566,7 @@ const EvolutionExplorerPage = () => {
                       )}
                       <div className="evolution-level">
                         {levelSpecies.map((speciesEntry) => (
-                          <div key={speciesEntry.uniqueId} className="evolution-column-species">
+                          <div key={speciesEntry.uniqueId} className="attribute-badge-adopt">
                             {renderSpeciesCard(speciesEntry.species, false)}
                           </div>
                         ))}
@@ -584,7 +584,7 @@ const EvolutionExplorerPage = () => {
 
   return (
     <div className="evolution-explorer-page">
-      <div className="page-header">
+      <div className="lore-header">
         <h1>Evolution Explorer</h1>
         <p>Explore evolution trees for Digimon, Yokai, Pokemon, Nexomon, Fakemon, and Final Fantasy creatures. Monster Hunter creatures can be searched but do not evolve.</p>
         
@@ -600,7 +600,7 @@ const EvolutionExplorerPage = () => {
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="Enter a species name to explore its evolution tree..."
-              className="species-search-input"
+              className="form-input"
             />
           </div>
 
@@ -608,7 +608,7 @@ const EvolutionExplorerPage = () => {
           {searchResults.length > 0 && (
             <div className="search-results">
               <h3>Search Results:</h3>
-              <div className="results-grid">
+              <div className="images-grid">
                 {searchResults.map(species => (
                   <button
                     key={species}

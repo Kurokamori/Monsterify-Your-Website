@@ -61,7 +61,7 @@ const AdminHome = () => {
     <div className="admin-home">
       <h1>Admin Dashboard</h1>
       
-      <div className="admin-stats-grid">
+      <div className="button">
         <div className="admin-stat-card">
           <div className="admin-stat-icon users">
             <i className="fas fa-users"></i>

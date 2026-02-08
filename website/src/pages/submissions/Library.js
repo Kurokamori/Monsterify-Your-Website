@@ -241,7 +241,7 @@ const Library = () => {
   if (loading) return <LoadingSpinner />;
 
   return (
-    <Container className="submission-page library-page">
+    <Container className="bazar-container library-page">
       <h1 className="text-center mb-4">Writing Library</h1>
 
       {error && <div className="alert alert-danger">{error}</div>}
@@ -262,7 +262,7 @@ const Library = () => {
 
         <Collapse in={showFilters}>
           <div id="library-filter-collapse">
-            <Row className="filter-row">
+            <Row className="form-row">
               <Col md={3}>
                 <Form.Group>
                   <Form.Label>Filter by Tag</Form.Label>
@@ -340,7 +340,7 @@ const Library = () => {
               <Col key={submission.id} md={4} sm={6} className="mb-4">
                 <Card className="submission-card h-100" onClick={() => handleSubmissionClick(submission.id)}>
                   {submission.cover_image_url ? (
-                    <div className="card-img-container">
+                    <div className="npc-avatar">
                       <Card.Img
                         variant="top"
                         src={submission.cover_image_url}
@@ -355,10 +355,10 @@ const Library = () => {
                   ) : (
                     <div className="library-item-text-cover">
                       <div className="library-item-text-cover-icon">
-                        <i className={`fas ${submission.is_book ? 'fa-book' : 'fa-feather-alt'}`}></i>
+                        <i className={`fas${submission.is_book ? 'fa-book' : 'fa-feather-alt'}`}></i>
                       </div>
-                      <h4 className="library-item-text-cover-title">{submission.title}</h4>
-                      <p className="library-item-text-cover-author">
+                      <h4 className="gallery-item-title">{submission.title}</h4>
+                      <p className="gallery-item-artist">
                         By: {submission.trainer_name || submission.display_name || 'Unknown'}
                       </p>
                       {(submission.description || submission.content_preview) && (
@@ -387,7 +387,7 @@ const Library = () => {
                     {submission.cover_image_url && (
                       <>
                         <Card.Title>{submission.title}</Card.Title>
-                        <Card.Text className="submission-description">
+                        <Card.Text className="related-submissions">
                           {submission.description || getContentPreview(submission.content_preview)}
                         </Card.Text>
                         <div className="submission-meta">
@@ -402,7 +402,7 @@ const Library = () => {
                       </div>
                     )}
                     {submission.tags && Array.isArray(submission.tags) && submission.tags.length > 0 && (
-                      <div className="submission-tags">
+                      <div className="type-tags">
                         {submission.tags.map(tag => (
                           <span key={tag} className="tag">{tag}</span>
                         ))}

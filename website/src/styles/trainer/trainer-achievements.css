@@ -95,18 +95,6 @@
   align-items: center;
 }
 
-.status-claimed, .status-unlocked, .status-locked{
-  align-items: center;
-  background: var(--warning-color);
-  border-radius: .5rem;
-  color: var(--text-color);
-  display: flex;
-  font-size: .875rem;
-  font-weight: 500;
-  gap: .5rem;
-  padding: .25rem .75rem;
-}
-
 /* ===== Loading and empty messages ===== */
 
 .loading-message i{ font-size:2rem; margin-bottom:1rem; color:var(--primary-color); }
@@ -162,11 +150,6 @@
   padding: 2rem;
 }
 
-.achievement-info {
-  text-align: center;
-  margin-bottom: 2rem;
-}
-
 .achievement-icon-large {
   width: 4rem;
   height: 4rem;
@@ -217,12 +200,6 @@
 }
 
 /* ===== Bulk claim ===== */
-
-.bulk-claim-info {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-}
 
 .bulk-stats {
   text-align: center;

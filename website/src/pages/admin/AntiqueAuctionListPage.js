@@ -127,7 +127,7 @@ const AntiqueAuctionListPage = () => {
   // Render auction card
   const renderAuctionCard = (auction) => (
     <div key={auction.id} className="seasonal-adopt-card">
-      <div className="seasonal-adopt-image">
+      <div className="item-icon">
         {auction.image ? (
           <img src={auction.image} alt={auction.name} />
         ) : (
@@ -138,7 +138,7 @@ const AntiqueAuctionListPage = () => {
       </div>
       <div className="seasonal-adopt-info">
         <h4 className="seasonal-adopt-name">{auction.name}</h4>
-        <div className="seasonal-adopt-species">
+        <div className="gift-monster-types">
           <span className="species-tag">{auction.species1}</span>
           {auction.species2 && <span className="species-tag">{auction.species2}</span>}
           {auction.species3 && <span className="species-tag">{auction.species3}</span>}
@@ -199,7 +199,7 @@ const AntiqueAuctionListPage = () => {
           />
         </div>
 
-        <div className="admin-filter-group">
+        <div className="form-input">
           <div className="admin-filter">
             <label>Antique:</label>
             <select value={antiqueFilter} onChange={(e) => setAntiqueFilter(e.target.value)}>
@@ -216,14 +216,14 @@ const AntiqueAuctionListPage = () => {
             <label>View:</label>
             <div className="view-toggle">
               <button
-                className={`view-toggle-btn ${viewMode === 'grouped' ? 'active' : ''}`}
+                className={`view-toggle-btn${viewMode === 'grouped' ? 'active' : ''}`}
                 onClick={() => setViewMode('grouped')}
                 title="Grouped View"
               >
                 <i className="fas fa-layer-group"></i>
               </button>
               <button
-                className={`view-toggle-btn ${viewMode === 'list' ? 'active' : ''}`}
+                className={`view-toggle-btn${viewMode === 'list' ? 'active' : ''}`}
                 onClick={() => setViewMode('list')}
                 title="List View"
               >
@@ -252,7 +252,7 @@ const AntiqueAuctionListPage = () => {
       ) : error ? (
         <div className="admin-error">{error}</div>
       ) : filteredAuctions.length === 0 ? (
-        <div className="admin-empty-state">
+        <div className="empty-results">
           <i className="fas fa-box-open"></i>
           <p>No seasonal adopts found</p>
           <Link to="/admin/seasonal-adopts/add" className="button primary">
@@ -260,7 +260,7 @@ const AntiqueAuctionListPage = () => {
           </Link>
         </div>
       ) : viewMode === 'grouped' ? (
-        <div className="seasonal-adopts-grouped">
+        <div className="antique-store-content">
           {Object.entries(groupedAuctions).map(([antiqueName, group]) => (
             <div key={antiqueName} className="antique-group">
               <div className="antique-group-header">
@@ -342,7 +342,7 @@ const AntiqueAuctionListPage = () => {
                     <td>
                       <span className="antique-name">{auction.antique}</span>
                       <br />
-                      <small className="holiday-text">({antiqueHolidayMap[auction.antique] || 'Unknown'})</small>
+                      <small className="no-content">({antiqueHolidayMap[auction.antique] || 'Unknown'})</small>
                     </td>
                     <td>
                       {auction.species1}

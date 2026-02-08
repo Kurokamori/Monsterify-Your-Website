@@ -57,8 +57,8 @@ const AdventuresPage = () => {
   }
 
   return (
-    <div className="adventures-container">
-      <div className="adventures-header">
+    <div className="bosses-page">
+      <div className="map-header">
         <h1>Adventures</h1>
         <p>Embark on exciting journeys, complete missions, and battle powerful bosses</p>
       </div>
@@ -134,7 +134,7 @@ const AdventuresOverview = () => {
                 <span className="event-date">
                   <i className="fas fa-calendar-alt"></i> Ends in 5 days
                 </span>
-                <span className="event-participants">
+                <span className="event-date">
                   <i className="fas fa-users"></i> 1,245 participants
                 </span>
               </div>
@@ -162,7 +162,7 @@ const AdventuresOverview = () => {
             </div>
             <div className="mission-info">
               <h3 className="mission-title">Forest Expedition</h3>
-              <div className="mission-details">
+              <div className="adopts-grid">
                 <span className="mission-difficulty easy">
                   <i className="fas fa-star"></i> Easy
                 </span>
@@ -190,7 +190,7 @@ const AdventuresOverview = () => {
             </div>
             <div className="mission-info">
               <h3 className="mission-title">Mountain Rescue</h3>
-              <div className="mission-details">
+              <div className="adopts-grid">
                 <span className="mission-difficulty medium">
                   <i className="fas fa-star"></i> Medium
                 </span>
@@ -231,7 +231,7 @@ const AdventuresOverview = () => {
             </div>
             <div className="boss-info">
               <h3 className="boss-title">Dragon Lord</h3>
-              <div className="boss-details">
+              <div className="type-tags">
                 <span className="boss-difficulty hard">
                   <i className="fas fa-skull"></i> Hard
                 </span>

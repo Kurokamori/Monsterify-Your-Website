@@ -252,7 +252,7 @@ const Shop = ({ shopId, shopName, shopDescription }) => {
   const displayCategories = categories.length > 0 ? categories : fallbackCategories;
 
   return (
-    <div className="shop-container">
+    <div className="form">
       <div className="shop-header">
         <h2>{shopName || 'Shop'}</h2>
         <p className="shop-description">{shopDescription || 'Purchase items for your monsters and trainers.'}</p>
@@ -262,7 +262,7 @@ const Shop = ({ shopId, shopName, shopDescription }) => {
         {displayCategories.map(category => (
           <button
             key={category.id}
-            className={`button secondary ${selectedCategory === category.id ? 'active' : ''}`}
+            className={`button secondary${selectedCategory === category.id ? 'active' : ''}`}
             onClick={() => handleCategoryChange(category.id)}
           >
             {category.name}
@@ -270,11 +270,11 @@ const Shop = ({ shopId, shopName, shopDescription }) => {
         ))}
       </div>
 
-      <div className="shop-items-grid">
+      <div className="town-places">
         {displayItems.map(item => (
           <div
             key={item.id}
-            className={`shop-item ${item.stock === 0 ? 'out-of-stock' : ''}`}
+            className={`shop-item${item.stock === 0 ? 'out-of-stock' : ''}`}
             onClick={() => item.stock > 0 && handleItemClick(item)}
           >
             <div className="item-image-container">
@@ -311,7 +311,7 @@ const Shop = ({ shopId, shopName, shopDescription }) => {
 
       {/* Pagination */}
       {totalPages > 1 && (
-        <div className="shop-pagination">
+        <div className="type-tags">
           <button
             className="button secondary"
             onClick={() => handlePageChange(page - 1)}
@@ -341,7 +341,7 @@ const Shop = ({ shopId, shopName, shopDescription }) => {
         title={selectedItem?.name || 'Item Details'}
       >
         {selectedItem && (
-          <div className="item-modal-content">
+          <div className="form">
             {purchaseSuccess ? (
               <div className="purchase-success">
                 <div className="success-icon">
@@ -381,7 +381,7 @@ const Shop = ({ shopId, shopName, shopDescription }) => {
                     />
                   </div>
 
-                  <div className="item-info-detailed">
+                  <div className="type-tags">
                     <p className="item-description">{selectedItem.description}</p>
 
                     <div className="item-meta">
@@ -411,10 +411,10 @@ const Shop = ({ shopId, shopName, shopDescription }) => {
 
                 {isAuthenticated ? (
                   <div className="purchase-section">
-                    <div className="purchase-options">
+                    <div className="type-tags">
                       <div className="form-group">
                         <label htmlFor="purchase-quantity">Quantity:</label>
-                        <div className="quantity-input">
+                        <div className="form-input">
                           <button
                             type="button"
                             className="button quantity"
@@ -509,7 +509,7 @@ const Shop = ({ shopId, shopName, shopDescription }) => {
                     </div>
                   </div>
                 ) : (
-                  <div className="login-prompt">
+                  <div className="claim-error">
                     <p>Please log in to purchase items.</p>
                   </div>
                 )}

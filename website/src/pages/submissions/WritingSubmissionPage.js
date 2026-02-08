@@ -39,10 +39,10 @@ const WritingSubmissionPage = () => {
   }
 
   return (
-    <div className="submission-page-container">
-      <div className="submission-page-header">
+    <div className="edit-monster-container">
+      <div className="map-header">
         <h1>Submit Writing</h1>
-        <p>Share your stories, poems, and other written works with the community and earn rewards based on word count and quality.</p>
+        <p className="description">Share your stories, poems, and other written works with the community and earn rewards based on word count and quality.</p>
       </div>
 
       {submissionSuccess ? (
@@ -59,7 +59,7 @@ const WritingSubmissionPage = () => {
           {submissionResult && submissionResult.rewards && (
             <div className="rewards-summary">
               <h3>Rewards Earned</h3>
-              <div className="rewards-grid">
+              <div className="town-places">
                 <div className="reward-item">
                   <i className="fas fa-book"></i>
                   <h4>Writing Rewards</h4>
@@ -107,7 +107,7 @@ const WritingSubmissionPage = () => {
                       )}
                       {submissionResult.rewards.missionProgress.completedMissions &&
                        submissionResult.rewards.missionProgress.completedMissions.length > 0 && (
-                        <div className="mission-completions">
+                        <div className="mission-updates">
                           <p className="reward-detail">Completed missions:</p>
                           <ul>
                             {submissionResult.rewards.missionProgress.completedMissions.map((mission, index) => (
@@ -160,7 +160,7 @@ const WritingSubmissionPage = () => {
           {loading && <LoadingSpinner />}
         </div>
       ) : (
-        <div className="submission-page-content">
+        <div className="town-section">
           <WritingSubmissionForm onSubmissionComplete={handleSubmissionComplete} />
         </div>
       )}

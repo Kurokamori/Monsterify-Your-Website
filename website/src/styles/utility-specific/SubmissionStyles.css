@@ -1,23 +1,6 @@
 /* Submission Forms Styles */
 
 /* Bulk Upload Styles */
-.bulk-upload-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1rem;
-}
-
-.monster-name-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 0.5rem;
-}
-
-.monster-name-header label {
-  margin-bottom: 0;
-}
 
 .bulk-upload-section {
   background-color: var(--background-color);
@@ -88,12 +71,8 @@
 }
 
 /* Tags */
-.tag-input-container {
-  display: flex;
-  gap: 0.5rem;
-}
 
-.tag-input-container input {
+.type-row input {
   flex: 1;
 }
 /* Toggle Switch */
@@ -107,13 +86,6 @@
   overflow: hidden;
   box-shadow: 0 4px 8px var(--overlay-light);
   transition: all 0.2s ease;
-}
-
-.additional-images-preview {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-top: 0.5rem;
 }
 
 .additional-image-item {
@@ -131,11 +103,6 @@
 }
 
 /* Input Method Options */
-.input-method-options {
-  display: flex;
-  gap: 1rem;
-  margin-top: 0.25rem;
-}
 
 .word-count {
   font-size: var(--font-size-sm);
@@ -178,14 +145,6 @@
   margin: 1rem 0;
 }
 
-.instance-appearance-row {
-  display: flex;
-  align-items: center;
-  margin-bottom: 0.5rem;
-  gap: 0.5rem;
-  flex-wrap: wrap;
-}
-
 .reward-estimate {
   margin-top: 1rem;
   padding: 1rem;
@@ -208,12 +167,6 @@
   border-bottom: 1px solid var(--border-color);
 }
 
-.reward-items {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
 .reward-label {
   font-weight: 600;
   min-width: 100px;
@@ -223,18 +176,6 @@
 /* Form Actions */
 
 /* Art Calculator Styles */
-.art-calculator {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-  padding: 1.75rem;
-  background-color: var(--card-background);
-  border-radius: 0.75rem;
-  border: 1px solid var(--border-color);
-  margin-bottom: 2rem;
-  box-shadow: 0 4px 12px var(--overlay-light);
-  transition: all 0.3s ease;
-}
 
 .calculator-section {
   background: var(--card-background);
@@ -261,13 +202,7 @@
   border-bottom: 1px solid var(--border-color);
 }
 
-.quality-options {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
-}
-
-.quality-options label, .difficulty-option {
+.type-tags label, .difficulty-option {
   align-items: center;
   background-color: var(--card-background-light);
   border: 1px solid var(--border-color);
@@ -281,14 +216,14 @@
   transition: all 0.2s;
 }
 
-.quality-options label:hover, .difficulty-option:hover {
+.type-tags label:hover, .difficulty-option:hover {
   background-color: var(--nav-hover);
   border-color: var(--primary-color-light);
   box-shadow: 0 4px 8px var(--overlay-light);
   transform: translateY(-2px);
 }
 
-.quality-options input[type="radio"], .difficulty-option input[type="checkbox"] {
+.type-tags input[type="radio"], .difficulty-option input[type="checkbox"] {
   margin: 0;
   accent-color: var(--primary-color);
   width: 18px;
@@ -359,16 +294,6 @@
   box-shadow: 0 4px 12px var(--overlay-light);
 }
 
-.appearance-count-input {
-  width: 80px;
-  padding: 0.75rem;
-  border-radius: 0.5rem;
-  border: 1px solid var(--border-color);
-  background-color: var(--input-background);
-  color: var(--text-color);
-  font-size: 1rem;
-}
-
 .complexity-label {
   display: flex;
   align-items: center;
@@ -429,7 +354,7 @@
   border-bottom: 1px solid var(--border-color);
 }
 
-.reward-entity-name {
+.appearance-count {
   font-weight: 600;
   color: var(--accent-color);
 }
@@ -438,12 +363,6 @@
   font-size: 0.9rem;
   font-weight: normal;
   color: var(--text-color);
-}
-
-.reward-entity-details {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
 }
 
 .capped-levels {
@@ -462,12 +381,6 @@
   margin-bottom: 0.5rem;
 }
 
-.gift-item-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
 .gift-item {
   display: flex;
   align-items: center;
@@ -476,12 +389,6 @@
   background-color: var(--card-background-light);
   border-radius: 0.25rem;
   margin-bottom: 0.5rem;
-}
-
-.capped-levels-section {
-  background-color: var(--card-background);
-  padding: 1rem;
-  border-radius: 0.25rem;
 }
 
 .capped-levels-info {
@@ -516,19 +423,11 @@
 
 /* Responsive Styles */
 @media (max-width: 768px) {
-  .input-method-options {
-    flex-direction: column;
-    gap: 0.5rem;
-  }
 
   .selected-entities {
     grid-template-columns: 1fr;
   }
 
-  .quality-options{
-    flex-direction: column;
-    gap: 0.5rem;
-  }
 }
 
 .submission-detail-page {
@@ -551,19 +450,14 @@
   color: var(--text-color);
 }
 
-.submission-author .clickable {
+.upload-title .clickable {
   color: var(--accent-color);
   cursor: pointer;
 }
 
-.submission-author .clickable:hover {
+.upload-title .clickable:hover {
   text-decoration: underline;
   color: var(--accent-hover);
-}
-
-.submission-image-container {
-  margin-bottom: 2rem;
-  text-align: center;
 }
 
 .submission-main-image {
@@ -578,19 +472,7 @@
   transform: scale(1.02);
 }
 
-.submission-description h2,
-.submission-writing-content h2,
-.submission-additional-images h2,
-.submission-featured-entities h2,
-.related-submissions h2 {
-  font-size: 1.5rem;
-  margin: 1.5rem 0 1rem;
-  color: var(--text-color);
-  border-bottom: 1px solid var(--divider-color);
-  padding-bottom: 0.5rem;
-}
-
-.submission-description p {
+.related-submissions p {
   line-height: 1.6;
   margin-bottom: 1rem;
 }
@@ -602,13 +484,6 @@
 
 .writing-text p {
   margin-bottom: 1.5rem;
-}
-
-.additional-images-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 1rem;
-  margin-top: 1rem;
 }
 
 .additional-image-container {
@@ -628,13 +503,6 @@
   transform: scale(1.05);
 }
 
-.featured-entities-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-  gap: 1rem;
-  margin-top: 1rem;
-}
-
 .featured-entity-card {
   background: var(--nav-active);
   border-radius: .5rem;
@@ -644,48 +512,6 @@
   display: flex;
   flex-direction: column;
   gap: .5rem;
-}
-
-.featured-trainer-card {
-  background: var(--nav-active);
-  border-radius: .5rem;
-  padding: 1rem;
-  box-shadow: 0 2px 8px var(--overlay-light);
-  transition: all .2s ease;
-  display: flex;
-  flex-direction: column;
-  gap: .5rem;
-  width: max-content;
-}
-
-.featured-trainer-card:hover,
-.featured-entity-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 5px 15px var(--overlay-dark);
-}
-
-.featured-trainer-image {
-  height: 20vh;
-  width: 15vh;
-  overflow: hidden;
-  border-radius: 15%;
-}
-
-.featured-entity-image {
-  height: 120px;
-  overflow: hidden;
-}
-
-.featured-trainer-image img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-}
-
-.featured-entity-image img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
 }
 
 .featured-entity-name {
@@ -711,13 +537,6 @@
   margin: 0.25rem;
 }
 
-.related-submissions-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-  gap: 1rem;
-  margin-top: 1rem;
-}
-
 .related-submission-card {
   background-color: var(--nav-background);
   border-radius: 8px;
@@ -728,26 +547,6 @@
 
 .related-submission-card:hover {
   transform: scale(1.05);
-}
-
-.related-submission-image {
-  height: 100px;
-  overflow: hidden;
-}
-
-.related-submission-image img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.related-submission-title {
-  padding: 0.5rem;
-  font-size: 0.9rem;
-  text-align: center;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 /* Image Modal */
@@ -785,11 +584,6 @@
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
-  .featured-entities-grid,
-  .related-submissions-grid {
-  gap: 0.75rem;
-  grid-template-columns: repeat(2, 1fr);
-}
 }
 
 @media (max-width: 480px) {
@@ -801,12 +595,6 @@
   .submission-detail-content {
     padding: 1rem;
   }
-  
-  .featured-entities-grid,
-  .related-submissions-grid {
-  gap: 0.5rem;
-  grid-template-columns: 1fr 1fr;
-}
 }
 /* Enhanced Submission Forms Styles */
 
@@ -882,23 +670,6 @@
   font-weight: 600;
 }
 
-.instance-appearance-row label {
-  min-width: 180px;
-  font-weight: 500;
-  color: var(--text-color);
-}
-
-.instance-appearance-row select {
-  flex: 1;
-  min-width: 200px;
-  padding: 0.625rem;
-  border-radius: 0.375rem;
-  border: 1px solid var(--border-color);
-  background-color: var(--input-background);
-  color: var(--text-color);
-  font-size: var(--font-size-sm);
-}
-
 /* Image Preview */
 
 .image-preview-container:hover {
@@ -910,19 +681,6 @@
 @media (max-width: 768px) {
   .form-row .form-group {
     min-width: 100%;
-  }
-
-  .instance-appearance-row {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .instance-appearance-row label {
-    margin-bottom: 0.5rem;
-  }
-
-  .instance-appearance-row select {
-    width: 100%;
   }
 }
 
@@ -947,86 +705,22 @@
 /* Submission Page Styles */
 
 /* Dedicated Submission Pages */
-.submission-page-container {
-  width: 100%;
-  max-width: var(--container-max-width);
-  margin: 0 auto;
-  padding: 2rem var(--content-padding);
-}
-
-.submission-page-header {
-  margin-bottom: 2rem;
-  text-align: center;
-}
-
-.submission-page-header h1 {
-  font-size: var(--font-size-3xl);
-  color: var(--accent-color);
-  margin-bottom: 0.5rem;
-}
-
-.submission-page-header p {
-  font-size: var(--font-size-lg);
-  color: var(--text-color);
-  opacity: 0.8;
-  max-width: 800px;
-  margin: 0 auto;
-}
-
-.submission-page-content {
-  background-color: var(--card-background);
-  border-radius: 0.5rem;
-  box-shadow: 0 2px 4px var(--overlay-light);
-  padding: 2rem;
-}
-
-/* .action-button.primary/.secondary - use unified button system: className="button primary" or "button secondary" */
-
-/* Dropdown Menu */
-
-/* Tabs */
-.submission-tabs {
-  display: flex;
-  gap: 1rem;
-  margin-bottom: 1.5rem;
-  border-bottom: 1px solid var(--divider-color);
-  padding-bottom: 0.5rem;
-}
 
 /* Submission Types */
-.submission-types-container {
-  background-color: var(--card-background);
-  border-radius: 0.5rem;
-  box-shadow: 0 2px 4px var(--overlay-light);
-  padding: 2rem;
-  margin-bottom: 2rem;
-}
 
-.submission-types-container h2 {
+.guide-detail-content h2 {
   font-size: var(--font-size-xl);
   color: var(--accent-color);
   margin-bottom: 0.5rem;
   text-align: center;
 }
 
-.submission-types-container > p {
+.guide-detail-content > p {
   color: var(--text-color);
   opacity: 0.8;
   max-width: 800px;
   margin: 0 auto 2rem;
   text-align: center;
-}
-
-.submission-types-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 1.5rem;
-}
-
-.submission-types-grid-row {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
 }
 
 .submission-types-section {
@@ -1040,32 +734,12 @@
   text-align: center;
 }
 
-.submission-types-grid-column {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 1.5rem;
-}
-
-.submission-type-card {
-  background-color: var(--card-background-light);
-  border-radius: 0.5rem;
-  padding: 1.5rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-  transition: transform 0.2s, box-shadow 0.2s;
-  cursor: pointer;
-  position: relative;
-  overflow: hidden;
-  box-shadow: 0 2px 4px var(--overlay-light);
-}
-
-.submission-type-card:hover {
+.adopt-card:hover {
   transform: translateY(-5px);
   box-shadow: 0 5px 15px var(--overlay-light);
 }
 
-.submission-type-card::after {
+.adopt-card::after {
   content: '';
   position: absolute;
   top: 0;
@@ -1088,13 +762,13 @@
   margin-bottom: 0.5rem;
 }
 
-.submission-type-card h3 {
+.adopt-card h3 {
   font-size: var(--font-size-lg);
   color: var(--accent-color);
   margin: 0;
 }
 
-.submission-type-card p {
+.adopt-card p {
   color: var(--text-color);
   line-height: 1.5;
   margin: 0;
@@ -1104,27 +778,6 @@
 /* .prompt-button - use unified button system: className="button secondary sm" */
 
 /* My Submissions */
-.my-submissions-container {
-  background-color: var(--card-background);
-  border-radius: 0.5rem;
-  box-shadow: 0 2px 4px var(--overlay-light);
-  padding: 2rem;
-  margin-bottom: 2rem;
-  text-align: center;
-}
-
-.my-submissions-container h2 {
-  font-size: var(--font-size-xl);
-  color: var(--accent-color);
-  margin-bottom: 1rem;
-}
-
-.my-submissions-container p {
-  color: var(--text-color);
-  opacity: 0.8;
-  max-width: 600px;
-  margin: 0 auto;
-}
 
 /* Submission Success */
 .submission-success {
@@ -1186,31 +839,7 @@
 }
 
 /* Responsive Styles */
-@media (max-width: 768px) { 
-  
-  
-  .submission-tabs {
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-
-  .submission-types-grid {
-    grid-template-columns: 1fr;
-  }
-}
-.submission-page {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 20px;
-}
-
-.submission-success-container {
-  background-color: var(--card-background);
-  border-radius: 8px;
-  box-shadow: 0 2px 10px var(--overlay-light);
-  padding: 24px;
-  margin-bottom: 24px;
-  text-align: center;
+@media (max-width: 768px) {
 }
 
 .submission-details {
@@ -1256,25 +885,6 @@
   font-style: italic;
 }
 
-.mission-updates,
-.mission-completions {
-  margin-top: 8px;
-}
-
-.mission-updates ul,
-.mission-completions ul {
-  list-style-type: disc;
-  margin-left: 20px;
-  margin-top: 4px;
-}
-
-.mission-updates li,
-.mission-completions li {
-  font-size: 0.9em;
-  color: var(--text-color);
-  margin-bottom: 2px;
-}
-
 .boss-damage-results {
   margin-top: 8px;
 }
@@ -1292,32 +902,10 @@
 }
 
 @media (max-width: 768px) {
-  .submission-page {
-    padding: 16px;
-  }
-
-  .submission-form-container,
-  .submission-success-container {
-  margin-bottom: 1rem;
-  padding: 1rem;
-}
 }
 /* Submissions Page Styles */
-.submissions-container {
-  width: 100%;
-  max-width: var(--container-max-width);
-  margin: 0 auto;
-  padding: 0 var(--content-padding);
-}
 
-.submissions-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 2rem;
-}
-
-.submissions-header h1 {
+.tree-header h1 {
   font-size: var(--font-size-3xl);
   color: var(--accent-color);
 }
@@ -1325,24 +913,6 @@
 /* .new-submission-button - use unified button system: className="button primary" */
 
 /* Submissions Filters */
-.submissions-filters {
-  display: flex;
-  gap: 1.5rem;
-  margin-bottom: 2rem;
-}
-
-/* Submissions Grid */
-
-.submission-image {
-  height: 200px;
-  position: relative;
-}
-
-.submission-image img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
 
 .submission-content {
   padding: 1.5rem;
@@ -1406,25 +976,6 @@
   margin-right: 0.5rem;
 }
 
-.submission-detail-description,
-.submission-detail-feedback {
-  background-color: var(--nav-background);
-  border-radius: 0.5rem;
-  margin-bottom: 1.5rem;
-  padding: 1rem;
-}
-
-.submission-detail-description .detail-label,
-.submission-detail-feedback .detail-label {
-  display: block;
-  margin-bottom: 0.5rem;
-}
-
-.submission-detail-description .detail-value,
-.submission-detail-feedback .detail-value {
-  line-height: 1.6;
-}
-
 /* New Submission Modal */
 .new-submission-modal {
   padding: 1rem 0;
@@ -1434,24 +985,9 @@
 
 /* Responsive Styles */
 @media (max-width: 768px) {
-  .submissions-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 1rem;
-  }
-  
-  .submissions-filters {
-    flex-direction: column;
-    gap: 1rem;
-  }
   
   .submissions-grid {
     grid-template-columns: 1fr;
-  }
-  
-  .image-upload {
-    flex-direction: column;
-    align-items: center;
   }
   
   .image-controls {
@@ -1476,7 +1012,7 @@
 
 /* Quality Section */
 
-.quality-options input[type="radio"]:checked + span {
+.type-tags input[type="radio"]:checked + span {
   color: var(--primary-color);
   font-weight: 600;
 }
@@ -1537,11 +1073,6 @@
 
 .appearance-type {
   color: var(--text-color);
-}
-
-.appearance-count {
-  color: var(--accent-color);
-  font-weight: 600;
 }
 
 .bonus-label {
@@ -1633,16 +1164,6 @@
 
 /* .add-entity-button - removed, use unified button system */
 
-.entity-select:focus,
-.appearance-select:focus,
-.complexity-select:focus,
-.monster-name-input:focus,
-.appearance-count-input:focus {
-  border-color: var(--accent-color);
-  box-shadow: 0 0 0 2px var(--accent-glow);
-  outline: none;
-}
-
 /* .calculate-button:hover - removed, use unified button system */
 
 /* Responsive Adjustments - moved to comprehensive block */
@@ -1654,22 +1175,6 @@
   background: var(--card-background);
   border-radius: 12px;
   box-shadow: 0 4px 6px var(--overlay-light);
-}
-
-.gift-rewards-header {
-  text-align: center;
-  margin-bottom: 2rem;
-}
-
-.gift-rewards-header h2 {
-  color: var(--primary-color);
-  margin-bottom: 0.5rem;
-  font-size: 2rem;
-}
-
-.gift-rewards-header p {
-  color: var(--text-secondary);
-  font-size: 1.1rem;
 }
 
 .warning-message {
@@ -1700,17 +1205,6 @@
 /* Level Distribution Styles */
 .allocations-list {
   margin-bottom: 1rem;
-}
-
-.allocation-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: var(--input-background);
-  padding: 0.75rem 1rem;
-  border-radius: 6px;
-  margin-bottom: 0.5rem;
-  border: 1px solid var(--border-color);
 }
 
 .allocation-info {
@@ -1745,24 +1239,6 @@
   border-bottom: none;
 }
 
-.monster-species strong,
-.monster-types strong,
-.monster-attribute strong {
-  color: var(--text-primary);
-  display: block;
-  margin-bottom: 0.25rem;
-}
-
-.species,
-.type {
-  background: var(--secondary-color);
-  border-radius: 4px;
-  color: var(--text-color);
-  font-size: 0.875rem;
-  font-weight: 500;
-  padding: 0.25rem 0.5rem;
-}
-
 .monster-assignment .form-group {
   margin-bottom: 1rem;
 }
@@ -1778,44 +1254,9 @@
   margin-bottom: 0.5rem;
 }
 
-/* Action Buttons */
-.gift-rewards-actions {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 2rem;
-  padding-top: 2rem;
-  border-top: 1px solid var(--border-color);
-}
-
 /* Monster Rewards Styles */
 
 /* Gift Monster Card - styled like MonsterCard */
-.gift-monster-card {
-  display: block;
-  background-color: var(--card-background);
-  border-radius: 8px;
-  overflow: hidden;
-  box-shadow: 0 2px 4px var(--overlay-light);
-  transition: transform 0.2s, box-shadow 0.2s;
-  text-decoration: none;
-  color: var(--text-color);
-  width: 100%;
-}
-
-.gift-monster-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 5px 15px var(--overlay-medium);
-}
-
-.gift-monster-card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px 15px;
-  background-color: var(--nav-background);
-  border-bottom: 1px solid var(--divider-color);
-}
 
 .gift-monster-name {
   margin: 0;
@@ -1827,25 +1268,7 @@
   white-space: nowrap;
 }
 
-.gift-monster-card-image {
-  position: relative;
-  width: 100%;
-  height: 180px;
-  overflow: hidden;
-  background-color: var(--nav-hover);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.gift-monster-card-image img {
-  max-width: 100%;
-  max-height: 100%;
-  object-fit: contain;
-  transition: transform 0.3s;
-}
-
-.gift-monster-card:hover .gift-monster-card-image img {
+.gift-monster-card:hover .monster-card-image img {
   transform: scale(1.05);
 }
 
@@ -1864,12 +1287,6 @@
   gap: 0.25rem;
 }
 
-.species-with-image {
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
-}
-
 .species-reference-image {
   width: 20px;
   height: 20px;
@@ -1879,13 +1296,6 @@
 
 .species-separator {
   color: var(--text-color-secondary);
-}
-
-.gift-monster-types {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 5px;
-  margin-bottom: 10px;
 }
 
 .gift-monster-attribute {
@@ -1906,7 +1316,7 @@
 
 /* Responsive Design */
 @media (max-width: 768px) {
-  .gift-monster-card-image {
+  .monster-card-image {
     height: 150px;
   }
 }
@@ -1918,33 +1328,6 @@
   margin: 2rem 0;
   border: 2px solid var(--primary-color);
   box-shadow: 0 4px 12px var(--overlay-light);
-}
-
-.reallocation-header {
-  text-align: center;
-  margin-bottom: 2rem;
-}
-
-.reallocation-header h2 {
-  color: var(--primary-color);
-  margin-bottom: 1rem;
-}
-
-.reallocation-header p {
-  color: var(--text-color-secondary);
-  margin-bottom: 1.5rem;
-  line-height: 1.6;
-}
-
-.level-summary {
-  display: flex;
-  justify-content: center;
-  gap: 2rem;
-  flex-wrap: wrap;
-  background: var(--input-background);
-  padding: 1rem;
-  border-radius: 8px;
-  border: 1px solid var(--border-color);
 }
 
 .level-summary span {
@@ -1978,11 +1361,6 @@
   object-fit: contain;
 }
 
-.allocation-targets {
-  border-top: 1px solid var(--border-color);
-  padding-top: 1.5rem;
-}
-
 .allocation-targets h4 {
   color: var(--heading-color);
   margin-bottom: 1rem;
@@ -1999,12 +1377,6 @@
   background: var(--card-background);
   border: 1px solid var(--border-color);
   border-radius: 4px;
-}
-
-.target-name {
-  flex: 1;
-  font-weight: 500;
-  color: var(--text-color);
 }
 
 .allocation-entry input[type="number"] {
@@ -2037,6 +1409,13 @@
   gap: 1rem;
   padding-top: 2rem;
   border-top: 1px solid var(--border-color);
+}
+
+.gallery-item-title {
+  font-size: var(--font-size-base);
+  color: var(--accent-color);
+  margin-bottom: 0.5rem;
+  font-weight: 800;
 }
 
 /* .complete-button - use unified button system: className="button success" */
@@ -2080,20 +1459,6 @@
   box-shadow: 0 2px 8px var(--overlay-light);
 }
 
-.chapter-card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.chapter-card-info {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  flex: 1;
-  min-width: 0;
-}
-
 .chapter-card-number {
   font-weight: 700;
   color: var(--accent-color);
@@ -2108,21 +1473,6 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-}
-
-.chapter-card-meta {
-  display: flex;
-  gap: 1rem;
-  margin-top: 0.5rem;
-  font-size: var(--font-size-xs);
-  color: var(--text-secondary);
-  padding-left: 2.75rem;
-}
-
-.chapter-card-meta span {
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
 }
 
 /* .chapter-button - use unified button system: className="button danger" */
@@ -2184,10 +1534,6 @@
 
 /* Responsive */
 @media (max-width: 768px) {
-  .chapter-card-meta {
-    padding-left: 0;
-    flex-wrap: wrap;
-  }
 
   .chapter-form {
     padding: 1rem;
@@ -2260,7 +1606,7 @@
     padding: 1.5rem;
   }
 
-  .gift-rewards-header h2 {
+  .map-header h2 {
     font-size: 1.75rem;
   }
 
@@ -2272,7 +1618,7 @@
     padding: 1.5rem;
   }
 
-  .allocation-item {
+  .category-row {
     padding: 0.625rem 0.875rem;
   }
 
@@ -2297,11 +1643,6 @@
     gap: 1.5rem;
   }
 
-  .art-calculator {
-    padding: 1rem;
-    gap: 1rem;
-  }
-
   .calculator-section {
   margin-bottom: 2rem;
   padding: 1.5rem;
@@ -2310,10 +1651,6 @@
 
   .calculator-section h3 {
     font-size: 1.1rem;
-  }
-
-  .appearance-count-input {
-    width: 100%;
   }
 
   .gift-participants-list {
@@ -2338,39 +1675,11 @@
     border-radius: 8px;
   }
 
-  .gift-rewards-actions {
-    flex-direction: column;
-    gap: 1rem;
-  }
-
-  .gift-rewards-header {
-    margin-bottom: 1.5rem;
-  }
-
-  .gift-rewards-header h2 {
-    font-size: 1.5rem;
-  }
-
-  .gift-rewards-header p {
-    font-size: 1rem;
-  }
-
-  .reward-section {
-    padding: 1rem;
-    margin-bottom: 1.5rem;
-  }
-
   .reward-section h3 {
     font-size: 1.1rem;
   }
 
   /* Level Distribution */
-  .allocation-item {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.5rem;
-    padding: 0.75rem;
-  }
 
   .allocation-info {
     width: 100%;
@@ -2441,25 +1750,6 @@
     margin: 1rem 0;
   }
 
-  .reallocation-header {
-    margin-bottom: 1.5rem;
-  }
-
-  .reallocation-header h2 {
-    font-size: 1.25rem;
-  }
-
-  .reallocation-header p {
-    font-size: 0.9rem;
-  }
-
-  .level-summary {
-    flex-direction: column;
-    gap: 0.5rem;
-    text-align: center;
-    padding: 0.75rem;
-  }
-
   .level-summary span {
     font-size: 0.9rem;
   }
@@ -2516,24 +1806,10 @@
     max-width: 100%;
   }
 
-  .additional-images-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 0.75rem;
-  }
-
   /* Featured Entity Cards */
-  .featured-entity-card,
-  .featured-trainer-card {
-    padding: 0.75rem;
-  }
 
-  .featured-entity-image {
+  .selected-item-image {
     height: 100px;
-  }
-
-  .featured-trainer-image {
-    height: 15vh;
-    width: 12vh;
   }
 
   .featured-entity-name {
@@ -2544,12 +1820,6 @@
   /* Chapter Cards */
   .chapter-card {
     padding: 0.75rem 1rem;
-  }
-
-  .chapter-card-info {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.25rem;
   }
 
   .chapter-card-number {
@@ -2567,10 +1837,6 @@
     font-size: 1.1rem;
   }
 
-  .art-calculator {
-    padding: 0.75rem;
-  }
-
   .calculator-section h3 {
     font-size: 1rem;
   }
@@ -2579,25 +1845,13 @@
     padding: 0.75rem;
   }
 
-  .entity-select,
-  .appearance-select,
-  .complexity-select,
-  .monster-name-input {
-    padding: 0.625rem;
-    font-size: 0.9rem;
-  }
-
   /* Gift Rewards */
   .gift-rewards-container {
     padding: 0.75rem;
   }
 
-  .gift-rewards-header h2 {
+  .map-header h2 {
     font-size: 1.25rem;
-  }
-
-  .gift-rewards-header p {
-    font-size: 0.9rem;
   }
 
   .reward-section h3 {
@@ -2606,7 +1860,7 @@
   }
 
   /* Level Distribution */
-  .allocation-item {
+  .category-row {
     padding: 0.625rem;
   }
 
@@ -2621,18 +1875,6 @@
   /* Level Cap Reallocation */
   .level-cap-reallocation {
     padding: 0.75rem;
-  }
-
-  .reallocation-header h2 {
-    font-size: 1.1rem;
-  }
-
-  .reallocation-header p {
-    font-size: 0.85rem;
-  }
-
-  .level-summary {
-    padding: 0.625rem;
   }
 
   .level-summary span {
@@ -2669,30 +1911,11 @@
     font-size: 1.25rem;
   }
 
-  .submission-description h2,
-  .submission-writing-content h2,
-  .submission-additional-images h2,
-  .submission-featured-entities h2,
-  .related-submissions h2 {
-    font-size: 1.1rem;
-    margin: 1rem 0 0.75rem;
-  }
-
-  .additional-images-grid {
-    grid-template-columns: 1fr 1fr;
-    gap: 0.5rem;
-  }
-
   .additional-image {
     height: 100px;
   }
 
-  .featured-entity-card,
-  .featured-trainer-card {
-    padding: 0.5rem;
-  }
-
-  .featured-entity-image {
+  .selected-item-image {
     height: 80px;
   }
 
@@ -2706,26 +1929,13 @@
     padding: 0 0.375rem 0.375rem;
   }
 
-  .related-submission-image {
-    height: 70px;
-  }
-
-  .related-submission-title {
-    padding: 0.375rem;
-    font-size: 0.8rem;
-  }
-
   /* Gift Monster Cards */
-  .gift-monster-card-header {
+  .monster-card-header {
     padding: 0.5rem 0.75rem;
   }
 
   .gift-monster-name {
     font-size: 0.95rem;
-  }
-
-  .gift-monster-card-image {
-    height: 120px;
   }
 
   .gift-monster-card-info {
@@ -2774,11 +1984,11 @@
     padding: 0.5rem;
   }
 
-  .gift-rewards-header h2 {
+  .map-header h2 {
     font-size: 1.1rem;
   }
 
-  .gift-rewards-header p {
+  .map-header p {
     font-size: 0.85rem;
   }
 
@@ -2793,10 +2003,6 @@
   /* Level Cap Reallocation */
   .level-cap-reallocation {
     padding: 0.5rem;
-  }
-
-  .reallocation-header h2 {
-    font-size: 1rem;
   }
 
   .level-summary span {
@@ -2829,18 +2035,11 @@
     font-size: 1.1rem;
   }
 
-  .additional-images-grid,
-  .featured-entities-grid,
-  .related-submissions-grid {
-    grid-template-columns: 1fr;
-    gap: 0.5rem;
-  }
-
-  .featured-entity-image {
+  .selected-item-image {
     height: 100px;
   }
 
-  .gift-monster-card-image {
+  .monster-card-image {
     height: 100px;
   }
 }

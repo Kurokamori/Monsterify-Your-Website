@@ -30,8 +30,8 @@ const TrainerReferenceSubmissionPage = () => {
   }
 
   return (
-    <div className="submission-page-container">
-      <div className="submission-page-header">
+    <div className="edit-monster-container">
+      <div className="map-header">
         <h1>Submit Trainer References</h1>
         <p>Submit reference images for your trainers to help artists draw them accurately.</p>
       </div>
@@ -49,7 +49,7 @@ const TrainerReferenceSubmissionPage = () => {
           {loading && <LoadingSpinner />}
         </div>
       ) : (
-        <div className="submission-page-content">
+        <div className="town-section">
           <TrainerReferenceSubmissionForm onSubmissionComplete={handleSubmissionComplete} />
         </div>
       )}

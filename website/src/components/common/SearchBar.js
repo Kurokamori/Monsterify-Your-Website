@@ -50,11 +50,11 @@ const SearchBar = ({
 
   return (
     <div className="search-bar">
-      <div className="search-bar-input-container">
+      <div className="autocomplete-input-wrapper">
         <i className="fas fa-search search-bar-icon"></i>
         <input
           type="text"
-          className="search-bar-input"
+          className="form-input"
           placeholder={placeholder}
           value={searchTerm}
           onChange={handleChange}

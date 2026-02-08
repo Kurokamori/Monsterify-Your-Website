@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 const NotFoundPage = () => {
   return (
-    <div className="not-found-container">
+    <div className="auth-container">
       <div className="not-found-content">
         <div className="not-found-icon">
           <i className="fas fa-ghost"></i>

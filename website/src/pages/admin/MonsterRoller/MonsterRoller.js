@@ -295,7 +295,7 @@ const MonsterRoller = () => {
         <form onSubmit={handleSubmit} className="monster-roller-form">
           <div className="form-section">
             <h3>Monster Tables</h3>
-            <div className="checkbox-group">
+            <div className="event-date">
               {options.tables.map(table => (
                 <label key={table} className="checkbox-label">
                   <input
@@ -1039,7 +1039,7 @@ const MonsterRoller = () => {
             </div>
 
             <div className="form-row">
-              <div className="form-group checkbox-group">
+              <div className="form-group event-date">
                 <label className="checkbox-label">
                   <input
                     type="checkbox"

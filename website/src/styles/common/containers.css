@@ -2,60 +2,6 @@
    Page Containers & Headers
    ============================== */
 
-.page-container,
-.guides-container,
-.guide-detail-container,
-.lore-container,
-.npcs-container {
-  margin: 0 auto;
-  max-width: var(--container-max-width);
-  padding: 0 var(--content-padding);
-  padding-bottom: 3rem;
-  width: 100%;
-}
-
-.page-header,
-.guides-header,
-.lore-header,
-.npcs-header {
-  align-items: center;
-  background: var(--card-background);
-  border: 1px solid var(--border-color);
-  border-bottom: 1px solid var(--divider-color);
-  border-radius: 1rem;
-  box-shadow: 0 8px 25px var(--overlay-medium);
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 3rem;
-  margin-top: 20px;
-  padding: 3rem 2rem;
-  padding-bottom: 1rem;
-  text-align: center;
-}
-
-.page-header h1,
-.guides-header h1,
-.lore-header h1,
-.npcs-header h1 {
-  color: var(--accent-color);
-  font-size: var(--font-size-4xl);
-  font-weight: 700;
-  letter-spacing: -0.025em;
-  margin: 0 0 0.75rem 0;
-  margin-bottom: 1rem;
-}
-
-.page-header p,
-.guides-header p,
-.lore-header p,
-.npcs-header p {
-  color: var(--text-color);
-  font-size: var(--font-size-lg);
-  margin: 0 auto;
-  max-width: 600px;
-  opacity: 0.8;
-}
-
 /* ---------- Section Title ---------- */
 
 .section-title {
@@ -82,4 +28,56 @@
   box-shadow: 0 4px 6px -1px var(--overlay-light), 0 2px 4px -1px var(--overlay-light);
   padding: 1.5rem;
   margin-bottom: 1.5rem;
+}
+
+/* ---------- Generic Containers ---------- */
+
+.container {
+  display: flex;
+}
+
+.container.center {
+  justify-content: center;
+  align-items: center;
+}
+
+.container.horizontal {
+  flex-direction: row;
+}
+
+.container.vertical {
+  flex-direction: column;
+}
+
+.container.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+}
+
+.container.five {
+  grid-template-columns: repeat(5, 1fr);
+}
+
+.container.gap-sm {
+  gap: 0.5rem;
+}
+
+.container.gap-md {
+  gap: 1rem;
+}
+
+.container.gap-lg {
+  gap: 1.5rem;
+}
+
+.container.small {
+  max-width: 30%;
+}
+
+.container.medium {
+  max-width: 50%;
+}
+
+.container.large {
+  max-width: 100%;
 }

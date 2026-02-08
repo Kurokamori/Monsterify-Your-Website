@@ -447,11 +447,11 @@ const MonsterReferenceSubmissionForm = ({ onSubmissionComplete }) => {
       <form className="submission-form" onSubmit={handleSubmit}>
         {/* Bulk Upload Section */}
         <div className="form-section">
-          <div className="bulk-upload-header">
+          <div className="adopt-card">
             <h3>Upload Options</h3>
             <button
               type="button"
-              className={`toggle-button ${showBulkUpload ? 'active' : ''}`}
+              className={`toggle-button${showBulkUpload ? 'active' : ''}`}
               onClick={toggleBulkUpload}
             >
               {showBulkUpload ? 'Switch to Individual Upload' : 'Upload Many Refs'}
@@ -686,7 +686,7 @@ const MonsterReferenceSubmissionForm = ({ onSubmissionComplete }) => {
                     <div className="instance-appearances">
                       <h5>Instance Appearances</h5>
                       {reference.instanceAppearances.map((appearance, i) => (
-                        <div key={i} className="instance-appearance-row">
+                        <div key={i} className="option-row">
                           <label>Instance #{appearance.instanceNumber} Appearance:</label>
                           <select
                             value={appearance.type}
@@ -768,7 +768,7 @@ const MonsterReferenceSubmissionForm = ({ onSubmissionComplete }) => {
 
               <div className="reward-section">
                 <h5>Trainer Rewards</h5>
-                <div className="reward-items">
+                <div className="fandom-grid">
                   <div className="reward-item">
                     <span className="reward-label">Levels:</span>
                     <span className="reward-value">{rewardEstimate.levels}</span>

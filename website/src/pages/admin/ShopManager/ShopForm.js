@@ -252,8 +252,8 @@ const ShopForm = () => {
   }
   
   return (
-    <div className="shop-form-container">
-      <div className="shop-form-header">
+    <div className="shop-page">
+      <div className="adopt-card">
         <h1>{isEditMode ? 'Edit Shop' : 'Add New Shop'}</h1>
       </div>
       
@@ -387,7 +387,7 @@ const ShopForm = () => {
         <div className="form-section">
           <h2>Shop Visibility</h2>
           
-          <div className="form-group checkbox-group">
+          <div className="form-group event-date">
             <label>
               <input
                 type="checkbox"
@@ -399,7 +399,7 @@ const ShopForm = () => {
             </label>
           </div>
           
-          <div className="form-group checkbox-group">
+          <div className="form-group event-date">
             <label>
               <input
                 type="checkbox"
@@ -474,7 +474,7 @@ const ShopForm = () => {
                 <small>Probability of shop appearing (0 = never, 1 = always)</small>
               </div>
               
-              <div className="form-group checkbox-group">
+              <div className="form-group event-date">
                 <label>
                   <input
                     type="checkbox"

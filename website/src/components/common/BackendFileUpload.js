@@ -167,7 +167,7 @@ const BackendFileUpload = ({
   };
 
   return (
-    <div className={`file-upload ${disabled ? 'disabled' : ''}`}>
+    <div className={`file-upload${disabled ? 'disabled' : ''}`}>
       <input
         type="file"
         ref={fileInputRef}

@@ -21,16 +21,17 @@
   height: 50px;
 }
 
-.nav-left {
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
-}
-
 .nav-right {
   display: flex;
   align-items: center;
   gap: 0.25rem;
+  height: 100%;
+}
+
+.nav-left {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
   height: 100%;
 }
 
@@ -41,30 +42,18 @@
   align-items: center;
 }
 
-.logo-link {
-  display: flex;
-  align-items: center;
+.top-nav-link {
+  color: var(--text-color);
+  text-decoration: none;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.25rem;
+  transition: background-color 0.2s;
+  font-size: 1rem;
 }
 
 /* Mobile Menu Button - Hidden by default, shown on mobile */
 .mobile-menu-button {
   display: none;
-}
-
-.top-nav-link {
-  display: flex;
-  align-items: center;
-  padding: 0.35rem 0.75rem;
-  color: var(--text-color);
-  text-decoration: none;
-  border-radius: 0.25rem;
-  transition: background-color 0.2s;
-  font-size: 0.95rem;
-}
-
-.top-nav-link:hover {
-  background-color: var(--nav-hover);
-  color: var(--text-color);
 }
 
 .nav-divider {
@@ -179,24 +168,6 @@
   background-color: var(--nav-hover) !important;
 }
 
-/* Mobile Dropdown Section Headers */
-.mobile-dropdown-section-header {
-  padding: 0.5rem 1rem 0.25rem;
-  font-size: 0.65rem;
-  font-weight: 600;
-  color: var(--accent-color);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  border-top: 1px solid var(--divider-color);
-  margin-top: 0.5rem;
-  background-color: var(--nav-background);
-}
-
-.mobile-dropdown-section-header:first-child {
-  border-top: none;
-  margin-top: 0;
-}
-
 /* Mobile dropdown sub-items */
 .mobile-sub-item {
   padding-left: 1.75rem !important;
@@ -228,22 +199,6 @@
   z-index: 1;
   border-radius: 0.25rem;
   margin-top: 0.25rem;
-}
-
-.dropdown-item {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem 0.75rem;
-  color: var(--text-color);
-  text-decoration: none;
-  transition: background-color 0.2s;
-  font-size: 0.9rem;
-}
-
-.dropdown-item:hover {
-  background-color: var(--nav-hover);
-  color: var(--text-color);
 }
 
 .dropdown-divider {
@@ -280,19 +235,6 @@
   pointer-events: auto;
 }
 
-.mobile-nav-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1.5rem;
-}
-
-.mobile-nav-links {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
 .mobile-nav-link {
   display: block;
   padding: 0.75rem 1rem;
@@ -310,27 +252,6 @@
   margin-bottom: 0.5rem;
 }
 
-/* Mobile Dropdown Toggle - navigation-specific styling kept here */
-.mobile-dropdown-toggle {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-  padding: 0.75rem 1rem;
-  background-color: transparent;
-  color: var(--text-color);
-  border: none;
-  border-radius: 0.25rem;
-  text-align: left;
-  font-size: var(--font-size-base);
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.mobile-dropdown-toggle:hover {
-  background-color: var(--nav-hover);
-}
-
 .mobile-dropdown-content {
   display: none;
   padding-left: 1rem;
@@ -341,18 +262,6 @@
 }
 
 /* Enhanced Mobile Interactions */
-.mobile-nav-link:active,
-.mobile-dropdown-toggle:active {
-  background-color: var(--accent-color);
-  color: var(--text-color);
-  transform: scale(0.98);
-}
-
-.mobile-nav-link:focus,
-.mobile-dropdown-toggle:focus {
-  outline: 2px solid var(--accent-color);
-  outline-offset: 2px;
-}
 
 /* Safe area support for devices with notches */
 @supports (padding: max(0px)) {
@@ -395,11 +304,6 @@
     transition: none;
   }
   
-  .mobile-nav-link:active,
-  .mobile-dropdown-toggle:active {
-    transform: none;
-  }
-  
   @keyframes dropdownFadeIn {
     from {
       opacity: 1;
@@ -434,14 +338,16 @@
   margin-top: auto;
 }
 
-.footer-content {
+.step-header {
+  align-items: center;
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-between;
-  max-width: var(--container-max-width);
-  margin: 0 auto;
-  padding: 0 var(--content-padding);
   gap: 1rem;
+  justify-content: space-between;
+  margin: 0 auto;
+  margin-bottom: 1.5rem;
+  max-width: var(--container-max-width);
+  padding: 0 var(--content-padding);
 }
 
 .footer-section {
@@ -593,7 +499,7 @@
     padding: 0.75rem;
   }
   
-  .mobile-nav-header {
+  .tree-header {
     margin-bottom: 1rem;
   }
   
@@ -604,16 +510,9 @@
   min-height: 44px;
   padding: 0.6rem 0.8rem;
 }
+
   
-  .mobile-dropdown-toggle {
-  align-items: center;
-  display: flex;
-  font-size: 1rem;
-  min-height: 44px;
-  padding: 0.6rem 0.8rem;
-}
-  
-  .footer-content {
+  .step-header {
     flex-direction: column;
     gap: 0.75rem;
   }
@@ -650,11 +549,7 @@
     padding: 0.7rem 0.6rem;
     font-size: 0.95rem;
   }
-  
-  .mobile-dropdown-toggle {
-    padding: 0.7rem 0.6rem;
-    font-size: 0.95rem;
-  }
+
   
   .mobile-dropdown-content {
     padding-left: 0.8rem;
@@ -688,19 +583,18 @@
     padding: 0.4rem;
   }
   
-  .mobile-nav-header {
-    margin-bottom: 0.8rem;
-  }
+  .tree-header {
+  align-items: flex-start;
+  flex-direction: column;
+  gap: 0.2rem;
+  margin-bottom: 0.8rem;
+}
   
   .mobile-nav-link {
     padding: 0.6rem 0.5rem;
     font-size: 0.9rem;
   }
-  
-  .mobile-dropdown-toggle {
-    padding: 0.6rem 0.5rem;
-    font-size: 0.9rem;
-  }
+
   
   .mobile-dropdown-content {
     padding-left: 0.6rem;
@@ -743,12 +637,6 @@
   
   /* Auth button responsive adjustments removed - handled by unified button system */
   
-  .mobile-nav-link,
-  .mobile-dropdown-toggle {
-    padding: 0.5rem 0.4rem;
-    font-size: 0.85rem;
-  }
-  
   .main-content {
     padding-top: 2.6rem;
     padding-bottom: 1rem;
@@ -759,7 +647,7 @@
 @media (max-width: 767px) {
   /* Ensure touch targets are at least 44px */
   
-  .mobile-dropdown-toggle i {
+  .mobile-nav-link i {
     margin-left: auto;
     font-size: 0.8rem;
   }
@@ -795,7 +683,7 @@
     padding: 0.5rem;
   }
   
-  .mobile-nav-header {
+  .tree-header {
     grid-column: 1 / -1;
     margin-bottom: 0.5rem;
   }
@@ -805,7 +693,7 @@
     margin-top: 0.5rem;
   }
   
-  .mobile-nav-links {
+  .fandom-grid {
     grid-column: 1 / -1;
     display: grid;
     grid-template-columns: 1fr 1fr;

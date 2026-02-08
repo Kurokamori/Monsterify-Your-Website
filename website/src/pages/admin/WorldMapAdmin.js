@@ -460,7 +460,7 @@ const WorldMapAdmin = () => {
                 {activeTab === 'areas' && <td>{item.regionName}</td>}
                 {activeTab === 'areas' && (
                   <td>
-                    <span className={`difficulty-badge difficulty-${item.difficulty?.toLowerCase()}`}>
+                    <span className={`status-badge difficulty-${item.difficulty?.toLowerCase()}`}>
                       {item.difficulty}
                     </span>
                   </td>
@@ -501,7 +501,7 @@ const WorldMapAdmin = () => {
     return (
       <div className="modal-overlay" onClick={() => setShowModal(false)}>
         <div className="modal-content" onClick={e => e.stopPropagation()}>
-          <div className="modal-header">
+          <div className="tree-header">
             <h2>Edit {activeTab.slice(0, -1)}</h2>
             <button 
               className="button close"
@@ -693,7 +693,7 @@ const WorldMapAdmin = () => {
 
   return (
     <div className="world-map-admin">
-      <div className="admin-header">
+      <div className="option-row">
         <h1>World Map Administration</h1>
         <p>Manage landmasses, regions, and areas</p>
       </div>
@@ -732,15 +732,15 @@ const WorldMapAdmin = () => {
       </div>
 
       <div className="admin-stats">
-        <div className="stat-card">
+        <div className="ref-item">
           <div className="stat-number">{Object.keys(landmasses).length}</div>
           <div className="stat-label">Landmasses</div>
         </div>
-        <div className="stat-card">
+        <div className="ref-item">
           <div className="stat-number">{Object.keys(regions).length}</div>
           <div className="stat-label">Regions</div>
         </div>
-        <div className="stat-card">
+        <div className="ref-item">
           <div className="stat-number">{Object.keys(areas).length}</div>
           <div className="stat-label">Areas</div>
         </div>

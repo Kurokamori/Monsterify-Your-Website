@@ -2,7 +2,7 @@
    MONSTER EVOLUTION
    ============================================================================= */
 
-.monster-evolution-tab h2 {
+.monster-mega-tab h2 {
   font-size: var(--font-size-xl);
   color: var(--accent-color);
   margin-bottom: 1.5rem;
@@ -29,21 +29,9 @@
 /* Evolution edit button: Use unified button system from common/buttons.css
    Example: className="button primary" or "button danger" for active state */
 
-.evolution-item.current {
+.value-item.current {
   background-color: var(--nav-active);
   border: 2px solid var(--accent-color);
-}
-
-.evolution-method {
-  background: var(--nav-background);
-  border: 1px solid var(--border-color);
-  border-radius: 0.75rem;
-  color: var(--text-color);
-  font-size: var(--font-size-sm);
-  margin-top: 0.5rem;
-  opacity: 0.8;
-  padding: 1.5rem;
-  text-align: center;
 }
 
 /* =============================================================================
@@ -52,10 +40,6 @@
 
 /* Tablet screens (768px and below) */
 @media (max-width: 768px) {
-  .evolution-chain {
-    flex-direction: column;
-    align-items: center;
-  }
 
   .evolution-arrow {
   font-size: 1rem;

@@ -248,7 +248,7 @@ const Shop = () => {
         <div className="location-icon-large">
           <i className="fas fa-store"></i>
         </div>
-        <div className="location-title">
+        <div className="no-adventures">
           <h2>Shop</h2>
           <p>Purchase items for your adventures</p>
         </div>
@@ -278,7 +278,7 @@ const Shop = () => {
         {(selectedCategory === 'berries' || true) && (
           <div className="berry-filters">
             <h4>Filter Berries by Type (stackable) - Debug: {selectedCategory}</h4>
-            <div className="filter-buttons">
+            <div className="type-tags">
               <button
                 className={`button filter ${berryFilters.type ? 'active' : ''}`}
                 onClick={() => toggleBerryFilter('type')}
@@ -325,9 +325,9 @@ const Shop = () => {
           </div>
         )}
 
-        <div className="shop-items-grid">
+        <div className="town-places">
           {displayItems.map((item) => (
-            <div className="shop-item-card" key={item.id}>
+            <div className="guide-card" key={item.id}>
               <div className="item-image-container">
                 <img
                   src={item.image_path}

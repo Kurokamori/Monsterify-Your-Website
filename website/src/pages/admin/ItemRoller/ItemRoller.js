@@ -131,7 +131,7 @@ const ItemRoller = () => {
 
   return (
     <div className="item-roller-container">
-      <div className="item-roller-header">
+      <div className="adopt-card">
         <h1>Item Roller</h1>
       </div>
 
@@ -141,7 +141,7 @@ const ItemRoller = () => {
             <h2>Categories</h2>
             <div className="categories-grid">
               <button
-                className={`button secondary ${selectedCategories.length === categories.length ? 'selected' : ''}`}
+                className={`button secondary${selectedCategories.length === categories.length ? 'selected' : ''}`}
                 onClick={handleSelectAllCategories}
               >
                 All
@@ -149,7 +149,7 @@ const ItemRoller = () => {
               {categories.map(category => (
                 <button
                   key={category}
-                  className={`button secondary ${selectedCategories.includes(category) ? 'selected' : ''}`}
+                  className={`button secondary${selectedCategories.includes(category) ? 'selected' : ''}`}
                   onClick={() => handleCategoryChange(category)}
                 >
                   {category.charAt(0).toUpperCase() + category.slice(1)}
@@ -161,7 +161,7 @@ const ItemRoller = () => {
           <div className="control-section">
             <h2>Rarity</h2>
             <div className="rarity-options">
-              <label className={`rarity-option ${rarity === '' ? 'selected' : ''}`}>
+              <label className={`rarity-option${rarity === '' ? 'selected' : ''}`}>
                 <input
                   type="radio"
                   name="rarity"
@@ -171,7 +171,7 @@ const ItemRoller = () => {
                 />
                 <span>Any</span>
               </label>
-              <label className={`rarity-option ${rarity === 'common' ? 'selected' : ''}`}>
+              <label className={`rarity-option${rarity === 'common' ? 'selected' : ''}`}>
                 <input
                   type="radio"
                   name="rarity"
@@ -181,7 +181,7 @@ const ItemRoller = () => {
                 />
                 <span>Common</span>
               </label>
-              <label className={`rarity-option ${rarity === 'uncommon' ? 'selected' : ''}`}>
+              <label className={`rarity-option${rarity === 'uncommon' ? 'selected' : ''}`}>
                 <input
                   type="radio"
                   name="rarity"
@@ -191,7 +191,7 @@ const ItemRoller = () => {
                 />
                 <span>Uncommon</span>
               </label>
-              <label className={`rarity-option ${rarity === 'rare' ? 'selected' : ''}`}>
+              <label className={`rarity-option${rarity === 'rare' ? 'selected' : ''}`}>
                 <input
                   type="radio"
                   name="rarity"
@@ -201,7 +201,7 @@ const ItemRoller = () => {
                 />
                 <span>Rare</span>
               </label>
-              <label className={`rarity-option ${rarity === 'ultra rare' ? 'selected' : ''}`}>
+              <label className={`rarity-option${rarity === 'ultra rare' ? 'selected' : ''}`}>
                 <input
                   type="radio"
                   name="rarity"
@@ -211,7 +211,7 @@ const ItemRoller = () => {
                 />
                 <span>Ultra Rare</span>
               </label>
-              <label className={`rarity-option ${rarity === 'legendary' ? 'selected' : ''}`}>
+              <label className={`rarity-option${rarity === 'legendary' ? 'selected' : ''}`}>
                 <input
                   type="radio"
                   name="rarity"

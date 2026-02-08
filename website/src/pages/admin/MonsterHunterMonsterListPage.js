@@ -132,7 +132,7 @@ const MonsterHunterMonsterListPage = () => {
           />
         </div>
 
-        <div className="admin-filter-group">
+        <div className="form-input">
           <div className="admin-filter">
             <label>Class:</label>
             <select value={classFilter} onChange={handleClassFilterChange}>

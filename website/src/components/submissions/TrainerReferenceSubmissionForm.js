@@ -384,7 +384,7 @@ const TrainerReferenceSubmissionForm = ({ onSubmissionComplete }) => {
 
               <div className="reward-section">
                 <h5>Trainer Rewards</h5>
-                <div className="reward-items">
+                <div className="fandom-grid">
                   <div className="reward-item">
                     <span className="reward-label">Levels:</span>
                     <span className="reward-value">{rewardEstimate.levels}</span>

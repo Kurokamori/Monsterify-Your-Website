@@ -2,12 +2,6 @@
    MONSTER GALLERY
    ============================================================================= */
 
-.monster-gallery-tab h2 {
-  font-size: var(--font-size-xl);
-  color: var(--accent-color);
-  margin-bottom: 1.5rem;
-}
-
 .gallery-image-container {
   position: relative;
   border-radius: 0.5rem;
@@ -56,15 +50,8 @@
 
 /* Tablet screens (768px and below) */
 @media (max-width: 768px) {
-  .gallery-grid {
-  grid-template-columns: 1fr;
-}
 }
 
 /* Mobile screens (480px and below) */
 @media (max-width: 480px) {
-  .gallery-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 0.5rem;
-  }
 }

@@ -1,11 +1,11 @@
-.monster-roll-configurator {
+.reward-configurator {
   background: var(--card-background);
   border: 1px solid var(--border-color);
   border-radius: 8px;
   padding: 20px;
 }
 
-.preset-section {
+.config-section {
   margin-bottom: 25px;
   padding: 15px;
   background: var(--card-background);
@@ -13,7 +13,7 @@
   border: 1px solid var(--border-color);
 }
 
-.preset-section h5 {
+.config-section h5 {
   font-size: 1rem;
   font-weight: 600;
   color: var(--text-color);
@@ -26,29 +26,15 @@
   gap: 10px;
 }
 
-.config-section {
-  background: var(--card-background);
-  border: 1px solid var(--border-color);
-  border-radius: 6px;
-  margin-bottom: 1.5rem;
-  padding: 15px;
-}
-
 .config-section:last-child {
   margin-bottom: 0;
 }
 
-.config-section h5 {
-  font-size: 1rem;
-  font-weight: 600;
-  color: var(--text-color);
-  margin: 0 0 15px 0;
-}
-
 .config-row {
+  align-items: end;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 15px;
+  gap: 10px;
+  grid-template-columns: 3fr 1fr 1fr auto;
   margin-bottom: 15px;
 }
 
@@ -59,38 +45,8 @@
   width: 16px;
 }
 
-.type-grid,
-.attribute-grid,
-.checkbox-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-  gap: 10px;
-  margin-top: 10px;
-}
-
-.type-checkbox,
-.attribute-checkbox {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  cursor: pointer;
-  padding: 8px;
-  border-radius: 6px;
-  transition: background-color 0.2s ease;
-}
-
-.type-checkbox:hover,
-.attribute-checkbox:hover {
-  background: var(--card-background-light);
-}
-
-.type-checkbox input[type="checkbox"],
-.attribute-checkbox input[type="checkbox"] {
-  display: none;
-}
-
 .type-checkbox input[type="checkbox"]:checked + .type-badge,
-.attribute-checkbox input[type="checkbox"]:checked + .attribute-badge {
+.type-checkbox input[type="checkbox"]:checked + .attribute-badge {
   border-color: var(--accent-color);
   box-shadow: 0 0 0 2px var(--accent-glow);
 }
@@ -128,7 +84,7 @@
 
 /* Responsive Design */
 @media (max-width: 768px) {
-  .monster-roll-configurator {
+  .reward-configurator {
     padding: 15px;
   }
   
@@ -140,40 +96,14 @@
     grid-template-columns: 1fr;
     gap: 10px;
   }
-  
-  .type-grid,
-  .attribute-grid {
-    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-    gap: 8px;
-  }
 }
 
 @media (max-width: 480px) {
-  .config-section,
-  .preset-section {
-    padding: 10px;
-  }
-  
-  .type-grid,
-  .attribute-grid {
-    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
-  }
   
 }
 
 /* Focus styles for accessibility */
 
 /* High contrast mode support */
-@media (prefers-contrast: high) {
-  .config-section,
-  .preset-section,
-  .config-summary {
-    border-width: 2px;
-  }
-  
-  .form-select,
-  .form-input {
-    border-width: 2px;
-  }
-  
+@media (prefers-contrast: high) {  
 }

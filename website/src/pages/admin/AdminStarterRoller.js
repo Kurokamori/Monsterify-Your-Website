@@ -88,7 +88,7 @@ const AdminStarterRoller = () => {
         return (
           <div className="starter-empty-state">
             <h2>Loading starter monsters...</h2>
-            <div className="starter-spinner-container">
+            <div className="evolution-attribute">
               <div className="starter-spinner"></div>
             </div>
           </div>
@@ -105,7 +105,7 @@ const AdminStarterRoller = () => {
             {currentSet.monsters.map((monster, index) => (
               <div
                 key={`${currentSet.setId}-${index}`}
-                className={`starter-card ${
+                className={`guide-card ${
                   selectedStarters[currentStep] === monster
                     ? 'selected'
                     : ''
@@ -124,7 +124,7 @@ const AdminStarterRoller = () => {
         return (
           <div className="starter-empty-state">
             <h2>Please select all three starters first</h2>
-            <div className="starter-spinner-container">
+            <div className="evolution-attribute">
               <button
                 className="button secondary"
                 onClick={() => setCurrentStep(0)}
@@ -230,13 +230,13 @@ const AdminStarterRoller = () => {
   // Render initial state (before rolling)
   if (!hasRolled) {
     return (
-      <div className="admin-starter-roller">
-        <div className="admin-starter-header">
+      <div className="bulk-monster-add">
+        <div className="steps-header">
           <h1>Admin Starter Roller</h1>
           <p>Preview the starter roller without creating a trainer. This uses the exact same roller system as the actual trainer creation flow.</p>
         </div>
 
-        <div className="admin-starter-roll-section">
+        <div className="auth-loading">
           <div className="roll-card">
             <div className="roll-icon">
               <i className="fas fa-egg"></i>
@@ -267,7 +267,7 @@ const AdminStarterRoller = () => {
   // Render loading state
   if (loading) {
     return (
-      <div className="admin-starter-roller">
+      <div className="bulk-monster-add">
         <h1 className="starter-loading-title">Admin Starter Roller</h1>
         <LoadingSpinner />
       </div>
@@ -277,7 +277,7 @@ const AdminStarterRoller = () => {
   // Render roller interface
   return (
     <div className="starter-selection-container">
-      <div className="admin-starter-header-inline">
+      <div className="profile-content">
         <h1 className="starter-page-title">Admin Starter Roller</h1>
         <button
           className="button primary"
@@ -306,7 +306,7 @@ const AdminStarterRoller = () => {
             return (
               <button
                 key={index}
-                className={`starter-progress-tab ${currentStep === index ? 'active' : ''} ${isCompleted ? 'completed' : ''}`}
+                className={`button${currentStep === index ? 'active' : ''}${isCompleted ? 'completed' : ''}`}
                 onClick={() => setCurrentStep(index)}
                 disabled={isDisabled}
               >

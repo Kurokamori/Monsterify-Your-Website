@@ -16,15 +16,31 @@
 
 /* Activity Image */
 
-.activity-image {
-  width: 100%;
-  height: 600px;
-  object-fit: cover;
-  transition: transform 0.3s ease;
+.npc-avatar {
+  align-items: center;
+  background: var(--background-primary);
+  background-color: var(--nav-background);
+  border: 2px solid var(--accent-color);
   border-bottom: 2px solid var(--accent-glow);
+  border-radius: 50%;
+  bottom: -40px;
+  box-shadow: 0 4px 12px var(--overlay-medium);
+  display: flex;
+  flex-shrink: 0;
+  height: 40px;
+  justify-content: center;
+  left: 1.5rem;
+  margin: 10px auto 15px;
+  margin-left: 15px;
+  margin-right: 1.5rem;
+  object-fit: cover;
+  overflow: hidden;
+  position: relative;
+  transition: all 0.3s ease;
+  width: 40px;
 }
 
-.activity-image img {
+.npc-avatar img {
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -46,16 +62,34 @@
   align-items: center;
 }
 
-.activity-session-header {
-  display: flex;
-  justify-content: space-between;
+.adopt-card {
   align-items: center;
+  background-color: var(--card-background);
+  border-radius: .5rem;
+  box-shadow: 0 2px 4px var(--overlay-light);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  grid-row: span 5;
+  grid-template-rows: subgrid;
+  height: 100%;
+  justify-content: space-between;
   margin-bottom: 20px;
+  overflow: hidden;
+  padding: 1.5rem;
+  position: relative;
+  row-gap: 0.5rem;
+  text-align: center;
+  transition: transform .2s, box-shadow .2s;
 }
 
-.activity-session-header h2 {
+.adopt-card h2 {
+  color: var(--accent-color);
+  flex: 1;
+  font-size: var(--font-size-2xl);
+  font-weight: 600;
   margin: 0;
-  color: var(--text-color);
   text-transform: capitalize;
 }
 
@@ -69,16 +103,12 @@
   opacity: 0.9;
 }
 
-.activity-prompt {
-  margin-bottom: 30px;
-  padding: 25px;
-  background: linear-gradient(135deg, var(--accent-glow), var(--accent-glow));
+.info-item {
   border-radius: 12px;
-  border: 2px solid var(--accent-glow);
-  box-shadow: 0 4px 12px var(--overlay-light);
+  font-size: 0.9rem;
 }
 
-.activity-prompt h3 {
+.info-item h3 {
   margin-top: 0;
   margin-bottom: 20px;
   color: var(--accent-color);
@@ -88,14 +118,14 @@
   text-shadow: 0 2px 4px var(--overlay-light);
 }
 
-.activity-prompt p {
+.info-item p {
   line-height: 1.8;
   margin-bottom: 0;
   color: var(--text-color);
   font-size: 1.1rem;
 }
 
-.activity-prompt strong {
+.info-item strong {
   color: var(--accent-color);
   font-weight: 600;
 }
@@ -226,18 +256,23 @@
   margin-top: 1.5rem;
 }
 
-.garden-plot {
+.guide-card {
   background-color: var(--card-background);
   border-radius: 0.5rem;
-  overflow: hidden;
-  transition: transform 0.2s, box-shadow 0.2s;
   box-shadow: 0 2px 4px var(--overlay-light);
-  height: 100%;
+  cursor: pointer;
   display: flex;
   flex-direction: column;
+  height: 100%;
+  margin-bottom: 2rem;
+  overflow: hidden;
+  padding: 2rem;
+  position: relative;
+  text-align: center;
+  transition: transform 0.2s, box-shadow 0.2s;
 }
 
-.garden-plot:hover {
+.guide-card:hover {
   transform: translateY(-4px);
   box-shadow: 0 6px 12px var(--overlay-medium);
 }
@@ -305,7 +340,7 @@
   margin-bottom: 1.5rem;
 }
 
-.task-actions {
+.type-row {
   display: flex;
   gap: 0.5rem;
 }
@@ -348,7 +383,7 @@
   box-shadow: 0 4px 12px var(--overlay-light);
 }
 
-.location-activity-card:hover .activity-image {
+.location-activity-card:hover .npc-avatar {
   transform: scale(1.05);
 }
 
@@ -389,22 +424,9 @@
   text-shadow: 0 1px 3px var(--overlay-solid);
 }
 
-.active-session-message {
-  background-color: var(--card-background);
-  border-radius: 8px;
-  padding: 30px;
-  text-align: center;
-}
-
-.active-session-message h2 {
+.auth-message h2 {
   color: var(--text-color);
   margin-bottom: 15px;
-}
-
-.active-session-message p {
-  color: var(--text-color);
-  opacity: 0.8;
-  margin-bottom: 20px;
 }
 
 /* Rewards Styles */
@@ -432,12 +454,15 @@
 }
 
 /* Rewards Loading State */
-.rewards-loading {
+.appraisal-start {
   padding: 20px;
   text-align: center;
 }
 
-.rewards-loading p {
+.appraisal-start p {
+  color: var(--text-color);
+  font-size: 1.1rem;
+  margin-bottom: 15px;
   margin-top: 10px;
 }
 
@@ -474,32 +499,35 @@
 }
 
 /* Monster Reward Card */
-.monster-reward-card {
+.gift-monster-card {
   align-items: center;
   background: var(--text-color);
   background-color: var(--card-background);
   border: 1px solid var(--border-color);
   border-radius: 8px;
-  box-shadow: 0 2px 8px var(--overlay-light);
-  display: flex;
+  box-shadow: 0 2px 4px var(--overlay-light);
+  color: var(--text-color);
+  display: block;
   flex-direction: column;
-  height: auto;
+  height: 100%;
   justify-content: space-between;
-  margin-bottom: 15px;
+  margin-bottom: 20px;
   min-height: 550px;
   overflow: hidden;
   padding: 20px;
   position: relative;
   text-align: center;
+  text-decoration: none;
   transition: transform 0.2s, box-shadow 0.2s;
+  width: 100%;
 }
 
-.monster-reward-card:hover {
+.gift-monster-card:hover {
   box-shadow: 0 5px 15px var(--overlay-medium);
   transform: translateY(-5px);
 }
 
-.monster-reward-card.claimed {
+.gift-monster-card.claimed {
   background-color: var(--overlay-light);
   opacity: 0.8;
 }
@@ -587,38 +615,29 @@
   border: 1px solid var(--border-color);
 }
 
-.rewards-header {
+.auth-header {
+  border-top: 1px solid var(--divider-color);
+  margin-bottom: 1rem;
+  margin-top: 3rem;
+  padding-top: 2rem;
   text-align: center;
-  margin-bottom: 1.5rem;
 }
 
-.rewards-header h1 {
+.auth-header h1 {
   color: var(--accent-color);
-  font-size: 2.5rem;
-  margin-bottom: 10px;
+  font-size: var(--font-size-2xl);
+  margin-bottom: 0.5rem;
   text-shadow: 2px 2px 4px var(--overlay-heavy);
 }
 
-.rewards-grid {
+.town-places {
   display: grid;
-  gap: 1rem;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   margin-bottom: 1.5rem;
 }
 
-.monster-rewards-grid {
-  background-color: var(--overlay-light);
-  border: 1px solid var(--border-color);
-  border-radius: 0.5rem;
-  display: grid;
-  gap: 1.5rem;
-  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-  justify-items: center;
-  margin: 1.5rem 0;
-  padding: 1rem;
-}
-
-.monster-rewards-grid .monster-reward-card {
+.button .gift-monster-card {
   height: auto;
   max-height: none;
   max-width: 450px;
@@ -654,16 +673,20 @@
   margin: 1.5rem 0;
 }
 
-.reward-card {
+.area-card {
   align-items: center;
-  background: var(--card-background);
-  background-color: var(--nav-background);
-  border: 2px solid var(--nav-hover);
+  background: var(--input-background);
+  background-color: var(--background-color);
+  border: 2px solid var(--border-color);
   border-radius: 8px;
   box-shadow: 0 2px 8px var(--overlay-light);
+  color: var(--text-color);
   cursor: pointer;
   display: flex;
   flex-direction: column;
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  gap: 0.5rem;
   height: auto;
   justify-content: space-between;
   margin-bottom: 20px;
@@ -672,7 +695,7 @@
   padding: 1rem;
   position: relative;
   text-align: center;
-  transition: all 0.2s ease;
+  transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
 }
 
 .reward-icon {
@@ -727,11 +750,12 @@
 }
 
 .rewards-actions {
+  align-items: center;
   border-top: 1px solid var(--border-color);
   display: flex;
-  gap: 15px;
-  justify-content: center;
-  margin-top: 30px;
+  gap: 10px;
+  justify-content: space-between;
+  margin-top: 15px;
   padding-top: 20px;
 }
 
@@ -748,7 +772,7 @@
     gap: 20px;
   }
 
-  .activity-image {
+  .npc-avatar {
     height: 500px;
   }
 
@@ -766,15 +790,15 @@
     gap: 1.25rem;
   }
 
-  .activity-prompt {
+  .info-item {
     padding: 20px;
   }
 
-  .activity-prompt h3 {
+  .info-item h3 {
     font-size: 1.3rem;
   }
 
-  .activity-prompt p {
+  .info-item p {
     font-size: 1rem;
   }
 }
@@ -785,16 +809,18 @@
     padding: 12px;
   }
 
-  .activity-session-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.5rem;
-  }
+  .adopt-card {
+  align-items: flex-start;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1rem;
+  text-align: center;
+}
 
-  .activity-session-header h2 {
-    margin-bottom: 10px;
-    font-size: 1.25rem;
-  }
+  .adopt-card h2 {
+  font-size: 1.1rem;
+  margin-bottom: 10px;
+}
 
   .location-activities {
     grid-template-columns: 1fr;
@@ -806,9 +832,13 @@
     border-radius: 12px;
   }
 
-  .activity-image {
-    height: 350px;
-  }
+  .npc-avatar {
+  height: 200px;
+  margin-bottom: 1rem;
+  margin-left: 0;
+  margin-right: 0;
+  width: 100%;
+}
 
   .activity-info {
     padding: 15px 20px 20px 20px;
@@ -844,9 +874,11 @@
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
 }
 
-  .garden-plot {
-    border-radius: 0.375rem;
-  }
+  .guide-card {
+  border-radius: 0.375rem;
+  flex-direction: column;
+  padding: 0.75rem;
+}
 
   .plot-image-container {
     height: 130px;
@@ -861,17 +893,17 @@
     font-size: 0.95rem;
   }
 
-  .activity-prompt {
+  .info-item {
     padding: 18px;
     margin-bottom: 25px;
   }
 
-  .activity-prompt h3 {
+  .info-item h3 {
     font-size: 1.25rem;
     margin-bottom: 15px;
   }
 
-  .activity-prompt p {
+  .info-item p {
     font-size: 0.95rem;
     line-height: 1.6;
   }
@@ -932,16 +964,16 @@
     gap: 0.375rem;
   }
 
-  .task-actions {
+  .type-row {
     flex-direction: column;
     gap: 0.375rem;
   }
 
-  .active-session-message {
+  .auth-message {
     padding: 20px;
   }
 
-  .active-session-message h2 {
+  .auth-message h2 {
     font-size: 1.25rem;
   }
 }
@@ -952,18 +984,18 @@
     padding: 10px;
   }
 
-  .activity-session-header h2 {
-    font-size: 1.1rem;
-  }
+  .adopt-card h2 {
+  font-size: 1rem;
+}
 
   .location-activities {
     gap: 15px;
     padding: 10px 0;
   }
 
-  .activity-image {
-    height: 280px;
-  }
+  .npc-avatar {
+  height: 70px;
+}
 
   .activity-info {
     padding: 12px 15px 18px 15px;
@@ -997,7 +1029,7 @@
     font-size: 0.85rem;
   }
 
-  .rewards-grid {
+  .town-places {
     grid-template-columns: repeat(2, 1fr);
     gap: 0.5rem;
   }
@@ -1020,18 +1052,18 @@
     font-size: 0.9rem;
   }
 
-  .activity-prompt {
+  .info-item {
     padding: 15px;
     margin-bottom: 20px;
     border-radius: 10px;
   }
 
-  .activity-prompt h3 {
+  .info-item h3 {
     font-size: 1.1rem;
     margin-bottom: 12px;
   }
 
-  .activity-prompt p {
+  .info-item p {
     font-size: 0.9rem;
   }
 
@@ -1083,16 +1115,16 @@
     font-size: 1.1rem;
   }
 
-  .active-session-message {
+  .auth-message {
     padding: 15px;
     border-radius: 6px;
   }
 
-  .active-session-message h2 {
+  .auth-message h2 {
     font-size: 1.1rem;
   }
 
-  .active-session-message p {
+  .auth-message p {
     font-size: 0.9rem;
   }
 
@@ -1116,15 +1148,15 @@
     padding: 8px;
   }
 
-  .activity-session-header h2 {
-    font-size: 1rem;
-  }
+  .adopt-card h2 {
+  font-size: 0.95rem;
+}
 
   .location-activities {
     gap: 12px;
   }
 
-  .activity-image {
+  .npc-avatar {
     height: 220px;
   }
 
@@ -1154,7 +1186,7 @@
     font-size: 0.8rem;
   }
 
-  .rewards-grid {
+  .town-places {
     grid-template-columns: 1fr 1fr;
     gap: 0.375rem;
   }
@@ -1176,15 +1208,15 @@
     font-size: 0.85rem;
   }
 
-  .activity-prompt {
+  .info-item {
     padding: 12px;
   }
 
-  .activity-prompt h3 {
+  .info-item h3 {
     font-size: 1rem;
   }
 
-  .activity-prompt p {
+  .info-item p {
     font-size: 0.85rem;
   }
 

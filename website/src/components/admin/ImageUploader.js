@@ -83,7 +83,7 @@ const ImageUploader = ({ images = [], onChange, maxImages = 4, required = false 
             value={newImageUrl}
             onChange={(e) => setNewImageUrl(e.target.value)}
             onKeyPress={handleKeyPress}
-            className="form-control"
+            className="form-input"
             placeholder="Enter image URL (e.g., https://example.com/image.jpg)"
           />
           <button
@@ -129,7 +129,7 @@ const ImageUploader = ({ images = [], onChange, maxImages = 4, required = false 
             {images.map((imageUrl, index) => (
               <div
                 key={index}
-                className={`image-item ${index === 0 ? 'primary' : ''} ${draggedIndex === index ? 'dragging' : ''}`}
+                className={`image-item${index === 0 ? 'primary' : ''}${draggedIndex === index ? 'dragging' : ''}`}
                 draggable
                 onDragStart={(e) => handleDragStart(e, index)}
                 onDragOver={handleDragOver}

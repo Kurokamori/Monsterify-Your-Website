@@ -124,7 +124,7 @@ const FactionStore = ({ factionId, trainerId, faction }) => {
   }
 
   return (
-    <div className="faction-store">
+    <div className="shop-page">
       <div className="store-header">
         <h3>{faction.name} Store</h3>
         <div className="trainer-currency">
@@ -189,7 +189,7 @@ const FactionStore = ({ factionId, trainerId, faction }) => {
 
               <div className="item-actions">
                 <button
-                  className={`button primary ${
+                  className={`button primary${
                     !canAfford(item.price) ? 'cannot-afford' :
                     !isInStock(item) ? 'out-of-stock' :
                     purchaseLoading === item.id ? 'loading' : ''

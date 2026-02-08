@@ -33,7 +33,7 @@ const PersonFullView = ({ person, trainerId, onClose }) => {
 
   if (loading) {
     return (
-      <div className="person-full-view-overlay" onClick={onClose}>
+      <div className="person-form-overlay" onClick={onClose}>
         <div className="person-full-view loading" onClick={(e) => e.stopPropagation()}>
           <div className="loading-spinner">
             <i className="fas fa-spinner fa-spin"></i>
@@ -46,7 +46,7 @@ const PersonFullView = ({ person, trainerId, onClose }) => {
 
   if (!fullPersonData) {
     return (
-      <div className="person-full-view-overlay" onClick={onClose}>
+      <div className="person-form-overlay" onClick={onClose}>
         <div className="person-full-view error" onClick={(e) => e.stopPropagation()}>
           <div className="error-message">
             <i className="fas fa-exclamation-triangle"></i>
@@ -67,9 +67,9 @@ const PersonFullView = ({ person, trainerId, onClose }) => {
   ].filter(section => section.content);
 
   return (
-    <div className="person-full-view-overlay" onClick={onClose}>
+    <div className="person-form-overlay" onClick={onClose}>
       <div className="person-full-view" onClick={(e) => e.stopPropagation()}>
-        <div className="modal-header">
+        <div className="tree-header">
           <h2>{fullPersonData.name}</h2>
           <button className="button close" onClick={onClose}>×</button>
         </div>
@@ -90,7 +90,7 @@ const PersonFullView = ({ person, trainerId, onClose }) => {
                       {fullPersonData.images.map((image, index) => (
                         <button
                           key={index}
-                          className={`thumbnail ${index === activeImageIndex ? 'active' : ''}`}
+                          className={`thumbnail${index === activeImageIndex ? 'active' : ''}`}
                           onClick={() => setActiveImageIndex(index)}
                         >
                           <img src={image} alt={`${fullPersonData.name} - Thumbnail ${index + 1}`} />
@@ -123,7 +123,7 @@ const PersonFullView = ({ person, trainerId, onClose }) => {
               {bioSections.map(section => (
                 <button
                   key={section.key}
-                  className={`bio-tab ${activeBioSection === section.key ? 'active' : ''}`}
+                  className={`bio-tab${activeBioSection === section.key ? 'active' : ''}`}
                   onClick={() => setActiveBioSection(section.key)}
                 >
                   {section.label}

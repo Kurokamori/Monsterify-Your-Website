@@ -12,6 +12,7 @@
 .auth-message p {
   color: var(--text-color);
   margin-bottom: 20px;
+  opacity: 0.8;
 }
 
 .discord-login-container {
@@ -55,7 +56,7 @@
 
 /* For Discord login button, use unified button system: className="button info block lg" (see buttons.css) */
 
-.discord-button-content {
+.event-date {
   display: flex;
   align-items: center;
   gap: 0.5rem;

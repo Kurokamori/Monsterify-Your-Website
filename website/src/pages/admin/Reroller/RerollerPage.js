@@ -241,7 +241,7 @@ const RerollerPage = () => {
         className="result-card-image"
         onError={(e) => { e.target.src = '/images/monsters/default.png'; }}
       />
-      <div className="result-card-name">{monster.species1}</div>
+      <div className="reward-name">{monster.species1}</div>
       {monster.species2 && (
         <div className="result-card-details">+ {monster.species2}</div>
       )}
@@ -282,7 +282,7 @@ const RerollerPage = () => {
         className="result-card-image"
         onError={(e) => { e.target.src = '/images/items/default_item.png'; }}
       />
-      <div className="result-card-name">{item.name}</div>
+      <div className="reward-name">{item.name}</div>
       <div className="result-card-details">
         {item.category} {item.quantity > 1 && `x${item.quantity}`}
       </div>
@@ -311,7 +311,7 @@ const RerollerPage = () => {
 
   return (
     <div className="reroller-container">
-      <div className="reroller-header">
+      <div className="map-header">
         <h1>Reroller</h1>
         <p>Create custom rolls for players and generate claim links</p>
         <Link to="/admin/reroller/sessions" className="button secondary reroller-sessions-link">
@@ -322,31 +322,31 @@ const RerollerPage = () => {
       {/* Roll Type Tabs */}
       <div className="roll-type-tabs">
         <button
-          className={`roll-type-tab ${rollType === 'monster' ? 'active' : ''}`}
+          className={`roll-type-tab${rollType === 'monster' ? 'active' : ''}`}
           onClick={() => setRollType('monster')}
         >
           Monster
         </button>
         <button
-          className={`roll-type-tab ${rollType === 'item' ? 'active' : ''}`}
+          className={`roll-type-tab${rollType === 'item' ? 'active' : ''}`}
           onClick={() => setRollType('item')}
         >
           Item
         </button>
         <button
-          className={`roll-type-tab ${rollType === 'combined' ? 'active' : ''}`}
+          className={`roll-type-tab${rollType === 'combined' ? 'active' : ''}`}
           onClick={() => setRollType('combined')}
         >
           Combined
         </button>
         <button
-          className={`roll-type-tab ${rollType === 'gift' ? 'active' : ''}`}
+          className={`roll-type-tab${rollType === 'gift' ? 'active' : ''}`}
           onClick={() => setRollType('gift')}
         >
           Gift
         </button>
         <button
-          className={`roll-type-tab ${rollType === 'birthday' ? 'active' : ''}`}
+          className={`roll-type-tab${rollType === 'birthday' ? 'active' : ''}`}
           onClick={() => setRollType('birthday')}
         >
           Birthday
@@ -358,7 +358,7 @@ const RerollerPage = () => {
 
       <div className="reroller-content">
         {/* Configuration Panel */}
-        <div className="config-panel">
+        <div className="evo-tree">
           <div className="panel-header">
             <h2>Configuration</h2>
           </div>
@@ -367,7 +367,7 @@ const RerollerPage = () => {
           <div className="config-section">
             <h3><i className="fas fa-user"></i> Target User</h3>
             <div className="user-selector">
-              <div className="user-search">
+              <div className="array-input">
                 <input
                   type="text"
                   placeholder="Search users..."
@@ -402,7 +402,7 @@ const RerollerPage = () => {
                 </button>
                 <input
                   type="number"
-                  className="quantity-input"
+                  className="form-input"
                   value={monsterCount}
                   onChange={(e) => setMonsterCount(Math.max(1, Math.min(20, parseInt(e.target.value) || 1)))}
                   min="1"
@@ -432,7 +432,7 @@ const RerollerPage = () => {
                 </button>
                 <input
                   type="number"
-                  className="quantity-input"
+                  className="form-input"
                   value={itemCount}
                   onChange={(e) => setItemCount(Math.max(1, Math.min(20, parseInt(e.target.value) || 1)))}
                   min="1"
@@ -450,7 +450,7 @@ const RerollerPage = () => {
               <label className="reroller-field-label">
                 Categories
               </label>
-              <div className="category-buttons">
+              <div className="type-tags">
                 <button
                   className={`button filter ${selectedCategories.length === itemCategories.filter(c => c.default).length ? 'selected' : ''}`}
                   onClick={toggleAllCategories}
@@ -474,7 +474,7 @@ const RerollerPage = () => {
           {rollType === 'gift' && (
             <div className="config-section">
               <h3><i className="fas fa-gift"></i> Gift Settings</h3>
-              <div className="gift-level-input">
+              <div className="fandom-grid">
                 <input
                   type="number"
                   value={giftLevels}
@@ -514,7 +514,7 @@ const RerollerPage = () => {
               <h3><i className="fas fa-lock"></i> Claim Limits</h3>
               <div className="claim-limits">
                 {(rollType === 'monster' || rollType === 'combined') && (
-                  <div className="limit-group">
+                  <div className="fandom-grid">
                     <label>Monster Limit</label>
                     <select
                       value={monsterClaimLimit === null ? 'all' : monsterClaimLimit}
@@ -528,7 +528,7 @@ const RerollerPage = () => {
                   </div>
                 )}
                 {(rollType === 'item' || rollType === 'combined') && (
-                  <div className="limit-group">
+                  <div className="fandom-grid">
                     <label>Item Limit</label>
                     <select
                       value={itemClaimLimit === null ? 'all' : itemClaimLimit}
@@ -578,7 +578,7 @@ const RerollerPage = () => {
         </div>
 
         {/* Results Panel */}
-        <div className="results-panel">
+        <div className="evo-tree">
           <div className="panel-header">
             <h2>Results</h2>
             {session && (
@@ -606,7 +606,7 @@ const RerollerPage = () => {
                       </span>
                     )}
                   </h3>
-                  <div className="results-grid">
+                  <div className="images-grid">
                     {rolledMonsters.map((monster, index) => renderMonsterCard(monster, index))}
                   </div>
                 </div>
@@ -623,7 +623,7 @@ const RerollerPage = () => {
                       </span>
                     )}
                   </h3>
-                  <div className="results-grid">
+                  <div className="images-grid">
                     {rolledItems.map((item, index) => renderItemCard(item, index))}
                   </div>
                 </div>
@@ -632,7 +632,7 @@ const RerollerPage = () => {
               {/* Generated Link */}
               <div className="link-section">
                 <h3><i className="fas fa-link"></i> Claim Link</h3>
-                <div className="link-display">
+                <div className="type-row">
                   <input
                     type="text"
                     className="link-input"

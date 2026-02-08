@@ -153,7 +153,7 @@ const AccountSettings = () => {
 
   return (
     <div className="account-settings">
-      <div className="settings-section">
+      <div className="item-card">
         <div className="settings-section-header">
           <h2 className="settings-section-title">Profile Information</h2>
         </div>
@@ -174,7 +174,7 @@ const AccountSettings = () => {
         )}
         
         <form onSubmit={handleProfileSubmit}>
-          <div className="avatar-upload">
+          <div className="image-upload">
             <div className="current-avatar">
               <img 
                 src={avatarPreview || "https://via.placeholder.com/100/1e2532/d6a339?text=User"} 
@@ -243,7 +243,7 @@ const AccountSettings = () => {
         </form>
       </div>
 
-      <div className="settings-section">
+      <div className="item-card">
         <div className="settings-section-header">
           <h2 className="settings-section-title">Update Password</h2>
         </div>
@@ -322,7 +322,7 @@ const AccountSettings = () => {
         </form>
       </div>
 
-      <div className="settings-section">
+      <div className="item-card">
         <div className="settings-section-header">
           <h2 className="settings-section-title">Delete Account</h2>
         </div>

@@ -170,13 +170,13 @@ const AntiqueAppraisal = ({ trainerId, antique, onClose }) => {
                     value={monsterName}
                     onChange={handleNameChange}
                     placeholder="Enter monster name"
-                    className="form-control"
+                    className="form-input"
                   />
                 </div>
 
                 {adoptError && <ErrorMessage message={adoptError} />}
 
-                <div className="adoption-actions">
+                <div className="type-tags">
                   {adoptLoading ? (
                     <LoadingSpinner />
                   ) : (

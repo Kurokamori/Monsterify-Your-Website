@@ -4,36 +4,6 @@
    ======================================== */
 
 /* ---------- Common Page Structure ---------- */
-.area-page,
-.region-page,
-.landmass-page {
-  padding: var(--content-padding);
-  max-width: var(--container-max-width);
-  margin: 0 auto;
-}
-
-.area-header,
-.region-header,
-.landmass-header {
-  margin-bottom: 30px;
-}
-
-.area-header h1,
-.region-header h1,
-.landmass-header h1 {
-  color: var(--accent-color);
-  font-size: var(--font-size-3xl);
-  margin: 0 0 0.5rem 0;
-}
-
-.area-subtitle,
-.landmass-subtitle {
-  color: var(--text-color);
-  opacity: 0.8;
-  font-size: var(--font-size-lg);
-  line-height: 1.6;
-  margin: 0;
-}
 
 /* ---------- Breadcrumbs ---------- */
 .breadcrumb {
@@ -64,63 +34,22 @@
   opacity: 0.6;
 }
 
-.breadcrumb-current {
+.currency-label {
   color: var(--text-color);
   font-weight: 600;
 }
 
 /* ---------- Content Layout ---------- */
-.area-content,
-.region-content,
-.landmass-content {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 30px;
-}
 
-.region-top-section,
-.landmass-top-section {
-  display: grid;
-  grid-template-columns: 1fr 400px;
-  gap: 30px;
-  align-items: start;
-}
-
-.region-sidebar,
-.landmass-sidebar {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.region-bottom-section,
-.landmass-bottom-section {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 25px;
-}
-
-.region-details-full {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 25px;
-}
-
-.region-info-grid-additional {
+.timer-settings {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 15px;
 }
 
 /* ---------- Title Sections ---------- */
-.area-title-section {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-  margin-bottom: 10px;
-}
 
-.area-title-section h1 {
+.item-header h1 {
   color: var(--accent-color);
   font-size: var(--font-size-3xl);
   margin: 0;
@@ -128,12 +57,12 @@
 
 /* ---------- Difficulty Badges ---------- */
 
-.difficulty-badge.large {
+.status-badge.large {
   padding: 8px 16px;
   font-size: 1rem;
 }
 
-.difficulty-badge.small {
+.status-badge.small {
   padding: 3px 6px;
   font-size: 0.7rem;
 }
@@ -154,79 +83,15 @@
 }
 
 /* ---------- Map Sections ---------- */
-.region-map-section,
-.landmass-map-section {
-  background: var(--card-background);
-  border-radius: 0.5rem;
-  overflow: hidden;
-  box-shadow: 0 2px 4px var(--overlay-dark);
-}
-
-.region-map-container,
-.landmass-map-container {
-  position: relative;
-  width: 100%;
-  height: 0;
-  padding-bottom: 100%;
-}
-
-.region-map-image,
-.landmass-map-image {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
 
 /* ---------- Hotspots ---------- */
-.area-hotspot,
-.region-hotspot {
-  position: absolute;
-  cursor: pointer;
-  border: 2px solid transparent;
-  border-radius: 8px;
-  transition: all 0.3s ease;
-  z-index: 2;
-}
-
-.area-hotspot:hover,
-.region-hotspot:hover {
-  border-color: var(--accent-color);
-  background-color: var(--accent-glow);
-  box-shadow: 0 0 15px var(--accent-glow);
-}
 
 /* ---------- Tooltips ---------- */
-.area-tooltip,
-.region-tooltip {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background: var(--card-background);
-  border: 1px solid var(--divider-color);
-  border-radius: 0.5rem;
-  box-shadow: 0 8px 25px var(--overlay-heavy);
-  z-index: 1000;
-  max-width: 400px;
-  pointer-events: none;
-  animation: tooltipFadeIn 0.2s ease;
-}
 
-.tooltip-info h3 {
+.area-card h3 {
   color: var(--accent-color);
   font-size: var(--font-size-lg);
   margin: 0 0 8px 0;
-}
-
-.tooltip-info p {
-  color: var(--text-color);
-  font-size: var(--font-size-sm);
-  line-height: 1.4;
-  margin: 0;
-  opacity: 0.8;
 }
 
 .area-count {
@@ -235,66 +100,7 @@
   font-weight: 600;
 }
 
-/* ---------- Detail Sections ---------- */
-.area-details {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 25px;
-}
-
-.quick-facts,
-.special-features,
-.wildlife-section,
-.resources-section,
-.lore-section,
-.history-section,
-.safety-section,
-.regions-section {
-  background: none;
-  border-radius: 0.5rem;
-  box-shadow: none;
-  padding: 0;
-}
-
-.quick-facts h3,
-.special-features h3,
-.wildlife-section h3,
-.resources-section h3,
-.lore-section h3,
-.history-section h3,
-.regions-section h3,
-.dangers h3,
-.tips h3 {
-  margin: 0 0 0.9rem 0;
-  color: var(--accent-color);
-  font-size: var(--font-size-xl);
-}
-
 /* ---------- Info Cards ---------- */
-.info-card {
-  background: var(--card-background);
-  padding: 0.9rem;
-  border-radius: 0.5rem;
-  box-shadow: 0 2px 4px var(--overlay-dark);
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  transition: all .2s ease;
-  border: 1px solid transparent;
-}
-
-.info-card h3 {
-  margin: 0 0 0.5rem 0;
-  color: var(--accent-color);
-  font-size: var(--font-size-base);
-}
-
-.info-card p {
-  margin: 0;
-  color: var(--text-color);
-  opacity: 0.8;
-  font-size: var(--font-size-sm);
-}
 
 /* ---------- Facts Grid ---------- */
 .facts-grid {
@@ -338,42 +144,6 @@
 }
 
 /* ---------- Wildlife & Resources ---------- */
-.wildlife-grid,
-.resources-grid {
-  display: grid;
-  gap: 1.5rem;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-}
-
-.wildlife-card,
-.resource-card {
-  border: 1px solid var(--divider-color);
-  border-radius: 0.375rem;
-  padding: 0.9rem;
-  transition: all 0.3s ease;
-}
-
-.wildlife-card:hover,
-.resource-card:hover {
-  border-color: var(--accent-color);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px var(--overlay-dark);
-}
-
-.wildlife-header,
-.resource-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 8px;
-}
-
-.wildlife-header h4,
-.resource-header h4 {
-  margin: 0;
-  color: var(--accent-color);
-  font-size: var(--font-size-lg);
-}
 
 .wildlife-type {
   color: var(--accent-color);
@@ -382,25 +152,7 @@
   margin-bottom: 0.5rem;
 }
 
-.wildlife-card p,
-.resource-card p {
-  margin: 0;
-  color: var(--text-color);
-  opacity: 0.8;
-  font-size: var(--font-size-sm);
-  line-height: 1.4;
-}
-
 /* ---------- Lore & History ---------- */
-.lore-section p,
-.history-section p {
-  color: var(--text-color);
-  font-size: var(--font-size-base);
-  font-style: italic;
-  line-height: 1.6;
-  margin: 0;
-  opacity: 0.9;
-}
 
 /* ---------- Safety Section ---------- */
 
@@ -408,29 +160,6 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 20px;
-}
-
-.dangers,
-.tips {
-  background: var(--card-background);
-  border-left: 4px solid var(--success-color);
-  border-radius: 0.5rem;
-  box-shadow: 0 2px 4px var(--overlay-dark);
-  padding: 1.25rem;
-}
-
-.dangers ul,
-.tips ul {
-  margin: 0;
-  padding-left: 20px;
-}
-
-.dangers li,
-.tips li {
-  margin-bottom: 0.5rem;
-  color: var(--text-color);
-  opacity: 0.9;
-  line-height: 1.4;
 }
 
 /* ---------- Region Cards ---------- */
@@ -473,19 +202,6 @@
   padding: 15px;
 }
 
-.area-card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 8px;
-}
-
-.area-card-header h4 {
-  margin: 0;
-  color: var(--accent-color);
-  font-size: var(--font-size-base);
-}
-
 .area-card-content p {
   margin: 0 0 0.75rem 0;
   color: var(--text-color);
@@ -523,42 +239,21 @@
 
 /* ---------- Mobile Responsiveness ---------- */
 @media (max-width: 1024px) {
-  .region-top-section,
-  .landmass-top-section {
-    grid-template-columns: 1fr;
-    gap: 20px;
-  }
   
-  .region-info-grid-additional {
+  .timer-settings {
     grid-template-columns: 1fr;
-  }
-  
-  .region-content,
-  .landmass-content {
-    gap: 20px;
   }
 }
 
 @media (max-width: 768px) {
-  .area-page,
-  .region-page,
-  .landmass-page {
-    padding: 15px;
-  }
-  
-  .area-header h1,
-  .region-header h1,
-  .landmass-header h1 {
-    font-size: 2rem;
-  }
 
-  .area-title-section {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 10px;
-  }
+  .item-header {
+  align-items: flex-start;
+  flex-direction: column;
+  gap: 15px;
+}
 
-  .area-title-section h1 {
+  .item-header h1 {
     font-size: 2rem;
   }
 
@@ -589,26 +284,8 @@
     grid-template-columns: 1fr;
   }
 
-  .wildlife-grid,
-  .resources-grid {
-    grid-template-columns: 1fr;
-  }
-
   .dangers-warnings {
     grid-template-columns: 1fr;
-  }
-
-  .wildlife-header,
-  .resource-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 8px;
-  }
-
-  .tooltip-content {
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
   }
 
   .tooltip-image {
@@ -617,18 +294,8 @@
     height: 120px;
   }
 
-  .area-card-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 8px;
-  }
-
   .feature-tags {
     justify-content: flex-start;
-  }
-
-  .region-card {
-    flex-direction: column;
   }
 
   .region-card-image {

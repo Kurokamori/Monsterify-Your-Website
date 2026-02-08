@@ -11,15 +11,6 @@
   width: 100%;
 }
 
-.trainer-list-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-}
-
-.trainer-list-header h1{ margin:0; color:var(--text-color); }
-
 /* Create trainer button: Use unified button system from common/buttons.css
    Example: className="button primary" */
 
@@ -79,29 +70,10 @@
   overflow-x: auto;
   margin-bottom: 20px;
 }
-
-.trainer-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.trainer-table th, .trainer-table td{
-  background-color: var(--nav-background);
-  border-bottom: 1px solid var(--border-color);
-  color: var(--text-color);
-  font-weight: 600;
-  padding: 15px;
-  text-align: left;
-}
 .trainer-table tr:last-child td{ border-bottom:none; }
 .trainer-table tr:hover{ background-color:var(--nav-hover); }
 
-.trainer-name-cell {
-  display: flex;
-  align-items: center;
-}
-
-.trainer-table .trainer-avatar{ width:40px; height:40px; margin-right:10px; }
+.trainer-table .npc-avatar{ width:40px; height:40px; margin-right:10px; }
 
 /* ===== Actions ===== */
 
@@ -127,20 +99,6 @@
 
 /* ===== Detailed list view ===== */
 
-.detailed-list-header, .detailed-list-row{
-  align-items: center;
-  background-color: var(--background-color);
-  border-bottom: 1px solid var(--border-color);
-  border-left: 3px solid transparent;
-  color: var(--text-color);
-  display: grid;
-  gap: .75rem;
-  grid-template-columns: repeat(9, 1fr);
-  padding: .75rem;
-  text-decoration: none;
-  transition: all .2s ease;
-}
-
 .detailed-list-row:hover{ background-color:var(--hover-color); border-left-color:var(--primary-color); transform:translateX(2px); }
 
 .detailed-list-body {
@@ -150,21 +108,6 @@
 }
 
 /* ===== View toggles ===== */
-
-.pc-header, .boxes-header{
-  align-items: center;
-  border-bottom: 1px solid var(--divider-color);
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 1.5rem;
-  padding-bottom: .5rem;
-}
-
-.boxes-header-controls {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
 
 .view-toggle {
   display: flex;

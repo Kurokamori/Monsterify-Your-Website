@@ -245,8 +245,8 @@ const FactionsPage = () => {
   }
 
   return (
-    <div className="factions-container">
-      <div className="factions-header">
+    <div className="bosses-page">
+      <div className="map-header">
         <h1>World Factions</h1>
         <p>Learn about the various organizations and groups in the Monsterify world</p>
       </div>
@@ -257,7 +257,7 @@ const FactionsPage = () => {
           placeholder="Search factions..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="search-input"
+          className="form-input"
         />
         <button className="button primary">
           <i className="fas fa-search"></i>
@@ -267,7 +267,7 @@ const FactionsPage = () => {
       <div className="factions-grid">
         {displayFactions.map(faction => (
           <div 
-            className={`faction-card ${selectedFaction === faction.id ? 'selected' : ''}`} 
+            className={`guide-card ${selectedFaction === faction.id ? 'selected' : ''}`} 
             key={faction.id}
             onClick={() => setSelectedFaction(selectedFaction === faction.id ? null : faction.id)}
           >
@@ -311,7 +311,7 @@ const FactionsPage = () => {
             </div>
             
             {selectedFaction === faction.id && (
-              <div className="faction-details">
+              <div className="npc-details">
                 <div className="faction-section">
                   <h4 className="section-title">History</h4>
                   <div 
@@ -322,7 +322,7 @@ const FactionsPage = () => {
                 
                 <div className="faction-section">
                   <h4 className="section-title">Goals</h4>
-                  <ul className="faction-goals">
+                  <ul className="npc-quests">
                     {faction.goals.map((goal, index) => (
                       <li key={index}>{goal}</li>
                     ))}
@@ -331,10 +331,10 @@ const FactionsPage = () => {
                 
                 <div className="faction-section">
                   <h4 className="section-title">Notable Members</h4>
-                  <div className="faction-members">
+                  <div className="images-grid">
                     {faction.notable_members.map((member, index) => (
                       <div className="faction-member" key={index}>
-                        <div className="member-avatar">
+                        <div className="npc-avatar">
                           <img
                             src={member.image_url}
                             alt={member.name}
@@ -346,7 +346,7 @@ const FactionsPage = () => {
                         </div>
                         <div className="member-info">
                           <div className="member-name">{member.name}</div>
-                          <div className="member-role">{member.role}</div>
+                          <div className="file-name">{member.role}</div>
                         </div>
                       </div>
                     ))}

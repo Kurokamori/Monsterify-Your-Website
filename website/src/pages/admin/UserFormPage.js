@@ -161,8 +161,8 @@ const UserFormPage = () => {
         </div>
 
         {/* User Form */}
-        <div className="admin-form-container">
-          <form onSubmit={handleSubmit} className="admin-form">
+        <div className="bulk-monster-add-form">
+          <form onSubmit={handleSubmit} className="reroller-content">
             <div className="admin-form-group">
               <label htmlFor="username" className="admin-form-label">
                 Username <span className="required">*</span>
@@ -173,7 +173,7 @@ const UserFormPage = () => {
                 name="username"
                 value={formData.username}
                 onChange={handleChange}
-                className={`admin-form-input ${formErrors.username ? 'error' : ''}`}
+                className={`admin-form-input${formErrors.username ? 'error' : ''}`}
                 disabled={loading}
                 required
               />
@@ -228,7 +228,7 @@ const UserFormPage = () => {
                 name="password"
                 value={formData.password}
                 onChange={handleChange}
-                className={`admin-form-input ${formErrors.password ? 'error' : ''}`}
+                className={`admin-form-input${formErrors.password ? 'error' : ''}`}
                 disabled={loading}
                 required={!isEditMode}
               />
@@ -243,7 +243,7 @@ const UserFormPage = () => {
             </div>
 
             <div className="admin-form-group">
-              <div className="admin-form-checkbox">
+              <div className="logo-link">
                 <input
                   type="checkbox"
                   id="is_admin"

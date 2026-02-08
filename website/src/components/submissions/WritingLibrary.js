@@ -289,7 +289,7 @@ const WritingLibrary = () => {
     <div className="gallery-container library-container">
       {/* Filters */}
       <div className="gallery-filters">
-        <div className="filter-group">
+        <div className="set-item">
           <label htmlFor="content-type-filter">Content Type:</label>
           <select
             id="content-type-filter"
@@ -306,7 +306,7 @@ const WritingLibrary = () => {
           </select>
         </div>
 
-        <div className="filter-group">
+        <div className="set-item">
           <label htmlFor="tag-filter">Tag:</label>
           <select
             id="tag-filter"
@@ -320,7 +320,7 @@ const WritingLibrary = () => {
           </select>
         </div>
 
-        <div className="filter-group">
+        <div className="set-item">
           <label htmlFor="sort-by">Sort By:</label>
           <select
             id="sort-by"
@@ -334,7 +334,7 @@ const WritingLibrary = () => {
           </select>
         </div>
 
-        <div className="filter-group filter-checkbox">
+        <div className="set-item logo-link">
           <label className="checkbox-label">
             <input
               type="checkbox"
@@ -362,15 +362,15 @@ const WritingLibrary = () => {
       </div>
 
       {/* Library Grid */}
-      <div className="gallery-grid library-grid">
+      <div className="town-places library-grid">
           {displayWritings.map(writing => (
             <div
               key={writing.id}
-              className={`gallery-item library-item ${writing.is_book ? 'is-book' : ''}`}
+              className={`gallery-item library-item${writing.is_book ? 'is-book' : ''}`}
               onClick={() => handleWritingClick(writing)}
             >
               {writing.cover_image_url ? (
-                <div className="gallery-item-image-container library-item-cover-container">
+                <div className="image-container library-item-cover-container">
                   <img
                     src={writing.cover_image_url}
                     alt={writing.title}
@@ -393,10 +393,10 @@ const WritingLibrary = () => {
               ) : (
                 <div className="library-item-text-cover">
                   <div className="library-item-text-cover-icon">
-                    <i className={`fas ${writing.is_book ? 'fa-book' : 'fa-feather-alt'}`}></i>
+                    <i className={`fas${writing.is_book ? 'fa-book' : 'fa-feather-alt'}`}></i>
                   </div>
-                  <h4 className="library-item-text-cover-title">{writing.title}</h4>
-                  <p className="library-item-text-cover-author">
+                  <h4 className="gallery-item-title">{writing.title}</h4>
+                  <p className="gallery-item-artist">
                     By {writing.user?.display_name || writing.display_name || writing.username || 'Unknown'}
                   </p>
                   {(writing.description || writing.content_preview) && (
@@ -448,7 +448,7 @@ const WritingLibrary = () => {
 
       {/* Pagination */}
       {totalPages > 1 && (
-        <div className="gallery-pagination">
+        <div className="type-tags">
           <button
             className="button secondary"
             onClick={() => handlePageChange(page - 1)}

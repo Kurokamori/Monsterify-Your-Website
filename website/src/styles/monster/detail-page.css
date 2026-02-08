@@ -6,19 +6,6 @@
    1. MONSTER DETAILS
    ============================================================================= */
 
-.monster-details,
-.enhanced-monster-details {
-  background-color: var(--nav-background);
-  border-radius: 0.5rem;
-  color: var(--text-secondary);
-  display: flex;
-  flex-direction: column;
-  font-size: 0.9rem;
-  gap: 1.5rem;
-  margin-bottom: 2rem;
-  padding: 1.5rem;
-}
-
 .monster-details h3 {
   color: var(--accent-color);
   margin-bottom: 1rem;
@@ -37,14 +24,17 @@
   color: var(--accent-color);
 }
 
-.monster-detail-header {
-  display: flex;
-  gap: 2rem;
-  margin-bottom: 2rem;
+.evolution-help {
   background-color: var(--card-background);
-  border-radius: 0.5rem;
-  overflow: hidden;
+  border: 2px solid var(--accent-glow);
+  border-radius: 0.75rem;
   box-shadow: 0 2px 4px var(--overlay-light);
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  margin-top: 2rem;
+  overflow: hidden;
+  padding: 1.5rem;
 }
 
 .monster-profile-image-container {
@@ -82,12 +72,6 @@
   flex-direction: row;
   justify-content: space-between;
   gap: 1rem;
-}
-
-.monster-species-types {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
 }
 
 /* Monster Detail Content */
@@ -236,6 +220,7 @@
   font-size: var(--font-size-lg);
   font-weight: 600;
   margin: 0;
+  color: var(--accent-color);
 }
 
 .panel-title i {
@@ -315,12 +300,11 @@
 }
 
 /* Panel Header Variants */
-.personal-panel .panel-header { background: linear-gradient(135deg, var(--custom-type), var(--custom-type)); color: var(--text-color); }
-.fun-facts-panel .panel-header { background: linear-gradient(135deg, var(--warning-color), var(--warning-color)); color: var(--text-color); }
-.relations-panel .panel-header { background: linear-gradient(135deg, var(--blue-color), var(--blue-dark)); color: var(--text-color); }
-.bio-summary-panel .panel-header { background: linear-gradient(135deg, var(--success-color), var(--success-color)); color: var(--text-color); }
 .full-bio-panel .panel-header { background: linear-gradient(135deg, var(--custom-type), var(--custom-type)); color: var(--text-color); }
 .moves-panel .panel-header { background: linear-gradient(135deg, var(--warning-color), var(--warning-color)); color: var(--text-color); }
+.relations-panel .panel-header { background: linear-gradient(135deg, var(--blue-color), var(--blue-dark)); color: var(--text-color); }
+.bio-summary-panel .panel-header { background: linear-gradient(135deg, var(--success-color), var(--success-color)); color: var(--text-color); }
+
 .pokemon-stats-panel .panel-header { background: linear-gradient(135deg, var(--success-light), var(--success-color)); color: var(--text-color); }
 
 /* Friendship Panel */
@@ -329,13 +313,6 @@
   border-radius: 0.75rem;
   padding: 1.5rem;
   border: 1px solid var(--blue-glow);
-}
-
-.friendship-header {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  margin-bottom: 1rem;
 }
 
 .friendship-icon {
@@ -348,12 +325,6 @@
   justify-content: center;
   color: var(--text-color);
   font-size: 1.1rem;
-}
-
-.friendship-title {
-  font-size: var(--font-size-lg);
-  font-weight: 600;
-  color: var(--text-color);
 }
 
 .friendship-meter {
@@ -424,7 +395,7 @@
     padding: 1rem;
   }
 
-  .monster-detail-header {
+  .evolution-help {
     flex-direction: column;
     text-align: center;
   }

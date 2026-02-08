@@ -362,21 +362,22 @@ const Apothecary = () => {
   };
   
   return (
-    <div className="apothecary-container">
+    <div className="form">
       
       {loading ? (
-        <div className="loading-container">
+        <div className="error-container">
           <LoadingSpinner />
           <p>Loading...</p>
         </div>
       ) : error ? (
         <ErrorMessage message={error} />
       ) : (
-        <div className="apothecary-content">
-          <div className="trainer-selection">
+        <div className="form">
+          <div className="shop-search">
             <label htmlFor="trainer-select">Select Trainer:</label>
             <select
               id="trainer-select"
+              className="trainer-select"
               value={selectedTrainer}
               onChange={(e) => setSelectedTrainer(e.target.value)}
             >
@@ -391,7 +392,7 @@ const Apothecary = () => {
           
           {selectedTrainer && (
             <>
-              <div className="monster-search">
+              <div className="form-input">
                 <input
                   type="text"
                   placeholder="Search monsters..."
@@ -400,9 +401,9 @@ const Apothecary = () => {
                 />
               </div>
               
-              <div className="monsters-grid">
+              <div className="container grid gap-md">
                 {filteredMonsters.length === 0 ? (
-                  <div className="no-monsters">
+                  <div className="no-results">
                     <p>No monsters found.</p>
                   </div>
                 ) : (
@@ -413,7 +414,7 @@ const Apothecary = () => {
                       onClick={() => handleMonsterClick(monster)}
                     >
                       <div className="monster-name">{monster.name}</div>
-                      <div className="monster-species">
+                      <div className="monster-types">
                         {monster.species1}
                         {monster.species2 && ` + ${monster.species2}`}
                         {monster.species3 && ` + ${monster.species3}`}
@@ -509,12 +510,12 @@ const Apothecary = () => {
                   showItemInfo={!!selectedBerry}
                 />
                 
-                <div className="berry-selection">
+                <div className="map-filters">
                   <h3>Select a Berry</h3>
                   
                   <div className="berry-filters">
                     <h4>Filter by Category (stackable)</h4>
-                    <div className="filter-buttons">
+                    <div className="type-tags">
                       <button
                         className={`button filter ${berryFilters.type ? 'active' : ''}`}
                         onClick={() => toggleFilter('type')}
@@ -561,11 +562,11 @@ const Apothecary = () => {
                   </div>
                   
                   <div className="berry-categories">
-                    <div className="berry-category">
+                    <div className="fandom-grid">
                       <h4>Species Modification</h4>
                       <div className="berry-items">
                         <button
-                          className={`berry-item ${!matchesFilters('Bugger Berry') ? 'filtered-out' : ''}`}
+                          className={`button vertical ${!matchesFilters('Bugger Berry') ? 'filtered-out' : ''}`}
                           onClick={() => setSelectedBerry('Bugger Berry')}
                           disabled={!selectedMonster.species2 || !isBerryAvailable('Bugger Berry')}
                         >
@@ -574,7 +575,7 @@ const Apothecary = () => {
                           {isBerryAvailable('Bugger Berry') && <span className="berry-count">x{getBerryCount('Bugger Berry')}</span>}
                         </button>
                         <button
-                          className={`berry-item ${!matchesFilters('Mala Berry') ? 'filtered-out' : ''}`}
+                          className={`button vertical ${!matchesFilters('Mala Berry') ? 'filtered-out' : ''}`}
                           onClick={() => setSelectedBerry('Mala Berry')}
                           disabled={!selectedMonster.species2 || !isBerryAvailable('Mala Berry')}
                         >
@@ -583,7 +584,7 @@ const Apothecary = () => {
                           {isBerryAvailable('Mala Berry') && <span className="berry-count">x{getBerryCount('Mala Berry')}</span>}
                         </button>
                         <button
-                          className={`berry-item ${!matchesFilters('Merco Berry') ? 'filtered-out' : ''}`}
+                          className={`button vertical ${!matchesFilters('Merco Berry') ? 'filtered-out' : ''}`}
                           onClick={() => setSelectedBerry('Merco Berry')}
                           disabled={!selectedMonster.species3 || !isBerryAvailable('Merco Berry')}
                         >
@@ -591,7 +592,7 @@ const Apothecary = () => {
                           <span className="berry-desc">Removes species 3 (if present)</span>
                         </button>
                         <button
-                          className={`berry-item ${!matchesFilters('Patama Berry') ? 'filtered-out' : ''}`}
+                          className={`button vertical ${!matchesFilters('Patama Berry') ? 'filtered-out' : ''}`}
                           onClick={() => setSelectedBerry('Patama Berry')}
                           disabled={!isBerryAvailable('Patama Berry')}
                         >
@@ -600,7 +601,7 @@ const Apothecary = () => {
                           {isBerryAvailable('Patama Berry') && <span className="berry-count">x{getBerryCount('Patama Berry')}</span>}
                         </button>
                         <button
-                          className={`berry-item ${!matchesFilters('Bluk Berry') ? 'filtered-out' : ''}`}
+                          className={`button vertical ${!matchesFilters('Bluk Berry') ? 'filtered-out' : ''}`}
                           onClick={() => setSelectedBerry('Bluk Berry')}
                           disabled={!selectedMonster.species2 || !isBerryAvailable('Bluk Berry')}
                         >
@@ -609,7 +610,7 @@ const Apothecary = () => {
                           {isBerryAvailable('Bluk Berry') && <span className="berry-count">x{getBerryCount('Bluk Berry')}</span>}
                         </button>
                         <button
-                          className={`berry-item ${!matchesFilters('Nuevo Berry') ? 'filtered-out' : ''}`}
+                          className={`button vertical ${!matchesFilters('Nuevo Berry') ? 'filtered-out' : ''}`}
                           onClick={() => setSelectedBerry('Nuevo Berry')}
                           disabled={!selectedMonster.species3 || !isBerryAvailable('Nuevo Berry')}
                         >
@@ -618,7 +619,7 @@ const Apothecary = () => {
                           {isBerryAvailable('Nuevo Berry') && <span className="berry-count">x{getBerryCount('Nuevo Berry')}</span>}
                         </button>
                         <button
-                          className={`berry-item ${!matchesFilters('Azzuk Berry') ? 'filtered-out' : ''}`}
+                          className={`button vertical ${!matchesFilters('Azzuk Berry') ? 'filtered-out' : ''}`}
                           onClick={() => setSelectedBerry('Azzuk Berry')}
                           disabled={selectedMonster.species2 || !isBerryAvailable('Azzuk Berry')}
                         >
@@ -627,7 +628,7 @@ const Apothecary = () => {
                           {isBerryAvailable('Azzuk Berry') && <span className="berry-count">x{getBerryCount('Azzuk Berry')}</span>}
                         </button>
                         <button
-                          className={`berry-item ${!matchesFilters('Mangus Berry') ? 'filtered-out' : ''}`}
+                          className={`button${!matchesFilters('Mangus Berry') ? 'filtered-out' : ''}`}
                           onClick={() => setSelectedBerry('Mangus Berry')}
                           disabled={selectedMonster.species3 || !selectedMonster.species2 || !isBerryAvailable('Mangus Berry')}
                         >
@@ -638,11 +639,11 @@ const Apothecary = () => {
                       </div>
                     </div>
                     
-                    <div className="berry-category">
+                    <div className="fandom-grid">
                       <h4>Type Modification</h4>
                       <div className="berry-items">
                         <button
-                          className={`berry-item ${!matchesFilters('Siron Berry') ? 'filtered-out' : ''}`}
+                          className={`button vertical ${!matchesFilters('Siron Berry') ? 'filtered-out' : ''}`}
                           onClick={() => setSelectedBerry('Siron Berry')}
                           disabled={!selectedMonster.type2 && !selectedMonster.type3 && !selectedMonster.type4 && !selectedMonster.type5 || !isBerryAvailable('Siron Berry')}
                         >
@@ -651,7 +652,7 @@ const Apothecary = () => {
                           {isBerryAvailable('Siron Berry') && <span className="berry-count">x{getBerryCount('Siron Berry')}</span>}
                         </button>
                         <button
-                          className={`berry-item ${!matchesFilters('Lilan Berry') ? 'filtered-out' : ''}`}
+                          className={`button vertical ${!matchesFilters('Lilan Berry') ? 'filtered-out' : ''}`}
                           onClick={() => setSelectedBerry('Lilan Berry')}
                           disabled={!selectedMonster.type2 || !availableBerries['Lilan Berry'] || availableBerries['Lilan Berry'] < 1}
                         >
@@ -660,7 +661,7 @@ const Apothecary = () => {
                           {availableBerries['Lilan Berry'] && <span className="berry-count">x{availableBerries['Lilan Berry']}</span>}
                         </button>
                         <button
-                          className={`berry-item ${!matchesFilters('Kham Berry') ? 'filtered-out' : ''}`}
+                          className={`button vertical ${!matchesFilters('Kham Berry') ? 'filtered-out' : ''}`}
                           onClick={() => setSelectedBerry('Kham Berry')}
                           disabled={!selectedMonster.type3 || !availableBerries['Kham Berry'] || availableBerries['Kham Berry'] < 1}
                         >
@@ -669,7 +670,7 @@ const Apothecary = () => {
                           {availableBerries['Kham Berry'] && <span className="berry-count">x{availableBerries['Kham Berry']}</span>}
                         </button>
                         <button
-                          className={`berry-item ${!matchesFilters('Maizi Berry') ? 'filtered-out' : ''}`}
+                          className={`button vertical ${!matchesFilters('Maizi Berry') ? 'filtered-out' : ''}`}
                           onClick={() => setSelectedBerry('Maizi Berry')}
                           disabled={!selectedMonster.type4 || !isBerryAvailable('Maizi Berry')}
                         >
@@ -678,7 +679,7 @@ const Apothecary = () => {
                           {isBerryAvailable('Maizi Berry') && <span className="berry-count">x{getBerryCount('Maizi Berry')}</span>}
                         </button>
                         <button
-                          className={`berry-item ${!matchesFilters('Fani Berry') ? 'filtered-out' : ''}`}
+                          className={`button vertical ${!matchesFilters('Fani Berry') ? 'filtered-out' : ''}`}
                           onClick={() => setSelectedBerry('Fani Berry')}
                           disabled={!selectedMonster.type5 || !isBerryAvailable('Fani Berry')}
                         >
@@ -687,7 +688,7 @@ const Apothecary = () => {
                           {isBerryAvailable('Fani Berry') && <span className="berry-count">x{getBerryCount('Fani Berry')}</span>}
                         </button>
                         <button
-                          className={`berry-item ${!matchesFilters('Miraca Berry') ? 'filtered-out' : ''}`}
+                          className={`button vertical ${!matchesFilters('Miraca Berry') ? 'filtered-out' : ''}`}
                           onClick={() => setSelectedBerry('Miraca Berry')}
                           disabled={!isBerryAvailable('Miraca Berry')}
                         >
@@ -696,7 +697,7 @@ const Apothecary = () => {
                           {isBerryAvailable('Miraca Berry') && <span className="berry-count">x{getBerryCount('Miraca Berry')}</span>}
                         </button>
                         <button
-                          className={`berry-item ${!matchesFilters('Cocon Berry') ? 'filtered-out' : ''}`}
+                          className={`button vertical ${!matchesFilters('Cocon Berry') ? 'filtered-out' : ''}`}
                           onClick={() => setSelectedBerry('Cocon Berry')}
                           disabled={!selectedMonster.type2 || !isBerryAvailable('Cocon Berry')}
                         >
@@ -705,7 +706,7 @@ const Apothecary = () => {
                           {isBerryAvailable('Cocon Berry') && <span className="berry-count">x{getBerryCount('Cocon Berry')}</span>}
                         </button>
                         <button
-                          className={`berry-item ${!matchesFilters('Durian Berry') ? 'filtered-out' : ''}`}
+                          className={`button${!matchesFilters('Durian Berry') ? 'filtered-out' : ''}`}
                           onClick={() => setSelectedBerry('Durian Berry')}
                           disabled={!selectedMonster.type3 || !isBerryAvailable('Durian Berry')}
                         >
@@ -714,7 +715,7 @@ const Apothecary = () => {
                           {isBerryAvailable('Durian Berry') && <span className="berry-count">x{getBerryCount('Durian Berry')}</span>}
                         </button>
                         <button
-                          className={`berry-item ${!matchesFilters('Monel Berry') ? 'filtered-out' : ''}`}
+                          className={`button${!matchesFilters('Monel Berry') ? 'filtered-out' : ''}`}
                           onClick={() => setSelectedBerry('Monel Berry')}
                           disabled={!selectedMonster.type4 || !isBerryAvailable('Monel Berry')}
                         >
@@ -723,7 +724,7 @@ const Apothecary = () => {
                           {isBerryAvailable('Monel Berry') && <span className="berry-count">x{getBerryCount('Monel Berry')}</span>}
                         </button>
                         <button
-                          className={`berry-item ${!matchesFilters('Perep Berry') ? 'filtered-out' : ''}`}
+                          className={`button${!matchesFilters('Perep Berry') ? 'filtered-out' : ''}`}
                           onClick={() => setSelectedBerry('Perep Berry')}
                           disabled={!selectedMonster.type5 || !isBerryAvailable('Perep Berry')}
                         >
@@ -732,7 +733,7 @@ const Apothecary = () => {
                           {isBerryAvailable('Perep Berry') && <span className="berry-count">x{getBerryCount('Perep Berry')}</span>}
                         </button>
                         <button
-                          className={`berry-item ${!matchesFilters('Addish Berry') ? 'filtered-out' : ''}`}
+                          className={`button${!matchesFilters('Addish Berry') ? 'filtered-out' : ''}`}
                           onClick={() => setSelectedBerry('Addish Berry')}
                           disabled={selectedMonster.type2 || !availableBerries['Addish Berry'] || availableBerries['Addish Berry'] < 1}
                         >
@@ -741,7 +742,7 @@ const Apothecary = () => {
                           {availableBerries['Addish Berry'] && <span className="berry-count">x{availableBerries['Addish Berry']}</span>}
                         </button>
                         <button
-                          className={`berry-item ${!matchesFilters('Sky Carrot Berry') ? 'filtered-out' : ''}`}
+                          className={`button${!matchesFilters('Sky Carrot Berry') ? 'filtered-out' : ''}`}
                           onClick={() => setSelectedBerry('Sky Carrot Berry')}
                           disabled={selectedMonster.type3 || !selectedMonster.type2 || !isBerryAvailable('Sky Carrot Berry')}
                         >
@@ -750,7 +751,7 @@ const Apothecary = () => {
                           {isBerryAvailable('Sky Carrot Berry') && <span className="berry-count">x{getBerryCount('Sky Carrot Berry')}</span>}
                         </button>
                         <button
-                          className={`berry-item ${!matchesFilters('Kembre Berry') ? 'filtered-out' : ''}`}
+                          className={`button${!matchesFilters('Kembre Berry') ? 'filtered-out' : ''}`}
                           onClick={() => setSelectedBerry('Kembre Berry')}
                           disabled={selectedMonster.type4 || !selectedMonster.type3 || !isBerryAvailable('Kembre Berry')}
                         >
@@ -759,7 +760,7 @@ const Apothecary = () => {
                           {isBerryAvailable('Kembre Berry') && <span className="berry-count">x{getBerryCount('Kembre Berry')}</span>}
                         </button>
                         <button
-                          className={`berry-item ${!matchesFilters('Espara Berry') ? 'filtered-out' : ''}`}
+                          className={`button vertical ${!matchesFilters('Espara Berry') ? 'filtered-out' : ''}`}
                           onClick={() => setSelectedBerry('Espara Berry')}
                           disabled={selectedMonster.type5 || !selectedMonster.type4 || !isBerryAvailable('Espara Berry')}
                         >
@@ -770,11 +771,11 @@ const Apothecary = () => {
                       </div>
                     </div>
                     
-                    <div className="berry-category">
+                    <div className="fandom-grid">
                       <h4>Attribute Modification</h4>
                       <div className="berry-items">
                         <button
-                          className={`berry-item ${!matchesFilters('Datei Berry') ? 'filtered-out' : ''}`}
+                          className={`button vertical${!matchesFilters('Datei Berry') ? 'filtered-out' : ''}`}
                           onClick={() => setSelectedBerry('Datei Berry')}
                           disabled={!isBerryAvailable('Datei Berry')}
                         >
@@ -785,11 +786,11 @@ const Apothecary = () => {
                       </div>
                     </div>
 
-                    <div className="berry-category">
+                    <div className="fandom-grid">
                       <h4>Species Splitting</h4>
                       <div className="berry-items">
                         <button
-                          className={`berry-item ${!matchesFilters('Divest Berry') ? 'filtered-out' : ''}`}
+                          className={`button vertical${!matchesFilters('Divest Berry') ? 'filtered-out' : ''}`}
                           onClick={() => setSelectedBerry('Divest Berry')}
                           disabled={!selectedMonster.species2 || !isBerryAvailable('Divest Berry')}
                         >
@@ -807,7 +808,7 @@ const Apothecary = () => {
                     </div>
                   )}
                   
-                  <div className="berry-actions">
+                  <div className="container horizontal gap-md">
                     <button
                       className="button secondary"
                       onClick={closeMonsterModal}
@@ -850,23 +851,23 @@ const Apothecary = () => {
           />
         </div>
 
-        <div className="species-modal-content">
+        <div className="map-filters">
           <p>Select one of the following species:</p>
           
-          <div className="species-list">
+          <div className="container grid five gap-md">
             {rolledSpecies.map((species, index) => {
               const speciesImage = speciesImages[species];
               return (
                 <button
                   key={index}
-                  className={`species-item ${selectedSpecies === species ? 'selected' : ''}`}
+                  className={`monster-card sm ${selectedSpecies === species ? 'selected' : ''}`}
                   onClick={() => handleSpeciesSelect(species)}
                 >
                   {speciesImage?.image_url && (
                     <img 
                       src={speciesImage.image_url} 
                       alt={species}
-                      className="species-image"
+                      className="monster-image"
                       onError={(e) => {
                         e.target.style.display = 'none';
                       }}
@@ -878,7 +879,7 @@ const Apothecary = () => {
             })}
           </div>
           
-          <div className="species-actions">
+          <div className="container horizontal gap-md">
             <button
               className="button secondary"
               onClick={() => {

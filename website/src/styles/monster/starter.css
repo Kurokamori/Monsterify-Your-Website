@@ -28,29 +28,6 @@
   gap: 1rem;
 }
 
-.starter-card {
-  transition: transform 0.2s, box-shadow 0.2s;
-  border-radius: 0.5rem;
-  overflow: hidden;
-  display: flex;
-  background-color: var(--nav-background);
-  padding: 1.5rem;
-  cursor: pointer;
-  position: relative;
-}
-
-.starter-card:hover {
-  box-shadow: 0 6px 12px var(--overlay-medium);
-  transform: translateY(-4px);
-}
-
-.starter-card.selected {
-  background-color: rgba(var(--accent-color), .05);
-  border: 2px solid var(--accent-color);
-  color: var(--accent-color);
-  transform: scale(1.05);
-}
-
 .starter-monster-card {
   flex: 1;
   display: flex;
@@ -112,11 +89,6 @@
   font-size: 1.25rem;
   font-weight: 600;
   margin-bottom: 1.5rem;
-}
-
-.starter-spinner-container {
-  display: flex;
-  justify-content: center;
 }
 
 .starter-spinner {
@@ -189,46 +161,11 @@
   border-bottom: 2px solid var(--divider-color);
 }
 
-.starter-progress-tab {
-  flex: 1;
-  padding: 0.625rem 0.5rem;
-  text-align: center;
-  background: none;
-  border: none;
-  border-bottom: 3px solid transparent;
-  margin-bottom: -2px;
-  font-size: 0.9rem;
-  font-weight: 500;
-  color: var(--text-muted);
-  cursor: pointer;
-  transition: all 0.2s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.4rem;
-}
-
-.starter-progress-tab:hover:not(:disabled) {
-  color: var(--text-color);
-  background-color: var(--nav-hover, var(--highlight-subtle));
-}
-
-.starter-progress-tab.active {
-  color: var(--accent-color);
-  font-weight: 600;
-  border-bottom-color: var(--accent-color);
-}
-
-.starter-progress-tab.completed:not(.active) {
+.button.completed:not(.active) {
   color: var(--text-color);
 }
 
-.starter-progress-tab:disabled {
-  cursor: not-allowed;
-  opacity: 0.5;
-}
-
-.starter-progress-tab .tab-icon {
+.button .tab-icon {
   font-size: 0.75rem;
 }
 
@@ -254,12 +191,6 @@
 
 /* Tablet screens (768px and below) */
 @media (max-width: 768px) {
-  
-
-  
-  .starter-card {
-    padding: 0.75rem;
-  }
 }
 
 /* Mobile screens (480px and below) */
@@ -269,20 +200,11 @@
   
 
   
-  .starter-card {
+  .guide-card {
     padding: 0.5rem;
   }
 
-  
-
-  
-
-  .starter-progress-tab {
-    padding: 0.5rem 0.25rem;
-    font-size: 0.75rem;
-  }
-
-  .starter-progress-tab .tab-icon {
+  .button .tab-icon {
     display: none;
   }
 }
@@ -291,11 +213,11 @@
 
 /* Reduced motion preference */
 @media (prefers-reduced-motion: reduce) {
-  .starter-card {
+  .guide-card {
     transition: none;
   }
 
-  .starter-card:hover {
+  .guide-card:hover {
     transform: none;
   }
 }

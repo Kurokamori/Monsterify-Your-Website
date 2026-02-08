@@ -96,7 +96,7 @@ const PromptManagement = () => {
 
   return (
     <div className="prompt-management">
-      <div className="prompt-management-header">
+      <div className="item-header">
         <h2>Prompt Management</h2>
         <div className="header-actions">
           <button

@@ -84,7 +84,7 @@ const RerollerSessionsPage = () => {
 
   return (
     <div className="reroller-container">
-      <div className="reroller-header">
+      <div className="map-header">
         <h1>Reroller Sessions</h1>
         <p>View and manage all reroll sessions</p>
         <Link to="/admin/reroller" className="button primary">
@@ -93,7 +93,7 @@ const RerollerSessionsPage = () => {
       </div>
 
       {/* Filters */}
-      <div className="sessions-filter">
+      <div className="step-header">
         <label className="sessions-filter-label">Filter by Status:</label>
         <select
           value={statusFilter}
@@ -120,7 +120,7 @@ const RerollerSessionsPage = () => {
         <>
           {/* Sessions Table */}
           <div className="sessions-table-wrapper">
-            <table className="sessions-table">
+            <table className="trainer-table">
               <thead>
                 <tr className="sessions-table-header-row">
                   <th>ID</th>
@@ -166,7 +166,7 @@ const RerollerSessionsPage = () => {
                       {formatDate(session.createdAt)}
                     </td>
                     <td>
-                      <div className="session-actions">
+                      <div className="type-row">
                         <button
                           onClick={() => copyLink(session.token)}
                           className="button secondary icon sm"

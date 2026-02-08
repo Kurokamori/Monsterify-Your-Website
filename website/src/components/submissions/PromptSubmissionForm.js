@@ -197,7 +197,7 @@ const PromptSubmissionForm = ({ onSubmissionComplete, category = 'general' }) =>
           <h3>Select Prompt</h3>
 
           {loadingPrompts ? (
-            <div className="loading-container">
+            <div className="error-container">
               <LoadingSpinner />
               <p>Loading available prompts...</p>
             </div>
@@ -215,7 +215,7 @@ const PromptSubmissionForm = ({ onSubmissionComplete, category = 'general' }) =>
                 >
                   <h4 className="prompt-title">{prompt.title}</h4>
                   <p className="prompt-description">{prompt.description}</p>
-                  <div className="prompt-rewards">
+                  <div className="prompt-text">
                     <span className="reward-badge">
                       <i className="fas fa-arrow-up"></i> {prompt.levelReward} Levels
                     </span>
@@ -237,7 +237,7 @@ const PromptSubmissionForm = ({ onSubmissionComplete, category = 'general' }) =>
             <div className="selected-prompt-details">
               <h4>{selectedPrompt.title}</h4>
               <p>{selectedPrompt.description}</p>
-              <div className="prompt-rewards">
+              <div className="prompt-text">
                 <span className="reward-badge">
                   <i className="fas fa-arrow-up"></i> {selectedPrompt.levelReward} Levels
                 </span>
@@ -323,7 +323,7 @@ const PromptSubmissionForm = ({ onSubmissionComplete, category = 'general' }) =>
 
                 <div className="reward-section">
                   <h5>Trainer Rewards</h5>
-                  <div className="reward-items">
+                  <div className="fandom-grid">
                     <div className="reward-item">
                       <span className="reward-label">Levels:</span>
                       <span className="reward-value">{rewardEstimate.levels}</span>

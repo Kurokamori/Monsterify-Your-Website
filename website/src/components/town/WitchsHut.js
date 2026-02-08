@@ -462,23 +462,24 @@ const WitchsHut = () => {
   return (
     <div className="witchs-hut-container">
             {loading ? (
-        <div className="loading-container">
+        <div className="error-container">
           <LoadingSpinner />
           <p>Loading...</p>
         </div>
       ) : error ? (
         <ErrorMessage message={error} />
       ) : (
-        <div className="witchs-hut-content">
+        <div className="town-square">
           {/* Step 1: Trainer Selection */}
           <div className="evolution-step">
             <div className="step-header">
               <div className="step-number">1</div>
               <h3>Select Your Trainer</h3>
             </div>
-            <div className="trainer-selection">
+            <div className="shop-search">
               <select
                 id="trainer-select"
+                className="trainer-select"
                 value={selectedTrainer}
                 onChange={(e) => setSelectedTrainer(e.target.value)}
               >
@@ -504,7 +505,7 @@ const WitchsHut = () => {
                   </div>
                 </div>
                 
-                <div className="monster-search">
+                <div className="form-input">
                   <div className="search-input-container">
                     <i className="fas fa-search search-icon"></i>
                     <input
@@ -512,7 +513,7 @@ const WitchsHut = () => {
                       placeholder="Search monsters by name or species..."
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
-                      className="search-input"
+                      className="form-input"
                     />
                     {searchTerm && (
                       <button 
@@ -525,9 +526,9 @@ const WitchsHut = () => {
                   </div>
                 </div>
 
-                <div className="monsters-grid">
+                <div className="container grid gap-md">
                   {filteredMonsters.length === 0 ? (
-                    <div className="no-monsters">
+                    <div className="no-results">
                       <i className="fas fa-dragon"></i>
                       <h4>No monsters found</h4>
                       <p>
@@ -544,13 +545,13 @@ const WitchsHut = () => {
                         className="monster-card"
                         onClick={() => handleMonsterClick(monster)}
                       >
-                        <div className="monster-header">
+                        <div className="tree-header">
                           <div className="monster-name">{monster.name}</div>
                           <div className="evolution-badge">
                             <i className="fas fa-magic"></i>
                           </div>
                         </div>
-                        <div className="monster-species">
+                        <div className="monster-types">
                           {monster.species1}
                           {monster.species2 && ` + ${monster.species2}`}
                           {monster.species3 && ` + ${monster.species3}`}
@@ -616,7 +617,7 @@ const WitchsHut = () => {
         {selectedMonster && (
           <div className="monster-modal-content">
             {evolutionSuccess ? (
-              <div className="evolution-success">
+              <div className="success-step">
                 <div className="success-icon">
                   <i className="fas fa-check-circle"></i>
                 </div>
@@ -625,7 +626,7 @@ const WitchsHut = () => {
                   {selectedMonster.name} has evolved successfully!
                   {selectedEvolutionItem && ` The ${selectedEvolutionItem} was used in the evolution.`}
                 </p>
-                <div className="evolved-monster-details">
+                <div className="help-content">
                   <h4>Evolved Monster Details:</h4>
                   <p><strong>Species:</strong> {evolvedMonster.species1}
                     {evolvedMonster.species2 && ` + ${evolvedMonster.species2}`}
@@ -651,9 +652,9 @@ const WitchsHut = () => {
                 </div>
               </div>
             ) : (
-              <div className="evolution-wizard">
+              <div className="town-square">
                 {/* Monster Summary Header */}
-                <div className="monster-summary">
+                <div className="person-header">
                   <div className="monster-info">
                     <h3>{selectedMonster.name}</h3>
                     <div className="level-display">Level {selectedMonster.level}</div>
@@ -662,7 +663,7 @@ const WitchsHut = () => {
                       {selectedMonster.species2 && ` + ${selectedMonster.species2}`}
                       {selectedMonster.species3 && ` + ${selectedMonster.species3}`}
                     </div>
-                    <div className="types-display">
+                    <div className="type-tags">
                       <span className={`type-badge type-${selectedMonster.type1?.toLowerCase()}`}>
                         {selectedMonster.type1}
                       </span>
@@ -691,7 +692,7 @@ const WitchsHut = () => {
                   <div className="evolution-arrow">
                     <i className="fas fa-arrow-right"></i>
                   </div>
-                  <div className="evolution-target">
+                  <div className="ability-preview">
                     <div className="target-placeholder">
                       <i className="fas fa-question"></i>
                       <span>Choose Evolution</span>
@@ -700,7 +701,7 @@ const WitchsHut = () => {
                 </div>
 
                 {/* Step-by-step Evolution Form */}
-                <div className="evolution-form">
+                <div className="town-square">
                   
                   {/* Step 1: Species Selection */}
                   <div className="evolution-step active">
@@ -708,10 +709,10 @@ const WitchsHut = () => {
                       <div className="step-number">1</div>
                       <h4>Choose Species to Evolve</h4>
                     </div>
-                    <div className="species-options">
+                    <div className="type-tags">
                       {selectedMonster.species1 && (
                         <button
-                          className={`species-option ${selectedSpeciesSlot === 'species1' ? 'selected' : ''}`}
+                          className={`monster-card ${selectedSpeciesSlot === 'species1' ? 'selected' : ''}`}
                           onClick={() => handleSpeciesSlotChange({ target: { value: 'species1' } })}
                         >
                           <div className="species-slot">Species 1</div>
@@ -720,7 +721,7 @@ const WitchsHut = () => {
                       )}
                       {selectedMonster.species2 && (
                         <button
-                          className={`species-option ${selectedSpeciesSlot === 'species2' ? 'selected' : ''}`}
+                          className={`monster-card ${selectedSpeciesSlot === 'species2' ? 'selected' : ''}`}
                           onClick={() => handleSpeciesSlotChange({ target: { value: 'species2' } })}
                         >
                           <div className="species-slot">Species 2</div>
@@ -729,7 +730,7 @@ const WitchsHut = () => {
                       )}
                       {selectedMonster.species3 && (
                         <button
-                          className={`species-option ${selectedSpeciesSlot === 'species3' ? 'selected' : ''}`}
+                          className={`monster-card ${selectedSpeciesSlot === 'species3' ? 'selected' : ''}`}
                           onClick={() => handleSpeciesSlotChange({ target: { value: 'species3' } })}
                         >
                           <div className="species-slot">Species 3</div>
@@ -746,10 +747,10 @@ const WitchsHut = () => {
                       <h4>Choose Evolution Method</h4>
                     </div>
                     
-                    <div className="evolution-methods">
+                    <div className="form">
                       {/* Natural Evolution */}
                       {evolutionOptions.length > 0 && (
-                        <div className="evolution-method">
+                        <div className="help-content">
                           <h5>Natural Evolution</h5>
                           <p>Choose from available evolution options for {selectedMonster[selectedSpeciesSlot]}</p>
                           {loadingEvolutionOptions ? (
@@ -775,14 +776,14 @@ const WitchsHut = () => {
                       )}
                       
                       {/* Custom Evolution */}
-                      <div className="evolution-method">
+                      <div className="help-content">
                         <div className="method-header">
                           <h5>Custom Evolution</h5>
                           <span className="requires-item">Requires Digital Repair Kit</span>
                         </div>
                         <p>Create your own evolution by entering any species name</p>
                         <button
-                          className={`method-selector ${useDigitalRepairKit ? 'active' : ''}`}
+                          className={`button vertical ${useDigitalRepairKit ? 'active' : ''}`}
                           onClick={() => setUseDigitalRepairKit(!useDigitalRepairKit)}
                           disabled={!hasEvolutionItem('Digital Repair Kit')}
                         >
@@ -799,7 +800,7 @@ const WitchsHut = () => {
                               value={customSpeciesName}
                               onChange={(e) => setCustomSpeciesName(e.target.value)}
                               placeholder="Enter species name (e.g., Charizard, Dragonite, etc.)"
-                              className="custom-species-input"
+                              className="help-content"
                             />
                             {customSpeciesName.trim() && (
                               <div className="evolution-preview-mini">
@@ -816,10 +817,10 @@ const WitchsHut = () => {
                     {evolutionPreview && (
                       <div className="evolution-preview-card">
                         <h5>Evolution Preview</h5>
-                        <div className="preview-content">
+                        <div className="image-upload">
                           <div className="preview-info">
                             <div className="preview-name">{evolutionPreview.name}</div>
-                            <div className="preview-types">
+                            <div className="type-tags">
                               <span className={`type-badge type-${evolutionPreview.type_primary?.toLowerCase()}`}>
                                 {evolutionPreview.type_primary}
                               </span>
@@ -848,21 +849,21 @@ const WitchsHut = () => {
                     </div>
 
                     {/* Image Section */}
-                    <div className="image-section">
+                    <div className="help-content">
                       <h5>Evolution Image</h5>
                       <p>Upload an image or use a Void Stone to bypass this requirement</p>
                       
                       <div className="image-options">
                         <div className="image-input-tabs">
                           <button 
-                            className={`button tab ${!useVoidStone ? 'active' : ''}`}
+                            className={`button vertical tab ${!useVoidStone ? 'active' : ''}`}
                             onClick={() => setUseVoidStone(false)}
                           >
                             <i className="fas fa-image"></i>
                             Upload Image
                           </button>
                           <button 
-                            className={`button tab ${useVoidStone ? 'active' : ''} ${(trainerInventory?.evolution?.['Void Evolution Stone'] || 0) === 0 ? 'disabled' : ''}`}
+                            className={`button vertical tab ${useVoidStone ? 'active' : ''}${(trainerInventory?.evolution?.['Void Evolution Stone'] || 0) === 0 ? 'disabled' : ''}`}
                             onClick={() => {
                               const voidStoneCount = trainerInventory?.evolution?.['Void Evolution Stone'] || 0;
                               if (voidStoneCount > 0) {
@@ -878,13 +879,13 @@ const WitchsHut = () => {
                         </div>
 
                         {!useVoidStone && (
-                          <div className="image-inputs">
+                          <div className="auth-form">
                             <input
                               type="text"
                               value={imageUrl}
                               onChange={handleImageUrlChange}
                               placeholder="Enter image URL"
-                              className="image-url-input"
+                              className="form-input"
                             />
                             <div className="file-input-wrapper">
                               <input
@@ -893,7 +894,7 @@ const WitchsHut = () => {
                                 onChange={handleImageFileChange}
                                 id="image-upload"
                               />
-                              <label htmlFor="image-upload" className="file-input-label">
+                              <label htmlFor="image-upload" className="logo-link">
                                 <i className="fas fa-upload"></i>
                                 Choose File
                               </label>
@@ -909,7 +910,7 @@ const WitchsHut = () => {
                         )}
 
                         {imagePreview && !useVoidStone && (
-                          <div className="image-preview-mini">
+                          <div className="npc-avatar">
                             <img src={imagePreview} alt="Preview" />
                             <button 
                               className="remove-preview"
@@ -927,7 +928,7 @@ const WitchsHut = () => {
                     </div>
 
                     {/* Evolution Items */}
-                    <div className="items-section">
+                    <div className="help-content">
                       <h5>Evolution Items (Optional)</h5>
                       <p>Choose one evolution item to add or modify your monster's types. Digital Repair Kit can be used alongside any other item.</p>
                       
@@ -1001,7 +1002,7 @@ const WitchsHut = () => {
                             return (
                               <button
                                 key={item.id}
-                                className={`evolution-item-full ${isSelected ? 'selected' : ''} ${count === 0 ? 'unavailable' : ''}`}
+                                className={`evolution-item-full ${isSelected ? 'selected' : ''}${count === 0 ? 'unavailable' : ''}`}
                                 onClick={() => {
                                   if (count > 0) {
                                     // If clicking the same item, deselect it
@@ -1043,7 +1044,7 @@ const WitchsHut = () => {
                       )}
                       
                       {(selectedEvolutionItem || useDigitalRepairKit) && (
-                        <div className="selected-item-info">
+                        <div className="naming-header">
                           <i className="fas fa-info-circle"></i>
                           <div>
                             {useDigitalRepairKit && (

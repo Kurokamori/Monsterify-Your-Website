@@ -106,8 +106,8 @@ const RewardConfigurator = ({ rewards, onChange, availableItems, isBonus = false
       <div className="reward-section">
         <h4>Basic Rewards</h4>
         
-        <div className="basic-rewards">
-          <div className="reward-input-group">
+        <div className="item-rewards">
+          <div className="set-item">
             <label htmlFor={`levels-${isBonus ? 'bonus' : 'main'}`}>Levels</label>
             <input
               id={`levels-${isBonus ? 'bonus' : 'main'}`}
@@ -119,7 +119,7 @@ const RewardConfigurator = ({ rewards, onChange, availableItems, isBonus = false
             />
           </div>
           
-          <div className="reward-input-group">
+          <div className="set-item">
             <label htmlFor={`coins-${isBonus ? 'bonus' : 'main'}`}>Coins</label>
             <input
               id={`coins-${isBonus ? 'bonus' : 'main'}`}
@@ -150,7 +150,7 @@ const RewardConfigurator = ({ rewards, onChange, availableItems, isBonus = false
           <div className="items-list">
             {rewards.items.map((item, index) => (
               <div key={index} className="item-config">
-                <div className="item-config-row">
+                <div className="config-row">
                   <div className="form-group">
                     <label>Item Configuration</label>
                     <div className="item-config-options">
@@ -213,7 +213,7 @@ const RewardConfigurator = ({ rewards, onChange, availableItems, isBonus = false
                             items: updatedItems
                           });
                         }}
-                        className="form-select"
+                        className="form-input"
                       >
                         <option value="">Select a category</option>
                         {[...new Set(availableItems.map(i => i.category).filter(Boolean))].map(category => (
@@ -223,8 +223,8 @@ const RewardConfigurator = ({ rewards, onChange, availableItems, isBonus = false
                         ))}
                       </select>
                     ) : item.is_random_from_set ? (
-                      <div className="random-set-config">
-                        <div className="set-items-list">
+                      <div className="rarity-options">
+                        <div className="change-details">
                           {(item.random_set_items || []).map((setItemId, setIndex) => {
                             const setItem = availableItems.find(ai => ai.id === setItemId);
                             return (
@@ -245,7 +245,7 @@ const RewardConfigurator = ({ rewards, onChange, availableItems, isBonus = false
                                       items: updatedItems
                                     });
                                   }}
-                                  className="form-select"
+                                  className="form-input"
                                 >
                                   <option value="">Select item</option>
                                   {availableItems.map(availableItem => (
@@ -314,7 +314,7 @@ const RewardConfigurator = ({ rewards, onChange, availableItems, isBonus = false
                             items: updatedItems
                           });
                         }}
-                        className="form-select"
+                        className="form-input"
                       >
                         <option value="">Select an item</option>
                         {availableItems.map(availableItem => (

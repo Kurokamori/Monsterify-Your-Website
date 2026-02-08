@@ -162,7 +162,7 @@ const ItemListPage = () => {
           />
         </div>
 
-        <div className="admin-filter-group">
+        <div className="form-input">
           <div className="admin-filter">
             <label>Category:</label>
             <select value={categoryFilter} onChange={handleCategoryFilterChange}>

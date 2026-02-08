@@ -1,17 +1,4 @@
-.reward-configurator {
-  background: var(--card-background);
-  border: 1px solid var(--border-color);
-  border-radius: 8px;
-  padding: 20px;
-}
 
-.reward-section {
-  background: var(--section-background);
-  border: 1px solid var(--border-color);
-  border-radius: 10px;
-  margin-bottom: 2rem;
-  padding: 1.5rem;
-}
 
 .reward-section:last-child {
   margin-bottom: 0;
@@ -31,18 +18,6 @@
   margin: 0;
 }
 
-.reward-input-group {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-}
-
-.reward-input-group label {
-  font-size: 0.9rem;
-  font-weight: 500;
-  color: var(--text-color);
-}
-
 .reward-input {
   padding: 8px 10px;
   border: 1px solid var(--border-color);
@@ -59,46 +34,10 @@
   outline-offset: 2px;
 }
 
-.item-config {
-  background: var(--card-background);
-  border: 1px solid var(--border-color);
-  border-radius: 6px;
-  padding: 15px;
-}
-
-.item-config-row {
-  display: grid;
-  grid-template-columns: 3fr 1fr 1fr auto;
-  gap: 10px;
-  align-items: end;
-}
-
 .item-config-options {
   display: flex;
   gap: 15px;
   margin-bottom: 10px;
-}
-
-.random-set-config {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.set-items-list {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.set-item {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-}
-
-.set-item .form-select {
-  flex: 1;
 }
 
 /* Button styles removed - Use unified button system from common/buttons.css
@@ -118,23 +57,10 @@
 
 /* Responsive Design */
 @media (max-width: 768px) {
-  .reward-configurator {
-    padding: 15px;
-  }
-  
-  .item-config-row {
-    grid-template-columns: 1fr;
-    gap: 10px;
-  }
   
   .item-config-options {
     flex-direction: column;
     gap: 8px;
-  }
-  
-  .set-item {
-    flex-direction: column;
-    align-items: stretch;
   }
 }
 
@@ -144,10 +70,6 @@
   margin-bottom: 1rem;
   padding: 0.75rem;
 }
-  
-  .reward-input-group {
-    gap: 3px;
-  }
 }
 
 /* Focus styles for accessibility */

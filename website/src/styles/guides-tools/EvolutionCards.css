@@ -32,13 +32,6 @@
 }
 
 /* Evolution Chain */
-.evolution-chain {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-  margin-bottom: 32px;
-  min-width: fit-content;
-}
 
 .evolution-connector {
   display: flex;
@@ -113,12 +106,6 @@
 }
 
 /* Card Header */
-.evolution-card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-}
 
 .evolution-stage {
   display: flex;
@@ -178,25 +165,12 @@
   box-shadow: 0 4px 12px var(--accent-glow);
 }
 
-.no-evolution-image {
-  width: 120px;
-  height: 120px;
-  border: 3px dashed var(--border-color);
-  border-radius: 12px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  color: var(--text-color);
-  background: var(--nav-active);
-}
-
-.no-evolution-image i {
+.evolution-image i {
   font-size: 2rem;
   margin-bottom: 4px;
 }
 
-.no-evolution-image span {
+.evolution-image span {
   font-size: 0.8rem;
   font-weight: 600;
 }
@@ -259,7 +233,7 @@
   margin-bottom: 0.75rem;
 }
 
-.method-details {
+.change-details {
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -328,20 +302,13 @@
   margin-top: 24px;
 }
 
-.summary-header {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 16px;
-}
-
-.summary-header h4 {
+.naming-header h4 {
   color: var(--accent-color);
   margin: 0;
   font-size: 1.2rem;
 }
 
-.summary-header i {
+.naming-header i {
   color: var(--accent-color);
   font-size: 1.1rem;
 }
@@ -366,11 +333,7 @@
     width: 80px;
     height: 80px;
   }
-  
-  .no-evolution-image {
-    width: 80px;
-    height: 80px;
-  }
+
   
   .species-name {
   font-size: 0.95rem;
@@ -382,14 +345,7 @@
   }
 }
 
-@media (min-width: 1024px) {
-  .evolution-chain {
-    flex-direction: row;
-    align-items: flex-start;
-    overflow-x: auto;
-    padding: 20px 0;
-  }
-  
+@media (min-width: 1024px) {  
   .evolution-card {
     flex-shrink: 0;
   }

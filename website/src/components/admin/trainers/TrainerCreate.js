@@ -74,9 +74,9 @@ const TrainerCreate = () => {
 
   return (
     <div className="trainer-create-container">
-      <div className="trainer-create-header">
+      <div className="adopt-card">
         <h1>Create New Trainer</h1>
-        <div className="trainer-create-actions">
+        <div className="header-actions">
           <Link to="/admin/dashboard/trainers" className="button secondary">
             <i className="fas fa-times"></i> Cancel
           </Link>
@@ -85,32 +85,32 @@ const TrainerCreate = () => {
 
       {error && <ErrorMessage message={error} />}
 
-      <form onSubmit={handleSubmit} className="trainer-create-form">
-        <div className="trainer-create-tabs">
+      <form onSubmit={handleSubmit} className="trainer-edit-form">
+        <div className="trainer-edit-tabs">
           <button
             type="button"
-            className={`trainer-create-tab ${activeSection === 'basic' ? 'active' : ''}`}
+            className={`trainer-edit-tab${activeSection === 'basic' ? 'active' : ''}`}
             onClick={() => setActiveSection('basic')}
           >
             <i className="fas fa-user"></i> Basic Info
           </button>
           <button
             type="button"
-            className={`trainer-create-tab ${activeSection === 'personal' ? 'active' : ''}`}
+            className={`trainer-edit-tab${activeSection === 'personal' ? 'active' : ''}`}
             onClick={() => setActiveSection('personal')}
           >
             <i className="fas fa-address-card"></i> Personal
           </button>
           <button
             type="button"
-            className={`trainer-create-tab ${activeSection === 'species' ? 'active' : ''}`}
+            className={`trainer-edit-tab${activeSection === 'type' ? 'active' : ''}`}
             onClick={() => setActiveSection('species')}
           >
             <i className="fas fa-dna"></i> Species & Types
           </button>
           <button
             type="button"
-            className={`trainer-create-tab ${activeSection === 'bio' ? 'active' : ''}`}
+            className={`trainer-edit-tab${activeSection === 'bio' ? 'active' : ''}`}
             onClick={() => setActiveSection('bio')}
           >
             <i className="fas fa-book"></i> Biography
@@ -119,7 +119,7 @@ const TrainerCreate = () => {
 
         <div className="trainer-create-content">
           {activeSection === 'basic' && (
-            <div className="create-section">
+            <div className="set-item">
               <h2>Basic Information</h2>
 
               <div className="form-grid">
@@ -227,7 +227,7 @@ const TrainerCreate = () => {
           )}
 
           {activeSection === 'personal' && (
-            <div className="create-section">
+            <div className="set-item">
               <h2>Personal Information</h2>
 
               <div className="form-grid">
@@ -355,7 +355,7 @@ const TrainerCreate = () => {
           )}
 
           {activeSection === 'species' && (
-            <div className="create-section">
+            <div className="set-item">
               <h2>Species & Types</h2>
 
               <div className="form-grid">
@@ -460,7 +460,7 @@ const TrainerCreate = () => {
           )}
 
           {activeSection === 'bio' && (
-            <div className="create-section">
+            <div className="set-item">
               <h2>Biography</h2>
 
               <div className="form-group">
@@ -502,7 +502,7 @@ const TrainerCreate = () => {
           )}
         </div>
 
-        <div className="trainer-create-footer">
+        <div className="trainer-edit-footer">
           <button
             type="button"
             className="button secondary"

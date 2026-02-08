@@ -575,7 +575,7 @@ const EditTrainerPage = () => {
 
   if (loading) {
     return (
-      <div className="loading-container">
+      <div className="error-container">
         <div className="loading-spinner">
           <i className="fas fa-spinner fa-spin"></i>
         </div>
@@ -612,7 +612,7 @@ const EditTrainerPage = () => {
   }
 
   return (
-    <div className="edit-trainer-container">
+    <div className="edit-monster-container">
       <h1>Edit Trainer: {trainer.name}</h1>
 
       {error && (
@@ -1524,7 +1524,7 @@ const EditTrainerPage = () => {
             <div className="additional-refs-list">
               {additionalRefs.map((ref, index) => (
                 <div key={ref.id} className="additional-ref-item">
-                  <div className="additional-ref-header">
+                  <div className="adopt-card">
                     <h3>Reference #{index + 1}</h3>
                     <button
                       type="button"
@@ -1590,7 +1590,7 @@ const EditTrainerPage = () => {
             </div>
           )}
 
-          <div className="add-ref-button-container">
+          <div className="artwork-pagination">
             <button
               type="button"
               className="button primary"

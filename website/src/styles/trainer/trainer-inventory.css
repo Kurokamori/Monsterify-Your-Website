@@ -15,7 +15,7 @@
   gap: 20px;
 }
 
-.trainer-inventory-tab .inventory-sections{ display:flex; flex-direction:column; gap:1.5rem; }
+.stats-section .inventory-sections{ display:flex; flex-direction:column; gap:1.5rem; }
 
 .inventory-section {
   border-radius: 8px;
@@ -28,26 +28,15 @@
 
 /* ===== Inventory items ===== */
 
-.inventory-items {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.inventory-items-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px,1fr));
-  gap: 1rem;
-}
-
 .inventory-item {
-  display: flex;
   align-items: center;
-  gap: .75rem;
-  padding: .75rem;
   background-color: var(--nav-background);
   border-radius: .5rem;
-  transition: all .2s;
+  display: flex;
+  flex-direction: column;
+  gap: .25rem;
+  padding: .75rem;
+  transition: transform .2s ease;
 }
 
 .inventory-item:hover{ transform:translateY(-2px); box-shadow:0 2px 8px var(--overlay-light); }
@@ -61,19 +50,6 @@
 
 /* ===== Inventory item image ===== */
 
-.inventory-item-image {
-  width: 40px;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: var(--highlight-light);
-  border-radius: .25rem;
-  overflow: hidden;
-}
-
-.inventory-item-image img{ max-width:100%; max-height:100%; object-fit:contain; }
-
 /* ===== Inventory item details ===== */
 
 .inventory-item-details {
@@ -81,11 +57,6 @@
   display: flex;
   flex-direction: column;
   gap: .25rem;
-}
-
-.inventory-item-name {
-  font-weight: 500;
-  font-size: var(--font-size-sm);
 }
 
 .inventory-item-quantity {

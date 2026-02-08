@@ -527,15 +527,15 @@ const AdoptionItemModal = ({
 
   // Render monster display
   const renderMonsterDisplay = (monsterData, title = null, compact = false) => (
-    <div className={`adoption-item-monster-display ${compact ? 'compact' : ''}`}>
+    <div className={`adoption-item-monster-display${compact ? 'compact' : ''}`}>
       {title && <h4>{title}</h4>}
       <div className="monster-info-row">
         <div className="monster-name-species">
           <h3>{monsterData.name}</h3>
-          <div className="monster-species-list">
-            {monsterData.species1 && <span className="species-badge">{monsterData.species1}</span>}
-            {monsterData.species2 && <span className="species-badge"> {monsterData.species2}</span>}
-            {monsterData.species3 && <span className="species-badge"> {monsterData.species3}</span>}
+          <div className="species-images-grid">
+            {monsterData.species1 && <span className="type-badge">{monsterData.species1}</span>}
+            {monsterData.species2 && <span className="type-badge"> {monsterData.species2}</span>}
+            {monsterData.species3 && <span className="type-badge"> {monsterData.species3}</span>}
           </div>
         </div>
       </div>
@@ -579,9 +579,9 @@ const AdoptionItemModal = ({
                     e.target.src = getItemFallbackImage(category);
                   }}
                 />
-                <span className="queued-item-name">{item.name}</span>
+                <span className="target-name">{item.name}</span>
                 {item.value && (
-                  <span className="queued-item-value">→ {item.value}</span>
+                  <span className="result-value">→ {item.value}</span>
                 )}
                 {item.type === 'berry' && berryRequiresSpeciesSelection(item.name) && !item.value && (
                   <span className="queued-item-note">(species will be rolled)</span>
@@ -614,7 +614,7 @@ const AdoptionItemModal = ({
 
     return (
       <div className="item-selection-section">
-        <div className="filter-buttons">
+        <div className="type-tags">
           {Object.keys(berryFilters).map(filter => (
             <button
               key={filter}
@@ -683,7 +683,7 @@ const AdoptionItemModal = ({
 
     return (
       <div className="item-selection-section">
-        <div className="filter-buttons">
+        <div className="type-tags">
           {Object.keys(pastryFilters).map(filter => (
             <button
               key={filter}
@@ -767,7 +767,7 @@ const AdoptionItemModal = ({
         {filteredValueOptions.map((value, index) => (
           <button
             key={index}
-            className={`value-option ${selectedValue === value ? 'selected' : ''}`}
+            className={`value-item ${selectedValue === value ? 'selected' : ''}`}
             onClick={() => setSelectedValue(value)}
           >
             {value}
@@ -816,16 +816,16 @@ const AdoptionItemModal = ({
                 <div className="monster-selection-details">
                   <h4>{monster?.name || 'Monster'}</h4>
                   <div className="current-species">
-                    <span className={`species-badge ${speciesSlot === 1 ? 'species-highlight' : ''}`}>
+                    <span className={`type-badge${speciesSlot === 1 ? 'species-highlight' : ''}`}>
                       {monster?.species1 || 'None'}
                     </span>
                     {monster?.species2 && (
-                      <span className={`species-badge ${speciesSlot === 2 ? 'species-highlight' : ''}`}>
+                      <span className={`type-badge${speciesSlot === 2 ? 'species-highlight' : ''}`}>
                         {monster.species2}
                       </span>
                     )}
                     {monster?.species3 && (
-                      <span className={`species-badge ${speciesSlot === 3 ? 'species-highlight' : ''}`}>
+                      <span className={`type-badge${speciesSlot === 3 ? 'species-highlight' : ''}`}>
                         {monster.species3}
                       </span>
                     )}
@@ -863,7 +863,7 @@ const AdoptionItemModal = ({
                 return (
                   <button
                     key={index}
-                    className={`species-selection-item ${isSelected ? 'selected' : ''}`}
+                    className={`species-selection-item${isSelected ? 'selected' : ''}`}
                     onClick={() => setSelectedSpeciesForOperations(prev => ({
                       ...prev,
                       [op.operationId]: species
@@ -873,7 +873,7 @@ const AdoptionItemModal = ({
                       <img
                         src={speciesImage.image_url}
                         alt={species}
-                        className="species-image"
+                        className="item-icon"
                         onError={(e) => { e.target.style.display = 'none'; }}
                       />
                     )}
@@ -931,7 +931,7 @@ const AdoptionItemModal = ({
     const failCount = processingResults.filter(r => !r.success).length;
 
     return (
-      <div className="result-section">
+      <div className="monster-info">
         <div className="results-summary">
           <h3>Results</h3>
           <p>
@@ -962,12 +962,12 @@ const AdoptionItemModal = ({
             {processingResults.map((result, index) => (
               <div
                 key={index}
-                className={`result-item ${result.success ? 'success' : 'error'}`}
+                className={`result-item${result.success ? 'success' : 'error'}`}
               >
                 <span className="result-icon">
                   {result.success ? '✓' : '✗'}
                 </span>
-                <span className="result-name">{result.item.name}</span>
+                <span className="task-name">{result.item.name}</span>
                 {result.item.value && (
                   <span className="result-value">→ {result.item.value}</span>
                 )}

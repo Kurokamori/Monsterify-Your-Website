@@ -282,8 +282,8 @@ const ContentEditorPage = () => {
         {loading ? (
           <LoadingSpinner message={isEditMode ? "Loading content..." : "Preparing editor..."} />
         ) : (
-          <div className="admin-form-container">
-            <form onSubmit={handleSubmit} className="admin-form">
+          <div className="bulk-monster-add-form">
+            <form onSubmit={handleSubmit} className="reroller-content">
               <div className="admin-form-group">
                 <label htmlFor="title" className="admin-form-label">
                   Title <span className="required">*</span>
@@ -327,14 +327,14 @@ const ContentEditorPage = () => {
               <div className="admin-tabs">
                 <button 
                   type="button"
-                  className={`admin-tab ${activeTab === 'editor' ? 'active' : ''}`}
+                  className={`admin-tab${activeTab === 'editor' ? 'active' : ''}`}
                   onClick={() => setActiveTab('editor')}
                 >
                   <i className="fas fa-edit"></i> Editor
                 </button>
                 <button 
                   type="button"
-                  className={`admin-tab ${activeTab === 'preview' ? 'active' : ''}`}
+                  className={`admin-tab${activeTab === 'preview' ? 'active' : ''}`}
                   onClick={() => setActiveTab('preview')}
                 >
                   <i className="fas fa-eye"></i> Preview
@@ -342,7 +342,7 @@ const ContentEditorPage = () => {
               </div>
 
               {/* Editor Tab */}
-              <div className={`admin-tab-content ${activeTab === 'editor' ? 'active' : ''}`}>
+              <div className={`admin-tab-content${activeTab === 'editor' ? 'active' : ''}`}>
                 <div className="admin-form-group">
                   <label htmlFor="content" className="admin-form-label">
                     Content (Markdown)
@@ -366,7 +366,7 @@ const ContentEditorPage = () => {
                     ref={editorRef}
                     value={formData.content}
                     onChange={handleChange}
-                    className="admin-form-textarea"
+                    className="admin-form-input"
                     rows="20"
                     disabled={saving}
                   ></textarea>
@@ -374,7 +374,7 @@ const ContentEditorPage = () => {
               </div>
 
               {/* Preview Tab */}
-              <div className={`admin-tab-content ${activeTab === 'preview' ? 'active' : ''}`}>
+              <div className={`admin-tab-content${activeTab === 'preview' ? 'active' : ''}`}>
                 <div className="admin-form-group">
                   <label className="admin-form-label">Content Preview</label>
                   <div className="admin-preview" ref={previewRef}></div>

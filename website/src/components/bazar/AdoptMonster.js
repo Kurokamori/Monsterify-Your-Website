@@ -96,13 +96,13 @@ const AdoptMonster = ({ userTrainers }) => {
       .filter(species => species && species.trim() !== '');
 
     return (
-      <div key={monster.id} className="bazzar-monster-card">
-        <div className="monster-header">
+      <div key={monster.id} className="monster-card">
+        <div className="tree-header">
           <h3>{monster.name}</h3>
           <p className="monster-level">Level {monster.level}</p>
         </div>
         
-        <div className="monster-species">
+        <div className="monster-types">
           <strong>Species:</strong> {species.join(', ')}
         </div>
         
@@ -116,7 +116,7 @@ const AdoptMonster = ({ userTrainers }) => {
         </div>
         
         {monster.attribute && (
-          <div className="monster-attribute">
+          <div className="monster-types">
             <strong>Attribute:</strong>
             <AttributeBadge attribute={monster.attribute} />
           </div>
@@ -170,7 +170,7 @@ const AdoptMonster = ({ userTrainers }) => {
 
       {showAdoptModal && selectedMonster && (
         <Modal isOpen={showAdoptModal} onClose={() => setShowAdoptModal(false)}>
-          <div className="modal-header">
+          <div className="tree-header">
             <h3>Adopt {selectedMonster.name}</h3>
           </div>
           <div className="modal-body">
@@ -178,6 +178,7 @@ const AdoptMonster = ({ userTrainers }) => {
               <label htmlFor="trainer-select">Select Trainer:</label>
               <select
                 id="trainer-select"
+                className="trainer-select"
                 value={selectedTrainer}
                 onChange={(e) => setSelectedTrainer(e.target.value)}
                 required

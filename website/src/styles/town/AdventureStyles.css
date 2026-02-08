@@ -2,23 +2,11 @@
 
 /* Base Adventure Containers */
 
-.adventures-container {
+.bosses-page {
   width: 100%;
   max-width: var(--container-max-width);
   margin: 0 auto;
   padding: 0 var(--content-padding);
-}
-
-.adventure-detail-container {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-}
-
-.adventure-list-container {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
 }
 
 /* Page Headers */
@@ -41,45 +29,19 @@
   margin-bottom: 10px;
 }
 
-/* REMOVED: .page-actions .action-button overrides - Use unified button system from common/buttons.css */
-
-/* Boss Battles Styles */
-.bosses-page {
-  width: 100%;
-  max-width: var(--container-max-width);
-  margin: 0 auto;
-  padding: 0 var(--content-padding);
-}
-
-.bosses-nav {
-  display: flex;
-  justify-content: center;
-  gap: 1rem;
-  margin-bottom: 2rem;
-  padding: 1rem;
-  background: var(--card-background);
-  border-radius: var(--border-radius);
-  border: 1px solid var(--border-color);
-}
-
-.bosses-nav-link {
-  padding: 0.75rem 1.5rem;
-  border-radius: var(--border-radius);
-  text-decoration: none;
-  color: var(--text-secondary);
-  border: 1px solid transparent;
-  transition: all 0.3s ease;
-}
-
-.bosses-nav-link:hover {
+.button:hover {
   background: var(--hover-color);
+  box-shadow: 0 2px 4px var(--overlay-light);
   color: var(--text-primary);
+  transform: translateY(-2px);
 }
 
-.bosses-nav-link.active {
+.button.active {
   background: var(--accent-color);
-  color: var(--text-color);
+  border-bottom-color: var(--accent-color);
   border-color: var(--accent-color);
+  color: var(--text-color);
+  font-weight: 600;
 }
 
 .boss-battle-card {
@@ -165,14 +127,7 @@
   box-shadow: 0 6px 20px var(--success-glow);
 }
 
-.boss-details {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.boss-details h3 {
+.type-tags h3 {
   font-size: var(--font-size-2xl);
   color: var(--text-color);
   margin: 0;
@@ -205,7 +160,7 @@
   transform: translateY(-2px);
 }
 
-.boss-details span {
+.type-tags span {
   display: flex;
   align-items: center;
   gap: 0.25rem;
@@ -249,7 +204,7 @@
   gap: 0.75rem;
 }
 
-.top-winners {
+.map-filters {
   display: flex;
   flex-direction: column;
   gap: 1rem;
@@ -327,14 +282,14 @@
 }
 
 /* Top Rankings Preview - Legacy support */
-.top-rankings-preview {
+.prize-distribution {
   background: var(--background-light);
   border-radius: var(--border-radius);
   padding: 1rem;
   margin-bottom: 1rem;
 }
 
-.top-rankings-preview h4 {
+.prize-distribution h4 {
   margin: 0 0 1rem 0;
   color: var(--text-primary);
   font-size: 1rem;
@@ -394,43 +349,6 @@
   color: var(--text-secondary);
 }
 
-/* Prize Distribution */
-.prize-distribution {
-  background: var(--background-light);
-  border-radius: var(--border-radius);
-  padding: 1rem;
-  margin-bottom: 1rem;
-}
-
-.prize-distribution h4 {
-  margin: 0 0 1rem 0;
-  color: var(--text-primary);
-  font-size: 1rem;
-}
-
-.prize-info {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-}
-
-.first-place-prize,
-.other-prizes {
-  align-items: center;
-  background: linear-gradient(135deg, var(--accent-glow), var(--accent-glow));
-  border: 1px solid var(--border-color);
-  border-color: var(--accent-light);
-  border-radius: var(--border-radius);
-  display: flex;
-  justify-content: space-between;
-  padding: 0.75rem;
-}
-
-.prize-label {
-  font-weight: bold;
-  color: var(--text-primary);
-}
-
 .prize-reward {
   color: var(--accent-color);
   font-weight: 500;
@@ -458,25 +376,6 @@
 */
 
 /* Modal Styles for Rankings */
-.boss-rankings-modal {
-  max-width: 800px;
-  width: 100%;
-}
-
-.boss-battle-stats {
-  display: flex;
-  justify-content: center;
-  gap: 2rem;
-  flex-wrap: wrap;
-  font-size: 0.875rem;
-  color: var(--text-secondary);
-}
-
-.boss-battle-stats span {
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
-}
 
 .full-leaderboard h4 {
   margin: 0 0 1rem 0;
@@ -573,15 +472,6 @@
 
 /* Responsive Design */
 @media (max-width: 768px) {
-  .bosses-nav {
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-  
-  .defeated-boss-header {
-    flex-direction: column;
-    align-items: stretch;
-  }
   
   .top-three {
     grid-template-columns: 1fr;
@@ -590,11 +480,7 @@
   .defeated-boss-actions {
     flex-direction: column;
   }
-  
-  .boss-battle-stats {
-    flex-direction: column;
-    gap: 0.5rem;
-  }
+
   
   .leaderboard-entry {
     grid-template-columns: auto 1fr;
@@ -608,50 +494,25 @@
   }
 }
 
-.adventures-header {
-  text-align: center;
-  margin-bottom: 2rem;
-}
-
-.adventures-header h1,
-.page-title h1 {
-  color: var(--accent-color);
-  font-size: var(--font-size-3xl);
-  margin-bottom: 0.5rem;
-  text-align: center;
-}
-
-.adventures-header p,
-.page-title p {
-  color: var(--text-color);
-  font-size: var(--font-size-lg);
-  opacity: 0.8;
-  text-align: center;
-}
-
-.page-actions {
-  display: flex;
-  gap: 1rem;
-}
-
 /* Sub-tabs */
 
 /* Adventure Cards */
-.adventure-card {
-  background-color: var(--card-background);
+.gallery-item {
+  background-color: var(--card-background-light);
   border-radius: 0.5rem;
-  overflow: hidden;
-  box-shadow: 0 2px 4px var(--overlay-light);
-  transition: transform 0.2s, box-shadow 0.2s;
   border-top: 4px solid var(--accent-color);
+  box-shadow: 0 2px 4px var(--overlay-light);
+  cursor: pointer;
+  overflow: hidden;
+  transition: transform 0.2s, box-shadow 0.2s;
 }
 
-.adventure-card:hover {
+.gallery-item:hover {
   transform: translateY(-4px);
   box-shadow: 0 4px 8px var(--overlay-light);
 }
 
-.adventure-card.completed {
+.gallery-item.completed {
   border-top-color: var(--success-color);
 }
 
@@ -667,15 +528,6 @@
   justify-content: space-between;
   align-items: flex-start;
   margin-bottom: 0.75rem;
-}
-
-.adventure-title,
-.adventure-title-section h2 {
-  color: var(--accent-color);
-  flex: 1;
-  font-size: var(--font-size-2xl);
-  font-weight: 600;
-  margin: 0;
 }
 
 .adventure-status {
@@ -720,13 +572,6 @@
   border-top: 1px solid var(--divider-color);
 }
 
-.adventure-creator,
-.adventure-date {
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
-}
-
 .stat-item i {
   color: var(--accent-color);
   min-width: max-content;
@@ -737,14 +582,6 @@
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
   gap: 1.5rem;
-}
-
-.adventure-pagination {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 1rem;
-  margin-top: 1.5rem;
 }
 
 /* Adventure Filters */
@@ -759,13 +596,13 @@
   border: 1px solid var(--border-color);
 }
 
-.filter-group label {
+.set-item label {
   color: var(--text-muted);
-  font-size: 0.9rem;
+  font-size: 0.875rem;
   font-weight: 500;
 }
 
-.filter-group select {
+.set-item select {
   padding: 0.5rem;
   border-radius: 0.25rem;
   border: 1px solid var(--border-color);
@@ -781,12 +618,6 @@
 }
 
 /* Adventure Detail Layout */
-.adventure-title-section {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1rem;
-}
 
 .adventure-content {
   gap: 1.5rem;
@@ -841,7 +672,7 @@
   border-bottom: 1px solid var(--divider-color);
 }
 
-.adventure-creation-form {
+.town-square {
   display: flex;
   flex-direction: column;
   gap: 2rem;
@@ -856,57 +687,7 @@
   opacity: 0.8;
 }
 
-/* Toggle Switch */
-.toggle-switch {
-  align-items: center;
-  color: var(--text-color);
-  cursor: pointer;
-  display: flex;
-  font-size: 0.9rem;
-  gap: 10px;
-  height: 34px;
-  position: relative;
-  width: 60px;
-}
-
-.toggle-switch input[type="checkbox"] {
-  appearance: none;
-  background: var(--border-color);
-  background-color: var(--nav-background);
-  border-radius: 1rem;
-  cursor: pointer;
-  height: 1.25rem;
-  position: relative;
-  transition: background-color 0.2s;
-  width: 2.5rem;
-}
-
-.toggle-switch input[type="checkbox"]::before {
-  background: var(--card-background);
-  background-color: var(--text-color);
-  border-radius: 50%;
-  content: '';
-  height: 1rem;
-  left: 0.125rem;
-  position: absolute;
-  top: 0.125rem;
-  transition: transform 0.2s;
-  width: 1rem;
-}
-
-.toggle-switch input[type="checkbox"]:checked {
-  background: var(--accent-color);
-  background-color: var(--accent-color);
-}
-
-.toggle-switch input[type="checkbox"]:checked::before {
-  transform: translateX(1.25rem);
-}
-
-.toggle-switch label {
-  font-size: var(--font-size-base);
-  cursor: pointer;
-}
+/* Toggle Switch: Use common/inputs.css */
 
 /* File Upload */
 
@@ -918,12 +699,6 @@
   gap: 0.75rem;
 }
 
-.file-name {
-  font-size: var(--font-size-sm);
-  color: var(--text-color);
-  opacity: 0.8;
-}
-
 /* Adventure Type Selection */
 .adventure-type-selection {
   display: grid;
@@ -932,39 +707,26 @@
   margin-top: 1rem;
 }
 
-.adventure-type-card {
-  background: var(--background-secondary, var(--card-background));
-  border: 2px solid var(--border-color);
-  border-radius: 0.75rem;
-  padding: 1.25rem;
-  text-align: center;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.adventure-type-card:hover {
-  border-color: var(--accent-color);
-  transform: translateY(-2px);
-}
-
-.adventure-type-card.selected {
-  border-color: var(--accent-color);
+.area-card.selected {
   background: var(--accent-glow);
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 3px var(--accent-color);
+  transform: translateY(-5px);
 }
 
-.adventure-type-card .type-icon {
+.area-card .type-icon {
   font-size: 2.5rem;
   color: var(--accent-color);
   margin-bottom: 0.75rem;
 }
 
-.adventure-type-card h4 {
+.area-card h4 {
   margin: 0 0 0.5rem 0;
   color: var(--text-color);
   font-size: var(--font-size-lg);
 }
 
-.adventure-type-card p {
+.area-card p {
   margin: 0;
   color: var(--text-color);
   opacity: 0.8;
@@ -978,45 +740,6 @@
   grid-template-columns: 1fr 1fr 1fr;
   gap: 15px;
   margin-bottom: 1.5rem;
-}
-
-.region-card {
-  align-items: center;
-  background: var(--background-secondary, var(--card-background));
-  border: 1px solid var(--divider-color);
-  border-radius: 0.375rem;
-  color: inherit;
-  cursor: pointer;
-  display: flex;
-  gap: 1rem;
-  padding: 0.9rem;
-  text-decoration: none;
-  transition: all 0.3s ease;
-}
-
-.region-card:hover {
-  background: var(--nav-hover);
-  border-color: var(--accent-color);
-  transform: translateY(-2px);
-}
-
-.region-card.selected {
-  border-color: var(--accent-color);
-  background: var(--accent-glow);
-}
-
-.region-card h4 {
-  margin: 0 0 0.5rem 0;
-  color: var(--text-color);
-  font-size: var(--font-size-lg);
-}
-
-.region-card p {
-  margin: 0;
-  color: var(--text-color);
-  opacity: 0.8;
-  font-size: var(--font-size-sm);
-  line-height: 1.4;
 }
 
 .areas-section {
@@ -1048,41 +771,10 @@
   gap: 15px;
 }
 
-.area-card {
-  background: var(--background-secondary, var(--card-background));
-  border: 1px solid var(--divider-color);
-  border-radius: 0.375rem;
-  color: inherit;
-  cursor: pointer;
-  overflow: hidden;
-  padding: 0.75rem;
-  text-decoration: none;
-  transition: all 0.3s ease;
-}
-
-.area-card:hover {
-  border-color: var(--success-color);
-  box-shadow: 0 4px 12px var(--overlay-light);
-  transform: translateY(-2px);
-}
-
-.area-card.selected {
-  border-color: var(--accent-color);
-  background: var(--accent-glow);
-}
-
 .area-card h5 {
   margin: 0 0 0.375rem 0;
   color: var(--text-color);
   font-size: var(--font-size-base);
-}
-
-.area-card p {
-  margin: 0;
-  color: var(--text-color);
-  opacity: 0.8;
-  font-size: var(--font-size-xs);
-  line-height: 1.3;
 }
 
 .area-requirements-preview {
@@ -1131,35 +823,6 @@
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 1rem;
   margin-bottom: 1rem;
-}
-
-.landmass-card {
-  border: 2px solid var(--border-color);
-  border-radius: 0.5rem;
-  padding: 1rem;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  background: var(--card-background);
-  text-align: center;
-  overflow: hidden;
-  box-shadow: 0 2px 4px var(--overlay-dark);
-}
-
-.landmass-card:hover {
-  border-color: var(--accent-color);
-  box-shadow: 0 6px 12px var(--overlay-heavy);
-  transform: translateY(-4px);
-}
-
-.landmass-card.selected {
-  border-color: var(--accent-color);
-  background: var(--accent-glow);
-}
-
-.landmass-card h5 {
-  margin: 0;
-  color: var(--text-color);
-  font-size: 1rem;
 }
 
 /* Requirements */
@@ -1284,24 +947,6 @@
   gap: 12px;
 }
 
-.emoji-input {
-  width: 60px;
-  height: 40px;
-  text-align: center;
-  font-size: 20px;
-  border: 2px solid var(--border-color);
-  border-radius: 8px;
-  background: var(--background-secondary, white);
-  color: var(--text-color);
-  transition: border-color 0.3s ease;
-}
-
-.emoji-input:focus {
-  outline: none;
-  border-color: var(--accent-color);
-  box-shadow: 0 0 0 3px var(--accent-glow);
-}
-
 .emoji-presets {
   display: flex;
   align-items: center;
@@ -1314,30 +959,6 @@
   color: var(--text-color);
   opacity: 0.7;
   margin-right: 8px;
-}
-
-.emoji-preset {
-  width: 36px;
-  height: 36px;
-  border: 2px solid var(--border-color);
-  border-radius: 6px;
-  background: var(--background-secondary, white);
-  font-size: 18px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.emoji-preset:hover {
-  border-color: var(--accent-color);
-  transform: scale(1.1);
-}
-
-.emoji-preset.selected {
-  border-color: var(--accent-color);
-  background: var(--accent-glow);
 }
 
 /* Unclaimed Rewards Banner */
@@ -1362,24 +983,35 @@
   }
 }
 
-.banner-content {
-  display: flex;
+.art-calculator {
   align-items: center;
+  background: linear-gradient(135deg, var(--card-background) 0%, var(--nav-background) 100%);
+  background-color: var(--card-background);
+  border: 1px solid var(--border-color);
+  border-radius: 0.75rem;
+  box-shadow: 0 4px 12px var(--overlay-light);
+  display: flex;
+  flex-direction: column;
   gap: 1.5rem;
-  padding: 1.5rem;
+  margin-bottom: 2rem;
+  overflow: hidden;
+  padding: 1.75rem;
   position: relative;
+  transition: all 0.3s ease;
 }
 
-.banner-content::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 3px;
-  background: linear-gradient(90deg, var(--accent-color) 0%, var(--accent-hover) 50%, var(--accent-color) 100%);
-  background-size: 200% 100%;
+.art-calculator::before {
   animation: shimmer 2s linear infinite;
+  background: linear-gradient(90deg, var(--accent-color), var(--accent-hover));
+  background-size: 200% 100%;
+  content: '';
+  height: 3px;
+  left: 0;
+  opacity: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  transition: opacity 0.3s ease;
 }
 
 @keyframes shimmer {
@@ -1414,13 +1046,6 @@
   }
 }
 
-.banner-text {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
 .banner-text h3 {
   margin: 0;
   font-size: var(--font-size-xl);
@@ -1450,12 +1075,12 @@
 
 /* Responsive Design for Banner */
 @media (max-width: 768px) {
-  .banner-content {
-    flex-direction: column;
-    text-align: center;
-    gap: 1rem;
-    padding: 1.25rem;
-  }
+  .art-calculator {
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1rem;
+  text-align: center;
+}
   
   .banner-icon {
     width: 50px;
@@ -1479,9 +1104,9 @@
     margin: 1rem 0;
   }
   
-  .banner-content {
-    padding: 1rem;
-  }
+  .art-calculator {
+  padding: 0.75rem;
+}
   
   .banner-text h3 {
     font-size: var(--font-size-base);
@@ -1589,12 +1214,6 @@
   gap: 15px;
   margin-bottom: 16px;
   grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-}
-
-.boss-stat {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
 }
 
 .boss-view-page {
@@ -1841,7 +1460,7 @@
   font-size: 1rem;
 }
 
-.submission-count {
+.last-harvested {
   color: var(--text-secondary);
   font-size: 0.9rem;
 }
@@ -1887,10 +1506,19 @@
   transform: translateX(4px);
 }
 
-.trainer-info-row {
-  display: flex;
+.missions-filters {
   align-items: center;
-  gap: 10px;
+  backdrop-filter: blur(20px);
+  background: linear-gradient(135deg, var(--overlay-solid) 0%, var(--overlay-heavy) 100%);
+  border-bottom: 1px solid var(--accent-glow);
+  border-radius: 8px;
+  box-shadow: 0 2px 4px var(--overlay-light);
+  display: flex;
+  gap: 1.5rem;
+  justify-content: center;
+  padding: 20px;
+  position: relative;
+  z-index: 2;
 }
 
 .trainer-avatar-small {
@@ -1923,15 +1551,8 @@
 }
 
 /* No data states */
-.no-boss-message,
-.no-leaderboard {
-  color: var(--text-secondary);
-  font-style: italic;
-  padding: 20px;
-  text-align: center;
-}
 
-.no-boss-message h2 {
+.no-leaderboard h2 {
   color: var(--text-primary);
   margin-bottom: 10px;
 }
@@ -2009,15 +1630,15 @@
   border-color: var(--accent-color);
 }
 
-.events-header {
-  text-align: center;
-  margin-bottom: 2rem;
-}
-
-.events-header h2 {
-  font-size: 2.5rem;
+.map-header h2 {
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background: linear-gradient(135deg, var(--text-color) 0%, var(--accent-color) 100%);
+  background-clip: text;
+  color: var(--primary-color);
+  font-size: 2rem;
+  font-weight: 700;
   margin-bottom: 0.5rem;
-  color: var(--text-color);
 }
 
 .events-count {
@@ -2107,16 +1728,6 @@
   font-size: var(--font-size-sm);
 }
 
-.event-date, .event-participants {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.event-date i, .event-participants i {
-  color: var(--accent-color);
-}
-
 .event-description {
   margin-bottom: 1.5rem;
   line-height: 1.6;
@@ -2130,13 +1741,14 @@
 */
 
 .no-events {
-  display: flex;
-  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  padding: 3rem;
   background-color: var(--card-background);
   border-radius: 0.5rem;
+  color: var(--text-muted);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 3rem 2rem;
   text-align: center;
 }
 
@@ -2162,7 +1774,7 @@
   overflow: hidden;
 }
 
-.event-detail-image {
+.map-image {
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -2187,12 +1799,6 @@
   display: flex;
   gap: 1.5rem;
   font-size: var(--font-size-base);
-}
-
-.event-detail-content {
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
 }
 
 .rewards-list {
@@ -2257,14 +1863,15 @@
 
 /* Header Section */
 .missions-header {
-  text-align: center;
-  margin-bottom: 2rem;
-  padding: 2rem;
   background: linear-gradient(135deg, var(--card-background) 0%, var(--nav-background) 100%);
-  border-radius: 16px;
   border: 1px solid var(--border-color);
-  position: relative;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px var(--overlay-medium);
+  margin-bottom: 3rem;
   overflow: hidden;
+  padding: 2rem;
+  position: relative;
+  text-align: center;
 }
 
 .missions-header::before {
@@ -2294,22 +1901,11 @@
   line-height: 1.6;
 }
 
-/* Filters Section */
-.missions-filters {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  padding: 1.5rem;
-  background-color: var(--card-background);
-  border-radius: 12px;
-  border: 1px solid var(--border-color);
-  margin-bottom: 1.5rem;
-}
-
 .missions-filters label {
+  color: var(--accent-color);
+  font-size: 1.2rem;
   font-weight: 600;
-  color: var(--text-color);
-  font-size: var(--font-size-base);
+  text-shadow: 1px 1px 3px var(--overlay-heavy);
 }
 
 .missions-filters select {
@@ -2327,21 +1923,6 @@
   outline: none;
   border-color: var(--accent-color);
   box-shadow: 0 0 0 3px var(--accent-glow);
-}
-
-/* Grid Layout */
-.missions-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
-  gap: 2rem;
-  margin-top: 1.5rem;
-}
-
-.active-missions-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
-  gap: 1.5rem;
-  margin-bottom: 1.5rem;
 }
 
 /* Active Mission Section */
@@ -2444,29 +2025,8 @@
 }
 
 /* Mission Card Header */
-.mission-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  padding: 1.5rem 1.5rem 1rem 1.5rem;
-  gap: 1rem;
-}
-
-.mission-header h3 {
-  font-size: var(--font-size-xl);
-  font-weight: 700;
-  color: var(--text-color);
-  margin: 0;
-  line-height: 1.3;
-  flex: 1;
-}
 
 /* Difficulty Badges */
-
-.difficulty-badge.active {
-  background: linear-gradient(135deg, var(--warning-color), var(--warning-dark));
-  animation: pulse 2s infinite;
-}
 
 @keyframes pulse {
   0%, 100% { opacity: 1; }
@@ -2488,28 +2048,16 @@
 }
 
 /* Mission Details */
-.mission-details {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 1rem;
-  padding: 1rem 1.5rem;
+.adopts-grid {
   background-color: var(--overlay-light);
-  border-top: 1px solid var(--border-color);
   border-bottom: 1px solid var(--border-color);
-}
-
-.detail-row .label {
-  font-size: var(--font-size-sm);
-  font-weight: 600;
-  color: var(--accent-color);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.detail-row .value {
-  font-size: var(--font-size-base);
-  color: var(--text-color);
-  font-weight: 500;
+  border-top: 1px solid var(--border-color);
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 1fr 1fr 1fr;
+  margin-bottom: 2rem;
+  margin-top: 2rem;
+  padding: 1rem 1.5rem;
 }
 
 /* Mission Requirements */
@@ -2525,13 +2073,6 @@
   margin-bottom: 0.75rem;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-}
-
-.type-tags,
-.attribute-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
 }
 
 /* Mission Rewards */
@@ -2586,15 +2127,6 @@
   color: var(--accent-color);
   font-size: .75rem;
   margin-bottom: 0.5rem;
-}
-
-/* Mission Actions */
-.mission-actions {
-  display: flex;
-  gap: 1rem;
-  padding: 1.5rem;
-  border-top: 1px solid var(--border-color);
-  background-color: var(--overlay-light);
 }
 
 /* ========== Mission Progress ========== */
@@ -2653,31 +2185,6 @@
   padding: 1rem 1.5rem;
   background-color: var(--overlay-light);
   border-top: 1px solid var(--border-color);
-}
-
-.status-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 0.5rem;
-}
-
-.status-row:last-child {
-  margin-bottom: 0;
-}
-
-.status-row .label {
-  font-size: var(--font-size-sm);
-  font-weight: 600;
-  color: var(--accent-color);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.status-row .value {
-  font-size: var(--font-size-base);
-  color: var(--text-color);
-  font-weight: 500;
 }
 
 .status.active {
@@ -2825,12 +2332,6 @@
     padding: 1.5rem;
   }
 
-  .missions-grid,
-  .active-missions-grid {
-    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-    gap: 1.5rem;
-  }
-
   .missions-header {
     padding: 1.5rem;
   }
@@ -2846,16 +2347,11 @@
     padding: 1rem;
   }
 
-  .missions-grid,
-  .active-missions-grid {
-    grid-template-columns: 1fr;
-    gap: 1rem;
-  }
-
   .missions-header {
-    padding: 1.5rem 1rem;
-    text-align: center;
-  }
+  margin-bottom: 1.5rem;
+  padding: 1.5rem 1rem;
+  text-align: center;
+}
 
   .missions-header h2 {
     font-size: var(--font-size-xl);
@@ -2875,13 +2371,7 @@
     width: 100%;
   }
 
-  .mission-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.75rem;
-  }
-
-  .mission-details {
+  .adopts-grid {
     grid-template-columns: 1fr;
     gap: 0.75rem;
   }
@@ -2891,7 +2381,7 @@
     gap: 0.5rem;
   }
 
-  .mission-actions {
+  .adventure-meta {
     flex-direction: column;
     gap: 0.75rem;
   }
@@ -2923,15 +2413,11 @@
     padding: 1rem;
   }
 
-  .mission-header {
-    padding: 1rem 1rem 0.75rem 1rem;
-  }
-
   .mission-description {
     padding: 0 1rem 0.75rem 1rem;
   }
 
-  .mission-details,
+  .adopts-grid,
   .mission-requirements,
   .mission-rewards,
   .mission-progress,
@@ -2939,7 +2425,7 @@
     padding: 0.75rem 1rem;
   }
 
-  .mission-actions {
+  .adventure-meta {
     padding: 1rem;
   }
 }
@@ -2992,12 +2478,12 @@
   background: var(--background-tertiary);
 }
 
-.no-boss-message h3 {
+.no-leaderboard h3 {
   margin: 0 0 8px 0;
   color: var(--text-primary);
 }
 
-.no-boss-message p {
+.no-leaderboard p {
   margin: 0;
   font-style: italic;
 }
@@ -3091,25 +2577,26 @@
 
 /* Leaderboard Placeholder */
 
-.leaderboard-row {
+.category-row {
   align-items: center;
-  background: linear-gradient(135deg, var(--input-background) 0%, var(--nav-background) 100%);
+  background: var(--input-background);
   border: 1px solid var(--border-color);
   border-bottom: 1px solid var(--border-color);
-  border-radius: 12px;
+  border-radius: 6px;
   display: flex;
   gap: 1rem;
   grid-template-columns: 0.5fr 2fr 1fr 1fr 1fr;
-  margin-bottom: 0.75rem;
-  padding: 1rem;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+  padding: 0.75rem 1rem;
   transition: all 0.3s ease;
 }
 
-.leaderboard-row:last-child {
+.category-row:last-child {
   border-bottom: none;
 }
 
-.leaderboard-row:hover {
+.category-row:hover {
   background-color: var(--card-background-light);
   border-color: var(--accent-color);
   box-shadow: 0 6px 16px var(--overlay-medium);
@@ -3199,31 +2686,16 @@
 }
 
 @media (max-width: 768px) {
-  .page-header {
+  .lore-header {
   align-items: flex-start;
   flex-direction: column;
   gap: 10px;
   margin-bottom: 2rem;
   padding: 2rem 1.5rem;
 }
-  
-  .page-actions {
-  flex-wrap: wrap;
-  width: 100%;
-}
 
   /* REMOVED: .action-button responsive override - Use unified button system */
 
-  .adventure-title-section {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.5rem;
-  }
-  
-  .adventure-meta {
-    flex-direction: column;
-    gap: 0.75rem;
-  }
   
   .section-header {
   align-items: stretch;
@@ -3262,11 +2734,7 @@
   .adventures-grid {
     grid-template-columns: 1fr;
   }
-  
-  .adventure-pagination {
-    flex-direction: column;
-    gap: 0.5rem;
-  }
+
   
   .modal-actions {
     flex-direction: column;
@@ -3278,7 +2746,7 @@
     padding: 15px;
   }
   
-  .reward-card {
+  .area-card {
     flex-direction: column;
     align-items: stretch;
     gap: 15px;
@@ -3296,10 +2764,6 @@
     margin-bottom: 15px;
   }
 
-  .attribute-tags {
-    flex-wrap: wrap;
-    gap: 8px;
-  }
 }
 
 /* Monster Preview Styles */
@@ -3331,13 +2795,6 @@
   box-shadow: 0 2px 4px var(--overlay-light);
 }
 
-.monster-preview-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1rem;
-}
-
 .rarity-badge {
   border-radius: 4px;
   color: var(--text-color);
@@ -3347,12 +2804,6 @@
   letter-spacing: 0.05em;
   padding: 4px 8px;
   text-transform: uppercase;
-}
-
-.monster-attributes {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
 }
 
 .attribute-section h5 {
@@ -3377,24 +2828,14 @@
   font-weight: 600;
 }
 
-.attribute-tag:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 2px 8px var(--overlay-medium);
-}
-
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .monster-preview-card {
     padding: 1rem;
   }
   
-  .monster-attributes {
+  .map-filters {
     gap: 0.75rem;
-  }
-  
-  .attribute-tag {
-    padding: 0.3rem 0.6rem;
-    font-size: 0.8rem;
   }
 }
 

@@ -32,8 +32,8 @@ const TrainerMegaReferenceSubmissionPage = () => {
 
   if (!isAuthenticated) {
     return (
-      <div className="page-container">
-        <div className="loading-container">
+      <div className="lore-container">
+        <div className="error-container">
           <LoadingSpinner />
           <p>Redirecting to login...</p>
         </div>
@@ -42,8 +42,8 @@ const TrainerMegaReferenceSubmissionPage = () => {
   }
 
   return (
-    <div className="page-container">
-      <div className="submission-page-header">
+    <div className="lore-container">
+      <div className="map-header">
         <button 
           className="button secondary"
           onClick={() => navigate('/submissions')}
@@ -51,7 +51,7 @@ const TrainerMegaReferenceSubmissionPage = () => {
           <i className="fas fa-arrow-left"></i> Back to Submissions
         </button>
         
-        <div className="page-title">
+        <div className="map-header">
           <h1>
             <i className="fas fa-user-shield"></i> Trainer Mega Reference Submission
           </h1>

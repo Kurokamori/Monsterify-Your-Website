@@ -11,111 +11,7 @@
   width: 100%;
 }
 
-.trainer-create-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-}
-
-.trainer-create-header h1{ margin:0; color:var(--text-color); }
-
-.trainer-create-actions {
-  display: flex;
-  gap: 10px;
-}
-
 /* Create buttons: Use unified button system from common/buttons.css
-   Example: className="button secondary outline" for cancel
-   Example: className="button primary" for save */
-
-.trainer-create-form {
-  background-color: var(--card-background);
-  border-radius: 8px;
-  box-shadow: 0 2px 10px var(--overlay-light);
-  overflow: hidden;
-}
-
-.trainer-create-tabs {
-  display: flex;
-  background-color: var(--nav-background);
-  border-bottom: 1px solid var(--border-color);
-  overflow-x: auto;
-}
-
-.trainer-create-tab {
-  padding: 15px 20px;
-  background: none;
-  border: none;
-  font-size: .95rem;
-  color: var(--text-muted);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  transition: all .2s;
-  white-space: nowrap;
-}
-
-.trainer-create-tab:hover{ color:var(--text-color); background-color:var(--overlay-light); }
-.trainer-create-tab.active{
-  color:var(--accent-color); background-color:var(--card-background); font-weight:500; box-shadow:0 2px 0 var(--accent-color);
-}
-
-.trainer-create-content { padding:20px; }
-
-.trainer-create-footer {
-  padding: 20px;
-  border-top: 1px solid var(--border-color);
-  display: flex;
-  justify-content: flex-end;
-  gap: 10px;
-}
-
-/* ===== Edit Trainer ===== */
-
-.edit-trainer-container {
-  width: 100%;
-  max-width: var(--container-max-width);
-  margin: 0 auto;
-  padding: 2rem var(--content-padding);
-}
-
-.edit-trainer-container h1{
-  font-size:var(--font-size-3xl); color:var(--accent-color); margin-bottom:1.5rem;
-}
-
-.edit-trainer-form {
-  background-color: var(--card-background);
-  border-radius: .5rem;
-  padding: 2rem;
-  box-shadow: 0 2px 4px var(--overlay-light);
-}
-
-/* Add relation/secret buttons: Use unified button system from common/buttons.css
-   Example: className="button primary" */
-
-/* ===== Trainer edit shells ===== */
-
-.trainer-edit-container {
-  width: 100%;
-}
-
-.trainer-edit-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-}
-
-.trainer-edit-header h1{ margin:0; color:var(--text-color); }
-
-.trainer-edit-actions {
-  display: flex;
-  gap: 10px;
-}
-
-/* Edit buttons: Use unified button system from common/buttons.css
    Example: className="button secondary outline" for cancel
    Example: className="button primary" for save */
 
@@ -152,9 +48,7 @@
   color:var(--accent-color); background-color:var(--card-background); font-weight:500; box-shadow:0 2px 0 var(--accent-color);
 }
 
-.trainer-edit-content {
-  padding: 20px;
-}
+.trainer-create-content { padding:20px; }
 
 .trainer-edit-footer {
   padding: 20px;
@@ -164,23 +58,29 @@
   gap: 10px;
 }
 
-/* ===== Add Trainer Page ===== */
+/* ===== Edit Trainer ===== */
 
-.add-trainer-container {
+.edit-trainer-form {
+  background-color: var(--card-background);
+  border-radius: .5rem;
+  padding: 2rem;
+  box-shadow: 0 2px 4px var(--overlay-light);
+}
+
+/* Add relation/secret buttons: Use unified button system from common/buttons.css
+   Example: className="button primary" */
+
+/* ===== Trainer edit shells ===== */
+
+.trainer-edit-container {
   width: 100%;
-  max-width: var(--container-max-width);
-  margin: 0 auto;
-  padding: 0 var(--content-padding);
 }
 
-.add-trainer-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 2rem;
+.trainer-edit-content {
+  padding: 20px;
 }
 
-.add-trainer-header h1{ font-size:var(--font-size-3xl); color:var(--accent-color); }
+/* ===== Add Trainer Page ===== */
 
 .trainer-form {
   margin-bottom: 3rem;
@@ -191,12 +91,6 @@
    Add custom positioning via inline styles or a wrapper class */
 
 /* ===== Avatar Upload ===== */
-
-.avatar-upload {
-  display: flex;
-  align-items: center;
-  gap: 1.5rem;
-}
 
 /* Upload button: Use unified button system from common/buttons.css
    Example: className="button secondary" */
@@ -211,31 +105,22 @@
   border-bottom: 1px dashed var(--divider-color);
 }
 
-.additional-ref-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1rem;
-}
-
-.additional-ref-header h3{ margin:0; font-size:var(--font-size-lg); color:var(--accent-color); }
-
 /* Reference buttons: Use unified button system from common/buttons.css
    Example: className="button danger outline sm" for remove
    Example: className="button primary outline block" for add */
 
 /* ===== Edit page specific additional refs ===== */
 
-.edit-trainer-container .additional-refs-list{
+.edit-monster-container .additional-refs-list{
   display:flex; flex-direction:column; gap:1.5rem; margin-bottom:1.5rem;
 }
 
-.edit-trainer-container .additional-ref-item{
+.edit-monster-container .additional-ref-item{
   background-color:var(--nav-background); border-radius:.5rem; padding:1.5rem; box-shadow:0 2px 4px var(--overlay-light);
 }
 
-.edit-trainer-container .additional-ref-header{ display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem; }
-.edit-trainer-container .additional-ref-header h3{ margin:0; font-size:var(--font-size-lg); color:var(--accent-color); }
+.edit-monster-container .adopt-card{ display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem; }
+.edit-monster-container .adopt-card h3{ margin:0; font-size:var(--font-size-lg); color:var(--accent-color); }
 
 /* Edit container remove button: Use unified button system from common/buttons.css
    Example: className="button danger icon" */
@@ -255,21 +140,14 @@
 .no-additional-refs i{ font-size:2.5rem; color:var(--text-muted); margin-bottom:1rem; }
 .no-additional-refs p{ margin:0; color:var(--text-muted); }
 
-.add-ref-button-container {
-  display: flex;
-  justify-content: center;
-  margin-top: 1rem;
-}
-
 /* Add ref button container: Use unified button system from common/buttons.css
    Example: className="button primary" */
 
 /* ===== Responsive ===== */
 
 @media (max-width:768px){
-  .add-trainer-header{ flex-direction:column; align-items:flex-start; gap:1rem; }
-  .avatar-upload{ flex-direction:column; align-items:center; }
+  .tree-header{ flex-direction:column; align-items:flex-start; gap:1rem; }
+  .image-upload{ flex-direction:column; align-items:center; }
   .radio-group{ flex-direction:column; gap:.75rem; }
-  .starter-card{ flex-direction:column; align-items:center; text-align:center; }
-  .additional-ref-header{ flex-direction:column; align-items:flex-start; gap:.75rem; }
+  .guide-card{ flex-direction:column; align-items:center; text-align:center; }
 }

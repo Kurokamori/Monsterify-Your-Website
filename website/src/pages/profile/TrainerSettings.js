@@ -231,7 +231,7 @@ const TrainerSettings = () => {
 
   return (
     <div className="trainer-settings">
-      <div className="settings-section">
+      <div className="item-card">
         <div className="settings-section-header">
           <h2 className="settings-section-title">Your Trainers</h2>
           <button 
@@ -245,11 +245,11 @@ const TrainerSettings = () => {
           Manage your trainers and their profiles. You can create up to 5 trainers per account.
         </p>
         
-        <div className="trainer-cards">
+        <div className="town-places">
           {displayTrainers.map(trainer => (
             <div className="trainer-card" key={trainer.id}>
               <div className="trainer-card-header">
-                <div className="trainer-avatar">
+                <div className="npc-avatar">
                   <img 
                     src={trainer.avatar_url || "https://via.placeholder.com/100/1e2532/d6a339?text=Trainer"} 
                     alt={trainer.name} 
@@ -278,7 +278,7 @@ const TrainerSettings = () => {
                     <span className="trainer-stat-value">{trainer.badges_count}</span>
                   </div>
                 </div>
-                <div className="trainer-card-actions">
+                <div className="edit-boxes-actions">
                   <Link to={`/trainers/${trainer.id}`} className="button primary sm">
                     <i className="fas fa-eye"></i> View
                   </Link>
@@ -308,7 +308,7 @@ const TrainerSettings = () => {
         title="Create New Trainer"
       >
         <div className="new-trainer-modal">
-          <div className="avatar-upload">
+          <div className="image-upload">
             <div className="current-avatar">
               <img 
                 src={newTrainerAvatarPreview || "https://via.placeholder.com/100/1e2532/d6a339?text=Trainer"} 
@@ -385,7 +385,7 @@ const TrainerSettings = () => {
       >
         {selectedTrainer && (
           <div className="edit-trainer-modal">
-            <div className="avatar-upload">
+            <div className="image-upload">
               <div className="current-avatar">
                 <img 
                   src={editTrainerAvatarPreview || "https://via.placeholder.com/100/1e2532/d6a339?text=Trainer"} 

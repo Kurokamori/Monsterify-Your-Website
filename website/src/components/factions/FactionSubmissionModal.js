@@ -129,15 +129,15 @@ const FactionSubmissionModal = ({ faction, trainerId, onClose, onSubmit }) => {
 
   const renderStepIndicator = () => (
     <div className="step-indicator">
-      <div className={`step ${step >= 1 ? 'active' : ''}`}>
+      <div className={`step${step >= 1 ? 'active' : ''}`}>
         <span>1</span>
         <label>Select Submission</label>
       </div>
-      <div className={`step ${step >= 2 ? 'active' : ''}`}>
+      <div className={`step${step >= 2 ? 'active' : ''}`}>
         <span>2</span>
         <label>Configure Details</label>
       </div>
-      <div className={`step ${step >= 3 ? 'active' : ''}`}>
+      <div className={`step${step >= 3 ? 'active' : ''}`}>
         <span>3</span>
         <label>Complete</label>
       </div>
@@ -195,7 +195,7 @@ const FactionSubmissionModal = ({ faction, trainerId, onClose, onSubmit }) => {
         <select
           value={formData.promptId}
           onChange={(e) => setFormData(prev => ({ ...prev, promptId: e.target.value }))}
-          className="form-select"
+          className="form-input"
         >
           <option value="">No specific prompt</option>
           {factionPrompts.map(prompt => (
@@ -274,7 +274,7 @@ const FactionSubmissionModal = ({ faction, trainerId, onClose, onSubmit }) => {
       </div>
 
       <div className="form-section">
-        <label className="checkbox-option">
+        <label className="radio-option">
           <input
             type="checkbox"
             checked={formData.specialBonus}
@@ -286,7 +286,7 @@ const FactionSubmissionModal = ({ faction, trainerId, onClose, onSubmit }) => {
 
       <div className="score-calculation">
         <h4>Calculated Score: <span className="score-value">{calculatedScore}</span></h4>
-        <div className="score-breakdown">
+        <div className="stat-info">
           <div>Base Score: 10</div>
           <div>Trainer Status: +{formData.trainerStatus === 'alone' ? 10 : formData.trainerStatus === 'with_others' ? 20 : 0}</div>
           <div>Task Size: +{formData.taskSize === 'small' ? 0 : formData.taskSize === 'medium' ? 10 : 20}</div>
@@ -316,7 +316,7 @@ const FactionSubmissionModal = ({ faction, trainerId, onClose, onSubmit }) => {
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="faction-submission-modal" onClick={(e) => e.stopPropagation()}>
-        <div className="modal-header">
+        <div className="tree-header">
           <h2>Submit to {faction.name}</h2>
           <button className="button close" onClick={onClose}>&times;</button>
         </div>

@@ -107,7 +107,7 @@ const TrainerList = () => {
 
   return (
     <div className="trainer-list-container">
-      <div className="trainer-list-header">
+      <div className="adopt-card">
         <h1>Trainer Management</h1>
         <Link to="/admin/dashboard/trainers/create" className="button primary">
           <i className="fas fa-plus"></i> Create Trainer
@@ -181,7 +181,7 @@ const TrainerList = () => {
       {loading ? (
         <LoadingSpinner />
       ) : trainers.length === 0 ? (
-        <div className="no-trainers-message">
+        <div className="map-header">
           <p>No trainers found. Try adjusting your search or filters.</p>
         </div>
       ) : (
@@ -206,12 +206,12 @@ const TrainerList = () => {
                   <tr key={trainer.id}>
                     <td>{trainer.id}</td>
                     <td>
-                      <div className="trainer-name-cell">
+                      <div className="logo-link">
                         {trainer.main_ref && (
                           <img
                             src={trainer.main_ref}
                             alt={trainer.name}
-                            className="trainer-avatar"
+                            className="npc-avatar"
                             onError={(e) => {
                               e.target.onerror = null;
                               e.target.src = 'https://via.placeholder.com/40/1e2532/d6a339?text=T';

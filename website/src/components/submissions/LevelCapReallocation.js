@@ -76,7 +76,7 @@ const LevelCapReallocation = ({
 
   return (
     <div className="level-cap-reallocation">
-      <div className="reallocation-header">
+      <div className="map-header">
         <h2>Level Cap Reallocation</h2>
         <p>
           Some monsters would exceed level 100. For every 2 excess levels, you can assign 1 level 

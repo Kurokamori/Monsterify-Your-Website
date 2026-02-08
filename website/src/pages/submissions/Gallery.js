@@ -204,7 +204,7 @@ const Gallery = () => {
   if (loading) return <LoadingSpinner />;
 
   return (
-    <Container className="submission-page gallery-page">
+    <Container className="bazar-container gallery-page">
       <div className="page-header-centered">
         <h1>Art Gallery</h1>
         <p>Browse artwork from the community</p>
@@ -228,7 +228,7 @@ const Gallery = () => {
 
         <Collapse in={showFilters}>
           <div id="gallery-filter-collapse">
-            <Row className="filter-row">
+            <Row className="form-row">
               <Col md={3}>
                 <Form.Group>
                   <Form.Label>Filter by Tag</Form.Label>
@@ -305,7 +305,7 @@ const Gallery = () => {
             {Array.isArray(submissions) && submissions.map(submission => (
               <Col key={submission.id} md={4} sm={6} className="mb-4">
                 <Card className="submission-card h-100" onClick={() => handleSubmissionClick(submission.id)}>
-                  <div className="card-img-container">
+                  <div className="image-container">
                     <Card.Img
                       variant="top"
                       src={submission.image_url || 'https://via.placeholder.com/300/1e2532/d6a339?text=No+Image'}
@@ -314,13 +314,13 @@ const Gallery = () => {
                   </div>
                   <Card.Body>
                     <Card.Title>{submission.title}</Card.Title>
-                    <Card.Text className="submission-description">{submission.description}</Card.Text>
+                    <Card.Text className="related-submissions">{submission.description}</Card.Text>
                     <div className="submission-meta">
                       <small>By: {submission.display_name || submission.username || 'Unknown'}</small>
                       <small>{new Date(submission.submission_date).toLocaleDateString()}</small>
                     </div>
                     {submission.tags && Array.isArray(submission.tags) && submission.tags.length > 0 && (
-                      <div className="submission-tags">
+                      <div className="type-tags">
                         {submission.tags.map(tag => (
                           <span key={tag} className="tag">{tag}</span>
                         ))}

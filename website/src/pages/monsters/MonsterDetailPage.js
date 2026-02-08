@@ -499,7 +499,7 @@ const MonsterDetailPage = () => {
 
   if (loading) {
     return (
-      <div className="loading-container">
+      <div className="error-container">
         <div className="loading-spinner">
           <i className="fas fa-spinner fa-spin"></i>
         </div>
@@ -536,7 +536,7 @@ const MonsterDetailPage = () => {
   }
 
   return (
-    <div className="monster-detail-container">
+    <div className="bosses-page">
       {/* Box Navigation */}
       {(prevMonster || nextMonster) && (
         <div className="monster-box-navigation">
@@ -564,7 +564,7 @@ const MonsterDetailPage = () => {
         </div>
       )}
 
-      <div className="monster-detail-header">
+      <div className="evolution-help">
         <div className="monster-profile-image-container">
           <img
             src={monster.img_link || monster.main_image || '/images/default_mon.png'}
@@ -583,8 +583,8 @@ const MonsterDetailPage = () => {
             <span className="level-badge">Level {monster.level || 1}</span>
           </h1>
 
-          <div className="monster-species-types">
-            <div className="monster-species">
+          <div className="auth-form">
+            <div className="monster-types">
               {[monster.species1, monster.species2, monster.species3]
                 .filter(Boolean)
                 .join(' / ')}
@@ -620,7 +620,7 @@ const MonsterDetailPage = () => {
           </div>
 
           {monster.attribute && (
-            <div className="monster-attribute">
+            <div className="monster-types">
               <span className={`attribute-badge attribute-${monster.attribute.toLowerCase()}`}>
                 {monster.attribute}
               </span>
@@ -747,7 +747,7 @@ const MonsterDetailPage = () => {
                       {Boolean(monster.gender) && (
                         <div className="info-card">
                           <div className="info-card-icon">
-                            <i className={`fas ${monster.gender.toLowerCase() === 'male' ? 'fa-mars' : monster.gender.toLowerCase() === 'female' ? 'fa-venus' : 'fa-genderless'}`}></i>
+                            <i className={`fas${monster.gender.toLowerCase() === 'male' ? 'fa-mars' : monster.gender.toLowerCase() === 'female' ? 'fa-venus' : 'fa-genderless'}`}></i>
                           </div>
                           <div className="info-card-content">
                             <div className="info-label">Gender</div>
@@ -813,7 +813,7 @@ const MonsterDetailPage = () => {
                     </div>
                     {Boolean(monster.friendship) && (
                       <div className="friendship-panel">
-                        <div className="friendship-header">
+                        <div className="naming-header">
                           <div className="friendship-icon">
                             <i className="fas fa-handshake"></i>
                           </div>
@@ -987,7 +987,7 @@ const MonsterDetailPage = () => {
                   <div className="monster-panel-content">
                     <div className="special-features-grid">
                       {Boolean(monster.shiny) && (
-                        <div className="special-feature-card shiny">
+                        <div className="gift-monster-card shiny">
                           <div className="feature-icon">
                             <i className="fas fa-sparkles"></i>
                           </div>
@@ -998,7 +998,7 @@ const MonsterDetailPage = () => {
                         </div>
                       )}
                       {Boolean(monster.alpha) && (
-                        <div className="special-feature-card alpha">
+                        <div className="gift-monster-card alpha">
                           <div className="feature-icon">
                             <i className="fas fa-crown"></i>
                           </div>
@@ -1009,7 +1009,7 @@ const MonsterDetailPage = () => {
                         </div>
                       )}
                       {Boolean(monster.shadow) && (
-                        <div className="special-feature-card shadow">
+                        <div className="gift-monster-card shadow">
                           <div className="feature-icon">
                             <i className="fas fa-ghost"></i>
                           </div>
@@ -1020,7 +1020,7 @@ const MonsterDetailPage = () => {
                         </div>
                       )}
                       {Boolean(monster.paradox) && (
-                        <div className="special-feature-card paradox">
+                        <div className="gift-monster-card paradox">
                           <div className="feature-icon">
                             <i className="fas fa-infinity"></i>
                           </div>
@@ -1031,7 +1031,7 @@ const MonsterDetailPage = () => {
                         </div>
                       )}
                       {Boolean(monster.pokerus) && (
-                        <div className="special-feature-card pokerus">
+                        <div className="gift-monster-card pokerus">
                           <div className="feature-icon">
                             <i className="fas fa-virus"></i>
                           </div>
@@ -1119,10 +1119,10 @@ const MonsterDetailPage = () => {
                       }
                     ].map((stat, index) => (
                       <div key={index} className="pokemon-stat-row">
-                        <div className="stat-info-section">
+                        <div className="option-row">
                           <div className="stat-label-container">
                             <span className="stat-name-full">{stat.name}</span>
-                            <span className="stat-name-short">{stat.shortName}</span>
+                            <span className="move-stat-label">{stat.shortName}</span>
                           </div>
                           <div className="monster-stat-value-display">
                             <span className="stat-total-value">{stat.total}</span>
@@ -1144,21 +1144,21 @@ const MonsterDetailPage = () => {
                         </div>
                         
                         <div className="iv-ev-indicators">
-                          <div className="iv-indicator">
-                            <div className="iv-label">IV</div>
-                            <div className="iv-bar-mini">
+                          <div className="event-date">
+                            <div className="ev-label">IV</div>
+                            <div className="ev-bar-mini">
                               <div 
-                                className="iv-fill-mini"
+                                className="ev-fill-mini"
                                 style={{ 
                                   width: `${(stat.iv / 31) * 100}%`,
                                   backgroundColor: stat.color
                                 }}
                               ></div>
                             </div>
-                            <div className="iv-value">{stat.iv}</div>
+                            <div className="ev-value">{stat.iv}</div>
                           </div>
                           
-                          <div className="ev-indicator">
+                          <div className="event-date">
                             <div className="ev-label">EV</div>
                             <div className="ev-bar-mini">
                               <div 
@@ -1229,7 +1229,7 @@ const MonsterDetailPage = () => {
                       {moves.map((move, index) => (
                         <div className="enhanced-move-card" key={index}>
                           <div className="move-card-header">
-                            <div className="move-title-section">
+                            <div className="option-row">
                               <h4 className="move-title">{move.move_name}</h4>
                               <span className={`move-type-badge type-${move.move_type?.toLowerCase() || 'normal'}`}>
                                 {move.move_type}
@@ -1292,16 +1292,16 @@ const MonsterDetailPage = () => {
 
           {/* Evolution Tab Content */}
           {activeTab === 'evolution' && (
-            <div className="monster-evolution-tab">
+            <div className="monster-mega-tab">
               <div className="evolution-tab-header">
                 <h2>Evolution Information</h2>
                 {isOwner && (
                   <button
-                    className={`evolution-edit-button ${showEvolutionEditor ? 'active' : ''}`}
+                    className={`evolution-edit-button${showEvolutionEditor ? 'active' : ''}`}
                     onClick={() => setShowEvolutionEditor(!showEvolutionEditor)}
                     disabled={evolutionSaving}
                   >
-                    <i className={`fas ${showEvolutionEditor ? 'fa-times' : 'fa-edit'}`}></i>
+                    <i className={`fas${showEvolutionEditor ? 'fa-times' : 'fa-edit'}`}></i>
                     {showEvolutionEditor ? 'Cancel Edit' : 'Edit Evolution Information'}
                   </button>
                 )}
@@ -1329,7 +1329,7 @@ const MonsterDetailPage = () => {
             <div className="monster-bio-tab">
                             {/* Personal Information Panel */}
               {(monster.likes || monster.dislikes) && (
-                <div className="info-panel personal-panel">
+                <div className="info-panel full-bio-panel">
                   <div className="panel-header">
                     <h3 className="panel-title">
                       <i className="fas fa-user-circle"></i>
@@ -1337,7 +1337,7 @@ const MonsterDetailPage = () => {
                     </h3>
                   </div>
                   <div className="monster-panel-content">
-                    <div className="preferences-grid">
+                    <div className="form-grid">
                       {monster.likes && (
                         <div className="preference-card likes-card">
                           <div className="preference-icon">
@@ -1376,7 +1376,7 @@ const MonsterDetailPage = () => {
                   return false;
                 }
               })() && (
-                <div className="info-panel fun-facts-panel">
+                <div className="info-panel moves-panel">
                   <div className="panel-header">
                     <h3 className="panel-title">
                       <i className="fas fa-lightbulb"></i>
@@ -1464,10 +1464,10 @@ const MonsterDetailPage = () => {
                                 const entity = relationEntities[entityKey];
                                 
                                 return (
-                                  <div className="enhanced-relation-card" key={relation.id || index}>
+                                  <div className="enhanced-move-card" key={relation.id || index}>
                                     <div className="relation-header-section">
                                       <div className="relation-icon">
-                                        <i className={`fas ${relation.related_type === 'trainer' ? 'fa-user' : 'fa-paw'}`}></i>
+                                        <i className={`fas${relation.related_type === 'trainer' ? 'fa-user' : 'fa-paw'}`}></i>
                                       </div>
                                       <div className="relation-title-info">
                                         <h4 className="relation-title">{relation.name || 'Unknown Relation'}</h4>
@@ -1483,7 +1483,7 @@ const MonsterDetailPage = () => {
                                         >
                                           <div className="entity-preview-card">
                                             <div className="entity-avatar">
-                                              <i className={`fas ${relation.related_type === 'trainer' ? 'fa-user-circle' : 'fa-dragon'}`}></i>
+                                              <i className={`fas${relation.related_type === 'trainer' ? 'fa-user-circle' : 'fa-dragon'}`}></i>
                                             </div>
                                             <div className="entity-info">
                                               <div className="entity-name">{entity.name}</div>
@@ -1592,7 +1592,7 @@ const MonsterDetailPage = () => {
 
           {/* Gallery Tab Content */}
           {activeTab === 'gallery' && (
-            <div className="monster-gallery-tab">
+            <div className="monster-mega-tab">
               <h2>Image Gallery</h2>
 
               <div className="gallery-images">
@@ -1643,14 +1643,14 @@ const MonsterDetailPage = () => {
           {/* Lineage Tab Content */}
           {activeTab === 'lineage' && (
             <div className="monster-lineage-tab">
-              <div className="lineage-header">
+              <div className="tree-header">
                 <h2>Monster Lineage</h2>
                 {isOwner && (
                   <button 
-                    className={`button primary ${showEditLineage ? 'active' : ''}`}
+                    className={`button primary${showEditLineage ? 'active' : ''}`}
                     onClick={() => setShowEditLineage(!showEditLineage)}
                   >
-                    <i className={`fas ${showEditLineage ? 'fa-times' : 'fa-edit'}`}></i>
+                    <i className={`fas${showEditLineage ? 'fa-times' : 'fa-edit'}`}></i>
                     {showEditLineage ? 'Done Editing' : 'Edit Lineage'}
                   </button>
                 )}
@@ -1667,7 +1667,7 @@ const MonsterDetailPage = () => {
                       </h3>
                       <div className="lineage-monsters">
                         {lineage.parents.map((parent, index) => (
-                          <div className="lineage-monster-card" key={index}>
+                          <div className="seasonal-adopt-card" key={index}>
                             <div className="monster-image-container">
                               <img
                                 src={parent.img_link || '/images/default_mon.png'}
@@ -1686,7 +1686,7 @@ const MonsterDetailPage = () => {
                                   {parent.name}
                                 </Link>
                               </h4>
-                              <div className="monster-species">
+                              <div className="monster-types">
                                 {[parent.species1, parent.species2, parent.species3]
                                   .filter(Boolean)
                                   .join(' / ')}
@@ -1734,7 +1734,7 @@ const MonsterDetailPage = () => {
                       </h3>
                       <div className="lineage-monsters">
                         {lineage.siblings.map((sibling, index) => (
-                          <div className="lineage-monster-card" key={index}>
+                          <div className="seasonal-adopt-card" key={index}>
                             <div className="monster-image-container">
                               <img
                                 src={sibling.img_link || '/images/default_mon.png'}
@@ -1753,7 +1753,7 @@ const MonsterDetailPage = () => {
                                   {sibling.name}
                                 </Link>
                               </h4>
-                              <div className="monster-species">
+                              <div className="monster-types">
                                 {[sibling.species1, sibling.species2, sibling.species3]
                                   .filter(Boolean)
                                   .join(' / ')}
@@ -1801,7 +1801,7 @@ const MonsterDetailPage = () => {
                       </h3>
                       <div className="lineage-monsters">
                         {lineage.children.map((child, index) => (
-                          <div className="lineage-monster-card" key={index}>
+                          <div className="seasonal-adopt-card" key={index}>
                             <div className="monster-image-container">
                               <img
                                 src={child.img_link || '/images/default_mon.png'}
@@ -1820,7 +1820,7 @@ const MonsterDetailPage = () => {
                                   {child.name}
                                 </Link>
                               </h4>
-                              <div className="monster-species">
+                              <div className="monster-types">
                                 {[child.species1, child.species2, child.species3]
                                   .filter(Boolean)
                                   .join(' / ')}
@@ -1868,7 +1868,7 @@ const MonsterDetailPage = () => {
                       </h3>
                       <div className="lineage-monsters">
                         {lineage.grandchildren.map((grandchild, index) => (
-                          <div className="lineage-monster-card" key={index}>
+                          <div className="seasonal-adopt-card" key={index}>
                             <div className="monster-image-container">
                               <img
                                 src={grandchild.img_link || '/images/default_mon.png'}
@@ -1887,7 +1887,7 @@ const MonsterDetailPage = () => {
                                   {grandchild.name}
                                 </Link>
                               </h4>
-                              <div className="monster-species">
+                              <div className="monster-types">
                                 {[grandchild.species1, grandchild.species2, grandchild.species3]
                                   .filter(Boolean)
                                   .join(' / ')}
@@ -1916,7 +1916,7 @@ const MonsterDetailPage = () => {
                    (!lineage.siblings || lineage.siblings.length === 0) &&
                    (!lineage.children || lineage.children.length === 0) &&
                    (!lineage.grandchildren || lineage.grandchildren.length === 0) && (
-                    <div className="no-lineage-message">
+                    <div className="no-events">
                       <i className="fas fa-sitemap"></i>
                       <p>No lineage relationships have been recorded for this monster yet.</p>
                       {isOwner && (
@@ -1935,7 +1935,7 @@ const MonsterDetailPage = () => {
                             <label htmlFor="relationship-type">Relationship Type:</label>
                             <select 
                               id="relationship-type" 
-                              className="form-control"
+                              className="form-input"
                               value={newRelationshipType}
                               onChange={(e) => setNewRelationshipType(e.target.value)}
                             >
@@ -1950,7 +1950,7 @@ const MonsterDetailPage = () => {
                               <input 
                                 type="text" 
                                 id="monster-search" 
-                                className="form-control" 
+                                className="form-input" 
                                 placeholder="Search by trainer name, monster name, or species..."
                                 value={monsterSearch}
                                 onChange={handleSearchChange}
@@ -1973,7 +1973,7 @@ const MonsterDetailPage = () => {
                                         }}
                                       />
                                       <div className="result-info">
-                                        <div className="result-name">{result.name}</div>
+                                        <div className="task-name">{result.name}</div>
                                         <div className="result-trainer">Trainer: {result.trainer_name}</div>
                                         <div className="result-species">
                                           {[result.species1, result.species2, result.species3]
@@ -1999,7 +1999,7 @@ const MonsterDetailPage = () => {
                             <input 
                               type="text" 
                               id="relationship-notes" 
-                              className="form-control" 
+                              className="form-input" 
                               placeholder="Additional notes about this relationship..."
                               value={relationshipNotes}
                               onChange={(e) => setRelationshipNotes(e.target.value)}
@@ -2019,7 +2019,7 @@ const MonsterDetailPage = () => {
                   )}
                 </div>
               ) : (
-                <div className="no-lineage-message">
+                <div className="no-events">
                   <i className="fas fa-sitemap"></i>
                   <p>No lineage data available for this monster.</p>
                   {isOwner && (
@@ -2036,7 +2036,7 @@ const MonsterDetailPage = () => {
               <h2>Mega Evolution</h2>
 
               <div className="mega-evolution-container">
-                <div className="mega-stone-section">
+                <div className="trainer-bio">
                   <h3>Mega Stone</h3>
                   <div className="mega-stone-info">
                     <div className="mega-stone-image-container">
@@ -2058,21 +2058,21 @@ const MonsterDetailPage = () => {
                     </div>
                     <div className="mega-stone-details">
                       <h4>{monster.mega_stone_name || 'Mega Stone'}</h4>
-                      <p className="mega-stone-description">
+                      <p className="harvest-message">
                         A special stone that enables {monster.name} to Mega Evolve during battle.
                       </p>
                     </div>
                   </div>
                 </div>
 
-                <div className="mega-evolution-comparison">
-                  <div className="mega-comparison-normal">
+                <div className="mega-stone-info">
+                  <div className="mega-comparison-mega">
                     <h3>Normal Form</h3>
                     <div className="mega-comparison-image-container">
                       <img
                         src={monster.img_link || monster.main_image || '/images/default_mon.png'}
                         alt={monster.name}
-                        className="mega-comparison-image"
+                        className="plot-image"
                         onError={(e) => {
                           e.target.onerror = null;
                           e.target.src = '/images/default_mon.png';
@@ -2115,7 +2115,7 @@ const MonsterDetailPage = () => {
                         <img
                           src={megaImages.mega_image?.image_url || monster.mega_img_link || '/images/default_mon.png'}
                           alt={`Mega ${monster.name}`}
-                          className="mega-comparison-image"
+                          className="plot-image"
                           onError={(e) => {
                             e.target.onerror = null;
                             e.target.src = '/images/default_mon.png';

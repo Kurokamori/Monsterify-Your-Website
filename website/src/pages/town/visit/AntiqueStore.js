@@ -286,9 +286,9 @@ const AntiqueStore = () => {
         {trainerAntiques.map((antique, index) => (
           <div
             key={`antique-${index}`}
-            className="antique-item"
+            className="adopt-card"
           >
-            <div className="antique-item-image">
+            <div className="item-icon">
               <img
                 src={`/images/items/antiques/${antique.name.toLowerCase().replace(/\s+/g, '_')}.png`}
                 alt={antique.name}
@@ -325,10 +325,10 @@ const AntiqueStore = () => {
   // Render catalogue view
   const renderCatalogue = () => {
     return (
-      <div className="catalogue-container">
+      <div className="form">
         {/* Filters */}
         <div className="catalogue-filters">
-          <div className="filter-group">
+          <div className="set-item">
             <label>Antique:</label>
             <select
               value={selectedFilters.antique}
@@ -343,7 +343,7 @@ const AntiqueStore = () => {
             </select>
           </div>
 
-          <div className="filter-group">
+          <div className="set-item">
             <label>Species:</label>
             <input
               type="text"
@@ -353,7 +353,7 @@ const AntiqueStore = () => {
             />
           </div>
 
-          <div className="filter-group">
+          <div className="set-item">
             <label>Type:</label>
             <select
               value={selectedFilters.type}
@@ -366,7 +366,7 @@ const AntiqueStore = () => {
             </select>
           </div>
 
-          <div className="filter-group">
+          <div className="set-item">
             <label>Creator:</label>
             <select
               value={selectedFilters.creator}
@@ -396,7 +396,7 @@ const AntiqueStore = () => {
           <>
             <div className="catalogue-grid">
               {catalogueData.map((item) => (
-                <div key={item.id} className="catalogue-card">
+                <div key={item.id} className="ref-item">
                   {/* Monster Image */}
                   {item.image && (
                     <div
@@ -427,12 +427,12 @@ const AntiqueStore = () => {
                   </div>
 
                   {/* Species */}
-                  <div className="catalogue-card-species">
+                  <div className="catalogue-card-antique">
                     <span className="label">Species:</span> {getSpeciesDisplay(item)}
                   </div>
 
                   {/* Types */}
-                  <div className="catalogue-card-types">
+                  <div className="auction-option-types">
                     {getTypes(item).map((type, index) => (
                       <TypeBadge key={index} type={type} />
                     ))}
@@ -440,14 +440,14 @@ const AntiqueStore = () => {
 
                   {/* Attribute */}
                   {item.attribute && (
-                    <div className="catalogue-card-attribute">
+                    <div className="evolution-attribute">
                       <AttributeBadge attribute={item.attribute} />
                     </div>
                   )}
 
                   {/* Creator */}
                   {item.creator && (
-                    <div className="catalogue-card-creator">
+                    <div className="catalogue-card-antique">
                       <span className="label">Artist:</span> {item.creator}
                     </div>
                   )}
@@ -478,7 +478,7 @@ const AntiqueStore = () => {
 
   return (
     <div className="antique-store-container">
-      <div className="antique-store-header">
+      <div className="bazar-header">
         <h1>Antique Store</h1>
         <p className="antique-store-description">
           Welcome to the Antique Store! Here you can appraise your antiques for a random monster roll
@@ -508,7 +508,7 @@ const AntiqueStore = () => {
         {activeView === 'inventory' ? (
           <>
             {/* Trainer Selection */}
-            <div className="trainer-selection">
+            <div className="shop-search">
               <TrainerSelector
                 selectedTrainerId={selectedTrainer}
                 onChange={handleTrainerChange}
@@ -524,7 +524,7 @@ const AntiqueStore = () => {
                 {renderAntiqueItems()}
               </div>
             ) : (
-              <div className="select-trainer-message">
+              <div className="no-antiques-message">
                 <p>Please select a trainer to view their antiques.</p>
               </div>
             )}

@@ -228,9 +228,9 @@ const MonsterRollConfigurator = ({ parameters = {}, onChange }) => {
   }, []);
 
   return (
-    <div className="monster-roll-configurator">
+    <div className="reward-configurator">
       {/* Preset Configurations */}
-      <div className="preset-section">
+      <div className="config-section">
         <h5>Quick Presets</h5>
         <div className="preset-buttons">
           {getPresetConfigurations().map((preset, index) => (
@@ -314,7 +314,7 @@ const MonsterRollConfigurator = ({ parameters = {}, onChange }) => {
         <div className="config-row">
           <div className="form-group">
             <label>Evolution Stages</label>
-            <div className="checkbox-grid">
+            <div className="type-grid">
               {[1, 2, 3].map(stage => (
                 <label key={stage} className="checkbox-label">
                   <input
@@ -393,9 +393,9 @@ const MonsterRollConfigurator = ({ parameters = {}, onChange }) => {
           Select specific attributes to limit the roll to. Leave empty for no restrictions.
         </p>
         
-        <div className="attribute-grid">
+        <div className="type-grid">
           {availableAttributes.map(attribute => (
-            <label key={attribute} className="attribute-checkbox">
+            <label key={attribute} className="type-checkbox">
               <input
                 type="checkbox"
                 checked={(config.includeAttributes || []).includes(attribute)}
@@ -417,7 +417,7 @@ const MonsterRollConfigurator = ({ parameters = {}, onChange }) => {
         </p>
 
         <div className="config-row">
-          <div className="checkbox-grid">
+          <div className="type-grid">
             {['pokemon', 'digimon', 'yokai', 'nexomon', 'pals', 'fakemon'].map(table => (
               <label key={table} className="checkbox-label">
                 <input

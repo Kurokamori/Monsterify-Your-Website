@@ -32,7 +32,7 @@
   overflow: hidden;
 }
 
-.monsters-header {
+.monster-row {
   display: grid;
   grid-template-columns: 80px 1fr 120px 2fr 1fr 80px;
   gap: 1rem;
@@ -46,16 +46,6 @@
   letter-spacing: 0.025em;
 }
 
-.monster-row {
-  display: grid;
-  grid-template-columns: 80px 1fr 120px 2fr 1fr 80px;
-  gap: 1rem;
-  padding: 1.5rem;
-  border-bottom: 1px solid var(--border-color);
-  transition: all 0.2s ease;
-  align-items: start;
-}
-
 .monster-row:last-child {
   border-bottom: none;
 }
@@ -64,7 +54,7 @@
   background: var(--input-background);
 }
 
-.monster-number-col {
+.monster-name-col {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -83,67 +73,12 @@
   font-size: var(--font-size-sm);
 }
 
-.monster-name-input::placeholder {
-  color: var(--text-color);
-  opacity: 0.5;
-}
-
-.attribute-select {
-  width: 100%;
-  padding: 0.75rem;
-  border: 1px solid var(--border-color);
-  border-radius: 0.5rem;
-  background: var(--input-background);
-  color: var(--text-color);
-  font-size: var(--font-size-sm);
-  transition: all 0.2s ease;
-}
-
-.attribute-select:focus {
-  outline: none;
-  border-color: var(--accent-color);
-  box-shadow: 0 0 0 2px var(--accent-glow);
-}
-
-.attribute-select option {
-  background: var(--card-background);
-  color: var(--text-color);
-}
-
-.types-inputs {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-}
-
 .type-input-group {
   align-items: center;
   display: flex;
   flex: 1;
   gap: 0.75rem;
   min-width: 120px;
-}
-
-.type-select-small {
-  flex: 1;
-  padding: 0.5rem;
-  border: 1px solid var(--border-color);
-  border-radius: 0.375rem;
-  background: var(--input-background);
-  color: var(--text-color);
-  font-size: var(--font-size-xs);
-  transition: all 0.2s ease;
-}
-
-.type-select-small:focus {
-  outline: none;
-  border-color: var(--accent-color);
-  box-shadow: 0 0 0 2px var(--accent-glow);
-}
-
-.type-select-small option {
-  background: var(--card-background);
-  color: var(--text-color);
 }
 
 .monster-badges {
@@ -183,7 +118,10 @@
 }
 
 .effectiveness-chart {
+  border-bottom: 1px solid var(--divider-color);
   margin-bottom: 2.5rem;
+  padding-bottom: 1.5rem;
+  text-align: center;
 }
 
 .effectiveness-chart h3 {
@@ -302,7 +240,7 @@
   opacity: 0.6;
 }
 
-.team-total-column {
+.team-total-cell {
   background: var(--accent-color);
   color: var(--background-color);
   font-weight: 700;
@@ -311,18 +249,6 @@
   position: sticky;
   right: 0;
   z-index: 10;
-}
-
-.team-total-cell {
-  font-weight: 700;
-  font-size: 0.7rem;
-  line-height: 1;
-  position: sticky;
-  right: 0;
-  z-index: 5;
-  min-width: 60px;
-  max-width: 80px;
-  border-left: 2px solid var(--border-color);
 }
 
 .team-total-cell.team-weakness {
@@ -370,12 +296,6 @@
   font-weight: 600;
 }
 
-.summary-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-}
-
 .summary-item.weakness {
   background: var(--error-glow);
   border-color: var(--error-glow);
@@ -417,18 +337,13 @@
 
 /* Responsive Design */
 @media (max-width: 1024px) {
-  .monsters-header,
-  .monster-row {
-    grid-template-columns: 60px 1fr 100px 1.5fr 1fr 60px;
-    gap: 0.75rem;
-  }
   
   .summary-sections {
     grid-template-columns: 1fr;
     gap: 1rem;
   }
   
-  .types-inputs {
+  .type-tags {
     gap: 0.25rem;
   }
   
@@ -442,76 +357,21 @@
     border-radius: 0.5rem;
   }
   
-  .monsters-header {
+  .monster-row {
     display: none; /* Hide header on mobile, show labels inline instead */
   }
-  
-  .monster-row {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    padding: 1rem;
-  }
+
   
   .monster-row:hover {
     background: var(--card-background);
   }
   
-  .monster-number-col,
-  .monster-name-col,
-  .monster-attribute-col,
-  .monster-types-col,
-  .monster-preview-col,
-  .monster-actions-col {
-  align-items: flex-end;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-  
-  .monster-number-col::before {
+  .monster-name-col::before {
     content: "Monster:";
     font-weight: 600;
     color: var(--accent-color);
     font-size: var(--font-size-xs);
     text-transform: uppercase;
-  }
-  
-  .monster-name-col::before {
-    content: "Name:";
-    font-weight: 600;
-    color: var(--accent-color);
-    font-size: var(--font-size-xs);
-    text-transform: uppercase;
-  }
-  
-  .monster-attribute-col::before {
-    content: "Attribute:";
-    font-weight: 600;
-    color: var(--accent-color);
-    font-size: var(--font-size-xs);
-    text-transform: uppercase;
-  }
-  
-  .monster-types-col::before {
-    content: "Types:";
-    font-weight: 600;
-    color: var(--accent-color);
-    font-size: var(--font-size-xs);
-    text-transform: uppercase;
-  }
-  
-  .monster-preview-col::before {
-    content: "Preview:";
-    font-weight: 600;
-    color: var(--accent-color);
-    font-size: var(--font-size-xs);
-    text-transform: uppercase;
-  }
-  
-  .types-inputs {
-    flex-direction: column;
-    gap: 0.5rem;
   }
   
   .type-input-group {
@@ -549,13 +409,6 @@
     padding: 0.0625rem 0.0625rem;
     min-width: 0.5rem;
   }
-  
-  .team-total-column,
-  .team-total-cell {
-    min-width: 45px;
-    max-width: 55px;
-    font-size: 0.55rem;
-  }
 }
 
 @media (max-width: 480px) {
@@ -591,13 +444,6 @@
   .attacking-type-cell {
     min-width: 50px;
     max-width: 65px;
-    font-size: 0.5rem;
-  }
-  
-  .team-total-column,
-  .team-total-cell {
-    min-width: 35px;
-    max-width: 45px;
     font-size: 0.5rem;
   }
   

@@ -3,14 +3,18 @@
    ============================== */
 
 .image-container {
-  position: relative;
-  overflow: hidden;
-  border-radius: 8px;
-  display: flex;
-  justify-content: center;
   align-items: center;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  display: flex;
+  height: 250px;
+  justify-content: center;
+  margin-bottom: 1.5rem;
   margin-left: auto;
   margin-right: auto;
+  overflow: hidden;
+  position: relative;
+  width: 100%;
 }
 
 .image-container.small {
@@ -42,26 +46,35 @@
 
 /* ---------- Reference Images ---------- */
 
-.reference-image {
-  width: 100%;
-  height: 60px;
-  overflow: hidden;
-  border-radius: 4px;
-  cursor: pointer;
-  border: 1px solid var(--divider-color);
-  display: flex;
-  justify-content: center;
+.item-icon {
   align-items: center;
-  background-color: var(--card-background);
-  transition: transform 0.2s;
+  backdrop-filter: blur(10px);
+  background: var(--bg-tertiary);
+  background-color: var(--highlight-light);
+  border: 2px solid var(--accent-glow-strong);
+  border-radius: .25rem;
+  color: var(--background-color);
+  cursor: pointer;
+  display: flex;
+  flex: 1;
+  flex-shrink: 0;
+  font-size: 2.2rem;
+  height: 40px;
+  justify-content: center;
+  margin-bottom: 15px;
+  object-fit: contain;
+  overflow: hidden;
+  padding: 0.25rem;
+  transition: all .3s ease;
+  width: 40px;
 }
 
-.reference-image:hover {
+.item-icon:hover {
   transform: scale(1.05);
   box-shadow: 0 2px 5px var(--overlay-medium);
 }
 
-.reference-image img {
+.item-icon img {
   max-width: 100%;
   max-height: 100%;
   object-fit: contain;

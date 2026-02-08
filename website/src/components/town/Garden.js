@@ -182,15 +182,15 @@ const Garden = () => {
   // Render login prompt if not authenticated
   if (!isAuthenticated) {
     return (
-      <div className="garden-container">
-        <div className="garden-header">
+      <div className="form">
+        <div className="auth-header">
           <h2>Garden</h2>
           <p className="garden-description">
             Grow berries and other plants for your monsters.
           </p>
         </div>
         
-        <div className="login-prompt">
+        <div className="claim-error">
           <p>Please log in to access your garden.</p>
         </div>
       </div>
@@ -256,8 +256,8 @@ const Garden = () => {
   const displayGarden = gardenState || fallbackGarden;
   
   return (
-    <div className="garden-container">
-      <div className="garden-header">
+    <div className="form">
+      <div className="auth-header">
         <h2>Garden</h2>
         <p className="garden-description">
           Grow berries and other plants for your monsters.
@@ -271,8 +271,8 @@ const Garden = () => {
         />
       )}
       
-      <div className="garden-controls">
-        <div className="trainer-selector">
+      <div className="set-item">
+        <div className="missions-filters">
           <label htmlFor="garden-trainer">Trainer:</label>
           <select
             id="garden-trainer"
@@ -288,7 +288,7 @@ const Garden = () => {
           </select>
         </div>
         
-        <div className="garden-actions">
+        <div className="type-row">
           <button
             className="button primary"
             onClick={handleTendGarden}
@@ -326,7 +326,7 @@ const Garden = () => {
       </div>
       
       {actionMessage && (
-        <div className={`action-message ${actionSuccess ? 'success' : 'error'}`}>
+        <div className={`action-message${actionSuccess ? 'success' : 'error'}`}>
           {actionMessage}
         </div>
       )}
@@ -351,7 +351,7 @@ const Garden = () => {
         {displayGarden.plots.map((plot, index) => (
           <div 
             key={index} 
-            className={`garden-plot ${plot.plant_name ? 'planted' : 'empty'} ${plot.is_ready ? 'ready' : ''} ${plot.needs_tending ? 'needs-tending' : ''}`}
+            className={`guide-card ${plot.plant_name ? 'planted' : 'empty'}${plot.is_ready ? 'ready' : ''}${plot.needs_tending ? 'needs-tending' : ''}`}
           >
             {plot.plant_name ? (
               <>
@@ -382,14 +382,14 @@ const Garden = () => {
                 <div className="plot-info">
                   <h3 className="plot-name">{plot.plant_name}</h3>
                   
-                  <div className="plot-growth">
+                  <div className="stat-info">
                     <div className="growth-bar-container">
                       <div 
                         className="growth-bar-fill"
                         style={{ width: `${(plot.growth_stage / plot.max_growth_stage) * 100}%` }}
                       ></div>
                     </div>
-                    <div className="growth-text">
+                    <div className="file-name">
                       Stage {plot.growth_stage}/{plot.max_growth_stage}
                     </div>
                   </div>

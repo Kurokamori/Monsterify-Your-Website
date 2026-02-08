@@ -71,12 +71,6 @@
   overflow-y: auto;
 }
 
-.trainer-profile-name-container {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
 .trainer-profile-age {
   font-size: var(--font-size-sm);
 }
@@ -128,13 +122,6 @@
 
 /* ===== My trainer stats ===== */
 
-.my-trainer-stats {
-  display: flex;
-  flex-direction: column;
-  gap: .5rem;
-  align-items: center;
-}
-
 .my-trainer-stat-item {
  display: flex;
  align-items: center;
@@ -155,24 +142,20 @@
 .trainer-stat i{ color:var(--accent-color); font-size:var(--font-size-base); }
 .trainer-stat span{ font-weight:500; font-size:var(--font-size-sm); }
 
-.trainer-currency-stats, .trainer-monster-stats{
-  display:flex; align-items:center; gap:.5rem; font-size:var(--font-size-sm);
-}
-
 /* ===== Quote section ===== */
 
 .trainer-quote-section {
   position: relative;
   margin: 2rem 0;
   padding: 2rem 3rem;
-  background-color: rgba(var(--accent-color), .05);
+  background-color: var(--accent-muted);
   border-radius: .75rem;
   box-shadow: 0 4px 16px var(--overlay-light);
   overflow: hidden;
 }
 
 .trainer-quote-section::before, .trainer-quote-section::after{
-  color: rgba(var(--accent-color), .2);
+  color: var(--accent-muted);
   content: '"';
   font-family: Georgia, serif;
   font-size: 6rem;
@@ -199,10 +182,10 @@
   margin-bottom: 24px;
   padding: 20px 24px;
   border-left: 6px solid var(--accent-color);
-  background: linear-gradient(135deg, var(--accent-glow-light) 0%, var(--overlay-medium) 100%);
+  background: linear-gradient(135deg, var(--accent-muted) 0%, var(--overlay-medium) 100%);
   border-radius: 0 12px 12px 0;
   position: relative;
-  box-shadow: 0 4px 16px var(--accent-glow-light);
+  box-shadow: 0 4px 16px var(--accent-muted);
 }
 
 .trainer-quote::before{
@@ -214,48 +197,19 @@
 .trainer-tldr {
   margin-bottom: 20px;
   padding: .75rem 1rem;
-  background-color: rgba(var(--accent-color), .05);
+  background-color: var(--accent-muted);
   border-left: 3px solid var(--accent-color);
   border-radius: .25rem;
 }
 
 .trainer-tldr p{ line-height:1.5; font-size:var(--font-size-sm); font-style:italic; }
-.trainer-tldr h4, .trainer-biography h4{ margin-top:0; margin-bottom:10px; color:var(--text-color); font-size:1.1rem; }
 
 /* ===== Bio ===== */
-
-.trainer-bio {
-  margin-top: 2rem;
-  padding-top: 1.5rem;
-}
-
-.trainer-bio h3{ font-size:var(--font-size-lg); margin-bottom:1rem; color:var(--accent-color); }
 .trainer-bio p{ line-height:1.8; white-space:pre-line; font-size:var(--font-size-base); }
-
-.trainer-bio-section {
-  background: var(--card-background);
-  border-radius: 16px;
-  box-shadow: 0 8px 32px var(--overlay-light);
-  padding: 30px;
-  border: 1px solid var(--border-color);
-  backdrop-filter: blur(10px);
-  transition: transform .2s ease, box-shadow .2s ease;
-}
-
-.trainer-bio-section:hover{ transform:translateY(-2px); box-shadow:0 12px 48px var(--overlay-light); }
-
-.trainer-bio-section h3{
-  margin-top:0; margin-bottom:15px; color:var(--text-color); font-size:1.2rem; border-bottom:1px solid var(--border-color); padding-bottom:10px;
-}
 
 .biography-content {
   white-space: pre-line;
   line-height: 1.6;
-}
-
-.no-content {
-  color: var(--text-muted);
-  font-style: italic;
 }
 
 /* ===== Details grids ===== */
@@ -275,19 +229,6 @@
   margin-bottom: 2rem;
 }
 
-.trainer-detail-item {
-  display: flex;
-  flex-direction: column;
-  gap: .25rem;
-  padding: .75rem;
-  background-color: var(--nav-background);
-  border-radius: .5rem;
-  transition: transform .2s ease;
-  align-items: center;
-}
-
-.trainer-detail-item:hover{ transform:translateY(-2px); box-shadow:0 2px 8px var(--overlay-light); }
-
 .trainer-compact-info {
   display: flex;
   flex-direction: column;
@@ -300,15 +241,6 @@
 }
 
 /* ===== Dynamic grouped other information layout ===== */
-
-.trainer-other-info-container {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 2rem;
-  margin-bottom: 2rem;
-  width: 100%;
-  box-sizing: border-box;
-}
 
 .info-group {
   background: var(--highlight-light);
@@ -326,12 +258,6 @@
   transform: translateY(-2px);
   box-shadow: 0 8px 25px var(--overlay-medium);
   border-color: var(--accent-glow);
-}
-
-.group-content {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
 }
 
 /* Specific group styling */
@@ -359,12 +285,6 @@
   padding: 1rem;
 }
 
-.attributes-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1rem;
-}
-
 .attribute-column {
   display: flex;
   flex-direction: column;
@@ -383,13 +303,7 @@
 
 .attribute-item:last-child{ margin-bottom:0; }
 
-.vertical-grid {
-  display: flex;
-  flex-direction: column;
-  gap: .5rem;
-}
-
-.fav-types-grid {
+.types-grid {
   display: grid;
   grid-template-columns: repeat(3,1fr);
   gap: .5rem;
@@ -401,11 +315,10 @@
   letter-spacing: .5px;
 }
 
-.types-grid {
-  display: grid;
-  grid-template-columns: repeat(2,1fr);
-  grid-template-rows: repeat(3,auto);
+.trainer-type-badges {
+  display: flex;
   gap: .5rem;
+  margin-top: .5rem;
 }
 
 .nature-characteristic-row {
@@ -426,7 +339,7 @@
 
 /* ===== Fav types within other info ===== */
 
-.fav-types-item .fav-types-grid{
+.fav-types-item .types-grid{
   display:grid; grid-template-columns:repeat(3,1fr); gap:.5rem; margin-top:.5rem;
 }
 
@@ -465,19 +378,7 @@
   display: block;
 }
 
-.mega-types {
-  display: flex;
-  flex-direction: column;
-  gap: .5rem;
-}
-
 /* ===== Monsters grid ===== */
-
-.trainer-monsters-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px,1fr));
-  gap: 1.5rem;
-}
 
 /* ===== Profile grid ===== */
 
@@ -518,10 +419,11 @@
   margin-bottom: 1.5rem;
   padding-bottom: 1rem;
   border-bottom: 2px solid var(--border-color);
+  border-top: 2px solid var(--border-color);
 }
 
 .personal-hero-section .full-name{
-  font-size:1.75rem; font-weight:bold; color:var(--accent-color); margin:0 0 .5rem 0;
+  font-size:1.75rem; font-weight:bold; color:var(--accent-color); margin-top:1rem; margin-bottom:.25rem;
 }
 .personal-hero-section .title{ font-size:1.25rem; font-weight:500; color:var(--text-muted); margin:0; font-style:italic; }
 
@@ -545,7 +447,7 @@
   justify-content: space-between;
 }
 
-.personal-info-row .trainer-detail-item{ flex:1; min-width:200px; }
+.personal-info-row .inventory-item{ flex:1; min-width:200px; }
 
 /* ===== Theme section ===== */
 
@@ -557,14 +459,6 @@
 .voice-claim-content,
 .theme-content {
   width: 100%;
-}
-
-.voice-claim-display,
-.theme-display {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
 }
 
 .theme-player-container {
@@ -593,12 +487,6 @@
   flex: 1;
   padding: 1rem;
   border-radius: .5rem;
-}
-
-.relation-entity-image {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
 }
 
 .relation-entity-info {
@@ -643,10 +531,6 @@
 /* ===== Responsive ===== */
 
 @media (max-width: 768px) {
-  .trainer-other-info-container {
-    grid-template-columns: 1fr;
-    gap: 1.5rem;
-  }
 
   .info-group {
     padding: 1rem;
@@ -664,13 +548,12 @@
   .trainer-monster-stats{ margin-left:0; margin-top:.5rem; }
   .trainer-mega-info{ grid-template-columns:1fr; }
   .mega-image-container{ max-width:100%; margin:0 auto; }
-  .attributes-row{ grid-template-columns:1fr; gap:1.5rem; }
-  .types-grid, .fav-types-grid{ grid-template-columns:repeat(2,1fr); }
+  .claim-limits{ grid-template-columns:1fr; gap:1.5rem; }
   .info-label{ width:100%; }
 }
 
 @media (max-width:768px){
-  .trainer-monsters-grid{ grid-template-columns:repeat(auto-fill, minmax(100%,1fr)); }
+  .catalogue-grid{ grid-template-columns:repeat(auto-fill, minmax(100%,1fr)); }
   .trainer-profile-image-container{ height:50vh; }
 }
 
@@ -684,11 +567,7 @@
   top: .25rem;
 }
   .trainer-attributes-grid{ padding:.75rem; }
-  .attributes-row{ gap:1rem; }
-  .vertical-grid{ gap:.25rem; }
-  .types-grid, .fav-types-grid{ grid-template-columns:repeat(2,1fr); grid-auto-rows:auto; }
-  .species-badge, .type-badge, .ability-badge, .nature-badge, .characteristic-badge{
-    font-size:var(--font-size-xs, .75rem); padding:.2rem .4rem;
-  }
+  .claim-limits{ gap:1rem; }
+  .mega-types{ gap:.25rem; }
   .species-example img{ height:60px; }
 }

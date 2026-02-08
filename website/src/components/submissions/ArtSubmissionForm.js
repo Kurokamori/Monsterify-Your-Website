@@ -668,7 +668,7 @@ const ArtSubmissionForm = ({ onSubmissionComplete }) => {
 
           <div className="form-group">
             <label htmlFor="art-tags">Add Tags</label>
-            <div className="tag-input-container">
+            <div className="type-row">
               <input
                 id="art-tags"
                 type="text"
@@ -679,7 +679,7 @@ const ArtSubmissionForm = ({ onSubmissionComplete }) => {
               />
               <button
                 type="button"
-                className="button primary icon"
+                className="button primary lg no-flex"
                 onClick={addTag}
               >
                 Add
@@ -783,7 +783,7 @@ const ArtSubmissionForm = ({ onSubmissionComplete }) => {
           </div>
 
           {additionalImagePreviews.length > 0 && (
-            <div className="additional-images-preview">
+            <div className="species-images-grid">
               {additionalImagePreviews.map((preview, index) => (
                 <div key={index} className="additional-image-item">
                   <img

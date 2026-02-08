@@ -197,9 +197,9 @@ const MonsterHunterMonsterFormPage = () => {
         <h1>{isEditMode ? 'Edit Monster Hunter Monster' : 'Add Monster Hunter Monster'}</h1>
       </div>
 
-      <div className="admin-form-container">
-        <form onSubmit={handleSubmit} className="admin-form">
-          <div className="admin-form-grid">
+      <div className="bulk-monster-add-form">
+        <form onSubmit={handleSubmit} className="reroller-content">
+          <div className="reroller-content">
             <div className="admin-form-column">
               <FormInput
                 label="Name"
@@ -276,7 +276,7 @@ const MonsterHunterMonsterFormPage = () => {
                   onChange={handleImageChange}
                   className="form-input"
                 />
-                <div className="form-help-text">
+                <div className="form-help">
                   Upload an image for this monster. Supported formats: JPG, PNG, GIF.
                 </div>
               </div>

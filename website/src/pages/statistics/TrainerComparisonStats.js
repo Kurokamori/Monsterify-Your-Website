@@ -79,11 +79,11 @@ const TrainerComparisonStats = () => {
 
   return (
     <div className="monster-stats">
-      <div className="statistics-section">
-        <div className="statistics-section-header">
+      <div className="missions-header">
+        <div className="option-row">
           <h3 className="statistics-section-title">Global Statistics</h3>
         </div>
-        <div className="statistics-grid">
+        <div className="button">
           <div className="statistic-item">
             <div className="statistic-icon">
               <i className="fas fa-users"></i>
@@ -122,8 +122,8 @@ const TrainerComparisonStats = () => {
         </div>
       </div>
 
-      <div className="statistics-section">
-        <div className="statistics-section-header">
+      <div className="missions-header">
+        <div className="option-row">
           <h3 className="statistics-section-title">Top Trainers by Level</h3>
         </div>
         <div className="leaderboard-podium">
@@ -138,7 +138,7 @@ const TrainerComparisonStats = () => {
                   return (
                     <div 
                       key={trainer.id || index} 
-                      className={`podium-card ${isFirst ? 'first-place' : ''} position-${actualPosition + 1}`}
+                      className={`podium-card ${isFirst ? 'first-place' : ''}position-${actualPosition + 1}`}
                       style={{ order: index }}
                     >
                       <div className={`podium-rank rank-${actualPosition + 1}`}>
@@ -163,7 +163,7 @@ const TrainerComparisonStats = () => {
                           {trainer.name || 'Unknown Trainer'}
                           {trainer.title && <span className="trainer-title"> - {trainer.title}</span>}
                         </h4>
-                        <div className="podium-details">
+                        <div className="fandom-grid">
                           <span className="podium-level">Level {trainer.level || 0}</span>
                           <span className="trainer-player">Player: {trainer.player_display_name || 'Unknown Player'}</span>
                         </div>
@@ -176,9 +176,9 @@ const TrainerComparisonStats = () => {
               {displayStats.top_trainers.by_level.length > 3 && (
                 <div className="remaining-positions">
                   {displayStats.top_trainers.by_level.slice(3, 5).map((trainer, index) => (
-                    <div className="remaining-card" key={trainer.id || (index + 3)}>
+                    <div className="art-calculator" key={trainer.id || (index + 3)}>
                       <div className="remaining-rank">#{index + 4}</div>
-                      <div className="remaining-image">
+                      <div className="pc-box-slot">
                         {trainer.main_ref ? (
                           <img 
                             src={trainer.main_ref} 
@@ -197,7 +197,7 @@ const TrainerComparisonStats = () => {
                           {trainer.name || 'Unknown Trainer'}
                           {trainer.title && <span className="trainer-title"> - {trainer.title}</span>}
                         </h4>
-                        <div className="remaining-details">
+                        <div className="stat-info">
                           <span className="remaining-level">Level {trainer.level || 0}</span>
                           <span className="trainer-player">Player: {trainer.player_display_name || 'Unknown Player'}</span>
                         </div>
@@ -215,8 +215,8 @@ const TrainerComparisonStats = () => {
         </div>
       </div>
 
-      <div className="statistics-section">
-        <div className="statistics-section-header">
+      <div className="missions-header">
+        <div className="option-row">
           <h3 className="statistics-section-title">Top Trainers by Monster Count</h3>
         </div>
         <div className="leaderboard-podium">
@@ -231,7 +231,7 @@ const TrainerComparisonStats = () => {
                   return (
                     <div 
                       key={trainer.id || index} 
-                      className={`podium-card ${isFirst ? 'first-place' : ''} position-${actualPosition + 1}`}
+                      className={`podium-card ${isFirst ? 'first-place' : ''}position-${actualPosition + 1}`}
                       style={{ order: index }}
                     >
                       <div className={`podium-rank rank-${actualPosition + 1}`}>
@@ -256,7 +256,7 @@ const TrainerComparisonStats = () => {
                           {trainer.name || 'Unknown Trainer'}
                           {trainer.title && <span className="trainer-title"> - {trainer.title}</span>}
                         </h4>
-                        <div className="podium-details">
+                        <div className="fandom-grid">
                           <span className="podium-level">{trainer.monster_count || 0} Monsters</span>
                           <span className="trainer-player">Player: {trainer.player_display_name || 'Unknown Player'}</span>
                         </div>
@@ -269,9 +269,9 @@ const TrainerComparisonStats = () => {
               {displayStats.top_trainers.by_monsters.length > 3 && (
                 <div className="remaining-positions">
                   {displayStats.top_trainers.by_monsters.slice(3, 5).map((trainer, index) => (
-                    <div className="remaining-card" key={trainer.id || (index + 3)}>
+                    <div className="art-calculator" key={trainer.id || (index + 3)}>
                       <div className="remaining-rank">#{index + 4}</div>
-                      <div className="remaining-image">
+                      <div className="pc-box-slot">
                         {trainer.main_ref ? (
                           <img 
                             src={trainer.main_ref} 
@@ -290,7 +290,7 @@ const TrainerComparisonStats = () => {
                           {trainer.name || 'Unknown Trainer'}
                           {trainer.title && <span className="trainer-title"> - {trainer.title}</span>}
                         </h4>
-                        <div className="remaining-details">
+                        <div className="stat-info">
                           <span className="remaining-level">{trainer.monster_count || 0} Monsters</span>
                           <span className="trainer-player">Player: {trainer.player_display_name || 'Unknown Player'}</span>
                         </div>

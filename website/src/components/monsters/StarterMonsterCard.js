@@ -118,7 +118,7 @@ const StarterMonsterCard = ({ monster }) => {
           src={image.src}
           alt={image.alt}
           title={image.title}
-          className="reference-image"
+          className="item-icon"
           onError={(e) => {
             e.target.onerror = null;
             e.target.src = '/images/default_mon.png';
@@ -162,13 +162,13 @@ const StarterMonsterCard = ({ monster }) => {
         />
       </div>
 
-      <div className="monster-card-info">
+      <div className="chapter-item">
         <div className="monster-types">
           {renderTypes()}
         </div>
 
         {monster.attribute && (
-          <div className="monster-attribute" style={{ color: getTypeColor(monster.attribute.toLowerCase()) }}>
+          <div className="monster-types" style={{ color: getTypeColor(monster.attribute.toLowerCase()) }}>
             {monster.attribute}
           </div>
         )}

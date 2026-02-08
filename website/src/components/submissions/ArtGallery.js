@@ -229,7 +229,7 @@ const ArtGallery = () => {
     <div className="gallery-container">
       {/* Filters */}
       <div className="gallery-filters">
-        <div className="filter-group">
+        <div className="set-item">
           <label htmlFor="content-type-filter">Content Type:</label>
           <select
             id="content-type-filter"
@@ -246,7 +246,7 @@ const ArtGallery = () => {
           </select>
         </div>
 
-        <div className="filter-group">
+        <div className="set-item">
           <label htmlFor="tag-filter">Tag:</label>
           <select
             id="tag-filter"
@@ -260,7 +260,7 @@ const ArtGallery = () => {
           </select>
         </div>
 
-        <div className="filter-group">
+        <div className="set-item">
           <label htmlFor="sort-by">Sort By:</label>
           <select
             id="sort-by"
@@ -283,14 +283,14 @@ const ArtGallery = () => {
       </div>
 
       {/* Gallery Grid */}
-      <div className="gallery-grid">
+      <div className="town-places">
         {Array.isArray(displayArtworks) && displayArtworks.map(artwork => (
           <div
             key={artwork.id}
             className="gallery-item"
             onClick={() => handleArtworkClick(artwork)}
           >
-            <div className="gallery-item-image-container">
+            <div className="image-container">
               <img
                 src={artwork.image_url}
                 alt={artwork.title}
@@ -315,7 +315,7 @@ const ArtGallery = () => {
 
       {/* Pagination */}
       {totalPages > 1 && (
-        <div className="gallery-pagination">
+        <div className="type-tags">
           <button
             className="button secondary"
             onClick={() => handlePageChange(page - 1)}

@@ -126,25 +126,25 @@ const EventsList = ({ category }) => {
       <div className="events-nav">
         <Link 
           to="/adventures/event/current" 
-          className={`events-nav-link ${category === 'current' ? 'active' : ''}`}
+          className={`events-nav-link${category === 'current' ? 'active' : ''}`}
         >
           Current Events
         </Link>
         <Link 
           to="/adventures/event/upcoming" 
-          className={`events-nav-link ${category === 'upcoming' ? 'active' : ''}`}
+          className={`events-nav-link${category === 'upcoming' ? 'active' : ''}`}
         >
           Upcoming Events
         </Link>
         <Link 
           to="/adventures/event/past" 
-          className={`events-nav-link ${category === 'past' ? 'active' : ''}`}
+          className={`events-nav-link${category === 'past' ? 'active' : ''}`}
         >
           Past Events
         </Link>
       </div>
 
-      <div className="events-header">
+      <div className="map-header">
         <h2>{getCategoryTitle()}</h2>
         {events.length > 0 && (
           <p className="events-count">{events.length} event{events.length !== 1 ? 's' : ''} found</p>
@@ -303,7 +303,7 @@ const EventDetail = () => {
           <img
             src={event.imageUrl}
             alt={event.title}
-            className="event-detail-image"
+            className="map-image"
             onError={(e) => {
               e.target.style.display = 'none';
             }}
@@ -320,7 +320,7 @@ const EventDetail = () => {
         </div>
       </div>
 
-      <div className="event-detail-content">
+      <div className="town-square">
         <div 
           className="event-content-html"
           dangerouslySetInnerHTML={{ __html: event.content }}

@@ -1,33 +1,12 @@
-.type-calculator-page {
-  max-width: 90%;
-  margin: 0 auto;
-  padding: var(--content-padding);
-  min-height: calc(100vh - 200px);
-}
 
-.team-builder-section {
-  background: var(--card-background);
-  border-radius: 1rem;
-  padding: 2rem;
-  border: 1px solid var(--border-color);
-  box-shadow: 0 8px 25px var(--overlay-medium);
-}
 
 /* Responsive Design */
 @media (max-width: 768px) {
-  .type-calculator-page {
-    padding: 1rem;
-  }
   
-  .page-header p {
+  .lore-header p {
     font-size: var(--font-size-base);
   }
 }
 
 @media (max-width: 480px) {
-  
-  .calculator-section,
-  .team-builder-section {
-    padding: 1rem;
-  }
 }

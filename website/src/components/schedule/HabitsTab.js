@@ -102,7 +102,7 @@ const HabitsTab = ({ trainers, onRefresh }) => {
 
   return (
     <div className="habits-tab">
-      <div className="tab-header">
+      <div className="option-row">
         <h2>Habits</h2>
         <button
           className="button primary"
@@ -135,7 +135,7 @@ const HabitsTab = ({ trainers, onRefresh }) => {
       </div>
 
       {filteredHabits.length === 0 ? (
-        <div className="empty-state">
+        <div className="no-npcs">
           <i className="fas fa-chart-line"></i>
           <h3>No habits found</h3>
           <p>
@@ -159,7 +159,7 @@ const HabitsTab = ({ trainers, onRefresh }) => {
               <div className="item-header">
                 <h3 className="item-title">{habit.title}</h3>
                 <div className="habit-streak">
-                  <span className={`streak-badge ${getStreakStatusColor(habit.streak_status)}`}>
+                  <span className={`streak-badge${getStreakStatusColor(habit.streak_status)}`}>
                     <i className="fas fa-fire"></i>
                     {habit.streak || 0} day streak
                   </span>

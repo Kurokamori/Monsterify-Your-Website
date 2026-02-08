@@ -93,7 +93,7 @@ const PiratesDock = () => {
   if (!isAuthenticated) {
     return (
       <div className="location-activity-container">
-        <div className="location-activity-header">
+        <div className="quick-actions">
           <Link to="/town" className="button secondary">
             <i className="fas fa-arrow-left mr-2"></i> Back to Town
           </Link>
@@ -169,7 +169,7 @@ const PiratesDock = () => {
   if (showSession && sessionData && promptData && flavorData) {
     return (
       <div className="location-activity-container">
-        <div className="location-activity-header">
+        <div className="quick-actions">
           <button onClick={returnToActivity} className="button secondary">
             <i className="fas fa-arrow-left mr-2"></i> Back to Pirate's Dock
           </button>
@@ -192,13 +192,13 @@ const PiratesDock = () => {
   if (activeSession && !showSession) {
     return (
       <div className="location-activity-container">
-        <div className="location-activity-header">
+        <div className="quick-actions">
           <Link to="/town" className="button secondary">
             <i className="fas fa-arrow-left mr-2"></i> Back to Town
           </Link>
           <h1>Pirate's Dock</h1>
         </div>
-        <div className="active-session-message">
+        <div className="auth-message">
           <h2>Active Session</h2>
           <p>You have an active pirate's dock session in progress.</p>
           <button onClick={continueSession} className="button primary">
@@ -211,7 +211,7 @@ const PiratesDock = () => {
 
   return (
     <div className="location-activity-container">
-      <div className="location-activity-header">
+      <div className="quick-actions">
         <Link to="/town" className="button secondary">
           <i className="fas fa-arrow-left mr-2"></i> Back to Town
         </Link>
@@ -232,7 +232,7 @@ const PiratesDock = () => {
 
         <div className="location-activities">
           <div className="location-activity-card">
-            <div className="activity-image">
+            <div className="npc-avatar">
               <img src="https://i.imgur.com/RmKySNO.png" alt="Swab the Deck" />
             </div>
             <div className="activity-info">
@@ -258,7 +258,7 @@ const PiratesDock = () => {
           </div>
 
           <div className="location-activity-card">
-            <div className="activity-image">
+            <div className="npc-avatar">
               <img src="https://i.imgur.com/RmKySNO.png" alt="Go Fishing" />
             </div>
             <div className="activity-info">

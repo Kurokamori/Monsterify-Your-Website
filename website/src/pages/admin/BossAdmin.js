@@ -267,7 +267,7 @@ const BossAdmin = () => {
 
   return (
     <div className="admin-page">
-      <div className="admin-header">
+      <div className="option-row">
         <h1>Boss Management</h1>
         <button
           className="button primary"
@@ -339,7 +339,7 @@ const BossAdmin = () => {
                     </div>
                   </td>
                   <td>
-                    <span className={`status-badge ${boss.status}`}>
+                    <span className={`status-badge${boss.status}`}>
                       {boss.status}
                     </span>
                   </td>
@@ -668,7 +668,7 @@ const BossAdmin = () => {
         }}
         title="Delete Boss"
       >
-        <div className="delete-confirmation">
+        <div className="guide-content">
           <p>Are you sure you want to delete "{selectedBoss?.name}"?</p>
           <p className="warning">This action cannot be undone and will also delete all related damage data.</p>
           

@@ -14,6 +14,7 @@
   --accent-color: #c78f15;
   --accent-hover: #a67617;
   --accent-light: #ffd666;
+  --accent-muted: #36312f;
 
   /* UI elements */
   --divider-color: #3d4b5d;
@@ -84,26 +85,53 @@
   --container-max-width: 1400px;
   --content-padding: 2rem;
 
-  /*Utilities */
-  --radius-sm:4px; --radius:8px; --radius-lg:12px; --radius-xl:16px;
-  --shadow-1:0 2px 4px rgba(0,0,0,.1);
-  --shadow-2:0 5px 15px rgba(0,0,0,.3);
-  --ease:.2s ease;
+  /* Utilities */
+  --radius-xs: 2px;
+  --radius-sm: 4px;
+  --radius: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-2xl: 24px;
+  --radius-full: 9999px;
+  --shadow-1: 0 2px 4px rgba(0,0,0,.1);
+  --shadow-2: 0 5px 15px rgba(0,0,0,.3);
+  --ease: .2s ease;
+
+  /* Spacing Scale */
+  --spacing-xs: 0.25rem;   /* 4px */
+  --spacing-sm: 0.5rem;    /* 8px */
+  --spacing-md: 1rem;      /* 16px */
+  --spacing-lg: 1.5rem;    /* 24px */
+  --spacing-xl: 2rem;      /* 32px */
+  --spacing-2xl: 3rem;     /* 48px */
+  --spacing-3xl: 4rem;     /* 64px */
 
   /* Alpha overlays */
-  --overlay-light:rgba(0,0,0,.1); 
-  --overlay-medium:rgba(0,0,0,.2); 
-  --overlay-dark:rgba(0,0,0,.3);
-  --overlay-heavy:rgba(0,0,0,.5); 
-  --overlay-solid:rgba(0,0,0,.8);
-  --highlight-light:rgba(255,255,255,.1); 
-  --highlight-medium:rgba(255,255,255,.3); 
-  --highlight-heavy:rgba(255,255,255,.5);
-  --accent-glow:rgba(214,163,57,.2); 
-  --error-glow:rgba(239,68,68,.2);
-  --success-glow:rgba(16,185,129,.2); 
-  --warning-glow:rgba(245,158,11,.2); 
-  --blue-glow:rgba(59,130,246,.2);
+  --overlay-light: rgba(0,0,0,.1);
+  --overlay-medium: rgba(0,0,0,.2);
+  --overlay-dark: rgba(0,0,0,.3);
+  --overlay-heavy: rgba(0,0,0,.5);
+  --overlay-solid: rgba(0,0,0,.8);
+  --highlight-light: rgba(255,255,255,.1);
+  --highlight-medium: rgba(255,255,255,.3);
+  --highlight-heavy: rgba(255,255,255,.5);
+  --accent-glow: rgba(214,163,57,.2);
+  --accent-glow-faint: rgba(214,163,57,.1);
+  --accent-glow-soft: rgba(214,163,57,.15);
+  --accent-glow-strong: rgba(214,163,57,.4);
+  --error-glow: rgba(239,68,68,.2);
+  --success-glow: rgba(16,185,129,.2);
+  --warning-glow: rgba(245,158,11,.2);
+  --blue-glow: rgba(59,130,246,.2);
+
+  /* Semantic color aliases */
+  --text-primary: var(--text-color);
+  --text-color-secondary: var(--text-muted);
+  --heading-color: var(--accent-color);
+  --secondary-color: var(--nav-active);
+  --success-hover: #0d9668;
+  --accent-color-rgb: 199, 143, 21;
+  --accent-color-2: #e74c3c;
 }
 
 * {

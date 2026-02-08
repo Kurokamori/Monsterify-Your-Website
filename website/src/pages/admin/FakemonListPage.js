@@ -160,7 +160,7 @@ const FakemonListPage = () => {
       <button
         key="first"
         onClick={() => handlePageChange(1)}
-        className={`button secondary ${currentPage === 1 ? 'active' : ''}`}
+        className={`button secondary${currentPage === 1 ? 'active' : ''}`}
         disabled={currentPage === 1}
       >
         1
@@ -182,7 +182,7 @@ const FakemonListPage = () => {
         <button
           key={i}
           onClick={() => handlePageChange(i)}
-          className={`button secondary ${currentPage === i ? 'active' : ''}`}
+          className={`button secondary${currentPage === i ? 'active' : ''}`}
         >
           {i}
         </button>
@@ -202,7 +202,7 @@ const FakemonListPage = () => {
         <button
           key="last"
           onClick={() => handlePageChange(totalPages)}
-          className={`button secondary ${currentPage === totalPages ? 'active' : ''}`}
+          className={`button secondary${currentPage === totalPages ? 'active' : ''}`}
           disabled={currentPage === totalPages}
         >
           {totalPages}
@@ -252,7 +252,7 @@ const FakemonListPage = () => {
 
         {/* Search and Filter */}
         <div className="admin-filters">
-          <form onSubmit={handleSearch} className="admin-search-form">
+          <form onSubmit={handleSearch} className="tree-header">
             <input
               type="text"
               placeholder="Search fakemon..."
@@ -265,7 +265,7 @@ const FakemonListPage = () => {
             </button>
           </form>
 
-          <div className="admin-filter-group">
+          <div className="form-input">
             <label htmlFor="typeFilter" className="admin-filter-label">Filter by Type:</label>
             <select
               id="typeFilter"

@@ -28,41 +28,6 @@
   align-items: center;
 }
 
-/* Input styling - matches form inputs from FormComponents.css */
-.autocomplete-input {
-  width: 100%;
-  padding: 0.75rem 2.5rem 0.75rem 1rem;
-  background-color: var(--input-background);
-  border: 1px solid var(--divider-color);
-  border-radius: 0.375rem;
-  color: var(--text-color);
-  font-size: var(--font-size-base);
-  transition: border-color 0.2s, box-shadow 0.2s;
-}
-
-.autocomplete-input::placeholder {
-  color: var(--text-muted);
-}
-
-.autocomplete-input:focus {
-  outline: none;
-  border-color: var(--accent-color);
-  box-shadow: 0 0 0 2px var(--accent-glow);
-}
-
-.autocomplete-input.invalid {
-  border-color: var(--warning-color);
-}
-
-.autocomplete-input.invalid:focus {
-  box-shadow: 0 0 0 2px var(--warning-glow);
-}
-
-.autocomplete-input:disabled {
-  background-color: var(--nav-active);
-  cursor: not-allowed;
-  opacity: 0.6;
-}
 
 /* Validation Indicator */
 .validation-indicator {
@@ -196,7 +161,7 @@
 }
 
 /* Help Text - matches .field-note */
-.autocomplete-help-text {
+.field-note {
   display: block;
   margin-top: 0.25rem;
   font-size: var(--font-size-xs);

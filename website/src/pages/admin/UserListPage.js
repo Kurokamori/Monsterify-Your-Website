@@ -151,7 +151,7 @@ const UserListPage = () => {
                       <td>{user.display_name || '-'}</td>
                       <td>{user.discord_id || '-'}</td>
                       <td>
-                        <span className={`admin-badge ${user.is_admin ? 'admin' : 'user'}`}>
+                        <span className={`admin-badge${user.is_admin ? 'admin' : 'user'}`}>
                           {user.is_admin ? 'Admin' : 'User'}
                         </span>
                       </td>

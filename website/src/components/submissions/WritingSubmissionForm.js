@@ -847,7 +847,7 @@ const WritingSubmissionForm = ({ onSubmissionComplete }) => {
           {/* Book/Chapter Options */}
           <div className="form-group">
             <label>Book Organization</label>
-            <div className="book-options">
+            <div className="container horizontal">
               <label className="checkbox-label">
                 <input
                   type="checkbox"
@@ -937,7 +937,7 @@ const WritingSubmissionForm = ({ onSubmissionComplete }) => {
 
           <div className="form-group">
             <label htmlFor="writing-tags">Add Tags</label>
-            <div className="tag-input-container">
+            <div className="type-row">
               <input
                 id="writing-tags"
                 type="text"
@@ -981,7 +981,7 @@ const WritingSubmissionForm = ({ onSubmissionComplete }) => {
 
             <div className="form-group">
               <label>Input Method</label>
-              <div className="input-method-options">
+              <div className="type-tags">
                 <label className="radio-label">
                   <input
                     type="radio"
@@ -1145,8 +1145,8 @@ const WritingSubmissionForm = ({ onSubmissionComplete }) => {
               <div className="chapter-list">
                 {chapters.map((ch, index) => (
                   <div key={index} className="chapter-card">
-                    <div className="chapter-card-header">
-                      <div className="chapter-card-info">
+                    <div className="option-row">
+                      <div className="detail-row">
                         <span className="chapter-card-number">Chapter {index + 1}</span>
                         <span className="chapter-card-title">{ch.title}</span>
                       </div>
@@ -1167,7 +1167,7 @@ const WritingSubmissionForm = ({ onSubmissionComplete }) => {
                         </button>
                       </div>
                     </div>
-                    <div className="chapter-card-meta">
+                    <div className="type-tags">
                       <span>{ch.wordCount} words</span>
                       <span>{(ch.trainers?.length || 0) + (ch.monsters?.length || 0)} participants</span>
                     </div>
@@ -1206,7 +1206,7 @@ const WritingSubmissionForm = ({ onSubmissionComplete }) => {
 
                 <div className="form-group">
                   <label>Input Method</label>
-                  <div className="input-method-options">
+                  <div className="type-tags">
                     <label className="radio-label">
                       <input
                         type="radio"
@@ -1375,7 +1375,7 @@ const WritingSubmissionForm = ({ onSubmissionComplete }) => {
 
                 <div className="reward-section">
                   <h5>Trainer Rewards</h5>
-                  <div className="reward-items">
+                  <div className="fandom-grid">
                     <div className="reward-item">
                       <span className="reward-label">Levels:</span>
                       <span className="reward-value">{rewardEstimate.levels}</span>
@@ -1389,7 +1389,7 @@ const WritingSubmissionForm = ({ onSubmissionComplete }) => {
 
                 <div className="reward-section">
                   <h5>Additional Rewards</h5>
-                  <div className="reward-items">
+                  <div className="fandom-grid">
                     <div className="reward-item">
                       <span className="reward-label">Garden Points:</span>
                       <span className="reward-value">{rewardEstimate.gardenPoints}</span>

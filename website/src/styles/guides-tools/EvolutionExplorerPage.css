@@ -6,132 +6,12 @@
   min-height: 100vh;
 }
 
-.toggle-switch input {
-  opacity: 0;
-  width: 0;
-  height: 0;
-}
-
-.toggle-slider {
-  background-color: var(--nav-background);
-  border: 1px solid var(--border-color);
-  border-radius: 24px;
-  bottom: 0;
-  cursor: pointer;
-  inset: 0;
-  left: 0;
-  position: absolute;
-  right: 0;
-  top: 0;
-  transition: .4s;
-}
-
-.toggle-slider:before {
-  background: var(--text-color);
-  background-color: var(--text-color);
-  border-radius: 50%;
-  bottom: 4px;
-  content: "";
-  height: 16px;
-  left: 4px;
-  position: absolute;
-  transition: .4s;
-  width: 16px;
-}
-
-input:checked + .toggle-slider {
-  background-color: var(--accent-color);
-}
-
-input:checked + .toggle-slider:before {
-  transform: translateX(26px);
-  background-color: var(--background-color);
-}
-
-/* Clear cache button: Use unified button system from common/buttons.css
-   Example: className="button secondary sm" */
-
-.search-section {
-  background: var(--card-background);
-  border-radius: 0.75rem;
-  padding: 2rem;
-  margin-bottom: 2rem;
-  box-shadow: 0 2px 10px var(--overlay-dark);
-  border: 1px solid var(--border-color);
-}
-
-.search-input-container {
-  margin: 0 auto 1.5rem;
-  margin-bottom: 20px;
-  max-width: 500px;
-  position: relative;
-  width: 100%;
-}
-
-.species-search-input {
-  background: var(--input-background);
-  background-color: var(--input-background);
-  border: 1px solid var(--border-color);
-  border-radius: 0.5rem;
-  color: var(--text-color);
-  flex: 1;
-  font-size: 1rem;
-  padding: 0.75rem 1rem;
-  transition: all 0.3s ease;
-  width: 100%;
-}
-
-.species-search-input::placeholder {
-  color: var(--text-color);
-  opacity: 0.6;
-}
-
-.species-search-input:focus {
-  outline: none;
-  border-color: var(--accent-color);
-  box-shadow: 0 0 0 3px var(--accent-glow);
-}
-
-.search-results {
-  margin-top: 1.5rem;
-}
-
-.search-results h3 {
-  margin-bottom: 1rem;
-  color: var(--text-color);
-  font-size: var(--font-size-xl);
-}
-
-.results-grid {
-  display: grid;
-  gap: 1rem;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-}
-
-/* Species result buttons: Use unified button system from common/buttons.css
-   Example: className="button secondary lift" */
-
 .evolution-tree-section {
   background: var(--card-background);
   border-radius: 0.75rem;
   padding: 2rem;
   box-shadow: 0 2px 10px var(--overlay-dark);
   border: 1px solid var(--border-color);
-}
-
-.tree-header {
-  display: flex;
-  align-items: center;
-  gap: 1.5rem;
-  margin-bottom: 2rem;
-  padding-bottom: 1.5rem;
-  border-bottom: 2px solid var(--border-color);
-}
-
-.tree-header h2 {
-  margin: 0;
-  color: var(--text-color);
-  font-size: var(--font-size-2xl);
 }
 
 /* Bidirectional Evolution Structure */
@@ -146,14 +26,6 @@ input:checked + .toggle-slider:before {
   border: 2px solid var(--border-color);
 }
 
-.reverse-evolutions-section,
-.forward-evolutions-section {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
 .target-species-section {
   display: flex;
   justify-content: center;
@@ -161,11 +33,6 @@ input:checked + .toggle-slider:before {
   border-top: 2px solid var(--border-color);
   border-bottom: 2px solid var(--border-color);
   background: linear-gradient(135deg, var(--card-background), var(--accent-glow-light));
-}
-
-.evolution-section-header {
-  margin-bottom: 1.5rem;
-  text-align: center;
 }
 
 .evolution-section-label {
@@ -195,27 +62,30 @@ input:checked + .toggle-slider:before {
   padding: 1rem;
 }
 
-.nested-evolution-node {
+.reward-section {
+  background: var(--section-background);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  box-shadow: 0 4px 12px var(--overlay-dark);
   display: flex;
   flex-direction: column;
   margin-bottom: 2rem;
-  background: var(--card-background);
-  border: 2px solid var(--border-color);
-  border-radius: 1rem;
   padding: 1.5rem;
-  box-shadow: 0 4px 12px var(--overlay-dark);
   position: relative;
 }
 
-.nested-evolution-node[data-depth="0"] {
+.reward-section[data-depth="0"] {
   border-color: var(--accent-color);
   background: linear-gradient(135deg, var(--card-background), var(--accent-glow-light));
 }
 
-.evolution-node-header {
+.modal-species-images {
+  align-items: flex-start;
   display: flex;
-  align-items: center;
-  gap: 1.5rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+  margin: 1rem 0 1.5rem;
   margin-bottom: 1rem;
 }
 
@@ -228,7 +98,7 @@ input:checked + .toggle-slider:before {
 /* Nested collapse buttons: Use unified button system from common/buttons.css
    Example: className="button primary icon" */
 
-.evolution-columns-container {
+.evolution-children-row {
   border-top: 2px solid var(--border-color);
   padding-top: 2rem;
   margin-top: 1rem;
@@ -242,7 +112,7 @@ input:checked + .toggle-slider:before {
   padding-bottom: 1rem;
 }
 
-.evolution-columns-container::before {
+.evolution-children-row::before {
   content: '';
   position: absolute;
   left: 50%;
@@ -284,35 +154,13 @@ input:checked + .toggle-slider:before {
   width: 100%;
 }
 
-.evolution-column-species {
+.attribute-badge-adopt {
   display: flex;
   justify-content: center;
   width: 100%;
 }
 
 /* Legacy styles for nested sub-evolutions (keeping for compatibility) */
-.evolution-children-section {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-}
-
-.evolution-children-row {
-  border-top: 2px solid var(--border-color);
-  padding-top: 1rem;
-  position: relative;
-}
-
-.evolution-children-row::before {
-  content: '';
-  position: absolute;
-  left: 50%;
-  top: -1rem;
-  width: 2px;
-  height: 1rem;
-  background: var(--border-color);
-  transform: translateX(-50%);
-}
 
 .evolution-children-container {
   display: flex;
@@ -325,7 +173,7 @@ input:checked + .toggle-slider:before {
 }
 
 /* Legacy group styles kept for compatibility */
-.evolution-groups-container {
+.evolution-row-species {
   width: 100%;
   overflow-x: auto;
   padding-bottom: 1rem;
@@ -385,19 +233,6 @@ input:checked + .toggle-slider:before {
   transform: translateX(-50%);
 }
 
-/* Legacy styles kept for backwards compatibility */
-.evolution-chain-container {
-  width: 100%;
-  overflow-x: auto;
-  padding-bottom: 1rem;
-}
-
-.evolution-row {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
 .evolution-row-header {
   display: flex;
   justify-content: space-between;
@@ -407,12 +242,6 @@ input:checked + .toggle-slider:before {
   border: 1px solid var(--border-color);
   border-radius: 0.5rem;
   margin-bottom: 0.5rem;
-}
-
-.evolution-row-info {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
 }
 
 .evolution-row-label {
@@ -425,21 +254,6 @@ input:checked + .toggle-slider:before {
   font-size: var(--font-size-sm);
   color: var(--text-color);
   opacity: 0.7;
-}
-
-/* Collapse buttons: Use unified button system from common/buttons.css
-   Example: className="button ghost" */
-
-.evolution-row-species {
-  display: flex;
-  gap: 1rem;
-  overflow-x: auto;
-  padding: 0.5rem;
-  background: var(--card-background);
-  border: 1px solid var(--border-color);
-  border-radius: 0.75rem;
-  min-height: 200px;
-  align-items: flex-start;
 }
 
 .evolution-explorer-species-card {
@@ -472,17 +286,6 @@ input:checked + .toggle-slider:before {
   color: var(--background-color);
   border-color: var(--accent-hover);
   box-shadow: 0 4px 15px var(--accent-glow);
-}
-
-.evolution-explorer-species-image-container {
-  position: relative;
-  width: 80px;
-  height: 80px;
-  margin: 0 auto 15px auto;
-  border-radius: 50%;
-  overflow: hidden;
-  background: var(--highlight-light);
-  border: 3px solid var(--highlight-medium);
 }
 
 .evolution-explorer-species-image {
@@ -519,27 +322,6 @@ input:checked + .toggle-slider:before {
 }
 
 /* Horizontal scrollbar styling */
-.evolution-chain-container::-webkit-scrollbar,
-.evolution-row-species::-webkit-scrollbar {
-  height: 8px;
-}
-
-.evolution-chain-container::-webkit-scrollbar-track,
-.evolution-row-species::-webkit-scrollbar-track {
-  background: var(--input-background);
-  border-radius: 4px;
-}
-
-.evolution-chain-container::-webkit-scrollbar-thumb,
-.evolution-row-species::-webkit-scrollbar-thumb {
-  background: var(--accent-color);
-  border-radius: 4px;
-}
-
-.evolution-chain-container::-webkit-scrollbar-thumb:hover,
-.evolution-row-species::-webkit-scrollbar-thumb:hover {
-  background: var(--accent-hover);
-}
 
 .evolution-explorer-no-evolutions {
   text-align: center;
@@ -557,34 +339,15 @@ input:checked + .toggle-slider:before {
     padding: var(--content-padding);
   }
   
-  .page-header h1 {
+  .lore-header h1 {
   font-size: var(--font-size-3xl);
   order: -1;
 }
-  
-  
-  
-  
-  
-  .tree-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 1rem;
-  }
-  
-  .results-grid {
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-  }
   
   .evolution-explorer-species-card {
     min-width: 140px;
     max-width: 140px;
     padding: 0.75rem;
-  }
-  
-  .evolution-explorer-species-image-container {
-    width: 60px;
-    height: 60px;
   }
   
   /* Nested evolution responsive styles */
@@ -596,18 +359,18 @@ input:checked + .toggle-slider:before {
     padding: 0.5rem;
   }
   
-  .nested-evolution-node {
+  .reward-section {
     padding: 1rem;
     margin-bottom: 1.5rem;
   }
   
-  .evolution-node-header {
+  .modal-species-images {
     gap: 1rem;
     flex-direction: column;
     align-items: center;
   }
   
-  .evolution-columns-container {
+  .evolution-children-row {
     gap: 1.5rem;
     padding-top: 1.5rem;
   }
@@ -647,12 +410,6 @@ input:checked + .toggle-slider:before {
     padding: 0.5rem 0.75rem;
   }
   
-  .evolution-row-info {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.25rem;
-  }
-  
   .evolution-row-species {
     gap: 0.75rem;
     min-height: 180px;
@@ -669,7 +426,7 @@ input:checked + .toggle-slider:before {
     padding: 1.5rem;
   }
   
-  .results-grid {
+  .images-grid {
     grid-template-columns: 1fr;
   }
   
@@ -682,7 +439,7 @@ input:checked + .toggle-slider:before {
     min-height: 160px;
   }
   
-  .page-header {
+  .lore-header {
   padding: 1.5rem 1rem;
 }
 }

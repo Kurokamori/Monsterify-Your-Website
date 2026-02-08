@@ -169,7 +169,7 @@ const GuideDetail = () => {
   }
 
   return (
-    <div className="guide-detail-container">
+    <div className="lore-container">
       <button 
         className="button secondary"
         onClick={() => navigate('/guides')}
@@ -181,18 +181,18 @@ const GuideDetail = () => {
         <img
           src={displayGuide.image_url}
           alt={displayGuide.title}
-          className="guide-detail-image"
+          className="map-image"
           onError={(e) => {
             e.target.onerror = null;
             e.target.src = '/images/default_guide.png';
           }}
         />
-        <div className="guide-detail-overlay">
+        <div className="event-detail-overlay">
           <div className="guide-detail-category">
             {displayCategories.find(cat => cat.id === displayGuide.category)?.name || displayGuide.category}
           </div>
-          <h1 className="guide-detail-title">{displayGuide.title}</h1>
-          <div className="guide-detail-meta">
+          <h1 className="event-detail-title">{displayGuide.title}</h1>
+          <div className="type-tags">
             <span className="guide-author">
               <i className="fas fa-user"></i> {displayGuide.author}
             </span>
@@ -216,7 +216,7 @@ const GuideDetail = () => {
       {displayRelatedGuides.length > 0 && (
         <div className="guide-related">
           <h2 className="guide-related-title">Related Guides</h2>
-          <div className="guide-related-grid">
+          <div className="town-places">
             {displayRelatedGuides.map(relatedGuide => (
               <div className="guide-card" key={relatedGuide.id}>
                 <div className="guide-image">

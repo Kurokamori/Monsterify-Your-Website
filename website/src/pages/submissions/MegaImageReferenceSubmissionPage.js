@@ -15,7 +15,7 @@ const MegaImageReferenceSubmissionPage = () => {
 
   if (!currentUser) {
     return (
-      <div className="submission-page">
+      <div className="bazar-container">
         <div className="submission-container">
           <div className="auth-required">
             <h2>Authentication Required</h2>
@@ -27,7 +27,7 @@ const MegaImageReferenceSubmissionPage = () => {
   }
 
   return (
-    <div className="submission-page">
+    <div className="bazar-container">
       <div className="submission-container">
         <div className="submission-header">
           <button 

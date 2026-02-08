@@ -228,11 +228,11 @@ const AdventureList = ({
   const displayAdventures = adventures.length > 0 ? adventures : fallbackAdventures;
   
   return (
-    <div className="adventure-list-container">
+    <div className="form">
       {/* Filters */}
       {showFilters && (
         <div className="adventure-filters">
-          <div className="filter-group">
+          <div className="set-item">
             <label htmlFor="status-filter">Status:</label>
             <select
               id="status-filter"
@@ -246,7 +246,7 @@ const AdventureList = ({
             </select>
           </div>
           
-          <div className="filter-group">
+          <div className="set-item">
             <label htmlFor="sort-by">Sort By:</label>
             <select
               id="sort-by"
@@ -281,13 +281,13 @@ const AdventureList = ({
           {displayAdventures.map(adventure => (
             <div 
               key={adventure.id} 
-              className={`adventure-card ${adventure.status}`}
+              className={`gallery-item${adventure.status}`}
               onClick={() => handleAdventureClick(adventure)}
             >
               <Link to={`/adventures/${adventure.id}`} className="adventure-link">
                 <div className="adventure-header">
                   <h3 className="adventure-title">{adventure.title}</h3>
-                  <div className={`adventure-status ${adventure.status}`}>
+                  <div className={`adventure-status${adventure.status}`}>
                     {adventure.status.charAt(0).toUpperCase() + adventure.status.slice(1)}
                   </div>
                 </div>
@@ -295,12 +295,12 @@ const AdventureList = ({
                 <p className="adventure-description">{adventure.description}</p>
                 
                 <div className="adventure-meta">
-                  <div className="adventure-creator">
+                  <div className="nav-left">
                     <span className="meta-label">Creator:</span>
                     <span className="meta-value">{adventure.creator?.name || 'Unknown'}</span>
                   </div>
                   
-                  <div className="adventure-date">
+                  <div className="nav-left">
                     <span className="meta-label">Created:</span>
                     <span className="meta-value" title={formatDate(adventure.created_at)}>
                       {timeAgo(adventure.created_at)}
@@ -318,7 +318,7 @@ const AdventureList = ({
       
       {/* Pagination */}
       {showPagination && totalPages > 1 && (
-        <div className="adventure-pagination">
+        <div className="type-tags">
           <button
             className="button secondary"
             onClick={() => handlePageChange(page - 1)}

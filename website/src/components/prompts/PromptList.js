@@ -125,7 +125,7 @@ const PromptList = ({
 
   if (loading && prompts.length === 0) {
     return (
-      <div className="prompt-list-container">
+      <div className="bazar-container">
         <LoadingSpinner />
         <p>Loading prompts...</p>
       </div>
@@ -133,8 +133,8 @@ const PromptList = ({
   }
 
   return (
-    <div className="prompt-list-container">
-      <div className="prompt-list-header">
+    <div className="bazar-container">
+      <div className="item-header">
         <h2>{title}</h2>
         {prompts.length > 0 && (
           <p className="prompt-count">
@@ -145,8 +145,8 @@ const PromptList = ({
 
       {showFilters && (
         <div className="prompt-filters">
-          <div className="filter-row">
-            <div className="filter-group">
+          <div className="form-row">
+            <div className="set-item">
               <label htmlFor="search">Search:</label>
               <input
                 id="search"
@@ -158,13 +158,13 @@ const PromptList = ({
               />
             </div>
 
-            <div className="filter-group">
+            <div className="set-item">
               <label htmlFor="type">Type:</label>
               <select
                 id="type"
                 value={filters.type}
                 onChange={(e) => handleFilterChange('type', e.target.value)}
-                className="filter-select"
+                className="filter-input"
               >
                 <option value="">All Types</option>
                 <option value="general">General</option>
@@ -174,13 +174,13 @@ const PromptList = ({
               </select>
             </div>
 
-            <div className="filter-group">
+            <div className="set-item">
               <label htmlFor="category">Category:</label>
               <select
                 id="category"
                 value={filters.category}
                 onChange={(e) => handleFilterChange('category', e.target.value)}
-                className="filter-select"
+                className="filter-input"
               >
                 <option value="">All Categories</option>
                 {categories.map(cat => (
@@ -191,13 +191,13 @@ const PromptList = ({
               </select>
             </div>
 
-            <div className="filter-group">
+            <div className="set-item">
               <label htmlFor="difficulty">Difficulty:</label>
               <select
                 id="difficulty"
                 value={filters.difficulty}
                 onChange={(e) => handleFilterChange('difficulty', e.target.value)}
-                className="filter-select"
+                className="filter-input"
               >
                 <option value="">All Difficulties</option>
                 <option value="easy">Easy</option>
@@ -207,7 +207,7 @@ const PromptList = ({
               </select>
             </div>
 
-            <div className="filter-group">
+            <div className="set-item">
               <label className="checkbox-label">
                 <input
                   type="checkbox"
@@ -244,7 +244,7 @@ const PromptList = ({
         </div>
       ) : (
         <>
-          <div className="prompt-grid">
+          <div className="form-row">
             {prompts.map(prompt => (
               <PromptCard
                 key={prompt.id}

@@ -142,7 +142,7 @@ const ProfileSettings = () => {
           <p>Choose how the site looks:</p>
           <div className="theme-options">
             {THEMES.map(t => (
-              <label key={t.id} className={`theme-option${theme === t.id ? ' active' : ''}`}>
+              <label key={t.id} className={`theme-option${theme === t.id ? 'active' : ''}`}>
                 <input
                   type="radio"
                   name="theme"
@@ -150,7 +150,7 @@ const ProfileSettings = () => {
                   checked={theme === t.id}
                   onChange={() => setTheme(t.id)}
                 />
-                <span className="theme-option-label">{t.label}</span>
+                <span className="trainer-name">{t.label}</span>
                 <small>{t.description}</small>
               </label>
             ))}
@@ -161,8 +161,8 @@ const ProfileSettings = () => {
           <h3>Monster Roller Settings</h3>
           <p>Select which monster types you want to enable for the monster roller:</p>
 
-          <div className="monster-types-grid">
-            <div className="monster-type-toggle">
+          <div className="button">
+            <div className="logo-link">
               <input
                 type="checkbox"
                 id="pokemon"
@@ -175,7 +175,7 @@ const ProfileSettings = () => {
               </label>
             </div>
 
-            <div className="monster-type-toggle">
+            <div className="logo-link">
               <input
                 type="checkbox"
                 id="digimon"
@@ -188,7 +188,7 @@ const ProfileSettings = () => {
               </label>
             </div>
 
-            <div className="monster-type-toggle">
+            <div className="logo-link">
               <input
                 type="checkbox"
                 id="yokai"
@@ -201,7 +201,7 @@ const ProfileSettings = () => {
               </label>
             </div>
 
-            <div className="monster-type-toggle">
+            <div className="logo-link">
               <input
                 type="checkbox"
                 id="pals"
@@ -214,7 +214,7 @@ const ProfileSettings = () => {
               </label>
             </div>
 
-            <div className="monster-type-toggle">
+            <div className="logo-link">
               <input
                 type="checkbox"
                 id="nexomon"
@@ -227,7 +227,7 @@ const ProfileSettings = () => {
               </label>
             </div>
 
-            <div className="monster-type-toggle">
+            <div className="logo-link">
               <input
                 type="checkbox"
                 id="fakemon"
@@ -240,7 +240,7 @@ const ProfileSettings = () => {
               </label>
             </div>
 
-            <div className="monster-type-toggle">
+            <div className="logo-link">
               <input
                 type="checkbox"
                 id="finalfantasy"
@@ -253,7 +253,7 @@ const ProfileSettings = () => {
               </label>
             </div>
 
-            <div className="monster-type-toggle">
+            <div className="logo-link">
               <input
                 type="checkbox"
                 id="monsterhunter"

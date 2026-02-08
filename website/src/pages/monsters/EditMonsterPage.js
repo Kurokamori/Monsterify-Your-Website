@@ -380,7 +380,7 @@ const EditMonsterPage = () => {
 
   if (loading) {
     return (
-      <div className="loading-container">
+      <div className="error-container">
         <div className="loading-spinner">
           <i className="fas fa-spinner fa-spin"></i>
         </div>
@@ -455,7 +455,7 @@ const EditMonsterPage = () => {
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="edit-monster-form">
+      <form onSubmit={handleSubmit} className="town-section">
         {/* Basic Information Section */}
         <div className="form-section">
           <h2>Basic Information</h2>
@@ -609,7 +609,7 @@ const EditMonsterPage = () => {
         <div className="form-section">
           <h2>Special Features</h2>
           <div className="form-grid">
-            <div className="form-group checkbox-group">
+            <div className="form-group event-date">
               <label className="checkbox-label">
                 <input
                   type="checkbox"
@@ -621,7 +621,7 @@ const EditMonsterPage = () => {
               </label>
             </div>
 
-            <div className="form-group checkbox-group">
+            <div className="form-group event-date">
               <label className="checkbox-label">
                 <input
                   type="checkbox"
@@ -633,7 +633,7 @@ const EditMonsterPage = () => {
               </label>
             </div>
 
-            <div className="form-group checkbox-group">
+            <div className="form-group event-date">
               <label className="checkbox-label">
                 <input
                   type="checkbox"
@@ -645,7 +645,7 @@ const EditMonsterPage = () => {
               </label>
             </div>
 
-            <div className="form-group checkbox-group">
+            <div className="form-group event-date">
               <label className="checkbox-label">
                 <input
                   type="checkbox"
@@ -657,7 +657,7 @@ const EditMonsterPage = () => {
               </label>
             </div>
 
-            <div className="form-group checkbox-group">
+            <div className="form-group event-date">
               <label className="checkbox-label">
                 <input
                   type="checkbox"
@@ -777,7 +777,7 @@ const EditMonsterPage = () => {
               <div className="form-grid">
                 <div className="form-group">
                   <label htmlFor="has_mega_stone">Has Mega Stone</label>
-                  <div className="checkbox-group">
+                  <div className="event-date">
                     <label className="checkbox-label">
                       <input
                         type="checkbox"
@@ -806,7 +806,7 @@ const EditMonsterPage = () => {
 
               {formData.has_mega_stone && (
                 <>
-                  <div className="mega-stone-section">
+                  <div className="trainer-bio">
                     <h3>Mega Stone Artwork</h3>
                     <div className="form-grid">
                       <div className="form-group full-width">
@@ -823,7 +823,7 @@ const EditMonsterPage = () => {
                     </div>
                   </div>
 
-                  <div className="mega-evolution-section">
+                  <div className="trainer-bio">
                     <h3>Mega Evolution Form</h3>
                     <div className="form-grid">
 

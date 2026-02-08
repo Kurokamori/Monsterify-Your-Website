@@ -130,7 +130,7 @@ const DigimonMonsterListPage = () => {
           />
         </div>
 
-        <div className="admin-filter-group">
+        <div className="form-input">
           <div className="admin-filter">
             <label>Rank:</label>
             <select value={rankFilter} onChange={handleRankFilterChange}>
@@ -213,7 +213,7 @@ const DigimonMonsterListPage = () => {
                       <td>{monster.name}</td>
                       <td>{monster.rank}</td>
                       <td>
-                        <span className={`monster-attribute attribute-${monster.attribute?.toLowerCase()}`}>
+                        <span className={`monster-types attribute-${monster.attribute?.toLowerCase()}`}>
                           {monster.attribute}
                         </span>
                       </td>

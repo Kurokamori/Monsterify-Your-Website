@@ -66,7 +66,7 @@
   gap: 2rem;
 }
 
-.info-section {
+.faction-info {
   background: linear-gradient(135deg, var(--overlay-solid) 0%, var(--overlay-heavy) 100%);
   padding: 2.5rem;
   border-radius: 16px;
@@ -77,93 +77,6 @@
   overflow: hidden;
   transition: all 0.3s ease;
   margin-bottom: 3rem;
-}
-
-.info-section::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(135deg, var(--accent-glow) 0%, transparent 50%);
-  pointer-events: none;
-}
-
-.info-section:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 12px 30px var(--overlay-heavy);
-  border-color: var(--accent-glow);
-}
-
-.info-section h3 {
-  color: var(--accent-color);
-  margin-bottom: 1.5rem;
-  font-size: 1.6rem;
-  font-weight: 700;
-  position: relative;
-  z-index: 1;
-}
-
-.info-section p {
-  line-height: 1.7;
-  color: var(--text-muted);
-  font-size: 1.1rem;
-  position: relative;
-  z-index: 1;
-}
-
-.info-section ul {
-  list-style: none;
-  padding: 0;
-  position: relative;
-  z-index: 1;
-}
-
-.info-section li {
-  padding: 0.75rem 0;
-  border-bottom: 1px solid var(--accent-glow);
-  color: var(--text-muted);
-  position: relative;
-  padding-left: 2rem;
-  font-size: 1.05rem;
-  transition: all 0.3s ease;
-}
-
-.info-section li:hover {
-  color: var(--text-color);
-  padding-left: 2.5rem;
-}
-
-.info-section li:before {
-  content: "▶";
-  position: absolute;
-  left: 0;
-  color: var(--accent-color);
-  font-size: 1rem;
-  transition: all 0.3s ease;
-}
-
-.info-section li:hover:before {
-  color: var(--accent-light);
-  transform: scale(1.1);
-}
-
-.info-section li:last-child {
-  border-bottom: none;
-}
-
-/* Faction Info Display */
-.faction-info {
-  background: linear-gradient(135deg, var(--overlay-solid) 0%, var(--overlay-heavy) 100%);
-  padding: 2.5rem;
-  border-radius: 16px;
-  border-left: 4px solid var(--accent-color);
-  backdrop-filter: blur(20px);
-  border: 1px solid var(--accent-glow);
-  position: relative;
-  overflow: hidden;
-  margin-bottom: 1.5rem;
 }
 
 .faction-info::before {
@@ -177,10 +90,16 @@
   pointer-events: none;
 }
 
+.faction-info:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 30px var(--overlay-heavy);
+  border-color: var(--accent-glow);
+}
+
 .faction-info h3 {
   color: var(--accent-color);
   margin-bottom: 1.5rem;
-  font-size: 1.8rem;
+  font-size: 1.6rem;
   font-weight: 700;
   position: relative;
   z-index: 1;
@@ -189,10 +108,49 @@
 .faction-info p {
   line-height: 1.7;
   color: var(--text-muted);
-  margin-bottom: 2rem;
   font-size: 1.1rem;
   position: relative;
   z-index: 1;
+}
+
+.faction-info ul {
+  list-style: none;
+  padding: 0;
+  position: relative;
+  z-index: 1;
+}
+
+.faction-info li {
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--accent-glow);
+  color: var(--text-muted);
+  position: relative;
+  padding-left: 2rem;
+  font-size: 1.05rem;
+  transition: all 0.3s ease;
+}
+
+.faction-info li:hover {
+  color: var(--text-color);
+  padding-left: 2.5rem;
+}
+
+.faction-info li:before {
+  content: "▶";
+  position: absolute;
+  left: 0;
+  color: var(--accent-color);
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.faction-info li:hover:before {
+  color: var(--accent-light);
+  transform: scale(1.1);
+}
+
+.faction-info li:last-child {
+  border-bottom: none;
 }
 
 /* Relationships Section */
@@ -276,21 +234,6 @@
   margin: 2rem;
   border: 1px solid var(--accent-glow);
   box-shadow: 0 4px 12px var(--overlay-dark);
-}
-
-.standing-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1.5rem;
-  flex-wrap: wrap;
-  gap: 1rem;
-}
-
-.standing-header h3 {
-  color: var(--accent-color);
-  margin: 0;
-  font-size: 1.5rem;
 }
 
 .standing-number {
@@ -624,13 +567,7 @@
   text-shadow: 0 0 10px var(--accent-glow-medium);
 }
 
-.score-breakdown {
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-}
-
-.score-breakdown div {
+.stat-info div {
   color: var(--text-muted);
   font-size: 0.9rem;
   display: flex;
@@ -670,19 +607,7 @@
   font-size: 1.2em;
 }
 
-.known-people-loading,
-.known-people-empty {
-  align-items: center;
-  color: var(--text-color);
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  opacity: 0.7;
-  padding: 2rem;
-  text-align: center;
-}
-
-.known-people-loading i {
+.known-people-empty i {
   font-size: 2rem;
   color: var(--accent-color);
 }
@@ -713,23 +638,6 @@
 .person-card.can-meet {
   border-color: var(--warning-color);
   background: linear-gradient(135deg, var(--card-background) 0%, var(--highlight-medium) 100%);
-}
-
-.met-badge,
-.can-meet-badge {
-  align-items: center;
-  background: var(--success-light);
-  border-radius: 50%;
-  color: var(--text-color);
-  display: flex;
-  font-size: 0.8rem;
-  height: 24px;
-  justify-content: center;
-  position: absolute;
-  right: -5px;
-  top: -5px;
-  width: 24px;
-  z-index: 2;
 }
 
 .locked-overlay {
@@ -775,83 +683,15 @@
 }
 
 /* Person Detail/Form Modals */
-.person-detail-modal-overlay,
-.person-full-view-overlay,
-.person-form-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: var(--overlay-solid);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
 
 /* Base Faction Containers */
-.factions-container {
-  width: 100%;
-  max-width: var(--container-max-width);
-  margin: 0 auto;
-  padding: 0 var(--content-padding);
-}
-
-.faction-detail-container,
-.faction-quests-container {
-  min-height: 100vh;
-  background: linear-gradient(135deg, var(--background-color) 0%, var(--card-background) 25%, var(--nav-hover) 50%, var(--card-background) 75%, var(--background-color) 100%);
-  color: var(--text-color);
-  position: relative;
-  overflow-x: hidden;
-}
-
-.faction-detail-container::before,
-.faction-quests-container::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: 
-    radial-gradient(ellipse at 15% 25%, var(--accent-glow) 0%, transparent 60%),
-    radial-gradient(ellipse at 85% 75%, var(--success-glow) 0%, transparent 65%),
-    radial-gradient(ellipse at 50% 50%, var(--highlight-light) 0%, transparent 70%),
-    conic-gradient(from 45deg at 30% 80%, var(--accent-glow) 0deg, transparent 60deg);
-  pointer-events: none;
-  z-index: 0;
-  animation: ambient-glow 30s ease-in-out infinite;
-}
 
 @keyframes ambient-glow {
   0%, 100% { opacity: 1; }
   50% { opacity: 0.7; }
 }
 
-.faction-detail-container > *,
-.faction-quests-container > * {
-  position: relative;
-  z-index: 1;
-}
-
 /* Faction Headers */
-.factions-header {
-  text-align: center;
-  margin-bottom: 2rem;
-}
-
-.factions-header h1 {
-  font-size: var(--font-size-3xl);
-  color: var(--accent-color);
-  margin-bottom: 0.5rem;
-}
-
-.factions-header p {
-  font-size: var(--font-size-lg);
-  color: var(--text-color);
-  opacity: 0.8;
-}
 
 .faction-quests-header {
   text-align: center;
@@ -1015,42 +855,12 @@
   padding: 2rem;
 }
 
-.faction-card {
-  background-color: var(--card-background);
-  border-radius: 0.5rem;
-  overflow: hidden;
-  box-shadow: 0 2px 4px var(--overlay-light);
-  transition: transform 0.2s, box-shadow 0.2s;
-  cursor: pointer;
-}
-
-.faction-card:hover {
-  transform: translateY(-4px);
+.guide-card.selected {
+  background-color: var(--accent-muted);
+  border: 2px solid var(--accent-color);
   box-shadow: 0 6px 12px var(--overlay-medium);
-}
-
-.faction-card.selected {
-  transform: translateY(-4px);
-  box-shadow: 0 6px 12px var(--overlay-medium);
-}
-
-.faction-logo {
-  position: absolute;
-  bottom: -40px;
-  left: 1.5rem;
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-  overflow: hidden;
-  background-color: var(--card-background);
-  border: 4px solid var(--card-background);
-  box-shadow: 0 2px 4px var(--overlay-medium);
-}
-
-.faction-logo img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+  color: var(--accent-color);
+  transform: scale(1.05);
 }
 
 .faction-alignment {
@@ -1071,7 +881,7 @@
    Example: className="button toggle" or className="button toggle active" */
 
 /* Faction Details */
-.faction-details {
+.npc-details {
   padding: 0 1.5rem 1.5rem;
   border-top: 1px solid var(--divider-color);
 }
@@ -1089,21 +899,15 @@
   margin-bottom: 1rem;
 }
 
-.faction-goals {
+.npc-quests {
   list-style-type: disc;
   padding-left: 1.5rem;
   margin-bottom: 1.5rem;
 }
 
-.faction-goals li {
+.npc-quests li {
   margin-bottom: 0.5rem;
   line-height: 1.6;
-}
-
-.faction-members {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 1rem;
 }
 
 .faction-member {
@@ -1115,20 +919,6 @@
   border-radius: 0.375rem;
 }
 
-.member-avatar {
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  overflow: hidden;
-  background-color: var(--card-background);
-}
-
-.member-avatar img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
 .member-info {
   flex: 1;
 }
@@ -1136,12 +926,6 @@
 .member-name {
   font-weight: 500;
   margin-bottom: 0.25rem;
-}
-
-.member-role {
-  font-size: var(--font-size-sm);
-  color: var(--text-color);
-  opacity: 0.8;
 }
 
 /* Faction Quest Prisms */

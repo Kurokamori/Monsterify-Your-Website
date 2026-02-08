@@ -32,7 +32,7 @@
   border-radius: 6px;
 }
 
-.seasonal-adopts-grouped {
+.antique-store-content {
   display: flex;
   flex-direction: column;
   gap: 30px;
@@ -74,7 +74,7 @@
   font-weight: normal;
 }
 
-.holiday-text {
+.no-content {
   color: var(--text-muted);
   font-style: italic;
 }
@@ -125,10 +125,13 @@
 
 .seasonal-adopt-card {
   background: var(--bg-primary);
-  border-radius: 10px;
+  background-color: var(--card-background);
   border: 1px solid var(--border-color);
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 8px var(--overlay-light);
   overflow: hidden;
-  transition: transform 0.2s, box-shadow 0.2s;
+  position: relative;
+  transition: all 0.2s;
 }
 
 .seasonal-adopt-card:hover {
@@ -136,22 +139,7 @@
   box-shadow: 0 4px 12px var(--overlay-medium);
 }
 
-.seasonal-adopt-image {
-  height: 180px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--bg-tertiary);
-  overflow: hidden;
-}
-
-.seasonal-adopt-image img {
-  max-width: 100%;
-  max-height: 100%;
-  object-fit: contain;
-}
-
-.seasonal-adopt-image .no-image {
+.item-icon .no-image {
   color: var(--text-muted);
   font-size: 3rem;
 }
@@ -165,7 +153,7 @@
   font-size: 1.1rem;
 }
 
-.seasonal-adopt-species {
+.gift-monster-types {
   display: flex;
   flex-wrap: wrap;
   gap: 5px;
@@ -274,20 +262,20 @@
   font-weight: 500;
 }
 
-.seasonal-adopts-page .admin-empty-state {
+.seasonal-adopts-page .empty-results {
   text-align: center;
   padding: 60px 20px;
   background: var(--bg-secondary);
   border-radius: 12px;
 }
 
-.seasonal-adopts-page .admin-empty-state i {
+.seasonal-adopts-page .empty-results i {
   font-size: 4rem;
   color: var(--text-muted);
   margin-bottom: 20px;
 }
 
-.seasonal-adopts-page .admin-empty-state p {
+.seasonal-adopts-page .empty-results p {
   color: var(--text-secondary);
   margin-bottom: 20px;
 }

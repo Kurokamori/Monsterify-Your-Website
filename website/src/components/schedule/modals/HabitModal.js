@@ -99,7 +99,7 @@ const HabitModal = ({ isOpen, onClose, onSuccess, trainers = [], habit = null })
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-content" onClick={e => e.stopPropagation()}>
-        <div className="modal-header">
+        <div className="tree-header">
           <h3>{habit ? 'Edit Habit' : 'Create New Habit'}</h3>
           <button className="button close" onClick={onClose}>
             <i className="fas fa-times"></i>
@@ -252,7 +252,7 @@ const HabitModal = ({ isOpen, onClose, onSuccess, trainers = [], habit = null })
 
                 <div className="form-group">
                   <label>Reminder Days</label>
-                  <div className="checkbox-group">
+                  <div className="event-date">
                     {weekDays.map(day => (
                       <label key={day} className="checkbox-label">
                         <input

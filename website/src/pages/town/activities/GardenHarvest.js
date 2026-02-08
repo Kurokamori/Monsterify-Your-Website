@@ -9,7 +9,7 @@ const GardenHarvestPage = () => {
   if (!isAuthenticated) {
     return (
       <div className="location-activity-container">
-        <div className="location-activity-header">
+        <div className="quick-actions">
           <Link to="/town" className="button secondary">
             <i className="fas fa-arrow-left mr-2"></i> Back to Town
           </Link>
@@ -25,7 +25,7 @@ const GardenHarvestPage = () => {
 
   return (
     <div className="location-activity-container">
-      <div className="location-activity-header">
+      <div className="quick-actions">
         <Link to="/town/activities/garden" className="button secondary">
           <i className="fas fa-arrow-left mr-2"></i> Back to Garden
         </Link>

@@ -115,6 +115,7 @@ const ForfeitMonster = ({ userTrainers }) => {
           <label htmlFor="trainer-select">Select Trainer:</label>
           <select
             id="trainer-select"
+            className="trainer-select"
             value={selectedTrainer}
             onChange={handleTrainerChange}
           >
@@ -151,7 +152,7 @@ const ForfeitMonster = ({ userTrainers }) => {
                     >
                       <MonsterCard monster={monster} />
                       <button
-                        className={`button ${selectedMonsters.some(m => m.id === monster.id) ? 'success' : 'secondary'} monster-select-btn`}
+                        className={`button${selectedMonsters.some(m => m.id === monster.id) ? 'success' : 'secondary'}monster-select-btn`}
                         onClick={() => handleMonsterSelect(monster)}
                       >
                         {selectedMonsters.some(m => m.id === monster.id) ? '✓ Selected' : 'Select Monster'}
@@ -171,7 +172,7 @@ const ForfeitMonster = ({ userTrainers }) => {
 
       {showConfirmModal && (
         <Modal isOpen={showConfirmModal} onClose={() => setShowConfirmModal(false)}>
-          <div className="modal-header">
+          <div className="tree-header">
             <h3>Confirm Forfeit</h3>
           </div>
           <div className="modal-body">

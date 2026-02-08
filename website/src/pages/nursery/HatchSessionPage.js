@@ -271,7 +271,7 @@ const HatchSessionPage = () => {
             </div>
           </div>
           <div className="success-content">
-            <h2 className="success-title">Hatching Complete!</h2>
+            <h2 className="session-title">Hatching Complete!</h2>
             <p className="success-description">
               Congratulations! You have successfully hatched <strong>{session.eggCount}</strong> {session.eggCount === 1 ? 'egg' : 'eggs'} and selected your monsters.
             </p>
@@ -309,7 +309,7 @@ const HatchSessionPage = () => {
   return (
     <div className="hatch-session-modern-container">
       {/* Session Header */}
-      <div className="session-header-modern">
+      <div className="evolution-help">
         <div className="session-background">
           <div className="session-icon">
             <i className="fas fa-egg"></i>
@@ -335,7 +335,7 @@ const HatchSessionPage = () => {
           {session.hatchedEggs.map((egg, index) => (
             <div
               key={egg.eggId}
-              className={`progress-step-modern ${
+              className={`progress-step-modern${
                 index < currentEgg ? 'completed' :
                 index === currentEgg ? 'active' : 'pending'
               }`}
@@ -357,7 +357,7 @@ const HatchSessionPage = () => {
 
       {/* Current Egg */}
       <div className="current-egg-modern">
-        <div className="egg-header-modern">
+        <div className="evolution-help">
           <h2 className="egg-title">
             <i className="fas fa-egg"></i>
             Choose your {getOrdinal(currentEgg + 1)} monster
@@ -378,7 +378,7 @@ const HatchSessionPage = () => {
               <div className="naming-input-container">
                 <input
                   type="text"
-                  className="monster-name-input-modern"
+                  className="form-input"
                   value={monsterNames[currentEggData.eggId] || ''}
                   onChange={(e) => handleNameChange(currentEggData.eggId, e.target.value)}
                   placeholder={`Hatched Monster ${currentEggData.eggId}`}
@@ -398,7 +398,7 @@ const HatchSessionPage = () => {
             <i className="fas fa-sparkles"></i>
             Available Monsters
           </h3>
-          <div className="monster-grid-modern">
+          <div className="catalogue-grid">
             {currentEggData.monsters.map((monster, index) => {
               const isClaimedWithEdenwiess = claimedMonsterIndices.includes(index);
               const isCurrentlySelected = selectedMonsters[currentEggData.eggId] === index;
@@ -406,9 +406,9 @@ const HatchSessionPage = () => {
               return (
                 <div
                   key={index}
-                  className={`monster-card-modern ${
+                  className={`monster-card-modern${
                     isCurrentlySelected ? 'selected' : ''
-                  } ${isEggSelected ? 'disabled' : ''} ${isClaimedWithEdenwiess ? 'claimed-with-edenwiess' : ''}`}
+                  }${isEggSelected ? 'disabled' : ''}${isClaimedWithEdenwiess ? 'claimed-with-edenwiess' : ''}`}
                   onClick={() => !isEggSelected && !isClaimedWithEdenwiess && handleMonsterSelect(currentEggData.eggId, index)}
                 >
                   <div className="monster-card-content">

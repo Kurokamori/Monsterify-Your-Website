@@ -140,8 +140,8 @@ const ShopItems = () => {
   }
   
   return (
-    <div className="shop-items-container">
-      <div className="shop-items-header">
+    <div className="shop-page">
+      <div className="adopt-card">
         <h1>Manage Items: {shop.name}</h1>
         <Link to="/admin/shop-manager" className="button secondary">
           <i className="fas fa-arrow-left"></i> Back to Shops
@@ -149,7 +149,7 @@ const ShopItems = () => {
       </div>
       
       <div className="shop-items-content">
-        <div className="shop-stock-section">
+        <div className="shop-form">
           <h2>Stock Shop</h2>
           
           <div className="stock-form">
@@ -220,7 +220,7 @@ const ShopItems = () => {
           {stockSuccess && <div className="stock-success">Shop stocked successfully!</div>}
         </div>
         
-        <div className="shop-items-list">
+        <div className="shop-form">
           <h2>Current Items</h2>
           
           {items.length === 0 ? (

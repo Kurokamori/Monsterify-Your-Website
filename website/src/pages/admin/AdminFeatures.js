@@ -466,11 +466,11 @@ const AdminFeatures = () => {
   const implementedCount = features.filter(f => f.implemented).length;
 
   return (
-    <div className="admin-features">
-      <div className="admin-features-header">
+    <div className="item-roller-container">
+      <div className="bazar-header">
         <h1>Admin Tools</h1>
         <p>All admin tools and features in one place</p>
-        <div className="admin-features-stats">
+        <div className="image-upload">
           <span className="stat-item">
             <i className="fas fa-tools"></i> {features.length} Total Tools
           </span>
@@ -500,14 +500,14 @@ const AdminFeatures = () => {
       </div>
 
       {/* Categories */}
-      <div className="admin-features-categories">
+      <div className="set-item">
         {categories.map(category => (
           <button
             key={category.id}
-            className={`admin-features-category ${activeCategory === category.id ? 'active' : ''}`}
+            className={`top-nav-link${activeCategory === category.id ? 'active' : ''}`}
             onClick={() => handleCategoryChange(category.id)}
           >
-            <i className={`fas ${category.icon}`}></i>
+            <i className={`fas${category.icon}`}></i>
             <span>{category.name}</span>
             <span className="category-count">{getCategoryCount(category.id)}</span>
           </button>
@@ -523,9 +523,9 @@ const AdminFeatures = () => {
           </div>
         ) : (
           filteredFeatures.map(feature => (
-            <div key={feature.id} className={`admin-feature-card ${!feature.implemented ? 'not-implemented' : ''}`}>
-              <div className="admin-feature-icon">
-                <i className={`fas ${feature.icon}`}></i>
+            <div key={feature.id} className={`gift-monster-card ${!feature.implemented ? 'not-implemented' : ''}`}>
+              <div className="location-icon">
+                <i className={`fas${feature.icon}`}></i>
               </div>
               <div className="admin-feature-content">
                 <h3 className="admin-feature-title">{feature.name}</h3>

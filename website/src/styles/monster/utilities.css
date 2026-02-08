@@ -6,7 +6,7 @@
    1. UTILITIES & EMPTY STATES
    ============================================================================= */
 
-/* Merged .no-monsters from multiple definitions */
+/* Merged .no-results from multiple definitions */
 
 .monster-error {
   text-align: center;
@@ -152,7 +152,7 @@
 
 /* Mobile screens (480px and below) */
 @media (max-width: 480px) {
-  .no-monsters {
+  .no-results {
     padding: 2rem 1rem;
     font-size: 1rem;
   }

@@ -170,7 +170,7 @@ const StarterSelectionPage = () => {
         return (
           <div className="starter-empty-state">
             <h2>Loading starter monsters...</h2>
-            <div className="starter-spinner-container">
+            <div className="evolution-attribute">
               <div className="starter-spinner"></div>
             </div>
           </div>
@@ -187,7 +187,7 @@ const StarterSelectionPage = () => {
             {currentSet.monsters.map((monster, index) => (
               <div
                 key={`${currentSet.setId}-${index}`}
-                className={`starter-card ${
+                className={`guide-card ${
                   selectedStarters[currentStep] === monster
                     ? 'selected'
                     : ''
@@ -207,7 +207,7 @@ const StarterSelectionPage = () => {
         return (
           <div className="starter-empty-state">
             <h2>Please select all three starters first</h2>
-            <div className="starter-spinner-container">
+            <div className="evolution-attribute">
               <button
                 className="button secondary"
                 onClick={() => setCurrentStep(0)}
@@ -345,7 +345,7 @@ const StarterSelectionPage = () => {
             return (
               <button
                 key={index}
-                className={`starter-progress-tab ${currentStep === index ? 'active' : ''} ${isCompleted ? 'completed' : ''}`}
+                className={`button${currentStep === index ? 'active' : ''}${isCompleted ? 'completed' : ''}`}
                 onClick={() => setCurrentStep(index)}
                 disabled={isDisabled || submitting}
               >

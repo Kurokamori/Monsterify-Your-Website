@@ -167,7 +167,7 @@ const RoutineModal = ({ isOpen, onClose, onSuccess, trainers = [], routine = nul
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-content large" onClick={e => e.stopPropagation()}>
-        <div className="modal-header">
+        <div className="tree-header">
           <h3>{routine ? 'Edit Routine' : 'Create New Routine'}</h3>
           <button className="button close" onClick={onClose}>
             <i className="fas fa-times"></i>
@@ -252,7 +252,7 @@ const RoutineModal = ({ isOpen, onClose, onSuccess, trainers = [], routine = nul
             {formData.pattern_type === 'custom' && (
               <div className="form-group">
                 <label>Select Days</label>
-                <div className="checkbox-group">
+                <div className="event-date">
                   {weekDays.map(day => (
                     <label key={day} className="checkbox-label">
                       <input

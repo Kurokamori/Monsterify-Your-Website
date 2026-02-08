@@ -1,22 +1,10 @@
 /* =========================
    Fakemon Styles
    - Dex grid page styles
-   - Detail page styles (scoped under .fakemon-detail-container)
+   - Detail page styles (scoped under .fakedex-container)
    ========================= */
 
 /* ========== Containers (shared) ========== */
-.fakedex-container,
-.fakemon-detail-container {
-  background-color: var(--background-color);
-  color: var(--text-color);
-  margin: 0 auto;
-  max-width: var(--container-max-width);
-  min-height: 100vh;
-  padding: 0 var(--content-padding);
-  padding-bottom: 3rem;
-  padding-top: 2rem;
-  width: 100%;
-}
 
 /* ========== Dex: Header ========== */
 .fakedex-header {
@@ -64,12 +52,6 @@
   box-shadow: none;
 }
 
-.fakedex-controls-inner {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
 .search-and-toggles {
   display: flex;
   align-items: center;
@@ -79,11 +61,7 @@
 
 .search-form {
   flex: 1;
-  max-width: 400px;
 }
-
-/* Filter toggle buttons: Use unified button system from common/buttons.css
-   Example: className="button toggle" or className="button toggle active" */
 
 .filter-count {
   background-color: var(--error-light);
@@ -98,48 +76,12 @@
   font-weight: 700;
 }
 
-.filters-container {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-}
-
 .filter-section {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
   margin-bottom: 2rem;
 }
-
-.filter-buttons {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-}
-
-/* Search input */
-.search-input input {
-  width: 100%;
-  padding: 0.6rem 2.5rem 0.6rem 1rem;
-  background-color: var(--nav-hover);
-  border: 2px solid var(--border-color);
-  border-radius: 8px;
-  color: var(--text-color);
-  font-size: 0.9rem;
-  transition: all 0.3s ease;
-  box-shadow: inset 0 2px 4px var(--overlay-light);
-}
-
-.search-input input:focus {
-  outline: none;
-  border-color: var(--accent-color);
-  box-shadow: 0 0 0 3px var(--accent-glow);
-}
-
-.search-input input::placeholder { color: var(--text-muted); }
-
-/* Search input buttons: Use unified button system from common/buttons.css
-   Example: className="button ghost sm" positioned within .search-input */
 
 /* Category filter colors */
 
@@ -238,14 +180,6 @@
   font-size: 0.6rem;
 }
 
-.fakemon-category,
-.fakemon-attribute {
-  font-size: 0.65rem;
-  color: var(--text-muted);
-  margin-bottom: 0.25rem;
-  line-height: 1.3;
-}
-
 /* Scoped: short description inside cards */
 
 /* ========== Pagination ========== */
@@ -263,11 +197,11 @@
 
 /* ================================================================
    DETAIL PAGE STYLES
-   All scoped under .fakemon-detail-container where collision risk
+   All scoped under .fakedex-container where collision risk
    ================================================================ */
 
 /* ========== Detail: Hero Section ========== */
-.fakemon-detail-container .fakemon-hero {
+.fakedex-container .fakemon-hero {
   display: flex;
   align-items: center;
   gap: 3rem;
@@ -281,7 +215,7 @@
   overflow: hidden;
 }
 
-.fakemon-detail-container .fakemon-hero::before {
+.fakedex-container .fakemon-hero::before {
   content: '';
   position: absolute;
   top: 0;
@@ -339,21 +273,14 @@
   border-top: 1px solid var(--highlight-light);
 }
 
-.fakemon-hero-info {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.fakemon-detail-container .fakemon-number {
+.fakedex-container .fakemon-number {
   font-size: var(--font-size-lg);
   color: var(--accent-color);
   font-weight: 700;
   letter-spacing: 1px;
 }
 
-.fakemon-detail-container .fakemon-name {
+.fakedex-container .fakemon-name {
   font-size: var(--font-size-4xl);
   font-weight: 700;
   background: var(--accent-gradient);
@@ -371,13 +298,13 @@
   margin-bottom: 0.5rem;
 }
 
-.fakemon-detail-container .fakemon-types {
+.fakedex-container .fakemon-types {
   display: flex;
   gap: 0.75rem;
   margin-top: 0.25rem;
 }
 
-.fakemon-detail-container .fakemon-types .type-badge {
+.fakedex-container .fakemon-types .type-badge {
   padding: 0.45rem 1rem;
   font-size: 0.9rem;
   letter-spacing: 0.5px;
@@ -392,14 +319,14 @@
   margin-bottom: 2rem;
 }
 
-.fakemon-panel-section {
+.evo-tree {
   background: var(--card-background);
   border-radius: 12px;
   padding: 1.5rem;
   border: 1px solid var(--border-color);
 }
 
-.fakemon-detail-container .panel-heading {
+.fakedex-container .panel-heading {
   font-size: var(--font-size-lg);
   font-weight: 700;
   background: var(--accent-gradient);
@@ -414,25 +341,6 @@
   display: flex;
   flex-wrap: wrap;
   gap: 0.6rem;
-}
-
-.ability-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.45rem 1rem;
-  background: var(--input-background);
-  border-radius: 20px;
-  border: 1px solid var(--border-color);
-  color: var(--text-color);
-  font-weight: 600;
-  font-size: var(--font-size-xs);
-  transition: all 0.2s ease;
-}
-
-.ability-pill:hover {
-  border-color: var(--accent-color);
-  transform: translateY(-2px);
 }
 
 .ability-hidden-pill {
@@ -503,13 +411,13 @@
   border: 1px solid var(--border-color);
 }
 
-.fakemon-detail-container .stats-grid {
+.fakedex-container .stats-grid {
   display: flex;
   flex-direction: column;
   gap: 0.4rem;
 }
 
-.fakemon-detail-container .stat-row {
+.fakedex-container .stat-row {
   display: grid;
   grid-template-columns: 36px 38px 1fr;
   align-items: center;
@@ -517,7 +425,7 @@
   padding: 0.2rem 0;
 }
 
-.fakemon-detail-container .stat-label {
+.fakedex-container .stat-label {
   font-size: 0.75rem;
   font-weight: 700;
   color: var(--highlight-heavy);
@@ -527,7 +435,7 @@
   width: auto;
 }
 
-.fakemon-detail-container .stat-value {
+.fakedex-container .stat-value {
   font-size: var(--font-size-xs);
   font-weight: 700;
   text-align: right;
@@ -536,12 +444,12 @@
 }
 
 /* Stat value color classes */
-.fakemon-detail-container .stat-legendary { color: var(--accent-light); }
-.fakemon-detail-container .stat-excellent { color: var(--success-color); }
-.fakemon-detail-container .stat-great { color: var(--blue-color); }
-.fakemon-detail-container .stat-good { color: var(--text-color); }
-.fakemon-detail-container .stat-average { color: var(--warning-color); }
-.fakemon-detail-container .stat-low { color: var(--error-color); }
+.fakedex-container .stat-legendary { color: var(--accent-light); }
+.fakedex-container .stat-excellent { color: var(--success-color); }
+.fakedex-container .stat-great { color: var(--blue-color); }
+.fakedex-container .stat-good { color: var(--text-color); }
+.fakedex-container .stat-average { color: var(--warning-color); }
+.fakedex-container .stat-low { color: var(--error-color); }
 
 .stat-bar-track {
   height: 8px;
@@ -564,13 +472,13 @@
   background: linear-gradient(90deg, var(--highlight-subtle) 0%, var(--highlight-subtle) 50%, var(--highlight-subtle) 100%);
 }
 
-.fakemon-detail-container .stat-total-row {
+.fakedex-container .stat-total-row {
   margin-top: 0.25rem;
   padding-top: 0.6rem;
   border-top: 1px solid var(--border-color);
 }
 
-.fakemon-detail-container .stat-total-value {
+.fakedex-container .stat-total-value {
   color: var(--accent-color) !important;
   font-size: var(--font-size-sm) !important;
 }
@@ -580,7 +488,7 @@
 }
 
 /* ========== Detail: Evolution Tree ========== */
-.fakemon-detail-container .fakemon-evolution-section {
+.fakedex-container .fakemon-evolution-section {
   background: var(--card-background);
   border-radius: 12px;
   padding: 1.5rem;
@@ -588,23 +496,14 @@
   border: 1px solid var(--border-color);
 }
 
-.evo-tree {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0;
-  overflow-x: auto;
-  padding: 1rem 0;
-  scrollbar-width: thin;
-  scrollbar-color: var(--border-color) transparent;
-}
-
 .evo-tree::-webkit-scrollbar {
   height: 6px;
+  width: 6px;
 }
 
 .evo-tree::-webkit-scrollbar-track {
-  background: transparent;
+  background: var(--input-background);
+  border-radius: 3px;
 }
 
 .evo-tree::-webkit-scrollbar-thumb {
@@ -686,16 +585,6 @@
 }
 
 /* Evolution branches */
-.evo-tree-branches {
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-}
-
-.evo-tree-branch {
-  display: flex;
-  align-items: center;
-}
 
 .evo-tree-connector {
   display: flex;
@@ -704,12 +593,6 @@
   gap: 0.25rem;
   padding: 0 0.4rem;
   min-width: 90px;
-}
-
-.evo-tree-arrow-line {
-  display: flex;
-  align-items: center;
-  width: 100%;
 }
 
 .evo-tree-line {
@@ -765,10 +648,8 @@
   display: flex;
   justify-content: space-between;
   margin-bottom: 3rem;
+  gap: 2rem;
 }
-
-/* Navigation buttons (prev/next): Use unified button system from common/buttons.css
-   Example: className="button secondary" */
 
 /* Universe tag on detail page */
 .fakemon-universe-tag {
@@ -827,6 +708,31 @@
   margin-top: 0.15rem;
 }
 
+.category-label {
+  font-size: 0.65rem;
+  color: var(--accent-color);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 0.25rem;
+}
+
+.fakemon-category {
+  display: flex;
+  gap: 0.5rem;
+  font-size: 0.65rem;
+  color: var(--text-muted);
+}
+
+.ability-pill {
+  padding: 0.25rem 0.6rem;
+  background: var(--nav-hover);
+  color: var(--text-color);
+  border-radius: 8px;
+  border: 2px solid var(--border-color);
+  font-size: 0.9rem;
+}
+
 /* ========== Dex: Responsive ========== */
 @media (max-width: 1024px) {
   .fakedex-grid {
@@ -848,7 +754,7 @@
   }
   
   
-  .filters-container { gap: 0.5rem; }
+  .auth-form { gap: 0.5rem; }
   .fakedex-header h1 { font-size: 2rem; }
   .fakedex-header p { font-size: 1rem; }
   .fakedex-controls { padding: 0.75rem; }
@@ -870,7 +776,7 @@
 
 /* ========== Detail: Responsive ========== */
 @media (max-width: 1024px) {
-  .fakemon-detail-container .fakemon-hero {
+  .fakedex-container .fakemon-hero {
     gap: 2rem;
     padding: 2rem;
   }
@@ -878,17 +784,17 @@
     width: 300px;
     height: 300px;
   }
-  .fakemon-detail-container .fakemon-name {
+  .fakedex-container .fakemon-name {
     font-size: 2.2rem;
   }
 }
 
 @media (max-width: 768px) {
-  .fakemon-detail-container {
+  .fakedex-container {
     padding-top: 1.5rem;
   }
 
-  .fakemon-detail-container .fakemon-hero {
+  .fakedex-container .fakemon-hero {
     flex-direction: column;
     text-align: center;
     padding: 1.5rem;
@@ -901,15 +807,15 @@
     margin: 0 auto;
   }
 
-  .fakemon-hero-info {
+  .banner-text {
     align-items: center;
   }
 
-  .fakemon-detail-container .fakemon-types {
+  .fakedex-container .fakemon-types {
     justify-content: center;
   }
 
-  .fakemon-detail-container .fakemon-name {
+  .fakedex-container .fakemon-name {
     font-size: 2rem;
   }
 
@@ -928,12 +834,8 @@
     flex-direction: column;
   }
 
-  .evo-tree-branches {
+  .stat-info {
     align-items: center;
-  }
-
-  .evo-tree-branch {
-    flex-direction: column;
   }
 
   .evo-tree-connector {
@@ -941,11 +843,6 @@
     min-width: auto;
     padding: 0.25rem 0;
     gap: 0.25rem;
-  }
-
-  .evo-tree-arrow-line {
-    flex-direction: column;
-    align-items: center;
   }
 
   .evo-tree-line {
@@ -971,7 +868,7 @@
     height: 200px;
   }
 
-  .fakemon-detail-container .fakemon-name {
+  .fakedex-container .fakemon-name {
     font-size: 1.8rem;
   }
 
@@ -979,12 +876,12 @@
     grid-template-columns: 1fr;
   }
 
-  .fakemon-detail-container .stat-row {
+  .fakedex-container .stat-row {
     grid-template-columns: 32px 34px 1fr;
     gap: 0.5rem;
   }
 
-  .fakemon-detail-container .stat-label {
+  .fakedex-container .stat-label {
     font-size: 0.7rem;
   }
 

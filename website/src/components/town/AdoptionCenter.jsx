@@ -507,9 +507,9 @@ const AdoptionCenter = () => {
   }
 
   return (
-    <div className="adoption-center-container">
-      <div className="adoption-center-controls">
-        <div className="view-options">
+    <div className="form">
+      <div className="option-row">
+        <div className="type-row">
           <button
             className={`button filter ${showCurrentMonthOnly ? 'active' : ''}`}
             onClick={() => handleViewOptionChange(true)}
@@ -541,7 +541,7 @@ const AdoptionCenter = () => {
       </div>
 
       {adopts.length === 0 ? (
-        <div className="no-adopts-message">
+        <div className="no-adventures">
           <p>No monsters available for adoption at this time.</p>
         </div>
       ) : (
@@ -567,7 +567,7 @@ const AdoptionCenter = () => {
                           <img
                             src={speciesImages[adopt.species1]}
                             alt={adopt.species1}
-                            className="species-image"
+                            className="item-icon"
                             onError={(e) => {
                               e.target.onerror = null;
                               e.target.style.display = 'none';
@@ -587,7 +587,7 @@ const AdoptionCenter = () => {
                           <img
                             src={speciesImages[adopt.species2]}
                             alt={adopt.species2}
-                            className="species-image"
+                            className="item-icon"
                             onError={(e) => {
                               e.target.onerror = null;
                               e.target.style.display = 'none';
@@ -607,7 +607,7 @@ const AdoptionCenter = () => {
                           <img
                             src={speciesImages[adopt.species3]}
                             alt={adopt.species3}
-                            className="species-image"
+                            className="item-icon"
                             onError={(e) => {
                               e.target.onerror = null;
                               e.target.style.display = 'none';
@@ -675,7 +675,7 @@ const AdoptionCenter = () => {
             </p>
 
             {adoptedMonster && (
-              <div className="adoption-actions">
+              <div className="type-tags">
                 <button
                   className="button primary"
                   onClick={openItemModal}
@@ -700,14 +700,14 @@ const AdoptionCenter = () => {
           <div className="adoption-form">
             {selectedAdopt && (
               <>
-                <div className="adopt-details">
+                <div className="no-npcs">
                   <h3>Monster Details</h3>
 
                   {/* Species Images in Modal - Clickable for Popout */}
                   <div className="modal-species-images">
                     {selectedAdopt.species1 && (
                       <div
-                        className={`modal-species-image-container ${speciesImages[selectedAdopt.species1] ? 'clickable' : ''}`}
+                        className={`modal-species-image-container${speciesImages[selectedAdopt.species1] ? 'clickable' : ''}`}
                         onClick={() => openImagePopout(speciesImages[selectedAdopt.species1], selectedAdopt.species1)}
                         title={speciesImages[selectedAdopt.species1] ? `Click to view ${selectedAdopt.species1}` : selectedAdopt.species1}
                       >
@@ -727,7 +727,7 @@ const AdoptionCenter = () => {
                     )}
                     {selectedAdopt.species2 && (
                       <div
-                        className={`modal-species-image-container fusion ${speciesImages[selectedAdopt.species2] ? 'clickable' : ''}`}
+                        className={`modal-species-image-container fusion${speciesImages[selectedAdopt.species2] ? 'clickable' : ''}`}
                         onClick={() => openImagePopout(speciesImages[selectedAdopt.species2], selectedAdopt.species2)}
                         title={speciesImages[selectedAdopt.species2] ? `Click to view ${selectedAdopt.species2}` : selectedAdopt.species2}
                       >
@@ -748,7 +748,7 @@ const AdoptionCenter = () => {
                     )}
                     {selectedAdopt.species3 && (
                       <div
-                        className={`modal-species-image-container fusion ${speciesImages[selectedAdopt.species3] ? 'clickable' : ''}`}
+                        className={`modal-species-image-container fusion${speciesImages[selectedAdopt.species3] ? 'clickable' : ''}`}
                         onClick={() => openImagePopout(speciesImages[selectedAdopt.species3], selectedAdopt.species3)}
                         title={speciesImages[selectedAdopt.species3] ? `Click to view ${selectedAdopt.species3}` : selectedAdopt.species3}
                       >
@@ -783,14 +783,14 @@ const AdoptionCenter = () => {
                   {selectedAdopt.attribute && (
                     <div className="adopt-attribute-details">
                       <p><strong>Attribute:</strong></p>
-                      <div className="adopt-attribute-badge-container">
+                      <div className="evolution-attribute">
                         <AttributeBadge attribute={selectedAdopt.attribute} />
                       </div>
                     </div>
                   )}
                 </div>
 
-                <div className="adoption-inputs">
+                <div className="map-filters">
                   <div className="form-group">
                     <label htmlFor="monster-name">Monster Name:</label>
                     <input
@@ -830,8 +830,8 @@ const AdoptionCenter = () => {
                           alt={selectedArtwork.title}
                           className="selected-artwork-thumbnail"
                         />
-                        <div className="selected-artwork-info">
-                          <span className="selected-artwork-title">{selectedArtwork.title}</span>
+                        <div className="resource-info">
+                          <span className="detail-val">{selectedArtwork.title}</span>
                           <button
                             type="button"
                             className="button secondary"
@@ -850,7 +850,7 @@ const AdoptionCenter = () => {
                         placeholder="Search by title..."
                         value={artworkSearchQuery}
                         onChange={(e) => setArtworkSearchQuery(e.target.value)}
-                        className="artwork-search-input"
+                        className="special-input"
                       />
                       <button type="submit" className="button primary">
                         Search
@@ -885,7 +885,7 @@ const AdoptionCenter = () => {
                             {userArtworks.map(artwork => (
                               <div
                                 key={artwork.id}
-                                className={`artwork-selector-item ${selectedArtwork?.id === artwork.id ? 'selected' : ''}`}
+                                className={`value-item ${selectedArtwork?.id === artwork.id ? 'selected' : ''}`}
                                 onClick={() => setSelectedArtwork(artwork)}
                                 title={artwork.title}
                               >
@@ -919,7 +919,7 @@ const AdoptionCenter = () => {
                     </div>
                   )}
 
-                  <div className="adoption-actions">
+                  <div className="type-tags">
                     <button
                       className="button secondary"
                       onClick={closeAdoptModal}

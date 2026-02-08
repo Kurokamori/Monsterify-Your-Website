@@ -35,71 +35,6 @@
   margin: 0 0 10px 0;
 }
 
-.prompt-details {
-  background: var(--nav-hover);
-  border-left: 4px solid var(--blue-color);
-  padding: 12px 15px;
-  margin: 15px 0;
-  border-radius: 0 6px 6px 0;
-}
-
-.prompt-details h4 {
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: var(--text-color);
-  margin: 0 0 8px 0;
-}
-
-.prompt-details p {
-  font-size: 0.9rem;
-  color: var(--text-muted);
-  margin: 0;
-  line-height: 1.4;
-}
-
-.prompt-rewards-info {
-  background: var(--success-light);
-  border-left: 4px solid var(--success-color);
-  padding: 12px 15px;
-  margin: 15px 0;
-  border-radius: 0 6px 6px 0;
-}
-
-.prompt-rewards-info h4 {
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: var(--success-dark);
-  margin: 0 0 8px 0;
-}
-
-.prompt-rewards-info p {
-  font-size: 0.9rem;
-  color: var(--success-dark);
-  margin: 0;
-  font-weight: 500;
-}
-
-.prompt-requirements-info {
-  background: var(--warning-color);
-  border-left: 4px solid var(--warning-dark);
-  padding: 12px 15px;
-  margin: 15px 0;
-  border-radius: 0 6px 6px 0;
-}
-
-.prompt-requirements-info h4 {
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: var(--warning-dark);
-  margin: 0 0 8px 0;
-}
-
-.prompt-requirements-info p {
-  font-size: 0.9rem;
-  color: var(--warning-dark);
-  margin: 0;
-}
-
 /* Availability Error */
 .availability-error {
   background: var(--error-light);
@@ -144,17 +79,6 @@
   .prompt-info-section {
     padding: 12px;
   }
-  
-  .prompt-details,
-  .prompt-rewards-info,
-  .prompt-requirements-info {
-    padding: 10px 12px;
-    margin: 12px 0;
-  }
-  
-  .form-textarea {
-    min-height: 80px;
-  }
 }
 
 /* Focus styles for accessibility */
@@ -180,35 +104,10 @@
   font-weight: 600;
 }
 
-.basic-rewards,
-.item-rewards,
-.special-item-rewards,
-.monster-rewards {
-  background: var(--card-background);
-  border: 1px solid var(--border-color);
-  border-radius: 8px;
-  display: grid;
-  flex-wrap: wrap;
-  gap: 15px;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  justify-content: center;
-  margin-bottom: 25px;
-  padding: 20px;
-}
-
 .reward-text {
   color: var(--text-primary);
   font-size: 1rem;
   font-weight: 500;
-}
-
-.item-rewards h4,
-.special-item-rewards h4,
-.monster-rewards h4 {
-  font-size: 1.2rem;
-  color: var(--text-color);
-  margin-bottom: 15px;
-  font-weight: 600;
 }
 
 .monster-info h5 {
@@ -226,13 +125,13 @@
 
 /* Responsive Design for Rewards */
 @media (max-width: 768px) {
-  .basic-rewards {
+  .item-rewards {
   flex-direction: column;
   gap: 15px;
   grid-template-columns: 1fr;
 }
 
-  .monster-reward-card {
+  .gift-monster-card {
     flex-direction: column;
     gap: 15px;
     text-align: center;

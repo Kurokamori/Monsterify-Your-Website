@@ -1,55 +1,8 @@
 /* =========================
    Bulk Monster Add Component
    ========================= */
-.bulk-monster-add {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 2rem;
-}
-
-.bulk-monster-add-header {
-  text-align: center;
-  margin-bottom: 2rem;
-}
-
-.bulk-monster-add-header h2 {
-  font-size: 1.875rem;
-  font-weight: 700;
-  color: var(--text-color);
-  margin-bottom: 1rem;
-  background: linear-gradient(135deg, var(--text-color) 0%, var(--accent-color) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-.bulk-monster-add-header p {
-  color: var(--accent-color);
-  font-size: 1.125rem;
-  line-height: 1.6;
-}
 
 /* Form Styles */
-.bulk-monster-add-form {
-  background: var(--admin-card-bg);
-  border: 1px solid var(--border-color);
-  border-radius: .75rem;
-  padding: 2rem;
-  margin-bottom: 2rem;
-  box-shadow: var(--admin-shadow-md);
-  position: relative;
-  overflow: hidden;
-}
-
-.bulk-monster-add-form::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 4px;
-  background: var(--accent-gradient);
-}
 
 .form-group {
   display: flex;
@@ -89,32 +42,6 @@
   border-color: var(--accent-color);
   box-shadow: 0 0 0 3px var(--accent-glow-medium);
   outline: none;
-}
-
-.monsters-textarea {
-  width: 100%;
-  min-height: 300px;
-  padding: 1rem;
-  border: 2px solid var(--border-color);
-  border-radius: .5rem;
-  background: var(--input-background);
-  color: var(--text-color);
-  font-size: 0.875rem;
-  font-family: 'Courier New', monospace;
-  resize: vertical;
-  transition: all 0.3s ease;
-  line-height: 1.5;
-}
-
-.monsters-textarea:focus {
-  outline: none;
-  border-color: var(--accent-color);
-  box-shadow: 0 0 0 3px var(--accent-glow);
-}
-
-.monsters-textarea::placeholder {
-  color: var(--text-muted);
-  font-style: italic;
 }
 
 /* Results Section */
@@ -256,11 +183,6 @@
   font-weight: 700;
 }
 
-.guide-content p {
-  color: var(--text-color);
-  margin-bottom: 1rem;
-}
-
 .guide-content ul {
   color: var(--accent-color);
   margin: 0 0 1.5rem 1.5rem;
@@ -296,13 +218,10 @@
 
 /* Responsive Design */
 @media (max-width: 768px) {
-  .bulk-monster-add {
-    padding: 1.5rem;
-  }
   
-  .bulk-monster-add-header h2 {
-    font-size: 1.25rem;
-  }
+  .map-header h2 {
+  font-size: 1.5rem;
+}
   
   .bulk-monster-add-form {
     padding: 1.5rem;

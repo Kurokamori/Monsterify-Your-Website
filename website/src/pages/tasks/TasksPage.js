@@ -233,14 +233,14 @@ const TasksPage = () => {
   }
 
   return (
-    <div className="tasks-container">
-      <div className="tasks-header">
+    <div className="schedule-page">
+      <div className="option-row">
         <h1>Tasks</h1>
         <p>Complete daily and weekly tasks to earn rewards</p>
       </div>
 
       <div className="tasks-progress">
-        <div className="progress-card">
+        <div className="item-card">
           <div className="progress-header">
             <h2>Daily Tasks</h2>
             <span className="progress-percentage">{dailyProgress}%</span>
@@ -256,7 +256,7 @@ const TasksPage = () => {
           </div>
         </div>
         
-        <div className="progress-card">
+        <div className="item-card">
           <div className="progress-header">
             <h2>Weekly Tasks</h2>
             <span className="progress-percentage">{weeklyProgress}%</span>
@@ -315,7 +315,7 @@ const TasksPage = () => {
                     <div className="rewards-list">
                       {task.rewards.map((reward, index) => (
                         <div className="reward-badge" key={index}>
-                          <i className={`fas ${
+                          <i className={`fas${
                             reward.type === 'coin' ? 'fa-coins' : 
                             reward.type === 'exp' ? 'fa-star' : 
                             'fa-box'
@@ -327,7 +327,7 @@ const TasksPage = () => {
                   </div>
                 </div>
                 
-                <div className="task-actions">
+                <div className="type-row">
                   {task.completed ? (
                     <button className="button secondary" disabled>
                       <i className="fas fa-check-circle"></i> Completed
@@ -379,7 +379,7 @@ const TasksPage = () => {
                     <div className="rewards-list">
                       {task.rewards.map((reward, index) => (
                         <div className="reward-badge" key={index}>
-                          <i className={`fas ${
+                          <i className={`fas${
                             reward.type === 'coin' ? 'fa-coins' : 
                             reward.type === 'exp' ? 'fa-star' : 
                             'fa-box'
@@ -391,7 +391,7 @@ const TasksPage = () => {
                   </div>
                 </div>
                 
-                <div className="task-actions">
+                <div className="type-row">
                   {task.completed ? (
                     <button className="button secondary" disabled>
                       <i className="fas fa-check-circle"></i> Completed
@@ -440,7 +440,7 @@ const TasksPage = () => {
               {completeResults?.rewards.map((reward, index) => (
                 <div className="reward-item" key={index}>
                   <div className="reward-icon">
-                    <i className={`fas ${
+                    <i className={`fas${
                       reward.type === 'coin' ? 'fa-coins' : 
                       reward.type === 'exp' ? 'fa-star' : 
                       'fa-box'
@@ -464,7 +464,7 @@ const TasksPage = () => {
         ) : (
           <>
             {selectedTask && (
-              <div className="complete-form">
+              <div className="form">
                 <div className="task-preview">
                   <h3>{selectedTask.title}</h3>
                   <p>{selectedTask.description}</p>
@@ -474,7 +474,7 @@ const TasksPage = () => {
                     <div className="rewards-list">
                       {selectedTask.rewards.map((reward, index) => (
                         <div className="reward-badge" key={index}>
-                          <i className={`fas ${
+                          <i className={`fas${
                             reward.type === 'coin' ? 'fa-coins' : 
                             reward.type === 'exp' ? 'fa-star' : 
                             'fa-box'
@@ -486,7 +486,7 @@ const TasksPage = () => {
                   </div>
                 </div>
                 
-                <div className="trainer-selector">
+                <div className="missions-filters">
                   <label>Select Trainer:</label>
                   <select
                     value={selectedTrainer}

@@ -198,8 +198,8 @@ const ItemBulkFormPage = () => {
         </button>
       </div>
 
-      <div className="admin-form-container">
-        <form onSubmit={handleSubmit} className="admin-form">
+      <div className="bulk-monster-add-form">
+        <form onSubmit={handleSubmit} className="reroller-content">
           {items.map((item, index) => (
             <div key={index} className="admin-bulk-item-form">
               <div className="admin-bulk-item-header">
@@ -213,7 +213,7 @@ const ItemBulkFormPage = () => {
                 </button>
               </div>
 
-              <div className="admin-form-grid">
+              <div className="reroller-content">
                 <div className="admin-form-column">
                   <FormInput
                     label="Name"

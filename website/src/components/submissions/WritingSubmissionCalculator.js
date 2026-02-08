@@ -288,7 +288,7 @@ const WritingSubmissionCalculator = ({
                 label="Select Trainer"
                 placeholder="Type to search trainers..."
                 showOwnership={true}
-                className="entity-select"
+                className="form-input"
                 required
               />
             </div>
@@ -352,7 +352,7 @@ const WritingSubmissionCalculator = ({
                 label="Select Trainer First"
                 placeholder="Type to search trainers..."
                 showOwnership={true}
-                className="entity-select"
+                className="form-input"
                 required
               />
             </div>
@@ -365,7 +365,7 @@ const WritingSubmissionCalculator = ({
                   onSelect={(id) => setSelectedMonsterId(id)}
                   label="Select Monster"
                   placeholder="Type to search monsters..."
-                  className="entity-select"
+                  className="form-input"
                   required
                 />
               </div>
@@ -435,7 +435,7 @@ const WritingSubmissionCalculator = ({
                   value={npcName}
                   onChange={(e) => setNpcName(e.target.value)}
                   placeholder="NPC name for tracking"
-                  className="entity-select"
+                  className="form-input"
                 />
               </label>
             </div>
@@ -449,7 +449,7 @@ const WritingSubmissionCalculator = ({
                   value={npcWordCount}
                   onChange={(e) => setNpcWordCount(e.target.value)}
                   placeholder="Word count for this NPC"
-                  className="entity-select"
+                  className="form-input"
                 />
               </label>
             </div>

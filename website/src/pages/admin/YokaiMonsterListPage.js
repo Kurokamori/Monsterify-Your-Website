@@ -143,7 +143,7 @@ const YokaiMonsterListPage = () => {
           />
         </div>
 
-        <div className="admin-filter-group">
+        <div className="form-input">
           <div className="admin-filter">
             <label>Tribe:</label>
             <select value={tribeFilter} onChange={handleTribeFilterChange}>

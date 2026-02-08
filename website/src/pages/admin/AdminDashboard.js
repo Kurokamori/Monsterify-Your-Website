@@ -551,7 +551,7 @@ const AdminDashboard = () => {
       </div>
 
       {/* Stats Overview */}
-      <div className="admin-stats-grid">
+      <div className="button">
         <Link to="/admin/users" className="admin-stat-card clickable">
           <div className="admin-stat-icon users">
             <i className="fas fa-users"></i>
@@ -637,14 +637,14 @@ const AdminDashboard = () => {
         </div>
 
         {/* Categories */}
-        <div className="admin-features-categories">
+        <div className="set-item">
           {categories.map(category => (
             <button
               key={category.id}
-              className={`admin-features-category ${activeCategory === category.id ? 'active' : ''}`}
+              className={`top-nav-link${activeCategory === category.id ? 'active' : ''}`}
               onClick={() => setActiveCategory(category.id)}
             >
-              <i className={`fas ${category.icon}`}></i>
+              <i className={`fas${category.icon}`}></i>
               <span>{category.name}</span>
               <span className="category-count">{getCategoryCount(category.id)}</span>
             </button>
@@ -660,9 +660,9 @@ const AdminDashboard = () => {
             </div>
           ) : (
             filteredFeatures.map(feature => (
-              <div key={feature.id} className={`admin-feature-card ${!feature.implemented ? 'not-implemented' : ''}`}>
-                <div className="admin-feature-icon">
-                  <i className={`fas ${feature.icon}`}></i>
+              <div key={feature.id} className={`gift-monster-card ${!feature.implemented ? 'not-implemented' : ''}`}>
+                <div className="location-icon">
+                  <i className={`fas${feature.icon}`}></i>
                 </div>
                 <div className="admin-feature-content">
                   <h3 className="admin-feature-title">{feature.name}</h3>

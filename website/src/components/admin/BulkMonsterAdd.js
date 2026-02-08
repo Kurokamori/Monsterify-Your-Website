@@ -87,7 +87,7 @@ Blaze | 10 | Charmander | Fire | Data`;
 
   return (
     <div className="bulk-monster-add">
-      <div className="bulk-monster-add-header">
+      <div className="map-header">
         <h2>Bulk Add Monsters to Trainer</h2>
         <p>Add multiple monsters to a selected trainer using a simple text format.</p>
       </div>
@@ -123,7 +123,7 @@ Blaze | 10 | Charmander | Fire | Data`;
             onChange={(e) => setMonstersText(e.target.value)}
             placeholder={`Enter monsters data, one per line. Example:\n${exampleText}`}
             rows={10}
-            className="monsters-textarea"
+            className="form-input"
           />
         </div>
 
@@ -171,9 +171,9 @@ Blaze | 10 | Charmander | Fire | Data`;
                   <div key={index} className="monster-item success">
                     <span className="monster-name">{monster.name}</span>
                     <span className="monster-level">Lv. {monster.level}</span>
-                    <span className="monster-species">{monster.species.join(', ')}</span>
+                    <span className="monster-types">{monster.species.join(', ')}</span>
                     <span className="monster-types">{monster.types.join(', ')}</span>
-                    <span className="monster-attribute">{monster.attribute}</span>
+                    <span className="monster-types">{monster.attribute}</span>
                   </div>
                 ))}
               </div>

@@ -94,7 +94,7 @@ const Farm = () => {
   if (!isAuthenticated) {
     return (
       <div className="location-activity-container">
-        <div className="location-activity-header">
+        <div className="quick-actions">
           <Link to="/town" className="button secondary">
             <i className="fas fa-arrow-left mr-2"></i> Back to Town
           </Link>
@@ -187,7 +187,7 @@ const Farm = () => {
   if (showSession && sessionData && promptData && flavorData) {
     return (
       <div className="location-activity-container">
-        <div className="location-activity-header">
+        <div className="quick-actions">
           <button onClick={returnToActivity} className="button secondary">
             <i className="fas fa-arrow-left mr-2"></i> Back to Farm
           </button>
@@ -211,7 +211,7 @@ const Farm = () => {
   if (showBreeding) {
     return (
       <div className="location-activity-container">
-        <div className="location-activity-header">
+        <div className="quick-actions">
           <button onClick={handleBreedingCancel} className="button secondary">
             <i className="fas fa-arrow-left mr-2"></i> Back to Farm
           </button>
@@ -229,13 +229,13 @@ const Farm = () => {
   if (activeSession && !showSession) {
     return (
       <div className="location-activity-container">
-        <div className="location-activity-header">
+        <div className="quick-actions">
           <Link to="/town" className="button secondary">
             <i className="fas fa-arrow-left mr-2"></i> Back to Town
           </Link>
           <h1>Farm</h1>
         </div>
-        <div className="active-session-message">
+        <div className="auth-message">
           <h2>Active Session</h2>
           <p>You have an active farm session in progress.</p>
           <button onClick={continueSession} className="button primary">
@@ -248,7 +248,7 @@ const Farm = () => {
 
   return (
     <div className="location-activity-container">
-      <div className="location-activity-header">
+      <div className="quick-actions">
         <Link to="/town" className="button secondary">
           <i className="fas fa-arrow-left mr-2"></i> Back to Town
         </Link>
@@ -280,7 +280,7 @@ const Farm = () => {
 
         <div className="location-activities">
           <div className="location-activity-card">
-            <div className="activity-image">
+            <div className="npc-avatar">
               <img src="https://i.imgur.com/fztdYkJ.png" alt="Work the Farm" />
             </div>
             <div className="activity-info">
@@ -300,7 +300,7 @@ const Farm = () => {
           </div>
 
           <div className="location-activity-card">
-            <div className="activity-image">
+            <div className="npc-avatar">
               <img src="https://i.imgur.com/fztdYkJ.png" alt="Breed Monsters" />
             </div>
             <div className="activity-info">

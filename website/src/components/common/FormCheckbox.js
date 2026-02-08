@@ -20,7 +20,7 @@ const FormCheckbox = ({
           checked={checked}
           onChange={onChange}
           disabled={disabled}
-          className={`form-checkbox ${error ? 'has-error' : ''}`}
+          className={`form-checkbox${error ? 'has-error' : ''}`}
           {...props}
         />
         

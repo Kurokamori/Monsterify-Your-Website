@@ -94,14 +94,14 @@ const AdminPromptList = ({
     <div className="admin-prompt-list">
       {/* Filters */}
       <div className="list-filters">
-        <div className="filter-row">
-          <div className="filter-group">
+        <div className="form-row">
+          <div className="set-item">
             <label htmlFor="type-filter">Type:</label>
             <select
               id="type-filter"
               value={filters.type}
               onChange={(e) => handleFilterChange('type', e.target.value)}
-              className="filter-select"
+              className="filter-input"
             >
               <option value="">All Types</option>
               <option value="general">General</option>
@@ -111,13 +111,13 @@ const AdminPromptList = ({
             </select>
           </div>
 
-          <div className="filter-group">
+          <div className="set-item">
             <label htmlFor="status-filter">Status:</label>
             <select
               id="status-filter"
               value={filters.status}
               onChange={(e) => handleFilterChange('status', e.target.value)}
-              className="filter-select"
+              className="filter-input"
             >
               <option value="all">All</option>
               <option value="active">Active Only</option>
@@ -231,7 +231,7 @@ const AdminPromptList = ({
                       {new Date(prompt.created_at).toLocaleDateString()}
                     </td>
                     <td className="actions-cell">
-                      <div className="admin-action-buttons">
+                      <div className="quick-actions">
                         <button
                           onClick={() => onEdit(prompt)}
                           className="button primary"
@@ -257,7 +257,7 @@ const AdminPromptList = ({
       </div>
 
       {/* Summary Stats */}
-      <div className="list-summary">
+      <div className="item-config">
         <div className="summary-stats">
           <div className="stat-item">
             <span className="stat-label">Total Prompts:</span>

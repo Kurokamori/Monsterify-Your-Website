@@ -93,7 +93,7 @@ const TasksTab = ({ trainers, onRefresh }) => {
 
   return (
     <div className="tasks-tab">
-      <div className="tab-header">
+      <div className="option-row">
         <h2>Tasks</h2>
         <button
           className="button primary"
@@ -126,7 +126,7 @@ const TasksTab = ({ trainers, onRefresh }) => {
       </div>
 
       {filteredTasks.length === 0 ? (
-        <div className="empty-state">
+        <div className="no-npcs">
           <i className="fas fa-tasks"></i>
           <h3>No tasks found</h3>
           <p>
@@ -149,7 +149,7 @@ const TasksTab = ({ trainers, onRefresh }) => {
             <div key={task.id} className="item-card">
               <div className="item-header">
                 <h3 className="item-title">{task.title}</h3>
-                <span className={`item-status ${task.status}`}>
+                <span className={`item-status${task.status}`}>
                   {task.status}
                 </span>
               </div>

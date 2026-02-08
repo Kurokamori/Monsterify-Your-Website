@@ -87,7 +87,7 @@ const TributeSubmissionModal = ({ faction, trainerId, standing, onClose, onSubmi
   return (
     <div className="tribute-modal-overlay" onClick={onClose}>
       <div className="tribute-modal" onClick={(e) => e.stopPropagation()}>
-        <div className="modal-header">
+        <div className="tree-header">
           <h2>Submit Tribute to {faction.name}</h2>
           <button className="button icon danger" onClick={onClose}>×</button>
         </div>

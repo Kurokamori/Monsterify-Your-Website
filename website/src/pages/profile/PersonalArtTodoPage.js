@@ -358,7 +358,7 @@ const PersonalArtTodoPage = () => {
 
   if (!isAuthenticated) {
     return (
-      <div className="art-todo-container">
+      <div className="schedule-page">
         <div className="auth-required">
           <h2>Authentication Required</h2>
           <p>Please log in to access your art todo lists.</p>
@@ -381,8 +381,8 @@ const PersonalArtTodoPage = () => {
   }
 
   return (
-    <div className="art-todo-container">
-      <div className="art-todo-header">
+    <div className="schedule-page">
+      <div className="option-row">
         <h1>My Art To-Do Lists</h1>
         <button
           className="button primary"
@@ -407,9 +407,9 @@ const PersonalArtTodoPage = () => {
           </button>
         </div>
       ) : (
-        <div className="lists-grid">
+        <div className="items-grid">
           {lists.map(list => (
-            <div key={list.id} className="list-card">
+            <div key={list.id} className="item-card">
               <div className="list-header">
                 <h3 className="list-title">{list.title}</h3>
                 <div className="list-actions">
@@ -465,7 +465,7 @@ const PersonalArtTodoPage = () => {
       {/* Selected List Items View */}
       {selectedList && !isCreateItemModalOpen && !isEditItemModalOpen && (
         <div className="list-items-view">
-          <div className="items-header">
+          <div className="option-row">
             <h2>{selectedList.title} - Items</h2>
             <div className="items-actions">
               <button
@@ -485,7 +485,7 @@ const PersonalArtTodoPage = () => {
 
           <div className="items-grid">
             {selectedList.items?.map(item => (
-              <div key={item.id} className={`item-card status-${item.status} priority-${item.priority}`}>
+              <div key={item.id} className={`item-card status-${item.status}priority-${item.priority}`}>
                 <div className="item-header">
                   <h4 className="item-title">{item.title}</h4>
                   <div className="item-actions">
@@ -626,7 +626,7 @@ const PersonalArtTodoPage = () => {
         onClose={() => setIsCreateListModalOpen(false)}
         title="Create New Art Todo List"
       >
-        <form onSubmit={handleCreateList} className="list-form">
+        <form onSubmit={handleCreateList} className="form">
           <div className="form-group">
             <label htmlFor="list-title">Title *</label>
             <input
@@ -671,7 +671,7 @@ const PersonalArtTodoPage = () => {
         onClose={() => setIsEditListModalOpen(false)}
         title="Edit Art Todo List"
       >
-        <form onSubmit={handleUpdateList} className="list-form">
+        <form onSubmit={handleUpdateList} className="form">
           <div className="form-group">
             <label htmlFor="edit-list-title">Title *</label>
             <input
@@ -716,7 +716,7 @@ const PersonalArtTodoPage = () => {
         onClose={() => setIsCreateItemModalOpen(false)}
         title="Create New Art Todo Item"
       >
-        <form onSubmit={handleCreateItem} className="item-form">
+        <form onSubmit={handleCreateItem} className="form">
           <div className="form-group">
             <label htmlFor="item-title">Title *</label>
             <input
@@ -823,7 +823,7 @@ const PersonalArtTodoPage = () => {
         onClose={() => setIsEditItemModalOpen(false)}
         title="Edit Art Todo Item"
       >
-        <form onSubmit={handleUpdateItem} className="item-form">
+        <form onSubmit={handleUpdateItem} className="form">
           <div className="form-group">
             <label htmlFor="edit-item-title">Title *</label>
             <input
@@ -937,10 +937,10 @@ const PersonalArtTodoPage = () => {
             {itemReferences.length === 0 ? (
               <p className="no-references">No references added yet.</p>
             ) : (
-              <div className="references-grid">
+              <div className="items-grid">
                 {itemReferences.map(ref => (
-                  <div key={ref.id} className="reference-item">
-                    <div className="reference-image">
+                  <div key={ref.id} className="level-summary">
+                    <div className="item-icon">
                       {ref.reference_image ? (
                         <img
                           src={ref.reference_image}
@@ -953,7 +953,7 @@ const PersonalArtTodoPage = () => {
                       )}
                     </div>
                     <div className="reference-info">
-                      <span className="reference-name">{ref.reference_name}</span>
+                      <span className="damage-cell">{ref.reference_name}</span>
                       <span className="reference-type">{ref.reference_type}</span>
                     </div>
                     <button
@@ -990,7 +990,7 @@ const PersonalArtTodoPage = () => {
 
               <div className="tab-content">
                 {selectedTab === 'trainers' && (
-                  <div className="trainers-grouped">
+                  <div className="map-filters">
                     {Object.entries(getGroupedTrainers()).map(([groupName, groupTrainers]) => (
                       <div key={groupName} className="trainer-group">
                         <div 
@@ -1003,10 +1003,10 @@ const PersonalArtTodoPage = () => {
                           </h4>
                         </div>
                         {!collapsedTrainerGroups[groupName] && (
-                          <div className="trainers-grid">
+                          <div className="items-grid">
                             {groupTrainers.map(trainer => (
-                              <div key={trainer.id} className="reference-option">
-                                <div className="reference-image">
+                              <div key={trainer.id} className="level-summary">
+                                <div className="item-icon">
                                   {trainer.main_ref ? (
                                     <img
                                       src={trainer.main_ref}
@@ -1019,7 +1019,7 @@ const PersonalArtTodoPage = () => {
                                   )}
                                 </div>
                                 <div className="reference-info">
-                                  <span className="reference-name">{trainer.name}</span>
+                                  <span className="damage-cell">{trainer.name}</span>
                                   <span className="reference-details">
                                     {trainer.species1} {trainer.type1 && `• ${trainer.type1}`}
                                   </span>
@@ -1043,7 +1043,7 @@ const PersonalArtTodoPage = () => {
                 {selectedTab === 'monsters' && (
                   <div className="monsters-section">
                     <div className="monsters-filters">
-                      <div className="filter-row">
+                      <div className="form-row">
                         <div className="search-box">
                           <i className="fas fa-search"></i>
                           <input
@@ -1067,10 +1067,10 @@ const PersonalArtTodoPage = () => {
                         </select>
                       </div>
                     </div>
-                    <div className="monsters-grid">
+                    <div className="button">
                       {getFilteredMonsters().map(monster => (
-                        <div key={monster.id} className="reference-option">
-                          <div className="reference-image">
+                        <div key={monster.id} className="level-summary">
+                          <div className="item-icon">
                             {monster.img_link ? (
                               <img
                                 src={monster.img_link}
@@ -1083,7 +1083,7 @@ const PersonalArtTodoPage = () => {
                             )}
                           </div>
                           <div className="reference-info">
-                            <span className="reference-name">{monster.name}</span>
+                            <span className="damage-cell">{monster.name}</span>
                             <span className="reference-details">
                               {monster.species1} {monster.type1 && `• ${monster.type1}`}
                             </span>
@@ -1133,7 +1133,7 @@ const PersonalArtTodoPage = () => {
               <p>No references have been added to this item yet.</p>
             </div>
           ) : (
-            <div className="reference-matrix-grid">
+            <div className="items-grid">
               {itemReferences.map(ref => (
                 <div
                   key={ref.id}

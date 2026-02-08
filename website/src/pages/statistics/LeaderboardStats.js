@@ -167,8 +167,8 @@ const LeaderboardStats = () => {
   const renderLeaderboard = (title, data, valueKey, valueLabel, icon) => {
     if (!data || !Array.isArray(data) || data.length === 0) {
       return (
-        <div className="statistics-section">
-          <div className="statistics-section-header">
+        <div className="missions-header">
+          <div className="option-row">
             <h3 className="statistics-section-title">{title}</h3>
           </div>
           <div className="no-data-message">
@@ -179,8 +179,8 @@ const LeaderboardStats = () => {
     }
 
     return (
-      <div className="statistics-section">
-        <div className="statistics-section-header">
+      <div className="missions-header">
+        <div className="option-row">
           <h3 className="statistics-section-title">{title}</h3>
         </div>
         <div className="leaderboard-podium">
@@ -193,7 +193,7 @@ const LeaderboardStats = () => {
               return (
                 <div 
                   key={trainer.id || index} 
-                  className={`podium-card ${isFirst ? 'first-place' : ''} position-${actualPosition + 1}`}
+                  className={`podium-card ${isFirst ? 'first-place' : ''}position-${actualPosition + 1}`}
                   style={{ order: index }}
                 >
                   <div className={`podium-rank rank-${actualPosition + 1}`}>
@@ -211,13 +211,13 @@ const LeaderboardStats = () => {
                         }}
                       />
                     ) : null}
-                    <i className={`fas ${icon} trainer-icon`} style={trainer.main_ref ? {display: 'none'} : {}}></i>
+                    <i className={`fas${icon}trainer-icon`} style={trainer.main_ref ? {display: 'none'} : {}}></i>
                   </div>
                   <div className="podium-info">
                     <h4 className="podium-name">
                       {trainer.name || 'Unknown Trainer'}
                     </h4>
-                    <div className="podium-details">
+                    <div className="fandom-grid">
                       <span className="podium-level">
                         {valueKey === 'monster_ref_percent' 
                           ? `${trainer[valueKey] || 0}% (${trainer.monster_ref_count || 0}/${trainer.monster_count || 0})`
@@ -235,9 +235,9 @@ const LeaderboardStats = () => {
           {data.length > 3 && (
             <div className="remaining-positions">
               {data.slice(3, 5).map((trainer, index) => (
-                <div className="remaining-card" key={trainer.id || (index + 3)}>
+                <div className="art-calculator" key={trainer.id || (index + 3)}>
                   <div className="remaining-rank">#{index + 4}</div>
-                  <div className="remaining-image">
+                  <div className="pc-box-slot">
                     {trainer.main_ref ? (
                       <img 
                         src={trainer.main_ref} 
@@ -249,13 +249,13 @@ const LeaderboardStats = () => {
                         }}
                       />
                     ) : null}
-                    <i className={`fas ${icon} trainer-icon`} style={trainer.main_ref ? {display: 'none'} : {}}></i>
+                    <i className={`fas${icon}trainer-icon`} style={trainer.main_ref ? {display: 'none'} : {}}></i>
                   </div>
                   <div className="remaining-info">
                     <h4 className="remaining-name">
                       {trainer.name || 'Unknown Trainer'}
                     </h4>
-                    <div className="remaining-details">
+                    <div className="stat-info">
                       <span className="remaining-level">
                         {valueKey === 'monster_ref_percent' 
                           ? `${trainer[valueKey] || 0}% (${trainer.monster_ref_count || 0}/${trainer.monster_count || 0})`
@@ -340,18 +340,18 @@ const LeaderboardStats = () => {
         'fa-trophy'
       )}
 
-      <div className="statistics-section">
-        <div className="statistics-section-header">
+      <div className="missions-header">
+        <div className="option-row">
           <h3 className="statistics-section-title">Type Specialists</h3>
         </div>
         <div className="specialists-grid">
           {Object.entries(displayStats.type_specialists).map(([type, specialist]) => (
-            <div className="specialist-card" key={type}>
+            <div className="art-calculator" key={type}>
               <div className="specialist-type">
                 <span className={`type-badge type-${type.toLowerCase()}`}>{type}</span>
               </div>
               {specialist.main_ref && (
-                <div className="specialist-avatar">
+                <div className="npc-avatar">
                   <img 
                     src={specialist.main_ref} 
                     alt={specialist.trainer_name || 'Trainer'} 
@@ -366,7 +366,7 @@ const LeaderboardStats = () => {
                 <h4 className="specialist-name">
                   {specialist.trainer_name}
                 </h4>
-                <div className="specialist-details">
+                <div className="stat-info">
                   <span className="specialist-count">{specialist.count} {type} monsters</span>
                   <span className="specialist-player">Player: {specialist.player_display_name}</span>
                 </div>
@@ -376,18 +376,18 @@ const LeaderboardStats = () => {
         </div>
       </div>
 
-      <div className="statistics-section">
-        <div className="statistics-section-header">
+      <div className="missions-header">
+        <div className="option-row">
           <h3 className="statistics-section-title">Attribute Specialists</h3>
         </div>
         <div className="specialists-grid">
           {Object.entries(displayStats.attribute_specialists).map(([attribute, specialist]) => (
-            <div className="specialist-card" key={attribute}>
+            <div className="art-calculator" key={attribute}>
               <div className="specialist-type">
                 <span className={`attribute-badge attribute-${attribute.toLowerCase()}`}>{attribute}</span>
               </div>
               {specialist.main_ref && (
-                <div className="specialist-avatar">
+                <div className="npc-avatar">
                   <img 
                     src={specialist.main_ref} 
                     alt={specialist.trainer_name || 'Trainer'} 
@@ -402,7 +402,7 @@ const LeaderboardStats = () => {
                 <h4 className="specialist-name">
                   {specialist.trainer_name}
                 </h4>
-                <div className="specialist-details">
+                <div className="stat-info">
                   <span className="specialist-count">{specialist.count} {attribute} monsters</span>
                   <span className="specialist-player">Player: {specialist.player_display_name}</span>
                 </div>
@@ -412,13 +412,13 @@ const LeaderboardStats = () => {
         </div>
       </div>
 
-      <div className="statistics-section">
-        <div className="statistics-section-header">
+      <div className="missions-header">
+        <div className="option-row">
           <h3 className="statistics-section-title">Species Specialists</h3>
         </div>
         <div className="species-specialists">
           {displayStats.species_specialists.map((specialist, index) => (
-            <div className="species-specialist-card" key={`${specialist.trainer_name}-${specialist.species}`}>
+            <div className="art-calculator" key={`${specialist.trainer_name}-${specialist.species}`}>
               <div className="species-specialist-rank">#{index + 1}</div>
               {specialist.main_ref && (
                 <div className="species-specialist-avatar">
@@ -436,7 +436,7 @@ const LeaderboardStats = () => {
                 <h4 className="species-specialist-trainer">
                   {specialist.trainer_name}
                 </h4>
-                <div className="species-specialist-details">
+                <div className="type-bar-container">
                   <span className="species-specialist-species">{specialist.count} {specialist.species}</span>
                   {specialist.faction && (
                     <span className="species-specialist-faction">Faction: {specialist.faction}</span>
@@ -444,9 +444,9 @@ const LeaderboardStats = () => {
                   <span className="species-specialist-player">Player: {specialist.player_display_name}</span>
                 </div>
               </div>
-              <div className="species-specialist-monsters">
+              <div className="stat-group">
                 {specialist.sample_monsters.map((monster) => (
-                  <div className="species-monster-preview" key={monster.id}>
+                  <div className="my-trainer-stats" key={monster.id}>
                     <img
                       src={monster.img_link || '/images/default_mon.png'}
                       alt={monster.name}

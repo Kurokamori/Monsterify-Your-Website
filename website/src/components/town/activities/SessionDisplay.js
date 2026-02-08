@@ -406,9 +406,9 @@ const SessionDisplay = ({
 
             {/* Monster Rewards Grid */}
             {rewards.filter(reward => reward.type === 'monster').length > 0 && (
-              <div className="monster-rewards-section">
+              <div className="other-rewards-section">
                 <h4>Monster Rewards</h4>
-                <div className="monster-rewards-grid">
+                <div className="button">
                   {Array.isArray(rewards) && rewards
                     .filter(reward => reward.type === 'monster')
                     .map((reward, index) => (
@@ -434,12 +434,12 @@ const SessionDisplay = ({
             {rewards.filter(reward => reward.type !== 'monster').length > 0 && (
               <div className="other-rewards-section">
                 <h4>Other Rewards</h4>
-                <div className="rewards-grid">
+                <div className="town-places">
                   {Array.isArray(rewards) && rewards
                     .filter(reward => reward.type !== 'monster')
                     .map((reward, index) => (
-                      <div key={reward.id || index} className={`reward-card ${reward.claimed ? 'claimed' : ''}`}>
-                        <div className={`reward-icon ${reward.type}`}>
+                      <div key={reward.id || index} className={`area-card ${reward.claimed ? 'claimed' : ''}`}>
+                        <div className={`reward-icon${reward.type}`}>
                           <i className={
                             reward.type === 'coin' ? 'fas fa-coins' :
                             reward.type === 'item' ? 'fas fa-box' :
@@ -460,7 +460,7 @@ const SessionDisplay = ({
                            reward.type === 'level' ? `${reward.reward_data.levels} level${reward.reward_data.levels > 1 ? 's' : ''}` :
                            'Mystery reward'}
                         </div>
-                        <div className={`reward-rarity ${reward.rarity}`}>
+                        <div className={`reward-rarity${reward.rarity}`}>
                           {reward.rarity.charAt(0).toUpperCase() + reward.rarity.slice(1)}
                         </div>
 
@@ -533,13 +533,13 @@ const SessionDisplay = ({
             <img
               src={flavor.image_url}
               alt={`${session.location} ${session.activity}`}
-              className="activity-image"
+              className="npc-avatar"
             />
           )}
           <p className="flavor-text">{flavor.flavor_text}</p>
         </div>
 
-        <div className="activity-prompt">
+        <div className="info-item">
           <h3>Your Creative Prompt</h3>
           <p><strong>Prompt:</strong> {prompt.prompt_text}</p>
           <div className="creative-instructions">

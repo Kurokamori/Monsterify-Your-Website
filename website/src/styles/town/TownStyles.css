@@ -27,40 +27,13 @@
   box-shadow: 0 2px 4px var(--overlay-light);
 }
 
-.location-image {
-  width: 100%;
-  height: auto;
-  object-fit: cover;
-  flex-shrink: 0;
-  position: relative;
-  display: block;
-}
-
 /* Town Info */
 
 /* Town Square */
 
 /* Adoption Center Styles */
-.adoption-center-container {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-}
 
 /* Controls */
-.adoption-center-controls {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1.5rem;
-  flex-wrap: wrap;
-  gap: 1rem;
-}
-
-.view-options {
-  display: flex;
-  gap: 0.5rem;
-}
 
 /* BUTTON STYLES REMOVED - Use unified button system from common/buttons.css
    Pattern: className="button [type] [modifiers]"
@@ -86,28 +59,6 @@
 }
 
 /* Adopts Grid */
-.adopts-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-  gap: 1.5rem;
-  margin-bottom: 1.5rem;
-}
-
-.adopt-card {
-  background-color: var(--nav-active);
-  border-radius: 0.5rem;
-  padding: 1.5rem;
-  box-shadow: 0 2px 4px var(--overlay-light);
-  display: grid;
-  grid-row: span 5;
-  grid-template-rows: subgrid;
-  row-gap: 0.5rem;
-  cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  position: relative;
-  overflow: hidden;
-  text-align: center;
-}
 
 .adopt-name {
   font-size: 1.25rem;
@@ -128,11 +79,6 @@
   row-gap: 0.5rem;
 }
 
-.adopt-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 5px 15px var(--overlay-light);
-}
-
 .adopt-types {
   display: flex;
   flex-wrap: wrap;
@@ -151,12 +97,6 @@
 
 .type-badge-adopt {
   display: block;
-  width: 100%;
-}
-
-.attribute-badge-adopt {
-  display: flex;
-  justify-content: center;
   width: 100%;
 }
 
@@ -244,14 +184,6 @@
 }
 
 /* Modal Species Images */
-.modal-species-images {
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  gap: 1rem;
-  margin: 1rem 0 1.5rem;
-  flex-wrap: wrap;
-}
 
 .modal-species-image-container {
   display: flex;
@@ -393,130 +325,10 @@
 }
 
 /* No Adopts Message */
-.no-adopts-message {
-  text-align: center;
-  padding: 2rem;
-  background-color: var(--card-background);
-  border-radius: 0.5rem;
-  box-shadow: 0 2px 4px var(--overlay-light);
-}
 
 /* Berry and Pastry Styles */
-.adoption-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 15px;
-  justify-content: center;
-  margin-top: 20px;
-}
 
 /* Berry/Pastry button styles removed - use "button primary" or "button info" */
-
-.berry-list,
-.pastry-list {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-  max-height: 400px;
-  overflow-y: auto;
-  padding-right: 1rem;
-}
-
-.berry-category,
-.pastry-category {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.berry-category h4,
-.pastry-category h4 {
-  font-size: 1rem;
-  color: var(--accent-color);
-  margin-bottom: 0.5rem;
-}
-
-.berry-items,
-.pastry-items {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 0.5rem;
-}
-
-.berry-item,
-.pastry-item {
-  background-color: var(--card-background);
-  border: 1px solid var(--border-color);
-  border-radius: 0.25rem;
-  cursor: pointer;
-  display: flex;
-  flex-direction: column;
-  padding: 0.75rem;
-  position: relative;
-  text-align: left;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.berry-item.selected,
-.pastry-item.selected {
-  border-color: var(--accent-color);
-  box-shadow: 0 0 0 2px var(--accent-color);
-}
-
-.berry-count,
-.pastry-count {
-  position: absolute;
-  top: 0.25rem;
-  right: 0.25rem;
-  background-color: var(--accent-color);
-  color: var(--text-color);
-  font-size: 0.75rem;
-  font-weight: 600;
-  padding: 0.1rem 0.3rem;
-  border-radius: 1rem;
-}
-
-.berry-item:hover,
-.pastry-item:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 2px 4px var(--overlay-light);
-}
-
-.berry-item:disabled,
-.pastry-item:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.berry-name,
-.pastry-name {
-  font-weight: 600;
-  color: var(--accent-color);
-  margin-bottom: 0.25rem;
-}
-
-.berry-desc,
-.pastry-desc {
-  color: var(--text-color);
-  font-size: var(--font-size-xs);
-}
-
-.berry-error,
-.pastry-error {
-  color: var(--error-color);
-  margin: 1rem 0;
-  padding: 0.5rem;
-  background-color: var(--error-glow);
-  border-radius: 0.25rem;
-}
-
-.berry-actions,
-.pastry-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 0.5rem;
-  margin-top: 1rem;
-}
 /* Adoption Section */
 
 /* Adoption Modal */
@@ -527,17 +339,6 @@
   max-width: 90%;
 }
 
-.adopt-details {
-  background-color: var(--card-background-secondary);
-  padding: 1rem;
-  border-radius: 0.5rem;
-}
-
-.adopt-details h3 {
-  margin-bottom: 1rem;
-  color: var(--accent-color);
-}
-
 .adopt-types-details, .adopt-attribute-details {
   margin-bottom: 1rem;
 }
@@ -546,24 +347,13 @@
   justify-content: center;
 }
 
-.adopt-attribute-badge-container {
-  display: flex;
-  justify-content: center;
-}
-
-.adopt-attribute-badge-container .attribute-badge {
+.evolution-attribute .attribute-badge {
   width: 100%!important;
   text-align: center;
   font-weight: 600;
   font-size: var(--font-size-sm);
   margin-top: 0.75rem;
   justify-content: center;
-}
-
-.adoption-inputs {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
 }
 
 .balance-label {
@@ -630,17 +420,11 @@
   border: 1px solid var(--border-color);
 }
 
-.selected-artwork-info {
+.resource-info {
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
   flex: 1;
-}
-
-.selected-artwork-title {
-  font-weight: 500;
-  color: var(--text-color);
-  font-size: var(--font-size-sm);
 }
 
 /* Artwork Search */
@@ -648,21 +432,6 @@
   display: flex;
   gap: 0.5rem;
   margin-bottom: 1rem;
-}
-
-.artwork-search-input {
-  flex: 1;
-  padding: 0.5rem 0.75rem;
-  border: 1px solid var(--border-color);
-  border-radius: 0.375rem;
-  background-color: var(--input-background);
-  color: var(--text-color);
-  font-size: var(--font-size-sm);
-}
-
-.artwork-search-input:focus {
-  outline: none;
-  border-color: var(--accent-color);
 }
 
 /* Artwork Grid Container */
@@ -697,28 +466,6 @@
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
   gap: 0.75rem;
-}
-
-.artwork-selector-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 0.5rem;
-  border: 2px solid transparent;
-  border-radius: 0.5rem;
-  cursor: pointer;
-  transition: all 0.2s;
-  background-color: var(--nav-background);
-}
-
-.artwork-selector-item:hover {
-  border-color: var(--accent-color);
-  background-color: var(--nav-hover);
-}
-
-.artwork-selector-item.selected {
-  border-color: var(--success-color);
-  background-color: var(--success-color-light, var(--success-glow-light));
 }
 
 .artwork-thumbnail {
@@ -767,7 +514,7 @@
     text-align: center;
   }
 
-  .selected-artwork-info {
+  .resource-info {
     align-items: center;
   }
 }
@@ -845,11 +592,6 @@
 /* Banner Section */
 
 /* Content Layout */
-.witchs-hut-content {
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-}
 
 /* Evolution Information */
 .evolution-info {
@@ -877,7 +619,7 @@
 
 /* Evolution Form */
 
-.evolution-form h3 {
+.town-square h3 {
   color: var(--accent-color);
   margin-bottom: 1rem;
   font-size: 1.5rem;
@@ -886,92 +628,17 @@
 /* Species Slot Selection */
 
 /* Evolution Options */
-.evolution-options {
-  background-color: var(--nav-background);
-  border-radius: 0.5rem;
-  padding: 1.5rem;
-}
 
-.evolution-options h4 {
+.help-content h4 {
   color: var(--accent-color);
   margin-bottom: 1rem;
   font-size: 1.1rem;
 }
 
-.evolution-options-list {
-  margin-top: 1rem;
-}
-
-.evolution-options-list p {
+.help-content p {
   color: var(--text-color);
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
   opacity: 0.8;
-}
-
-.evolution-option {
-  display: block;
-  width: 100%;
-  padding: 0.75rem 1rem;
-  margin-bottom: 0.5rem;
-  background-color: var(--card-background);
-  border: 1px solid var(--border-color);
-  border-radius: 0.375rem;
-  color: var(--text-color);
-  cursor: pointer;
-  transition: all 0.2s ease;
-  text-align: left;
-}
-
-.evolution-option:hover {
-  background-color: var(--nav-hover);
-  border-color: var(--accent-color);
-}
-
-.evolution-option.selected {
-  background-color: var(--accent-color);
-  color: var(--text-color);
-  border-color: var(--accent-color);
-}
-
-/* Custom Species Input */
-.custom-species-input {
-  width: 100%;
-  background-color: var(--nav-background);
-  background: var(--input-background);
-  border: 1px solid var(--border-color);
-  border-radius: 0.5rem;
-  padding: 0.75rem;
-  color: var(--text-color);
-  margin-bottom: 0.75rem;
-}
-
-.custom-species-input h4 {
-  color: var(--accent-color);
-  margin-bottom: 0.75rem;
-  font-size: 1.1rem;
-}
-
-.custom-species-input p {
-  color: var(--text-color);
-  margin-bottom: 1rem;
-  opacity: 0.8;
-}
-
-.custom-species-name-input {
-  width: 100%;
-  padding: 0.75rem;
-  background-color: var(--input-background);
-  border: 1px solid var(--border-color);
-  border-radius: 0.375rem;
-  color: var(--text-color);
-  font-size: 1rem;
-  margin-bottom: 1rem;
-}
-
-.custom-species-name-input:focus {
-  outline: none;
-  border-color: var(--accent-color);
-  box-shadow: 0 0 0 3px var(--accent-glow);
 }
 
 .custom-species-preview {
@@ -990,20 +657,6 @@
   color: var(--accent-color);
 }
 
-/* Evolution Preview */
-.evolution-preview {
-  background-color: var(--nav-background);
-  border-radius: 0.5rem;
-  padding: 1.5rem;
-  margin-top: 1rem;
-}
-
-.evolution-preview h4 {
-  color: var(--accent-color);
-  margin-bottom: 1rem;
-  font-size: 1.1rem;
-}
-
 .preview-image img {
   width: 100%;
   height: 100%;
@@ -1016,66 +669,24 @@
 
 /* Image Submission */
 
-.image-url-input:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-/* Evolution Items */
-.evolution-item-selection {
-  background-color: var(--nav-background);
-  border-radius: 0.5rem;
-  padding: 1.5rem;
-}
-
-.evolution-item-selection h4 {
-  color: var(--accent-color);
-  margin-bottom: 0.75rem;
-  font-size: 1.1rem;
-}
-
-.evolution-item-selection p {
-  color: var(--text-color);
-  margin-bottom: 1.5rem;
-  opacity: 0.8;
-}
-
 .evolution-items-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 0.75rem;
 }
 
-.evolution-item {
-  background-color: var(--card-background);
-  border: 1px solid var(--border-color);
-  border-radius: 0.375rem;
-  padding: 1rem;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.evolution-item:hover:not(.unavailable) {
+.value-item:hover:not(.unavailable) {
   background-color: var(--nav-hover);
   border-color: var(--accent-color);
   transform: translateY(-1px);
 }
 
-.evolution-item.selected {
-  background-color: var(--accent-color);
-  color: var(--text-color);
-  border-color: var(--accent-color);
-}
-
-.evolution-item.unavailable {
+.value-item.unavailable {
   opacity: 0.5;
   cursor: not-allowed;
 }
 
-.evolution-item.selected .item-count {
+.value-item.selected .item-count {
   background-color: var(--text-color);
   color: var(--accent-color);
 }
@@ -1126,13 +737,6 @@
   box-shadow: 0 0 0 3px var(--accent-glow);
 }
 
-.step-header {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  margin-bottom: 1.5rem;
-}
-
 .step-header h3,
 .step-header h4 {
   color: var(--accent-color);
@@ -1163,47 +767,14 @@
 }
 
 /* Enhanced No Monsters State */
-.no-monsters {
-  background-color: var(--card-background);
-  border: 1px dashed var(--border-color);
-  border-radius: 0.75rem;
-  color: var(--text-muted);
-  font-size: 1.1rem;
-  grid-column: 1/-1;
-  padding: 3rem 2rem;
-  text-align: center;
-}
 
-.no-monsters i {
-  font-size: 3rem;
-  color: var(--accent-color);
-  opacity: 0.5;
-  margin-bottom: 1rem;
-}
-
-.no-monsters h4 {
+.no-results h4 {
   color: var(--text-color);
   margin-bottom: 0.5rem;
   font-size: 1.25rem;
 }
 
-.no-monsters p {
-  color: var(--text-color);
-  opacity: 0.7;
-  max-width: 400px;
-  margin: 0 auto;
-}
-
 /* Evolution Help Section */
-.evolution-help {
-  display: flex;
-  gap: 1rem;
-  background: linear-gradient(135deg, var(--accent-glow), var(--accent-glow));
-  border: 1px solid var(--accent-glow);
-  border-radius: 0.75rem;
-  padding: 1.5rem;
-  margin-top: 2rem;
-}
 
 .help-icon {
   width: 30px;
@@ -1219,12 +790,6 @@
   margin-top: 0.25rem;
 }
 
-.help-content h4 {
-  color: var(--accent-color);
-  margin-bottom: 0.75rem;
-  font-size: 1.1rem;
-}
-
 .help-content ul {
   margin: 0;
   padding-left: 1.25rem;
@@ -1236,32 +801,7 @@
   line-height: 1.5;
 }
 
-/* ==============================
-   Evolution Wizard Layout
-   ============================== */
-
-.evolution-wizard {
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-}
-
 /* Monster Summary Header */
-.monster-summary {
-  display: flex;
-  align-items: center;
-  gap: 2rem;
-  padding: 1.5rem;
-  background: linear-gradient(135deg, var(--nav-background), var(--card-background));
-  border-radius: 1rem;
-  border: 1px solid var(--border-color);
-}
-
-.monster-info h3 {
-  color: var(--accent-color);
-  margin-bottom: 0.5rem;
-  font-size: 1.5rem;
-}
 
 .species-display {
   color: var(--text-color);
@@ -1270,13 +810,7 @@
   opacity: 0.9;
 }
 
-.types-display {
-  display: flex;
-  gap: 0.5rem;
-  flex-wrap: wrap;
-}
-
-.evolution-target {
+.ability-preview {
   flex: 1;
   text-align: center;
 }
@@ -1297,20 +831,6 @@
   font-size: 2rem;
 }
 
-/* Species Selection */
-.species-options {
-  display: flex;
-  gap: 1rem;
-  flex-wrap: wrap;
-}
-
-/* Evolution Methods */
-.evolution-methods {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-}
-
 .method-header h5 {
   color: var(--accent-color);
   margin: 0;
@@ -1324,12 +844,6 @@
   border-radius: 1rem;
   font-size: 0.8rem;
   font-weight: 500;
-}
-
-.evolution-method p {
-  color: var(--text-color);
-  opacity: 0.8;
-  margin-bottom: 1rem;
 }
 
 .evolution-options-grid {
@@ -1367,27 +881,6 @@
   opacity: 0.7;
 }
 
-.method-selector {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1.5rem;
-}
-
-.method-selector:hover:not(:disabled) {
-  border-color: var(--accent-color);
-}
-
-.method-selector.active {
-  background: var(--accent-color);
-  color: var(--text-color);
-  border-color: var(--accent-color);
-}
-
-.method-selector:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
 .custom-input {
   margin-top: 1rem;
 }
@@ -1415,12 +908,6 @@
   font-size: 1.1rem;
 }
 
-.preview-content {
-  display: flex;
-  align-items: center;
-  gap: 1.5rem;
-}
-
 .preview-info {
   flex: 1;
 }
@@ -1432,30 +919,10 @@
   margin-bottom: 0.5rem;
 }
 
-.preview-types {
-  display: flex;
-  gap: 0.5rem;
-  flex-wrap: wrap;
-}
-
 /* Image Section */
 
-.items-section:last-child {
+.help-content:last-child {
   margin-bottom: 0;
-}
-
-.image-section h5,
-.items-section h5 {
-  color: var(--accent-color);
-  margin-bottom: 0.5rem;
-  font-size: 1.1rem;
-}
-
-.image-section p,
-.items-section p {
-  color: var(--text-color);
-  opacity: 0.8;
-  margin-bottom: 1.5rem;
 }
 
 .image-input-tabs {
@@ -1468,12 +935,6 @@
 
 /* Tab button styles removed - use "button tab" */
 
-.image-inputs {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-}
-
 .file-input-wrapper {
   position: relative;
 }
@@ -1482,25 +943,6 @@
   position: absolute;
   opacity: 0;
   pointer-events: none;
-}
-
-.file-input-label {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  padding: 0.75rem;
-  background: var(--card-background);
-  border: 1px solid var(--border-color);
-  border-radius: 0.5rem;
-  color: var(--text-color);
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.file-input-label:hover {
-  border-color: var(--accent-color);
-  background: var(--nav-hover);
 }
 
 .void-stone-info {
@@ -1513,21 +955,6 @@
   border-radius: 0.5rem;
   color: var(--accent-color);
   font-weight: 500;
-}
-
-.image-preview-mini {
-  position: relative;
-  width: 100px;
-  height: 100px;
-  border-radius: 0.5rem;
-  overflow: hidden;
-  margin-top: 1rem;
-}
-
-.image-preview-mini img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
 }
 
 .remove-preview {
@@ -1567,6 +994,8 @@
   transition: all 0.2s ease;
   text-align: left;
   width: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 .evolution-item-full:hover:not(.unavailable) {
@@ -1662,6 +1091,14 @@
   opacity: 0.6;
 }
 
+.item-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  text-align: center;
+  align-items: center;
+}
+
 .loading-items {
   display: flex;
   align-items: center;
@@ -1672,55 +1109,27 @@
   opacity: 0.7;
 }
 
-.selected-item-info i {
-  color: var(--accent-color);
-  font-size: 1.1rem;
-}
-
-.selected-item-info strong {
+.naming-header strong {
   color: var(--accent-color);
 }
 
 /* Tab button disabled styles removed - use "button tab" with :disabled state */
 
 /* Evolution Success */
-.evolution-success {
-  text-align: center;
-  padding: 2rem;
-}
 
-.evolution-success h3 {
+.success-step h3 {
   color: var(--success-color);
   margin-bottom: 1rem;
   font-size: 1.5rem;
 }
 
-.evolution-success p {
+.success-step p {
   color: var(--text-color);
   margin-bottom: 1.5rem;
   line-height: 1.6;
 }
 
-.evolved-monster-details {
-  background-color: var(--nav-background);
-  border-radius: 0.5rem;
-  padding: 1.5rem;
-  margin: 1.5rem 0;
-  text-align: left;
-}
-
-.evolved-monster-details h4 {
-  color: var(--accent-color);
-  margin-bottom: 1rem;
-  font-size: 1.1rem;
-}
-
-.evolved-monster-details p {
-  margin-bottom: 0.5rem;
-  color: var(--text-color);
-}
-
-.evolved-monster-details strong {
+.help-content strong {
   color: var(--accent-color);
 }
 
@@ -1740,7 +1149,7 @@
     flex-direction: column;
   }
   
-  .evolution-form {
+  .town-square {
     gap: 1.5rem;
   }
   
@@ -1752,27 +1161,8 @@
     padding: 1rem;
   }
   
-  .monster-summary {
-    flex-direction: column;
-    gap: 1rem;
-    text-align: center;
-  }
-  
-  .species-options {
-    flex-direction: column;
-  }
-  
-  .species-option {
-    min-width: auto;
-  }
-  
   .evolution-options-grid {
     grid-template-columns: 1fr;
-  }
-  
-  .evolution-help {
-    flex-direction: column;
-    text-align: center;
   }
   
   .evolution-items-full-grid {
@@ -1797,7 +1187,7 @@
     font-size: 0.8rem;
   }
   
-  .selected-item-info {
+  .naming-header {
     padding: 0.75rem;
     font-size: 0.9rem;
   }
@@ -1814,11 +1204,11 @@
   
   
   
-  .evolution-form h3 {
+  .town-square h3 {
     font-size: 1.25rem;
   }
   
-  .evolved-monster-details,
+  .help-content,
   .monster-details {
     padding: 1rem;
   }
@@ -1917,7 +1307,7 @@
   color: var(--text-color);
 }
 
-.monster-info-details {
+.video-list {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
@@ -1949,14 +1339,8 @@
   border: 1px solid var(--custom-type);
 }
 
-.ability-actions {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
 @media (min-width: 768px) {
-  .ability-actions {
+  .rarity-options {
     flex-direction: row;
   }
 }
@@ -1977,11 +1361,6 @@
   background-color: var(--overlay-solid);
   border-radius: 8px;
   padding: 15px;
-}
-
-.ability-preview {
-  text-align: center;
-  flex: 1;
 }
 
 .ability-preview h4 {
@@ -2110,29 +1489,6 @@
 /* Responsive adjustments */
 
 /* Locations Page Styles */
-.locations-container {
-  width: 100%;
-  max-width: var(--container-max-width);
-  margin: 0 auto;
-  padding: 0 var(--content-padding);
-}
-
-.locations-header {
-  text-align: center;
-  margin-bottom: 2rem;
-}
-
-.locations-header h1 {
-  font-size: var(--font-size-3xl);
-  color: var(--accent-color);
-  margin-bottom: 0.5rem;
-}
-
-.locations-header p {
-  font-size: var(--font-size-lg);
-  color: var(--text-color);
-  opacity: 0.8;
-}
 
 /* Search and Filter */
 .locations-search-filter {
@@ -2150,38 +1506,12 @@
 
 /* Search button hover removed - use "button primary" */
 
-.locations-filter {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-}
-
 /* Locations Grid */
 .locations-grid {
   display: flex;
   flex-direction: column;
   gap: 2rem;
   margin-bottom: 3rem;
-}
-
-.location-card {
-  display: flex;
-  background-color: var(--card-background);
-  border-radius: 0.5rem;
-  overflow: hidden;
-  box-shadow: 0 2px 4px var(--overlay-light);
-  transition: transform 0.2s, box-shadow 0.2s;
-}
-
-.location-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 6px 12px var(--overlay-medium);
-}
-
-.location-image img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
 }
 
 .location-type {
@@ -2215,29 +1545,11 @@
   white-space: nowrap;
 }
 
-.location-region {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: var(--font-size-sm);
-  color: var(--text-color);
-  opacity: 0.8;
-  margin-bottom: 1rem;
-}
-
 .town-location-description {
   font-size: var(--font-size-md);
   color: var(--text-color);
   margin-bottom: 1rem;
   align-items: center;
-}
-
-.location-details {
-  display: flex;
-  gap: 1rem;
-  margin-bottom: 1.5rem;
-  flex: 1;
-  flex-direction: column;
 }
 
 .location-section {
@@ -2297,57 +1609,10 @@
   .locations-search {
     max-width: 100%;
   }
-  
-  .location-card {
-    flex-direction: column;
-  }
-  
-  .location-image {
-    width: 100%;
-    height: 200px;
-  }
-  
-  .location-details {
-    flex-direction: column;
-    gap: 1.5rem;
-  }
 }
 /* Town Locations Styles */
 
 /* Trade Center Styles */
-
-.trade-search .search-input, .monster-search .search-input {
-  background: var(--card-background);
-  background-color: var(--background-secondary);
-  border: 2px solid var(--border-color);
-  border-radius: 10px;
-  box-shadow: 0 2px 8px var(--overlay-light);
-  color: var(--text-color);
-  font-size: 0.95rem;
-  padding: 1rem 1rem 1rem 3rem;
-  transition: all 0.3s ease;
-  width: 100%;
-}
-
-.trade-search .search-input:focus, .monster-search .search-input:focus {
-  outline: none;
-  border-color: var(--accent-color);
-  box-shadow: 0 0 0 3px var(--accent-glow);
-}
-
-.trade-search .search-input::placeholder, .monster-search .search-input::placeholder {
-  color: var(--text-secondary);
-}
-
-.trade-search .search-icon, .monster-search .search-icon {
-  color: var(--text-secondary);
-  font-size: 1rem;
-  left: 1rem;
-  pointer-events: none;
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-}
 
 /* Adoption Center */
 
@@ -2370,23 +1635,7 @@
   font-size: var(--font-size-base);
 }
 
-/* Shop */
-
-/* Category button styles removed - use "button filter" */
-
-.shop-item-card {
-  background-color: var(--nav-background);
-  border-radius: 0.5rem;
-  overflow: hidden;
-  transition: transform 0.2s, box-shadow 0.2s;
-}
-
-.shop-item-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 6px 12px var(--overlay-medium);
-}
-
-.shop-item-card .evolution-item-image-container {
+.guide-card .evolution-item-image-container {
   width: 100%;
   height: 150px;
   background-color: var(--card-background);
@@ -2395,23 +1644,23 @@
   justify-content: center;
 }
 
-.shop-item-card .evolution-item-image {
+.guide-card .evolution-item-image {
   max-width: 100%;
   max-height: 100%;
   object-fit: contain;
 }
 
-.shop-item-card .item-info {
+.guide-card .item-info {
   padding: 1.25rem;
 }
 
-.shop-item-card .item-name {
+.guide-card .item-name {
   font-size: var(--font-size-lg);
   font-weight: 600;
   margin-bottom: 0.5rem;
 }
 
-.shop-item-card .item-description {
+.guide-card .item-description {
   font-size: var(--font-size-sm);
   margin-bottom: 1rem;
   color: var(--text-color);
@@ -2419,7 +1668,7 @@
   line-height: 1.5;
 }
 
-.shop-item-card .item-price {
+.guide-card .item-price {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -2428,27 +1677,13 @@
   border-top: 1px solid var(--divider-color);
 }
 
-.shop-item-card .price-amount {
+.guide-card .price-amount {
   font-weight: 600;
   color: var(--accent-color);
 }
 
-/* Buy button styles removed - use "button primary block" */
-
-/* Nursery */
-
-/* Breeding Actions */
-.breeding-actions {
-  display: flex;
-  gap: 1rem;
-  justify-content: center;
-  margin-top: 2rem;
-  padding-top: 2rem;
-  border-top: 1px solid var(--divider-color);
-}
-
 /* Top breeding actions - no top border, margin below instead */
-.breeding-actions.breeding-actions-top {
+.image-upload.breeding-actions-top {
   margin-top: 0;
   margin-bottom: 1.5rem;
   padding-top: 0;
@@ -2458,50 +1693,22 @@
 }
 
 /* Bottom breeding actions - standard styling */
-.breeding-actions.breeding-actions-bottom {
+.image-upload.breeding-actions-bottom {
   margin-top: 2rem;
   margin-bottom: 0;
 }
 
 /* Ensure button icons have proper spacing */
-.breeding-actions button i {
+.image-upload button i {
   margin-right: 0.5rem;
 }
 
 /* Trade Center */
-.trade-listings {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 1.5rem;
-}
-
-.trade-listing-card {
-  background-color: var(--nav-background);
-  border-radius: 0.5rem;
-  overflow: hidden;
-  transition: transform 0.2s, box-shadow 0.2s;
-}
-
-.trade-listing-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 6px 12px var(--overlay-medium);
-}
 
 .trade-listing-header {
   padding: 1rem;
   background-color: var(--card-background);
   border-bottom: 1px solid var(--divider-color);
-}
-
-.trade-listing-title {
-  font-weight: 600;
-  margin-bottom: 0.25rem;
-}
-
-.trade-listing-trainer {
-  font-size: var(--font-size-sm);
-  color: var(--text-color);
-  opacity: 0.8;
 }
 
 .trade-listing-content {
@@ -2540,20 +1747,10 @@
   flex: 1;
 }
 
-.trade-monster-name {
-  font-weight: 500;
-  margin-bottom: 0.25rem;
-}
-
 .trade-monster-details {
   display: flex;
   justify-content: space-between;
   font-size: var(--font-size-sm);
-}
-
-.trade-listing-actions {
-  display: flex;
-  gap: 0.5rem;
 }
 
 /* Trade action button styles removed - use "button primary" or "button secondary" */
@@ -2674,25 +1871,12 @@
 
 /* Responsive design */
 @media (max-width: 768px) {
-  
-  
-  
-  
-  
-  .monster-options {
+  .success-stats {
     grid-template-columns: 1fr;
   }
   
   .progress-bar {
     gap: 0.5rem;
-  }
-  
-  
-  
-  
-  
-  .monster-name-input input {
-    width: 100%;
   }
 }
 .garden-harvest-container {
@@ -2703,17 +1887,6 @@
   background-color: var(--card-background);
   border-radius: 0.5rem;
   box-shadow: 0 2px 8px var(--overlay-light);
-}
-
-.garden-harvest-header {
-  text-align: center;
-  margin-bottom: 1rem;
-}
-
-.garden-harvest-header h2 {
-  font-size: 1.8rem;
-  color: var(--primary-color);
-  margin-bottom: 0.5rem;
 }
 
 .garden-harvest-description {
@@ -2747,11 +1920,6 @@
   font-size: 1.2rem;
   margin-bottom: 0.25rem;
   color: var(--text-color);
-}
-
-.last-harvested {
-  font-size: 0.9rem;
-  color: var(--text-secondary);
 }
 
 .garden-harvest-info {
@@ -2804,24 +1972,6 @@
   max-width: 400px;
 }
 
-/* Garden Styles */
-.garden-container {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-}
-
-.garden-header {
-  text-align: center;
-  margin-bottom: 1rem;
-}
-
-.garden-header h2 {
-  font-size: var(--font-size-2xl);
-  color: var(--accent-color);
-  margin-bottom: 0.5rem;
-}
-
 .garden-description {
   color: var(--text-color);
   opacity: 0.8;
@@ -2830,34 +1980,6 @@
 }
 
 /* Garden Controls */
-.garden-controls {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
-  justify-content: space-between;
-  align-items: center;
-  background-color: var(--card-background);
-  border-radius: 0.5rem;
-  padding: 1rem;
-  box-shadow: 0 2px 4px var(--overlay-light);
-}
-
-.trainer-selector {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.trainer-selector label {
-  font-size: var(--font-size-base);
-  font-weight: 600;
-  color: var(--text-color);
-}
-
-.garden-actions {
-  display: flex;
-  gap: 0.5rem;
-}
 
 /* Action button tend/harvest styles removed - use "button primary" or "button success" */
 
@@ -2892,16 +2014,16 @@
 
 /* Garden Plots */
 
-.garden-plot.planted:hover {
+.guide-card.planted:hover {
   transform: translateY(-4px);
   box-shadow: 0 4px 8px var(--overlay-light);
 }
 
-.garden-plot.ready {
+.guide-card.ready {
   border: 2px solid var(--success-color);
 }
 
-.garden-plot.needs-tending {
+.guide-card.needs-tending {
   border: 2px solid var(--warning-color);
 }
 
@@ -2935,12 +2057,6 @@
   gap: 0.25rem;
 }
 
-.plot-growth {
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-}
-
 .growth-bar-container {
   height: 0.5rem;
   background-color: var(--card-background-light);
@@ -2952,12 +2068,6 @@
   height: 100%;
   background-color: var(--accent-color);
   border-radius: 0.25rem;
-}
-
-.growth-text {
-  font-size: var(--font-size-sm);
-  color: var(--text-color);
-  opacity: 0.8;
 }
 
 .plot-time {
@@ -2994,12 +2104,6 @@
   text-align: center;
 }
 
-.harvest-message {
-  font-size: var(--font-size-base);
-  color: var(--text-color);
-  margin: 0;
-}
-
 .harvested-items {
   width: 100%;
   text-align: left;
@@ -3032,26 +2136,6 @@
 
 /* Responsive Styles */
 @media (max-width: 768px) {
-  .garden-controls {
-    flex-direction: column;
-    align-items: stretch;
-  }
-  
-  .garden-actions {
-    flex-direction: column;
-  }
-}
-.game-corner-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 20px;
-}
-
-.game-corner-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
 }
 
 .game-corner-content {
@@ -3069,13 +2153,6 @@
   display: flex;
   flex-direction: column;
   height: 100%;
-}
-
-.video-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 15px;
 }
 
 .video-form {
@@ -3169,20 +2246,11 @@
   color: var(--text-muted);
 }
 
-.video-error .error-actions {
+.video-error .stat-group {
   display: flex;
   gap: 1rem;
   justify-content: center;
   flex-wrap: wrap;
-}
-
-/* Video error button styles removed - use "button primary sm" or "button secondary sm" */
-
-.video-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-top: 10px;
 }
 
 .video-item {
@@ -3232,11 +2300,6 @@
   text-align: center;
 }
 
-.timer-session {
-  font-size: 0.875rem;
-  color: var(--text-muted);
-}
-
 .timer-controls {
   width: 100%;
 }
@@ -3248,24 +2311,7 @@
   margin-bottom: 20px;
 }
 
-.timer-settings {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 15px;
-}
-
-.setting-group {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-}
-
-.setting-group label {
-  font-size: 0.875rem;
-  color: var(--text-muted);
-}
-
-.setting-group input {
+.set-item input {
   padding: 8px;
   border-radius: 4px;
   border: 1px solid var(--border-color);
@@ -3274,7 +2320,7 @@
   width: 100%;
 }
 
-.setting-group .checkbox-label {
+.set-item .checkbox-label {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -3283,7 +2329,7 @@
   color: var(--text-muted);
 }
 
-.setting-group .checkbox-label input[type="checkbox"] {
+.set-item .checkbox-label input[type="checkbox"] {
   width: 16px;
   height: 16px;
   padding: 0;
@@ -3291,7 +2337,7 @@
   accent-color: var(--blue-color);
 }
 
-.setting-group small {
+.set-item small {
   font-size: 0.75rem;
   color: var(--text-muted);
   margin-top: 2px;
@@ -3414,12 +2460,6 @@
   }
 }
 
-.breeding-form {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
 .trainer-select-container {
   flex: 1;
   position: relative;
@@ -3433,13 +2473,7 @@
    Breeding Results Styles
    =========================== */
 
-.breeding-results {
-  max-width: var(--container-max-width);
-  margin: 0 auto;
-  padding: var(--content-padding);
-}
-
-.breeding-results h2 {
+.area-page h2 {
   font-size: var(--font-size-3xl);
   color: var(--accent-color);
   text-align: center;
@@ -3450,18 +2484,20 @@
   gap: 0.75rem;
 }
 
-.breeding-results h2::before {
+.area-page h2::before {
   content: '🧬';
   font-size: 1.5rem;
 }
 
 /* Parent Cards Section */
 .breeding-parents {
+  box-sizing: border-box;
   display: grid;
-  grid-template-columns: 1fr 1fr;
   gap: 2rem;
-  margin-bottom: 3rem;
+  grid-template-columns: 1fr 1fr;
+  margin-bottom: 2rem;
   position: relative;
+  width: 100%;
 }
 
 .breeding-parents::after {
@@ -3518,7 +2554,7 @@
 /* Special berry button styles removed - use "button info lift glow" */
 
 /* Offspring Section */
-.breeding-results h3 {
+.area-page h3 {
   font-size: var(--font-size-2xl);
   color: var(--accent-color);
   margin-bottom: 1.5rem;
@@ -3527,16 +2563,9 @@
   gap: 0.5rem;
 }
 
-.breeding-results h3::before {
+.area-page h3::before {
   content: '🥚';
   font-size: 1.25rem;
-}
-
-.breeding-offspring {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 1.5rem;
-  margin-bottom: 2rem;
 }
 
 .offspring-card {
@@ -3602,13 +2631,9 @@
 
 /* Responsive Styles for Breeding */
 @media (max-width: 1024px) {
-  .breeding-offspring {
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  }
 }
 
 @media (max-width: 768px) {
-  .trainer-selection,
   .monster-selection {
     flex-direction: column;
   }
@@ -3623,42 +2648,9 @@
     transform: translate(-50%, -50%) rotate(90deg);
   }
 
-  .breeding-offspring {
-    grid-template-columns: 1fr;
-    gap: 1rem;
-  }
-
   .offspring-card {
     padding: 1rem;
   }
-
-  .breeding-actions {
-    flex-direction: column;
-    align-items: center;
-  }
-}
-.bazar-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 20px;
-}
-
-.bazar-header {
-  text-align: center;
-  margin-bottom: 30px;
-}
-
-.bazar-header h1 {
-  color: var(--accent-color);
-  margin-bottom: 10px;
-  font-size: 2.5rem;
-}
-
-.bazar-header p {
-  color: var(--text-color);
-  font-size: 1.1rem;
-  max-width: 600px;
-  margin: 0 auto;
 }
 
 .bazar-tabs {
@@ -3686,9 +2678,6 @@
 
 /* Responsive design */
 @media (max-width: 768px) {
-  .bazar-container {
-    padding: 10px;
-  }
 
   .bazar-tabs {
     flex-wrap: wrap;
@@ -3704,31 +2693,13 @@
     gap: 5px;
   }
 }
-/* Bakery Styles */
-.bakery-container {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-}
 
-.bakery-content {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-}
-
-.pastry-selection {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.pastry-selection h3 {
+.map-filters h3 {
   margin-bottom: 0.5rem;
   color: var(--primary-color);
 }
 
-.pastry-categories {
+.berry-categories {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
@@ -3736,13 +2707,7 @@
   padding-right: 0.5rem;
 }
 
-.pastry-item:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: 0 2px 4px var(--overlay-light);
-  border-color: var(--accent-color);
-}
-
-.pastry-success {
+.berry-success {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -3750,10 +2715,9 @@
   padding: 1rem;
 }
 
-/* Value Selection Modal Styles */
-.value-modal-content {
-  display: flex;
-  flex-direction: column;
+.berry-items {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   gap: 1rem;
 }
 
@@ -3765,36 +2729,9 @@
   overflow-y: auto;
 }
 
-.value-item {
-  padding: 0.75rem;
-  border-radius: 0.25rem;
-  background-color: var(--card-background);
-  border: 1px solid var(--border-color);
-  cursor: pointer;
-  transition: all 0.2s ease;
-  color: var(--text-color);
-}
-
-.value-item:hover {
-  border-color: var(--accent-color);
-}
-
-.value-item.selected {
-  background-color: var(--accent-color);
-  color: var(--text-color);
-  border-color: var(--accent-color);
-}
-
-.value-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 0.5rem;
-  margin-top: 1rem;
-}
-
 /* Responsive Styles */
 @media (max-width: 768px) {
-  .pastry-items {
+  .berry-items {
     grid-template-columns: 1fr;
   }
   
@@ -3802,87 +2739,15 @@
     grid-template-columns: 1fr 1fr;
   }
 }
-/* Apothecary Styles */
-.apothecary-container {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-}
-
-.apothecary-content {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-}
-
-.berry-selection {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.berry-selection h3 {
-  margin-bottom: 0.5rem;
-  color: var(--primary-color);
-}
-
-/* Berry and Pastry Filter Styles */
-
-.berry-categories {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-  overflow-y: auto;
-  padding-right: 0.5rem;
-}
-
-.berry-item:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: 0 2px 4px var(--overlay-light);
-  border-color: var(--primary-color);
-}
-
-.berry-success {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  padding: 1rem;
-}
-
-/* Species Selection Modal Styles */
-.species-modal-content {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.species-item:hover {
-  border-color: var(--primary-color);
-}
-
-.species-item.selected {
-  background-color: var(--primary-color);
-  color: var(--text-color);
-  border-color: var(--primary-color);
-}
-
-.species-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 0.5rem;
-  margin-top: 1rem;
-}
 
 /* Responsive Styles */
 @media (max-width: 768px) {
-  .berry-items {
-    grid-template-columns: 1fr;
-  }
+
   
-  .species-list {
-    grid-template-columns: 1fr 1fr;
-  }
+  .type-badges {
+  grid-template-columns: 1fr 1fr;
+  justify-content: flex-start;
+}
 }
 .antique-appraisal-modal {
   position: fixed;
@@ -3928,22 +2793,6 @@
 
 /* Close button hover removed - use "button close" */
 
-.antique-appraisal-body {
-  padding: 20px;
-  flex-grow: 1;
-}
-
-.appraisal-start {
-  text-align: center;
-  padding: 20px;
-}
-
-.appraisal-start p {
-  margin-bottom: 15px;
-  font-size: 1.1rem;
-  color: var(--text-color);
-}
-
 .no-options-message {
   text-align: center;
   padding: 2rem;
@@ -3957,22 +2806,11 @@
   margin: 0 auto;
 }
 
-.antique-store-header {
-  text-align: center;
-  margin-bottom: 30px;
-}
-
 .antique-store-description {
   font-size: 1.1rem;
   color: var(--text-color);
   max-width: 800px;
   margin: 0 auto;
-}
-
-.antique-store-content {
-  display: flex;
-  flex-direction: column;
-  gap: 30px;
 }
 
 .antiques-section {
@@ -3989,53 +2827,9 @@
   margin-top: 20px;
 }
 
-.antique-item {
-  background-color: var(--card-background);
-  border-radius: 8px;
-  padding: 15px;
-  box-shadow: 0 2px 4px var(--overlay-light);
-  transition: transform 0.2s, box-shadow 0.2s;
-  cursor: pointer;
-  display: flex;
-  flex-direction: column;
-}
-
-.antique-item:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 5px 15px var(--overlay-light);
-}
-
-.antique-item.selected {
+.adopt-card.selected {
   border: 2px solid var(--accent-color);
   box-shadow: 0 0 10px var(--blue-glow);
-}
-
-.antique-item-image {
-  height: 100px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-bottom: 15px;
-}
-
-.antique-item-image img {
-  max-height: 100%;
-  max-width: 100%;
-  object-fit: contain;
-}
-
-.antique-evolution-item-image {
-  height: 120px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-bottom: 15px;
-}
-
-.antique-evolution-item-image img {
-  max-height: 100%;
-  max-width: 100%;
-  object-fit: contain;
 }
 
 .antique-item-info {
@@ -4069,18 +2863,6 @@
   transition: background-color 0.2s;
 }
 
-.no-antiques-message, .select-trainer-message {
-  text-align: center;
-  padding: 30px;
-  background-color: var(--card-background);
-  border-radius: 8px;
-  color: var(--text-muted);
-}
-
-.no-antiques-message p, .select-trainer-message p {
-  margin: 10px 0;
-}
-
 /* Modal styles will be handled by the modal components */
 
 /* Antique Store Tabs */
@@ -4090,13 +2872,6 @@
   margin-bottom: 1.5rem;
   border-bottom: 2px solid var(--border-color);
   padding-bottom: 0.5rem;
-}
-
-/* Catalogue Styles */
-.catalogue-container {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
 }
 
 .catalogue-filters {
@@ -4110,7 +2885,7 @@
   box-shadow: 0 2px 4px var(--overlay-light);
 }
 
-.catalogue-filters .filter-group {
+.catalogue-filters .set-item {
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
@@ -4119,14 +2894,14 @@
   width: 100%;
 }
 
-.catalogue-filters .filter-group label {
+.catalogue-filters .set-item label {
   font-size: 0.875rem;
   font-weight: 500;
   color: var(--text-color);
 }
 
-.catalogue-filters .filter-group select,
-.catalogue-filters .filter-group input {
+.catalogue-filters .set-item select,
+.catalogue-filters .set-item input {
   padding: 0.5rem;
   border: 1px solid var(--border-color);
   border-radius: 4px;
@@ -4139,22 +2914,6 @@
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 1.5rem;
-}
-
-.catalogue-card {
-  background-color: var(--nav-active);
-  border-radius: 8px;
-  padding: 1rem;
-  box-shadow: 0 2px 4px var(--overlay-light);
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-  transition: transform 0.2s, box-shadow 0.2s;
-}
-
-.catalogue-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 4px 12px var(--overlay-medium);
 }
 
 .catalogue-card-image {
@@ -4205,29 +2964,10 @@
   text-align: center;
 }
 
-.catalogue-card-antique,
-.catalogue-card-species,
-.catalogue-card-creator {
-  font-size: 0.875rem;
-  color: var(--text-color);
-}
-
-.catalogue-card-antique .label,
-.catalogue-card-species .label,
-.catalogue-card-creator .label {
-  font-weight: 600;
-  margin-right: 0.25rem;
-}
-
-.catalogue-card-types {
+.auction-option-types {
   display: flex;
   flex-wrap: wrap;
   gap: 0.25rem;
-  justify-content: center;
-}
-
-.catalogue-card-attribute {
-  display: flex;
   justify-content: center;
 }
 
@@ -4279,38 +3019,10 @@
   box-shadow: 0 10px 40px var(--overlay-dark);
 }
 
-.antique-auction-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1rem 1.5rem;
-  border-bottom: 1px solid var(--border-color);
-  position: sticky;
-  top: 0;
-  background-color: var(--card-background);
-  z-index: 1;
-}
-
-.antique-auction-header h2 {
-  margin: 0;
-  font-size: 1.25rem;
-  color: var(--text-color);
-}
-
 /* Antique auction header close button styles removed - use "button close" */
 
 .antique-auction-body {
   padding: 1.5rem;
-}
-
-.auction-description {
-  margin-bottom: 1.5rem;
-  text-align: center;
-}
-
-.auction-description p {
-  margin: 0.5rem 0;
-  color: var(--text-color);
 }
 
 .auction-warning {
@@ -4329,29 +3041,6 @@
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   gap: 1rem;
   margin-bottom: 1.5rem;
-}
-
-.auction-option-card {
-  background-color: var(--background-color);
-  border: 2px solid var(--border-color);
-  border-radius: 8px;
-  padding: 1rem;
-  cursor: pointer;
-  transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  position: relative;
-}
-
-.auction-option-card:hover {
-  border-color: var(--accent-color);
-  transform: translateY(-2px);
-}
-
-.auction-option-card.selected {
-  border-color: var(--accent-color);
-  box-shadow: 0 0 0 3px rgba(var(--accent-color), 0.2);
 }
 
 .auction-option-image-container {
@@ -4402,29 +3091,6 @@
   text-align: center;
 }
 
-.auction-option-species,
-.auction-option-creator {
-  font-size: 0.8rem;
-  color: var(--text-secondary);
-}
-
-.auction-option-species .label,
-.auction-option-creator .label {
-  font-weight: 600;
-}
-
-.auction-option-types {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.25rem;
-  justify-content: center;
-}
-
-.auction-option-attribute {
-  display: flex;
-  justify-content: center;
-}
-
 .auction-option-description {
   font-size: 0.75rem;
   color: var(--text-secondary);
@@ -4464,22 +3130,7 @@
   color: var(--text-color);
 }
 
-.monster-adoption-form .form-control {
-  padding: 0.75rem;
-  border: 1px solid var(--border-color);
-  border-radius: 4px;
-  background-color: var(--card-background);
-  color: var(--text-color);
-  font-size: 1rem;
-}
-
-.monster-adoption-form .form-control:focus {
-  outline: none;
-  border-color: var(--accent-color);
-  box-shadow: 0 0 0 2px rgba(var(--accent-color, 74, 144, 226), 0.2);
-}
-
-.monster-adoption-form .adoption-actions {
+.monster-adoption-form .type-tags {
   display: flex;
   gap: 1rem;
   justify-content: flex-end;
@@ -4509,18 +3160,6 @@
   justify-content: center;
 }
 
-.map-background {
-  width: 100%;
-  height: 100%;
-  position: relative;
-}
-
-.map-image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
 .map-location {
   position: absolute;
   transform: translate(-50%, -50%);
@@ -4539,21 +3178,6 @@
 
 .map-location.locked {
   filter: grayscale(100%);
-}
-
-.location-icon {
-  width: 60px;
-  height: 60px;
-  background-color: var(--nav-background);
-  color: var(--text-color);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.5rem;
-  box-shadow: 0 2px 4px var(--overlay-medium);
-  margin-bottom: 0.5rem;
-  transition: all 0.2s;
 }
 
 .map-location.locked .location-icon {
@@ -4587,20 +3211,6 @@
 }
 
 /* Close button hover removed - use "button close" */
-
-.location-info-header {
-  padding: 1.5rem;
-  border-bottom: 1px solid var(--divider-color);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.location-info-header h2 {
-  font-size: var(--font-size-xl);
-  color: var(--accent-color);
-  margin: 0;
-}
 
 .location-locked-badge {
   background-color: var(--error-color-light);
@@ -4717,52 +3327,22 @@
   padding: 2rem;
 }
 
-.location-activity-header {
-  display: flex;
-  flex-direction: column;
-}
-
-.location-activity-header h1 {
+.quick-actions h1 {
   font-size: var(--font-size-4xl);
   color: var(--accent-color);
   margin: 0;
   text-align: center;
 }
 /* Town Square */
-.town-square {
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-}
 
-.town-welcome {
-  background-color: var(--card-background);
-  border-radius: 0.5rem;
-  padding: 2rem;
-  box-shadow: 0 2px 4px var(--overlay-light);
-}
-
-.town-welcome h2 {
+.town-section h2 {
   font-size: var(--font-size-2xl);
   color: var(--accent-color);
   margin-bottom: 1rem;
 }
 
-.town-welcome p {
+.town-section p {
   line-height: 1.6;
-}
-
-.town-sections {
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-}
-
-.town-section {
-  background-color: var(--card-background);
-  border-radius: 0.5rem;
-  padding: 2rem;
-  box-shadow: 0 2px 4px var(--overlay-light);
 }
 
 .town-section h3 {
@@ -4771,12 +3351,6 @@
   margin-bottom: 1.5rem;
   padding-bottom: 0.5rem;
   border-bottom: 1px solid var(--divider-color);
-}
-
-.town-places {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 1.5rem;
 }
 
 .town-place-card {
@@ -4848,20 +3422,10 @@
   flex-shrink: 0;
 }
 
-.location-title {
-  flex: 1;
-}
-
-.location-title h2 {
+.no-adventures h2 {
   font-size: var(--font-size-2xl);
   color: var(--accent-color);
   margin-bottom: 0.25rem;
-}
-
-.location-title p {
-  font-size: var(--font-size-base);
-  color: var(--text-color);
-  opacity: 0.8;
 }
 
 /* Location action button styles removed - use "button primary" or "button secondary" */
@@ -4901,16 +3465,6 @@
 
   .town-location {
     width: 80px;
-  }
-
-  .location-icon {
-    width: 50px;
-    height: 50px;
-    font-size: 1.25rem;
-  }
-
-  .town-places {
-    grid-template-columns: 1fr;
   }
 }
 
@@ -5031,23 +3585,12 @@
   font-size: 1.25rem;
 }
 
-.card-badge, .method-badge {
-  background: var(--accent-color);
-  color: var(--background-color);
-  padding: 0.25rem 0.75rem;
-  border-radius: 20px;
-  font-size: 0.8rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.method-badge.hatch {
+.card-badge.hatch {
   background: linear-gradient(135deg, var(--success-color), var(--success-dark));
   color: var(--text-color);
 }
 
-.method-badge.nurture {
+.card-badge.nurture {
   background: linear-gradient(135deg, var(--custom-type), var(--custom-type));
   color: var(--text-color);
 }
@@ -5087,24 +3630,6 @@
   pointer-events: none;
 }
 
-/* Resources Grid */
-
-.resource-item {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  padding: 1.5rem;
-  background: var(--nav-background);
-  border-radius: 12px;
-  border: 1px solid var(--border-color);
-  transition: all 0.3s ease;
-}
-
-.resource-item:hover {
-  border-color: var(--accent-color);
-  background: var(--nav-hover);
-}
-
 .resource-icon {
   width: 50px;
   height: 50px;
@@ -5129,13 +3654,6 @@
   background: linear-gradient(135deg, var(--custom-type), var(--custom-type));
 }
 
-.resource-info {
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-  flex: 1;
-}
-
 .resource-name {
   font-weight: 500;
   color: var(--highlight-heavy);
@@ -5153,27 +3671,7 @@
   margin: 2rem 0;
 }
 
-.method-tab {
-  display: flex;
-  align-items: center;
-  gap: 1.5rem;
-  padding: 2rem;
-  background: var(--nav-background);
-  border: 2px solid var(--border-color);
-  border-radius: 16px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  color: inherit;
-  text-decoration: none;
-}
-
-.method-tab:hover {
-  border-color: var(--accent-color);
-  background: var(--nav-hover);
-  transform: translateY(-2px);
-}
-
-.method-tab.active {
+.area-card.active {
   border-color: var(--accent-color);
   background: linear-gradient(135deg, var(--accent-color), var(--accent-hover));
   color: var(--background-color);
@@ -5192,7 +3690,7 @@
   flex-shrink: 0;
 }
 
-.method-tab.active .method-icon {
+.area-card.active .method-icon {
   background: var(--background-color);
   color: var(--accent-color);
 }
@@ -5225,7 +3723,7 @@
 }
 
 /* Form Groups */
-.modern-form-group {
+.naming-card {
   background: var(--nav-background);
   border-radius: 12px;
   padding: 1.5rem;
@@ -5244,49 +3742,7 @@
   max-width: 200px;
 }
 
-.modern-number-input {
-  flex: 1;
-  padding: 0.75rem;
-  background: var(--background-color);
-  border: 1px solid var(--border-color);
-  border-radius: 8px;
-  color: var(--text-color);
-  text-align: center;
-  font-size: 1.1rem;
-  font-weight: 600;
-  min-width: 80px;
-}
-
-.modern-number-input:focus {
-  outline: none;
-  border-color: var(--accent-color);
-  box-shadow: 0 0 0 3px var(--accent-glow);
-}
-
-/* Options Section */
-.options-section {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-}
-
 /* Modern Checkbox */
-.modern-checkbox {
-  display: flex;
-  align-items: flex-start;
-  gap: 1rem;
-  padding: 1.5rem;
-  background: var(--nav-background);
-  border: 1px solid var(--border-color);
-  border-radius: 12px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.modern-checkbox:hover {
-  border-color: var(--accent-color);
-  background: var(--overlay-solid);
-}
 
 .modern-checkbox input[type="checkbox"] {
   display: none;
@@ -5312,30 +3768,10 @@
   transform: scale(1.1);
 }
 
-.checkbox-text {
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-}
-
-.checkbox-title {
-  font-size: 1.1rem;
-  font-weight: 600;
-  color: var(--text-color);
-}
-
 .checkbox-description {
   font-size: 0.9rem;
   color: var(--highlight-heavy);
   line-height: 1.4;
-}
-
-/* Artwork Section */
-.artwork-section {
-  background: var(--nav-background);
-  border: 1px solid var(--border-color);
-  border-radius: 12px;
-  padding: 1.5rem;
 }
 
 .artwork-tabs {
@@ -5388,27 +3824,6 @@
   font-size: 1.1rem;
 }
 
-.modern-text-input {
-  width: 100%;
-  padding: 1rem 1rem 1rem 2.5rem;
-  background: var(--background-color);
-  border: 1px solid var(--border-color);
-  border-radius: 8px;
-  color: var(--text-color);
-  font-size: 1rem;
-  transition: all 0.3s ease;
-}
-
-.modern-text-input:focus {
-  outline: none;
-  border-color: var(--accent-color);
-  box-shadow: 0 0 0 3px var(--accent-glow);
-}
-
-.modern-text-input::placeholder {
-  color: var(--highlight-heavy);
-}
-
 /* File Upload */
 .file-upload-modern {
   position: relative;
@@ -5430,12 +3845,6 @@
 .file-upload-modern-label:hover {
   border-color: var(--accent-color);
   background: var(--overlay-heavy);
-}
-
-.upload-title {
-  font-size: 1.1rem;
-  font-weight: 600;
-  color: var(--text-color);
 }
 
 .upload-subtitle {
@@ -5484,24 +3893,6 @@
   background: var(--nursery-bg-gradient);
   padding: 2rem 1rem;
   color: var(--text-color);
-}
-
-/* Session Header */
-.session-header-modern {
-  position: relative;
-  display: flex;
-  align-items: center;
-  gap: 2rem;
-  margin-bottom: 2rem;
-  padding: 2rem;
-  background: var(--nursery-card-bg);
-  border-radius: 16px;
-  border: 1px solid var(--border-color);
-  box-shadow: var(--nursery-shadow);
-  max-width: 1200px;
-  margin-left: auto;
-  margin-right: auto;
-  overflow: hidden;
 }
 
 .session-background {
@@ -5652,16 +4043,6 @@
   overflow: hidden;
 }
 
-.egg-header-modern {
-  background: linear-gradient(135deg, var(--nav-active), var(--nav-hover));
-  padding: 2rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 1rem;
-}
-
 .egg-title {
   margin: 0;
   font-size: 2rem;
@@ -5691,25 +4072,6 @@
   border-bottom: 1px solid var(--border-color);
 }
 
-.naming-card {
-  background: var(--nav-background);
-  border-radius: 12px;
-  border: 1px solid var(--border-color);
-  padding: 1.5rem;
-}
-
-.naming-header {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  margin-bottom: 1rem;
-}
-
-.naming-header i {
-  color: var(--accent-color);
-  font-size: 1.1rem;
-}
-
 .naming-header span:first-of-type {
   font-weight: 600;
   color: var(--text-color);
@@ -5730,27 +4092,6 @@
 
 .naming-input-container {
   position: relative;
-}
-
-.monster-name-input-modern {
-  width: 100%;
-  padding: 1rem;
-  background: var(--background-color);
-  border: 1px solid var(--border-color);
-  border-radius: 8px;
-  color: var(--text-color);
-  font-size: 1.1rem;
-  transition: all 0.3s ease;
-}
-
-.monster-name-input-modern:focus {
-  outline: none;
-  border-color: var(--accent-color);
-  box-shadow: 0 0 0 3px var(--accent-glow);
-}
-
-.monster-name-input-modern::placeholder {
-  color: var(--highlight-heavy);
 }
 
 .character-count {
@@ -5775,12 +4116,6 @@
   display: flex;
   align-items: center;
   gap: 0.75rem;
-}
-
-.monster-grid-modern {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 1.5rem;
 }
 
 .monster-card-modern {
@@ -6029,14 +4364,6 @@
   flex: 1;
 }
 
-.success-title {
-  font-size: 2.5rem;
-  font-weight: 700;
-  color: var(--accent-color);
-  margin-bottom: 1rem;
-  text-shadow: 0 2px 4px var(--overlay-dark);
-}
-
 .success-description {
   font-size: 1.25rem;
   color: var(--highlight-heavy);
@@ -6045,13 +4372,6 @@
   max-width: 500px;
   margin-left: auto;
   margin-right: auto;
-}
-
-.success-stats {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 1rem;
-  margin-bottom: 2rem;
 }
 
 .success-actions {
@@ -6102,12 +4422,9 @@
   .nursery-title {
     font-size: 2.5rem;
   }
+
   
-  .method-selector {
-    grid-template-columns: 1fr;
-  }
-  
-  .resources-grid {
+  .wildlife-grid {
     grid-template-columns: 1fr 1fr;
   }
 }
@@ -6133,12 +4450,6 @@
     font-size: 1.5rem;
   }
   
-  .session-header-modern,
-  .egg-header-modern {
-    flex-direction: column;
-    text-align: center;
-  }
-  
   .progress-bar-modern {
     flex-wrap: wrap;
     gap: 1rem;
@@ -6155,7 +4466,7 @@
     padding: 1rem;
   }
   
-  .success-title {
+  .session-title {
     font-size: 2rem;
   }
 }
@@ -6214,14 +4525,6 @@
   background: var(--nav-background);
   border-radius: 12px;
   border: 1px solid var(--border-color);
-}
-
-.trainer-selection label {
-  color: var(--text-color);
-  display: block;
-  font-size: 1rem;
-  font-weight: 600;
-  margin-bottom: 0.5rem;
 }
 
 .trade-arrow {
@@ -6337,78 +4640,10 @@
 }
 
 /* Item Search and Filter Styles */
-.item-search-filters {
-  display: flex;
-  gap: 1rem;
-  margin-bottom: 1.5rem;
-  align-items: center;
-}
-
-.item-search {
-  position: relative;
-  flex: 2;
-}
-
-.item-search .search-input {
-  width: 100%;
-  padding: 1rem 1rem 1rem 3rem;
-  border: 2px solid var(--border-color);
-  border-radius: 10px;
-  background: var(--card-background);
-  color: var(--text-color);
-  font-size: 0.95rem;
-  transition: all 0.3s ease;
-  box-shadow: 0 2px 8px var(--overlay-light);
-}
-
-.item-search .search-input:focus {
-  outline: none;
-  border-color: var(--accent-color);
-  box-shadow: 0 0 0 3px var(--accent-glow);
-}
-
-.item-search .search-input::placeholder {
-  color: var(--text-secondary);
-}
-
-.item-search .search-icon {
-  position: absolute;
-  left: 1rem;
-  top: 50%;
-  transform: translateY(-50%);
-  color: var(--text-secondary);
-  font-size: 1rem;
-  pointer-events: none;
-}
 
 .category-filter {
   flex: 1;
   min-width: 150px;
-}
-
-.category-filter .form-select {
-  width: 100%;
-  padding: 1rem;
-  border: 2px solid var(--border-color);
-  border-radius: 10px;
-  background: var(--card-background);
-  color: var(--text-color);
-  font-size: 0.95rem;
-  transition: all 0.3s ease;
-  box-shadow: 0 2px 8px var(--overlay-light);
-  cursor: pointer;
-}
-
-.category-filter .form-select:focus {
-  outline: none;
-  border-color: var(--accent-color);
-  box-shadow: 0 0 0 3px var(--accent-glow);
-}
-
-.category-filter .form-select option {
-  background: var(--card-background);
-  color: var(--text-color);
-  padding: 0.5rem;
 }
 
 /* Enhanced Item Trade Styles */
@@ -6421,12 +4656,6 @@
 
 .item-row:hover .item-image {
   transform: scale(1.1);
-}
-
-/* Enhanced Modal Styles */
-.trade-success {
-  text-align: center;
-  padding: 2rem;
 }
 
 @keyframes success-bounce {
@@ -6615,26 +4844,6 @@
     margin-bottom: 1rem;
   }
   
-  .monster-search .search-input {
-    padding: 0.875rem 0.875rem 0.875rem 2.5rem;
-    font-size: 0.9rem;
-  }
-
-  .item-search-filters {
-    flex-direction: column;
-    gap: 0.75rem;
-  }
-  
-  .item-search .search-input {
-    padding: 0.875rem 0.875rem 0.875rem 2.5rem;
-    font-size: 0.9rem;
-  }
-  
-  .category-filter .form-select {
-    padding: 0.875rem;
-    font-size: 0.9rem;
-  }
-  
   .monster-list {
     max-height: 300px;
   }
@@ -6649,7 +4858,7 @@
     padding: 0.2rem 0.4rem;
   }
   
-  .monster-species {
+  .monster-types {
     font-size: 0.85rem;
   }
   
@@ -6686,15 +4895,6 @@
   .item-quantity {
     font-size: 0.8rem;
   }
-  
-  .quantity-input {
-    grid-column: 2;
-    grid-row: 2;
-    justify-self: end;
-    width: 70px;
-  }
-  
-  /* Responsive location-action-button styles removed - use unified button classes */
 }
 
 /* Large Phone (480px - 599px) */
@@ -6724,10 +4924,6 @@
     padding: 0.875rem;
   }
   
-  .trainer-selection label {
-    font-size: 0.95rem;
-  }
-  
   
   .trade-arrow {
     min-width: 40px;
@@ -6750,35 +4946,10 @@
     font-size: 1rem;
     margin-bottom: 0.875rem;
   }
-  
-  .monster-search .search-input {
-    padding: 0.75rem 0.75rem 0.75rem 2.25rem;
-    font-size: 0.85rem;
-  }
-  
-  .monster-search .search-icon {
-    left: 0.75rem;
-    font-size: 0.9rem;
-  }
 
-  .item-search-filters {
+  .step-header {
     flex-direction: column;
     gap: 0.5rem;
-  }
-  
-  .item-search .search-input {
-    padding: 0.75rem 0.75rem 0.75rem 2.25rem;
-    font-size: 0.85rem;
-  }
-  
-  .item-search .search-icon {
-    left: 0.75rem;
-    font-size: 0.9rem;
-  }
-  
-  .category-filter .form-select {
-    padding: 0.75rem;
-    font-size: 0.85rem;
   }
   
   .monster-list {
@@ -6800,7 +4971,7 @@
     padding: 0.2rem 0.4rem;
   }
   
-  .monster-species {
+  .monster-types {
     font-size: 0.8rem;
   }
   
@@ -6830,13 +5001,6 @@
   .item-quantity {
     font-size: 0.8rem;
   }
-  
-  .quantity-input {
-    width: 60px;
-    padding: 0.4rem;
-    font-size: 0.85rem;
-  }
-  
   /* Responsive location-action-button styles removed - use "button block" */
 }
 
@@ -6875,20 +5039,10 @@
     margin-bottom: 0.75rem;
   }
   
-  /* Responsive trade-type-button styles removed - use unified button classes */
-  
-  /* Responsive trade-type-button i styles removed - use unified button classes */
-  
   .trainer-selection-row {
     padding: 0.75rem;
     gap: 0.75rem;
   }
-  
-  .trainer-selection label {
-    font-size: 0.9rem;
-    margin-bottom: 0.4rem;
-  }
-  
   
   .trade-arrow {
     min-width: 36px;
@@ -6916,38 +5070,10 @@
   .trade-side h4::before {
     font-size: 0.85rem;
   }
-  
-  .monster-search .search-input {
-    padding: 0.625rem 0.625rem 0.625rem 2rem;
-    font-size: 0.8rem;
-    border-radius: 8px;
-  }
-  
-  .monster-search .search-icon {
-    left: 0.625rem;
-    font-size: 0.85rem;
-  }
 
-  .item-search-filters {
+  .step-header {
     flex-direction: column;
     gap: 0.5rem;
-  }
-  
-  .item-search .search-input {
-    padding: 0.625rem 0.625rem 0.625rem 2rem;
-    font-size: 0.8rem;
-    border-radius: 8px;
-  }
-  
-  .item-search .search-icon {
-    left: 0.625rem;
-    font-size: 0.85rem;
-  }
-  
-  .category-filter .form-select {
-    padding: 0.625rem;
-    font-size: 0.8rem;
-    border-radius: 8px;
   }
   
   .monster-list {
@@ -6969,26 +5095,16 @@
     height: 16px;
   }
   
-  .monster-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.2rem;
-  }
-  
   .monster-level {
     align-self: flex-start;
     font-size: 0.75rem;
     padding: 0.15rem 0.3rem;
   }
   
-  .monster-species {
+  .monster-types {
     font-size: 0.75rem;
   }
-  
-  .monster-types {
-    gap: 0.15rem;
-    flex-wrap: wrap;
-  }
+
   
   .item-image-container {
     width: 14px;
@@ -7022,15 +5138,8 @@
     font-size: 0.8rem;
   }
   
-  .quantity-input {
-    width: 50px;
-    padding: 0.3rem;
-    font-size: 0.8rem;
-    border-radius: 4px;
-  }
-  
   /* Modal adjustments for small screens */
-  .trade-success {
+  .success-step {
     padding: 1.5rem;
   }
   
@@ -7072,33 +5181,18 @@
     min-height: 200px;
     padding: 0.5rem;
   }
-  
-  .monster-search .search-input {
-    padding: 0.5rem 0.5rem 0.5rem 1.75rem;
-    font-size: 0.75rem;
-  }
 
-  .item-search-filters {
+  .step-header {
     flex-direction: column;
     gap: 0.25rem;
     margin-bottom: 1rem;
   }
-  
-  .item-search .search-input {
-    padding: 0.5rem 0.5rem 0.5rem 1.75rem;
-    font-size: 0.75rem;
-  }
-  
-  .item-search .search-icon {
-    left: 0.5rem;
-    font-size: 0.8rem;
-  }
-  
+
   .category-filter {
     min-width: 120px;
   }
   
-  .category-filter .form-select {
+  .category-filter {
     padding: 0.5rem;
     font-size: 0.75rem;
   }
@@ -7167,15 +5261,6 @@
 
 /* Game Corner Reward Grid Styles */
 
-.monster-rewards-section h3,
-.other-rewards-section h3 {
-  color: var(--accent-color);
-  margin-bottom: 1rem;
-  font-size: 1.2rem;
-  font-weight: 600;
-  text-align: center;
-}
-
 .other-rewards-section .rewards-list {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -7192,10 +5277,6 @@
 
 /* Responsive adjustments for separated grids */
 @media (max-width: 768px) {
-  .monster-rewards-grid {
-    grid-template-columns: 1fr;
-    gap: 1rem;
-  }
 
   .other-rewards-section .rewards-list {
     grid-template-columns: 1fr;
@@ -7225,13 +5306,7 @@
     gap: 1rem;
   }
 
-  .adoption-center-controls {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 0.75rem;
-  }
-
-  .view-options {
+  .type-row {
     justify-content: center;
     flex-wrap: wrap;
   }
@@ -7277,15 +5352,6 @@
     height: 200px;
   }
 
-  .adopts-grid {
-    grid-template-columns: 1fr;
-    gap: 0.75rem;
-  }
-
-  .adopt-card {
-    padding: 1rem;
-  }
-
   .adopt-name {
     font-size: 1.1rem;
   }
@@ -7302,18 +5368,7 @@
     height: 60px;
   }
 
-  .adoption-actions {
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-
   /* Responsive berry/pastry button styles removed - use "button block" modifier for full width */
-
-  .modal-species-images {
-    flex-direction: column;
-    align-items: center;
-    gap: 1rem;
-  }
 
   .modal-species-image-container.fusion {
     padding-left: 0;
@@ -7339,22 +5394,8 @@
   /* Town location button styles removed - use "button primary block" */
 
   /* Shop styles */
-  .shop-container {
+  .form {
     padding: 1rem;
-  }
-
-  .shop-items-grid {
-    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-    gap: 0.75rem;
-  }
-
-  /* Nursery styles */
-  
-
-  /* Antique store styles */
-  .antique-grid {
-    grid-template-columns: 1fr;
-    gap: 0.75rem;
   }
 
   /* Bakery styles */
@@ -7396,7 +5437,7 @@
 
   /* Responsive view-option-button styles removed - use "button toggle sm" */
 
-  .no-adopts-message {
+  .no-adventures {
     padding: 1.5rem 1rem;
     font-size: 0.9rem;
   }
@@ -7422,10 +5463,6 @@
   }
 
   /* Shop styles */
-  .shop-items-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 0.5rem;
-  }
 
   /* Town button styles removed - use unified button classes */
 }
@@ -7474,10 +5511,6 @@
   }
 
   /* Shop styles */
-  .shop-items-grid {
-    grid-template-columns: 1fr 1fr;
-    gap: 0.375rem;
-  }
 
   /* Responsive location-action-button styles removed - use unified button classes */
 }

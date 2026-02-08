@@ -33,7 +33,7 @@ const GuideSidebar = ({ structure, category }) => {
           return (
             <div className="guide-sidebar-item" key={dirPath}>
               <div 
-                className={`guide-sidebar-dir ${dirExpanded ? 'expanded' : ''}`}
+                className={`guide-sidebar-dir${dirExpanded ? 'expanded' : ''}`}
                 onClick={() => toggleDirectory(dirPath)}
               >
                 <span className="guide-sidebar-icon">
@@ -56,7 +56,7 @@ const GuideSidebar = ({ structure, category }) => {
           
           return (
             <div 
-              className={`guide-sidebar-item guide-sidebar-file ${isActive(filePath) ? 'active' : ''}`} 
+              className={`guide-sidebar-item guide-sidebar-file${isActive(filePath) ? 'active' : ''}`} 
               key={filePath}
             >
               <Link to={`/guides/${category}/${filePath}`}>

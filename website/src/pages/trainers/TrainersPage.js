@@ -131,9 +131,9 @@ const TrainersPage = () => {
 
   return (
     <div className="trainers-container">
-      <div className="trainers-controls-compact">
-        <form className="search-form" onSubmit={handleSearch}>
-          <div className="search-input">
+      <div className="option-row">
+        <form className="search-input-container" onSubmit={handleSearch}>
+          <div className="form-input">
             <input
               ref={searchInputRef}
               type="search"
@@ -171,7 +171,7 @@ const TrainersPage = () => {
           </select>
         </div>
 
-        <div className="sort-controls">
+        <div className="detail-row">
           <button
             className={`button filter ${sortBy === 'name' ? 'active' : ''}`}
             onClick={() => handleSort('name')}
@@ -212,7 +212,7 @@ const TrainersPage = () => {
       </div>
 
       {loading ? (
-        <div className="loading-container">
+        <div className="error-container">
           <div className="loading-spinner">
             <i className="fas fa-spinner fa-spin"></i>
           </div>
@@ -228,9 +228,9 @@ const TrainersPage = () => {
         </div>
       ) : (
         <>
-          <div className="trainers-grid">
+          <div className="items-grid">
             {trainers.length === 0 ? (
-              <div className="no-trainers-message">
+              <div className="map-header">
                 <i className="fas fa-users-slash"></i>
                 <p>No trainers found. Try adjusting your search criteria.</p>
               </div>
@@ -259,12 +259,12 @@ const TrainersPage = () => {
                       <span className="trainer-level">
                         <i className="fas fa-star"></i> Level {trainer.level || 1}
                       </span>
-                      <span className="trainer-monsters">
+                      <span className="trainer-level">
                         <i className="fas fa-dragon"></i> {trainer.monster_count || 0} Monsters
                       </span>
                     </div>
                     {trainer.region && (
-                      <span className="trainer-region">
+                      <span className="trainer-level">
                         <i className="fas fa-map-marker-alt"></i> {trainer.region}
                       </span>
                     )}
@@ -292,7 +292,7 @@ const TrainersPage = () => {
               {[...Array(totalPages).keys()].map((page) => (
                 <button
                   key={page + 1}
-                  className={`button secondary ${currentPage === page + 1 ? 'active' : ''}`}
+                  className={`button secondary${currentPage === page + 1 ? 'active' : ''}`}
                   onClick={() => handlePageChange(page + 1)}
                 >
                   {page + 1}

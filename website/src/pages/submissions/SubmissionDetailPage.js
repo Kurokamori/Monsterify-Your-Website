@@ -183,12 +183,12 @@ const SubmissionDetailPage = ({ type }) => {
     <div className="submission-detail-page">
       <div className="submission-detail-container">
         <div className="submission-detail-header">
-          <button className="button secondary" onClick={handleBack}>
+          <button className="button secondary no-flex" onClick={handleBack}>
             <i className="fas fa-arrow-left"></i> Back to {isArt ? 'Gallery' : isWriting ? 'Library' : 'Submissions'}
           </button>
           <div className="submission-header-content">
             <h1 className="submission-title">{submission.title}</h1>
-            <div className="submission-author">
+            <div className="upload-title">
               Created By: {submission.display_name || submission.username || 'Unknown'}
             </div>
           </div>
@@ -201,7 +201,7 @@ const SubmissionDetailPage = ({ type }) => {
 
         <div className="submission-detail-content">
           {isArt && submission.image_url && (
-            <div className="submission-image-container">
+            <div className="map-header">
               <img
                 src={submission.image_url}
                 alt={submission.title}
@@ -212,7 +212,7 @@ const SubmissionDetailPage = ({ type }) => {
           )}
 
           {submission.description && (
-            <div className="submission-description">
+            <div className="related-submissions">
               <h2>Description</h2>
               <p>{submission.description}</p>
             </div>
@@ -232,12 +232,12 @@ const SubmissionDetailPage = ({ type }) => {
           {isWriting && !!submission.is_book && bookChapters.length > 0 && (
             <div className="book-chapters-section">
               <h2><i className="fas fa-list"></i> Chapters</h2>
-              <div className="chapters-list-compact">
+              <div className="fandom-grid">
                 {bookChapters.map((chapter, index) => (
                   <Link
                     key={chapter.id}
                     to={`/library/${chapter.id}`}
-                    className="chapter-link"
+                    className="detail-row"
                   >
                     <span className="chapter-num">Chapter {chapter.chapter_number || index + 1}</span>
                     <span className="chapter-title">{chapter.title}</span>
@@ -251,7 +251,7 @@ const SubmissionDetailPage = ({ type }) => {
           )}
 
           {isWriting && submission.content && (
-            <div className="submission-writing-content">
+            <div className="related-submissions">
               {(submission.description || parentBook || (!!submission.is_book && bookChapters.length > 0)) && (
                 <h2>Content</h2>
               )}
@@ -263,9 +263,9 @@ const SubmissionDetailPage = ({ type }) => {
 
           {/* Additional Images */}
           {isArt && submission.additional_images && submission.additional_images.length > 0 && (
-            <div className="submission-additional-images">
+            <div className="related-submissions">
               <h2>Additional Images</h2>
-              <div className="additional-images-grid">
+              <div className="container horizontal center">
                 {submission.additional_images.map((image, index) => (
                   <div key={index} className="additional-image-container">
                     <img
@@ -282,7 +282,7 @@ const SubmissionDetailPage = ({ type }) => {
 
           {/* Tags */}
           {submission.tags && Array.isArray(submission.tags) && submission.tags.length > 0 && (
-            <div className="submission-tags">
+            <div className="type-tags">
               {submission.tags.map(tag => (
                 <span key={tag} className="submission-tag">{tag}</span>
               ))}
@@ -291,16 +291,16 @@ const SubmissionDetailPage = ({ type }) => {
 
           {/* Featured Trainers */}
           {submission.trainers && submission.trainers.length > 0 && (
-            <div className="submission-featured-entities">
+            <div className="related-submissions">
               <h2>Featured Trainers</h2>
-              <div className="featured-entities-grid">
+              <div className="container horizontal center">
                 {submission.trainers.map(trainer => (
                   <div
                     key={trainer.id}
-                    className="featured-trainer-card"
+                    className="featured-entity-card"
                     onClick={() => handleTrainerClick(trainer.id)}
                   >
-                    <div className="featured-trainer-image">
+                    <div className="selected-item-image">
                       <img
                         src={trainer.main_ref || '/images/default_trainer.png'}
                         alt={trainer.name}
@@ -357,16 +357,16 @@ const SubmissionDetailPage = ({ type }) => {
 
           {/* Featured Monsters */}
           {submission.monsters && submission.monsters.length > 0 && (
-            <div className="submission-featured-entities">
+            <div className="related-submissions">
               <h2>Featured Monsters</h2>
-              <div className="featured-entities-grid">
+              <div className="container horizontal center">
                 {submission.monsters.map(monster => (
                   <div
                     key={monster.id}
                     className="featured-entity-card"
                     onClick={() => handleMonsterClick(monster.id)}
                   >
-                    <div className="featured-entity-image">
+                    <div className="selected-item-image">
                       <img
                         src={monster.img_link || monster.image_url || '/images/default_mon.png'}
                         alt={monster.name}
@@ -423,14 +423,14 @@ const SubmissionDetailPage = ({ type }) => {
           {relatedSubmissions.length > 0 && (
             <div className="related-submissions">
               <h2>More by this Creator</h2>
-              <div className="related-submissions-grid">
+              <div className="container horizontal center">
                 {relatedSubmissions.map(related => (
                   <div
                     key={related.id}
                     className="related-submission-card"
                     onClick={() => handleRelatedClick(related.id)}
                   >
-                    <div className="related-submission-image">
+                    <div className="image-container">
                       <img
                         src={related.image_url || (isArt ? '/images/default_art.png' : '/images/default_book.png')}
                         alt={related.title}
@@ -440,7 +440,7 @@ const SubmissionDetailPage = ({ type }) => {
                         }}
                       />
                     </div>
-                    <div className="related-submission-title">{related.title}</div>
+                    <div className="featured-entity-name">{related.title}</div>
                   </div>
                 ))}
               </div>

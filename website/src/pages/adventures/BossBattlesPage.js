@@ -259,14 +259,14 @@ const AvailableBosses = () => {
 
   return (
     <div className="bosses-page">
-      <div className="bosses-nav">
-        <Link to="/adventures/boss/available" className="bosses-nav-link active">
+      <div className="type-tags">
+        <Link to="/adventures/boss/available" className="button active">
           Available Bosses
         </Link>
-        <Link to="/adventures/boss/active" className="bosses-nav-link">
+        <Link to="/adventures/boss/active" className="button">
           Active Battles
         </Link>
-        <Link to="/adventures/boss/defeated" className="bosses-nav-link">
+        <Link to="/adventures/boss/defeated" className="button">
           Defeated Bosses
         </Link>
       </div>
@@ -284,13 +284,13 @@ const AvailableBosses = () => {
                   e.target.src = '/images/default_boss.png';
                 }}
               />
-              <div className={`boss-difficulty ${boss.difficulty}`}>
+              <div className={`boss-difficulty${boss.difficulty}`}>
                 {boss.difficulty.charAt(0).toUpperCase() + boss.difficulty.slice(1)}
               </div>
             </div>
             <div className="boss-info">
               <h3 className="boss-name">{boss.name}</h3>
-              <div className="boss-details">
+              <div className="type-tags">
                 <span className="boss-level">
                   <i className="fas fa-bolt"></i> Level {boss.level}
                 </span>
@@ -328,7 +328,7 @@ const AvailableBosses = () => {
                 <div className="rewards-list">
                   {boss.rewards.map((reward, index) => (
                     <span className="reward" key={index}>
-                      <i className={`fas ${
+                      <i className={`fas${
                         reward.type === 'coin' ? 'fa-coins' : 
                         reward.type === 'exp' ? 'fa-star' : 
                         'fa-box'
@@ -404,7 +404,7 @@ const AvailableBosses = () => {
                     <h3>{selectedBoss.name}</h3>
                     <div className="boss-preview-details">
                       <span className="boss-level">Level {selectedBoss.level}</span>
-                      <span className={`boss-difficulty ${selectedBoss.difficulty}`}>
+                      <span className={`boss-difficulty${selectedBoss.difficulty}`}>
                         {selectedBoss.difficulty.charAt(0).toUpperCase() + selectedBoss.difficulty.slice(1)}
                       </span>
                     </div>
@@ -421,7 +421,7 @@ const AvailableBosses = () => {
                   </div>
                 </div>
                 
-                <div className="trainer-selector">
+                <div className="missions-filters">
                   <label>Select Trainer:</label>
                   <select
                     value={selectedTrainer}
@@ -438,7 +438,7 @@ const AvailableBosses = () => {
                 
                 <div className="monster-selector">
                   <label>Select Your Team (up to 3 monsters):</label>
-                  <div className="monster-grid">
+                  <div className="button">
                     {displayMonsters.map((monster) => (
                       <div 
                         key={monster.id}
@@ -521,14 +521,14 @@ const ActiveBosses = () => {
   // For brevity, showing a simplified version
   return (
     <div className="bosses-page">
-      <div className="bosses-nav">
-        <Link to="/adventures/boss/available" className="bosses-nav-link">
+      <div className="type-tags">
+        <Link to="/adventures/boss/available" className="button">
           Available Bosses
         </Link>
-        <Link to="/adventures/boss/active" className="bosses-nav-link active">
+        <Link to="/adventures/boss/active" className="button active">
           Active Battles
         </Link>
-        <Link to="/adventures/boss/defeated" className="bosses-nav-link">
+        <Link to="/adventures/boss/defeated" className="button">
           Defeated Bosses
         </Link>
       </div>
@@ -676,14 +676,14 @@ const DefeatedBosses = () => {
 
   return (
     <div className="bosses-page">
-      <div className="bosses-nav">
-        <Link to="/adventures/boss/available" className="bosses-nav-link">
+      <div className="type-tags">
+        <Link to="/adventures/boss/available" className="button">
           Available Bosses
         </Link>
-        <Link to="/adventures/boss/active" className="bosses-nav-link">
+        <Link to="/adventures/boss/active" className="button">
           Active Battles
         </Link>
-        <Link to="/adventures/boss/defeated" className="bosses-nav-link active">
+        <Link to="/adventures/boss/defeated" className="button active">
           Defeated Bosses
         </Link>
       </div>
@@ -695,10 +695,10 @@ const DefeatedBosses = () => {
               <i className="fas fa-trophy"></i> Boss Defeated
             </div>
             
-            <div className="defeated-boss-header">
+            <div className="set-item">
               <div className="boss-info">
                 <h3>Victory against {boss.name}</h3>
-                <div className="boss-details">
+                <div className="type-tags">
                   <span className="boss-month">
                     <i className="fas fa-calendar"></i> {boss.month}/{boss.year}
                   </span>
@@ -729,11 +729,11 @@ const DefeatedBosses = () => {
             </div>
 
             {/* Top 3 Rankings Preview */}
-            <div className="top-rankings-preview">
+            <div className="prize-distribution">
               <h4>🏆 Top Damage Dealers</h4>
               <div className="top-three">
                 {boss.top_users && boss.top_users.slice(0, 3).map((user, index) => (
-                  <div key={user.user_id} className={`top-user ${getRankClass(index + 1)}`}>
+                  <div key={user.user_id} className={`top-user${getRankClass(index + 1)}`}>
                     <div className="rank-badge">
                       {getRankIcon(index + 1)}
                     </div>
@@ -749,13 +749,13 @@ const DefeatedBosses = () => {
             {/* Prize Distribution Info */}
             <div className="prize-distribution">
               <h4>🎁 Prize Distribution</h4>
-              <div className="prize-info">
-                <div className="first-place-prize">
-                  <span className="prize-label">🥇 1st Place:</span>
+              <div className="auth-form">
+                <div className="other-prizes">
+                  <span className="username">🥇 1st Place:</span>
                   <span className="prize-reward">Boss Monster Reward</span>
                 </div>
                 <div className="other-prizes">
-                  <span className="prize-label">🎉 All Other Participants:</span>
+                  <span className="username">🎉 All Other Participants:</span>
                   <span className="prize-reward">Grunt Monster Reward</span>
                 </div>
               </div>
@@ -793,10 +793,10 @@ const DefeatedBosses = () => {
         title={selectedBoss ? `${selectedBoss.boss.name} - Final Rankings` : 'Boss Rankings'}
       >
         {selectedBoss && (
-          <div className="boss-rankings-modal">
+          <div className="boss-form">
             <div className="boss-info-header">
               <h3>{selectedBoss.boss.name}</h3>
-              <div className="boss-battle-stats">
+              <div className="type-tags">
                 <span><i className="fas fa-calendar"></i> {selectedBoss.boss.month}/{selectedBoss.boss.year}</span>
                 <span><i className="fas fa-users"></i> {selectedBoss.total_participants} Participants</span>
                 {selectedBoss.boss.end_date && (
@@ -809,7 +809,7 @@ const DefeatedBosses = () => {
               <h4>🏆 Final Leaderboard</h4>
               <div className="leaderboard-list">
                 {selectedBoss.leaderboard.map((entry, index) => (
-                  <div key={entry.user_id} className={`leaderboard-entry ${getRankClass(index + 1)}`}>
+                  <div key={entry.user_id} className={`leaderboard-entry${getRankClass(index + 1)}`}>
                     <div className="rank">
                       <span className="rank-badge">{getRankIcon(index + 1)}</span>
                     </div>

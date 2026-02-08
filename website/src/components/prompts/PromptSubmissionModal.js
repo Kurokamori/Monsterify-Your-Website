@@ -243,7 +243,7 @@ const PromptSubmissionModal = ({ prompt, trainerId, onClose, onSuccess }) => {
 
             {/* Level and Coin Rewards */}
             {(appliedRewards.levels > 0 || appliedRewards.coins > 0) && (
-              <div className="basic-rewards">
+              <div className="item-rewards">
                 {appliedRewards.levels > 0 && (
                   <div className="reward-item">
                     <span className="reward-icon">⭐</span>
@@ -274,7 +274,7 @@ const PromptSubmissionModal = ({ prompt, trainerId, onClose, onSuccess }) => {
 
             {/* Special Item Rewards */}
             {appliedRewards.special_items && appliedRewards.special_items.length > 0 && (
-              <div className="special-item-rewards">
+              <div className="item-rewards">
                 <h4>Special Items Received:</h4>
                 {appliedRewards.special_items.map((item, index) => (
                   <div key={index} className="reward-item">
@@ -287,10 +287,10 @@ const PromptSubmissionModal = ({ prompt, trainerId, onClose, onSuccess }) => {
 
             {/* Monster Rewards */}
             {appliedRewards.monsters && appliedRewards.monsters.length > 0 && (
-              <div className="monster-rewards">
+              <div className="item-rewards">
                 <h4>Monsters Received:</h4>
                 {appliedRewards.monsters.map((monster, index) => (
-                  <div key={index} className="monster-reward-card">
+                  <div key={index} className="gift-monster-card">
                     <div className="monster-info">
                       <h5>{monster.nickname || monster.species_name}</h5>
                       <p>Level {monster.level} • {monster.types?.join('/')}</p>
@@ -329,19 +329,19 @@ const PromptSubmissionModal = ({ prompt, trainerId, onClose, onSuccess }) => {
             <p className="prompt-description">{prompt.description}</p>
             
             {prompt.prompt_text && (
-              <div className="prompt-details">
+              <div className="prompt-text">
                 <h4>Prompt Details:</h4>
                 <p>{prompt.prompt_text}</p>
               </div>
             )}
 
-            <div className="prompt-rewards-info">
+            <div className="prompt-text">
               <h4>Rewards:</h4>
               <p>{formatRewards(prompt.rewards)}</p>
             </div>
 
             {prompt.requirements && (
-              <div className="prompt-requirements-info">
+              <div className="prompt-text">
                 <h4>Requirements:</h4>
                 <p>{prompt.prerequisites || 'See detailed requirements'}</p>
               </div>
@@ -368,7 +368,7 @@ const PromptSubmissionModal = ({ prompt, trainerId, onClose, onSuccess }) => {
                 value={formData.trainer_id}
                 onChange={handleInputChange}
                 required
-                className="form-select"
+                className="form-input"
               >
                 <option value="">Select a trainer</option>
                 {userTrainers.map(trainer => (
@@ -391,7 +391,7 @@ const PromptSubmissionModal = ({ prompt, trainerId, onClose, onSuccess }) => {
                   value={formData.monster_id}
                   onChange={handleInputChange}
                   required={prompt.target_type === 'monster'}
-                  className="form-select"
+                  className="form-input"
                 >
                   <option value="">Select a monster</option>
                   {trainerMonsters.map(monster => (
@@ -413,7 +413,7 @@ const PromptSubmissionModal = ({ prompt, trainerId, onClose, onSuccess }) => {
                 onChange={handleInputChange}
                 required
                 rows={6}
-                className="form-textarea"
+                className="form-input"
                 placeholder="Describe your submission, provide links to artwork, or write your response to the prompt..."
               />
             </div>
@@ -427,7 +427,7 @@ const PromptSubmissionModal = ({ prompt, trainerId, onClose, onSuccess }) => {
                 value={formData.submission_notes}
                 onChange={handleInputChange}
                 rows={3}
-                className="form-textarea"
+                className="form-input"
                 placeholder="Any additional notes or comments..."
               />
             </div>

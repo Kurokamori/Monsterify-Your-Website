@@ -11,12 +11,19 @@
   color: var(--text-color);
 }
 
-.gallery-pagination {
-  display: flex;
-  justify-content: center;
+.type-tags {
   align-items: center;
-  gap: 1rem;
-  margin-top: 1.5rem;
+  background: var(--card-background);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  display: flex;
+  flex-wrap: wrap;
+  font-size: var(--font-size-base);
+  gap: 0.5rem;
+  justify-content: center;
+  margin-bottom: 2rem;
+  margin-top: 20px;
+  padding: 1rem;
 }
 
 .pagination-info {

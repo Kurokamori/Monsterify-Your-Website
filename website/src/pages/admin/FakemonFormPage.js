@@ -399,9 +399,9 @@ const FakemonFormPage = () => {
         {loading ? (
           <LoadingSpinner message="Loading fakemon data..." />
         ) : (
-          <div className="admin-form-container">
-            <form onSubmit={handleSubmit} className="admin-form">
-              <div className="admin-form-grid">
+          <div className="bulk-monster-add-form">
+            <form onSubmit={handleSubmit} className="reroller-content">
+              <div className="reroller-content">
                 {/* Basic Information */}
                 <div className="admin-form-section">
                   <h2 className="admin-form-section-title">Basic Information</h2>
@@ -581,7 +581,7 @@ const FakemonFormPage = () => {
                     name="description"
                     value={formData.description}
                     onChange={handleChange}
-                    className="admin-form-textarea"
+                    className="admin-form-input"
                     rows="4"
                     placeholder="Enter a description for this fakemon..."
                     disabled={saving}
@@ -645,7 +645,7 @@ const FakemonFormPage = () => {
                       <select
                         value={statPowerLevel}
                         onChange={(e) => setStatPowerLevel(e.target.value)}
-                        className="admin-form-select"
+                        className="admin-form-input"
                       >
                         <option value="">Select Power Level</option>
                         {POWER_LEVELS.map(pl => (
@@ -655,9 +655,9 @@ const FakemonFormPage = () => {
                     </div>
                     <div className="admin-form-group specialty-group">
                       <label className="admin-form-label">Specialty Stats</label>
-                      <div className="specialty-checkboxes">
+                      <div className="type-tags">
                         {SPECIALTY_OPTIONS.map(opt => (
-                          <label key={opt.key} className="specialty-checkbox">
+                          <label key={opt.key} className="attribute-tag">
                             <input
                               type="checkbox"
                               checked={statSpecialties.includes(opt.key)}
@@ -679,7 +679,7 @@ const FakemonFormPage = () => {
                   </div>
                 </div>
 
-                <div className="admin-stats-grid">
+                <div className="button">
                   {STAT_KEYS.map(key => {
                     const labels = {
                       hp: 'HP', attack: 'Attack', defense: 'Defense',
@@ -702,7 +702,7 @@ const FakemonFormPage = () => {
                         />
                         <div className="admin-stat-bar">
                           <div
-                            className={`admin-stat-fill ${barClass}`}
+                            className={`admin-stat-fill${barClass}`}
                             style={{ width: `${Math.min(100, (formData[key] / 255) * 100)}%` }}
                           ></div>
                         </div>
@@ -755,7 +755,7 @@ const FakemonFormPage = () => {
                             <select
                               value={evo.method || ''}
                               onChange={(e) => handleEvolutionChange(index, 'method', e.target.value)}
-                              className="admin-form-select"
+                              className="admin-form-input"
                               disabled={saving}
                             >
                               <option value="">None (Base)</option>
@@ -801,7 +801,7 @@ const FakemonFormPage = () => {
                             <select
                               value={evo.evolves_from != null ? evo.evolves_from : ''}
                               onChange={(e) => handleEvolutionChange(index, 'evolves_from', e.target.value ? (parseInt(e.target.value) || e.target.value) : null)}
-                              className="admin-form-select"
+                              className="admin-form-input"
                               disabled={saving}
                             >
                               <option value="">None (Base Form)</option>

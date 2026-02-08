@@ -139,7 +139,7 @@ const MonsterTeamManager = ({ person, onClose, onTeamUpdated }) => {
   return (
     <div className="monster-team-manager-overlay">
       <div className="monster-team-manager">
-        <div className="modal-header">
+        <div className="tree-header">
           <h2>
             <i className="fas fa-dragon"></i>
             {person.name}'s Monster Team
@@ -184,7 +184,7 @@ const MonsterTeamManager = ({ person, onClose, onTeamUpdated }) => {
           </div>
         )}
 
-        <div className="monsters-grid">
+        <div className="button">
           {team.length === 0 ? (
             <div className="empty-team">
               <i className="fas fa-dragon"></i>
@@ -200,7 +200,7 @@ const MonsterTeamManager = ({ person, onClose, onTeamUpdated }) => {
           ) : (
             team.map(monster => (
               <div key={monster.id} className="monster-card">
-                <div className="monster-header">
+                <div className="tree-header">
                   <div className="monster-image">
                     {monster.image ? (
                       <img src={monster.image} alt={monster.name} />

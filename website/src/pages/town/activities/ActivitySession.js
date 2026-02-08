@@ -140,7 +140,7 @@ const ActivitySession = () => {
   if (success && rewards) {
     return (
       <div className="activity-session-container">
-        <div className="activity-session-header">
+        <div className="adopt-card">
           <Link to="/town" className="button secondary">
             <i className="fas fa-arrow-left mr-2"></i> Back to Town
           </Link>
@@ -202,7 +202,7 @@ const ActivitySession = () => {
 
   return (
     <div className="activity-session-container">
-      <div className="activity-session-header">
+      <div className="adopt-card">
         <Link to="/town" className="button secondary">
           <i className="fas fa-arrow-left mr-2"></i> Back to Town
         </Link>
@@ -215,13 +215,13 @@ const ActivitySession = () => {
             <img
               src={flavor.image_url}
               alt={`${session.location} ${session.activity}`}
-              className="activity-image"
+              className="npc-avatar"
             />
           )}
           <p className="flavor-text">{flavor.flavor_text}</p>
         </div>
 
-        <div className="activity-prompt">
+        <div className="info-item">
           <h3>Your Task</h3>
           <p>{prompt.prompt_text}</p>
         </div>

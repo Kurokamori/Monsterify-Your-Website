@@ -5,24 +5,6 @@
    assignment blocks, and empty states.
    ============================== */
 
-/* ===== Trainer selection ===== */
-
-.trainer-selection {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  gap: 2.5rem;
-  width: 100%;
-  max-width: 400px;
-  margin: 1rem auto 20px;
-  padding: 1rem;
-  backdrop-filter: blur(15px);
-  border-radius: 0.5rem;
-  box-sizing: border-box;
-  white-space: nowrap;
-}
-
 /* ===== Trainer select ===== */
 
 .trainer-select:hover{ border-color:var(--accent-color); }
@@ -30,16 +12,16 @@
 /* ===== Dropdown options ===== */
 
 .trainer-select option,
-.trainer-selector select option {
+.missions-filters select option {
   background-color: var(--input-background);
   color: var(--text-color);
   padding: 0.5rem;
 }
 
 .trainer-select option:hover,
-.trainer-selector select option:hover,
+.missions-filters select option:hover,
 .trainer-select option:checked,
-.trainer-selector select option:checked {
+.missions-filters select option:checked {
   background-color: var(--nav-hover);
   color: var(--text-color);
 }
@@ -57,31 +39,9 @@
 
 /* ===== Card-y selection wrapper ===== */
 
-.trainer-selection-section {
-  background: linear-gradient(135deg, var(--overlay-solid) 0%, var(--overlay-heavy) 100%);
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px var(--overlay-light);
-  border-bottom: 1px solid var(--accent-glow);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 1.5rem;
-  backdrop-filter: blur(20px);
-  position: relative;
-  z-index: 2;
-}
-
-.trainer-selection-section label {
-  font-weight: 600;
-  color: var(--accent-color);
-  font-size: 1.2rem;
-  text-shadow: 1px 1px 3px var(--overlay-heavy);
-}
-
 /* ===== Fancy select in hero section ===== */
 
-.trainer-selection-section .trainer-select {
+.missions-filters .trainer-select {
   padding: 1rem 1.5rem;
   background: linear-gradient(135deg, var(--overlay-dark) 0%, var(--overlay-heavy) 100%);
   border: 2px solid var(--accent-glow-medium);
@@ -94,7 +54,7 @@
   box-shadow: 0 4px 15px var(--overlay-medium);
 }
 
-.trainer-selection-section .trainer-select:focus {
+.missions-filters .trainer-select:focus {
   outline: none;
   border-color: var(--accent-color);
   box-shadow: 0 0 0 3px var(--accent-glow-medium), 0 8px 25px var(--overlay-medium);
@@ -102,19 +62,6 @@
 }
 
 /* ===== Dropdown options in hero section ===== */
-
-.trainer-selection-section .trainer-select option,
-.trainer-selection-section select option {
-  background-color: var(--input-background);
-  color: var(--text-color);
-  padding: 0.5rem;
-}
-
-.trainer-selection-section .trainer-select option:checked,
-.trainer-selection-section select option:checked {
-  background-color: var(--nav-hover);
-  color: var(--text-color);
-}
 
 /* ===== Empty state ===== */
 
@@ -137,41 +84,15 @@
 
 /* ===== Selector widget ===== */
 
-.trainer-selector-loading,
-.trainer-selector-error,
-.trainer-selector-empty {
-  background-color: var(--overlay-medium);
-  border-radius: 4px;
-  color: var(--blue-color);
-  font-size: .9rem;
-  padding: 10px;
-}
-
 /* ===== Responsive ===== */
 
 @media (max-width: 480px) {
-  .trainer-selection {
-    padding: .75rem;
-    white-space: normal;
-    align-items: stretch;
-  }
-
-  .trainer-selection .trainer-selection-section {
-    flex-direction: row;
-    gap: 1rem;
-    padding: 1.5rem;
-  }
-
-  .trainer-selection-section .trainer-select {
+  .missions-filters .trainer-select {
     min-width: 0;
     width: 100%;
   }
-
-  .trainer-selection label { font-size: 1rem; }
 }
 
 @media (min-width: 768px) {
-  .trainer-selection { padding: 1.5rem; }
-  .trainer-selection label { font-size: 1.05rem; }
-  .trainer-selection-section label { font-size: 1.25rem; }
+  .missions-filters label { font-size: 1.25rem; }
 }

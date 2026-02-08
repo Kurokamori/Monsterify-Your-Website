@@ -218,7 +218,7 @@ const FactionDetailPage = () => {
       </div>
 
       {/* Trainer Selection */}
-      <div className="trainer-selection-section">
+      <div className="missions-filters">
         <label htmlFor="trainer-select">Viewing as:</label>
         <select
           id="trainer-select"
@@ -294,7 +294,7 @@ const FactionDetailPage = () => {
                       <h4>Faction Relationships</h4>
                       <div className="relationships-grid">
                         {faction.relationships.map(rel => (
-                          <div key={rel.related_faction_id} className={`relationship-item ${rel.relationship_type}`}>
+                          <div key={rel.related_faction_id} className={`relationship-item${rel.relationship_type}`}>
                             <span className="relationship-faction">{rel.related_faction_name}</span>
                             <span className="relationship-type">{rel.relationship_type}</span>
                           </div>

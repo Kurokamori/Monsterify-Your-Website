@@ -23,7 +23,7 @@ const FormInput = ({
         </label>
       )}
       
-      <div className={`input-wrapper ${icon ? 'has-icon' : ''}`}>
+      <div className={`input-wrapper${icon ? 'has-icon' : ''}`}>
         {icon && <span className="input-icon">{icon}</span>}
         <input
           id={name}
@@ -34,7 +34,7 @@ const FormInput = ({
           placeholder={placeholder}
           disabled={disabled}
           required={required}
-          className={`form-input ${error ? 'has-error' : ''}`}
+          className={`form-input${error ? 'has-error' : ''}`}
           {...props}
         />
       </div>

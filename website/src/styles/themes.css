@@ -28,8 +28,8 @@
   /* Accent/Gold colors */
   --accent-color: #b8862d;
   --accent-hover: #9a7025;
-  --accent-hover-color: #9a7025;
   --accent-light: #d4a84a;
+  --accent-muted: #bba28b;
 
   /* UI elements */
   --divider-color: #d0cbc3;
@@ -95,10 +95,22 @@
   --highlight-medium: rgba(0, 0, 0, 0.1);
   --highlight-heavy: rgba(0, 0, 0, 0.2);
   --accent-glow: rgba(184, 134, 45, 0.15);
+  --accent-glow-faint: rgba(184, 134, 45, 0.08);
+  --accent-glow-soft: rgba(184, 134, 45, 0.12);
+  --accent-glow-strong: rgba(184, 134, 45, 0.3);
   --error-glow: rgba(220, 38, 38, 0.15);
   --success-glow: rgba(5, 150, 105, 0.15);
   --warning-glow: rgba(217, 119, 6, 0.15);
   --blue-glow: rgba(37, 99, 235, 0.15);
+
+  /* Semantic color aliases */
+  --text-primary: var(--text-color);
+  --text-color-secondary: var(--text-muted);
+  --heading-color: var(--accent-color);
+  --secondary-color: var(--nav-active);
+  --success-hover: #047857;
+  --accent-color-rgb: 184, 134, 45;
+  --accent-color-2: #c74038;
 }
 
 /* ==========================================================================
@@ -118,8 +130,8 @@
   /* Accent/Gold colors */
   --accent-color: #ffd700;
   --accent-hover: #ffed4a;
-  --accent-hover-color: #ffed4a;
   --accent-light: #fff066;
+  --accent-muted: #36312f;
 
   /* UI elements */
   --divider-color: #3c466e;
@@ -185,8 +197,20 @@
   --highlight-medium: rgba(255, 255, 255, 0.35);
   --highlight-heavy: rgba(255, 255, 255, 0.55);
   --accent-glow: rgba(255, 215, 0, 0.3);
+  --accent-glow-faint: rgba(255, 215, 0, 0.15);
+  --accent-glow-soft: rgba(255, 215, 0, 0.2);
+  --accent-glow-strong: rgba(255, 215, 0, 0.5);
   --error-glow: rgba(255, 68, 68, 0.3);
   --success-glow: rgba(0, 255, 127, 0.3);
   --warning-glow: rgba(255, 170, 0, 0.3);
   --blue-glow: rgba(0, 170, 255, 0.3);
+
+  /* Semantic color aliases */
+  --text-primary: var(--text-color);
+  --text-color-secondary: var(--text-muted);
+  --heading-color: var(--accent-color);
+  --secondary-color: var(--nav-active);
+  --success-hover: #22c55e;
+  --accent-color-rgb: 255, 215, 0;
+  --accent-color-2: #ff5555;
 }

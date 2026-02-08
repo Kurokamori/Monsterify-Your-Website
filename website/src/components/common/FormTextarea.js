@@ -31,7 +31,7 @@ const FormTextarea = ({
         disabled={disabled}
         required={required}
         rows={rows}
-        className={`form-textarea ${error ? 'has-error' : ''}`}
+        className={`form-input${error ? 'has-error' : ''}`}
         {...props}
       />
       

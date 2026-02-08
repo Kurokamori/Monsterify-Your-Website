@@ -176,7 +176,7 @@ const TownMap = () => {
           {displayLocations.map(location => (
             <div
               key={location.id}
-              className={`map-location ${location.is_locked ? 'locked' : ''}`}
+              className={`map-location${location.is_locked ? 'locked' : ''}`}
               style={{
                 left: `${location.position.x}%`,
                 top: `${location.position.y}%`
@@ -203,7 +203,7 @@ const TownMap = () => {
               <i className="fas fa-times"></i>
             </button>
             
-            <div className="location-info-header">
+            <div className="tree-header">
               <h2>{activeLocation.name}</h2>
               {activeLocation.is_locked && (
                 <div className="location-locked-badge">
@@ -217,7 +217,7 @@ const TownMap = () => {
                 <img
                   src={activeLocation.image_path}
                   alt={activeLocation.name}
-                  className="location-image"
+                  className="npc-avatar"
                   onError={(e) => {
                     e.target.onerror = null;
                     e.target.src = `https://via.placeholder.com/400x300/1e2532/d6a339?text=${activeLocation.name}`;
@@ -225,7 +225,7 @@ const TownMap = () => {
                 />
               </div>
               
-              <div className="location-details">
+              <div className="npc-columns">
                 <p className="town-location-description">{activeLocation.description}</p>
                 
                 {activeLocation.is_locked ? (

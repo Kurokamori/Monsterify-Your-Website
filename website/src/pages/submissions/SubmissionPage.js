@@ -94,14 +94,14 @@ const SubmissionPage = () => {
   const headerText = getHeaderText();
 
   return (
-    <div className="page-container">
+    <div className="lore-container">
 
-        <div className="page-title">
+        <div className="map-header">
           <h1>{headerText.title}</h1>
           <p>{headerText.subtitle}</p>
         </div>
 
-        <div className="submission-tabs">
+        <div className="type-tags">
           <button
             className={`button tab ${activeTab === 'art-gallery' ? 'active' : ''}`}
             onClick={() => handleTabChange('art-gallery')}
@@ -134,15 +134,15 @@ const SubmissionPage = () => {
 
       <div className="submission-content">
         {activeTab === 'submission-types' && (
-          <div className="submission-types-container">
+          <div className="guide-detail-content">
             <h2>Create a New Submission</h2>
             <p>Choose a submission type below to get started. Each type offers different rewards and opportunities.</p>
 
-            <div className="submission-types-grid-row">
+            <div className="form">
               <div className="submission-types-section">
                 <h2 className="submission-types-heading">Generic Submissions</h2>
-              <div className="submission-types-grid-column">
-                <div className="submission-type-card" onClick={() => navigateToSubmission('art')}>
+              <div className="refs-grid">
+                <div className="adopt-card" onClick={() => navigateToSubmission('art')}>
                   <div className="submission-type-icon">
                     <i className="fas fa-paint-brush"></i>
                   </div>
@@ -153,7 +153,7 @@ const SubmissionPage = () => {
                   </button>
                 </div>
 
-                <div className="submission-type-card" onClick={() => navigateToSubmission('writing')}>
+                <div className="adopt-card" onClick={() => navigateToSubmission('writing')}>
                   <div className="submission-type-icon">
                     <i className="fas fa-pen-fancy"></i>
                   </div>
@@ -167,8 +167,8 @@ const SubmissionPage = () => {
               </div>
               <div className="submission-types-section">
                 <h2 className="submission-types-heading">Reference Submissions</h2>
-              <div className="submission-types-grid-column">
-              <div className="submission-type-card" onClick={() => navigateToSubmission('trainer-reference')}>
+              <div className="refs-grid">
+              <div className="adopt-card" onClick={() => navigateToSubmission('trainer-reference')}>
                 <div className="submission-type-icon">
                   <i className="fas fa-user"></i>
                 </div>
@@ -179,7 +179,7 @@ const SubmissionPage = () => {
                 </button>
               </div>
 
-              <div className="submission-type-card" onClick={() => navigateToSubmission('monster-reference')}>
+              <div className="adopt-card" onClick={() => navigateToSubmission('monster-reference')}>
                 <div className="submission-type-icon">
                   <i className="fas fa-dragon"></i>
                 </div>
@@ -190,7 +190,7 @@ const SubmissionPage = () => {
                 </button>
               </div>
 
-              <div className="submission-type-card" onClick={() => navigateToSubmission('mega-image-reference')}>
+              <div className="adopt-card" onClick={() => navigateToSubmission('mega-image-reference')}>
                 <div className="submission-type-icon">
                   <i className="fas fa-bolt"></i>
                 </div>
@@ -201,7 +201,7 @@ const SubmissionPage = () => {
                 </button>
               </div>
 
-              <div className="submission-type-card" onClick={() => navigateToSubmission('trainer-mega-reference')}>
+              <div className="adopt-card" onClick={() => navigateToSubmission('trainer-mega-reference')}>
                 <div className="submission-type-icon">
                   <i className="fas fa-user-shield"></i>
                 </div>
@@ -217,7 +217,7 @@ const SubmissionPage = () => {
               <div className="submission-types-section">
                 <h2 className="submission-types-heading">Prompt Submissions</h2>
 
-              <div className="submission-type-card prompt-card">
+              <div className="adopt-card prompt-card">
                 <div className="submission-type-icon">
                   <i className="fas fa-lightbulb"></i>
                 </div>
@@ -252,7 +252,7 @@ const SubmissionPage = () => {
         )}
 
         {activeTab === 'my-submissions' && (
-          <div className="my-submissions-container">
+          <div className="guide-card">
             <h2>My Submissions</h2>
             <p>This feature is coming soon. You'll be able to view and manage all your submissions here.</p>
           </div>

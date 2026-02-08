@@ -418,21 +418,22 @@ const Bakery = () => {
   };
 
   return (
-    <div className="bakery-container">
+    <div className="form">
 
       {loading ? (
-        <div className="loading-container">
+        <div className="error-container">
           <LoadingSpinner />
           <p>Loading...</p>
         </div>
       ) : error ? (
         <ErrorMessage message={error} />
       ) : (
-        <div className="bakery-content">
-          <div className="trainer-selection">
+        <div className="form">
+          <div className="shop-search">
             <label htmlFor="trainer-select">Select Trainer:</label>
             <select
               id="trainer-select"
+              className="trainer-select"
               value={selectedTrainer}
               onChange={(e) => setSelectedTrainer(e.target.value)}
             >
@@ -447,7 +448,7 @@ const Bakery = () => {
 
           {selectedTrainer && (
             <>
-              <div className="monster-search">
+              <div className="form-input">
                 <input
                   type="text"
                   placeholder="Search monsters..."
@@ -456,9 +457,9 @@ const Bakery = () => {
                 />
               </div>
 
-              <div className="monsters-grid">
+              <div className="container grid gap-md">
                 {filteredMonsters.length === 0 ? (
-                  <div className="no-monsters">
+                  <div className="no-results">
                     <p>No monsters found.</p>
                   </div>
                 ) : (
@@ -469,7 +470,7 @@ const Bakery = () => {
                       onClick={() => handleMonsterClick(monster)}
                     >
                       <div className="monster-name">{monster.name}</div>
-                      <div className="monster-species">
+                      <div className="monster-types">
                         {monster.species1}
                         {monster.species2 && ` + ${monster.species2}`}
                         {monster.species3 && ` + ${monster.species3}`}
@@ -519,7 +520,7 @@ const Bakery = () => {
         {selectedMonster ? (
           <div className="monster-modal-content">
             {pastrySuccess ? (
-              <div className="pastry-success">
+              <div className="berry-success">
                 <div className="success-icon">
                   <i className="fas fa-check-circle"></i>
                 </div>
@@ -551,12 +552,12 @@ const Bakery = () => {
                   showItemInfo={!!selectedPastry}
                 />
 
-                <div className="pastry-selection">
+                <div className="map-filters">
                   <h3>Select a Pastry</h3>
 
-                  <div className="pastry-filters">
+                  <div className="berry-filters">
                     <h4>Filter by Category (stackable)</h4>
-                    <div className="filter-buttons">
+                    <div className="type-tags">
                       <button
                         className={`button filter ${pastryFilters.type ? 'active' : ''}`}
                         onClick={() => toggleFilter('type')}
@@ -602,168 +603,168 @@ const Bakery = () => {
                     </div>
                   </div>
 
-                  <div className="pastry-categories">
-                    <div className="pastry-category">
+                  <div className="berry-categories">
+                    <div className="fandom-grid">
                       <h4>Species Modification</h4>
-                      <div className="pastry-items">
+                      <div className="berry-items">
                         <button
-                          className={`pastry-item ${!matchesFilters('Patama Pastry') ? 'filtered-out' : ''}`}
+                          className={`button vertical ${!matchesFilters('Patama Pastry') ? 'filtered-out' : ''}`}
                           onClick={() => setSelectedPastry('Patama Pastry')}
                           disabled={!isPastryAvailable('Patama Pastry')}
                         >
-                          <span className="pastry-name">Patama Pastry</span>
-                          <span className="pastry-desc">Sets species 1</span>
-                          {isPastryAvailable('Patama Pastry') && <span className="pastry-count">x{getPastryCount('Patama Pastry')}</span>}
+                          <span className="berry-name">Patama Pastry</span>
+                          <span className="berry-desc">Sets species 1</span>
+                          {isPastryAvailable('Patama Pastry') && <span className="berry-count">x{getPastryCount('Patama Pastry')}</span>}
                         </button>
                         <button
-                          className={`pastry-item ${!matchesFilters('Bluk Pastry') ? 'filtered-out' : ''}`}
+                          className={`button vertical ${!matchesFilters('Bluk Pastry') ? 'filtered-out' : ''}`}
                           onClick={() => setSelectedPastry('Bluk Pastry')}
                           disabled={!selectedMonster?.species2 || !isPastryAvailable('Bluk Pastry')}
                         >
-                          <span className="pastry-name">Bluk Pastry</span>
-                          <span className="pastry-desc">Sets species 2 (if present)</span>
-                          {isPastryAvailable('Bluk Pastry') && <span className="pastry-count">x{getPastryCount('Bluk Pastry')}</span>}
+                          <span className="berry-name">Bluk Pastry</span>
+                          <span className="berry-desc">Sets species 2 (if present)</span>
+                          {isPastryAvailable('Bluk Pastry') && <span className="berry-count">x{getPastryCount('Bluk Pastry')}</span>}
                         </button>
                         <button
-                          className={`pastry-item ${!matchesFilters('Nuevo Pastry') ? 'filtered-out' : ''}`}
+                          className={`button vertical ${!matchesFilters('Nuevo Pastry') ? 'filtered-out' : ''}`}
                           onClick={() => setSelectedPastry('Nuevo Pastry')}
                           disabled={!selectedMonster?.species3 || !isPastryAvailable('Nuevo Pastry')}
                         >
-                          <span className="pastry-name">Nuevo Pastry</span>
-                          <span className="pastry-desc">Sets species 3 (if present)</span>
-                          {isPastryAvailable('Nuevo Pastry') && <span className="pastry-count">x{getPastryCount('Nuevo Pastry')}</span>}
+                          <span className="berry-name">Nuevo Pastry</span>
+                          <span className="berry-desc">Sets species 3 (if present)</span>
+                          {isPastryAvailable('Nuevo Pastry') && <span className="berry-count">x{getPastryCount('Nuevo Pastry')}</span>}
                         </button>
                         <button
-                          className={`pastry-item ${!matchesFilters('Azzuk Pastry') ? 'filtered-out' : ''}`}
+                          className={`button vertical ${!matchesFilters('Azzuk Pastry') ? 'filtered-out' : ''}`}
                           onClick={() => setSelectedPastry('Azzuk Pastry')}
                           disabled={selectedMonster?.species2 || !isPastryAvailable('Azzuk Pastry')}
                         >
-                          <span className="pastry-name">Azzuk Pastry</span>
-                          <span className="pastry-desc">Adds a new species to species 2 (if not present)</span>
-                          {isPastryAvailable('Azzuk Pastry') && <span className="pastry-count">x{getPastryCount('Azzuk Pastry')}</span>}
+                          <span className="berry-name">Azzuk Pastry</span>
+                          <span className="berry-desc">Adds a new species to species 2 (if not present)</span>
+                          {isPastryAvailable('Azzuk Pastry') && <span className="berry-count">x{getPastryCount('Azzuk Pastry')}</span>}
                         </button>
                         <button
-                          className={`pastry-item ${!matchesFilters('Mangus Pastry') ? 'filtered-out' : ''}`}
+                          className={`button vertical ${!matchesFilters('Mangus Pastry') ? 'filtered-out' : ''}`}
                           onClick={() => setSelectedPastry('Mangus Pastry')}
                           disabled={selectedMonster?.species3 || !selectedMonster?.species2 || !isPastryAvailable('Mangus Pastry')}
                         >
-                          <span className="pastry-name">Mangus Pastry</span>
-                          <span className="pastry-desc">Adds a new species to species 3 (if not present)</span>
-                          {isPastryAvailable('Mangus Pastry') && <span className="pastry-count">x{getPastryCount('Mangus Pastry')}</span>}
+                          <span className="berry-name">Mangus Pastry</span>
+                          <span className="berry-desc">Adds a new species to species 3 (if not present)</span>
+                          {isPastryAvailable('Mangus Pastry') && <span className="berry-count">x{getPastryCount('Mangus Pastry')}</span>}
                         </button>
                       </div>
                     </div>
 
-                    <div className="pastry-category">
+                    <div className="fandom-grid">
                       <h4>Type Modification</h4>
-                      <div className="pastry-items">
+                      <div className="berry-items">
                         <button
-                          className={`pastry-item ${!matchesFilters('Miraca Pastry') ? 'filtered-out' : ''}`}
+                          className={`button vertical ${!matchesFilters('Miraca Pastry') ? 'filtered-out' : ''}`}
                           onClick={() => setSelectedPastry('Miraca Pastry')}
                           disabled={!isPastryAvailable('Miraca Pastry')}
                         >
-                          <span className="pastry-name">Miraca Pastry</span>
-                          <span className="pastry-desc">Sets type 1</span>
-                          {isPastryAvailable('Miraca Pastry') && <span className="pastry-count">x{getPastryCount('Miraca Pastry')}</span>}
+                          <span className="berry-name">Miraca Pastry</span>
+                          <span className="berry-desc">Sets type 1</span>
+                          {isPastryAvailable('Miraca Pastry') && <span className="berry-count">x{getPastryCount('Miraca Pastry')}</span>}
                         </button>
                         <button
-                          className={`pastry-item ${!matchesFilters('Cocon Pastry') ? 'filtered-out' : ''}`}
+                          className={`button vertical ${!matchesFilters('Cocon Pastry') ? 'filtered-out' : ''}`}
                           onClick={() => setSelectedPastry('Cocon Pastry')}
                           disabled={!selectedMonster?.type2 || !isPastryAvailable('Cocon Pastry')}
                         >
-                          <span className="pastry-name">Cocon Pastry</span>
-                          <span className="pastry-desc">Sets type 2 (if present)</span>
-                          {isPastryAvailable('Cocon Pastry') && <span className="pastry-count">x{getPastryCount('Cocon Pastry')}</span>}
+                          <span className="berry-name">Cocon Pastry</span>
+                          <span className="berry-desc">Sets type 2 (if present)</span>
+                          {isPastryAvailable('Cocon Pastry') && <span className="berry-count">x{getPastryCount('Cocon Pastry')}</span>}
                         </button>
                         <button
-                          className={`pastry-item ${!matchesFilters('Durian Pastry') ? 'filtered-out' : ''}`}
+                          className={`button vertical ${!matchesFilters('Durian Pastry') ? 'filtered-out' : ''}`}
                           onClick={() => setSelectedPastry('Durian Pastry')}
                           disabled={!selectedMonster?.type3 || !isPastryAvailable('Durian Pastry')}
                         >
-                          <span className="pastry-name">Durian Pastry</span>
-                          <span className="pastry-desc">Sets type 3 (if present)</span>
-                          {isPastryAvailable('Durian Pastry') && <span className="pastry-count">x{getPastryCount('Durian Pastry')}</span>}
+                          <span className="berry-name">Durian Pastry</span>
+                          <span className="berry-desc">Sets type 3 (if present)</span>
+                          {isPastryAvailable('Durian Pastry') && <span className="berry-count">x{getPastryCount('Durian Pastry')}</span>}
                         </button>
                         <button
-                          className={`pastry-item ${!matchesFilters('Monel Pastry') ? 'filtered-out' : ''}`}
+                          className={`button vertical ${!matchesFilters('Monel Pastry') ? 'filtered-out' : ''}`}
                           onClick={() => setSelectedPastry('Monel Pastry')}
                           disabled={!selectedMonster?.type4 || !isPastryAvailable('Monel Pastry')}
                         >
-                          <span className="pastry-name">Monel Pastry</span>
-                          <span className="pastry-desc">Sets type 4 (if present)</span>
-                          {isPastryAvailable('Monel Pastry') && <span className="pastry-count">x{getPastryCount('Monel Pastry')}</span>}
+                          <span className="berry-name">Monel Pastry</span>
+                          <span className="berry-desc">Sets type 4 (if present)</span>
+                          {isPastryAvailable('Monel Pastry') && <span className="berry-count">x{getPastryCount('Monel Pastry')}</span>}
                         </button>
                         <button
-                          className={`pastry-item ${!matchesFilters('Perep Pastry') ? 'filtered-out' : ''}`}
+                          className={`button vertical ${!matchesFilters('Perep Pastry') ? 'filtered-out' : ''}`}
                           onClick={() => setSelectedPastry('Perep Pastry')}
                           disabled={!selectedMonster?.type5 || !isPastryAvailable('Perep Pastry')}
                         >
-                          <span className="pastry-name">Perep Pastry</span>
-                          <span className="pastry-desc">Sets type 5 (if present)</span>
-                          {isPastryAvailable('Perep Pastry') && <span className="pastry-count">x{getPastryCount('Perep Pastry')}</span>}
+                          <span className="berry-name">Perep Pastry</span>
+                          <span className="berry-desc">Sets type 5 (if present)</span>
+                          {isPastryAvailable('Perep Pastry') && <span className="berry-count">x{getPastryCount('Perep Pastry')}</span>}
                         </button>
                         <button
-                          className={`pastry-item ${!matchesFilters('Addish Pastry') ? 'filtered-out' : ''}`}
+                          className={`button vertical ${!matchesFilters('Addish Pastry') ? 'filtered-out' : ''}`}
                           onClick={() => setSelectedPastry('Addish Pastry')}
                           disabled={selectedMonster?.type2 || !isPastryAvailable('Addish Pastry')}
                         >
-                          <span className="pastry-name">Addish Pastry</span>
-                          <span className="pastry-desc">Adds type 2 (if not present)</span>
-                          {isPastryAvailable('Addish Pastry') && <span className="pastry-count">x{getPastryCount('Addish Pastry')}</span>}
+                          <span className="berry-name">Addish Pastry</span>
+                          <span className="berry-desc">Adds type 2 (if not present)</span>
+                          {isPastryAvailable('Addish Pastry') && <span className="berry-count">x{getPastryCount('Addish Pastry')}</span>}
                         </button>
                         <button
-                          className={`pastry-item ${!matchesFilters('Sky Carrot Pastry') ? 'filtered-out' : ''}`}
+                          className={`button vertical ${!matchesFilters('Sky Carrot Pastry') ? 'filtered-out' : ''}`}
                           onClick={() => setSelectedPastry('Sky Carrot Pastry')}
                           disabled={selectedMonster?.type3 || !selectedMonster?.type2 || !isPastryAvailable('Sky Carrot Pastry')}
                         >
-                          <span className="pastry-name">Sky Carrot Pastry</span>
-                          <span className="pastry-desc">Adds type 3 (if not present)</span>
-                          {isPastryAvailable('Sky Carrot Pastry') && <span className="pastry-count">x{getPastryCount('Sky Carrot Pastry')}</span>}
+                          <span className="berry-name">Sky Carrot Pastry</span>
+                          <span className="berry-desc">Adds type 3 (if not present)</span>
+                          {isPastryAvailable('Sky Carrot Pastry') && <span className="berry-count">x{getPastryCount('Sky Carrot Pastry')}</span>}
                         </button>
                         <button
-                          className={`pastry-item ${!matchesFilters('Kembre Pastry') ? 'filtered-out' : ''}`}
+                          className={`button vertical ${!matchesFilters('Kembre Pastry') ? 'filtered-out' : ''}`}
                           onClick={() => setSelectedPastry('Kembre Pastry')}
                           disabled={selectedMonster?.type4 || !selectedMonster?.type3 || !isPastryAvailable('Kembre Pastry')}
                         >
-                          <span className="pastry-name">Kembre Pastry</span>
-                          <span className="pastry-desc">Adds type 4 (if not present)</span>
-                          {isPastryAvailable('Kembre Pastry') && <span className="pastry-count">x{getPastryCount('Kembre Pastry')}</span>}
+                          <span className="berry-name">Kembre Pastry</span>
+                          <span className="berry-desc">Adds type 4 (if not present)</span>
+                          {isPastryAvailable('Kembre Pastry') && <span className="berry-count">x{getPastryCount('Kembre Pastry')}</span>}
                         </button>
                         <button
-                          className={`pastry-item ${!matchesFilters('Espara Pastry') ? 'filtered-out' : ''}`}
+                          className={`button vertical ${!matchesFilters('Espara Pastry') ? 'filtered-out' : ''}`}
                           onClick={() => setSelectedPastry('Espara Pastry')}
                           disabled={selectedMonster?.type5 || !selectedMonster?.type4 || !isPastryAvailable('Espara Pastry')}
                         >
-                          <span className="pastry-name">Espara Pastry</span>
-                          <span className="pastry-desc">Adds type 5 (if not present)</span>
-                          {isPastryAvailable('Espara Pastry') && <span className="pastry-count">x{getPastryCount('Espara Pastry')}</span>}
+                          <span className="berry-name">Espara Pastry</span>
+                          <span className="berry-desc">Adds type 5 (if not present)</span>
+                          {isPastryAvailable('Espara Pastry') && <span className="berry-count">x{getPastryCount('Espara Pastry')}</span>}
                         </button>
                       </div>
                     </div>
 
-                    <div className="pastry-category">
+                    <div className="fandom-grid">
                       <h4>Attribute Modification</h4>
-                      <div className="pastry-items">
+                      <div className="berry-items">
                         <button
-                          className={`pastry-item ${!matchesFilters('Datei Pastry') ? 'filtered-out' : ''}`}
+                          className={`button vertical ${!matchesFilters('Datei Pastry') ? 'filtered-out' : ''}`}
                           onClick={() => setSelectedPastry('Datei Pastry')}
                           disabled={!isPastryAvailable('Datei Pastry')}
                         >
-                          <span className="pastry-name">Datei Pastry</span>
-                          <span className="pastry-desc">Sets attribute</span>
-                          {isPastryAvailable('Datei Pastry') && <span className="pastry-count">x{getPastryCount('Datei Pastry')}</span>}
+                          <span className="berry-name">Datei Pastry</span>
+                          <span className="berry-desc">Sets attribute</span>
+                          {isPastryAvailable('Datei Pastry') && <span className="berry-count">x{getPastryCount('Datei Pastry')}</span>}
                         </button>
                       </div>
                     </div>
                   </div>
 
                   {pastryError && (
-                    <div className="pastry-error">
+                    <div className="berry-error">
                       {pastryError}
                     </div>
                   )}
 
-                  <div className="pastry-actions">
+                  <div className="container horizontal gap-md">
                     <button
                       className="button secondary"
                       onClick={closeMonsterModal}
@@ -802,7 +803,7 @@ const Bakery = () => {
           />
         </div>
 
-        <div className="value-modal-content">
+        <div className="map-filters">
           <p>Select a value to apply:</p>
 
           <div className="value-search">
@@ -826,7 +827,7 @@ const Bakery = () => {
             ))}
           </div>
 
-          <div className="value-actions">
+          <div className="container horizontal gap-md">
             <button
               className="button secondary"
               onClick={() => setShowValueModal(false)}

@@ -93,7 +93,7 @@ const Garden = () => {
   if (!isAuthenticated) {
     return (
       <div className="location-activity-container">
-        <div className="location-activity-header">
+        <div className="quick-actions">
           <Link to="/town" className="button secondary">
             <i className="fas fa-arrow-left mr-2"></i> Back to Town
           </Link>
@@ -171,7 +171,7 @@ const Garden = () => {
   if (showSession && sessionData && promptData && flavorData) {
     return (
       <div className="location-activity-container">
-        <div className="location-activity-header">
+        <div className="quick-actions">
           <button onClick={returnToActivity} className="button secondary">
             <i className="fas fa-arrow-left mr-2"></i> Back to Garden
           </button>
@@ -194,13 +194,13 @@ const Garden = () => {
   if (activeSession && !showSession) {
     return (
       <div className="location-activity-container">
-        <div className="location-activity-header">
+        <div className="quick-actions">
           <Link to="/town" className="button secondary">
             <i className="fas fa-arrow-left mr-2"></i> Back to Town
           </Link>
           <h1>Garden</h1>
         </div>
-        <div className="active-session-message">
+        <div className="auth-message">
           <h2>Active Session</h2>
           <p>You have an active garden session in progress.</p>
           <button onClick={continueSession} className="button primary">
@@ -213,7 +213,7 @@ const Garden = () => {
 
   return (
     <div className="location-activity-container">
-      <div className="location-activity-header">
+      <div className="quick-actions">
         <Link to="/town" className="button secondary">
           <i className="fas fa-arrow-left mr-2"></i> Back to Town
         </Link>
@@ -246,7 +246,7 @@ const Garden = () => {
 
           <div className="location-activities">
             <div className="location-activity-card">
-              <div className="activity-image">
+              <div className="npc-avatar">
                 <img src="https://i.imgur.com/Z5dNHXv.jpeg" alt="Tend Garden" />
               </div>
               <div className="activity-info">
@@ -266,7 +266,7 @@ const Garden = () => {
             </div>
 
             <div className="location-activity-card">
-              <div className="activity-image">
+              <div className="npc-avatar">
                 <img src="https://i.imgur.com/Z5dNHXv.jpeg" alt="Harvest Garden" />
               </div>
               <div className="activity-info">

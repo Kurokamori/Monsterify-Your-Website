@@ -61,7 +61,7 @@ const SubmissionDetail = () => {
 
   if (error) {
     return (
-      <Container className="submission-page">
+      <Container className="bazar-container">
         <div className="alert alert-danger">{error}</div>
         <Button variant="secondary" onClick={handleBackClick}>
           Back to {(submission?.submission_type === 'art' || submission?.submission_type === 'reference' || submission?.submission_type === 'prompt') ? 'Gallery' : 'Library'}
@@ -72,7 +72,7 @@ const SubmissionDetail = () => {
 
   if (!submission) {
     return (
-      <Container className="submission-page">
+      <Container className="bazar-container">
         <div className="alert alert-warning">Submission not found</div>
         <Button variant="secondary" onClick={handleBackClick}>
           Back to Gallery/Library
@@ -88,7 +88,7 @@ const SubmissionDetail = () => {
   const hasImages = submission.images && submission.images.length > 0;
 
   return (
-    <Container className="submission-page">
+    <Container className="bazar-container">
       <Button variant="secondary" className="mb-3" onClick={handleBackClick}>
         &larr; Back to {isArt ? 'Gallery' : 'Library'}
       </Button>
@@ -108,7 +108,7 @@ const SubmissionDetail = () => {
           </div>
 
           {submission.tags && Array.isArray(submission.tags) && submission.tags.length > 0 && (
-            <div className="submission-tags">
+            <div className="type-tags">
               {submission.tags.map(tag => (
                 <span key={tag} className="tag">{tag}</span>
               ))}
@@ -133,7 +133,7 @@ const SubmissionDetail = () => {
                   {Array.isArray(submission.images) && submission.images.map(image => (
                     <div
                       key={image.id}
-                      className={`submission-detail-image ${selectedImage === image.image_url ? 'selected' : ''}`}
+                      className={`image-container${selectedImage === image.image_url ? 'selected' : ''}`}
                       onClick={() => handleImageClick(image.image_url)}
                     >
                       <img src={image.image_url} alt={submission.title} />
@@ -192,7 +192,7 @@ const SubmissionDetail = () => {
         )}
 
         {hasChapters && (
-          <div className="chapters-list">
+          <div className="no-npcs">
             <h3>Chapters</h3>
             <div className="list-group">
               {Array.isArray(submission.chapters) && submission.chapters.map(chapter => (

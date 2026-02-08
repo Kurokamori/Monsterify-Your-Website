@@ -55,12 +55,12 @@ const SchedulePage = () => {
 
   return (
     <div className="schedule-page">
-      <div className="schedule-header">
+      <div className="option-row">
         <h1>Manage Schedule</h1>
         <p>Organize your tasks, track habits, and manage daily routines with optional Discord reminders and in-game rewards</p>
       </div>
 
-      <div className="schedule-tabs">
+      <div className="tasks-tabs">
         <button
           className={`button tab ${activeTab === 'dashboard' ? 'active' : ''}`}
           onClick={() => handleTabChange('dashboard')}

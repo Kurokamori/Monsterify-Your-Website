@@ -261,7 +261,7 @@ const GiftRewards = ({
   if (generatingRewards) {
     return (
       <div className="gift-rewards-container">
-        <div className="gift-rewards-header">
+        <div className="map-header">
           <h2>Generating Gift Rewards...</h2>
           <LoadingSpinner />
         </div>
@@ -271,7 +271,7 @@ const GiftRewards = ({
 
   return (
     <div className="gift-rewards-container">
-      <div className="gift-rewards-header">
+      <div className="map-header">
         <h2>Gift {submissionType === 'art' ? 'Art' : submissionType === 'reference' ? 'Reference' : 'Writing'} Rewards</h2>
         <p>
           You gave {giftLevels} levels as gift {submissionType === 'reference' ? 'references' : submissionType}! Here are your rewards:
@@ -305,7 +305,7 @@ const GiftRewards = ({
                 : null;
               
               return (
-                <div key={allocation.id} className="allocation-item">
+                <div key={allocation.id} className="category-row">
                   <span className="allocation-info">
                     <i className={allocation.type === 'trainer' ? 'fas fa-user' : 'fas fa-dragon'}></i>
                     {allocation.entityName}
@@ -377,7 +377,7 @@ const GiftRewards = ({
                       onSelect={(id) => setSelectedEntityId(id)}
                       label="Select Trainer"
                       placeholder="Type to search trainers..."
-                      className="entity-select"
+                      className="form-input"
                     />
                   ) : (
                     <MonsterAutocomplete
@@ -387,7 +387,7 @@ const GiftRewards = ({
                       label="Select Monster"
                       placeholder={!selectedTrainerId ? 'Select Trainer First' : 'Type to search monsters...'}
                       disabled={!selectedTrainerId}
-                      className="entity-select"
+                      className="form-input"
                     />
                   )}
                 </div>
@@ -488,16 +488,16 @@ const GiftRewards = ({
           </h3>
           <p>Name each monster and assign them to one of your trainers:</p>
 
-          <div className="monsters-grid">
+          <div className="button">
             {monsterRewards.map((monster, index) => (
               <div key={index} className="gift-monster-card">
-                <div className="gift-monster-card-header">
+                <div className="monster-card-header">
                   <h3 className="gift-monster-name">
                     {monster.name || monster.species1 || 'Mystery Monster'}
                   </h3>
                 </div>
 
-                <div className="gift-monster-card-image">
+                <div className="monster-card-image">
                   <img
                     src={monster.image_url || '/images/default_mon.png'}
                     alt={monster.name || monster.species1}
@@ -512,7 +512,7 @@ const GiftRewards = ({
                   {/* Species with reference images */}
                   <div className="gift-monster-species">
                     {monster.species1 && (
-                      <div className="species-with-image">
+                      <div className="nav-left">
                         <img
                           src={`/images/species/${monster.species1.toLowerCase().replace(/[^a-z0-9]/g, '')}.png`}
                           alt={monster.species1}
@@ -528,7 +528,7 @@ const GiftRewards = ({
                     {monster.species2 && (
                       <>
                         <span className="species-separator"> / </span>
-                        <div className="species-with-image">
+                        <div className="nav-left">
                           <img
                             src={`/content/static/images/species/${monster.species2.toLowerCase().replace(/[^a-z0-9]/g, '')}.png`}
                             alt={monster.species2}
@@ -545,7 +545,7 @@ const GiftRewards = ({
                     {monster.species3 && (
                       <>
                         <span className="species-separator"> / </span>
-                        <div className="species-with-image">
+                        <div className="nav-left">
                           <img
                             src={`/content/static/images/species/${monster.species3.toLowerCase().replace(/[^a-z0-9]/g, '')}.png`}
                             alt={monster.species3}
@@ -602,7 +602,7 @@ const GiftRewards = ({
                       type="text"
                       value={monsterNames[index] || ''}
                       onChange={(e) => handleMonsterNameChange(index, e.target.value)}
-                      className="monster-name-input"
+                      className="form-input"
                       placeholder="Enter monster name"
                     />
                   </div>
@@ -625,7 +625,7 @@ const GiftRewards = ({
       )}
 
       {/* Action Buttons */}
-      <div className="gift-rewards-actions">
+      <div className="profile-content">
         <button
           type="button"
           className="button secondary"

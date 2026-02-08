@@ -64,7 +64,7 @@ const MonsterTeamCard = ({ monster }) => {
 
   return (
     <div className="monster-team-card">
-      <div className="monster-header">
+      <div className="tree-header">
         <div className="monster-image">
           {monster.image ? (
             <img src={monster.image} alt={monster.name} />
@@ -81,16 +81,16 @@ const MonsterTeamCard = ({ monster }) => {
 
       <div className="monster-details">
         {monster.species && monster.species.length > 0 && (
-          <div className="monster-species">
+          <div className="monster-types">
             <label>Species:</label>
-            <div className="species-list">
+            <div className="type-badges">
               {monster.species.slice(0, 3).map((species, index) => (
                 <span key={index} className="species-tag">
                   {species}
                 </span>
               ))}
               {monster.species.length > 3 && (
-                <span className="species-more">+{monster.species.length - 3}</span>
+                <span className="types-more">+{monster.species.length - 3}</span>
               )}
             </div>
           </div>
@@ -117,7 +117,7 @@ const MonsterTeamCard = ({ monster }) => {
         )}
 
         {monster.attribute && (
-          <div className="monster-attribute">
+          <div className="monster-types">
             <label>Attribute:</label>
             <div 
               className="attribute-badge"

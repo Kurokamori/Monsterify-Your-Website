@@ -37,21 +37,22 @@
 }
 
 /* Header */
-.modal-header {
+.tree-header {
   align-items: center;
   background: var(--modal-header-bg, var(--overlay-heavy));
   border-bottom: 1px solid var(--divider-color);
   color: var(--modal-header-color, var(--text-color));
   display: flex;
-  gap: 1rem;
+  gap: 1.5rem;
   justify-content: space-between;
-  margin-bottom: 20px;
-  padding: 1.25rem 1.5rem;
+  margin-bottom: 1.5rem;
+  padding: 1.5rem;
+  padding-bottom: 1.5rem;
 }
 
 .modal-title,
-.modal-header h2,
-.modal-header h3 { margin: 0; font-size: var(--font-size-xl); color: var(--accent-color); }
+.tree-header h2,
+.tree-header h3 { margin: 0; font-size: var(--font-size-xl); color: var(--accent-color); }
 
 /* Close buttons - use: className="button close"
    See common/buttons.css for button styles */
@@ -147,11 +148,11 @@
 }
 
 /* Evolution form sections spacing */
-.evolution-form > * {
+.town-square > * {
   margin-bottom: 1.5rem;
 }
 
-.evolution-form > *:last-child {
+.town-square > *:last-child {
   margin-bottom: 0;
 }
 
@@ -167,7 +168,7 @@
     padding: 1rem;
   }
   
-  .evolution-form > * {
+  .town-square > * {
     margin-bottom: 1rem;
   }
 }

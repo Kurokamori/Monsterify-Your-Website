@@ -3,7 +3,7 @@ import React from 'react';
 const DashboardTab = ({ data, onRefresh, onTabChange }) => {
   if (!data) {
     return (
-      <div className="empty-state">
+      <div className="no-npcs">
         <i className="fas fa-chart-line"></i>
         <h3>Loading Dashboard...</h3>
         <p>Please wait while we load your schedule data.</p>
@@ -44,9 +44,9 @@ const DashboardTab = ({ data, onRefresh, onTabChange }) => {
         </button>
       </div>
 
-      <div className="dashboard-grid">
+      <div className="button">
         {/* Tasks Overview */}
-        <div className="dashboard-card">
+        <div className="item-card">
           <h3>
             <i className="fas fa-tasks"></i>
             Tasks
@@ -66,7 +66,7 @@ const DashboardTab = ({ data, onRefresh, onTabChange }) => {
         </div>
 
         {/* Habits Overview */}
-        <div className="dashboard-card">
+        <div className="item-card">
           <h3>
             <i className="fas fa-chart-line"></i>
             Habits
@@ -86,7 +86,7 @@ const DashboardTab = ({ data, onRefresh, onTabChange }) => {
         </div>
 
         {/* Routines Overview */}
-        <div className="dashboard-card">
+        <div className="item-card">
           <h3>
             <i className="fas fa-calendar-day"></i>
             Daily Routines
@@ -110,7 +110,7 @@ const DashboardTab = ({ data, onRefresh, onTabChange }) => {
         </div>
 
         {/* Reminders Overview */}
-        <div className="dashboard-card">
+        <div className="item-card">
           <h3>
             <i className="fas fa-bell"></i>
             Reminders

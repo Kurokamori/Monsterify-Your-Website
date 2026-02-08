@@ -411,13 +411,13 @@ const ActivityRewards = () => {
     console.log('ActivityRewards: Showing loading spinner');
     return (
       <div className="rewards-container">
-        <div className="activity-session-header">
+        <div className="adopt-card">
           <Link to="/town" className="button secondary">
             <i className="fas fa-arrow-left mr-2"></i> Back to Town
           </Link>
           <h1>Activity Rewards</h1>
         </div>
-        <div className="rewards-loading">
+        <div className="appraisal-start">
           <LoadingSpinner />
           <p>Loading activity rewards...</p>
         </div>
@@ -429,7 +429,7 @@ const ActivityRewards = () => {
     console.log('ActivityRewards: User not authenticated');
     return (
       <div className="rewards-container">
-        <div className="activity-session-header">
+        <div className="adopt-card">
           <Link to="/town" className="button secondary">
             <i className="fas fa-arrow-left mr-2"></i> Back to Town
           </Link>
@@ -447,7 +447,7 @@ const ActivityRewards = () => {
     console.log('ActivityRewards: No session data found');
     return (
       <div className="rewards-container">
-        <div className="activity-session-header">
+        <div className="adopt-card">
           <Link to="/town" className="button secondary">
             <i className="fas fa-arrow-left mr-2"></i> Back to Town
           </Link>
@@ -483,7 +483,7 @@ const ActivityRewards = () => {
 
   return (
     <div className="rewards-container">
-      <div className="rewards-header">
+      <div className="auth-header">
         <h1>Activity Completed!</h1>
         <p>Great job completing your {activityName} at the {locationName}! You've earned the following rewards:</p>
       </div>
@@ -494,13 +494,13 @@ const ActivityRewards = () => {
           <div className="rewards-section-header">
             <h2>Items & Rewards</h2>
           </div>
-          <div className="rewards-grid">
+          <div className="town-places">
             {otherRewards.map(reward => (
               <div
                 key={reward.id}
-                className={`reward-card ${reward.claimed ? 'claimed' : ''}`}
+                className={`area-card ${reward.claimed ? 'claimed' : ''}`}
               >
-                <div className={`reward-icon ${reward.type}`}>
+                <div className={`reward-icon${reward.type}`}>
                   <i 
                     className={
                       reward.type === 'coin' ? 'fas fa-coins' :
@@ -523,7 +523,7 @@ const ActivityRewards = () => {
                    reward.type === 'level' ? `${reward.reward_data.levels} level${reward.reward_data.levels > 1 ? 's' : ''}` :
                    'Mystery reward'}
                 </div>
-                <div className={`reward-rarity ${reward.rarity}`}>
+                <div className={`reward-rarity${reward.rarity}`}>
                   {reward.rarity.charAt(0).toUpperCase() + reward.rarity.slice(1)}
                 </div>
 
@@ -574,7 +574,7 @@ const ActivityRewards = () => {
             {monsterRewards.map(reward => (
               <div
                 key={reward.id}
-                className={`monster-reward-card ${reward.claimed ? 'claimed' : ''}`}
+                className={`gift-monster-card ${reward.claimed ? 'claimed' : ''}`}
               >
                 <div className="monster-reward-image-container">
                   {(() => {
@@ -622,7 +622,7 @@ const ActivityRewards = () => {
                     ) : null;
                   })()}
                   <i
-                    className={`fas fa-dragon monster-fallback-icon ${(() => {
+                    className={`fas fa-dragon monster-fallback-icon${(() => {
                       const rolledMonster = reward.reward_data.rolled_monster;
                       const hasImage = rolledMonster?.image_url || reward.reward_data.species1_image || reward.reward_data.species_image_url || reward.reward_data.monster_image;
                       return hasImage ? 'hidden' : '';
@@ -642,16 +642,16 @@ const ActivityRewards = () => {
 
                     {reward.reward_data.type1 && (
                       <div className="monster-reward-types">
-                        <span className={`type-badge monster-reward-type-badge ${reward.reward_data.type1.toLowerCase()}`}>
+                        <span className={`type-badge monster-reward-type-badge${reward.reward_data.type1.toLowerCase()}`}>
                           {reward.reward_data.type1}
                         </span>
                         {reward.reward_data.type2 && (
-                          <span className={`type-badge monster-reward-type-badge ${reward.reward_data.type2.toLowerCase()}`}>
+                          <span className={`type-badge monster-reward-type-badge${reward.reward_data.type2.toLowerCase()}`}>
                             {reward.reward_data.type2}
                           </span>
                         )}
                         {reward.reward_data.type3 && (
-                          <span className={`type-badge monster-reward-type-badge ${reward.reward_data.type3.toLowerCase()}`}>
+                          <span className={`type-badge monster-reward-type-badge${reward.reward_data.type3.toLowerCase()}`}>
                             {reward.reward_data.type3}
                           </span>
                         )}
@@ -665,7 +665,7 @@ const ActivityRewards = () => {
                     )}
                   </div>
 
-                  <div className={`reward-rarity ${reward.rarity}`}>
+                  <div className={`reward-rarity${reward.rarity}`}>
                     {reward.rarity.charAt(0).toUpperCase() + reward.rarity.slice(1)}
                   </div>
 

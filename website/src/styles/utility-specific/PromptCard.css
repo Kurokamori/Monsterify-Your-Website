@@ -67,32 +67,17 @@
   color: var(--text-color);
 }
 
-.prompt-image {
-  width: 80px;
-  height: 80px;
-  border-radius: 8px;
-  overflow: hidden;
-  margin-left: 15px;
-  flex-shrink: 0;
-}
-
-.prompt-image img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
 /* Content */
 .prompt-card-content {
   margin-bottom: 20px;
 }
 
 .prompt-text {
-  background: var(--card-background);
+  background: var(--nav-hover);
   border-left: 4px solid var(--blue-color);
-  padding: 12px 15px;
-  margin: 15px 0;
   border-radius: 0 6px 6px 0;
+  margin: 15px 0;
+  padding: 12px 15px;
 }
 
 .prompt-text h4 {
@@ -107,73 +92,6 @@
   color: var(--text-muted);
   margin: 0;
   line-height: 1.4;
-}
-
-.prompt-requirements {
-  background: var(--warning-color);
-  border-left: 4px solid var(--warning-dark);
-  padding: 12px 15px;
-  margin: 15px 0;
-  border-radius: 0 6px 6px 0;
-}
-
-.prompt-requirements h4 {
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: var(--warning-dark);
-  margin: 0 0 8px 0;
-}
-
-.prompt-requirements p {
-  font-size: 0.9rem;
-  color: var(--warning-dark);
-  margin: 0;
-}
-
-.prompt-rewards {
-  background: var(--success-light);
-  border-left: 4px solid var(--success-color);
-  border-radius: 0 6px 6px 0;
-  display: flex;
-  flex-direction: row;
-  gap: 0.5rem;
-  margin: 15px 0;
-  padding: 1rem;
-}
-
-.prompt-rewards h4 {
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: var(--success-dark);
-  margin: 0 0 8px 0;
-}
-
-.prompt-rewards p {
-  font-size: 0.9rem;
-  color: var(--success-dark);
-  margin: 0;
-  font-weight: 500;
-}
-
-.prompt-event-info,
-.prompt-monthly-info {
-  background: var(--custom-type);
-  border-left: 4px solid var(--accent-color);
-  padding: 12px 15px;
-  margin: 15px 0;
-  border-radius: 0 6px 6px 0;
-}
-
-.prompt-event-info p,
-.prompt-monthly-info p {
-  font-size: 0.85rem;
-  color: var(--text-color);
-  margin: 0 0 4px 0;
-}
-
-.prompt-event-info p:last-child,
-.prompt-monthly-info p:last-child {
-  margin-bottom: 0;
 }
 
 .prompt-statistics {
@@ -198,13 +116,6 @@
 }
 
 /* Footer */
-.prompt-card-footer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 10px;
-  margin-top: 15px;
-}
 
 .availability-notice {
   color: var(--error-color);
@@ -234,19 +145,8 @@
     gap: 15px;
   }
   
-  .prompt-image {
-    width: 100%;
-    height: 120px;
-    margin-left: 0;
-  }
-  
   .prompt-title {
     font-size: 1.2rem;
-  }
-  
-  .prompt-card-footer {
-    flex-direction: column;
-    gap: 10px;
   }
   
   .prompt-statistics {

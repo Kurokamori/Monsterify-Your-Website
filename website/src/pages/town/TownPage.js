@@ -139,98 +139,98 @@ const TownPage = ({ children, currentLocation: propCurrentLocation }) => {
 
       <div className="town-map-container">
         <div className="town-map">
-          <div className={`town-location ${currentLocation === 'town-square' ? 'active' : ''}`}>
+          <div className={`town-location${currentLocation === 'town-square' ? 'active' : ''}`}>
             <Link to="/town" className="location-icon">
               <i className="fas fa-monument"></i>
             </Link>
             <span className="location-name">Town Square</span>
           </div>
 
-          <div className={`town-location ${currentLocation === 'adoption' ? 'active' : ''}`}>
+          <div className={`town-location${currentLocation === 'adoption' ? 'active' : ''}`}>
             <Link to="/town/adoption" className="location-icon">
               <i className="fas fa-home"></i>
             </Link>
             <span className="location-name">Adoption Center</span>
           </div>
 
-          <div className={`town-location ${currentLocation === 'shop' ? 'active' : ''}`}>
+          <div className={`town-location${currentLocation === 'shop' ? 'active' : ''}`}>
             <Link to="/town/shop" className="location-icon">
               <i className="fas fa-store"></i>
             </Link>
             <span className="location-name">Shop</span>
           </div>
 
-          <div className={`town-location ${currentLocation === 'nursery' ? 'active' : ''}`}>
+          <div className={`town-location${currentLocation === 'nursery' ? 'active' : ''}`}>
             <Link to="/town/nursery" className="location-icon">
               <i className="fas fa-egg"></i>
             </Link>
             <span className="location-name">Nursery</span>
           </div>
 
-          <div className={`town-location ${currentLocation === 'trade' ? 'active' : ''}`}>
+          <div className={`town-location${currentLocation === 'trade' ? 'active' : ''}`}>
             <Link to="/town/trade" className="location-icon">
               <i className="fas fa-exchange-alt"></i>
             </Link>
             <span className="location-name">Trade Center</span>
           </div>
 
-          <div className={`town-location ${currentLocation === 'garden' ? 'active' : ''}`}>
+          <div className={`town-location${currentLocation === 'garden' ? 'active' : ''}`}>
             <Link to="/town/activities/garden" className="location-icon">
               <i className="fas fa-seedling"></i>
             </Link>
             <span className="location-name">Garden</span>
           </div>
 
-          <div className={`town-location ${currentLocation === 'farm' ? 'active' : ''}`}>
+          <div className={`town-location${currentLocation === 'farm' ? 'active' : ''}`}>
             <Link to="/town/activities/farm" className="location-icon">
               <i className="fas fa-tractor"></i>
             </Link>
             <span className="location-name">Farm</span>
           </div>
 
-          <div className={`town-location ${currentLocation === 'pirates-dock' ? 'active' : ''}`}>
+          <div className={`town-location${currentLocation === 'pirates-dock' ? 'active' : ''}`}>
             <Link to="/town/activities/pirates-dock" className="location-icon">
               <i className="fas fa-anchor"></i>
             </Link>
             <span className="location-name">Pirate's Dock</span>
           </div>
 
-          <div className={`town-location ${currentLocation === 'game-corner' ? 'active' : ''}`}>
+          <div className={`town-location${currentLocation === 'game-corner' ? 'active' : ''}`}>
             <Link to="/town/visit/game_corner" className="location-icon">
               <i className="fas fa-gamepad"></i>
             </Link>
             <span className="location-name">Game Corner</span>
           </div>
 
-          <div className={`town-location ${currentLocation === 'apothecary' ? 'active' : ''}`}>
+          <div className={`town-location${currentLocation === 'apothecary' ? 'active' : ''}`}>
             <Link to="/town/apothecary" className="location-icon">
               <i className="fas fa-mortar-pestle"></i>
             </Link>
             <span className="location-name">Apothecary</span>
           </div>
 
-          <div className={`town-location ${currentLocation === 'bakery' ? 'active' : ''}`}>
+          <div className={`town-location${currentLocation === 'bakery' ? 'active' : ''}`}>
             <Link to="/town/bakery" className="location-icon">
               <i className="fas fa-cookie"></i>
             </Link>
             <span className="location-name">Bakery</span>
           </div>
 
-          <div className={`town-location ${currentLocation === 'witchs-hut' ? 'active' : ''}`}>
+          <div className={`town-location${currentLocation === 'witchs-hut' ? 'active' : ''}`}>
             <Link to="/town/visit/witchs_hut" className="location-icon">
               <i className="fas fa-hat-wizard"></i>
             </Link>
             <span className="location-name">Witch's Hut</span>
           </div>
 
-          <div className={`town-location ${currentLocation === 'mega-mart' ? 'active' : ''}`}>
+          <div className={`town-location${currentLocation === 'mega-mart' ? 'active' : ''}`}>
             <Link to="/town/mega-mart" className="location-icon">
               <i className="fas fa-shopping-basket"></i>
             </Link>
             <span className="location-name">Mega Mart</span>
           </div>
 
-          <div className={`town-location ${currentLocation === 'antique-store' ? 'active' : ''}`}>
+          <div className={`town-location${currentLocation === 'antique-store' ? 'active' : ''}`}>
             <Link to="/town/visit/antique-store" className="location-icon">
               <i className="fas fa-gem"></i>
             </Link>
@@ -246,7 +246,7 @@ const TownPage = ({ children, currentLocation: propCurrentLocation }) => {
 const TownSquare = () => {
   return (
     <div className="town-square">
-      <div className="town-welcome">
+      <div className="town-section">
         <h2>Welcome to Aurora Town</h2>
         <p>
           Aurora Town is a bustling hub for trainers from all regions. Here you can adopt new monsters,
@@ -255,7 +255,7 @@ const TownSquare = () => {
         </p>
       </div>
 
-      <div className="town-sections">
+      <div className="town-square">
         <div className="town-section">
           <h3>Places to Visit</h3>
           <div className="town-places">

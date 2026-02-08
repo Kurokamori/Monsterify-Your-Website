@@ -41,8 +41,8 @@ const AchievementsStats = () => {
 
   return (
     <div className="achievements-stats">
-      <div className="statistics-section">
-        <div className="statistics-section-header">
+      <div className="missions-header">
+        <div className="option-row">
           <h3 className="statistics-section-title">Achievement Statistics</h3>
           <p className="statistics-section-description">
             Track achievement progress across all trainers
@@ -128,23 +128,23 @@ const AchievementsStats = () => {
               <h4>Achievement Categories</h4>
               <div className="category-grid">
                 <div className="category-item">
-                  <span className="category-name">Type Achievements</span>
+                  <span className="task-name">Type Achievements</span>
                   <span className="category-count">{stats.category_breakdown.type}</span>
                 </div>
                 <div className="category-item">
-                  <span className="category-name">Attribute Achievements</span>
+                  <span className="task-name">Attribute Achievements</span>
                   <span className="category-count">{stats.category_breakdown.attribute}</span>
                 </div>
                 <div className="category-item">
-                  <span className="category-name">Level 100 Achievements</span>
+                  <span className="task-name">Level 100 Achievements</span>
                   <span className="category-count">{stats.category_breakdown.level100}</span>
                 </div>
                 <div className="category-item">
-                  <span className="category-name">Trainer Level Achievements</span>
+                  <span className="task-name">Trainer Level Achievements</span>
                   <span className="category-count">{stats.category_breakdown.trainer_level}</span>
                 </div>
                 <div className="category-item">
-                  <span className="category-name">Special Achievements</span>
+                  <span className="task-name">Special Achievements</span>
                   <span className="category-count">{stats.category_breakdown.special}</span>
                 </div>
               </div>
@@ -154,7 +154,7 @@ const AchievementsStats = () => {
 
         {activeTab === 'leaderboards' && (
           <div className="achievement-leaderboards">
-            <div className="leaderboard-section">
+            <div className="missions-header">
               <h4><i className="fas fa-crown"></i> Most Achievements</h4>
               <div className="leaderboard-podium">
                 {stats.most_achievements.slice(0, 3).length > 0 && (
@@ -167,7 +167,7 @@ const AchievementsStats = () => {
                       return (
                         <div 
                           key={trainer.trainer_id} 
-                          className={`podium-card ${isFirst ? 'first-place' : ''} position-${actualPosition + 1}`}
+                          className={`podium-card ${isFirst ? 'first-place' : ''}position-${actualPosition + 1}`}
                           style={{ order: index }}
                         >
                           <div className={`podium-rank rank-${actualPosition + 1}`}>
@@ -189,7 +189,7 @@ const AchievementsStats = () => {
                           </div>
                           <div className="podium-info">
                             <h4 className="podium-name">{formatTrainerName(trainer)}</h4>
-                            <div className="podium-details">
+                            <div className="fandom-grid">
                               <span className="podium-level">{trainer.count} achievements</span>
                               <span className="trainer-player">Player: {trainer.player_display_name}</span>
                             </div>
@@ -203,9 +203,9 @@ const AchievementsStats = () => {
                 {stats.most_achievements.length > 3 && (
                   <div className="remaining-positions">
                     {stats.most_achievements.slice(3, 10).map((trainer, index) => (
-                      <div key={trainer.trainer_id} className="remaining-card">
+                      <div key={trainer.trainer_id} className="art-calculator">
                         <div className="remaining-rank">#{index + 4}</div>
-                        <div className="remaining-image">
+                        <div className="pc-box-slot">
                           {trainer.main_ref ? (
                             <img 
                               src={trainer.main_ref} 
@@ -221,7 +221,7 @@ const AchievementsStats = () => {
                         </div>
                         <div className="remaining-info">
                           <h4 className="remaining-name">{formatTrainerName(trainer)}</h4>
-                          <div className="remaining-details">
+                          <div className="stat-info">
                             <span className="remaining-level">{trainer.count} achievements</span>
                             <span className="trainer-player">Player: {trainer.player_display_name}</span>
                           </div>
@@ -233,15 +233,15 @@ const AchievementsStats = () => {
               </div>
             </div>
 
-            <div className="leaderboard-section">
+            <div className="missions-header">
               <h4><i className="fas fa-seedling"></i> Least Achievements (Room to Grow!)</h4>
               <div className="leaderboard-table">
                 {stats.least_achievements.slice(0, 10).map((trainer, index) => (
-                  <div key={trainer.trainer_id} className="leaderboard-row">
+                  <div key={trainer.trainer_id} className="category-row">
                     <div className="rank">#{index + 1}</div>
                     <div className="trainer-info">
                       {trainer.main_ref && (
-                        <img src={trainer.main_ref} alt={trainer.trainer_name} className="trainer-avatar" />
+                        <img src={trainer.main_ref} alt={trainer.trainer_name} className="npc-avatar" />
                       )}
                       <div className="trainer-details">
                         <span className="trainer-name">{formatTrainerName(trainer)}</span>
@@ -270,7 +270,7 @@ const AchievementsStats = () => {
                       <div className="rank">#{index + 1}</div>
                       <div className="trainer-info">
                         {trainer.main_ref && (
-                          <img src={trainer.main_ref} alt={trainer.trainer_name} className="trainer-avatar" />
+                          <img src={trainer.main_ref} alt={trainer.trainer_name} className="npc-avatar" />
                         )}
                         <div className="trainer-details">
                           <span className="trainer-name">{formatTrainerName(trainer)}</span>
@@ -294,7 +294,7 @@ const AchievementsStats = () => {
                 {Object.entries(stats.top_by_subtype.types).map(([type, trainers]) => (
                   <div key={type} className={`subtype-card sub-type-${type.toLowerCase()}`}>
                     <h5>{type} Type</h5>
-                    <div className="subtype-trainers">
+                    <div className="mega-types">
                       {trainers.slice(0, 3).map((trainer, index) => (
                         <div key={trainer.trainer_id} className="subtype-trainer">
                           <span className="rank">#{index + 1}</span>
@@ -317,7 +317,7 @@ const AchievementsStats = () => {
                 {Object.entries(stats.top_by_subtype.attributes).map(([attribute, trainers]) => (
                   <div key={attribute} className={`subtype-card sub-attribute-${attribute.toLowerCase()}`}>
                     <h5>{attribute} Attribute</h5>
-                    <div className="subtype-trainers">
+                    <div className="mega-types">
                       {trainers.slice(0, 3).map((trainer, index) => (
                         <div key={trainer.trainer_id} className="subtype-trainer">
                           <span className="rank">#{index + 1}</span>

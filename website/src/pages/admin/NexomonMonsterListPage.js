@@ -138,7 +138,7 @@ const NexomonMonsterListPage = () => {
           />
         </div>
 
-        <div className="admin-filter-group">
+        <div className="form-input">
           <div className="admin-filter">
             <label>Type:</label>
             <select value={typeFilter} onChange={handleTypeFilterChange}>

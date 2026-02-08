@@ -192,11 +192,11 @@ const MonsterStats = () => {
 
   return (
     <div className="monster-stats">
-      <div className="statistics-section">
-        <div className="statistics-section-header">
+      <div className="missions-header">
+        <div className="option-row">
           <h3 className="statistics-section-title">Monster Collection Overview</h3>
         </div>
-        <div className="statistics-grid">
+        <div className="button">
           <div className="statistic-item">
             <div className="statistic-icon">
               <i className="fas fa-dragon"></i>
@@ -228,9 +228,9 @@ const MonsterStats = () => {
         </div>
         <div className="monster-types-chart statistics-card">
           <h4 className="chart-title">Monster Types Distribution</h4>
-          <div className="types-distribution">
+          <div className="button">
             {Object.entries(displayStats.overview.type_distribution).map(([type, count]) => (
-              <div className="type-distribution-item" key={type}>
+              <div className="monster-card" key={type}>
                 <div className="type-distribution-header">
                   <span className={`type-badge type-${type.toLowerCase()}`}>{type}</span>
                   <span className="type-count">{count}</span>
@@ -247,15 +247,15 @@ const MonsterStats = () => {
         </div>
       </div>
 
-      <div className="statistics-section">
-        <div className="statistics-section-header">
+      <div className="missions-header">
+        <div className="option-row">
           <h3 className="statistics-section-title">Top Monsters</h3>
         </div>
-        <div className="top-monsters">
+        <div className="button">
           {displayStats.top_monsters.map((monster, index) => (
-            <div className="top-monster-card" key={monster.id}>
+            <div className="art-calculator" key={monster.id}>
               <div className="top-monster-rank">#{index + 1}</div>
-              <div className="top-monster-image">
+              <div className="pc-box-slot">
                 <img
                   src={monster.image_path}
                   alt={monster.name}
@@ -267,7 +267,7 @@ const MonsterStats = () => {
               </div>
               <div className="top-monster-info">
                 <h4 className="top-monster-name">{monster.name}</h4>
-                <div className="top-monster-details">
+                <div className="stat-info">
                   <span className="top-monster-level">Lv. {monster.level}</span>
                   <div className="top-monster-types">
                     {monster.types.map((type, typeIndex) => (
@@ -278,7 +278,7 @@ const MonsterStats = () => {
                   </div>
                 </div>
                 <div className="top-monster-stats">
-                  <div className="stat-grid">
+                  <div className="button">
                     <div className="stat-item">
                       <div className="stat-label">HP</div>
                       <div className="stat-bar-container">
@@ -348,8 +348,8 @@ const MonsterStats = () => {
         </div>
       </div>
 
-      <div className="statistics-section">
-        <div className="statistics-section-header">
+      <div className="missions-header">
+        <div className="option-row">
           <h3 className="statistics-section-title">Monster List</h3>
           <div className="monster-filters">
             <div className="type-filter">
@@ -358,7 +358,7 @@ const MonsterStats = () => {
                 id="type-select"
                 value={selectedType}
                 onChange={(e) => setSelectedType(e.target.value)}
-                className="type-select"
+                className="form-input"
               >
                 {allTypes.map((type) => (
                   <option key={type} value={type}>
@@ -375,7 +375,7 @@ const MonsterStats = () => {
               <tr>
                 <th>Monster</th>
                 <th
-                  className={`sortable ${sortBy === 'level' ? 'active' : ''}`}
+                  className={`sortable${sortBy === 'level' ? 'active' : ''}`}
                   onClick={() => handleSort('level')}
                 >
                   Level
@@ -385,7 +385,7 @@ const MonsterStats = () => {
                 </th>
                 <th>Type</th>
                 <th
-                  className={`sortable ${sortBy === 'battles_won' ? 'active' : ''}`}
+                  className={`sortable${sortBy === 'battles_won' ? 'active' : ''}`}
                   onClick={() => handleSort('battles_won')}
                 >
                   Battles Won
@@ -394,7 +394,7 @@ const MonsterStats = () => {
                   )}
                 </th>
                 <th
-                  className={`sortable ${sortBy === 'win_rate' ? 'active' : ''}`}
+                  className={`sortable${sortBy === 'win_rate' ? 'active' : ''}`}
                   onClick={() => handleSort('win_rate')}
                 >
                   Win Rate

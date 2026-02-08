@@ -8,31 +8,10 @@
   gap: 1.25rem;
 }
 
-.enhanced-move-card {
-  background: var(--nav-background);
-  border-radius: 1rem;
-  overflow: hidden;
-  box-shadow: 0 4px 12px var(--overlay-light);
-  border: 1px solid transparent;
-  transition: all 0.3s ease;
-}
-
-.enhanced-move-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 8px 25px var(--overlay-medium);
-  border-color: rgba(var(--accent-color), 0.2);
-}
-
 .move-card-header {
   background: linear-gradient(135deg, var(--nav-hover), var(--nav-background));
   padding: 1.5rem;
-  border-bottom: 1px solid rgba(var(--accent-color), 0.1);
-}
-
-.move-title-section {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  border-bottom: 1px solid var(--accent-color);
 }
 
 .move-title {
@@ -78,7 +57,7 @@
   width: 30px;
   height: 30px;
   border-radius: 50%;
-  background: linear-gradient(135deg, var(--accent-color), rgba(var(--accent-color), 0.7));
+  background: linear-gradient(135deg, var(--accent-color), var(--accent-muted));
   display: flex;
   align-items: center;
   justify-content: center;
@@ -108,15 +87,15 @@
   align-items: flex-start;
   gap: 1rem;
   padding: 1.5rem;
-  background: rgba(var(--accent-color), 0.03);
-  border-top: 1px solid rgba(var(--accent-color), 0.1);
+  background: var(--accent-muted);
+  border-top: 1px solid var(--accent-color);
 }
 
 .description-icon {
   width: 24px;
   height: 24px;
   border-radius: 50%;
-  background: rgba(var(--accent-color), 0.2);
+  background: var(--accent-muted);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -148,7 +127,7 @@
   width: 80px;
   height: 80px;
   border-radius: 50%;
-  background: rgba(var(--accent-color), 0.1);
+  background: var(--accent-muted);
   display: flex;
   align-items: center;
   justify-content: center;

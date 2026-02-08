@@ -236,7 +236,7 @@ const HomePage = () => {
             </p>
           </div>
           <div className="hero-visual">
-            <div className="floating-monsters">
+            <div className="map-background">
               {displayFakemon.slice(0, 4).map((mon, index) => (
                 <div key={mon.number} className={`floating-monster monster-${index + 1}`}>
                   <img 
@@ -345,7 +345,7 @@ const HomePage = () => {
             <div className="look-around-section">
               <h2>Look Around</h2>
               <div className="look-around-grid">
-                <Link to="/gallery" className="look-around-card">
+                <Link to="/gallery" className="feature-card">
                   <div className="look-around-icon">
                     <i className="fas fa-images"></i>
                   </div>
@@ -353,7 +353,7 @@ const HomePage = () => {
                   <p>Browse amazing artwork from the community</p>
                 </Link>
                 
-                <Link to="/library" className="look-around-card">
+                <Link to="/library" className="feature-card">
                   <div className="look-around-icon">
                     <i className="fas fa-book"></i>
                   </div>
@@ -361,7 +361,7 @@ const HomePage = () => {
                   <p>Read stories and lore from trainers</p>
                 </Link>
                 
-                <Link to="/trainers" className="look-around-card">
+                <Link to="/trainers" className="feature-card">
                   <div className="look-around-icon">
                     <i className="fas fa-users"></i>
                   </div>
@@ -373,9 +373,9 @@ const HomePage = () => {
               {/* Recent Gallery Carousel */}
               <div className="gallery-carousel">
                 <h3>Recent Gallery Submissions</h3>
-                <div className="gallery-carousel-items">
+                <div className="creatures-gallery">
                   {(gallerySubmissions.length > 0 ? gallerySubmissions : fallbackGallery).map((submission, index) => (
-                    <Link to={`/submissions/${submission.id}`} key={index} className="gallery-carousel-item">
+                    <Link to={`/submissions/${submission.id}`} key={index} className="feature-card">
                       <img 
                         src={submission.image_url || submission.url || `https://via.placeholder.com/200/1e2532/d6a339?text=Art`}
                         alt={submission.title || 'Gallery Submission'}
@@ -402,12 +402,12 @@ const HomePage = () => {
               <p>Ready to continue your artistic adventure?</p>
             </div>
 
-            <div className="dashboard-grid">
+            <div className="button">
               {/* Top Row - Quick Actions and User Trainers */}
               <div className="dashboard-row">
-                <div className="dashboard-card quick-actions">
+                <div className="item-card quick-actions">
                   <h3>Quick Actions</h3>
-                  <div className="quick-action-buttons">
+                  <div className="town-square">
                     <Link to="/submissions/art" className="quick-action-button art">
                       <i className="fas fa-palette"></i>
                       <span>Submit Art</span>
@@ -428,12 +428,12 @@ const HomePage = () => {
                 </div>
 
                 {/* User Trainers */}
-                <div className="dashboard-card user-trainers">
+                <div className="item-card item-card">
                   <div className="card-header">
                     <h3>Your Trainers</h3>
                     <Link to="/my_trainers" className="button primary view-all">View All</Link>
                   </div>
-                  <div className="compact-trainers">
+                  <div className="map-filters">
                     {(userTrainers.length > 0 ? userTrainers : fallbackTrainers).slice(0, 5).map((trainer) => (
                       <Link to={`/trainers/${trainer.id}`} key={trainer.id} className="compact-trainer-card">
                         <div className="compact-trainer-avatar">
@@ -448,7 +448,7 @@ const HomePage = () => {
                         </div>
                         <div className="compact-trainer-info">
                           <div className="compact-trainer-name">{trainer.name}</div>
-                          <div className="compact-trainer-stats">
+                          <div className="form-input">
                             <span className="compact-trainer-level">Lv. {trainer.level || 1}</span>
                             <div className="compact-stat">
                               <i className="fas fa-dragon"></i>
@@ -467,16 +467,16 @@ const HomePage = () => {
               <div className="dashboard-row">
                 {/* Recent Tasks */}
                 {recentTasks.length > 0 && (
-                  <div className="dashboard-card recent-tasks">
+                  <div className="item-card recent-tasks">
                     <div className="card-header">
                       <h3>Recent Tasks</h3>
                       <Link to="/tasks" className="button primary view-all">View All</Link>
                     </div>
-                    <div className="task-list">
+                    <div className="auth-form">
                       {recentTasks.map((task, index) => (
                         <div key={index} className="task-item">
                           <div className="task-status">
-                            <i className={`fas ${task.completed ? 'fa-check-circle completed' : 'fa-circle pending'}`}></i>
+                            <i className={`fas${task.completed ? 'fa-check-circle completed' : 'fa-circle pending'}`}></i>
                           </div>
                           <div className="task-content">
                             <span className="task-name">{task.name}</span>
@@ -490,20 +490,20 @@ const HomePage = () => {
 
                 {/* Art Todo List */}
                 {artTodos.length > 0 && (
-                  <div className="dashboard-card art-todos">
+                  <div className="item-card art-todos">
                     <div className="card-header">
                       <h3>Art Todo List</h3>
                       <Link to="/profile/art-todo" className="button primary view-all">View All</Link>
                     </div>
-                    <div className="todo-list">
+                    <div className="auth-form">
                       {artTodos.map((todo, index) => (
-                        <div key={index} className="todo-item">
+                        <div key={index} className="task-item">
                           <div className="todo-priority">
-                            <span className={`priority-badge ${todo.priority}`}>{todo.priority}</span>
+                            <span className={`priority-badge${todo.priority}`}>{todo.priority}</span>
                           </div>
                           <div className="todo-content">
-                            <span className="todo-title">{todo.title}</span>
-                            <span className="todo-type">{todo.type}</span>
+                            <span className="task-name">{todo.title}</span>
+                            <span className="task-date">{todo.type}</span>
                           </div>
                         </div>
                       ))}
@@ -517,7 +517,7 @@ const HomePage = () => {
             <div className="look-around-section">
               <h2>Look Around</h2>
               <div className="look-around-grid">
-                <Link to="/gallery" className="look-around-card">
+                <Link to="/gallery" className="feature-card">
                   <div className="look-around-icon">
                     <i className="fas fa-images"></i>
                   </div>
@@ -525,7 +525,7 @@ const HomePage = () => {
                   <p>Browse amazing artwork from the community</p>
                 </Link>
                 
-                <Link to="/library" className="look-around-card">
+                <Link to="/library" className="feature-card">
                   <div className="look-around-icon">
                     <i className="fas fa-book"></i>
                   </div>
@@ -533,7 +533,7 @@ const HomePage = () => {
                   <p>Read stories and lore from trainers</p>
                 </Link>
                 
-                <Link to="/trainers" className="look-around-card">
+                <Link to="/trainers" className="feature-card">
                   <div className="look-around-icon">
                     <i className="fas fa-users"></i>
                   </div>
@@ -545,9 +545,9 @@ const HomePage = () => {
               {/* Recent Gallery Carousel */}
               <div className="gallery-carousel">
                 <h3>Recent Gallery Submissions</h3>
-                <div className="gallery-carousel-items">
+                <div className="creatures-gallery">
                   {(gallerySubmissions.length > 0 ? gallerySubmissions : fallbackGallery).map((submission, index) => (
-                    <Link to={`/submissions/${submission.id}`} key={index} className="gallery-carousel-item">
+                    <Link to={`/submissions/${submission.id}`} key={index} className="feature-card">
                       <img 
                         src={submission.image_url || submission.url || `https://via.placeholder.com/200/1e2532/d6a339?text=Art`}
                         alt={submission.title || 'Gallery Submission'}
@@ -580,7 +580,7 @@ const HomePage = () => {
           
           <div className="creatures-gallery">
             {displayFakemon.map((mon) => (
-              <Link to={`/fakedex/${mon.number}`} className="creature-card" key={mon.number}>
+              <Link to={`/fakedex/${mon.number}`} className="feature-card" key={mon.number}>
                 <div className="creature-image">
                   <img 
                     src={mon.image_path || mon.image_url || mon.sprite_url || `https://via.placeholder.com/150/1e2532/d6a339?text=${mon.name || 'Mon'}`}
@@ -594,7 +594,7 @@ const HomePage = () => {
                 <div className="creature-info">
                   <span className="creature-number">#{String(mon.number).padStart(3, '0')}</span>
                   <span className="creature-name">{mon.name}</span>
-                  <div className="creature-types">
+                  <div className="type-tags">
                     {(mon.types || ['Normal']).map((type, index) => (
                       <span className={`type-badge type-${type.toLowerCase()}`} key={index}>
                         {type}

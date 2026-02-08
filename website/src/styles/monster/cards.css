@@ -7,20 +7,30 @@
    ============================================================================= */
 
 .monster-card {
-  display: flex;
-  flex-direction: column;
-  background: var(--nav-active);
-  border-radius: 10px;
-  overflow: hidden;
-  text-decoration: none;
-  color: var(--text-color);
-  transition: transform 0.2s, box-shadow 0.2s;
-  box-shadow: 0 4px 12px var(--overlay-light);
-  height: max-content;
-  width: 30vh;
+  align-items: center;
+  background: linear-gradient(135deg, var(--input-background) 0%, var(--nav-background) 100%);
+  background-color: var(--card-background);
   border: 1px solid var(--border-color);
+  border-radius: 12px;
+  box-shadow: 0 4px 12px var(--overlay-light);
+  color: var(--text-color);
   cursor: pointer;
-  padding: 1.5rem;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  height: max-content;
+  justify-content: space-between;
+  min-width: 150px;
+  overflow: hidden;
+  padding: 1rem;
+  text-align: center;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  width: 30vh;
+}
+
+.monster-card.sm {
+  width: auto;
 }
 
 .monster-card:hover {
@@ -30,8 +40,10 @@
 }
 
 .monster-card.selected {
+  background: var(--accent-color);
+  background-color: var(--accent-muted);
   border-color: var(--accent-color);
-  background-color: var(--accent-color-light, var(--accent-glow-light));
+  color: var(--text-color);
 }
 
 .monster-card.full-height {
@@ -42,34 +54,6 @@
   height: 220px;
 }
 
-/* =============================================================================
-   2. CARD VARIANTS
-   ============================================================================= */
-
-/* Bazar Monster Card */
-.bazzar-monster-card {
-  display: flex;
-  background-color: var(--nav-active);
-  flex-direction: column;
-  padding: 1.5rem;
-  border-radius: 8%;
-  cursor: pointer;
-  color: var(--text-color);
-  transition: transform 0.2s, box-shadow 0.2s;
-  box-shadow: 0 4px 12px var(--overlay-light);
-  height: max-content;
-}
-
-.bazzar-monster-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 24px var(--overlay-medium);
-}
-
-.bazzar-monster-card.selected {
-  border-color: var(--accent-color);
-  background-color: var(--accent-color-light, var(--accent-glow-light));
-}
-
 .bazzar-monster-types {
   display: inline-block;
   color: var(--type-color);
@@ -77,6 +61,13 @@
   padding: 0.25rem 0.5rem;
   margin-right: 0.5rem;
   font-size: var(--font-size-xs);
+}
+
+.item-info-section {
+    background-color: var(--card-background);
+    border: 1px solid var(--border-color);
+    border-radius: .5rem;
+    padding: 1.25rem;
 }
 
 /* Team Monster Card */
@@ -104,91 +95,21 @@
 .monster-team-card[data-attribute="free"] { border-left: 4px solid var(--free-attribute); }
 .monster-team-card[data-attribute="variable"] { border-left: 4px solid var(--warning-color); }
 
-/* Reward Monster Card */
-
-/* Reward Card Rarity Variants */
-
-.monster-reward-card.mythical,
-.special-feature-card.mythical {
-  border: 2px solid var(--warning-color);
-  box-shadow: 0 4px 25px var(--warning-glow);
-  animation: mythical-card-glow 3s ease-in-out infinite alternate;
-}
-
-.monster-reward-card.legendary,
-.special-feature-card.legendary {
-  border: 2px solid var(--warning-color);
-  box-shadow: 0 4px 30px var(--accent-glow);
-  animation: legendary-card-glow 2s ease-in-out infinite alternate;
-}
-
-/* Special Feature Card */
-.special-feature-card {
-  background-color: var(--card-background);
-  border-radius: 8px;
-  box-shadow: 0 2px 8px var(--overlay-light);
-  padding: 20px;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  transition: transform 0.2s, box-shadow 0.2s;
-  overflow: hidden;
-  margin-bottom: 20px;
-  align-items: center;
-}
-
-.special-feature-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 5px 15px var(--overlay-medium);
-}
-
-.special-feature-card.claimed {
-  opacity: 0.8;
-  background-color: var(--overlay-light);
-}
 
 /* Monster Option Card */
-.monster-option {
-  position: relative;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  border-radius: 12px;
-  overflow: hidden;
-  background: var(--highlight-light);
-  border: 2px solid transparent;
-}
 
-.monster-option:hover:not(.disabled) {
+.area-card:hover:not(.disabled) {
   transform: translateY(-5px);
   box-shadow: 0 8px 25px var(--overlay-medium);
   border-color: var(--highlight-medium);
 }
 
-.monster-option.selected {
-  border-color: var(--success-light);
-  box-shadow: 0 0 20px var(--success-glow);
-  transform: translateY(-5px);
-}
-
-.monster-option.disabled {
+.area-card.disabled {
   opacity: 0.6;
   cursor: not-allowed;
 }
 
 /* Lineage Monster Card */
-.lineage-monster-card {
-  position: relative;
-  background-color: var(--card-background);
-  border-radius: 0.5rem;
-  overflow: hidden;
-  box-shadow: 0 2px 8px var(--overlay-light);
-  transition: all 0.2s;
-}
-
-.lineage-monster-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px var(--overlay-medium);
-}
 
 /* Monster Edit Card */
 .monster-edit-card {
@@ -258,23 +179,7 @@
    3. CARD HEADERS & META
    ============================================================================= */
 
-.monster-header {
-  align-items: center;
-  border-bottom: 2px solid var(--border-color);
-  display: flex;
-  gap: 0.5rem;
-  justify-content: space-between;
-  margin-bottom: 0.5rem;
-  padding-bottom: 1rem;
-}
-
-.monster-header h3 {
-  font-size: var(--font-size-xl);
-  color: var(--accent-color);
-  margin: 0;
-}
-
-.monster-header .placeholder-image {
+.tree-header .placeholder-image {
   color: var(--text-muted);
   font-size: 1.5rem;
 }
@@ -294,7 +199,7 @@
   padding: 0;
 }
 
-.monster-reward-header {
+.video-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -385,47 +290,31 @@
 }
 
 /* Monster Selector Card Image */
-.monster-selector-card-image {
-  height: 100px;
-  overflow: hidden;
-  display: flex;
+.creature-image {
   align-items: center;
-  justify-content: center;
+  background: linear-gradient(135deg, var(--accent-glow) 0%, var(--accent-glow) 100%);
   background-color: var(--overlay-dark);
+  display: flex;
+  height: 160px;
+  justify-content: center;
   min-height: 80px;
+  overflow: hidden;
+  position: relative;
+  width: 100%;
 }
 
-.monster-selector-card-image img {
+.creature-image img {
   width: 100%;
   height: 100%;
   object-fit: contain;
   transition: transform 0.3s ease;
 }
 
-.monster-selector-card:hover .monster-selector-card-image img {
+.monster-selector-card:hover .creature-image img {
   transform: scale(1.05);
 }
 
 /* Species/Reward Images */
-.species-image,
-.monster-species-image {
-  align-items: center;
-  border-radius: 1rem;
-  display: flex;
-  height: 100%;
-  justify-content: center;
-  margin-bottom: 10px;
-  object-fit: contain;
-  overflow: hidden;
-  padding: 4px;
-  width: 100%;
-}
-
-.monster-species-image img {
-  max-width: 100%;
-  max-height: 100%;
-  object-fit: contain;
-}
 
 .monster-species-placeholder {
   font-size: 40px;
@@ -444,29 +333,25 @@
    5. CARD BODY & INFO
    ============================================================================= */
 
-.monster-info {
-  align-items: flex-start;
-  background: transparent;
-  border-radius: 0;
+.chapter-item {
+  background: linear-gradient(135deg, var(--card-background) 0%, var(--nav-hover) 100%);
+  border: 1px solid var(--border-color);
+  border-radius: 0.5rem;
+  cursor: pointer;
   display: flex;
-  flex: 1;
   flex-direction: column;
   gap: 0.5rem;
-  margin-bottom: 1.5rem;
-  min-width: 0;
+  margin-bottom: 0.5rem;
   padding: 1.25rem;
+  transition: all 0.2s;
 }
 
-.monster-card-info {
-  padding: 15px;
-}
-
-.monster-card-info h4 {
+.chapter-item h4 {
   color: var(--accent-color);
   margin-bottom: 0.25rem;
 }
 
-.monster-card-info p {
+.chapter-item p {
   color: var(--text-muted);
   margin-bottom: 0;
 }
@@ -528,17 +413,10 @@
 }
 
 /* Monster Info Sections */
-.monster-info-section,
-.item-info-section {
-  background-color: var(--card-background);
-  border-radius: 0.5rem;
-  padding: 1.25rem;
-  border: 1px solid var(--border-color);
-}
 
 .monster-info-grid {
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: 1fr 1fr;
   gap: 0.75rem;
 }
 
@@ -613,16 +491,6 @@
 }
 
 /* More/Overflow Tags */
-.species-more,
-.types-more {
-  display: inline-block;
-  padding: 0.3rem 0.7rem;
-  border-radius: 12px;
-  font-size: 0.8rem;
-  font-weight: 500;
-  background: var(--text-muted);
-  color: var(--text-color);
-}
 
 /* =============================================================================
    6. RESPONSIVE STYLES
@@ -631,9 +499,9 @@
 /* Tablet screens (768px and below) */
 @media (max-width: 768px) {
   .monster-card {
-    min-width: unset;
-    max-width: 100%;
-  }
+  max-width: 100%;
+  min-width: auto;
+}
 }
 
 /* Mobile screens (480px and below) */

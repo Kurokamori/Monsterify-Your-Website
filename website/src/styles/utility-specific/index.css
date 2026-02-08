@@ -26,3 +26,6 @@
 
 /* Fakemon dex */
 @import './FakemonDexPage.css';
+
+/* Home page */
+@import './HomePage.css';

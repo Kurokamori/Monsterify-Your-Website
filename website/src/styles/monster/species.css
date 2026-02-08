@@ -10,41 +10,6 @@
   flex-direction: column;
 }
 
-.species-grid {
-  display: grid;
-  gap: .5rem;
-  grid-template-columns: 1fr;
-}
-
-.species-option {
-  align-items: center;
-  background: var(--nav-background);
-  background-color: var(--card-background);
-  border: 2px solid var(--border-color);
-  border-radius: 0.75rem;
-  cursor: pointer;
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  min-width: 150px;
-  padding: 1rem;
-  text-align: center;
-  transition: all 0.2s ease;
-}
-
-.species-option:hover {
-  border-color: var(--accent-color);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px var(--overlay-medium);
-}
-
-.species-option.selected {
-  background: var(--accent-color);
-  background-color: var(--accent-color-light, rgba(var(--accent-color), 0.1));
-  border-color: var(--accent-color);
-  color: var(--text-color);
-}
-
 /* =============================================================================
    RESPONSIVE STYLES
    ============================================================================= */
@@ -54,36 +19,18 @@
   .species-selection-modal {
     max-width: 95vw;
   }
-
-  .species-grid {
-    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-  }
 }
 
 /* Tablet screens (768px and below) */
 
 /* Mobile screens (480px and below) */
 @media (max-width: 480px) {
-  .species-grid {
-    grid-template-columns: 1fr 1fr;
-    gap: 0.5rem;
-  }
-
-  .species-option {
-    padding: 0.75rem;
-  }
 }
 
 /* Extra small screens (360px and below) */
 @media (max-width: 360px) {
-  .species-grid {
-    grid-template-columns: 1fr;
-  }
 }
 
 /* Reduced motion preference */
 @media (prefers-reduced-motion: reduce) {
-  .species-option {
-    transition: none;
-  }
 }

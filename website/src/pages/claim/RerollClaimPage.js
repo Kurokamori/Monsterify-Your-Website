@@ -253,7 +253,7 @@ const RerollClaimPage = () => {
     return (
       <div className="claim-page">
         <div className="claim-container">
-          <div className="login-prompt">
+          <div className="claim-error">
             <i className="fas fa-gift"></i>
             <h2>Claim Your Rewards</h2>
             <p>Please log in to claim your rewards from this link.</p>
@@ -271,12 +271,12 @@ const RerollClaimPage = () => {
     return (
       <div className="claim-page">
         <div className="claim-container">
-          <div className="claim-success">
+          <div className="claim-error">
             <i className="fas fa-check-circle"></i>
             <h2>Rewards Claimed Successfully!</h2>
             <p>Your rewards have been added to your trainers.</p>
 
-            <div className="claimed-items-list">
+            <div className="task-steps">
               {claimSuccess.monsters?.length > 0 && (
                 <>
                   <h3>Monsters Received:</h3>
@@ -322,7 +322,7 @@ const RerollClaimPage = () => {
   return (
     <div className="claim-page">
       <div className="claim-container">
-        <div className="claim-header">
+        <div className="map-header">
           <h1><i className="fas fa-gift"></i> Claim Your Rewards</h1>
           <p>Select the rewards you want to claim and choose which trainer receives each one.</p>
         </div>
@@ -355,7 +355,7 @@ const RerollClaimPage = () => {
                   </div>
                 )}
 
-                <div className="rewards-grid">
+                <div className="town-places">
                   {sessionData.monsters.map((monster, index) => {
                     const isSelected = !!monsterSelections[index];
                     const selection = monsterSelections[index];
@@ -363,7 +363,7 @@ const RerollClaimPage = () => {
                     return (
                       <div
                         key={index}
-                        className={`reward-card ${
+                        className={`area-card ${
                           monster.claimed ? 'claimed' :
                           isSelected ? 'selected' :
                           sessionData.remaining.monstersRemaining !== 'unlimited' &&
@@ -392,7 +392,7 @@ const RerollClaimPage = () => {
 
                         {isSelected && (
                           <div className="reward-config" onClick={(e) => e.stopPropagation()}>
-                            <div className="config-field">
+                            <div className="form-input">
                               <label>Nickname:</label>
                               <input
                                 type="text"
@@ -401,7 +401,7 @@ const RerollClaimPage = () => {
                                 placeholder={monster.species1}
                               />
                             </div>
-                            <div className="config-field">
+                            <div className="form-input">
                               <label>Trainer:</label>
                               <select
                                 value={selection.trainerId || ''}
@@ -443,7 +443,7 @@ const RerollClaimPage = () => {
                   </div>
                 )}
 
-                <div className="rewards-grid">
+                <div className="town-places">
                   {sessionData.items.map((item, index) => {
                     const isSelected = !!itemSelections[index];
                     const selection = itemSelections[index];
@@ -451,7 +451,7 @@ const RerollClaimPage = () => {
                     return (
                       <div
                         key={index}
-                        className={`reward-card ${
+                        className={`area-card ${
                           item.claimed ? 'claimed' :
                           isSelected ? 'selected' :
                           sessionData.remaining.itemsRemaining !== 'unlimited' &&
@@ -475,7 +475,7 @@ const RerollClaimPage = () => {
 
                         {isSelected && (
                           <div className="reward-config" onClick={(e) => e.stopPropagation()}>
-                            <div className="config-field">
+                            <div className="form-input">
                               <label>Trainer:</label>
                               <select
                                 value={selection.trainerId || ''}
@@ -505,15 +505,15 @@ const RerollClaimPage = () => {
 
             {(selectedMonsterCount > 0 || selectedItemCount > 0) ? (
               <>
-                <div className="selected-summary">
+                <div className="task-steps">
                   {Object.entries(monsterSelections).map(([index, selection]) => (
                     <div key={`monster-${index}`} className="selected-item">
-                      <div className="selected-item-info">
+                      <div className="naming-header">
                         <i className="fas fa-dragon category-icon"></i>
-                        <span className="selected-item-name">
+                        <span className="task-name">
                           {selection.name || sessionData.monsters[index].species1}
                         </span>
-                        <span className="selected-item-trainer">
+                        <span className="reward-details">
                           → {selection.trainerId ? getTrainerName(selection.trainerId) : <em>No trainer</em>}
                         </span>
                       </div>
@@ -531,12 +531,12 @@ const RerollClaimPage = () => {
                   ))}
                   {Object.entries(itemSelections).map(([index, selection]) => (
                     <div key={`item-${index}`} className="selected-item">
-                      <div className="selected-item-info">
+                      <div className="naming-header">
                         <i className="fas fa-box category-icon"></i>
-                        <span className="selected-item-name">
+                        <span className="task-name">
                           {sessionData.items[index].name}
                         </span>
-                        <span className="selected-item-trainer">
+                        <span className="reward-details">
                           → {selection.trainerId ? getTrainerName(selection.trainerId) : <em>No trainer</em>}
                         </span>
                       </div>

@@ -227,14 +227,14 @@ const AntiqueAuctionFormPage = () => {
         <h1 className="admin-dashboard-title">{isEditMode ? 'Edit Seasonal Adopt' : 'Add Seasonal Adopt'}</h1>
       </div>
 
-      <div className="admin-form-container">
-        <form onSubmit={handleSubmit} className="admin-form">
+      <div className="bulk-monster-add-form">
+        <form onSubmit={handleSubmit} className="reroller-content">
           <div className="admin-form-section">
             <h2 className="admin-form-section-title">
               <i className="fas fa-info-circle"></i> Basic Information
             </h2>
 
-            <div className="admin-form-grid">
+            <div className="reroller-content">
               <div>
                 <FormInput
                   label="Monster Name"
@@ -254,7 +254,7 @@ const AntiqueAuctionFormPage = () => {
                     name="antique"
                     value={formData.antique}
                     onChange={handleChange}
-                    className={`admin-form-select ${errors.antique ? 'error' : ''}`}
+                    className={`admin-form-input${errors.antique ? 'error' : ''}`}
                     required
                   >
                     <option value="">Select an antique...</option>
@@ -305,7 +305,7 @@ const AntiqueAuctionFormPage = () => {
               <i className="fas fa-dna"></i> Species
             </h2>
 
-            <div className="admin-form-grid three-columns">
+            <div className="reroller-content three-columns">
               <FormInput
                 label="Species 1"
                 name="species1"
@@ -339,7 +339,7 @@ const AntiqueAuctionFormPage = () => {
               <i className="fas fa-fire"></i> Types
             </h2>
 
-            <div className="admin-form-grid five-columns">
+            <div className="reroller-content five-columns">
               <AutocompleteInput
                 id="type1"
                 name="type1"
@@ -399,7 +399,7 @@ const AntiqueAuctionFormPage = () => {
               <i className="fas fa-star"></i> Attribute
             </h2>
 
-            <div className="admin-form-grid">
+            <div className="reroller-content">
               <div>
                 <AutocompleteInput
                   id="attribute"

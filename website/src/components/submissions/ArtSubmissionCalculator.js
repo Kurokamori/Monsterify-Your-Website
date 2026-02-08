@@ -454,7 +454,7 @@ const ArtSubmissionCalculator = ({
     <div className="art-calculator">
       <div className="calculator-section">
         <h3>Image Quality</h3>
-        <div className="quality-options">
+        <div className="type-tags">
           <label>
             <input
               type="radio"
@@ -679,14 +679,14 @@ const ArtSubmissionCalculator = ({
                 label="Select Trainer"
                 placeholder="Type to search trainers..."
                 showOwnership={true}
-                className="entity-select"
+                className="form-input"
               />
             </div>
             <div className="form-row">
               <select
                 value={appearanceType}
                 onChange={(e) => setAppearanceType(e.target.value)}
-                className="appearance-select"
+                className="form-input"
               >
                 <option value="bust">Bust (+1 level)</option>
                 <option value="halfBody">Half Body (+2 levels)</option>
@@ -698,7 +698,7 @@ const ArtSubmissionCalculator = ({
                 max="10"
                 value={appearanceCount}
                 onChange={(e) => setAppearanceCount(parseInt(e.target.value) || 1)}
-                className="appearance-count-input"
+                className="form-input"
                 placeholder="Count"
               />
             </div>
@@ -853,7 +853,7 @@ const ArtSubmissionCalculator = ({
                 label="Select Trainer First"
                 placeholder="Type to search trainers..."
                 showOwnership={true}
-                className="entity-select"
+                className="form-input"
                 required
               />
             </div>
@@ -866,7 +866,7 @@ const ArtSubmissionCalculator = ({
                   onSelect={(id) => setSelectedMonsterId(id)}
                   label="Select Monster"
                   placeholder="Type to search monsters..."
-                  className="entity-select"
+                  className="form-input"
                   required
                 />
               </div>
@@ -875,7 +875,7 @@ const ArtSubmissionCalculator = ({
               <select
                 value={appearanceType}
                 onChange={(e) => setAppearanceType(e.target.value)}
-                className="appearance-select"
+                className="form-input"
               >
                 <option value="bust">Bust (+1 level)</option>
                 <option value="halfBody">Half Body (+2 levels)</option>
@@ -887,7 +887,7 @@ const ArtSubmissionCalculator = ({
                 max="10"
                 value={appearanceCount}
                 onChange={(e) => setAppearanceCount(parseInt(e.target.value) || 1)}
-                className="appearance-count-input"
+                className="form-input"
                 placeholder="Count"
               />
             </div>
@@ -897,7 +897,7 @@ const ArtSubmissionCalculator = ({
                 <select
                   value={complexityBonus}
                   onChange={(e) => setComplexityBonus(e.target.value)}
-                  className="complexity-select"
+                  className="form-input"
                 >
                   <option value="0">None (+0)</option>
                   <option value="1">Low (+1)</option>
@@ -992,7 +992,7 @@ const ArtSubmissionCalculator = ({
                   value={npcName}
                   onChange={(e) => setNpcName(e.target.value)}
                   placeholder="NPC name for tracking"
-                  className="entity-select"
+                  className="form-input"
                 />
               </label>
             </div>
@@ -1003,7 +1003,7 @@ const ArtSubmissionCalculator = ({
                 <select
                   value={npcSize}
                   onChange={(e) => setNpcSize(e.target.value)}
-                  className="entity-select"
+                  className="form-input"
                 >
                   <option value="bust">Bust (+1 level)</option>
                   <option value="halfbody">Half Body (+2 levels)</option>
@@ -1018,7 +1018,7 @@ const ArtSubmissionCalculator = ({
                 <select
                   value={npcBonus}
                   onChange={(e) => setNpcBonus(e.target.value)}
-                  className="entity-select"
+                  className="form-input"
                 >
                   <option value="simple">Simple (+1 level)</option>
                   <option value="medium">Medium (+3 levels)</option>

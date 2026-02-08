@@ -17,41 +17,121 @@
   padding: 1.5rem;
 }
 
-.monster-name-input {
-  background: var(--input-background);
+
+.form-input, .form-group input, .form-group textarea, .form-group select {
+  align-items: center;
   background-color: var(--input-background);
   border: 1px solid var(--border-color);
   border-radius: 0.5rem;
   color: var(--text-color);
+  display: flex;
   flex: 1;
   font-size: var(--font-size-sm);
-  margin-bottom: 2rem;
-  margin-top: 0.75rem;
+  font-weight: 500;
+  gap: 1rem;
+  height: 40px;
   min-width: 200px;
-  padding: 0.75rem;
+  padding: 0.75rem 1rem;
+  position: relative;
   text-align: center;
   transition: all 0.2s ease;
   width: 100%;
+  height: 100%;
 }
 
-.monster-name-input label {
+
+.form-input option {
+  background: var(--card-background);
+  color: var(--text-color);
+}
+
+.form-input:focus, .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 2px var(--accent-glow);
+  outline: none;
+}
+
+.form-input:hover {
+  border-color: var(--border-color);
+}
+
+.form-input label {
   color: var(--text-muted);
   display: block;
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   font-weight: 600;
+  letter-spacing: 0.5px;
   margin-bottom: 0.25rem;
+  text-transform: uppercase;
 }
 
-.monster-name-input input {
-  background: var(--nav-background);
-  border: 1px solid var(--nav-hover);
-  border-radius: 4px;
+.form-input.invalid {
+  border-color: var(--warning-color);
+}
+
+.form-input.invalid:focus {
+  box-shadow: 0 0 0 2px var(--warning-glow);
+}
+
+.form-input:disabled {
+  background-color: var(--nav-active);
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.form-input:last-child {
+  margin-bottom: 0;
+}
+
+.form-input::placeholder {
+  color: var(--highlight-heavy);
+  opacity: 0.5;
+}
+
+.form-input input {
+  background-color: var(--input-background);
+  border: 1px solid var(--border-color);
+  border-left: none;
+  border-radius: 0.375rem;
+  border-right: none;
+  box-shadow: inset 0 2px 4px var(--overlay-light);
   color: var(--text-color);
-  font-size: 0.85rem;
+  font-size: 1rem;
+  height: 2rem;
   max-width: 100%;
-  padding: 0.5rem;
+  padding: 0.75rem 1rem;
   text-align: center;
+  border: 2px solid #3a4156;
+  padding: .6rem 2.5rem .6rem 1rem;
+  transition: all .3s ease;
   width: 100%;
+}
+
+.form-input input:focus {
+  outline: none;
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 3px var(--accent-glow);
+}
+
+.form-input input::placeholder {
+  color: var(--text-color);
+  opacity: 0.6;
+}
+
+/* Search Forms */
+.search-section {
+  background: var(--card-background);
+  border-radius: 0.75rem;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 2px 10px var(--overlay-dark);
+  border: 1px solid var(--border-color);
+}
+
+.search-input-container {
+  height: 100%;
+  display: flex;
+  align-items: center;
 }
 
 /* Edit Monster */
@@ -68,7 +148,7 @@
   margin-bottom: 1.5rem;
 }
 
-.edit-monster-form {
+.town-section {
   background-color: var(--card-background);
   border-radius: 0.5rem;
   padding: 2rem;
@@ -103,59 +183,11 @@
   font-size: 14px;
 }
 
-.monster-edit-controls {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.edit-section {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-}
-
-.edit-section .section-header {
+.set-item .section-header {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-}
-
-.edit-section label {
-  font-weight: 600;
-  color: var(--text-color);
-  font-size: 14px;
-}
-
-.rename-input,
-.berry-select,
-.pastry-select,
-.pastry-value-input {
-  background: var(--input-background);
-  border: 1px solid var(--border-color);
-  border-radius: 6px;
-  color: var(--text-color);
-  font-size: 14px;
-  margin-top: 0;
-  padding: 8px 12px;
-  transition: border-color 0.2s;
-}
-
-.rename-input:focus,
-.berry-select:focus,
-.pastry-select:focus,
-.pastry-value-input:focus {
-  outline: none;
-  border-color: var(--blue-color);
-  box-shadow: 0 0 0 2px var(--blue-glow);
-}
-
-.berry-select option,
-.pastry-select option {
-  padding: 5px;
-  font-size: 12px;
-  line-height: 1.3;
 }
 
 /* Edit Box Monster */
@@ -164,21 +196,6 @@
   width: 100%;
   display: flex;
   flex-direction: column;
-}
-
-.edit-box-monster-image {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0.25rem;
-  background-color: var(--overlay-medium);
-}
-
-.edit-box-monster-image img {
-  max-width: 100%;
-  max-height: 100%;
-  object-fit: contain;
 }
 
 .edit-box-monster-info {
@@ -223,19 +240,8 @@
 }
 
 /* Monster Type Toggle */
-.monster-type-toggle {
-  display: flex;
-  align-items: center;
-}
 
-.monster-type-toggle input[type="checkbox"] {
-  margin-right: 0.5rem;
-  width: 18px;
-  height: 18px;
-  cursor: pointer;
-}
-
-.monster-type-toggle label {
+.logo-link label {
   display: flex;
   align-items: center;
   cursor: pointer;
@@ -252,11 +258,6 @@
 }
 
 /* Breed Monsters */
-.breed-monsters-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 20px;
-}
 
 .monster-selection {
   display: flex;
@@ -307,7 +308,7 @@
   scrollbar-color: var(--text-muted) var(--background-color);
 }
 
-.mass-edit-form {
+.breeding-form {
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -333,28 +334,36 @@
   padding: 30px;
 }
 
-.mass-edit-instructions {
-  background: var(--text-muted);
+.tips {
+  background: var(--card-background);
   border: 1px solid var(--nav-hover);
-  border-radius: 8px;
-  padding: 15px;
+  border-left: 4px solid var(--success-color);
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 4px var(--overlay-dark);
   margin-bottom: 25px;
+  padding: 1.25rem;
 }
 
-.mass-edit-instructions p {
-  margin: 0 0 10px 0;
-  color: var(--nav-background);
+.tips p {
+  color: var(--text-color);
+  font-size: var(--font-size-base);
+  font-style: italic;
   font-weight: 500;
+  line-height: 1.6;
+  margin: 0;
+  opacity: 0.9;
 }
 
-.mass-edit-instructions ul {
+.tips ul {
   margin: 0;
   padding-left: 20px;
 }
 
-.mass-edit-instructions li {
-  color: var(--nav-background);
-  margin-bottom: 5px;
+.tips li {
+  color: var(--text-color);
+  line-height: 1.4;
+  margin-bottom: 0.5rem;
+  opacity: 0.9;
 }
 
 .mass-edit-actions {
@@ -456,24 +465,6 @@
   align-items: center;
 }
 
-.before-section,
-.after-section {
-  background: var(--card-background);
-  border-radius: 6px;
-  padding: 15px;
-  border: 1px solid var(--text-color);
-}
-
-.before-section h5,
-.after-section h5 {
-  color: var(--error-color);
-  font-size: 14px;
-  font-weight: 600;
-  letter-spacing: 0.5px;
-  margin: 0 0 10px 0;
-  text-transform: uppercase;
-}
-
 .arrow-section {
   display: flex;
   align-items: center;
@@ -484,12 +475,6 @@
 
 .monster-mini-card {
   min-height: 80px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.change-details {
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -525,17 +510,6 @@
 .new-value {
   background: var(--blue-light);
   color: var(--blue-dark);
-}
-
-.type-badges,
-.species-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.75rem;
-  grid-template-columns: 1fr 1fr 1fr;
-  justify-content: center;
-  justify-items: center;
-  margin-top: 0.5rem;
 }
 
 .species-selection-needed {
@@ -587,6 +561,16 @@
     flex-direction: column;
     gap: 0.75rem;
   }
+
+    /* Forms */
+  .form-group input,
+  .form-group textarea,
+  .form-group select,
+  .form-input {
+  font-size: 0.9rem;
+  min-height: 80px;
+  padding: 0.625rem;
+}
 }
 
 /* Extra small screens (360px and below) */

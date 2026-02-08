@@ -338,7 +338,7 @@ const AdventureRewards = () => {
     return (
       <div className="adventure-rewards-container">
         <div className="claim-interface">
-          <div className="claim-header">
+          <div className="map-header">
             <h2>Claim Adventure Rewards</h2>
             <p>Adventure: <strong>{selectedReward.adventure_title}</strong></p>
             <p>Words Written: <strong>{selectedReward.word_count}</strong></p>
@@ -362,7 +362,7 @@ const AdventureRewards = () => {
             {levelAllocations.length > 0 && (
               <div className="allocations-list">
                 {levelAllocations.map((allocation) => (
-                  <div key={allocation.id} className="allocation-item">
+                  <div key={allocation.id} className="category-row">
                     <span className="allocation-info">
                       <i className={allocation.entityType === 'trainer' ? 'fas fa-user' : 'fas fa-dragon'}></i>
                       {allocation.entityName}
@@ -417,7 +417,7 @@ const AdventureRewards = () => {
                         <select
                           value={selectedEntityId}
                           onChange={(e) => setSelectedEntityId(e.target.value)}
-                          className="entity-select"
+                          className="form-input"
                         >
                           <option value="">Select trainer</option>
                           {userTrainers.map(trainer => (
@@ -456,7 +456,7 @@ const AdventureRewards = () => {
                             <select
                               value={selectedEntityId}
                               onChange={(e) => setSelectedEntityId(e.target.value)}
-                              className="entity-select"
+                              className="form-input"
                             >
                               <option value="">Select monster</option>
                               {userMonsters
@@ -526,7 +526,7 @@ const AdventureRewards = () => {
                       <h4>{item.name}</h4>
                       <p>{item.description}</p>
                       {item.rarity && (
-                        <span className={`rarity-badge ${item.rarity.toLowerCase()}`}>
+                        <span className={`rarity-badge${item.rarity.toLowerCase()}`}>
                           {item.rarity}
                         </span>
                       )}
@@ -566,7 +566,7 @@ const AdventureRewards = () => {
 
               <div className="coin-allocations">
                 {coinAllocations.map((allocation, index) => (
-                  <div key={index} className="allocation-item">
+                  <div key={index} className="category-row">
                     <div className="allocation-info">
                       <span className="trainer-name">
                         {userTrainers.find(t => t.id === allocation.trainerId)?.name || 'Unknown Trainer'}
@@ -691,7 +691,7 @@ const AdventureRewards = () => {
 
   return (
     <div className="adventure-rewards-container">
-      <div className="rewards-header">
+      <div className="auth-header">
         <h1>Adventure Rewards</h1>
         <p>Claim rewards from your completed adventures</p>
       </div>
@@ -707,7 +707,7 @@ const AdventureRewards = () => {
         <div className="rewards-list">
           <h2>Unclaimed Rewards ({unclaimedRewards.length})</h2>
           {unclaimedRewards.map((reward) => (
-            <div key={reward.id} className="reward-card">
+            <div key={reward.id} className="area-card">
               <div className="reward-info">
                 <h3>{reward.adventure_title}</h3>
                 <div className="reward-stats">

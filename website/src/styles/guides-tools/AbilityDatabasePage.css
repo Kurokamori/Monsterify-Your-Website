@@ -2,7 +2,7 @@
    Ability Database Page Styles
    ============================== */
 
-.ability-database-page {
+.type-calculator-page {
   max-width: 90%;
   margin: 0 auto;
   padding: var(--content-padding);
@@ -10,7 +10,7 @@
 }
 
 /* Page Header */
-.ability-database-page .page-header {
+.type-calculator-page .lore-header {
   text-align: center;
   margin-bottom: 2rem;
   background: var(--card-background);
@@ -20,7 +20,7 @@
   box-shadow: 0 8px 25px var(--overlay-medium);
 }
 
-.ability-database-page .page-header h1 {
+.type-calculator-page .lore-header h1 {
   color: var(--accent-color);
   font-size: var(--font-size-4xl);
   margin-bottom: 1rem;
@@ -28,7 +28,7 @@
   letter-spacing: -0.025em;
 }
 
-.ability-database-page .page-header p {
+.type-calculator-page .lore-header p {
   color: var(--text-color);
   opacity: 0.8;
   font-size: var(--font-size-lg);
@@ -47,88 +47,38 @@
   box-shadow: 0 8px 25px var(--overlay-medium);
 }
 
-.filter-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1.5rem;
-}
-
-.filter-header h2 {
-  color: var(--accent-color);
-  font-size: var(--font-size-xl);
-  margin: 0;
-}
-
 /* Clear filters button: Use unified button system from common/buttons.css
    Example: className="button secondary outline sm" */
 
 /* Search Row */
-.search-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1.5rem;
-  margin-bottom: 1.5rem;
-}
 
-.search-input-group {
+.fandom-grid {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
 }
 
-.search-input-group label {
-  color: var(--text-color);
-  font-size: var(--font-size-sm);
-  font-weight: 500;
-  display: flex;
+.fandom-grid label {
   align-items: center;
+  color: var(--accent-color);
+  display: flex;
+  font-size: 0.85rem;
+  font-weight: 600;
   gap: 0.5rem;
+  margin-bottom: 0.25rem;
 }
 
-.search-input-group label i {
+.fandom-grid label i {
   color: var(--accent-color);
 }
 
-.search-input:focus {
-  outline: none;
-  border-color: var(--accent-color);
-  box-shadow: 0 0 0 3px var(--accent-glow);
-}
-
-.search-input::placeholder {
-  color: var(--text-color);
-  opacity: 0.5;
-}
-
 /* Type Filter Section */
-.type-filter-section {
+.allocation-targets {
   border-top: 1px solid var(--border-color);
   padding-top: 1.5rem;
 }
 
-.type-filter-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1rem;
-  flex-wrap: wrap;
-  gap: 1rem;
-}
-
-.type-filter-header h3 {
-  color: var(--text-color);
-  font-size: var(--font-size-base);
-  margin: 0;
-}
-
-.type-logic-toggle {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.logic-label {
+.file-name {
   color: var(--text-color);
   font-size: var(--font-size-sm);
   opacity: 0.8;
@@ -138,11 +88,6 @@
    Example: className="button toggle" or className="button toggle active" */
 
 /* Type Filter Buttons */
-.type-buttons {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-}
 
 /* Type filter buttons: Use unified button system from common/buttons.css
    Example: className="button filter sm" or className="button filter sm selected" */
@@ -168,21 +113,12 @@
 }
 
 /* Results Section */
-.ability-results-section {
+.team-builder-section {
   background: var(--card-background);
   border-radius: 1rem;
   padding: 2rem;
   border: 1px solid var(--border-color);
   box-shadow: 0 8px 25px var(--overlay-medium);
-}
-
-.results-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1.5rem;
-  flex-wrap: wrap;
-  gap: 1rem;
 }
 
 .results-count {
@@ -192,28 +128,6 @@
 
 .results-count strong {
   color: var(--accent-color);
-}
-
-.sort-controls {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-}
-
-.sort-label {
-  color: var(--text-color);
-  font-size: var(--font-size-sm);
-  opacity: 0.8;
-}
-
-/* Sort buttons: Use unified button system from common/buttons.css
-   Example: className="button toggle" or className="button toggle active" */
-
-/* Ability Grid */
-.ability-grid {
-  display: grid;
-  gap: .5rem;
-  grid-template-columns: 1fr;
 }
 
 /* Ability Card */
@@ -241,14 +155,6 @@
   box-shadow: 0 12px 30px var(--accent-glow);
 }
 
-.ability-card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 1rem;
-  margin-bottom: 0.75rem;
-}
-
 .ability-name {
   color: var(--accent-color);
   font-size: var(--font-size-lg);
@@ -273,15 +179,6 @@
   max-height: 500px;
 }
 
-.ability-effect,
-.ability-description,
-.ability-monsters {
-  color: var(--text-muted);
-  font-size: 0.9rem;
-  line-height: 1.4;
-  margin-bottom: 0.75rem;
-}
-
 .ability-label {
   color: var(--accent-color);
   display: block;
@@ -291,21 +188,6 @@
   margin-bottom: 0.25rem;
   margin-right: 0.25rem;
   text-transform: uppercase;
-}
-
-.ability-effect p,
-.ability-description p {
-  color: var(--text-color);
-  font-size: var(--font-size-sm);
-  line-height: 1.5;
-  margin: 0;
-  opacity: 0.9;
-}
-
-.monster-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
 }
 
 .monster-tag {
@@ -348,7 +230,7 @@
   }
 }
 
-.loading-container p {
+.error-container p {
   color: var(--text-muted);
   margin-top: 16px;
   opacity: 0.8;
@@ -357,18 +239,19 @@
 /* No Results State */
 .no-results {
   align-items: center;
-  background-color: var(--accent-glow);
-  border: 1px solid var(--accent-color);
-  border-radius: 12px;
-  color: var(--text-color);
+  background-color: var(--card-background);
+  border: 1px dashed var(--border-color);
+  border-radius: 0.75rem;
+  color: var(--text-muted);
   display: flex;
   flex-direction: column;
-  font-size: var(--font-size-sm);
+  font-size: 1.1rem;
   font-style: italic;
+  grid-column: 1/-1;
   justify-content: center;
   margin: 1rem 0;
   opacity: 0.6;
-  padding: 2rem;
+  padding: 3rem 2rem;
   text-align: center;
 }
 
@@ -387,8 +270,9 @@
 
 .no-results p {
   color: var(--text-color);
+  margin: 0 auto;
+  max-width: 400px;
   opacity: 0.7;
-  margin: 0;
 }
 
 /* Pagination */
@@ -413,54 +297,35 @@
 
 /* Responsive Styles */
 @media (max-width: 768px) {
-  .ability-database-page {
+  .type-calculator-page {
     padding: 1rem;
   }
 
-  .ability-database-page .page-header {
+  .type-calculator-page .lore-header {
     padding: 2rem 1.5rem;
     margin-bottom: 1.5rem;
   }
 
-  .ability-database-page .page-header h1 {
+  .type-calculator-page .lore-header h1 {
     font-size: var(--font-size-3xl);
   }
 
-  .ability-database-page .page-header p {
+  .type-calculator-page .lore-header p {
     font-size: var(--font-size-base);
   }
 
   .ability-filter-section,
-  .ability-results-section {
+  .team-builder-section {
     padding: 1.5rem;
   }
 
-  .search-row {
-    grid-template-columns: 1fr;
-    gap: 1rem;
-  }
-
-  .filter-header {
+  .tree-header {
     flex-direction: column;
     align-items: flex-start;
     gap: 1rem;
   }
 
-  .type-filter-header {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .results-header {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .ability-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .ability-card-header {
+  .type-tags {
     flex-direction: column;
     gap: 0.5rem;
   }
@@ -473,16 +338,16 @@
 }
 
 @media (max-width: 480px) {
-  .ability-database-page .page-header {
+  .type-calculator-page .lore-header {
     padding: 1.5rem 1rem;
   }
 
   .ability-filter-section,
-  .ability-results-section {
+  .team-builder-section {
     padding: 1rem;
   }
 
-  .type-buttons {
+  .type-tags {
     justify-content: center;
   }
 }

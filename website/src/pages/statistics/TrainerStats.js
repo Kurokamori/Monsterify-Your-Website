@@ -153,7 +153,7 @@ const TrainerStats = () => {
 
   return (
     <div className="trainer-stats">
-      <div className="trainer-selector">
+      <div className="missions-filters">
         <label htmlFor="trainer-select">Select Trainer:</label>
         <select
           id="trainer-select"
@@ -171,7 +171,7 @@ const TrainerStats = () => {
 
       <div className="trainer-profile statistics-card">
         <div className="trainer-profile-header">
-          <div className="trainer-avatar">
+          <div className="npc-avatar">
             <img
               src={displayStats.trainer.avatar_url}
               alt={displayStats.trainer.name}
@@ -210,11 +210,11 @@ const TrainerStats = () => {
         </div>
       </div>
 
-      <div className="statistics-section">
-        <div className="statistics-section-header">
+      <div className="missions-header">
+        <div className="option-row">
           <h3 className="statistics-section-title">Monster Collection</h3>
         </div>
-        <div className="statistics-grid">
+        <div className="button">
           <div className="statistic-item">
             <div className="statistic-icon">
               <i className="fas fa-dragon"></i>
@@ -239,9 +239,9 @@ const TrainerStats = () => {
         </div>
         <div className="monster-types-chart statistics-card">
           <h4 className="chart-title">Monster Types Distribution</h4>
-          <div className="types-distribution">
+          <div className="button">
             {Object.entries(displayStats.monsters.types).map(([type, count]) => (
-              <div className="type-distribution-item" key={type}>
+              <div className="monster-card" key={type}>
                 <div className="type-distribution-header">
                   <span className={`type-badge type-${type.toLowerCase()}`}>{type}</span>
                   <span className="type-count">{count}</span>
@@ -258,11 +258,11 @@ const TrainerStats = () => {
         </div>
       </div>
 
-      <div className="statistics-section">
-        <div className="statistics-section-header">
+      <div className="missions-header">
+        <div className="option-row">
           <h3 className="statistics-section-title">Activities</h3>
         </div>
-        <div className="statistics-grid">
+        <div className="button">
           <div className="statistic-item">
             <div className="statistic-icon">
               <i className="fas fa-fist-raised"></i>
@@ -308,24 +308,24 @@ const TrainerStats = () => {
         </div>
       </div>
 
-      <div className="statistics-section">
-        <div className="statistics-section-header">
+      <div className="missions-header">
+        <div className="option-row">
           <h3 className="statistics-section-title">Activity Over Time</h3>
           <div className="timeframe-selector">
             <button
-              className={`timeframe-button ${activityTimeframe === 'week' ? 'active' : ''}`}
+              className={`timeframe-button${activityTimeframe === 'week' ? 'active' : ''}`}
               onClick={() => setActivityTimeframe('week')}
             >
               Week
             </button>
             <button
-              className={`timeframe-button ${activityTimeframe === 'month' ? 'active' : ''}`}
+              className={`timeframe-button${activityTimeframe === 'month' ? 'active' : ''}`}
               onClick={() => setActivityTimeframe('month')}
             >
               Month
             </button>
             <button
-              className={`timeframe-button ${activityTimeframe === 'year' ? 'active' : ''}`}
+              className={`timeframe-button${activityTimeframe === 'year' ? 'active' : ''}`}
               onClick={() => setActivityTimeframe('year')}
             >
               Year

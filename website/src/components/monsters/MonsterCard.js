@@ -258,13 +258,13 @@ const MonsterCard = ({ monster, linkToDetail = true, fullHeight = false }) => {
         />
       </div>
 
-      <div className="monster-card-info">
+      <div className="chapter-item">
         <div className="monster-info">
           {getMonsterInfo()}
         </div>
 
         {/* Display species if available */}
-        <div className="monster-species">
+        <div className="monster-types">
           {monster.species1 && (
             <span className="species-name">{monster.species1}</span>
           )}
@@ -287,7 +287,7 @@ const MonsterCard = ({ monster, linkToDetail = true, fullHeight = false }) => {
         </div>
 
         {monster.attribute && (
-          <div className="monster-attribute" style={{ color: getAttributeColor(monster.attribute) }}>
+          <div className="monster-types" style={{ color: getAttributeColor(monster.attribute) }}>
             {monster.attribute}
           </div>
         )}
@@ -298,7 +298,7 @@ const MonsterCard = ({ monster, linkToDetail = true, fullHeight = false }) => {
             {referenceImages.map((image, index) => (
               <div
                 key={index}
-                className="reference-image"
+                className="item-icon"
                 onClick={() => openModal(image.url)}
               >
                 {image.url ? (

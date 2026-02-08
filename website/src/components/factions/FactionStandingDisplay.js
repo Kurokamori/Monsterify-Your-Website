@@ -4,7 +4,7 @@ const FactionStandingDisplay = ({ standing, faction, trainerId }) => {
   if (!standing) {
     return (
       <div className="standing-display">
-        <div className="standing-header">
+        <div className="option-row">
           <h3>Standing with {faction?.name}</h3>
           <div className="standing-value neutral">
             <span className="standing-number">0</span>
@@ -72,7 +72,7 @@ const FactionStandingDisplay = ({ standing, faction, trainerId }) => {
 
   return (
     <div className="standing-display">
-      <div className="standing-header">
+      <div className="option-row">
         <h3>Standing with {faction.name}</h3>
         <div className="standing-value" style={{ color: standingColor }}>
           <span className="standing-number">{standing.standing}</span>

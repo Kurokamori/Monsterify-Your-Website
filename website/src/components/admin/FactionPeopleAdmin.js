@@ -112,7 +112,7 @@ const FactionPeopleAdmin = () => {
 
   return (
     <div className="faction-people-admin">
-      <div className="admin-header">
+      <div className="option-row">
         <h1>
           <i className="fas fa-users"></i>
           Faction People Management
@@ -127,13 +127,13 @@ const FactionPeopleAdmin = () => {
       </div>
 
       <div className="admin-filters">
-        <div className="filter-group">
+        <div className="set-item">
           <label htmlFor="faction-filter">Filter by Faction:</label>
           <select
             id="faction-filter"
             value={selectedFaction}
             onChange={(e) => setSelectedFaction(e.target.value)}
-            className="form-control"
+            className="form-input"
           >
             <option value="">All Factions</option>
             {factions.map(faction => (
@@ -152,9 +152,9 @@ const FactionPeopleAdmin = () => {
         </div>
       )}
 
-      <div className="people-grid">
+      <div className="button">
         {people.length === 0 ? (
-          <div className="empty-state">
+          <div className="no-npcs">
             <i className="fas fa-user-friends"></i>
             <h3>No People Found</h3>
             <p>
@@ -209,7 +209,7 @@ const FactionPeopleAdmin = () => {
                   <span>{person.role || 'Not specified'}</span>
                 </div>
                 {person.blurb && (
-                  <div className="person-blurb">
+                  <div className="task-steps">
                     <label>Blurb:</label>
                     <p>{person.blurb}</p>
                   </div>

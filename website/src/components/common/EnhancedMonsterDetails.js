@@ -127,8 +127,8 @@ const EnhancedMonsterDetails = ({
   if (!monster) {
     console.log('No monster data provided to EnhancedMonsterDetails');
     return (
-      <div className="enhanced-monster-details">
-        <div className="monster-info-section">
+      <div className="monster-details">
+        <div className="item-info-section">
           <h3 className="section-title">Monster Information</h3>
           <p>No monster data available.</p>
         </div>
@@ -139,9 +139,9 @@ const EnhancedMonsterDetails = ({
 
 
   return (
-    <div className="enhanced-monster-details">
+    <div className="monster-details">
       {/* Monster Information Section */}
-      <div className="monster-info-section">
+      <div className="item-info-section">
         <h3 className="section-title">Monster Information</h3>
         <div className="monster-info-grid">
           <div className="info-item">
@@ -156,7 +156,7 @@ const EnhancedMonsterDetails = ({
 
           <div className="info-item">
             <span className="info-label">Types:</span>
-            <span className="info-value types-display">
+            <span className="info-value type-tags">
               {formatTypes()}
             </span>
           </div>
