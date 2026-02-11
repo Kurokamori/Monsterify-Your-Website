@@ -414,7 +414,7 @@ const HomePage = () => {
                       <i className="fas fa-feather-alt"></i>
                       <span>Submit Writing</span>
                     </Link>
-                    <Link to="/town/farm" className="quick-action-button farm">
+                    <Link to="/town/activities/farm" className="quick-action-button farm">
                       <i className="fas fa-seedling"></i>
                       <span>Visit Farm</span>
                     </Link>
