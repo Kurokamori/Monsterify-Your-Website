@@ -245,7 +245,7 @@ const TributeSubmissionModal = ({ faction, trainerId, standing, onClose, onSubmi
               )}
 
               {error && (
-                <div className="error-message">
+                <div className="alert error">
                   <i className="fas fa-exclamation-triangle"></i>
                   {error}
                 </div>

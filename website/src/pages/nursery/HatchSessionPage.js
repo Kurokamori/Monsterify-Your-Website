@@ -59,7 +59,7 @@ const HatchSessionPage = () => {
   const handleMonsterSelect = (eggId, monsterIndex) => {
     setSelectedMonsters(prev => ({
       ...prev,
-      [eggId]: monsterIndex
+      [eggId]: prev[eggId] === monsterIndex ? undefined : monsterIndex
     }));
   };
 
@@ -275,7 +275,7 @@ const HatchSessionPage = () => {
             <p className="success-description">
               Congratulations! You have successfully hatched <strong>{session.eggCount}</strong> {session.eggCount === 1 ? 'egg' : 'eggs'} and selected your monsters.
             </p>
-            <div className="success-stats">
+            <div className="container grid-md gap-md mb-lg">
               <div className="stat-item">
                 <i className="fas fa-egg"></i>
                 <span>Eggs Hatched: {session.eggCount}</span>
@@ -367,13 +367,38 @@ const HatchSessionPage = () => {
           </div>
         </div>
 
-        {!isEggSelected && (
-          <div className="monster-naming-section">
+        {!isEggSelected && selectedMonsters[currentEggData.eggId] !== undefined && (
+          <div className="monster-naming-section top-naming">
             <div className="naming-card">
               <div className="naming-header">
                 <i className="fas fa-signature"></i>
                 <span>Name Your Monster</span>
                 <span className="optional-badge">Optional</span>
+              </div>
+              <div className="naming-species-label">
+                {(() => {
+                  // Build species label showing claimed monsters + currently selected
+                  const speciesLabels = [];
+
+                  // Add Edenwiess-claimed monster species
+                  claimedMonsterIndices.forEach(claimedIndex => {
+                    const claimedMonster = currentEggData.monsters[claimedIndex];
+                    if (claimedMonster) {
+                      speciesLabels.push(claimedMonster.species || claimedMonster.species_name || 'Unknown');
+                    }
+                  });
+
+                  // Add currently selected monster species
+                  const selectedIndex = selectedMonsters[currentEggData.eggId];
+                  if (selectedIndex !== undefined) {
+                    const selectedMonster = currentEggData.monsters[selectedIndex];
+                    if (selectedMonster) {
+                      speciesLabels.push(selectedMonster.species || selectedMonster.species_name || 'Selected Monster');
+                    }
+                  }
+
+                  return speciesLabels.join(' / ') || 'Selected Monster';
+                })()}
               </div>
               <div className="naming-input-container">
                 <input
@@ -500,6 +525,57 @@ const HatchSessionPage = () => {
         {/* Action Section */}
         {!isEggSelected && (
           <div className="egg-actions-modern">
+            {/* Duplicate naming input at bottom */}
+            {selectedMonsters[currentEggData.eggId] !== undefined && (
+              <div className="monster-naming-section bottom-naming">
+                <div className="naming-card">
+                  <div className="naming-header">
+                    <i className="fas fa-signature"></i>
+                    <span>Name Your Monster</span>
+                    <span className="optional-badge">Optional</span>
+                  </div>
+                  <div className="naming-species-label">
+                    {(() => {
+                      // Build species label showing claimed monsters + currently selected
+                      const speciesLabels = [];
+
+                      // Add Edenwiess-claimed monster species
+                      claimedMonsterIndices.forEach(claimedIndex => {
+                        const claimedMonster = currentEggData.monsters[claimedIndex];
+                        if (claimedMonster) {
+                          speciesLabels.push(claimedMonster.species || claimedMonster.species_name || 'Unknown');
+                        }
+                      });
+
+                      // Add currently selected monster species
+                      const selectedIndex = selectedMonsters[currentEggData.eggId];
+                      if (selectedIndex !== undefined) {
+                        const selectedMonster = currentEggData.monsters[selectedIndex];
+                        if (selectedMonster) {
+                          speciesLabels.push(selectedMonster.species || selectedMonster.species_name || 'Selected Monster');
+                        }
+                      }
+
+                      return speciesLabels.join(' / ') || 'Selected Monster';
+                    })()}
+                  </div>
+                  <div className="naming-input-container">
+                    <input
+                      type="text"
+                      className="form-input"
+                      value={monsterNames[currentEggData.eggId] || ''}
+                      onChange={(e) => handleNameChange(currentEggData.eggId, e.target.value)}
+                      placeholder={`Hatched Monster ${currentEggData.eggId}`}
+                      maxLength={50}
+                    />
+                    <div className="character-count">
+                      {(monsterNames[currentEggData.eggId] || '').length}/50
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
             <button
               className="button primary large"
               onClick={() => handleSelectMonster(currentEggData.eggId)}
@@ -513,10 +589,10 @@ const HatchSessionPage = () => {
                 )}
               </span>
               <span className="button-text">
-                {submitting 
-                  ? 'Selecting Monster...' 
-                  : currentEggClaims > 0 
-                    ? 'Select This Monster (Final)' 
+                {submitting
+                  ? 'Selecting Monster...'
+                  : currentEggClaims > 0
+                    ? 'Select This Monster (Final)'
                     : 'Select This Monster'
                 }
               </span>

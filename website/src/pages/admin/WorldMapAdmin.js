@@ -443,12 +443,13 @@ const WorldMapAdmin = () => {
                   <div className="name-content">
                     <strong>{item.name}</strong>
                     {item.image && (
-                      <img 
-                        src={item.image} 
-                        alt={item.name}
-                        className="table-thumbnail"
-                        onError={(e) => { e.target.style.display = 'none'; }}
-                      />
+                      <div className="image-container tiny rounded cover no-margin inline">
+                        <img
+                          src={item.image}
+                          alt={item.name}
+                          onError={(e) => { e.target.style.display = 'none'; }}
+                        />
+                      </div>
                     )}
                   </div>
                 </td>
@@ -460,7 +461,7 @@ const WorldMapAdmin = () => {
                 {activeTab === 'areas' && <td>{item.regionName}</td>}
                 {activeTab === 'areas' && (
                   <td>
-                    <span className={`status-badge difficulty-${item.difficulty?.toLowerCase()}`}>
+                    <span className={`badge difficulty-${item.difficulty?.toLowerCase()}`}>
                       {item.difficulty}
                     </span>
                   </td>
@@ -512,7 +513,7 @@ const WorldMapAdmin = () => {
           </div>
           
           <div className="modal-body">
-            <div className="form-grid">
+            <div className="container cols-2 gap-md">
               <div className="form-group">
                 <label>ID</label>
                 <input

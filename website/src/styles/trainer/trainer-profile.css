@@ -10,7 +10,7 @@
 .trainer-profile-image-container {
   width: 45%;
   height: 90vh;
-  max-height: 700px;
+  max-height: 100%;
   border-radius: .75rem;
   overflow: hidden;
   flex-shrink: 0;
@@ -55,6 +55,16 @@
   padding: .5rem;
   font-size: var(--font-size-sm);
   text-align: center;
+}
+
+.trainer-level,
+.trainer-faction {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .5rem;
 }
 
 /* ===== Profile info ===== */
@@ -378,7 +388,8 @@
   display: block;
 }
 
-/* ===== Monsters grid ===== */
+/* Monsters grid: Use unified container grid from common/containers.css
+   Example: className="container grid" */
 
 /* ===== Profile grid ===== */
 

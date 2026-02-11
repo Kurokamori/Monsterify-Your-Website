@@ -295,21 +295,22 @@ const BossAdmin = () => {
               {bosses.map((boss) => (
                 <tr key={boss.id}>
                   <td>
-                    {boss.image_url ? (
-                      <img 
-                        src={boss.image_url} 
-                        alt={boss.name}
-                        className="admin-boss-image"
-                        onError={(e) => {
-                          e.target.onerror = null;
-                          e.target.src = '/images/default_boss.png';
-                        }}
-                      />
-                    ) : (
-                      <div className="admin-boss-placeholder">
-                        <i className="fas fa-dragon"></i>
-                      </div>
-                    )}
+                    <div className="image-container tiny rounded cover no-margin">
+                      {boss.image_url ? (
+                        <img
+                          src={boss.image_url}
+                          alt={boss.name}
+                          onError={(e) => {
+                            e.target.onerror = null;
+                            e.target.src = '/images/default_boss.png';
+                          }}
+                        />
+                      ) : (
+                        <div className="image-placeholder">
+                          <i className="fas fa-dragon"></i>
+                        </div>
+                      )}
+                    </div>
                   </td>
                   <td>
                     <div className="boss-name-cell">
@@ -328,9 +329,9 @@ const BossAdmin = () => {
                   <td>
                     <div className="health-display">
                       {boss.current_hp?.toLocaleString() || 0} / {boss.total_hp?.toLocaleString() || 0}
-                      <div className="health-bar-small">
-                        <div 
-                          className="health-fill"
+                      <div className="progress sm">
+                        <div
+                          className="progress-fill success"
                           style={{
                             width: `${((boss.current_hp || 0) / (boss.total_hp || 1)) * 100}%`
                           }}
@@ -339,7 +340,7 @@ const BossAdmin = () => {
                     </div>
                   </td>
                   <td>
-                    <span className={`status-badge${boss.status}`}>
+                    <span className={`badge ${boss.status}`}>
                       {boss.status}
                     </span>
                   </td>
@@ -393,7 +394,7 @@ const BossAdmin = () => {
         size="large"
       >
         <form onSubmit={handleSubmit} className="boss-form">
-          <div className="form-grid">
+          <div className="container cols-2 gap-md">
             <div className="form-group">
               <label>Boss Name *</label>
               <input
@@ -476,7 +477,7 @@ const BossAdmin = () => {
           {/* Reward Monster Section */}
           <div className="monster-section">
             <h3>🏆 Reward Monster (1st Place)</h3>
-            <div className="form-grid">
+            <div className="container cols-2 gap-md">
               <div className="form-group">
                 <label>Monster Name</label>
                 <input
@@ -557,7 +558,7 @@ const BossAdmin = () => {
           {/* Grunt Monster Section */}
           <div className="monster-section">
             <h3>🎁 Grunt Monster (All Others)</h3>
-            <div className="form-grid">
+            <div className="container cols-2 gap-md">
               <div className="form-group">
                 <label>Monster Name</label>
                 <input

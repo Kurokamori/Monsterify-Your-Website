@@ -327,7 +327,7 @@ const FactionSubmissionModal = ({ faction, trainerId, onClose, onSubmit }) => {
           {loading && <div className="loading-spinner">Loading...</div>}
           
           {error && (
-            <div className="error-message">
+            <div className="alert error">
               <span className="error-icon">⚠️</span>
               {error}
             </div>

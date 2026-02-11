@@ -128,7 +128,7 @@ const EnhancedMonsterDetails = ({
     console.log('No monster data provided to EnhancedMonsterDetails');
     return (
       <div className="monster-details">
-        <div className="item-info-section">
+        <div className="card-container">
           <h3 className="section-title">Monster Information</h3>
           <p>No monster data available.</p>
         </div>
@@ -141,28 +141,28 @@ const EnhancedMonsterDetails = ({
   return (
     <div className="monster-details">
       {/* Monster Information Section */}
-      <div className="item-info-section">
+      <div className="container no-set outline">
         <h3 className="section-title">Monster Information</h3>
         <div className="monster-info-grid">
           <div className="info-item">
-            <span className="info-label">Name:</span>
+            <span className="info-label info-heading">Name:</span>
             <span className="info-value monster-name">{monster.name}</span>
           </div>
           
           <div className="info-item">
-            <span className="info-label">Species:</span>
+            <span className="info-label info-heading">Species:</span>
             <span className="info-value">{formatSpecies()}</span>
           </div>
 
           <div className="info-item">
-            <span className="info-label">Types:</span>
+            <span className="info-label info-heading">Types:</span>
             <span className="info-value type-tags">
               {formatTypes()}
             </span>
           </div>
 
           <div className="info-item">
-            <span className="info-label">Attribute:</span>
+            <span className="info-label info-heading">Attribute:</span>
             <span className="info-value attribute-display">
               {monster.attribute || 'None'}
             </span>
@@ -171,7 +171,7 @@ const EnhancedMonsterDetails = ({
           
           {monster.level && (
             <div className="info-item">
-              <span className="info-label">Level:</span>
+              <span className="info-label info-heading">Level:</span>
               <span className="info-value">{monster.level}</span>
             </div>
           )}
@@ -180,13 +180,13 @@ const EnhancedMonsterDetails = ({
 
       {/* Item Information Section */}
       {showItemInfo && itemName && (
-        <div className="item-info-section">
+        <div className="card-container">
           <h3 className="section-title">
             {itemType === 'berry' ? 'Berry' : 'Pastry'} Information
           </h3>
           <div className="item-info-content">
             <div className="item-header">
-              <div className="item-icon">
+              <div className="image-container medium">
                 {itemLoading ? (
                   <div className="item-loading">Loading...</div>
                 ) : (

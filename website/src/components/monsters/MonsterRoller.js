@@ -193,7 +193,7 @@ const MonsterRoller = ({ context = 'adoption', onMonsterSelected, trainerId }) =
           <div className="form">
             {/* Trainer Selection */}
             {!trainerId && userTrainers.length > 0 && (
-              <div className="fandom-grid">
+              <div className="container cols-2 gap-md">
                 <label>Select Trainer:</label>
                 <select 
                   value={selectedTrainer} 
@@ -210,13 +210,13 @@ const MonsterRoller = ({ context = 'adoption', onMonsterSelected, trainerId }) =
             )}
             
             {/* Monster Source Selection */}
-            <div className="fandom-grid">
+            <div className="container cols-2 gap-md">
               <label>Monster Sources:</label>
               <div className="source-options">
                 {availableSources.map(source => (
                   <div 
                     key={source}
-                    className={`source-option${selectedSources.includes(source) ? 'selected' : ''}`}
+                    className={`source-option ${selectedSources.includes(source) ? 'selected' : ''}`}
                     onClick={() => handleSourceToggle(source)}
                   >
                     <span className="source-name">{source}</span>
@@ -229,7 +229,7 @@ const MonsterRoller = ({ context = 'adoption', onMonsterSelected, trainerId }) =
             </div>
             
             {/* Advanced Options Toggle */}
-            <div className="fandom-grid">
+            <div className="container cols-2 gap-md">
               <button 
                 className="advanced-toggle"
                 onClick={() => setShowAdvancedOptions(!showAdvancedOptions)}
@@ -340,7 +340,7 @@ const MonsterRoller = ({ context = 'adoption', onMonsterSelected, trainerId }) =
                   {rolledMonster.types.map((type, index) => (
                     <span 
                       key={index} 
-                      className={`type-badge type-${type.toLowerCase()}`}
+                      className={`badge type-${type.toLowerCase()}`}
                     >
                       {type}
                     </span>

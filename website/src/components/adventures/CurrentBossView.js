@@ -146,9 +146,9 @@ const CurrentBossView = () => {
                 <span>Health</span>
                 <span>{boss.current_hp.toLocaleString()} / {boss.total_hp.toLocaleString()}</span>
               </div>
-              <div className="health-bar-container">
-                <div 
-                  className="health-bar"
+              <div className="progress lg">
+                <div
+                  className="progress-fill"
                   style={{
                     width: `${boss.healthPercentage}%`,
                     backgroundColor: getHealthBarColor(boss.healthPercentage)

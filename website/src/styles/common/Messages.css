@@ -1,6 +1,5 @@
 .option-row {
   align-items: center;
-  background-color: var(--card-background);
   border-radius: 1rem;
   display: flex;
   flex-wrap: wrap;
@@ -78,13 +77,14 @@
 
 .message-icon {
   margin-right: 16px;
+  margin-left: 16px;
   font-size: 24px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-
+.message-icon .fa-check-circle { color: var(--text-color); }
 
 
 .message-title {

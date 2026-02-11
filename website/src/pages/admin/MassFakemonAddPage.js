@@ -27,7 +27,7 @@ const MassFakemonAddPage = () => {
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
 
-  const attributes = ['Normal', 'Mega', 'Legendary', 'Mythical', 'Ultra Beast'];
+  const attributes = ['Virus', 'Vaccine', 'Data', 'Free', 'Variable'];
 
   // Fetch types and categories on mount
   useEffect(() => {
@@ -341,13 +341,13 @@ const MassFakemonAddPage = () => {
 
         {/* Messages */}
         {successMessage && (
-          <div className="admin-alert success">
+          <div className="alert success">
             <i className="fas fa-check-circle"></i> {successMessage}
           </div>
         )}
 
         {error && (
-          <div className="admin-alert error">
+          <div className="alert error">
             <i className="fas fa-exclamation-circle"></i> {error}
           </div>
         )}
@@ -390,9 +390,9 @@ const MassFakemonAddPage = () => {
 
             {uploading && (
               <div className="upload-progress-container">
-                <div className="upload-progress-bar">
+                <div className="progress">
                   <div
-                    className="upload-progress-fill"
+                    className="progress-fill primary"
                     style={{ width: `${uploadProgress}%` }}
                   ></div>
                 </div>
@@ -426,7 +426,7 @@ const MassFakemonAddPage = () => {
                   </div>
 
                   {/* Image Preview */}
-                  <div className="item-icon">
+                  <div className="image-container medium">
                     <img
                       src={card.image_url}
                       alt={card.name || 'Fakemon'}

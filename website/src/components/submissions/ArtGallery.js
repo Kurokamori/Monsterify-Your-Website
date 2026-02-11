@@ -3,6 +3,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import submissionService from '../../services/submissionService';
 import LoadingSpinner from '../common/LoadingSpinner';
 import ErrorMessage from '../common/ErrorMessage';
+import MatureContentFilter from './MatureContentFilter';
+import AutocompleteInput from '../common/AutocompleteInput';
 
 const ArtGallery = () => {
   const navigate = useNavigate();
@@ -14,15 +16,24 @@ const ArtGallery = () => {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [contentTypeFilter, setContentTypeFilter] = useState('all');
-  const [tagFilter, setTagFilter] = useState('');
+  const [tagFilters, setTagFilters] = useState([]);
+  const [tagInputValue, setTagInputValue] = useState('');
   const [availableTags, setAvailableTags] = useState([]);
   const [sortBy, setSortBy] = useState('newest');
+  const [showMature, setShowMature] = useState(false);
+  const [matureFilters, setMatureFilters] = useState({
+    gore: true,
+    nsfw_light: true,
+    nsfw_heavy: true,
+    triggering: true,
+    intense_violence: true
+  });
 
   // Fetch artworks
   useEffect(() => {
     fetchArtworks();
     fetchTags();
-  }, [page, contentTypeFilter, tagFilter, sortBy]);
+  }, [page, contentTypeFilter, tagFilters, sortBy, showMature, matureFilters]);
 
   const fetchArtworks = async () => {
     try {
@@ -31,15 +42,20 @@ const ArtGallery = () => {
       const params = {
         page,
         limit: 12,
-        sort: sortBy
+        sort: sortBy,
+        showMature
       };
 
       if (contentTypeFilter !== 'all') {
         params.contentType = contentTypeFilter;
       }
 
-      if (tagFilter) {
-        params.tag = tagFilter;
+      if (tagFilters.length > 0) {
+        params.tags = tagFilters.join(',');
+      }
+
+      if (showMature) {
+        params.matureFilters = JSON.stringify(matureFilters);
       }
 
       const response = await submissionService.getArtGallery(params);
@@ -133,9 +149,39 @@ const ArtGallery = () => {
   // Reset filters
   const resetFilters = () => {
     setContentTypeFilter('all');
-    setTagFilter('');
+    setTagFilters([]);
+    setTagInputValue('');
     setSortBy('newest');
+    setShowMature(false);
+    setMatureFilters({
+      gore: true,
+      nsfw_light: true,
+      nsfw_heavy: true,
+      triggering: true,
+      intense_violence: true
+    });
     setPage(1);
+  };
+
+  // Handle tag selection from autocomplete
+  const handleTagSelect = (option) => {
+    const tagName = option.name;
+    if (tagName && !tagFilters.includes(tagName)) {
+      setTagFilters(prev => [...prev, tagName]);
+      setPage(1);
+    }
+    setTagInputValue('');
+  };
+
+  // Handle tag removal
+  const handleRemoveTag = (tagToRemove) => {
+    setTagFilters(prev => prev.filter(tag => tag !== tagToRemove));
+    setPage(1);
+  };
+
+  // Handle mature filter change
+  const handleMatureFilterChange = (type, value) => {
+    setMatureFilters(prev => ({ ...prev, [type]: value }));
   };
 
   // Render loading state
@@ -153,77 +199,8 @@ const ArtGallery = () => {
     );
   }
 
-  // Fallback data for development
-  const fallbackArtworks = [
-    {
-      id: 1,
-      title: 'Leafeon in the Forest',
-      description: 'A Leafeon enjoying a sunny day in the forest.',
-      image_url: 'https://via.placeholder.com/800/1e2532/d6a339?text=Leafeon',
-      content_type: 'monster',
-      quality: 'rendered',
-      submitted_date: '2023-05-15T00:00:00Z',
-      user: {
-        id: 1,
-        username: 'ash123',
-        display_name: 'Ash'
-      },
-      trainer: {
-        id: 1,
-        name: 'Ash Ketchum'
-      },
-      likes: 24,
-      liked_by_user: false,
-      comments_count: 5,
-      tags: ['leafeon', 'forest', 'pokemon']
-    },
-    {
-      id: 2,
-      title: 'Flameon Battle Stance',
-      description: 'Flameon ready for battle with flames blazing.',
-      image_url: 'https://via.placeholder.com/800/1e2532/d6a339?text=Flameon',
-      content_type: 'monster',
-      quality: 'polished',
-      submitted_date: '2023-05-20T00:00:00Z',
-      user: {
-        id: 1,
-        username: 'ash123',
-        display_name: 'Ash'
-      },
-      trainer: {
-        id: 1,
-        name: 'Ash Ketchum'
-      },
-      likes: 32,
-      liked_by_user: true,
-      comments_count: 8,
-      tags: ['flameon', 'battle', 'pokemon', 'fire']
-    },
-    {
-      id: 3,
-      title: 'Aqueon Swimming',
-      description: 'Aqueon gracefully swimming in a crystal clear lake.',
-      image_url: 'https://via.placeholder.com/800/1e2532/d6a339?text=Aqueon',
-      content_type: 'monster',
-      quality: 'rendered',
-      submitted_date: '2023-05-25T00:00:00Z',
-      user: {
-        id: 2,
-        username: 'misty456',
-        display_name: 'Misty'
-      },
-      trainer: {
-        id: 2,
-        name: 'Misty'
-      },
-      likes: 18,
-      liked_by_user: false,
-      comments_count: 3,
-      tags: ['aqueon', 'swimming', 'pokemon', 'water']
-    }
-  ];
 
-  const displayArtworks = artworks.length > 0 ? artworks : fallbackArtworks;
+  const displayArtworks = artworks.length > 0 ? artworks : [];
 
   return (
     <div className="gallery-container">
@@ -248,16 +225,15 @@ const ArtGallery = () => {
 
         <div className="set-item">
           <label htmlFor="tag-filter">Tag:</label>
-          <select
+          <AutocompleteInput
             id="tag-filter"
-            value={tagFilter}
-            onChange={(e) => setTagFilter(e.target.value)}
-          >
-            <option value="">All Tags</option>
-            {Array.isArray(availableTags) && availableTags.map(tag => (
-              <option key={tag} value={tag}>{tag}</option>
-            ))}
-          </select>
+            name="tag-filter"
+            value={tagInputValue}
+            onChange={(e) => setTagInputValue(e.target.value)}
+            options={Array.isArray(availableTags) ? availableTags.filter(tag => !tagFilters.includes(tag)) : []}
+            placeholder="Search tags..."
+            onSelect={handleTagSelect}
+          />
         </div>
 
         <div className="set-item">
@@ -272,6 +248,13 @@ const ArtGallery = () => {
           </select>
         </div>
 
+        <MatureContentFilter
+          showMature={showMature}
+          onShowMatureChange={setShowMature}
+          activeFilters={matureFilters}
+          onFilterChange={handleMatureFilterChange}
+        />
+
         <div className="filter-actions">
           <button
             className="button filter reset"
@@ -281,6 +264,28 @@ const ArtGallery = () => {
           </button>
         </div>
       </div>
+
+      {/* Selected Tags Row */}
+      {tagFilters.length > 0 && (
+        <div className="selected-tags-row">
+          <span className="selected-tags-label">Active Tags:</span>
+          <div className="selected-tags-list">
+            {tagFilters.map(tag => (
+              <span key={tag} className="selected-tag">
+                {tag}
+                <button
+                  type="button"
+                  className="selected-tag-remove"
+                  onClick={() => handleRemoveTag(tag)}
+                  aria-label={`Remove ${tag} tag`}
+                >
+                  <i className="fas fa-times"></i>
+                </button>
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Gallery Grid */}
       <div className="town-places">
@@ -315,7 +320,7 @@ const ArtGallery = () => {
 
       {/* Pagination */}
       {totalPages > 1 && (
-        <div className="type-tags">
+        <div className="type-tags fw gallery-pagination">
           <button
             className="button secondary"
             onClick={() => handlePageChange(page - 1)}

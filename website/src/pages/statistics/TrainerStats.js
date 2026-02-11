@@ -193,9 +193,9 @@ const TrainerStats = () => {
                   <span className="progress-label">Experience</span>
                   <span className="progress-value">{displayStats.trainer.experience} / {displayStats.trainer.next_level_exp}</span>
                 </div>
-                <div className="progress-bar-container">
+                <div className="progress">
                   <div
-                    className="progress-bar"
+                    className="progress-fill primary"
                     style={{ width: `${(displayStats.trainer.experience / displayStats.trainer.next_level_exp) * 100}%` }}
                   ></div>
                 </div>
@@ -243,12 +243,12 @@ const TrainerStats = () => {
             {Object.entries(displayStats.monsters.types).map(([type, count]) => (
               <div className="monster-card" key={type}>
                 <div className="type-distribution-header">
-                  <span className={`type-badge type-${type.toLowerCase()}`}>{type}</span>
+                  <span className={`badge type-${type.toLowerCase()}`}>{type}</span>
                   <span className="type-count">{count}</span>
                 </div>
-                <div className="progress-bar-container">
+                <div className="progress">
                   <div
-                    className={`progress-bar type-${type.toLowerCase()}-bg`}
+                    className={`progress-fill type-${type.toLowerCase()}-bg`}
                     style={{ width: `${(count / displayStats.monsters.total) * 100}%` }}
                   ></div>
                 </div>
@@ -313,19 +313,19 @@ const TrainerStats = () => {
           <h3 className="statistics-section-title">Activity Over Time</h3>
           <div className="timeframe-selector">
             <button
-              className={`timeframe-button${activityTimeframe === 'week' ? 'active' : ''}`}
+              className={`timeframe-button ${activityTimeframe === 'week' ? 'active' : ''}`}
               onClick={() => setActivityTimeframe('week')}
             >
               Week
             </button>
             <button
-              className={`timeframe-button${activityTimeframe === 'month' ? 'active' : ''}`}
+              className={`timeframe-button ${activityTimeframe === 'month' ? 'active' : ''}`}
               onClick={() => setActivityTimeframe('month')}
             >
               Month
             </button>
             <button
-              className={`timeframe-button${activityTimeframe === 'year' ? 'active' : ''}`}
+              className={`timeframe-button ${activityTimeframe === 'year' ? 'active' : ''}`}
               onClick={() => setActivityTimeframe('year')}
             >
               Year

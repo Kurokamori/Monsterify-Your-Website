@@ -320,7 +320,7 @@ const AdventureRewards = () => {
   if (error && !showClaimInterface) {
     return (
       <div className="adventure-rewards-container">
-        <div className="error-message">
+        <div className="alert error">
           <i className="fas fa-exclamation-triangle"></i>
           {error}
         </div>
@@ -345,7 +345,7 @@ const AdventureRewards = () => {
           </div>
 
           {error && (
-            <div className="error-message">
+            <div className="alert error">
               <i className="fas fa-exclamation-triangle"></i>
               {error}
             </div>
@@ -519,14 +519,14 @@ const AdventureRewards = () => {
               </h3>
               <p>Assign each item to one of your trainers:</p>
 
-              <div className="items-grid">
+              <div className="container grid gap-md">
                 {selectedReward.items_earned.map((item, index) => (
                   <div key={index} className="item-assignment-card">
                     <div className="item-info">
                       <h4>{item.name}</h4>
                       <p>{item.description}</p>
                       {item.rarity && (
-                        <span className={`rarity-badge${item.rarity.toLowerCase()}`}>
+                        <span className={`badge ${item.rarity.toLowerCase()}`}>
                           {item.rarity}
                         </span>
                       )}

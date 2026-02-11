@@ -131,7 +131,7 @@ const AbilityDatabasePage = () => {
         className={`ability-card ${isExpanded ? 'expanded' : ''}`}
         onClick={() => toggleExpanded(ability.name)}
       >
-        <div className="type-tags">
+        <div className="type-tags fw">
           <h3 className="ability-name">{ability.name}</h3>
           {hasTypes && (
             <div className="ability-types">
@@ -160,7 +160,7 @@ const AbilityDatabasePage = () => {
           {hasMonsters && (
             <div className="ability-effect">
               <span className="ability-label">Signature Monsters:</span>
-              <div className="type-tags">
+              <div className="type-tags fw">
                 {ability.signatureMonsters.map(monster => (
                   <span key={monster} className="monster-tag">{monster}</span>
                 ))}
@@ -199,7 +199,7 @@ const AbilityDatabasePage = () => {
         </div>
 
         <div className="button">
-          <div className="fandom-grid">
+          <div className="container cols-2 gap-md">
             <label htmlFor="ability-search">
               <i className="fas fa-search"></i> Search by Name
             </label>
@@ -213,7 +213,7 @@ const AbilityDatabasePage = () => {
             />
           </div>
 
-          <div className="fandom-grid">
+          <div className="container cols-2 gap-md">
             <label htmlFor="monster-search">
               <i className="fas fa-dragon"></i> Search by Monster
             </label>
@@ -250,7 +250,7 @@ const AbilityDatabasePage = () => {
             </div>
           </div>
 
-          <div className="type-tags">
+          <div className="type-tags fw">
             {ALL_TYPES.map(type => (
               <button
                 key={type}
@@ -301,7 +301,7 @@ const AbilityDatabasePage = () => {
         </div>
 
         {error && (
-          <div className="error-message">
+          <div className="alert error">
             <i className="fas fa-exclamation-circle"></i> {error}
           </div>
         )}

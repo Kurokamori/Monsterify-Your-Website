@@ -328,7 +328,7 @@ const AntiqueAuction = ({ trainerId, antique, onClose, userTrainers = [] }) => {
 
                   {adoptError && <ErrorMessage message={adoptError} />}
 
-                  <div className="type-tags">
+                  <div className="type-tags fw">
                     {adoptLoading ? (
                       <LoadingSpinner />
                     ) : (

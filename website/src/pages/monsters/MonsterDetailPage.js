@@ -7,6 +7,26 @@ import useDocumentTitle from '../../hooks/useDocumentTitle';
 import EvolutionEditor from '../../components/monsters/EvolutionEditor';
 import EvolutionCards from '../../components/monsters/EvolutionCards';
 
+// Stat configuration for compact display
+const STAT_CONFIG = [
+  { key: 'hp', label: 'HP', barClass: 'hp-bar', totalKey: 'hp_total', ivKey: 'hp_iv', evKey: 'hp_ev', maxStat: 714 },
+  { key: 'atk', label: 'Atk', barClass: 'attack-bar', totalKey: 'atk_total', ivKey: 'atk_iv', evKey: 'atk_ev', maxStat: 526 },
+  { key: 'def', label: 'Def', barClass: 'defense-bar', totalKey: 'def_total', ivKey: 'def_iv', evKey: 'def_ev', maxStat: 614 },
+  { key: 'spa', label: 'SpA', barClass: 'sp-attack-bar', totalKey: 'spa_total', ivKey: 'spa_iv', evKey: 'spa_ev', maxStat: 526 },
+  { key: 'spd', label: 'SpD', barClass: 'sp-defense-bar', totalKey: 'spd_total', ivKey: 'spd_iv', evKey: 'spd_ev', maxStat: 614 },
+  { key: 'spe', label: 'Spe', barClass: 'speed-bar', totalKey: 'spe_total', ivKey: 'spe_iv', evKey: 'spe_ev', maxStat: 504 },
+];
+
+const getStatColorClass = (value, maxStat = 255) => {
+  const percentage = (value / maxStat) * 100;
+  if (percentage >= 85) return 'stat-legendary';
+  if (percentage >= 70) return 'stat-excellent';
+  if (percentage >= 50) return 'stat-great';
+  if (percentage >= 35) return 'stat-good';
+  if (percentage >= 20) return 'stat-average';
+  return 'stat-low';
+};
+
 const MonsterDetailPage = () => {
   const params = useParams();
   // Get the ID from URL parameters and ensure it's a valid number
@@ -592,27 +612,27 @@ const MonsterDetailPage = () => {
 
             <div className="monster-types">
               {monster.type1 && (
-                <span className={`type-badge type-${monster.type1.toLowerCase()}`}>
+                <span className={`badge type-${monster.type1.toLowerCase()}`}>
                   {monster.type1}
                 </span>
               )}
               {monster.type2 && (
-                <span className={`type-badge type-${monster.type2.toLowerCase()}`}>
+                <span className={`badge type-${monster.type2.toLowerCase()}`}>
                   {monster.type2}
                 </span>
               )}
               {monster.type3 && (
-                <span className={`type-badge type-${monster.type3.toLowerCase()}`}>
+                <span className={`badge type-${monster.type3.toLowerCase()}`}>
                   {monster.type3}
                 </span>
               )}
               {monster.type4 && (
-                <span className={`type-badge type-${monster.type4.toLowerCase()}`}>
+                <span className={`badge type-${monster.type4.toLowerCase()}`}>
                   {monster.type4}
                 </span>
               )}
               {monster.type5 && (
-                <span className={`type-badge type-${monster.type5.toLowerCase()}`}>
+                <span className={`badge type-${monster.type5.toLowerCase()}`}>
                   {monster.type5}
                 </span>
               )}
@@ -621,7 +641,7 @@ const MonsterDetailPage = () => {
 
           {monster.attribute && (
             <div className="monster-types">
-              <span className={`attribute-badge attribute-${monster.attribute.toLowerCase()}`}>
+              <span className={`badge attribute-${monster.attribute.toLowerCase()}`}>
                 {monster.attribute}
               </span>
             </div>
@@ -737,7 +757,7 @@ const MonsterDetailPage = () => {
               {(monster.gender || monster.pronouns || monster.age || monster.nature || monster.characteristic || monster.ability || monster.friendship !== undefined) && (
                 <div className="info-panel">
                   <div className="panel-header">
-                    <h3 className="panel-title">
+                    <h3 className="panel-title accent">
                       <i className="fas fa-info-circle"></i>
                       Additional Information
                     </h3>
@@ -841,7 +861,7 @@ const MonsterDetailPage = () => {
               {(monster.where_met || monster.date_met || monster.acquired || monster.ball) && (
                 <div className="info-panel">
                   <div className="panel-header">
-                    <h3 className="panel-title">
+                    <h3 className="panel-title accent">
                       <i className="fas fa-map-marked-alt"></i>
                       Origin Story
                     </h3>
@@ -901,7 +921,7 @@ const MonsterDetailPage = () => {
               {(monster.height || monster.weight) && (
                 <div className="info-panel">
                   <div className="panel-header">
-                    <h3 className="panel-title">
+                    <h3 className="panel-title accent">
                       <i className="fas fa-ruler-combined"></i>
                       Physical Characteristics
                     </h3>
@@ -939,7 +959,7 @@ const MonsterDetailPage = () => {
               {monster.tldr && (
                 <div className="info-panel summary-panel">
                   <div className="panel-header">
-                    <h3 className="panel-title">
+                    <h3 className="panel-title accent">
                       <i className="fas fa-file-alt"></i>
                       Summary
                     </h3>
@@ -960,7 +980,7 @@ const MonsterDetailPage = () => {
               {monster.lore && (
                 <div className="info-panel lore-panel">
                   <div className="panel-header">
-                    <h3 className="panel-title">
+                    <h3 className="panel-title accent">
                       <i className="fas fa-scroll"></i>
                       Lore & Legends
                     </h3>
@@ -979,7 +999,7 @@ const MonsterDetailPage = () => {
               {Boolean(monster.shiny || monster.alpha || monster.shadow || monster.paradox || monster.pokerus) && (
                 <div className="info-panel special-panel">
                   <div className="panel-header">
-                    <h3 className="panel-title">
+                    <h3 className="panel-title accent">
                       <i className="fas fa-magic"></i>
                       Special Features
                     </h3>
@@ -1053,153 +1073,63 @@ const MonsterDetailPage = () => {
           {/* Stats Tab Content */}
           {activeTab === 'stats' && (
             <div className="monster-stats-tab">
-              <div className="info-panel pokemon-stats-panel">
-                <div className="panel-header">
-                  <h3 className="panel-title">
-                    <i className="fas fa-chart-bar"></i>
-                    Base Stats
-                  </h3>
-                </div>
-                <div className="monster-panel-content">
-                  <div className="pokemon-stats-container">
-                    {[
-                      { 
-                        name: 'HP', 
-                        shortName: 'HP',
-                        total: monster.hp_total || 0, 
-                        iv: monster.hp_iv || 0, 
-                        ev: monster.hp_ev || 0, 
-                        color: '#FF5959',
-                        maxStat: 714 // Blissey's max HP for scaling
-                      },
-                      { 
-                        name: 'Attack', 
-                        shortName: 'ATK',
-                        total: monster.atk_total || 0, 
-                        iv: monster.atk_iv || 0, 
-                        ev: monster.atk_ev || 0, 
-                        color: '#F5AC78',
-                        maxStat: 526 // Mega Mewtwo X's max Attack for scaling
-                      },
-                      { 
-                        name: 'Defense', 
-                        shortName: 'DEF',
-                        total: monster.def_total || 0, 
-                        iv: monster.def_iv || 0, 
-                        ev: monster.def_ev || 0, 
-                        color: '#FAE078',
-                        maxStat: 614 // Mega Steelix's max Defense for scaling
-                      },
-                      { 
-                        name: 'Sp. Atk', 
-                        shortName: 'SPA',
-                        total: monster.spa_total || 0, 
-                        iv: monster.spa_iv || 0, 
-                        ev: monster.spa_ev || 0, 
-                        color: '#9DB7F5',
-                        maxStat: 526 // Mega Mewtwo Y's max Sp. Attack for scaling
-                      },
-                      { 
-                        name: 'Sp. Def', 
-                        shortName: 'SPD',
-                        total: monster.spd_total || 0, 
-                        iv: monster.spd_iv || 0, 
-                        ev: monster.spd_ev || 0, 
-                        color: '#A7DB8D',
-                        maxStat: 614 // Lugia's max Sp. Defense for scaling
-                      },
-                      { 
-                        name: 'Speed', 
-                        shortName: 'SPE',
-                        total: monster.spe_total || 0, 
-                        iv: monster.spe_iv || 0, 
-                        ev: monster.spe_ev || 0, 
-                        color: '#FA92B2',
-                        maxStat: 504 // Ninjask's max Speed for scaling
-                      }
-                    ].map((stat, index) => (
-                      <div key={index} className="pokemon-stat-row">
-                        <div className="option-row">
-                          <div className="stat-label-container">
-                            <span className="stat-name-full">{stat.name}</span>
-                            <span className="move-stat-label">{stat.shortName}</span>
-                          </div>
-                          <div className="monster-stat-value-display">
-                            <span className="stat-total-value">{stat.total}</span>
-                          </div>
+              {/* Compact Base Stats */}
+              <div className="monster-stats-compact">
+                <h2 className="panel-heading">Base Stats</h2>
+                <div className="monster-stats-grid">
+                  {STAT_CONFIG.map(stat => {
+                    const value = monster[stat.totalKey] || 0;
+                    const iv = monster[stat.ivKey] || 0;
+                    const ev = monster[stat.evKey] || 0;
+                    return (
+                      <div className="monster-stat-row-compact" key={stat.key}>
+                        <span className="monster-stat-label">{stat.label}</span>
+                        <span className={`monster-stat-value ${getStatColorClass(value, stat.maxStat)}`}>{value}</span>
+                        <div className="stat-bar-track">
+                          <div
+                            className={`stat-bar-fill ${stat.barClass}`}
+                            style={{ width: `${Math.min((value / stat.maxStat) * 100, 100)}%` }}
+                          ></div>
                         </div>
-                        
-                        <div className="stat-bar-section">
-                          <div className="main-stat-bar-container">
-                            <div 
-                              className="main-stat-bar"
-                              style={{ 
-                                width: `${Math.min((stat.total / stat.maxStat) * 100, 100)}%`,
-                                backgroundColor: stat.color
-                              }}
-                            >
-                              <div className="stat-bar-shine"></div>
-                            </div>
-                          </div>
-                        </div>
-                        
-                        <div className="iv-ev-indicators">
-                          <div className="event-date">
-                            <div className="ev-label">IV</div>
-                            <div className="ev-bar-mini">
-                              <div 
-                                className="ev-fill-mini"
-                                style={{ 
-                                  width: `${(stat.iv / 31) * 100}%`,
-                                  backgroundColor: stat.color
-                                }}
-                              ></div>
-                            </div>
-                            <div className="ev-value">{stat.iv}</div>
-                          </div>
-                          
-                          <div className="event-date">
-                            <div className="ev-label">EV</div>
-                            <div className="ev-bar-mini">
-                              <div 
-                                className="ev-fill-mini"
-                                style={{ 
-                                  width: `${(stat.ev / 252) * 100}%`,
-                                  backgroundColor: stat.color,
-                                  opacity: 0.8
-                                }}
-                              ></div>
-                            </div>
-                            <div className="ev-value">{stat.ev}</div>
-                          </div>
+                        <div className="monster-iv-ev-compact">
+                          <span className="iv-compact" title={`IV: ${iv}/31`}>
+                            <span className="iv-ev-label">IV</span>
+                            <span className="iv-ev-value">{iv}</span>
+                          </span>
+                          <span className="ev-compact" title={`EV: ${ev}/252`}>
+                            <span className="iv-ev-label">EV</span>
+                            <span className="iv-ev-value">{ev}</span>
+                          </span>
                         </div>
                       </div>
-                    ))}
+                    );
+                  })}
+                  <div className="monster-stat-row-compact stat-total-row">
+                    <span className="monster-stat-label">Total</span>
+                    <span className="monster-stat-value stat-total-value">
+                      {(monster.hp_total || 0) + (monster.atk_total || 0) + (monster.def_total || 0) +
+                       (monster.spa_total || 0) + (monster.spd_total || 0) + (monster.spe_total || 0)}
+                    </span>
+                    <div className="stat-bar-track stat-total-track"></div>
+                    <div className="monster-iv-ev-compact"></div>
                   </div>
-                  
-                  {/* Total Stats Summary */}
-                  <div className="stats-summary">
-                    <div className="summary-item">
-                      <span className="summary-label">Total Base Stats</span>
-                      <span className="summary-value">
-                        {(monster.hp_total || 0) + (monster.atk_total || 0) + (monster.def_total || 0) + 
-                         (monster.spa_total || 0) + (monster.spd_total || 0) + (monster.spe_total || 0)}
-                      </span>
-                    </div>
-                    <div className="summary-item">
-                      <span className="summary-label">Average IV</span>
-                      <span className="summary-value">
-                        {Math.round(((monster.hp_iv || 0) + (monster.atk_iv || 0) + (monster.def_iv || 0) + 
-                                   (monster.spa_iv || 0) + (monster.spd_iv || 0) + (monster.spe_iv || 0)) / 6 * 10) / 10}
-                      </span>
-                    </div>
-                    <div className="summary-item">
-                      <span className="summary-label">Total EVs</span>
-                      <span className="summary-value">
-                        {(monster.hp_ev || 0) + (monster.atk_ev || 0) + (monster.def_ev || 0) + 
-                         (monster.spa_ev || 0) + (monster.spd_ev || 0) + (monster.spe_ev || 0)}/510
-                      </span>
-                    </div>
+                </div>
+
+                {/* IV/EV Summary */}
+                <div className="stats-summary">
+                  <div className="summary-item">
+                    <span className="summary-label">Average IV</span>
+                    <span className="summary-value">
+                      {Math.round(((monster.hp_iv || 0) + (monster.atk_iv || 0) + (monster.def_iv || 0) +
+                                 (monster.spa_iv || 0) + (monster.spd_iv || 0) + (monster.spe_iv || 0)) / 6 * 10) / 10}
+                    </span>
+                  </div>
+                  <div className="summary-item">
+                    <span className="summary-label">Total EVs</span>
+                    <span className="summary-value">
+                      {(monster.hp_ev || 0) + (monster.atk_ev || 0) + (monster.def_ev || 0) +
+                       (monster.spa_ev || 0) + (monster.spd_ev || 0) + (monster.spe_ev || 0)}/510
+                    </span>
                   </div>
                 </div>
               </div>
@@ -1231,7 +1161,7 @@ const MonsterDetailPage = () => {
                           <div className="move-card-header">
                             <div className="option-row">
                               <h4 className="move-title">{move.move_name}</h4>
-                              <span className={`move-type-badge type-${move.move_type?.toLowerCase() || 'normal'}`}>
+                              <span className={`badge type-${move.move_type?.toLowerCase() || 'normal'}`}>
                                 {move.move_type}
                               </span>
                             </div>
@@ -1297,7 +1227,7 @@ const MonsterDetailPage = () => {
                 <h2>Evolution Information</h2>
                 {isOwner && (
                   <button
-                    className={`evolution-edit-button${showEvolutionEditor ? 'active' : ''}`}
+                    className={`evolution-edit-button ${showEvolutionEditor ? 'active' : ''}`}
                     onClick={() => setShowEvolutionEditor(!showEvolutionEditor)}
                     disabled={evolutionSaving}
                   >
@@ -1337,7 +1267,7 @@ const MonsterDetailPage = () => {
                     </h3>
                   </div>
                   <div className="monster-panel-content">
-                    <div className="form-grid">
+                    <div className="container cols-2 gap-md">
                       {monster.likes && (
                         <div className="preference-card likes-card">
                           <div className="preference-icon">
@@ -1647,7 +1577,7 @@ const MonsterDetailPage = () => {
                 <h2>Monster Lineage</h2>
                 {isOwner && (
                   <button 
-                    className={`button primary${showEditLineage ? 'active' : ''}`}
+                    className={`button primary ${showEditLineage ? 'active' : ''}`}
                     onClick={() => setShowEditLineage(!showEditLineage)}
                   >
                     <i className={`fas${showEditLineage ? 'fa-times' : 'fa-edit'}`}></i>
@@ -1665,7 +1595,7 @@ const MonsterDetailPage = () => {
                         <i className="fas fa-chevron-up"></i>
                         Parents ({lineage.parents.length})
                       </h3>
-                      <div className="lineage-monsters">
+                      <div className="container grid-lg gap-sm">
                         {lineage.parents.map((parent, index) => (
                           <div className="seasonal-adopt-card" key={index}>
                             <div className="monster-image-container">
@@ -1693,12 +1623,12 @@ const MonsterDetailPage = () => {
                               </div>
                               <div className="monster-types">
                                 {parent.type1 && (
-                                  <span className={`type-badge type-${parent.type1.toLowerCase()}`}>
+                                  <span className={`badge type-${parent.type1.toLowerCase()}`}>
                                     {parent.type1}
                                   </span>
                                 )}
                                 {parent.type2 && (
-                                  <span className={`type-badge type-${parent.type2.toLowerCase()}`}>
+                                  <span className={`badge type-${parent.type2.toLowerCase()}`}>
                                     {parent.type2}
                                   </span>
                                 )}
@@ -1732,7 +1662,7 @@ const MonsterDetailPage = () => {
                         <i className="fas fa-equals"></i>
                         Siblings ({lineage.siblings.length})
                       </h3>
-                      <div className="lineage-monsters">
+                      <div className="container grid-lg gap-sm">
                         {lineage.siblings.map((sibling, index) => (
                           <div className="seasonal-adopt-card" key={index}>
                             <div className="monster-image-container">
@@ -1760,12 +1690,12 @@ const MonsterDetailPage = () => {
                               </div>
                               <div className="monster-types">
                                 {sibling.type1 && (
-                                  <span className={`type-badge type-${sibling.type1.toLowerCase()}`}>
+                                  <span className={`badge type-${sibling.type1.toLowerCase()}`}>
                                     {sibling.type1}
                                   </span>
                                 )}
                                 {sibling.type2 && (
-                                  <span className={`type-badge type-${sibling.type2.toLowerCase()}`}>
+                                  <span className={`badge type-${sibling.type2.toLowerCase()}`}>
                                     {sibling.type2}
                                   </span>
                                 )}
@@ -1799,7 +1729,7 @@ const MonsterDetailPage = () => {
                         <i className="fas fa-chevron-down"></i>
                         Children ({lineage.children.length})
                       </h3>
-                      <div className="lineage-monsters">
+                      <div className="container grid-lg gap-sm">
                         {lineage.children.map((child, index) => (
                           <div className="seasonal-adopt-card" key={index}>
                             <div className="monster-image-container">
@@ -1827,12 +1757,12 @@ const MonsterDetailPage = () => {
                               </div>
                               <div className="monster-types">
                                 {child.type1 && (
-                                  <span className={`type-badge type-${child.type1.toLowerCase()}`}>
+                                  <span className={`badge type-${child.type1.toLowerCase()}`}>
                                     {child.type1}
                                   </span>
                                 )}
                                 {child.type2 && (
-                                  <span className={`type-badge type-${child.type2.toLowerCase()}`}>
+                                  <span className={`badge type-${child.type2.toLowerCase()}`}>
                                     {child.type2}
                                   </span>
                                 )}
@@ -1866,7 +1796,7 @@ const MonsterDetailPage = () => {
                         <i className="fas fa-angle-double-down"></i>
                         Grandchildren ({lineage.grandchildren.length})
                       </h3>
-                      <div className="lineage-monsters">
+                      <div className="container grid-lg gap-sm">
                         {lineage.grandchildren.map((grandchild, index) => (
                           <div className="seasonal-adopt-card" key={index}>
                             <div className="monster-image-container">
@@ -1894,12 +1824,12 @@ const MonsterDetailPage = () => {
                               </div>
                               <div className="monster-types">
                                 {grandchild.type1 && (
-                                  <span className={`type-badge type-${grandchild.type1.toLowerCase()}`}>
+                                  <span className={`badge type-${grandchild.type1.toLowerCase()}`}>
                                     {grandchild.type1}
                                   </span>
                                 )}
                                 {grandchild.type2 && (
-                                  <span className={`type-badge type-${grandchild.type2.toLowerCase()}`}>
+                                  <span className={`badge type-${grandchild.type2.toLowerCase()}`}>
                                     {grandchild.type2}
                                   </span>
                                 )}
@@ -2087,12 +2017,12 @@ const MonsterDetailPage = () => {
                       </div>
                       <div className="mega-comparison-types">
                         {monster.type1 && (
-                          <span className={`type-badge type-${monster.type1.toLowerCase()}`}>
+                          <span className={`badge type-${monster.type1.toLowerCase()}`}>
                             {monster.type1}
                           </span>
                         )}
                         {monster.type2 && (
-                          <span className={`type-badge type-${monster.type2.toLowerCase()}`}>
+                          <span className={`badge type-${monster.type2.toLowerCase()}`}>
                             {monster.type2}
                           </span>
                         )}
@@ -2135,12 +2065,12 @@ const MonsterDetailPage = () => {
                       </div>
                       <div className="mega-comparison-types">
                         {monster.mega_type1 && (
-                          <span className={`type-badge type-${monster.mega_type1.toLowerCase()}`}>
+                          <span className={`badge type-${monster.mega_type1.toLowerCase()}`}>
                             {monster.mega_type1}
                           </span>
                         )}
                         {monster.mega_type2 && (
-                          <span className={`type-badge type-${monster.mega_type2.toLowerCase()}`}>
+                          <span className={`badge type-${monster.mega_type2.toLowerCase()}`}>
                             {monster.mega_type2}
                           </span>
                         )}

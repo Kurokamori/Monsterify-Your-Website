@@ -221,9 +221,9 @@ const BackendFileUpload = ({
 
       {isUploading && (
         <div className="upload-progress">
-          <div className="progress-bar">
+          <div className="progress">
             <div
-              className="progress-bar-fill"
+              className="progress-fill primary"
               style={{ width: `${uploadProgress}%` }}
             ></div>
           </div>

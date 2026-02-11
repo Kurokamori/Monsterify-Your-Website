@@ -235,7 +235,7 @@ const GiftRewards = ({
       </div>
 
       {error && (
-        <div className="error-message">
+        <div className="alert error">
           <i className="fas fa-exclamation-triangle"></i>
           {error}
         </div>

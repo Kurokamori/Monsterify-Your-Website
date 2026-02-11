@@ -128,7 +128,7 @@ const PersonDetailModal = ({ person, trainerId, onClose, onPersonMet }) => {
             )}
 
             {error && (
-              <div className="error-message">
+              <div className="alert error">
                 <i className="fas fa-exclamation-triangle"></i>
                 {error}
               </div>

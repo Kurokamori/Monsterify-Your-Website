@@ -120,7 +120,7 @@ const MonsterRewardCard = ({
         <div className="monster-reward-title">
           {reward.reward_data.title || `Level ${level} Monster`}
         </div>
-        <div className={`reward-rarity${reward.rarity}`}>
+        <div className={`badge ${reward.rarity}`}>
           {reward.rarity.charAt(0).toUpperCase() + reward.rarity.slice(1)}
         </div>
       </div>
@@ -128,7 +128,7 @@ const MonsterRewardCard = ({
       <div className="monster-species-grid">
         {speciesList.map((species, index) => (
           <div key={index} className="monster-species-item">
-            <div className="item-icon">
+            <div className="image-container medium">
               {species === MYSTERY_ROLL ? (
                 <img
                   src="/images/mystery.png"
@@ -162,7 +162,7 @@ const MonsterRewardCard = ({
       <div className="monster-types-container">
         <div className="monster-types">
           {getTypes().map((type, typeIndex) => (
-            <span key={typeIndex} className={`type-badge ${type === MYSTERY_TYPE ? 'type-mystery' : `type-${type.toLowerCase()}`}`}>
+            <span key={typeIndex} className={`badge ${type === MYSTERY_TYPE ? 'type-mystery' : `type-${type.toLowerCase()}`}`}>
               {type}
             </span>
           ))}

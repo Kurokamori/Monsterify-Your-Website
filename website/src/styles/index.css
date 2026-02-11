@@ -93,9 +93,23 @@
   --radius-xl: 16px;
   --radius-2xl: 24px;
   --radius-full: 9999px;
+
+  /* Shadow Scale */
   --shadow-1: 0 2px 4px rgba(0,0,0,.1);
   --shadow-2: 0 5px 15px rgba(0,0,0,.3);
+  --shadow-sm: 0 2px 4px var(--overlay-light);
+  --shadow-md: 0 4px 8px var(--overlay-light);
+  --shadow-lg: 0 8px 16px var(--overlay-medium);
+  --shadow-xl: 0 12px 24px var(--overlay-medium);
+  --shadow-glow: 0 0 20px var(--accent-glow);
+  --shadow-focus: 0 0 0 2px var(--accent-glow);
+
+  /* Transition Presets */
   --ease: .2s ease;
+  --transition-fast: 0.15s ease;
+  --transition-base: 0.2s ease;
+  --transition-slow: 0.3s ease;
+  --transition-smooth: 0.4s ease;
 
   /* Spacing Scale */
   --spacing-xs: 0.25rem;   /* 4px */
@@ -131,7 +145,6 @@
   --secondary-color: var(--nav-active);
   --success-hover: #0d9668;
   --accent-color-rgb: 199, 143, 21;
-  --accent-color-2: #e74c3c;
 }
 
 * {

@@ -97,14 +97,14 @@ const UserListPage = () => {
 
         {/* Success Message */}
         {successMessage && (
-          <div className="admin-alert success">
+          <div className="alert success">
             <i className="fas fa-check-circle"></i> {successMessage}
           </div>
         )}
 
         {/* Error Message */}
         {error && (
-          <div className="admin-alert error">
+          <div className="alert error">
             <i className="fas fa-exclamation-circle"></i> {error}
           </div>
         )}
@@ -151,7 +151,7 @@ const UserListPage = () => {
                       <td>{user.display_name || '-'}</td>
                       <td>{user.discord_id || '-'}</td>
                       <td>
-                        <span className={`admin-badge${user.is_admin ? 'admin' : 'user'}`}>
+                        <span className={`badge ${user.is_admin ? 'admin' : 'user'}`}>
                           {user.is_admin ? 'Admin' : 'User'}
                         </span>
                       </td>

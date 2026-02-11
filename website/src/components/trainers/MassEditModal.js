@@ -787,7 +787,7 @@ const MassEditModal = ({
                 </div>
               </div>
               
-              <div className="monsters-edit-grid">
+              <div className="container grid-2xl gap-md mb-lg">
                 {filteredMonsters.map(monster => (
                   <div key={monster.id} className="monster-edit-card">
                     <div className="monster-edit-info">
@@ -804,13 +804,13 @@ const MassEditModal = ({
                         <p>{monster.species1} {monster.species2 ? `+ ${monster.species2}` : ''} {monster.species3 ? `+ ${monster.species3}` : ''} - Level {monster.level}</p>
                         <div className="monster-types">
                           {[monster.type1, monster.type2, monster.type3, monster.type4, monster.type5].filter(Boolean).map((type, index) => (
-                            <span className={`type-badge type-${type && type.toLowerCase ? type.toLowerCase() : 'unknown'}`} key={index}>
+                            <span className={`badge type-${type && type.toLowerCase ? type.toLowerCase() : 'unknown'}`} key={index}>
                               {type}
                             </span>
                           ))}
                         </div>
                         <div className="monster-types">
-                          <span className={`attribute-badge attribute-${monster.attribute && monster.attribute.toLowerCase ? monster.attribute.toLowerCase() : 'unknown'}`}>
+                          <span className={`badge attribute-${monster.attribute && monster.attribute.toLowerCase ? monster.attribute.toLowerCase() : 'unknown'}`}>
                             {monster.attribute}
                           </span>
                         </div>
@@ -1010,20 +1010,20 @@ const MassEditModal = ({
                                     <div className="change-detail">
                                       <span className="change-label">All Types:</span>
                                       <div className="container vertical gap-md">
-                                        {result.beforeMonster.type1 && <span className={`type-badge type-${result.beforeMonster.type1.toLowerCase()}`}>{result.beforeMonster.type1}</span>}
-                                        {result.beforeMonster.type2 && <span className={`type-badge type-${result.beforeMonster.type2.toLowerCase()}`}>{result.beforeMonster.type2}</span>}
-                                        {result.beforeMonster.type3 && <span className={`type-badge type-${result.beforeMonster.type3.toLowerCase()}`}>{result.beforeMonster.type3}</span>}
-                                        {result.beforeMonster.type4 && <span className={`type-badge type-${result.beforeMonster.type4.toLowerCase()}`}>{result.beforeMonster.type4}</span>}
-                                        {result.beforeMonster.type5 && <span className={`type-badge type-${result.beforeMonster.type5.toLowerCase()}`}>{result.beforeMonster.type5}</span>}
-                                        {!result.beforeMonster.type1 && <span className="type-badge type-none">None</span>}
+                                        {result.beforeMonster.type1 && <span className={`badge type-${result.beforeMonster.type1.toLowerCase()}`}>{result.beforeMonster.type1}</span>}
+                                        {result.beforeMonster.type2 && <span className={`badge type-${result.beforeMonster.type2.toLowerCase()}`}>{result.beforeMonster.type2}</span>}
+                                        {result.beforeMonster.type3 && <span className={`badge type-${result.beforeMonster.type3.toLowerCase()}`}>{result.beforeMonster.type3}</span>}
+                                        {result.beforeMonster.type4 && <span className={`badge type-${result.beforeMonster.type4.toLowerCase()}`}>{result.beforeMonster.type4}</span>}
+                                        {result.beforeMonster.type5 && <span className={`badge type-${result.beforeMonster.type5.toLowerCase()}`}>{result.beforeMonster.type5}</span>}
+                                        {!result.beforeMonster.type1 && <span className="badge type-none">None</span>}
                                       </div>
                                     </div>
                                     <div className="change-detail">
                                       <span className="change-label">All Species:</span>
                                       <div className="container vertical gap-md">
-                                        {result.beforeMonster.species1 && <span className="type-badge">{result.beforeMonster.species1}</span>}
-                                        {result.beforeMonster.species2 && <span className="type-badge">{result.beforeMonster.species2}</span>}
-                                        {result.beforeMonster.species3 && <span className="type-badge">{result.beforeMonster.species3}</span>}
+                                        {result.beforeMonster.species1 && <span className="badge">{result.beforeMonster.species1}</span>}
+                                        {result.beforeMonster.species2 && <span className="badge">{result.beforeMonster.species2}</span>}
+                                        {result.beforeMonster.species3 && <span className="badge">{result.beforeMonster.species3}</span>}
                                       </div>
                                     </div>
                                     <div className="change-detail">
@@ -1054,20 +1054,20 @@ const MassEditModal = ({
                                     <div className="change-detail">
                                       <span className="change-label">All Types:</span>
                                       <div className="container vertical gap-md">
-                                        {result.updatedMonster.type1 && <span className={`type-badge type-${result.updatedMonster.type1.toLowerCase()}`}>{result.updatedMonster.type1}</span>}
-                                        {result.updatedMonster.type2 && <span className={`type-badge type-${result.updatedMonster.type2.toLowerCase()}`}>{result.updatedMonster.type2}</span>}
-                                        {result.updatedMonster.type3 && <span className={`type-badge type-${result.updatedMonster.type3.toLowerCase()}`}>{result.updatedMonster.type3}</span>}
-                                        {result.updatedMonster.type4 && <span className={`type-badge type-${result.updatedMonster.type4.toLowerCase()}`}>{result.updatedMonster.type4}</span>}
-                                        {result.updatedMonster.type5 && <span className={`type-badge type-${result.updatedMonster.type5.toLowerCase()}`}>{result.updatedMonster.type5}</span>}
-                                        {!result.updatedMonster.type1 && <span className="type-badge type-none">None</span>}
+                                        {result.updatedMonster.type1 && <span className={`badge type-${result.updatedMonster.type1.toLowerCase()}`}>{result.updatedMonster.type1}</span>}
+                                        {result.updatedMonster.type2 && <span className={`badge type-${result.updatedMonster.type2.toLowerCase()}`}>{result.updatedMonster.type2}</span>}
+                                        {result.updatedMonster.type3 && <span className={`badge type-${result.updatedMonster.type3.toLowerCase()}`}>{result.updatedMonster.type3}</span>}
+                                        {result.updatedMonster.type4 && <span className={`badge type-${result.updatedMonster.type4.toLowerCase()}`}>{result.updatedMonster.type4}</span>}
+                                        {result.updatedMonster.type5 && <span className={`badge type-${result.updatedMonster.type5.toLowerCase()}`}>{result.updatedMonster.type5}</span>}
+                                        {!result.updatedMonster.type1 && <span className="badge type-none">None</span>}
                                       </div>
                                     </div>
                                     <div className="change-detail">
                                       <span className="change-label">All Species:</span>
                                       <div className="container vertical gap-md">
-                                        {result.updatedMonster.species1 && <span className="type-badge">{result.updatedMonster.species1}</span>}
-                                        {result.updatedMonster.species2 && <span className="type-badge">{result.updatedMonster.species2}</span>}
-                                        {result.updatedMonster.species3 && <span className="type-badge">{result.updatedMonster.species3}</span>}
+                                        {result.updatedMonster.species1 && <span className="badge">{result.updatedMonster.species1}</span>}
+                                        {result.updatedMonster.species2 && <span className="badge">{result.updatedMonster.species2}</span>}
+                                        {result.updatedMonster.species3 && <span className="badge">{result.updatedMonster.species3}</span>}
                                       </div>
                                     </div>
                                     <div className="change-detail">
@@ -1091,19 +1091,19 @@ const MassEditModal = ({
                                 <div className="change-detail">
                                   <span className="change-label">Species:</span>
                                   <div className="container vertical gap-md">
-                                    {result.newMonster.species1 && <span className="type-badge">{result.newMonster.species1}</span>}
-                                    {result.newMonster.species2 && <span className="type-badge">{result.newMonster.species2}</span>}
-                                    {result.newMonster.species3 && <span className="type-badge">{result.newMonster.species3}</span>}
+                                    {result.newMonster.species1 && <span className="badge">{result.newMonster.species1}</span>}
+                                    {result.newMonster.species2 && <span className="badge">{result.newMonster.species2}</span>}
+                                    {result.newMonster.species3 && <span className="badge">{result.newMonster.species3}</span>}
                                   </div>
                                 </div>
                                 <div className="change-detail">
                                   <span className="change-label">Types:</span>
                                   <div className="container vertical gap-md">
-                                    {result.newMonster.type1 && <span className={`type-badge type-${result.newMonster.type1.toLowerCase()}`}>{result.newMonster.type1}</span>}
-                                    {result.newMonster.type2 && <span className={`type-badge type-${result.newMonster.type2.toLowerCase()}`}>{result.newMonster.type2}</span>}
-                                    {result.newMonster.type3 && <span className={`type-badge type-${result.newMonster.type3.toLowerCase()}`}>{result.newMonster.type3}</span>}
-                                    {result.newMonster.type4 && <span className={`type-badge type-${result.newMonster.type4.toLowerCase()}`}>{result.newMonster.type4}</span>}
-                                    {result.newMonster.type5 && <span className={`type-badge type-${result.newMonster.type5.toLowerCase()}`}>{result.newMonster.type5}</span>}
+                                    {result.newMonster.type1 && <span className={`badge type-${result.newMonster.type1.toLowerCase()}`}>{result.newMonster.type1}</span>}
+                                    {result.newMonster.type2 && <span className={`badge type-${result.newMonster.type2.toLowerCase()}`}>{result.newMonster.type2}</span>}
+                                    {result.newMonster.type3 && <span className={`badge type-${result.newMonster.type3.toLowerCase()}`}>{result.newMonster.type3}</span>}
+                                    {result.newMonster.type4 && <span className={`badge type-${result.newMonster.type4.toLowerCase()}`}>{result.newMonster.type4}</span>}
+                                    {result.newMonster.type5 && <span className={`badge type-${result.newMonster.type5.toLowerCase()}`}>{result.newMonster.type5}</span>}
                                   </div>
                                 </div>
                                 <div className="change-detail">
@@ -1188,16 +1188,16 @@ const MassEditModal = ({
                           <div className="monster-selection-details">
                             <h4>{monster?.name || op.monsterName}</h4>
                             <div className="current-species">
-                              <span className={`type-badge${speciesSlot === 1 ? 'species-highlight' : ''}`}>
+                              <span className={`badge${speciesSlot === 1 ? 'species-highlight' : ''}`}>
                                 {monster?.species1 || 'None'}
                               </span>
                               {monster?.species2 && (
-                                <span className={`type-badge${speciesSlot === 2 ? 'species-highlight' : ''}`}>
+                                <span className={`badge${speciesSlot === 2 ? 'species-highlight' : ''}`}>
                                   {monster.species2}
                                 </span>
                               )}
                               {monster?.species3 && (
-                                <span className={`type-badge${speciesSlot === 3 ? 'species-highlight' : ''}`}>
+                                <span className={`badge${speciesSlot === 3 ? 'species-highlight' : ''}`}>
                                   {monster.species3}
                                 </span>
                               )}
@@ -1206,13 +1206,13 @@ const MassEditModal = ({
                               {[monster?.type1, monster?.type2, monster?.type3, monster?.type4, monster?.type5]
                                 .filter(Boolean)
                                 .map((type, index) => (
-                                  <span className={`type-badge type-${type.toLowerCase()}`} key={index}>
+                                  <span className={`badge type-${type.toLowerCase()}`} key={index}>
                                     {type}
                                   </span>
                                 ))}
                             </div>
                             <div className="current-attribute">
-                              <span className={`attribute-badge attribute-${monster?.attribute?.toLowerCase() || 'none'}`}>
+                              <span className={`badge attribute-${monster?.attribute?.toLowerCase() || 'none'}`}>
                                 {monster?.attribute || 'None'}
                               </span>
                             </div>
@@ -1242,7 +1242,7 @@ const MassEditModal = ({
                                 <img 
                                   src={speciesImage.image_url} 
                                   alt={species}
-                                  className="item-icon"
+                                  className="image-container medium"
                                   onError={(e) => {
                                     e.target.style.display = 'none';
                                   }}

@@ -83,6 +83,7 @@ const MainLayout = () => {
               <Link to="/guides/type-calculator" className="dropdown-sub-item">Type Calculator</Link>
               <Link to="/guides/evolution-explorer" className="dropdown-sub-item">Evolution Explorer</Link>
               <Link to="/guides/ability-database" className="dropdown-sub-item">Ability Database</Link>
+              <Link to="/guides/species-database" className="dropdown-sub-item">Species Database</Link>
               <Link to="/guides/interactive-map" className="dropdown-sub-item">Interactive Map</Link>
             </div>
           </div>
@@ -150,7 +151,7 @@ const MainLayout = () => {
       </nav>
 
       {/* Mobile Navigation Menu */}
-      <div className={`mobile-nav${mobileMenuOpen ? 'active' : ''}`}>
+      <div className={`mobile-nav ${mobileMenuOpen ? 'active' : ''}`}>
         <div className="tree-header">
           <Link to="/" className="logo-link">
             <img
@@ -167,7 +168,7 @@ const MainLayout = () => {
             <i className="fas fa-times"></i>
           </button>
         </div>
-        <div className="fandom-grid">
+        <div className="container cols-2 gap-md">
           <Link to="/trainers" className="mobile-nav-link" onClick={toggleMobileMenu}>Trainers</Link>
           <Link to="/fakedex" className="mobile-nav-link" onClick={toggleMobileMenu}>Fakedex</Link>
 
@@ -178,7 +179,7 @@ const MainLayout = () => {
             >
               Guides <i className={`fas fa-chevron-${dropdownOpen.guides ? 'up' : 'down'}`}></i>
             </button>
-            <div className={`mobile-dropdown-content${dropdownOpen.guides ? 'active' : ''}`}>
+            <div className={`mobile-dropdown-content ${dropdownOpen.guides ? 'active' : ''}`}>
               <Link to="/guides" className="mobile-nav-link" onClick={toggleMobileMenu}>All Guides</Link>
               <div className="dropdown-section-header">Game Guides</div>
               <Link to="/guides/guides/Creating%20a%20Trainer/!Creating%20a%20Trainer.md" className="mobile-nav-link mobile-sub-item" onClick={toggleMobileMenu}>Creating a Trainer</Link>
@@ -194,6 +195,7 @@ const MainLayout = () => {
               <Link to="/guides/type-calculator" className="mobile-nav-link mobile-sub-item" onClick={toggleMobileMenu}>Type Calculator</Link>
               <Link to="/guides/evolution-explorer" className="mobile-nav-link mobile-sub-item" onClick={toggleMobileMenu}>Evolution Explorer</Link>
               <Link to="/guides/ability-database" className="mobile-nav-link mobile-sub-item" onClick={toggleMobileMenu}>Ability Database</Link>
+              <Link to="/guides/species-database" className="mobile-nav-link mobile-sub-item" onClick={toggleMobileMenu}>Species Database</Link>
               <Link to="/guides/interactive-map" className="mobile-nav-link mobile-sub-item" onClick={toggleMobileMenu}>Interactive Map</Link>
             </div>
           </div>
@@ -205,7 +207,7 @@ const MainLayout = () => {
             >
               Submissions <i className={`fas fa-chevron-${dropdownOpen.submissions ? 'up' : 'down'}`}></i>
             </button>
-            <div className={`mobile-dropdown-content${dropdownOpen.submissions ? 'active' : ''}`}>
+            <div className={`mobile-dropdown-content ${dropdownOpen.submissions ? 'active' : ''}`}>
               <Link to="/submissions?tab=gallery" className="mobile-nav-link" onClick={toggleMobileMenu}>Gallery</Link>
               <Link to="/submissions?tab=library" className="mobile-nav-link" onClick={toggleMobileMenu}>Library</Link>
               {isAuthenticated && (
@@ -228,7 +230,7 @@ const MainLayout = () => {
                 >
                   Markets <i className={`fas fa-chevron-${dropdownOpen.markets ? 'up' : 'down'}`}></i>
                 </button>
-                <div className={`mobile-dropdown-content${dropdownOpen.markets ? 'active' : ''}`}>
+                <div className={`mobile-dropdown-content ${dropdownOpen.markets ? 'active' : ''}`}>
                   <MobileShopLinks toggleMobileMenu={toggleMobileMenu} />
                 </div>
               </div>
@@ -240,7 +242,7 @@ const MainLayout = () => {
                 >
                   Town <i className={`fas fa-chevron-${dropdownOpen.town ? 'up' : 'down'}`}></i>
                 </button>
-                <div className={`mobile-dropdown-content${dropdownOpen.town ? 'active' : ''}`}>
+                <div className={`mobile-dropdown-content ${dropdownOpen.town ? 'active' : ''}`}>
                   <Link to="/town/apothecary" className="mobile-nav-link" onClick={toggleMobileMenu}>Apothecary</Link>
                   <Link to="/town/bakery" className="mobile-nav-link" onClick={toggleMobileMenu}>Bakery</Link>
                   <Link to="/town/visit/witchs_hut" className="mobile-nav-link" onClick={toggleMobileMenu}>Witch's Hut</Link>
@@ -263,7 +265,7 @@ const MainLayout = () => {
                 >
                   Adventures <i className={`fas fa-chevron-${dropdownOpen.adventures ? 'up' : 'down'}`}></i>
                 </button>
-                <div className={`mobile-dropdown-content${dropdownOpen.adventures ? 'active' : ''}`}>
+                <div className={`mobile-dropdown-content ${dropdownOpen.adventures ? 'active' : ''}`}>
                   <Link to="/adventures" className="mobile-nav-link" onClick={toggleMobileMenu}>Adventures</Link>
                   <Link to="/adventures/event/current" className="mobile-nav-link" onClick={toggleMobileMenu}>Events</Link>
                   <Link to="/adventures/missions" className="mobile-nav-link" onClick={toggleMobileMenu}>Missions</Link>

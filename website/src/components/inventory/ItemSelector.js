@@ -137,7 +137,7 @@ const ItemSelector = ({
               filteredItems.map(item => (
                 <div 
                   key={item.id || item.item_id} 
-                  className={`item-option${selectedItem && (selectedItem.id === item.id || selectedItem.item_id === item.item_id) ? 'selected' : ''}`}
+                  className={`item-option ${selectedItem && (selectedItem.id === item.id || selectedItem.item_id === item.item_id) ? 'selected' : ''}`}
                   onClick={() => handleSelect(item)}
                 >
                   <div className="item-image">

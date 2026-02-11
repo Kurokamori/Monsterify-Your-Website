@@ -28,6 +28,7 @@
   gap: 1rem;
 }
 
+/* Starter Monster Card */
 .starter-monster-card {
   flex: 1;
   display: flex;
@@ -74,12 +75,14 @@
   border-radius: 8px;
 }
 
+/* Loading State */
 .starter-loading-title {
   font-size: 1.5rem;
   font-weight: 700;
   margin-bottom: 1rem;
 }
 
+/* Empty State */
 .starter-empty-state {
   text-align: center;
   padding: 2rem 0;
@@ -91,20 +94,7 @@
   margin-bottom: 1.5rem;
 }
 
-.starter-spinner {
-  width: 4rem;
-  height: 4rem;
-  border-radius: 50%;
-  border-top: 4px solid var(--accent-color);
-  border-bottom: 4px solid var(--accent-color);
-  border-left: 4px solid transparent;
-  border-right: 4px solid transparent;
-  animation: starter-spin 1s linear infinite;
-}
-
-/* Button styles: Use unified button system from common/buttons.css
-   Example: className="button primary" */
-
+/* Review Card */
 .starter-review-card {
   border: 1px solid var(--border-color);
   border-radius: 0.5rem;
@@ -131,6 +121,7 @@
   padding: 1rem;
 }
 
+/* Name Input */
 .starter-name-label {
   display: block;
   font-size: 1rem;
@@ -151,6 +142,7 @@
   transition: border-color 0.2s ease;
 }
 
+/* Progress Tabs */
 .starter-progress {
   margin-bottom: 1.5rem;
 }
@@ -187,37 +179,36 @@
    RESPONSIVE STYLES
    ============================================================================= */
 
-/* Large screens (1200px and below) */
-
-/* Tablet screens (768px and below) */
 @media (max-width: 768px) {
+  .starter-cards-grid {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  }
+
+  .starter-page-title {
+    font-size: 1.5rem;
+  }
+
+  .starter-step-title {
+    font-size: 1.25rem;
+  }
 }
 
-/* Mobile screens (480px and below) */
 @media (max-width: 480px) {
-  
-
-  
-
-  
-  .guide-card {
-    padding: 0.5rem;
+  .starter-cards-grid {
+    grid-template-columns: 1fr;
   }
 
   .button .tab-icon {
     display: none;
   }
+
+  .starter-selection-container {
+    padding: 0.5rem;
+  }
 }
 
-/* Extra small screens (360px and below) */
-
-/* Reduced motion preference */
 @media (prefers-reduced-motion: reduce) {
-  .guide-card {
+  .starter-review-card {
     transition: none;
-  }
-
-  .guide-card:hover {
-    transform: none;
   }
 }

@@ -31,6 +31,9 @@
   gap: 1rem;
 }
 
+/* Note: Consider using unified progress from common/feedback.css
+   Example: className="progress" with "progress-fill primary" inside */
+
 .stat-progress {
   height: .5rem;
   background-color: var(--highlight-light);
@@ -178,12 +181,45 @@
   margin-top: 1.5rem;
 }
 
-/* ===== No Data Messages ===== */
+/* No data messages: Use unified empty-state from common/feedback.css
+   Example: className="empty-state" */
 
 /* ===== Responsive ===== */
 
-@media (max-width:480px){
-  .stats-grid{ grid-template-columns:1fr; }
-  .special-status-grid{ grid-template-columns:1fr; }
-  .option-row .type-badge{ min-width:4rem; }
+@media (max-width: 1024px) {
+  .stats-section h3 { font-size: var(--font-size-base); margin-bottom: 1.25rem; }
+  .special-status-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 0.75rem; }
+  .favorite-species-examples { grid-template-columns: repeat(4, 1fr); }
+}
+
+@media (max-width: 768px) {
+  .stats-section h3 { font-size: var(--font-size-base); margin-bottom: 1rem; padding-bottom: 0.4rem; }
+  .stat-icon { width: 2.5rem; height: 2.5rem; font-size: 1.25rem; }
+  .stat-content { gap: 0.75rem; }
+  .type-distribution { margin-top: 1rem; }
+  .type-bars { gap: 0.5rem; }
+  .special-status-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 0.75rem; margin-top: 1rem; }
+  .special-status-icon { width: 2rem; height: 2rem; font-size: 1rem; }
+  .special-status-count { font-size: var(--font-size-base); }
+  .favorite-species-examples { grid-template-columns: repeat(3, 1fr); gap: 0.4rem; padding: 0.75rem; }
+  .species-example { padding: 0.4rem; }
+  .species-example img { height: 70px; }
+  .attribute-distribution { margin-top: 1rem; }
+  .level-distribution { margin-top: 1rem; }
+}
+
+@media (max-width: 480px) {
+  .stats-grid { grid-template-columns: 1fr; }
+  .special-status-grid { grid-template-columns: 1fr; }
+  .option-row .type-badge { min-width: 4rem; }
+  .stat-icon { width: 2rem; height: 2rem; font-size: 1rem; }
+  .stat-content { flex-direction: column; gap: 0.5rem; }
+  .stat-number { font-size: 1.25rem; }
+  .special-status-icon { width: 1.75rem; height: 1.75rem; font-size: 0.9rem; }
+  .favorite-species-examples { grid-template-columns: repeat(2, 1fr); padding: 0.5rem; }
+  .species-example img { height: 60px; }
+  .species-example span { font-size: var(--font-size-xs); }
+  .type-bar-wrapper { height: 0.6rem; }
+  .attribute-bar-wrapper { height: 1.25rem; }
+  .attribute-count { font-size: var(--font-size-xs); right: 0.4rem; }
 }

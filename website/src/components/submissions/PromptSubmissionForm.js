@@ -323,7 +323,7 @@ const PromptSubmissionForm = ({ onSubmissionComplete, category = 'general' }) =>
 
                 <div className="reward-section">
                   <h5>Trainer Rewards</h5>
-                  <div className="fandom-grid">
+                  <div className="container cols-2 gap-md">
                     <div className="reward-item">
                       <span className="reward-label">Levels:</span>
                       <span className="reward-value">{rewardEstimate.levels}</span>

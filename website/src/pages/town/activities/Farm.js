@@ -280,7 +280,7 @@ const Farm = () => {
 
         <div className="location-activities">
           <div className="location-activity-card">
-            <div className="npc-avatar">
+            <div className="image-container activity">
               <img src="https://i.imgur.com/fztdYkJ.png" alt="Work the Farm" />
             </div>
             <div className="activity-info">
@@ -300,7 +300,7 @@ const Farm = () => {
           </div>
 
           <div className="location-activity-card">
-            <div className="npc-avatar">
+            <div className="image-container activity">
               <img src="https://i.imgur.com/fztdYkJ.png" alt="Breed Monsters" />
             </div>
             <div className="activity-info">

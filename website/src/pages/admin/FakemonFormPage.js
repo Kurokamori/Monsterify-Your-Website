@@ -385,7 +385,7 @@ const FakemonFormPage = () => {
         </div>
 
         {error && (
-          <div className="admin-alert error">
+          <div className="alert error">
             <i className="fas fa-exclamation-circle"></i> {error}
           </div>
         )}
@@ -655,7 +655,7 @@ const FakemonFormPage = () => {
                     </div>
                     <div className="admin-form-group specialty-group">
                       <label className="admin-form-label">Specialty Stats</label>
-                      <div className="type-tags">
+                      <div className="type-tags fw">
                         {SPECIALTY_OPTIONS.map(opt => (
                           <label key={opt.key} className="attribute-tag">
                             <input
@@ -700,9 +700,9 @@ const FakemonFormPage = () => {
                           max="255"
                           disabled={saving}
                         />
-                        <div className="admin-stat-bar">
+                        <div className="progress">
                           <div
-                            className={`admin-stat-fill${barClass}`}
+                            className={`progress-fill${barClass}`}
                             style={{ width: `${Math.min(100, (formData[key] / 255) * 100)}%` }}
                           ></div>
                         </div>

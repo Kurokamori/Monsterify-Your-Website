@@ -259,7 +259,7 @@ const BossViewPage = () => {
                     />
                   )}
                 </div>
-                <div className="type-tags">
+                <div className="type-tags fw">
                   <h3>{boss.name}</h3>
                   <div className="boss-meta">
                     <span>🗓️ {boss.month}/{boss.year}</span>
@@ -351,7 +351,7 @@ const BossViewPage = () => {
                   <div className="map-filters">
                     <div className="attribute-section">
                       <h5><i className="fas fa-dna"></i> Species</h5>
-                      <div className="type-tags">
+                      <div className="type-tags fw">
                         {currentReward.monster_data.species && currentReward.monster_data.species.map((species, index) => (
                           <span key={index} className="attribute-tag species-tag">
                             {species}
@@ -362,7 +362,7 @@ const BossViewPage = () => {
                     
                     <div className="attribute-section">
                       <h5><i className="fas fa-magic"></i> Types</h5>
-                      <div className="type-tags">
+                      <div className="type-tags fw">
                         {currentReward.monster_data.types && currentReward.monster_data.types.map((type, index) => (
                           <span key={index} className="attribute-tag type-tag">
                             {type}
@@ -373,7 +373,7 @@ const BossViewPage = () => {
                     
                     <div className="attribute-section">
                       <h5><i className="fas fa-star"></i> Attribute</h5>
-                      <div className="type-tags">
+                      <div className="type-tags fw">
                         <span className="attribute-tag primary-attribute-tag">
                           {currentReward.monster_data.attribute}
                         </span>
@@ -539,7 +539,7 @@ const BossViewPage = () => {
             <div className="boss-stats">
               <div className="set-item">
                 <span className="stat-label">Status:</span>
-                <span className={`stat-value status-${boss.status}`}>
+                <span className={`badge stat-value status-${boss.status}`}>
                   {boss.status.charAt(0).toUpperCase() + boss.status.slice(1)}
                 </span>
               </div>
@@ -563,9 +563,9 @@ const BossViewPage = () => {
                 <span>Health</span>
                 <span>{boss.current_hp.toLocaleString()} / {boss.total_hp.toLocaleString()}</span>
               </div>
-              <div className="health-bar-container">
-                <div 
-                  className="health-bar"
+              <div className="progress lg">
+                <div
+                  className="progress-fill"
                   style={{
                     width: `${boss.healthPercentage}%`,
                     backgroundColor: getHealthBarColor(boss.healthPercentage)
@@ -733,7 +733,7 @@ const BossViewPage = () => {
                   <div className="map-filters">
                     <div className="attribute-section">
                       <h5><i className="fas fa-dna"></i> Species</h5>
-                      <div className="type-tags">
+                      <div className="type-tags fw">
                         {currentReward.monster_data.species && currentReward.monster_data.species.map((species, index) => (
                           <span key={index} className="attribute-tag species-tag">
                             {species}
@@ -744,7 +744,7 @@ const BossViewPage = () => {
                     
                     <div className="attribute-section">
                       <h5><i className="fas fa-magic"></i> Types</h5>
-                      <div className="type-tags">
+                      <div className="type-tags fw">
                         {currentReward.monster_data.types && currentReward.monster_data.types.map((type, index) => (
                           <span key={index} className="attribute-tag type-tag">
                             {type}
@@ -755,7 +755,7 @@ const BossViewPage = () => {
                     
                     <div className="attribute-section">
                       <h5><i className="fas fa-star"></i> Attribute</h5>
-                      <div className="type-tags">
+                      <div className="type-tags fw">
                         <span className="attribute-tag primary-attribute-tag">
                           {currentReward.monster_data.attribute}
                         </span>

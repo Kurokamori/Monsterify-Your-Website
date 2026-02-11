@@ -201,7 +201,7 @@ const NPCsPage = () => {
   }
 
   return (
-    <div className="lore-container">
+    <div className="main-content-container">
       <div className="lore-header">
         <h1>Important Characters</h1>
         <p>Meet the key figures in the Monsterify world</p>

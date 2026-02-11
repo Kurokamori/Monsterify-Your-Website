@@ -351,20 +351,20 @@ const AddTrainerPage = () => {
 
       <button
         type="button"
-        className="button secondary sm"
+        className="button primary sm jump-button"
         onClick={handleJumpToSubmit}
       >
         <i className="fas fa-arrow-down"></i> Jump to Submit
       </button>
 
       {error && (
-        <div className="form-error-message">
+        <div className="alert error">
           <i className="fas fa-exclamation-circle"></i> {error}
         </div>
       )}
 
       {success && (
-        <div className="form-success-message">
+        <div className="alert success">
           <i className="fas fa-check-circle"></i> {success}
         </div>
       )}
@@ -380,7 +380,7 @@ const AddTrainerPage = () => {
         <div className="form-section">
           <h2 className="section-title">Basic Information</h2>
 
-          <div className="form-grid">
+          <div className="container cols-2 gap-md">
             <div className="form-group">
               <label htmlFor="name">Trainer Name <span className="required">*</span></label>
               <input
@@ -389,14 +389,14 @@ const AddTrainerPage = () => {
                 name="name"
                 value={formData.name}
                 onChange={handleInputChange}
-                className={`form-input${errors.name ? 'error' : ''}`}
+                className={`form-input ${errors.name ? 'error' : ''}`}
                 placeholder="Enter trainer name"
               />
               {errors.name && <div className="input-error">{errors.name}</div>}
               <small className="field-note">The primary name of your trainer</small>
             </div>
           </div>
-          <div className="form-grid">
+          <div className="container cols-2 gap-md">
             <div className="form-group">
               <label htmlFor="nickname">Nickname</label>
               <input
@@ -425,7 +425,7 @@ const AddTrainerPage = () => {
               <small className="field-note">The complete name of your trainer</small>
             </div>
           </div>
-          <div className="form-grid">
+          <div className="container cols-2 gap-md">
             <div className="form-group">
               <label htmlFor="title">Title</label>
               <input
@@ -518,7 +518,7 @@ const AddTrainerPage = () => {
           <p className="subsection-description">
             Species can be any species of a valid monster from the game (Pokemon, Digimon, Yokai, Nexomon, Pals, Fakemon, Final Fantasy, Monster Hunter). Yes, this includes mythicals, legendaries, etc.
           </p>
-          <div className="form-grid">
+          <div className="container cols-2 gap-md">
             <div className="form-group">
               <label htmlFor="species1">Primary Species</label>
               <input
@@ -566,7 +566,7 @@ const AddTrainerPage = () => {
           <p className="subsection-description">
             Types are the same as the types of monsters. You can choose up to 6 types for your trainer. Types are not required, and Humans cannot have types (only Alters and Catfolk can). 
           </p>
-          <div className="form-grid">
+          <div className="container cols-2 gap-md">
             <div className="form-group">
               <AutocompleteInput
                 id="type1"
@@ -645,7 +645,7 @@ const AddTrainerPage = () => {
         <div className="form-section">
           <h2 className="section-title">Abilities and Characteristics</h2>
 
-          <div className="form-grid">
+          <div className="container cols-2 gap-md">
             <div className="form-group">
               <AutocompleteInput
                 id="ability"
@@ -692,7 +692,7 @@ const AddTrainerPage = () => {
         <div className="form-section">
           <h2 className="section-title">Favorite Types</h2>
 
-          <div className="form-grid">
+          <div className="container cols-2 gap-md">
             <div className="form-group">
               <AutocompleteInput
                 id="fav_type1"
@@ -772,7 +772,7 @@ const AddTrainerPage = () => {
         <div className="form-section">
           <h2 className="section-title">Personal Information</h2>
 
-          <div className="form-grid">
+          <div className="container cols-2 gap-md">
             <div className="form-group">
               <label htmlFor="gender">Gender</label>
               <input
@@ -877,7 +877,7 @@ const AddTrainerPage = () => {
             </div>
             
           </div>
-          <div className="form-grid">
+          <div className="container cols-2 gap-md">
             <div className="form-group">
               <label htmlFor="height">Height</label>
               <input
@@ -906,7 +906,7 @@ const AddTrainerPage = () => {
               <small className="field-note">Your trainer's weight</small>
             </div>
           </div>
-          <div className="form-grid">
+          <div className="container cols-2 gap-md">
             <div className="form-group">
               <label htmlFor="theme_display">Theme Display Text</label>
               <input
@@ -935,7 +935,7 @@ const AddTrainerPage = () => {
               <small className="field-note">If provided, users will be able to expand and play the theme music</small>
             </div>
           </div>
-          <div className="form-grid">
+          <div className="container cols-2 gap-md">
             <div className="form-group">
               <label htmlFor="voice_claim_display">Voice Claim Display Text</label>
               <input
@@ -964,7 +964,7 @@ const AddTrainerPage = () => {
               <small className="field-note">If provided, users will be able to expand and view the voice claim video</small>
             </div>
           </div>
-          <div className="form-grid">
+          <div className="container cols-2 gap-md">
             <div className="form-group">
               <label htmlFor="occupation">Occupation</label>
               <input
@@ -979,7 +979,7 @@ const AddTrainerPage = () => {
               <small className="field-note">Your trainer's occupation</small>
             </div>
           </div>
-          <div className="form-grid">
+          <div className="container cols-2 gap-md">
             <div className="form-group">
               <label htmlFor="birthday">Birthday</label>
               <input
@@ -1084,7 +1084,7 @@ const AddTrainerPage = () => {
         {/* Character Information Section */}
         <div className="form-section">
           <h2 className="section-title">Character Information</h2>
-          <div className="form-grid">
+          <div className="container cols-2 gap-md">
             <div className="form-group full-width">
               <label htmlFor="strengths">Character Strengths</label>
               <textarea
@@ -1207,7 +1207,7 @@ const AddTrainerPage = () => {
                     </button>
                   </div>
 
-                  <div className="form-grid">
+                  <div className="container cols-2 gap-md">
                     <div className="form-group">
                       <label>Title</label>
                       <input
@@ -1269,7 +1269,7 @@ const AddTrainerPage = () => {
                     </button>
                   </div>
 
-                  <div className="form-grid">
+                  <div className="container cols-2 gap-md">
                     <div className="form-group">
                       <label>Relation Type</label>
                       <select
@@ -1343,7 +1343,7 @@ const AddTrainerPage = () => {
                 )}
               </div>
 
-              <div className="form-grid">
+              <div className="container cols-2 gap-md">
                 <div className="form-group">
                   <label htmlFor={`ref-title-${index}`}>Title</label>
                   <input

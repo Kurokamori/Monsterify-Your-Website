@@ -462,7 +462,7 @@ const EvolutionExplorerPage = () => {
     return evolutions.map((evolutionNode, index) => (
       <div key={`${direction}-${evolutionNode.species.name}-${index}`} className="evolution-column">
         <div className="evolution-level">
-          <div className="attribute-badge-adopt">
+          <div className="badge">
             {renderSpeciesCard(evolutionNode.species, false)}
           </div>
         </div>
@@ -566,7 +566,7 @@ const EvolutionExplorerPage = () => {
                       )}
                       <div className="evolution-level">
                         {levelSpecies.map((speciesEntry) => (
-                          <div key={speciesEntry.uniqueId} className="attribute-badge-adopt">
+                          <div key={speciesEntry.uniqueId} className="badge">
                             {renderSpeciesCard(speciesEntry.species, false)}
                           </div>
                         ))}

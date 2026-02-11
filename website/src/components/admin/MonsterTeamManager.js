@@ -178,7 +178,7 @@ const MonsterTeamManager = ({ person, onClose, onTeamUpdated }) => {
         </div>
 
         {error && (
-          <div className="alert alert-danger">
+          <div className="alert error">
             <i className="fas fa-exclamation-triangle"></i>
             {error}
           </div>
@@ -205,7 +205,7 @@ const MonsterTeamManager = ({ person, onClose, onTeamUpdated }) => {
                     {monster.image ? (
                       <img src={monster.image} alt={monster.name} />
                     ) : (
-                      <div className="placeholder-image">
+                      <div className="image-placeholder">
                         <i className="fas fa-dragon"></i>
                       </div>
                     )}
@@ -259,7 +259,7 @@ const MonsterTeamManager = ({ person, onClose, onTeamUpdated }) => {
                     <div className="detail-group">
                       <label>Attribute:</label>
                       <div 
-                        className="attribute-badge"
+                        className="badge"
                         style={{ backgroundColor: getAttributeColor(monster.attribute) }}
                       >
                         <i className={getAttributeIcon(monster.attribute)}></i>

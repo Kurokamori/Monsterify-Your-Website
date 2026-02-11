@@ -294,11 +294,12 @@ const MonsterHunterMonsterFormPage = () => {
           {imagePreview && (
             <div className="admin-form-preview">
               <h3>Image Preview</h3>
-              <img
-                src={imagePreview}
-                alt={formData.name}
-                className="admin-form-image-preview"
-              />
+              <div className="image-container medium no-margin">
+                <img
+                  src={imagePreview}
+                  alt={formData.name}
+                />
+              </div>
             </div>
           )}
 

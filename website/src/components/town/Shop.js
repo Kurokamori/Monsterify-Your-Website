@@ -262,7 +262,7 @@ const Shop = ({ shopId, shopName, shopDescription }) => {
         {displayCategories.map(category => (
           <button
             key={category.id}
-            className={`button secondary${selectedCategory === category.id ? 'active' : ''}`}
+            className={`button secondary ${selectedCategory === category.id ? 'active' : ''}`}
             onClick={() => handleCategoryChange(category.id)}
           >
             {category.name}
@@ -311,7 +311,7 @@ const Shop = ({ shopId, shopName, shopDescription }) => {
 
       {/* Pagination */}
       {totalPages > 1 && (
-        <div className="type-tags">
+        <div className="type-tags fw">
           <button
             className="button secondary"
             onClick={() => handlePageChange(page - 1)}
@@ -381,7 +381,7 @@ const Shop = ({ shopId, shopName, shopDescription }) => {
                     />
                   </div>
 
-                  <div className="type-tags">
+                  <div className="type-tags fw">
                     <p className="item-description">{selectedItem.description}</p>
 
                     <div className="item-meta">
@@ -411,7 +411,7 @@ const Shop = ({ shopId, shopName, shopDescription }) => {
 
                 {isAuthenticated ? (
                   <div className="purchase-section">
-                    <div className="type-tags">
+                    <div className="type-tags fw">
                       <div className="form-group">
                         <label htmlFor="purchase-quantity">Quantity:</label>
                         <div className="form-input">

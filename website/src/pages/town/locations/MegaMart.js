@@ -326,7 +326,7 @@ const MegaMart = () => {
                 {selectedMonster.species && selectedMonster.species.length > 0 && (
                   <div className="monster-types">
                     {selectedMonster.species.slice(0, 3).map((species, index) => (
-                      <span key={index} className="type-badge">{species}</span>
+                      <span key={index} className="badge">{species}</span>
                     ))}
                   </div>
                 )}
@@ -531,7 +531,7 @@ const MegaMart = () => {
                 filteredAbilities.map(ability => (
                   <div
                     key={ability.name}
-                    className={`ability-option${selectedAbility === ability.name ? 'selected' : ''}`}
+                    className={`ability-option ${selectedAbility === ability.name ? 'selected' : ''}`}
                     onClick={() => setSelectedAbility(ability.name)}
                   >
                     <h4>{ability.name}</h4>

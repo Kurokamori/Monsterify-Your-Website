@@ -232,7 +232,7 @@ const PiratesDock = () => {
 
         <div className="location-activities">
           <div className="location-activity-card">
-            <div className="npc-avatar">
+            <div className="image-container activity">
               <img src="https://i.imgur.com/RmKySNO.png" alt="Swab the Deck" />
             </div>
             <div className="activity-info">
@@ -258,7 +258,7 @@ const PiratesDock = () => {
           </div>
 
           <div className="location-activity-card">
-            <div className="npc-avatar">
+            <div className="image-container activity">
               <img src="https://i.imgur.com/RmKySNO.png" alt="Go Fishing" />
             </div>
             <div className="activity-info">

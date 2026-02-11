@@ -7,6 +7,7 @@ const LeaderboardStats = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [leaderboardStats, setLeaderboardStats] = useState(null);
+  const [globalStats, setGlobalStats] = useState(null);
 
   useEffect(() => {
     fetchLeaderboardStats();
@@ -15,18 +16,26 @@ const LeaderboardStats = () => {
   const fetchLeaderboardStats = async () => {
     try {
       setLoading(true);
-      
-      // Fetch leaderboard statistics
-      const response = await api.get('/statistics/leaderboards');
-      
+
+      // Fetch both leaderboard and global statistics
+      const [leaderboardResponse, comparisonResponse] = await Promise.all([
+        api.get('/statistics/leaderboards'),
+        api.get('/statistics/trainer-comparison')
+      ]);
+
       // Check if the response has the expected structure
-      if (response.data && response.data.success && response.data.data) {
-        setLeaderboardStats(response.data.data);
+      if (leaderboardResponse.data && leaderboardResponse.data.success && leaderboardResponse.data.data) {
+        setLeaderboardStats(leaderboardResponse.data.data);
       } else {
         setLeaderboardStats(null);
         setError('Invalid response format from the server.');
       }
-      
+
+      // Set global stats from trainer-comparison endpoint
+      if (comparisonResponse.data && comparisonResponse.data.success && comparisonResponse.data.data) {
+        setGlobalStats(comparisonResponse.data.data.global_stats);
+      }
+
     } catch (err) {
       console.error('Error fetching leaderboard statistics:', err);
       setError('Failed to load leaderboard statistics. Please try again later.');
@@ -191,9 +200,9 @@ const LeaderboardStats = () => {
               const isFirst = actualPosition === 0;
               
               return (
-                <div 
-                  key={trainer.id || index} 
-                  className={`podium-card ${isFirst ? 'first-place' : ''}position-${actualPosition + 1}`}
+                <div
+                  key={trainer.id || index}
+                  className={`podium-card ${isFirst ? 'first-place ' : ''}position-${actualPosition + 1}`}
                   style={{ order: index }}
                 >
                   <div className={`podium-rank rank-${actualPosition + 1}`}>
@@ -201,30 +210,32 @@ const LeaderboardStats = () => {
                   </div>
                   <div className="podium-image">
                     {trainer.main_ref ? (
-                      <img 
-                        src={trainer.main_ref} 
-                        alt={trainer.name || 'Trainer'} 
+                      <img
+                        src={trainer.main_ref}
+                        alt={trainer.name || 'Trainer'}
                         className="trainer-avatar-image"
                         onError={(e) => {
                           e.target.style.display = 'none';
-                          e.target.nextSibling.style.display = 'flex';
+                          if (e.target.nextSibling) e.target.nextSibling.style.display = 'flex';
                         }}
                       />
                     ) : null}
-                    <i className={`fas${icon}trainer-icon`} style={trainer.main_ref ? {display: 'none'} : {}}></i>
+                    <i className={`fas ${icon} trainer-icon`} style={trainer.main_ref ? {display: 'none'} : {}}></i>
                   </div>
                   <div className="podium-info">
                     <h4 className="podium-name">
                       {trainer.name || 'Unknown Trainer'}
                     </h4>
-                    <div className="fandom-grid">
-                      <span className="podium-level">
-                        {valueKey === 'monster_ref_percent' 
+                    <div className="podium-details">
+                      <span className="podium-value">
+                        {valueKey === 'monster_ref_percent'
                           ? `${trainer[valueKey] || 0}% (${trainer.monster_ref_count || 0}/${trainer.monster_count || 0})`
                           : `${valueLabel} ${trainer[valueKey] || 0}`
                         }
                       </span>
-                      <span className="trainer-player">Player: {trainer.player_display_name || 'Unknown Player'}</span>
+                      <span className="podium-player">
+                        <i className="fas fa-user"></i> {trainer.player_display_name || 'Unknown'}
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -235,34 +246,36 @@ const LeaderboardStats = () => {
           {data.length > 3 && (
             <div className="remaining-positions">
               {data.slice(3, 5).map((trainer, index) => (
-                <div className="art-calculator" key={trainer.id || (index + 3)}>
+                <div className="remaining-card" key={trainer.id || (index + 3)}>
                   <div className="remaining-rank">#{index + 4}</div>
-                  <div className="pc-box-slot">
+                  <div className="remaining-avatar">
                     {trainer.main_ref ? (
-                      <img 
-                        src={trainer.main_ref} 
-                        alt={trainer.name || 'Trainer'} 
+                      <img
+                        src={trainer.main_ref}
+                        alt={trainer.name || 'Trainer'}
                         className="trainer-avatar-image"
                         onError={(e) => {
                           e.target.style.display = 'none';
-                          e.target.nextSibling.style.display = 'flex';
+                          if (e.target.nextSibling) e.target.nextSibling.style.display = 'flex';
                         }}
                       />
                     ) : null}
-                    <i className={`fas${icon}trainer-icon`} style={trainer.main_ref ? {display: 'none'} : {}}></i>
+                    <i className={`fas ${icon} trainer-icon`} style={trainer.main_ref ? {display: 'none'} : {}}></i>
                   </div>
                   <div className="remaining-info">
                     <h4 className="remaining-name">
                       {trainer.name || 'Unknown Trainer'}
                     </h4>
-                    <div className="stat-info">
-                      <span className="remaining-level">
-                        {valueKey === 'monster_ref_percent' 
+                    <div className="remaining-details">
+                      <span className="remaining-value">
+                        {valueKey === 'monster_ref_percent'
                           ? `${trainer[valueKey] || 0}% (${trainer.monster_ref_count || 0}/${trainer.monster_count || 0})`
                           : `${valueLabel} ${trainer[valueKey] || 0}`
                         }
                       </span>
-                      <span className="trainer-player">Player: {trainer.player_display_name || 'Unknown Player'}</span>
+                      <span className="remaining-player">
+                        <i className="fas fa-user"></i> {trainer.player_display_name || 'Unknown'}
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -275,7 +288,53 @@ const LeaderboardStats = () => {
   };
 
   return (
-    <div className="monster-stats">
+    <div className="leaderboard-stats">
+      {/* Global Statistics Section */}
+      {globalStats && (
+        <section className="statistics-section">
+          <h3 className="statistics-section-title">Global Statistics</h3>
+          <div className="statistics-card">
+            <div className="statistics-grid">
+              <div className="statistic-item">
+                <div className="statistic-icon">
+                  <i className="fas fa-users"></i>
+                </div>
+                <div className="statistic-value">{globalStats.total_trainers || 0}</div>
+                <div className="statistic-label">Total Trainers</div>
+              </div>
+              <div className="statistic-item">
+                <div className="statistic-icon">
+                  <i className="fas fa-dragon"></i>
+                </div>
+                <div className="statistic-value">{globalStats.total_monsters || 0}</div>
+                <div className="statistic-label">Total Monsters</div>
+              </div>
+              <div className="statistic-item">
+                <div className="statistic-icon">
+                  <i className="fas fa-user-friends"></i>
+                </div>
+                <div className="statistic-value">{globalStats.total_players || 0}</div>
+                <div className="statistic-label">Total Players</div>
+              </div>
+              <div className="statistic-item">
+                <div className="statistic-icon">
+                  <i className="fas fa-chart-line"></i>
+                </div>
+                <div className="statistic-value">{globalStats.average_monsters_per_trainer || 0}</div>
+                <div className="statistic-label">Avg Monsters/Trainer</div>
+              </div>
+              <div className="statistic-item">
+                <div className="statistic-icon">
+                  <i className="fas fa-percentage"></i>
+                </div>
+                <div className="statistic-value">{globalStats.average_reference_percentage || 0}%</div>
+                <div className="statistic-label">Avg Reference %</div>
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
+
       {renderLeaderboard(
         'Top 5 Trainers by Level',
         displayStats.top_trainers_by_level,
@@ -348,7 +407,7 @@ const LeaderboardStats = () => {
           {Object.entries(displayStats.type_specialists).map(([type, specialist]) => (
             <div className="art-calculator" key={type}>
               <div className="specialist-type">
-                <span className={`type-badge type-${type.toLowerCase()}`}>{type}</span>
+                <span className={`badge type-${type.toLowerCase()}`}>{type}</span>
               </div>
               {specialist.main_ref && (
                 <div className="npc-avatar">
@@ -384,7 +443,7 @@ const LeaderboardStats = () => {
           {Object.entries(displayStats.attribute_specialists).map(([attribute, specialist]) => (
             <div className="art-calculator" key={attribute}>
               <div className="specialist-type">
-                <span className={`attribute-badge attribute-${attribute.toLowerCase()}`}>{attribute}</span>
+                <span className={`badge attribute-${attribute.toLowerCase()}`}>{attribute}</span>
               </div>
               {specialist.main_ref && (
                 <div className="npc-avatar">

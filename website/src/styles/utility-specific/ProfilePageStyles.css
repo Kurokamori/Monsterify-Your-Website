@@ -1,115 +1,20 @@
-/* ====================================================================== */
-/* ART TODO — CONSOLIDATED CORE                                           */
-/* keeps your tokens; groups existing selectors to kill duplication        */
-/* ====================================================================== */
+/* ==============================
+   PROFILE & SCHEDULE PAGE STYLES
 
-/* ---- Primitives / Tokens ---- */
-:root {
-  --radius-xs: .25rem;
-  --radius-sm: .375rem;
-  --radius: .5rem;
-  --radius-lg: .75rem;
-  --shadow-1: 0 2px 4px var(--overlay-light);
-  --shadow-2: 0 4px 12px var(--overlay-light);
-  --ease: .2s ease;
-}
+   Contains styles for:
+   - Schedule page layout
+   - Profile page layout
+   - Task/habit tracking components
+   - Reference todo styles (separate from Art Todo)
+   ============================== */
 
-/* ---- Containers ---- */
+/* ========== Page Layout ========== */
 
 .schedule-page h1 {
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
-
-/* ---- Section headers (title + actions) ---- */
-
-/* ---- Grids ---- */
-
-@media (max-width: 768px) {
-}
-
-/* ---- Cards (base) ---- */
-
-/* Accent-left variants (status stripes) */
-.item-card.status-pending { border-left: 4px solid var(--warning-color); }
-.item-card.status-in_progress { border-left: 4px solid var(--info-color); }
-.item-card.status-completed { border-left: 4px solid var(--success-color); }
-
-/* Priority rings (unified) */
-.item-card.priority-high   { box-shadow: 0 0 0 2px var(--error-glow); }
-.item-card.priority-medium { box-shadow: 0 0 0 2px var(--warning-glow); }
-.item-card.priority-low    { box-shadow: 0 0 0 2px var(--overlay-medium); }
-
-/* ---- Badges / Pills ---- */
-.status-badge.status-pending,
-.priority-badge.priority-medium,
-.streak-badge.warning { background: var(--warning-glow); color: var(--warning-color); }
-.status-badge.status-in_progress { background: var(--blue-glow); color: var(--info-color); }
-.status-badge.status-completed { background: var(--success-glow); color: var(--success-color); }
-.priority-badge.priority-high { background: var(--error-glow); color: var(--error-color); }
-.priority-badge.priority-low { background: var(--overlay-medium); color: var(--text-muted); }
-.item-status.pending { background: var(--warning-light); color: var(--warning-dark); }
-.item-status.completed { background: var(--success-light); color: var(--success-dark); }
-.item-status.active { background: var(--primary-light); color: var(--primary-dark); }
-
-/* ---- Progress Bars ---- */
-
-/* ---- Thumbnails / Reference Tiles ---- */
-
-.reference-thumbnail.clickable { cursor: pointer; }
-.reference-thumbnail.clickable:hover {
-  transform: scale(1.1);
-  border-color: var(--primary-color);
-  box-shadow: 0 2px 8px var(--overlay-medium);
-}
-
-/* ---- Forms (unified) ---- */
-
-/* Checkboxes / Radios / Toggle Switch: Use common/inputs.css */
-
-/* ---- Tabs (shared) ---- */
-
-/* ---- Empty / No-content states ---- */
-
-/* ---- Modals (unified) ---- */
-.modal-content.large { max-width: 800px; max-height: 90vh; }
-.modal-container:has(.reference-matrix-fullscreen) { max-width: 90vw !important; width: 90vw !important; }
-
-/* ---- Image Viewer ---- */
-.image-viewer {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-  max-height: 80vh;
-}
-
-.image-viewer-main {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--hover-background);
-  border-radius: 8px;
-  padding: 1rem;
-  min-height: 400px;
-}
-
-.viewer-image {
-  max-width: 100%;
-  max-height: 100%;
-  object-fit: contain;
-  border-radius: 8px;
-  box-shadow: 0 4px 20px var(--overlay-medium);
-}
-
-/* ---- Shared titles / text colors ---- */
-
-/* ====================================================================== */
-/* PAGE- & FEATURE-SPECIFIC (left as-is but trimmed where possible)       */
-/* ====================================================================== */
-
-/* Schedule page only */
 
 .schedule-content {
   background: var(--card-background);
@@ -119,7 +24,7 @@
   min-height: 500px;
 }
 
-/* Profile page snips */
+/* ========== Profile Layout ========== */
 
 .profile-sidebar {
   width: 300px;
@@ -130,55 +35,78 @@
   flex: 1;
 }
 
-/* Logout button: Use unified button system from common/buttons.css
-   Example: className="button danger ghost block" */
+.profile-content {
+  gap: 1.5rem;
+}
 
-/* Search box shared */
+/* ========== Search Components ========== */
+
 .search-box {
   position: relative;
   flex: 1;
 }
 
 .search-box i {
-  position: absolute; left: .75rem; top: 50%; transform: translateY(-50%);
-  color: var(--text-muted); font-size: .9rem;
-}
-
-/* Reference management specifics */
-.reference-management {
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-  max-height: 70vh;
-  overflow-y: auto;
-}
-
-.reference-type {
-  font-size: .8rem;
+  position: absolute;
+  left: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
   color: var(--text-muted);
-  text-transform: capitalize;
+  font-size: 0.9rem;
 }
 
-/* Task steps list icons */
+/* ========== Task Steps ========== */
+
 .task-steps li:before {
-  content: '\f111'; font-family: 'Font Awesome 5 Free'; font-weight: 400;
-  position: absolute; left: 0; color: var(--border-color);
+  content: '\f111';
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 400;
+  position: absolute;
+  left: 0;
+  color: var(--border-color);
 }
-.task-steps li.completed { color: var(--success-color); text-decoration: line-through; }
-.task-steps li.completed:before { content: '\f058'; font-weight: 900; color: var(--success-color); }
 
-/* Streaks / completion badges */
+.task-steps li.completed {
+  color: var(--success-color);
+  text-decoration: line-through;
+}
+
+.task-steps li.completed:before {
+  content: '\f058';
+  font-weight: 900;
+  color: var(--success-color);
+}
+
+/* ========== Streaks / Completion Badges ========== */
+
 .habit-streak {
   display: flex;
   align-items: center;
-  gap: .5rem;
+  gap: 0.5rem;
 }
 
-.streak-badge.success { background: var(--success-light); color: var(--success-dark); }
-.streak-badge.danger  { background: var(--danger-light);  color: var(--danger-dark); }
-.streak-badge.muted   { background: var(--background-light); color: var(--text-muted); }
+.streak-badge.success {
+  background: var(--success-light);
+  color: var(--success-dark);
+}
 
-/* Routine list */
+.streak-badge.warning {
+  background: var(--warning-glow);
+  color: var(--warning-color);
+}
+
+.streak-badge.danger {
+  background: var(--danger-light);
+  color: var(--danger-dark);
+}
+
+.streak-badge.muted {
+  background: var(--background-light);
+  color: var(--text-muted);
+}
+
+/* ========== Routine Items ========== */
+
 .routine-items {
   margin-top: 1rem;
 }
@@ -189,59 +117,21 @@
   padding: 0;
 }
 
-.routine-item.completed { background: var(--success-light); border-color: var(--success-color); opacity: .8; }
+.routine-item.completed {
+  background: var(--success-light);
+  border-color: var(--success-color);
+  opacity: 0.8;
+}
+
+/* ========== Type Bar Container ========== */
+
 .type-bar-container {
   display: flex;
   flex-direction: column;
-  gap: .25rem;
+  gap: 0.25rem;
 }
 
-/* Image modal specifics */
-
-/* Enhanced Mobile Responsiveness for Profile Pages */
-@media (max-width: 1024px) {
-  .schedule-page {
-  padding: 1.5rem;
-}
-  
-  .items-grid {
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-    gap: 1rem;
-  }
-  
-  .reference-thumbnail {
-    width: 40px;
-    height: 40px;
-  }
-}
-
-/* Schedule + Tasks responsiveness */
-@media (max-width: 768px) {
-  .schedule-page { padding: 1rem; }
-  .quick-actions { flex-direction: column; }
-  .item-meta { flex-direction: column; gap: .25rem; }
-
-  /* Enhanced Reference Todo Mobile Styles - unique selectors */
-
-  .reference-type-badge {
-    margin-top: .5rem;
-    padding: .5rem 1rem;
-    font-size: .9rem;
-    border-radius: 20px;
-  }
-
-  .reference-matrix-image {
-    height: 120px;
-  }
-}
-
-.reference-todo-description {
-  margin-bottom: 20px;
-  color: var(--text-color-secondary);
-}
-
-/* User dropdown toggle: Use unified button system from common/buttons.css
-   Example: className="button primary sm" */
+/* ========== User Info ========== */
 
 .user-name {
   font-weight: 600;
@@ -249,7 +139,13 @@
   padding: 1.25rem;
 }
 
-/* ---- Reference Todo Specifics ---- */
+/* ========== Reference Todo (Non-Art) ========== */
+
+.reference-todo-description {
+  margin-bottom: 20px;
+  color: var(--text-color-secondary);
+}
+
 .total-needed-container {
   text-align: center;
   margin-bottom: 1.5rem;
@@ -274,7 +170,7 @@
   font-size: 0.9rem;
 }
 
-/* ---- Collapsible Trainer Groups ---- */
+/* ========== Collapsible Trainer Groups ========== */
 
 .trainer-group {
   border: 1px solid var(--border-color);
@@ -316,12 +212,13 @@
   width: 12px;
 }
 
-.trainer-group .items-grid {
+.trainer-group .container.grid {
   padding: 1rem;
   margin-bottom: 0;
 }
 
-/* ---- Reference Todo Header ---- */
+/* ========== Reference Todo Header ========== */
+
 .reference-todo-header {
   display: flex;
   justify-content: space-between;
@@ -335,6 +232,8 @@
   color: var(--accent-color);
 }
 
+/* ========== Level Summary Cards ========== */
+
 .level-summary {
   align-items: center;
   background: var(--input-background);
@@ -346,6 +245,8 @@
   justify-content: center;
   padding: 1rem;
 }
+
+/* ========== Reference Images ========== */
 
 .reference-species-image {
   object-fit: contain;
@@ -368,7 +269,9 @@
   border-radius: var(--radius-sm);
 }
 
-/* ---- Small Image Size ---- */
+/* ========== Image Size Variants ========== */
+
+/* Small */
 .species-reference-item--small .species-image-container {
   width: 80px;
   height: 80px;
@@ -379,7 +282,7 @@
   max-height: 80px;
 }
 
-/* ---- Medium Image Size (Default) ---- */
+/* Medium (Default) */
 .species-reference-item--medium .species-image-container {
   width: 120px;
   height: 120px;
@@ -390,7 +293,7 @@
   max-height: 120px;
 }
 
-/* ---- Large Image Size ---- */
+/* Large */
 .species-reference-item--large .species-image-container {
   width: 160px;
   height: 160px;
@@ -401,7 +304,7 @@
   max-height: 160px;
 }
 
-/* ---- Max Width Image Size ---- */
+/* Max Width */
 .species-references--max-width {
   display: flex;
   flex-direction: row;
@@ -435,28 +338,31 @@
   object-fit: contain;
 }
 
+/* ==============================================
+   RESPONSIVE STYLES
+   ============================================== */
+
 /* Horizontal layout for wider screens */
 @media (min-width: 900px) {
-
   .level-summary:not(.species-reference-item--max-width) {
     flex-direction: column;
     text-align: center;
     min-width: 150px;
     padding: 1rem;
   }
-  
+
   .species-reference-item--small {
     max-width: 140px;
   }
-  
+
   .species-reference-item--medium {
     max-width: 180px;
   }
-  
+
   .species-reference-item--large {
     max-width: 220px;
   }
-  
+
   .species-name {
     min-width: unset;
     margin-bottom: 0.5rem;
@@ -464,29 +370,11 @@
   }
 }
 
-/* Mobile responsiveness for different sizes */
-@media (max-width: 899px) {
-  .reference-todo-header {
-    flex-direction: column;
-    align-items: stretch;
-    text-align: center;
-  }
-
-  
-
-  .species-references--max-width {
-    flex-direction: column;
-  }
-
-  .species-reference-item--max-width {
-    min-height: 150px;
-  }
-}
-
-/* ===== COMPREHENSIVE RESPONSIVE DESIGN FOR PROFILE PAGES ===== */
-
-/* Tablet (768px - 1024px) */
+/* ---------- Tablet (768px - 1024px) ---------- */
 @media (max-width: 1024px) {
+  .schedule-page {
+    padding: 1.5rem;
+  }
 
   .profile-content {
     gap: 1.5rem;
@@ -513,10 +401,37 @@
   }
 }
 
-/* Mobile (max-width: 768px) - Enhanced Reference Todo */
-@media (max-width: 768px) {
+/* ---------- Mobile (max-width: 899px) ---------- */
+@media (max-width: 899px) {
+  .reference-todo-header {
+    flex-direction: column;
+    align-items: stretch;
+    text-align: center;
+  }
 
-  /* Profile Layout */
+  .species-references--max-width {
+    flex-direction: column;
+  }
+
+  .species-reference-item--max-width {
+    min-height: 150px;
+  }
+}
+
+/* ---------- Mobile (max-width: 768px) ---------- */
+@media (max-width: 768px) {
+  .schedule-page {
+    padding: 1rem;
+  }
+
+  .quick-actions {
+    flex-direction: column;
+  }
+
+  .item-meta {
+    flex-direction: column;
+    gap: 0.25rem;
+  }
 
   .profile-sidebar {
     width: 100%;
@@ -555,28 +470,20 @@
     font-size: 1rem;
   }
 
-  
-
-  /* Trainer Groups */
-
   .trainer-group-header {
     padding: 0.75rem 1rem;
   }
 
   .group-title {
-  font-size: 1rem;
-  gap: 0.5rem;
-}
+    font-size: 1rem;
+    gap: 0.5rem;
+  }
 
   .trainer-count {
     align-self: center;
     padding: 0.3rem 0.6rem;
     font-size: 0.85rem;
   }
-
-  /* Grids */
-
-  /* Cards */
 
   .level-summary {
     flex-direction: column;
@@ -585,7 +492,7 @@
     gap: 0.5rem;
   }
 
-  /* Image Size Variants - Mobile Adjustments */
+  /* Image Size Variants - Mobile */
   .species-reference-item--small .species-image-container {
     width: 60px;
     height: 60px;
@@ -605,43 +512,6 @@
     min-height: 120px;
   }
 
-  /* Reference Items */
-
-  .reference-thumbnail {
-    width: 50px;
-    height: 50px;
-    margin: 0 auto;
-  }
-
-  .reference-info {
-    align-items: center;
-  }
-
-  .damage-cell {
-    font-size: 0.95rem;
-  }
-
-  .reference-type {
-    font-size: 0.8rem;
-  }
-
-  /* Modals */
-  .modal-content {
-    width: 95%;
-    margin: 0.5rem;
-    max-height: 90vh;
-  }
-
-  .reference-management {
-    max-height: 65vh;
-    padding: 0.5rem;
-  }
-
-  .image-viewer-main {
-    min-height: 250px;
-  }
-
-  /* Schedule */
   .schedule-content {
     padding: 1rem;
     min-height: 400px;
@@ -653,9 +523,6 @@
     justify-content: center;
   }
 
-  /* Forms */
-
-  /* User Info */
   .user-info {
     padding: 1rem;
   }
@@ -666,9 +533,8 @@
   }
 }
 
-/* Small Mobile (max-width: 480px) */
+/* ---------- Small Mobile (max-width: 480px) ---------- */
 @media (max-width: 480px) {
-
   .reference-todo-header h1 {
     font-size: 1.1rem;
   }
@@ -686,9 +552,6 @@
     font-size: 0.95rem;
   }
 
-  
-
-  /* Trainer Groups */
   .trainer-group-header {
     padding: 0.625rem 0.875rem;
   }
@@ -706,17 +569,14 @@
     font-size: 0.8rem;
   }
 
-  .items-grid {
+  .container.grid {
     padding: 0.5rem;
   }
 
-  /* Cards */
-
-  /* Species References */
   .level-summary {
-  gap: 0.5rem;
-  padding: 0.625rem;
-}
+    gap: 0.5rem;
+    padding: 0.625rem;
+  }
 
   .species-name {
     font-size: 0.9rem;
@@ -741,40 +601,6 @@
     min-height: 100px;
   }
 
-  /* Reference Items */
-
-  .reference-thumbnail {
-    width: 45px;
-    height: 45px;
-  }
-
-  .damage-cell {
-    font-size: 0.9rem;
-  }
-
-  .reference-type {
-    font-size: 0.75rem;
-  }
-
-  .reference-type-badge {
-    padding: 0.35rem 0.7rem;
-    font-size: 0.75rem;
-  }
-
-  /* Modals */
-  .modal-content {
-    width: 98%;
-    margin: 0.25rem;
-    max-height: 90vh;
-  }
-
-  .reference-matrix-image {
-    height: 80px;
-  }
-
-  /* Headers */
-
-  /* Profile */
   .map-header h1 {
     font-size: 1.25rem;
   }
@@ -783,7 +609,6 @@
     font-size: 0.9rem;
   }
 
-  /* Schedule */
   .schedule-content {
     padding: 0.75rem;
   }
@@ -802,9 +627,8 @@
   }
 }
 
-/* Ultra Small (max-width: 320px) */
+/* ---------- Ultra Small (max-width: 320px) ---------- */
 @media (max-width: 320px) {
-
   .reference-todo-header h1 {
     font-size: 1rem;
   }
@@ -813,9 +637,6 @@
     font-size: 0.9rem;
   }
 
-  
-
-  /* Trainer Groups */
   .trainer-group-header {
     padding: 0.5rem 0.75rem;
   }
@@ -828,9 +649,6 @@
     font-size: 0.75rem;
   }
 
-  /* Cards */
-
-  /* Species References */
   .species-name {
     font-size: 0.85rem;
   }
@@ -850,31 +668,8 @@
     height: 100px;
   }
 
-  /* Reference Items */
-  .reference-thumbnail {
-    width: 40px;
-    height: 40px;
-  }
-
-  .damage-cell {
-    font-size: 0.85rem;
-  }
-
-  .reference-type-badge {
-    padding: 0.3rem 0.6rem;
-    font-size: 0.7rem;
-  }
-
-  /* Headers */
-
-  /* Profile */
   .map-header h1 {
     font-size: 1.1rem;
-  }
-
-  /* Modals */
-  .reference-matrix-image {
-    height: 60px;
   }
 
   /* Empty States */

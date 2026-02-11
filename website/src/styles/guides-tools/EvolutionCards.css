@@ -189,29 +189,9 @@
   margin-bottom: 8px;
 }
 
-.evolution-type-badge {
-  padding: 4px 10px;
-  border-radius: 6px;
-  font-size: 0.8rem;
-  font-weight: bold;
-  text-transform: uppercase;
-  color: var(--text-color);
-  text-shadow: 0 1px 1px var(--overlay-dark);
-  letter-spacing: 0.02em;
-}
-
 .evolution-attribute {
   display: flex;
   justify-content: center;
-}
-
-.evolution-attribute-badge {
-  padding: 3px 8px;
-  border-radius: 4px;
-  font-size: 0.75rem;
-  font-weight: bold;
-  color: var(--text-color);
-  text-shadow: 0 1px 1px var(--overlay-dark);
 }
 
 /* Evolution Method Information */

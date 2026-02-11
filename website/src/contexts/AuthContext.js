@@ -291,6 +291,26 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  // Update user's content settings
+  const updateContentSettings = async (settings) => {
+    try {
+      const response = await api.put('/auth/content-settings', settings);
+
+      if (response.data.success) {
+        setCurrentUser(prevUser => {
+          const updatedUser = { ...prevUser, content_settings: response.data.content_settings };
+          localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(updatedUser));
+          return updatedUser;
+        });
+      }
+
+      return true;
+    } catch (err) {
+      console.error('Content settings update error:', err);
+      return false;
+    }
+  };
+
   // Change password
   const changePassword = async (currentPassword, newPassword) => {
     try {
@@ -375,6 +395,7 @@ export const AuthProvider = ({ children }) => {
     updateProfile,
     updateMonsterRollerSettings,
     updateTheme,
+    updateContentSettings,
     changePassword,
     requestPasswordReset,
     resetPassword,

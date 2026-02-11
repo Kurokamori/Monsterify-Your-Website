@@ -1667,7 +1667,7 @@ const Regions = {
                     <div className="area-card">
                       <h3>{hoveredArea.name}</h3>
                       <p>{hoveredArea.description}</p>
-                      <div className="status-badge" style={{ backgroundColor: getDifficultyColor(hoveredArea.difficulty) }}>
+                      <div className="badge" style={{ backgroundColor: getDifficultyColor(hoveredArea.difficulty) }}>
                         {hoveredArea.difficulty}
                       </div>
                     </div>
@@ -1692,9 +1692,9 @@ const Regions = {
             </div>
             <div className="info-card">
               <h3>Dominant Types</h3>
-              <div className="map-type-badges">
+              <div className="map-badges">
                 {regionData.dominantTypes.map((type) => (
-                  <span key={type} className={`trainer-type-badge type-${type.toLowerCase()}`}>
+                  <span key={type} className={`badge full-width type-${type.toLowerCase()}`}>
                     {type}
                   </span>
                 ))}
@@ -1739,8 +1739,8 @@ const Regions = {
                     <div className="area-card-content">
                       <div className="resource-header">
                         <h4>{area.name}</h4>
-                        <div 
-                          className="status-badge small"
+                        <div
+                          className="badge sm"
                           style={{ backgroundColor: getDifficultyColor(area.difficulty) }}
                         >
                           {area.difficulty}

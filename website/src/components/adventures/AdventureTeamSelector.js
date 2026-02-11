@@ -199,7 +199,7 @@ const AdventureTeamSelector = ({ adventureId, trainerId, onTeamUpdate, onCancel 
                 {[monster.type1, monster.type2, monster.type3, monster.type4, monster.type5].filter(Boolean).map((type, index) => (
                   <span 
                     key={index} 
-                    className={`type-badge type-${type.toLowerCase()}`}
+                    className={`badge type-${type.toLowerCase()}`}
                   >
                     {type}
                   </span>

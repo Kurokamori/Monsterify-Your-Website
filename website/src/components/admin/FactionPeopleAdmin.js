@@ -146,7 +146,7 @@ const FactionPeopleAdmin = () => {
       </div>
 
       {error && (
-        <div className="alert alert-danger">
+        <div className="alert error">
           <i className="fas fa-exclamation-triangle"></i>
           {error}
         </div>
@@ -178,7 +178,7 @@ const FactionPeopleAdmin = () => {
                   {person.images && person.images.length > 0 ? (
                     <img src={person.images[0]} alt={person.name} />
                   ) : (
-                    <div className="placeholder-image">
+                    <div className="image-placeholder">
                       <i className="fas fa-user"></i>
                     </div>
                   )}

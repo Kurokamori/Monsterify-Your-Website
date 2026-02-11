@@ -483,9 +483,9 @@ const Landmasses = {
             </div>
             <div className="info-card">
               <h3>Dominant Types</h3>
-              <div className="map-type-badges">
+              <div className="map-badges">
                 {landmassData.dominantTypes.map((type) => (
-                  <span key={type} className={`trainer-type-badge type-${type.toLowerCase()}`}>
+                  <span key={type} className={`badge full-width type-${type.toLowerCase()}`}>
                     {type}
                   </span>
                 ))}

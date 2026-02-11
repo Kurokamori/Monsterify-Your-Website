@@ -476,26 +476,26 @@ const Bakery = () => {
                         {monster.species3 && ` + ${monster.species3}`}
                       </div>
                       <div className="monster-types">
-                        <span className={`type-badge type-${monster.type1?.toLowerCase()}`}>
+                        <span className={`badge type-${monster.type1?.toLowerCase()}`}>
                           {monster.type1}
                         </span>
                         {monster.type2 && (
-                          <span className={`type-badge type-${monster.type2.toLowerCase()}`}>
+                          <span className={`badge type-${monster.type2.toLowerCase()}`}>
                             {monster.type2}
                           </span>
                         )}
                         {monster.type3 && (
-                          <span className={`type-badge type-${monster.type3.toLowerCase()}`}>
+                          <span className={`badge type-${monster.type3.toLowerCase()}`}>
                             {monster.type3}
                           </span>
                         )}
                         {monster.type4 && (
-                          <span className={`type-badge type-${monster.type4.toLowerCase()}`}>
+                          <span className={`badge type-${monster.type4.toLowerCase()}`}>
                             {monster.type4}
                           </span>
                         )}
                         {monster.type5 && (
-                          <span className={`type-badge type-${monster.type5.toLowerCase()}`}>
+                          <span className={`badge type-${monster.type5.toLowerCase()}`}>
                             {monster.type5}
                           </span>
                         )}
@@ -557,7 +557,7 @@ const Bakery = () => {
 
                   <div className="berry-filters">
                     <h4>Filter by Category (stackable)</h4>
-                    <div className="type-tags">
+                    <div className="type-tags fw">
                       <button
                         className={`button filter ${pastryFilters.type ? 'active' : ''}`}
                         onClick={() => toggleFilter('type')}
@@ -604,7 +604,7 @@ const Bakery = () => {
                   </div>
 
                   <div className="berry-categories">
-                    <div className="fandom-grid">
+                    <div className="container vertical gap-md">
                       <h4>Species Modification</h4>
                       <div className="berry-items">
                         <button
@@ -655,7 +655,7 @@ const Bakery = () => {
                       </div>
                     </div>
 
-                    <div className="fandom-grid">
+                    <div className="container vertical gap-md">
                       <h4>Type Modification</h4>
                       <div className="berry-items">
                         <button
@@ -742,7 +742,7 @@ const Bakery = () => {
                       </div>
                     </div>
 
-                    <div className="fandom-grid">
+                    <div className="container vertical gap-md">
                       <h4>Attribute Modification</h4>
                       <div className="berry-items">
                         <button

@@ -454,7 +454,7 @@ const ArtSubmissionCalculator = ({
     <div className="art-calculator">
       <div className="calculator-section">
         <h3>Image Quality</h3>
-        <div className="type-tags">
+        <div className="type-tags fw">
           <label>
             <input
               type="radio"

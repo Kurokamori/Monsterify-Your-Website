@@ -35,15 +35,6 @@
    2. ANIMATIONS
    ============================================================================= */
 
-@keyframes spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
 @keyframes cardFadeIn {
   from {
     opacity: 0;
@@ -97,14 +88,7 @@
   }
 }
 
-@keyframes starter-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
+/* Note: starter-spin removed - use 'spin' animation instead */
 
 @keyframes pulse {
   0%, 100% {
@@ -160,12 +144,6 @@
 
 /* Reduced motion preference */
 @media (prefers-reduced-motion: reduce) {
-  @keyframes spin {
-    from, to {
-      transform: rotate(0deg);
-    }
-  }
-
   @keyframes pulse {
     from, to {
       opacity: 1;

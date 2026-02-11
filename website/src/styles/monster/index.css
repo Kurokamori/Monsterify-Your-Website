@@ -1,33 +1,37 @@
 /* =============================================================================
    MONSTER STYLES - Main Entry Point
    =============================================================================
-   This file imports all monster-related styles organized by category.
+   Imports all monster-related styles organized by category.
 
-   Structure:
-   - cards.css: Base card styles, variants, headers, images, body/info
-   - badges.css: Type and attribute badges
-   - stats.css: Stats display and Pokemon-style stats
-   - search-filters.css: Search bars and filter controls
+   Core Components:
+   - cards.css: Base card styles, variants, headers, images
+   - stats.css: Stats display and Pokemon-style compact stats
+
+   Layout & Navigation:
    - grids.css: Grid layouts for monster displays
+   - search-filters.css: Search bars and filter controls
    - selector.css: Monster selector component
    - pc-box.css: PC box storage system and box previews
+
+   Detail Page:
    - detail-page.css: Monster detail page, sidebar, info panels
    - moves.css: Moves panel and move cards
    - evolution.css: Evolution displays and controls
    - biography.css: Biography, preferences, lineage
    - gallery.css: Monster gallery
    - mega-evolution.css: Mega evolution displays
+
+   Forms & Interactions:
    - forms.css: Forms, inputs, mass edit modal
    - starter.css: Starter selection
    - species.css: Species selection modal
-   - buttons.css: Action buttons
-   - utilities.css: Utilities, empty states, animations
-   - responsive.css: Responsive breakpoints
+
+   Utilities:
+   - utilities.css: Empty states, animations
    ============================================================================= */
 
 /* Core card components */
 @import './cards.css';
-@import './badges.css';
 @import './stats.css';
 
 /* Layout and navigation */

@@ -462,7 +462,7 @@ const AdventureCreationForm = ({ onAdventureCreated }) => {
                           {selectedTrainer && userInventory && (
                             <div className="trainer-inventory">
                               <span className="inventory-label">You have:</span>
-                              <span className={`inventory-count${
+                              <span className={`inventory-count ${
                                 hasRequiredItems(areaRequirements, userInventory)?.missionMandate ? 'has-item' : 'missing-item'
                               }`}>
                                 {hasRequiredItems(areaRequirements, userInventory)?.missionMandateQuantity || 0}
@@ -484,7 +484,7 @@ const AdventureCreationForm = ({ onAdventureCreated }) => {
                           {selectedTrainer && userInventory && (
                             <div className="trainer-inventory">
                               <span className="inventory-label">You have:</span>
-                              <span className={`inventory-count${
+                              <span className={`inventory-count ${
                                 hasRequiredItems(areaRequirements, userInventory)?.specificItem ? 'has-item' : 'missing-item'
                               }`}>
                                 {hasRequiredItems(areaRequirements, userInventory)?.specificItemQuantity || 0}

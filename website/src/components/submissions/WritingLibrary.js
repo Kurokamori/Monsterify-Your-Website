@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import submissionService from '../../services/submissionService';
 import LoadingSpinner from '../common/LoadingSpinner';
 import ErrorMessage from '../common/ErrorMessage';
+import MatureContentFilter from './MatureContentFilter';
+import AutocompleteInput from '../common/AutocompleteInput';
 
 
 // Strip markdown formatting and return first ~40 words with ellipsis
@@ -54,16 +56,25 @@ const WritingLibrary = () => {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [contentTypeFilter, setContentTypeFilter] = useState('all');
-  const [tagFilter, setTagFilter] = useState('');
+  const [tagFilters, setTagFilters] = useState([]);
+  const [tagInputValue, setTagInputValue] = useState('');
   const [availableTags, setAvailableTags] = useState([]);
   const [sortBy, setSortBy] = useState('newest');
   const [showBooksOnly, setShowBooksOnly] = useState(false);
+  const [showMature, setShowMature] = useState(false);
+  const [matureFilters, setMatureFilters] = useState({
+    gore: true,
+    nsfw_light: true,
+    nsfw_heavy: true,
+    triggering: true,
+    intense_violence: true
+  });
 
   // Fetch writings
   useEffect(() => {
     fetchWritings();
     fetchTags();
-  }, [page, contentTypeFilter, tagFilter, sortBy, showBooksOnly]);
+  }, [page, contentTypeFilter, tagFilters, sortBy, showBooksOnly, showMature, matureFilters]);
 
   const fetchWritings = async () => {
     try {
@@ -72,15 +83,16 @@ const WritingLibrary = () => {
       const params = {
         page,
         limit: 12,
-        sort: sortBy
+        sort: sortBy,
+        showMature
       };
 
       if (contentTypeFilter !== 'all') {
         params.contentType = contentTypeFilter;
       }
 
-      if (tagFilter) {
-        params.tag = tagFilter;
+      if (tagFilters.length > 0) {
+        params.tags = tagFilters.join(',');
       }
 
       // Filter by books only or exclude chapters
@@ -89,6 +101,10 @@ const WritingLibrary = () => {
       } else {
         // By default, hide chapters (they should be viewed within their books)
         params.excludeChapters = true;
+      }
+
+      if (showMature) {
+        params.matureFilters = JSON.stringify(matureFilters);
       }
 
       const response = await submissionService.getWritingLibrary(params);
@@ -182,9 +198,40 @@ const WritingLibrary = () => {
   // Reset filters
   const resetFilters = () => {
     setContentTypeFilter('all');
-    setTagFilter('');
+    setTagFilters([]);
+    setTagInputValue('');
     setSortBy('newest');
+    setShowBooksOnly(false);
+    setShowMature(false);
+    setMatureFilters({
+      gore: true,
+      nsfw_light: true,
+      nsfw_heavy: true,
+      triggering: true,
+      intense_violence: true
+    });
     setPage(1);
+  };
+
+  // Handle tag selection from autocomplete
+  const handleTagSelect = (option) => {
+    const tagName = option.name;
+    if (tagName && !tagFilters.includes(tagName)) {
+      setTagFilters(prev => [...prev, tagName]);
+      setPage(1);
+    }
+    setTagInputValue('');
+  };
+
+  // Handle tag removal
+  const handleRemoveTag = (tagToRemove) => {
+    setTagFilters(prev => prev.filter(tag => tag !== tagToRemove));
+    setPage(1);
+  };
+
+  // Handle mature filter change
+  const handleMatureFilterChange = (type, value) => {
+    setMatureFilters(prev => ({ ...prev, [type]: value }));
   };
 
   // Format word count
@@ -308,16 +355,15 @@ const WritingLibrary = () => {
 
         <div className="set-item">
           <label htmlFor="tag-filter">Tag:</label>
-          <select
+          <AutocompleteInput
             id="tag-filter"
-            value={tagFilter}
-            onChange={(e) => setTagFilter(e.target.value)}
-          >
-            <option value="">All Tags</option>
-            {availableTags.map(tag => (
-              <option key={tag} value={tag}>{tag}</option>
-            ))}
-          </select>
+            name="tag-filter"
+            value={tagInputValue}
+            onChange={(e) => setTagInputValue(e.target.value)}
+            options={Array.isArray(availableTags) ? availableTags.filter(tag => !tagFilters.includes(tag)) : []}
+            placeholder="Search tags..."
+            onSelect={handleTagSelect}
+          />
         </div>
 
         <div className="set-item">
@@ -345,6 +391,13 @@ const WritingLibrary = () => {
           </label>
         </div>
 
+        <MatureContentFilter
+          showMature={showMature}
+          onShowMatureChange={setShowMature}
+          activeFilters={matureFilters}
+          onFilterChange={handleMatureFilterChange}
+        />
+
         <div className="filter-actions">
           <button
             className="button filter apply"
@@ -360,6 +413,28 @@ const WritingLibrary = () => {
           </button>
         </div>
       </div>
+
+      {/* Selected Tags Row */}
+      {tagFilters.length > 0 && (
+        <div className="selected-tags-row">
+          <span className="selected-tags-label">Active Tags:</span>
+          <div className="selected-tags-list">
+            {tagFilters.map(tag => (
+              <span key={tag} className="selected-tag">
+                {tag}
+                <button
+                  type="button"
+                  className="selected-tag-remove"
+                  onClick={() => handleRemoveTag(tag)}
+                  aria-label={`Remove ${tag} tag`}
+                >
+                  <i className="fas fa-times"></i>
+                </button>
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Library Grid */}
       <div className="town-places library-grid">
@@ -393,7 +468,7 @@ const WritingLibrary = () => {
               ) : (
                 <div className="library-item-text-cover">
                   <div className="library-item-text-cover-icon">
-                    <i className={`fas${writing.is_book ? 'fa-book' : 'fa-feather-alt'}`}></i>
+                    <i className={`fas ${writing.is_book ? 'fa-book' : 'fa-feather-alt'}`}></i>
                   </div>
                   <h4 className="gallery-item-title">{writing.title}</h4>
                   <p className="gallery-item-artist">
@@ -448,7 +523,7 @@ const WritingLibrary = () => {
 
       {/* Pagination */}
       {totalPages > 1 && (
-        <div className="type-tags">
+        <div className="type-tags fw">
           <button
             className="button secondary"
             onClick={() => handlePageChange(page - 1)}

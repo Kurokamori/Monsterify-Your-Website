@@ -162,7 +162,7 @@ const AdventuresOverview = () => {
             </div>
             <div className="mission-info">
               <h3 className="mission-title">Forest Expedition</h3>
-              <div className="adopts-grid">
+              <div className="container grid gap-md">
                 <span className="mission-difficulty easy">
                   <i className="fas fa-star"></i> Easy
                 </span>
@@ -190,7 +190,7 @@ const AdventuresOverview = () => {
             </div>
             <div className="mission-info">
               <h3 className="mission-title">Mountain Rescue</h3>
-              <div className="adopts-grid">
+              <div className="container grid gap-md">
                 <span className="mission-difficulty medium">
                   <i className="fas fa-star"></i> Medium
                 </span>
@@ -231,7 +231,7 @@ const AdventuresOverview = () => {
             </div>
             <div className="boss-info">
               <h3 className="boss-title">Dragon Lord</h3>
-              <div className="type-tags">
+              <div className="type-tags fw">
                 <span className="boss-difficulty hard">
                   <i className="fas fa-skull"></i> Hard
                 </span>

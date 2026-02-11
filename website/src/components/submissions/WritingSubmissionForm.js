@@ -8,9 +8,10 @@ import ErrorMessage from '../common/ErrorMessage';
 import GiftRewards from './GiftRewards';
 import WritingSubmissionCalculator from './WritingSubmissionCalculator';
 import LevelCapReallocation from './LevelCapReallocation';
+import MatureContentCheckbox from './MatureContentCheckbox';
 
 
-const WritingSubmissionForm = ({ onSubmissionComplete }) => {
+const WritingSubmissionForm = ({ onSubmissionComplete, preselectedBookId }) => {
   const { currentUser } = useAuth();
 
   // Form state
@@ -19,6 +20,14 @@ const WritingSubmissionForm = ({ onSubmissionComplete }) => {
   const [contentType, setContentType] = useState('story');
   const [tags, setTags] = useState([]);
   const [tagInput, setTagInput] = useState('');
+  const [isMature, setIsMature] = useState(false);
+  const [contentRating, setContentRating] = useState({
+    gore: false,
+    nsfw_light: false,
+    nsfw_heavy: false,
+    triggering: false,
+    intense_violence: false
+  });
   const [content, setContent] = useState('');
   const [contentFile, setContentFile] = useState(null);
   const [contentUrl, setContentUrl] = useState('');
@@ -131,6 +140,18 @@ const WritingSubmissionForm = ({ onSubmissionComplete }) => {
       fetchUserBooks();
     }
   }, [currentUser]);
+
+  // Pre-select book if preselectedBookId is provided (for "Add Chapter" flow)
+  useEffect(() => {
+    if (preselectedBookId && userBooks.length > 0) {
+      const bookExists = userBooks.some(book => String(book.id) === String(preselectedBookId));
+      if (bookExists) {
+        setBelongsToBook(true);
+        setSelectedBookId(String(preselectedBookId));
+        setContentType('chapter');
+      }
+    }
+  }, [preselectedBookId, userBooks]);
 
   // Fetch all trainers for monster selection
   useEffect(() => {
@@ -324,6 +345,8 @@ const WritingSubmissionForm = ({ onSubmissionComplete }) => {
         isBook: isBook ? 1 : 0,
         parentId: belongsToBook && selectedBookId ? parseInt(selectedBookId) : null,
         chapterNumber: belongsToBook && chapterNumber ? parseInt(chapterNumber) : null,
+        isMature,
+        contentRating,
         ...dataToSend
       };
 
@@ -974,6 +997,17 @@ const WritingSubmissionForm = ({ onSubmissionComplete }) => {
           )}
         </div>
 
+        {/* Content Rating */}
+        <div className="form-section">
+          <h3>Content Rating</h3>
+          <MatureContentCheckbox
+            isMature={isMature}
+            contentRating={contentRating}
+            onMatureChange={setIsMature}
+            onRatingChange={setContentRating}
+          />
+        </div>
+
         {/* Content - hidden in book mode */}
         {!isBook && (
           <div className="form-section">
@@ -981,7 +1015,7 @@ const WritingSubmissionForm = ({ onSubmissionComplete }) => {
 
             <div className="form-group">
               <label>Input Method</label>
-              <div className="type-tags">
+              <div className="type-tags fw">
                 <label className="radio-label">
                   <input
                     type="radio"
@@ -1167,7 +1201,7 @@ const WritingSubmissionForm = ({ onSubmissionComplete }) => {
                         </button>
                       </div>
                     </div>
-                    <div className="type-tags">
+                    <div className="type-tags fw">
                       <span>{ch.wordCount} words</span>
                       <span>{(ch.trainers?.length || 0) + (ch.monsters?.length || 0)} participants</span>
                     </div>
@@ -1206,7 +1240,7 @@ const WritingSubmissionForm = ({ onSubmissionComplete }) => {
 
                 <div className="form-group">
                   <label>Input Method</label>
-                  <div className="type-tags">
+                  <div className="type-tags fw">
                     <label className="radio-label">
                       <input
                         type="radio"
@@ -1375,7 +1409,7 @@ const WritingSubmissionForm = ({ onSubmissionComplete }) => {
 
                 <div className="reward-section">
                   <h5>Trainer Rewards</h5>
-                  <div className="fandom-grid">
+                  <div className="container cols-2 gap-md">
                     <div className="reward-item">
                       <span className="reward-label">Levels:</span>
                       <span className="reward-value">{rewardEstimate.levels}</span>
@@ -1389,7 +1423,7 @@ const WritingSubmissionForm = ({ onSubmissionComplete }) => {
 
                 <div className="reward-section">
                   <h5>Additional Rewards</h5>
-                  <div className="fandom-grid">
+                  <div className="container cols-2 gap-md">
                     <div className="reward-item">
                       <span className="reward-label">Garden Points:</span>
                       <span className="reward-value">{rewardEstimate.gardenPoints}</span>

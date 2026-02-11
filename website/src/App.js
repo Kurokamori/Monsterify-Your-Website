@@ -21,9 +21,11 @@ import FakemonDetailPage from './pages/fakemon/FakemonDetailPage';
 import StatisticsPage from './pages/statistics/StatisticsPage';
 import GuidesPage from './pages/guides/GuidesPage';
 import InteractiveMap from './pages/guides/InteractiveMap';
+import InteractiveMapUnderConstruction from './pages/guides/InteractiveMapUnderConstruction';
 import TypeCalculatorPage from './pages/guides/TypeCalculatorPage';
 import EvolutionExplorerPage from './pages/guides/EvolutionExplorerPage';
 import AbilityDatabasePage from './pages/guides/AbilityDatabasePage';
+import SpeciesDatabasePage from './pages/guides/SpeciesDatabasePage';
 import LandmassPage from './pages/guides/LandmassPage';
 import RegionPage from './pages/guides/RegionPage';
 import AreaPage from './pages/guides/AreaPage';
@@ -124,16 +126,21 @@ function App() {
         {/* Claim Routes */}
         <Route path="claim/:token" element={<RerollClaimPage />} />
 
-        {/* Interactive Map Routes - Must come before the catch-all guides route */}
+        {/* Interactive Map Routes - Currently under construction */}
+        {/* Original routes preserved but disabled:
         <Route path="guides/interactive-map" element={<InteractiveMap />} />
         <Route path="guides/interactive-map/landmass/:landmassId" element={<LandmassPage />} />
         <Route path="guides/interactive-map/landmass/:landmassId/region/:regionId" element={<RegionPage />} />
         <Route path="guides/interactive-map/landmass/:landmassId/region/:regionId/area/:areaId" element={<AreaPage />} />
+        */}
+        <Route path="guides/interactive-map" element={<InteractiveMapUnderConstruction />} />
+        <Route path="guides/interactive-map/*" element={<InteractiveMapUnderConstruction />} />
         
         {/* Type Calculator Route - Must come before the catch-all guides route */}
         <Route path="guides/type-calculator" element={<TypeCalculatorPage />} />
         <Route path="guides/evolution-explorer" element={<EvolutionExplorerPage />} />
         <Route path="guides/ability-database" element={<AbilityDatabasePage />} />
+        <Route path="guides/species-database" element={<SpeciesDatabasePage />} />
 
         {/* Guide Routes - Catch-all for other guide categories */}
         <Route path="guides/*" element={<GuidesPage />} />

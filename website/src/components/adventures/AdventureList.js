@@ -318,7 +318,7 @@ const AdventureList = ({
       
       {/* Pagination */}
       {showPagination && totalPages > 1 && (
-        <div className="type-tags">
+        <div className="type-tags fw">
           <button
             className="button secondary"
             onClick={() => handlePageChange(page - 1)}

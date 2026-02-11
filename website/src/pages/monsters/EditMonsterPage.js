@@ -442,14 +442,14 @@ const EditMonsterPage = () => {
       <h1>Edit Monster: {monster.name}</h1>
 
       {error && (
-        <div className="alert alert-danger">
+        <div className="alert error">
           <i className="fas fa-exclamation-circle"></i>
           <span>{error}</span>
         </div>
       )}
 
       {success && (
-        <div className="alert alert-success">
+        <div className="alert success">
           <i className="fas fa-check-circle"></i>
           <span>{success}</span>
         </div>
@@ -459,7 +459,7 @@ const EditMonsterPage = () => {
         {/* Basic Information Section */}
         <div className="form-section">
           <h2>Basic Information</h2>
-          <div className="form-grid">
+          <div className="container cols-2 gap-md">
             <div className="form-group">
               <label htmlFor="name">Name</label>
               <input
@@ -494,7 +494,7 @@ const EditMonsterPage = () => {
         {/* Personality Section */}
         <div className="form-section">
           <h2>Personality</h2>
-          <div className="form-grid">
+          <div className="container cols-2 gap-md">
             <div className="form-group">
               <label htmlFor="nature">Nature</label>
               <input
@@ -546,7 +546,7 @@ const EditMonsterPage = () => {
         {/* Physical Characteristics Section */}
         <div className="form-section">
           <h2>Physical Characteristics</h2>
-          <div className="form-grid">
+          <div className="container cols-2 gap-md">
             <div className="form-group">
               <label htmlFor="height">Height</label>
               <input
@@ -575,7 +575,7 @@ const EditMonsterPage = () => {
         {/* Origin Information Section */}
         <div className="form-section">
           <h2>Origin Information</h2>
-          <div className="form-grid">
+          <div className="container cols-2 gap-md">
             <div className="form-group">
               <label htmlFor="where_met">Where Met</label>
               <input
@@ -608,7 +608,7 @@ const EditMonsterPage = () => {
         {/* Special Features Section */}
         <div className="form-section">
           <h2>Special Features</h2>
-          <div className="form-grid">
+          <div className="container cols-2 gap-md">
             <div className="form-group event-date">
               <label className="checkbox-label">
                 <input
@@ -675,7 +675,7 @@ const EditMonsterPage = () => {
         {/* Held Items Section */}
         <div className="form-section">
           <h2>Held Items</h2>
-          <div className="form-grid">
+          <div className="container cols-2 gap-md">
             <div className="form-group">
               <label htmlFor="held_item">Held Item</label>
               <input
@@ -717,7 +717,7 @@ const EditMonsterPage = () => {
         {/* Biography Section */}
         <div className="form-section">
           <h2>Biography</h2>
-          <div className="form-grid">
+          <div className="container cols-2 gap-md">
 
 
             <div className="form-group full-width">
@@ -747,7 +747,7 @@ const EditMonsterPage = () => {
         {/* Images Section */}
         <div className="form-section">
           <h2>Images</h2>
-          <div className="form-grid">
+          <div className="container cols-2 gap-md">
             <div className="form-group full-width">
               <label htmlFor="img_link">Main Image</label>
               <BackendFileUpload
@@ -774,7 +774,7 @@ const EditMonsterPage = () => {
             </div>
           ) : (
             <>
-              <div className="form-grid">
+              <div className="container cols-2 gap-md">
                 <div className="form-group">
                   <label htmlFor="has_mega_stone">Has Mega Stone</label>
                   <div className="event-date">
@@ -808,7 +808,7 @@ const EditMonsterPage = () => {
                 <>
                   <div className="trainer-bio">
                     <h3>Mega Stone Artwork</h3>
-                    <div className="form-grid">
+                    <div className="container cols-2 gap-md">
                       <div className="form-group full-width">
                         <BackendFileUpload
                           onUploadSuccess={handleMegaStoneUpload}
@@ -825,7 +825,7 @@ const EditMonsterPage = () => {
 
                   <div className="trainer-bio">
                     <h3>Mega Evolution Form</h3>
-                    <div className="form-grid">
+                    <div className="container cols-2 gap-md">
 
 
                       <div className="form-group">
@@ -909,7 +909,7 @@ const EditMonsterPage = () => {
 
                   <div className="mega-image-section">
                     <h3>Mega Evolution Image</h3>
-                    <div className="form-grid">
+                    <div className="container cols-2 gap-md">
                       <div className="form-group full-width">
                         <BackendFileUpload
                           onUploadSuccess={handleMegaImageUpload}
@@ -932,7 +932,7 @@ const EditMonsterPage = () => {
         {/* Personal Information Section */}
         <div className="form-section">
           <h2>Personal Information</h2>
-          <div className="form-grid">
+          <div className="container cols-2 gap-md">
             <div className="form-group">
               <label htmlFor="likes">Likes</label>
               <textarea
@@ -991,7 +991,7 @@ const EditMonsterPage = () => {
                     </button>
                   </div>
 
-                  <div className="form-grid">
+                  <div className="container cols-2 gap-md">
                     <div className="form-group">
                       <label>Title</label>
                       <input
@@ -1046,14 +1046,14 @@ const EditMonsterPage = () => {
                     <h3>Relation #{index + 1}</h3>
                     <button
                       type="button"
-                      className="button icon danger"
+                      className="button icon danger sm"
                       onClick={() => handleRemoveRelation(relation.id)}
                     >
                       <i className="fas fa-trash-alt"></i>
                     </button>
                   </div>
 
-                  <div className="form-grid">
+                  <div className="container cols-2 gap-md">
                     <div className="form-group">
                       <label>Type</label>
                       <select

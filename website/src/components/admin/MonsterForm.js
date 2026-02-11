@@ -364,7 +364,7 @@ const MonsterForm = ({ monster, personId, position, onSave, onCancel }) => {
                 {attributes.map(attr => (
                   <label
                     key={attr.value}
-                    className={`attribute-option${formData.attribute === attr.value ? 'selected' : ''}`}
+                    className={`attribute-option ${formData.attribute === attr.value ? 'selected' : ''}`}
                   >
                     <input
                       type="radio"
@@ -507,7 +507,7 @@ const MonsterForm = ({ monster, personId, position, onSave, onCancel }) => {
           </div>
 
           {error && (
-            <div className="alert alert-danger">
+            <div className="alert error">
               <i className="fas fa-exclamation-triangle"></i>
               {error}
             </div>

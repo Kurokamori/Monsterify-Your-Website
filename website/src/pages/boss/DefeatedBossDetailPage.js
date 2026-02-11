@@ -443,7 +443,7 @@ const DefeatedBossDetailPage = () => {
                   <div className="map-filters">
                     <div className="attribute-section">
                       <h5><i className="fas fa-dna"></i> Species</h5>
-                      <div className="type-tags">
+                      <div className="type-tags fw">
                         {currentReward.monster_data.species && currentReward.monster_data.species.map((species, index) => (
                           <span key={index} className="attribute-tag species-tag">
                             {species}
@@ -454,7 +454,7 @@ const DefeatedBossDetailPage = () => {
                     
                     <div className="attribute-section">
                       <h5><i className="fas fa-magic"></i> Types</h5>
-                      <div className="type-tags">
+                      <div className="type-tags fw">
                         {currentReward.monster_data.types && currentReward.monster_data.types.map((type, index) => (
                           <span key={index} className="attribute-tag type-tag">
                             {type}
@@ -465,7 +465,7 @@ const DefeatedBossDetailPage = () => {
                     
                     <div className="attribute-section">
                       <h5><i className="fas fa-star"></i> Attribute</h5>
-                      <div className="type-tags">
+                      <div className="type-tags fw">
                         <span className="attribute-tag primary-attribute-tag">
                           {currentReward.monster_data.attribute}
                         </span>

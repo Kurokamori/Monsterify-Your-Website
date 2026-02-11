@@ -64,10 +64,10 @@ const RerollerSessionsPage = () => {
   // Get status badge class
   const getStatusClass = (status) => {
     switch (status) {
-      case 'active': return 'status-badge active';
-      case 'claimed': return 'status-badge defeated';
-      case 'cancelled': return 'status-badge';
-      default: return 'status-badge';
+      case 'active': return 'badge active';
+      case 'claimed': return 'badge defeated';
+      case 'cancelled': return 'badge neutral';
+      default: return 'badge neutral';
     }
   };
 
@@ -138,7 +138,7 @@ const RerollerSessionsPage = () => {
                   <tr key={session.id} className="sessions-table-row">
                     <td>#{session.id}</td>
                     <td>
-                      <span className="roll-type-badge">
+                      <span className="roll-badge">
                         {getRollTypeLabel(session.rollType)}
                       </span>
                     </td>

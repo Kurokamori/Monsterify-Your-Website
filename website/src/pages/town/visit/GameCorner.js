@@ -805,7 +805,7 @@ const GameCorner = () => {
                        reward.type === 'level' ? `${reward.reward_data.levels} level${reward.reward_data.levels > 1 ? 's' : ''}` :
                        'Mystery reward'}
                     </div>
-                    <div className={`reward-rarity${reward.rarity}`}>
+                    <div className={`badge ${reward.rarity}`}>
                       {reward.rarity.charAt(0).toUpperCase() + reward.rarity.slice(1)}
                     </div>
                     <div className="reward-assigned">

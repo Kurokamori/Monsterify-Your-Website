@@ -8,6 +8,7 @@
 
 /* Submissions */
 @import './SubmissionStyles.css';
+@import './MySubmissions.css';
 
 /* Prompts */
 @import './PromptCard.css';
@@ -17,6 +18,9 @@
 
 /* Profile */
 @import './ProfilePageStyles.css';
+
+/* Art Todo */
+@import './art-todo.css';
 
 /* Statistics */
 @import './StatisticsStyles.css';

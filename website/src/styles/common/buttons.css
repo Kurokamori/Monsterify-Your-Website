@@ -41,6 +41,7 @@
   text-align: center;
   text-decoration: none;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
+  min-width: fit-content;
 }
 
 .button.vertical {
@@ -193,6 +194,11 @@
 /* ---------- Text Type Modifier ---------- */
 .button.between {
   justify-content: space-between;
+}
+
+.button.strong {
+  font-weight: 600;
+  font-size: 1rem;
 }
 
 /* ---------- Icon Button ---------- */
@@ -363,5 +369,313 @@
 .button.lift:hover:not(:disabled) {
   transform: translateY(-2px);
   box-shadow: 0 4px 12px var(--overlay-medium);
+}
+
+/* ==============================================
+   RESPONSIVE STYLES
+   ============================================== */
+
+/* ---------- Large Desktop (1200px+) - Default styles above ---------- */
+
+/* ---------- Medium Desktop/Laptop (1024px - 1199px) ---------- */
+@media (max-width: 1199px) {
+  .button {
+    padding: 0.625rem 0.875rem;
+    font-size: 0.875rem;
+    gap: 0.5rem;
+  }
+
+  .button.lg {
+    padding: 0.625rem 1.25rem;
+    font-size: 0.95rem;
+  }
+
+  .button.tab {
+    padding: 0.625rem 1.25rem;
+  }
+}
+
+/* ---------- Small Desktop/Large Tablet (768px - 1023px) ---------- */
+@media (max-width: 1023px) {
+  .button {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.85rem;
+    gap: 0.4rem;
+  }
+
+  .button.lg {
+    padding: 0.625rem 1rem;
+    font-size: 0.9rem;
+  }
+
+  .button.tab {
+    padding: 0.5rem 1rem;
+    font-size: 0.85rem;
+  }
+
+  .button.icon {
+    width: 2.25rem;
+    height: 2.25rem;
+  }
+
+  .button.icon.lg {
+    width: 2.75rem;
+    height: 2.75rem;
+  }
+
+  .button.quantity {
+    width: 2.25rem;
+    height: 2.25rem;
+  }
+
+  /* Touch-friendly minimum size */
+  .button:not(.sm):not(.icon) {
+    min-height: 44px;
+  }
+}
+
+/* ---------- Tablet Portrait (600px - 767px) ---------- */
+@media (max-width: 767px) {
+  .button {
+    padding: 0.5rem 0.625rem;
+    font-size: 0.8rem;
+    gap: 0.35rem;
+    flex: none;
+  }
+
+  .button.lg {
+    padding: 0.5rem 0.875rem;
+    font-size: 0.875rem;
+  }
+
+  .button.tab {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.8rem;
+  }
+
+  .button.icon {
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+
+  .button.icon.sm {
+    width: 2rem;
+    height: 2rem;
+  }
+
+  .button.icon.lg {
+    width: 3rem;
+    height: 3rem;
+  }
+
+  .button.quantity {
+    width: 2.5rem;
+    height: 2.5rem;
+    font-size: 1rem;
+  }
+
+  .button.close {
+    width: 2.5rem;
+    height: 2.5rem;
+    font-size: 1.25rem;
+  }
+
+  /* Touch-friendly for mobile */
+  .button:not(.sm):not(.icon) {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  /* Full width buttons on mobile for primary actions */
+  .button.block-mobile {
+    width: 100%;
+  }
+
+  /* Stack vertical button groups */
+  .button-group {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .button-group .button {
+    width: 100%;
+  }
+
+  /* Disable hover transform on touch devices */
+  .button:hover:not(:disabled) {
+    transform: none;
+  }
+
+  .button.lift:hover:not(:disabled) {
+    transform: none;
+  }
+}
+
+/* ---------- Large Phone (480px - 599px) ---------- */
+@media (max-width: 599px) {
+  .button {
+    padding: 0.5rem;
+    font-size: 0.75rem;
+    gap: 0.25rem;
+  }
+
+  .button.lg {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.8rem;
+  }
+
+  .button.sm {
+    padding: 0.25rem 0.375rem;
+    font-size: 0.7rem;
+  }
+
+  .button.tab {
+    padding: 0.375rem 0.5rem;
+    font-size: 0.75rem;
+  }
+
+  /* Ensure minimum touch target */
+  .button.icon,
+  .button.quantity,
+  .button.close {
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  /* Hide button text on small screens when icon is present */
+  .button.icon-only-mobile .button-text {
+    display: none;
+  }
+
+  .button.icon-only-mobile {
+    padding: 0.5rem;
+    width: auto;
+  }
+}
+
+/* ---------- Small Phone (320px - 479px) ---------- */
+@media (max-width: 479px) {
+  .button {
+    padding: 0.375rem 0.5rem;
+    font-size: 0.7rem;
+    gap: 0.2rem;
+  }
+
+  .button.lg {
+    padding: 0.5rem 0.625rem;
+    font-size: 0.75rem;
+  }
+
+  .button.tab {
+    padding: 0.375rem 0.5rem;
+    font-size: 0.7rem;
+  }
+
+  /* Full width for all primary buttons on very small screens */
+  .button.primary:not(.icon):not(.sm) {
+    width: 100%;
+  }
+
+  /* Compact filter buttons */
+  .button.filter {
+    padding: 0.375rem 0.5rem;
+    font-size: 0.7rem;
+  }
+
+  .button.toggle {
+    padding: 0.375rem 0.5rem;
+    font-size: 0.7rem;
+  }
+}
+
+/* ---------- Ultra Small Screens (below 320px) ---------- */
+@media (max-width: 319px) {
+  .button {
+    padding: 0.375rem;
+    font-size: 0.65rem;
+  }
+
+  .button.lg {
+    padding: 0.375rem 0.5rem;
+    font-size: 0.7rem;
+  }
+
+  .button.sm {
+    padding: 0.25rem;
+    font-size: 0.6rem;
+  }
+}
+
+/* ---------- Accessibility: Reduced Motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .button {
+    transition: none;
+  }
+
+  .button:hover:not(:disabled) {
+    transform: none;
+  }
+
+  .button.icon:hover:not(:disabled) {
+    transform: none;
+  }
+
+  .button.lift:hover:not(:disabled) {
+    transform: none;
+  }
+}
+
+/* ---------- Touch Device Optimizations ---------- */
+@media (hover: none) and (pointer: coarse) {
+  .button:hover:not(:disabled) {
+    transform: none;
+    box-shadow: none;
+  }
+
+  .button.icon:hover:not(:disabled) {
+    transform: none;
+  }
+
+  .button:active:not(:disabled) {
+    transform: scale(0.98);
+    opacity: 0.9;
+  }
+
+  /* Larger touch targets */
+  .button:not(.sm):not(.icon) {
+    min-height: 44px;
+  }
+}
+
+/* ---------- High Contrast Mode ---------- */
+@media (prefers-contrast: high) {
+  .button {
+    border-width: 2px;
+  }
+
+  .button.outline {
+    border-width: 2px;
+  }
+
+  .button:focus {
+    outline: 3px solid var(--accent-color);
+    outline-offset: 2px;
+  }
+}
+
+/* ---------- Landscape Phone Orientation ---------- */
+@media (max-width: 767px) and (orientation: landscape) {
+  .button {
+    padding: 0.375rem 0.625rem;
+    font-size: 0.75rem;
+  }
+
+  .button.lg {
+    padding: 0.5rem 0.875rem;
+  }
+
+  .button:not(.sm):not(.icon) {
+    min-height: 36px;
+  }
 }
 

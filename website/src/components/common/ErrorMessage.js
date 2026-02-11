@@ -8,7 +8,7 @@ const ErrorMessage = ({
   return (
     <div className="error-container">
       <i className="fas fa-exclamation-circle"></i>
-      <p className="error-message">{message}</p>
+      <p className="alert error">{message}</p>
       <div className="stat-group">
         {onRetry && (
           <button onClick={onRetry} className="button primary">

@@ -171,7 +171,11 @@ const StarterSelectionPage = () => {
           <div className="starter-empty-state">
             <h2>Loading starter monsters...</h2>
             <div className="evolution-attribute">
-              <div className="starter-spinner"></div>
+              <div className="spinner-dots lg">
+                {[...Array(8)].map((_, i) => (
+                  <div key={i} className="spinner-dot"></div>
+                ))}
+              </div>
             </div>
           </div>
         );
@@ -345,7 +349,7 @@ const StarterSelectionPage = () => {
             return (
               <button
                 key={index}
-                className={`button${currentStep === index ? 'active' : ''}${isCompleted ? 'completed' : ''}`}
+                className={`button ${currentStep === index ? 'active' : ''}${isCompleted ? 'completed' : ''}`}
                 onClick={() => setCurrentStep(index)}
                 disabled={isDisabled || submitting}
               >
@@ -360,7 +364,7 @@ const StarterSelectionPage = () => {
         </div>
         <div className="starter-progress-track">
           <div
-            className="progress-bar"
+            className="progress-fill primary"
             style={{ width: `${(currentStep / 3) * 100}%` }}
           ></div>
         </div>

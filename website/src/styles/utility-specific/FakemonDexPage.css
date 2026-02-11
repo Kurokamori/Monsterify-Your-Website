@@ -5,6 +5,10 @@
    ========================= */
 
 /* ========== Containers (shared) ========== */
+.fakedex-container {
+  max-width: 90vw;
+  margin: 0 auto;
+}
 
 /* ========== Dex: Header ========== */
 .fakedex-header {
@@ -184,9 +188,6 @@
 
 /* ========== Pagination ========== */
 
-/* ========== Loading & Errors ========== */
-@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
 /* ========== Stat Bar Colors (shared) ========== */
 .hp-bar { background-color: var(--error-color); }
 .attack-bar { background-color: var(--fire-type); }
@@ -213,6 +214,7 @@
   box-shadow: 0 10px 30px var(--overlay-dark);
   position: relative;
   overflow: hidden;
+  justify-content: center;
 }
 
 .fakedex-container .fakemon-hero::before {
@@ -514,6 +516,7 @@
 .evo-tree-node {
   display: flex;
   align-items: center;
+  justify-content: center;
   flex-shrink: 0;
 }
 

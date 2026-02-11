@@ -1361,7 +1361,7 @@ const TrainerDetailPage = () => {
             <div className="trainer-monster-stats">
               <i className="fas fa-coins"></i>
               <span>
-                Current : {trainer.currency_amount || 0} Total Earned : {trainer.total_earned_currency || 0}
+                Current : {trainer.currency_amount || 0} <br />Total Earned : {trainer.total_earned_currency || 0}
               </span>
             </div>
             
@@ -1385,13 +1385,13 @@ const TrainerDetailPage = () => {
                     <span className="info-label">Species</span>
                     <div className="attribute-column">
                       {trainer.species1 && (
-                        <span className="type-badge">{trainer.species1}</span>
+                        <span className="badge secondary">{trainer.species1}</span>
                       )}
                       {trainer.species2 && (
-                        <span className="type-badge">{trainer.species2}</span>
+                        <span className="badge secondary">{trainer.species2}</span>
                       )}
                       {trainer.species3 && (
-                        <span className="type-badge">{trainer.species3}</span>
+                        <span className="badge secondary">{trainer.species3}</span>
                       )}
                     </div>
                   </div>
@@ -1403,32 +1403,32 @@ const TrainerDetailPage = () => {
                     <span className="info-label">Type</span>
                     <div className="mega-types types-grid">
                       {trainer.type1 && (
-                        <span className={`trainer-type-badge type-${trainer.type1?.toLowerCase() || 'normal'}`}>
+                        <span className={`badge full-width type-${trainer.type1?.toLowerCase() || 'normal'}`}>
                           {trainer.type1}
                         </span>
                       )}
                       {trainer.type2 && (
-                        <span className={`trainer-type-badge type-${trainer.type2.toLowerCase()}`}>
+                        <span className={`badge full-width type-${trainer.type2.toLowerCase()}`}>
                           {trainer.type2}
                         </span>
                       )}
                       {trainer.type3 && (
-                        <span className={`trainer-type-badge type-${trainer.type3.toLowerCase()}`}>
+                        <span className={`badge full-width type-${trainer.type3.toLowerCase()}`}>
                           {trainer.type3}
                         </span>
                       )}
                       {trainer.type4 && (
-                        <span className={`trainer-type-badge type-${trainer.type4.toLowerCase()}`}>
+                        <span className={`badge full-width type-${trainer.type4.toLowerCase()}`}>
                           {trainer.type4}
                         </span>
                       )}
                       {trainer.type5 && (
-                        <span className={`trainer-type-badge type-${trainer.type5.toLowerCase()}`}>
+                        <span className={`badge full-width type-${trainer.type5.toLowerCase()}`}>
                           {trainer.type5}
                         </span>
                       )}
                       {trainer.type6 && (
-                        <span className={`trainer-type-badge type-${trainer.type6.toLowerCase()}`}>
+                        <span className={`badge full-width type-${trainer.type6.toLowerCase()}`}>
                           {trainer.type6}
                         </span>
                       )}
@@ -1446,7 +1446,7 @@ const TrainerDetailPage = () => {
                     <div className="attribute-item">
                       <span className="info-label">Ability</span>
                       <div>
-                        <span className="type-badge">{trainer.ability}</span>
+                        <span className="badge secondary full-width">{trainer.ability}</span>
                       </div>
                     </div>
                   )}
@@ -1459,7 +1459,7 @@ const TrainerDetailPage = () => {
                         {trainer.nature && (
                           <div className="nature-characteristic-column">
                             <span className="info-label">Nature</span>
-                            <span className="type-badge">{trainer.nature}</span>
+                            <span className="badge secondary">{trainer.nature}</span>
                           </div>
                         )}
 
@@ -1467,7 +1467,7 @@ const TrainerDetailPage = () => {
                         {trainer.characteristic && (
                           <div className="nature-characteristic-column">
                             <span className="info-label">Characteristic</span>
-                            <span className="type-badge">{trainer.characteristic}</span>
+                            <span className="badge secondary">{trainer.characteristic}</span>
                           </div>
                         )}
                       </div>
@@ -1597,19 +1597,19 @@ const TrainerDetailPage = () => {
                             <h2 className="monster-name">{monster.name}</h2>
                             <p className="monster-level">Level: {monster.level}</p>
                           </div>
-                          <div className="trainer-type-badges"> 
-                            <span className={`trainer-type-badge type-${monster.type1?.toLowerCase() || 'normal'}`}></span>
+                          <div className="badge full-widths"> 
+                            <span className={`badge full-width type-${monster.type1?.toLowerCase() || 'normal'}`}></span>
                             {monster.type2 && (
-                              <span className={`trainer-type-badge type-${monster.type2?.toLowerCase()}`}></span>
+                              <span className={`badge full-width type-${monster.type2?.toLowerCase()}`}></span>
                             )}
                             {monster.type3 && (
-                              <span className={`trainer-type-badge type-${monster.type3?.toLowerCase()}`}></span>
+                              <span className={`badge full-width type-${monster.type3?.toLowerCase()}`}></span>
                             )}
                             {monster.type4 && (
-                              <span className={`trainer-type-badge type-${monster.type4?.toLowerCase()}`}></span>
+                              <span className={`badge full-width type-${monster.type4?.toLowerCase()}`}></span>
                             )}
                             {monster.type5 && (
-                              <span className={`trainer-type-badge type-${monster.type5?.toLowerCase()}`}></span>
+                              <span className={`badge full-width type-${monster.type5?.toLowerCase()}`}></span>
                             )}
                           </div>
                         </Link>
@@ -1876,32 +1876,32 @@ const TrainerDetailPage = () => {
                               <span className="detail-label">Favorite Types</span>
                               <div className="types-grid">
                                 {trainer.fav_type1 && (
-                                  <span className={`trainer-type-badge type-${trainer.fav_type1?.toLowerCase() || 'normal'}`}>
+                                  <span className={`badge full-width type-${trainer.fav_type1?.toLowerCase() || 'normal'}`}>
                                     {trainer.fav_type1}
                                   </span>
                                 )}
                                 {trainer.fav_type2 && (
-                                  <span className={`trainer-type-badge type-${trainer.fav_type2.toLowerCase()}`}>
+                                  <span className={`badge full-width type-${trainer.fav_type2.toLowerCase()}`}>
                                     {trainer.fav_type2}
                                   </span>
                                 )}
                                 {trainer.fav_type3 && (
-                                  <span className={`trainer-type-badge type-${trainer.fav_type3.toLowerCase()}`}>
+                                  <span className={`badge full-width type-${trainer.fav_type3.toLowerCase()}`}>
                                     {trainer.fav_type3}
                                   </span>
                                 )}
                                 {trainer.fav_type4 && (
-                                  <span className={`trainer-type-badge type-${trainer.fav_type4.toLowerCase()}`}>
+                                  <span className={`badge full-width type-${trainer.fav_type4.toLowerCase()}`}>
                                     {trainer.fav_type4}
                                   </span>
                                 )}
                                 {trainer.fav_type5 && (
-                                  <span className={`trainer-type-badge type-${trainer.fav_type5.toLowerCase()}`}>
+                                  <span className={`badge full-width type-${trainer.fav_type5.toLowerCase()}`}>
                                     {trainer.fav_type5}
                                   </span>
                                 )}
                                 {trainer.fav_type6 && (
-                                  <span className={`trainer-type-badge type-${trainer.fav_type6.toLowerCase()}`}>
+                                  <span className={`badge full-width type-${trainer.fav_type6.toLowerCase()}`}>
                                     {trainer.fav_type6}
                                   </span>
                                 )}
@@ -1983,31 +1983,31 @@ const TrainerDetailPage = () => {
                             <div className="mega-types">
                               <span className="detail-label">Mega Types</span>
                               <div className="trainer-types">
-                                <span className={`trainer-type-badge type-${megaType1?.toLowerCase() || 'normal'}`}>
+                                <span className={`badge full-width type-${megaType1?.toLowerCase() || 'normal'}`}>
                                   {megaType1}
                                 </span>
                                 {megaType2 && (
-                                  <span className={`trainer-type-badge type-${megaType2.toLowerCase()}`}>
+                                  <span className={`badge full-width type-${megaType2.toLowerCase()}`}>
                                     {megaType2}
                                   </span>
                                 )}
                                 {megaType3 && (
-                                  <span className={`trainer-type-badge type-${megaType3.toLowerCase()}`}>
+                                  <span className={`badge full-width type-${megaType3.toLowerCase()}`}>
                                     {megaType3}
                                   </span>
                                 )}
                                 {megaType4 && (
-                                  <span className={`trainer-type-badge type-${megaType4.toLowerCase()}`}>
+                                  <span className={`badge full-width type-${megaType4.toLowerCase()}`}>
                                     {megaType4}
                                   </span>
                                 )}
                                 {megaType5 && (
-                                  <span className={`trainer-type-badge type-${megaType5.toLowerCase()}`}>
+                                  <span className={`badge full-width type-${megaType5.toLowerCase()}`}>
                                     {megaType5}
                                   </span>
                                 )}
                                 {megaType6 && (
-                                  <span className={`trainer-type-badge type-${megaType6.toLowerCase()}`}>
+                                  <span className={`badge full-width type-${megaType6.toLowerCase()}`}>
                                     {megaType6}
                                   </span>
                                 )}
@@ -2210,14 +2210,7 @@ const TrainerDetailPage = () => {
                     <>
                       {/* PC Box Navigation */}
                       <div className="pc-box-navigation">
-                        <div className="pc-box-info">
-                          <h3>Box {currentPCBox + 1}</h3>
-                          <p>{(searchTerm 
-                            ? getFilteredBoxMonsters(currentPCBox) 
-                            : getBoxMonstersForDisplay(currentPCBox)
-                          ).filter(Boolean).length} / 30 Monsters</p>
-                        </div>
-                        <div className="form-input">
+                        <div className="container center horizontal gap-md">
                           <button
                             className="button primary"
                             onClick={() => setCurrentPCBox(prev => Math.max(0, prev - 1))}
@@ -2265,11 +2258,11 @@ const TrainerDetailPage = () => {
                                     <div className="container center horizontal gap-sm">
                                       <span className="pc-box-monster-level">Lv.{monster.level}</span>
                                       <div className="pc-box-monster-types">
-                                        <span className={`type-badge type-${monster.type1?.toLowerCase() || 'normal'}`}></span>
-                                        {monster.type2 && <span className={`type-badge type-${monster.type2.toLowerCase()}`}></span>}
-                                        {monster.type3 && <span className={`type-badge type-${monster.type3.toLowerCase()}`}></span>}
-                                        {monster.type4 && <span className={`type-badge type-${monster.type4.toLowerCase()}`}></span>}
-                                        {monster.type5 && <span className={`type-badge type-${monster.type5.toLowerCase()}`}></span>}
+                                        <span className={`badge type-${monster.type1?.toLowerCase() || 'normal'}`}></span>
+                                        {monster.type2 && <span className={`badge type-${monster.type2.toLowerCase()}`}></span>}
+                                        {monster.type3 && <span className={`badge type-${monster.type3.toLowerCase()}`}></span>}
+                                        {monster.type4 && <span className={`badge type-${monster.type4.toLowerCase()}`}></span>}
+                                        {monster.type5 && <span className={`badge type-${monster.type5.toLowerCase()}`}></span>}
                                         
                                       </div>
                                     </div>
@@ -2451,7 +2444,7 @@ const TrainerDetailPage = () => {
                             key={`item-${index}`}
                             onClick={() => handleItemDetailClick(itemName, 'items')}
                           >
-                            <div className="item-icon">
+                            <div className="image-container small">
                               <img
                                 src={getItemImageUrl(itemName, 'items')}
                                 alt={itemName}
@@ -2482,7 +2475,7 @@ const TrainerDetailPage = () => {
                             key={`ball-${index}`}
                             onClick={() => handleItemDetailClick(itemName, 'balls')}
                           >
-                            <div className="item-icon">
+                            <div className="image-container small">
                               <img
                                 src={getItemImageUrl(itemName, 'balls')}
                                 alt={itemName}
@@ -2513,7 +2506,7 @@ const TrainerDetailPage = () => {
                             key={`berry-${index}`}
                             onClick={() => handleItemDetailClick(itemName, 'berries')}
                           >
-                            <div className="item-icon">
+                            <div className="image-container small">
                               <img
                                 src={getItemImageUrl(itemName, 'berries')}
                                 alt={itemName}
@@ -2544,7 +2537,7 @@ const TrainerDetailPage = () => {
                             key={`evolution-${index}`}
                             onClick={() => handleItemDetailClick(itemName, 'evolution')}
                           >
-                            <div className="item-icon">
+                            <div className="image-container small">
                               <img
                                 src={getItemImageUrl(itemName, 'evolution')}
                                 alt={itemName}
@@ -2575,7 +2568,7 @@ const TrainerDetailPage = () => {
                             key={`held-${index}`}
                             onClick={() => handleItemDetailClick(itemName, 'helditems')}
                           >
-                            <div className="item-icon">
+                            <div className="image-container small">
                               <img
                                 src={getItemImageUrl(itemName, 'helditems')}
                                 alt={itemName}
@@ -2606,7 +2599,7 @@ const TrainerDetailPage = () => {
                             key={`egg-${index}`}
                             onClick={() => handleItemDetailClick(itemName, 'eggs')}
                           >
-                            <div className="item-icon">
+                            <div className="image-container small">
                               <img
                                 src={getItemImageUrl(itemName, 'eggs')}
                                 alt={itemName}
@@ -2637,7 +2630,7 @@ const TrainerDetailPage = () => {
                             key={`pastry-${index}`}
                             onClick={() => handleItemDetailClick(itemName, 'pastries')}
                           >
-                            <div className="item-icon">
+                            <div className="image-container small">
                               <img
                                 src={getItemImageUrl(itemName, 'pastries')}
                                 alt={itemName}
@@ -2668,7 +2661,7 @@ const TrainerDetailPage = () => {
                             key={`antique-${index}`}
                             onClick={() => handleItemDetailClick(itemName, 'antiques')}
                           >
-                            <div className="item-icon">
+                            <div className="image-container small">
                               <img
                                 src={getItemImageUrl(itemName, 'antiques')}
                                 alt={itemName}
@@ -2699,7 +2692,7 @@ const TrainerDetailPage = () => {
                             key={`seal-${index}`}
                             onClick={() => handleItemDetailClick(itemName, 'seals')}
                           >
-                            <div className="item-icon">
+                            <div className="image-container small">
                               <img
                                 src={getItemImageUrl(itemName, 'seals')}
                                 alt={itemName}
@@ -2730,7 +2723,7 @@ const TrainerDetailPage = () => {
                             key={`keyitem-${index}`}
                             onClick={() => handleItemDetailClick(itemName, 'keyitems')}
                           >
-                            <div className="item-icon">
+                            <div className="image-container small">
                               <img
                                 src={getItemImageUrl(itemName, 'keyitems')}
                                 alt={itemName}
@@ -2854,7 +2847,7 @@ const TrainerDetailPage = () => {
                           {sortedTypes.map(([type, count]) => (
                             <div className="type-bar-container" key={type}>
                               <div className="option-row">
-                                <span className={`type-badge type-${type.toLowerCase()}`}>{type}</span>
+                                <span className={`badge type-${type.toLowerCase()}`}>{type}</span>
                                 <span className="type-count">{count}</span>
                               </div>
                               <div className="type-bar-wrapper">
@@ -3250,11 +3243,11 @@ const TrainerDetailPage = () => {
                             <p className="achievement-description">{achievement.description}</p>
                             
                             <div className="achievement-progress">
-                              <div className="progress-bar">
-                                <div 
-                                  className="progress-fill" 
-                                  style={{ 
-                                    width: `${Math.min(100, (achievement.progress / achievement.requirement) * 100)}%` 
+                              <div className="progress">
+                                <div
+                                  className="progress-fill primary"
+                                  style={{
+                                    width: `${Math.min(100, (achievement.progress / achievement.requirement) * 100)}%`
                                   }}
                                 ></div>
                               </div>
@@ -3372,7 +3365,7 @@ const TrainerDetailPage = () => {
                             <div className="relation-card-content">
                               <div className="relation-header">
                                 <h3>{relation.name || 'Unknown Relation'}</h3>
-                                <span className="relation-type-badge">
+                                <span className="relation-badge">
                                   {isMonsterRelation ? 'Monster' : 'Trainer'}
                                 </span>
                               </div>
@@ -3605,7 +3598,7 @@ const TrainerDetailPage = () => {
                         {megaInfo.mega_ability && (
                           <div className="mega-stat-group">
                             <h4>Ability</h4>
-                            <span className="mega-ability">{megaInfo.mega_ability}</span>
+                            <span className="badge secondary full-width">{megaInfo.mega_ability}</span>
                           </div>
                         )}
                       </div>
@@ -3657,7 +3650,7 @@ const TrainerDetailPage = () => {
                   <h3>Featured Monsters</h3>
                   <span>{featuredMonsters.length}/6</span>
                   <button
-                    className="button primary"
+                    className="button primary sm no-flex"
                     onClick={handleSaveFeaturedMonsters}
                     disabled={isSaving}
                     title="Save featured monsters"
@@ -3677,7 +3670,7 @@ const TrainerDetailPage = () => {
 
                     return (
                       <div
-                        className={`edit-box-slot featured-monster-slot${featuredMonster ? 'filled' : 'empty'}`}
+                        className={`edit-box-slot featured-monster-slot ${featuredMonster ? 'filled' : 'empty'}`}
                         key={slotIndex}
                         data-slot={slotIndex}
                         onDragOver={handleFeaturedDragOver}
@@ -3775,7 +3768,7 @@ const TrainerDetailPage = () => {
 
                           return (
                             <div
-                              className={`edit-box-slot${monster ? 'filled' : 'empty'}`}
+                              className={`edit-box-slot ${monster ? 'filled' : 'empty'}`}
                               key={slotIndex}
                               data-box={boxIndex}
                               data-slot={slotIndex}
@@ -3790,7 +3783,7 @@ const TrainerDetailPage = () => {
                             >
                               {monster && (
                                 <div className="edit-box-monster">
-                                  <div className="item-icon">
+                                  <div className="image-container medium">
                                     <img
                                       src={monster.img_link || '/images/default_mon.png'}
                                       alt={monster.name}

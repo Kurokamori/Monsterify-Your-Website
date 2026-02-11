@@ -207,12 +207,12 @@ const AdminPromptList = ({
                       )}
                     </td>
                     <td>
-                      <span className={`type-badge type-${prompt.type}`}>
+                      <span className={`badge type-${prompt.type}`}>
                         {prompt.type}
                       </span>
                     </td>
                     <td>
-                      <span className={`status-badge status-${status.class}`}>
+                      <span className={`badge ${status.class}`}>
                         {status.text}
                       </span>
                     </td>

@@ -127,7 +127,7 @@ const AntiqueAuctionListPage = () => {
   // Render auction card
   const renderAuctionCard = (auction) => (
     <div key={auction.id} className="seasonal-adopt-card">
-      <div className="item-icon">
+      <div className="image-container medium">
         {auction.image ? (
           <img src={auction.image} alt={auction.name} />
         ) : (
@@ -144,14 +144,14 @@ const AntiqueAuctionListPage = () => {
           {auction.species3 && <span className="species-tag">{auction.species3}</span>}
         </div>
         <div className="seasonal-adopt-types">
-          {auction.type1 && <span className={`type-badge type-${auction.type1?.toLowerCase()}`}>{auction.type1}</span>}
-          {auction.type2 && <span className={`type-badge type-${auction.type2?.toLowerCase()}`}>{auction.type2}</span>}
-          {auction.type3 && <span className={`type-badge type-${auction.type3?.toLowerCase()}`}>{auction.type3}</span>}
-          {auction.type4 && <span className={`type-badge type-${auction.type4?.toLowerCase()}`}>{auction.type4}</span>}
-          {auction.type5 && <span className={`type-badge type-${auction.type5?.toLowerCase()}`}>{auction.type5}</span>}
+          {auction.type1 && <span className={`badge type-${auction.type1?.toLowerCase()}`}>{auction.type1}</span>}
+          {auction.type2 && <span className={`badge type-${auction.type2?.toLowerCase()}`}>{auction.type2}</span>}
+          {auction.type3 && <span className={`badge type-${auction.type3?.toLowerCase()}`}>{auction.type3}</span>}
+          {auction.type4 && <span className={`badge type-${auction.type4?.toLowerCase()}`}>{auction.type4}</span>}
+          {auction.type5 && <span className={`badge type-${auction.type5?.toLowerCase()}`}>{auction.type5}</span>}
         </div>
         <div className="seasonal-adopt-attribute">
-          <span className="attribute-badge">{auction.attribute}</span>
+          <span className="badge">{auction.attribute}</span>
         </div>
         {auction.description && (
           <p className="seasonal-adopt-description">{auction.description}</p>
@@ -351,15 +351,15 @@ const AntiqueAuctionListPage = () => {
                     </td>
                     <td>
                       <div className="types-cell">
-                        {auction.type1 && <span className={`type-badge-small type-${auction.type1?.toLowerCase()}`}>{auction.type1}</span>}
-                        {auction.type2 && <span className={`type-badge-small type-${auction.type2?.toLowerCase()}`}>{auction.type2}</span>}
-                        {auction.type3 && <span className={`type-badge-small type-${auction.type3?.toLowerCase()}`}>{auction.type3}</span>}
-                        {auction.type4 && <span className={`type-badge-small type-${auction.type4?.toLowerCase()}`}>{auction.type4}</span>}
-                        {auction.type5 && <span className={`type-badge-small type-${auction.type5?.toLowerCase()}`}>{auction.type5}</span>}
+                        {auction.type1 && <span className={`badge sm type-${auction.type1?.toLowerCase()}`}>{auction.type1}</span>}
+                        {auction.type2 && <span className={`badge sm type-${auction.type2?.toLowerCase()}`}>{auction.type2}</span>}
+                        {auction.type3 && <span className={`badge sm type-${auction.type3?.toLowerCase()}`}>{auction.type3}</span>}
+                        {auction.type4 && <span className={`badge sm type-${auction.type4?.toLowerCase()}`}>{auction.type4}</span>}
+                        {auction.type5 && <span className={`badge sm type-${auction.type5?.toLowerCase()}`}>{auction.type5}</span>}
                       </div>
                     </td>
                     <td>
-                      <span className="attribute-badge-small">{auction.attribute}</span>
+                      <span className="badge dm">{auction.attribute}</span>
                     </td>
                     <td>{auction.family || '-'}</td>
                     <td>{auction.creator}</td>

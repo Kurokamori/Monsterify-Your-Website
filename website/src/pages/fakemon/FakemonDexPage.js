@@ -233,7 +233,7 @@ const FakemonDexPage = () => {
             {/* Category Filters */}
             {showCategoryFilter && (
               <div className="filter-section">
-                <div className="type-tags">
+                <div className="type-tags fw">
                   <button
                     className={`button filter ${selectedCategory === '' ? 'active' : ''}`}
                     onClick={() => handleCategoryChange('')}
@@ -256,7 +256,7 @@ const FakemonDexPage = () => {
             {/* Attribute Filters */}
             {showAttributeFilter && (
               <div className="filter-section">
-                <div className="type-tags">
+                <div className="type-tags fw">
                   <button
                     className={`button filter ${selectedAttribute === '' ? 'active' : ''}`}
                     onClick={() => handleAttributeChange('')}
@@ -279,7 +279,7 @@ const FakemonDexPage = () => {
             {/* Type Filters */}
             {showTypeFilter && (
               <div className="filter-section">
-                <div className="type-tags type-filters">
+                <div className="type-tags fw type-filters">
                   <button
                     className={`button filter ${selectedType === '' ? 'active' : ''}`}
                     onClick={() => handleTypeChange('')}
@@ -331,12 +331,12 @@ const FakemonDexPage = () => {
                   <div className="types-container">
                     {mon.types && mon.types.length > 0 ? (
                       mon.types.map((type, index) => (
-                        <span className={`type-badge type-${type.toLowerCase()}`} key={index}>
+                        <span className={`badge type-${type.toLowerCase()}`} key={index}>
                           {type}
                         </span>
                       ))
                     ) : (
-                      <span className="type-badge type-normal">Unknown</span>
+                      <span className="badge type-normal">Unknown</span>
                     )}
                   </div>
                   {mon.category && (
@@ -372,7 +372,7 @@ const FakemonDexPage = () => {
               {[...Array(totalPages).keys()].map((page) => (
                 <button
                   key={page + 1}
-                  className={`button secondary${currentPage === page + 1 ? 'active' : ''}`}
+                  className={`button secondary ${currentPage === page + 1 ? 'active' : ''}`}
                   onClick={() => handlePageChange(page + 1)}
                 >
                   {page + 1}

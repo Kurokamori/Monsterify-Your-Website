@@ -157,7 +157,7 @@ const FactionStore = ({ factionId, trainerId, faction }) => {
           {storeItems.map(item => (
             <div key={item.id} className="store-item-card">
               <div className="item-header">
-                <div className="item-icon">
+                <div className="image-container medium">
                   {getItemTypeIcon(item.item_type)}
                 </div>
                 <div className="item-info">
@@ -189,7 +189,7 @@ const FactionStore = ({ factionId, trainerId, faction }) => {
 
               <div className="item-actions">
                 <button
-                  className={`button primary${
+                  className={`button primary ${
                     !canAfford(item.price) ? 'cannot-afford' :
                     !isInStock(item) ? 'out-of-stock' :
                     purchaseLoading === item.id ? 'loading' : ''

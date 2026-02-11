@@ -40,7 +40,7 @@ const AdventurePage = () => {
   // If viewing a specific adventure
   if (adventureId) {
     return (
-      <div className="lore-container">
+      <div className="main-content-container">
         <div className="lore-header">
           <div className="map-header">
             <h1>Adventure Details</h1>
@@ -63,7 +63,7 @@ const AdventurePage = () => {
 
   // Main adventures page
   return (
-    <div className="lore-container">
+    <div className="main-content-container">
       <div className="lore-header">
         <div className="map-header">
           <h1>Adventures</h1>

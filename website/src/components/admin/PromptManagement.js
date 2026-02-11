@@ -125,7 +125,7 @@ const PromptManagement = () => {
 
       <div className="prompt-management-content">
         {error && (
-          <div className="error-message">
+          <div className="alert error">
             <p>{error}</p>
             <button onClick={() => setError(null)} className="button secondary">
               Dismiss

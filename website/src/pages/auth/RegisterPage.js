@@ -105,7 +105,7 @@ const RegisterPage = () => {
           )}
 
           <form className="auth-form" onSubmit={handleSubmit}>
-            <div className="fandom-grid">
+            <div className="container vertical gap-md">
               <label htmlFor="username">Username*</label>
               <div className="form-input">
                 <i className="fas fa-user"></i>
@@ -122,7 +122,7 @@ const RegisterPage = () => {
               </div>
             </div>
 
-            <div className="fandom-grid">
+            <div className="container vertical gap-md">
               <label htmlFor="display_name">Display Name</label>
               <div className="form-input">
                 <i className="fas fa-id-card"></i>
@@ -138,7 +138,7 @@ const RegisterPage = () => {
               </div>
             </div>
 
-            <div className="fandom-grid">
+            <div className="container vertical gap-md">
               <label htmlFor="discord_id">Discord ID</label>
               <div className="form-input">
                 <i className="fab fa-discord"></i>
@@ -154,7 +154,7 @@ const RegisterPage = () => {
               </div>
             </div>
 
-            <div className="fandom-grid">
+            <div className="container vertical gap-md">
               <label htmlFor="password">Password*</label>
               <div className="form-input">
                 <i className="fas fa-lock"></i>
@@ -171,7 +171,7 @@ const RegisterPage = () => {
               </div>
             </div>
 
-            <div className="fandom-grid">
+            <div className="container vertical gap-md">
               <label htmlFor="confirm_password">Confirm Password*</label>
               <div className="form-input">
                 <i className="fas fa-lock"></i>
@@ -300,7 +300,7 @@ const RegisterPage = () => {
               </div>
             </div>
 
-            <div className="fandom-grid">
+            <div className="container vertical gap-md">
               <button
                 type="submit"
                 className="button primary lg block"
@@ -333,7 +333,7 @@ const RegisterPage = () => {
           <h2>Monster Roller Settings</h2>
           <p>Select which monster types you want to roll from. This can be changed later in your profile settings.</p>
 
-          <div className="fandom-grid">
+          <div className="container vertical gap-md">
             <div className="fandom-toggle">
               <input
                 type="checkbox"

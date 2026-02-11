@@ -7201,8 +7201,8 @@ const AreaPage = () => {
         </button>
         <div className="item-header">
           <h1>{areaData.name}</h1>
-          <div 
-            className="status-badge large"
+          <div
+            className="badge lg"
             style={{ backgroundColor: getDifficultyColor(areaData.difficulty) }}
           >
             {areaData.difficulty}
@@ -7273,8 +7273,8 @@ const AreaPage = () => {
                 <div key={index} className="area-card">
                   <div className="resource-header">
                     <h4>{creature.name}</h4>
-                    <span 
-                      className="rarity-badge"
+                    <span
+                      className="badge"
                       style={{ backgroundColor: getRarityColor(creature.rarity) }}
                     >
                       {creature.rarity}
@@ -7295,8 +7295,8 @@ const AreaPage = () => {
                 <div key={index} className="area-card">
                   <div className="resource-header">
                     <h4>{resource.name}</h4>
-                    <span 
-                      className="rarity-badge"
+                    <span
+                      className="badge"
                       style={{ backgroundColor: getRarityColor(resource.rarity) }}
                     >
                       {resource.rarity}

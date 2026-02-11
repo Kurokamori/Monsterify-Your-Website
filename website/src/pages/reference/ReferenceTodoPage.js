@@ -250,7 +250,7 @@ const ReferenceTodoPage = () => {
   
   if (trainers.length === 0) {
     return (
-      <div className="schedule-page">
+      <div className="main-content-container">
         <h1>Reference To-Do List</h1>
         <div className="no-references-needed">
           <p>Great job! All of your monsters have images.</p>
@@ -263,11 +263,11 @@ const ReferenceTodoPage = () => {
   const totalReferencesNeeded = trainers.reduce((total, trainer) => total + trainer.monsters.length, 0);
   
   return (
-    <div className="schedule-page">
+    <div className="main-content-container">
       <div className="reference-todo-header">
         <h1>Reference To-Do List</h1>
         <button 
-          className="button secondary toggle"
+          className="button secondary toggle no-flex"
           onClick={cycleImageSize}
           title={`Current: ${getImageSizeDisplayName(imageSize)}. Click to cycle.`}
         >

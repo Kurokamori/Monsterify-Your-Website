@@ -557,26 +557,26 @@ const WitchsHut = () => {
                           {monster.species3 && ` + ${monster.species3}`}
                         </div>
                         <div className="monster-types">
-                          <span className={`type-badge type-${monster.type1?.toLowerCase()}`}>
+                          <span className={`badge type-${monster.type1?.toLowerCase()}`}>
                             {monster.type1}
                           </span>
                           {monster.type2 && (
-                            <span className={`type-badge type-${monster.type2.toLowerCase()}`}>
+                            <span className={`badge type-${monster.type2.toLowerCase()}`}>
                               {monster.type2}
                             </span>
                           )}
                           {monster.type3 && (
-                            <span className={`type-badge type-${monster.type3.toLowerCase()}`}>
+                            <span className={`badge type-${monster.type3.toLowerCase()}`}>
                               {monster.type3}
                             </span>
                           )}
                           {monster.type4 && (
-                            <span className={`type-badge type-${monster.type4.toLowerCase()}`}>
+                            <span className={`badge type-${monster.type4.toLowerCase()}`}>
                               {monster.type4}
                             </span>
                           )}
                           {monster.type5 && (
-                            <span className={`type-badge type-${monster.type5.toLowerCase()}`}>
+                            <span className={`badge type-${monster.type5.toLowerCase()}`}>
                               {monster.type5}
                             </span>
                           )}
@@ -663,27 +663,27 @@ const WitchsHut = () => {
                       {selectedMonster.species2 && ` + ${selectedMonster.species2}`}
                       {selectedMonster.species3 && ` + ${selectedMonster.species3}`}
                     </div>
-                    <div className="type-tags">
-                      <span className={`type-badge type-${selectedMonster.type1?.toLowerCase()}`}>
+                    <div className="type-tags fw">
+                      <span className={`badge type-${selectedMonster.type1?.toLowerCase()}`}>
                         {selectedMonster.type1}
                       </span>
                       {selectedMonster.type2 && (
-                        <span className={`type-badge type-${selectedMonster.type2.toLowerCase()}`}>
+                        <span className={`badge type-${selectedMonster.type2.toLowerCase()}`}>
                           {selectedMonster.type2}
                         </span>
                       )}
                       {selectedMonster.type3 && (
-                        <span className={`type-badge type-${selectedMonster.type3.toLowerCase()}`}>
+                        <span className={`badge type-${selectedMonster.type3.toLowerCase()}`}>
                           {selectedMonster.type3}
                         </span>
                       )}
                       {selectedMonster.type4 && (
-                        <span className={`type-badge type-${selectedMonster.type4.toLowerCase()}`}>
+                        <span className={`badge type-${selectedMonster.type4.toLowerCase()}`}>
                           {selectedMonster.type4}
                         </span>
                       )}
                       {selectedMonster.type5 && (
-                        <span className={`type-badge type-${selectedMonster.type5.toLowerCase()}`}>
+                        <span className={`badge type-${selectedMonster.type5.toLowerCase()}`}>
                           {selectedMonster.type5}
                         </span>
                       )}
@@ -709,7 +709,7 @@ const WitchsHut = () => {
                       <div className="step-number">1</div>
                       <h4>Choose Species to Evolve</h4>
                     </div>
-                    <div className="type-tags">
+                    <div className="type-tags fw">
                       {selectedMonster.species1 && (
                         <button
                           className={`monster-card ${selectedSpeciesSlot === 'species1' ? 'selected' : ''}`}
@@ -820,12 +820,12 @@ const WitchsHut = () => {
                         <div className="image-upload">
                           <div className="preview-info">
                             <div className="preview-name">{evolutionPreview.name}</div>
-                            <div className="type-tags">
-                              <span className={`type-badge type-${evolutionPreview.type_primary?.toLowerCase()}`}>
+                            <div className="type-tags fw">
+                              <span className={`badge type-${evolutionPreview.type_primary?.toLowerCase()}`}>
                                 {evolutionPreview.type_primary}
                               </span>
                               {evolutionPreview.type_secondary && (
-                                <span className={`type-badge type-${evolutionPreview.type_secondary.toLowerCase()}`}>
+                                <span className={`badge type-${evolutionPreview.type_secondary.toLowerCase()}`}>
                                   {evolutionPreview.type_secondary}
                                 </span>
                               )}
@@ -1030,8 +1030,8 @@ const WitchsHut = () => {
                                   <div className="item-name">{item.id}</div>
                                   <div className="item-desc">{item.desc}</div>
                                   <div className="item-count">Count: {count}</div>
-                                  <div className="item-type-badge-container">
-                                    <div className={`type-badge type-${item.type?.toLowerCase()}`}>
+                                  <div className="item-badge-container">
+                                    <div className={`badge type-${item.type?.toLowerCase()}`}>
                                       {item.type}
                                     </div>
                                   </div>

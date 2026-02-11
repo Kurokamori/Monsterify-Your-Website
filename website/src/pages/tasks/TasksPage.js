@@ -233,7 +233,7 @@ const TasksPage = () => {
   }
 
   return (
-    <div className="schedule-page">
+    <div className="main-content-container">
       <div className="option-row">
         <h1>Tasks</h1>
         <p>Complete daily and weekly tasks to earn rewards</p>
@@ -245,9 +245,9 @@ const TasksPage = () => {
             <h2>Daily Tasks</h2>
             <span className="progress-percentage">{dailyProgress}%</span>
           </div>
-          <div className="progress-bar-container">
-            <div 
-              className="progress-bar"
+          <div className="progress">
+            <div
+              className="progress-fill primary"
               style={{ width: `${dailyProgress}%` }}
             ></div>
           </div>
@@ -261,9 +261,9 @@ const TasksPage = () => {
             <h2>Weekly Tasks</h2>
             <span className="progress-percentage">{weeklyProgress}%</span>
           </div>
-          <div className="progress-bar-container">
-            <div 
-              className="progress-bar"
+          <div className="progress">
+            <div
+              className="progress-fill primary"
               style={{ width: `${weeklyProgress}%` }}
             ></div>
           </div>
@@ -302,9 +302,9 @@ const TasksPage = () => {
                       <span>Progress:</span>
                       <span>{task.progress} / {task.total}</span>
                     </div>
-                    <div className="task-progress-bar-container">
-                      <div 
-                        className="task-progress-bar"
+                    <div className="progress">
+                      <div
+                        className="progress-fill primary"
                         style={{ width: `${(task.progress / task.total) * 100}%` }}
                       ></div>
                     </div>
@@ -366,9 +366,9 @@ const TasksPage = () => {
                       <span>Progress:</span>
                       <span>{task.progress} / {task.total}</span>
                     </div>
-                    <div className="task-progress-bar-container">
-                      <div 
-                        className="task-progress-bar"
+                    <div className="progress">
+                      <div
+                        className="progress-fill primary"
                         style={{ width: `${(task.progress / task.total) * 100}%` }}
                       ></div>
                     </div>

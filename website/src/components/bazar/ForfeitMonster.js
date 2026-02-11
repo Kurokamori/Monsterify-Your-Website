@@ -144,7 +144,7 @@ const ForfeitMonster = ({ userTrainers }) => {
                   </button>
                 </div>
 
-                <div className="bazar-monsters-grid">
+                <div className="container cols-3 gap-lg mb-lg">
                   {trainerMonsters.map(monster => (
                     <div
                       key={monster.id}
@@ -152,7 +152,7 @@ const ForfeitMonster = ({ userTrainers }) => {
                     >
                       <MonsterCard monster={monster} />
                       <button
-                        className={`button${selectedMonsters.some(m => m.id === monster.id) ? 'success' : 'secondary'}monster-select-btn`}
+                        className={`button ${selectedMonsters.some(m => m.id === monster.id) ? 'success' : 'secondary'}monster-select-btn`}
                         onClick={() => handleMonsterSelect(monster)}
                       >
                         {selectedMonsters.some(m => m.id === monster.id) ? '✓ Selected' : 'Select Monster'}

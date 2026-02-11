@@ -136,4 +136,85 @@
     flex: 1 1 45%;
     min-width: 120px;
   }
+
+  .monsters-filters {
+    padding: 0.75rem;
+  }
+
+  .monster-selector-search-input {
+    padding: 0.625rem 0.875rem;
+    padding-right: 2.25rem;
+    font-size: 0.9rem;
+    border-radius: 6px;
+  }
+
+  .form-row.toggles {
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+
+  .toggle-label {
+    font-size: 13px;
+  }
+
+  .additional-filters {
+    margin-top: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .monsters-filters {
+    padding: 0.5rem;
+    border-radius: 6px;
+  }
+
+  .monster-selector-search-input {
+    padding: 0.5rem 0.75rem;
+    padding-right: 2rem;
+    font-size: 0.85rem;
+    border-radius: 4px;
+  }
+
+  .monster-selector-search-clear {
+    right: 0.5rem;
+    width: 20px;
+    height: 20px;
+    font-size: 1rem;
+  }
+
+  .search-icon {
+    left: 0.75rem;
+    font-size: 0.875rem;
+  }
+
+  .form-row .search-bar {
+    min-width: 100%;
+  }
+
+  .form-row.toggles {
+    flex-direction: column;
+    gap: 12px;
+    align-items: flex-start;
+  }
+
+  .toggle-filter {
+    gap: 6px;
+  }
+
+  .toggle-filter input[type="checkbox"] {
+    width: 14px;
+    height: 14px;
+  }
+
+  .toggle-label {
+    font-size: 12px;
+  }
+
+  .search-filters-section {
+    margin-bottom: 15px;
+  }
+
+  .additional-filters {
+    margin-top: 10px;
+  }
 }

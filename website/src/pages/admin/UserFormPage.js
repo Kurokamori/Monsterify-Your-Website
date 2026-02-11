@@ -148,7 +148,7 @@ const UserFormPage = () => {
 
         {/* Error Message */}
         {error && (
-          <div className="admin-alert error">
+          <div className="alert error">
             <i className="fas fa-exclamation-circle"></i> {error}
           </div>
         )}
@@ -173,7 +173,7 @@ const UserFormPage = () => {
                 name="username"
                 value={formData.username}
                 onChange={handleChange}
-                className={`admin-form-input${formErrors.username ? 'error' : ''}`}
+                className={`admin-form-input ${formErrors.username ? 'error' : ''}`}
                 disabled={loading}
                 required
               />
@@ -228,7 +228,7 @@ const UserFormPage = () => {
                 name="password"
                 value={formData.password}
                 onChange={handleChange}
-                className={`admin-form-input${formErrors.password ? 'error' : ''}`}
+                className={`admin-form-input ${formErrors.password ? 'error' : ''}`}
                 disabled={loading}
                 required={!isEditMode}
               />

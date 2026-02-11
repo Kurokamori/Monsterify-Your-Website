@@ -45,28 +45,6 @@
   margin-bottom: 10px;
 }
 
-.badge {
-  padding: 4px 8px;
-  border-radius: 12px;
-  font-size: 0.75rem;
-  font-weight: 500;
-  color: var(--text-color);
-  text-transform: capitalize;
-}
-
-.badge-type {
-  background-color: var(--blue-color);
-}
-
-.badge-difficulty {
-  background-color: var(--text-muted);
-}
-
-.badge-category {
-  background-color: var(--accent-color);
-  color: var(--text-color);
-}
-
 /* Content */
 .prompt-card-content {
   margin-bottom: 20px;

@@ -358,7 +358,7 @@ const MonsterFormPage = () => {
 
         {/* Error Message */}
         {error && (
-          <div className="admin-alert error">
+          <div className="alert error">
             <i className="fas fa-exclamation-circle"></i> {error}
           </div>
         )}
@@ -403,7 +403,7 @@ const MonsterFormPage = () => {
                 </div>
               </div>
 
-              <div className={`admin-form-tab-content${activeTab === 'basic' ? 'active' : ''}`}>
+              <div className={`admin-form-tab-content ${activeTab === 'basic' ? 'active' : ''}`}>
                 <div className="reroller-content">
                   {/* Basic Information */}
                   <div className="admin-form-section">
@@ -636,7 +636,7 @@ const MonsterFormPage = () => {
               </div>
 
               {/* Stats & Moves Tab */}
-              <div className={`admin-form-tab-content${activeTab === 'stats' ? 'active' : ''}`}>
+              <div className={`admin-form-tab-content ${activeTab === 'stats' ? 'active' : ''}`}>
                 <div className="reroller-content">
                   {/* Stats */}
                   <div className="admin-form-section">
@@ -656,9 +656,9 @@ const MonsterFormPage = () => {
                           max="255"
                           disabled={saving}
                         />
-                        <div className="admin-stat-bar">
+                        <div className="progress">
                           <div
-                            className="admin-stat-fill hp"
+                            className="progress-fill hp"
                             style={{ width: `${Math.min(100, (formData.hp_total / 255) * 100)}%` }}
                           ></div>
                         </div>
@@ -677,9 +677,9 @@ const MonsterFormPage = () => {
                           max="255"
                           disabled={saving}
                         />
-                        <div className="admin-stat-bar">
+                        <div className="progress">
                           <div
-                            className="admin-stat-fill attack"
+                            className="progress-fill attack"
                             style={{ width: `${Math.min(100, (formData.atk_total / 255) * 100)}%` }}
                           ></div>
                         </div>
@@ -698,9 +698,9 @@ const MonsterFormPage = () => {
                           max="255"
                           disabled={saving}
                         />
-                        <div className="admin-stat-bar">
+                        <div className="progress">
                           <div
-                            className="admin-stat-fill defense"
+                            className="progress-fill defense"
                             style={{ width: `${Math.min(100, (formData.def_total / 255) * 100)}%` }}
                           ></div>
                         </div>
@@ -719,9 +719,9 @@ const MonsterFormPage = () => {
                           max="255"
                           disabled={saving}
                         />
-                        <div className="admin-stat-bar">
+                        <div className="progress">
                           <div
-                            className="admin-stat-fill special-attack"
+                            className="progress-fill special-attack"
                             style={{ width: `${Math.min(100, (formData.spa_total / 255) * 100)}%` }}
                           ></div>
                         </div>
@@ -740,9 +740,9 @@ const MonsterFormPage = () => {
                           max="255"
                           disabled={saving}
                         />
-                        <div className="admin-stat-bar">
+                        <div className="progress">
                           <div
-                            className="admin-stat-fill special-defense"
+                            className="progress-fill special-defense"
                             style={{ width: `${Math.min(100, (formData.spd_total / 255) * 100)}%` }}
                           ></div>
                         </div>
@@ -761,9 +761,9 @@ const MonsterFormPage = () => {
                           max="255"
                           disabled={saving}
                         />
-                        <div className="admin-stat-bar">
+                        <div className="progress">
                           <div
-                            className="admin-stat-fill speed"
+                            className="progress-fill speed"
                             style={{ width: `${Math.min(100, (formData.spe_total / 255) * 100)}%` }}
                           ></div>
                         </div>
@@ -1064,7 +1064,7 @@ const MonsterFormPage = () => {
               </div>
 
               {/* Appearance Tab */}
-              <div className={`admin-form-tab-content${activeTab === 'appearance' ? 'active' : ''}`}>
+              <div className={`admin-form-tab-content ${activeTab === 'appearance' ? 'active' : ''}`}>
                 <div className="reroller-content">
                   {/* Image */}
                   <div className="admin-form-section">
@@ -1085,7 +1085,7 @@ const MonsterFormPage = () => {
                         disabled={saving}
                       />
                       {formData.img_link && (
-                        <div className="admin-form-image-preview">
+                        <div className="image-container medium no-margin">
                           <img
                             src={formData.img_link}
                             alt="Monster preview"
@@ -1345,7 +1345,7 @@ const MonsterFormPage = () => {
               </div>
 
               {/* Biography Tab */}
-              <div className={`admin-form-tab-content${activeTab === 'biography' ? 'active' : ''}`}>
+              <div className={`admin-form-tab-content ${activeTab === 'biography' ? 'active' : ''}`}>
                 <div className="reroller-content">
                   {/* Biography */}
                   <div className="admin-form-section">

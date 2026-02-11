@@ -151,3 +151,160 @@
   color: var(--text-color);
   font-weight: 500;
 }
+
+/* =============================================================================
+   RESPONSIVE STYLES
+   ============================================================================= */
+
+@media (max-width: 768px) {
+  .mega-evolution-container {
+    gap: 1.5rem;
+    margin-top: 1rem;
+  }
+
+  .mega-stone-info {
+    flex-direction: column;
+    text-align: center;
+    gap: 1rem;
+  }
+
+  .mega-stone-image-container {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto;
+  }
+
+  .mega-stone-details h4 {
+    font-size: var(--font-size-base);
+  }
+
+  .harvest-message {
+    font-size: var(--font-size-sm);
+  }
+
+  .mega-comparison-image-container {
+    width: 150px;
+    height: 150px;
+    margin: 0.75rem 0;
+  }
+
+  .mega-evolution-arrow {
+    font-size: 1.5rem;
+  }
+
+  .mega-comparison-species {
+    font-size: var(--font-size-base);
+  }
+
+  .mega-stat-bonus {
+    padding: 1.25rem;
+  }
+
+  .mega-stat-bonus h3 {
+    font-size: var(--font-size-lg);
+  }
+
+  .mega-evolution-locked {
+    padding: 1.5rem;
+  }
+
+  .mega-evolution-locked i {
+    font-size: 2rem;
+  }
+
+  .mega-evolution-locked p {
+    font-size: var(--font-size-base);
+  }
+}
+
+@media (max-width: 480px) {
+  .mega-evolution-container {
+    gap: 1.25rem;
+    margin-top: 0.75rem;
+  }
+
+  .mega-stone-info {
+    gap: 0.75rem;
+    margin-top: 0.75rem;
+  }
+
+  .mega-stone-image-container {
+    width: 70px;
+    height: 70px;
+  }
+
+  .no-mega-stone-image {
+    font-size: 2rem;
+  }
+
+  .mega-stone-details h4 {
+    font-size: var(--font-size-sm);
+    margin-bottom: 0.375rem;
+  }
+
+  .harvest-message {
+    font-size: var(--font-size-xs);
+  }
+
+  .mega-comparison-image-container {
+    width: 120px;
+    height: 120px;
+    margin: 0.5rem 0;
+  }
+
+  .no-mega-image {
+    font-size: 2.5rem;
+    border-radius: 0.375rem;
+  }
+
+  .mega-evolution-arrow {
+    font-size: 1.25rem;
+  }
+
+  .mega-comparison-details {
+    margin-top: 0.75rem;
+  }
+
+  .mega-comparison-species {
+    font-size: var(--font-size-sm);
+    margin-bottom: 0.375rem;
+  }
+
+  .mega-comparison-types {
+    gap: 0.375rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .mega-comparison-ability {
+    font-size: var(--font-size-xs);
+  }
+
+  .mega-stat-bonus {
+    padding: 1rem;
+    border-radius: 0.375rem;
+  }
+
+  .mega-stat-bonus h3 {
+    font-size: var(--font-size-base);
+    margin-bottom: 0.5rem;
+  }
+
+  .mega-stat-bonus p {
+    font-size: var(--font-size-sm);
+  }
+
+  .mega-evolution-locked {
+    padding: 1.25rem;
+    border-radius: 0.375rem;
+    margin: 0.75rem 0;
+  }
+
+  .mega-evolution-locked i {
+    font-size: 1.75rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .mega-evolution-locked p {
+    font-size: var(--font-size-sm);
+  }
+}

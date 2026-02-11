@@ -1,0 +1,1024 @@
+/* =============================================================================
+   NURSERY - Egg hatching and nurturing styles
+   =============================================================================
+
+   Purpose: Styles for the Nursery location including:
+   - Modern nursery container layout
+   - Hero section and cards
+   - Hatch session interface
+   - Monster selection and naming
+   - Progress indicators
+
+   ============================================================================= */
+
+/* ---------- Nursery Page Container ---------- */
+
+.nursery-modern-container {
+  min-height: 100vh;
+  background: var(--nav-background);
+  padding: 2rem 1rem;
+  color: var(--text-color);
+}
+
+/* ---------- Hero Section ---------- */
+
+.nursery-hero {
+  position: relative;
+  text-align: center;
+  margin-bottom: 3rem;
+  padding: 4rem 2rem;
+  border-radius: var(--radius-2xl);
+  background: var(--card-background);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+}
+
+.nursery-hero-background {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 200px;
+  height: 200px;
+  opacity: 0.1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.nursery-hero-icon {
+  font-size: 8rem;
+  color: var(--accent-color);
+}
+
+.nursery-hero-content {
+  position: relative;
+  z-index: 2;
+}
+
+.nursery-title {
+  font-size: 3rem;
+  font-weight: 700;
+  color: var(--accent-color);
+  margin-bottom: 0.5rem;
+  text-shadow: 0 2px 4px var(--overlay-medium);
+}
+
+.nursery-subtitle {
+  font-size: 1.25rem;
+  color: var(--text-muted, var(--highlight-bright));
+  margin-bottom: 1.5rem;
+  font-style: italic;
+}
+
+.nursery-description {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.nursery-description p {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  color: var(--text-color);
+}
+
+/* ---------- Main Content ---------- */
+
+.nursery-main-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+/* ---------- Nursery Cards ---------- */
+
+.nursery-card {
+  background: var(--card-background);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+  transition: all var(--transition-slow);
+}
+
+.nursery-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-xl);
+  border-color: var(--accent-color);
+}
+
+.nursery-card-header {
+  background: linear-gradient(135deg, var(--nav-background), var(--nav-hover));
+  padding: 1.5rem 2rem;
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.nursery-card-header h3 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--text-color);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.nursery-card-header h3 i {
+  color: var(--accent-color);
+  font-size: 1.25rem;
+}
+
+.card-badge.hatch {
+  background: linear-gradient(135deg, var(--success-color), var(--success-dark));
+  color: var(--text-color);
+}
+
+.card-badge.nurture {
+  background: linear-gradient(135deg, var(--custom-type), var(--custom-type));
+  color: var(--text-color);
+}
+
+.nursery-card-body {
+  padding: 2rem;
+}
+
+/* ---------- Trainer Selection ---------- */
+
+.modern-select {
+  width: 100%;
+  padding: 1rem 2.5rem 1rem 1rem;
+  background: var(--input-background);
+  border: 2px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  color: var(--text-color);
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: all var(--transition-slow);
+  appearance: none;
+}
+
+.modern-select:focus {
+  outline: none;
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 4px var(--accent-glow);
+}
+
+.select-arrow {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--accent-color);
+  font-size: 1.2rem;
+  pointer-events: none;
+}
+
+/* ---------- Resource Icons ---------- */
+
+.resource-icon {
+  width: 50px;
+  height: 50px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  color: var(--text-color);
+  flex-shrink: 0;
+}
+
+.resource-icon.standard-egg {
+  background: linear-gradient(135deg, var(--warning-color), var(--warning-dark));
+}
+
+.resource-icon.incubator {
+  background: linear-gradient(135deg, var(--error-color), var(--error-dark));
+}
+
+.resource-icon.void-stone {
+  background: linear-gradient(135deg, var(--custom-type), var(--custom-type));
+}
+
+.resource-name {
+  font-weight: 500;
+  color: var(--highlight-heavy);
+  font-size: 0.95rem;
+}
+
+.resource-count {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--accent-color);
+}
+
+/* ---------- Method Selection ---------- */
+
+.nursery-methods-container {
+  margin: 2rem 0;
+}
+
+.method-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.75rem;
+  background: var(--accent-color);
+  color: var(--background-color);
+  flex-shrink: 0;
+}
+
+.method-info h4 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.method-info p {
+  margin: 0;
+  opacity: 0.8;
+  font-size: 0.95rem;
+  line-height: 1.4;
+}
+
+.method-description {
+  background: var(--accent-glow);
+  border: 1px solid var(--accent-glow);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.method-description p {
+  margin: 0;
+  color: var(--text-color);
+  line-height: 1.6;
+}
+
+/* ---------- Naming Card ---------- */
+
+.naming-card {
+  background: var(--nav-background);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  border: 1px solid var(--border-color);
+}
+
+.naming-species-label {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--accent-color);
+  padding: 0.5rem 0.75rem;
+  background: var(--nav-active);
+  border-radius: var(--radius-sm);
+  margin-bottom: 0.75rem;
+  display: inline-block;
+}
+
+.bottom-naming {
+  margin-bottom: 1rem;
+}
+
+.form-label i {
+  font-size: 1rem;
+}
+
+/* ---------- Number Input ---------- */
+
+.number-input-container {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  max-width: 200px;
+}
+
+/* ---------- Modern Checkbox ---------- */
+
+.modern-checkbox input[type="checkbox"] {
+  display: none;
+}
+
+.checkbox-icon {
+  width: 50px;
+  height: 50px;
+  border-radius: var(--radius);
+  background: var(--nav-active);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  color: var(--accent-color);
+  flex-shrink: 0;
+  transition: all var(--transition-slow);
+}
+
+.modern-checkbox input[type="checkbox"]:checked + .checkbox-label .checkbox-icon {
+  background: var(--accent-color);
+  color: var(--background-color);
+  transform: scale(1.1);
+}
+
+.checkbox-description {
+  font-size: 0.9rem;
+  color: var(--highlight-heavy);
+  line-height: 1.4;
+}
+
+/* ---------- Artwork Tabs ---------- */
+
+.artwork-tabs {
+  display: flex;
+  background: var(--background-color);
+  border-radius: var(--radius);
+  padding: 0.25rem;
+  margin-bottom: 1.5rem;
+}
+
+.artwork-tab {
+  flex: 1;
+  padding: 0.75rem 1rem;
+  border: none;
+  background: transparent;
+  color: var(--highlight-heavy);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all var(--transition-base);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.artwork-tab:hover {
+  color: var(--text-color);
+  background: var(--highlight-light);
+}
+
+.artwork-tab.active {
+  background: var(--accent-color);
+  color: var(--background-color);
+  font-weight: 600;
+}
+
+/* ---------- URL Input ---------- */
+
+.url-input-container {
+  position: relative;
+}
+
+.input-icon {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--accent-color);
+  font-size: 1.1rem;
+}
+
+/* ---------- File Upload ---------- */
+
+.file-upload-modern {
+  position: relative;
+}
+
+.file-upload-modern-label {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 2rem;
+  border: 2px dashed var(--border-color);
+  border-radius: var(--radius-lg);
+  background: var(--background-color);
+  cursor: pointer;
+  transition: all var(--transition-slow);
+  position: relative;
+}
+
+.file-upload-modern-label:hover {
+  border-color: var(--accent-color);
+  background: var(--overlay-heavy);
+}
+
+.upload-subtitle {
+  font-size: 0.9rem;
+  color: var(--highlight-heavy);
+}
+
+.remove-file-modern {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  width: 30px;
+  height: 30px;
+  border-radius: var(--radius-full);
+  background: var(--error-color);
+  border: none;
+  color: var(--text-color);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  transition: all var(--transition-base);
+}
+
+.remove-file-modern:hover {
+  background: var(--error-color);
+  transform: scale(1.1);
+}
+
+/* ---------- Action Section ---------- */
+
+.action-section {
+  margin-top: 2rem;
+  display: flex;
+  justify-content: center;
+}
+
+/* ---------- Hatch Session Modern Styles ---------- */
+
+.hatch-session-modern-container {
+  min-height: 100vh;
+  background: var(--nursery-bg-gradient);
+  padding: 2rem 1rem;
+  color: var(--text-color);
+}
+
+.session-background {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 150px;
+  height: 150px;
+  opacity: 0.1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.session-icon {
+  font-size: 6rem;
+  color: var(--accent-color);
+}
+
+.session-info-modern {
+  position: relative;
+  z-index: 2;
+  flex: 1;
+}
+
+.session-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--accent-color);
+  margin-bottom: 1rem;
+  text-shadow: 0 2px 4px var(--overlay-dark);
+}
+
+.session-details {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.session-type {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: var(--accent-color);
+  color: var(--background-color);
+  border-radius: var(--radius-2xl);
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.session-progress-text {
+  font-size: 1.1rem;
+  color: var(--highlight-heavy);
+}
+
+/* ---------- Progress Bar ---------- */
+
+.progress-container-modern {
+  max-width: 1200px;
+  margin: 0 auto 3rem;
+  padding: 0 1rem;
+}
+
+.progress-bar-modern {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+  padding: 1rem 0;
+}
+
+.progress-bar-modern::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--accent-glow);
+  z-index: 1;
+}
+
+.progress-step-modern {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  position: relative;
+  z-index: 2;
+}
+
+.step-circle {
+  width: 50px;
+  height: 50px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  transition: all var(--transition-slow);
+  border: 2px solid transparent;
+}
+
+.progress-step-modern.pending .step-circle {
+  background: var(--highlight-light);
+  color: var(--highlight-heavy);
+  border-color: var(--highlight-medium);
+}
+
+.progress-step-modern.active .step-circle {
+  background: var(--accent-color);
+  color: var(--background-color);
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 4px var(--accent-glow);
+}
+
+.progress-step-modern.completed .step-circle {
+  background: var(--success-color);
+  color: var(--text-color);
+  border-color: var(--success-color);
+}
+
+.step-label {
+  font-size: 0.8rem;
+  color: var(--highlight-heavy);
+  text-align: center;
+  white-space: nowrap;
+}
+
+.progress-step-modern.active .step-label {
+  color: var(--accent-color);
+  font-weight: 600;
+}
+
+.progress-step-modern.completed .step-label {
+  color: var(--success-color);
+}
+
+/* ---------- Current Egg ---------- */
+
+.current-egg-modern {
+  max-width: 1200px;
+  margin: 0 auto;
+  background: var(--nursery-card-bg);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--nursery-shadow);
+  overflow: hidden;
+}
+
+.egg-title {
+  margin: 0;
+  font-size: 2rem;
+  font-weight: 600;
+  color: var(--text-color);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.egg-title i {
+  color: var(--accent-color);
+}
+
+.egg-id-badge {
+  background: var(--accent-color);
+  color: var(--background-color);
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-2xl);
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+/* ---------- Monster Naming ---------- */
+
+.monster-naming-section {
+  padding: 2rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.naming-header span:first-of-type {
+  font-weight: 600;
+  color: var(--text-color);
+  font-size: 1.1rem;
+}
+
+.optional-badge {
+  background: var(--accent-glow);
+  color: var(--accent-color);
+  padding: 0.25rem 0.75rem;
+  border-radius: var(--radius-xl);
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-left: auto;
+}
+
+.naming-input-container {
+  position: relative;
+}
+
+.character-count {
+  position: absolute;
+  right: 0.75rem;
+  bottom: -1.5rem;
+  font-size: 0.75rem;
+  color: var(--highlight-heavy);
+}
+
+/* ---------- Monster Selection ---------- */
+
+.monster-selection-modern {
+  padding: 2rem;
+  background: var(--card-background);
+}
+
+.selection-title {
+  margin: 0 0 1.5rem 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--accent-color);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.monster-card-modern {
+  position: relative;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  cursor: pointer;
+  transition: all var(--transition-slow);
+  border: 2px solid transparent;
+}
+
+.monster-card-modern:hover:not(.disabled) {
+  transform: translateY(-4px);
+  border-color: var(--accent-color);
+  box-shadow: 0 8px 24px var(--accent-glow);
+}
+
+.monster-card-modern.selected {
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 4px var(--accent-glow);
+}
+
+.monster-card-modern.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.monster-card-modern.claimed-with-edenwiess {
+  border-color: var(--custom-type);
+  opacity: 0.7;
+}
+
+.monster-card-content {
+  position: relative;
+}
+
+.selection-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--accent-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+.selection-checkmark {
+  width: 80px;
+  height: 80px;
+  border-radius: var(--radius-full);
+  background: var(--background-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  color: var(--accent-color);
+  animation: bounce 0.5s ease;
+}
+
+.claimed-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--custom-type);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+/* ---------- Special Actions ---------- */
+
+.special-actions-section {
+  padding: 2rem;
+  border-top: 1px solid var(--border-color);
+  background: var(--accent-glow);
+}
+
+.special-actions-title {
+  margin: 0 0 1.5rem 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--accent-color);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.special-actions-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.edenwiess-help {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1rem;
+  background: var(--overlay-light);
+  border: 1px solid var(--accent-glow);
+  border-radius: var(--radius);
+}
+
+.help-text {
+  flex: 1;
+  color: var(--highlight-heavy);
+  line-height: 1.5;
+  font-size: 0.9rem;
+}
+
+/* ---------- Egg Actions ---------- */
+
+.egg-actions-modern {
+  padding: 2rem;
+  display: flex;
+  justify-content: center;
+  border-top: 1px solid var(--border-color);
+}
+
+/* ---------- Selected State ---------- */
+
+.egg-selected-modern {
+  padding: 2rem;
+  border-top: 1px solid var(--border-color);
+  background: var(--success-glow);
+}
+
+.selected-success {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 1.5rem;
+  background: var(--success-glow);
+  border: 1px solid var(--success-glow);
+  border-radius: var(--radius-lg);
+}
+
+.success-icon-medium {
+  width: 60px;
+  height: 60px;
+  border-radius: var(--radius-full);
+  background: var(--success-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  color: var(--text-color);
+  flex-shrink: 0;
+  animation: pulse 2s infinite;
+}
+
+.success-content-medium h4 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--success-color);
+}
+
+.success-content-medium p {
+  margin: 0;
+  color: var(--highlight-heavy);
+}
+
+/* ---------- Complete State ---------- */
+
+.hatch-complete-modern {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 3rem;
+  background: var(--nursery-card-bg);
+  border-radius: var(--radius-2xl);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--nursery-shadow);
+  text-align: center;
+}
+
+.success-celebration {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.success-icon-large {
+  width: 120px;
+  height: 120px;
+  border-radius: var(--radius-full);
+  background: linear-gradient(135deg, var(--success-color), var(--success-dark));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3rem;
+  color: var(--text-color);
+  animation: bounce 1s ease-in-out;
+  z-index: 2;
+  position: relative;
+}
+
+.confetti-animation {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+}
+
+.confetti {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background: var(--accent-color);
+  animation: confetti-fall 3s ease-out infinite;
+}
+
+.confetti:nth-child(1) {
+  left: 20%;
+  animation-delay: 0s;
+  background: var(--warning-color);
+}
+
+.confetti:nth-child(2) {
+  left: 50%;
+  animation-delay: 1s;
+  background: var(--custom-type);
+}
+
+.confetti:nth-child(3) {
+  left: 80%;
+  animation-delay: 2s;
+  background: var(--success-color);
+}
+
+.success-content {
+  flex: 1;
+}
+
+.success-description {
+  font-size: 1.25rem;
+  color: var(--highlight-heavy);
+  line-height: 1.6;
+  margin-bottom: 2rem;
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.success-actions {
+  margin-top: 2rem;
+}
+
+/* ---------- Animations ---------- */
+
+@keyframes bounce {
+  0%, 20%, 53%, 80%, 100% {
+    transform: translateY(0);
+  }
+  40%, 43% {
+    transform: translateY(-15px);
+  }
+  70% {
+    transform: translateY(-7px);
+  }
+  90% {
+    transform: translateY(-3px);
+  }
+}
+
+@keyframes confetti-fall {
+  0% {
+    transform: translateY(-100px) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(400px) rotate(720deg);
+    opacity: 0;
+  }
+}
+
+/* ---------- Responsive Design ---------- */
+
+@media (max-width: 1024px) {
+  .nursery-title {
+    font-size: 2.5rem;
+  }
+
+  .wildlife-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .nursery-modern-container {
+    padding: 1rem 0.5rem;
+  }
+
+  .nursery-hero {
+    padding: 3rem 1rem;
+  }
+
+  .nursery-title {
+    font-size: 2rem;
+  }
+
+  .session-title {
+    font-size: 2rem;
+  }
+
+  .egg-title {
+    font-size: 1.5rem;
+  }
+
+  .progress-bar-modern {
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .step-label {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .nursery-card-header,
+  .nursery-card-body {
+    padding: 1rem;
+  }
+
+  .session-title {
+    font-size: 2rem;
+  }
+}

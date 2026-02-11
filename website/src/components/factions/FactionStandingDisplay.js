@@ -11,8 +11,8 @@ const FactionStandingDisplay = ({ standing, faction, trainerId }) => {
             <span className="standing-label">Neutral</span>
           </div>
         </div>
-        <div className="standing-bar">
-          <div className="standing-progress default"></div>
+        <div className="progress">
+          <div className="progress-fill default"></div>
         </div>
         <div className="standing-info">
           <p>No standing established with this faction yet.</p>
@@ -81,13 +81,15 @@ const FactionStandingDisplay = ({ standing, faction, trainerId }) => {
       </div>
 
       <div className="standing-bar">
-        <div 
-          className="standing-progress" 
-          style={{ 
-            width: `${progressPercentage}%`,
-            backgroundColor: standingColor
-          }}
-        ></div>
+        <div className="progress">
+          <div
+            className="progress-fill"
+            style={{
+              width: `${progressPercentage}%`,
+              backgroundColor: standingColor
+            }}
+          ></div>
+        </div>
         <div className="standing-markers">
           <div className="marker negative">-1000</div>
           <div className="marker neutral">0</div>
@@ -111,10 +113,10 @@ const FactionStandingDisplay = ({ standing, faction, trainerId }) => {
             <p>{nextTitle.description}</p>
             <div className="title-progress">
               <span>Progress to next title:</span>
-              <div className="title-progress-bar">
-                <div 
-                  className="title-progress-fill"
-                  style={{ 
+              <div className="progress">
+                <div
+                  className="progress-fill"
+                  style={{
                     width: `${Math.max(0, (standing.standing / nextTitle.standing_requirement) * 100)}%`,
                     backgroundColor: standingColor
                   }}

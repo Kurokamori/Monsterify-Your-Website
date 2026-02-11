@@ -82,7 +82,7 @@ const EvolutionCards = ({ evolutionData, currentMonsterId }) => {
                   {[evo.type1, evo.type2, evo.type3, evo.type4, evo.type5]
                     .filter(Boolean)
                     .map((type, i) => (
-                      <span key={i} className={`evolution-type-badge type-${type.toLowerCase()}`}>
+                      <span key={i} className={`badge type-${type.toLowerCase()}`}>
                         {type}
                       </span>
                     ))}
@@ -91,7 +91,7 @@ const EvolutionCards = ({ evolutionData, currentMonsterId }) => {
                 {/* Attribute */}
                 {evo.attribute && evo.attribute !== 'None' && (
                   <div className="evolution-attribute">
-                    <span className={`evolution-attribute-badge attribute-${evo.attribute.toLowerCase()}`}>
+                    <span className={`badge attribute-${evo.attribute.toLowerCase()}`}>
                       {evo.attribute}
                     </span>
                   </div>

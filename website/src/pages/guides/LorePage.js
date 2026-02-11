@@ -177,7 +177,7 @@ const LorePage = () => {
   }
 
   return (
-    <div className="lore-container">
+    <div className="main-content-container">
       <div className="lore-header">
         <h1>World Lore & History</h1>
         <p>Explore the rich history, legends, and stories of the Monsterify world</p>
@@ -217,7 +217,7 @@ const LorePage = () => {
       <div className="npcs-grid">
         {displayLoreEntries.map(entry => (
           <div 
-            className={`lore-entry${expandedEntry === entry.id ? 'expanded' : ''}`} 
+            className={`lore-entry ${expandedEntry === entry.id ? 'expanded' : ''}`} 
             key={entry.id}
           >
             <div className="option-row" onClick={() => toggleExpandEntry(entry.id)}>

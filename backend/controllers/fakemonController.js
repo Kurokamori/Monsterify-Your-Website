@@ -417,6 +417,13 @@ const getEvolutionChain = async (req, res) => {
   }
 };
 
+// Standard Pokemon-style types - always available regardless of database content
+const STANDARD_TYPES = [
+  'Normal', 'Fire', 'Water', 'Electric', 'Grass', 'Ice',
+  'Fighting', 'Poison', 'Ground', 'Flying', 'Psychic', 'Bug',
+  'Rock', 'Ghost', 'Dragon', 'Dark', 'Steel', 'Fairy'
+];
+
 /**
  * Get all fakemon types
  * @param {Object} req - Express request object
@@ -424,27 +431,9 @@ const getEvolutionChain = async (req, res) => {
  */
 const getAllTypes = async (req, res) => {
   try {
-    // Ensure the fakemon table exists
-    await ensureFakemonTableExists();
-
-    // Get all unique types from fakemon
-    const types = await db.asyncAll(`
-      SELECT DISTINCT type AS name
-      FROM (
-        SELECT type1 AS type FROM fakemon WHERE type1 IS NOT NULL
-        UNION
-        SELECT type2 AS type FROM fakemon WHERE type2 IS NOT NULL
-        UNION
-        SELECT type3 AS type FROM fakemon WHERE type3 IS NOT NULL
-        UNION
-        SELECT type4 AS type FROM fakemon WHERE type4 IS NOT NULL
-        UNION
-        SELECT type5 AS type FROM fakemon WHERE type5 IS NOT NULL
-      )
-      ORDER BY name
-    `);
-
-    res.json({ types: types.map(t => t.name) });
+    // Return the standard list of types
+    // This ensures all types are always available, even if not yet used in the database
+    res.json({ types: STANDARD_TYPES });
   } catch (error) {
     console.error('Error fetching fakemon types:', error);
     res.status(500).json({ error: 'Failed to fetch fakemon types' });
@@ -960,8 +949,8 @@ const bulkCreateFakemon = async (req, res) => {
             number, name, category, classification, type1, type2, type3, type4, type5,
             attribute, image_url,
             hp, attack, defense, special_attack, special_defense, speed,
-            created_by, created_at, updated_at
-          ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, NOW(), NOW())
+            created_by, created_at
+          ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, NOW())
         `, [
           number,
           name,
@@ -1000,7 +989,7 @@ const bulkCreateFakemon = async (req, res) => {
 
     res.status(201).json({
       success: true,
-      message: `Created ${results.length} fakemon successfully${errors.length > 0 ? `, ${errors.length} failed` : ''}`,
+      message: `Created ${results.length} fakemon successfully ${errors.length > 0 ? `, ${errors.length} failed` : ''}`,
       created: results,
       errors
     });

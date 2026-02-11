@@ -637,11 +637,11 @@ const AdminDashboard = () => {
         </div>
 
         {/* Categories */}
-        <div className="set-item">
+        <div className="container horizontal gap-md">
           {categories.map(category => (
             <button
               key={category.id}
-              className={`top-nav-link${activeCategory === category.id ? 'active' : ''}`}
+              className={`button toggle ${activeCategory === category.id ? 'active' : ''}`}
               onClick={() => setActiveCategory(category.id)}
             >
               <i className={`fas${category.icon}`}></i>
@@ -652,7 +652,7 @@ const AdminDashboard = () => {
         </div>
 
         {/* Features Grid */}
-        <div className="admin-features-grid">
+        <div className="container grid-xl gap-md">
           {filteredFeatures.length === 0 ? (
             <div className="no-results">
               <i className="fas fa-search"></i>
@@ -660,7 +660,7 @@ const AdminDashboard = () => {
             </div>
           ) : (
             filteredFeatures.map(feature => (
-              <div key={feature.id} className={`gift-monster-card ${!feature.implemented ? 'not-implemented' : ''}`}>
+              <div key={feature.id} className={`card-container ${!feature.implemented ? 'not-implemented' : ''}`}>
                 <div className="location-icon">
                   <i className={`fas${feature.icon}`}></i>
                 </div>

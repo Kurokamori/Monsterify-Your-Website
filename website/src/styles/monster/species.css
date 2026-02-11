@@ -14,23 +14,25 @@
    RESPONSIVE STYLES
    ============================================================================= */
 
-/* Medium screens (1024px and below) */
 @media (max-width: 1024px) {
   .species-selection-modal {
     max-width: 95vw;
   }
 }
 
-/* Tablet screens (768px and below) */
+@media (max-width: 768px) {
+  .species-selection-modal {
+    width: 100%;
+    max-width: 100%;
+    max-height: 85vh;
+    border-radius: 0.75rem 0.75rem 0 0;
+  }
+}
 
-/* Mobile screens (480px and below) */
 @media (max-width: 480px) {
-}
-
-/* Extra small screens (360px and below) */
-@media (max-width: 360px) {
-}
-
-/* Reduced motion preference */
-@media (prefers-reduced-motion: reduce) {
+  .species-selection-modal {
+    width: 100%;
+    max-height: 90vh;
+    border-radius: 0.5rem 0.5rem 0 0;
+  }
 }

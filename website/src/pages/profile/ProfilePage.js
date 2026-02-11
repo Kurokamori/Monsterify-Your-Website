@@ -58,7 +58,7 @@ const ProfilePage = () => {
   }
 
   return (
-    <div className="schedule-page">
+    <div className="main-content-container">
       <div className="map-header">
         <h1>Profile Settings</h1>
         <p>Customize your profile and monster roller preferences</p>

@@ -184,7 +184,7 @@ const CollectItem = ({ userTrainers }) => {
             }
           </p>
         ) : (
-          <div className="items-grid">
+          <div className="container grid gap-md">
             {filteredItems.map(renderItemCard)}
           </div>
         )}

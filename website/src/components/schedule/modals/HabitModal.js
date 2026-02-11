@@ -108,7 +108,7 @@ const HabitModal = ({ isOpen, onClose, onSuccess, trainers = [], habit = null })
 
         <form onSubmit={handleSubmit} className="modal-body">
           {error && (
-            <div className="error-message">
+            <div className="alert error">
               <i className="fas fa-exclamation-triangle"></i>
               {error}
             </div>

@@ -163,11 +163,11 @@ const AchievementsStats = () => {
                       const positions = [1, 0, 2]; // 2nd, 1st, 3rd order
                       const actualPosition = positions[index];
                       const isFirst = actualPosition === 0;
-                      
+
                       return (
-                        <div 
-                          key={trainer.trainer_id} 
-                          className={`podium-card ${isFirst ? 'first-place' : ''}position-${actualPosition + 1}`}
+                        <div
+                          key={trainer.trainer_id}
+                          className={`podium-card ${isFirst ? 'first-place ' : ''}position-${actualPosition + 1}`}
                           style={{ order: index }}
                         >
                           <div className={`podium-rank rank-${actualPosition + 1}`}>
@@ -175,13 +175,13 @@ const AchievementsStats = () => {
                           </div>
                           <div className="podium-image">
                             {trainer.main_ref ? (
-                              <img 
-                                src={trainer.main_ref} 
-                                alt={trainer.trainer_name} 
+                              <img
+                                src={trainer.main_ref}
+                                alt={trainer.trainer_name}
                                 className="trainer-avatar-image"
                                 onError={(e) => {
                                   e.target.style.display = 'none';
-                                  e.target.nextSibling.style.display = 'flex';
+                                  if (e.target.nextSibling) e.target.nextSibling.style.display = 'flex';
                                 }}
                               />
                             ) : null}
@@ -189,9 +189,11 @@ const AchievementsStats = () => {
                           </div>
                           <div className="podium-info">
                             <h4 className="podium-name">{formatTrainerName(trainer)}</h4>
-                            <div className="fandom-grid">
-                              <span className="podium-level">{trainer.count} achievements</span>
-                              <span className="trainer-player">Player: {trainer.player_display_name}</span>
+                            <div className="podium-details">
+                              <span className="podium-value">{trainer.count} achievements</span>
+                              <span className="podium-player">
+                                <i className="fas fa-user"></i> {trainer.player_display_name}
+                              </span>
                             </div>
                           </div>
                         </div>
@@ -203,17 +205,17 @@ const AchievementsStats = () => {
                 {stats.most_achievements.length > 3 && (
                   <div className="remaining-positions">
                     {stats.most_achievements.slice(3, 10).map((trainer, index) => (
-                      <div key={trainer.trainer_id} className="art-calculator">
+                      <div key={trainer.trainer_id} className="remaining-card">
                         <div className="remaining-rank">#{index + 4}</div>
-                        <div className="pc-box-slot">
+                        <div className="remaining-avatar">
                           {trainer.main_ref ? (
-                            <img 
-                              src={trainer.main_ref} 
-                              alt={trainer.trainer_name} 
+                            <img
+                              src={trainer.main_ref}
+                              alt={trainer.trainer_name}
                               className="trainer-avatar-image"
                               onError={(e) => {
                                 e.target.style.display = 'none';
-                                e.target.nextSibling.style.display = 'flex';
+                                if (e.target.nextSibling) e.target.nextSibling.style.display = 'flex';
                               }}
                             />
                           ) : null}
@@ -221,9 +223,11 @@ const AchievementsStats = () => {
                         </div>
                         <div className="remaining-info">
                           <h4 className="remaining-name">{formatTrainerName(trainer)}</h4>
-                          <div className="stat-info">
-                            <span className="remaining-level">{trainer.count} achievements</span>
-                            <span className="trainer-player">Player: {trainer.player_display_name}</span>
+                          <div className="remaining-details">
+                            <span className="remaining-value">{trainer.count} achievements</span>
+                            <span className="remaining-player">
+                              <i className="fas fa-user"></i> {trainer.player_display_name}
+                            </span>
                           </div>
                         </div>
                       </div>
@@ -235,20 +239,20 @@ const AchievementsStats = () => {
 
             <div className="missions-header">
               <h4><i className="fas fa-seedling"></i> Least Achievements (Room to Grow!)</h4>
-              <div className="leaderboard-table">
+              <div className="achievement-category-list">
                 {stats.least_achievements.slice(0, 10).map((trainer, index) => (
-                  <div key={trainer.trainer_id} className="category-row">
-                    <div className="rank">#{index + 1}</div>
-                    <div className="trainer-info">
+                  <div key={trainer.trainer_id} className="stats-leaderboard-row">
+                    <div className="stats-rank">#{index + 1}</div>
+                    <div className="stats-trainer-info">
                       {trainer.main_ref && (
-                        <img src={trainer.main_ref} alt={trainer.trainer_name} className="npc-avatar" />
+                        <img src={trainer.main_ref} alt={trainer.trainer_name} className="stats-trainer-avatar" />
                       )}
-                      <div className="trainer-details">
-                        <span className="trainer-name">{formatTrainerName(trainer)}</span>
-                        <span className="player-name">Player: {trainer.player_display_name}</span>
+                      <div className="stats-trainer-details">
+                        <span className="stats-trainer-name">{formatTrainerName(trainer)}</span>
+                        <span className="stats-player-name">Player: {trainer.player_display_name}</span>
                       </div>
                     </div>
-                    <div className="achievement-count">{trainer.count} achievements</div>
+                    <div className="stats-value">{trainer.count} achievements</div>
                   </div>
                 ))}
               </div>
@@ -259,25 +263,25 @@ const AchievementsStats = () => {
         {activeTab === 'categories' && (
           <div className="achievement-categories">
             {Object.entries(stats.top_by_category).map(([category, trainers]) => (
-              <div key={category} className="category-section">
+              <div key={category} className="achievement-category-section">
                 <h4>
-                  <i className="fas fa-medal"></i> 
+                  <i className="fas fa-medal"></i>
                   Top {category.charAt(0).toUpperCase() + category.slice(1).replace('_', ' ')} Achievers
                 </h4>
-                <div className="category-leaderboard">
+                <div className="achievement-category-list">
                   {trainers.slice(0, 5).map((trainer, index) => (
-                    <div key={trainer.trainer_id} className="category-row">
-                      <div className="rank">#{index + 1}</div>
-                      <div className="trainer-info">
+                    <div key={trainer.trainer_id} className="stats-leaderboard-row">
+                      <div className="stats-rank">#{index + 1}</div>
+                      <div className="stats-trainer-info">
                         {trainer.main_ref && (
-                          <img src={trainer.main_ref} alt={trainer.trainer_name} className="npc-avatar" />
+                          <img src={trainer.main_ref} alt={trainer.trainer_name} className="stats-trainer-avatar" />
                         )}
-                        <div className="trainer-details">
-                          <span className="trainer-name">{formatTrainerName(trainer)}</span>
-                          <span className="player-name">Player: {trainer.player_display_name}</span>
+                        <div className="stats-trainer-details">
+                          <span className="stats-trainer-name">{formatTrainerName(trainer)}</span>
+                          <span className="stats-player-name">Player: {trainer.player_display_name}</span>
                         </div>
                       </div>
-                      <div className="achievement-count">{trainer.count} achievements</div>
+                      <div className="stats-value">{trainer.count} achievements</div>
                     </div>
                   ))}
                 </div>

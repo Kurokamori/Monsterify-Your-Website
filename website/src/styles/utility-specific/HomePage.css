@@ -293,11 +293,7 @@
   text-shadow: 0 2px 4px var(--overlay-dark);
 }
 
-.steps-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 2rem;
-}
+/* .steps-grid - grid moved to container classes */
 
 .step-card {
   background: linear-gradient(145deg, var(--overlay-medium) 0%, var(--overlay-heavy) 100%);
@@ -371,11 +367,7 @@
   text-shadow: 0 2px 4px var(--overlay-dark);
 }
 
-.features-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 2rem;
-}
+/* .features-grid - grid moved to container classes */
 
 .feature-card {
   background: linear-gradient(145deg, var(--overlay-medium) 0%, var(--overlay-medium) 100%);
@@ -667,12 +659,7 @@
   text-shadow: 0 2px 4px var(--overlay-dark);
 }
 
-.look-around-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 2rem;
-  margin-bottom: 3rem;
-}
+/* .look-around-grid - grid moved to container classes */
 
 .feature-card::before {
   content: '';
@@ -793,9 +780,7 @@
     padding: 2rem;
   }
   
-  .steps-grid, .features-grid, .look-around-grid {
-    grid-template-columns: 1fr;
-  }
+  /* Old grid classes replaced by container classes - responsive in containers.css */
   
   .stats-grid {
     grid-template-columns: repeat(2, 1fr);

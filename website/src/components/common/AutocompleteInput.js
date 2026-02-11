@@ -225,7 +225,7 @@ const AutocompleteInput = ({
           placeholder={placeholder}
           disabled={disabled}
           required={required}
-          className={`form-input${!isValid && value ? 'invalid' : ''}`}
+          className={`form-input ${!isValid && value ? 'invalid' : ''}`}
           autoComplete="off"
         />
 
@@ -248,7 +248,7 @@ const AutocompleteInput = ({
             {filteredOptions.map((option, index) => (
               <div
                 key={option.name}
-                className={`autocomplete-option${
+                className={`autocomplete-option ${
                   highlightedIndex === index ? 'highlighted' : ''
                 }${value.toLowerCase() === option.name.toLowerCase() ? 'selected' : ''}`}
                 onClick={() => handleOptionClick(option)}

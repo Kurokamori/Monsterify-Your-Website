@@ -40,7 +40,15 @@ const registerUser = async (req, res) => {
         discord_id: user.discord_id,
         is_admin: user.is_admin,
         monster_roller_settings: user.monster_roller_settings,
-        theme: user.theme || 'dusk'
+        theme: user.theme || 'dusk',
+        content_settings: user.content_settings || {
+          mature_enabled: false,
+          gore: false,
+          nsfw_light: false,
+          nsfw_heavy: false,
+          triggering: false,
+          intense_violence: false
+        }
       },
       token,
       refreshToken
@@ -115,7 +123,15 @@ const loginUser = async (req, res) => {
         discord_id: user.discord_id,
         is_admin: user.is_admin,
         monster_roller_settings: user.monster_roller_settings,
-        theme: user.theme || 'dusk'
+        theme: user.theme || 'dusk',
+        content_settings: user.content_settings || {
+          mature_enabled: false,
+          gore: false,
+          nsfw_light: false,
+          nsfw_heavy: false,
+          triggering: false,
+          intense_violence: false
+        }
       },
       token,
       refreshToken
@@ -201,7 +217,15 @@ const getUserProfile = async (req, res) => {
         discord_id: user.discord_id,
         is_admin: user.is_admin,
         monster_roller_settings: user.monster_roller_settings,
-        theme: user.theme || 'dusk'
+        theme: user.theme || 'dusk',
+        content_settings: user.content_settings || {
+          mature_enabled: false,
+          gore: false,
+          nsfw_light: false,
+          nsfw_heavy: false,
+          triggering: false,
+          intense_violence: false
+        }
       }
     });
   } catch (error) {
@@ -237,7 +261,15 @@ const updateUserProfile = async (req, res) => {
         discord_id: updatedUser.discord_id,
         is_admin: updatedUser.is_admin,
         monster_roller_settings: updatedUser.monster_roller_settings,
-        theme: updatedUser.theme || 'dusk'
+        theme: updatedUser.theme || 'dusk',
+        content_settings: updatedUser.content_settings || {
+          mature_enabled: false,
+          gore: false,
+          nsfw_light: false,
+          nsfw_heavy: false,
+          triggering: false,
+          intense_violence: false
+        }
       }
     });
   } catch (error) {
@@ -335,6 +367,35 @@ const updateUserTheme = async (req, res) => {
   }
 };
 
+const updateContentSettings = async (req, res) => {
+  try {
+    const settings = req.body;
+    if (!settings || typeof settings !== 'object') {
+      return res.status(400).json({ success: false, message: 'Invalid settings format' });
+    }
+    const sanitized = {
+      mature_enabled: !!settings.mature_enabled,
+      gore: !!settings.gore,
+      nsfw_light: !!settings.nsfw_light,
+      nsfw_heavy: !!settings.nsfw_heavy,
+      triggering: !!settings.triggering,
+      intense_violence: !!settings.intense_violence
+    };
+    if (!sanitized.mature_enabled) {
+      sanitized.gore = false;
+      sanitized.nsfw_light = false;
+      sanitized.nsfw_heavy = false;
+      sanitized.triggering = false;
+      sanitized.intense_violence = false;
+    }
+    const updatedUser = await User.updateContentSettings(req.user.id, sanitized);
+    res.status(200).json({ success: true, content_settings: updatedUser.content_settings || sanitized });
+  } catch (error) {
+    console.error('Update content settings error:', error);
+    res.status(500).json({ success: false, message: 'Server error while updating content settings' });
+  }
+};
+
 /**
  * Test Discord configuration
  * @route GET /api/auth/discord/test
@@ -400,7 +461,15 @@ const discordCallback = (req, res, next) => {
         discord_id: user.discord_id,
         is_admin: user.is_admin,
         monster_roller_settings: user.monster_roller_settings,
-        theme: user.theme || 'dusk'
+        theme: user.theme || 'dusk',
+        content_settings: user.content_settings || {
+          mature_enabled: false,
+          gore: false,
+          nsfw_light: false,
+          nsfw_heavy: false,
+          triggering: false,
+          intense_violence: false
+        }
       };
       
       const redirectUrl = `${frontendUrl}/auth/discord/success?token=${encodeURIComponent(token)}&refreshToken=${encodeURIComponent(refreshToken)}&user=${encodeURIComponent(JSON.stringify(userData))}`;
@@ -424,6 +493,7 @@ module.exports = {
   getMonsterRollerSettings,
   updateMonsterRollerSettings,
   updateUserTheme,
+  updateContentSettings,
   testDiscordConfig,
   discordAuth,
   discordCallback

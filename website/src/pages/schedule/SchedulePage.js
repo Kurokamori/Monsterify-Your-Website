@@ -54,7 +54,7 @@ const SchedulePage = () => {
   }
 
   return (
-    <div className="schedule-page">
+    <div className="main-content-container">
       <div className="option-row">
         <h1>Manage Schedule</h1>
         <p>Organize your tasks, track habits, and manage daily routines with optional Discord reminders and in-game rewards</p>

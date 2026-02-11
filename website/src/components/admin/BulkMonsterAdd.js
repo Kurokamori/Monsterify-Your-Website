@@ -146,7 +146,7 @@ Blaze | 10 | Charmander | Fire | Data`;
       </form>
 
       {error && (
-        <div className="error-message">
+        <div className="alert error">
           <h3>Error</h3>
           <p>{error}</p>
         </div>

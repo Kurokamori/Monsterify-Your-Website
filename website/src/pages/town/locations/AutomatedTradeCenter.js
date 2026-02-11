@@ -454,7 +454,7 @@ const AutomatedTradeCenter = () => {
             {/* Trade Type Selection */}
             <div className="trade-type-selection">
               <label>Trade Type:</label>
-              <div className="trade-type-buttons">
+              <div className="container horizontal gap-md">
                 <button
                   className={`button filter ${tradeType === 'monsters' ? 'active' : ''}`}
                   onClick={() => handleTradeTypeChange('monsters')}
@@ -552,20 +552,22 @@ const AutomatedTradeCenter = () => {
                                       {monster.species2 && ` • ${monster.species2}`}
                                       {monster.species3 && ` • ${monster.species3}`}
                                     </div>
+                                    <div className="container horizontal gap-sm center">
                                     {(monster.type1 || monster.type2 || monster.type3 || monster.type4 || monster.type5) && (
                                       <div className="monster-types">
-                                        {monster.type1 && <span className="type-badge type-1">{monster.type1}</span>}
-                                        {monster.type2 && <span className="type-badge type-2">{monster.type2}</span>}
-                                        {monster.type3 && <span className="type-badge type-3">{monster.type3}</span>}
-                                        {monster.type4 && <span className="type-badge type-4">{monster.type4}</span>}
-                                        {monster.type5 && <span className="type-badge type-5">{monster.type5}</span>}
+                                        {monster.type1 && <span className={`badge type-${monster.type1.toLowerCase()}`}>{monster.type1}</span>}
+                                        {monster.type2 && <span className={`badge type-${monster.type2.toLowerCase()}`}>{monster.type2}</span>}
+                                        {monster.type3 && <span className={`badge type-${monster.type3.toLowerCase()}`}>{monster.type3}</span>}
+                                        {monster.type4 && <span className={`badge type-${monster.type4.toLowerCase()}`}>{monster.type4}</span>}
+                                        {monster.type5 && <span className={`badge type-${monster.type5.toLowerCase()}`}>{monster.type5}</span>}
                                       </div>
                                     )}
                                     {monster.attribute && (
                                       <div className="monster-types">
-                                        <span className="attribute-badge">{monster.attribute}</span>
+                                        <span className="badge">{monster.attribute}</span>
                                       </div>
                                     )}
+                                  </div>
                                   </div>
                                 </label>
                               </div>
@@ -614,16 +616,16 @@ const AutomatedTradeCenter = () => {
                                     </div>
                                     {(monster.type1 || monster.type2 || monster.type3 || monster.type4 || monster.type5) && (
                                       <div className="monster-types">
-                                        {monster.type1 && <span className="type-badge type-1">{monster.type1}</span>}
-                                        {monster.type2 && <span className="type-badge type-2">{monster.type2}</span>}
-                                        {monster.type3 && <span className="type-badge type-3">{monster.type3}</span>}
-                                        {monster.type4 && <span className="type-badge type-4">{monster.type4}</span>}
-                                        {monster.type5 && <span className="type-badge type-5">{monster.type5}</span>}
+                                        {monster.type1 && <span className={`badge ${monster.type1.toLowerCase()}`}>{monster.type1}</span>}
+                                        {monster.type2 && <span className={`badge ${monster.type2.toLowerCase()}`}>{monster.type2}</span>}
+                                        {monster.type3 && <span className={`badge ${monster.type3.toLowerCase()}`}>{monster.type3}</span>}
+                                        {monster.type4 && <span className={`badge ${monster.type4.toLowerCase()}`}>{monster.type4}</span>}
+                                        {monster.type5 && <span className={`badge ${monster.type5.toLowerCase()}`}>{monster.type5}</span>}
                                       </div>
                                     )}
                                     {monster.attribute && (
                                       <div className="monster-types">
-                                        <span className="attribute-badge">{monster.attribute}</span>
+                                        <span className="badge">{monster.attribute}</span>
                                       </div>
                                     )}
                                   </div>

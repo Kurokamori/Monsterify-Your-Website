@@ -246,7 +246,7 @@ const Garden = () => {
 
           <div className="location-activities">
             <div className="location-activity-card">
-              <div className="npc-avatar">
+              <div className="image-container activity">
                 <img src="https://i.imgur.com/Z5dNHXv.jpeg" alt="Tend Garden" />
               </div>
               <div className="activity-info">
@@ -266,7 +266,7 @@ const Garden = () => {
             </div>
 
             <div className="location-activity-card">
-              <div className="npc-avatar">
+              <div className="image-container activity">
                 <img src="https://i.imgur.com/Z5dNHXv.jpeg" alt="Harvest Garden" />
               </div>
               <div className="activity-info">

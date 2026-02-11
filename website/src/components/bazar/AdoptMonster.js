@@ -162,7 +162,7 @@ const AdoptMonster = ({ userTrainers }) => {
         {availableMonsters.length === 0 ? (
           <p>No monsters are currently available for adoption.</p>
         ) : (
-          <div className="bazar-monsters-grid">
+          <div className="container cols-3 gap-lg mb-lg">
             {availableMonsters.map(renderMonsterCard)}
           </div>
         )}

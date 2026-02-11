@@ -91,12 +91,6 @@
   gap: 1.5rem;
 }
 
-/* Action buttons: Use unified button system from common/buttons.css
-   Example: className="button info icon" for view
-   Example: className="button primary icon" for edit
-   Example: className="button danger icon" for delete
-   Example: className="button secondary" or "button danger" for action buttons */
-
 /* ===== Detailed list view ===== */
 
 .detailed-list-row:hover{ background-color:var(--hover-color); border-left-color:var(--primary-color); transform:translateX(2px); }
@@ -107,15 +101,39 @@
   overflow: hidden;
 }
 
-/* ===== View toggles ===== */
-
 .view-toggle {
   display: flex;
-  background-color: var(--surface-color);
-  border: 1px solid var(--border-color);
-  border-radius: .5rem;
+  gap: 10px;
+  border-radius: .25rem;
   overflow: hidden;
 }
 
-/* View toggle buttons: Use unified button system from common/buttons.css
-   Example: className="button toggle" with .active modifier */
+/* ===== Responsive ===== */
+
+@media (max-width: 1024px) {
+  .trainer-list-filters { gap: 12px; padding: 12px; }
+  .trainer-filter-controls { gap: 8px; }
+  .trainer-filter-select { min-width: 100px; }
+}
+
+@media (max-width: 768px) {
+  .trainer-list-filters { flex-direction: column; gap: 10px; padding: 12px; }
+  .trainer-search-form { min-width: 100%; }
+  .trainer-filter-controls { width: 100%; justify-content: space-between; }
+  .trainer-filter-select { flex: 1; min-width: 0; }
+  .trainer-table-container { margin-bottom: 15px; }
+  .trainer-table .npc-avatar { width: 35px; height: 35px; margin-right: 8px; }
+  .trainer-actions { flex-direction: column; gap: 0.4rem; }
+  .trainer-actions-row { flex-direction: column; gap: 0.75rem; align-items: stretch; }
+  .view-toggle { width: 100%; justify-content: center; }
+  .detailed-list-body { border-radius: 0 0 0.4rem 0.4rem; }
+}
+
+@media (max-width: 480px) {
+  .trainer-list-filters { padding: 10px; border-radius: 6px; }
+  .trainer-search-input { padding: 8px 12px; font-size: 0.85rem; }
+  .trainer-filter-select { padding: 8px; font-size: 0.85rem; }
+  .trainer-table .npc-avatar { width: 30px; height: 30px; margin-right: 6px; }
+  .trainer-actions { gap: 0.3rem; }
+  .view-toggle { gap: 6px; }
+}

@@ -176,7 +176,7 @@ const AntiqueAppraisal = ({ trainerId, antique, onClose }) => {
 
                 {adoptError && <ErrorMessage message={adoptError} />}
 
-                <div className="type-tags">
+                <div className="type-tags fw">
                   {adoptLoading ? (
                     <LoadingSpinner />
                   ) : (

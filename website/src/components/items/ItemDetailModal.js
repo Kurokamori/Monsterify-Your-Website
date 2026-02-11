@@ -26,11 +26,11 @@ const ItemDetailModal = ({ isOpen, onClose, item }) => {
             <img
               src={getItemImageUrl(item)}
               alt={item.name}
-              className="floating-monster"
+              className="item-detail-image"
               onError={(e) => handleItemImageError(e, item.category)}
             />
             {item.rarity && (
-              <div className={`item-detail-rarity${getRarityClass()}`}>
+              <div className={`item-detail-rarity ${getRarityClass()}`}>
                 {item.rarity}
               </div>
             )}

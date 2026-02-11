@@ -382,7 +382,7 @@ const ShopPage = () => {
       {isApothecaryShop && (
         <div className="berry-filters">
           <h4>Filter Berries by Type (stackable)</h4>
-          <div className="type-tags">
+          <div className="type-tags fw">
             <button
               className={`button filter ${berryFilters.type ? 'active' : ''}`}
               onClick={() => toggleBerryFilter('type')}
@@ -433,7 +433,7 @@ const ShopPage = () => {
       {isBakeryShop && (
         <div className="berry-filters">
           <h4>Filter Pastries by Type (stackable)</h4>
-          <div className="type-tags">
+          <div className="type-tags fw">
             <button
               className={`button filter ${pastryFilters.type ? 'active' : ''}`}
               onClick={() => togglePastryFilter('type')}

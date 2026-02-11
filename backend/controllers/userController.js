@@ -236,9 +236,18 @@ const getUserRelatedSubmissions = async (req, res) => {
         s.description,
         s.submission_type,
         s.submission_date,
-        (SELECT image_url FROM submission_images WHERE submission_id = s.id AND is_main = 1 LIMIT 1) as image_url
+        s.is_book,
+        s.content,
+        u.display_name,
+        u.username,
+        (SELECT image_url FROM submission_images WHERE submission_id = s.id AND is_main = 1 LIMIT 1) as image_url,
+        (SELECT image_url FROM submission_images WHERE submission_id = s.id AND is_main = 1 LIMIT 1) as cover_image_url,
+        (SELECT COUNT(*) FROM submissions WHERE parent_id = s.id) as chapter_count,
+        (SELECT content FROM submissions WHERE parent_id = s.id ORDER BY chapter_number ASC, submission_date ASC LIMIT 1) as first_chapter_content
       FROM submissions s
+      LEFT JOIN users u ON s.user_id::text = u.discord_id
       WHERE s.user_id = $1
+        AND s.parent_id IS NULL
     `;
 
     const queryParams = [userId];

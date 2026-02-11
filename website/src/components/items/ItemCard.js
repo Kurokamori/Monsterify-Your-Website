@@ -27,7 +27,7 @@ const ItemCard = ({
 
   const handleCardClick = (e) => {
     // Don't trigger if clicking on purchase button
-    if (e.target.closest('.button primary')) {
+    if (e.target.closest('.button.primary')) {
       return;
     }
     if (onItemClick) {
@@ -48,7 +48,7 @@ const ItemCard = ({
           onError={(e) => handleItemImageError(e, item.category)}
         />
         {item.rarity && (
-          <div className={`item-rarity${getRarityClass()}`}>
+          <div className={`item-rarity ${getRarityClass()}`}>
             {item.rarity}
           </div>
         )}

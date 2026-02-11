@@ -14,7 +14,9 @@ const getArtGallery = async (req, res) => {
     const limit = parseInt(req.query.limit) || 12;
     const offset = (page - 1) * limit;
     const contentType = req.query.contentType;
-    const tag = req.query.tag;
+    // Support both single tag and multiple tags (comma-separated)
+    const tagsParam = req.query.tags || req.query.tag;
+    const tags = tagsParam ? tagsParam.split(',').map(t => t.trim()).filter(t => t) : [];
     const trainerId = req.query.trainerId;
     const userId = req.query.userId;
     const monsterId = req.query.monsterId;
@@ -88,11 +90,13 @@ const getArtGallery = async (req, res) => {
       paramIndex++;
     }
 
-    // Add tag filter
-    if (tag) {
-      query += ` AND EXISTS (SELECT 1 FROM submission_tags WHERE submission_id = s.id AND tag = $${paramIndex})`;
-      queryParams.push(tag);
-      paramIndex++;
+    // Add tag filter (must match ALL tags)
+    if (tags.length > 0) {
+      for (const tag of tags) {
+        query += ` AND EXISTS (SELECT 1 FROM submission_tags WHERE submission_id = s.id AND tag = $${paramIndex})`;
+        queryParams.push(tag);
+        paramIndex++;
+      }
     }
 
     // Add trainer filter
@@ -121,6 +125,30 @@ const getArtGallery = async (req, res) => {
       query += ` AND LOWER(s.title) LIKE LOWER($${paramIndex})`;
       queryParams.push(`%${search}%`);
       paramIndex++;
+    }
+
+    // Add mature content filter
+    const showMature = req.query.showMature === 'true';
+    if (!showMature) {
+      // Hide all mature content when showMature is false
+      query += ` AND (s.is_mature IS NOT TRUE)`;
+    } else {
+      // When showing mature content, optionally filter by specific types
+      const matureFilters = req.query.matureFilters;
+      if (matureFilters) {
+        try {
+          const filters = typeof matureFilters === 'string' ? JSON.parse(matureFilters) : matureFilters;
+          const enabledFilters = Object.keys(filters).filter(key => filters[key]);
+
+          if (enabledFilters.length > 0) {
+            // Show non-mature content OR mature content matching the enabled filters
+            const filterConditions = enabledFilters.map(f => `(s.content_rating->>'${f}')::boolean = true`).join(' OR ');
+            query += ` AND (s.is_mature IS NOT TRUE OR (${filterConditions}))`;
+          }
+        } catch (e) {
+          console.error('Error parsing matureFilters:', e);
+        }
+      }
     }
 
     // Add sorting
@@ -153,11 +181,13 @@ const getArtGallery = async (req, res) => {
       paramIndex++;
     }
 
-    // Add tag filter
-    if (tag) {
-      countQuery += ` AND EXISTS (SELECT 1 FROM submission_tags WHERE submission_id = s.id AND tag = $${paramIndex})`;
-      countParams.push(tag);
-      paramIndex++;
+    // Add tag filter (must match ALL tags)
+    if (tags.length > 0) {
+      for (const tag of tags) {
+        countQuery += ` AND EXISTS (SELECT 1 FROM submission_tags WHERE submission_id = s.id AND tag = $${paramIndex})`;
+        countParams.push(tag);
+        paramIndex++;
+      }
     }
 
     // Add trainer filter
@@ -186,6 +216,26 @@ const getArtGallery = async (req, res) => {
       countQuery += ` AND LOWER(s.title) LIKE LOWER($${paramIndex})`;
       countParams.push(`%${search}%`);
       paramIndex++;
+    }
+
+    // Add mature content filter to count query
+    if (!showMature) {
+      countQuery += ` AND (s.is_mature IS NOT TRUE)`;
+    } else {
+      const matureFilters = req.query.matureFilters;
+      if (matureFilters) {
+        try {
+          const filters = typeof matureFilters === 'string' ? JSON.parse(matureFilters) : matureFilters;
+          const enabledFilters = Object.keys(filters).filter(key => filters[key]);
+
+          if (enabledFilters.length > 0) {
+            const filterConditions = enabledFilters.map(f => `(s.content_rating->>'${f}')::boolean = true`).join(' OR ');
+            countQuery += ` AND (s.is_mature IS NOT TRUE OR (${filterConditions}))`;
+          }
+        } catch (e) {
+          console.error('Error parsing matureFilters for count:', e);
+        }
+      }
     }
 
     // Execute the queries
@@ -233,7 +283,9 @@ const getWritingLibrary = async (req, res) => {
     const limit = parseInt(req.query.limit) || 12;
     const offset = (page - 1) * limit;
     const contentType = req.query.contentType;
-    const tag = req.query.tag;
+    // Support both single tag and multiple tags (comma-separated)
+    const tagsParam = req.query.tags || req.query.tag;
+    const tags = tagsParam ? tagsParam.split(',').map(t => t.trim()).filter(t => t) : [];
     const trainerId = req.query.trainerId;
     const userId = req.query.userId;
     const monsterId = req.query.monsterId;
@@ -311,11 +363,13 @@ const getWritingLibrary = async (req, res) => {
       paramIndex++;
     }
 
-    // Add tag filter
-    if (tag) {
-      query += ` AND EXISTS (SELECT 1 FROM submission_tags WHERE submission_id = s.id AND tag = $${paramIndex})`;
-      queryParams.push(tag);
-      paramIndex++;
+    // Add tag filter (must match ALL tags)
+    if (tags.length > 0) {
+      for (const tag of tags) {
+        query += ` AND EXISTS (SELECT 1 FROM submission_tags WHERE submission_id = s.id AND tag = $${paramIndex})`;
+        queryParams.push(tag);
+        paramIndex++;
+      }
     }
 
     // Add trainer filter
@@ -349,13 +403,14 @@ const getWritingLibrary = async (req, res) => {
       query += ` AND s.parent_id IS NULL`;
     }
 
-    // Hide empty books (0 chapters) from non-owners
+    // Hide empty books (0 chapters) from non-owners and non-collaborators
     if (req.user) {
       const currentUserId = req.user.discord_id || req.user.id;
       query += ` AND (
         s.is_book = 0 OR s.is_book IS NULL
         OR (SELECT COUNT(*) FROM submissions WHERE parent_id = s.id) > 0
         OR s.user_id::text = $${paramIndex}::text
+        OR EXISTS (SELECT 1 FROM book_collaborators bc WHERE bc.book_id = s.id AND bc.user_id::text = $${paramIndex}::text)
       )`;
       queryParams.push(currentUserId);
       paramIndex++;
@@ -364,6 +419,30 @@ const getWritingLibrary = async (req, res) => {
         s.is_book = 0 OR s.is_book IS NULL
         OR (SELECT COUNT(*) FROM submissions WHERE parent_id = s.id) > 0
       )`;
+    }
+
+    // Add mature content filter
+    const showMature = req.query.showMature === 'true';
+    if (!showMature) {
+      // Hide all mature content when showMature is false
+      query += ` AND (s.is_mature IS NOT TRUE)`;
+    } else {
+      // When showing mature content, optionally filter by specific types
+      const matureFilters = req.query.matureFilters;
+      if (matureFilters) {
+        try {
+          const filters = typeof matureFilters === 'string' ? JSON.parse(matureFilters) : matureFilters;
+          const enabledFilters = Object.keys(filters).filter(key => filters[key]);
+
+          if (enabledFilters.length > 0) {
+            // Show non-mature content OR mature content matching the enabled filters
+            const filterConditions = enabledFilters.map(f => `(s.content_rating->>'${f}')::boolean = true`).join(' OR ');
+            query += ` AND (s.is_mature IS NOT TRUE OR (${filterConditions}))`;
+          }
+        } catch (e) {
+          console.error('Error parsing matureFilters:', e);
+        }
+      }
     }
 
     // Add sorting
@@ -396,11 +475,13 @@ const getWritingLibrary = async (req, res) => {
       paramIndex++;
     }
 
-    // Add tag filter
-    if (tag) {
-      countQuery += ` AND EXISTS (SELECT 1 FROM submission_tags WHERE submission_id = s.id AND tag = $${paramIndex})`;
-      countParams.push(tag);
-      paramIndex++;
+    // Add tag filter (must match ALL tags)
+    if (tags.length > 0) {
+      for (const tag of tags) {
+        countQuery += ` AND EXISTS (SELECT 1 FROM submission_tags WHERE submission_id = s.id AND tag = $${paramIndex})`;
+        countParams.push(tag);
+        paramIndex++;
+      }
     }
 
     // Add trainer filter
@@ -434,13 +515,14 @@ const getWritingLibrary = async (req, res) => {
       countQuery += ` AND s.parent_id IS NULL`;
     }
 
-    // Hide empty books (0 chapters) from non-owners in count
+    // Hide empty books (0 chapters) from non-owners and non-collaborators in count
     if (req.user) {
       const currentUserIdForCount = req.user.discord_id || req.user.id;
       countQuery += ` AND (
         s.is_book = 0 OR s.is_book IS NULL
         OR (SELECT COUNT(*) FROM submissions WHERE parent_id = s.id) > 0
         OR s.user_id::text = $${paramIndex}::text
+        OR EXISTS (SELECT 1 FROM book_collaborators bc WHERE bc.book_id = s.id AND bc.user_id::text = $${paramIndex}::text)
       )`;
       countParams.push(currentUserIdForCount);
       paramIndex++;
@@ -449,6 +531,26 @@ const getWritingLibrary = async (req, res) => {
         s.is_book = 0 OR s.is_book IS NULL
         OR (SELECT COUNT(*) FROM submissions WHERE parent_id = s.id) > 0
       )`;
+    }
+
+    // Add mature content filter to count query
+    if (!showMature) {
+      countQuery += ` AND (s.is_mature IS NOT TRUE)`;
+    } else {
+      const matureFiltersForCount = req.query.matureFilters;
+      if (matureFiltersForCount) {
+        try {
+          const filters = typeof matureFiltersForCount === 'string' ? JSON.parse(matureFiltersForCount) : matureFiltersForCount;
+          const enabledFilters = Object.keys(filters).filter(key => filters[key]);
+
+          if (enabledFilters.length > 0) {
+            const filterConditions = enabledFilters.map(f => `(s.content_rating->>'${f}')::boolean = true`).join(' OR ');
+            countQuery += ` AND (s.is_mature IS NOT TRUE OR (${filterConditions}))`;
+          }
+        } catch (e) {
+          console.error('Error parsing matureFilters for count:', e);
+        }
+      }
     }
 
     // Execute the queries
@@ -958,7 +1060,9 @@ const submitArt = async (req, res) => {
       monsters,
       npcs,
       isGift,
-      tags = []
+      tags = [],
+      isMature = false,
+      contentRating = {}
     } = req.body;
 
     // Parse JSON strings if needed
@@ -1006,6 +1110,18 @@ const submitArt = async (req, res) => {
         tags = [];
       }
     }
+
+    if (typeof contentRating === 'string') {
+      try {
+        contentRating = JSON.parse(contentRating);
+      } catch (error) {
+        console.error('Error parsing contentRating JSON:', error);
+        contentRating = {};
+      }
+    }
+
+    // Convert isMature to boolean
+    isMature = isMature === 'true' || isMature === true;
 
     // Validate required fields
     if (!title || !contentType || !quality) {
@@ -1073,7 +1189,9 @@ const submitArt = async (req, res) => {
       contentType,
       content: imageUrl,
       submissionType: 'art',
-      status: 'approved' // Auto-approve for now
+      status: 'approved', // Auto-approve for now
+      isMature,
+      contentRating
     };
 
     console.log('Art submission data:', submissionData);
@@ -1274,7 +1392,9 @@ const submitWriting = async (req, res) => {
       npcs,
       trainerId, // Legacy support
       isGift, // Legacy support
-      tags = []
+      tags = [],
+      isMature = false,
+      contentRating = {}
     } = req.body;
 
     // Parse JSON strings if needed
@@ -1304,6 +1424,18 @@ const submitWriting = async (req, res) => {
         npcs = [];
       }
     }
+
+    if (typeof contentRating === 'string') {
+      try {
+        contentRating = JSON.parse(contentRating);
+      } catch (error) {
+        console.error('Error parsing contentRating JSON:', error);
+        contentRating = {};
+      }
+    }
+
+    // Convert isMature to boolean
+    isMature = isMature === 'true' || isMature === true;
 
     // Validate required fields
     if (!title || !contentType || !content || !wordCount || wordCount <= 0) {
@@ -1382,6 +1514,51 @@ const submitWriting = async (req, res) => {
     // Handle chapter number assignment
     let chapterNumber = req.body.chapterNumber ? parseInt(req.body.chapterNumber) : null;
 
+    // If this is a chapter, verify user has permission to add chapters to the book
+    if (req.body.parentId) {
+      const parentBookQuery = `
+        SELECT id, user_id, is_book FROM submissions WHERE id = $1
+      `;
+      const parentBook = await db.asyncGet(parentBookQuery, [req.body.parentId]);
+
+      if (!parentBook) {
+        return res.status(404).json({
+          success: false,
+          message: 'Parent book not found'
+        });
+      }
+
+      if (!parentBook.is_book) {
+        return res.status(400).json({
+          success: false,
+          message: 'Parent submission is not a book'
+        });
+      }
+
+      // Check if user is owner or editor collaborator
+      const isOwner = parentBook.user_id === userId;
+      let isEditorCollaborator = false;
+
+      if (!isOwner) {
+        try {
+          const collaboratorQuery = `
+            SELECT role FROM book_collaborators WHERE book_id = $1 AND user_id::text = $2::text
+          `;
+          const collaborator = await db.asyncGet(collaboratorQuery, [req.body.parentId, userId]);
+          isEditorCollaborator = collaborator && collaborator.role === 'editor';
+        } catch (err) {
+          // Table might not exist
+        }
+      }
+
+      if (!isOwner && !isEditorCollaborator) {
+        return res.status(403).json({
+          success: false,
+          message: 'You do not have permission to add chapters to this book'
+        });
+      }
+    }
+
     // If this is a chapter but no chapter number provided, auto-assign next chapter number
     if (req.body.parentId && !chapterNumber) {
       const maxChapterQuery = `
@@ -1404,7 +1581,9 @@ const submitWriting = async (req, res) => {
       status: 'approved', // Auto-approve for now
       isBook: req.body.isBook || 0,
       parentId: req.body.parentId || null,
-      chapterNumber: chapterNumber
+      chapterNumber: chapterNumber,
+      isMature,
+      contentRating
     };
 
     const submission = await Submission.create(submissionData);
@@ -3470,18 +3649,21 @@ const claimSubmissionMonster = async (req, res) => {
 
 
 /**
- * Get user's books for chapter assignment
+ * Get user's books for chapter assignment (includes owned and collaborated books)
  */
 const getUserBooks = async (req, res) => {
   try {
     const userId = req.user.discord_id || req.user.id;
 
-    const query = `
+    // Get owned books
+    const ownedQuery = `
       SELECT
         s.id,
         s.title,
         s.description,
         s.submission_date,
+        s.user_id,
+        'owner' as role,
         (SELECT image_url FROM submission_images WHERE submission_id = s.id AND is_main = 1 LIMIT 1) as cover_image_url,
         (SELECT COUNT(*) FROM submissions WHERE parent_id = s.id) as chapter_count
       FROM submissions s
@@ -3491,7 +3673,43 @@ const getUserBooks = async (req, res) => {
       ORDER BY s.submission_date DESC
     `;
 
-    const books = await db.asyncAll(query, [userId]);
+    const ownedBooks = await db.asyncAll(ownedQuery, [userId]);
+
+    // Get collaborated books (with editor role only for chapter assignment)
+    const collaboratedQuery = `
+      SELECT
+        s.id,
+        s.title,
+        s.description,
+        s.submission_date,
+        s.user_id,
+        bc.role,
+        (SELECT image_url FROM submission_images WHERE submission_id = s.id AND is_main = 1 LIMIT 1) as cover_image_url,
+        (SELECT COUNT(*) FROM submissions WHERE parent_id = s.id) as chapter_count,
+        u.username as owner_username,
+        u.display_name as owner_display_name
+      FROM submissions s
+      JOIN book_collaborators bc ON bc.book_id = s.id
+      LEFT JOIN users u ON (s.user_id::text = u.discord_id OR s.user_id::text = u.id::text)
+      WHERE s.submission_type = 'writing'
+        AND s.is_book = 1
+        AND bc.user_id::text = $1::text
+        AND bc.role = 'editor'
+      ORDER BY s.submission_date DESC
+    `;
+
+    let collaboratedBooks = [];
+    try {
+      collaboratedBooks = await db.asyncAll(collaboratedQuery, [userId]);
+    } catch (err) {
+      // Table might not exist yet - that's okay
+    }
+
+    // Combine and mark which are collaborations
+    const books = [
+      ...ownedBooks.map(b => ({ ...b, isCollaboration: false })),
+      ...collaboratedBooks.map(b => ({ ...b, isCollaboration: true }))
+    ];
 
     res.json({
       success: true,
@@ -3565,7 +3783,7 @@ const updateChapterOrder = async (req, res) => {
     const { chapterOrder } = req.body;
     const userId = req.user.discord_id || req.user.id;
 
-    // Verify the user owns this book
+    // Verify the book exists
     const bookQuery = `
       SELECT id, user_id FROM submissions WHERE id = $1 AND is_book = 1
     `;
@@ -3575,7 +3793,23 @@ const updateChapterOrder = async (req, res) => {
       return res.status(404).json({ error: 'Book not found' });
     }
 
-    if (bookResult[0].user_id !== userId) {
+    // Check if user is owner or editor collaborator
+    const isOwner = bookResult[0].user_id === userId;
+    let isEditorCollaborator = false;
+
+    if (!isOwner) {
+      try {
+        const collaboratorQuery = `
+          SELECT role FROM book_collaborators WHERE book_id = $1 AND user_id::text = $2::text
+        `;
+        const collaborator = await db.asyncGet(collaboratorQuery, [bookId, userId]);
+        isEditorCollaborator = collaborator && collaborator.role === 'editor';
+      } catch (err) {
+        // Table might not exist
+      }
+    }
+
+    if (!isOwner && !isEditorCollaborator) {
       return res.status(403).json({ error: 'You do not have permission to modify this book' });
     }
 
@@ -3658,6 +3892,1137 @@ const createBook = async (req, res) => {
   }
 };
 
+/**
+ * Submit combined prompt + art/writing submission
+ * Creates both the art/writing submission and prompt_submission records
+ * Returns all rewards for claiming on page 3
+ */
+const submitPromptCombined = async (req, res) => {
+  try {
+    let {
+      submissionType,
+      promptId,
+      trainerId,
+      // Art fields
+      title,
+      description,
+      contentType,
+      quality,
+      backgrounds,
+      uniquelyDifficult,
+      trainers,
+      monsters,
+      npcs,
+      tags = [],
+      isMature = false,
+      contentRating = {},
+      // Writing fields
+      content,
+      wordCount
+    } = req.body;
+
+    // Parse JSON strings if needed
+    if (typeof trainers === 'string') {
+      try { trainers = JSON.parse(trainers); } catch (e) { trainers = []; }
+    }
+    if (typeof monsters === 'string') {
+      try { monsters = JSON.parse(monsters); } catch (e) { monsters = []; }
+    }
+    if (typeof npcs === 'string') {
+      try { npcs = JSON.parse(npcs); } catch (e) { npcs = []; }
+    }
+    if (typeof backgrounds === 'string') {
+      try { backgrounds = JSON.parse(backgrounds); } catch (e) { backgrounds = []; }
+    }
+    if (typeof tags === 'string') {
+      try { tags = JSON.parse(tags); } catch (e) { tags = []; }
+    }
+    if (typeof contentRating === 'string') {
+      try { contentRating = JSON.parse(contentRating); } catch (e) { contentRating = {}; }
+    }
+    isMature = isMature === 'true' || isMature === true;
+
+    // Validate required fields
+    if (!submissionType || !promptId || !trainerId) {
+      return res.status(400).json({
+        success: false,
+        message: 'Submission type, prompt ID, and trainer ID are required'
+      });
+    }
+
+    // Get user info
+    const userId = req.user.discord_id || req.user.id;
+    const websiteUserId = req.user.id;
+
+    // Get prompt
+    const prompts = await db.asyncAll('SELECT * FROM prompts WHERE id = $1', [promptId]);
+    if (!prompts.length) {
+      return res.status(404).json({ success: false, message: 'Prompt not found' });
+    }
+    const prompt = prompts[0];
+
+    // Get trainer and verify ownership
+    const trainer = await Trainer.getById(trainerId);
+    if (!trainer) {
+      return res.status(404).json({ success: false, message: 'Trainer not found' });
+    }
+    if (trainer.player_user_id !== userId && !req.user.is_admin) {
+      return res.status(403).json({ success: false, message: 'You do not own this trainer' });
+    }
+
+    // Ensure arrays
+    const trainersArray = Array.isArray(trainers) ? trainers : [];
+    const monstersArray = Array.isArray(monsters) ? monsters : [];
+    const npcsArray = Array.isArray(npcs) ? npcs : [];
+
+    let imageUrl = null;
+    let artWritingRewards = null;
+    let submission = null;
+
+    // Handle art submission
+    if (submissionType === 'art') {
+      if (!title || !quality) {
+        return res.status(400).json({
+          success: false,
+          message: 'Title and quality are required for art submissions'
+        });
+      }
+
+      // Upload image
+      if (req.file) {
+        const result = await cloudinary.uploader.upload(req.file.path, {
+          folder: 'submissions/art'
+        });
+        imageUrl = result.secure_url;
+      } else if (req.body.imageUrl) {
+        imageUrl = req.body.imageUrl;
+      } else {
+        return res.status(400).json({
+          success: false,
+          message: 'Image file or URL is required for art submissions'
+        });
+      }
+
+      // Calculate art rewards
+      artWritingRewards = await Submission.calculateArtRewards({
+        quality,
+        backgrounds: backgrounds || [],
+        uniquelyDifficult,
+        trainers: trainersArray,
+        monsters: monstersArray,
+        npcs: npcsArray,
+        isGift: false,
+        useStaticRewards: false
+      }, userId);
+
+      // Create art submission
+      submission = await Submission.create({
+        userId,
+        trainerId: trainersArray.length > 0 ? trainersArray[0].trainerId : trainerId,
+        title,
+        description,
+        contentType: contentType || 'prompt',
+        content: imageUrl,
+        submissionType: 'art',
+        status: 'approved',
+        isMature,
+        contentRating
+      });
+
+      // Add submission image
+      if (imageUrl) {
+        await db.asyncRun(
+          'INSERT INTO submission_images (submission_id, image_url, is_main) VALUES ($1, $2, 1)',
+          [submission.id, imageUrl]
+        );
+      }
+
+      // Add submission monsters
+      for (const monster of monstersArray) {
+        try {
+          const monsterData = await db.asyncGet(
+            'SELECT id FROM monsters WHERE name = $1 AND trainer_id = $2',
+            [monster.name, monster.trainerId]
+          );
+          if (monsterData) {
+            await db.asyncRun(
+              'INSERT INTO submission_monsters (submission_id, monster_id) VALUES ($1, $2)',
+              [submission.id, monsterData.id]
+            );
+          }
+        } catch (err) {
+          console.error(`Error adding monster ${monster.name}:`, err);
+        }
+      }
+
+      // Add submission trainers
+      for (const t of trainersArray) {
+        const tId = t.trainerId || t.id;
+        if (tId) {
+          await db.asyncRun(
+            'INSERT INTO submission_trainers (submission_id, trainer_id) VALUES ($1, $2)',
+            [submission.id, tId]
+          );
+        }
+      }
+    }
+    // Handle writing submission
+    else if (submissionType === 'writing') {
+      if (!title || !content || !wordCount || wordCount <= 0) {
+        return res.status(400).json({
+          success: false,
+          message: 'Title, content, and valid word count are required for writing submissions'
+        });
+      }
+
+      // Calculate writing rewards
+      artWritingRewards = await Submission.calculateWritingRewards({
+        wordCount: parseInt(wordCount),
+        trainers: trainersArray,
+        monsters: monstersArray,
+        npcs: npcsArray,
+        isGift: false
+      }, userId);
+
+      // Create writing submission
+      submission = await Submission.create({
+        userId,
+        trainerId: trainersArray.length > 0 ? trainersArray[0].trainerId : trainerId,
+        title,
+        description,
+        contentType: contentType || 'prompt',
+        content,
+        submissionType: 'writing',
+        status: 'approved',
+        isMature,
+        contentRating,
+        wordCount: parseInt(wordCount)
+      });
+
+      // Add submission monsters
+      for (const monster of monstersArray) {
+        try {
+          const monsterData = await db.asyncGet(
+            'SELECT id FROM monsters WHERE name = $1 AND trainer_id = $2',
+            [monster.name, monster.trainerId]
+          );
+          if (monsterData) {
+            await db.asyncRun(
+              'INSERT INTO submission_monsters (submission_id, monster_id) VALUES ($1, $2)',
+              [submission.id, monsterData.id]
+            );
+          }
+        } catch (err) {
+          console.error(`Error adding monster ${monster.name}:`, err);
+        }
+      }
+
+      // Add submission trainers
+      for (const t of trainersArray) {
+        const tId = t.trainerId || t.id;
+        if (tId) {
+          await db.asyncRun(
+            'INSERT INTO submission_trainers (submission_id, trainer_id) VALUES ($1, $2)',
+            [submission.id, tId]
+          );
+        }
+      }
+    } else {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid submission type. Must be "art" or "writing".'
+      });
+    }
+
+    // Add tags including prompt name
+    const allTags = [...new Set([...tags, prompt.title, 'prompt'])];
+    for (const tag of allTags) {
+      await db.asyncRun(
+        'INSERT INTO submission_tags (submission_id, tag) VALUES ($1, $2)',
+        [submission.id, tag]
+      );
+    }
+
+    // Parse prompt rewards config
+    const promptRewardConfig = prompt.rewards
+      ? (typeof prompt.rewards === 'string' ? JSON.parse(prompt.rewards) : prompt.rewards)
+      : {};
+
+    // Generate prompt rewards preview (but don't apply yet - user will claim them)
+    const promptRewardsPreview = {
+      levels: promptRewardConfig.levels || 0,
+      coins: promptRewardConfig.coins || 0,
+      items: [],
+      monsters: []
+    };
+
+    // Roll and preview items (actually roll random items now so user sees what they got)
+    if (promptRewardConfig.items && Array.isArray(promptRewardConfig.items)) {
+      for (const item of promptRewardConfig.items) {
+        let itemPreview = { ...item, quantity: item.quantity || 1 };
+
+        if (item.is_random_from_category && item.category) {
+          // Roll random item from category
+          const categoryItems = await db.asyncAll(
+            'SELECT id, name, category, icon FROM items WHERE category = $1',
+            [item.category]
+          );
+          if (categoryItems.length > 0) {
+            const rolledItem = categoryItems[Math.floor(Math.random() * categoryItems.length)];
+            itemPreview.item_id = rolledItem.id;
+            itemPreview.item_name = rolledItem.name;
+            itemPreview.category = rolledItem.category;
+            itemPreview.icon = rolledItem.icon;
+            itemPreview.display = rolledItem.name;
+            itemPreview.was_random = true;
+          }
+        } else if (item.is_random_from_set && item.random_set_items?.length > 0) {
+          // Roll random item from custom set
+          const validSetItems = item.random_set_items.filter(id => id);
+          if (validSetItems.length > 0) {
+            const randomItemId = validSetItems[Math.floor(Math.random() * validSetItems.length)];
+            const rolledItem = await db.asyncGet(
+              'SELECT id, name, category, icon FROM items WHERE id = $1',
+              [randomItemId]
+            );
+            if (rolledItem) {
+              itemPreview.item_id = rolledItem.id;
+              itemPreview.item_name = rolledItem.name;
+              itemPreview.category = rolledItem.category;
+              itemPreview.icon = rolledItem.icon;
+              itemPreview.display = rolledItem.name;
+              itemPreview.was_random = true;
+            }
+          }
+        } else if (item.item_id) {
+          // Specific item - look up details
+          const itemRecord = await db.asyncGet(
+            'SELECT id, name, category, icon FROM items WHERE id = $1',
+            [item.item_id]
+          );
+          if (itemRecord) {
+            itemPreview.item_name = itemRecord.name;
+            itemPreview.category = itemRecord.category;
+            itemPreview.icon = itemRecord.icon;
+            itemPreview.display = itemRecord.name;
+          }
+        }
+
+        promptRewardsPreview.items.push(itemPreview);
+      }
+    }
+
+    // Generate monster rolls preview
+    if (promptRewardConfig.monsters && Array.isArray(promptRewardConfig.monsters)) {
+      const MonsterRoller = require('../models/MonsterRoller');
+      for (const monsterRoll of promptRewardConfig.monsters) {
+        try {
+          const rolledMonster = await MonsterRoller.rollOne(monsterRoll);
+          if (rolledMonster) {
+            promptRewardsPreview.monsters.push({
+              ...rolledMonster,
+              claimed: false,
+              roll_config: monsterRoll
+            });
+          }
+        } catch (err) {
+          console.error('Error rolling prompt monster:', err);
+        }
+      }
+    }
+
+    // Handle legacy monster_roll format
+    if (promptRewardConfig.monster_roll && promptRewardConfig.monster_roll.enabled) {
+      const MonsterRoller = require('../models/MonsterRoller');
+      try {
+        const rolledMonster = await MonsterRoller.rollOne(promptRewardConfig.monster_roll.parameters || {});
+        if (rolledMonster) {
+          promptRewardsPreview.monsters.push({
+            ...rolledMonster,
+            claimed: false,
+            roll_config: promptRewardConfig.monster_roll.parameters
+          });
+        }
+      } catch (err) {
+        console.error('Error rolling legacy prompt monster:', err);
+      }
+    }
+
+    // Create prompt_submission record
+    const promptSubmissionResult = await db.asyncRun(
+      `INSERT INTO prompt_submissions (
+        prompt_id,
+        trainer_id,
+        submission_content,
+        submission_notes,
+        status,
+        submitted_at,
+        approved_at,
+        submission_id,
+        rewards_granted
+      ) VALUES ($1, $2, $3, $4, $5, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, $6, $7) RETURNING id`,
+      [
+        promptId,
+        trainerId,
+        imageUrl || content,
+        `Combined prompt submission for: ${prompt.title}`,
+        'approved',
+        submission.id,
+        JSON.stringify({
+          ...promptRewardsPreview,
+          applied: false
+        })
+      ]
+    );
+
+    const promptSubmissionId = promptSubmissionResult.rows[0].id;
+
+    // Check for level caps in art/writing rewards
+    const levelCapInfo = await Submission.checkLevelCaps(artWritingRewards.monsterRewards || []);
+
+    // Apply art/writing rewards (not prompt rewards - those get claimed separately)
+    const discordUserId = req.user.discord_id;
+    const appliedArtWritingRewards = await Submission.applyRewards(artWritingRewards, websiteUserId, submission.id, discordUserId);
+
+    res.json({
+      success: true,
+      submission: {
+        id: submission.id,
+        title: submission.title,
+        submissionType: submission.submissionType,
+        status: submission.status,
+        imageUrl
+      },
+      promptSubmission: {
+        id: promptSubmissionId,
+        prompt_id: promptId,
+        trainer_id: trainerId
+      },
+      artWritingRewards: {
+        ...appliedArtWritingRewards,
+        totalGiftLevels: artWritingRewards.totalGiftLevels
+      },
+      promptRewards: promptRewardsPreview,
+      hasLevelCaps: levelCapInfo.cappedMonsters.length > 0,
+      cappedMonsters: levelCapInfo.cappedMonsters,
+      hasGiftLevels: artWritingRewards.totalGiftLevels > 0,
+      message: 'Submission created successfully! Art/Writing rewards applied. Please claim your prompt rewards.'
+    });
+
+  } catch (error) {
+    console.error('Error in submitPromptCombined:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to submit prompt',
+      error: error.message
+    });
+  }
+};
+
+/**
+ * Claim prompt rewards from a combined submission
+ * Handles level allocation (trainer or monster) and monster claiming
+ */
+const claimPromptRewards = async (req, res) => {
+  try {
+    const { id } = req.params; // prompt_submission ID
+    const {
+      levelTarget, // 'trainer' or 'monster'
+      targetMonsterId, // if levelTarget is 'monster'
+      claimItems = true // whether to claim items to trainer
+    } = req.body;
+
+    const userId = req.user.discord_id || req.user.id;
+
+    // Get the prompt submission
+    const submission = await db.asyncGet(
+      'SELECT * FROM prompt_submissions WHERE id = $1',
+      [id]
+    );
+
+    if (!submission) {
+      return res.status(404).json({
+        success: false,
+        message: 'Prompt submission not found'
+      });
+    }
+
+    // Verify user owns the trainer
+    const trainer = await Trainer.getById(submission.trainer_id);
+    if (!trainer) {
+      return res.status(404).json({ success: false, message: 'Trainer not found' });
+    }
+    if (trainer.player_user_id !== userId && !req.user.is_admin) {
+      return res.status(403).json({ success: false, message: 'You do not own this trainer' });
+    }
+
+    // Parse rewards
+    const rewards = typeof submission.rewards_granted === 'string'
+      ? JSON.parse(submission.rewards_granted)
+      : submission.rewards_granted || {};
+
+    if (rewards.applied) {
+      return res.status(400).json({
+        success: false,
+        message: 'Prompt rewards have already been claimed'
+      });
+    }
+
+    const appliedRewards = {
+      levels: 0,
+      levelTarget: levelTarget || 'trainer',
+      coins: 0,
+      items: [],
+      trainer_id: submission.trainer_id
+    };
+
+    // Apply levels based on target
+    if (rewards.levels && rewards.levels > 0) {
+      if (levelTarget === 'monster' && targetMonsterId) {
+        // Add levels to specific monster
+        const monster = await Monster.getById(targetMonsterId);
+        if (monster) {
+          await Monster.addLevels(targetMonsterId, rewards.levels);
+          appliedRewards.levels = rewards.levels;
+          appliedRewards.levelTargetName = monster.name;
+          console.log(`Applied ${rewards.levels} prompt levels to monster ${monster.name} (ID: ${targetMonsterId})`);
+        } else {
+          // Fallback to trainer if monster not found
+          await Trainer.addLevels(submission.trainer_id, rewards.levels);
+          appliedRewards.levels = rewards.levels;
+          appliedRewards.levelTarget = 'trainer';
+          console.log(`Monster not found, applied ${rewards.levels} prompt levels to trainer ${submission.trainer_id}`);
+        }
+      } else {
+        // Add levels to trainer
+        await Trainer.addLevels(submission.trainer_id, rewards.levels);
+        appliedRewards.levels = rewards.levels;
+        console.log(`Applied ${rewards.levels} prompt levels to trainer ${submission.trainer_id}`);
+      }
+    }
+
+    // Apply coins to trainer
+    if (rewards.coins && rewards.coins > 0) {
+      await Trainer.addCoins(submission.trainer_id, rewards.coins);
+      appliedRewards.coins = rewards.coins;
+      console.log(`Applied ${rewards.coins} prompt coins to trainer ${submission.trainer_id}`);
+    }
+
+    // Apply items to trainer
+    if (claimItems && rewards.items && Array.isArray(rewards.items)) {
+      for (const item of rewards.items) {
+        const appliedItem = await applyItemReward(submission.trainer_id, item);
+        if (appliedItem) {
+          appliedRewards.items.push(appliedItem);
+        }
+      }
+    }
+
+    // Update the submission to mark rewards as applied
+    rewards.applied = true;
+    rewards.appliedAt = new Date().toISOString();
+    rewards.appliedDetails = appliedRewards;
+
+    await db.asyncRun(
+      'UPDATE prompt_submissions SET rewards_granted = $1 WHERE id = $2',
+      [JSON.stringify(rewards), id]
+    );
+
+    res.json({
+      success: true,
+      message: 'Prompt rewards claimed successfully!',
+      appliedRewards,
+      unclaimedMonsters: rewards.monsters ? rewards.monsters.filter(m => !m.claimed) : []
+    });
+
+  } catch (error) {
+    console.error('Error claiming prompt rewards:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to claim prompt rewards',
+      error: error.message
+    });
+  }
+};
+
+/**
+ * Get authenticated user's own submissions with pagination and filtering
+ */
+const getMySubmissions = async (req, res) => {
+  try {
+    const userId = req.user.discord_id || req.user.id;
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 12;
+    const offset = (page - 1) * limit;
+    const submissionType = req.query.submissionType; // 'art' or 'writing'
+    const sortBy = req.query.sortBy || 'newest';
+
+    console.log('getMySubmissions - User info:', {
+      discord_id: req.user.discord_id,
+      id: req.user.id,
+      userId: userId,
+      submissionType,
+      page,
+      limit
+    });
+
+    // Build the query
+    let query = `
+      SELECT
+        s.id,
+        s.title,
+        s.description,
+        s.content,
+        s.content_type,
+        s.submission_type,
+        s.submission_date,
+        s.user_id,
+        s.trainer_id,
+        s.status,
+        s.is_mature,
+        (SELECT image_url FROM submission_images WHERE submission_id = s.id AND is_main = 1 LIMIT 1) as image_url,
+        (SELECT json_agg(tag) FROM submission_tags WHERE submission_id = s.id) as tags
+      FROM submissions s
+      WHERE (s.user_id::text = $1 OR s.user_id::text = (SELECT id::text FROM users WHERE discord_id = $1))
+        AND (s.status IS NULL OR s.status != 'deleted')
+    `;
+
+    const queryParams = [userId];
+    let paramIndex = 2;
+
+    // Filter by submission type
+    if (submissionType && (submissionType === 'art' || submissionType === 'writing')) {
+      query += ` AND s.submission_type = $${paramIndex}`;
+      queryParams.push(submissionType);
+      paramIndex++;
+    }
+
+    // Add sorting
+    switch (sortBy) {
+      case 'oldest':
+        query += ' ORDER BY s.submission_date ASC';
+        break;
+      case 'title':
+        query += ' ORDER BY s.title ASC';
+        break;
+      case 'newest':
+      default:
+        query += ' ORDER BY s.submission_date DESC';
+        break;
+    }
+
+    // Get total count for pagination
+    let countQuery = `
+      SELECT COUNT(*) as total
+      FROM submissions s
+      WHERE (s.user_id::text = $1 OR s.user_id::text = (SELECT id::text FROM users WHERE discord_id = $1))
+        AND (s.status IS NULL OR s.status != 'deleted')
+    `;
+    const countParams = [userId];
+
+    if (submissionType && (submissionType === 'art' || submissionType === 'writing')) {
+      countQuery += ` AND s.submission_type = $2`;
+      countParams.push(submissionType);
+    }
+
+    const countResult = await db.asyncAll(countQuery, countParams);
+    const total = parseInt(countResult[0]?.total || 0);
+
+    // Add pagination
+    query += ` LIMIT $${paramIndex} OFFSET $${paramIndex + 1}`;
+    queryParams.push(limit, offset);
+
+    const submissions = await db.asyncAll(query, queryParams);
+
+    console.log('getMySubmissions - Results:', {
+      total,
+      foundCount: submissions.length,
+      queryParams
+    });
+
+    res.json({
+      success: true,
+      submissions,
+      pagination: {
+        page,
+        limit,
+        total,
+        totalPages: Math.ceil(total / limit)
+      }
+    });
+  } catch (error) {
+    console.error('Error fetching user submissions:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch submissions',
+      error: error.message
+    });
+  }
+};
+
+/**
+ * Update an existing submission (title, description, tags, content for writing)
+ */
+const updateSubmission = async (req, res) => {
+  try {
+    const submissionId = req.params.id;
+    const userId = req.user.discord_id || req.user.id;
+    const { title, description, tags, content } = req.body;
+
+    // Get the submission to verify ownership
+    const submissions = await db.asyncAll(
+      `SELECT s.*, u.discord_id as user_discord_id
+       FROM submissions s
+       LEFT JOIN users u ON (s.user_id::text = u.discord_id OR s.user_id = u.id)
+       WHERE s.id = $1`,
+      [submissionId]
+    );
+
+    if (!submissions.length) {
+      return res.status(404).json({
+        success: false,
+        message: 'Submission not found'
+      });
+    }
+
+    const submission = submissions[0];
+
+    // Check ownership - user_id might be discord_id or user table id
+    const isOwner = submission.user_id === userId ||
+                    submission.user_id === String(userId) ||
+                    submission.user_discord_id === userId;
+
+    if (!isOwner && !req.user.is_admin) {
+      return res.status(403).json({
+        success: false,
+        message: 'You do not have permission to edit this submission'
+      });
+    }
+
+    // Check if submission is deleted
+    if (submission.status === 'deleted') {
+      return res.status(400).json({
+        success: false,
+        message: 'Cannot edit a deleted submission'
+      });
+    }
+
+    // Build update query based on submission type
+    let updateFields = [];
+    let updateParams = [];
+    let paramIndex = 1;
+
+    if (title !== undefined) {
+      updateFields.push(`title = $${paramIndex}`);
+      updateParams.push(title);
+      paramIndex++;
+    }
+
+    if (description !== undefined) {
+      updateFields.push(`description = $${paramIndex}`);
+      updateParams.push(description);
+      paramIndex++;
+    }
+
+    // Only allow content update for writing submissions
+    if (content !== undefined && submission.submission_type === 'writing') {
+      updateFields.push(`content = $${paramIndex}`);
+      updateParams.push(content);
+      paramIndex++;
+    }
+
+    // Update the submission if there are fields to update
+    if (updateFields.length > 0) {
+      updateParams.push(submissionId);
+      await db.asyncRun(
+        `UPDATE submissions SET ${updateFields.join(', ')} WHERE id = $${paramIndex}`,
+        updateParams
+      );
+    }
+
+    // Update tags if provided
+    if (tags !== undefined && Array.isArray(tags)) {
+      // Delete existing tags
+      await db.asyncRun('DELETE FROM submission_tags WHERE submission_id = $1', [submissionId]);
+
+      // Insert new tags
+      for (const tag of tags) {
+        if (tag && tag.trim()) {
+          await db.asyncRun(
+            'INSERT INTO submission_tags (submission_id, tag) VALUES ($1, $2)',
+            [submissionId, tag.trim()]
+          );
+        }
+      }
+    }
+
+    // Fetch updated submission
+    const updatedSubmissions = await db.asyncAll(
+      `SELECT s.*,
+        (SELECT json_agg(tag) FROM submission_tags WHERE submission_id = s.id) as tags,
+        (SELECT image_url FROM submission_images WHERE submission_id = s.id AND is_main = 1 LIMIT 1) as image_url
+       FROM submissions s WHERE s.id = $1`,
+      [submissionId]
+    );
+
+    res.json({
+      success: true,
+      message: 'Submission updated successfully',
+      submission: updatedSubmissions[0]
+    });
+  } catch (error) {
+    console.error('Error updating submission:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to update submission',
+      error: error.message
+    });
+  }
+};
+
+/**
+ * Soft delete a submission (set status to 'deleted')
+ * Rewards already granted are NOT affected
+ */
+const deleteSubmission = async (req, res) => {
+  try {
+    const submissionId = req.params.id;
+    const userId = req.user.discord_id || req.user.id;
+
+    // Get the submission to verify ownership
+    const submissions = await db.asyncAll(
+      `SELECT s.*, u.discord_id as user_discord_id
+       FROM submissions s
+       LEFT JOIN users u ON (s.user_id::text = u.discord_id OR s.user_id = u.id)
+       WHERE s.id = $1`,
+      [submissionId]
+    );
+
+    if (!submissions.length) {
+      return res.status(404).json({
+        success: false,
+        message: 'Submission not found'
+      });
+    }
+
+    const submission = submissions[0];
+
+    // Check ownership
+    const isOwner = submission.user_id === userId ||
+                    submission.user_id === String(userId) ||
+                    submission.user_discord_id === userId;
+
+    if (!isOwner && !req.user.is_admin) {
+      return res.status(403).json({
+        success: false,
+        message: 'You do not have permission to delete this submission'
+      });
+    }
+
+    // Check if already deleted
+    if (submission.status === 'deleted') {
+      return res.status(400).json({
+        success: false,
+        message: 'Submission is already deleted'
+      });
+    }
+
+    // Soft delete - set status to 'deleted'
+    await db.asyncRun(
+      "UPDATE submissions SET status = 'deleted' WHERE id = $1",
+      [submissionId]
+    );
+
+    res.json({
+      success: true,
+      message: 'Submission deleted successfully'
+    });
+  } catch (error) {
+    console.error('Error deleting submission:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to delete submission',
+      error: error.message
+    });
+  }
+};
+
+// Import BookCollaborator model
+const BookCollaborator = require('../models/BookCollaborator');
+
+/**
+ * Get collaborators for a book
+ */
+const getBookCollaborators = async (req, res) => {
+  try {
+    const bookId = parseInt(req.params.bookId);
+
+    // Verify book exists
+    const bookQuery = `SELECT id, title, user_id, is_book FROM submissions WHERE id = $1`;
+    const book = await db.asyncGet(bookQuery, [bookId]);
+
+    if (!book) {
+      return res.status(404).json({ success: false, error: 'Book not found' });
+    }
+
+    if (!book.is_book) {
+      return res.status(400).json({ success: false, error: 'This submission is not a book' });
+    }
+
+    const collaborators = await BookCollaborator.getBookCollaborators(bookId);
+
+    res.json({
+      success: true,
+      bookId,
+      bookTitle: book.title,
+      ownerId: book.user_id,
+      collaborators
+    });
+  } catch (error) {
+    console.error('Error getting book collaborators:', error);
+    res.status(500).json({ success: false, error: 'Failed to get collaborators' });
+  }
+};
+
+/**
+ * Add a collaborator to a book
+ */
+const addBookCollaborator = async (req, res) => {
+  try {
+    const bookId = parseInt(req.params.bookId);
+    const { userId, role = 'editor' } = req.body;
+    const currentUserId = req.user.discord_id || req.user.id;
+
+    if (!userId) {
+      return res.status(400).json({ success: false, error: 'User ID is required' });
+    }
+
+    // Verify book exists and user is the owner
+    const bookQuery = `SELECT id, title, user_id, is_book FROM submissions WHERE id = $1`;
+    const book = await db.asyncGet(bookQuery, [bookId]);
+
+    if (!book) {
+      return res.status(404).json({ success: false, error: 'Book not found' });
+    }
+
+    if (!book.is_book) {
+      return res.status(400).json({ success: false, error: 'This submission is not a book' });
+    }
+
+    // Only the owner can add collaborators
+    if (book.user_id !== currentUserId) {
+      return res.status(403).json({ success: false, error: 'Only the book owner can add collaborators' });
+    }
+
+    // Cannot add yourself as collaborator
+    if (userId === currentUserId) {
+      return res.status(400).json({ success: false, error: 'You cannot add yourself as a collaborator' });
+    }
+
+    // Verify the user being added exists
+    const userQuery = `SELECT id, username, display_name, discord_id FROM users WHERE discord_id = $1 OR id::text = $1`;
+    const userToAdd = await db.asyncGet(userQuery, [userId]);
+
+    if (!userToAdd) {
+      return res.status(404).json({ success: false, error: 'User not found' });
+    }
+
+    // Initialize table if needed
+    await BookCollaborator.initializeTable();
+
+    // Add the collaborator
+    const collaboratorUserId = userToAdd.discord_id || String(userToAdd.id);
+    console.log('Adding collaborator:', {
+      bookId,
+      collaboratorUserId,
+      userToAdd_discord_id: userToAdd.discord_id,
+      userToAdd_id: userToAdd.id,
+      addedBy: currentUserId,
+      role
+    });
+
+    const collaborator = await BookCollaborator.addCollaborator(
+      bookId,
+      collaboratorUserId,
+      currentUserId,
+      role
+    );
+
+    res.json({
+      success: true,
+      collaborator: {
+        ...collaborator,
+        username: userToAdd.username,
+        display_name: userToAdd.display_name
+      }
+    });
+  } catch (error) {
+    console.error('Error adding collaborator:', error);
+    if (error.message.includes('already a collaborator')) {
+      return res.status(400).json({ success: false, error: error.message });
+    }
+    res.status(500).json({ success: false, error: 'Failed to add collaborator' });
+  }
+};
+
+/**
+ * Remove a collaborator from a book
+ */
+const removeBookCollaborator = async (req, res) => {
+  try {
+    const bookId = parseInt(req.params.bookId);
+    const collaboratorUserId = req.params.userId;
+    const currentUserId = req.user.discord_id || req.user.id;
+
+    // Verify book exists and user is the owner
+    const bookQuery = `SELECT id, user_id, is_book FROM submissions WHERE id = $1`;
+    const book = await db.asyncGet(bookQuery, [bookId]);
+
+    if (!book) {
+      return res.status(404).json({ success: false, error: 'Book not found' });
+    }
+
+    if (!book.is_book) {
+      return res.status(400).json({ success: false, error: 'This submission is not a book' });
+    }
+
+    // Only the owner can remove collaborators, or users can remove themselves
+    if (book.user_id !== currentUserId && collaboratorUserId !== currentUserId) {
+      return res.status(403).json({ success: false, error: 'Only the book owner can remove collaborators' });
+    }
+
+    const removed = await BookCollaborator.removeCollaborator(bookId, collaboratorUserId);
+
+    if (!removed) {
+      return res.status(404).json({ success: false, error: 'Collaborator not found' });
+    }
+
+    res.json({
+      success: true,
+      message: 'Collaborator removed successfully'
+    });
+  } catch (error) {
+    console.error('Error removing collaborator:', error);
+    res.status(500).json({ success: false, error: 'Failed to remove collaborator' });
+  }
+};
+
+/**
+ * Update a collaborator's role
+ */
+const updateCollaboratorRole = async (req, res) => {
+  try {
+    const bookId = parseInt(req.params.bookId);
+    const collaboratorUserId = req.params.userId;
+    const { role } = req.body;
+    const currentUserId = req.user.discord_id || req.user.id;
+
+    if (!role || !['editor', 'viewer'].includes(role)) {
+      return res.status(400).json({ success: false, error: 'Valid role (editor or viewer) is required' });
+    }
+
+    // Verify book exists and user is the owner
+    const bookQuery = `SELECT id, user_id, is_book FROM submissions WHERE id = $1`;
+    const book = await db.asyncGet(bookQuery, [bookId]);
+
+    if (!book) {
+      return res.status(404).json({ success: false, error: 'Book not found' });
+    }
+
+    if (!book.is_book) {
+      return res.status(400).json({ success: false, error: 'This submission is not a book' });
+    }
+
+    // Only the owner can update roles
+    if (book.user_id !== currentUserId) {
+      return res.status(403).json({ success: false, error: 'Only the book owner can update collaborator roles' });
+    }
+
+    const updated = await BookCollaborator.updateRole(bookId, collaboratorUserId, role);
+
+    if (!updated) {
+      return res.status(404).json({ success: false, error: 'Collaborator not found' });
+    }
+
+    res.json({
+      success: true,
+      message: 'Collaborator role updated successfully'
+    });
+  } catch (error) {
+    console.error('Error updating collaborator role:', error);
+    res.status(500).json({ success: false, error: 'Failed to update collaborator role' });
+  }
+};
+
+/**
+ * Get books the user collaborates on (not owns)
+ */
+const getUserCollaborations = async (req, res) => {
+  try {
+    const userId = req.user.discord_id || req.user.id;
+
+    // Initialize table if needed
+    await BookCollaborator.initializeTable();
+
+    const collaborations = await BookCollaborator.getUserCollaborations(userId);
+
+    res.json({
+      success: true,
+      collaborations
+    });
+  } catch (error) {
+    console.error('Error getting user collaborations:', error);
+    res.status(500).json({ success: false, error: 'Failed to get collaborations' });
+  }
+};
+
+/**
+ * Search users to add as collaborators
+ */
+const searchCollaboratorUsers = async (req, res) => {
+  try {
+    const bookId = parseInt(req.params.bookId);
+    const { search } = req.query;
+    const currentUserId = req.user.discord_id || req.user.id;
+
+    if (!search || search.length < 2) {
+      return res.status(400).json({ success: false, error: 'Search term must be at least 2 characters' });
+    }
+
+    // Verify book exists and user is the owner
+    const bookQuery = `SELECT id, user_id, is_book FROM submissions WHERE id = $1`;
+    const book = await db.asyncGet(bookQuery, [bookId]);
+
+    if (!book) {
+      return res.status(404).json({ success: false, error: 'Book not found' });
+    }
+
+    if (!book.is_book) {
+      return res.status(400).json({ success: false, error: 'This submission is not a book' });
+    }
+
+    // Only the owner can search for collaborators
+    if (book.user_id !== currentUserId) {
+      return res.status(403).json({ success: false, error: 'Only the book owner can add collaborators' });
+    }
+
+    // Initialize table if needed
+    await BookCollaborator.initializeTable();
+
+    console.log('Searching for collaborators with term:', search, 'for book:', bookId);
+    const users = await BookCollaborator.searchUsers(search, bookId, 10);
+    console.log('Search results:', users);
+
+    res.json({
+      success: true,
+      users
+    });
+  } catch (error) {
+    console.error('Error searching users:', error);
+    res.status(500).json({ success: false, error: 'Failed to search users' });
+  }
+};
+
 module.exports = {
   getArtGallery,
   getWritingLibrary,
@@ -3687,7 +5052,19 @@ module.exports = {
   getUserBooks,
   getBookChapters,
   updateChapterOrder,
-  createBook
+  createBook,
+  submitPromptCombined,
+  claimPromptRewards,
+  getMySubmissions,
+  updateSubmission,
+  deleteSubmission,
+  // Collaborator functions
+  getBookCollaborators,
+  addBookCollaborator,
+  removeBookCollaborator,
+  updateCollaboratorRole,
+  getUserCollaborations,
+  searchCollaboratorUsers
 };
 
 /**

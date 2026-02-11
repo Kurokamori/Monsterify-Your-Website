@@ -367,7 +367,7 @@ const TradeCenter = () => {
                               <span>Lv. {listing.monster.level}</span>
                               <span>
                                 {listing.monster.types.map((type, index) => (
-                                  <span key={index} className={`type-badge type-${type.toLowerCase()}`}>
+                                  <span key={index} className={`badge type-${type.toLowerCase()}`}>
                                     {type}
                                   </span>
                                 ))}
@@ -549,7 +549,7 @@ const TradeCenter = () => {
                         <span>Lv. {selectedListing.monster.level}</span>
                         <span>
                           {selectedListing.monster.types.map((type, index) => (
-                            <span key={index} className={`type-badge type-${type.toLowerCase()}`}>
+                            <span key={index} className={`badge type-${type.toLowerCase()}`}>
                               {type}
                             </span>
                           ))}

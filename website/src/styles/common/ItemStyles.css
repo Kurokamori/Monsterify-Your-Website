@@ -139,10 +139,8 @@
   text-align: center;
 }
 
-.items-grid {
-  display: grid;
-  gap: 1.5rem;
-  grid-template-columns: repeat(auto-fill, minmax(min(200px, 100%), 1fr));
+/* .items-grid replaced by .container.grid in JSX - grid properties now in containers.css */
+.container.grid.items-layout {
   margin-top: 20px;
   min-width: 0;
   overflow-y: auto;
@@ -150,17 +148,25 @@
 }
 
 .modern-checkbox {
-  align-items: flex-start;
+  align-items: center;
   background: var(--nav-background);
   border: 1px solid var(--border-color);
   border-radius: 12px;
   cursor: pointer;
   display: flex;
+  flex-direction: column;
   gap: 1rem;
   padding: 1.5rem;
   transition: all 0.3s ease;
+  justify-content: center;
 }
+
 .modern-checkbox:hover {
+  border-color: var(--accent-color);
+  background: var(--overlay-solid);
+}
+
+.modern-checkbox.active {
   border-color: var(--accent-color);
   background: var(--overlay-solid);
 }
@@ -231,6 +237,21 @@
 .item-detail-image-container {
   position: relative;
   flex-shrink: 0;
+  width: 120px;
+  height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--background-tertiary);
+  border-radius: 12px;
+  padding: 1rem;
+}
+
+.item-detail-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 8px;
 }
 
 .floating-monster {
@@ -345,8 +366,9 @@
 @media (max-width: 768px) {
   .item-detail-header { flex-direction: column; align-items: center; text-align: center; gap: 1rem; }
   .floating-monster { width: 100px; height: 100px; }
+  .item-detail-image-container { width: 100px; height: 100px; }
   .item-detail-name { font-size: 1.5rem; }
-    .item-detail-content { padding: 0 1rem; }
+  .item-detail-content { padding: 0 1rem; }
   .item-detail-actions { padding: 1rem; }
 
   .button .offspring-actions { flex-direction: column; }

@@ -254,7 +254,7 @@ const AntiqueAuctionFormPage = () => {
                     name="antique"
                     value={formData.antique}
                     onChange={handleChange}
-                    className={`admin-form-input${errors.antique ? 'error' : ''}`}
+                    className={`admin-form-input ${errors.antique ? 'error' : ''}`}
                     required
                   >
                     <option value="">Select an antique...</option>
@@ -437,7 +437,9 @@ const AntiqueAuctionFormPage = () => {
 
               {imagePreview && (
                 <div>
-                  <img src={imagePreview} alt="Preview" className="admin-form-image-preview" />
+                  <div className="image-container medium no-margin">
+                    <img src={imagePreview} alt="Preview" />
+                  </div>
                   <button
                     type="button"
                     className="button secondary sm"

@@ -5,7 +5,25 @@
    Import this file to get all admin styles.
    ============================== */
 
-/* Core admin styles */
+/* Core layout and shell */
+@import './admin-layout.css';
+
+/* Cards and stat components */
+@import './admin-cards.css';
+
+/* Tables and data display */
+@import './admin-tables.css';
+
+/* Form components */
+@import './admin-forms.css';
+
+/* Modal components */
+@import './admin-modals.css';
+
+/* Third-party library overrides */
+@import './admin-third-party.css';
+
+/* Feature-specific admin styles */
 @import './AdminStyles.css';
 
 /* Prompt management */

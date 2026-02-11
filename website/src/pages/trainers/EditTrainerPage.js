@@ -616,14 +616,14 @@ const EditTrainerPage = () => {
       <h1>Edit Trainer: {trainer.name}</h1>
 
       {error && (
-        <div className="alert alert-danger">
+        <div className="alert error">
           <i className="fas fa-exclamation-circle"></i>
           <span>{error}</span>
         </div>
       )}
 
       {success && (
-        <div className="alert alert-success">
+        <div className="alert success">
           <i className="fas fa-check-circle"></i>
           <span>{success}</span>
         </div>
@@ -633,7 +633,7 @@ const EditTrainerPage = () => {
         {/* Basic Information Section */}
         <div className="form-section">
           <h2>Basic Information</h2>
-          <div className="form-grid">
+          <div className="container cols-2 gap-md">
             <div className="form-group">
               <label htmlFor="name">Name</label>
               <input
@@ -646,7 +646,7 @@ const EditTrainerPage = () => {
               />
             </div>
             </div>
-          <div className="form-grid">
+          <div className="container cols-2 gap-md">
             <div className="form-group">
               <label htmlFor="nickname">Nickname</label>
               <input
@@ -669,7 +669,7 @@ const EditTrainerPage = () => {
               />
             </div>
           </div>
-          <div className="form-grid">
+          <div className="container cols-2 gap-md">
             <div className="form-group">
               <AutocompleteInput
                 id="faction"
@@ -687,7 +687,7 @@ const EditTrainerPage = () => {
         {/* Species and Types Section */}
         <div className="form-section">
           <h2>Species and Types</h2>
-          <div className="form-grid">
+          <div className="container cols-2 gap-md">
             <div className="form-group">
               <label htmlFor="species1">Primary Species</label>
               <input
@@ -800,7 +800,7 @@ const EditTrainerPage = () => {
         {/* Abilities and Characteristics Section */}
         <div className="form-section">
           <h2>Abilities and Characteristics</h2>
-          <div className="form-grid">
+          <div className="container cols-2 gap-md">
             <div className="form-group">
               <AutocompleteInput
                 id="ability"
@@ -921,7 +921,7 @@ const EditTrainerPage = () => {
         {/* Personal Information Section */}
         <div className="form-section">
           <h2>Personal Information</h2>
-          <div className="form-grid">
+          <div className="container cols-2 gap-md">
             <div className="form-group">
               <label htmlFor="gender">Gender</label>
               <input
@@ -983,7 +983,7 @@ const EditTrainerPage = () => {
               />
             </div>
             </div>
-            <div className="form-grid">
+            <div className="container cols-2 gap-md">
 
             <div className="form-group">
               <label htmlFor="height">Height</label>
@@ -1007,7 +1007,7 @@ const EditTrainerPage = () => {
               />
             </div>
             </div>
-            <div className="form-grid">
+            <div className="container cols-2 gap-md">
 
             <div className="form-group theme-fields">
               <label htmlFor="theme_display">Theme Display Text</label>
@@ -1036,7 +1036,7 @@ const EditTrainerPage = () => {
               </small>
             </div>
             </div>
-            <div className="form-grid">
+            <div className="container cols-2 gap-md">
 
             <div className="form-group">
               <label htmlFor="voice_claim_display">Voice Claim Display Text</label>
@@ -1072,7 +1072,7 @@ const EditTrainerPage = () => {
         {/* Location Information Section */}
         <div className="form-section">
           <h2>Location Information</h2>
-          <div className="form-grid">
+          <div className="container cols-2 gap-md">
             <div className="form-group">
               <label htmlFor="birthplace">Birthplace</label>
               <input
@@ -1102,7 +1102,7 @@ const EditTrainerPage = () => {
         {/* Character Information Section */}
         <div className="form-section">
           <h2>Character Information</h2>
-          <div className="form-grid">
+          <div className="container cols-2 gap-md">
             <div className="form-group">
               <label htmlFor="strengths">Character Strengths</label>
               <textarea
@@ -1192,7 +1192,7 @@ const EditTrainerPage = () => {
         {/* Other Information Section */}
         <div className="form-section">
           <h2>Other Information</h2>
-          <div className="form-grid">
+          <div className="container cols-2 gap-md">
             <div className="form-group">
               <label htmlFor="occupation">Occupation</label>
               <input
@@ -1204,7 +1204,7 @@ const EditTrainerPage = () => {
               />
             </div>
             </div>
-            <div className="form-grid">
+            <div className="container cols-2 gap-md">
 
             <div className="form-group">
               <label htmlFor="birthday">Birthday</label>
@@ -1247,7 +1247,7 @@ const EditTrainerPage = () => {
               <small className="field-note">Automatically calculated from birth year</small>
             </div>
           </div>
-          <div className="form-grid">
+          <div className="container cols-2 gap-md">
 
             <div className="form-group">
               <AutocompleteInput
@@ -1266,7 +1266,7 @@ const EditTrainerPage = () => {
         {/* Biography Section */}
         <div className="form-section">
           <h2>Biography</h2>
-          <div className="form-grid">
+          <div className="container cols-2 gap-md">
             <div className="form-group">
               <label htmlFor="quote">Quote</label>
               <input
@@ -1326,7 +1326,7 @@ const EditTrainerPage = () => {
                     </button>
                   </div>
 
-                  <div className="form-grid">
+                  <div className="container cols-2 gap-md">
                     <div className="form-group">
                       <label>Title</label>
                       <input
@@ -1388,7 +1388,7 @@ const EditTrainerPage = () => {
                     </button>
                   </div>
 
-                  <div className="form-grid">
+                  <div className="container cols-2 gap-md">
                     <div className="form-group">
                       <label>Relation Type</label>
                       <select
@@ -1487,7 +1487,7 @@ const EditTrainerPage = () => {
         {/* Images Section */}
         <div className="form-section">
           <h2>Images</h2>
-          <div className="form-grid">
+          <div className="container cols-2 gap-md">
             <div className="form-group full-width">
               <label htmlFor="main_ref">Main Image</label>
               <div className="file-upload-container">
@@ -1535,7 +1535,7 @@ const EditTrainerPage = () => {
                     </button>
                   </div>
 
-                  <div className="form-grid">
+                  <div className="container cols-2 gap-md">
                     <div className="form-group">
                       <label>Title</label>
                       <input
@@ -1604,7 +1604,7 @@ const EditTrainerPage = () => {
         {/* Mega Evolution Section */}
         <div className="form-section">
           <h2>Mega Evolution</h2>
-          <div className="form-grid">
+          <div className="container cols-2 gap-md">
             <div className="form-group full-width">
               <label htmlFor="mega_ref">Mega Evolution Image</label>
               <div className="file-upload-container">
@@ -1641,7 +1641,7 @@ const EditTrainerPage = () => {
               />
             </div>
             </div>
-            <div className="form-grid">
+            <div className="container cols-2 gap-md">
 
             <div className="form-group">
               <label htmlFor="mega_species1">Mega Primary Species</label>
@@ -1749,7 +1749,7 @@ const EditTrainerPage = () => {
               />
             </div>
             </div>
-            <div className="form-grid">
+            <div className="container cols-2 gap-md">
 
             <div className="form-group">
               <AutocompleteInput

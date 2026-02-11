@@ -2,6 +2,65 @@
    Input & Form Element Styles
    ============================== */
 
+/* ===== Filter Controls ===== */
+
+.filter-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: flex-end;
+  padding: 1rem;
+  background: linear-gradient(135deg, var(--card-background) 0%, var(--nav-background) 100%);
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  margin-bottom: 1.5rem;
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-width: 120px;
+}
+
+.filter-group label {
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.filter-group label i {
+  color: var(--accent-color);
+}
+
+.filter-group.button-group {
+  flex-direction: row;
+  align-items: center;
+  gap: 0.25rem;
+  min-width: auto;
+}
+
+@media (max-width: 768px) {
+  .filter-controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .filter-group {
+    min-width: 100%;
+  }
+
+  .filter-group.button-group {
+    flex-direction: row;
+    justify-content: flex-start;
+  }
+}
+
+/* ===== Base Input ===== */
+
 .special-input {
   background: var(--input-background);
   background-color: var(--input-background);
@@ -79,4 +138,244 @@
   font-weight: bold;
   color: var(--text-color);
   font-size: 1.1rem;
+}
+
+/* ==============================================
+   RESPONSIVE STYLES
+   ============================================== */
+
+/* ---------- Medium Desktop/Laptop (1024px - 1199px) ---------- */
+@media (max-width: 1199px) {
+  .special-input {
+    font-size: 0.875rem;
+    padding: 0.5rem 0.625rem;
+  }
+
+  .toggle-switch {
+    font-size: 0.85rem;
+    width: 56px;
+    height: 32px;
+  }
+
+  .toggle-switch input[type="checkbox"] {
+    width: 2.25rem;
+    height: 1.125rem;
+  }
+
+  .toggle-switch input[type="checkbox"]::before {
+    width: 0.875rem;
+    height: 0.875rem;
+  }
+
+  .toggle-switch input[type="checkbox"]:checked::before {
+    transform: translateX(1.125rem);
+  }
+
+  .stat-value {
+    font-size: 1rem;
+  }
+}
+
+/* ---------- Small Desktop/Large Tablet (768px - 1023px) ---------- */
+@media (max-width: 1023px) {
+  .special-input {
+    font-size: 0.85rem;
+    padding: 0.5rem;
+    margin-left: 0.375rem;
+    margin-top: 0.375rem;
+  }
+
+  .toggle-switch {
+    font-size: 0.8rem;
+    width: 52px;
+    height: 30px;
+    gap: 8px;
+  }
+
+  .stat-value {
+    font-size: 0.95rem;
+  }
+}
+
+/* ---------- Tablet Portrait (600px - 767px) ---------- */
+@media (max-width: 767px) {
+  .special-input {
+    font-size: 16px; /* Prevents iOS zoom on focus */
+    padding: 0.625rem 0.5rem;
+    margin-left: 0;
+    margin-top: 0.5rem;
+    width: 100%;
+    min-height: 44px; /* Touch-friendly */
+    border-radius: 0.5rem;
+  }
+
+  .special-input:focus {
+    box-shadow: 0 0 0 2px var(--accent-glow);
+  }
+
+  .toggle-switch {
+    font-size: 0.85rem;
+    width: 54px;
+    height: 32px;
+    gap: 10px;
+  }
+
+  .toggle-switch input[type="checkbox"] {
+    width: 2.75rem;
+    height: 1.5rem;
+  }
+
+  .toggle-switch input[type="checkbox"]::before {
+    width: 1.125rem;
+    height: 1.125rem;
+    left: 0.1875rem;
+    top: 0.1875rem;
+  }
+
+  .toggle-switch input[type="checkbox"]:checked::before {
+    transform: translateX(1.25rem);
+  }
+
+  .toggle-switch label {
+    font-size: 0.9rem;
+  }
+
+  .stat-value {
+    font-size: 1rem;
+  }
+}
+
+/* ---------- Large Phone (480px - 599px) ---------- */
+@media (max-width: 599px) {
+  .special-input {
+    font-size: 16px;
+    padding: 0.75rem 0.625rem;
+    border-radius: 0.5rem;
+  }
+
+  .toggle-switch {
+    font-size: 0.8rem;
+    width: 50px;
+    height: 30px;
+    gap: 8px;
+  }
+
+  .toggle-switch input[type="checkbox"] {
+    width: 2.5rem;
+    height: 1.375rem;
+  }
+
+  .toggle-switch input[type="checkbox"]::before {
+    width: 1rem;
+    height: 1rem;
+  }
+
+  .toggle-switch input[type="checkbox"]:checked::before {
+    transform: translateX(1.125rem);
+  }
+
+  .stat-value {
+    font-size: 0.95rem;
+  }
+}
+
+/* ---------- Small Phone (320px - 479px) ---------- */
+@media (max-width: 479px) {
+  .special-input {
+    font-size: 16px;
+    padding: 0.75rem 0.5rem;
+  }
+
+  .toggle-switch {
+    font-size: 0.75rem;
+    width: 48px;
+    height: 28px;
+  }
+
+  .toggle-switch label {
+    font-size: 0.8rem;
+  }
+
+  .stat-value {
+    font-size: 0.9rem;
+  }
+}
+
+/* ---------- Ultra Small Screens (below 320px) ---------- */
+@media (max-width: 319px) {
+  .special-input {
+    padding: 0.625rem 0.375rem;
+    font-size: 14px;
+  }
+
+  .toggle-switch {
+    width: 44px;
+    height: 26px;
+    font-size: 0.7rem;
+    gap: 6px;
+  }
+
+  .toggle-switch input[type="checkbox"] {
+    width: 2.25rem;
+    height: 1.25rem;
+  }
+
+  .toggle-switch input[type="checkbox"]::before {
+    width: 0.875rem;
+    height: 0.875rem;
+  }
+
+  .stat-value {
+    font-size: 0.85rem;
+  }
+}
+
+/* ---------- Accessibility: Reduced Motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .special-input {
+    transition: none;
+  }
+
+  .toggle-switch input[type="checkbox"],
+  .toggle-switch input[type="checkbox"]::before {
+    transition: none;
+  }
+}
+
+/* ---------- Touch Device Optimizations ---------- */
+@media (hover: none) and (pointer: coarse) {
+  .special-input {
+    font-size: 16px;
+    min-height: 44px;
+  }
+
+  .toggle-switch {
+    min-height: 44px;
+    padding: 0.25rem;
+  }
+
+  .toggle-switch input[type="checkbox"] {
+    min-width: 44px;
+    min-height: 24px;
+  }
+}
+
+/* ---------- High Contrast Mode ---------- */
+@media (prefers-contrast: high) {
+  .special-input {
+    border-width: 2px;
+  }
+
+  .special-input:focus {
+    outline: 3px solid var(--accent-color);
+    outline-offset: 2px;
+  }
+
+  .toggle-switch input[type="checkbox"] {
+    border: 2px solid var(--border-color);
+  }
+
+  .toggle-switch input[type="checkbox"]:checked {
+    border-color: var(--accent-color);
+  }
 }

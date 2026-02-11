@@ -180,7 +180,7 @@ const FakemonDetailPage = () => {
       <div className="evo-tree-node" key={node.number}>
         <Link
           to={`/fakedex/${node.number}`}
-          className={`evo-tree-entry${isCurrent ? 'evo-current' : ''}`}
+          className={`evo-tree-entry ${isCurrent ? 'evo-current' : ''}`}
         >
           <div className="evo-tree-image-wrap">
             <img
@@ -274,7 +274,7 @@ const FakemonDetailPage = () => {
           )}
           <div className="fakemon-types">
             {displayFakemon.types.map((type, index) => (
-              <span className={`type-badge type-${type.toLowerCase()}`} key={index}>
+              <span className={`badge type-${type.toLowerCase()}`} key={index}>
                 {type}
               </span>
             ))}

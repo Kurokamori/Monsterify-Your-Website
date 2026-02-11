@@ -169,7 +169,7 @@ const GuideDetail = () => {
   }
 
   return (
-    <div className="lore-container">
+    <div className="main-content-container">
       <button 
         className="button secondary"
         onClick={() => navigate('/guides')}
@@ -192,7 +192,7 @@ const GuideDetail = () => {
             {displayCategories.find(cat => cat.id === displayGuide.category)?.name || displayGuide.category}
           </div>
           <h1 className="event-detail-title">{displayGuide.title}</h1>
-          <div className="type-tags">
+          <div className="type-tags fw">
             <span className="guide-author">
               <i className="fas fa-user"></i> {displayGuide.author}
             </span>

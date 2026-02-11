@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import WritingSubmissionForm from '../../components/submissions/WritingSubmissionForm';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
@@ -8,6 +8,10 @@ import LoadingSpinner from '../../components/common/LoadingSpinner';
 const WritingSubmissionPage = () => {
   const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+
+  // Get bookId from URL params for "Add Chapter" flow
+  const preselectedBookId = searchParams.get('bookId');
 
   // State
   const [submissionSuccess, setSubmissionSuccess] = useState(false);
@@ -41,8 +45,12 @@ const WritingSubmissionPage = () => {
   return (
     <div className="edit-monster-container">
       <div className="map-header">
-        <h1>Submit Writing</h1>
-        <p className="description">Share your stories, poems, and other written works with the community and earn rewards based on word count and quality.</p>
+        <h1>{preselectedBookId ? 'Add Chapter' : 'Submit Writing'}</h1>
+        <p className="description">
+          {preselectedBookId
+            ? 'Add a new chapter to your book and earn rewards based on word count.'
+            : 'Share your stories, poems, and other written works with the community and earn rewards based on word count and quality.'}
+        </p>
       </div>
 
       {submissionSuccess ? (
@@ -161,7 +169,7 @@ const WritingSubmissionPage = () => {
         </div>
       ) : (
         <div className="town-section">
-          <WritingSubmissionForm onSubmissionComplete={handleSubmissionComplete} />
+          <WritingSubmissionForm onSubmissionComplete={handleSubmissionComplete} preselectedBookId={preselectedBookId} />
         </div>
       )}
     </div>

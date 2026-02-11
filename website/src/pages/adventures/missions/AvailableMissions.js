@@ -91,7 +91,7 @@ const AvailableMissions = () => {
               <div key={mission.id} className="mission-card active-mission">
                 <div className="option-row">
                   <h3>{mission.title}</h3>
-                  <span className="status-badge active">
+                  <span className="badge active">
                     ACTIVE
                   </span>
                 </div>
@@ -99,9 +99,9 @@ const AvailableMissions = () => {
                   <p>{mission.description}</p>
                 </div>
                 <div className="mission-progress">
-                  <div className="progress-bar">
+                  <div className="progress">
                     <div
-                      className="progress-fill"
+                      className="progress-fill primary"
                       style={{
                         width: `${Math.min(100, (mission.current_progress / mission.required_progress) * 100)}%`
                       }}
@@ -165,8 +165,8 @@ const AvailableMissions = () => {
               >
                 <div className="option-row">
                   <h3>{mission.title}</h3>
-                  <span 
-                    className="status-badge"
+                  <span
+                    className="badge"
                     style={{ backgroundColor: getDifficultyColor(mission.difficulty) }}
                   >
                     {mission.difficulty.toUpperCase()}
@@ -177,7 +177,7 @@ const AvailableMissions = () => {
                   <p>{mission.description}</p>
                 </div>
 
-                <div className="adopts-grid">
+                <div className="container grid gap-md">
                   <div className="detail-row">
                     <span className="label">Duration:</span>
                     <span className="value">{mission.duration} submissions</span>
@@ -197,7 +197,7 @@ const AvailableMissions = () => {
                 {requirements.types && requirements.types.length > 0 && (
                   <div className="mission-requirements">
                     <h4>Type Requirements:</h4>
-                    <div className="type-tags">
+                    <div className="type-tags fw">
                       {requirements.types.map((type, index) => (
                         <span key={index} className="type-tag">{type}</span>
                       ))}
@@ -208,7 +208,7 @@ const AvailableMissions = () => {
                 {requirements.attributes && requirements.attributes.length > 0 && (
                   <div className="mission-requirements">
                     <h4>Attribute Requirements:</h4>
-                    <div className="type-tags">
+                    <div className="type-tags fw">
                       {requirements.attributes.map((attr, index) => (
                         <span key={index} className="attribute-tag">{attr}</span>
                       ))}

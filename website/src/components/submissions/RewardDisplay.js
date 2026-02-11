@@ -94,7 +94,7 @@ const RewardDisplay = ({
                 <div className="reward-entity-header">
                   <span className="appearance-count">{trainerName}</span>
                 </div>
-                <div className="fandom-grid">
+                <div className="container cols-2 gap-md">
                   <div className="reward-item">
                     <span className="reward-label">Levels:</span>
                     <span className="reward-value">{formatLevelText(reward.levels)}</span>
@@ -132,7 +132,7 @@ const RewardDisplay = ({
                     )}
                   </span>
                 </div>
-                <div className="fandom-grid">
+                <div className="container cols-2 gap-md">
                   <div className="reward-item">
                     <span className="reward-label">Levels:</span>
                     <span className="reward-value">{formatLevelText(reward.levels)}</span>

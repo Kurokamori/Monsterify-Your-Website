@@ -311,12 +311,12 @@ const ReferenceHelperPage = () => {
   }
 
   return (
-    <div className="schedule-page">
+    <div className="main-content-container">
       <div className="reference-todo-header">
         <h1>Reference Helper</h1>
         {selectedTrainerData && (
           <button 
-            className="button secondary toggle"
+            className="button secondary toggle no-flex"
             onClick={cycleImageSize}
             title={`Current: ${getImageSizeDisplayName(imageSize)}. Click to cycle.`}
           >

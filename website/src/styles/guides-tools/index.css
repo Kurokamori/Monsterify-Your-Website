@@ -18,6 +18,7 @@
 /* Database and explorer pages */
 @import './AbilityDatabasePage.css';
 @import './EvolutionExplorerPage.css';
+@import './SpeciesDatabasePage.css';
 
 /* Evolution components */
 @import './EvolutionCards.css';

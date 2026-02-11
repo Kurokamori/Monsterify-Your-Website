@@ -122,7 +122,7 @@ const TrainerCreate = () => {
             <div className="set-item">
               <h2>Basic Information</h2>
 
-              <div className="form-grid">
+              <div className="container cols-2 gap-md">
                 <div className="form-group">
                   <label htmlFor="player_user_id">User ID *</label>
                   <input
@@ -230,7 +230,7 @@ const TrainerCreate = () => {
             <div className="set-item">
               <h2>Personal Information</h2>
 
-              <div className="form-grid">
+              <div className="container cols-2 gap-md">
                 <div className="form-group">
                   <label htmlFor="gender">Gender</label>
                   <input
@@ -358,7 +358,7 @@ const TrainerCreate = () => {
             <div className="set-item">
               <h2>Species & Types</h2>
 
-              <div className="form-grid">
+              <div className="container cols-2 gap-md">
                 <div className="form-group">
                   <label htmlFor="species1">Species 1</label>
                   <input

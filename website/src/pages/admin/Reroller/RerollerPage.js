@@ -246,9 +246,9 @@ const RerollerPage = () => {
         <div className="result-card-details">+ {monster.species2}</div>
       )}
       <div className="container vertical gap-md">
-        {monster.type1 && <span className="type-badge">{monster.type1}</span>}
-        {monster.type2 && <span className="type-badge">{monster.type2}</span>}
-        {monster.type3 && <span className="type-badge">{monster.type3}</span>}
+        {monster.type1 && <span className="badge">{monster.type1}</span>}
+        {monster.type2 && <span className="badge">{monster.type2}</span>}
+        {monster.type3 && <span className="badge">{monster.type3}</span>}
       </div>
       <div className="result-card-actions">
         <button
@@ -450,7 +450,7 @@ const RerollerPage = () => {
               <label className="reroller-field-label">
                 Categories
               </label>
-              <div className="type-tags">
+              <div className="type-tags fw">
                 <button
                   className={`button filter ${selectedCategories.length === itemCategories.filter(c => c.default).length ? 'selected' : ''}`}
                   onClick={toggleAllCategories}
@@ -474,7 +474,7 @@ const RerollerPage = () => {
           {rollType === 'gift' && (
             <div className="config-section">
               <h3><i className="fas fa-gift"></i> Gift Settings</h3>
-              <div className="fandom-grid">
+              <div className="container cols-2 gap-md">
                 <input
                   type="number"
                   value={giftLevels}
@@ -514,7 +514,7 @@ const RerollerPage = () => {
               <h3><i className="fas fa-lock"></i> Claim Limits</h3>
               <div className="claim-limits">
                 {(rollType === 'monster' || rollType === 'combined') && (
-                  <div className="fandom-grid">
+                  <div className="container cols-2 gap-md">
                     <label>Monster Limit</label>
                     <select
                       value={monsterClaimLimit === null ? 'all' : monsterClaimLimit}
@@ -528,7 +528,7 @@ const RerollerPage = () => {
                   </div>
                 )}
                 {(rollType === 'item' || rollType === 'combined') && (
-                  <div className="fandom-grid">
+                  <div className="container cols-2 gap-md">
                     <label>Item Limit</label>
                     <select
                       value={itemClaimLimit === null ? 'all' : itemClaimLimit}

@@ -453,7 +453,7 @@ const ActivityRewards = () => {
           </Link>
           <h1>Activity Rewards</h1>
         </div>
-        <div className="error-message">
+        <div className="alert error">
           <p>Session not found or has expired.</p>
           <p>Session ID: {sessionId}</p>
           <p>This may happen if the server was restarted since the session was created.</p>
@@ -523,7 +523,7 @@ const ActivityRewards = () => {
                    reward.type === 'level' ? `${reward.reward_data.levels} level${reward.reward_data.levels > 1 ? 's' : ''}` :
                    'Mystery reward'}
                 </div>
-                <div className={`reward-rarity${reward.rarity}`}>
+                <div className={`badge ${reward.rarity}`}>
                   {reward.rarity.charAt(0).toUpperCase() + reward.rarity.slice(1)}
                 </div>
 
@@ -642,16 +642,16 @@ const ActivityRewards = () => {
 
                     {reward.reward_data.type1 && (
                       <div className="monster-reward-types">
-                        <span className={`type-badge monster-reward-type-badge${reward.reward_data.type1.toLowerCase()}`}>
+                        <span className={`badge monster-reward-badge${reward.reward_data.type1.toLowerCase()}`}>
                           {reward.reward_data.type1}
                         </span>
                         {reward.reward_data.type2 && (
-                          <span className={`type-badge monster-reward-type-badge${reward.reward_data.type2.toLowerCase()}`}>
+                          <span className={`badge monster-reward-badge${reward.reward_data.type2.toLowerCase()}`}>
                             {reward.reward_data.type2}
                           </span>
                         )}
                         {reward.reward_data.type3 && (
-                          <span className={`type-badge monster-reward-type-badge${reward.reward_data.type3.toLowerCase()}`}>
+                          <span className={`badge monster-reward-badge${reward.reward_data.type3.toLowerCase()}`}>
                             {reward.reward_data.type3}
                           </span>
                         )}
@@ -665,7 +665,7 @@ const ActivityRewards = () => {
                     )}
                   </div>
 
-                  <div className={`reward-rarity${reward.rarity}`}>
+                  <div className={`badge ${reward.rarity}`}>
                     {reward.rarity.charAt(0).toUpperCase() + reward.rarity.slice(1)}
                   </div>
 

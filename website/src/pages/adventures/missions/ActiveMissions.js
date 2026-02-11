@@ -101,8 +101,8 @@ const ActiveMissions = () => {
               <div key={mission.id} className={`mission-card ${isCompleted ? 'completed' : ''}`}>
                 <div className="option-row">
                   <h3>{mission.title}</h3>
-                  <span 
-                    className="status-badge"
+                  <span
+                    className="badge"
                     style={{ backgroundColor: getDifficultyColor(mission.difficulty) }}
                   >
                     {mission.difficulty.toUpperCase()}
@@ -118,9 +118,9 @@ const ActiveMissions = () => {
                     <span>Progress</span>
                     <span>{mission.current_progress} / {mission.required_progress}</span>
                   </div>
-                  <div className="progress-bar">
-                    <div 
-                      className="progress-fill"
+                  <div className="progress">
+                    <div
+                      className="progress-fill primary"
                       style={{ width: `${progressPercentage}%` }}
                     ></div>
                   </div>

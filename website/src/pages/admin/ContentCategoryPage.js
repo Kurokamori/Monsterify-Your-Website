@@ -203,14 +203,14 @@ const ContentCategoryPage = () => {
 
         {/* Success Message */}
         {successMessage && (
-          <div className="admin-alert success">
+          <div className="alert success">
             <i className="fas fa-check-circle"></i> {successMessage}
           </div>
         )}
 
         {/* Error Message */}
         {error && (
-          <div className="admin-alert error">
+          <div className="alert error">
             <i className="fas fa-exclamation-circle"></i> {error}
           </div>
         )}

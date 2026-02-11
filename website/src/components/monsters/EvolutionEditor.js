@@ -211,14 +211,14 @@ const EvolutionEditor = ({ monsterId, evolutionData, onSave, onCancel, isOwner }
                       {[entry.type1, entry.type2, entry.type3, entry.type4, entry.type5]
                         .filter(Boolean)
                         .map((type, i) => (
-                          <span key={i} className={`type-badge type-${type.toLowerCase()}`}>
+                          <span key={i} className={`badge type-${type.toLowerCase()}`}>
                             {type}
                           </span>
                         ))}
                     </div>
                     {entry.attribute && (
                       <div className="entry-attribute">
-                        <span className={`attribute-badge attribute-${entry.attribute.toLowerCase()}`}>
+                        <span className={`badge attribute-${entry.attribute.toLowerCase()}`}>
                           {entry.attribute}
                         </span>
                       </div>

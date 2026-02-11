@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import api from '../services/api';
 import submissionService from '../services/submissionService';
+import LoadingSpinner from '../components/common/LoadingSpinner';
 
 const HomePage = () => {
   const { currentUser, isAuthenticated } = useAuth();
@@ -201,10 +202,7 @@ const HomePage = () => {
   if (loading) {
     return (
       <div className="homepage-loading">
-        <div className="loading-spinner">
-          <i className="fas fa-dragon"></i>
-          <p>Loading your adventure...</p>
-        </div>
+        <LoadingSpinner message="Loading your adventure..." />
       </div>
     );
   }
@@ -265,7 +263,7 @@ const HomePage = () => {
                 <p>Join our comminity of artists and monster enthusiasts to start your adventure!</p>
               </div>
               
-              <div className="steps-grid">
+              <div className="container grid-xl gap-lg">
                 <div className="step-card">
                   <div className="step-number">1</div>
                   <div className="step-icon">
@@ -306,7 +304,7 @@ const HomePage = () => {
 
             <div className="features-showcase">
               <h2>Game Features</h2>
-              <div className="features-grid">
+              <div className="container grid-xl gap-md">
                 <div className="feature-card">
                   <div className="feature-icon">
                     <i className="fas fa-palette"></i>
@@ -344,7 +342,7 @@ const HomePage = () => {
             {/* Look Around Section for New Users */}
             <div className="look-around-section">
               <h2>Look Around</h2>
-              <div className="look-around-grid">
+              <div className="container grid-lg gap-md">
                 <Link to="/gallery" className="feature-card">
                   <div className="look-around-icon">
                     <i className="fas fa-images"></i>
@@ -516,7 +514,7 @@ const HomePage = () => {
             {/* Look Around Section for Returning Users */}
             <div className="look-around-section">
               <h2>Look Around</h2>
-              <div className="look-around-grid">
+              <div className="container grid-lg gap-md">
                 <Link to="/gallery" className="feature-card">
                   <div className="look-around-icon">
                     <i className="fas fa-images"></i>
@@ -594,9 +592,9 @@ const HomePage = () => {
                 <div className="creature-info">
                   <span className="creature-number">#{String(mon.number).padStart(3, '0')}</span>
                   <span className="creature-name">{mon.name}</span>
-                  <div className="type-tags">
+                  <div className="type-tags fw">
                     {(mon.types || ['Normal']).map((type, index) => (
-                      <span className={`type-badge type-${type.toLowerCase()}`} key={index}>
+                      <span className={`badge type-${type.toLowerCase()}`} key={index}>
                         {type}
                       </span>
                     ))}

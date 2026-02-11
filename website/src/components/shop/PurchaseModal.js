@@ -42,7 +42,7 @@ const PurchaseModal = ({
       <div className="purchase-modal">
         <div className="purchase-modal-header">
           <h2>Purchase Item</h2>
-          <button className="button icon danger" onClick={onCancel}>×</button>
+          <button className="button icon danger no-flex" onClick={onCancel}>×</button>
         </div>
         
         <div className="antique-appraisal-body">

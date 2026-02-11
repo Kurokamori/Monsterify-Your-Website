@@ -32,7 +32,7 @@ const TrainerMegaReferenceSubmissionPage = () => {
 
   if (!isAuthenticated) {
     return (
-      <div className="lore-container">
+      <div className="main-content-container">
         <div className="error-container">
           <LoadingSpinner />
           <p>Redirecting to login...</p>
@@ -42,7 +42,7 @@ const TrainerMegaReferenceSubmissionPage = () => {
   }
 
   return (
-    <div className="lore-container">
+    <div className="main-content-container">
       <div className="map-header">
         <button 
           className="button secondary"

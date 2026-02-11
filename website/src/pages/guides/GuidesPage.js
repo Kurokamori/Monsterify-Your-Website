@@ -58,7 +58,7 @@ const GuideCategoryIndex = () => {
   }
 
   return (
-    <div className="lore-container">
+    <div className="main-content-container">
       <div className="lore-header">
         <h1>Guides & Documentation</h1>
         <p>Learn everything you need to know about the game</p>
@@ -169,7 +169,7 @@ const GuideCategory = () => {
   }
 
   return (
-    <div className="lore-container">
+    <div className="main-content-container">
       <GuideCategoryTabs categories={categories} activeCategory={category} />
 
       <div className="guide-content-layout">
@@ -249,7 +249,7 @@ const GuideContent = () => {
   }
 
   return (
-    <div className="lore-container">
+    <div className="main-content-container">
       <GuideCategoryTabs categories={categories} activeCategory={category} />
 
       <div className="guide-content-layout">

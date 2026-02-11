@@ -199,16 +199,20 @@ const MyTrainersPage = () => {
 
   return (
     <div className="my-trainers-container">
-      <div className="my-trainers-header">
-        <h1>My Trainers</h1>
-        <Link to="/add_trainer" className="button primary">
-          <i className="fas fa-plus"></i> New Trainer
-        </Link>
+      <div className="page-header">
+        <div className="page-header-title">
+          <h1>My Trainers</h1>
+        </div>
+        <div className="page-header-actions">
+          <Link to="/add_trainer" className="button primary">
+            <i className="fas fa-plus"></i> New Trainer
+          </Link>
+        </div>
       </div>
 
       {trainers.length > 0 && (
-        <div className="option-row">
-          <div className="set-item">
+        <div className="filter-controls">
+          <div className="filter-group">
             <label htmlFor="faction-filter">
               <i className="fas fa-filter"></i> Faction
             </label>
@@ -216,6 +220,7 @@ const MyTrainersPage = () => {
               id="faction-filter"
               value={filterFaction}
               onChange={(e) => setFilterFaction(e.target.value)}
+              className="special-input"
             >
               <option value="">All Factions</option>
               {uniqueFactions.map(faction => (
@@ -224,7 +229,7 @@ const MyTrainersPage = () => {
             </select>
           </div>
 
-          <div className="sort-group">
+          <div className="filter-group">
             <label htmlFor="sort-by">
               <i className="fas fa-sort"></i> Sort By
             </label>
@@ -232,6 +237,7 @@ const MyTrainersPage = () => {
               id="sort-by"
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
+              className="special-input"
             >
               <option value="alphabet">Name</option>
               <option value="level">Level</option>
@@ -241,16 +247,16 @@ const MyTrainersPage = () => {
             </select>
           </div>
 
-          <div className="order-group">
+          <div className="filter-group button-group">
             <button
-              className={`button filter ${sortOrder === 'asc' ? 'active' : ''}`}
+              className={`button toggle ${sortOrder === 'asc' ? 'active' : ''}`}
               onClick={() => setSortOrder('asc')}
               title="Ascending"
             >
               <i className="fas fa-sort-amount-up-alt"></i>
             </button>
             <button
-              className={`button filter ${sortOrder === 'desc' ? 'active' : ''}`}
+              className={`button toggle ${sortOrder === 'desc' ? 'active' : ''}`}
               onClick={() => setSortOrder('desc')}
               title="Descending"
             >
@@ -270,7 +276,7 @@ const MyTrainersPage = () => {
       )}
 
       {displayTrainers.length > 0 ? (
-        <div className="items-grid">
+        <div className="container grid gap-sm">
           {displayTrainers.map(trainer => (
             <div
               className="trainer-card clickable"
@@ -285,110 +291,88 @@ const MyTrainersPage = () => {
                 }
               }}
             >
+              <div className="trainer-card-header">
+                <div className="trainer-info">
+                  <h2 className="trainer-name">{trainer.name}</h2>
+                  {trainer.title && <div className="trainer-title">{trainer.title}</div>}
+                </div>
+                <span className="level-badge">Lv. {trainer.level || 1}</span>
+              </div>
 
-                <div className="adopt-card">
-                  <div className="trainer-info">
-                    <h2 className="trainer-name">{trainer.name}</h2>
-                    {trainer.title && <div className="trainer-title">{trainer.title}</div>}
-                    <div className="trainer-level">
-                      <span className="level-badge">Lv. {trainer.level || 1}</span>
+              <div className="trainer-card-body">
+                <div className="trainer-avatar">
+                  <img
+                    src={trainer.avatar_url || trainer.main_ref || '/images/default_trainer.png'}
+                    alt={trainer.name}
+                    onError={(e) => {
+                      e.target.onerror = null;
+                      e.target.src = '/images/default_trainer.png';
+                    }}
+                  />
+                </div>
+
+                <div className="trainer-stats-grid">
+                  <div className="trainer-stat-item">
+                    <i className="fas fa-dragon"></i>
+                    <div className="stat-content">
+                      <span className="stat-value">{trainer.monsters_count || trainer.monster_count || 0}</span>
+                      <span className="stat-label">Mons</span>
+                    </div>
+                  </div>
+                  <div className="trainer-stat-item">
+                    <i className="fas fa-image"></i>
+                    <div className="stat-content">
+                      <span className="stat-value">{trainer.monster_ref_count || 0}</span>
+                      <span className="stat-label">Refs</span>
+                    </div>
+                  </div>
+                  <div className="trainer-stat-item">
+                    <i className="fas fa-coins"></i>
+                    <div className="stat-content">
+                      <span className="stat-value">{trainer.coins || trainer.currency_amount || 0}</span>
+                      <span className="stat-label">Coins</span>
                     </div>
                   </div>
                 </div>
+              </div>
 
-              <div className="trainer-avatar-and-info">
-              <div className="npc-avatar">
-                <img
-                  src={trainer.avatar_url || trainer.main_ref || '/images/default_trainer.png'}
-                  alt={trainer.name}
-                  onError={(e) => {
-                    e.target.onerror = null;
-                    e.target.src = '/images/default_trainer.png';
+              <div className="trainer-card-actions" onClick={(e) => e.stopPropagation()}>
+                <Link to={`/trainers/${trainer.id}`} className="button primary sm">
+                  <i className="fas fa-eye"></i> View
+                </Link>
+                <Link to={`/trainers/${trainer.id}/edit`} className="button secondary sm">
+                  <i className="fas fa-edit"></i> Edit
+                </Link>
+                <button
+                  className="button danger sm"
+                  onClick={() => {
+                    setSelectedTrainer(trainer);
+                    setIsDeleteModalOpen(true);
                   }}
-                />
-              </div>
-              <div className="trainer-content">
-
-
-              <div className="my-trainer-stats">
-                <div className="my-trainer-stat-item">
-                  <div className="stat-info">
-                    <div className="stat-icon">
-                      <i className="fas fa-dragon"></i>
-                    </div>
-                    <div className="stat-content">
-                      <div className="stat-value">{trainer.monsters_count || trainer.monster_count || 0}</div>
-                      <div className="stat-label">Mons</div>
-                    </div>
-                  </div>
-                </div>
-                <div className="my-trainer-stat-item">
-                  <div className="stat-info">
-                    <div className="stat-icon">
-                      <i className="fas fa-image"></i>
-                    </div>
-                    <div className="stat-content">
-                      <div className="stat-value">{trainer.monster_ref_count || 0}</div>
-                      <div className="stat-label">Refs</div>
-                    </div>
-                  </div>
-                </div>
-                <div className="my-trainer-stat-item">
-                  <div className="stat-info">
-                    <div className="stat-icon">
-                      <i className="fas fa-coins"></i>
-                    </div>
-                    <div className="stat-content">
-                      <div className="stat-value">{trainer.coins || trainer.currency_amount || 0}</div>
-                      <div className="stat-label">Coins</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              </div>
-</div>
-                <div className="trainer-actions" onClick={(e) => e.stopPropagation()}>
-                  <div className="trainer-actions-row primary">
-                    <Link to={`/trainers/${trainer.id}`} className="button primary">
-                      <i className="fas fa-eye"></i> View
-                    </Link>
-                    <Link to={`/trainers/${trainer.id}/edit`} className="button primary">
-                      <i className="fas fa-edit"></i> Edit
-                    </Link>
-                  </div>
-                  <div className="trainer-actions-row secondary">
-                    <button
-                      className="button danger"
-                      onClick={() => {
-                        setSelectedTrainer(trainer);
-                        setIsDeleteModalOpen(true);
-                      }}
-                    >
-                      <i className="fas fa-trash-alt"></i> Delete
-                    </button>
-
-                </div>
+                >
+                  <i className="fas fa-trash-alt"></i>
+                </button>
               </div>
             </div>
           ))}
         </div>
       ) : trainers.length > 0 ? (
-        <div className="no-trainers">
-          <div className="no-trainers-icon">
+        <div className="empty-state">
+          <div className="empty-state-icon">
             <i className="fas fa-filter"></i>
           </div>
           <h2>No Trainers Match Filter</h2>
           <p>No trainers found for the selected faction "{filterFaction}".</p>
           <button
-            className="button primary lg"
+            className="button primary"
             onClick={() => setFilterFaction('')}
           >
             Clear Filter
           </button>
         </div>
       ) : (
-        <div className="no-trainers">
-          <div className="no-trainers-icon">
+        <div className="empty-state">
+          <div className="empty-state-icon">
             <i className="fas fa-user-slash"></i>
           </div>
           <h2>No Trainers Found</h2>

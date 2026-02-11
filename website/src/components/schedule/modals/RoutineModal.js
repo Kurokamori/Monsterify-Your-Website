@@ -176,7 +176,7 @@ const RoutineModal = ({ isOpen, onClose, onSuccess, trainers = [], routine = nul
 
         <form onSubmit={handleSubmit} className="modal-body">
           {error && (
-            <div className="error-message">
+            <div className="alert error">
               <i className="fas fa-exclamation-triangle"></i>
               {error}
             </div>

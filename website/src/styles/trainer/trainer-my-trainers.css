@@ -9,7 +9,7 @@
 
 .my-trainers-container {
   width: 100%;
-  max-width: 1400px;
+  max-width: 1500px;
   margin: 0 auto;
   padding: 1rem;
   background: linear-gradient(135deg, var(--accent-glow-subtle) 0%, var(--accent-glow-faint) 100%);
@@ -40,8 +40,9 @@
 
 /* ===== Scoped trainers-grid override ===== */
 
-.my-trainers-container .items-grid{
-  display:grid; grid-template-columns:repeat(auto-fill, minmax(380px,1fr));
+/* Override container grid with larger card sizing for trainer cards */
+.my-trainers-container .container.grid{
+  grid-template-columns:repeat(auto-fill, minmax(380px,1fr));
   gap:2rem; margin-bottom:3rem; padding:1rem 0;
 }
 
@@ -54,6 +55,7 @@
 
 .my-trainers-container .trainer-card.clickable {
   cursor: pointer;
+  min-width: fit-content;
 }
 
 .my-trainers-container .trainer-card.clickable:focus {
@@ -75,6 +77,142 @@
 }
 
 .my-trainers-container .trainer-card:hover::before{ opacity:1; }
+
+/* ===== Trainer Card Structure ===== */
+
+.my-trainers-container .trainer-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 1rem 1.25rem;
+  background: linear-gradient(135deg, var(--nav-background) 0%, var(--card-background) 100%);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.my-trainers-container .trainer-card-header .trainer-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.my-trainers-container .trainer-card-header .trainer-name {
+  font-size: var(--font-size-lg);
+  font-weight: 700;
+  color: var(--text-color);
+  margin: 0 0 0.25rem 0;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.my-trainers-container .trainer-card-header .trainer-title {
+  font-size: var(--font-size-sm);
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.my-trainers-container .trainer-card-header .level-badge {
+  background: linear-gradient(135deg, var(--accent-color), var(--accent-hover));
+  color: var(--text-color);
+  padding: 0.35rem 0.75rem;
+  border-radius: 1rem;
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  white-space: nowrap;
+  box-shadow: 0 2px 8px var(--accent-glow);
+}
+
+.my-trainers-container .trainer-card-body {
+  display: flex;
+  gap: 1rem;
+  padding: 1rem;
+}
+
+.my-trainers-container .trainer-avatar {
+  width: 120px;
+  height: 120px;
+  flex-shrink: 0;
+  border-radius: 12px;
+  overflow: hidden;
+  background: linear-gradient(135deg, var(--accent-color), var(--accent-hover));
+  box-shadow: 0 4px 12px var(--overlay-light);
+  border: 2px solid var(--border-color);
+}
+
+.my-trainers-container .trainer-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top;
+  transition: transform 0.3s ease;
+}
+
+.my-trainers-container .trainer-card:hover .trainer-avatar img {
+  transform: scale(1.05);
+}
+
+.my-trainers-container .trainer-stats-grid {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+  align-content: center;
+}
+
+.my-trainers-container .trainer-stat-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  background: var(--input-background);
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  transition: all 0.2s ease;
+}
+
+.my-trainers-container .trainer-stat-item:hover {
+  background: var(--nav-hover);
+  border-color: var(--accent-color);
+}
+
+.my-trainers-container .trainer-stat-item i {
+  font-size: 1rem;
+  color: var(--accent-color);
+}
+
+.my-trainers-container .trainer-stat-item .stat-content {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+
+.my-trainers-container .trainer-stat-item .stat-value {
+  font-weight: 700;
+  font-size: var(--font-size-base);
+  color: var(--text-color);
+}
+
+.my-trainers-container .trainer-stat-item .stat-label {
+  font-size: var(--font-size-xs);
+  color: var(--text-muted);
+}
+
+.my-trainers-container .trainer-card-actions {
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  background: var(--nav-background);
+  border-top: 1px solid var(--border-color);
+}
+
+.my-trainers-container .trainer-card-actions .button {
+  flex: 1;
+}
+
+.my-trainers-container .trainer-card-actions .button.danger {
+  flex: 0;
+  min-width: 44px;
+}
 
 /* ===== Avatar override ===== */
 
@@ -104,9 +242,53 @@
   flex-direction: row;
   gap: 1rem;
   align-items: center;
-  justify-content: space-between;
+}
+
+.my-trainers-container .stat-item {
+  background: var(--card-background);
+  border: 1px solid var(--divider-color);
+  border-radius: .5rem;
+  padding: 1rem;
+  box-shadow: var(--stats-shadow);
+  transition: transform .2s, box-shadow .2s;
 }
 
 /* ===== Animation ===== */
 
 @keyframes shimmer{ 0%{ transform:translateX(-100%); } 100%{ transform:translateX(100%); } }
+
+/* ===== Responsive ===== */
+
+@media (max-width: 1200px) {
+  .my-trainers-container .container.grid { grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1.5rem; }
+  .my-trainers-container .npc-avatar { height: 260px; }
+}
+
+@media (max-width: 1024px) {
+  .my-trainers-container { padding: 0.75rem; }
+  .my-trainers-container .container.grid { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.25rem; }
+  .my-trainers-header { padding: 0.75rem; margin-bottom: 2rem; }
+  .my-trainers-header h1 { font-size: 2.5rem; }
+  .my-trainers-container .npc-avatar { height: 240px; }
+}
+
+@media (max-width: 768px) {
+  .my-trainers-container { padding: 0.5rem; }
+  .my-trainers-container .container.grid { grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 1rem; padding: 0.5rem 0; }
+  .my-trainers-header { flex-direction: column; gap: 1rem; padding: 0.75rem; margin-bottom: 1.5rem; border-radius: 0.75rem 0.75rem 0 0; }
+  .my-trainers-header h1 { font-size: 2rem; text-align: center; }
+  .my-trainers-container .trainer-card { border-radius: 1rem; }
+  .my-trainers-container .npc-avatar { height: 200px; }
+  .my-trainers-container .trainer-content { margin-right: 1rem; }
+  .my-trainers-container .stat-info { flex-direction: column; gap: 0.5rem; align-items: flex-start; }
+}
+
+@media (max-width: 480px) {
+  .my-trainers-container .container.grid { grid-template-columns: 1fr; gap: 0.75rem; }
+  .my-trainers-header h1 { font-size: 1.75rem; }
+  .my-trainers-container .trainer-card { border-radius: 0.75rem; }
+  .my-trainers-container .trainer-card::before { height: 3px; }
+  .my-trainers-container .npc-avatar { height: 180px; border-radius: 6px; }
+  .my-trainers-container .trainer-content { margin-right: 0.75rem; }
+  .my-trainers-container .stat-info { gap: 0.4rem; }
+}

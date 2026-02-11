@@ -22,7 +22,7 @@ const AdventureRewardsPage = () => {
   }
 
   return (
-    <div className="lore-container">
+    <div className="main-content-container">
       <AdventureRewards />
     </div>
   );

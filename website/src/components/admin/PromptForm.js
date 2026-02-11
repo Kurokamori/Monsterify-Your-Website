@@ -9,7 +9,6 @@ const PromptForm = ({ prompt, onSuccess, onCancel }) => {
     description: '',
     prompt_text: '',
     type: 'general',
-    category: 'art',
     difficulty: 'medium',
     is_active: true,
     priority: 0,
@@ -35,7 +34,6 @@ const PromptForm = ({ prompt, onSuccess, onCancel }) => {
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [categories, setCategories] = useState([]);
   const [availableItems, setAvailableItems] = useState([]);
 
   // Initialize form data when editing
@@ -62,22 +60,10 @@ const PromptForm = ({ prompt, onSuccess, onCancel }) => {
     }
   }, [prompt]);
 
-  // Fetch categories and items
+  // Fetch items for rewards
   useEffect(() => {
-    fetchCategories();
     fetchItems();
   }, []);
-
-  const fetchCategories = async () => {
-    try {
-      const response = await api.get('/prompts/meta/categories');
-      if (response.data.success) {
-        setCategories(response.data.categories || []);
-      }
-    } catch (err) {
-      console.error('Error fetching categories:', err);
-    }
-  };
 
   const fetchItems = async () => {
     try {
@@ -196,45 +182,21 @@ const PromptForm = ({ prompt, onSuccess, onCancel }) => {
             </div>
           </div>
 
-          <div className="form-row">
-            <div className="form-group">
-              <label htmlFor="category">Category *</label>
-              <select
-                id="category"
-                name="category"
-                value={formData.category}
-                onChange={handleInputChange}
-                required
-                className="form-input"
-              >
-                <option value="art">Art</option>
-                <option value="writing">Writing</option>
-                <option value="reference">Reference</option>
-                <option value="activity">Activity</option>
-                {categories.map(cat => (
-                  <option key={cat.category} value={cat.category}>
-                    {cat.category}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div className="form-group">
-              <label htmlFor="difficulty">Difficulty *</label>
-              <select
-                id="difficulty"
-                name="difficulty"
-                value={formData.difficulty}
-                onChange={handleInputChange}
-                required
-                className="form-input"
-              >
-                <option value="easy">Easy</option>
-                <option value="medium">Medium</option>
-                <option value="hard">Hard</option>
-                <option value="expert">Expert</option>
-              </select>
-            </div>
+          <div className="form-group">
+            <label htmlFor="difficulty">Difficulty *</label>
+            <select
+              id="difficulty"
+              name="difficulty"
+              value={formData.difficulty}
+              onChange={handleInputChange}
+              required
+              className="form-input"
+            >
+              <option value="easy">Easy</option>
+              <option value="medium">Medium</option>
+              <option value="hard">Hard</option>
+              <option value="expert">Expert</option>
+            </select>
           </div>
 
           <div className="form-group">
@@ -423,7 +385,7 @@ const PromptForm = ({ prompt, onSuccess, onCancel }) => {
 
         {/* Error Display */}
         {error && (
-          <div className="error-message">
+          <div className="alert error">
             <p>{error}</p>
           </div>
         )}

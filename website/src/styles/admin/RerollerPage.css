@@ -90,9 +90,9 @@
 
 /* Quantity Controls - Use unified button system: className="button quantity" */
 
-/* Gift Level Input */
+/* Gift Level Input - .fandom-grid replaced with .container.cols-2 */
 
-.fandom-grid input {
+.container.cols-2 input {
   background: var(--input-background);
   border: 1px solid var(--border-color);
   border-radius: 6px;

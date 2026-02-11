@@ -104,7 +104,7 @@ const MarkdownRenderer = ({ content, className = '', inline = false, disableCode
   }, [content, disableCodeBlocks]);
 
   if (!content) {
-    return <div className={`markdown-empty${className}`}>No content available</div>;
+    return <div className={`markdown-empty ${className}`}>No content available</div>;
   }
 
   if (inline) {
@@ -118,7 +118,7 @@ const MarkdownRenderer = ({ content, className = '', inline = false, disableCode
 
   return (
     <div
-      className={`markdown-content${className}`}
+      className={`markdown-content ${className}`}
       dangerouslySetInnerHTML={{ __html: htmlContent }}
     />
   );

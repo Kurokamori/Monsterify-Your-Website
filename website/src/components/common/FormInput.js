@@ -34,7 +34,7 @@ const FormInput = ({
           placeholder={placeholder}
           disabled={disabled}
           required={required}
-          className={`form-input${error ? 'has-error' : ''}`}
+          className={`form-input ${error ? 'has-error' : ''}`}
           {...props}
         />
       </div>

@@ -76,7 +76,8 @@
   margin: 0 0 .5rem 0;
 }
 
-/* ===== Progress fill ===== */
+/* Progress bars: Use unified progress system from common/feedback.css
+   Example: className="progress" with "progress-fill" inside */
 
 /* ===== Achievement reward ===== */
 
@@ -95,9 +96,9 @@
   align-items: center;
 }
 
-/* ===== Loading and empty messages ===== */
+/* Loading: Use unified loading-message from common/feedback.css */
 
-.loading-message i{ font-size:2rem; margin-bottom:1rem; color:var(--primary-color); }
+/* ===== Empty achievements message ===== */
 
 .no-achievements-message {
   text-align: center;

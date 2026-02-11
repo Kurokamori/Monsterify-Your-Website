@@ -211,7 +211,7 @@ const InteractiveMapPage = () => {
             </select>
           </div>
           
-          <div className="fandom-grid">
+          <div className="container cols-2 gap-md">
             <label className="layer-toggle">
               <input
                 type="checkbox"
@@ -270,14 +270,14 @@ const InteractiveMapPage = () => {
           {showLocations && filteredLocations.map(location => (
             <div 
               key={location.id}
-              className={`map-marker${selectedLocation?.id === location.id ? 'selected' : ''}`}
+              className={`map-marker ${selectedLocation?.id === location.id ? 'selected' : ''}`}
               style={{
                 left: `${location.position.x}px`,
                 top: `${location.position.y}px`
               }}
               onClick={() => handleLocationClick(location)}
             >
-              <div className={`marker-icon${location.icon}`}>
+              <div className={`marker-icon ${location.icon}`}>
                 <i className={`fas fa-${getIconForLocationType(location.type)}`}></i>
               </div>
               <div className="marker-label">{location.name}</div>

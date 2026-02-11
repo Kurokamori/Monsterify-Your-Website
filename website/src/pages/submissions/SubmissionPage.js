@@ -3,6 +3,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import ArtGallery from '../../components/submissions/ArtGallery';
 import WritingLibrary from '../../components/submissions/WritingLibrary';
+import MySubmissions from '../../components/submissions/MySubmissions';
 import useDocumentTitle from '../../hooks/useDocumentTitle';
 
 const SubmissionPage = () => {
@@ -94,14 +95,14 @@ const SubmissionPage = () => {
   const headerText = getHeaderText();
 
   return (
-    <div className="lore-container">
+    <div className="main-content-container">
 
         <div className="map-header">
           <h1>{headerText.title}</h1>
           <p>{headerText.subtitle}</p>
         </div>
 
-        <div className="type-tags">
+        <div className="type-tags fw">
           <button
             className={`button tab ${activeTab === 'art-gallery' ? 'active' : ''}`}
             onClick={() => handleTabChange('art-gallery')}
@@ -252,10 +253,7 @@ const SubmissionPage = () => {
         )}
 
         {activeTab === 'my-submissions' && (
-          <div className="guide-card">
-            <h2>My Submissions</h2>
-            <p>This feature is coming soon. You'll be able to view and manage all your submissions here.</p>
-          </div>
+          <MySubmissions />
         )}
       </div>
     </div>

@@ -515,7 +515,7 @@ const AdminFeatures = () => {
       </div>
 
       {/* Features Grid */}
-      <div className="admin-features-grid">
+      <div className="container grid-xl gap-md">
         {filteredFeatures.length === 0 ? (
           <div className="no-results">
             <i className="fas fa-search"></i>

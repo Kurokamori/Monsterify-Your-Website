@@ -160,7 +160,7 @@ const FakemonListPage = () => {
       <button
         key="first"
         onClick={() => handlePageChange(1)}
-        className={`button secondary${currentPage === 1 ? 'active' : ''}`}
+        className={`button secondary ${currentPage === 1 ? 'active' : ''}`}
         disabled={currentPage === 1}
       >
         1
@@ -182,7 +182,7 @@ const FakemonListPage = () => {
         <button
           key={i}
           onClick={() => handlePageChange(i)}
-          className={`button secondary${currentPage === i ? 'active' : ''}`}
+          className={`button secondary ${currentPage === i ? 'active' : ''}`}
         >
           {i}
         </button>
@@ -202,7 +202,7 @@ const FakemonListPage = () => {
         <button
           key="last"
           onClick={() => handlePageChange(totalPages)}
-          className={`button secondary${currentPage === totalPages ? 'active' : ''}`}
+          className={`button secondary ${currentPage === totalPages ? 'active' : ''}`}
           disabled={currentPage === totalPages}
         >
           {totalPages}
@@ -225,14 +225,14 @@ const FakemonListPage = () => {
 
         {/* Success Message */}
         {successMessage && (
-          <div className="admin-alert success">
+          <div className="alert success">
             <i className="fas fa-check-circle"></i> {successMessage}
           </div>
         )}
 
         {/* Error Message */}
         {error && (
-          <div className="admin-alert error">
+          <div className="alert error">
             <i className="fas fa-exclamation-circle"></i> {error}
           </div>
         )}
@@ -321,7 +321,7 @@ const FakemonListPage = () => {
                         <td>{mon.name}</td>
                         <td className="fakemon-types-cell">
                           {mon.types.map(type => (
-                            <span key={type} className={`fakemon-type type-badge type-${type.toLowerCase()}`}>
+                            <span key={type} className={`fakemon-type badge type-${type.toLowerCase()}`}>
                               {type}
                             </span>
                           ))}

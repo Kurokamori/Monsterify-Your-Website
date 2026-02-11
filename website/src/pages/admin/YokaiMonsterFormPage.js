@@ -226,11 +226,12 @@ const YokaiMonsterFormPage = () => {
           {formData.image_url && (
             <div className="admin-form-preview">
               <h3>Image Preview</h3>
-              <img
-                src={formData.image_url}
-                alt={formData.name}
-                className="admin-form-image-preview"
-              />
+              <div className="image-container medium no-margin">
+                <img
+                  src={formData.image_url}
+                  alt={formData.name}
+                />
+              </div>
             </div>
           )}
 

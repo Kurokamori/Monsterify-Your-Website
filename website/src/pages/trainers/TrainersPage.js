@@ -228,7 +228,7 @@ const TrainersPage = () => {
         </div>
       ) : (
         <>
-          <div className="items-grid">
+          <div className="container grid-sm gap-md">
             {trainers.length === 0 ? (
               <div className="map-header">
                 <i className="fas fa-users-slash"></i>
@@ -292,7 +292,7 @@ const TrainersPage = () => {
               {[...Array(totalPages).keys()].map((page) => (
                 <button
                   key={page + 1}
-                  className={`button secondary${currentPage === page + 1 ? 'active' : ''}`}
+                  className={`button secondary ${currentPage === page + 1 ? 'active' : ''}`}
                   onClick={() => handlePageChange(page + 1)}
                 >
                   {page + 1}

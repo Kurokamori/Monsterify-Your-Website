@@ -316,7 +316,7 @@ const PersonForm = ({ person, factions, onSave, onCancel }) => {
           </div>
 
           {error && (
-            <div className="alert alert-danger">
+            <div className="alert error">
               <i className="fas fa-exclamation-triangle"></i>
               {error}
             </div>

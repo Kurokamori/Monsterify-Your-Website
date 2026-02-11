@@ -88,3 +88,6 @@
 
 /* Auth pages */
 @import './auth-pages.css';
+
+/* Content settings and mature content */
+@import './content-settings.css';

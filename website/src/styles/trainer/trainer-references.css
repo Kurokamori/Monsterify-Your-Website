@@ -5,9 +5,11 @@
    ref grids, and image containers.
    ============================== */
 
-/* ===== No refs message ===== */
+/* No refs message: Use unified empty-state from common/feedback.css
+   Example: className="empty-state" */
 
-/* ===== Refs grid ===== */
+/* Refs grid: Use unified container grid from common/containers.css
+   Example: className="container grid" */
 
 /* ===== Ref item ===== */
 

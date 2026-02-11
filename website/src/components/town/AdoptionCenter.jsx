@@ -546,7 +546,7 @@ const AdoptionCenter = () => {
         </div>
       ) : (
         <>
-          <div className="adopts-grid">
+          <div className="container grid gap-md">
             {adopts.map((adopt) => {
               const speciesCount = [adopt.species1, adopt.species2, adopt.species3].filter(Boolean).length;
               return (
@@ -562,12 +562,12 @@ const AdoptionCenter = () => {
                     {/* Species Images */}
                   <div className={`adopt-species-images species-count-${speciesCount}`}>
                     {adopt.species1 && (
-                      <div className="species-image-wrapper" title={adopt.species1}>
+                      <div className="image-container small" title={adopt.species1}>
                         {speciesImages[adopt.species1] ? (
                           <img
                             src={speciesImages[adopt.species1]}
                             alt={adopt.species1}
-                            className="item-icon"
+                            className="image-container medium"
                             onError={(e) => {
                               e.target.onerror = null;
                               e.target.style.display = 'none';
@@ -581,13 +581,13 @@ const AdoptionCenter = () => {
                       </div>
                     )}
                     {adopt.species2 && (
-                      <div className="species-image-wrapper fusion-species" title={adopt.species2}>
+                      <div className="image-container small" title={adopt.species2}>
                         <span className="fusion-plus">+</span>
                         {speciesImages[adopt.species2] ? (
                           <img
                             src={speciesImages[adopt.species2]}
                             alt={adopt.species2}
-                            className="item-icon"
+                            className="image-container medium"
                             onError={(e) => {
                               e.target.onerror = null;
                               e.target.style.display = 'none';
@@ -601,13 +601,13 @@ const AdoptionCenter = () => {
                       </div>
                     )}
                     {adopt.species3 && (
-                      <div className="species-image-wrapper fusion-species" title={adopt.species3}>
+                      <div className="image-container small fusion-species" title={adopt.species3}>
                         <span className="fusion-plus">+</span>
                         {speciesImages[adopt.species3] ? (
                           <img
                             src={speciesImages[adopt.species3]}
                             alt={adopt.species3}
-                            className="item-icon"
+                            className="image-container medium"
                             onError={(e) => {
                               e.target.onerror = null;
                               e.target.style.display = 'none';
@@ -675,7 +675,7 @@ const AdoptionCenter = () => {
             </p>
 
             {adoptedMonster && (
-              <div className="type-tags">
+              <div className="type-tags fw">
                 <button
                   className="button primary"
                   onClick={openItemModal}
@@ -919,7 +919,7 @@ const AdoptionCenter = () => {
                     </div>
                   )}
 
-                  <div className="type-tags">
+                  <div className="type-tags fw">
                     <button
                       className="button secondary"
                       onClick={closeAdoptModal}

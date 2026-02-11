@@ -173,7 +173,7 @@ const MonsterListPage = () => {
       <button
         key="first"
         onClick={() => handlePageChange(1)}
-        className={`button secondary${currentPage === 1 ? 'active' : ''}`}
+        className={`button secondary ${currentPage === 1 ? 'active' : ''}`}
         disabled={currentPage === 1}
       >
         1
@@ -195,7 +195,7 @@ const MonsterListPage = () => {
         <button
           key={i}
           onClick={() => handlePageChange(i)}
-          className={`button secondary${currentPage === i ? 'active' : ''}`}
+          className={`button secondary ${currentPage === i ? 'active' : ''}`}
         >
           {i}
         </button>
@@ -215,7 +215,7 @@ const MonsterListPage = () => {
         <button
           key="last"
           onClick={() => handlePageChange(totalPages)}
-          className={`button secondary${currentPage === totalPages ? 'active' : ''}`}
+          className={`button secondary ${currentPage === totalPages ? 'active' : ''}`}
           disabled={currentPage === totalPages}
         >
           {totalPages}
@@ -255,14 +255,14 @@ const MonsterListPage = () => {
 
         {/* Success Message */}
         {successMessage && (
-          <div className="admin-alert success">
+          <div className="alert success">
             <i className="fas fa-check-circle"></i> {successMessage}
           </div>
         )}
 
         {/* Error Message */}
         {error && (
-          <div className="admin-alert error">
+          <div className="alert error">
             <i className="fas fa-exclamation-circle"></i> {error}
           </div>
         )}

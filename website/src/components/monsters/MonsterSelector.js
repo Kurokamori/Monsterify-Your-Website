@@ -188,7 +188,7 @@ const MonsterSelector = ({
                         {getMonsterTypes(monster).map((type, index) => (
                           <span 
                             key={index} 
-                            className="monster-selector-type-badge"
+                            className="monster-selector-badge"
                             style={{ backgroundColor: getTypeColor(type) }}
                           >
                             {type}

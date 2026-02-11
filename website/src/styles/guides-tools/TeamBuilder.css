@@ -34,7 +34,7 @@
 
 .monster-row {
   display: grid;
-  grid-template-columns: 80px 1fr 120px 2fr 1fr 80px;
+  grid-template-columns: 0.5fr 1fr 1fr 2.5fr 0.5fr 0.5fr;
   gap: 1rem;
   padding: 1rem 1.5rem;
   background: var(--input-background);
@@ -172,13 +172,6 @@
   align-items: center;
   gap: 0.125rem;
   line-height: 1.2;
-}
-
-.monster-types-small {
-  display: flex;
-  gap: 0.0625rem;
-  flex-wrap: wrap;
-  justify-content: center;
 }
 
 .type-badge-mini {

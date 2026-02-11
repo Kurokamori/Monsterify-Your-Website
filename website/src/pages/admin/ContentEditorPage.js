@@ -260,7 +260,7 @@ const ContentEditorPage = () => {
 
         {/* Error Message */}
         {error && (
-          <div className="admin-alert error">
+          <div className="alert error">
             <i className="fas fa-exclamation-circle"></i> {error}
           </div>
         )}
@@ -342,7 +342,7 @@ const ContentEditorPage = () => {
               </div>
 
               {/* Editor Tab */}
-              <div className={`admin-tab-content${activeTab === 'editor' ? 'active' : ''}`}>
+              <div className={`admin-tab-content ${activeTab === 'editor' ? 'active' : ''}`}>
                 <div className="admin-form-group">
                   <label htmlFor="content" className="admin-form-label">
                     Content (Markdown)
@@ -374,7 +374,7 @@ const ContentEditorPage = () => {
               </div>
 
               {/* Preview Tab */}
-              <div className={`admin-tab-content${activeTab === 'preview' ? 'active' : ''}`}>
+              <div className={`admin-tab-content ${activeTab === 'preview' ? 'active' : ''}`}>
                 <div className="admin-form-group">
                   <label className="admin-form-label">Content Preview</label>
                   <div className="admin-preview" ref={previewRef}></div>

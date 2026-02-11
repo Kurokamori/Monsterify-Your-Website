@@ -259,7 +259,7 @@ const AvailableBosses = () => {
 
   return (
     <div className="bosses-page">
-      <div className="type-tags">
+      <div className="type-tags fw">
         <Link to="/adventures/boss/available" className="button active">
           Available Bosses
         </Link>
@@ -284,13 +284,13 @@ const AvailableBosses = () => {
                   e.target.src = '/images/default_boss.png';
                 }}
               />
-              <div className={`boss-difficulty${boss.difficulty}`}>
+              <div className={`boss-difficulty ${boss.difficulty}`}>
                 {boss.difficulty.charAt(0).toUpperCase() + boss.difficulty.slice(1)}
               </div>
             </div>
             <div className="boss-info">
               <h3 className="boss-name">{boss.name}</h3>
-              <div className="type-tags">
+              <div className="type-tags fw">
                 <span className="boss-level">
                   <i className="fas fa-bolt"></i> Level {boss.level}
                 </span>
@@ -305,7 +305,7 @@ const AvailableBosses = () => {
                   <span className="attribute-label">Weaknesses:</span>
                   <div className="attribute-list">
                     {boss.weaknesses.map((weakness, index) => (
-                      <span className={`type-badge type-${weakness.toLowerCase()}`} key={index}>
+                      <span className={`badge type-${weakness.toLowerCase()}`} key={index}>
                         {weakness}
                       </span>
                     ))}
@@ -315,7 +315,7 @@ const AvailableBosses = () => {
                   <span className="attribute-label">Resistances:</span>
                   <div className="attribute-list">
                     {boss.resistances.map((resistance, index) => (
-                      <span className={`type-badge type-${resistance.toLowerCase()}`} key={index}>
+                      <span className={`badge type-${resistance.toLowerCase()}`} key={index}>
                         {resistance}
                       </span>
                     ))}
@@ -404,7 +404,7 @@ const AvailableBosses = () => {
                     <h3>{selectedBoss.name}</h3>
                     <div className="boss-preview-details">
                       <span className="boss-level">Level {selectedBoss.level}</span>
-                      <span className={`boss-difficulty${selectedBoss.difficulty}`}>
+                      <span className={`boss-difficulty ${selectedBoss.difficulty}`}>
                         {selectedBoss.difficulty.charAt(0).toUpperCase() + selectedBoss.difficulty.slice(1)}
                       </span>
                     </div>
@@ -412,7 +412,7 @@ const AvailableBosses = () => {
                       <span>Weaknesses:</span>
                       <div className="attribute-list">
                         {selectedBoss.weaknesses.map((weakness, index) => (
-                          <span className={`type-badge type-${weakness.toLowerCase()}`} key={index}>
+                          <span className={`badge type-${weakness.toLowerCase()}`} key={index}>
                             {weakness}
                           </span>
                         ))}
@@ -461,7 +461,7 @@ const AvailableBosses = () => {
                             <span>Lv. {monster.level}</span>
                             <div className="monster-select-types">
                               {monster.types.map((type, index) => (
-                                <span className={`type-badge type-${type.toLowerCase()}`} key={index}>
+                                <span className={`badge type-${type.toLowerCase()}`} key={index}>
                                   {type}
                                 </span>
                               ))}
@@ -521,7 +521,7 @@ const ActiveBosses = () => {
   // For brevity, showing a simplified version
   return (
     <div className="bosses-page">
-      <div className="type-tags">
+      <div className="type-tags fw">
         <Link to="/adventures/boss/available" className="button">
           Available Bosses
         </Link>
@@ -571,8 +571,8 @@ const ActiveBosses = () => {
                 <span>Battle Progress:</span>
                 <span>45%</span>
               </div>
-              <div className="progress-bar-container">
-                <div className="progress-bar" style={{ width: '45%' }}></div>
+              <div className="progress">
+                <div className="progress-fill primary" style={{ width: '45%' }}></div>
               </div>
             </div>
             <div className="battle-actions">
@@ -676,7 +676,7 @@ const DefeatedBosses = () => {
 
   return (
     <div className="bosses-page">
-      <div className="type-tags">
+      <div className="type-tags fw">
         <Link to="/adventures/boss/available" className="button">
           Available Bosses
         </Link>
@@ -698,7 +698,7 @@ const DefeatedBosses = () => {
             <div className="set-item">
               <div className="boss-info">
                 <h3>Victory against {boss.name}</h3>
-                <div className="type-tags">
+                <div className="type-tags fw">
                   <span className="boss-month">
                     <i className="fas fa-calendar"></i> {boss.month}/{boss.year}
                   </span>
@@ -796,7 +796,7 @@ const DefeatedBosses = () => {
           <div className="boss-form">
             <div className="boss-info-header">
               <h3>{selectedBoss.boss.name}</h3>
-              <div className="type-tags">
+              <div className="type-tags fw">
                 <span><i className="fas fa-calendar"></i> {selectedBoss.boss.month}/{selectedBoss.boss.year}</span>
                 <span><i className="fas fa-users"></i> {selectedBoss.total_participants} Participants</span>
                 {selectedBoss.boss.end_date && (
@@ -809,7 +809,7 @@ const DefeatedBosses = () => {
               <h4>🏆 Final Leaderboard</h4>
               <div className="leaderboard-list">
                 {selectedBoss.leaderboard.map((entry, index) => (
-                  <div key={entry.user_id} className={`leaderboard-entry${getRankClass(index + 1)}`}>
+                  <div key={entry.user_id} className={`leaderboard-entry ${getRankClass(index + 1)}`}>
                     <div className="rank">
                       <span className="rank-badge">{getRankIcon(index + 1)}</span>
                     </div>

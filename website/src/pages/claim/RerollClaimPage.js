@@ -382,9 +382,9 @@ const RerollClaimPage = () => {
                           <div className="reward-details">+ {monster.species2}</div>
                         )}
                         <div className="reward-types">
-                          {monster.type1 && <span className="reward-type-badge">{monster.type1}</span>}
-                          {monster.type2 && <span className="reward-type-badge">{monster.type2}</span>}
-                          {monster.type3 && <span className="reward-type-badge">{monster.type3}</span>}
+                          {monster.type1 && <span className="reward-badge">{monster.type1}</span>}
+                          {monster.type2 && <span className="reward-badge">{monster.type2}</span>}
+                          {monster.type3 && <span className="reward-badge">{monster.type3}</span>}
                         </div>
 
                         {monster.claimed && <span className="claimed-badge">Already Claimed</span>}

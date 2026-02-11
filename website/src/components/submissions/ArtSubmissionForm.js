@@ -9,6 +9,7 @@ import ArtSubmissionCalculator from './ArtSubmissionCalculator';
 import RewardDisplay from './RewardDisplay';
 import GiftRewards from './GiftRewards';
 import LevelCapReallocation from './LevelCapReallocation';
+import MatureContentCheckbox from './MatureContentCheckbox';
 
 
 const ArtSubmissionForm = ({ onSubmissionComplete }) => {
@@ -20,6 +21,14 @@ const ArtSubmissionForm = ({ onSubmissionComplete }) => {
   const [contentType, setContentType] = useState('general');
   const [tags, setTags] = useState([]);
   const [tagInput, setTagInput] = useState('');
+  const [isMature, setIsMature] = useState(false);
+  const [contentRating, setContentRating] = useState({
+    gore: false,
+    nsfw_light: false,
+    nsfw_heavy: false,
+    triggering: false,
+    intense_violence: false
+  });
   const [mainImage, setMainImage] = useState(null);
   const [mainImagePreview, setMainImagePreview] = useState('');
   const [mainImageUrl, setMainImageUrl] = useState('');
@@ -55,6 +64,9 @@ const ArtSubmissionForm = ({ onSubmissionComplete }) => {
   const [showLevelCapReallocation, setShowLevelCapReallocation] = useState(false);
   const [cappedMonsters, setCappedMonsters] = useState([]);
   const [availableTargets, setAvailableTargets] = useState([]);
+
+  // Track whether user has attempted to submit (for showing validation errors)
+  const [hasAttemptedSubmit, setHasAttemptedSubmit] = useState(false);
 
   // Fetch user's trainers and monsters
   useEffect(() => {
@@ -184,8 +196,8 @@ const ArtSubmissionForm = ({ onSubmissionComplete }) => {
 
   // Calculate reward estimate
   const calculateRewardEstimate = async () => {
+    // Silently return if required fields are missing - errors shown only on submit
     if (!title || (!mainImage && !mainImageUrl)) {
-      setError('Please provide a title and image to calculate rewards.');
       return;
     }
 
@@ -313,6 +325,7 @@ const ArtSubmissionForm = ({ onSubmissionComplete }) => {
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setHasAttemptedSubmit(true);
 
     // Validate form
     if (!title) {
@@ -342,7 +355,9 @@ const ArtSubmissionForm = ({ onSubmissionComplete }) => {
         description,
         contentType,
         ...dataToSend,
-        tags
+        tags,
+        isMature,
+        contentRating
       };
 
       if (useImageUrl) {
@@ -703,6 +718,17 @@ const ArtSubmissionForm = ({ onSubmissionComplete }) => {
               ))}
             </div>
           )}
+        </div>
+
+        {/* Content Rating */}
+        <div className="form-section">
+          <h3>Content Rating</h3>
+          <MatureContentCheckbox
+            isMature={isMature}
+            contentRating={contentRating}
+            onMatureChange={setIsMature}
+            onRatingChange={setContentRating}
+          />
         </div>
 
         {/* Image Upload */}

@@ -527,15 +527,15 @@ const AdoptionItemModal = ({
 
   // Render monster display
   const renderMonsterDisplay = (monsterData, title = null, compact = false) => (
-    <div className={`adoption-item-monster-display${compact ? 'compact' : ''}`}>
+    <div className={`adoption-item-monster-display ${compact ? 'compact' : ''}`}>
       {title && <h4>{title}</h4>}
       <div className="monster-info-row">
         <div className="monster-name-species">
           <h3>{monsterData.name}</h3>
           <div className="species-images-grid">
-            {monsterData.species1 && <span className="type-badge">{monsterData.species1}</span>}
-            {monsterData.species2 && <span className="type-badge"> {monsterData.species2}</span>}
-            {monsterData.species3 && <span className="type-badge"> {monsterData.species3}</span>}
+            {monsterData.species1 && <span className="badge">{monsterData.species1}</span>}
+            {monsterData.species2 && <span className="badge"> {monsterData.species2}</span>}
+            {monsterData.species3 && <span className="badge"> {monsterData.species3}</span>}
           </div>
         </div>
       </div>
@@ -614,7 +614,7 @@ const AdoptionItemModal = ({
 
     return (
       <div className="item-selection-section">
-        <div className="type-tags">
+        <div className="type-tags fw">
           {Object.keys(berryFilters).map(filter => (
             <button
               key={filter}
@@ -634,7 +634,7 @@ const AdoptionItemModal = ({
           </button>
         </div>
 
-        <div className="items-grid">
+        <div className="container grid gap-md">
           {Object.entries(remainingBerries)
             .filter(([berryName, count]) => count > 0)
             .filter(([berryName]) => matchesBerryFilters(berryName))
@@ -683,7 +683,7 @@ const AdoptionItemModal = ({
 
     return (
       <div className="item-selection-section">
-        <div className="type-tags">
+        <div className="type-tags fw">
           {Object.keys(pastryFilters).map(filter => (
             <button
               key={filter}
@@ -703,7 +703,7 @@ const AdoptionItemModal = ({
           </button>
         </div>
 
-        <div className="items-grid">
+        <div className="container grid gap-md">
           {Object.entries(remainingPastries)
             .filter(([pastryName, count]) => count > 0)
             .filter(([pastryName]) => matchesPastryFilters(pastryName))
@@ -775,7 +775,7 @@ const AdoptionItemModal = ({
         ))}
       </div>
 
-      {error && <div className="error-message">{error}</div>}
+      {error && <div className="alert error">{error}</div>}
 
       <div className="modal-actions">
         <button className="button secondary" onClick={cancelSelection}>
@@ -816,16 +816,16 @@ const AdoptionItemModal = ({
                 <div className="monster-selection-details">
                   <h4>{monster?.name || 'Monster'}</h4>
                   <div className="current-species">
-                    <span className={`type-badge${speciesSlot === 1 ? 'species-highlight' : ''}`}>
+                    <span className={`badge${speciesSlot === 1 ? 'species-highlight' : ''}`}>
                       {monster?.species1 || 'None'}
                     </span>
                     {monster?.species2 && (
-                      <span className={`type-badge${speciesSlot === 2 ? 'species-highlight' : ''}`}>
+                      <span className={`badge${speciesSlot === 2 ? 'species-highlight' : ''}`}>
                         {monster.species2}
                       </span>
                     )}
                     {monster?.species3 && (
-                      <span className={`type-badge${speciesSlot === 3 ? 'species-highlight' : ''}`}>
+                      <span className={`badge${speciesSlot === 3 ? 'species-highlight' : ''}`}>
                         {monster.species3}
                       </span>
                     )}
@@ -834,14 +834,14 @@ const AdoptionItemModal = ({
                     {[monster?.type1, monster?.type2, monster?.type3, monster?.type4, monster?.type5]
                       .filter(Boolean)
                       .map((type, index) => (
-                        <span className={`type-badge type-${type.toLowerCase()}`} key={index}>
+                        <span className={`badge type-${type.toLowerCase()}`} key={index}>
                           {type}
                         </span>
                       ))}
                   </div>
                   {monster?.attribute && (
                     <div className="current-attribute">
-                      <span className={`attribute-badge attribute-${monster.attribute.toLowerCase()}`}>
+                      <span className={`badge attribute-${monster.attribute.toLowerCase()}`}>
                         {monster.attribute}
                       </span>
                     </div>
@@ -873,7 +873,7 @@ const AdoptionItemModal = ({
                       <img
                         src={speciesImage.image_url}
                         alt={species}
-                        className="item-icon"
+                        className="image-container medium"
                         onError={(e) => { e.target.style.display = 'none'; }}
                       />
                     )}
@@ -892,7 +892,7 @@ const AdoptionItemModal = ({
         );
       })}
 
-      {error && <div className="error-message">{error}</div>}
+      {error && <div className="alert error">{error}</div>}
 
       <div className="species-selection-actions">
         <button
@@ -1031,7 +1031,7 @@ const AdoptionItemModal = ({
               </button>
             </div>
 
-            {error && <div className="error-message">{error}</div>}
+            {error && <div className="alert error">{error}</div>}
 
             {activeTab === 'berries' ? renderBerrySelection() : renderPastrySelection()}
 

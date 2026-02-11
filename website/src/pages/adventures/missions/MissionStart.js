@@ -151,8 +151,8 @@ const MissionStart = () => {
       <div className="mission-details-card">
         <div className="option-row">
           <h3>{mission.title}</h3>
-          <span 
-            className="status-badge"
+          <span
+            className="badge"
             style={{ backgroundColor: getDifficultyColor(mission.difficulty) }}
           >
             {mission.difficulty.toUpperCase()}

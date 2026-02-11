@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { useModalManager } from '../../hooks/useModalManager';
@@ -6,7 +6,45 @@ import submissionService from '../../services/submissionService';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
 import ErrorMessage from '../../components/common/ErrorMessage';
 import MarkdownRenderer from '../../components/common/MarkdownRenderer';
+import CollaboratorManagement from '../../components/submissions/CollaboratorManagement';
 import useDocumentTitle from '../../hooks/useDocumentTitle';
+
+// Strip markdown formatting and return first ~40 words with ellipsis
+const getContentPreview = (rawContent, wordLimit = 40) => {
+  if (!rawContent) return '';
+  let text = rawContent
+    .replace(/^#{1,6}\s+/gm, '')        // headers
+    .replace(/!\[[^\]]*\]\([^)]*\)/g, '') // images
+    .replace(/\[([^\]]*)\]\([^)]*\)/g, '$1') // links -> text
+    .replace(/(`{3}[\s\S]*?`{3}|`[^`]+`)/g, '') // code blocks/inline code
+    .replace(/(\*{1,3}|_{1,3})(.*?)\1/g, '$2')  // bold/italic
+    .replace(/~~(.*?)~~/g, '$1')         // strikethrough
+    .replace(/^[-*>]+\s?/gm, '')         // list markers, blockquotes
+    .replace(/^---+$/gm, '')             // horizontal rules
+    .replace(/\|/g, '')                  // table pipes
+    .trim();
+
+  const words = text.split(/\s+/).filter(Boolean);
+  if (words.length <= wordLimit) return text;
+  let count = 0;
+  let result = '';
+  for (const char of text) {
+    if (/\s/.test(char)) {
+      if (char === '\n') {
+        result += char;
+      } else if (result.length > 0 && !/\s$/.test(result)) {
+        result += ' ';
+      }
+      continue;
+    }
+    if (result.length === 0 || /\s$/.test(result)) {
+      count++;
+      if (count > wordLimit) break;
+    }
+    result += char;
+  }
+  return result.trim() + '...';
+};
 
 const SubmissionDetailPage = ({ type }) => {
   const { id } = useParams();
@@ -22,6 +60,9 @@ const SubmissionDetailPage = ({ type }) => {
   const [relatedSubmissions, setRelatedSubmissions] = useState([]);
   const [bookChapters, setBookChapters] = useState([]);
   const [parentBook, setParentBook] = useState(null);
+  const [collaborators, setCollaborators] = useState([]);
+  const [collaboratorModalOpen, setCollaboratorModalOpen] = useState(false);
+  const [userCanEdit, setUserCanEdit] = useState(false);
 
   // Set document title based on submission title
   useDocumentTitle(submission ? submission.title : (type === 'art' ? 'Gallery' : 'Library'));
@@ -33,6 +74,36 @@ const SubmissionDetailPage = ({ type }) => {
   const submissionType = type || (window.location.pathname.includes('gallery') ? 'art' :
                                  window.location.pathname.includes('library') ? 'writing' : 'general');
 
+  // Fetch collaborators for a book
+  const fetchCollaborators = useCallback(async (bookId) => {
+    try {
+      const response = await submissionService.getBookCollaborators(bookId);
+      if (response.success) {
+        setCollaborators(response.collaborators || []);
+        return response.collaborators || [];
+      }
+    } catch (err) {
+      console.error('Error fetching collaborators:', err);
+    }
+    return [];
+  }, []);
+
+  // Check if user can edit the book (owner or editor collaborator)
+  const checkUserCanEdit = useCallback((submissionData, collaboratorsList, user) => {
+    if (!user || !submissionData) return false;
+
+    const userId = user.discord_id || user.id;
+    const isOwner = submissionData.user_id === userId;
+
+    if (isOwner) return true;
+
+    const isEditorCollaborator = collaboratorsList.some(
+      c => c.user_id === userId && c.role === 'editor'
+    );
+
+    return isEditorCollaborator;
+  }, []);
+
   // Fetch submission data
   useEffect(() => {
     const fetchSubmissionData = async () => {
@@ -41,13 +112,15 @@ const SubmissionDetailPage = ({ type }) => {
         setError(null);
         setBookChapters([]);
         setParentBook(null);
+        setCollaborators([]);
+        setUserCanEdit(false);
 
         const response = await submissionService.getSubmissionById(id);
 
         if (response.success && response.submission) {
           setSubmission(response.submission);
 
-          // If this is a book, fetch its chapters
+          // If this is a book, fetch its chapters and collaborators
           if (response.submission.is_book) {
             try {
               const chaptersResponse = await submissionService.getBookChapters(id);
@@ -56,6 +129,15 @@ const SubmissionDetailPage = ({ type }) => {
               }
             } catch (chaptersErr) {
               console.error('Error fetching book chapters:', chaptersErr);
+            }
+
+            // Fetch collaborators
+            const collaboratorsList = await fetchCollaborators(id);
+
+            // Check if user can edit
+            if (currentUser) {
+              const canEdit = checkUserCanEdit(response.submission, collaboratorsList, currentUser);
+              setUserCanEdit(canEdit);
             }
           }
 
@@ -97,7 +179,7 @@ const SubmissionDetailPage = ({ type }) => {
     if (id) {
       fetchSubmissionData();
     }
-  }, [id]);
+  }, [id, currentUser, fetchCollaborators, checkUserCanEdit]);
 
   // Handle back navigation
   const handleBack = () => {
@@ -167,7 +249,7 @@ const SubmissionDetailPage = ({ type }) => {
     return (
       <div className="submission-detail-page">
         <div className="submission-detail-container">
-          <div className="error-message">Submission not found</div>
+          <div className="alert error">Submission not found</div>
           <button className="button secondary" onClick={handleBack}>
             Back
           </button>
@@ -229,24 +311,66 @@ const SubmissionDetailPage = ({ type }) => {
           )}
 
           {/* Book Chapters (if this is a book) */}
-          {isWriting && !!submission.is_book && bookChapters.length > 0 && (
+          {isWriting && !!submission.is_book && (
             <div className="book-chapters-section">
-              <h2><i className="fas fa-list"></i> Chapters</h2>
-              <div className="fandom-grid">
-                {bookChapters.map((chapter, index) => (
-                  <Link
-                    key={chapter.id}
-                    to={`/library/${chapter.id}`}
-                    className="detail-row"
-                  >
-                    <span className="chapter-num">Chapter {chapter.chapter_number || index + 1}</span>
-                    <span className="chapter-title">{chapter.title}</span>
-                    {chapter.word_count > 0 && (
-                      <span className="chapter-words">{chapter.word_count.toLocaleString()} words</span>
-                    )}
-                  </Link>
-                ))}
+              <div className="section-header-with-action">
+                <h2><i className="fas fa-list"></i> Chapters</h2>
+                <div className="book-actions">
+                  {/* Add Chapter button for book owner or editor collaborators */}
+                  {currentUser && userCanEdit && (
+                    <Link
+                      to={`/submissions/writing?bookId=${submission.id}`}
+                      className="button primary"
+                    >
+                      <i className="fas fa-plus"></i> Add Chapter
+                    </Link>
+                  )}
+                  {/* Manage Collaborators button - only for owner */}
+                  {currentUser && (submission.user_id === currentUser.discord_id || submission.user_id === currentUser.id) && (
+                    <button
+                      className="button secondary"
+                      onClick={() => setCollaboratorModalOpen(true)}
+                    >
+                      <i className="fas fa-users"></i> Collaborators
+                    </button>
+                  )}
+                </div>
               </div>
+
+              {/* Display collaborators */}
+              {collaborators.length > 0 && (
+                <div className="book-collaborators-display">
+                  <span className="collaborators-label">Collaborators: </span>
+                  {collaborators.map((collab, index) => (
+                    <span key={collab.id} className="collaborator-badge">
+                      {collab.display_name || collab.username}
+                      {collab.role === 'editor' && <i className="fas fa-pen" title="Editor"></i>}
+                      {collab.role === 'viewer' && <i className="fas fa-eye" title="Viewer"></i>}
+                      {index < collaborators.length - 1 && ', '}
+                    </span>
+                  ))}
+                </div>
+              )}
+
+              {bookChapters.length > 0 ? (
+                <div className="container cols-2 gap-md">
+                  {bookChapters.map((chapter, index) => (
+                    <Link
+                      key={chapter.id}
+                      to={`/library/${chapter.id}`}
+                      className="detail-row"
+                    >
+                      <span className="chapter-num">Chapter {chapter.chapter_number || index + 1}</span>
+                      <span className="chapter-title">{chapter.title}</span>
+                      {chapter.word_count > 0 && (
+                        <span className="chapter-words">{chapter.word_count.toLocaleString()} words</span>
+                      )}
+                    </Link>
+                  ))}
+                </div>
+              ) : (
+                <p className="no-chapters-message">No chapters yet. {userCanEdit ? 'Add your first chapter!' : ''}</p>
+              )}
             </div>
           )}
 
@@ -282,7 +406,7 @@ const SubmissionDetailPage = ({ type }) => {
 
           {/* Tags */}
           {submission.tags && Array.isArray(submission.tags) && submission.tags.length > 0 && (
-            <div className="type-tags">
+            <div className="type-tags fw">
               {submission.tags.map(tag => (
                 <span key={tag} className="submission-tag">{tag}</span>
               ))}
@@ -324,27 +448,27 @@ const SubmissionDetailPage = ({ type }) => {
                     </div>
                     <div className="featured-entity-types">
                       {trainer.type1 && (
-                        <span className={`featured-type-badge type-${trainer.type1.toLowerCase()}`}>
+                        <span className={`badge type-${trainer.type1.toLowerCase()}`}>
                           {trainer.type1}
                         </span>
                       )}
                       {trainer.type2 && (
-                        <span className={`featured-type-badge type-${trainer.type2.toLowerCase()}`}>
+                        <span className={`badge type-${trainer.type2.toLowerCase()}`}>
                           {trainer.type2}
                         </span>
                       )}
                       {trainer.type3 && (
-                        <span className={`featured-type-badge type-${trainer.type3.toLowerCase()}`}>
+                        <span className={`badge type-${trainer.type3.toLowerCase()}`}>
                           {trainer.type3}
                         </span>
                       )}
                       {trainer.type4 && (
-                        <span className={`featured-type-badge type-${trainer.type4.toLowerCase()}`}>
+                        <span className={`badge type-${trainer.type4.toLowerCase()}`}>
                           {trainer.type4}
                         </span>
                       )}
                       {trainer.type5 && (
-                        <span className={`featured-type-badge type-${trainer.type5.toLowerCase()}`}>
+                        <span className={`badge type-${trainer.type5.toLowerCase()}`}>
                           {trainer.type5}
                         </span>
                       )}
@@ -359,7 +483,7 @@ const SubmissionDetailPage = ({ type }) => {
           {submission.monsters && submission.monsters.length > 0 && (
             <div className="related-submissions">
               <h2>Featured Monsters</h2>
-              <div className="container horizontal center">
+              <div className="container horizontal center gap-md">
                 {submission.monsters.map(monster => (
                   <div
                     key={monster.id}
@@ -381,35 +505,35 @@ const SubmissionDetailPage = ({ type }) => {
                     <div className="featured-entity-level">Lv. {monster.level}</div>
                     <div className="featured-entity-types">
                       {monster.type1 && (
-                        <span className={`featured-type-badge type-${monster.type1.toLowerCase()}`}>
+                        <span className={`badge type-${monster.type1.toLowerCase()}`}>
                           {monster.type1}
                         </span>
                       )}
                       {monster.type2 && (
-                        <span className={`featured-type-badge type-${monster.type2.toLowerCase()}`}>
+                        <span className={`badge type-${monster.type2.toLowerCase()}`}>
                           {monster.type2}
                         </span>
                       )}
                     </div>
                     <div className="featured-entity-types">
                       {monster.type3 && (
-                        <span className={`featured-type-badge type-${monster.type3.toLowerCase()}`}>
+                        <span className={`badge type-${monster.type3.toLowerCase()}`}>
                           {monster.type3}
                         </span>
                       )}
                       {monster.type4 && (
-                        <span className={`featured-type-badge type-${monster.type4.toLowerCase()}`}>
+                        <span className={`badge type-${monster.type4.toLowerCase()}`}>
                           {monster.type4}
                         </span>
                       )}
                       {monster.type5 && (
-                        <span className={`featured-type-badge type-${monster.type5.toLowerCase()}`}>
+                        <span className={`badge type-${monster.type5.toLowerCase()}`}>
                           {monster.type5}
                         </span>
                       )}
                     </div>
                     <div className="featured-entity-attribute">
-                      <span className={`featured-attribute-badge attribute-${monster.attribute.toLowerCase()}`}>
+                      <span className={`badge attribute-${monster.attribute.toLowerCase()}`}>
                         {monster.attribute}
                       </span>
                     </div>
@@ -423,24 +547,51 @@ const SubmissionDetailPage = ({ type }) => {
           {relatedSubmissions.length > 0 && (
             <div className="related-submissions">
               <h2>More by this Creator</h2>
-              <div className="container horizontal center">
+              <div className="container horizontal center gap-lg">
                 {relatedSubmissions.map(related => (
                   <div
                     key={related.id}
                     className="related-submission-card"
                     onClick={() => handleRelatedClick(related.id)}
                   >
-                    <div className="image-container">
-                      <img
-                        src={related.image_url || (isArt ? '/images/default_art.png' : '/images/default_book.png')}
-                        alt={related.title}
-                        onError={(e) => {
-                          e.target.onerror = null;
-                          e.target.src = isArt ? '/images/default_art.png' : '/images/default_book.png';
-                        }}
-                      />
-                    </div>
-                    <div className="featured-entity-name">{related.title}</div>
+                    {(related.image_url || related.cover_image_url) ? (
+                      <>
+                        <div className="image-container">
+                          <img
+                            src={related.image_url || related.cover_image_url}
+                            alt={related.title}
+                            onError={(e) => {
+                              e.target.onerror = null;
+                              e.target.src = isArt ? '/images/default_art.png' : '/images/default_book.png';
+                            }}
+                          />
+                          {related.is_book && (
+                            <span className="library-item-book-badge">
+                              <i className="fas fa-book"></i> {related.chapter_count || 0} Chapters
+                            </span>
+                          )}
+                        </div>
+                        <div className="featured-entity-name">{related.title}</div>
+                      </>
+                    ) : (
+                      <div className="library-item-text-cover">
+                        <div className="library-item-text-cover-icon">
+                          <i className={`fas ${related.is_book ? 'fa-book' : 'fa-feather-alt'}`}></i>
+                        </div>
+                        <h4 className="gallery-item-title">{related.title}</h4>
+                        <p className="gallery-item-artist">
+                          By: {related.display_name || related.username || submission.display_name || submission.username || 'Unknown'}
+                        </p>
+                        <p className="library-item-text-cover-description">
+                          {related.description || getContentPreview(related.content || related.first_chapter_content, 30)}
+                        </p>
+                        {related.is_book && (
+                          <span className="library-item-book-badge" style={{ position: 'static', marginTop: '0.5rem' }}>
+                            <i className="fas fa-book"></i> {related.chapter_count || 0} Chapters
+                          </span>
+                        )}
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
@@ -464,6 +615,18 @@ const SubmissionDetailPage = ({ type }) => {
           </div>
         </div>
       )}
+
+      {/* Collaborator Management Modal */}
+      {submission && !!submission.is_book && (
+        <CollaboratorManagement
+          bookId={submission.id}
+          bookTitle={submission.title}
+          isOpen={collaboratorModalOpen}
+          onClose={() => setCollaboratorModalOpen(false)}
+          onCollaboratorsChange={() => fetchCollaborators(id)}
+        />
+      )}
+
     </div>
   );
 };

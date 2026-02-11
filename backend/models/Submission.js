@@ -31,7 +31,9 @@ class Submission {
         isBook = 0,
         parentId = null,
         chapterNumber = null,
-        status = 'pending'
+        status = 'pending',
+        isMature = false,
+        contentRating = {}
       } = submissionData;
 
       console.log('Submitting to database with data:', {
@@ -45,10 +47,14 @@ class Submission {
         isBook,
         parentId,
         chapterNumber,
-        status
+        status,
+        isMature,
+        contentRating
       });
 
       let query, result, submissionId;
+      // Serialize contentRating to JSON string
+      const contentRatingJson = typeof contentRating === 'string' ? contentRating : JSON.stringify(contentRating);
       const params = [
         userId,
         trainerId,
@@ -60,7 +66,9 @@ class Submission {
         isBook,
         parentId,
         chapterNumber,
-        status
+        status,
+        isMature ? 1 : 0,
+        contentRatingJson
       ];
 
       if (isPostgreSQL) {
@@ -68,8 +76,9 @@ class Submission {
         query = `
           INSERT INTO submissions (
             user_id, trainer_id, title, description, content_type,
-            content, submission_type, is_book, parent_id, chapter_number, status, submission_date
-          ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, CURRENT_TIMESTAMP)
+            content, submission_type, is_book, parent_id, chapter_number, status, submission_date,
+            is_mature, content_rating
+          ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, CURRENT_TIMESTAMP, $12, $13)
           RETURNING id
         `;
         result = await db.asyncRun(query, params);
@@ -79,8 +88,9 @@ class Submission {
         query = `
           INSERT INTO submissions (
             user_id, trainer_id, title, description, content_type,
-            content, submission_type, is_book, parent_id, chapter_number, status, submission_date
-          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
+            content, submission_type, is_book, parent_id, chapter_number, status, submission_date,
+            is_mature, content_rating
+          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, ?, ?)
         `;
         result = await db.asyncRun(query, params);
         submissionId = result.lastID;

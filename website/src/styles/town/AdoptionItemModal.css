@@ -408,7 +408,7 @@
 
 /* Result Section */
 .monster-info {
-  align-items: flex-start;
+  align-items: center;
   background: transparent;
   border-radius: 0;
   display: flex;
@@ -431,6 +431,28 @@
   font-size: 1.5rem;
   color: var(--accent-color);
   margin-bottom: 0.5rem;
+}
+
+
+.monster-info h4 {
+  margin: 0 0 5px 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--accent-color);
+}
+
+
+.monster-info h5 {
+  font-size: 1.2rem;
+  color: var(--text-color);
+  margin: 0 0 8px 0;
+  font-weight: 600;
+}
+
+.monster-info p {
+  color: var(--text-muted);
+  margin: 0 0 4px 0;
+  font-size: 0.9rem;
 }
 
 .result-message {
@@ -723,9 +745,7 @@
 }
 
 @media (max-width: 600px) {
-  .items-grid {
-    grid-template-columns: 1fr;
-  }
+  /* .items-grid replaced by .container.grid - responsive in containers.css */
 
   .species-selection-grid {
     grid-template-columns: repeat(2, 1fr);

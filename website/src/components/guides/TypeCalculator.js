@@ -132,13 +132,13 @@ const TypeCalculator = () => {
         <p>Select up to 6 types to see the combined weaknesses, resistances, and strengths</p>
       </div>
 
-      <div className="adopts-grid">
+      <div className="type-selector-grid">
         {selectedTypes.map((type, index) => (
-          <div key={index} className="type-selector">
+          <div key={index} className="type-selector-item">
             <label>Type {index + 1}:</label>
             <div className="type-input-group">
-              <select 
-                value={type} 
+              <select
+                value={type}
                 onChange={(e) => handleTypeChange(index, e.target.value)}
                 className="form-input"
               >
@@ -150,7 +150,7 @@ const TypeCalculator = () => {
                 ))}
               </select>
               {type && (
-                <button 
+                <button
                   onClick={() => removeType(index)}
                   className="button danger icon sm"
                   title="Remove Type"
@@ -171,9 +171,9 @@ const TypeCalculator = () => {
 
       {results && results.types.length > 0 && (
         <div className="results-section">
-          <div className="effectiveness-chart">
+          <div className="selected-types-display">
             <h3>Selected Types:</h3>
-            <div className="container vertical gap-md">
+            <div className="selected-types-list">
               {results.types.map((type, index) => (
                 <span key={index} className={`type-badge type-${type.toLowerCase()}`}>
                   {type}
@@ -182,17 +182,17 @@ const TypeCalculator = () => {
             </div>
           </div>
 
-          <div className="button">
-            <div className="type-selector">
+          <div className="results-grid">
+            <div className="results-card weakness-card">
               <h3>Weaknesses (Takes More Damage From):</h3>
               {Object.keys(results.weaknesses).length === 0 ? (
                 <p className="no-results">No weaknesses</p>
               ) : (
-                <div className="type-tags">
+                <div className="type-results-list">
                   {Object.entries(results.weaknesses)
                     .sort(([,a], [,b]) => b - a)
                     .map(([type, multiplier]) => (
-                    <div key={type} className={`summary-item${getEffectivenessClass(multiplier)}`}>
+                    <div key={type} className={`summary-item ${getEffectivenessClass(multiplier)}`}>
                       <span className={`type-badge type-${type.toLowerCase()}`}>{type}</span>
                       <span className="multiplier">{getEffectivenessText(multiplier)}</span>
                     </div>
@@ -201,16 +201,16 @@ const TypeCalculator = () => {
               )}
             </div>
 
-            <div className="type-selector">
+            <div className="results-card resistance-card">
               <h3>Resistances (Takes Less Damage From):</h3>
               {Object.keys(results.resistances).length === 0 ? (
                 <p className="no-results">No resistances</p>
               ) : (
-                <div className="type-tags">
+                <div className="type-results-list">
                   {Object.entries(results.resistances)
                     .sort(([,a], [,b]) => a - b)
                     .map(([type, multiplier]) => (
-                    <div key={type} className={`summary-item${getEffectivenessClass(multiplier)}`}>
+                    <div key={type} className={`summary-item ${getEffectivenessClass(multiplier)}`}>
                       <span className={`type-badge type-${type.toLowerCase()}`}>{type}</span>
                       <span className="multiplier">{getEffectivenessText(multiplier)}</span>
                     </div>
@@ -219,14 +219,14 @@ const TypeCalculator = () => {
               )}
             </div>
 
-            <div className="type-selector">
+            <div className="results-card immunity-card">
               <h3>Immunities (Takes No Damage From):</h3>
               {Object.keys(results.immunities).length === 0 ? (
                 <p className="no-results">No immunities</p>
               ) : (
-                <div className="type-tags">
+                <div className="type-results-list">
                   {Object.entries(results.immunities).map(([type, multiplier]) => (
-                    <div key={type} className={`summary-item${getEffectivenessClass(multiplier)}`}>
+                    <div key={type} className={`summary-item ${getEffectivenessClass(multiplier)}`}>
                       <span className={`type-badge type-${type.toLowerCase()}`}>{type}</span>
                       <span className="multiplier">{getEffectivenessText(multiplier)}</span>
                     </div>
@@ -235,16 +235,16 @@ const TypeCalculator = () => {
               )}
             </div>
 
-            <div className="type-selector">
+            <div className="results-card strength-card">
               <h3>Strong Against (Deals More Damage To):</h3>
               {Object.keys(results.strongAgainst).length === 0 ? (
                 <p className="no-results">No super effective matchups</p>
               ) : (
-                <div className="type-tags">
+                <div className="type-results-list">
                   {Object.entries(results.strongAgainst)
                     .sort(([,a], [,b]) => b - a)
                     .map(([type, multiplier]) => (
-                    <div key={type} className={`summary-item${getEffectivenessClass(multiplier)}`}>
+                    <div key={type} className={`summary-item ${getEffectivenessClass(multiplier)}`}>
                       <span className={`type-badge type-${type.toLowerCase()}`}>{type}</span>
                       <span className="multiplier">{getEffectivenessText(multiplier)}</span>
                     </div>

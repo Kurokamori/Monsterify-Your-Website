@@ -111,7 +111,7 @@ const ImageUploader = ({ images = [], onChange, maxImages = 4, required = false 
         </div>
 
         {error && (
-          <div className="error-message">
+          <div className="alert error">
             <i className="fas fa-exclamation-triangle"></i>
             {error}
           </div>

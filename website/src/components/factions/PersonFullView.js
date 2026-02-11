@@ -48,7 +48,7 @@ const PersonFullView = ({ person, trainerId, onClose }) => {
     return (
       <div className="person-form-overlay" onClick={onClose}>
         <div className="person-full-view error" onClick={(e) => e.stopPropagation()}>
-          <div className="error-message">
+          <div className="alert error">
             <i className="fas fa-exclamation-triangle"></i>
             <p>Failed to load person details</p>
             <button onClick={onClose} className="button close">Close</button>

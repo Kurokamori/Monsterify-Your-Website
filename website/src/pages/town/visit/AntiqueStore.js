@@ -288,7 +288,7 @@ const AntiqueStore = () => {
             key={`antique-${index}`}
             className="adopt-card"
           >
-            <div className="item-icon">
+            <div className="image-container medium">
               <img
                 src={`/images/items/antiques/${antique.name.toLowerCase().replace(/\s+/g, '_')}.png`}
                 alt={antique.name}

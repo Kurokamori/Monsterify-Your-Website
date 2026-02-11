@@ -278,7 +278,7 @@ const Shop = () => {
         {(selectedCategory === 'berries' || true) && (
           <div className="berry-filters">
             <h4>Filter Berries by Type (stackable) - Debug: {selectedCategory}</h4>
-            <div className="type-tags">
+            <div className="type-tags fw">
               <button
                 className={`button filter ${berryFilters.type ? 'active' : ''}`}
                 onClick={() => toggleBerryFilter('type')}

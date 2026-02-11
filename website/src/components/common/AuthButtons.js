@@ -34,16 +34,20 @@ const AuthButtons = ({ onLogout }) => {
   if (isAuthenticated) {
     return (
       <div className="auth-buttons">
-        <div>
-          {Boolean(currentUser?.is_admin) && (
-            <Link to="/admin/dashboard" className="button primary lg block">Admin</Link>
-          )}
-        </div>
+        {Boolean(currentUser?.is_admin) && (
+          <div className="admin-button-wrapper">
+            <Link to="/admin/dashboard" className="button primary lg admin-button">
+              <i className="fas fa-shield-alt"></i>
+              <span className="admin-button-text">Admin</span>
+            </Link>
+          </div>
+        )}
 
         <div className="user-dropdown" ref={dropdownRef}>
-          <button className="button primary tall lg between" onClick={toggleDropdown}>
+          <button className="button primary tall lg between user-dropdown-trigger" onClick={toggleDropdown}>
+            <i className="fas fa-user-circle user-icon"></i>
             <span className="user-name">{currentUser?.display_name || currentUser?.username || 'User'}</span>
-            <i className={`fas fa-chevron-${dropdownOpen ? 'up' : 'down'}`}></i>
+            <i className={`fas fa-chevron-${dropdownOpen ? 'up' : 'down'} dropdown-chevron`}></i>
           </button>
 
           {dropdownOpen && (
@@ -93,8 +97,8 @@ const AuthButtons = ({ onLogout }) => {
 
   return (
     <div className="auth-buttons">
-      <Link to="/login" className="button primary lg block">Login</Link>
-      <Link to="/register" className="button primary lg block">Register</Link>
+      <Link to="/login" className="button primary lg">Login</Link>
+      <Link to="/register" className="button primary lg">Register</Link>
     </div>
   );
 };

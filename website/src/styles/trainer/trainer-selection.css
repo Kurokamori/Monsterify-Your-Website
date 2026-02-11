@@ -37,8 +37,6 @@
   font-weight: 700;
 }
 
-/* ===== Card-y selection wrapper ===== */
-
 /* ===== Fancy select in hero section ===== */
 
 .missions-filters .trainer-select {
@@ -61,8 +59,6 @@
   transform: translateY(-2px);
 }
 
-/* ===== Dropdown options in hero section ===== */
-
 /* ===== Empty state ===== */
 
 .no-trainer-selected {
@@ -81,8 +77,6 @@
   font-weight: 500;
   margin: 0;
 }
-
-/* ===== Selector widget ===== */
 
 /* ===== Responsive ===== */
 

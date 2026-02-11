@@ -418,7 +418,7 @@ const RewardsDisplay = ({
                     <strong>Effect:</strong> {getBerryEffect(reward.reward_data.name)}
                   </div>
                 )}
-                <div className={`reward-rarity${reward.rarity}`}>
+                <div className={`badge ${reward.rarity}`}>
                   {reward.rarity.charAt(0).toUpperCase() + reward.rarity.slice(1)}
                 </div>
                 <div className="reward-actions">

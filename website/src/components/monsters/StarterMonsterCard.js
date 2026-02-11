@@ -118,7 +118,7 @@ const StarterMonsterCard = ({ monster }) => {
           src={image.src}
           alt={image.alt}
           title={image.title}
-          className="item-icon"
+          className="image-container medium"
           onError={(e) => {
             e.target.onerror = null;
             e.target.src = '/images/default_mon.png';
@@ -162,7 +162,7 @@ const StarterMonsterCard = ({ monster }) => {
         />
       </div>
 
-      <div className="chapter-item">
+      <div className="monster-compact-card">
         <div className="monster-types">
           {renderTypes()}
         </div>

@@ -2087,9 +2087,19 @@ async function rollMonsterForTrainer(trainerId, level = 5, allowedTypes = null, 
       const friendship = Math.floor(Math.random() * 70) + 30;
       const genders = ['Male', 'Female', 'Unknown'];
       const gender = genders[Math.floor(Math.random() * genders.length)];
-      const natures = ['Adamant', 'Brave', 'Bold', 'Relaxed', 'Modest', 'Quiet', 'Calm', 'Sassy', 'Timid', 'Hasty', 'Jolly', 'Naive'];
+      const natures = ['Adamant', 'Brave', 'Bold', 'Relaxed', 'Modest', 'Quiet', 'Calm', 'Sassy', 'Timid', 'Hasty', 'Jolly', 'Naive', 'Modest', 'Mild', 'Rash', 'Careful', 'Gentle', 'Hardy', 'Lonely', 'Docile', 'Serious', 'Bashful', 'Quirky'];
       const nature = natures[Math.floor(Math.random() * natures.length)];
-      const characteristics = ['Likes to run', 'Proud of its power', 'Highly curious', 'Mischievous', 'Somewhat vain', 'Alert to sounds'];
+      const characteristics = [      'Loves to eat', 'Takes plenty of siestas', 'Nods off a lot',
+      'Scatters things often', 'Likes to relax', 'Proud of its power',
+      'Likes to thrash about', 'A little quick tempered', 'Likes to fight',
+      'Quick tempered', 'Sturdy body', 'Capable of taking hits',
+      'Highly persistent', 'Good endurance', 'Good perseverance',
+      'Highly curious', 'Mischievous', 'Thoroughly cunning',
+      'Often lost in thought', 'Very finicky', 'Strong willed',
+      'Somewhat vain', 'Strongly defiant', 'Hates to lose',
+      'Somewhat stubborn', 'Impetuous and silly', 'Alert to sounds',
+      'Impetuous and silly', 'A little quick tempered', 'Likes to run',
+      'Somewhat of a clown', 'Quick to flee'];
       const characteristic = characteristics[Math.floor(Math.random() * characteristics.length)];
 
       // Note: Monster type is determined by the species data, not stored separately

@@ -28,59 +28,12 @@
 }
 }
 
-.area-card:hover {
-  background: var(--highlight-light);
-  border-color: var(--accent-color);
-  box-shadow: 0 4px 8px var(--overlay-dark);
-  transform: translateY(-2px);
-}
-
-.area-card.claimed {
-  background-color: var(--overlay-light);
-  cursor: not-allowed;
-  opacity: 0.5;
-}
-
 /* ---------- Reward Icon Colors ---------- */
 
 .reward-icon.coin { background-color: var(--accent-color); }
 .reward-icon.item { background-color: var(--success-light); }
 .reward-icon.monster { background-color: var(--blue-color); }
 .reward-icon.level { background-color: var(--free-attribute); }
-
-/* ---------- Reward Rarity ---------- */
-
-.reward-rarity {
-  display: inline-block;
-  padding: 4px 8px;
-  border-radius: 4px;
-  font-size: 0.75rem;
-  font-weight: 600;
-  margin-bottom: 1rem;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.reward-rarity.common {
-  background-color: var(--text-muted);
-  color: var(--text-color);
-}
-.reward-rarity.uncommon {
-  background-color: var(--success-color);
-  color: var(--text-color);
-}
-.reward-rarity.rare {
-  background-color: var(--blue-color);
-  color: var(--text-color);
-}
-
-.reward-rarity.legendary {
-  animation: legendary-glow 1.5s ease-in-out infinite alternate;
-  background: linear-gradient(45deg, var(--accent-light), var(--warning-color), var(--error-color));
-  background-color: var(--accent-light);
-  box-shadow: 0 0 20px var(--accent-glow);
-  color: var(--text-color);
-}
 
 /* ---------- All Claimed Message ---------- */
 

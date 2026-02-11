@@ -450,7 +450,7 @@ const PromptSubmissionModal = ({ prompt, trainerId, onClose, onSuccess }) => {
 
             {/* Error Display */}
             {error && (
-              <div className="error-message">
+              <div className="alert error">
                 <p>{error}</p>
               </div>
             )}

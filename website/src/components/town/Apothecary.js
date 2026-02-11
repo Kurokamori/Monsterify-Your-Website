@@ -420,26 +420,26 @@ const Apothecary = () => {
                         {monster.species3 && ` + ${monster.species3}`}
                       </div>
                       <div className="monster-types">
-                        <span className={`type-badge type-${monster.type1?.toLowerCase()}`}>
+                        <span className={`badge type-${monster.type1?.toLowerCase()}`}>
                           {monster.type1}
                         </span>
                         {monster.type2 && (
-                          <span className={`type-badge type-${monster.type2.toLowerCase()}`}>
+                          <span className={`badge type-${monster.type2.toLowerCase()}`}>
                             {monster.type2}
                           </span>
                         )}
                         {monster.type3 && (
-                          <span className={`type-badge type-${monster.type3.toLowerCase()}`}>
+                          <span className={`badge type-${monster.type3.toLowerCase()}`}>
                             {monster.type3}
                           </span>
                         )}
                         {monster.type4 && (
-                          <span className={`type-badge type-${monster.type4.toLowerCase()}`}>
+                          <span className={`badge type-${monster.type4.toLowerCase()}`}>
                             {monster.type4}
                           </span>
                         )}
                         {monster.type5 && (
-                          <span className={`type-badge type-${monster.type5.toLowerCase()}`}>
+                          <span className={`badge type-${monster.type5.toLowerCase()}`}>
                             {monster.type5}
                           </span>
                         )}
@@ -515,7 +515,7 @@ const Apothecary = () => {
                   
                   <div className="berry-filters">
                     <h4>Filter by Category (stackable)</h4>
-                    <div className="type-tags">
+                    <div className="type-tags fw">
                       <button
                         className={`button filter ${berryFilters.type ? 'active' : ''}`}
                         onClick={() => toggleFilter('type')}
@@ -562,7 +562,7 @@ const Apothecary = () => {
                   </div>
                   
                   <div className="berry-categories">
-                    <div className="fandom-grid">
+                    <div className="container vertical gap-md">
                       <h4>Species Modification</h4>
                       <div className="berry-items">
                         <button
@@ -628,7 +628,7 @@ const Apothecary = () => {
                           {isBerryAvailable('Azzuk Berry') && <span className="berry-count">x{getBerryCount('Azzuk Berry')}</span>}
                         </button>
                         <button
-                          className={`button${!matchesFilters('Mangus Berry') ? 'filtered-out' : ''}`}
+                          className={`button ${!matchesFilters('Mangus Berry') ? 'filtered-out' : ''}`}
                           onClick={() => setSelectedBerry('Mangus Berry')}
                           disabled={selectedMonster.species3 || !selectedMonster.species2 || !isBerryAvailable('Mangus Berry')}
                         >
@@ -639,7 +639,7 @@ const Apothecary = () => {
                       </div>
                     </div>
                     
-                    <div className="fandom-grid">
+                    <div className="container vertical gap-md">
                       <h4>Type Modification</h4>
                       <div className="berry-items">
                         <button
@@ -706,7 +706,7 @@ const Apothecary = () => {
                           {isBerryAvailable('Cocon Berry') && <span className="berry-count">x{getBerryCount('Cocon Berry')}</span>}
                         </button>
                         <button
-                          className={`button${!matchesFilters('Durian Berry') ? 'filtered-out' : ''}`}
+                          className={`button ${!matchesFilters('Durian Berry') ? 'filtered-out' : ''}`}
                           onClick={() => setSelectedBerry('Durian Berry')}
                           disabled={!selectedMonster.type3 || !isBerryAvailable('Durian Berry')}
                         >
@@ -715,7 +715,7 @@ const Apothecary = () => {
                           {isBerryAvailable('Durian Berry') && <span className="berry-count">x{getBerryCount('Durian Berry')}</span>}
                         </button>
                         <button
-                          className={`button${!matchesFilters('Monel Berry') ? 'filtered-out' : ''}`}
+                          className={`button ${!matchesFilters('Monel Berry') ? 'filtered-out' : ''}`}
                           onClick={() => setSelectedBerry('Monel Berry')}
                           disabled={!selectedMonster.type4 || !isBerryAvailable('Monel Berry')}
                         >
@@ -724,7 +724,7 @@ const Apothecary = () => {
                           {isBerryAvailable('Monel Berry') && <span className="berry-count">x{getBerryCount('Monel Berry')}</span>}
                         </button>
                         <button
-                          className={`button${!matchesFilters('Perep Berry') ? 'filtered-out' : ''}`}
+                          className={`button ${!matchesFilters('Perep Berry') ? 'filtered-out' : ''}`}
                           onClick={() => setSelectedBerry('Perep Berry')}
                           disabled={!selectedMonster.type5 || !isBerryAvailable('Perep Berry')}
                         >
@@ -733,7 +733,7 @@ const Apothecary = () => {
                           {isBerryAvailable('Perep Berry') && <span className="berry-count">x{getBerryCount('Perep Berry')}</span>}
                         </button>
                         <button
-                          className={`button${!matchesFilters('Addish Berry') ? 'filtered-out' : ''}`}
+                          className={`button ${!matchesFilters('Addish Berry') ? 'filtered-out' : ''}`}
                           onClick={() => setSelectedBerry('Addish Berry')}
                           disabled={selectedMonster.type2 || !availableBerries['Addish Berry'] || availableBerries['Addish Berry'] < 1}
                         >
@@ -742,7 +742,7 @@ const Apothecary = () => {
                           {availableBerries['Addish Berry'] && <span className="berry-count">x{availableBerries['Addish Berry']}</span>}
                         </button>
                         <button
-                          className={`button${!matchesFilters('Sky Carrot Berry') ? 'filtered-out' : ''}`}
+                          className={`button ${!matchesFilters('Sky Carrot Berry') ? 'filtered-out' : ''}`}
                           onClick={() => setSelectedBerry('Sky Carrot Berry')}
                           disabled={selectedMonster.type3 || !selectedMonster.type2 || !isBerryAvailable('Sky Carrot Berry')}
                         >
@@ -751,7 +751,7 @@ const Apothecary = () => {
                           {isBerryAvailable('Sky Carrot Berry') && <span className="berry-count">x{getBerryCount('Sky Carrot Berry')}</span>}
                         </button>
                         <button
-                          className={`button${!matchesFilters('Kembre Berry') ? 'filtered-out' : ''}`}
+                          className={`button ${!matchesFilters('Kembre Berry') ? 'filtered-out' : ''}`}
                           onClick={() => setSelectedBerry('Kembre Berry')}
                           disabled={selectedMonster.type4 || !selectedMonster.type3 || !isBerryAvailable('Kembre Berry')}
                         >
@@ -771,7 +771,7 @@ const Apothecary = () => {
                       </div>
                     </div>
                     
-                    <div className="fandom-grid">
+                    <div className="container vertical gap-md">
                       <h4>Attribute Modification</h4>
                       <div className="berry-items">
                         <button
@@ -786,7 +786,7 @@ const Apothecary = () => {
                       </div>
                     </div>
 
-                    <div className="fandom-grid">
+                    <div className="container vertical gap-md">
                       <h4>Species Splitting</h4>
                       <div className="berry-items">
                         <button
