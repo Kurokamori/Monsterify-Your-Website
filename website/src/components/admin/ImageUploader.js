@@ -83,12 +83,12 @@ const ImageUploader = ({ images = [], onChange, maxImages = 4, required = false 
             value={newImageUrl}
             onChange={(e) => setNewImageUrl(e.target.value)}
             onKeyPress={handleKeyPress}
-            className="form-control"
+            className="form-input"
             placeholder="Enter image URL (e.g., https://example.com/image.jpg)"
           />
           <button
             type="button"
-            className="btn btn-primary add-btn"
+            className="button primary"
             onClick={handleAddImage}
             disabled={images.length >= maxImages}
           >
@@ -111,7 +111,7 @@ const ImageUploader = ({ images = [], onChange, maxImages = 4, required = false 
         </div>
 
         {error && (
-          <div className="error-message">
+          <div className="alert error">
             <i className="fas fa-exclamation-triangle"></i>
             {error}
           </div>
@@ -129,7 +129,7 @@ const ImageUploader = ({ images = [], onChange, maxImages = 4, required = false 
             {images.map((imageUrl, index) => (
               <div
                 key={index}
-                className={`image-item ${index === 0 ? 'primary' : ''} ${draggedIndex === index ? 'dragging' : ''}`}
+                className={`image-item${index === 0 ? 'primary' : ''}${draggedIndex === index ? 'dragging' : ''}`}
                 draggable
                 onDragStart={(e) => handleDragStart(e, index)}
                 onDragOver={handleDragOver}
@@ -160,28 +160,28 @@ const ImageUploader = ({ images = [], onChange, maxImages = 4, required = false 
                     {index > 0 && (
                       <button
                         type="button"
-                        className="btn-icon move-up"
+                        className="button secondary icon sm"
                         onClick={() => handleMoveImage(index, index - 1)}
                         title="Move up"
                       >
                         <i className="fas fa-arrow-up"></i>
                       </button>
                     )}
-                    
+
                     {index < images.length - 1 && (
                       <button
                         type="button"
-                        className="btn-icon move-down"
+                        className="button secondary icon sm"
                         onClick={() => handleMoveImage(index, index + 1)}
                         title="Move down"
                       >
                         <i className="fas fa-arrow-down"></i>
                       </button>
                     )}
-                    
+
                     <button
                       type="button"
-                      className="btn-icon remove"
+                      className="button danger icon sm"
                       onClick={() => handleRemoveImage(index)}
                       title="Remove image"
                     >

@@ -87,9 +87,9 @@ const TributeSubmissionModal = ({ faction, trainerId, standing, onClose, onSubmi
   return (
     <div className="tribute-modal-overlay" onClick={onClose}>
       <div className="tribute-modal" onClick={(e) => e.stopPropagation()}>
-        <div className="modal-header">
+        <div className="tree-header">
           <h2>Submit Tribute to {faction.name}</h2>
-          <button className="close-button" onClick={onClose}>×</button>
+          <button className="button icon danger" onClick={onClose}>×</button>
         </div>
 
         <div className="modal-content">
@@ -245,19 +245,19 @@ const TributeSubmissionModal = ({ faction, trainerId, standing, onClose, onSubmi
               )}
 
               {error && (
-                <div className="error-message">
+                <div className="alert error">
                   <i className="fas fa-exclamation-triangle"></i>
                   {error}
                 </div>
               )}
 
               <div className="form-actions">
-                <button type="button" onClick={onClose} className="cancel-button">
+                <button type="button" onClick={onClose} className="button secondary">
                   Cancel
                 </button>
                 <button 
                   type="submit" 
-                  className="submit-button"
+                  className="button success"
                   disabled={loading}
                 >
                   {loading ? (

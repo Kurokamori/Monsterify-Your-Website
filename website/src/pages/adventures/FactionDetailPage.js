@@ -196,7 +196,7 @@ const FactionDetailPage = () => {
         <div className="banner-overlay">
           <div className="faction-navigation">
             <button 
-              className="nav-button nav-left"
+              className="button icon"
               onClick={() => navigateToFaction('left')}
               title="Previous Faction"
             >
@@ -206,7 +206,7 @@ const FactionDetailPage = () => {
               {faction.name}
             </h1>
             <button 
-              className="nav-button nav-right"
+              className="button icon"
               onClick={() => navigateToFaction('right')}
               title="Next Faction"
             >
@@ -218,7 +218,7 @@ const FactionDetailPage = () => {
       </div>
 
       {/* Trainer Selection */}
-      <div className="trainer-selection-section">
+      <div className="missions-filters">
         <label htmlFor="trainer-select">Viewing as:</label>
         <select
           id="trainer-select"
@@ -247,19 +247,19 @@ const FactionDetailPage = () => {
           {/* Action Tabs */}
           <div className="faction-tabs">
             <button
-              className={`tab-button ${activeTab === 'overview' ? 'active' : ''}`}
+              className={`button tab ${activeTab === 'overview' ? 'active' : ''}`}
               onClick={() => setActiveTab('overview')}
             >
               Overview
             </button>
             <button
-              className={`tab-button ${activeTab === 'store' ? 'active' : ''}`}
+              className={`button tab ${activeTab === 'store' ? 'active' : ''}`}
               onClick={() => setActiveTab('store')}
             >
               Faction Store
             </button>
             <button
-              className={`tab-button ${activeTab === 'individuals' ? 'active' : ''}`}
+              className={`button tab ${activeTab === 'individuals' ? 'active' : ''}`}
               onClick={() => setActiveTab('individuals')}
             >
               Known Individuals
@@ -272,13 +272,13 @@ const FactionDetailPage = () => {
               <div className="overview-content">
                 <div className="action-buttons">
                   <button
-                    className="action-button submission-button"
+                    className="button primary"
                     onClick={() => handleSubmissionClick('submission')}
                   >
                     Make Submission
                   </button>
                   <button
-                    className="action-button tribute-button"
+                    className="button primary"
                     onClick={() => handleSubmissionClick('tribute')}
                   >
                     Make Tribute
@@ -294,7 +294,7 @@ const FactionDetailPage = () => {
                       <h4>Faction Relationships</h4>
                       <div className="relationships-grid">
                         {faction.relationships.map(rel => (
-                          <div key={rel.related_faction_id} className={`relationship-item ${rel.relationship_type}`}>
+                          <div key={rel.related_faction_id} className={`relationship-item${rel.relationship_type}`}>
                             <span className="relationship-faction">{rel.related_faction_name}</span>
                             <span className="relationship-type">{rel.relationship_type}</span>
                           </div>

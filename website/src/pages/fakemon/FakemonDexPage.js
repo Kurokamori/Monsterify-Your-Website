@@ -185,25 +185,25 @@ const FakemonDexPage = () => {
       </div>
 
       <div className="fakedex-controls">
-        <div className="fakedex-controls-inner">
+        <div className="map-filters">
           <div className="search-and-toggles">
             <form className="search-form" onSubmit={handleSearch}>
-              <div className="search-input">
+              <div className="form-input">
                 <input
                   type="text"
                   placeholder="Search fakemon..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                 />
-                <button type="submit">
+                <button type="submit" className="button search">
                   <i className="fas fa-search"></i>
                 </button>
               </div>
             </form>
 
-            <div className="filter-toggles">
+            <div className="container center horizontal gap-md medium">
               <button
-                className={`filter-toggle ${showCategoryFilter ? 'active' : ''}`}
+                className={`button toggle${showCategoryFilter ? 'active' : ''}`}
                 onClick={() => setShowCategoryFilter(!showCategoryFilter)}
               >
                 <i className="fas fa-layer-group"></i>
@@ -211,7 +211,7 @@ const FakemonDexPage = () => {
                 {selectedCategory && <span className="filter-count">1</span>}
               </button>
               <button
-                className={`filter-toggle ${showAttributeFilter ? 'active' : ''}`}
+                className={`button toggle${showAttributeFilter ? 'active' : ''}`}
                 onClick={() => setShowAttributeFilter(!showAttributeFilter)}
               >
                 <i className="fas fa-tags"></i>
@@ -219,7 +219,7 @@ const FakemonDexPage = () => {
                 {selectedAttribute && <span className="filter-count">1</span>}
               </button>
               <button
-                className={`filter-toggle ${showTypeFilter ? 'active' : ''}`}
+                className={`button toggle${showTypeFilter ? 'active' : ''}`}
                 onClick={() => setShowTypeFilter(!showTypeFilter)}
               >
                 <i className="fas fa-fire"></i>
@@ -229,13 +229,13 @@ const FakemonDexPage = () => {
             </div>
           </div>
 
-          <div className="filters-container">
+          <div className="auth-form">
             {/* Category Filters */}
             {showCategoryFilter && (
               <div className="filter-section">
-                <div className="filter-buttons">
+                <div className="type-tags fw">
                   <button
-                    className={`filter-button ${selectedCategory === '' ? 'active' : ''}`}
+                    className={`button filter ${selectedCategory === '' ? 'active' : ''}`}
                     onClick={() => handleCategoryChange('')}
                   >
                     All Categories
@@ -243,7 +243,7 @@ const FakemonDexPage = () => {
                   {categories.map((category) => (
                     <button
                       key={category}
-                      className={`filter-button category-${category.toLowerCase()} ${selectedCategory === category ? 'active' : ''}`}
+                      className={`button filter category-${category.toLowerCase()}${selectedCategory === category ? 'active' : ''}`}
                       onClick={() => handleCategoryChange(category)}
                     >
                       {category}
@@ -256,9 +256,9 @@ const FakemonDexPage = () => {
             {/* Attribute Filters */}
             {showAttributeFilter && (
               <div className="filter-section">
-                <div className="filter-buttons">
+                <div className="type-tags fw">
                   <button
-                    className={`filter-button ${selectedAttribute === '' ? 'active' : ''}`}
+                    className={`button filter ${selectedAttribute === '' ? 'active' : ''}`}
                     onClick={() => handleAttributeChange('')}
                   >
                     All Attributes
@@ -266,7 +266,7 @@ const FakemonDexPage = () => {
                   {attributes.map((attribute) => (
                     <button
                       key={attribute}
-                      className={`filter-button attribute-${attribute.toLowerCase()} ${selectedAttribute === attribute ? 'active' : ''}`}
+                      className={`button filter attribute-${attribute.toLowerCase()}${selectedAttribute === attribute ? 'active' : ''}`}
                       onClick={() => handleAttributeChange(attribute)}
                     >
                       {attribute}
@@ -279,9 +279,9 @@ const FakemonDexPage = () => {
             {/* Type Filters */}
             {showTypeFilter && (
               <div className="filter-section">
-                <div className="filter-buttons type-filters">
+                <div className="type-tags fw type-filters">
                   <button
-                    className={`filter-button ${selectedType === '' ? 'active' : ''}`}
+                    className={`button filter ${selectedType === '' ? 'active' : ''}`}
                     onClick={() => handleTypeChange('')}
                   >
                     All Types
@@ -289,7 +289,7 @@ const FakemonDexPage = () => {
                   {displayTypes.map((type) => (
                     <button
                       key={type}
-                      className={`filter-button type-${type.toLowerCase()} ${selectedType === type ? 'active' : ''}`}
+                      className={`button filter type-${type.toLowerCase()}${selectedType === type ? 'active' : ''}`}
                       onClick={() => handleTypeChange(type)}
                     >
                       {type}
@@ -331,12 +331,12 @@ const FakemonDexPage = () => {
                   <div className="types-container">
                     {mon.types && mon.types.length > 0 ? (
                       mon.types.map((type, index) => (
-                        <span className={`type-badge type-${type.toLowerCase()}`} key={index}>
+                        <span className={`badge type-${type.toLowerCase()}`} key={index}>
                           {type}
                         </span>
                       ))
                     ) : (
-                      <span className="type-badge type-normal">Unknown</span>
+                      <span className="badge type-normal">Unknown</span>
                     )}
                   </div>
                   {mon.category && (
@@ -350,7 +350,7 @@ const FakemonDexPage = () => {
                     </div>
                   )}
                   {mon.attribute && (
-                    <div className="fakemon-attribute">
+                    <div className="fakemon-category">
                       <span className="attribute-label">Attribute:</span> {mon.attribute}
                     </div>
                   )}
@@ -362,7 +362,7 @@ const FakemonDexPage = () => {
           {totalPages > 1 && (
             <div className="pagination">
               <button
-                className="pagination-button"
+                className="button secondary"
                 disabled={currentPage === 1}
                 onClick={() => handlePageChange(currentPage - 1)}
               >
@@ -372,7 +372,7 @@ const FakemonDexPage = () => {
               {[...Array(totalPages).keys()].map((page) => (
                 <button
                   key={page + 1}
-                  className={`pagination-button ${currentPage === page + 1 ? 'active' : ''}`}
+                  className={`button secondary ${currentPage === page + 1 ? 'active' : ''}`}
                   onClick={() => handlePageChange(page + 1)}
                 >
                   {page + 1}
@@ -380,7 +380,7 @@ const FakemonDexPage = () => {
               ))}
 
               <button
-                className="pagination-button"
+                className="button secondary"
                 disabled={currentPage === totalPages}
                 onClick={() => handlePageChange(currentPage + 1)}
               >

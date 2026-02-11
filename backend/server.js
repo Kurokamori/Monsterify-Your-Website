@@ -197,6 +197,17 @@ async function startServer() {
     // Database tables already exist, skipping initialization
     console.log('Using existing database tables');
 
+    // Add content_tags column to submissions table if it doesn't exist
+    const db = require('./config/db');
+    try {
+      await db.asyncRun('ALTER TABLE submissions ADD COLUMN IF NOT EXISTS content_tags TEXT');
+      console.log('Ensured content_tags column exists in submissions table');
+    } catch (err) {
+      if (!err.message.includes('duplicate column') && !err.message.includes('already exists')) {
+        console.error('Note: content_tags column migration:', err.message);
+      }
+    }
+
     // Skip location activity tables initialization as tables already exist
     // await initLocationTables();
     console.log('Database connection ready');

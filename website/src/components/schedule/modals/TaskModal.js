@@ -148,16 +148,16 @@ const TaskModal = ({ isOpen, onClose, onSuccess, trainers = [], task = null }) =
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-content large" onClick={e => e.stopPropagation()}>
-        <div className="modal-header">
+        <div className="tree-header">
           <h3>{task ? 'Edit Task' : 'Create New Task'}</h3>
-          <button className="modal-close" onClick={onClose}>
+          <button className="button close" onClick={onClose}>
             <i className="fas fa-times"></i>
           </button>
         </div>
 
         <form onSubmit={handleSubmit} className="modal-body">
           {error && (
-            <div className="error-message">
+            <div className="alert error">
               <i className="fas fa-exclamation-triangle"></i>
               {error}
             </div>
@@ -263,7 +263,7 @@ const TaskModal = ({ isOpen, onClose, onSuccess, trainers = [], task = null }) =
                 placeholder="Add a tag"
                 onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addTag())}
               />
-              <button type="button" onClick={addTag} className="btn-secondary">
+              <button type="button" onClick={addTag} className="button secondary">
                 <i className="fas fa-plus"></i>
               </button>
             </div>
@@ -294,7 +294,7 @@ const TaskModal = ({ isOpen, onClose, onSuccess, trainers = [], task = null }) =
                 placeholder="Add a step"
                 onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addStep())}
               />
-              <button type="button" onClick={addStep} className="btn-secondary">
+              <button type="button" onClick={addStep} className="button secondary">
                 <i className="fas fa-plus"></i>
               </button>
             </div>
@@ -355,7 +355,7 @@ const TaskModal = ({ isOpen, onClose, onSuccess, trainers = [], task = null }) =
             {formData.repeat_type === 'weekly' && (
               <div className="form-group">
                 <label>Repeat on Days</label>
-                <div className="checkbox-group">
+                <div className="event-date">
                   {weekDays.map(day => (
                     <label key={day} className="checkbox-label">
                       <input
@@ -448,7 +448,7 @@ const TaskModal = ({ isOpen, onClose, onSuccess, trainers = [], task = null }) =
 
                 <div className="form-group">
                   <label>Reminder Days</label>
-                  <div className="checkbox-group">
+                  <div className="event-date">
                     {weekDays.map(day => (
                       <label key={day} className="checkbox-label">
                         <input
@@ -466,10 +466,10 @@ const TaskModal = ({ isOpen, onClose, onSuccess, trainers = [], task = null }) =
           </div>
 
           <div className="modal-actions">
-            <button type="button" onClick={onClose} className="btn-secondary">
+            <button type="button" onClick={onClose} className="button secondary">
               Cancel
             </button>
-            <button type="submit" disabled={loading} className="btn-primary">
+            <button type="submit" disabled={loading} className="button primary">
               {loading ? (
                 <>
                   <i className="fas fa-spinner fa-spin"></i>

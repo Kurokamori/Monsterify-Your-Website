@@ -65,22 +65,22 @@ const ShopManager = () => {
   }
   
   return (
-    <div className="shop-manager">
-      <div className="shop-manager-header">
+    <div className="shop-page">
+      <div className="adopt-card">
         <h1>Shop Manager</h1>
-        <Link to="/admin/shop-manager/new" className="add-shop-button">
+        <Link to="/admin/shop-manager/new" className="button primary">
           <i className="fas fa-plus"></i> Add New Shop
         </Link>
       </div>
       
-      <div className="shop-manager-content">
+      <div className="shop-form">
         {shops.length === 0 ? (
           <div className="no-shops-message">
             <p>No shops found. Click the "Add New Shop" button to create one.</p>
           </div>
         ) : (
           <div className="shops-table-container">
-            <table className="shops-table">
+            <table className="items-table">
               <thead>
                 <tr>
                   <th>ID</th>
@@ -99,19 +99,19 @@ const ShopManager = () => {
                     <td>{shop.category}</td>
                     <td>{shop.is_constant ? 'Constant' : 'Dynamic'}</td>
                     <td>
-                      <span className={`shop-status ${shop.is_active ? 'active' : 'inactive'}`}>
+                      <span className={`shop-status${shop.is_active ? 'active' : 'inactive'}`}>
                         {shop.is_active ? 'Active' : 'Inactive'}
                       </span>
                     </td>
                     <td className="shop-actions">
-                      <Link to={`/admin/shop-manager/${shop.shop_id}`} className="shop-action-button edit">
+                      <Link to={`/admin/shop-manager/${shop.shop_id}`} className="button secondary icon">
                         <i className="fas fa-edit"></i>
                       </Link>
-                      <Link to={`/admin/shop-manager/${shop.shop_id}/items`} className="shop-action-button items">
+                      <Link to={`/admin/shop-manager/${shop.shop_id}/items`} className="button info icon">
                         <i className="fas fa-box"></i>
                       </Link>
                       <button
-                        className={`shop-action-button ${shop.is_active ? 'deactivate' : 'activate'}`}
+                        className={`button icon${shop.is_active ? 'danger' : 'success'}`}
                         onClick={() => toggleShopStatus(shop.shop_id, shop.is_active)}
                       >
                         <i className={`fas fa-${shop.is_active ? 'times' : 'check'}`}></i>

@@ -129,7 +129,7 @@ const CollectItem = ({ userTrainers }) => {
         
         <div className="item-actions">
           <button
-            className="btn btn-primary"
+            className="button primary"
             onClick={() => handleCollectClick(item)}
           >
             Collect
@@ -184,7 +184,7 @@ const CollectItem = ({ userTrainers }) => {
             }
           </p>
         ) : (
-          <div className="items-grid">
+          <div className="container grid gap-md">
             {filteredItems.map(renderItemCard)}
           </div>
         )}
@@ -192,7 +192,7 @@ const CollectItem = ({ userTrainers }) => {
 
       {showCollectModal && selectedItem && (
         <Modal isOpen={showCollectModal} onClose={() => setShowCollectModal(false)}>
-          <div className="modal-header">
+          <div className="tree-header">
             <h3>Collect {selectedItem.item_name}</h3>
           </div>
           <div className="modal-body">
@@ -200,6 +200,7 @@ const CollectItem = ({ userTrainers }) => {
               <label htmlFor="trainer-select">Select Trainer:</label>
               <select
                 id="trainer-select"
+                className="trainer-select"
                 value={selectedTrainer}
                 onChange={(e) => setSelectedTrainer(e.target.value)}
                 required
@@ -235,14 +236,14 @@ const CollectItem = ({ userTrainers }) => {
           </div>
           <div className="modal-actions">
             <button
-              className="btn btn-secondary"
+              className="button secondary"
               onClick={() => setShowCollectModal(false)}
               disabled={submitting}
             >
               Cancel
             </button>
             <button
-              className="btn btn-primary"
+              className="button primary"
               onClick={handleCollect}
               disabled={submitting || !selectedTrainer || collectQuantity <= 0 || collectQuantity > selectedItem.quantity}
             >

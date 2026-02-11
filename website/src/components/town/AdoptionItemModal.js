@@ -20,7 +20,6 @@ import {
   BERRY_CATEGORIES,
   PASTRY_CATEGORIES
 } from '../../utils/itemHelpers';
-import './AdoptionItemModal.css';
 
 /**
  * AdoptionItemModal - Modal for using berries and pastries on a newly adopted monster
@@ -533,10 +532,10 @@ const AdoptionItemModal = ({
       <div className="monster-info-row">
         <div className="monster-name-species">
           <h3>{monsterData.name}</h3>
-          <div className="monster-species-list">
-            {monsterData.species1 && <span className="species-badge">{monsterData.species1}</span>}
-            {monsterData.species2 && <span className="species-badge"> {monsterData.species2}</span>}
-            {monsterData.species3 && <span className="species-badge"> {monsterData.species3}</span>}
+          <div className="species-images-grid">
+            {monsterData.species1 && <span className="badge">{monsterData.species1}</span>}
+            {monsterData.species2 && <span className="badge"> {monsterData.species2}</span>}
+            {monsterData.species3 && <span className="badge"> {monsterData.species3}</span>}
           </div>
         </div>
       </div>
@@ -580,9 +579,9 @@ const AdoptionItemModal = ({
                     e.target.src = getItemFallbackImage(category);
                   }}
                 />
-                <span className="queued-item-name">{item.name}</span>
+                <span className="target-name">{item.name}</span>
                 {item.value && (
-                  <span className="queued-item-value">→ {item.value}</span>
+                  <span className="result-value">→ {item.value}</span>
                 )}
                 {item.type === 'berry' && berryRequiresSpeciesSelection(item.name) && !item.value && (
                   <span className="queued-item-note">(species will be rolled)</span>
@@ -599,7 +598,7 @@ const AdoptionItemModal = ({
           })}
         </div>
         <button
-          className="modal-button primary apply-all-button"
+          className="button primary"
           onClick={processQueue}
           disabled={loading}
         >
@@ -615,18 +614,18 @@ const AdoptionItemModal = ({
 
     return (
       <div className="item-selection-section">
-        <div className="filter-buttons">
+        <div className="type-tags fw">
           {Object.keys(berryFilters).map(filter => (
             <button
               key={filter}
-              className={`filter-button ${berryFilters[filter] ? 'active' : ''}`}
+              className={`button filter ${berryFilters[filter] ? 'active' : ''}`}
               onClick={() => setBerryFilters(prev => ({ ...prev, [filter]: !prev[filter] }))}
             >
               {filter.charAt(0).toUpperCase() + filter.slice(1)}
             </button>
           ))}
           <button
-            className="filter-button clear"
+            className="button filter reset"
             onClick={() => setBerryFilters({
               species: false, type: false, randomize: false, add: false, remove: false, misc: false
             })}
@@ -635,7 +634,7 @@ const AdoptionItemModal = ({
           </button>
         </div>
 
-        <div className="items-grid">
+        <div className="container grid gap-md">
           {Object.entries(remainingBerries)
             .filter(([berryName, count]) => count > 0)
             .filter(([berryName]) => matchesBerryFilters(berryName))
@@ -645,7 +644,7 @@ const AdoptionItemModal = ({
               return (
                 <button
                   key={berryName}
-                  className="item-button berry"
+                  className="button item berry"
                   onClick={() => handleBerryClick(berryName)}
                   disabled={loading}
                 >
@@ -684,18 +683,18 @@ const AdoptionItemModal = ({
 
     return (
       <div className="item-selection-section">
-        <div className="filter-buttons">
+        <div className="type-tags fw">
           {Object.keys(pastryFilters).map(filter => (
             <button
               key={filter}
-              className={`filter-button ${pastryFilters[filter] ? 'active' : ''}`}
+              className={`button filter ${pastryFilters[filter] ? 'active' : ''}`}
               onClick={() => setPastryFilters(prev => ({ ...prev, [filter]: !prev[filter] }))}
             >
               {filter.charAt(0).toUpperCase() + filter.slice(1)}
             </button>
           ))}
           <button
-            className="filter-button clear"
+            className="button filter reset"
             onClick={() => setPastryFilters({
               species: false, type: false, set: false, add: false, misc: false
             })}
@@ -704,7 +703,7 @@ const AdoptionItemModal = ({
           </button>
         </div>
 
-        <div className="items-grid">
+        <div className="container grid gap-md">
           {Object.entries(remainingPastries)
             .filter(([pastryName, count]) => count > 0)
             .filter(([pastryName]) => matchesPastryFilters(pastryName))
@@ -714,7 +713,7 @@ const AdoptionItemModal = ({
               return (
                 <button
                   key={pastryName}
-                  className="item-button pastry"
+                  className="button item pastry"
                   onClick={() => handlePastryClick(pastryName)}
                   disabled={loading}
                 >
@@ -768,7 +767,7 @@ const AdoptionItemModal = ({
         {filteredValueOptions.map((value, index) => (
           <button
             key={index}
-            className={`value-option ${selectedValue === value ? 'selected' : ''}`}
+            className={`value-item ${selectedValue === value ? 'selected' : ''}`}
             onClick={() => setSelectedValue(value)}
           >
             {value}
@@ -776,14 +775,14 @@ const AdoptionItemModal = ({
         ))}
       </div>
 
-      {error && <div className="error-message">{error}</div>}
+      {error && <div className="alert error">{error}</div>}
 
       <div className="modal-actions">
-        <button className="modal-button secondary" onClick={cancelSelection}>
+        <button className="button secondary" onClick={cancelSelection}>
           Cancel
         </button>
         <button
-          className="modal-button primary"
+          className="button primary"
           onClick={confirmValueSelection}
           disabled={!selectedValue || loading}
         >
@@ -817,16 +816,16 @@ const AdoptionItemModal = ({
                 <div className="monster-selection-details">
                   <h4>{monster?.name || 'Monster'}</h4>
                   <div className="current-species">
-                    <span className={`species-badge ${speciesSlot === 1 ? 'species-highlight' : ''}`}>
+                    <span className={`badge${speciesSlot === 1 ? 'species-highlight' : ''}`}>
                       {monster?.species1 || 'None'}
                     </span>
                     {monster?.species2 && (
-                      <span className={`species-badge ${speciesSlot === 2 ? 'species-highlight' : ''}`}>
+                      <span className={`badge${speciesSlot === 2 ? 'species-highlight' : ''}`}>
                         {monster.species2}
                       </span>
                     )}
                     {monster?.species3 && (
-                      <span className={`species-badge ${speciesSlot === 3 ? 'species-highlight' : ''}`}>
+                      <span className={`badge${speciesSlot === 3 ? 'species-highlight' : ''}`}>
                         {monster.species3}
                       </span>
                     )}
@@ -835,14 +834,14 @@ const AdoptionItemModal = ({
                     {[monster?.type1, monster?.type2, monster?.type3, monster?.type4, monster?.type5]
                       .filter(Boolean)
                       .map((type, index) => (
-                        <span className={`type-badge type-${type.toLowerCase()}`} key={index}>
+                        <span className={`badge type-${type.toLowerCase()}`} key={index}>
                           {type}
                         </span>
                       ))}
                   </div>
                   {monster?.attribute && (
                     <div className="current-attribute">
-                      <span className={`attribute-badge attribute-${monster.attribute.toLowerCase()}`}>
+                      <span className={`badge attribute-${monster.attribute.toLowerCase()}`}>
                         {monster.attribute}
                       </span>
                     </div>
@@ -864,7 +863,7 @@ const AdoptionItemModal = ({
                 return (
                   <button
                     key={index}
-                    className={`species-selection-item ${isSelected ? 'selected' : ''}`}
+                    className={`species-selection-item${isSelected ? 'selected' : ''}`}
                     onClick={() => setSelectedSpeciesForOperations(prev => ({
                       ...prev,
                       [op.operationId]: species
@@ -874,7 +873,7 @@ const AdoptionItemModal = ({
                       <img
                         src={speciesImage.image_url}
                         alt={species}
-                        className="species-image"
+                        className="image-container medium"
                         onError={(e) => { e.target.style.display = 'none'; }}
                       />
                     )}
@@ -893,11 +892,11 @@ const AdoptionItemModal = ({
         );
       })}
 
-      {error && <div className="error-message">{error}</div>}
+      {error && <div className="alert error">{error}</div>}
 
       <div className="species-selection-actions">
         <button
-          className="modal-button secondary"
+          className="button secondary"
           onClick={() => {
             // Skip species berries and go to results
             setQueuedItems([]);
@@ -908,7 +907,7 @@ const AdoptionItemModal = ({
           Skip Species Berries
         </button>
         <button
-          className="modal-button primary"
+          className="button primary"
           onClick={completeSpeciesBerryProcessing}
           disabled={pendingBerryOperations.some(op => !selectedSpeciesForOperations[op.operationId])}
         >
@@ -932,7 +931,7 @@ const AdoptionItemModal = ({
     const failCount = processingResults.filter(r => !r.success).length;
 
     return (
-      <div className="result-section">
+      <div className="monster-info">
         <div className="results-summary">
           <h3>Results</h3>
           <p>
@@ -963,12 +962,12 @@ const AdoptionItemModal = ({
             {processingResults.map((result, index) => (
               <div
                 key={index}
-                className={`result-item ${result.success ? 'success' : 'error'}`}
+                className={`result-item${result.success ? 'success' : 'error'}`}
               >
                 <span className="result-icon">
                   {result.success ? '✓' : '✗'}
                 </span>
-                <span className="result-name">{result.item.name}</span>
+                <span className="task-name">{result.item.name}</span>
                 {result.item.value && (
                   <span className="result-value">→ {result.item.value}</span>
                 )}
@@ -986,10 +985,10 @@ const AdoptionItemModal = ({
         )}
 
         <div className="modal-actions">
-          <button className="modal-button secondary" onClick={onClose}>
+          <button className="button secondary" onClick={onClose}>
             Done
           </button>
-          <button className="modal-button primary" onClick={handleUseMore}>
+          <button className="button primary" onClick={handleUseMore}>
             Use More Items
           </button>
         </div>
@@ -1017,29 +1016,29 @@ const AdoptionItemModal = ({
           <>
             {renderMonsterDisplay(monster)}
 
-            <div className="tab-buttons">
+            <div className="button tabs">
               <button
-                className={`tab-button ${activeTab === 'berries' ? 'active' : ''}`}
+                className={`button tab ${activeTab === 'berries' ? 'active' : ''}`}
                 onClick={() => setActiveTab('berries')}
               >
                 Berries
               </button>
               <button
-                className={`tab-button ${activeTab === 'pastries' ? 'active' : ''}`}
+                className={`button tab ${activeTab === 'pastries' ? 'active' : ''}`}
                 onClick={() => setActiveTab('pastries')}
               >
                 Pastries
               </button>
             </div>
 
-            {error && <div className="error-message">{error}</div>}
+            {error && <div className="alert error">{error}</div>}
 
             {activeTab === 'berries' ? renderBerrySelection() : renderPastrySelection()}
 
             {renderQueuedItems()}
 
             <div className="modal-actions">
-              <button className="modal-button secondary" onClick={onClose}>
+              <button className="button secondary" onClick={onClose}>
                 {queuedItems.length > 0 ? 'Cancel' : 'Close'}
               </button>
             </div>

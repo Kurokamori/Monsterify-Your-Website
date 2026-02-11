@@ -268,7 +268,7 @@ const TrainerReferenceSubmissionForm = ({ onSubmissionComplete }) => {
                 {index > 0 && (
                   <button
                     type="button"
-                    className="remove-button"
+                    className="button danger icon"
                     onClick={() => removeReference(index)}
                   >
                     Remove
@@ -320,11 +320,10 @@ const TrainerReferenceSubmissionForm = ({ onSubmissionComplete }) => {
               </div>
 
               {reference.referencePreview && (
-                <div className="image-preview-container">
+                <div className="image-container medium">
                   <img
                     src={reference.referencePreview}
                     alt="Reference Preview"
-                    className="image-preview"
                   />
                 </div>
               )}
@@ -359,7 +358,7 @@ const TrainerReferenceSubmissionForm = ({ onSubmissionComplete }) => {
 
           <button
             type="button"
-            className="add-button"
+            className="button primary"
             onClick={addReference}
           >
             Add Another Reference
@@ -372,7 +371,7 @@ const TrainerReferenceSubmissionForm = ({ onSubmissionComplete }) => {
 
           <button
             type="button"
-            className="estimate-button"
+            className="button secondary"
             onClick={calculateRewardEstimate}
             disabled={loading}
           >
@@ -385,7 +384,7 @@ const TrainerReferenceSubmissionForm = ({ onSubmissionComplete }) => {
 
               <div className="reward-section">
                 <h5>Trainer Rewards</h5>
-                <div className="reward-items">
+                <div className="container cols-2 gap-md">
                   <div className="reward-item">
                     <span className="reward-label">Levels:</span>
                     <span className="reward-value">{rewardEstimate.levels}</span>
@@ -404,7 +403,7 @@ const TrainerReferenceSubmissionForm = ({ onSubmissionComplete }) => {
         <div className="form-actions">
           <button
             type="submit"
-            className="submit-button"
+            className="button success"
             disabled={loading}
           >
             {loading ? (

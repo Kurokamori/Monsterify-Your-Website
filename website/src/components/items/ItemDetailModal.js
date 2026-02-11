@@ -36,7 +36,7 @@ const ItemDetailModal = ({ isOpen, onClose, item }) => {
             )}
           </div>
           
-          <div className="item-detail-title-section">
+          <div className="compact-trainer-info">
             <h2 className="item-detail-name">{item.name}</h2>
             {item.category && (
               <div className="item-detail-category">{item.category}</div>
@@ -63,7 +63,7 @@ const ItemDetailModal = ({ isOpen, onClose, item }) => {
         </div>
         
         <div className="item-detail-actions">
-          <button className="modal-button primary" onClick={onClose}>
+          <button className="button primary" onClick={onClose}>
             Close
           </button>
         </div>

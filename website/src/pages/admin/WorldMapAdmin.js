@@ -443,12 +443,13 @@ const WorldMapAdmin = () => {
                   <div className="name-content">
                     <strong>{item.name}</strong>
                     {item.image && (
-                      <img 
-                        src={item.image} 
-                        alt={item.name}
-                        className="table-thumbnail"
-                        onError={(e) => { e.target.style.display = 'none'; }}
-                      />
+                      <div className="image-container tiny rounded cover no-margin inline">
+                        <img
+                          src={item.image}
+                          alt={item.name}
+                          onError={(e) => { e.target.style.display = 'none'; }}
+                        />
+                      </div>
                     )}
                   </div>
                 </td>
@@ -460,21 +461,21 @@ const WorldMapAdmin = () => {
                 {activeTab === 'areas' && <td>{item.regionName}</td>}
                 {activeTab === 'areas' && (
                   <td>
-                    <span className={`difficulty-badge difficulty-${item.difficulty?.toLowerCase()}`}>
+                    <span className={`badge difficulty-${item.difficulty?.toLowerCase()}`}>
                       {item.difficulty}
                     </span>
                   </td>
                 )}
                 <td className="actions-cell">
                   <button
-                    className="edit-btn"
+                    className="button secondary icon sm"
                     onClick={() => handleEdit(item)}
                     title="Edit"
                   >
                     <i className="fas fa-edit"></i>
                   </button>
                   <button
-                    className="delete-btn"
+                    className="button danger icon sm"
                     onClick={() => handleDelete(item.id)}
                     title="Delete"
                   >
@@ -501,10 +502,10 @@ const WorldMapAdmin = () => {
     return (
       <div className="modal-overlay" onClick={() => setShowModal(false)}>
         <div className="modal-content" onClick={e => e.stopPropagation()}>
-          <div className="modal-header">
+          <div className="tree-header">
             <h2>Edit {activeTab.slice(0, -1)}</h2>
             <button 
-              className="modal-close"
+              className="button close"
               onClick={() => setShowModal(false)}
             >
               <i className="fas fa-times"></i>
@@ -512,7 +513,7 @@ const WorldMapAdmin = () => {
           </div>
           
           <div className="modal-body">
-            <div className="form-grid">
+            <div className="container cols-2 gap-md">
               <div className="form-group">
                 <label>ID</label>
                 <input
@@ -673,14 +674,14 @@ const WorldMapAdmin = () => {
           </div>
           
           <div className="modal-footer">
-            <button 
-              className="btn-secondary"
+            <button
+              className="button secondary"
               onClick={() => setShowModal(false)}
             >
               Cancel
             </button>
-            <button 
-              className="btn-primary"
+            <button
+              className="button primary"
               onClick={handleSave}
             >
               Save Changes
@@ -693,7 +694,7 @@ const WorldMapAdmin = () => {
 
   return (
     <div className="world-map-admin">
-      <div className="admin-header">
+      <div className="option-row">
         <h1>World Map Administration</h1>
         <p>Manage landmasses, regions, and areas</p>
       </div>
@@ -702,7 +703,7 @@ const WorldMapAdmin = () => {
         {tabs.map(tab => (
           <button
             key={tab.id}
-            className={`tab-button ${activeTab === tab.id ? 'active' : ''}`}
+            className={`button tab ${activeTab === tab.id ? 'active' : ''}`}
             onClick={() => setActiveTab(tab.id)}
           >
             <i className={tab.icon}></i>
@@ -723,7 +724,7 @@ const WorldMapAdmin = () => {
         </div>
         
         <button
-          className="add-new-btn"
+          className="button primary"
           onClick={handleAddNew}
         >
           <i className="fas fa-plus"></i>
@@ -732,15 +733,15 @@ const WorldMapAdmin = () => {
       </div>
 
       <div className="admin-stats">
-        <div className="stat-card">
+        <div className="ref-item">
           <div className="stat-number">{Object.keys(landmasses).length}</div>
           <div className="stat-label">Landmasses</div>
         </div>
-        <div className="stat-card">
+        <div className="ref-item">
           <div className="stat-number">{Object.keys(regions).length}</div>
           <div className="stat-label">Regions</div>
         </div>
-        <div className="stat-card">
+        <div className="ref-item">
           <div className="stat-number">{Object.keys(areas).length}</div>
           <div className="stat-label">Areas</div>
         </div>

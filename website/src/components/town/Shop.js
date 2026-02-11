@@ -252,7 +252,7 @@ const Shop = ({ shopId, shopName, shopDescription }) => {
   const displayCategories = categories.length > 0 ? categories : fallbackCategories;
 
   return (
-    <div className="shop-container">
+    <div className="form">
       <div className="shop-header">
         <h2>{shopName || 'Shop'}</h2>
         <p className="shop-description">{shopDescription || 'Purchase items for your monsters and trainers.'}</p>
@@ -262,7 +262,7 @@ const Shop = ({ shopId, shopName, shopDescription }) => {
         {displayCategories.map(category => (
           <button
             key={category.id}
-            className={`category-button ${selectedCategory === category.id ? 'active' : ''}`}
+            className={`button secondary ${selectedCategory === category.id ? 'active' : ''}`}
             onClick={() => handleCategoryChange(category.id)}
           >
             {category.name}
@@ -270,11 +270,11 @@ const Shop = ({ shopId, shopName, shopDescription }) => {
         ))}
       </div>
 
-      <div className="shop-items-grid">
+      <div className="town-places">
         {displayItems.map(item => (
           <div
             key={item.id}
-            className={`shop-item ${item.stock === 0 ? 'out-of-stock' : ''}`}
+            className={`shop-item${item.stock === 0 ? 'out-of-stock' : ''}`}
             onClick={() => item.stock > 0 && handleItemClick(item)}
           >
             <div className="item-image-container">
@@ -311,9 +311,9 @@ const Shop = ({ shopId, shopName, shopDescription }) => {
 
       {/* Pagination */}
       {totalPages > 1 && (
-        <div className="shop-pagination">
+        <div className="type-tags fw">
           <button
-            className="pagination-button"
+            className="button secondary"
             onClick={() => handlePageChange(page - 1)}
             disabled={page === 1}
           >
@@ -325,7 +325,7 @@ const Shop = ({ shopId, shopName, shopDescription }) => {
           </div>
 
           <button
-            className="pagination-button"
+            className="button secondary"
             onClick={() => handlePageChange(page + 1)}
             disabled={page === totalPages}
           >
@@ -341,7 +341,7 @@ const Shop = ({ shopId, shopName, shopDescription }) => {
         title={selectedItem?.name || 'Item Details'}
       >
         {selectedItem && (
-          <div className="item-modal-content">
+          <div className="form">
             {purchaseSuccess ? (
               <div className="purchase-success">
                 <div className="success-icon">
@@ -353,13 +353,13 @@ const Shop = ({ shopId, shopName, shopDescription }) => {
                 </p>
                 <div className="modal-actions">
                   <button
-                    className="modal-button secondary"
+                    className="button secondary"
                     onClick={closeItemModal}
                   >
                     Close
                   </button>
                   <button
-                    className="modal-button primary"
+                    className="button primary"
                     onClick={() => {
                       setPurchaseSuccess(false);
                       setPurchaseQuantity(1);
@@ -381,7 +381,7 @@ const Shop = ({ shopId, shopName, shopDescription }) => {
                     />
                   </div>
 
-                  <div className="item-info-detailed">
+                  <div className="type-tags fw">
                     <p className="item-description">{selectedItem.description}</p>
 
                     <div className="item-meta">
@@ -411,13 +411,13 @@ const Shop = ({ shopId, shopName, shopDescription }) => {
 
                 {isAuthenticated ? (
                   <div className="purchase-section">
-                    <div className="purchase-options">
+                    <div className="type-tags fw">
                       <div className="form-group">
                         <label htmlFor="purchase-quantity">Quantity:</label>
-                        <div className="quantity-input">
+                        <div className="form-input">
                           <button
                             type="button"
-                            className="quantity-button"
+                            className="button quantity"
                             onClick={() => purchaseQuantity > 1 && setPurchaseQuantity(purchaseQuantity - 1)}
                           >
                             -
@@ -432,7 +432,7 @@ const Shop = ({ shopId, shopName, shopDescription }) => {
                           />
                           <button
                             type="button"
-                            className="quantity-button"
+                            className="button quantity"
                             onClick={() => {
                               if (selectedItem.is_limited) {
                                 purchaseQuantity < selectedItem.stock && setPurchaseQuantity(purchaseQuantity + 1);
@@ -487,7 +487,7 @@ const Shop = ({ shopId, shopName, shopDescription }) => {
                       )}
 
                       <button
-                        className="purchase-button"
+                        className="button primary"
                         onClick={handlePurchase}
                         disabled={
                           purchaseLoading ||
@@ -509,7 +509,7 @@ const Shop = ({ shopId, shopName, shopDescription }) => {
                     </div>
                   </div>
                 ) : (
-                  <div className="login-prompt">
+                  <div className="claim-error">
                     <p>Please log in to purchase items.</p>
                   </div>
                 )}

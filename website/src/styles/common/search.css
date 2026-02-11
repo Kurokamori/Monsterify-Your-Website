@@ -1,0 +1,309 @@
+/* ==============================
+   Search Bar Styles
+   ============================== */
+
+.search-bar {
+  border-color: var(--border-color);
+  flex: 1;
+  margin-bottom: 20px;
+  margin-top: 10px;
+  text-align: center;
+  width: 100%;
+}
+
+.search-bar-icon {
+  position: absolute;
+  left: 12px;
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
+.form-input button {
+  background: none;
+  border: none;
+  color: var(--accent-color);
+  font-size: 1rem;
+  padding: 0.3rem;
+  position: absolute;
+  right: 0.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  transition: all .2s ease;
+}
+
+/* ---------- Search Input ---------- */
+
+.search-input {
+  background: var(--input-background);
+  border: 1px solid var(--border-color);
+  border-radius: 0.5rem;
+  color: var(--text-color);
+  font-size: 0.9rem;
+  padding: 0.625rem 2.5rem 0.625rem 2.5rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  width: 100%;
+}
+
+.search-input:focus {
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 2px var(--accent-glow);
+  outline: none;
+}
+
+.search-input::placeholder {
+  color: var(--text-muted);
+}
+
+/* ---------- Search Container ---------- */
+
+.search-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  max-width: 500px;
+}
+
+.search-container.full-width {
+  max-width: 100%;
+}
+
+.search-container .search-icon {
+  position: absolute;
+  left: 0.75rem;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  pointer-events: none;
+}
+
+.search-container .clear-button {
+  position: absolute;
+  right: 0.75rem;
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 0.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s;
+}
+
+.search-container .clear-button:hover {
+  color: var(--text-color);
+}
+
+/* ==============================================
+   RESPONSIVE STYLES
+   ============================================== */
+
+/* ---------- Medium Desktop/Laptop (1024px - 1199px) ---------- */
+@media (max-width: 1199px) {
+  .search-bar {
+    margin-bottom: 16px;
+    margin-top: 8px;
+  }
+
+  .search-bar-icon {
+    left: 10px;
+    font-size: 13px;
+  }
+
+  .search-input {
+    font-size: 0.875rem;
+    padding: 0.5rem 2.25rem;
+  }
+
+  .search-container {
+    max-width: 450px;
+  }
+}
+
+/* ---------- Small Desktop/Large Tablet (768px - 1023px) ---------- */
+@media (max-width: 1023px) {
+  .search-bar {
+    margin-bottom: 14px;
+    margin-top: 6px;
+  }
+
+  .search-bar-icon {
+    left: 10px;
+    font-size: 12px;
+  }
+
+  .search-input {
+    font-size: 0.85rem;
+    padding: 0.5rem 2rem;
+  }
+
+  .search-container {
+    max-width: 400px;
+  }
+
+  .form-input button {
+    font-size: 0.9rem;
+    padding: 0.25rem;
+  }
+}
+
+/* ---------- Tablet Portrait (600px - 767px) ---------- */
+@media (max-width: 767px) {
+  .search-bar {
+    margin-bottom: 12px;
+    margin-top: 8px;
+    width: 100%;
+  }
+
+  .search-bar-icon {
+    left: 12px;
+    font-size: 14px;
+  }
+
+  .search-input {
+    font-size: 16px; /* Prevents iOS zoom */
+    padding: 0.75rem 2.5rem;
+    min-height: 44px; /* Touch-friendly */
+    border-radius: 0.625rem;
+  }
+
+  .search-input:focus {
+    box-shadow: 0 0 0 3px var(--accent-glow);
+  }
+
+  .search-container {
+    max-width: 100%;
+  }
+
+  .search-container .search-icon {
+    left: 0.875rem;
+    font-size: 1rem;
+  }
+
+  .search-container .clear-button {
+    right: 0.875rem;
+    padding: 0.5rem;
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  .form-input button {
+    font-size: 1rem;
+    padding: 0.5rem;
+    right: 0.75rem;
+    min-width: 44px;
+    min-height: 44px;
+  }
+}
+
+/* ---------- Large Phone (480px - 599px) ---------- */
+@media (max-width: 599px) {
+  .search-bar {
+    margin-bottom: 10px;
+    margin-top: 6px;
+  }
+
+  .search-input {
+    font-size: 16px;
+    padding: 0.625rem 2.25rem;
+  }
+
+  .search-container .search-icon {
+    left: 0.625rem;
+  }
+
+  .search-container .clear-button {
+    right: 0.625rem;
+  }
+}
+
+/* ---------- Small Phone (320px - 479px) ---------- */
+@media (max-width: 479px) {
+  .search-bar {
+    margin-bottom: 8px;
+    margin-top: 4px;
+  }
+
+  .search-bar-icon {
+    left: 8px;
+    font-size: 12px;
+  }
+
+  .search-input {
+    font-size: 16px;
+    padding: 0.5rem 2rem;
+    border-radius: 0.5rem;
+  }
+
+  .search-container .search-icon {
+    left: 0.5rem;
+    font-size: 0.85rem;
+  }
+
+  .search-container .clear-button {
+    right: 0.5rem;
+  }
+
+  .form-input button {
+    right: 0.375rem;
+    font-size: 0.9rem;
+  }
+}
+
+/* ---------- Ultra Small Screens (below 320px) ---------- */
+@media (max-width: 319px) {
+  .search-bar {
+    margin-bottom: 6px;
+    margin-top: 2px;
+  }
+
+  .search-input {
+    font-size: 14px;
+    padding: 0.375rem 1.75rem;
+  }
+
+  .search-container .search-icon {
+    left: 0.375rem;
+    font-size: 0.75rem;
+  }
+
+  .search-container .clear-button {
+    right: 0.375rem;
+    padding: 0.25rem;
+  }
+}
+
+/* ---------- Accessibility: Reduced Motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .search-input,
+  .form-input button,
+  .search-container .clear-button {
+    transition: none;
+  }
+}
+
+/* ---------- Touch Device Optimizations ---------- */
+@media (hover: none) and (pointer: coarse) {
+  .search-input {
+    font-size: 16px;
+    min-height: 44px;
+  }
+
+  .search-container .clear-button,
+  .form-input button {
+    min-width: 44px;
+    min-height: 44px;
+  }
+}
+
+/* ---------- High Contrast Mode ---------- */
+@media (prefers-contrast: high) {
+  .search-input {
+    border-width: 2px;
+  }
+
+  .search-input:focus {
+    outline: 3px solid var(--accent-color);
+    outline-offset: 2px;
+  }
+}

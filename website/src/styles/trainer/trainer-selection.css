@@ -1,0 +1,92 @@
+/* ==============================
+   Trainer Selection Styles
+
+   Trainer selection components, selectors,
+   assignment blocks, and empty states.
+   ============================== */
+
+/* ===== Trainer select ===== */
+
+.trainer-select:hover{ border-color:var(--accent-color); }
+
+/* ===== Dropdown options ===== */
+
+.trainer-select option,
+.missions-filters select option {
+  background-color: var(--input-background);
+  color: var(--text-color);
+  padding: 0.5rem;
+}
+
+.trainer-select option:hover,
+.missions-filters select option:hover,
+.trainer-select option:checked,
+.missions-filters select option:checked {
+  background-color: var(--nav-hover);
+  color: var(--text-color);
+}
+
+/* ===== Assignment block ===== */
+
+.trainer-assignment { margin-top: 15px; }
+
+.trainer-assignment label {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--text-muted);
+  font-weight: 700;
+}
+
+/* ===== Fancy select in hero section ===== */
+
+.missions-filters .trainer-select {
+  padding: 1rem 1.5rem;
+  background: linear-gradient(135deg, var(--overlay-dark) 0%, var(--overlay-heavy) 100%);
+  border: 2px solid var(--accent-glow-medium);
+  border-radius: 12px;
+  color: var(--text-color);
+  min-width: 280px;
+  font-size: 1.05rem;
+  transition: all .3s ease;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 15px var(--overlay-medium);
+}
+
+.missions-filters .trainer-select:focus {
+  outline: none;
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 3px var(--accent-glow-medium), 0 8px 25px var(--overlay-medium);
+  transform: translateY(-2px);
+}
+
+/* ===== Empty state ===== */
+
+.no-trainer-selected {
+  text-align: center;
+  padding: 3rem 2rem;
+  background: linear-gradient(135deg, var(--warning-glow) 0%, var(--warning-glow) 100%);
+  backdrop-filter: blur(15px);
+  border-radius: 16px;
+  margin: 2rem;
+  border: 1px solid var(--warning-glow);
+}
+
+.no-trainer-selected p {
+  color: var(--warning-color);
+  font-size: 1.2rem;
+  font-weight: 500;
+  margin: 0;
+}
+
+/* ===== Responsive ===== */
+
+@media (max-width: 480px) {
+  .missions-filters .trainer-select {
+    min-width: 0;
+    width: 100%;
+  }
+}
+
+@media (min-width: 768px) {
+  .missions-filters label { font-size: 1.25rem; }
+}

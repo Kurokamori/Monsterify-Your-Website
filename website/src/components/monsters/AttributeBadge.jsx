@@ -13,7 +13,7 @@ const AttributeBadge = ({ attribute, context }) => {
   const formattedAttribute = attribute.toLowerCase();
   
   return (
-    <span className={`attribute-badge attribute-${formattedAttribute} ${context && `attribute-badge-${context}`}`}>
+    <span className={`badge attribute-${formattedAttribute}${context ? ` attribute-badge-${context}` : ''}`}>
       {attribute}
     </span>
   );

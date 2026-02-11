@@ -4,15 +4,15 @@ const FactionStandingDisplay = ({ standing, faction, trainerId }) => {
   if (!standing) {
     return (
       <div className="standing-display">
-        <div className="standing-header">
+        <div className="option-row">
           <h3>Standing with {faction?.name}</h3>
           <div className="standing-value neutral">
             <span className="standing-number">0</span>
             <span className="standing-label">Neutral</span>
           </div>
         </div>
-        <div className="standing-bar">
-          <div className="standing-progress" style={{ width: '50%' }}></div>
+        <div className="progress">
+          <div className="progress-fill default"></div>
         </div>
         <div className="standing-info">
           <p>No standing established with this faction yet.</p>
@@ -72,7 +72,7 @@ const FactionStandingDisplay = ({ standing, faction, trainerId }) => {
 
   return (
     <div className="standing-display">
-      <div className="standing-header">
+      <div className="option-row">
         <h3>Standing with {faction.name}</h3>
         <div className="standing-value" style={{ color: standingColor }}>
           <span className="standing-number">{standing.standing}</span>
@@ -81,17 +81,19 @@ const FactionStandingDisplay = ({ standing, faction, trainerId }) => {
       </div>
 
       <div className="standing-bar">
-        <div 
-          className="standing-progress" 
-          style={{ 
-            width: `${progressPercentage}%`,
-            backgroundColor: standingColor
-          }}
-        ></div>
+        <div className="progress">
+          <div
+            className="progress-fill"
+            style={{
+              width: `${progressPercentage}%`,
+              backgroundColor: standingColor
+            }}
+          ></div>
+        </div>
         <div className="standing-markers">
-          <div className="marker negative" style={{ left: '0%' }}>-1000</div>
-          <div className="marker neutral" style={{ left: '50%' }}>0</div>
-          <div className="marker positive" style={{ left: '100%' }}>1000</div>
+          <div className="marker negative">-1000</div>
+          <div className="marker neutral">0</div>
+          <div className="marker positive">1000</div>
         </div>
       </div>
 
@@ -111,10 +113,10 @@ const FactionStandingDisplay = ({ standing, faction, trainerId }) => {
             <p>{nextTitle.description}</p>
             <div className="title-progress">
               <span>Progress to next title:</span>
-              <div className="title-progress-bar">
-                <div 
-                  className="title-progress-fill"
-                  style={{ 
+              <div className="progress">
+                <div
+                  className="progress-fill"
+                  style={{
                     width: `${Math.max(0, (standing.standing / nextTitle.standing_requirement) * 100)}%`,
                     backgroundColor: standingColor
                   }}

@@ -1,5 +1,4 @@
 import React from 'react';
-import './EvolutionCards.css';
 
 const EvolutionCards = ({ evolutionData, currentMonsterId }) => {
   if (!evolutionData || !Array.isArray(evolutionData) || evolutionData.length === 0) {
@@ -21,7 +20,7 @@ const EvolutionCards = ({ evolutionData, currentMonsterId }) => {
 
   return (
     <div className="evolution-cards-container">
-      <div className="evolution-chain">
+      <div className="image-upload">
         {sortedEvolution.map((evo, index) => (
           <React.Fragment key={evo.id || index}>
             {index > 0 && (
@@ -37,7 +36,7 @@ const EvolutionCards = ({ evolutionData, currentMonsterId }) => {
               className={`evolution-card ${evo.id === currentMonsterId ? 'current-monster' : ''}`}
             >
               {/* Card Header */}
-              <div className="evolution-card-header">
+              <div className="adopt-card">
                 <div className="evolution-stage">
                   <span className="stage-number">#{index + 1}</span>
                   <span className="stage-label">Evolution Stage</span>
@@ -63,7 +62,7 @@ const EvolutionCards = ({ evolutionData, currentMonsterId }) => {
                     }}
                   />
                 ) : (
-                  <div className="no-evolution-image">
+                  <div className="evolution-image">
                     <i className="fas fa-image"></i>
                     <span>No Image</span>
                   </div>
@@ -83,7 +82,7 @@ const EvolutionCards = ({ evolutionData, currentMonsterId }) => {
                   {[evo.type1, evo.type2, evo.type3, evo.type4, evo.type5]
                     .filter(Boolean)
                     .map((type, i) => (
-                      <span key={i} className={`evolution-type-badge type-${type.toLowerCase()}`}>
+                      <span key={i} className={`badge type-${type.toLowerCase()}`}>
                         {type}
                       </span>
                     ))}
@@ -92,7 +91,7 @@ const EvolutionCards = ({ evolutionData, currentMonsterId }) => {
                 {/* Attribute */}
                 {evo.attribute && evo.attribute !== 'None' && (
                   <div className="evolution-attribute">
-                    <span className={`evolution-attribute-badge attribute-${evo.attribute.toLowerCase()}`}>
+                    <span className={`badge attribute-${evo.attribute.toLowerCase()}`}>
                       {evo.attribute}
                     </span>
                   </div>
@@ -107,7 +106,7 @@ const EvolutionCards = ({ evolutionData, currentMonsterId }) => {
                     <span>Evolution Method</span>
                   </div>
                   
-                  <div className="method-details">
+                  <div className="change-details">
                     <div className="method-name">
                       {evo.evolution_method}
                     </div>
@@ -147,7 +146,7 @@ const EvolutionCards = ({ evolutionData, currentMonsterId }) => {
 
       {/* Evolution Summary */}
       <div className="evolution-summary">
-        <div className="summary-header">
+        <div className="naming-header">
           <i className="fas fa-chart-line"></i>
           <h4>Evolution Chain Summary</h4>
         </div>

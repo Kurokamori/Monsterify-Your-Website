@@ -99,16 +99,16 @@ const HabitModal = ({ isOpen, onClose, onSuccess, trainers = [], habit = null })
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-content" onClick={e => e.stopPropagation()}>
-        <div className="modal-header">
+        <div className="tree-header">
           <h3>{habit ? 'Edit Habit' : 'Create New Habit'}</h3>
-          <button className="modal-close" onClick={onClose}>
+          <button className="button close" onClick={onClose}>
             <i className="fas fa-times"></i>
           </button>
         </div>
 
         <form onSubmit={handleSubmit} className="modal-body">
           {error && (
-            <div className="error-message">
+            <div className="alert error">
               <i className="fas fa-exclamation-triangle"></i>
               {error}
             </div>
@@ -252,7 +252,7 @@ const HabitModal = ({ isOpen, onClose, onSuccess, trainers = [], habit = null })
 
                 <div className="form-group">
                   <label>Reminder Days</label>
-                  <div className="checkbox-group">
+                  <div className="event-date">
                     {weekDays.map(day => (
                       <label key={day} className="checkbox-label">
                         <input
@@ -296,10 +296,10 @@ const HabitModal = ({ isOpen, onClose, onSuccess, trainers = [], habit = null })
           </div>
 
           <div className="modal-actions">
-            <button type="button" onClick={onClose} className="btn-secondary">
+            <button type="button" onClick={onClose} className="button secondary">
               Cancel
             </button>
-            <button type="submit" disabled={loading} className="btn-primary">
+            <button type="submit" disabled={loading} className="button primary">
               {loading ? (
                 <>
                   <i className="fas fa-spinner fa-spin"></i>

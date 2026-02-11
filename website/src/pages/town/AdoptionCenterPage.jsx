@@ -26,7 +26,7 @@ const AdoptionCenterPage = () => {
         <div className="location-icon-large">
           <i className="fas fa-home"></i>
         </div>
-        <div className="location-title">
+        <div className="no-adventures">
           <h2>Adoption Center</h2>
           <p>Find a new monster to join your team</p>
         </div>

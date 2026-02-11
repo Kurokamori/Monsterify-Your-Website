@@ -68,7 +68,7 @@ const AdventureDetail = ({ adventureId }) => {
   const displayAdventure = adventure || fallbackAdventure;
 
   return (
-    <div className="adventure-detail-container">
+    <div className="form">
       {error && (
         <ErrorMessage 
           message={error} 
@@ -77,9 +77,9 @@ const AdventureDetail = ({ adventureId }) => {
       )}
       
       <div className="adventure-header">
-        <div className="adventure-title-section">
+        <div className="adopt-card">
           <h2>{displayAdventure.title}</h2>
-          <div className={`adventure-status ${displayAdventure.status}`}>
+          <div className={`adventure-status${displayAdventure.status}`}>
             {displayAdventure.status.charAt(0).toUpperCase() + displayAdventure.status.slice(1)}
           </div>
         </div>

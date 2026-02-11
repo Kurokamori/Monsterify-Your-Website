@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import api from '../services/api';
 import submissionService from '../services/submissionService';
+import LoadingSpinner from '../components/common/LoadingSpinner';
 
 const HomePage = () => {
   const { currentUser, isAuthenticated } = useAuth();
@@ -201,10 +202,7 @@ const HomePage = () => {
   if (loading) {
     return (
       <div className="homepage-loading">
-        <div className="loading-spinner">
-          <i className="fas fa-dragon"></i>
-          <p>Loading your adventure...</p>
-        </div>
+        <LoadingSpinner message="Loading your adventure..." />
       </div>
     );
   }
@@ -236,7 +234,7 @@ const HomePage = () => {
             </p>
           </div>
           <div className="hero-visual">
-            <div className="floating-monsters">
+            <div className="map-background">
               {displayFakemon.slice(0, 4).map((mon, index) => (
                 <div key={mon.number} className={`floating-monster monster-${index + 1}`}>
                   <img 
@@ -265,7 +263,7 @@ const HomePage = () => {
                 <p>Join our comminity of artists and monster enthusiasts to start your adventure!</p>
               </div>
               
-              <div className="steps-grid">
+              <div className="container grid-xl gap-lg">
                 <div className="step-card">
                   <div className="step-number">1</div>
                   <div className="step-icon">
@@ -273,7 +271,7 @@ const HomePage = () => {
                   </div>
                   <h3>Join Discord</h3>
                   <p>Connect with our vibrant community</p>
-                  <a href="https://discord.gg/YrF74RWA6v" className="step-button" target="_blank" rel="noopener noreferrer">
+                  <a href="https://discord.gg/YrF74RWA6v" className="button primary" target="_blank" rel="noopener noreferrer">
                     Join Server
                   </a>
                 </div>
@@ -285,7 +283,7 @@ const HomePage = () => {
                   </div>
                   <h3>Register Account</h3>
                   <p>Create your profile and get started</p>
-                  <Link to="/register" className="step-button">
+                  <Link to="/register" className="button primary">
                     Sign Up
                   </Link>
                 </div>
@@ -297,7 +295,7 @@ const HomePage = () => {
                   </div>
                   <h3>Create Trainer</h3>
                   <p>Design your character and start your adventure</p>
-                  <Link to="/profile/trainers/add" className="step-button">
+                  <Link to="/profile/trainers/add" className="button primary">
                     Create Trainer
                   </Link>
                 </div>
@@ -306,7 +304,7 @@ const HomePage = () => {
 
             <div className="features-showcase">
               <h2>Game Features</h2>
-              <div className="features-grid">
+              <div className="container grid-xl gap-md">
                 <div className="feature-card">
                   <div className="feature-icon">
                     <i className="fas fa-palette"></i>
@@ -344,8 +342,8 @@ const HomePage = () => {
             {/* Look Around Section for New Users */}
             <div className="look-around-section">
               <h2>Look Around</h2>
-              <div className="look-around-grid">
-                <Link to="/gallery" className="look-around-card">
+              <div className="container grid-lg gap-md">
+                <Link to="/gallery" className="feature-card">
                   <div className="look-around-icon">
                     <i className="fas fa-images"></i>
                   </div>
@@ -353,7 +351,7 @@ const HomePage = () => {
                   <p>Browse amazing artwork from the community</p>
                 </Link>
                 
-                <Link to="/library" className="look-around-card">
+                <Link to="/library" className="feature-card">
                   <div className="look-around-icon">
                     <i className="fas fa-book"></i>
                   </div>
@@ -361,7 +359,7 @@ const HomePage = () => {
                   <p>Read stories and lore from trainers</p>
                 </Link>
                 
-                <Link to="/trainers" className="look-around-card">
+                <Link to="/trainers" className="feature-card">
                   <div className="look-around-icon">
                     <i className="fas fa-users"></i>
                   </div>
@@ -373,9 +371,9 @@ const HomePage = () => {
               {/* Recent Gallery Carousel */}
               <div className="gallery-carousel">
                 <h3>Recent Gallery Submissions</h3>
-                <div className="gallery-carousel-items">
+                <div className="creatures-gallery">
                   {(gallerySubmissions.length > 0 ? gallerySubmissions : fallbackGallery).map((submission, index) => (
-                    <Link to={`/submissions/${submission.id}`} key={index} className="gallery-carousel-item">
+                    <Link to={`/submissions/${submission.id}`} key={index} className="feature-card">
                       <img 
                         src={submission.image_url || submission.url || `https://via.placeholder.com/200/1e2532/d6a339?text=Art`}
                         alt={submission.title || 'Gallery Submission'}
@@ -402,25 +400,25 @@ const HomePage = () => {
               <p>Ready to continue your artistic adventure?</p>
             </div>
 
-            <div className="dashboard-grid">
+            <div className="button">
               {/* Top Row - Quick Actions and User Trainers */}
               <div className="dashboard-row">
-                <div className="dashboard-card quick-actions">
+                <div className="item-card quick-actions">
                   <h3>Quick Actions</h3>
-                  <div className="action-buttons">
-                    <Link to="/submissions/art" className="action-button art">
+                  <div className="town-square">
+                    <Link to="/submissions/art" className="quick-action-button art">
                       <i className="fas fa-palette"></i>
                       <span>Submit Art</span>
                     </Link>
-                    <Link to="/submissions/writing" className="action-button writing">
+                    <Link to="/submissions/writing" className="quick-action-button writing">
                       <i className="fas fa-feather-alt"></i>
                       <span>Submit Writing</span>
                     </Link>
-                    <Link to="/town/farm" className="action-button farm">
+                    <Link to="/town/farm" className="quick-action-button farm">
                       <i className="fas fa-seedling"></i>
                       <span>Visit Farm</span>
                     </Link>
-                    <Link to="/town/adoption" className="action-button adoption">
+                    <Link to="/town/adoption" className="quick-action-button adoption">
                       <i className="fas fa-heart"></i>
                       <span>Adoption Center</span>
                     </Link>
@@ -428,12 +426,12 @@ const HomePage = () => {
                 </div>
 
                 {/* User Trainers */}
-                <div className="dashboard-card user-trainers">
+                <div className="item-card item-card">
                   <div className="card-header">
                     <h3>Your Trainers</h3>
-                    <Link to="/my_trainers" className="view-all">View All</Link>
+                    <Link to="/my_trainers" className="button primary view-all">View All</Link>
                   </div>
-                  <div className="compact-trainers">
+                  <div className="map-filters">
                     {(userTrainers.length > 0 ? userTrainers : fallbackTrainers).slice(0, 5).map((trainer) => (
                       <Link to={`/trainers/${trainer.id}`} key={trainer.id} className="compact-trainer-card">
                         <div className="compact-trainer-avatar">
@@ -448,7 +446,7 @@ const HomePage = () => {
                         </div>
                         <div className="compact-trainer-info">
                           <div className="compact-trainer-name">{trainer.name}</div>
-                          <div className="compact-trainer-stats">
+                          <div className="form-input">
                             <span className="compact-trainer-level">Lv. {trainer.level || 1}</span>
                             <div className="compact-stat">
                               <i className="fas fa-dragon"></i>
@@ -467,16 +465,16 @@ const HomePage = () => {
               <div className="dashboard-row">
                 {/* Recent Tasks */}
                 {recentTasks.length > 0 && (
-                  <div className="dashboard-card recent-tasks">
+                  <div className="item-card recent-tasks">
                     <div className="card-header">
                       <h3>Recent Tasks</h3>
-                      <Link to="/tasks" className="view-all">View All</Link>
+                      <Link to="/tasks" className="button primary view-all">View All</Link>
                     </div>
-                    <div className="task-list">
+                    <div className="auth-form">
                       {recentTasks.map((task, index) => (
                         <div key={index} className="task-item">
                           <div className="task-status">
-                            <i className={`fas ${task.completed ? 'fa-check-circle completed' : 'fa-circle pending'}`}></i>
+                            <i className={`fas${task.completed ? 'fa-check-circle completed' : 'fa-circle pending'}`}></i>
                           </div>
                           <div className="task-content">
                             <span className="task-name">{task.name}</span>
@@ -490,20 +488,20 @@ const HomePage = () => {
 
                 {/* Art Todo List */}
                 {artTodos.length > 0 && (
-                  <div className="dashboard-card art-todos">
+                  <div className="item-card art-todos">
                     <div className="card-header">
                       <h3>Art Todo List</h3>
-                      <Link to="/profile/art-todo" className="view-all">View All</Link>
+                      <Link to="/profile/art-todo" className="button primary view-all">View All</Link>
                     </div>
-                    <div className="todo-list">
+                    <div className="auth-form">
                       {artTodos.map((todo, index) => (
-                        <div key={index} className="todo-item">
+                        <div key={index} className="task-item">
                           <div className="todo-priority">
-                            <span className={`priority-badge ${todo.priority}`}>{todo.priority}</span>
+                            <span className={`priority-badge${todo.priority}`}>{todo.priority}</span>
                           </div>
                           <div className="todo-content">
-                            <span className="todo-title">{todo.title}</span>
-                            <span className="todo-type">{todo.type}</span>
+                            <span className="task-name">{todo.title}</span>
+                            <span className="task-date">{todo.type}</span>
                           </div>
                         </div>
                       ))}
@@ -516,8 +514,8 @@ const HomePage = () => {
             {/* Look Around Section for Returning Users */}
             <div className="look-around-section">
               <h2>Look Around</h2>
-              <div className="look-around-grid">
-                <Link to="/gallery" className="look-around-card">
+              <div className="container grid-lg gap-md">
+                <Link to="/gallery" className="feature-card">
                   <div className="look-around-icon">
                     <i className="fas fa-images"></i>
                   </div>
@@ -525,7 +523,7 @@ const HomePage = () => {
                   <p>Browse amazing artwork from the community</p>
                 </Link>
                 
-                <Link to="/library" className="look-around-card">
+                <Link to="/library" className="feature-card">
                   <div className="look-around-icon">
                     <i className="fas fa-book"></i>
                   </div>
@@ -533,7 +531,7 @@ const HomePage = () => {
                   <p>Read stories and lore from trainers</p>
                 </Link>
                 
-                <Link to="/trainers" className="look-around-card">
+                <Link to="/trainers" className="feature-card">
                   <div className="look-around-icon">
                     <i className="fas fa-users"></i>
                   </div>
@@ -545,9 +543,9 @@ const HomePage = () => {
               {/* Recent Gallery Carousel */}
               <div className="gallery-carousel">
                 <h3>Recent Gallery Submissions</h3>
-                <div className="gallery-carousel-items">
+                <div className="creatures-gallery">
                   {(gallerySubmissions.length > 0 ? gallerySubmissions : fallbackGallery).map((submission, index) => (
-                    <Link to={`/submissions/${submission.id}`} key={index} className="gallery-carousel-item">
+                    <Link to={`/submissions/${submission.id}`} key={index} className="feature-card">
                       <img 
                         src={submission.image_url || submission.url || `https://via.placeholder.com/200/1e2532/d6a339?text=Art`}
                         alt={submission.title || 'Gallery Submission'}
@@ -572,7 +570,7 @@ const HomePage = () => {
         <div className="discover-section">
           <div className="section-header">
             <h2>Discover Creatures</h2>
-            <Link to="/fakedex" className="view-all-button">
+            <Link to="/fakedex" className="button primary button primary">
               <span>Explore Fakedex</span>
               <i className="fas fa-arrow-right"></i>
             </Link>
@@ -580,7 +578,7 @@ const HomePage = () => {
           
           <div className="creatures-gallery">
             {displayFakemon.map((mon) => (
-              <Link to={`/fakedex/${mon.number}`} className="creature-card" key={mon.number}>
+              <Link to={`/fakedex/${mon.number}`} className="feature-card" key={mon.number}>
                 <div className="creature-image">
                   <img 
                     src={mon.image_path || mon.image_url || mon.sprite_url || `https://via.placeholder.com/150/1e2532/d6a339?text=${mon.name || 'Mon'}`}
@@ -594,9 +592,9 @@ const HomePage = () => {
                 <div className="creature-info">
                   <span className="creature-number">#{String(mon.number).padStart(3, '0')}</span>
                   <span className="creature-name">{mon.name}</span>
-                  <div className="creature-types">
+                  <div className="type-tags fw">
                     {(mon.types || ['Normal']).map((type, index) => (
-                      <span className={`type-badge type-${type.toLowerCase()}`} key={index}>
+                      <span className={`badge type-${type.toLowerCase()}`} key={index}>
                         {type}
                       </span>
                     ))}

@@ -1,0 +1,42 @@
+/* ==============================
+   Navigation Button Styles
+   ============================== */
+
+/* For navigation buttons, use unified button system (see buttons.css):
+   - Primary nav: className="button primary"
+   - Secondary nav: className="button secondary"
+   - Success nav: className="button success"
+*/
+
+/* ---------- Starter Page Responsive Styles ---------- */
+
+@media (max-width: 768px) {
+  .starter-page-title {
+    font-size: 1.5rem;
+  }
+
+  .starter-step-title {
+    font-size: 1.25rem;
+  }
+
+  .button {
+  font-size: 0.75rem;
+  gap: 1rem;
+  grid-template-columns: 1fr;
+  padding: 0.5rem 0.25rem;
+}
+
+  .button .tab-label {
+    display: none;
+  }
+
+  .button .tab-label-short {
+    display: inline;
+  }
+}
+
+@media (min-width: 769px) {
+  .button .tab-label-short {
+    display: none;
+  }
+}

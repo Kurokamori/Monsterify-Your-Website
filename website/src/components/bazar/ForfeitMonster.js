@@ -115,6 +115,7 @@ const ForfeitMonster = ({ userTrainers }) => {
           <label htmlFor="trainer-select">Select Trainer:</label>
           <select
             id="trainer-select"
+            className="trainer-select"
             value={selectedTrainer}
             onChange={handleTrainerChange}
           >
@@ -135,7 +136,7 @@ const ForfeitMonster = ({ userTrainers }) => {
               <>
                 <div className="form-actions">
                   <button
-                    className="btn btn-primary"
+                    className="button primary"
                     onClick={handleConfirm}
                     disabled={selectedMonsters.length === 0}
                   >
@@ -143,7 +144,7 @@ const ForfeitMonster = ({ userTrainers }) => {
                   </button>
                 </div>
 
-                <div className="bazar-monsters-grid">
+                <div className="container cols-3 gap-lg mb-lg">
                   {trainerMonsters.map(monster => (
                     <div
                       key={monster.id}
@@ -151,7 +152,7 @@ const ForfeitMonster = ({ userTrainers }) => {
                     >
                       <MonsterCard monster={monster} />
                       <button
-                        className={`btn ${selectedMonsters.some(m => m.id === monster.id) ? 'btn-success' : 'btn-secondary'} monster-select-btn`}
+                        className={`button ${selectedMonsters.some(m => m.id === monster.id) ? 'success' : 'secondary'}monster-select-btn`}
                         onClick={() => handleMonsterSelect(monster)}
                       >
                         {selectedMonsters.some(m => m.id === monster.id) ? '✓ Selected' : 'Select Monster'}
@@ -171,7 +172,7 @@ const ForfeitMonster = ({ userTrainers }) => {
 
       {showConfirmModal && (
         <Modal isOpen={showConfirmModal} onClose={() => setShowConfirmModal(false)}>
-          <div className="modal-header">
+          <div className="tree-header">
             <h3>Confirm Forfeit</h3>
           </div>
           <div className="modal-body">
@@ -187,14 +188,14 @@ const ForfeitMonster = ({ userTrainers }) => {
           </div>
           <div className="modal-actions">
             <button
-              className="btn btn-secondary"
+              className="button secondary"
               onClick={() => setShowConfirmModal(false)}
               disabled={submitting}
             >
               Cancel
             </button>
             <button
-              className="btn btn-danger"
+              className="button danger"
               onClick={handleSubmit}
               disabled={submitting}
             >

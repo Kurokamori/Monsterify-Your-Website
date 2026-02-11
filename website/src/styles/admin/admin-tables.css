@@ -1,0 +1,168 @@
+/* =============================================================================
+   ADMIN TABLES
+
+   Data tables, search inputs, and filter components for admin views.
+   ============================================================================= */
+
+/* Table Container */
+.admin-table-container {
+  overflow-x: auto;
+  margin-bottom: 1.5rem;
+}
+
+/* Table Base */
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  color: var(--text-color);
+  background-color: var(--admin-card-bg);
+  border: 1px solid var(--border-color);
+}
+
+.admin-table th,
+.admin-table td {
+  background-color: var(--background-color);
+  border-bottom: 1px solid var(--border-color);
+  color: var(--accent-color);
+  font-weight: 700;
+  padding: 0.75rem 1rem;
+  text-align: center;
+}
+
+.admin-table tr:hover {
+  background-color: var(--nav-hover);
+}
+
+/* Specific Cell Types */
+.boss-name-cell {
+  min-width: 150px;
+}
+
+.boss-description-preview {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+.health-display {
+  min-width: 120px;
+}
+
+.fakemon-types-cell {
+  min-width: 40vh;
+}
+
+.admin-actions-cell {
+  white-space: nowrap;
+  align-items: center;
+}
+
+/* Search Input */
+.admin-search-input {
+  width: 90%;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  background-color: var(--input-background);
+  color: var(--text-color);
+  font-size: 1rem;
+  transition: all var(--transition-slow);
+}
+
+/* Filter Select */
+.admin-filter-select {
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  background-color: var(--input-background);
+  color: var(--text-color);
+  font-size: 1rem;
+  transition: all var(--transition-slow);
+}
+
+/* Admin Actions Bar */
+.admin-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+}
+
+@media (max-width: 768px) {
+  .admin-actions {
+    flex-direction: column;
+  }
+}
+
+/* Pagination */
+.admin-pagination {
+  display: flex;
+  justify-content: center;
+  gap: 0.25rem;
+  margin-top: 1.5rem;
+}
+
+.admin-pagination-ellipsis {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  color: var(--accent-color);
+}
+
+/* Admin Filters Panel */
+.admin-filters {
+  background: var(--admin-card-bg);
+  padding: 1.5rem;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 2rem;
+  border: 1px solid var(--border-color);
+}
+
+/* No Data State */
+.no-data {
+  text-align: center;
+  padding: 3rem;
+  color: var(--text-muted);
+}
+
+.no-data i {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  display: block;
+}
+
+/* Empty Results */
+.empty-results {
+  color: var(--text-muted);
+  padding: 3rem 1rem;
+  text-align: center;
+}
+
+.empty-results i {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  opacity: 0.5;
+}
+
+.empty-results h3 {
+  margin-bottom: 0.5rem;
+}
+
+.empty-results p {
+  font-size: 0.875rem;
+}
+
+/* Loading State */
+.admin-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  color: var(--accent-color);
+}
+
+.admin-loading i {
+  margin-right: 0.5rem;
+}

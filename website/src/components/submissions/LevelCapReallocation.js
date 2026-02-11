@@ -76,7 +76,7 @@ const LevelCapReallocation = ({
 
   return (
     <div className="level-cap-reallocation">
-      <div className="reallocation-header">
+      <div className="map-header">
         <h2>Level Cap Reallocation</h2>
         <p>
           Some monsters would exceed level 100. For every 2 excess levels, you can assign 1 level 
@@ -151,7 +151,7 @@ const LevelCapReallocation = ({
                         <span>levels</span>
                         <button
                           type="button"
-                          className="remove-allocation"
+                          className="button icon danger"
                           onClick={() => handleAllocation(monster.monsterId, parseInt(targetId), targetType, 0)}
                         >
                           Remove
@@ -203,14 +203,14 @@ const LevelCapReallocation = ({
         <button
           type="button"
           onClick={onCancel}
-          className="cancel-button"
+          className="button secondary"
         >
           Cancel
         </button>
         <button
           type="button"
           onClick={handleComplete}
-          className="complete-button"
+          className="button primary"
           disabled={remainingLevels > 0}
         >
           {remainingLevels > 0 ? `Allocate ${remainingLevels} more levels` : 'Complete Allocation'}

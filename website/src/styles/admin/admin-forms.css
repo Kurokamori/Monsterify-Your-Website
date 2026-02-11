@@ -1,0 +1,318 @@
+/* =============================================================================
+   ADMIN FORMS
+
+   Form components, inputs, and form layouts for admin views.
+   ============================================================================= */
+
+/* Form Groups */
+.admin-form-group {
+  display: flex;
+  flex-direction: column;
+  padding-top: 0.5rem;
+}
+
+.admin-form-label {
+  display: block;
+  font-weight: 600;
+  color: var(--text-color);
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  position: relative;
+}
+
+.admin-form-label.required::after {
+  content: '*';
+  color: var(--error-color);
+  margin-left: 0.25rem;
+}
+
+.admin-form-hint {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.admin-form-hint i {
+  color: var(--accent-color);
+}
+
+.admin-form-error {
+  font-size: 0.75rem;
+  color: var(--error-color);
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  background: var(--error-glow);
+  padding: 0.5rem;
+  border-radius: var(--radius-sm);
+}
+
+.admin-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--border-color);
+}
+
+/* Form Group with Full Width */
+.form-group.full-width {
+  grid-column: 1 / -1;
+}
+
+/* Bulk Monster Add Form */
+.bulk-monster-add-form {
+  background: var(--admin-card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--admin-shadow-md);
+  margin-bottom: 2rem;
+  overflow: hidden;
+  padding: 2rem;
+  position: relative;
+}
+
+.bulk-monster-add-form::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--accent-gradient);
+}
+
+/* Monster Section */
+.monster-section {
+  background: var(--card-background);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.monster-section h3 {
+  margin: 0 0 1rem 0;
+  color: var(--text-color);
+  font-size: 1.1rem;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 0.5rem;
+}
+
+/* Array Input */
+.array-input {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.array-input input {
+  background: var(--input-background);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  color: var(--text-color);
+  flex: 1;
+  padding: 0.5rem 0.75rem;
+}
+
+@media (max-width: 768px) {
+  .array-input {
+    flex-direction: column;
+  }
+}
+
+/* Stat Info */
+.stat-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.stat-info label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--accent-color);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.stat-info input,
+.stat-info select {
+  padding: 0.5rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  font-size: 0.875rem;
+  background-color: var(--input-background);
+  color: var(--text-color);
+  transition: border-color var(--transition-base);
+}
+
+.stat-info input:focus,
+.stat-info select:focus {
+  outline: none;
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 2px var(--accent-glow);
+}
+
+.stat-info.has-error input,
+.stat-info.has-error select {
+  border-color: var(--error-color);
+}
+
+.field-error {
+  font-size: 0.75rem;
+  color: var(--error-color);
+}
+
+.type-row select {
+  flex: 1;
+}
+
+/* Auth Form */
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+/* Mass Upload Area */
+.mass-upload-area {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.5rem;
+  border: 2px dashed var(--border-color);
+  border-radius: var(--radius);
+  background: var(--input-background);
+}
+
+.upload-progress-container {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+/* Timer Session */
+.timer-session {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+}
+
+/* References Grid */
+.refs-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+@media (max-width: 768px) {
+  .refs-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Mass Fakemon Card */
+.mass-fakemon-card {
+  background: var(--admin-card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  padding: 1rem;
+  position: relative;
+}
+
+.mass-fakemon-card-header {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  z-index: 1;
+}
+
+/* Boss Form */
+.boss-form {
+  width: 100%;
+  max-width: 800px;
+}
+
+/* Delete Confirmation */
+.guide-content {
+  text-align: center;
+  padding: 1rem;
+}
+
+.guide-content p {
+  margin-bottom: 1rem;
+  color: var(--text-color);
+}
+
+.guide-content .warning {
+  color: var(--error-color);
+  font-size: 0.9rem;
+  font-style: italic;
+}
+
+/* Alert */
+.alert {
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  border-radius: var(--radius);
+  margin: 1.5rem 0;
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+}
+
+/* Admin Form Section (Fakemon) */
+.admin-form-section {
+  background: var(--input-background);
+  padding: 2rem;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-color);
+  position: relative;
+}
+
+.admin-form-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--accent-gradient);
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  opacity: 0.6;
+}
+
+.admin-form-section-title {
+  margin: 0 0 1.5rem 0;
+  color: var(--accent-color);
+  font-size: 1.125rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border-color);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.admin-form-section-title i {
+  font-size: 1rem;
+  opacity: 0.8;
+}
+
+@media (max-width: 768px) {
+  .admin-form-section {
+    padding: 1.5rem;
+  }
+}
+
+/* Admin Form Input Helpers */
+.admin-form-input.with-margin-top {
+  margin-top: 10px;
+}

@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import PromptForm from './PromptForm';
-import PromptList from './AdminPromptList';
 import api from '../../services/api';
-import './PromptManagement.css';
+import PromptList from './AdminPromptList';
+import PromptForm from './PromptForm';
 
 const PromptManagement = () => {
   const [activeTab, setActiveTab] = useState('list');
@@ -97,12 +96,12 @@ const PromptManagement = () => {
 
   return (
     <div className="prompt-management">
-      <div className="prompt-management-header">
+      <div className="item-header">
         <h2>Prompt Management</h2>
         <div className="header-actions">
           <button
             onClick={handleCreatePrompt}
-            className="btn btn-primary"
+            className="button primary"
           >
             Create New Prompt
           </button>
@@ -111,13 +110,13 @@ const PromptManagement = () => {
 
       <div className="prompt-management-tabs">
         <button
-          className={`tab-btn ${activeTab === 'list' ? 'active' : ''}`}
+          className={`button tab ${activeTab === 'list' ? 'active' : ''}`}
           onClick={() => setActiveTab('list')}
         >
           Prompt List
         </button>
         <button
-          className={`tab-btn ${activeTab === 'form' ? 'active' : ''}`}
+          className={`button tab ${activeTab === 'form' ? 'active' : ''}`}
           onClick={() => setActiveTab('form')}
         >
           {editingPrompt ? 'Edit Prompt' : 'Create Prompt'}
@@ -126,9 +125,9 @@ const PromptManagement = () => {
 
       <div className="prompt-management-content">
         {error && (
-          <div className="error-message">
+          <div className="alert error">
             <p>{error}</p>
-            <button onClick={() => setError(null)} className="btn btn-sm">
+            <button onClick={() => setError(null)} className="button secondary">
               Dismiss
             </button>
           </div>

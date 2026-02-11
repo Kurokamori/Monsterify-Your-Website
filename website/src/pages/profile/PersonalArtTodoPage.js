@@ -8,7 +8,7 @@ import useDocumentTitle from '../../hooks/useDocumentTitle';
 
 const PersonalArtTodoPage = () => {
   useDocumentTitle('Art Todo');
-  
+
   const { isAuthenticated, currentUser } = useAuth();
 
   const [loading, setLoading] = useState(true);
@@ -156,7 +156,6 @@ const PersonalArtTodoPage = () => {
       });
       setIsCreateItemModalOpen(false);
       fetchLists();
-      // Refresh the current list view if we're viewing items
       if (selectedList) {
         fetchListWithItems(selectedList.id);
       }
@@ -182,7 +181,6 @@ const PersonalArtTodoPage = () => {
       setIsEditItemModalOpen(false);
       setSelectedItem(null);
       fetchLists();
-      // Refresh the current list view if we're viewing items
       if (selectedList) {
         fetchListWithItems(selectedList.id);
       }
@@ -200,7 +198,6 @@ const PersonalArtTodoPage = () => {
     try {
       await api.delete(`/art-todo/items/${itemId}`);
       fetchLists();
-      // Refresh the current list view if we're viewing items
       if (selectedList) {
         fetchListWithItems(selectedList.id);
       }
@@ -212,7 +209,6 @@ const PersonalArtTodoPage = () => {
 
   const handleAddReference = async (referenceType, referenceId) => {
     try {
-      console.log('Adding reference:', { referenceType, referenceId, itemId: selectedItem.id });
       await api.post(`/art-todo/items/${selectedItem.id}/references`, {
         reference_type: referenceType,
         reference_id: referenceId
@@ -220,7 +216,6 @@ const PersonalArtTodoPage = () => {
       fetchItemReferences(selectedItem.id);
     } catch (err) {
       console.error('Error adding reference:', err);
-      console.error('Error details:', err.response?.data);
       setError(err.response?.data?.message || 'Failed to add reference. Please try again.');
     }
   };
@@ -317,7 +312,6 @@ const PersonalArtTodoPage = () => {
   const getFilteredMonsters = () => {
     let filtered = monsters;
 
-    // Filter by search query
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase();
       filtered = filtered.filter(monster =>
@@ -327,7 +321,6 @@ const PersonalArtTodoPage = () => {
       );
     }
 
-    // Filter by trainer
     if (selectedTrainerFilter) {
       filtered = filtered.filter(monster =>
         monster.trainer_id === parseInt(selectedTrainerFilter)
@@ -358,7 +351,7 @@ const PersonalArtTodoPage = () => {
 
   if (!isAuthenticated) {
     return (
-      <div className="art-todo-container">
+      <div className="main-content-container">
         <div className="auth-required">
           <h2>Authentication Required</h2>
           <p>Please log in to access your art todo lists.</p>
@@ -381,47 +374,50 @@ const PersonalArtTodoPage = () => {
   }
 
   return (
-    <div className="art-todo-container">
+    <div className="main-content-container art-todo-page">
+      {/* Page Header */}
       <div className="art-todo-header">
         <h1>My Art To-Do Lists</h1>
         <button
-          className="create-list-btn"
+          className="button primary"
           onClick={() => setIsCreateListModalOpen(true)}
         >
           <i className="fas fa-plus"></i> Create New List
         </button>
       </div>
 
+      {/* Empty State */}
       {lists.length === 0 ? (
-        <div className="no-lists">
-          <div className="no-lists-icon">
-            <i className="fas fa-list"></i>
+        <div className="art-todo-empty">
+          <div className="art-todo-empty-icon">
+            <i className="fas fa-palette"></i>
           </div>
-          <h2>No Art Todo Lists</h2>
-          <p>Create your first art todo list to start organizing your art projects!</p>
+          <h2>No Art Todo Lists Yet</h2>
+          <p>Create your first art todo list to start organizing your creative projects!</p>
           <button
-            className="create-first-list-btn"
+            className="button primary lg"
             onClick={() => setIsCreateListModalOpen(true)}
           >
             Create Your First List
           </button>
         </div>
       ) : (
-        <div className="lists-grid">
+        /* Lists Grid */
+        <div className="art-todo-lists">
           {lists.map(list => (
-            <div key={list.id} className="list-card">
-              <div className="list-header">
-                <h3 className="list-title">{list.title}</h3>
-                <div className="list-actions">
+            <div key={list.id} className="art-todo-list-card">
+              <div className="art-todo-list-header">
+                <h3 className="art-todo-list-title">{list.title}</h3>
+                <div className="art-todo-list-actions">
                   <button
-                    className="action-btn edit"
+                    className="button secondary icon sm"
                     onClick={() => openEditListModal(list)}
                     title="Edit List"
                   >
                     <i className="fas fa-edit"></i>
                   </button>
                   <button
-                    className="action-btn delete"
+                    className="button danger icon sm"
                     onClick={() => handleDeleteList(list.id)}
                     title="Delete List"
                   >
@@ -431,30 +427,30 @@ const PersonalArtTodoPage = () => {
               </div>
 
               {list.description && (
-                <p className="list-description">{list.description}</p>
+                <p className="art-todo-list-description">{list.description}</p>
               )}
 
-              <div className="list-stats">
-                <span className="stat">
+              <div className="art-todo-list-stats">
+                <span className="art-todo-stat">
                   <i className="fas fa-tasks"></i> {list.item_count} items
                 </span>
-                <span className="stat">
+                <span className="art-todo-stat">
                   <i className="fas fa-check-circle"></i> {list.completed_count} completed
                 </span>
               </div>
 
-              <div className="list-actions-bottom">
+              <div className="art-todo-list-footer">
                 <button
-                  className="add-item-btn"
+                  className="button primary sm"
                   onClick={() => openCreateItemModal(list)}
                 >
                   <i className="fas fa-plus"></i> Add Item
                 </button>
                 <button
-                  className="view-items-btn"
+                  className="button secondary sm"
                   onClick={() => fetchListWithItems(list.id)}
                 >
-                  View Items
+                  <i className="fas fa-eye"></i> View Items
                 </button>
               </div>
             </div>
@@ -464,18 +460,18 @@ const PersonalArtTodoPage = () => {
 
       {/* Selected List Items View */}
       {selectedList && !isCreateItemModalOpen && !isEditItemModalOpen && (
-        <div className="list-items-view">
-          <div className="items-header">
+        <div className="art-todo-items-section">
+          <div className="art-todo-items-header">
             <h2>{selectedList.title} - Items</h2>
-            <div className="items-actions">
+            <div className="art-todo-items-actions">
               <button
-                className="add-item-btn"
+                className="button primary sm"
                 onClick={() => openCreateItemModal(selectedList)}
               >
                 <i className="fas fa-plus"></i> Add Item
               </button>
               <button
-                className="back-btn"
+                className="button secondary"
                 onClick={() => setSelectedList(null)}
               >
                 <i className="fas fa-arrow-left"></i> Back to Lists
@@ -483,28 +479,31 @@ const PersonalArtTodoPage = () => {
             </div>
           </div>
 
-          <div className="items-grid">
+          <div className="art-todo-items-grid">
             {selectedList.items?.map(item => (
-              <div key={item.id} className={`item-card status-${item.status} priority-${item.priority}`}>
-                <div className="item-header">
-                  <h4 className="item-title">{item.title}</h4>
-                  <div className="item-actions">
+              <div
+                key={item.id}
+                className={`art-todo-item-card status-${item.status} priority-${item.priority}`}
+              >
+                <div className="art-todo-item-header">
+                  <h4 className="art-todo-item-title">{item.title}</h4>
+                  <div className="art-todo-item-actions">
                     <button
-                      className="action-btn reference"
+                      className="button info icon sm"
                       onClick={() => openReferenceModal(item)}
                       title="Manage References"
                     >
                       <i className="fas fa-image"></i>
                     </button>
                     <button
-                      className="action-btn edit"
+                      className="button secondary icon sm"
                       onClick={() => openEditItemModal(item)}
                       title="Edit Item"
                     >
                       <i className="fas fa-edit"></i>
                     </button>
                     <button
-                      className="action-btn delete"
+                      className="button danger icon sm"
                       onClick={() => handleDeleteItem(item.id)}
                       title="Delete Item"
                     >
@@ -514,34 +513,34 @@ const PersonalArtTodoPage = () => {
                 </div>
 
                 {item.description && (
-                  <p className="item-description">{item.description}</p>
+                  <p className="art-todo-item-description">{item.description}</p>
                 )}
 
-                <div className="item-meta">
-                  <span className={`status-badge status-${item.status}`}>
+                <div className="art-todo-item-meta">
+                  <span className={`badge ${item.status === 'in_progress' ? 'info' : item.status}`}>
                     {item.status.replace('_', ' ')}
                   </span>
-                  <span className={`priority-badge priority-${item.priority}`}>
-                    {item.priority}
+                  <span className={`badge ${item.priority === 'high' ? 'danger' : item.priority === 'medium' ? 'warning' : 'neutral'}`}>
+                    {item.priority} priority
                   </span>
                 </div>
 
                 {item.due_date && (
-                  <div className="item-due-date">
+                  <div className="art-todo-item-due">
                     <i className="fas fa-calendar-alt"></i>
                     Due: {new Date(item.due_date).toLocaleDateString()}
                   </div>
                 )}
 
                 {item.steps_total > 0 && (
-                  <div className="item-progress">
-                    <div className="progress-header">
-                      <span className="progress-text">
+                  <div className="art-todo-progress">
+                    <div className="art-todo-progress-header">
+                      <span className="art-todo-progress-text">
                         {item.steps_completed}/{item.steps_total} steps
                       </span>
                       {item.steps_completed < item.steps_total && (
                         <button
-                          className="increment-step-btn"
+                          className="button primary icon sm"
                           onClick={(e) => {
                             e.stopPropagation();
                             handleIncrementStep(item);
@@ -552,9 +551,9 @@ const PersonalArtTodoPage = () => {
                         </button>
                       )}
                     </div>
-                    <div className="progress-bar">
+                    <div className="art-todo-progress-bar">
                       <div
-                        className="progress-fill"
+                        className={`art-todo-progress-fill ${item.steps_completed >= item.steps_total ? 'complete' : ''}`}
                         style={{ width: `${(item.steps_completed / item.steps_total) * 100}%` }}
                       ></div>
                     </div>
@@ -562,11 +561,11 @@ const PersonalArtTodoPage = () => {
                 )}
 
                 {item.references && item.references.length > 0 && (
-                  <div className="item-references">
-                    <div className="references-header">
-                      <span className="references-label">References:</span>
+                  <div className="art-todo-references">
+                    <div className="art-todo-references-header">
+                      <span className="art-todo-references-label">References</span>
                       <button
-                        className="view-matrix-btn"
+                        className="button secondary icon sm"
                         onClick={(e) => {
                           e.stopPropagation();
                           openFullScreenReference(item);
@@ -576,16 +575,16 @@ const PersonalArtTodoPage = () => {
                         <i className="fas fa-expand"></i>
                       </button>
                     </div>
-                    <div className="reference-thumbnails">
+                    <div className="art-todo-thumbnails">
                       {item.references.slice(0, 3).map(ref => (
                         <div
                           key={ref.id}
-                          className="reference-thumbnail clickable"
+                          className="art-todo-thumbnail clickable"
                           onClick={(e) => {
                             e.stopPropagation();
                             openImageViewer(ref);
                           }}
-                          title={`Click to view ${ref.reference_type}: ${ref.reference_name}`}
+                          title={`View ${ref.reference_type}: ${ref.reference_name}`}
                         >
                           {ref.reference_image ? (
                             <img
@@ -593,7 +592,7 @@ const PersonalArtTodoPage = () => {
                               alt={ref.reference_name}
                             />
                           ) : (
-                            <div className="reference-placeholder">
+                            <div className="art-todo-thumbnail-placeholder">
                               <i className={`fas fa-${ref.reference_type === 'trainer' ? 'user' : 'paw'}`}></i>
                             </div>
                           )}
@@ -601,7 +600,7 @@ const PersonalArtTodoPage = () => {
                       ))}
                       {item.references.length > 3 && (
                         <div
-                          className="reference-more clickable"
+                          className="art-todo-thumbnail-more"
                           onClick={(e) => {
                             e.stopPropagation();
                             openFullScreenReference(item);
@@ -626,7 +625,7 @@ const PersonalArtTodoPage = () => {
         onClose={() => setIsCreateListModalOpen(false)}
         title="Create New Art Todo List"
       >
-        <form onSubmit={handleCreateList} className="list-form">
+        <form onSubmit={handleCreateList} className="form">
           <div className="form-group">
             <label htmlFor="list-title">Title *</label>
             <input
@@ -650,15 +649,15 @@ const PersonalArtTodoPage = () => {
             />
           </div>
 
-          <div className="modal-actions">
+          <div className="art-todo-modal-actions">
             <button
               type="button"
-              className="modal-button secondary"
+              className="button secondary"
               onClick={() => setIsCreateListModalOpen(false)}
             >
               Cancel
             </button>
-            <button type="submit" className="modal-button primary">
+            <button type="submit" className="button primary">
               Create List
             </button>
           </div>
@@ -671,7 +670,7 @@ const PersonalArtTodoPage = () => {
         onClose={() => setIsEditListModalOpen(false)}
         title="Edit Art Todo List"
       >
-        <form onSubmit={handleUpdateList} className="list-form">
+        <form onSubmit={handleUpdateList} className="form">
           <div className="form-group">
             <label htmlFor="edit-list-title">Title *</label>
             <input
@@ -695,15 +694,15 @@ const PersonalArtTodoPage = () => {
             />
           </div>
 
-          <div className="modal-actions">
+          <div className="art-todo-modal-actions">
             <button
               type="button"
-              className="modal-button secondary"
+              className="button secondary"
               onClick={() => setIsEditListModalOpen(false)}
             >
               Cancel
             </button>
-            <button type="submit" className="modal-button primary">
+            <button type="submit" className="button primary">
               Update List
             </button>
           </div>
@@ -716,7 +715,7 @@ const PersonalArtTodoPage = () => {
         onClose={() => setIsCreateItemModalOpen(false)}
         title="Create New Art Todo Item"
       >
-        <form onSubmit={handleCreateItem} className="item-form">
+        <form onSubmit={handleCreateItem} className="form">
           <div className="form-group">
             <label htmlFor="item-title">Title *</label>
             <input
@@ -802,15 +801,15 @@ const PersonalArtTodoPage = () => {
             </label>
           </div>
 
-          <div className="modal-actions">
+          <div className="art-todo-modal-actions">
             <button
               type="button"
-              className="modal-button secondary"
+              className="button secondary"
               onClick={() => setIsCreateItemModalOpen(false)}
             >
               Cancel
             </button>
-            <button type="submit" className="modal-button primary">
+            <button type="submit" className="button primary">
               Create Item
             </button>
           </div>
@@ -823,7 +822,7 @@ const PersonalArtTodoPage = () => {
         onClose={() => setIsEditItemModalOpen(false)}
         title="Edit Art Todo Item"
       >
-        <form onSubmit={handleUpdateItem} className="item-form">
+        <form onSubmit={handleUpdateItem} className="form">
           <div className="form-group">
             <label htmlFor="edit-item-title">Title *</label>
             <input
@@ -909,15 +908,15 @@ const PersonalArtTodoPage = () => {
             </label>
           </div>
 
-          <div className="modal-actions">
+          <div className="art-todo-modal-actions">
             <button
               type="button"
-              className="modal-button secondary"
+              className="button secondary"
               onClick={() => setIsEditItemModalOpen(false)}
             >
               Cancel
             </button>
-            <button type="submit" className="modal-button primary">
+            <button type="submit" className="button primary">
               Update Item
             </button>
           </div>
@@ -931,33 +930,34 @@ const PersonalArtTodoPage = () => {
         title={`Manage References - ${selectedItem?.title}`}
         size="large"
       >
-        <div className="reference-management">
-          <div className="current-references">
+        <div className="art-todo-ref-management">
+          {/* Current References */}
+          <div className="art-todo-current-refs">
             <h3>Current References</h3>
             {itemReferences.length === 0 ? (
-              <p className="no-references">No references added yet.</p>
+              <p className="art-todo-no-refs">No references added yet.</p>
             ) : (
-              <div className="references-grid">
+              <div className="art-todo-ref-grid">
                 {itemReferences.map(ref => (
-                  <div key={ref.id} className="reference-item">
-                    <div className="reference-image">
+                  <div key={ref.id} className="art-todo-ref-item">
+                    <div className="art-todo-ref-image">
                       {ref.reference_image ? (
                         <img
                           src={ref.reference_image}
                           alt={ref.reference_name}
                         />
                       ) : (
-                        <div className="reference-placeholder">
+                        <div className="art-todo-ref-placeholder">
                           <i className={`fas fa-${ref.reference_type === 'trainer' ? 'user' : 'paw'}`}></i>
                         </div>
                       )}
                     </div>
-                    <div className="reference-info">
-                      <span className="reference-name">{ref.reference_name}</span>
-                      <span className="reference-type">{ref.reference_type}</span>
+                    <div className="art-todo-ref-info">
+                      <span className="art-todo-ref-name">{ref.reference_name}</span>
+                      <span className="art-todo-ref-type">{ref.reference_type}</span>
                     </div>
                     <button
-                      className="remove-reference-btn"
+                      className="button danger icon sm"
                       onClick={() => handleRemoveReference(ref.id)}
                       title="Remove Reference"
                     >
@@ -969,63 +969,66 @@ const PersonalArtTodoPage = () => {
             )}
           </div>
 
-          <div className="add-references">
+          {/* Add References */}
+          <div className="art-todo-add-refs">
             <h3>Add References</h3>
 
-            <div className="reference-tabs">
-              <div className="tab-buttons">
+            <div className="art-todo-ref-tabs">
+              <div className="art-todo-tab-buttons">
                 <button
-                  className={`tab-button ${selectedTab === 'trainers' ? 'active' : ''}`}
+                  className={`button tab ${selectedTab === 'trainers' ? 'active' : ''}`}
                   onClick={() => setSelectedTab('trainers')}
                 >
-                  Trainers
+                  <i className="fas fa-user"></i> Trainers
                 </button>
                 <button
-                  className={`tab-button ${selectedTab === 'monsters' ? 'active' : ''}`}
+                  className={`button tab ${selectedTab === 'monsters' ? 'active' : ''}`}
                   onClick={() => setSelectedTab('monsters')}
                 >
-                  Monsters
+                  <i className="fas fa-paw"></i> Monsters
                 </button>
               </div>
 
-              <div className="tab-content">
+              <div className="art-todo-tab-content">
+                {/* Trainers Tab */}
                 {selectedTab === 'trainers' && (
-                  <div className="trainers-grouped">
+                  <div className="art-todo-trainer-groups">
                     {Object.entries(getGroupedTrainers()).map(([groupName, groupTrainers]) => (
-                      <div key={groupName} className="trainer-group">
-                        <div 
-                          className="trainer-group-header"
+                      <div key={groupName} className="art-todo-trainer-group">
+                        <div
+                          className="art-todo-group-header"
                           onClick={() => toggleTrainerGroup(groupName)}
                         >
-                          <h4 className="group-title">
+                          <h4 className="art-todo-group-title">
                             <i className={`fas fa-chevron-${collapsedTrainerGroups[groupName] ? 'right' : 'down'}`}></i>
-                            {groupName} ({groupTrainers.length})
+                            {groupName}
                           </h4>
+                          <span className="art-todo-group-count">{groupTrainers.length}</span>
                         </div>
                         {!collapsedTrainerGroups[groupName] && (
-                          <div className="trainers-grid">
+                          <div className="art-todo-group-items">
                             {groupTrainers.map(trainer => (
-                              <div key={trainer.id} className="reference-option">
-                                <div className="reference-image">
+                              <div key={trainer.id} className="art-todo-selectable-item">
+                                <div className="art-todo-selectable-image">
                                   {trainer.main_ref ? (
                                     <img
                                       src={trainer.main_ref}
                                       alt={trainer.name}
                                     />
                                   ) : (
-                                    <div className="reference-placeholder">
+                                    <div className="art-todo-ref-placeholder">
                                       <i className="fas fa-user"></i>
                                     </div>
                                   )}
                                 </div>
-                                <div className="reference-info">
-                                  <span className="reference-name">{trainer.name}</span>
-                                  <span className="reference-details">
+                                <div className="art-todo-selectable-info">
+                                  <span className="art-todo-selectable-name">{trainer.name}</span>
+                                  <span className="art-todo-selectable-details">
                                     {trainer.species1} {trainer.type1 && `• ${trainer.type1}`}
                                   </span>
                                 </div>
                                 <button
-                                  className="add-reference-btn"
+                                  className="button primary icon sm"
                                   onClick={() => handleAddReference('trainer', trainer.id)}
                                   title="Add as Reference"
                                 >
@@ -1040,59 +1043,58 @@ const PersonalArtTodoPage = () => {
                   </div>
                 )}
 
+                {/* Monsters Tab */}
                 {selectedTab === 'monsters' && (
-                  <div className="monsters-section">
-                    <div className="monsters-filters">
-                      <div className="filter-row">
-                        <div className="search-box">
-                          <i className="fas fa-search"></i>
-                          <input
-                            type="text"
-                            placeholder="Search by name, species, or type..."
-                            value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                          />
-                        </div>
-                        <select
-                          value={selectedTrainerFilter}
-                          onChange={(e) => setSelectedTrainerFilter(e.target.value)}
-                          className="trainer-filter"
-                        >
-                          <option value="">All Trainers</option>
-                          {trainers.map(trainer => (
-                            <option key={trainer.id} value={trainer.id}>
-                              {trainer.name}
-                            </option>
-                          ))}
-                        </select>
+                  <div>
+                    <div className="art-todo-monster-filters">
+                      <div className="art-todo-search-box">
+                        <i className="fas fa-search"></i>
+                        <input
+                          type="text"
+                          placeholder="Search by name, species, or type..."
+                          value={searchQuery}
+                          onChange={(e) => setSearchQuery(e.target.value)}
+                        />
                       </div>
+                      <select
+                        value={selectedTrainerFilter}
+                        onChange={(e) => setSelectedTrainerFilter(e.target.value)}
+                        className="art-todo-trainer-filter"
+                      >
+                        <option value="">All Trainers</option>
+                        {trainers.map(trainer => (
+                          <option key={trainer.id} value={trainer.id}>
+                            {trainer.name}
+                          </option>
+                        ))}
+                      </select>
                     </div>
-                    <div className="monsters-grid">
+                    <div className="art-todo-monster-grid">
                       {getFilteredMonsters().map(monster => (
-                        <div key={monster.id} className="reference-option">
-                          <div className="reference-image">
+                        <div key={monster.id} className="art-todo-selectable-item">
+                          <div className="art-todo-selectable-image">
                             {monster.img_link ? (
                               <img
                                 src={monster.img_link}
                                 alt={monster.name}
                               />
                             ) : (
-                              <div className="reference-placeholder">
+                              <div className="art-todo-ref-placeholder">
                                 <i className="fas fa-paw"></i>
                               </div>
                             )}
                           </div>
-                          <div className="reference-info">
-                            <span className="reference-name">{monster.name}</span>
-                            <span className="reference-details">
+                          <div className="art-todo-selectable-info">
+                            <span className="art-todo-selectable-name">{monster.name}</span>
+                            <span className="art-todo-selectable-details">
                               {monster.species1} {monster.type1 && `• ${monster.type1}`}
                             </span>
-                            <span className="reference-trainer">
-                              Trainer: {trainers.find(t => t.id === monster.trainer_id)?.name || 'Unknown'}
+                            <span className="art-todo-selectable-trainer">
+                              {trainers.find(t => t.id === monster.trainer_id)?.name || 'Unknown'}
                             </span>
                           </div>
                           <button
-                            className="add-reference-btn"
+                            className="button primary icon sm"
                             onClick={() => handleAddReference('monster', monster.id)}
                             title="Add as Reference"
                           >
@@ -1107,9 +1109,9 @@ const PersonalArtTodoPage = () => {
             </div>
           </div>
 
-          <div className="modal-actions">
+          <div className="art-todo-modal-actions">
             <button
-              className="modal-button primary"
+              className="button primary"
               onClick={() => setIsReferenceModalOpen(false)}
             >
               Done
@@ -1125,36 +1127,36 @@ const PersonalArtTodoPage = () => {
         title={`Reference Matrix - ${selectedItem?.title}`}
         size="xlarge"
       >
-        <div className="reference-matrix-fullscreen">
+        <div className="art-todo-ref-matrix">
           {itemReferences.length === 0 ? (
-            <div className="no-references-fullscreen">
+            <div className="art-todo-no-refs-large">
               <i className="fas fa-image"></i>
               <h3>No References</h3>
               <p>No references have been added to this item yet.</p>
             </div>
           ) : (
-            <div className="reference-matrix-grid">
+            <div className="art-todo-matrix-grid">
               {itemReferences.map(ref => (
                 <div
                   key={ref.id}
-                  className="reference-matrix-item"
+                  className="art-todo-matrix-item"
                   onClick={() => openImageViewer(ref)}
                 >
-                  <div className="reference-matrix-image">
+                  <div className="art-todo-matrix-image">
                     {ref.reference_image ? (
                       <img
                         src={ref.reference_image}
                         alt={ref.reference_name}
                       />
                     ) : (
-                      <div className="reference-placeholder large">
+                      <div className="art-todo-matrix-placeholder">
                         <i className={`fas fa-${ref.reference_type === 'trainer' ? 'user' : 'paw'}`}></i>
                       </div>
                     )}
                   </div>
-                  <div className="reference-matrix-info">
+                  <div className="art-todo-matrix-info">
                     <h4>{ref.reference_name}</h4>
-                    <span className="reference-type-badge">{ref.reference_type}</span>
+                    <span className="art-todo-matrix-badge">{ref.reference_type}</span>
                   </div>
                 </div>
               ))}
@@ -1171,28 +1173,28 @@ const PersonalArtTodoPage = () => {
         size="large"
       >
         {selectedReference && (
-          <div className="image-viewer">
-            <div className="image-viewer-main">
+          <div className="art-todo-image-viewer">
+            <div className="art-todo-viewer-main">
               {selectedReference.reference_image ? (
                 <img
                   src={selectedReference.reference_image}
                   alt={selectedReference.reference_name}
-                  className="viewer-image"
+                  className="art-todo-viewer-image"
                 />
               ) : (
-                <div className="viewer-placeholder">
+                <div className="art-todo-viewer-placeholder">
                   <i className={`fas fa-${selectedReference.reference_type === 'trainer' ? 'user' : 'paw'}`}></i>
                   <p>No image available</p>
                 </div>
               )}
             </div>
-            <div className="image-viewer-info">
+            <div className="art-todo-viewer-info">
               <h3>{selectedReference.reference_name}</h3>
-              <span className="reference-type-badge">{selectedReference.reference_type}</span>
+              <span className="art-todo-matrix-badge">{selectedReference.reference_type}</span>
             </div>
-            <div className="image-viewer-actions">
+            <div className="art-todo-viewer-actions">
               <button
-                className="modal-button primary"
+                className="button primary"
                 onClick={() => {
                   const detailPath = selectedReference.reference_type === 'trainer'
                     ? `/trainers/${selectedReference.reference_id}`
@@ -1203,7 +1205,7 @@ const PersonalArtTodoPage = () => {
                 <i className="fas fa-external-link-alt"></i> Visit Details
               </button>
               <button
-                className="modal-button secondary"
+                className="button secondary"
                 onClick={() => setIsImageViewerOpen(false)}
               >
                 Close

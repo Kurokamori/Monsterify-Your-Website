@@ -197,7 +197,7 @@ const PromptSubmissionForm = ({ onSubmissionComplete, category = 'general' }) =>
           <h3>Select Prompt</h3>
 
           {loadingPrompts ? (
-            <div className="loading-container">
+            <div className="error-container">
               <LoadingSpinner />
               <p>Loading available prompts...</p>
             </div>
@@ -215,7 +215,7 @@ const PromptSubmissionForm = ({ onSubmissionComplete, category = 'general' }) =>
                 >
                   <h4 className="prompt-title">{prompt.title}</h4>
                   <p className="prompt-description">{prompt.description}</p>
-                  <div className="prompt-rewards">
+                  <div className="prompt-text">
                     <span className="reward-badge">
                       <i className="fas fa-arrow-up"></i> {prompt.levelReward} Levels
                     </span>
@@ -237,7 +237,7 @@ const PromptSubmissionForm = ({ onSubmissionComplete, category = 'general' }) =>
             <div className="selected-prompt-details">
               <h4>{selectedPrompt.title}</h4>
               <p>{selectedPrompt.description}</p>
-              <div className="prompt-rewards">
+              <div className="prompt-text">
                 <span className="reward-badge">
                   <i className="fas fa-arrow-up"></i> {selectedPrompt.levelReward} Levels
                 </span>
@@ -293,11 +293,10 @@ const PromptSubmissionForm = ({ onSubmissionComplete, category = 'general' }) =>
             )}
 
             {submissionPreview && (
-              <div className="image-preview-container">
+              <div className="image-container medium">
                 <img
                   src={submissionPreview}
                   alt="Submission Preview"
-                  className="image-preview"
                 />
               </div>
             )}
@@ -311,7 +310,7 @@ const PromptSubmissionForm = ({ onSubmissionComplete, category = 'general' }) =>
 
             <button
               type="button"
-              className="estimate-button"
+              className="button secondary"
               onClick={calculateRewardEstimate}
               disabled={loading}
             >
@@ -324,7 +323,7 @@ const PromptSubmissionForm = ({ onSubmissionComplete, category = 'general' }) =>
 
                 <div className="reward-section">
                   <h5>Trainer Rewards</h5>
-                  <div className="reward-items">
+                  <div className="container cols-2 gap-md">
                     <div className="reward-item">
                       <span className="reward-label">Levels:</span>
                       <span className="reward-value">{rewardEstimate.levels}</span>
@@ -344,7 +343,7 @@ const PromptSubmissionForm = ({ onSubmissionComplete, category = 'general' }) =>
         <div className="form-actions">
           <button
             type="submit"
-            className="submit-button"
+            className="button success"
             disabled={loading || !selectedPrompt}
           >
             {loading ? (

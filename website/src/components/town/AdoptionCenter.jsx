@@ -507,17 +507,17 @@ const AdoptionCenter = () => {
   }
 
   return (
-    <div className="adoption-center-container">
-      <div className="adoption-center-controls">
-        <div className="view-options">
+    <div className="form">
+      <div className="option-row">
+        <div className="type-row">
           <button
-            className={`view-option-button ${showCurrentMonthOnly ? 'active' : ''}`}
+            className={`button filter ${showCurrentMonthOnly ? 'active' : ''}`}
             onClick={() => handleViewOptionChange(true)}
           >
             Current Month
           </button>
           <button
-            className={`view-option-button ${!showCurrentMonthOnly ? 'active' : ''}`}
+            className={`button filter ${!showCurrentMonthOnly ? 'active' : ''}`}
             onClick={() => handleViewOptionChange(false)}
           >
             All Months
@@ -541,12 +541,12 @@ const AdoptionCenter = () => {
       </div>
 
       {adopts.length === 0 ? (
-        <div className="no-adopts-message">
+        <div className="no-adventures">
           <p>No monsters available for adoption at this time.</p>
         </div>
       ) : (
         <>
-          <div className="adopts-grid">
+          <div className="container grid gap-md">
             {adopts.map((adopt) => {
               const speciesCount = [adopt.species1, adopt.species2, adopt.species3].filter(Boolean).length;
               return (
@@ -562,12 +562,12 @@ const AdoptionCenter = () => {
                     {/* Species Images */}
                   <div className={`adopt-species-images species-count-${speciesCount}`}>
                     {adopt.species1 && (
-                      <div className="species-image-wrapper" title={adopt.species1}>
+                      <div className="image-container small" title={adopt.species1}>
                         {speciesImages[adopt.species1] ? (
                           <img
                             src={speciesImages[adopt.species1]}
                             alt={adopt.species1}
-                            className="species-image"
+                            className="image-container medium"
                             onError={(e) => {
                               e.target.onerror = null;
                               e.target.style.display = 'none';
@@ -581,13 +581,13 @@ const AdoptionCenter = () => {
                       </div>
                     )}
                     {adopt.species2 && (
-                      <div className="species-image-wrapper fusion-species" title={adopt.species2}>
+                      <div className="image-container small" title={adopt.species2}>
                         <span className="fusion-plus">+</span>
                         {speciesImages[adopt.species2] ? (
                           <img
                             src={speciesImages[adopt.species2]}
                             alt={adopt.species2}
-                            className="species-image"
+                            className="image-container medium"
                             onError={(e) => {
                               e.target.onerror = null;
                               e.target.style.display = 'none';
@@ -601,13 +601,13 @@ const AdoptionCenter = () => {
                       </div>
                     )}
                     {adopt.species3 && (
-                      <div className="species-image-wrapper fusion-species" title={adopt.species3}>
+                      <div className="image-container small fusion-species" title={adopt.species3}>
                         <span className="fusion-plus">+</span>
                         {speciesImages[adopt.species3] ? (
                           <img
                             src={speciesImages[adopt.species3]}
                             alt={adopt.species3}
-                            className="species-image"
+                            className="image-container medium"
                             onError={(e) => {
                               e.target.onerror = null;
                               e.target.style.display = 'none';
@@ -641,7 +641,7 @@ const AdoptionCenter = () => {
                   
 
                   <div className="adopt-action">
-                    <button className="adopt-button">
+                    <button className="button primary">
                       Adopt
                     </button>
                   </div>
@@ -675,9 +675,9 @@ const AdoptionCenter = () => {
             </p>
 
             {adoptedMonster && (
-              <div className="adoption-actions">
+              <div className="type-tags fw">
                 <button
-                  className="berry-button"
+                  className="button primary"
                   onClick={openItemModal}
                   disabled={
                     !Object.values(availableBerries).some(count => count > 0) &&
@@ -690,7 +690,7 @@ const AdoptionCenter = () => {
             )}
 
             <button
-              className="modal-button primary"
+              className="button primary"
               onClick={closeAdoptModal}
             >
               Close
@@ -700,14 +700,14 @@ const AdoptionCenter = () => {
           <div className="adoption-form">
             {selectedAdopt && (
               <>
-                <div className="adopt-details">
+                <div className="no-npcs">
                   <h3>Monster Details</h3>
 
                   {/* Species Images in Modal - Clickable for Popout */}
                   <div className="modal-species-images">
                     {selectedAdopt.species1 && (
                       <div
-                        className={`modal-species-image-container ${speciesImages[selectedAdopt.species1] ? 'clickable' : ''}`}
+                        className={`modal-species-image-container${speciesImages[selectedAdopt.species1] ? 'clickable' : ''}`}
                         onClick={() => openImagePopout(speciesImages[selectedAdopt.species1], selectedAdopt.species1)}
                         title={speciesImages[selectedAdopt.species1] ? `Click to view ${selectedAdopt.species1}` : selectedAdopt.species1}
                       >
@@ -727,7 +727,7 @@ const AdoptionCenter = () => {
                     )}
                     {selectedAdopt.species2 && (
                       <div
-                        className={`modal-species-image-container fusion ${speciesImages[selectedAdopt.species2] ? 'clickable' : ''}`}
+                        className={`modal-species-image-container fusion${speciesImages[selectedAdopt.species2] ? 'clickable' : ''}`}
                         onClick={() => openImagePopout(speciesImages[selectedAdopt.species2], selectedAdopt.species2)}
                         title={speciesImages[selectedAdopt.species2] ? `Click to view ${selectedAdopt.species2}` : selectedAdopt.species2}
                       >
@@ -748,7 +748,7 @@ const AdoptionCenter = () => {
                     )}
                     {selectedAdopt.species3 && (
                       <div
-                        className={`modal-species-image-container fusion ${speciesImages[selectedAdopt.species3] ? 'clickable' : ''}`}
+                        className={`modal-species-image-container fusion${speciesImages[selectedAdopt.species3] ? 'clickable' : ''}`}
                         onClick={() => openImagePopout(speciesImages[selectedAdopt.species3], selectedAdopt.species3)}
                         title={speciesImages[selectedAdopt.species3] ? `Click to view ${selectedAdopt.species3}` : selectedAdopt.species3}
                       >
@@ -783,14 +783,14 @@ const AdoptionCenter = () => {
                   {selectedAdopt.attribute && (
                     <div className="adopt-attribute-details">
                       <p><strong>Attribute:</strong></p>
-                      <div className="adopt-attribute-badge-container">
+                      <div className="evolution-attribute">
                         <AttributeBadge attribute={selectedAdopt.attribute} />
                       </div>
                     </div>
                   )}
                 </div>
 
-                <div className="adoption-inputs">
+                <div className="map-filters">
                   <div className="form-group">
                     <label htmlFor="monster-name">Monster Name:</label>
                     <input
@@ -830,11 +830,11 @@ const AdoptionCenter = () => {
                           alt={selectedArtwork.title}
                           className="selected-artwork-thumbnail"
                         />
-                        <div className="selected-artwork-info">
-                          <span className="selected-artwork-title">{selectedArtwork.title}</span>
+                        <div className="resource-info">
+                          <span className="detail-val">{selectedArtwork.title}</span>
                           <button
                             type="button"
-                            className="clear-artwork-btn"
+                            className="button secondary"
                             onClick={() => setSelectedArtwork(null)}
                           >
                             Change
@@ -850,9 +850,9 @@ const AdoptionCenter = () => {
                         placeholder="Search by title..."
                         value={artworkSearchQuery}
                         onChange={(e) => setArtworkSearchQuery(e.target.value)}
-                        className="artwork-search-input"
+                        className="special-input"
                       />
-                      <button type="submit" className="artwork-search-btn">
+                      <button type="submit" className="button primary">
                         Search
                       </button>
                     </form>
@@ -869,7 +869,7 @@ const AdoptionCenter = () => {
                           {artworkSearchQuery && (
                             <button
                               type="button"
-                              className="clear-search-btn"
+                              className="button secondary"
                               onClick={() => {
                                 setArtworkSearchQuery('');
                                 fetchUserArtworks(1, '');
@@ -885,7 +885,7 @@ const AdoptionCenter = () => {
                             {userArtworks.map(artwork => (
                               <div
                                 key={artwork.id}
-                                className={`artwork-selector-item ${selectedArtwork?.id === artwork.id ? 'selected' : ''}`}
+                                className={`value-item ${selectedArtwork?.id === artwork.id ? 'selected' : ''}`}
                                 onClick={() => setSelectedArtwork(artwork)}
                                 title={artwork.title}
                               >
@@ -919,15 +919,15 @@ const AdoptionCenter = () => {
                     </div>
                   )}
 
-                  <div className="adoption-actions">
+                  <div className="type-tags fw">
                     <button
-                      className="modal-button secondary"
+                      className="button secondary"
                       onClick={closeAdoptModal}
                     >
                       Cancel
                     </button>
                     <button
-                      className="modal-button primary"
+                      className="button primary"
                       onClick={handleAdoptSubmit}
                       disabled={adoptionLoading || !selectedTrainer || !monsterName.trim() || !selectedArtwork}
                     >

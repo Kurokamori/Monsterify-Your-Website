@@ -280,7 +280,7 @@ const MegaMart = () => {
         </p>
       </div>
 
-      <div className="trainer-selection">
+      <div className="shop-search">
         <TrainerSelector
           trainers={userTrainers}
           selectedTrainerId={selectedTrainer}
@@ -298,7 +298,7 @@ const MegaMart = () => {
       {actionError && (
         <div className="action-error">
           <p>{actionError}</p>
-          <button onClick={() => setActionError(null)}>Dismiss</button>
+          <button className="button danger" onClick={() => setActionError(null)}>Dismiss</button>
         </div>
       )}
 
@@ -322,11 +322,11 @@ const MegaMart = () => {
                 <h4>{selectedMonster.name}</h4>
               </div>
 
-              <div className="monster-info-details">
+              <div className="video-list">
                 {selectedMonster.species && selectedMonster.species.length > 0 && (
-                  <div className="monster-species">
+                  <div className="monster-types">
                     {selectedMonster.species.slice(0, 3).map((species, index) => (
-                      <span key={index} className="species-badge">{species}</span>
+                      <span key={index} className="badge">{species}</span>
                     ))}
                   </div>
                 )}
@@ -340,7 +340,7 @@ const MegaMart = () => {
                 )}
 
                 {selectedMonster.attribute && (
-                  <div className="monster-attribute">
+                  <div className="monster-types">
                     <AttributeBadge attribute={selectedMonster.attribute} />
                   </div>
                 )}
@@ -351,27 +351,27 @@ const MegaMart = () => {
               <div className="ability-card">
                 <h4>Primary Ability</h4>
                 <p className="ability-name">{monsterAbilities.ability1?.name || 'None'}</p>
-                <p className="ability-description">{monsterAbilities.ability1?.effect || 'No description available'}</p>
+                <p className="ability-effect">{monsterAbilities.ability1?.effect || 'No description available'}</p>
               </div>
 
               <div className="ability-card">
                 <h4>Secondary Ability</h4>
                 <p className="ability-name">{monsterAbilities.ability2?.name || 'None'}</p>
-                <p className="ability-description">{monsterAbilities.ability2?.effect || 'No description available'}</p>
+                <p className="ability-effect">{monsterAbilities.ability2?.effect || 'No description available'}</p>
               </div>
 
               {monsterAbilities.hidden_ability && (
                 <div className="ability-card hidden">
                   <h4>Hidden Ability</h4>
                   <p className="ability-name">{monsterAbilities.hidden_ability.name}</p>
-                  <p className="ability-description">{monsterAbilities.hidden_ability.effect}</p>
+                  <p className="ability-effect">{monsterAbilities.hidden_ability.effect}</p>
                 </div>
               )}
             </div>
 
-            <div className="ability-actions">
+            <div className="rarity-options">
               <button
-                className="action-button"
+                className="button primary"
                 onClick={handleUseAbilityCapsule}
                 disabled={!monsterAbilities.ability1 || !monsterAbilities.ability2}
               >
@@ -382,7 +382,7 @@ const MegaMart = () => {
               </button>
 
               <button
-                className="action-button"
+                className="button primary"
                 onClick={handleUseScrollOfSecrets}
               >
                 Use Scroll of Secrets
@@ -414,7 +414,7 @@ const MegaMart = () => {
             <p>The Ability Capsule has been used successfully!</p>
             <p>The monster's abilities have been swapped.</p>
             <button
-              className="modal-button primary"
+              className="button primary"
               onClick={closeAbilityCapsuleModal}
             >
               Close
@@ -445,14 +445,14 @@ const MegaMart = () => {
 
             <div className="modal-actions">
               <button
-                className="modal-button secondary"
+                className="button secondary"
                 onClick={closeAbilityCapsuleModal}
               >
                 Cancel
               </button>
 
               <button
-                className="modal-button primary"
+                className="button primary"
                 onClick={confirmUseAbilityCapsule}
                 disabled={loading}
               >
@@ -474,7 +474,7 @@ const MegaMart = () => {
             <p>The Scroll of Secrets has been used successfully!</p>
             <p>The monster's ability has been changed.</p>
             <button
-              className="modal-button primary"
+              className="button primary"
               onClick={closeScrollOfSecretsModal}
             >
               Close
@@ -543,14 +543,14 @@ const MegaMart = () => {
 
             <div className="modal-actions">
               <button
-                className="modal-button secondary"
+                className="button secondary"
                 onClick={closeScrollOfSecretsModal}
               >
                 Cancel
               </button>
 
               <button
-                className="modal-button primary"
+                className="button primary"
                 onClick={confirmUseScrollOfSecrets}
                 disabled={loading || !selectedAbility}
               >

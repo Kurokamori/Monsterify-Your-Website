@@ -139,12 +139,12 @@ const MonsterTeamManager = ({ person, onClose, onTeamUpdated }) => {
   return (
     <div className="monster-team-manager-overlay">
       <div className="monster-team-manager">
-        <div className="modal-header">
+        <div className="tree-header">
           <h2>
             <i className="fas fa-dragon"></i>
             {person.name}'s Monster Team
           </h2>
-          <button className="close-button" onClick={onClose}>×</button>
+          <button className="button close" onClick={onClose}>×</button>
         </div>
 
         <div className="team-info">
@@ -168,7 +168,7 @@ const MonsterTeamManager = ({ person, onClose, onTeamUpdated }) => {
           </div>
 
           <button
-            className="btn btn-primary add-monster-btn"
+            className="button primary lg lift"
             onClick={handleAddMonster}
             disabled={team.length >= 4}
           >
@@ -178,20 +178,20 @@ const MonsterTeamManager = ({ person, onClose, onTeamUpdated }) => {
         </div>
 
         {error && (
-          <div className="alert alert-danger">
+          <div className="alert error">
             <i className="fas fa-exclamation-triangle"></i>
             {error}
           </div>
         )}
 
-        <div className="monsters-grid">
+        <div className="button">
           {team.length === 0 ? (
             <div className="empty-team">
               <i className="fas fa-dragon"></i>
               <h3>No Monsters Yet</h3>
               <p>{person.name} doesn't have any team monsters yet.</p>
               <button 
-                className="btn btn-primary"
+                className="button primary"
                 onClick={handleAddMonster}
               >
                 Add First Monster
@@ -200,12 +200,12 @@ const MonsterTeamManager = ({ person, onClose, onTeamUpdated }) => {
           ) : (
             team.map(monster => (
               <div key={monster.id} className="monster-card">
-                <div className="monster-header">
+                <div className="tree-header">
                   <div className="monster-image">
                     {monster.image ? (
                       <img src={monster.image} alt={monster.name} />
                     ) : (
-                      <div className="placeholder-image">
+                      <div className="image-placeholder">
                         <i className="fas fa-dragon"></i>
                       </div>
                     )}
@@ -259,7 +259,7 @@ const MonsterTeamManager = ({ person, onClose, onTeamUpdated }) => {
                     <div className="detail-group">
                       <label>Attribute:</label>
                       <div 
-                        className="attribute-badge"
+                        className="badge"
                         style={{ backgroundColor: getAttributeColor(monster.attribute) }}
                       >
                         <i className={getAttributeIcon(monster.attribute)}></i>
@@ -271,7 +271,7 @@ const MonsterTeamManager = ({ person, onClose, onTeamUpdated }) => {
 
                 <div className="monster-actions">
                   <button
-                    className="btn btn-sm btn-primary"
+                    className="button primary sm"
                     onClick={() => handleEditMonster(monster)}
                     title="Edit Monster"
                   >
@@ -279,7 +279,7 @@ const MonsterTeamManager = ({ person, onClose, onTeamUpdated }) => {
                     Edit
                   </button>
                   <button
-                    className="btn btn-sm btn-danger"
+                    className="button danger sm"
                     onClick={() => handleDeleteMonster(monster.id)}
                     title="Delete Monster"
                   >

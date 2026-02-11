@@ -27,7 +27,7 @@ const ItemCard = ({
 
   const handleCardClick = (e) => {
     // Don't trigger if clicking on purchase button
-    if (e.target.closest('.purchase-button')) {
+    if (e.target.closest('.button.primary')) {
       return;
     }
     if (onItemClick) {
@@ -37,7 +37,7 @@ const ItemCard = ({
 
   return (
     <div 
-      className={`item-card ${getRarityClass()} ${disabled ? 'disabled' : ''} ${onItemClick ? 'clickable' : ''}`}
+      className={`item-card ${getRarityClass()} ${disabled ? 'disabled' : ''}${onItemClick ? 'clickable' : ''}`}
       onClick={handleCardClick}
     >
       <div className="item-image-container">
@@ -81,7 +81,7 @@ const ItemCard = ({
 
         {showPurchase && (
           <button
-            className="purchase-button"
+            className="button primary"
             onClick={onPurchaseClick}
             disabled={disabled}
           >

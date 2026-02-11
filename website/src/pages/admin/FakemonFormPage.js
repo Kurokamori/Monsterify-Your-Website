@@ -59,11 +59,11 @@ const buildEvolutionTree = (chain) => {
 };
 
 const renderEvoPreviewNode = (node, depth = 0) => (
-  <div key={node.number} style={{ marginLeft: depth * 24 }}>
-    <span style={{ opacity: 0.7 }}>
-      {depth > 0 && <><i className="fas fa-arrow-right" style={{ fontSize: '0.7rem', marginRight: 6 }}></i></>}
+  <div key={node.number} className="evo-preview-node" style={{ marginLeft: depth * 24 }}>
+    <span className="evo-preview-node-content">
+      {depth > 0 && <><i className="fas fa-arrow-right evo-preview-arrow"></i></>}
       <strong>#{node.number}</strong> {node.name || '???'}
-      {node.method && <span style={{ fontSize: '0.75rem', opacity: 0.6 }}> ({node.method}{node.method_detail ? `: ${node.method_detail}` : ''})</span>}
+      {node.method && <span className="evo-preview-method"> ({node.method}{node.method_detail ? `: ${node.method_detail}` : ''})</span>}
     </span>
     {node.children && node.children.map(child => renderEvoPreviewNode(child, depth + 1))}
   </div>
@@ -385,13 +385,13 @@ const FakemonFormPage = () => {
         </div>
 
         {error && (
-          <div className="admin-alert error">
+          <div className="alert error">
             <i className="fas fa-exclamation-circle"></i> {error}
           </div>
         )}
 
         <div className="admin-actions">
-          <Link to="/admin/fakemon" className="admin-button secondary">
+          <Link to="/admin/fakemon" className="button secondary">
             <i className="fas fa-arrow-left"></i> Back to Fakemon List
           </Link>
         </div>
@@ -399,9 +399,9 @@ const FakemonFormPage = () => {
         {loading ? (
           <LoadingSpinner message="Loading fakemon data..." />
         ) : (
-          <div className="admin-form-container">
-            <form onSubmit={handleSubmit} className="admin-form">
-              <div className="admin-form-grid">
+          <div className="bulk-monster-add-form">
+            <form onSubmit={handleSubmit} className="reroller-content">
+              <div className="reroller-content">
                 {/* Basic Information */}
                 <div className="admin-form-section">
                   <h2 className="admin-form-section-title">Basic Information</h2>
@@ -491,10 +491,9 @@ const FakemonFormPage = () => {
                       name="image_url"
                       value={formData.image_url}
                       onChange={handleChange}
-                      className="admin-form-input"
                       placeholder="Or enter image URL directly"
                       disabled={saving}
-                      style={{ marginTop: '10px' }}
+                      className="admin-form-input with-margin-top"
                     />
                   </div>
                 </div>
@@ -582,7 +581,7 @@ const FakemonFormPage = () => {
                     name="description"
                     value={formData.description}
                     onChange={handleChange}
-                    className="admin-form-textarea"
+                    className="admin-form-input"
                     rows="4"
                     placeholder="Enter a description for this fakemon..."
                     disabled={saving}
@@ -637,16 +636,16 @@ const FakemonFormPage = () => {
 
                 {/* Stat Generator */}
                 <div className="admin-stat-generator">
-                  <h3 style={{ margin: '0 0 1rem 0', fontSize: '1rem', color: 'var(--accent-color, #d6a339)' }}>
+                  <h3 className="admin-stat-generator-title">
                     <i className="fas fa-dice"></i> Stat Generator
                   </h3>
-                  <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', alignItems: 'flex-end' }}>
-                    <div className="admin-form-group" style={{ flex: '1', minWidth: '200px' }}>
+                  <div className="admin-stat-generator-row">
+                    <div className="admin-form-group power-level-group">
                       <label className="admin-form-label">Power Level</label>
                       <select
                         value={statPowerLevel}
                         onChange={(e) => setStatPowerLevel(e.target.value)}
-                        className="admin-form-select"
+                        className="admin-form-input"
                       >
                         <option value="">Select Power Level</option>
                         {POWER_LEVELS.map(pl => (
@@ -654,11 +653,11 @@ const FakemonFormPage = () => {
                         ))}
                       </select>
                     </div>
-                    <div className="admin-form-group" style={{ flex: '2', minWidth: '300px' }}>
+                    <div className="admin-form-group specialty-group">
                       <label className="admin-form-label">Specialty Stats</label>
-                      <div className="specialty-checkboxes">
+                      <div className="type-tags fw">
                         {SPECIALTY_OPTIONS.map(opt => (
-                          <label key={opt.key} className="specialty-checkbox">
+                          <label key={opt.key} className="attribute-tag">
                             <input
                               type="checkbox"
                               checked={statSpecialties.includes(opt.key)}
@@ -671,17 +670,16 @@ const FakemonFormPage = () => {
                     </div>
                     <button
                       type="button"
-                      className="admin-button secondary"
+                      className="button secondary"
                       onClick={handleRollStats}
                       disabled={!statPowerLevel}
-                      style={{ height: 'fit-content' }}
                     >
                       <i className="fas fa-dice"></i> Roll Stats
                     </button>
                   </div>
                 </div>
 
-                <div className="admin-stats-grid">
+                <div className="button">
                   {STAT_KEYS.map(key => {
                     const labels = {
                       hp: 'HP', attack: 'Attack', defense: 'Defense',
@@ -702,9 +700,9 @@ const FakemonFormPage = () => {
                           max="255"
                           disabled={saving}
                         />
-                        <div className="admin-stat-bar">
+                        <div className="progress">
                           <div
-                            className={`admin-stat-fill ${barClass}`}
+                            className={`progress-fill${barClass}`}
                             style={{ width: `${Math.min(100, (formData[key] / 255) * 100)}%` }}
                           ></div>
                         </div>
@@ -712,7 +710,7 @@ const FakemonFormPage = () => {
                     );
                   })}
                 </div>
-                <div style={{ textAlign: 'right', opacity: 0.7, fontSize: '0.85rem', marginTop: '0.5rem' }}>
+                <div className="admin-bst-display">
                   <strong>BST Total: {bstTotal}</strong>
                 </div>
               </div>
@@ -757,7 +755,7 @@ const FakemonFormPage = () => {
                             <select
                               value={evo.method || ''}
                               onChange={(e) => handleEvolutionChange(index, 'method', e.target.value)}
-                              className="admin-form-select"
+                              className="admin-form-input"
                               disabled={saving}
                             >
                               <option value="">None (Base)</option>
@@ -803,7 +801,7 @@ const FakemonFormPage = () => {
                             <select
                               value={evo.evolves_from != null ? evo.evolves_from : ''}
                               onChange={(e) => handleEvolutionChange(index, 'evolves_from', e.target.value ? (parseInt(e.target.value) || e.target.value) : null)}
-                              className="admin-form-select"
+                              className="admin-form-input"
                               disabled={saving}
                             >
                               <option value="">None (Base Form)</option>
@@ -820,7 +818,7 @@ const FakemonFormPage = () => {
                         <button
                           type="button"
                           onClick={() => removeEvolution(index)}
-                          className="admin-button delete"
+                          className="button danger sm"
                           disabled={saving}
                         >
                           <i className="fas fa-times"></i>
@@ -833,7 +831,7 @@ const FakemonFormPage = () => {
                 <button
                   type="button"
                   onClick={addEvolution}
-                  className="admin-button secondary"
+                  className="button secondary"
                   disabled={saving}
                 >
                   <i className="fas fa-plus"></i> Add Evolution
@@ -852,10 +850,10 @@ const FakemonFormPage = () => {
 
               {/* Form Actions */}
               <div className="admin-form-actions">
-                <Link to="/admin/fakemon" className="admin-button secondary" disabled={saving}>
+                <Link to="/admin/fakemon" className="button secondary" disabled={saving}>
                   Cancel
                 </Link>
-                <button type="submit" className="admin-button" disabled={saving}>
+                <button type="submit" className="button primary" disabled={saving}>
                   {saving ? (
                     <>
                       <i className="fas fa-spinner fa-spin"></i> {isEditMode ? 'Updating...' : 'Creating...'}

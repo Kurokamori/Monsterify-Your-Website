@@ -1,0 +1,133 @@
+.prompt-card {
+  background: linear-gradient(135deg, var(--overlay-dark) 0%, var(--card-background) 100%);
+  border: 2px solid var(--border-color);
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 8px var(--overlay-light);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.prompt-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px var(--overlay-medium);
+}
+
+.prompt-card.unavailable {
+  opacity: 0.7;
+  background: linear-gradient(135deg, var(--card-background) 0%, var(--border-color) 100%);
+}
+
+.prompt-card.expired {
+  opacity: 0.6;
+  background: linear-gradient(135deg, var(--error-light) 0%, var(--error-light) 100%);
+  border-color: var(--error-color);
+}
+
+/* Header */
+.prompt-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 15px;
+}
+
+.prompt-title-section {
+  flex: 1;
+}
+
+.prompt-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+/* Content */
+.prompt-card-content {
+  margin-bottom: 20px;
+}
+
+.prompt-text {
+  background: var(--nav-hover);
+  border-left: 4px solid var(--blue-color);
+  border-radius: 0 6px 6px 0;
+  margin: 15px 0;
+  padding: 12px 15px;
+}
+
+.prompt-text h4 {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-color);
+  margin: 0 0 8px 0;
+}
+
+.prompt-text p {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  margin: 0;
+  line-height: 1.4;
+}
+
+.prompt-statistics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  padding: 12px 0;
+  border-top: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--border-color);
+  margin: 15px 0;
+}
+
+.prompt-limits {
+  margin-top: 10px;
+}
+
+.prompt-limits p {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin: 0;
+  font-style: italic;
+}
+
+/* Footer */
+
+.availability-notice {
+  color: var(--error-color);
+  font-size: 0.9rem;
+  font-weight: 500;
+  font-style: italic;
+}
+
+/* Tags */
+.prompt-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 1px solid var(--border-color);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .prompt-card {
+    padding: 15px;
+  }
+  
+  .prompt-card-header {
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .prompt-title {
+    font-size: 1.2rem;
+  }
+  
+  .prompt-statistics {
+    justify-content: space-around;
+  }
+}

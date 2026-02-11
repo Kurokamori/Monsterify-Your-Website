@@ -447,7 +447,7 @@ const MonsterReferenceSubmissionForm = ({ onSubmissionComplete }) => {
       <form className="submission-form" onSubmit={handleSubmit}>
         {/* Bulk Upload Section */}
         <div className="form-section">
-          <div className="bulk-upload-header">
+          <div className="adopt-card">
             <h3>Upload Options</h3>
             <button
               type="button"
@@ -548,7 +548,7 @@ const MonsterReferenceSubmissionForm = ({ onSubmissionComplete }) => {
                 {index > 0 && (
                   <button
                     type="button"
-                    className="remove-button"
+                    className="button danger"
                     onClick={() => removeReference(index)}
                   >
                     Remove
@@ -644,11 +644,10 @@ const MonsterReferenceSubmissionForm = ({ onSubmissionComplete }) => {
               )}
 
               {reference.referencePreview && (
-                <div className="image-preview-container">
+                <div className="image-container medium">
                   <img
                     src={reference.referencePreview}
                     alt="Reference Preview"
-                    className="image-preview"
                   />
                 </div>
               )}
@@ -687,7 +686,7 @@ const MonsterReferenceSubmissionForm = ({ onSubmissionComplete }) => {
                     <div className="instance-appearances">
                       <h5>Instance Appearances</h5>
                       {reference.instanceAppearances.map((appearance, i) => (
-                        <div key={i} className="instance-appearance-row">
+                        <div key={i} className="option-row">
                           <label>Instance #{appearance.instanceNumber} Appearance:</label>
                           <select
                             value={appearance.type}
@@ -742,7 +741,7 @@ const MonsterReferenceSubmissionForm = ({ onSubmissionComplete }) => {
           {!showBulkUpload && (
             <button
               type="button"
-              className="add-button"
+              className="button primary"
               onClick={addReference}
             >
               Add Another Reference
@@ -756,7 +755,7 @@ const MonsterReferenceSubmissionForm = ({ onSubmissionComplete }) => {
 
           <button
             type="button"
-            className="estimate-button"
+            className="button secondary"
             onClick={calculateRewardEstimate}
             disabled={loading}
           >
@@ -769,7 +768,7 @@ const MonsterReferenceSubmissionForm = ({ onSubmissionComplete }) => {
 
               <div className="reward-section">
                 <h5>Trainer Rewards</h5>
-                <div className="reward-items">
+                <div className="container cols-2 gap-md">
                   <div className="reward-item">
                     <span className="reward-label">Levels:</span>
                     <span className="reward-value">{rewardEstimate.levels}</span>
@@ -788,7 +787,7 @@ const MonsterReferenceSubmissionForm = ({ onSubmissionComplete }) => {
         <div className="form-actions">
           <button
             type="submit"
-            className="submit-button"
+            className="button success"
             disabled={loading}
           >
             {loading ? (

@@ -8,7 +8,7 @@ const GuideCategoryTabs = ({ categories, activeCategory }) => {
         <Link
           key={key}
           to={`/guides/${key}`}
-          className={`guide-category-tab ${activeCategory === key ? 'active' : ''}`}
+          className={`guide-category-tab${activeCategory === key ? 'active' : ''}`}
         >
           {categories[key].name}
         </Link>

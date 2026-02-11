@@ -194,7 +194,7 @@ const InteractiveMapPage = () => {
     <div className="interactive-map-container">
       <div className="map-controls">
         <div className="map-filters">
-          <div className="region-filter">
+          <div className="detail-row">
             <label htmlFor="region-select">Region:</label>
             <select
               id="region-select"
@@ -211,7 +211,7 @@ const InteractiveMapPage = () => {
             </select>
           </div>
           
-          <div className="layer-toggles">
+          <div className="container cols-2 gap-md">
             <label className="layer-toggle">
               <input
                 type="checkbox"
@@ -239,14 +239,14 @@ const InteractiveMapPage = () => {
           </div>
         </div>
         
-        <div className="zoom-controls">
-          <button className="zoom-button" onClick={handleZoomIn}>
+        <div className="type-row">
+          <button className="button secondary icon" onClick={handleZoomIn}>
             <i className="fas fa-plus"></i>
           </button>
-          <button className="zoom-button" onClick={handleZoomOut}>
+          <button className="button secondary icon" onClick={handleZoomOut}>
             <i className="fas fa-minus"></i>
           </button>
-          <button className="zoom-button" onClick={handleResetView}>
+          <button className="button secondary icon" onClick={handleResetView}>
             <i className="fas fa-home"></i>
           </button>
         </div>
@@ -290,7 +290,7 @@ const InteractiveMapPage = () => {
         <div className="location-info-panel">
           <div className="panel-header">
             <h3>{selectedLocation.name}</h3>
-            <button className="close-button" onClick={() => setSelectedLocation(null)}>
+            <button className="button close" onClick={() => setSelectedLocation(null)}>
               <i className="fas fa-times"></i>
             </button>
           </div>
@@ -298,12 +298,12 @@ const InteractiveMapPage = () => {
             <div className="location-type-badge">{selectedLocation.type}</div>
             <p className="location-description">{selectedLocation.description}</p>
             
-            <div className="location-region-info">
+            <div className="location-region">
               <i className="fas fa-map-marker-alt"></i>
               <span>{displayMapData.regions.find(r => r.id === selectedLocation.region)?.name || selectedLocation.region}</span>
             </div>
             
-            <button className="view-details-button">
+            <button className="button primary">
               <i className="fas fa-info-circle"></i> View Full Details
             </button>
           </div>

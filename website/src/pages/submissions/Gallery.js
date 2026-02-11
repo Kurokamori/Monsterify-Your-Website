@@ -5,6 +5,7 @@ import submissionService from '../../services/submissionService';
 import trainerService from '../../services/trainerService';
 import monsterService from '../../services/monsterService';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
+import AutocompleteInput from '../../components/common/AutocompleteInput';
 
 const Gallery = () => {
   const [submissions, setSubmissions] = useState([]);
@@ -17,7 +18,8 @@ const Gallery = () => {
   const [monsters, setMonsters] = useState([]);
 
   // Filters
-  const [selectedTag, setSelectedTag] = useState('');
+  const [selectedTags, setSelectedTags] = useState([]);
+  const [tagInputValue, setTagInputValue] = useState('');
   const [selectedTrainer, setSelectedTrainer] = useState('');
   const [selectedMonster, setSelectedMonster] = useState('');
   const [sortBy, setSortBy] = useState('newest');
@@ -29,20 +31,20 @@ const Gallery = () => {
   // Parse query parameters
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
-    const tagParam = queryParams.get('tag');
+    const tagsParam = queryParams.get('tags');
     const trainerParam = queryParams.get('trainer');
     const monsterParam = queryParams.get('monster');
     const sortParam = queryParams.get('sort');
     const pageParam = queryParams.get('page');
 
-    if (tagParam) setSelectedTag(tagParam);
+    if (tagsParam) setSelectedTags(tagsParam.split(',').filter(t => t.trim()));
     if (trainerParam) setSelectedTrainer(trainerParam);
     if (monsterParam) setSelectedMonster(monsterParam);
     if (sortParam) setSortBy(sortParam);
     if (pageParam) setPage(parseInt(pageParam));
 
     // Auto-expand filters if any are active
-    if (tagParam || trainerParam || monsterParam || (sortParam && sortParam !== 'newest')) {
+    if (tagsParam || trainerParam || monsterParam || (sortParam && sortParam !== 'newest')) {
       setShowFilters(true);
     }
   }, [location.search]);
@@ -59,7 +61,7 @@ const Gallery = () => {
           sort: sortBy
         };
 
-        if (selectedTag) params.tag = selectedTag;
+        if (selectedTags.length > 0) params.tags = selectedTags.join(',');
         if (selectedTrainer) params.trainerId = selectedTrainer;
         if (selectedMonster) params.monsterId = selectedMonster;
 
@@ -75,7 +77,7 @@ const Gallery = () => {
     };
 
     fetchSubmissions();
-  }, [page, selectedTag, selectedTrainer, selectedMonster, sortBy]);
+  }, [page, selectedTags, selectedTrainer, selectedMonster, sortBy]);
 
   // Load tags, trainers, and monsters for filters
   useEffect(() => {
@@ -102,23 +104,32 @@ const Gallery = () => {
   useEffect(() => {
     const queryParams = new URLSearchParams();
 
-    if (selectedTag) queryParams.set('tag', selectedTag);
+    if (selectedTags.length > 0) queryParams.set('tags', selectedTags.join(','));
     if (selectedTrainer) queryParams.set('trainer', selectedTrainer);
     if (selectedMonster) queryParams.set('monster', selectedMonster);
     if (sortBy !== 'newest') queryParams.set('sort', sortBy);
     if (page > 1) queryParams.set('page', page.toString());
 
     const queryString = queryParams.toString();
-    navigate(`/submissions/gallery${queryString ? `?${queryString}` : ''}`, { replace: true });
-  }, [selectedTag, selectedTrainer, selectedMonster, sortBy, page, navigate]);
+    navigate(`/submissions/gallery ${queryString ? `?${queryString}` : ''}`, { replace: true });
+  }, [selectedTags, selectedTrainer, selectedMonster, sortBy, page, navigate]);
 
   const handlePageChange = (newPage) => {
     setPage(newPage);
     window.scrollTo(0, 0);
   };
 
-  const handleTagChange = (e) => {
-    setSelectedTag(e.target.value);
+  const handleTagSelect = (option) => {
+    const tagName = option.name;
+    if (tagName && !selectedTags.includes(tagName)) {
+      setSelectedTags(prev => [...prev, tagName]);
+      setPage(1);
+    }
+    setTagInputValue('');
+  };
+
+  const handleRemoveTag = (tagToRemove) => {
+    setSelectedTags(prev => prev.filter(tag => tag !== tagToRemove));
     setPage(1);
   };
 
@@ -204,13 +215,13 @@ const Gallery = () => {
   if (loading) return <LoadingSpinner />;
 
   return (
-    <Container className="submission-page gallery-page">
+    <Container className="bazar-container gallery-page">
       <div className="page-header-centered">
         <h1>Art Gallery</h1>
         <p>Browse artwork from the community</p>
       </div>
 
-      {error && <div className="alert alert-danger">{error}</div>}
+      {error && <div className="alert error">{error}</div>}
 
       <div className="filter-section mb-4">
         <Button
@@ -218,26 +229,29 @@ const Gallery = () => {
           aria-controls="gallery-filter-collapse"
           aria-expanded={showFilters}
           variant="outline-primary"
-          className="w-100 mb-2 filter-toggle-btn"
+          className="button toggle block"
         >
           {showFilters ? 'Hide Filters' : 'Show Filters'}
-          {(selectedTag || selectedTrainer || selectedMonster || sortBy !== 'newest') &&
+          {(selectedTags.length > 0 || selectedTrainer || selectedMonster || sortBy !== 'newest') &&
             <span className="ms-2 filter-badge">Filters Applied</span>
           }
         </Button>
 
         <Collapse in={showFilters}>
           <div id="gallery-filter-collapse">
-            <Row className="filter-row">
+            <Row className="form-row">
               <Col md={3}>
                 <Form.Group>
                   <Form.Label>Filter by Tag</Form.Label>
-                  <Form.Select value={selectedTag} onChange={handleTagChange}>
-                    <option value="">All Tags</option>
-                    {Array.isArray(tags) && tags.map(tag => (
-                      <option key={tag} value={tag}>{tag}</option>
-                    ))}
-                  </Form.Select>
+                  <AutocompleteInput
+                    id="tag-filter"
+                    name="tag-filter"
+                    value={tagInputValue}
+                    onChange={(e) => setTagInputValue(e.target.value)}
+                    options={Array.isArray(tags) ? tags.filter(tag => !selectedTags.includes(tag)) : []}
+                    placeholder="Search tags..."
+                    onSelect={handleTagSelect}
+                  />
                 </Form.Group>
               </Col>
               <Col md={3}>
@@ -272,13 +286,35 @@ const Gallery = () => {
                 </Form.Group>
               </Col>
             </Row>
-            {(selectedTag || selectedTrainer || selectedMonster || sortBy !== 'newest') && (
+            {/* Selected Tags Row */}
+            {selectedTags.length > 0 && (
+              <div className="selected-tags-row">
+                <span className="selected-tags-label">Active Tags:</span>
+                <div className="selected-tags-list">
+                  {selectedTags.map(tag => (
+                    <span key={tag} className="selected-tag">
+                      {tag}
+                      <button
+                        type="button"
+                        className="selected-tag-remove"
+                        onClick={() => handleRemoveTag(tag)}
+                        aria-label={`Remove ${tag} tag`}
+                      >
+                        <i className="fas fa-times"></i>
+                      </button>
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+            {(selectedTags.length > 0 || selectedTrainer || selectedMonster || sortBy !== 'newest') && (
               <div className="text-end mt-2">
                 <Button
                   variant="outline-secondary"
                   size="sm"
                   onClick={() => {
-                    setSelectedTag('');
+                    setSelectedTags([]);
+                    setTagInputValue('');
                     setSelectedTrainer('');
                     setSelectedMonster('');
                     setSortBy('newest');
@@ -305,7 +341,7 @@ const Gallery = () => {
             {Array.isArray(submissions) && submissions.map(submission => (
               <Col key={submission.id} md={4} sm={6} className="mb-4">
                 <Card className="submission-card h-100" onClick={() => handleSubmissionClick(submission.id)}>
-                  <div className="card-img-container">
+                  <div className="image-container">
                     <Card.Img
                       variant="top"
                       src={submission.image_url || 'https://via.placeholder.com/300/1e2532/d6a339?text=No+Image'}
@@ -314,13 +350,13 @@ const Gallery = () => {
                   </div>
                   <Card.Body>
                     <Card.Title>{submission.title}</Card.Title>
-                    <Card.Text className="submission-description">{submission.description}</Card.Text>
+                    <Card.Text className="related-submissions">{submission.description}</Card.Text>
                     <div className="submission-meta">
                       <small>By: {submission.display_name || submission.username || 'Unknown'}</small>
                       <small>{new Date(submission.submission_date).toLocaleDateString()}</small>
                     </div>
                     {submission.tags && Array.isArray(submission.tags) && submission.tags.length > 0 && (
-                      <div className="submission-tags">
+                      <div className="type-tags fw">
                         {submission.tags.map(tag => (
                           <span key={tag} className="tag">{tag}</span>
                         ))}

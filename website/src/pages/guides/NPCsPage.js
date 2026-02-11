@@ -201,8 +201,8 @@ const NPCsPage = () => {
   }
 
   return (
-    <div className="npcs-container">
-      <div className="npcs-header">
+    <div className="main-content-container">
+      <div className="lore-header">
         <h1>Important Characters</h1>
         <p>Meet the key figures in the Monsterify world</p>
       </div>
@@ -214,9 +214,9 @@ const NPCsPage = () => {
             placeholder="Search characters..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="search-input"
+            className="form-input"
           />
-          <button className="search-button">
+          <button className="button primary">
             <i className="fas fa-search"></i>
           </button>
         </div>
@@ -283,12 +283,12 @@ const NPCsPage = () => {
                 <div className="npc-columns">
                   <div className="npc-section">
                     <h4 className="section-title">Information</h4>
-                    <div className="npc-info-list">
-                      <div className="npc-info-item">
+                    <div className="auth-form">
+                      <div className="stat-info">
                         <span className="info-label">Faction:</span>
                         <span className="info-value">{npc.faction}</span>
                       </div>
-                      <div className="npc-info-item">
+                      <div className="stat-info">
                         <span className="info-label">Specialization:</span>
                         <span className="info-value">{npc.specialization}</span>
                       </div>
@@ -307,7 +307,7 @@ const NPCsPage = () => {
                 
                 <div className="npc-section">
                   <h4 className="section-title">Dialogue</h4>
-                  <div className="npc-dialogue">
+                  <div className="map-filters">
                     {npc.dialogue.map((line, index) => (
                       <div className="dialogue-line" key={index}>
                         <i className="fas fa-quote-left"></i>
@@ -323,7 +323,7 @@ const NPCsPage = () => {
                     {npc.rewards.map((reward, index) => (
                       <div className="reward-item" key={index}>
                         <div className="reward-icon">
-                          <i className={`fas ${getRewardIcon(reward.type)}`}></i>
+                          <i className={`fas${getRewardIcon(reward.type)}`}></i>
                         </div>
                         <div className="reward-info">
                           <div className="reward-name">{reward.name}</div>
@@ -344,7 +344,7 @@ const NPCsPage = () => {
           <i className="fas fa-user-slash"></i>
           <p>No characters found matching your search criteria.</p>
           <button 
-            className="reset-button"
+            className="button secondary"
             onClick={() => {
               setSelectedCategory('all');
               setSearchQuery('');

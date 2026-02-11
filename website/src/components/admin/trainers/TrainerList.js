@@ -107,9 +107,9 @@ const TrainerList = () => {
 
   return (
     <div className="trainer-list-container">
-      <div className="trainer-list-header">
+      <div className="adopt-card">
         <h1>Trainer Management</h1>
-        <Link to="/admin/dashboard/trainers/create" className="create-trainer-btn">
+        <Link to="/admin/dashboard/trainers/create" className="button primary">
           <i className="fas fa-plus"></i> Create Trainer
         </Link>
       </div>
@@ -123,7 +123,7 @@ const TrainerList = () => {
             onChange={(e) => setSearchTerm(e.target.value)}
             className="trainer-search-input"
           />
-          <button type="submit" className="trainer-search-btn">
+          <button type="submit" className="button primary icon">
             <i className="fas fa-search"></i>
           </button>
         </form>
@@ -181,7 +181,7 @@ const TrainerList = () => {
       {loading ? (
         <LoadingSpinner />
       ) : trainers.length === 0 ? (
-        <div className="no-trainers-message">
+        <div className="map-header">
           <p>No trainers found. Try adjusting your search or filters.</p>
         </div>
       ) : (
@@ -206,12 +206,12 @@ const TrainerList = () => {
                   <tr key={trainer.id}>
                     <td>{trainer.id}</td>
                     <td>
-                      <div className="trainer-name-cell">
+                      <div className="logo-link">
                         {trainer.main_ref && (
                           <img
                             src={trainer.main_ref}
                             alt={trainer.name}
-                            className="trainer-avatar"
+                            className="npc-avatar"
                             onError={(e) => {
                               e.target.onerror = null;
                               e.target.src = 'https://via.placeholder.com/40/1e2532/d6a339?text=T';
@@ -237,14 +237,14 @@ const TrainerList = () => {
                     <td>{new Date(trainer.created_at).toLocaleDateString()}</td>
                     <td>
                       <div className="trainer-actions">
-                        <Link to={`/admin/dashboard/trainers/${trainer.id}`} className="trainer-action-btn view">
+                        <Link to={`/admin/dashboard/trainers/${trainer.id}`} className="button info icon sm">
                           <i className="fas fa-eye"></i>
                         </Link>
-                        <Link to={`/admin/dashboard/trainers/${trainer.id}/edit`} className="trainer-action-btn edit">
+                        <Link to={`/admin/dashboard/trainers/${trainer.id}/edit`} className="button secondary icon sm">
                           <i className="fas fa-edit"></i>
                         </Link>
                         <button
-                          className="trainer-action-btn delete"
+                          className="button danger icon sm"
                           onClick={() => handleDelete(trainer.id)}
                         >
                           <i className="fas fa-trash-alt"></i>

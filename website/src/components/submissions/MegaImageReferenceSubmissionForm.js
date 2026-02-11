@@ -256,7 +256,7 @@ const MegaImageReferenceSubmissionForm = ({ onSubmissionComplete }) => {
                 {index > 0 && (
                   <button
                     type="button"
-                    className="remove-button"
+                    className="button danger icon"
                     onClick={() => removeReference(index)}
                   >
                     Remove
@@ -326,7 +326,7 @@ const MegaImageReferenceSubmissionForm = ({ onSubmissionComplete }) => {
 
                   {/* Image Preview */}
                   {reference.referencePreview && (
-                    <div className="image-preview">
+                    <div className="image-container medium">
                       <img src={reference.referencePreview} alt="Mega evolution preview" />
                     </div>
                   )}
@@ -360,7 +360,7 @@ const MegaImageReferenceSubmissionForm = ({ onSubmissionComplete }) => {
 
           <button
             type="button"
-            className="add-reference-button"
+            className="button primary"
             onClick={addReference}
           >
             <i className="fas fa-plus"></i> Add Another Reference
@@ -371,7 +371,7 @@ const MegaImageReferenceSubmissionForm = ({ onSubmissionComplete }) => {
         <div className="form-actions">
           <button
             type="submit"
-            className="submit-button"
+            className="button success"
             disabled={loading}
           >
             {loading ? (

@@ -283,7 +283,7 @@ const ItemManagement = () => {
 
   return (
     <Container className="item-management-container">
-      <h1 className="page-title">Item Management</h1>
+      <h1 className="map-header">Item Management</h1>
       <p className="page-description">Add items to trainers' inventories</p>
 
       <Row>

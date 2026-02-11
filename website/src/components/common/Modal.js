@@ -55,11 +55,11 @@ const Modal = ({
     <div className="modal-overlay" style={{ zIndex }} onClick={handleOverlayClick}>
       <div className={`modal-container ${sizeClass}`}>
         {title && (
-          <div className="modal-header">
+          <div className="tree-header">
             <h2 className="modal-title">{title}</h2>
             <button
               type="button"
-              className="modal-close"
+              className="button close no-flex"
               onClick={onClose}
               aria-label="Close"
             >

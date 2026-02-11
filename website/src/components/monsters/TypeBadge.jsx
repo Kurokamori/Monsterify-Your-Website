@@ -14,7 +14,7 @@ const TypeBadge = ({ type, context}) => {
   const formattedType = type.toLowerCase();
   
   return (
-    <span className={`type-badge type-${formattedType} ${context && `type-badge-${context}`}`}>
+    <span className={`badge type-${formattedType}${context ? ` badge-${context}` : ''}`}>
       {type}
     </span>
   );

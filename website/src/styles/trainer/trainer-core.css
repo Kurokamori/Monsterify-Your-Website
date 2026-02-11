@@ -1,0 +1,156 @@
+/* ==============================
+   Trainer Core Styles
+
+   Basic trainer elements: inventory hints,
+   containers, names, avatars, and base styles.
+   ============================== */
+
+.trainer-inventory {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  flex-shrink: 0;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px var(--overlay-light);
+  padding: 20px;
+}
+
+.select-trainer-hint {
+  color: var(--text-color);
+  opacity: .7;
+  font-size: .85rem;
+  font-style: italic;
+  text-align: center;
+  margin-top: .5rem;
+  padding: .5rem;
+  background: var(--accent-glow);
+  border-radius: 4px;
+}
+
+/* ===== Subtype trainers list ===== */
+.subtype-trainer .trainer-name{ flex:1; text-align:center; font-weight:500; }
+
+/* ===== Containers ===== */
+
+.trainers-container {
+  width: 100%;
+  max-width: var(--container-max-width);
+  margin: 0 auto;
+  padding: .5rem var(--content-padding);
+}
+
+/* ===== Avatar ===== */
+
+.avatar-placeholder {
+  font-size: 2rem;
+  color: var(--text-color);
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: .5;
+}
+
+/* ===== Name ===== */
+
+.trainer-name-heading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.trainer-name-heading .trainer-name {
+  color: var(--accent-color);
+  font-size: var(--font-size-lg);
+}
+
+/* ===== Base trainer info elements ===== */
+
+.trainer-player i{ color:var(--accent-color); flex-shrink:0; }
+
+/* ===== Empty states ===== */
+
+.map-header i{ font-size:3rem; color:var(--accent-color); margin-bottom:1rem; opacity:.7; }
+
+/* ===== Misc trainer utilities ===== */
+
+.trainer-details {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: .5rem;
+}
+
+.trainer-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  font-size: .9em;
+  color: var(--text-color);
+  font-weight: normal;
+}
+
+.faction-select {
+  border: none;
+  color: var(--text-color);
+  background-color: var(--nav-active);
+  border-radius: .375rem;
+  padding: .5rem 1rem;
+}
+
+/* ===== Responsive ===== */
+
+@media (max-width: 1024px) {
+  .trainers-container { padding: 0.5rem var(--content-padding-sm, 1rem); }
+}
+
+@media (max-width: 768px) {
+  .faction-select { width: 100%; }
+  .trainer-inventory { flex-direction: column; padding: 15px; gap: 0.75rem; }
+  .trainers-container { padding: 0.5rem 0.75rem; }
+  .trainer-name-heading .trainer-name { font-size: var(--font-size-base); }
+  .trainer-details { gap: 0.5rem; }
+  .trainer-info { font-size: 0.85em; }
+  .trainer-type-badge { font-size: 0.8rem; padding: 0.2rem 0.5rem; }
+  .map-header i { font-size: 2.5rem; }
+}
+
+@media (max-width: 480px) {
+  .trainer-inventory { padding: 12px; gap: 0.5rem; border-radius: 6px; }
+  .avatar-placeholder { font-size: 1.5rem; }
+  .select-trainer-hint { font-size: 0.8rem; padding: 0.4rem; }
+  .trainer-type-badge { font-size: 0.75rem; padding: 0.15rem 0.4rem; }
+  .map-header i { font-size: 2rem; margin-bottom: 0.75rem; }
+}
+
+/* Clear search button: Use unified button system from common/buttons.css
+   Example: className="button secondary sm" */
+
+/* ===== Trainer type badge ===== */
+
+.trainer-type-badge {
+  display: inline-block;
+  padding: .25rem .75rem;
+  border-radius: .375rem;
+  font-size: .875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--text-color);
+  width:100%;
+}
+
+/* Status messages: Use unified alert system from common/feedback.css
+   Example: className="alert success" or "alert error" */
+
+/* ===== Monster level badge ===== */
+
+/* View monster button: Use unified button system from common/buttons.css
+   Example: className="button secondary block" */
+
+.monster-ref-stats {
+  color: var(--text-muted);
+  font-size: .9em;
+}

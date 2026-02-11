@@ -93,10 +93,10 @@ const TasksTab = ({ trainers, onRefresh }) => {
 
   return (
     <div className="tasks-tab">
-      <div className="tab-header">
+      <div className="option-row">
         <h2>Tasks</h2>
         <button
-          className="quick-action-btn"
+          className="button primary"
           onClick={() => setShowCreateForm(true)}
         >
           <i className="fas fa-plus"></i>
@@ -106,19 +106,19 @@ const TasksTab = ({ trainers, onRefresh }) => {
 
       <div className="tab-filters">
         <button
-          className={`filter-btn ${filter === 'all' ? 'active' : ''}`}
+          className={`button filter ${filter === 'all' ? 'active' : ''}`}
           onClick={() => setFilter('all')}
         >
           All ({tasks.length})
         </button>
         <button
-          className={`filter-btn ${filter === 'pending' ? 'active' : ''}`}
+          className={`button filter ${filter === 'pending' ? 'active' : ''}`}
           onClick={() => setFilter('pending')}
         >
           Pending ({tasks.filter(t => t.status === 'pending').length})
         </button>
         <button
-          className={`filter-btn ${filter === 'completed' ? 'active' : ''}`}
+          className={`button filter ${filter === 'completed' ? 'active' : ''}`}
           onClick={() => setFilter('completed')}
         >
           Completed ({tasks.filter(t => t.status === 'completed').length})
@@ -126,7 +126,7 @@ const TasksTab = ({ trainers, onRefresh }) => {
       </div>
 
       {filteredTasks.length === 0 ? (
-        <div className="empty-state">
+        <div className="no-npcs">
           <i className="fas fa-tasks"></i>
           <h3>No tasks found</h3>
           <p>
@@ -136,7 +136,7 @@ const TasksTab = ({ trainers, onRefresh }) => {
             }
           </p>
           <button
-            className="quick-action-btn"
+            className="button primary"
             onClick={() => setShowCreateForm(true)}
           >
             <i className="fas fa-plus"></i>
@@ -149,7 +149,7 @@ const TasksTab = ({ trainers, onRefresh }) => {
             <div key={task.id} className="item-card">
               <div className="item-header">
                 <h3 className="item-title">{task.title}</h3>
-                <span className={`item-status ${task.status}`}>
+                <span className={`item-status${task.status}`}>
                   {task.status}
                 </span>
               </div>
@@ -191,7 +191,7 @@ const TasksTab = ({ trainers, onRefresh }) => {
               <div className="item-actions">
                 {task.status === 'pending' && (
                   <button
-                    className="item-action-btn"
+                    className="button primary sm"
                     onClick={() => handleCompleteTask(task.id)}
                   >
                     <i className="fas fa-check"></i>
@@ -199,14 +199,14 @@ const TasksTab = ({ trainers, onRefresh }) => {
                   </button>
                 )}
                 <button
-                  className="item-action-btn secondary"
+                  className="button secondary sm"
                   onClick={() => handleEditTask(task)}
                 >
                   <i className="fas fa-edit"></i>
                   Edit
                 </button>
                 <button
-                  className="item-action-btn danger"
+                  className="button danger sm"
                   onClick={() => handleDeleteTask(task.id)}
                 >
                   <i className="fas fa-trash"></i>

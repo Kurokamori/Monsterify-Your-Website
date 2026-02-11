@@ -1,0 +1,100 @@
+
+
+.item-header h2 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--text-color);
+  margin: 0;
+}
+
+.prompt-count {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+/* Filters */
+.prompt-filters {
+  background: var(--card-background);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 30px;
+}
+
+/* Error and Loading States */
+
+.no-prompts p {
+  color: var(--text-muted);
+  font-size: 1.1rem;
+  margin: 0 0 15px 0;
+}
+
+/* Grid Layout */
+
+/* Pagination */
+
+/* Loading Overlay */
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--highlight-heavy);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .bazar-container {
+  padding: 10px;
+}
+  
+  .item-header h2 {
+    font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .prompt-filters {
+    padding: 15px;
+  }
+  
+  .set-item {
+    gap: 3px;
+  }
+}
+
+/* Animation for loading */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.form-row > * {
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* Focus styles for accessibility */
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .prompt-filters {
+    border-width: 2px;
+  }
+  
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+}

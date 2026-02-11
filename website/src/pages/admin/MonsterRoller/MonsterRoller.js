@@ -295,7 +295,7 @@ const MonsterRoller = () => {
         <form onSubmit={handleSubmit} className="monster-roller-form">
           <div className="form-section">
             <h3>Monster Tables</h3>
-            <div className="checkbox-group">
+            <div className="event-date">
               {options.tables.map(table => (
                 <label key={table} className="checkbox-label">
                   <input
@@ -1039,7 +1039,7 @@ const MonsterRoller = () => {
             </div>
 
             <div className="form-row">
-              <div className="form-group checkbox-group">
+              <div className="form-group event-date">
                 <label className="checkbox-label">
                   <input
                     type="checkbox"
@@ -1062,10 +1062,10 @@ const MonsterRoller = () => {
           </div>
 
           <div className="form-actions">
-            <button type="submit" className="submit-button" disabled={loading}>
+            <button type="submit" className="button success" disabled={loading}>
               {loading ? 'Rolling...' : 'Roll Monsters'}
             </button>
-            <button type="button" className="reset-button" onClick={handleReset} disabled={loading}>
+            <button type="button" className="button secondary" onClick={handleReset} disabled={loading}>
               Reset Form
             </button>
           </div>

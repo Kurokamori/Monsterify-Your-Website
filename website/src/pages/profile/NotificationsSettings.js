@@ -126,7 +126,7 @@ const NotificationsSettings = () => {
 
   return (
     <div className="notifications-settings">
-      <div className="settings-section">
+      <div className="item-card">
         <div className="settings-section-header">
           <h2 className="settings-section-title">Email Notifications</h2>
         </div>
@@ -231,7 +231,7 @@ const NotificationsSettings = () => {
         </div>
       </div>
 
-      <div className="settings-section">
+      <div className="item-card">
         <div className="settings-section-header">
           <h2 className="settings-section-title">Push Notifications</h2>
         </div>

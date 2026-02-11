@@ -197,11 +197,11 @@ const FakemonDetailPage = () => {
         </Link>
 
         {node.children && node.children.length > 0 && (
-          <div className={`evo-tree-branches ${node.children.length > 1 ? 'evo-branching' : ''}`}>
+          <div className={`stat-info${node.children.length > 1 ? 'evo-branching' : ''}`}>
             {node.children.map(child => (
-              <div className="evo-tree-branch" key={child.number}>
+              <div className="logo-link" key={child.number}>
                 <div className="evo-tree-connector">
-                  <div className="evo-tree-arrow-line">
+                  <div className="image-upload">
                     <div className="evo-tree-line"></div>
                     <div className="evo-tree-arrow">
                       <i className="fas fa-chevron-right"></i>
@@ -241,7 +241,7 @@ const FakemonDetailPage = () => {
   }
 
   return (
-    <div className="fakemon-detail-container">
+    <div className="fakedex-container">
       {/* Hero Section */}
       <div className="fakemon-hero">
         <div className="fakemon-hero-image-wrap">
@@ -259,7 +259,7 @@ const FakemonDetailPage = () => {
             <div className="artist-caption">{displayFakemon.artist_caption}</div>
           )}
         </div>
-        <div className="fakemon-hero-info">
+        <div className="banner-text">
           <span className="fakemon-number">#{displayFakemon.displayNumber}</span>
           <h1 className="fakemon-name">{displayFakemon.name}</h1>
           {displayFakemon.classification && (
@@ -274,7 +274,7 @@ const FakemonDetailPage = () => {
           )}
           <div className="fakemon-types">
             {displayFakemon.types.map((type, index) => (
-              <span className={`type-badge type-${type.toLowerCase()}`} key={index}>
+              <span className={`badge type-${type.toLowerCase()}`} key={index}>
                 {type}
               </span>
             ))}
@@ -284,7 +284,7 @@ const FakemonDetailPage = () => {
 
       {/* Info Panel */}
       <div className="fakemon-info-panel">
-        <div className="fakemon-panel-section">
+        <div className="evo-tree">
           <h2 className="panel-heading">Abilities</h2>
           <div className="abilities-pills">
             {displayFakemon.abilities.map((ability, index) => (
@@ -302,7 +302,7 @@ const FakemonDetailPage = () => {
             ))}
           </div>
         </div>
-        <div className="fakemon-panel-section">
+        <div className="evo-tree">
           <h2 className="panel-heading">Details</h2>
           <div className="detail-pairs">
             {displayFakemon.height && (
@@ -348,7 +348,7 @@ const FakemonDetailPage = () => {
             return (
               <div className="stat-row" key={stat.key}>
                 <span className="stat-label">{stat.label}</span>
-                <span className={`stat-value ${getStatColorClass(value)}`}>{value}</span>
+                <span className={`stat-value${getStatColorClass(value)}`}>{value}</span>
                 <div className="stat-bar-track">
                   <div
                     className={`stat-bar-fill ${stat.barClass}`}
@@ -384,17 +384,17 @@ const FakemonDetailPage = () => {
       {/* Navigation */}
       <div className="fakemon-navigation">
         {prevFakemon && (
-          <Link to={`/fakedex/${prevFakemon.number}`} className="nav-button prev-button">
+          <Link to={`/fakedex/${prevFakemon.number}`} className="button secondary">
             <i className="fas fa-chevron-left"></i>
             <span>#{String(prevFakemon.number).padStart(3, '0')} {prevFakemon.name}</span>
           </Link>
         )}
-        <Link to="/fakedex" className="nav-button back-button">
+        <Link to="/fakedex" className="button secondary">
           <i className="fas fa-th"></i>
           <span>Fakemon Dex</span>
         </Link>
         {nextFakemon && (
-          <Link to={`/fakedex/${nextFakemon.number}`} className="nav-button next-button">
+          <Link to={`/fakedex/${nextFakemon.number}`} className="button secondary">
             <span>#{String(nextFakemon.number).padStart(3, '0')} {nextFakemon.name}</span>
             <i className="fas fa-chevron-right"></i>
           </Link>

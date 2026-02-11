@@ -233,21 +233,21 @@ const TasksPage = () => {
   }
 
   return (
-    <div className="tasks-container">
-      <div className="tasks-header">
+    <div className="main-content-container">
+      <div className="option-row">
         <h1>Tasks</h1>
         <p>Complete daily and weekly tasks to earn rewards</p>
       </div>
 
       <div className="tasks-progress">
-        <div className="progress-card">
+        <div className="item-card">
           <div className="progress-header">
             <h2>Daily Tasks</h2>
             <span className="progress-percentage">{dailyProgress}%</span>
           </div>
-          <div className="progress-bar-container">
-            <div 
-              className="progress-bar"
+          <div className="progress">
+            <div
+              className="progress-fill primary"
               style={{ width: `${dailyProgress}%` }}
             ></div>
           </div>
@@ -256,14 +256,14 @@ const TasksPage = () => {
           </div>
         </div>
         
-        <div className="progress-card">
+        <div className="item-card">
           <div className="progress-header">
             <h2>Weekly Tasks</h2>
             <span className="progress-percentage">{weeklyProgress}%</span>
           </div>
-          <div className="progress-bar-container">
-            <div 
-              className="progress-bar"
+          <div className="progress">
+            <div
+              className="progress-fill primary"
               style={{ width: `${weeklyProgress}%` }}
             ></div>
           </div>
@@ -275,13 +275,13 @@ const TasksPage = () => {
 
       <div className="tasks-tabs">
         <button 
-          className={`tab-button ${activeTab === 'daily' ? 'active' : ''}`}
+          className={`button tab ${activeTab === 'daily' ? 'active' : ''}`}
           onClick={() => setActiveTab('daily')}
         >
           Daily Tasks
         </button>
         <button 
-          className={`tab-button ${activeTab === 'weekly' ? 'active' : ''}`}
+          className={`button tab ${activeTab === 'weekly' ? 'active' : ''}`}
           onClick={() => setActiveTab('weekly')}
         >
           Weekly Tasks
@@ -302,9 +302,9 @@ const TasksPage = () => {
                       <span>Progress:</span>
                       <span>{task.progress} / {task.total}</span>
                     </div>
-                    <div className="task-progress-bar-container">
-                      <div 
-                        className="task-progress-bar"
+                    <div className="progress">
+                      <div
+                        className="progress-fill primary"
                         style={{ width: `${(task.progress / task.total) * 100}%` }}
                       ></div>
                     </div>
@@ -315,7 +315,7 @@ const TasksPage = () => {
                     <div className="rewards-list">
                       {task.rewards.map((reward, index) => (
                         <div className="reward-badge" key={index}>
-                          <i className={`fas ${
+                          <i className={`fas${
                             reward.type === 'coin' ? 'fa-coins' : 
                             reward.type === 'exp' ? 'fa-star' : 
                             'fa-box'
@@ -327,14 +327,14 @@ const TasksPage = () => {
                   </div>
                 </div>
                 
-                <div className="task-actions">
+                <div className="type-row">
                   {task.completed ? (
-                    <button className="task-button completed" disabled>
+                    <button className="button secondary" disabled>
                       <i className="fas fa-check-circle"></i> Completed
                     </button>
                   ) : (
                     <button 
-                      className="task-button"
+                      className="button primary"
                       onClick={() => handleCompleteClick(task)}
                       disabled={task.progress < task.total}
                     >
@@ -366,9 +366,9 @@ const TasksPage = () => {
                       <span>Progress:</span>
                       <span>{task.progress} / {task.total}</span>
                     </div>
-                    <div className="task-progress-bar-container">
-                      <div 
-                        className="task-progress-bar"
+                    <div className="progress">
+                      <div
+                        className="progress-fill primary"
                         style={{ width: `${(task.progress / task.total) * 100}%` }}
                       ></div>
                     </div>
@@ -379,7 +379,7 @@ const TasksPage = () => {
                     <div className="rewards-list">
                       {task.rewards.map((reward, index) => (
                         <div className="reward-badge" key={index}>
-                          <i className={`fas ${
+                          <i className={`fas${
                             reward.type === 'coin' ? 'fa-coins' : 
                             reward.type === 'exp' ? 'fa-star' : 
                             'fa-box'
@@ -391,14 +391,14 @@ const TasksPage = () => {
                   </div>
                 </div>
                 
-                <div className="task-actions">
+                <div className="type-row">
                   {task.completed ? (
-                    <button className="task-button completed" disabled>
+                    <button className="button secondary" disabled>
                       <i className="fas fa-check-circle"></i> Completed
                     </button>
                   ) : (
                     <button 
-                      className="task-button"
+                      className="button primary"
                       onClick={() => handleCompleteClick(task)}
                       disabled={task.progress < task.total}
                     >
@@ -440,7 +440,7 @@ const TasksPage = () => {
               {completeResults?.rewards.map((reward, index) => (
                 <div className="reward-item" key={index}>
                   <div className="reward-icon">
-                    <i className={`fas ${
+                    <i className={`fas${
                       reward.type === 'coin' ? 'fa-coins' : 
                       reward.type === 'exp' ? 'fa-star' : 
                       'fa-box'
@@ -455,7 +455,7 @@ const TasksPage = () => {
             </div>
             
             <button 
-              className="modal-button primary"
+              className="button primary"
               onClick={closeCompleteModal}
             >
               Close
@@ -464,7 +464,7 @@ const TasksPage = () => {
         ) : (
           <>
             {selectedTask && (
-              <div className="complete-form">
+              <div className="form">
                 <div className="task-preview">
                   <h3>{selectedTask.title}</h3>
                   <p>{selectedTask.description}</p>
@@ -474,7 +474,7 @@ const TasksPage = () => {
                     <div className="rewards-list">
                       {selectedTask.rewards.map((reward, index) => (
                         <div className="reward-badge" key={index}>
-                          <i className={`fas ${
+                          <i className={`fas${
                             reward.type === 'coin' ? 'fa-coins' : 
                             reward.type === 'exp' ? 'fa-star' : 
                             'fa-box'
@@ -486,7 +486,7 @@ const TasksPage = () => {
                   </div>
                 </div>
                 
-                <div className="trainer-selector">
+                <div className="missions-filters">
                   <label>Select Trainer:</label>
                   <select
                     value={selectedTrainer}
@@ -510,13 +510,13 @@ const TasksPage = () => {
                 
                 <div className="complete-actions">
                   <button 
-                    className="modal-button secondary"
+                    className="button secondary"
                     onClick={closeCompleteModal}
                   >
                     Cancel
                   </button>
                   <button 
-                    className="modal-button primary"
+                    className="button primary"
                     onClick={handleCompleteTask}
                     disabled={loading}
                   >

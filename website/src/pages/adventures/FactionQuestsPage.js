@@ -83,7 +83,7 @@ const FactionQuestsMain = () => {
   }
 
   return (
-    <div className="faction-quests-container">
+    <div className="faction-detail-container">
       <div className="faction-quests-header">
         <h1>Faction Quests</h1>
         <p>Choose your allegiances and build your reputation with the various factions across the archipelago</p>
@@ -154,7 +154,7 @@ const FactionQuestsMain = () => {
       )}
 
       <div className="faction-quests-info">
-        <div className="info-section">
+        <div className="faction-info">
           <h3>About Faction Quests</h3>
           <p>
             Build relationships with the various factions across the archipelago. Each faction offers unique rewards,
@@ -163,7 +163,7 @@ const FactionQuestsMain = () => {
           </p>
         </div>
         
-        <div className="info-section">
+        <div className="faction-info">
           <h3>Standing System</h3>
           <ul>
             <li>Standing ranges from -1000 (Nemesis) to +1000 (Champion)</li>

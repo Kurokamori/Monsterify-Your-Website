@@ -1,0 +1,57 @@
+/* =============================================================================
+   MONSTER STYLES - Main Entry Point
+   =============================================================================
+   Imports all monster-related styles organized by category.
+
+   Core Components:
+   - cards.css: Base card styles, variants, headers, images
+   - stats.css: Stats display and Pokemon-style compact stats
+
+   Layout & Navigation:
+   - grids.css: Grid layouts for monster displays
+   - search-filters.css: Search bars and filter controls
+   - selector.css: Monster selector component
+   - pc-box.css: PC box storage system and box previews
+
+   Detail Page:
+   - detail-page.css: Monster detail page, sidebar, info panels
+   - moves.css: Moves panel and move cards
+   - evolution.css: Evolution displays and controls
+   - biography.css: Biography, preferences, lineage
+   - gallery.css: Monster gallery
+   - mega-evolution.css: Mega evolution displays
+
+   Forms & Interactions:
+   - forms.css: Forms, inputs, mass edit modal
+   - starter.css: Starter selection
+   - species.css: Species selection modal
+
+   Utilities:
+   - utilities.css: Empty states, animations
+   ============================================================================= */
+
+/* Core card components */
+@import './cards.css';
+@import './stats.css';
+
+/* Layout and navigation */
+@import './grids.css';
+@import './search-filters.css';
+@import './selector.css';
+@import './pc-box.css';
+
+/* Detail page sections */
+@import './detail-page.css';
+@import './moves.css';
+@import './evolution.css';
+@import './biography.css';
+@import './gallery.css';
+@import './mega-evolution.css';
+
+/* Forms and interactions */
+@import './forms.css';
+@import './starter.css';
+@import './species.css';
+
+/* Utilities */
+@import './utilities.css';

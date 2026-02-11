@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 const NotFoundPage = () => {
   return (
-    <div className="not-found-container">
+    <div className="auth-container">
       <div className="not-found-content">
         <div className="not-found-icon">
           <i className="fas fa-ghost"></i>
@@ -12,10 +12,10 @@ const NotFoundPage = () => {
         <h2>Page Not Found</h2>
         <p>Oops! The page you're looking for seems to have wandered off into the tall grass.</p>
         <div className="not-found-actions">
-          <Link to="/" className="not-found-button primary">
+          <Link to="/" className="button primary">
             <i className="fas fa-home"></i> Return Home
           </Link>
-          <Link to="/guides" className="not-found-button secondary">
+          <Link to="/guides" className="button secondary">
             <i className="fas fa-book"></i> View Guides
           </Link>
         </div>

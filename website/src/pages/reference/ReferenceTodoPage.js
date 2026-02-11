@@ -203,9 +203,9 @@ const ReferenceTodoPage = () => {
     return (
       <div className="species-info">
         <h4>Species References</h4>
-        <div className={`species-references species-references--${imageSize}`}>
+        <div className={`map-filters species-references--${imageSize}`}>
           {speciesInfo.map((species, index) => (
-            <div key={index} className={`species-reference-item species-reference-item--${imageSize}`}>
+            <div key={index} className={`level-summary species-reference-item--${imageSize}`}>
               <div className="species-name">{species.name}</div>
               <div className="species-image-container">
                 {species.image ? (
@@ -250,7 +250,7 @@ const ReferenceTodoPage = () => {
   
   if (trainers.length === 0) {
     return (
-      <div className="reference-todo-container">
+      <div className="main-content-container">
         <h1>Reference To-Do List</h1>
         <div className="no-references-needed">
           <p>Great job! All of your monsters have images.</p>
@@ -263,11 +263,11 @@ const ReferenceTodoPage = () => {
   const totalReferencesNeeded = trainers.reduce((total, trainer) => total + trainer.monsters.length, 0);
   
   return (
-    <div className="reference-todo-container">
+    <div className="main-content-container">
       <div className="reference-todo-header">
         <h1>Reference To-Do List</h1>
         <button 
-          className="image-size-toggle"
+          className="button secondary toggle no-flex"
           onClick={cycleImageSize}
           title={`Current: ${getImageSizeDisplayName(imageSize)}. Click to cycle.`}
         >
@@ -285,8 +285,8 @@ const ReferenceTodoPage = () => {
       </div>
       
       {trainers.map(trainer => (
-        <div key={trainer.id} className="trainer-section">
-          <div className="trainer-header" onClick={() => toggleTrainerCollapsed(trainer.id)}>
+        <div key={trainer.id} className="item-card">
+          <div className="adopt-card" onClick={() => toggleTrainerCollapsed(trainer.id)}>
             <h2>
               <span className="collapse-icon">
                 {collapsedTrainers[trainer.id] ? '▶' : '▼'}
@@ -321,7 +321,7 @@ const ReferenceTodoPage = () => {
                       <td>{monster.attribute}</td>
                       <td>
                         <button 
-                          className="show-references-button"
+                          className="button secondary sm"
                           onClick={() => toggleMonsterExpanded(monster.id)}
                         >
                           {expandedMonsters[monster.id] ? 'Hide References' : 'Show References'}

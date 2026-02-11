@@ -3,7 +3,7 @@ import React from 'react';
 const DashboardTab = ({ data, onRefresh, onTabChange }) => {
   if (!data) {
     return (
-      <div className="empty-state">
+      <div className="no-npcs">
         <i className="fas fa-chart-line"></i>
         <h3>Loading Dashboard...</h3>
         <p>Please wait while we load your schedule data.</p>
@@ -38,15 +38,15 @@ const DashboardTab = ({ data, onRefresh, onTabChange }) => {
     <div className="dashboard-tab">
       <div className="dashboard-header">
         <h2>Schedule Dashboard</h2>
-        <button className="quick-action-btn" onClick={onRefresh}>
+        <button className="button primary" onClick={onRefresh}>
           <i className="fas fa-sync-alt"></i>
           Refresh
         </button>
       </div>
 
-      <div className="dashboard-grid">
+      <div className="button">
         {/* Tasks Overview */}
-        <div className="dashboard-card">
+        <div className="item-card">
           <h3>
             <i className="fas fa-tasks"></i>
             Tasks
@@ -66,7 +66,7 @@ const DashboardTab = ({ data, onRefresh, onTabChange }) => {
         </div>
 
         {/* Habits Overview */}
-        <div className="dashboard-card">
+        <div className="item-card">
           <h3>
             <i className="fas fa-chart-line"></i>
             Habits
@@ -86,7 +86,7 @@ const DashboardTab = ({ data, onRefresh, onTabChange }) => {
         </div>
 
         {/* Routines Overview */}
-        <div className="dashboard-card">
+        <div className="item-card">
           <h3>
             <i className="fas fa-calendar-day"></i>
             Daily Routines
@@ -110,7 +110,7 @@ const DashboardTab = ({ data, onRefresh, onTabChange }) => {
         </div>
 
         {/* Reminders Overview */}
-        <div className="dashboard-card">
+        <div className="item-card">
           <h3>
             <i className="fas fa-bell"></i>
             Reminders
@@ -161,7 +161,7 @@ const DashboardTab = ({ data, onRefresh, onTabChange }) => {
             </div>
             {totalDueTasks > 3 && (
               <button 
-                className="quick-action-btn secondary"
+                className="button primary secondary"
                 onClick={() => onTabChange('tasks')}
               >
                 View All Due Tasks
@@ -199,7 +199,7 @@ const DashboardTab = ({ data, onRefresh, onTabChange }) => {
             </div>
             {totalActiveHabits > 3 && (
               <button 
-                className="quick-action-btn secondary"
+                className="button primary secondary"
                 onClick={() => onTabChange('habits')}
               >
                 View All Habits
@@ -237,7 +237,7 @@ const DashboardTab = ({ data, onRefresh, onTabChange }) => {
             </div>
             {routines.length > 2 && (
               <button 
-                className="quick-action-btn secondary"
+                className="button primary secondary"
                 onClick={() => onTabChange('routines')}
               >
                 View All Routines
@@ -250,21 +250,21 @@ const DashboardTab = ({ data, onRefresh, onTabChange }) => {
       {/* Quick Actions */}
       <div className="quick-actions">
         <button 
-          className="quick-action-btn"
+          className="button primary"
           onClick={() => onTabChange('tasks')}
         >
           <i className="fas fa-plus"></i>
           Create Task
         </button>
         <button 
-          className="quick-action-btn"
+          className="button primary"
           onClick={() => onTabChange('habits')}
         >
           <i className="fas fa-plus"></i>
           Create Habit
         </button>
         <button 
-          className="quick-action-btn"
+          className="button primary"
           onClick={() => onTabChange('routines')}
         >
           <i className="fas fa-plus"></i>

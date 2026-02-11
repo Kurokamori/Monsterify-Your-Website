@@ -1,6 +1,5 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import './PromptCard.css';
 
 const PromptCard = ({ 
   prompt, 
@@ -51,7 +50,7 @@ const PromptCard = ({
   const isExpired = prompt.type === 'event' && new Date(prompt.end_date) < new Date();
 
   return (
-    <div className={`prompt-card ${!isAvailable ? 'unavailable' : ''} ${isExpired ? 'expired' : ''}`}>
+    <div className={`prompt-card ${!isAvailable ? 'unavailable' : ''}${isExpired ? 'expired' : ''}`}>
       {/* Header */}
       <div className="prompt-card-header">
         <div className="prompt-title-section">
@@ -78,7 +77,7 @@ const PromptCard = ({
         </div>
         
         {prompt.image_url && (
-          <div className="prompt-image">
+          <div className="npc-avatar">
             <img src={prompt.image_url} alt={prompt.title} />
           </div>
         )}
@@ -97,14 +96,14 @@ const PromptCard = ({
 
         {/* Requirements */}
         {prompt.requirements && (
-          <div className="prompt-requirements">
+          <div className="prompt-text">
             <h4>Requirements:</h4>
             <p>{prompt.prerequisites || 'See detailed requirements'}</p>
           </div>
         )}
 
         {/* Rewards */}
-        <div className="prompt-rewards">
+        <div className="prompt-text">
           <h4>Rewards:</h4>
           <p>{formatRewards(prompt.rewards)}</p>
         </div>
@@ -118,7 +117,7 @@ const PromptCard = ({
         )}
 
         {prompt.type === 'monthly' && prompt.active_months && (
-          <div className="prompt-monthly-info">
+          <div className="prompt-event-info">
             <p><strong>Active Months:</strong> {prompt.active_months}</p>
           </div>
         )}
@@ -154,7 +153,7 @@ const PromptCard = ({
       </div>
 
       {/* Footer */}
-      <div className="prompt-card-footer">
+      <div className="rewards-actions">
         {!isAvailable && (
           <div className="availability-notice">
             {isExpired ? 'This event has ended' : 'Currently not available'}
@@ -163,16 +162,16 @@ const PromptCard = ({
         
         {showSubmissionButton && isAvailable && trainerId && (
           <button 
-            className="btn btn-primary submit-btn"
+            className="button primary"
             onClick={() => onSubmit && onSubmit(prompt)}
           >
             Submit to Prompt
           </button>
         )}
         
-        <Link 
-          to={`/prompts/${prompt.id}`} 
-          className="btn btn-outline-secondary view-details-btn"
+        <Link
+          to={`/prompts/${prompt.id}`}
+          className="button secondary outline"
         >
           View Details
         </Link>

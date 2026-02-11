@@ -19,6 +19,9 @@ router.get('/tags', submissionController.getSubmissionTags);
 // Get user's books
 router.get('/user/books', authenticateJWT, submissionController.getUserBooks);
 
+// Get user's own submissions (must be before /:id to avoid matching)
+router.get('/user/my-submissions', authenticateJWT, submissionController.getMySubmissions);
+
 // Get chapters for a book
 router.get('/books/:bookId/chapters', submissionController.getBookChapters);
 
@@ -27,6 +30,25 @@ router.put('/books/:bookId/chapters/order', authenticateJWT, submissionControlle
 
 // Create a new book
 router.post('/books', authenticateJWT, upload.single('coverImage'), submissionController.createBook);
+
+// Book collaborator routes
+// Get user's collaborations (books they collaborate on but don't own)
+router.get('/user/collaborations', authenticateJWT, submissionController.getUserCollaborations);
+
+// Get collaborators for a book
+router.get('/books/:bookId/collaborators', submissionController.getBookCollaborators);
+
+// Search users to add as collaborators
+router.get('/books/:bookId/collaborators/search', authenticateJWT, submissionController.searchCollaboratorUsers);
+
+// Add a collaborator to a book
+router.post('/books/:bookId/collaborators', authenticateJWT, submissionController.addBookCollaborator);
+
+// Update a collaborator's role
+router.put('/books/:bookId/collaborators/:userId', authenticateJWT, submissionController.updateCollaboratorRole);
+
+// Remove a collaborator from a book
+router.delete('/books/:bookId/collaborators/:userId', authenticateJWT, submissionController.removeBookCollaborator);
 
 // Get submission by ID
 router.get('/:id', submissionController.getSubmissionById);
@@ -60,6 +82,12 @@ router.post('/reference/submit', authenticateJWT, upload.any(), submissionContro
 // Submit prompt
 router.post('/prompt/submit', authenticateJWT, upload.single('submissionFile'), submissionController.submitPrompt);
 
+// Submit combined prompt (art or writing + prompt)
+router.post('/prompt/combined', authenticateJWT, upload.single('image'), submissionController.submitPromptCombined);
+
+// Claim prompt rewards
+router.post('/prompt/:id/claim-rewards', authenticateJWT, submissionController.claimPromptRewards);
+
 // Get available prompts
 router.get('/prompt/available', authenticateJWT, submissionController.getAvailablePrompts);
 
@@ -89,5 +117,11 @@ router.post('/:id/reroll-monsters', authenticateJWT, submissionController.reroll
 
 // Claim endpoints
 router.post('/:id/claim-monster', authenticateJWT, submissionController.claimSubmissionMonster);
+
+// Update a submission (title, description, tags, content for writing)
+router.put('/:id', authenticateJWT, submissionController.updateSubmission);
+
+// Delete a submission (soft delete)
+router.delete('/:id', authenticateJWT, submissionController.deleteSubmission);
 
 module.exports = router;

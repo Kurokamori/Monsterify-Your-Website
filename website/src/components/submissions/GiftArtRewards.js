@@ -217,7 +217,7 @@ const GiftRewards = ({
   if (generatingRewards) {
     return (
       <div className="gift-rewards-container">
-        <div className="gift-rewards-header">
+        <div className="map-header">
           <h2>Generating Gift Rewards...</h2>
           <LoadingSpinner />
         </div>
@@ -227,7 +227,7 @@ const GiftRewards = ({
 
   return (
     <div className="gift-rewards-container">
-      <div className="gift-rewards-header">
+      <div className="map-header">
         <h2>Gift {submissionType === 'art' ? 'Art' : 'Writing'} Rewards</h2>
         <p>
           You gave {giftLevels} levels as gift {submissionType}! Here are your rewards:
@@ -235,7 +235,7 @@ const GiftRewards = ({
       </div>
 
       {error && (
-        <div className="error-message">
+        <div className="alert error">
           <i className="fas fa-exclamation-triangle"></i>
           {error}
         </div>
@@ -256,14 +256,14 @@ const GiftRewards = ({
         {levelAllocations.length > 0 && (
           <div className="allocations-list">
             {levelAllocations.map((allocation) => (
-              <div key={allocation.id} className="allocation-item">
+              <div key={allocation.id} className="category-row">
                 <span className="allocation-info">
                   <i className={allocation.type === 'trainer' ? 'fas fa-user' : 'fas fa-dragon'}></i>
                   {allocation.entityName} - {allocation.levels} levels
                 </span>
                 <button
                   type="button"
-                  className="remove-allocation"
+                  className="button icon danger"
                   onClick={() => handleRemoveAllocation(allocation.id)}
                 >
                   <i className="fas fa-times"></i>
@@ -278,7 +278,7 @@ const GiftRewards = ({
             {!showAddAllocation ? (
               <button
                 type="button"
-                className="add-allocation-btn"
+                className="button primary"
                 onClick={() => setShowAddAllocation(true)}
               >
                 <i className="fas fa-plus"></i>
@@ -307,7 +307,7 @@ const GiftRewards = ({
                       onSelect={(id) => setSelectedEntityId(id)}
                       label="Select Trainer"
                       placeholder="Type to search trainers..."
-                      className="entity-select"
+                      className="form-input"
                     />
                   ) : (
                     <MonsterAutocomplete
@@ -316,7 +316,7 @@ const GiftRewards = ({
                       onSelect={(id) => setSelectedEntityId(id)}
                       label="Select Monster"
                       placeholder="Type to search monsters..."
-                      className="entity-select"
+                      className="form-input"
                     />
                   )}
                 </div>
@@ -334,7 +334,7 @@ const GiftRewards = ({
                 <div className="form-actions">
                   <button
                     type="button"
-                    className="add-btn"
+                    className="button primary"
                     onClick={handleAddAllocation}
                     disabled={!selectedEntityId || allocationLevels < 1 || allocationLevels > availableLevels}
                   >
@@ -342,7 +342,7 @@ const GiftRewards = ({
                   </button>
                   <button
                     type="button"
-                    className="cancel-btn"
+                    className="button secondary"
                     onClick={() => {
                       setShowAddAllocation(false);
                       setSelectedEntityId('');
@@ -411,15 +411,15 @@ const GiftRewards = ({
           </h3>
           <p>Name each monster and assign them to one of your trainers:</p>
 
-          <div className="monsters-grid">
+          <div className="button">
             {monsterRewards.map((monster, index) => (
               <div key={index} className="monster-card">
                 <div className="monster-info">
-                  <div className="monster-species">
+                  <div className="monster-types">
                     <strong>Species:</strong>
-                    <div className="species-list">
-                      {monster.species1 && <span className="species">{monster.species1}</span>}
-                      {monster.species2 && <span className="species">{monster.species2}</span>}
+                    <div className="container vertical gap-md">
+                      {monster.species1 && <span className="type">{monster.species1}</span>}
+                      {monster.species2 && <span className="type">{monster.species2}</span>}
                     </div>
                   </div>
                   <div className="monster-types">
@@ -431,7 +431,7 @@ const GiftRewards = ({
                     </div>
                   </div>
                   {monster.attribute && (
-                    <div className="monster-attribute">
+                    <div className="monster-types">
                       <strong>Attribute:</strong> {monster.attribute}
                     </div>
                   )}
@@ -444,7 +444,7 @@ const GiftRewards = ({
                       type="text"
                       value={monsterNames[index] || ''}
                       onChange={(e) => handleMonsterNameChange(index, e.target.value)}
-                      className="monster-name-input"
+                      className="form-input"
                       placeholder="Enter monster name"
                     />
                   </div>
@@ -467,10 +467,10 @@ const GiftRewards = ({
       )}
 
       {/* Action Buttons */}
-      <div className="gift-rewards-actions">
+      <div className="profile-content">
         <button
           type="button"
-          className="cancel-button"
+          className="button secondary"
           onClick={onCancel}
           disabled={loading}
         >
@@ -478,7 +478,7 @@ const GiftRewards = ({
         </button>
         <button
           type="button"
-          className="submit-button"
+          className="button success"
           onClick={handleSubmit}
           disabled={loading || availableLevels > 0}
         >

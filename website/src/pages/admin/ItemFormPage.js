@@ -195,9 +195,9 @@ const ItemFormPage = () => {
         <h1>{isEditMode ? 'Edit Item' : 'Add Item'}</h1>
       </div>
 
-      <div className="admin-form-container">
-        <form onSubmit={handleSubmit} className="admin-form">
-          <div className="admin-form-grid">
+      <div className="bulk-monster-add-form">
+        <form onSubmit={handleSubmit} className="reroller-content">
+          <div className="reroller-content">
             <div className="admin-form-column">
               <FormInput
                 label="Name"
@@ -327,7 +327,7 @@ const ItemFormPage = () => {
                   onChange={handleImageChange}
                   className="form-input"
                 />
-                <div className="form-help-text">
+                <div className="form-help">
                   Upload an image for this item. Supported formats: JPG, PNG, GIF.
                 </div>
               </div>
@@ -337,18 +337,19 @@ const ItemFormPage = () => {
           {imagePreview && (
             <div className="admin-form-preview">
               <h3>Image Preview</h3>
-              <img
-                src={imagePreview}
-                alt={formData.name}
-                className="admin-form-image-preview"
-              />
+              <div className="image-container medium no-margin">
+                <img
+                  src={imagePreview}
+                  alt={formData.name}
+                />
+              </div>
             </div>
           )}
 
           <div className="admin-form-actions">
             <button
               type="button"
-              className="admin-button secondary"
+              className="button secondary"
               onClick={handleCancel}
               disabled={submitting || uploadingImage}
             >
@@ -356,7 +357,7 @@ const ItemFormPage = () => {
             </button>
             <button
               type="submit"
-              className="admin-button primary"
+              className="button primary"
               disabled={submitting || uploadingImage}
             >
               {(submitting || uploadingImage) ? (

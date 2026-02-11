@@ -8,7 +8,7 @@ const AdventureRewardsPage = () => {
 
   if (loading) {
     return (
-      <div className="loading-container">
+      <div className="error-container">
         <div className="loading-spinner">
           <i className="fas fa-spinner fa-spin"></i>
           <p>Loading...</p>
@@ -22,7 +22,7 @@ const AdventureRewardsPage = () => {
   }
 
   return (
-    <div className="page-container">
+    <div className="main-content-container">
       <AdventureRewards />
     </div>
   );

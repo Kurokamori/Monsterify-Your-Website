@@ -1,0 +1,76 @@
+/* ==============================
+   Authentication & Social Styles
+   ============================== */
+
+.auth-message {
+  background-color: var(--card-background);
+  border-radius: 8px;
+  padding: 30px;
+  text-align: center;
+}
+
+.auth-message p {
+  color: var(--text-color);
+  margin-bottom: 20px;
+  opacity: 0.8;
+}
+
+.discord-login-container {
+  margin-top: 1.5rem;
+}
+
+.auth-divider {
+  position: relative;
+  text-align: center;
+  margin: 1.5rem 0;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.auth-divider::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background-color: var(--border-color);
+  z-index: 1;
+}
+
+.auth-divider span {
+  background-color: var(--text-color);
+  padding: 0 1rem;
+  position: relative;
+  z-index: 2;
+}
+
+@media (prefers-color-scheme: dark) {
+  .auth-divider span {
+    background-color: var(--background-color);
+  }
+  .auth-divider::before {
+    background-color: var(--border-color);
+  }
+}
+
+/* For Discord login button, use unified button system: className="button info block lg" (see buttons.css) */
+
+.event-date {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.discord-icon {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+@media (max-width: 480px) {
+  .discord-icon {
+    width: 18px;
+    height: 18px;
+  }
+}

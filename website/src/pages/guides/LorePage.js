@@ -177,7 +177,7 @@ const LorePage = () => {
   }
 
   return (
-    <div className="lore-container">
+    <div className="main-content-container">
       <div className="lore-header">
         <h1>World Lore & History</h1>
         <p>Explore the rich history, legends, and stories of the Monsterify world</p>
@@ -190,9 +190,9 @@ const LorePage = () => {
             placeholder="Search lore entries..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="search-input"
+            className="form-input"
           />
-          <button className="search-button">
+          <button className="button primary">
             <i className="fas fa-search"></i>
           </button>
         </div>
@@ -214,13 +214,13 @@ const LorePage = () => {
         </div>
       </div>
 
-      <div className="lore-entries">
+      <div className="npcs-grid">
         {displayLoreEntries.map(entry => (
           <div 
             className={`lore-entry ${expandedEntry === entry.id ? 'expanded' : ''}`} 
             key={entry.id}
           >
-            <div className="lore-entry-header" onClick={() => toggleExpandEntry(entry.id)}>
+            <div className="option-row" onClick={() => toggleExpandEntry(entry.id)}>
               <div className="lore-entry-title-container">
                 <h3 className="lore-entry-title">{entry.title}</h3>
                 <span className="lore-entry-category">
@@ -276,11 +276,11 @@ const LorePage = () => {
       </div>
 
       {displayLoreEntries.length === 0 && (
-        <div className="no-entries">
+        <div className="no-npcs">
           <i className="fas fa-book"></i>
           <p>No lore entries found matching your search criteria.</p>
           <button 
-            className="reset-button"
+            className="button secondary"
             onClick={() => {
               setSelectedCategory('all');
               setSearchQuery('');

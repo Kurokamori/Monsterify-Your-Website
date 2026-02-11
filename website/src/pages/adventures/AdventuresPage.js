@@ -57,8 +57,8 @@ const AdventuresPage = () => {
   }
 
   return (
-    <div className="adventures-container">
-      <div className="adventures-header">
+    <div className="bosses-page">
+      <div className="map-header">
         <h1>Adventures</h1>
         <p>Embark on exciting journeys, complete missions, and battle powerful bosses</p>
       </div>
@@ -66,31 +66,31 @@ const AdventuresPage = () => {
       <div className="adventures-tabs">
         <Link
           to="/adventures/create"
-          className={`tab-button ${activeTab === 'adventures' ? 'active' : ''}`}
+          className={`button tab ${activeTab === 'adventures' ? 'active' : ''}`}
         >
           Adventures
         </Link>
         <Link
           to="/adventures/event/current"
-          className={`tab-button ${activeTab === 'events' ? 'active' : ''}`}
+          className={`button tab ${activeTab === 'events' ? 'active' : ''}`}
         >
           Events
         </Link>
         <Link
           to="/adventures/mission/available"
-          className={`tab-button ${activeTab === 'missions' ? 'active' : ''}`}
+          className={`button tab ${activeTab === 'missions' ? 'active' : ''}`}
         >
           Missions
         </Link>
         <Link
           to="/adventures/faction-quests"
-          className={`tab-button ${activeTab === 'faction-quests' ? 'active' : ''}`}
+          className={`button tab ${activeTab === 'faction-quests' ? 'active' : ''}`}
         >
           Faction Quests
         </Link>
         <Link
           to="/boss"
-          className={`tab-button ${activeTab === 'boss' ? 'active' : ''}`}
+          className={`button tab ${activeTab === 'boss' ? 'active' : ''}`}
         >
           Current Boss
         </Link>
@@ -134,14 +134,14 @@ const AdventuresOverview = () => {
                 <span className="event-date">
                   <i className="fas fa-calendar-alt"></i> Ends in 5 days
                 </span>
-                <span className="event-participants">
+                <span className="event-date">
                   <i className="fas fa-users"></i> 1,245 participants
                 </span>
               </div>
               <p className="event-description">
                 Join the Summer Festival and catch special summer-themed monsters! Complete event challenges to earn exclusive rewards.
               </p>
-              <Link to="/adventures/event/summer-festival" className="event-button">
+              <Link to="/adventures/event/summer-festival" className="button primary">
                 View Event
               </Link>
             </div>
@@ -162,7 +162,7 @@ const AdventuresOverview = () => {
             </div>
             <div className="mission-info">
               <h3 className="mission-title">Forest Expedition</h3>
-              <div className="mission-details">
+              <div className="container grid gap-md">
                 <span className="mission-difficulty easy">
                   <i className="fas fa-star"></i> Easy
                 </span>
@@ -190,7 +190,7 @@ const AdventuresOverview = () => {
             </div>
             <div className="mission-info">
               <h3 className="mission-title">Mountain Rescue</h3>
-              <div className="mission-details">
+              <div className="container grid gap-md">
                 <span className="mission-difficulty medium">
                   <i className="fas fa-star"></i> Medium
                 </span>
@@ -231,7 +231,7 @@ const AdventuresOverview = () => {
             </div>
             <div className="boss-info">
               <h3 className="boss-title">Dragon Lord</h3>
-              <div className="boss-details">
+              <div className="type-tags fw">
                 <span className="boss-difficulty hard">
                   <i className="fas fa-skull"></i> Hard
                 </span>

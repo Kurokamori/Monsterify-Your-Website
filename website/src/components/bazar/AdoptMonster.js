@@ -96,19 +96,19 @@ const AdoptMonster = ({ userTrainers }) => {
       .filter(species => species && species.trim() !== '');
 
     return (
-      <div key={monster.id} className="bazzar-monster-card">
-        <div className="monster-header">
+      <div key={monster.id} className="monster-card">
+        <div className="tree-header">
           <h3>{monster.name}</h3>
           <p className="monster-level">Level {monster.level}</p>
         </div>
         
-        <div className="monster-species">
+        <div className="monster-types">
           <strong>Species:</strong> {species.join(', ')}
         </div>
         
         <div className="bazzar-monster-types">
           <strong>Types:</strong>
-          <div className="type-badges">
+          <div className="container vertical gap-md">
             {types.map((type, index) => (
               <TypeBadge key={index} type={type} />
             ))}
@@ -116,7 +116,7 @@ const AdoptMonster = ({ userTrainers }) => {
         </div>
         
         {monster.attribute && (
-          <div className="monster-attribute">
+          <div className="monster-types">
             <strong>Attribute:</strong>
             <AttributeBadge attribute={monster.attribute} />
           </div>
@@ -129,7 +129,7 @@ const AdoptMonster = ({ userTrainers }) => {
         
         <div className="monster-actions">
           <button
-            className="btn btn-success"
+            className="button success"
             onClick={() => handleAdoptClick(monster)}
           >
             Adopt
@@ -162,7 +162,7 @@ const AdoptMonster = ({ userTrainers }) => {
         {availableMonsters.length === 0 ? (
           <p>No monsters are currently available for adoption.</p>
         ) : (
-          <div className="bazar-monsters-grid">
+          <div className="container cols-3 gap-lg mb-lg">
             {availableMonsters.map(renderMonsterCard)}
           </div>
         )}
@@ -170,7 +170,7 @@ const AdoptMonster = ({ userTrainers }) => {
 
       {showAdoptModal && selectedMonster && (
         <Modal isOpen={showAdoptModal} onClose={() => setShowAdoptModal(false)}>
-          <div className="modal-header">
+          <div className="tree-header">
             <h3>Adopt {selectedMonster.name}</h3>
           </div>
           <div className="modal-body">
@@ -178,6 +178,7 @@ const AdoptMonster = ({ userTrainers }) => {
               <label htmlFor="trainer-select">Select Trainer:</label>
               <select
                 id="trainer-select"
+                className="trainer-select"
                 value={selectedTrainer}
                 onChange={(e) => setSelectedTrainer(e.target.value)}
                 required
@@ -205,14 +206,14 @@ const AdoptMonster = ({ userTrainers }) => {
           </div>
           <div className="modal-actions">
             <button
-              className="btn btn-secondary"
+              className="button secondary"
               onClick={() => setShowAdoptModal(false)}
               disabled={submitting}
             >
               Cancel
             </button>
             <button
-              className="btn btn-success"
+              className="button success"
               onClick={handleAdopt}
               disabled={submitting || !selectedTrainer || !newName.trim()}
             >

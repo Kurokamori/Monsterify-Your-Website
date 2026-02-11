@@ -221,7 +221,7 @@ const BossViewPage = () => {
         {/* Unclaimed Rewards Banner */}
         {currentUser && unclaimedRewards.length > 0 && (
           <div className="unclaimed-rewards-banner">
-            <div className="banner-content">
+            <div className="art-calculator">
               <div className="banner-icon">
                 <i className="fas fa-gift"></i>
               </div>
@@ -231,7 +231,7 @@ const BossViewPage = () => {
               </div>
               <div className="banner-actions">
                 <button 
-                  className="claim-rewards-button"
+                  className="button success"
                   onClick={() => handleClaimReward(unclaimedRewards[0])}
                 >
                   <i className="fas fa-trophy"></i>
@@ -259,7 +259,7 @@ const BossViewPage = () => {
                     />
                   )}
                 </div>
-                <div className="boss-details">
+                <div className="type-tags fw">
                   <h3>{boss.name}</h3>
                   <div className="boss-meta">
                     <span>🗓️ {boss.month}/{boss.year}</span>
@@ -274,7 +274,7 @@ const BossViewPage = () => {
               {boss.top_users && boss.top_users.length > 0 && (
                 <div className="winners-preview">
                   <h4>🏆 Top 3 Winners:</h4>
-                  <div className="top-winners">
+                  <div className="map-filters">
                     {boss.top_users.slice(0, 3).map((user, index) => (
                       <div key={user.user_id} className={`winner rank-${index + 1}`}>
                         <span className="rank-badge">
@@ -292,7 +292,7 @@ const BossViewPage = () => {
         </div>
 
         <div className="boss-actions">
-          <a href="/adventures/boss/defeated" className="view-all-button">
+          <a href="/adventures/boss/defeated" className="button primary">
             View All Defeated Bosses
           </a>
         </div>
@@ -348,10 +348,10 @@ const BossViewPage = () => {
                   Monster Preview: {currentReward.monster_data.name}
                 </h4>
                 <div className="monster-preview-card">
-                  <div className="monster-attributes">
+                  <div className="map-filters">
                     <div className="attribute-section">
                       <h5><i className="fas fa-dna"></i> Species</h5>
-                      <div className="attribute-tags">
+                      <div className="type-tags fw">
                         {currentReward.monster_data.species && currentReward.monster_data.species.map((species, index) => (
                           <span key={index} className="attribute-tag species-tag">
                             {species}
@@ -362,7 +362,7 @@ const BossViewPage = () => {
                     
                     <div className="attribute-section">
                       <h5><i className="fas fa-magic"></i> Types</h5>
-                      <div className="attribute-tags">
+                      <div className="type-tags fw">
                         {currentReward.monster_data.types && currentReward.monster_data.types.map((type, index) => (
                           <span key={index} className="attribute-tag type-tag">
                             {type}
@@ -373,7 +373,7 @@ const BossViewPage = () => {
                     
                     <div className="attribute-section">
                       <h5><i className="fas fa-star"></i> Attribute</h5>
-                      <div className="attribute-tags">
+                      <div className="type-tags fw">
                         <span className="attribute-tag primary-attribute-tag">
                           {currentReward.monster_data.attribute}
                         </span>
@@ -410,6 +410,7 @@ const BossViewPage = () => {
                   <label htmlFor="trainer-select">Assign to trainer:</label>
                   <select
                     id="trainer-select"
+                    className="trainer-select"
                     value={selectedTrainer}
                     onChange={(e) => setSelectedTrainer(e.target.value)}
                   >
@@ -431,14 +432,14 @@ const BossViewPage = () => {
 
                 <div className="modal-actions">
                   <button 
-                    className="modal-button secondary"
+                    className="button secondary"
                     onClick={closeRewardModal}
                     disabled={claimingReward}
                   >
                     Cancel
                   </button>
                   <button 
-                    className="modal-button primary"
+                    className="button primary"
                     onClick={submitRewardClaim}
                     disabled={claimingReward || !monsterName.trim() || !selectedTrainer}
                   >
@@ -464,7 +465,7 @@ const BossViewPage = () => {
   if (!bossData || !bossData.boss) {
     return (
       <div className="boss-view-page">
-        <div className="no-boss-message">
+        <div className="no-leaderboard">
           <h2>No Boss Battles</h2>
           <p>There are currently no boss battles available. Check back later!</p>
         </div>
@@ -486,7 +487,7 @@ const BossViewPage = () => {
       {/* Unclaimed Rewards Banner */}
       {currentUser && unclaimedRewards.length > 0 && (
         <div className="unclaimed-rewards-banner">
-          <div className="banner-content">
+          <div className="art-calculator">
             <div className="banner-icon">
               <i className="fas fa-gift"></i>
             </div>
@@ -496,7 +497,7 @@ const BossViewPage = () => {
             </div>
             <div className="banner-actions">
               <button 
-                className="claim-rewards-button"
+                className="button success"
                 onClick={() => handleClaimReward(unclaimedRewards[0])}
               >
                 <i className="fas fa-trophy"></i>
@@ -536,20 +537,20 @@ const BossViewPage = () => {
             )}
             
             <div className="boss-stats">
-              <div className="boss-stat">
+              <div className="set-item">
                 <span className="stat-label">Status:</span>
-                <span className={`stat-value status-${boss.status}`}>
+                <span className={`badge stat-value status-${boss.status}`}>
                   {boss.status.charAt(0).toUpperCase() + boss.status.slice(1)}
                 </span>
               </div>
               
-              <div className="boss-stat">
+              <div className="set-item">
                 <span className="stat-label">Month:</span>
                 <span className="stat-value">{boss.month}/{boss.year}</span>
               </div>
               
               {boss.start_date && (
-                <div className="boss-stat">
+                <div className="set-item">
                   <span className="stat-label">Started:</span>
                   <span className="stat-value">{formatDate(boss.start_date)}</span>
                 </div>
@@ -562,9 +563,9 @@ const BossViewPage = () => {
                 <span>Health</span>
                 <span>{boss.current_hp.toLocaleString()} / {boss.total_hp.toLocaleString()}</span>
               </div>
-              <div className="health-bar-container">
-                <div 
-                  className="health-bar"
+              <div className="progress lg">
+                <div
+                  className="progress-fill"
                   style={{
                     width: `${boss.healthPercentage}%`,
                     backgroundColor: getHealthBarColor(boss.healthPercentage)
@@ -591,7 +592,7 @@ const BossViewPage = () => {
                   {leaderboard.slice(0, 3).map((entry, index) => (
                     <div key={`${entry.user_id}-${entry.trainer_id}`} className={`top-rank rank-${index + 1}`}>
                       <div className="rank-badge">{index + 1}</div>
-                      <div className="trainer-avatar">
+                      <div className="npc-avatar">
                         {entry.trainer_avatar ? (
                           <img 
                             src={entry.trainer_avatar} 
@@ -614,7 +615,7 @@ const BossViewPage = () => {
                         <div className="damage-amount">
                           {entry.total_damage.toLocaleString()} damage
                         </div>
-                        <div className="submission-count">
+                        <div className="last-harvested">
                           {entry.submission_count} submission{entry.submission_count !== 1 ? 's' : ''}
                         </div>
                       </div>
@@ -640,7 +641,7 @@ const BossViewPage = () => {
                         <tr key={`${entry.user_id}-${entry.trainer_id}`}>
                           <td className="rank-cell">#{entry.rank}</td>
                           <td className="trainer-cell">
-                            <div className="trainer-info-row">
+                            <div className="missions-filters">
                               {entry.trainer_avatar ? (
                                 <img 
                                   src={entry.trainer_avatar} 
@@ -729,10 +730,10 @@ const BossViewPage = () => {
                   Monster Preview: {currentReward.monster_data.name}
                 </h4>
                 <div className="monster-preview-card">
-                  <div className="monster-attributes">
+                  <div className="map-filters">
                     <div className="attribute-section">
                       <h5><i className="fas fa-dna"></i> Species</h5>
-                      <div className="attribute-tags">
+                      <div className="type-tags fw">
                         {currentReward.monster_data.species && currentReward.monster_data.species.map((species, index) => (
                           <span key={index} className="attribute-tag species-tag">
                             {species}
@@ -743,7 +744,7 @@ const BossViewPage = () => {
                     
                     <div className="attribute-section">
                       <h5><i className="fas fa-magic"></i> Types</h5>
-                      <div className="attribute-tags">
+                      <div className="type-tags fw">
                         {currentReward.monster_data.types && currentReward.monster_data.types.map((type, index) => (
                           <span key={index} className="attribute-tag type-tag">
                             {type}
@@ -754,7 +755,7 @@ const BossViewPage = () => {
                     
                     <div className="attribute-section">
                       <h5><i className="fas fa-star"></i> Attribute</h5>
-                      <div className="attribute-tags">
+                      <div className="type-tags fw">
                         <span className="attribute-tag primary-attribute-tag">
                           {currentReward.monster_data.attribute}
                         </span>
@@ -790,6 +791,7 @@ const BossViewPage = () => {
                 <label htmlFor="trainer-select">Assign to trainer:</label>
                 <select
                   id="trainer-select"
+                  className="trainer-select"
                   value={selectedTrainer}
                   onChange={(e) => setSelectedTrainer(e.target.value)}
                 >
@@ -811,14 +813,14 @@ const BossViewPage = () => {
 
               <div className="modal-actions">
                 <button 
-                  className="modal-button secondary"
+                  className="button secondary"
                   onClick={closeRewardModal}
                   disabled={claimingReward}
                 >
                   Cancel
                 </button>
                 <button 
-                  className="modal-button primary"
+                  className="button primary"
                   onClick={submitRewardClaim}
                   disabled={claimingReward || !monsterName.trim() || !selectedTrainer}
                 >

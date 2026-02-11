@@ -38,8 +38,8 @@ const ArtSubmissionPage = () => {
   }
 
   return (
-    <div className="submission-page-container">
-      <div className="submission-page-header">
+    <div className="edit-monster-container">
+      <div className="map-header">
         <h1>Submit Artwork</h1>
         <p>Share your artwork with the community and earn rewards based on quality and complexity.</p>
       </div>
@@ -57,7 +57,7 @@ const ArtSubmissionPage = () => {
           {submissionResult && submissionResult.rewards && (
             <div className="rewards-summary">
               <h3>Rewards Earned</h3>
-              <div className="rewards-grid">
+              <div className="town-places">
                 {submissionResult.rewards.trainers && submissionResult.rewards.trainers.length > 0 && (
                   <div className="reward-item">
                     <i className="fas fa-user"></i>
@@ -118,7 +118,7 @@ const ArtSubmissionPage = () => {
                       )}
                       {submissionResult.rewards.missionProgress.completedMissions &&
                        submissionResult.rewards.missionProgress.completedMissions.length > 0 && (
-                        <div className="mission-completions">
+                        <div className="mission-updates">
                           <p className="reward-detail">Completed missions:</p>
                           <ul>
                             {submissionResult.rewards.missionProgress.completedMissions.map((mission, index) => (
@@ -171,7 +171,7 @@ const ArtSubmissionPage = () => {
           {loading && <LoadingSpinner />}
         </div>
       ) : (
-        <div className="submission-page-content">
+        <div className="town-section">
           <ArtSubmissionForm onSubmissionComplete={handleSubmissionComplete} />
         </div>
       )}

@@ -129,8 +129,8 @@ const ActivitySession = () => {
           <p>API URL: {`/town/activities/session/${sessionId}`}</p>
           <pre>{JSON.stringify(debugInfo, null, 2)}</pre>
           <div className="debug-actions">
-            <button onClick={retryFetch} className="btn-primary">Retry</button>
-            <Link to="/town" className="btn-secondary">Return to Town</Link>
+            <button onClick={retryFetch} className="button primary">Retry</button>
+            <Link to="/town" className="button secondary">Return to Town</Link>
           </div>
         </div>
       </div>
@@ -140,8 +140,8 @@ const ActivitySession = () => {
   if (success && rewards) {
     return (
       <div className="activity-session-container">
-        <div className="activity-session-header">
-          <Link to="/town" className="btn-secondary">
+        <div className="adopt-card">
+          <Link to="/town" className="button secondary">
             <i className="fas fa-arrow-left mr-2"></i> Back to Town
           </Link>
           <h2>Activity Completed!</h2>
@@ -172,8 +172,8 @@ const ActivitySession = () => {
             </div>
 
             <div className="rewards-actions">
-              <Link to="/town" className="btn-primary">Return to Town</Link>
-              <Link to="/profile" className="btn-secondary">View Profile</Link>
+              <Link to="/town" className="button primary">Return to Town</Link>
+              <Link to="/profile" className="button secondary">View Profile</Link>
             </div>
           </div>
         </div>
@@ -192,8 +192,8 @@ const ActivitySession = () => {
           <p>API URL: {`/town/activities/session/${sessionId}`}</p>
           <pre>{JSON.stringify(debugInfo, null, 2)}</pre>
           <div className="debug-actions">
-            <button onClick={retryFetch} className="btn-primary">Retry</button>
-            <Link to="/town" className="btn-secondary">Return to Town</Link>
+            <button onClick={retryFetch} className="button primary">Retry</button>
+            <Link to="/town" className="button secondary">Return to Town</Link>
           </div>
         </div>
       </div>
@@ -202,8 +202,8 @@ const ActivitySession = () => {
 
   return (
     <div className="activity-session-container">
-      <div className="activity-session-header">
-        <Link to="/town" className="btn-secondary">
+      <div className="adopt-card">
+        <Link to="/town" className="button secondary">
           <i className="fas fa-arrow-left mr-2"></i> Back to Town
         </Link>
         <h2>{session.location} - {session.activity}</h2>
@@ -215,13 +215,13 @@ const ActivitySession = () => {
             <img
               src={flavor.image_url}
               alt={`${session.location} ${session.activity}`}
-              className="activity-image"
+              className="npc-avatar"
             />
           )}
           <p className="flavor-text">{flavor.flavor_text}</p>
         </div>
 
-        <div className="activity-prompt">
+        <div className="info-item">
           <h3>Your Task</h3>
           <p>{prompt.prompt_text}</p>
         </div>
@@ -229,7 +229,7 @@ const ActivitySession = () => {
         <div className="activity-completion">
           <p>Complete this activity to earn your rewards!</p>
           <button
-            className="submit-button"
+            className="button success"
             onClick={handleComplete}
             disabled={submitting}
           >

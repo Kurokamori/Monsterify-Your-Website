@@ -2,8 +2,6 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import fakemonService from '../../services/fakemonService';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
-import '../../styles/AdminStyles.css';
-
 /**
  * Mass Fakemon Add Page
  * Allows bulk uploading of fakemon with image uploads
@@ -29,7 +27,7 @@ const MassFakemonAddPage = () => {
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
 
-  const attributes = ['Normal', 'Mega', 'Legendary', 'Mythical', 'Ultra Beast'];
+  const attributes = ['Virus', 'Vaccine', 'Data', 'Free', 'Variable'];
 
   // Fetch types and categories on mount
   useEffect(() => {
@@ -343,20 +341,20 @@ const MassFakemonAddPage = () => {
 
         {/* Messages */}
         {successMessage && (
-          <div className="admin-alert success">
+          <div className="alert success">
             <i className="fas fa-check-circle"></i> {successMessage}
           </div>
         )}
 
         {error && (
-          <div className="admin-alert error">
+          <div className="alert error">
             <i className="fas fa-exclamation-circle"></i> {error}
           </div>
         )}
 
         {/* Action Buttons */}
         <div className="admin-actions">
-          <Link to="/admin/fakemon" className="admin-button secondary">
+          <Link to="/admin/fakemon" className="button secondary">
             <i className="fas fa-arrow-left"></i> Back to Fakemon List
           </Link>
         </div>
@@ -383,7 +381,7 @@ const MassFakemonAddPage = () => {
 
             <button
               type="button"
-              className="admin-button"
+              className="button primary"
               onClick={() => fileInputRef.current?.click()}
               disabled={uploading || submitting}
             >
@@ -392,13 +390,13 @@ const MassFakemonAddPage = () => {
 
             {uploading && (
               <div className="upload-progress-container">
-                <div className="upload-progress-bar">
+                <div className="progress">
                   <div
-                    className="upload-progress-fill"
+                    className="progress-fill primary"
                     style={{ width: `${uploadProgress}%` }}
                   ></div>
                 </div>
-                <span className="upload-progress-text">{uploadProgress}% Uploading...</span>
+                <span className="timer-session">{uploadProgress}% Uploading...</span>
               </div>
             )}
           </div>
@@ -411,14 +409,14 @@ const MassFakemonAddPage = () => {
               <i className="fas fa-list"></i> Fakemon Cards ({fakemonCards.length})
             </h2>
 
-            <div className="mass-fakemon-grid">
+            <div className="refs-grid">
               {fakemonCards.map((card) => (
                 <div key={card.id} className="mass-fakemon-card">
                   {/* Card Header with Remove Button */}
                   <div className="mass-fakemon-card-header">
                     <button
                       type="button"
-                      className="admin-button delete small"
+                      className="button danger sm"
                       onClick={() => removeCard(card.id)}
                       disabled={submitting}
                       title="Remove this card"
@@ -428,7 +426,7 @@ const MassFakemonAddPage = () => {
                   </div>
 
                   {/* Image Preview */}
-                  <div className="mass-fakemon-image">
+                  <div className="image-container medium">
                     <img
                       src={card.image_url}
                       alt={card.name || 'Fakemon'}
@@ -440,9 +438,9 @@ const MassFakemonAddPage = () => {
                   </div>
 
                   {/* Form Fields */}
-                  <div className="mass-fakemon-fields">
+                  <div className="auth-form">
                     {/* Number */}
-                    <div className={`mass-fakemon-field ${card.errors.number ? 'has-error' : ''}`}>
+                    <div className={`stat-info${card.errors.number ? 'has-error' : ''}`}>
                       <label>Number *</label>
                       <input
                         type="text"
@@ -457,7 +455,7 @@ const MassFakemonAddPage = () => {
                     </div>
 
                     {/* Name */}
-                    <div className={`mass-fakemon-field ${card.errors.name ? 'has-error' : ''}`}>
+                    <div className={`stat-info${card.errors.name ? 'has-error' : ''}`}>
                       <label>Name *</label>
                       <input
                         type="text"
@@ -472,7 +470,7 @@ const MassFakemonAddPage = () => {
                     </div>
 
                     {/* Category */}
-                    <div className={`mass-fakemon-field ${card.errors.category ? 'has-error' : ''}`}>
+                    <div className={`stat-info${card.errors.category ? 'has-error' : ''}`}>
                       <label>Category *</label>
                       <input
                         type="text"
@@ -493,7 +491,7 @@ const MassFakemonAddPage = () => {
                     </div>
 
                     {/* Types */}
-                    <div className={`mass-fakemon-field ${card.errors.types ? 'has-error' : ''}`}>
+                    <div className={`stat-info${card.errors.types ? 'has-error' : ''}`}>
                       <label>Types * (min 1, max 5)</label>
                       <div className="types-container">
                         {card.types.map((type, typeIndex) => (
@@ -511,7 +509,7 @@ const MassFakemonAddPage = () => {
                             {card.types.length > 1 && (
                               <button
                                 type="button"
-                                className="type-remove-btn"
+                                className="button danger icon sm"
                                 onClick={() => removeTypeSlot(card.id, typeIndex)}
                                 disabled={submitting}
                                 title="Remove type"
@@ -524,7 +522,7 @@ const MassFakemonAddPage = () => {
                         {card.types.length < 5 && (
                           <button
                             type="button"
-                            className="type-add-btn"
+                            className="button primary sm"
                             onClick={() => addTypeSlot(card.id)}
                             disabled={submitting}
                           >
@@ -538,7 +536,7 @@ const MassFakemonAddPage = () => {
                     </div>
 
                     {/* Attribute */}
-                    <div className="mass-fakemon-field">
+                    <div className="stat-info">
                       <label>Attribute</label>
                       <select
                         value={card.attribute}
@@ -563,7 +561,7 @@ const MassFakemonAddPage = () => {
           <div className="admin-form-actions">
             <button
               type="button"
-              className="admin-button secondary"
+              className="button secondary"
               onClick={() => setFakemonCards([])}
               disabled={submitting}
             >
@@ -571,7 +569,7 @@ const MassFakemonAddPage = () => {
             </button>
             <button
               type="button"
-              className="admin-button"
+              className="button primary"
               onClick={handleSubmit}
               disabled={submitting || fakemonCards.length === 0}
             >
@@ -590,7 +588,7 @@ const MassFakemonAddPage = () => {
 
         {/* Empty State */}
         {fakemonCards.length === 0 && !uploading && (
-          <div className="admin-empty-state">
+          <div className="empty-results">
             <i className="fas fa-images"></i>
             <h3>No Images Uploaded</h3>
             <p>Upload images to start creating fakemon entries</p>

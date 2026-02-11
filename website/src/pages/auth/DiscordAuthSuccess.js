@@ -135,7 +135,7 @@ const DiscordAuthSuccess = () => {
         {status === 'error' && (
           <div className="auth-error-actions">
             <button 
-              className="auth-button"
+              className="button primary lg block"
               onClick={() => navigate('/login', { replace: true })}
             >
               Return to Login

@@ -116,7 +116,7 @@ const MissionStart = () => {
     return (
       <div className="mission-start-container">
         <div className="error">Error: {error}</div>
-        <button onClick={() => navigate('/adventures/missions/available')}>
+        <button className="button secondary" onClick={() => navigate('/adventures/missions/available')}>
           Back to Available Missions
         </button>
       </div>
@@ -127,7 +127,7 @@ const MissionStart = () => {
     return (
       <div className="mission-start-container">
         <div className="error">Mission not found</div>
-        <button onClick={() => navigate('/adventures/missions/available')}>
+        <button className="button secondary" onClick={() => navigate('/adventures/missions/available')}>
           Back to Available Missions
         </button>
       </div>
@@ -140,7 +140,7 @@ const MissionStart = () => {
     <div className="mission-start-container">
       <div className="mission-start-header">
         <button 
-          className="back-btn"
+          className="button secondary"
           onClick={() => navigate('/adventures/missions/available')}
         >
           ← Back to Available Missions
@@ -149,10 +149,10 @@ const MissionStart = () => {
       </div>
 
       <div className="mission-details-card">
-        <div className="mission-header">
+        <div className="option-row">
           <h3>{mission.title}</h3>
-          <span 
-            className="difficulty-badge"
+          <span
+            className="badge"
             style={{ backgroundColor: getDifficultyColor(mission.difficulty) }}
           >
             {mission.difficulty.toUpperCase()}
@@ -195,12 +195,12 @@ const MissionStart = () => {
         <h3>Select Monsters ({selectedMonsters.length}/{mission.max_monsters})</h3>
         
         {eligibleMonsters.length === 0 ? (
-          <div className="no-monsters">
+          <div className="no-results">
             <p>No eligible monsters found for this mission.</p>
             <p>Make sure you have monsters that meet the requirements.</p>
           </div>
         ) : (
-          <div className="monsters-grid">
+          <div className="button">
             {eligibleMonsters.map((monster) => {
               const isSelected = selectedMonsters.find(m => m.id === monster.id);
               const canSelect = selectedMonsters.length < mission.max_monsters;
@@ -208,7 +208,7 @@ const MissionStart = () => {
               return (
                 <div 
                   key={monster.id}
-                  className={`monster-card${isSelected ? ' selected' : ''}${!canSelect && !isSelected ? ' disabled' : ''}`}
+                  className={`monster-card ${isSelected ? 'selected' : ''}${!canSelect && !isSelected ? 'disabled' : ''}`}
                   onClick={() => handleMonsterSelect(monster)}
                 >
                   <img
@@ -245,9 +245,9 @@ const MissionStart = () => {
       </div>
 
       {eligibleMonsters.length > 0 && (
-        <div className="mission-actions">
+        <div className="adventure-meta">
           <button
-            className="start-mission-btn"
+            className="button primary"
             onClick={handleStartMission}
             disabled={selectedMonsters.length === 0 || starting}
           >

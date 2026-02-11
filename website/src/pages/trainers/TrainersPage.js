@@ -19,6 +19,7 @@ const TrainersPage = () => {
   const [retryCount, setRetryCount] = useState(0);
   const isFirstRender = useRef(true);
   const fetchIdRef = useRef(0);
+  const searchInputRef = useRef(null);
 
   // Debounce the search term into a separate state
   useEffect(() => {
@@ -101,8 +102,15 @@ const TrainersPage = () => {
   const handleSearch = (e) => {
     e.preventDefault();
     // When form is submitted (e.g. mobile keyboard "Go" button),
-    // immediately flush the debounced search
-    setDebouncedSearch(searchTerm);
+    // immediately flush the debounced search.
+    // Use ref value as fallback since some mobile browsers (iOS Safari)
+    // clear the input before the submit event fires, causing searchTerm to be empty.
+    const currentValue = searchInputRef.current?.value ?? searchTerm;
+    setDebouncedSearch(currentValue);
+    // Sync the state in case it got out of sync
+    if (currentValue !== searchTerm) {
+      setSearchTerm(currentValue);
+    }
   };
 
   const handleSort = (field) => {
@@ -123,10 +131,11 @@ const TrainersPage = () => {
 
   return (
     <div className="trainers-container">
-      <div className="trainers-controls-compact">
-        <form className="search-form" onSubmit={handleSearch}>
-          <div className="search-input">
+      <div className="option-row">
+        <form className="search-input-container" onSubmit={handleSearch}>
+          <div className="form-input">
             <input
+              ref={searchInputRef}
               type="search"
               placeholder="Search trainers..."
               value={searchTerm}
@@ -162,9 +171,9 @@ const TrainersPage = () => {
           </select>
         </div>
 
-        <div className="sort-controls">
+        <div className="detail-row">
           <button
-            className={`sort-button ${sortBy === 'name' ? 'active' : ''}`}
+            className={`button filter ${sortBy === 'name' ? 'active' : ''}`}
             onClick={() => handleSort('name')}
           >
             <i className="fas fa-font"></i>
@@ -173,7 +182,7 @@ const TrainersPage = () => {
             )}
           </button>
           <button
-            className={`sort-button ${sortBy === 'level' ? 'active' : ''}`}
+            className={`button filter ${sortBy === 'level' ? 'active' : ''}`}
             onClick={() => handleSort('level')}
           >
             <i className="fas fa-star"></i>
@@ -182,7 +191,7 @@ const TrainersPage = () => {
             )}
           </button>
           <button
-            className={`sort-button ${sortBy === 'monster_count' ? 'active' : ''}`}
+            className={`button filter ${sortBy === 'monster_count' ? 'active' : ''}`}
             onClick={() => handleSort('monster_count')}
           >
             <i className="fas fa-dragon"></i>
@@ -191,7 +200,7 @@ const TrainersPage = () => {
             )}
           </button>
           <button
-            className={`sort-button ${sortBy === 'faction' ? 'active' : ''}`}
+            className={`button filter ${sortBy === 'faction' ? 'active' : ''}`}
             onClick={() => handleSort('faction')}
           >
             <i className="fas fa-flag"></i>
@@ -203,7 +212,7 @@ const TrainersPage = () => {
       </div>
 
       {loading ? (
-        <div className="loading-container">
+        <div className="error-container">
           <div className="loading-spinner">
             <i className="fas fa-spinner fa-spin"></i>
           </div>
@@ -213,21 +222,27 @@ const TrainersPage = () => {
         <div className="error-container">
           <i className="fas fa-exclamation-circle"></i>
           <p>{error}</p>
-          <button onClick={() => setRetryCount(c => c + 1)} className="retry-button">
+          <button onClick={() => setRetryCount(c => c + 1)} className="button primary">
             Try Again
           </button>
         </div>
       ) : (
         <>
-          <div className="trainers-grid">
+          <div className="container grid-sm gap-md">
             {trainers.length === 0 ? (
-              <div className="no-trainers-message">
+              <div className="map-header">
                 <i className="fas fa-users-slash"></i>
                 <p>No trainers found. Try adjusting your search criteria.</p>
               </div>
             ) : (
               trainers.map((trainer) => (
                 <Link to={`/trainers/${trainer.id}`} className="trainer-card" key={trainer.id}>
+                  <div className="trainer-name-heading">
+                    <h3 className="trainer-name">{trainer.name}</h3>
+                    <div className="trainer-player">
+                      <i className="fas fa-user"></i> {trainer.player_display_name || trainer.player_username || 'Unknown Player'}
+                    </div>
+                  </div>
                   <div className="trainer-image-container">
                     <img
                       src={trainer.main_ref || '/images/default_trainer.png'}
@@ -240,20 +255,16 @@ const TrainersPage = () => {
                     />
                   </div>
                   <div className="trainer-info">
-                    <h3 className="trainer-name">{trainer.name}</h3>
-                    <div className="trainer-player">
-                      <i className="fas fa-user"></i> {trainer.player_display_name || trainer.player_username || 'Unknown Player'}
-                    </div>
                     <div className="trainer-details">
                       <span className="trainer-level">
                         <i className="fas fa-star"></i> Level {trainer.level || 1}
                       </span>
-                      <span className="trainer-monsters">
+                      <span className="trainer-level">
                         <i className="fas fa-dragon"></i> {trainer.monster_count || 0} Monsters
                       </span>
                     </div>
                     {trainer.region && (
-                      <span className="trainer-region">
+                      <span className="trainer-level">
                         <i className="fas fa-map-marker-alt"></i> {trainer.region}
                       </span>
                     )}
@@ -271,7 +282,7 @@ const TrainersPage = () => {
           {totalPages > 1 && (
             <div className="pagination">
               <button
-                className="pagination-button"
+                className="button secondary"
                 disabled={currentPage === 1}
                 onClick={() => handlePageChange(currentPage - 1)}
               >
@@ -281,7 +292,7 @@ const TrainersPage = () => {
               {[...Array(totalPages).keys()].map((page) => (
                 <button
                   key={page + 1}
-                  className={`pagination-button ${currentPage === page + 1 ? 'active' : ''}`}
+                  className={`button secondary ${currentPage === page + 1 ? 'active' : ''}`}
                   onClick={() => handlePageChange(page + 1)}
                 >
                   {page + 1}
@@ -289,7 +300,7 @@ const TrainersPage = () => {
               ))}
 
               <button
-                className="pagination-button"
+                className="button secondary"
                 disabled={currentPage === totalPages}
                 onClick={() => handlePageChange(currentPage + 1)}
               >

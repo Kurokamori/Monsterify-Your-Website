@@ -93,15 +93,15 @@ const Garden = () => {
   if (!isAuthenticated) {
     return (
       <div className="location-activity-container">
-        <div className="location-activity-header">
-          <Link to="/town" className="btn-secondary">
+        <div className="quick-actions">
+          <Link to="/town" className="button secondary">
             <i className="fas fa-arrow-left mr-2"></i> Back to Town
           </Link>
           <h1>Garden</h1>
         </div>
         <div className="auth-message">
           <p>Please log in to access the garden.</p>
-          <Link to="/login" className="btn-primary">Log In</Link>
+          <Link to="/login" className="button primary">Log In</Link>
         </div>
       </div>
     );
@@ -171,8 +171,8 @@ const Garden = () => {
   if (showSession && sessionData && promptData && flavorData) {
     return (
       <div className="location-activity-container">
-        <div className="location-activity-header">
-          <button onClick={returnToActivity} className="btn-secondary">
+        <div className="quick-actions">
+          <button onClick={returnToActivity} className="button secondary">
             <i className="fas fa-arrow-left mr-2"></i> Back to Garden
           </button>
           <h1>Garden - {sessionData.activity.replace(/_/g, ' ')}</h1>
@@ -194,16 +194,16 @@ const Garden = () => {
   if (activeSession && !showSession) {
     return (
       <div className="location-activity-container">
-        <div className="location-activity-header">
-          <Link to="/town" className="btn-secondary">
+        <div className="quick-actions">
+          <Link to="/town" className="button secondary">
             <i className="fas fa-arrow-left mr-2"></i> Back to Town
           </Link>
           <h1>Garden</h1>
         </div>
-        <div className="active-session-message">
+        <div className="auth-message">
           <h2>Active Session</h2>
           <p>You have an active garden session in progress.</p>
-          <button onClick={continueSession} className="btn-primary">
+          <button onClick={continueSession} className="button primary">
             Continue Session
           </button>
         </div>
@@ -213,8 +213,8 @@ const Garden = () => {
 
   return (
     <div className="location-activity-container">
-      <div className="location-activity-header">
-        <Link to="/town" className="btn-secondary">
+      <div className="quick-actions">
+        <Link to="/town" className="button secondary">
           <i className="fas fa-arrow-left mr-2"></i> Back to Town
         </Link>
         <h1>Garden</h1>
@@ -246,7 +246,7 @@ const Garden = () => {
 
           <div className="location-activities">
             <div className="location-activity-card">
-              <div className="activity-image">
+              <div className="image-container activity">
                 <img src="https://i.imgur.com/Z5dNHXv.jpeg" alt="Tend Garden" />
               </div>
               <div className="activity-info">
@@ -256,7 +256,7 @@ const Garden = () => {
                 </div>
                 <p>Nurture the magical plants and commune with the ancient spirits that dwell among the enchanted blooms.</p>
                 <button
-                  className="btn-primary"
+                  className="button primary"
                   onClick={() => startActivity('tend')}
                   disabled={cooldown.active}
                 >
@@ -266,14 +266,14 @@ const Garden = () => {
             </div>
 
             <div className="location-activity-card">
-              <div className="activity-image">
+              <div className="image-container activity">
                 <img src="https://i.imgur.com/Z5dNHXv.jpeg" alt="Harvest Garden" />
               </div>
               <div className="activity-info">
                 <h3>Harvest Garden</h3>
                 <p>Harvest your garden points to collect berries and possibly find monsters!</p>
                 <button
-                  className="btn-primary"
+                  className="button primary"
                   onClick={() => setActiveTab('harvest')}
                 >
                   <i className="fas fa-hand-holding-heart mr-2"></i> Harvest Garden
@@ -286,7 +286,7 @@ const Garden = () => {
         <div className="location-activity-content">
           <div className="location-activity-tabs">
             <button
-              className="tab-button"
+              className="button tab"
               onClick={() => setActiveTab('garden')}
             >
               <i className="fas fa-arrow-left mr-2"></i> Back to Garden

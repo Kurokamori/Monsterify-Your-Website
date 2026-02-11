@@ -153,7 +153,7 @@ const AccountSettings = () => {
 
   return (
     <div className="account-settings">
-      <div className="settings-section">
+      <div className="item-card">
         <div className="settings-section-header">
           <h2 className="settings-section-title">Profile Information</h2>
         </div>
@@ -162,19 +162,19 @@ const AccountSettings = () => {
         </p>
         
         {error && (
-          <div className="form-error" style={{ marginBottom: '1rem' }}>
+          <div className="form-error mb-1">
             <i className="fas fa-exclamation-circle"></i> {error}
           </div>
         )}
-        
+
         {success && (
-          <div className="form-success" style={{ marginBottom: '1rem', color: '#10b981' }}>
+          <div className="form-success mb-1">
             <i className="fas fa-check-circle"></i> {success}
           </div>
         )}
         
         <form onSubmit={handleProfileSubmit}>
-          <div className="avatar-upload">
+          <div className="image-upload">
             <div className="current-avatar">
               <img 
                 src={avatarPreview || "https://via.placeholder.com/100/1e2532/d6a339?text=User"} 
@@ -187,11 +187,11 @@ const AccountSettings = () => {
             </div>
             <div className="avatar-upload-controls">
               <label className="avatar-upload-button">
-                <input 
-                  type="file" 
-                  accept="image/*" 
-                  onChange={handleAvatarChange} 
-                  style={{ display: 'none' }}
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleAvatarChange}
+                  className="hidden"
                 />
                 Change Avatar
               </label>
@@ -228,7 +228,7 @@ const AccountSettings = () => {
           <div className="form-actions">
             <button 
               type="submit" 
-              className="form-button primary"
+              className="button primary"
               disabled={loading}
             >
               {loading ? (
@@ -243,7 +243,7 @@ const AccountSettings = () => {
         </form>
       </div>
 
-      <div className="settings-section">
+      <div className="item-card">
         <div className="settings-section-header">
           <h2 className="settings-section-title">Update Password</h2>
         </div>
@@ -252,13 +252,13 @@ const AccountSettings = () => {
         </p>
         
         {passwordError && (
-          <div className="form-error" style={{ marginBottom: '1rem' }}>
+          <div className="form-error mb-1">
             <i className="fas fa-exclamation-circle"></i> {passwordError}
           </div>
         )}
-        
+
         {passwordSuccess && (
-          <div className="form-success" style={{ marginBottom: '1rem', color: '#10b981' }}>
+          <div className="form-success mb-1">
             <i className="fas fa-check-circle"></i> {passwordSuccess}
           </div>
         )}
@@ -307,7 +307,7 @@ const AccountSettings = () => {
           <div className="form-actions">
             <button 
               type="submit" 
-              className="form-button primary"
+              className="button primary"
               disabled={loading}
             >
               {loading ? (
@@ -322,7 +322,7 @@ const AccountSettings = () => {
         </form>
       </div>
 
-      <div className="settings-section">
+      <div className="item-card">
         <div className="settings-section-header">
           <h2 className="settings-section-title">Delete Account</h2>
         </div>
@@ -330,10 +330,9 @@ const AccountSettings = () => {
           Permanently delete your account and all of your data. This action cannot be undone.
         </p>
         
-        <button 
-          className="form-button secondary"
+        <button
+          className="button danger"
           onClick={() => setIsDeleteModalOpen(true)}
-          style={{ backgroundColor: 'rgba(239, 68, 68, 0.1)', color: '#ef4444' }}
         >
           <i className="fas fa-trash-alt"></i> Delete Account
         </button>
@@ -351,7 +350,7 @@ const AccountSettings = () => {
             This action cannot be undone.
           </p>
           
-          <div className="form-group" style={{ marginTop: '1.5rem' }}>
+          <div className="form-group mt-1-5">
             <label className="form-label">
               Please type <strong>DELETE</strong> to confirm:
             </label>
@@ -362,22 +361,22 @@ const AccountSettings = () => {
               onChange={(e) => setDeleteConfirmation(e.target.value)}
             />
           </div>
-          
+
           {deleteError && (
-            <div className="form-error" style={{ marginTop: '1rem' }}>
+            <div className="form-error mt-1">
               <i className="fas fa-exclamation-circle"></i> {deleteError}
             </div>
           )}
           
           <div className="modal-actions">
             <button 
-              className="modal-button secondary"
+              className="button secondary"
               onClick={() => setIsDeleteModalOpen(false)}
             >
               Cancel
             </button>
             <button 
-              className="modal-button primary"
+              className="button primary"
               onClick={handleDeleteAccount}
               disabled={loading}
             >

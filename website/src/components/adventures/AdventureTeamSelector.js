@@ -162,7 +162,7 @@ const AdventureTeamSelector = ({ adventureId, trainerId, onTeamUpdate, onCancel 
         </p>
       </div>
       
-      <div className="monsters-grid">
+      <div className="button">
         {displayMonsters.map(monster => (
           <div 
             key={monster.id} 
@@ -189,9 +189,9 @@ const AdventureTeamSelector = ({ adventureId, trainerId, onTeamUpdate, onCancel 
             <div className="monster-info">
               <h4 className="monster-name">{monster.name}</h4>
               <div className="monster-details">
-                <span className="monster-species">{monster.species1}</span>
-                <span className="monster-species">{monster.species2}</span>
-                <span className="monster-species">{monster.species3}</span>
+                <span className="monster-types">{monster.species1}</span>
+                <span className="monster-types">{monster.species2}</span>
+                <span className="monster-types">{monster.species3}</span>
                 <span className="monster-level">Lv. {monster.level}</span>
               </div>
               
@@ -199,7 +199,7 @@ const AdventureTeamSelector = ({ adventureId, trainerId, onTeamUpdate, onCancel 
                 {[monster.type1, monster.type2, monster.type3, monster.type4, monster.type5].filter(Boolean).map((type, index) => (
                   <span 
                     key={index} 
-                    className={`type-badge type-${type.toLowerCase()}`}
+                    className={`badge type-${type.toLowerCase()}`}
                   >
                     {type}
                   </span>
@@ -243,13 +243,13 @@ const AdventureTeamSelector = ({ adventureId, trainerId, onTeamUpdate, onCancel 
       
       <div className="team-selector-actions">
         <button 
-          className="action-button secondary"
+          className="button secondary"
           onClick={onCancel}
         >
           Cancel
         </button>
         <button 
-          className="action-button primary"
+          className="button primary"
           onClick={handleSaveTeam}
           disabled={selectedMonsters.length === 0}
         >

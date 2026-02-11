@@ -167,16 +167,16 @@ const RoutineModal = ({ isOpen, onClose, onSuccess, trainers = [], routine = nul
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-content large" onClick={e => e.stopPropagation()}>
-        <div className="modal-header">
+        <div className="tree-header">
           <h3>{routine ? 'Edit Routine' : 'Create New Routine'}</h3>
-          <button className="modal-close" onClick={onClose}>
+          <button className="button close" onClick={onClose}>
             <i className="fas fa-times"></i>
           </button>
         </div>
 
         <form onSubmit={handleSubmit} className="modal-body">
           {error && (
-            <div className="error-message">
+            <div className="alert error">
               <i className="fas fa-exclamation-triangle"></i>
               {error}
             </div>
@@ -252,7 +252,7 @@ const RoutineModal = ({ isOpen, onClose, onSuccess, trainers = [], routine = nul
             {formData.pattern_type === 'custom' && (
               <div className="form-group">
                 <label>Select Days</label>
-                <div className="checkbox-group">
+                <div className="event-date">
                   {weekDays.map(day => (
                     <label key={day} className="checkbox-label">
                       <input
@@ -282,7 +282,7 @@ const RoutineModal = ({ isOpen, onClose, onSuccess, trainers = [], routine = nul
                           type="button"
                           onClick={() => moveItem(index, 'up')}
                           disabled={index === 0}
-                          className="order-btn"
+                          className="button secondary icon sm"
                         >
                           <i className="fas fa-chevron-up"></i>
                         </button>
@@ -291,7 +291,7 @@ const RoutineModal = ({ isOpen, onClose, onSuccess, trainers = [], routine = nul
                           type="button"
                           onClick={() => moveItem(index, 'down')}
                           disabled={index === formData.items.length - 1}
-                          className="order-btn"
+                          className="button secondary icon sm"
                         >
                           <i className="fas fa-chevron-down"></i>
                         </button>
@@ -311,7 +311,7 @@ const RoutineModal = ({ isOpen, onClose, onSuccess, trainers = [], routine = nul
                       <button
                         type="button"
                         onClick={() => removeItem(index)}
-                        className="remove-btn"
+                        className="button danger icon sm"
                       >
                         <i className="fas fa-trash"></i>
                       </button>
@@ -325,7 +325,7 @@ const RoutineModal = ({ isOpen, onClose, onSuccess, trainers = [], routine = nul
               <button
                 type="button"
                 onClick={() => setShowAddItem(true)}
-                className="btn-secondary add-item-btn"
+                className="button secondary"
               >
                 <i className="fas fa-plus"></i>
                 Add Routine Item
@@ -419,14 +419,14 @@ const RoutineModal = ({ isOpen, onClose, onSuccess, trainers = [], routine = nul
                   <button
                     type="button"
                     onClick={() => setShowAddItem(false)}
-                    className="btn-secondary"
+                    className="button secondary"
                   >
                     Cancel
                   </button>
                   <button
                     type="button"
                     onClick={addItem}
-                    className="btn-primary"
+                    className="button primary"
                   >
                     <i className="fas fa-plus"></i>
                     Add Item
@@ -437,10 +437,10 @@ const RoutineModal = ({ isOpen, onClose, onSuccess, trainers = [], routine = nul
           </div>
 
           <div className="modal-actions">
-            <button type="button" onClick={onClose} className="btn-secondary">
+            <button type="button" onClick={onClose} className="button secondary">
               Cancel
             </button>
-            <button type="submit" disabled={loading} className="btn-primary">
+            <button type="submit" disabled={loading} className="button primary">
               {loading ? (
                 <>
                   <i className="fas fa-spinner fa-spin"></i>

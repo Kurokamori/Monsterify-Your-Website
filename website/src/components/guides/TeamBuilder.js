@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import './TeamBuilder.css';
 
 const TeamBuilder = () => {
   const [team, setTeam] = useState([
@@ -182,24 +181,24 @@ const TeamBuilder = () => {
       <div className="team-builder-header">
         <h2>Team Builder</h2>
         <p>Build a team of up to 6 monsters and analyze their combined type effectiveness</p>
-        <button onClick={clearAllMonsters} className="clear-team-btn">
+        <button onClick={clearAllMonsters} className="button secondary">
           Clear All Monsters
         </button>
       </div>
 
       <div className="monsters-table">
-        <div className="monsters-header">
-          <div className="monster-number-col">Monster</div>
+        <div className="monster-row">
+          <div className="monster-name-col">Monster</div>
           <div className="monster-name-col">Name</div>
-          <div className="monster-attribute-col">Attribute</div>
-          <div className="monster-types-col">Types</div>
-          <div className="monster-preview-col">Preview</div>
-          <div className="monster-actions-col">Actions</div>
+          <div className="monster-name-col">Attribute</div>
+          <div className="monster-name-col">Types</div>
+          <div className="monster-name-col">Preview</div>
+          <div className="monster-name-col">Actions</div>
         </div>
         
         {team.map((monster) => (
           <div key={monster.id} className="monster-row">
-            <div className="monster-number-col">
+            <div className="monster-name-col">
               <span className="monster-number">{monster.id}</span>
             </div>
             
@@ -209,15 +208,15 @@ const TeamBuilder = () => {
                 value={monster.name}
                 onChange={(e) => updateMonster(monster.id, 'name', e.target.value)}
                 placeholder="Monster name"
-                className="monster-name-input"
+                className="form-input"
               />
             </div>
 
-            <div className="monster-attribute-col">
+            <div className="monster-name-col">
               <select
                 value={monster.attribute}
                 onChange={(e) => updateMonster(monster.id, 'attribute', e.target.value)}
-                className="attribute-select"
+                className="form-input"
               >
                 <option value="">Attribute</option>
                 {availableAttributes.map(attr => (
@@ -226,14 +225,14 @@ const TeamBuilder = () => {
               </select>
             </div>
 
-            <div className="monster-types-col">
-              <div className="types-inputs">
+            <div className="monster-name-col">
+              <div className="type-tags fw">
                 {monster.types.map((type, typeIndex) => (
                   <div key={typeIndex} className="type-input-group">
                     <select
                       value={type}
                       onChange={(e) => updateMonsterType(monster.id, typeIndex, e.target.value)}
-                      className="type-select-small"
+                      className="form-input"
                     >
                       <option value="">Type {typeIndex + 1}</option>
                       {availableTypes.map(availableType => (
@@ -245,7 +244,7 @@ const TeamBuilder = () => {
                     {type && (
                       <button
                         onClick={() => removeMonsterType(monster.id, typeIndex)}
-                        className="remove-type-btn-small"
+                        className="button secondary no-flex sm"
                         title="Remove Type"
                       >
                         ×
@@ -256,25 +255,25 @@ const TeamBuilder = () => {
               </div>
             </div>
 
-            <div className="monster-preview-col">
+            <div className="monster-name-col">
               <div className="monster-badges">
                 {monster.types.filter(type => type !== '').map((type, index) => (
-                  <span key={index} className={`type-badge type-${type.toLowerCase()}`}>
+                  <span key={index} className={`badge type-${type.toLowerCase()}`}>
                     {type}
                   </span>
                 ))}
                 {monster.attribute && (
-                  <span className="attribute-badge">
+                  <span className="badge">
                     {monster.attribute}
                   </span>
                 )}
               </div>
             </div>
 
-            <div className="monster-actions-col">
+            <div className="monster-name-col">
               <button 
                 onClick={() => clearMonster(monster.id)}
-                className="clear-monster-btn"
+                className="button secondary"
                 title="Clear Monster"
               >
                 ×
@@ -306,7 +305,7 @@ const TeamBuilder = () => {
                           </div>
                           <div className="monster-types-small">
                             {monster.types.filter(t => t !== '').map((type, i) => (
-                              <span key={i} className={`type-badge-mini type-${type.toLowerCase()}`}>
+                              <span key={i} className={`badge small type-${type.toLowerCase()}`}>
                                 {type.charAt(0)}
                               </span>
                             ))}
@@ -314,7 +313,7 @@ const TeamBuilder = () => {
                         </div>
                       </th>
                     ))}
-                    <th className="team-total-column">Team Total</th>
+                    <th className="team-total-cell">Team Total</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -347,19 +346,19 @@ const TeamBuilder = () => {
                     return (
                       <tr key={attackingType}>
                         <td className="attacking-type-cell">
-                          <span className={`attacking-type-badge type-${attackingType.toLowerCase()}`}>
+                          <span className={`badge type-${attackingType.toLowerCase()}`}>
                             {attackingType}
                           </span>
                         </td>
                         {activeMonsters.map((monster) => {
                           const effectiveness = calculateMonsterEffectiveness(monster.types, attackingType);
                           return (
-                            <td key={monster.id} className={`effectiveness-cell ${getEffectivenessClass(effectiveness)}`}>
+                            <td key={monster.id} className={`effectiveness-cell${getEffectivenessClass(effectiveness)}`}>
                               {getEffectivenessText(effectiveness)}
                             </td>
                           );
                         })}
-                        <td className={`team-total-cell ${getTotalClass(teamTotal)}`}>
+                        <td className={`team-total-cell${getTotalClass(teamTotal)}`}>
                           {getTotalDisplay(teamTotal)}
                         </td>
                       </tr>
@@ -378,12 +377,12 @@ const TeamBuilder = () => {
                 {Object.keys(teamSummary.weaknesses).length === 0 ? (
                   <p className="no-results">No shared weaknesses</p>
                 ) : (
-                  <div className="summary-grid">
+                  <div className="type-tags fw">
                     {Object.entries(teamSummary.weaknesses)
                       .sort(([,a], [,b]) => b - a)
                       .map(([type, count]) => (
                       <div key={type} className="summary-item weakness">
-                        <span className={`attacking-type-badge type-${type.toLowerCase()}`}>{type}</span>
+                        <span className={`badge type-${type.toLowerCase()}`}>{type}</span>
                         <span className="count-badge">{count}/{teamSummary.activeMonsters} weak</span>
                       </div>
                     ))}
@@ -396,12 +395,12 @@ const TeamBuilder = () => {
                 {Object.keys(teamSummary.resistances).length === 0 ? (
                   <p className="no-results">No shared resistances</p>
                 ) : (
-                  <div className="summary-grid">
+                  <div className="type-tags fw">
                     {Object.entries(teamSummary.resistances)
                       .sort(([,a], [,b]) => b - a)
                       .map(([type, count]) => (
                       <div key={type} className="summary-item resistance">
-                        <span className={`attacking-type-badge type-${type.toLowerCase()}`}>{type}</span>
+                        <span className={`badge type-${type.toLowerCase()}`}>{type}</span>
                         <span className="count-badge">{count}/{teamSummary.activeMonsters} resist</span>
                       </div>
                     ))}
@@ -414,12 +413,12 @@ const TeamBuilder = () => {
                 {Object.keys(teamSummary.immunities).length === 0 ? (
                   <p className="no-results">No shared immunities</p>
                 ) : (
-                  <div className="summary-grid">
+                  <div className="type-tags fw">
                     {Object.entries(teamSummary.immunities)
                       .sort(([,a], [,b]) => b - a)
                       .map(([type, count]) => (
                       <div key={type} className="summary-item immunity">
-                        <span className={`attacking-type-badge type-${type.toLowerCase()}`}>{type}</span>
+                        <span className={`badge type-${type.toLowerCase()}`}>{type}</span>
                         <span className="count-badge">{count}/{teamSummary.activeMonsters} immune</span>
                       </div>
                     ))}

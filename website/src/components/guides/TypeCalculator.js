@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import './TypeCalculator.css';
 
 const TypeCalculator = () => {
   const [selectedTypes, setSelectedTypes] = useState(['', '', '', '', '', '']);
@@ -135,13 +134,13 @@ const TypeCalculator = () => {
 
       <div className="type-selector-grid">
         {selectedTypes.map((type, index) => (
-          <div key={index} className="type-selector">
+          <div key={index} className="type-selector-item">
             <label>Type {index + 1}:</label>
             <div className="type-input-group">
-              <select 
-                value={type} 
+              <select
+                value={type}
                 onChange={(e) => handleTypeChange(index, e.target.value)}
-                className="type-select"
+                className="form-input"
               >
                 <option value="">Select Type</option>
                 {availableTypes.map(availableType => (
@@ -151,9 +150,9 @@ const TypeCalculator = () => {
                 ))}
               </select>
               {type && (
-                <button 
+                <button
                   onClick={() => removeType(index)}
-                  className="remove-type-btn"
+                  className="button danger icon sm"
                   title="Remove Type"
                 >
                   ×
@@ -165,7 +164,7 @@ const TypeCalculator = () => {
       </div>
 
       <div className="calculator-actions">
-        <button onClick={clearAll} className="clear-all-btn">
+        <button onClick={clearAll} className="button secondary">
           Clear All Types
         </button>
       </div>
@@ -174,7 +173,7 @@ const TypeCalculator = () => {
         <div className="results-section">
           <div className="selected-types-display">
             <h3>Selected Types:</h3>
-            <div className="type-badges">
+            <div className="selected-types-list">
               {results.types.map((type, index) => (
                 <span key={index} className={`type-badge type-${type.toLowerCase()}`}>
                   {type}
@@ -183,17 +182,17 @@ const TypeCalculator = () => {
             </div>
           </div>
 
-          <div className="effectiveness-results">
-            <div className="effectiveness-section">
+          <div className="results-grid">
+            <div className="results-card weakness-card">
               <h3>Weaknesses (Takes More Damage From):</h3>
               {Object.keys(results.weaknesses).length === 0 ? (
                 <p className="no-results">No weaknesses</p>
               ) : (
-                <div className="effectiveness-grid">
+                <div className="type-results-list">
                   {Object.entries(results.weaknesses)
                     .sort(([,a], [,b]) => b - a)
                     .map(([type, multiplier]) => (
-                    <div key={type} className={`effectiveness-item ${getEffectivenessClass(multiplier)}`}>
+                    <div key={type} className={`summary-item ${getEffectivenessClass(multiplier)}`}>
                       <span className={`type-badge type-${type.toLowerCase()}`}>{type}</span>
                       <span className="multiplier">{getEffectivenessText(multiplier)}</span>
                     </div>
@@ -202,16 +201,16 @@ const TypeCalculator = () => {
               )}
             </div>
 
-            <div className="effectiveness-section">
+            <div className="results-card resistance-card">
               <h3>Resistances (Takes Less Damage From):</h3>
               {Object.keys(results.resistances).length === 0 ? (
                 <p className="no-results">No resistances</p>
               ) : (
-                <div className="effectiveness-grid">
+                <div className="type-results-list">
                   {Object.entries(results.resistances)
                     .sort(([,a], [,b]) => a - b)
                     .map(([type, multiplier]) => (
-                    <div key={type} className={`effectiveness-item ${getEffectivenessClass(multiplier)}`}>
+                    <div key={type} className={`summary-item ${getEffectivenessClass(multiplier)}`}>
                       <span className={`type-badge type-${type.toLowerCase()}`}>{type}</span>
                       <span className="multiplier">{getEffectivenessText(multiplier)}</span>
                     </div>
@@ -220,14 +219,14 @@ const TypeCalculator = () => {
               )}
             </div>
 
-            <div className="effectiveness-section">
+            <div className="results-card immunity-card">
               <h3>Immunities (Takes No Damage From):</h3>
               {Object.keys(results.immunities).length === 0 ? (
                 <p className="no-results">No immunities</p>
               ) : (
-                <div className="effectiveness-grid">
+                <div className="type-results-list">
                   {Object.entries(results.immunities).map(([type, multiplier]) => (
-                    <div key={type} className={`effectiveness-item ${getEffectivenessClass(multiplier)}`}>
+                    <div key={type} className={`summary-item ${getEffectivenessClass(multiplier)}`}>
                       <span className={`type-badge type-${type.toLowerCase()}`}>{type}</span>
                       <span className="multiplier">{getEffectivenessText(multiplier)}</span>
                     </div>
@@ -236,16 +235,16 @@ const TypeCalculator = () => {
               )}
             </div>
 
-            <div className="effectiveness-section">
+            <div className="results-card strength-card">
               <h3>Strong Against (Deals More Damage To):</h3>
               {Object.keys(results.strongAgainst).length === 0 ? (
                 <p className="no-results">No super effective matchups</p>
               ) : (
-                <div className="effectiveness-grid">
+                <div className="type-results-list">
                   {Object.entries(results.strongAgainst)
                     .sort(([,a], [,b]) => b - a)
                     .map(([type, multiplier]) => (
-                    <div key={type} className={`effectiveness-item ${getEffectivenessClass(multiplier)}`}>
+                    <div key={type} className={`summary-item ${getEffectivenessClass(multiplier)}`}>
                       <span className={`type-badge type-${type.toLowerCase()}`}>{type}</span>
                       <span className="multiplier">{getEffectivenessText(multiplier)}</span>
                     </div>

@@ -358,14 +358,14 @@ const MonsterFormPage = () => {
 
         {/* Error Message */}
         {error && (
-          <div className="admin-alert error">
+          <div className="alert error">
             <i className="fas fa-exclamation-circle"></i> {error}
           </div>
         )}
 
         {/* Action Buttons */}
         <div className="admin-actions">
-          <Link to="/admin/monsters" className="admin-button secondary">
+          <Link to="/admin/monsters" className="button secondary">
             <i className="fas fa-arrow-left"></i> Back to Monster List
           </Link>
         </div>
@@ -374,29 +374,29 @@ const MonsterFormPage = () => {
         {loading ? (
           <LoadingSpinner message="Loading monster data..." />
         ) : (
-          <div className="admin-form-container">
-            <form onSubmit={handleSubmit} className="admin-form">
+          <div className="bulk-monster-add-form">
+            <form onSubmit={handleSubmit} className="reroller-content">
               <div className="admin-form-tabs">
                 <div
-                  className={`admin-form-tab ${activeTab === 'basic' ? 'active' : ''}`}
+                  className={`admin-form-tab${activeTab === 'basic' ? 'active' : ''}`}
                   onClick={() => setActiveTab('basic')}
                 >
                   Basic Info
                 </div>
                 <div
-                  className={`admin-form-tab ${activeTab === 'stats' ? 'active' : ''}`}
+                  className={`admin-form-tab${activeTab === 'stats' ? 'active' : ''}`}
                   onClick={() => setActiveTab('stats')}
                 >
                   Stats & Moves
                 </div>
                 <div
-                  className={`admin-form-tab ${activeTab === 'appearance' ? 'active' : ''}`}
+                  className={`admin-form-tab${activeTab === 'appearance' ? 'active' : ''}`}
                   onClick={() => setActiveTab('appearance')}
                 >
                   Appearance
                 </div>
                 <div
-                  className={`admin-form-tab ${activeTab === 'biography' ? 'active' : ''}`}
+                  className={`admin-form-tab${activeTab === 'biography' ? 'active' : ''}`}
                   onClick={() => setActiveTab('biography')}
                 >
                   Biography
@@ -404,7 +404,7 @@ const MonsterFormPage = () => {
               </div>
 
               <div className={`admin-form-tab-content ${activeTab === 'basic' ? 'active' : ''}`}>
-                <div className="admin-form-grid">
+                <div className="reroller-content">
                   {/* Basic Information */}
                   <div className="admin-form-section">
                     <h2 className="admin-form-section-title">Basic Information</h2>
@@ -435,7 +435,7 @@ const MonsterFormPage = () => {
                         name="trainer_id"
                         value={formData.trainer_id}
                         onChange={handleChange}
-                        className="admin-form-select"
+                        className="admin-form-input"
                         required
                         disabled={saving || isEditMode}
                       >
@@ -526,7 +526,7 @@ const MonsterFormPage = () => {
                         name="type1"
                         value={formData.type1}
                         onChange={handleChange}
-                        className="admin-form-select"
+                        className="admin-form-input"
                         required
                         disabled={saving || isEditMode}
                       >
@@ -546,7 +546,7 @@ const MonsterFormPage = () => {
                         name="type2"
                         value={formData.type2}
                         onChange={handleChange}
-                        className="admin-form-select"
+                        className="admin-form-input"
                         disabled={saving || isEditMode}
                       >
                         <option value="">None</option>
@@ -565,7 +565,7 @@ const MonsterFormPage = () => {
                         name="type3"
                         value={formData.type3}
                         onChange={handleChange}
-                        className="admin-form-select"
+                        className="admin-form-input"
                         disabled={saving || isEditMode}
                       >
                         <option value="">None</option>
@@ -584,7 +584,7 @@ const MonsterFormPage = () => {
                         name="type4"
                         value={formData.type4}
                         onChange={handleChange}
-                        className="admin-form-select"
+                        className="admin-form-input"
                         disabled={saving || isEditMode}
                       >
                         <option value="">None</option>
@@ -603,7 +603,7 @@ const MonsterFormPage = () => {
                         name="type5"
                         value={formData.type5}
                         onChange={handleChange}
-                        className="admin-form-select"
+                        className="admin-form-input"
                         disabled={saving || isEditMode}
                       >
                         <option value="">None</option>
@@ -622,7 +622,7 @@ const MonsterFormPage = () => {
                         name="attribute"
                         value={formData.attribute}
                         onChange={handleChange}
-                        className="admin-form-select"
+                        className="admin-form-input"
                         disabled={saving || isEditMode}
                       >
                         <option value="">None</option>
@@ -637,12 +637,12 @@ const MonsterFormPage = () => {
 
               {/* Stats & Moves Tab */}
               <div className={`admin-form-tab-content ${activeTab === 'stats' ? 'active' : ''}`}>
-                <div className="admin-form-grid">
+                <div className="reroller-content">
                   {/* Stats */}
                   <div className="admin-form-section">
                     <h2 className="admin-form-section-title">Base Stats</h2>
 
-                    <div className="admin-stats-grid">
+                    <div className="button">
                       <div className="admin-form-group">
                         <label htmlFor="hp_total" className="admin-form-label">HP</label>
                         <input
@@ -656,9 +656,9 @@ const MonsterFormPage = () => {
                           max="255"
                           disabled={saving}
                         />
-                        <div className="admin-stat-bar">
+                        <div className="progress">
                           <div
-                            className="admin-stat-fill hp"
+                            className="progress-fill hp"
                             style={{ width: `${Math.min(100, (formData.hp_total / 255) * 100)}%` }}
                           ></div>
                         </div>
@@ -677,9 +677,9 @@ const MonsterFormPage = () => {
                           max="255"
                           disabled={saving}
                         />
-                        <div className="admin-stat-bar">
+                        <div className="progress">
                           <div
-                            className="admin-stat-fill attack"
+                            className="progress-fill attack"
                             style={{ width: `${Math.min(100, (formData.atk_total / 255) * 100)}%` }}
                           ></div>
                         </div>
@@ -698,9 +698,9 @@ const MonsterFormPage = () => {
                           max="255"
                           disabled={saving}
                         />
-                        <div className="admin-stat-bar">
+                        <div className="progress">
                           <div
-                            className="admin-stat-fill defense"
+                            className="progress-fill defense"
                             style={{ width: `${Math.min(100, (formData.def_total / 255) * 100)}%` }}
                           ></div>
                         </div>
@@ -719,9 +719,9 @@ const MonsterFormPage = () => {
                           max="255"
                           disabled={saving}
                         />
-                        <div className="admin-stat-bar">
+                        <div className="progress">
                           <div
-                            className="admin-stat-fill special-attack"
+                            className="progress-fill special-attack"
                             style={{ width: `${Math.min(100, (formData.spa_total / 255) * 100)}%` }}
                           ></div>
                         </div>
@@ -740,9 +740,9 @@ const MonsterFormPage = () => {
                           max="255"
                           disabled={saving}
                         />
-                        <div className="admin-stat-bar">
+                        <div className="progress">
                           <div
-                            className="admin-stat-fill special-defense"
+                            className="progress-fill special-defense"
                             style={{ width: `${Math.min(100, (formData.spd_total / 255) * 100)}%` }}
                           ></div>
                         </div>
@@ -761,9 +761,9 @@ const MonsterFormPage = () => {
                           max="255"
                           disabled={saving}
                         />
-                        <div className="admin-stat-bar">
+                        <div className="progress">
                           <div
-                            className="admin-stat-fill speed"
+                            className="progress-fill speed"
                             style={{ width: `${Math.min(100, (formData.spe_total / 255) * 100)}%` }}
                           ></div>
                         </div>
@@ -989,7 +989,7 @@ const MonsterFormPage = () => {
                           <button
                             type="button"
                             onClick={() => removeMove(index)}
-                            className="admin-button delete"
+                            className="button danger sm"
                             disabled={saving}
                           >
                             <i className="fas fa-times"></i>
@@ -1002,7 +1002,7 @@ const MonsterFormPage = () => {
                   <button
                     type="button"
                     onClick={addMove}
-                    className="admin-button secondary"
+                    className="button secondary"
                     disabled={saving || formData.moveset.length >= 4}
                   >
                     <i className="fas fa-plus"></i> Add Move
@@ -1065,7 +1065,7 @@ const MonsterFormPage = () => {
 
               {/* Appearance Tab */}
               <div className={`admin-form-tab-content ${activeTab === 'appearance' ? 'active' : ''}`}>
-                <div className="admin-form-grid">
+                <div className="reroller-content">
                   {/* Image */}
                   <div className="admin-form-section">
                     <h2 className="admin-form-section-title">Image</h2>
@@ -1085,7 +1085,7 @@ const MonsterFormPage = () => {
                         disabled={saving}
                       />
                       {formData.img_link && (
-                        <div className="admin-form-image-preview">
+                        <div className="image-container medium no-margin">
                           <img
                             src={formData.img_link}
                             alt="Monster preview"
@@ -1112,7 +1112,7 @@ const MonsterFormPage = () => {
                         name="gender"
                         value={formData.gender}
                         onChange={handleChange}
-                        className="admin-form-select"
+                        className="admin-form-input"
                         disabled={saving}
                       >
                         <option value="">Select Gender</option>
@@ -1179,7 +1179,7 @@ const MonsterFormPage = () => {
                         name="nature"
                         value={formData.nature}
                         onChange={handleChange}
-                        className="admin-form-select"
+                        className="admin-form-input"
                         disabled={saving}
                       >
                         <option value="">Select Nature</option>
@@ -1212,7 +1212,7 @@ const MonsterFormPage = () => {
                   <h2 className="admin-form-section-title">Special Characteristics</h2>
 
                   <div className="admin-form-checkboxes">
-                    <div className="admin-form-checkbox">
+                    <div className="logo-link">
                       <input
                         type="checkbox"
                         id="shiny"
@@ -1224,7 +1224,7 @@ const MonsterFormPage = () => {
                       <label htmlFor="shiny">Shiny</label>
                     </div>
 
-                    <div className="admin-form-checkbox">
+                    <div className="logo-link">
                       <input
                         type="checkbox"
                         id="alpha"
@@ -1236,7 +1236,7 @@ const MonsterFormPage = () => {
                       <label htmlFor="alpha">Alpha</label>
                     </div>
 
-                    <div className="admin-form-checkbox">
+                    <div className="logo-link">
                       <input
                         type="checkbox"
                         id="shadow"
@@ -1248,7 +1248,7 @@ const MonsterFormPage = () => {
                       <label htmlFor="shadow">Shadow</label>
                     </div>
 
-                    <div className="admin-form-checkbox">
+                    <div className="logo-link">
                       <input
                         type="checkbox"
                         id="paradox"
@@ -1260,7 +1260,7 @@ const MonsterFormPage = () => {
                       <label htmlFor="paradox">Paradox</label>
                     </div>
 
-                    <div className="admin-form-checkbox">
+                    <div className="logo-link">
                       <input
                         type="checkbox"
                         id="pokerus"
@@ -1346,7 +1346,7 @@ const MonsterFormPage = () => {
 
               {/* Biography Tab */}
               <div className={`admin-form-tab-content ${activeTab === 'biography' ? 'active' : ''}`}>
-                <div className="admin-form-grid">
+                <div className="reroller-content">
                   {/* Biography */}
                   <div className="admin-form-section">
                     <h2 className="admin-form-section-title">Biography</h2>
@@ -1376,7 +1376,7 @@ const MonsterFormPage = () => {
                         name="bio"
                         value={formData.bio}
                         onChange={handleChange}
-                        className="admin-form-textarea"
+                        className="admin-form-input"
                         rows="6"
                         placeholder="Full biography of the monster"
                         disabled={saving}
@@ -1480,14 +1480,14 @@ const MonsterFormPage = () => {
               <div className="admin-form-actions">
                 <Link
                   to="/admin/monsters"
-                  className="admin-button secondary"
+                  className="button secondary"
                   disabled={saving}
                 >
                   Cancel
                 </Link>
                 <button
                   type="submit"
-                  className="admin-button"
+                  className="button primary"
                   disabled={saving}
                 >
                   {saving ? (

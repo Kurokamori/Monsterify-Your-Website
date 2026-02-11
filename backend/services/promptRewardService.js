@@ -1,5 +1,28 @@
 const db = require('../config/db');
 const MonsterRoller = require('../models/MonsterRoller');
+const Monster = require('../models/Monster');
+
+// Available types for random type selection
+const AVAILABLE_TYPES = [
+  'Normal', 'Fire', 'Water', 'Electric', 'Grass', 'Ice',
+  'Fighting', 'Poison', 'Ground', 'Flying', 'Psychic', 'Bug',
+  'Rock', 'Ghost', 'Dragon', 'Dark', 'Steel', 'Fairy'
+];
+
+// Available attributes for random attribute selection
+const AVAILABLE_ATTRIBUTES = ['Vaccine', 'Variable', 'Virus', 'Data', 'Free'];
+
+// Table name mapping for database queries
+const TABLE_NAMES = {
+  pokemon: 'pokemon_monsters',
+  digimon: 'digimon_monsters',
+  yokai: 'yokai_monsters',
+  nexomon: 'nexomon_monsters',
+  pals: 'pals_monsters',
+  fakemon: 'fakemon',
+  finalfantasy: 'finalfantasy_monsters',
+  monsterhunter: 'monsterhunter_monsters'
+};
 
 class PromptRewardService {
   /**
@@ -19,6 +42,9 @@ class PromptRewardService {
         items: [],
         special_items: [],
         monster_rolls: 0,
+        static_monsters: [],
+        semi_random_monsters: [],
+        created_monsters: [],
         bonus_applied: bonusApplied
       };
 
@@ -39,6 +65,16 @@ class PromptRewardService {
         distributedRewards.special_items = [...rewards.special_items];
       }
 
+      // Static monster rewards
+      if (rewards.static_monsters && rewards.static_monsters.length > 0) {
+        distributedRewards.static_monsters = [...rewards.static_monsters];
+      }
+
+      // Semi-random monster rewards
+      if (rewards.semi_random_monsters && rewards.semi_random_monsters.length > 0) {
+        distributedRewards.semi_random_monsters = [...rewards.semi_random_monsters];
+      }
+
       // Quality-based bonuses
       if (qualityScore >= 8 && rewards.bonus_conditions) {
         const bonus = rewards.bonus_conditions;
@@ -57,10 +93,10 @@ class PromptRewardService {
 
       // Manual bonus application
       if (bonusApplied && prompt.bonus_rewards) {
-        const bonusRewards = typeof prompt.bonus_rewards === 'string' 
-          ? JSON.parse(prompt.bonus_rewards) 
+        const bonusRewards = typeof prompt.bonus_rewards === 'string'
+          ? JSON.parse(prompt.bonus_rewards)
           : prompt.bonus_rewards;
-        
+
         if (bonusRewards.levels) {
           distributedRewards.levels += bonusRewards.levels;
         }
@@ -131,9 +167,29 @@ class PromptRewardService {
           await this.addSpecialItemToTrainer(trainerId, specialItem);
         }
 
-        // Handle monster rolls
+        // Handle monster rolls (stored for later claiming)
         if (rewards.monster_rolls > 0) {
           await this.addMonsterRollToTrainer(trainerId, rewards.monster_roll_params);
+        }
+
+        // Handle static monsters - create them immediately
+        if (rewards.static_monsters && rewards.static_monsters.length > 0) {
+          for (const staticMonster of rewards.static_monsters) {
+            const createdMonster = await this.createStaticMonster(trainerId, staticMonster);
+            if (createdMonster) {
+              rewards.created_monsters.push(createdMonster);
+            }
+          }
+        }
+
+        // Handle semi-random monsters - create them immediately with randomized attributes
+        if (rewards.semi_random_monsters && rewards.semi_random_monsters.length > 0) {
+          for (const semiRandomMonster of rewards.semi_random_monsters) {
+            const createdMonster = await this.createSemiRandomMonster(trainerId, semiRandomMonster);
+            if (createdMonster) {
+              rewards.created_monsters.push(createdMonster);
+            }
+          }
         }
 
         // Commit transaction
@@ -303,6 +359,281 @@ class PromptRewardService {
   }
 
   /**
+   * Create a static monster for the trainer (predefined species and level)
+   * @param {number} trainerId - Trainer ID
+   * @param {Object} monsterConfig - Static monster configuration
+   * @returns {Object} Created monster
+   */
+  static async createStaticMonster(trainerId, monsterConfig) {
+    try {
+      const { table, species_id, species_name, level, image_url } = monsterConfig;
+
+      if (!species_name && !species_id) {
+        console.warn('Static monster missing species information:', monsterConfig);
+        return null;
+      }
+
+      // Get the species data from the appropriate table
+      const tableName = TABLE_NAMES[table];
+      if (!tableName) {
+        console.warn('Invalid table for static monster:', table);
+        return null;
+      }
+
+      let speciesData;
+      if (species_id) {
+        speciesData = await db.asyncGet(
+          `SELECT * FROM ${tableName} WHERE id = $1`,
+          [species_id]
+        );
+      } else if (species_name) {
+        speciesData = await db.asyncGet(
+          `SELECT * FROM ${tableName} WHERE name = $1`,
+          [species_name]
+        );
+      }
+
+      if (!speciesData) {
+        console.warn(`Species not found in ${tableName}:`, species_id || species_name);
+        return null;
+      }
+
+      // Extract type information from species data
+      const types = this.extractTypesFromSpecies(speciesData, table);
+      const attribute = speciesData.attribute || null;
+
+      // Build monster data
+      const monsterData = {
+        trainer_id: trainerId,
+        name: speciesData.name,
+        species1: speciesData.name,
+        type1: types[0] || 'Normal',
+        type2: types[1] || null,
+        type3: types[2] || null,
+        type4: types[3] || null,
+        type5: types[4] || null,
+        attribute: attribute,
+        level: level || 1,
+        img_link: image_url || speciesData.image_url || null,
+        date_met: new Date().toISOString().split('T')[0],
+        where_met: 'Prompt Reward'
+      };
+
+      // Create the monster
+      const createdMonster = await Monster.create(monsterData);
+      console.log(`Created static monster ${speciesData.name} (level ${level}) for trainer ${trainerId}`);
+
+      return createdMonster;
+    } catch (error) {
+      console.error('Error creating static monster:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Create a semi-random monster for the trainer (predefined species, randomized attributes)
+   * @param {number} trainerId - Trainer ID
+   * @param {Object} monsterConfig - Semi-random monster configuration
+   * @returns {Object} Created monster
+   */
+  static async createSemiRandomMonster(trainerId, monsterConfig) {
+    try {
+      const {
+        table,
+        species_id,
+        species_name,
+        image_url,
+        allow_fusion,
+        type_mode,
+        fixed_types,
+        types_min,
+        types_max,
+        attribute_mode,
+        fixed_attribute,
+        level_mode,
+        fixed_level,
+        level_min,
+        level_max
+      } = monsterConfig;
+
+      if (!species_name && !species_id) {
+        console.warn('Semi-random monster missing species information:', monsterConfig);
+        return null;
+      }
+
+      // Get the primary species data
+      const tableName = TABLE_NAMES[table];
+      if (!tableName) {
+        console.warn('Invalid table for semi-random monster:', table);
+        return null;
+      }
+
+      let speciesData;
+      if (species_id) {
+        speciesData = await db.asyncGet(
+          `SELECT * FROM ${tableName} WHERE id = $1`,
+          [species_id]
+        );
+      } else if (species_name) {
+        speciesData = await db.asyncGet(
+          `SELECT * FROM ${tableName} WHERE name = $1`,
+          [species_name]
+        );
+      }
+
+      if (!speciesData) {
+        console.warn(`Species not found in ${tableName}:`, species_id || species_name);
+        return null;
+      }
+
+      // Determine species (with optional fusion)
+      let species1 = speciesData.name;
+      let species2 = null;
+      let fusionImageUrl = image_url || speciesData.image_url;
+
+      if (allow_fusion) {
+        // Get a random species for fusion from any enabled table
+        const fusionSpecies = await this.getRandomFusionSpecies(table);
+        if (fusionSpecies) {
+          species2 = fusionSpecies.name;
+        }
+      }
+
+      // Determine types
+      let types = [];
+      if (type_mode === 'fixed' && fixed_types && fixed_types.length > 0) {
+        types = [...fixed_types];
+      } else {
+        // Random types
+        const minTypes = types_min || 1;
+        const maxTypes = types_max || 2;
+        const numTypes = Math.floor(Math.random() * (maxTypes - minTypes + 1)) + minTypes;
+
+        // Shuffle and pick random types
+        const shuffledTypes = [...AVAILABLE_TYPES].sort(() => Math.random() - 0.5);
+        types = shuffledTypes.slice(0, numTypes);
+      }
+
+      // Determine attribute
+      let attribute = null;
+      if (attribute_mode === 'fixed' && fixed_attribute) {
+        attribute = fixed_attribute;
+      } else {
+        // Random attribute
+        attribute = AVAILABLE_ATTRIBUTES[Math.floor(Math.random() * AVAILABLE_ATTRIBUTES.length)];
+      }
+
+      // Determine level
+      let level = 1;
+      if (level_mode === 'fixed') {
+        level = fixed_level || 1;
+      } else {
+        // Random level in range
+        const minLevel = level_min || 1;
+        const maxLevel = level_max || 10;
+        level = Math.floor(Math.random() * (maxLevel - minLevel + 1)) + minLevel;
+      }
+
+      // Build monster data
+      const monsterData = {
+        trainer_id: trainerId,
+        name: species2 ? `${species1}/${species2}` : species1,
+        species1: species1,
+        species2: species2,
+        type1: types[0] || 'Normal',
+        type2: types[1] || null,
+        type3: types[2] || null,
+        type4: types[3] || null,
+        type5: types[4] || null,
+        attribute: attribute,
+        level: level,
+        img_link: fusionImageUrl,
+        date_met: new Date().toISOString().split('T')[0],
+        where_met: 'Prompt Reward'
+      };
+
+      // Create the monster
+      const createdMonster = await Monster.create(monsterData);
+      console.log(`Created semi-random monster ${monsterData.name} (level ${level}) for trainer ${trainerId}`);
+
+      return createdMonster;
+    } catch (error) {
+      console.error('Error creating semi-random monster:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Extract types from species data based on the table type
+   * @param {Object} speciesData - Species data from database
+   * @param {string} table - Table key (pokemon, digimon, etc.)
+   * @returns {Array} Array of types
+   */
+  static extractTypesFromSpecies(speciesData, table) {
+    const types = [];
+
+    switch (table) {
+      case 'pokemon':
+      case 'nexomon':
+        if (speciesData.type_primary) types.push(speciesData.type_primary);
+        if (speciesData.type_secondary) types.push(speciesData.type_secondary);
+        break;
+      case 'digimon':
+        if (speciesData.digimon_type) types.push(speciesData.digimon_type);
+        break;
+      case 'yokai':
+        if (speciesData.tribe) types.push(speciesData.tribe);
+        break;
+      case 'fakemon':
+        if (speciesData.type1) types.push(speciesData.type1);
+        if (speciesData.type2) types.push(speciesData.type2);
+        if (speciesData.type3) types.push(speciesData.type3);
+        if (speciesData.type4) types.push(speciesData.type4);
+        if (speciesData.type5) types.push(speciesData.type5);
+        break;
+      case 'finalfantasy':
+      case 'monsterhunter':
+      case 'pals':
+        // These may not have standard type fields
+        if (speciesData.element) types.push(speciesData.element);
+        break;
+      default:
+        // Try common field names
+        if (speciesData.type) types.push(speciesData.type);
+        if (speciesData.type1) types.push(speciesData.type1);
+        if (speciesData.type_primary) types.push(speciesData.type_primary);
+    }
+
+    return types.filter(t => t); // Remove nulls
+  }
+
+  /**
+   * Get a random species for fusion from any table
+   * @param {string} primaryTable - The primary table to prefer
+   * @returns {Object|null} Random species data
+   */
+  static async getRandomFusionSpecies(primaryTable) {
+    try {
+      // Pick a random table (could be the same or different)
+      const tables = Object.keys(TABLE_NAMES);
+      const randomTable = tables[Math.floor(Math.random() * tables.length)];
+      const tableName = TABLE_NAMES[randomTable];
+
+      // Get a random species from that table
+      const result = await db.asyncGet(`
+        SELECT name, image_url FROM ${tableName}
+        ORDER BY RANDOM()
+        LIMIT 1
+      `);
+
+      return result;
+    } catch (error) {
+      console.error('Error getting random fusion species:', error);
+      return null;
+    }
+  }
+
+  /**
    * Log reward distribution for tracking
    * @param {number} submissionId - Submission ID
    * @param {Object} rewards - Distributed rewards
@@ -464,12 +795,15 @@ class PromptRewardService {
   static async getTotalRewardsGiven(trainerId) {
     try {
       const history = await this.getRewardHistory(trainerId);
-      
+
       const totals = {
         levels: 0,
         coins: 0,
         items: 0,
         monster_rolls: 0,
+        static_monsters: 0,
+        semi_random_monsters: 0,
+        total_monsters_created: 0,
         submissions_rewarded: history.length
       };
 
@@ -479,6 +813,9 @@ class PromptRewardService {
         totals.coins += rewards.coins || 0;
         totals.items += (rewards.items?.length || 0) + (rewards.special_items?.length || 0);
         totals.monster_rolls += rewards.monster_rolls || 0;
+        totals.static_monsters += rewards.static_monsters?.length || 0;
+        totals.semi_random_monsters += rewards.semi_random_monsters?.length || 0;
+        totals.total_monsters_created += rewards.created_monsters?.length || 0;
       }
 
       return totals;

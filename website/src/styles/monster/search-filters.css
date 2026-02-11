@@ -1,0 +1,220 @@
+/* =============================================================================
+   MONSTER SEARCH & FILTERS
+   ============================================================================= */
+
+.monsters-filters {
+  background: var(--hover-background);
+  padding: 1rem;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+}
+
+/* Monster Selector Search */
+.monster-selector-search {
+  position: relative;
+}
+
+.monster-selector-search-input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  padding-right: 2.5rem;
+  border-radius: 8px;
+  border: 1px solid var(--highlight-light);
+  background-color: var(--overlay-medium);
+  color: var(--text-color, var(--text-color));
+  font-size: 0.95rem;
+  transition: all 0.2s ease;
+}
+
+.monster-selector-search-input:focus {
+  outline: none;
+  border-color: var(--accent-color, var(--accent-color));
+  box-shadow: 0 0 0 2px var(--accent-glow);
+}
+
+.monster-selector-search-clear {
+  position: absolute;
+  right: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: var(--text-color, var(--text-color));
+  font-size: 1.25rem;
+  cursor: pointer;
+  opacity: 0.6;
+  transition: opacity 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+}
+
+.monster-selector-search-clear:hover {
+  opacity: 1;
+  background-color: var(--highlight-light);
+}
+
+/* Search Icon */
+.search-icon {
+  color: var(--text-color);
+  left: 1rem;
+  opacity: 0.5;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+/* Filter Rows */
+.search-filters-section {
+  margin-bottom: 20px;
+}
+
+.additional-filters {
+  margin-top: 15px;
+}
+
+.form-row .search-bar {
+  flex: 1;
+  min-width: 200px;
+  position: relative;
+}
+
+.species-search,
+.type-search {
+  flex: 1;
+}
+
+.form-row.toggles {
+  justify-content: flex-start;
+  gap: 30px;
+}
+
+.toggle-filter {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.toggle-filter input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--accent-color);
+  cursor: pointer;
+}
+
+.toggle-label {
+  color: var(--text-color);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.toggle-filter:hover .toggle-label {
+  color: var(--accent-color);
+}
+
+/* =============================================================================
+   RESPONSIVE STYLES
+   ============================================================================= */
+
+/* Tablet screens (768px and below) */
+@media (max-width: 768px) {
+  .monster-search-bar {
+    flex-direction: column;
+  }
+
+  .monster-search-input {
+    width: 100%;
+  }
+
+  .monster-filter-select {
+    flex: 1 1 45%;
+    min-width: 120px;
+  }
+
+  .monsters-filters {
+    padding: 0.75rem;
+  }
+
+  .monster-selector-search-input {
+    padding: 0.625rem 0.875rem;
+    padding-right: 2.25rem;
+    font-size: 0.9rem;
+    border-radius: 6px;
+  }
+
+  .form-row.toggles {
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+
+  .toggle-label {
+    font-size: 13px;
+  }
+
+  .additional-filters {
+    margin-top: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .monsters-filters {
+    padding: 0.5rem;
+    border-radius: 6px;
+  }
+
+  .monster-selector-search-input {
+    padding: 0.5rem 0.75rem;
+    padding-right: 2rem;
+    font-size: 0.85rem;
+    border-radius: 4px;
+  }
+
+  .monster-selector-search-clear {
+    right: 0.5rem;
+    width: 20px;
+    height: 20px;
+    font-size: 1rem;
+  }
+
+  .search-icon {
+    left: 0.75rem;
+    font-size: 0.875rem;
+  }
+
+  .form-row .search-bar {
+    min-width: 100%;
+  }
+
+  .form-row.toggles {
+    flex-direction: column;
+    gap: 12px;
+    align-items: flex-start;
+  }
+
+  .toggle-filter {
+    gap: 6px;
+  }
+
+  .toggle-filter input[type="checkbox"] {
+    width: 14px;
+    height: 14px;
+  }
+
+  .toggle-label {
+    font-size: 12px;
+  }
+
+  .search-filters-section {
+    margin-bottom: 15px;
+  }
+
+  .additional-filters {
+    margin-top: 10px;
+  }
+}

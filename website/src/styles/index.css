@@ -1,23 +1,74 @@
 /* Base styles */
 :root {
+  /* Core colors */
   --background-color: #111319;
   --text-color: #d7ddf3;
   --text-muted: #a0aec0;
+
+  /* Navigation */
   --nav-background: #1e2532;
   --nav-hover: #2b3645;
   --nav-active: #3d4b5d;
-  --accent-color: #d6a339;
-  --accent-hover: #b88a30;
-  --accent-hover-color: #b88a30;
+
+  /* Accent/Gold colors */
+  --accent-color: #c78f15;
+  --accent-hover: #a67617;
+  --accent-light: #ffd666;
+  --accent-muted: #36312f;
+
+  /* UI elements */
   --divider-color: #3d4b5d;
   --border-color: #3d4b5d;
   --card-background: #1e2532;
   --card-background-secondary: #1b1f24;
   --input-background: #2b3645;
+
+  /* Status colors */
   --error-color: #ef4444;
+  --error-dark: #a02626;
+  --error-light: #dc2626;
   --success-color: #10b981;
   --success-dark: #094d3a;
-  --accent-gradient: linear-gradient(90deg, #d6a339, #e74c3c);
+  --success-light: #4caf50;
+  --warning-color: #f59e0b;
+  --warning-dark: #d97706;
+  --blue-color: #3b82f6;
+  --blue-dark: #1e40af;
+  --blue-light: #4299e1;
+
+  --normal-type:   #A8A878;
+  --fire-type:     #db6a19;
+  --water-type:    #405ea7;
+  --electric-type: #d3a01e;
+  --grass-type:    #599c38;
+  --ice-type:      #7ebdbd;
+  --fighting-type: #853530;
+  --poison-type:   #7e4086;
+  --ground-type:   #866b54;
+  --flying-type:   #7787a6;
+  --psychic-type:  #cc4870;
+  --bug-type:      #A8B820;
+  --rock-type:     #69613e;
+  --ghost-type:    #645380;
+  --dragon-type:   #4d26a9;
+  --dark-type:     #38364d;
+  --steel-type:    #7f7fb2;
+  --fairy-type:    #f07691;
+
+  --custom-type: #8b5cf6;
+  --random-type: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #f9ca24);
+  --light-type: #8db8e4;
+  --cosmic-type: #342f3d;
+  
+
+  --vaccine-attribute: #6381ad;
+  --data-attribute: #58aa90;
+  --virus-attribute: #8B4513;
+  --free-attribute: #ab54ba;
+  --variable-attribute: #493ead;
+
+
+  --accent-gradient: linear-gradient(90deg, #c78f15, #e74c3c);
 
   /* Font sizes */
   --font-size-xs: 0.875rem;
@@ -33,6 +84,67 @@
   --sidebar-width: 280px;
   --container-max-width: 1400px;
   --content-padding: 2rem;
+
+  /* Utilities */
+  --radius-xs: 2px;
+  --radius-sm: 4px;
+  --radius: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-2xl: 24px;
+  --radius-full: 9999px;
+
+  /* Shadow Scale */
+  --shadow-1: 0 2px 4px rgba(0,0,0,.1);
+  --shadow-2: 0 5px 15px rgba(0,0,0,.3);
+  --shadow-sm: 0 2px 4px var(--overlay-light);
+  --shadow-md: 0 4px 8px var(--overlay-light);
+  --shadow-lg: 0 8px 16px var(--overlay-medium);
+  --shadow-xl: 0 12px 24px var(--overlay-medium);
+  --shadow-glow: 0 0 20px var(--accent-glow);
+  --shadow-focus: 0 0 0 2px var(--accent-glow);
+
+  /* Transition Presets */
+  --ease: .2s ease;
+  --transition-fast: 0.15s ease;
+  --transition-base: 0.2s ease;
+  --transition-slow: 0.3s ease;
+  --transition-smooth: 0.4s ease;
+
+  /* Spacing Scale */
+  --spacing-xs: 0.25rem;   /* 4px */
+  --spacing-sm: 0.5rem;    /* 8px */
+  --spacing-md: 1rem;      /* 16px */
+  --spacing-lg: 1.5rem;    /* 24px */
+  --spacing-xl: 2rem;      /* 32px */
+  --spacing-2xl: 3rem;     /* 48px */
+  --spacing-3xl: 4rem;     /* 64px */
+
+  /* Alpha overlays */
+  --overlay-light: rgba(0,0,0,.1);
+  --overlay-medium: rgba(0,0,0,.2);
+  --overlay-dark: rgba(0,0,0,.3);
+  --overlay-heavy: rgba(0,0,0,.5);
+  --overlay-solid: rgba(0,0,0,.8);
+  --highlight-light: rgba(255,255,255,.1);
+  --highlight-medium: rgba(255,255,255,.3);
+  --highlight-heavy: rgba(255,255,255,.5);
+  --accent-glow: rgba(214,163,57,.2);
+  --accent-glow-faint: rgba(214,163,57,.1);
+  --accent-glow-soft: rgba(214,163,57,.15);
+  --accent-glow-strong: rgba(214,163,57,.4);
+  --error-glow: rgba(239,68,68,.2);
+  --success-glow: rgba(16,185,129,.2);
+  --warning-glow: rgba(245,158,11,.2);
+  --blue-glow: rgba(59,130,246,.2);
+
+  /* Semantic color aliases */
+  --text-primary: var(--text-color);
+  --text-color-secondary: var(--text-muted);
+  --heading-color: var(--accent-color);
+  --secondary-color: var(--nav-active);
+  --success-hover: #0d9668;
+  --accent-color-rgb: 199, 143, 21;
 }
 
 * {
@@ -76,6 +188,7 @@ button {
 .page-content {
   flex: 1;
   min-width: 0;
+  width: 100%;
 }
 
 

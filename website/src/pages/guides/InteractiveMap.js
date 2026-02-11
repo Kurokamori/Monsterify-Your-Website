@@ -44,7 +44,7 @@ const InteractiveMap = () => {
   };
 
   return (
-    <div className="interactive-map">
+    <div className="area-page">
       <div className="map-header">
         <h1>Interactive World Map</h1>
         <p>Explore the vast world of Dusk and Dawn. Click on a landmass to begin your journey.</p>
@@ -62,7 +62,7 @@ const InteractiveMap = () => {
           {landmasses.map((landmass) => (
             <div
               key={landmass.id}
-              className="landmass-hotspot"
+              className="area-hotspot"
               style={{
                 left: `${landmass.coordinates.x}%`,
                 top: `${landmass.coordinates.y}%`,
@@ -77,14 +77,14 @@ const InteractiveMap = () => {
 
           {hoveredLandmass && (
             <div className="map-tooltip">
-              <div className="tooltip-content">
+              <div className="npc-basic-info">
                 <img 
                   src={hoveredLandmass.image} 
                   alt={hoveredLandmass.name}
                   className="tooltip-image"
                   onError={(e) => handleMapImageError(e, 'map')}
                 />
-                <div className="tooltip-info">
+                <div className="area-card">
                   <h3>{hoveredLandmass.name}</h3>
                   <p>{hoveredLandmass.description}</p>
                 </div>
@@ -100,7 +100,7 @@ const InteractiveMap = () => {
           {landmasses.map((landmass) => (
             <div 
               key={landmass.id} 
-              className="landmass-card"
+              className="area-card"
               onClick={() => handleLandmassClick(landmass)}
             >
               <img 

@@ -265,9 +265,9 @@ const ReferenceHelperPage = () => {
     return (
       <div className="species-info">
         <h4>Species References</h4>
-        <div className={`species-references species-references--${imageSize}`}>
+        <div className={`map-filters species-references--${imageSize}`}>
           {speciesInfo.map((species, index) => (
-            <div key={index} className={`species-reference-item species-reference-item--${imageSize}`}>
+            <div key={index} className={`level-summary species-reference-item--${imageSize}`}>
               <div className="species-name">{species.name}</div>
               <div className="species-image-container">
                 {species.image ? (
@@ -311,12 +311,12 @@ const ReferenceHelperPage = () => {
   }
 
   return (
-    <div className="reference-todo-container">
+    <div className="main-content-container">
       <div className="reference-todo-header">
         <h1>Reference Helper</h1>
         {selectedTrainerData && (
           <button 
-            className="image-size-toggle"
+            className="button secondary toggle no-flex"
             onClick={cycleImageSize}
             title={`Current: ${getImageSizeDisplayName(imageSize)}. Click to cycle.`}
           >
@@ -355,7 +355,7 @@ const ReferenceHelperPage = () => {
             </h3>
           </div>
           
-          <div className="trainer-section">
+          <div className="item-card">
             <table className="monster-table">
               <thead>
                 <tr>
@@ -380,7 +380,7 @@ const ReferenceHelperPage = () => {
                       <td>{monster.attribute}</td>
                       <td>
                         <button 
-                          className="show-references-button"
+                          className="button secondary sm"
                           onClick={() => toggleMonsterExpanded(monster.id)}
                         >
                           {expandedMonsters[monster.id] ? 'Hide References' : 'Show References'}

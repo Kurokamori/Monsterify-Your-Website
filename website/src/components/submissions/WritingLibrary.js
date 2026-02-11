@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import submissionService from '../../services/submissionService';
 import LoadingSpinner from '../common/LoadingSpinner';
 import ErrorMessage from '../common/ErrorMessage';
+import MatureContentFilter from './MatureContentFilter';
+import AutocompleteInput from '../common/AutocompleteInput';
 
 
 // Strip markdown formatting and return first ~40 words with ellipsis
@@ -54,21 +56,25 @@ const WritingLibrary = () => {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [contentTypeFilter, setContentTypeFilter] = useState('all');
-  const [tagFilter, setTagFilter] = useState('');
+  const [tagFilters, setTagFilters] = useState([]);
+  const [tagInputValue, setTagInputValue] = useState('');
   const [availableTags, setAvailableTags] = useState([]);
   const [sortBy, setSortBy] = useState('newest');
   const [showBooksOnly, setShowBooksOnly] = useState(false);
-  const [viewingBook, setViewingBook] = useState(null);
-  const [bookChapters, setBookChapters] = useState([]);
-  const [loadingChapters, setLoadingChapters] = useState(false);
+  const [showMature, setShowMature] = useState(false);
+  const [matureFilters, setMatureFilters] = useState({
+    gore: true,
+    nsfw_light: true,
+    nsfw_heavy: true,
+    triggering: true,
+    intense_violence: true
+  });
 
   // Fetch writings
   useEffect(() => {
-    if (!viewingBook) {
-      fetchWritings();
-    }
+    fetchWritings();
     fetchTags();
-  }, [page, contentTypeFilter, tagFilter, sortBy, showBooksOnly, viewingBook]);
+  }, [page, contentTypeFilter, tagFilters, sortBy, showBooksOnly, showMature, matureFilters]);
 
   const fetchWritings = async () => {
     try {
@@ -77,15 +83,16 @@ const WritingLibrary = () => {
       const params = {
         page,
         limit: 12,
-        sort: sortBy
+        sort: sortBy,
+        showMature
       };
 
       if (contentTypeFilter !== 'all') {
         params.contentType = contentTypeFilter;
       }
 
-      if (tagFilter) {
-        params.tag = tagFilter;
+      if (tagFilters.length > 0) {
+        params.tags = tagFilters.join(',');
       }
 
       // Filter by books only or exclude chapters
@@ -94,6 +101,10 @@ const WritingLibrary = () => {
       } else {
         // By default, hide chapters (they should be viewed within their books)
         params.excludeChapters = true;
+      }
+
+      if (showMature) {
+        params.matureFilters = JSON.stringify(matureFilters);
       }
 
       const response = await submissionService.getWritingLibrary(params);
@@ -109,20 +120,6 @@ const WritingLibrary = () => {
     }
   };
 
-  // Fetch book chapters
-  const fetchBookChapters = async (bookId) => {
-    try {
-      setLoadingChapters(true);
-      const response = await submissionService.getBookChapters(bookId);
-      setBookChapters(response.chapters || []);
-    } catch (err) {
-      console.error('Error fetching book chapters:', err);
-      setError('Failed to load chapters. Please try again.');
-    } finally {
-      setLoadingChapters(false);
-    }
-  };
-
   const fetchTags = async () => {
     try {
       const response = await submissionService.getSubmissionTags();
@@ -134,24 +131,7 @@ const WritingLibrary = () => {
 
   // Handle writing click
   const handleWritingClick = (writing) => {
-    // If it's a book, show chapters view
-    if (writing.is_book) {
-      setViewingBook(writing);
-      fetchBookChapters(writing.id);
-    } else {
-      navigate(`/library/${writing.id}`);
-    }
-  };
-
-  // Handle back from book view
-  const handleBackFromBook = () => {
-    setViewingBook(null);
-    setBookChapters([]);
-  };
-
-  // Handle chapter click
-  const handleChapterClick = (chapter) => {
-    navigate(`/library/${chapter.id}`);
+    navigate(`/library/${writing.id}`);
   };
 
   // Handle like
@@ -218,9 +198,40 @@ const WritingLibrary = () => {
   // Reset filters
   const resetFilters = () => {
     setContentTypeFilter('all');
-    setTagFilter('');
+    setTagFilters([]);
+    setTagInputValue('');
     setSortBy('newest');
+    setShowBooksOnly(false);
+    setShowMature(false);
+    setMatureFilters({
+      gore: true,
+      nsfw_light: true,
+      nsfw_heavy: true,
+      triggering: true,
+      intense_violence: true
+    });
     setPage(1);
+  };
+
+  // Handle tag selection from autocomplete
+  const handleTagSelect = (option) => {
+    const tagName = option.name;
+    if (tagName && !tagFilters.includes(tagName)) {
+      setTagFilters(prev => [...prev, tagName]);
+      setPage(1);
+    }
+    setTagInputValue('');
+  };
+
+  // Handle tag removal
+  const handleRemoveTag = (tagToRemove) => {
+    setTagFilters(prev => prev.filter(tag => tag !== tagToRemove));
+    setPage(1);
+  };
+
+  // Handle mature filter change
+  const handleMatureFilterChange = (type, value) => {
+    setMatureFilters(prev => ({ ...prev, [type]: value }));
   };
 
   // Format word count
@@ -325,7 +336,7 @@ const WritingLibrary = () => {
     <div className="gallery-container library-container">
       {/* Filters */}
       <div className="gallery-filters">
-        <div className="filter-group">
+        <div className="set-item">
           <label htmlFor="content-type-filter">Content Type:</label>
           <select
             id="content-type-filter"
@@ -342,21 +353,20 @@ const WritingLibrary = () => {
           </select>
         </div>
 
-        <div className="filter-group">
+        <div className="set-item">
           <label htmlFor="tag-filter">Tag:</label>
-          <select
+          <AutocompleteInput
             id="tag-filter"
-            value={tagFilter}
-            onChange={(e) => setTagFilter(e.target.value)}
-          >
-            <option value="">All Tags</option>
-            {availableTags.map(tag => (
-              <option key={tag} value={tag}>{tag}</option>
-            ))}
-          </select>
+            name="tag-filter"
+            value={tagInputValue}
+            onChange={(e) => setTagInputValue(e.target.value)}
+            options={Array.isArray(availableTags) ? availableTags.filter(tag => !tagFilters.includes(tag)) : []}
+            placeholder="Search tags..."
+            onSelect={handleTagSelect}
+          />
         </div>
 
-        <div className="filter-group">
+        <div className="set-item">
           <label htmlFor="sort-by">Sort By:</label>
           <select
             id="sort-by"
@@ -370,7 +380,7 @@ const WritingLibrary = () => {
           </select>
         </div>
 
-        <div className="filter-group filter-checkbox">
+        <div className="set-item logo-link">
           <label className="checkbox-label">
             <input
               type="checkbox"
@@ -381,15 +391,22 @@ const WritingLibrary = () => {
           </label>
         </div>
 
+        <MatureContentFilter
+          showMature={showMature}
+          onShowMatureChange={setShowMature}
+          activeFilters={matureFilters}
+          onFilterChange={handleMatureFilterChange}
+        />
+
         <div className="filter-actions">
           <button
-            className="filter-button apply"
+            className="button filter apply"
             onClick={applyFilters}
           >
             Apply Filters
           </button>
           <button
-            className="filter-button reset"
+            className="button filter reset"
             onClick={resetFilters}
           >
             Reset
@@ -397,83 +414,38 @@ const WritingLibrary = () => {
         </div>
       </div>
 
-      {/* Book View */}
-      {viewingBook && (
-        <div className="book-view">
-          <div className="book-view-header">
-            <button className="btn-back" onClick={handleBackFromBook}>
-              <i className="fas fa-arrow-left"></i> Back to Library
-            </button>
-            <div className="book-view-info">
-              <div className="book-view-cover">
-                <img
-                  src={viewingBook.cover_image_url || '/images/default_book.png'}
-                  alt={viewingBook.title}
-                  onError={(e) => {
-                    e.target.onerror = null;
-                    e.target.src = '/images/default_book.png';
-                  }}
-                />
-              </div>
-              <div className="book-view-details">
-                <h2>{viewingBook.title}</h2>
-                <p className="book-author">By {viewingBook.user?.display_name || viewingBook.display_name || viewingBook.username || 'Unknown'}</p>
-                {viewingBook.description && (
-                  <p className="book-description">{viewingBook.description}</p>
-                )}
-                <div className="book-stats">
-                  <span className="book-chapter-count">
-                    <i className="fas fa-book-open"></i> {bookChapters.length} Chapters
-                  </span>
-                </div>
-              </div>
-            </div>
+      {/* Selected Tags Row */}
+      {tagFilters.length > 0 && (
+        <div className="selected-tags-row">
+          <span className="selected-tags-label">Active Tags:</span>
+          <div className="selected-tags-list">
+            {tagFilters.map(tag => (
+              <span key={tag} className="selected-tag">
+                {tag}
+                <button
+                  type="button"
+                  className="selected-tag-remove"
+                  onClick={() => handleRemoveTag(tag)}
+                  aria-label={`Remove ${tag} tag`}
+                >
+                  <i className="fas fa-times"></i>
+                </button>
+              </span>
+            ))}
           </div>
-
-          {loadingChapters ? (
-            <LoadingSpinner message="Loading chapters..." />
-          ) : (
-            <div className="chapters-list">
-              <h3>Chapters</h3>
-              {bookChapters.length === 0 ? (
-                <p className="no-chapters">No chapters have been added to this book yet.</p>
-              ) : (
-                <div className="chapters-grid">
-                  {bookChapters.map((chapter, index) => (
-                    <div
-                      key={chapter.id}
-                      className="chapter-item"
-                      onClick={() => handleChapterClick(chapter)}
-                    >
-                      <div className="chapter-number">
-                        Chapter {chapter.chapter_number || index + 1}
-                      </div>
-                      <div className="chapter-title">{chapter.title}</div>
-                      {chapter.word_count && (
-                        <div className="chapter-word-count">
-                          {formatWordCount(chapter.word_count)}
-                        </div>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          )}
         </div>
       )}
 
       {/* Library Grid */}
-      {!viewingBook && (
-        <div className="gallery-grid library-grid">
+      <div className="town-places library-grid">
           {displayWritings.map(writing => (
             <div
               key={writing.id}
-              className={`gallery-item library-item ${writing.is_book ? 'is-book' : ''}`}
+              className={`gallery-item library-item${writing.is_book ? 'is-book' : ''}`}
               onClick={() => handleWritingClick(writing)}
             >
               {writing.cover_image_url ? (
-                <div className="gallery-item-image-container library-item-cover-container">
+                <div className="image-container library-item-cover-container">
                   <img
                     src={writing.cover_image_url}
                     alt={writing.title}
@@ -498,8 +470,8 @@ const WritingLibrary = () => {
                   <div className="library-item-text-cover-icon">
                     <i className={`fas ${writing.is_book ? 'fa-book' : 'fa-feather-alt'}`}></i>
                   </div>
-                  <h4 className="library-item-text-cover-title">{writing.title}</h4>
-                  <p className="library-item-text-cover-author">
+                  <h4 className="gallery-item-title">{writing.title}</h4>
+                  <p className="gallery-item-artist">
                     By {writing.user?.display_name || writing.display_name || writing.username || 'Unknown'}
                   </p>
                   {(writing.description || writing.content_preview) && (
@@ -548,13 +520,12 @@ const WritingLibrary = () => {
             </div>
           ))}
         </div>
-      )}
 
       {/* Pagination */}
-      {!viewingBook && totalPages > 1 && (
-        <div className="gallery-pagination">
+      {totalPages > 1 && (
+        <div className="type-tags fw">
           <button
-            className="pagination-button"
+            className="button secondary"
             onClick={() => handlePageChange(page - 1)}
             disabled={page === 1}
           >
@@ -566,7 +537,7 @@ const WritingLibrary = () => {
           </div>
 
           <button
-            className="pagination-button"
+            className="button secondary"
             onClick={() => handlePageChange(page + 1)}
             disabled={page === totalPages}
           >

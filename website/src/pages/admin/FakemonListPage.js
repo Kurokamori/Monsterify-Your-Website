@@ -160,7 +160,7 @@ const FakemonListPage = () => {
       <button
         key="first"
         onClick={() => handlePageChange(1)}
-        className={`admin-pagination-button ${currentPage === 1 ? 'active' : ''}`}
+        className={`button secondary ${currentPage === 1 ? 'active' : ''}`}
         disabled={currentPage === 1}
       >
         1
@@ -182,7 +182,7 @@ const FakemonListPage = () => {
         <button
           key={i}
           onClick={() => handlePageChange(i)}
-          className={`admin-pagination-button ${currentPage === i ? 'active' : ''}`}
+          className={`button secondary ${currentPage === i ? 'active' : ''}`}
         >
           {i}
         </button>
@@ -202,7 +202,7 @@ const FakemonListPage = () => {
         <button
           key="last"
           onClick={() => handlePageChange(totalPages)}
-          className={`admin-pagination-button ${currentPage === totalPages ? 'active' : ''}`}
+          className={`button secondary ${currentPage === totalPages ? 'active' : ''}`}
           disabled={currentPage === totalPages}
         >
           {totalPages}
@@ -225,34 +225,34 @@ const FakemonListPage = () => {
 
         {/* Success Message */}
         {successMessage && (
-          <div className="admin-alert success">
+          <div className="alert success">
             <i className="fas fa-check-circle"></i> {successMessage}
           </div>
         )}
 
         {/* Error Message */}
         {error && (
-          <div className="admin-alert error">
+          <div className="alert error">
             <i className="fas fa-exclamation-circle"></i> {error}
           </div>
         )}
 
         {/* Action Buttons */}
         <div className="admin-actions">
-          <Link to="/admin" className="admin-button secondary">
+          <Link to="/admin" className="button secondary">
             <i className="fas fa-arrow-left"></i> Back to Dashboard
           </Link>
-          <Link to="/admin/fakemon/add" className="admin-button">
+          <Link to="/admin/fakemon/add" className="button primary">
             <i className="fas fa-plus"></i> Add New Fakemon
           </Link>
-          <Link to="/admin/fakemon/mass-add" className="admin-button">
+          <Link to="/admin/fakemon/mass-add" className="button primary">
             <i className="fas fa-images"></i> Mass Addition
           </Link>
         </div>
 
         {/* Search and Filter */}
         <div className="admin-filters">
-          <form onSubmit={handleSearch} className="admin-search-form">
+          <form onSubmit={handleSearch} className="tree-header">
             <input
               type="text"
               placeholder="Search fakemon..."
@@ -260,12 +260,12 @@ const FakemonListPage = () => {
               onChange={(e) => setSearchTerm(e.target.value)}
               className="admin-search-input"
             />
-            <button type="submit" className="admin-button">
+            <button type="submit" className="button primary">
               <i className="fas fa-search"></i> Search
             </button>
           </form>
 
-          <div className="admin-filter-group">
+          <div className="form-input">
             <label htmlFor="typeFilter" className="admin-filter-label">Filter by Type:</label>
             <select
               id="typeFilter"
@@ -321,7 +321,7 @@ const FakemonListPage = () => {
                         <td>{mon.name}</td>
                         <td className="fakemon-types-cell">
                           {mon.types.map(type => (
-                            <span key={type} className={`fakemon-type type-badge type-${type.toLowerCase()}`}>
+                            <span key={type} className={`fakemon-type badge type-${type.toLowerCase()}`}>
                               {type}
                             </span>
                           ))}
@@ -330,7 +330,7 @@ const FakemonListPage = () => {
                         <td className="admin-actions-cell">
                           <Link
                             to={`/fakedex/${mon.number}`}
-                            className="admin-action-button view"
+                            className="button secondary sm"
                             title="View Fakemon"
                             target="_blank"
                             rel="noopener noreferrer"
@@ -339,14 +339,14 @@ const FakemonListPage = () => {
                           </Link>
                           <Link
                             to={`/admin/fakemon/edit/${mon.number}`}
-                            className="admin-action-button edit"
+                            className="button info sm"
                             title="Edit Fakemon"
                           >
                             <i className="fas fa-edit"></i>
                           </Link>
                           <button
                             onClick={() => openDeleteModal(mon)}
-                            className="admin-action-button delete"
+                            className="button danger sm"
                             title="Delete Fakemon"
                           >
                             <i className="fas fa-trash-alt"></i>
@@ -365,7 +365,7 @@ const FakemonListPage = () => {
                 <button
                   onClick={() => handlePageChange(currentPage - 1)}
                   disabled={currentPage === 1}
-                  className="admin-pagination-button"
+                  className="button secondary sm"
                 >
                   <i className="fas fa-chevron-left"></i>
                 </button>
@@ -375,7 +375,7 @@ const FakemonListPage = () => {
                 <button
                   onClick={() => handlePageChange(currentPage + 1)}
                   disabled={currentPage === totalPages}
-                  className="admin-pagination-button"
+                  className="button secondary sm"
                 >
                   <i className="fas fa-chevron-right"></i>
                 </button>
@@ -403,13 +403,13 @@ const FakemonListPage = () => {
             <div className="admin-modal-footer">
               <button
                 onClick={closeDeleteModal}
-                className="admin-button secondary"
+                className="button secondary"
               >
                 Cancel
               </button>
               <button
                 onClick={handleDeleteFakemon}
-                className="admin-button delete"
+                className="button danger"
               >
                 Delete Fakemon
               </button>

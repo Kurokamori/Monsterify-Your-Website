@@ -4,7 +4,6 @@ import LoadingSpinner from '../../../components/common/LoadingSpinner';
 import ErrorMessage from '../../../components/common/ErrorMessage';
 import Modal from '../../../components/common/Modal';
 import api from '../../../services/api';
-import '../../../styles/ShopStyles.css';
 const Shop = () => {
   const { currentUser } = useAuth();
   
@@ -249,7 +248,7 @@ const Shop = () => {
         <div className="location-icon-large">
           <i className="fas fa-store"></i>
         </div>
-        <div className="location-title">
+        <div className="no-adventures">
           <h2>Shop</h2>
           <p>Purchase items for your adventures</p>
         </div>
@@ -267,7 +266,7 @@ const Shop = () => {
           {displayCategories.map((category) => (
             <button
               key={category.id}
-              className={`category-button ${selectedCategory === category.id ? 'active' : ''}`}
+              className={`button filter ${selectedCategory === category.id ? 'active' : ''}`}
               onClick={() => setSelectedCategory(category.id)}
             >
               {category.name}
@@ -277,41 +276,41 @@ const Shop = () => {
 
         {/* Berry filters - only show when berries category is selected */}
         {(selectedCategory === 'berries' || true) && (
-          <div className="berry-filters" style={{border: '2px solid red', background: 'rgba(255,0,0,0.1)'}}>
+          <div className="berry-filters">
             <h4>Filter Berries by Type (stackable) - Debug: {selectedCategory}</h4>
-            <div className="filter-buttons">
+            <div className="type-tags fw">
               <button
-                className={`filter-button ${berryFilters.type ? 'active' : ''}`}
+                className={`button filter ${berryFilters.type ? 'active' : ''}`}
                 onClick={() => toggleBerryFilter('type')}
               >
                 Type
               </button>
               <button
-                className={`filter-button ${berryFilters.species ? 'active' : ''}`}
+                className={`button filter ${berryFilters.species ? 'active' : ''}`}
                 onClick={() => toggleBerryFilter('species')}
               >
                 Species
               </button>
               <button
-                className={`filter-button ${berryFilters.randomize ? 'active' : ''}`}
+                className={`button filter ${berryFilters.randomize ? 'active' : ''}`}
                 onClick={() => toggleBerryFilter('randomize')}
               >
                 Randomize
               </button>
               <button
-                className={`filter-button ${berryFilters.remove ? 'active' : ''}`}
+                className={`button filter ${berryFilters.remove ? 'active' : ''}`}
                 onClick={() => toggleBerryFilter('remove')}
               >
                 Remove
               </button>
               <button
-                className={`filter-button ${berryFilters.misc ? 'active' : ''}`}
+                className={`button filter ${berryFilters.misc ? 'active' : ''}`}
                 onClick={() => toggleBerryFilter('misc')}
               >
                 Misc
               </button>
               <button
-                className="filter-button clear"
+                className="button filter reset"
                 onClick={() => setBerryFilters({
                   type: false,
                   species: false,
@@ -326,9 +325,9 @@ const Shop = () => {
           </div>
         )}
 
-        <div className="shop-items-grid">
+        <div className="town-places">
           {displayItems.map((item) => (
-            <div className="shop-item-card" key={item.id}>
+            <div className="guide-card" key={item.id}>
               <div className="item-image-container">
                 <img
                   src={item.image_path}
@@ -348,7 +347,7 @@ const Shop = () => {
                   <span className="price-amount">{item.price} <i className="fas fa-coins"></i></span>
                 </div>
                 <button 
-                  className="buy-button"
+                  className="button primary"
                   onClick={() => handleBuyClick(item)}
                   disabled={item.stock <= 0}
                 >
@@ -376,7 +375,7 @@ const Shop = () => {
               The item(s) have been added to your inventory.
             </p>
             <button 
-              className="modal-button primary"
+              className="button primary"
               onClick={closeBuyModal}
             >
               Close
@@ -411,7 +410,7 @@ const Shop = () => {
                     <label htmlFor="quantity">Quantity:</label>
                     <div className="quantity-controls">
                       <button 
-                        className="quantity-button"
+                        className="button icon"
                         onClick={() => setQuantity(Math.max(1, quantity - 1))}
                       >
                         <i className="fas fa-minus"></i>
@@ -425,7 +424,7 @@ const Shop = () => {
                         onChange={(e) => setQuantity(Math.min(selectedItem.stock, Math.max(1, parseInt(e.target.value) || 1)))}
                       />
                       <button 
-                        className="quantity-button"
+                        className="button icon"
                         onClick={() => setQuantity(Math.min(selectedItem.stock, quantity + 1))}
                       >
                         <i className="fas fa-plus"></i>
@@ -464,13 +463,13 @@ const Shop = () => {
                 
                 <div className="purchase-actions">
                   <button 
-                    className="modal-button secondary"
+                    className="button secondary"
                     onClick={closeBuyModal}
                   >
                     Cancel
                   </button>
                   <button 
-                    className="modal-button primary"
+                    className="button primary"
                     onClick={handleBuy}
                     disabled={loading}
                   >

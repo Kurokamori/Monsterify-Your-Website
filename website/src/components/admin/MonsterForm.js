@@ -292,12 +292,12 @@ const MonsterForm = ({ monster, personId, position, onSave, onCancel }) => {
   return (
     <div className="monster-form-overlay">
       <div className="monster-form-modal">
-        <div className="modal-header">
+        <div className="tree-header">
           <h3>
             <i className="fas fa-dragon"></i>
             {monster ? 'Edit Monster' : 'Add New Monster'}
           </h3>
-          <button className="close-button" onClick={onCancel}>×</button>
+          <button className="button close" onClick={onCancel}>×</button>
         </div>
 
         <form onSubmit={handleSubmit} className="monster-form">
@@ -317,7 +317,7 @@ const MonsterForm = ({ monster, personId, position, onSave, onCancel }) => {
                     name="name"
                     value={formData.name}
                     onChange={handleInputChange}
-                    className="form-control"
+                    className="form-input"
                     placeholder="Enter monster name"
                     required
                   />
@@ -330,7 +330,7 @@ const MonsterForm = ({ monster, personId, position, onSave, onCancel }) => {
                     name="position"
                     value={formData.position}
                     onChange={handleInputChange}
-                    className="form-control"
+                    className="form-input"
                   >
                     <option value={1}>Position 1</option>
                     <option value={2}>Position 2</option>
@@ -348,7 +348,7 @@ const MonsterForm = ({ monster, personId, position, onSave, onCancel }) => {
                   name="image"
                   value={formData.image}
                   onChange={handleInputChange}
-                  className="form-control"
+                  className="form-input"
                   placeholder="https://example.com/monster-image.jpg"
                 />
               </div>
@@ -374,7 +374,7 @@ const MonsterForm = ({ monster, personId, position, onSave, onCancel }) => {
                       onChange={handleInputChange}
                     />
                     <div 
-                      className="attribute-card"
+                      className="ability-pill"
                       style={{ borderColor: attr.color }}
                     >
                       <i className={attr.icon} style={{ color: attr.color }}></i>
@@ -396,13 +396,13 @@ const MonsterForm = ({ monster, personId, position, onSave, onCancel }) => {
                   type="text"
                   value={newSpecies}
                   onChange={(e) => setNewSpecies(e.target.value)}
-                  className="form-control"
+                  className="form-input"
                   placeholder="Enter species name"
                   onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddSpecies())}
                 />
                 <button
                   type="button"
-                  className="btn btn-sm btn-primary"
+                  className="button primary sm"
                   onClick={handleAddSpecies}
                   disabled={formData.species.length >= 3}
                 >
@@ -441,7 +441,7 @@ const MonsterForm = ({ monster, personId, position, onSave, onCancel }) => {
                       <button
                         key={type}
                         type="button"
-                        className={`type-btn ${formData.types.includes(type) ? 'selected' : ''}`}
+                        className={`type-btn${formData.types.includes(type) ? 'selected' : ''}`}
                         style={{ 
                           backgroundColor: formData.types.includes(type) ? getTypeColor(type) : '#f8f9fa',
                           color: formData.types.includes(type) ? 'white' : '#333'
@@ -465,13 +465,13 @@ const MonsterForm = ({ monster, personId, position, onSave, onCancel }) => {
                       type="text"
                       value={newType}
                       onChange={(e) => setNewType(e.target.value)}
-                      className="form-control"
+                      className="form-input"
                       placeholder="Enter custom type"
                       onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddCustomType())}
                     />
                     <button
                       type="button"
-                      className="btn btn-sm btn-primary"
+                      className="button primary sm"
                       onClick={handleAddCustomType}
                       disabled={formData.types.length >= 5}
                     >
@@ -507,7 +507,7 @@ const MonsterForm = ({ monster, personId, position, onSave, onCancel }) => {
           </div>
 
           {error && (
-            <div className="alert alert-danger">
+            <div className="alert error">
               <i className="fas fa-exclamation-triangle"></i>
               {error}
             </div>
@@ -516,7 +516,7 @@ const MonsterForm = ({ monster, personId, position, onSave, onCancel }) => {
           <div className="form-actions">
             <button
               type="button"
-              className="btn btn-secondary"
+              className="button secondary"
               onClick={onCancel}
               disabled={loading}
             >
@@ -524,7 +524,7 @@ const MonsterForm = ({ monster, personId, position, onSave, onCancel }) => {
             </button>
             <button
               type="submit"
-              className="btn btn-primary"
+              className="button primary"
               disabled={loading}
             >
               {loading ? (

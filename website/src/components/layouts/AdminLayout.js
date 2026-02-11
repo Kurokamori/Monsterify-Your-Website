@@ -33,7 +33,7 @@ const AdminLayout = ({ children }) => {
           </div>
         </div>
 
-        <nav className="admin-nav">
+        <nav className="task-steps">
           <ul>
             {/* Return to Site */}
             <li className="return-to-site">
@@ -162,7 +162,7 @@ const AdminLayout = ({ children }) => {
         </nav>
 
         <div className="admin-sidebar-footer">
-          <button className="admin-logout-button" onClick={handleLogout}>
+          <button className="button danger" onClick={handleLogout}>
             <i className="fas fa-sign-out-alt"></i> Logout
           </button>
         </div>

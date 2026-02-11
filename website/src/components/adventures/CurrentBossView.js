@@ -72,7 +72,7 @@ const CurrentBossView = () => {
   if (!bossData || !bossData.boss) {
     return (
       <div className="current-boss-view">
-        <div className="no-boss-message">
+        <div className="no-leaderboard">
           <h3>No Active Boss</h3>
           <p>There is currently no active boss battle. Check back later!</p>
         </div>
@@ -86,7 +86,7 @@ const CurrentBossView = () => {
     <div className="current-boss-view">
       <div className="boss-header">
         <h2>Current Boss Battle</h2>
-        <Link to="/boss" className="view-full-button">
+        <Link to="/boss" className="button primary">
           View Full Details
         </Link>
       </div>
@@ -120,20 +120,20 @@ const CurrentBossView = () => {
             )}
             
             <div className="boss-stats">
-              <div className="boss-stat">
+              <div className="set-item">
                 <span className="stat-label">Status:</span>
                 <span className={`stat-value status-${boss.status}`}>
                   {boss.status.charAt(0).toUpperCase() + boss.status.slice(1)}
                 </span>
               </div>
               
-              <div className="boss-stat">
+              <div className="set-item">
                 <span className="stat-label">Month:</span>
                 <span className="stat-value">{boss.month}/{boss.year}</span>
               </div>
               
               {boss.start_date && (
-                <div className="boss-stat">
+                <div className="set-item">
                   <span className="stat-label">Started:</span>
                   <span className="stat-value">{formatDate(boss.start_date)}</span>
                 </div>
@@ -146,9 +146,9 @@ const CurrentBossView = () => {
                 <span>Health</span>
                 <span>{boss.current_hp.toLocaleString()} / {boss.total_hp.toLocaleString()}</span>
               </div>
-              <div className="health-bar-container">
-                <div 
-                  className="health-bar"
+              <div className="progress lg">
+                <div
+                  className="progress-fill"
                   style={{
                     width: `${boss.healthPercentage}%`,
                     backgroundColor: getHealthBarColor(boss.healthPercentage)
@@ -188,10 +188,10 @@ const CurrentBossView = () => {
       </div>
 
       <div className="boss-actions">
-        <Link to="/submissions/art" className="action-button primary">
+        <Link to="/submissions/art" className="button primary">
           <i className="fas fa-palette"></i> Submit Art to Deal Damage
         </Link>
-        <Link to="/boss" className="action-button secondary">
+        <Link to="/boss" className="button secondary">
           <i className="fas fa-info-circle"></i> View Full Boss Details
         </Link>
       </div>

@@ -145,9 +145,9 @@ const YokaiMonsterFormPage = () => {
         <h1>{isEditMode ? 'Edit Yokai Monster' : 'Add Yokai Monster'}</h1>
       </div>
 
-      <div className="admin-form-container">
-        <form onSubmit={handleSubmit} className="admin-form">
-          <div className="admin-form-grid">
+      <div className="bulk-monster-add-form">
+        <form onSubmit={handleSubmit} className="reroller-content">
+          <div className="reroller-content">
             <div className="admin-form-column">
               <FormInput
                 label="Name"
@@ -226,18 +226,19 @@ const YokaiMonsterFormPage = () => {
           {formData.image_url && (
             <div className="admin-form-preview">
               <h3>Image Preview</h3>
-              <img
-                src={formData.image_url}
-                alt={formData.name}
-                className="admin-form-image-preview"
-              />
+              <div className="image-container medium no-margin">
+                <img
+                  src={formData.image_url}
+                  alt={formData.name}
+                />
+              </div>
             </div>
           )}
 
           <div className="admin-form-actions">
             <button
               type="button"
-              className="admin-button secondary"
+              className="button secondary"
               onClick={handleCancel}
               disabled={submitting}
             >
@@ -245,7 +246,7 @@ const YokaiMonsterFormPage = () => {
             </button>
             <button
               type="submit"
-              className="admin-button primary"
+              className="button primary"
               disabled={submitting}
             >
               {submitting ? (

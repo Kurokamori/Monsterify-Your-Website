@@ -86,7 +86,7 @@ const LoginPage = () => {
         <form className="auth-form" onSubmit={handleSubmit}>
           <div className="form-group">
             <label htmlFor="username">Username</label>
-            <div className="input-with-icon">
+            <div className="form-input">
               <i className="fas fa-user"></i>
               <input
                 type="text"
@@ -101,7 +101,7 @@ const LoginPage = () => {
 
           <div className="form-group">
             <label htmlFor="password">Password</label>
-            <div className="input-with-icon">
+            <div className="form-input">
               <i className="fas fa-lock"></i>
               <input
                 type="password"
@@ -114,8 +114,8 @@ const LoginPage = () => {
             </div>
           </div>
 
-          <div className="form-options">
-            <div className="checkbox-group">
+          <div className="option-row">
+            <div className="event-date">
               <input
                 type="checkbox"
                 id="remember"
@@ -125,14 +125,14 @@ const LoginPage = () => {
               />
               <label htmlFor="remember">Remember me</label>
             </div>
-            <Link to="/forgot-password" className="forgot-password">
+            <Link to="/forgot-password" className="auth-link">
               Forgot password?
             </Link>
           </div>
 
           <button
             type="submit"
-            className="auth-button"
+            className="button primary lg block"
             disabled={loading}
           >
             {loading ? (

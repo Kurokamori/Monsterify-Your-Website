@@ -78,7 +78,7 @@ const KnownPeople = ({ faction, trainerId, standing, onStandingChange }) => {
   };
 
   if (loading) {
-    return <div className="known-people-loading">Loading faction people...</div>;
+    return <div className="known-people-empty">Loading faction people...</div>;
   }
 
   if (!people || people.length === 0) {
@@ -93,17 +93,17 @@ const KnownPeople = ({ faction, trainerId, standing, onStandingChange }) => {
   return (
     <div className="known-people">
       <h3>Known People</h3>
-      <div className="people-grid">
+      <div className="button">
         {people.map(person => {
           const displayInfo = getPersonDisplayInfo(person);
           
           return (
             <div
               key={person.id}
-              className={`person-card ${displayInfo.canClick ? 'clickable' : 'locked'} ${person.has_met ? 'met' : person.can_meet ? 'can-meet' : 'locked'}`}
+              className={`person-card ${displayInfo.canClick ? 'clickable' : 'locked'}${person.has_met ? 'met' : person.can_meet ? 'can-meet' : 'locked'}`}
               onClick={() => displayInfo.canClick && handlePersonClick(person)}
             >
-              <div className="person-image">
+              <div className="image-container">
                 <img src={displayInfo.image} alt={displayInfo.name} />
                 {person.has_met && (
                   <div className="met-badge">
@@ -111,7 +111,7 @@ const KnownPeople = ({ faction, trainerId, standing, onStandingChange }) => {
                   </div>
                 )}
                 {!person.has_met && person.can_meet && (
-                  <div className="can-meet-badge">
+                  <div className="met-badge">
                     <i className="fas fa-handshake"></i>
                   </div>
                 )}

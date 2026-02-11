@@ -371,7 +371,7 @@ const RewardsDisplay = ({
   return (
     <div className="rewards-display">
       {showTitle && (
-        <div className="rewards-header">
+        <div className="auth-header">
           <h3>Your Garden Harvest Rewards</h3>
           <p>Claim your rewards by selecting a trainer for each item.</p>
         </div>
@@ -388,10 +388,10 @@ const RewardsDisplay = ({
       {berryRewards.length > 0 && (
         <div className="rewards-section">
           <h4 className="rewards-section-title">Berry Rewards</h4>
-          <div className="rewards-grid berry-rewards-grid">
+          <div className="town-places berry-rewards-grid">
             {berryRewards.map((reward) => (
-              <div key={reward.id} className={`reward-card ${reward.claimed ? 'claimed' : ''}`}>
-                <div className={`reward-icon ${reward.type}`}>
+              <div key={reward.id} className={`area-card ${reward.claimed ? 'claimed' : ''}`}>
+                <div className={`reward-icon${reward.type}`}>
                   <i className={
                     reward.type === 'coin' ? 'fas fa-coins' :
                     reward.type === 'item' ? 'fas fa-box' :
@@ -418,7 +418,7 @@ const RewardsDisplay = ({
                     <strong>Effect:</strong> {getBerryEffect(reward.reward_data.name)}
                   </div>
                 )}
-                <div className={`reward-rarity ${reward.rarity}`}>
+                <div className={`badge ${reward.rarity}`}>
                   {reward.rarity.charAt(0).toUpperCase() + reward.rarity.slice(1)}
                 </div>
                 <div className="reward-actions">
@@ -435,7 +435,7 @@ const RewardsDisplay = ({
                         onChange={(trainerId) => handleTrainerSelect(reward.id, trainerId)}
                       />
                       <button
-                        className="btn-primary mt-2 w-full"
+                        className="button primary mt-2 w-full"
                         onClick={() => claimReward(reward.id)}
                         disabled={claimingReward === reward.id || !selectedTrainers[reward.id]}
                       >
@@ -462,7 +462,7 @@ const RewardsDisplay = ({
       {monsterRewards.length > 0 && (
         <div className="rewards-section">
           <h4 className="rewards-section-title">Monster Rewards</h4>
-          <div className="rewards-grid monster-rewards-grid">
+          <div className="town-places button">
             {monsterRewards.map((reward) => (
               <MonsterRewardCard
                 key={reward.id}
@@ -488,7 +488,7 @@ const RewardsDisplay = ({
       {anyUnclaimed && userTrainers.length > 0 && (
         <div className="rewards-actions">
           <button
-            className="btn-primary"
+            className="button primary"
             onClick={claimAllRewards}
             disabled={loading}
           >

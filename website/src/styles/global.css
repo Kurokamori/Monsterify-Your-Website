@@ -1,29 +1,33 @@
-@import './AuthPages.css';
-@import './CommonComponents.css';
-@import './TrainerStyles.css';
-@import './MarkdownRenderer.css';
-@import './Messages.css';
-@import './PageHeader.css';
-@import './Pagination.css';
-@import './MonsterStyles.css';
-@import './ShopStyles.css';
-@import './TownStyles.css';
-@import './ActivityStyles.css';
-@import './InteractiveMap.css';
-@import './GeographicPages.css';
-@import './MainLayout.css';
-@import './AdminStyles.css';
-@import './FileUpload.css';
-@import './FormComponents.css';
-@import './SubmissionStyles.css';
-@import './FakemonDexPage.css';
-@import './GalleryLibraryStyles.css';
-@import './Guides.css';
-@import './FactionStyles.css';
-@import './StatisticsStyles.css';
-@import './HomePage.css';
-@import './ItemStyles.css';
-@import './AdventureStyles.css';
-@import './ModalComponents.css';
-@import './ProfilePageStyles.css';
+/* =============================================================================
+   GLOBAL STYLES ENTRY POINT
+   =============================================================================
+   This file imports all style modules organized by folder.
+   Each folder has its own index.css that bundles related styles.
+   ============================================================================= */
+
+/* Themes - import first for CSS variables */
 @import './themes.css';
+
+/* Common components - shared across the app */
+@import './common/index.css';
+
+/* Monster styles */
+@import './monster/index.css';
+
+/* Trainer styles */
+@import './trainer/index.css';
+
+/* Admin styles */
+@import './admin/index.css';
+
+/* Town and location styles */
+@import './town/index.css';
+
+/* Market and shop styles */
+@import './market/index.css';
+
+/* Guides and tools */
+@import './guides-tools/index.css';
+
+/* Utility-specific page styles */
+@import './utility-specific/index.css';

@@ -4,6 +4,43 @@ import { Container, Row, Col, Button, Card, Badge } from 'react-bootstrap';
 import submissionService from '../../services/submissionService';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
 
+// Strip markdown formatting and return first ~40 words with ellipsis
+const getContentPreview = (rawContent, wordLimit = 40) => {
+  if (!rawContent) return '';
+  let text = rawContent
+    .replace(/^#{1,6}\s+/gm, '')        // headers
+    .replace(/!\[[^\]]*\]\([^)]*\)/g, '') // images
+    .replace(/\[([^\]]*)\]\([^)]*\)/g, '$1') // links -> text
+    .replace(/(`{3}[\s\S]*?`{3}|`[^`]+`)/g, '') // code blocks/inline code
+    .replace(/(\*{1,3}|_{1,3})(.*?)\1/g, '$2')  // bold/italic
+    .replace(/~~(.*?)~~/g, '$1')         // strikethrough
+    .replace(/^[-*>]+\s?/gm, '')         // list markers, blockquotes
+    .replace(/^---+$/gm, '')             // horizontal rules
+    .replace(/\|/g, '')                  // table pipes
+    .trim();
+
+  const words = text.split(/\s+/).filter(Boolean);
+  if (words.length <= wordLimit) return text;
+  let count = 0;
+  let result = '';
+  for (const char of text) {
+    if (/\s/.test(char)) {
+      if (char === '\n') {
+        result += char;
+      } else if (result.length > 0 && !/\s$/.test(result)) {
+        result += ' ';
+      }
+      continue;
+    }
+    if (result.length === 0 || /\s$/.test(result)) {
+      count++;
+      if (count > wordLimit) break;
+    }
+    result += char;
+  }
+  return result.trim() + '...';
+};
+
 const SubmissionDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -11,6 +48,7 @@ const SubmissionDetail = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [selectedImage, setSelectedImage] = useState(null);
+  const [relatedSubmissions, setRelatedSubmissions] = useState([]);
 
   useEffect(() => {
     const fetchSubmission = async () => {
@@ -23,6 +61,21 @@ const SubmissionDetail = () => {
         if (data.submission.images && data.submission.images.length > 0) {
           const mainImage = data.submission.images.find(img => img.is_main) || data.submission.images[0];
           setSelectedImage(mainImage.image_url);
+        }
+
+        // Fetch related submissions by the same creator
+        if (data.submission.user_id) {
+          try {
+            const contentType = data.submission.submission_type === 'art' ? 'art' : 'writing';
+            const related = await submissionService.getRelatedSubmissions(
+              id,
+              data.submission.user_id,
+              contentType
+            );
+            setRelatedSubmissions(related.submissions || []);
+          } catch (relatedErr) {
+            console.error('Error fetching related submissions:', relatedErr);
+          }
         }
 
         setLoading(false);
@@ -61,8 +114,8 @@ const SubmissionDetail = () => {
 
   if (error) {
     return (
-      <Container className="submission-page">
-        <div className="alert alert-danger">{error}</div>
+      <Container className="bazar-container">
+        <div className="alert error">{error}</div>
         <Button variant="secondary" onClick={handleBackClick}>
           Back to {(submission?.submission_type === 'art' || submission?.submission_type === 'reference' || submission?.submission_type === 'prompt') ? 'Gallery' : 'Library'}
         </Button>
@@ -72,7 +125,7 @@ const SubmissionDetail = () => {
 
   if (!submission) {
     return (
-      <Container className="submission-page">
+      <Container className="bazar-container">
         <div className="alert alert-warning">Submission not found</div>
         <Button variant="secondary" onClick={handleBackClick}>
           Back to Gallery/Library
@@ -88,7 +141,7 @@ const SubmissionDetail = () => {
   const hasImages = submission.images && submission.images.length > 0;
 
   return (
-    <Container className="submission-page">
+    <Container className="bazar-container">
       <Button variant="secondary" className="mb-3" onClick={handleBackClick}>
         &larr; Back to {isArt ? 'Gallery' : 'Library'}
       </Button>
@@ -108,7 +161,7 @@ const SubmissionDetail = () => {
           </div>
 
           {submission.tags && Array.isArray(submission.tags) && submission.tags.length > 0 && (
-            <div className="submission-tags">
+            <div className="type-tags fw">
               {submission.tags.map(tag => (
                 <span key={tag} className="tag">{tag}</span>
               ))}
@@ -133,7 +186,7 @@ const SubmissionDetail = () => {
                   {Array.isArray(submission.images) && submission.images.map(image => (
                     <div
                       key={image.id}
-                      className={`submission-detail-image ${selectedImage === image.image_url ? 'selected' : ''}`}
+                      className={`image-container${selectedImage === image.image_url ? 'selected' : ''}`}
                       onClick={() => handleImageClick(image.image_url)}
                     >
                       <img src={image.image_url} alt={submission.title} />
@@ -192,13 +245,13 @@ const SubmissionDetail = () => {
         )}
 
         {hasChapters && (
-          <div className="chapters-list">
+          <div className="no-npcs">
             <h3>Chapters</h3>
             <div className="list-group">
               {Array.isArray(submission.chapters) && submission.chapters.map(chapter => (
                 <div
                   key={chapter.id}
-                  className="chapter-item"
+                  className="monster-compact-card"
                   onClick={() => handleChapterClick(chapter.id)}
                 >
                   <h4>{chapter.title}</h4>
@@ -218,6 +271,76 @@ const SubmissionDetail = () => {
             >
               Back to Book
             </Button>
+          </div>
+        )}
+
+        {/* More by this Creator */}
+        {relatedSubmissions.length > 0 && (
+          <div className="more-by-creator mt-4">
+            <h3>More by this Creator</h3>
+            <Row>
+              {relatedSubmissions.slice(0, 6).map(related => (
+                <Col key={related.id} md={4} sm={6} className="mb-4">
+                  <Card
+                    className="submission-card h-100"
+                    onClick={() => navigate(`/submissions/${related.id}`)}
+                    style={{ cursor: 'pointer' }}
+                  >
+                    {related.cover_image_url ? (
+                      <div className="npc-avatar">
+                        <Card.Img
+                          variant="top"
+                          src={related.cover_image_url}
+                          alt={related.title}
+                        />
+                        {related.is_book && (
+                          <Badge bg="primary" className="book-badge">
+                            Book ({related.chapter_count} {related.chapter_count === 1 ? 'chapter' : 'chapters'})
+                          </Badge>
+                        )}
+                      </div>
+                    ) : (
+                      <div className="library-item-text-cover">
+                        <div className="library-item-text-cover-icon">
+                          <i className={`fas ${related.is_book ? 'fa-book' : 'fa-feather-alt'}`}></i>
+                        </div>
+                        <h4 className="gallery-item-title">{related.title}</h4>
+                        <p className="gallery-item-artist">
+                          By: {related.display_name || related.username || submission.display_name || 'Unknown'}
+                        </p>
+                        <p className="library-item-text-cover-description">
+                          {related.description || getContentPreview(related.content || related.first_chapter_content, 30)}
+                        </p>
+                        {related.is_book && (
+                          <Badge bg="primary" className="book-badge" style={{ position: 'static', marginTop: '0.5rem' }}>
+                            Book ({related.chapter_count} {related.chapter_count === 1 ? 'chapter' : 'chapters'})
+                          </Badge>
+                        )}
+                      </div>
+                    )}
+                    <Card.Body>
+                      {related.cover_image_url && (
+                        <>
+                          <Card.Title>{related.title}</Card.Title>
+                          <Card.Text className="related-submissions">
+                            {related.description || getContentPreview(related.content || related.first_chapter_content, 30)}
+                          </Card.Text>
+                          <div className="submission-meta">
+                            <small>By: {related.display_name || related.username || submission.display_name || 'Unknown'}</small>
+                            <small>{new Date(related.submission_date).toLocaleDateString()}</small>
+                          </div>
+                        </>
+                      )}
+                      {!related.cover_image_url && (
+                        <div className="submission-meta">
+                          <small>{new Date(related.submission_date).toLocaleDateString()}</small>
+                        </div>
+                      )}
+                    </Card.Body>
+                  </Card>
+                </Col>
+              ))}
+            </Row>
           </div>
         )}
       </div>

@@ -10,7 +10,7 @@ import React from 'react';
  */
 const SuccessMessage = ({ title, message, onClose }) => {
   return (
-    <div className="message-container success">
+    <div className="option-row success">
       <div className="message-icon">
         <i className="fas fa-check-circle"></i>
       </div>

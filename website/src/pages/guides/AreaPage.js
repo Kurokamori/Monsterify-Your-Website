@@ -7194,15 +7194,15 @@ const AreaPage = () => {
             {breadcrumbData.regionName}
           </button>
           <span className="breadcrumb-separator">›</span>
-          <span className="breadcrumb-current">{areaData.name}</span>
+          <span className="currency-label">{areaData.name}</span>
         </div>
-        <button onClick={handleBack} className="back-button">
+        <button onClick={handleBack} className="button secondary">
           ← Back to {breadcrumbData.regionName}
         </button>
-        <div className="area-title-section">
+        <div className="item-header">
           <h1>{areaData.name}</h1>
-          <div 
-            className="difficulty-badge large"
+          <div
+            className="badge lg"
             style={{ backgroundColor: getDifficultyColor(areaData.difficulty) }}
           >
             {areaData.difficulty}
@@ -7222,7 +7222,7 @@ const AreaPage = () => {
         </div>
 
         <div className="area-details">
-          <div className="quick-facts">
+          <div className="tips">
             <h3>Quick Facts</h3>
             <div className="facts-grid">
               <div className="fact-item">
@@ -7254,7 +7254,7 @@ const AreaPage = () => {
             </div>
           </div>
 
-          <div className="special-features">
+          <div className="tips">
             <h3>Special Features</h3>
             <div className="feature-list">
               {areaData.specialFeatures.map((feature, index) => (
@@ -7266,15 +7266,15 @@ const AreaPage = () => {
             </div>
           </div>
 
-          <div className="wildlife-section">
+          <div className="tips">
             <h3>Wildlife</h3>
             <div className="wildlife-grid">
               {areaData.wildlife.map((creature, index) => (
-                <div key={index} className="wildlife-card">
-                  <div className="wildlife-header">
+                <div key={index} className="area-card">
+                  <div className="resource-header">
                     <h4>{creature.name}</h4>
-                    <span 
-                      className="rarity-badge"
+                    <span
+                      className="badge"
                       style={{ backgroundColor: getRarityColor(creature.rarity) }}
                     >
                       {creature.rarity}
@@ -7288,15 +7288,15 @@ const AreaPage = () => {
             </div>
           </div>
 
-          <div className="resources-section">
+          <div className="tips">
             <h3>Resources</h3>
-            <div className="resources-grid">
+            <div className="wildlife-grid">
               {areaData.resources.map((resource, index) => (
-                <div key={index} className="resource-card">
+                <div key={index} className="area-card">
                   <div className="resource-header">
                     <h4>{resource.name}</h4>
-                    <span 
-                      className="rarity-badge"
+                    <span
+                      className="badge"
                       style={{ backgroundColor: getRarityColor(resource.rarity) }}
                     >
                       {resource.rarity}
@@ -7308,19 +7308,19 @@ const AreaPage = () => {
             </div>
           </div>
 
-          <div className="lore-section">
+          <div className="tips">
             <h3>Lore & Legends</h3>
             <p>{areaData.lore}</p>
           </div>
 
-          <div className="history-section">
+          <div className="tips">
             <h3>Historical Significance</h3>
             <p>{areaData.history}</p>
           </div>
 
-          <div className="safety-section">
+          <div className="tips">
             <div className="dangers-warnings">
-              <div className="dangers">
+              <div className="tips">
                 <h3>⚠️ Dangers & Hazards</h3>
                 <ul>
                   {areaData.dangers.map((danger, index) => (

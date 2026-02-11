@@ -173,7 +173,7 @@ const DefeatedBossDetailPage = () => {
   if (!bossData) {
     return (
       <div className="boss-view-page">
-        <div className="no-boss-message">
+        <div className="no-leaderboard">
           <h2>Boss Not Found</h2>
           <p>The requested boss could not be found.</p>
         </div>
@@ -194,7 +194,7 @@ const DefeatedBossDetailPage = () => {
 
       {/* User Reward Status */}
       {currentUser && userReward && (
-        <div className={`user-reward-status ${userReward.is_claimed ? 'claimed' : 'unclaimed'}`}>
+        <div className={`user-reward-status${userReward.is_claimed ? 'claimed' : 'unclaimed'}`}>
           <div className="reward-status-content">
             <div className="reward-status-icon">
               {userReward.is_claimed ? (
@@ -223,7 +223,7 @@ const DefeatedBossDetailPage = () => {
             {!userReward.is_claimed && (
               <div className="reward-status-actions">
                 <button 
-                  className="claim-reward-button"
+                  className="button primary"
                   onClick={handleClaimReward}
                 >
                   <i className="fas fa-trophy"></i>
@@ -268,18 +268,18 @@ const DefeatedBossDetailPage = () => {
             )}
             
             <div className="boss-stats">
-              <div className="boss-stat">
+              <div className="set-item">
                 <span className="stat-label">Battle:</span>
                 <span className="stat-value">{boss.month}/{boss.year}</span>
               </div>
               
-              <div className="boss-stat">
+              <div className="set-item">
                 <span className="stat-label">Participants:</span>
                 <span className="stat-value">{bossData.total_participants || 0}</span>
               </div>
               
               {boss.start_date && (
-                <div className="boss-stat">
+                <div className="set-item">
                   <span className="stat-label">Started:</span>
                   <span className="stat-value">{formatDate(boss.start_date)}</span>
                 </div>
@@ -316,7 +316,7 @@ const DefeatedBossDetailPage = () => {
                           <span className="rank-badge">{getRankIcon(entry.rank)}</span>
                         </td>
                         <td className="trainer-cell">
-                          <div className="trainer-info-row">
+                          <div className="missions-filters">
                             {entry.trainer_avatar ? (
                               <img 
                                 src={entry.trainer_avatar} 
@@ -368,7 +368,7 @@ const DefeatedBossDetailPage = () => {
                           )}
                           {currentUser && entry.user_id === currentUser.id && entry.reward_claim && !entry.reward_claim.is_claimed && (
                             <button 
-                              className="claim-button-small"
+                              className="button primary sm"
                               onClick={handleClaimReward}
                             >
                               Claim
@@ -440,10 +440,10 @@ const DefeatedBossDetailPage = () => {
                   Monster Preview: {currentReward.monster_data.name}
                 </h4>
                 <div className="monster-preview-card">
-                  <div className="monster-attributes">
+                  <div className="map-filters">
                     <div className="attribute-section">
                       <h5><i className="fas fa-dna"></i> Species</h5>
-                      <div className="attribute-tags">
+                      <div className="type-tags fw">
                         {currentReward.monster_data.species && currentReward.monster_data.species.map((species, index) => (
                           <span key={index} className="attribute-tag species-tag">
                             {species}
@@ -454,7 +454,7 @@ const DefeatedBossDetailPage = () => {
                     
                     <div className="attribute-section">
                       <h5><i className="fas fa-magic"></i> Types</h5>
-                      <div className="attribute-tags">
+                      <div className="type-tags fw">
                         {currentReward.monster_data.types && currentReward.monster_data.types.map((type, index) => (
                           <span key={index} className="attribute-tag type-tag">
                             {type}
@@ -465,7 +465,7 @@ const DefeatedBossDetailPage = () => {
                     
                     <div className="attribute-section">
                       <h5><i className="fas fa-star"></i> Attribute</h5>
-                      <div className="attribute-tags">
+                      <div className="type-tags fw">
                         <span className="attribute-tag primary-attribute-tag">
                           {currentReward.monster_data.attribute}
                         </span>
@@ -493,6 +493,7 @@ const DefeatedBossDetailPage = () => {
                 <label htmlFor="trainer-select">Assign to trainer:</label>
                 <select
                   id="trainer-select"
+                  className="trainer-select"
                   value={selectedTrainer}
                   onChange={(e) => setSelectedTrainer(e.target.value)}
                 >
@@ -514,14 +515,14 @@ const DefeatedBossDetailPage = () => {
 
               <div className="modal-actions">
                 <button 
-                  className="modal-button secondary"
+                  className="button secondary"
                   onClick={closeRewardModal}
                   disabled={claimingReward}
                 >
                   Cancel
                 </button>
                 <button 
-                  className="modal-button primary"
+                  className="button primary"
                   onClick={submitRewardClaim}
                   disabled={claimingReward || !monsterName.trim() || !selectedTrainer}
                 >

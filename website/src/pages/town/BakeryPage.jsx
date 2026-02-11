@@ -26,7 +26,7 @@ const BakeryPage = () => {
         <div className="location-icon-large">
           <i className="fas fa-cookie"></i>
         </div>
-        <div className="location-title">
+        <div className="no-adventures">
           <h2>Bakery</h2>
           <p>Use pastries to precisely modify your monsters' species, types, and attributes</p>
         </div>

@@ -23,9 +23,7 @@ const Nursery = () => {
   const [eggCount, setEggCount] = useState(1);
   const [useIncubator, setUseIncubator] = useState(false);
   const [useVoidStone, setUseVoidStone] = useState(false);
-  const [imageUrl, setImageUrl] = useState('');
   const [imageFile, setImageFile] = useState(null);
-  const [imageMode, setImageMode] = useState('url'); // 'url' or 'upload'
   const [selectedItems, setSelectedItems] = useState({});
   // For species/type slot inputs for special items
   const [speciesInputs, setSpeciesInputs] = useState({});
@@ -94,8 +92,8 @@ const Nursery = () => {
       return;
     }
 
-    if (!useIncubator && !useVoidStone && !imageUrl && !imageFile) {
-      setError('Either an incubator, void stone, artwork URL, or uploaded image is required for hatching.');
+    if (!useIncubator && !useVoidStone && !imageFile) {
+      setError('Either an incubator, void stone, or uploaded image is required for hatching.');
       return;
     }
 
@@ -127,8 +125,6 @@ const Nursery = () => {
 
       if (imageFile) {
         formData.append('imageFile', imageFile);
-      } else if (imageUrl) {
-        formData.append('imageUrl', imageUrl);
       }
 
       const response = await api.post('/nursery/hatch', formData, {
@@ -161,8 +157,8 @@ const Nursery = () => {
       return;
     }
 
-    if (!useIncubator && !useVoidStone && !imageUrl && !imageFile) {
-      setError('Either an incubator, void stone, artwork URL, or uploaded image is required for nurturing.');
+    if (!useIncubator && !useVoidStone && !imageFile) {
+      setError('Either an incubator, void stone, or uploaded image is required for nurturing.');
       return;
     }
 
@@ -196,8 +192,6 @@ const Nursery = () => {
 
       if (imageFile) {
         formData.append('imageFile', imageFile);
-      } else if (imageUrl) {
-        formData.append('imageUrl', imageUrl);
       }
 
       const response = await api.post('/nursery/nurture', formData, {
@@ -223,16 +217,6 @@ const Nursery = () => {
       ...prev,
       [itemName]: Math.max(0, Math.min(quantity, eggItems[itemName] || 0))
     }));
-  };
-
-  const handleImageModeChange = (mode) => {
-    setImageMode(mode);
-    // Clear the other input when switching modes
-    if (mode === 'url') {
-      setImageFile(null);
-    } else {
-      setImageUrl('');
-    }
   };
 
   const handleFileChange = (e) => {
@@ -331,30 +315,30 @@ const Nursery = () => {
                 <h3><i className="fas fa-inventory"></i> Your Resources</h3>
               </div>
               <div className="nursery-card-body">
-                <div className="resources-grid">
-                  <div className="resource-item">
+                <div className="container horizontal gap-lg">
+                  <div className="container vertical center">
                     <div className="resource-icon standard-egg">
                       <i className="fas fa-egg"></i>
                     </div>
-                    <div className="resource-info">
+                    <div className="container vertical center">
                       <span className="resource-name">Standard Eggs</span>
                       <span className="resource-count">{trainerEggs['Standard Egg'] || 0}</span>
                     </div>
                   </div>
-                  <div className="resource-item">
+                  <div className="container vertical center">
                     <div className="resource-icon incubator">
                       <i className="fas fa-fire"></i>
                     </div>
-                    <div className="resource-info">
+                    <div className="container vertical center">
                       <span className="resource-name">Incubators</span>
                       <span className="resource-count">{trainerEggs['Incubator'] || 0}</span>
                     </div>
                   </div>
-                  <div className="resource-item">
+                  <div className="container vertical center">
                     <div className="resource-icon void-stone">
                       <i className="fas fa-gem"></i>
                     </div>
-                    <div className="resource-info">
+                    <div className="container vertical center">
                       <span className="resource-name">Void Stones</span>
                       <span className="resource-count">{eggItems['Void Evolution Stone'] || 0}</span>
                     </div>
@@ -365,9 +349,9 @@ const Nursery = () => {
 
             {/* Method Selection */}
             <div className="nursery-methods-container">
-              <div className="method-selector">
+              <div className="container horizontal center gap-lg">
                 <button
-                  className={`method-tab ${activeTab === 'hatch' ? 'active' : ''}`}
+                  className={`area-card ${activeTab === 'hatch' ? 'active' : ''}`}
                   onClick={() => setActiveTab('hatch')}
                 >
                   <div className="method-icon">
@@ -380,7 +364,7 @@ const Nursery = () => {
                 </button>
 
                 <button
-                  className={`method-tab ${activeTab === 'nurture' ? 'active' : ''}`}
+                  className={`area-card ${activeTab === 'nurture' ? 'active' : ''}`}
                   onClick={() => setActiveTab('nurture')}
                 >
                   <div className="method-icon">
@@ -399,7 +383,7 @@ const Nursery = () => {
               <div className="nursery-card method-card">
                 <div className="nursery-card-header">
                   <h3><i className="fas fa-magic"></i> Simple Hatching Process</h3>
-                  <span className="method-badge hatch">Quick Method</span>
+                  <span className="card-badge hatch">Quick Method</span>
                 </div>
                 <div className="nursery-card-body">
                   <div className="method-description">
@@ -407,15 +391,15 @@ const Nursery = () => {
                   </div>
 
                   <div className="form-section">
-                    <div className="form-group modern-form-group">
-                      <label className="form-label">
+                    <div className="form-group naming-card">
+                      <label className="form-label-heading">
                         <i className="fas fa-hashtag"></i>
                         Number of Eggs
                       </label>
                       <div className="number-input-container">
                         <button 
                           type="button" 
-                          className="number-btn minus"
+                          className="button primary minus"
                           onClick={() => setEggCount(Math.max(1, eggCount - 1))}
                           disabled={eggCount <= 1}
                         >
@@ -423,7 +407,7 @@ const Nursery = () => {
                         </button>
                         <input
                           type="number"
-                          className="modern-number-input"
+                          className="form-input"
                           min="1"
                           max="10"
                           value={eggCount}
@@ -431,7 +415,7 @@ const Nursery = () => {
                         />
                         <button 
                           type="button" 
-                          className="number-btn plus"
+                          className="button primary plus"
                           onClick={() => setEggCount(Math.min(10, eggCount + 1))}
                           disabled={eggCount >= 10}
                         >
@@ -440,8 +424,8 @@ const Nursery = () => {
                       </div>
                     </div>
 
-                    <div className="options-section">
-                      <div className="checkbox-option modern-checkbox">
+                    <div className="form">
+                      <div className={`radio-option modern-checkbox ${useIncubator ? 'active' : ''}`}>
                         <input
                           type="checkbox"
                           id="use-incubator"
@@ -452,89 +436,58 @@ const Nursery = () => {
                           <span className="checkbox-icon">
                             <i className="fas fa-fire"></i>
                           </span>
-                          <div className="checkbox-text">
-                            <span className="checkbox-title">Use Incubator</span>
+                          <div className="stat-info">
+                            <span className="upload-title">Use Incubator</span>
                             <span className="checkbox-description">Bypass artwork requirements (uses {eggCount} incubator{eggCount > 1 ? 's' : ''})</span>
                           </div>
                         </label>
                       </div>
 
                       {!useIncubator && (
-                        <div className="artwork-section">
+                        <div className="naming-card">
                           <h5 className="section-title">
                             <i className="fas fa-palette"></i>
                             Artwork Inspiration
                           </h5>
-                          <div className="artwork-tabs">
-                            <button
-                              type="button"
-                              className={`artwork-tab ${imageMode === 'url' ? 'active' : ''}`}
-                              onClick={() => handleImageModeChange('url')}
-                            >
-                              <i className="fas fa-link"></i>
-                              URL
-                            </button>
-                            <button
-                              type="button"
-                              className={`artwork-tab ${imageMode === 'upload' ? 'active' : ''}`}
-                              onClick={() => handleImageModeChange('upload')}
-                            >
-                              <i className="fas fa-upload"></i>
-                              Upload
-                            </button>
-                          </div>
 
                           <div className="artwork-input-container">
-                            {imageMode === 'url' ? (
-                              <div className="url-input-container">
-                                <i className="fas fa-globe input-icon"></i>
-                                <input
-                                  type="url"
-                                  className="modern-text-input"
-                                  value={imageUrl}
-                                  onChange={(e) => setImageUrl(e.target.value)}
-                                  placeholder="https://example.com/your-artwork.jpg"
-                                />
-                              </div>
-                            ) : (
-                              <div className="file-upload-modern">
-                                <input
-                                  type="file"
-                                  accept="image/*"
-                                  onChange={handleFileChange}
-                                  className="file-input-hidden"
-                                  id="hatch-image-upload"
-                                />
-                                <label htmlFor="hatch-image-upload" className="file-upload-modern-label">
-                                  <div className="upload-icon">
-                                    <i className="fas fa-cloud-upload-alt"></i>
-                                  </div>
-                                  <div className="upload-text">
-                                    <span className="upload-title">
-                                      {imageFile ? imageFile.name : 'Drop your artwork here'}
-                                    </span>
-                                    <span className="upload-subtitle">
-                                      {imageFile 
-                                        ? `${(imageFile.size / 1024 / 1024).toFixed(2)} MB`
-                                        : 'or click to browse files'
-                                      }
-                                    </span>
-                                  </div>
-                                  {imageFile && (
-                                    <button
-                                      type="button"
-                                      className="remove-file-modern"
-                                      onClick={(e) => {
-                                        e.preventDefault();
-                                        setImageFile(null);
-                                      }}
-                                    >
-                                      <i className="fas fa-times"></i>
-                                    </button>
-                                  )}
-                                </label>
-                              </div>
-                            )}
+                            <div className="file-upload-modern">
+                              <input
+                                type="file"
+                                accept="image/*"
+                                onChange={handleFileChange}
+                                className="file-input-hidden"
+                                id="hatch-image-upload"
+                              />
+                              <label htmlFor="hatch-image-upload" className="file-upload-modern-label">
+                                <div className="upload-icon">
+                                  <i className="fas fa-cloud-upload-alt"></i>
+                                </div>
+                                <div className="upload-text">
+                                  <span className="upload-title">
+                                    {imageFile ? imageFile.name : 'Drop your artwork here'}
+                                  </span>
+                                  <span className="upload-subtitle">
+                                    {imageFile
+                                      ? `${(imageFile.size / 1024 / 1024).toFixed(2)} MB`
+                                      : 'or click to browse files'
+                                    }
+                                  </span>
+                                </div>
+                                {imageFile && (
+                                  <button
+                                    type="button"
+                                    className="remove-file-modern"
+                                    onClick={(e) => {
+                                      e.preventDefault();
+                                      setImageFile(null);
+                                    }}
+                                  >
+                                    <i className="fas fa-times"></i>
+                                  </button>
+                                )}
+                              </label>
+                            </div>
                           </div>
                         </div>
                       )}
@@ -542,11 +495,11 @@ const Nursery = () => {
 
                     <div className="action-section">
                       <button
-                        className="nursery-action-button primary"
+                        className="button primary"
                         onClick={handleHatch}
                         disabled={loading || !selectedTrainer}
                       >
-                        <span className="button-icon">
+                        <span className="icon">
                           {loading ? (
                             <i className="fas fa-spinner fa-spin"></i>
                           ) : (
@@ -568,7 +521,7 @@ const Nursery = () => {
               <div className="nursery-card method-card">
                 <div className="nursery-card-header">
                   <h3><i className="fas fa-seedling"></i> Advanced Nurturing Process</h3>
-                  <span className="method-badge nurture">Complex Method</span>
+                  <span className="card-badge nurture">Complex Method</span>
                 </div>
                 <div className="nursery-card-body">
                   <div className="method-description">
@@ -576,15 +529,15 @@ const Nursery = () => {
                   </div>
 
                   <div className="form-section">
-                    <div className="form-group modern-form-group">
-                      <label className="form-label">
+                    <div className="form-group naming-card">
+                      <label className="form-label-heading">
                         <i className="fas fa-hashtag"></i>
                         Number of Eggs
                       </label>
                       <div className="number-input-container">
                         <button 
                           type="button" 
-                          className="number-btn minus"
+                          className="button primary minus"
                           onClick={() => setEggCount(Math.max(1, eggCount - 1))}
                           disabled={eggCount <= 1}
                         >
@@ -592,7 +545,7 @@ const Nursery = () => {
                         </button>
                         <input
                           type="number"
-                          className="modern-number-input"
+                          className="form-input"
                           min="1"
                           max="10"
                           value={eggCount}
@@ -600,7 +553,7 @@ const Nursery = () => {
                         />
                         <button 
                           type="button" 
-                          className="number-btn plus"
+                          className="button primary plus"
                           onClick={() => setEggCount(Math.min(10, eggCount + 1))}
                           disabled={eggCount >= 10}
                         >
@@ -609,8 +562,8 @@ const Nursery = () => {
                       </div>
                     </div>
 
-                    <div className="options-section">
-                      <div className="checkbox-option modern-checkbox">
+                    <div className="form">
+                      <div className={`radio-option modern-checkbox ${useIncubator ? 'active' : ''}`}>
                         <input
                           type="checkbox"
                           id="use-incubator-nurture"
@@ -621,101 +574,70 @@ const Nursery = () => {
                           <span className="checkbox-icon">
                             <i className="fas fa-fire"></i>
                           </span>
-                          <div className="checkbox-text">
-                            <span className="checkbox-title">Use Incubator</span>
+                          <div className="stat-info">
+                            <span className="upload-title">Use Incubator</span>
                             <span className="checkbox-description">Bypass artwork requirements (uses {eggCount} incubator{eggCount > 1 ? 's' : ''})</span>
                           </div>
                         </label>
                       </div>
 
                       {!useIncubator && (
-                        <div className="artwork-section">
+                        <div className="naming-card">
                           <h5 className="section-title">
                             <i className="fas fa-palette"></i>
                             Artwork Inspiration
                           </h5>
-                          <div className="artwork-tabs">
-                            <button
-                              type="button"
-                              className={`artwork-tab ${imageMode === 'url' ? 'active' : ''}`}
-                              onClick={() => handleImageModeChange('url')}
-                            >
-                              <i className="fas fa-link"></i>
-                              URL
-                            </button>
-                            <button
-                              type="button"
-                              className={`artwork-tab ${imageMode === 'upload' ? 'active' : ''}`}
-                              onClick={() => handleImageModeChange('upload')}
-                            >
-                              <i className="fas fa-upload"></i>
-                              Upload
-                            </button>
-                          </div>
 
                           <div className="artwork-input-container">
-                            {imageMode === 'url' ? (
-                              <div className="url-input-container">
-                                <i className="fas fa-globe input-icon"></i>
-                                <input
-                                  type="url"
-                                  className="modern-text-input"
-                                  value={imageUrl}
-                                  onChange={(e) => setImageUrl(e.target.value)}
-                                  placeholder="https://example.com/your-artwork.jpg"
-                                />
-                              </div>
-                            ) : (
-                              <div className="file-upload-modern">
-                                <input
-                                  type="file"
-                                  accept="image/*"
-                                  onChange={handleFileChange}
-                                  className="file-input-hidden"
-                                  id="nurture-image-upload"
-                                />
-                                <label htmlFor="nurture-image-upload" className="file-upload-modern-label">
-                                  <div className="upload-icon">
-                                    <i className="fas fa-cloud-upload-alt"></i>
-                                  </div>
-                                  <div className="upload-text">
-                                    <span className="upload-title">
-                                      {imageFile ? imageFile.name : 'Drop your artwork here'}
-                                    </span>
-                                    <span className="upload-subtitle">
-                                      {imageFile 
-                                        ? `${(imageFile.size / 1024 / 1024).toFixed(2)} MB`
-                                        : 'or click to browse files'
-                                      }
-                                    </span>
-                                  </div>
-                                  {imageFile && (
-                                    <button
-                                      type="button"
-                                      className="remove-file-modern"
-                                      onClick={(e) => {
-                                        e.preventDefault();
-                                        setImageFile(null);
-                                      }}
-                                    >
-                                      <i className="fas fa-times"></i>
-                                    </button>
-                                  )}
-                                </label>
-                              </div>
-                            )}
+                            <div className="file-upload-modern">
+                              <input
+                                type="file"
+                                accept="image/*"
+                                onChange={handleFileChange}
+                                className="file-input-hidden"
+                                id="nurture-image-upload"
+                              />
+                              <label htmlFor="nurture-image-upload" className="file-upload-modern-label">
+                                <div className="upload-icon">
+                                  <i className="fas fa-cloud-upload-alt"></i>
+                                </div>
+                                <div className="upload-text">
+                                  <span className="upload-title">
+                                    {imageFile ? imageFile.name : 'Drop your artwork here'}
+                                  </span>
+                                  <span className="upload-subtitle">
+                                    {imageFile
+                                      ? `${(imageFile.size / 1024 / 1024).toFixed(2)} MB`
+                                      : 'or click to browse files'
+                                    }
+                                  </span>
+                                </div>
+                                {imageFile && (
+                                  <button
+                                    type="button"
+                                    className="remove-file-modern"
+                                    onClick={(e) => {
+                                      e.preventDefault();
+                                      setImageFile(null);
+                                    }}
+                                  >
+                                    <i className="fas fa-times"></i>
+                                  </button>
+                                )}
+                              </label>
+                            </div>
                           </div>
                         </div>
                       )}
                     </div>
 
                     {/* Item Selection */}
-                    <div className="items-section">
+                    <div className="help-content">
                       <h5 className="section-title">
                         <i className="fas fa-flask"></i>
                         Nurturing Items
                       </h5>
-                      <div className="items-grid">
+                      <div className="container grid gap-md">
                         {Object.entries(eggItems)
                           .filter(([itemName]) => itemName !== 'Incubator')
                           .map(([itemName, quantity]) => {
@@ -814,9 +736,9 @@ const Nursery = () => {
                             return null;
                           };
                           return (
-                            <div key={itemName} className="item-selection-card">
+                            <div key={itemName} className="modern-checkbox">
                               <div className="item-header">
-                                <div className="item-icon">
+                                <div className="image-container medium">
                                   <i className="fas fa-vial"></i>
                                 </div>
                                 <div className="item-info">
@@ -824,10 +746,10 @@ const Nursery = () => {
                                   <span className="item-available">Available: {quantity}</span>
                                 </div>
                               </div>
-                              <div className="item-quantity-selector">
+                              <div className="event-date">
                                 <button 
                                   type="button" 
-                                  className="quantity-btn minus"
+                                  className="button quantity"
                                   onClick={() => handleItemQuantityChange(itemName, Math.max(0, (selectedItems[itemName] || 0) - 1))}
                                   disabled={!selectedItems[itemName] || selectedItems[itemName] <= 0}
                                 >
@@ -835,7 +757,7 @@ const Nursery = () => {
                                 </button>
                                 <input
                                   type="number"
-                                  className="quantity-input"
+                                  className="form-input"
                                   min="0"
                                   max={quantity}
                                   value={selectedItems[itemName] || 0}
@@ -843,7 +765,7 @@ const Nursery = () => {
                                 />
                                 <button 
                                   type="button" 
-                                  className="quantity-btn plus"
+                                  className="button quantity"
                                   onClick={() => handleItemQuantityChange(itemName, Math.min(quantity, (selectedItems[itemName] || 0) + 1))}
                                   disabled={(selectedItems[itemName] || 0) >= quantity}
                                 >
@@ -860,11 +782,11 @@ const Nursery = () => {
 
                     <div className="action-section">
                       <button
-                        className="nursery-action-button primary"
+                        className="button primary"
                         onClick={handleNurture}
                         disabled={loading || !selectedTrainer}
                       >
-                        <span className="button-icon">
+                        <span className="icon">
                           {loading ? (
                             <i className="fas fa-spinner fa-spin"></i>
                           ) : (

@@ -144,10 +144,10 @@ const ItemListPage = () => {
       <div className="admin-page-header">
         <h1>Shop Items</h1>
         <div>
-          <Link to="/admin/items/add" className="admin-button" style={{ marginRight: '10px' }}>
+          <Link to="/admin/items/add" className="button primary" style={{ marginRight: '10px' }}>
             <i className="fas fa-plus"></i> Add Item
           </Link>
-          <Link to="/admin/items/bulk" className="admin-button">
+          <Link to="/admin/items/bulk" className="button primary">
             <i className="fas fa-upload"></i> Bulk Add Items
           </Link>
         </div>
@@ -162,7 +162,7 @@ const ItemListPage = () => {
           />
         </div>
 
-        <div className="admin-filter-group">
+        <div className="form-input">
           <div className="admin-filter">
             <label>Category:</label>
             <select value={categoryFilter} onChange={handleCategoryFilterChange}>
@@ -199,7 +199,7 @@ const ItemListPage = () => {
             </select>
           </div>
 
-          <button className="admin-button secondary" onClick={resetFilters}>
+          <button className="button secondary" onClick={resetFilters}>
             Reset Filters
           </button>
         </div>
@@ -268,13 +268,13 @@ const ItemListPage = () => {
                       <td className="admin-actions-cell">
                         <Link
                           to={`/admin/items/edit/${item.id}`}
-                          className="admin-action-button edit"
+                          className="button info sm"
                           title="Edit Item"
                         >
                           <i className="fas fa-edit"></i>
                         </Link>
                         <button
-                          className="admin-action-button delete"
+                          className="button danger sm"
                           title="Delete Item"
                           onClick={() => handleDelete(item.id)}
                         >

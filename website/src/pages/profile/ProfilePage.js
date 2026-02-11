@@ -58,8 +58,8 @@ const ProfilePage = () => {
   }
 
   return (
-    <div className="profile-container">
-      <div className="profile-header">
+    <div className="main-content-container">
+      <div className="map-header">
         <h1>Profile Settings</h1>
         <p>Customize your profile and monster roller preferences</p>
       </div>
@@ -74,7 +74,7 @@ const ProfilePage = () => {
 
           <nav className="profile-nav">
             <button
-              className="nav-link logout-button"
+              className="button danger"
               onClick={() => setIsLogoutModalOpen(true)}
             >
               <i className="fas fa-sign-out-alt"></i> Logout
@@ -101,13 +101,13 @@ const ProfilePage = () => {
           <p>Are you sure you want to log out?</p>
           <div className="modal-actions">
             <button
-              className="modal-button secondary"
+              className="button secondary"
               onClick={() => setIsLogoutModalOpen(false)}
             >
               Cancel
             </button>
             <button
-              className="modal-button primary"
+              className="button primary"
               onClick={handleLogout}
               disabled={loading}
             >

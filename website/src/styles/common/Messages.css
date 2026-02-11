@@ -1,0 +1,138 @@
+.option-row {
+  align-items: center;
+  border-radius: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  justify-content: space-between;
+  position: relative;
+}
+
+.option-row.decorated {
+  box-shadow: 0 2px 10px var(--overlay-light);
+  border-bottom: 2px solid var(--border-color);
+}
+
+.option-row.spaced {
+  margin-bottom: 1.5rem;
+  padding: 1.5rem 2rem;
+}
+
+
+.option-row.error {
+  background-color: var(--error-glow);
+  border: 1px solid var(--error-color);
+  color: var(--error-light);
+}
+
+.option-row.success {
+  background-color: var(--success-glow);
+  border: 1px solid var(--success-light);
+  color: var(--success-dark);
+}
+
+.option-row.warning {
+  background-color: var(--warning-glow);
+  border: 1px solid var(--warning-color);
+  color: var(--warning-dark);
+}
+
+.option-row.info {
+  background-color: var(--blue-glow);
+  border: 1px solid var(--blue-color);
+  color: var(--blue-dark);
+}
+
+.option-row label {
+  align-items: center;
+  color: var(--text-secondary);
+  display: flex;
+  font-size: .9rem;
+  font-weight: 600;
+  gap: .5rem;
+  min-width: 180px;
+  white-space: nowrap;
+}
+
+.option-row select {
+  background: var(--input-background);
+  background-color: var(--input-background);
+  border: 2px solid var(--divider-color);
+  border-radius: .5rem;
+  color: var(--text-primary);
+  cursor: pointer;
+  flex: 1;
+  font-size: .95rem;
+  min-width: 140px;
+  padding: .6rem 1rem;
+  transition: all .2s ease;
+}
+
+
+.detail-row {
+  align-items: center;
+  display: flex;
+  gap: 1rem;
+}
+
+.message-icon {
+  margin-right: 16px;
+  margin-left: 16px;
+  font-size: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.message-icon .fa-check-circle { color: var(--text-color); }
+
+
+.message-title {
+  margin: 0 0 8px 0;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+
+.message-text {
+  margin: 0;
+  line-height: 1.5;
+}
+
+
+.message-close {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: inherit;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+  padding: 0;
+  margin-left: 16px;
+}
+
+
+.message-close:hover {
+  opacity: 1;
+}
+
+@media (max-width: 768px) {
+  .option-row {
+  align-items: stretch;
+  flex-direction: column;
+  gap: 1rem;
+  text-align: center;
+}
+  
+  .message-icon {
+    margin-right: 0;
+    margin-bottom: 8px;
+  }
+  
+  .message-close {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+  }
+}

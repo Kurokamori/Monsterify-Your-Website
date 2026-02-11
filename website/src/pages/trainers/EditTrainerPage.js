@@ -575,7 +575,7 @@ const EditTrainerPage = () => {
 
   if (loading) {
     return (
-      <div className="loading-container">
+      <div className="error-container">
         <div className="loading-spinner">
           <i className="fas fa-spinner fa-spin"></i>
         </div>
@@ -589,10 +589,10 @@ const EditTrainerPage = () => {
       <div className="error-container">
         <i className="fas fa-exclamation-circle"></i>
         <p>{error}</p>
-        <button onClick={fetchTrainerData} className="retry-button">
+        <button onClick={fetchTrainerData} className="button primary">
           Try Again
         </button>
-        <button onClick={() => navigate(-1)} className="back-button">
+        <button onClick={() => navigate(-1)} className="button secondary">
           Go Back
         </button>
       </div>
@@ -604,7 +604,7 @@ const EditTrainerPage = () => {
       <div className="error-container">
         <i className="fas fa-lock"></i>
         <p>You are not authorized to edit this trainer.</p>
-        <button onClick={() => navigate(`/trainers/${id}`)} className="back-button">
+        <button onClick={() => navigate(`/trainers/${id}`)} className="button secondary">
           View Trainer
         </button>
       </div>
@@ -612,18 +612,18 @@ const EditTrainerPage = () => {
   }
 
   return (
-    <div className="edit-trainer-container">
+    <div className="edit-monster-container">
       <h1>Edit Trainer: {trainer.name}</h1>
 
       {error && (
-        <div className="alert alert-danger">
+        <div className="alert error">
           <i className="fas fa-exclamation-circle"></i>
           <span>{error}</span>
         </div>
       )}
 
       {success && (
-        <div className="alert alert-success">
+        <div className="alert success">
           <i className="fas fa-check-circle"></i>
           <span>{success}</span>
         </div>
@@ -633,7 +633,7 @@ const EditTrainerPage = () => {
         {/* Basic Information Section */}
         <div className="form-section">
           <h2>Basic Information</h2>
-          <div className="form-grid">
+          <div className="container cols-2 gap-md">
             <div className="form-group">
               <label htmlFor="name">Name</label>
               <input
@@ -646,7 +646,7 @@ const EditTrainerPage = () => {
               />
             </div>
             </div>
-          <div className="form-grid">
+          <div className="container cols-2 gap-md">
             <div className="form-group">
               <label htmlFor="nickname">Nickname</label>
               <input
@@ -669,7 +669,7 @@ const EditTrainerPage = () => {
               />
             </div>
           </div>
-          <div className="form-grid">
+          <div className="container cols-2 gap-md">
             <div className="form-group">
               <AutocompleteInput
                 id="faction"
@@ -687,7 +687,7 @@ const EditTrainerPage = () => {
         {/* Species and Types Section */}
         <div className="form-section">
           <h2>Species and Types</h2>
-          <div className="form-grid">
+          <div className="container cols-2 gap-md">
             <div className="form-group">
               <label htmlFor="species1">Primary Species</label>
               <input
@@ -800,7 +800,7 @@ const EditTrainerPage = () => {
         {/* Abilities and Characteristics Section */}
         <div className="form-section">
           <h2>Abilities and Characteristics</h2>
-          <div className="form-grid">
+          <div className="container cols-2 gap-md">
             <div className="form-group">
               <AutocompleteInput
                 id="ability"
@@ -921,7 +921,7 @@ const EditTrainerPage = () => {
         {/* Personal Information Section */}
         <div className="form-section">
           <h2>Personal Information</h2>
-          <div className="form-grid">
+          <div className="container cols-2 gap-md">
             <div className="form-group">
               <label htmlFor="gender">Gender</label>
               <input
@@ -983,7 +983,7 @@ const EditTrainerPage = () => {
               />
             </div>
             </div>
-            <div className="form-grid">
+            <div className="container cols-2 gap-md">
 
             <div className="form-group">
               <label htmlFor="height">Height</label>
@@ -1007,7 +1007,7 @@ const EditTrainerPage = () => {
               />
             </div>
             </div>
-            <div className="form-grid">
+            <div className="container cols-2 gap-md">
 
             <div className="form-group theme-fields">
               <label htmlFor="theme_display">Theme Display Text</label>
@@ -1036,7 +1036,7 @@ const EditTrainerPage = () => {
               </small>
             </div>
             </div>
-            <div className="form-grid">
+            <div className="container cols-2 gap-md">
 
             <div className="form-group">
               <label htmlFor="voice_claim_display">Voice Claim Display Text</label>
@@ -1072,7 +1072,7 @@ const EditTrainerPage = () => {
         {/* Location Information Section */}
         <div className="form-section">
           <h2>Location Information</h2>
-          <div className="form-grid">
+          <div className="container cols-2 gap-md">
             <div className="form-group">
               <label htmlFor="birthplace">Birthplace</label>
               <input
@@ -1102,7 +1102,7 @@ const EditTrainerPage = () => {
         {/* Character Information Section */}
         <div className="form-section">
           <h2>Character Information</h2>
-          <div className="form-grid">
+          <div className="container cols-2 gap-md">
             <div className="form-group">
               <label htmlFor="strengths">Character Strengths</label>
               <textarea
@@ -1192,7 +1192,7 @@ const EditTrainerPage = () => {
         {/* Other Information Section */}
         <div className="form-section">
           <h2>Other Information</h2>
-          <div className="form-grid">
+          <div className="container cols-2 gap-md">
             <div className="form-group">
               <label htmlFor="occupation">Occupation</label>
               <input
@@ -1204,7 +1204,7 @@ const EditTrainerPage = () => {
               />
             </div>
             </div>
-            <div className="form-grid">
+            <div className="container cols-2 gap-md">
 
             <div className="form-group">
               <label htmlFor="birthday">Birthday</label>
@@ -1247,7 +1247,7 @@ const EditTrainerPage = () => {
               <small className="field-note">Automatically calculated from birth year</small>
             </div>
           </div>
-          <div className="form-grid">
+          <div className="container cols-2 gap-md">
 
             <div className="form-group">
               <AutocompleteInput
@@ -1266,7 +1266,7 @@ const EditTrainerPage = () => {
         {/* Biography Section */}
         <div className="form-section">
           <h2>Biography</h2>
-          <div className="form-grid">
+          <div className="container cols-2 gap-md">
             <div className="form-group">
               <label htmlFor="quote">Quote</label>
               <input
@@ -1319,14 +1319,14 @@ const EditTrainerPage = () => {
                     <h3>Secret #{index + 1}</h3>
                     <button
                       type="button"
-                      className="remove-secret-button"
+                      className="button icon danger"
                       onClick={() => handleRemoveSecret(secret.id)}
                     >
                       <i className="fas fa-trash-alt"></i>
                     </button>
                   </div>
 
-                  <div className="form-grid">
+                  <div className="container cols-2 gap-md">
                     <div className="form-group">
                       <label>Title</label>
                       <input
@@ -1360,7 +1360,7 @@ const EditTrainerPage = () => {
           <div className="add-secret-button-container">
             <button
               type="button"
-              className="add-secret-button"
+              className="button primary"
               onClick={handleAddSecret}
             >
               <i className="fas fa-plus"></i> Add Secret
@@ -1381,14 +1381,14 @@ const EditTrainerPage = () => {
                     <h3>Relation #{index + 1}</h3>
                     <button
                       type="button"
-                      className="icon-button"
+                      className="button icon danger"
                       onClick={() => handleRemoveRelation(relation.id)}
                     >
                       <i className="fas fa-trash-alt"></i>
                     </button>
                   </div>
 
-                  <div className="form-grid">
+                  <div className="container cols-2 gap-md">
                     <div className="form-group">
                       <label>Relation Type</label>
                       <select
@@ -1476,7 +1476,7 @@ const EditTrainerPage = () => {
           <div className="add-relation-button-container">
             <button
               type="button"
-              className="add-relation-button"
+              className="button primary"
               onClick={handleAddRelation}
             >
               <i className="fas fa-plus"></i> Add Relation
@@ -1487,7 +1487,7 @@ const EditTrainerPage = () => {
         {/* Images Section */}
         <div className="form-section">
           <h2>Images</h2>
-          <div className="form-grid">
+          <div className="container cols-2 gap-md">
             <div className="form-group full-width">
               <label htmlFor="main_ref">Main Image</label>
               <div className="file-upload-container">
@@ -1497,11 +1497,11 @@ const EditTrainerPage = () => {
                   onChange={(e) => handleImageUpload(e.target.files[0])}
                   id="main-ref-upload"
                 />
-                <label htmlFor="main-ref-upload" className="file-upload-button">
+                <label htmlFor="main-ref-upload" className="button primary">
                   {formData.main_ref_file ? formData.main_ref_file.name : 'Upload Trainer Image'}
                 </label>
                 {(formData.main_ref || formData.main_ref_file) && (
-                  <div className="image-preview">
+                  <div className="image-container medium">
                     <img 
                       src={formData.main_ref_file ? URL.createObjectURL(formData.main_ref_file) : formData.main_ref} 
                       alt="Main reference preview" 
@@ -1524,18 +1524,18 @@ const EditTrainerPage = () => {
             <div className="additional-refs-list">
               {additionalRefs.map((ref, index) => (
                 <div key={ref.id} className="additional-ref-item">
-                  <div className="additional-ref-header">
+                  <div className="adopt-card">
                     <h3>Reference #{index + 1}</h3>
                     <button
                       type="button"
-                      className="remove-ref-button"
+                      className="button icon danger"
                       onClick={() => handleRemoveAdditionalRef(ref.id)}
                     >
                       <i className="fas fa-trash-alt"></i>
                     </button>
                   </div>
 
-                  <div className="form-grid">
+                  <div className="container cols-2 gap-md">
                     <div className="form-group">
                       <label>Title</label>
                       <input
@@ -1565,11 +1565,11 @@ const EditTrainerPage = () => {
                           onChange={(e) => handleAdditionalRefImageUpload(ref.id, e.target.files[0])}
                           id={`additional-ref-upload-${ref.id}`}
                         />
-                        <label htmlFor={`additional-ref-upload-${ref.id}`} className="file-upload-button">
+                        <label htmlFor={`additional-ref-upload-${ref.id}`} className="button primary">
                           {ref.image_file ? ref.image_file.name : 'Upload Reference Image'}
                         </label>
                         {(ref.image_url || ref.image_file) && (
-                          <div className="image-preview">
+                          <div className="image-container medium">
                             <img 
                               src={ref.image_file ? URL.createObjectURL(ref.image_file) : ref.image_url} 
                               alt="Additional reference preview" 
@@ -1590,10 +1590,10 @@ const EditTrainerPage = () => {
             </div>
           )}
 
-          <div className="add-ref-button-container">
+          <div className="artwork-pagination">
             <button
               type="button"
-              className="add-ref-button"
+              className="button primary"
               onClick={handleAddAdditionalRef}
             >
               <i className="fas fa-plus"></i> Add Reference
@@ -1604,7 +1604,7 @@ const EditTrainerPage = () => {
         {/* Mega Evolution Section */}
         <div className="form-section">
           <h2>Mega Evolution</h2>
-          <div className="form-grid">
+          <div className="container cols-2 gap-md">
             <div className="form-group full-width">
               <label htmlFor="mega_ref">Mega Evolution Image</label>
               <div className="file-upload-container">
@@ -1614,11 +1614,11 @@ const EditTrainerPage = () => {
                   onChange={(e) => handleMegaImageUpload(e.target.files[0])}
                   id="mega-ref-upload"
                 />
-                <label htmlFor="mega-ref-upload" className="file-upload-button">
+                <label htmlFor="mega-ref-upload" className="button primary">
                   {formData.mega_ref_file ? formData.mega_ref_file.name : 'Upload Mega Evolution Image'}
                 </label>
                 {(formData.mega_ref || formData.mega_ref_file) && (
-                  <div className="image-preview">
+                  <div className="image-container medium">
                     <img 
                       src={formData.mega_ref_file ? URL.createObjectURL(formData.mega_ref_file) : formData.mega_ref} 
                       alt="Mega reference preview" 
@@ -1641,7 +1641,7 @@ const EditTrainerPage = () => {
               />
             </div>
             </div>
-            <div className="form-grid">
+            <div className="container cols-2 gap-md">
 
             <div className="form-group">
               <label htmlFor="mega_species1">Mega Primary Species</label>
@@ -1749,7 +1749,7 @@ const EditTrainerPage = () => {
               />
             </div>
             </div>
-            <div className="form-grid">
+            <div className="container cols-2 gap-md">
 
             <div className="form-group">
               <AutocompleteInput
@@ -1767,10 +1767,10 @@ const EditTrainerPage = () => {
         </div>
 
         <div className="form-actions">
-          <button type="button" className="cancel-button" onClick={() => navigate(`/trainers/${id}`)}>
+          <button type="button" className="button danger" onClick={() => navigate(`/trainers/${id}`)}>
             Cancel
           </button>
-          <button type="submit" className="save-button" disabled={saving}>
+          <button type="submit" className="button primary" disabled={saving}>
             {saving ? <i className="fas fa-spinner fa-spin"></i> : 'Save Changes'}
           </button>
         </div>

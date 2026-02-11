@@ -58,15 +58,15 @@ const GuideCategoryIndex = () => {
   }
 
   return (
-    <div className="guides-container">
-      <div className="guides-header">
+    <div className="main-content-container">
+      <div className="lore-header">
         <h1>Guides & Documentation</h1>
         <p>Learn everything you need to know about the game</p>
       </div>
 
       <div className="guide-categories-grid">
         {Object.keys(categories).map(key => (
-          <Link to={`/guides/${key}`} className="guide-category-card" key={key}>
+          <Link to={`/guides/${key}`} className="guide-card" key={key}>
             <div className="guide-category-icon">
               <i className={getCategoryIcon(key)}></i>
             </div>
@@ -74,6 +74,40 @@ const GuideCategoryIndex = () => {
             <p>{getCategoryDescription(key)}</p>
           </Link>
         ))}
+        <Link to="/guides/interactive-map" className="guide-card" key="map">
+          <div className="guide-category-icon">
+            <i className="fas fa-map-marked-alt"></i>
+          </div>
+          <h2>Map</h2>
+          <p>Navigate through the world with our interactive map system.</p>
+        </Link>
+      </div>
+
+      <div className="auth-header">
+        <h2>Tools</h2>
+        <div className="guide-categories-grid">
+          <Link to="/guides/type-calculator" className="guide-card">
+            <div className="guide-category-icon">
+              <i className="fas fa-calculator"></i>
+            </div>
+            <h2>Type Calculator</h2>
+            <p>Calculate type effectiveness and damage multipliers.</p>
+          </Link>
+          <Link to="/guides/evolution-explorer" className="guide-card">
+            <div className="guide-category-icon">
+              <i className="fas fa-dna"></i>
+            </div>
+            <h2>Evolution Explorer</h2>
+            <p>Explore evolution chains and requirements.</p>
+          </Link>
+          <Link to="/guides/ability-database" className="guide-card">
+            <div className="guide-category-icon">
+              <i className="fas fa-bolt"></i>
+            </div>
+            <h2>Ability Database</h2>
+            <p>Browse and search all available abilities.</p>
+          </Link>
+        </div>
       </div>
     </div>
   );
@@ -135,7 +169,7 @@ const GuideCategory = () => {
   }
 
   return (
-    <div className="guides-container">
+    <div className="main-content-container">
       <GuideCategoryTabs categories={categories} activeCategory={category} />
 
       <div className="guide-content-layout">
@@ -148,7 +182,7 @@ const GuideCategory = () => {
           )}
         </div>
 
-        <div className="guide-content-container">
+        <div className="town-section">
           <MarkdownRenderer content={content} />
         </div>
       </div>
@@ -215,7 +249,7 @@ const GuideContent = () => {
   }
 
   return (
-    <div className="guides-container">
+    <div className="main-content-container">
       <GuideCategoryTabs categories={categories} activeCategory={category} />
 
       <div className="guide-content-layout">
@@ -228,7 +262,7 @@ const GuideContent = () => {
           )}
         </div>
 
-        <div className="guide-content-container">
+        <div className="town-section">
           <MarkdownRenderer content={content} />
         </div>
       </div>

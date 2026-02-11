@@ -80,21 +80,21 @@ const ContentManagementPage = () => {
 
         {/* Success Message */}
         {successMessage && (
-          <div className="admin-alert success">
+          <div className="alert success">
             <i className="fas fa-check-circle"></i> {successMessage}
           </div>
         )}
 
         {/* Error Message */}
         {error && (
-          <div className="admin-alert error">
+          <div className="alert error">
             <i className="fas fa-exclamation-circle"></i> {error}
           </div>
         )}
 
         {/* Action Buttons */}
         <div className="admin-actions">
-          <Link to="/admin" className="admin-button secondary">
+          <Link to="/admin" className="button secondary">
             <i className="fas fa-arrow-left"></i> Back to Dashboard
           </Link>
         </div>
@@ -130,13 +130,13 @@ const ContentManagementPage = () => {
                     <div className="admin-card-actions">
                       <Link
                         to={`/admin/content/${key}`}
-                        className="admin-button"
+                        className="button primary"
                       >
                         <i className="fas fa-folder-open"></i> Browse Content
                       </Link>
                       <Link
                         to={`/admin/content/${key}/add`}
-                        className="admin-button secondary"
+                        className="button secondary"
                       >
                         <i className="fas fa-plus"></i> Add New
                       </Link>

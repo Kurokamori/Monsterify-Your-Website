@@ -94,15 +94,15 @@ const Farm = () => {
   if (!isAuthenticated) {
     return (
       <div className="location-activity-container">
-        <div className="location-activity-header">
-          <Link to="/town" className="btn-secondary">
+        <div className="quick-actions">
+          <Link to="/town" className="button secondary">
             <i className="fas fa-arrow-left mr-2"></i> Back to Town
           </Link>
           <h1>Farm</h1>
         </div>
         <div className="auth-message">
           <p>Please log in to access the farm.</p>
-          <Link to="/login" className="btn-primary">Log In</Link>
+          <Link to="/login" className="button primary">Log In</Link>
         </div>
       </div>
     );
@@ -187,8 +187,8 @@ const Farm = () => {
   if (showSession && sessionData && promptData && flavorData) {
     return (
       <div className="location-activity-container">
-        <div className="location-activity-header">
-          <button onClick={returnToActivity} className="btn-secondary">
+        <div className="quick-actions">
+          <button onClick={returnToActivity} className="button secondary">
             <i className="fas fa-arrow-left mr-2"></i> Back to Farm
           </button>
           <h1>Farm - {sessionData.activity.replace(/_/g, ' ')}</h1>
@@ -211,8 +211,8 @@ const Farm = () => {
   if (showBreeding) {
     return (
       <div className="location-activity-container">
-        <div className="location-activity-header">
-          <button onClick={handleBreedingCancel} className="btn-secondary">
+        <div className="quick-actions">
+          <button onClick={handleBreedingCancel} className="button secondary">
             <i className="fas fa-arrow-left mr-2"></i> Back to Farm
           </button>
           <h1>Farm - Breed Monsters</h1>
@@ -229,16 +229,16 @@ const Farm = () => {
   if (activeSession && !showSession) {
     return (
       <div className="location-activity-container">
-        <div className="location-activity-header">
-          <Link to="/town" className="btn-secondary">
+        <div className="quick-actions">
+          <Link to="/town" className="button secondary">
             <i className="fas fa-arrow-left mr-2"></i> Back to Town
           </Link>
           <h1>Farm</h1>
         </div>
-        <div className="active-session-message">
+        <div className="auth-message">
           <h2>Active Session</h2>
           <p>You have an active farm session in progress.</p>
-          <button onClick={continueSession} className="btn-primary">
+          <button onClick={continueSession} className="button primary">
             Continue Session
           </button>
         </div>
@@ -248,8 +248,8 @@ const Farm = () => {
 
   return (
     <div className="location-activity-container">
-      <div className="location-activity-header">
-        <Link to="/town" className="btn-secondary">
+      <div className="quick-actions">
+        <Link to="/town" className="button secondary">
           <i className="fas fa-arrow-left mr-2"></i> Back to Town
         </Link>
         <h1>Farm</h1>
@@ -280,7 +280,7 @@ const Farm = () => {
 
         <div className="location-activities">
           <div className="location-activity-card">
-            <div className="activity-image">
+            <div className="image-container activity">
               <img src="https://i.imgur.com/fztdYkJ.png" alt="Work the Farm" />
             </div>
             <div className="activity-info">
@@ -290,7 +290,7 @@ const Farm = () => {
               </div>
               <p>Toil in the magical fields where crops grow with supernatural abundance and mythical beasts aid in the harvest.</p>
               <button
-                className="btn-primary"
+                className="button primary"
                 onClick={() => startActivity('work')}
                 disabled={cooldown.active}
               >
@@ -300,14 +300,14 @@ const Farm = () => {
           </div>
 
           <div className="location-activity-card">
-            <div className="activity-image">
+            <div className="image-container activity">
               <img src="https://i.imgur.com/fztdYkJ.png" alt="Breed Monsters" />
             </div>
             <div className="activity-info">
               <h3>Breed Monsters</h3>
               <p>Breed compatible monsters to create new monsters. Select one of your monsters and any monster in the game.</p>
               <button
-                className="btn-primary"
+                className="button primary"
                 onClick={startBreeding}
               >
                 <i className="fas fa-egg mr-2"></i> Breed Monsters

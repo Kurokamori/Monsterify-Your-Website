@@ -167,7 +167,7 @@ const BackendFileUpload = ({
   };
 
   return (
-    <div className={`file-upload ${disabled ? 'disabled' : ''}`}>
+    <div className={`file-upload${disabled ? 'disabled' : ''}`}>
       <input
         type="file"
         ref={fileInputRef}
@@ -192,14 +192,14 @@ const BackendFileUpload = ({
             <div className="preview-actions">
               <button
                 type="button"
-                className="change-image-button"
+                className="button secondary sm"
                 onClick={handleButtonClick}
               >
                 <i className="fas fa-exchange-alt"></i> Change
               </button>
               <button
                 type="button"
-                className="remove-image-button"
+                className="button danger sm"
                 onClick={handleRemoveImage}
               >
                 <i className="fas fa-trash-alt"></i> Remove
@@ -210,7 +210,7 @@ const BackendFileUpload = ({
       ) : (
         <button
           type="button"
-          className="upload-button"
+          className="button primary"
           onClick={handleButtonClick}
           disabled={disabled || isUploading}
         >
@@ -221,9 +221,9 @@ const BackendFileUpload = ({
 
       {isUploading && (
         <div className="upload-progress">
-          <div className="progress-bar">
+          <div className="progress">
             <div
-              className="progress-bar-fill"
+              className="progress-fill primary"
               style={{ width: `${uploadProgress}%` }}
             ></div>
           </div>

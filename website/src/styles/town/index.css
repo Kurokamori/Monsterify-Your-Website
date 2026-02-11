@@ -1,0 +1,40 @@
+/* =============================================================================
+   TOWN STYLES INDEX
+
+   This file imports all town location styles.
+   Import this file to get all town styles.
+   ============================================================================= */
+
+/* Core town styles */
+@import './TownStyles.css';
+
+/* Activities */
+@import './ActivityStyles.css';
+
+/* Adventures - Core and split files */
+@import './adventure-bosses.css';
+@import './adventure-leaderboard.css';
+@import './adventure-events.css';
+@import './adventure-missions.css';
+@import './AdventureStyles.css';
+
+/* Antique auction */
+@import './AntiqueAuctionStyles.css';
+
+/* Adoption center */
+@import './AdoptionItemModal.css';
+
+/* Nursery - Egg hatching and nurturing */
+@import './nursery.css';
+
+/* Trade Center - Automated trades */
+@import './trade-center.css';
+
+/* Garden - Plant cultivation and harvest */
+@import './garden.css';
+
+/* Game Corner - Video timer and rewards */
+@import './game-corner.css';
+
+/* Breeding - Monster breeding system */
+@import './breeding.css';

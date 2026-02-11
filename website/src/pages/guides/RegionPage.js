@@ -1607,8 +1607,8 @@ const Regions = {
   }
 
   return (
-    <div className="region-page">
-      <div className="region-header">
+    <div className="area-page">
+      <div className="area-header">
         <div className="breadcrumb">
           <button onClick={() => navigate('/guides/interactive-map')} className="breadcrumb-link">
             World Map
@@ -1618,9 +1618,9 @@ const Regions = {
             {landmassData?.name}
           </button>
           <span className="breadcrumb-separator">›</span>
-          <span className="breadcrumb-current">{regionData.name}</span>
+          <span className="currency-label">{regionData.name}</span>
         </div>
-        <button onClick={handleBack} className="back-button">
+        <button onClick={handleBack} className="button secondary">
           ← Back to {landmassData?.name}
         </button>
         <h1 align="center">{regionData.name}</h1>
@@ -1628,14 +1628,14 @@ const Regions = {
         
       </div>
 
-      <div className="region-content">
+      <div className="area-content">
         <div className="region-top-section">
           <div className="region-map-section">
             <div className="region-map-container">
               <img 
                 src={regionData.image} 
                 alt={regionData.name}
-                className="region-map-image"
+                className="world-map-image"
                 onError={(e) => handleMapImageError(e, 'map')}
               />
               
@@ -1656,18 +1656,18 @@ const Regions = {
               ))}
 
               {hoveredArea && (
-                <div className="area-tooltip">
-                  <div className="tooltip-content">
+                <div className="map-tooltip">
+                  <div className="npc-basic-info">
                     <img 
                       src={hoveredArea.image} 
                       alt={hoveredArea.name}
                       className="tooltip-image"
                       onError={(e) => handleMapImageError(e, 'map')}
                     />
-                    <div className="tooltip-info">
+                    <div className="area-card">
                       <h3>{hoveredArea.name}</h3>
                       <p>{hoveredArea.description}</p>
-                      <div className="difficulty-badge" style={{ backgroundColor: getDifficultyColor(hoveredArea.difficulty) }}>
+                      <div className="badge" style={{ backgroundColor: getDifficultyColor(hoveredArea.difficulty) }}>
                         {hoveredArea.difficulty}
                       </div>
                     </div>
@@ -1677,7 +1677,7 @@ const Regions = {
             </div>
           </div>
 
-          <div className="region-sidebar">
+          <div className="breeding-form">
             <div className="info-card">
               <h3>Description</h3>
               <p>{regionData.description}</p>
@@ -1692,9 +1692,9 @@ const Regions = {
             </div>
             <div className="info-card">
               <h3>Dominant Types</h3>
-              <div className="map-type-badges">
+              <div className="map-badges">
                 {regionData.dominantTypes.map((type) => (
-                  <span key={type} className={`trainer-type-badge type-${type.toLowerCase()}`}>
+                  <span key={type} className={`badge full-width type-${type.toLowerCase()}`}>
                     {type}
                   </span>
                 ))}
@@ -1703,9 +1703,9 @@ const Regions = {
           </div>
         </div>
 
-        <div className="region-bottom-section">
-          <div className="region-details-full">
-            <div className="region-info-grid-additional">
+        <div className="area-details">
+          <div className="area-details">
+            <div className="timer-settings">
               <div className="info-card">
                 <h3>Wildlife</h3>
                 <p>{regionData.wildlife}</p>
@@ -1716,7 +1716,7 @@ const Regions = {
               </div>
             </div>
 
-            <div className="lore-section">
+            <div className="tips">
               <h3>Lore & History</h3>
               <p>{regionData.lore}</p>
             </div>
@@ -1737,10 +1737,10 @@ const Regions = {
                       onError={(e) => handleMapImageError(e, 'map')}
                     />
                     <div className="area-card-content">
-                      <div className="area-card-header">
+                      <div className="resource-header">
                         <h4>{area.name}</h4>
-                        <div 
-                          className="difficulty-badge small"
+                        <div
+                          className="badge sm"
                           style={{ backgroundColor: getDifficultyColor(area.difficulty) }}
                         >
                           {area.difficulty}

@@ -193,25 +193,25 @@ const SubmissionsPage = () => {
   }
 
   return (
-    <div className="submissions-container">
-      <div className="submissions-header">
+    <div className="bosses-page">
+      <div className="tree-header">
         <h1>My Submissions</h1>
         <button 
-          className="new-submission-button"
+          className="button primary"
           onClick={() => setIsNewSubmissionModalOpen(true)}
         >
           <i className="fas fa-plus"></i> New Submission
         </button>
       </div>
 
-      <div className="submissions-filters">
-        <div className="filter-group">
+      <div className="profile-content">
+        <div className="set-item">
           <label htmlFor="status-filter">Status:</label>
           <select
             id="status-filter"
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="filter-select"
+            className="filter-input"
           >
             <option value="all">All Statuses</option>
             <option value="pending">Pending</option>
@@ -220,13 +220,13 @@ const SubmissionsPage = () => {
           </select>
         </div>
         
-        <div className="filter-group">
+        <div className="set-item">
           <label htmlFor="type-filter">Type:</label>
           <select
             id="type-filter"
             value={typeFilter}
             onChange={(e) => setTypeFilter(e.target.value)}
-            className="filter-select"
+            className="filter-input"
           >
             <option value="all">All Types</option>
             <option value="monster">Monster</option>
@@ -247,7 +247,7 @@ const SubmissionsPage = () => {
                 setIsSubmissionModalOpen(true);
               }}
             >
-              <div className="submission-image">
+              <div className="npc-avatar">
                 <img
                   src={submission.image_url}
                   alt={submission.name}
@@ -261,7 +261,7 @@ const SubmissionsPage = () => {
               </div>
               <div className="submission-content">
                 <h3 className="submission-name">{submission.name}</h3>
-                <p className="submission-description">{submission.description}</p>
+                <p className="related-submissions">{submission.description}</p>
                 <div className="submission-date">
                   <i className="fas fa-calendar-alt"></i> Submitted on {new Date(submission.submitted_date).toLocaleDateString()}
                 </div>
@@ -277,7 +277,7 @@ const SubmissionsPage = () => {
           <h2>No Submissions Found</h2>
           <p>You haven't submitted any content yet. Create your first submission to contribute to the game!</p>
           <button 
-            className="create-submission-button"
+            className="button primary lg"
             onClick={() => setIsNewSubmissionModalOpen(true)}
           >
             Create Your First Submission
@@ -293,7 +293,7 @@ const SubmissionsPage = () => {
       >
         {selectedSubmission && (
           <div className="submission-detail-modal">
-            <div className="submission-detail-image">
+            <div className="image-container">
               <img
                 src={selectedSubmission.image_url}
                 alt={selectedSubmission.name}
@@ -322,7 +322,7 @@ const SubmissionsPage = () => {
                 <span className="detail-value">{new Date(selectedSubmission.submitted_date).toLocaleString()}</span>
               </div>
               
-              <div className="submission-detail-description">
+              <div className="submission-detail-feedback">
                 <span className="detail-label">Description:</span>
                 <p className="detail-value">{selectedSubmission.description}</p>
               </div>
@@ -337,7 +337,7 @@ const SubmissionsPage = () => {
             
             <div className="modal-actions">
               <button 
-                className="modal-button secondary"
+                className="button secondary"
                 onClick={() => setIsSubmissionModalOpen(false)}
               >
                 Close
@@ -367,7 +367,7 @@ const SubmissionsPage = () => {
                 id="submission-type"
                 value={submissionType}
                 onChange={(e) => setSubmissionType(e.target.value)}
-                className="form-select"
+                className="form-input"
               >
                 <option value="monster">Monster</option>
                 <option value="location">Location</option>
@@ -394,7 +394,7 @@ const SubmissionsPage = () => {
                 id="submission-description"
                 value={submissionDescription}
                 onChange={(e) => setSubmissionDescription(e.target.value)}
-                className="form-textarea"
+                className="form-input"
                 placeholder={`Describe your ${submissionType}`}
                 rows={4}
                 required
@@ -404,7 +404,7 @@ const SubmissionsPage = () => {
             <div className="form-group">
               <label>Image</label>
               <div className="image-upload">
-                <div className="image-preview">
+                <div className="image-container medium">
                   {submissionImagePreview ? (
                     <img src={submissionImagePreview} alt="Preview" />
                   ) : (
@@ -431,14 +431,14 @@ const SubmissionsPage = () => {
             <div className="modal-actions">
               <button 
                 type="button" 
-                className="modal-button secondary"
+                className="button secondary"
                 onClick={() => setIsNewSubmissionModalOpen(false)}
               >
                 Cancel
               </button>
               <button 
                 type="submit" 
-                className="modal-button primary"
+                className="button primary"
                 disabled={loading}
               >
                 {loading ? (

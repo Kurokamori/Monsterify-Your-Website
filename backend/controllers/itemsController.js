@@ -977,8 +977,12 @@ async function validateSpeciesForPastry(speciesName) {
         SELECT name, 'pals' as monster_type, null as stage, false as is_legendary, false as is_mythical, null as rank FROM pals_monsters WHERE name = $5
         UNION
         SELECT name, 'fakemon' as monster_type, stage, is_legendary, is_mythical, null as rank FROM fakemon WHERE name = $6
+        UNION
+        SELECT name, 'finalfantasy' as monster_type, stage, false as is_legendary, false as is_mythical, null as rank FROM finalfantasy_monsters WHERE name = $7
+        UNION
+        SELECT name, 'monsterhunter' as monster_type, null as stage, false as is_legendary, false as is_mythical, null as rank FROM monsterhunter_monsters WHERE name = $8
         LIMIT 1`;
-      existsParams = [speciesName, speciesName, speciesName, speciesName, speciesName, speciesName];
+      existsParams = [speciesName, speciesName, speciesName, speciesName, speciesName, speciesName, speciesName, speciesName];
     } else {
       existsQuery = `
         SELECT name, 'pokemon' as monster_type, stage, is_legendary, is_mythical, null as rank FROM pokemon_monsters WHERE name = ?
@@ -992,8 +996,12 @@ async function validateSpeciesForPastry(speciesName) {
         SELECT name, 'pals' as monster_type, null as stage, false as is_legendary, false as is_mythical, null as rank FROM pals_monsters WHERE name = ?
         UNION
         SELECT name, 'fakemon' as monster_type, stage, is_legendary, is_mythical, null as rank FROM fakemon WHERE name = ?
+        UNION
+        SELECT name, 'finalfantasy' as monster_type, stage, false as is_legendary, false as is_mythical, null as rank FROM finalfantasy_monsters WHERE name = ?
+        UNION
+        SELECT name, 'monsterhunter' as monster_type, null as stage, false as is_legendary, false as is_mythical, null as rank FROM monsterhunter_monsters WHERE name = ?
         LIMIT 1`;
-      existsParams = [speciesName, speciesName, speciesName, speciesName, speciesName, speciesName];
+      existsParams = [speciesName, speciesName, speciesName, speciesName, speciesName, speciesName, speciesName, speciesName];
     }
 
     const species = await db.asyncGet(existsQuery, existsParams);
@@ -1012,11 +1020,13 @@ async function validateSpeciesForPastry(speciesName) {
     }
 
     // Check stage restrictions based on monster type
-    if (species.monster_type === 'pokemon' || species.monster_type === 'yokai' || species.monster_type === 'nexomon') {
+    if (species.monster_type === 'pokemon' || species.monster_type === 'yokai' || species.monster_type === 'nexomon' || species.monster_type === 'finalfantasy') {
       if (species.stage && !['Base Stage', 'Doesn\'t Evolve'].includes(species.stage)) {
         throw new Error(`"${speciesName}" is an evolved form (${species.stage}). Pastries can only be used with base stage or non-evolving species (like those that can hatch from eggs).`);
       }
     }
+
+    // Monster Hunter monsters don't evolve, so no stage restrictions needed
 
     // Check rank restrictions for Digimon
     if (species.monster_type === 'digimon') {

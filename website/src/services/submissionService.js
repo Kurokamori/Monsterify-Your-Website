@@ -68,6 +68,52 @@ const submissionService = {
   },
 
   /**
+   * Get authenticated user's own submissions with pagination and filtering
+   * @param {Object} params - Query parameters (submissionType, sortBy, page, limit)
+   * @returns {Promise<Object>} - Response with user's submissions and pagination
+   */
+  getMySubmissions: async (params = {}) => {
+    try {
+      const response = await api.get('/submissions/user/my-submissions', { params });
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching my submissions:', error);
+      throw error;
+    }
+  },
+
+  /**
+   * Update a submission (title, description, tags, content for writing)
+   * @param {number} submissionId - Submission ID
+   * @param {Object} data - Update data (title, description, tags, content)
+   * @returns {Promise<Object>} - Response with updated submission
+   */
+  updateSubmission: async (submissionId, data) => {
+    try {
+      const response = await api.put(`/submissions/${submissionId}`, data);
+      return response.data;
+    } catch (error) {
+      console.error(`Error updating submission ${submissionId}:`, error);
+      throw error;
+    }
+  },
+
+  /**
+   * Delete a submission (soft delete)
+   * @param {number} submissionId - Submission ID
+   * @returns {Promise<Object>} - Response with success status
+   */
+  deleteSubmission: async (submissionId) => {
+    try {
+      const response = await api.delete(`/submissions/${submissionId}`);
+      return response.data;
+    } catch (error) {
+      console.error(`Error deleting submission ${submissionId}:`, error);
+      throw error;
+    }
+  },
+
+  /**
    * Get trainer's submissions
    * @param {number} trainerId - Trainer ID
    * @param {Object} params - Query parameters (type, status, page, limit)
@@ -810,7 +856,304 @@ const submissionService = {
     }
   },
 
+  /**
+   * Submit combined art/writing + prompt submission
+   * Creates a gallery submission linked to a prompt, calculates all rewards
+   * @param {Object} data - Combined submission data
+   * @param {string} data.submissionType - 'art' or 'writing'
+   * @param {number} data.promptId - Prompt ID
+   * @param {number} data.trainerId - Trainer ID
+   * @param {Object} data.artData - Art submission data (if submissionType === 'art')
+   * @param {Object} data.writingData - Writing submission data (if submissionType === 'writing')
+   * @returns {Promise<Object>} - Response with combined submission result and rewards
+   */
+  submitPromptCombined: async (data) => {
+    try {
+      const formData = new FormData();
 
+      formData.append('submissionType', data.submissionType);
+      formData.append('promptId', data.promptId);
+      formData.append('trainerId', data.trainerId);
+
+      if (data.submissionType === 'art' && data.artData) {
+        const artData = data.artData;
+
+        // Add basic submission data
+        formData.append('title', artData.title || '');
+        formData.append('description', artData.description || '');
+        formData.append('contentType', artData.contentType || 'prompt');
+        formData.append('quality', artData.quality || 'rendered');
+
+        // Add backgrounds
+        if (artData.backgrounds && artData.backgrounds.length > 0) {
+          formData.append('backgrounds', JSON.stringify(artData.backgrounds));
+        }
+
+        formData.append('uniquelyDifficult', artData.uniquelyDifficult || false);
+
+        // Add trainer data
+        if (artData.trainers && Array.isArray(artData.trainers)) {
+          formData.append('trainers', JSON.stringify(artData.trainers));
+        } else {
+          formData.append('trainers', JSON.stringify([]));
+        }
+
+        // Add monster data
+        if (artData.monsters && Array.isArray(artData.monsters)) {
+          formData.append('monsters', JSON.stringify(artData.monsters));
+        } else {
+          formData.append('monsters', JSON.stringify([]));
+        }
+
+        // Add NPC data
+        if (artData.npcs && Array.isArray(artData.npcs)) {
+          formData.append('npcs', JSON.stringify(artData.npcs));
+        } else {
+          formData.append('npcs', JSON.stringify([]));
+        }
+
+        // Add tags
+        if (artData.tags && artData.tags.length > 0) {
+          formData.append('tags', JSON.stringify(artData.tags));
+        }
+
+        // Add mature content flags
+        formData.append('isMature', artData.isMature || false);
+        if (artData.contentRating) {
+          formData.append('contentRating', JSON.stringify(artData.contentRating));
+        }
+
+        // Add image file or URL
+        if (artData.imageFile) {
+          formData.append('image', artData.imageFile);
+        } else if (artData.imageUrl) {
+          formData.append('imageUrl', artData.imageUrl);
+        }
+
+        // Add additional images
+        if (artData.additionalImages && artData.additionalImages.length > 0) {
+          artData.additionalImages.forEach((file, index) => {
+            formData.append(`additionalImage_${index}`, file);
+          });
+        }
+      } else if (data.submissionType === 'writing' && data.writingData) {
+        const writingData = data.writingData;
+
+        // Add basic submission data
+        formData.append('title', writingData.title || '');
+        formData.append('description', writingData.description || '');
+        formData.append('contentType', writingData.contentType || 'prompt');
+        formData.append('wordCount', writingData.wordCount || 0);
+
+        // Add trainer data
+        if (writingData.trainers && Array.isArray(writingData.trainers)) {
+          formData.append('trainers', JSON.stringify(writingData.trainers));
+        } else {
+          formData.append('trainers', JSON.stringify([]));
+        }
+
+        // Add monster data
+        if (writingData.monsters && Array.isArray(writingData.monsters)) {
+          formData.append('monsters', JSON.stringify(writingData.monsters));
+        } else {
+          formData.append('monsters', JSON.stringify([]));
+        }
+
+        // Add NPC data
+        if (writingData.npcs && Array.isArray(writingData.npcs)) {
+          formData.append('npcs', JSON.stringify(writingData.npcs));
+        } else {
+          formData.append('npcs', JSON.stringify([]));
+        }
+
+        // Add tags
+        if (writingData.tags && writingData.tags.length > 0) {
+          formData.append('tags', JSON.stringify(writingData.tags));
+        }
+
+        // Add mature content flags
+        formData.append('isMature', writingData.isMature || false);
+        if (writingData.contentRating) {
+          formData.append('contentRating', JSON.stringify(writingData.contentRating));
+        }
+
+        // Add content
+        if (writingData.content) {
+          formData.append('content', writingData.content);
+        } else if (writingData.contentFile) {
+          formData.append('contentFile', writingData.contentFile);
+        } else if (writingData.contentUrl) {
+          formData.append('contentUrl', writingData.contentUrl);
+        }
+
+        // Add cover image
+        if (writingData.coverImage) {
+          formData.append('coverImage', writingData.coverImage);
+        } else if (writingData.coverImageUrl) {
+          formData.append('coverImageUrl', writingData.coverImageUrl);
+        }
+      }
+
+      const response = await api.post('/submissions/prompt/combined', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+
+      return response.data;
+    } catch (error) {
+      console.error('Error submitting combined prompt submission:', error);
+      throw error;
+    }
+  },
+
+  /**
+   * Claim prompt-specific rewards
+   * @param {number} submissionId - Submission ID
+   * @param {Object} allocations - Reward allocations
+   * @param {Object} allocations.promptLevelAllocation - Where prompt levels go
+   * @param {string} allocations.promptLevelAllocation.type - 'trainer' or 'monster'
+   * @param {number} allocations.promptLevelAllocation.targetId - Target trainer/monster ID
+   * @param {Array} allocations.monsterClaims - Monster claiming data
+   * @returns {Promise<Object>} - Response with claimed rewards
+   */
+  claimPromptRewards: async (submissionId, allocations) => {
+    try {
+      const response = await api.post(`/submissions/prompt/${submissionId}/claim-rewards`, allocations);
+      return response.data;
+    } catch (error) {
+      console.error(`Error claiming prompt rewards for submission ${submissionId}:`, error);
+      throw error;
+    }
+  },
+
+  /**
+   * Claim a monster from a prompt submission
+   * @param {number} submissionId - Prompt submission ID
+   * @param {number} trainerId - Trainer to assign the monster to
+   * @param {number} monsterIndex - Index of the monster in the rewards array
+   * @param {string} monsterName - Name for the monster
+   * @returns {Promise<Object>} Claim result with created monster
+   */
+  claimSubmissionMonster: async (submissionId, trainerId, monsterIndex, monsterName) => {
+    try {
+      const response = await api.post(`/submissions/${submissionId}/claim-monster`, {
+        trainerId,
+        monsterIndex,
+        monsterName
+      });
+      return response.data;
+    } catch (error) {
+      console.error(`Error claiming monster from submission ${submissionId}:`, error);
+      throw error;
+    }
+  },
+
+  // ==========================================
+  // Book Collaborator Methods
+  // ==========================================
+
+  /**
+   * Get collaborators for a book
+   * @param {number} bookId - Book submission ID
+   * @returns {Promise<Object>} - Response with collaborators
+   */
+  getBookCollaborators: async (bookId) => {
+    try {
+      const response = await api.get(`/submissions/books/${bookId}/collaborators`);
+      return response.data;
+    } catch (error) {
+      console.error(`Error fetching collaborators for book ${bookId}:`, error);
+      throw error;
+    }
+  },
+
+  /**
+   * Search users to add as collaborators
+   * @param {number} bookId - Book submission ID
+   * @param {string} searchTerm - Search term for username/display name
+   * @returns {Promise<Object>} - Response with matching users
+   */
+  searchCollaboratorUsers: async (bookId, searchTerm) => {
+    try {
+      const response = await api.get(`/submissions/books/${bookId}/collaborators/search`, {
+        params: { search: searchTerm }
+      });
+      return response.data;
+    } catch (error) {
+      console.error(`Error searching users for book ${bookId}:`, error);
+      throw error;
+    }
+  },
+
+  /**
+   * Add a collaborator to a book
+   * @param {number} bookId - Book submission ID
+   * @param {string} userId - User ID to add as collaborator
+   * @param {string} role - Role ('editor' or 'viewer')
+   * @returns {Promise<Object>} - Response with new collaborator
+   */
+  addBookCollaborator: async (bookId, userId, role = 'editor') => {
+    try {
+      const response = await api.post(`/submissions/books/${bookId}/collaborators`, {
+        userId,
+        role
+      });
+      return response.data;
+    } catch (error) {
+      console.error(`Error adding collaborator to book ${bookId}:`, error);
+      throw error;
+    }
+  },
+
+  /**
+   * Remove a collaborator from a book
+   * @param {number} bookId - Book submission ID
+   * @param {string} userId - User ID to remove
+   * @returns {Promise<Object>} - Response with success status
+   */
+  removeBookCollaborator: async (bookId, userId) => {
+    try {
+      const response = await api.delete(`/submissions/books/${bookId}/collaborators/${userId}`);
+      return response.data;
+    } catch (error) {
+      console.error(`Error removing collaborator from book ${bookId}:`, error);
+      throw error;
+    }
+  },
+
+  /**
+   * Update a collaborator's role
+   * @param {number} bookId - Book submission ID
+   * @param {string} userId - User ID to update
+   * @param {string} role - New role ('editor' or 'viewer')
+   * @returns {Promise<Object>} - Response with success status
+   */
+  updateCollaboratorRole: async (bookId, userId, role) => {
+    try {
+      const response = await api.put(`/submissions/books/${bookId}/collaborators/${userId}`, {
+        role
+      });
+      return response.data;
+    } catch (error) {
+      console.error(`Error updating collaborator role for book ${bookId}:`, error);
+      throw error;
+    }
+  },
+
+  /**
+   * Get books the current user collaborates on (but doesn't own)
+   * @returns {Promise<Object>} - Response with collaborated books
+   */
+  getUserCollaborations: async () => {
+    try {
+      const response = await api.get('/submissions/user/collaborations');
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching user collaborations:', error);
+      throw error;
+    }
+  },
 
 };
 

@@ -107,7 +107,7 @@ const AntiqueAppraisal = ({ trainerId, antique, onClose }) => {
       <div className="antique-appraisal-content">
         <div className="antique-appraisal-header">
           <h2>Appraise Antique: {antique}</h2>
-          <button className="close-button" onClick={onClose}>×</button>
+          <button className="button close" onClick={onClose}>×</button>
         </div>
 
         <div className="antique-appraisal-body">
@@ -127,13 +127,13 @@ const AntiqueAppraisal = ({ trainerId, antique, onClose }) => {
                 ) : (
                   <>
                     <button
-                      className="btn btn-primary"
+                      className="button primary"
                       onClick={handleAppraise}
                     >
                       Appraise Antique
                     </button>
                     <button
-                      className="btn btn-secondary"
+                      className="button secondary"
                       onClick={onClose}
                     >
                       Cancel
@@ -147,7 +147,7 @@ const AntiqueAppraisal = ({ trainerId, antique, onClose }) => {
               <h3>Congratulations!</h3>
               <p>You've successfully adopted {monsterName}!</p>
               <button
-                className="btn btn-primary"
+                className="button primary"
                 onClick={onClose}
               >
                 Close
@@ -170,26 +170,26 @@ const AntiqueAppraisal = ({ trainerId, antique, onClose }) => {
                     value={monsterName}
                     onChange={handleNameChange}
                     placeholder="Enter monster name"
-                    className="form-control"
+                    className="form-input"
                   />
                 </div>
 
                 {adoptError && <ErrorMessage message={adoptError} />}
 
-                <div className="adoption-actions">
+                <div className="type-tags fw">
                   {adoptLoading ? (
                     <LoadingSpinner />
                   ) : (
                     <>
                       <button
-                        className="btn btn-primary"
+                        className="button primary"
                         onClick={handleAdopt}
                         disabled={!monsterName.trim()}
                       >
                         Adopt Monster
                       </button>
                       <button
-                        className="btn btn-secondary"
+                        className="button secondary"
                         onClick={onClose}
                       >
                         Cancel

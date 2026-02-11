@@ -320,12 +320,12 @@ const AdventureRewards = () => {
   if (error && !showClaimInterface) {
     return (
       <div className="adventure-rewards-container">
-        <div className="error-message">
+        <div className="alert error">
           <i className="fas fa-exclamation-triangle"></i>
           {error}
         </div>
         <button 
-          className="retry-button"
+          className="button primary"
           onClick={loadUnclaimedRewards}
         >
           Try Again
@@ -338,14 +338,14 @@ const AdventureRewards = () => {
     return (
       <div className="adventure-rewards-container">
         <div className="claim-interface">
-          <div className="claim-header">
+          <div className="map-header">
             <h2>Claim Adventure Rewards</h2>
             <p>Adventure: <strong>{selectedReward.adventure_title}</strong></p>
             <p>Words Written: <strong>{selectedReward.word_count}</strong></p>
           </div>
 
           {error && (
-            <div className="error-message">
+            <div className="alert error">
               <i className="fas fa-exclamation-triangle"></i>
               {error}
             </div>
@@ -362,7 +362,7 @@ const AdventureRewards = () => {
             {levelAllocations.length > 0 && (
               <div className="allocations-list">
                 {levelAllocations.map((allocation) => (
-                  <div key={allocation.id} className="allocation-item">
+                  <div key={allocation.id} className="category-row">
                     <span className="allocation-info">
                       <i className={allocation.entityType === 'trainer' ? 'fas fa-user' : 'fas fa-dragon'}></i>
                       {allocation.entityName}
@@ -373,7 +373,7 @@ const AdventureRewards = () => {
                     </span>
                     <button
                       type="button"
-                      className="remove-allocation"
+                      className="button icon danger"
                       onClick={() => handleRemoveAllocation(allocation.id)}
                     >
                       <i className="fas fa-times"></i>
@@ -388,7 +388,7 @@ const AdventureRewards = () => {
                 {!showAddAllocation ? (
                   <button
                     type="button"
-                    className="add-allocation-btn"
+                    className="button primary"
                     onClick={() => setShowAddAllocation(true)}
                   >
                     <i className="fas fa-plus"></i> Add Level Allocation
@@ -417,7 +417,7 @@ const AdventureRewards = () => {
                         <select
                           value={selectedEntityId}
                           onChange={(e) => setSelectedEntityId(e.target.value)}
-                          className="entity-select"
+                          className="form-input"
                         >
                           <option value="">Select trainer</option>
                           {userTrainers.map(trainer => (
@@ -456,7 +456,7 @@ const AdventureRewards = () => {
                             <select
                               value={selectedEntityId}
                               onChange={(e) => setSelectedEntityId(e.target.value)}
-                              className="entity-select"
+                              className="form-input"
                             >
                               <option value="">Select monster</option>
                               {userMonsters
@@ -485,7 +485,7 @@ const AdventureRewards = () => {
                     <div className="form-actions">
                       <button
                         type="button"
-                        className="add-btn"
+                        className="button primary"
                         onClick={handleAddAllocation}
                         disabled={!selectedEntityId || allocationLevels < 1 || allocationLevels > availableLevels}
                       >
@@ -493,7 +493,7 @@ const AdventureRewards = () => {
                       </button>
                       <button
                         type="button"
-                        className="cancel-btn"
+                        className="button secondary"
                         onClick={() => {
                           setShowAddAllocation(false);
                           setSelectedEntityId('');
@@ -519,14 +519,14 @@ const AdventureRewards = () => {
               </h3>
               <p>Assign each item to one of your trainers:</p>
 
-              <div className="items-grid">
+              <div className="container grid gap-md">
                 {selectedReward.items_earned.map((item, index) => (
                   <div key={index} className="item-assignment-card">
                     <div className="item-info">
                       <h4>{item.name}</h4>
                       <p>{item.description}</p>
                       {item.rarity && (
-                        <span className={`rarity-badge ${item.rarity.toLowerCase()}`}>
+                        <span className={`badge ${item.rarity.toLowerCase()}`}>
                           {item.rarity}
                         </span>
                       )}
@@ -566,7 +566,7 @@ const AdventureRewards = () => {
 
               <div className="coin-allocations">
                 {coinAllocations.map((allocation, index) => (
-                  <div key={index} className="allocation-item">
+                  <div key={index} className="category-row">
                     <div className="allocation-info">
                       <span className="trainer-name">
                         {userTrainers.find(t => t.id === allocation.trainerId)?.name || 'Unknown Trainer'}
@@ -575,7 +575,7 @@ const AdventureRewards = () => {
                     </div>
                     <button
                       type="button"
-                      className="remove-allocation-btn"
+                      className="button icon danger"
                       onClick={() => removeCoinAllocation(index)}
                     >
                       <i className="fas fa-times"></i>
@@ -586,7 +586,7 @@ const AdventureRewards = () => {
                 {availableCoins > 0 && (
                   <button
                     type="button"
-                    className="add-allocation-btn"
+                    className="button primary"
                     onClick={() => setShowAddCoinAllocation(true)}
                   >
                     <i className="fas fa-plus"></i>
@@ -632,7 +632,7 @@ const AdventureRewards = () => {
                   <div className="form-actions">
                     <button
                       type="button"
-                      className="add-btn"
+                      className="button primary"
                       onClick={handleAddCoinAllocation}
                       disabled={!selectedEntityId || allocationCoins < 1 || allocationCoins > availableCoins}
                     >
@@ -640,7 +640,7 @@ const AdventureRewards = () => {
                     </button>
                     <button
                       type="button"
-                      className="cancel-btn"
+                      className="button secondary"
                       onClick={() => {
                         setShowAddCoinAllocation(false);
                         setSelectedEntityId('');
@@ -659,7 +659,7 @@ const AdventureRewards = () => {
           <div className="claim-actions">
             <button
               type="button"
-              className="claim-button"
+              className="button primary"
               onClick={handleClaimRewards}
               disabled={claiming || availableLevels > 0 || availableCoins > 0}
             >
@@ -677,7 +677,7 @@ const AdventureRewards = () => {
             </button>
             <button
               type="button"
-              className="cancel-button"
+              className="button secondary"
               onClick={handleCancel}
               disabled={claiming}
             >
@@ -691,7 +691,7 @@ const AdventureRewards = () => {
 
   return (
     <div className="adventure-rewards-container">
-      <div className="rewards-header">
+      <div className="auth-header">
         <h1>Adventure Rewards</h1>
         <p>Claim rewards from your completed adventures</p>
       </div>
@@ -707,7 +707,7 @@ const AdventureRewards = () => {
         <div className="rewards-list">
           <h2>Unclaimed Rewards ({unclaimedRewards.length})</h2>
           {unclaimedRewards.map((reward) => (
-            <div key={reward.id} className="reward-card">
+            <div key={reward.id} className="area-card">
               <div className="reward-info">
                 <h3>{reward.adventure_title}</h3>
                 <div className="reward-stats">
@@ -734,7 +734,7 @@ const AdventureRewards = () => {
               </div>
               <div className="reward-actions">
                 <button
-                  className="claim-btn"
+                  className="button primary"
                   onClick={() => handleSelectReward(reward)}
                 >
                   <i className="fas fa-hand-holding-heart"></i>

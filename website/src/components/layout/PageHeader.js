@@ -10,8 +10,8 @@ import React from 'react';
  */
 const PageHeader = ({ title, subtitle, actions, children }) => {
   return (
-    <div className="page-header">
-      <div className="page-header-content">
+    <div className="lore-header">
+      <div className="option-row">
         <div className="page-header-title">
           <h1>{title}</h1>
           {subtitle && <p className="page-header-subtitle">{subtitle}</p>}

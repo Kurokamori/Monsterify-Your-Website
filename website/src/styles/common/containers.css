@@ -1,0 +1,146 @@
+/* ==============================
+   Page Containers & Headers
+   ============================== */
+
+/* main content container */
+.main-content-container {
+  width: 90vw;
+  max-width: var(--container-max-width);
+  margin: 0 auto;
+}
+
+/* ---------- Section Title ---------- */
+
+.section-title {
+  align-items: center;
+  border-bottom: 1px solid var(--divider-color);
+  color: var(--accent-color);
+  display: flex;
+  font-size: 1.1rem;
+  font-weight: 600;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.5rem;
+}
+
+.npc-section .section-title {
+  font-size: var(--font-size-lg);
+}
+
+/* ---------- Generic Containers ---------- */
+
+.container {
+  display: flex;
+  margin: 0.5rem;
+}
+
+.container.center {
+  justify-content: center;
+  align-items: center;
+}
+
+.container.horizontal {
+  flex-direction: row;
+}
+
+.container.vertical {
+  flex-direction: column;
+}
+
+.container.no-set {
+  display: block;
+  margin: 0;
+}
+
+/* ======== GRID SYSTEM ======== */
+
+/* Base grid display (use with size modifiers) */
+.container.grid-xs,
+.container.grid-sm,
+.container.grid-md,
+.container.grid,
+.container.grid-lg,
+.container.grid-xl,
+.container.grid-2xl,
+.container.cols-2,
+.container.cols-3,
+.container.cols-4,
+.container.cols-5,
+.container.cols-6 {
+  display: grid;
+}
+
+/* Responsive Auto-sizing Grids */
+.container.grid-xs { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); }
+.container.grid-sm { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+.container.grid-md { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
+.container.grid { grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); }
+.container.grid-lg { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
+.container.grid-xl { grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); }
+.container.grid-2xl { grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); }
+
+/* Fixed Column Grids */
+.container.cols-2 { grid-template-columns: repeat(2, 1fr); }
+.container.cols-3 { grid-template-columns: repeat(3, 1fr); }
+.container.cols-4 { grid-template-columns: repeat(4, 1fr); }
+.container.cols-5 { grid-template-columns: repeat(5, 1fr); }
+.container.cols-6 { grid-template-columns: repeat(6, 1fr); }
+
+/* Legacy alias */
+.container.five { grid-template-columns: repeat(5, 1fr); }
+
+/* ======== GAP MODIFIERS ======== */
+
+.container.gap-xs { gap: 0.25rem; }
+.container.gap-sm { gap: 0.5rem; }
+.container.gap-md { gap: 1rem; }
+.container.gap-lg { gap: 1.5rem; }
+.container.gap-xl { gap: 2rem; }
+
+/* ======== MARGIN MODIFIERS ======== */
+
+.container.mb-sm { margin-bottom: 1rem; }
+.container.mb-md { margin-bottom: 1.5rem; }
+.container.mb-lg { margin-bottom: 2rem; }
+.container.mt-sm { margin-top: 1rem; }
+.container.mt-md { margin-top: 1.5rem; }
+.container.mt-lg { margin-top: 2rem; }
+
+/* ======== WIDTH MODIFIERS ======== */
+
+.container.small { max-width: 30%; }
+.container.medium { max-width: 50%; }
+.container.large { max-width: 100%; }
+
+/* ======== OUTLINE MODIFIERS ======== */
+
+.container.outline {
+  border: 2px solid var(--divider-color);
+}
+
+/* ======== RESPONSIVE BREAKPOINTS ======== */
+
+@media (max-width: 1024px) {
+  .container.grid-xl,
+  .container.grid-2xl { grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); }
+  .container.cols-5,
+  .container.cols-6 { grid-template-columns: repeat(3, 1fr); }
+}
+
+@media (max-width: 768px) {
+  .container.cols-3,
+  .container.cols-4 { grid-template-columns: repeat(2, 1fr); }
+  .container.cols-5,
+  .container.cols-6 { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 480px) {
+  .container.cols-2,
+  .container.cols-3,
+  .container.cols-4,
+  .container.cols-5,
+  .container.cols-6 { grid-template-columns: 1fr; }
+  .container.grid-lg,
+  .container.grid-xl,
+  .container.grid-2xl { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
+}

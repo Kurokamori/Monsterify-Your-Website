@@ -173,7 +173,7 @@ const MonsterListPage = () => {
       <button
         key="first"
         onClick={() => handlePageChange(1)}
-        className={`admin-pagination-button ${currentPage === 1 ? 'active' : ''}`}
+        className={`button secondary ${currentPage === 1 ? 'active' : ''}`}
         disabled={currentPage === 1}
       >
         1
@@ -195,7 +195,7 @@ const MonsterListPage = () => {
         <button
           key={i}
           onClick={() => handlePageChange(i)}
-          className={`admin-pagination-button ${currentPage === i ? 'active' : ''}`}
+          className={`button secondary ${currentPage === i ? 'active' : ''}`}
         >
           {i}
         </button>
@@ -215,7 +215,7 @@ const MonsterListPage = () => {
         <button
           key="last"
           onClick={() => handlePageChange(totalPages)}
-          className={`admin-pagination-button ${currentPage === totalPages ? 'active' : ''}`}
+          className={`button secondary ${currentPage === totalPages ? 'active' : ''}`}
           disabled={currentPage === totalPages}
         >
           {totalPages}
@@ -255,31 +255,31 @@ const MonsterListPage = () => {
 
         {/* Success Message */}
         {successMessage && (
-          <div className="admin-alert success">
+          <div className="alert success">
             <i className="fas fa-check-circle"></i> {successMessage}
           </div>
         )}
 
         {/* Error Message */}
         {error && (
-          <div className="admin-alert error">
+          <div className="alert error">
             <i className="fas fa-exclamation-circle"></i> {error}
           </div>
         )}
 
         {/* Action Buttons */}
         <div className="admin-actions">
-          <Link to="/admin" className="admin-button secondary">
+          <Link to="/admin" className="button secondary">
             <i className="fas fa-arrow-left"></i> Back to Dashboard
           </Link>
-          <Link to="/admin/monsters/add" className="admin-button">
+          <Link to="/admin/monsters/add" className="button primary">
             <i className="fas fa-plus"></i> Add New Monster
           </Link>
         </div>
 
         {/* Search and Filter */}
         <div className="admin-filters">
-          <form onSubmit={handleSearch} className="admin-search-form">
+          <form onSubmit={handleSearch} className="tree-header">
             <input
               type="text"
               placeholder="Search monsters..."
@@ -287,12 +287,12 @@ const MonsterListPage = () => {
               onChange={(e) => setSearchTerm(e.target.value)}
               className="admin-search-input"
             />
-            <button type="submit" className="admin-button">
+            <button type="submit" className="button primary">
               <i className="fas fa-search"></i> Search
             </button>
           </form>
 
-          <div className="admin-filter-group">
+          <div className="form-input">
             <label htmlFor="typeFilter" className="admin-filter-label">Type:</label>
             <select
               id="typeFilter"
@@ -307,7 +307,7 @@ const MonsterListPage = () => {
             </select>
           </div>
 
-          <div className="admin-filter-group">
+          <div className="form-input">
             <label htmlFor="trainerFilter" className="admin-filter-label">Trainer:</label>
             <select
               id="trainerFilter"
@@ -376,7 +376,7 @@ const MonsterListPage = () => {
                         <td className="admin-actions-cell">
                           <Link
                             to={`/monsters/${monster.id}`}
-                            className="admin-action-button view"
+                            className="button secondary sm"
                             title="View Monster"
                             target="_blank"
                             rel="noopener noreferrer"
@@ -385,14 +385,14 @@ const MonsterListPage = () => {
                           </Link>
                           <Link
                             to={`/admin/monsters/edit/${monster.id}`}
-                            className="admin-action-button edit"
+                            className="button info sm"
                             title="Edit Monster"
                           >
                             <i className="fas fa-edit"></i>
                           </Link>
                           <button
                             onClick={() => openDeleteModal(monster)}
-                            className="admin-action-button delete"
+                            className="button danger sm"
                             title="Delete Monster"
                           >
                             <i className="fas fa-trash-alt"></i>
@@ -411,7 +411,7 @@ const MonsterListPage = () => {
                 <button
                   onClick={() => handlePageChange(currentPage - 1)}
                   disabled={currentPage === 1}
-                  className="admin-pagination-button"
+                  className="button secondary sm"
                 >
                   <i className="fas fa-chevron-left"></i>
                 </button>
@@ -421,7 +421,7 @@ const MonsterListPage = () => {
                 <button
                   onClick={() => handlePageChange(currentPage + 1)}
                   disabled={currentPage === totalPages}
-                  className="admin-pagination-button"
+                  className="button secondary sm"
                 >
                   <i className="fas fa-chevron-right"></i>
                 </button>
@@ -449,13 +449,13 @@ const MonsterListPage = () => {
             <div className="admin-modal-footer">
               <button
                 onClick={closeDeleteModal}
-                className="admin-button secondary"
+                className="button secondary"
               >
                 Cancel
               </button>
               <button
                 onClick={handleDeleteMonster}
-                className="admin-button delete"
+                className="button danger"
               >
                 Delete Monster
               </button>

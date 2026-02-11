@@ -65,7 +65,7 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
   return (
     <div className="pagination">
       <button
-        className="pagination-button"
+        className="button secondary"
         onClick={() => onPageChange(currentPage - 1)}
         disabled={currentPage === 1}
       >
@@ -75,7 +75,7 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
       {getPageNumbers().map((page, index) => (
         <button
           key={index}
-          className={`pagination-number ${page === currentPage ? 'active' : ''}`}
+          className={`pagination-number${page === currentPage ? 'active' : ''}`}
           onClick={() => typeof page === 'number' && onPageChange(page)}
           disabled={typeof page !== 'number'}
         >
@@ -84,7 +84,7 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
       ))}
       
       <button
-        className="pagination-button"
+        className="button secondary"
         onClick={() => onPageChange(currentPage + 1)}
         disabled={currentPage === totalPages}
       >

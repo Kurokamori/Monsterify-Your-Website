@@ -40,15 +40,15 @@ const AdventurePage = () => {
   // If viewing a specific adventure
   if (adventureId) {
     return (
-      <div className="page-container">
-        <div className="page-header">
-          <div className="page-title">
+      <div className="main-content-container">
+        <div className="lore-header">
+          <div className="map-header">
             <h1>Adventure Details</h1>
           </div>
 
-          <div className="page-actions">
+          <div className="stat-group">
             <button
-              className="action-button secondary"
+              className="button secondary"
               onClick={() => navigate('/adventures')}
             >
               <i className="fas fa-arrow-left"></i> Back to Adventures
@@ -63,16 +63,16 @@ const AdventurePage = () => {
 
   // Main adventures page
   return (
-    <div className="page-container">
-      <div className="page-header">
-        <div className="page-title">
+    <div className="main-content-container">
+      <div className="lore-header">
+        <div className="map-header">
           <h1>Adventures</h1>
           <p>Embark on exciting journeys with your monsters</p>
         </div>
 
-        <div className="page-actions">
+        <div className="stat-group">
           <button
-            className="action-button primary"
+            className="button primary"
             onClick={openCreateModal}
           >
             <i className="fas fa-plus"></i> Create Adventure

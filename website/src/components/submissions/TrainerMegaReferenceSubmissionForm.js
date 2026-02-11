@@ -294,7 +294,7 @@ const TrainerMegaReferenceSubmissionForm = ({ onSubmissionComplete }) => {
                 <button
                   type="button"
                   onClick={() => removeReference(index)}
-                  className="remove-reference-btn"
+                  className="button danger sm"
                 >
                   Remove
                 </button>
@@ -350,7 +350,7 @@ const TrainerMegaReferenceSubmissionForm = ({ onSubmissionComplete }) => {
 
                 {/* Image Preview */}
                 {reference.referencePreview && (
-                  <div className="image-preview">
+                  <div className="image-container medium">
                     <img src={reference.referencePreview} alt="Trainer mega reference preview" />
                     <div className="image-preview-overlay">
                       <span className="image-preview-label">Preview</span>
@@ -528,7 +528,7 @@ const TrainerMegaReferenceSubmissionForm = ({ onSubmissionComplete }) => {
           <button
             type="button"
             onClick={addReference}
-            className="add-reference-btn"
+            className="button secondary"
           >
             Add Another Reference
           </button>
@@ -536,7 +536,7 @@ const TrainerMegaReferenceSubmissionForm = ({ onSubmissionComplete }) => {
           <button
             type="submit"
             disabled={loading}
-            className="submit-btn"
+            className="button primary"
           >
             {loading ? <LoadingSpinner /> : 'Submit Trainer Mega References'}
           </button>

@@ -1,0 +1,487 @@
+/* ==============================
+   Feedback Styles (Loading, Alerts, Empty States)
+   ============================== */
+
+/* ======================
+   Modular Alert System
+   ====================== */
+
+/* ---------- Base Alert ---------- */
+
+.alert {
+  align-items: center;
+  border-radius: 0.5rem;
+  display: flex;
+  font-size: 0.875rem;
+  font-weight: 500;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  padding: 1rem 1.25rem;
+  animation: alertSlideIn 0.3s ease;
+}
+
+.alert i {
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+/* ---------- Alert Variants ---------- */
+
+.alert.success {
+  background: var(--success-glow);
+  border: 1px solid var(--success-glow);
+  color: var(--success-color);
+}
+
+.alert.error,
+.alert.danger {
+  background: var(--error-glow);
+  border: 1px solid var(--error-glow);
+  color: var(--error-color);
+}
+
+.alert.warning {
+  background: var(--warning-glow);
+  border: 1px solid var(--warning-glow);
+  color: var(--warning-dark);
+}
+
+.alert.info {
+  background: var(--blue-glow);
+  border: 1px solid var(--blue-glow);
+  color: var(--accent-color);
+}
+
+.alert.neutral {
+  background: var(--card-background);
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+}
+
+/* ---------- Alert Sizes ---------- */
+
+.alert.sm {
+  font-size: 0.8rem;
+  padding: 0.625rem 1rem;
+}
+
+.alert.lg {
+  font-size: 1rem;
+  padding: 1.25rem 1.5rem;
+}
+
+/* ---------- Alert with Close Button ---------- */
+
+.alert .alert-close {
+  background: none;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+  font-size: 1.25rem;
+  margin-left: auto;
+  opacity: 0.7;
+  padding: 0;
+  transition: opacity 0.2s;
+}
+
+.alert .alert-close:hover {
+  opacity: 1;
+}
+
+/* ---------- Alert Animation ---------- */
+
+@keyframes alertSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ======================
+   Notice/Instruction Boxes
+   ====================== */
+
+.notice {
+  background: var(--card-background);
+  border: 1px solid var(--border-color);
+  border-left: 4px solid var(--accent-color);
+  border-radius: 0.5rem;
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  line-height: 1.6;
+  margin-bottom: 1rem;
+  padding: 1rem 1.25rem;
+}
+
+.notice.success {
+  border-left-color: var(--success-color);
+  background: var(--success-glow);
+}
+
+.notice.warning {
+  border-left-color: var(--warning-color);
+  background: var(--warning-glow);
+}
+
+.notice.error {
+  border-left-color: var(--error-color);
+  background: var(--error-glow);
+}
+
+.notice.info {
+  border-left-color: var(--blue-color);
+  background: var(--blue-glow);
+}
+
+/* ======================
+   Loading States
+   ====================== */
+
+/* ---------- Spinner/Error Container ---------- */
+
+.spinner-container,
+.error-container {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 200px;
+  padding: 2rem;
+  width: 100%;
+}
+
+.error-container i {
+  color: var(--error-color);
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+/* ---------- Spinner Message ---------- */
+
+.spinner-message {
+  color: var(--text-secondary);
+  font-size: var(--font-size-base);
+  margin-top: 1rem;
+  opacity: 0.8;
+  text-align: center;
+}
+
+/* ---------- Loading Spinner (Border Style) ---------- */
+
+.loading-spinner {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  justify-content: center;
+  position: relative;
+}
+
+.loading-spinner::before {
+  animation: spin 1s linear infinite;
+  border: 3px solid var(--divider-color);
+  border-radius: 50%;
+  border-top-color: var(--accent-color);
+  content: '';
+  height: 40px;
+  width: 40px;
+}
+
+.loading-spinner.sm::before {
+  border-width: 2px;
+  height: 24px;
+  width: 24px;
+}
+
+.loading-spinner.lg::before {
+  border-width: 4px;
+  height: 60px;
+  width: 60px;
+}
+
+/* Hide pseudo-element when spinner has icon content */
+.loading-spinner:has(> i)::before {
+  display: none;
+}
+
+.loading-spinner > i {
+  animation: spin 1s linear infinite;
+  color: var(--accent-color);
+  font-size: 2rem;
+}
+
+/* ---------- Spinner Dots ---------- */
+
+.spinner-dots {
+  height: 40px;
+  position: relative;
+  width: 40px;
+}
+
+.spinner-dots.sm {
+  height: 24px;
+  width: 24px;
+}
+
+.spinner-dots.sm .spinner-dot {
+  height: 5px;
+  width: 5px;
+}
+
+.spinner-dots.lg {
+  height: 60px;
+  width: 60px;
+}
+
+.spinner-dots.lg .spinner-dot {
+  height: 10px;
+  width: 10px;
+}
+
+.spinner-dot {
+  animation: spinner-fade 1.2s linear infinite;
+  background-color: var(--accent-color);
+  border-radius: 50%;
+  height: 8px;
+  opacity: 0.3;
+  position: absolute;
+  width: 8px;
+}
+
+.spinner-dot:nth-child(1) { top: 0; left: 50%; transform: translateX(-50%); animation-delay: 0s; }
+.spinner-dot:nth-child(2) { top: 3px; right: 3px; animation-delay: 0.15s; }
+.spinner-dot:nth-child(3) { top: 50%; right: 0; transform: translateY(-50%); animation-delay: 0.3s; }
+.spinner-dot:nth-child(4) { bottom: 3px; right: 3px; animation-delay: 0.45s; }
+.spinner-dot:nth-child(5) { bottom: 0; left: 50%; transform: translateX(-50%); animation-delay: 0.6s; }
+.spinner-dot:nth-child(6) { bottom: 3px; left: 3px; animation-delay: 0.75s; }
+.spinner-dot:nth-child(7) { top: 50%; left: 0; transform: translateY(-50%); animation-delay: 0.9s; }
+.spinner-dot:nth-child(8) { top: 3px; left: 3px; animation-delay: 1.05s; }
+
+/* ======================
+   Empty States
+   ====================== */
+
+.empty-state {
+  text-align: center;
+  padding: 3rem 1.5rem;
+  color: var(--text-muted);
+  background: linear-gradient(135deg, var(--card-background) 0%, var(--nav-background) 100%);
+  border-radius: 16px;
+  border: 2px dashed var(--border-color);
+  margin: 2rem auto;
+  max-width: 500px;
+}
+
+.empty-state-icon {
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--accent-glow), var(--accent-glow-faint));
+  border-radius: 50%;
+}
+
+.empty-state-icon i,
+.empty-state > i {
+  font-size: 2.5rem;
+  color: var(--accent-color);
+  opacity: 0.8;
+}
+
+.empty-state h2 {
+  font-size: var(--font-size-xl);
+  margin-bottom: 0.75rem;
+  color: var(--text-color);
+  font-weight: 700;
+}
+
+.empty-state h3 {
+  font-size: 1.25rem;
+  margin-bottom: 0.5rem;
+  color: var(--text-secondary);
+}
+
+.empty-state p {
+  font-size: var(--font-size-base);
+  max-width: 400px;
+  margin: 0 auto 1.5rem;
+  line-height: 1.6;
+  color: var(--text-muted);
+}
+
+.empty-state .button {
+  margin-top: 0.5rem;
+}
+
+/* ======================
+   Stat Groups
+   ====================== */
+
+.stat-group {
+  display: flex;
+  gap: 1rem;
+}
+
+@media (max-width: 768px) {
+  .stat-group {
+    flex-direction: column;
+    flex-wrap: wrap;
+    justify-content: center;
+    max-width: 300px;
+    width: 100%;
+  }
+
+  .alert {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .alert .alert-close {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    margin-left: 0;
+  }
+}
+
+/* ======================
+   Modular Progress Bar System
+   ====================== */
+
+/* ---------- Base Progress Bar ---------- */
+
+.progress {
+  background: var(--overlay-dark);
+  border-radius: 4px;
+  height: 8px;
+  overflow: hidden;
+  width: 100%;
+}
+
+.progress-fill {
+  border-radius: 4px;
+  height: 100%;
+  position: relative;
+  transition: width 0.4s ease;
+}
+
+/* ---------- Progress Bar Sizes ---------- */
+
+.progress.xs {
+  height: 4px;
+}
+
+.progress.sm {
+  height: 6px;
+}
+
+.progress.md {
+  height: 8px;
+}
+
+.progress.lg {
+  height: 12px;
+}
+
+.progress.xl {
+  height: 16px;
+}
+
+/* ---------- Progress Bar Variants ---------- */
+
+.progress-fill.primary,
+.progress-fill.default {
+  background: var(--accent-gradient);
+}
+
+.progress-fill.success {
+  background: linear-gradient(90deg, var(--success-color) 0%, var(--success-light) 100%);
+}
+
+.progress-fill.error,
+.progress-fill.danger {
+  background: linear-gradient(90deg, var(--error-color) 0%, var(--error-light) 100%);
+}
+
+.progress-fill.warning {
+  background: linear-gradient(90deg, var(--warning-color) 0%, var(--warning-light) 100%);
+}
+
+.progress-fill.info {
+  background: linear-gradient(90deg, var(--blue-color) 0%, var(--blue-light) 100%);
+}
+
+/* ---------- Stat-Specific Colors ---------- */
+
+.progress-fill.hp { background-color: var(--error-color); }
+.progress-fill.attack { background-color: var(--fire-type); }
+.progress-fill.defense { background-color: var(--electric-type); }
+.progress-fill.special-attack { background-color: var(--water-type); }
+.progress-fill.special-defense { background-color: var(--grass-type); }
+.progress-fill.speed { background-color: var(--fairy-type); }
+
+/* ---------- Progress with Shine Effect ---------- */
+
+.progress-fill.shine::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent 0%, var(--highlight-light) 50%, transparent 100%);
+  animation: progressShine 2s linear infinite;
+}
+
+@keyframes progressShine {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+/* ---------- Progress Bar with Label ---------- */
+
+.progress-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.progress-wrapper .progress {
+  flex: 1;
+}
+
+.progress-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  min-width: 3rem;
+  text-align: right;
+  color: var(--text-secondary);
+}
+
+/* ---------- Animated/Striped Progress ---------- */
+
+.progress-fill.striped {
+  background-image: linear-gradient(
+    45deg,
+    rgba(255, 255, 255, 0.15) 25%,
+    transparent 25%,
+    transparent 50%,
+    rgba(255, 255, 255, 0.15) 50%,
+    rgba(255, 255, 255, 0.15) 75%,
+    transparent 75%,
+    transparent
+  );
+  background-size: 1rem 1rem;
+}
+
+.progress-fill.striped.animated {
+  animation: progressStripes 1s linear infinite;
+}
+
+@keyframes progressStripes {
+  0% { background-position: 1rem 0; }
+  100% { background-position: 0 0; }
+}

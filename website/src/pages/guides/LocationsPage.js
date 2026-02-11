@@ -138,8 +138,8 @@ const LocationsPage = () => {
   }
 
   return (
-    <div className="locations-container">
-      <div className="locations-header">
+    <div className="bosses-page">
+      <div className="map-header">
         <h1>World Locations</h1>
         <p>Explore the various regions and locations in the Monsterify world</p>
       </div>
@@ -151,13 +151,13 @@ const LocationsPage = () => {
             placeholder="Search locations..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="search-input"
+            className="form-input"
           />
-          <button className="search-button">
+          <button className="button primary">
             <i className="fas fa-search"></i>
           </button>
         </div>
-        <div className="locations-filter">
+        <div className="detail-row">
           <label htmlFor="region-filter">Filter by Region:</label>
           <select
             id="region-filter"
@@ -177,8 +177,8 @@ const LocationsPage = () => {
 
       <div className="locations-grid">
         {displayLocations.map(location => (
-          <div className="location-card" key={location.id}>
-            <div className="location-image">
+          <div className="guide-card" key={location.id}>
+            <div className="npc-avatar">
               <img
                 src={location.image_url}
                 alt={location.name}
@@ -196,7 +196,7 @@ const LocationsPage = () => {
               </div>
               <p className="town-location-description">{location.description}</p>
               
-              <div className="location-details">
+              <div className="npc-columns">
                 <div className="location-section">
                   <h4>Points of Interest</h4>
                   <ul className="location-list">
@@ -215,7 +215,7 @@ const LocationsPage = () => {
                 </div>
               </div>
               
-              <Link to={`/interactive_map?location=${location.id}`} className="location-button">
+              <Link to={`/interactive_map?location=${location.id}`} className="button primary outline">
                 <i className="fas fa-map"></i> View on Map
               </Link>
             </div>
@@ -228,7 +228,7 @@ const LocationsPage = () => {
           <i className="fas fa-map-marked-alt"></i>
           <p>No locations found matching your search criteria.</p>
           <button 
-            className="reset-button"
+            className="button secondary"
             onClick={() => {
               setSelectedRegion('all');
               setSearchQuery('');

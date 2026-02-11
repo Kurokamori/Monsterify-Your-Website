@@ -92,9 +92,9 @@ const RewardDisplay = ({
             return (
               <div key={index} className="reward-entity">
                 <div className="reward-entity-header">
-                  <span className="reward-entity-name">{trainerName}</span>
+                  <span className="appearance-count">{trainerName}</span>
                 </div>
-                <div className="reward-entity-details">
+                <div className="container cols-2 gap-md">
                   <div className="reward-item">
                     <span className="reward-label">Levels:</span>
                     <span className="reward-value">{formatLevelText(reward.levels)}</span>
@@ -125,14 +125,14 @@ const RewardDisplay = ({
             return (
               <div key={index} className="reward-entity">
                 <div className="reward-entity-header">
-                  <span className="reward-entity-name">
+                  <span className="appearance-count">
                     {monster ? monster.name : `Monster #${reward.monsterId}`}
                     {reward.trainerName && (
                       <span className="reward-entity-trainer"> (Trainer: {reward.trainerName})</span>
                     )}
                   </span>
                 </div>
-                <div className="reward-entity-details">
+                <div className="container cols-2 gap-md">
                   <div className="reward-item">
                     <span className="reward-label">Levels:</span>
                     <span className="reward-value">{formatLevelText(reward.levels)}</span>
@@ -207,7 +207,7 @@ const RewardDisplay = ({
             {onAllocate && rewards.totalGiftLevels > 0 && (
               <button
                 type="button"
-                className="allocate-button"
+                className="button primary"
                 onClick={() => handleAllocateClick('giftLevels')}
               >
                 Allocate
@@ -235,7 +235,7 @@ const RewardDisplay = ({
 
       {/* Capped Levels */}
       {rewards.cappedLevels > 0 && (
-        <div className="reward-section capped-levels-section">
+        <div className="reward-section gift-rewards">
           <h4>Capped Levels</h4>
           <div className="reward-item">
             <span className="reward-label">Available Capped Levels:</span>
@@ -243,7 +243,7 @@ const RewardDisplay = ({
             {onAllocate && (
               <button
                 type="button"
-                className="allocate-button"
+                className="button primary"
                 onClick={() => handleAllocateClick('cappedLevels')}
               >
                 Allocate
@@ -317,14 +317,14 @@ const RewardDisplay = ({
           <div className="form-actions">
             <button
               type="button"
-              className="cancel-button"
+              className="button secondary"
               onClick={() => setShowAllocateForm(false)}
             >
               Cancel
             </button>
             <button
               type="button"
-              className="allocate-submit-button"
+              className="button primary"
               onClick={handleAllocateSubmit}
               disabled={!selectedRecipientId || allocateAmount <= 0 || allocateAmount > getAvailableAmount()}
             >

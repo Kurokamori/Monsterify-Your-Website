@@ -54,7 +54,7 @@ class User {
    */
   static async findById(id) {
     try {
-      const query = 'SELECT id, username, display_name, discord_id, is_admin, monster_roller_settings, theme, created_at FROM users WHERE id = $1';
+      const query = 'SELECT id, username, display_name, discord_id, is_admin, monster_roller_settings, theme, content_settings, created_at FROM users WHERE id = $1';
       const user = await db.asyncGet(query, [id]);
 
       // Parse monster_roller_settings if it exists
@@ -64,6 +64,18 @@ class User {
         } catch (e) {
           console.error('Error parsing monster_roller_settings:', e);
           user.monster_roller_settings = { pokemon_enabled: true, digimon_enabled: true, yokai_enabled: true, pals_enabled: true, nexomon_enabled: true, fakemon_enabled: true, finalfantasy_enabled: true, monsterhunter_enabled: true };
+        }
+      }
+
+      // Parse content_settings if it exists
+      if (user && user.content_settings) {
+        try {
+          if (typeof user.content_settings === 'string') {
+            user.content_settings = JSON.parse(user.content_settings);
+          }
+        } catch (e) {
+          console.error('Error parsing content_settings:', e);
+          user.content_settings = { mature_enabled: false, gore: false, nsfw_light: false, nsfw_heavy: false, triggering: false, intense_violence: false };
         }
       }
 
@@ -82,7 +94,28 @@ class User {
   static async findByUsername(username) {
     try {
       const query = 'SELECT * FROM users WHERE username = $1';
-      return await db.asyncGet(query, [username]);
+      const user = await db.asyncGet(query, [username]);
+
+      // Parse JSON fields if they exist
+      if (user) {
+        if (user.monster_roller_settings && typeof user.monster_roller_settings === 'string') {
+          try {
+            user.monster_roller_settings = JSON.parse(user.monster_roller_settings);
+          } catch (e) {
+            console.error('Error parsing monster_roller_settings:', e);
+          }
+        }
+        if (user.content_settings && typeof user.content_settings === 'string') {
+          try {
+            user.content_settings = JSON.parse(user.content_settings);
+          } catch (e) {
+            console.error('Error parsing content_settings:', e);
+            user.content_settings = { mature_enabled: false, gore: false, nsfw_light: false, nsfw_heavy: false, triggering: false, intense_violence: false };
+          }
+        }
+      }
+
+      return user;
     } catch (error) {
       console.error(`Error finding user with username ${username}:`, error);
       throw error;
@@ -97,7 +130,28 @@ class User {
   static async findByDiscordId(discordId) {
     try {
       const query = 'SELECT * FROM users WHERE discord_id = $1';
-      return await db.asyncGet(query, [discordId]);
+      const user = await db.asyncGet(query, [discordId]);
+
+      // Parse JSON fields if they exist
+      if (user) {
+        if (user.monster_roller_settings && typeof user.monster_roller_settings === 'string') {
+          try {
+            user.monster_roller_settings = JSON.parse(user.monster_roller_settings);
+          } catch (e) {
+            console.error('Error parsing monster_roller_settings:', e);
+          }
+        }
+        if (user.content_settings && typeof user.content_settings === 'string') {
+          try {
+            user.content_settings = JSON.parse(user.content_settings);
+          } catch (e) {
+            console.error('Error parsing content_settings:', e);
+            user.content_settings = { mature_enabled: false, gore: false, nsfw_light: false, nsfw_heavy: false, triggering: false, intense_violence: false };
+          }
+        }
+      }
+
+      return user;
     } catch (error) {
       console.error(`Error finding user with Discord ID ${discordId}:`, error);
       throw error;
@@ -236,9 +290,11 @@ class User {
    * @param {string} userData.password - Password (optional)
    * @param {boolean} userData.is_admin - Is admin (optional)
    * @param {Object} userData.monster_roller_settings - Monster roller settings (optional)
+   * @param {string} userData.theme - Theme preference (optional)
+   * @param {Object} userData.content_settings - Content settings (optional)
    * @returns {Promise<Object>} - Updated user
    */
-  static async update(id, { username, display_name, discord_id, password, is_admin, monster_roller_settings, theme }) {
+  static async update(id, { username, display_name, discord_id, password, is_admin, monster_roller_settings, theme, content_settings }) {
     try {
       // Check if user exists
       const user = await this.findById(id);
@@ -305,6 +361,16 @@ class User {
       if (theme !== undefined) {
         updates.push(`theme = $${paramIndex}`);
         values.push(theme);
+        paramIndex++;
+      }
+
+      if (content_settings !== undefined) {
+        updates.push(`content_settings = $${paramIndex}`);
+        // Convert object to JSON string
+        const settingsJson = typeof content_settings === 'string'
+          ? content_settings
+          : JSON.stringify(content_settings);
+        values.push(settingsJson);
         paramIndex++;
       }
 
@@ -462,6 +528,21 @@ class User {
       return await this.update(id, { theme });
     } catch (error) {
       console.error(`Error updating theme for user with ID ${id}:`, error);
+      throw error;
+    }
+  }
+
+  /**
+   * Update user's content settings
+   * @param {number} id - User ID
+   * @param {Object} settings - Content settings
+   * @returns {Promise<Object>} - Updated user
+   */
+  static async updateContentSettings(id, settings) {
+    try {
+      return await this.update(id, { content_settings: settings });
+    } catch (error) {
+      console.error(`Error updating content settings for user with ID ${id}:`, error);
       throw error;
     }
   }

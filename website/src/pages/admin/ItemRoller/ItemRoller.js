@@ -131,7 +131,7 @@ const ItemRoller = () => {
 
   return (
     <div className="item-roller-container">
-      <div className="item-roller-header">
+      <div className="adopt-card">
         <h1>Item Roller</h1>
       </div>
 
@@ -141,7 +141,7 @@ const ItemRoller = () => {
             <h2>Categories</h2>
             <div className="categories-grid">
               <button
-                className={`category-button ${selectedCategories.length === categories.length ? 'selected' : ''}`}
+                className={`button secondary ${selectedCategories.length === categories.length ? 'selected' : ''}`}
                 onClick={handleSelectAllCategories}
               >
                 All
@@ -149,7 +149,7 @@ const ItemRoller = () => {
               {categories.map(category => (
                 <button
                   key={category}
-                  className={`category-button ${selectedCategories.includes(category) ? 'selected' : ''}`}
+                  className={`button secondary ${selectedCategories.includes(category) ? 'selected' : ''}`}
                   onClick={() => handleCategoryChange(category)}
                 >
                   {category.charAt(0).toUpperCase() + category.slice(1)}
@@ -228,7 +228,7 @@ const ItemRoller = () => {
             <h2>Quantity</h2>
             <div className="quantity-control">
               <button
-                className="quantity-button"
+                className="button quantity"
                 onClick={() => setQuantity(Math.max(1, quantity - 1))}
               >
                 -
@@ -241,7 +241,7 @@ const ItemRoller = () => {
                 max="20"
               />
               <button
-                className="quantity-button"
+                className="button quantity"
                 onClick={() => setQuantity(Math.min(20, quantity + 1))}
               >
                 +
@@ -273,7 +273,7 @@ const ItemRoller = () => {
           </div>
 
           <button
-            className="roll-button"
+            className="button primary lg"
             onClick={handleRollItems}
             disabled={loading || selectedCategories.length === 0 || (addToTrainer && !selectedTrainer)}
           >
@@ -292,7 +292,7 @@ const ItemRoller = () => {
               <p>No items rolled yet. Configure the options and click "Roll Items".</p>
             </div>
           ) : (
-            <div className="items-grid">
+            <div className="container grid gap-md">
               {rolledItems.map((item, index) => (
                 <div key={index} className={`item-card ${item.rarity || 'common'}`}>
                   <div className="item-image-container">

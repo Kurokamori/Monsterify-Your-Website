@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import PromptCard from './PromptCard';
 import PromptSubmissionModal from './PromptSubmissionModal';
 import LoadingSpinner from '../common/LoadingSpinner';
-import './PromptList.css';
 
 const PromptList = ({ 
   trainerId, 
@@ -126,7 +125,7 @@ const PromptList = ({
 
   if (loading && prompts.length === 0) {
     return (
-      <div className="prompt-list-container">
+      <div className="bazar-container">
         <LoadingSpinner />
         <p>Loading prompts...</p>
       </div>
@@ -134,8 +133,8 @@ const PromptList = ({
   }
 
   return (
-    <div className="prompt-list-container">
-      <div className="prompt-list-header">
+    <div className="bazar-container">
+      <div className="item-header">
         <h2>{title}</h2>
         {prompts.length > 0 && (
           <p className="prompt-count">
@@ -146,8 +145,8 @@ const PromptList = ({
 
       {showFilters && (
         <div className="prompt-filters">
-          <div className="filter-row">
-            <div className="filter-group">
+          <div className="form-row">
+            <div className="set-item">
               <label htmlFor="search">Search:</label>
               <input
                 id="search"
@@ -159,13 +158,13 @@ const PromptList = ({
               />
             </div>
 
-            <div className="filter-group">
+            <div className="set-item">
               <label htmlFor="type">Type:</label>
               <select
                 id="type"
                 value={filters.type}
                 onChange={(e) => handleFilterChange('type', e.target.value)}
-                className="filter-select"
+                className="filter-input"
               >
                 <option value="">All Types</option>
                 <option value="general">General</option>
@@ -175,13 +174,13 @@ const PromptList = ({
               </select>
             </div>
 
-            <div className="filter-group">
+            <div className="set-item">
               <label htmlFor="category">Category:</label>
               <select
                 id="category"
                 value={filters.category}
                 onChange={(e) => handleFilterChange('category', e.target.value)}
-                className="filter-select"
+                className="filter-input"
               >
                 <option value="">All Categories</option>
                 {categories.map(cat => (
@@ -192,13 +191,13 @@ const PromptList = ({
               </select>
             </div>
 
-            <div className="filter-group">
+            <div className="set-item">
               <label htmlFor="difficulty">Difficulty:</label>
               <select
                 id="difficulty"
                 value={filters.difficulty}
                 onChange={(e) => handleFilterChange('difficulty', e.target.value)}
-                className="filter-select"
+                className="filter-input"
               >
                 <option value="">All Difficulties</option>
                 <option value="easy">Easy</option>
@@ -208,7 +207,7 @@ const PromptList = ({
               </select>
             </div>
 
-            <div className="filter-group">
+            <div className="set-item">
               <label className="checkbox-label">
                 <input
                   type="checkbox"
@@ -223,9 +222,9 @@ const PromptList = ({
       )}
 
       {error && (
-        <div className="error-message">
+        <div className="alert error">
           <p>Error: {error}</p>
-          <button onClick={fetchPrompts} className="retry-btn">
+          <button onClick={fetchPrompts} className="button secondary">
             Retry
           </button>
         </div>
@@ -237,7 +236,7 @@ const PromptList = ({
           {filters.search || filters.type || filters.category || filters.difficulty ? (
             <button 
               onClick={() => setFilters({ ...filters, search: '', type: '', category: '', difficulty: '' })}
-              className="clear-filters-btn"
+              className="button danger"
             >
               Clear Filters
             </button>
@@ -245,7 +244,7 @@ const PromptList = ({
         </div>
       ) : (
         <>
-          <div className="prompt-grid">
+          <div className="form-row">
             {prompts.map(prompt => (
               <PromptCard
                 key={prompt.id}
@@ -262,7 +261,7 @@ const PromptList = ({
               <button
                 onClick={() => handlePageChange(pagination.page - 1)}
                 disabled={pagination.page === 1}
-                className="pagination-btn"
+                className="button secondary"
               >
                 Previous
               </button>
@@ -274,7 +273,7 @@ const PromptList = ({
               <button
                 onClick={() => handlePageChange(pagination.page + 1)}
                 disabled={pagination.page === totalPages}
-                className="pagination-btn"
+                className="button secondary"
               >
                 Next
               </button>

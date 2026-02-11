@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import api from '../../../services/api';
 import rerollerService from '../../../services/rerollerService';
 import LoadingSpinner from '../../../components/common/LoadingSpinner';
-import './RerollerPage.css';
 
 const RerollerPage = () => {
   // Roll type state
@@ -242,30 +241,30 @@ const RerollerPage = () => {
         className="result-card-image"
         onError={(e) => { e.target.src = '/images/monsters/default.png'; }}
       />
-      <div className="result-card-name">{monster.species1}</div>
+      <div className="reward-name">{monster.species1}</div>
       {monster.species2 && (
         <div className="result-card-details">+ {monster.species2}</div>
       )}
-      <div className="type-badges">
-        {monster.type1 && <span className="type-badge">{monster.type1}</span>}
-        {monster.type2 && <span className="type-badge">{monster.type2}</span>}
-        {monster.type3 && <span className="type-badge">{monster.type3}</span>}
+      <div className="container vertical gap-md">
+        {monster.type1 && <span className="badge">{monster.type1}</span>}
+        {monster.type2 && <span className="badge">{monster.type2}</span>}
+        {monster.type3 && <span className="badge">{monster.type3}</span>}
       </div>
       <div className="result-card-actions">
         <button
-          className="result-action-btn"
+          className="button primary"
           onClick={() => handleEditResult('monster', index, monster)}
         >
           Edit
         </button>
         <button
-          className="result-action-btn"
+          className="button primary"
           onClick={() => handleRerollResult('monster', index)}
         >
           Reroll
         </button>
         <button
-          className="result-action-btn delete"
+          className="button danger"
           onClick={() => handleDeleteResult('monster', index)}
         >
           Delete
@@ -283,25 +282,25 @@ const RerollerPage = () => {
         className="result-card-image"
         onError={(e) => { e.target.src = '/images/items/default_item.png'; }}
       />
-      <div className="result-card-name">{item.name}</div>
+      <div className="reward-name">{item.name}</div>
       <div className="result-card-details">
         {item.category} {item.quantity > 1 && `x${item.quantity}`}
       </div>
       <div className="result-card-actions">
         <button
-          className="result-action-btn"
+          className="button primary"
           onClick={() => handleEditResult('item', index, item)}
         >
           Edit
         </button>
         <button
-          className="result-action-btn"
+          className="button primary"
           onClick={() => handleRerollResult('item', index)}
         >
           Reroll
         </button>
         <button
-          className="result-action-btn delete"
+          className="button danger"
           onClick={() => handleDeleteResult('item', index)}
         >
           Delete
@@ -312,10 +311,10 @@ const RerollerPage = () => {
 
   return (
     <div className="reroller-container">
-      <div className="reroller-header">
+      <div className="map-header">
         <h1>Reroller</h1>
         <p>Create custom rolls for players and generate claim links</p>
-        <Link to="/admin/reroller/sessions" className="btn-secondary" style={{ marginTop: '1rem', display: 'inline-block' }}>
+        <Link to="/admin/reroller/sessions" className="button secondary reroller-sessions-link">
           View All Sessions
         </Link>
       </div>
@@ -323,31 +322,31 @@ const RerollerPage = () => {
       {/* Roll Type Tabs */}
       <div className="roll-type-tabs">
         <button
-          className={`roll-type-tab ${rollType === 'monster' ? 'active' : ''}`}
+          className={`roll-type-tab${rollType === 'monster' ? 'active' : ''}`}
           onClick={() => setRollType('monster')}
         >
           Monster
         </button>
         <button
-          className={`roll-type-tab ${rollType === 'item' ? 'active' : ''}`}
+          className={`roll-type-tab${rollType === 'item' ? 'active' : ''}`}
           onClick={() => setRollType('item')}
         >
           Item
         </button>
         <button
-          className={`roll-type-tab ${rollType === 'combined' ? 'active' : ''}`}
+          className={`roll-type-tab${rollType === 'combined' ? 'active' : ''}`}
           onClick={() => setRollType('combined')}
         >
           Combined
         </button>
         <button
-          className={`roll-type-tab ${rollType === 'gift' ? 'active' : ''}`}
+          className={`roll-type-tab${rollType === 'gift' ? 'active' : ''}`}
           onClick={() => setRollType('gift')}
         >
           Gift
         </button>
         <button
-          className={`roll-type-tab ${rollType === 'birthday' ? 'active' : ''}`}
+          className={`roll-type-tab${rollType === 'birthday' ? 'active' : ''}`}
           onClick={() => setRollType('birthday')}
         >
           Birthday
@@ -359,7 +358,7 @@ const RerollerPage = () => {
 
       <div className="reroller-content">
         {/* Configuration Panel */}
-        <div className="config-panel">
+        <div className="evo-tree">
           <div className="panel-header">
             <h2>Configuration</h2>
           </div>
@@ -368,7 +367,7 @@ const RerollerPage = () => {
           <div className="config-section">
             <h3><i className="fas fa-user"></i> Target User</h3>
             <div className="user-selector">
-              <div className="user-search">
+              <div className="array-input">
                 <input
                   type="text"
                   placeholder="Search users..."
@@ -396,26 +395,26 @@ const RerollerPage = () => {
               <h3><i className="fas fa-dragon"></i> Monster Settings</h3>
               <div className="quantity-control">
                 <button
-                  className="quantity-btn"
+                  className="button primary"
                   onClick={() => setMonsterCount(Math.max(1, monsterCount - 1))}
                 >
                   -
                 </button>
                 <input
                   type="number"
-                  className="quantity-input"
+                  className="form-input"
                   value={monsterCount}
                   onChange={(e) => setMonsterCount(Math.max(1, Math.min(20, parseInt(e.target.value) || 1)))}
                   min="1"
                   max="20"
                 />
                 <button
-                  className="quantity-btn"
+                  className="button primary"
                   onClick={() => setMonsterCount(Math.min(20, monsterCount + 1))}
                 >
                   +
                 </button>
-                <span style={{ marginLeft: '1rem', color: 'var(--admin-text-secondary)' }}>monsters</span>
+                <span className="quantity-suffix">monsters</span>
               </div>
             </div>
           )}
@@ -424,36 +423,36 @@ const RerollerPage = () => {
           {(rollType === 'item' || rollType === 'combined') && (
             <div className="config-section">
               <h3><i className="fas fa-box"></i> Item Settings</h3>
-              <div className="quantity-control" style={{ marginBottom: '1rem' }}>
+              <div className="quantity-control quantity-control-block">
                 <button
-                  className="quantity-btn"
+                  className="button primary"
                   onClick={() => setItemCount(Math.max(1, itemCount - 1))}
                 >
                   -
                 </button>
                 <input
                   type="number"
-                  className="quantity-input"
+                  className="form-input"
                   value={itemCount}
                   onChange={(e) => setItemCount(Math.max(1, Math.min(20, parseInt(e.target.value) || 1)))}
                   min="1"
                   max="20"
                 />
                 <button
-                  className="quantity-btn"
+                  className="button primary"
                   onClick={() => setItemCount(Math.min(20, itemCount + 1))}
                 >
                   +
                 </button>
-                <span style={{ marginLeft: '1rem', color: 'var(--admin-text-secondary)' }}>items</span>
+                <span className="quantity-suffix">items</span>
               </div>
 
-              <label style={{ color: 'var(--admin-text-secondary)', fontSize: '0.85rem', marginBottom: '0.5rem', display: 'block' }}>
+              <label className="reroller-field-label">
                 Categories
               </label>
-              <div className="category-buttons">
+              <div className="type-tags fw">
                 <button
-                  className={`category-btn ${selectedCategories.length === itemCategories.filter(c => c.default).length ? 'selected' : ''}`}
+                  className={`button filter ${selectedCategories.length === itemCategories.filter(c => c.default).length ? 'selected' : ''}`}
                   onClick={toggleAllCategories}
                 >
                   All Default
@@ -461,7 +460,7 @@ const RerollerPage = () => {
                 {itemCategories.map(cat => (
                   <button
                     key={cat.value}
-                    className={`category-btn ${selectedCategories.includes(cat.value) ? 'selected' : ''}`}
+                    className={`button filter ${selectedCategories.includes(cat.value) ? 'selected' : ''}`}
                     onClick={() => toggleCategory(cat.value)}
                   >
                     {cat.label}
@@ -475,7 +474,7 @@ const RerollerPage = () => {
           {rollType === 'gift' && (
             <div className="config-section">
               <h3><i className="fas fa-gift"></i> Gift Settings</h3>
-              <div className="gift-level-input">
+              <div className="container cols-2 gap-md">
                 <input
                   type="number"
                   value={giftLevels}
@@ -495,14 +494,14 @@ const RerollerPage = () => {
             <div className="config-section">
               <h3><i className="fas fa-birthday-cake"></i> Birthday Settings</h3>
               <div className="birthday-info">
-                <p style={{ color: 'var(--admin-text-secondary)', marginBottom: '0.5rem' }}>
+                <p className="reroller-help-text">
                   Birthday preset automatically rolls:
                 </p>
-                <ul style={{ color: 'var(--admin-text-secondary)', marginLeft: '1.5rem', fontSize: '0.9rem' }}>
+                <ul className="reroller-help-list">
                   <li><strong>10 Items</strong> - Random from all categories</li>
                   <li><strong>10 Monsters</strong> - Base stage only, no legendaries</li>
                 </ul>
-                <p style={{ color: 'var(--admin-text-muted)', fontSize: '0.85rem', marginTop: '0.5rem' }}>
+                <p className="reroller-help-note">
                   Uses the target user's monster table preferences.
                 </p>
               </div>
@@ -515,7 +514,7 @@ const RerollerPage = () => {
               <h3><i className="fas fa-lock"></i> Claim Limits</h3>
               <div className="claim-limits">
                 {(rollType === 'monster' || rollType === 'combined') && (
-                  <div className="limit-group">
+                  <div className="container cols-2 gap-md">
                     <label>Monster Limit</label>
                     <select
                       value={monsterClaimLimit === null ? 'all' : monsterClaimLimit}
@@ -529,7 +528,7 @@ const RerollerPage = () => {
                   </div>
                 )}
                 {(rollType === 'item' || rollType === 'combined') && (
-                  <div className="limit-group">
+                  <div className="container cols-2 gap-md">
                     <label>Item Limit</label>
                     <select
                       value={itemClaimLimit === null ? 'all' : itemClaimLimit}
@@ -560,7 +559,7 @@ const RerollerPage = () => {
           {/* Generate Button */}
           <div className="action-buttons">
             <button
-              className="btn-primary"
+              className="button primary"
               onClick={handleGenerateRoll}
               disabled={loading || !targetUserId}
             >
@@ -568,7 +567,7 @@ const RerollerPage = () => {
             </button>
             {session && (
               <button
-                className="btn-secondary"
+                className="button secondary"
                 onClick={handleRerollAll}
                 disabled={loading}
               >
@@ -579,11 +578,11 @@ const RerollerPage = () => {
         </div>
 
         {/* Results Panel */}
-        <div className="results-panel">
+        <div className="evo-tree">
           <div className="panel-header">
             <h2>Results</h2>
             {session && (
-              <button className="btn-secondary" onClick={handleUpdateClaimLimits}>
+              <button className="button secondary" onClick={handleUpdateClaimLimits}>
                 Update Limits
               </button>
             )}
@@ -602,12 +601,12 @@ const RerollerPage = () => {
                   <h3>
                     Monsters ({rolledMonsters.length})
                     {session.monsterClaimLimit && (
-                      <span style={{ fontWeight: 'normal', color: 'var(--admin-text-secondary)' }}>
+                      <span className="reroller-info-value">
                         - Limit: {session.monsterClaimLimit}
                       </span>
                     )}
                   </h3>
-                  <div className="results-grid">
+                  <div className="images-grid">
                     {rolledMonsters.map((monster, index) => renderMonsterCard(monster, index))}
                   </div>
                 </div>
@@ -619,12 +618,12 @@ const RerollerPage = () => {
                   <h3>
                     Items ({rolledItems.length})
                     {session.itemClaimLimit && (
-                      <span style={{ fontWeight: 'normal', color: 'var(--admin-text-secondary)' }}>
+                      <span className="reroller-info-value">
                         - Limit: {session.itemClaimLimit}
                       </span>
                     )}
                   </h3>
-                  <div className="results-grid">
+                  <div className="images-grid">
                     {rolledItems.map((item, index) => renderItemCard(item, index))}
                   </div>
                 </div>
@@ -633,19 +632,19 @@ const RerollerPage = () => {
               {/* Generated Link */}
               <div className="link-section">
                 <h3><i className="fas fa-link"></i> Claim Link</h3>
-                <div className="link-display">
+                <div className="type-row">
                   <input
                     type="text"
                     className="link-input"
                     value={rerollerService.buildClaimUrl(session.token)}
                     readOnly
                   />
-                  <button className="copy-btn" onClick={copyLink}>
+                  <button className="button success" onClick={copyLink}>
                     <i className={copiedLink ? 'fas fa-check' : 'fas fa-copy'}></i>
                     {copiedLink ? 'Copied!' : 'Copy'}
                   </button>
                 </div>
-                <p style={{ marginTop: '0.5rem', color: 'var(--admin-text-secondary)', fontSize: '0.85rem' }}>
+                <p className="reroller-info-note">
                   Send this link to {users.find(u => u.id === parseInt(targetUserId))?.display_name || 'the player'} to claim their rewards.
                 </p>
               </div>
@@ -758,10 +757,10 @@ const RerollerPage = () => {
             )}
 
             <div className="edit-modal-actions">
-              <button className="btn-secondary" onClick={() => setEditModal(null)}>
+              <button className="button secondary" onClick={() => setEditModal(null)}>
                 Cancel
               </button>
-              <button className="btn-primary" onClick={handleSaveEdit}>
+              <button className="button primary" onClick={handleSaveEdit}>
                 Save Changes
               </button>
             </div>

@@ -1,0 +1,450 @@
+/* Reward Configurator Styles */
+
+/* Reward Sections */
+.reward-section {
+  background: var(--card-background);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+}
+
+.reward-section:last-child {
+  margin-bottom: 0;
+}
+
+.reward-section h4 {
+  border-bottom: 1px solid var(--border-color);
+  color: var(--text-color);
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  margin: 0 0 15px 0;
+  padding-bottom: 0.5rem;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.section-header h4 {
+  margin: 0;
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.section-description {
+  color: var(--text-muted);
+  font-size: 0.875rem;
+  margin: 0 0 1rem 0;
+  line-height: 1.4;
+}
+
+/* Basic Rewards */
+.item-rewards {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.item-rewards .set-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+/* Reward Input */
+.reward-input {
+  padding: 8px 10px;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  font-size: 0.9rem;
+  background: var(--input-background);
+  color: var(--text-color);
+  width: 100px;
+}
+
+.reward-input:focus {
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 2px var(--accent-glow);
+  outline: 2px solid var(--accent-color);
+  outline-offset: 2px;
+}
+
+/* Item Configuration */
+.item-config {
+  background: var(--card-background-light);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.item-config:last-child {
+  margin-bottom: 0;
+}
+
+.item-config-options {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+
+/* No Items Message */
+.no-items {
+  backdrop-filter: blur(15px);
+  background: linear-gradient(135deg, var(--overlay-heavy) 0%, var(--overlay-dark) 100%);
+  border: 1px solid var(--accent-glow);
+  border-radius: 16px;
+  color: var(--text-muted);
+  font-style: italic;
+  padding: 40px;
+  text-align: center;
+}
+
+/* Monster Rewards Section */
+.monster-rewards-section {
+  border-left: 3px solid var(--accent-color);
+}
+
+.monster-rewards-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* Monster Reward Card */
+.monster-reward-card {
+  background: var(--card-background-light);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  overflow: hidden;
+  transition: box-shadow 0.2s ease;
+}
+
+.monster-reward-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.monster-reward-card.semi-random {
+  border-left: 3px solid var(--purple-color, #9b59b6);
+}
+
+.monster-reward-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  background: var(--card-background);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.monster-reward-number {
+  font-weight: 600;
+  color: var(--accent-color);
+  font-size: 0.9rem;
+}
+
+.monster-reward-body {
+  display: flex;
+  gap: 1rem;
+  padding: 1rem;
+}
+
+.monster-preview {
+  flex-shrink: 0;
+  width: 80px;
+  height: 80px;
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--card-background);
+  border: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.monster-preview img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.monster-reward-fields {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.monster-reward-fields .form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+/* Species Search */
+.species-search-wrapper {
+  position: relative;
+}
+
+.species-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: var(--card-background);
+  border: 1px solid var(--border-color);
+  border-radius: 0 0 6px 6px;
+  max-height: 200px;
+  overflow-y: auto;
+  z-index: 100;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.species-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.species-option:hover {
+  background: var(--hover-background);
+}
+
+.species-thumb {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+  border-radius: 4px;
+  background: var(--card-background-light);
+}
+
+.dropdown-loading {
+  padding: 12px;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.875rem;
+}
+
+.selected-species {
+  margin-top: 0.5rem;
+  font-size: 0.875rem;
+  color: var(--text-color);
+  background: var(--accent-glow);
+  padding: 4px 8px;
+  border-radius: 4px;
+  display: inline-block;
+}
+
+/* Config Subsection */
+.config-subsection {
+  background: var(--card-background);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.config-subsection h5 {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-color);
+  margin: 0 0 0.75rem 0;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+/* Mode Toggle */
+.mode-toggle {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.mode-option {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: var(--card-background-light);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.875rem;
+  transition: all 0.2s ease;
+}
+
+.mode-option:hover {
+  border-color: var(--accent-color);
+}
+
+.mode-option.active {
+  background: var(--accent-glow);
+  border-color: var(--accent-color);
+  color: var(--accent-color);
+  font-weight: 500;
+}
+
+.mode-option input[type="radio"] {
+  display: none;
+}
+
+/* Range Inputs */
+.range-inputs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+/* Type Selection Grid */
+.type-selection {
+  margin-top: 0.5rem;
+}
+
+.type-selection .type-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(85px, 1fr));
+  gap: 6px;
+}
+
+/* Fusion Toggle */
+.fusion-toggle {
+  background: var(--card-background-light);
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1px solid var(--border-color);
+}
+
+.fusion-toggle:hover {
+  border-color: var(--accent-color);
+}
+
+/* Toggle Switch */
+.toggle-switch {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.toggle-switch input[type="checkbox"] {
+  width: 40px;
+  height: 20px;
+  appearance: none;
+  background: var(--border-color);
+  border-radius: 10px;
+  position: relative;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.toggle-switch input[type="checkbox"]::before {
+  content: '';
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  background: white;
+  border-radius: 50%;
+  top: 2px;
+  left: 2px;
+  transition: transform 0.2s ease;
+}
+
+.toggle-switch input[type="checkbox"]:checked {
+  background: var(--accent-color);
+}
+
+.toggle-switch input[type="checkbox"]:checked::before {
+  transform: translateX(20px);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .item-config-options {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .monster-reward-body {
+    flex-direction: column;
+  }
+
+  .monster-preview {
+    width: 60px;
+    height: 60px;
+    align-self: center;
+  }
+
+  .monster-reward-fields .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .mode-toggle {
+    flex-direction: column;
+  }
+
+  .range-inputs {
+    grid-template-columns: 1fr;
+  }
+
+  .type-selection .type-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .reward-section {
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    padding: 0.75rem;
+  }
+
+  .section-header {
+    flex-direction: column;
+    gap: 0.75rem;
+    align-items: flex-start;
+  }
+
+  .type-selection .type-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Focus styles for accessibility */
+.species-option:focus-visible {
+  outline: 2px solid var(--accent-color);
+  outline-offset: -2px;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .reward-section,
+  .item-config,
+  .monster-reward-card {
+    border-width: 2px;
+  }
+
+  .monster-rewards-section {
+    border-left-width: 4px;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .toggle-switch input[type="checkbox"],
+  .toggle-switch input[type="checkbox"]::before,
+  .mode-option,
+  .species-option,
+  .monster-reward-card {
+    transition: none;
+  }
+}

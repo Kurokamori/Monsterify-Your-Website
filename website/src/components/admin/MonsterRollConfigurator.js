@@ -1,12 +1,24 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import './MonsterRollConfigurator.css';
 
 const MonsterRollConfigurator = ({ parameters = {}, onChange }) => {
   const isInitialMount = useRef(true);
+  const [collapsedSections, setCollapsedSections] = useState({
+    advanced: true,
+    types: false,
+    attributes: false
+  });
+
+  const toggleSection = (section) => {
+    setCollapsedSections(prev => ({
+      ...prev,
+      [section]: !prev[section]
+    }));
+  };
+
   const [config, setConfig] = useState(() => ({
     // Core parameters from MonsterRoller
-    tables: ['pokemon', 'digimon', 'yokai', 'nexomon', 'pals', 'fakemon'],
-    enabledTables: ['pokemon', 'digimon', 'yokai', 'nexomon', 'pals', 'fakemon'],
+    tables: ['pokemon', 'digimon', 'yokai', 'nexomon', 'pals', 'fakemon', 'finalfantasy', 'monsterhunter'],
+    enabledTables: ['pokemon', 'digimon', 'yokai', 'nexomon', 'pals', 'fakemon', 'finalfantasy', 'monsterhunter'],
 
     // Species slots (from MonsterRoller)
     species1: null,
@@ -229,9 +241,9 @@ const MonsterRollConfigurator = ({ parameters = {}, onChange }) => {
   }, []);
 
   return (
-    <div className="monster-roll-configurator">
+    <div className="reward-configurator">
       {/* Preset Configurations */}
-      <div className="preset-section">
+      <div className="config-section">
         <h5>Quick Presets</h5>
         <div className="preset-buttons">
           {getPresetConfigurations().map((preset, index) => (
@@ -239,7 +251,7 @@ const MonsterRollConfigurator = ({ parameters = {}, onChange }) => {
               key={index}
               type="button"
               onClick={() => applyPreset(preset.config)}
-              className="preset-btn"
+              className="button secondary"
               title={preset.description}
             >
               {preset.name}
@@ -315,7 +327,7 @@ const MonsterRollConfigurator = ({ parameters = {}, onChange }) => {
         <div className="config-row">
           <div className="form-group">
             <label>Evolution Stages</label>
-            <div className="checkbox-grid">
+            <div className="type-grid">
               {[1, 2, 3].map(stage => (
                 <label key={stage} className="checkbox-label">
                   <input
@@ -365,49 +377,69 @@ const MonsterRollConfigurator = ({ parameters = {}, onChange }) => {
       </div>
 
       {/* Type Restrictions */}
-      <div className="config-section">
-        <h5>Type Restrictions</h5>
-        <p className="section-description">
-          Select specific types to limit the roll to. Leave empty for no restrictions.
-        </p>
-        
-        <div className="type-grid">
-          {availableTypes.map(type => (
-            <label key={type} className="type-checkbox">
-              <input
-                type="checkbox"
-                checked={(config.includeTypes || []).includes(type)}
-                onChange={() => handleArrayToggle('includeTypes', type)}
-              />
-              <span className={`type-badge type-${type.toLowerCase()}`}>
-                {type}
-              </span>
-            </label>
-          ))}
+      <div className={`config-section ${collapsedSections.types ? 'collapsed' : ''}`}>
+        <div className="config-section-header" onClick={() => toggleSection('types')}>
+          <span className="collapse-icon">{collapsedSections.types ? '▶' : '▼'}</span>
+          <h5>Type Restrictions</h5>
+          {(config.includeTypes || []).length > 0 && (
+            <span className="section-badge">{config.includeTypes.length} selected</span>
+          )}
         </div>
+        {!collapsedSections.types && (
+          <div className="config-section-content">
+            <p className="section-description">
+              Select specific types to limit the roll to. Leave empty for no restrictions.
+            </p>
+
+            <div className="type-grid">
+              {availableTypes.map(type => (
+                <label key={type} className="type-checkbox">
+                  <input
+                    type="checkbox"
+                    checked={(config.includeTypes || []).includes(type)}
+                    onChange={() => handleArrayToggle('includeTypes', type)}
+                  />
+                  <span className={`badge type-${type.toLowerCase()}`}>
+                    {type}
+                  </span>
+                </label>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Attribute Restrictions */}
-      <div className="config-section">
-        <h5>Attribute Restrictions</h5>
-        <p className="section-description">
-          Select specific attributes to limit the roll to. Leave empty for no restrictions.
-        </p>
-        
-        <div className="attribute-grid">
-          {availableAttributes.map(attribute => (
-            <label key={attribute} className="attribute-checkbox">
-              <input
-                type="checkbox"
-                checked={(config.includeAttributes || []).includes(attribute)}
-                onChange={() => handleArrayToggle('includeAttributes', attribute)}
-              />
-              <span className={`attribute-badge attribute-${attribute.toLowerCase()}`}>
-                {attribute}
-              </span>
-            </label>
-          ))}
+      <div className={`config-section ${collapsedSections.attributes ? 'collapsed' : ''}`}>
+        <div className="config-section-header" onClick={() => toggleSection('attributes')}>
+          <span className="collapse-icon">{collapsedSections.attributes ? '▶' : '▼'}</span>
+          <h5>Attribute Restrictions</h5>
+          {(config.includeAttributes || []).length > 0 && (
+            <span className="section-badge">{config.includeAttributes.length} selected</span>
+          )}
         </div>
+        {!collapsedSections.attributes && (
+          <div className="config-section-content">
+            <p className="section-description">
+              Select specific attributes to limit the roll to. Leave empty for no restrictions.
+            </p>
+
+            <div className="type-grid">
+              {availableAttributes.map(attribute => (
+                <label key={attribute} className="type-checkbox">
+                  <input
+                    type="checkbox"
+                    checked={(config.includeAttributes || []).includes(attribute)}
+                    onChange={() => handleArrayToggle('includeAttributes', attribute)}
+                  />
+                  <span className={`badge attribute-${attribute.toLowerCase()}`}>
+                    {attribute}
+                  </span>
+                </label>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Monster Tables */}
@@ -418,70 +450,89 @@ const MonsterRollConfigurator = ({ parameters = {}, onChange }) => {
         </p>
 
         <div className="config-row">
-          <div className="checkbox-grid">
-            {['pokemon', 'digimon', 'yokai', 'nexomon', 'pals', 'fakemon'].map(table => (
-              <label key={table} className="checkbox-label">
+          <div className="type-grid tables-grid">
+            {[
+              { key: 'pokemon', label: 'Pokemon' },
+              { key: 'digimon', label: 'Digimon' },
+              { key: 'yokai', label: 'Yokai Watch' },
+              { key: 'nexomon', label: 'Nexomon' },
+              { key: 'pals', label: 'Palworld' },
+              { key: 'fakemon', label: 'Fakemon' },
+              { key: 'finalfantasy', label: 'Final Fantasy' },
+              { key: 'monsterhunter', label: 'Monster Hunter' }
+            ].map(table => (
+              <label key={table.key} className="checkbox-label table-checkbox">
                 <input
                   type="checkbox"
-                  checked={(config.tables || []).includes(table)}
-                  onChange={() => handleArrayToggle('tables', table)}
+                  checked={(config.tables || []).includes(table.key)}
+                  onChange={() => handleArrayToggle('tables', table.key)}
                 />
-                {table.charAt(0).toUpperCase() + table.slice(1)}
+                {table.label}
               </label>
             ))}
           </div>
         </div>
+        <small className="form-help">
+          Note: Monster Hunter uses "rank" (1-6) instead of evolution stages. Final Fantasy uses stages.
+        </small>
       </div>
 
       {/* Advanced Configuration */}
-      <div className="config-section">
-        <h5>Advanced Configuration</h5>
-        <p className="section-description">
-          Advanced parameters for fine-tuning the monster roll.
-        </p>
-        
-        <div className="config-row">
-          <div className="form-group">
-            <label htmlFor="species_min">Minimum Species</label>
-            <input
-              id="species_min"
-              type="number"
-              min="1"
-              max="3"
-              value={config.species_min || 1}
-              onChange={(e) => handleConfigChange('species_min', parseInt(e.target.value) || 1)}
-              className="form-input"
-            />
-          </div>
+      <div className={`config-section ${collapsedSections.advanced ? 'collapsed' : ''}`}>
+        <div className="config-section-header" onClick={() => toggleSection('advanced')}>
+          <span className="collapse-icon">{collapsedSections.advanced ? '▶' : '▼'}</span>
+          <h5>Advanced Configuration</h5>
+        </div>
+        {!collapsedSections.advanced && (
+          <div className="config-section-content">
+            <p className="section-description">
+              Advanced parameters for fine-tuning the monster roll.
+            </p>
 
-          <div className="form-group">
-            <label htmlFor="types_min">Minimum Types</label>
-            <input
-              id="types_min"
-              type="number"
-              min="1"
-              max="5"
-              value={config.types_min || 1}
-              onChange={(e) => handleConfigChange('types_min', parseInt(e.target.value) || 1)}
-              className="form-input"
-            />
+            <div className="config-row">
+              <div className="form-group">
+                <label htmlFor="species_min">Minimum Species</label>
+                <input
+                  id="species_min"
+                  type="number"
+                  min="1"
+                  max="3"
+                  value={config.species_min || 1}
+                  onChange={(e) => handleConfigChange('species_min', parseInt(e.target.value) || 1)}
+                  className="form-input"
+                />
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="types_min">Minimum Types</label>
+                <input
+                  id="types_min"
+                  type="number"
+                  min="1"
+                  max="5"
+                  value={config.types_min || 1}
+                  onChange={(e) => handleConfigChange('types_min', parseInt(e.target.value) || 1)}
+                  className="form-input"
+                />
+              </div>
+            </div>
+
+            <div className="config-row">
+              <div className="form-group">
+                <label htmlFor="custom_seed">Custom Seed (Optional)</label>
+                <input
+                  id="custom_seed"
+                  type="text"
+                  value={config.seed || ''}
+                  onChange={(e) => handleConfigChange('seed', e.target.value)}
+                  className="form-input"
+                  placeholder="Leave empty for random seed"
+                />
+                <small className="form-help">Use the same seed to get consistent results</small>
+              </div>
+            </div>
           </div>
-        </div>
-        
-        <div className="config-row">
-          <div className="form-group">
-            <label htmlFor="custom_seed">Custom Seed (Optional)</label>
-            <input
-              id="custom_seed"
-              type="text"
-              value={config.seed || ''}
-              onChange={(e) => handleConfigChange('seed', e.target.value)}
-              className="form-input"
-              placeholder="Leave empty for random seed"
-            />
-            <small className="form-help">Use the same seed to get consistent results</small>
-          </div>
-        </div>
+        )}
       </div>
 
       {/* Configuration Summary */}

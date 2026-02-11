@@ -50,16 +50,16 @@ const PersonDetailModal = ({ person, trainerId, onClose, onPersonMet }) => {
   };
 
   return (
-    <div className="person-detail-modal-overlay" onClick={onClose}>
+    <div className="person-form-overlay" onClick={onClose}>
       <div className="person-detail-modal" onClick={(e) => e.stopPropagation()}>
-        <div className="modal-header">
+        <div className="tree-header">
           <h2>Meet {person.alias}</h2>
-          <button className="close-button" onClick={onClose}>×</button>
+          <button className="button close" onClick={onClose}>×</button>
         </div>
 
         <div className="modal-content">
           <div className="person-preview">
-            <div className="person-image">
+            <div className="image-container">
               <img 
                 src={person.images && person.images.length > 0 ? person.images[0] : '/images/placeholder-person.png'} 
                 alt={person.name || person.alias} 
@@ -75,7 +75,7 @@ const PersonDetailModal = ({ person, trainerId, onClose, onPersonMet }) => {
             </div>
           </div>
 
-          <div className="person-blurb">
+          <div className="task-steps">
             <h4>About</h4>
             <p>{person.blurb}</p>
           </div>
@@ -128,7 +128,7 @@ const PersonDetailModal = ({ person, trainerId, onClose, onPersonMet }) => {
             )}
 
             {error && (
-              <div className="error-message">
+              <div className="alert error">
                 <i className="fas fa-exclamation-triangle"></i>
                 {error}
               </div>
@@ -142,12 +142,12 @@ const PersonDetailModal = ({ person, trainerId, onClose, onPersonMet }) => {
             </div>
 
             <div className="form-actions">
-              <button type="button" onClick={onClose} className="cancel-button">
+              <button type="button" onClick={onClose} className="button secondary">
                 Cancel
               </button>
               <button 
                 type="submit" 
-                className="meet-button"
+                className="button primary"
                 disabled={loading || !selectedSubmission}
               >
                 {loading ? (

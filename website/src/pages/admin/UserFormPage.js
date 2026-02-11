@@ -148,21 +148,21 @@ const UserFormPage = () => {
 
         {/* Error Message */}
         {error && (
-          <div className="admin-alert error">
+          <div className="alert error">
             <i className="fas fa-exclamation-circle"></i> {error}
           </div>
         )}
 
         {/* Action Buttons */}
         <div className="admin-actions">
-          <Link to="/admin/users" className="admin-button secondary">
+          <Link to="/admin/users" className="button secondary">
             <i className="fas fa-arrow-left"></i> Back to Users
           </Link>
         </div>
 
         {/* User Form */}
-        <div className="admin-form-container">
-          <form onSubmit={handleSubmit} className="admin-form">
+        <div className="bulk-monster-add-form">
+          <form onSubmit={handleSubmit} className="reroller-content">
             <div className="admin-form-group">
               <label htmlFor="username" className="admin-form-label">
                 Username <span className="required">*</span>
@@ -243,7 +243,7 @@ const UserFormPage = () => {
             </div>
 
             <div className="admin-form-group">
-              <div className="admin-form-checkbox">
+              <div className="logo-link">
                 <input
                   type="checkbox"
                   id="is_admin"
@@ -262,16 +262,16 @@ const UserFormPage = () => {
             </div>
 
             <div className="admin-form-actions">
-              <Link 
-                to="/admin/users" 
-                className="admin-button secondary"
+              <Link
+                to="/admin/users"
+                className="button secondary"
                 disabled={loading}
               >
                 Cancel
               </Link>
-              <button 
-                type="submit" 
-                className="admin-button"
+              <button
+                type="submit"
+                className="button primary"
                 disabled={loading}
               >
                 {loading ? (

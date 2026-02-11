@@ -59,7 +59,7 @@ const HatchSessionPage = () => {
   const handleMonsterSelect = (eggId, monsterIndex) => {
     setSelectedMonsters(prev => ({
       ...prev,
-      [eggId]: monsterIndex
+      [eggId]: prev[eggId] === monsterIndex ? undefined : monsterIndex
     }));
   };
 
@@ -271,11 +271,11 @@ const HatchSessionPage = () => {
             </div>
           </div>
           <div className="success-content">
-            <h2 className="success-title">Hatching Complete!</h2>
+            <h2 className="session-title">Hatching Complete!</h2>
             <p className="success-description">
               Congratulations! You have successfully hatched <strong>{session.eggCount}</strong> {session.eggCount === 1 ? 'egg' : 'eggs'} and selected your monsters.
             </p>
-            <div className="success-stats">
+            <div className="container grid-md gap-md mb-lg">
               <div className="stat-item">
                 <i className="fas fa-egg"></i>
                 <span>Eggs Hatched: {session.eggCount}</span>
@@ -288,13 +288,13 @@ const HatchSessionPage = () => {
           </div>
           <div className="success-actions">
             <button
-              className="nursery-action-button primary large"
+              className="button primary large"
               onClick={() => navigate('/town/nursery')}
             >
-              <span className="button-icon">
+              <span className="icon">
                 <i className="fas fa-home"></i>
               </span>
-              <span className="button-text">Return to Nursery</span>
+              <span className="button">Return to Nursery</span>
             </button>
           </div>
         </div>
@@ -309,7 +309,7 @@ const HatchSessionPage = () => {
   return (
     <div className="hatch-session-modern-container">
       {/* Session Header */}
-      <div className="session-header-modern">
+      <div className="evolution-help">
         <div className="session-background">
           <div className="session-icon">
             <i className="fas fa-egg"></i>
@@ -335,7 +335,7 @@ const HatchSessionPage = () => {
           {session.hatchedEggs.map((egg, index) => (
             <div
               key={egg.eggId}
-              className={`progress-step-modern ${
+              className={`progress-step-modern${
                 index < currentEgg ? 'completed' :
                 index === currentEgg ? 'active' : 'pending'
               }`}
@@ -357,7 +357,7 @@ const HatchSessionPage = () => {
 
       {/* Current Egg */}
       <div className="current-egg-modern">
-        <div className="egg-header-modern">
+        <div className="evolution-help">
           <h2 className="egg-title">
             <i className="fas fa-egg"></i>
             Choose your {getOrdinal(currentEgg + 1)} monster
@@ -367,18 +367,43 @@ const HatchSessionPage = () => {
           </div>
         </div>
 
-        {!isEggSelected && (
-          <div className="monster-naming-section">
+        {!isEggSelected && selectedMonsters[currentEggData.eggId] !== undefined && (
+          <div className="monster-naming-section top-naming">
             <div className="naming-card">
               <div className="naming-header">
                 <i className="fas fa-signature"></i>
                 <span>Name Your Monster</span>
                 <span className="optional-badge">Optional</span>
               </div>
+              <div className="naming-species-label">
+                {(() => {
+                  // Build species label showing claimed monsters + currently selected
+                  const speciesLabels = [];
+
+                  // Add Edenwiess-claimed monster species
+                  claimedMonsterIndices.forEach(claimedIndex => {
+                    const claimedMonster = currentEggData.monsters[claimedIndex];
+                    if (claimedMonster) {
+                      speciesLabels.push(claimedMonster.species || claimedMonster.species_name || 'Unknown');
+                    }
+                  });
+
+                  // Add currently selected monster species
+                  const selectedIndex = selectedMonsters[currentEggData.eggId];
+                  if (selectedIndex !== undefined) {
+                    const selectedMonster = currentEggData.monsters[selectedIndex];
+                    if (selectedMonster) {
+                      speciesLabels.push(selectedMonster.species || selectedMonster.species_name || 'Selected Monster');
+                    }
+                  }
+
+                  return speciesLabels.join(' / ') || 'Selected Monster';
+                })()}
+              </div>
               <div className="naming-input-container">
                 <input
                   type="text"
-                  className="monster-name-input-modern"
+                  className="form-input"
                   value={monsterNames[currentEggData.eggId] || ''}
                   onChange={(e) => handleNameChange(currentEggData.eggId, e.target.value)}
                   placeholder={`Hatched Monster ${currentEggData.eggId}`}
@@ -398,7 +423,7 @@ const HatchSessionPage = () => {
             <i className="fas fa-sparkles"></i>
             Available Monsters
           </h3>
-          <div className="monster-grid-modern">
+          <div className="catalogue-grid">
             {currentEggData.monsters.map((monster, index) => {
               const isClaimedWithEdenwiess = claimedMonsterIndices.includes(index);
               const isCurrentlySelected = selectedMonsters[currentEggData.eggId] === index;
@@ -406,9 +431,9 @@ const HatchSessionPage = () => {
               return (
                 <div
                   key={index}
-                  className={`monster-card-modern ${
+                  className={`monster-card-modern${
                     isCurrentlySelected ? 'selected' : ''
-                  } ${isEggSelected ? 'disabled' : ''} ${isClaimedWithEdenwiess ? 'claimed-with-edenwiess' : ''}`}
+                  }${isEggSelected ? 'disabled' : ''}${isClaimedWithEdenwiess ? 'claimed-with-edenwiess' : ''}`}
                   onClick={() => !isEggSelected && !isClaimedWithEdenwiess && handleMonsterSelect(currentEggData.eggId, index)}
                 >
                   <div className="monster-card-content">
@@ -451,12 +476,12 @@ const HatchSessionPage = () => {
             <div className="special-actions-grid">
               {session.specialBerries['Forget-Me-Not'] > 0 && (
                 <button
-                  className="special-action-button forget-me-not"
+                  className="button decorative forget-me-not"
                   onClick={handleRerollEgg}
                   disabled={submitting}
                   title="Reroll this egg using a Forget-Me-Not berry"
                 >
-                  <div className="special-button-icon">
+                  <div className="special-icon">
                     <i className="fas fa-dice"></i>
                   </div>
                   <div className="special-button-content">
@@ -468,12 +493,12 @@ const HatchSessionPage = () => {
 
               {selectedMonsters[currentEggData.eggId] !== undefined && session.specialBerries['Edenwiess'] > 0 && (
                 <button
-                  className="special-action-button edenwiess"
+                  className="button decorative edenwiess"
                   onClick={() => handleClaimWithEdenwiess(currentEggData.eggId)}
                   disabled={submitting}
                   title="Claim this monster as an extra using an Edenwiess berry"
                 >
-                  <div className="special-button-icon">
+                  <div className="special-icon">
                     <i className="fas fa-plus-circle"></i>
                   </div>
                   <div className="special-button-content">
@@ -500,12 +525,63 @@ const HatchSessionPage = () => {
         {/* Action Section */}
         {!isEggSelected && (
           <div className="egg-actions-modern">
+            {/* Duplicate naming input at bottom */}
+            {selectedMonsters[currentEggData.eggId] !== undefined && (
+              <div className="monster-naming-section bottom-naming">
+                <div className="naming-card">
+                  <div className="naming-header">
+                    <i className="fas fa-signature"></i>
+                    <span>Name Your Monster</span>
+                    <span className="optional-badge">Optional</span>
+                  </div>
+                  <div className="naming-species-label">
+                    {(() => {
+                      // Build species label showing claimed monsters + currently selected
+                      const speciesLabels = [];
+
+                      // Add Edenwiess-claimed monster species
+                      claimedMonsterIndices.forEach(claimedIndex => {
+                        const claimedMonster = currentEggData.monsters[claimedIndex];
+                        if (claimedMonster) {
+                          speciesLabels.push(claimedMonster.species || claimedMonster.species_name || 'Unknown');
+                        }
+                      });
+
+                      // Add currently selected monster species
+                      const selectedIndex = selectedMonsters[currentEggData.eggId];
+                      if (selectedIndex !== undefined) {
+                        const selectedMonster = currentEggData.monsters[selectedIndex];
+                        if (selectedMonster) {
+                          speciesLabels.push(selectedMonster.species || selectedMonster.species_name || 'Selected Monster');
+                        }
+                      }
+
+                      return speciesLabels.join(' / ') || 'Selected Monster';
+                    })()}
+                  </div>
+                  <div className="naming-input-container">
+                    <input
+                      type="text"
+                      className="form-input"
+                      value={monsterNames[currentEggData.eggId] || ''}
+                      onChange={(e) => handleNameChange(currentEggData.eggId, e.target.value)}
+                      placeholder={`Hatched Monster ${currentEggData.eggId}`}
+                      maxLength={50}
+                    />
+                    <div className="character-count">
+                      {(monsterNames[currentEggData.eggId] || '').length}/50
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
             <button
-              className="nursery-action-button primary large"
+              className="button primary large"
               onClick={() => handleSelectMonster(currentEggData.eggId)}
               disabled={submitting || selectedMonsters[currentEggData.eggId] === undefined}
             >
-              <span className="button-icon">
+              <span className="icon">
                 {submitting ? (
                   <i className="fas fa-spinner fa-spin"></i>
                 ) : (
@@ -513,10 +589,10 @@ const HatchSessionPage = () => {
                 )}
               </span>
               <span className="button-text">
-                {submitting 
-                  ? 'Selecting Monster...' 
-                  : currentEggClaims > 0 
-                    ? 'Select This Monster (Final)' 
+                {submitting
+                  ? 'Selecting Monster...'
+                  : currentEggClaims > 0
+                    ? 'Select This Monster (Final)'
                     : 'Select This Monster'
                 }
               </span>

@@ -1,16 +1,14 @@
 import React from 'react';
 
-const LoadingSpinner = ({ message = 'Loading...' }) => {
+const LoadingSpinner = ({ message = 'Loading...', size = '' }) => {
   return (
-    <div className="loading-container">
-      <div className="loading-spinner">
-        <div className="spinner-dots">
-          {[...Array(8)].map((_, i) => (
-            <div key={i} className="spinner-dot"></div>
-          ))}
-        </div>
+    <div className="spinner-container">
+      <div className={`spinner-dots ${size}`}>
+        {[...Array(8)].map((_, i) => (
+          <div key={i} className="spinner-dot"></div>
+        ))}
       </div>
-      <p className="loading-message">{message}</p>
+      {message && <p className="spinner-message">{message}</p>}
     </div>
   );
 };

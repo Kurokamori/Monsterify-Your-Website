@@ -380,7 +380,7 @@ const EditMonsterPage = () => {
 
   if (loading) {
     return (
-      <div className="loading-container">
+      <div className="error-container">
         <div className="loading-spinner">
           <i className="fas fa-spinner fa-spin"></i>
         </div>
@@ -394,10 +394,10 @@ const EditMonsterPage = () => {
       <div className="error-container">
         <i className="fas fa-exclamation-circle"></i>
         <p>{error}</p>
-        <button onClick={fetchMonsterData} className="retry-button">
+        <button onClick={fetchMonsterData} className="button primary">
           Try Again
         </button>
-        <button onClick={() => navigate(-1)} className="back-button">
+        <button onClick={() => navigate(-1)} className="button secondary">
           Go Back
         </button>
       </div>
@@ -430,7 +430,7 @@ const EditMonsterPage = () => {
       <div className="error-container">
         <i className="fas fa-lock"></i>
         <p>You are not authorized to edit this monster.</p>
-        <button onClick={() => navigate(`/monsters/${id}`)} className="back-button">
+        <button onClick={() => navigate(`/monsters/${id}`)} className="button secondary">
           View Monster
         </button>
       </div>
@@ -442,24 +442,24 @@ const EditMonsterPage = () => {
       <h1>Edit Monster: {monster.name}</h1>
 
       {error && (
-        <div className="alert alert-danger">
+        <div className="alert error">
           <i className="fas fa-exclamation-circle"></i>
           <span>{error}</span>
         </div>
       )}
 
       {success && (
-        <div className="alert alert-success">
+        <div className="alert success">
           <i className="fas fa-check-circle"></i>
           <span>{success}</span>
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="edit-monster-form">
+      <form onSubmit={handleSubmit} className="town-section">
         {/* Basic Information Section */}
         <div className="form-section">
           <h2>Basic Information</h2>
-          <div className="form-grid">
+          <div className="container cols-2 gap-md">
             <div className="form-group">
               <label htmlFor="name">Name</label>
               <input
@@ -494,7 +494,7 @@ const EditMonsterPage = () => {
         {/* Personality Section */}
         <div className="form-section">
           <h2>Personality</h2>
-          <div className="form-grid">
+          <div className="container cols-2 gap-md">
             <div className="form-group">
               <label htmlFor="nature">Nature</label>
               <input
@@ -546,7 +546,7 @@ const EditMonsterPage = () => {
         {/* Physical Characteristics Section */}
         <div className="form-section">
           <h2>Physical Characteristics</h2>
-          <div className="form-grid">
+          <div className="container cols-2 gap-md">
             <div className="form-group">
               <label htmlFor="height">Height</label>
               <input
@@ -575,7 +575,7 @@ const EditMonsterPage = () => {
         {/* Origin Information Section */}
         <div className="form-section">
           <h2>Origin Information</h2>
-          <div className="form-grid">
+          <div className="container cols-2 gap-md">
             <div className="form-group">
               <label htmlFor="where_met">Where Met</label>
               <input
@@ -608,8 +608,8 @@ const EditMonsterPage = () => {
         {/* Special Features Section */}
         <div className="form-section">
           <h2>Special Features</h2>
-          <div className="form-grid">
-            <div className="form-group checkbox-group">
+          <div className="container cols-2 gap-md">
+            <div className="form-group event-date">
               <label className="checkbox-label">
                 <input
                   type="checkbox"
@@ -621,7 +621,7 @@ const EditMonsterPage = () => {
               </label>
             </div>
 
-            <div className="form-group checkbox-group">
+            <div className="form-group event-date">
               <label className="checkbox-label">
                 <input
                   type="checkbox"
@@ -633,7 +633,7 @@ const EditMonsterPage = () => {
               </label>
             </div>
 
-            <div className="form-group checkbox-group">
+            <div className="form-group event-date">
               <label className="checkbox-label">
                 <input
                   type="checkbox"
@@ -645,7 +645,7 @@ const EditMonsterPage = () => {
               </label>
             </div>
 
-            <div className="form-group checkbox-group">
+            <div className="form-group event-date">
               <label className="checkbox-label">
                 <input
                   type="checkbox"
@@ -657,7 +657,7 @@ const EditMonsterPage = () => {
               </label>
             </div>
 
-            <div className="form-group checkbox-group">
+            <div className="form-group event-date">
               <label className="checkbox-label">
                 <input
                   type="checkbox"
@@ -675,7 +675,7 @@ const EditMonsterPage = () => {
         {/* Held Items Section */}
         <div className="form-section">
           <h2>Held Items</h2>
-          <div className="form-grid">
+          <div className="container cols-2 gap-md">
             <div className="form-group">
               <label htmlFor="held_item">Held Item</label>
               <input
@@ -717,7 +717,7 @@ const EditMonsterPage = () => {
         {/* Biography Section */}
         <div className="form-section">
           <h2>Biography</h2>
-          <div className="form-grid">
+          <div className="container cols-2 gap-md">
 
 
             <div className="form-group full-width">
@@ -747,7 +747,7 @@ const EditMonsterPage = () => {
         {/* Images Section */}
         <div className="form-section">
           <h2>Images</h2>
-          <div className="form-grid">
+          <div className="container cols-2 gap-md">
             <div className="form-group full-width">
               <label htmlFor="img_link">Main Image</label>
               <BackendFileUpload
@@ -774,10 +774,10 @@ const EditMonsterPage = () => {
             </div>
           ) : (
             <>
-              <div className="form-grid">
+              <div className="container cols-2 gap-md">
                 <div className="form-group">
                   <label htmlFor="has_mega_stone">Has Mega Stone</label>
-                  <div className="checkbox-group">
+                  <div className="event-date">
                     <label className="checkbox-label">
                       <input
                         type="checkbox"
@@ -806,9 +806,9 @@ const EditMonsterPage = () => {
 
               {formData.has_mega_stone && (
                 <>
-                  <div className="mega-stone-section">
+                  <div className="trainer-bio">
                     <h3>Mega Stone Artwork</h3>
-                    <div className="form-grid">
+                    <div className="container cols-2 gap-md">
                       <div className="form-group full-width">
                         <BackendFileUpload
                           onUploadSuccess={handleMegaStoneUpload}
@@ -823,9 +823,9 @@ const EditMonsterPage = () => {
                     </div>
                   </div>
 
-                  <div className="mega-evolution-section">
+                  <div className="trainer-bio">
                     <h3>Mega Evolution Form</h3>
-                    <div className="form-grid">
+                    <div className="container cols-2 gap-md">
 
 
                       <div className="form-group">
@@ -909,7 +909,7 @@ const EditMonsterPage = () => {
 
                   <div className="mega-image-section">
                     <h3>Mega Evolution Image</h3>
-                    <div className="form-grid">
+                    <div className="container cols-2 gap-md">
                       <div className="form-group full-width">
                         <BackendFileUpload
                           onUploadSuccess={handleMegaImageUpload}
@@ -932,7 +932,7 @@ const EditMonsterPage = () => {
         {/* Personal Information Section */}
         <div className="form-section">
           <h2>Personal Information</h2>
-          <div className="form-grid">
+          <div className="container cols-2 gap-md">
             <div className="form-group">
               <label htmlFor="likes">Likes</label>
               <textarea
@@ -984,14 +984,14 @@ const EditMonsterPage = () => {
                     <h3>Fun Fact #{index + 1}</h3>
                     <button
                       type="button"
-                      className="remove-fun-fact-button"
+                      className="button icon danger"
                       onClick={() => handleRemoveFunFact(fact.id)}
                     >
                       <i className="fas fa-trash-alt"></i>
                     </button>
                   </div>
 
-                  <div className="form-grid">
+                  <div className="container cols-2 gap-md">
                     <div className="form-group">
                       <label>Title</label>
                       <input
@@ -1025,7 +1025,7 @@ const EditMonsterPage = () => {
           <div className="add-fun-fact-button-container">
             <button
               type="button"
-              className="add-fun-fact-button"
+              className="button primary"
               onClick={handleAddFunFact}
             >
               <i className="fas fa-plus"></i> Add Fun Fact
@@ -1046,14 +1046,14 @@ const EditMonsterPage = () => {
                     <h3>Relation #{index + 1}</h3>
                     <button
                       type="button"
-                      className="icon-button"
+                      className="button icon danger sm"
                       onClick={() => handleRemoveRelation(relation.id)}
                     >
                       <i className="fas fa-trash-alt"></i>
                     </button>
                   </div>
 
-                  <div className="form-grid">
+                  <div className="container cols-2 gap-md">
                     <div className="form-group">
                       <label>Type</label>
                       <select
@@ -1140,7 +1140,7 @@ const EditMonsterPage = () => {
           <div className="add-relation-button-container">
             <button
               type="button"
-              className="add-relation-button"
+              className="button primary"
               onClick={handleAddRelation}
             >
               <i className="fas fa-plus"></i> Add Relation
@@ -1149,10 +1149,10 @@ const EditMonsterPage = () => {
         </div>
 
         <div className="form-actions">
-          <button type="button" className="cancel-button" onClick={() => navigate(`/monsters/${id}`)}>
+          <button type="button" className="button secondary" onClick={() => navigate(`/monsters/${id}`)}>
             Cancel
           </button>
-          <button type="submit" className="save-button" disabled={saving}>
+          <button type="submit" className="button primary" disabled={saving}>
             {saving ? <i className="fas fa-spinner fa-spin"></i> : 'Save Changes'}
           </button>
         </div>

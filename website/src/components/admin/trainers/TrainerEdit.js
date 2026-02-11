@@ -116,10 +116,10 @@ const TrainerEdit = () => {
 
   return (
     <div className="trainer-edit-container">
-      <div className="trainer-edit-header">
+      <div className="adopt-card">
         <h1>Edit Trainer: {trainer.name}</h1>
-        <div className="trainer-edit-actions">
-          <Link to={`/admin/dashboard/trainers/${id}`} className="trainer-edit-btn cancel">
+        <div className="header-actions">
+          <Link to={`/admin/dashboard/trainers/${id}`} className="button secondary">
             <i className="fas fa-times"></i> Cancel
           </Link>
         </div>
@@ -129,28 +129,28 @@ const TrainerEdit = () => {
         <div className="trainer-edit-tabs">
           <button
             type="button"
-            className={`trainer-edit-tab ${activeSection === 'basic' ? 'active' : ''}`}
+            className={`trainer-edit-tab${activeSection === 'basic' ? 'active' : ''}`}
             onClick={() => setActiveSection('basic')}
           >
             <i className="fas fa-user"></i> Basic Info
           </button>
           <button
             type="button"
-            className={`trainer-edit-tab ${activeSection === 'personal' ? 'active' : ''}`}
+            className={`trainer-edit-tab${activeSection === 'personal' ? 'active' : ''}`}
             onClick={() => setActiveSection('personal')}
           >
             <i className="fas fa-address-card"></i> Personal
           </button>
           <button
             type="button"
-            className={`trainer-edit-tab ${activeSection === 'species' ? 'active' : ''}`}
+            className={`trainer-edit-tab${activeSection === 'type' ? 'active' : ''}`}
             onClick={() => setActiveSection('species')}
           >
             <i className="fas fa-dna"></i> Species & Types
           </button>
           <button
             type="button"
-            className={`trainer-edit-tab ${activeSection === 'bio' ? 'active' : ''}`}
+            className={`trainer-edit-tab${activeSection === 'bio' ? 'active' : ''}`}
             onClick={() => setActiveSection('bio')}
           >
             <i className="fas fa-book"></i> Biography
@@ -159,10 +159,10 @@ const TrainerEdit = () => {
 
         <div className="trainer-edit-content">
           {activeSection === 'basic' && (
-            <div className="edit-section">
+            <div className="set-item">
               <h2>Basic Information</h2>
 
-              <div className="form-grid">
+              <div className="container cols-2 gap-md">
                 <div className="form-group">
                   <label htmlFor="name">Name *</label>
                   <input
@@ -262,10 +262,10 @@ const TrainerEdit = () => {
           )}
 
           {activeSection === 'personal' && (
-            <div className="edit-section">
+            <div className="set-item">
               <h2>Personal Information</h2>
 
-              <div className="form-grid">
+              <div className="container cols-2 gap-md">
                 <div className="form-group">
                   <label htmlFor="gender">Gender</label>
                   <input
@@ -413,10 +413,10 @@ const TrainerEdit = () => {
           )}
 
           {activeSection === 'species' && (
-            <div className="edit-section">
+            <div className="set-item">
               <h2>Species & Types</h2>
 
-              <div className="form-grid">
+              <div className="container cols-2 gap-md">
                 <div className="form-group">
                   <label htmlFor="species1">Species 1</label>
                   <input
@@ -563,7 +563,7 @@ const TrainerEdit = () => {
           )}
 
           {activeSection === 'bio' && (
-            <div className="edit-section">
+            <div className="set-item">
               <h2>Biography</h2>
 
               <div className="form-group">
@@ -611,14 +611,14 @@ const TrainerEdit = () => {
         <div className="trainer-edit-footer">
           <button
             type="button"
-            className="trainer-edit-btn cancel"
+            className="button secondary"
             onClick={() => navigate(`/admin/dashboard/trainers/${id}`)}
           >
             Cancel
           </button>
           <button
             type="submit"
-            className="trainer-edit-btn save"
+            className="button primary"
             disabled={saving}
           >
             {saving ? (

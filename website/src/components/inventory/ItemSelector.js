@@ -81,7 +81,7 @@ const ItemSelector = ({
   // Get the appropriate image URL based on the item type - now using utility function
 
   return (
-    <div className={`item-selector ${disabled ? 'disabled' : ''}`}>
+    <div className={`file-upload${disabled ? 'disabled' : ''}`}>
       <div className="item-selector-header" onClick={handleToggle}>
         {selectedItem ? (
           <div className="selected-item">
@@ -92,10 +92,10 @@ const ItemSelector = ({
                 onError={(e) => handleItemImageError(e, selectedItem.category)}
               />
             </div>
-            <div className="selected-item-info">
-              <div className="selected-item-name">{selectedItem.name}</div>
+            <div className="naming-header">
+              <div className="task-name">{selectedItem.name}</div>
               {selectedItem.quantity && (
-                <div className="selected-item-quantity">Qty: {selectedItem.quantity}</div>
+                <div className="species-count">Qty: {selectedItem.quantity}</div>
               )}
             </div>
             {!disabled && (
@@ -122,7 +122,7 @@ const ItemSelector = ({
               placeholder="Search items..."
               value={searchTerm}
               onChange={handleSearchChange}
-              className="search-input"
+              className="form-input"
             />
             <i className="fas fa-search search-icon"></i>
           </div>

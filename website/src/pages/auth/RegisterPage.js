@@ -92,7 +92,7 @@ const RegisterPage = () => {
   
   return (
     <div className="auth-container register-container">
-      <div className="register-wrapper">
+      <div className="image-upload">
         <div className="auth-card register-card">
           <div className="auth-header">
             <h1>Register</h1>
@@ -105,9 +105,9 @@ const RegisterPage = () => {
           )}
 
           <form className="auth-form" onSubmit={handleSubmit}>
-            <div className="auth-form-group">
+            <div className="container vertical gap-md">
               <label htmlFor="username">Username*</label>
-              <div className="input-with-icon">
+              <div className="form-input">
                 <i className="fas fa-user"></i>
                 <input
                   type="text"
@@ -122,9 +122,9 @@ const RegisterPage = () => {
               </div>
             </div>
 
-            <div className="auth-form-group">
+            <div className="container vertical gap-md">
               <label htmlFor="display_name">Display Name</label>
-              <div className="input-with-icon">
+              <div className="form-input">
                 <i className="fas fa-id-card"></i>
                 <input
                   type="text"
@@ -138,9 +138,9 @@ const RegisterPage = () => {
               </div>
             </div>
 
-            <div className="auth-form-group">
+            <div className="container vertical gap-md">
               <label htmlFor="discord_id">Discord ID</label>
-              <div className="input-with-icon">
+              <div className="form-input">
                 <i className="fab fa-discord"></i>
                 <input
                   type="text"
@@ -154,9 +154,9 @@ const RegisterPage = () => {
               </div>
             </div>
 
-            <div className="auth-form-group">
+            <div className="container vertical gap-md">
               <label htmlFor="password">Password*</label>
-              <div className="input-with-icon">
+              <div className="form-input">
                 <i className="fas fa-lock"></i>
                 <input
                   type="password"
@@ -171,9 +171,9 @@ const RegisterPage = () => {
               </div>
             </div>
 
-            <div className="auth-form-group">
+            <div className="container vertical gap-md">
               <label htmlFor="confirm_password">Confirm Password*</label>
-              <div className="input-with-icon">
+              <div className="form-input">
                 <i className="fas fa-lock"></i>
                 <input
                   type="password"
@@ -300,10 +300,10 @@ const RegisterPage = () => {
               </div>
             </div>
 
-            <div className="register-actions">
+            <div className="container vertical gap-md">
               <button
                 type="submit"
-                className="auth-button-register"
+                className="button primary lg block"
                 disabled={loading}
               >
                 {loading ? (
@@ -333,7 +333,7 @@ const RegisterPage = () => {
           <h2>Monster Roller Settings</h2>
           <p>Select which monster types you want to roll from. This can be changed later in your profile settings.</p>
 
-          <div className="fandom-grid">
+          <div className="container vertical gap-md">
             <div className="fandom-toggle">
               <input
                 type="checkbox"

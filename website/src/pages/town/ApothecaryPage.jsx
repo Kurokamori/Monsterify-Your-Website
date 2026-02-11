@@ -26,7 +26,7 @@ const ApothecaryPage = () => {
         <div className="location-icon-large">
           <i className="fas fa-mortar-pestle"></i>
         </div>
-        <div className="location-title">
+        <div className="no-adventures">
           <h2>Apothecary</h2>
           <p>Use berries to modify your monsters' species, types, and attributes</p>
         </div>

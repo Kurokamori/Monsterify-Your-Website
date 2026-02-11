@@ -124,7 +124,7 @@ const FactionStore = ({ factionId, trainerId, faction }) => {
   }
 
   return (
-    <div className="faction-store">
+    <div className="shop-page">
       <div className="store-header">
         <h3>{faction.name} Store</h3>
         <div className="trainer-currency">
@@ -144,7 +144,7 @@ const FactionStore = ({ factionId, trainerId, faction }) => {
         <div className="purchase-error">
           <i className="fas fa-exclamation-triangle"></i>
           {purchaseError}
-          <button onClick={() => setPurchaseError(null)} className="dismiss-button">×</button>
+          <button onClick={() => setPurchaseError(null)} className="button close sm">×</button>
         </div>
       )}
 
@@ -157,7 +157,7 @@ const FactionStore = ({ factionId, trainerId, faction }) => {
           {storeItems.map(item => (
             <div key={item.id} className="store-item-card">
               <div className="item-header">
-                <div className="item-icon">
+                <div className="image-container medium">
                   {getItemTypeIcon(item.item_type)}
                 </div>
                 <div className="item-info">
@@ -189,7 +189,7 @@ const FactionStore = ({ factionId, trainerId, faction }) => {
 
               <div className="item-actions">
                 <button
-                  className={`purchase-button ${
+                  className={`button primary ${
                     !canAfford(item.price) ? 'cannot-afford' :
                     !isInStock(item) ? 'out-of-stock' :
                     purchaseLoading === item.id ? 'loading' : ''

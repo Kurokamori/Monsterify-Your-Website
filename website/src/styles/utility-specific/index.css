@@ -1,0 +1,35 @@
+/* ==============================
+   Utility-Specific Styles Index
+
+   This file imports page-specific and utility styles
+   that don't fit into other categories.
+   Import this file to get all utility-specific styles.
+   ============================== */
+
+/* Submissions */
+@import './SubmissionStyles.css';
+@import './MySubmissions.css';
+
+/* Prompts */
+@import './PromptCard.css';
+@import './PromptForm.css';
+@import './PromptList.css';
+@import './PromptSubmissionModal.css';
+
+/* Profile */
+@import './ProfilePageStyles.css';
+
+/* Art Todo */
+@import './art-todo.css';
+
+/* Statistics */
+@import './StatisticsStyles.css';
+
+/* Gallery and library */
+@import './GalleryLibraryStyles.css';
+
+/* Fakemon dex */
+@import './FakemonDexPage.css';
+
+/* Home page */
+@import './HomePage.css';

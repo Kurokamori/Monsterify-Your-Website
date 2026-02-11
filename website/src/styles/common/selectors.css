@@ -1,0 +1,778 @@
+/* ==============================
+   Selector Component Styles
+   ============================== */
+
+/* ---------- Generic Item Selector ---------- */
+
+.item-selector-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem;
+  border: 1px solid var(--divider-color);
+  border-radius: 0.375rem;
+  background-color: var(--input-background);
+  cursor: pointer;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.file-upload:not(.disabled) .item-selector-header:hover {
+  border-color: var(--accent-color);
+}
+
+.selected-item {
+  align-items: center;
+  border-bottom: 1px solid var(--nav-hover);
+  color: var(--text-muted);
+  display: flex;
+  flex: 1;
+  font-size: 0.85rem;
+  gap: 0.5rem;
+  justify-content: space-between;
+  padding: 0.5rem 0;
+}
+
+.selected-item-image {
+  align-items: center;
+  background-color: var(--highlight-light);
+  border-radius: 15%;
+  display: flex;
+  height: 20vh;
+  justify-content: center;
+  overflow: hidden;
+  width: 15vh;
+}
+
+.selected-item-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.naming-header {
+  align-items: center;
+  background: linear-gradient(135deg, var(--accent-glow), var(--accent-glow));
+  border: 1px solid var(--accent-glow);
+  border-radius: 0.5rem;
+  color: var(--text-color);
+  display: flex;
+  flex: 1;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  margin-top: 1rem;
+  min-width: 0;
+  padding: 1rem;
+}
+
+.task-name {
+  font-weight: 500;
+  color: var(--text-color);
+}
+
+.placeholder {
+  color: var(--text-muted);
+}
+
+.toggle-icon {
+  color: var(--text-muted);
+  margin-left: 0.5rem;
+}
+
+/* ---------- Item Selector Dropdown ---------- */
+
+.item-selector-dropdown {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  left: 0;
+  width: 100%;
+  max-height: 20rem;
+  background-color: var(--card-background);
+  border: 1px solid var(--divider-color);
+  border-radius: 0.375rem;
+  box-shadow: 0 4px 6px var(--overlay-light);
+  z-index: 10;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.items-list {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 10px;
+  max-height: 16rem;
+  overflow-y: auto;
+}
+
+.item-option {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  border-bottom: 1px solid var(--divider-color);
+}
+
+.item-option:last-child {
+  border-bottom: none;
+}
+
+.item-option:hover {
+  background-color: var(--nav-hover);
+}
+
+.item-option.selected {
+  background-color: var(--accent-muted);
+}
+
+.item-option .item-image {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 0.25rem;
+  overflow: hidden;
+  background-color: var(--highlight-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.item-option .item-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.item-option .item-info {
+  flex: 1;
+}
+
+.item-option .item-name {
+  font-weight: 500;
+  color: var(--text-color);
+}
+
+.item-option .item-description {
+  font-size: var(--font-size-sm);
+  color: var(--text-muted);
+  margin-top: 0.25rem;
+}
+
+.item-option .item-quantity {
+  font-size: var(--font-size-sm);
+  color: var(--accent-color);
+  margin-top: 0.25rem;
+}
+
+/* ---------- Monster Selector ---------- */
+
+.monster-selector {
+  background: var(--nav-active);
+  background-color: var(--card-background);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  box-shadow: 0 4px 12px var(--overlay-medium);
+  color: var(--text-color);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  height: 100%;
+  min-height: 40px;
+  padding: 1.25rem;
+  width: 100%;
+}
+
+/* ---------- User Selector ---------- */
+
+.user-selector {
+  background: var(--nav-active);
+  border: 1px solid var(--border-color);
+  border-radius: 0.375rem;
+  color: var(--text-color);
+  min-height: 40px;
+  padding: 0.5rem;
+  width: 100%;
+}
+
+/* ==============================================
+   RESPONSIVE STYLES
+   ============================================== */
+
+/* ---------- Medium Desktop/Laptop (1024px - 1199px) ---------- */
+@media (max-width: 1199px) {
+  .item-selector-header {
+    padding: 0.625rem;
+  }
+
+  .selected-item {
+    font-size: 0.8rem;
+    gap: 0.375rem;
+    padding: 0.375rem 0;
+  }
+
+  .selected-item-image {
+    height: 18vh;
+    width: 13vh;
+  }
+
+  .naming-header {
+    padding: 0.875rem;
+    gap: 0.625rem;
+    margin-bottom: 0.875rem;
+    margin-top: 0.875rem;
+  }
+
+  .item-selector-dropdown {
+    max-height: 18rem;
+  }
+
+  .items-list {
+    max-height: 14rem;
+    gap: 8px;
+  }
+
+  .item-option {
+    padding: 0.625rem;
+    gap: 0.625rem;
+  }
+
+  .item-option .item-image {
+    width: 2.25rem;
+    height: 2.25rem;
+  }
+
+  .monster-selector {
+    padding: 1.125rem;
+    gap: 0.875rem;
+  }
+
+  .user-selector {
+    padding: 0.4rem;
+  }
+}
+
+/* ---------- Small Desktop/Large Tablet (768px - 1023px) ---------- */
+@media (max-width: 1023px) {
+  .item-selector-header {
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+  }
+
+  .selected-item {
+    font-size: 0.75rem;
+    gap: 0.3rem;
+    padding: 0.3rem 0;
+  }
+
+  .selected-item-image {
+    height: 16vh;
+    width: 12vh;
+    border-radius: 12%;
+  }
+
+  .naming-header {
+    padding: 0.75rem;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+    margin-top: 0.75rem;
+    border-radius: 0.375rem;
+  }
+
+  .item-selector-dropdown {
+    max-height: 16rem;
+    top: calc(100% + 0.375rem);
+  }
+
+  .items-list {
+    max-height: 12rem;
+    gap: 6px;
+  }
+
+  .item-option {
+    padding: 0.5rem;
+    gap: 0.5rem;
+  }
+
+  .item-option .item-image {
+    width: 2rem;
+    height: 2rem;
+  }
+
+  .item-option .item-name {
+    font-size: 0.9rem;
+  }
+
+  .monster-selector {
+    padding: 1rem;
+    gap: 0.75rem;
+    border-radius: 10px;
+  }
+
+  .user-selector {
+    padding: 0.4rem;
+    min-height: 38px;
+  }
+}
+
+/* ---------- Tablet Portrait (600px - 767px) ---------- */
+@media (max-width: 767px) {
+  .item-selector-header {
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    min-height: 44px; /* Touch-friendly */
+  }
+
+  .selected-item {
+    font-size: 0.8rem;
+    gap: 0.5rem;
+    padding: 0.5rem 0;
+    flex-wrap: wrap;
+  }
+
+  .selected-item-image {
+    height: 20vh;
+    width: 15vh;
+    max-height: 150px;
+    max-width: 120px;
+    border-radius: 10%;
+  }
+
+  .naming-header {
+    padding: 0.875rem;
+    gap: 0.625rem;
+    margin-bottom: 0.875rem;
+    margin-top: 0.875rem;
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .task-name {
+    font-size: 0.95rem;
+  }
+
+  .item-selector-dropdown {
+    max-height: 50vh;
+    top: calc(100% + 0.25rem);
+    position: fixed;
+    left: 1rem;
+    right: 1rem;
+    width: auto;
+    bottom: auto;
+    border-radius: 0.5rem;
+    z-index: 1000;
+  }
+
+  .items-list {
+    max-height: calc(50vh - 4rem);
+    gap: 8px;
+    padding: 0.5rem;
+  }
+
+  .item-option {
+    padding: 0.75rem;
+    gap: 0.75rem;
+    min-height: 44px;
+    border-radius: 0.375rem;
+  }
+
+  .item-option:hover {
+    background-color: transparent;
+  }
+
+  .item-option:active {
+    background-color: var(--nav-hover);
+  }
+
+  .item-option .item-image {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 0.375rem;
+  }
+
+  .item-option .item-name {
+    font-size: 0.9rem;
+  }
+
+  .item-option .item-description,
+  .item-option .item-quantity {
+    font-size: 0.8rem;
+  }
+
+  .monster-selector {
+    padding: 1rem;
+    gap: 0.75rem;
+    border-radius: 0.75rem;
+  }
+
+  .user-selector {
+    padding: 0.5rem;
+    min-height: 44px;
+    font-size: 16px; /* Prevents iOS zoom */
+  }
+
+  .toggle-icon {
+    margin-left: 0.375rem;
+    font-size: 1rem;
+  }
+}
+
+/* ---------- Large Phone (480px - 599px) ---------- */
+@media (max-width: 599px) {
+  .item-selector-header {
+    padding: 0.625rem;
+  }
+
+  .selected-item {
+    font-size: 0.75rem;
+    gap: 0.375rem;
+  }
+
+  .selected-item-image {
+    height: 18vh;
+    width: 13vh;
+    max-height: 130px;
+    max-width: 100px;
+  }
+
+  .naming-header {
+    padding: 0.75rem;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+    margin-top: 0.75rem;
+    font-size: 0.9rem;
+  }
+
+  .task-name {
+    font-size: 0.9rem;
+  }
+
+  .item-selector-dropdown {
+    max-height: 60vh;
+    left: 0.5rem;
+    right: 0.5rem;
+  }
+
+  .items-list {
+    max-height: calc(60vh - 4rem);
+    gap: 6px;
+    padding: 0.375rem;
+  }
+
+  .item-option {
+    padding: 0.625rem;
+    gap: 0.5rem;
+  }
+
+  .item-option .item-image {
+    width: 2.25rem;
+    height: 2.25rem;
+  }
+
+  .item-option .item-name {
+    font-size: 0.85rem;
+  }
+
+  .item-option .item-description,
+  .item-option .item-quantity {
+    font-size: 0.75rem;
+  }
+
+  .monster-selector {
+    padding: 0.875rem;
+    gap: 0.625rem;
+    border-radius: 0.625rem;
+  }
+
+  .user-selector {
+    padding: 0.375rem;
+    min-height: 44px;
+  }
+}
+
+/* ---------- Small Phone (320px - 479px) ---------- */
+@media (max-width: 479px) {
+  .item-selector-header {
+    padding: 0.5rem;
+    border-radius: 0.375rem;
+  }
+
+  .selected-item {
+    font-size: 0.7rem;
+    gap: 0.25rem;
+    padding: 0.25rem 0;
+  }
+
+  .selected-item-image {
+    height: 15vh;
+    width: 11vh;
+    max-height: 100px;
+    max-width: 80px;
+    border-radius: 8%;
+  }
+
+  .naming-header {
+    padding: 0.625rem;
+    gap: 0.375rem;
+    margin-bottom: 0.625rem;
+    margin-top: 0.625rem;
+    font-size: 0.85rem;
+  }
+
+  .task-name {
+    font-size: 0.85rem;
+  }
+
+  .placeholder {
+    font-size: 0.8rem;
+  }
+
+  .item-selector-dropdown {
+    max-height: 70vh;
+    left: 0.25rem;
+    right: 0.25rem;
+    border-radius: 0.375rem;
+  }
+
+  .items-list {
+    max-height: calc(70vh - 3.5rem);
+    gap: 4px;
+    padding: 0.25rem;
+  }
+
+  .item-option {
+    padding: 0.5rem;
+    gap: 0.375rem;
+    border-radius: 0.25rem;
+  }
+
+  .item-option .item-image {
+    width: 2rem;
+    height: 2rem;
+  }
+
+  .item-option .item-name {
+    font-size: 0.8rem;
+  }
+
+  .item-option .item-description,
+  .item-option .item-quantity {
+    font-size: 0.7rem;
+    margin-top: 0.125rem;
+  }
+
+  .monster-selector {
+    padding: 0.75rem;
+    gap: 0.5rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 2px 8px var(--overlay-light);
+  }
+
+  .user-selector {
+    padding: 0.25rem;
+    min-height: 44px;
+    border-radius: 0.25rem;
+  }
+
+  .toggle-icon {
+    margin-left: 0.25rem;
+    font-size: 0.9rem;
+  }
+}
+
+/* ---------- Ultra Small Screens (below 320px) ---------- */
+@media (max-width: 319px) {
+  .item-selector-header {
+    padding: 0.375rem;
+  }
+
+  .selected-item {
+    font-size: 0.65rem;
+    gap: 0.2rem;
+  }
+
+  .selected-item-image {
+    height: 12vh;
+    width: 9vh;
+    max-height: 80px;
+    max-width: 64px;
+  }
+
+  .naming-header {
+    padding: 0.5rem;
+    gap: 0.25rem;
+    margin-bottom: 0.5rem;
+    margin-top: 0.5rem;
+    font-size: 0.8rem;
+  }
+
+  .item-selector-dropdown {
+    max-height: 75vh;
+    left: 0.125rem;
+    right: 0.125rem;
+  }
+
+  .items-list {
+    gap: 2px;
+    padding: 0.125rem;
+  }
+
+  .item-option {
+    padding: 0.375rem;
+    gap: 0.25rem;
+  }
+
+  .item-option .item-image {
+    width: 1.75rem;
+    height: 1.75rem;
+  }
+
+  .item-option .item-name {
+    font-size: 0.75rem;
+  }
+
+  .monster-selector {
+    padding: 0.625rem;
+    gap: 0.375rem;
+  }
+
+  .user-selector {
+    padding: 0.25rem;
+    min-height: 40px;
+  }
+}
+
+/* ---------- Accessibility: Reduced Motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .item-selector-header,
+  .item-option,
+  .monster-selector {
+    transition: none;
+  }
+}
+
+/* ---------- Touch Device Optimizations ---------- */
+@media (hover: none) and (pointer: coarse) {
+  .item-selector-header {
+    min-height: 44px;
+  }
+
+  .item-selector-header:hover {
+    border-color: var(--border-color);
+  }
+
+  .item-selector-header:active {
+    border-color: var(--accent-color);
+    background-color: var(--nav-hover);
+  }
+
+  .item-option {
+    min-height: 44px;
+  }
+
+  .item-option:hover {
+    background-color: transparent;
+  }
+
+  .item-option:active {
+    background-color: var(--nav-hover);
+  }
+
+  .monster-selector {
+    min-height: 60px;
+  }
+
+  .user-selector {
+    min-height: 44px;
+    font-size: 16px;
+  }
+
+  /* Larger touch targets for selector items */
+  .items-list {
+    gap: 0.5rem;
+  }
+}
+
+/* ---------- High Contrast Mode ---------- */
+@media (prefers-contrast: high) {
+  .item-selector-header {
+    border-width: 2px;
+  }
+
+  .item-selector-header:focus {
+    outline: 3px solid var(--accent-color);
+    outline-offset: 2px;
+  }
+
+  .item-selector-dropdown {
+    border-width: 2px;
+  }
+
+  .item-option {
+    border-bottom-width: 2px;
+  }
+
+  .item-option.selected {
+    border-left: 3px solid var(--accent-color);
+  }
+
+  .monster-selector {
+    border-width: 2px;
+  }
+
+  .user-selector {
+    border-width: 2px;
+  }
+
+  .naming-header {
+    border-width: 2px;
+  }
+}
+
+/* ---------- Landscape Phone Orientation ---------- */
+@media (max-width: 767px) and (orientation: landscape) {
+  .item-selector-header {
+    padding: 0.5rem;
+    min-height: 36px;
+  }
+
+  .selected-item-image {
+    height: 25vh;
+    width: auto;
+    max-height: 100px;
+  }
+
+  .naming-header {
+    flex-direction: row;
+    text-align: left;
+    padding: 0.5rem 0.75rem;
+  }
+
+  .item-selector-dropdown {
+    max-height: 80vh;
+    position: fixed;
+    top: 10%;
+    bottom: 10%;
+    left: 20%;
+    right: 20%;
+  }
+
+  .items-list {
+    max-height: calc(80vh - 4rem);
+  }
+
+  .item-option {
+    min-height: 36px;
+    padding: 0.5rem;
+  }
+
+  .monster-selector {
+    padding: 0.75rem;
+  }
+
+  .user-selector {
+    min-height: 36px;
+  }
+}

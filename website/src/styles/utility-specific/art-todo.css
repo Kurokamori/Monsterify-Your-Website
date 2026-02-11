@@ -1,0 +1,1118 @@
+/* ==============================
+   Art Todo Page Styles
+
+   A clean, modular styling system for the Art Todo feature.
+   Uses the existing design system tokens and patterns.
+   ============================== */
+
+/* ========== Page Layout ========== */
+
+.art-todo-page {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.art-todo-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.art-todo-header h1 {
+  margin: 0;
+  color: var(--accent-color);
+  font-size: 1.75rem;
+}
+
+/* ========== List Cards ========== */
+
+.art-todo-lists {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1.5rem;
+}
+
+.art-todo-list-card {
+  background: var(--card-background);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 1.5rem;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.art-todo-list-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px var(--overlay-medium);
+}
+
+.art-todo-list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.art-todo-list-title {
+  margin: 0;
+  font-size: 1.25rem;
+  color: var(--text-color);
+  font-weight: 600;
+}
+
+.art-todo-list-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.art-todo-list-description {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+  line-height: 1.5;
+}
+
+.art-todo-list-stats {
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 1.25rem;
+  padding: 0.75rem;
+  background: var(--hover-background);
+  border-radius: 8px;
+}
+
+.art-todo-stat {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+.art-todo-stat i {
+  color: var(--accent-color);
+}
+
+.art-todo-list-footer {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+/* ========== Items View ========== */
+
+.art-todo-items-section {
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 2px solid var(--divider-color);
+}
+
+.art-todo-items-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.art-todo-items-header h2 {
+  margin: 0;
+  color: var(--text-color);
+  font-size: 1.5rem;
+}
+
+.art-todo-items-actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.art-todo-items-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 1.25rem;
+}
+
+/* ========== Item Cards ========== */
+
+.art-todo-item-card {
+  background: var(--card-background);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 1.25rem;
+  position: relative;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.art-todo-item-card:hover {
+  box-shadow: 0 4px 16px var(--overlay-medium);
+}
+
+/* Status Indicators (left border stripe) */
+.art-todo-item-card.status-pending {
+  border-left: 4px solid var(--warning-color);
+}
+
+.art-todo-item-card.status-in_progress {
+  border-left: 4px solid var(--info-color);
+}
+
+.art-todo-item-card.status-completed {
+  border-left: 4px solid var(--success-color);
+}
+
+/* Priority Indicators (subtle ring effect) */
+.art-todo-item-card.priority-high {
+  box-shadow: inset 0 0 0 1px var(--error-color), 0 2px 8px var(--error-glow);
+}
+
+.art-todo-item-card.priority-medium {
+  box-shadow: inset 0 0 0 1px var(--warning-color);
+}
+
+.art-todo-item-card.priority-low {
+  /* Default styling, no special indicator */
+}
+
+.art-todo-item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.art-todo-item-title {
+  margin: 0;
+  font-size: 1.1rem;
+  color: var(--text-color);
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.art-todo-item-actions {
+  display: flex;
+  gap: 0.375rem;
+  flex-shrink: 0;
+}
+
+.art-todo-item-description {
+  color: var(--text-muted);
+  font-size: 0.875rem;
+  margin-bottom: 1rem;
+  line-height: 1.5;
+}
+
+.art-todo-item-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.art-todo-item-due {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-bottom: 0.75rem;
+}
+
+.art-todo-item-due i {
+  color: var(--warning-color);
+}
+
+/* ========== Progress Tracking ========== */
+
+.art-todo-progress {
+  margin-top: 1rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--divider-color);
+}
+
+.art-todo-progress-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.art-todo-progress-text {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.art-todo-progress-bar {
+  height: 8px;
+  background: var(--hover-background);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.art-todo-progress-fill {
+  height: 100%;
+  background: var(--accent-gradient);
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+.art-todo-progress-fill.complete {
+  background: var(--success-color);
+}
+
+/* ========== References Section ========== */
+
+.art-todo-references {
+  margin-top: 1rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--divider-color);
+}
+
+.art-todo-references-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.art-todo-references-label {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.art-todo-thumbnails {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.art-todo-thumbnail {
+  width: 48px;
+  height: 48px;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 2px solid var(--border-color);
+  background: var(--hover-background);
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.art-todo-thumbnail.clickable {
+  cursor: pointer;
+}
+
+.art-todo-thumbnail.clickable:hover {
+  transform: scale(1.1);
+  border-color: var(--accent-color);
+  box-shadow: 0 2px 8px var(--overlay-medium);
+}
+
+.art-todo-thumbnail img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.art-todo-thumbnail-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+  font-size: 1rem;
+}
+
+.art-todo-thumbnail-more {
+  width: 48px;
+  height: 48px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--nav-active);
+  color: var(--text-color);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.art-todo-thumbnail-more:hover {
+  background: var(--accent-color);
+}
+
+/* ========== Reference Management Modal ========== */
+
+.art-todo-ref-management {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+.art-todo-current-refs {
+  background: var(--hover-background);
+  border-radius: 12px;
+  padding: 1.25rem;
+}
+
+.art-todo-current-refs h3 {
+  margin: 0 0 1rem 0;
+  font-size: 1.1rem;
+  color: var(--accent-color);
+}
+
+.art-todo-ref-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.art-todo-ref-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  background: var(--card-background);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+}
+
+.art-todo-ref-image {
+  width: 50px;
+  height: 50px;
+  border-radius: 8px;
+  overflow: hidden;
+  flex-shrink: 0;
+  background: var(--hover-background);
+}
+
+.art-todo-ref-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.art-todo-ref-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+  font-size: 1.25rem;
+}
+
+.art-todo-ref-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.art-todo-ref-name {
+  font-weight: 600;
+  color: var(--text-color);
+  font-size: 0.9rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.art-todo-ref-type {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  text-transform: capitalize;
+}
+
+.art-todo-no-refs {
+  color: var(--text-muted);
+  font-style: italic;
+  text-align: center;
+  padding: 1.5rem;
+}
+
+/* ========== Add References Section ========== */
+
+.art-todo-add-refs {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.art-todo-add-refs h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  color: var(--accent-color);
+}
+
+.art-todo-ref-tabs {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.art-todo-tab-buttons {
+  display: flex;
+  background: var(--nav-background);
+  border-radius: 8px;
+  padding: 0.25rem;
+  gap: 0.25rem;
+}
+
+.art-todo-tab-content {
+  min-height: 300px;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+/* ========== Trainer Groups (Collapsible) ========== */
+
+.art-todo-trainer-groups {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.art-todo-trainer-group {
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  background: var(--card-background);
+  overflow: hidden;
+}
+
+.art-todo-group-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.25rem;
+  background: var(--hover-background);
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  user-select: none;
+}
+
+.art-todo-group-header:hover {
+  background: var(--nav-hover);
+}
+
+.art-todo-group-title {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-weight: 600;
+  color: var(--accent-color);
+  margin: 0;
+  font-size: 1rem;
+}
+
+.art-todo-group-title i {
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  transition: transform 0.2s ease;
+  width: 12px;
+}
+
+.art-todo-group-count {
+  background: var(--accent-color);
+  color: var(--text-color);
+  padding: 0.25rem 0.6rem;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.art-todo-group-items {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 0.75rem;
+  padding: 1rem;
+}
+
+/* ========== Selectable Reference Items ========== */
+
+.art-todo-selectable-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  background: var(--input-background);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.art-todo-selectable-item:hover {
+  border-color: var(--accent-color);
+  background: var(--hover-background);
+}
+
+.art-todo-selectable-image {
+  width: 45px;
+  height: 45px;
+  border-radius: 6px;
+  overflow: hidden;
+  flex-shrink: 0;
+  background: var(--hover-background);
+}
+
+.art-todo-selectable-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.art-todo-selectable-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.art-todo-selectable-name {
+  font-weight: 600;
+  color: var(--text-color);
+  font-size: 0.85rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.art-todo-selectable-details {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.art-todo-selectable-trainer {
+  font-size: 0.7rem;
+  color: var(--accent-color);
+  margin-top: 0.125rem;
+}
+
+/* ========== Monster Filters ========== */
+
+.art-todo-monster-filters {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.art-todo-search-box {
+  position: relative;
+  flex: 1;
+  min-width: 200px;
+}
+
+.art-todo-search-box i {
+  position: absolute;
+  left: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.art-todo-search-box input {
+  width: 100%;
+  padding: 0.625rem 1rem 0.625rem 2.25rem;
+  background: var(--input-background);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  color: var(--text-color);
+  font-size: 0.9rem;
+}
+
+.art-todo-search-box input:focus {
+  outline: none;
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 2px var(--accent-glow);
+}
+
+.art-todo-trainer-filter {
+  min-width: 150px;
+  padding: 0.625rem 1rem;
+  background: var(--input-background);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  color: var(--text-color);
+  font-size: 0.9rem;
+}
+
+.art-todo-trainer-filter:focus {
+  outline: none;
+  border-color: var(--accent-color);
+}
+
+.art-todo-monster-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 0.75rem;
+  max-height: 350px;
+  overflow-y: auto;
+  padding: 0.25rem;
+}
+
+/* ========== Reference Matrix (Full Screen) ========== */
+
+.art-todo-ref-matrix {
+  padding: 1rem;
+}
+
+.art-todo-matrix-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 1.25rem;
+}
+
+.art-todo-matrix-item {
+  background: var(--card-background);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.art-todo-matrix-item:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px var(--overlay-medium);
+}
+
+.art-todo-matrix-image {
+  width: 100%;
+  height: 150px;
+  background: var(--hover-background);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.art-todo-matrix-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.art-todo-matrix-placeholder {
+  font-size: 3rem;
+  color: var(--text-muted);
+}
+
+.art-todo-matrix-info {
+  padding: 1rem;
+  text-align: center;
+}
+
+.art-todo-matrix-info h4 {
+  margin: 0 0 0.5rem 0;
+  font-size: 0.95rem;
+  color: var(--text-color);
+}
+
+.art-todo-matrix-badge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  background: var(--accent-glow);
+  color: var(--accent-color);
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: capitalize;
+}
+
+.art-todo-no-refs-large {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: var(--text-muted);
+}
+
+.art-todo-no-refs-large i {
+  font-size: 4rem;
+  margin-bottom: 1.5rem;
+  opacity: 0.5;
+}
+
+.art-todo-no-refs-large h3 {
+  margin: 0 0 0.5rem 0;
+  color: var(--text-color);
+}
+
+.art-todo-no-refs-large p {
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+/* ========== Image Viewer Modal ========== */
+
+.art-todo-image-viewer {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.art-todo-viewer-main {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--hover-background);
+  border-radius: 12px;
+  padding: 1.5rem;
+  min-height: 400px;
+}
+
+.art-todo-viewer-image {
+  max-width: 100%;
+  max-height: 60vh;
+  object-fit: contain;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px var(--overlay-medium);
+}
+
+.art-todo-viewer-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  color: var(--text-muted);
+}
+
+.art-todo-viewer-placeholder i {
+  font-size: 4rem;
+  opacity: 0.5;
+}
+
+.art-todo-viewer-info {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.art-todo-viewer-info h3 {
+  margin: 0;
+  color: var(--text-color);
+}
+
+.art-todo-viewer-actions {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--divider-color);
+}
+
+/* ========== Empty States ========== */
+
+.art-todo-empty {
+  text-align: center;
+  padding: 4rem 2rem;
+  background: var(--card-background);
+  border-radius: 16px;
+  border: 2px dashed var(--border-color);
+}
+
+.art-todo-empty-icon {
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--accent-glow);
+  border-radius: 50%;
+  font-size: 2.5rem;
+  color: var(--accent-color);
+}
+
+.art-todo-empty h2 {
+  margin: 0 0 0.75rem 0;
+  color: var(--text-color);
+  font-size: 1.5rem;
+}
+
+.art-todo-empty p {
+  margin: 0 0 1.5rem 0;
+  color: var(--text-muted);
+  font-size: 1rem;
+  max-width: 400px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* ========== Modal Actions ========== */
+
+.art-todo-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--divider-color);
+  margin-top: auto;
+}
+
+/* ==============================================
+   RESPONSIVE STYLES
+   ============================================== */
+
+/* ---------- Tablet (768px - 1024px) ---------- */
+@media (max-width: 1024px) {
+  .art-todo-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .art-todo-header h1 {
+    font-size: 1.5rem;
+  }
+
+  .art-todo-lists {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1rem;
+  }
+
+  .art-todo-items-grid {
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  }
+
+  .art-todo-list-stats {
+    gap: 1rem;
+  }
+
+  .art-todo-ref-grid {
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  }
+}
+
+/* ---------- Mobile (max-width: 768px) ---------- */
+@media (max-width: 768px) {
+  .art-todo-header {
+    margin-bottom: 1.5rem;
+  }
+
+  .art-todo-header h1 {
+    font-size: 1.25rem;
+  }
+
+  .art-todo-lists {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .art-todo-list-card {
+    padding: 1.25rem;
+  }
+
+  .art-todo-list-stats {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .art-todo-list-footer {
+    flex-direction: column;
+  }
+
+  .art-todo-list-footer .button {
+    width: 100%;
+  }
+
+  .art-todo-items-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .art-todo-items-actions {
+    width: 100%;
+    flex-direction: column;
+  }
+
+  .art-todo-items-actions .button {
+    width: 100%;
+  }
+
+  .art-todo-items-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .art-todo-item-card {
+    padding: 1rem;
+  }
+
+  .art-todo-item-meta {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.375rem;
+  }
+
+  .art-todo-thumbnail {
+    width: 40px;
+    height: 40px;
+  }
+
+  .art-todo-thumbnail-more {
+    width: 40px;
+    height: 40px;
+    font-size: 0.75rem;
+  }
+
+  .art-todo-ref-management {
+    max-height: 60vh;
+  }
+
+  .art-todo-monster-filters {
+    flex-direction: column;
+  }
+
+  .art-todo-search-box {
+    min-width: 100%;
+  }
+
+  .art-todo-trainer-filter {
+    width: 100%;
+  }
+
+  .art-todo-group-items {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+    padding: 0.75rem;
+  }
+
+  .art-todo-monster-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .art-todo-matrix-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+  }
+
+  .art-todo-matrix-image {
+    height: 100px;
+  }
+
+  .art-todo-viewer-main {
+    min-height: 250px;
+    padding: 1rem;
+  }
+
+  .art-todo-viewer-actions {
+    flex-direction: column;
+  }
+
+  .art-todo-viewer-actions .button {
+    width: 100%;
+  }
+
+  .art-todo-empty {
+    padding: 2.5rem 1.5rem;
+  }
+
+  .art-todo-empty-icon {
+    width: 60px;
+    height: 60px;
+    font-size: 1.75rem;
+  }
+
+  .art-todo-empty h2 {
+    font-size: 1.25rem;
+  }
+}
+
+/* ---------- Small Mobile (max-width: 480px) ---------- */
+@media (max-width: 480px) {
+  .art-todo-header h1 {
+    font-size: 1.1rem;
+  }
+
+  .art-todo-list-header {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .art-todo-list-actions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+
+  .art-todo-item-header {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .art-todo-item-actions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+
+  .art-todo-thumbnails {
+    justify-content: center;
+  }
+
+  .art-todo-selectable-item {
+    padding: 0.625rem;
+  }
+
+  .art-todo-selectable-image {
+    width: 40px;
+    height: 40px;
+  }
+
+  .art-todo-matrix-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .art-todo-matrix-image {
+    height: 140px;
+  }
+}
+
+/* ---------- Accessibility: Reduced Motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .art-todo-list-card,
+  .art-todo-item-card,
+  .art-todo-matrix-item,
+  .art-todo-thumbnail {
+    transition: none;
+  }
+
+  .art-todo-progress-fill {
+    transition: none;
+  }
+}
+
+/* ---------- Touch Device Optimizations ---------- */
+@media (hover: none) and (pointer: coarse) {
+  .art-todo-list-card:hover,
+  .art-todo-item-card:hover,
+  .art-todo-matrix-item:hover {
+    transform: none;
+  }
+
+  .art-todo-thumbnail.clickable:hover {
+    transform: none;
+  }
+
+  /* Larger touch targets */
+  .art-todo-thumbnail,
+  .art-todo-thumbnail-more {
+    width: 52px;
+    height: 52px;
+  }
+
+  .art-todo-group-header {
+    padding: 1.25rem;
+  }
+}

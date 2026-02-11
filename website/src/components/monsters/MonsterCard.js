@@ -258,13 +258,15 @@ const MonsterCard = ({ monster, linkToDetail = true, fullHeight = false }) => {
         />
       </div>
 
-      <div className="monster-card-info">
-        <div className="monster-info">
-          {getMonsterInfo()}
-        </div>
+      <div className="monster-compact-card">
+        {Boolean(getMonsterInfo()) && (
+          <div className="monster-info">
+            {getMonsterInfo()}
+          </div>
+        )}
 
         {/* Display species if available */}
-        <div className="monster-species">
+        <div className="monster-types">
           {monster.species1 && (
             <span className="species-name">{monster.species1}</span>
           )}
@@ -287,7 +289,7 @@ const MonsterCard = ({ monster, linkToDetail = true, fullHeight = false }) => {
         </div>
 
         {monster.attribute && (
-          <div className="monster-attribute" style={{ color: getAttributeColor(monster.attribute) }}>
+          <div className="monster-types" style={{ color: getAttributeColor(monster.attribute) }}>
             {monster.attribute}
           </div>
         )}
@@ -298,7 +300,7 @@ const MonsterCard = ({ monster, linkToDetail = true, fullHeight = false }) => {
             {referenceImages.map((image, index) => (
               <div
                 key={index}
-                className="reference-image"
+                className="image-container small"
                 onClick={() => openModal(image.url)}
               >
                 {image.url ? (
@@ -334,7 +336,7 @@ const MonsterCard = ({ monster, linkToDetail = true, fullHeight = false }) => {
       onClick={closeModal}
     >
       <div className="modal-content" onClick={e => e.stopPropagation()}>
-        <button className="close-button" onClick={closeModal}>×</button>
+        <button className="button close" onClick={closeModal}>×</button>
         <img src={selectedImage} alt="Reference" className="modal-image" />
       </div>
     </div>,

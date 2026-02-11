@@ -1,0 +1,133 @@
+/* ==============================
+   Image Container Styles
+   ============================== */
+
+.image-container {
+  align-items: center;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  display: flex;
+  height: 250px;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+  margin-left: auto;
+  margin-right: auto;
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+  object-fit: contain;
+}
+
+/* ---------- Size Variants ---------- */
+
+.image-container.tiny {
+  width: 40px;
+  height: 40px;
+}
+
+.image-container.xs {
+  width: 60px;
+  height: 60px;
+}
+
+.image-container.small {
+  width: 100px;
+  height: 100px;
+}
+
+.image-container.medium {
+  width: 200px;
+  height: 200px;
+}
+
+.image-container.large {
+  width: 300px;
+  height: 300px;
+}
+
+.image-container.xlarge {
+  width: 500px;
+  height: 500px;
+}
+
+/* ---------- Shape Variants ---------- */
+
+.image-container.circular {
+  border-radius: 50%;
+}
+
+.image-container.circular img {
+  object-fit: cover;
+}
+
+.image-container.rounded {
+  border-radius: var(--radius-md);
+}
+
+/* ---------- Fit Variants ---------- */
+
+.image-container.cover img {
+  object-fit: cover;
+}
+
+/* ---------- Spacing Variants ---------- */
+
+.image-container.no-margin {
+  margin: 0;
+}
+
+.image-container.inline {
+  display: inline-flex;
+  margin: 0;
+}
+
+.image-container.activity {
+  width: 100%;
+  height: 600px;
+  border-radius: 1rem;
+}
+
+.image-container.activity img {
+  object-fit: cover;
+}
+
+.image-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transition: transform 0.2s;
+}
+
+.image-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--nav-background);
+  color: var(--text-color);
+  opacity: 0.5;
+  font-size: 2rem;
+  width: 100%;
+  height: 100%;
+}
+
+/* ---------- Species Images Grid ---------- */
+
+.species-images-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.species-image-container {
+  align-items: center;
+  background: var(--hover-background);
+  background-color: var(--card-background);
+  border: 1px solid var(--divider-color);
+  border-radius: var(--radius-sm);
+  display: flex;
+  height: 60px;
+  justify-content: center;
+  overflow: hidden;
+  width: 60px;
+}

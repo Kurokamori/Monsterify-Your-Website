@@ -454,7 +454,7 @@ const ArtSubmissionCalculator = ({
     <div className="art-calculator">
       <div className="calculator-section">
         <h3>Image Quality</h3>
-        <div className="quality-options">
+        <div className="type-tags fw">
           <label>
             <input
               type="radio"
@@ -521,7 +521,7 @@ const ArtSubmissionCalculator = ({
               {backgrounds.length > 1 && (
                 <button
                   type="button"
-                  className="remove-background"
+                  className="button icon danger"
                   onClick={() => handleRemoveBackground(index)}
                 >
                   &times;
@@ -547,14 +547,14 @@ const ArtSubmissionCalculator = ({
             <div className="form-actions">
               <button
                 type="button"
-                className="cancel-button"
+                className="button secondary"
                 onClick={() => setShowAddBackground(false)}
               >
                 Cancel
               </button>
               <button
                 type="button"
-                className="add-button"
+                className="button primary"
                 onClick={handleAddBackground}
               >
                 Add Background
@@ -564,7 +564,7 @@ const ArtSubmissionCalculator = ({
         ) : (
           <button
             type="button"
-            className="add-entity-button"
+            className="button primary"
             onClick={() => setShowAddBackground(true)}
           >
             + Add Background
@@ -598,7 +598,7 @@ const ArtSubmissionCalculator = ({
                 <span className="entity-name">{trainer.name}</span>
                 <button
                   type="button"
-                  className="remove-entity"
+                  className="button danger icon sm"
                   onClick={() => handleRemoveTrainer(trainer.trainerId)}
                 >
                   &times;
@@ -679,14 +679,14 @@ const ArtSubmissionCalculator = ({
                 label="Select Trainer"
                 placeholder="Type to search trainers..."
                 showOwnership={true}
-                className="entity-select"
+                className="form-input"
               />
             </div>
             <div className="form-row">
               <select
                 value={appearanceType}
                 onChange={(e) => setAppearanceType(e.target.value)}
-                className="appearance-select"
+                className="form-input"
               >
                 <option value="bust">Bust (+1 level)</option>
                 <option value="halfBody">Half Body (+2 levels)</option>
@@ -698,7 +698,7 @@ const ArtSubmissionCalculator = ({
                 max="10"
                 value={appearanceCount}
                 onChange={(e) => setAppearanceCount(parseInt(e.target.value) || 1)}
-                className="appearance-count-input"
+                className="form-input"
                 placeholder="Count"
               />
             </div>
@@ -731,14 +731,14 @@ const ArtSubmissionCalculator = ({
             <div className="form-actions">
               <button
                 type="button"
-                className="cancel-button"
+                className="button secondary"
                 onClick={() => setShowAddTrainer(false)}
               >
                 Cancel
               </button>
               <button
                 type="button"
-                className="add-button"
+                className="button primary"
                 onClick={handleAddTrainer}
                 disabled={!selectedTrainerId || (isTrainerGift && !giftRecipientId)}
               >
@@ -749,7 +749,7 @@ const ArtSubmissionCalculator = ({
         ) : (
           <button
             type="button"
-            className="add-entity-button"
+            className="button primary"
             onClick={() => setShowAddTrainer(true)}
           >
             + Add Trainer
@@ -766,7 +766,7 @@ const ArtSubmissionCalculator = ({
                 <span className="entity-name">{monster.name}</span>
                 <button
                   type="button"
-                  className="remove-entity"
+                  className="button danger icon sm"
                   onClick={() => handleRemoveMonster(monster.monsterId)}
                 >
                   &times;
@@ -853,7 +853,7 @@ const ArtSubmissionCalculator = ({
                 label="Select Trainer First"
                 placeholder="Type to search trainers..."
                 showOwnership={true}
-                className="entity-select"
+                className="form-input"
                 required
               />
             </div>
@@ -866,7 +866,7 @@ const ArtSubmissionCalculator = ({
                   onSelect={(id) => setSelectedMonsterId(id)}
                   label="Select Monster"
                   placeholder="Type to search monsters..."
-                  className="entity-select"
+                  className="form-input"
                   required
                 />
               </div>
@@ -875,7 +875,7 @@ const ArtSubmissionCalculator = ({
               <select
                 value={appearanceType}
                 onChange={(e) => setAppearanceType(e.target.value)}
-                className="appearance-select"
+                className="form-input"
               >
                 <option value="bust">Bust (+1 level)</option>
                 <option value="halfBody">Half Body (+2 levels)</option>
@@ -887,7 +887,7 @@ const ArtSubmissionCalculator = ({
                 max="10"
                 value={appearanceCount}
                 onChange={(e) => setAppearanceCount(parseInt(e.target.value) || 1)}
-                className="appearance-count-input"
+                className="form-input"
                 placeholder="Count"
               />
             </div>
@@ -897,7 +897,7 @@ const ArtSubmissionCalculator = ({
                 <select
                   value={complexityBonus}
                   onChange={(e) => setComplexityBonus(e.target.value)}
-                  className="complexity-select"
+                  className="form-input"
                 >
                   <option value="0">None (+0)</option>
                   <option value="1">Low (+1)</option>
@@ -924,7 +924,7 @@ const ArtSubmissionCalculator = ({
             <div className="form-actions">
               <button
                 type="button"
-                className="cancel-button"
+                className="button secondary"
                 onClick={() => {
                   setShowAddMonster(false);
                   setMonsterTrainerId('');
@@ -936,7 +936,7 @@ const ArtSubmissionCalculator = ({
               </button>
               <button
                 type="button"
-                className="add-button"
+                className="button primary"
                 onClick={handleAddMonster}
                 disabled={!selectedMonsterId || !monsterTrainerId}
               >
@@ -947,7 +947,7 @@ const ArtSubmissionCalculator = ({
         ) : (
           <button
             type="button"
-            className="add-entity-button"
+            className="button primary"
             onClick={() => setShowAddMonster(true)}
           >
             + Add Monster
@@ -965,7 +965,7 @@ const ArtSubmissionCalculator = ({
                 <span className="entity-name">{npc.name}</span>
                 <button
                   type="button"
-                  className="remove-entity"
+                  className="button icon danger"
                   onClick={() => handleRemoveNPC(npc.id)}
                 >
                   &times;
@@ -992,7 +992,7 @@ const ArtSubmissionCalculator = ({
                   value={npcName}
                   onChange={(e) => setNpcName(e.target.value)}
                   placeholder="NPC name for tracking"
-                  className="entity-select"
+                  className="form-input"
                 />
               </label>
             </div>
@@ -1003,7 +1003,7 @@ const ArtSubmissionCalculator = ({
                 <select
                   value={npcSize}
                   onChange={(e) => setNpcSize(e.target.value)}
-                  className="entity-select"
+                  className="form-input"
                 >
                   <option value="bust">Bust (+1 level)</option>
                   <option value="halfbody">Half Body (+2 levels)</option>
@@ -1018,7 +1018,7 @@ const ArtSubmissionCalculator = ({
                 <select
                   value={npcBonus}
                   onChange={(e) => setNpcBonus(e.target.value)}
-                  className="entity-select"
+                  className="form-input"
                 >
                   <option value="simple">Simple (+1 level)</option>
                   <option value="medium">Medium (+3 levels)</option>
@@ -1031,7 +1031,7 @@ const ArtSubmissionCalculator = ({
             <div className="form-actions">
               <button
                 type="button"
-                className="cancel-button"
+                className="button secondary"
                 onClick={() => {
                   setShowAddNPC(false);
                   setNpcName('');
@@ -1043,7 +1043,7 @@ const ArtSubmissionCalculator = ({
               </button>
               <button
                 type="button"
-                className="add-button"
+                className="button primary"
                 onClick={handleAddNPC}
               >
                 Add NPC
@@ -1053,7 +1053,7 @@ const ArtSubmissionCalculator = ({
         ) : (
           <button
             type="button"
-            className="add-entity-button"
+            className="button primary"
             onClick={() => setShowAddNPC(true)}
           >
             + Add NPC
@@ -1085,7 +1085,7 @@ const ArtSubmissionCalculator = ({
       <div className="calculator-actions">
         <button
           type="button"
-          className="calculate-button"
+          className="button primary"
           onClick={handleCalculate}
         >
           Calculate Rewards

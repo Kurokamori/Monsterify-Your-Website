@@ -8,7 +8,6 @@ import LoadingSpinner from '../../../components/common/LoadingSpinner';
 import ErrorMessage from '../../../components/common/ErrorMessage';
 import PurchaseModal from '../../../components/shop/PurchaseModal';
 import ItemDetailModal from '../../../components/items/ItemDetailModal';
-import '../../../styles/ShopStyles.css';
 
 
 const ShopPage = () => {
@@ -340,7 +339,7 @@ const ShopPage = () => {
       </div>
 
       <div className="shop-controls">
-        <div className="trainer-selection">
+        <div className="shop-search">
           <TrainerSelector
             userId={currentUser?.discord_id}
             selectedTrainerId={selectedTrainer}
@@ -361,10 +360,10 @@ const ShopPage = () => {
             placeholder="Search items..."
             value={searchTerm}
             onChange={handleSearchChange}
-            className="search-input"
+            className="form-input"
           />
           <button
-            className={`sort-price-btn ${sortByPrice}`}
+            className={`button filter ${sortByPrice}`}
             onClick={handleSortByPriceToggle}
             title={
               sortByPrice === 'off' ? 'Sort by price' :
@@ -383,39 +382,39 @@ const ShopPage = () => {
       {isApothecaryShop && (
         <div className="berry-filters">
           <h4>Filter Berries by Type (stackable)</h4>
-          <div className="filter-buttons">
+          <div className="type-tags fw">
             <button
-              className={`filter-button ${berryFilters.type ? 'active' : ''}`}
+              className={`button filter ${berryFilters.type ? 'active' : ''}`}
               onClick={() => toggleBerryFilter('type')}
             >
               Type
             </button>
             <button
-              className={`filter-button ${berryFilters.species ? 'active' : ''}`}
+              className={`button filter ${berryFilters.species ? 'active' : ''}`}
               onClick={() => toggleBerryFilter('species')}
             >
               Species
             </button>
             <button
-              className={`filter-button ${berryFilters.randomize ? 'active' : ''}`}
+              className={`button filter ${berryFilters.randomize ? 'active' : ''}`}
               onClick={() => toggleBerryFilter('randomize')}
             >
               Randomize
             </button>
             <button
-              className={`filter-button ${berryFilters.remove ? 'active' : ''}`}
+              className={`button filter ${berryFilters.remove ? 'active' : ''}`}
               onClick={() => toggleBerryFilter('remove')}
             >
               Remove
             </button>
             <button
-              className={`filter-button ${berryFilters.misc ? 'active' : ''}`}
+              className={`button filter ${berryFilters.misc ? 'active' : ''}`}
               onClick={() => toggleBerryFilter('misc')}
             >
               Misc
             </button>
             <button
-              className="filter-button clear"
+              className="button filter reset"
               onClick={() => setBerryFilters({
                 type: false,
                 species: false,
@@ -432,41 +431,41 @@ const ShopPage = () => {
 
       {/* Pastry filters - only show for bakery shop */}
       {isBakeryShop && (
-        <div className="pastry-filters">
+        <div className="berry-filters">
           <h4>Filter Pastries by Type (stackable)</h4>
-          <div className="filter-buttons">
+          <div className="type-tags fw">
             <button
-              className={`filter-button ${pastryFilters.type ? 'active' : ''}`}
+              className={`button filter ${pastryFilters.type ? 'active' : ''}`}
               onClick={() => togglePastryFilter('type')}
             >
               Type
             </button>
             <button
-              className={`filter-button ${pastryFilters.species ? 'active' : ''}`}
+              className={`button filter ${pastryFilters.species ? 'active' : ''}`}
               onClick={() => togglePastryFilter('species')}
             >
               Species
             </button>
             <button
-              className={`filter-button ${pastryFilters.set ? 'active' : ''}`}
+              className={`button filter ${pastryFilters.set ? 'active' : ''}`}
               onClick={() => togglePastryFilter('set')}
             >
               Set
             </button>
             <button
-              className={`filter-button ${pastryFilters.add ? 'active' : ''}`}
+              className={`button filter ${pastryFilters.add ? 'active' : ''}`}
               onClick={() => togglePastryFilter('add')}
             >
               Add
             </button>
             <button
-              className={`filter-button ${pastryFilters.misc ? 'active' : ''}`}
+              className={`button filter ${pastryFilters.misc ? 'active' : ''}`}
               onClick={() => togglePastryFilter('misc')}
             >
               Misc
             </button>
             <button
-              className="filter-button clear"
+              className="button filter reset"
               onClick={() => setPastryFilters({
                 type: false,
                 species: false,
@@ -486,7 +485,7 @@ const ShopPage = () => {
           <p>No items available in this shop at the moment.</p>
         </div>
       ) : (
-        <div className="shop-items-grid">
+        <div className="town-places">
           {filteredItems.map(item => (
             <ItemCard
               key={item.id}

@@ -102,10 +102,10 @@ const HabitsTab = ({ trainers, onRefresh }) => {
 
   return (
     <div className="habits-tab">
-      <div className="tab-header">
+      <div className="option-row">
         <h2>Habits</h2>
         <button
-          className="quick-action-btn"
+          className="button primary"
           onClick={() => setShowCreateForm(true)}
         >
           <i className="fas fa-plus"></i>
@@ -115,19 +115,19 @@ const HabitsTab = ({ trainers, onRefresh }) => {
 
       <div className="tab-filters">
         <button
-          className={`filter-btn ${filter === 'all' ? 'active' : ''}`}
+          className={`button filter ${filter === 'all' ? 'active' : ''}`}
           onClick={() => setFilter('all')}
         >
           All ({habits.length})
         </button>
         <button
-          className={`filter-btn ${filter === 'active' ? 'active' : ''}`}
+          className={`button filter ${filter === 'active' ? 'active' : ''}`}
           onClick={() => setFilter('active')}
         >
           Active ({habits.filter(h => h.status === 'active').length})
         </button>
         <button
-          className={`filter-btn ${filter === 'paused' ? 'active' : ''}`}
+          className={`button filter ${filter === 'paused' ? 'active' : ''}`}
           onClick={() => setFilter('paused')}
         >
           Paused ({habits.filter(h => h.status === 'paused').length})
@@ -135,7 +135,7 @@ const HabitsTab = ({ trainers, onRefresh }) => {
       </div>
 
       {filteredHabits.length === 0 ? (
-        <div className="empty-state">
+        <div className="no-npcs">
           <i className="fas fa-chart-line"></i>
           <h3>No habits found</h3>
           <p>
@@ -145,7 +145,7 @@ const HabitsTab = ({ trainers, onRefresh }) => {
             }
           </p>
           <button
-            className="quick-action-btn"
+            className="button primary"
             onClick={() => setShowCreateForm(true)}
           >
             <i className="fas fa-plus"></i>
@@ -159,7 +159,7 @@ const HabitsTab = ({ trainers, onRefresh }) => {
               <div className="item-header">
                 <h3 className="item-title">{habit.title}</h3>
                 <div className="habit-streak">
-                  <span className={`streak-badge ${getStreakStatusColor(habit.streak_status)}`}>
+                  <span className={`streak-badge${getStreakStatusColor(habit.streak_status)}`}>
                     <i className="fas fa-fire"></i>
                     {habit.streak || 0} day streak
                   </span>
@@ -193,7 +193,7 @@ const HabitsTab = ({ trainers, onRefresh }) => {
               <div className="item-actions">
                 {habit.status === 'active' && (
                   <button
-                    className="item-action-btn"
+                    className="button primary sm"
                     onClick={() => handleTrackHabit(habit.id)}
                   >
                     <i className="fas fa-check"></i>
@@ -201,14 +201,14 @@ const HabitsTab = ({ trainers, onRefresh }) => {
                   </button>
                 )}
                 <button
-                  className="item-action-btn secondary"
+                  className="button secondary sm"
                   onClick={() => handleEditHabit(habit)}
                 >
                   <i className="fas fa-edit"></i>
                   Edit
                 </button>
                 <button
-                  className="item-action-btn danger"
+                  className="button danger sm"
                   onClick={() => handleDeleteHabit(habit.id)}
                 >
                   <i className="fas fa-trash"></i>

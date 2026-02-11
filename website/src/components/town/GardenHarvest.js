@@ -100,7 +100,7 @@ const GardenHarvest = () => {
 
   return (
     <div className="garden-harvest-container">
-      <div className="garden-harvest-header">
+      <div className="auth-header">
         <h2>Garden Harvest</h2>
         <p className="garden-harvest-description">
           Harvest your garden to collect berries and possibly find monsters!
@@ -158,7 +158,7 @@ const GardenHarvest = () => {
 
           <div className="garden-harvest-actions">
             <button
-              className="harvest-button"
+              className="button success lg"
               onClick={handleHarvest}
               disabled={harvestLoading || gardenPoints?.points <= 0}
             >
@@ -197,7 +197,7 @@ const GardenHarvest = () => {
 
           <div className="garden-harvest-actions">
             <button
-              className="btn-secondary"
+              className="button secondary"
               onClick={() => setShowRewards(false)}
             >
               <i className="fas fa-arrow-left mr-2"></i>

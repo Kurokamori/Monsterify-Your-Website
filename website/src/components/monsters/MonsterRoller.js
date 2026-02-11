@@ -176,7 +176,7 @@ const MonsterRoller = ({ context = 'adoption', onMonsterSelected, trainerId }) =
   
   return (
     <div className="monster-roller">
-      <div className="roller-header">
+      <div className="auth-header">
         <h2>Monster Roller</h2>
         <p>Roll a random monster based on your preferences.</p>
       </div>
@@ -188,12 +188,12 @@ const MonsterRoller = ({ context = 'adoption', onMonsterSelected, trainerId }) =
         />
       )}
       
-      <div className="roller-content">
+      <div className="form">
         {!rolledMonster ? (
-          <div className="roller-options">
+          <div className="form">
             {/* Trainer Selection */}
             {!trainerId && userTrainers.length > 0 && (
-              <div className="option-group">
+              <div className="container cols-2 gap-md">
                 <label>Select Trainer:</label>
                 <select 
                   value={selectedTrainer} 
@@ -210,7 +210,7 @@ const MonsterRoller = ({ context = 'adoption', onMonsterSelected, trainerId }) =
             )}
             
             {/* Monster Source Selection */}
-            <div className="option-group">
+            <div className="container cols-2 gap-md">
               <label>Monster Sources:</label>
               <div className="source-options">
                 {availableSources.map(source => (
@@ -229,7 +229,7 @@ const MonsterRoller = ({ context = 'adoption', onMonsterSelected, trainerId }) =
             </div>
             
             {/* Advanced Options Toggle */}
-            <div className="option-group">
+            <div className="container cols-2 gap-md">
               <button 
                 className="advanced-toggle"
                 onClick={() => setShowAdvancedOptions(!showAdvancedOptions)}
@@ -242,7 +242,7 @@ const MonsterRoller = ({ context = 'adoption', onMonsterSelected, trainerId }) =
             {showAdvancedOptions && (
               <div className="advanced-options">
                 <div className="option-row">
-                  <div className="option-item">
+                  <div className="banner-text">
                     <label>Min Types:</label>
                     <input 
                       type="number" 
@@ -253,7 +253,7 @@ const MonsterRoller = ({ context = 'adoption', onMonsterSelected, trainerId }) =
                       onChange={handleAdvancedOptionChange}
                     />
                   </div>
-                  <div className="option-item">
+                  <div className="banner-text">
                     <label>Max Types:</label>
                     <input 
                       type="number" 
@@ -267,7 +267,7 @@ const MonsterRoller = ({ context = 'adoption', onMonsterSelected, trainerId }) =
                 </div>
                 
                 <div className="option-row">
-                  <div className="option-item">
+                  <div className="banner-text">
                     <label>Rarity Boost:</label>
                     <input 
                       type="number" 
@@ -281,7 +281,7 @@ const MonsterRoller = ({ context = 'adoption', onMonsterSelected, trainerId }) =
                 </div>
                 
                 <div className="option-row">
-                  <div className="option-item checkbox">
+                  <div className="banner-text checkbox">
                     <label>
                       <input 
                         type="checkbox" 
@@ -292,7 +292,7 @@ const MonsterRoller = ({ context = 'adoption', onMonsterSelected, trainerId }) =
                       Enable Legendary
                     </label>
                   </div>
-                  <div className="option-item checkbox">
+                  <div className="banner-text checkbox">
                     <label>
                       <input 
                         type="checkbox" 
@@ -310,20 +310,20 @@ const MonsterRoller = ({ context = 'adoption', onMonsterSelected, trainerId }) =
             {/* Roll Button */}
             <div className="roller-actions">
               <button 
-                className="roll-button"
+                className="button primary lg"
                 onClick={handleRoll}
                 disabled={loading || selectedSources.length === 0 || !selectedTrainer}
               >
                 {loading ? 'Rolling...' : 'Roll Monster'}
               </button>
-              <div className="roll-count">
+              <div className="file-name">
                 Rolls: {rollCount}/{maxRolls}
               </div>
             </div>
           </div>
         ) : (
           <div className="rolled-monster">
-            <div className="monster-preview">
+            <div className="npc-basic-info">
               <img
                 src={rolledMonster.image_path}
                 alt={rolledMonster.name}
@@ -335,12 +335,12 @@ const MonsterRoller = ({ context = 'adoption', onMonsterSelected, trainerId }) =
               />
               <div className="monster-info">
                 <h3 className="monster-name">{rolledMonster.name}</h3>
-                <div className="monster-species">{rolledMonster.species}</div>
+                <div className="monster-types">{rolledMonster.species}</div>
                 <div className="monster-types">
                   {rolledMonster.types.map((type, index) => (
                     <span 
                       key={index} 
-                      className={`type-badge type-${type.toLowerCase()}`}
+                      className={`badge type-${type.toLowerCase()}`}
                     >
                       {type}
                     </span>
@@ -384,7 +384,7 @@ const MonsterRoller = ({ context = 'adoption', onMonsterSelected, trainerId }) =
             
             <div className="monster-actions">
               <button 
-                className="adopt-button"
+                className="button success"
                 onClick={handleAdopt}
                 disabled={loading}
               >
@@ -393,7 +393,7 @@ const MonsterRoller = ({ context = 'adoption', onMonsterSelected, trainerId }) =
               
               {rollCount < maxRolls && (
                 <button 
-                  className="reroll-button"
+                  className="button info"
                   onClick={handleRoll}
                   disabled={loading}
                 >
@@ -402,7 +402,7 @@ const MonsterRoller = ({ context = 'adoption', onMonsterSelected, trainerId }) =
               )}
               
               <button 
-                className="reset-button"
+                className="button secondary"
                 onClick={handleReset}
                 disabled={loading}
               >

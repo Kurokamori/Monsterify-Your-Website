@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import adminService from '../../services/adminService';
 import api from '../../services/api';
-import './BulkMonsterAdd.css';
 
 const BulkMonsterAdd = () => {
   const [trainers, setTrainers] = useState([]);
@@ -88,7 +87,7 @@ Blaze | 10 | Charmander | Fire | Data`;
 
   return (
     <div className="bulk-monster-add">
-      <div className="bulk-monster-add-header">
+      <div className="map-header">
         <h2>Bulk Add Monsters to Trainer</h2>
         <p>Add multiple monsters to a selected trainer using a simple text format.</p>
       </div>
@@ -124,7 +123,7 @@ Blaze | 10 | Charmander | Fire | Data`;
             onChange={(e) => setMonstersText(e.target.value)}
             placeholder={`Enter monsters data, one per line. Example:\n${exampleText}`}
             rows={10}
-            className="monsters-textarea"
+            className="form-input"
           />
         </div>
 
@@ -132,14 +131,14 @@ Blaze | 10 | Charmander | Fire | Data`;
           <button 
             type="submit" 
             disabled={loading || !selectedTrainerId || !monstersText.trim()}
-            className="submit-button"
+            className="button success"
           >
             {loading ? 'Adding Monsters...' : 'Add Monsters'}
           </button>
           <button 
             type="button" 
             onClick={handleClear}
-            className="clear-button"
+            className="button danger"
           >
             Clear
           </button>
@@ -147,7 +146,7 @@ Blaze | 10 | Charmander | Fire | Data`;
       </form>
 
       {error && (
-        <div className="error-message">
+        <div className="alert error">
           <h3>Error</h3>
           <p>{error}</p>
         </div>
@@ -172,9 +171,9 @@ Blaze | 10 | Charmander | Fire | Data`;
                   <div key={index} className="monster-item success">
                     <span className="monster-name">{monster.name}</span>
                     <span className="monster-level">Lv. {monster.level}</span>
-                    <span className="monster-species">{monster.species.join(', ')}</span>
+                    <span className="monster-types">{monster.species.join(', ')}</span>
                     <span className="monster-types">{monster.types.join(', ')}</span>
-                    <span className="monster-attribute">{monster.attribute}</span>
+                    <span className="monster-types">{monster.attribute}</span>
                   </div>
                 ))}
               </div>

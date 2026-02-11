@@ -295,8 +295,8 @@ const LevelManagement = () => {
   }
 
   return (
-    <div className="level-management">
-      <div className="level-management-header">
+    <div className="bazar-container">
+      <div className="bazar-header">
         <h1>Level Management</h1>
         <p>Add levels and coins to trainers and monsters</p>
       </div>
@@ -342,7 +342,7 @@ const LevelManagement = () => {
                   </div>
 
                   <div className="form-group">
-                    <div className="checkbox-group">
+                    <div className="event-date">
                       <input
                         type="checkbox"
                         id="useDefaultCoins"
@@ -374,7 +374,7 @@ const LevelManagement = () => {
                     />
                   </div>
 
-                  <button type="submit" className="submit-button" disabled={loading}>
+                  <button type="submit" className="button success" disabled={loading}>
                     {loading ? 'Processing...' : 'Add Levels to Trainer'}
                   </button>
                 </form>
@@ -415,7 +415,7 @@ const LevelManagement = () => {
                     />
                   </div>
 
-                  <button type="submit" className="submit-button" disabled={loading}>
+                  <button type="submit" className="button success" disabled={loading}>
                     {loading ? 'Processing...' : 'Add Levels to Monster'}
                   </button>
                 </form>
@@ -460,7 +460,7 @@ const LevelManagement = () => {
                   </div>
 
                   <div className="form-group">
-                    <div className="checkbox-group">
+                    <div className="event-date">
                       <input
                         type="checkbox"
                         id="bulkUseDefaultCoins"
@@ -492,7 +492,7 @@ const LevelManagement = () => {
                     />
                   </div>
 
-                  <button type="submit" className="submit-button" disabled={loading}>
+                  <button type="submit" className="button success" disabled={loading}>
                     {loading ? 'Processing...' : 'Add Levels to Selected Trainers'}
                   </button>
                 </form>
@@ -534,7 +534,7 @@ const LevelManagement = () => {
                     />
                   </div>
 
-                  <button type="submit" className="submit-button" disabled={loading}>
+                  <button type="submit" className="button success" disabled={loading}>
                     {loading ? 'Processing...' : 'Add Levels to Selected Monsters'}
                   </button>
                 </form>

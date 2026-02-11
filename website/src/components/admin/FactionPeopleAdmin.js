@@ -112,13 +112,13 @@ const FactionPeopleAdmin = () => {
 
   return (
     <div className="faction-people-admin">
-      <div className="admin-header">
+      <div className="option-row">
         <h1>
           <i className="fas fa-users"></i>
           Faction People Management
         </h1>
         <button 
-          className="btn btn-primary create-btn"
+          className="button primary"
           onClick={handleCreatePerson}
         >
           <i className="fas fa-plus"></i>
@@ -127,13 +127,13 @@ const FactionPeopleAdmin = () => {
       </div>
 
       <div className="admin-filters">
-        <div className="filter-group">
+        <div className="set-item">
           <label htmlFor="faction-filter">Filter by Faction:</label>
           <select
             id="faction-filter"
             value={selectedFaction}
             onChange={(e) => setSelectedFaction(e.target.value)}
-            className="form-control"
+            className="form-input"
           >
             <option value="">All Factions</option>
             {factions.map(faction => (
@@ -146,15 +146,15 @@ const FactionPeopleAdmin = () => {
       </div>
 
       {error && (
-        <div className="alert alert-danger">
+        <div className="alert error">
           <i className="fas fa-exclamation-triangle"></i>
           {error}
         </div>
       )}
 
-      <div className="people-grid">
+      <div className="button">
         {people.length === 0 ? (
-          <div className="empty-state">
+          <div className="no-npcs">
             <i className="fas fa-user-friends"></i>
             <h3>No People Found</h3>
             <p>
@@ -164,7 +164,7 @@ const FactionPeopleAdmin = () => {
               }
             </p>
             <button 
-              className="btn btn-primary"
+              className="button primary"
               onClick={handleCreatePerson}
             >
               Create First Person
@@ -174,11 +174,11 @@ const FactionPeopleAdmin = () => {
           people.map(person => (
             <div key={person.id} className="person-card">
               <div className="person-header">
-                <div className="person-image">
+                <div className="image-container">
                   {person.images && person.images.length > 0 ? (
                     <img src={person.images[0]} alt={person.name} />
                   ) : (
-                    <div className="placeholder-image">
+                    <div className="image-placeholder">
                       <i className="fas fa-user"></i>
                     </div>
                   )}
@@ -209,7 +209,7 @@ const FactionPeopleAdmin = () => {
                   <span>{person.role || 'Not specified'}</span>
                 </div>
                 {person.blurb && (
-                  <div className="person-blurb">
+                  <div className="task-steps">
                     <label>Blurb:</label>
                     <p>{person.blurb}</p>
                   </div>
@@ -218,7 +218,7 @@ const FactionPeopleAdmin = () => {
 
               <div className="person-actions">
                 <button
-                  className="btn btn-sm btn-secondary"
+                  className="button secondary sm"
                   onClick={() => handleManageTeam(person)}
                   title="Manage Monster Team"
                 >
@@ -226,7 +226,7 @@ const FactionPeopleAdmin = () => {
                   Team
                 </button>
                 <button
-                  className="btn btn-sm btn-primary"
+                  className="button primary sm"
                   onClick={() => handleEditPerson(person)}
                   title="Edit Person"
                 >
@@ -234,7 +234,7 @@ const FactionPeopleAdmin = () => {
                   Edit
                 </button>
                 <button
-                  className="btn btn-sm btn-danger"
+                  className="button danger sm"
                   onClick={() => handleDeletePerson(person.id)}
                   title="Delete Person"
                 >

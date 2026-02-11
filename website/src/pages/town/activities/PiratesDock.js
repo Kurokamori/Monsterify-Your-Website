@@ -93,15 +93,15 @@ const PiratesDock = () => {
   if (!isAuthenticated) {
     return (
       <div className="location-activity-container">
-        <div className="location-activity-header">
-          <Link to="/town" className="btn-secondary">
+        <div className="quick-actions">
+          <Link to="/town" className="button secondary">
             <i className="fas fa-arrow-left mr-2"></i> Back to Town
           </Link>
           <h1>Pirate's Dock</h1>
         </div>
         <div className="auth-message">
           <p>Please log in to access the pirate's dock.</p>
-          <Link to="/login" className="btn-primary">Log In</Link>
+          <Link to="/login" className="button primary">Log In</Link>
         </div>
       </div>
     );
@@ -169,8 +169,8 @@ const PiratesDock = () => {
   if (showSession && sessionData && promptData && flavorData) {
     return (
       <div className="location-activity-container">
-        <div className="location-activity-header">
-          <button onClick={returnToActivity} className="btn-secondary">
+        <div className="quick-actions">
+          <button onClick={returnToActivity} className="button secondary">
             <i className="fas fa-arrow-left mr-2"></i> Back to Pirate's Dock
           </button>
           <h1>Pirate's Dock - {sessionData.activity.replace(/_/g, ' ')}</h1>
@@ -192,16 +192,16 @@ const PiratesDock = () => {
   if (activeSession && !showSession) {
     return (
       <div className="location-activity-container">
-        <div className="location-activity-header">
-          <Link to="/town" className="btn-secondary">
+        <div className="quick-actions">
+          <Link to="/town" className="button secondary">
             <i className="fas fa-arrow-left mr-2"></i> Back to Town
           </Link>
           <h1>Pirate's Dock</h1>
         </div>
-        <div className="active-session-message">
+        <div className="auth-message">
           <h2>Active Session</h2>
           <p>You have an active pirate's dock session in progress.</p>
-          <button onClick={continueSession} className="btn-primary">
+          <button onClick={continueSession} className="button primary">
             Continue Session
           </button>
         </div>
@@ -211,8 +211,8 @@ const PiratesDock = () => {
 
   return (
     <div className="location-activity-container">
-      <div className="location-activity-header">
-        <Link to="/town" className="btn-secondary">
+      <div className="quick-actions">
+        <Link to="/town" className="button secondary">
           <i className="fas fa-arrow-left mr-2"></i> Back to Town
         </Link>
         <h1>Pirate's Dock</h1>
@@ -232,7 +232,7 @@ const PiratesDock = () => {
 
         <div className="location-activities">
           <div className="location-activity-card">
-            <div className="activity-image">
+            <div className="image-container activity">
               <img src="https://i.imgur.com/RmKySNO.png" alt="Swab the Deck" />
             </div>
             <div className="activity-info">
@@ -248,7 +248,7 @@ const PiratesDock = () => {
                 </div>
               ) : (
                 <button
-                  className="btn-primary"
+                  className="button primary"
                   onClick={() => startActivity('swab')}
                 >
                   <i className="fas fa-broom mr-2"></i> Swab the Deck
@@ -258,7 +258,7 @@ const PiratesDock = () => {
           </div>
 
           <div className="location-activity-card">
-            <div className="activity-image">
+            <div className="image-container activity">
               <img src="https://i.imgur.com/RmKySNO.png" alt="Go Fishing" />
             </div>
             <div className="activity-info">
@@ -274,7 +274,7 @@ const PiratesDock = () => {
                 </div>
               ) : (
                 <button
-                  className="btn-primary"
+                  className="button primary"
                   onClick={() => startActivity('fishing')}
                 >
                   <i className="fas fa-fish mr-2"></i> Go Fishing

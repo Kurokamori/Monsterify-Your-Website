@@ -74,25 +74,25 @@ const Bazar = () => {
 
       <div className="bazar-tabs">
         <button
-          className={`tab-button ${activeTab === 'forfeit-monster' ? 'active' : ''}`}
+          className={`button tab ${activeTab === 'forfeit-monster' ? 'active' : ''}`}
           onClick={() => setActiveTab('forfeit-monster')}
         >
           Forfeit Monster
         </button>
         <button
-          className={`tab-button ${activeTab === 'forfeit-item' ? 'active' : ''}`}
+          className={`button tab ${activeTab === 'forfeit-item' ? 'active' : ''}`}
           onClick={() => setActiveTab('forfeit-item')}
         >
           Forfeit Item
         </button>
         <button
-          className={`tab-button ${activeTab === 'adopt-monster' ? 'active' : ''}`}
+          className={`button tab ${activeTab === 'adopt-monster' ? 'active' : ''}`}
           onClick={() => setActiveTab('adopt-monster')}
         >
           Adopt Monster
         </button>
         <button
-          className={`tab-button ${activeTab === 'collect-item' ? 'active' : ''}`}
+          className={`button tab ${activeTab === 'collect-item' ? 'active' : ''}`}
           onClick={() => setActiveTab('collect-item')}
         >
           Collect Items

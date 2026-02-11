@@ -504,9 +504,9 @@ const GameCorner = () => {
   }
 
   return (
-    <div className="game-corner-container">
-      <div className="game-corner-header">
-        <Link to="/town" className="btn-secondary">
+    <div className="bazar-container">
+      <div className="adopt-card">
+        <Link to="/town" className="button secondary">
           <i className="fas fa-arrow-left mr-2"></i> Back to Town
         </Link>
         <h1>Game Corner</h1>
@@ -517,7 +517,7 @@ const GameCorner = () => {
           <div className="video-header">
             <h2>Pomodoro Videos</h2>
             <button
-              className="btn-secondary"
+              className="button secondary"
               onClick={() => setShowVideoForm(!showVideoForm)}
             >
               {showVideoForm ? 'Cancel' : 'Add Custom Video'}
@@ -533,7 +533,7 @@ const GameCorner = () => {
                 onChange={(e) => setCustomVideoUrl(e.target.value)}
                 className="form-input"
               />
-              <button type="submit" className="btn-primary">Add Video</button>
+              <button type="submit" className="button primary">Add Video</button>
             </form>
           )}
 
@@ -551,9 +551,9 @@ const GameCorner = () => {
                   <i className="fas fa-exclamation-triangle"></i>
                   <h3>Video Unavailable</h3>
                   <p>This video cannot be played due to restrictions or connectivity issues.</p>
-                  <div className="error-actions">
+                  <div className="stat-group">
                     <button 
-                      className="btn-secondary"
+                      className="button secondary"
                       onClick={() => handleVideoSelect(selectedVideo)}
                     >
                       <i className="fas fa-redo mr-2"></i>Try Again
@@ -562,7 +562,7 @@ const GameCorner = () => {
                       href={`https://youtube.com/watch?v=${selectedVideo.videoId || selectedVideo.url.split('/').pop().split('?')[0]}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="btn-primary"
+                      className="button primary"
                     >
                       <i className="fas fa-external-link-alt mr-2"></i>Watch on YouTube
                     </a>
@@ -588,7 +588,7 @@ const GameCorner = () => {
             {defaultVideos.map(video => (
               <button
                 key={video.id}
-                className={`video-item ${selectedVideo.id === video.id ? 'active' : ''}`}
+                className={`video-item${selectedVideo.id === video.id ? 'active' : ''}`}
                 onClick={() => handleVideoSelect(video)}
               >
                 {video.title}
@@ -628,21 +628,21 @@ const GameCorner = () => {
           <div className="timer-controls">
             <div className="timer-buttons">
               {!timerActive ? (
-                <button className="btn-primary" onClick={startTimer}>
+                <button className="button primary" onClick={startTimer}>
                   <i className="fas fa-play mr-2"></i> Start
                 </button>
               ) : (
-                <button className="btn-secondary" onClick={pauseTimer}>
+                <button className="button secondary" onClick={pauseTimer}>
                   <i className="fas fa-pause mr-2"></i> Pause
                 </button>
               )}
-              <button className="btn-danger" onClick={resetTimer}>
+              <button className="button danger" onClick={resetTimer}>
                 <i className="fas fa-redo mr-2"></i> Reset
               </button>
             </div>
 
             <div className="timer-settings">
-              <div className="setting-group">
+              <div className="set-item">
                 <label>Session Length (min)</label>
                 <input
                   type="number"
@@ -654,7 +654,7 @@ const GameCorner = () => {
                 />
               </div>
 
-              <div className="setting-group">
+              <div className="set-item">
                 <label>Break Length (min)</label>
                 <input
                   type="number"
@@ -666,7 +666,7 @@ const GameCorner = () => {
                 />
               </div>
 
-              <div className="setting-group">
+              <div className="set-item">
                 <label>Long Break Length (min)</label>
                 <input
                   type="number"
@@ -678,7 +678,7 @@ const GameCorner = () => {
                 />
               </div>
 
-              <div className="setting-group">
+              <div className="set-item">
                 <label>Number of Sessions</label>
                 <input
                   type="number"
@@ -718,7 +718,7 @@ const GameCorner = () => {
               {[0, 20, 40, 60, 80, 100].map(rating => (
                 <button
                   key={rating}
-                  className="productivity-rating-btn"
+                  className="button secondary"
                   onClick={() => handleProductivityRating(rating)}
                 >
                   {rating}%
@@ -751,9 +751,9 @@ const GameCorner = () => {
 
             {/* Monster Rewards - Separate Grid */}
             {rewards.rewards && rewards.rewards.filter(reward => reward.type === 'monster').length > 0 && (
-              <div className="monster-rewards-section">
+              <div className="other-rewards-section">
                 <h3>Monster Rewards</h3>
-                <div className="monster-rewards-grid">
+                <div className="button">
                   {rewards.rewards.filter(reward => reward.type === 'monster').map((reward, index) => (
                     <MonsterRewardCard
                       key={reward.id || index}
@@ -783,8 +783,8 @@ const GameCorner = () => {
                 <h3>Other Rewards</h3>
                 <div className="rewards-list">
                   {rewards.rewards.filter(reward => reward.type !== 'monster').map((reward, index) => (
-                    <div key={index} className="reward-card claimed">
-                    <div className={`reward-icon ${reward.type}`}>
+                    <div key={index} className="area-card claimed">
+                    <div className={`reward-icon${reward.type}`}>
                       <i className={
                         reward.type === 'coin' ? 'fas fa-coins' :
                         reward.type === 'item' ? 'fas fa-box' :
@@ -805,7 +805,7 @@ const GameCorner = () => {
                        reward.type === 'level' ? `${reward.reward_data.levels} level${reward.reward_data.levels > 1 ? 's' : ''}` :
                        'Mystery reward'}
                     </div>
-                    <div className={`reward-rarity ${reward.rarity}`}>
+                    <div className={`badge ${reward.rarity}`}>
                       {reward.rarity.charAt(0).toUpperCase() + reward.rarity.slice(1)}
                     </div>
                     <div className="reward-assigned">
@@ -834,7 +834,7 @@ const GameCorner = () => {
             )}
 
             <button
-              className="btn-primary"
+              className="button primary"
               onClick={() => {
                 setShowRewards(false);
                 resetTimer();

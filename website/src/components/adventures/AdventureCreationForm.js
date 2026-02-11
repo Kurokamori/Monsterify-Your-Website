@@ -334,14 +334,14 @@ const AdventureCreationForm = ({ onAdventureCreated }) => {
         />
       )}
 
-      <form className="adventure-creation-form" onSubmit={handleSubmit}>
+      <form className="town-square" onSubmit={handleSubmit}>
         {/* Adventure Type Selection */}
         <div className="form-section">
           <h3>Adventure Type</h3>
 
           <div className="adventure-type-selection">
             <div
-              className={`adventure-type-card ${adventureType === 'custom' ? 'selected' : ''}`}
+              className={`area-card ${adventureType === 'custom' ? 'selected' : ''}`}
               onClick={() => setAdventureType('custom')}
             >
               <div className="type-icon">
@@ -352,7 +352,7 @@ const AdventureCreationForm = ({ onAdventureCreated }) => {
             </div>
 
             <div
-              className={`adventure-type-card ${adventureType === 'prebuilt' ? 'selected' : ''}`}
+              className={`area-card ${adventureType === 'prebuilt' ? 'selected' : ''}`}
               onClick={() => setAdventureType('prebuilt')}
             >
               <div className="type-icon">
@@ -377,7 +377,7 @@ const AdventureCreationForm = ({ onAdventureCreated }) => {
                   {landmasses.map(landmass => (
                     <div
                       key={landmass.id}
-                      className={`landmass-card ${selectedLandmass === landmass.id ? 'selected' : ''}`}
+                      className={`area-card ${selectedLandmass === landmass.id ? 'selected' : ''}`}
                       onClick={() => handleLandmassChange(landmass.id)}
                     >
                       <h5>{landmass.name}</h5>
@@ -398,7 +398,7 @@ const AdventureCreationForm = ({ onAdventureCreated }) => {
                     {regions.map(region => (
                       <div
                         key={region.id}
-                        className={`region-card ${selectedRegion === region.id ? 'selected' : ''}`}
+                        className={`area-card ${selectedRegion === region.id ? 'selected' : ''}`}
                         onClick={() => handleRegionChange(region.id)}
                       >
                         <h5>{region.name}</h5>
@@ -510,7 +510,7 @@ const AdventureCreationForm = ({ onAdventureCreated }) => {
                   </div>
                 )}
                 {trainers.length > 0 ? (
-                  <div className="trainer-selection">
+                  <div className="shop-search">
                     <select
                       value={selectedTrainer}
                       onChange={async (e) => {
@@ -582,7 +582,7 @@ const AdventureCreationForm = ({ onAdventureCreated }) => {
                 onChange={(e) => setThreadEmoji(e.target.value)}
                 placeholder="🗡️"
                 maxLength={2}
-                className="emoji-input"
+                className="form-input"
               />
               <div className="emoji-presets">
                 <span>Quick select:</span>
@@ -590,7 +590,7 @@ const AdventureCreationForm = ({ onAdventureCreated }) => {
                   <button
                     key={emoji}
                     type="button"
-                    className={`emoji-preset ${threadEmoji === emoji ? 'selected' : ''}`}
+                    className={`area-card ${threadEmoji === emoji ? 'selected' : ''}`}
                     onClick={() => setThreadEmoji(emoji)}
                   >
                     {emoji}
@@ -605,7 +605,7 @@ const AdventureCreationForm = ({ onAdventureCreated }) => {
         <div className="form-actions">
           <button
             type="submit"
-            className="submit-button"
+            className="button success"
             disabled={loading || (adventureType === 'prebuilt' && (!selectedRegion || !selectedArea))}
           >
             {loading ? (

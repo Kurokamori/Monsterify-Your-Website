@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import './AdminPromptList.css';
 
 const AdminPromptList = ({ 
   prompts, 
@@ -95,14 +94,14 @@ const AdminPromptList = ({
     <div className="admin-prompt-list">
       {/* Filters */}
       <div className="list-filters">
-        <div className="filter-row">
-          <div className="filter-group">
+        <div className="form-row">
+          <div className="set-item">
             <label htmlFor="type-filter">Type:</label>
             <select
               id="type-filter"
               value={filters.type}
               onChange={(e) => handleFilterChange('type', e.target.value)}
-              className="filter-select"
+              className="filter-input"
             >
               <option value="">All Types</option>
               <option value="general">General</option>
@@ -112,13 +111,13 @@ const AdminPromptList = ({
             </select>
           </div>
 
-          <div className="filter-group">
+          <div className="set-item">
             <label htmlFor="status-filter">Status:</label>
             <select
               id="status-filter"
               value={filters.status}
               onChange={(e) => handleFilterChange('status', e.target.value)}
-              className="filter-select"
+              className="filter-input"
             >
               <option value="all">All</option>
               <option value="active">Active Only</option>
@@ -126,7 +125,7 @@ const AdminPromptList = ({
             </select>
           </div>
 
-          <button onClick={onRefresh} className="btn btn-secondary">
+          <button onClick={onRefresh} className="button secondary">
             Refresh
           </button>
         </div>
@@ -141,19 +140,19 @@ const AdminPromptList = ({
           <div className="bulk-buttons">
             <button
               onClick={() => handleBulkAction('activate')}
-              className="btn btn-sm btn-success"
+              className="button success sm"
             >
               Activate
             </button>
             <button
               onClick={() => handleBulkAction('deactivate')}
-              className="btn btn-sm btn-warning"
+              className="button warning sm"
             >
               Deactivate
             </button>
             <button
               onClick={() => handleBulkAction('delete')}
-              className="btn btn-sm btn-danger"
+              className="button danger sm"
             >
               Delete
             </button>
@@ -208,12 +207,12 @@ const AdminPromptList = ({
                       )}
                     </td>
                     <td>
-                      <span className={`type-badge type-${prompt.type}`}>
+                      <span className={`badge type-${prompt.type}`}>
                         {prompt.type}
                       </span>
                     </td>
                     <td>
-                      <span className={`status-badge status-${status.class}`}>
+                      <span className={`badge ${status.class}`}>
                         {status.text}
                       </span>
                     </td>
@@ -232,17 +231,17 @@ const AdminPromptList = ({
                       {new Date(prompt.created_at).toLocaleDateString()}
                     </td>
                     <td className="actions-cell">
-                      <div className="admin-action-buttons">
+                      <div className="quick-actions">
                         <button
                           onClick={() => onEdit(prompt)}
-                          className="btn btn-primary"
+                          className="button primary"
                           title="Edit prompt"
                         >
                           Edit
                         </button>
                         <button
                           onClick={() => onDelete(prompt.id)}
-                          className="btn btn-danger"
+                          className="button danger"
                           title="Delete prompt"
                         >
                           Delete
@@ -258,7 +257,7 @@ const AdminPromptList = ({
       </div>
 
       {/* Summary Stats */}
-      <div className="list-summary">
+      <div className="item-config">
         <div className="summary-stats">
           <div className="stat-item">
             <span className="stat-label">Total Prompts:</span>

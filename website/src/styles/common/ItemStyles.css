@@ -1,0 +1,376 @@
+.item-card {
+  backdrop-filter: blur(20px);
+  background: linear-gradient(145deg, var(--overlay-medium) 0%, var(--overlay-medium) 100%);
+  border: 1px solid var(--accent-glow);
+  border-radius: 1.5rem;
+  box-shadow: var(--shadow-1);
+  display: flex;
+  flex-direction: column;
+  margin: 0.5rem;
+  overflow: hidden;
+  padding: 2rem;
+  position: relative;
+  transition: all 0.3s ease;
+}
+.item-card:hover {
+  box-shadow: 0 15px 40px var(--accent-glow);
+  transform: translateY(-5px);
+}
+.item-card.common { border-color: var(--text-muted); }
+.item-card.uncommon { border-color: var(--success-light); }
+.item-card.rare { border-color: var(--blue-color); }
+
+.item-card.legendary { border-color: var(--warning-color); }
+
+.item-image-container {
+  height: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+  background: var(--card-background-light);
+  position: relative;
+  width: 100%;
+  border-radius: 0.25rem;
+}
+
+.item-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: var(--shop-bg);
+  border-radius: var(--radius-sm);
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.item-details {
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin: 15px 0;
+  border-radius: 6px;
+}
+
+.item-header {
+  align-items: center;
+  border-bottom: 2px solid var(--border-color);
+  display: flex;
+  gap: 15px;
+  justify-content: space-between;
+  margin-bottom: 30px;
+  padding-bottom: 15px;
+}
+
+.item-name {
+  margin: 0;
+  font-size: 1rem;
+  color: var(--text-color);
+  font-weight: 600;
+  white-space: wrap;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex: 1;
+}
+
+.item-meta {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  font-size: 0.8rem;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.item-category {
+  color: var(--text-color);
+  text-transform: capitalize;
+  font-size: 0.9rem;
+  background-color: var(--nav-active);
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-weight: 600;
+}
+
+.item-rarity {
+  color: var(--border-color);
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  background-color: var(--overlay-solid);
+  border: 1px solid var(--border-color);
+}
+
+.item-quantity {
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  font-weight: 500;
+  margin-bottom: 10px;
+  margin-left: auto;
+  opacity: 0.7;
+}
+
+.item-description {
+  font-size: 0.9rem;
+  color: var(--text-color);
+  margin: 0;
+  line-height: 1.6;
+}
+
+/* Items Section */
+.help-content {
+  background: var(--nav-background);
+  background-color: var(--nav-background);
+  border: 1px solid var(--border-color);
+  border-radius: 0.5rem;
+  color: var(--text-color);
+  font-size: var(--font-size-sm);
+  margin-bottom: 1.5rem;
+  margin-top: 0.5rem;
+  opacity: 0.8;
+  padding: 1.5rem;
+  text-align: center;
+}
+
+/* .items-grid replaced by .container.grid in JSX - grid properties now in containers.css */
+.container.grid.items-layout {
+  margin-top: 20px;
+  min-width: 0;
+  overflow-y: auto;
+  padding: 0.25rem;
+}
+
+.modern-checkbox {
+  align-items: center;
+  background: var(--nav-background);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1.5rem;
+  transition: all 0.3s ease;
+  justify-content: center;
+}
+
+.modern-checkbox:hover {
+  border-color: var(--accent-color);
+  background: var(--overlay-solid);
+}
+
+.modern-checkbox.active {
+  border-color: var(--accent-color);
+  background: var(--overlay-solid);
+}
+
+.item-count {
+  font-size: 0.8rem;
+  color: var(--accent-color);
+  margin-top: 5px;
+}
+
+.item-info {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-width: 0;
+  padding: 1rem;
+}
+
+.item-available {
+  font-size: 0.85rem;
+  color: var(--highlight-heavy);
+}
+
+/* For quantity buttons, use unified button system: className="button quantity" (see buttons.css) */
+
+.item-card.rarity-common,
+.item-card.rarity-uncommon,
+.item-card.rarity-rare,
+.item-card.rarity-ultra-rare,
+.item-card.rarity-legendary { border-color: var(--border-color); }
+
+/* Card body */
+.item-card .item-content { padding: 15px; display: flex; flex-direction: column; flex-grow: 1; }
+.item-card .item-name { word-wrap: break-word; font-size: 1.2rem; margin: 0 0 5px 0; color: var(--text-color); }
+.item-card .item-category { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 10px; text-transform: uppercase; }
+.item-card .item-description { font-size: 0.9rem; color: var(--text-color); margin-bottom: 15px; flex-grow: 1; }
+
+.item-card .item-price {
+  display: flex; align-items: center; gap: 5px; margin-bottom: 10px;
+  font-weight: bold; color: var(--accent-color);
+}
+.item-card .item-price i { font-size: 0.9rem; }
+
+.item-card .item-quantity {
+  display: flex; justify-content: space-between; font-size: 0.9rem; color: var(--text-muted); margin-bottom: 15px;
+}
+
+/* For purchase buttons, use unified button system: className="button success lg block" (see buttons.css) */
+
+/* Detail modal content (not the generic modal controls) */
+.item-detail-modal {
+  padding: 0;
+  max-width: 600px;
+  width: 100%;
+}
+
+.item-detail-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background: linear-gradient(135deg, var(--background-secondary) 0%, var(--background-tertiary) 100%);
+  border-radius: 12px;
+}
+
+.item-detail-image-container {
+  position: relative;
+  flex-shrink: 0;
+  width: 120px;
+  height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--background-tertiary);
+  border-radius: 12px;
+  padding: 1rem;
+}
+
+.item-detail-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 8px;
+}
+
+.floating-monster {
+  align-items: center;
+  animation: floatMonster 6s ease-in-out infinite;
+  backdrop-filter: blur(15px);
+  background: linear-gradient(135deg, var(--accent-glow) 0%, var(--accent-glow) 100%);
+  border: 3px solid var(--accent-glow);
+  border-radius: 50%;
+  box-shadow: 0 12px 48px var(--accent-glow), 0 0 30px var(--accent-glow);
+  display: flex;
+  height: 160px;
+  justify-content: center;
+  object-fit: cover;
+  position: absolute;
+  width: 160px;
+  z-index: 3;
+}
+
+.item-detail-rarity {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  border-radius: 12px;
+  border: 1px solid var(--highlight-medium);
+  background: var(--rarity-pill-bg);
+  color: var(--text-color);
+}
+
+.compact-trainer-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.item-detail-name {
+  font-size: 1.75rem;
+  font-weight: bold;
+  color: var(--text-primary);
+  margin: 0 0 0.5rem 0;
+  word-wrap: break-word;
+}
+
+.item-detail-category {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  background: var(--accent-color);
+  color: var(--text-color);
+  border-radius: 20px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-transform: capitalize;
+}
+
+.item-detail-content {
+  padding: 0 1.5rem;
+}
+
+.item-detail-section {
+  margin-bottom: 1.5rem;
+}
+
+.item-detail-section h3 {
+  font-size: 1.125rem; font-weight: 600; color: var(--text-primary); margin: 0 0 0.5rem 0;
+  border-bottom: 2px solid var(--accent-color); padding-bottom: 0.25rem; display: inline-block;
+}
+.item-detail-section p { color: var(--text-secondary); line-height: 1.6; margin: 0; }
+
+/* Intentionally NOT redefining .info-label/.info-value globally here to avoid duplicate class declarations */
+.item-detail-info-item .info-label { font-weight: 600; color: var(--text-secondary); white-space: nowrap; }
+
+.item-detail-actions {
+  padding: 1.5rem;
+  border-top: 1px solid var(--border-color);
+  display: flex;
+  justify-content: center;
+  margin-top: 1rem;
+}
+
+/* Special Berry Actions - for buttons use unified button system (see buttons.css) */
+
+/* Breeding / Nursery contexts - for buttons use unified button system: className="button sm" (see buttons.css) */
+.offspring-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.egg-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 2rem;
+  flex-wrap: wrap;
+  flex-direction: column;
+  text-align: center;
+}
+
+/* Claimed monster (typo preserved for compatibility) */
+.area-card.claimed-with-edenwiess { opacity: 0.6; position: relative; }
+.area-card.claimed-with-edenwiess::after {
+  content: ''; position: absolute; inset: 0; background: var(--success-glow);
+  border: 2px solid var(--success-color); border-radius: 8px; pointer-events: none;
+}
+
+/* Edenweiss tooltip (typo preserved) */
+
+/* Responsive (feature-specific) */
+@media (max-width: 768px) {
+  .item-detail-header { flex-direction: column; align-items: center; text-align: center; gap: 1rem; }
+  .floating-monster { width: 100px; height: 100px; }
+  .item-detail-image-container { width: 100px; height: 100px; }
+  .item-detail-name { font-size: 1.5rem; }
+  .item-detail-content { padding: 0 1rem; }
+  .item-detail-actions { padding: 1rem; }
+
+  .button .offspring-actions { flex-direction: column; }
+  .egg-actions { flex-direction: column; }
+}

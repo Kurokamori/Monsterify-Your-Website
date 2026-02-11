@@ -173,7 +173,7 @@ const AntiqueAuction = ({ trainerId, antique, onClose, userTrainers = [] }) => {
           <p>No auction options available for this antique.</p>
           <p>This antique can only be used for appraisal (random roll).</p>
           <button
-            className="btn btn-primary"
+            className="button primary"
             onClick={onClose}
           >
             Close
@@ -187,7 +187,7 @@ const AntiqueAuction = ({ trainerId, antique, onClose, userTrainers = [] }) => {
         {auctionOptions.map((option) => (
           <div
             key={option.id}
-            className={`auction-option-card ${selectedOption?.id === option.id ? 'selected' : ''}`}
+            className={`area-card ${selectedOption?.id === option.id ? 'selected' : ''}`}
             onClick={() => handleOptionSelect(option)}
           >
             {/* Monster Image */}
@@ -219,7 +219,7 @@ const AntiqueAuction = ({ trainerId, antique, onClose, userTrainers = [] }) => {
             </div>
 
             {/* Species */}
-            <div className="auction-option-species">
+            <div className="auction-option-creator">
               <span className="label">Species:</span> {getSpeciesDisplay(option)}
             </div>
 
@@ -232,7 +232,7 @@ const AntiqueAuction = ({ trainerId, antique, onClose, userTrainers = [] }) => {
 
             {/* Attribute */}
             {option.attribute && (
-              <div className="auction-option-attribute">
+              <div className="evolution-attribute">
                 <AttributeBadge attribute={option.attribute} />
               </div>
             )}
@@ -264,9 +264,9 @@ const AntiqueAuction = ({ trainerId, antique, onClose, userTrainers = [] }) => {
   return (
     <div className="antique-auction-modal">
       <div className="antique-auction-content">
-        <div className="antique-auction-header">
+        <div className="panel-header">
           <h2>Auction Antique: {antique}</h2>
-          <button className="close-button" onClick={onClose}>&times;</button>
+          <button className="button close" onClick={onClose}>&times;</button>
         </div>
 
         <div className="antique-auction-body">
@@ -283,7 +283,7 @@ const AntiqueAuction = ({ trainerId, antique, onClose, userTrainers = [] }) => {
               <p>You've successfully adopted <strong>{monsterName}</strong>!</p>
               <p>Your new monster has been added to your team.</p>
               <button
-                className="btn btn-primary"
+                className="button primary"
                 onClick={onClose}
               >
                 Close
@@ -291,7 +291,7 @@ const AntiqueAuction = ({ trainerId, antique, onClose, userTrainers = [] }) => {
             </div>
           ) : (
             <>
-              <div className="auction-description">
+              <div className="auth-header">
                 <p>
                   Select a monster from the options below to adopt using your <strong>{antique}</strong>.
                 </p>
@@ -322,26 +322,26 @@ const AntiqueAuction = ({ trainerId, antique, onClose, userTrainers = [] }) => {
                       value={monsterName}
                       onChange={handleNameChange}
                       placeholder="Enter monster name"
-                      className="form-control"
+                      className="form-input"
                     />
                   </div>
 
                   {adoptError && <ErrorMessage message={adoptError} />}
 
-                  <div className="adoption-actions">
+                  <div className="type-tags fw">
                     {adoptLoading ? (
                       <LoadingSpinner />
                     ) : (
                       <>
                         <button
-                          className="btn btn-primary"
+                          className="button primary"
                           onClick={handleAuction}
                           disabled={!monsterName.trim() || !selectedOption}
                         >
                           Claim Monster
                         </button>
                         <button
-                          className="btn btn-secondary"
+                          className="button secondary"
                           onClick={onClose}
                         >
                           Cancel

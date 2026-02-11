@@ -1,0 +1,68 @@
+/* =============================================================================
+   ADMIN THIRD-PARTY OVERRIDES
+
+   Scoped overrides for third-party libraries (React Select, React Tabs).
+   !important is intentionally used here to override library defaults.
+   ============================================================================= */
+
+/* React Select (admin only) */
+.admin-layout .react-select__control {
+  background-color: var(--input-background) !important;
+  border-color: var(--border-color) !important;
+}
+
+.admin-layout .react-select__menu {
+  background-color: var(--admin-card-bg) !important;
+}
+
+.admin-layout .react-select__option {
+  background-color: var(--admin-card-bg) !important;
+  color: var(--text-color) !important;
+}
+
+.admin-layout .react-select__option--is-focused {
+  background-color: var(--nav-hover) !important;
+}
+
+.admin-layout .react-select__option--is-selected {
+  background-color: var(--accent-color) !important;
+}
+
+.admin-layout .react-select__single-value,
+.admin-layout .react-select__multi-value__label,
+.admin-layout .react-select__input {
+  color: var(--text-color) !important;
+}
+
+.admin-layout .react-select__multi-value {
+  background-color: var(--nav-hover) !important;
+}
+
+/* React Tabs (admin only) */
+.admin-layout .react-tabs__tab-list {
+  border-bottom: 1px solid var(--border-color);
+  margin-bottom: 20px;
+}
+
+.admin-layout .react-tabs__tab {
+  color: var(--accent-color);
+  padding: 10px 20px;
+  border-radius: 4px 4px 0 0;
+  cursor: pointer;
+}
+
+.admin-layout .react-tabs__tab--selected {
+  background-color: var(--card-background);
+  color: var(--accent-color);
+  border: 1px solid var(--border-color);
+  border-bottom: none;
+}
+
+.admin-layout .react-tabs__tab:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--accent-color);
+}
+
+.admin-layout .react-tabs__tab-panel {
+  padding: 20px 0;
+}

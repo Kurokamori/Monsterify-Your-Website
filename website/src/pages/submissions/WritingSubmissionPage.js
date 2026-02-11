@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import WritingSubmissionForm from '../../components/submissions/WritingSubmissionForm';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
@@ -8,6 +8,10 @@ import LoadingSpinner from '../../components/common/LoadingSpinner';
 const WritingSubmissionPage = () => {
   const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+
+  // Get bookId from URL params for "Add Chapter" flow
+  const preselectedBookId = searchParams.get('bookId');
 
   // State
   const [submissionSuccess, setSubmissionSuccess] = useState(false);
@@ -39,10 +43,14 @@ const WritingSubmissionPage = () => {
   }
 
   return (
-    <div className="submission-page-container">
-      <div className="submission-page-header">
-        <h1>Submit Writing</h1>
-        <p>Share your stories, poems, and other written works with the community and earn rewards based on word count and quality.</p>
+    <div className="edit-monster-container">
+      <div className="map-header">
+        <h1>{preselectedBookId ? 'Add Chapter' : 'Submit Writing'}</h1>
+        <p className="description">
+          {preselectedBookId
+            ? 'Add a new chapter to your book and earn rewards based on word count.'
+            : 'Share your stories, poems, and other written works with the community and earn rewards based on word count and quality.'}
+        </p>
       </div>
 
       {submissionSuccess ? (
@@ -59,7 +67,7 @@ const WritingSubmissionPage = () => {
           {submissionResult && submissionResult.rewards && (
             <div className="rewards-summary">
               <h3>Rewards Earned</h3>
-              <div className="rewards-grid">
+              <div className="town-places">
                 <div className="reward-item">
                   <i className="fas fa-book"></i>
                   <h4>Writing Rewards</h4>
@@ -107,7 +115,7 @@ const WritingSubmissionPage = () => {
                       )}
                       {submissionResult.rewards.missionProgress.completedMissions &&
                        submissionResult.rewards.missionProgress.completedMissions.length > 0 && (
-                        <div className="mission-completions">
+                        <div className="mission-updates">
                           <p className="reward-detail">Completed missions:</p>
                           <ul>
                             {submissionResult.rewards.missionProgress.completedMissions.map((mission, index) => (
@@ -160,8 +168,8 @@ const WritingSubmissionPage = () => {
           {loading && <LoadingSpinner />}
         </div>
       ) : (
-        <div className="submission-page-content">
-          <WritingSubmissionForm onSubmissionComplete={handleSubmissionComplete} />
+        <div className="town-section">
+          <WritingSubmissionForm onSubmissionComplete={handleSubmissionComplete} preselectedBookId={preselectedBookId} />
         </div>
       )}
     </div>

@@ -170,8 +170,12 @@ const StarterSelectionPage = () => {
         return (
           <div className="starter-empty-state">
             <h2>Loading starter monsters...</h2>
-            <div className="starter-spinner-container">
-              <div className="starter-spinner"></div>
+            <div className="evolution-attribute">
+              <div className="spinner-dots lg">
+                {[...Array(8)].map((_, i) => (
+                  <div key={i} className="spinner-dot"></div>
+                ))}
+              </div>
             </div>
           </div>
         );
@@ -187,7 +191,7 @@ const StarterSelectionPage = () => {
             {currentSet.monsters.map((monster, index) => (
               <div
                 key={`${currentSet.setId}-${index}`}
-                className={`starter-card ${
+                className={`guide-card ${
                   selectedStarters[currentStep] === monster
                     ? 'selected'
                     : ''
@@ -207,9 +211,9 @@ const StarterSelectionPage = () => {
         return (
           <div className="starter-empty-state">
             <h2>Please select all three starters first</h2>
-            <div className="starter-spinner-container">
+            <div className="evolution-attribute">
               <button
-                className="starter-back-button"
+                className="button secondary"
                 onClick={() => setCurrentStep(0)}
               >
                 <i className="fas fa-arrow-left"></i>
@@ -245,7 +249,7 @@ const StarterSelectionPage = () => {
                     />
                     {starterNames[index] && (
                       <button
-                        className="clear-button"
+                        className="button danger"
                         onClick={() => handleNameChange(index, '')}
                         type="button"
                         aria-label="Clear name"
@@ -255,7 +259,7 @@ const StarterSelectionPage = () => {
                     )}
                   </div>
                   <button
-                    className="starter-return-button"
+                    className="button secondary"
                     onClick={() => setCurrentStep(index)}
                     type="button"
                   >
@@ -282,7 +286,7 @@ const StarterSelectionPage = () => {
   const NavigationButtons = () => (
     <div className="starter-nav-buttons">
       <button
-        className="nav-button nav-button-secondary btn"
+        className="button secondary"
         onClick={() => setCurrentStep(prev => Math.max(0, prev - 1))}
         disabled={currentStep === 0 || submitting}
       >
@@ -292,7 +296,7 @@ const StarterSelectionPage = () => {
 
       {currentStep < 3 && selectedStarters[currentStep] && (
         <button
-          className="nav-button nav-button-primary btn"
+          className="button primary"
           onClick={() => setCurrentStep(prev => Math.min(3, prev + 1))}
           disabled={submitting}
         >
@@ -303,7 +307,7 @@ const StarterSelectionPage = () => {
 
       {currentStep === 3 && (
         <button
-          className="nav-button nav-button-success btn"
+          className="button success"
           onClick={handleSubmit}
           disabled={submitting}
         >
@@ -345,7 +349,7 @@ const StarterSelectionPage = () => {
             return (
               <button
                 key={index}
-                className={`starter-progress-tab ${currentStep === index ? 'active' : ''} ${isCompleted ? 'completed' : ''}`}
+                className={`button ${currentStep === index ? 'active' : ''}${isCompleted ? 'completed' : ''}`}
                 onClick={() => setCurrentStep(index)}
                 disabled={isDisabled || submitting}
               >
@@ -360,7 +364,7 @@ const StarterSelectionPage = () => {
         </div>
         <div className="starter-progress-track">
           <div
-            className="progress-bar"
+            className="progress-fill primary"
             style={{ width: `${(currentStep / 3) * 100}%` }}
           ></div>
         </div>

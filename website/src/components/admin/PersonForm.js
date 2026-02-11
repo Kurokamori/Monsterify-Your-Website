@@ -103,12 +103,12 @@ const PersonForm = ({ person, factions, onSave, onCancel }) => {
   return (
     <div className="person-form-overlay">
       <div className="person-form-modal">
-        <div className="modal-header">
+        <div className="tree-header">
           <h2>
             <i className="fas fa-user-edit"></i>
             {person ? 'Edit Person' : 'Create New Person'}
           </h2>
-          <button className="close-button" onClick={onCancel}>×</button>
+          <button className="button close" onClick={onCancel}>×</button>
         </div>
 
         <form onSubmit={handleSubmit} className="person-form">
@@ -130,7 +130,7 @@ const PersonForm = ({ person, factions, onSave, onCancel }) => {
                     name="faction_id"
                     value={formData.faction_id}
                     onChange={handleInputChange}
-                    className="form-control"
+                    className="form-input"
                     required
                   >
                     <option value="">Select a faction</option>
@@ -152,7 +152,7 @@ const PersonForm = ({ person, factions, onSave, onCancel }) => {
                     name="name"
                     value={formData.name}
                     onChange={handleInputChange}
-                    className="form-control"
+                    className="form-input"
                     placeholder="Full name of the person"
                     required
                   />
@@ -170,7 +170,7 @@ const PersonForm = ({ person, factions, onSave, onCancel }) => {
                     name="alias"
                     value={formData.alias}
                     onChange={handleInputChange}
-                    className="form-control"
+                    className="form-input"
                     placeholder="Title, position, or attribute shown to non-met users"
                     required
                   />
@@ -184,7 +184,7 @@ const PersonForm = ({ person, factions, onSave, onCancel }) => {
                     name="role"
                     value={formData.role}
                     onChange={handleInputChange}
-                    className="form-control"
+                    className="form-input"
                     placeholder="Their role or position in the faction"
                   />
                 </div>
@@ -199,7 +199,7 @@ const PersonForm = ({ person, factions, onSave, onCancel }) => {
                     name="standing_requirement"
                     value={formData.standing_requirement}
                     onChange={handleInputChange}
-                    className="form-control"
+                    className="form-input"
                     placeholder="0"
                   />
                   <small className="form-text">
@@ -215,7 +215,7 @@ const PersonForm = ({ person, factions, onSave, onCancel }) => {
                     name="standing_reward"
                     value={formData.standing_reward}
                     onChange={handleInputChange}
-                    className="form-control"
+                    className="form-input"
                     placeholder="50"
                   />
                   <small className="form-text">
@@ -241,7 +241,7 @@ const PersonForm = ({ person, factions, onSave, onCancel }) => {
                   name="blurb"
                   value={formData.blurb}
                   onChange={handleInputChange}
-                  className="form-control"
+                  className="form-input"
                   rows={2}
                   placeholder="Short description shown in meeting modal and TL;DR tab"
                 />
@@ -254,7 +254,7 @@ const PersonForm = ({ person, factions, onSave, onCancel }) => {
                   name="short_bio"
                   value={formData.short_bio}
                   onChange={handleInputChange}
-                  className="form-control"
+                  className="form-input"
                   rows={3}
                   placeholder="Concise biography for the Short Bio tab"
                 />
@@ -267,7 +267,7 @@ const PersonForm = ({ person, factions, onSave, onCancel }) => {
                   name="long_bio"
                   value={formData.long_bio}
                   onChange={handleInputChange}
-                  className="form-control"
+                  className="form-input"
                   rows={5}
                   placeholder="Detailed biography for the Long Bio tab"
                 />
@@ -280,7 +280,7 @@ const PersonForm = ({ person, factions, onSave, onCancel }) => {
                   name="available_assistance"
                   value={formData.available_assistance}
                   onChange={handleInputChange}
-                  className="form-control"
+                  className="form-input"
                   rows={3}
                   placeholder="What help or services this person can provide"
                 />
@@ -316,7 +316,7 @@ const PersonForm = ({ person, factions, onSave, onCancel }) => {
           </div>
 
           {error && (
-            <div className="alert alert-danger">
+            <div className="alert error">
               <i className="fas fa-exclamation-triangle"></i>
               {error}
             </div>
@@ -325,7 +325,7 @@ const PersonForm = ({ person, factions, onSave, onCancel }) => {
           <div className="form-actions">
             <button
               type="button"
-              className="btn btn-secondary"
+              className="button secondary"
               onClick={onCancel}
               disabled={loading}
             >
@@ -333,7 +333,7 @@ const PersonForm = ({ person, factions, onSave, onCancel }) => {
             </button>
             <button
               type="submit"
-              className="btn btn-primary"
+              className="button primary"
               disabled={loading}
             >
               {loading ? (

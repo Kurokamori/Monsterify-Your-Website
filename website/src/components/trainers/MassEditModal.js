@@ -689,15 +689,15 @@ const MassEditModal = ({
       <div className="mass-edit-modal">
         <div className="mass-edit-header">
           <h2>Mass Edit Monsters</h2>
-          <button className="close-button" onClick={handleClose}>
+          <button className="button close" onClick={handleClose}>
             <i className="fas fa-times"></i>
           </button>
         </div>
 
         <div className="mass-edit-content">
           {step === 'edit' && (
-            <div className="mass-edit-form">
-              <div className="mass-edit-instructions">
+            <div className="breeding-form">
+              <div className="tips">
                 <p>Edit your monsters in bulk. You can:</p>
                 <ul>
                   <li>Rename monsters (guaranteed)</li>
@@ -717,12 +717,12 @@ const MassEditModal = ({
                     placeholder="Search by name..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="search-input"
+                    className="form-input"
                   />
                 </div>
                 
                 <div className="additional-filters">
-                  <div className="filter-row">
+                  <div className="form-row">
                     <div className="search-bar species-search">
                       <div className="search-icon">
                         <i className="fas fa-dna"></i>
@@ -732,7 +732,7 @@ const MassEditModal = ({
                         placeholder="Search by species..."
                         value={speciesSearch}
                         onChange={(e) => setSpeciesSearch(e.target.value)}
-                        className="search-input"
+                        className="form-input"
                       />
                     </div>
                     
@@ -745,12 +745,12 @@ const MassEditModal = ({
                         placeholder="Search by type..."
                         value={typeSearch}
                         onChange={(e) => setTypeSearch(e.target.value)}
-                        className="search-input"
+                        className="form-input"
                       />
                     </div>
                   </div>
                   
-                  <div className="filter-row toggles">
+                  <div className="form-row toggles">
                     <label className="toggle-filter">
                       <input
                         type="checkbox"
@@ -787,7 +787,7 @@ const MassEditModal = ({
                 </div>
               </div>
               
-              <div className="monsters-edit-grid">
+              <div className="container grid-2xl gap-md mb-lg">
                 {filteredMonsters.map(monster => (
                   <div key={monster.id} className="monster-edit-card">
                     <div className="monster-edit-info">
@@ -804,38 +804,38 @@ const MassEditModal = ({
                         <p>{monster.species1} {monster.species2 ? `+ ${monster.species2}` : ''} {monster.species3 ? `+ ${monster.species3}` : ''} - Level {monster.level}</p>
                         <div className="monster-types">
                           {[monster.type1, monster.type2, monster.type3, monster.type4, monster.type5].filter(Boolean).map((type, index) => (
-                            <span className={`type-badge type-${type && type.toLowerCase ? type.toLowerCase() : 'unknown'}`} key={index}>
+                            <span className={`badge type-${type && type.toLowerCase ? type.toLowerCase() : 'unknown'}`} key={index}>
                               {type}
                             </span>
                           ))}
                         </div>
-                        <div className="monster-attribute">
-                          <span className={`attribute-badge attribute-${monster.attribute && monster.attribute.toLowerCase ? monster.attribute.toLowerCase() : 'unknown'}`}>
+                        <div className="monster-types">
+                          <span className={`badge attribute-${monster.attribute && monster.attribute.toLowerCase ? monster.attribute.toLowerCase() : 'unknown'}`}>
                             {monster.attribute}
                           </span>
                         </div>
                       </div>
                     </div>
 
-                    <div className="monster-edit-controls">
-                      <div className="edit-section">
+                    <div className="emoji-selection">
+                      <div className="set-item">
                         <label>Rename:</label>
                         <input
                           type="text"
                           value={editData[monster.id]?.newNickname || ''}
                           onChange={(e) => handleNicknameChange(monster.id, e.target.value)}
                           placeholder={monster.name}
-                          className="rename-input"
+                          className="berry-select"
                         />
                       </div>
 
-                      <div className="edit-section">
+                      <div className="set-item">
                         <div className="section-header">
                           <label>Use Berries:</label>
                           <button
                             type="button"
                             onClick={() => addBerryDropdown(monster.id)}
-                            className="add-dropdown-button"
+                            className="button secondary"
                             title="Add another berry"
                           >
                             <i className="fas fa-plus"></i>
@@ -872,7 +872,7 @@ const MassEditModal = ({
                               <button
                                 type="button"
                                 onClick={() => removeBerryDropdown(monster.id, index)}
-                                className="remove-dropdown-button"
+                                className="button danger"
                                 title="Remove this berry"
                               >
                                 <i className="fas fa-times"></i>
@@ -882,13 +882,13 @@ const MassEditModal = ({
                         ))}
                       </div>
 
-                      <div className="edit-section">
+                      <div className="set-item">
                         <div className="section-header">
                           <label>Use Pastries:</label>
                           <button
                             type="button"
                             onClick={() => addPastryDropdown(monster.id)}
-                            className="add-dropdown-button"
+                            className="button secondary"
                             title="Add another pastry"
                           >
                             <i className="fas fa-plus"></i>
@@ -900,7 +900,7 @@ const MassEditModal = ({
                               <select
                                 value={pastry.type}
                                 onChange={(e) => handlePastryChange(monster.id, index, e.target.value)}
-                                className="pastry-select"
+                                className="berry-select"
                               >
                                 <option value="">Select pastry</option>
                                 {trainerInventory.pastries && Object.entries(trainerInventory.pastries).map(([pastryType, count]) => {
@@ -918,7 +918,7 @@ const MassEditModal = ({
                                   placeholder="Enter value"
                                   value={pastry.value}
                                   onChange={(e) => handlePastryValueChange(monster.id, index, e.target.value)}
-                                  className="pastry-value-input"
+                                  className="berry-select"
                                 />
                               )}
                             </div>
@@ -926,7 +926,7 @@ const MassEditModal = ({
                               <button
                                 type="button"
                                 onClick={() => removePastryDropdown(monster.id, index)}
-                                className="remove-dropdown-button"
+                                className="button danger"
                                 title="Remove this pastry"
                               >
                                 <i className="fas fa-times"></i>
@@ -944,13 +944,13 @@ const MassEditModal = ({
                 <button
                   onClick={handleSubmit}
                   disabled={isProcessing}
-                  className="submit-mass-edit-button"
+                  className="button success"
                 >
                   Process All Changes
                 </button>
                 <button
                   onClick={handleClose}
-                  className="cancel-mass-edit-button"
+                  className="button secondary"
                 >
                   Cancel
                 </button>
@@ -995,7 +995,7 @@ const MassEditModal = ({
                         
                         <div className="monster-comparison">
                           <div className="before-after">
-                            <div className="before-section">
+                            <div className="after-section">
                               <h5>Before</h5>
                               <h4>{result.beforeMonster?.name || 'Unknown'}</h4>
                               <div className="monster-mini-card">
@@ -1009,21 +1009,21 @@ const MassEditModal = ({
                                   <div className="change-details">
                                     <div className="change-detail">
                                       <span className="change-label">All Types:</span>
-                                      <div className="type-badges">
-                                        {result.beforeMonster.type1 && <span className={`type-badge type-${result.beforeMonster.type1.toLowerCase()}`}>{result.beforeMonster.type1}</span>}
-                                        {result.beforeMonster.type2 && <span className={`type-badge type-${result.beforeMonster.type2.toLowerCase()}`}>{result.beforeMonster.type2}</span>}
-                                        {result.beforeMonster.type3 && <span className={`type-badge type-${result.beforeMonster.type3.toLowerCase()}`}>{result.beforeMonster.type3}</span>}
-                                        {result.beforeMonster.type4 && <span className={`type-badge type-${result.beforeMonster.type4.toLowerCase()}`}>{result.beforeMonster.type4}</span>}
-                                        {result.beforeMonster.type5 && <span className={`type-badge type-${result.beforeMonster.type5.toLowerCase()}`}>{result.beforeMonster.type5}</span>}
-                                        {!result.beforeMonster.type1 && <span className="type-badge type-none">None</span>}
+                                      <div className="container vertical gap-md">
+                                        {result.beforeMonster.type1 && <span className={`badge type-${result.beforeMonster.type1.toLowerCase()}`}>{result.beforeMonster.type1}</span>}
+                                        {result.beforeMonster.type2 && <span className={`badge type-${result.beforeMonster.type2.toLowerCase()}`}>{result.beforeMonster.type2}</span>}
+                                        {result.beforeMonster.type3 && <span className={`badge type-${result.beforeMonster.type3.toLowerCase()}`}>{result.beforeMonster.type3}</span>}
+                                        {result.beforeMonster.type4 && <span className={`badge type-${result.beforeMonster.type4.toLowerCase()}`}>{result.beforeMonster.type4}</span>}
+                                        {result.beforeMonster.type5 && <span className={`badge type-${result.beforeMonster.type5.toLowerCase()}`}>{result.beforeMonster.type5}</span>}
+                                        {!result.beforeMonster.type1 && <span className="badge type-none">None</span>}
                                       </div>
                                     </div>
                                     <div className="change-detail">
                                       <span className="change-label">All Species:</span>
-                                      <div className="species-list">
-                                        {result.beforeMonster.species1 && <span className="species-badge">{result.beforeMonster.species1}</span>}
-                                        {result.beforeMonster.species2 && <span className="species-badge">{result.beforeMonster.species2}</span>}
-                                        {result.beforeMonster.species3 && <span className="species-badge">{result.beforeMonster.species3}</span>}
+                                      <div className="container vertical gap-md">
+                                        {result.beforeMonster.species1 && <span className="badge">{result.beforeMonster.species1}</span>}
+                                        {result.beforeMonster.species2 && <span className="badge">{result.beforeMonster.species2}</span>}
+                                        {result.beforeMonster.species3 && <span className="badge">{result.beforeMonster.species3}</span>}
                                       </div>
                                     </div>
                                     <div className="change-detail">
@@ -1053,21 +1053,21 @@ const MassEditModal = ({
                                   <div className="change-details">
                                     <div className="change-detail">
                                       <span className="change-label">All Types:</span>
-                                      <div className="type-badges">
-                                        {result.updatedMonster.type1 && <span className={`type-badge type-${result.updatedMonster.type1.toLowerCase()}`}>{result.updatedMonster.type1}</span>}
-                                        {result.updatedMonster.type2 && <span className={`type-badge type-${result.updatedMonster.type2.toLowerCase()}`}>{result.updatedMonster.type2}</span>}
-                                        {result.updatedMonster.type3 && <span className={`type-badge type-${result.updatedMonster.type3.toLowerCase()}`}>{result.updatedMonster.type3}</span>}
-                                        {result.updatedMonster.type4 && <span className={`type-badge type-${result.updatedMonster.type4.toLowerCase()}`}>{result.updatedMonster.type4}</span>}
-                                        {result.updatedMonster.type5 && <span className={`type-badge type-${result.updatedMonster.type5.toLowerCase()}`}>{result.updatedMonster.type5}</span>}
-                                        {!result.updatedMonster.type1 && <span className="type-badge type-none">None</span>}
+                                      <div className="container vertical gap-md">
+                                        {result.updatedMonster.type1 && <span className={`badge type-${result.updatedMonster.type1.toLowerCase()}`}>{result.updatedMonster.type1}</span>}
+                                        {result.updatedMonster.type2 && <span className={`badge type-${result.updatedMonster.type2.toLowerCase()}`}>{result.updatedMonster.type2}</span>}
+                                        {result.updatedMonster.type3 && <span className={`badge type-${result.updatedMonster.type3.toLowerCase()}`}>{result.updatedMonster.type3}</span>}
+                                        {result.updatedMonster.type4 && <span className={`badge type-${result.updatedMonster.type4.toLowerCase()}`}>{result.updatedMonster.type4}</span>}
+                                        {result.updatedMonster.type5 && <span className={`badge type-${result.updatedMonster.type5.toLowerCase()}`}>{result.updatedMonster.type5}</span>}
+                                        {!result.updatedMonster.type1 && <span className="badge type-none">None</span>}
                                       </div>
                                     </div>
                                     <div className="change-detail">
                                       <span className="change-label">All Species:</span>
-                                      <div className="species-list">
-                                        {result.updatedMonster.species1 && <span className="species-badge">{result.updatedMonster.species1}</span>}
-                                        {result.updatedMonster.species2 && <span className="species-badge">{result.updatedMonster.species2}</span>}
-                                        {result.updatedMonster.species3 && <span className="species-badge">{result.updatedMonster.species3}</span>}
+                                      <div className="container vertical gap-md">
+                                        {result.updatedMonster.species1 && <span className="badge">{result.updatedMonster.species1}</span>}
+                                        {result.updatedMonster.species2 && <span className="badge">{result.updatedMonster.species2}</span>}
+                                        {result.updatedMonster.species3 && <span className="badge">{result.updatedMonster.species3}</span>}
                                       </div>
                                     </div>
                                     <div className="change-detail">
@@ -1090,20 +1090,20 @@ const MassEditModal = ({
                               <div className="change-details">
                                 <div className="change-detail">
                                   <span className="change-label">Species:</span>
-                                  <div className="species-list">
-                                    {result.newMonster.species1 && <span className="species-badge">{result.newMonster.species1}</span>}
-                                    {result.newMonster.species2 && <span className="species-badge">{result.newMonster.species2}</span>}
-                                    {result.newMonster.species3 && <span className="species-badge">{result.newMonster.species3}</span>}
+                                  <div className="container vertical gap-md">
+                                    {result.newMonster.species1 && <span className="badge">{result.newMonster.species1}</span>}
+                                    {result.newMonster.species2 && <span className="badge">{result.newMonster.species2}</span>}
+                                    {result.newMonster.species3 && <span className="badge">{result.newMonster.species3}</span>}
                                   </div>
                                 </div>
                                 <div className="change-detail">
                                   <span className="change-label">Types:</span>
-                                  <div className="type-badges">
-                                    {result.newMonster.type1 && <span className={`type-badge type-${result.newMonster.type1.toLowerCase()}`}>{result.newMonster.type1}</span>}
-                                    {result.newMonster.type2 && <span className={`type-badge type-${result.newMonster.type2.toLowerCase()}`}>{result.newMonster.type2}</span>}
-                                    {result.newMonster.type3 && <span className={`type-badge type-${result.newMonster.type3.toLowerCase()}`}>{result.newMonster.type3}</span>}
-                                    {result.newMonster.type4 && <span className={`type-badge type-${result.newMonster.type4.toLowerCase()}`}>{result.newMonster.type4}</span>}
-                                    {result.newMonster.type5 && <span className={`type-badge type-${result.newMonster.type5.toLowerCase()}`}>{result.newMonster.type5}</span>}
+                                  <div className="container vertical gap-md">
+                                    {result.newMonster.type1 && <span className={`badge type-${result.newMonster.type1.toLowerCase()}`}>{result.newMonster.type1}</span>}
+                                    {result.newMonster.type2 && <span className={`badge type-${result.newMonster.type2.toLowerCase()}`}>{result.newMonster.type2}</span>}
+                                    {result.newMonster.type3 && <span className={`badge type-${result.newMonster.type3.toLowerCase()}`}>{result.newMonster.type3}</span>}
+                                    {result.newMonster.type4 && <span className={`badge type-${result.newMonster.type4.toLowerCase()}`}>{result.newMonster.type4}</span>}
+                                    {result.newMonster.type5 && <span className={`badge type-${result.newMonster.type5.toLowerCase()}`}>{result.newMonster.type5}</span>}
                                   </div>
                                 </div>
                                 <div className="change-detail">
@@ -1128,7 +1128,7 @@ const MassEditModal = ({
                     ) : (
                       <div className="simple-result-item">
                         <div className="result-status">
-                          <i className={`fas ${result.status === 'success' ? 'fa-check-circle' : 'fa-times-circle'}`}></i>
+                          <i className={`fas${result.status === 'success' ? 'fa-check-circle' : 'fa-times-circle'}`}></i>
                         </div>
                         <div className="result-message">
                           <p>{result.message}</p>
@@ -1147,7 +1147,7 @@ const MassEditModal = ({
               <div className="results-actions">
                 <button
                   onClick={handleClose}
-                  className="close-results-button"
+                  className="button primary"
                 >
                   Close
                 </button>
@@ -1188,16 +1188,16 @@ const MassEditModal = ({
                           <div className="monster-selection-details">
                             <h4>{monster?.name || op.monsterName}</h4>
                             <div className="current-species">
-                              <span className={`species-badge ${speciesSlot === 1 ? 'species-highlight' : ''}`}>
+                              <span className={`badge${speciesSlot === 1 ? 'species-highlight' : ''}`}>
                                 {monster?.species1 || 'None'}
                               </span>
                               {monster?.species2 && (
-                                <span className={`species-badge ${speciesSlot === 2 ? 'species-highlight' : ''}`}>
+                                <span className={`badge${speciesSlot === 2 ? 'species-highlight' : ''}`}>
                                   {monster.species2}
                                 </span>
                               )}
                               {monster?.species3 && (
-                                <span className={`species-badge ${speciesSlot === 3 ? 'species-highlight' : ''}`}>
+                                <span className={`badge${speciesSlot === 3 ? 'species-highlight' : ''}`}>
                                   {monster.species3}
                                 </span>
                               )}
@@ -1206,13 +1206,13 @@ const MassEditModal = ({
                               {[monster?.type1, monster?.type2, monster?.type3, monster?.type4, monster?.type5]
                                 .filter(Boolean)
                                 .map((type, index) => (
-                                  <span className={`type-badge type-${type.toLowerCase()}`} key={index}>
+                                  <span className={`badge type-${type.toLowerCase()}`} key={index}>
                                     {type}
                                   </span>
                                 ))}
                             </div>
                             <div className="current-attribute">
-                              <span className={`attribute-badge attribute-${monster?.attribute?.toLowerCase() || 'none'}`}>
+                              <span className={`badge attribute-${monster?.attribute?.toLowerCase() || 'none'}`}>
                                 {monster?.attribute || 'None'}
                               </span>
                             </div>
@@ -1233,7 +1233,7 @@ const MassEditModal = ({
                           return (
                             <button
                               key={index}
-                              className={`species-selection-item ${
+                              className={`species-selection-item${
                                 selectedSpeciesForOperations[op.operationId] === species ? 'selected' : ''
                               }`}
                               onClick={() => handleSpeciesSelection(op.operationId, species)}
@@ -1242,7 +1242,7 @@ const MassEditModal = ({
                                 <img 
                                   src={speciesImage.image_url} 
                                   alt={species}
-                                  className="species-image"
+                                  className="image-container medium"
                                   onError={(e) => {
                                     e.target.style.display = 'none';
                                   }}
@@ -1266,14 +1266,14 @@ const MassEditModal = ({
                 <div className="species-selection-actions">
                   <button
                     onClick={() => setShowSpeciesSelectionModal(false)}
-                    className="cancel-mass-edit-button"
+                    className="button secondary"
                   >
                     Cancel
                   </button>
                   <button
                     onClick={completeSpeciesBerryProcessing}
                     disabled={pendingBerryOperations.some(op => !selectedSpeciesForOperations[op.operationId])}
-                    className="submit-mass-edit-button"
+                    className="button primary"
                   >
                     Apply Selected Species
                   </button>

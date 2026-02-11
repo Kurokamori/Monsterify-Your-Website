@@ -140,16 +140,16 @@ const ShopItems = () => {
   }
   
   return (
-    <div className="shop-items-container">
-      <div className="shop-items-header">
+    <div className="shop-page">
+      <div className="adopt-card">
         <h1>Manage Items: {shop.name}</h1>
-        <Link to="/admin/shop-manager" className="back-button">
+        <Link to="/admin/shop-manager" className="button secondary">
           <i className="fas fa-arrow-left"></i> Back to Shops
         </Link>
       </div>
       
       <div className="shop-items-content">
-        <div className="shop-stock-section">
+        <div className="shop-form">
           <h2>Stock Shop</h2>
           
           <div className="stock-form">
@@ -208,7 +208,7 @@ const ShopItems = () => {
             </div>
             
             <button
-              className="stock-button"
+              className="button primary"
               onClick={handleStockShop}
               disabled={stockLoading}
             >
@@ -220,7 +220,7 @@ const ShopItems = () => {
           {stockSuccess && <div className="stock-success">Shop stocked successfully!</div>}
         </div>
         
-        <div className="shop-items-list">
+        <div className="shop-form">
           <h2>Current Items</h2>
           
           {items.length === 0 ? (
@@ -259,14 +259,14 @@ const ShopItems = () => {
                       <td className="quantity-cell">
                         <div className="quantity-control">
                           <button
-                            className="quantity-button"
+                            className="button quantity"
                             onClick={() => handleUpdateQuantity(item.id, Math.max(0, item.current_quantity - 1))}
                           >
                             -
                           </button>
                           <span className="quantity-value">{item.current_quantity}</span>
                           <button
-                            className="quantity-button"
+                            className="button quantity"
                             onClick={() => handleUpdateQuantity(item.id, item.current_quantity + 1)}
                           >
                             +
@@ -275,7 +275,7 @@ const ShopItems = () => {
                       </td>
                       <td className="actions-cell">
                         <button
-                          className="remove-button"
+                          className="button danger"
                           onClick={() => handleRemoveItem(item.id)}
                         >
                           <i className="fas fa-trash"></i>

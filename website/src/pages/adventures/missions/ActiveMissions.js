@@ -91,7 +91,7 @@ const ActiveMissions = () => {
           <p>Visit the Available Missions tab to start a new adventure!</p>
         </div>
       ) : (
-        <div className="missions-grid">
+        <div className="button">
           {activeMissions.map((mission) => {
             const progressPercentage = getProgressPercentage(mission.current_progress, mission.required_progress);
             const isCompleted = mission.status === 'completed';
@@ -99,10 +99,10 @@ const ActiveMissions = () => {
 
             return (
               <div key={mission.id} className={`mission-card ${isCompleted ? 'completed' : ''}`}>
-                <div className="mission-header">
+                <div className="option-row">
                   <h3>{mission.title}</h3>
-                  <span 
-                    className="difficulty-badge"
+                  <span
+                    className="badge"
                     style={{ backgroundColor: getDifficultyColor(mission.difficulty) }}
                   >
                     {mission.difficulty.toUpperCase()}
@@ -118,9 +118,9 @@ const ActiveMissions = () => {
                     <span>Progress</span>
                     <span>{mission.current_progress} / {mission.required_progress}</span>
                   </div>
-                  <div className="progress-bar">
-                    <div 
-                      className="progress-fill"
+                  <div className="progress">
+                    <div
+                      className="progress-fill primary"
                       style={{ width: `${progressPercentage}%` }}
                     ></div>
                   </div>
@@ -128,17 +128,17 @@ const ActiveMissions = () => {
                 </div>
 
                 <div className="mission-status">
-                  <div className="status-row">
+                  <div className="detail-row">
                     <span className="label">Status:</span>
-                    <span className={`status ${mission.status}`}>
+                    <span className={`status${mission.status}`}>
                       {mission.status.charAt(0).toUpperCase() + mission.status.slice(1)}
                     </span>
                   </div>
-                  <div className="status-row">
+                  <div className="detail-row">
                     <span className="label">Progress:</span>
                     <span className="value">{progressStatus}</span>
                   </div>
-                  <div className="status-row">
+                  <div className="detail-row">
                     <span className="label">Started:</span>
                     <span className="value">
                       {new Date(mission.started_at).toLocaleDateString()}
@@ -147,9 +147,9 @@ const ActiveMissions = () => {
                 </div>
 
                 {isCompleted && !mission.reward_claimed && (
-                  <div className="mission-actions">
+                  <div className="adventure-meta">
                     <button
-                      className="claim-rewards-btn"
+                      className="button primary"
                       onClick={() => handleClaimRewards(mission.id)}
                     >
                       Claim Rewards

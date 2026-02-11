@@ -341,30 +341,30 @@ const AddTrainerPage = () => {
   }
 
   return (
-    <div className="add-trainer-container">
-      <div className="add-trainer-header">
+    <div className="bosses-page">
+      <div className="tree-header">
         <h1>Create New Trainer</h1>
-        <Link to="/profile/trainers" className="back-button">
+        <Link to="/profile/trainers" className="button secondary">
           <i className="fas fa-arrow-left"></i> Back to Trainers
         </Link>
       </div>
 
       <button
         type="button"
-        className="jump-to-submit-btn"
+        className="button primary sm jump-button"
         onClick={handleJumpToSubmit}
       >
         <i className="fas fa-arrow-down"></i> Jump to Submit
       </button>
 
       {error && (
-        <div className="form-error-message">
+        <div className="alert error">
           <i className="fas fa-exclamation-circle"></i> {error}
         </div>
       )}
 
       {success && (
-        <div className="form-success-message">
+        <div className="alert success">
           <i className="fas fa-check-circle"></i> {success}
         </div>
       )}
@@ -380,7 +380,7 @@ const AddTrainerPage = () => {
         <div className="form-section">
           <h2 className="section-title">Basic Information</h2>
 
-          <div className="form-grid">
+          <div className="container cols-2 gap-md">
             <div className="form-group">
               <label htmlFor="name">Trainer Name <span className="required">*</span></label>
               <input
@@ -396,7 +396,7 @@ const AddTrainerPage = () => {
               <small className="field-note">The primary name of your trainer</small>
             </div>
           </div>
-          <div className="form-grid">
+          <div className="container cols-2 gap-md">
             <div className="form-group">
               <label htmlFor="nickname">Nickname</label>
               <input
@@ -425,7 +425,7 @@ const AddTrainerPage = () => {
               <small className="field-note">The complete name of your trainer</small>
             </div>
           </div>
-          <div className="form-grid">
+          <div className="container cols-2 gap-md">
             <div className="form-group">
               <label htmlFor="title">Title</label>
               <input
@@ -477,12 +477,12 @@ const AddTrainerPage = () => {
                 <div className="main-ref-preview">
                   <img src={mainRefPreview} alt="Main reference preview" />
                   <div className="preview-overlay">
-                    <label htmlFor="main_ref" className="change-image-btn">
+                    <label htmlFor="main_ref" className="button secondary sm">
                       <i className="fas fa-camera"></i> Change Image
                     </label>
                     <button
                       type="button"
-                      className="remove-image-btn"
+                      className="button danger sm"
                       onClick={() => {
                         setMainRefFile(null);
                         setMainRefPreview('');
@@ -498,8 +498,8 @@ const AddTrainerPage = () => {
                     <i className="fas fa-cloud-upload-alt"></i>
                   </div>
                   <div className="upload-text">
-                    <span className="upload-main-text">Click to upload trainer image</span>
-                    <span className="upload-sub-text">PNG, JPG, or GIF (Recommended: 800x800px)</span>
+                    <span className="friendship-title">Click to upload trainer image</span>
+                    <span className="species-count">PNG, JPG, or GIF (Recommended: 800x800px)</span>
                   </div>
                 </label>
               )}
@@ -518,7 +518,7 @@ const AddTrainerPage = () => {
           <p className="subsection-description">
             Species can be any species of a valid monster from the game (Pokemon, Digimon, Yokai, Nexomon, Pals, Fakemon, Final Fantasy, Monster Hunter). Yes, this includes mythicals, legendaries, etc.
           </p>
-          <div className="form-grid">
+          <div className="container cols-2 gap-md">
             <div className="form-group">
               <label htmlFor="species1">Primary Species</label>
               <input
@@ -566,7 +566,7 @@ const AddTrainerPage = () => {
           <p className="subsection-description">
             Types are the same as the types of monsters. You can choose up to 6 types for your trainer. Types are not required, and Humans cannot have types (only Alters and Catfolk can). 
           </p>
-          <div className="form-grid">
+          <div className="container cols-2 gap-md">
             <div className="form-group">
               <AutocompleteInput
                 id="type1"
@@ -645,7 +645,7 @@ const AddTrainerPage = () => {
         <div className="form-section">
           <h2 className="section-title">Abilities and Characteristics</h2>
 
-          <div className="form-grid">
+          <div className="container cols-2 gap-md">
             <div className="form-group">
               <AutocompleteInput
                 id="ability"
@@ -692,7 +692,7 @@ const AddTrainerPage = () => {
         <div className="form-section">
           <h2 className="section-title">Favorite Types</h2>
 
-          <div className="form-grid">
+          <div className="container cols-2 gap-md">
             <div className="form-group">
               <AutocompleteInput
                 id="fav_type1"
@@ -772,7 +772,7 @@ const AddTrainerPage = () => {
         <div className="form-section">
           <h2 className="section-title">Personal Information</h2>
 
-          <div className="form-grid">
+          <div className="container cols-2 gap-md">
             <div className="form-group">
               <label htmlFor="gender">Gender</label>
               <input
@@ -877,7 +877,7 @@ const AddTrainerPage = () => {
             </div>
             
           </div>
-          <div className="form-grid">
+          <div className="container cols-2 gap-md">
             <div className="form-group">
               <label htmlFor="height">Height</label>
               <input
@@ -906,7 +906,7 @@ const AddTrainerPage = () => {
               <small className="field-note">Your trainer's weight</small>
             </div>
           </div>
-          <div className="form-grid">
+          <div className="container cols-2 gap-md">
             <div className="form-group">
               <label htmlFor="theme_display">Theme Display Text</label>
               <input
@@ -935,7 +935,7 @@ const AddTrainerPage = () => {
               <small className="field-note">If provided, users will be able to expand and play the theme music</small>
             </div>
           </div>
-          <div className="form-grid">
+          <div className="container cols-2 gap-md">
             <div className="form-group">
               <label htmlFor="voice_claim_display">Voice Claim Display Text</label>
               <input
@@ -964,7 +964,7 @@ const AddTrainerPage = () => {
               <small className="field-note">If provided, users will be able to expand and view the voice claim video</small>
             </div>
           </div>
-          <div className="form-grid">
+          <div className="container cols-2 gap-md">
             <div className="form-group">
               <label htmlFor="occupation">Occupation</label>
               <input
@@ -979,7 +979,7 @@ const AddTrainerPage = () => {
               <small className="field-note">Your trainer's occupation</small>
             </div>
           </div>
-          <div className="form-grid">
+          <div className="container cols-2 gap-md">
             <div className="form-group">
               <label htmlFor="birthday">Birthday</label>
               <input
@@ -1059,7 +1059,7 @@ const AddTrainerPage = () => {
                 name="tldr"
                 value={formData.tldr}
                 onChange={handleInputChange}
-                className="form-textarea"
+                className="form-input"
                 placeholder="Enter a brief summary about your trainer"
                 rows={2}
               />
@@ -1073,7 +1073,7 @@ const AddTrainerPage = () => {
                 name="biography"
                 value={formData.biography}
                 onChange={handleInputChange}
-                className="form-textarea"
+                className="form-input"
                 placeholder="Enter your trainer's biography (supports Markdown formatting)"
                 rows={5}
               />
@@ -1084,7 +1084,7 @@ const AddTrainerPage = () => {
         {/* Character Information Section */}
         <div className="form-section">
           <h2 className="section-title">Character Information</h2>
-          <div className="form-grid">
+          <div className="container cols-2 gap-md">
             <div className="form-group full-width">
               <label htmlFor="strengths">Character Strengths</label>
               <textarea
@@ -1092,7 +1092,7 @@ const AddTrainerPage = () => {
                 name="strengths"
                 value={formData.strengths}
                 onChange={handleInputChange}
-                className="form-textarea"
+                className="form-input"
                 placeholder="List your character's strengths and positive traits"
                 rows={3}
               />
@@ -1106,7 +1106,7 @@ const AddTrainerPage = () => {
                 name="weaknesses"
                 value={formData.weaknesses}
                 onChange={handleInputChange}
-                className="form-textarea"
+                className="form-input"
                 placeholder="List your character's weaknesses and areas for improvement"
                 rows={3}
               />
@@ -1120,7 +1120,7 @@ const AddTrainerPage = () => {
                 name="likes"
                 value={formData.likes}
                 onChange={handleInputChange}
-                className="form-textarea"
+                className="form-input"
                 placeholder="What does your character enjoy and love?"
                 rows={3}
               />
@@ -1134,7 +1134,7 @@ const AddTrainerPage = () => {
                 name="dislikes"
                 value={formData.dislikes}
                 onChange={handleInputChange}
-                className="form-textarea"
+                className="form-input"
                 placeholder="What does your character dislike or hate?"
                 rows={3}
               />
@@ -1148,7 +1148,7 @@ const AddTrainerPage = () => {
                 name="flaws"
                 value={formData.flaws}
                 onChange={handleInputChange}
-                className="form-textarea"
+                className="form-input"
                 placeholder="Character flaws and imperfections"
                 rows={3}
               />
@@ -1162,7 +1162,7 @@ const AddTrainerPage = () => {
                 name="values"
                 value={formData.values}
                 onChange={handleInputChange}
-                className="form-textarea"
+                className="form-input"
                 placeholder="What principles and values does your character hold dear?"
                 rows={3}
               />
@@ -1176,7 +1176,7 @@ const AddTrainerPage = () => {
                 name="quirks"
                 value={formData.quirks}
                 onChange={handleInputChange}
-                className="form-textarea"
+                className="form-input"
                 placeholder="Unique habits, behaviors, or characteristics"
                 rows={3}
               />
@@ -1200,14 +1200,14 @@ const AddTrainerPage = () => {
                     <h3>Secret #{index + 1}</h3>
                     <button
                       type="button"
-                      className="remove-secret-button"
+                      className="button danger sm"
                       onClick={() => handleRemoveSecret(secret.id)}
                     >
                       <i className="fas fa-trash-alt"></i> Remove
                     </button>
                   </div>
 
-                  <div className="form-grid">
+                  <div className="container cols-2 gap-md">
                     <div className="form-group">
                       <label>Title</label>
                       <input
@@ -1224,7 +1224,7 @@ const AddTrainerPage = () => {
                       <textarea
                         value={secret.description || ''}
                         onChange={(e) => handleSecretChange(secret.id, 'description', e.target.value)}
-                        className="form-textarea"
+                        className="form-input"
                         placeholder="Describe the secret"
                         rows={3}
                       ></textarea>
@@ -1242,7 +1242,7 @@ const AddTrainerPage = () => {
 
           <button
             type="button"
-            className="add-secret-button"
+            className="button secondary"
             onClick={handleAddSecret}
           >
             <i className="fas fa-plus"></i> Add Secret
@@ -1262,14 +1262,14 @@ const AddTrainerPage = () => {
                     <h3>Relation #{index + 1}</h3>
                     <button
                       type="button"
-                      className="icon-button"
+                      className="button icon danger"
                       onClick={() => handleRemoveRelation(relation.id)}
                     >
                       <i className="fas fa-trash-alt"></i> Remove
                     </button>
                   </div>
 
-                  <div className="form-grid">
+                  <div className="container cols-2 gap-md">
                     <div className="form-group">
                       <label>Relation Type</label>
                       <select
@@ -1298,7 +1298,7 @@ const AddTrainerPage = () => {
                       <textarea
                         value={relation.elaboration || ''}
                         onChange={(e) => handleRelationChange(relation.id, 'elaboration', e.target.value)}
-                        className="form-textarea"
+                        className="form-input"
                         placeholder={relation.type === 'monster' ? "Describe how they interact with this monster" : "Describe how they interact with this trainer"}
                         rows={3}
                       ></textarea>
@@ -1317,7 +1317,7 @@ const AddTrainerPage = () => {
 
           <button
             type="button"
-            className="add-relation-button"
+            className="button secondary"
             onClick={handleAddRelation}
           >
             <i className="fas fa-plus"></i> Add Relation
@@ -1330,12 +1330,12 @@ const AddTrainerPage = () => {
 
           {additionalRefs.map((ref, index) => (
             <div key={index} className="additional-ref-item">
-              <div className="additional-ref-header">
+              <div className="adopt-card">
                 <h3>Reference {index + 1}</h3>
                 {index > 0 && (
                   <button
                     type="button"
-                    className="remove-ref-button"
+                    className="button danger sm"
                     onClick={() => handleRemoveAdditionalRef(index)}
                   >
                     <i className="fas fa-trash"></i> Remove
@@ -1343,7 +1343,7 @@ const AddTrainerPage = () => {
                 )}
               </div>
 
-              <div className="form-grid">
+              <div className="container cols-2 gap-md">
                 <div className="form-group">
                   <label htmlFor={`ref-title-${index}`}>Title</label>
                   <input
@@ -1362,7 +1362,7 @@ const AddTrainerPage = () => {
                     id={`ref-description-${index}`}
                     value={ref.description}
                     onChange={(e) => handleAdditionalRefChange(index, 'description', e.target.value)}
-                    className="form-textarea"
+                    className="form-input"
                     placeholder="Enter reference description"
                     rows={3}
                   />
@@ -1385,7 +1385,7 @@ const AddTrainerPage = () => {
 
           <button
             type="button"
-            className="add-ref-button"
+            className="button secondary"
             onClick={handleAddAdditionalRef}
           >
             <i className="fas fa-plus"></i> Add Another Reference
@@ -1403,12 +1403,12 @@ const AddTrainerPage = () => {
         </div>
 
         <div className="form-actions" ref={submitRef}>
-          <Link to="/profile/trainers" className="cancel-button">
+          <Link to="/profile/trainers" className="button secondary">
             Cancel
           </Link>
           <button
             type="submit"
-            className="submit-button"
+            className="button success"
             disabled={loading}
           >
             {loading ? (

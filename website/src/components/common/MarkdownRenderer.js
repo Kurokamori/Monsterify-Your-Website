@@ -110,7 +110,7 @@ const MarkdownRenderer = ({ content, className = '', inline = false, disableCode
   if (inline) {
     return (
       <span
-        className={`markdown-content markdown-inline ${className}`}
+        className={`markdown-content markdown-inline${className}`}
         dangerouslySetInnerHTML={{ __html: htmlContent }}
       />
     );

@@ -420,7 +420,7 @@ const AutomatedTradeCenter = () => {
         <div className="location-icon-large">
           <i className="fas fa-exchange-alt"></i>
         </div>
-        <div className="location-title">
+        <div className="no-adventures">
           <h2>Automated Trade Center</h2>
           <p>Execute instant trades between trainers</p>
         </div>
@@ -443,7 +443,7 @@ const AutomatedTradeCenter = () => {
             <div className="section-header">
               <h3>Setup Trade</h3>
               <button
-                className="location-action-button"
+                className="button primary"
                 onClick={openTradeModal}
                 disabled={!fromTrainerId || !toTrainerId}
               >
@@ -454,15 +454,15 @@ const AutomatedTradeCenter = () => {
             {/* Trade Type Selection */}
             <div className="trade-type-selection">
               <label>Trade Type:</label>
-              <div className="trade-type-buttons">
+              <div className="container horizontal gap-md">
                 <button
-                  className={`trade-type-button ${tradeType === 'monsters' ? 'active' : ''}`}
+                  className={`button filter ${tradeType === 'monsters' ? 'active' : ''}`}
                   onClick={() => handleTradeTypeChange('monsters')}
                 >
                   <i className="fas fa-dragon"></i> Trade Monsters
                 </button>
                 <button
-                  className={`trade-type-button ${tradeType === 'items' ? 'active' : ''}`}
+                  className={`button filter ${tradeType === 'items' ? 'active' : ''}`}
                   onClick={() => handleTradeTypeChange('items')}
                 >
                   <i className="fas fa-box"></i> Trade Items
@@ -472,13 +472,13 @@ const AutomatedTradeCenter = () => {
 
             {/* Trainer Selection */}
             <div className="trainer-selection-row">
-              <div className="trainer-selection">
+              <div className="shop-search">
                 <label htmlFor="from-trainer">From Trainer:</label>
                 <select
                   id="from-trainer"
                   value={fromTrainerId}
                   onChange={(e) => setFromTrainerId(e.target.value)}
-                  className="form-select"
+                  className="form-input"
                 >
                   <option value="">Select trainer</option>
                   {userTrainers.map((trainer) => (
@@ -493,13 +493,13 @@ const AutomatedTradeCenter = () => {
                 <i className="fas fa-exchange-alt"></i>
               </div>
 
-              <div className="trainer-selection">
+              <div className="shop-search">
                 <label htmlFor="to-trainer">To Trainer:</label>
                 <select
                   id="to-trainer"
                   value={toTrainerId}
                   onChange={(e) => setToTrainerId(e.target.value)}
-                  className="form-select"
+                  className="form-input"
                 >
                   <option value="">Select trainer</option>
                   {availableTrainers.map((trainer) => (
@@ -520,13 +520,13 @@ const AutomatedTradeCenter = () => {
                     <div className="trade-sides">
                       <div className="trade-side">
                         <h4>From: {availableTrainers.find(t => t.id == fromTrainerId)?.name}</h4>
-                        <div className="monster-search">
+                        <div className="form-input">
                           <input
                             type="text"
                             placeholder="Search monsters by name, species, or type..."
                             value={fromSearchTerm}
                             onChange={(e) => setFromSearchTerm(e.target.value)}
-                            className="search-input"
+                            className="form-input"
                           />
                           <i className="fas fa-search search-icon"></i>
                         </div>
@@ -543,29 +543,31 @@ const AutomatedTradeCenter = () => {
                                     onChange={(e) => handleMonsterSelection(monster.id, 'from', e.target.checked)}
                                   />
                                   <div className="monster-info">
-                                    <div className="monster-header">
+                                    <div className="tree-header">
                                       <span className="monster-name">{monster.name}</span>
                                       <span className="monster-level">Lvl {monster.level}</span>
                                     </div>
-                                    <div className="monster-species">
+                                    <div className="monster-types">
                                       {monster.species1}
                                       {monster.species2 && ` • ${monster.species2}`}
                                       {monster.species3 && ` • ${monster.species3}`}
                                     </div>
+                                    <div className="container horizontal gap-sm center">
                                     {(monster.type1 || monster.type2 || monster.type3 || monster.type4 || monster.type5) && (
                                       <div className="monster-types">
-                                        {monster.type1 && <span className="type-badge type-1">{monster.type1}</span>}
-                                        {monster.type2 && <span className="type-badge type-2">{monster.type2}</span>}
-                                        {monster.type3 && <span className="type-badge type-3">{monster.type3}</span>}
-                                        {monster.type4 && <span className="type-badge type-4">{monster.type4}</span>}
-                                        {monster.type5 && <span className="type-badge type-5">{monster.type5}</span>}
+                                        {monster.type1 && <span className={`badge type-${monster.type1.toLowerCase()}`}>{monster.type1}</span>}
+                                        {monster.type2 && <span className={`badge type-${monster.type2.toLowerCase()}`}>{monster.type2}</span>}
+                                        {monster.type3 && <span className={`badge type-${monster.type3.toLowerCase()}`}>{monster.type3}</span>}
+                                        {monster.type4 && <span className={`badge type-${monster.type4.toLowerCase()}`}>{monster.type4}</span>}
+                                        {monster.type5 && <span className={`badge type-${monster.type5.toLowerCase()}`}>{monster.type5}</span>}
                                       </div>
                                     )}
                                     {monster.attribute && (
-                                      <div className="monster-attribute">
-                                        <span className="attribute-badge">{monster.attribute}</span>
+                                      <div className="monster-types">
+                                        <span className="badge">{monster.attribute}</span>
                                       </div>
                                     )}
+                                  </div>
                                   </div>
                                 </label>
                               </div>
@@ -580,13 +582,13 @@ const AutomatedTradeCenter = () => {
 
                       <div className="trade-side">
                         <h4>To: {availableTrainers.find(t => t.id == toTrainerId)?.name}</h4>
-                        <div className="monster-search">
+                        <div className="form-input">
                           <input
                             type="text"
                             placeholder="Search monsters by name, species, or type..."
                             value={toSearchTerm}
                             onChange={(e) => setToSearchTerm(e.target.value)}
-                            className="search-input"
+                            className="form-input"
                           />
                           <i className="fas fa-search search-icon"></i>
                         </div>
@@ -603,27 +605,27 @@ const AutomatedTradeCenter = () => {
                                     onChange={(e) => handleMonsterSelection(monster.id, 'to', e.target.checked)}
                                   />
                                   <div className="monster-info">
-                                    <div className="monster-header">
+                                    <div className="tree-header">
                                       <span className="monster-name">{monster.name}</span>
                                       <span className="monster-level">Lvl {monster.level}</span>
                                     </div>
-                                    <div className="monster-species">
+                                    <div className="monster-types">
                                       {monster.species1}
                                       {monster.species2 && ` • ${monster.species2}`}
                                       {monster.species3 && ` • ${monster.species3}`}
                                     </div>
                                     {(monster.type1 || monster.type2 || monster.type3 || monster.type4 || monster.type5) && (
                                       <div className="monster-types">
-                                        {monster.type1 && <span className="type-badge type-1">{monster.type1}</span>}
-                                        {monster.type2 && <span className="type-badge type-2">{monster.type2}</span>}
-                                        {monster.type3 && <span className="type-badge type-3">{monster.type3}</span>}
-                                        {monster.type4 && <span className="type-badge type-4">{monster.type4}</span>}
-                                        {monster.type5 && <span className="type-badge type-5">{monster.type5}</span>}
+                                        {monster.type1 && <span className={`badge ${monster.type1.toLowerCase()}`}>{monster.type1}</span>}
+                                        {monster.type2 && <span className={`badge ${monster.type2.toLowerCase()}`}>{monster.type2}</span>}
+                                        {monster.type3 && <span className={`badge ${monster.type3.toLowerCase()}`}>{monster.type3}</span>}
+                                        {monster.type4 && <span className={`badge ${monster.type4.toLowerCase()}`}>{monster.type4}</span>}
+                                        {monster.type5 && <span className={`badge ${monster.type5.toLowerCase()}`}>{monster.type5}</span>}
                                       </div>
                                     )}
                                     {monster.attribute && (
-                                      <div className="monster-attribute">
-                                        <span className="attribute-badge">{monster.attribute}</span>
+                                      <div className="monster-types">
+                                        <span className="badge">{monster.attribute}</span>
                                       </div>
                                     )}
                                   </div>
@@ -640,14 +642,14 @@ const AutomatedTradeCenter = () => {
                     <div className="trade-sides">
                       <div className="trade-side">
                         <h4>From: {availableTrainers.find(t => t.id == fromTrainerId)?.name}</h4>
-                        <div className="item-search-filters">
-                          <div className="item-search">
+                        <div className="step-header">
+                          <div className="form-input">
                             <input
                               type="text"
                               placeholder="Search items by name..."
                               value={fromItemSearchTerm}
                               onChange={(e) => setFromItemSearchTerm(e.target.value)}
-                              className="search-input"
+                              className="form-input"
                             />
                             <i className="fas fa-search search-icon"></i>
                           </div>
@@ -655,7 +657,7 @@ const AutomatedTradeCenter = () => {
                             <select
                               value={fromItemCategoryFilter}
                               onChange={(e) => setFromItemCategoryFilter(e.target.value)}
-                              className="form-select"
+                              className="form-input"
                             >
                               <option value="all">All Categories</option>
                               <option value="items">Items</option>
@@ -704,7 +706,7 @@ const AutomatedTradeCenter = () => {
                                           max={quantity}
                                           value={selectedFromItems[category]?.[itemName] || 0}
                                           onChange={(e) => handleItemSelection(category, itemName, parseInt(e.target.value) || 0, 'from')}
-                                          className="quantity-input"
+                                          className="form-input"
                                           placeholder="0"
                                         />
                                       </div>
@@ -723,14 +725,14 @@ const AutomatedTradeCenter = () => {
 
                       <div className="trade-side">
                         <h4>To: {availableTrainers.find(t => t.id == toTrainerId)?.name}</h4>
-                        <div className="item-search-filters">
-                          <div className="item-search">
+                        <div className="step-header">
+                          <div className="form-input">
                             <input
                               type="text"
                               placeholder="Search items by name..."
                               value={toItemSearchTerm}
                               onChange={(e) => setToItemSearchTerm(e.target.value)}
-                              className="search-input"
+                              className="form-input"
                             />
                             <i className="fas fa-search search-icon"></i>
                           </div>
@@ -738,7 +740,7 @@ const AutomatedTradeCenter = () => {
                             <select
                               value={toItemCategoryFilter}
                               onChange={(e) => setToItemCategoryFilter(e.target.value)}
-                              className="form-select"
+                              className="form-input"
                             >
                               <option value="all">All Categories</option>
                               <option value="items">Items</option>
@@ -787,7 +789,7 @@ const AutomatedTradeCenter = () => {
                                           max={quantity}
                                           value={selectedToItems[category]?.[itemName] || 0}
                                           onChange={(e) => handleItemSelection(category, itemName, parseInt(e.target.value) || 0, 'to')}
-                                          className="quantity-input"
+                                          className="form-input"
                                           placeholder="0"
                                         />
                                       </div>
@@ -815,7 +817,7 @@ const AutomatedTradeCenter = () => {
         title={tradeSuccess ? "Trade Executed Successfully!" : "Execute Trade"}
       >
         {tradeSuccess ? (
-          <div className="trade-success">
+          <div className="success-step">
             <div className="success-icon">
               <i className="fas fa-check-circle"></i>
             </div>
@@ -823,7 +825,7 @@ const AutomatedTradeCenter = () => {
               The trade has been executed successfully! All items and monsters have been transferred automatically.
             </p>
             <button
-              className="modal-button primary"
+              className="button primary"
               onClick={closeTradeModal}
             >
               Close
@@ -842,13 +844,13 @@ const AutomatedTradeCenter = () => {
 
             <div className="trade-modal-actions">
               <button
-                className="modal-button secondary"
+                className="button secondary"
                 onClick={closeTradeModal}
               >
                 Cancel
               </button>
               <button
-                className="modal-button primary"
+                className="button primary"
                 onClick={handleExecuteTrade}
                 disabled={executing}
               >

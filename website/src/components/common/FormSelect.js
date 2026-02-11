@@ -29,7 +29,7 @@ const FormSelect = ({
         onChange={onChange}
         disabled={disabled}
         required={required}
-        className={`form-select ${error ? 'has-error' : ''}`}
+        className={`form-input ${error ? 'has-error' : ''}`}
         {...props}
       >
         <option value="" disabled>

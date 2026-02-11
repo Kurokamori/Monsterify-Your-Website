@@ -75,11 +75,11 @@ const TrainerSelector = ({ selectedTrainerId, onChange, trainers: propTrainers }
   };
 
   if (loading) {
-    return <div className="trainer-selector-loading">Loading trainers...</div>;
+    return <div className="trainer-selector-empty">Loading trainers...</div>;
   }
 
   if (error) {
-    return <div className="trainer-selector-error">{error}</div>;
+    return <div className="trainer-selector-empty">{error}</div>;
   }
 
   if (trainers.length === 0) {
@@ -94,7 +94,7 @@ const TrainerSelector = ({ selectedTrainerId, onChange, trainers: propTrainers }
   const renderTrainers = Array.isArray(trainers) ? trainers : [];
 
   return (
-    <div className="trainer-selector">
+    <div className="missions-filters">
       <label htmlFor="trainer-select">Select Trainer:</label>
       <select
         id="trainer-select"

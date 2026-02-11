@@ -231,11 +231,11 @@ const TrainerSettings = () => {
 
   return (
     <div className="trainer-settings">
-      <div className="settings-section">
+      <div className="item-card">
         <div className="settings-section-header">
           <h2 className="settings-section-title">Your Trainers</h2>
           <button 
-            className="form-button primary"
+            className="button primary"
             onClick={() => setIsNewTrainerModalOpen(true)}
           >
             <i className="fas fa-plus"></i> New Trainer
@@ -245,11 +245,11 @@ const TrainerSettings = () => {
           Manage your trainers and their profiles. You can create up to 5 trainers per account.
         </p>
         
-        <div className="trainer-cards">
+        <div className="town-places">
           {displayTrainers.map(trainer => (
             <div className="trainer-card" key={trainer.id}>
               <div className="trainer-card-header">
-                <div className="trainer-avatar">
+                <div className="npc-avatar">
                   <img 
                     src={trainer.avatar_url || "https://via.placeholder.com/100/1e2532/d6a339?text=Trainer"} 
                     alt={trainer.name} 
@@ -278,20 +278,19 @@ const TrainerSettings = () => {
                     <span className="trainer-stat-value">{trainer.badges_count}</span>
                   </div>
                 </div>
-                <div className="trainer-card-actions">
-                  <Link to={`/trainers/${trainer.id}`} className="trainer-action-button">
+                <div className="edit-boxes-actions">
+                  <Link to={`/trainers/${trainer.id}`} className="button primary sm">
                     <i className="fas fa-eye"></i> View
                   </Link>
                   <button 
-                    className="trainer-action-button secondary"
+                    className="button secondary sm"
                     onClick={() => openEditTrainerModal(trainer)}
                   >
                     <i className="fas fa-edit"></i> Edit
                   </button>
-                  <button 
-                    className="trainer-action-button secondary"
+                  <button
+                    className="button danger icon sm"
                     onClick={() => openDeleteTrainerModal(trainer)}
-                    style={{ backgroundColor: 'rgba(239, 68, 68, 0.1)', color: '#ef4444' }}
                   >
                     <i className="fas fa-trash-alt"></i>
                   </button>
@@ -309,7 +308,7 @@ const TrainerSettings = () => {
         title="Create New Trainer"
       >
         <div className="new-trainer-modal">
-          <div className="avatar-upload">
+          <div className="image-upload">
             <div className="current-avatar">
               <img 
                 src={newTrainerAvatarPreview || "https://via.placeholder.com/100/1e2532/d6a339?text=Trainer"} 
@@ -322,11 +321,11 @@ const TrainerSettings = () => {
             </div>
             <div className="avatar-upload-controls">
               <label className="avatar-upload-button">
-                <input 
-                  type="file" 
-                  accept="image/*" 
-                  onChange={handleNewTrainerAvatarChange} 
-                  style={{ display: 'none' }}
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleNewTrainerAvatarChange}
+                  className="hidden"
                 />
                 Choose Avatar
               </label>
@@ -349,20 +348,20 @@ const TrainerSettings = () => {
           </div>
           
           {newTrainerError && (
-            <div className="form-error" style={{ marginBottom: '1rem' }}>
+            <div className="form-error mb-1">
               <i className="fas fa-exclamation-circle"></i> {newTrainerError}
             </div>
           )}
           
           <div className="modal-actions">
             <button 
-              className="modal-button secondary"
+              className="button secondary"
               onClick={() => setIsNewTrainerModalOpen(false)}
             >
               Cancel
             </button>
             <button 
-              className="modal-button primary"
+              className="button primary"
               onClick={handleCreateTrainer}
               disabled={loading}
             >
@@ -386,7 +385,7 @@ const TrainerSettings = () => {
       >
         {selectedTrainer && (
           <div className="edit-trainer-modal">
-            <div className="avatar-upload">
+            <div className="image-upload">
               <div className="current-avatar">
                 <img 
                   src={editTrainerAvatarPreview || "https://via.placeholder.com/100/1e2532/d6a339?text=Trainer"} 
@@ -399,11 +398,11 @@ const TrainerSettings = () => {
               </div>
               <div className="avatar-upload-controls">
                 <label className="avatar-upload-button">
-                  <input 
-                    type="file" 
-                    accept="image/*" 
-                    onChange={handleEditTrainerAvatarChange} 
-                    style={{ display: 'none' }}
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleEditTrainerAvatarChange}
+                    className="hidden"
                   />
                   Change Avatar
                 </label>
@@ -426,20 +425,20 @@ const TrainerSettings = () => {
             </div>
             
             {editTrainerError && (
-              <div className="form-error" style={{ marginBottom: '1rem' }}>
+              <div className="form-error mb-1">
                 <i className="fas fa-exclamation-circle"></i> {editTrainerError}
               </div>
             )}
             
             <div className="modal-actions">
               <button 
-                className="modal-button secondary"
+                className="button secondary"
                 onClick={() => setIsEditTrainerModalOpen(false)}
               >
                 Cancel
               </button>
               <button 
-                className="modal-button primary"
+                className="button primary"
                 onClick={handleEditTrainer}
                 disabled={loading}
               >
@@ -471,23 +470,22 @@ const TrainerSettings = () => {
             </p>
             
             {deleteTrainerError && (
-              <div className="form-error" style={{ marginTop: '1rem' }}>
+              <div className="form-error mt-1">
                 <i className="fas fa-exclamation-circle"></i> {deleteTrainerError}
               </div>
             )}
             
             <div className="modal-actions">
               <button 
-                className="modal-button secondary"
+                className="button secondary"
                 onClick={() => setIsDeleteTrainerModalOpen(false)}
               >
                 Cancel
               </button>
-              <button 
-                className="modal-button primary"
+              <button
+                className="button danger"
                 onClick={handleDeleteTrainer}
                 disabled={loading}
-                style={{ backgroundColor: '#ef4444' }}
               >
                 {loading ? (
                   <>

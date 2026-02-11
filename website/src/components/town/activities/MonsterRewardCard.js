@@ -115,12 +115,12 @@ const MonsterRewardCard = ({
   };
 
   return (
-    <div className={`monster-reward-card ${reward.claimed ? 'claimed' : ''} ${reward.rarity}`}>
-      <div className="monster-reward-header">
+    <div className={`gift-monster-card ${reward.claimed ? 'claimed' : ''}${reward.rarity}`}>
+      <div className="video-header">
         <div className="monster-reward-title">
           {reward.reward_data.title || `Level ${level} Monster`}
         </div>
-        <div className={`reward-rarity ${reward.rarity}`}>
+        <div className={`badge ${reward.rarity}`}>
           {reward.rarity.charAt(0).toUpperCase() + reward.rarity.slice(1)}
         </div>
       </div>
@@ -128,7 +128,7 @@ const MonsterRewardCard = ({
       <div className="monster-species-grid">
         {speciesList.map((species, index) => (
           <div key={index} className="monster-species-item">
-            <div className="monster-species-image">
+            <div className="image-container medium">
               {species === MYSTERY_ROLL ? (
                 <img
                   src="/images/mystery.png"
@@ -162,7 +162,7 @@ const MonsterRewardCard = ({
       <div className="monster-types-container">
         <div className="monster-types">
           {getTypes().map((type, typeIndex) => (
-            <span key={typeIndex} className={`type-badge ${type === MYSTERY_TYPE ? 'type-mystery' : `type-${type.toLowerCase()}`}`}>
+            <span key={typeIndex} className={`badge ${type === MYSTERY_TYPE ? 'type-mystery' : `type-${type.toLowerCase()}`}`}>
               {type}
             </span>
           ))}
@@ -199,7 +199,7 @@ const MonsterRewardCard = ({
           </div>
         ) : (
           <>
-            <div className="monster-name-input">
+            <div className="form-input">
               <label htmlFor={`monster-name-${reward.id}`}>Monster Name:</label>
               <input
                 id={`monster-name-${reward.id}`}
@@ -207,7 +207,7 @@ const MonsterRewardCard = ({
                 value={monsterName || ''}
                 onChange={(e) => onNameChange(reward.id, e.target.value)}
                 placeholder="Enter monster name"
-                className="form-control"
+                className="form-input"
               />
             </div>
 
@@ -221,7 +221,7 @@ const MonsterRewardCard = ({
 
             <div className="monster-reward-buttons">
               <button
-                className="btn-primary mt-2"
+                className="button primary mt-2"
                 onClick={() => onClaim(reward.id, selectedTrainerId)}
                 disabled={isClaiming || !selectedTrainerId || isForfeiting}
                 style={{ flex: 1, marginRight: '8px' }}
@@ -238,7 +238,7 @@ const MonsterRewardCard = ({
               </button>
               
               <button
-                className="btn-danger mt-2"
+                className="button danger mt-2"
                 onClick={() => handleForfeit()}
                 disabled={isClaiming || isForfeiting}
                 style={{ flex: 1 }}

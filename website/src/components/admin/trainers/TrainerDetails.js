@@ -45,7 +45,7 @@ const ThemeSection = ({ theme }) => {
           <span className="info-value">{displayText}</span>
           {hasLink && videoId && (
             <button 
-              className="theme-expand-btn"
+              className="button secondary sm"
               onClick={() => setIsExpanded(!isExpanded)}
               title={isExpanded ? 'Hide theme player' : 'Show theme player'}
             >
@@ -183,19 +183,19 @@ const TrainerDetails = () => {
   return (
     <div className="trainer-details-container">
       <div className="trainer-details-header">
-        <div className="trainer-details-title">
+        <div className="adopt-card">
           <h1>{trainer.name}</h1>
           {trainer.nickname && <span className="trainer-nickname">"{trainer.nickname}"</span>}
         </div>
 
-        <div className="trainer-details-actions">
-          <Link to={`/admin/dashboard/trainers/${id}/edit`} className="trainer-details-btn edit">
+        <div className="header-actions">
+          <Link to={`/admin/dashboard/trainers/${id}/edit`} className="button primary">
             <i className="fas fa-edit"></i> Edit
           </Link>
-          <button className="trainer-details-btn delete" onClick={handleDelete}>
+          <button className="button danger" onClick={handleDelete}>
             <i className="fas fa-trash-alt"></i> Delete
           </button>
-          <Link to="/admin/dashboard/trainers" className="trainer-details-btn back">
+          <Link to="/admin/dashboard/trainers" className="button secondary">
             <i className="fas fa-arrow-left"></i> Back to List
           </Link>
         </div>
@@ -203,25 +203,25 @@ const TrainerDetails = () => {
 
       <div className="trainer-details-tabs">
         <button
-          className={`trainer-tab ${activeTab === 'profile' ? 'active' : ''}`}
+          className={`button tab ${activeTab === 'profile' ? 'active' : ''}`}
           onClick={() => setActiveTab('profile')}
         >
           <i className="fas fa-user"></i> Profile
         </button>
         <button
-          className={`trainer-tab ${activeTab === 'monsters' ? 'active' : ''}`}
+          className={`button tab ${activeTab === 'monsters' ? 'active' : ''}`}
           onClick={() => setActiveTab('monsters')}
         >
           <i className="fas fa-dragon"></i> Monsters ({monsters.length})
         </button>
         <button
-          className={`trainer-tab ${activeTab === 'inventory' ? 'active' : ''}`}
+          className={`button tab ${activeTab === 'inventory' ? 'active' : ''}`}
           onClick={() => setActiveTab('inventory')}
         >
           <i className="fas fa-box-open"></i> Inventory
         </button>
         <button
-          className={`trainer-tab ${activeTab === 'references' ? 'active' : ''}`}
+          className={`button tab ${activeTab === 'references' ? 'active' : ''}`}
           onClick={() => setActiveTab('references')}
         >
           <i className="fas fa-images"></i> References
@@ -251,7 +251,7 @@ const TrainerDetails = () => {
               </div>
 
               <div className="trainer-profile-info">
-                <div className="trainer-info-section">
+                <div className="trainer-bio-section">
                   <h3>Basic Information</h3>
                   <div className="trainer-info-grid">
                     <div className="trainer-info-item">
@@ -310,7 +310,7 @@ const TrainerDetails = () => {
                   </div>
                 </div>
 
-                <div className="trainer-info-section">
+                <div className="trainer-bio-section">
                   <h3>Personal Information</h3>
                   <div className="trainer-info-grid">
                     <div className="trainer-info-item">
@@ -349,7 +349,7 @@ const TrainerDetails = () => {
                   </div>
                 </div>
 
-                <div className="trainer-info-section">
+                <div className="trainer-bio-section">
                   <h3>Species & Types</h3>
                   <div className="trainer-info-grid">
                     <div className="trainer-info-item">
@@ -404,7 +404,7 @@ const TrainerDetails = () => {
                 <p>{trainer.tldr || 'No summary provided'}</p>
               </div>
 
-              <div className="trainer-biography">
+              <div className="trainer-tldr">
                 <h4>Full Biography</h4>
                 <div className="biography-content">
                   {trainer.biography ? (
@@ -424,14 +424,14 @@ const TrainerDetails = () => {
         )}
 
         {activeTab === 'monsters' && (
-          <div className="trainer-monsters">
+          <div className="trainer-level">
             {monsters.length === 0 ? (
               <div className="no-monsters-message">
                 <i className="fas fa-dragon"></i>
                 <p>This trainer doesn't have any monsters yet.</p>
               </div>
             ) : (
-              <div className="monsters-grid">
+              <div className="button">
                 {monsters.map(monster => (
                   <div key={monster.id} className="monster-card">
                     <div className="monster-card-image">
@@ -453,10 +453,10 @@ const TrainerDetails = () => {
                     <div className="monster-card-content">
                       <h3>{monster.name}</h3>
                       <div className="monster-card-details">
-                        <span className="monster-species">{monster.species}</span>
+                        <span className="monster-types">{monster.species}</span>
                         <span className="monster-level">Lv. {monster.level}</span>
                       </div>
-                      <Link to={`/admin/dashboard/monsters/${monster.id}`} className="view-monster-btn">
+                      <Link to={`/admin/dashboard/monsters/${monster.id}`} className="button secondary">
                         View Details
                       </Link>
                     </div>
@@ -470,7 +470,7 @@ const TrainerDetails = () => {
         {activeTab === 'inventory' && (
           <div className="trainer-inventory">
             {!inventory ? (
-              <div className="no-inventory-message">
+              <div className="no-monsters-message">
                 <i className="fas fa-box-open"></i>
                 <p>No inventory data available for this trainer.</p>
               </div>
@@ -478,7 +478,7 @@ const TrainerDetails = () => {
               <div className="inventory-sections">
                 <div className="inventory-section">
                   <h3>Items</h3>
-                  <div className="inventory-items">
+                  <div className="rarity-options">
                     {Object.keys(JSON.parse(inventory.items || '{}')).length === 0 ? (
                       <p className="no-items">No items</p>
                     ) : (
@@ -494,7 +494,7 @@ const TrainerDetails = () => {
 
                 <div className="inventory-section">
                   <h3>Poké Balls</h3>
-                  <div className="inventory-items">
+                  <div className="rarity-options">
                     {Object.keys(JSON.parse(inventory.balls || '{}')).length === 0 ? (
                       <p className="no-items">No balls</p>
                     ) : (
@@ -510,7 +510,7 @@ const TrainerDetails = () => {
 
                 <div className="inventory-section">
                   <h3>Berries</h3>
-                  <div className="inventory-items">
+                  <div className="rarity-options">
                     {Object.keys(JSON.parse(inventory.berries || '{}')).length === 0 ? (
                       <p className="no-items">No berries</p>
                     ) : (
@@ -526,7 +526,7 @@ const TrainerDetails = () => {
 
                 <div className="inventory-section">
                   <h3>Eggs</h3>
-                  <div className="inventory-items">
+                  <div className="rarity-options">
                     {Object.keys(JSON.parse(inventory.eggs || '{}')).length === 0 ? (
                       <p className="no-items">No eggs</p>
                     ) : (

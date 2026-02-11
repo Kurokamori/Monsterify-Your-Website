@@ -43,14 +43,14 @@ const ThemeSection = ({ theme }) => {
   const videoId = getYouTubeVideoId(youtubeLink);
 
   return (
-    <div className="trainer-detail-item theme-section">
+    <div className="inventory-item theme-section">
       <span className="detail-label">Theme</span>
       <div className="theme-content">
         <div className="theme-display">
           <span className="detail-value">{displayText}</span>
           {hasLink && videoId && (
             <button 
-              className="theme-expand-btn"
+              className="button secondary sm"
               onClick={() => setIsExpanded(!isExpanded)}
               title={isExpanded ? 'Hide theme player' : 'Show theme player'}
             >
@@ -107,14 +107,14 @@ const VoiceClaimSection = ({ voice_claim }) => {
   const videoId = getYouTubeVideoId(youtubeLink);
 
   return (
-    <div className="trainer-detail-item voice-claim-section">
+    <div className="inventory-item voice-claim-section">
       <span className="detail-label">Voice Claim</span>
       <div className="voice-claim-content">
-        <div className="voice-claim-display">
+        <div className="theme-display">
           <span className="detail-value">{displayText}</span>
           {hasLink && videoId && (
             <button 
-              className="voice-claim-expand-btn"
+              className="button secondary icon sm"
               onClick={() => setIsExpanded(!isExpanded)}
               title={isExpanded ? 'Hide voice claim player' : 'Show voice claim player'}
             >
@@ -1049,7 +1049,7 @@ const TrainerDetailPage = () => {
     return (
       <div className="monsters-detailed-list">
         {title && <h3>{title}</h3>}
-        <div className="detailed-list-header">
+        <div className="detailed-list-row">
           <span>Name</span>
           <span>Species 1</span>
           <span>Species 2</span>
@@ -1070,16 +1070,16 @@ const TrainerDetailPage = () => {
               <span className={`monster-type type-${(monster.type1 || 'normal').toLowerCase()}`}>
                 {monster.type1 || '-'}
               </span>
-              <span className={`monster-type ${monster.type2 ? `type-${monster.type2.toLowerCase()}` : ''}`}>
+              <span className={`monster-type${monster.type2 ? ` type-${monster.type2.toLowerCase()}` : ''}`}>
                 {monster.type2 || '-'}
               </span>
-              <span className={`monster-type ${monster.type3 ? `type-${monster.type3.toLowerCase()}` : ''}`}>
+              <span className={`monster-type${monster.type3 ? ` type-${monster.type3.toLowerCase()}` : ''}`}>
                 {monster.type3 || '-'}
               </span>
-              <span className={`monster-type ${monster.type4 ? `type-${monster.type4.toLowerCase()}` : ''}`}>
+              <span className={`monster-type${monster.type4 ? ` type-${monster.type4.toLowerCase()}` : ''}`}>
                 {monster.type4 || '-'}
               </span>
-              <span className={`monster-type ${monster.type5 ? `type-${monster.type5.toLowerCase()}` : ''}`}>
+              <span className={`monster-type${monster.type5 ? ` type-${monster.type5.toLowerCase()}` : ''}`}>
                 {monster.type5 || '-'}
               </span>
             </Link>
@@ -1267,7 +1267,7 @@ const TrainerDetailPage = () => {
 
   if (loading) {
     return (
-      <div className="loading-container">
+      <div className="error-container">
         <div className="loading-spinner">
           <i className="fas fa-spinner fa-spin"></i>
         </div>
@@ -1281,10 +1281,10 @@ const TrainerDetailPage = () => {
       <div className="error-container">
         <i className="fas fa-exclamation-circle"></i>
         <p>{error}</p>
-        <button onClick={fetchTrainerData} className="retry-button">
+        <button onClick={fetchTrainerData} className="button primary">
           Try Again
         </button>
-        <button onClick={() => navigate('/trainers')} className="back-button">
+        <button onClick={() => navigate('/trainers')} className="button secondary">
           Back to Trainers
         </button>
       </div>
@@ -1296,7 +1296,7 @@ const TrainerDetailPage = () => {
       <div className="error-container">
         <i className="fas fa-user-slash"></i>
         <p>Trainer not found. The trainer you're looking for might not exist or has been removed.</p>
-        <button onClick={() => navigate('/trainers')} className="back-button">
+        <button onClick={() => navigate('/trainers')} className="button secondary">
           Back to Trainers
         </button>
       </div>
@@ -1304,7 +1304,7 @@ const TrainerDetailPage = () => {
   }
 
   return (
-    <div className="trainer-detail-container">
+    <div className="edit-monster-container">
       <div className="trainer-detail-header">
         <div className="trainer-profile-image-container">
           <img
@@ -1322,10 +1322,15 @@ const TrainerDetailPage = () => {
         </div>
         <div className="trainer-profile-info">
           <div className="trainer-profile-info-header">
+          <div className="option-row">
           <h1 className="trainer-profile-name">
             {trainer.name}
             {trainer.nickname && <span className="trainer-nickname">({trainer.nickname})</span>}
           </h1>
+          <h3 className="trainer-profile-age">
+            {trainer.age ? `Age: ${trainer.age}` : 'Age: Unknown'}
+          </h3>
+          </div>
 
           <div className="trainer-player-info">
             <div>
@@ -1353,10 +1358,10 @@ const TrainerDetailPage = () => {
                 {trainer.monster_ref_count && ` (${trainer.monster_ref_count}/${trainer.monster_count} Refs - ${trainer.monster_ref_percent || 0}%)`}
               </span>
             </div>
-            <div className="trainer-currency-stats">
+            <div className="trainer-monster-stats">
               <i className="fas fa-coins"></i>
               <span>
-                Current : {trainer.currency_amount || 0} Total Earned : {trainer.total_earned_currency || 0}
+                Current : {trainer.currency_amount || 0} <br />Total Earned : {trainer.total_earned_currency || 0}
               </span>
             </div>
             
@@ -1373,20 +1378,20 @@ const TrainerDetailPage = () => {
             {/* Grid layout for species, types, ability, and favorite types */}
             <div className="trainer-attributes-grid">
               {/* Row 1: Species and Types */}
-              <div className="attributes-row">
+              <div className="claim-limits">
                 {/* Species Column */}
                 {trainer.species1 && (
                   <div className="attribute-column">
                     <span className="info-label">Species</span>
-                    <div className="vertical-grid species-grid">
+                    <div className="attribute-column">
                       {trainer.species1 && (
-                        <span className="species-badge">{trainer.species1}</span>
+                        <span className="badge secondary">{trainer.species1}</span>
                       )}
                       {trainer.species2 && (
-                        <span className="species-badge">{trainer.species2}</span>
+                        <span className="badge secondary">{trainer.species2}</span>
                       )}
                       {trainer.species3 && (
-                        <span className="species-badge">{trainer.species3}</span>
+                        <span className="badge secondary">{trainer.species3}</span>
                       )}
                     </div>
                   </div>
@@ -1396,34 +1401,34 @@ const TrainerDetailPage = () => {
                 {trainer.type1 && (
                   <div className="attribute-column">
                     <span className="info-label">Type</span>
-                    <div className="vertical-grid types-grid">
+                    <div className="mega-types types-grid">
                       {trainer.type1 && (
-                        <span className={`trainer-type-badge type-${trainer.type1?.toLowerCase() || 'normal'}`}>
+                        <span className={`badge full-width type-${trainer.type1?.toLowerCase() || 'normal'}`}>
                           {trainer.type1}
                         </span>
                       )}
                       {trainer.type2 && (
-                        <span className={`trainer-type-badge type-${trainer.type2.toLowerCase()}`}>
+                        <span className={`badge full-width type-${trainer.type2.toLowerCase()}`}>
                           {trainer.type2}
                         </span>
                       )}
                       {trainer.type3 && (
-                        <span className={`trainer-type-badge type-${trainer.type3.toLowerCase()}`}>
+                        <span className={`badge full-width type-${trainer.type3.toLowerCase()}`}>
                           {trainer.type3}
                         </span>
                       )}
                       {trainer.type4 && (
-                        <span className={`trainer-type-badge type-${trainer.type4.toLowerCase()}`}>
+                        <span className={`badge full-width type-${trainer.type4.toLowerCase()}`}>
                           {trainer.type4}
                         </span>
                       )}
                       {trainer.type5 && (
-                        <span className={`trainer-type-badge type-${trainer.type5.toLowerCase()}`}>
+                        <span className={`badge full-width type-${trainer.type5.toLowerCase()}`}>
                           {trainer.type5}
                         </span>
                       )}
                       {trainer.type6 && (
-                        <span className={`trainer-type-badge type-${trainer.type6.toLowerCase()}`}>
+                        <span className={`badge full-width type-${trainer.type6.toLowerCase()}`}>
                           {trainer.type6}
                         </span>
                       )}
@@ -1440,8 +1445,8 @@ const TrainerDetailPage = () => {
                   {trainer.ability && (
                     <div className="attribute-item">
                       <span className="info-label">Ability</span>
-                      <div className="vertical-grid ability-grid">
-                        <span className="ability-badge">{trainer.ability}</span>
+                      <div>
+                        <span className="badge secondary full-width">{trainer.ability}</span>
                       </div>
                     </div>
                   )}
@@ -1454,7 +1459,7 @@ const TrainerDetailPage = () => {
                         {trainer.nature && (
                           <div className="nature-characteristic-column">
                             <span className="info-label">Nature</span>
-                            <span className="nature-badge">{trainer.nature}</span>
+                            <span className="badge secondary">{trainer.nature}</span>
                           </div>
                         )}
 
@@ -1462,22 +1467,20 @@ const TrainerDetailPage = () => {
                         {trainer.characteristic && (
                           <div className="nature-characteristic-column">
                             <span className="info-label">Characteristic</span>
-                            <span className="characteristic-badge">{trainer.characteristic}</span>
+                            <span className="badge secondary">{trainer.characteristic}</span>
                           </div>
                         )}
                       </div>
                     </div>
                   )}
                 </div>
-
-                {/* Favorite Types removed from hero section - now in Other Information */}
               </div>
             </div>
           </div>
 
           {isOwner && (
             <div className="trainer-actions">
-              <Link to={`/trainers/${trainer.id}/edit`} className="trainer-action-button">
+              <Link to={`/trainers/${trainer.id}/edit`} className="button primary">
                 <i className="fas fa-edit"></i> Edit Trainer
               </Link>
             </div>
@@ -1564,19 +1567,19 @@ const TrainerDetailPage = () => {
           </div>
         </div>
 
-        <div className="trainer-main-content">
+        <div className="compact-trainer-info">
           {activeTab === 'profile' && (
-            <div className="trainer-profile-tab">
+            <div className="town-square">
               {/* Featured Monsters Section - Collapsible */}
               {featuredMonsters.filter(fm => fm !== null).length > 0 && (
-                <div className="trainer-monsters-section">
+                <div className="stats-section">
                   <div className="collapsible-header" onClick={() => setFeaturedMonstersCollapsed(!featuredMonstersCollapsed)}>
                     <h2>Featured Monsters</h2>
                     <i className={`fas fa-chevron-${featuredMonstersCollapsed ? 'down' : 'up'}`}></i>
                   </div>
                   {!featuredMonstersCollapsed && (
                   <>
-                    <div className="trainer-monsters-grid">
+                    <div className="catalogue-grid">
                       {featuredMonsters.filter(monster => monster !== null).map((monster) => (
                         <Link to={`/monsters/${monster.id}`} className="monster-card" key={monster.id}>
                           <div className="monster-image-container">
@@ -1594,28 +1597,28 @@ const TrainerDetailPage = () => {
                             <h2 className="monster-name">{monster.name}</h2>
                             <p className="monster-level">Level: {monster.level}</p>
                           </div>
-                          <div className="pc-box-monster-details"> 
-                            <span className={`trainer-type-badge type-${monster.type1?.toLowerCase() || 'normal'}`}></span>
+                          <div className="badge full-widths"> 
+                            <span className={`badge full-width type-${monster.type1?.toLowerCase() || 'normal'}`}></span>
                             {monster.type2 && (
-                              <span className={`trainer-type-badge type-${monster.type2?.toLowerCase()}`}></span>
+                              <span className={`badge full-width type-${monster.type2?.toLowerCase()}`}></span>
                             )}
                             {monster.type3 && (
-                              <span className={`trainer-type-badge type-${monster.type3?.toLowerCase()}`}></span>
+                              <span className={`badge full-width type-${monster.type3?.toLowerCase()}`}></span>
                             )}
                             {monster.type4 && (
-                              <span className={`trainer-type-badge type-${monster.type4?.toLowerCase()}`}></span>
+                              <span className={`badge full-width type-${monster.type4?.toLowerCase()}`}></span>
                             )}
                             {monster.type5 && (
-                              <span className={`trainer-type-badge type-${monster.type5?.toLowerCase()}`}></span>
+                              <span className={`badge full-width type-${monster.type5?.toLowerCase()}`}></span>
                             )}
                           </div>
                         </Link>
                       ))}
                     </div>
                     {monsters.length > 0 && (
-                      <div className="view-all-container">
+                      <div className="container center horizontal">
                         <button
-                          className="view-all-button"
+                          className="button primary"
                           onClick={() => setActiveTab('pc')}
                         >
                           View All {monsters.length} Monsters
@@ -1638,7 +1641,7 @@ const TrainerDetailPage = () => {
 
               {/* Personal Information Panel */}
               {(trainer.full_name || trainer.title || trainer.nickname || trainer.age || trainer.gender || trainer.pronouns || trainer.sexuality || trainer.race || trainer.height || trainer.weight || trainer.height_ft || trainer.height_in) && (
-                <div className="trainer-panel">
+                <div className="stats-section">
                   <h2>Personal Information</h2>
                   
                   {/* Hero Section */}
@@ -1669,25 +1672,25 @@ const TrainerDetailPage = () => {
                   {(trainer.gender || trainer.pronouns || trainer.sexuality || trainer.race) && (
                     <div className="personal-info-row">
                       {trainer.gender && (
-                        <div className="trainer-detail-item">
+                        <div className="inventory-item">
                           <span className="detail-label">Gender</span>
                           <span className="detail-value">{trainer.gender}</span>
                         </div>
                       )}
                       {trainer.pronouns && (
-                        <div className="trainer-detail-item">
+                        <div className="inventory-item">
                           <span className="detail-label">Pronouns</span>
                           <span className="detail-value">{trainer.pronouns}</span>
                         </div>
                       )}
                       {trainer.sexuality && (
-                        <div className="trainer-detail-item">
+                        <div className="inventory-item">
                           <span className="detail-label">Sexuality</span>
                           <span className="detail-value">{trainer.sexuality}</span>
                         </div>
                       )}
                       {trainer.race && (
-                        <div className="trainer-detail-item">
+                        <div className="inventory-item">
                           <span className="detail-label">Race</span>
                           <span className="detail-value">{trainer.race}</span>
                         </div>
@@ -1699,7 +1702,7 @@ const TrainerDetailPage = () => {
                   {(trainer.height || trainer.weight || trainer.height_ft || trainer.height_in) && (
                     <div className="personal-info-row">
                       {(trainer.height || trainer.height_ft || trainer.height_in) && (
-                        <div className="trainer-detail-item">
+                        <div className="inventory-item">
                           <span className="detail-label">Height</span>
                           <span className="detail-value">
                             {trainer.height || (trainer.height_ft ? `${trainer.height_ft}'${trainer.height_in || 0}"` : 'Unknown')}
@@ -1707,7 +1710,7 @@ const TrainerDetailPage = () => {
                         </div>
                       )}
                       {trainer.weight && (
-                        <div className="trainer-detail-item">
+                        <div className="inventory-item">
                           <span className="detail-label">Weight</span>
                           <span className="detail-value">{trainer.weight}</span>
                         </div>
@@ -1719,7 +1722,7 @@ const TrainerDetailPage = () => {
 
               {/* Theme Panel */}
               {(trainer.theme && trainer.theme.trim() !== '' && trainer.theme !== '{"",""}') && ( // Check if theme is not empty or just a pair of empty quotes
-                <div className="trainer-panel">
+                <div className="stats-section">
                   <h2>Theme</h2>
                   <div className="trainer-details-grid">
                     <ThemeSection theme={trainer.theme} />
@@ -1729,7 +1732,7 @@ const TrainerDetailPage = () => {
 
               {/* Voice Claim Panel */}
               {trainer.voice_claim && (
-                <div className="trainer-panel">
+                <div className="stats-section">
                   <h2>Voice Claim</h2>
                   <div className="trainer-details-grid">
                     <VoiceClaimSection voice_claim={trainer.voice_claim} />
@@ -1739,47 +1742,47 @@ const TrainerDetailPage = () => {
 
               {/* Character Information Panel */}
               {(trainer.strengths || trainer.weaknesses || trainer.likes || trainer.dislikes || trainer.flaws || trainer.values || trainer.quirks) && (
-                <div className="trainer-panel">
+                <div className="stats-section">
                   <h2>Character Information</h2>
                   <div className="trainer-details-grid-other">
                     {trainer.strengths && (
-                      <div className="trainer-detail-item">
+                      <div className="inventory-item">
                         <span className="detail-label">Character Strengths</span>
                         <span className="detail-value">{trainer.strengths}</span>
                       </div>
                     )}
                     {trainer.weaknesses && (
-                      <div className="trainer-detail-item">
+                      <div className="inventory-item">
                         <span className="detail-label">Character Weaknesses</span>
                         <span className="detail-value">{trainer.weaknesses}</span>
                       </div>
                     )}
                     {trainer.likes && (
-                      <div className="trainer-detail-item">
+                      <div className="inventory-item">
                         <span className="detail-label">Character Likes</span>
                         <span className="detail-value">{trainer.likes}</span>
                       </div>
                     )}
                     {trainer.dislikes && (
-                      <div className="trainer-detail-item">
+                      <div className="inventory-item">
                         <span className="detail-label">Character Dislikes</span>
                         <span className="detail-value">{trainer.dislikes}</span>
                       </div>
                     )}
                     {trainer.flaws && (
-                      <div className="trainer-detail-item">
+                      <div className="inventory-item">
                         <span className="detail-label">Flaws</span>
                         <span className="detail-value">{trainer.flaws}</span>
                       </div>
                     )}
                     {trainer.values && (
-                      <div className="trainer-detail-item">
+                      <div className="inventory-item">
                         <span className="detail-label">Core Values</span>
                         <span className="detail-value">{trainer.values}</span>
                       </div>
                     )}
                     {trainer.quirks && (
-                      <div className="trainer-detail-item">
+                      <div className="inventory-item">
                         <span className="detail-label">Quirks</span>
                         <span className="detail-value">{trainer.quirks}</span>
                       </div>
@@ -1790,22 +1793,22 @@ const TrainerDetailPage = () => {
 
               {/* Other Information Panel */}
               {(trainer.job || trainer.occupation || trainer.birthday || trainer.zodiac || trainer.chinese_zodiac || trainer.fav_berry || trainer.birthplace || trainer.residence || trainer.region || trainer.fav_type1) && (
-                <div className="trainer-panel">
+                <div className="stats-section">
                   <h2>Other Information</h2>
-                  <div className="trainer-other-info-container">
+                  <div className="trainer-stats">
                     {/* Birthday & Zodiac Group */}
                     {(trainer.birthday || trainer.zodiac || trainer.chinese_zodiac) && (
                       <div className="info-group birthday-group">
                         <h3 className="group-title">Birthday & Zodiac</h3>
-                        <div className="group-content">
+                        <div className="auth-form">
                           {trainer.birthday && (
-                            <div className="trainer-detail-item">
+                            <div className="inventory-item">
                               <span className="detail-label">Birthday</span>
                               <span className="detail-value">{formatBirthday(trainer.birthday)}</span>
                             </div>
                           )}
                           {trainer.zodiac && (
-                            <div className="trainer-detail-item">
+                            <div className="inventory-item">
                               <span className="detail-label">Zodiac Sign</span>
                               <span className="detail-value">
                                 {getZodiacEmoji(trainer.zodiac)} {trainer.zodiac}
@@ -1813,7 +1816,7 @@ const TrainerDetailPage = () => {
                             </div>
                           )}
                           {trainer.chinese_zodiac && (
-                            <div className="trainer-detail-item">
+                            <div className="inventory-item">
                               <span className="detail-label">Chinese Zodiac</span>
                               <span className="detail-value">
                                 {getChineseZodiacEmoji(trainer.chinese_zodiac)} {trainer.chinese_zodiac}
@@ -1828,27 +1831,27 @@ const TrainerDetailPage = () => {
                     {(trainer.job || trainer.occupation || trainer.birthplace || trainer.residence || trainer.region) && (
                       <div className="info-group location-group">
                         <h3 className="group-title">Location & Work</h3>
-                        <div className="group-content">
+                        <div className="auth-form">
                           {(trainer.job || trainer.occupation) && (
-                            <div className="trainer-detail-item">
+                            <div className="inventory-item">
                               <span className="detail-label">Occupation</span>
                               <span className="detail-value">{trainer.job || trainer.occupation}</span>
                             </div>
                           )}
                           {trainer.birthplace && (
-                            <div className="trainer-detail-item">
+                            <div className="inventory-item">
                               <span className="detail-label">Birthplace</span>
                               <span className="detail-value">{trainer.birthplace}</span>
                             </div>
                           )}
                           {trainer.residence && (
-                            <div className="trainer-detail-item">
+                            <div className="inventory-item">
                               <span className="detail-label">Residence</span>
                               <span className="detail-value">{trainer.residence}</span>
                             </div>
                           )}
                           {trainer.region && (
-                            <div className="trainer-detail-item">
+                            <div className="inventory-item">
                               <span className="detail-label">Region</span>
                               <span className="detail-value">{trainer.region}</span>
                             </div>
@@ -1861,44 +1864,44 @@ const TrainerDetailPage = () => {
                     {(trainer.fav_berry || trainer.fav_type1) && (
                       <div className="info-group favorites-group">
                         <h3 className="group-title">Favorites</h3>
-                        <div className="group-content">
+                        <div className="auth-form">
                           {trainer.fav_berry && (
-                            <div className="trainer-detail-item">
+                            <div className="inventory-item">
                               <span className="detail-label">Favorite Berry</span>
                               <span className="detail-value">{trainer.fav_berry}</span>
                             </div>
                           )}
                           {trainer.fav_type1 && (
-                            <div className="trainer-detail-item fav-types-item">
+                            <div className="inventory-item fav-types-item">
                               <span className="detail-label">Favorite Types</span>
-                              <div className="fav-types-grid">
+                              <div className="types-grid">
                                 {trainer.fav_type1 && (
-                                  <span className={`trainer-type-badge type-${trainer.fav_type1?.toLowerCase() || 'normal'}`}>
+                                  <span className={`badge full-width type-${trainer.fav_type1?.toLowerCase() || 'normal'}`}>
                                     {trainer.fav_type1}
                                   </span>
                                 )}
                                 {trainer.fav_type2 && (
-                                  <span className={`trainer-type-badge type-${trainer.fav_type2.toLowerCase()}`}>
+                                  <span className={`badge full-width type-${trainer.fav_type2.toLowerCase()}`}>
                                     {trainer.fav_type2}
                                   </span>
                                 )}
                                 {trainer.fav_type3 && (
-                                  <span className={`trainer-type-badge type-${trainer.fav_type3.toLowerCase()}`}>
+                                  <span className={`badge full-width type-${trainer.fav_type3.toLowerCase()}`}>
                                     {trainer.fav_type3}
                                   </span>
                                 )}
                                 {trainer.fav_type4 && (
-                                  <span className={`trainer-type-badge type-${trainer.fav_type4.toLowerCase()}`}>
+                                  <span className={`badge full-width type-${trainer.fav_type4.toLowerCase()}`}>
                                     {trainer.fav_type4}
                                   </span>
                                 )}
                                 {trainer.fav_type5 && (
-                                  <span className={`trainer-type-badge type-${trainer.fav_type5.toLowerCase()}`}>
+                                  <span className={`badge full-width type-${trainer.fav_type5.toLowerCase()}`}>
                                     {trainer.fav_type5}
                                   </span>
                                 )}
                                 {trainer.fav_type6 && (
-                                  <span className={`trainer-type-badge type-${trainer.fav_type6.toLowerCase()}`}>
+                                  <span className={`badge full-width type-${trainer.fav_type6.toLowerCase()}`}>
                                     {trainer.fav_type6}
                                   </span>
                                 )}
@@ -1915,7 +1918,7 @@ const TrainerDetailPage = () => {
               {/* Mega Evolution Information */}
               {((trainer.mega_info && Object.keys(JSON.parse(typeof trainer.mega_info === 'string' ? trainer.mega_info : JSON.stringify(trainer.mega_info))).length > 0) ||
                  trainer.mega_evo || trainer.mega_type1 || trainer.mega_ability) && (
-                <div className="trainer-panel">
+                <div className="stats-section">
                   <h2>Mega Evolution</h2>
                   <div className="trainer-mega-info">
                     {(() => {
@@ -1980,31 +1983,31 @@ const TrainerDetailPage = () => {
                             <div className="mega-types">
                               <span className="detail-label">Mega Types</span>
                               <div className="trainer-types">
-                                <span className={`trainer-type-badge type-${megaType1?.toLowerCase() || 'normal'}`}>
+                                <span className={`badge full-width type-${megaType1?.toLowerCase() || 'normal'}`}>
                                   {megaType1}
                                 </span>
                                 {megaType2 && (
-                                  <span className={`trainer-type-badge type-${megaType2.toLowerCase()}`}>
+                                  <span className={`badge full-width type-${megaType2.toLowerCase()}`}>
                                     {megaType2}
                                   </span>
                                 )}
                                 {megaType3 && (
-                                  <span className={`trainer-type-badge type-${megaType3.toLowerCase()}`}>
+                                  <span className={`badge full-width type-${megaType3.toLowerCase()}`}>
                                     {megaType3}
                                   </span>
                                 )}
                                 {megaType4 && (
-                                  <span className={`trainer-type-badge type-${megaType4.toLowerCase()}`}>
+                                  <span className={`badge full-width type-${megaType4.toLowerCase()}`}>
                                     {megaType4}
                                   </span>
                                 )}
                                 {megaType5 && (
-                                  <span className={`trainer-type-badge type-${megaType5.toLowerCase()}`}>
+                                  <span className={`badge full-width type-${megaType5.toLowerCase()}`}>
                                     {megaType5}
                                   </span>
                                 )}
                                 {megaType6 && (
-                                  <span className={`trainer-type-badge type-${megaType6.toLowerCase()}`}>
+                                  <span className={`badge full-width type-${megaType6.toLowerCase()}`}>
                                     {megaType6}
                                   </span>
                                 )}
@@ -2028,7 +2031,7 @@ const TrainerDetailPage = () => {
 
               {/* Additional References Section */}
               {trainer.additional_refs && trainer.additional_refs.length > 0 && (
-                <div className="trainer-panel">
+                <div className="stats-section">
                   <h2>Additional References</h2>
                   <div className="additional-refs-container">
                     {(() => {
@@ -2039,9 +2042,9 @@ const TrainerDetailPage = () => {
 
                         if (Array.isArray(refs) && refs.length > 0) {
                           return (
-                            <div className="additional-refs-grid">
+                            <div className="button">
                               {refs.map((ref, index) => (
-                                <div className="additional-ref-card" key={ref.id || index}>
+                                <div className="adopt-card" key={ref.id || index}>
                                   {ref.image_url && (
                                     <div className="additional-ref-image">
                                       <img
@@ -2095,7 +2098,7 @@ const TrainerDetailPage = () => {
                   return false;
                 }
               })() && (
-                <div className="trainer-panel">
+                <div className="stats-section">
                   <h2>Secrets</h2>
                   <div className="secrets-container">
                     {(() => {
@@ -2133,7 +2136,7 @@ const TrainerDetailPage = () => {
 
               {/* Biography Section */}
               {(trainer.bio || trainer.long_bio || trainer.biography) && (
-                <div className="trainer-panel">
+                <div className="stats-section">
                   <h2>Biography</h2>
                   <div className="trainer-bio">
                     <div 
@@ -2149,20 +2152,20 @@ const TrainerDetailPage = () => {
           )}
 
           {activeTab === 'pc' && (
-            <div className="trainer-pc-tab">
+            <div className="stats-section">
               <div className="pc-header">
                 <h2>PC Boxes</h2>
                 {monsters.length > 0 && (
                   <div className="view-toggle">
                     <button
-                      className={`view-toggle-button ${viewMode === 'grid' ? 'active' : ''}`}
+                      className={`button toggle${viewMode === 'grid' ? 'active' : ''}`}
                       onClick={() => setViewMode('grid')}
                       title="Grid View"
                     >
                       <i className="fas fa-th"></i>
                     </button>
                     <button
-                      className={`view-toggle-button ${viewMode === 'list' ? 'active' : ''}`}
+                      className={`button toggle${viewMode === 'list' ? 'active' : ''}`}
                       onClick={() => setViewMode('list')}
                       title="Detailed List View"
                     >
@@ -2187,10 +2190,10 @@ const TrainerDetailPage = () => {
                       onChange={setSearchTerm}
                     />
                     {searchTerm && (
-                      <div className="search-results-info">
+                      <div className="adopt-card">
                         <p>{filteredMonsters.length} monsters found</p>
                         <button 
-                          className="clear-search-button"
+                          className="button danger"
                           onClick={() => setSearchTerm('')}
                         >
                           <i className="fas fa-times"></i> Clear Search
@@ -2207,16 +2210,9 @@ const TrainerDetailPage = () => {
                     <>
                       {/* PC Box Navigation */}
                       <div className="pc-box-navigation">
-                        <div className="pc-box-info">
-                          <h3>Box {currentPCBox + 1}</h3>
-                          <p>{(searchTerm 
-                            ? getFilteredBoxMonsters(currentPCBox) 
-                            : getBoxMonstersForDisplay(currentPCBox)
-                          ).filter(Boolean).length} / 30 Monsters</p>
-                        </div>
-                        <div className="pc-box-controls">
+                        <div className="container center horizontal gap-md">
                           <button
-                            className="pc-box-nav-button"
+                            className="button primary"
                             onClick={() => setCurrentPCBox(prev => Math.max(0, prev - 1))}
                             disabled={currentPCBox === 0}
                           >
@@ -2224,7 +2220,7 @@ const TrainerDetailPage = () => {
                           </button>
                           <span className="pc-box-number">Box {currentPCBox + 1} of {getMaxBoxNumber()}</span>
                           <button
-                            className="pc-box-nav-button"
+                            className="button primary"
                             onClick={() => setCurrentPCBox(prev => Math.min(getMaxBoxNumber() - 1, prev + 1))}
                             disabled={currentPCBox >= getMaxBoxNumber() - 1}
                           >
@@ -2259,14 +2255,14 @@ const TrainerDetailPage = () => {
                                   </div>
                                   <div className="pc-box-monster-info">
                                     <h4 className="pc-box-monster-name">{monster.name}</h4>
-                                    <div className="pc-box-monster-details">
+                                    <div className="container center horizontal gap-sm">
                                       <span className="pc-box-monster-level">Lv.{monster.level}</span>
                                       <div className="pc-box-monster-types">
-                                        <span className={`type-badge type-${monster.type1?.toLowerCase() || 'normal'}`}></span>
-                                        {monster.type2 && <span className={`type-badge type-${monster.type2.toLowerCase()}`}></span>}
-                                        {monster.type3 && <span className={`type-badge type-${monster.type3.toLowerCase()}`}></span>}
-                                        {monster.type4 && <span className={`type-badge type-${monster.type4.toLowerCase()}`}></span>}
-                                        {monster.type5 && <span className={`type-badge type-${monster.type5.toLowerCase()}`}></span>}
+                                        <span className={`badge type-${monster.type1?.toLowerCase() || 'normal'}`}></span>
+                                        {monster.type2 && <span className={`badge type-${monster.type2.toLowerCase()}`}></span>}
+                                        {monster.type3 && <span className={`badge type-${monster.type3.toLowerCase()}`}></span>}
+                                        {monster.type4 && <span className={`badge type-${monster.type4.toLowerCase()}`}></span>}
+                                        {monster.type5 && <span className={`badge type-${monster.type5.toLowerCase()}`}></span>}
                                         
                                       </div>
                                     </div>
@@ -2287,21 +2283,21 @@ const TrainerDetailPage = () => {
           )}
 
           {activeTab === 'boxes' && (
-            <div className="trainer-boxes-tab">
-              <div className="boxes-header">
+            <div className="stats-section">
+              <div className="pc-header">
                 <h2>All Boxes</h2>
-                <div className="boxes-header-controls">
+                <div className="form-input">
                   {monsters.length > 0 && (
                     <div className="view-toggle">
                       <button
-                        className={`view-toggle-button ${viewMode === 'grid' ? 'active' : ''}`}
+                        className={`button toggle${viewMode === 'grid' ? 'active' : ''}`}
                         onClick={() => setViewMode('grid')}
                         title="Grid View"
                       >
                         <i className="fas fa-th"></i>
                       </button>
                       <button
-                        className={`view-toggle-button ${viewMode === 'list' ? 'active' : ''}`}
+                        className={`button toggle${viewMode === 'list' ? 'active' : ''}`}
                         onClick={() => setViewMode('list')}
                         title="Detailed List View"
                       >
@@ -2311,7 +2307,7 @@ const TrainerDetailPage = () => {
                   )}
                   {isOwner && monsters.length > 0 && (
                     <button 
-                      className="mass-edit-button"
+                      className="button secondary"
                       onClick={handleOpenMassEdit}
                       title="Mass edit your monsters - rename, use berries, and use pastries in bulk"
                     >
@@ -2337,10 +2333,10 @@ const TrainerDetailPage = () => {
                       onChange={setSearchTerm}
                     />
                     {searchTerm && (
-                      <div className="search-results-info">
+                      <div className="adopt-card">
                         <p>{filteredMonsters.length} monsters found</p>
                         <button 
-                          className="clear-search-button"
+                          className="button danger"
                           onClick={() => setSearchTerm('')}
                         >
                           <i className="fas fa-times"></i> Clear Search
@@ -2368,7 +2364,7 @@ const TrainerDetailPage = () => {
                           : getBoxMonstersForDisplay(boxIndex); // Respect gaps for normal display
 
                       return (
-                        <div className="box-preview-container" key={boxIndex}>
+                        <div className="ref-item" key={boxIndex}>
                           <div className="box-preview-header">
                             <h3>Box {boxIndex + 1}</h3>
                             <span>{boxMonsters.filter(Boolean).length}/30</span>
@@ -2409,7 +2405,7 @@ const TrainerDetailPage = () => {
                                         </div>
                                       </Link>
                                     ) : (
-                                      <div className="box-preview-empty-slot"></div>
+                                      <div className="pc-box-empty-slot"></div>
                                     )}
                                   </div>
                                 );
@@ -2427,11 +2423,11 @@ const TrainerDetailPage = () => {
           )}
 
           {activeTab === 'inventory' && (
-            <div className="trainer-inventory-tab">
+            <div className="stats-section">
               <h2>Inventory</h2>
 
               {!trainer.inventory || !trainer.inventory.data || !trainer.inventory.data.data || Object.keys(trainer.inventory.data.data).length === 0 ? (
-                <div className="no-inventory-message">
+                <div className="no-monsters-message">
                   <i className="fas fa-box-open"></i>
                   <p>This trainer doesn't have any items yet.</p>
                 </div>
@@ -2441,14 +2437,14 @@ const TrainerDetailPage = () => {
                   {trainer.inventory.data.data.items && Object.keys(trainer.inventory.data.data.items).length > 0 && (
                     <div className="inventory-section">
                       <h3>Items</h3>
-                      <div className="inventory-items-grid">
+                      <div className="images-grid">
                         {Object.entries(trainer.inventory.data.data.items).map(([itemName, quantity], index) => (
                           <div 
                             className="inventory-item clickable-item" 
                             key={`item-${index}`}
                             onClick={() => handleItemDetailClick(itemName, 'items')}
                           >
-                            <div className="inventory-item-image">
+                            <div className="image-container small">
                               <img
                                 src={getItemImageUrl(itemName, 'items')}
                                 alt={itemName}
@@ -2459,7 +2455,7 @@ const TrainerDetailPage = () => {
                               />
                             </div>
                             <div className="inventory-item-details">
-                              <span className="inventory-item-name">{itemName}</span>
+                              <span className="pc-box-number">{itemName}</span>
                               <span className="inventory-item-quantity">x{quantity}</span>
                             </div>
                           </div>
@@ -2472,14 +2468,14 @@ const TrainerDetailPage = () => {
                   {trainer.inventory.data.data.balls && Object.keys(trainer.inventory.data.data.balls).length > 0 && (
                     <div className="inventory-section">
                       <h3>Pokéballs</h3>
-                      <div className="inventory-items-grid">
+                      <div className="images-grid">
                         {Object.entries(trainer.inventory.data.data.balls).map(([itemName, quantity], index) => (
                           <div 
                             className="inventory-item clickable-item" 
                             key={`ball-${index}`}
                             onClick={() => handleItemDetailClick(itemName, 'balls')}
                           >
-                            <div className="inventory-item-image">
+                            <div className="image-container small">
                               <img
                                 src={getItemImageUrl(itemName, 'balls')}
                                 alt={itemName}
@@ -2490,7 +2486,7 @@ const TrainerDetailPage = () => {
                               />
                             </div>
                             <div className="inventory-item-details">
-                              <span className="inventory-item-name">{itemName}</span>
+                              <span className="pc-box-number">{itemName}</span>
                               <span className="inventory-item-quantity">x{quantity}</span>
                             </div>
                           </div>
@@ -2503,14 +2499,14 @@ const TrainerDetailPage = () => {
                   {trainer.inventory.data.data.berries && Object.keys(trainer.inventory.data.data.berries).length > 0 && (
                     <div className="inventory-section">
                       <h3>Berries</h3>
-                      <div className="inventory-items-grid">
+                      <div className="images-grid">
                         {Object.entries(trainer.inventory.data.data.berries).map(([itemName, quantity], index) => (
                           <div 
                             className="inventory-item clickable-item" 
                             key={`berry-${index}`}
                             onClick={() => handleItemDetailClick(itemName, 'berries')}
                           >
-                            <div className="inventory-item-image">
+                            <div className="image-container small">
                               <img
                                 src={getItemImageUrl(itemName, 'berries')}
                                 alt={itemName}
@@ -2521,7 +2517,7 @@ const TrainerDetailPage = () => {
                               />
                             </div>
                             <div className="inventory-item-details">
-                              <span className="inventory-item-name">{itemName}</span>
+                              <span className="pc-box-number">{itemName}</span>
                               <span className="inventory-item-quantity">x{quantity}</span>
                             </div>
                           </div>
@@ -2534,14 +2530,14 @@ const TrainerDetailPage = () => {
                   {trainer.inventory.data.data.evolution && Object.keys(trainer.inventory.data.data.evolution).length > 0 && (
                     <div className="inventory-section">
                       <h3>Evolution Items</h3>
-                      <div className="inventory-items-grid">
+                      <div className="images-grid">
                         {Object.entries(trainer.inventory.data.data.evolution).map(([itemName, quantity], index) => (
                           <div 
                             className="inventory-item clickable-item" 
                             key={`evolution-${index}`}
                             onClick={() => handleItemDetailClick(itemName, 'evolution')}
                           >
-                            <div className="inventory-item-image">
+                            <div className="image-container small">
                               <img
                                 src={getItemImageUrl(itemName, 'evolution')}
                                 alt={itemName}
@@ -2552,7 +2548,7 @@ const TrainerDetailPage = () => {
                               />
                             </div>
                             <div className="inventory-item-details">
-                              <span className="inventory-item-name">{itemName}</span>
+                              <span className="pc-box-number">{itemName}</span>
                               <span className="inventory-item-quantity">x{quantity}</span>
                             </div>
                           </div>
@@ -2565,14 +2561,14 @@ const TrainerDetailPage = () => {
                   {trainer.inventory.data.data.helditems && Object.keys(trainer.inventory.data.data.helditems).length > 0 && (
                     <div className="inventory-section">
                       <h3>Held Items</h3>
-                      <div className="inventory-items-grid">
+                      <div className="images-grid">
                         {Object.entries(trainer.inventory.data.data.helditems).map(([itemName, quantity], index) => (
                           <div 
                             className="inventory-item clickable-item" 
                             key={`held-${index}`}
                             onClick={() => handleItemDetailClick(itemName, 'helditems')}
                           >
-                            <div className="inventory-item-image">
+                            <div className="image-container small">
                               <img
                                 src={getItemImageUrl(itemName, 'helditems')}
                                 alt={itemName}
@@ -2583,7 +2579,7 @@ const TrainerDetailPage = () => {
                               />
                             </div>
                             <div className="inventory-item-details">
-                              <span className="inventory-item-name">{itemName}</span>
+                              <span className="pc-box-number">{itemName}</span>
                               <span className="inventory-item-quantity">x{quantity}</span>
                             </div>
                           </div>
@@ -2596,14 +2592,14 @@ const TrainerDetailPage = () => {
                   {trainer.inventory.data.data.eggs && Object.keys(trainer.inventory.data.data.eggs).length > 0 && (
                     <div className="inventory-section">
                       <h3>Eggs</h3>
-                      <div className="inventory-items-grid">
+                      <div className="images-grid">
                         {Object.entries(trainer.inventory.data.data.eggs).map(([itemName, quantity], index) => (
                           <div 
                             className="inventory-item clickable-item" 
                             key={`egg-${index}`}
                             onClick={() => handleItemDetailClick(itemName, 'eggs')}
                           >
-                            <div className="inventory-item-image">
+                            <div className="image-container small">
                               <img
                                 src={getItemImageUrl(itemName, 'eggs')}
                                 alt={itemName}
@@ -2614,7 +2610,7 @@ const TrainerDetailPage = () => {
                               />
                             </div>
                             <div className="inventory-item-details">
-                              <span className="inventory-item-name">{itemName}</span>
+                              <span className="pc-box-number">{itemName}</span>
                               <span className="inventory-item-quantity">x{quantity}</span>
                             </div>
                           </div>
@@ -2627,14 +2623,14 @@ const TrainerDetailPage = () => {
                   {trainer.inventory.data.data.pastries && Object.keys(trainer.inventory.data.data.pastries).length > 0 && (
                     <div className="inventory-section">
                       <h3>Pastries</h3>
-                      <div className="inventory-items-grid">
+                      <div className="images-grid">
                         {Object.entries(trainer.inventory.data.data.pastries).map(([itemName, quantity], index) => (
                           <div 
                             className="inventory-item clickable-item" 
                             key={`pastry-${index}`}
                             onClick={() => handleItemDetailClick(itemName, 'pastries')}
                           >
-                            <div className="inventory-item-image">
+                            <div className="image-container small">
                               <img
                                 src={getItemImageUrl(itemName, 'pastries')}
                                 alt={itemName}
@@ -2645,7 +2641,7 @@ const TrainerDetailPage = () => {
                               />
                             </div>
                             <div className="inventory-item-details">
-                              <span className="inventory-item-name">{itemName}</span>
+                              <span className="pc-box-number">{itemName}</span>
                               <span className="inventory-item-quantity">x{quantity}</span>
                             </div>
                           </div>
@@ -2658,14 +2654,14 @@ const TrainerDetailPage = () => {
                   {trainer.inventory.data.data.antiques && Object.keys(trainer.inventory.data.data.antiques).length > 0 && (
                     <div className="inventory-section">
                       <h3>Antiques</h3>
-                      <div className="inventory-items-grid">
+                      <div className="images-grid">
                         {Object.entries(trainer.inventory.data.data.antiques).map(([itemName, quantity], index) => (
                           <div 
                             className="inventory-item clickable-item" 
                             key={`antique-${index}`}
                             onClick={() => handleItemDetailClick(itemName, 'antiques')}
                           >
-                            <div className="inventory-item-image">
+                            <div className="image-container small">
                               <img
                                 src={getItemImageUrl(itemName, 'antiques')}
                                 alt={itemName}
@@ -2676,7 +2672,7 @@ const TrainerDetailPage = () => {
                               />
                             </div>
                             <div className="inventory-item-details">
-                              <span className="inventory-item-name">{itemName}</span>
+                              <span className="pc-box-number">{itemName}</span>
                               <span className="inventory-item-quantity">x{quantity}</span>
                             </div>
                           </div>
@@ -2689,14 +2685,14 @@ const TrainerDetailPage = () => {
                   {trainer.inventory.data.data.seals && Object.keys(trainer.inventory.data.data.seals).length > 0 && (
                     <div className="inventory-section">
                       <h3>Seals</h3>
-                      <div className="inventory-items-grid">
+                      <div className="images-grid">
                         {Object.entries(trainer.inventory.data.data.seals).map(([itemName, quantity], index) => (
                           <div 
                             className="inventory-item clickable-item" 
                             key={`seal-${index}`}
                             onClick={() => handleItemDetailClick(itemName, 'seals')}
                           >
-                            <div className="inventory-item-image">
+                            <div className="image-container small">
                               <img
                                 src={getItemImageUrl(itemName, 'seals')}
                                 alt={itemName}
@@ -2707,7 +2703,7 @@ const TrainerDetailPage = () => {
                               />
                             </div>
                             <div className="inventory-item-details">
-                              <span className="inventory-item-name">{itemName}</span>
+                              <span className="pc-box-number">{itemName}</span>
                               <span className="inventory-item-quantity">x{quantity}</span>
                             </div>
                           </div>
@@ -2720,14 +2716,14 @@ const TrainerDetailPage = () => {
                   {trainer.inventory.data.data.keyitems && Object.keys(trainer.inventory.data.data.keyitems).length > 0 && (
                     <div className="inventory-section">
                       <h3>Key Items</h3>
-                      <div className="inventory-items-grid">
+                      <div className="images-grid">
                         {Object.entries(trainer.inventory.data.data.keyitems).map(([itemName, quantity], index) => (
                           <div 
                             className="inventory-item clickable-item" 
                             key={`keyitem-${index}`}
                             onClick={() => handleItemDetailClick(itemName, 'keyitems')}
                           >
-                            <div className="inventory-item-image">
+                            <div className="image-container small">
                               <img
                                 src={getItemImageUrl(itemName, 'keyitems')}
                                 alt={itemName}
@@ -2738,7 +2734,7 @@ const TrainerDetailPage = () => {
                               />
                             </div>
                             <div className="inventory-item-details">
-                              <span className="inventory-item-name">{itemName}</span>
+                              <span className="pc-box-number">{itemName}</span>
                               <span className="inventory-item-quantity">x{quantity}</span>
                             </div>
                           </div>
@@ -2752,14 +2748,14 @@ const TrainerDetailPage = () => {
           )}
 
           {activeTab === 'stats' && (
-            <div className="trainer-stats-tab">
+            <div className="stats-section">
               <h2>Trainer Statistics</h2>
 
               {/* Monster Stats Section */}
               <div className="stats-section">
                 <h3>Monster Statistics</h3>
                 <div className="stats-grid">
-                  <div className="stat-card">
+                  <div className="ref-item">
                     <div className="stat-icon">
                       <i className="fas fa-dragon"></i>
                     </div>
@@ -2769,7 +2765,7 @@ const TrainerDetailPage = () => {
                     </div>
                   </div>
 
-                  <div className="stat-card">
+                  <div className="ref-item">
                     <div className="stat-icon">
                       <i className="fas fa-image"></i>
                     </div>
@@ -2780,14 +2776,14 @@ const TrainerDetailPage = () => {
                       <div className="stat-label">Monster References</div>
                       <div className="stat-progress">
                         <div
-                          className="stat-progress-bar"
+                          className="level-bar"
                           style={{ width: `${trainer.monster_ref_percent || 0}%` }}
                         ></div>
                       </div>
                     </div>
                   </div>
 
-                  <div className="stat-card">
+                  <div className="ref-item">
                     <div className="stat-icon">
                       <i className="fas fa-trophy"></i>
                     </div>
@@ -2799,7 +2795,7 @@ const TrainerDetailPage = () => {
                     </div>
                   </div>
 
-                  <div className="stat-card">
+                  <div className="ref-item">
                     <div className="stat-icon">
                       <i className="fas fa-coins"></i>
                     </div>
@@ -2809,7 +2805,7 @@ const TrainerDetailPage = () => {
                     </div>
                   </div>
 
-                  <div className="stat-card">
+                  <div className="ref-item">
                     <div className="stat-icon">
                       <i className="fas fa-money-bill-wave"></i>
                     </div>
@@ -2850,8 +2846,8 @@ const TrainerDetailPage = () => {
                         <div className="type-bars">
                           {sortedTypes.map(([type, count]) => (
                             <div className="type-bar-container" key={type}>
-                              <div className="type-bar-label">
-                                <span className={`type-badge type-${type.toLowerCase()}`}>{type}</span>
+                              <div className="option-row">
+                                <span className={`badge type-${type.toLowerCase()}`}>{type}</span>
                                 <span className="type-count">{count}</span>
                               </div>
                               <div className="type-bar-wrapper">
@@ -2895,7 +2891,7 @@ const TrainerDetailPage = () => {
                         .slice(0, 3); // Show top 3 species
 
                       return (
-                        <div className="favorite-species-grid">
+                        <div className="refs-grid">
                           {sortedSpecies.map(([species, count]) => {
                             // Find examples of this species
                             const examples = monsters
@@ -2903,8 +2899,8 @@ const TrainerDetailPage = () => {
                               .slice(0, 3); // Show up to 3 examples
 
                             return (
-                              <div className="favorite-species-card" key={species}>
-                                <div className="favorite-species-header">
+                              <div className="ref-item" key={species}>
+                                <div className="resource-header">
                                   <h4>{species}</h4>
                                   <span className="species-count">{count} monsters</span>
                                 </div>
@@ -2955,12 +2951,12 @@ const TrainerDetailPage = () => {
                       ];
 
                       return specialStatuses.map(status => (
-                        <div className="special-status-card" key={status.name}>
+                        <div className="ref-item" key={status.name}>
                           <div className="special-status-icon">
                             <i className={status.icon}></i>
                           </div>
                           <div className="special-status-content">
-                            <div className="special-status-name">{status.name}</div>
+                            <div className="species-count">{status.name}</div>
                             <div className="special-status-count">{status.count}</div>
                           </div>
                         </div>
@@ -2998,10 +2994,10 @@ const TrainerDetailPage = () => {
                         .sort((a, b) => b[1] - a[1]);
 
                       return (
-                        <div className="attribute-chart">
+                        <div className="type-bars">
                           {sortedAttributes.map(([attribute, count]) => (
                             <div className="attribute-item" key={attribute}>
-                              <div className="attribute-name">{attribute}</div>
+                              <div className="type-count">{attribute}</div>
                               <div className="attribute-bar-wrapper">
                                 <div
                                   className="attribute-bar"
@@ -3055,14 +3051,14 @@ const TrainerDetailPage = () => {
                       });
 
                       return (
-                        <div className="level-bars">
+                        <div className="type-bars">
                           {Object.entries(levelRanges).map(([range, count]) => (
-                            <div className="level-bar-container" key={range}>
-                              <div className="level-bar-label">
-                                <span className="level-range">{range}</span>
-                                <span className="level-count">{count}</span>
+                            <div className="type-bar-container" key={range}>
+                              <div className="option-row">
+                                <span className="type-count">{range}</span>
+                                <span className="type-count">{count}</span>
                               </div>
-                              <div className="level-bar-wrapper">
+                              <div className="type-bar-wrapper">
                                 <div
                                   className="level-bar"
                                   style={{ width: `${(count / monsters.length) * 100}%` }}
@@ -3078,7 +3074,7 @@ const TrainerDetailPage = () => {
               )}
 
               {monsters.length === 0 && (
-                <div className="no-stats-message">
+                <div className="map-header">
                   <i className="fas fa-chart-bar"></i>
                   <p>This trainer doesn't have any monsters yet, so statistics cannot be calculated.</p>
                 </div>
@@ -3112,7 +3108,7 @@ const TrainerDetailPage = () => {
                 {/* Claim All Button */}
                 {isOwner && achievementStats && achievementStats.unclaimed > 0 && (
                   <button 
-                    className="claim-all-btn"
+                    className="button primary"
                     onClick={handleClaimAllAchievements}
                     disabled={isClaimingAll}
                   >
@@ -3140,50 +3136,50 @@ const TrainerDetailPage = () => {
                 <>
                   <div className="achievement-filters">
                     <button
-                      className={`filter-btn ${achievementFilter === 'all' ? 'active' : ''}`}
+                      className={`button filter ${achievementFilter === 'all' ? 'active' : ''}`}
                       onClick={() => setAchievementFilter('all')}
                     >
                       All ({achievements.length})
                     </button>
                     <button
-                      className={`filter-btn ${achievementFilter === 'unlocked' ? 'active' : ''}`}
+                      className={`button filter ${achievementFilter === 'unlocked' ? 'active' : ''}`}
                       onClick={() => setAchievementFilter('unlocked')}
                     >
                       Unlocked ({achievements.filter(a => a.unlocked).length})
                     </button>
                     <button
-                      className={`filter-btn ${achievementFilter === 'type' ? 'active' : ''}`}
+                      className={`button filter ${achievementFilter === 'type' ? 'active' : ''}`}
                       onClick={() => setAchievementFilter('type')}
                     >
                       Type ({achievements.filter(a => a.category === 'type').length})
                     </button>
                     <button
-                      className={`filter-btn ${achievementFilter === 'attribute' ? 'active' : ''}`}
+                      className={`button filter ${achievementFilter === 'attribute' ? 'active' : ''}`}
                       onClick={() => setAchievementFilter('attribute')}
                     >
                       Attribute ({achievements.filter(a => a.category === 'attribute').length})
                     </button>
                     <button
-                      className={`filter-btn ${achievementFilter === 'level100' ? 'active' : ''}`}
+                      className={`button filter ${achievementFilter === 'level100' ? 'active' : ''}`}
                       onClick={() => setAchievementFilter('level100')}
                     >
                       Level 100 ({achievements.filter(a => a.category === 'level100').length})
                     </button>
                     <button
-                      className={`filter-btn ${achievementFilter === 'trainer_level' ? 'active' : ''}`}
+                      className={`button filter ${achievementFilter === 'trainer_level' ? 'active' : ''}`}
                       onClick={() => setAchievementFilter('trainer_level')}
                     >
                       Trainer Level ({achievements.filter(a => a.category === 'trainer_level').length})
                     </button>
                     <button
-                      className={`filter-btn ${achievementFilter === 'special' ? 'active' : ''}`}
+                      className={`button filter ${achievementFilter === 'special' ? 'active' : ''}`}
                       onClick={() => setAchievementFilter('special')}
                     >
                       Special ({achievements.filter(a => a.category === 'special').length})
                     </button>
                     {isOwner && (
                       <button
-                        className={`filter-btn ${achievementFilter === 'claimable' ? 'active' : ''}`}
+                        className={`button filter ${achievementFilter === 'claimable' ? 'active' : ''}`}
                         onClick={() => setAchievementFilter('claimable')}
                       >
                         Claimable ({achievements.filter(a => a.canClaim).length})
@@ -3232,7 +3228,7 @@ const TrainerDetailPage = () => {
                     })().map(achievement => (
                         <div 
                           key={achievement.id} 
-                          className={`achievement-card ${achievement.unlocked ? 'unlocked' : 'locked'} ${achievement.claimed ? 'claimed' : ''}`}
+                          className={`achievement-card ${achievement.unlocked ? 'unlocked' : 'locked'}${achievement.claimed ? 'claimed' : ''}`}
                         >
                           <div className="achievement-icon">
                             {achievement.category === 'type' && <i className="fas fa-fire"></i>}
@@ -3247,11 +3243,11 @@ const TrainerDetailPage = () => {
                             <p className="achievement-description">{achievement.description}</p>
                             
                             <div className="achievement-progress">
-                              <div className="progress-bar">
-                                <div 
-                                  className="progress-fill" 
-                                  style={{ 
-                                    width: `${Math.min(100, (achievement.progress / achievement.requirement) * 100)}%` 
+                              <div className="progress">
+                                <div
+                                  className="progress-fill primary"
+                                  style={{
+                                    width: `${Math.min(100, (achievement.progress / achievement.requirement) * 100)}%`
                                   }}
                                 ></div>
                               </div>
@@ -3284,13 +3280,13 @@ const TrainerDetailPage = () => {
                               isOwner: isOwner
                             })}
                             {achievement.claimed && (
-                              <span className="status-claimed">
+                              <span className="status-locked">
                                 <i className="fas fa-check-circle"></i> Claimed
                               </span>
                             )}
                             {achievement.canClaim && (
                               <button 
-                                className="claim-btn"
+                                className="button primary"
                                 onClick={() => {
                                   console.log(`Claiming achievement: ${achievement.id} - ${achievement.name}`);
                                   handleClaimAchievement(achievement.id);
@@ -3300,7 +3296,7 @@ const TrainerDetailPage = () => {
                               </button>
                             )}
                             {achievement.unlocked && !achievement.claimed && !achievement.canClaim && (
-                              <span className="status-unlocked">
+                              <span className="status-locked">
                                 <i className="fas fa-unlock"></i> Unlocked
                               </span>
                             )}
@@ -3369,7 +3365,7 @@ const TrainerDetailPage = () => {
                             <div className="relation-card-content">
                               <div className="relation-header">
                                 <h3>{relation.name || 'Unknown Relation'}</h3>
-                                <span className="relation-type-badge">
+                                <span className="relation-badge">
                                   {isMonsterRelation ? 'Monster' : 'Trainer'}
                                 </span>
                               </div>
@@ -3380,7 +3376,7 @@ const TrainerDetailPage = () => {
                                   <div className="relation-entity-image-container">
                                     <Link to={`/trainers/${relation.trainer_id}`} className="entity-link">
                                       <img
-                                        className="relation-entity-image"
+                                        className="mega-stone-image"
                                         src={relatedTrainer.icon || relatedTrainer.main_ref || '/images/default_trainer.png'}
                                         alt={relatedTrainer.name}
                                         onError={(e) => {
@@ -3396,7 +3392,7 @@ const TrainerDetailPage = () => {
                                   <div className="relation-entity-image-container">
                                     <Link to={`/monsters/${relation.monster_id}`} className="entity-link">
                                       <img
-                                        className="relation-entity-image"
+                                        className="mega-stone-image"
                                         src={relatedMonster.img_link || relatedMonster.image_url || '/images/default_mon.png'}
                                         alt={relatedMonster.name}
                                         onError={(e) => {
@@ -3468,7 +3464,7 @@ const TrainerDetailPage = () => {
               <h2>Additional References</h2>
 
               {!trainer.additional_refs || trainer.additional_refs.length === 0 ? (
-                <div className="no-refs-message">
+                <div className="map-header">
                   <i className="fas fa-images"></i>
                   <p>This trainer doesn't have any additional references yet.</p>
                 </div>
@@ -3602,7 +3598,7 @@ const TrainerDetailPage = () => {
                         {megaInfo.mega_ability && (
                           <div className="mega-stat-group">
                             <h4>Ability</h4>
-                            <span className="mega-ability">{megaInfo.mega_ability}</span>
+                            <span className="badge secondary full-width">{megaInfo.mega_ability}</span>
                           </div>
                         )}
                       </div>
@@ -3614,12 +3610,12 @@ const TrainerDetailPage = () => {
           )}
 
           {activeTab === 'edit-boxes' && (
-            <div className="trainer-edit-boxes-tab">
-              <div className="edit-boxes-header">
+            <div className="stats-section">
+              <div className="tree-header">
                 <h2>Edit Boxes</h2>
                 <div className="edit-boxes-actions">
                   <button
-                    className="edit-boxes-button save-button"
+                    className="button primary"
                     onClick={handleSaveBoxes}
                     disabled={isSaving}
                   >
@@ -3634,7 +3630,7 @@ const TrainerDetailPage = () => {
                     )}
                   </button>
                   <button
-                    className="edit-boxes-button cancel-button"
+                    className="button secondary"
                     onClick={() => setActiveTab('boxes')}
                   >
                     <i className="fas fa-times"></i> Cancel
@@ -3643,18 +3639,18 @@ const TrainerDetailPage = () => {
               </div>
 
               {statusMessage && (
-                <div className={`status-message ${statusType}`}>
+                <div className={`status-message${statusType}`}>
                   {statusMessage}
                 </div>
               )}
 
               {/* Featured Monsters Section */}
-              <div className="edit-box-container featured-monsters-box">
+              <div className="ref-item featured-monsters-box">
                 <div className="edit-box-header">
                   <h3>Featured Monsters</h3>
                   <span>{featuredMonsters.length}/6</span>
                   <button
-                    className="featured-monsters-save-button"
+                    className="button primary sm no-flex"
                     onClick={handleSaveFeaturedMonsters}
                     disabled={isSaving}
                     title="Save featured monsters"
@@ -3668,14 +3664,6 @@ const TrainerDetailPage = () => {
                 </div>
                 <div
                   className="edit-box-grid featured-monsters-grid featured-monsters-compact"
-                  style={{
-                    display: 'grid',
-                    gridTemplateColumns: 'repeat(6, 1fr)',
-                    gridTemplateRows: '1fr',
-                    gap: '8px',
-                    maxWidth: '600px',
-                    margin: '0 auto'
-                  }}
                 >
                   {Array.from({ length: 6 }).map((_, slotIndex) => {
                     const featuredMonster = featuredMonsters[slotIndex];
@@ -3685,11 +3673,6 @@ const TrainerDetailPage = () => {
                         className={`edit-box-slot featured-monster-slot ${featuredMonster ? 'filled' : 'empty'}`}
                         key={slotIndex}
                         data-slot={slotIndex}
-                        style={{
-                          width: '80px',
-                          height: '80px',
-                          fontSize: '10px'
-                        }}
                         onDragOver={handleFeaturedDragOver}
                         onDragEnter={handleFeaturedDragEnter}
                         onDragLeave={handleFeaturedDragLeave}
@@ -3697,42 +3680,26 @@ const TrainerDetailPage = () => {
                       >
                         {featuredMonster ? (
                           <div
-                            className="edit-box-monster"
-                            style={{ position: 'relative', width: '100%', height: '100%' }}
+                            className="edit-box-monster map-background"
                             draggable={true}
                             onDragStart={(e) => handleDragStart(e, featuredMonster, -1, slotIndex)}
                             onDragEnd={handleDragEnd}
                           >
-                            <div className="edit-box-monster-image" style={{ width: '50px', height: '50px' }}>
+                            <div className="item-icon compact">
                               <img
                                 src={featuredMonster.img_link || '/images/default_mon.png'}
                                 alt={featuredMonster.name}
-                                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                                 onError={(e) => {
                                   e.target.onerror = null;
                                   e.target.src = '/images/default_mon.png';
                                 }}
                               />
                             </div>
-                            <div className="edit-box-monster-info" style={{ fontSize: '8px', padding: '2px' }}>
+                            <div className="edit-box-monster-info compact">
                               {featuredMonster.name.length > 8 ? featuredMonster.name.substring(0, 8) + '...' : featuredMonster.name}
                             </div>
                             <button
-                              className="remove-featured-button"
-                              style={{
-                                position: 'absolute',
-                                top: '2px',
-                                right: '2px',
-                                width: '16px',
-                                height: '16px',
-                                fontSize: '8px',
-                                padding: '0',
-                                border: 'none',
-                                borderRadius: '50%',
-                                backgroundColor: 'rgba(255, 0, 0, 0.7)',
-                                color: 'white',
-                                cursor: 'pointer'
-                              }}
+                              className="button danger icon sm"
                               onClick={(e) => {
                                 e.stopPropagation();
                                 const updatedFeatured = [...featuredMonsters];
@@ -3747,9 +3714,9 @@ const TrainerDetailPage = () => {
                             </button>
                           </div>
                         ) : (
-                          <div className="featured-monster-empty" style={{ fontSize: '8px', padding: '4px' }}>
-                            <i className="fas fa-star" style={{ fontSize: '12px', marginBottom: '2px' }}></i>
-                            <span style={{ display: 'block', lineHeight: '1' }}>Drop Here</span>
+                          <div className="featured-monster-empty compact">
+                            <i className="fas fa-star"></i>
+                            <span>Drop Here</span>
                           </div>
                         )}
                       </div>
@@ -3774,7 +3741,7 @@ const TrainerDetailPage = () => {
 
               <div className="edit-boxes-controls">
                 <button
-                  className="add-box-button"
+                  className="button primary"
                   onClick={handleAddBox}
                   title="Add a new empty box for better organization"
                 >
@@ -3787,7 +3754,7 @@ const TrainerDetailPage = () => {
                   const boxMonsters = getBoxMonsters(boxIndex);
 
                   return (
-                    <div className="edit-box-container" key={boxIndex}>
+                    <div className="ref-item" key={boxIndex}>
                       <div className="edit-box-header">
                         <h3>Box {boxIndex + 1}</h3>
                         <span>{boxMonsters.filter(Boolean).length}/30</span>
@@ -3816,7 +3783,7 @@ const TrainerDetailPage = () => {
                             >
                               {monster && (
                                 <div className="edit-box-monster">
-                                  <div className="edit-box-monster-image">
+                                  <div className="image-container medium">
                                     <img
                                       src={monster.img_link || '/images/default_mon.png'}
                                       alt={monster.name}
@@ -3862,7 +3829,7 @@ const TrainerDetailPage = () => {
             <div className="popup-header">
               <h2>{rewardPopupData.isBulk ? '🎉 Achievements Claimed!' : '🎉 Achievement Unlocked!'}</h2>
               <button 
-                className="popup-close-btn"
+                className="button danger icon sm"
                 onClick={() => setShowRewardPopup(false)}
               >
                 <i className="fas fa-times"></i>
@@ -3872,7 +3839,7 @@ const TrainerDetailPage = () => {
             <div className="popup-content">
               {rewardPopupData.isBulk ? (
                 // Bulk claim display
-                <div className="bulk-claim-info">
+                <div className="form">
                   <div className="bulk-stats">
                     <div className="bulk-stat-item">
                       <i className="fas fa-trophy"></i>
@@ -3920,7 +3887,7 @@ const TrainerDetailPage = () => {
                 </div>
               ) : (
                 // Single achievement display
-                <div className="achievement-info">
+                <div className="map-header">
                   <div className="achievement-icon-large">
                     {rewardPopupData.achievement.category === 'type' && <i className="fas fa-fire"></i>}
                     {rewardPopupData.achievement.category === 'attribute' && <i className="fas fa-shield-alt"></i>}
@@ -3954,7 +3921,7 @@ const TrainerDetailPage = () => {
             
             <div className="popup-footer">
               <button 
-                className="popup-ok-btn"
+                className="button primary"
                 onClick={() => setShowRewardPopup(false)}
               >
                 Awesome! 🎉
@@ -3978,7 +3945,7 @@ const TrainerDetailPage = () => {
       {showImageModal && (
         <div className="image-modal-overlay" onClick={closeImageModal}>
           <div className="image-modal-content" onClick={(e) => e.stopPropagation()}>
-            <button className="image-modal-close" onClick={closeImageModal}>
+            <button className="button danger icon sm" onClick={closeImageModal}>
               <i className="fas fa-times"></i>
             </button>
             <img

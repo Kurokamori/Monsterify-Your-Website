@@ -9,6 +9,7 @@ const {
   getMonsterRollerSettings,
   updateMonsterRollerSettings,
   updateUserTheme,
+  updateContentSettings,
   testDiscordConfig,
   discordAuth,
   discordCallback
@@ -52,5 +53,8 @@ router.put('/roller-settings', protect, updateMonsterRollerSettings);
 
 // Update theme preference
 router.put('/theme', protect, updateUserTheme);
+
+// Update content settings
+router.put('/content-settings', protect, updateContentSettings);
 
 module.exports = router;

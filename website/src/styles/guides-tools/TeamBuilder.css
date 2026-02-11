@@ -1,0 +1,447 @@
+.team-builder {
+  max-width: var(--container-max-width);
+  margin: 0 auto;
+}
+
+.team-builder-header {
+  text-align: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--divider-color);
+}
+
+.team-builder-header h2 {
+  color: var(--accent-color);
+  font-size: var(--font-size-3xl);
+  margin-bottom: 0.5rem;
+  font-weight: 700;
+}
+
+.team-builder-header p {
+  color: var(--text-color);
+  opacity: 0.8;
+  font-size: var(--font-size-lg);
+  margin-bottom: 1.5rem;
+}
+
+.monsters-table {
+  margin-bottom: 3rem;
+  background: var(--nav-background);
+  border-radius: 0.75rem;
+  border: 1px solid var(--border-color);
+  overflow: hidden;
+}
+
+.monster-row {
+  display: grid;
+  grid-template-columns: 0.5fr 1fr 1fr 2.5fr 0.5fr 0.5fr;
+  gap: 1rem;
+  padding: 1rem 1.5rem;
+  background: var(--input-background);
+  border-bottom: 1px solid var(--border-color);
+  font-weight: 600;
+  color: var(--accent-color);
+  font-size: var(--font-size-sm);
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+}
+
+.monster-row:last-child {
+  border-bottom: none;
+}
+
+.monster-row:hover {
+  background: var(--input-background);
+}
+
+.monster-name-col {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.monster-number {
+  background: var(--accent-color);
+  color: var(--background-color);
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: var(--font-size-sm);
+}
+
+.type-input-group {
+  align-items: center;
+  display: flex;
+  flex: 1;
+  gap: 0.75rem;
+  min-width: 120px;
+}
+
+.monster-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  align-items: center;
+}
+
+.team-analysis {
+  background: var(--card-background);
+  border-radius: 1rem;
+  padding: 2rem;
+  border: 1px solid var(--border-color);
+  box-shadow: 0 8px 25px var(--overlay-medium);
+  margin-top: 3rem;
+}
+
+.team-analysis h2 {
+  color: var(--accent-color);
+  font-size: var(--font-size-2xl);
+  margin-bottom: 1rem;
+  font-weight: 700;
+}
+
+.analysis-header {
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--divider-color);
+}
+
+.analysis-header p {
+  color: var(--text-color);
+  opacity: 0.8;
+  font-size: var(--font-size-lg);
+  margin: 0;
+}
+
+.effectiveness-chart {
+  border-bottom: 1px solid var(--divider-color);
+  margin-bottom: 2.5rem;
+  padding-bottom: 1.5rem;
+  text-align: center;
+}
+
+.effectiveness-chart h3 {
+  color: var(--accent-color);
+  font-size: var(--font-size-xl);
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+.team-chart-container {
+  overflow-x: auto;
+  border-radius: 0.5rem;
+  border: 1px solid var(--border-color);
+}
+
+.effectiveness-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--font-size-xs);
+  background: var(--nav-background);
+}
+
+.effectiveness-table th,
+.effectiveness-table td {
+  background: var(--input-background);
+  border: 1px solid var(--border-color);
+  color: var(--accent-color);
+  font-size: 1rem;
+  font-weight: 600;
+  max-width: 80px;
+  min-width: 45px;
+  padding: 0.375rem 0.25rem;
+  position: sticky;
+  text-align: center;
+  top: 0;
+  z-index: 10;
+}
+
+.monster-column {
+  min-width: 60px;
+  max-width: 80px;
+  padding: 0.25rem;
+}
+
+.monster-header-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.125rem;
+  line-height: 1.2;
+}
+
+.type-badge-mini {
+  background: var(--accent-color);
+  color: var(--background-color);
+  padding: 0.0625rem 0.125rem;
+  border-radius: 0.125rem;
+  font-size: 0.5rem;
+  font-weight: bold;
+  min-width: 0.75rem;
+  text-align: center;
+  line-height: 1;
+}
+
+.attacking-type-cell {
+  background: var(--input-background);
+  font-weight: 600;
+  position: sticky;
+  left: 0;
+  z-index: 5;
+  min-width: 80px;
+  max-width: 100px;
+  padding: 0.375rem 0.5rem;
+}
+
+.attacking-type-badge {
+  color: var(--text-color);
+  padding: 0.25rem 0.5rem;
+  border-radius: 1rem;
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+}
+
+.effectiveness-cell {
+  font-weight: 700;
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.effectiveness-cell.weakness {
+  background: var(--error-glow);
+  color: var(--error-light);
+}
+
+.effectiveness-cell.resistance {
+  background: var(--blue-glow);
+  color: var(--blue-light);
+}
+
+.effectiveness-cell.immunity {
+  background: var(--success-glow);
+  color: var(--success-light);
+}
+
+.effectiveness-cell.neutral {
+  color: var(--text-color);
+  opacity: 0.6;
+}
+
+.team-total-cell {
+  background: var(--accent-color);
+  color: var(--background-color);
+  font-weight: 700;
+  min-width: 60px;
+  max-width: 80px;
+  position: sticky;
+  right: 0;
+  z-index: 10;
+}
+
+.team-total-cell.team-weakness {
+  background: var(--error-glow);
+  color: var(--error-light);
+  font-weight: 800;
+}
+
+.team-total-cell.team-strength {
+  background: var(--success-glow);
+  color: var(--success-light);
+  font-weight: 800;
+}
+
+.team-total-cell.team-neutral {
+  background: var(--input-background);
+  color: var(--text-color);
+  opacity: 0.7;
+}
+
+.team-summary h3 {
+  color: var(--accent-color);
+  font-size: var(--font-size-xl);
+  margin-bottom: 1.5rem;
+  font-weight: 600;
+}
+
+.summary-sections {
+  display: grid;
+  grid-template-rows: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.summary-section {
+  background: var(--nav-background);
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  border: 1px solid var(--border-color);
+}
+
+.summary-section h4 {
+  color: var(--accent-color);
+  font-size: var(--font-size-lg);
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+.summary-item.weakness {
+  background: var(--error-glow);
+  border-color: var(--error-glow);
+}
+
+.summary-item.resistance {
+  background: var(--blue-glow);
+  border-color: var(--blue-glow);
+}
+
+.summary-item.immunity {
+  background: var(--success-glow);
+  border-color: var(--success-glow);
+}
+
+.count-badge {
+  background: var(--overlay-dark);
+  color: var(--text-color);
+  padding: 0.125rem 0.5rem;
+  border-radius: 0.25rem;
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+}
+
+.summary-item.weakness .count-badge {
+  background: var(--error-glow);
+  color: var(--error-light);
+}
+
+.summary-item.resistance .count-badge {
+  background: var(--blue-glow);
+  color: var(--blue-light);
+}
+
+.summary-item.immunity .count-badge {
+  background: var(--success-glow);
+  color: var(--success-light);
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  
+  .summary-sections {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .type-tags {
+    gap: 0.25rem;
+  }
+  
+  .type-input-group {
+    min-width: 100px;
+  }
+}
+
+@media (max-width: 768px) {
+  .monsters-table {
+    border-radius: 0.5rem;
+  }
+  
+  .monster-row {
+    display: none; /* Hide header on mobile, show labels inline instead */
+  }
+
+  
+  .monster-row:hover {
+    background: var(--card-background);
+  }
+  
+  .monster-name-col::before {
+    content: "Monster:";
+    font-weight: 600;
+    color: var(--accent-color);
+    font-size: var(--font-size-xs);
+    text-transform: uppercase;
+  }
+  
+  .type-input-group {
+    min-width: auto;
+  }
+  
+  .team-analysis {
+    padding: 1.5rem;
+  }
+  
+  .effectiveness-table th,
+  .effectiveness-table td {
+    padding: 0.25rem 0.125rem;
+    font-size: 0.55rem;
+    min-width: 35px;
+    max-width: 50px;
+  }
+  
+  .monster-column {
+    min-width: 45px;
+    max-width: 60px;
+    padding: 0.125rem;
+  }
+  
+  .attacking-type-cell {
+    min-width: 60px;
+    max-width: 80px;
+    padding: 0.25rem 0.375rem;
+    font-size: 0.55rem;
+  }
+
+  
+  .type-badge-mini {
+    font-size: 0.4rem;
+    padding: 0.0625rem 0.0625rem;
+    min-width: 0.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .team-builder-header {
+    text-align: left;
+  }
+  
+  .monsters-table {
+    margin: 0 -0.5rem 3rem -0.5rem;
+  }
+  
+  .monster-row {
+    padding: 0.75rem;
+  }
+  
+  .team-chart-container {
+    font-size: 0.5rem;
+  }
+  
+  .effectiveness-table th,
+  .effectiveness-table td {
+    padding: 0.125rem 0.0625rem;
+    font-size: 0.5rem;
+    min-width: 30px;
+    max-width: 40px;
+  }
+  
+  .monster-column {
+    min-width: 35px;
+    max-width: 45px;
+  }
+  
+  .attacking-type-cell {
+    min-width: 50px;
+    max-width: 65px;
+    font-size: 0.5rem;
+  }
+  
+  .monster-badges {
+    gap: 0.125rem;
+  }
+  
+}

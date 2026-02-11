@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import BackendFileUpload from '../common/BackendFileUpload';
-import './EvolutionEditor.css';
 
 const EvolutionEditor = ({ monsterId, evolutionData, onSave, onCancel, isOwner }) => {
   const [evolutionEntries, setEvolutionEntries] = useState([]);
@@ -162,7 +161,7 @@ const EvolutionEditor = ({ monsterId, evolutionData, onSave, onCancel, isOwner }
 
   return (
     <div className="evolution-editor-container">
-      <div className="evolution-editor-header">
+      <div className="info-card">
         <h3>
           <i className="fas fa-dna"></i>
           Edit Evolution Information
@@ -174,7 +173,7 @@ const EvolutionEditor = ({ monsterId, evolutionData, onSave, onCancel, isOwner }
       {evolutionEntries.length > 0 && (
         <div className="evolution-entries-list">
           <h4>Current Evolution Chain ({evolutionEntries.length} entries)</h4>
-          <div className="entries-container">
+          <div className="change-details">
             {evolutionEntries.map((entry, index) => (
               <div
                 key={entry.id}
@@ -192,7 +191,7 @@ const EvolutionEditor = ({ monsterId, evolutionData, onSave, onCancel, isOwner }
 
                 <div className="entry-preview">
                   {entry.image && (
-                    <div className="entry-image">
+                    <div className="image-container small">
                       <img
                         src={entry.image}
                         alt="Evolution"
@@ -212,14 +211,14 @@ const EvolutionEditor = ({ monsterId, evolutionData, onSave, onCancel, isOwner }
                       {[entry.type1, entry.type2, entry.type3, entry.type4, entry.type5]
                         .filter(Boolean)
                         .map((type, i) => (
-                          <span key={i} className={`type-badge type-${type.toLowerCase()}`}>
+                          <span key={i} className={`badge type-${type.toLowerCase()}`}>
                             {type}
                           </span>
                         ))}
                     </div>
                     {entry.attribute && (
                       <div className="entry-attribute">
-                        <span className={`attribute-badge attribute-${entry.attribute.toLowerCase()}`}>
+                        <span className={`badge attribute-${entry.attribute.toLowerCase()}`}>
                           {entry.attribute}
                         </span>
                       </div>
@@ -237,14 +236,14 @@ const EvolutionEditor = ({ monsterId, evolutionData, onSave, onCancel, isOwner }
 
                 <div className="entry-actions">
                   <button
-                    className="edit-button"
+                    className="button secondary icon sm"
                     onClick={() => handleEditEntry(index)}
                     title="Edit this entry"
                   >
                     <i className="fas fa-edit"></i>
                   </button>
                   <button
-                    className="delete-button"
+                    className="button danger icon sm"
                     onClick={() => handleDeleteEntry(index)}
                     title="Delete this entry"
                   >
@@ -269,7 +268,7 @@ const EvolutionEditor = ({ monsterId, evolutionData, onSave, onCancel, isOwner }
           {editingIndex !== null ? 'Edit Evolution Entry' : 'Add New Evolution Entry'}
         </h4>
         
-        <form className="evolution-form" onSubmit={(e) => e.preventDefault()}>
+        <form className="town-square" onSubmit={(e) => e.preventDefault()}>
           <div className="form-row">
             <div className="form-group image-upload-group">
               <label>Evolution Image:</label>
@@ -300,7 +299,7 @@ const EvolutionEditor = ({ monsterId, evolutionData, onSave, onCancel, isOwner }
                   value={formData.image}
                   onChange={handleInputChange}
                   placeholder="https://example.com/image.png"
-                  className="image-url-input"
+                  className="form-input"
                 />
               </div>
             </div>
@@ -446,7 +445,7 @@ const EvolutionEditor = ({ monsterId, evolutionData, onSave, onCancel, isOwner }
               <>
                 <button
                   type="button"
-                  className="update-button"
+                  className="button primary"
                   onClick={handleUpdateEntry}
                 >
                   <i className="fas fa-save"></i>
@@ -454,7 +453,7 @@ const EvolutionEditor = ({ monsterId, evolutionData, onSave, onCancel, isOwner }
                 </button>
                 <button
                   type="button"
-                  className="cancel-edit-button"
+                  className="button secondary"
                   onClick={() => {
                     setEditingIndex(null);
                     resetForm();
@@ -467,7 +466,7 @@ const EvolutionEditor = ({ monsterId, evolutionData, onSave, onCancel, isOwner }
             ) : (
               <button
                 type="button"
-                className="add-button"
+                className="button primary"
                 onClick={handleAddEntry}
               >
                 <i className="fas fa-plus"></i>
@@ -481,14 +480,14 @@ const EvolutionEditor = ({ monsterId, evolutionData, onSave, onCancel, isOwner }
       {/* Editor Actions */}
       <div className="evolution-editor-actions">
         <button
-          className="save-evolution-button"
+          className="button primary"
           onClick={handleSave}
         >
           <i className="fas fa-save"></i>
           Save Evolution Data
         </button>
         <button
-          className="cancel-evolution-button"
+          className="button secondary"
           onClick={onCancel}
         >
           <i className="fas fa-times"></i>

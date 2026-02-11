@@ -42,10 +42,10 @@ const PurchaseModal = ({
       <div className="purchase-modal">
         <div className="purchase-modal-header">
           <h2>Purchase Item</h2>
-          <button className="close-button" onClick={onCancel}>×</button>
+          <button className="button icon danger no-flex" onClick={onCancel}>×</button>
         </div>
         
-        <div className="purchase-modal-content">
+        <div className="antique-appraisal-body">
           <div className="item-preview">
             <img
               src={getItemImageUrl(item)}
@@ -66,7 +66,7 @@ const PurchaseModal = ({
               <label htmlFor="quantity">Quantity:</label>
               <div className="quantity-input-group">
                 <button
-                  className="quantity-button"
+                  className="button icon"
                   onClick={handleDecrement}
                   disabled={quantity <= 1}
                 >
@@ -81,7 +81,7 @@ const PurchaseModal = ({
                   max={maxQuantity}
                 />
                 <button
-                  className="quantity-button"
+                  className="button icon"
                   onClick={handleIncrement}
                   disabled={quantity >= maxQuantity}
                 >
@@ -117,14 +117,14 @@ const PurchaseModal = ({
         
         <div className="purchase-modal-actions">
           <button
-            className="cancel-button"
+            className="button secondary"
             onClick={onCancel}
             disabled={success}
           >
             Cancel
           </button>
           <button
-            className="confirm-button"
+            className="button primary"
             onClick={onConfirm}
             disabled={maxQuantity < 1 || success}
           >

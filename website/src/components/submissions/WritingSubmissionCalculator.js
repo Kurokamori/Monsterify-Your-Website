@@ -250,7 +250,7 @@ const WritingSubmissionCalculator = ({
           <button
             type="button"
             onClick={() => setShowAddTrainer(!showAddTrainer)}
-            className="add-entity-button"
+            className="button secondary block"
           >
             {showAddTrainer ? 'Cancel' : 'Add Trainer'}
           </button>
@@ -264,7 +264,7 @@ const WritingSubmissionCalculator = ({
                 <button
                   type="button"
                   onClick={() => handleRemoveTrainer(trainer.trainerId)}
-                  className="remove-entity"
+                  className="button danger"
                 >
                   &times;
                 </button>
@@ -288,7 +288,7 @@ const WritingSubmissionCalculator = ({
                 label="Select Trainer"
                 placeholder="Type to search trainers..."
                 showOwnership={true}
-                className="entity-select"
+                className="form-input"
                 required
               />
             </div>
@@ -296,10 +296,10 @@ const WritingSubmissionCalculator = ({
 
 
             <div className="form-actions">
-              <button type="button" onClick={handleAddTrainer} className="add-button">
+              <button type="button" onClick={handleAddTrainer} className="button primary">
                 Add Trainer
               </button>
-              <button type="button" onClick={() => setShowAddTrainer(false)} className="cancel-button">
+              <button type="button" onClick={() => setShowAddTrainer(false)} className="button secondary">
                 Cancel
               </button>
             </div>
@@ -314,7 +314,7 @@ const WritingSubmissionCalculator = ({
           <button
             type="button"
             onClick={() => setShowAddMonster(!showAddMonster)}
-            className="add-entity-button"
+            className="button secondary block"
           >
             {showAddMonster ? 'Cancel' : 'Add Monster'}
           </button>
@@ -328,7 +328,7 @@ const WritingSubmissionCalculator = ({
                 <button
                   type="button"
                   onClick={() => handleRemoveMonster(monster.monsterId)}
-                  className="remove-entity"
+                  className="button danger"
                 >
                   &times;
                 </button>
@@ -352,7 +352,7 @@ const WritingSubmissionCalculator = ({
                 label="Select Trainer First"
                 placeholder="Type to search trainers..."
                 showOwnership={true}
-                className="entity-select"
+                className="form-input"
                 required
               />
             </div>
@@ -365,7 +365,7 @@ const WritingSubmissionCalculator = ({
                   onSelect={(id) => setSelectedMonsterId(id)}
                   label="Select Monster"
                   placeholder="Type to search monsters..."
-                  className="entity-select"
+                  className="form-input"
                   required
                 />
               </div>
@@ -377,7 +377,7 @@ const WritingSubmissionCalculator = ({
               <button
                 type="button"
                 onClick={handleAddMonster}
-                className="add-button"
+                className="button primary"
                 disabled={!selectedMonsterId || !monsterTrainerId}
               >
                 Add Monster
@@ -390,7 +390,7 @@ const WritingSubmissionCalculator = ({
                   setSelectedMonsterId('');
                   setAvailableMonsters([]);
                 }}
-                className="cancel-button"
+                className="button secondary"
               >
                 Cancel
               </button>
@@ -409,7 +409,7 @@ const WritingSubmissionCalculator = ({
                 <span className="entity-name">{npc.name}</span>
                 <button
                   type="button"
-                  className="remove-entity"
+                  className="button icon danger"
                   onClick={() => handleRemoveNPC(npc.id)}
                 >
                   &times;
@@ -435,7 +435,7 @@ const WritingSubmissionCalculator = ({
                   value={npcName}
                   onChange={(e) => setNpcName(e.target.value)}
                   placeholder="NPC name for tracking"
-                  className="entity-select"
+                  className="form-input"
                 />
               </label>
             </div>
@@ -449,7 +449,7 @@ const WritingSubmissionCalculator = ({
                   value={npcWordCount}
                   onChange={(e) => setNpcWordCount(e.target.value)}
                   placeholder="Word count for this NPC"
-                  className="entity-select"
+                  className="form-input"
                 />
               </label>
             </div>
@@ -457,7 +457,7 @@ const WritingSubmissionCalculator = ({
             <div className="form-actions">
               <button
                 type="button"
-                className="cancel-button"
+                className="button secondary"
                 onClick={() => {
                   setShowAddNPC(false);
                   setNpcName('');
@@ -468,7 +468,7 @@ const WritingSubmissionCalculator = ({
               </button>
               <button
                 type="button"
-                className="add-button"
+                className="button primary"
                 onClick={handleAddNPC}
                 disabled={!npcWordCount || npcWordCount < 1}
               >
@@ -479,7 +479,7 @@ const WritingSubmissionCalculator = ({
         ) : (
           <button
             type="button"
-            className="add-entity-button"
+            className="button secondary"
             onClick={() => setShowAddNPC(true)}
           >
             + Add NPC
@@ -495,7 +495,7 @@ const WritingSubmissionCalculator = ({
 
       {/* Calculate Button */}
       <div className="calculator-actions">
-        <button type="button" onClick={handleCalculate} className="calculate-button">
+        <button type="button" onClick={handleCalculate} className="button secondary">
           Calculate Rewards
         </button>
       </div>

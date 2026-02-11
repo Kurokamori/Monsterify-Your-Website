@@ -259,14 +259,14 @@ const AvailableBosses = () => {
 
   return (
     <div className="bosses-page">
-      <div className="bosses-nav">
-        <Link to="/adventures/boss/available" className="bosses-nav-link active">
+      <div className="type-tags fw">
+        <Link to="/adventures/boss/available" className="button active">
           Available Bosses
         </Link>
-        <Link to="/adventures/boss/active" className="bosses-nav-link">
+        <Link to="/adventures/boss/active" className="button">
           Active Battles
         </Link>
-        <Link to="/adventures/boss/defeated" className="bosses-nav-link">
+        <Link to="/adventures/boss/defeated" className="button">
           Defeated Bosses
         </Link>
       </div>
@@ -290,7 +290,7 @@ const AvailableBosses = () => {
             </div>
             <div className="boss-info">
               <h3 className="boss-name">{boss.name}</h3>
-              <div className="boss-details">
+              <div className="type-tags fw">
                 <span className="boss-level">
                   <i className="fas fa-bolt"></i> Level {boss.level}
                 </span>
@@ -305,7 +305,7 @@ const AvailableBosses = () => {
                   <span className="attribute-label">Weaknesses:</span>
                   <div className="attribute-list">
                     {boss.weaknesses.map((weakness, index) => (
-                      <span className={`type-badge type-${weakness.toLowerCase()}`} key={index}>
+                      <span className={`badge type-${weakness.toLowerCase()}`} key={index}>
                         {weakness}
                       </span>
                     ))}
@@ -315,7 +315,7 @@ const AvailableBosses = () => {
                   <span className="attribute-label">Resistances:</span>
                   <div className="attribute-list">
                     {boss.resistances.map((resistance, index) => (
-                      <span className={`type-badge type-${resistance.toLowerCase()}`} key={index}>
+                      <span className={`badge type-${resistance.toLowerCase()}`} key={index}>
                         {resistance}
                       </span>
                     ))}
@@ -328,7 +328,7 @@ const AvailableBosses = () => {
                 <div className="rewards-list">
                   {boss.rewards.map((reward, index) => (
                     <span className="reward" key={index}>
-                      <i className={`fas ${
+                      <i className={`fas${
                         reward.type === 'coin' ? 'fa-coins' : 
                         reward.type === 'exp' ? 'fa-star' : 
                         'fa-box'
@@ -340,14 +340,14 @@ const AvailableBosses = () => {
               
               <div className="boss-actions">
                 <button 
-                  className="boss-button"
+                  className="button primary"
                   onClick={() => handleChallengeClick(boss)}
                 >
                   <i className="fas fa-dragon"></i> Challenge Boss
                 </button>
                 <Link 
                   to={`/adventures/boss/${boss.id}`} 
-                  className="boss-button secondary"
+                  className="button secondary"
                 >
                   <i className="fas fa-info-circle"></i> View Details
                 </Link>
@@ -380,7 +380,7 @@ const AvailableBosses = () => {
               Head to Active Battles to track your progress.
             </p>
             <button 
-              className="modal-button primary"
+              className="button primary"
               onClick={closeChallengeModal}
             >
               Go to Active Battles
@@ -412,7 +412,7 @@ const AvailableBosses = () => {
                       <span>Weaknesses:</span>
                       <div className="attribute-list">
                         {selectedBoss.weaknesses.map((weakness, index) => (
-                          <span className={`type-badge type-${weakness.toLowerCase()}`} key={index}>
+                          <span className={`badge type-${weakness.toLowerCase()}`} key={index}>
                             {weakness}
                           </span>
                         ))}
@@ -421,7 +421,7 @@ const AvailableBosses = () => {
                   </div>
                 </div>
                 
-                <div className="trainer-selector">
+                <div className="missions-filters">
                   <label>Select Trainer:</label>
                   <select
                     value={selectedTrainer}
@@ -438,7 +438,7 @@ const AvailableBosses = () => {
                 
                 <div className="monster-selector">
                   <label>Select Your Team (up to 3 monsters):</label>
-                  <div className="monster-grid">
+                  <div className="button">
                     {displayMonsters.map((monster) => (
                       <div 
                         key={monster.id}
@@ -461,7 +461,7 @@ const AvailableBosses = () => {
                             <span>Lv. {monster.level}</span>
                             <div className="monster-select-types">
                               {monster.types.map((type, index) => (
-                                <span className={`type-badge type-${type.toLowerCase()}`} key={index}>
+                                <span className={`badge type-${type.toLowerCase()}`} key={index}>
                                   {type}
                                 </span>
                               ))}
@@ -487,13 +487,13 @@ const AvailableBosses = () => {
                 
                 <div className="challenge-actions">
                   <button 
-                    className="modal-button secondary"
+                    className="button secondary"
                     onClick={closeChallengeModal}
                   >
                     Cancel
                   </button>
                   <button 
-                    className="modal-button primary"
+                    className="button primary"
                     onClick={handleChallengeBoss}
                     disabled={loading || selectedMonsters.length === 0}
                   >
@@ -521,14 +521,14 @@ const ActiveBosses = () => {
   // For brevity, showing a simplified version
   return (
     <div className="bosses-page">
-      <div className="bosses-nav">
-        <Link to="/adventures/boss/available" className="bosses-nav-link">
+      <div className="type-tags fw">
+        <Link to="/adventures/boss/available" className="button">
           Available Bosses
         </Link>
-        <Link to="/adventures/boss/active" className="bosses-nav-link active">
+        <Link to="/adventures/boss/active" className="button active">
           Active Battles
         </Link>
-        <Link to="/adventures/boss/defeated" className="bosses-nav-link">
+        <Link to="/adventures/boss/defeated" className="button">
           Defeated Bosses
         </Link>
       </div>
@@ -571,12 +571,12 @@ const ActiveBosses = () => {
                 <span>Battle Progress:</span>
                 <span>45%</span>
               </div>
-              <div className="progress-bar-container">
-                <div className="progress-bar" style={{ width: '45%' }}></div>
+              <div className="progress">
+                <div className="progress-fill primary" style={{ width: '45%' }}></div>
               </div>
             </div>
             <div className="battle-actions">
-              <button className="boss-button">
+              <button className="button primary">
                 <i className="fas fa-gamepad"></i> Continue Battle
               </button>
             </div>
@@ -676,14 +676,14 @@ const DefeatedBosses = () => {
 
   return (
     <div className="bosses-page">
-      <div className="bosses-nav">
-        <Link to="/adventures/boss/available" className="bosses-nav-link">
+      <div className="type-tags fw">
+        <Link to="/adventures/boss/available" className="button">
           Available Bosses
         </Link>
-        <Link to="/adventures/boss/active" className="bosses-nav-link">
+        <Link to="/adventures/boss/active" className="button">
           Active Battles
         </Link>
-        <Link to="/adventures/boss/defeated" className="bosses-nav-link active">
+        <Link to="/adventures/boss/defeated" className="button active">
           Defeated Bosses
         </Link>
       </div>
@@ -695,10 +695,10 @@ const DefeatedBosses = () => {
               <i className="fas fa-trophy"></i> Boss Defeated
             </div>
             
-            <div className="defeated-boss-header">
+            <div className="set-item">
               <div className="boss-info">
                 <h3>Victory against {boss.name}</h3>
-                <div className="boss-details">
+                <div className="type-tags fw">
                   <span className="boss-month">
                     <i className="fas fa-calendar"></i> {boss.month}/{boss.year}
                   </span>
@@ -729,11 +729,11 @@ const DefeatedBosses = () => {
             </div>
 
             {/* Top 3 Rankings Preview */}
-            <div className="top-rankings-preview">
+            <div className="prize-distribution">
               <h4>🏆 Top Damage Dealers</h4>
               <div className="top-three">
                 {boss.top_users && boss.top_users.slice(0, 3).map((user, index) => (
-                  <div key={user.user_id} className={`top-user ${getRankClass(index + 1)}`}>
+                  <div key={user.user_id} className={`top-user${getRankClass(index + 1)}`}>
                     <div className="rank-badge">
                       {getRankIcon(index + 1)}
                     </div>
@@ -749,13 +749,13 @@ const DefeatedBosses = () => {
             {/* Prize Distribution Info */}
             <div className="prize-distribution">
               <h4>🎁 Prize Distribution</h4>
-              <div className="prize-info">
-                <div className="first-place-prize">
-                  <span className="prize-label">🥇 1st Place:</span>
+              <div className="auth-form">
+                <div className="other-prizes">
+                  <span className="username">🥇 1st Place:</span>
                   <span className="prize-reward">Boss Monster Reward</span>
                 </div>
                 <div className="other-prizes">
-                  <span className="prize-label">🎉 All Other Participants:</span>
+                  <span className="username">🎉 All Other Participants:</span>
                   <span className="prize-reward">Grunt Monster Reward</span>
                 </div>
               </div>
@@ -763,14 +763,14 @@ const DefeatedBosses = () => {
 
             <div className="defeated-boss-actions">
               <button 
-                className="boss-button primary"
+                className="button primary"
                 onClick={() => handleViewRankings(boss)}
               >
                 <i className="fas fa-trophy"></i> View Full Rankings
               </button>
               <Link 
                 to={`/adventures/boss/${boss.id}`} 
-                className="boss-button secondary"
+                className="button secondary"
               >
                 <i className="fas fa-info-circle"></i> View Boss Details
               </Link>
@@ -793,10 +793,10 @@ const DefeatedBosses = () => {
         title={selectedBoss ? `${selectedBoss.boss.name} - Final Rankings` : 'Boss Rankings'}
       >
         {selectedBoss && (
-          <div className="boss-rankings-modal">
+          <div className="boss-form">
             <div className="boss-info-header">
               <h3>{selectedBoss.boss.name}</h3>
-              <div className="boss-battle-stats">
+              <div className="type-tags fw">
                 <span><i className="fas fa-calendar"></i> {selectedBoss.boss.month}/{selectedBoss.boss.year}</span>
                 <span><i className="fas fa-users"></i> {selectedBoss.total_participants} Participants</span>
                 {selectedBoss.boss.end_date && (
@@ -836,7 +836,7 @@ const DefeatedBosses = () => {
 
             <div className="modal-actions">
               <button 
-                className="modal-button primary"
+                className="button primary"
                 onClick={closeRankingsModal}
               >
                 Close

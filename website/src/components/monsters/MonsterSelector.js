@@ -158,7 +158,7 @@ const MonsterSelector = ({
               className={`monster-selector-card ${selectedMonster?.id === monster.id ? 'selected' : ''}`}
               onClick={() => onSelectMonster(monster)}
             >
-              <div className="monster-selector-card-image">
+              <div className="creature-image">
                 <img 
                   src={getMonsterImage(monster)} 
                   alt={monster.name || 'Monster'}
@@ -188,7 +188,7 @@ const MonsterSelector = ({
                         {getMonsterTypes(monster).map((type, index) => (
                           <span 
                             key={index} 
-                            className="monster-selector-type-badge"
+                            className="monster-selector-badge"
                             style={{ backgroundColor: getTypeColor(type) }}
                           >
                             {type}

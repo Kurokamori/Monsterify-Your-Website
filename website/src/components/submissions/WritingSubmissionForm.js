@@ -8,9 +8,10 @@ import ErrorMessage from '../common/ErrorMessage';
 import GiftRewards from './GiftRewards';
 import WritingSubmissionCalculator from './WritingSubmissionCalculator';
 import LevelCapReallocation from './LevelCapReallocation';
+import MatureContentCheckbox from './MatureContentCheckbox';
 
 
-const WritingSubmissionForm = ({ onSubmissionComplete }) => {
+const WritingSubmissionForm = ({ onSubmissionComplete, preselectedBookId }) => {
   const { currentUser } = useAuth();
 
   // Form state
@@ -19,6 +20,14 @@ const WritingSubmissionForm = ({ onSubmissionComplete }) => {
   const [contentType, setContentType] = useState('story');
   const [tags, setTags] = useState([]);
   const [tagInput, setTagInput] = useState('');
+  const [isMature, setIsMature] = useState(false);
+  const [contentRating, setContentRating] = useState({
+    gore: false,
+    nsfw_light: false,
+    nsfw_heavy: false,
+    triggering: false,
+    intense_violence: false
+  });
   const [content, setContent] = useState('');
   const [contentFile, setContentFile] = useState(null);
   const [contentUrl, setContentUrl] = useState('');
@@ -131,6 +140,18 @@ const WritingSubmissionForm = ({ onSubmissionComplete }) => {
       fetchUserBooks();
     }
   }, [currentUser]);
+
+  // Pre-select book if preselectedBookId is provided (for "Add Chapter" flow)
+  useEffect(() => {
+    if (preselectedBookId && userBooks.length > 0) {
+      const bookExists = userBooks.some(book => String(book.id) === String(preselectedBookId));
+      if (bookExists) {
+        setBelongsToBook(true);
+        setSelectedBookId(String(preselectedBookId));
+        setContentType('chapter');
+      }
+    }
+  }, [preselectedBookId, userBooks]);
 
   // Fetch all trainers for monster selection
   useEffect(() => {
@@ -324,6 +345,8 @@ const WritingSubmissionForm = ({ onSubmissionComplete }) => {
         isBook: isBook ? 1 : 0,
         parentId: belongsToBook && selectedBookId ? parseInt(selectedBookId) : null,
         chapterNumber: belongsToBook && chapterNumber ? parseInt(chapterNumber) : null,
+        isMature,
+        contentRating,
         ...dataToSend
       };
 
@@ -847,7 +870,7 @@ const WritingSubmissionForm = ({ onSubmissionComplete }) => {
           {/* Book/Chapter Options */}
           <div className="form-group">
             <label>Book Organization</label>
-            <div className="book-options">
+            <div className="container horizontal">
               <label className="checkbox-label">
                 <input
                   type="checkbox"
@@ -937,7 +960,7 @@ const WritingSubmissionForm = ({ onSubmissionComplete }) => {
 
           <div className="form-group">
             <label htmlFor="writing-tags">Add Tags</label>
-            <div className="tag-input-container">
+            <div className="type-row">
               <input
                 id="writing-tags"
                 type="text"
@@ -948,7 +971,7 @@ const WritingSubmissionForm = ({ onSubmissionComplete }) => {
               />
               <button
                 type="button"
-                className="tag-add-button"
+                className="button primary"
                 onClick={addTag}
               >
                 Add
@@ -963,7 +986,7 @@ const WritingSubmissionForm = ({ onSubmissionComplete }) => {
                   <span>{tag}</span>
                   <button
                     type="button"
-                    className="tag-remove-button"
+                    className="button icon danger"
                     onClick={() => removeTag(tag)}
                   >
                     &times;
@@ -974,6 +997,17 @@ const WritingSubmissionForm = ({ onSubmissionComplete }) => {
           )}
         </div>
 
+        {/* Content Rating */}
+        <div className="form-section">
+          <h3>Content Rating</h3>
+          <MatureContentCheckbox
+            isMature={isMature}
+            contentRating={contentRating}
+            onMatureChange={setIsMature}
+            onRatingChange={setContentRating}
+          />
+        </div>
+
         {/* Content - hidden in book mode */}
         {!isBook && (
           <div className="form-section">
@@ -981,7 +1015,7 @@ const WritingSubmissionForm = ({ onSubmissionComplete }) => {
 
             <div className="form-group">
               <label>Input Method</label>
-              <div className="input-method-options">
+              <div className="type-tags fw">
                 <label className="radio-label">
                   <input
                     type="radio"
@@ -1121,11 +1155,10 @@ const WritingSubmissionForm = ({ onSubmissionComplete }) => {
           )}
 
           {coverImagePreview && (
-            <div className="image-preview-container">
+            <div className="image-container medium">
               <img
                 src={coverImagePreview}
                 alt="Cover Preview"
-                className="image-preview"
               />
             </div>
           )}
@@ -1146,29 +1179,29 @@ const WritingSubmissionForm = ({ onSubmissionComplete }) => {
               <div className="chapter-list">
                 {chapters.map((ch, index) => (
                   <div key={index} className="chapter-card">
-                    <div className="chapter-card-header">
-                      <div className="chapter-card-info">
+                    <div className="option-row">
+                      <div className="detail-row">
                         <span className="chapter-card-number">Chapter {index + 1}</span>
                         <span className="chapter-card-title">{ch.title}</span>
                       </div>
                       <div className="chapter-card-actions">
                         <button
                           type="button"
-                          className="chapter-edit-button"
+                          className="button primary"
                           onClick={() => handleEditChapter(index)}
                         >
                           Edit
                         </button>
                         <button
                           type="button"
-                          className="chapter-remove-button"
+                          className="button danger"
                           onClick={() => handleRemoveChapter(index)}
                         >
                           &times;
                         </button>
                       </div>
                     </div>
-                    <div className="chapter-card-meta">
+                    <div className="type-tags fw">
                       <span>{ch.wordCount} words</span>
                       <span>{(ch.trainers?.length || 0) + (ch.monsters?.length || 0)} participants</span>
                     </div>
@@ -1180,7 +1213,7 @@ const WritingSubmissionForm = ({ onSubmissionComplete }) => {
             {!showAddChapter && (
               <button
                 type="button"
-                className="add-chapter-button"
+                className="button primary"
                 onClick={() => {
                   resetChapterForm();
                   setShowAddChapter(true);
@@ -1207,7 +1240,7 @@ const WritingSubmissionForm = ({ onSubmissionComplete }) => {
 
                 <div className="form-group">
                   <label>Input Method</label>
-                  <div className="input-method-options">
+                  <div className="type-tags fw">
                     <label className="radio-label">
                       <input
                         type="radio"
@@ -1308,14 +1341,14 @@ const WritingSubmissionForm = ({ onSubmissionComplete }) => {
                 <div className="chapter-form-actions">
                   <button
                     type="button"
-                    className="chapter-save-button"
+                    className="button primary"
                     onClick={handleSaveChapter}
                   >
                     {editingChapterIndex !== null ? 'Update Chapter' : 'Save Chapter'}
                   </button>
                   <button
                     type="button"
-                    className="chapter-cancel-button"
+                    className="button secondary"
                     onClick={resetChapterForm}
                   >
                     Cancel
@@ -1363,7 +1396,7 @@ const WritingSubmissionForm = ({ onSubmissionComplete }) => {
 
             <button
               type="button"
-              className="estimate-button"
+              className="button secondary"
               onClick={calculateRewardEstimate}
               disabled={loading}
             >
@@ -1376,7 +1409,7 @@ const WritingSubmissionForm = ({ onSubmissionComplete }) => {
 
                 <div className="reward-section">
                   <h5>Trainer Rewards</h5>
-                  <div className="reward-items">
+                  <div className="container cols-2 gap-md">
                     <div className="reward-item">
                       <span className="reward-label">Levels:</span>
                       <span className="reward-value">{rewardEstimate.levels}</span>
@@ -1390,7 +1423,7 @@ const WritingSubmissionForm = ({ onSubmissionComplete }) => {
 
                 <div className="reward-section">
                   <h5>Additional Rewards</h5>
-                  <div className="reward-items">
+                  <div className="container cols-2 gap-md">
                     <div className="reward-item">
                       <span className="reward-label">Garden Points:</span>
                       <span className="reward-value">{rewardEstimate.gardenPoints}</span>
@@ -1414,7 +1447,7 @@ const WritingSubmissionForm = ({ onSubmissionComplete }) => {
         <div className="form-actions">
           <button
             type="submit"
-            className="submit-button"
+            className="button success"
             disabled={loading}
           >
             {loading ? (

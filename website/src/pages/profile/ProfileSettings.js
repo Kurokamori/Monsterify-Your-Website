@@ -2,9 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useTheme, THEMES } from '../../contexts/ThemeContext';
 import ErrorMessage from '../../components/common/ErrorMessage';
+import ContentSettingsSection from '../../components/profile/ContentSettingsSection';
 
 const ProfileSettings = () => {
-  const { currentUser, updateProfile, updateMonsterRollerSettings } = useAuth();
+  const { currentUser, updateProfile, updateMonsterRollerSettings, updateContentSettings } = useAuth();
   const { theme, setTheme } = useTheme();
 
   const [loading, setLoading] = useState(false);
@@ -25,6 +26,16 @@ const ProfileSettings = () => {
     fakemon: true,
     finalfantasy: true,
     monsterhunter: true
+  });
+
+  // Content settings
+  const [contentSettings, setContentSettings] = useState({
+    mature_enabled: false,
+    gore: false,
+    nsfw_light: false,
+    nsfw_heavy: false,
+    triggering: false,
+    intense_violence: false
   });
 
   // Load user data on component mount
@@ -58,6 +69,30 @@ const ProfileSettings = () => {
         
         setMonsterSettings(settings);
       }
+
+      // Load content settings from currentUser if available
+      if (currentUser.content_settings) {
+        let contentSettingsData = currentUser.content_settings;
+
+        // Parse if it's a string
+        if (typeof contentSettingsData === 'string') {
+          try {
+            contentSettingsData = JSON.parse(contentSettingsData);
+          } catch (e) {
+            console.error('Error parsing content_settings:', e);
+            contentSettingsData = {
+              mature_enabled: false,
+              gore: false,
+              nsfw_light: false,
+              nsfw_heavy: false,
+              triggering: false,
+              intense_violence: false
+            };
+          }
+        }
+
+        setContentSettings(contentSettingsData);
+      }
     }
   }, [currentUser]);
 
@@ -67,6 +102,11 @@ const ProfileSettings = () => {
       ...prev,
       [type]: !prev[type]
     }));
+  };
+
+  // Handle content settings change
+  const handleContentSettingsChange = (newSettings) => {
+    setContentSettings(newSettings);
   };
 
   // Handle form submission
@@ -87,7 +127,10 @@ const ProfileSettings = () => {
       // Update monster roller settings
       const settingsSuccess = await updateMonsterRollerSettings(monsterSettings);
 
-      if (profileSuccess && settingsSuccess) {
+      // Update content settings
+      const contentSettingsSuccess = await updateContentSettings(contentSettings);
+
+      if (profileSuccess && settingsSuccess && contentSettingsSuccess) {
         setSuccess('Profile settings updated successfully!');
       } else {
         setError('Some settings could not be updated. Please try again.');
@@ -142,7 +185,7 @@ const ProfileSettings = () => {
           <p>Choose how the site looks:</p>
           <div className="theme-options">
             {THEMES.map(t => (
-              <label key={t.id} className={`theme-option${theme === t.id ? ' active' : ''}`}>
+              <label key={t.id} className={`theme-option ${theme === t.id ? 'active' : ''}`}>
                 <input
                   type="radio"
                   name="theme"
@@ -150,7 +193,7 @@ const ProfileSettings = () => {
                   checked={theme === t.id}
                   onChange={() => setTheme(t.id)}
                 />
-                <span className="theme-option-label">{t.label}</span>
+                <span className="trainer-name">{t.label}</span>
                 <small>{t.description}</small>
               </label>
             ))}
@@ -161,8 +204,8 @@ const ProfileSettings = () => {
           <h3>Monster Roller Settings</h3>
           <p>Select which monster types you want to enable for the monster roller:</p>
 
-          <div className="monster-types-grid">
-            <div className="monster-type-toggle">
+          <div className="container grid gap-md">
+            <div className="logo-link">
               <input
                 type="checkbox"
                 id="pokemon"
@@ -175,7 +218,7 @@ const ProfileSettings = () => {
               </label>
             </div>
 
-            <div className="monster-type-toggle">
+            <div className="logo-link">
               <input
                 type="checkbox"
                 id="digimon"
@@ -188,7 +231,7 @@ const ProfileSettings = () => {
               </label>
             </div>
 
-            <div className="monster-type-toggle">
+            <div className="logo-link">
               <input
                 type="checkbox"
                 id="yokai"
@@ -201,7 +244,7 @@ const ProfileSettings = () => {
               </label>
             </div>
 
-            <div className="monster-type-toggle">
+            <div className="logo-link">
               <input
                 type="checkbox"
                 id="pals"
@@ -214,7 +257,7 @@ const ProfileSettings = () => {
               </label>
             </div>
 
-            <div className="monster-type-toggle">
+            <div className="logo-link">
               <input
                 type="checkbox"
                 id="nexomon"
@@ -227,7 +270,7 @@ const ProfileSettings = () => {
               </label>
             </div>
 
-            <div className="monster-type-toggle">
+            <div className="logo-link">
               <input
                 type="checkbox"
                 id="fakemon"
@@ -240,7 +283,7 @@ const ProfileSettings = () => {
               </label>
             </div>
 
-            <div className="monster-type-toggle">
+            <div className="logo-link">
               <input
                 type="checkbox"
                 id="finalfantasy"
@@ -253,7 +296,7 @@ const ProfileSettings = () => {
               </label>
             </div>
 
-            <div className="monster-type-toggle">
+            <div className="logo-link">
               <input
                 type="checkbox"
                 id="monsterhunter"
@@ -268,10 +311,16 @@ const ProfileSettings = () => {
           </div>
         </div>
 
+        <ContentSettingsSection
+          contentSettings={contentSettings}
+          onSettingsChange={handleContentSettingsChange}
+          loading={loading}
+        />
+
         <div className="form-actions">
           <button
             type="submit"
-            className="primary-button"
+            className="button primary"
             disabled={loading}
           >
             {loading ? (

@@ -1,0 +1,48 @@
+/* ==============================
+   Rewards Display Styles
+   ============================== */
+
+.rewards-display {
+  margin-top: 1.5rem;
+  padding: 20px 0;
+  text-align: center;
+}
+
+.auth-header h3 {
+  font-size: 1.5rem;
+  color: var(--primary-color);
+  margin-bottom: 0.5rem;
+}
+
+.auth-header p {
+  color: var(--text-color);
+  font-size: 1.1rem;
+  margin: 0.5rem 0;
+  opacity: 0.8;
+}
+
+@media (max-width: 768px) {
+  .town-places {
+  gap: 0.75rem;
+  grid-template-columns: 1fr;
+}
+}
+
+/* ---------- Reward Icon Colors ---------- */
+
+.reward-icon.coin { background-color: var(--accent-color); }
+.reward-icon.item { background-color: var(--success-light); }
+.reward-icon.monster { background-color: var(--blue-color); }
+.reward-icon.level { background-color: var(--free-attribute); }
+
+/* ---------- All Claimed Message ---------- */
+
+.all-claimed-message {
+  text-align: center;
+  padding: 1rem;
+  background-color: var(--success-dark);
+  border-radius: 0.5rem;
+  color: var(--success-light);
+  font-weight: 600;
+  margin-top: 1.5rem;
+}
