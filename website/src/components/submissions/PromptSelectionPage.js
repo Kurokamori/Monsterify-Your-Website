@@ -190,6 +190,12 @@ const PromptSelectionPage = ({
                 onClick={() => handlePromptSelect(prompt)}
               >
                 <div className="prompt-card-header">
+                  {prompt.type === 'event' && prompt.event_name && (
+                    <div className="prompt-event-name">
+                      <i className="fas fa-star"></i>
+                      {prompt.event_name}
+                    </div>
+                  )}
                   <h4 className="prompt-title">{prompt.title}</h4>
                   <div className="prompt-badges">
                     <span className={`badge badge-type-${prompt.type}`}>

@@ -2245,10 +2245,37 @@
 
 .prompt-card-header {
   display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin-bottom: 0.5rem;
+}
+
+.prompt-card-header .prompt-title-row {
+  display: flex;
   justify-content: space-between;
   align-items: flex-start;
   gap: 0.5rem;
-  margin-bottom: 0.5rem;
+}
+
+.prompt-event-name {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.25rem 0.5rem;
+  background: linear-gradient(135deg, var(--accent-background) 0%, var(--warning-background) 100%);
+  border: 1px solid var(--accent-light);
+  border-radius: 0.25rem;
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  color: var(--accent-color);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 0.25rem;
+}
+
+.prompt-event-name i {
+  font-size: 0.7rem;
+  color: var(--warning-color);
 }
 
 .prompt-selection-card .prompt-title {

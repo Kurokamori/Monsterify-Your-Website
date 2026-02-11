@@ -92,13 +92,24 @@ const MainLayout = () => {
               Submissions
               <span className="dropdown-arrow"></span>
             </Link>
-            <div className="dropdown-content">
-              <Link to="/submissions?tab=gallery">Gallery</Link>
-              <Link to="/submissions?tab=library">Library</Link>
+            <div className="dropdown-content dropdown-sectioned">
+              <Link to="/submissions?tab=gallery" className="dropdown-mid-item">Gallery</Link>
+              <Link to="/submissions?tab=library" className="dropdown-mid-item">Library</Link>
               {isAuthenticated && (
                 <>
-                  <Link to="/submissions?tab=submit">Submit</Link>
-                  <Link to="/submissions?tab=my-submissions">My Submissions</Link>
+                  <Link to="/submissions?tab=my-submissions" className="dropdown-mid-item">My Submissions</Link>
+                  <div className="dropdown-section-header">Submit</div>
+                  <Link to="/submissions/art" className="dropdown-sub-item">Art Submission</Link>
+                  <Link to="/submissions/writing" className="dropdown-sub-item">Writing Submission</Link>
+                  <Link to="/submissions/monster-reference" className="dropdown-sub-item">Monster Reference</Link>
+                  <Link to="/submissions/trainer-reference" className="dropdown-sub-item">Trainer Reference</Link>
+                  <Link to="/submissions/mega-image-reference" className="dropdown-sub-item">Mega Monster Reference</Link>
+                  <Link to="/submissions/trainer-mega-reference" className="dropdown-sub-item">Mega Trainer Reference</Link>
+                  <div className="dropdown-section-header">Prompts</div>
+                  <Link to="/submissions/prompt/general" className="dropdown-sub-item">General Prompt</Link>
+                  <Link to="/submissions/prompt/progression" className="dropdown-sub-item">Progression Prompt</Link>
+                  <Link to="/submissions/prompt/monthly" className="dropdown-sub-item">Monthly Prompt</Link>
+                  <Link to="/submissions/prompt/event" className="dropdown-sub-item">Event Prompt</Link>
                 </>
               )}
             </div>
@@ -212,8 +223,19 @@ const MainLayout = () => {
               <Link to="/submissions?tab=library" className="mobile-nav-link" onClick={toggleMobileMenu}>Library</Link>
               {isAuthenticated && (
                 <>
-                  <Link to="/submissions?tab=submit" className="mobile-nav-link" onClick={toggleMobileMenu}>Submit</Link>
                   <Link to="/submissions?tab=my-submissions" className="mobile-nav-link" onClick={toggleMobileMenu}>My Submissions</Link>
+                  <div className="dropdown-section-header">Submit</div>
+                  <Link to="/submissions/art" className="mobile-nav-link mobile-sub-item" onClick={toggleMobileMenu}>Art Submission</Link>
+                  <Link to="/submissions/writing" className="mobile-nav-link mobile-sub-item" onClick={toggleMobileMenu}>Writing Submission</Link>
+                  <Link to="/submissions/monster-reference" className="mobile-nav-link mobile-sub-item" onClick={toggleMobileMenu}>Monster Reference</Link>
+                  <Link to="/submissions/trainer-reference" className="mobile-nav-link mobile-sub-item" onClick={toggleMobileMenu}>Trainer Reference</Link>
+                  <Link to="/submissions/mega-image-reference" className="mobile-nav-link mobile-sub-item" onClick={toggleMobileMenu}>Mega Monster Reference</Link>
+                  <Link to="/submissions/trainer-mega-reference" className="mobile-nav-link mobile-sub-item" onClick={toggleMobileMenu}>Mega Trainer Reference</Link>
+                  <div className="dropdown-section-header">Prompts</div>
+                  <Link to="/submissions/prompt/general" className="mobile-nav-link mobile-sub-item" onClick={toggleMobileMenu}>General Prompt</Link>
+                  <Link to="/submissions/prompt/progression" className="mobile-nav-link mobile-sub-item" onClick={toggleMobileMenu}>Progression Prompt</Link>
+                  <Link to="/submissions/prompt/monthly" className="mobile-nav-link mobile-sub-item" onClick={toggleMobileMenu}>Monthly Prompt</Link>
+                  <Link to="/submissions/prompt/event" className="mobile-nav-link mobile-sub-item" onClick={toggleMobileMenu}>Event Prompt</Link>
                 </>
               )}
             </div>
