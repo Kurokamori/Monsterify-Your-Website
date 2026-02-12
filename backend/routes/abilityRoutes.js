@@ -2,6 +2,16 @@ const express = require('express');
 const router = express.Router();
 const Ability = require('../models/Ability');
 
+// Helper to parse PostgreSQL text[] literal strings like "{grass, fire}" into arrays
+function parseTextArray(value) {
+  if (Array.isArray(value)) return value;
+  if (!value || typeof value !== 'string') return [];
+  // Strip surrounding braces and split by comma
+  const inner = value.replace(/^\{|\}$/g, '');
+  if (!inner.trim()) return [];
+  return inner.split(',').map(s => s.trim()).filter(s => s);
+}
+
 /**
  * @route   GET /api/abilities
  * @desc    Get all abilities with advanced filtering
@@ -43,13 +53,13 @@ router.get('/', async (req, res) => {
     });
 
     // Map abilities to include all fields with normalized names
-    // PostgreSQL text[] arrays are returned as JavaScript arrays
+    // Parse text[] fields that may come back as strings like "{grass, fire}"
     const abilities = result.data.map(ability => ({
       name: ability.name,
       effect: ability.effect || '',
       description: ability.description || '',
-      commonTypes: ability.common_types || [],
-      signatureMonsters: ability.signature_monsters || []
+      commonTypes: parseTextArray(ability.common_types),
+      signatureMonsters: parseTextArray(ability.signature_monsters)
     }));
 
     res.json({
@@ -145,8 +155,8 @@ router.get('/:name', async (req, res) => {
         name: ability.name,
         effect: ability.effect || '',
         description: ability.description || '',
-        commonTypes: ability.common_types || [],
-        signatureMonsters: ability.signature_monsters || []
+        commonTypes: parseTextArray(ability.common_types),
+        signatureMonsters: parseTextArray(ability.signature_monsters)
       }
     });
   } catch (error) {

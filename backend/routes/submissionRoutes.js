@@ -5,9 +5,9 @@ const { authenticateJWT } = require('../middleware/auth');
 const { optionalAuth } = require('../middleware/authMiddleware');
 const upload = require('../middleware/uploadMiddleware');
 
-// Public routes
+// Public routes (optionalAuth to support content filtering)
 // Get art gallery submissions
-router.get('/gallery', submissionController.getArtGallery);
+router.get('/gallery', optionalAuth, submissionController.getArtGallery);
 
 // Get writing library submissions (optionalAuth so we can filter empty books by owner)
 router.get('/library', optionalAuth, submissionController.getWritingLibrary);

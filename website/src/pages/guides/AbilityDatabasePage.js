@@ -131,7 +131,7 @@ const AbilityDatabasePage = () => {
         className={`ability-card ${isExpanded ? 'expanded' : ''}`}
         onClick={() => toggleExpanded(ability.name)}
       >
-        <div className="type-tags fw">
+        <div className="">
           <h3 className="ability-name">{ability.name}</h3>
           {hasTypes && (
             <div className="ability-types">
@@ -198,7 +198,7 @@ const AbilityDatabasePage = () => {
           )}
         </div>
 
-        <div className="button">
+        <div className="container horizontal gap-lg">
           <div className="container cols-2 gap-md">
             <label htmlFor="ability-search">
               <i className="fas fa-search"></i> Search by Name
@@ -318,7 +318,7 @@ const AbilityDatabasePage = () => {
             <p>Try adjusting your search or filters</p>
           </div>
         ) : (
-          <div className="button">
+          <div className="container vertical gap-md">
             {abilities.map(renderAbilityCard)}
           </div>
         )}
