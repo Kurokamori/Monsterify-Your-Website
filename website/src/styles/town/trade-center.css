@@ -15,9 +15,10 @@
 .trade-center-content {
   background: linear-gradient(135deg, var(--card-background) 0%, var(--nav-background) 100%);
   border-radius: var(--radius-lg);
-  padding: 2rem;
   box-shadow: var(--shadow-lg);
   border: 1px solid var(--accent-glow);
+  width: 1500px;
+  margin: 0rem auto;
 }
 
 .trade-form-section {
