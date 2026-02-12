@@ -27,6 +27,7 @@
 
 /* Gallery and library */
 @import './GalleryLibraryStyles.css';
+@import './CollaboratorManagement.css';
 
 /* Fakemon dex */
 @import './FakemonDexPage.css';

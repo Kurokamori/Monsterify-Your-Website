@@ -3,7 +3,6 @@ import Modal from '../common/Modal';
 import submissionService from '../../services/submissionService';
 import LoadingSpinner from '../common/LoadingSpinner';
 import { useAuth } from '../../contexts/AuthContext';
-import './CollaboratorManagement.css';
 
 const CollaboratorManagement = ({ bookId, bookTitle, isOpen, onClose, onCollaboratorsChange }) => {
   const { currentUser } = useAuth();
