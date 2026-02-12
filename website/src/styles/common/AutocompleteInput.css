@@ -1,5 +1,7 @@
 /* ==============================
    AutocompleteInput Component
+   ==============================
+   Using fluid values for responsive scaling
    ============================== */
 
 .autocomplete-input-container {
@@ -10,7 +12,7 @@
 /* Label styling - matches .form-group label */
 .autocomplete-label {
   display: block;
-  margin-bottom: 0.5rem;
+  margin-bottom: clamp(0.35rem, 1vw, 0.5rem);
   font-size: var(--font-size-base);
   font-weight: 600;
   color: var(--text-color);
@@ -33,7 +35,7 @@
 /* Validation Indicator */
 .validation-indicator {
   position: absolute;
-  right: 0.75rem;
+  right: clamp(0.5rem, 1.5vw, 0.75rem);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -45,7 +47,7 @@
 }
 
 .validation-indicator.invalid i {
-  font-size: 1rem;
+  font-size: clamp(0.875rem, 0.8rem + 0.4vw, 1rem);
 }
 
 .validation-indicator.valid {
@@ -53,7 +55,7 @@
 }
 
 .validation-indicator.valid i {
-  font-size: 1rem;
+  font-size: clamp(0.875rem, 0.8rem + 0.4vw, 1rem);
 }
 
 /* Dropdown */
@@ -63,12 +65,12 @@
   left: 0;
   right: 0;
   z-index: 1000;
-  max-height: 300px;
+  max-height: min(300px, 50vh);
   overflow-y: auto;
   background-color: var(--card-background);
   border: 1px solid var(--divider-color);
   border-top: none;
-  border-radius: 0 0 0.375rem 0.375rem;
+  border-radius: 0 0 clamp(0.25rem, 0.75vw, 0.375rem) clamp(0.25rem, 0.75vw, 0.375rem);
   box-shadow: 0 4px 12px var(--overlay-dark);
   scrollbar-color: var(--nav-hover) var(--card-background);
 }
@@ -92,7 +94,7 @@
 
 /* Dropdown options */
 .autocomplete-option {
-  padding: 0.75rem 1rem;
+  padding: clamp(0.5rem, 1.5vw, 0.75rem) clamp(0.75rem, 2vw, 1rem);
   cursor: pointer;
   border-bottom: 1px solid var(--divider-color);
   transition: background-color 0.15s ease;
@@ -123,7 +125,7 @@
   display: block;
   font-size: var(--font-size-sm);
   color: var(--text-muted);
-  margin-top: 0.25rem;
+  margin-top: clamp(0.15rem, 0.5vw, 0.25rem);
   line-height: 1.4;
 }
 
@@ -134,7 +136,7 @@
 
 /* No matches message */
 .autocomplete-no-matches {
-  padding: 0.75rem 1rem;
+  padding: clamp(0.5rem, 1.5vw, 0.75rem) clamp(0.75rem, 2vw, 1rem);
   text-align: center;
   color: var(--text-muted);
   font-style: italic;
@@ -145,12 +147,12 @@
 .autocomplete-description-display {
   display: flex;
   align-items: flex-start;
-  gap: 0.5rem;
-  margin-top: 0.5rem;
-  padding: 0.75rem 1rem;
+  gap: clamp(0.35rem, 1vw, 0.5rem);
+  margin-top: clamp(0.35rem, 1vw, 0.5rem);
+  padding: clamp(0.5rem, 1.5vw, 0.75rem) clamp(0.75rem, 2vw, 1rem);
   background-color: var(--accent-glow);
   border: 1px solid var(--accent-glow);
-  border-radius: 0.375rem;
+  border-radius: clamp(0.25rem, 0.75vw, 0.375rem);
   font-size: var(--font-size-sm);
   color: var(--text-color);
 }
@@ -164,27 +166,37 @@
 /* Help Text - matches .field-note */
 .field-note {
   display: block;
-  margin-top: 0.25rem;
+  margin-top: clamp(0.15rem, 0.5vw, 0.25rem);
   font-size: var(--font-size-xs);
   color: var(--text-muted);
   font-style: italic;
 }
 
-/* Responsive adjustments */
-@media (max-width: 768px) {
-  .autocomplete-dropdown {
-    max-height: 200px;
-  }
+/* ==============================================
+   RESPONSIVE STYLES
+   ============================================== */
 
+/* ---------- Accessibility: Reduced Motion ---------- */
+@media (prefers-reduced-motion: reduce) {
   .autocomplete-option {
-    padding: 0.625rem 0.75rem;
+    transition: none;
+  }
+}
+
+/* ---------- Touch Device Optimizations ---------- */
+@media (hover: none) and (pointer: coarse) {
+  .autocomplete-option {
+    min-height: 44px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
   }
 
-  .autocomplete-option .option-name {
-    font-size: var(--font-size-sm);
+  .autocomplete-option:hover {
+    background-color: transparent;
   }
 
-  .autocomplete-option .option-description {
-    font-size: var(--font-size-xs);
+  .autocomplete-option:active {
+    background-color: var(--nav-hover);
   }
 }

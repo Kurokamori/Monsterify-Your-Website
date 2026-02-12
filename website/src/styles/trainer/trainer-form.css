@@ -3,6 +3,7 @@
 
    Create/Edit trainer pages, form tabs,
    buttons, and form elements.
+   Using fluid values for responsive scaling
    ============================== */
 
 /* ===== Create page ===== */
@@ -17,7 +18,7 @@
 
 .trainer-edit-form {
   background-color: var(--card-background);
-  border-radius: 8px;
+  border-radius: clamp(6px, 1.5vw, 8px);
   box-shadow: 0 2px 10px var(--overlay-light);
   overflow: hidden;
 }
@@ -30,15 +31,15 @@
 }
 
 .trainer-edit-tab {
-  padding: 15px 20px;
+  padding: clamp(10px, 2.5vw, 15px) clamp(12px, 3vw, 20px);
   background: none;
   border: none;
-  font-size: .95rem;
+  font-size: clamp(0.85rem, 0.8rem + 0.25vw, 0.95rem);
   color: var(--text-muted);
   cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: clamp(6px, 1.5vw, 8px);
   transition: all .2s;
   white-space: nowrap;
 }
@@ -48,22 +49,22 @@
   color:var(--accent-color); background-color:var(--card-background); font-weight:500; box-shadow:0 2px 0 var(--accent-color);
 }
 
-.trainer-create-content { padding:20px; }
+.trainer-create-content { padding: clamp(12px, 3vw, 20px); }
 
 .trainer-edit-footer {
-  padding: 20px;
+  padding: clamp(12px, 3vw, 20px);
   border-top: 1px solid var(--border-color);
   display: flex;
   justify-content: flex-end;
-  gap: 10px;
+  gap: clamp(6px, 1.5vw, 10px);
 }
 
 /* ===== Edit Trainer ===== */
 
 .edit-trainer-form {
   background-color: var(--card-background);
-  border-radius: .5rem;
-  padding: 2rem;
+  border-radius: clamp(0.375rem, 1vw, 0.5rem);
+  padding: clamp(1.25rem, 3vw, 2rem);
   box-shadow: 0 2px 4px var(--overlay-light);
 }
 
@@ -72,14 +73,14 @@
 .secrets-list {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
-  margin-bottom: 1.5rem;
+  gap: clamp(1rem, 2.5vw, 1.5rem);
+  margin-bottom: clamp(1rem, 2.5vw, 1.5rem);
 }
 
 .secret-item {
   background-color: var(--nav-background);
-  border-radius: 0.5rem;
-  padding: 1.5rem;
+  border-radius: clamp(0.375rem, 1vw, 0.5rem);
+  padding: clamp(1rem, 2.5vw, 1.5rem);
   box-shadow: 0 2px 4px var(--overlay-light);
 }
 
@@ -87,7 +88,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1rem;
+  margin-bottom: clamp(0.75rem, 2vw, 1rem);
 }
 
 .secret-header h3 {
@@ -101,17 +102,17 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 2rem;
+  padding: clamp(1.25rem, 3vw, 2rem);
   background-color: var(--nav-background);
-  border-radius: 0.5rem;
-  margin-bottom: 1.5rem;
+  border-radius: clamp(0.375rem, 1vw, 0.5rem);
+  margin-bottom: clamp(1rem, 2.5vw, 1.5rem);
   text-align: center;
 }
 
 .no-secrets i {
-  font-size: 2.5rem;
+  font-size: clamp(2rem, 4vw + 0.5rem, 2.5rem);
   color: var(--text-muted);
-  margin-bottom: 1rem;
+  margin-bottom: clamp(0.75rem, 2vw, 1rem);
 }
 
 .no-secrets p {
@@ -129,14 +130,14 @@
 .relations-list {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
-  margin-bottom: 1.5rem;
+  gap: clamp(1rem, 2.5vw, 1.5rem);
+  margin-bottom: clamp(1rem, 2.5vw, 1.5rem);
 }
 
 .relation-item {
   background-color: var(--nav-background);
-  border-radius: 0.5rem;
-  padding: 1.5rem;
+  border-radius: clamp(0.375rem, 1vw, 0.5rem);
+  padding: clamp(1rem, 2.5vw, 1.5rem);
   box-shadow: 0 2px 4px var(--overlay-light);
 }
 
@@ -144,7 +145,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1rem;
+  margin-bottom: clamp(0.75rem, 2vw, 1rem);
 }
 
 .relation-header h3 {
@@ -158,17 +159,17 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 2rem;
+  padding: clamp(1.25rem, 3vw, 2rem);
   background-color: var(--nav-background);
-  border-radius: 0.5rem;
-  margin-bottom: 1.5rem;
+  border-radius: clamp(0.375rem, 1vw, 0.5rem);
+  margin-bottom: clamp(1rem, 2.5vw, 1.5rem);
   text-align: center;
 }
 
 .no-relations i {
-  font-size: 2.5rem;
+  font-size: clamp(2rem, 4vw + 0.5rem, 2.5rem);
   color: var(--text-muted);
-  margin-bottom: 1rem;
+  margin-bottom: clamp(0.75rem, 2vw, 1rem);
 }
 
 .no-relations p {
@@ -188,19 +189,19 @@
 }
 
 .trainer-edit-content {
-  padding: 20px;
+  padding: clamp(12px, 3vw, 20px);
 }
 
 /* ===== Add Trainer Page ===== */
 
 .trainer-form {
-  margin-bottom: 3rem;
+  margin-bottom: clamp(2rem, 4vw, 3rem);
 }
 
 .jump-button {
   position: fixed;
-  top: 100px;
-  left: 20px;
+  top: clamp(80px, 12vh, 100px);
+  left: clamp(12px, 3vw, 20px);
   z-index: 1000;
 }
 
@@ -208,21 +209,21 @@
 /* ===== Additional References (Add page) ===== */
 
 .additional-ref-item {
-  margin-bottom: 2rem;
-  padding-bottom: 1.5rem;
+  margin-bottom: clamp(1.5rem, 3vw, 2rem);
+  padding-bottom: clamp(1rem, 2.5vw, 1.5rem);
   border-bottom: 1px dashed var(--divider-color);
 }
 
 
 .edit-monster-container .additional-refs-list{
-  display:flex; flex-direction:column; gap:1.5rem; margin-bottom:1.5rem;
+  display:flex; flex-direction:column; gap: clamp(1rem, 2.5vw, 1.5rem); margin-bottom: clamp(1rem, 2.5vw, 1.5rem);
 }
 
 .edit-monster-container .additional-ref-item{
-  background-color:var(--nav-background); border-radius:.5rem; padding:1.5rem; box-shadow:0 2px 4px var(--overlay-light);
+  background-color:var(--nav-background); border-radius: clamp(0.375rem, 1vw, 0.5rem); padding: clamp(1rem, 2.5vw, 1.5rem); box-shadow:0 2px 4px var(--overlay-light);
 }
 
-.edit-monster-container .adopt-card{ display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem; }
+.edit-monster-container .adopt-card{ display:flex; justify-content:space-between; align-items:center; margin-bottom: clamp(0.75rem, 2vw, 1rem); }
 .edit-monster-container .adopt-card h3{ margin:0; font-size:var(--font-size-lg); color:var(--accent-color); }
 
 /* Edit container remove button: Use unified button system from common/buttons.css
@@ -233,14 +234,14 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 2rem;
+  padding: clamp(1.25rem, 3vw, 2rem);
   background-color: var(--nav-background);
-  border-radius: .5rem;
-  margin-bottom: 1.5rem;
+  border-radius: clamp(0.375rem, 1vw, 0.5rem);
+  margin-bottom: clamp(1rem, 2.5vw, 1.5rem);
   text-align: center;
 }
 
-.no-additional-refs i{ font-size:2.5rem; color:var(--text-muted); margin-bottom:1rem; }
+.no-additional-refs i{ font-size: clamp(2rem, 4vw + 0.5rem, 2.5rem); color:var(--text-muted); margin-bottom: clamp(0.75rem, 2vw, 1rem); }
 .no-additional-refs p{ margin:0; color:var(--text-muted); }
 
 /* Add ref button container: Use unified button system from common/buttons.css
@@ -251,7 +252,7 @@
 .file-upload-container {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: clamp(0.75rem, 2vw, 1rem);
   align-items: flex-start;
 }
 
@@ -260,21 +261,21 @@
 }
 
 .file-upload-container .image-container {
-  margin-top: 1rem;
+  margin-top: clamp(0.75rem, 2vw, 1rem);
 }
 
 .file-upload-container .image-container.medium img {
-  max-width: 200px;
-  max-height: 200px;
+  max-width: clamp(150px, 25vw + 50px, 200px);
+  max-height: clamp(150px, 25vw + 50px, 200px);
   object-fit: cover;
-  border-radius: 0.5rem;
+  border-radius: clamp(0.375rem, 1vw, 0.5rem);
   border: 1px solid var(--border-color);
 }
 
 /* ===== Section Description ===== */
 
 .section-description {
-  margin: 0 0 1.5rem 0;
+  margin: 0 0 clamp(1rem, 2.5vw, 1.5rem) 0;
   color: var(--text-muted);
   font-size: var(--font-size-sm);
 }
@@ -283,7 +284,7 @@
 
 .field-note {
   display: block;
-  margin-top: 0.25rem;
+  margin-top: clamp(0.15rem, 0.5vw, 0.25rem);
   font-size: var(--font-size-xs);
   color: var(--text-muted);
 }
@@ -304,7 +305,6 @@
 
   .radio-group {
     flex-direction: column;
-    gap: 0.75rem;
   }
 
   .guide-card {
@@ -313,29 +313,27 @@
     text-align: center;
   }
 
-  .secrets-list,
-  .relations-list {
-    gap: 1rem;
-  }
-
-  .secret-item,
-  .relation-item {
-    padding: 1rem;
-  }
-
   .secret-header,
   .relation-header {
     flex-direction: column;
-    gap: 0.75rem;
     align-items: flex-start;
   }
 
   .file-upload-container {
     align-items: center;
   }
+}
 
-  .file-upload-container .image-container.medium img {
-    max-width: 150px;
-    max-height: 150px;
+/* ---------- Accessibility: Reduced Motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .trainer-edit-tab {
+    transition: none;
+  }
+}
+
+/* ---------- Touch Device Optimizations ---------- */
+@media (hover: none) and (pointer: coarse) {
+  .trainer-edit-tab {
+    min-height: 44px;
   }
 }

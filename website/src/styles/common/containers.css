@@ -1,12 +1,14 @@
 /* ==============================
    Page Containers & Headers
+   ==============================
+   Using fluid values with clamp() for smooth scaling
    ============================== */
 
-/* main content container */
+/* main content container - fluid width */
 .main-content-container {
-  width: 90vw;
-  max-width: var(--container-max-width);
+  width: min(95vw, var(--container-max-width));
   margin: 0 auto;
+  padding-inline: clamp(0.5rem, 2vw, 1rem);
 }
 
 /* ---------- Section Title ---------- */
@@ -16,11 +18,11 @@
   border-bottom: 1px solid var(--divider-color);
   color: var(--accent-color);
   display: flex;
-  font-size: 1.1rem;
+  font-size: clamp(0.95rem, 1vw + 0.5rem, 1.1rem);
   font-weight: 600;
-  gap: 0.75rem;
-  margin-bottom: 1.5rem;
-  padding-bottom: 0.5rem;
+  gap: clamp(0.5rem, 1.5vw, 0.75rem);
+  margin-bottom: clamp(1rem, 3vw, 1.5rem);
+  padding-bottom: clamp(0.35rem, 1vw, 0.5rem);
 }
 
 .npc-section .section-title {
@@ -52,7 +54,9 @@
   margin: 0;
 }
 
-/* ======== GRID SYSTEM ======== */
+/* ======== GRID SYSTEM ========
+   Using fluid minmax values with clamp() for smoother breakpoints
+   ======== */
 
 /* Base grid display (use with size modifiers) */
 .container.grid-xs,
@@ -70,46 +74,46 @@
   display: grid;
 }
 
-/* Responsive Auto-sizing Grids */
-.container.grid-xs { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); }
-.container.grid-sm { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
-.container.grid-md { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
-.container.grid { grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); }
-.container.grid-lg { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
-.container.grid-xl { grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); }
-.container.grid-2xl { grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); }
+/* Fluid Auto-sizing Grids - minmax adapts based on viewport */
+.container.grid-xs { grid-template-columns: repeat(auto-fill, minmax(clamp(90px, 12vw + 40px, 120px), 1fr)); }
+.container.grid-sm { grid-template-columns: repeat(auto-fill, minmax(clamp(120px, 15vw + 40px, 150px), 1fr)); }
+.container.grid-md { grid-template-columns: repeat(auto-fill, minmax(clamp(160px, 18vw + 50px, 200px), 1fr)); }
+.container.grid    { grid-template-columns: repeat(auto-fit, minmax(clamp(180px, 20vw + 60px, 250px), 1fr)); }
+.container.grid-lg { grid-template-columns: repeat(auto-fill, minmax(clamp(200px, 22vw + 70px, 280px), 1fr)); }
+.container.grid-xl { grid-template-columns: repeat(auto-fill, minmax(clamp(220px, 24vw + 80px, 300px), 1fr)); }
+.container.grid-2xl { grid-template-columns: repeat(auto-fill, minmax(clamp(250px, 28vw + 90px, 350px), 1fr)); }
 
-/* Fixed Column Grids */
-.container.cols-2 { grid-template-columns: repeat(2, 1fr); }
-.container.cols-3 { grid-template-columns: repeat(3, 1fr); }
-.container.cols-4 { grid-template-columns: repeat(4, 1fr); }
-.container.cols-5 { grid-template-columns: repeat(5, 1fr); }
-.container.cols-6 { grid-template-columns: repeat(6, 1fr); }
+/* Fixed Column Grids - responsive column count */
+.container.cols-2 { grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr)); }
+.container.cols-3 { grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr)); }
+.container.cols-4 { grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr)); }
+.container.cols-5 { grid-template-columns: repeat(auto-fit, minmax(min(100%, 160px), 1fr)); }
+.container.cols-6 { grid-template-columns: repeat(auto-fit, minmax(min(100%, 140px), 1fr)); }
 
 /* Legacy alias */
-.container.five { grid-template-columns: repeat(5, 1fr); }
+.container.five { grid-template-columns: repeat(auto-fit, minmax(min(100%, 160px), 1fr)); }
 
-/* ======== GAP MODIFIERS ======== */
+/* ======== FLUID GAP MODIFIERS ======== */
 
-.container.gap-xs { gap: 0.25rem; }
-.container.gap-sm { gap: 0.5rem; }
-.container.gap-md { gap: 1rem; }
-.container.gap-lg { gap: 1.5rem; }
-.container.gap-xl { gap: 2rem; }
+.container.gap-xs { gap: clamp(0.15rem, 0.5vw, 0.25rem); }
+.container.gap-sm { gap: clamp(0.35rem, 1vw, 0.5rem); }
+.container.gap-md { gap: clamp(0.75rem, 2vw, 1rem); }
+.container.gap-lg { gap: clamp(1rem, 3vw, 1.5rem); }
+.container.gap-xl { gap: clamp(1.5rem, 4vw, 2rem); }
 
-/* ======== MARGIN MODIFIERS ======== */
+/* ======== FLUID MARGIN MODIFIERS ======== */
 
-.container.mb-sm { margin-bottom: 1rem; }
-.container.mb-md { margin-bottom: 1.5rem; }
-.container.mb-lg { margin-bottom: 2rem; }
-.container.mt-sm { margin-top: 1rem; }
-.container.mt-md { margin-top: 1.5rem; }
-.container.mt-lg { margin-top: 2rem; }
+.container.mb-sm { margin-bottom: clamp(0.75rem, 2vw, 1rem); }
+.container.mb-md { margin-bottom: clamp(1rem, 3vw, 1.5rem); }
+.container.mb-lg { margin-bottom: clamp(1.5rem, 4vw, 2rem); }
+.container.mt-sm { margin-top: clamp(0.75rem, 2vw, 1rem); }
+.container.mt-md { margin-top: clamp(1rem, 3vw, 1.5rem); }
+.container.mt-lg { margin-top: clamp(1.5rem, 4vw, 2rem); }
 
-/* ======== WIDTH MODIFIERS ======== */
+/* ======== FLUID WIDTH MODIFIERS ======== */
 
-.container.small { max-width: 30%; }
-.container.medium { max-width: 50%; }
+.container.small { max-width: clamp(200px, 30vw, 30%); }
+.container.medium { max-width: clamp(300px, 50vw, 50%); }
 .container.large { max-width: 100%; }
 
 /* ======== OUTLINE MODIFIERS ======== */
@@ -118,29 +122,8 @@
   border: 2px solid var(--divider-color);
 }
 
-/* ======== RESPONSIVE BREAKPOINTS ======== */
-
-@media (max-width: 1024px) {
-  .container.grid-xl,
-  .container.grid-2xl { grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); }
-  .container.cols-5,
-  .container.cols-6 { grid-template-columns: repeat(3, 1fr); }
-}
-
-@media (max-width: 768px) {
-  .container.cols-3,
-  .container.cols-4 { grid-template-columns: repeat(2, 1fr); }
-  .container.cols-5,
-  .container.cols-6 { grid-template-columns: repeat(2, 1fr); }
-}
-
-@media (max-width: 480px) {
-  .container.cols-2,
-  .container.cols-3,
-  .container.cols-4,
-  .container.cols-5,
-  .container.cols-6 { grid-template-columns: 1fr; }
-  .container.grid-lg,
-  .container.grid-xl,
-  .container.grid-2xl { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
-}
+/*
+ * Note: Traditional breakpoints removed - the fluid minmax() and clamp()
+ * values now handle responsive behavior smoothly across all viewport sizes.
+ * Fixed column grids automatically collapse using auto-fit with min().
+ */

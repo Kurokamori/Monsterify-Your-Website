@@ -1,15 +1,17 @@
 /* ==============================
    Image Container Styles
+   ==============================
+   Using fluid values for responsive scaling
    ============================== */
 
 .image-container {
   align-items: center;
-  border-radius: 0.5rem;
+  border-radius: clamp(0.375rem, 1vw, 0.5rem);
   cursor: pointer;
   display: flex;
-  height: 250px;
+  height: clamp(180px, 30vw + 50px, 250px);
   justify-content: center;
-  margin-bottom: 1.5rem;
+  margin-bottom: clamp(1rem, 3vw, 1.5rem);
   margin-left: auto;
   margin-right: auto;
   overflow: hidden;
@@ -21,33 +23,33 @@
 /* ---------- Size Variants ---------- */
 
 .image-container.tiny {
-  width: 40px;
-  height: 40px;
+  width: clamp(32px, 5vw + 16px, 40px);
+  height: clamp(32px, 5vw + 16px, 40px);
 }
 
 .image-container.xs {
-  width: 60px;
-  height: 60px;
+  width: clamp(48px, 7vw + 20px, 60px);
+  height: clamp(48px, 7vw + 20px, 60px);
 }
 
 .image-container.small {
-  width: 100px;
-  height: 100px;
+  width: clamp(80px, 12vw + 30px, 100px);
+  height: clamp(80px, 12vw + 30px, 100px);
 }
 
 .image-container.medium {
-  width: 200px;
-  height: 200px;
+  width: clamp(150px, 20vw + 50px, 200px);
+  height: clamp(150px, 20vw + 50px, 200px);
 }
 
 .image-container.large {
-  width: 300px;
-  height: 300px;
+  width: clamp(220px, 30vw + 60px, 300px);
+  height: clamp(220px, 30vw + 60px, 300px);
 }
 
 .image-container.xlarge {
-  width: 500px;
-  height: 500px;
+  width: min(500px, 90vw);
+  height: min(500px, 90vw);
 }
 
 /* ---------- Shape Variants ---------- */
@@ -83,8 +85,8 @@
 
 .image-container.activity {
   width: 100%;
-  height: 600px;
-  border-radius: 1rem;
+  height: clamp(400px, 50vw + 150px, 600px);
+  border-radius: clamp(0.75rem, 2vw, 1rem);
 }
 
 .image-container.activity img {
@@ -105,7 +107,7 @@
   background-color: var(--nav-background);
   color: var(--text-color);
   opacity: 0.5;
-  font-size: 2rem;
+  font-size: clamp(1.5rem, 3vw + 0.5rem, 2rem);
   width: 100%;
   height: 100%;
 }
@@ -115,8 +117,8 @@
 .species-images-grid {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-top: 0.5rem;
+  gap: clamp(0.35rem, 1vw, 0.5rem);
+  margin-top: clamp(0.35rem, 1vw, 0.5rem);
 }
 
 .species-image-container {
@@ -126,8 +128,19 @@
   border: 1px solid var(--divider-color);
   border-radius: var(--radius-sm);
   display: flex;
-  height: 60px;
+  height: clamp(48px, 8vw + 20px, 60px);
   justify-content: center;
   overflow: hidden;
-  width: 60px;
+  width: clamp(48px, 8vw + 20px, 60px);
+}
+
+/* ==============================================
+   RESPONSIVE STYLES
+   ============================================== */
+
+/* ---------- Accessibility: Reduced Motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .image-container img {
+    transition: none;
+  }
 }

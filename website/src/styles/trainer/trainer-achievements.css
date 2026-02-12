@@ -3,6 +3,7 @@
 
    Achievements tab, filters, cards,
    popups, and bulk claim.
+   Using fluid values for responsive scaling
    ============================== */
 
 /* ===== Achievements tab ===== */
@@ -15,9 +16,9 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 2rem;
+  margin-bottom: clamp(1.5rem, 3vw, 2rem);
   flex-wrap: wrap;
-  gap: 1rem;
+  gap: clamp(0.75rem, 2vw, 1rem);
 }
 
 .achievements-header h2{ margin:0; color:var(--text-primary); }
@@ -26,14 +27,14 @@
   width: 100%;
   flex-wrap: nowrap;
   display: flex;
-  gap: 1.5rem;
+  gap: clamp(1rem, 2.5vw, 1.5rem);
 }
 
 .stat-item.highlight{ background:var(--primary-color); color:var(--text-color); border-color:var(--primary-color); }
 
 .stat-number {
   display: block;
-  font-size: 1.5rem;
+  font-size: clamp(1.25rem, 1rem + 1vw, 1.5rem);
   font-weight: bold;
   color: var(--primary-color);
 }
@@ -45,16 +46,16 @@
 
 .achievement-filters {
   display: flex;
-  gap: .5rem;
-  margin-bottom: 2rem;
+  gap: clamp(0.25rem, 1vw, 0.5rem);
+  margin-bottom: clamp(1.5rem, 3vw, 2rem);
   flex-wrap: wrap;
 }
 /* ===== Achievements grid ===== */
 
 .achievements-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(350px,1fr));
-  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fill, minmax(clamp(280px, 35vw + 80px, 350px), 1fr));
+  gap: clamp(1rem, 2.5vw, 1.5rem);
 }
 
 /* ===== Achievement card states ===== */
@@ -70,10 +71,10 @@
 .achievement-card.unlocked .achievement-icon, .achievement-card.claimed .achievement-icon{ color:var(--success-color); }
 
 .achievement-name {
-  font-size: 1.125rem;
+  font-size: clamp(1rem, 0.9rem + 0.5vw, 1.125rem);
   font-weight: 600;
   color: var(--text-primary);
-  margin: 0 0 .5rem 0;
+  margin: 0 0 clamp(0.35rem, 1vw, 0.5rem) 0;
 }
 
 /* Progress bars: Use unified progress system from common/feedback.css
@@ -83,8 +84,8 @@
 
 .achievement-reward {
   display: flex;
-  gap: 1rem;
-  margin-bottom: 1rem;
+  gap: clamp(0.75rem, 2vw, 1rem);
+  margin-bottom: clamp(0.75rem, 2vw, 1rem);
   flex-wrap: wrap;
 }
 
@@ -102,11 +103,11 @@
 
 .no-achievements-message {
   text-align: center;
-  padding: 3rem;
+  padding: clamp(2rem, 4vw, 3rem);
   color: var(--text-secondary);
 }
 
-.no-achievements-message i{ font-size:3rem; margin-bottom:1rem; color:var(--text-secondary); }
+.no-achievements-message i{ font-size: clamp(2rem, 4vw + 0.5rem, 3rem); margin-bottom: clamp(0.75rem, 2vw, 1rem); color:var(--text-secondary); }
 
 /* ===== Achievement popup ===== */
 
@@ -122,13 +123,14 @@
   align-items: center;
   z-index: 10000;
   backdrop-filter: blur(4px);
+  padding: clamp(0.5rem, 2vw, 1rem);
 }
 
 .achievement-reward-popup {
   background: var(--background-primary);
-  border-radius: 1rem;
+  border-radius: clamp(0.75rem, 2vw, 1rem);
   box-shadow: 0 20px 40px var(--overlay-dark);
-  max-width: 500px;
+  max-width: min(500px, 95vw);
   width: 90%;
   max-height: 80vh;
   overflow-y: auto;
@@ -139,63 +141,63 @@
 .popup-header {
   background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
   color: var(--text-color);
-  padding: 1.5rem;
-  border-radius: 1rem 1rem 0 0;
+  padding: clamp(1rem, 2.5vw, 1.5rem);
+  border-radius: clamp(0.75rem, 2vw, 1rem) clamp(0.75rem, 2vw, 1rem) 0 0;
   text-align: center;
   position: relative;
 }
 
-.popup-header h2{ margin:0; font-size:1.5rem; font-weight:600; }
+.popup-header h2{ margin:0; font-size: clamp(1.25rem, 1rem + 1vw, 1.5rem); font-weight:600; }
 
 .popup-content {
-  padding: 2rem;
+  padding: clamp(1.25rem, 3vw, 2rem);
 }
 
 .achievement-icon-large {
-  width: 4rem;
-  height: 4rem;
+  width: clamp(3rem, 6vw + 1rem, 4rem);
+  height: clamp(3rem, 6vw + 1rem, 4rem);
   border-radius: 50%;
   background: linear-gradient(135deg, var(--primary-color), var(--success-color));
   color: var(--text-color);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 2rem;
-  margin: 0 auto 1rem auto;
+  font-size: clamp(1.5rem, 3vw + 0.5rem, 2rem);
+  margin: 0 auto clamp(0.75rem, 2vw, 1rem) auto;
   box-shadow: 0 8px 16px var(--overlay-medium);
 }
 
 .achievement-name-popup {
-  font-size: 1.25rem;
+  font-size: clamp(1.1rem, 0.9rem + 0.5vw, 1.25rem);
   font-weight: 600;
   color: var(--text-primary);
-  margin: 0 0 .5rem 0;
+  margin: 0 0 clamp(0.35rem, 1vw, 0.5rem) 0;
 }
 
 .achievement-description-popup {
   color: var(--text-secondary);
-  font-size: .9rem;
+  font-size: clamp(0.85rem, 0.8rem + 0.25vw, 0.9rem);
   line-height: 1.4;
   margin: 0;
 }
 
-.rewards-section h4{ color:var(--text-primary); margin:0 0 1rem 0; font-size:1.1rem; text-align:center; }
+.rewards-section h4{ color:var(--text-primary); margin: 0 0 clamp(0.75rem, 2vw, 1rem) 0; font-size: clamp(1rem, 0.9rem + 0.25vw, 1.1rem); text-align:center; }
 
 .reward-item-popup {
   background: var(--background-secondary);
   border: 1px solid var(--border-color);
-  border-radius: .5rem;
-  padding: 1rem;
+  border-radius: clamp(0.375rem, 1vw, 0.5rem);
+  padding: clamp(0.75rem, 2vw, 1rem);
   display: flex;
   align-items: center;
-  gap: .75rem;
+  gap: clamp(0.5rem, 1.5vw, 0.75rem);
   transition: all .2s ease;
 }
 
 .reward-item-popup:hover{ transform:translateY(-1px); box-shadow:0 4px 12px var(--overlay-light); }
 
 .popup-footer {
-  padding: 1.5rem;
+  padding: clamp(1rem, 2.5vw, 1.5rem);
   text-align: center;
   border-top: 1px solid var(--border-color);
 }
@@ -204,9 +206,9 @@
 
 .bulk-stats {
   text-align: center;
-  padding: 1rem;
+  padding: clamp(0.75rem, 2vw, 1rem);
   background: var(--background-secondary);
-  border-radius: .75rem;
+  border-radius: clamp(0.5rem, 1.5vw, 0.75rem);
   border: 2px solid var(--success-color);
 }
 
@@ -214,55 +216,55 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: .5rem;
-  font-size: 1.25rem;
+  gap: clamp(0.35rem, 1vw, 0.5rem);
+  font-size: clamp(1.1rem, 0.9rem + 0.5vw, 1.25rem);
   font-weight: 600;
   color: var(--success-color);
 }
 
-.bulk-stat-item i{ font-size:1.5rem; }
+.bulk-stat-item i{ font-size: clamp(1.25rem, 1rem + 0.5vw, 1.5rem); }
 
-.claimed-achievements-list h4{ color:var(--text-primary); margin-bottom:1rem; font-size:1.1rem; }
+.claimed-achievements-list h4{ color:var(--text-primary); margin-bottom: clamp(0.75rem, 2vw, 1rem); font-size: clamp(1rem, 0.9rem + 0.25vw, 1.1rem); }
 
 .claimed-achievements-scroll {
-  max-height: 200px;
+  max-height: min(200px, 40vh);
   overflow-y: auto;
   background: var(--background-secondary);
-  border-radius: .5rem;
-  padding: .75rem;
+  border-radius: clamp(0.375rem, 1vw, 0.5rem);
+  padding: clamp(0.5rem, 1.5vw, 0.75rem);
   border: 1px solid var(--border-color);
 }
 
 .claimed-achievement-item {
   display: flex;
   align-items: center;
-  gap: .75rem;
-  padding: .5rem;
-  margin-bottom: .5rem;
+  gap: clamp(0.5rem, 1.5vw, 0.75rem);
+  padding: clamp(0.35rem, 1vw, 0.5rem);
+  margin-bottom: clamp(0.35rem, 1vw, 0.5rem);
   background: var(--background-primary);
-  border-radius: .5rem;
+  border-radius: clamp(0.375rem, 1vw, 0.5rem);
   border: 1px solid var(--border-color);
 }
 
 .claimed-achievement-item:last-child{ margin-bottom:0; }
 
 .achievement-icon-small {
-  width: 2rem;
-  height: 2rem;
+  width: clamp(1.75rem, 3vw + 0.5rem, 2rem);
+  height: clamp(1.75rem, 3vw + 0.5rem, 2rem);
   border-radius: 50%;
   background: var(--primary-color);
   display: flex;
   align-items: center;
   justify-content: center;
   color: var(--text-color);
-  font-size: .875rem;
+  font-size: clamp(0.8rem, 0.7rem + 0.25vw, 0.875rem);
   flex-shrink: 0;
 }
 
 .achievement-name-small {
   font-weight: 500;
   color: var(--text-primary);
-  font-size: .9rem;
+  font-size: clamp(0.85rem, 0.8rem + 0.25vw, 0.9rem);
 }
 
 /* ===== Responsive ===== */
@@ -270,17 +272,26 @@
 @media (max-width:768px){
   .achievements-header{ flex-direction:column; align-items:flex-start; }
   .achievements-grid{ grid-template-columns:1fr; }
-  .achievement-filters{ gap:.25rem; }
-  .achievement-card{ padding:1rem; }
-  .achievement-content{ padding-right:2.5rem; }
-  .achievement-icon{ font-size:1.25rem; top:.75rem; right:.75rem; }
+}
 
-  .achievement-reward-popup{ width:95%; margin:1rem; }
-  .popup-header{ padding:1rem; }
-  .popup-header h2{ font-size:1.25rem; }
-  .popup-content{ padding:1.5rem; }
-  .achievement-icon-large{ width:3rem; height:3rem; font-size:1.5rem; }
-  .rewards-list{ gap:.5rem; }
-  .reward-item-popup{ padding:.75rem; }
-  .reward-icon{ width:2rem; height:2rem; font-size:1rem; }
+/* ---------- Accessibility: Reduced Motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .reward-item-popup {
+    transition: none;
+  }
+
+  .reward-item-popup:hover {
+    transform: none;
+  }
+}
+
+/* ---------- Touch Device Optimizations ---------- */
+@media (hover: none) and (pointer: coarse) {
+  .reward-item-popup:hover {
+    transform: none;
+  }
+
+  .achievement-card {
+    min-height: 44px;
+  }
 }

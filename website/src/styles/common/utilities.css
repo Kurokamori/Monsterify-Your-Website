@@ -777,71 +777,68 @@
   .grid-cols-6-xl { grid-template-columns: repeat(6, 1fr); }
 }
 
-/* ---------- Responsive Spacing Utilities ---------- */
+/* ---------- Fluid Responsive Spacing Utilities ---------- */
+/* These use clamp() for smooth scaling - no breakpoints needed */
 
-/* Mobile-first spacing that increases on larger screens */
 .responsive-gap {
-  gap: var(--spacing-sm);
+  gap: clamp(var(--spacing-sm), 3vw, var(--spacing-xl));
 }
 
 .responsive-padding {
-  padding: var(--spacing-sm);
+  padding: clamp(var(--spacing-sm), 3vw, var(--spacing-xl));
 }
 
 .responsive-margin {
-  margin: var(--spacing-sm);
+  margin: clamp(var(--spacing-sm), 3vw, var(--spacing-xl));
 }
 
-@media (min-width: 480px) {
-  .responsive-gap { gap: var(--spacing-md); }
-  .responsive-padding { padding: var(--spacing-md); }
-  .responsive-margin { margin: var(--spacing-md); }
-}
+/* Fluid gap variants */
+.fluid-gap-sm { gap: clamp(0.25rem, 1vw, 0.5rem); }
+.fluid-gap-md { gap: clamp(0.5rem, 2vw, 1rem); }
+.fluid-gap-lg { gap: clamp(1rem, 3vw, 1.5rem); }
+.fluid-gap-xl { gap: clamp(1.5rem, 4vw, 2.5rem); }
 
-@media (min-width: 768px) {
-  .responsive-gap { gap: var(--spacing-lg); }
-  .responsive-padding { padding: var(--spacing-lg); }
-  .responsive-margin { margin: var(--spacing-lg); }
-}
+/* Fluid padding variants */
+.fluid-p-sm { padding: clamp(0.25rem, 1vw, 0.5rem); }
+.fluid-p-md { padding: clamp(0.5rem, 2vw, 1rem); }
+.fluid-p-lg { padding: clamp(1rem, 3vw, 1.5rem); }
+.fluid-p-xl { padding: clamp(1.5rem, 4vw, 2.5rem); }
 
-@media (min-width: 1024px) {
-  .responsive-gap { gap: var(--spacing-xl); }
-  .responsive-padding { padding: var(--spacing-xl); }
-  .responsive-margin { margin: var(--spacing-xl); }
-}
+.fluid-px-sm { padding-inline: clamp(0.25rem, 1vw, 0.5rem); }
+.fluid-px-md { padding-inline: clamp(0.5rem, 2vw, 1rem); }
+.fluid-px-lg { padding-inline: clamp(1rem, 3vw, 1.5rem); }
 
-/* ---------- Responsive Text Utilities ---------- */
+.fluid-py-sm { padding-block: clamp(0.25rem, 1vw, 0.5rem); }
+.fluid-py-md { padding-block: clamp(0.5rem, 2vw, 1rem); }
+.fluid-py-lg { padding-block: clamp(1rem, 3vw, 1.5rem); }
+
+/* ---------- Fluid Text Utilities ---------- */
+/* Text scales smoothly with viewport - no breakpoints needed */
 
 .responsive-text {
-  font-size: var(--font-size-sm);
-}
-
-@media (min-width: 480px) {
-  .responsive-text { font-size: var(--font-size-base); }
-}
-
-@media (min-width: 768px) {
-  .responsive-text { font-size: var(--font-size-lg); }
+  font-size: clamp(var(--font-size-sm), 1.5vw + 0.5rem, var(--font-size-lg));
 }
 
 .responsive-heading {
-  font-size: var(--font-size-lg);
+  font-size: clamp(var(--font-size-lg), 2.5vw + 0.5rem, var(--font-size-2xl));
 }
 
-@media (min-width: 480px) {
-  .responsive-heading { font-size: var(--font-size-xl); }
-}
+/* Additional fluid text sizes */
+.fluid-text-xs { font-size: clamp(0.7rem, 0.6rem + 0.25vw, 0.875rem); }
+.fluid-text-sm { font-size: clamp(0.8rem, 0.75rem + 0.25vw, 1rem); }
+.fluid-text-base { font-size: clamp(0.9rem, 0.85rem + 0.3vw, 1.125rem); }
+.fluid-text-lg { font-size: clamp(1rem, 0.9rem + 0.5vw, 1.25rem); }
+.fluid-text-xl { font-size: clamp(1.125rem, 1rem + 0.75vw, 1.5rem); }
+.fluid-text-2xl { font-size: clamp(1.25rem, 1rem + 1.25vw, 1.75rem); }
+.fluid-text-3xl { font-size: clamp(1.5rem, 1.25rem + 1.5vw, 2rem); }
+.fluid-text-4xl { font-size: clamp(1.75rem, 1.25rem + 2.5vw, 2.5rem); }
 
-@media (min-width: 768px) {
-  .responsive-heading { font-size: var(--font-size-2xl); }
-}
+/* ---------- Fluid Container Max Width Utilities ---------- */
 
-/* ---------- Container Max Width Utilities ---------- */
-
-.container-sm { max-width: 640px; margin-left: auto; margin-right: auto; }
-.container-md { max-width: 768px; margin-left: auto; margin-right: auto; }
-.container-lg { max-width: 1024px; margin-left: auto; margin-right: auto; }
-.container-xl { max-width: 1280px; margin-left: auto; margin-right: auto; }
+.container-sm { max-width: min(640px, 95vw); margin-inline: auto; }
+.container-md { max-width: min(768px, 95vw); margin-inline: auto; }
+.container-lg { max-width: min(1024px, 95vw); margin-inline: auto; }
+.container-xl { max-width: min(1280px, 95vw); margin-inline: auto; }
 .container-full { max-width: 100%; }
 
 /* ---------- Safe Area Utilities (for notched devices) ---------- */

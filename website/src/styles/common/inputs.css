@@ -1,5 +1,7 @@
 /* ==============================
    Input & Form Element Styles
+   ==============================
+   Using fluid values for responsive scaling
    ============================== */
 
 /* ===== Filter Controls ===== */
@@ -7,20 +9,20 @@
 .filter-controls {
   display: flex;
   flex-wrap: wrap;
-  gap: 1rem;
+  gap: clamp(0.75rem, 2vw, 1rem);
   align-items: flex-end;
-  padding: 1rem;
+  padding: clamp(0.75rem, 2vw, 1rem);
   background: linear-gradient(135deg, var(--card-background) 0%, var(--nav-background) 100%);
-  border-radius: 12px;
+  border-radius: clamp(8px, 2vw, 12px);
   border: 1px solid var(--border-color);
-  margin-bottom: 1.5rem;
+  margin-bottom: clamp(1rem, 3vw, 1.5rem);
 }
 
 .filter-group {
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
-  min-width: 120px;
+  gap: clamp(0.15rem, 0.5vw, 0.25rem);
+  min-width: clamp(100px, 15vw + 40px, 120px);
 }
 
 .filter-group label {
@@ -29,7 +31,7 @@
   color: var(--text-muted);
   display: flex;
   align-items: center;
-  gap: 0.35rem;
+  gap: clamp(0.25rem, 0.75vw, 0.35rem);
 }
 
 .filter-group label i {
@@ -39,10 +41,11 @@
 .filter-group.button-group {
   flex-direction: row;
   align-items: center;
-  gap: 0.25rem;
+  gap: clamp(0.15rem, 0.5vw, 0.25rem);
   min-width: auto;
 }
 
+/* Filter controls stack behavior on narrow screens */
 @media (max-width: 768px) {
   .filter-controls {
     flex-direction: column;
@@ -69,9 +72,9 @@
   color: var(--text-color);
   flex: 1;
   font-size: var(--font-size-sm);
-  margin-left: 0.5rem;
-  margin-top: 0.5rem;
-  padding: 0.5rem 0.75rem;
+  margin-left: clamp(0.35rem, 1vw, 0.5rem);
+  margin-top: clamp(0.35rem, 1vw, 0.5rem);
+  padding: clamp(0.35rem, 1vw, 0.5rem) clamp(0.5rem, 1.5vw, 0.75rem);
   transition: border-color 0.2s;
 }
 
@@ -87,11 +90,11 @@
   color: var(--text-color);
   cursor: pointer;
   display: flex;
-  font-size: 0.9rem;
-  gap: 10px;
-  height: 34px;
+  font-size: clamp(0.8rem, 0.75rem + 0.35vw, 0.9rem);
+  gap: clamp(8px, 2vw, 10px);
+  height: clamp(28px, 4vw + 12px, 34px);
   position: relative;
-  width: 60px;
+  width: clamp(50px, 8vw + 20px, 60px);
 }
 
 .toggle-switch input[type="checkbox"] {

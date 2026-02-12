@@ -3,6 +3,7 @@
 
    Trainer selection components, selectors,
    assignment blocks, and empty states.
+   Using fluid values for responsive scaling
    ============================== */
 
 /* ===== Trainer select ===== */
@@ -15,7 +16,7 @@
 .missions-filters select option {
   background-color: var(--input-background);
   color: var(--text-color);
-  padding: 0.5rem;
+  padding: clamp(0.35rem, 1vw, 0.5rem);
 }
 
 .trainer-select option:hover,
@@ -28,11 +29,11 @@
 
 /* ===== Assignment block ===== */
 
-.trainer-assignment { margin-top: 15px; }
+.trainer-assignment { margin-top: clamp(12px, 3vw, 15px); }
 
 .trainer-assignment label {
   display: block;
-  margin-bottom: 8px;
+  margin-bottom: clamp(6px, 1.5vw, 8px);
   color: var(--text-muted);
   font-weight: 700;
 }
@@ -40,13 +41,13 @@
 /* ===== Fancy select in hero section ===== */
 
 .missions-filters .trainer-select {
-  padding: 1rem 1.5rem;
+  padding: clamp(0.75rem, 2vw, 1rem) clamp(1rem, 3vw, 1.5rem);
   background: linear-gradient(135deg, var(--overlay-dark) 0%, var(--overlay-heavy) 100%);
   border: 2px solid var(--accent-glow-medium);
-  border-radius: 12px;
+  border-radius: clamp(8px, 2vw, 12px);
   color: var(--text-color);
-  min-width: 280px;
-  font-size: 1.05rem;
+  min-width: clamp(200px, 40vw + 80px, 280px);
+  font-size: clamp(0.95rem, 0.85rem + 0.5vw, 1.05rem);
   transition: all .3s ease;
   backdrop-filter: blur(10px);
   box-shadow: 0 4px 15px var(--overlay-medium);
@@ -63,17 +64,17 @@
 
 .no-trainer-selected {
   text-align: center;
-  padding: 3rem 2rem;
+  padding: clamp(2rem, 5vw, 3rem) clamp(1.5rem, 4vw, 2rem);
   background: linear-gradient(135deg, var(--warning-glow) 0%, var(--warning-glow) 100%);
   backdrop-filter: blur(15px);
-  border-radius: 16px;
-  margin: 2rem;
+  border-radius: clamp(12px, 3vw, 16px);
+  margin: clamp(1.5rem, 4vw, 2rem);
   border: 1px solid var(--warning-glow);
 }
 
 .no-trainer-selected p {
   color: var(--warning-color);
-  font-size: 1.2rem;
+  font-size: clamp(1rem, 0.9rem + 0.75vw, 1.2rem);
   font-weight: 500;
   margin: 0;
 }
@@ -87,6 +88,25 @@
   }
 }
 
-@media (min-width: 768px) {
-  .missions-filters label { font-size: 1.25rem; }
+/* ---------- Accessibility: Reduced Motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .missions-filters .trainer-select {
+    transition: none;
+  }
+
+  .missions-filters .trainer-select:focus {
+    transform: none;
+  }
+}
+
+/* ---------- Touch Device Optimizations ---------- */
+@media (hover: none) and (pointer: coarse) {
+  .missions-filters .trainer-select:focus {
+    transform: none;
+  }
+
+  .missions-filters .trainer-select {
+    min-height: 44px;
+    font-size: max(16px, 1rem);
+  }
 }

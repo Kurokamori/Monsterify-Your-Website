@@ -3,6 +3,7 @@
 
    Table list, filters, search, and
    action buttons for trainer lists.
+   Using fluid values for responsive scaling
    ============================== */
 
 /* ===== Table list container ===== */
@@ -19,26 +20,26 @@
 .trainer-list-filters {
   display: flex;
   flex-wrap: wrap;
-  gap: 15px;
-  margin-bottom: 20px;
+  gap: clamp(10px, 2.5vw, 15px);
+  margin-bottom: clamp(15px, 3vw, 20px);
   background-color: var(--card-background);
-  padding: 15px;
-  border-radius: 8px;
+  padding: clamp(10px, 2.5vw, 15px);
+  border-radius: clamp(6px, 1.5vw, 8px);
   box-shadow: 0 2px 10px var(--overlay-light);
 }
 
 .trainer-search-form {
   display: flex;
   flex: 1;
-  min-width: 200px;
+  min-width: clamp(150px, 30vw + 50px, 200px);
 }
 
 .trainer-search-input {
   flex: 1;
-  padding: 10px 15px;
+  padding: clamp(8px, 2vw, 10px) clamp(10px, 2.5vw, 15px);
   border: 1px solid var(--border-color);
-  border-radius: 4px 0 0 4px;
-  font-size: .9rem;
+  border-radius: clamp(3px, 0.75vw, 4px) 0 0 clamp(3px, 0.75vw, 4px);
+  font-size: clamp(0.85rem, 0.8rem + 0.25vw, 0.9rem);
   background-color: var(--input-background);
   color: var(--text-color);
 }
@@ -49,31 +50,31 @@
 .trainer-filter-controls {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: clamp(6px, 1.5vw, 10px);
 }
 
 .trainer-filter-select {
-  padding: 10px;
+  padding: clamp(8px, 2vw, 10px);
   border: 1px solid var(--border-color);
-  border-radius: 4px;
+  border-radius: clamp(3px, 0.75vw, 4px);
   background-color: var(--input-background);
   color: var(--text-color);
-  font-size: .9rem;
-  min-width: 120px;
+  font-size: clamp(0.85rem, 0.8rem + 0.25vw, 0.9rem);
+  min-width: clamp(100px, 15vw + 40px, 120px);
 }
 
 /* ===== Table ===== */
 
 .trainer-table-container {
-  border-radius: 8px;
+  border-radius: clamp(6px, 1.5vw, 8px);
   box-shadow: 0 2px 10px var(--overlay-light);
   overflow-x: auto;
-  margin-bottom: 20px;
+  margin-bottom: clamp(15px, 3vw, 20px);
 }
 .trainer-table tr:last-child td{ border-bottom:none; }
 .trainer-table tr:hover{ background-color:var(--nav-hover); }
 
-.trainer-table .npc-avatar{ width:40px; height:40px; margin-right:10px; }
+.trainer-table .npc-avatar{ width: clamp(30px, 5vw + 15px, 40px); height: clamp(30px, 5vw + 15px, 40px); margin-right: clamp(6px, 1.5vw, 10px); }
 
 /* ===== Actions ===== */
 
@@ -81,14 +82,14 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: .5rem;
+  gap: clamp(0.3rem, 1vw, 0.5rem);
 }
 
 .trainer-actions-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 1.5rem;
+  gap: clamp(1rem, 2.5vw, 1.5rem);
 }
 
 /* ===== Detailed list view ===== */
@@ -97,43 +98,45 @@
 
 .detailed-list-body {
   border: 1px solid var(--border-color);
-  border-radius: 0 0 .5rem .5rem;
+  border-radius: 0 0 clamp(0.4rem, 1vw, 0.5rem) clamp(0.4rem, 1vw, 0.5rem);
   overflow: hidden;
 }
 
 .view-toggle {
   display: flex;
-  gap: 10px;
-  border-radius: .25rem;
+  gap: clamp(6px, 1.5vw, 10px);
+  border-radius: clamp(0.2rem, 0.5vw, 0.25rem);
   overflow: hidden;
 }
 
 /* ===== Responsive ===== */
 
-@media (max-width: 1024px) {
-  .trainer-list-filters { gap: 12px; padding: 12px; }
-  .trainer-filter-controls { gap: 8px; }
-  .trainer-filter-select { min-width: 100px; }
-}
-
 @media (max-width: 768px) {
-  .trainer-list-filters { flex-direction: column; gap: 10px; padding: 12px; }
+  .trainer-list-filters { flex-direction: column; }
   .trainer-search-form { min-width: 100%; }
   .trainer-filter-controls { width: 100%; justify-content: space-between; }
   .trainer-filter-select { flex: 1; min-width: 0; }
-  .trainer-table-container { margin-bottom: 15px; }
-  .trainer-table .npc-avatar { width: 35px; height: 35px; margin-right: 8px; }
-  .trainer-actions { flex-direction: column; gap: 0.4rem; }
-  .trainer-actions-row { flex-direction: column; gap: 0.75rem; align-items: stretch; }
+  .trainer-actions { flex-direction: column; }
+  .trainer-actions-row { flex-direction: column; align-items: stretch; }
   .view-toggle { width: 100%; justify-content: center; }
-  .detailed-list-body { border-radius: 0 0 0.4rem 0.4rem; }
 }
 
-@media (max-width: 480px) {
-  .trainer-list-filters { padding: 10px; border-radius: 6px; }
-  .trainer-search-input { padding: 8px 12px; font-size: 0.85rem; }
-  .trainer-filter-select { padding: 8px; font-size: 0.85rem; }
-  .trainer-table .npc-avatar { width: 30px; height: 30px; margin-right: 6px; }
-  .trainer-actions { gap: 0.3rem; }
-  .view-toggle { gap: 6px; }
+/* ---------- Accessibility: Reduced Motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .detailed-list-row:hover {
+    transform: none;
+  }
+}
+
+/* ---------- Touch Device Optimizations ---------- */
+@media (hover: none) and (pointer: coarse) {
+  .trainer-search-input,
+  .trainer-filter-select {
+    min-height: 44px;
+    font-size: max(16px, 1rem);
+  }
+
+  .detailed-list-row:hover {
+    transform: none;
+  }
 }

@@ -3,28 +3,29 @@
 
    Basic trainer elements: inventory hints,
    containers, names, avatars, and base styles.
+   Using fluid values for responsive scaling
    ============================== */
 
 .trainer-inventory {
   display: flex;
   align-items: center;
-  gap: .5rem;
+  gap: clamp(0.5rem, 1.5vw, 0.75rem);
   flex-shrink: 0;
-  border-radius: 8px;
+  border-radius: clamp(6px, 1.5vw, 8px);
   box-shadow: 0 2px 10px var(--overlay-light);
-  padding: 20px;
+  padding: clamp(12px, 3vw, 20px);
 }
 
 .select-trainer-hint {
   color: var(--text-color);
   opacity: .7;
-  font-size: .85rem;
+  font-size: clamp(0.8rem, 0.75rem + 0.25vw, 0.85rem);
   font-style: italic;
   text-align: center;
-  margin-top: .5rem;
-  padding: .5rem;
+  margin-top: clamp(0.35rem, 1vw, 0.5rem);
+  padding: clamp(0.4rem, 1vw, 0.5rem);
   background: var(--accent-glow);
-  border-radius: 4px;
+  border-radius: clamp(3px, 0.75vw, 4px);
 }
 
 /* ===== Subtype trainers list ===== */
@@ -42,7 +43,7 @@
 /* ===== Avatar ===== */
 
 .avatar-placeholder {
-  font-size: 2rem;
+  font-size: clamp(1.5rem, 3vw + 0.5rem, 2rem);
   color: var(--text-color);
   width: 100%;
   height: 100%;
@@ -72,7 +73,7 @@
 
 /* ===== Empty states ===== */
 
-.map-header i{ font-size:3rem; color:var(--accent-color); margin-bottom:1rem; opacity:.7; }
+.map-header i{ font-size: clamp(2rem, 4vw + 0.5rem, 3rem); color:var(--accent-color); margin-bottom: clamp(0.75rem, 2vw, 1rem); opacity:.7; }
 
 /* ===== Misc trainer utilities ===== */
 
@@ -80,7 +81,8 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-bottom: .5rem;
+  margin-bottom: clamp(0.35rem, 1vw, 0.5rem);
+  gap: clamp(0.35rem, 1vw, 0.5rem);
 }
 
 .trainer-info {
@@ -88,7 +90,7 @@
   flex-direction: column;
   align-items: center;
   flex: 1;
-  font-size: .9em;
+  font-size: clamp(0.85em, 0.8em + 0.25vw, 0.9em);
   color: var(--text-color);
   font-weight: normal;
 }
@@ -97,33 +99,31 @@
   border: none;
   color: var(--text-color);
   background-color: var(--nav-active);
-  border-radius: .375rem;
-  padding: .5rem 1rem;
+  border-radius: clamp(0.25rem, 0.75vw, 0.375rem);
+  padding: clamp(0.4rem, 1vw, 0.5rem) clamp(0.75rem, 2vw, 1rem);
 }
 
 /* ===== Responsive ===== */
 
-@media (max-width: 1024px) {
-  .trainers-container { padding: 0.5rem var(--content-padding-sm, 1rem); }
-}
-
 @media (max-width: 768px) {
   .faction-select { width: 100%; }
-  .trainer-inventory { flex-direction: column; padding: 15px; gap: 0.75rem; }
-  .trainers-container { padding: 0.5rem 0.75rem; }
-  .trainer-name-heading .trainer-name { font-size: var(--font-size-base); }
-  .trainer-details { gap: 0.5rem; }
-  .trainer-info { font-size: 0.85em; }
-  .trainer-type-badge { font-size: 0.8rem; padding: 0.2rem 0.5rem; }
-  .map-header i { font-size: 2.5rem; }
+  .trainer-inventory { flex-direction: column; }
 }
 
-@media (max-width: 480px) {
-  .trainer-inventory { padding: 12px; gap: 0.5rem; border-radius: 6px; }
-  .avatar-placeholder { font-size: 1.5rem; }
-  .select-trainer-hint { font-size: 0.8rem; padding: 0.4rem; }
-  .trainer-type-badge { font-size: 0.75rem; padding: 0.15rem 0.4rem; }
-  .map-header i { font-size: 2rem; margin-bottom: 0.75rem; }
+/* ---------- Accessibility: Reduced Motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .trainer-inventory,
+  .trainer-card {
+    transition: none;
+  }
+}
+
+/* ---------- Touch Device Optimizations ---------- */
+@media (hover: none) and (pointer: coarse) {
+  .faction-select {
+    min-height: 44px;
+    font-size: max(16px, 1rem);
+  }
 }
 
 /* Clear search button: Use unified button system from common/buttons.css
@@ -133,13 +133,13 @@
 
 .trainer-type-badge {
   display: inline-block;
-  padding: .25rem .75rem;
-  border-radius: .375rem;
-  font-size: .875rem;
+  padding: clamp(0.15rem, 0.5vw, 0.25rem) clamp(0.4rem, 1.5vw, 0.75rem);
+  border-radius: clamp(0.25rem, 0.75vw, 0.375rem);
+  font-size: clamp(0.75rem, 0.7rem + 0.25vw, 0.875rem);
   font-weight: 600;
   text-transform: uppercase;
   color: var(--text-color);
-  width:100%;
+  width: 100%;
 }
 
 /* Status messages: Use unified alert system from common/feedback.css

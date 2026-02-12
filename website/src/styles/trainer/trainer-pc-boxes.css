@@ -3,6 +3,7 @@
 
    PC boxes, box grids, edit boxes,
    mass edit, and box controls.
+   Using fluid values for responsive scaling
    ============================== */
 
 /* ===== Boxes header ===== */
@@ -14,8 +15,8 @@
 .edit-boxes-controls {
   display: flex;
   justify-content: center;
-  margin-bottom: 1.5rem;
-  padding: 1rem;
+  margin-bottom: clamp(1rem, 2.5vw, 1.5rem);
+  padding: clamp(0.75rem, 2vw, 1rem);
 }
 
 /* ===== Edit boxes grid ===== */
@@ -26,23 +27,23 @@
 .edit-boxes-instructions {
   background-color: var(--accent-muted);
   border-left: 3px solid var(--accent-color);
-  padding: 1rem;
-  margin-bottom: 1.5rem;
-  border-radius: .25rem;
+  padding: clamp(0.75rem, 2vw, 1rem);
+  margin-bottom: clamp(1rem, 2.5vw, 1.5rem);
+  border-radius: clamp(0.2rem, 0.5vw, 0.25rem);
 }
 
 .edit-boxes-instructions p{ margin:0; font-size:var(--font-size-sm); }
 
 .edit-boxes-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-  gap: 1.5rem;
-  margin-bottom: 1.5rem;
+  grid-template-columns: repeat(auto-fill, minmax(clamp(280px, 35vw + 80px, 350px), 1fr));
+  gap: clamp(1rem, 2.5vw, 1.5rem);
+  margin-bottom: clamp(1rem, 2.5vw, 1.5rem);
 }
 
 .ref-item {
   background-color: var(--card-background);
-  border-radius: .5rem;
+  border-radius: clamp(0.375rem, 1vw, 0.5rem);
   overflow: hidden;
   box-shadow: 0 2px 8px rgba(0,0,0,.1);
   transition: transform .2s;
@@ -53,7 +54,7 @@
 
 .ref-item:hover{ transform:translateY(-3px); box-shadow:0 4px 12px rgba(0,0,0,.15); }
 .ref-header {
-  padding: 1rem;
+  padding: clamp(0.75rem, 2vw, 1rem);
   background-color: var(--nav-background);
   border-bottom: 1px solid var(--divider-color);
 }
@@ -63,10 +64,10 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: .75rem 1rem;
+  padding: clamp(0.5rem, 1.5vw, 0.75rem) clamp(0.75rem, 2vw, 1rem);
   background-color: var(--accent-color);
   color: var(--background-color);
-  height: 2rem;
+  height: clamp(1.75rem, 3vw + 0.5rem, 2rem);
 }
 
 .edit-box-header h3{ font-size:var(--font-size-base); font-weight:600; margin:0!important; padding:0!important; color: var(--text-color)!important; }
@@ -74,7 +75,7 @@
 
 .edit-box-container {
   background-color: var(--nav-background);
-  border-radius: .5rem;
+  border-radius: clamp(0.375rem, 1vw, 0.5rem);
   overflow: hidden;
   box-shadow: 0 2px 8px rgba(0,0,0,.1);
   transition: all .2s;
@@ -96,15 +97,15 @@
   display: grid;
   grid-template-columns: repeat(6, 1fr);
   grid-template-rows: repeat(5, 1fr);
-  gap: .25rem;
-  padding: .75rem;
+  gap: clamp(2px, 0.5vw, 0.25rem);
+  padding: clamp(0.4rem, 1.5vw, 0.75rem);
   background-color: rgba(0,0,0,.2);
 }
 
 .edit-box-slot {
   aspect-ratio: 1;
   background-color: rgba(255,255,255,.05);
-  border-radius: .25rem;
+  border-radius: clamp(0.2rem, 0.5vw, 0.25rem);
   overflow: hidden;
   position: relative;
   transition: all .2s;
@@ -186,31 +187,31 @@
 /* ===== Featured Monsters Grid ===== */
 
 .featured-monsters-box {
-  margin-bottom: 1.5rem;
+  margin-bottom: clamp(1rem, 2.5vw, 1.5rem);
 }
 
 .featured-monsters-box .edit-box-header {
-  border-radius: 0.5rem 0.5rem 0 0;
+  border-radius: clamp(0.375rem, 1vw, 0.5rem) clamp(0.375rem, 1vw, 0.5rem) 0 0;
 }
 
 .featured-monsters-compact {
   display: grid;
   grid-template-columns: repeat(6, 1fr);
   grid-template-rows: 1fr;
-  gap: 8px;
-  max-width: 600px;
+  gap: clamp(4px, 1.5vw, 8px);
+  max-width: min(600px, 95vw);
   margin: 0 auto;
-  padding: 1rem;
+  padding: clamp(0.5rem, 2vw, 1rem);
   background-color: var(--overlay-medium);
-  border-radius: 0 0 0.5rem 0.5rem;
+  border-radius: 0 0 clamp(0.375rem, 1vw, 0.5rem) clamp(0.375rem, 1vw, 0.5rem);
 }
 
 .featured-monster-slot {
   aspect-ratio: 1;
-  width: 80px;
-  height: 80px;
+  width: clamp(50px, 10vw + 30px, 80px);
+  height: clamp(50px, 10vw + 30px, 80px);
   background-color: var(--highlight-light);
-  border-radius: 0.25rem;
+  border-radius: clamp(0.2rem, 0.5vw, 0.25rem);
   overflow: hidden;
   position: relative;
   display: flex;
@@ -299,46 +300,42 @@
 
 /* ===== Responsive ===== */
 
-@media (max-width: 1024px) {
-  .edit-boxes-grid { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.25rem; }
-  .edit-box-grid { grid-template-columns: repeat(6, 45px); grid-auto-rows: 45px; }
-  .edit-box-slot { width: 45px; height: 45px; }
-  .featured-monsters-compact { max-width: 500px; gap: 6px; }
-  .featured-monster-slot { width: 70px; height: 70px; }
-}
-
 @media (max-width: 768px) {
-  .edit-boxes-controls { padding: 0.75rem; margin-bottom: 1rem; }
   .edit-boxes-actions { flex-wrap: wrap; justify-content: center; }
-  .edit-boxes-instructions { padding: 0.75rem; margin-bottom: 1rem; }
-  .edit-boxes-instructions p { font-size: var(--font-size-xs); }
-  .edit-boxes-grid { grid-template-columns: 1fr; gap: 1rem; }
+  .edit-boxes-grid { grid-template-columns: 1fr; }
   .edit-boxes-grid .ref-item { max-width: 100%; }
-  .edit-box-header { padding: 0.5rem 0.75rem; }
-  .edit-box-header h3 { font-size: var(--font-size-sm); }
-  .edit-box-grid { grid-template-columns: repeat(6, 45px); grid-auto-rows: 45px; gap: 3px; padding: 0.4rem; }
-  .edit-box-slot { width: 45px; height: 45px; }
-  .edit-box-monster-info { font-size: 7px; padding: 1px 2px; }
-  .featured-monsters-compact { grid-template-columns: repeat(3, 1fr); max-width: 300px; gap: 6px; padding: 0.75rem; }
-  .featured-monster-slot { width: 60px; height: 60px; font-size: 9px; }
+  .featured-monsters-compact { grid-template-columns: repeat(3, 1fr); }
   .featured-monster-slot .button.danger.icon { opacity: 1; }
-  .edit-box-monster-info.compact { font-size: 7px; padding: 1px; }
 }
 
 @media (max-width: 480px) {
-  .edit-boxes-controls { flex-direction: column; gap: 0.5rem; }
+  .edit-boxes-controls { flex-direction: column; }
   .edit-boxes-actions { flex-direction: column; width: 100%; }
   .edit-boxes-actions .button { width: 100%; }
-  .edit-box-header { padding: 0.4rem 0.5rem; }
-  .edit-box-header h3 { font-size: var(--font-size-xs); }
-  .edit-box-header span { font-size: var(--font-size-xs); }
-  .edit-box-grid { grid-template-columns: repeat(6, 40px); grid-auto-rows: 40px; gap: 2px; padding: 0.25rem; }
-  .edit-box-slot { width: 40px; height: 40px; }
-  .edit-box-monster-info { font-size: 6px; padding: 1px; }
-  .featured-monsters-compact { grid-template-columns: repeat(3, 1fr); max-width: 240px; gap: 4px; padding: 0.5rem; }
-  .featured-monster-slot { width: 50px; height: 50px; font-size: 8px; }
-  .featured-monster-empty { font-size: 8px; padding: 0.25rem; }
-  .featured-monster-empty i { font-size: 12px; }
-  .featured-monster-empty.compact { font-size: 7px; padding: 3px; }
-  .featured-monster-empty.compact i { font-size: 10px; }
+}
+
+/* ---------- Accessibility: Reduced Motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .ref-item,
+  .edit-box-container,
+  .edit-box-slot {
+    transition: none;
+  }
+
+  .ref-item:hover,
+  .edit-box-container:hover {
+    transform: none;
+  }
+}
+
+/* ---------- Touch Device Optimizations ---------- */
+@media (hover: none) and (pointer: coarse) {
+  .ref-item:hover,
+  .edit-box-container:hover {
+    transform: none;
+  }
+
+  .featured-monster-slot .button.danger.icon {
+    opacity: 1;
+  }
 }

@@ -1,31 +1,33 @@
 /* ==============================
    Search Bar Styles
+   ==============================
+   Using fluid values for responsive scaling
    ============================== */
 
 .search-bar {
   border-color: var(--border-color);
   flex: 1;
-  margin-bottom: 20px;
-  margin-top: 10px;
+  margin-bottom: clamp(0.75rem, 3vw, 1.25rem);
+  margin-top: clamp(0.5rem, 1.5vw, 0.625rem);
   text-align: center;
   width: 100%;
 }
 
 .search-bar-icon {
   position: absolute;
-  left: 12px;
+  left: clamp(8px, 2vw, 12px);
   color: var(--text-muted);
-  font-size: 14px;
+  font-size: clamp(12px, 1vw + 6px, 14px);
 }
 
 .form-input button {
   background: none;
   border: none;
   color: var(--accent-color);
-  font-size: 1rem;
-  padding: 0.3rem;
+  font-size: clamp(0.85rem, 0.8rem + 0.4vw, 1rem);
+  padding: clamp(0.2rem, 0.6vw, 0.3rem);
   position: absolute;
-  right: 0.5rem;
+  right: clamp(0.35rem, 1vw, 0.5rem);
   top: 50%;
   transform: translateY(-50%);
   transition: all .2s ease;
@@ -38,10 +40,12 @@
   border: 1px solid var(--border-color);
   border-radius: 0.5rem;
   color: var(--text-color);
-  font-size: 0.9rem;
-  padding: 0.625rem 2.5rem 0.625rem 2.5rem;
+  font-size: clamp(0.8rem, 0.75rem + 0.35vw, 0.9rem);
+  padding: clamp(0.5rem, 1.25vw, 0.625rem) clamp(2rem, 5vw, 2.5rem);
   transition: border-color 0.2s, box-shadow 0.2s;
   width: 100%;
+  /* Prevent iOS zoom on focus */
+  font-size: max(16px, clamp(0.8rem, 0.75rem + 0.35vw, 0.9rem));
 }
 
 .search-input:focus {
@@ -61,7 +65,7 @@
   display: flex;
   align-items: center;
   width: 100%;
-  max-width: 500px;
+  max-width: min(500px, 100%);
 }
 
 .search-container.full-width {
@@ -70,9 +74,9 @@
 
 .search-container .search-icon {
   position: absolute;
-  left: 0.75rem;
+  left: clamp(0.5rem, 1.5vw, 0.75rem);
   color: var(--text-muted);
-  font-size: 0.9rem;
+  font-size: clamp(0.8rem, 0.75rem + 0.35vw, 0.9rem);
   pointer-events: none;
 }
 
