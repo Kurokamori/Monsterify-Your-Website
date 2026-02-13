@@ -1632,6 +1632,21 @@ const MonsterDetailPage = () => {
                                     {parent.type2}
                                   </span>
                                 )}
+                                {parent.type3 && (
+                                  <span className={`badge type-${parent.type3.toLowerCase()}`}>
+                                    {parent.type3}
+                                  </span>
+                                )}
+                                {parent.type4 && (
+                                  <span className={`badge type-${parent.type4.toLowerCase()}`}>
+                                    {parent.type4}
+                                  </span>
+                                )}
+                                {parent.type5 && (
+                                  <span className={`badge type-${parent.type5.toLowerCase()}`}>
+                                    {parent.type5}
+                                  </span>
+                                )}
                               </div>
                               {parent.is_automatic && (
                                 <div className="relationship-info">
@@ -1697,6 +1712,21 @@ const MonsterDetailPage = () => {
                                 {sibling.type2 && (
                                   <span className={`badge type-${sibling.type2.toLowerCase()}`}>
                                     {sibling.type2}
+                                  </span>
+                                )}
+                                {sibling.type3 && (
+                                  <span className={`badge type-${sibling.type3.toLowerCase()}`}>
+                                    {sibling.type3}
+                                  </span>
+                                )}
+                                {sibling.type4 && (
+                                  <span className={`badge type-${sibling.type4.toLowerCase()}`}>
+                                    {sibling.type4}
+                                  </span>
+                                )}
+                                {sibling.type5 && (
+                                  <span className={`badge type-${sibling.type5.toLowerCase()}`}>
+                                    {sibling.type5}
                                   </span>
                                 )}
                               </div>
@@ -1766,6 +1796,21 @@ const MonsterDetailPage = () => {
                                     {child.type2}
                                   </span>
                                 )}
+                                {child.type3 && (
+                                  <span className={`badge type-${child.type3.toLowerCase()}`}>
+                                    {child.type3}
+                                  </span>
+                                )}
+                                {child.type4 && (
+                                  <span className={`badge type-${child.type4.toLowerCase()}`}>
+                                    {child.type4}
+                                  </span>
+                                )}
+                                {child.type5 && (
+                                  <span className={`badge type-${child.type5.toLowerCase()}`}>
+                                    {child.type5}
+                                  </span>
+                                )}
                               </div>
                               {child.is_automatic && (
                                 <div className="relationship-info">
@@ -1831,6 +1876,21 @@ const MonsterDetailPage = () => {
                                 {grandchild.type2 && (
                                   <span className={`badge type-${grandchild.type2.toLowerCase()}`}>
                                     {grandchild.type2}
+                                  </span>
+                                )}
+                                {grandchild.type3 && (
+                                  <span className={`badge type-${grandchild.type3.toLowerCase()}`}>
+                                    {grandchild.type3}
+                                  </span>
+                                )}
+                                {grandchild.type4 && (
+                                  <span className={`badge type-${grandchild.type4.toLowerCase()}`}>
+                                    {grandchild.type4}
+                                  </span>
+                                )}
+                                {grandchild.type5 && (
+                                  <span className={`badge type-${grandchild.type5.toLowerCase()}`}>
+                                    {grandchild.type5}
                                   </span>
                                 )}
                               </div>

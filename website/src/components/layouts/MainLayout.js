@@ -29,13 +29,24 @@ const MainLayout = () => {
     document.body.style.overflow = !mobileMenuOpen ? 'hidden' : '';
   };
 
-  // Toggle dropdown
+  // Toggle dropdown (works for both mobile and desktop click-to-toggle)
   const toggleDropdown = (id) => {
     setDropdownOpen(prev => ({
       ...prev,
       [id]: !prev[id]
     }));
   };
+
+  // Close desktop dropdowns when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (!e.target.closest('.dropdown')) {
+        setDropdownOpen({});
+      }
+    };
+    document.addEventListener('click', handleClickOutside);
+    return () => document.removeEventListener('click', handleClickOutside);
+  }, []);
 
   return (
     <div className="app-container">
@@ -117,12 +128,12 @@ const MainLayout = () => {
           <div className="nav-divider"></div>
           {isAuthenticated && (
             <>
-              <ShopDropdown />
-              <div className="dropdown">
-                <span className="top-nav-link">
+              <ShopDropdown isActive={dropdownOpen['markets']} onToggle={() => toggleDropdown('markets')} />
+              <div className={`dropdown${dropdownOpen['town'] ? ' dropdown-active' : ''}`}>
+                <button type="button" className="top-nav-link dropdown-toggle" onClick={() => toggleDropdown('town')}>
                   Town
                   <span className="dropdown-arrow"></span>
-                </span>
+                </button>
                 <div className="dropdown-content">
                   <Link to="/town/apothecary">Apothecary</Link>
                   <Link to="/town/bakery">Bakery</Link>
@@ -139,11 +150,11 @@ const MainLayout = () => {
                   <Link to="/town/bazar">Bazzar</Link>
                 </div>
               </div>
-              <div className="dropdown">
-                <span className="top-nav-link">
+              <div className={`dropdown${dropdownOpen['adventures'] ? ' dropdown-active' : ''}`}>
+                <button type="button" className="top-nav-link dropdown-toggle" onClick={() => toggleDropdown('adventures')}>
                   Adventures
                   <span className="dropdown-arrow"></span>
-                </span>
+                </button>
                 <div className="dropdown-content">
                   <Link to="/adventures">Adventures</Link>
                   <Link to="/adventures/event/current">Events</Link>

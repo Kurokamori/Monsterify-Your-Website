@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../../services/api';
 
-const ShopDropdown = () => {
+const ShopDropdown = ({ isActive, onToggle }) => {
   const [shops, setShops] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -40,11 +40,11 @@ const ShopDropdown = () => {
   }, []);
 
   return (
-    <div className="dropdown">
-      <span className="top-nav-link">
+    <div className={`dropdown${isActive ? ' dropdown-active' : ''}`}>
+      <button type="button" className="top-nav-link dropdown-toggle" onClick={onToggle}>
         Markets
         <span className="dropdown-arrow"></span>
-      </span>
+      </button>
       <div className="dropdown-content">
         {loading ? (
           <div className="shop-dropdown-loading">Loading shops...</div>
