@@ -8,7 +8,7 @@
     "npm": "9.x"
   },
   "scripts": {
-    "start": "node backend/server.js",
+    "start": "cd backend && npx tsx server.ts",
     "build": "npm run install-backend && npm run install-discord && cd website && npm install && cross-env REACT_APP_API_URL=/api npm run build",
     "heroku-postbuild": "npm run build",
     "dev": "concurrently \"cd backend && npm run dev\" \"cd website && npm start\"",

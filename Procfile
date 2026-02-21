@@ -1,2 +1,2 @@
-web: node backend/server.js
+web: cd backend && npx tsx server.ts
 worker: cd discord-bot && npm install && npm start
