@@ -1,54 +1,358 @@
 /* ==============================
-   Rewards Display Styles
-   ==============================
-   Using fluid values for responsive scaling
+   RewardItem Component
    ============================== */
 
-.rewards-display {
-  margin-top: clamp(1rem, 3vw, 1.5rem);
-  padding: clamp(1rem, 3vw, 20px) 0;
-  text-align: center;
+.reward-item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-small);
+  padding: var(--spacing-small);
+  background-color: var(--primary-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-medium);
+  transition: all 0.2s ease;
+  flex-direction: column;
+  min-width: fit-content;
 }
 
-.auth-header h3 {
-  font-size: clamp(1.25rem, 1rem + 1vw, 1.5rem);
-  color: var(--primary-color);
-  margin-bottom: clamp(0.35rem, 1vw, 0.5rem);
+.reward-item:not(.reward-item--disabled):hover {
+  background-color: var(--primary-color-hover);
+  border-color: var(--accent-color);
 }
 
-.auth-header p {
+/* Link variant */
+a.reward-item {
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+}
+
+/* ---------- Compact Mode ---------- */
+
+.reward-item--compact {
+  padding: var(--spacing-xsmall);
+  gap: var(--spacing-xsmall);
+}
+
+.reward-item--compact .reward-item__icon {
+  width: 1.5rem;
+  height: 1.5rem;
+  font-size: var(--font-size-xsmall);
+}
+
+.reward-item--compact .reward-item__label {
+  font-size: var(--font-size-small);
+}
+
+/* ---------- Image Styling ---------- */
+
+.reward-item__image {
+  width: 90%;
+  height: 90%;
+  border-radius: var(--border-radius-medium);
+  object-fit: contain;
+}
+
+/* ---------- Icon ---------- */
+
+.reward-item__icon {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: var(--border-radius-medium);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: var(--font-size-medium);
   color: var(--text-color);
-  font-size: clamp(0.95rem, 0.85rem + 0.5vw, 1.1rem);
-  margin: clamp(0.35rem, 1vw, 0.5rem) 0;
-  opacity: 0.8;
 }
 
-/* ==============================================
-   RESPONSIVE STYLES
-   ============================================== */
+.reward-item__icon--coin {
+  background-color: var(--accent-color);
+}
 
-@media (max-width: 767px) {
-  .town-places {
-    gap: 0.75rem;
-    grid-template-columns: 1fr;
+.reward-item__icon--level {
+  background-color: var(--free-attribute);
+}
+
+.reward-item__icon--item {
+  background-color: var(--success-dark);
+}
+
+.reward-item__icon--monster {
+  background-color: var(--water-type);
+}
+
+.reward-item__icon--points {
+  background-color: var(--grass-type);
+}
+
+.reward-item__icon--custom {
+  background-color: var(--secondary-color);
+}
+
+/* ---------- Content ---------- */
+
+.reward-item__content {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xxsmall);
+}
+
+.reward-item__header {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xsmall);
+  flex-wrap: wrap;
+}
+
+.reward-item__label {
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+.reward-item__status {
+  font-size: var(--font-size-small);
+  color: var(--text-color-muted);
+  font-style: italic;
+}
+
+/* ---------- Monster Details ---------- */
+
+.reward-item__monster-details {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xsmall);
+  flex-wrap: wrap;
+}
+
+.reward-item__level {
+  font-size: var(--font-size-small);
+  color: var(--text-color-muted);
+  font-weight: 500;
+}
+
+/* ---------- Item Details ---------- */
+
+.reward-item__item-details {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xxsmall);
+}
+
+.reward-item__category {
+  font-size: var(--font-size-xsmall);
+  color: var(--text-color-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.reward-item__description {
+  font-size: var(--font-size-small);
+  color: var(--text-color-muted);
+  margin: 0;
+  line-height: 1.4;
+}
+
+/* ---------- Extra Content ---------- */
+
+.reward-item__extra {
+  flex-shrink: 0;
+}
+
+/* ---------- Actions ---------- */
+
+.reward-item__actions {
+  display: flex;
+  gap: var(--spacing-xsmall);
+  flex-shrink: 0;
+}
+
+/* ---------- States ---------- */
+
+.reward-item--claimed {
+  opacity: 0.7;
+}
+
+.reward-item--claimed .reward-item__icon {
+  filter: grayscale(0.5);
+}
+
+.reward-item--disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ---------- Rarity Variants ---------- */
+
+.reward-item--legendary {
+  border-color: var(--accent-color);
+  box-shadow: 0 0 8px var(--accent-color);
+}
+
+.reward-item--mythic {
+  border-color: var(--ghost-type);
+  box-shadow: 0 0 8px var(--ghost-type);
+  animation: mythic-glow 2s ease-in-out infinite alternate;
+}
+
+@keyframes mythic-glow {
+  from {
+    box-shadow: 0 0 8px var(--ghost-type);
+  }
+  to {
+    box-shadow: 0 0 16px var(--ghost-type);
   }
 }
 
-/* ---------- Reward Icon Colors ---------- */
+/* ==============================
+   RewardList Component
+   ============================== */
 
-.reward-icon.coin { background-color: var(--accent-color); }
-.reward-icon.item { background-color: var(--success-light); }
-.reward-icon.monster { background-color: var(--blue-color); }
-.reward-icon.level { background-color: var(--free-attribute); }
+.reward-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-small);
+}
 
-/* ---------- All Claimed Message ---------- */
+/* ---------- Header ---------- */
 
-.all-claimed-message {
-  text-align: center;
-  padding: clamp(0.75rem, 2vw, 1rem);
-  background-color: var(--success-dark);
-  border-radius: clamp(0.375rem, 1vw, 0.5rem);
-  color: var(--success-light);
+.reward-list__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--spacing-small);
+  flex-wrap: wrap;
+}
+
+.reward-list__title {
+  margin: 0;
+  font-size: var(--font-size-large);
   font-weight: 600;
-  margin-top: clamp(1rem, 3vw, 1.5rem);
+  color: var(--text-color);
+}
+
+.reward-list__header-actions {
+  display: flex;
+  gap: var(--spacing-xsmall);
+  align-items: center;
+}
+
+/* ---------- Summary ---------- */
+
+.reward-list__summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-small);
+  padding: var(--spacing-xsmall) var(--spacing-small);
+  background-color: var(--primary-color);
+  border-radius: var(--border-radius-medium);
+  border: 1px solid var(--border-color);
+}
+
+.reward-list__summary-item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xxsmall);
+  font-size: var(--font-size-small);
+  color: var(--text-color);
+}
+
+.reward-list__summary-item i {
+  color: var(--accent-color);
+}
+
+/* ---------- Content ---------- */
+
+.reward-list__content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-medium);
+}
+
+/* ---------- Group ---------- */
+
+.reward-list__group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xsmall);
+}
+
+.reward-list__group-header {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xsmall);
+  padding-bottom: var(--spacing-xxsmall);
+  border-bottom: 1px solid var(--border-color);
+  margin-bottom: var(--spacing-xxsmall);
+}
+
+.reward-list__group-header i {
+  color: var(--accent-color);
+}
+
+.reward-list__group-title {
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+.reward-list__group-count {
+  font-size: var(--font-size-small);
+  color: var(--text-color-muted);
+}
+
+/* ---------- Items Container ---------- */
+
+.reward-list__items {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xsmall);
+}
+
+/* ---------- Compact Mode ---------- */
+
+.reward-list--compact .reward-list__summary {
+  display: none;
+}
+
+.reward-list--compact .reward-list__items {
+  gap: var(--spacing-xxsmall);
+}
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 768px) {
+  .reward-list__header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .reward-list__header-actions {
+    justify-content: flex-end;
+  }
+
+  .reward-item__actions {
+    flex-direction: column;
+  }
+
+  .reward-item__actions .button {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .reward-item {
+    flex-wrap: wrap;
+  }
+
+  .reward-item__content {
+    flex-basis: calc(100% - 3.5rem);
+  }
+
+  .reward-item__actions {
+    flex-basis: 100%;
+    margin-top: var(--spacing-xsmall);
+  }
 }

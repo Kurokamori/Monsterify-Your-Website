@@ -1,0 +1,152 @@
+/* ==============================
+   Bulk Monster Add Styles
+   ============================== */
+
+.bulk-monster-add {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: var(--spacing-large);
+  color: var(--text-color);
+}
+
+.bulk-monster-add-form {
+  background: var(--primary-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  padding: var(--spacing-large);
+  margin-bottom: var(--spacing-large);
+}
+
+.bulk-monster-add-form .format-hint {
+  display: block;
+  font-size: var(--font-size-xsmall);
+  color: var(--text-color-muted);
+  font-weight: normal;
+  margin-top: var(--spacing-xsmall);
+}
+
+/* --- Results --- */
+
+.results-section {
+  background: var(--primary-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  padding: var(--spacing-large);
+  margin-bottom: var(--spacing-large);
+}
+
+.results-section h3 {
+  margin: 0 0 var(--spacing-medium) 0;
+  color: var(--text-color);
+}
+
+.results-summary {
+  margin-bottom: var(--spacing-medium);
+  padding: var(--spacing-medium);
+  background: var(--secondary-color);
+  border-radius: var(--border-radius-large);
+}
+
+.results-summary p {
+  margin: var(--spacing-xsmall) 0;
+  font-size: var(--font-size-small);
+}
+
+.results-summary .errors {
+  color: var(--error-color);
+}
+
+.success-results,
+.error-results {
+  margin-top: var(--spacing-medium);
+}
+
+.success-results h4,
+.error-results h4 {
+  font-size: var(--font-size-small);
+  margin: 0 0 var(--spacing-small) 0;
+}
+
+.monster-list,
+.error-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xsmall);
+}
+
+.monster-item {
+  display: flex;
+  gap: var(--spacing-medium);
+  align-items: center;
+  padding: var(--spacing-small) var(--spacing-medium);
+  background: var(--secondary-color);
+  border-radius: var(--border-radius-large);
+  font-size: var(--font-size-small);
+  border-left: 3px solid var(--success-color);
+}
+
+.monster-item .monster-name {
+  font-weight: 600;
+  min-width: 100px;
+}
+
+.monster-item .monster-level {
+  color: var(--text-color-muted);
+  min-width: 50px;
+}
+
+.monster-item .monster-types {
+  color: var(--text-color-muted);
+}
+
+.error-item {
+  padding: var(--spacing-small) var(--spacing-medium);
+  background: var(--secondary-color);
+  border-radius: var(--border-radius-large);
+  font-size: var(--font-size-small);
+  color: var(--error-color);
+  border-left: 3px solid var(--error-color);
+}
+
+/* --- Format Guide --- */
+
+.format-guide {
+  background: var(--primary-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  padding: var(--spacing-large);
+}
+
+.format-guide h3 {
+  margin: 0 0 var(--spacing-medium) 0;
+  color: var(--text-color);
+}
+
+.guide-content {
+  font-size: var(--font-size-small);
+  color: var(--text-color);
+  line-height: 1.6;
+}
+
+.guide-content ul {
+  padding-left: var(--spacing-large);
+  margin: var(--spacing-small) 0;
+}
+
+.guide-content li {
+  margin-bottom: var(--spacing-xsmall);
+}
+
+.example-section {
+  margin-top: var(--spacing-medium);
+}
+
+.example-section pre {
+  background: var(--secondary-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-large);
+  padding: var(--spacing-medium);
+  font-size: var(--font-size-xsmall);
+  overflow-x: auto;
+  color: var(--text-color);
+}

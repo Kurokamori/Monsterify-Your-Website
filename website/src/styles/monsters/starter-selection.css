@@ -1,0 +1,122 @@
+/* ==============================
+   Starter Selection Page
+   ============================== */
+
+/* ---------- Page Title ---------- */
+
+.starter-page-title {
+  justify-content: center;
+}
+
+/* ---------- Step Title ---------- */
+
+.starter-step-title {
+  text-align: center;
+  font-size: var(--font-size-xlarge);
+  font-weight: 700;
+  color: var(--text-color);
+  margin: var(--spacing-small) 0;
+}
+
+/* ---------- Progress ---------- */
+
+.starter-progress {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xsmall);
+  margin-bottom: var(--spacing-small);
+}
+
+/* ---------- Tab Label Variants ---------- */
+
+.starter-tab-label-short {
+  display: none;
+}
+
+/* ---------- Navigation ---------- */
+
+.starter-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--spacing-small);
+  margin: var(--spacing-small) 0;
+}
+
+/* ---------- Review Grid ---------- */
+
+.starter-review-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: var(--spacing-medium);
+}
+
+.starter-review-card {
+  background-color: var(--primary-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-medium);
+  overflow: hidden;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.starter-review-card:hover {
+  border-color: var(--accent-color);
+  box-shadow: 0 8px 16px var(--overlay-light);
+}
+
+.starter-review-card__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xsmall);
+  padding: var(--spacing-small);
+}
+
+/* ---------- Name Input Row ---------- */
+
+.starter-name-row {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xsmall);
+}
+
+.starter-name-row .input {
+  flex: 1;
+}
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 768px) {
+  .starter-tab-label {
+    display: none;
+  }
+
+  .starter-tab-label-short {
+    display: inline;
+  }
+
+  .starter-review-grid {
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  }
+}
+
+@media (max-width: 480px) {
+  .starter-review-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .starter-nav {
+    flex-wrap: wrap;
+  }
+}
+
+/* ---------- Reduced Motion ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .starter-review-card {
+    transition: none;
+  }
+
+  .starter-review-card:hover {
+    transform: none;
+  }
+}

@@ -1,0 +1,799 @@
+/* ==============================
+   Guide Pages
+   - Index, Category, Detail, Factions, Lore, NPCs
+   ============================== */
+
+/* ======================
+   Shared Page Layout
+   ====================== */
+
+.guide-page {
+  max-width: var(--container-max-width);
+  margin: 0 auto;
+  padding: var(--spacing-large);
+}
+
+.guide-page__header {
+  margin-bottom: var(--spacing-medium);
+}
+
+.guide-page__header h1 {
+  margin: 0;
+  color: var(--accent-color);
+  font-size: var(--font-size-xxlarge);
+}
+
+.guide-page__header p {
+  margin: var(--spacing-xxsmall) 0 0;
+  color: var(--text-color-muted);
+  font-size: var(--font-size-small);
+}
+
+/* ---------- Toolbar (Search + Filter) ---------- */
+
+.guide-page__toolbar {
+  display: flex;
+  gap: var(--spacing-medium);
+  margin-bottom: var(--spacing-medium);
+  flex-wrap: wrap;
+}
+
+.guide-page__search {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xsmall);
+  flex: 1;
+  min-width: 200px;
+  padding: var(--spacing-xsmall) var(--spacing-small);
+  background-color: var(--primary-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-medium);
+  transition: border-color 0.2s;
+}
+
+.guide-page__search:focus-within {
+  border-color: var(--accent-color);
+}
+
+.guide-page__search i {
+  color: var(--text-color-muted);
+  font-size: var(--font-size-small);
+}
+
+.guide-page__search input {
+  flex: 1;
+  background: none;
+  border: none;
+  color: var(--text-color);
+  font-size: var(--font-size-small);
+  outline: none;
+}
+
+.guide-page__search input::placeholder {
+  color: var(--text-color-muted);
+}
+
+.guide-page__filter {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xsmall);
+}
+
+.guide-page__filter label {
+  font-size: var(--font-size-small);
+  color: var(--text-color-muted);
+  white-space: nowrap;
+}
+
+/* ---------- Grid + List ---------- */
+
+.guide-page__grid {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-small);
+}
+
+.guide-page__list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-small);
+}
+
+/* ======================
+   Guide Content Layout (Category View)
+   ====================== */
+
+.guide-content-layout {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: var(--spacing-large);
+  align-items: start;
+}
+
+.guide-content-layout__sidebar {
+  position: sticky;
+  top: var(--spacing-large);
+}
+
+.guide-content-layout__main {
+  min-width: 0;
+}
+
+/* ======================
+   Index Page
+   ====================== */
+
+.guide-index__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: var(--spacing-medium);
+  margin-bottom: var(--spacing-medium);
+}
+
+.guide-index__section {
+  margin-top: var(--spacing-large);
+}
+
+.guide-index__section h2 {
+  color: var(--accent-color);
+  font-size: var(--font-size-xlarge);
+  margin: 0 0 var(--spacing-medium);
+}
+
+.guide-index__card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: var(--spacing-large);
+  background-color: var(--primary-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-medium);
+  text-decoration: none;
+  transition: border-color 0.2s, transform 0.2s;
+}
+
+.guide-index__card:hover {
+  border-color: var(--accent-color);
+  transform: translateY(-2px);
+}
+
+.guide-index__card-icon {
+  font-size: clamp(2rem, 1.5rem + 1.5vw, 3.5rem);
+  color: var(--accent-color);
+  margin-bottom: var(--spacing-small);
+}
+
+.guide-index__card h2 {
+  margin: 0 0 var(--spacing-xsmall);
+  font-size: var(--font-size-medium);
+  color: var(--text-color);
+}
+
+.guide-index__card p {
+  margin: 0;
+  font-size: var(--font-size-small);
+  color: var(--text-color-muted);
+  line-height: 1.5;
+}
+
+/* ======================
+   Guide Detail Page
+   ====================== */
+
+.guide-detail__hero {
+  position: relative;
+  border-radius: var(--border-radius-medium);
+  overflow: hidden;
+  margin: var(--spacing-medium) 0;
+}
+
+.guide-detail__hero-image {
+  width: 100%;
+  height: 300px;
+  object-fit: cover;
+  display: block;
+}
+
+.guide-detail__hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(transparent 30%, var(--overlay-dark) 100%);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: var(--spacing-large);
+}
+
+.guide-detail__hero-overlay h1 {
+  margin: var(--spacing-xsmall) 0;
+  color: var(--text-color);
+  font-size: var(--font-size-xxlarge);
+  text-shadow: 0 2px 8px var(--overlay-medium);
+}
+
+.guide-detail__category-badge {
+  display: inline-block;
+  padding: var(--spacing-xxsmall) var(--spacing-xsmall);
+  background-color: var(--accent-color);
+  color: var(--background-color);
+  border-radius: var(--border-radius-small);
+  font-size: var(--font-size-xsmall);
+  font-weight: 600;
+}
+
+.guide-detail__meta {
+  display: flex;
+  gap: var(--spacing-medium);
+  flex-wrap: wrap;
+  font-size: var(--font-size-small);
+  color: var(--highlight-heavy);
+}
+
+.guide-detail__meta i {
+  margin-right: var(--spacing-xxsmall);
+}
+
+.guide-detail__body {
+  padding: var(--spacing-medium) 0;
+}
+
+.guide-detail__related {
+  margin-top: var(--spacing-large);
+  border-top: 1px solid var(--border-color);
+  padding-top: var(--spacing-large);
+}
+
+.guide-detail__related h2 {
+  margin: 0 0 var(--spacing-medium);
+  color: var(--accent-color);
+  font-size: var(--font-size-xlarge);
+}
+
+.guide-detail__related-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: var(--spacing-medium);
+}
+
+.guide-detail__related-card {
+  background-color: var(--primary-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-medium);
+  overflow: hidden;
+}
+
+.guide-detail__related-image {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+  display: block;
+}
+
+.guide-detail__related-content {
+  padding: var(--spacing-medium);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xsmall);
+}
+
+.guide-detail__related-content h3 {
+  margin: 0;
+  font-size: var(--font-size-medium);
+  color: var(--text-color);
+}
+
+.guide-detail__related-content p {
+  margin: 0;
+  font-size: var(--font-size-small);
+  color: var(--text-color-muted);
+  line-height: 1.5;
+}
+
+/* ======================
+   Shared Expandable Detail Area
+   ====================== */
+
+.expandable-detail {
+  padding: var(--spacing-medium);
+  border-top: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-medium);
+}
+
+.expandable-detail__section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xsmall);
+}
+
+.expandable-detail__list {
+  margin: 0;
+  padding-left: var(--spacing-large);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xxsmall);
+  color: var(--text-color);
+  font-size: var(--font-size-small);
+  line-height: 1.6;
+}
+
+.expandable-detail__columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-medium);
+}
+
+/* ---------- Shared Info Pair ---------- */
+
+.info-pair {
+  display: flex;
+  gap: var(--spacing-xsmall);
+  font-size: var(--font-size-small);
+  margin-bottom: var(--spacing-xxsmall);
+}
+
+.info-pair__label {
+  font-weight: 600;
+  color: var(--text-color-muted);
+}
+
+.info-pair__value {
+  color: var(--text-color);
+}
+
+/* ---------- Expand Toggle ---------- */
+
+.expand-toggle {
+  display: inline-block;
+  margin-top: var(--spacing-xsmall);
+  font-size: var(--font-size-xsmall);
+  font-weight: 600;
+  color: var(--accent-color);
+  cursor: pointer;
+}
+
+/* ======================
+   Faction Cards
+   ====================== */
+
+.faction-card {
+  background-color: var(--primary-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-medium);
+  overflow: hidden;
+  transition: border-color 0.2s;
+}
+
+.faction-card:hover {
+  border-color: var(--accent-color-hover);
+}
+
+.faction-card--expanded {
+  border-color: var(--accent-color);
+}
+
+.faction-card__header {
+  display: flex;
+  gap: var(--spacing-medium);
+  padding: var(--spacing-medium);
+  cursor: pointer;
+  user-select: none;
+}
+
+.faction-card__banner {
+  flex-shrink: 0;
+  width: 100px;
+  height: 100px;
+  border-radius: var(--border-radius-small);
+  overflow: hidden;
+  border: 2px solid var(--border-color);
+}
+
+.faction-card__image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.faction-card__summary {
+  flex: 1;
+  min-width: 0;
+}
+
+.faction-card__summary h3 {
+  margin: 0;
+  font-size: var(--font-size-medium);
+}
+
+.faction-card__summary p {
+  margin: var(--spacing-xxsmall) 0 0;
+  font-size: var(--font-size-small);
+  color: var(--text-color-muted);
+  line-height: 1.5;
+}
+
+.faction-card__alignment {
+  display: inline-block;
+  padding: var(--spacing-xxsmall) var(--spacing-xsmall);
+  border-radius: var(--border-radius-small);
+  font-size: var(--font-size-xsmall);
+  font-weight: 600;
+  background-color: var(--background-color);
+  color: var(--text-color-muted);
+}
+
+.faction-card__alignment[data-alignment="good"] {
+  color: var(--success-color);
+}
+
+.faction-card__alignment[data-alignment="evil"] {
+  color: var(--error-color);
+}
+
+.faction-card__alignment[data-alignment="neutral"] {
+  color: var(--accent-color);
+}
+
+.faction-card__info {
+  margin-top: var(--spacing-xsmall);
+}
+
+/* ---------- Member Grid ---------- */
+
+.member-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: var(--spacing-small);
+}
+
+.member-grid__item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xsmall);
+  padding: var(--spacing-xsmall);
+  background-color: var(--background-color);
+  border-radius: var(--border-radius-small);
+}
+
+.member-grid__avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.member-grid__info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.member-grid__name {
+  font-size: var(--font-size-small);
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+.member-grid__role {
+  font-size: var(--font-size-xsmall);
+  color: var(--text-color-muted);
+}
+
+/* ======================
+   Lore Entries
+   ====================== */
+
+.lore-entry {
+  background-color: var(--primary-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-medium);
+  overflow: hidden;
+  transition: border-color 0.2s;
+}
+
+.lore-entry--expanded {
+  border-color: var(--accent-color);
+}
+
+.lore-entry__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: var(--spacing-small) var(--spacing-medium);
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  color: var(--text-color);
+  font-size: var(--font-size-medium);
+}
+
+.lore-entry__header:hover {
+  background-color: var(--primary-color-hover);
+}
+
+.lore-entry__header > i {
+  color: var(--text-color-muted);
+  font-size: var(--font-size-xsmall);
+  flex-shrink: 0;
+}
+
+.lore-entry__title-row {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-small);
+  flex-wrap: wrap;
+}
+
+.lore-entry__title-row h3 {
+  margin: 0;
+  font-size: var(--font-size-medium);
+  color: var(--accent-color);
+}
+
+.lore-entry__category {
+  padding: var(--spacing-xxsmall) var(--spacing-xsmall);
+  background-color: var(--background-color);
+  border-radius: var(--border-radius-small);
+  font-size: var(--font-size-xsmall);
+  color: var(--text-color-muted);
+  font-weight: 600;
+}
+
+.lore-entry__summary {
+  padding: 0 var(--spacing-medium) var(--spacing-small);
+}
+
+.lore-entry__summary p {
+  margin: 0;
+  font-size: var(--font-size-small);
+  color: var(--text-color-muted);
+  line-height: 1.5;
+}
+
+.lore-entry__image {
+  max-width: 400px;
+  margin-bottom: var(--spacing-small);
+}
+
+.lore-entry__image img {
+  width: 100%;
+  border-radius: var(--border-radius-small);
+}
+
+.lore-entry__related {
+  display: flex;
+  gap: var(--spacing-xsmall);
+  flex-wrap: wrap;
+}
+
+/* ======================
+   NPC Cards
+   ====================== */
+
+.npc-card {
+  background-color: var(--primary-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-medium);
+  overflow: hidden;
+  transition: border-color 0.2s;
+}
+
+.npc-card--expanded {
+  border-color: var(--accent-color);
+}
+
+.npc-card__header {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-medium);
+  width: 100%;
+  padding: var(--spacing-medium);
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  color: var(--text-color);
+}
+
+.npc-card__header:hover {
+  background-color: var(--primary-color-hover);
+}
+
+.npc-card__avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+  border: 2px solid var(--border-color);
+}
+
+.npc-card__summary {
+  flex: 1;
+  min-width: 0;
+}
+
+.npc-card__summary h3 {
+  margin: 0;
+  font-size: var(--font-size-medium);
+  color: var(--text-color);
+}
+
+.npc-card__summary p {
+  margin: var(--spacing-xxsmall) 0 0;
+  font-size: var(--font-size-small);
+  color: var(--text-color-muted);
+  line-height: 1.5;
+}
+
+.npc-card__category {
+  display: inline-block;
+  padding: var(--spacing-xxsmall) var(--spacing-xsmall);
+  background-color: var(--background-color);
+  border-radius: var(--border-radius-small);
+  font-size: var(--font-size-xsmall);
+  color: var(--text-color-muted);
+  font-weight: 600;
+}
+
+.npc-card__location {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xxsmall);
+  font-size: var(--font-size-xsmall);
+  color: var(--accent-color);
+  margin-top: var(--spacing-xxsmall);
+}
+
+.npc-card__toggle {
+  color: var(--text-color-muted);
+  font-size: var(--font-size-small);
+  flex-shrink: 0;
+}
+
+/* ---------- NPC Dialogue ---------- */
+
+.npc-card__dialogue {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xsmall);
+}
+
+.npc-card__dialogue-line {
+  display: flex;
+  gap: var(--spacing-xsmall);
+  padding: var(--spacing-xsmall) var(--spacing-small);
+  background-color: var(--background-color);
+  border-radius: var(--border-radius-small);
+  border-left: 3px solid var(--accent-color);
+}
+
+.npc-card__dialogue-line i {
+  color: var(--accent-color);
+  font-size: var(--font-size-xsmall);
+  margin-top: var(--spacing-xxsmall);
+  flex-shrink: 0;
+}
+
+.npc-card__dialogue-line p {
+  margin: 0;
+  font-size: var(--font-size-small);
+  color: var(--text-color);
+  line-height: 1.5;
+  font-style: italic;
+}
+
+/* ---------- NPC Rewards ---------- */
+
+.npc-card__rewards {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xsmall);
+}
+
+.npc-card__reward {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-small);
+  padding: var(--spacing-xsmall) var(--spacing-small);
+  background-color: var(--background-color);
+  border-radius: var(--border-radius-small);
+}
+
+.npc-card__reward-icon {
+  font-size: var(--font-size-large);
+  color: var(--accent-color);
+  width: 2rem;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.npc-card__reward-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.npc-card__reward-name {
+  font-weight: 600;
+  font-size: var(--font-size-small);
+  color: var(--text-color);
+}
+
+.npc-card__reward-desc {
+  font-size: var(--font-size-xsmall);
+  color: var(--text-color-muted);
+}
+
+/* ======================
+   Responsive
+   ====================== */
+
+@media (max-width: 768px) {
+  .guide-content-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .guide-content-layout__sidebar {
+    position: static;
+  }
+
+  .guide-index__grid {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  }
+
+  .guide-detail__hero-image {
+    height: 200px;
+  }
+
+  .guide-detail__related-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .expandable-detail__columns {
+    grid-template-columns: 1fr;
+  }
+
+  .faction-card__header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .member-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .guide-page__toolbar {
+    flex-direction: column;
+  }
+
+  .guide-index__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .guide-detail__meta {
+    flex-direction: column;
+    gap: var(--spacing-xsmall);
+  }
+}
+
+/* ---------- Accessibility ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .guide-index__card,
+  .faction-card,
+  .lore-entry,
+  .npc-card {
+    transition: none;
+  }
+
+  .guide-index__card:hover {
+    transform: none;
+  }
+}

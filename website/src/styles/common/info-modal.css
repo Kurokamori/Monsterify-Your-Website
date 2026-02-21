@@ -1,0 +1,198 @@
+/* ==============================
+   InfoModal Component
+   ============================== */
+
+.info-modal {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-medium);
+}
+
+/* ---------- Navigation ---------- */
+
+.info-modal__nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: var(--secondary-color);
+  border: 1px solid var(--border-color);
+  border-radius: 50%;
+  width: 2.5rem;
+  height: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--text-color);
+  z-index: 2;
+  transition: background-color var(--transition-fast);
+}
+
+.info-modal__nav:hover {
+  background: var(--primary-color-hover);
+}
+
+.info-modal__nav--prev {
+  left: calc(-1 * var(--spacing-medium));
+}
+
+.info-modal__nav--next {
+  right: calc(-1 * var(--spacing-medium));
+}
+
+/* ---------- Header ---------- */
+
+.info-modal__header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-small);
+}
+
+.info-modal__image-container {
+  position: relative;
+  width: clamp(100px, 12vw, 180px);
+  height: clamp(100px, 12vw, 180px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--overlay-light);
+  border-radius: var(--border-radius-medium);
+}
+
+.info-modal__image {
+  max-width: 90%;
+  max-height: 90%;
+  object-fit: contain;
+}
+
+.info-modal__badge {
+  position: absolute;
+  top: var(--spacing-xxsmall);
+  right: var(--spacing-xxsmall);
+}
+
+.info-modal__subtitle {
+  font-size: var(--font-size-small);
+  color: var(--text-color-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* ---------- Description ---------- */
+
+.info-modal__description {
+  color: var(--text-color);
+  line-height: 1.6;
+}
+
+.info-modal__description p {
+  margin: 0;
+}
+
+/* ---------- Metadata ---------- */
+
+.info-modal__metadata {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: var(--spacing-small);
+  padding: var(--spacing-small);
+  background: var(--overlay-light);
+  border-radius: var(--border-radius-small);
+}
+
+.info-modal__metadata-item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xxsmall);
+}
+
+.info-modal__metadata-label {
+  font-size: var(--font-size-small);
+  color: var(--text-color-muted);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.info-modal__metadata-value {
+  color: var(--text-color);
+  font-weight: 500;
+}
+
+/* ---------- Sections ---------- */
+
+.info-modal__sections {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-medium);
+}
+
+.info-modal__section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xsmall);
+}
+
+.info-modal__section-title {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xsmall);
+  margin: 0;
+  font-size: var(--font-size-medium);
+  color: var(--accent-color);
+  border-bottom: 2px solid var(--accent-color);
+  padding-bottom: var(--spacing-xxsmall);
+}
+
+.info-modal__section-title i {
+  font-size: var(--font-size-small);
+}
+
+.info-modal__section-content {
+  color: var(--text-color);
+  line-height: 1.6;
+}
+
+.info-modal__section-content p {
+  margin: 0;
+}
+
+/* ---------- Navigation Hint ---------- */
+
+.info-modal__nav-hint {
+  display: flex;
+  justify-content: center;
+  gap: var(--spacing-medium);
+  padding-top: var(--spacing-small);
+  border-top: 1px solid var(--border-color);
+  font-size: var(--font-size-small);
+  color: var(--text-color-muted);
+}
+
+.info-modal__nav-hint kbd {
+  display: inline-block;
+  padding: 0.1em 0.4em;
+  font-size: var(--font-size-xsmall);
+  font-family: inherit;
+  background: var(--secondary-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-small);
+}
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 480px) {
+  .info-modal__nav--prev {
+    left: var(--spacing-xxsmall);
+  }
+
+  .info-modal__nav--next {
+    right: var(--spacing-xxsmall);
+  }
+
+  .info-modal__metadata {
+    grid-template-columns: 1fr;
+  }
+}

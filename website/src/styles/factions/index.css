@@ -1,0 +1,11 @@
+/* Faction Styles Index */
+@import './standing.css';
+@import './people.css';
+
+/* ---------- Faction Store ---------- */
+
+.faction-store {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-medium);
+}

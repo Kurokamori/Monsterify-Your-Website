@@ -1,270 +1,295 @@
-/* =============================================================================
-   GARDEN STYLES
+/* ==============================
+   Garden Component Styles
+   ============================== */
 
-   Garden activity styles including harvest, plots, growth tracking.
-   ============================================================================= */
+/* ---------- Garden Info ---------- */
 
-/* Garden Harvest Container */
-.garden-harvest-container {
+.garden-info {
   display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-  padding: 1.5rem;
-  background-color: var(--card-background);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow-md);
+  gap: var(--spacing-large);
+  padding: var(--spacing-medium);
+  background-color: var(--primary-color);
+  border-radius: var(--border-radius-medium);
+  border: 1px solid var(--border-color);
+  margin-bottom: var(--spacing-medium);
 }
 
-.garden-harvest-description {
-  color: var(--text-secondary);
-  font-size: 1rem;
+.info-row {
+  display: flex;
+  gap: var(--spacing-small);
 }
 
-/* Garden Points Display */
-.garden-points-display {
+.info-label {
+  color: var(--text-color-muted);
+  font-weight: 500;
+}
+
+.info-value {
+  color: var(--text-color);
+  font-weight: 600;
+}
+
+/* ---------- Garden Plots Grid ---------- */
+
+.garden-plots {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: var(--spacing-medium);
+}
+
+.garden-plot {
+  position: relative;
+  min-height: 200px;
+}
+
+.garden-plot.ready {
+  border-color: var(--success-color);
+}
+
+.garden-plot.needs-tending {
+  border-color: var(--warning-color);
+}
+
+/* ---------- Plot Image ---------- */
+
+.plot-image-container {
+  position: relative;
+  margin-bottom: var(--spacing-small);
+}
+
+.plot-image {
+  width: 100%;
+  height: 100px;
+  object-fit: contain;
+  border-radius: var(--border-radius-small);
+  background-color: var(--secondary-color);
+}
+
+/* ---------- Plot Badges ---------- */
+
+.plot-badge {
+  position: absolute;
+  top: var(--spacing-xsmall);
+  right: var(--spacing-xsmall);
+  padding: var(--spacing-xxsmall) var(--spacing-xsmall);
+  border-radius: var(--border-radius-small);
+  font-size: var(--font-size-xsmall);
+  font-weight: 600;
   display: flex;
   align-items: center;
-  gap: 1rem;
-  padding: 1rem;
-  background-color: var(--background-light);
-  border-radius: var(--radius);
-  border-left: 4px solid var(--success-color);
+  gap: var(--spacing-xxsmall);
 }
 
-.garden-points-icon {
-  font-size: 2rem;
-  color: var(--success-color);
+.plot-badge--ready {
+  background-color: var(--success-color);
+  color: white;
+}
+
+.plot-badge--tending {
+  background-color: var(--warning-color);
+  color: var(--background-color);
+}
+
+/* ---------- Plot Info ---------- */
+
+.plot-name {
+  font-size: var(--font-size-medium);
+  font-weight: 600;
+  margin-bottom: var(--spacing-xsmall);
+}
+
+.plot-time {
+  font-size: var(--font-size-small);
+  color: var(--text-color-muted);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xsmall);
+  margin-top: var(--spacing-xsmall);
+}
+
+/* ---------- Growth Progress ---------- */
+
+.growth-progress {
+  margin-top: var(--spacing-xsmall);
+}
+
+.growth-bar {
+  height: 8px;
+  background-color: var(--secondary-color);
+  border-radius: var(--border-radius-small);
+  overflow: hidden;
+}
+
+.growth-bar__fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--success-color), var(--accent-color));
+  border-radius: var(--border-radius-small);
+  transition: width 0.3s ease;
+}
+
+.growth-label {
+  font-size: var(--font-size-xsmall);
+  color: var(--text-color-muted);
+  margin-top: var(--spacing-xxsmall);
+  display: block;
+}
+
+/* ---------- Empty Plot ---------- */
+
+.empty-plot {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 150px;
+  color: var(--text-color-muted);
+  border: 2px dashed var(--border-color);
+  border-radius: var(--border-radius-medium);
+}
+
+.empty-plot i {
+  font-size: clamp(1.5rem, 1.25rem + 1vw, 2.5rem);
+  margin-bottom: var(--spacing-small);
+}
+
+/* ---------- Harvest Results ---------- */
+
+.harvest-results {
+  text-align: center;
+}
+
+.harvested-items {
+  margin-top: var(--spacing-medium);
+}
+
+.harvested-items h4 {
+  margin-bottom: var(--spacing-small);
+}
+
+.items-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: var(--spacing-small);
+}
+
+.harvested-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--spacing-small);
+  background-color: var(--primary-color);
+  border-radius: var(--border-radius-small);
+  border: 1px solid var(--border-color);
+}
+
+.harvested-item .item-image {
+  width: 50px;
+  height: 50px;
+  object-fit: contain;
+  margin-bottom: var(--spacing-xsmall);
+}
+
+.harvested-item .item-info {
+  text-align: center;
+}
+
+.harvested-item .item-name {
+  font-size: var(--font-size-small);
+  font-weight: 500;
+  display: block;
+}
+
+.harvested-item .item-quantity {
+  font-size: var(--font-size-xsmall);
+  color: var(--accent-color);
+  font-weight: 600;
+}
+
+.harvest-xp {
+  margin-top: var(--spacing-medium);
+  font-size: var(--font-size-large);
+  color: var(--accent-color);
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 3rem;
-  height: 3rem;
-  background-color: rgba(var(--success-color-rgb), 0.1);
-  border-radius: var(--radius-full);
+  gap: var(--spacing-xsmall);
+}
+
+/* ---------- Garden Points Display ---------- */
+
+.garden-points-display {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-medium);
+  padding: var(--spacing-medium);
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  border-radius: var(--border-radius-medium);
+  border: 1px solid var(--accent-color);
+  margin-bottom: var(--spacing-large);
+}
+
+.garden-points-icon {
+  font-size: clamp(2rem, 1.5rem + 1.5vw, 3.5rem);
+  color: var(--accent-color);
 }
 
 .garden-points-info h3 {
-  font-size: 1.2rem;
-  margin-bottom: 0.25rem;
-  color: var(--text-color);
+  margin: 0;
+  font-size: var(--font-size-xlarge);
 }
 
-/* Garden Harvest Info */
-.garden-harvest-info {
-  padding: 1rem;
-  background-color: var(--background-light);
-  border-radius: var(--radius);
+/* ---------- Harvest Info & Rewards ---------- */
+
+.harvest-info {
+  margin-bottom: var(--spacing-medium);
 }
 
-.garden-harvest-info h3 {
-  font-size: 1.2rem;
-  margin-bottom: 1rem;
-  color: var(--primary-color);
+.harvest-rewards {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-small);
 }
+
+/* ---------- Harvest Rewards List ---------- */
 
 .harvest-rewards-list {
   list-style: none;
   padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
+  margin: 0;
 }
 
 .harvest-rewards-list li {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  font-size: 0.95rem;
+  gap: var(--spacing-small);
+  padding: var(--spacing-xsmall) 0;
+  font-size: var(--font-size-small);
 }
 
 .harvest-rewards-list li i {
-  color: var(--primary-color);
-  width: 1.5rem;
+  width: 20px;
   text-align: center;
 }
 
-/* Garden Harvest Actions */
-.garden-harvest-actions {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1rem;
-  margin-top: 1rem;
-}
+/* ---------- Responsive ---------- */
 
-/* Harvest button styles removed - use "button success" */
-
-.no-points-message {
-  text-align: center;
-  color: var(--text-secondary);
-  font-style: italic;
-  max-width: 400px;
-}
-
-.garden-description {
-  color: var(--text-color);
-  opacity: 0.8;
-  max-width: 800px;
-  margin: 0 auto;
-}
-
-/* Garden Controls */
-
-/* Action button tend/harvest styles removed - use "button primary" or "button success" */
-
-/* Action Message */
-.action-message {
-  padding: 0.75rem;
-  border-radius: var(--radius-sm);
-  font-size: var(--font-size-base);
-  text-align: center;
-}
-
-.action-message.success {
-  background-color: var(--success-color-light);
-  color: var(--success-color);
-}
-
-.action-message.error {
-  background-color: var(--error-color-light);
-  color: var(--error-color);
-}
-
-/* Garden Info */
-.garden-info {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
-  background-color: var(--card-background);
-  border-radius: var(--radius);
-  padding: 1rem;
-  box-shadow: var(--shadow-sm);
-}
-
-/* Garden Plots */
-
-.guide-card.planted:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-md);
-}
-
-.guide-card.ready {
-  border: 2px solid var(--success-color);
-}
-
-.guide-card.needs-tending {
-  border: 2px solid var(--warning-color);
-}
-
-.ready-badge {
-  position: absolute;
-  top: 0.5rem;
-  right: 0.5rem;
-  background-color: var(--success-color);
-  color: var(--text-color);
-  font-size: var(--font-size-xs);
-  font-weight: 600;
-  padding: 0.25rem 0.5rem;
-  border-radius: var(--radius-full);
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
-}
-
-.needs-tending-badge {
-  position: absolute;
-  top: 0.5rem;
-  right: 0.5rem;
-  background-color: var(--warning-color);
-  color: var(--text-color);
-  font-size: var(--font-size-xs);
-  font-weight: 600;
-  padding: 0.25rem 0.5rem;
-  border-radius: var(--radius-full);
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
-}
-
-/* Growth Progress Bar */
-.growth-bar-container {
-  height: 0.5rem;
-  background-color: var(--card-background-light);
-  border-radius: var(--radius-sm);
-  overflow: hidden;
-}
-
-.growth-bar-fill {
-  height: 100%;
-  background-color: var(--accent-color);
-  border-radius: var(--radius-sm);
-}
-
-.plot-time {
-  font-size: var(--font-size-sm);
-  color: var(--text-color);
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
-  margin-top: auto;
-}
-
-/* Empty Plot */
-.empty-plot {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  padding: 2rem;
-  color: var(--text-color);
-  opacity: 0.5;
-}
-
-.empty-plot i {
-  font-size: 2rem;
-}
-
-/* Harvest Results */
-.harvest-results {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1.5rem;
-  text-align: center;
-}
-
-.harvested-items {
-  width: 100%;
-  text-align: left;
-}
-
-.harvested-items h3 {
-  font-size: var(--font-size-base);
-  color: var(--text-color);
-  margin: 0 0 1rem 0;
-}
-
-.harvested-item {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  padding: 0.75rem;
-  background-color: var(--card-background-light);
-  border-radius: var(--radius-sm);
-}
-
-.harvest-reward {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: var(--font-size-base);
-  font-weight: 600;
-}
-
-/* Modal button styles removed - use "button primary" */
-
-/* Responsive Styles */
 @media (max-width: 768px) {
+  .garden-info {
+    flex-direction: column;
+  }
+
+  .garden-plots {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .garden-points-display {
+    flex-direction: column;
+    text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .garden-plots {
+    grid-template-columns: 1fr;
+  }
 }

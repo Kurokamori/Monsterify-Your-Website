@@ -1,0 +1,116 @@
+.evo-line-editor {
+  margin-bottom: var(--spacing-medium);
+}
+
+.evo-line-editor__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--spacing-medium);
+  padding-bottom: var(--spacing-small);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.evo-line-editor__empty {
+  color: var(--text-color-muted);
+  font-style: italic;
+  padding: var(--spacing-medium) 0;
+  text-align: center;
+}
+
+.evo-line-editor__preview {
+  margin-top: var(--spacing-medium);
+  padding: var(--spacing-small) var(--spacing-medium);
+  background: var(--primary-color);
+  border-radius: var(--border-radius);
+  font-size: var(--font-size-small);
+  border: 1px solid var(--border-color);
+}
+
+.evo-entry {
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  padding: var(--spacing-medium);
+  margin-bottom: var(--spacing-medium);
+  background: var(--primary-color);
+}
+
+.evo-entry__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--spacing-small);
+  padding-bottom: var(--spacing-xsmall);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.evo-entry__number {
+  font-weight: 700;
+  font-size: var(--font-size-small);
+  color: var(--text-color-muted);
+}
+
+.evo-entry__fields {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--spacing-small) var(--spacing-medium);
+  align-items: start;
+}
+
+.evo-entry__field--wide {
+  grid-column: span 2;
+}
+
+.evo-entry__field {
+  display: flex;
+  flex-direction: column;
+}
+
+.evo-entry__field > label {
+  display: block;
+  font-size: var(--font-size-xsmall);
+  font-weight: 600;
+  color: var(--text-color-muted);
+  margin-bottom: var(--spacing-xxsmall);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.evo-entry__field input,
+.evo-entry__field select {
+  width: 100%;
+  padding: var(--spacing-xsmall) var(--spacing-small);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-small);
+  background: var(--input-background);
+  color: var(--text-color);
+  font-size: var(--font-size-small);
+  height: 36px;
+  box-sizing: border-box;
+}
+
+.evo-entry__field input:focus,
+.evo-entry__field select:focus {
+  outline: none;
+  border-color: var(--accent-color);
+}
+
+/* Ensure autocomplete inputs inside entries match sizing */
+.evo-entry__field .form-group {
+  margin-bottom: 0;
+}
+
+.evo-entry__field .autocomplete-input-wrapper .input {
+  height: 36px;
+  font-size: var(--font-size-small);
+}
+
+@media (max-width: 768px) {
+  .evo-entry__fields {
+    grid-template-columns: 1fr;
+  }
+
+  .evo-entry__field--wide {
+    grid-column: span 1;
+  }
+}

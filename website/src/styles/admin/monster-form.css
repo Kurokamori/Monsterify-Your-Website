@@ -1,0 +1,82 @@
+/* ==============================
+   MonsterForm Component
+   ============================== */
+
+.monster-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-medium);
+  padding: var(--spacing-medium);
+}
+
+/* ---------- Attributes Grid ---------- */
+.attributes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: var(--spacing-xsmall);
+}
+
+.attribute-option {
+  cursor: pointer;
+}
+
+.attribute-option input[type="radio"] {
+  display: none;
+}
+
+.attribute-option.selected .ability-pill {
+  background: var(--primary-color-active);
+}
+
+/* ---------- Types Section ---------- */
+.types-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-small);
+}
+
+.common-types,
+.custom-type,
+.selected-types {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xsmall);
+}
+
+.common-types h5,
+.custom-type h5,
+.selected-types h5 {
+  margin: 0;
+  font-size: var(--font-size-small);
+  color: var(--text-color-muted);
+  font-weight: 600;
+}
+
+.type-btn {
+  padding: var(--spacing-xxsmall) var(--spacing-xsmall);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-small);
+  font-size: var(--font-size-small);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.type-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.type-btn.selected {
+  border-color: transparent;
+  font-weight: 600;
+}
+
+/* ---------- Tag Variants ---------- */
+.tag.species-tag {
+  background-color: var(--secondary-color);
+}
+
+.tag.type-tag {
+  color: white;
+  font-weight: 600;
+}

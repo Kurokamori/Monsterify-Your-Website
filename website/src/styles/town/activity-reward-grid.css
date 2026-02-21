@@ -1,0 +1,308 @@
+/* ==============================
+   Activity Reward Grid
+   Unified reward display for activities,
+   garden harvest, and game corner
+   ============================== */
+.activity-reward-grid {
+  gap: var(--spacing-medium);
+}
+
+.activity-reward-grid__section {
+  margin-bottom: var(--spacing-large);
+}
+
+.activity-reward-grid__section-header {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-small);
+  padding-bottom: var(--spacing-xsmall);
+  border-bottom: 1px solid var(--border-color);
+  margin-bottom: var(--spacing-medium);
+}
+
+.activity-reward-grid__section-header i {
+  color: var(--accent-color);
+  font-size: var(--font-size-medium);
+}
+
+.activity-reward-grid__section-header h2 {
+  margin: 0;
+  font-size: var(--font-size-large);
+  color: var(--text-color);
+}
+
+/* ---------- Grid Layouts ---------- */
+
+.activity-reward-grid__items,
+.activity-reward-grid__monsters {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: var(--spacing-medium);
+}
+
+/* ---------- Card Inner ----------
+   Using variant="compact" on Card removes its internal padding.
+   We use .activity-reward-grid__card-inner as the main flex container
+   inside the Card so we control the layout entirely.
+   --------------------------------- */
+
+.activity-reward-grid__card-inner {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-small);
+  padding: var(--spacing-small);
+}
+
+.activity-reward-grid__card--claimed {
+  opacity: 0.7;
+}
+
+/* ---------- Item Display ---------- */
+
+.activity-reward-grid__item-display {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-small);
+}
+
+.activity-reward-grid__item-image {
+  width: 64px;
+  height: 64px;
+  border-radius: var(--border-radius-medium);
+  object-fit: contain;
+  flex-shrink: 0;
+  background-color: var(--secondary-color);
+  padding: var(--spacing-xxsmall);
+}
+
+.activity-reward-grid__item-info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xxsmall);
+  min-width: 0;
+}
+
+.activity-reward-grid__item-name {
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+.activity-reward-grid__item-qty {
+  font-size: var(--font-size-small);
+  color: var(--text-color-muted);
+}
+
+/* ---------- Monster Display ---------- */
+
+.activity-reward-grid__monster-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-small);
+  justify-content: center;
+  align-items: center;
+}
+
+/* ---------- Species Images ---------- */
+
+.activity-reward-grid__species-images {
+  display: flex;
+  gap: var(--spacing-xxsmall);
+  flex-shrink: 0;
+}
+
+/* Single species — larger image */
+.activity-reward-grid__species-images--1 .activity-reward-grid__species-img,
+.activity-reward-grid__species-images--1 .activity-reward-grid__species-fallback {
+  width: 100px;
+  height: 100px;
+}
+
+/* Two species — medium images */
+.activity-reward-grid__species-images--2 .activity-reward-grid__species-img,
+.activity-reward-grid__species-images--2 .activity-reward-grid__species-fallback {
+  width: 72px;
+  height: 72px;
+}
+
+/* Three species — smaller images */
+.activity-reward-grid__species-images--3 .activity-reward-grid__species-img,
+.activity-reward-grid__species-images--3 .activity-reward-grid__species-fallback {
+  width: 56px;
+  height: 56px;
+}
+
+.activity-reward-grid__species-img {
+  border-radius: var(--border-radius-medium);
+  object-fit: cover;
+  background-color: var(--secondary-color);
+}
+
+.activity-reward-grid__species-fallback {
+  border-radius: var(--border-radius-medium);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--secondary-color);
+  color: var(--text-color-muted);
+  font-size: var(--font-size-large);
+  overflow: hidden;
+}
+
+.activity-reward-grid__species-fallback-name {
+  font-size: var(--font-size-xxxsmall);
+  text-align: center;
+  line-height: 1.1;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding: 0 var(--spacing-xxsmall);
+}
+
+/* ---------- Monster Info ---------- */
+
+.activity-reward-grid__monster-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xxsmall);
+}
+
+.activity-reward-grid__monster-name {
+  font-weight: 600;
+  font-size: var(--font-size-large);
+  color: var(--text-color);
+  margin: 0;
+  word-break: break-word;
+}
+
+.activity-reward-grid__monster-level {
+  font-size: var(--font-size-small);
+  color: var(--text-color-muted);
+}
+
+/* ---------- Actions ---------- */
+
+.activity-reward-grid__actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xsmall);
+  margin-top: auto;
+}
+
+.activity-reward-grid__buttons {
+  display: flex;
+  gap: var(--spacing-xsmall);
+}
+
+.activity-reward-grid__buttons .button {
+  flex: 1;
+}
+
+/* ---------- Claimed Display ---------- */
+
+.activity-reward-grid__claimed {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--spacing-xxsmall);
+}
+
+.activity-reward-grid__claimed-by {
+  font-size: var(--font-size-small);
+  color: var(--text-color-muted);
+  font-style: italic;
+}
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 768px) {
+  .activity-reward-grid__items,
+  .activity-reward-grid__monsters {
+    grid-template-columns: 1fr;
+  }
+
+  .activity-reward-grid__monster-content {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .activity-reward-grid__species-images {
+    justify-content: center;
+  }
+}
+
+/* ---------- Species Image Lightbox ---------- */
+
+.activity-reward-grid__species-img--clickable {
+  cursor: zoom-in;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.activity-reward-grid__species-img--clickable:hover {
+  transform: scale(1.08);
+  box-shadow: var(--shadow-medium);
+}
+
+.activity-reward-grid__lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--overlay-heavy);
+  backdrop-filter: blur(4px);
+  padding: var(--spacing-medium);
+}
+
+.activity-reward-grid__lightbox-content {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-small);
+  background: var(--primary-color);
+  border-radius: var(--border-radius-large);
+  padding: var(--spacing-medium);
+  max-width: min(90vw, 480px);
+  max-height: 90vh;
+  box-shadow: var(--shadow-large);
+}
+
+.activity-reward-grid__lightbox-close {
+  position: absolute;
+  top: var(--spacing-xsmall);
+  right: var(--spacing-xsmall);
+  background: none;
+  border: none;
+  color: var(--text-color-muted);
+  font-size: var(--font-size-large);
+  cursor: pointer;
+  padding: var(--spacing-xxsmall) var(--spacing-xsmall);
+  border-radius: var(--border-radius-small);
+  line-height: 1;
+  transition: color 0.15s ease, background-color 0.15s ease;
+}
+
+.activity-reward-grid__lightbox-close:hover {
+  color: var(--text-color);
+  background-color: var(--secondary-color);
+}
+
+.activity-reward-grid__lightbox-img {
+  max-width: 100%;
+  max-height: calc(90vh - 100px);
+  object-fit: contain;
+  border-radius: var(--border-radius-medium);
+}
+
+.activity-reward-grid__lightbox-caption {
+  margin: 0;
+  font-weight: 600;
+  color: var(--text-color);
+  text-align: center;
+}

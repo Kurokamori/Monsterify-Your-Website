@@ -1,0 +1,141 @@
+/* ==============================
+   Guide Navigation Styles
+   - Sidebar and Category Tabs
+   ============================== */
+
+/* ---------- Guide Sidebar ---------- */
+
+.guide-sidebar {
+  width: 100%;
+  background-color: var(--primary-color);
+  border-radius: var(--border-radius-medium);
+  overflow: hidden;
+  box-shadow: 0 2px 8px var(--overlay-light);
+}
+
+.guide-sidebar__header {
+  padding: var(--spacing-medium);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.guide-sidebar__overview {
+  display: block;
+  font-weight: bold;
+  color: var(--accent-color);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.guide-sidebar__overview:hover {
+  color: var(--accent-color-hover);
+}
+
+.guide-sidebar__content {
+  padding: var(--spacing-xsmall) 0;
+}
+
+.guide-sidebar__empty {
+  padding: var(--spacing-medium);
+  text-align: center;
+  color: var(--text-color-muted);
+  font-style: italic;
+}
+
+.guide-sidebar__item {
+  margin-bottom: 2px;
+}
+
+.guide-sidebar__dir {
+  display: flex;
+  align-items: center;
+  padding: var(--spacing-xsmall) var(--spacing-medium);
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.guide-sidebar__dir:hover {
+  background-color: var(--primary-color-hover);
+}
+
+.guide-sidebar__dir--expanded {
+  background-color: var(--primary-color-active);
+}
+
+.guide-sidebar__icon {
+  margin-right: var(--spacing-xsmall);
+  font-size: var(--font-size-xsmall);
+  color: var(--text-color-muted);
+}
+
+.guide-sidebar__name {
+  font-weight: 500;
+}
+
+.guide-sidebar__children {
+  padding-left: var(--spacing-large);
+}
+
+.guide-sidebar__file {
+  padding: var(--spacing-xsmall) var(--spacing-medium) var(--spacing-xsmall) var(--spacing-xlarge);
+  position: relative;
+}
+
+.guide-sidebar__file a {
+  color: var(--text-color);
+  text-decoration: none;
+  display: block;
+  transition: color 0.2s;
+}
+
+.guide-sidebar__file a:hover {
+  color: var(--accent-color);
+}
+
+.guide-sidebar__file--active {
+  background-color: var(--primary-color-active);
+}
+
+.guide-sidebar__file--active a {
+  color: var(--accent-color);
+  font-weight: 500;
+}
+
+/* ---------- Guide Category Tabs ---------- */
+
+.guide-category-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--border-color);
+  margin-bottom: var(--spacing-large);
+  overflow-x: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--accent-color) var(--primary-color);
+}
+
+.guide-category-tab {
+  padding: var(--spacing-small) var(--spacing-large);
+  white-space: nowrap;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s;
+  text-decoration: none;
+  color: var(--text-color);
+  font-weight: 500;
+}
+
+.guide-category-tab:hover {
+  background-color: var(--primary-color-hover);
+  color: var(--accent-color);
+}
+
+.guide-category-tab--active {
+  border-bottom-color: var(--accent-color);
+  color: var(--accent-color);
+}
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 768px) {
+  .guide-sidebar {
+    margin-bottom: var(--spacing-large);
+  }
+}

@@ -1,0 +1,191 @@
+/* ==============================
+   Item Roller Admin Tool
+   ============================== */
+
+/* ---------- Quantity Input ---------- */
+
+.item-roller__quantity-input {
+  width: 80px;
+  text-align: center;
+}
+
+/* ---------- Category Checkboxes ---------- */
+
+.item-roller__categories {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: var(--spacing-xsmall);
+}
+
+.item-roller__category-checkbox {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xsmall);
+  padding: var(--spacing-xsmall) var(--spacing-small);
+  background-color: var(--primary-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-small);
+  cursor: pointer;
+  font-size: var(--font-size-small);
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+  user-select: none;
+}
+
+.item-roller__category-checkbox:hover {
+  border-color: var(--accent-color-hover);
+}
+
+.item-roller__category-checkbox input[type="checkbox"] {
+  accent-color: var(--accent-color);
+}
+
+/* ---------- Card Grid ---------- */
+
+.item-roller__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: var(--spacing-small);
+}
+
+/* ---------- Item Card ---------- */
+
+.item-roller__card {
+  background-color: var(--primary-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-medium);
+  padding: var(--spacing-small);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-xsmall);
+  cursor: pointer;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  position: relative;
+}
+
+.item-roller__card:hover {
+  border-color: var(--accent-color-hover);
+}
+
+.item-roller__card--selected {
+  border-color: var(--accent-color);
+  box-shadow: 0 0 12px var(--accent-glow);
+  cursor: default;
+}
+
+.item-roller__card--success {
+  border-color: var(--success-color);
+  cursor: default;
+  opacity: 0.8;
+}
+
+.item-roller__card--error {
+  border-color: var(--error-color);
+  cursor: pointer;
+}
+
+/* ---------- Card Image ---------- */
+
+.item-roller__card-image {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.item-roller__card-image img {
+  width: 72px;
+  height: 72px;
+  object-fit: contain;
+  border-radius: var(--border-radius-small);
+  background-color: var(--background-color);
+}
+
+/* ---------- Card Info ---------- */
+
+.item-roller__card-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-xxsmall);
+  width: 100%;
+  text-align: center;
+}
+
+.item-roller__card-name {
+  margin: 0;
+  font-size: var(--font-size-small);
+  font-weight: 600;
+  color: var(--text-color);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+.item-roller__card-meta {
+  display: flex;
+  gap: var(--spacing-xsmall);
+  font-size: var(--font-size-xsmall);
+}
+
+/* ---------- Card Status ---------- */
+
+.item-roller__card-status {
+  font-size: var(--font-size-xsmall);
+  font-weight: 600;
+  padding: var(--spacing-xxsmall) var(--spacing-xsmall);
+  border-radius: var(--border-radius-small);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xxsmall);
+}
+
+.item-roller__card-status--success {
+  color: var(--success-color);
+}
+
+.item-roller__card-status--error {
+  color: var(--error-color);
+}
+
+/* ---------- Card Hint ---------- */
+
+.item-roller__card-hint {
+  font-size: var(--font-size-xsmall);
+  color: var(--text-color-muted);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.item-roller__card:hover .item-roller__card-hint {
+  opacity: 1;
+}
+
+/* ---------- Assignment Panel ---------- */
+
+.item-roller__assign {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xsmall);
+  padding-top: var(--spacing-xsmall);
+  border-top: 1px solid var(--border-color);
+}
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 768px) {
+  .item-roller__grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  }
+
+  .item-roller__categories {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  }
+}
+
+@media (max-width: 480px) {
+  .item-roller__grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}

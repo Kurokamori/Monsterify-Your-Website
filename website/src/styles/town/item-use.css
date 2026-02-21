@@ -1,0 +1,625 @@
+/* ==============================
+   Item Use Page Styles
+   Shared layout for Apothecary, Bakery, Witch's Hut,
+   Mega Mart, and Antique Store pages
+   ============================== */
+
+/* ---------- Page Layout ---------- */
+
+.item-use-page {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.item-use-page__breadcrumb {
+  margin-bottom: var(--spacing-medium);
+}
+
+.item-use-page__header {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-medium);
+  margin-bottom: var(--spacing-xlarge);
+}
+
+.item-use-page__icon {
+  width: 64px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--border-radius-large);
+  background-color: var(--accent-color);
+  color: var(--background-color);
+  font-size: clamp(1.5rem, 1.25rem + 1vw, 2rem);
+  flex-shrink: 0;
+}
+
+.item-use-page__header h1 {
+  margin: 0 0 var(--spacing-xxsmall) 0;
+  color: var(--text-color);
+}
+
+.item-use-page__description {
+  margin: 0;
+  color: var(--text-color-muted);
+  font-size: var(--font-size-medium);
+}
+
+/* ---------- Mega Mart ---------- */
+
+.mega-mart__search {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xsmall);
+}
+
+.mega-mart__search > i {
+  position: absolute;
+  left: var(--spacing-small);
+  color: var(--text-color-muted);
+  pointer-events: none;
+}
+
+.mega-mart__search > .input {
+  padding-left: calc(var(--spacing-small) + 1.25em + var(--spacing-xsmall));
+}
+
+.mega-mart__search > .button {
+  position: absolute;
+  right: var(--spacing-xsmall);
+}
+
+.mega-mart__layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-large);
+  padding: var(--spacing-medium);
+  align-items: start;
+}
+
+.mega-mart__monsters {
+  min-height: 600px;
+  max-height: 600px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.mega-mart__monsters .data-grid__items--sm {
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 150px), 1fr));
+}
+
+.mega-mart__monster-card {
+  min-width: 0;
+  overflow: hidden;
+}
+
+.mega-mart__monster-card .card__title,
+.mega-mart__monster-card .card__subtitle {
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
+.mega-mart__monster-card .card__image-container {
+  aspect-ratio: 1;
+  max-height: 180px;
+}
+
+.mega-mart__monster-card .card__image-container img {
+  object-fit: contain;
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+}
+
+.mega-mart__monster-card.card--selected {
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 2px var(--accent-color);
+}
+
+.mega-mart__detail {
+  position: sticky;
+  top: var(--spacing-large);
+}
+
+.mega-mart__panel {
+  padding: var(--spacing-medium);
+  background-color: var(--primary-color);
+  border-radius: var(--border-radius-medium);
+  border: 1px solid var(--border-color);
+  box-sizing: border-box;
+}
+
+.mega-mart__monster-info {
+  margin-bottom: var(--spacing-medium);
+  padding-bottom: var(--spacing-medium);
+  border-bottom: 1px solid var(--border-color);
+  display: inline-flex;
+  flex-direction: column;
+  gap: var(--spacing-xsmall);
+}
+
+.mega-mart__monster-info h3 {
+  margin: 0 0 var(--spacing-xsmall) 0;
+}
+
+/* Ability Cards */
+.mega-mart__abilities {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-small);
+  margin-bottom: var(--spacing-medium);
+}
+
+.mega-mart__ability-card {
+  padding: var(--spacing-small);
+  background-color: var(--secondary-color);
+  border-radius: var(--border-radius-small);
+  border: 1px solid var(--border-color);
+}
+
+.mega-mart__ability-card h4 {
+  margin: 0 0 var(--spacing-xxsmall) 0;
+  font-size: var(--font-size-small);
+  color: var(--text-color-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.mega-mart__ability-name {
+  margin: 0 0 var(--spacing-xxsmall) 0;
+  font-weight: 600;
+  color: var(--accent-color);
+}
+
+.mega-mart__ability-effect {
+  margin: 0;
+  font-size: var(--font-size-small);
+  color: var(--text-color);
+  line-height: 1.4;
+}
+
+.mega-mart__ability-card--hidden {
+  border-color: var(--accent-color);
+  background: linear-gradient(135deg, var(--secondary-color), var(--accent-color));
+}
+
+/* Action Buttons */
+.mega-mart__actions {
+  display: flex;
+  gap: var(--spacing-small);
+  flex-wrap: wrap;
+}
+
+.mega-mart__actions .button {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Empty State */
+.mega-mart__empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-xlarge);
+  text-align: center;
+  color: var(--text-color-muted);
+  background-color: var(--primary-color);
+  border-radius: var(--border-radius-medium);
+  border: 1px dashed var(--border-color);
+}
+
+.mega-mart__empty i {
+  font-size: clamp(2rem, 1.5rem + 1.5vw, 3.5rem);
+  margin-bottom: var(--spacing-medium);
+  opacity: 0.5;
+}
+
+.mega-mart__empty h3 {
+  margin: 0 0 var(--spacing-xsmall) 0;
+  color: var(--text-color);
+}
+
+.mega-mart__empty p {
+  margin: 0;
+}
+
+/* Ability Capsule Modal */
+.mega-mart__swap-preview {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-medium);
+  padding: var(--spacing-medium);
+  background-color: var(--primary-color);
+  border-radius: var(--border-radius-medium);
+  border: 1px solid var(--border-color);
+}
+
+.mega-mart__swap-ability {
+  flex: 1;
+  text-align: center;
+}
+
+.mega-mart__swap-ability span {
+  display: block;
+  margin-bottom: var(--spacing-xxsmall);
+}
+
+.mega-mart__swap-icon {
+  font-size: var(--font-size-xxlarge);
+  color: var(--accent-color);
+}
+
+/* Scroll of Secrets Modal */
+.mega-mart__slot-selection {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xsmall);
+}
+
+.mega-mart__slot-option {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xsmall);
+  cursor: pointer;
+  padding: var(--spacing-xsmall);
+  border-radius: var(--border-radius-small);
+  transition: background-color var(--transition-fast);
+}
+
+.mega-mart__slot-option:hover {
+  background-color: var(--primary-color);
+}
+
+.mega-mart__slot-option input[type="radio"] {
+  accent-color: var(--accent-color);
+}
+
+.mega-mart__ability-list {
+  max-height: 300px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xxsmall);
+  padding: var(--spacing-xsmall);
+  background-color: var(--primary-color);
+  border-radius: var(--border-radius-small);
+  border: 1px solid var(--border-color);
+}
+
+.mega-mart__ability-option {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xxsmall);
+  padding: var(--spacing-xsmall) var(--spacing-small);
+  background-color: var(--secondary-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-small);
+  cursor: pointer;
+  text-align: left;
+  transition: all var(--transition-fast);
+}
+
+.mega-mart__ability-option:hover {
+  border-color: var(--accent-color);
+  background-color: var(--accent-color-hover);
+}
+
+.mega-mart__ability-option.selected {
+  border-color: var(--accent-color);
+  background-color: var(--accent-color);
+  color: var(--background-color);
+}
+
+.mega-mart__ability-option strong {
+  font-size: var(--font-size-small);
+}
+
+.mega-mart__ability-option span {
+  font-size: var(--font-size-xsmall);
+  opacity: 0.8;
+}
+
+/* ---------- Modal Content Wrappers ---------- */
+
+.mega-mart__capsule-modal,
+.mega-mart__scroll-modal {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-medium);
+}
+
+/* ---------- Processing & Result Steps ---------- */
+
+.processing-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-medium);
+  padding: var(--spacing-large);
+  text-align: center;
+}
+
+.result-step {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-medium);
+}
+
+/* ---------- Category Filter ---------- */
+
+.category-filter {
+  display: flex;
+  gap: var(--spacing-xsmall);
+  align-items: center;
+}
+
+.category-filter select {
+  flex: 1;
+}
+
+/* ---------- Antique Store ---------- */
+
+.antique-store__inventory,
+.antique-store__catalogue {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.antique-store__tabs {
+  display: flex;
+  gap: var(--spacing-xsmall);
+  margin-bottom: var(--spacing-large);
+}
+
+.antique-store__content {
+  min-height: 300px;
+}
+
+/* Inventory */
+.antique-store__item-card {
+  text-align: center;
+}
+
+.antique-store__item-image {
+  width: 100%;
+  height: 100px;
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--background-color);
+  overflow: hidden;
+}
+
+.antique-store__item-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.antique-store__item-actions {
+  display: flex;
+  gap: var(--spacing-xsmall);
+  justify-content: center;
+  margin-top: var(--spacing-small);
+}
+
+/* Catalogue Filters */
+.antique-store__filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-small);
+  align-items: flex-end;
+  margin-bottom: var(--spacing-large);
+  padding: var(--spacing-medium);
+  background-color: var(--primary-color);
+  border-radius: var(--border-radius-medium);
+  border: 1px solid var(--border-color);
+}
+
+.antique-store__filters .form-group {
+  flex: 1;
+  min-width: 180px;
+  margin-bottom: 0;
+  padding: 0;
+}
+
+.antique-store__filters .button {
+  align-self: flex-end;
+}
+
+/* Catalogue Card */
+.antique-store__catalogue-card {
+  transition: transform var(--transition-fast);
+}
+
+.antique-store__catalogue-card:hover {
+  transform: translateY(-2px);
+}
+
+.antique-store__catalogue-card .card__content {
+  gap: var(--spacing-xsmall);
+}
+
+.antique-store__catalogue-card .antique-store__catalogue-name {
+  font-size: var(--font-size-medium);
+  font-weight: 700;
+  color: var(--accent-color);
+  margin: 0 0 var(--spacing-xsmall) 0;
+  line-height: 1.3;
+  text-wrap: wrap;
+  text-align: center;
+}
+
+.antique-store__catalogue-card .antique-store__catalogue-detail {
+  margin: 0;
+  font-size: var(--font-size-small);
+  color: var(--text-color-muted);
+  line-height: 1.3;
+}
+
+.antique-store__catalogue-card .antique-store__catalogue-artist {
+  margin: 0;
+  font-size: var(--font-size-small);
+  color: var(--text-color-muted);
+  line-height: 1.3;
+  font-style: italic;
+}
+
+.antique-store__catalogue-card .antique-store__catalogue-detail i {
+  margin-right: 2px;
+}
+
+.antique-store__catalogue-card .antique-store__catalogue-description {
+  margin: var(--spacing-xxsmall) 0 0;
+  font-size: var(--font-size-small);
+  color: var(--text-color);
+  line-height: 1.4;
+}
+
+.antique-store__catalogue-card .badge-group {
+  margin: var(--spacing-xxsmall) 0;
+}
+
+/* ---------- Responsive ---------- */
+
+.item-use-page {
+  padding: clamp(var(--spacing-medium), 3vw, var(--spacing-large));
+}
+
+.item-use-page__icon {
+  width: clamp(48px, 8vw, 64px);
+  height: clamp(48px, 8vw, 64px);
+  font-size: clamp(1.25rem, 3vw, 1.75rem);
+}
+
+/* Fluid grid: collapse to single column when container is narrow */
+@media (max-width: 900px) {
+  .mega-mart__layout {
+    grid-template-columns: 1fr;
+  }
+
+  .mega-mart__detail {
+    position: static;
+  }
+
+  .mega-mart__monsters {
+    min-height: auto;
+    max-height: min(50vh, 400px);
+  }
+}
+
+@media (max-width: 768px) {
+  .item-use-page__header {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .mega-mart__actions {
+    flex-direction: column;
+  }
+
+  .mega-mart__swap-preview {
+    flex-direction: column;
+  }
+
+  .antique-store__tabs {
+    flex-direction: column;
+  }
+
+  .antique-store__filters {
+    flex-direction: column;
+  }
+
+  .antique-store__filters .form-group {
+    min-width: 100%;
+  }
+}
+
+/* ---------- Compact Inventory ---------- */
+
+.compact-inventory {
+  background: var(--primary-color);
+  border-radius: var(--border-radius-medium);
+  padding: var(--spacing-small) var(--spacing-medium);
+  box-sizing: border-box;
+}
+
+.compact-inventory__title {
+  font-size: var(--font-size-small);
+  font-weight: 600;
+  margin: 0 0 var(--spacing-xsmall) 0;
+  color: var(--text-color-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.compact-inventory__title i {
+  margin-right: var(--spacing-xxsmall);
+}
+
+.compact-inventory__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: var(--spacing-xsmall);
+}
+
+.compact-inventory__item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xsmall);
+  background: var(--primary-color-hover);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-small);
+  padding: var(--spacing-xxsmall) var(--spacing-xsmall);
+  font-size: var(--font-size-xsmall);
+  cursor: default;
+}
+
+.compact-inventory__image {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.compact-inventory__info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  flex: 1;
+}
+
+.compact-inventory__name {
+  color: var(--text-color);
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: inline-flex;
+  justify-content: space-between;
+}
+
+.compact-inventory__count {
+  color: var(--text-color-muted);
+  font-weight: 600;
+}
+
+.compact-inventory__effect {
+  color: var(--text-color-muted);
+  font-size: var(--font-size-xxxsmall);
+  line-height: 1.2;
+}
+
+@media (max-width: 480px) {
+  .compact-inventory__grid {
+    grid-template-columns: 1fr;
+  }
+}

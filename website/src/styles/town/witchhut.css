@@ -1,0 +1,721 @@
+/* ==============================
+   Witch's Hut Component Styles
+   ============================== */
+
+/* ---------- Main Container ---------- */
+
+.witchs-hut {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-large);
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* ---------- Step Layout ---------- */
+
+.witchs-hut-step {
+  background-color: var(--primary-color);
+  border-radius: var(--border-radius-large);
+  padding: var(--spacing-large);
+  border: 2px solid transparent;
+  transition: border-color var(--transition-medium), box-shadow var(--transition-medium);
+}
+
+.witchs-hut-step.active {
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 3px var(--accent-color-active);
+}
+
+.witchs-hut-step-header {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-medium);
+  margin-bottom: var(--spacing-medium);
+}
+
+.witchs-hut-step-number {
+  width: 32px;
+  height: 32px;
+  background-color: var(--accent-color);
+  color: var(--background-color);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: var(--font-size-medium);
+  flex-shrink: 0;
+}
+
+.witchs-hut-step-header h3,
+.witchs-hut-step-header h4 {
+  color: var(--accent-color);
+  margin: 0;
+  flex: 1;
+}
+
+.witchs-hut-step-subtitle {
+  color: var(--text-color-muted);
+  font-size: var(--font-size-small);
+  margin-left: auto;
+}
+
+/* ---------- Search ---------- */
+
+.witchs-hut-search {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-small);
+  background-color: var(--primary-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-medium);
+  padding: 0 var(--spacing-medium);
+}
+
+.witchs-hut-search i {
+  color: var(--text-color-muted);
+}
+
+.witchs-hut-search .input {
+  border: none;
+  background: transparent;
+  flex: 1;
+}
+
+/* ---------- Monster Grid ---------- */
+
+.witchs-hut-monster-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: var(--spacing-medium);
+  max-height: 500px;
+  overflow-y: auto;
+  padding: var(--spacing-small);
+  background-color: var(--primary-color);
+  border-radius: var(--border-radius-medium);
+  border: 1px solid var(--border-color);
+}
+
+.witchs-hut-monster-card {
+  cursor: pointer;
+  transition: transform var(--transition-medium), box-shadow var(--transition-medium);
+}
+
+.witchs-hut-monster-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-medium);
+}
+
+.witchs-hut-monster-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-small);
+}
+
+.witchs-hut-evolution-badge {
+  background-color: var(--accent-color);
+  color: var(--background-color);
+  padding: var(--spacing-xxsmall) var(--spacing-xsmall);
+  border-radius: var(--border-radius-full);
+  font-size: var(--font-size-xsmall);
+  display: flex;
+  align-items: center;
+}
+
+/* ---------- Help Section ---------- */
+
+.witchs-hut-help {
+  display: flex;
+  gap: var(--spacing-medium);
+  background-color: var(--secondary-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-medium);
+  padding: var(--spacing-medium);
+}
+
+.witchs-hut-help-icon {
+  width: 30px;
+  height: 30px;
+  background-color: var(--secondary-color);
+  color: var(--text-color-muted);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.witchs-hut-help-content h4 {
+  color: var(--text-color-muted);
+  margin: 0 0 var(--spacing-small) 0;
+}
+
+.witchs-hut-help-content ul {
+  margin: 0;
+  padding-left: var(--spacing-large);
+  color: var(--text-color);
+}
+
+.witchs-hut-help-content li {
+  margin-bottom: var(--spacing-xsmall);
+}
+
+/* ---------- Evolution Summary ---------- */
+
+.witchs-hut-summary {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-large);
+  background-color: var(--primary-color);
+  border-radius: var(--border-radius-medium);
+  padding: var(--spacing-large);
+  margin-bottom: var(--spacing-large);
+}
+
+.witchs-hut-monster-info {
+  flex: 1;
+}
+
+.witchs-hut-monster-info h3 {
+  color: var(--accent-color);
+  margin: 0 0 var(--spacing-xsmall) 0;
+}
+
+.witchs-hut-level {
+  color: var(--text-color-muted);
+  font-size: var(--font-size-small);
+  margin: 0 0 var(--spacing-xsmall) 0;
+}
+
+.witchs-hut-species {
+  color: var(--text-color);
+  margin: 0 0 var(--spacing-small) 0;
+}
+
+.witchs-hut-arrow {
+  font-size: clamp(1.5rem, 1.25rem + 1vw, 2.5rem);
+  color: var(--accent-color);
+}
+
+.witchs-hut-target {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-small);
+  padding: var(--spacing-large);
+  border: 2px dashed var(--border-color);
+  border-radius: var(--border-radius-large);
+  color: var(--text-color-muted);
+  text-align: center;
+}
+
+.witchs-hut-target i {
+  font-size: clamp(1.5rem, 1.25rem + 1vw, 2.5rem);
+}
+
+.witchs-hut-target-name {
+  font-size: var(--font-size-large);
+  font-weight: bold;
+  color: var(--accent-color);
+}
+
+/* ---------- Evolution Form ---------- */
+
+.witchs-hut-evolution-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-large);
+}
+
+/* ---------- Species Buttons ---------- */
+
+.witchs-hut-species-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-small);
+}
+
+.witchs-hut-species-buttons .button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-xxsmall);
+  min-width: 120px;
+}
+
+.witchs-hut-species-slot {
+  font-size: var(--font-size-xsmall);
+  opacity: 0.8;
+}
+
+.witchs-hut-species-name {
+  font-weight: bold;
+}
+
+/* ---------- Evolution Method ---------- */
+
+.witchs-hut-method {
+  background-color: var(--primary-color);
+  border-radius: var(--border-radius-medium);
+  padding: var(--spacing-medium);
+  margin-bottom: var(--spacing-medium);
+}
+
+.witchs-hut-method:last-child {
+  margin-bottom: 0;
+}
+
+.witchs-hut-method h5 {
+  color: var(--accent-color);
+  margin: 0 0 var(--spacing-xsmall) 0;
+}
+
+.witchs-hut-method p {
+  color: var(--text-color-muted);
+  margin: 0 0 var(--spacing-medium) 0;
+  font-size: var(--font-size-small);
+}
+
+.witchs-hut-method-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-medium);
+  margin-bottom: var(--spacing-xsmall);
+}
+
+.witchs-hut-requires-item {
+  background-color: var(--accent-color-active);
+  color: var(--accent-color);
+  padding: var(--spacing-xxsmall) var(--spacing-small);
+  border-radius: var(--border-radius-full);
+  font-size: var(--font-size-xsmall);
+  font-weight: 500;
+}
+
+/* ---------- Evolution Options ---------- */
+
+.witchs-hut-evolution-options {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: var(--spacing-small);
+}
+
+.witchs-hut-evolution-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-xxsmall);
+  padding: var(--spacing-medium);
+  background-color: var(--secondary-color);
+  border: 2px solid var(--border-color);
+  border-radius: var(--border-radius-medium);
+  cursor: pointer;
+  transition: all var(--transition-medium);
+}
+
+.witchs-hut-evolution-card:hover {
+  border-color: var(--accent-color);
+  background-color: var(--primary-color);
+}
+
+.witchs-hut-evolution-card.selected {
+  border-color: var(--accent-color);
+  background-color: var(--accent-color);
+  color: var(--background-color);
+}
+
+.witchs-hut-evolution-name {
+  font-weight: 600;
+  color: var(--accent-color);
+}
+
+.witchs-hut-evolution-card.selected .witchs-hut-evolution-name {
+  color: var(--background-color);
+}
+
+.witchs-hut-evolution-type {
+  font-size: var(--font-size-xsmall);
+  text-transform: uppercase;
+  opacity: 0.7;
+}
+
+/* ---------- Custom Input ---------- */
+
+.witchs-hut-custom-input {
+  margin-top: var(--spacing-medium);
+}
+
+.witchs-hut-preview-mini {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-small);
+  color: var(--accent-color);
+  font-weight: 500;
+  margin-top: var(--spacing-small);
+}
+
+/* ---------- Evolution Preview ---------- */
+
+.witchs-hut-preview-card {
+  background: linear-gradient(135deg, var(--accent-color-active), var(--secondary-color));
+  border: 1px solid var(--accent-color-active);
+  border-radius: var(--border-radius-large);
+  padding: var(--spacing-large);
+  margin-top: var(--spacing-medium);
+}
+
+.witchs-hut-preview-card h5 {
+  color: var(--accent-color);
+  margin: 0 0 var(--spacing-medium) 0;
+}
+
+.witchs-hut-preview-content {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-large);
+}
+
+.witchs-hut-preview-info {
+  flex: 1;
+}
+
+.witchs-hut-preview-name {
+  font-size: var(--font-size-large);
+  font-weight: 600;
+  color: var(--text-color);
+  display: block;
+  margin-bottom: var(--spacing-small);
+}
+
+.witchs-hut-preview-image {
+  width: 120px;
+  height: 120px;
+  object-fit: contain;
+  border-radius: var(--border-radius-medium);
+  background-color: var(--secondary-color);
+}
+
+/* ---------- Image Section ---------- */
+
+.witchs-hut-image-tabs {
+  display: flex;
+  gap: var(--spacing-small);
+  margin-bottom: var(--spacing-medium);
+}
+
+.witchs-hut-image-inputs {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-small);
+}
+
+.witchs-hut-file-input {
+  position: relative;
+}
+
+.witchs-hut-file-input input[type="file"] {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  overflow: hidden;
+}
+
+.witchs-hut-void-info {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-small);
+  padding: var(--spacing-medium);
+  background-color: var(--accent-color-subtle);
+  border: 1px solid var(--accent-color);
+  border-radius: var(--border-radius-medium);
+  color: var(--text-color);
+  font-weight: 500;
+}
+
+.witchs-hut-image-preview {
+  position: relative;
+  display: inline-block;
+  margin-top: var(--spacing-medium);
+}
+
+.witchs-hut-image-preview img {
+  max-width: 200px;
+  max-height: 200px;
+  border-radius: var(--border-radius-medium);
+  border: 2px solid var(--border-color);
+}
+
+.witchs-hut-remove-preview {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  width: 24px;
+  height: 24px;
+  background-color: var(--error-color);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--font-size-small);
+  transition: transform var(--transition-medium);
+}
+
+.witchs-hut-remove-preview:hover {
+  transform: scale(1.1);
+}
+
+/* ---------- Items Grid ---------- */
+
+.witchs-hut-items-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--spacing-small);
+  max-height: 400px;
+  overflow-y: auto;
+  padding-right: var(--spacing-small);
+}
+
+.witchs-hut-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--spacing-medium);
+  background-color: var(--secondary-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-medium);
+  cursor: pointer;
+  transition: all var(--transition-medium);
+  text-align: center;
+}
+
+.witchs-hut-item:hover:not(.unavailable) {
+  border-color: var(--accent-color);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-medium);
+}
+
+.witchs-hut-item.selected {
+  border-color: var(--accent-color);
+  background: linear-gradient(135deg, var(--accent-color), var(--accent-color-hover));
+  color: var(--background-color);
+}
+
+.witchs-hut-item.unavailable {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background-color: var(--primary-color);
+}
+
+.witchs-hut-item-details {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xxsmall);
+  align-items: center;
+}
+
+.witchs-hut-item-image-container {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--border-radius-small);
+  background-color: var(--background-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent-color);
+  flex-shrink: 0;
+}
+
+.witchs-hut-item-image {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.witchs-hut-item-name {
+  font-weight: 600;
+  font-size: var(--font-size-small);
+  color: var(--accent-color);
+}
+
+.witchs-hut-item-desc {
+  font-size: var(--font-size-xsmall);
+  opacity: 0.8;
+  line-height: 1.4;
+  color: var(--text-color-muted);
+}
+
+.witchs-hut-item.selected .witchs-hut-item-desc, .witchs-hut-item.selected .witchs-hut-item-name {
+  color: var(--background-color);
+}
+
+.witchs-hut-item-count {
+  font-size: var(--font-size-xsmall);
+  color: var(--accent-color);
+  font-weight: 500;
+}
+
+.witchs-hut-item.selected .witchs-hut-item-count {
+  color: var(--background-color);
+}
+
+.witchs-hut-item-badge {
+  margin-top: var(--spacing-xsmall);
+}
+
+/* ---------- Selected Items Info ---------- */
+
+.witchs-hut-selected-items {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-small);
+  padding: var(--spacing-medium);
+  background-color: var(--secondary-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-medium);
+  margin-top: var(--spacing-medium);
+}
+
+.witchs-hut-selected-items i {
+  color: var(--text-color);
+  margin-top: 2px;
+}
+
+.witchs-hut-selected-items strong {
+  color: var(--accent-color);
+}
+
+/* ---------- Loading State ---------- */
+
+.witchs-hut-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-small);
+  padding: var(--spacing-large);
+  color: var(--text-color-muted);
+}
+
+/* ---------- Actions ---------- */
+
+.witchs-hut-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--spacing-medium);
+  padding-top: var(--spacing-large);
+  border-top: 1px solid var(--border-color);
+}
+
+/* ---------- Success Screen ---------- */
+
+.witchs-hut-success {
+  text-align: center;
+  padding: var(--spacing-xlarge);
+}
+
+.witchs-hut-success-icon {
+  font-size: clamp(2rem, 1.5rem + 1.5vw, 3.5rem);
+  color: var(--success-color);
+  margin-bottom: var(--spacing-large);
+}
+
+.witchs-hut-success h3 {
+  color: var(--success-color);
+  margin: 0 0 var(--spacing-medium) 0;
+  font-size: var(--font-size-xlarge);
+}
+
+.witchs-hut-success p {
+  color: var(--text-color);
+  margin: 0 0 var(--spacing-large) 0;
+}
+
+.witchs-hut-evolved-details {
+  background-color: var(--primary-color);
+  border-radius: var(--border-radius-medium);
+  padding: var(--spacing-large);
+  text-align: center;
+  margin-bottom: var(--spacing-large);
+}
+
+.witchs-hut-evolved-details h4 {
+  color: var(--accent-color);
+  margin: 0 0 var(--spacing-medium) 0;
+}
+
+.witchs-hut-evolved-details p {
+  margin: 0 0 var(--spacing-small) 0;
+}
+
+.witchs-hut-evolved-details strong {
+  color: var(--accent-color);
+}
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 768px) {
+  .witchs-hut-monster-grid {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    max-height: 350px;
+  }
+
+  .witchs-hut-summary {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .witchs-hut-arrow {
+    transform: rotate(90deg);
+  }
+
+  .witchs-hut-items-grid {
+    grid-template-columns: 1fr 1fr;
+    max-height: 300px;
+  }
+
+  .witchs-hut-evolution-options {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .witchs-hut-actions {
+    flex-direction: column;
+  }
+
+  .witchs-hut-image-tabs {
+    flex-direction: column;
+  }
+
+  .witchs-hut-preview-content {
+    flex-direction: column;
+    text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .witchs-hut-step {
+    padding: var(--spacing-medium);
+  }
+
+  .witchs-hut-items-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .witchs-hut-evolution-options {
+    grid-template-columns: 1fr;
+  }
+
+  .witchs-hut-species-buttons {
+    flex-direction: column;
+  }
+
+  .witchs-hut-species-buttons .button {
+    width: 100%;
+  }
+}

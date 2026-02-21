@@ -1,0 +1,171 @@
+/* Trainer Manager Admin */
+
+/* Status message bar */
+.trainer-manager__status {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xsmall);
+  padding: var(--spacing-small) var(--spacing-medium);
+  border-radius: var(--border-radius-medium);
+  margin-bottom: var(--spacing-medium);
+  font-size: var(--font-size-medium);
+}
+
+.trainer-manager__status--success {
+  background: var(--success-dark);
+  border: 1px solid var(--success-color);
+  color: var(--success-color);
+}
+
+.trainer-manager__status--error {
+  background: var(--error-dark);
+  border: 1px solid var(--error-color);
+  color: var(--error-color);
+}
+
+.trainer-manager__status-dismiss {
+  margin-left: auto;
+  background: none;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+  padding: var(--spacing-xxsmall);
+  opacity: 0.7;
+  transition: opacity 0.15s;
+}
+
+.trainer-manager__status-dismiss:hover {
+  opacity: 1;
+}
+
+/* ID column */
+.trainer-manager__id-col {
+  width: 60px;
+}
+
+/* Name link */
+.trainer-manager__name-link {
+  color: var(--accent-color);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.trainer-manager__name-link:hover {
+  text-decoration: underline;
+}
+
+/* Owner cell */
+.trainer-manager__owner {
+  color: var(--text-color-muted);
+  font-size: var(--font-size-medium);
+}
+
+/* Forfeit checkbox in delete modal */
+.trainer-manager__forfeit-checkbox {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xsmall);
+  padding: var(--spacing-xsmall) 0;
+  font-size: var(--font-size-medium);
+  cursor: pointer;
+}
+
+.trainer-manager__forfeit-checkbox input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+
+/* Change owner modal */
+.trainer-manager__owner-modal {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-medium);
+}
+
+.trainer-manager__current-owner {
+  padding: var(--spacing-xsmall) var(--spacing-small);
+  background: var(--primary-color-hover);
+  border-radius: var(--border-radius-small);
+  font-size: var(--font-size-medium);
+}
+
+.trainer-manager__owner-search label {
+  display: block;
+  margin-bottom: var(--spacing-xxsmall);
+  font-size: var(--font-size-medium);
+  color: var(--text-color-muted);
+}
+
+.trainer-manager__search-loading {
+  text-align: center;
+  padding: var(--spacing-xsmall);
+  color: var(--text-color-muted);
+  font-size: var(--font-size-medium);
+}
+
+.trainer-manager__owner-results {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xxsmall);
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.trainer-manager__owner-result {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-xsmall) var(--spacing-small);
+  background: var(--primary-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-small);
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+  text-align: left;
+  width: 100%;
+  color: inherit;
+  font-size: var(--font-size-medium);
+}
+
+.trainer-manager__owner-result:hover {
+  background: var(--primary-color-hover);
+}
+
+.trainer-manager__owner-result--selected {
+  border-color: var(--accent-color);
+  background: var(--accent-color-hover);
+}
+
+.trainer-manager__owner-result-name {
+  font-weight: 500;
+}
+
+.trainer-manager__owner-result-id {
+  font-size: var(--font-size-small);
+  color: var(--text-color-muted);
+}
+
+.trainer-manager__no-results {
+  text-align: center;
+  padding: var(--spacing-small);
+  color: var(--text-color-muted);
+  font-size: var(--font-size-medium);
+}
+
+.trainer-manager__selected-owner {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xsmall);
+  padding: var(--spacing-xsmall) var(--spacing-small);
+  background: var(--accent-color-hover);
+  border: 1px solid var(--accent-color);
+  border-radius: var(--border-radius-small);
+  font-size: var(--font-size-medium);
+}
+
+.trainer-manager__modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--spacing-xsmall);
+}

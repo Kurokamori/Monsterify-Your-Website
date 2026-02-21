@@ -1,0 +1,431 @@
+/* ==============================
+   Activity Pages Styles
+   Shared layout for Activity Session and
+   Activity Rewards pages
+   ============================== */
+
+/* ---------- Page Layout ---------- */
+
+.activity-page {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: var(--spacing-large);
+}
+
+.activity-page__breadcrumb {
+  margin-bottom: var(--spacing-medium);
+}
+
+.activity-page__header {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-medium);
+  margin-bottom: var(--spacing-large);
+}
+
+.activity-page__icon {
+  width: 64px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--border-radius-large);
+  background-color: var(--accent-color);
+  color: var(--background-color);
+  font-size: clamp(1.5rem, 1.25rem + 1vw, 2rem);
+  flex-shrink: 0;
+}
+
+.activity-page__header h1 {
+  margin: 0 0 var(--spacing-xxsmall) 0;
+  color: var(--text-color);
+}
+
+.activity-page__description {
+  margin: 0;
+  color: var(--text-color-muted);
+  font-size: var(--font-size-medium);
+}
+
+/* ---------- Rewards Page ---------- */
+
+.activity-rewards__section {
+  margin-bottom: var(--spacing-large);
+}
+
+.activity-rewards__section-header {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-small);
+  padding-bottom: var(--spacing-xsmall);
+  border-bottom: 1px solid var(--border-color);
+  margin-bottom: var(--spacing-medium);
+}
+
+.activity-rewards__section-header i {
+  color: var(--accent-color);
+  font-size: var(--font-size-medium);
+}
+
+.activity-rewards__section-header h2 {
+  margin: 0;
+  font-size: var(--font-size-large);
+  color: var(--text-color);
+}
+
+/* ---------- Rewards Grid ---------- */
+
+.activity-rewards__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: var(--spacing-medium);
+}
+
+/* ---------- Reward Card ---------- */
+
+.activity-reward-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-small);
+}
+
+.activity-reward-card--claimed {
+  opacity: 0.7;
+}
+
+.activity-reward-card__claim {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xsmall);
+}
+
+/* ---------- Monster Reward Card ---------- */
+
+.activity-monster-card {
+  display: flex;
+  flex-direction: column;
+}
+
+.activity-monster-card__content {
+  display: flex;
+  gap: var(--spacing-small);
+  margin-bottom: var(--spacing-small);
+}
+
+.activity-monster-card__image {
+  width: 100px;
+  height: 100px;
+  border-radius: var(--border-radius-medium);
+  object-fit: cover;
+  flex-shrink: 0;
+  background-color: var(--secondary-color);
+}
+
+.activity-monster-card__fallback {
+  width: 100px;
+  height: 100px;
+  border-radius: var(--border-radius-medium);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  background-color: var(--secondary-color);
+  color: var(--text-color-muted);
+  font-size: clamp(1.5rem, 1.25rem + 1vw, 2.5rem);
+}
+
+.activity-monster-card__info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xxsmall);
+}
+
+.activity-monster-card__name {
+  font-weight: 600;
+  font-size: var(--font-size-large);
+  color: var(--text-color);
+  margin: 0;
+}
+
+.activity-monster-card__level {
+  font-size: var(--font-size-small);
+  color: var(--text-color-muted);
+}
+
+.activity-monster-card__game {
+  font-size: var(--font-size-xsmall);
+  color: var(--text-color-muted);
+  text-transform: capitalize;
+}
+
+.activity-monster-card__claim {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xsmall);
+}
+
+/* ---------- Session Not Found ---------- */
+
+.activity-page__not-found {
+  text-align: center;
+  padding: var(--spacing-xlarge) var(--spacing-medium);
+}
+
+.activity-page__not-found p {
+  color: var(--text-color-muted);
+  margin-bottom: var(--spacing-small);
+}
+
+.activity-page__not-found-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-small);
+  justify-content: center;
+  margin-top: var(--spacing-medium);
+}
+
+/* ---------- Footer Actions ---------- */
+
+.activity-page__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-small);
+  justify-content: center;
+  margin-top: var(--spacing-xlarge);
+  padding-top: var(--spacing-medium);
+  border-top: 1px solid var(--border-color);
+}
+
+/* ==============================
+   Location Activity Pages
+   Garden, Pirate's Dock, etc.
+   ============================== */
+
+/* ---------- Location Description ---------- */
+
+.activity-location__description {
+  color: var(--text-color-muted);
+  line-height: 1.6;
+  margin-bottom: var(--spacing-large);
+}
+
+.activity-location__description p {
+  margin: 0 0 var(--spacing-small) 0;
+}
+
+.activity-location__description p:last-child {
+  margin-bottom: 0;
+}
+
+/* ---------- Location Tabs ---------- */
+
+.activity-location__tabs {
+  display: flex;
+  gap: var(--spacing-small);
+  margin-bottom: var(--spacing-large);
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: var(--spacing-small);
+}
+
+.activity-location__tab {
+  padding: var(--spacing-xsmall) var(--spacing-medium);
+  border: none;
+  background: none;
+  color: var(--text-color-muted);
+  font-size: var(--font-size-medium);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: color 0.2s, border-color 0.2s;
+}
+
+.activity-location__tab:hover {
+  color: var(--text-color);
+}
+
+.activity-location__tab--active {
+  color: var(--accent-color);
+  border-bottom-color: var(--accent-color);
+  font-weight: 600;
+}
+
+/* ---------- Cooldown Banner ---------- */
+
+.activity-location__cooldown {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-small);
+  padding: var(--spacing-small) var(--spacing-medium);
+  background-color: var(--secondary-color);
+  border-radius: var(--border-radius-medium);
+  border-left: 3px solid var(--warning-color);
+  margin-bottom: var(--spacing-large);
+  color: var(--text-color-muted);
+}
+
+.activity-location__cooldown i {
+  color: var(--warning-color);
+  font-size: var(--font-size-medium);
+}
+
+/* ---------- Activity Cards Grid ---------- */
+
+.activity-location__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: var(--spacing-large);
+}
+
+/* ---------- Activity Card ---------- */
+
+.activity-card {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--primary-color);
+  border-radius: var(--border-radius-large);
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+  transition: border-color 0.2s;
+}
+
+.activity-card:hover {
+  border-color: var(--accent-color);
+}
+
+.activity-card__image {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+}
+
+.activity-card__body {
+  padding: var(--spacing-medium);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-small);
+  flex: 1;
+}
+
+.activity-card__body h3 {
+  margin: 0;
+  color: var(--text-color);
+  font-size: var(--font-size-large);
+}
+
+.activity-card__body p {
+  margin: 0;
+  color: var(--text-color-muted);
+  font-size: var(--font-size-small);
+  line-height: 1.5;
+}
+
+.activity-card__prompt-notice {
+  padding: var(--spacing-xsmall) var(--spacing-small);
+  background-color: var(--background-color);
+  border-radius: var(--border-radius-small);
+  font-size: var(--font-size-small);
+  color: var(--text-color-muted);
+  line-height: 1.4;
+}
+
+.activity-card__prompt-notice strong {
+  color: var(--accent-color);
+}
+
+.activity-card__cooldown {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xsmall);
+  padding: var(--spacing-xsmall) var(--spacing-small);
+  background-color: var(--background-color);
+  border-radius: var(--border-radius-small);
+  color: var(--text-color-muted);
+  font-size: var(--font-size-small);
+}
+
+.activity-card__cooldown i {
+  color: var(--warning-color);
+}
+
+.activity-card__actions {
+  margin-top: auto;
+}
+
+/* ---------- Active Session Banner ---------- */
+
+.activity-location__active-session {
+  text-align: center;
+  padding: var(--spacing-xlarge) var(--spacing-medium);
+}
+
+.activity-location__active-session h2 {
+  margin: 0 0 var(--spacing-small) 0;
+  color: var(--text-color);
+}
+
+.activity-location__active-session p {
+  color: var(--text-color-muted);
+  margin: 0 0 var(--spacing-medium) 0;
+}
+
+/* ---------- Auth Message ---------- */
+
+.activity-page__auth {
+  text-align: center;
+  padding: var(--spacing-xlarge) var(--spacing-medium);
+}
+
+.activity-page__auth p {
+  color: var(--text-color-muted);
+  margin: 0 0 var(--spacing-medium) 0;
+}
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 768px) {
+  .activity-page__header {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .activity-rewards__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .activity-monster-card__content {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .activity-page__actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .activity-page__not-found-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .activity-location__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .activity-location__tabs {
+    flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 480px) {
+  .activity-monster-card__image,
+  .activity-monster-card__fallback {
+    width: 80px;
+    height: 80px;
+  }
+
+  .activity-card__image {
+    height: 140px;
+  }
+}

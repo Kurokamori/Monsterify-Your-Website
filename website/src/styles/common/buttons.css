@@ -1,53 +1,38 @@
-/* ==============================
-   UNIFIED BUTTON SYSTEM
-
-   This is the single source of truth for all button styles.
-   Do NOT add button styles to other CSS files - use these classes.
-
-   Usage: className="button [type] [modifiers]"
-
-   Types: primary, secondary, danger, success, info
-   Modifiers: outline, sm, lg, icon, block
-   Special: tab, toggle, filter, quantity, ghost, close
-
-   Examples:
-   - className="button primary"
-   - className="button danger outline"
-   - className="button secondary sm"
-   - className="button primary lg block"
-   - className="button tab active"
-   - className="button toggle"
-   ============================== */
-
 /* ---------- Base Button ---------- */
-/* Using fluid values with clamp() for smooth scaling */
 
 .button {
   align-items: center;
   background: none;
-  background-color: var(--card-background);
+  background-color: var(--primary-color);
   border: 1px solid var(--border-color);
-  border-radius: 0.25rem;
-  color: var(--text-muted);
+  border-radius: var(--border-radius-small);
+  color: var(--text-color-muted);
   cursor: pointer;
   display: flex;
   flex: 1;
-  font-size: clamp(0.7rem, 0.6rem + 0.5vw, 0.9rem);
+  font-size: clamp(0.8rem, 0.75rem + 0.2vw, 0.9rem);
   font-weight: 500;
-  gap: clamp(0.25rem, 1vw, 0.5rem);
+  gap: clamp(0.4rem, 0.2rem + 0.6vw, 1.5rem);
   justify-content: center;
   justify-items: center;
-  padding: clamp(0.4rem, 1vw + 0.1rem, 0.75rem);
+  padding: clamp(0.4rem, 0.3rem + 0.45vw, 0.75rem);
   position: relative;
   text-align: center;
   text-decoration: none;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
-  min-width: fit-content;
+}
+
+/* ---------- Layout Variants ---------- */
+
+.button.full-width {
+  width: 100%;
 }
 
 .button.vertical {
   flex-direction: column;
 }
+
+/* ---------- State Variants ---------- */
 
 .button:disabled {
   opacity: 0.5;
@@ -55,7 +40,7 @@
 }
 
 .button:hover:not(:disabled) {
-  background-color: var(--nav-hover, var(--highlight-subtle));
+  background-color: var(--primary-color-hover);
   border-color: var(--accent-color);
   box-shadow: 0 4px 12px var(--overlay-light);
   color: var(--text-color);
@@ -70,16 +55,26 @@
 }
 
 .button.primary:hover:not(:disabled) {
-  background-color: var(--accent-hover);
+  background-color: var(--accent-color-hover);
 }
 
 .button.secondary {
-  background-color: var(--nav-active);
+  background-color: var(--secondary-color);
   color: var(--text-color);
 }
 
 .button.secondary:hover:not(:disabled) {
-  background-color: var(--nav-hover);
+  background-color: var(--secondary-color-hover);
+}
+
+.button.tertiary {
+  background-color: var(--primary-color);
+  color: var(--text-color-muted);
+  border: none;
+}
+
+.button.tertiary:hover:not(:disabled) {
+  background-color: var(--primary-color-hover);
 }
 
 .button.danger {
@@ -92,213 +87,52 @@
 }
 
 .button.success {
-  background-color: var(--success-color);
+  background-color: var(--success-dark);
   color: var(--text-color);
 }
 
 .button.success:hover:not(:disabled) {
-  background-color: var(--success-hover);
-}
-
-.button.info {
-  background-color: var(--blue-color);
-  color: var(--text-color);
-}
-
-.button.info:hover:not(:disabled) {
-  background-color: var(--blue-dark);
-}
-
-.button.decorative {
-  background-color: var(--custom-type);
-  color: var(--text-color);
-}
-
-.button.decorative:hover:not(:disabled) {
-  background-color: var(--ghost-type);
-}
-
-/* ---------- Outline Modifier ---------- */
-
-.button.outline {
-  background-color: transparent;
-  border: 1px solid currentColor;
-}
-
-.button.primary.outline {
-  color: var(--accent-color);
-  border-color: var(--accent-color);
-}
-
-.button.primary.outline:hover:not(:disabled) {
-  background-color: var(--accent-color);
-  color: var(--text-color);
-}
-
-.button.secondary.outline {
-  color: var(--text-color);
-  border-color: var(--border-color);
-}
-
-.button.secondary.outline:hover:not(:disabled) {
-  background-color: var(--nav-hover);
-}
-
-.button.danger.outline {
-  color: var(--error-color);
-  border-color: var(--error-color);
-}
-
-.button.danger.outline:hover:not(:disabled) {
-  background-color: var(--error-color);
-  color: var(--text-color);
-}
-
-.button.success.outline {
-  color: var(--success-color);
-  border-color: var(--success-color);
-}
-
-.button.success.outline:hover:not(:disabled) {
   background-color: var(--success-color);
-  color: var(--text-color);
 }
-
-.button.info.outline {
-  color: var(--blue-color);
-  border-color: var(--blue-color);
-}
-
-.button.info.outline:hover:not(:disabled) {
-  background-color: var(--blue-color);
-  color: var(--text-color);
-}
-
-/* ---------- Size Modifiers ---------- */
-/* Using fluid values for smooth scaling */
-
-.button.sm {
-  padding: clamp(0.2rem, 0.5vw, 0.25rem) clamp(0.35rem, 1vw, 0.5rem);
-  font-size: clamp(0.65rem, 0.6rem + 0.4vw, 0.875rem);
-  flex: none;
-}
-
-.button.lg {
-  padding: clamp(0.5rem, 1.5vw, 0.75rem) clamp(1rem, 3vw, 1.5rem);
-  font-size: clamp(0.85rem, 0.75rem + 0.5vw, 1rem);
-  font-weight: 600;
-}
-
-.button.no-flex {
-  flex: none;
-}
-
-/* ---------- Text Type Modifier ---------- */
-.button.between {
-  justify-content: space-between;
-}
-
-.button.strong {
-  font-weight: 600;
-  font-size: 1rem;
-}
-
-/* ---------- Icon Button ---------- */
-/* Fluid icon button sizing */
-
-.button.icon {
-  width: clamp(1.75rem, 3vw + 0.5rem, 2rem);
-  height: clamp(1.75rem, 3vw + 0.5rem, 2rem);
-  padding: 0;
-  border-radius: 50%;
-}
-
-.button.icon.sm {
-  width: clamp(1.25rem, 2vw + 0.5rem, 1.5rem);
-  height: clamp(1.25rem, 2vw + 0.5rem, 1.5rem);
-}
-
-.button.icon.lg {
-  width: clamp(2.25rem, 4vw + 0.5rem, 2.75rem);
-  height: clamp(2.25rem, 4vw + 0.5rem, 2.75rem);
-}
-
-.button.icon:hover:not(:disabled) {
-  transform: scale(1.1);
-}
-
-.button.search {
-  background: none;
-  border: none;
-  color: var(--accent-color);
-  font-size: 1rem;
-  padding: 0.3rem;
-  position: absolute;
-  right: 0.5rem;
-  top: 50%;
-  transform: translateY(-50%);
-  transition: all .2s ease;
-}
-
-/* ---------- Block Modifier ---------- */
-
-.button.block {
-  width: 100%;
-  height: 100%;
-}
-
-.button.tall {
-  height: 100%;
-}
-
-/* ---------- Ghost/Text Button ---------- */
 
 .button.ghost {
   background-color: transparent;
-  color: var(--text-color);
+  border-color: transparent;
 }
 
 .button.ghost:hover:not(:disabled) {
   background-color: var(--overlay-light);
-  transform: none;
 }
 
-.button.ghost.primary {
-  color: var(--accent-color);
-}
-
-.button.ghost.danger {
-  color: var(--error-color);
-}
-
-/* ---------- Close Button ---------- */
-
-.button.close {
+button.close {
   background: none;
-  color: var(--text-muted);
-  font-size: clamp(1.25rem, 2vw + 0.5rem, 1.5rem);
-  padding: clamp(0.35rem, 1vw, 0.5rem);
+  color: var(--text-color);
+  font-size: var(--font-size-large);
+  padding: var(--spacing-xsmall);
   border-radius: 50%;
-  width: clamp(1.75rem, 3vw + 0.5rem, 2rem);
-  height: clamp(1.75rem, 3vw + 0.5rem, 2rem);
+  width: 2rem;
+  height: 2rem;
 }
 
-.button.close:hover:not(:disabled) {
-  background: var(--overlay-light);
+button.close:hover:not(:disabled) {
+  background-color: var(--overlay-light);
+  transform: scale(1.1);
+}
+
+button.discord {
+  background-color: var(--discord-color);
   color: var(--text-color);
-  transform: none;
 }
 
 /* ---------- Tab Button ---------- */
 
 .button.tab {
-  padding: clamp(0.4rem, 1.5vw, 0.75rem) clamp(0.75rem, 3vw, 1.5rem);
+  padding: clamp(0.5rem, 0.4rem + 0.3vw, 0.75rem) clamp(0.75rem, 0.5rem + 0.75vw, 1.5rem);
   background-color: transparent;
-  color: var(--text-muted);
+  color: var(--text-color-muted);
   border: none;
   border-bottom: 2px solid transparent;
   border-radius: 0;
-  font-size: clamp(0.7rem, 0.6rem + 0.5vw, 0.9rem);
 }
 
 .button.tab:hover:not(:disabled) {
@@ -310,20 +144,20 @@
 .button.tab.active {
   color: var(--text-color);
   border-color: var(--accent-color);
-  background-color: var(--nav-active);
-  border-radius: .5rem;
+  background-color: var(--primary-color-hover);
+  border-radius: var(--border-radius-medium);
 }
 
 /* ---------- Toggle Button ---------- */
 
 .button.toggle {
-  background-color: var(--nav-background);
-  color: var(--text-muted);
+  background-color: var(--primary-color);
+  color: var(--text-color-muted);
   border: 1px solid var(--border-color);
 }
 
 .button.toggle:hover:not(:disabled) {
-  background-color: var(--nav-hover);
+  background-color: var(--primary-color-hover);
   color: var(--text-color);
   transform: none;
 }
@@ -337,7 +171,7 @@
 /* ---------- Filter Button ---------- */
 
 .button.filter {
-  background-color: var(--nav-active);
+  background-color: var(--primary-color);
   color: var(--text-color);
 }
 
@@ -347,147 +181,99 @@
   border: 2px solid var(--accent-color);
 }
 
+button.filter.active-secondary {
+  background-color: var(--primary-color-active);
+  border: 2px solid var(--primary-color-active);
+}
+
 .button.filter:hover:not(:disabled) {
-  background-color: var(--nav-hover);
+  background-color: var(--primary-color-hover);
   transform: none;
 }
 
-/* ---------- Quantity Button ---------- */
+/* ---------- Size Modifiers ---------- */
 
-.button.quantity {
-  width: clamp(1.75rem, 3vw + 0.5rem, 2.25rem);
-  height: clamp(1.75rem, 3vw + 0.5rem, 2.25rem);
+.button.sm,
+.button.small {
+  font-size: var(--font-size-small);
+  padding: clamp(0.3rem, 0.25rem + 0.2vw, 0.5rem) clamp(0.5rem, 0.4rem + 0.3vw, 0.75rem);
+}
+
+.button.md,
+.button.medium {
+  font-size: var(--font-size-medium);
+  padding: clamp(0.5rem, 0.4rem + 0.3vw, 0.75rem) clamp(0.65rem, 0.5rem + 0.45vw, 1rem);
+}
+
+.button.lg,
+.button.large {
+  font-size: var(--font-size-large);
+  padding: clamp(0.65rem, 0.5rem + 0.45vw, 1rem) clamp(0.85rem, 0.6rem + 0.7vw, 1.5rem);
+}
+
+.button.no-flex {
+  flex: none;
+}
+
+.button.block {
+  width: 100%;
+  height: 100%;
+}
+
+.button.tall {
+  height: 100%;
+}
+
+/* ---------- Justify Modifiers ---------- */
+
+.button.justify-start {
+  justify-content: flex-start;
+}
+
+.button.justify-end {
+  justify-content: flex-end;
+}
+
+.button.justify-center {
+  justify-content: center;
+}
+
+.button.justify-between {
+  justify-content: space-between;
+}
+
+/* ---------- Icon Button ---------- */
+
+.button.icon {
+  width: clamp(1.75rem, 1.5rem + 0.3vw, 2rem);
+  height: clamp(1.75rem, 1.5rem + 0.3vw, 2rem);
   padding: 0;
-  font-weight: 600;
-  font-size: clamp(0.85rem, 0.75rem + 0.5vw, 1rem);
-  background-color: var(--nav-background);
-  border: 1px solid var(--border-color);
+  border-radius: 50%;
 }
 
-.button.quantity:hover:not(:disabled) {
-  background-color: var(--nav-hover);
-  transform: none;
+.button.icon.sm {
+  width: 1.5rem;
+  height: 1.5rem;
 }
 
-/* ---------- Special Effects ---------- */
-
-.button.lift:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px var(--overlay-medium);
+.button.icon.lg {
+  width: 2.5rem;
+  height: 2.5rem;
 }
 
-/* ==============================================
-   RESPONSIVE BEHAVIORAL CHANGES
-   ==============================================
-   Note: Sizes are now fluid via clamp() in base styles.
-   These handle behavioral changes only.
-   ============================================== */
-
-/* ---------- Touch-friendly sizing for mobile ---------- */
-@media (max-width: 767px) {
-  /* Ensure touch-friendly minimum sizes */
-  .button:not(.sm):not(.icon) {
-    min-height: 44px;
-  }
-
-  /* Full width buttons on mobile for primary actions */
-  .button.block-mobile {
-    width: 100%;
-  }
-
-  /* Stack vertical button groups */
-  .button-group {
-    flex-direction: column;
-    gap: clamp(0.35rem, 1vw, 0.5rem);
-  }
-
-  .button-group .button {
-    width: 100%;
-  }
+.button.icon:hover:not(:disabled) {
+  transform: scale(1.1);
 }
 
-/* ---------- Compact mode for very small screens ---------- */
-@media (max-width: 479px) {
-  /* Hide button text when icon-only-mobile class is used */
-  .button.icon-only-mobile .button-text {
-    display: none;
-  }
-
-  .button.icon-only-mobile {
-    width: auto;
-  }
+.button.search {
+  background: none;
+  border: none;
+  color: var(--accent-color);
+  font-size: var(--font-size-medium);
+  padding: var(--spacing-xxsmall);
+  position: absolute;
+  right: var(--spacing-xsmall);
+  top: 50%;
+  transform: translateY(-50%);
+  transition: all .2s ease;
 }
-
-/* ---------- Accessibility: Reduced Motion ---------- */
-@media (prefers-reduced-motion: reduce) {
-  .button {
-    transition: none;
-  }
-
-  .button:hover:not(:disabled) {
-    transform: none;
-  }
-
-  .button.icon:hover:not(:disabled) {
-    transform: none;
-  }
-
-  .button.lift:hover:not(:disabled) {
-    transform: none;
-  }
-}
-
-/* ---------- Touch Device Optimizations ---------- */
-@media (hover: none) and (pointer: coarse) {
-  .button:hover:not(:disabled) {
-    transform: none;
-    box-shadow: none;
-  }
-
-  .button.icon:hover:not(:disabled) {
-    transform: none;
-  }
-
-  .button:active:not(:disabled) {
-    transform: scale(0.98);
-    opacity: 0.9;
-  }
-
-  /* Larger touch targets */
-  .button:not(.sm):not(.icon) {
-    min-height: 44px;
-  }
-}
-
-/* ---------- High Contrast Mode ---------- */
-@media (prefers-contrast: high) {
-  .button {
-    border-width: 2px;
-  }
-
-  .button.outline {
-    border-width: 2px;
-  }
-
-  .button:focus {
-    outline: 3px solid var(--accent-color);
-    outline-offset: 2px;
-  }
-}
-
-/* ---------- Landscape Phone Orientation ---------- */
-@media (max-width: 767px) and (orientation: landscape) {
-  .button {
-    padding: 0.375rem 0.625rem;
-    font-size: 0.75rem;
-  }
-
-  .button.lg {
-    padding: 0.5rem 0.875rem;
-  }
-
-  .button:not(.sm):not(.icon) {
-    min-height: 36px;
-  }
-}
-

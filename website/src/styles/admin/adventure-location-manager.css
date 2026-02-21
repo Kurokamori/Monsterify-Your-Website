@@ -1,0 +1,208 @@
+/* ==============================
+   Adventure Location Manager
+   ============================== */
+
+/* ── Layout ─────────────────────────────────────────────── */
+
+.alm {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-medium);
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.alm__loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-xsmall);
+  padding: var(--spacing-xlarge);
+  color: var(--text-color-muted);
+  font-size: var(--font-size-xlarge);
+}
+
+.alm__error {
+  color: var(--error-color);
+  padding: var(--spacing-medium);
+  text-align: center;
+}
+
+/* ── Breadcrumb ─────────────────────────────────────────── */
+
+.alm__breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xsmall);
+  padding: var(--spacing-xsmall) 0;
+  font-size: var(--font-size-large);
+}
+
+.alm__breadcrumb button {
+  background: none;
+  border: none;
+  color: var(--text-color);
+  cursor: pointer;
+  padding: var(--spacing-xxsmall) var(--spacing-xsmall);
+  border-radius: var(--border-radius-small);
+  font-size: inherit;
+  transition: background 0.15s;
+}
+
+.alm__breadcrumb button:hover {
+  background: var(--primary-color-hover);
+}
+
+.alm__breadcrumb .fas {
+  color: var(--text-color-muted);
+  font-size: var(--font-size-xsmall);
+}
+
+.alm__breadcrumb span {
+  color: var(--text-color);
+  font-weight: 600;
+}
+
+/* ── Entity List Table ──────────────────────────────────── */
+
+.alm__entity-list {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.alm__entity-list th {
+  text-align: left;
+  padding: var(--spacing-xsmall) var(--spacing-small);
+  font-size: var(--font-size-small);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--text-color-muted);
+  border-bottom: 2px solid var(--border-color);
+}
+
+.alm__entity-row {
+  cursor: pointer;
+  transition: background 0.12s;
+}
+
+.alm__entity-row:hover {
+  background: var(--primary-color-hover);
+}
+
+.alm__entity-row td {
+  padding: var(--spacing-xsmall) var(--spacing-small);
+  border-bottom: 1px solid var(--border-color);
+  font-size: var(--font-size-medium);
+}
+
+.alm__entity-row td:first-child {
+  font-weight: 600;
+}
+
+.alm__desc-snippet {
+  color: var(--text-color-muted);
+  font-size: var(--font-size-medium);
+  max-width: 360px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.alm__count-cell {
+  text-align: center;
+  color: var(--text-color-muted);
+}
+
+/* ── Summary Badges ─────────────────────────────────────── */
+
+.alm__summary-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-xxsmall);
+}
+
+.alm__badge {
+  display: inline-block;
+  padding: var(--spacing-xxsmall) var(--spacing-xsmall);
+  border-radius: var(--border-radius-full);
+  font-size: var(--font-size-xsmall);
+  font-weight: 600;
+  background: var(--primary-color-hover);
+  color: var(--text-color-muted);
+}
+
+.alm__badge--easy { background: var(--success-color); color: var(--background-color); }
+.alm__badge--medium { background: var(--warning-color); color: var(--background-color); }
+.alm__badge--hard { background: var(--error-color); color: var(--background-color); }
+.alm__badge--extreme { background: var(--ghost-type); color: var(--text-color); }
+
+/* ── Editor ─────────────────────────────────────────────── */
+
+.alm__editor {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-medium);
+}
+
+.alm__editor-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-medium);
+}
+
+.alm__editor-header h2 {
+  margin: 0;
+  font-size: var(--font-size-xlarge);
+}
+
+.alm__editor-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-small);
+  padding: var(--spacing-medium) 0;
+  margin-top: var(--spacing-xsmall);
+  border-top: 1px solid var(--border-color);
+  position: sticky;
+  bottom: 0;
+  background: var(--background-color);
+  z-index: 10;
+}
+
+/* ── Type Checkbox Grid ─────────────────────────────────── */
+
+.alm__type-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: var(--spacing-xxsmall) var(--spacing-small);
+}
+
+.alm__type-checkbox {
+  cursor: pointer;
+  font-size: var(--font-size-medium);
+}
+
+/* ── Status Messages ────────────────────────────────────── */
+
+.alm__status {
+  font-size: var(--font-size-medium);
+  padding: var(--spacing-xxsmall) 0;
+}
+
+.alm__status--success {
+  color: var(--success-color);
+}
+
+.alm__status--error {
+  color: var(--error-color);
+}
+
+/* ── Responsive ─────────────────────────────────────────── */
+
+@media (max-width: 640px) {
+  .alm__entity-list th:nth-child(2),
+  .alm__entity-list td:nth-child(2) {
+    display: none;
+  }
+}

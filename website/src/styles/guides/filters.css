@@ -1,0 +1,63 @@
+/* ==============================
+   Franchise Filters Styles
+   ============================== */
+
+.franchise-filters {
+  margin-top: var(--spacing-medium);
+  padding-top: var(--spacing-medium);
+  border-top: 1px solid var(--border-color);
+}
+
+.filter-row {
+  display: flex;
+  gap: var(--spacing-medium);
+  flex-wrap: wrap;
+  align-items: flex-end;
+}
+
+.filter-group {
+  flex: 1;
+  min-width: 150px;
+  max-width: 200px;
+}
+
+.filter-group label {
+  display: block;
+  margin-bottom: var(--spacing-xxsmall);
+  font-size: var(--font-size-small);
+  color: var(--text-color-muted);
+}
+
+.filter-group label i {
+  margin-right: var(--spacing-xxsmall);
+  color: var(--accent-color);
+}
+
+.filter-group--boolean {
+  display: flex;
+  align-items: center;
+}
+
+.filter-checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xsmall);
+  cursor: pointer;
+  font-size: var(--font-size-small);
+  padding: var(--spacing-xsmall) 0;
+}
+
+.filter-checkbox-label input[type="checkbox"] {
+  width: 1rem;
+  height: 1rem;
+  cursor: pointer;
+}
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 768px) {
+  .filter-group {
+    min-width: 100%;
+    max-width: none;
+  }
+}

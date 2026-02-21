@@ -1,0 +1,288 @@
+/* ==============================
+   Species Components Styles
+   - Species Card
+   - Species Detail Modal
+   ============================== */
+
+/* ---------- Species Card ---------- */
+
+.species-card {
+  background: var(--primary-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-medium);
+  padding: var(--spacing-medium);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.species-card:hover {
+  border-color: var(--accent-color);
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px var(--overlay-medium);
+}
+
+.species-card__image {
+  width: 100%;
+  max-width: 120px;
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: var(--spacing-xsmall);
+}
+
+.species-card__image img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.species-card__placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--background-color);
+  border-radius: var(--border-radius-medium);
+  color: var(--text-color-muted);
+  font-size: clamp(2rem, 1.5rem + 1.5vw, 3.5rem);
+}
+
+.species-card__info {
+  width: 100%;
+}
+
+.species-card__name {
+  font-weight: 600;
+  font-size: var(--font-size-small);
+  color: var(--text-color);
+  margin-bottom: var(--spacing-xxsmall);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.species-card__secondary {
+  font-size: var(--font-size-xsmall);
+  color: var(--text-color-muted);
+  margin-bottom: var(--spacing-xxsmall);
+}
+
+.species-card__type {
+  margin-top: var(--spacing-xxsmall);
+}
+
+/* ---------- Species Detail Modal ---------- */
+
+.species-detail {
+  display: flex;
+  align-items: stretch;
+  gap: var(--spacing-medium);
+  min-height: 300px;
+}
+
+.species-detail__nav {
+  background: var(--background-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-medium);
+  padding: var(--spacing-xsmall);
+  cursor: pointer;
+  color: var(--text-color);
+  font-size: var(--font-size-xlarge);
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 40px;
+}
+
+.species-detail__nav:hover:not(:disabled) {
+  background: var(--accent-color);
+  border-color: var(--accent-color);
+  color: white;
+}
+
+.species-detail__nav:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.species-detail__main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-medium);
+}
+
+.species-detail__loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+  color: var(--text-color-muted);
+}
+
+.species-detail__image {
+  width: 100%;
+  max-width: 200px;
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.species-detail__image img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.species-detail__placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: var(--background-color);
+  border-radius: var(--border-radius-medium);
+  color: var(--text-color-muted);
+  gap: var(--spacing-xsmall);
+}
+
+.species-detail__info {
+  width: 100%;
+  text-align: left;
+}
+
+.species-detail__name {
+  font-size: var(--font-size-xlarge);
+  font-weight: 700;
+  color: var(--text-color);
+  margin-bottom: var(--spacing-xxsmall);
+}
+
+.species-detail__franchise {
+  font-size: var(--font-size-small);
+  color: var(--text-color-muted);
+  margin-bottom: var(--spacing-medium);
+}
+
+.species-detail__franchise i {
+  margin-right: var(--spacing-xxsmall);
+  color: var(--accent-color);
+}
+
+.species-detail__fields {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: var(--spacing-small);
+  margin-bottom: var(--spacing-medium);
+}
+
+.species-detail__field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xxsmall);
+}
+
+.species-detail__label {
+  font-size: var(--font-size-xsmall);
+  color: var(--text-color-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.species-detail__value {
+  font-size: var(--font-size-small);
+  color: var(--text-color);
+}
+
+.species-detail__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xxsmall);
+  background: var(--accent-color);
+  color: white;
+  padding: var(--spacing-xxsmall) var(--spacing-xsmall);
+  border-radius: var(--border-radius-small);
+  font-size: var(--font-size-xsmall);
+  width: fit-content;
+}
+
+.species-detail__types {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-xxsmall);
+}
+
+.species-detail__evolution {
+  margin-top: var(--spacing-medium);
+  padding-top: var(--spacing-medium);
+  border-top: 1px solid var(--border-color);
+}
+
+.species-detail__evolution h4 {
+  font-size: var(--font-size-small);
+  color: var(--text-color);
+  margin-bottom: var(--spacing-xsmall);
+}
+
+.species-detail__evolution h4 i {
+  margin-right: var(--spacing-xxsmall);
+  color: var(--accent-color);
+}
+
+/* Modal title and hints */
+.species-modal__title {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xsmall);
+}
+
+.species-modal__position {
+  font-size: var(--font-size-small);
+  color: var(--text-color-muted);
+  font-weight: normal;
+}
+
+.species-modal__hint {
+  display: flex;
+  justify-content: center;
+  gap: var(--spacing-large);
+  margin-top: var(--spacing-medium);
+  padding-top: var(--spacing-medium);
+  border-top: 1px solid var(--border-color);
+  font-size: var(--font-size-xsmall);
+  color: var(--text-color-muted);
+}
+
+.species-modal__hint kbd {
+  display: inline-block;
+  padding: var(--spacing-xxsmall) var(--spacing-xsmall);
+  font-size: var(--font-size-xsmall);
+  font-family: monospace;
+  background: var(--background-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-small);
+  box-shadow: 0 1px 0 var(--border-color);
+}
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 768px) {
+  .species-detail {
+    flex-direction: column;
+  }
+
+  .species-detail__nav {
+    display: none;
+  }
+}

@@ -1,0 +1,393 @@
+/* ==============================
+   Claim / Reroll Rewards Page
+   ============================== */
+
+/* ---------- Page Layout ---------- */
+
+.claim-page {
+  min-height: 80vh;
+  padding: var(--spacing-large);
+}
+
+.claim-container {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.claim-header {
+  margin-bottom: var(--spacing-large);
+}
+
+.claim-header h1 {
+  font-size: var(--font-size-xxlarge);
+  color: var(--text-color);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-small);
+}
+
+.claim-header h1 i {
+  color: var(--accent-color);
+}
+
+.claim-header p {
+  color: var(--text-color-muted);
+  margin-top: var(--spacing-xxsmall);
+}
+
+/* ---------- Status Card (Error / Login / Success) ---------- */
+
+.claim-status-card {
+  background-color: var(--primary-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-medium);
+  box-shadow: 0 2px 4px var(--overlay-light);
+  max-width: 500px;
+  margin: var(--spacing-xlarge) auto;
+  padding: var(--spacing-xlarge);
+  text-align: center;
+}
+
+.claim-status-card > i {
+  font-size: clamp(2rem, 1.5rem + 1.5vw, 3.5rem);
+  color: var(--accent-color);
+  margin-bottom: var(--spacing-medium);
+  display: block;
+}
+
+.claim-status-card.success > i {
+  color: var(--success-color);
+}
+
+.claim-status-card h2 {
+  color: var(--text-color);
+  margin-bottom: var(--spacing-small);
+}
+
+.claim-status-card p {
+  color: var(--text-color-muted);
+  margin-bottom: var(--spacing-medium);
+}
+
+/* ---------- Success List ---------- */
+
+.claim-success-list {
+  text-align: left;
+  margin: var(--spacing-medium) 0 var(--spacing-large);
+}
+
+.claim-success-list h3 {
+  font-size: var(--font-size-medium);
+  color: var(--text-color);
+  margin-bottom: var(--spacing-xsmall);
+}
+
+.claim-success-list ul {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 var(--spacing-medium);
+}
+
+.claim-success-list li {
+  padding: var(--spacing-xsmall) 0;
+  color: var(--text-color);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xsmall);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.claim-success-list li:last-child {
+  border-bottom: none;
+}
+
+.claim-success-list li i {
+  color: var(--success-color);
+}
+
+/* ---------- Info Banner ---------- */
+
+.claim-info {
+  background-color: var(--accent-glow);
+  border: 1px solid var(--accent-color);
+  border-radius: var(--border-radius-small);
+  padding: var(--spacing-small) var(--spacing-medium);
+  margin-bottom: var(--spacing-medium);
+  color: var(--accent-color);
+  font-size: var(--font-size-small);
+}
+
+.claim-info.error {
+  border-color: var(--error-color);
+  color: var(--error-color);
+}
+
+/* ---------- Content Grid ---------- */
+
+.claim-content {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-large);
+}
+
+.rewards-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-large);
+}
+
+/* ---------- Rewards Section ---------- */
+
+.rewards-section h2 {
+  color: var(--text-color);
+  font-size: var(--font-size-large);
+  margin-bottom: var(--spacing-medium);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xsmall);
+}
+
+.rewards-section h2 i {
+  color: var(--accent-color);
+}
+
+.claim-count-info {
+  font-weight: normal;
+  font-size: var(--font-size-small);
+  color: var(--text-color-muted);
+  margin-left: var(--spacing-xsmall);
+}
+
+/* ---------- Reward Grid ---------- */
+
+.reward-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: var(--spacing-medium);
+}
+
+/* ---------- Reward Cards (reuses area-card base) ---------- */
+
+.claim-page .area-card {
+  background-color: var(--primary-color);
+  border: 2px solid var(--border-color);
+  border-radius: var(--border-radius-medium);
+  padding: var(--spacing-medium);
+  cursor: pointer;
+  transition: border-color 0.2s, transform 0.2s, opacity 0.2s;
+  text-align: center;
+  position: relative;
+}
+
+.claim-page .area-card:hover:not(.claimed):not(.disabled) {
+  border-color: var(--accent-color);
+  transform: translateY(-2px);
+}
+
+.claim-page .area-card.selected {
+  border-color: var(--accent-color);
+  background-color: var(--primary-color-hover);
+}
+
+.claim-page .area-card.claimed {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.claim-page .area-card.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ---------- Reward Image ---------- */
+
+.reward-image {
+  width: clamp(60px, 8vw, 80px);
+  height: clamp(60px, 8vw, 80px);
+  object-fit: contain;
+  margin: 0 auto var(--spacing-xsmall);
+  display: block;
+}
+
+.reward-name {
+  font-weight: 600;
+  color: var(--text-color);
+  font-size: var(--font-size-medium);
+}
+
+.reward-details {
+  color: var(--text-color-muted);
+  font-size: var(--font-size-small);
+}
+
+.reward-details em {
+  color: var(--error-color);
+}
+
+/* ---------- Reward Types ---------- */
+
+.reward-types {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-xxsmall);
+  margin-top: var(--spacing-xsmall);
+  justify-content: center;
+}
+
+.reward-type-badge {
+  padding: var(--spacing-xxsmall) var(--spacing-xsmall);
+  border-radius: var(--border-radius-small);
+  font-size: var(--font-size-xsmall);
+  font-weight: 600;
+  text-transform: uppercase;
+  background-color: var(--accent-color);
+  color: var(--background-color);
+}
+
+/* ---------- Badges ---------- */
+
+.claimed-badge,
+.selected-badge {
+  display: inline-block;
+  margin-top: var(--spacing-xsmall);
+  padding: var(--spacing-xxsmall) var(--spacing-xsmall);
+  border-radius: var(--border-radius-small);
+  font-size: var(--font-size-xsmall);
+  font-weight: 600;
+}
+
+.claimed-badge {
+  background-color: var(--error-color);
+  color: var(--text-color);
+}
+
+.selected-badge {
+  background-color: var(--accent-color);
+  color: var(--background-color);
+}
+
+/* ---------- Reward Config (per-card inputs) ---------- */
+
+.reward-config {
+  margin-top: var(--spacing-small);
+  padding-top: var(--spacing-small);
+  border-top: 1px solid var(--border-color);
+  text-align: left;
+}
+
+.reward-config .form-group {
+  margin-bottom: var(--spacing-xsmall);
+}
+
+.reward-config label {
+  display: block;
+  font-size: var(--font-size-xsmall);
+  color: var(--text-color-muted);
+  margin-bottom: var(--spacing-xxsmall);
+}
+
+/* ---------- Claim Panel (Sidebar) ---------- */
+
+.claim-panel {
+  background-color: var(--primary-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-medium);
+  padding: var(--spacing-medium);
+  position: sticky;
+  top: var(--spacing-large);
+}
+
+.claim-panel h2 {
+  color: var(--text-color);
+  font-size: var(--font-size-large);
+  margin-bottom: var(--spacing-medium);
+}
+
+/* ---------- Summary List ---------- */
+
+.claim-summary-list {
+  margin-bottom: var(--spacing-medium);
+}
+
+.selected-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-xsmall) 0;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.selected-item:last-child {
+  border-bottom: none;
+}
+
+.selected-item-info {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xsmall);
+  flex: 1;
+  min-width: 0;
+}
+
+.selected-item-name {
+  font-weight: 500;
+  color: var(--text-color);
+}
+
+.selected-item-trainer {
+  font-size: var(--font-size-small);
+  color: var(--text-color-muted);
+}
+
+.category-icon {
+  color: var(--accent-color);
+}
+
+/* ---------- Warning & Empty ---------- */
+
+.claim-warning {
+  margin-top: var(--spacing-small);
+  padding: var(--spacing-small);
+  background-color: var(--overlay-light);
+  border: 1px solid var(--error-color);
+  border-radius: var(--border-radius-small);
+  color: var(--error-color);
+  font-size: var(--font-size-small);
+  text-align: center;
+}
+
+.claim-warning i {
+  margin-right: var(--spacing-xxsmall);
+}
+
+.no-selection {
+  color: var(--text-color-muted);
+  text-align: center;
+  padding: var(--spacing-large) var(--spacing-small);
+  font-size: var(--font-size-small);
+}
+
+/* ---------- Responsive ---------- */
+
+@media (min-width: 768px) {
+  .claim-content {
+    grid-template-columns: 2fr 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .reward-grid {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: var(--spacing-small);
+  }
+
+  .claim-panel {
+    position: static;
+  }
+}
+
+@media (max-width: 480px) {
+  .reward-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}

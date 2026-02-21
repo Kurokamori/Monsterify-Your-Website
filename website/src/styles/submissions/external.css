@@ -1,0 +1,134 @@
+/* ==============================
+   External Submissions Styles
+   Calculator, Allocator, Badges
+   ============================== */
+
+/* ---------- External Allocator ---------- */
+
+.external-allocator {
+  background: var(--primary-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-medium);
+  padding: var(--spacing-medium);
+  margin-top: var(--spacing-medium);
+}
+
+.allocator-header {
+  margin-bottom: var(--spacing-medium);
+}
+
+.allocator-remaining {
+  display: flex;
+  gap: var(--spacing-small);
+  flex-wrap: wrap;
+  margin-top: var(--spacing-small);
+}
+
+.remaining-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xxsmall);
+  padding: var(--spacing-xxsmall) var(--spacing-small);
+  background: var(--secondary-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-small);
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.remaining-badge i {
+  color: var(--accent-color);
+}
+
+.allocator-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-small);
+}
+
+.allocator-complete {
+  text-align: center;
+  padding: var(--spacing-large);
+}
+
+.allocator-complete i {
+  font-size: 3rem;
+  color: var(--success-color);
+  margin-bottom: var(--spacing-small);
+}
+
+/* ---------- Allocation History ---------- */
+
+.allocation-history {
+  margin-top: var(--spacing-medium);
+  padding-top: var(--spacing-medium);
+  border-top: 1px solid var(--border-color);
+}
+
+.allocation-history h4 {
+  margin-bottom: var(--spacing-small);
+}
+
+.allocation-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xxsmall);
+}
+
+.allocation-record {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-small);
+  padding: var(--spacing-xxsmall) var(--spacing-small);
+  background: var(--secondary-color);
+  border-radius: var(--border-radius-small);
+  font-size: 0.9rem;
+}
+
+.allocation-record i {
+  color: var(--text-color-muted);
+  width: 1.2em;
+  text-align: center;
+}
+
+.allocation-name {
+  flex: 1;
+  font-weight: 500;
+}
+
+.allocation-levels {
+  color: var(--accent-color);
+  font-weight: 600;
+}
+
+.allocation-coins {
+  color: var(--warning-color);
+  font-weight: 600;
+}
+
+/* ---------- External Characters List ---------- */
+
+.external-characters-list {
+  margin-top: var(--spacing-small);
+}
+
+.external-characters-list h4 {
+  margin-bottom: var(--spacing-xxsmall);
+}
+
+/* ---------- Reward Preview ---------- */
+
+.reward-preview {
+  background: var(--secondary-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-medium);
+  padding: var(--spacing-medium);
+}
+
+/* ---------- Submission Types Description ---------- */
+
+.submission-types-description {
+  color: var(--text-color-muted);
+  margin-bottom: var(--spacing-small);
+  font-size: 0.95rem;
+}

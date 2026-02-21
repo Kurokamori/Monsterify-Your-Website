@@ -1,0 +1,34 @@
+/* ==============================
+   Page-Specific Styles
+   ============================== */
+
+@import './home-page.css';
+@import './claim-page.css';
+@import './profile-page.css';
+@import './art-todo.css';
+@import './trainer-form-page.css';
+@import './my-trainers.css';
+@import './reference-pages.css';
+@import './game-tasks.css';
+@import './statistics.css';
+@import './admin-dashboard.css';
+@import '../admin/species-admin.css';
+@import '../admin/map-manager.css';
+@import '../admin/reroller.css';
+@import '../admin/submission-manager.css';
+@import '../admin/user-manager.css';
+@import '../admin/item-manager.css';
+@import '../admin/item-roller.css';
+@import '../admin/antique-appraisal-editor.css';
+@import '../admin/antique-auction-editor.css';
+@import '../admin/content-manager.css';
+@import '../admin/prompt-manager.css';
+@import '../admin/town-activities-editor.css';
+@import '../admin/shop-manager.css';
+@import '../admin/boss-manager.css';
+@import '../admin/discord-adventure-manager.css';
+@import '../admin/trainer-manager.css';
+@import '../admin/monster-manager.css';
+@import '../admin/bulk-monster-add.css';
+@import '../admin/faction-people-admin.css';
+@import '../admin/monster-form.css';

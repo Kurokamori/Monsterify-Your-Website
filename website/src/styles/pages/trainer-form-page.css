@@ -1,0 +1,149 @@
+/* ==============================
+   Trainer Form Page Styles
+   Add/Edit Trainer page-specific styles.
+   Uses common form, card, and layout styles as base.
+   ============================== */
+
+/* ---------- Page Form Container ---------- */
+
+.trainer-page-form {
+  max-width: var(--container-max-width);
+  margin: 0 auto;
+  padding: var(--spacing-medium) 0;
+}
+
+.trainer-page-form__header {
+  margin-bottom: var(--spacing-medium);
+}
+
+.trainer-page-form__header h1 {
+  margin: 0;
+  font-size: var(--font-size-xxlarge);
+  color: var(--text-color);
+}
+
+/* ---------- Jump Button ---------- */
+
+.trainer-page-form__jump-button {
+  position: sticky;
+  top: 100px;
+  right: 20px;
+  z-index: 10;
+  float: right;
+  opacity: 0.85;
+  transition: opacity 0.2s;
+  border: var(--accent-color)
+}
+
+.trainer-page-form__jump-button:hover {
+  opacity: 1;
+}
+
+/* ---------- Form Layout ---------- */
+
+.trainer-page-form__form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-medium);
+}
+
+.trainer-page-form__form .form-section {
+  background: var(--primary-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-medium);
+  padding: var(--spacing-medium);
+}
+
+/* ---------- Section Descriptions ---------- */
+
+.form-section__description {
+  color: var(--text-color-muted);
+  font-size: var(--font-size-small);
+  margin: 0 0 var(--spacing-small);
+  line-height: 1.5;
+}
+
+/* ---------- Form Actions ---------- */
+
+.trainer-page-form__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--spacing-small);
+  padding: var(--spacing-medium);
+  background: var(--primary-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-medium);
+}
+
+/* ---------- Dynamic List Items ---------- */
+
+.dynamic-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-small);
+  margin-bottom: var(--spacing-small);
+}
+
+.dynamic-list__item {
+  background: var(--primary-color-hover);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-medium);
+  padding: var(--spacing-small);
+}
+
+.dynamic-list__item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-xsmall);
+}
+
+.dynamic-list__item-header h4 {
+  margin: 0;
+  font-size: var(--font-size-medium);
+  color: var(--accent-color);
+  font-weight: 600;
+}
+
+.dynamic-list__empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-xsmall);
+  padding: var(--spacing-medium);
+  color: var(--text-color-muted);
+  border: 1px dashed var(--border-color);
+  border-radius: var(--border-radius-medium);
+  margin-bottom: var(--spacing-small);
+}
+
+.dynamic-list__empty i {
+  font-size: var(--font-size-xlarge);
+  opacity: 0.5;
+}
+
+.dynamic-list__empty p {
+  margin: 0;
+  font-size: var(--font-size-small);
+}
+
+/* ---------- Image Upload/Preview ---------- */
+
+.ref-image-upload {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xsmall);
+}
+
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 768px) {
+  .trainer-page-form__jump-button {
+    position: static;
+    float: none;
+    align-self: flex-end;
+    margin-bottom: var(--spacing-small);
+  }
+}

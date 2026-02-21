@@ -1,0 +1,398 @@
+/* ==============================
+   Monster Roller Styles
+   ============================== */
+
+/* ---------- Monster Roller Container ---------- */
+
+.monster-roller {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-medium);
+}
+
+.monster-roller__header {
+  text-align: center;
+}
+
+.monster-roller__header h2 {
+  margin: 0 0 var(--spacing-xsmall);
+  color: var(--text-color);
+}
+
+.monster-roller__header p {
+  margin: 0;
+  color: var(--text-color-muted);
+}
+
+/* ---------- Roller Form ---------- */
+
+.monster-roller__form {
+  background-color: var(--primary-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-medium);
+  padding: var(--spacing-medium);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-small);
+}
+
+/* ---------- Trainer Selection ---------- */
+
+.monster-roller__trainer-select {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xsmall);
+}
+
+.monster-roller__trainer-select label {
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+.monster-roller__trainer-select select {
+  padding: var(--spacing-xsmall) var(--spacing-small);
+  background-color: var(--input-background);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-small);
+  color: var(--text-color);
+  font-size: var(--font-size-medium);
+}
+
+.monster-roller__trainer-select select:focus {
+  outline: none;
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 2px var(--accent-color-hover);
+}
+
+/* ---------- Source Selection ---------- */
+
+.monster-roller__sources {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xsmall);
+}
+
+.monster-roller__sources-label {
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+.monster-roller__sources-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: var(--spacing-xsmall);
+}
+
+.monster-roller__source {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--spacing-xsmall);
+  background-color: var(--background-color);
+  border: 2px solid var(--border-color);
+  border-radius: var(--border-radius-small);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.monster-roller__source:hover {
+  border-color: var(--accent-color-hover);
+}
+
+.monster-roller__source--selected {
+  border-color: var(--accent-color);
+  background-color: var(--primary-color-hover);
+}
+
+.monster-roller__source-name {
+  font-weight: 600;
+  color: var(--text-color);
+  text-transform: capitalize;
+}
+
+.monster-roller__source-status {
+  font-size: var(--font-size-xsmall);
+  color: var(--text-color-muted);
+}
+
+.monster-roller__source--selected .monster-roller__source-status {
+  color: var(--success-color);
+}
+
+/* ---------- Advanced Options ---------- */
+
+.monster-roller__advanced-toggle {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xsmall);
+  padding: var(--spacing-xsmall);
+  background-color: var(--background-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-small);
+  color: var(--text-color);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.monster-roller__advanced-toggle:hover {
+  background-color: var(--primary-color-hover);
+}
+
+.monster-roller__advanced-toggle i {
+  transition: transform 0.2s ease;
+}
+
+.monster-roller__advanced-toggle--open i {
+  transform: rotate(180deg);
+}
+
+.monster-roller__advanced-options {
+  background-color: var(--background-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-small);
+  padding: var(--spacing-small);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xsmall);
+}
+
+.monster-roller__option-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: var(--spacing-xsmall);
+}
+
+.monster-roller__option {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.monster-roller__option label {
+  font-size: var(--font-size-small);
+  color: var(--text-color);
+}
+
+.monster-roller__option input[type="number"] {
+  padding: var(--spacing-xxsmall) var(--spacing-xsmall);
+  background-color: var(--input-background);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-small);
+  color: var(--text-color);
+  font-size: var(--font-size-small);
+  width: 100%;
+}
+
+.monster-roller__option input[type="number"]:focus {
+  outline: none;
+  border-color: var(--accent-color);
+}
+
+.monster-roller__option--checkbox {
+  flex-direction: row;
+  align-items: center;
+  gap: var(--spacing-xsmall);
+}
+
+.monster-roller__option--checkbox label {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xsmall);
+  cursor: pointer;
+}
+
+.monster-roller__option--checkbox input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--accent-color);
+}
+
+/* ---------- Roll Actions ---------- */
+
+.monster-roller__actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-xsmall);
+  padding-top: var(--spacing-small);
+  border-top: 1px solid var(--border-color);
+}
+
+.monster-roller__roll-count {
+  font-size: var(--font-size-small);
+  color: var(--text-color-muted);
+}
+
+.monster-roller__roll-count-current {
+  color: var(--accent-color);
+  font-weight: 600;
+}
+
+/* ---------- Rolled Monster Display ---------- */
+
+.monster-roller__result {
+  background-color: var(--primary-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-medium);
+  padding: var(--spacing-medium);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-medium);
+}
+
+.monster-roller__monster {
+  display: flex;
+  gap: var(--spacing-medium);
+}
+
+.monster-roller__monster-image {
+  width: 200px;
+  height: 200px;
+  flex-shrink: 0;
+  background-color: var(--background-color);
+  border-radius: var(--border-radius-medium);
+  overflow: hidden;
+}
+
+.monster-roller__monster-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.monster-roller__monster-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xsmall);
+}
+
+.monster-roller__monster-name {
+  margin: 0;
+  font-size: var(--font-size-xlarge);
+  font-weight: 700;
+  color: var(--text-color);
+}
+
+.monster-roller__monster-species {
+  font-size: var(--font-size-medium);
+  color: var(--text-color-muted);
+}
+
+.monster-roller__monster-types {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-xxsmall);
+}
+
+.monster-roller__monster-description {
+  font-size: var(--font-size-small);
+  color: var(--text-color);
+  line-height: 1.5;
+}
+
+/* ---------- Monster Stats ---------- */
+
+.monster-roller__stats {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--spacing-small);
+  padding: var(--spacing-small);
+  background-color: var(--background-color);
+  border-radius: var(--border-radius-small);
+}
+
+.monster-roller__stat-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xxsmall);
+}
+
+.monster-roller__stat {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-xxsmall) 0;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.monster-roller__stat:last-child {
+  border-bottom: none;
+}
+
+.monster-roller__stat-label {
+  font-size: var(--font-size-small);
+  color: var(--text-color-muted);
+}
+
+.monster-roller__stat-value {
+  font-size: var(--font-size-medium);
+  font-weight: 600;
+  color: var(--accent-color);
+}
+
+/* ---------- Result Actions ---------- */
+
+.monster-roller__result-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-xsmall);
+  justify-content: center;
+  padding-top: var(--spacing-small);
+  border-top: 1px solid var(--border-color);
+}
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 768px) {
+  .monster-roller__monster {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .monster-roller__monster-image {
+    width: 160px;
+    height: 160px;
+  }
+
+  .monster-roller__monster-info {
+    align-items: center;
+    text-align: center;
+  }
+
+  .monster-roller__monster-types {
+    justify-content: center;
+  }
+
+  .monster-roller__stats {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .monster-roller__sources-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .monster-roller__option-row {
+    grid-template-columns: 1fr;
+  }
+
+  .monster-roller__result-actions {
+    flex-direction: column;
+  }
+
+  .monster-roller__result-actions .button {
+    width: 100%;
+  }
+}
+
+/* ---------- Reduced Motion ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .monster-roller__source,
+  .monster-roller__advanced-toggle,
+  .monster-roller__advanced-toggle i {
+    transition: none;
+  }
+}

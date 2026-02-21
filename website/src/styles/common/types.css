@@ -50,28 +50,16 @@
 .type-steel { 
     background-color: var(--steel-type); 
 }
-.type-fairy { 
-    background-color: var(--fairy-type); 
+.type-fairy {
+    background-color: var(--fairy-type);
 }
 
 /* ---------- Custom Types ---------- */
-.type-custom { 
-    background-color: var(--custom-type); 
+.type-light {
+    background-color: var(--light-type);
 }
-.type-random { 
-    background: var(--random-type); 
-}
-.type-light { 
-    background-color: var(--light-type); 
-}
-.type-cosmic { 
-    background-color: var(--cosmic-type); 
-}
-
-.type-mystery,
-.type-\?\?\? {
-  background: var(--random-type);
-  animation: mystery-shimmer 2s ease-in-out infinite;
+.type-cosmic {
+    background-color: var(--cosmic-type);
 }
 
 /* ---------- Attributes ---------- */

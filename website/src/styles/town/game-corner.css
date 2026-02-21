@@ -1,62 +1,78 @@
 /* =============================================================================
    GAME CORNER STYLES
 
-   Game corner activity with video player, timer, and reward system.
+   Pomodoro timer with video player, reward system.
    ============================================================================= */
 
-/* Game Corner Layout */
-.game-corner-content {
+/* ---------- Layout ---------- */
+
+.game-corner__layout {
   display: grid;
   grid-template-columns: 3fr 1fr;
-  gap: 20px;
+  gap: var(--spacing-large);
   min-height: 600px;
 }
 
-/* Video Section */
-.video-section {
-  background-color: var(--card-background);
-  border-radius: var(--radius);
-  padding: 20px;
+/* ---------- Video Section ---------- */
+
+.game-corner__video-section {
+  background-color: var(--primary-color);
+  border-radius: var(--border-radius-large);
+  padding: var(--spacing-large);
   display: flex;
   flex-direction: column;
-  height: 100%;
+  border: none;
 }
 
-.video-form {
+.game-corner__video-header {
   display: flex;
-  gap: 10px;
-  margin-bottom: 15px;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-medium);
 }
 
-.video-form input {
-  flex: 1;
-  padding: 8px 12px;
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--border-color);
-  background-color: var(--nav-hover);
+.game-corner__video-header h2 {
+  margin: 0;
   color: var(--text-color);
 }
 
-.video-player {
+.game-corner__video-form {
+  display: flex;
+  gap: var(--spacing-small);
+  margin-bottom: var(--spacing-medium);
+}
+
+.game-corner__video-form input {
   flex: 1;
+  padding: var(--spacing-xsmall) var(--spacing-small);
+  border-radius: var(--border-radius-small);
+  border: 1px solid var(--border-color);
+  background-color: var(--background-color);
+  color: var(--text-color);
+  font-size: var(--font-size-medium);
+}
+
+/* ---------- Video Player ---------- */
+
+.game-corner__video-player {
   position: relative;
   padding-bottom: 56.25%;
   height: 0;
   overflow: hidden;
-  margin-bottom: 15px;
+  margin-bottom: var(--spacing-medium);
+  border-radius: var(--border-radius-medium);
 }
 
-.video-player iframe {
+.game-corner__video-player iframe {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  border-radius: var(--radius-sm);
+  border-radius: var(--border-radius-medium);
 }
 
-/* Video Loading State */
-.video-loading {
+.game-corner__video-loading {
   position: absolute;
   top: 0;
   left: 0;
@@ -66,19 +82,18 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background-color: var(--nav-hover);
-  border-radius: var(--radius-sm);
-  color: var(--text-muted);
+  background-color: var(--background-color);
+  border-radius: var(--border-radius-medium);
+  color: var(--text-color-muted);
   z-index: 2;
 }
 
-.video-loading p {
-  margin-top: 1rem;
-  font-size: 1rem;
+.game-corner__video-loading p {
+  margin-top: var(--spacing-small);
+  font-size: var(--font-size-medium);
 }
 
-/* Video Error State */
-.video-error {
+.game-corner__video-error {
   position: absolute;
   top: 0;
   left: 0;
@@ -87,77 +102,117 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: var(--nav-hover);
-  border-radius: var(--radius-sm);
+  background-color: var(--background-color);
+  border-radius: var(--border-radius-medium);
   z-index: 2;
 }
 
-.video-error .error-content {
+.game-corner__video-error-content {
   text-align: center;
-  color: var(--text-muted);
-  padding: 2rem;
+  color: var(--text-color-muted);
+  padding: var(--spacing-xlarge);
 }
 
-.video-error .error-content i {
-  font-size: 3rem;
+.game-corner__video-error-content i {
+  font-size: clamp(2rem, 1.5rem + 1.5vw, 3.5rem);
   color: var(--warning-color);
-  margin-bottom: 1rem;
+  margin-bottom: var(--spacing-small);
 }
 
-.video-error .error-content h3 {
-  font-size: 1.25rem;
-  margin-bottom: 0.5rem;
+.game-corner__video-error-content h3 {
+  font-size: var(--font-size-large);
+  margin-bottom: var(--spacing-xsmall);
   color: var(--text-color);
 }
 
-.video-error .error-content p {
-  margin-bottom: 1.5rem;
-  color: var(--text-muted);
+.game-corner__video-error-content p {
+  margin-bottom: var(--spacing-medium);
+  color: var(--text-color-muted);
 }
 
-.video-error .stat-group {
+.game-corner__video-error-actions {
   display: flex;
-  gap: 1rem;
+  gap: var(--spacing-small);
   justify-content: center;
   flex-wrap: wrap;
 }
 
-/* Video Item Button */
-.video-item {
-  padding: 8px 12px;
-  background-color: var(--nav-hover);
-  border: none;
-  border-radius: var(--radius-sm);
+/* ---------- Video List ---------- */
+
+.game-corner__video-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-xsmall);
+}
+
+.game-corner__video-item {
+  padding: var(--spacing-xsmall) var(--spacing-small);
+  background-color: var(--background-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-small);
   color: var(--text-color);
   cursor: pointer;
-  transition: background-color var(--transition-base);
+  font-size: var(--font-size-small);
+  transition: background-color 0.2s, border-color 0.2s;
 }
 
-.video-item:hover {
-  background-color: var(--nav-active);
+.game-corner__video-item:hover {
+  border-color: var(--accent-color);
 }
 
-.video-item.active {
-  background-color: var(--blue-color);
+.game-corner__video-item--active {
+  background-color: var(--accent-color);
+  border-color: var(--accent-color);
+  color: var(--background-color);
 }
 
-/* Timer Section */
-.timer-section {
-  background-color: var(--card-background);
-  border-radius: var(--radius);
-  padding: 20px;
+/* ---------- Timer Section ---------- */
+
+.game-corner__timer-section {
+  background-color: var(--primary-color);
+  border-radius: var(--border-radius-large);
+  padding: var(--spacing-large);
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: space-between;
+  border: none;
 }
 
-.timer-display svg {
+/* ---------- Timer Display ---------- */
+
+.game-corner__timer-display {
+  position: relative;
+  width: 200px;
+  height: 200px;
+  margin-bottom: var(--spacing-large);
+}
+
+.game-corner__timer-display svg {
   transform: rotate(-90deg);
   overflow: visible;
+  width: 100%;
+  height: 100%;
 }
 
-.timer-text {
+.game-corner__timer-bg {
+  fill: none;
+  stroke: var(--border-color);
+  stroke-width: 4;
+}
+
+.game-corner__timer-progress {
+  fill: none;
+  stroke: var(--accent-color);
+  stroke-width: 4;
+  stroke-linecap: round;
+  transition: stroke 0.3s;
+}
+
+.game-corner__timer-progress--break {
+  stroke: var(--success-color);
+}
+
+.game-corner__timer-text {
   position: absolute;
   top: 0;
   left: 0;
@@ -170,146 +225,282 @@
   text-align: center;
 }
 
-.timer-controls {
+.game-corner__timer-time {
+  font-size: clamp(1.5rem, 1.25rem + 1vw, 2.5rem);
+  font-weight: 700;
+  color: var(--text-color);
+  font-variant-numeric: tabular-nums;
+}
+
+.game-corner__timer-label {
+  font-size: var(--font-size-medium);
+  color: var(--text-color-muted);
+  margin-top: var(--spacing-xxsmall);
+}
+
+.game-corner__timer-session {
+  font-size: var(--font-size-small);
+  color: var(--text-color-muted);
+  margin-top: var(--spacing-xxsmall);
+}
+
+/* ---------- Timer Controls ---------- */
+
+.game-corner__timer-controls {
   width: 100%;
 }
 
-.timer-buttons {
+.game-corner__timer-buttons {
   display: flex;
   justify-content: center;
-  gap: 10px;
-  margin-bottom: 20px;
+  gap: var(--spacing-small);
+  margin-bottom: var(--spacing-large);
 }
 
-/* Timer Settings */
-.set-item input {
-  padding: 8px;
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--border-color);
-  background-color: var(--nav-hover);
-  color: var(--text-color);
+/* ---------- Timer Settings ---------- */
+
+.game-corner__timer-settings {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-small);
   width: 100%;
 }
 
-.set-item .checkbox-label {
+.game-corner__setting {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xxsmall);
+}
+
+.game-corner__setting label {
+  font-size: var(--font-size-small);
+  color: var(--text-color-muted);
+}
+
+.game-corner__setting input[type="number"] {
+  padding: var(--spacing-xsmall);
+  border-radius: var(--border-radius-small);
+  border: 1px solid var(--border-color);
+  background-color: var(--background-color);
+  color: var(--text-color);
+  width: 100%;
+  font-size: var(--font-size-medium);
+}
+
+.game-corner__setting input[type="number"]:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ---------- Audio Toggle ---------- */
+
+.game-corner__audio-toggle {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--spacing-xsmall);
+  padding-top: var(--spacing-small);
+  border-top: 1px solid var(--border-color);
+  margin-top: var(--spacing-small);
   cursor: pointer;
-  font-size: 0.875rem;
-  color: var(--text-muted);
+  user-select: none;
+  font-size: var(--font-size-small);
+  color: var(--text-color-muted);
 }
 
-.set-item .checkbox-label input[type="checkbox"] {
-  width: 16px;
-  height: 16px;
-  padding: 0;
-  margin: 0;
-  accent-color: var(--blue-color);
+.game-corner__audio-toggle input[type="checkbox"] {
+  accent-color: var(--accent-color);
 }
 
-.set-item small {
-  font-size: 0.75rem;
-  color: var(--text-muted);
-  margin-top: 2px;
-}
+/* ---------- Productivity Rating ---------- */
 
-/* Modal */
-
-.productivity-ratings {
+.game-corner__productivity-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
-  margin-top: 20px;
+  gap: var(--spacing-small);
+  margin-top: var(--spacing-medium);
 }
 
-/* Rewards Modal */
+/* ---------- Rewards Modal ---------- */
 
-.reward-stat {
+.game-corner__rewards-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--spacing-medium);
+  margin-bottom: var(--spacing-large);
+  padding: var(--spacing-medium);
+  background-color: var(--background-color);
+  border-radius: var(--border-radius-medium);
+}
+
+.game-corner__stat {
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
+  gap: var(--spacing-xxsmall);
 }
 
-.reward-stat span:first-child {
-  font-size: 0.875rem;
-  color: var(--text-muted);
-  margin-bottom: 5px;
+.game-corner__stat-label {
+  font-size: var(--font-size-small);
+  color: var(--text-color-muted);
 }
 
-.reward-stat span:last-child {
-  font-size: 1.5rem;
-  font-weight: bold;
+.game-corner__stat-value {
+  font-size: var(--font-size-xlarge);
+  font-weight: 700;
+  color: var(--text-color);
 }
 
-/* Reward Icons */
-.reward-icon.coin i {
-  color: var(--accent-color); /* Gold */
+/* ---------- Reward Sections ---------- */
+
+.game-corner__reward-section {
+  margin-bottom: var(--spacing-large);
 }
 
-.reward-icon.item i {
-  color: var(--psychic-type); /* Purple */
+.game-corner__reward-section h3 {
+  margin: 0 0 var(--spacing-medium) 0;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xsmall);
+  color: var(--text-color);
 }
 
-.reward-icon.monster i {
-  color: var(--error-color); /* Red */
+.game-corner__reward-section h3 i {
+  color: var(--accent-color);
 }
 
-.reward-icon.level i {
-  color: var(--success-color); /* Green */
-}
+/* ---------- Monster Reward Card ---------- */
 
-.reward-assigned {
-  margin-top: 10px;
-  width: 100%;
-}
-
-/* Trainer Select Container */
-.trainer-select-container {
-  flex: 1;
-  position: relative;
-  background-color: var(--card-background);
-  border-radius: var(--radius);
-  padding: 15px;
-  box-shadow: var(--shadow-sm);
-}
-
-/* Game Corner Reward Grid Styles */
-.other-rewards-section .rewards-list {
+.game-corner__monster-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 1rem;
-  max-height: none;
-  overflow-y: visible;
-  padding: 1rem;
-  background-color: var(--overlay-light);
-  border-radius: var(--radius);
-  border: 1px solid var(--border-color);
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: var(--spacing-medium);
 }
 
-/* Responsive */
+.game-corner__monster-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-small);
+}
+
+.game-corner__monster-content {
+  display: flex;
+  gap: var(--spacing-small);
+}
+
+.game-corner__monster-image {
+  width: 80px;
+  height: 80px;
+  border-radius: var(--border-radius-medium);
+  object-fit: cover;
+  flex-shrink: 0;
+  background-color: var(--background-color);
+}
+
+.game-corner__monster-fallback {
+  width: 80px;
+  height: 80px;
+  border-radius: var(--border-radius-medium);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  background-color: var(--background-color);
+  color: var(--text-color-muted);
+  font-size: clamp(1.5rem, 1.25rem + 1vw, 2.5rem);
+}
+
+.game-corner__monster-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xxsmall);
+}
+
+.game-corner__monster-name {
+  font-weight: 600;
+  font-size: var(--font-size-large);
+  color: var(--text-color);
+  margin: 0;
+}
+
+.game-corner__monster-level {
+  font-size: var(--font-size-small);
+  color: var(--text-color-muted);
+}
+
+.game-corner__monster-claim {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xsmall);
+}
+
+/* ---------- Other Rewards Grid ---------- */
+
+.game-corner__other-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: var(--spacing-medium);
+}
+
+.game-corner__other-reward {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xsmall);
+}
+
+.game-corner__reward-icon {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xsmall);
+}
+
+.game-corner__reward-icon i {
+  font-size: var(--font-size-large);
+}
+
+.game-corner__reward-icon--coin i { color: var(--accent-color); }
+.game-corner__reward-icon--item i { color: var(--psychic-type); }
+.game-corner__reward-icon--level i { color: var(--success-color); }
+.game-corner__reward-icon--monster i { color: var(--error-color); }
+
+.game-corner__reward-title {
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+.game-corner__reward-desc {
+  font-size: var(--font-size-small);
+  color: var(--text-color-muted);
+}
+
+.game-corner__claimed-badge {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xxsmall);
+  font-size: var(--font-size-small);
+  color: var(--success-color);
+  margin-top: var(--spacing-xxsmall);
+}
+
+/* ---------- Responsive ---------- */
+
 @media (max-width: 768px) {
-  .game-corner-content {
+  .game-corner__layout {
     grid-template-columns: 1fr;
   }
 
-  .timer-settings {
+  .game-corner__rewards-stats {
     grid-template-columns: 1fr;
   }
 
-  .rewards-summary {
-    grid-template-columns: 1fr;
+  .game-corner__productivity-grid {
+    grid-template-columns: repeat(2, 1fr);
   }
 
-  .rewards-list {
+  .game-corner__monster-grid,
+  .game-corner__other-grid {
     grid-template-columns: 1fr;
-    gap: 15px;
-    max-height: 70vh;
-  }
-
-  .other-rewards-section .rewards-list {
-    grid-template-columns: 1fr;
-    gap: 1rem;
   }
 }

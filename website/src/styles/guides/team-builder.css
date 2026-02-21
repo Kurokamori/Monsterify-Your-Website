@@ -1,0 +1,377 @@
+/* ==============================
+   Team Builder Styles
+   - Team Builder
+   - Team Analysis
+   - Effectiveness Chart
+   - Team Summary
+   ============================== */
+
+/* ---------- Team Builder ---------- */
+
+.team-builder {
+  max-width: var(--container-max-width);
+  margin: 0 auto;
+}
+
+.team-builder__header {
+  text-align: center;
+  margin-bottom: var(--spacing-xlarge);
+  padding-bottom: var(--spacing-large);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.team-builder__header h2 {
+  color: var(--accent-color);
+  font-size: var(--font-size-xxlarge);
+  margin-bottom: var(--spacing-xsmall);
+  font-weight: 700;
+}
+
+.team-builder__header p {
+  color: var(--text-color);
+  opacity: 0.8;
+  font-size: var(--font-size-medium);
+  margin-bottom: var(--spacing-large);
+}
+
+.team-builder__table {
+  margin-bottom: var(--spacing-xxlarge);
+  background: var(--primary-color);
+  border-radius: var(--border-radius-medium);
+  border: 1px solid var(--border-color);
+  overflow: hidden;
+}
+
+.team-builder__row {
+  display: grid;
+  grid-template-columns: 80px 1fr 120px 2fr 1fr 80px;
+  gap: var(--spacing-medium);
+  padding: var(--spacing-medium) var(--spacing-large);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.team-builder__row:last-child {
+  border-bottom: none;
+}
+
+.team-builder__row--header {
+  background: var(--input-background);
+  font-weight: 600;
+  color: var(--accent-color);
+  font-size: var(--font-size-small);
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+}
+
+.team-builder__col {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.team-builder__number {
+  background: var(--accent-color);
+  color: var(--background-color);
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: var(--font-size-small);
+}
+
+.team-builder__types {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-xsmall);
+}
+
+.team-builder__type-input {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xsmall);
+  min-width: 120px;
+}
+
+.team-builder__badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-xxsmall);
+  align-items: center;
+}
+
+/* ---------- Team Analysis ---------- */
+
+.team-analysis {
+  background: var(--primary-color);
+  border-radius: var(--border-radius-large);
+  padding: var(--spacing-xlarge);
+  border: 1px solid var(--border-color);
+  box-shadow: 0 8px 25px var(--overlay-medium);
+  margin-top: var(--spacing-xxlarge);
+}
+
+.team-analysis h2 {
+  color: var(--accent-color);
+  font-size: var(--font-size-xlarge);
+  margin-bottom: var(--spacing-medium);
+  font-weight: 700;
+}
+
+.team-analysis__header {
+  margin-bottom: var(--spacing-xlarge);
+  padding-bottom: var(--spacing-medium);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.team-analysis__header p {
+  color: var(--text-color);
+  opacity: 0.8;
+  font-size: var(--font-size-medium);
+  margin: 0;
+}
+
+/* ---------- Effectiveness Chart ---------- */
+
+.effectiveness-chart {
+  border-bottom: 1px solid var(--border-color);
+  margin-bottom: var(--spacing-xlarge);
+  padding-bottom: var(--spacing-large);
+  text-align: center;
+}
+
+.effectiveness-chart h3 {
+  color: var(--accent-color);
+  font-size: var(--font-size-large);
+  margin-bottom: var(--spacing-medium);
+  font-weight: 600;
+}
+
+.effectiveness-chart__container {
+  overflow-x: auto;
+  border-radius: var(--border-radius-medium);
+  border: 1px solid var(--border-color);
+}
+
+.effectiveness-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--font-size-xsmall);
+  background: var(--primary-color);
+}
+
+.effectiveness-table th,
+.effectiveness-table td {
+  background: var(--input-background);
+  border: 1px solid var(--border-color);
+  color: var(--accent-color);
+  font-size: var(--font-size-small);
+  font-weight: 600;
+  max-width: 80px;
+  min-width: 45px;
+  padding: var(--spacing-xsmall) var(--spacing-xxsmall);
+  text-align: center;
+}
+
+.effectiveness-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.effectiveness-table__monster-col {
+  min-width: 60px;
+  max-width: 80px;
+  padding: var(--spacing-xxsmall);
+}
+
+.effectiveness-table__monster-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.125rem;
+  line-height: 1.2;
+}
+
+.effectiveness-table__monster-name {
+  font-size: var(--font-size-xsmall);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 70px;
+}
+
+.effectiveness-table__monster-types {
+  display: flex;
+  gap: 2px;
+}
+
+.badge-mini {
+  background: var(--accent-color);
+  color: var(--background-color);
+  padding: var(--spacing-xxsmall) var(--spacing-xxsmall);
+  border-radius: var(--border-radius-small);
+  font-size: var(--font-size-xxxsmall);
+  font-weight: bold;
+  min-width: 0.75rem;
+  text-align: center;
+  line-height: 1;
+}
+
+.effectiveness-table__attacking-type {
+  background: var(--input-background);
+  font-weight: 600;
+  position: sticky;
+  left: 0;
+  z-index: 5;
+  min-width: 80px;
+  max-width: 100px;
+  padding: var(--spacing-xsmall) var(--spacing-small);
+}
+
+.effectiveness-table__cell {
+  font-weight: 700;
+  font-size: var(--font-size-small);
+  line-height: 1;
+}
+
+.effectiveness-table__cell--weakness {
+  background: var(--error-dark);
+  color: var(--error-color);
+}
+
+.effectiveness-table__cell--resistance {
+  background: var(--accent-color-hover);
+  color: var(--accent-color);
+}
+
+.effectiveness-table__cell--immunity {
+  background: var(--success-dark);
+  color: var(--success-color);
+}
+
+.effectiveness-table__cell--neutral {
+  color: var(--text-color);
+  opacity: 0.6;
+}
+
+.effectiveness-table__total-col {
+  background: var(--accent-color);
+  color: var(--background-color);
+  font-weight: 700;
+  min-width: 60px;
+  max-width: 80px;
+  position: sticky;
+  right: 0;
+  z-index: 10;
+}
+
+.effectiveness-table__total--team-weakness {
+  background: var(--error-dark);
+  color: var(--error-color);
+  font-weight: 800;
+}
+
+.effectiveness-table__total--team-strength {
+  background: var(--success-dark);
+  color: var(--success-color);
+  font-weight: 800;
+}
+
+.effectiveness-table__total--team-neutral {
+  background: var(--input-background);
+  color: var(--text-color);
+  opacity: 0.7;
+}
+
+/* ---------- Team Summary ---------- */
+
+.team-summary h3 {
+  color: var(--accent-color);
+  font-size: var(--font-size-large);
+  margin-bottom: var(--spacing-large);
+  font-weight: 600;
+}
+
+.team-summary__sections {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: var(--spacing-large);
+}
+
+.team-summary__section {
+  background: var(--primary-color-hover);
+  border-radius: var(--border-radius-medium);
+  padding: var(--spacing-large);
+  border: 1px solid var(--border-color);
+}
+
+.team-summary__section h4 {
+  color: var(--accent-color);
+  font-size: var(--font-size-medium);
+  margin-bottom: var(--spacing-medium);
+  font-weight: 600;
+}
+
+.team-summary__items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-xsmall);
+}
+
+.team-summary__item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xsmall);
+  padding: var(--spacing-xsmall) var(--spacing-small);
+  border-radius: var(--border-radius-small);
+  border: 1px solid var(--border-color);
+}
+
+.team-summary__item--weakness {
+  background: var(--error-dark);
+  border-color: var(--error-dark);
+}
+
+.team-summary__item--resistance {
+  background: var(--accent-color-hover);
+  border-color: var(--accent-color-hover);
+}
+
+.team-summary__item--immunity {
+  background: var(--success-dark);
+  border-color: var(--success-dark);
+}
+
+.team-summary__count {
+  background: var(--overlay-dark);
+  color: var(--text-color);
+  padding: var(--spacing-xxsmall) var(--spacing-xsmall);
+  border-radius: var(--border-radius-small);
+  font-size: var(--font-size-xsmall);
+  font-weight: 600;
+}
+
+.team-summary__empty {
+  color: var(--text-color-muted);
+  font-style: italic;
+  margin: 0;
+}
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 768px) {
+  .team-builder__row {
+    display: none;
+  }
+
+  .team-builder__row--header {
+    display: none;
+  }
+
+  .team-summary__sections {
+    grid-template-columns: 1fr;
+  }
+}

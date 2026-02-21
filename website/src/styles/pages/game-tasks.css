@@ -1,0 +1,303 @@
+/* ==============================
+   Game Tasks Page
+   ============================== */
+
+/* ---------- Page Layout ---------- */
+
+.game-tasks {
+  max-width: var(--container-max-width);
+  margin: 0 auto;
+  padding: var(--spacing-large);
+}
+
+.game-tasks__header {
+  margin-bottom: var(--spacing-medium);
+}
+
+.game-tasks__header h1 {
+  margin: 0;
+  color: var(--accent-color);
+  font-size: var(--font-size-xxlarge);
+}
+
+.game-tasks__header p {
+  margin: var(--spacing-xxsmall) 0 0;
+  color: var(--text-color-muted);
+  font-size: var(--font-size-small);
+}
+
+/* ---------- Progress Summary ---------- */
+
+.game-tasks__progress {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: var(--spacing-medium);
+  margin-bottom: var(--spacing-medium);
+}
+
+.game-tasks__progress-card {
+  background-color: var(--primary-color);
+  border-radius: var(--border-radius-medium);
+  padding: var(--spacing-medium);
+  border: 1px solid var(--border-color);
+}
+
+.game-tasks__progress-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--spacing-small);
+}
+
+.game-tasks__progress-header h2 {
+  margin: 0;
+  font-size: var(--font-size-medium);
+  color: var(--text-color);
+}
+
+.game-tasks__progress-percent {
+  font-size: var(--font-size-large);
+  font-weight: 700;
+  color: var(--accent-color);
+}
+
+/* ---------- Tabs ---------- */
+
+.game-tasks__tabs {
+  display: flex;
+  gap: var(--spacing-xsmall);
+  margin-bottom: var(--spacing-medium);
+}
+
+/* ---------- Task List ---------- */
+
+.game-tasks__list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-small);
+}
+
+/* ---------- Task Card ---------- */
+
+.task-card {
+  display: flex;
+  align-items: stretch;
+  background-color: var(--primary-color);
+  border-radius: var(--border-radius-medium);
+  border: 1px solid var(--border-color);
+  overflow: hidden;
+  transition: border-color 0.2s;
+}
+
+.task-card:hover {
+  border-color: var(--accent-color-hover);
+}
+
+.task-card--completed {
+  opacity: 0.7;
+}
+
+.task-card--completed:hover {
+  border-color: var(--border-color);
+}
+
+.task-card__info {
+  flex: 1;
+  padding: var(--spacing-medium);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xsmall);
+}
+
+.task-card__title {
+  margin: 0;
+  font-size: var(--font-size-medium);
+  color: var(--text-color);
+}
+
+.task-card__description {
+  margin: 0;
+  font-size: var(--font-size-small);
+  color: var(--text-color-muted);
+  line-height: 1.5;
+}
+
+.task-card__progress {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xxsmall);
+}
+
+.task-card__progress-text {
+  display: flex;
+  justify-content: space-between;
+  font-size: var(--font-size-xsmall);
+  color: var(--text-color-muted);
+}
+
+/* ---------- Reward Badges ---------- */
+
+.task-card__rewards {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--spacing-xsmall);
+}
+
+.task-card__rewards-label {
+  font-size: var(--font-size-xsmall);
+  font-weight: 600;
+  color: var(--text-color-muted);
+}
+
+.task-card__reward-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-xxsmall);
+}
+
+.task-card__reward {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xxsmall);
+  padding: var(--spacing-xxsmall) var(--spacing-xsmall);
+  background-color: var(--background-color);
+  border-radius: var(--border-radius-small);
+  font-size: var(--font-size-xsmall);
+  color: var(--text-color);
+}
+
+.task-card__reward i {
+  color: var(--accent-color);
+  font-size: var(--font-size-xsmall);
+}
+
+/* ---------- Task Card Action ---------- */
+
+.task-card__action {
+  display: flex;
+  align-items: center;
+  padding: var(--spacing-medium);
+  border-left: 1px solid var(--border-color);
+}
+
+/* ---------- Complete Modal ---------- */
+
+.complete-modal__success {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: var(--spacing-medium);
+}
+
+.complete-modal__success-icon {
+  font-size: clamp(2rem, 1.5rem + 1.5vw, 3.5rem);
+  color: var(--success-color);
+}
+
+.complete-modal__success p {
+  margin: 0;
+  color: var(--text-color-muted);
+  line-height: 1.6;
+}
+
+.complete-modal__rewards {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-small);
+  width: 100%;
+}
+
+.complete-modal__reward {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-small);
+  padding: var(--spacing-small);
+  background-color: var(--primary-color);
+  border-radius: var(--border-radius-small);
+  border: 1px solid var(--border-color);
+}
+
+.complete-modal__reward-icon {
+  font-size: var(--font-size-large);
+  color: var(--accent-color);
+  width: 2rem;
+  text-align: center;
+}
+
+.complete-modal__reward-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.complete-modal__reward-name {
+  font-weight: 600;
+  font-size: var(--font-size-small);
+  color: var(--text-color);
+}
+
+.complete-modal__reward-amount {
+  font-size: var(--font-size-xsmall);
+  color: var(--text-color-muted);
+}
+
+.complete-modal__form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-medium);
+}
+
+.complete-modal__preview {
+  padding: var(--spacing-small);
+  background-color: var(--background-color);
+  border-radius: var(--border-radius-small);
+  border: 1px solid var(--border-color);
+}
+
+.complete-modal__preview h3 {
+  margin: 0 0 var(--spacing-xxsmall);
+  font-size: var(--font-size-medium);
+  color: var(--text-color);
+}
+
+.complete-modal__preview p {
+  margin: 0 0 var(--spacing-small);
+  font-size: var(--font-size-small);
+  color: var(--text-color-muted);
+}
+
+.complete-modal__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--spacing-small);
+}
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 768px) {
+  .task-card {
+    flex-direction: column;
+  }
+
+  .task-card__action {
+    border-left: none;
+    border-top: 1px solid var(--border-color);
+    justify-content: flex-end;
+    padding: var(--spacing-small);
+  }
+}
+
+@media (max-width: 480px) {
+  .game-tasks__progress {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ---------- Accessibility ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .task-card {
+    transition: none;
+  }
+}

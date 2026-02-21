@@ -1,0 +1,72 @@
+/* ==============================
+   MonsterDetails Component
+   For Berry/Pastry item usage display
+   ============================== */
+
+.monster-details {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-medium);
+}
+
+.monster-info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: var(--spacing-small);
+}
+
+.attribute-display {
+  font-weight: 600;
+}
+
+/* ---------- Item Info ---------- */
+
+.item-info-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-small);
+}
+
+.item-header {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-small);
+}
+
+.item-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  color: var(--text-color-muted);
+  font-size: var(--font-size-small);
+}
+
+.item-effect {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xxsmall);
+  padding: var(--spacing-small);
+  background: var(--overlay-light);
+  border-radius: var(--border-radius-small);
+}
+
+.effect-label {
+  font-size: var(--font-size-small);
+  font-weight: 600;
+  color: var(--accent-color);
+}
+
+.effect-description {
+  color: var(--text-color);
+  line-height: 1.5;
+}
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 480px) {
+  .monster-info-grid {
+    grid-template-columns: 1fr;
+  }
+}

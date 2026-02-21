@@ -1,0 +1,133 @@
+/* Garden Manager Admin */
+
+/* Status message bar */
+.garden-manager__status {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xsmall);
+  padding: var(--spacing-small) var(--spacing-medium);
+  border-radius: var(--border-radius-medium);
+  margin-bottom: var(--spacing-medium);
+  font-size: var(--font-size-medium);
+}
+
+.garden-manager__status--success {
+  background: var(--success-dark);
+  border: 1px solid var(--success-color);
+  color: var(--success-color);
+}
+
+.garden-manager__status--error {
+  background: var(--error-dark);
+  border: 1px solid var(--error-color);
+  color: var(--error-color);
+}
+
+.garden-manager__status-dismiss {
+  margin-left: auto;
+  background: none;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+  padding: var(--spacing-xxsmall);
+  opacity: 0.7;
+  transition: opacity 0.15s;
+}
+
+.garden-manager__status-dismiss:hover {
+  opacity: 1;
+}
+
+/* ID column */
+.garden-manager__id-col {
+  width: 70px;
+}
+
+/* User cell */
+.garden-manager__user-cell {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xxsmall);
+}
+
+.garden-manager__display-name {
+  font-weight: 500;
+}
+
+.garden-manager__discord-id {
+  font-size: var(--font-size-small);
+  color: var(--text-color-muted);
+}
+
+/* Points cell with inline +/- buttons */
+.garden-manager__points-cell {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xsmall);
+}
+
+.garden-manager__points-value {
+  font-weight: 600;
+  font-size: var(--font-size-large);
+  min-width: 2rem;
+}
+
+.garden-manager__quick-adjust {
+  display: flex;
+  gap: var(--spacing-xxsmall);
+}
+
+.garden-manager__adjust-btn {
+  padding: var(--spacing-xxsmall) var(--spacing-xxsmall) !important;
+  min-width: unset !important;
+  font-size: var(--font-size-xsmall) !important;
+  line-height: 1 !important;
+}
+
+/* Modal footer */
+.garden-manager__modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--spacing-xsmall);
+}
+
+/* Adjust modal */
+.garden-manager__adjust-modal {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-medium);
+}
+
+.garden-manager__current-info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xxsmall);
+  padding: var(--spacing-xsmall) var(--spacing-small);
+  background: var(--primary-color-hover);
+  border-radius: var(--border-radius-small);
+  font-size: var(--font-size-medium);
+}
+
+.garden-manager__adjust-input {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xxsmall);
+}
+
+.garden-manager__adjust-input label {
+  font-size: var(--font-size-medium);
+  color: var(--text-color-muted);
+}
+
+.garden-manager__adjust-hint {
+  font-size: var(--font-size-small);
+  color: var(--text-color-muted);
+}
+
+.garden-manager__preview {
+  padding: var(--spacing-xsmall) var(--spacing-small);
+  background: var(--accent-color-hover);
+  border: 1px solid var(--accent-color);
+  border-radius: var(--border-radius-small);
+  font-size: var(--font-size-medium);
+}

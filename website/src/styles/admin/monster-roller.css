@@ -1,0 +1,137 @@
+/* ==============================
+   Monster Roller Admin Tool
+   ============================== */
+
+/* ---------- Quantity Input ---------- */
+
+.monster-roller__quantity-input {
+  width: 80px;
+  text-align: center;
+}
+
+/* ---------- Level Input ---------- */
+
+.monster-roller__level-input {
+  width: 80px;
+  text-align: center;
+}
+
+/* ---------- Card Grid ---------- */
+
+.monster-roller__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 240px), 1fr));
+  gap: var(--spacing-small);
+}
+
+/* ---------- Card Wrapper ---------- */
+
+.monster-roller__card-wrapper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  border: 2px solid transparent;
+  border-radius: var(--border-radius-medium);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.monster-roller__card-wrapper--selected {
+  border-color: var(--accent-color);
+  box-shadow: 0 0 12px var(--accent-glow);
+}
+
+.monster-roller__card-wrapper--success {
+  border-color: var(--success-color);
+  opacity: 0.8;
+}
+
+.monster-roller__card-wrapper--error {
+  border-color: var(--error-color);
+}
+
+/* ---------- Clickable Area ---------- */
+
+.monster-roller__card-clickable {
+  cursor: pointer;
+}
+
+.monster-roller__card-wrapper--success .monster-roller__card-clickable,
+.monster-roller__card-wrapper--selected .monster-roller__card-clickable {
+  cursor: default;
+}
+
+/* ---------- Source Badge ---------- */
+
+.monster-roller__card-source {
+  display: flex;
+  justify-content: center;
+  gap: var(--spacing-xxsmall);
+  padding: var(--spacing-xxsmall) var(--spacing-xsmall);
+}
+
+/* ---------- Card Status ---------- */
+
+.monster-roller__card-status {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-xxsmall);
+  padding: var(--spacing-xsmall);
+  font-size: var(--font-size-small);
+  font-weight: 600;
+}
+
+.monster-roller__card-status--success {
+  color: var(--success-color);
+}
+
+.monster-roller__card-status--error {
+  color: var(--error-color);
+}
+
+/* ---------- Card Hint ---------- */
+
+.monster-roller__card-hint {
+  text-align: center;
+  padding: var(--spacing-xxsmall);
+  font-size: var(--font-size-xsmall);
+  color: var(--text-color-muted);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.monster-roller__card-wrapper:hover .monster-roller__card-hint {
+  opacity: 1;
+}
+
+/* ---------- Assignment Panel ---------- */
+
+.monster-roller__assign {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xsmall);
+  padding: var(--spacing-small);
+  border-top: 1px solid var(--border-color);
+  background-color: var(--primary-color);
+  border-radius: 0 0 var(--border-radius-medium) var(--border-radius-medium);
+}
+
+.monster-roller__assign-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xxsmall);
+}
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 768px) {
+  .monster-roller__grid {
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 200px), 1fr));
+  }
+}
+
+@media (max-width: 480px) {
+  .monster-roller__grid {
+    grid-template-columns: 1fr;
+  }
+}

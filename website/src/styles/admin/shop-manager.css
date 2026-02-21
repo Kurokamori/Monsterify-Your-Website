@@ -1,0 +1,545 @@
+/* ==============================
+   Shop Manager
+   ============================== */
+
+/* Panel */
+.shop-manager__panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-medium);
+}
+
+/* Toolbar */
+.shop-manager__toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-medium);
+  flex-wrap: wrap;
+  padding: var(--spacing-medium);
+  background: var(--primary-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+}
+
+.shop-manager__filters {
+  display: flex;
+  gap: var(--spacing-small);
+  flex-wrap: wrap;
+}
+
+.shop-manager__select {
+  background-color: var(--input-background);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-medium);
+  color: var(--text-color);
+  font-size: var(--font-size-small);
+  padding: var(--spacing-xsmall) var(--spacing-medium);
+  min-width: 200px;
+}
+
+.shop-manager__select:focus {
+  border-color: var(--accent-color);
+  outline: 2px solid var(--accent-color);
+  outline-offset: 2px;
+}
+
+/* Status Messages */
+.shop-manager__status {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-small);
+  padding: var(--spacing-small) var(--spacing-medium);
+  border-radius: var(--border-radius);
+  font-size: var(--font-size-small);
+  animation: shopManagerStatusSlideIn 0.2s ease;
+}
+
+.shop-manager__status--success {
+  background: var(--success-light);
+  color: var(--success-color);
+  border: 1px solid var(--success-color);
+}
+
+.shop-manager__status--error {
+  background: var(--error-light);
+  color: var(--error-color);
+  border: 1px solid var(--error-color);
+}
+
+.shop-manager__status-dismiss {
+  margin-left: auto;
+  background: none;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+  opacity: 0.7;
+  padding: var(--spacing-xxsmall);
+}
+
+.shop-manager__status-dismiss:hover {
+  opacity: 1;
+}
+
+@keyframes shopManagerStatusSlideIn {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Form Panel */
+.shop-manager__form-panel {
+  background: var(--primary-color);
+  border: 1px solid var(--accent-color);
+  border-radius: var(--border-radius);
+  padding: var(--spacing-large);
+}
+
+.shop-manager__form-panel h3 {
+  margin: 0 0 var(--spacing-medium) 0;
+  font-size: var(--font-size-xlarge);
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+.shop-manager__form-row {
+  display: flex;
+  gap: var(--spacing-medium);
+  flex-wrap: wrap;
+  margin-bottom: var(--spacing-medium);
+}
+
+.shop-manager__field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xxsmall);
+  min-width: 140px;
+}
+
+.shop-manager__field--full {
+  width: 100%;
+  margin-bottom: var(--spacing-medium);
+}
+
+.shop-manager__field--grow {
+  flex: 1;
+  min-width: 200px;
+}
+
+.shop-manager__field--action {
+  display: flex;
+  align-items: flex-end;
+  min-width: auto;
+}
+
+.shop-manager__field label {
+  font-size: var(--font-size-small);
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+.shop-manager__optional {
+  font-weight: 400;
+  color: var(--text-color-muted);
+  font-size: var(--font-size-xsmall);
+}
+
+.shop-manager__input {
+  background-color: var(--input-background);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-medium);
+  color: var(--text-color);
+  font-size: var(--font-size-small);
+  padding: var(--spacing-xsmall) var(--spacing-small);
+}
+
+.shop-manager__input:focus {
+  border-color: var(--accent-color);
+  outline: 2px solid var(--accent-color);
+  outline-offset: 2px;
+}
+
+.shop-manager__input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.shop-manager__textarea {
+  background-color: var(--input-background);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-medium);
+  color: var(--text-color);
+  font-size: var(--font-size-small);
+  padding: var(--spacing-xsmall) var(--spacing-small);
+  resize: vertical;
+  font-family: inherit;
+  line-height: 1.5;
+}
+
+.shop-manager__textarea:focus {
+  border-color: var(--accent-color);
+  outline: 2px solid var(--accent-color);
+  outline-offset: 2px;
+}
+
+.shop-manager__checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xsmall);
+  font-size: var(--font-size-small);
+  color: var(--text-color);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.shop-manager__checkbox-label input[type="checkbox"] {
+  cursor: pointer;
+}
+
+.shop-manager__form-actions {
+  display: flex;
+  gap: var(--spacing-small);
+  justify-content: flex-end;
+}
+
+/* Image Preview */
+.shop-manager__image-preview-container {
+  margin-bottom: var(--spacing-medium);
+}
+
+.shop-manager__image-preview {
+  max-height: 120px;
+  max-width: 400px;
+  border-radius: var(--border-radius);
+  border: 1px solid var(--border-color);
+  object-fit: cover;
+}
+
+.shop-manager__image-error {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-small);
+  padding: var(--spacing-small) var(--spacing-medium);
+  background: var(--error-light);
+  color: var(--error-color);
+  border-radius: var(--border-radius);
+  font-size: var(--font-size-small);
+  max-width: 300px;
+}
+
+/* Visibility Panel */
+.shop-manager__visibility-panel {
+  background: var(--secondary-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  padding: var(--spacing-medium);
+  margin-bottom: var(--spacing-medium);
+}
+
+.shop-manager__visibility-panel h4 {
+  margin: 0 0 var(--spacing-small) 0;
+  font-size: var(--font-size-small);
+  font-weight: 600;
+  color: var(--text-color-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.shop-manager__days-row {
+  display: flex;
+  gap: var(--spacing-small);
+  flex-wrap: wrap;
+  margin-bottom: var(--spacing-small);
+}
+
+.shop-manager__day-checkbox {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xxsmall);
+  font-size: var(--font-size-small);
+  color: var(--text-color);
+  cursor: pointer;
+  padding: var(--spacing-xxsmall) var(--spacing-xsmall);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  background: var(--primary-color);
+  transition: border-color 0.15s ease;
+}
+
+.shop-manager__day-checkbox:has(input:checked) {
+  border-color: var(--accent-color);
+  background: var(--accent-color);
+  color: white;
+}
+
+.shop-manager__day-checkbox input[type="checkbox"] {
+  display: none;
+}
+
+/* Stock Panel */
+.shop-manager__stock-panel {
+  background: var(--primary-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  padding: var(--spacing-medium);
+}
+
+.shop-manager__stock-panel h3 {
+  margin: 0 0 var(--spacing-small) 0;
+  font-size: var(--font-size-large);
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+/* Table */
+.shop-manager__table-container {
+  overflow-x: auto;
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+}
+
+.shop-manager__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--font-size-small);
+}
+
+.shop-manager__table th {
+  background: var(--primary-color);
+  border-bottom: 2px solid var(--border-color);
+  color: var(--text-color);
+  font-weight: 600;
+  padding: var(--spacing-small) var(--spacing-small);
+  text-align: left;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.shop-manager__table td {
+  background: var(--primary-color);
+  border-bottom: 1px solid var(--border-color);
+  color: var(--text-color);
+  padding: var(--spacing-small);
+}
+
+.shop-manager__table tr:hover td {
+  background: var(--primary-color-hover);
+}
+
+.shop-manager__row--active td {
+  background: var(--secondary-color) !important;
+  border-left: 3px solid var(--accent-color);
+}
+
+.shop-manager__id-cell {
+  color: var(--text-color-muted);
+  font-size: var(--font-size-xsmall);
+  font-family: monospace;
+}
+
+.shop-manager__muted {
+  color: var(--text-color-muted);
+  font-style: italic;
+}
+
+.shop-manager__actions-cell {
+  white-space: nowrap;
+  display: flex;
+  gap: var(--spacing-xsmall);
+}
+
+/* Badges */
+.shop-manager__category-badge {
+  display: inline-block;
+  background: var(--accent-color);
+  color: white;
+  font-size: var(--font-size-xsmall);
+  font-weight: 500;
+  padding: var(--spacing-xxsmall) var(--spacing-xsmall);
+  border-radius: var(--border-radius-full);
+  white-space: nowrap;
+}
+
+.shop-manager__status-badge {
+  display: inline-block;
+  font-size: var(--font-size-xsmall);
+  font-weight: 600;
+  padding: var(--spacing-xxsmall) var(--spacing-small);
+  border-radius: var(--border-radius-full);
+  white-space: nowrap;
+}
+
+.shop-manager__status-badge--active {
+  background: var(--success-light);
+  color: var(--success-color);
+}
+
+.shop-manager__status-badge--inactive {
+  background: var(--error-light);
+  color: var(--error-color);
+}
+
+/* Item Thumbnails */
+.shop-manager__item-thumb {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--border-radius);
+  object-fit: contain;
+  background: var(--secondary-color);
+}
+
+.shop-manager__item-thumb-placeholder {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--border-radius);
+  background: var(--secondary-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-color-muted);
+  font-size: var(--font-size-large);
+  opacity: 0.5;
+}
+
+/* Quantity Control */
+.shop-manager__quantity-control {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xxsmall);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  overflow: hidden;
+}
+
+.shop-manager__qty-btn {
+  background: var(--primary-color);
+  border: none;
+  color: var(--text-color);
+  cursor: pointer;
+  font-size: var(--font-size-small);
+  font-weight: 600;
+  padding: var(--spacing-xxsmall) var(--spacing-small);
+  transition: background 0.15s ease;
+}
+
+.shop-manager__qty-btn:hover:not(:disabled) {
+  background: var(--primary-color-hover);
+}
+
+.shop-manager__qty-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.shop-manager__qty-value {
+  min-width: 36px;
+  text-align: center;
+  font-size: var(--font-size-small);
+  font-weight: 500;
+  padding: var(--spacing-xxsmall);
+  background: var(--input-background);
+}
+
+/* Footer */
+.shop-manager__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--spacing-small);
+  padding-top: var(--spacing-small);
+}
+
+.shop-manager__count {
+  font-size: var(--font-size-small);
+  color: var(--text-color-muted);
+}
+
+/* Loading & Empty States */
+.shop-manager__loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-small);
+  padding: var(--spacing-xlarge);
+  color: var(--text-color-muted);
+  font-size: var(--font-size-small);
+}
+
+.shop-manager__empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-medium);
+  padding: var(--spacing-xlarge);
+  color: var(--text-color-muted);
+  text-align: center;
+}
+
+.shop-manager__empty i {
+  font-size: clamp(2rem, 1.5rem + 1.5vw, 3.5rem);
+  opacity: 0.4;
+}
+
+.shop-manager__empty p {
+  margin: 0;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .shop-manager__toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .shop-manager__filters {
+    flex-direction: column;
+  }
+
+  .shop-manager__select {
+    min-width: unset;
+    width: 100%;
+  }
+
+  .shop-manager__form-row {
+    flex-direction: column;
+  }
+
+  .shop-manager__field {
+    min-width: unset;
+  }
+
+  .shop-manager__form-actions {
+    flex-direction: column-reverse;
+  }
+
+  .shop-manager__form-actions .button {
+    width: 100%;
+  }
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .shop-manager__status {
+    animation: none;
+    transition: none;
+  }
+}
+
+@media (prefers-contrast: high) {
+  .shop-manager__form-panel {
+    border-width: 2px;
+  }
+
+  .shop-manager__visibility-panel {
+    border-width: 2px;
+  }
+
+  .shop-manager__table th {
+    border-bottom-width: 3px;
+  }
+
+  .shop-manager__status-badge {
+    border: 1px solid currentColor;
+  }
+}

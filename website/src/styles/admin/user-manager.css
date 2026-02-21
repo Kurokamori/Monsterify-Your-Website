@@ -1,0 +1,83 @@
+/* User Manager Admin */
+
+.user-manager__detail-panel {
+  background: var(--primary-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-medium);
+  padding: var(--spacing-large);
+  margin: var(--spacing-small) 0 var(--spacing-medium);
+}
+
+.user-manager__detail-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--spacing-medium);
+  padding-bottom: var(--spacing-small);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.user-manager__detail-header h3 {
+  margin: 0;
+  font-size: var(--font-size-xlarge);
+}
+
+.user-manager__detail-info {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: var(--spacing-small);
+  margin-bottom: var(--spacing-large);
+}
+
+.user-manager__detail-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xxsmall);
+}
+
+.user-manager__detail-field label {
+  font-size: var(--font-size-xsmall);
+  color: var(--text-color-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.user-manager__detail-field span {
+  font-size: var(--font-size-medium);
+}
+
+.user-manager__settings-section {
+  margin-top: var(--spacing-medium);
+}
+
+.user-manager__settings-section h4 {
+  margin: 0 0 var(--spacing-xsmall);
+  font-size: var(--font-size-large);
+  color: var(--text-color-muted);
+}
+
+.user-manager__settings-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: var(--spacing-xsmall);
+}
+
+.user-manager__setting-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-xxsmall) var(--spacing-xsmall);
+  background: var(--primary-color-hover);
+  border-radius: var(--border-radius-small);
+  font-size: var(--font-size-medium);
+}
+
+.user-manager__setting-name {
+  color: var(--text-color-muted);
+}
+
+.user-manager__discord-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xxsmall);
+}

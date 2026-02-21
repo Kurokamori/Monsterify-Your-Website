@@ -1,0 +1,684 @@
+/* ==============================
+   Boss Pages
+   ============================== */
+
+/* ---------- Boss Page Layout ---------- */
+
+.boss-page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-medium);
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: var(--spacing-medium);
+}
+
+.boss-page__header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xsmall);
+}
+
+.boss-page__header h1 {
+  margin: 0;
+  color: var(--accent-color);
+  font-size: var(--font-size-xxlarge);
+}
+
+.boss-page__subtitle {
+  margin: 0;
+  color: var(--text-color-muted);
+  font-size: var(--font-size-medium);
+}
+
+.boss-page__content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-medium);
+}
+
+.boss-page__content--vertical {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-medium);
+}
+
+.boss-card__image-container--hero {
+  width: 100%;
+  max-width: 400px;
+}
+
+.boss-card__image-container--hero img {
+  width: 100%;
+  height: auto;
+  border-radius: var(--border-radius-medium);
+  object-fit: contain;
+}
+
+.boss-page__content--vertical .boss-card__info {
+  width: 100%;
+  max-width: 600px;
+  text-align: center;
+}
+
+.boss-page__content--vertical .boss-card__stats {
+  justify-content: center;
+}
+
+.boss-page__content--vertical .boss-leaderboard {
+  width: 100%;
+}
+
+/* Reward banner text layout */
+.boss-page__reward-banner-text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xxsmall);
+  flex: 1;
+}
+
+/* ---------- Boss Card (Large Variant for Pages) ---------- */
+
+.boss-card--large {
+  padding: var(--spacing-medium);
+}
+
+.boss-card--large .boss-card__image-container {
+  position: relative;
+}
+
+.boss-card--large .boss-card__image,
+.boss-card--large .boss-card__image-container img {
+  width: 160px;
+  height: 160px;
+  object-fit: cover;
+  border-radius: var(--border-radius-medium);
+}
+
+.boss-card--defeated {
+  border-left: 4px solid var(--success-color);
+}
+
+.boss-card__defeated-badge {
+  position: absolute;
+  bottom: var(--spacing-xxsmall);
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xxsmall);
+  padding: var(--spacing-xxsmall) var(--spacing-xsmall);
+  background-color: var(--success-color);
+  color: var(--text-color);
+  border-radius: var(--border-radius-small);
+  font-size: var(--font-size-xsmall);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* Status badges */
+.badge--status {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--spacing-xxsmall) var(--spacing-xsmall);
+  border-radius: var(--border-radius-small);
+  font-size: var(--font-size-xsmall);
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.badge--status-active {
+  background-color: var(--accent-color);
+  color: var(--text-color);
+}
+
+.badge--status-defeated {
+  background-color: var(--success-dark);
+  color: var(--success-color);
+}
+
+/* ---------- Boss Leaderboard ---------- */
+
+.boss-leaderboard {
+  background-color: var(--primary-color);
+  border-radius: var(--border-radius-medium);
+  padding: var(--spacing-medium);
+}
+
+.boss-leaderboard__content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-medium);
+}
+
+/* Podium */
+.boss-leaderboard__podium {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--spacing-small);
+}
+
+.boss-leaderboard__podium-entry {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-xsmall);
+  padding: var(--spacing-small);
+  background-color: var(--background-color);
+  border-radius: var(--border-radius-medium);
+  border: 2px solid var(--border-color);
+  text-align: center;
+}
+
+.boss-leaderboard__podium-entry--rank-1 {
+  border-color: var(--accent-color-active);
+}
+
+.boss-leaderboard__podium-entry--rank-2 {
+  border-color: var(--steel-type);
+}
+
+.boss-leaderboard__podium-entry--rank-3 {
+  border-color: var(--warning-dark);
+}
+
+.boss-leaderboard__rank-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  background-color: var(--accent-color);
+  color: var(--text-color);
+  font-weight: 700;
+  font-size: var(--font-size-medium);
+}
+
+.boss-leaderboard__podium-entry--rank-1 .boss-leaderboard__rank-badge {
+  background-color: var(--accent-color-active);
+  color: var(--background-color);
+}
+
+.boss-leaderboard__podium-entry--rank-2 .boss-leaderboard__rank-badge {
+  background-color: var(--steel-type);
+  color: var(--background-color);
+}
+
+.boss-leaderboard__podium-entry--rank-3 .boss-leaderboard__rank-badge {
+  background-color: var(--warning-dark);
+  color: var(--background-color);
+}
+
+.boss-leaderboard__avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  overflow: hidden;
+  background-color: var(--primary-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.boss-leaderboard__avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.boss-leaderboard__avatar-placeholder {
+  color: var(--text-color-muted);
+  font-size: var(--font-size-large);
+}
+
+.boss-leaderboard__entry-info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xxsmall);
+}
+
+.boss-leaderboard__entry-name {
+  color: var(--text-color);
+  font-weight: 600;
+  font-size: var(--font-size-small);
+}
+
+.boss-leaderboard__entry-damage {
+  color: var(--accent-color);
+  font-weight: 600;
+  font-size: var(--font-size-medium);
+}
+
+.boss-leaderboard__entry-submissions {
+  color: var(--text-color-muted);
+  font-size: var(--font-size-xsmall);
+}
+
+/* Leaderboard Table */
+.boss-leaderboard__table-wrapper {
+  overflow-x: auto;
+}
+
+.boss-leaderboard__table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.boss-leaderboard__table th,
+.boss-leaderboard__table td {
+  padding: var(--spacing-xsmall) var(--spacing-small);
+  text-align: left;
+  border-bottom: 1px solid var(--border-color);
+  font-size: var(--font-size-small);
+}
+
+.boss-leaderboard__table th {
+  color: var(--text-color-muted);
+  font-weight: 600;
+  font-size: var(--font-size-xsmall);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background-color: var(--background-color);
+}
+
+.boss-leaderboard__table td {
+  color: var(--text-color);
+}
+
+.boss-leaderboard__row--first {
+  background-color: var(--overlay-light);
+}
+
+.boss-leaderboard__row--second {
+  background-color: var(--overlay-light);
+}
+
+.boss-leaderboard__row--third {
+  background-color: var(--overlay-light);
+}
+
+.boss-leaderboard__cell--rank {
+  font-weight: 700;
+  color: var(--accent-color);
+  min-width: 3rem;
+}
+
+.boss-leaderboard__rank-icon {
+  font-size: var(--font-size-large);
+}
+
+.boss-leaderboard__cell--trainer {
+  min-width: 150px;
+}
+
+.boss-leaderboard__trainer-info {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xsmall);
+}
+
+.boss-leaderboard__avatar-small {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.boss-leaderboard__avatar-placeholder-small {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background-color: var(--background-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: var(--text-color-muted);
+  font-size: var(--font-size-xsmall);
+}
+
+.boss-leaderboard__status-cell {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xsmall);
+  flex-wrap: wrap;
+}
+
+.boss-leaderboard__empty {
+  text-align: center;
+  padding: var(--spacing-large);
+  color: var(--text-color-muted);
+}
+
+/* Reward badges */
+.badge--boss-reward {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xxsmall);
+  padding: var(--spacing-xxsmall) var(--spacing-xsmall);
+  background-color: var(--accent-glow);
+  color: var(--accent-color-active);
+  border-radius: var(--border-radius-small);
+  font-size: var(--font-size-xsmall);
+  font-weight: 600;
+}
+
+.badge--grunt-reward {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xxsmall);
+  padding: var(--spacing-xxsmall) var(--spacing-xsmall);
+  background-color: var(--success-dark);
+  color: var(--success-color);
+  border-radius: var(--border-radius-small);
+  font-size: var(--font-size-xsmall);
+  font-weight: 600;
+}
+
+.badge--claimed {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xxsmall);
+  padding: var(--spacing-xxsmall) var(--spacing-xsmall);
+  background-color: var(--success-dark);
+  color: var(--success-color);
+  border-radius: var(--border-radius-small);
+  font-size: var(--font-size-xsmall);
+  font-weight: 500;
+}
+
+.badge--unclaimed {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xxsmall);
+  padding: var(--spacing-xxsmall) var(--spacing-xsmall);
+  background-color: var(--warning-dark);
+  color: var(--warning-color);
+  border-radius: var(--border-radius-small);
+  font-size: var(--font-size-xsmall);
+  font-weight: 500;
+}
+
+.badge--no-reward {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xxsmall);
+  padding: var(--spacing-xxsmall) var(--spacing-xsmall);
+  background-color: var(--background-color);
+  color: var(--text-color-muted);
+  border-radius: var(--border-radius-small);
+  font-size: var(--font-size-xsmall);
+  font-weight: 500;
+}
+
+/* ---------- Defeated Boss Cards ---------- */
+
+.boss-page__defeated-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-small);
+}
+
+.boss-defeated-card {
+  display: block;
+  background-color: var(--primary-color);
+  border-radius: var(--border-radius-medium);
+  border-left: 4px solid var(--success-color);
+  padding: var(--spacing-small);
+  text-decoration: none;
+  color: inherit;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.boss-defeated-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px var(--overlay-dark);
+}
+
+.boss-defeated-card__header {
+  display: flex;
+  gap: var(--spacing-small);
+  align-items: center;
+}
+
+.boss-defeated-card__image {
+  width: 80px;
+  height: 80px;
+  border-radius: var(--border-radius-small);
+  overflow: hidden;
+  flex-shrink: 0;
+  background-color: var(--background-color);
+}
+
+.boss-defeated-card__image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.boss-defeated-card__info {
+  flex: 1;
+}
+
+.boss-defeated-card__info h3 {
+  margin: 0 0 var(--spacing-xxsmall) 0;
+  color: var(--accent-color);
+  font-size: var(--font-size-large);
+}
+
+.boss-defeated-card__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-small);
+  font-size: var(--font-size-small);
+  color: var(--text-color-muted);
+}
+
+.boss-defeated-card__winners {
+  margin-top: var(--spacing-small);
+  padding-top: var(--spacing-small);
+  border-top: 1px solid var(--border-color);
+}
+
+.boss-defeated-card__winners h4 {
+  margin: 0 0 var(--spacing-xsmall) 0;
+  color: var(--accent-color);
+  font-size: var(--font-size-small);
+}
+
+.boss-defeated-card__winner-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-small);
+}
+
+.boss-defeated-card__winner {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xxsmall);
+  padding: var(--spacing-xxsmall) var(--spacing-xsmall);
+  background-color: var(--background-color);
+  border-radius: var(--border-radius-small);
+  font-size: var(--font-size-small);
+}
+
+.boss-defeated-card__winner-rank {
+  font-size: var(--font-size-medium);
+}
+
+.boss-defeated-card__winner-name {
+  color: var(--text-color);
+  font-weight: 500;
+}
+
+.boss-defeated-card__winner-damage {
+  color: var(--text-color-muted);
+  font-size: var(--font-size-xsmall);
+}
+
+/* ---------- Boss Reward Modal ---------- */
+
+.boss-reward-modal {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-medium);
+}
+
+.boss-reward-modal__boss-info {
+  display: flex;
+  gap: var(--spacing-small);
+  align-items: flex-start;
+}
+
+.boss-reward-modal__boss-image {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: var(--border-radius-medium);
+  flex-shrink: 0;
+}
+
+.boss-reward-modal__details {
+  flex: 1;
+}
+
+.boss-reward-modal__details h3 {
+  margin: 0 0 var(--spacing-xsmall) 0;
+  color: var(--accent-color);
+  font-size: var(--font-size-large);
+}
+
+.boss-reward-modal__reward-type {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xxsmall);
+  color: var(--text-color-muted);
+  font-size: var(--font-size-small);
+  margin-bottom: var(--spacing-xsmall);
+}
+
+.boss-reward-modal__reward-type i {
+  color: var(--accent-color);
+}
+
+.boss-reward-modal__stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-small);
+  font-size: var(--font-size-small);
+  color: var(--text-color-muted);
+}
+
+/* Monster Preview */
+.boss-reward-modal__monster-preview {
+  background-color: var(--background-color);
+  border-radius: var(--border-radius-medium);
+  padding: var(--spacing-small);
+  border: 1px solid var(--border-color);
+}
+
+.boss-reward-modal__monster-preview h4 {
+  margin: 0 0 var(--spacing-small) 0;
+  color: var(--accent-color);
+  font-size: var(--font-size-medium);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xsmall);
+}
+
+.boss-reward-modal__monster-preview--unavailable h4 {
+  color: var(--warning-color);
+}
+
+.boss-reward-modal__monster-preview--unavailable p {
+  margin: 0;
+  color: var(--text-color-muted);
+  font-size: var(--font-size-small);
+}
+
+.boss-reward-modal__monster-attributes {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-small);
+}
+
+.boss-reward-modal__attribute-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xxsmall);
+}
+
+.boss-reward-modal__attribute-label {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xxsmall);
+  font-size: var(--font-size-small);
+  color: var(--text-color-muted);
+  font-weight: 500;
+}
+
+.boss-reward-modal__attribute-label i {
+  color: var(--accent-color);
+}
+
+/* Modal Actions */
+.boss-reward-modal__actions {
+  display: flex;
+  gap: var(--spacing-small);
+  justify-content: flex-end;
+}
+
+.boss-reward-modal__form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-small);
+}
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 768px) {
+  .boss-page {
+    padding: var(--spacing-small);
+  }
+
+  .boss-page__content {
+    grid-template-columns: 1fr;
+  }
+
+  .boss-card--large {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .boss-leaderboard__podium {
+    grid-template-columns: 1fr;
+  }
+
+  .boss-reward-modal__boss-info {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .boss-reward-modal__actions {
+    flex-direction: column;
+  }
+
+  .boss-defeated-card__header {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .boss-defeated-card__meta {
+    justify-content: center;
+  }
+
+  .boss-defeated-card__winner-list {
+    justify-content: center;
+  }
+}
+

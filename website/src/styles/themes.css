@@ -1,216 +1,198 @@
-/* ==========================================================================
-   THEME OVERRIDES
-   ==========================================================================
-   The default "Dusk (Dark)" theme uses the :root values in index.css,
-   AdminStyles.css, ShopStyles.css, and ProfilePageStyles.css.
+/* ==============================================
+   Dawn (Light) Theme
+   - Light backgrounds with the same blue/gold palette
+   - Text flipped to dark for readability
+   ============================================== */
 
-   Additional themes override those variables via data-theme selectors.
-
-   To add a new theme:
-   1. Add a :root[data-theme="your-id"] block below
-   2. Add an entry to THEMES in ThemeContext.js
-   ========================================================================== */
-
-/* ==========================================================================
-   DAWN (LIGHT) THEME
-   ========================================================================== */
 :root[data-theme="dawn"] {
-  /* Core colors */
-  --background-color: #f5f3ef;
-  --text-color: #0c0b0b;
-  --text-muted: #312f2f;
+    /* Main Colors */
+    --background-color: #e8e0d8;
+    --background-color-hover: #d6dce6;
 
-  /* Navigation */
-  --nav-background: #e8e4de;
-  --nav-hover: #ddd8d0;
-  --nav-active: #cfc9bf;
+    --text-color: #1a1e2a;
+    --text-color-muted: #1a1e2a99;
 
-  /* Accent/Gold colors */
-  --accent-color: #b8862d;
-  --accent-hover: #9a7025;
-  --accent-light: #d4a84a;
-  --accent-muted: #bba28b;
+    --primary-color: #cdd5e0;
+    --primary-color-hover: #b8c4d4;
+    --primary-color-active: #a3b1c6;
 
-  /* UI elements */
-  --divider-color: #d0cbc3;
-  --border-color: #d0cbc3;
-  --card-background: #e8e4de;
-  --card-background-secondary: #ede9e3;
-  --input-background: #ede9e3;
+    --secondary-color: #8a9ab3;
+    --secondary-color-hover: #b8c4d4;
+    --secondary-color-active: #a3b1c6;
 
-  /* Status colors */
-  --error-color: #dc2626;
-  --error-dark: #991b1b;
-  --error-light: #ef4444;
-  --success-color: #059669;
-  --success-dark: #d1fae5;
-  --success-light: #34d399;
-  --warning-color: #d97706;
-  --warning-dark: #b45309;
-  --blue-color: #2563eb;
-  --blue-dark: #1e40af;
-  --blue-light: #3b82f6;
+    --accent-color: #c4960e;
+    --accent-color-hover: #a87f08;
+    --accent-color-active: #daa520;
+    --accent-color-muted: #c4960e88;
+    --accent-color-subtle: #c4960e18;
+    --accent-color-dark: #927d3680;
 
-  /* Type colors */
-  --normal-type: #9a9a6e;
-  --fire-type: #c55a12;
-  --water-type: #3a5494;
-  --electric-type: #b8891a;
-  --grass-type: #4e8a31;
-  --ice-type: #6ba8a8;
-  --fighting-type: #752d29;
-  --poison-type: #6e3875;
-  --ground-type: #745c48;
-  --flying-type: #687594;
-  --psychic-type: #b33d62;
-  --bug-type: #949c1c;
-  --rock-type: #5c5436;
-  --ghost-type: #574970;
-  --dragon-type: #432196;
-  --dark-type: #2d2b3d;
-  --steel-type: #6e6e9e;
-  --fairy-type: #d66882;
+    /* UI Elements */
+    --border-color: #8a9ab3;
 
-  --custom-type: #7c4ee0;
-  --random-type: linear-gradient(45deg, #e05a5a, #43b8aa, #3ca3bd, #ddb520);
-  --light-type: #7aa4cc;
-  --cosmic-type: #2a2632;
+    --input-background: #d6dce6;
 
-  /* Attribute colors */
-  --vaccine-attribute: #567099;
-  --data-attribute: #4d9680;
-  --virus-attribute: #7a3e10;
-  --free-attribute: #9849a6;
-  --variable-attribute: #3f359a;
+    /* Status colors */
+    --error-color: #dc2626;
+    --error-dark: #b91c1c;
+    --error-light: #ef4444;
+    --success-color: #059669;
+    --success-dark: #047857;
+    --success-light: #10b981;
+    --warning-color: #d97706;
+    --warning-dark: #b45309;
 
-  --accent-gradient: linear-gradient(90deg, #b8862d, #c74038);
+    /* Overlays */
+    --overlay-light: rgba(0, 0, 0, 0.06);
+    --overlay-dark: rgba(0, 0, 0, 0.15);
 
-  /* Alpha overlays (inverted for light theme) */
-  --overlay-light: rgba(0, 0, 0, 0.05);
-  --overlay-medium: rgba(0, 0, 0, 0.1);
-  --overlay-dark: rgba(0, 0, 0, 0.15);
-  --overlay-heavy: rgba(0, 0, 0, 0.3);
-  --overlay-solid: rgba(0, 0, 0, 0.6);
-  --highlight-light: rgba(0, 0, 0, 0.05);
-  --highlight-medium: rgba(0, 0, 0, 0.1);
-  --highlight-heavy: rgba(0, 0, 0, 0.2);
-  --accent-glow: rgba(184, 134, 45, 0.15);
-  --accent-glow-faint: rgba(184, 134, 45, 0.08);
-  --accent-glow-soft: rgba(184, 134, 45, 0.12);
-  --accent-glow-strong: rgba(184, 134, 45, 0.3);
-  --error-glow: rgba(220, 38, 38, 0.15);
-  --success-glow: rgba(5, 150, 105, 0.15);
-  --warning-glow: rgba(217, 119, 6, 0.15);
-  --blue-glow: rgba(37, 99, 235, 0.15);
+    /* Type Colors — slightly richer for light backgrounds */
+    --normal-type:   #8a8a60;
+    --fire-type:     #c85a10;
+    --water-type:    #34508a;
+    --electric-type: #b8890a;
+    --grass-type:    #468028;
+    --ice-type:      #5a9e9e;
+    --fighting-type: #752a26;
+    --poison-type:   #6a3570;
+    --ground-type:   #705840;
+    --flying-type:   #5e7090;
+    --psychic-type:  #b03a5e;
+    --bug-type:      #8a9a10;
+    --rock-type:     #5a5230;
+    --ghost-type:    #524468;
+    --dragon-type:   #3e1c90;
+    --dark-type:     #2c2a40;
+    --steel-type:    #6868a0;
+    --fairy-type:    #d8607e;
 
-  /* Semantic color aliases */
-  --text-primary: var(--text-color);
-  --text-color-secondary: var(--text-muted);
-  --heading-color: var(--accent-color);
-  --secondary-color: var(--nav-active);
-  --success-hover: #047857;
-  --accent-color-rgb: 184, 134, 45;
-  --accent-color-2: #c74038;
+    /* Additional Custom Types */
+    --light-type:    #6a9fd0;
+    --cosmic-type:   #28242e;
+
+    --vaccine-attribute: #4e6d96;
+    --data-attribute: #42907a;
+    --virus-attribute: #7a3c10;
+    --free-attribute: #9240a5;
+    --variable-attribute: #3a3098;
+
+    /* Effects & Glows */
+    --accent-glow: rgba(196, 150, 14, 0.15);
+    --overlay-medium: rgba(0, 0, 0, 0.12);
+    --overlay-heavy: rgba(0, 0, 0, 0.25);
+    --highlight-heavy: rgba(0, 0, 0, 0.6);
+    --highlight-medium: rgba(0, 0, 0, 0.3);
+    --blue-glow: rgba(52, 80, 138, 0.12);
+    --warning-glow: rgba(217, 119, 6, 0.15);
+
+    /* Special Colors */
+    --discord-color: #5865f2;
+
+    --input-disabled-background: var(--primary-color-hover);
+    --faction-color: var(--border-color);
+
+    /* Shadows — softer for light theme */
+    --shadow-small: 0 2px 4px rgba(0, 0, 0, 0.08);
+    --shadow-medium: 0 4px 12px rgba(0, 0, 0, 0.1);
+    --shadow-large: 0 8px 24px rgba(0, 0, 0, 0.14);
 }
 
-/* ==========================================================================
-   HIGH CONTRAST THEME
-   ========================================================================== */
+
+/* ==============================================
+   High Contrast Theme
+   - Pure black background, brighter colors
+   - Stronger borders, bolder accents
+   ============================================== */
+
 :root[data-theme="high-contrast"] {
-  /* Core colors */
-  --background-color: #000000;
-  --text-color: #ffffff;
-  --text-muted: #cccccc;
+    /* Main Colors */
+    --background-color: #000000;
+    --background-color-hover: #0e141e;
 
-  /* Navigation */
-  --nav-background: #1a1a1a;
-  --nav-hover: #333333;
-  --nav-active: #4d4d4d;
+    --text-color: #ffffff;
+    --text-color-muted: #ffffffcc;
 
-  /* Accent/Gold colors */
-  --accent-color: #ffd700;
-  --accent-hover: #ffed4a;
-  --accent-light: #fff066;
-  --accent-muted: #36312f;
+    --primary-color: #141a26;
+    --primary-color-hover: #1e2a3e;
+    --primary-color-active: #2a3c56;
 
-  /* UI elements */
-  --divider-color: #3c466e;
-  --border-color: #3c466e;
-  --card-background: #1a1a1a;
-  --card-background-secondary: #0d0d0d;
-  --input-background: #1a1a1a;
+    --secondary-color: #3a4d6a;
+    --secondary-color-hover: #1e2a3e;
+    --secondary-color-active: #2a3c56;
 
-  /* Status colors */
-  --error-color: #ff4444;
-  --error-dark: #cc0000;
-  --error-light: #ff6666;
-  --success-color: #1fb369;
-  --success-dark: #003d1f;
-  --success-light: #25ea88;
-  --warning-color: #ffaa00;
-  --warning-dark: #cc8800;
-  --blue-color: #00aaff;
-  --blue-dark: #0066cc;
-  --blue-light: #33bbff;
+    --accent-color: #ffc521;
+    --accent-color-hover: #ffb800;
+    --accent-color-active: #ffe066;
+    --accent-color-muted: #ffc521cc;
+    --accent-color-subtle: #ffc52133;
+    --accent-color-dark: #927d3680;
 
-  /* Type colors (high saturation for visibility) */
-  --normal-type: #c8c896;
-  --fire-type: #ff6622;
-  --water-type: #5588cc;
-  --electric-type: #ffcc00;
-  --grass-type: #66bb44;
-  --ice-type: #99dddd;
-  --fighting-type: #bb4444;
-  --poison-type: #aa55aa;
-  --ground-type: #bb9966;
-  --flying-type: #99aacc;
-  --psychic-type: #ff5588;
-  --bug-type: #ccdd33;
-  --rock-type: #aa9955;
-  --ghost-type: #8866aa;
-  --dragon-type: #7744dd;
-  --dark-type: #665577;
-  --steel-type: #aaaacc;
-  --fairy-type: #ff88aa;
+    /* UI Elements */
+    --border-color: #6b84a8;
 
-  --custom-type: #aa77ff;
-  --random-type: linear-gradient(45deg, #ff5555, #55ddcc, #55ccee, #ffdd33);
-  --light-type: #aaccee;
-  --cosmic-type: #554466;
+    --input-background: #1a2436;
 
-  /* Attribute colors (high saturation for visibility) */
-  --vaccine-attribute: #7799cc;
-  --data-attribute: #66bbaa;
-  --virus-attribute: #bb6622;
-  --free-attribute: #cc66dd;
-  --variable-attribute: #6655cc;
+    /* Status colors */
+    --error-color: #ff5555;
+    --error-dark: #cc3333;
+    --error-light: #ff4444;
+    --success-color: #22d9a0;
+    --success-dark: #0fa87a;
+    --success-light: #55e0aa;
+    --warning-color: #ffb020;
+    --warning-dark: #e09000;
 
-  --accent-gradient: linear-gradient(135deg, #ffd700 0%, #ffed4a 100%);
+    /* Overlays */
+    --overlay-light: rgba(255, 255, 255, 0.14);
+    --overlay-dark: rgba(0, 0, 0, 0.6);
 
-  /* Alpha overlays (stronger for high contrast) */
-  --overlay-light: rgba(255, 255, 255, 0.1);
-  --overlay-medium: rgba(255, 255, 255, 0.2);
-  --overlay-dark: rgba(255, 255, 255, 0.3);
-  --overlay-heavy: rgba(255, 255, 255, 0.5);
-  --overlay-solid: rgba(255, 255, 255, 0.8);
-  --highlight-light: rgba(255, 255, 255, 0.15);
-  --highlight-medium: rgba(255, 255, 255, 0.35);
-  --highlight-heavy: rgba(255, 255, 255, 0.55);
-  --accent-glow: rgba(255, 215, 0, 0.3);
-  --accent-glow-faint: rgba(255, 215, 0, 0.15);
-  --accent-glow-soft: rgba(255, 215, 0, 0.2);
-  --accent-glow-strong: rgba(255, 215, 0, 0.5);
-  --error-glow: rgba(255, 68, 68, 0.3);
-  --success-glow: rgba(0, 255, 127, 0.3);
-  --warning-glow: rgba(255, 170, 0, 0.3);
-  --blue-glow: rgba(0, 170, 255, 0.3);
+    /* Type Colors — boosted saturation/brightness for contrast */
+    --normal-type:   #c0c088;
+    --fire-type:     #f07820;
+    --water-type:    #5070c0;
+    --electric-type: #eab820;
+    --grass-type:    #66b840;
+    --ice-type:      #90d4d4;
+    --fighting-type: #a04040;
+    --poison-type:   #9850a0;
+    --ground-type:   #a08060;
+    --flying-type:   #8898c0;
+    --psychic-type:  #e05888;
+    --bug-type:      #c0d030;
+    --rock-type:     #807050;
+    --ghost-type:    #7868a0;
+    --dragon-type:   #6030d0;
+    --dark-type:     #4a4868;
+    --steel-type:    #9090cc;
+    --fairy-type:    #ff88a8;
 
-  /* Semantic color aliases */
-  --text-primary: var(--text-color);
-  --text-color-secondary: var(--text-muted);
-  --heading-color: var(--accent-color);
-  --secondary-color: var(--nav-active);
-  --success-hover: #22c55e;
-  --accent-color-rgb: 255, 215, 0;
-  --accent-color-2: #ff5555;
+    /* Additional Custom Types */
+    --light-type:    #a0d0f0;
+    --cosmic-type:   #483e58;
+
+    --vaccine-attribute: #7898c8;
+    --data-attribute: #60c0a0;
+    --virus-attribute: #a85020;
+    --free-attribute: #c068d0;
+    --variable-attribute: #5848c8;
+
+    /* Effects & Glows */
+    --accent-glow: rgba(255, 197, 33, 0.25);
+    --overlay-medium: rgba(0, 0, 0, 0.4);
+    --overlay-heavy: rgba(0, 0, 0, 0.6);
+    --highlight-heavy: rgba(255, 255, 255, 0.9);
+    --highlight-medium: rgba(255, 255, 255, 0.5);
+    --blue-glow: rgba(80, 112, 192, 0.2);
+    --warning-glow: rgba(255, 176, 32, 0.25);
+
+    /* Special Colors */
+    --discord-color: #7289da;
+
+    --input-disabled-background: var(--primary-color);
+    --faction-color: var(--border-color);
+
+    /* Shadows — stronger for high contrast */
+    --shadow-small: 0 2px 4px rgba(0, 0, 0, 0.5);
+    --shadow-medium: 0 4px 12px rgba(0, 0, 0, 0.6);
+    --shadow-large: 0 8px 24px rgba(0, 0, 0, 0.7);
 }

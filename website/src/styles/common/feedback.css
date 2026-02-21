@@ -1,75 +1,89 @@
-/* ==============================
-   Feedback Styles (Loading, Alerts, Empty States)
-   ==============================
-   Using fluid values for responsive scaling
-   ============================== */
+/* ---------- Spinner Container ---------- */
 
-/* ======================
-   Modular Alert System
-   ====================== */
+.spinner-container {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 200px;
+  padding: var(--spacing-large);
+  width: 100%;
+}
+
+.button .spinner-container {
+  min-height: unset;
+  padding: 0;
+  flex-direction: row;
+}
+
+.button .spinner-container .spinner-message {
+  margin-top: 0;
+  margin-left: var(--spacing-xsmall);
+  font-size: inherit;
+}
+
+@keyframes spinner-fade {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 1; }
+}
 
 /* ---------- Base Alert ---------- */
 
 .alert {
   align-items: center;
-  border-radius: 0.5rem;
+  border-radius: var(--border-radius-medium);
   display: flex;
-  font-size: clamp(0.8rem, 0.75rem + 0.25vw, 0.875rem);
+  font-size: var(--font-size-medium);
   font-weight: 500;
-  gap: clamp(0.5rem, 1.5vw, 0.75rem);
-  margin-bottom: clamp(0.75rem, 2vw, 1rem);
-  padding: clamp(0.75rem, 2vw, 1rem) clamp(1rem, 2.5vw, 1.25rem);
+  gap: var(--spacing-small);
+  margin-bottom: var(--spacing-medium);
+  padding: var(--spacing-medium) var(--spacing-large);
   animation: alertSlideIn 0.3s ease;
 }
 
 .alert i {
-  font-size: clamp(0.95rem, 0.85rem + 0.5vw, 1.1rem);
+  font-size: var(--font-size-large);
   flex-shrink: 0;
 }
 
 /* ---------- Alert Variants ---------- */
 
 .alert.success {
-  background: var(--success-glow);
-  border: 1px solid var(--success-glow);
-  color: var(--success-color);
+  background: var(--success-dark);
+  border: 1px solid var(--success-color);
+  color: var(--text-color);
 }
 
-.alert.error,
-.alert.danger {
-  background: var(--error-glow);
-  border: 1px solid var(--error-glow);
-  color: var(--error-color);
+.alert.error {
+  background: var(--error-dark);
+  border: 1px solid var(--error-color);
+  color: var(--text-color);
 }
 
 .alert.warning {
-  background: var(--warning-glow);
-  border: 1px solid var(--warning-glow);
-  color: var(--warning-dark);
-}
-
-.alert.info {
-  background: var(--blue-glow);
-  border: 1px solid var(--blue-glow);
-  color: var(--accent-color);
+  background: var(--warning-dark);
+  border: 1px solid var(--warning-color);
+  color: var(--text-color);
 }
 
 .alert.neutral {
-  background: var(--card-background);
+  background: var(--primary-color);
   border: 1px solid var(--border-color);
-  color: var(--text-secondary);
+  color: var(--text-color-muted);
 }
 
 /* ---------- Alert Sizes ---------- */
 
-.alert.sm {
-  font-size: clamp(0.7rem, 0.65rem + 0.25vw, 0.8rem);
-  padding: clamp(0.5rem, 1.25vw, 0.625rem) clamp(0.75rem, 2vw, 1rem);
+.alert.sm,
+.alert.small {
+  font-size: var(--font-size-small);
+  padding: var(--spacing-xsmall) var(--spacing-medium);
 }
 
-.alert.lg {
-  font-size: clamp(0.9rem, 0.85rem + 0.3vw, 1rem);
-  padding: clamp(1rem, 2.5vw, 1.25rem) clamp(1.25rem, 3vw, 1.5rem);
+.alert.lg,
+.alert.large {
+  font-size: var(--font-size-large);
+  padding: var(--spacing-large) var(--spacing-xlarge);
 }
 
 /* ---------- Alert with Close Button ---------- */
@@ -79,7 +93,7 @@
   border: none;
   color: inherit;
   cursor: pointer;
-  font-size: 1.25rem;
+  font-size: var(--font-size-xlarge);
   margin-left: auto;
   opacity: 0.7;
   padding: 0;
@@ -90,130 +104,36 @@
   opacity: 1;
 }
 
-/* ---------- Alert Animation ---------- */
-
-@keyframes alertSlideIn {
-  from {
-    opacity: 0;
-    transform: translateY(-8px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* ======================
-   Notice/Instruction Boxes
-   ====================== */
-
-.notice {
-  background: var(--card-background);
-  border: 1px solid var(--border-color);
-  border-left: 4px solid var(--accent-color);
-  border-radius: 0.5rem;
-  color: var(--text-secondary);
-  font-size: 0.875rem;
-  line-height: 1.6;
-  margin-bottom: 1rem;
-  padding: 1rem 1.25rem;
-}
-
-.notice.success {
-  border-left-color: var(--success-color);
-  background: var(--success-glow);
-}
-
-.notice.warning {
-  border-left-color: var(--warning-color);
-  background: var(--warning-glow);
-}
-
-.notice.error {
-  border-left-color: var(--error-color);
-  background: var(--error-glow);
-}
-
-.notice.info {
-  border-left-color: var(--blue-color);
-  background: var(--blue-glow);
-}
-
 /* ======================
    Loading States
    ====================== */
 
 /* ---------- Spinner/Error Container ---------- */
 
-.spinner-container,
 .error-container {
   align-items: center;
   display: flex;
   flex-direction: column;
   justify-content: center;
   min-height: 200px;
-  padding: 2rem;
+  padding: var(--spacing-large);
   width: 100%;
 }
 
 .error-container i {
   color: var(--error-color);
-  font-size: 2.5rem;
-  margin-bottom: 1rem;
+  font-size: clamp(2rem, 1.5rem + 1.5vw, 3rem);
+  margin-bottom: var(--spacing-medium);
 }
 
 /* ---------- Spinner Message ---------- */
 
 .spinner-message {
-  color: var(--text-secondary);
-  font-size: var(--font-size-base);
-  margin-top: 1rem;
+  color: var(--text-color-muted);
+  font-size: var(--font-size-medium);
+  margin-top: var(--spacing-medium);
   opacity: 0.8;
   text-align: center;
-}
-
-/* ---------- Loading Spinner (Border Style) ---------- */
-
-.loading-spinner {
-  align-items: center;
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  justify-content: center;
-  position: relative;
-}
-
-.loading-spinner::before {
-  animation: spin 1s linear infinite;
-  border: 3px solid var(--divider-color);
-  border-radius: 50%;
-  border-top-color: var(--accent-color);
-  content: '';
-  height: 40px;
-  width: 40px;
-}
-
-.loading-spinner.sm::before {
-  border-width: 2px;
-  height: 24px;
-  width: 24px;
-}
-
-.loading-spinner.lg::before {
-  border-width: 4px;
-  height: 60px;
-  width: 60px;
-}
-
-/* Hide pseudo-element when spinner has icon content */
-.loading-spinner:has(> i)::before {
-  display: none;
-}
-
-.loading-spinner > i {
-  animation: spin 1s linear infinite;
-  color: var(--accent-color);
-  font-size: 2rem;
 }
 
 /* ---------- Spinner Dots ---------- */
@@ -269,87 +189,26 @@
 
 .empty-state {
   text-align: center;
-  padding: 3rem 1.5rem;
-  color: var(--text-muted);
-  background: linear-gradient(135deg, var(--card-background) 0%, var(--nav-background) 100%);
-  border-radius: 16px;
-  border: 2px dashed var(--border-color);
-  margin: 2rem auto;
-  max-width: 500px;
+  padding: var(--spacing-xxlarge) var(--spacing-large);
+  color: var(--text-color-muted);
 }
 
-.empty-state-icon {
-  width: 80px;
-  height: 80px;
-  margin: 0 auto 1.5rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: linear-gradient(135deg, var(--accent-glow), var(--accent-glow-faint));
-  border-radius: 50%;
-}
-
-.empty-state-icon i,
-.empty-state > i {
-  font-size: 2.5rem;
-  color: var(--accent-color);
-  opacity: 0.8;
-}
-
-.empty-state h2 {
-  font-size: var(--font-size-xl);
-  margin-bottom: 0.75rem;
-  color: var(--text-color);
-  font-weight: 700;
+.empty-state i {
+  font-size: clamp(2rem, 1.5rem + 1.5vw, 3.5rem);
+  margin-bottom: var(--spacing-medium);
+  opacity: 0.5;
 }
 
 .empty-state h3 {
-  font-size: 1.25rem;
-  margin-bottom: 0.5rem;
-  color: var(--text-secondary);
+  font-size: var(--font-size-xlarge);
+  margin-bottom: var(--spacing-xsmall);
+  color: var(--text-color-muted);
 }
 
 .empty-state p {
-  font-size: var(--font-size-base);
+  font-size: var(--font-size-medium);
   max-width: 400px;
-  margin: 0 auto 1.5rem;
-  line-height: 1.6;
-  color: var(--text-muted);
-}
-
-.empty-state .button {
-  margin-top: 0.5rem;
-}
-
-/* ======================
-   Stat Groups
-   ====================== */
-
-.stat-group {
-  display: flex;
-  gap: 1rem;
-}
-
-@media (max-width: 768px) {
-  .stat-group {
-    flex-direction: column;
-    flex-wrap: wrap;
-    justify-content: center;
-    max-width: 300px;
-    width: 100%;
-  }
-
-  .alert {
-    flex-direction: column;
-    text-align: center;
-  }
-
-  .alert .alert-close {
-    position: absolute;
-    top: 0.5rem;
-    right: 0.5rem;
-    margin-left: 0;
-  }
+  margin: 0 auto;
 }
 
 /* ======================
@@ -399,7 +258,7 @@
 
 .progress-fill.primary,
 .progress-fill.default {
-  background: var(--accent-gradient);
+  background: linear-gradient(90deg, var(--accent-color) 0%, var(--accent-color-active) 100%);
 }
 
 .progress-fill.success {
@@ -412,11 +271,7 @@
 }
 
 .progress-fill.warning {
-  background: linear-gradient(90deg, var(--warning-color) 0%, var(--warning-light) 100%);
-}
-
-.progress-fill.info {
-  background: linear-gradient(90deg, var(--blue-color) 0%, var(--blue-light) 100%);
+  background: linear-gradient(90deg, var(--warning-color) 0%, var(--accent-color) 100%);
 }
 
 /* ---------- Stat-Specific Colors ---------- */
@@ -434,7 +289,7 @@
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(90deg, transparent 0%, var(--highlight-light) 50%, transparent 100%);
+  background: linear-gradient(90deg, transparent 0%, var(--overlay-light) 50%, transparent 100%);
   animation: progressShine 2s linear infinite;
 }
 
@@ -448,7 +303,7 @@
 .progress-wrapper {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: var(--spacing-small);
 }
 
 .progress-wrapper .progress {
@@ -456,11 +311,11 @@
 }
 
 .progress-label {
-  font-size: 0.75rem;
+  font-size: var(--font-size-xsmall);
   font-weight: 600;
   min-width: 3rem;
   text-align: right;
-  color: var(--text-secondary);
+  color: var(--text-color-muted);
 }
 
 /* ---------- Animated/Striped Progress ---------- */
@@ -468,11 +323,11 @@
 .progress-fill.striped {
   background-image: linear-gradient(
     45deg,
-    rgba(255, 255, 255, 0.15) 25%,
+    var(--overlay-light) 25%,
     transparent 25%,
     transparent 50%,
-    rgba(255, 255, 255, 0.15) 50%,
-    rgba(255, 255, 255, 0.15) 75%,
+    var(--overlay-light) 50%,
+    var(--overlay-light) 75%,
     transparent 75%,
     transparent
   );
@@ -486,4 +341,39 @@
 @keyframes progressStripes {
   0% { background-position: 1rem 0; }
   100% { background-position: 0 0; }
+}
+
+/* ======================
+   Message Boxes
+   ====================== */
+
+.alert.message-box {
+  align-items: flex-start;
+  gap: var(--spacing-medium);
+  position: relative;
+}
+
+.message-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--font-size-xxlarge);
+  flex-shrink: 0;
+}
+
+.message-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.message-title {
+  font-size: var(--font-size-large);
+  font-weight: 600;
+  margin: 0 0 var(--spacing-xxsmall) 0;
+  color: var(--text-color);
+}
+
+.message-text {
+  margin: 0;
+  line-height: 1.5;
 }

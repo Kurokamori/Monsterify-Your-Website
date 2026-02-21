@@ -1,0 +1,378 @@
+/* ==============================
+   DataGrid Component
+   ============================== */
+
+.data-grid {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-medium);
+}
+
+/* ---------- Header ---------- */
+
+.data-grid__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--spacing-small);
+  flex-wrap: wrap;
+}
+
+.data-grid__title {
+  margin: 0;
+  font-size: var(--font-size-xlarge);
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+.data-grid__header-actions {
+  display: flex;
+  gap: var(--spacing-xsmall);
+}
+
+/* ---------- Toolbar ---------- */
+
+.data-grid__toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-small);
+  align-items: center;
+  padding: var(--spacing-small);
+  background-color: var(--primary-color);
+  border-radius: var(--border-radius-medium);
+  border: 1px solid var(--border-color);
+}
+
+/* ---------- Search ---------- */
+
+.data-grid__search {
+  position: relative;
+  flex: 1;
+  min-width: 200px;
+  max-width: 400px;
+}
+
+.data-grid__search-icon {
+  position: absolute;
+  left: var(--spacing-small);
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-color-muted);
+  pointer-events: none;
+}
+
+.data-grid__search-input {
+  width: 100%;
+  min-width: 0;
+  padding-left: calc(var(--spacing-small) * 2 + 1em);
+  padding-right: calc(var(--spacing-small) * 2 + 1em);
+}
+
+.data-grid__search-clear {
+  position: absolute;
+  right: var(--spacing-xsmall);
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: var(--text-color-muted);
+  cursor: pointer;
+  padding: var(--spacing-xxsmall);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--border-radius-small);
+  transition: color 0.2s ease;
+}
+
+.data-grid__search-clear:hover {
+  color: var(--text-color);
+}
+
+/* ---------- Filters ---------- */
+
+.data-grid__filters {
+  display: flex;
+  gap: var(--spacing-xsmall);
+  flex-wrap: wrap;
+}
+
+.data-grid__filter {
+  min-width: 150px;
+}
+
+/* ---------- Sort ---------- */
+
+.data-grid__sort {
+  display: flex;
+  gap: var(--spacing-xxsmall);
+}
+
+.data-grid__sort .button {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xxsmall);
+}
+
+/* ---------- Layout Toggle ---------- */
+
+.data-grid__layout-toggle {
+  display: flex;
+  gap: var(--spacing-xxsmall);
+  margin-left: auto;
+}
+
+.data-grid__layout-toggle .button {
+  border-radius: 0;
+}
+
+.data-grid__layout-toggle .button:first-child {
+  border-radius: var(--border-radius-small) 0 0 var(--border-radius-small);
+}
+
+.data-grid__layout-toggle .button:last-child {
+  border-radius: 0 var(--border-radius-small) var(--border-radius-small) 0;
+}
+
+/* ---------- Items Container ---------- */
+
+.data-grid__items {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Grid Layout */
+.data-grid__items--grid {
+  display: grid;
+  padding: var(--spacing-small);
+}
+
+.data-grid__items--xs {
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+}
+
+.data-grid__items--sm {
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+}
+
+.data-grid__items--md {
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+}
+
+.data-grid__items--lg {
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+}
+
+.data-grid__items--xl {
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+}
+
+.data-grid__items--2xl {
+  grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+}
+
+/* Fixed columns */
+.data-grid__items--cols-2 {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.data-grid__items--cols-3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.data-grid__items--cols-4 {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.data-grid__items--cols-5 {
+  grid-template-columns: repeat(5, 1fr);
+}
+
+.data-grid__items--cols-6 {
+  grid-template-columns: repeat(6, 1fr);
+}
+
+/* Parent-level column shorthand */
+.data-grid--columns-4 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--spacing-medium);
+}
+
+@media (max-width: 768px) {
+  .data-grid--columns-4 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .data-grid__items--cols-3 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .data-grid__items--cols-4 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .data-grid__items--cols-5 {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .data-grid__items--cols-6 {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .data-grid__items--cols-3 {
+    grid-template-columns: 1fr;
+  }
+
+  .data-grid__items--cols-4 {
+    grid-template-columns: 1fr;
+  }
+
+  .data-grid__items--cols-5 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .data-grid__items--cols-6 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* List Layout */
+.data-grid__items--list {
+  display: flex;
+  flex-direction: column;
+}
+
+.data-grid__items--list .data-grid__item {
+  border-bottom: 1px solid var(--border-color);
+}
+
+.data-grid__items--list .data-grid__item:last-child {
+  border-bottom: none;
+}
+
+/* Gap sizes */
+.data-grid__items--gap-xs {
+  gap: var(--spacing-xxsmall);
+}
+
+.data-grid__items--gap-sm {
+  gap: var(--spacing-xsmall);
+}
+
+.data-grid__items--gap-md {
+  gap: var(--spacing-small);
+}
+
+.data-grid__items--gap-lg {
+  gap: var(--spacing-medium);
+}
+
+.data-grid__items--gap-xl {
+  gap: var(--spacing-large);
+}
+
+/* ---------- Item ---------- */
+
+.data-grid__item {
+  min-width: 0;
+}
+
+/* ---------- Parent-level Size Modifiers ---------- */
+
+.data-grid.data-grid--sm .data-grid__items {
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+}
+
+.data-grid.data-grid--md .data-grid__items {
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+}
+
+.data-grid.data-grid--lg .data-grid__items {
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+}
+
+/* Simple grid shorthand (when data-grid is used as a plain grid without DataGrid component) */
+.data-grid.data-grid--sm {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+}
+
+.data-grid.data-grid--md {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+}
+
+.data-grid.data-grid--lg {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+}
+
+/* ---------- Pagination ---------- */
+
+.data-grid__pagination {
+  display: flex;
+  justify-content: center;
+  padding-top: var(--spacing-small);
+}
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 768px) {
+  .data-grid__toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .data-grid__search {
+    max-width: none;
+    min-width: 0;
+  }
+
+  .data-grid__filters {
+    width: 100%;
+  }
+
+  .data-grid__filter {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .data-grid__sort {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+
+  .data-grid__sort .button {
+    flex: 1;
+  }
+
+  .data-grid__layout-toggle {
+    margin-left: 0;
+    width: 100%;
+  }
+
+  .data-grid__layout-toggle .button {
+    flex: 1;
+  }
+
+  /* Fixed columns become responsive */
+  .data-grid__items--cols-3,
+  .data-grid__items--cols-4,
+  .data-grid__items--cols-5,
+  .data-grid__items--cols-6 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .data-grid__items--cols-2,
+  .data-grid__items--cols-3,
+  .data-grid__items--cols-4,
+  .data-grid__items--cols-5,
+  .data-grid__items--cols-6 {
+    grid-template-columns: 1fr;
+  }
+}

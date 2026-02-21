@@ -1,0 +1,604 @@
+/* ==============================
+   Faction Quest Styles
+   ============================== */
+
+/* ---------- Faction Containers ---------- */
+
+.faction-detail-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-medium);
+}
+
+/* ---------- Faction Quests Header ---------- */
+
+.faction-quests-header {
+  text-align: center;
+  padding: var(--spacing-large) var(--spacing-medium) var(--spacing-medium);
+  background: linear-gradient(135deg, var(--primary-color) 0%, var(--background-color) 100%);
+  border-radius: var(--border-radius-medium);
+  margin-bottom: var(--spacing-small);
+}
+
+.faction-quests-header h1 {
+  font-size: var(--font-size-xxlarge);
+  margin-bottom: var(--spacing-xsmall);
+  color: var(--accent-color);
+}
+
+.faction-quests-header p {
+  font-size: var(--font-size-medium);
+  color: var(--text-color-muted);
+  max-width: 800px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+/* ---------- Factions Grid ---------- */
+
+.factions-grid {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-small);
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: var(--spacing-medium);
+}
+
+/* ---------- Faction Prism Cards ---------- */
+
+.faction-prism {
+  position: relative;
+  width: 100%;
+  height: 120px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border-radius: var(--border-radius-medium);
+  overflow: hidden;
+  background: var(--primary-color);
+  border: 2px solid var(--faction-color, var(--border-color));
+  display: flex;
+  align-items: center;
+  padding: 0;
+}
+
+.faction-prism::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, var(--faction-color, transparent) 0%, transparent 50%);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.faction-prism:hover {
+  transform: translateY(-4px);
+  border-color: var(--faction-color, var(--accent-color));
+  box-shadow: 0 8px 24px var(--overlay-dark);
+}
+
+.faction-prism:hover::before {
+  opacity: 0.15;
+}
+
+.faction-card-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  opacity: 0.1;
+  transition: opacity 0.3s ease;
+}
+
+.faction-prism:hover .faction-card-background {
+  opacity: 0.2;
+}
+
+.faction-card-content {
+  position: relative;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  padding: var(--spacing-small) var(--spacing-medium);
+  z-index: 2;
+}
+
+.faction-card-icon {
+  margin-right: var(--spacing-medium);
+  flex-shrink: 0;
+}
+
+.faction-icon {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--background-color);
+  border-radius: var(--border-radius-medium);
+  border: 2px solid var(--faction-color, var(--border-color));
+  transition: all 0.3s ease;
+}
+
+.faction-prism:hover .faction-icon {
+  border-color: var(--faction-color, var(--accent-color));
+  transform: scale(1.05);
+}
+
+.faction-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: var(--border-radius-small);
+}
+
+.faction-icon-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: clamp(1.5rem, 1.25rem + 1vw, 2.25rem);
+  font-weight: bold;
+  color: var(--faction-color, var(--accent-color));
+}
+
+.faction-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.faction-name {
+  color: var(--text-color);
+  font-size: var(--font-size-large);
+  font-weight: 700;
+  margin: 0 0 var(--spacing-xxsmall) 0;
+  transition: color 0.3s ease;
+}
+
+.faction-prism:hover .faction-name {
+  color: var(--accent-color);
+}
+
+.faction-description-preview {
+  color: var(--text-color-muted);
+  font-size: var(--font-size-small);
+  margin: 0;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* ---------- Faction Info Sections ---------- */
+
+.faction-quests-info {
+  max-width: 1200px;
+  margin: var(--spacing-large) auto 0;
+  padding: 0 var(--spacing-medium) var(--spacing-large);
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: var(--spacing-medium);
+}
+
+.faction-info {
+  background-color: var(--primary-color);
+  padding: var(--spacing-medium);
+  border-radius: var(--border-radius-medium);
+  border-left: 4px solid var(--accent-color);
+  border: 1px solid var(--border-color);
+}
+
+.faction-info h3 {
+  color: var(--accent-color);
+  margin: 0 0 var(--spacing-small) 0;
+  font-size: var(--font-size-large);
+}
+
+.faction-info p {
+  line-height: 1.7;
+  color: var(--text-color-muted);
+  font-size: var(--font-size-medium);
+  margin: 0;
+}
+
+.faction-info ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.faction-info li {
+  padding: var(--spacing-xsmall) 0;
+  border-bottom: 1px solid var(--border-color);
+  color: var(--text-color-muted);
+  padding-left: var(--spacing-medium);
+  position: relative;
+}
+
+.faction-info li::before {
+  content: '\25B6';
+  position: absolute;
+  left: 0;
+  color: var(--accent-color);
+  font-size: var(--font-size-small);
+}
+
+.faction-info li:last-child {
+  border-bottom: none;
+}
+
+/* ---------- Faction Banner ---------- */
+
+.faction-banner {
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  position: relative;
+  border-bottom: 4px solid;
+  border-radius: var(--border-radius-medium);
+  overflow: hidden;
+}
+
+.banner-overlay {
+  background: linear-gradient(135deg, var(--overlay-heavy) 0%, var(--overlay-medium) 100%);
+  padding: var(--spacing-large);
+  text-align: center;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  backdrop-filter: blur(8px);
+}
+
+.faction-navigation {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-large);
+  margin-bottom: var(--spacing-medium);
+}
+
+.faction-title {
+  font-size: var(--font-size-xxlarge);
+  margin: 0;
+  font-weight: 900;
+}
+
+.faction-description {
+  font-size: var(--font-size-medium);
+  line-height: 1.6;
+  color: var(--text-color);
+  margin: 0 auto;
+  max-width: 900px;
+  opacity: 0.9;
+}
+
+/* ---------- Relationships ---------- */
+
+.relationships-section {
+  margin-top: var(--spacing-medium);
+}
+
+.relationships-section h4 {
+  color: var(--accent-color);
+  margin-bottom: var(--spacing-small);
+  font-size: var(--font-size-large);
+}
+
+.relationships-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: var(--spacing-small);
+}
+
+.relationship-item {
+  padding: var(--spacing-xsmall);
+  border-radius: var(--border-radius-small);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-left: 4px solid var(--border-color);
+  background-color: var(--primary-color);
+  border: 1px solid var(--border-color);
+}
+
+.relationship-item.ally {
+  border-left-color: var(--success-color);
+}
+
+.relationship-item.enemy {
+  border-left-color: var(--error-color);
+}
+
+.relationship-item.neutral {
+  border-left-color: var(--text-color-muted);
+}
+
+.relationship-faction {
+  font-weight: bold;
+  color: var(--text-color);
+}
+
+.relationship-type {
+  font-size: var(--font-size-small);
+  text-transform: capitalize;
+  padding: var(--spacing-xxsmall) var(--spacing-xsmall);
+  border-radius: var(--border-radius-small);
+  background-color: var(--background-color);
+}
+
+/* ---------- Faction Submission Modal ---------- */
+
+.faction-submission-modal {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-medium);
+}
+
+.submission-step h3 {
+  color: var(--accent-color);
+  margin-bottom: var(--spacing-xsmall);
+}
+
+.submission-step p {
+  color: var(--text-color-muted);
+  margin-bottom: var(--spacing-small);
+  line-height: 1.6;
+}
+
+.submissions-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: var(--spacing-small);
+}
+
+.submission-card {
+  background-color: var(--primary-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-small);
+  padding: var(--spacing-small);
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.submission-card:hover {
+  border-color: var(--accent-color);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px var(--overlay-dark);
+}
+
+.submission-card.selected {
+  border-color: var(--accent-color);
+  background-color: var(--background-color);
+}
+
+.submission-card h4 {
+  color: var(--text-color);
+  margin: 0 0 var(--spacing-xxsmall) 0;
+}
+
+.submission-card p {
+  color: var(--text-color-muted);
+  margin: 0 0 var(--spacing-xsmall) 0;
+  font-size: var(--font-size-small);
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.submission-type {
+  display: inline-block;
+  background-color: var(--accent-color);
+  color: var(--text-color);
+  padding: 0.15rem 0.5rem;
+  border-radius: var(--border-radius-small);
+  font-size: var(--font-size-xsmall);
+  text-transform: capitalize;
+  margin-bottom: var(--spacing-xsmall);
+}
+
+.submission-date {
+  font-size: var(--font-size-xsmall);
+  color: var(--text-color-muted);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xxsmall);
+}
+
+/* Score Calculation */
+
+.score-calculation {
+  background-color: var(--background-color);
+  border: 2px solid var(--accent-color);
+  border-radius: var(--border-radius-medium);
+  padding: var(--spacing-small);
+}
+
+.score-calculation h4 {
+  color: var(--accent-color);
+  margin: 0 0 var(--spacing-xsmall) 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.score-value {
+  font-size: var(--font-size-xlarge);
+  font-weight: 700;
+  color: var(--accent-color);
+}
+
+.person-card.locked {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.person-card.met {
+  border-color: var(--success-color);
+}
+
+.person-card.can-meet {
+  border-color: var(--warning-color);
+}
+
+.person-name {
+  margin: 0 0 var(--spacing-xxsmall) 0;
+  color: var(--text-color);
+  font-size: var(--font-size-medium);
+  font-weight: 600;
+}
+
+.person-subtitle {
+  margin: 0;
+  color: var(--text-color-muted);
+  font-size: var(--font-size-small);
+}
+
+.locked-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--overlay-dark);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+
+.no-submissions {
+  text-align: center;
+  padding: var(--spacing-large);
+  background-color: var(--primary-color);
+  border: 2px dashed var(--border-color);
+  border-radius: var(--border-radius-medium);
+}
+
+.no-submissions p {
+  color: var(--text-color-muted);
+}
+
+.standing-preview {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-xsmall);
+  padding: var(--spacing-xsmall);
+  background-color: var(--background-color);
+  border: 1px solid var(--success-color);
+  border-radius: var(--border-radius-small);
+}
+
+.standing-gain {
+  font-weight: 700;
+  color: var(--success-color);
+}
+
+.selected-submission-info {
+  background-color: var(--background-color);
+  border: 1px solid var(--accent-color);
+  border-radius: var(--border-radius-small);
+  padding: var(--spacing-xsmall);
+}
+
+.selected-submission-info h4 {
+  color: var(--accent-color);
+  margin: 0 0 var(--spacing-xxsmall) 0;
+  font-size: var(--font-size-small);
+}
+
+.prompt-description {
+  background-color: var(--background-color);
+  border-left: 3px solid var(--accent-color);
+  border-radius: var(--border-radius-small);
+  color: var(--text-color-muted);
+  font-size: var(--font-size-small);
+  font-style: italic;
+  line-height: 1.5;
+  padding: var(--spacing-xsmall);
+  margin-top: var(--spacing-xxsmall);
+}
+
+.success-step {
+  text-align: center;
+  padding: var(--spacing-medium);
+}
+
+.stat-info div {
+  color: var(--text-color-muted);
+  font-size: var(--font-size-small);
+  display: flex;
+  justify-content: space-between;
+}
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 768px) {
+  .faction-prism {
+    height: auto;
+    min-height: 90px;
+  }
+
+  .faction-card-content {
+    flex-direction: column;
+    padding: var(--spacing-small);
+    text-align: center;
+  }
+
+  .faction-card-icon {
+    margin-right: 0;
+    margin-bottom: var(--spacing-xsmall);
+  }
+
+  .faction-icon {
+    width: 60px;
+    height: 60px;
+  }
+
+  .faction-quests-info {
+    grid-template-columns: 1fr;
+  }
+
+  .relationships-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .submissions-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .faction-prism {
+    min-height: 80px;
+  }
+
+  .faction-icon {
+    width: 50px;
+    height: 50px;
+  }
+
+  .relationship-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-xxsmall);
+  }
+
+}

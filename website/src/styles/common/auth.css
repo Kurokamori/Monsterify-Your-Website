@@ -2,29 +2,169 @@
    Authentication & Social Styles
    ============================== */
 
+/* ---------- Auth Page Layout ---------- */
+
+.auth-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 80vh;
+  padding: var(--spacing-large);
+  gap: var(--spacing-large);
+}
+
+.auth-container.register-container {
+  align-items: flex-start;
+}
+
+/* ---------- Not Found Page ---------- */
+
+.not-found-content {
+  text-align: center;
+  max-width: 480px;
+}
+
+.not-found-icon {
+  font-size: clamp(2.5rem, 2rem + 1.5vw, 4.5rem);
+  color: var(--accent-color);
+  margin-bottom: var(--spacing-medium);
+}
+
+.not-found-actions {
+  display: flex;
+  gap: var(--spacing-small);
+  justify-content: center;
+  margin-top: var(--spacing-large);
+}
+
+/* ---------- Auth Card ---------- */
+
+.auth-card {
+  background-color: var(--primary-color);
+  border-radius: var(--border-radius-medium);
+  box-shadow: 0 4px 6px var(--overlay-light);
+  width: 100%;
+  max-width: 480px;
+  padding: var(--spacing-large);
+}
+
+.auth-card.register-card {
+  min-width: 30dvw;
+}
+
+/* ---------- Auth Header ---------- */
+
+.auth-header {
+  margin-bottom: var(--spacing-medium);
+}
+
+.auth-header h1 {
+  font-size: var(--font-size-xxlarge);
+  color: var(--accent-color);
+  margin-bottom: var(--spacing-xxsmall);
+}
+
+.auth-header p {
+  color: var(--text-color-muted);
+  font-size: var(--font-size-small);
+}
+
+/* ---------- Auth Form ---------- */
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-small);
+}
+
+.auth-form .form-group {
+  margin-bottom: 0;
+}
+
+/* ---------- Auth Options Row ---------- */
+
+.auth-options-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.auth-options-row .form-group {
+  margin: 0;
+}
+
+.auth-options-row .checkbox-label {
+  margin-top: 0;
+  padding: 0;
+  font-size: var(--font-size-small);
+}
+
+/* ---------- Auth Link ---------- */
+
+.auth-link {
+  font-size: var(--font-size-small);
+  color: var(--accent-color);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.auth-link:hover {
+  color: var(--accent-color-hover);
+  text-decoration: underline;
+}
+
+/* ---------- Auth Footer ---------- */
+
+.auth-footer {
+  text-align: center;
+  margin-top: var(--spacing-large);
+  font-size: var(--font-size-small);
+}
+
+/* ---------- Auth Status Indicators ---------- */
+
+.auth-status-success {
+  color: var(--success-color);
+}
+
+.auth-status-error {
+  color: var(--error-color);
+}
+
+/* ---------- Auth Error Actions ---------- */
+
+.auth-error-actions {
+  text-align: center;
+  margin-top: var(--spacing-medium);
+}
+
+/* ---------- Auth Message ---------- */
+
 .auth-message {
-  background-color: var(--card-background);
-  border-radius: 8px;
-  padding: 30px;
+  background-color: var(--primary-color);
+  border-radius: var(--border-radius-medium);
+  padding: var(--spacing-xlarge);
   text-align: center;
 }
 
 .auth-message p {
   color: var(--text-color);
-  margin-bottom: 20px;
+  margin-bottom: var(--spacing-large);
   opacity: 0.8;
 }
 
+/* ---------- Discord Login ---------- */
+
 .discord-login-container {
-  margin-top: 1.5rem;
+  margin-top: var(--spacing-medium);
 }
 
 .auth-divider {
   position: relative;
   text-align: center;
-  margin: 1.5rem 0;
-  color: var(--text-muted);
-  font-size: 0.9rem;
+  margin: var(--spacing-medium) 0;
+  color: var(--text-color-muted);
+  font-size: var(--font-size-small);
 }
 
 .auth-divider::before {
@@ -39,27 +179,10 @@
 }
 
 .auth-divider span {
-  background-color: var(--text-color);
-  padding: 0 1rem;
+  background-color: var(--primary-color);
+  padding: 0 var(--spacing-medium);
   position: relative;
   z-index: 2;
-}
-
-@media (prefers-color-scheme: dark) {
-  .auth-divider span {
-    background-color: var(--background-color);
-  }
-  .auth-divider::before {
-    background-color: var(--border-color);
-  }
-}
-
-/* For Discord login button, use unified button system: className="button info block lg" (see buttons.css) */
-
-.event-date {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
 }
 
 .discord-icon {
@@ -68,9 +191,140 @@
   flex-shrink: 0;
 }
 
+.auth-discord-note {
+  font-size: var(--font-size-xsmall);
+  color: var(--text-color-muted);
+  margin-top: var(--spacing-xsmall);
+  text-align: center;
+  line-height: 1.4;
+}
+
+/* ---------- Monster Fandom Panel (Desktop) ---------- */
+
+.fandom-panel {
+  background-color: var(--primary-color);
+  border-radius: var(--border-radius-medium);
+  box-shadow: 0 4px 6px var(--overlay-light);
+  padding: var(--spacing-medium);
+  width: 280px;
+  flex-shrink: 0;
+}
+
+.fandom-panel h2 {
+  font-size: var(--font-size-large);
+  color: var(--accent-color);
+  margin-bottom: var(--spacing-xsmall);
+}
+
+.fandom-panel p {
+  font-size: var(--font-size-small);
+  color: var(--text-color);
+  opacity: 0.8;
+  margin-bottom: var(--spacing-medium);
+}
+
+/* ---------- Fandom Toggle ---------- */
+
+.fandom-toggle {
+  display: flex;
+  align-items: center;
+  padding: var(--spacing-xsmall);
+  border-radius: var(--border-radius-small);
+  background-color: var(--primary-color-hover);
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.fandom-toggle:hover {
+  background-color: var(--primary-color-active);
+}
+
+.fandom-toggle input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  margin-right: var(--spacing-xsmall);
+  accent-color: var(--accent-color);
+  cursor: pointer;
+}
+
+.fandom-toggle label {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  font-size: var(--font-size-small);
+  flex: 1;
+}
+
+.fandom-icon {
+  font-size: var(--font-size-medium);
+  margin-right: var(--spacing-xsmall);
+  width: 1.25rem;
+  text-align: center;
+}
+
+/* ---------- Mobile Fandom Section ---------- */
+
+.mobile-fandom-section {
+  display: none;
+}
+
+.mobile-fandom-section h3 {
+  font-size: var(--font-size-medium);
+  color: var(--accent-color);
+  margin-bottom: var(--spacing-xxsmall);
+}
+
+.mobile-fandom-section p {
+  font-size: var(--font-size-xsmall);
+  color: var(--text-color);
+  opacity: 0.8;
+  margin-bottom: var(--spacing-small);
+}
+
+.mobile-fandom-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--spacing-xsmall);
+}
+
+.mobile-fandom-grid .fandom-toggle {
+  padding: var(--spacing-xsmall);
+}
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 768px) {
+  .auth-container {
+    padding: var(--spacing-small);
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .auth-card {
+    max-width: 100%;
+  }
+
+  .auth-card.register-card {
+    min-width: unset;
+    max-width: 100%;
+  }
+
+  .fandom-panel {
+    display: none;
+  }
+
+  .mobile-fandom-section {
+    display: block;
+    background-color: var(--primary-color-hover);
+    border-radius: var(--border-radius-small);
+    padding: var(--spacing-small);
+  }
+}
+
 @media (max-width: 480px) {
-  .discord-icon {
-    width: 18px;
-    height: 18px;
+  .auth-options-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-xsmall);
   }
 }

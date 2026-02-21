@@ -1,0 +1,93 @@
+/* ==============================
+   AdminForm Component
+   ============================== */
+
+.admin-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-medium);
+}
+
+/* ---------- Header ---------- */
+
+.admin-form__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.admin-form__header h1 {
+  margin: 0;
+  font-size: var(--font-size-xlarge);
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+/* ---------- Body ---------- */
+
+.admin-form__body {
+  background-color: var(--primary-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-medium);
+  padding: var(--spacing-medium);
+}
+
+/* ---------- Columns Layout ---------- */
+
+.admin-form__columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-medium);
+}
+
+.admin-form__column {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-small);
+}
+
+/* ---------- Section Title ---------- */
+
+.admin-form__section-title {
+  border-bottom: 2px solid var(--accent-color);
+  color: var(--accent-color);
+  font-size: var(--font-size-large);
+  font-weight: 600;
+  margin: 0 0 var(--spacing-xsmall) 0;
+  padding-bottom: var(--spacing-xsmall);
+}
+
+/* ---------- Image Preview ---------- */
+
+.admin-form__preview {
+  margin-top: var(--spacing-small);
+  padding: var(--spacing-small);
+  background-color: var(--primary-color-hover);
+  border-radius: var(--border-radius-medium);
+  border: 1px solid var(--border-color);
+}
+
+.admin-form__preview h3 {
+  margin: 0 0 var(--spacing-xsmall) 0;
+  font-size: var(--font-size-medium);
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+/* ---------- Actions ---------- */
+
+.admin-form__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--spacing-xsmall);
+  padding-top: var(--spacing-small);
+  border-top: 1px solid var(--border-color);
+}
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 768px) {
+  .admin-form__columns {
+    grid-template-columns: 1fr;
+  }
+}

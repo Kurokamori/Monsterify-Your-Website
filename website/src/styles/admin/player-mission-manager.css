@@ -1,0 +1,60 @@
+.player-mission-manager {
+  width: 100%;
+}
+
+/* Progress bar */
+.player-mission-manager__progress {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xsmall);
+  min-width: 140px;
+}
+
+.player-mission-manager__progress-bar {
+  flex: 1;
+  height: 8px;
+  background: var(--secondary-color);
+  border-radius: var(--border-radius-small);
+  overflow: hidden;
+}
+
+.player-mission-manager__progress-fill {
+  height: 100%;
+  background: var(--accent-color);
+  border-radius: var(--border-radius-small);
+  transition: width 0.3s ease;
+}
+
+.player-mission-manager__progress-text {
+  font-size: var(--font-size-small);
+  color: var(--text-color-muted);
+  white-space: nowrap;
+}
+
+/* Edit progress modal */
+.player-mission-manager__edit-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-medium);
+}
+
+.player-mission-manager__edit-form .form-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xxsmall);
+}
+
+.player-mission-manager__edit-form .input {
+  max-width: 150px;
+}
+
+.player-mission-manager__required {
+  font-size: var(--font-size-medium);
+  color: var(--text-color-muted);
+}
+
+.player-mission-manager__modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--spacing-xsmall);
+}

@@ -1,17 +1,15 @@
 /* ==============================
    Image Container Styles
-   ==============================
-   Using fluid values for responsive scaling
    ============================== */
 
 .image-container {
   align-items: center;
-  border-radius: clamp(0.375rem, 1vw, 0.5rem);
+  border-radius: var(--border-radius-medium);
   cursor: pointer;
   display: flex;
-  height: clamp(180px, 30vw + 50px, 250px);
+  height: clamp(150px, 20vw, 300px);
   justify-content: center;
-  margin-bottom: clamp(1rem, 3vw, 1.5rem);
+  margin-bottom: var(--spacing-medium);
   margin-left: auto;
   margin-right: auto;
   overflow: hidden;
@@ -23,33 +21,33 @@
 /* ---------- Size Variants ---------- */
 
 .image-container.tiny {
-  width: clamp(32px, 5vw + 16px, 40px);
-  height: clamp(32px, 5vw + 16px, 40px);
+  width: 40px;
+  height: 40px;
 }
 
 .image-container.xs {
-  width: clamp(48px, 7vw + 20px, 60px);
-  height: clamp(48px, 7vw + 20px, 60px);
+  width: 60px;
+  height: 60px;
 }
 
 .image-container.small {
-  width: clamp(80px, 12vw + 30px, 100px);
-  height: clamp(80px, 12vw + 30px, 100px);
+  width: 100px;
+  height: 100px;
 }
 
 .image-container.medium {
-  width: clamp(150px, 20vw + 50px, 200px);
-  height: clamp(150px, 20vw + 50px, 200px);
+  width: 200px;
+  height: 200px;
 }
 
 .image-container.large {
-  width: clamp(220px, 30vw + 60px, 300px);
-  height: clamp(220px, 30vw + 60px, 300px);
+  width: 300px;
+  height: 300px;
 }
 
 .image-container.xlarge {
-  width: min(500px, 90vw);
-  height: min(500px, 90vw);
+  width: 500px;
+  height: 500px;
 }
 
 /* ---------- Shape Variants ---------- */
@@ -63,7 +61,7 @@
 }
 
 .image-container.rounded {
-  border-radius: var(--radius-md);
+  border-radius: var(--border-radius-medium);
 }
 
 /* ---------- Fit Variants ---------- */
@@ -85,8 +83,8 @@
 
 .image-container.activity {
   width: 100%;
-  height: clamp(400px, 50vw + 150px, 600px);
-  border-radius: clamp(0.75rem, 2vw, 1rem);
+  height: clamp(300px, 40vw, 700px);
+  border-radius: var(--border-radius-large);
 }
 
 .image-container.activity img {
@@ -104,10 +102,10 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: var(--nav-background);
+  background-color: var(--secondary-color);
   color: var(--text-color);
   opacity: 0.5;
-  font-size: clamp(1.5rem, 3vw + 0.5rem, 2rem);
+  font-size: clamp(1.5rem, 1rem + 1vw, 2.5rem);
   width: 100%;
   height: 100%;
 }
@@ -117,30 +115,18 @@
 .species-images-grid {
   display: flex;
   flex-wrap: wrap;
-  gap: clamp(0.35rem, 1vw, 0.5rem);
-  margin-top: clamp(0.35rem, 1vw, 0.5rem);
+  gap: var(--spacing-xsmall);
+  margin-top: var(--spacing-xsmall);
 }
 
 .species-image-container {
   align-items: center;
-  background: var(--hover-background);
-  background-color: var(--card-background);
-  border: 1px solid var(--divider-color);
-  border-radius: var(--radius-sm);
+  background: var(--primary-color-hover);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-small);
   display: flex;
-  height: clamp(48px, 8vw + 20px, 60px);
+  height: 60px;
   justify-content: center;
   overflow: hidden;
-  width: clamp(48px, 8vw + 20px, 60px);
-}
-
-/* ==============================================
-   RESPONSIVE STYLES
-   ============================================== */
-
-/* ---------- Accessibility: Reduced Motion ---------- */
-@media (prefers-reduced-motion: reduce) {
-  .image-container img {
-    transition: none;
-  }
+  width: 60px;
 }

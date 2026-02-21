@@ -1,0 +1,538 @@
+/* ==============================
+   Who Should I Draw Toy
+   ============================== */
+
+.who-should-i-draw {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-large);
+  max-width: var(--container-max-width);
+  margin: 0 auto;
+  padding: var(--spacing-medium);
+}
+
+.who-should-i-draw__header {
+  text-align: center;
+}
+
+.who-should-i-draw__title {
+  font-size: var(--font-size-xxlarge);
+  font-weight: 800;
+  color: var(--text-color);
+  margin: 0 0 var(--spacing-xsmall) 0;
+}
+
+.who-should-i-draw__subtitle {
+  font-size: var(--font-size-medium);
+  color: var(--text-color-muted);
+  margin: 0;
+}
+
+/* ==============================
+   Configuration Panel
+   ============================== */
+
+.wsid-config {
+  background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-color) 100%);
+  border-radius: var(--border-radius-large);
+  padding: var(--spacing-medium);
+  border: 1px solid var(--border-color);
+  box-shadow: 0 4px 16px var(--overlay-light);
+}
+
+.wsid-config__title {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-small);
+  font-size: var(--font-size-xlarge);
+  font-weight: 700;
+  color: var(--text-color);
+  margin: 0 0 var(--spacing-medium) 0;
+  padding-bottom: var(--spacing-xsmall);
+  border-bottom: 2px solid var(--accent-color);
+}
+
+.wsid-config__title i {
+  color: var(--accent-color);
+}
+
+.wsid-config__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: var(--spacing-medium);
+}
+
+.wsid-config__field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xsmall);
+}
+
+.wsid-config__label {
+  font-size: var(--font-size-small);
+  font-weight: 600;
+  color: var(--text-color-muted);
+}
+
+.wsid-config__select,
+.wsid-config__input {
+  background: var(--input-background);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-small);
+  padding: var(--spacing-xsmall) var(--spacing-small);
+  color: var(--text-color);
+  font-size: var(--font-size-small);
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+
+.wsid-config__select:focus,
+.wsid-config__input:focus {
+  outline: none;
+  border-color: var(--accent-color);
+}
+
+.wsid-config__input {
+  cursor: text;
+}
+
+.wsid-config__input[type="number"] {
+  width: 80px;
+}
+
+/* Option group (radio-like button group) */
+.wsid-config__option-group {
+  display: flex;
+  gap: var(--spacing-xxsmall);
+  flex-wrap: wrap;
+}
+
+.wsid-config__option {
+  padding: var(--spacing-xsmall) var(--spacing-small);
+  background: var(--input-background);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-small);
+  color: var(--text-color-muted);
+  font-size: var(--font-size-small);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.wsid-config__option:hover {
+  border-color: var(--accent-color);
+  color: var(--text-color);
+}
+
+.wsid-config__option--active {
+  background: var(--accent-color);
+  border-color: var(--accent-color);
+  color: var(--text-color);
+  font-weight: 600;
+}
+
+.wsid-config__option--active:hover {
+  background: var(--accent-color-hover);
+}
+
+/* Actions row */
+.wsid-config__actions {
+  display: flex;
+  justify-content: center;
+  gap: var(--spacing-small);
+  margin-top: var(--spacing-medium);
+  padding-top: var(--spacing-medium);
+  border-top: 1px solid var(--border-color);
+}
+
+/* ==============================
+   Results Section
+   ============================== */
+
+.wsid-results {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-medium);
+}
+
+.wsid-results__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.wsid-results__title {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-small);
+  font-size: var(--font-size-xlarge);
+  font-weight: 700;
+  color: var(--text-color);
+  margin: 0;
+}
+
+.wsid-results__title i {
+  color: var(--accent-color);
+}
+
+.wsid-results__count {
+  font-size: var(--font-size-small);
+  color: var(--text-color-muted);
+}
+
+/* Results grid */
+.wsid-results__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: var(--spacing-medium);
+}
+
+/* ==============================
+   Result Card
+   ============================== */
+
+.wsid-result-card {
+  display: flex;
+  gap: var(--spacing-medium);
+  padding: var(--spacing-medium);
+  background: linear-gradient(135deg, var(--input-background) 0%, var(--primary-color) 100%);
+  border-radius: var(--border-radius-large);
+  border: 2px solid var(--border-color);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  text-decoration: none;
+  color: var(--text-color);
+}
+
+.wsid-result-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--accent-color), var(--accent-color-hover));
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.wsid-result-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 32px var(--overlay-dark);
+  border-color: var(--accent-color);
+}
+
+.wsid-result-card:hover::before {
+  opacity: 1;
+}
+
+.wsid-result-card--trainer {
+  border-left: 4px solid var(--accent-color);
+}
+
+.wsid-result-card--monster {
+  border-left: 4px solid var(--water-type);
+}
+
+/* Card badge (Trainer / Monster label) */
+.wsid-result-card__badge {
+  position: absolute;
+  top: var(--spacing-xsmall);
+  right: var(--spacing-xsmall);
+  padding: var(--spacing-xxsmall) var(--spacing-xsmall);
+  border-radius: var(--border-radius-small);
+  font-size: var(--font-size-xsmall);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.wsid-result-card__badge--trainer {
+  background: var(--accent-color);
+  color: var(--primary-color);
+}
+
+.wsid-result-card__badge--monster {
+  background: var(--water-type);
+  color: var(--text-color);
+}
+
+/* Card avatar */
+.wsid-result-card__avatar {
+  width: clamp(72px, 10vw, 96px);
+  height: clamp(72px, 10vw, 96px);
+  border-radius: var(--border-radius-medium);
+  overflow: hidden;
+  background: linear-gradient(135deg, var(--accent-color), var(--accent-color-hover));
+  flex-shrink: 0;
+  border: 2px solid var(--border-color);
+}
+
+.wsid-result-card__avatar img {
+  width: 100%;
+  object-fit: cover;
+}
+
+.wsid-result-card__avatar--placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.wsid-result-card__avatar--placeholder i {
+  font-size: var(--font-size-xxlarge);
+  color: var(--text-color);
+  opacity: 0.6;
+}
+
+/* Card details */
+.wsid-result-card__details {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xxsmall);
+}
+
+.wsid-result-card__name {
+  font-size: var(--font-size-large);
+  font-weight: 700;
+  color: var(--text-color);
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding-right: 4rem;
+}
+
+.wsid-result-card__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-xxsmall);
+  align-items: center;
+}
+
+.wsid-result-card__meta-item {
+  font-size: var(--font-size-small);
+  color: var(--text-color-muted);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xxsmall);
+}
+
+.wsid-result-card__meta-item i {
+  color: var(--accent-color);
+  font-size: var(--font-size-xsmall);
+}
+
+.wsid-result-card__types {
+  display: flex;
+  gap: var(--spacing-xxsmall);
+  flex-wrap: wrap;
+  margin-top: var(--spacing-xxsmall);
+}
+
+.wsid-result-card__owner {
+  font-size: var(--font-size-xsmall);
+  color: var(--text-color-muted);
+  margin-top: auto;
+}
+
+.wsid-result-card__owner i {
+  margin-right: var(--spacing-xxsmall);
+}
+
+/* ==============================
+   Roll Animation
+   ============================== */
+
+.wsid-rolling {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-medium);
+  padding: var(--spacing-xlarge);
+  min-height: 200px;
+}
+
+.wsid-rolling__spinner {
+  width: 64px;
+  height: 64px;
+  border: 4px solid var(--border-color);
+  border-top-color: var(--accent-color);
+  border-radius: 50%;
+  animation: wsid-spin 0.8s linear infinite;
+}
+
+@keyframes wsid-spin {
+  to { transform: rotate(360deg); }
+}
+
+.wsid-rolling__text {
+  font-size: var(--font-size-large);
+  font-weight: 600;
+  color: var(--accent-color);
+  animation: wsid-pulse 1s ease-in-out infinite;
+}
+
+@keyframes wsid-pulse {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+
+/* ==============================
+   Empty State
+   ============================== */
+
+.wsid-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-small);
+  padding: var(--spacing-xlarge);
+  text-align: center;
+}
+
+.wsid-empty__icon {
+  font-size: 3rem;
+  color: var(--accent-color);
+  opacity: 0.5;
+}
+
+.wsid-empty__text {
+  font-size: var(--font-size-medium);
+  color: var(--text-color-muted);
+}
+
+/* ==============================
+   User Selector (for specific user mode)
+   ============================== */
+
+.wsid-config__user-search {
+  position: relative;
+}
+
+.wsid-config__user-results {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: var(--primary-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-small);
+  max-height: 200px;
+  overflow-y: auto;
+  z-index: 10;
+  box-shadow: 0 8px 24px var(--overlay-dark);
+}
+
+.wsid-config__user-option {
+  padding: var(--spacing-xsmall) var(--spacing-small);
+  cursor: pointer;
+  font-size: var(--font-size-small);
+  color: var(--text-color);
+  transition: background 0.2s;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.wsid-config__user-option:last-child {
+  border-bottom: none;
+}
+
+.wsid-config__user-option:hover {
+  background: var(--primary-color-hover);
+}
+
+.wsid-config__selected-user {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xsmall);
+  padding: var(--spacing-xsmall) var(--spacing-small);
+  background: var(--accent-color-subtle);
+  border: 1px solid var(--accent-color-muted);
+  border-radius: var(--border-radius-small);
+  font-size: var(--font-size-small);
+  color: var(--text-color);
+}
+
+.wsid-config__selected-user button {
+  background: none;
+  border: none;
+  color: var(--text-color-muted);
+  cursor: pointer;
+  padding: 0;
+  font-size: var(--font-size-small);
+  line-height: 1;
+  transition: color 0.2s;
+}
+
+.wsid-config__selected-user button:hover {
+  color: var(--error-color);
+}
+
+/* ==============================
+   Back Link
+   ============================== */
+
+.wsid-back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xsmall);
+  color: var(--text-color-muted);
+  font-size: var(--font-size-small);
+  transition: color 0.2s;
+  text-decoration: none;
+}
+
+.wsid-back-link:hover {
+  color: var(--accent-color);
+}
+
+/* ==============================
+   Responsive
+   ============================== */
+
+@media (max-width: 768px) {
+  .wsid-config__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .wsid-results__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .wsid-result-card {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .wsid-result-card__name {
+    padding-right: 0;
+  }
+
+  .wsid-result-card__meta {
+    justify-content: center;
+  }
+
+  .wsid-result-card__types {
+    justify-content: center;
+  }
+
+  .wsid-config__actions {
+    flex-direction: column;
+  }
+
+  .wsid-config__option-group {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .wsid-result-card__avatar {
+    width: 64px;
+    height: 64px;
+  }
+}

@@ -1,0 +1,125 @@
+/* ==============================
+   My Trainers Page
+   ============================== */
+
+/* ---------- Page Layout ---------- */
+
+.my-trainers {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: var(--spacing-medium);
+}
+
+.my-trainers__header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--spacing-xsmall);
+  margin-bottom: var(--spacing-medium);
+}
+
+.my-trainers__header h1 {
+  margin: 0;
+}
+
+/* ---------- Toolbar ---------- */
+
+.my-trainers__toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--spacing-small);
+  margin-bottom: var(--spacing-medium);
+  padding: var(--spacing-small);
+  background-color: var(--primary-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-medium);
+}
+
+.my-trainers__filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xxsmall);
+}
+
+.my-trainers__filter-group label {
+  font-size: var(--font-size-small);
+  color: var(--text-color-muted);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xxsmall);
+}
+
+.my-trainers__sort-toggle {
+  display: flex;
+  gap: var(--spacing-xxsmall);
+}
+
+/* ---------- Trainer Grid ---------- */
+
+.my-trainers__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
+  gap: var(--spacing-medium);
+}
+
+.my-trainer-card {
+  text-align: center;
+}
+
+/* ---------- Trainer Card Stats ---------- */
+
+.my-trainer-card__stats {
+  display: flex;
+  justify-content: space-around;
+  margin-top: auto;
+  padding-top: var(--spacing-xsmall);
+  border-top: 1px solid var(--border-color);
+}
+
+.my-trainer-card__stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-xxsmall);
+  font-size: var(--font-size-small);
+  color: var(--text-color-muted);
+}
+
+.my-trainer-card__stat i {
+  font-size: var(--font-size-medium);
+  color: var(--accent-color);
+}
+
+.my-trainer-card__stat-value {
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+.my-trainer-card__stat-label {
+  font-size: var(--font-size-xsmall);
+}
+
+/* ---------- Delete Modal ---------- */
+
+.my-trainers__delete-modal p {
+  margin-bottom: var(--spacing-small);
+  line-height: 1.5;
+}
+
+.my-trainers__delete-error {
+  color: var(--error-color);
+  background-color: var(--error-dark);
+  padding: var(--spacing-xsmall) var(--spacing-small);
+  border-radius: var(--border-radius-small);
+  margin-bottom: var(--spacing-small);
+  font-size: var(--font-size-small);
+}
+
+.my-trainers__delete-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--spacing-xsmall);
+}
+

@@ -1,0 +1,266 @@
+/* Trainer Inventory Editor */
+
+.inventory-editor {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-large);
+}
+
+.inventory-editor__header {
+  margin-bottom: var(--spacing-xsmall);
+}
+
+.inventory-editor__single {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-medium);
+}
+
+.inventory-editor__search {
+  max-width: 400px;
+}
+
+.inventory-editor__loading {
+  text-align: center;
+  padding: var(--spacing-large);
+  color: var(--text-color-muted);
+}
+
+.inventory-editor__status {
+  padding: var(--spacing-small) var(--spacing-medium);
+  border-radius: var(--border-radius-medium);
+  font-size: var(--font-size-medium);
+}
+
+.inventory-editor__status--success {
+  background: var(--success-dark);
+  border: 1px solid var(--success-color);
+  color: var(--success-color);
+}
+
+.inventory-editor__status--error {
+  background: var(--error-dark);
+  border: 1px solid var(--error-color);
+  color: var(--error-color);
+}
+
+.inventory-editor__currency-card {
+  /* uses .card base */
+}
+
+.inventory-editor__currency-row {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-small);
+  margin-bottom: var(--spacing-xsmall);
+}
+
+.inventory-editor__currency-value {
+  font-size: var(--font-size-xlarge);
+  font-weight: 700;
+  color: var(--accent-color);
+}
+
+.inventory-editor__inventory-card {
+  /* uses .card base */
+}
+
+.inventory-editor__item-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xxsmall);
+}
+
+.inventory-editor__add-item {
+  margin-top: var(--spacing-large);
+  padding-top: var(--spacing-medium);
+  border-top: 1px solid var(--border-color);
+}
+
+.inventory-editor__add-title {
+  font-size: var(--font-size-large);
+  font-weight: 600;
+  margin-bottom: var(--spacing-xsmall);
+}
+
+.inventory-editor__qty-input {
+  width: 70px;
+}
+
+.inventory-editor__mass {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-medium);
+}
+
+.inventory-editor__trainer-select {
+  max-width: 400px;
+}
+
+/* Currency section */
+.inventory-editor__currency {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-medium);
+  padding: var(--spacing-medium);
+  background: var(--primary-color-hover);
+  border-radius: var(--border-radius-medium);
+  border: 1px solid var(--border-color);
+  flex-wrap: wrap;
+}
+
+.inventory-editor__currency-label {
+  font-weight: 600;
+  font-size: var(--font-size-large);
+  white-space: nowrap;
+}
+
+.inventory-editor__currency-amount {
+  font-size: var(--font-size-xlarge);
+  font-weight: 700;
+  color: var(--accent-color);
+}
+
+.inventory-editor__currency-input {
+  width: 120px;
+}
+
+/* Category sections */
+.inventory-editor__category {
+  margin-bottom: var(--spacing-medium);
+}
+
+.inventory-editor__category-title {
+  font-size: var(--font-size-large);
+  font-weight: 600;
+  text-transform: capitalize;
+  margin-bottom: var(--spacing-xsmall);
+  padding-bottom: var(--spacing-xxsmall);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.inventory-editor__items {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xxsmall);
+}
+
+.inventory-editor__item-row {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xsmall);
+  padding: var(--spacing-xxsmall) var(--spacing-xsmall);
+  border-radius: var(--border-radius-small);
+  transition: background 0.15s;
+}
+
+.inventory-editor__item-row:hover {
+  background: var(--primary-color-hover);
+}
+
+.inventory-editor__item-name {
+  flex: 1;
+  font-size: var(--font-size-medium);
+}
+
+.inventory-editor__item-qty {
+  font-weight: 600;
+  min-width: 2rem;
+  text-align: center;
+  font-size: var(--font-size-medium);
+}
+
+.inventory-editor__item-actions {
+  display: flex;
+  gap: var(--spacing-xxsmall);
+}
+
+/* Add item row */
+.inventory-editor__add-row {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xsmall);
+  margin-top: var(--spacing-medium);
+  padding-top: var(--spacing-medium);
+  border-top: 1px solid var(--border-color);
+  flex-wrap: wrap;
+}
+
+.inventory-editor__add-name {
+  flex: 1;
+  min-width: 150px;
+}
+
+.inventory-editor__add-category {
+  min-width: 120px;
+}
+
+.inventory-editor__add-qty {
+  width: 70px;
+}
+
+/* Mass add tab */
+.inventory-editor__mass-entry {
+  padding: var(--spacing-medium);
+  background: var(--primary-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-medium);
+  margin-bottom: var(--spacing-small);
+}
+
+.inventory-editor__mass-entry-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--spacing-small);
+}
+
+.inventory-editor__mass-entry-trainer {
+  font-weight: 600;
+  font-size: var(--font-size-large);
+}
+
+.inventory-editor__mass-items {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xsmall);
+}
+
+.inventory-editor__mass-item-row {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xsmall);
+  flex-wrap: wrap;
+}
+
+.inventory-editor__mass-item-name {
+  flex: 1;
+  min-width: 150px;
+}
+
+.inventory-editor__mass-item-category {
+  min-width: 120px;
+}
+
+.inventory-editor__mass-item-qty {
+  width: 70px;
+}
+
+.inventory-editor__mass-actions {
+  display: flex;
+  gap: var(--spacing-xsmall);
+  margin-top: var(--spacing-medium);
+}
+
+/* Empty state */
+.inventory-editor__empty {
+  text-align: center;
+  padding: var(--spacing-large);
+  color: var(--text-color-muted);
+}
+
+.inventory-editor__empty i {
+  font-size: clamp(2rem, 1.5rem + 1.5vw, 3.5rem);
+  margin-bottom: var(--spacing-xsmall);
+  display: block;
+}

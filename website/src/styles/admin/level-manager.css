@@ -1,0 +1,159 @@
+/* ==============================
+   Level Manager Admin Tool
+   ============================== */
+
+/* ---------- Entry List ---------- */
+
+.level-manager__entries {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-small);
+}
+
+/* ---------- Entry Card ---------- */
+
+.level-manager__card {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-small);
+  background-color: var(--primary-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-medium);
+  padding: var(--spacing-small);
+  transition: border-color 0.2s ease;
+}
+
+.level-manager__card:hover {
+  border-color: var(--accent-color-muted);
+}
+
+.level-manager__card-fields {
+  display: grid;
+  grid-template-columns: 2fr 6rem 10rem;
+  gap: var(--spacing-small);
+  flex: 1;
+  align-items: start;
+}
+
+.level-manager__card-fields--monster {
+  grid-template-columns: 1.5fr 1.5fr 6rem 10rem;
+}
+
+.level-manager__card-trainer {
+  min-width: 0;
+}
+
+.level-manager__card-monster {
+  min-width: 0;
+}
+
+.level-manager__card-levels {
+  min-width: 0;
+}
+
+.level-manager__card-toggle {
+  min-width: 0;
+}
+
+.level-manager__card-remove {
+  margin-top: 1.75rem;
+  flex-shrink: 0;
+}
+
+/* ---------- Loading Monsters ---------- */
+
+.level-manager__loading-monsters {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xsmall);
+  padding: var(--spacing-small) var(--spacing-medium);
+  color: var(--text-color-muted);
+  font-size: var(--font-size-small);
+  background-color: var(--input-background);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-medium);
+  height: 100%;
+}
+
+/* ---------- Commit Section ---------- */
+
+.level-manager__commit {
+  padding-top: var(--spacing-small);
+  border-top: 1px solid var(--border-color);
+}
+
+/* ---------- Results Section ---------- */
+
+.level-manager__results {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xsmall);
+  background-color: var(--primary-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-medium);
+  padding: var(--spacing-small);
+}
+
+.level-manager__results h3 {
+  margin: 0;
+  font-size: var(--font-size-large);
+  color: var(--text-color);
+}
+
+.level-manager__results-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xxsmall);
+}
+
+.level-manager__result-item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xsmall);
+  padding: var(--spacing-xsmall) var(--spacing-small);
+  border-radius: var(--border-radius-small);
+  font-size: var(--font-size-small);
+}
+
+.level-manager__result-item--success {
+  background-color: var(--success-dark);
+  border: 1px solid var(--success-color);
+}
+
+.level-manager__result-item--success i {
+  color: var(--success-color);
+}
+
+.level-manager__result-item--fail {
+  background-color: var(--error-dark);
+  border: 1px solid var(--error-color);
+}
+
+.level-manager__result-item--fail i {
+  color: var(--error-color);
+}
+
+.level-manager__result-name {
+  font-weight: 600;
+  min-width: 8rem;
+}
+
+.level-manager__result-msg {
+  color: var(--text-color-muted);
+}
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 900px) {
+  .level-manager__card-fields {
+    grid-template-columns: 1fr;
+  }
+
+  .level-manager__card-fields--monster {
+    grid-template-columns: 1fr;
+  }
+
+  .level-manager__card-remove {
+    margin-top: 0;
+  }
+}

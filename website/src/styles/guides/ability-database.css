@@ -1,0 +1,329 @@
+/* ==============================
+   Ability Database Page Styles
+   ============================== */
+
+/* ---------- Page Layout ---------- */
+
+.ability-database {
+  max-width: var(--container-max-width);
+  margin: 0 auto;
+  padding: var(--spacing-large);
+}
+
+/* ---------- Filter Section ---------- */
+
+.ability-database__filter-section {
+  background: var(--primary-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-medium);
+  padding: var(--spacing-large);
+  margin-bottom: var(--spacing-large);
+}
+
+.ability-database__filter-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-medium);
+}
+
+.ability-database__filter-header h2 {
+  margin: 0;
+  color: var(--accent-color);
+  font-size: var(--font-size-xlarge);
+}
+
+.ability-database__search-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-medium);
+  margin-bottom: var(--spacing-medium);
+}
+
+.ability-database__search-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xxsmall);
+}
+
+.ability-database__search-group label {
+  font-size: var(--font-size-small);
+  color: var(--text-color-muted);
+}
+
+.ability-database__search-group label i {
+  margin-right: var(--spacing-xxsmall);
+  color: var(--accent-color);
+}
+
+/* ---------- Type Filter ---------- */
+
+.ability-database__type-filter {
+  border-top: 1px solid var(--border-color);
+  padding-top: var(--spacing-medium);
+}
+
+.ability-database__type-filter-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-small);
+}
+
+.ability-database__type-filter-header h3 {
+  margin: 0;
+  font-size: var(--font-size-medium);
+  color: var(--text-color);
+}
+
+.ability-database__type-logic {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xsmall);
+}
+
+.ability-database__type-logic-label {
+  font-size: var(--font-size-small);
+  color: var(--text-color-muted);
+}
+
+.ability-database__type-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-xsmall);
+  margin-bottom: var(--spacing-small);
+}
+
+.ability-database__type-button {
+  padding: var(--spacing-xxsmall) var(--spacing-xsmall);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-small);
+  background: var(--background-color);
+  color: var(--text-color);
+  font-size: var(--font-size-small);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.ability-database__type-button:hover {
+  border-color: var(--accent-color);
+}
+
+.ability-database__type-button--selected {
+  background: var(--accent-color);
+  color: var(--background-color);
+  border-color: var(--accent-color);
+}
+
+.ability-database__selected-types {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--spacing-xsmall);
+  font-size: var(--font-size-small);
+  color: var(--text-color-muted);
+}
+
+.ability-database__type-logic-indicator {
+  font-size: var(--font-size-xsmall);
+  color: var(--accent-color);
+  font-weight: 600;
+  padding: 0 var(--spacing-xxsmall);
+}
+
+/* ---------- Results Section ---------- */
+
+.ability-database__results {
+  margin-top: var(--spacing-large);
+}
+
+.ability-database__results-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-medium);
+}
+
+.ability-database__results-count {
+  font-size: var(--font-size-small);
+  color: var(--text-color-muted);
+}
+
+.ability-database__results-count strong {
+  color: var(--accent-color);
+}
+
+.ability-database__sort {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xsmall);
+}
+
+.ability-database__sort-label {
+  font-size: var(--font-size-small);
+  color: var(--text-color-muted);
+}
+
+/* ---------- Ability Grid ---------- */
+
+.ability-database__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: var(--spacing-medium);
+}
+
+.ability-database__loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-xxlarge);
+  color: var(--text-color-muted);
+}
+
+.ability-database__no-results {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-xxlarge);
+  text-align: center;
+  color: var(--text-color-muted);
+}
+
+.ability-database__no-results i {
+  font-size: clamp(2rem, 1.5rem + 1.5vw, 3.5rem);
+  margin-bottom: var(--spacing-small);
+  opacity: 0.5;
+}
+
+.ability-database__no-results h3 {
+  margin: 0 0 var(--spacing-xsmall);
+  color: var(--text-color);
+}
+
+.ability-database__no-results p {
+  margin: 0;
+}
+
+/* ---------- Ability Card ---------- */
+
+.ability-card {
+  background: var(--primary-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-medium);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  overflow: hidden;
+}
+
+.ability-card:hover {
+  border-color: var(--accent-color);
+}
+
+.ability-card--expanded {
+  border-color: var(--accent-color);
+}
+
+.ability-card__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-small) var(--spacing-medium);
+  gap: var(--spacing-small);
+}
+
+.ability-card__name {
+  margin: 0;
+  font-size: var(--font-size-medium);
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+.ability-card__types {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-xxsmall);
+}
+
+.ability-card__body {
+  padding: 0 var(--spacing-medium) var(--spacing-medium);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-small);
+}
+
+.ability-card__detail {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xxsmall);
+}
+
+.ability-card__label {
+  font-size: var(--font-size-xsmall);
+  font-weight: 600;
+  color: var(--accent-color);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.ability-card__detail p {
+  margin: 0;
+  font-size: var(--font-size-small);
+  color: var(--text-color);
+  line-height: 1.5;
+}
+
+.ability-card__monsters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-xxsmall);
+}
+
+.ability-card__monster-tag {
+  padding: var(--spacing-xxsmall) var(--spacing-xsmall);
+  background: var(--background-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-small);
+  font-size: var(--font-size-xsmall);
+  color: var(--text-color);
+}
+
+.ability-card__no-details {
+  font-size: var(--font-size-small);
+  color: var(--text-color-muted);
+  font-style: italic;
+  margin: 0;
+}
+
+.ability-card__expand-indicator {
+  text-align: center;
+  padding: var(--spacing-xsmall);
+  color: var(--text-color-muted);
+  font-size: var(--font-size-xsmall);
+  border-top: 1px solid var(--border-color);
+}
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 768px) {
+  .ability-database__search-row {
+    grid-template-columns: 1fr;
+  }
+
+  .ability-database__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .ability-database__results-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-xsmall);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ability-card {
+    transition: none;
+  }
+}

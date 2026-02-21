@@ -1,0 +1,110 @@
+/* ==============================
+   ActionButtonGroup Component
+   ============================== */
+
+.action-button-group {
+  display: flex;
+  align-items: center;
+}
+
+/* ---------- Direction ---------- */
+
+.action-button-group--row {
+  flex-direction: row;
+}
+
+.action-button-group--column {
+  flex-direction: column;
+}
+
+/* ---------- Alignment ---------- */
+
+.action-button-group--align-start {
+  justify-content: flex-start;
+}
+
+.action-button-group--align-center {
+  justify-content: center;
+}
+
+.action-button-group--align-end {
+  justify-content: flex-end;
+}
+
+.action-button-group--align-between {
+  justify-content: space-between;
+}
+
+.action-button-group--align-stretch {
+  justify-content: stretch;
+}
+
+.action-button-group--align-stretch > * {
+  flex: 1;
+}
+
+/* ---------- Gap Sizes ---------- */
+
+.action-button-group--gap-xs {
+  gap: var(--spacing-xxsmall);
+}
+
+.action-button-group--gap-sm {
+  gap: var(--spacing-xsmall);
+}
+
+.action-button-group--gap-md {
+  gap: var(--spacing-small);
+}
+
+.action-button-group--gap-lg {
+  gap: var(--spacing-medium);
+}
+
+/* ---------- Margin ---------- */
+
+.action-button-group--margin-top {
+  margin-top: var(--spacing-small);
+}
+
+.action-button-group--margin-bottom {
+  margin-bottom: var(--spacing-small);
+}
+
+/* ---------- Modifiers ---------- */
+
+.action-button-group--full-width {
+  width: 100%;
+}
+
+.action-button-group--full-width > .button {
+  flex: 1;
+}
+
+.action-button-group--reverse.action-button-group--row {
+  flex-direction: row-reverse;
+}
+
+.action-button-group--reverse.action-button-group--column {
+  flex-direction: column-reverse;
+}
+
+.action-button-group--wrap {
+  flex-wrap: wrap;
+}
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 480px) {
+  .action-button-group--row {
+    flex-direction: column;
+  }
+
+  .action-button-group--row > .button {
+    width: 100%;
+  }
+
+  .action-button-group--reverse.action-button-group--row {
+    flex-direction: column-reverse;
+  }
+}

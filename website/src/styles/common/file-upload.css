@@ -1,0 +1,38 @@
+/* Styling for the File Upload Component */
+.file-upload {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-small);
+    position: relative;
+    width: 100%;
+}
+
+.file-upload.disabled {
+    opacity: 0.6;
+    pointer-events: none;
+    cursor: not-allowed;
+}
+
+.file-input {
+    display: none;
+}
+
+/* Preview Container */
+.preview-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-small);
+}
+
+/* Upload Progress */
+.upload-progress {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-small);
+    width: 100%;
+}
+
+.upload-progress .progress {
+    flex: 1;
+}

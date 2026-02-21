@@ -1,0 +1,712 @@
+/* ==============================
+   Monster Detail Page Styles
+   ============================== */
+
+/* ---------- Box Navigation ---------- */
+
+.monster-box-navigation {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-small);
+  padding: var(--spacing-xsmall) var(--spacing-small);
+  border-radius: var(--border-radius-medium);
+}
+
+.monster-box-navigation .button {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xxsmall);
+  height: 0.5rem;
+}
+
+.box-info {
+  font-size: var(--font-size-small);
+  color: var(--text-color-muted);
+  font-weight: 600;
+}
+
+.box-nav-placeholder {
+  width: 120px;
+}
+
+/* ---------- Header ---------- */
+.monster-profile-image-container {
+  width: clamp(35%, 40vw, 45%);
+  height: clamp(20vh, 40vh, 70vh);
+  max-height: 100%;
+  border-radius: var(--border-radius-medium);
+  overflow: hidden;
+  flex-shrink: 0;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.monster-profile-image-container::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, var(--overlay-light), var(--overlay-dark));
+  opacity: 0;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  pointer-events: none;
+}
+
+.monster-profile-image-container:hover::after {
+  opacity: 1;
+}
+
+.monster-profile-image-container:hover {
+  transform: translateY(-4px);
+  transform: scale(1.03);
+  box-shadow: 0 8px 24px var(--overlay-medium);
+}
+
+.monster-profile-image {
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  display: block;
+  position: sticky;
+  top: 20px;
+}
+
+
+/* ---------- Friendship ---------- */
+
+.monster-friendship-panel {
+  margin-top: var(--spacing-small);
+  padding: var(--spacing-small);
+  background: var(--overlay-light);
+  border-radius: var(--border-radius-small);
+}
+
+.monster-friendship-header {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xxsmall);
+  font-weight: 600;
+  margin-bottom: var(--spacing-xsmall);
+}
+
+.monster-friendship-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xxsmall);
+}
+
+.monster-friendship-meter {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xsmall);
+}
+
+.monster-friendship-bar {
+  flex: 1;
+  height: 8px;
+  background: var(--overlay-medium);
+  border-radius: var(--border-radius-small);
+  overflow: hidden;
+}
+
+.monster-friendship-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent-color), var(--accent-color));
+  border-radius: var(--border-radius-small);
+  transition: width 0.5s ease;
+}
+
+.monster-friendship-value {
+  font-size: var(--font-size-small);
+  color: var(--text-color-muted);
+  min-width: 60px;
+  text-align: right;
+}
+
+.monster-friendship-message {
+  font-size: var(--font-size-small);
+  color: var(--text-color-muted);
+  font-style: italic;
+}
+
+/* ---------- Special Features ---------- */
+
+.monster-special-features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: var(--spacing-small);
+}
+
+.monster-special-card {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-xsmall);
+  padding: var(--spacing-small);
+  border-radius: var(--border-radius-small);
+  background: var(--overlay-light);
+  border-left: 3px solid var(--accent-color);
+}
+
+.monster-special-card i {
+  font-size: var(--font-size-medium);
+  margin-top: 2px;
+}
+
+.monster-special-card strong {
+  display: block;
+  margin-bottom: 2px;
+}
+
+.monster-special-card p {
+  font-size: var(--font-size-small);
+  color: var(--text-color-muted);
+  margin: 0;
+}
+
+.monster-special--shiny { border-left-color: var(--accent-color); }
+.monster-special--shiny i { color: var(--accent-color); }
+.monster-special--alpha { border-left-color: var(--error-color); }
+.monster-special--alpha i { color: var(--error-color); }
+.monster-special--shadow { border-left-color: var(--poison-type); }
+.monster-special--shadow i { color: var(--poison-type); }
+.monster-special--paradox { border-left-color: var(--water-type); }
+.monster-special--paradox i { color: var(--water-type); }
+.monster-special--pokerus { border-left-color: var(--success-color); }
+.monster-special--pokerus i { color: var(--success-color); }
+
+/* ---------- Stats ---------- */
+
+.monster-stats-grid {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xxsmall);
+}
+
+.monster-stat-row {
+  display: grid;
+  grid-template-columns: clamp(40px, 3vw + 30px, 45px) clamp(40px, 3vw + 30px, 50px) 1fr clamp(80px, 5vw + 50px, 100px);
+  align-items: center;
+  gap: var(--spacing-xsmall);
+  padding: var(--spacing-xxsmall) 0;
+}
+
+.monster-stat-row--total {
+  border-top: 1px solid var(--overlay-medium);
+  margin-top: var(--spacing-xxsmall);
+  padding-top: var(--spacing-xsmall);
+  font-weight: 700;
+}
+
+.monster-stat-label {
+  font-size: var(--font-size-small);
+  font-weight: 600;
+  color: var(--text-color-muted);
+  text-transform: uppercase;
+}
+
+.monster-stat-value {
+  font-weight: 700;
+  text-align: right;
+  font-size: var(--font-size-small);
+}
+
+.monster-stat-total-value {
+  color: var(--accent-color);
+}
+
+.monster-stat-bar-track {
+  height: 8px;
+  background: var(--overlay-medium);
+  border-radius: var(--border-radius-small);
+  overflow: hidden;
+}
+
+.monster-stat-bar-fill {
+  height: 100%;
+  border-radius: var(--border-radius-small);
+  transition: width 0.5s ease;
+}
+
+.stat-bar--hp  { background: var(--success-color); }
+.stat-bar--atk { background: var(--error-color); }
+.stat-bar--def { background: var(--warning-color); }
+.stat-bar--spa { background: var(--water-type); }
+.stat-bar--spd { background: var(--success-color); }
+.stat-bar--spe { background: var(--psychic-type); }
+
+.stat-color--legendary { color: var(--error-color); }
+.stat-color--excellent { color: var(--warning-color); }
+.stat-color--great     { color: var(--success-color); }
+.stat-color--good      { color: var(--water-type); }
+.stat-color--average   { color: var(--text-color-muted); }
+.stat-color--low       { color: var(--secondary-color); }
+
+.monster-iv-ev {
+  display: flex;
+  gap: var(--spacing-xsmall);
+  justify-content: flex-end;
+}
+
+.monster-iv,
+.monster-ev {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  font-size: var(--font-size-xsmall);
+}
+
+.monster-iv-ev-label {
+  color: var(--text-color-muted);
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: var(--font-size-xxxsmall);
+}
+
+.monster-iv-ev-value {
+  font-weight: 700;
+  min-width: 18px;
+  text-align: right;
+}
+
+.monster-stats-summary {
+  display: flex;
+  gap: var(--spacing-medium);
+  margin-top: var(--spacing-small);
+  padding-top: var(--spacing-small);
+  border-top: 1px solid var(--overlay-light);
+}
+
+.monster-stats-summary-item {
+  display: flex;
+  gap: var(--spacing-xxsmall);
+}
+
+/* ---------- Moves ---------- */
+
+.monster-moves-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: var(--spacing-small);
+}
+
+.monster-move-card {
+  padding: var(--spacing-small);
+  background: var(--overlay-light);
+  border-radius: var(--border-radius-small);
+  border: 1px solid var(--overlay-medium);
+}
+
+.monster-move-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-xsmall);
+}
+
+.monster-move-name {
+  margin: 0;
+  font-size: var(--font-size-medium);
+}
+
+.monster-move-stats {
+  display: flex;
+  gap: var(--spacing-small);
+  margin-bottom: var(--spacing-xsmall);
+}
+
+.monster-move-stat {
+  display: flex;
+  gap: var(--spacing-xxsmall);
+  font-size: var(--font-size-small);
+}
+
+.monster-move-description {
+  font-size: var(--font-size-small);
+  color: var(--text-color-muted);
+  border-top: 1px solid var(--overlay-light);
+  padding-top: var(--spacing-xxsmall);
+}
+
+.monster-move-description p {
+  margin: 0;
+}
+
+/* ---------- Fun Facts ---------- */
+
+.monster-fun-facts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: var(--spacing-small);
+}
+
+.monster-fun-fact-card {
+  display: flex;
+  gap: var(--spacing-xsmall);
+  padding: var(--spacing-small);
+  background: var(--overlay-light);
+  border-radius: var(--border-radius-small);
+  position: relative;
+}
+
+.monster-fun-fact-icon {
+  color: var(--accent-color);
+  font-size: var(--font-size-medium);
+  flex-shrink: 0;
+}
+
+.monster-fun-fact-content {
+  flex: 1;
+}
+
+.monster-fun-fact-content strong {
+  display: block;
+  margin-bottom: var(--spacing-xxsmall);
+}
+
+.monster-fun-fact-content p {
+  font-size: var(--font-size-small);
+  color: var(--text-color-muted);
+  margin: 0;
+}
+
+.monster-fun-fact-number {
+  position: absolute;
+  top: var(--spacing-xxsmall);
+  right: var(--spacing-xsmall);
+  font-size: var(--font-size-xsmall);
+  color: var(--text-color-muted);
+  opacity: 0.5;
+}
+
+/* ---------- Relations ---------- */
+
+.monster-relations-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: var(--spacing-small);
+}
+
+.monster-relation-card {
+  padding: var(--spacing-small);
+  background: var(--overlay-light);
+  border-radius: var(--border-radius-small);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xsmall);
+}
+
+.monster-relation-header {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xsmall);
+}
+
+.monster-relation-header i {
+  font-size: var(--font-size-medium);
+  color: var(--accent-color);
+}
+
+.monster-relation-header h4 {
+  margin: 0;
+}
+
+.monster-relation-link {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xsmall);
+  padding: var(--spacing-xxsmall) var(--spacing-xsmall);
+  background: var(--overlay-medium);
+  border-radius: var(--border-radius-small);
+  color: var(--text-color);
+  text-decoration: none;
+  transition: background 0.2s;
+}
+
+.monster-relation-link:hover {
+  background: var(--overlay-dark);
+}
+
+.monster-relation-link span {
+  flex: 1;
+}
+
+.monster-relation-story {
+  font-size: var(--font-size-small);
+  color: var(--text-color-muted);
+  font-style: italic;
+  border-top: 1px solid var(--overlay-medium);
+  padding-top: var(--spacing-xxsmall);
+}
+
+.monster-relation-story p {
+  margin: 0;
+}
+
+/* ---------- Gallery ---------- */
+
+.monster-gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: var(--spacing-small);
+}
+
+.monster-gallery-item {
+  border-radius: var(--border-radius-small);
+  overflow: hidden;
+  background: var(--overlay-light);
+}
+
+.monster-gallery-image {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.monster-gallery-image:hover {
+  transform: scale(1.03);
+}
+
+.monster-gallery-caption {
+  padding: var(--spacing-xxsmall) var(--spacing-xsmall);
+  font-size: var(--font-size-small);
+  text-align: center;
+  color: var(--text-color-muted);
+}
+
+/* ---------- Trainer Link & Level Badge ---------- */
+
+.trainer-link {
+  color: var(--accent-color);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.trainer-link:hover {
+  text-decoration: underline;
+}
+
+/* ---------- Lineage ---------- */
+
+.monster-lineage-tree {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-medium);
+}
+
+.monster-lineage-section h3 {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xxsmall);
+  margin-bottom: var(--spacing-xsmall);
+}
+
+.monster-lineage-auto {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xxsmall);
+  font-size: var(--font-size-small);
+  color: var(--text-color-muted);
+  margin-top: var(--spacing-xxsmall);
+}
+
+.monster-species-text {
+  font-size: var(--font-size-small);
+  color: var(--text-color-muted);
+  margin: 2px 0;
+}
+
+.monster-level-badge {
+  position: absolute;
+  bottom: var(--spacing-xxsmall);
+  right: var(--spacing-xxsmall);
+  background: var(--accent-color);
+  color: var(--background-color);
+  font-size: var(--font-size-xsmall);
+  font-weight: 700;
+  padding: var(--spacing-xxsmall) var(--spacing-xsmall);
+  border-radius: var(--border-radius-small);
+}
+
+.monster-lineage-form {
+  margin-top: var(--spacing-medium);
+  padding: var(--spacing-medium);
+  background: var(--overlay-light);
+  border-radius: var(--border-radius-medium);
+  border: 1px solid var(--overlay-medium);
+}
+
+.monster-lineage-form h3 {
+  margin-top: 0;
+}
+
+/* ---------- Lineage Search ---------- */
+
+.monster-search-container {
+  position: relative;
+}
+
+.monster-search-results {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  max-height: 300px;
+  overflow-y: auto;
+  background: var(--primary-color);
+  border: 1px solid var(--overlay-medium);
+  border-radius: var(--border-radius-small);
+  z-index: 100;
+  box-shadow: 0 4px 12px var(--overlay-dark);
+}
+
+.monster-search-result {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xsmall);
+  padding: var(--spacing-xsmall);
+  cursor: pointer;
+  transition: background 0.15s;
+  border-bottom: 1px solid var(--overlay-light);
+}
+
+.monster-search-result:last-child {
+  border-bottom: none;
+}
+
+.monster-search-result:hover {
+  background: var(--overlay-medium);
+}
+
+.monster-search-result-img {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--border-radius-small);
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.monster-search-result-name {
+  font-weight: 600;
+}
+
+.monster-search-result-detail {
+  font-size: var(--font-size-small);
+  color: var(--text-color-muted);
+}
+
+.monster-search-selected {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xxsmall);
+  margin-top: var(--spacing-xxsmall);
+  color: var(--success-color);
+  font-size: var(--font-size-small);
+}
+
+/* ---------- Mega Evolution ---------- */
+
+.monster-mega-stone-info {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-medium);
+}
+
+.monster-mega-stone-image {
+  width: 80px;
+  height: 80px;
+  flex-shrink: 0;
+}
+
+.monster-mega-stone-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.monster-mega-stone-placeholder {
+  width: 80px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--overlay-light);
+  border-radius: var(--border-radius-small);
+  font-size: clamp(1.5rem, 1rem + 1.5vw, 2.5rem);
+  color: var(--text-color-muted);
+}
+
+.monster-mega-comparison {
+  display: flex;
+  align-items: stretch;
+  gap: var(--spacing-medium);
+}
+
+.monster-mega-form {
+  flex: 1;
+  text-align: center;
+}
+
+.monster-mega-form h3 {
+  margin-bottom: var(--spacing-xsmall);
+}
+
+.monster-mega-form-image {
+  margin-bottom: var(--spacing-small);
+}
+
+.monster-mega-form-image img {
+  max-width: 100%;
+  max-height: 300px;
+  object-fit: contain;
+  border-radius: var(--border-radius-small);
+}
+
+.monster-mega-form-details {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-xxsmall);
+}
+
+.monster-mega-form-species {
+  font-weight: 600;
+  margin: 0;
+}
+
+.monster-mega-form-ability {
+  display: flex;
+  gap: var(--spacing-xxsmall);
+  font-size: var(--font-size-small);
+}
+
+.monster-mega-arrow {
+  display: flex;
+  align-items: center;
+  font-size: clamp(1.5rem, 1rem + 1.5vw, 2.5rem);
+  color: var(--accent-color);
+  padding: 0 var(--spacing-xsmall);
+}
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 768px) {
+  .monster-mega-comparison {
+    flex-direction: column;
+  }
+
+  .monster-mega-arrow {
+    justify-content: center;
+    padding: var(--spacing-xsmall) 0;
+  }
+
+  .monster-mega-arrow i {
+    transform: rotate(90deg);
+  }
+}

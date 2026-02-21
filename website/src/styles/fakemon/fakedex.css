@@ -1,0 +1,786 @@
+/* =========================
+   Fakedex Styles
+   - Dex grid page
+   - Detail page
+   ========================= */
+
+/* ========== Container ========== */
+
+.fakedex-container {
+  max-width: 90vw;
+  margin: 0 auto;
+}
+
+/* ========== Dex: Header ========== */
+
+.fakedex-header {
+  text-align: center;
+  margin-bottom: var(--spacing-xlarge);
+  padding-top: var(--spacing-large);
+  position: relative;
+}
+
+.fakedex-header::after {
+  content: '';
+  position: absolute;
+  bottom: -1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 4px;
+  background: var(--accent-color);
+  border-radius: 2px;
+}
+
+.fakedex-header h1 {
+  font-size: var(--font-size-xxlarge);
+  font-weight: 700;
+  color: var(--accent-color);
+  margin-bottom: var(--spacing-small);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.fakedex-header p {
+  font-size: var(--font-size-large);
+  color: var(--text-color-muted);
+  font-weight: 300;
+}
+
+/* ========== Dex: Controls ========== */
+
+.fakedex-controls {
+  margin-bottom: var(--spacing-medium);
+}
+
+.search-and-toggles {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-small);
+  justify-content: space-between;
+  margin-bottom: var(--spacing-small);
+}
+
+.search-form {
+  flex: 1;
+  max-width: 400px;
+}
+
+.filter-toggle-group {
+  display: flex;
+  gap: var(--spacing-xsmall);
+}
+
+.filter-count {
+  background-color: var(--error-color);
+  color: var(--text-color);
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--font-size-xxxsmall);
+  font-weight: 700;
+}
+
+.filter-section {
+  margin-bottom: var(--spacing-small);
+}
+
+.filter-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-xxsmall);
+}
+
+/* ========== Dex: Grid ========== */
+
+.fakedex-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: var(--spacing-small);
+  margin-bottom: var(--spacing-xlarge);
+}
+
+/* ========== Dex: Card ========== */
+
+.fakemon-card {
+  background: var(--primary-color);
+  border-radius: var(--border-radius-large);
+  overflow: hidden;
+  box-shadow: 0 4px 12px var(--overlay-light);
+  transition: all 0.3s ease;
+  text-decoration: none;
+  color: var(--text-color);
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--border-color);
+}
+
+.fakemon-card:hover {
+  transform: translateY(-6px) scale(1.02);
+  box-shadow: 0 10px 24px var(--overlay-dark);
+  border-color: var(--accent-color);
+}
+
+.fakemon-card-image {
+  display: flex;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.fakemon-image {
+  width: 100%;
+  height: 220px;
+  object-fit: contain;
+  transition: transform 0.4s ease;
+}
+
+.fakemon-card:hover .fakemon-image {
+  transform: scale(1.08);
+}
+
+.fakemon-card-body {
+  padding: var(--spacing-small);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xxsmall);
+  background: var(--primary-color-hover);
+}
+
+.dex-number {
+  font-size: var(--font-size-small);
+  color: var(--accent-color);
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.dex-name {
+  font-size: var(--font-size-medium);
+  font-weight: 700;
+  color: var(--text-color);
+  margin: 0;
+}
+
+.fakemon-card-category {
+  font-size: var(--font-size-xsmall);
+  color: var(--text-color-muted);
+}
+
+.fakemon-card-classification {
+  font-size: var(--font-size-xsmall);
+  color: var(--text-color-muted);
+  font-style: italic;
+}
+
+/* ========== Detail: Hero ========== */
+
+.fakemon-hero {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xlarge);
+  margin-bottom: var(--spacing-large);
+  background: linear-gradient(145deg, var(--primary-color), var(--primary-color-hover));
+  border-radius: var(--border-radius-large);
+  padding: var(--spacing-xlarge);
+  border: 1px solid var(--border-color);
+  box-shadow: 0 10px 30px var(--overlay-dark);
+  position: relative;
+  overflow: hidden;
+  justify-content: center;
+}
+
+.fakemon-hero::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--accent-color);
+  border-radius: var(--border-radius-large) var(--border-radius-large) 0 0;
+}
+
+.fakemon-hero-image-wrap {
+  position: relative;
+  flex-shrink: 0;
+  width: 380px;
+  height: 380px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.fakemon-hero-glow {
+  position: absolute;
+  inset: -20px;
+  background: radial-gradient(circle at center, var(--accent-color-hover) 0%, transparent 70%);
+  z-index: 0;
+  pointer-events: none;
+}
+
+.fakemon-hero-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  position: relative;
+  z-index: 1;
+  filter: drop-shadow(0 8px 24px var(--overlay-dark));
+  transition: transform 0.4s ease;
+}
+
+.fakemon-hero-image:hover {
+  transform: scale(1.05);
+}
+
+.artist-caption {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: var(--overlay-dark);
+  color: var(--text-color);
+  padding: var(--spacing-small);
+  font-size: var(--font-size-small);
+  text-align: center;
+  z-index: 3;
+  backdrop-filter: blur(4px);
+  border-top: 1px solid var(--border-color);
+}
+
+.fakemon-hero-text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xxsmall);
+}
+
+.fakemon-number {
+  font-size: var(--font-size-large);
+  color: var(--accent-color);
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.fakemon-name {
+  font-size: var(--font-size-xxlarge);
+  font-weight: 700;
+  color: var(--accent-color);
+  letter-spacing: 1px;
+  line-height: 1.2;
+  margin: 0;
+}
+
+.fakemon-classification-subtitle {
+  font-size: var(--font-size-medium);
+  color: var(--text-color-muted);
+  font-style: italic;
+  margin: 0;
+}
+
+/* Universe tag */
+.fakemon-universe-tag {
+  margin-top: var(--spacing-xxsmall);
+}
+
+.category-tag {
+  display: inline-block;
+  padding: var(--spacing-xxsmall) var(--spacing-small);
+  border-radius: var(--border-radius-large);
+  font-size: var(--font-size-xsmall);
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  background: var(--accent-color-hover);
+  color: var(--accent-color);
+}
+
+.category-tag.category-pokemon { background-color: var(--error-dark); color: var(--text-color); }
+.category-tag.category-digimon { background-color: var(--water-type); color: var(--text-color); }
+.category-tag.category-yokai { background-color: var(--warning-dark); color: var(--text-color); }
+.category-tag.category-fakemon { background-color: var(--success-dark); color: var(--text-color); }
+.category-tag.category-palmon { background-color: var(--accent-color-hover); color: var(--text-color); }
+.category-tag.category-nexomon { background-color: var(--poison-type); color: var(--text-color); }
+.category-tag.category-final-fantasy { background-color: var(--fairy-type); color: var(--text-color); }
+.category-tag.category-monster-hunter { background-color: var(--fighting-type); color: var(--text-color); }
+
+/* ========== Detail: Info Panel ========== */
+
+.fakemon-info-panel {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-medium);
+  margin-bottom: var(--spacing-large);
+}
+
+.fakemon-panel-card {
+  background: var(--primary-color);
+  border-radius: var(--border-radius-large);
+  padding: var(--spacing-medium);
+  border: 1px solid var(--border-color);
+}
+
+.panel-heading {
+  font-size: var(--font-size-large);
+  font-weight: 700;
+  color: var(--accent-color);
+  margin-bottom: var(--spacing-small);
+  padding-bottom: var(--spacing-xsmall);
+  border-bottom: 1px solid var(--border-color);
+}
+
+/* Abilities */
+.abilities-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-xsmall);
+}
+
+.ability-pill {
+  padding: var(--spacing-xxsmall) var(--spacing-xsmall);
+  background: var(--primary-color-hover);
+  color: var(--text-color);
+  border-radius: var(--border-radius-large);
+  border: 2px solid var(--border-color);
+  font-size: var(--font-size-small);
+}
+
+.ability-hidden-pill {
+  border-color: var(--accent-color-hover);
+}
+
+.hidden-tag {
+  font-size: var(--font-size-xxxsmall);
+  padding: var(--spacing-xxsmall) var(--spacing-xxsmall);
+  background: var(--accent-color);
+  color: var(--primary-color);
+  border-radius: var(--border-radius-small);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-left: var(--spacing-xxsmall);
+}
+
+/* Details pairs */
+.detail-pairs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-xsmall);
+}
+
+.detail-pair {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xxsmall);
+  padding: var(--spacing-xsmall) var(--spacing-small);
+  background: var(--primary-color-hover);
+  border-radius: var(--border-radius-medium);
+}
+
+.detail-key {
+  font-size: var(--font-size-xsmall);
+  color: var(--accent-color);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 600;
+}
+
+.detail-val {
+  font-size: var(--font-size-small);
+  color: var(--text-color);
+  font-weight: 500;
+}
+
+/* Description */
+.fakemon-description-full {
+  grid-column: 1 / -1;
+  background: var(--primary-color);
+  border-radius: var(--border-radius-large);
+  padding: var(--spacing-medium);
+  border: 1px solid var(--border-color);
+}
+
+.fakemon-description-full p {
+  line-height: 1.8;
+  color: var(--text-color-muted);
+  white-space: pre-line;
+  font-size: var(--font-size-small);
+  margin: 0;
+}
+
+/* ========== Detail: Stats ========== */
+
+.fakemon-stats-compact {
+  background: var(--primary-color);
+  border-radius: var(--border-radius-large);
+  padding: var(--spacing-medium);
+  margin-bottom: var(--spacing-large);
+  border: 1px solid var(--border-color);
+}
+
+.stats-grid {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xxsmall);
+}
+
+.stat-row {
+  display: grid;
+  grid-template-columns: 36px 38px 1fr;
+  align-items: center;
+  gap: var(--spacing-small);
+  padding: var(--spacing-xxsmall) 0;
+}
+
+.stat-label {
+  font-size: var(--font-size-xsmall);
+  font-weight: 700;
+  color: var(--text-color-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  text-align: right;
+}
+
+.stat-value {
+  font-size: var(--font-size-xsmall);
+  font-weight: 700;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.stat-legendary { color: var(--accent-color-active); }
+.stat-excellent { color: var(--success-color); }
+.stat-great { color: var(--water-type); }
+.stat-good { color: var(--text-color); }
+.stat-average { color: var(--warning-color); }
+.stat-low { color: var(--error-color); }
+
+.stat-bar-track {
+  height: 8px;
+  background: var(--overlay-dark);
+  border-radius: var(--border-radius-small);
+  overflow: hidden;
+}
+
+.stat-bar-fill {
+  height: 100%;
+  border-radius: var(--border-radius-small);
+  transition: width 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.hp-bar { background-color: var(--error-color); }
+.attack-bar { background-color: var(--fire-type); }
+.defense-bar { background-color: var(--electric-type); }
+.sp-attack-bar { background-color: var(--water-type); }
+.sp-defense-bar { background-color: var(--grass-type); }
+.speed-bar { background-color: var(--fairy-type); }
+
+.stat-total-row {
+  margin-top: var(--spacing-xxsmall);
+  padding-top: var(--spacing-xsmall);
+  border-top: 1px solid var(--border-color);
+}
+
+.stat-total-value {
+  color: var(--accent-color);
+  font-size: var(--font-size-small);
+}
+
+.stat-total-track {
+  background: transparent;
+}
+
+/* ========== Detail: Evolution Tree ========== */
+
+.fakemon-evolution-section {
+  background: var(--primary-color);
+  border-radius: var(--border-radius-large);
+  padding: var(--spacing-medium);
+  margin-bottom: var(--spacing-large);
+  border: 1px solid var(--border-color);
+}
+
+.evo-tree {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-xsmall);
+  justify-content: center;
+}
+
+.evo-tree-node {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.evo-tree-entry {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-xsmall);
+  padding: var(--spacing-small) var(--spacing-medium);
+  border-radius: var(--border-radius-large);
+  text-decoration: none;
+  color: var(--text-color);
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+  min-width: 110px;
+}
+
+.evo-tree-entry:hover {
+  background: var(--accent-color-hover);
+  border-color: var(--accent-color-hover);
+  transform: translateY(-4px);
+}
+
+.evo-current {
+  background: var(--accent-color-hover);
+  border-color: var(--accent-color);
+  box-shadow: 0 0 20px var(--accent-color-hover);
+}
+
+.evo-tree-image-wrap {
+  width: 88px;
+  height: 88px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: var(--primary-color-hover);
+  border: 2px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.evo-tree-entry:hover .evo-tree-image-wrap {
+  border-color: var(--accent-color-hover);
+}
+
+.evo-current .evo-tree-image-wrap {
+  border-color: var(--accent-color);
+  box-shadow: 0 0 12px var(--accent-color-hover);
+}
+
+.evo-tree-image {
+  width: 78%;
+  height: 78%;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 6px var(--overlay-dark));
+  transition: transform 0.3s ease;
+}
+
+.evo-tree-entry:hover .evo-tree-image {
+  transform: scale(1.1);
+}
+
+.evo-tree-name {
+  font-size: var(--font-size-xsmall);
+  font-weight: 600;
+  text-align: center;
+  line-height: 1.3;
+}
+
+/* Branches and connectors */
+.evo-tree-branches {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xsmall);
+}
+
+.evo-tree-branch {
+  display: flex;
+  align-items: center;
+}
+
+.evo-tree-connector {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-xxsmall);
+  padding: 0 var(--spacing-xsmall);
+  min-width: 90px;
+}
+
+.evo-tree-line {
+  width: 100%;
+  height: 2px;
+  background: var(--border-color);
+}
+
+.evo-tree-method {
+  font-size: var(--font-size-xxxsmall);
+  color: var(--accent-color);
+  font-weight: 600;
+  white-space: nowrap;
+  padding: var(--spacing-xxsmall) var(--spacing-xsmall);
+  background: var(--accent-color-hover);
+  border-radius: var(--border-radius-small);
+  border: 1px solid var(--accent-color-hover);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xxsmall);
+  text-align: center;
+}
+
+.evo-tree-method i {
+  font-size: var(--font-size-xxxsmall);
+  opacity: 0.8;
+}
+
+.evo-tree-arrow {
+  color: var(--accent-color);
+  font-size: var(--font-size-xsmall);
+  opacity: 0.7;
+}
+
+.evo-none {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-small);
+  padding: var(--spacing-medium);
+  color: var(--text-color-muted);
+  font-style: italic;
+  font-size: var(--font-size-small);
+}
+
+.evo-none i {
+  font-size: var(--font-size-large);
+  opacity: 0.5;
+}
+
+/* ========== Detail: Navigation ========== */
+
+.fakemon-navigation {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: var(--spacing-xlarge);
+  gap: var(--spacing-large);
+}
+
+/* ========== Responsive: Dex ========== */
+
+@media (max-width: 1024px) {
+  .fakedex-grid {
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  }
+}
+
+@media (max-width: 968px) {
+  .fakedex-grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  }
+
+  .search-and-toggles {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .search-form {
+    max-width: 100%;
+  }
+
+  .filter-toggle-group {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .fakedex-grid {
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  }
+
+  .fakemon-image {
+    height: 160px;
+  }
+}
+
+/* ========== Responsive: Detail ========== */
+
+@media (max-width: 1024px) {
+  .fakemon-hero-image-wrap {
+    width: 300px;
+    height: 300px;
+  }
+}
+
+@media (max-width: 768px) {
+  .fakemon-hero {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .fakemon-hero-image-wrap {
+    width: 260px;
+    height: 260px;
+    margin: 0 auto;
+  }
+
+  .fakemon-hero-text {
+    align-items: center;
+  }
+
+  .fakemon-info-panel {
+    grid-template-columns: 1fr;
+  }
+
+  /* Evolution: vertical on mobile */
+  .evo-tree {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .evo-tree-node {
+    flex-direction: column;
+  }
+
+  .evo-tree-branches {
+    align-items: center;
+  }
+
+  .evo-tree-branch {
+    flex-direction: column;
+  }
+
+  .evo-tree-connector {
+    min-width: auto;
+    padding: var(--spacing-xxsmall) 0;
+  }
+
+  .evo-tree-line {
+    width: 2px;
+    height: 16px;
+  }
+
+  .evo-tree-arrow {
+    transform: rotate(90deg);
+  }
+
+  .fakemon-navigation {
+    flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 480px) {
+  .fakemon-hero-image-wrap {
+    width: 200px;
+    height: 200px;
+  }
+
+  .detail-pairs {
+    grid-template-columns: 1fr;
+  }
+
+  .stat-row {
+    grid-template-columns: 32px 34px 1fr;
+  }
+
+  .evo-tree-entry {
+    min-width: 90px;
+  }
+
+  .evo-tree-image-wrap {
+    width: 72px;
+    height: 72px;
+  }
+}

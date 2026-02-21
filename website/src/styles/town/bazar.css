@@ -1,0 +1,801 @@
+/* ==============================
+   Bazar Component Styles
+   Styles for all bazar-related components
+   ============================== */
+
+/* ============================================================
+   Common Bazar Styles
+   ============================================================ */
+
+/* ---------- Header ---------- */
+
+.bazar-forfeit-item__header,
+.bazar-collect-item__header,
+.bazar-adopt-monster__header,
+.bazar-forfeit-monster__header {
+  margin-bottom: var(--spacing-large);
+}
+
+.bazar-forfeit-item__title,
+.bazar-collect-item__title,
+.bazar-adopt-monster__title,
+.bazar-forfeit-monster__title {
+  color: var(--accent-color);
+  margin: 0 0 var(--spacing-xsmall) 0;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-small);
+}
+
+.bazar-forfeit-item__title i,
+.bazar-collect-item__title i,
+.bazar-adopt-monster__title i,
+.bazar-forfeit-monster__title i {
+  font-size: 1.2em;
+}
+
+.bazar-forfeit-item__description,
+.bazar-collect-item__description,
+.bazar-adopt-monster__description,
+.bazar-forfeit-monster__description {
+  color: var(--text-color-muted);
+  margin: 0;
+}
+
+/* ---------- Loading State ---------- */
+
+.bazar-forfeit-item__loading,
+.bazar-collect-item__loading,
+.bazar-adopt-monster__loading,
+.bazar-forfeit-monster__loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-medium);
+  padding: var(--spacing-xlarge);
+  color: var(--text-color-muted);
+}
+
+/* ---------- Empty State ---------- */
+
+.bazar-forfeit-item__empty,
+.bazar-collect-item__empty,
+.bazar-adopt-monster__empty,
+.bazar-forfeit-monster__empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-medium);
+  padding: var(--spacing-xlarge);
+  color: var(--text-color-muted);
+  text-align: center;
+}
+
+.bazar-forfeit-item__empty i,
+.bazar-collect-item__empty i,
+.bazar-adopt-monster__empty i,
+.bazar-forfeit-monster__empty i {
+  font-size: clamp(2rem, 1.5rem + 1.5vw, 3.5rem);
+  opacity: 0.5;
+}
+
+/* ---------- Success State ---------- */
+
+.bazar-collect-item__success,
+.bazar-adopt-monster__success {
+  text-align: center;
+  padding: var(--spacing-large);
+}
+
+.bazar-collect-item__success-icon,
+.bazar-adopt-monster__success-icon {
+  font-size: clamp(2rem, 1.5rem + 1.5vw, 3.5rem);
+  color: var(--success-color);
+  margin-bottom: var(--spacing-medium);
+}
+
+.bazar-collect-item__success h3,
+.bazar-adopt-monster__success h3 {
+  color: var(--success-color);
+  font-size: var(--font-size-xlarge);
+  margin: 0 0 var(--spacing-small) 0;
+}
+
+.bazar-collect-item__success p,
+.bazar-adopt-monster__success p {
+  color: var(--text-color);
+  margin: 0;
+}
+
+/* ============================================================
+   Bazar Forfeit Item Styles
+   ============================================================ */
+
+.bazar-forfeit-item__content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-large);
+}
+
+.bazar-forfeit-item__section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-small);
+}
+
+.bazar-forfeit-item__controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--spacing-medium);
+  padding: var(--spacing-medium);
+  background-color: var(--primary-color);
+  border-radius: var(--border-radius-medium);
+  border: 1px solid var(--border-color);
+  margin-bottom: var(--spacing-small);
+}
+
+.bazar-forfeit-item__selection-info {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-small);
+}
+
+.bazar-forfeit-item__selection-count {
+  color: var(--accent-color);
+  font-weight: 600;
+}
+
+.bazar-forfeit-item__selection-actions {
+  display: flex;
+  gap: var(--spacing-small);
+}
+
+.bazar-forfeit-item__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: var(--spacing-medium);
+}
+
+.bazar-forfeit-item__card {
+  position: relative;
+  cursor: pointer;
+  transition: transform var(--transition-medium), box-shadow var(--transition-medium);
+  min-width: 0; /* prevent grid item from expanding its column */
+}
+
+.bazar-forfeit-item__card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-large);
+}
+
+.bazar-forfeit-item__card--selected {
+  border: 2px solid var(--accent-color);
+  box-shadow: 0 0 10px var(--accent-color);
+}
+
+.bazar-forfeit-item__card-checkbox {
+  position: absolute;
+  top: var(--spacing-small);
+  right: var(--spacing-small);
+  z-index: 1;
+}
+
+.bazar-forfeit-item__card-checkbox input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  accent-color: var(--accent-color);
+}
+
+.bazar-forfeit-item__card-info {
+  text-align: center;
+  padding: var(--spacing-small);
+}
+
+.bazar-forfeit-item__card-image {
+  width: 100%;
+  height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--secondary-color);
+  border-radius: var(--border-radius-medium);
+  margin-bottom: var(--spacing-small);
+  overflow: hidden;
+}
+
+.bazar-forfeit-item__card-image img {
+  max-width: 80%;
+  max-height: 80%;
+  object-fit: contain;
+}
+
+.bazar-forfeit-item__card-name {
+  color: var(--text-color);
+  font-size: var(--font-size-small);
+  font-weight: 600;
+  margin: 0 0 var(--spacing-xxsmall) 0;
+}
+
+.bazar-forfeit-item__card-quantity {
+  display: block;
+  color: var(--accent-color);
+  font-weight: 600;
+  font-size: var(--font-size-small);
+}
+
+.bazar-forfeit-item__card-category {
+  display: block;
+  color: var(--text-color-muted);
+  font-size: var(--font-size-xsmall);
+  margin-top: var(--spacing-xxsmall);
+}
+
+.bazar-forfeit-item__card-qty-controls {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: var(--spacing-xxsmall);
+  padding: var(--spacing-small);
+  border-top: 1px solid var(--border-color);
+  min-width: 0;
+}
+
+.bazar-forfeit-item__qty-input {
+  min-width: 50px;
+  width: 50px;
+  text-align: center;
+  font-weight: 600;
+  font-size: var(--font-size-small);
+  padding: var(--spacing-xxsmall);
+  -moz-appearance: textfield;
+}
+
+.bazar-forfeit-item__qty-input::-webkit-outer-spin-button,
+.bazar-forfeit-item__qty-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* ============================================================
+   Bazar Collect Item Styles
+   ============================================================ */
+
+.bazar-collect-item__filter {
+  margin-bottom: var(--spacing-large);
+  max-width: 300px;
+}
+
+.bazar-collect-item__content {
+  margin-bottom: var(--spacing-large);
+}
+
+.bazar-collect-item__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: var(--spacing-medium);
+  margin-bottom: var(--spacing-large);
+}
+
+.bazar-collect-item__card {
+  cursor: pointer;
+  transition: transform var(--transition-medium), box-shadow var(--transition-medium);
+}
+
+.bazar-collect-item__card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-large);
+}
+
+.bazar-collect-item__card-image {
+  width: 100%;
+  height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--secondary-color);
+  border-radius: var(--border-radius-medium);
+  margin-bottom: var(--spacing-small);
+  overflow: hidden;
+}
+
+.bazar-collect-item__card-image img {
+  max-width: 80%;
+  max-height: 80%;
+  object-fit: contain;
+}
+
+.bazar-collect-item__card-info {
+  text-align: center;
+}
+
+.bazar-collect-item__card-name {
+  color: var(--text-color);
+  font-size: var(--font-size-small);
+  font-weight: 600;
+  margin: 0 0 var(--spacing-xxsmall) 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.bazar-collect-item__card-quantity {
+  display: inline-block;
+  color: var(--accent-color);
+  font-weight: 600;
+  font-size: var(--font-size-small);
+  margin-right: var(--spacing-xsmall);
+}
+
+.bazar-collect-item__card-category {
+  display: block;
+  color: var(--text-color-muted);
+  font-size: var(--font-size-xsmall);
+  margin-top: var(--spacing-xxsmall);
+}
+
+/* Collection Modal */
+
+.bazar-collect-item__modal-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-large);
+}
+
+.bazar-collect-item__preview {
+  display: flex;
+  gap: var(--spacing-large);
+  padding: var(--spacing-medium);
+  background-color: var(--primary-color);
+  border-radius: var(--border-radius-medium);
+}
+
+.bazar-collect-item__preview-image {
+  width: 80px;
+  height: 80px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--secondary-color);
+  border-radius: var(--border-radius-medium);
+}
+
+.bazar-collect-item__preview-image img {
+  max-width: 80%;
+  max-height: 80%;
+  object-fit: contain;
+}
+
+.bazar-collect-item__preview-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.bazar-collect-item__preview-info h3 {
+  color: var(--accent-color);
+  font-size: var(--font-size-large);
+  margin: 0 0 var(--spacing-xsmall) 0;
+}
+
+.bazar-collect-item__preview-quantity {
+  color: var(--text-color);
+  font-size: var(--font-size-small);
+  margin: 0 0 var(--spacing-xsmall) 0;
+}
+
+.bazar-collect-item__preview-category {
+  color: var(--text-color-muted);
+  font-size: var(--font-size-xsmall);
+}
+
+.bazar-collect-item__trainer-select {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-small);
+}
+
+/* ============================================================
+   Bazar Adopt Monster Styles
+   ============================================================ */
+
+.bazar-adopt-monster__content {
+  margin-bottom: var(--spacing-large);
+}
+
+.bazar-adopt-monster__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: var(--spacing-medium);
+  margin-bottom: var(--spacing-large);
+}
+
+.bazar-adopt-monster__card {
+  cursor: pointer;
+  transition: transform var(--transition-medium), box-shadow var(--transition-medium);
+}
+
+.bazar-adopt-monster__card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-large);
+}
+
+.bazar-adopt-monster__card-image {
+  width: 100%;
+  height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--secondary-color);
+  border-radius: var(--border-radius-medium);
+  margin-bottom: var(--spacing-small);
+  overflow: hidden;
+}
+
+.bazar-adopt-monster__card-image img {
+  max-width: 90%;
+  max-height: 90%;
+  object-fit: contain;
+}
+
+.bazar-adopt-monster__card-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-color-muted);
+  font-size: clamp(1.5rem, 1.25rem + 1vw, 2.5rem);
+}
+
+.bazar-adopt-monster__card-info {
+  text-align: center;
+}
+
+.bazar-adopt-monster__card-name {
+  color: var(--text-color);
+  font-size: var(--font-size-small);
+  font-weight: 600;
+  margin: 0 0 var(--spacing-xxsmall) 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.bazar-adopt-monster__card-species {
+  color: var(--text-color-muted);
+  font-size: var(--font-size-xsmall);
+  margin: 0 0 var(--spacing-xsmall) 0;
+}
+
+.bazar-adopt-monster__card-types {
+  display: flex;
+  justify-content: center;
+  gap: var(--spacing-xxsmall);
+  flex-wrap: wrap;
+  margin-bottom: var(--spacing-xsmall);
+}
+
+.bazar-adopt-monster__card-level {
+  display: inline-block;
+  color: var(--accent-color);
+  font-size: var(--font-size-xsmall);
+  font-weight: 600;
+}
+
+/* Adoption Modal */
+
+.bazar-adopt-monster__modal-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-large);
+}
+
+.bazar-adopt-monster__preview {
+  display: flex;
+  gap: var(--spacing-large);
+  padding: var(--spacing-medium);
+  background-color: var(--primary-color);
+  border-radius: var(--border-radius-medium);
+}
+
+.bazar-adopt-monster__preview-image {
+  width: 100px;
+  height: 100px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--secondary-color);
+  border-radius: var(--border-radius-medium);
+}
+
+.bazar-adopt-monster__preview-image img {
+  max-width: 90%;
+  max-height: 90%;
+  object-fit: contain;
+}
+
+.bazar-adopt-monster__preview-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-color-muted);
+  font-size: clamp(1.5rem, 1.25rem + 1vw, 2.5rem);
+}
+
+.bazar-adopt-monster__preview-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xsmall);
+}
+
+.bazar-adopt-monster__preview-info h3 {
+  color: var(--accent-color);
+  font-size: var(--font-size-large);
+  margin: 0;
+}
+
+.bazar-adopt-monster__preview-species {
+  color: var(--text-color);
+  font-size: var(--font-size-small);
+  margin: 0;
+}
+
+.bazar-adopt-monster__preview-types {
+  display: flex;
+  gap: var(--spacing-xxsmall);
+  flex-wrap: wrap;
+}
+
+.bazar-adopt-monster__preview-level {
+  color: var(--text-color-muted);
+  font-size: var(--font-size-small);
+  margin: 0;
+}
+
+.bazar-adopt-monster__trainer-select,
+.bazar-adopt-monster__name-input {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-small);
+}
+
+/* ============================================================
+   Bazar Forfeit Monster Styles
+   ============================================================ */
+
+.bazar-forfeit-monster__content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-large);
+}
+
+.bazar-forfeit-monster__section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-small);
+}
+
+.bazar-forfeit-monster__controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--spacing-medium);
+  padding: var(--spacing-medium);
+  background-color: var(--primary-color);
+  border-radius: var(--border-radius-medium);
+  border: 1px solid var(--border-color);
+}
+
+.bazar-forfeit-monster__selection-info {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-small);
+}
+
+.bazar-forfeit-monster__selection-count {
+  color: var(--accent-color);
+  font-weight: 600;
+}
+
+.bazar-forfeit-monster__selection-actions {
+  display: flex;
+  gap: var(--spacing-small);
+}
+
+.bazar-forfeit-monster__monsters {
+  margin-top: var(--spacing-medium);
+}
+
+.bazar-forfeit-monster__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: var(--spacing-medium);
+  margin-bottom: var(--spacing-large);
+}
+
+.bazar-forfeit-monster__card {
+  position: relative;
+  cursor: pointer;
+  transition: transform var(--transition-medium), box-shadow var(--transition-medium);
+}
+
+.bazar-forfeit-monster__card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-large);
+}
+
+.bazar-forfeit-monster__card--selected {
+  border: 2px solid var(--accent-color);
+  box-shadow: 0 0 10px var(--accent-color);
+}
+
+.bazar-forfeit-monster__card-checkbox {
+  position: absolute;
+  top: var(--spacing-small);
+  right: var(--spacing-small);
+  z-index: 1;
+}
+
+.bazar-forfeit-monster__card-checkbox input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  accent-color: var(--accent-color);
+}
+
+.bazar-forfeit-monster__card-image {
+  width: 100%;
+  height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--secondary-color);
+  border-radius: var(--border-radius-medium);
+  margin-bottom: var(--spacing-small);
+  overflow: hidden;
+}
+
+.bazar-forfeit-monster__card-image img {
+  max-width: 90%;
+  max-height: 90%;
+  object-fit: contain;
+}
+
+.bazar-forfeit-monster__card-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-color-muted);
+  font-size: clamp(1.5rem, 1.25rem + 1vw, 2.5rem);
+}
+
+.bazar-forfeit-monster__card-info {
+  text-align: center;
+}
+
+.bazar-forfeit-monster__card-name {
+  color: var(--text-color);
+  font-size: var(--font-size-small);
+  font-weight: 600;
+  margin: 0 0 var(--spacing-xxsmall) 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.bazar-forfeit-monster__card-species {
+  color: var(--text-color-muted);
+  font-size: var(--font-size-xsmall);
+  margin: 0 0 var(--spacing-xsmall) 0;
+}
+
+.bazar-forfeit-monster__card-types {
+  display: flex;
+  justify-content: center;
+  gap: var(--spacing-xxsmall);
+  flex-wrap: wrap;
+  margin-bottom: var(--spacing-xsmall);
+}
+
+.bazar-forfeit-monster__card-level {
+  display: inline-block;
+  color: var(--accent-color);
+  font-size: var(--font-size-xsmall);
+  font-weight: 600;
+}
+
+/* ============================================================
+   Responsive Styles
+   ============================================================ */
+
+@media (max-width: 768px) {
+  .bazar-collect-item__preview,
+  .bazar-adopt-monster__preview {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .bazar-collect-item__preview-info,
+  .bazar-adopt-monster__preview-info {
+    align-items: center;
+  }
+
+  .bazar-adopt-monster__preview-types {
+    justify-content: center;
+  }
+
+  .bazar-forfeit-monster__controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .bazar-forfeit-monster__selection-info {
+    justify-content: center;
+  }
+
+  .bazar-forfeit-monster__selection-actions {
+    justify-content: center;
+  }
+
+  .bazar-forfeit-item__grid,
+  .bazar-collect-item__grid,
+  .bazar-adopt-monster__grid,
+  .bazar-forfeit-monster__grid {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  }
+
+  .bazar-forfeit-item__controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .bazar-forfeit-item__selection-info {
+    justify-content: center;
+  }
+
+  .bazar-forfeit-item__selection-actions {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .bazar-collect-item__filter {
+    max-width: 100%;
+  }
+
+  .bazar-collect-item__card-image,
+  .bazar-adopt-monster__card-image,
+  .bazar-forfeit-monster__card-image {
+    height: 80px;
+  }
+
+  .bazar-collect-item__preview-image,
+  .bazar-adopt-monster__preview-image {
+    width: 60px;
+    height: 60px;
+  }
+
+  .bazar-forfeit-item__grid,
+  .bazar-collect-item__grid,
+  .bazar-adopt-monster__grid,
+  .bazar-forfeit-monster__grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

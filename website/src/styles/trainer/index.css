@@ -1,45 +1,191 @@
-/* ==============================
-   Trainer Styles Index
-
-   This file imports all trainer-related styles.
-   Import this file to get all trainer styles.
-   ============================== */
-
-/* Core trainer elements */
-@import './trainer-core.css';
-
-/* Card grid and listing */
-@import './trainer-card.css';
-
-/* Table list styles */
-@import './trainer-list.css';
-
-/* Detail page styles */
 @import './trainer-detail.css';
 
-/* Profile info, quote, bio, attributes */
-@import './trainer-profile.css';
+/* ==============================
+   Trainer Component Styles
 
-/* Create/Edit form styles */
-@import './trainer-form.css';
+   Minimal trainer-specific styles.
+   Uses common component styles for base styling.
+   ============================== */
 
-/* My Trainers page */
-@import './trainer-my-trainers.css';
+/* ---------- Trainer Card Extensions ---------- */
 
-/* PC boxes and edit boxes */
-@import './trainer-pc-boxes.css';
+.trainer-card__content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xsmall);
+}
 
-/* Inventory styles */
-@import './trainer-inventory.css';
+.trainer-card__types {
+  margin-top: var(--spacing-xxsmall);
+}
 
-/* Stats tab styles */
-@import './trainer-stats.css';
+.trainer-card__stats {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--spacing-small);
+  color: var(--text-color-muted);
+  font-size: var(--font-size-small);
+}
 
-/* Achievements tab styles */
-@import './trainer-achievements.css';
+.trainer-card__stat {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xxsmall);
+}
 
-/* Trainer selection/selector */
-@import './trainer-selection.css';
+.trainer-card__stat i {
+  font-size: var(--font-size-xsmall);
+}
 
-/* Additional references */
-@import './trainer-references.css';
+/* Skeleton loading state */
+.trainer-card {
+  /* Base styles applied via Card component */
+}
+
+.trainer-card--skeleton {
+  pointer-events: none;
+}
+
+.trainer-card--skeleton .skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--primary-color-hover) 25%,
+    var(--secondary-color) 50%,
+    var(--primary-color-hover) 75%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.5s infinite;
+}
+
+.trainer-card--skeleton .skeleton--text {
+  border-radius: var(--border-radius-small);
+}
+
+@keyframes skeleton-shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* ---------- Trainer Form ---------- */
+
+.trainer-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-medium);
+}
+
+.trainer-form__header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--spacing-xsmall);
+  padding-bottom: var(--spacing-small);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.trainer-form__title {
+  margin: 0;
+  font-size: var(--font-size-xlarge);
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+.trainer-form__error {
+  margin-bottom: var(--spacing-small);
+}
+
+.trainer-form__tabs {
+  flex: 1;
+}
+
+.trainer-form__footer {
+  padding-top: var(--spacing-medium);
+  border-top: 1px solid var(--border-color);
+}
+
+.trainer-form--loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+}
+
+/* ---------- Form Sections ---------- */
+
+.form-section {
+  margin-bottom: var(--spacing-medium);
+}
+
+.form-section__title {
+  margin: 0 0 var(--spacing-small);
+  font-size: var(--font-size-large);
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+/* Form grid layout */
+.form-grid {
+  display: grid;
+  gap: var(--spacing-small);
+}
+
+.form-grid.cols-2 {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+}
+
+.form-grid.cols-3 {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
+}
+
+.form-grid.cols-1 {
+  grid-template-columns: 1fr;
+}
+
+/* Form stack layout */
+.form-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-small);
+}
+
+.form-stack.gap-xs {
+  gap: var(--spacing-xsmall);
+}
+
+/* ---------- Badge Extensions ---------- */
+
+.badge--accent {
+  background-color: var(--accent-color);
+  color: var(--background-color);
+  padding: var(--spacing-xxsmall) var(--spacing-xsmall);
+  border-radius: var(--border-radius-small);
+  font-size: var(--font-size-small);
+  font-weight: 600;
+}
+
+.badge--muted {
+  background-color: var(--secondary-color);
+  color: var(--text-color-muted);
+  padding: var(--spacing-xxsmall) var(--spacing-xsmall);
+  border-radius: var(--border-radius-small);
+  font-size: var(--font-size-xsmall);
+}
+
+/* ---------- Trainer Grid ---------- */
+
+.trainer-grid {
+  max-width: var(--container-max-width);
+  margin: 0 auto;
+}
+
+.trainer-card__image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}

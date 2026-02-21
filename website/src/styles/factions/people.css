@@ -1,0 +1,721 @@
+/* ==============================
+   Faction People Styles
+   ============================== */
+
+/* ---------- Known People Grid ---------- */
+
+.known-people {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-small);
+}
+
+.known-people h3 {
+  margin: 0;
+  font-size: var(--font-size-large);
+  color: var(--text-color);
+}
+
+.known-people__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: var(--spacing-small);
+}
+
+.known-people__empty {
+  text-align: center;
+  padding: var(--spacing-large);
+  color: var(--text-color-muted);
+}
+
+/* ---------- Person Card ---------- */
+
+.person-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--spacing-small);
+  background-color: var(--primary-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-medium);
+  transition: all 0.2s ease;
+  text-align: center;
+}
+
+.person-card--clickable {
+  cursor: pointer;
+}
+
+.person-card--clickable:hover {
+  border-color: var(--accent-color);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px var(--overlay-light);
+}
+
+.person-card--locked {
+  opacity: 0.6;
+}
+
+.person-card--met {
+  border-color: var(--success-color);
+}
+
+.person-card--can-meet {
+  border-color: var(--accent-color-hover);
+}
+
+/* ---------- Person Card Image ---------- */
+
+.person-card__image {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  overflow: hidden;
+  margin-bottom: var(--spacing-xsmall);
+  background-color: var(--background-color);
+}
+
+.person-card__image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.person-card__badge {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-size: var(--font-size-xsmall);
+}
+
+.person-card__badge--met {
+  background-color: var(--success-color);
+  color: var(--background-color);
+}
+
+.person-card__badge--can-meet {
+  background-color: var(--accent-color);
+  color: var(--background-color);
+}
+
+.person-card__locked-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--overlay-dark);
+  color: var(--text-color-muted);
+  font-size: var(--font-size-large);
+}
+
+/* ---------- Person Card Info ---------- */
+
+.person-card__info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xxsmall);
+}
+
+.person-card__name {
+  margin: 0;
+  font-size: var(--font-size-small);
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+.person-card__subtitle {
+  margin: 0;
+  font-size: var(--font-size-xsmall);
+  color: var(--text-color-muted);
+}
+
+/* ---------- Person Full View ---------- */
+
+.person-full-view {
+  width: 90%;
+  max-width: 800px;
+  max-height: 90vh;
+  overflow-y: auto;
+  background-color: var(--primary-color);
+  border-radius: var(--border-radius-medium);
+}
+
+.person-full-view__header {
+  display: flex;
+  gap: var(--spacing-medium);
+  padding: var(--spacing-medium);
+  border-bottom: 1px solid var(--border-color);
+}
+
+/* ---------- Person Images Gallery ---------- */
+
+.person-images {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xsmall);
+  flex-shrink: 0;
+}
+
+.person-images__main {
+  width: 200px;
+  height: 200px;
+  border-radius: var(--border-radius-medium);
+  overflow: hidden;
+  background-color: var(--background-color);
+}
+
+.person-images__main img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.person-images__thumbnails {
+  display: flex;
+  gap: var(--spacing-xxsmall);
+  flex-wrap: wrap;
+}
+
+.person-images__thumbnail {
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  border: 2px solid transparent;
+  border-radius: var(--border-radius-small);
+  overflow: hidden;
+  cursor: pointer;
+  background-color: var(--background-color);
+  transition: all 0.2s ease;
+}
+
+.person-images__thumbnail:hover {
+  border-color: var(--accent-color-hover);
+}
+
+.person-images__thumbnail--active {
+  border-color: var(--accent-color);
+}
+
+.person-images__thumbnail img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ---------- Person Basic Info ---------- */
+
+.person-basic-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xsmall);
+}
+
+.person-basic-info h3 {
+  margin: 0;
+  font-size: var(--font-size-xlarge);
+  color: var(--text-color);
+}
+
+.person-basic-info__role {
+  font-size: var(--font-size-medium);
+  color: var(--accent-color);
+}
+
+.person-basic-info__met-date {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xsmall);
+  font-size: var(--font-size-small);
+  color: var(--text-color-muted);
+}
+
+/* ---------- Person Biography ---------- */
+
+.person-biography {
+  padding: var(--spacing-medium);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.person-biography__tabs {
+  display: flex;
+  gap: var(--spacing-xxsmall);
+  margin-bottom: var(--spacing-small);
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: var(--spacing-xsmall);
+  overflow-x: auto;
+}
+
+.person-biography__tab {
+  padding: var(--spacing-xsmall) var(--spacing-small);
+  background-color: transparent;
+  border: none;
+  border-radius: var(--border-radius-small);
+  color: var(--text-color-muted);
+  font-size: var(--font-size-small);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.person-biography__tab:hover {
+  color: var(--text-color);
+  background-color: var(--background-color);
+}
+
+.person-biography__tab--active {
+  color: var(--accent-color);
+  background-color: var(--background-color);
+  font-weight: 600;
+}
+
+.person-biography__content {
+  font-size: var(--font-size-medium);
+  color: var(--text-color);
+  line-height: 1.6;
+}
+
+.person-biography__content p {
+  margin: 0;
+  white-space: pre-wrap;
+}
+
+/* ---------- Person Team ---------- */
+
+.person-team {
+  padding: var(--spacing-medium);
+}
+
+.person-team h4 {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xsmall);
+  margin: 0 0 var(--spacing-small);
+  font-size: var(--font-size-medium);
+  color: var(--text-color);
+}
+
+.person-team__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: var(--spacing-small);
+}
+
+/* ---------- Monster Team Card ---------- */
+
+.monster-team-card {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--background-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-medium);
+  overflow: hidden;
+}
+
+.monster-team-card__header {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xsmall);
+  padding: var(--spacing-xsmall);
+  background-color: var(--primary-color);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.monster-team-card__image {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--border-radius-small);
+  overflow: hidden;
+  background-color: var(--background-color);
+  flex-shrink: 0;
+}
+
+.monster-team-card__image img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.monster-team-card__image-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-color-muted);
+  font-size: var(--font-size-large);
+}
+
+.monster-team-card__name {
+  margin: 0;
+  font-size: var(--font-size-small);
+  font-weight: 600;
+  color: var(--text-color);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.monster-team-card__details {
+  padding: var(--spacing-xsmall);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xxsmall);
+}
+
+.monster-team-card__row {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xxsmall);
+}
+
+.monster-team-card__row label {
+  font-size: var(--font-size-xsmall);
+  color: var(--text-color-muted);
+}
+
+.monster-team-card__species-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-xxsmall);
+}
+
+.monster-team-card__species-tag {
+  padding: var(--spacing-xxsmall) var(--spacing-xsmall);
+  background-color: var(--primary-color);
+  border-radius: var(--border-radius-small);
+  font-size: var(--font-size-xsmall);
+  color: var(--text-color);
+}
+
+.monster-team-card__types-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-xxsmall);
+}
+
+.monster-team-card__types-more {
+  padding: var(--spacing-xxsmall) var(--spacing-xsmall);
+  background-color: var(--primary-color);
+  border-radius: var(--border-radius-small);
+  font-size: var(--font-size-xsmall);
+  color: var(--text-color-muted);
+}
+
+/* ---------- Person Stats Footer ---------- */
+
+.person-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-medium);
+  padding: var(--spacing-medium);
+  background-color: var(--background-color);
+  border-radius: 0 0 var(--border-radius-medium) var(--border-radius-medium);
+}
+
+.person-stats__stat {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xsmall);
+  font-size: var(--font-size-small);
+  color: var(--text-color-muted);
+}
+
+.person-stats__stat i {
+  color: var(--accent-color);
+}
+
+/* ---------- Person Detail Modal ---------- */
+
+.person-detail-modal {
+  width: 90%;
+  max-width: 600px;
+  background-color: var(--primary-color);
+  border-radius: var(--border-radius-medium);
+  overflow: hidden;
+}
+
+.person-detail-modal__preview {
+  display: flex;
+  gap: var(--spacing-medium);
+  padding: var(--spacing-medium);
+  background-color: var(--background-color);
+  border-radius: var(--border-radius-small);
+  margin-bottom: var(--spacing-medium);
+}
+
+.person-detail-modal__preview-image {
+  width: 100px;
+  height: 100px;
+  border-radius: var(--border-radius-medium);
+  overflow: hidden;
+  flex-shrink: 0;
+  background-color: var(--primary-color);
+}
+
+.person-detail-modal__preview-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.person-detail-modal__preview-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xxsmall);
+}
+
+.person-detail-modal__preview-info h3 {
+  margin: 0;
+  font-size: var(--font-size-large);
+  color: var(--text-color);
+}
+
+.person-detail-modal__preview-info .person-role {
+  font-size: var(--font-size-small);
+  color: var(--accent-color);
+}
+
+.person-detail-modal__preview-info .standing-requirement {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xxsmall);
+  font-size: var(--font-size-small);
+  color: var(--text-color-muted);
+}
+
+.meeting-prompt {
+  padding: var(--spacing-small);
+  background-color: var(--background-color);
+  border-radius: var(--border-radius-small);
+  margin-bottom: var(--spacing-medium);
+}
+
+.meeting-prompt h4 {
+  margin: 0 0 var(--spacing-xsmall);
+  font-size: var(--font-size-small);
+  color: var(--accent-color);
+}
+
+.meeting-prompt p {
+  margin: 0;
+  font-size: var(--font-size-small);
+  color: var(--text-color);
+  line-height: 1.5;
+}
+
+.meeting-reward {
+  padding: var(--spacing-small);
+  background-color: var(--success-dark);
+  border-radius: var(--border-radius-small);
+  margin-top: var(--spacing-small);
+}
+
+.meeting-reward__info {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xsmall);
+  font-size: var(--font-size-small);
+  color: var(--success-color);
+}
+
+/* ---------- Submission Selector ---------- */
+
+.submission-selector {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xsmall);
+}
+
+.submission-selector__no-submissions {
+  padding: var(--spacing-medium);
+  background-color: var(--background-color);
+  border-radius: var(--border-radius-small);
+  text-align: center;
+  color: var(--text-color-muted);
+}
+
+.submission-selector__no-submissions p {
+  margin: 0 0 var(--spacing-xsmall);
+}
+
+.submission-preview {
+  padding: var(--spacing-small);
+  background-color: var(--background-color);
+  border-radius: var(--border-radius-small);
+  margin-top: var(--spacing-xsmall);
+}
+
+.submission-preview h6 {
+  margin: 0 0 var(--spacing-xxsmall);
+  font-size: var(--font-size-small);
+  color: var(--text-color);
+}
+
+.submission-preview p {
+  margin: 0 0 var(--spacing-xsmall);
+  font-size: var(--font-size-small);
+  color: var(--text-color-muted);
+}
+
+.submission-preview a {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xxsmall);
+  font-size: var(--font-size-small);
+  color: var(--accent-color);
+}
+
+/* ---------- Modal Info Section ---------- */
+
+.modal-info {
+  padding: var(--spacing-medium);
+  background-color: var(--background-color);
+  border-top: 1px solid var(--border-color);
+}
+
+.modal-info h4 {
+  margin: 0 0 var(--spacing-xsmall);
+  font-size: var(--font-size-small);
+  color: var(--accent-color);
+}
+
+.modal-info ul {
+  margin: 0;
+  padding-left: var(--spacing-medium);
+}
+
+.modal-info li {
+  font-size: var(--font-size-small);
+  color: var(--text-color-muted);
+  margin-bottom: var(--spacing-xxsmall);
+}
+
+.modal-info li:last-child {
+  margin-bottom: 0;
+}
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 768px) {
+  .known-people__grid {
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  }
+
+  .person-full-view__header {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .person-images__main {
+    width: 160px;
+    height: 160px;
+  }
+
+  .person-images__thumbnails {
+    justify-content: center;
+  }
+
+  .person-detail-modal__preview {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .person-team__grid {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  }
+}
+
+@media (max-width: 480px) {
+  .person-card__image {
+    width: 64px;
+    height: 64px;
+  }
+
+  .person-images__main {
+    width: 120px;
+    height: 120px;
+  }
+
+  .person-stats {
+    flex-direction: column;
+    gap: var(--spacing-xsmall);
+  }
+}
+
+/* ---------- Monster Team Manager ---------- */
+
+.mtm-team-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--spacing-medium);
+  margin-bottom: var(--spacing-medium);
+}
+
+.mtm-person-summary {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-small);
+}
+
+.mtm-person-details h3 {
+  margin: 0;
+  font-size: var(--font-size-large);
+  color: var(--text-color);
+}
+
+.mtm-person-details p {
+  margin: 0;
+  font-size: var(--font-size-small);
+  color: var(--text-color-muted);
+  font-style: italic;
+}
+
+.mtm-team-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: var(--spacing-small);
+}
+
+.mtm-monster-actions {
+  display: flex;
+  gap: var(--spacing-xsmall);
+  padding: var(--spacing-xsmall);
+  border-top: 1px solid var(--border-color);
+}
+
+.monster-team-card__name-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xxsmall);
+}
+
+.monster-team-card__name-group h4 {
+  margin: 0;
+  font-size: var(--font-size-small);
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+@media (max-width: 768px) {
+  .mtm-team-info {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .mtm-team-grid {
+    grid-template-columns: 1fr;
+  }
+}

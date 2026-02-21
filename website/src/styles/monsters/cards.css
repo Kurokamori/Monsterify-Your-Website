@@ -1,0 +1,361 @@
+/* ==============================
+   Monster Card Styles
+   ============================== */
+
+/* ---------- Monster Card ---------- */
+
+.monster-card {
+  background-color: var(--primary-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-medium);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  color: inherit;
+}
+
+.monster-card:hover {
+  border-color: var(--accent-color);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px var(--overlay-light);
+}
+
+.monster-card--full-height {
+  height: 100%;
+}
+
+.monster-card--clickable {
+  cursor: pointer;
+}
+
+/* ---------- Monster Card Header ---------- */
+
+.monster-card__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-xsmall) var(--spacing-small);
+  background-color: var(--background-color);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.monster-card__name {
+  margin: 0;
+  font-size: var(--font-size-medium);
+  font-weight: 600;
+  color: var(--text-color);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.monster-card__level {
+  flex-shrink: 0;
+  padding: var(--spacing-xxsmall) var(--spacing-xsmall);
+  background-color: var(--accent-color);
+  color: var(--background-color);
+  border-radius: var(--border-radius-small);
+  font-size: var(--font-size-xsmall);
+  font-weight: 600;
+}
+
+/* ---------- Monster Card Image ---------- */
+
+.monster-card__image {
+  width: 100%;
+  height: clamp(150px, 12vw + 100px, 180px);
+  background-color: var(--background-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.monster-card__image img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* ---------- Monster Card Body ---------- */
+
+.monster-card__body {
+  padding: var(--spacing-small);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xsmall);
+  flex: 1;
+}
+
+.monster-card__info {
+  font-size: var(--font-size-small);
+  color: var(--text-color-muted);
+}
+
+.monster-card__species {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 2px;
+  font-size: var(--font-size-small);
+  color: var(--text-color);
+}
+
+.monster-card__species-separator {
+  color: var(--text-color-muted);
+}
+
+.monster-card__types {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-xxsmall);
+}
+
+.monster-card__attribute {
+  margin-top: var(--spacing-xxsmall);
+}
+
+/* ---------- Monster Card References ---------- */
+
+.monster-card__references {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--spacing-xxsmall);
+  margin-top: var(--spacing-xsmall);
+  padding-top: var(--spacing-xsmall);
+  border-top: 1px solid var(--border-color);
+}
+
+.monster-card__reference {
+  position: relative;
+  aspect-ratio: 1;
+  background-color: var(--background-color);
+  border-radius: var(--border-radius-small);
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.monster-card__reference:hover {
+  transform: scale(1.05);
+  box-shadow: 0 2px 8px var(--overlay-light);
+}
+
+.monster-card__reference img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.monster-card__reference-text {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--font-size-xsmall);
+  color: var(--text-color-muted);
+  text-align: center;
+  padding: var(--spacing-xxsmall);
+}
+
+/* ---------- Image Modal ---------- */
+
+.monster-image-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--overlay-dark);
+  backdrop-filter: blur(4px);
+}
+
+.monster-image-modal__content {
+  position: relative;
+  max-width: 90vw;
+  max-height: 90vh;
+  background-color: var(--primary-color);
+  border-radius: var(--border-radius-medium);
+  padding: var(--spacing-xsmall);
+  box-shadow: 0 16px 48px var(--overlay-dark);
+}
+
+.monster-image-modal__close {
+  position: absolute;
+  top: var(--spacing-xsmall);
+  right: var(--spacing-xsmall);
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--background-color);
+  border: 1px solid var(--border-color);
+  border-radius: 50%;
+  color: var(--text-color);
+  font-size: var(--font-size-large);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  z-index: 1;
+}
+
+.monster-image-modal__close:hover {
+  background-color: var(--error-color);
+  border-color: var(--error-color);
+  color: var(--text-color);
+}
+
+.monster-image-modal__image {
+  display: block;
+  max-width: 100%;
+  max-height: calc(90vh - 2rem);
+  border-radius: var(--border-radius-small);
+}
+
+/* ---------- Starter Monster Card ---------- */
+
+.starter-monster-card {
+  background-color: var(--primary-color);
+  border: 2px solid var(--border-color);
+  border-radius: var(--border-radius-medium);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.2s ease;
+}
+
+.starter-monster-card:hover {
+  border-color: var(--accent-color);
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px var(--overlay-light);
+}
+
+.starter-monster-card--selected {
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 3px var(--accent-color-hover);
+}
+
+.starter-monster-card__header {
+  padding: var(--spacing-small);
+  background-color: var(--background-color);
+  border-bottom: 1px solid var(--border-color);
+  text-align: center;
+}
+
+.starter-monster-card__name {
+  margin: 0;
+  font-size: var(--font-size-large);
+  font-weight: 700;
+  color: var(--text-color);
+}
+
+.starter-monster-card__species-separator {
+  color: var(--text-color-muted);
+  margin: 0 var(--spacing-xxsmall);
+}
+
+.starter-monster-card__image {
+  width: 100%;
+  height: clamp(160px, 12vw + 110px, 200px);
+  background-color: var(--background-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.starter-monster-card__image img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.starter-monster-card__body {
+  padding: var(--spacing-small);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xsmall);
+  flex: 1;
+}
+
+.starter-monster-card__types {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--spacing-xxsmall);
+}
+
+.starter-monster-card__attribute {
+  text-align: center;
+}
+
+.starter-monster-card__species-images {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--spacing-xsmall);
+  margin-top: var(--spacing-xsmall);
+  padding-top: var(--spacing-xsmall);
+  border-top: 1px solid var(--border-color);
+}
+
+.starter-monster-card__species-image {
+  aspect-ratio: 1;
+  background-color: var(--background-color);
+  border-radius: var(--border-radius-small);
+  overflow: hidden;
+}
+
+.starter-monster-card__species-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ---------- Monster Card Grid ---------- */
+
+.monster-card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 250px), 1fr));
+  gap: var(--spacing-small);
+}
+
+/* ---------- Reduced Motion ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .monster-card,
+  .starter-monster-card,
+  .monster-card__reference,
+  .monster-image-modal__close {
+    transition: none;
+  }
+
+  .monster-card:hover,
+  .starter-monster-card:hover,
+  .monster-card__reference:hover {
+    transform: none;
+  }
+}
+
+/* ---------- Print Styles ---------- */
+
+@media print {
+  .monster-card,
+  .starter-monster-card {
+    box-shadow: none;
+    border: 1px solid var(--border-color);
+  }
+
+  .monster-card:hover,
+  .starter-monster-card:hover {
+    transform: none;
+    box-shadow: none;
+  }
+
+  .monster-image-modal {
+    display: none;
+  }
+}

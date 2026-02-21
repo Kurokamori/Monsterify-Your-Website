@@ -1,894 +1,1115 @@
-/* =============================================================================
-   NURSERY - Egg hatching and nurturing styles
-   =============================================================================
+/* ==============================
+   Nursery Styles
+   Egg hatching and nurturing interface
+   ============================== */
 
-   Purpose: Styles for the Nursery location including:
-   - Modern nursery container layout
-   - Hero section and cards
-   - Hatch session interface
-   - Monster selection and naming
-   - Progress indicators
+/* ---------- Resources Display ---------- */
 
-   ============================================================================= */
-
-/* ---------- Nursery Page Container ---------- */
-
-.nursery-modern-container {
-  min-height: 100vh;
-  background: var(--nav-background);
-  padding: 2rem 1rem;
-  color: var(--text-color);
-}
-
-/* ---------- Hero Section ---------- */
-
-.nursery-hero {
-  position: relative;
-  text-align: center;
-  margin-bottom: 3rem;
-  padding: 4rem 2rem;
-  border-radius: var(--radius-2xl);
-  background: var(--card-background);
-  border: 1px solid var(--border-color);
-  box-shadow: var(--shadow-lg);
-  overflow: hidden;
-}
-
-.nursery-hero-background {
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 200px;
-  height: 200px;
-  opacity: 0.1;
+.nursery-resources {
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: var(--spacing-large);
+  flex-wrap: wrap;
+  padding: var(--spacing-medium);
+  background-color: var(--primary-color);
+  border-radius: var(--border-radius-medium);
+  border: 1px solid var(--border-color);
+  margin-bottom: var(--spacing-large);
 }
 
-.nursery-hero-icon {
-  font-size: 8rem;
-  color: var(--accent-color);
-}
-
-.nursery-hero-content {
-  position: relative;
-  z-index: 2;
-}
-
-.nursery-title {
-  font-size: 3rem;
-  font-weight: 700;
-  color: var(--accent-color);
-  margin-bottom: 0.5rem;
-  text-shadow: 0 2px 4px var(--overlay-medium);
-}
-
-.nursery-subtitle {
-  font-size: 1.25rem;
-  color: var(--text-muted, var(--highlight-bright));
-  margin-bottom: 1.5rem;
-  font-style: italic;
-}
-
-.nursery-description {
-  max-width: 600px;
-  margin: 0 auto;
-}
-
-.nursery-description p {
-  font-size: 1.1rem;
-  line-height: 1.6;
-  color: var(--text-color);
-}
-
-/* ---------- Main Content ---------- */
-
-.nursery-main-content {
-  max-width: 1200px;
-  margin: 0 auto;
+.nursery-resource {
   display: flex;
   flex-direction: column;
-  gap: 2rem;
-}
-
-/* ---------- Nursery Cards ---------- */
-
-.nursery-card {
-  background: var(--card-background);
-  border-radius: var(--radius-xl);
-  border: 1px solid var(--border-color);
-  box-shadow: var(--shadow-lg);
-  overflow: hidden;
-  transition: all var(--transition-slow);
-}
-
-.nursery-card:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-xl);
-  border-color: var(--accent-color);
-}
-
-.nursery-card-header {
-  background: linear-gradient(135deg, var(--nav-background), var(--nav-hover));
-  padding: 1.5rem 2rem;
-  border-bottom: 1px solid var(--border-color);
-  display: flex;
-  justify-content: space-between;
   align-items: center;
+  gap: var(--spacing-xsmall);
 }
 
-.nursery-card-header h3 {
-  margin: 0;
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: var(--text-color);
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-}
-
-.nursery-card-header h3 i {
-  color: var(--accent-color);
-  font-size: 1.25rem;
-}
-
-.card-badge.hatch {
-  background: linear-gradient(135deg, var(--success-color), var(--success-dark));
-  color: var(--text-color);
-}
-
-.card-badge.nurture {
-  background: linear-gradient(135deg, var(--custom-type), var(--custom-type));
-  color: var(--text-color);
-}
-
-.nursery-card-body {
-  padding: 2rem;
-}
-
-/* ---------- Trainer Selection ---------- */
-
-.modern-select {
-  width: 100%;
-  padding: 1rem 2.5rem 1rem 1rem;
-  background: var(--input-background);
-  border: 2px solid var(--border-color);
-  border-radius: var(--radius-lg);
-  color: var(--text-color);
-  font-size: 1.1rem;
-  cursor: pointer;
-  transition: all var(--transition-slow);
-  appearance: none;
-}
-
-.modern-select:focus {
-  outline: none;
-  border-color: var(--accent-color);
-  box-shadow: 0 0 0 4px var(--accent-glow);
-}
-
-.select-arrow {
-  position: absolute;
-  right: 1rem;
-  top: 50%;
-  transform: translateY(-50%);
-  color: var(--accent-color);
-  font-size: 1.2rem;
-  pointer-events: none;
-}
-
-/* ---------- Resource Icons ---------- */
-
-.resource-icon {
+.nursery-resource__icon {
   width: 50px;
   height: 50px;
-  border-radius: var(--radius-full);
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.5rem;
+  font-size: clamp(1.25rem, 1rem + 1vw, 1.75rem);
   color: var(--text-color);
   flex-shrink: 0;
 }
 
-.resource-icon.standard-egg {
+.nursery-resource__icon--egg {
   background: linear-gradient(135deg, var(--warning-color), var(--warning-dark));
 }
 
-.resource-icon.incubator {
+.nursery-resource__icon--incubator {
   background: linear-gradient(135deg, var(--error-color), var(--error-dark));
 }
 
-.resource-icon.void-stone {
-  background: linear-gradient(135deg, var(--custom-type), var(--custom-type));
-}
-
-.resource-name {
+.nursery-resource__name {
   font-weight: 500;
-  color: var(--highlight-heavy);
-  font-size: 0.95rem;
+  color: var(--text-color-muted);
+  font-size: var(--font-size-small);
 }
 
-.resource-count {
-  font-size: 1.25rem;
+.nursery-resource__count {
+  font-size: var(--font-size-large);
   font-weight: 700;
   color: var(--accent-color);
 }
 
-/* ---------- Method Selection ---------- */
+/* ---------- Mode Tabs ---------- */
 
-.nursery-methods-container {
-  margin: 2rem 0;
+.nursery-mode-tabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-medium);
+  margin-bottom: var(--spacing-large);
 }
 
-.method-icon {
-  width: 60px;
-  height: 60px;
-  border-radius: var(--radius-full);
+.nursery-mode-tab {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-medium);
+  padding: var(--spacing-medium) var(--spacing-large);
+  background-color: var(--primary-color);
+  border: 2px solid var(--border-color);
+  border-radius: var(--border-radius-large);
+  cursor: pointer;
+  transition: all 0.25s ease;
+  text-align: left;
+}
+
+.nursery-mode-tab:hover:not(.nursery-mode-tab--active) {
+  border-color: var(--accent-color);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-medium);
+}
+
+.nursery-mode-tab--active {
+  border-color: var(--accent-color);
+  background: linear-gradient(135deg, var(--accent-color-hover), transparent 80%), var(--primary-color);
+  box-shadow: 0 0 0 1px var(--accent-color), 0 4px 16px var(--overlay-medium);
+}
+
+.nursery-mode-tab__icon {
+  width: 52px;
+  height: 52px;
+  border-radius: var(--border-radius-medium);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.75rem;
-  background: var(--accent-color);
-  color: var(--background-color);
+  font-size: clamp(1.25rem, 1rem + 1vw, 1.75rem);
   flex-shrink: 0;
+  background-color: var(--primary-color);
+  color: var(--text-color-muted);
+  transition: all 0.25s ease;
 }
 
-.method-info h4 {
-  margin: 0 0 0.5rem 0;
-  font-size: 1.25rem;
-  font-weight: 600;
+.nursery-mode-tab--active .nursery-mode-tab__icon {
+  background-color: var(--accent-color);
+  color: var(--background-color);
 }
 
-.method-info p {
-  margin: 0;
-  opacity: 0.8;
-  font-size: 0.95rem;
-  line-height: 1.4;
+.nursery-mode-tab__text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xxsmall);
 }
 
-.method-description {
-  background: var(--accent-glow);
-  border: 1px solid var(--accent-glow);
-  border-radius: var(--radius-lg);
-  padding: 1.5rem;
-  margin-bottom: 2rem;
-}
-
-.method-description p {
-  margin: 0;
+.nursery-mode-tab__title {
+  font-size: var(--font-size-large);
+  font-weight: 700;
   color: var(--text-color);
-  line-height: 1.6;
 }
 
-/* ---------- Naming Card ---------- */
+.nursery-mode-tab__subtitle {
+  font-size: var(--font-size-small);
+  color: var(--text-color-muted);
+}
 
-.naming-card {
-  background: var(--nav-background);
-  border-radius: var(--radius-lg);
-  padding: 1.5rem;
+.nursery-mode-tab--active .nursery-mode-tab__title {
+  color: var(--accent-color);
+}
+
+/* ---------- Form Section ---------- */
+
+.nursery-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-medium);
+}
+
+.nursery-form__section {
+  background-color: var(--primary-color);
+  border-radius: var(--border-radius-medium);
+  padding: var(--spacing-medium);
   border: 1px solid var(--border-color);
 }
 
-.naming-species-label {
-  font-size: 1rem;
+.nursery-form__section-title {
+  font-size: var(--font-size-medium);
   font-weight: 600;
-  color: var(--accent-color);
-  padding: 0.5rem 0.75rem;
-  background: var(--nav-active);
-  border-radius: var(--radius-sm);
-  margin-bottom: 0.75rem;
-  display: inline-block;
-}
-
-.bottom-naming {
-  margin-bottom: 1rem;
-}
-
-.form-label i {
-  font-size: 1rem;
-}
-
-/* ---------- Number Input ---------- */
-
-.number-input-container {
+  color: var(--text-color);
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: var(--spacing-xsmall);
+  margin-bottom: var(--spacing-small);
+}
+
+.nursery-form__section-title i {
+  color: var(--accent-color);
+}
+
+.nursery-form__description {
+  color: var(--text-color-muted);
+  line-height: 1.6;
+  margin-bottom: var(--spacing-medium);
+  padding: var(--spacing-small);
+  background-color: var(--accent-color-subtle);
+  border-radius: var(--border-radius-small);
+}
+
+/* ---------- Egg Count Selector ---------- */
+
+.nursery-egg-count {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xsmall);
   max-width: 200px;
 }
 
-/* ---------- Modern Checkbox ---------- */
-
-.modern-checkbox input[type="checkbox"] {
-  display: none;
-}
-
-.checkbox-icon {
-  width: 50px;
-  height: 50px;
-  border-radius: var(--radius);
-  background: var(--nav-active);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.5rem;
-  color: var(--accent-color);
-  flex-shrink: 0;
-  transition: all var(--transition-slow);
-}
-
-.modern-checkbox input[type="checkbox"]:checked + .checkbox-label .checkbox-icon {
-  background: var(--accent-color);
-  color: var(--background-color);
-  transform: scale(1.1);
-}
-
-.checkbox-description {
-  font-size: 0.9rem;
-  color: var(--highlight-heavy);
-  line-height: 1.4;
-}
-
-/* ---------- Artwork Tabs ---------- */
-
-.artwork-tabs {
-  display: flex;
-  background: var(--background-color);
-  border-radius: var(--radius);
-  padding: 0.25rem;
-  margin-bottom: 1.5rem;
-}
-
-.artwork-tab {
-  flex: 1;
-  padding: 0.75rem 1rem;
-  border: none;
-  background: transparent;
-  color: var(--highlight-heavy);
-  border-radius: var(--radius-sm);
-  cursor: pointer;
-  transition: all var(--transition-base);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  font-size: 0.9rem;
-  font-weight: 500;
-}
-
-.artwork-tab:hover {
-  color: var(--text-color);
-  background: var(--highlight-light);
-}
-
-.artwork-tab.active {
-  background: var(--accent-color);
-  color: var(--background-color);
+.nursery-egg-count__input {
+  width: 60px;
+  text-align: center;
+  font-size: var(--font-size-medium);
   font-weight: 600;
 }
 
-/* ---------- URL Input ---------- */
+/* ---------- Checkbox Option ---------- */
 
-.url-input-container {
-  position: relative;
+.nursery-checkbox {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-medium);
+  padding: var(--spacing-small) var(--spacing-medium);
+  background-color: var(--primary-color);
+  border-radius: var(--border-radius-medium);
+  border: 1px solid var(--border-color);
+  cursor: pointer;
+  transition: border-color var(--transition-fast);
 }
 
-.input-icon {
-  position: absolute;
-  left: 1rem;
-  top: 50%;
-  transform: translateY(-50%);
+.nursery-checkbox--active {
+  border-color: var(--accent-color);
+  background-color: var(--accent-color-subtle);
+}
+
+.nursery-checkbox__icon {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--border-radius-small);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: clamp(1rem, 0.875rem + 0.5vw, 1.375rem);
   color: var(--accent-color);
-  font-size: 1.1rem;
+  background-color: var(--background-color);
+  flex-shrink: 0;
+  transition: all var(--transition-fast);
+}
+
+.nursery-checkbox--active .nursery-checkbox__icon {
+  background-color: var(--accent-color);
+  color: var(--background-color);
+}
+
+.nursery-checkbox__info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xxsmall);
+}
+
+.nursery-checkbox__title {
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+.nursery-checkbox__description {
+  font-size: var(--font-size-small);
+  color: var(--text-color-muted);
+  line-height: 1.4;
+}
+
+.nursery-checkbox input[type="checkbox"] {
+  display: none;
 }
 
 /* ---------- File Upload ---------- */
 
-.file-upload-modern {
+.nursery-file-upload {
   position: relative;
 }
 
-.file-upload-modern-label {
+.nursery-file-upload__input {
+  display: none;
+}
+
+.nursery-file-upload__label {
   display: flex;
   align-items: center;
-  gap: 1rem;
-  padding: 2rem;
+  gap: var(--spacing-medium);
+  padding: var(--spacing-medium) var(--spacing-large);
   border: 2px dashed var(--border-color);
-  border-radius: var(--radius-lg);
-  background: var(--background-color);
+  border-radius: var(--border-radius-medium);
+  background-color: var(--background-color);
   cursor: pointer;
-  transition: all var(--transition-slow);
-  position: relative;
+  transition: border-color var(--transition-fast), background-color var(--transition-fast);
 }
 
-.file-upload-modern-label:hover {
+.nursery-file-upload__label:hover {
   border-color: var(--accent-color);
-  background: var(--overlay-heavy);
+  background-color: var(--accent-color);
 }
 
-.upload-subtitle {
-  font-size: 0.9rem;
-  color: var(--highlight-heavy);
+.nursery-file-upload__icon {
+  font-size: clamp(1.5rem, 1.25rem + 1vw, 2rem);
+  color: var(--accent-color);
 }
 
-.remove-file-modern {
-  position: absolute;
-  top: 0.5rem;
-  right: 0.5rem;
-  width: 30px;
-  height: 30px;
-  border-radius: var(--radius-full);
-  background: var(--error-color);
-  border: none;
+.nursery-file-upload__text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xxsmall);
+}
+
+.nursery-file-upload__title {
+  font-weight: 500;
   color: var(--text-color);
+}
+
+.nursery-file-upload__subtitle {
+  font-size: var(--font-size-small);
+  color: var(--text-color-muted);
+}
+
+.nursery-file-upload__remove {
+  position: absolute;
+  top: var(--spacing-xsmall);
+  right: var(--spacing-xsmall);
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background-color: var(--error-color);
+  border: none;
+  color: white;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.8rem;
-  transition: all var(--transition-base);
+  font-size: var(--font-size-xsmall);
+  transition: transform var(--transition-fast);
 }
 
-.remove-file-modern:hover {
-  background: var(--error-color);
+.nursery-file-upload__remove:hover {
   transform: scale(1.1);
+}
+
+/* ---------- Nurture Items Grid ---------- */
+
+.nursery-items {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-small);
+}
+
+.nursery-item__wrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+.nursery-item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-medium);
+  padding: var(--spacing-small);
+  background-color: var(--background-color);
+  border-radius: var(--border-radius-small);
+  border: 1px solid var(--border-color);
+  width: 100%;
+  text-align: left;
+}
+
+.nursery-item--selectable {
+  cursor: pointer;
+  transition: border-color var(--transition-fast), background-color var(--transition-fast);
+}
+
+.nursery-item--selectable:hover:not(.nursery-item--disabled) {
+  border-color: var(--accent-color);
+  background-color: var(--accent-color-subtle);
+}
+
+.nursery-item--selected {
+  border-color: var(--accent-color);
+  background-color: var(--accent-color-subtle);
+}
+
+.nursery-item--disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.nursery-item__icon {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--border-radius-small);
+  background-color: var(--primary-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent-color);
+  flex-shrink: 0;
+}
+
+.nursery-item__info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.nursery-item__name {
+  font-weight: 500;
+  color: var(--text-color);
+}
+
+.nursery-item__effect {
+  font-size: var(--font-size-small);
+  color: var(--text-color-muted);
+  line-height: 1.3;
+}
+
+.nursery-item__available {
+  font-size: var(--font-size-xsmall);
+  color: var(--text-color-muted);
+}
+
+.nursery-item__locked {
+  font-size: var(--font-size-xsmall);
+  color: var(--warning-color);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xxsmall);
+}
+
+.nursery-item__check {
+  flex-shrink: 0;
+  font-size: var(--font-size-large);
+  color: var(--text-color-muted);
+  width: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.nursery-item--selected .nursery-item__check {
+  color: var(--accent-color);
+}
+
+.nursery-item__special-inputs {
+  padding: var(--spacing-small);
+  padding-top: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xsmall);
+  background-color: var(--background-color);
+  border: 1px solid var(--border-color);
+  border-top: none;
+  border-radius: 0 0 var(--border-radius-small) var(--border-radius-small);
+  margin-top: -1px;
+}
+
+.nursery-item__special-input {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-small);
+}
+
+.nursery-item__special-input label {
+  font-size: var(--font-size-small);
+  font-weight: 500;
+  color: var(--text-color-muted);
+  white-space: nowrap;
+  min-width: 80px;
+}
+
+.nursery-item__special-input input {
+  flex: 1;
+  min-width: 0;
+}
+
+/* ---------- Per-Egg Tabs ---------- */
+
+.nursery-egg-tabs {
+  display: flex;
+  gap: var(--spacing-xxsmall);
+  margin-bottom: var(--spacing-small);
+  flex-wrap: wrap;
+}
+
+.nursery-egg-tab {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xxsmall);
+  padding: var(--spacing-xsmall) var(--spacing-small);
+  background-color: var(--background-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-small);
+  cursor: pointer;
+  font-size: var(--font-size-small);
+  font-weight: 500;
+  color: var(--text-color-muted);
+  transition: all var(--transition-fast);
+}
+
+.nursery-egg-tab:hover {
+  border-color: var(--accent-color);
+  color: var(--text-color);
+}
+
+.nursery-egg-tab--active {
+  background-color: var(--accent-color);
+  border-color: var(--accent-color);
+  color: var(--background-color);
+}
+
+.nursery-egg-tab__badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  border-radius: 9px;
+  background-color: var(--accent-color);
+  color: var(--background-color);
+  font-size: var(--font-size-xsmall);
+  font-weight: 700;
+  padding: 0 4px;
+}
+
+.nursery-egg-tab--active .nursery-egg-tab__badge {
+  background-color: var(--background-color);
+  color: var(--accent-color);
+}
+
+/* ---------- Item Icon Image ---------- */
+
+.nursery-item__icon-img {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+  image-rendering: pixelated;
+}
+
+/* ---------- Item Groups (Collapsible) ---------- */
+
+.nursery-item-groups {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-small);
+}
+
+.nursery-item-group {
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-small);
+  overflow: hidden;
+}
+
+.nursery-item-group__header {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-small);
+  width: 100%;
+  padding: var(--spacing-small) var(--spacing-medium);
+  background-color: var(--background-color);
+  border: none;
+  cursor: pointer;
+  color: var(--text-color);
+  font-size: var(--font-size-medium);
+  font-weight: 600;
+  transition: background-color var(--transition-fast);
+  text-align: left;
+}
+
+.nursery-item-group__header:hover {
+  background-color: var(--accent-color);
+}
+
+.nursery-item-group__header > i:first-child {
+  color: var(--accent-color);
+  width: 20px;
+  text-align: center;
+}
+
+.nursery-item-group__label {
+  flex: 1;
+  min-width: 0;
+}
+
+.nursery-item-group__count {
+  font-size: var(--font-size-small);
+  font-weight: 400;
+  color: var(--text-color-muted);
+}
+
+.nursery-item-group__selected {
+  font-size: var(--font-size-xsmall);
+  font-weight: 600;
+  color: var(--accent-color);
+  background-color: var(--accent-color);
+  padding: var(--spacing-xxsmall) var(--spacing-xsmall);
+  border-radius: var(--border-radius-large);
+}
+
+.nursery-item-group__chevron {
+  color: var(--text-color-muted);
+  font-size: var(--font-size-small);
+  transition: transform var(--transition-fast);
+}
+
+.nursery-item-group > .nursery-items {
+  padding: var(--spacing-xsmall) var(--spacing-small) var(--spacing-small);
+  border-top: 1px solid var(--border-color);
 }
 
 /* ---------- Action Section ---------- */
 
-.action-section {
-  margin-top: 2rem;
+.nursery-actions {
   display: flex;
   justify-content: center;
+  padding-top: var(--spacing-medium);
 }
 
-/* ---------- Hatch Session Modern Styles ---------- */
+/* ==============================
+   Hatch Session Styles
+   ============================== */
 
-.hatch-session-modern-container {
-  min-height: 100vh;
-  background: var(--nursery-bg-gradient);
-  padding: 2rem 1rem;
-  color: var(--text-color);
-}
+/* ---------- Session Header Info ---------- */
 
-.session-background {
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 150px;
-  height: 150px;
-  opacity: 0.1;
-  display: flex;
+.nursery-session__type-badge {
+  display: inline-flex;
   align-items: center;
-  justify-content: center;
-}
-
-.session-icon {
-  font-size: 6rem;
-  color: var(--accent-color);
-}
-
-.session-info-modern {
-  position: relative;
-  z-index: 2;
-  flex: 1;
-}
-
-.session-title {
-  font-size: 2.5rem;
-  font-weight: 700;
-  color: var(--accent-color);
-  margin-bottom: 1rem;
-  text-shadow: 0 2px 4px var(--overlay-dark);
-}
-
-.session-details {
-  display: flex;
-  align-items: center;
-  gap: 2rem;
-  flex-wrap: wrap;
-}
-
-.session-type {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem 1rem;
-  background: var(--accent-color);
+  gap: var(--spacing-xxsmall);
+  padding: var(--spacing-xxsmall) var(--spacing-small);
+  background-color: var(--accent-color);
   color: var(--background-color);
-  border-radius: var(--radius-2xl);
+  border-radius: var(--border-radius-large);
   font-weight: 600;
-  font-size: 0.9rem;
+  font-size: var(--font-size-small);
 }
 
-.session-progress-text {
-  font-size: 1.1rem;
-  color: var(--highlight-heavy);
+.nursery-session__progress-text {
+  color: var(--text-color-muted);
+  font-size: var(--font-size-medium);
 }
 
 /* ---------- Progress Bar ---------- */
 
-.progress-container-modern {
-  max-width: 1200px;
-  margin: 0 auto 3rem;
-  padding: 0 1rem;
+.nursery-progress {
+  margin-bottom: var(--spacing-large);
 }
 
-.progress-bar-modern {
+.nursery-progress__bar {
   display: flex;
   align-items: center;
   justify-content: space-between;
   position: relative;
-  padding: 1rem 0;
+  padding: var(--spacing-small) 0;
 }
 
-.progress-bar-modern::before {
+.nursery-progress__bar::before {
   content: '';
   position: absolute;
   top: 50%;
   left: 0;
   right: 0;
   height: 2px;
-  background: var(--accent-glow);
+  background-color: var(--border-color);
   z-index: 1;
+  transform: translateY(-12px);
 }
 
-.progress-step-modern {
+.nursery-progress__step {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.5rem;
+  gap: var(--spacing-xxsmall);
   position: relative;
   z-index: 2;
 }
 
-.step-circle {
-  width: 50px;
-  height: 50px;
-  border-radius: var(--radius-full);
+.nursery-progress__circle {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 600;
-  transition: all var(--transition-slow);
+  font-size: var(--font-size-small);
+  transition: all var(--transition-medium);
   border: 2px solid transparent;
 }
 
-.progress-step-modern.pending .step-circle {
-  background: var(--highlight-light);
-  color: var(--highlight-heavy);
-  border-color: var(--highlight-medium);
+.nursery-progress__step--pending .nursery-progress__circle {
+  background-color: var(--primary-color);
+  color: var(--text-color-muted);
+  border-color: var(--border-color);
 }
 
-.progress-step-modern.active .step-circle {
-  background: var(--accent-color);
+.nursery-progress__step--active .nursery-progress__circle {
+  background-color: var(--accent-color);
   color: var(--background-color);
   border-color: var(--accent-color);
-  box-shadow: 0 0 0 4px var(--accent-glow);
+  box-shadow: 0 0 0 4px var(--accent-color);
 }
 
-.progress-step-modern.completed .step-circle {
-  background: var(--success-color);
-  color: var(--text-color);
+.nursery-progress__step--completed .nursery-progress__circle {
+  background-color: var(--success-color);
+  color: white;
   border-color: var(--success-color);
 }
 
-.step-label {
-  font-size: 0.8rem;
-  color: var(--highlight-heavy);
+.nursery-progress__label {
+  font-size: var(--font-size-xsmall);
+  color: var(--text-color-muted);
   text-align: center;
   white-space: nowrap;
 }
 
-.progress-step-modern.active .step-label {
+.nursery-progress__step--active .nursery-progress__label {
   color: var(--accent-color);
   font-weight: 600;
 }
 
-.progress-step-modern.completed .step-label {
+.nursery-progress__step--completed .nursery-progress__label {
   color: var(--success-color);
 }
 
-/* ---------- Current Egg ---------- */
+/* ---------- Current Egg Section ---------- */
 
-.current-egg-modern {
-  max-width: 1200px;
-  margin: 0 auto;
-  background: var(--nursery-card-bg);
-  border-radius: var(--radius-xl);
+.nursery-egg {
+  background-color: var(--primary-color);
+  border-radius: var(--border-radius-large);
   border: 1px solid var(--border-color);
-  box-shadow: var(--nursery-shadow);
+  box-shadow: var(--shadow-medium);
   overflow: hidden;
 }
 
-.egg-title {
+.nursery-egg__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-medium);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.nursery-egg__title {
   margin: 0;
-  font-size: 2rem;
+  font-size: var(--font-size-xlarge);
   font-weight: 600;
   color: var(--text-color);
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: var(--spacing-xsmall);
 }
 
-.egg-title i {
+.nursery-egg__title i {
   color: var(--accent-color);
 }
 
-.egg-id-badge {
-  background: var(--accent-color);
+.nursery-egg__badge {
+  background-color: var(--accent-color);
   color: var(--background-color);
-  padding: 0.5rem 1rem;
-  border-radius: var(--radius-2xl);
+  padding: var(--spacing-xxsmall) var(--spacing-small);
+  border-radius: var(--border-radius-large);
   font-weight: 600;
-  font-size: 0.9rem;
+  font-size: var(--font-size-small);
 }
 
 /* ---------- Monster Naming ---------- */
 
-.monster-naming-section {
-  padding: 2rem;
+.nursery-naming {
+  padding: var(--spacing-medium);
   border-bottom: 1px solid var(--border-color);
 }
 
-.naming-header span:first-of-type {
-  font-weight: 600;
-  color: var(--text-color);
-  font-size: 1.1rem;
+.nursery-naming__card {
+  background-color: var(--primary-color);
+  border-radius: var(--border-radius-medium);
+  padding: var(--spacing-medium);
+  border: 1px solid var(--border-color);
 }
 
-.optional-badge {
-  background: var(--accent-glow);
+.nursery-naming__header {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xsmall);
+  margin-bottom: var(--spacing-small);
+}
+
+.nursery-naming__header i {
   color: var(--accent-color);
-  padding: 0.25rem 0.75rem;
-  border-radius: var(--radius-xl);
-  font-size: 0.75rem;
+}
+
+.nursery-naming__header span:first-of-type {
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+.nursery-naming__optional {
+  background-color: var(--accent-color);
+  color: var(--text-color);
+  padding: var(--spacing-xxsmall) var(--spacing-xsmall);
+  border-radius: var(--border-radius-large);
+  font-size: var(--font-size-xsmall);
   font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   margin-left: auto;
 }
 
-.naming-input-container {
+.nursery-naming__species {
+  font-size: var(--font-size-small);
+  font-weight: 600;
+  color: var(--accent-color);
+  padding: var(--spacing-xxsmall) var(--spacing-xsmall);
+  background-color: var(--background-color);
+  border-radius: var(--border-radius-small);
+  margin-bottom: var(--spacing-small);
+  display: inline-block;
+}
+
+.nursery-naming__input-wrap {
   position: relative;
 }
 
-.character-count {
+.nursery-naming__char-count {
   position: absolute;
-  right: 0.75rem;
-  bottom: -1.5rem;
-  font-size: 0.75rem;
-  color: var(--highlight-heavy);
+  right: var(--spacing-xsmall);
+  bottom: -1.25rem;
+  font-size: var(--font-size-xsmall);
+  color: var(--text-color-muted);
 }
 
-/* ---------- Monster Selection ---------- */
+/* ---------- Monster Selection Grid ---------- */
 
-.monster-selection-modern {
-  padding: 2rem;
-  background: var(--card-background);
+.nursery-monsters {
+  padding: var(--spacing-medium);
 }
 
-.selection-title {
-  margin: 0 0 1.5rem 0;
-  font-size: 1.5rem;
+.nursery-monsters__title {
+  margin: 0 0 var(--spacing-medium) 0;
+  font-size: var(--font-size-large);
   font-weight: 600;
   color: var(--accent-color);
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: var(--spacing-xsmall);
 }
 
-.monster-card-modern {
+.nursery-monsters__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: var(--spacing-medium);
+}
+
+.nursery-monster-slot {
   position: relative;
-  border-radius: var(--radius-lg);
+  border-radius: var(--border-radius-medium);
   overflow: hidden;
   cursor: pointer;
-  transition: all var(--transition-slow);
+  transition: transform var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast);
   border: 2px solid transparent;
 }
 
-.monster-card-modern:hover:not(.disabled) {
+.nursery-monster-slot:hover:not(.nursery-monster-slot--disabled):not(.nursery-monster-slot--claimed) {
   transform: translateY(-4px);
   border-color: var(--accent-color);
-  box-shadow: 0 8px 24px var(--accent-glow);
+  box-shadow: 0 8px 24px var(--accent-color);
 }
 
-.monster-card-modern.selected {
+.nursery-monster-slot--selected {
   border-color: var(--accent-color);
-  box-shadow: 0 0 0 4px var(--accent-glow);
+  box-shadow: 0 0 0 4px var(--accent-color);
 }
 
-.monster-card-modern.disabled {
+.nursery-monster-slot--disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
 
-.monster-card-modern.claimed-with-edenwiess {
-  border-color: var(--custom-type);
+.nursery-monster-slot--claimed {
+  border-color: var(--accent-color);
   opacity: 0.7;
+  cursor: not-allowed;
 }
 
-.monster-card-content {
-  position: relative;
-}
-
-.selection-overlay {
+.nursery-selection-overlay {
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background: var(--accent-color);
+  background-color: var(--accent-glow);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 10;
+  pointer-events: none;
 }
 
-.selection-checkmark {
-  width: 80px;
-  height: 80px;
-  border-radius: var(--radius-full);
-  background: var(--background-color);
+.nursery-selection-overlay__check {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background-color: var(--accent-color);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 2rem;
-  color: var(--accent-color);
-  animation: bounce 0.5s ease;
+  font-size: clamp(1.5rem, 1.25rem + 1vw, 2rem);
+  color: var(--background-color);
+  animation: nursery-bounce 0.5s ease;
 }
 
-.claimed-overlay {
+.nursery-claimed-overlay {
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background: var(--custom-type);
+  background-color: var(--overlay-heavy);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 10;
+  pointer-events: none;
 }
 
-/* ---------- Special Actions ---------- */
+.nursery-claimed-badge {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xxsmall);
+  padding: var(--spacing-xsmall) var(--spacing-small);
+  background-color: var(--accent-color);
+  color: var(--background-color);
+  border-radius: var(--border-radius-medium);
+  font-weight: 600;
+  font-size: var(--font-size-small);
+}
 
-.special-actions-section {
-  padding: 2rem;
+/* ---------- Special Berry Actions ---------- */
+
+.nursery-special-actions {
+  padding: var(--spacing-medium);
   border-top: 1px solid var(--border-color);
-  background: var(--accent-glow);
+  background-color: var(--primary-color);
 }
 
-.special-actions-title {
-  margin: 0 0 1.5rem 0;
-  font-size: 1.25rem;
+.nursery-special-actions__title {
+  margin: 0 0 var(--spacing-medium) 0;
+  font-size: var(--font-size-medium);
   font-weight: 600;
   color: var(--accent-color);
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: var(--spacing-xsmall);
 }
 
-.special-actions-grid {
+.nursery-special-actions__grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 1rem;
-  margin-bottom: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--spacing-small);
+  margin-bottom: var(--spacing-medium);
 }
 
-.edenwiess-help {
+.nursery-special-button {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-small);
+  padding: var(--spacing-small) var(--spacing-medium);
+  border-radius: var(--border-radius-medium);
+  border: 1px solid var(--border-color);
+  background-color: var(--primary-color);
+  cursor: pointer;
+  transition: border-color var(--transition-fast), transform var(--transition-fast);
+  text-align: left;
+  width: 100%;
+}
+
+.nursery-special-button:hover:not(:disabled) {
+  border-color: var(--accent-color);
+  transform: translateY(-2px);
+}
+
+.nursery-special-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.nursery-special-button__icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: clamp(1rem, 0.875rem + 0.5vw, 1.375rem);
+  flex-shrink: 0;
+}
+
+.nursery-special-button--forget-me-not .nursery-special-button__icon {
+  background-color: var(--water-type);
+  color: white;
+}
+
+.nursery-special-button--edenwiess .nursery-special-button__icon {
+  background-color: var(--warning-color);
+  color: white;
+}
+
+.nursery-special-button__content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xxsmall);
+}
+
+.nursery-special-button__title {
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+.nursery-special-button__description {
+  font-size: var(--font-size-small);
+  color: var(--text-color-muted);
+}
+
+.nursery-edenwiess-help {
   display: flex;
   align-items: flex-start;
-  gap: 1rem;
-  padding: 1rem;
-  background: var(--overlay-light);
-  border: 1px solid var(--accent-glow);
-  border-radius: var(--radius);
+  gap: var(--spacing-small);
+  padding: var(--spacing-small);
+  background-color: var(--primary-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-small);
 }
 
-.help-text {
+.nursery-edenwiess-help i {
+  color: var(--accent-color);
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+
+.nursery-edenwiess-help__text {
   flex: 1;
-  color: var(--highlight-heavy);
+  color: var(--text-color-muted);
   line-height: 1.5;
-  font-size: 0.9rem;
+  font-size: var(--font-size-small);
 }
 
 /* ---------- Egg Actions ---------- */
 
-.egg-actions-modern {
-  padding: 2rem;
-  display: flex;
-  justify-content: center;
-  border-top: 1px solid var(--border-color);
-}
-
-/* ---------- Selected State ---------- */
-
-.egg-selected-modern {
-  padding: 2rem;
-  border-top: 1px solid var(--border-color);
-  background: var(--success-glow);
-}
-
-.selected-success {
-  display: flex;
-  align-items: center;
-  gap: 1.5rem;
-  padding: 1.5rem;
-  background: var(--success-glow);
-  border: 1px solid var(--success-glow);
-  border-radius: var(--radius-lg);
-}
-
-.success-icon-medium {
-  width: 60px;
-  height: 60px;
-  border-radius: var(--radius-full);
-  background: var(--success-color);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.5rem;
-  color: var(--text-color);
-  flex-shrink: 0;
-  animation: pulse 2s infinite;
-}
-
-.success-content-medium h4 {
-  margin: 0 0 0.5rem 0;
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: var(--success-color);
-}
-
-.success-content-medium p {
-  margin: 0;
-  color: var(--highlight-heavy);
-}
-
-/* ---------- Complete State ---------- */
-
-.hatch-complete-modern {
+.nursery-egg__actions {
+  padding: var(--spacing-medium);
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 2rem;
-  max-width: 800px;
+  gap: var(--spacing-medium);
+  border-top: 1px solid var(--border-color);
+}
+
+/* ---------- Egg Selected State ---------- */
+
+.nursery-egg-selected {
+  padding: var(--spacing-medium);
+  border-top: 1px solid var(--border-color);
+}
+
+.nursery-egg-selected__content {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-medium);
+  padding: var(--spacing-medium);
+  background-color: var(--overlay-light);
+  border: 1px solid var(--success-color);
+  border-radius: var(--border-radius-medium);
+}
+
+.nursery-egg-selected__icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background-color: var(--success-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: clamp(1rem, 0.875rem + 0.5vw, 1.375rem);
+  color: white;
+  flex-shrink: 0;
+}
+
+.nursery-egg-selected__info h4 {
+  margin: 0 0 var(--spacing-xxsmall) 0;
+  color: var(--success-color);
+}
+
+.nursery-egg-selected__info p {
+  margin: 0;
+  color: var(--text-color-muted);
+}
+
+/* ---------- Completion View ---------- */
+
+.nursery-complete {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-large);
+  max-width: 600px;
   margin: 0 auto;
-  padding: 3rem;
-  background: var(--nursery-card-bg);
-  border-radius: var(--radius-2xl);
+  padding: var(--spacing-xlarge);
+  background-color: var(--primary-color);
+  border-radius: var(--border-radius-large);
   border: 1px solid var(--border-color);
-  box-shadow: var(--nursery-shadow);
+  box-shadow: var(--shadow-medium);
   text-align: center;
 }
 
-.success-celebration {
+.nursery-complete__celebration {
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 1rem;
+  margin-bottom: var(--spacing-small);
 }
 
-.success-icon-large {
-  width: 120px;
-  height: 120px;
-  border-radius: var(--radius-full);
-  background: linear-gradient(135deg, var(--success-color), var(--success-dark));
+.nursery-complete__icon {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background-color: var(--success-color);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 3rem;
-  color: var(--text-color);
-  animation: bounce 1s ease-in-out;
+  font-size: clamp(2rem, 1.5rem + 1.5vw, 3.5rem);
+  color: white;
+  animation: nursery-bounce 1s ease-in-out;
   z-index: 2;
   position: relative;
 }
 
-.confetti-animation {
+.nursery-complete__confetti {
   position: absolute;
   top: 0;
   left: 0;
@@ -897,68 +1118,77 @@
   pointer-events: none;
 }
 
-.confetti {
+.nursery-confetti {
   position: absolute;
   width: 10px;
   height: 10px;
-  background: var(--accent-color);
-  animation: confetti-fall 3s ease-out infinite;
+  animation: nursery-confetti-fall 3s ease-out infinite;
 }
 
-.confetti:nth-child(1) {
+.nursery-confetti:nth-child(1) {
   left: 20%;
+  background-color: var(--warning-color);
   animation-delay: 0s;
-  background: var(--warning-color);
 }
 
-.confetti:nth-child(2) {
+.nursery-confetti:nth-child(2) {
   left: 50%;
+  background-color: var(--accent-color);
   animation-delay: 1s;
-  background: var(--custom-type);
 }
 
-.confetti:nth-child(3) {
+.nursery-confetti:nth-child(3) {
   left: 80%;
+  background-color: var(--success-color);
   animation-delay: 2s;
-  background: var(--success-color);
 }
 
-.success-content {
-  flex: 1;
+.nursery-complete__title {
+  margin: 0;
+  color: var(--text-color);
 }
 
-.success-description {
-  font-size: 1.25rem;
-  color: var(--highlight-heavy);
+.nursery-complete__description {
+  font-size: var(--font-size-medium);
+  color: var(--text-color-muted);
   line-height: 1.6;
-  margin-bottom: 2rem;
-  max-width: 500px;
-  margin-left: auto;
-  margin-right: auto;
+  max-width: 400px;
 }
 
-.success-actions {
-  margin-top: 2rem;
+.nursery-complete__stats {
+  display: flex;
+  gap: var(--spacing-large);
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.nursery-complete__stat {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xsmall);
+  color: var(--text-color-muted);
+}
+
+.nursery-complete__stat i {
+  color: var(--accent-color);
+}
+
+/* ---------- Status Message ---------- */
+
+.nursery-status {
+  margin-top: var(--spacing-small);
 }
 
 /* ---------- Animations ---------- */
 
-@keyframes bounce {
-  0%, 20%, 53%, 80%, 100% {
-    transform: translateY(0);
-  }
-  40%, 43% {
-    transform: translateY(-15px);
-  }
-  70% {
-    transform: translateY(-7px);
-  }
-  90% {
-    transform: translateY(-3px);
-  }
+@keyframes nursery-bounce {
+  0%, 20%, 53%, 80%, 100% { transform: translateY(0); }
+  40%, 43% { transform: translateY(-15px); }
+  70% { transform: translateY(-7px); }
+  90% { transform: translateY(-3px); }
 }
 
-@keyframes confetti-fall {
+@keyframes nursery-confetti-fall {
   0% {
     transform: translateY(-100px) rotate(0deg);
     opacity: 1;
@@ -969,56 +1199,34 @@
   }
 }
 
-/* ---------- Responsive Design ---------- */
-
-@media (max-width: 1024px) {
-  .nursery-title {
-    font-size: 2.5rem;
-  }
-
-  .wildlife-grid {
-    grid-template-columns: 1fr 1fr;
-  }
-}
+/* ---------- Responsive ---------- */
 
 @media (max-width: 768px) {
-  .nursery-modern-container {
-    padding: 1rem 0.5rem;
+  .nursery-mode-tabs {
+    grid-template-columns: 1fr;
   }
 
-  .nursery-hero {
-    padding: 3rem 1rem;
+  .nursery-monsters__grid {
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
   }
 
-  .nursery-title {
-    font-size: 2rem;
-  }
-
-  .session-title {
-    font-size: 2rem;
-  }
-
-  .egg-title {
-    font-size: 1.5rem;
-  }
-
-  .progress-bar-modern {
+  .nursery-progress__bar {
     flex-wrap: wrap;
-    gap: 1rem;
   }
 
-  .step-label {
+  .nursery-progress__label {
     display: none;
+  }
+
+  .nursery-special-actions__grid {
+    grid-template-columns: 1fr;
   }
 }
 
 @media (max-width: 480px) {
-  .nursery-card-header,
-  .nursery-card-body {
-    padding: 1rem;
-  }
-
-  .session-title {
-    font-size: 2rem;
+  .nursery-egg__header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-xsmall);
   }
 }

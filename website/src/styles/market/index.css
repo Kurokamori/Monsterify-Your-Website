@@ -1,9 +1,0 @@
-/* ==============================
-   Market Styles Index
-
-   This file imports all market and shop-related styles.
-   Import this file to get all market styles.
-   ============================== */
-
-/* Shop styles */
-@import './ShopStyles.css';

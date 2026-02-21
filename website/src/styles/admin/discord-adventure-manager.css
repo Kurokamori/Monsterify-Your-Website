@@ -1,0 +1,383 @@
+/* ==============================
+   Discord Adventure Manager
+   ============================== */
+
+/* Panel */
+.dam__panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-medium);
+}
+
+/* Toolbar */
+.dam__toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-medium);
+  flex-wrap: wrap;
+  padding: var(--spacing-medium);
+  background: var(--primary-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+}
+
+.dam__filters {
+  display: flex;
+  gap: var(--spacing-small);
+  flex-wrap: wrap;
+}
+
+.dam__select {
+  background-color: var(--input-background);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-medium);
+  color: var(--text-color);
+  font-size: var(--font-size-small);
+  padding: var(--spacing-xsmall) var(--spacing-medium);
+  min-width: 180px;
+}
+
+.dam__select:focus {
+  border-color: var(--accent-color);
+  outline: 2px solid var(--accent-color);
+  outline-offset: 2px;
+}
+
+.dam__search {
+  background-color: var(--input-background);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-medium);
+  color: var(--text-color);
+  font-size: var(--font-size-small);
+  padding: var(--spacing-xsmall) var(--spacing-small);
+  min-width: 220px;
+}
+
+.dam__search:focus {
+  border-color: var(--accent-color);
+  outline: 2px solid var(--accent-color);
+  outline-offset: 2px;
+}
+
+/* Status Messages */
+.dam__status {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-small);
+  padding: var(--spacing-small) var(--spacing-medium);
+  border-radius: var(--border-radius);
+  font-size: var(--font-size-small);
+  animation: damStatusSlideIn 0.2s ease;
+}
+
+.dam__status--success {
+  background: var(--success-light);
+  color: var(--success-color);
+  border: 1px solid var(--success-color);
+}
+
+.dam__status--error {
+  background: var(--error-light);
+  color: var(--error-color);
+  border: 1px solid var(--error-color);
+}
+
+@keyframes damStatusSlideIn {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Table */
+.dam__table-container {
+  overflow-x: auto;
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+}
+
+.dam__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--font-size-small);
+}
+
+.dam__table th {
+  background: var(--primary-color);
+  border-bottom: 2px solid var(--border-color);
+  color: var(--text-color);
+  font-weight: 600;
+  padding: var(--spacing-small) var(--spacing-small);
+  text-align: left;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.dam__table td {
+  background: var(--primary-color);
+  border-bottom: 1px solid var(--border-color);
+  color: var(--text-color);
+  padding: var(--spacing-small);
+}
+
+.dam__table tr:hover td {
+  background: var(--primary-color-hover);
+}
+
+/* Actions Cell */
+.dam__actions-cell {
+  white-space: nowrap;
+  display: flex;
+  gap: var(--spacing-xsmall);
+}
+
+/* Status Badge */
+.dam__status-badge {
+  display: inline-block;
+  font-size: var(--font-size-xsmall);
+  font-weight: 600;
+  padding: var(--spacing-xxsmall) var(--spacing-small);
+  border-radius: var(--border-radius-full);
+  white-space: nowrap;
+  text-transform: capitalize;
+}
+
+.dam__status-badge--active {
+  background: var(--success-light);
+  color: var(--success-color);
+}
+
+.dam__status-badge--completed {
+  background: var(--accent-glow);
+  color: var(--accent-color);
+}
+
+.dam__status-badge--cancelled {
+  background: var(--error-light);
+  color: var(--error-color);
+}
+
+.dam__status-badge--pending {
+  background: var(--warning-color);
+  color: var(--text-color);
+}
+
+/* Rename Panel */
+.dam__rename-panel {
+  background: var(--primary-color);
+  border: 1px solid var(--accent-color);
+  border-radius: var(--border-radius);
+  padding: var(--spacing-medium);
+}
+
+.dam__rename-panel h3 {
+  margin: 0 0 var(--spacing-small) 0;
+  font-size: var(--font-size-large);
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+.dam__rename-row {
+  display: flex;
+  gap: var(--spacing-small);
+  align-items: center;
+}
+
+.dam__rename-row input {
+  flex: 1;
+  background-color: var(--input-background);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-medium);
+  color: var(--text-color);
+  font-size: var(--font-size-small);
+  padding: var(--spacing-xsmall) var(--spacing-small);
+}
+
+.dam__rename-row input:focus {
+  border-color: var(--accent-color);
+  outline: 2px solid var(--accent-color);
+  outline-offset: 2px;
+}
+
+/* Pagination */
+.dam__pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-small);
+  padding-top: var(--spacing-small);
+}
+
+.dam__pagination span {
+  font-size: var(--font-size-small);
+  color: var(--text-color-muted);
+}
+
+/* Section Title */
+.dam__section-title {
+  margin: 0;
+  font-size: var(--font-size-large);
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+/* Discord ID */
+.dam__discord-id {
+  font-family: monospace;
+  font-size: var(--font-size-xsmall);
+  color: var(--text-color-muted);
+}
+
+/* Message Panel */
+.dam__message-panel {
+  background: var(--primary-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  padding: var(--spacing-medium);
+}
+
+.dam__message-panel h3 {
+  margin: 0 0 var(--spacing-small) 0;
+  font-size: var(--font-size-large);
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+.dam__textarea {
+  width: 100%;
+  min-height: 100px;
+  background-color: var(--input-background);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-medium);
+  color: var(--text-color);
+  font-size: var(--font-size-small);
+  padding: var(--spacing-xsmall) var(--spacing-small);
+  resize: vertical;
+  font-family: inherit;
+  line-height: 1.5;
+  box-sizing: border-box;
+}
+
+.dam__textarea:focus {
+  border-color: var(--accent-color);
+  outline: 2px solid var(--accent-color);
+  outline-offset: 2px;
+}
+
+.dam__message-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-small);
+  margin-top: var(--spacing-small);
+}
+
+.dam__char-count {
+  font-size: var(--font-size-xsmall);
+  color: var(--text-color-muted);
+}
+
+.dam__char-count--over {
+  color: var(--error-color);
+  font-weight: 600;
+}
+
+/* Empty & Loading */
+.dam__empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-medium);
+  padding: var(--spacing-xlarge);
+  color: var(--text-color-muted);
+  text-align: center;
+}
+
+.dam__empty i {
+  font-size: clamp(2rem, 1.5rem + 1.5vw, 3.5rem);
+  opacity: 0.4;
+}
+
+.dam__empty p {
+  margin: 0;
+}
+
+.dam__loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-small);
+  padding: var(--spacing-xlarge);
+  color: var(--text-color-muted);
+  font-size: var(--font-size-small);
+}
+
+/* Footer */
+.dam__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--spacing-small);
+  padding-top: var(--spacing-small);
+}
+
+.dam__count {
+  font-size: var(--font-size-small);
+  color: var(--text-color-muted);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .dam__toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .dam__filters {
+    flex-direction: column;
+  }
+
+  .dam__select {
+    min-width: unset;
+    width: 100%;
+  }
+
+  .dam__search {
+    min-width: unset;
+    width: 100%;
+  }
+
+  .dam__rename-row {
+    flex-direction: column;
+  }
+
+  .dam__rename-row input {
+    width: 100%;
+  }
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .dam__status {
+    animation: none;
+  }
+}
+
+@media (prefers-contrast: high) {
+  .dam__rename-panel {
+    border-width: 2px;
+  }
+
+  .dam__message-panel {
+    border-width: 2px;
+  }
+
+  .dam__table th {
+    border-bottom-width: 3px;
+  }
+
+  .dam__status-badge {
+    border: 1px solid currentColor;
+  }
+}

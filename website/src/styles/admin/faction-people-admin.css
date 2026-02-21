@@ -1,0 +1,303 @@
+/* ==============================
+   Faction People Admin Styles
+   ============================== */
+
+/* --- Container --- */
+
+.faction-people-admin {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: var(--spacing-large);
+  color: var(--text-color);
+}
+
+.faction-people-admin.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px;
+}
+
+/* --- Loading Spinner --- */
+
+.loading-spinner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-small);
+  padding: var(--spacing-xlarge);
+  color: var(--text-color-muted);
+  font-size: var(--font-size-large);
+}
+
+.loading-spinner i {
+  font-size: clamp(2rem, 1.5rem + 1.5vw, 3.5rem);
+  color: var(--accent-color);
+}
+
+.loading-spinner p {
+  margin: 0;
+  font-size: var(--font-size-medium);
+}
+
+/* --- Admin Filters --- */
+
+.admin-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-small);
+  margin-bottom: var(--spacing-large);
+  padding: var(--spacing-medium);
+  background: var(--primary-color);
+  border-radius: var(--border-radius-medium);
+  border: 1px solid var(--border-color);
+}
+
+.admin-filters .set-item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-small);
+}
+
+.admin-filters .set-item label {
+  font-size: var(--font-size-small);
+  color: var(--text-color-muted);
+  white-space: nowrap;
+}
+
+/* --- People Grid --- */
+
+.people-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: var(--spacing-medium);
+}
+
+/* --- No NPCs Empty State --- */
+
+.no-npcs {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-small);
+  padding: var(--spacing-xlarge);
+  background: var(--primary-color);
+  border-radius: var(--border-radius-medium);
+  border: 1px solid var(--border-color);
+  text-align: center;
+  color: var(--text-color-muted);
+}
+
+.no-npcs i {
+  font-size: clamp(2rem, 1.5rem + 1.5vw, 3.5rem);
+  color: var(--accent-color);
+  opacity: 0.5;
+}
+
+.no-npcs h3 {
+  margin: 0;
+  color: var(--text-color);
+}
+
+.no-npcs p {
+  margin: 0;
+  font-size: var(--font-size-medium);
+}
+
+/* --- Person Card (admin variant) --- */
+
+.faction-people-admin .person-card {
+  display: flex;
+  flex-direction: column;
+  background: var(--primary-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-medium);
+  overflow: hidden;
+  transition: border-color 0.2s ease;
+}
+
+.faction-people-admin .person-card:hover {
+  border-color: var(--accent-color);
+}
+
+/* --- Person Header --- */
+
+.person-header {
+  display: flex;
+  gap: var(--spacing-medium);
+  padding: var(--spacing-medium);
+  background: var(--primary-color);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.person-header .image-container {
+  width: 80px;
+  height: 80px;
+  flex-shrink: 0;
+}
+
+/* --- Person Info --- */
+
+.person-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xxsmall);
+  min-width: 0;
+}
+
+.person-info h3 {
+  margin: 0;
+  font-size: var(--font-size-large);
+  color: var(--text-color);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.person-alias {
+  margin: 0;
+  font-size: var(--font-size-small);
+  color: var(--text-color-muted);
+  font-style: italic;
+}
+
+/* --- Faction Badge --- */
+
+.faction-badge {
+  display: inline-block;
+  padding: var(--spacing-xxsmall) var(--spacing-small);
+  border-radius: var(--border-radius-small);
+  font-size: var(--font-size-xsmall);
+  font-weight: 600;
+  color: var(--text-color);
+  width: fit-content;
+  margin-top: var(--spacing-xxsmall);
+}
+
+/* --- Person Details --- */
+
+.person-details {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xsmall);
+  padding: var(--spacing-medium);
+  font-size: var(--font-size-small);
+}
+
+.person-details .detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--spacing-small);
+}
+
+.person-details .detail-row label {
+  color: var(--text-color-muted);
+  font-size: var(--font-size-small);
+}
+
+.standing-value {
+  font-weight: 600;
+  color: var(--accent-color);
+}
+
+.faction-admin__reward-value {
+  font-weight: 600;
+  color: var(--success-color);
+}
+
+/* --- Person Actions --- */
+
+.person-actions {
+  display: flex;
+  gap: var(--spacing-xsmall);
+  padding: var(--spacing-small) var(--spacing-medium);
+  border-top: 1px solid var(--border-color);
+  background: var(--background-color);
+}
+
+.person-actions .button {
+  flex: 1;
+}
+
+/* --- Person Form Modal --- */
+
+.person-form-overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--overlay-heavy);
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.person-form-modal {
+  background: var(--primary-color);
+  border-radius: var(--border-radius-medium);
+  padding: var(--spacing-large);
+  max-width: 700px;
+  max-height: 90vh;
+  overflow-y: auto;
+  width: 95vw;
+}
+
+.person-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-medium);
+}
+
+.image-upload-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--spacing-small);
+}
+
+.image-upload-slot {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xxsmall);
+}
+
+.image-slot-label {
+  font-size: var(--font-size-small);
+  color: var(--text-color-muted);
+  font-weight: 500;
+}
+
+.faction-preview {
+  margin-top: var(--spacing-small);
+  padding: var(--spacing-small);
+  background: var(--primary-color);
+  border-radius: var(--border-radius-small);
+  border: 1px solid var(--border-color);
+}
+
+/* --- Responsive --- */
+
+@media (max-width: 768px) {
+  .people-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .person-header {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .person-info h3 {
+    white-space: normal;
+  }
+
+  .person-actions {
+    flex-wrap: wrap;
+  }
+}

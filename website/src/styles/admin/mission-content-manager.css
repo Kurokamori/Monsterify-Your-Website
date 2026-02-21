@@ -1,0 +1,130 @@
+.mission-content-manager {
+  width: 100%;
+}
+
+.mission-content-manager__tabs {
+  display: flex;
+  gap: var(--spacing-xsmall);
+  margin-bottom: var(--spacing-medium);
+}
+
+.mission-content-manager__content {
+  margin-top: var(--spacing-medium);
+}
+
+/* Mission form wrapper */
+.mission-form {
+  width: 100%;
+}
+
+/* Form JSON section styles */
+.mission-form__json-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-medium);
+}
+
+.mission-form__field-row {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xxsmall);
+}
+
+.mission-form__field-row .input {
+  max-width: 200px;
+}
+
+/* Tag input */
+.mission-form__tag-input {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xxsmall);
+}
+
+.mission-form__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-xxsmall);
+}
+
+.mission-form__tag {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xxsmall);
+  padding: var(--spacing-xxsmall) var(--spacing-xsmall);
+  border-radius: var(--border-radius-full);
+  background: var(--secondary-color);
+  font-size: var(--font-size-medium);
+}
+
+.mission-form__tag-remove {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-color-muted);
+  padding: 0;
+  font-size: var(--font-size-xsmall);
+  line-height: 1;
+}
+
+.mission-form__tag-remove:hover {
+  color: var(--error-color);
+}
+
+.mission-form__tag-add {
+  display: flex;
+  gap: var(--spacing-xsmall);
+  align-items: center;
+}
+
+.mission-form__tag-add .input {
+  max-width: 200px;
+}
+
+/* Min/max input */
+.mission-form__minmax {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xxsmall);
+}
+
+.mission-form__minmax-row {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xsmall);
+}
+
+.mission-form__minmax-row .input {
+  max-width: 100px;
+}
+
+.mission-form__minmax-sep {
+  color: var(--text-color-muted);
+  font-size: var(--font-size-medium);
+}
+
+/* Difficulty badge colors (extend existing badge system) */
+.badge.easy {
+  background-color: var(--success-dark);
+  color: var(--success-color);
+}
+
+.badge.medium {
+  background-color: var(--warning-dark);
+  color: var(--text-color);
+}
+
+.badge.hard {
+  background-color: var(--error-dark);
+  color: var(--error-color);
+}
+
+.badge.expert {
+  background-color: var(--accent-color-active);
+  color: var(--text-color);
+}
+
+.badge.draft {
+  background-color: var(--warning-dark);
+  color: var(--text-color);
+}

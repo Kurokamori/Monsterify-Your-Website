@@ -1,93 +1,25 @@
-/* ==============================
-   Common Components Index
-
-   This file imports all common component styles.
-   Import this file to get all common styles.
-   ============================== */
-
-/* Keyframe animations - import first as other files may reference them */
-@import './keyframes.css';
-
-/* Layout utilities */
-@import './utilities.css';
-
-/* Buttons */
-@import './buttons.css';
-
-/* Page containers and headers */
-@import './containers.css';
-
-/* Pagination */
-@import './pagination.css';
-
-/* Feedback (loading, errors, alerts, empty states) */
-@import './feedback.css';
-
-/* Badges (status, rarity, type, attribute) */
-@import './badges.css';
-
-/* Tags and chips */
-@import './tags.css';
-
-/* Search bars */
-@import './search.css';
-
-/* Tabs */
-@import './tabs.css';
-
-/* Authentication and social */
-@import './auth.css';
-
-/* Image containers */
-@import './images.css';
-
-/* Rewards display */
-@import './rewards.css';
-
-/* 404 Not Found page */
-@import './not-found.css';
-
-/* Selector components */
-@import './selectors.css';
-
-/* Form inputs */
-@import './inputs.css';
-
-/* Navigation buttons */
-@import './navigation.css';
-
-/* Types */
-@import './types.css';
-
-/* Form components */
-@import './FormComponents.css';
-
-/* File upload */
-@import './FileUpload.css';
-
-/* Autocomplete */
-@import './AutocompleteInput.css';
-
-/* Items */
-@import './ItemStyles.css';
-
-/* Markdown renderer */
-@import './MarkdownRenderer.css';
-
-/* Messages */
-@import './Messages.css';
-
-/* Modal components */
-@import './ModalComponents.css';
-
-/* Layout */
-@import './layout.css';
-
-/* Page header */
-@import './page-header.css';
-
-/* Auth pages */
-@import './auth-pages.css';
-
-/* Content settings and mature content */
-@import './content-settings.css';
+/* All Common Component Styles */
+@import "./auth.css";
+@import "./feedback.css";
+@import "./file-upload.css";
+@import "./forms.css";
+@import "./images.css";
+@import "./badges.css";
+@import "./buttons.css";
+@import "./cards.css";
+@import "./containers.css";
+@import "./modals.css";
+@import "./inputs.css";
+@import "./markdown-renderer.css";
+@import "./pagination.css";
+@import "./types.css";
+@import "./state-container.css";
+@import "./data-grid.css";
+@import "./action-button-group.css";
+@import "./rewards.css";
+@import "./tabs.css";
+@import "./utilities.css";
+@import "./purchase-modal.css";
+@import "./admin-table.css";
+@import "./admin-form.css";
+@import "./monster-details.css";

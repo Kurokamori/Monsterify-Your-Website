@@ -1,0 +1,512 @@
+/* ==============================
+   Interactive Map Pages
+   - World Map, Landmass, Region, Area
+   ============================== */
+
+/* ======================
+   Map Header
+   ====================== */
+
+.map-header {
+  text-align: center;
+  margin-bottom: var(--spacing-medium);
+  padding: var(--spacing-medium);
+  background: var(--primary-color);
+  border-radius: var(--border-radius-medium);
+  border: 1px solid var(--border-color);
+}
+
+.map-header h1 {
+  color: var(--accent-color);
+  margin: 0 0 var(--spacing-xxsmall) 0;
+}
+
+.map-header p {
+  color: var(--text-color-muted);
+  margin: 0;
+}
+
+/* ======================
+   Map Container + Hotspots
+   ====================== */
+
+.map-container {
+  position: relative;
+  margin-bottom: var(--spacing-medium);
+  background: var(--primary-color);
+  border-radius: var(--border-radius-medium);
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+}
+
+.map-image-wrapper {
+  position: relative;
+  width: 100%;
+  padding-bottom: 60%;
+}
+
+.map-image-wrapper img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.map-hotspot {
+  position: absolute;
+  cursor: pointer;
+  background: transparent;
+  border: 2px solid transparent;
+  border-radius: var(--border-radius-small);
+  transition: all 0.3s ease;
+}
+
+.map-hotspot:hover {
+  background: var(--accent-glow);
+  border-color: var(--accent-color);
+  box-shadow: 0 0 15px var(--accent-glow);
+}
+
+/* ======================
+   Map Tooltip
+   ====================== */
+
+.map-tooltip {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: var(--primary-color);
+  border-radius: var(--border-radius-medium);
+  padding: var(--spacing-small);
+  box-shadow: 0 4px 20px var(--overlay-heavy);
+  z-index: 100;
+  min-width: 300px;
+  max-width: 400px;
+  animation: tooltipFadeIn 0.2s ease;
+  border: 1px solid var(--border-color);
+  pointer-events: none;
+}
+
+@keyframes tooltipFadeIn {
+  from { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
+  to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+}
+
+.map-tooltip__content {
+  display: flex;
+  gap: var(--spacing-small);
+  align-items: flex-start;
+}
+
+.map-tooltip__image {
+  width: 120px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: var(--border-radius-small);
+  flex-shrink: 0;
+}
+
+.map-tooltip__info h3 {
+  color: var(--accent-color);
+  margin: 0 0 var(--spacing-xxsmall) 0;
+}
+
+.map-tooltip__info p {
+  color: var(--text-color);
+  margin: 0;
+  line-height: 1.5;
+  opacity: 0.9;
+  font-size: var(--font-size-small);
+}
+
+/* ======================
+   Card Grids
+   ====================== */
+
+.map-card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: var(--spacing-small);
+  margin-top: var(--spacing-small);
+}
+
+.map-card {
+  background: var(--primary-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-medium);
+  overflow: hidden;
+  cursor: pointer;
+  transition: border-color 0.2s, transform 0.2s;
+}
+
+.map-card:hover {
+  border-color: var(--accent-color);
+  transform: translateY(-2px);
+}
+
+.map-card__image {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+}
+
+.map-card__body {
+  padding: var(--spacing-small);
+}
+
+.map-card__body h3 {
+  margin: 0 0 var(--spacing-xxsmall) 0;
+  color: var(--accent-color);
+}
+
+.map-card__body p {
+  margin: 0;
+  color: var(--text-color-muted);
+  font-size: var(--font-size-small);
+  line-height: 1.5;
+}
+
+/* ======================
+   Top Section (Map + Info Sidebar)
+   ====================== */
+
+.map-top-section {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: var(--spacing-medium);
+  margin-bottom: var(--spacing-medium);
+}
+
+.map-info-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-small);
+}
+
+.map-info-card {
+  background: var(--primary-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-medium);
+  padding: var(--spacing-small);
+}
+
+.map-info-card h3 {
+  color: var(--accent-color);
+  margin: 0 0 var(--spacing-xxsmall) 0;
+  font-size: var(--font-size-small);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.map-info-card p {
+  margin: 0;
+  color: var(--text-color);
+  line-height: 1.6;
+  font-size: var(--font-size-small);
+}
+
+/* ======================
+   Type Badges
+   ====================== */
+
+.map-type-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-xxsmall);
+}
+
+.map-type-badge {
+  display: inline-block;
+  padding: var(--spacing-xxsmall) var(--spacing-xsmall);
+  border-radius: var(--border-radius-small);
+  font-size: var(--font-size-xsmall);
+  font-weight: 600;
+  color: white;
+  text-shadow: 0 1px 2px var(--overlay-medium);
+}
+
+/* ======================
+   Difficulty Badge
+   ====================== */
+
+.difficulty-badge {
+  display: inline-block;
+  padding: var(--spacing-xxsmall) var(--spacing-xsmall);
+  border-radius: var(--border-radius-small);
+  font-size: var(--font-size-xsmall);
+  font-weight: 600;
+  color: white;
+}
+
+.difficulty-badge--easy { background-color: var(--success-color); }
+.difficulty-badge--medium { background-color: var(--warning-color); }
+.difficulty-badge--hard { background-color: var(--error-color); }
+.difficulty-badge--extreme { background-color: var(--ghost-type); }
+
+/* ======================
+   Rarity Badge
+   ====================== */
+
+.rarity-badge {
+  display: inline-block;
+  padding: var(--spacing-xxsmall) var(--spacing-xsmall);
+  border-radius: var(--border-radius-small);
+  font-size: var(--font-size-xsmall);
+  font-weight: 600;
+  color: white;
+}
+
+.rarity-badge--common { background-color: var(--secondary-color); }
+.rarity-badge--uncommon { background-color: var(--success-color); }
+.rarity-badge--rare { background-color: var(--water-type); }
+.rarity-badge--extreme { background-color: var(--ghost-type); }
+
+/* ======================
+   Section Blocks
+   ====================== */
+
+.map-section {
+  background: var(--primary-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-medium);
+  padding: var(--spacing-small);
+  margin-bottom: var(--spacing-small);
+}
+
+.map-section h3 {
+  color: var(--accent-color);
+  margin: 0 0 var(--spacing-xsmall) 0;
+}
+
+.map-section p {
+  margin: 0;
+  color: var(--text-color);
+  line-height: 1.7;
+}
+
+.map-section ul {
+  margin: 0;
+  padding-left: var(--spacing-small);
+  color: var(--text-color);
+}
+
+.map-section ul li {
+  margin-bottom: var(--spacing-xxsmall);
+  line-height: 1.5;
+}
+
+/* ======================
+   Area Page - Facts Grid
+   ====================== */
+
+.facts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: var(--spacing-xsmall);
+}
+
+.fact-item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xxsmall);
+}
+
+.fact-item strong {
+  color: var(--accent-color);
+  font-size: var(--font-size-xsmall);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.fact-item span {
+  color: var(--text-color);
+  font-size: var(--font-size-small);
+}
+
+/* ======================
+   Area Page - Feature List
+   ====================== */
+
+.feature-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-xxsmall);
+}
+
+.feature-tag {
+  background: var(--secondary-color);
+  color: var(--text-color);
+  padding: var(--spacing-xxsmall) var(--spacing-xsmall);
+  border-radius: var(--border-radius-small);
+  font-size: var(--font-size-small);
+}
+
+/* ======================
+   Area Page - Wildlife / Resource Cards
+   ====================== */
+
+.creature-card,
+.resource-card {
+  background: var(--primary-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-medium);
+  padding: var(--spacing-small);
+}
+
+.creature-card__header,
+.resource-card__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-xxsmall);
+}
+
+.creature-card__header h4,
+.resource-card__header h4 {
+  margin: 0;
+  color: var(--text-color);
+}
+
+.creature-card__species {
+  color: var(--text-color-muted);
+  font-size: var(--font-size-small);
+  font-style: italic;
+}
+
+.creature-card__type {
+  color: var(--accent-color);
+  font-size: var(--font-size-small);
+  font-weight: 600;
+}
+
+.creature-card p,
+.resource-card p {
+  margin: var(--spacing-xxsmall) 0 0;
+  color: var(--text-color-muted);
+  font-size: var(--font-size-small);
+  line-height: 1.5;
+}
+
+/* ======================
+   Area Page - Dangers & Tips
+   ====================== */
+
+.dangers-tips-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-small);
+}
+
+/* ======================
+   Breadcrumb
+   ====================== */
+
+.map-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xxsmall);
+  margin-bottom: var(--spacing-small);
+  flex-wrap: wrap;
+}
+
+.map-breadcrumb__link {
+  background: none;
+  border: none;
+  color: var(--accent-color);
+  cursor: pointer;
+  font-size: var(--font-size-small);
+  padding: 0;
+  text-decoration: underline;
+}
+
+.map-breadcrumb__link:hover {
+  color: var(--accent-color-hover);
+}
+
+.map-breadcrumb__separator {
+  color: var(--text-color-muted);
+  font-size: var(--font-size-small);
+}
+
+.map-breadcrumb__current {
+  color: var(--text-color);
+  font-size: var(--font-size-small);
+}
+
+/* ======================
+   Area Header
+   ====================== */
+
+.area-guide-header {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-small);
+  margin-bottom: var(--spacing-xxsmall);
+}
+
+.area-guide-header h1 {
+  margin: 0;
+  color: var(--accent-color);
+}
+
+/* ======================
+   Hero Image
+   ====================== */
+
+.area-hero-image {
+  width: 100%;
+  max-height: 400px;
+  object-fit: cover;
+  border-radius: var(--border-radius-medium);
+  margin-bottom: var(--spacing-medium);
+  border: 1px solid var(--border-color);
+}
+
+/* ======================
+   Responsive
+   ====================== */
+
+@media (max-width: 768px) {
+  .map-top-section {
+    grid-template-columns: 1fr;
+  }
+
+  .map-tooltip {
+    max-width: 90vw;
+    min-width: auto;
+  }
+
+  .map-card-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .facts-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .dangers-tips-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .map-card__image {
+    height: 150px;
+  }
+}
+
+@media (max-width: 480px) {
+  .facts-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .map-tooltip__content {
+    flex-direction: column;
+  }
+
+  .map-tooltip__image {
+    width: 100%;
+    height: 120px;
+  }
+}

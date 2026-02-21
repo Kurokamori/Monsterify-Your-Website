@@ -1,0 +1,140 @@
+/* ==============================
+   Reroller Admin Tool
+   ============================== */
+
+/* ---------- Result Card ---------- */
+
+.reroller-result-card {
+  background-color: var(--primary-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-medium);
+  padding: var(--spacing-small);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-xsmall);
+  width: 180px;
+  transition: border-color 0.2s ease;
+}
+
+.reroller-result-card:hover {
+  border-color: var(--accent-color-hover);
+}
+
+/* ---------- Species Images Row ---------- */
+
+.reroller-result-card__images {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: var(--spacing-xsmall);
+  width: 100%;
+}
+
+.reroller-result-card__species-img {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-xxsmall);
+  flex: 1;
+  min-width: 0;
+}
+
+.reroller-result-card__species-img img {
+  width: 100%;
+  max-width: 80px;
+  height: 80px;
+  object-fit: contain;
+  border-radius: var(--border-radius-small);
+  background-color: var(--background-color);
+}
+
+/* Scale images smaller when there are multiple species */
+.reroller-result-card__images:has(.reroller-result-card__species-img:nth-child(2)) .reroller-result-card__species-img img {
+  max-width: 60px;
+  height: 60px;
+}
+
+.reroller-result-card__images:has(.reroller-result-card__species-img:nth-child(3)) .reroller-result-card__species-img img {
+  max-width: 48px;
+  height: 48px;
+}
+
+.reroller-result-card__species-label {
+  font-size: var(--font-size-xsmall);
+  color: var(--text-color-muted);
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+/* ---------- Card Info ---------- */
+
+.reroller-result-card__info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-xxsmall);
+  width: 100%;
+  text-align: center;
+}
+
+.reroller-result-card__name {
+  margin: 0;
+  font-size: var(--font-size-small);
+  font-weight: 600;
+  color: var(--text-color);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+/* ---------- Card Actions ---------- */
+
+.reroller-result-card__actions {
+  display: flex;
+  gap: var(--spacing-xxsmall);
+  justify-content: center;
+  width: 100%;
+  padding-top: var(--spacing-xxsmall);
+  border-top: 1px solid var(--border-color);
+}
+
+/* ---------- Item Variant ---------- */
+
+.reroller-result-card--item .reroller-result-card__species-img img {
+  max-width: 64px;
+  height: 64px;
+}
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 768px) {
+  .reroller-result-card {
+    width: 150px;
+  }
+
+  .reroller-result-card__species-img img {
+    max-width: 64px;
+    height: 64px;
+  }
+
+  .reroller-result-card__images:has(.reroller-result-card__species-img:nth-child(2)) .reroller-result-card__species-img img {
+    max-width: 48px;
+    height: 48px;
+  }
+
+  .reroller-result-card__images:has(.reroller-result-card__species-img:nth-child(3)) .reroller-result-card__species-img img {
+    max-width: 40px;
+    height: 40px;
+  }
+}
+
+@media (max-width: 480px) {
+  .reroller-result-card {
+    width: 100%;
+  }
+}

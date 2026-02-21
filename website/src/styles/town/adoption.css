@@ -1,0 +1,334 @@
+/* ==============================
+   Adoption Center Styles
+   ============================== */
+
+.adoption-center {
+  max-width: var(--container-max-width);
+  margin: 0 auto;
+  padding: var(--spacing-large) var(--spacing-medium);
+}
+
+.adoption-center__filters {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-small);
+}
+
+/* ==============================
+   Adopt Card — Compact & Sleek
+   ============================== */
+
+.adopt-card {
+  position: relative;
+  cursor: pointer;
+  background: var(--primary-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-medium);
+  overflow: hidden;
+  transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+  display: flex;
+  flex-direction: column;
+  padding: var(--spacing-small);
+}
+
+.adopt-card:hover:not(.adopt-card--adopted) {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px var(--overlay-medium);
+  border-color: var(--accent-color);
+}
+
+.adopt-card--adopted {
+  opacity: 0.5;
+  cursor: not-allowed;
+  filter: grayscale(0.4);
+}
+
+/* ---------- Species Showcase ---------- */
+
+.adopt-card__showcase {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-xsmall);
+  min-height: 90px;
+  background: var(--primary-color);
+}
+
+/* Single species — centered, larger */
+.showcase--1 .adopt-card__species-slot {
+  width: 80px;
+  height: 80px;
+}
+
+/* Two species — side by side */
+.showcase--2 .adopt-card__species-slot {
+  width: 64px;
+  height: 64px;
+}
+
+/* Three species — smaller to fit */
+.showcase--3 .adopt-card__species-slot {
+  width: 54px;
+  height: 54px;
+}
+
+.adopt-card__species-slot {
+  border-radius: var(--border-radius-small);
+  overflow: hidden;
+  background: var(--secondary-color);
+  border: 2px solid var(--border-color);
+  flex-shrink: 0;
+  transition: transform 0.18s ease;
+}
+
+.adopt-card__species-slot:hover {
+  transform: scale(1.08);
+}
+
+.adopt-card__species-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+.adopt-card__species-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-color-muted);
+  font-size: var(--font-size-large);
+  font-weight: 700;
+}
+
+/* ---------- Info Section ---------- */
+
+.adopt-card__info {
+  padding: var(--spacing-xsmall) var(--spacing-xsmall) var(--spacing-xsmall);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xxsmall);
+  flex: 1;
+}
+
+.adopt-card__name {
+  font-size: var(--font-size-small);
+  font-weight: 600;
+  color: var(--text-color);
+  margin: 0;
+  line-height: 1.25;
+  word-break: break-word;
+}
+
+/* Type badges row — compact wrap */
+.adopt-card__types {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-xxsmall);
+}
+
+.adopt-card__types .badge {
+  font-size: var(--font-size-xxxsmall);
+  padding: var(--spacing-xxsmall) var(--spacing-xxsmall);
+}
+
+/* Meta row: attribute */
+.adopt-card__meta {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xxsmall);
+  flex-wrap: wrap;
+}
+
+.adopt-card__meta .badge {
+  font-size: var(--font-size-xxxsmall);
+  padding: var(--spacing-xxsmall) var(--spacing-xxsmall);
+}
+
+/* Adopted overlay */
+.adopt-card__adopted-overlay {
+  margin-top: auto;
+  font-size: var(--font-size-xsmall);
+  font-weight: 600;
+  color: var(--text-color-muted);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xxsmall);
+}
+
+/* ==============================
+   Adoption Form / Modal
+   ============================== */
+
+.adopt-preview {
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.adoption-success {
+  text-align: center;
+  padding: var(--spacing-medium);
+}
+
+.adopted-monster-preview {
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.adoption-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-medium);
+}
+
+.artwork-grid {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.artwork-item {
+  padding: var(--spacing-xxsmall);
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+.artwork-thumbnail {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  border-radius: var(--border-radius-small);
+}
+
+/* ---------- Selected Artwork Preview ---------- */
+
+.selected-artwork-preview {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-medium);
+  padding: var(--spacing-small);
+  background-color: var(--secondary-color);
+  border-radius: var(--border-radius-medium);
+  border: 1px solid var(--border-color);
+}
+
+.selected-artwork-thumbnail {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: var(--border-radius-small);
+}
+
+.selected-artwork-info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xsmall);
+  flex: 1;
+}
+
+.selected-artwork-title {
+  font-weight: 500;
+  color: var(--text-color);
+}
+
+/* ---------- Adoption Item Modal ---------- */
+
+.item-selection .item-list {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.item-queue {
+  padding: var(--spacing-small);
+  background-color: var(--secondary-color);
+  border-radius: var(--border-radius-medium);
+}
+
+.species-selection .card--selected,
+.value-selection .card--selected {
+  border-color: var(--accent-color);
+  background-color: var(--accent-color);
+}
+
+/* ---------- Species Images (Modal) ---------- */
+
+.adopt-modal-species-images {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xsmall);
+  flex-shrink: 0;
+}
+
+.adopt-modal-species-container {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xxsmall);
+}
+
+.adopt-modal-species-container.clickable {
+  cursor: pointer;
+}
+
+.adopt-modal-species-img {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+  border-radius: var(--border-radius-small);
+  transition: transform 0.2s;
+}
+
+.adopt-modal-species-container.clickable:hover .adopt-modal-species-img {
+  transform: scale(1.05);
+}
+
+.adopt-species-placeholder {
+  width: 60px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--secondary-color);
+  border-radius: var(--border-radius-small);
+  color: var(--text-color-muted);
+  font-size: var(--font-size-xlarge);
+  font-weight: 600;
+}
+
+.adopt-fusion-plus {
+  color: var(--text-color-muted);
+  font-size: var(--font-size-large);
+  font-weight: 600;
+}
+
+/* ---------- Image Popout ---------- */
+
+.image-popout img {
+  max-height: 80vh;
+  object-fit: contain;
+}
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 768px) {
+  .adoption-center__filters {
+    flex-direction: column;
+    width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .adopt-card {
+    transition: none;
+  }
+
+  .adopt-card:hover {
+    transform: none;
+  }
+
+  .adopt-card__species-slot {
+    transition: none;
+  }
+}

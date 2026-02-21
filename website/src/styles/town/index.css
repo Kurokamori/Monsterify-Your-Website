@@ -1,40 +1,51 @@
-/* =============================================================================
-   TOWN STYLES INDEX
+/* ==============================
+   Town Component Styles
 
-   This file imports all town location styles.
-   Import this file to get all town styles.
-   ============================================================================= */
+   Imports all town-specific style modules.
+   ============================== */
 
-/* Core town styles */
-@import './TownStyles.css';
+@import "./session.css";
+@import "./adoption.css";
+@import "./antique.css";
+@import "./shop.css";
+@import "./breeding.css";
+@import "./garden.css";
+@import "./witchhut.css";
+@import "./activity-reward-grid.css";
+@import "./town-map.css";
+@import "./bazar.css";
+@import "./item-use.css";
+@import "./game-corner.css";
+@import "./nursery.css";
+@import "./trade-center.css";
 
-/* Activities */
-@import './ActivityStyles.css';
+/* ---------- Shared Town Styles ---------- */
 
-/* Adventures - Core and split files */
-@import './adventure-bosses.css';
-@import './adventure-leaderboard.css';
-@import './adventure-events.css';
-@import './adventure-missions.css';
-@import './AdventureStyles.css';
+/* Info Box */
+.info-box {
+  padding: var(--spacing-medium);
+  background-color: var(--primary-color);
+  border-radius: var(--border-radius-medium);
+  border: 1px solid var(--border-color);
+  font-size: var(--font-size-small);
+  color: var(--text-color-muted);
+}
 
-/* Antique auction */
-@import './AntiqueAuctionStyles.css';
+/* Info Box Extensions */
+.info-box--warning {
+  background-color: var(--warning-color);
+  border-left: 3px solid var(--warning-color);
+}
 
-/* Adoption center */
-@import './AdoptionItemModal.css';
+/* Toggle Filter */
+.toggle-filter {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xsmall);
+  cursor: pointer;
+  user-select: none;
+}
 
-/* Nursery - Egg hatching and nurturing */
-@import './nursery.css';
-
-/* Trade Center - Automated trades */
-@import './trade-center.css';
-
-/* Garden - Plant cultivation and harvest */
-@import './garden.css';
-
-/* Game Corner - Video timer and rewards */
-@import './game-corner.css';
-
-/* Breeding - Monster breeding system */
-@import './breeding.css';
+.toggle-filter input[type="checkbox"] {
+  accent-color: var(--accent-color);
+}

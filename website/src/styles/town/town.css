@@ -1,0 +1,69 @@
+/* ==============================
+   Town Hub Page Styles
+   ============================== */
+
+/* ---------- Town Hub Page ---------- */
+
+.town-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: var(--spacing-large);
+}
+
+.town-page__header {
+  text-align: center;
+  margin-bottom: var(--spacing-xlarge);
+}
+
+.town-page__header h1 {
+  color: var(--accent-color);
+  margin: 0 0 var(--spacing-small) 0;
+}
+
+.town-page__subtitle {
+  color: var(--text-color-muted);
+  max-width: 600px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+.town-page__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: var(--spacing-large);
+}
+
+/* ---------- Town Location Cards ---------- */
+
+.town-location-card {
+  cursor: pointer;
+}
+
+.town-location-card__name {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xsmall);
+  color: var(--text-color);
+  margin: 0 0 var(--spacing-xsmall) 0;
+  font-size: var(--font-size-large);
+}
+
+.town-location-card__name i {
+  color: var(--accent-color);
+  font-size: 1rem;
+}
+
+.town-location-card__description {
+  color: var(--text-color-muted);
+  margin: 0;
+  font-size: var(--font-size-small);
+  line-height: 1.5;
+}
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 768px) {
+  .town-page__grid {
+    grid-template-columns: 1fr;
+  }
+}
