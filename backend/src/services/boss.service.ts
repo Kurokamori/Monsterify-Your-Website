@@ -107,7 +107,7 @@ export class BossService {
     }));
 
     return {
-      boss: this.addHealthPercentage(boss),
+      boss: await this.addHealthPercentage(boss),
       leaderboard: rankedLeaderboard,
     };
   }
@@ -218,7 +218,7 @@ export class BossService {
     const rewards = await this.bossRepo.getUnclaimedRewards(userId);
 
     return {
-      boss: boss ? this.addHealthPercentage(boss) : null,
+      boss: boss ? await this.addHealthPercentage(boss) : null,
       rewards,
     };
   }
@@ -249,15 +249,38 @@ export class BossService {
     };
   }
 
+  async deleteUserDamage(bossId: number, userId: number): Promise<{ success: boolean; deletedCount: number }> {
+    const deletedCount = await this.bossRepo.deleteUserDamage(bossId, userId);
+    return { success: true, deletedCount };
+  }
+
+  async setUserDamage(bossId: number, userId: number, newTotal: number): Promise<{ success: boolean }> {
+    await this.bossRepo.setUserDamage(bossId, userId, newTotal);
+    return { success: true };
+  }
+
   // ==========================================================================
   // Private Helpers
   // ==========================================================================
 
-  private addHealthPercentage(boss: Boss): BossWithHealth {
+  private async addHealthPercentage(boss: Boss): Promise<BossWithHealth> {
+    // Always compute HP from actual damage logs so it reflects all dealt damage
+    const totalDamage = await this.bossRepo.getTotalDamage(boss.id);
+    const currentHp = Math.max(0, boss.totalHp - totalDamage);
+
+    // Sync the stored value if it drifted
+    if (currentHp !== boss.currentHp) {
+      await this.bossRepo.update(boss.id, {
+        currentHp,
+        status: currentHp <= 0 ? 'defeated' : boss.status,
+      });
+    }
+
     return {
       ...boss,
+      currentHp,
       healthPercentage: boss.totalHp > 0
-        ? Math.floor((boss.currentHp / boss.totalHp) * 100)
+        ? Math.floor((currentHp / boss.totalHp) * 100)
         : 0,
     };
   }

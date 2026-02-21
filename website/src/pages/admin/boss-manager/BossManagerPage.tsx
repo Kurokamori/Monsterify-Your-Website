@@ -251,6 +251,8 @@ export default function BossManagerPage() {
   const [leaderboardLoading, setLeaderboardLoading] = useState(false);
   const [damageForm, setDamageForm] = useState({ userId: '', damageAmount: '' });
   const [applyingDamage, setApplyingDamage] = useState(false);
+  const [editingUserId, setEditingUserId] = useState<number | null>(null);
+  const [editDamageValue, setEditDamageValue] = useState('');
 
   // ── Data loading ────────────────────────────────────────────────
 
@@ -433,6 +435,41 @@ export default function BossManagerPage() {
       setStatusMsg({ type: 'error', text: getAxiosError(err, 'Failed to apply damage') });
     } finally {
       setApplyingDamage(false);
+    }
+  };
+
+  const handleDeleteUserDamage = async (entry: AdminLeaderboardEntry) => {
+    if (selectedBossId === '') return;
+    const displayName = entry.username || `User ${entry.damageUserId}`;
+    if (!confirm(`Remove ALL damage entries for ${displayName}? This cannot be undone.`)) return;
+    setStatusMsg(null);
+    try {
+      const result = await bossService.adminDeleteUserDamage(selectedBossId, entry.damageUserId);
+      setStatusMsg({ type: 'success', text: `Deleted ${result.deletedCount} damage entries for ${displayName}` });
+      await loadLeaderboard(selectedBossId);
+      await loadBosses();
+    } catch (err) {
+      setStatusMsg({ type: 'error', text: getAxiosError(err, 'Failed to delete user damage') });
+    }
+  };
+
+  const handleSetUserDamage = async (damageUserId: number) => {
+    if (selectedBossId === '') return;
+    const newDamage = parseInt(editDamageValue, 10);
+    if (isNaN(newDamage) || newDamage < 0) {
+      setStatusMsg({ type: 'error', text: 'Damage must be a non-negative number' });
+      return;
+    }
+    setStatusMsg(null);
+    try {
+      await bossService.adminSetUserDamage(selectedBossId, damageUserId, newDamage);
+      setStatusMsg({ type: 'success', text: `Set damage for user ${damageUserId} to ${newDamage}` });
+      setEditingUserId(null);
+      setEditDamageValue('');
+      await loadLeaderboard(selectedBossId);
+      await loadBosses();
+    } catch (err) {
+      setStatusMsg({ type: 'error', text: getAxiosError(err, 'Failed to set user damage') });
     }
   };
 
@@ -833,20 +870,70 @@ export default function BossManagerPage() {
                       <th>User</th>
                       <th>Total Damage</th>
                       <th>Submissions</th>
+                      <th>Actions</th>
                     </tr>
                   </thead>
                   <tbody>
                     {leaderboard.map((entry, i) => (
-                      <tr key={entry.userId}>
+                      <tr key={entry.damageUserId}>
                         <td className="boss-manager__rank-cell">#{i + 1}</td>
                         <td>
-                          {entry.username || `User ${entry.userId}`}
+                          {entry.username || `User ${entry.damageUserId}`}
                           {entry.discordId && (
                             <span className="boss-manager__muted"> ({entry.discordId})</span>
                           )}
                         </td>
-                        <td>{entry.totalDamage.toLocaleString()}</td>
+                        <td>
+                          {editingUserId === entry.damageUserId ? (
+                            <div className="boss-manager__inline-edit">
+                              <input
+                                type="number"
+                                value={editDamageValue}
+                                onChange={e => setEditDamageValue(e.target.value)}
+                                className="boss-manager__input boss-manager__input--small"
+                                min="0"
+                              />
+                              <button
+                                className="button success sm"
+                                onClick={() => handleSetUserDamage(entry.damageUserId)}
+                                title="Save"
+                              >
+                                <i className="fas fa-check" />
+                              </button>
+                              <button
+                                className="button secondary sm"
+                                onClick={() => { setEditingUserId(null); setEditDamageValue(''); }}
+                                title="Cancel"
+                              >
+                                <i className="fas fa-times" />
+                              </button>
+                            </div>
+                          ) : (
+                            entry.totalDamage.toLocaleString()
+                          )}
+                        </td>
                         <td>{entry.submissionCount}</td>
+                        <td>
+                          <div className="boss-manager__actions">
+                            <button
+                              className="button secondary sm"
+                              onClick={() => {
+                                setEditingUserId(entry.damageUserId);
+                                setEditDamageValue(String(entry.totalDamage));
+                              }}
+                              title="Edit damage"
+                            >
+                              <i className="fas fa-edit" />
+                            </button>
+                            <button
+                              className="button danger sm"
+                              onClick={() => handleDeleteUserDamage(entry)}
+                              title="Remove all damage"
+                            >
+                              <i className="fas fa-trash" />
+                            </button>
+                          </div>
+                        </td>
                       </tr>
                     ))}
                   </tbody>

@@ -64,6 +64,7 @@ export interface AdminBoss {
 
 export interface AdminLeaderboardEntry {
   userId: number;
+  damageUserId: number;
   username: string | null;
   discordId: string | null;
   totalDamage: number;
@@ -185,6 +186,16 @@ const bossService = {
     damageAmount: number;
   }): Promise<{ success: boolean; damage: unknown; boss: unknown }> => {
     const response = await api.post(`/bosses/${bossId}/damage`, data);
+    return response.data;
+  },
+
+  adminDeleteUserDamage: async (bossId: number, userId: number) => {
+    const response = await api.delete(`/bosses/admin/${bossId}/damage/${userId}`);
+    return response.data;
+  },
+
+  adminSetUserDamage: async (bossId: number, userId: number, damage: number) => {
+    const response = await api.put(`/bosses/admin/${bossId}/damage/${userId}`, { damage });
     return response.data;
   },
 

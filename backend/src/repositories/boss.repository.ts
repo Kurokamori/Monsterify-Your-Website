@@ -107,6 +107,7 @@ export type BossRewardClaim = {
 
 export type LeaderboardEntry = {
   userId: number;
+  damageUserId: number;
   username: string | null;
   discordId: string | null;
   totalDamage: number;
@@ -262,7 +263,6 @@ export class BossRepository extends BaseRepository<Boss, BossCreateInput, BossUp
       return existing;
     }
 
-    updates.push(`updated_at = CURRENT_TIMESTAMP`);
     values.push(id);
 
     await db.query(
@@ -321,6 +321,35 @@ export class BossRepository extends BaseRepository<Boss, BossCreateInput, BossUp
     }));
   }
 
+  async deleteUserDamage(bossId: number, userId: number): Promise<number> {
+    const result = await db.query<{ count: string }>(
+      `WITH deleted AS (
+        DELETE FROM boss_damage WHERE boss_id = $1 AND user_id = $2 RETURNING id
+      ) SELECT COUNT(*)::text as count FROM deleted`,
+      [bossId, userId]
+    );
+    return parseInt(result.rows[0]?.count ?? '0', 10);
+  }
+
+  async setUserDamage(bossId: number, userId: number, newTotal: number): Promise<void> {
+    // Delete all existing entries for this user on this boss, then insert one with the correct total
+    await db.query('DELETE FROM boss_damage WHERE boss_id = $1 AND user_id = $2', [bossId, userId]);
+    if (newTotal > 0) {
+      await db.query(
+        'INSERT INTO boss_damage (boss_id, user_id, damage_amount) VALUES ($1, $2, $3)',
+        [bossId, userId, newTotal]
+      );
+    }
+  }
+
+  async getTotalDamage(bossId: number): Promise<number> {
+    const result = await db.query<{ total_damage: string | null }>(
+      `SELECT SUM(damage_amount) as total_damage FROM boss_damage WHERE boss_id = $1`,
+      [bossId]
+    );
+    return parseInt(result.rows[0]?.total_damage ?? '0', 10);
+  }
+
   async getUserDamage(userId: number, bossId: number): Promise<number> {
     const result = await db.query<{ total_damage: string | null }>(
       `SELECT SUM(damage_amount) as total_damage FROM boss_damage WHERE user_id = $1 AND boss_id = $2`,
@@ -332,6 +361,7 @@ export class BossRepository extends BaseRepository<Boss, BossCreateInput, BossUp
   async getLeaderboard(bossId: number, limit = 10): Promise<LeaderboardEntry[]> {
     const result = await db.query<{
       user_id: number;
+      damage_user_id: number;
       username: string | null;
       discord_id: string | null;
       total_damage: string;
@@ -339,7 +369,8 @@ export class BossRepository extends BaseRepository<Boss, BossCreateInput, BossUp
     }>(
       `
         SELECT
-          u.id as user_id,
+          COALESCE(u.id, bd.user_id) as user_id,
+          bd.user_id as damage_user_id,
           u.username,
           u.discord_id,
           SUM(bd.damage_amount) as total_damage,
@@ -347,7 +378,7 @@ export class BossRepository extends BaseRepository<Boss, BossCreateInput, BossUp
         FROM boss_damage bd
         LEFT JOIN users u ON (bd.user_id = u.id OR bd.user_id::text = u.discord_id)
         WHERE bd.boss_id = $1
-        GROUP BY u.id, u.username, u.discord_id
+        GROUP BY COALESCE(u.id, bd.user_id), bd.user_id, u.username, u.discord_id
         ORDER BY total_damage DESC
         LIMIT $2
       `,
@@ -356,6 +387,7 @@ export class BossRepository extends BaseRepository<Boss, BossCreateInput, BossUp
 
     return result.rows.map((row) => ({
       userId: row.user_id,
+      damageUserId: row.damage_user_id,
       username: row.username,
       discordId: row.discord_id,
       totalDamage: parseInt(row.total_damage, 10),

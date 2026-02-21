@@ -129,10 +129,6 @@ if (process.env.NODE_ENV === 'production') {
 // Use API routes
 app.use('/api', apiRoutes);
 
-app.use(notFound);
-app.use(errorHandler);
-
-
 // In production, serve Vite React app for all non-API routes
 if (process.env.NODE_ENV === 'production') {
   app.get('*catchAll', (_req, res) => {
@@ -167,6 +163,9 @@ if (process.env.NODE_ENV === 'production') {
     });
   });
 }
+
+app.use(notFound);
+app.use(errorHandler);
 
 // Set port
 const PORT = process.env.PORT ?? 4888;

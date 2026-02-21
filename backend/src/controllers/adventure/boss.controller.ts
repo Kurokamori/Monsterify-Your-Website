@@ -348,3 +348,42 @@ export async function deleteBoss(req: Request, res: Response): Promise<void> {
     res.status(500).json({ success: false, message: msg });
   }
 }
+
+export async function deleteUserDamage(req: Request, res: Response): Promise<void> {
+  try {
+    const bossId = parseInt(req.params.id as string, 10);
+    const userId = parseInt(req.params.userId as string, 10);
+    if (isNaN(bossId) || isNaN(userId)) {
+      res.status(400).json({ success: false, message: 'Invalid boss ID or user ID' });
+      return;
+    }
+    const result = await bossService.deleteUserDamage(bossId, userId);
+    res.json(result);
+  } catch (error) {
+    const msg = error instanceof Error ? error.message : 'Failed to delete user damage';
+    console.error('Error deleting user damage:', error);
+    res.status(500).json({ success: false, message: msg });
+  }
+}
+
+export async function setUserDamage(req: Request, res: Response): Promise<void> {
+  try {
+    const bossId = parseInt(req.params.id as string, 10);
+    const userId = parseInt(req.params.userId as string, 10);
+    if (isNaN(bossId) || isNaN(userId)) {
+      res.status(400).json({ success: false, message: 'Invalid boss ID or user ID' });
+      return;
+    }
+    const { damage } = req.body as { damage?: number };
+    if (damage === undefined || damage < 0) {
+      res.status(400).json({ success: false, message: 'Damage must be a non-negative number' });
+      return;
+    }
+    const result = await bossService.setUserDamage(bossId, userId, damage);
+    res.json(result);
+  } catch (error) {
+    const msg = error instanceof Error ? error.message : 'Failed to set user damage';
+    console.error('Error setting user damage:', error);
+    res.status(500).json({ success: false, message: msg });
+  }
+}
