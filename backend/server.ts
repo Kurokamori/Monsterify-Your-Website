@@ -128,7 +128,7 @@ app.use(errorHandler);
 
 // In production, serve Vite React app for all non-API routes
 if (process.env.NODE_ENV === 'production') {
-  app.get('*', (_req, res) => {
+  app.get('*catchAll', (_req, res) => {
     res.sendFile(path.join(__dirname, '../website/dist/index.html'));
   });
 } else {
