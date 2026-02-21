@@ -24,6 +24,7 @@
   "license": "MIT",
   "dependencies": {
     "axios": "^1.13.5",
+    "bcryptjs": "^3.0.3",
     "cloudinary": "^2.9.0",
     "cors": "^2.8.6",
     "dotenv": "^17.2.4",
@@ -31,6 +32,7 @@
     "express": "^5.2.1",
     "express-session": "^1.19.0",
     "helmet": "^8.1.0",
+    "jsonwebtoken": "^9.0.3",
     "marked": "^17.0.1",
     "morgan": "^1.10.1",
     "multer": "^2.0.2",
@@ -40,10 +42,10 @@
     "passport-discord": "^0.1.4",
     "pg": "^8.18.0",
     "seedrandom": "^3.0.5",
-    "ts-node": "^10.9.2"
-  },
-  "devDependencies": {
-    "@eslint/js": "^9.39.2",
+    "ts-node": "^10.9.2",
+    "tsconfig-paths": "^4.2.0",
+    "tsx": "^4.21.0",
+    "typescript": "~5.6.2",
     "@types/bcryptjs": "^2.4.6",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
@@ -56,13 +58,11 @@
     "@types/passport": "^1.0.17",
     "@types/passport-discord": "^0.1.15",
     "@types/pg": "^8.16.0",
-    "@types/seedrandom": "^3.0.8",
-    "bcryptjs": "^3.0.3",
+    "@types/seedrandom": "^3.0.8"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.2",
     "eslint": "^9.39.2",
-    "jsonwebtoken": "^9.0.3",
-    "tsconfig-paths": "^4.2.0",
-    "tsx": "^4.21.0",
-    "typescript": "~5.6.2",
     "typescript-eslint": "^8.55.0"
   }
 }
