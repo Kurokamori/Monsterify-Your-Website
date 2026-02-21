@@ -93,34 +93,6 @@ export default function GardenPage() {
     );
   }
 
-  // Active session prompt
-  if (activeSession && !showSession) {
-    return (
-      <div className="activity-page">
-        <div className="activity-page__breadcrumb">
-          <Link to="/town" className="breadcrumb-link">
-            <i className="fas fa-arrow-left"></i> Back to Town
-          </Link>
-        </div>
-        <div className="activity-page__header">
-          <div className="activity-page__icon">
-            <i className="fas fa-seedling"></i>
-          </div>
-          <div>
-            <h1>Garden</h1>
-          </div>
-        </div>
-        <div className="activity-location__active-session">
-          <h2>Active Session</h2>
-          <p>You have an active garden session in progress.</p>
-          <button onClick={continueSession} className="button primary">
-            Continue Session
-          </button>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="activity-page">
       <div className="activity-page__breadcrumb">
@@ -169,21 +141,34 @@ export default function GardenPage() {
           />
           <div className="activity-card__body">
             <h3>Tend Garden</h3>
-            <div className="activity-card__prompt-notice">
-              <strong>Creative Prompt:</strong> Create artwork, write a story, poem, or any creative response inspired by the gardening prompt!
-            </div>
-            <p>
-              Nurture the magical plants and commune with the ancient spirits that dwell among the enchanted blooms.
-            </p>
-            <div className="activity-card__actions">
-              <button
-                className="button primary"
-                onClick={() => startActivity('tend')}
-                disabled={gardenCooldown?.active}
-              >
-                <i className="fas fa-seedling"></i> Tend Garden
-              </button>
-            </div>
+            {activeSession ? (
+              <>
+                <p>You have an active garden session in progress.</p>
+                <div className="activity-card__actions">
+                  <button onClick={continueSession} className="button primary">
+                    <i className="fas fa-play"></i> Continue Session
+                  </button>
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="activity-card__prompt-notice">
+                  <strong>Creative Prompt:</strong> Create artwork, write a story, poem, or any creative response inspired by the gardening prompt!
+                </div>
+                <p>
+                  Nurture the magical plants and commune with the ancient spirits that dwell among the enchanted blooms.
+                </p>
+                <div className="activity-card__actions">
+                  <button
+                    className="button primary"
+                    onClick={() => startActivity('tend')}
+                    disabled={gardenCooldown?.active}
+                  >
+                    <i className="fas fa-seedling"></i> Tend Garden
+                  </button>
+                </div>
+              </>
+            )}
           </div>
         </div>
 

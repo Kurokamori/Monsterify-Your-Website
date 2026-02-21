@@ -4,7 +4,9 @@ import cors from 'cors';
 import morgan from 'morgan';
 import helmet from 'helmet';
 import session from 'express-session';
+import connectPgSimple from 'connect-pg-simple';
 import passport from './src/config/passport.js';
+import { db } from './src/database/client.js';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { errorHandler, notFound } from './src/middleware/error.middleware.js';
@@ -90,10 +92,15 @@ app.use(express.json()); // Parse JSON bodies
 app.use(express.urlencoded({ extended: true })); // Parse URL-encoded bodies
 
 // Session configuration
+const PgStore = connectPgSimple(session);
 app.use(session({
+    store: new PgStore({
+        pool: db.pool,
+        createTableIfMissing: true,
+    }),
     secret: process.env.SESSION_SECRET ?? 'your-secret-key',
     resave: false,
-    saveUninitialized: true,
+    saveUninitialized: false,
     cookie: {
         maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
         httpOnly: true,

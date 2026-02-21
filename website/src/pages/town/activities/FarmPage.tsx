@@ -131,34 +131,6 @@ export default function FarmPage() {
     );
   }
 
-  // Active session prompt
-  if (activeSession && !showSession) {
-    return (
-      <div className="activity-page">
-        <div className="activity-page__breadcrumb">
-          <Link to="/town" className="breadcrumb-link">
-            <i className="fas fa-arrow-left"></i> Back to Town
-          </Link>
-        </div>
-        <div className="activity-page__header">
-          <div className="activity-page__icon">
-            <i className="fas fa-tractor"></i>
-          </div>
-          <div>
-            <h1>Farm</h1>
-          </div>
-        </div>
-        <div className="activity-location__active-session">
-          <h2>Active Session</h2>
-          <p>You have an active farm session in progress.</p>
-          <button onClick={continueSession} className="button primary">
-            Continue Session
-          </button>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="activity-page">
       <div className="activity-page__breadcrumb">
@@ -207,21 +179,34 @@ export default function FarmPage() {
           />
           <div className="activity-card__body">
             <h3>Work the Farm</h3>
-            <div className="activity-card__prompt-notice">
-              <strong>Creative Prompt:</strong> Create artwork, write a story, poem, or any creative response inspired by the farming prompt!
-            </div>
-            <p>
-              Toil in the magical fields where crops grow with supernatural abundance and mythical beasts aid in the harvest.
-            </p>
-            <div className="activity-card__actions">
-              <button
-                className="button primary"
-                onClick={() => startActivity('work')}
-                disabled={farmCooldown?.active}
-              >
-                <i className="fas fa-tractor"></i> Work the Farm
-              </button>
-            </div>
+            {activeSession ? (
+              <>
+                <p>You have an active farm session in progress.</p>
+                <div className="activity-card__actions">
+                  <button onClick={continueSession} className="button primary">
+                    <i className="fas fa-play"></i> Continue Session
+                  </button>
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="activity-card__prompt-notice">
+                  <strong>Creative Prompt:</strong> Create artwork, write a story, poem, or any creative response inspired by the farming prompt!
+                </div>
+                <p>
+                  Toil in the magical fields where crops grow with supernatural abundance and mythical beasts aid in the harvest.
+                </p>
+                <div className="activity-card__actions">
+                  <button
+                    className="button primary"
+                    onClick={() => startActivity('work')}
+                    disabled={farmCooldown?.active}
+                  >
+                    <i className="fas fa-tractor"></i> Work the Farm
+                  </button>
+                </div>
+              </>
+            )}
           </div>
         </div>
 
