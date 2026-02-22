@@ -42,22 +42,34 @@ export const RelationsTab = ({ trainer, relatedTrainers, relatedMonsters }: Rela
       <div className="relations-grid">
         {relations.map((relation, index) => {
           const isTrainer = relation.type === 'trainer';
-          const targetId = String(relation.target_id);
-          const relatedTrainer = isTrainer ? relatedTrainers[targetId] : null;
-          const relatedMonster = !isTrainer ? (relatedMonsters[targetId] as Record<string, unknown> | undefined) : null;
+          // Relations are stored with trainer_id/monster_id fields, not target_id
+          const rawRelation = relation as unknown as Record<string, unknown>;
+          const entityId = isTrainer
+            ? String(rawRelation.trainer_id || relation.target_id || '')
+            : String(rawRelation.monster_id || relation.target_id || '');
+          const relatedTrainer = isTrainer ? relatedTrainers[entityId] : null;
+          const relatedMonster = !isTrainer ? (relatedMonsters[entityId] as Record<string, unknown> | undefined) : null;
 
-          const name = relation.target_name ||
-            relatedTrainer?.name ||
-            (relatedMonster?.name as string) ||
+          const relationshipLabel = relation.relationship ||
+            (rawRelation.name as string) ||
             'Unknown';
+
+          // Display the actual entity name, not the relationship label
+          const entityName = isTrainer
+            ? (relatedTrainer?.name || 'Unknown')
+            : (relatedMonster?.name as string) || 'Unknown';
+
+          const monsterOwner = !isTrainer
+            ? (relatedMonster?.trainer_name as string) || ''
+            : '';
 
           const imgSrc = isTrainer
             ? (relatedTrainer?.main_ref || '/images/default_trainer.png')
             : ((relatedMonster?.img_link as string) || '/images/default_mon.png');
 
           const linkPath = isTrainer
-            ? `/trainers/${relation.target_id}`
-            : `/monsters/${relation.target_id}`;
+            ? `/trainers/${entityId}`
+            : `/monsters/${entityId}`;
 
           return (
             <div className="relation-card" key={relation.id || index}>
@@ -65,17 +77,22 @@ export const RelationsTab = ({ trainer, relatedTrainers, relatedMonsters }: Rela
                 <div className="relation-image-container">
                   <img
                     src={imgSrc}
-                    alt={name}
+                    alt={entityName}
                     className="relation-image"
                     onError={handleImgError}
                   />
                 </div>
                 <div className="relation-info">
-                  <h3 className="relation-name">{name}</h3>
+                  <h3 className="relation-name">{relationshipLabel}</h3>
                   <span className={`badge ${isTrainer ? 'info' : 'secondary'} sm`}>
                     {isTrainer ? 'Trainer' : 'Monster'}
                   </span>
-                  <p className="relation-type">{relation.relationship}</p>
+                  <p className="relation-type">
+                    {isTrainer
+                      ? entityName
+                      : `${entityName}${monsterOwner ? ` (${monsterOwner})` : ''}`
+                    }
+                  </p>
                   {relation.elaboration && (
                     <p className="relation-elaboration">{relation.elaboration}</p>
                   )}

@@ -364,21 +364,26 @@ export function useTrainerDetail() {
       const trainersData: Record<string, Trainer> = {};
       const monstersData: Record<string, unknown> = {};
 
-      const trainerIds = relations.map(r => r.target_id).filter(Boolean);
+      // Relations are stored with trainer_id and monster_id fields (not target_id)
+      const trainerRelations = relations.filter(r => r.type === 'trainer');
       const monsterRelations = relations.filter(r => r.type === 'monster');
 
-      for (const tid of trainerIds) {
+      for (const rel of trainerRelations) {
+        const tid = (rel as unknown as Record<string, unknown>).trainer_id || rel.target_id;
+        if (!tid) continue;
         try {
-          const t = await trainerService.getTrainer(tid);
+          const t = await trainerService.getTrainer(tid as number);
           if (t) trainersData[String(tid)] = t;
         } catch { /* skip */ }
       }
 
       for (const rel of monsterRelations) {
+        const mid = (rel as unknown as Record<string, unknown>).monster_id || rel.target_id;
+        if (!mid) continue;
         try {
-          const response = await monsterService.getMonsterById(rel.target_id);
+          const response = await monsterService.getMonsterById(mid as number);
           if (response?.success && response.data) {
-            monstersData[String(rel.target_id)] = response.data;
+            monstersData[String(mid)] = response.data;
           }
         } catch { /* skip */ }
       }

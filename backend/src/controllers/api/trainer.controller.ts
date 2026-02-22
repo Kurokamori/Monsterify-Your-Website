@@ -203,7 +203,7 @@ export async function updateTrainer(req: Request, res: Response): Promise<void> 
     }
 
     // Destructure non-trainer fields from body
-    const { image: _image, uploadType, refId, title, description, ...bodyData } = req.body;
+    const { image: _image, uploadType, refId, description, ...bodyData } = req.body;
 
     let mainRef: string | undefined;
     let megaInfo: string | undefined;
