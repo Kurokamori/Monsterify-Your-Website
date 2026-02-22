@@ -756,8 +756,11 @@ export class SubmissionRepository extends BaseRepository<Submission, SubmissionC
     );
   }
 
-  async softDelete(id: number): Promise<void> {
-    await db.query("UPDATE submissions SET status = 'deleted' WHERE id = $1", [id]);
+  async hardDelete(id: number): Promise<void> {
+    await db.query('DELETE FROM submission_tags WHERE submission_id = $1', [id]);
+    await db.query('DELETE FROM submission_images WHERE submission_id = $1', [id]);
+    await db.query('DELETE FROM submission_likes WHERE submission_id = $1', [id]);
+    await db.query('DELETE FROM submissions WHERE id = $1', [id]);
   }
 
   async findByIdWithTagsAndImage(id: number): Promise<Record<string, unknown> | null> {

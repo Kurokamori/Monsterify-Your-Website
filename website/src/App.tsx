@@ -103,6 +103,7 @@ import { AdventureLocationManagerPage } from './pages/admin/adventure-location-m
 import { EventManagerPage } from './pages/admin/event-manager'
 import { GardenManagerPage } from './pages/admin/garden-manager'
 import { TrainerInventoryEditorPage } from './pages/admin/trainer-inventory-editor'
+import { MonthlyDistributionPage } from './pages/admin/monthly-distribution'
 import InteractiveMapPage from './pages/guides-and-tools/guides/InteractiveMapPage'
 import LandmassGuidePage from './pages/guides-and-tools/guides/LandmassGuidePage'
 import RegionGuidePage from './pages/guides-and-tools/guides/RegionGuidePage'
@@ -228,6 +229,7 @@ function App() {
         <Route path="admin/event-manager" element={<EventManagerPage />} />
         <Route path="admin/garden-manager" element={<GardenManagerPage />} />
         <Route path="admin/trainer-inventory-editor" element={<TrainerInventoryEditorPage />} />
+        <Route path="admin/monthly-distribution" element={<MonthlyDistributionPage />} />
 
         {/* Statistics Routes */}
         <Route path="statistics" element={<StatisticsPage />} />

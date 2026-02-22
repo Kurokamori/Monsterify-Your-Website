@@ -253,10 +253,10 @@ export class AbilityRepository extends BaseRepository<
     return result.rows.map((r) => r.type).filter((t) => t?.trim());
   }
 
-  async getAllNames(): Promise<string[]> {
-    const result = await db.query<{ name: string }>(
-      `SELECT name FROM abilities ORDER BY name`
+  async getAllNames(): Promise<{ name: string; description: string }[]> {
+    const result = await db.query<{ name: string; description: string }>(
+      `SELECT name, description FROM abilities ORDER BY name`
     );
-    return result.rows.map((r) => r.name);
+    return result.rows;
   }
 }

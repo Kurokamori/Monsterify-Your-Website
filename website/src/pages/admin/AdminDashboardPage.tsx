@@ -104,6 +104,7 @@ const ADMIN_CATEGORIES: AdminCategory[] = [
       { name: 'Town Activities Editor', icon: 'fas fa-tasks', description: 'Edit town activities and rewards', path: '/admin/town-activities-editor' },
       { name: 'Shop Manager', icon: 'fas fa-store', description: 'Manage shops and inventory', path: '/admin/shop-manager' },
       { name: 'Garden Manager', icon: 'fas fa-seedling', description: 'View and manage user garden points', path: '/admin/garden-manager' },
+      { name: 'Monthly Distribution', icon: 'fas fa-calendar-check', description: 'View and trigger monthly item distribution', path: '/admin/monthly-distribution' },
     ],
   },
 ];

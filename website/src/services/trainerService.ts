@@ -294,6 +294,12 @@ const trainerService = {
     return response.data;
   },
 
+  // Admin: Bulk add item to all trainers
+  adminBulkAddItemToAllTrainers: async (itemName: string, quantity: number, category: string) => {
+    const response = await api.post('/trainers/admin/inventory/bulk-add', { itemName, quantity, category });
+    return response.data;
+  },
+
   // Admin: Update trainer currency
   adminUpdateCurrency: async (trainerId: number | string, amount: number) => {
     const response = await api.post(`/trainers/admin/currency/${trainerId}`, { amount });

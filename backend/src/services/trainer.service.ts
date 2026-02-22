@@ -37,6 +37,57 @@ export type PaginatedMonsters = {
   currentPage: number;
 };
 
+export type TrainerProfileData = {
+  nickname?: string | null;
+  full_name?: string | null;
+  faction?: string | null;
+  title?: string | null;
+  species1?: string | null;
+  species2?: string | null;
+  species3?: string | null;
+  type1?: string | null;
+  type2?: string | null;
+  type3?: string | null;
+  type4?: string | null;
+  type5?: string | null;
+  type6?: string | null;
+  ability?: string | null;
+  nature?: string | null;
+  characteristic?: string | null;
+  fav_berry?: string | null;
+  fav_type1?: string | null;
+  fav_type2?: string | null;
+  fav_type3?: string | null;
+  fav_type4?: string | null;
+  fav_type5?: string | null;
+  fav_type6?: string | null;
+  gender?: string | null;
+  pronouns?: string | null;
+  sexuality?: string | null;
+  age?: string | null;
+  height?: string | null;
+  weight?: string | null;
+  birthplace?: string | null;
+  residence?: string | null;
+  race?: string | null;
+  occupation?: string | null;
+  theme?: string | null;
+  voice_claim?: string | null;
+  quote?: string | null;
+  tldr?: string | null;
+  biography?: string | null;
+  strengths?: string | null;
+  weaknesses?: string | null;
+  likes?: string | null;
+  dislikes?: string | null;
+  flaws?: string | null;
+  values?: string | null;
+  quirks?: string | null;
+  secrets?: string | null;
+  relations?: string | null;
+  icon?: string | null;
+};
+
 export type TrainerCreateData = {
   name: string;
   playerUserId: string;
@@ -44,7 +95,7 @@ export type TrainerCreateData = {
   bio?: string | null;
   birthday?: string | null;
   additionalRefs?: string | null;
-};
+} & TrainerProfileData;
 
 export type TrainerUpdateData = {
   name?: string;
@@ -53,7 +104,7 @@ export type TrainerUpdateData = {
   bio?: string | null;
   birthday?: string | null;
   megaInfo?: string | null;
-};
+} & TrainerProfileData;
 
 export type BoxPositionUpdate = {
   id: number;
@@ -254,6 +305,9 @@ export class TrainerService {
       chineseZodiac = calculateChineseZodiac(data.birthday) as string;
     }
 
+    // Extract profile fields
+    const { name: _n, playerUserId: _p, mainRef: _m, bio: _b, birthday: _bd, additionalRefs: _ar, ...profileFields } = data;
+
     const trainer = await this.trainerRepo.create({
       playerUserId: data.playerUserId,
       name: data.name,
@@ -262,6 +316,7 @@ export class TrainerService {
       birthday: data.birthday ?? undefined,
       zodiac,
       chineseZodiac,
+      ...profileFields,
     });
 
     // Initialize inventory for the new trainer
@@ -295,6 +350,9 @@ export class TrainerService {
       chineseZodiac = calculateChineseZodiac(data.birthday) as string;
     }
 
+    // Extract profile fields
+    const { name: _n, mainRef: _m, additionalRefs: _ar, bio: _b, birthday: _bd, megaInfo: _mi, ...profileFields } = data;
+
     return this.trainerRepo.update(id, {
       name: data.name,
       mainRef: data.mainRef,
@@ -304,6 +362,7 @@ export class TrainerService {
       zodiac,
       chineseZodiac,
       megaInfo: data.megaInfo,
+      ...profileFields,
     });
   }
 

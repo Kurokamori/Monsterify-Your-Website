@@ -196,5 +196,6 @@ export const PATTERN_TYPES: { value: PatternType; label: string; description: st
 
 // Utility function
 export const capitalize = (str: string): string => {
+  if (!str) return '';
   return str.charAt(0).toUpperCase() + str.slice(1);
 };

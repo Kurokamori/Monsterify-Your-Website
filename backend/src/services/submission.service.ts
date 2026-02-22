@@ -1202,7 +1202,57 @@ export class SubmissionService {
         level: 1,
         where_met: 'Gift Reward',
       };
-      await this.monsterInitService.initializeMonster(monsterData as MonsterData);
+      const initialized = await this.monsterInitService.initializeMonster(monsterData as MonsterData);
+
+      const created = await this.monsterRepo.create({
+        trainerId: assignment.trainerId,
+        name: initialized.name ?? assignment.name,
+        species1: initialized.species1 ?? (monsterData.species1 as string) ?? '',
+        species2: initialized.species2 as string | undefined,
+        species3: initialized.species3 as string | undefined,
+        type1: initialized.type1 ?? '' as never,
+        type2: initialized.type2 as never,
+        type3: initialized.type3 as never,
+        type4: initialized.type4 as never,
+        type5: initialized.type5 as never,
+        attribute: initialized.attribute as never,
+        level: initialized.level,
+        hpTotal: initialized.hp_total,
+        hpIv: initialized.hp_iv,
+        hpEv: initialized.hp_ev,
+        atkTotal: initialized.atk_total,
+        atkIv: initialized.atk_iv,
+        atkEv: initialized.atk_ev,
+        defTotal: initialized.def_total,
+        defIv: initialized.def_iv,
+        defEv: initialized.def_ev,
+        spaTotal: initialized.spa_total,
+        spaIv: initialized.spa_iv,
+        spaEv: initialized.spa_ev,
+        spdTotal: initialized.spd_total,
+        spdIv: initialized.spd_iv,
+        spdEv: initialized.spd_ev,
+        speTotal: initialized.spe_total,
+        speIv: initialized.spe_iv,
+        speEv: initialized.spe_ev,
+        nature: initialized.nature,
+        characteristic: initialized.characteristic,
+        gender: initialized.gender as never,
+        friendship: initialized.friendship,
+        ability1: initialized.ability1,
+        ability2: initialized.ability2,
+        moveset: typeof initialized.moveset === 'string'
+          ? JSON.parse(initialized.moveset)
+          : Array.isArray(initialized.moveset)
+            ? initialized.moveset
+            : [],
+        whereMet: 'Gift Reward',
+      });
+
+      // Initialize the created monster in the database with full stats/moves
+      if (created?.id) {
+        await this.monsterInitService.initializeMonster(created.id);
+      }
     }
 
     return {
@@ -1916,11 +1966,7 @@ export class SubmissionService {
     if (!isOwner && !isAdmin) {
       throw new Error('You do not have permission to delete this submission');
     }
-    if (ownership.status === 'deleted') {
-      throw new Error('Submission is already deleted');
-    }
-
-    await this.submissionRepo.softDelete(submissionId);
+    await this.submissionRepo.hardDelete(submissionId);
   }
 
   // ===========================================================================

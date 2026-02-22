@@ -311,7 +311,7 @@ const submissionService = {
     return response.data;
   },
 
-  // Delete a submission (soft delete)
+  // Delete a submission permanently
   deleteSubmission: async (submissionId: number | string) => {
     const response = await api.delete(`/submissions/${submissionId}`);
     return response.data;

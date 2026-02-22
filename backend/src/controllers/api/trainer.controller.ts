@@ -117,6 +117,55 @@ export async function createTrainer(req: Request, res: Response): Promise<void> 
       bio: req.body.bio ?? null,
       birthday: req.body.birthday ?? null,
       additionalRefs,
+      // Profile fields
+      nickname: req.body.nickname,
+      full_name: req.body.full_name,
+      faction: req.body.faction,
+      title: req.body.title,
+      species1: req.body.species1,
+      species2: req.body.species2,
+      species3: req.body.species3,
+      type1: req.body.type1,
+      type2: req.body.type2,
+      type3: req.body.type3,
+      type4: req.body.type4,
+      type5: req.body.type5,
+      type6: req.body.type6,
+      ability: req.body.ability,
+      nature: req.body.nature,
+      characteristic: req.body.characteristic,
+      fav_berry: req.body.fav_berry,
+      fav_type1: req.body.fav_type1,
+      fav_type2: req.body.fav_type2,
+      fav_type3: req.body.fav_type3,
+      fav_type4: req.body.fav_type4,
+      fav_type5: req.body.fav_type5,
+      fav_type6: req.body.fav_type6,
+      gender: req.body.gender,
+      pronouns: req.body.pronouns,
+      sexuality: req.body.sexuality,
+      age: req.body.age,
+      height: req.body.height,
+      weight: req.body.weight,
+      birthplace: req.body.birthplace,
+      residence: req.body.residence,
+      race: req.body.race,
+      occupation: req.body.occupation,
+      theme: req.body.theme,
+      voice_claim: req.body.voice_claim,
+      quote: req.body.quote,
+      tldr: req.body.tldr,
+      biography: req.body.biography,
+      strengths: req.body.strengths,
+      weaknesses: req.body.weaknesses,
+      likes: req.body.likes,
+      dislikes: req.body.dislikes,
+      flaws: req.body.flaws,
+      values: req.body.values,
+      quirks: req.body.quirks,
+      secrets: req.body.secrets,
+      relations: req.body.relations,
+      icon: req.body.icon,
     });
 
     res.status(201).json({
@@ -246,6 +295,55 @@ export async function updateTrainer(req: Request, res: Response): Promise<void> 
       bio: bodyData.bio,
       birthday: bodyData.birthday,
       megaInfo,
+      // Profile fields
+      nickname: bodyData.nickname,
+      full_name: bodyData.full_name,
+      faction: bodyData.faction,
+      title: bodyData.title,
+      species1: bodyData.species1,
+      species2: bodyData.species2,
+      species3: bodyData.species3,
+      type1: bodyData.type1,
+      type2: bodyData.type2,
+      type3: bodyData.type3,
+      type4: bodyData.type4,
+      type5: bodyData.type5,
+      type6: bodyData.type6,
+      ability: bodyData.ability,
+      nature: bodyData.nature,
+      characteristic: bodyData.characteristic,
+      fav_berry: bodyData.fav_berry,
+      fav_type1: bodyData.fav_type1,
+      fav_type2: bodyData.fav_type2,
+      fav_type3: bodyData.fav_type3,
+      fav_type4: bodyData.fav_type4,
+      fav_type5: bodyData.fav_type5,
+      fav_type6: bodyData.fav_type6,
+      gender: bodyData.gender,
+      pronouns: bodyData.pronouns,
+      sexuality: bodyData.sexuality,
+      age: bodyData.age,
+      height: bodyData.height,
+      weight: bodyData.weight,
+      birthplace: bodyData.birthplace,
+      residence: bodyData.residence,
+      race: bodyData.race,
+      occupation: bodyData.occupation,
+      theme: bodyData.theme,
+      voice_claim: bodyData.voice_claim,
+      quote: bodyData.quote,
+      tldr: bodyData.tldr,
+      biography: bodyData.biography,
+      strengths: bodyData.strengths,
+      weaknesses: bodyData.weaknesses,
+      likes: bodyData.likes,
+      dislikes: bodyData.dislikes,
+      flaws: bodyData.flaws,
+      values: bodyData.values,
+      quirks: bodyData.quirks,
+      secrets: bodyData.secrets,
+      relations: bodyData.relations,
+      icon: bodyData.icon,
     });
 
     res.json({ success: true, data: updatedTrainer });
@@ -339,6 +437,43 @@ export async function updateTrainerInventoryItem(req: Request, res: Response): P
     res.json({ success: true, data: updatedInventory });
   } catch (error) {
     console.error('Error in updateTrainerInventoryItem:', error);
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
+}
+
+export async function bulkAddItemToAllTrainers(req: Request, res: Response): Promise<void> {
+  try {
+    const { itemName, quantity, category } = req.body;
+    if (!itemName || !category) {
+      res.status(400).json({ success: false, message: 'itemName and category are required' });
+      return;
+    }
+    const qty = parseInt(quantity) || 1;
+
+    const allTrainers = await trainerService.getAllTrainersForForms();
+    const results: { success: number; failed: number; errors: string[] } = {
+      success: 0,
+      failed: 0,
+      errors: [],
+    };
+
+    for (const trainer of allTrainers) {
+      try {
+        await trainerService.addItem(trainer.id, itemName.trim(), qty, category as InventoryCategory);
+        results.success++;
+      } catch (err) {
+        results.failed++;
+        results.errors.push(`Trainer ${trainer.name} (ID ${trainer.id}): ${err instanceof Error ? err.message : 'Unknown error'}`);
+      }
+    }
+
+    res.json({
+      success: true,
+      data: results,
+      message: `Added ${itemName} x${qty} to ${results.success} trainers. ${results.failed} failed.`,
+    });
+  } catch (error) {
+    console.error('Error in bulkAddItemToAllTrainers:', error);
     res.status(500).json({ success: false, message: 'Server error' });
   }
 }

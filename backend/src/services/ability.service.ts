@@ -20,7 +20,7 @@ export class AbilityService {
     return abilityRepository.getAllTypes();
   }
 
-  async getAllNames(): Promise<string[]> {
+  async getAllNames(): Promise<{ name: string; description: string }[]> {
     return abilityRepository.getAllNames();
   }
 }

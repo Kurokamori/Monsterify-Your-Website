@@ -702,7 +702,7 @@ export class BreedingService {
     if (extraItems && typeof extraItems === 'object') {
       for (const [name, requested] of Object.entries(extraItems)) {
         const maxAllowed = VALID_EXTRA_ITEMS[name];
-        if (maxAllowed === undefined || typeof requested !== 'number' || requested <= 0) continue;
+        if (maxAllowed === undefined || typeof requested !== 'number' || requested <= 0) { continue; }
         const amount = Math.min(Math.floor(requested), maxAllowed);
         const owned = inventory?.items?.[name] ?? 0;
         if (owned < amount) {

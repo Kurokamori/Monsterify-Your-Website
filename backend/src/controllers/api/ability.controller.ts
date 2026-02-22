@@ -83,7 +83,7 @@ export async function getAbilityTypes(_req: Request, res: Response): Promise<voi
 export async function getAbilityNames(_req: Request, res: Response): Promise<void> {
   try {
     const names = await abilityService.getAllNames();
-    res.json({ success: true, data: names });
+    res.json({ success: true, abilities: names });
   } catch (error) {
     console.error('Error getting ability names:', error);
     res.status(500).json({ success: false, message: 'Error getting ability names' });

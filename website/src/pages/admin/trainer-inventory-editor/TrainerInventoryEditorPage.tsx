@@ -5,6 +5,8 @@ import { AutocompleteInput, TabContainer } from '@components/common';
 import type { AutocompleteOption } from '@components/common';
 import type { Tab } from '@components/common/TabContainer';
 import trainerService from '@services/trainerService';
+import itemsService from '@services/itemsService';
+import type { Item } from '@services/itemsService';
 import type { Trainer } from '@components/trainers/types/Trainer';
 import '@styles/admin/trainer-inventory-editor.css';
 
@@ -523,6 +525,152 @@ function MassAddEditor({ trainerOptions }: MassAddProps) {
 }
 
 // ============================================================================
+// Bulk Add to All Trainers Tab
+// ============================================================================
+
+interface BulkAddAllProps {
+  items: Item[];
+}
+
+function BulkAddToAllEditor({ items }: BulkAddAllProps) {
+  const [itemSearchValue, setItemSearchValue] = useState('');
+  const [selectedItemName, setSelectedItemName] = useState('');
+  const [category, setCategory] = useState<InventoryCategory>('items');
+  const [quantity, setQuantity] = useState(1);
+  const [submitting, setSubmitting] = useState(false);
+  const [statusMsg, setStatusMsg] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+  const [resultErrors, setResultErrors] = useState<string[]>([]);
+
+  const itemOptions: AutocompleteOption[] = items.map((item) => ({
+    name: item.name,
+    value: item.name,
+    description: item.category ?? '',
+  }));
+
+  const handleItemSelect = useCallback((option: AutocompleteOption | null) => {
+    if (option) {
+      setSelectedItemName(String(option.value ?? option.name));
+      const matchedItem = items.find((i) => i.name === (option.value ?? option.name));
+      if (matchedItem?.category) {
+        const cat = matchedItem.category.toLowerCase() as InventoryCategory;
+        if (INVENTORY_CATEGORIES.includes(cat)) {
+          setCategory(cat);
+        }
+      }
+    } else {
+      setSelectedItemName('');
+    }
+  }, [items]);
+
+  const handleSubmit = useCallback(async () => {
+    const itemName = selectedItemName.trim() || itemSearchValue.trim();
+    if (!itemName) return;
+
+    setSubmitting(true);
+    setStatusMsg(null);
+    setResultErrors([]);
+
+    try {
+      const response = await trainerService.adminBulkAddItemToAllTrainers(itemName, quantity, category);
+      const data = response.data;
+      setStatusMsg({
+        type: data.failed === 0 ? 'success' : 'error',
+        text: response.message || `Added ${itemName} x${quantity} to ${data.success} trainers. ${data.failed} failed.`,
+      });
+      if (data.errors?.length > 0) {
+        setResultErrors(data.errors);
+      }
+    } catch (err) {
+      setStatusMsg({ type: 'error', text: getAxiosError(err, 'Failed to bulk add items') });
+    } finally {
+      setSubmitting(false);
+    }
+  }, [selectedItemName, itemSearchValue, quantity, category]);
+
+  return (
+    <div className="inventory-editor__bulk-all">
+      <div className="card">
+        <div className="card__header">
+          <h3><i className="fas fa-globe" /> Add Item to All Trainers</h3>
+        </div>
+        <div className="card__body">
+          <p className="inventory-editor__bulk-description">
+            Select an item and quantity to add to <strong>every trainer</strong> in the system.
+          </p>
+
+          <div className="inventory-editor__bulk-form">
+            <div className="inventory-editor__bulk-field">
+              <label className="inventory-editor__bulk-label">Item</label>
+              <AutocompleteInput
+                name="bulkItemSearch"
+                placeholder="Search items..."
+                value={itemSearchValue}
+                onChange={setItemSearchValue}
+                options={itemOptions}
+                onSelect={handleItemSelect}
+              />
+            </div>
+
+            <div className="inventory-editor__bulk-field">
+              <label className="inventory-editor__bulk-label">Category</label>
+              <select
+                className="select"
+                value={category}
+                onChange={(e) => setCategory(e.target.value as InventoryCategory)}
+              >
+                {INVENTORY_CATEGORIES.map((cat) => (
+                  <option key={cat} value={cat}>{cat}</option>
+                ))}
+              </select>
+            </div>
+
+            <div className="inventory-editor__bulk-field">
+              <label className="inventory-editor__bulk-label">Quantity</label>
+              <input
+                type="number"
+                className="input inventory-editor__qty-input"
+                min={1}
+                value={quantity}
+                onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value, 10) || 1))}
+              />
+            </div>
+
+            <button
+              className="button primary"
+              onClick={handleSubmit}
+              disabled={submitting || (!selectedItemName.trim() && !itemSearchValue.trim())}
+            >
+              {submitting ? (
+                <><i className="fas fa-spinner fa-spin" /> Adding to all trainers...</>
+              ) : (
+                <><i className="fas fa-paper-plane" /> Add to All Trainers</>
+              )}
+            </button>
+          </div>
+
+          {statusMsg && (
+            <div className={`inventory-editor__status inventory-editor__status--${statusMsg.type}`}>
+              {statusMsg.text}
+            </div>
+          )}
+
+          {resultErrors.length > 0 && (
+            <div className="inventory-editor__bulk-errors">
+              <h4>Errors:</h4>
+              <ul>
+                {resultErrors.map((err, i) => (
+                  <li key={i}>{err}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ============================================================================
 // Main Component
 // ============================================================================
 
@@ -531,20 +679,25 @@ function TrainerInventoryEditorContent() {
 
   const [trainers, setTrainers] = useState<Trainer[]>([]);
   const [trainerOptions, setTrainerOptions] = useState<AutocompleteOption[]>([]);
+  const [allItems, setAllItems] = useState<Item[]>([]);
   const [activeTab, setActiveTab] = useState('single');
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchTrainers = async () => {
+    const fetchData = async () => {
       try {
-        const response = await trainerService.getAllTrainers();
-        setTrainers(response.trainers);
-        setTrainerOptions(buildTrainerOptions(response.trainers));
+        const [trainerResponse, itemsResponse] = await Promise.all([
+          trainerService.getAllTrainers(),
+          itemsService.getItems({ limit: 5000 }),
+        ]);
+        setTrainers(trainerResponse.trainers);
+        setTrainerOptions(buildTrainerOptions(trainerResponse.trainers));
+        setAllItems(itemsResponse.data ?? []);
       } catch (err) {
-        setError(getAxiosError(err, 'Failed to load trainers'));
+        setError(getAxiosError(err, 'Failed to load data'));
       }
     };
-    fetchTrainers();
+    fetchData();
   }, []);
 
   const tabs: Tab[] = [
@@ -559,6 +712,12 @@ function TrainerInventoryEditorContent() {
       label: 'Mass Add',
       icon: 'fas fa-users',
       content: <MassAddEditor trainerOptions={trainerOptions} />,
+    },
+    {
+      key: 'bulk-all',
+      label: 'Bulk Add to All',
+      icon: 'fas fa-globe',
+      content: <BulkAddToAllEditor items={allItems} />,
     },
   ];
 

@@ -252,6 +252,56 @@
   margin-top: var(--spacing-medium);
 }
 
+/* Bulk add to all trainers tab */
+.inventory-editor__bulk-all {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-medium);
+}
+
+.inventory-editor__bulk-description {
+  color: var(--text-color-muted);
+  margin-bottom: var(--spacing-medium);
+}
+
+.inventory-editor__bulk-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-medium);
+  max-width: 500px;
+}
+
+.inventory-editor__bulk-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xxsmall);
+}
+
+.inventory-editor__bulk-label {
+  font-weight: 600;
+  font-size: var(--font-size-medium);
+}
+
+.inventory-editor__bulk-errors {
+  margin-top: var(--spacing-medium);
+  padding: var(--spacing-small) var(--spacing-medium);
+  background: var(--error-dark);
+  border: 1px solid var(--error-color);
+  border-radius: var(--border-radius-medium);
+  color: var(--error-color);
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.inventory-editor__bulk-errors h4 {
+  margin-bottom: var(--spacing-xxsmall);
+}
+
+.inventory-editor__bulk-errors ul {
+  padding-left: var(--spacing-medium);
+  font-size: var(--font-size-small);
+}
+
 /* Empty state */
 .inventory-editor__empty {
   text-align: center;

@@ -33,6 +33,9 @@ import {
   addMonthlyItems,
   manualMonthlyDistribution,
   getCronJobStatus,
+  getMonthlyItemsConfig,
+  updateMonthlyItemsConfig,
+  getDistributionRuns,
 } from '../../controllers';
 
 const router = Router();
@@ -89,7 +92,10 @@ router.post('/routines/items/:itemId/complete', completeRoutineItem);
 
 router.post('/admin/monthly', requireAdmin, runMonthlyTasks);
 router.post('/admin/monthly/items', requireAdmin, addMonthlyItems);
+router.get('/admin/monthly/items-config', requireAdmin, getMonthlyItemsConfig);
+router.put('/admin/monthly/items-config', requireAdmin, updateMonthlyItemsConfig);
 router.post('/admin/manual/monthly-distribution', requireAdmin, manualMonthlyDistribution);
 router.get('/admin/status', requireAdmin, getCronJobStatus);
+router.get('/admin/distribution-runs', requireAdmin, getDistributionRuns);
 
 export default router;

@@ -1,6 +1,15 @@
 // Base Repository
 export { BaseRepository } from './base.repository';
 
+// Monthly Distribution Repository
+export { MonthlyDistributionRepository } from './monthly-distribution.repository';
+export type {
+  MonthlyDistributionItem,
+  MonthlyDistributionItemRow,
+  DistributionRun,
+  DistributionRunRow,
+} from './monthly-distribution.repository';
+
 // User Repository
 export { UserRepository } from './user.repository';
 export type {

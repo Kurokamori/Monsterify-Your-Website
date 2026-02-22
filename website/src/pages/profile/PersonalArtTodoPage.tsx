@@ -358,7 +358,7 @@ export default function PersonalArtTodoPage() {
       {/* Header */}
       <div className="art-todo-header">
         <h1>My Art To-Do Lists</h1>
-        <button className="button primary" onClick={openCreateList}>
+        <button className="button primary no-flex" onClick={openCreateList}>
           <i className="fa-solid fa-plus" /> Create New List
         </button>
       </div>

@@ -479,7 +479,7 @@ function buildLinkRedirectUrl(
   const params = new URLSearchParams();
   if (discordId) {
     params.set('discord_id', discordId);
-    if (discordUsername) params.set('discord_username', discordUsername);
+    if (discordUsername) { params.set('discord_username', discordUsername); }
   } else {
     params.set('discord_error', error ?? 'Unknown error');
   }

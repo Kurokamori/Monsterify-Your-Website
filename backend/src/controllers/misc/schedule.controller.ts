@@ -580,7 +580,7 @@ export async function runMonthlyTasks(req: Request, res: Response): Promise<void
       return;
     }
 
-    const result = await scheduledTasksService.runMonthlyTasks();
+    const result = await scheduledTasksService.runMonthlyTasks('manual');
     res.json(result);
   } catch (error) {
     const msg = error instanceof Error ? error.message : 'Error running monthly tasks';
@@ -601,7 +601,7 @@ export async function addMonthlyItems(req: Request, res: Response): Promise<void
       return;
     }
 
-    const result = await scheduledTasksService.addMonthlyItems();
+    const result = await scheduledTasksService.addMonthlyItems('manual');
     res.json(result);
   } catch (error) {
     const msg = error instanceof Error ? error.message : 'Error adding monthly items';
@@ -630,6 +630,39 @@ export async function manualMonthlyDistribution(_req: Request, res: Response): P
   }
 }
 
+export async function getMonthlyItemsConfig(_req: Request, res: Response): Promise<void> {
+  try {
+    const items = await scheduledTasksService.getMonthlyItems();
+    res.json({ success: true, data: items });
+  } catch (error) {
+    const msg = error instanceof Error ? error.message : 'Error getting monthly items config';
+    console.error('Error getting monthly items config:', error);
+    res.status(500).json({ success: false, message: msg });
+  }
+}
+
+export async function updateMonthlyItemsConfig(req: Request, res: Response): Promise<void> {
+  try {
+    const { items } = req.body;
+    if (!Array.isArray(items)) {
+      res.status(400).json({ success: false, message: 'Items must be an array' });
+      return;
+    }
+    for (const item of items) {
+      if (!item.name || !item.category || typeof item.quantity !== 'number' || item.quantity < 1) {
+        res.status(400).json({ success: false, message: `Invalid item: ${JSON.stringify(item)}` });
+        return;
+      }
+    }
+    const updated = await scheduledTasksService.setMonthlyItems(items);
+    res.json({ success: true, data: updated, message: 'Monthly items updated' });
+  } catch (error) {
+    const msg = error instanceof Error ? error.message : 'Error updating monthly items config';
+    console.error('Error updating monthly items config:', error);
+    res.status(500).json({ success: false, message: msg });
+  }
+}
+
 export async function getCronJobStatus(_req: Request, res: Response): Promise<void> {
   try {
     const cronService = new CronService();
@@ -643,5 +676,17 @@ export async function getCronJobStatus(_req: Request, res: Response): Promise<vo
       message: 'Error getting cron job status',
       error: msg,
     });
+  }
+}
+
+export async function getDistributionRuns(req: Request, res: Response): Promise<void> {
+  try {
+    const limit = parseInt(req.query.limit as string) || 20;
+    const runs = await scheduledTasksService.getRecentRuns(limit);
+    res.json({ success: true, data: runs });
+  } catch (error) {
+    const msg = error instanceof Error ? error.message : 'Error getting distribution runs';
+    console.error('Error getting distribution runs:', error);
+    res.status(500).json({ success: false, message: msg });
   }
 }

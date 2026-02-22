@@ -6,9 +6,58 @@ export type TrainerRow = {
   id: number;
   player_user_id: string;
   name: string;
+  nickname: string | null;
+  full_name: string | null;
   level: number;
   currency_amount: number;
   total_earned_currency: number;
+  alter_human: number | null;
+  faction: string | null;
+  title: string | null;
+  species1: string | null;
+  species2: string | null;
+  species3: string | null;
+  type1: string | null;
+  type2: string | null;
+  type3: string | null;
+  type4: string | null;
+  type5: string | null;
+  type6: string | null;
+  ability: string | null;
+  nature: string | null;
+  characteristic: string | null;
+  fav_berry: string | null;
+  fav_type1: string | null;
+  fav_type2: string | null;
+  fav_type3: string | null;
+  fav_type4: string | null;
+  fav_type5: string | null;
+  fav_type6: string | null;
+  gender: string | null;
+  pronouns: string | null;
+  sexuality: string | null;
+  age: string | null;
+  height: string | null;
+  weight: string | null;
+  birthplace: string | null;
+  residence: string | null;
+  race: string | null;
+  occupation: string | null;
+  theme: string | null;
+  voice_claim: string | null;
+  quote: string | null;
+  tldr: string | null;
+  biography: string | null;
+  strengths: string | null;
+  weaknesses: string | null;
+  likes: string | null;
+  dislikes: string | null;
+  flaws: string | null;
+  values: string | null;
+  quirks: string | null;
+  secrets: string | null;
+  relations: string | null;
+  icon: string | null;
   main_ref: string | null;
   additional_refs: string | null;
   bio: string | null;
@@ -29,6 +78,58 @@ export type TrainerWithStats = TrainerRow & {
   monster_ref_percent: number;
 };
 
+// All profile fields that can be set on create/update (using DB column names)
+export type TrainerProfileFields = {
+  nickname?: string | null;
+  full_name?: string | null;
+  faction?: string | null;
+  title?: string | null;
+  species1?: string | null;
+  species2?: string | null;
+  species3?: string | null;
+  type1?: string | null;
+  type2?: string | null;
+  type3?: string | null;
+  type4?: string | null;
+  type5?: string | null;
+  type6?: string | null;
+  ability?: string | null;
+  nature?: string | null;
+  characteristic?: string | null;
+  fav_berry?: string | null;
+  fav_type1?: string | null;
+  fav_type2?: string | null;
+  fav_type3?: string | null;
+  fav_type4?: string | null;
+  fav_type5?: string | null;
+  fav_type6?: string | null;
+  gender?: string | null;
+  pronouns?: string | null;
+  sexuality?: string | null;
+  age?: string | null;
+  height?: string | null;
+  weight?: string | null;
+  birthplace?: string | null;
+  residence?: string | null;
+  race?: string | null;
+  occupation?: string | null;
+  theme?: string | null;
+  voice_claim?: string | null;
+  quote?: string | null;
+  tldr?: string | null;
+  biography?: string | null;
+  strengths?: string | null;
+  weaknesses?: string | null;
+  likes?: string | null;
+  dislikes?: string | null;
+  flaws?: string | null;
+  values?: string | null;
+  quirks?: string | null;
+  secrets?: string | null;
+  relations?: string | null;
+  icon?: string | null;
+};
+
 export type TrainerCreateInput = {
   playerUserId: string;
   name: string;
@@ -40,7 +141,7 @@ export type TrainerCreateInput = {
   birthday?: string | null;
   zodiac?: string | null;
   chineseZodiac?: string | null;
-};
+} & TrainerProfileFields;
 
 export type TrainerUpdateInput = {
   name?: string;
@@ -51,7 +152,7 @@ export type TrainerUpdateInput = {
   zodiac?: string | null;
   chineseZodiac?: string | null;
   megaInfo?: string | null;
-};
+} & TrainerProfileFields;
 
 const BASE_SELECT_WITH_STATS = `
   SELECT
@@ -138,27 +239,40 @@ export class TrainerRepository extends BaseRepository<TrainerWithStats, TrainerC
     const currencyAmount = input.currencyAmount ?? 500;
     const totalEarnedCurrency = input.totalEarnedCurrency ?? 500;
 
+    // Build columns and values dynamically
+    const columns: string[] = ['player_user_id', 'name', 'level', 'currency_amount', 'total_earned_currency',
+      'main_ref', 'bio', 'birthday', 'zodiac', 'chinese_zodiac'];
+    const vals: unknown[] = [
+      input.playerUserId, input.name, level, currencyAmount, totalEarnedCurrency,
+      input.mainRef ?? null, input.bio ?? null, input.birthday ?? null,
+      input.zodiac ?? null, input.chineseZodiac ?? null,
+    ];
+
+    const profileFields = [
+      'nickname', 'full_name', 'faction', 'title',
+      'species1', 'species2', 'species3',
+      'type1', 'type2', 'type3', 'type4', 'type5', 'type6',
+      'ability', 'nature', 'characteristic',
+      'fav_berry', 'fav_type1', 'fav_type2', 'fav_type3', 'fav_type4', 'fav_type5', 'fav_type6',
+      'gender', 'pronouns', 'sexuality', 'age', 'height', 'weight',
+      'birthplace', 'residence', 'race', 'occupation', 'theme', 'voice_claim',
+      'quote', 'tldr', 'biography',
+      'strengths', 'weaknesses', 'likes', 'dislikes', 'flaws', 'values', 'quirks',
+      'secrets', 'relations', 'icon',
+    ];
+
+    for (const field of profileFields) {
+      const val = (input as Record<string, unknown>)[field];
+      if (val !== undefined && val !== null) {
+        columns.push(field);
+        vals.push(val);
+      }
+    }
+
+    const placeholders = vals.map((_, i) => `$${i + 1}`).join(', ');
     const result = await db.query<TrainerRow>(
-      `
-        INSERT INTO trainers (
-          player_user_id, name, level, currency_amount, total_earned_currency,
-          main_ref, bio, birthday, zodiac, chinese_zodiac
-        )
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
-        RETURNING id
-      `,
-      [
-        input.playerUserId,
-        input.name,
-        level,
-        currencyAmount,
-        totalEarnedCurrency,
-        input.mainRef ?? null,
-        input.bio ?? null,
-        input.birthday ?? null,
-        input.zodiac ?? null,
-        input.chineseZodiac ?? null,
-      ]
+      `INSERT INTO trainers (${columns.join(', ')}) VALUES (${placeholders}) RETURNING id`,
+      vals
     );
 
     const row = result.rows[0];
@@ -181,29 +295,44 @@ export class TrainerRepository extends BaseRepository<TrainerWithStats, TrainerC
       values.push(value);
     };
 
-    if (input.name !== undefined) {
-      pushUpdate('name', input.name);
+    // Map of input key -> DB column (for keys where they differ)
+    const fieldMap: Record<string, string> = {
+      name: 'name',
+      mainRef: 'main_ref',
+      additionalRefs: 'additional_refs',
+      bio: 'bio',
+      birthday: 'birthday',
+      zodiac: 'zodiac',
+      chineseZodiac: 'chinese_zodiac',
+      megaInfo: 'mega_info',
+    };
+
+    // Fields where input key matches DB column exactly
+    const directFields = [
+      'nickname', 'full_name', 'faction', 'title',
+      'species1', 'species2', 'species3',
+      'type1', 'type2', 'type3', 'type4', 'type5', 'type6',
+      'ability', 'nature', 'characteristic',
+      'fav_berry', 'fav_type1', 'fav_type2', 'fav_type3', 'fav_type4', 'fav_type5', 'fav_type6',
+      'gender', 'pronouns', 'sexuality', 'age', 'height', 'weight',
+      'birthplace', 'residence', 'race', 'occupation', 'theme', 'voice_claim',
+      'quote', 'tldr', 'biography',
+      'strengths', 'weaknesses', 'likes', 'dislikes', 'flaws', 'values', 'quirks',
+      'secrets', 'relations', 'icon',
+    ];
+
+    for (const [key, column] of Object.entries(fieldMap)) {
+      const val = (input as Record<string, unknown>)[key];
+      if (val !== undefined) {
+        pushUpdate(column, val);
+      }
     }
-    if (input.mainRef !== undefined) {
-      pushUpdate('main_ref', input.mainRef);
-    }
-    if (input.additionalRefs !== undefined) {
-      pushUpdate('additional_refs', input.additionalRefs);
-    }
-    if (input.bio !== undefined) {
-      pushUpdate('bio', input.bio);
-    }
-    if (input.birthday !== undefined) {
-      pushUpdate('birthday', input.birthday);
-    }
-    if (input.zodiac !== undefined) {
-      pushUpdate('zodiac', input.zodiac);
-    }
-    if (input.chineseZodiac !== undefined) {
-      pushUpdate('chinese_zodiac', input.chineseZodiac);
-    }
-    if (input.megaInfo !== undefined) {
-      pushUpdate('mega_info', input.megaInfo);
+
+    for (const field of directFields) {
+      const val = (input as Record<string, unknown>)[field];
+      if (val !== undefined) {
+        pushUpdate(field, val);
+      }
     }
 
     if (updates.length === 0) {

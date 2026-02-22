@@ -158,6 +158,9 @@ export {
   addMonthlyItems,
   manualMonthlyDistribution,
   getCronJobStatus,
+  getMonthlyItemsConfig,
+  updateMonthlyItemsConfig,
+  getDistributionRuns,
 } from './misc/schedule.controller';
 
 // Monster Controller

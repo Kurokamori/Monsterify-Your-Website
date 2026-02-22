@@ -32,6 +32,7 @@ import {
   adminUpdateCurrency,
   adminChangeTrainerOwner,
   adminDeleteTrainer,
+  bulkAddItemToAllTrainers,
 } from '@controllers/api/trainer.controller';
 
 const router = Router();
@@ -78,6 +79,7 @@ router.delete('/:id', deleteTrainer);
 // Inventory
 // =============================================================================
 
+router.post('/admin/inventory/bulk-add', authenticate, requireAdmin, bulkAddItemToAllTrainers);
 router.get('/:id/inventory', getTrainerInventory);
 router.put('/:id/inventory', updateTrainerInventoryItem);
 

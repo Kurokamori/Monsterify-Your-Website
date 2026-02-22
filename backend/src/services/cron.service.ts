@@ -71,7 +71,7 @@ export class CronService {
       async () => {
         console.log('Running automated monthly distribution...');
         try {
-          const result = await this.scheduledTasksService.addMonthlyItems();
+          const result = await this.scheduledTasksService.addMonthlyItems('automatic');
           console.log('Automated monthly distribution completed:', result);
         } catch (error) {
           console.error('Error in automated monthly distribution:', error);
@@ -314,7 +314,7 @@ export class CronService {
   async triggerMonthlyDistribution(): Promise<MonthlyDistributionResult> {
     console.log('Manually triggering monthly distribution...');
     try {
-      const result = await this.scheduledTasksService.addMonthlyItems();
+      const result = await this.scheduledTasksService.addMonthlyItems('manual');
       console.log('Manual monthly distribution completed:', result);
       return result;
     } catch (error) {

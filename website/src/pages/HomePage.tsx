@@ -77,11 +77,6 @@ const FALLBACK_FAKEMON: Fakemon[] = [
   { number: 16, name: 'Battlescale', types: ['Fighting'] },
 ];
 
-const FALLBACK_TRAINERS: Trainer[] = [
-  { id: 1, name: 'Aria', level: 15, monsters_count: 8 },
-  { id: 2, name: 'Zeph', level: 23, monsters_count: 12 },
-  { id: 3, name: 'Nova', level: 18, monsters_count: 6 },
-];
 
 const FALLBACK_GALLERY: GallerySubmission[] = [
   { id: 1, title: 'Dragon Artwork', trainer_name: 'ArtistOne' },
@@ -334,16 +329,16 @@ function QuickActionsCard() {
 }
 
 function TrainersCard({ trainers }: { trainers: Trainer[] }) {
-  const displayTrainers = trainers.length > 0 ? trainers : FALLBACK_TRAINERS;
+  if (trainers.length === 0) return null;
 
   return (
     <div className="dashboard-card">
       <div className="dashboard-card__header">
         <h3>Your Trainers</h3>
-        <Link to="/my_trainers" className="button primary small no-flex">View All</Link>
+        <Link to="/profile/trainers" className="button primary small no-flex">View All</Link>
       </div>
       <div className="trainers-list">
-        {displayTrainers.slice(0, 5).map((trainer) => (
+        {trainers.slice(0, 5).map((trainer) => (
           <Link to={`/trainers/${trainer.id}`} key={trainer.id} className="compact-trainer-card">
             <div className="compact-trainer-avatar">
               <img

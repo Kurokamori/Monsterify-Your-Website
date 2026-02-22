@@ -12,7 +12,6 @@ const STATUS_BADGES: Record<string, string> = {
   pending: 'badge pending',
   rejected: 'badge error',
   revision_requested: 'badge warning',
-  deleted: 'badge neutral',
 };
 
 const STATUS_LABELS: Record<string, string> = {
@@ -20,7 +19,6 @@ const STATUS_LABELS: Record<string, string> = {
   pending: 'Pending',
   rejected: 'Rejected',
   revision_requested: 'Revision',
-  deleted: 'Deleted',
 };
 
 function getViewLink(item: AdminSubmission): string {
@@ -42,6 +40,7 @@ function SubmissionManagerContent() {
   const [sortBy, setSortBy] = useState('created_at');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
   const [deleteTarget, setDeleteTarget] = useState<AdminSubmission | null>(null);
+  const [actionError, setActionError] = useState<string | null>(null);
 
   const fetchData = useCallback(async () => {
     setLoading(true);
@@ -100,12 +99,17 @@ function SubmissionManagerContent() {
 
   const handleDelete = useCallback(async () => {
     if (!deleteTarget) return;
+    setActionError(null);
     try {
       await submissionService.deleteSubmission(deleteTarget.id);
       setDeleteTarget(null);
       fetchData();
     } catch (err) {
-      console.error('Error deleting submission:', err);
+      const message = err && typeof err === 'object' && 'response' in err
+        ? ((err as { response?: { data?: { message?: string } } }).response?.data?.message ?? 'Failed to delete submission')
+        : err instanceof Error ? err.message : 'Failed to delete submission';
+      setActionError(message);
+      throw err;
     }
   }, [deleteTarget, fetchData]);
 
@@ -128,7 +132,6 @@ function SubmissionManagerContent() {
         { value: 'approved', label: 'Approved' },
         { value: 'rejected', label: 'Rejected' },
         { value: 'revision_requested', label: 'Revision Requested' },
-        { value: 'deleted', label: 'Deleted' },
       ],
     },
   ];
@@ -236,25 +239,24 @@ function SubmissionManagerContent() {
             <Link to={getViewLink(item)} className="button primary sm">
               <i className="fas fa-eye"></i> View
             </Link>
-            {item.status !== 'deleted' && (
-              <button
-                className="button danger sm"
-                onClick={() => setDeleteTarget(item)}
-              >
-                <i className="fas fa-trash"></i> Delete
-              </button>
-            )}
+            <button
+              className="button danger sm"
+              onClick={() => { setActionError(null); setDeleteTarget(item); }}
+            >
+              <i className="fas fa-trash"></i> Delete
+            </button>
           </>
         )}
       />
 
       <ConfirmModal
         isOpen={!!deleteTarget}
-        onClose={() => setDeleteTarget(null)}
+        onClose={() => { setDeleteTarget(null); setActionError(null); }}
         onConfirm={handleDelete}
         title="Delete Submission"
         message={`Are you sure you want to delete "${deleteTarget?.title ?? ''}"?`}
-        warning="This will soft-delete the submission. It can be restored by changing its status."
+        details={actionError ? <div style={{ color: 'var(--error-color)' }}>{actionError}</div> : undefined}
+        warning="This will permanently delete the submission and cannot be undone."
         confirmText="Delete"
         variant="danger"
         confirmIcon="fas fa-trash"
