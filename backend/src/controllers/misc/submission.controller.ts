@@ -703,7 +703,7 @@ export async function claimPromptRewards(req: Request, res: Response): Promise<v
       claimItems,
       userId,
     );
-    res.json(result);
+    res.json({ success: true, ...result });
   } catch (error) {
     console.error('Error claiming prompt rewards:', error);
     res.status(500).json({ success: false, message: 'Failed to claim prompt rewards' });
