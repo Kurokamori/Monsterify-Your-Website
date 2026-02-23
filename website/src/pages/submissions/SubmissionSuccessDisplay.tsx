@@ -8,6 +8,7 @@ interface TrainerReward {
 
 interface MonsterReward {
   monsterId: number;
+  name?: string;
   levels: number;
 }
 
@@ -107,7 +108,7 @@ export function SubmissionSuccessDisplay({ result, redirectMessage, loading }: S
                 <ul>
                   {rewards.monsters.map((monster, index) => (
                     <li key={index}>
-                      {monster.levels} levels for monster #{monster.monsterId}
+                      {monster.levels} levels for {monster.name || `monster #${monster.monsterId}`}
                     </li>
                   ))}
                 </ul>

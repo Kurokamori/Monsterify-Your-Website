@@ -71,6 +71,9 @@ import statisticsRoutes from './misc/statistics.routes';
 // Submission Routes
 import submissionRoutes from './misc/submission.routes';
 
+// Upload Routes
+import uploadRoutes from './api/upload.routes';
+
 // Trainer Routes Imports
 import trainerRoutes from './api/trainer.routes';
 
@@ -174,6 +177,9 @@ router.use('/statistics', statisticsRoutes);
 
 // Submission Routes
 router.use('/submissions', submissionRoutes);
+
+// Upload Routes
+router.use('/upload', uploadRoutes);
 
 // Trainer Routes
 router.use('/trainers', trainerRoutes);

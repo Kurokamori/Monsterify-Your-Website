@@ -2034,6 +2034,7 @@ export class SubmissionService {
       const monster = await this.monsterRepo.findByTrainerAndName(trainerId, monsterName);
       if (monster) {
         await this.monsterRepo.addImage(monster.id, referenceUrl, 'main');
+        await this.monsterRepo.update(monster.id, { imgLink: referenceUrl });
       }
     } else if (referenceType === 'mega image') {
       const monsterName = reference.monsterName as string;

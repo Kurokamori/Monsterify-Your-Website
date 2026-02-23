@@ -937,6 +937,7 @@ export class SubmissionRewardService {
 
         result.monsters.push({
           monsterId,
+          name: monsterReward.name,
           levels,
           cappedLevels: cappedLevels > 0 ? Math.ceil(cappedLevels / 2) : 0,
         });

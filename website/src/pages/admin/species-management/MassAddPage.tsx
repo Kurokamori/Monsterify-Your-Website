@@ -90,12 +90,17 @@ function MassAddContent() {
       try {
         const formData = new FormData();
         formData.append('file', file);
-        formData.append('upload_preset', 'dusk_and_dawn');
         formData.append('folder', 'fakemon');
 
+        const apiBase = import.meta.env.VITE_API_URL || 'http://localhost:4000/api';
+        const token = localStorage.getItem('token');
         const response = await fetch(
-          `https://api.cloudinary.com/v1_1/dusk-and-dawn/upload`,
-          { method: 'POST', body: formData }
+          `${apiBase}/upload`,
+          {
+            method: 'POST',
+            body: formData,
+            headers: token ? { 'Authorization': `Bearer ${token}` } : {},
+          }
         );
         const result = await response.json();
 

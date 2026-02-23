@@ -3,27 +3,23 @@ import { useState, useRef, useEffect, ChangeEvent } from 'react';
 interface FileUploadProps {
   onUploadSuccess?: (url: string | null) => void;
   onUploadError?: (error: string) => void;
-  uploadPreset?: string;
   folder?: string;
   acceptedFileTypes?: string;
   maxFileSize?: number;
   buttonText?: string;
   initialImageUrl?: string | null;
   disabled?: boolean;
-  cloudName?: string;
 }
 
 export function FileUpload({
   onUploadSuccess,
   onUploadError,
-  uploadPreset = 'dusk_and_dawn',
   folder = 'uploads',
   acceptedFileTypes = 'image/*',
   maxFileSize = 10 * 1024 * 1024,
   buttonText = 'Upload Image',
   initialImageUrl = null,
   disabled = false,
-  cloudName = 'dusk-and-dawn',
 }: FileUploadProps) {
   const [isUploading, setIsUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
@@ -66,11 +62,16 @@ export function FileUpload({
 
     const formData = new FormData();
     formData.append('file', file);
-    formData.append('upload_preset', uploadPreset);
     formData.append('folder', folder);
 
+    const apiBase = import.meta.env.VITE_API_URL || 'http://localhost:4000/api';
     const xhr = new XMLHttpRequest();
-    xhr.open('POST', `https://api.cloudinary.com/v1_1/${cloudName}/upload`, true);
+    xhr.open('POST', `${apiBase}/upload`, true);
+
+    const token = localStorage.getItem('token');
+    if (token) {
+      xhr.setRequestHeader('Authorization', `Bearer ${token}`);
+    }
 
     xhr.upload.onprogress = (e) => {
       if (e.lengthComputable) {
