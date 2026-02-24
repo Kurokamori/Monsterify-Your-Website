@@ -331,12 +331,20 @@ export class GameCornerService {
     const timeBonus = Math.min(2.0, input.totalFocusMinutes / 50);
     const sessionBonus = Math.min(1.5, input.completedSessions / 4);
     const performanceBonus = input.productivityScore / 200;
-    const combined = 1 + timeBonus + sessionBonus + performanceBonus;
+
+    // Erratic luck swing: random factor that can boost or dampen the multiplier
+    // Higher productivity narrows the range upward (less chance of bad luck)
+    const luckFloor = -0.5 + (input.productivityScore / 100) * 0.3; // -0.5 to -0.2
+    const luckCeiling = 0.5 + (input.productivityScore / 100) * 0.5; // 0.5 to 1.0
+    const luckSwing = luckFloor + Math.random() * (luckCeiling - luckFloor);
+
+    const combined = Math.max(1, 1 + timeBonus + sessionBonus + performanceBonus + luckSwing);
 
     console.log(
       `Game Corner scaling: time=${timeBonus.toFixed(2)}, ` +
       `session=${sessionBonus.toFixed(2)}, ` +
       `performance=${performanceBonus.toFixed(2)}, ` +
+      `luck=${luckSwing.toFixed(2)}, ` +
       `total=${combined.toFixed(2)}x`,
     );
 
@@ -352,17 +360,31 @@ export class GameCornerService {
   private calculateRewardSlotCount(input: GameCornerSessionInput): number {
     const base = Math.max(2, Math.floor(1 + input.completedSessions * 0.8));
     const bonus = Math.floor(Math.random() * Math.max(1, Math.floor(input.totalFocusMinutes / 30)));
-    return base + bonus;
+
+    // Chance for bonus burst slots (more likely with longer sessions)
+    const burstChance = Math.min(0.25, input.totalFocusMinutes / 400);
+    const burstSlots = Math.random() < burstChance
+      ? Math.floor(Math.random() * 3) + 1
+      : 0;
+
+    if (burstSlots > 0) {
+      console.log(`Game Corner BURST: +${burstSlots} bonus reward slots!`);
+    }
+
+    return base + bonus + burstSlots;
   }
 
   private calculateRewardChances(
     multiplier: number,
     totalSlots: number,
   ): { coin: number; item: number; level: number; monster: number } {
-    const coin = Math.min(2.0, 0.6 + multiplier * 0.2) / totalSlots;
-    const item = Math.min(2.0, 0.6 + multiplier * 0.2) / totalSlots;
-    const level = Math.min(1.8, 0.5 + multiplier * 0.15) / totalSlots;
-    const monster = Math.min(1.2, 0.15 + multiplier * 0.12) / totalSlots;
+    // Base chances with per-session random jitter (+/- 30%) for unpredictability
+    const jitter = () => 0.7 + Math.random() * 0.6;
+
+    const coin = (Math.min(2.0, 0.6 + multiplier * 0.2) * jitter()) / totalSlots;
+    const item = (Math.min(2.0, 0.6 + multiplier * 0.2) * jitter()) / totalSlots;
+    const level = (Math.min(1.8, 0.5 + multiplier * 0.15) * jitter()) / totalSlots;
+    const monster = (Math.min(1.2, 0.15 + multiplier * 0.12) * jitter()) / totalSlots;
     return { coin, item, level, monster };
   }
 
@@ -371,9 +393,29 @@ export class GameCornerService {
   // ==========================================================================
 
   private generateCoinReward(trainerId: number | null, baseAmount: number): GameCornerReward {
-    // Gambling variance: 30% to 300% of base
-    const gamblingMultiplier = 0.3 + Math.random() * 2.7;
-    const amount = Math.floor(baseAmount * gamblingMultiplier);
+    // Erratic gambling variance with jackpot/bust system
+    let gamblingMultiplier: number;
+    const fate = Math.random();
+
+    if (fate < 0.05) {
+      // 5% — JACKPOT: 4x to 8x base
+      gamblingMultiplier = 4 + Math.random() * 4;
+      console.log('Game Corner JACKPOT on coins!');
+    } else if (fate < 0.15) {
+      // 10% — Bust: 10% to 30% of base
+      gamblingMultiplier = 0.1 + Math.random() * 0.2;
+    } else if (fate < 0.35) {
+      // 20% — Low roll: 30% to 80%
+      gamblingMultiplier = 0.3 + Math.random() * 0.5;
+    } else if (fate < 0.75) {
+      // 40% — Normal: 80% to 200%
+      gamblingMultiplier = 0.8 + Math.random() * 1.2;
+    } else {
+      // 25% — Hot streak: 200% to 400%
+      gamblingMultiplier = 2 + Math.random() * 2;
+    }
+
+    const amount = Math.max(5, Math.floor(baseAmount * gamblingMultiplier));
 
     return {
       id: `coin-${randomUUID()}`,
@@ -459,7 +501,22 @@ export class GameCornerService {
     const timeScale = Math.max(1, totalFocusMinutes / 25);
     const sessionScale = Math.max(1, completedSessions / 2);
     const maxLevels = Math.min(15, Math.floor(1 + timeScale * sessionScale * 2.5));
-    const levels = Math.floor(Math.random() * maxLevels) + 1;
+
+    // Erratic level distribution: weighted toward low but with lucky spikes
+    let levels: number;
+    const spike = Math.random();
+    if (spike < 0.08) {
+      // 8% — Big level surge: 70-100% of max
+      levels = Math.max(1, Math.floor(maxLevels * (0.7 + Math.random() * 0.3)));
+      console.log(`Game Corner LEVEL SURGE: ${levels} levels!`);
+    } else if (spike < 0.30) {
+      // 22% — Decent roll: 40-70% of max
+      levels = Math.max(1, Math.floor(maxLevels * (0.4 + Math.random() * 0.3)));
+    } else {
+      // 70% — Normal low roll: 1 to 40% of max
+      levels = Math.max(1, Math.floor(Math.random() * Math.max(1, maxLevels * 0.4)) + 1);
+    }
+
     const isMonster = Math.random() < 0.4;
 
     const target = isMonster ? 'Monster' : 'Trainer';
@@ -958,10 +1015,15 @@ export class GameCornerService {
 
   private pickItemRarity(): string {
     const roll = Math.random();
-    if (roll < 0.1) {
+    if (roll < 0.03) {
+      // 3% — Epic item jackpot
+      console.log('Game Corner EPIC ITEM roll!');
+      return 'epic';
+    }
+    if (roll < 0.12) {
       return 'rare';
     }
-    if (roll < 0.35) {
+    if (roll < 0.38) {
       return 'uncommon';
     }
     return 'common';
@@ -980,6 +1042,10 @@ export class GameCornerService {
     let max: number;
 
     switch (rarity.toLowerCase()) {
+      case 'epic':
+        base = 1;
+        max = Math.min(3, Math.floor(1 + scale * 0.5));
+        break;
       case 'common':
         base = 2;
         max = Math.min(9, Math.floor(2 + scale * 2));
@@ -994,6 +1060,13 @@ export class GameCornerService {
         break;
     }
 
-    return Math.floor(Math.random() * (max - base + 1)) + base;
+    // Random quantity spike: 15% chance to double the result
+    let quantity = Math.floor(Math.random() * (max - base + 1)) + base;
+    if (Math.random() < 0.15) {
+      quantity = Math.min(quantity * 2, max + 2);
+      console.log(`Game Corner ITEM BONUS: doubled to ${quantity}!`);
+    }
+
+    return quantity;
   }
 }

@@ -1210,7 +1210,7 @@ export class SubmissionService {
 
       const created = await this.monsterRepo.create({
         trainerId: assignment.trainerId,
-        playerUserId,
+        playerUserId: playerUserId ?? undefined,
         name: initialized.name ?? assignment.name,
         species1: initialized.species1 ?? (monsterData.species1 as string) ?? '',
         species2: initialized.species2 as string | undefined,

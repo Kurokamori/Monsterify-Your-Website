@@ -598,7 +598,7 @@ export default function GameCornerPage() {
           <div className="game-corner__video-header">
             <h2>Pomodoro Videos</h2>
             <button
-              className="button secondary sm"
+              className="button secondary sm no-flex"
               onClick={() => setShowVideoForm(prev => !prev)}
             >
               {showVideoForm ? 'Cancel' : 'Add Custom Video'}
@@ -613,7 +613,7 @@ export default function GameCornerPage() {
                 value={customVideoUrl}
                 onChange={e => setCustomVideoUrl(e.target.value)}
               />
-              <button type="submit" className="button primary sm">Add</button>
+              <button type="submit" className="button primary sm no-flex">Add</button>
             </form>
           )}
 
@@ -633,7 +633,7 @@ export default function GameCornerPage() {
                   <p>This video cannot be played due to restrictions or connectivity issues.</p>
                   <div className="game-corner__video-error-actions">
                     <button
-                      className="button secondary sm"
+                      className="button secondary sm no-flex"
                       onClick={() => handleVideoSelect(selectedVideo)}
                     >
                       <i className="fas fa-redo"></i> Try Again
@@ -642,7 +642,7 @@ export default function GameCornerPage() {
                       href={`https://youtube.com/watch?v=${selectedVideo.videoId}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="button primary sm"
+                      className="button primary sm no-flex"
                     >
                       <i className="fas fa-external-link-alt"></i> Watch on YouTube
                     </a>

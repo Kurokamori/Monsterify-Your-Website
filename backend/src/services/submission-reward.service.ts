@@ -137,7 +137,7 @@ export type WritingRewardResult = {
 
 export type AppliedRewardsResult = {
   trainers: Array<{ trainerId: number; levels: number; coins: number; cappedLevels: number }>;
-  monsters: Array<{ monsterId: number; levels: number; cappedLevels: number }>;
+  monsters: Array<{ monsterId: number; name?: string; levels: number; cappedLevels: number }>;
   gardenPoints: number;
   missionProgress: number | { amount: number; success: boolean; message: string };
   bossDamage: number | { amount: number; results: unknown[] };

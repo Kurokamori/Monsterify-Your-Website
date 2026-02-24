@@ -116,7 +116,8 @@ export function MySubmissions() {
     title: '',
     description: '',
     tags: [],
-    content: ''
+    content: '',
+    parentId: ''
   });
   const [tagInput, setTagInput] = useState('');
 
