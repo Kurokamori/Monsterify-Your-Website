@@ -17,7 +17,7 @@ export interface Trainer extends BaseEntity {
   totalEarnedCurrency: number;
   imgLink: string | null;
   additionalRefs: string[];
-  bio: string | null;
+  biography: string | null;
 }
 
 /**
@@ -49,7 +49,7 @@ export interface TrainerCreateInput {
   playerUserId: string;
   name: string;
   imgLink?: string;
-  bio?: string;
+  biography?: string;
 }
 
 /**

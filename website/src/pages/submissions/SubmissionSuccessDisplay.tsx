@@ -2,6 +2,7 @@ import { LoadingSpinner } from '@components/common/LoadingSpinner';
 
 interface TrainerReward {
   trainerId: number;
+  trainerName?: string;
   levels: number;
   coins: number;
 }
@@ -51,7 +52,9 @@ interface SubmissionRewards {
   levels?: number;
   coins?: number;
   trainerId?: number;
+  trainerName?: string;
   monsterId?: number;
+  monsterName?: string;
   cappedLevels?: number;
   gardenPoints?: GardenPoints | number;
   missionProgress?: MissionProgress | number;
@@ -94,7 +97,7 @@ export function SubmissionSuccessDisplay({ result, redirectMessage, loading }: S
                 <ul>
                   {rewards.trainers.map((trainer, index) => (
                     <li key={index}>
-                      {trainer.levels} levels and {trainer.coins} coins for trainer #{trainer.trainerId}
+                      {trainer.levels} levels and {trainer.coins} coins for {trainer.trainerName || `Trainer #${trainer.trainerId}`}
                     </li>
                   ))}
                 </ul>
@@ -121,8 +124,8 @@ export function SubmissionSuccessDisplay({ result, redirectMessage, loading }: S
                 <h4><i className="fas fa-book"></i> Writing Rewards</h4>
                 <p>
                   {rewards.levels} levels and {rewards.coins} coins
-                  {rewards.trainerId && ` for trainer #${rewards.trainerId}`}
-                  {rewards.monsterId && ` for monster #${rewards.monsterId}`}
+                  {rewards.trainerId && ` for ${rewards.trainerName || `Trainer #${rewards.trainerId}`}`}
+                  {rewards.monsterId && ` for ${rewards.monsterName || `Monster #${rewards.monsterId}`}`}
                 </p>
                 {rewards.cappedLevels !== undefined && rewards.cappedLevels > 0 && (
                   <p className="capped-levels">

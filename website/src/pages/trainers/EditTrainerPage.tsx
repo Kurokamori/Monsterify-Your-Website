@@ -4,7 +4,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { useDocumentTitle } from '../../hooks/useDocumentTitle';
 import { extractErrorMessage } from '../../utils/errorUtils';
 import { LoadingSpinner } from '../../components/common/LoadingSpinner';
-import { ErrorMessage } from '../../components/common/ErrorMessage';
+import { ErrorModal } from '../../components/common/ErrorModal';
 import { TrainerPageForm } from '../../components/trainers/TrainerPageForm';
 import type { SubmitResult } from '../../components/trainers/TrainerPageForm';
 import trainerService from '../../services/trainerService';
@@ -104,12 +104,14 @@ const EditTrainerPage = () => {
   if (loadError) {
     return (
       <div className="main-container">
-        <ErrorMessage message={loadError} onRetry={handleRetry} />
-        <div style={{ marginTop: 'var(--spacing-small)' }}>
-          <button className="button secondary" onClick={() => navigate(-1)}>
-            Go Back
-          </button>
-        </div>
+        <ErrorModal
+          isOpen={true}
+          onClose={() => navigate(-1)}
+          message={loadError}
+          title="Failed to Load Trainer"
+          onRetry={handleRetry}
+          closeText="Go Back"
+        />
       </div>
     );
   }

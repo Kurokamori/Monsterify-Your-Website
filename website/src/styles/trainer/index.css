@@ -136,11 +136,11 @@
 }
 
 .form-grid.cols-2 {
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 30vw), 1fr));
 }
 
 .form-grid.cols-3 {
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 20vw), 1fr));
 }
 
 .form-grid.cols-1 {

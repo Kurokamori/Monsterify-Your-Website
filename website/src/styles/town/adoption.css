@@ -332,3 +332,49 @@
     transition: none;
   }
 }
+
+/* ==============================
+   Art Calculator in Adoption Modal
+   ============================== */
+
+.adoption-art-calculator .form-row {
+  display: flex;
+  gap: var(--spacing-small);
+}
+
+.adoption-art-calculator .form-row > * {
+  flex: 1;
+}
+
+.adoption-art-calculator .form-row.align-end {
+  align-items: flex-end;
+}
+
+.adoption-art-calculator .form-checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs, 0.4rem);
+  font-size: var(--font-size-small);
+  white-space: nowrap;
+  padding-bottom: var(--spacing-xs, 0.4rem);
+}
+
+.adoption-art-preview {
+  display: flex;
+  justify-content: space-around;
+  padding: var(--spacing-small) 0 0;
+  border-top: 1px solid var(--border-color);
+}
+
+.adoption-art-preview__row {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+  font-size: var(--font-size-small);
+}
+
+.adoption-art-preview__row strong {
+  color: var(--color-success, #4caf50);
+  font-size: 1.1rem;
+}

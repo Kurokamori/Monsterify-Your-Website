@@ -60,7 +60,6 @@ export type TrainerRow = {
   icon: string | null;
   main_ref: string | null;
   additional_refs: string | null;
-  bio: string | null;
   birthday: string | null;
   zodiac: string | null;
   chinese_zodiac: string | null;
@@ -137,7 +136,6 @@ export type TrainerCreateInput = {
   currencyAmount?: number;
   totalEarnedCurrency?: number;
   mainRef?: string | null;
-  bio?: string | null;
   birthday?: string | null;
   zodiac?: string | null;
   chineseZodiac?: string | null;
@@ -147,7 +145,6 @@ export type TrainerUpdateInput = {
   name?: string;
   mainRef?: string | null;
   additionalRefs?: string | null;
-  bio?: string | null;
   birthday?: string | null;
   zodiac?: string | null;
   chineseZodiac?: string | null;
@@ -241,10 +238,10 @@ export class TrainerRepository extends BaseRepository<TrainerWithStats, TrainerC
 
     // Build columns and values dynamically
     const columns: string[] = ['player_user_id', 'name', 'level', 'currency_amount', 'total_earned_currency',
-      'main_ref', 'bio', 'birthday', 'zodiac', 'chinese_zodiac'];
+      'main_ref', 'birthday', 'zodiac', 'chinese_zodiac'];
     const vals: unknown[] = [
       input.playerUserId, input.name, level, currencyAmount, totalEarnedCurrency,
-      input.mainRef ?? null, input.bio ?? null, input.birthday ?? null,
+      input.mainRef ?? null, input.birthday ?? null,
       input.zodiac ?? null, input.chineseZodiac ?? null,
     ];
 
@@ -300,7 +297,6 @@ export class TrainerRepository extends BaseRepository<TrainerWithStats, TrainerC
       name: 'name',
       mainRef: 'main_ref',
       additionalRefs: 'additional_refs',
-      bio: 'bio',
       birthday: 'birthday',
       zodiac: 'zodiac',
       chineseZodiac: 'chinese_zodiac',

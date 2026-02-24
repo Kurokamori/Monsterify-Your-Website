@@ -30,6 +30,13 @@ export interface AdoptListResponse {
   [key: string]: unknown;
 }
 
+export interface AdoptionArtDetails {
+  quality: string;
+  background: string;
+  appearances: { type: string }[];
+  complexityBonus: number;
+}
+
 export interface ClaimAdoptParams {
   adoptId: number;
   trainerId: number;
@@ -39,6 +46,7 @@ export interface ClaimAdoptParams {
   pastryName?: string | null;
   speciesValue?: string | null;
   typeValue?: string | null;
+  artDetails?: AdoptionArtDetails;
 }
 
 export interface UseItemParams {

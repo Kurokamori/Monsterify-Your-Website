@@ -51,7 +51,7 @@ export function BasicInfoFields({
     <div className="form-section">
       <h3 className="form-section__title">Basic Information</h3>
 
-      <div className="form-grid cols-2">
+      <div className="form-grid cols-3">
         <FormInput
           name="name"
           label="Name"
@@ -136,16 +136,6 @@ export function BasicInfoFields({
             )}
           </>
         )}
-
-        <FormInput
-          name="main_ref"
-          label="Main Reference Image URL"
-          value={formData.main_ref || ''}
-          onChange={handleInputChange}
-          placeholder="https://example.com/image.jpg"
-          disabled={disabled}
-          error={errors.main_ref}
-        />
       </div>
     </div>
   );
@@ -168,7 +158,7 @@ export function PersonalInfoFields({
     <div className="form-section">
       <h3 className="form-section__title">Personal Information</h3>
 
-      <div className="form-grid cols-2">
+      <div className="form-grid cols-3">
         <FormInput
           name="gender"
           label="Gender"
@@ -222,7 +212,49 @@ export function PersonalInfoFields({
           disabled={disabled}
           error={errors.weight}
         />
+      </div>
 
+      <div className="form-grid cols-3">
+        <FormInput
+          name="occupation"
+          label="Occupation"
+          value={formData.occupation || ''}
+          onChange={handleInputChange}
+          disabled={disabled}
+          error={errors.occupation}
+        />
+
+        <FormInput
+          name="birthplace"
+          label="Birthplace"
+          value={formData.birthplace || ''}
+          onChange={handleInputChange}
+          disabled={disabled}
+          error={errors.birthplace}
+        />
+
+        <FormInput
+          name="residence"
+          label="Residence"
+          value={formData.residence || ''}
+          onChange={handleInputChange}
+          disabled={disabled}
+          error={errors.residence}
+        />
+
+        <FormSelect
+          name="race"
+          label="Race"
+          value={formData.race || 'Human'}
+          onChange={handleInputChange}
+          options={RACE_SELECT_OPTIONS}
+          disabled={disabled}
+          error={errors.race}
+        />
+      </div>
+
+
+      <div className="form-grid cols-2">
         <FormInput
           name="theme_display"
           label="Theme Display Text"
@@ -264,53 +296,6 @@ export function PersonalInfoFields({
           helpText="If provided, users can expand to view the voice claim video"
           error={errors.voice_claim_link}
         />
-
-        <FormInput
-          name="occupation"
-          label="Occupation"
-          value={formData.occupation || ''}
-          onChange={handleInputChange}
-          disabled={disabled}
-          error={errors.occupation}
-        />
-
-        <FormInput
-          name="birthday"
-          label="Birthday"
-          type="date"
-          value={formData.birthday || ''}
-          onChange={handleInputChange}
-          disabled={disabled}
-          error={errors.birthday}
-        />
-
-        <FormInput
-          name="birthplace"
-          label="Birthplace"
-          value={formData.birthplace || ''}
-          onChange={handleInputChange}
-          disabled={disabled}
-          error={errors.birthplace}
-        />
-
-        <FormInput
-          name="residence"
-          label="Residence"
-          value={formData.residence || ''}
-          onChange={handleInputChange}
-          disabled={disabled}
-          error={errors.residence}
-        />
-
-        <FormSelect
-          name="race"
-          label="Race"
-          value={formData.race || 'Human'}
-          onChange={handleInputChange}
-          options={RACE_SELECT_OPTIONS}
-          disabled={disabled}
-          error={errors.race}
-        />
       </div>
     </div>
   );
@@ -338,7 +323,7 @@ export function SpeciesTypesFields({
     <div className="form-section">
       <h3 className="form-section__title">Species & Types</h3>
 
-      <div className="form-grid cols-2">
+      <div className="form-grid cols-3">
         {/* Species fields */}
         <FormInput
           name="species1"
@@ -366,7 +351,9 @@ export function SpeciesTypesFields({
           disabled={disabled}
           error={errors.species3}
         />
+        </div>
 
+        <div className="form-grid cols-3">
         {/* Type fields */}
         <AutocompleteInput
           name="type1"
@@ -428,7 +415,16 @@ export function SpeciesTypesFields({
           disabled={disabled}
         />
 
+        </div>
+
+        <div className="form-grid cols-2">
+  </div>
+    
+    <div className="form-section mt-md">
+      <h3 className="form-section__title">Special Characteristics</h3>
         {/* Ability, Nature, Characteristic */}
+
+        <div className="form-grid cols-3">
         <AutocompleteInput
           name="ability"
           label="Ability"
@@ -459,6 +455,7 @@ export function SpeciesTypesFields({
           placeholder="Trainer characteristic"
           disabled={disabled}
         />
+        </div>
       </div>
     </div>
   );
@@ -542,7 +539,7 @@ export function FavoriteTypesFields({
 
   return (
     <div className="form-section">
-      <h3 className="form-section__title">Favorite Types</h3>
+      <h3 className="form-section__title">Favorites</h3>
 
       <div className="form-grid cols-3">
         {FAV_TYPE_FIELDS.map(({ name, label }) => (

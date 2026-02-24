@@ -138,7 +138,10 @@ export const RACES = [
   'Ultra Beast',
   'Alter (Faller)',
   'Human (Faller)',
-  'Catfolk'
+  'Catfolk',
+  'Catfolk (Faller)',
+  'Catfolk (Alter)',
+  'Catfolk (Alter Faller)'
 ] as const;
 
 export type Race = typeof RACES[number];

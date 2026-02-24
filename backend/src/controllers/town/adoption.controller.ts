@@ -175,7 +175,7 @@ export async function getPastriesForAdoption(req: Request, res: Response): Promi
 
 export async function claimAdopt(req: Request, res: Response): Promise<void> {
   try {
-    const { adoptId, trainerId, monsterName, discordUserId, berryName, pastryName, speciesValue, typeValue } = req.body as {
+    const { adoptId, trainerId, monsterName, discordUserId, berryName, pastryName, speciesValue, typeValue, artDetails } = req.body as {
       adoptId?: number;
       trainerId?: number;
       monsterName?: string;
@@ -184,6 +184,12 @@ export async function claimAdopt(req: Request, res: Response): Promise<void> {
       pastryName?: string;
       speciesValue?: string;
       typeValue?: string;
+      artDetails?: {
+        quality: string;
+        background: string;
+        appearances: { type: string }[];
+        complexityBonus: number;
+      };
     };
 
     if (!adoptId || !trainerId) {
@@ -203,6 +209,7 @@ export async function claimAdopt(req: Request, res: Response): Promise<void> {
       pastryName,
       speciesValue,
       typeValue,
+      artDetails,
     });
 
     if (!result.success) {

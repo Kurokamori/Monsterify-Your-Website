@@ -15,10 +15,26 @@ import {
 import { MonsterRollerService, type UserSettings } from './monster-roller.service';
 import { MonsterInitializerService, InitializedMonster } from './monster-initializer.service';
 import { MONSTER_TYPES, DIGIMON_ATTRIBUTES } from '../utils/constants';
+import {
+  ART_QUALITY_BASE_LEVELS,
+  BACKGROUND_BONUS_LEVELS,
+  APPEARANCE_BONUS_LEVELS,
+  DEFAULT_REWARD_RATES,
+  type ArtQualityLevel,
+  type BackgroundType,
+  type AppearanceType,
+} from '../utils/constants/game-constants';
 
 // ============================================================================
 // Types
 // ============================================================================
+
+export type AdoptionArtDetails = {
+  quality: string;
+  background: string;
+  appearances: { type: string }[];
+  complexityBonus: number;
+};
 
 export type ClaimAdoptInput = {
   adoptId: number;
@@ -29,12 +45,15 @@ export type ClaimAdoptInput = {
   pastryName?: string;
   speciesValue?: string;
   typeValue?: string;
+  artDetails?: AdoptionArtDetails;
 };
 
 export type ClaimAdoptResult = {
   success: boolean;
   message: string;
   monster?: MonsterWithTrainer;
+  artLevels?: number;
+  artCoins?: number;
 };
 
 export type DaypassCheckResult = {
@@ -176,7 +195,7 @@ export class AdoptionService {
   // ==========================================================================
 
   async claimAdopt(input: ClaimAdoptInput): Promise<ClaimAdoptResult> {
-    const { adoptId, trainerId, monsterName, discordUserId, berryName, pastryName, speciesValue, typeValue } = input;
+    const { adoptId, trainerId, monsterName, discordUserId, berryName, pastryName, speciesValue, typeValue, artDetails } = input;
 
     // Validate adopt exists
     const adopt = await this.adoptRepository.findById(adoptId);
@@ -256,11 +275,48 @@ export class AdoptionService {
     // Record the adoption claim
     await this.adoptRepository.recordAdoptionClaim(adoptId, trainerId, createdMonster.id);
 
+    // Apply art reward levels and coins if art details provided
+    let artLevels = 0;
+    let artCoins = 0;
+    if (artDetails) {
+      artLevels = this.calculateArtLevels(artDetails);
+      artCoins = artLevels * DEFAULT_REWARD_RATES.coinsPerLevel;
+
+      if (artLevels > 0) {
+        await this.monsterRepository.addLevels(createdMonster.id, artLevels);
+        await this.trainerRepository.updateCurrency(trainerId, artCoins);
+      }
+    }
+
+    // Re-fetch monster to get updated level
+    const finalMonster = artLevels > 0
+      ? await this.monsterRepository.findById(createdMonster.id) ?? createdMonster
+      : createdMonster;
+
     return {
       success: true,
       message: 'Monster adopted successfully',
-      monster: createdMonster,
+      monster: finalMonster,
+      artLevels,
+      artCoins,
     };
+  }
+
+  // ==========================================================================
+  // Art Reward Calculation
+  // ==========================================================================
+
+  private calculateArtLevels(artDetails: AdoptionArtDetails): number {
+    const qualityLevels = ART_QUALITY_BASE_LEVELS[artDetails.quality as ArtQualityLevel] ?? 0;
+    const backgroundLevels = BACKGROUND_BONUS_LEVELS[artDetails.background as BackgroundType] ?? 0;
+
+    const appearanceLevels = (artDetails.appearances || []).reduce((sum, app) => {
+      return sum + (APPEARANCE_BONUS_LEVELS[app.type as AppearanceType] ?? 0);
+    }, 0);
+
+    const complexityBonus = artDetails.complexityBonus ?? 0;
+
+    return qualityLevels + backgroundLevels + appearanceLevels + complexityBonus;
   }
 
   // ==========================================================================

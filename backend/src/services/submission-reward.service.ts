@@ -136,7 +136,7 @@ export type WritingRewardResult = {
 };
 
 export type AppliedRewardsResult = {
-  trainers: Array<{ trainerId: number; levels: number; coins: number; cappedLevels: number }>;
+  trainers: Array<{ trainerId: number; trainerName?: string; levels: number; coins: number; cappedLevels: number }>;
   monsters: Array<{ monsterId: number; name?: string; levels: number; cappedLevels: number }>;
   gardenPoints: number;
   missionProgress: number | { amount: number; success: boolean; message: string };
@@ -887,7 +887,7 @@ export class SubmissionRewardService {
     // Apply trainer rewards
     if (rewards.trainerRewards) {
       for (const trainerReward of rewards.trainerRewards) {
-        const { trainerId, levels, coins, cappedLevels = 0, isOwned } = trainerReward;
+        const { trainerId, trainerName, levels, coins, cappedLevels = 0, isOwned } = trainerReward;
 
         if (!isOwned) {
           totalGiftLevels += levels;
@@ -907,6 +907,7 @@ export class SubmissionRewardService {
 
         result.trainers.push({
           trainerId,
+          trainerName,
           levels,
           coins,
           cappedLevels: cappedLevels > 0 ? Math.ceil(cappedLevels / 2) : 0,

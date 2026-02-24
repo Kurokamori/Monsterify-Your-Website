@@ -37,6 +37,61 @@ const MONTHS = [
   'July', 'August', 'September', 'October', 'November', 'December'
 ];
 
+const ART_QUALITY_OPTIONS = [
+  { value: 'sketch', label: 'Sketch (+2)', levels: 2 },
+  { value: 'sketchSet', label: 'Sketch Set (+3)', levels: 3 },
+  { value: 'lineArt', label: 'Line Art (+4)', levels: 4 },
+  { value: 'flatColor', label: 'Flat Color (+5)', levels: 5 },
+  { value: 'rendered', label: 'Rendered (+7)', levels: 7 },
+  { value: 'polished', label: 'Polished (+9)', levels: 9 },
+];
+
+const BACKGROUND_OPTIONS = [
+  { value: 'none', label: 'None (+0)', levels: 0 },
+  { value: 'simple', label: 'Simple (+3)', levels: 3 },
+  { value: 'complex', label: 'Complex (+6)', levels: 6 },
+];
+
+const APPEARANCE_OPTIONS = [
+  { value: 'bust', label: 'Bust (+1)', levels: 1 },
+  { value: 'halfBody', label: 'Half Body (+2)', levels: 2 },
+  { value: 'fullBody', label: 'Full Body (+3)', levels: 3 },
+];
+
+const COMPLEXITY_OPTIONS: Record<string, { label: string; stages: { label: string; value: number }[] }> = {
+  pokemon: {
+    label: 'Pokémon / Nexomon / Final Fantasy',
+    stages: [
+      { label: 'Base Stage (+0)', value: 0 },
+      { label: 'First Evolution (+1)', value: 1 },
+      { label: 'Final Stage (+2)', value: 2 },
+      { label: 'Second Evolution (+3)', value: 3 },
+      { label: "Doesn't Evolve (+3)", value: 3 },
+    ],
+  },
+  digimon: {
+    label: 'Digimon',
+    stages: [
+      { label: 'Baby / Fresh (+0)', value: 0 },
+      { label: 'Rookie (+1)', value: 1 },
+      { label: 'Champion (+3)', value: 3 },
+      { label: 'Above Champion (+5)', value: 5 },
+    ],
+  },
+  palworld: {
+    label: 'Palworld',
+    stages: [{ label: 'Pal (+2)', value: 2 }],
+  },
+  yokai: {
+    label: 'Yo-kai Watch',
+    stages: [{ label: 'Yo-kai (+2)', value: 2 }],
+  },
+  monsterhunter: {
+    label: 'Monster Hunter',
+    stages: [{ label: 'Monster (+3)', value: 3 }],
+  },
+};
+
 /**
  * AdoptionCenter - Browse and adopt available monsters
  * Features month/year filtering, artwork selection, and trainer assignment
@@ -98,6 +153,20 @@ export function AdoptionCenter({ className = '' }: AdoptionCenterProps) {
   // Image popout
   const [showImagePopout, setShowImagePopout] = useState(false);
   const [popoutImage, setPopoutImage] = useState({ url: '', species: '' });
+
+  // Art reward results
+  const [earnedLevels, setEarnedLevels] = useState(0);
+  const [earnedCoins, setEarnedCoins] = useState(0);
+
+  // Art calculator state
+  const [artQuality, setArtQuality] = useState('sketch');
+  const [artBackground, setArtBackground] = useState('none');
+  const [appearanceCount, setAppearanceCount] = useState(1);
+  const [sameAppearanceType, setSameAppearanceType] = useState(true);
+  const [sharedAppearanceType, setSharedAppearanceType] = useState('fullBody');
+  const [perAppearanceTypes, setPerAppearanceTypes] = useState<string[]>(['fullBody']);
+  const [complexityFranchise, setComplexityFranchise] = useState('');
+  const [complexityBonus, setComplexityBonus] = useState(0);
 
   // Load auth state
   useEffect(() => {
@@ -315,6 +384,14 @@ export function AdoptionCenter({ className = '' }: AdoptionCenterProps) {
     setAdoptionError('');
     setAdoptedMonster(null);
     setSelectedArtwork(null);
+    setArtQuality('sketch');
+    setArtBackground('none');
+    setAppearanceCount(1);
+    setSameAppearanceType(true);
+    setSharedAppearanceType('fullBody');
+    setPerAppearanceTypes(['fullBody']);
+    setComplexityFranchise('');
+    setComplexityBonus(0);
     fetchUserArtworks();
   };
 
@@ -348,16 +425,29 @@ export function AdoptionCenter({ className = '' }: AdoptionCenterProps) {
       setAdoptionLoading(true);
       setAdoptionError('');
 
+      // Build appearance list
+      const appearances = sameAppearanceType
+        ? Array.from({ length: appearanceCount }, () => ({ type: sharedAppearanceType }))
+        : perAppearanceTypes.slice(0, appearanceCount).map(type => ({ type }));
+
       const response = await api.post('/adoption/claim', {
         adoptId: selectedAdopt.id,
         trainerId: selectedTrainer,
         monsterName: monsterName.trim(),
-        artworkId: selectedArtwork?.id
+        artworkId: selectedArtwork?.id,
+        artDetails: {
+          quality: artQuality,
+          background: artBackground,
+          appearances,
+          complexityBonus,
+        },
       });
 
       if (response.data.success) {
         setAdoptionSuccess(true);
         setAdoptedMonster(response.data.monster);
+        setEarnedLevels(response.data.artLevels || 0);
+        setEarnedCoins(response.data.artCoins || 0);
 
         // Refresh the list
         fetchData();
@@ -534,6 +624,19 @@ export function AdoptionCenter({ className = '' }: AdoptionCenterProps) {
         {adoptionSuccess ? (
           <div className="adoption-success">
             <SuccessMessage message={`Successfully adopted ${adoptedMonster?.name || monsterName}!`} />
+
+            {(earnedLevels > 0 || earnedCoins > 0) && (
+              <div className="adoption-art-preview mt-sm">
+                <div className="adoption-art-preview__row">
+                  <span>Monster Levels Earned</span>
+                  <strong>+{earnedLevels}</strong>
+                </div>
+                <div className="adoption-art-preview__row">
+                  <span>Trainer Coins Earned</span>
+                  <strong>+{earnedCoins}</strong>
+                </div>
+              </div>
+            )}
 
             <div className="adopted-monster-preview mt-md">
               {adoptedMonster && (
@@ -724,6 +827,166 @@ export function AdoptionCenter({ className = '' }: AdoptionCenterProps) {
                       <p className="text-muted">No artworks found.</p>
                     )}
                   </div>
+
+                  {/* Art Calculator - shown when artwork is selected */}
+                  {selectedArtwork && (
+                    <div className="form-group adoption-art-calculator">
+                      <label className="form-label">Art Details</label>
+                      <Card>
+                        <div className="card__content form-stack gap-sm">
+                          <div className="form-row gap-sm">
+                            <FormSelect
+                              name="artQuality"
+                              label="Art Quality"
+                              value={artQuality}
+                              onChange={(e) => setArtQuality(e.target.value)}
+                              options={ART_QUALITY_OPTIONS.map(o => ({ value: o.value, label: o.label }))}
+                            />
+                            <FormSelect
+                              name="artBackground"
+                              label="Background"
+                              value={artBackground}
+                              onChange={(e) => setArtBackground(e.target.value)}
+                              options={BACKGROUND_OPTIONS.map(o => ({ value: o.value, label: o.label }))}
+                            />
+                          </div>
+
+                          <div className="form-row gap-sm align-end">
+                            <FormInput
+                              name="appearanceCount"
+                              label="Times Monster Appears"
+                              type="number"
+                              value={appearanceCount.toString()}
+                              onChange={(e) => {
+                                const count = Math.max(1, parseInt(e.target.value) || 1);
+                                setAppearanceCount(count);
+                                if (!sameAppearanceType) {
+                                  setPerAppearanceTypes(prev => {
+                                    const next = [...prev];
+                                    while (next.length < count) next.push('fullBody');
+                                    return next.slice(0, count);
+                                  });
+                                }
+                              }}
+                              min={1}
+                            />
+                            {appearanceCount > 1 && (
+                              <div className="form-group">
+                                <label className="form-checkbox-label">
+                                  <input
+                                    type="checkbox"
+                                    checked={sameAppearanceType}
+                                    onChange={(e) => {
+                                      setSameAppearanceType(e.target.checked);
+                                      if (!e.target.checked) {
+                                        setPerAppearanceTypes(
+                                          Array.from({ length: appearanceCount }, () => sharedAppearanceType)
+                                        );
+                                      }
+                                    }}
+                                  />
+                                  All same appearance type
+                                </label>
+                              </div>
+                            )}
+                          </div>
+
+                          {sameAppearanceType || appearanceCount === 1 ? (
+                            <FormSelect
+                              name="appearanceType"
+                              label="Appearance Type"
+                              value={sharedAppearanceType}
+                              onChange={(e) => setSharedAppearanceType(e.target.value)}
+                              options={APPEARANCE_OPTIONS.map(o => ({ value: o.value, label: o.label }))}
+                            />
+                          ) : (
+                            <div className="form-stack gap-xs">
+                              {perAppearanceTypes.slice(0, appearanceCount).map((type, idx) => (
+                                <FormSelect
+                                  key={idx}
+                                  name={`appearance-${idx}`}
+                                  label={`Appearance #${idx + 1}`}
+                                  value={type}
+                                  onChange={(e) => {
+                                    const next = [...perAppearanceTypes];
+                                    next[idx] = e.target.value;
+                                    setPerAppearanceTypes(next);
+                                  }}
+                                  options={APPEARANCE_OPTIONS.map(o => ({ value: o.value, label: o.label }))}
+                                />
+                              ))}
+                            </div>
+                          )}
+
+                          <div className="form-row gap-sm">
+                            <FormSelect
+                              name="complexityFranchise"
+                              label="Franchise"
+                              value={complexityFranchise}
+                              onChange={(e) => {
+                                const franchise = e.target.value;
+                                setComplexityFranchise(franchise);
+                                if (franchise && COMPLEXITY_OPTIONS[franchise]) {
+                                  const stages = COMPLEXITY_OPTIONS[franchise].stages;
+                                  if (stages.length === 1) {
+                                    setComplexityBonus(stages[0].value);
+                                  } else {
+                                    setComplexityBonus(0);
+                                  }
+                                } else {
+                                  setComplexityBonus(0);
+                                }
+                              }}
+                              options={[
+                                { value: '', label: 'Select franchise...' },
+                                ...Object.entries(COMPLEXITY_OPTIONS).map(([key, opt]) => ({
+                                  value: key,
+                                  label: opt.label,
+                                })),
+                              ]}
+                            />
+                            {complexityFranchise && COMPLEXITY_OPTIONS[complexityFranchise]?.stages.length > 1 && (
+                              <FormSelect
+                                name="complexityStage"
+                                label="Stage"
+                                value={complexityBonus.toString()}
+                                onChange={(e) => setComplexityBonus(parseInt(e.target.value) || 0)}
+                                options={COMPLEXITY_OPTIONS[complexityFranchise].stages.map(s => ({
+                                  value: s.value.toString(),
+                                  label: s.label,
+                                }))}
+                              />
+                            )}
+                          </div>
+
+                          {/* Calculated preview */}
+                          {(() => {
+                            const qualityLvl = ART_QUALITY_OPTIONS.find(o => o.value === artQuality)?.levels ?? 0;
+                            const bgLvl = BACKGROUND_OPTIONS.find(o => o.value === artBackground)?.levels ?? 0;
+                            const appLvl = sameAppearanceType || appearanceCount === 1
+                              ? (APPEARANCE_OPTIONS.find(o => o.value === sharedAppearanceType)?.levels ?? 0) * appearanceCount
+                              : perAppearanceTypes.slice(0, appearanceCount).reduce((sum, t) =>
+                                  sum + (APPEARANCE_OPTIONS.find(o => o.value === t)?.levels ?? 0), 0);
+                            const totalLvl = qualityLvl + bgLvl + appLvl + complexityBonus;
+                            const totalCoins = totalLvl * 50;
+
+                            return (
+                              <div className="adoption-art-preview">
+                                <div className="adoption-art-preview__row">
+                                  <span>Monster Levels:</span>
+                                  <strong>+{totalLvl}</strong>
+                                </div>
+                                <div className="adoption-art-preview__row">
+                                  <span>Trainer Coins:</span>
+                                  <strong>+{totalCoins}</strong>
+                                </div>
+                              </div>
+                            );
+                          })()}
+                        </div>
+                      </Card>
+                    </div>
+                  )}
 
                   {adoptionError && <ErrorMessage message={adoptionError} />}
                 </div>

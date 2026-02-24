@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useRef, FormEvent, ChangeEvent } from 'react';
 import { FormInput } from '../common/FormInput';
-import { ErrorMessage } from '../common/ErrorMessage';
+import { ErrorModal } from '../common/ErrorModal';
 import { SuccessMessage } from '../common/SuccessMessage';
 import {
   BasicInfoFields,
@@ -329,7 +329,12 @@ export function TrainerPageForm({
         <i className="fa-solid fa-arrow-down"></i> Jump to Submit
       </button>
 
-      {error && <ErrorMessage message={error} />}
+      <ErrorModal
+        isOpen={!!error}
+        onClose={() => setError(null)}
+        message={error || undefined}
+        title="Submission Error"
+      />
       {success && <SuccessMessage message={success} />}
 
       <form className="trainer-page-form__form" onSubmit={handleSubmit}>

@@ -28,13 +28,13 @@ export function SecretsSection({ secrets, onAdd, onRemove, onChange }: SecretsSe
                 <h4>Secret #{index + 1}</h4>
                 <button
                   type="button"
-                  className="button danger sm"
+                  className="button danger md no-flex"
                   onClick={() => onRemove(secret.id)}
                 >
                   <i className="fa-solid fa-trash-alt"></i>
                 </button>
               </div>
-              <div className="form-grid cols-2">
+              <div className="form-grid cols-1">
                 <FormInput
                   name={`secret-title-${secret.id}`}
                   label="Title"
@@ -113,13 +113,13 @@ export function RelationsSection({
                 <h4>Relation #{index + 1}</h4>
                 <button
                   type="button"
-                  className="button danger sm"
+                  className="button danger md no-flex"
                   onClick={() => onRemove(relation.id)}
                 >
                   <i className="fa-solid fa-trash-alt"></i>
                 </button>
               </div>
-              <div className="form-grid cols-2">
+              <div className="form-grid cols-1">
                 <div className="form-group">
                   <label className="form-label">Relation Type</label>
                   <select
@@ -132,6 +132,8 @@ export function RelationsSection({
                   </select>
                 </div>
 
+              </div>
+              <div className="form-grid cols-2">
                 <div className="form-group">
                   <label className="form-label">Trainer</label>
                   <select
@@ -168,7 +170,8 @@ export function RelationsSection({
                     </select>
                   </div>
                 )}
-
+              </div>
+              <div className="form-grid cols-1">
                 <FormInput
                   name={`relation-name-${relation.id}`}
                   label="Relationship Name"
@@ -239,13 +242,13 @@ export function AdditionalRefsSection({
                 <h4>Reference #{index + 1}</h4>
                 <button
                   type="button"
-                  className="button danger sm"
+                  className="button danger md no-flex"
                   onClick={() => onRemove(ref.id)}
                 >
                   <i className="fa-solid fa-trash-alt"></i>
                 </button>
               </div>
-              <div className="form-grid cols-2">
+              <div className="form-grid cols-1">
                 <FormInput
                   name={`ref-title-${ref.id}`}
                   label="Title"

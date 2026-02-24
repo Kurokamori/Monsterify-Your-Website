@@ -757,9 +757,19 @@ export class SubmissionRepository extends BaseRepository<Submission, SubmissionC
   }
 
   async hardDelete(id: number): Promise<void> {
+    // Remove all related records from join/child tables
     await db.query('DELETE FROM submission_tags WHERE submission_id = $1', [id]);
     await db.query('DELETE FROM submission_images WHERE submission_id = $1', [id]);
-    await db.query('DELETE FROM submission_likes WHERE submission_id = $1', [id]);
+    await db.query('DELETE FROM submission_monsters WHERE submission_id = $1', [id]);
+    await db.query('DELETE FROM submission_trainers WHERE submission_id = $1', [id]);
+    await db.query('DELETE FROM submission_references WHERE submission_id = $1', [id]);
+    await db.query('DELETE FROM submission_gift_items WHERE submission_id = $1', [id]);
+    await db.query('DELETE FROM book_collaborators WHERE book_id = $1', [id]);
+    await db.query('DELETE FROM prompt_submissions WHERE submission_id = $1', [id]);
+    await db.query('DELETE FROM faction_submissions WHERE submission_id = $1', [id]);
+    // Detach child chapters (make them standalone rather than deleting them)
+    await db.query('UPDATE submissions SET parent_id = NULL, chapter_number = NULL WHERE parent_id = $1', [id]);
+    // Finally delete the submission itself
     await db.query('DELETE FROM submissions WHERE id = $1', [id]);
   }
 

@@ -114,7 +114,6 @@ export async function createTrainer(req: Request, res: Response): Promise<void> 
       name: req.body.name,
       playerUserId: userId,
       mainRef,
-      bio: req.body.bio ?? null,
       birthday: req.body.birthday ?? null,
       additionalRefs,
       // Profile fields
@@ -292,7 +291,6 @@ export async function updateTrainer(req: Request, res: Response): Promise<void> 
       name: bodyData.name,
       mainRef: mainRef ?? bodyData.main_ref,
       additionalRefs: additionalRefs ?? bodyData.additional_refs,
-      bio: bodyData.bio,
       birthday: bodyData.birthday,
       megaInfo,
       // Profile fields

@@ -92,7 +92,6 @@ export type TrainerCreateData = {
   name: string;
   playerUserId: string;
   mainRef?: string | null;
-  bio?: string | null;
   birthday?: string | null;
   additionalRefs?: string | null;
 } & TrainerProfileData;
@@ -101,7 +100,6 @@ export type TrainerUpdateData = {
   name?: string;
   mainRef?: string | null;
   additionalRefs?: string | null;
-  bio?: string | null;
   birthday?: string | null;
   megaInfo?: string | null;
 } & TrainerProfileData;
@@ -306,13 +304,12 @@ export class TrainerService {
     }
 
     // Extract profile fields
-    const { name: _n, playerUserId: _p, mainRef: _m, bio: _b, birthday: _bd, additionalRefs: _ar, ...profileFields } = data;
+    const { name: _n, playerUserId: _p, mainRef: _m, birthday: _bd, additionalRefs: _ar, ...profileFields } = data;
 
     const trainer = await this.trainerRepo.create({
       playerUserId: data.playerUserId,
       name: data.name,
       mainRef: data.mainRef ?? undefined,
-      bio: data.bio ?? undefined,
       birthday: data.birthday ?? undefined,
       zodiac,
       chineseZodiac,
@@ -351,13 +348,12 @@ export class TrainerService {
     }
 
     // Extract profile fields
-    const { name: _n, mainRef: _m, additionalRefs: _ar, bio: _b, birthday: _bd, megaInfo: _mi, ...profileFields } = data;
+    const { name: _n, mainRef: _m, additionalRefs: _ar, birthday: _bd, megaInfo: _mi, ...profileFields } = data;
 
     return this.trainerRepo.update(id, {
       name: data.name,
       mainRef: data.mainRef,
       additionalRefs: data.additionalRefs,
-      bio: data.bio,
       birthday: data.birthday,
       zodiac,
       chineseZodiac,

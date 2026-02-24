@@ -5,7 +5,7 @@ import { FormCheckbox } from '@components/common/FormCheckbox';
 import { FormSelect } from '@components/common/FormSelect';
 import { AutocompleteInput } from '@components/common/AutocompleteInput';
 import { FileUpload } from '@components/common/FileUpload';
-import { ErrorMessage } from '@components/common/ErrorMessage';
+import { ErrorModal } from '@components/common/ErrorModal';
 import { SuccessMessage } from '@components/common/SuccessMessage';
 import { MONSTER_NATURES, MONSTER_CHARACTERISTICS } from '@utils/staticValues';
 import { extractErrorMessage } from '@utils/errorUtils';
@@ -258,7 +258,12 @@ export function MonsterEditForm({ monster, onSubmit, onCancel, onSuccess }: Mons
         <i className="fa-solid fa-arrow-down"></i> Jump to Submit
       </button>
 
-      {error && <ErrorMessage message={error} />}
+      <ErrorModal
+        isOpen={!!error}
+        onClose={() => setError(null)}
+        message={error || undefined}
+        title="Submission Error"
+      />
       {success && <SuccessMessage message={success} />}
 
       <form className="trainer-page-form__form" onSubmit={handleSubmit}>

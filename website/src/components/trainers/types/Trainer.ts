@@ -116,7 +116,10 @@ export type TrainerRace =
   | 'Ultra Beast'
   | 'Alter (Faller)'
   | 'Human (Faller)'
-  | 'Catfolk';
+  | 'Catfolk'
+  | 'Catfolk (Faller)'
+  | 'Catfolk (Alter)'
+  | 'Catfolk (Alter Faller)';
 
 export interface MegaEvolutionInfo {
   trigger?: string;
