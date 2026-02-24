@@ -12,7 +12,6 @@ export type ItemRow = {
   effect: string | null;
   base_price: number;
   created_at: Date;
-  updated_at: Date;
 };
 
 export type ItemCreateInput = {
@@ -256,7 +255,6 @@ export class ItemRepository extends BaseRepository<ItemRow, ItemCreateInput, Ite
       return existing;
     }
 
-    updates.push(`updated_at = CURRENT_TIMESTAMP`);
     values.push(id);
 
     const result = await db.query<ItemRow>(
@@ -278,7 +276,7 @@ export class ItemRepository extends BaseRepository<ItemRow, ItemCreateInput, Ite
       let updated = 0;
       for (const { id, imageUrl } of updates) {
         const result = await client.query(
-          'UPDATE items SET image_url = $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2',
+          'UPDATE items SET image_url = $1 WHERE id = $2',
           [imageUrl, id]
         );
         updated += result.rowCount ?? 0;

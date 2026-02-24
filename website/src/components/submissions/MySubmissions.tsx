@@ -6,6 +6,7 @@ import { ErrorModal } from '../common/ErrorModal';
 import { Modal } from '../common/Modal';
 import { Pagination } from '../common/Pagination';
 import api from '../../services/api';
+import submissionService from '../../services/submissionService';
 
 interface Submission {
   id: number;
@@ -20,6 +21,7 @@ interface Submission {
   submission_date?: string;
   tags?: string[];
   is_book?: boolean;
+  parent_id?: number | null;
   chapter_count?: number;
 }
 
@@ -39,11 +41,17 @@ interface UpdateResponse {
   message?: string;
 }
 
+interface UserBook {
+  id: number;
+  title: string;
+}
+
 interface EditForm {
   title: string;
   description: string;
   tags: string[];
   content: string;
+  parentId: string;
 }
 
 // Strip markdown formatting and return first ~40 words with ellipsis
@@ -98,6 +106,7 @@ export function MySubmissions() {
   const [selectedSubmission, setSelectedSubmission] = useState<Submission | null>(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [userBooks, setUserBooks] = useState<UserBook[]>([]);
   const [deleteError, setDeleteError] = useState<string | null>(null);
   const [editError, setEditError] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
@@ -153,17 +162,29 @@ export function MySubmissions() {
   }, [activeSubTab, sortBy]);
 
   // Handle edit modal open
-  const openEditModal = (submission: Submission) => {
+  const openEditModal = async (submission: Submission) => {
     setSelectedSubmission(submission);
     setEditForm({
       title: submission.title || '',
       description: submission.description || '',
       tags: submission.tags ? (Array.isArray(submission.tags) ? submission.tags : []) : [],
-      content: submission.content || ''
+      content: submission.content || '',
+      parentId: submission.parent_id ? String(submission.parent_id) : ''
     });
     setTagInput('');
     setEditError(null);
     setIsEditModalOpen(true);
+
+    // Fetch user's books for writing submissions
+    if (submission.submission_type === 'writing' && !submission.is_book) {
+      try {
+        const response = await submissionService.getUserBooks();
+        const books = ((response.books || []) as UserBook[]).filter(b => b.id !== submission.id);
+        setUserBooks(books);
+      } catch (err) {
+        console.error('Error fetching user books:', err);
+      }
+    }
   };
 
   // Handle delete modal open
@@ -217,7 +238,7 @@ export function MySubmissions() {
       setIsSaving(true);
       setEditError(null);
 
-      const updateData: Record<string, string | string[]> = {
+      const updateData: Record<string, string | string[] | number | null> = {
         title: editForm.title,
         description: editForm.description,
         tags: editForm.tags
@@ -226,6 +247,14 @@ export function MySubmissions() {
       // Only include content for writing submissions
       if (selectedSubmission.submission_type === 'writing') {
         updateData.content = editForm.content;
+
+        // Include book assignment change if applicable
+        if (!selectedSubmission.is_book) {
+          const originalParentId = selectedSubmission.parent_id ? String(selectedSubmission.parent_id) : '';
+          if (editForm.parentId !== originalParentId) {
+            updateData.parentId = editForm.parentId ? Number(editForm.parentId) : null;
+          }
+        }
       }
 
       const response = await api.patch<UpdateResponse>(
@@ -543,6 +572,24 @@ export function MySubmissions() {
                   rows={10}
                   placeholder="Enter your writing content"
                 />
+              </div>
+            )}
+
+            {/* Book assignment for writing submissions (non-books only) */}
+            {selectedSubmission.submission_type === 'writing' && !selectedSubmission.is_book && userBooks.length > 0 && (
+              <div className="form-group">
+                <label htmlFor="edit-parent-book" className="form-label">Book</label>
+                <select
+                  id="edit-parent-book"
+                  value={editForm.parentId}
+                  onChange={(e) => handleEditFormChange('parentId', e.target.value)}
+                  className="input"
+                >
+                  <option value="">None (standalone)</option>
+                  {userBooks.map(book => (
+                    <option key={book.id} value={String(book.id)}>{book.title}</option>
+                  ))}
+                </select>
               </div>
             )}
 

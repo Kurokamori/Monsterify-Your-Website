@@ -1195,6 +1195,10 @@ export class SubmissionService {
 
     // Process monsters
     for (const assignment of monsterAssignments) {
+      // Look up the trainer's player_user_id so the monster belongs to the correct player
+      const trainer = await this.trainerRepo.findById(assignment.trainerId);
+      const playerUserId = trainer?.player_user_id ?? null;
+
       const monsterData: Partial<MonsterData> = {
         ...assignment.monster,
         name: assignment.name,
@@ -1206,6 +1210,7 @@ export class SubmissionService {
 
       const created = await this.monsterRepo.create({
         trainerId: assignment.trainerId,
+        playerUserId,
         name: initialized.name ?? assignment.name,
         species1: initialized.species1 ?? (monsterData.species1 as string) ?? '',
         species2: initialized.species2 as string | undefined,
@@ -1908,7 +1913,7 @@ export class SubmissionService {
 
   async updateSubmission(
     submissionId: number,
-    updates: { title?: string; description?: string; content?: string; tags?: string[] },
+    updates: { title?: string; description?: string; content?: string; tags?: string[]; parentId?: number | null },
     userId: string,
     isAdmin: boolean
   ): Promise<unknown> {
@@ -1938,6 +1943,36 @@ export class SubmissionService {
     }
     if (updates.content !== undefined && ownership.submission_type === 'writing') {
       fields.content = updates.content;
+    }
+
+    // Handle book chapter assignment changes
+    if (updates.parentId !== undefined && ownership.submission_type === 'writing') {
+      if (updates.parentId === null || updates.parentId === 0) {
+        // Remove from book
+        fields.parent_id = null;
+        fields.chapter_number = null;
+      } else {
+        // Adding to a book - validate the book exists
+        const parentSubmission = await this.submissionRepo.findById(updates.parentId);
+        if (!parentSubmission || !(parentSubmission as Record<string, unknown>).is_book) {
+          throw new Error('Selected book not found or is not a book');
+        }
+
+        // Check permission on the target book
+        const bookUserId = String((parentSubmission as Record<string, unknown>).user_id);
+        const bookOwner = bookUserId === userId || String(bookUserId) === String(userId);
+        if (!bookOwner && !isAdmin) {
+          const role = await this.submissionRepo.findCollaboratorRole(updates.parentId, userId);
+          if (role !== 'editor') {
+            throw new Error('You do not have permission to add chapters to this book');
+          }
+        }
+
+        // Auto-assign next chapter number
+        const maxChapter = await this.submissionRepo.getMaxChapterNumber(updates.parentId);
+        fields.parent_id = updates.parentId;
+        fields.chapter_number = maxChapter + 1;
+      }
     }
 
     if (Object.keys(fields).length > 0) {

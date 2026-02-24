@@ -336,6 +336,7 @@ export function PromptWritingSubmissionPage({
               onChange={(e) => setTitle(e.target.value)}
               placeholder="Enter a title for your writing"
               required
+              className="form-input"
             />
           </div>
 
@@ -347,6 +348,7 @@ export function PromptWritingSubmissionPage({
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Describe your writing (optional)"
               rows={4}
+              className="form-input"
             />
           </div>
         </div>
@@ -365,6 +367,7 @@ export function PromptWritingSubmissionPage({
                 onChange={(e) => setTagInput(e.target.value)}
                 onKeyDown={handleTagKeyDown}
                 placeholder="Enter tags and press Enter"
+                className="form-input"
               />
               <button
                 type="button"
@@ -455,6 +458,7 @@ export function PromptWritingSubmissionPage({
                 placeholder="Enter your writing content here"
                 rows={10}
                 required={inputMethod === 'direct'}
+                className="form-input"
               />
               <div className="word-count-display">
                 Word Count: {wordCount}
@@ -498,6 +502,7 @@ export function PromptWritingSubmissionPage({
                 onChange={(e) => setContentUrl(e.target.value)}
                 placeholder="Enter the URL where your writing is hosted"
                 required={inputMethod === 'url'}
+                className="form-input"
               />
             </div>
           )}
@@ -528,6 +533,7 @@ export function PromptWritingSubmissionPage({
                 value={coverImageUrl}
                 onChange={(e) => setCoverImageUrl(e.target.value)}
                 placeholder="Enter the URL of your cover image"
+                className="form-input"
               />
             </div>
           ) : (

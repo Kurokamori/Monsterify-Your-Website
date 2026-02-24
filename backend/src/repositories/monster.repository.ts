@@ -403,6 +403,14 @@ export class MonsterRepository extends BaseRepository<MonsterWithTrainer, Monste
   }
 
   async findByTrainerId(trainerId: number): Promise<MonsterWithTrainer[]> {
+    // Auto-fix any monsters missing player_user_id by inheriting from their trainer
+    await db.query(
+      `UPDATE monsters SET player_user_id = (
+        SELECT player_user_id FROM trainers WHERE id = $1
+      ) WHERE trainer_id = $1 AND player_user_id IS NULL`,
+      [trainerId]
+    );
+
     const result = await db.query<MonsterWithTrainer>(
       `${BASE_SELECT_WITH_TRAINER} WHERE m.trainer_id = $1 ORDER BY m.name ASC`,
       [trainerId]

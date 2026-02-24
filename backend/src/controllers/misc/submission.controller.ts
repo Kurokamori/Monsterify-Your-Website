@@ -1094,9 +1094,9 @@ export async function updateSubmission(req: Request, res: Response): Promise<voi
 
     const userId = getUserId(req);
     const admin = isAdmin(req);
-    const { title, description, tags, content } = req.body;
+    const { title, description, tags, content, parentId } = req.body;
 
-    const result = await submissionService.updateSubmission(submissionId, { title, description, tags, content }, userId, admin);
+    const result = await submissionService.updateSubmission(submissionId, { title, description, tags, content, parentId }, userId, admin);
     res.json({ success: true, message: 'Submission updated successfully', submission: result });
   } catch (error) {
     const err = error as Error;

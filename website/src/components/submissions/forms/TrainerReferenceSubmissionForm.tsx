@@ -330,7 +330,7 @@ export function TrainerReferenceSubmissionForm({ onSubmissionComplete }: Trainer
                 <div className="reference-header">
                   <h4>Reference #{index + 1}</h4>
                   {index > 0 && (
-                    <button type="button" className="button danger" onClick={() => removeReference(index)}>
+                    <button type="button" className="button danger no-flex" onClick={() => removeReference(index)}>
                       Remove
                     </button>
                   )}

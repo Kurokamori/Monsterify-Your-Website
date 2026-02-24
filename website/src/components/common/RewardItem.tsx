@@ -240,9 +240,6 @@ export const RewardItem = ({
       <div className="reward-item__content">
         <div className="reward-item__header">
           <span className="reward-item__label">{label}</span>
-          {reward.rarity && !compact && (
-            <span className={`badge ${reward.rarity} xs`}>{reward.rarity}</span>
-          )}
         </div>
 
         {renderMonsterDetails()}

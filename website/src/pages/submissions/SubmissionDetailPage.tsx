@@ -459,14 +459,14 @@ const SubmissionDetailPage = ({ type }: SubmissionDetailPageProps) => {
           {submission.trainers && submission.trainers.length > 0 && (
             <div className="related-submissions">
               <h2>Featured Trainers</h2>
-              <div className="container horizontal center">
+              <div className="featured-entities-grid">
                 {submission.trainers.map(trainer => (
                   <div
                     key={trainer.id}
                     className="featured-entity-card"
                     onClick={() => navigate(`/trainers/${trainer.id}`)}
                   >
-                    <div className="selected-item-image">
+                    <div className="featured-entity-image">
                       <img
                         src={trainer.main_ref || '/images/default_trainer.png'}
                         alt={trainer.name}
@@ -475,18 +475,18 @@ const SubmissionDetailPage = ({ type }: SubmissionDetailPageProps) => {
                         }}
                       />
                     </div>
-                    <div className="featured-entity-name">{trainer.name}</div>
-                    <div className="featured-entity-species">
-                      {trainer.species1 && <div>{trainer.species1}</div>}
-                      {trainer.species2 && <div>{trainer.species2}</div>}
-                      {trainer.species3 && <div>{trainer.species3}</div>}
-                    </div>
-                    <div className="featured-entity-types">
-                      {[trainer.type1, trainer.type2, trainer.type3, trainer.type4, trainer.type5]
-                        .filter(Boolean)
-                        .map((t, i) => (
-                          <span key={i} className={`badge type-${t!.toLowerCase()}`}>{t}</span>
-                        ))}
+                    <div className="featured-entity-info">
+                      <div className="featured-entity-name">{trainer.name}</div>
+                      <div className="featured-entity-species">
+                        {[trainer.species1, trainer.species2, trainer.species3].filter(Boolean).join(' / ')}
+                      </div>
+                      <div className="featured-entity-types">
+                        {[trainer.type1, trainer.type2, trainer.type3, trainer.type4, trainer.type5]
+                          .filter(Boolean)
+                          .map((t, i) => (
+                            <span key={i} className={`badge type-${t!.toLowerCase()}`}>{t}</span>
+                          ))}
+                      </div>
                     </div>
                   </div>
                 ))}
@@ -498,14 +498,14 @@ const SubmissionDetailPage = ({ type }: SubmissionDetailPageProps) => {
           {submission.monsters && submission.monsters.length > 0 && (
             <div className="related-submissions">
               <h2>Featured Monsters</h2>
-              <div className="container horizontal center gap-md flex-wrap">
+              <div className="featured-entities-grid">
                 {submission.monsters.map(monster => (
                   <div
                     key={monster.id}
                     className="featured-entity-card"
                     onClick={() => navigate(`/monsters/${monster.id}`)}
                   >
-                    <div className="selected-item-image">
+                    <div className="featured-entity-image">
                       <img
                         src={monster.img_link || monster.image_url || '/images/default_mon.png'}
                         alt={monster.name}
@@ -514,23 +514,22 @@ const SubmissionDetailPage = ({ type }: SubmissionDetailPageProps) => {
                         }}
                       />
                     </div>
-                    <div className="featured-entity-name">{monster.name}</div>
-                    <div className="featured-entity-species">{monster.species}</div>
-                    <div className="featured-entity-level">Lv. {monster.level}</div>
-                    <div className="featured-entity-types">
-                      {[monster.type1, monster.type2].filter(Boolean).map((t, i) => (
-                        <span key={i} className={`badge type-${t!.toLowerCase()}`}>{t}</span>
-                      ))}
-                    </div>
-                    <div className="featured-entity-types">
-                      {[monster.type3, monster.type4, monster.type5].filter(Boolean).map((t, i) => (
-                        <span key={i} className={`badge type-${t!.toLowerCase()}`}>{t}</span>
-                      ))}
-                    </div>
-                    <div className="featured-entity-attribute">
-                      <span className={`badge attribute-${monster.attribute.toLowerCase()}`}>
-                        {monster.attribute}
-                      </span>
+                    <div className="featured-entity-info">
+                      <div className="featured-entity-name">{monster.name}</div>
+                      <div className="featured-entity-species">{monster.species}</div>
+                      <div className="featured-entity-level">Lv. {monster.level}</div>
+                      <div className="featured-entity-types">
+                        {[monster.type1, monster.type2, monster.type3, monster.type4, monster.type5]
+                          .filter(Boolean)
+                          .map((t, i) => (
+                            <span key={i} className={`badge type-${t!.toLowerCase()}`}>{t}</span>
+                          ))}
+                      </div>
+                      <div className="featured-entity-attribute">
+                        <span className={`badge attribute-${monster.attribute.toLowerCase()}`}>
+                          {monster.attribute}
+                        </span>
+                      </div>
                     </div>
                   </div>
                 ))}

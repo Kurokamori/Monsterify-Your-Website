@@ -360,9 +360,9 @@ export class GameCornerService {
     totalSlots: number,
   ): { coin: number; item: number; level: number; monster: number } {
     const coin = Math.min(2.0, 0.6 + multiplier * 0.2) / totalSlots;
-    const item = Math.min(1.8, 0.4 + multiplier * 0.15) / totalSlots;
-    const level = Math.min(1.5, 0.3 + multiplier * 0.1) / totalSlots;
-    const monster = Math.min(0.8, 0.05 + multiplier * 0.08) / totalSlots;
+    const item = Math.min(2.0, 0.6 + multiplier * 0.2) / totalSlots;
+    const level = Math.min(1.8, 0.5 + multiplier * 0.15) / totalSlots;
+    const monster = Math.min(1.2, 0.15 + multiplier * 0.12) / totalSlots;
     return { coin, item, level, monster };
   }
 
@@ -380,7 +380,7 @@ export class GameCornerService {
       type: 'coin',
       reward_type: 'coin',
       rarity: 'common',
-      reward_data: { amount, title: 'Coins' },
+      reward_data: { amount, title: `${amount} Coins` },
       assigned_to: trainerId,
       claimed: false,
     };

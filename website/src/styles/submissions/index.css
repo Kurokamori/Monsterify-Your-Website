@@ -1326,7 +1326,7 @@
 .my-submission-thumbnail img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
   transition: transform 0.3s ease;
 }
 
@@ -1358,7 +1358,7 @@
   color: var(--text-color);
   overflow: hidden;
   text-overflow: ellipsis;
-  white-space: nowrap;
+  white-space: wrap;
 }
 
 .my-submission-meta {
@@ -2917,17 +2917,21 @@
 
 /* ---------- Featured Entities ---------- */
 
+.featured-entities-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr));
+  gap: var(--spacing-medium);
+}
+
 .featured-entity-card {
   background: var(--primary-color-active);
   border-radius: var(--border-radius-medium);
-  padding: var(--spacing-small);
   box-shadow: 0 2px 8px var(--overlay-light);
   transition: all 0.2s ease;
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-xsmall);
-  align-items: center;
   cursor: pointer;
+  overflow: hidden;
 }
 
 .featured-entity-card:hover {
@@ -2935,14 +2939,35 @@
   box-shadow: 0 4px 12px var(--overlay-medium);
 }
 
-.featured-entity-name {
+.featured-entity-image {
+  width: 100%;
+  aspect-ratio: 1;
+  overflow: hidden;
+  background: var(--overlay-light);
+}
+
+.featured-entity-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top;
+}
+
+.featured-entity-info {
   padding: var(--spacing-small);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-xxsmall);
+  flex: 1;
+}
+
+.featured-entity-name {
   font-weight: bold;
   text-align: center;
 }
 
 .featured-entity-species {
-  padding: 0 var(--spacing-small) var(--spacing-small);
   font-size: var(--font-size-small);
   color: var(--text-color-muted);
   text-align: center;
@@ -2961,7 +2986,14 @@
 }
 
 .featured-entity-attribute {
-  margin-top: var(--spacing-xxsmall);
+  margin-top: auto;
+  padding-top: var(--spacing-xxsmall);
+}
+
+@media (max-width: 480px) {
+  .featured-entities-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
 /* ---------- Related Submissions ---------- */

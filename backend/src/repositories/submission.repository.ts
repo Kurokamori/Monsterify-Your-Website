@@ -1262,7 +1262,7 @@ export class SubmissionRepository extends BaseRepository<Submission, SubmissionC
       SELECT
         s.id, s.title, s.description, s.content, s.content_type,
         s.submission_type, s.submission_date, s.user_id, s.trainer_id,
-        s.status, s.is_mature,
+        s.status, s.is_mature, s.parent_id, s.is_book,
         (SELECT image_url FROM submission_images WHERE submission_id = s.id AND is_main::boolean = true LIMIT 1) as image_url,
         (SELECT json_agg(tag) FROM submission_tags WHERE submission_id = s.id) as tags
       FROM submissions s
