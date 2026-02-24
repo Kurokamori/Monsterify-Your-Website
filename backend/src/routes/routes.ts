@@ -71,6 +71,10 @@ import statisticsRoutes from './misc/statistics.routes';
 // Submission Routes
 import submissionRoutes from './misc/submission.routes';
 
+// Chat Routes
+import chatRoutes from './chat/chat.routes';
+import chatAdminRoutes from './chat/chat-admin.routes';
+
 // Upload Routes
 import uploadRoutes from './api/upload.routes';
 
@@ -177,6 +181,10 @@ router.use('/statistics', statisticsRoutes);
 
 // Submission Routes
 router.use('/submissions', submissionRoutes);
+
+// Chat Routes
+router.use('/chats', chatRoutes);
+router.use('/admin/chats', chatAdminRoutes);
 
 // Upload Routes
 router.use('/upload', uploadRoutes);

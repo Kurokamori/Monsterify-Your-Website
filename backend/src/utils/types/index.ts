@@ -29,3 +29,6 @@ export * from './item.types';
 
 // Move and ability types
 export * from './move.types';
+
+// Chat system types
+export * from './chat.types';

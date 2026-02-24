@@ -24,6 +24,13 @@ const toys: ToyDefinition[] = [
     icon: 'fas fa-id-card',
     path: '/toys/character-card-creator',
   },
+  {
+    id: 'group-chats',
+    name: 'Group Chats',
+    description: 'Chat as your trainers in group chats and DMs with image sharing, replies, and more.',
+    icon: 'fas fa-comments',
+    path: '/toys/group-chats',
+  },
 ];
 
 const ToysPage = () => {

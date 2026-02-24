@@ -631,6 +631,22 @@ export type {
 } from './art-todo.repository';
 
 // ============================================================================
+// Chat System Repositories
+// ============================================================================
+
+// Chat Profile Repository
+export { ChatProfileRepository } from './chat-profile.repository';
+
+// Chat Room Repository
+export { ChatRoomRepository } from './chat-room.repository';
+
+// Chat Room Member Repository
+export { ChatRoomMemberRepository } from './chat-room-member.repository';
+
+// DM Request Repository
+export { DmRequestRepository } from './dm-request.repository';
+
+// ============================================================================
 // Reroll Repository
 // ============================================================================
 

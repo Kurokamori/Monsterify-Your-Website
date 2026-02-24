@@ -444,6 +444,15 @@ export type {
 // Prompt Service
 export { PromptService } from './prompt.service';
 
+// Chat Services
+export { ChatStorageService } from './chat-storage.service';
+export { ChatRealtimeService } from './chat-realtime.service';
+export { ChatService } from './chat.service';
+export type {
+  SendMessageInput,
+  CreateGroupInput,
+} from './chat.service';
+
 // Antique Service
 export { AntiqueService } from './antique.service';
 export type {

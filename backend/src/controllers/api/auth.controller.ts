@@ -345,7 +345,7 @@ export function testDiscordConfig(_req: Request, res: Response): void {
   const config = {
     clientIdSet: !!process.env.DISCORD_CLIENT_ID,
     clientSecretSet: !!process.env.DISCORD_CLIENT_SECRET,
-    callbackUrl: process.env.DISCORD_CALLBACK_URL ?? '/api/auth/discord/callback',
+    callbackUrl: process.env.DISCORD_LINK_CALLBACK_URL ?? '/api/auth/discord/callback',
     frontendUrl: process.env.FRONTEND_URL ?? 'https://duskanddawn.net',
   };
 
@@ -357,25 +357,28 @@ export function testDiscordConfig(_req: Request, res: Response): void {
 }
 
 export async function discordCallback(req: Request, res: Response): Promise<void> {
+  const frontendUrl = process.env.FRONTEND_URL ?? 'http://localhost:3000';
+
   try {
-    const frontendUrl = process.env.FRONTEND_URL ?? 'http://localhost:3000';
+    const user = req.user as { id: number; username: string; display_name?: string; is_admin: boolean } | undefined;
 
-    // This would be integrated with passport or a manual OAuth flow
-    // For now, this is a placeholder that handles the callback pattern
-    const { code } = req.query as { code?: string };
-
-    if (!code) {
-      res.redirect(`${frontendUrl}/login?error=discord_no_code`);
+    if (!user) {
+      res.redirect(`${frontendUrl}/login?error=discord_no_user`);
       return;
     }
 
-    // In a full implementation, exchange code for tokens, get user profile,
-    // and call userService.findOrCreateFromDiscord
-    // For now, redirect with error indicating it needs OAuth setup
-    res.redirect(`${frontendUrl}/login?error=discord_not_configured`);
+    const token = userService.generateToken(user);
+    const refreshToken = userService.generateRefreshToken(user);
+    const userParam = encodeURIComponent(JSON.stringify({
+      id: user.id,
+      username: user.username,
+      display_name: user.display_name,
+      is_admin: user.is_admin,
+    }));
+
+    res.redirect(`${frontendUrl}/discord-auth-success?token=${token}&refreshToken=${refreshToken}&user=${userParam}`);
   } catch (error) {
     console.error('Discord callback error:', error);
-    const frontendUrl = process.env.FRONTEND_URL ?? 'http://localhost:3000';
     res.redirect(`${frontendUrl}/login?error=server_error`);
   }
 }

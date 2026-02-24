@@ -17,7 +17,7 @@ export default function DiscordAuthSuccess() {
   const navigate = useNavigate();
   const { currentUser } = useAuth();
   const [status, setStatus] = useState<AuthStatus>('processing');
-  const [message, setMessage] = useState('Processing Discord authentication...');
+  const [message, setMessage] = useState('');
 
   useEffect(() => {
     const handleDiscordAuth = async () => {
@@ -30,14 +30,12 @@ export default function DiscordAuthSuccess() {
         if (error) {
           setStatus('error');
           setMessage(ERROR_MESSAGES[error] || 'An unexpected error occurred. Please try again.');
-          setTimeout(() => navigate('/login', { replace: true }), 3000);
           return;
         }
 
         if (!token || !refreshToken || !userParam) {
           setStatus('error');
           setMessage('Missing authentication data. Please try logging in again.');
-          setTimeout(() => navigate('/login', { replace: true }), 3000);
           return;
         }
 
@@ -53,7 +51,7 @@ export default function DiscordAuthSuccess() {
           }
 
           setStatus('success');
-          setMessage(`Welcome, ${user.display_name || user.username}! Redirecting...`);
+          setMessage(user.display_name || user.username);
 
           setTimeout(() => {
             window.location.href = '/';
@@ -61,12 +59,10 @@ export default function DiscordAuthSuccess() {
         } catch {
           setStatus('error');
           setMessage('Invalid user data received. Please try logging in again.');
-          setTimeout(() => navigate('/login', { replace: true }), 3000);
         }
       } catch {
         setStatus('error');
         setMessage('An error occurred during authentication. Please try again.');
-        setTimeout(() => navigate('/login', { replace: true }), 3000);
       }
     };
 
@@ -81,39 +77,48 @@ export default function DiscordAuthSuccess() {
 
   return (
     <div className="auth-container">
-      <div className="auth-card">
-        <div className="auth-header">
-          <h1>
-            {status === 'processing' && (
-              <><i className="fa-solid fa-spinner fa-spin" /> Processing...</>
-            )}
-            {status === 'success' && (
-              <span className="auth-status-success">
-                <i className="fa-solid fa-check-circle" /> Success!
-              </span>
-            )}
-            {status === 'error' && (
-              <span className="auth-status-error">
-                <i className="fa-solid fa-exclamation-circle" /> Error
-              </span>
-            )}
-          </h1>
-          <p>{message}</p>
-        </div>
-
+      <div className="auth-card" style={{ textAlign: 'center' }}>
         {status === 'processing' && (
-          <LoadingSpinner message="" />
+          <>
+            <div style={{ marginBottom: 'var(--spacing-medium)' }}>
+              <i className="fa-brands fa-discord" style={{ fontSize: '2.5rem', color: '#5865F2' }} />
+            </div>
+            <LoadingSpinner message="Signing you in..." />
+          </>
+        )}
+
+        {status === 'success' && (
+          <>
+            <div style={{ marginBottom: 'var(--spacing-medium)' }}>
+              <i className="fa-solid fa-check-circle" style={{ fontSize: '2.5rem', color: 'var(--success-color)' }} />
+            </div>
+            <h2 style={{ color: 'var(--text-color)', marginBottom: 'var(--spacing-xxsmall)' }}>
+              Welcome back, {message}!
+            </h2>
+            <p style={{ color: 'var(--text-color-muted)', fontSize: 'var(--font-size-small)' }}>
+              Redirecting you now...
+            </p>
+          </>
         )}
 
         {status === 'error' && (
-          <div className="auth-error-actions">
+          <>
+            <div style={{ marginBottom: 'var(--spacing-medium)' }}>
+              <i className="fa-solid fa-exclamation-triangle" style={{ fontSize: '2.5rem', color: 'var(--error-color)' }} />
+            </div>
+            <h2 style={{ color: 'var(--text-color)', marginBottom: 'var(--spacing-xxsmall)' }}>
+              Authentication Failed
+            </h2>
+            <p style={{ color: 'var(--text-color-muted)', fontSize: 'var(--font-size-small)', marginBottom: 'var(--spacing-medium)' }}>
+              {message}
+            </p>
             <button
               className="button primary lg block"
               onClick={() => navigate('/login', { replace: true })}
             >
               Return to Login
             </button>
-          </div>
+          </>
         )}
       </div>
     </div>

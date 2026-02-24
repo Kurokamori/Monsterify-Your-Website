@@ -373,6 +373,35 @@ export {
   claimGameCornerReward,
 } from './town/game-corner.controller';
 
+// Chat Controller
+export {
+  getChatProfile,
+  updateChatProfile,
+  getMyRooms,
+  getRoomDetails,
+  createGroupChat,
+  markRoomRead,
+  getMessages,
+  getOlderMessages,
+  getDmRequests,
+  sendDmRequest,
+  respondDmRequest,
+  updateRoomIcon,
+  uploadChatImage,
+} from './chat/chat.controller';
+
+// Chat Admin Controller
+export {
+  adminGetAllRooms,
+  adminCreateRoom,
+  adminDeleteRoom,
+  adminAddMember,
+  adminRemoveMember,
+  adminGetRoomMembers,
+  adminGetMessages,
+  adminSendMessage,
+} from './chat/chat-admin.controller';
+
 // Area Controller
 export {
   getLandmasses,

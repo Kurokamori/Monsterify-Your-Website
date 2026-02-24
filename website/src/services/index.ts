@@ -1,4 +1,6 @@
 export { default as api } from './api';
+export { default as chatService } from './chatService';
+export { default as chatSocketService } from './chatSocketService';
 export { default as abilityService } from './abilityService';
 export { default as adventureService } from './adventureService';
 export type {

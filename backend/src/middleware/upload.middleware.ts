@@ -38,3 +38,10 @@ export const upload = multer({
   limits: { fileSize: MAX_FILE_SIZE },
   fileFilter,
 });
+
+/** Memory-based upload for routes that stream buffers to Cloudinary. */
+export const memoryUpload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: MAX_FILE_SIZE },
+  fileFilter,
+});

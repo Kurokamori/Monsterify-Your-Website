@@ -47,3 +47,6 @@ export * from './game-constants';
 
 // Monster status moves
 export * from './monster-status-moves';
+
+// Faction chat alias mapping
+export * from './faction-chat-mapping';

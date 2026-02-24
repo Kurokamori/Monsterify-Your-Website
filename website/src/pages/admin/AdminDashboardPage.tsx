@@ -59,6 +59,7 @@ const ADMIN_CATEGORIES: AdminCategory[] = [
       { name: 'Trainer Inventory Editor', icon: 'fas fa-box-open', description: 'Manage trainer inventories and currency', path: '/admin/trainer-inventory-editor' },
       { name: 'Monster Roller', icon: 'fas fa-dice-d20', description: 'Roll monsters for encounters', path: '/admin/monster-roller' },
       { name: 'Starter Selection Test', icon: 'fas fa-flask', description: 'Test the starter selection flow without creating a trainer', path: '/admin/starter-test' },
+      { name: 'Chat Manager', icon: 'fas fa-comments', description: 'Manage chat rooms, members, and send admin messages', path: '/admin/chat-manager' },
     ],
   },
   {

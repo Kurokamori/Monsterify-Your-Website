@@ -1,5 +1,6 @@
 import 'dotenv/config';
 import express from 'express';
+import http from 'http';
 import cors from 'cors';
 import morgan from 'morgan';
 import helmet from 'helmet';
@@ -12,6 +13,7 @@ import { fileURLToPath } from 'url';
 import { errorHandler, notFound } from './src/middleware/error.middleware.js';
 import { CronService } from './src/services/cron.service.js';
 import apiRoutes from './src/routes/routes.js';
+import { initializeSocketIO } from './src/socket/chat.socket.js';
 
 // ES module equivalent of __dirname
 const __filename = fileURLToPath(import.meta.url);
@@ -43,7 +45,7 @@ app.use(helmet({
                 "https://picsum.photos",
                 "*" // Allow all image sources for now - can be restricted later
             ],
-            connectSrc: ["'self'", "https://api.cloudinary.com"],
+            connectSrc: ["'self'", "https://api.cloudinary.com", "wss:", "ws:"],
             frameSrc: ["'self'", "https://*.cloudinary.com", "https://*.youtube.com"],
             objectSrc: ["'none'"],
             upgradeInsecureRequests: process.env.NODE_ENV === 'production' ? [] : null,
@@ -170,14 +172,18 @@ app.use(errorHandler);
 // Set port
 const PORT = process.env.PORT ?? 4888;
 
+// Create HTTP server and attach Socket.IO
+const httpServer = http.createServer(app);
+initializeSocketIO(httpServer);
+
 async function startServer() {
     try {
         console.log('Database connection ready');
-    
+
         // Start server
-        app.listen(PORT, () => {
+        httpServer.listen(PORT, () => {
           console.log(`Server running on port ${PORT}`);
-    
+
           // Initialize cron jobs after server starts
           cronService.init();
         });

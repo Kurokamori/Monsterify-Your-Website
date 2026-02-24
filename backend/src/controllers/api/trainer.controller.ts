@@ -26,8 +26,9 @@ export async function getAllTrainers(req: Request, res: Response): Promise<void>
     const sortBy = (req.query.sort_by as string | undefined) ?? 'name';
     const sortOrder = (req.query.sort_order as string | undefined) ?? 'asc';
     const search = (req.query.search as string | undefined) ?? '';
+    const faction = (req.query.faction as string | undefined) ?? '';
 
-    const result = await trainerService.getAllTrainers(page, limit, sortBy, sortOrder, search);
+    const result = await trainerService.getAllTrainers(page, limit, sortBy, sortOrder, search, faction);
     res.json({ success: true, ...result });
   } catch (error) {
     console.error('Error in getAllTrainers:', error);

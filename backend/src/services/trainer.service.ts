@@ -223,8 +223,18 @@ export class TrainerService {
     sortBy: string,
     sortOrder: string,
     search: string,
+    faction: string = '',
   ): Promise<PaginatedTrainers> {
     let trainers = await this.trainerRepo.findAll(10000, 0);
+
+    // Filter by faction
+    if (faction) {
+      const factionLower = faction.toLowerCase();
+      trainers = trainers.filter((t) => {
+        const trainerFaction = (t as unknown as Record<string, unknown>).faction;
+        return typeof trainerFaction === 'string' && trainerFaction.toLowerCase() === factionLower;
+      });
+    }
 
     // Filter by search
     if (search) {

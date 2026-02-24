@@ -50,18 +50,11 @@ const TrainersPage = () => {
         sort_order: sortOrderRef.current,
       };
 
-      // Combine search term and faction filter into search parameter
-      let searchParam = '';
       if (searchRef.current.trim()) {
-        searchParam = searchRef.current.trim();
+        params.search = searchRef.current.trim();
       }
       if (factionRef.current.trim()) {
-        searchParam = searchParam
-          ? `${searchParam} ${factionRef.current.trim()}`
-          : factionRef.current.trim();
-      }
-      if (searchParam) {
-        params.search = searchParam;
+        params.faction = factionRef.current.trim();
       }
 
       const response = await trainerService.getTrainersPaginated(params);

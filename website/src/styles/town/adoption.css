@@ -353,10 +353,10 @@
 .adoption-art-calculator .form-checkbox-label {
   display: flex;
   align-items: center;
-  gap: var(--spacing-xs, 0.4rem);
+  gap: var(--spacing-xxsmall);
   font-size: var(--font-size-small);
   white-space: nowrap;
-  padding-bottom: var(--spacing-xs, 0.4rem);
+  padding-bottom: var(--spacing-xxsmall);
 }
 
 .adoption-art-preview {
@@ -375,6 +375,6 @@
 }
 
 .adoption-art-preview__row strong {
-  color: var(--color-success, #4caf50);
+  color: var(--success-color);
   font-size: 1.1rem;
 }

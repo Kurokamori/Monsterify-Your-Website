@@ -611,7 +611,7 @@
   gap: var(--spacing-small);
   padding: var(--spacing-medium);
   text-align: center;
-  color: var(--text-secondary);
+  color: var(--text-color-muted);
 }
 
 @keyframes slideDown {

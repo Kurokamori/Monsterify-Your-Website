@@ -63,6 +63,7 @@ import StatisticsPage from './pages/statistics/StatisticsPage'
 import ToysPage from './pages/toys/ToysPage'
 import WhoShouldIDrawPage from './pages/toys/WhoShouldIDrawPage'
 import CharacterCardCreatorPage from './pages/toys/character-card-creator/CharacterCardCreatorPage'
+import GroupChatsPage from './pages/toys/group-chats/GroupChatsPage'
 import ActivitySessionPage from './pages/town/activities/ActivitySessionPage'
 import ActivityRewardsPage from './pages/town/activities/ActivityRewardsPage'
 import GardenPage from './pages/town/activities/GardenPage'
@@ -103,6 +104,7 @@ import { AdventureLocationManagerPage } from './pages/admin/adventure-location-m
 import { EventManagerPage } from './pages/admin/event-manager'
 import { GardenManagerPage } from './pages/admin/garden-manager'
 import { TrainerInventoryEditorPage } from './pages/admin/trainer-inventory-editor'
+import { ChatManagerPage } from './pages/admin/chat-manager'
 import { MonthlyDistributionPage } from './pages/admin/monthly-distribution'
 import InteractiveMapPage from './pages/guides-and-tools/guides/InteractiveMapPage'
 import LandmassGuidePage from './pages/guides-and-tools/guides/LandmassGuidePage'
@@ -229,6 +231,7 @@ function App() {
         <Route path="admin/event-manager" element={<EventManagerPage />} />
         <Route path="admin/garden-manager" element={<GardenManagerPage />} />
         <Route path="admin/trainer-inventory-editor" element={<TrainerInventoryEditorPage />} />
+        <Route path="admin/chat-manager" element={<ChatManagerPage />} />
         <Route path="admin/monthly-distribution" element={<MonthlyDistributionPage />} />
 
         {/* Statistics Routes */}
@@ -238,6 +241,7 @@ function App() {
         <Route path="toys" element={<ToysPage />} />
         <Route path="toys/who-should-i-draw" element={<WhoShouldIDrawPage />} />
         <Route path="toys/character-card-creator" element={<CharacterCardCreatorPage />} />
+        <Route path="toys/group-chats" element={<GroupChatsPage />} />
 
         {/* Town Hub */}
         <Route path="town" element={<TownPage />} />
