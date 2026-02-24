@@ -47,8 +47,8 @@ const DEFAULT_VIDEOS: VideoEntry[] = [
   { id: 'lofi3', title: 'Relaxing Pokemon Music', videoId: 'UyOnnLZTbhc', url: createYouTubeEmbedUrl('UyOnnLZTbhc') },
   { id: 'lofi4', title: 'Lofi Yokai Mix', videoId: 'VeAWlajUUy8', url: createYouTubeEmbedUrl('VeAWlajUUy8') },
   { id: 'lofi5', title: 'Lofi Palmon Mix', videoId: 'Ok61eoA1QaU', url: createYouTubeEmbedUrl('Ok61eoA1QaU') },
-  { id: 'lofi6', title: 'Lofi Final Fantasy Mix', videoId: 'WFRzzhpvlqs?si=0_APZHiWeIMBcGlz', url: createYouTubeEmbedUrl('WFRzzhpvlqs?si=0_APZHiWeIMBcGlz') },
-  { id: 'lofi7', title: 'Lofi Monster Hunter Mix', videoId: '6-5F85HpXkQ?si=qU979KmQFX7Ht_td', url: createYouTubeEmbedUrl('6-5F85HpXkQ?si=qU979KmQFX7Ht_td') },
+  { id: 'lofi6', title: 'Lofi Final Fantasy Mix', videoId: 'WFRzzhpvlqs', url: createYouTubeEmbedUrl('WFRzzhpvlqs') },
+  { id: 'lofi7', title: 'Lofi Monster Hunter Mix', videoId: '6-5F85HpXkQ', url: createYouTubeEmbedUrl('6-5F85HpXkQ') },
 ];
 
 const AUDIO_FILES = {
@@ -657,7 +657,7 @@ export default function GameCornerPage() {
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                 allowFullScreen
                 referrerPolicy="strict-origin-when-cross-origin"
-                sandbox="allow-scripts allow-same-origin allow-presentation"
+                sandbox="allow-scripts allow-same-origin allow-presentation allow-popups allow-popups-to-escape-sandbox allow-forms"
                 onLoad={() => { setVideoLoading(false); setVideoError(false); }}
                 onError={() => { setVideoLoading(false); setVideoError(true); }}
               />
