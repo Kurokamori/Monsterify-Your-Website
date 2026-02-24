@@ -78,6 +78,33 @@
   margin-bottom: var(--spacing-large);
 }
 
+/* ---------- Shop Search ---------- */
+
+.shop__search {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xsmall);
+}
+
+.shop__search > i {
+  position: absolute;
+  left: var(--spacing-small);
+  color: var(--text-color-muted);
+  pointer-events: none;
+}
+
+.shop__search > .input {
+  padding-left: calc(var(--spacing-small) + 1.25em + var(--spacing-xsmall));
+}
+
+.shop__search > .button {
+  position: absolute;
+  right: var(--spacing-xsmall);
+}
+
+/* ---------- Shop Items ---------- */
+
 .shop__items {
   margin-bottom: var(--spacing-large);
 }

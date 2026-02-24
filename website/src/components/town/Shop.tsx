@@ -105,6 +105,9 @@ export function Shop({
   const [allItems, setAllItems] = useState<ShopItem[]>([]);
   const [activeFilters, setActiveFilters] = useState<Set<string>>(new Set());
 
+  // Search state
+  const [searchTerm, setSearchTerm] = useState('');
+
   // Trainer state
   const [userTrainers, setUserTrainers] = useState<ShopTrainer[]>([]);
   const [selectedTrainer, setSelectedTrainer] = useState<string | number>('');
@@ -137,17 +140,30 @@ export function Shop({
     });
   }, []);
 
-  // Filter items client-side: item must match ALL active filters (intersection)
+  // Filter items client-side: item must match ALL active filters (intersection) + search term
   const filteredItems = useMemo(() => {
-    if (activeFilters.size === 0) return allItems;
+    let items = allItems;
 
-    return allItems.filter(item => {
-      return Array.from(activeFilters).every(filterId => {
-        const allowedNames = getFilteredItemNames(filterId, shopCategory);
-        return !allowedNames || allowedNames.includes(item.name);
+    if (activeFilters.size > 0) {
+      items = items.filter(item => {
+        return Array.from(activeFilters).every(filterId => {
+          const allowedNames = getFilteredItemNames(filterId, shopCategory);
+          return !allowedNames || allowedNames.includes(item.name);
+        });
       });
-    });
-  }, [allItems, activeFilters, shopCategory]);
+    }
+
+    if (searchTerm.trim()) {
+      const term = searchTerm.toLowerCase();
+      items = items.filter(item =>
+        item.name.toLowerCase().includes(term) ||
+        item.effect?.toLowerCase().includes(term) ||
+        item.description?.toLowerCase().includes(term)
+      );
+    }
+
+    return items;
+  }, [allItems, activeFilters, shopCategory, searchTerm]);
 
   // Fetch shop items
   const fetchShopItems = useCallback(async () => {
@@ -379,7 +395,7 @@ export function Shop({
 
         <div className="shop-item__info">
           <h4 className="shop-item__name">{item.name}</h4>
-          <p className="shop-item__effect">{getItemDescription(item, shopCategory)}</p>
+          <p className="shop-item__effect">{item.effect || getItemDescription(item, shopCategory)}</p>
           <div className="shop-item__price">
             <i className="fas fa-coins"></i>
             <span>{item.price.toLocaleString()}</span>
@@ -619,6 +635,23 @@ export function Shop({
           )}
         </div>
       )}
+
+      {/* Search bar */}
+      <div className="shop__search">
+        <i className="fas fa-search"></i>
+        <input
+          type="text"
+          className="input"
+          placeholder="Search items by name or effect..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+        {searchTerm && (
+          <button className="button ghost sm" onClick={() => setSearchTerm('')}>
+            <i className="fas fa-times"></i>
+          </button>
+        )}
+      </div>
 
       {/* Items grid */}
       {loading ? (

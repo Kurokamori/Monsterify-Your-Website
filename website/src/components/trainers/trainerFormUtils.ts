@@ -150,7 +150,7 @@ export function buildTrainerSubmitFormData(
   const skipFields = new Set(['theme_display', 'theme_link', 'voice_claim_display', 'voice_claim_link']);
   for (const [key, value] of Object.entries(formData)) {
     if (skipFields.has(key)) continue;
-    if (value !== undefined && value !== null && value !== '') {
+    if (value !== undefined && value !== null) {
       fd.append(key, String(value));
     }
   }
