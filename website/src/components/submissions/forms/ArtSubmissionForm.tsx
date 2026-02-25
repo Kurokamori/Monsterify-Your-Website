@@ -688,7 +688,8 @@ export function ArtSubmissionForm({ onSubmissionComplete }: ArtSubmissionFormPro
         </div>
 
         {/* Submit Button */}
-        <div className="form-actions">
+        <div className="form-actions flex flex-col">
+          <div className="form-tooltip--section">Before submitting, confirm you have added all the backgrounds, trainers, monsters, and NPCs you would like to add. While you are able to somewhat adjust this later, those adjustments will not award extra levels/points such as gift levels/rewards, level cap reallocation, garden, etc. So it's best you ensure everything is correct now.</div>
           <button type="submit" className="button success" disabled={loading}>
             {loading ? (
               <>

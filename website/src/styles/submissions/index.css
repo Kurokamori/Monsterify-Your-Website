@@ -1403,6 +1403,34 @@
   color: var(--accent-color);
 }
 
+/* Reward Summary on Cards */
+.my-submission-rewards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-xxsmall);
+  align-items: center;
+  margin-top: var(--spacing-xxsmall);
+}
+
+.reward-summary-label {
+  font-size: var(--font-size-xsmall);
+  color: var(--accent-color);
+  font-weight: 600;
+}
+
+.reward-summary-entry {
+  font-size: var(--font-size-xsmall);
+  padding: var(--spacing-xxsmall) var(--spacing-xsmall);
+  background: var(--background-color);
+  color: var(--text-color-muted);
+  border-radius: var(--border-radius-small);
+}
+
+.reward-summary-entry.more {
+  background: var(--accent-color-hover);
+  color: var(--accent-color);
+}
+
 /* Actions */
 .my-submission-actions {
   display: flex;
@@ -1410,6 +1438,7 @@
   padding: var(--spacing-xsmall) var(--spacing-small);
   border-top: 1px solid var(--border-color);
   background: var(--background-color);
+  flex-wrap: wrap;
 }
 
 .my-submission-actions .button.small {
@@ -3214,6 +3243,77 @@
 
 .collaborator-badge i.fa-eye {
   color: var(--text-color-muted);
+}
+
+/* ---------- Reward Breakdown ---------- */
+
+.reward-breakdown-toggle {
+  cursor: pointer;
+  user-select: none;
+}
+
+.reward-breakdown-toggle:hover {
+  opacity: 0.8;
+}
+
+.reward-breakdown-table {
+  margin-top: var(--spacing-small);
+  overflow-x: auto;
+}
+
+.reward-breakdown-table .admin-table {
+  width: 100%;
+  font-size: var(--font-size-small);
+}
+
+.reward-breakdown-table .admin-table th {
+  background: var(--secondary-color);
+}
+
+.reward-breakdown-table .admin-table td {
+  background-color: var(--background-color);
+  text-align: center;
+}
+
+.badge-trainer {
+  background: var(--accent-color-hover);
+  color: var(--accent-color);
+  margin-top: var(--spacing-xxsmall);
+  margin-bottom: var(--spacing-xxsmall);
+}
+
+.badge-monster {
+  background: var(--success-dark);
+  color: var(--success-color);
+  margin-top: var(--spacing-xxsmall);
+  margin-bottom: var(--spacing-xxsmall);
+}
+
+/* ---------- Edit Participants Button ---------- */
+
+.edit-participants-action {
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* ---------- Edit Participants Modal ---------- */
+
+.edit-participants-modal {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-medium);
+}
+
+.edit-participants-form.disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.edit-participants-saving {
+  text-align: center;
+  padding: var(--spacing-small);
+  color: var(--accent-color);
+  font-weight: 600;
 }
 
 /* ---------- Submission Success ---------- */

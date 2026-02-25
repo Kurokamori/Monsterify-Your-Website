@@ -414,3 +414,12 @@
 .monster-manager__required {
   color: var(--error-color);
 }
+
+.monster-manager__admin-edit-btn {
+  background: var(--accent-color-dark);
+  border-color: var(--accent-color);
+}
+
+.monster-manager__admin-edit-btn:hover {
+  background: var(--accent-color-hover);
+}

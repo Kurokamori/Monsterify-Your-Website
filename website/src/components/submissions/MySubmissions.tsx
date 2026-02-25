@@ -7,6 +7,15 @@ import { Modal } from '../common/Modal';
 import { Pagination } from '../common/Pagination';
 import api from '../../services/api';
 import submissionService from '../../services/submissionService';
+import { EditParticipantsModal } from './EditParticipantsModal';
+
+interface RewardSnapshotEntry {
+  id: number;
+  name?: string;
+  type: 'trainer' | 'monster';
+  levels: number;
+  coins: number;
+}
 
 interface Submission {
   id: number;
@@ -23,6 +32,7 @@ interface Submission {
   is_book?: boolean;
   parent_id?: number | null;
   chapter_count?: number;
+  reward_snapshot?: RewardSnapshotEntry[];
 }
 
 interface SubmissionsResponse {
@@ -110,6 +120,9 @@ export function MySubmissions() {
   const [deleteError, setDeleteError] = useState<string | null>(null);
   const [editError, setEditError] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
+  const [isEditParticipantsOpen, setIsEditParticipantsOpen] = useState(false);
+  const [editParticipantsSubmission, setEditParticipantsSubmission] = useState<Submission | null>(null);
+  const [editParticipantsConfig, setEditParticipantsConfig] = useState<Record<string, unknown> | null>(null);
 
   // Edit form state
   const [editForm, setEditForm] = useState<EditForm>({
@@ -185,6 +198,21 @@ export function MySubmissions() {
       } catch (err) {
         console.error('Error fetching user books:', err);
       }
+    }
+  };
+
+  // Handle edit participants modal open
+  const openEditParticipantsModal = async (submission: Submission) => {
+    try {
+      const breakdown = await submissionService.getLevelBreakdown(submission.id);
+      setEditParticipantsConfig(breakdown.calculatorConfig || {});
+      setEditParticipantsSubmission(submission);
+      setIsEditParticipantsOpen(true);
+    } catch (err) {
+      console.error('Error fetching calculator config:', err);
+      setEditParticipantsConfig({});
+      setEditParticipantsSubmission(submission);
+      setIsEditParticipantsOpen(true);
     }
   };
 
@@ -448,6 +476,21 @@ export function MySubmissions() {
                       )}
                     </div>
                   )}
+                  {submission.reward_snapshot && submission.reward_snapshot.length > 0 && (
+                    <div className="my-submission-rewards">
+                      <span className="reward-summary-label">
+                        <i className="fas fa-star"></i> Rewards:
+                      </span>
+                      {submission.reward_snapshot.slice(0, 3).map((entry, index) => (
+                        <span key={index} className="reward-summary-entry" title={`${entry.name}: ${entry.levels} lvl, ${entry.coins} coins`}>
+                          {entry.name || `${entry.type} #${entry.id}`}: {entry.levels} lvl
+                        </span>
+                      ))}
+                      {submission.reward_snapshot.length > 3 && (
+                        <span className="reward-summary-entry more">+{submission.reward_snapshot.length - 3} more</span>
+                      )}
+                    </div>
+                  )}
                 </div>
 
                 <div className="my-submission-actions">
@@ -459,6 +502,13 @@ export function MySubmissions() {
                     onClick={() => openEditModal(submission)}
                   >
                     <i className="fas fa-edit"></i> Edit
+                  </button>
+                  <button
+                    className="button secondary small"
+                    onClick={() => openEditParticipantsModal(submission)}
+                    title="Edit reward participants"
+                  >
+                    <i className="fas fa-users"></i> Participants
                   </button>
                   <button
                     className="button danger small"
@@ -681,6 +731,24 @@ export function MySubmissions() {
           </div>
         )}
       </Modal>
+
+      {/* Edit Participants Modal */}
+      {isEditParticipantsOpen && editParticipantsSubmission && (
+        <EditParticipantsModal
+          isOpen={isEditParticipantsOpen}
+          onClose={() => {
+            setIsEditParticipantsOpen(false);
+            setEditParticipantsSubmission(null);
+            setEditParticipantsConfig(null);
+          }}
+          submissionId={editParticipantsSubmission.id}
+          submissionType={editParticipantsSubmission.submission_type}
+          calculatorConfig={editParticipantsConfig || {}}
+          onSuccess={() => {
+            fetchSubmissions();
+          }}
+        />
+      )}
     </div>
   );
 }

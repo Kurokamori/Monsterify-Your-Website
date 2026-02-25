@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import passport from 'passport';
 import { authenticate } from '@middleware/auth.middleware';
+import { UserPublic } from '../../repositories';
 import {
   registerUser,
   loginUser,
@@ -31,7 +32,7 @@ router.post('/refresh', refreshToken);
 router.get('/discord', passport.authenticate('discord'));
 router.get('/discord/test', testDiscordConfig);
 router.get('/discord/callback', (req, res, next) => {
-  passport.authenticate('discord', { session: false }, (err: Error | null, user: Express.User | false) => {
+  passport.authenticate('discord', { session: false }, (err: Error | null, user: UserPublic | false) => {
     const frontendUrl = process.env.FRONTEND_URL ?? 'http://localhost:4000';
     if (err) {
       console.error('Discord auth error:', err);

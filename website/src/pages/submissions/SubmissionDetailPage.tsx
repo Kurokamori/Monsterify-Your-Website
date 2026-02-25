@@ -9,6 +9,7 @@ import { ErrorModal } from '@components/common/ErrorModal';
 import { MarkdownRenderer } from '@components/common/MarkdownRenderer';
 import { CollaboratorManagement } from '@components/submissions';
 import { ExternalLevelAllocator } from '@components/submissions/ExternalLevelAllocator';
+import { EditParticipantsModal } from '@components/submissions/EditParticipantsModal';
 
 interface Trainer {
   id: number;
@@ -54,6 +55,15 @@ interface BookChapter {
   word_count: number;
 }
 
+interface RewardSnapshotEntry {
+  id: number;
+  name?: string;
+  type: 'trainer' | 'monster';
+  levels: number;
+  coins: number;
+  cappedLevels?: number;
+}
+
 interface Submission {
   id: number;
   title: string;
@@ -75,6 +85,8 @@ interface Submission {
   external_characters?: Array<{ name?: string; appearance?: string; complexity?: string }>;
   external_levels?: number;
   external_coins?: number;
+  calculator_config?: Record<string, unknown>;
+  reward_snapshot?: RewardSnapshotEntry[];
 }
 
 interface RelatedSubmission {
@@ -131,6 +143,10 @@ const SubmissionDetailPage = ({ type }: SubmissionDetailPageProps) => {
   const [collaborators, setCollaborators] = useState<Collaborator[]>([]);
   const [collaboratorModalOpen, setCollaboratorModalOpen] = useState(false);
   const [userCanEdit, setUserCanEdit] = useState(false);
+  const [rewardSnapshot, setRewardSnapshot] = useState<RewardSnapshotEntry[] | null>(null);
+  const [calculatorConfig, setCalculatorConfig] = useState<Record<string, unknown> | null>(null);
+  const [editParticipantsOpen, setEditParticipantsOpen] = useState(false);
+  const [rewardBreakdownExpanded, setRewardBreakdownExpanded] = useState(false);
 
   useDocumentTitle(submission ? submission.title : (type === 'art' ? 'Gallery' : 'Library'));
 
@@ -202,6 +218,17 @@ const SubmissionDetailPage = ({ type }: SubmissionDetailPageProps) => {
             } catch (parentErr) {
               console.error('Error fetching parent book:', parentErr);
             }
+          }
+
+          // Fetch level breakdown if available
+          try {
+            const breakdownResponse = await submissionService.getLevelBreakdown(sub.id);
+            if (breakdownResponse.success) {
+              setRewardSnapshot(breakdownResponse.rewardSnapshot || null);
+              setCalculatorConfig(breakdownResponse.calculatorConfig || null);
+            }
+          } catch {
+            // Old submissions may not have breakdown data
           }
 
           if (sub.user_id) {
@@ -455,6 +482,67 @@ const SubmissionDetailPage = ({ type }: SubmissionDetailPageProps) => {
             </div>
           )}
 
+          {/* Edit Participants Button */}
+          {isOwner && (isArt || isWriting) && !submission.is_external && (
+            <div className="edit-participants-action">
+              <button
+                className="button secondary"
+                onClick={() => setEditParticipantsOpen(true)}
+              >
+                <i className="fas fa-edit"></i> Edit Participants
+              </button>
+            </div>
+          )}
+
+          {/* Reward Breakdown */}
+          {rewardSnapshot && rewardSnapshot.length > 0 && (
+            <div className="related-submissions">
+              <h2
+                className="reward-breakdown-toggle"
+                onClick={() => setRewardBreakdownExpanded(!rewardBreakdownExpanded)}
+              >
+                <i className={`fas fa-chevron-${rewardBreakdownExpanded ? 'down' : 'right'}`}></i>
+                {' '}Reward Breakdown
+              </h2>
+              {rewardBreakdownExpanded && (
+                <div className="reward-breakdown-table">
+                  <table className="admin-table">
+                    <thead>
+                      <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Levels</th>
+                        <th>Coins</th>
+                        {rewardSnapshot.some(e => (e.cappedLevels ?? 0) > 0) && <th>Capped Levels</th>}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {rewardSnapshot.map((entry, index) => (
+                        <tr key={`${entry.type}-${entry.id}-${index}`}>
+                          <td>
+                            <Link to={`/${entry.type === 'trainer' ? 'trainers' : 'monsters'}/${entry.id}`}>
+                              {entry.name || `${entry.type} #${entry.id}`}
+                            </Link>
+                          </td>
+                          <td>
+                            <span className={`badge ${entry.type === 'trainer' ? 'badge-trainer' : 'badge-monster'}`}>
+                              {entry.type === 'trainer' ? 'Trainer' : 'Monster'}
+                            </span>
+                          </td>
+                          <td>{entry.levels}</td>
+                          <td>{entry.coins}</td>
+                          {rewardSnapshot.some(e => (e.cappedLevels ?? 0) > 0) && (
+                            <td>{entry.cappedLevels || 0}</td>
+                          )}
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </div>
+          )}
+
           {/* Featured Trainers */}
           {submission.trainers && submission.trainers.length > 0 && (
             <div className="related-submissions">
@@ -525,11 +613,13 @@ const SubmissionDetailPage = ({ type }: SubmissionDetailPageProps) => {
                             <span key={i} className={`badge type-${t!.toLowerCase()}`}>{t}</span>
                           ))}
                       </div>
-                      <div className="featured-entity-attribute">
-                        <span className={`badge attribute-${monster.attribute.toLowerCase()}`}>
-                          {monster.attribute}
-                        </span>
-                      </div>
+                      {monster.attribute && (
+                        <div className="featured-entity-attribute">
+                          <span className={`badge attribute-${monster.attribute.toLowerCase()}`}>
+                            {monster.attribute}
+                          </span>
+                        </div>
+                      )}
                     </div>
                   </div>
                 ))}
@@ -613,6 +703,22 @@ const SubmissionDetailPage = ({ type }: SubmissionDetailPageProps) => {
           isOpen={collaboratorModalOpen}
           onClose={() => setCollaboratorModalOpen(false)}
           onCollaboratorsChange={() => fetchCollaborators(Number(id))}
+        />
+      )}
+
+      {/* Edit Participants Modal */}
+      {editParticipantsOpen && (
+        <EditParticipantsModal
+          isOpen={editParticipantsOpen}
+          onClose={() => setEditParticipantsOpen(false)}
+          submissionId={submission.id}
+          submissionType={submission.submission_type}
+          calculatorConfig={calculatorConfig || {}}
+          onSuccess={(newSnapshot) => {
+            setRewardSnapshot(newSnapshot);
+            setCalculatorConfig(newSnapshot.length > 0 ? calculatorConfig : null);
+            setRewardBreakdownExpanded(true);
+          }}
         />
       )}
     </div>

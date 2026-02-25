@@ -415,7 +415,11 @@ export class MonsterService {
       throw new Error('Trainer not found');
     }
 
-    const updatedMonster = await this.monsterRepo.addLevels(monsterId, levels);
+    await this.initializer.levelUpMonster(monsterId, levels);
+    const updatedMonster = await this.monsterRepo.findById(monsterId);
+    if (!updatedMonster) {
+      throw new Error('Monster not found after level up');
+    }
 
     return {
       monsterId,
@@ -440,7 +444,11 @@ export class MonsterService {
       throw new Error('Monster not found');
     }
 
-    const updatedMonster = await this.monsterRepo.addLevels(monsterId, levels);
+    await this.initializer.levelUpMonster(monsterId, levels);
+    const updatedMonster = await this.monsterRepo.findById(monsterId);
+    if (!updatedMonster) {
+      throw new Error('Monster not found after level up');
+    }
 
     console.log(`Admin added ${levels} levels to monster ${monster.name} (ID: ${monsterId})`);
     if (reason) {
@@ -478,7 +486,12 @@ export class MonsterService {
           continue;
         }
 
-        const updatedMonster = await this.monsterRepo.addLevels(monsterId, levels);
+        await this.initializer.levelUpMonster(monsterId, levels);
+        const updatedMonster = await this.monsterRepo.findById(monsterId);
+        if (!updatedMonster) {
+          results.failed.push({ id: monsterId, reason: 'Monster not found after level up' });
+          continue;
+        }
 
         results.success.push({
           monsterId,

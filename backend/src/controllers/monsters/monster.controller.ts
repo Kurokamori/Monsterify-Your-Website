@@ -1,7 +1,9 @@
 import { Request, Response } from 'express';
 import { MonsterService } from '../../services/monster.service';
+import { MoveRepository } from '../../repositories/move.repository';
 
 const monsterService = new MonsterService();
+const moveRepo = new MoveRepository();
 
 // =============================================================================
 // Monster CRUD
@@ -885,6 +887,28 @@ export async function adminBulkAddMonsters(req: Request, res: Response): Promise
       return;
     }
     res.status(500).json({ success: false, message: msg });
+  }
+}
+
+export async function searchMoves(req: Request, res: Response): Promise<void> {
+  try {
+    const search = (req.query.search as string || '').trim().toLowerCase();
+    const type = req.query.type as string | undefined;
+    const limit = Math.min(parseInt(req.query.limit as string) || 50, 200);
+
+    let moves = await moveRepo.findAll();
+
+    if (search) {
+      moves = moves.filter(m => m.moveName.toLowerCase().includes(search));
+    }
+    if (type) {
+      moves = moves.filter(m => m.moveType?.toLowerCase() === type.toLowerCase());
+    }
+
+    res.json({ success: true, data: moves.slice(0, limit) });
+  } catch (error) {
+    console.error('Error in searchMoves:', error);
+    res.status(500).json({ success: false, message: 'Server error' });
   }
 }
 

@@ -440,6 +440,27 @@ const monsterService = {
     return response.data;
   },
 
+  // Admin: Search moves database
+  adminSearchMoves: async (search?: string, type?: string, limit = 50): Promise<MonsterMove[]> => {
+    const response = await api.get('/monsters/moves/search', {
+      params: { search, type, limit },
+    });
+    const raw = response.data?.data ?? [];
+    return raw.map((m: Record<string, unknown>) => ({
+      name: (m.moveName ?? m.move_name ?? m.name ?? '') as string,
+      type: (m.moveType ?? m.move_type ?? m.type ?? '') as string,
+      power: (m.power ?? null) as number | null,
+      accuracy: (m.accuracy ?? null) as number | null,
+      pp: (m.pp ?? null) as number | null,
+    }));
+  },
+
+  // Admin: Update monster (admin-level fields like EVs, IVs, level, moves, abilities)
+  adminUpdateMonster: async (id: number | string, data: Record<string, unknown>) => {
+    const response = await api.put(`/monsters/${id}`, data);
+    return response.data;
+  },
+
   // Admin: Get filter options (types + attributes from actual monster data)
   adminGetFilterOptions: async (): Promise<{ types: string[]; attributes: string[] }> => {
     const response = await api.get('/monsters/admin/filter-options');

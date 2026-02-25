@@ -7,6 +7,7 @@ import {
   MonsterRepository,
   MonsterCreateInput,
 } from '../repositories';
+import { MonsterInitializerService } from './monster-initializer.service';
 
 export type CaptureData = {
   encounterId: number;
@@ -134,6 +135,7 @@ export class CaptureService {
   private inventoryRepository: TrainerInventoryRepository;
   private userRepository: UserRepository;
   private monsterRepository: MonsterRepository;
+  private monsterInitializer: MonsterInitializerService;
 
   constructor(
     trainerRepository?: TrainerRepository,
@@ -145,6 +147,7 @@ export class CaptureService {
     this.inventoryRepository = inventoryRepository ?? new TrainerInventoryRepository();
     this.userRepository = userRepository ?? new UserRepository();
     this.monsterRepository = monsterRepository ?? new MonsterRepository();
+    this.monsterInitializer = new MonsterInitializerService();
   }
 
   /**
@@ -502,6 +505,13 @@ export class CaptureService {
 
     // Create the monster in the database
     const createdMonster = await this.monsterRepository.create(monsterInput);
+
+    // Initialize monster with stats, moves, abilities, etc.
+    try {
+      await this.monsterInitializer.initializeMonster(createdMonster.id);
+    } catch (err) {
+      console.error(`Failed to initialize captured monster ${createdMonster.id}:`, err);
+    }
 
     return {
       id: createdMonster.id,

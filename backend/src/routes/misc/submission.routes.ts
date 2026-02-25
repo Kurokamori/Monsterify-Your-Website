@@ -14,6 +14,7 @@ import {
   getGiftItems,
   getSubmissionRewards,
   getAvailablePrompts,
+  getLevelBreakdown,
   // Reward Calculation
   calculateArtRewards,
   calculateWritingRewards,
@@ -44,6 +45,7 @@ import {
   updateChapterOrder,
   createBook,
   // Submission Management
+  editParticipants,
   updateSubmission,
   deleteSubmission,
   // Collaborators
@@ -109,6 +111,7 @@ router.post('/external/allocate', authenticate, allocateExternalLevels);
 router.get('/:id', getSubmissionById);
 router.get('/:id/gift-items', getGiftItems);
 router.get('/:id/rewards', getSubmissionRewards);
+router.get('/:id/level-breakdown', getLevelBreakdown);
 
 // =============================================================================
 // Authenticated Routes
@@ -139,6 +142,9 @@ router.post('/gift-rewards/finalize', authenticate, finalizeGiftRewards);
 router.post('/:id/reroll-items', authenticate, rerollSubmissionItems);
 router.post('/:id/reroll-monsters', authenticate, rerollSubmissionMonsters);
 router.post('/:id/claim-monster', authenticate, claimSubmissionMonster);
+
+// Edit participants
+router.patch('/:id/edit-participants', authenticate, editParticipants);
 
 // Submission management
 router.put('/:id', authenticate, updateSubmission);

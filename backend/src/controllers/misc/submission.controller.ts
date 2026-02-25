@@ -231,6 +231,23 @@ export async function getSubmissionRewards(req: Request, res: Response): Promise
   }
 }
 
+export async function getLevelBreakdown(req: Request, res: Response): Promise<void> {
+  try {
+    const submissionId = parseInt(req.params.id as string);
+    if (isNaN(submissionId)) {
+      res.status(400).json({ success: false, message: 'Invalid submission ID' });
+      return;
+    }
+
+    const breakdown = await submissionService.getLevelBreakdown(submissionId);
+    res.json({ success: true, ...breakdown });
+  } catch (error) {
+    const err = error as Error;
+    console.error('Error getting level breakdown:', error);
+    res.status(400).json({ success: false, message: err.message || 'Failed to get level breakdown' });
+  }
+}
+
 export async function getAvailablePrompts(req: Request, res: Response): Promise<void> {
   try {
     const trainerId = parseInt(req.query.trainerId as string);
@@ -1083,6 +1100,32 @@ export async function createBook(req: Request, res: Response): Promise<void> {
 // =============================================================================
 // Submission Management
 // =============================================================================
+
+export async function editParticipants(req: Request, res: Response): Promise<void> {
+  try {
+    const submissionId = parseInt(req.params.id as string);
+    if (isNaN(submissionId)) {
+      res.status(400).json({ success: false, message: 'Invalid submission ID' });
+      return;
+    }
+
+    const { calculatorConfig } = req.body;
+    if (!calculatorConfig || typeof calculatorConfig !== 'object') {
+      res.status(400).json({ success: false, message: 'calculatorConfig is required' });
+      return;
+    }
+
+    const userId = getUserId(req);
+    const websiteUserId = parseInt(getWebsiteUserId(req));
+
+    const result = await submissionService.editParticipants(submissionId, userId, websiteUserId, calculatorConfig);
+    res.json(result);
+  } catch (error) {
+    const err = error as Error;
+    console.error('Error editing participants:', error);
+    res.status(400).json({ success: false, message: err.message || 'Failed to edit participants' });
+  }
+}
 
 export async function updateSubmission(req: Request, res: Response): Promise<void> {
   try {

@@ -694,6 +694,23 @@ export class MonsterRepository extends BaseRepository<MonsterWithTrainer, Monste
     return updated;
   }
 
+  async subtractLevels(monsterId: number, levels: number): Promise<MonsterWithTrainer> {
+    await db.query(
+      `
+        UPDATE monsters
+        SET level = GREATEST(level - $1, 1), updated_at = CURRENT_TIMESTAMP
+        WHERE id = $2
+      `,
+      [levels, monsterId]
+    );
+
+    const updated = await this.findById(monsterId);
+    if (!updated) {
+      throw new Error('Monster not found after level update');
+    }
+    return updated;
+  }
+
   // Monster Images
   async getImages(monsterId: number): Promise<MonsterImageRow[]> {
     const result = await db.query<MonsterImageRow>(

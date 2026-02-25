@@ -37,6 +37,7 @@ import {
   adminGetMonstersPaginated,
   adminChangeMonsterOwner,
   adminDeleteMonster as adminDeleteMonsterController,
+  searchMoves,
 } from '@controllers/monsters/monster.controller';
 import {
   evolveMonster,
@@ -75,6 +76,9 @@ router.post('/upload-image', authenticate, uploadMonsterImage);
 
 // Add levels to monster (for level cap reallocation)
 router.post('/add-levels', authenticate, addMonsterLevels);
+
+// Move search (must be before /:id to avoid conflicts)
+router.get('/moves/search', authenticate, requireAdmin, searchMoves);
 
 // Admin Monster Management (must be before /:id to avoid conflicts)
 router.post('/admin/levels/:monsterId', authenticate, requireAdmin, adminAddLevelsToMonster);

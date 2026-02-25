@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { UserService } from '../../services/user.service';
-import { ContentSettings } from '../../repositories';
+import { ContentSettings, UserPublic } from '../../repositories';
 
 const userService = new UserService();
 
@@ -360,7 +360,7 @@ export async function discordCallback(req: Request, res: Response): Promise<void
   const frontendUrl = process.env.FRONTEND_URL ?? 'http://localhost:3000';
 
   try {
-    const user = req.user as { id: number; username: string; display_name?: string; is_admin: boolean } | undefined;
+    const user = req.user as UserPublic | undefined;
 
     if (!user) {
       res.redirect(`${frontendUrl}/login?error=discord_no_user`);

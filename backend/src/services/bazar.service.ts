@@ -10,11 +10,13 @@ import type {
   BazarItemWithDetails,
   InventoryCategory,
 } from '../repositories';
+import { MonsterInitializerService } from './monster-initializer.service';
 
 const bazarRepo = new BazarRepository();
 const monsterRepo = new MonsterRepository();
 const trainerRepo = new TrainerRepository();
 const inventoryRepo = new TrainerInventoryRepository();
+const monsterInitializer = new MonsterInitializerService();
 
 export type ForfeitMonsterResult = {
   success: boolean;
@@ -58,7 +60,11 @@ export class BazarService {
     }
 
     return db.transaction(async () => {
-      // Create bazar monster entry
+      // Create bazar monster entry preserving all monster data
+      const parsedMoveset = monster.moveset
+        ? (typeof monster.moveset === 'string' ? monster.moveset : JSON.stringify(monster.moveset))
+        : null;
+
       const bazarMonster = await bazarRepo.createMonster({
         originalMonsterId: monster.id,
         forfeitedByTrainerId: trainerId,
@@ -74,6 +80,37 @@ export class BazarService {
         type5: monster.type5,
         attribute: monster.attribute,
         level: monster.level,
+        hpTotal: monster.hp_total,
+        hpIv: monster.hp_iv,
+        hpEv: monster.hp_ev,
+        atkTotal: monster.atk_total,
+        atkIv: monster.atk_iv,
+        atkEv: monster.atk_ev,
+        defTotal: monster.def_total,
+        defIv: monster.def_iv,
+        defEv: monster.def_ev,
+        spaTotal: monster.spa_total,
+        spaIv: monster.spa_iv,
+        spaEv: monster.spa_ev,
+        spdTotal: monster.spd_total,
+        spdIv: monster.spd_iv,
+        spdEv: monster.spd_ev,
+        speTotal: monster.spe_total,
+        speIv: monster.spe_iv,
+        speEv: monster.spe_ev,
+        nature: monster.nature,
+        characteristic: monster.characteristic,
+        gender: monster.gender,
+        friendship: monster.friendship,
+        ability1: monster.ability1,
+        ability2: monster.ability2,
+        moveset: parsedMoveset,
+        imgLink: monster.img_link,
+        shiny: monster.shiny,
+        alpha: monster.alpha,
+        shadow: monster.shadow,
+        paradox: monster.paradox,
+        pokerus: monster.pokerus,
       });
 
       // Delete the original monster
@@ -158,7 +195,22 @@ export class BazarService {
     }
 
     return db.transaction(async () => {
-      // Create a new monster for the adopting trainer
+      // Parse moveset from stored string back to array for the create input
+      let moveset: string[] | undefined;
+      if (bazarMonster.moveset) {
+        try {
+          const parsed = typeof bazarMonster.moveset === 'string'
+            ? JSON.parse(bazarMonster.moveset)
+            : bazarMonster.moveset;
+          if (Array.isArray(parsed)) {
+            moveset = parsed;
+          }
+        } catch {
+          // If parsing fails, leave moveset undefined so initializer can generate one
+        }
+      }
+
+      // Create a new monster preserving all original stats, with friendship reset
       const newMonster = await monsterRepo.create({
         trainerId,
         playerUserId: userId,
@@ -173,7 +225,50 @@ export class BazarService {
         type5: bazarMonster.type5,
         attribute: bazarMonster.attribute,
         level: bazarMonster.level,
+        hpTotal: bazarMonster.hpTotal,
+        hpIv: bazarMonster.hpIv,
+        hpEv: bazarMonster.hpEv,
+        atkTotal: bazarMonster.atkTotal,
+        atkIv: bazarMonster.atkIv,
+        atkEv: bazarMonster.atkEv,
+        defTotal: bazarMonster.defTotal,
+        defIv: bazarMonster.defIv,
+        defEv: bazarMonster.defEv,
+        spaTotal: bazarMonster.spaTotal,
+        spaIv: bazarMonster.spaIv,
+        spaEv: bazarMonster.spaEv,
+        spdTotal: bazarMonster.spdTotal,
+        spdIv: bazarMonster.spdIv,
+        spdEv: bazarMonster.spdEv,
+        speTotal: bazarMonster.speTotal,
+        speIv: bazarMonster.speIv,
+        speEv: bazarMonster.speEv,
+        nature: bazarMonster.nature,
+        characteristic: bazarMonster.characteristic,
+        gender: bazarMonster.gender,
+        friendship: 70, // Reset friendship for new trainer
+        ability1: bazarMonster.ability1,
+        ability2: bazarMonster.ability2,
+        moveset,
+        imgLink: bazarMonster.imgLink,
+        shiny: bazarMonster.shiny,
+        alpha: bazarMonster.alpha,
+        shadow: bazarMonster.shadow,
+        paradox: bazarMonster.paradox,
+        pokerus: bazarMonster.pokerus,
+        dateMet: new Date(),
+        whereMet: 'Bazar Adoption',
       });
+
+      // If the monster is missing key data (e.g. from older bazar entries), initialize it
+      // initializeMonster uses ??= so it won't overwrite existing values
+      if (!bazarMonster.nature || !bazarMonster.moveset) {
+        try {
+          await monsterInitializer.initializeMonster(newMonster.id);
+        } catch (err) {
+          console.error(`Failed to initialize bazar monster ${newMonster.id}:`, err);
+        }
+      }
 
       // Mark bazar monster as unavailable
       await bazarRepo.markMonsterUnavailable(bazarMonsterId);

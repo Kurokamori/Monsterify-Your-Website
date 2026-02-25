@@ -419,6 +419,23 @@ export class TrainerRepository extends BaseRepository<TrainerWithStats, TrainerC
     return updated;
   }
 
+  async subtractLevels(id: number, levels: number): Promise<TrainerWithStats> {
+    await db.query(
+      `
+        UPDATE trainers
+        SET level = level - $1, updated_at = CURRENT_TIMESTAMP
+        WHERE id = $2
+      `,
+      [levels, id]
+    );
+
+    const updated = await this.findById(id);
+    if (!updated) {
+      throw new Error('Trainer not found after level update');
+    }
+    return updated;
+  }
+
   async addLevelsAndCoins(id: number, levels: number, coins: number): Promise<TrainerWithStats> {
     await db.query(
       `

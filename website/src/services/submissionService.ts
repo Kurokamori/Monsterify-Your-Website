@@ -1041,6 +1041,23 @@ const submissionService = {
     const response = await api.get(`/trainers/${trainerId}/berries`);
     return response.data;
   },
+
+  // ── Level Breakdown & Edit Participants ─────────────────────────────
+
+  getLevelBreakdown: async (submissionId: number | string) => {
+    const response = await api.get(`/submissions/${submissionId}/level-breakdown`);
+    return response.data;
+  },
+
+  editParticipants: async (
+    submissionId: number | string,
+    calculatorConfig: Record<string, unknown>,
+  ) => {
+    const response = await api.patch(`/submissions/${submissionId}/edit-participants`, {
+      calculatorConfig,
+    });
+    return response.data;
+  },
 };
 
 export default submissionService;

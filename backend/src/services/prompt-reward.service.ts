@@ -8,6 +8,7 @@ import {
   type MonsterCreateInput,
 } from '../repositories';
 import { MonsterRollerService, type UserSettings } from './monster-roller.service';
+import { MonsterInitializerService } from './monster-initializer.service';
 import {
   MONSTER_TYPES,
   DIGIMON_ATTRIBUTES,
@@ -171,6 +172,7 @@ export class PromptRewardService {
   private inventoryRepository: TrainerInventoryRepository;
   private itemRepository: ItemRepository;
   private monsterRepository: MonsterRepository;
+  private monsterInitializer: MonsterInitializerService;
 
   constructor(
     trainerRepository?: TrainerRepository,
@@ -182,6 +184,7 @@ export class PromptRewardService {
     this.inventoryRepository = inventoryRepository ?? new TrainerInventoryRepository();
     this.itemRepository = itemRepository ?? new ItemRepository();
     this.monsterRepository = monsterRepository ?? new MonsterRepository();
+    this.monsterInitializer = new MonsterInitializerService();
   }
 
   // ==========================================================================
@@ -769,6 +772,13 @@ export class PromptRewardService {
     };
 
     const createdMonster = await this.monsterRepository.create(monsterInput);
+
+    // Initialize monster with stats, moves, abilities, etc.
+    try {
+      await this.monsterInitializer.initializeMonster(createdMonster.id);
+    } catch (err) {
+      console.error(`Failed to initialize monster ${createdMonster.id} from prompt reward:`, err);
+    }
 
     // Mark the roll as claimed
     await db.query(

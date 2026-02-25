@@ -18,6 +18,37 @@ export type BazarMonsterRow = {
   type5: string | null;
   attribute: string | null;
   level: number;
+  hp_total: number;
+  hp_iv: number;
+  hp_ev: number;
+  atk_total: number;
+  atk_iv: number;
+  atk_ev: number;
+  def_total: number;
+  def_iv: number;
+  def_ev: number;
+  spa_total: number;
+  spa_iv: number;
+  spa_ev: number;
+  spd_total: number;
+  spd_iv: number;
+  spd_ev: number;
+  spe_total: number;
+  spe_iv: number;
+  spe_ev: number;
+  nature: string | null;
+  characteristic: string | null;
+  gender: string | null;
+  friendship: number;
+  ability1: string | null;
+  ability2: string | null;
+  moveset: string | null;
+  img_link: string | null;
+  shiny: boolean;
+  alpha: boolean;
+  shadow: boolean;
+  paradox: boolean;
+  pokerus: boolean;
   is_available: boolean;
   forfeited_at: Date;
 };
@@ -38,6 +69,37 @@ export type BazarMonster = {
   type5: string | null;
   attribute: string | null;
   level: number;
+  hpTotal: number;
+  hpIv: number;
+  hpEv: number;
+  atkTotal: number;
+  atkIv: number;
+  atkEv: number;
+  defTotal: number;
+  defIv: number;
+  defEv: number;
+  spaTotal: number;
+  spaIv: number;
+  spaEv: number;
+  spdTotal: number;
+  spdIv: number;
+  spdEv: number;
+  speTotal: number;
+  speIv: number;
+  speEv: number;
+  nature: string | null;
+  characteristic: string | null;
+  gender: string | null;
+  friendship: number;
+  ability1: string | null;
+  ability2: string | null;
+  moveset: string | null;
+  imgLink: string | null;
+  shiny: boolean;
+  alpha: boolean;
+  shadow: boolean;
+  paradox: boolean;
+  pokerus: boolean;
   isAvailable: boolean;
   forfeitedAt: Date;
 };
@@ -121,6 +183,37 @@ export type BazarMonsterCreateInput = {
   type5?: string | null;
   attribute?: string | null;
   level: number;
+  hpTotal?: number;
+  hpIv?: number;
+  hpEv?: number;
+  atkTotal?: number;
+  atkIv?: number;
+  atkEv?: number;
+  defTotal?: number;
+  defIv?: number;
+  defEv?: number;
+  spaTotal?: number;
+  spaIv?: number;
+  spaEv?: number;
+  spdTotal?: number;
+  spdIv?: number;
+  spdEv?: number;
+  speTotal?: number;
+  speIv?: number;
+  speEv?: number;
+  nature?: string | null;
+  characteristic?: string | null;
+  gender?: string | null;
+  friendship?: number;
+  ability1?: string | null;
+  ability2?: string | null;
+  moveset?: string | null;
+  imgLink?: string | null;
+  shiny?: boolean;
+  alpha?: boolean;
+  shadow?: boolean;
+  paradox?: boolean;
+  pokerus?: boolean;
 };
 
 export type BazarItemCreateInput = {
@@ -160,6 +253,37 @@ const normalizeBazarMonster = (row: BazarMonsterRow): BazarMonster => ({
   type5: row.type5,
   attribute: row.attribute,
   level: row.level,
+  hpTotal: row.hp_total,
+  hpIv: row.hp_iv,
+  hpEv: row.hp_ev,
+  atkTotal: row.atk_total,
+  atkIv: row.atk_iv,
+  atkEv: row.atk_ev,
+  defTotal: row.def_total,
+  defIv: row.def_iv,
+  defEv: row.def_ev,
+  spaTotal: row.spa_total,
+  spaIv: row.spa_iv,
+  spaEv: row.spa_ev,
+  spdTotal: row.spd_total,
+  spdIv: row.spd_iv,
+  spdEv: row.spd_ev,
+  speTotal: row.spe_total,
+  speIv: row.spe_iv,
+  speEv: row.spe_ev,
+  nature: row.nature,
+  characteristic: row.characteristic,
+  gender: row.gender,
+  friendship: row.friendship,
+  ability1: row.ability1,
+  ability2: row.ability2,
+  moveset: row.moveset,
+  imgLink: row.img_link,
+  shiny: row.shiny,
+  alpha: row.alpha,
+  shadow: row.shadow,
+  paradox: row.paradox,
+  pokerus: row.pokerus,
   isAvailable: row.is_available,
   forfeitedAt: row.forfeited_at,
 });
@@ -255,9 +379,23 @@ export class BazarRepository extends BaseRepository<BazarMonster, BazarMonsterCr
         INSERT INTO bazar_monsters (
           original_monster_id, forfeited_by_trainer_id, forfeited_by_user_id,
           name, species1, species2, species3, type1, type2, type3, type4, type5,
-          attribute, level
+          attribute, level,
+          hp_total, hp_iv, hp_ev, atk_total, atk_iv, atk_ev,
+          def_total, def_iv, def_ev, spa_total, spa_iv, spa_ev,
+          spd_total, spd_iv, spd_ev, spe_total, spe_iv, spe_ev,
+          nature, characteristic, gender, friendship,
+          ability1, ability2, moveset, img_link,
+          shiny, alpha, shadow, paradox, pokerus
         )
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
+        VALUES (
+          $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14,
+          $15, $16, $17, $18, $19, $20,
+          $21, $22, $23, $24, $25, $26,
+          $27, $28, $29, $30, $31, $32,
+          $33, $34, $35, $36,
+          $37, $38, $39, $40,
+          $41, $42, $43, $44, $45
+        )
         RETURNING id
       `,
       [
@@ -275,6 +413,37 @@ export class BazarRepository extends BaseRepository<BazarMonster, BazarMonsterCr
         input.type5 ?? null,
         input.attribute ?? null,
         input.level,
+        input.hpTotal ?? 50,
+        input.hpIv ?? 0,
+        input.hpEv ?? 0,
+        input.atkTotal ?? 50,
+        input.atkIv ?? 0,
+        input.atkEv ?? 0,
+        input.defTotal ?? 50,
+        input.defIv ?? 0,
+        input.defEv ?? 0,
+        input.spaTotal ?? 50,
+        input.spaIv ?? 0,
+        input.spaEv ?? 0,
+        input.spdTotal ?? 50,
+        input.spdIv ?? 0,
+        input.spdEv ?? 0,
+        input.speTotal ?? 50,
+        input.speIv ?? 0,
+        input.speEv ?? 0,
+        input.nature ?? null,
+        input.characteristic ?? null,
+        input.gender ?? null,
+        input.friendship ?? 70,
+        input.ability1 ?? null,
+        input.ability2 ?? null,
+        input.moveset ?? null,
+        input.imgLink ?? null,
+        input.shiny ?? false,
+        input.alpha ?? false,
+        input.shadow ?? false,
+        input.paradox ?? false,
+        input.pokerus ?? false,
       ]
     );
 

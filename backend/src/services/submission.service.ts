@@ -1,3 +1,4 @@
+import { db } from '../database';
 import { TrainerRepository } from '../repositories/trainer.repository';
 import { MonsterRepository } from '../repositories/monster.repository';
 import { TrainerInventoryRepository, type InventoryCategory } from '../repositories/trainer-inventory.repository';
@@ -166,6 +167,15 @@ function parseJsonField<T>(value: unknown, fallback: T): T {
 // =============================================================================
 // Service
 // =============================================================================
+
+export type RewardSnapshotEntry = {
+  id: number;
+  name?: string;
+  type: 'trainer' | 'monster';
+  levels: number;
+  coins: number;
+  cappedLevels?: number;
+};
 
 export class SubmissionService {
   private trainerRepo: TrainerRepository;
@@ -508,6 +518,22 @@ export class SubmissionService {
       }
     }
 
+    // Build and store calculator config and reward snapshot
+    const calculatorConfig = {
+      type: 'art' as const,
+      quality: data.quality,
+      backgroundType: data.backgroundType,
+      backgrounds,
+      uniquelyDifficult: data.uniquelyDifficult,
+      trainers: trainersArray,
+      monsters: monstersArray,
+      npcs: npcsArray,
+      isGift: data.isGift,
+      useStaticRewards: data.useStaticRewards,
+    };
+    const rewardSnapshot = this.buildRewardSnapshot(rewards.trainerRewards, rewards.monsterRewards);
+    await this.submissionRepo.updateCalculatorConfig(submissionId, calculatorConfig, rewardSnapshot);
+
     const levelCapInfo = await this.rewardService.checkLevelCaps(rewards.monsterRewards || []);
 
     // Level caps detected — still apply rewards
@@ -633,6 +659,18 @@ export class SubmissionService {
 
     await this.addSubmissionRelatedRecords(submissionId, null, coverImageUrl, tags, monstersArray, trainersArray);
 
+    // Build and store calculator config and reward snapshot
+    const calculatorConfig = {
+      type: 'writing' as const,
+      wordCount: data.wordCount,
+      trainers: trainersArray,
+      monsters: monstersArray,
+      npcs: npcsArray,
+      isGift: data.isGift,
+    };
+    const rewardSnapshot = this.buildRewardSnapshot(rewards.trainerRewards, rewards.monsterRewards);
+    await this.submissionRepo.updateCalculatorConfig(submissionId, calculatorConfig, rewardSnapshot);
+
     // Apply rewards (always apply non-gift rewards)
     const appliedRewards = await this.rewardService.applyRewards(rewards, websiteUserId, submissionId);
 
@@ -662,6 +700,213 @@ export class SubmissionService {
       success: true,
       submission: { id: submissionId, title: data.title, description: data.description, contentType: data.contentType, submissionType: 'writing', status: 'approved', coverImageUrl },
       rewards: { ...appliedRewards, totalGiftLevels: rewards.totalGiftLevels },
+    };
+  }
+
+  // ===========================================================================
+  // Calculator Config Helpers
+  // ===========================================================================
+
+  private buildRewardSnapshot(
+    trainerRewards: TrainerReward[],
+    monsterRewards: MonsterReward[]
+  ): RewardSnapshotEntry[] {
+    const entries: RewardSnapshotEntry[] = [];
+    for (const tr of trainerRewards) {
+      entries.push({
+        id: tr.trainerId,
+        name: tr.trainerName,
+        type: 'trainer',
+        levels: tr.levels,
+        coins: tr.coins,
+        cappedLevels: tr.cappedLevels,
+      });
+    }
+    for (const mr of monsterRewards) {
+      entries.push({
+        id: mr.monsterId,
+        name: mr.name,
+        type: 'monster',
+        levels: mr.levels,
+        coins: mr.coins,
+        cappedLevels: mr.cappedLevels,
+      });
+    }
+    return entries;
+  }
+
+  async getLevelBreakdown(submissionId: number): Promise<{
+    calculatorConfig: unknown | null;
+    rewardSnapshot: unknown | null;
+  }> {
+    const submission = await this.submissionRepo.findById(submissionId);
+    if (!submission) {
+      throw new Error('Submission not found');
+    }
+    return {
+      calculatorConfig: submission.calculatorConfig,
+      rewardSnapshot: submission.rewardSnapshot,
+    };
+  }
+
+  // ===========================================================================
+  // Edit Participants
+  // ===========================================================================
+
+  async editParticipants(
+    submissionId: number,
+    userId: string,
+    websiteUserId: number,
+    newCalculatorConfig: Record<string, unknown>
+  ): Promise<{
+    success: boolean;
+    rewardSnapshot: RewardSnapshotEntry[];
+    deltas: Array<{ type: string; id: number; name?: string; levelDelta: number; coinDelta: number }>;
+  }> {
+    // 1. Validate ownership
+    const ownership = await this.submissionRepo.findByIdForOwnership(submissionId);
+    if (!ownership) {
+      throw new Error('Submission not found');
+    }
+
+    const isOwner = String(ownership.user_id) === userId
+      || (ownership.user_discord_id && String(ownership.user_discord_id) === userId);
+    if (!isOwner) {
+      throw new Error('Not authorized to edit this submission');
+    }
+
+    // 2. Validate submission type (only art/writing, not external/reference)
+    if (ownership.submission_type !== 'art' && ownership.submission_type !== 'writing') {
+      throw new Error('Can only edit participants on art or writing submissions');
+    }
+
+    // 3. Get old reward snapshot
+    const submission = await this.submissionRepo.findById(submissionId);
+    if (!submission) {
+      throw new Error('Submission not found');
+    }
+
+    if (!submission.rewardSnapshot) {
+      throw new Error('This submission has no reward snapshot (old submission). Cannot edit participants.');
+    }
+
+    const oldSnapshot = (Array.isArray(submission.rewardSnapshot)
+      ? submission.rewardSnapshot
+      : []) as RewardSnapshotEntry[];
+
+    // 4. Recalculate rewards from new config
+    const configType = newCalculatorConfig.type as string;
+    let newTrainerRewards: TrainerReward[] = [];
+    let newMonsterRewards: MonsterReward[] = [];
+
+    if (configType === 'art') {
+      const rewards = await this.rewardService.calculateArtRewards({
+        quality: newCalculatorConfig.quality as ArtSubmissionData['quality'],
+        backgroundType: newCalculatorConfig.backgroundType as ArtSubmissionData['backgroundType'],
+        backgrounds: (newCalculatorConfig.backgrounds ?? []) as ArtSubmissionData['backgrounds'],
+        uniquelyDifficult: newCalculatorConfig.uniquelyDifficult as boolean,
+        trainers: (newCalculatorConfig.trainers ?? []) as ArtSubmissionData['trainers'],
+        monsters: (newCalculatorConfig.monsters ?? []) as ArtSubmissionData['monsters'],
+        npcs: (newCalculatorConfig.npcs ?? []) as ArtSubmissionData['npcs'],
+        isGift: newCalculatorConfig.isGift as boolean,
+        useStaticRewards: newCalculatorConfig.useStaticRewards as boolean,
+      }, websiteUserId);
+      newTrainerRewards = rewards.trainerRewards;
+      newMonsterRewards = rewards.monsterRewards;
+    } else if (configType === 'writing') {
+      const rewards = await this.rewardService.calculateWritingRewards({
+        wordCount: newCalculatorConfig.wordCount as number,
+        trainers: (newCalculatorConfig.trainers ?? []) as WritingSubmissionData['trainers'],
+        monsters: (newCalculatorConfig.monsters ?? []) as WritingSubmissionData['monsters'],
+        npcs: (newCalculatorConfig.npcs ?? []) as WritingSubmissionData['npcs'],
+      }, websiteUserId);
+      newTrainerRewards = rewards.trainerRewards;
+      newMonsterRewards = rewards.monsterRewards;
+    } else {
+      throw new Error('Invalid calculator config type');
+    }
+
+    const newSnapshot = this.buildRewardSnapshot(newTrainerRewards, newMonsterRewards);
+
+    // 5. Compute per-entity deltas (old vs new)
+    const oldByKey = new Map(oldSnapshot.map(e => [`${e.type}-${e.id}`, e]));
+    const newByKey = new Map(newSnapshot.map(e => [`${e.type}-${e.id}`, e]));
+
+    // All entity keys (union of old + new)
+    const allKeys = new Set([...oldByKey.keys(), ...newByKey.keys()]);
+    const deltas: Array<{ type: string; id: number; name?: string; levelDelta: number; coinDelta: number }> = [];
+
+    // 6. Apply deltas
+    for (const key of allKeys) {
+      const old = oldByKey.get(key);
+      const cur = newByKey.get(key);
+
+      const oldLevels = old?.levels ?? 0;
+      const newLevels = cur?.levels ?? 0;
+      const levelDelta = newLevels - oldLevels;
+
+      const oldCoins = old?.coins ?? 0;
+      const newCoins = cur?.coins ?? 0;
+      const coinDelta = newCoins - oldCoins;
+
+      const entityType = (cur?.type ?? old?.type) as string;
+      const entityId = (cur?.id ?? old?.id) as number;
+      const entityName = cur?.name ?? old?.name;
+
+      if (levelDelta !== 0 || coinDelta !== 0) {
+        deltas.push({ type: entityType, id: entityId, name: entityName, levelDelta, coinDelta });
+      }
+
+      // Apply level changes
+      if (levelDelta > 0) {
+        if (entityType === 'monster') {
+          await this.monsterInitService.levelUpMonster(entityId, levelDelta);
+        } else {
+          await this.trainerRepo.addLevels(entityId, levelDelta);
+        }
+      } else if (levelDelta < 0) {
+        const absDelta = Math.abs(levelDelta);
+        if (entityType === 'monster') {
+          await this.monsterRepo.subtractLevels(entityId, absDelta);
+          await this.monsterInitService.recalculateStats(entityId);
+        } else {
+          await this.trainerRepo.subtractLevels(entityId, absDelta);
+        }
+      }
+
+      // Apply coin changes
+      if (coinDelta !== 0) {
+        const trainerId = entityType === 'trainer'
+          ? entityId
+          : cur?.id ? (await this.monsterRepo.findById(cur.id))?.trainer_id : undefined;
+
+        if (trainerId) {
+          if (coinDelta > 0) {
+            await this.trainerRepo.updateCurrency(trainerId, coinDelta);
+          } else {
+            // Subtract coins, clamp at 0
+            await db.query(
+              'UPDATE trainers SET currency_amount = GREATEST(currency_amount + $1, 0) WHERE id = $2',
+              [coinDelta, trainerId]
+            );
+          }
+        }
+      }
+    }
+
+    // 7. Update calculator_config, reward_snapshot, and junction tables
+    await this.submissionRepo.updateCalculatorConfig(submissionId, newCalculatorConfig, newSnapshot);
+
+    // Update monster/trainer links
+    const newMonsterIds = newMonsterRewards.map(m => m.monsterId).filter(Boolean);
+    const newTrainerIds = newTrainerRewards.map(t => t.trainerId).filter(Boolean);
+    await this.submissionRepo.replaceMonsterLinks(submissionId, newMonsterIds);
+    await this.submissionRepo.replaceTrainerLinks(submissionId, newTrainerIds);
+
+    return {
+      success: true,
+      rewardSnapshot: newSnapshot,
+      deltas,
     };
   }
 
@@ -1076,6 +1321,13 @@ export class SubmissionService {
       rewardsGranted: JSON.stringify({ ...promptRewardsPreview, applied: false }),
     });
 
+    // Store calculator config and reward snapshot
+    const calculatorConfig = data.submissionType === 'art'
+      ? { type: 'art' as const, quality: data.quality, backgrounds, uniquelyDifficult: data.uniquelyDifficult, trainers: trainersArray, monsters: monstersArray, npcs: npcsArray, promptId: data.promptId }
+      : { type: 'writing' as const, wordCount: data.wordCount, trainers: trainersArray, monsters: monstersArray, npcs: npcsArray, promptId: data.promptId };
+    const rewardSnapshot = this.buildRewardSnapshot(artWritingRewards.trainerRewards, artWritingRewards.monsterRewards);
+    await this.submissionRepo.updateCalculatorConfig(submissionId, calculatorConfig, rewardSnapshot);
+
     const levelCapInfo = await this.rewardService.checkLevelCaps(artWritingRewards.monsterRewards || []);
     const appliedArtWritingRewards = await this.rewardService.applyRewards(artWritingRewards, websiteUserId, submissionId);
 
@@ -1183,7 +1435,7 @@ export class SubmissionService {
       if (alloc.type === 'trainer') {
         await this.trainerRepo.addLevels(alloc.entityId, alloc.levels);
       } else if (alloc.type === 'monster') {
-        await this.monsterRepo.addLevels(alloc.entityId, alloc.levels);
+        await this.monsterInitService.levelUpMonster(alloc.entityId, alloc.levels);
       }
     }
 
@@ -1300,7 +1552,7 @@ export class SubmissionService {
       if (levelTarget === 'monster' && targetMonsterId) {
         const monster = await this.monsterRepo.findById(targetMonsterId);
         if (monster) {
-          await this.monsterRepo.addLevels(targetMonsterId, rewards.levels);
+          await this.monsterInitService.levelUpMonster(targetMonsterId, rewards.levels);
           appliedRewards.levels = rewards.levels;
           appliedRewards.levelTargetName = monster.name;
         } else {

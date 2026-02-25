@@ -7,6 +7,7 @@ import {
   BossRepository,
 } from '../repositories';
 import { ItemRollerService } from './item-roller.service';
+import { MonsterInitializerService } from './monster-initializer.service';
 import {
   ART_QUALITY_BASE_LEVELS,
   BACKGROUND_BONUS_LEVELS,
@@ -198,6 +199,7 @@ export class SubmissionRewardService {
   private trainerRepository: TrainerRepository;
   private monsterRepository: MonsterRepository;
   private itemRollerService: ItemRollerService;
+  private monsterInitializer: MonsterInitializerService;
   private gardenPointRepository: GardenPointRepository;
   private userMissionRepository: UserMissionRepository;
   private bossRepository: BossRepository;
@@ -205,11 +207,13 @@ export class SubmissionRewardService {
   constructor(
     trainerRepository?: TrainerRepository,
     monsterRepository?: MonsterRepository,
-    itemRollerService?: ItemRollerService
+    itemRollerService?: ItemRollerService,
+    monsterInitializer?: MonsterInitializerService
   ) {
     this.trainerRepository = trainerRepository ?? new TrainerRepository();
     this.monsterRepository = monsterRepository ?? new MonsterRepository();
     this.itemRollerService = itemRollerService ?? new ItemRollerService();
+    this.monsterInitializer = monsterInitializer ?? new MonsterInitializerService();
     this.gardenPointRepository = new GardenPointRepository();
     this.userMissionRepository = new UserMissionRepository();
     this.bossRepository = new BossRepository();
@@ -925,7 +929,7 @@ export class SubmissionRewardService {
         }
 
         if (levels > 0) {
-          await this.monsterRepository.addLevels(monsterId, levels);
+          await this.monsterInitializer.levelUpMonster(monsterId, levels);
         }
 
         if (coins > 0 && monsterReward.trainerId) {
@@ -1056,7 +1060,7 @@ export class SubmissionRewardService {
     if (recipientType === 'trainer') {
       await this.trainerRepository.addLevels(recipientId, levels);
     } else {
-      await this.monsterRepository.addLevels(recipientId, levels);
+      await this.monsterInitializer.levelUpMonster(recipientId, levels);
     }
 
     // Update submission
@@ -1141,7 +1145,7 @@ export class SubmissionRewardService {
     if (recipientType === 'trainer') {
       await this.trainerRepository.addLevels(recipientId, levels);
     } else {
-      await this.monsterRepository.addLevels(recipientId, levels);
+      await this.monsterInitializer.levelUpMonster(recipientId, levels);
     }
 
     // Update submission
@@ -1289,7 +1293,7 @@ export class SubmissionRewardService {
       };
     } else {
       // Monster - apply levels, award coins to monster's trainer
-      await this.monsterRepository.addLevels(recipientId, levels);
+      await this.monsterInitializer.levelUpMonster(recipientId, levels);
 
       let trainerId: number | null = null;
       try {

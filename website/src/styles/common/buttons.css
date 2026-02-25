@@ -20,6 +20,7 @@
   text-align: center;
   text-decoration: none;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
+  max-height: 3rem;
 }
 
 /* ---------- Layout Variants ---------- */

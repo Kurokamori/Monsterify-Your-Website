@@ -35,6 +35,7 @@ import {
   MoveData,
 } from './damage-calculator.service';
 import { MonsterRollerService, RollParams, type UserSettings } from '../monster-roller.service';
+import { MonsterInitializerService } from '../monster-initializer.service';
 
 // ============================================================================
 // Types
@@ -213,6 +214,7 @@ export class BattleManagerService {
   private statusEffectService: StatusEffectService;
   private monsterRollerService: MonsterRollerService;
   private damageCalculator: DamageCalculatorService;
+  private monsterInitializer: MonsterInitializerService;
 
   /** In-memory cache of active battle states */
   private activeBattles: Map<number, BattleManagerState> = new Map();
@@ -252,6 +254,7 @@ export class BattleManagerService {
 
     this.monsterRollerService = monsterRollerService ?? new MonsterRollerService();
     this.damageCalculator = damageCalculator ?? createDamageCalculatorService();
+    this.monsterInitializer = new MonsterInitializerService(this.monsterDataRepo);
   }
 
   // ==========================================================================
@@ -1448,17 +1451,15 @@ export class BattleManagerService {
       for (const bm of opponentMonsters) {
         if (bm.currentHp > 0 && bm.monsterId > 0) {
           const previousLevel = (bm.monsterData as MonsterDataRecord).level ?? 1;
-          const updatedMonster = await this.monsterDataRepo.addLevels(
-            bm.monsterId,
-            levelsToAward
-          );
+          await this.monsterInitializer.levelUpMonster(bm.monsterId, levelsToAward);
+          const updatedMonster = await this.monsterDataRepo.findById(bm.monsterId);
 
           levelAwards.push({
             monsterId: bm.monsterId,
             monsterName: (bm.monsterData as MonsterDataRecord).name ?? 'Unknown',
             levelsAwarded: levelsToAward,
             previousLevel,
-            newLevel: updatedMonster.level,
+            newLevel: updatedMonster?.level ?? previousLevel + levelsToAward,
             participantName: opponent.trainerName,
           });
         }

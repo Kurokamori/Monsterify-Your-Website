@@ -283,7 +283,7 @@ export class AdoptionService {
       artCoins = artLevels * DEFAULT_REWARD_RATES.coinsPerLevel;
 
       if (artLevels > 0) {
-        await this.monsterRepository.addLevels(createdMonster.id, artLevels);
+        await this.monsterInitializer.levelUpMonster(createdMonster.id, artLevels);
         await this.trainerRepository.updateCurrency(trainerId, artCoins);
       }
     }

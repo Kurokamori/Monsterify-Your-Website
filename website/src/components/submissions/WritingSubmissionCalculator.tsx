@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { TrainerAutocomplete } from '../common/TrainerAutocomplete';
 import { MonsterAutocomplete } from '../common/MonsterAutocomplete';
 import monsterService from '../../services/monsterService';
+import api from '../../services/api';
 
 interface Trainer {
   id: string | number;
@@ -77,6 +78,20 @@ export function WritingSubmissionCalculator({
   // NPC state
   const [npcName, setNpcName] = useState('');
 
+  // Self-fetch trainers when none provided
+  const [fetchedTrainers, setFetchedTrainers] = useState<Trainer[]>([]);
+  useEffect(() => {
+    if (!trainers || trainers.length === 0) {
+      api.get('/trainers/all')
+        .then(response => {
+          const data = response.data?.trainers || response.data || [];
+          setFetchedTrainers(Array.isArray(data) ? data : []);
+        })
+        .catch(() => setFetchedTrainers([]));
+    }
+  }, [trainers]);
+  const resolvedTrainers = trainers?.length ? trainers : fetchedTrainers;
+
   // Add trainer to selected trainers
   const handleAddTrainer = () => {
     if (!selectedTrainerId) return;
@@ -86,7 +101,7 @@ export function WritingSubmissionCalculator({
       return;
     }
 
-    const trainer = trainers.find(t => t.id === selectedTrainerId);
+    const trainer = resolvedTrainers.find(t => t.id === selectedTrainerId);
     if (trainer) {
       const newTrainer: SelectedTrainer = {
         trainerId: selectedTrainerId,
@@ -108,7 +123,7 @@ export function WritingSubmissionCalculator({
     const monster = availableMonsters.find(m => m.id === selectedMonsterId);
     if (!monster) return;
 
-    const trainer = trainers.find(t => t.id === monsterTrainerId);
+    const trainer = resolvedTrainers.find(t => t.id === monsterTrainerId);
     const trainerName = trainer ? trainer.name : 'Unknown Trainer';
 
     const newMonster: SelectedMonster = {
@@ -299,7 +314,7 @@ export function WritingSubmissionCalculator({
           <div className="add-entity-form">
             <div className="flex w-full mb-sm">
               <TrainerAutocomplete
-                trainers={trainers}
+                trainers={trainers?.length ? trainers : undefined}
                 selectedTrainerId={selectedTrainerId}
                 onSelect={(id) => setSelectedTrainerId(id)}
                 label="Select Trainer"
@@ -359,7 +374,7 @@ export function WritingSubmissionCalculator({
           <div className="add-entity-form">
             <div className="flex w-full mb-sm">
               <TrainerAutocomplete
-                trainers={trainers}
+                trainers={trainers?.length ? trainers : undefined}
                 selectedTrainerId={monsterTrainerId}
                 onSelect={(id) => handleTrainerSelection(id)}
                 label="Select Trainer First"

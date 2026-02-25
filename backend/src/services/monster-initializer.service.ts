@@ -616,7 +616,21 @@ export class MonsterInitializerService {
   // ==========================================================================
 
   /**
-   * Level up a monster
+   * Weighted random: pick an index 0..weights.length-1 according to weights.
+   * E.g. weightedRandom([10,35,25,15,10,5]) returns 0-5 biased toward 1.
+   */
+  private weightedRandom(weights: number[]): number {
+    const total = weights.reduce((a, b) => a + b, 0);
+    let roll = Math.random() * total;
+    for (let i = 0; i < weights.length; i++) {
+      roll -= weights[i]!;
+      if (roll <= 0) { return i; }
+    }
+    return weights.length - 1;
+  }
+
+  /**
+   * Level up a monster with full side-effects: friendship, EVs, stats, and move learning.
    * @param monsterId - Monster ID
    * @param levels - Number of levels to add
    * @returns Updated monster data
@@ -656,37 +670,44 @@ export class MonsterInitializerService {
       // Update level
       updatedMonster.level = newLevel;
 
-      // Add EVs for each level gained (random distribution)
-      const totalEVsToAdd = actualLevelsGained * 2; // 2 EVs per level
-
       // Initialize EVs if they don't exist
       EV_STATS.forEach((stat) => {
         updatedMonster[stat] ??= 0;
       });
 
-      // Distribute EVs randomly
-      for (let i = 0; i < totalEVsToAdd; i++) {
-        const randomIndex = Math.floor(Math.random() * EV_STATS.length);
-        const randomStat = EV_STATS[randomIndex];
-        if (randomStat === undefined) { continue; }
-        // Cap individual EVs at 255
-        if ((updatedMonster[randomStat] as number) < 255) {
-          (updatedMonster[randomStat] as number)++;
+      // Per-level friendship and EV gains using weighted random
+      const friendshipWeights = [10, 35, 25, 15, 10, 5]; // 0-5 friendship
+      const evWeights = [10, 35, 25, 15, 10, 5]; // 0-5 total EV points
+
+      const currentFriendship = updatedMonster.friendship ?? 0;
+      let totalFriendshipGain = 0;
+
+      for (let lvl = 0; lvl < actualLevelsGained; lvl++) {
+        // Friendship: 0-5 per level, weighted
+        const friendshipGain = this.weightedRandom(friendshipWeights);
+        totalFriendshipGain += friendshipGain;
+
+        // EVs: 0-5 total points per level, dispersed randomly among 6 stats
+        const evPointsThisLevel = this.weightedRandom(evWeights);
+        for (let p = 0; p < evPointsThisLevel; p++) {
+          const randomStatIndex = Math.floor(Math.random() * EV_STATS.length);
+          const randomStat = EV_STATS[randomStatIndex];
+          if (randomStat === undefined) { continue; }
+          // Per-stat cap 252
+          if ((updatedMonster[randomStat] as number) < 252) {
+            (updatedMonster[randomStat] as number)++;
+          }
         }
       }
 
-      // Increase friendship (capped at 255)
-      const currentFriendship = updatedMonster.friendship ?? 0;
-      const friendshipIncrease = Math.floor(Math.random() * 3) + 1; // 1-3 friendship per level
-      updatedMonster.friendship = Math.min(currentFriendship + (friendshipIncrease * actualLevelsGained), 255);
-
+      updatedMonster.friendship = Math.min(currentFriendship + totalFriendshipGain, 255);
       console.log(`Monster ${monsterId} friendship increased from ${currentFriendship} to ${updatedMonster.friendship}`);
 
       // Calculate new stats based on updated level, IVs, and EVs
       const newStats = this.calculateStats(newLevel, updatedMonster);
       Object.assign(updatedMonster, newStats);
 
-      // Check for move learning (30% chance per level)
+      // Check for move learning (20% chance per level)
       // Safely parse moveset, defaulting to empty array if null/invalid
       let currentMoveset: string[] = [];
       try {
@@ -708,22 +729,20 @@ export class MonsterInitializerService {
       let learnedNewMove = false;
 
       for (let i = 0; i < actualLevelsGained; i++) {
-        // 30% chance to learn a new move
-        if (Math.random() < 0.3) {
-          // Determine move type
+        // 20% chance to learn a new move per level
+        if (Math.random() < 0.2) {
+          // Determine move type: 65% type, 15% attribute, 10% normal, 10% random
           const moveTypeRoll = Math.random() * 100;
           let moveType: MoveType = 'random';
 
-          if (moveTypeRoll < 10) {
-            // 10% chance for normal move
-            moveType = 'normal';
-          } else if (moveTypeRoll < 70) {
-            // 60% chance for move of monster's type
+          if (moveTypeRoll < 65) {
             moveType = 'type';
-          } else if (moveTypeRoll < 95) {
-            // 25% chance for move of monster's attribute
+          } else if (moveTypeRoll < 80) {
             moveType = 'attribute';
+          } else if (moveTypeRoll < 90) {
+            moveType = 'normal';
           }
+          // else: 10% random (default)
 
           // Get a move based on the determined type
           const newMove = await this.getNewMove(updatedMonster, moveType, newMoves);
@@ -752,6 +771,26 @@ export class MonsterInitializerService {
       console.error('Error leveling up monster:', error);
       throw error;
     }
+  }
+
+  /**
+   * Recalculate stats for a monster at its current level/IVs/EVs and update the DB.
+   */
+  async recalculateStats(monsterId: number): Promise<InitializedMonster> {
+    const monster = await this.monsterRepository.findById(monsterId);
+    if (!monster) {
+      throw new Error(`Monster with ID ${monsterId} not found`);
+    }
+
+    const updatedMonster: InitializedMonster = { ...monster } as InitializedMonster;
+    const level = updatedMonster.level ?? 1;
+    const newStats = this.calculateStats(level, updatedMonster);
+    Object.assign(updatedMonster, newStats);
+
+    const updateInput = this.convertToUpdateInput(updatedMonster);
+    await this.monsterRepository.update(monsterId, updateInput);
+
+    return updatedMonster;
   }
 
   // ==========================================================================

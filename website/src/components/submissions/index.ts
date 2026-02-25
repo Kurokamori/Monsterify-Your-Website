@@ -11,6 +11,7 @@ export { ArtSubmissionCalculator, type ArtCalculatorValues } from './ArtSubmissi
 export { WritingSubmissionCalculator, type WritingCalculatorValues } from './WritingSubmissionCalculator';
 export { ExternalArtCalculator, type ExternalArtCalculatorValues } from './ExternalArtCalculator';
 export { ExternalLevelAllocator } from './ExternalLevelAllocator';
+export { EditParticipantsModal } from './EditParticipantsModal';
 
 // Forms
 export * from './forms';

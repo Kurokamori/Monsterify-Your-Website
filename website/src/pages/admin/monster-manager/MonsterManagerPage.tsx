@@ -8,6 +8,7 @@ import { Modal } from '@components/common/Modal'
 import monsterService from '@services/monsterService'
 import trainerService from '@services/trainerService'
 import adminService from '@services/adminService'
+import { AdminMonsterEditModal } from '@components/admin/AdminMonsterEditModal'
 import type { Monster } from '@services/monsterService'
 import type { Trainer } from '@components/trainers/types/Trainer'
 import '@styles/admin/monster-manager.css'
@@ -100,6 +101,9 @@ function MonsterManagerContent() {
   const [addTrainerLoading, setAddTrainerLoading] = useState(false)
   const [addSubmitting, setAddSubmitting] = useState(false)
   const addTrainerTimeout = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  // Admin Edit modal state
+  const [adminEditTarget, setAdminEditTarget] = useState<Monster | null>(null)
 
   // --- Fetch filter options on mount ---
 
@@ -634,6 +638,12 @@ function MonsterManagerContent() {
               <i className="fas fa-edit" /> Edit
             </Link>
             <button
+              className="button sm primary monster-manager__admin-edit-btn"
+              onClick={() => setAdminEditTarget(monster)}
+            >
+              <i className="fas fa-wrench" /> Admin Edit
+            </button>
+            <button
               className="button sm secondary"
               onClick={() => openOwnerModal(monster)}
             >
@@ -785,6 +795,15 @@ function MonsterManagerContent() {
           )}
         </div>
       </Modal>
+
+      {/* Admin Edit Modal */}
+      <AdminMonsterEditModal
+        monster={adminEditTarget}
+        isOpen={!!adminEditTarget}
+        onClose={() => setAdminEditTarget(null)}
+        onSuccess={(msg) => { setStatusMsg({ type: 'success', text: msg }); fetchData() }}
+        onError={(msg) => setStatusMsg({ type: 'error', text: msg })}
+      />
 
       {/* Add Monster Modal */}
       <Modal

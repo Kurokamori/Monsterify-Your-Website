@@ -29,6 +29,8 @@ export type SubmissionRow = {
   external_characters: string | null;
   external_levels: number;
   external_coins: number;
+  calculator_config: unknown | null;
+  reward_snapshot: unknown | null;
   submission_date: Date;
   created_at: Date;
   updated_at: Date;
@@ -60,6 +62,8 @@ export type Submission = {
   externalCharacters: unknown[] | null;
   externalLevels: number;
   externalCoins: number;
+  calculatorConfig: unknown | null;
+  rewardSnapshot: unknown | null;
   userUsername: string | null;
   userDisplayName: string | null;
   trainerName: string | null;
@@ -257,6 +261,8 @@ const normalizeSubmission = (row: SubmissionWithDetails): Submission => {
     externalCharacters,
     externalLevels: row.external_levels || 0,
     externalCoins: row.external_coins || 0,
+    calculatorConfig: row.calculator_config ?? null,
+    rewardSnapshot: row.reward_snapshot ?? null,
     userUsername: row.user_username,
     userDisplayName: row.user_display_name,
     trainerName: row.trainer_name,
@@ -1273,6 +1279,7 @@ export class SubmissionRepository extends BaseRepository<Submission, SubmissionC
         s.id, s.title, s.description, s.content, s.content_type,
         s.submission_type, s.submission_date, s.user_id, s.trainer_id,
         s.status, s.is_mature, s.parent_id, s.is_book,
+        s.reward_snapshot,
         (SELECT image_url FROM submission_images WHERE submission_id = s.id AND is_main::boolean = true LIMIT 1) as image_url,
         (SELECT json_agg(tag) FROM submission_tags WHERE submission_id = s.id) as tags
       FROM submissions s
@@ -1501,5 +1508,40 @@ export class SubmissionRepository extends BaseRepository<Submission, SubmissionC
       [trainerId]
     );
     return result.rows[0]?.player_user_id ?? null;
+  }
+
+  // ===========================================================================
+  // Calculator Config & Reward Snapshot
+  // ===========================================================================
+
+  async updateCalculatorConfig(
+    id: number,
+    config: unknown,
+    snapshot: unknown
+  ): Promise<void> {
+    await db.query(
+      'UPDATE submissions SET calculator_config = $1, reward_snapshot = $2 WHERE id = $3',
+      [JSON.stringify(config), JSON.stringify(snapshot), id]
+    );
+  }
+
+  async replaceMonsterLinks(submissionId: number, monsterIds: number[]): Promise<void> {
+    await db.query('DELETE FROM submission_monsters WHERE submission_id = $1', [submissionId]);
+    for (const monsterId of monsterIds) {
+      await db.query(
+        'INSERT INTO submission_monsters (submission_id, monster_id) VALUES ($1, $2)',
+        [submissionId, monsterId]
+      );
+    }
+  }
+
+  async replaceTrainerLinks(submissionId: number, trainerIds: number[]): Promise<void> {
+    await db.query('DELETE FROM submission_trainers WHERE submission_id = $1', [submissionId]);
+    for (const trainerId of trainerIds) {
+      await db.query(
+        'INSERT INTO submission_trainers (submission_id, trainer_id) VALUES ($1, $2)',
+        [submissionId, trainerId]
+      );
+    }
   }
 }
