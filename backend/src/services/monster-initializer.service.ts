@@ -14,6 +14,7 @@ import {
   GENDERS,
   generateRandomGender,
   GenderValue,
+  DIGIMON_ATTRIBUTES,
 } from '../utils/constants';
 
 // ============================================================================
@@ -555,6 +556,11 @@ export class MonsterInitializerService {
       // Generate gender if not provided
       initializedMonster.gender ??= this.generateGender();
 
+      // Assign a random Digimon attribute (Data/Virus/Vaccine/Free/Variable) if not set
+      if (!initializedMonster.attribute) {
+        initializedMonster.attribute = DIGIMON_ATTRIBUTES[Math.floor(Math.random() * DIGIMON_ATTRIBUTES.length)];
+      }
+
       // Set initial friendship (0-70 random value) if not already set
       initializedMonster.friendship ??= Math.floor(Math.random() * 71);
 
@@ -835,6 +841,7 @@ export class MonsterInitializerService {
       ability1: monster.ability1,
       ability2: monster.ability2,
       moveset: Array.isArray(moveset) ? moveset : [],
+      attribute: monster.attribute,
       whereMet: monster.where_met,
     };
   }
