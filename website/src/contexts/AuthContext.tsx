@@ -372,9 +372,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   };
 
   // Clear error
-  const clearError = (): void => {
+  const clearError = useCallback((): void => {
     setError('');
-  };
+  }, []);
 
   const value: AuthContextType = {
     currentUser,
