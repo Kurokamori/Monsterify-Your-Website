@@ -656,6 +656,12 @@
   border-top: 1px solid var(--border-color);
 }
 
+.monster-assignment__actions {
+  display: flex;
+  gap: var(--spacing-xsmall);
+  width: 100%;
+}
+
 .gift-rewards-actions {
   margin-top: var(--spacing-medium);
   padding-top: var(--spacing-medium);

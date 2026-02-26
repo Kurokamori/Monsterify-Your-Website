@@ -33,9 +33,14 @@ export interface DirectoryNode {
   children: DirectoryStructure | null;
 }
 
+export type DirectoryItem =
+  | ({ type: 'directory' } & DirectoryNode)
+  | ({ type: 'file' } & DirectoryFile);
+
 export interface DirectoryStructure {
   directories: DirectoryNode[];
   files: DirectoryFile[];
+  items: DirectoryItem[];
 }
 
 /**
@@ -59,6 +64,7 @@ export function getDirectoryStructure(
     const result: DirectoryStructure = {
       directories: [],
       files: [],
+      items: [],
     };
 
     // Check for index file
@@ -70,18 +76,33 @@ export function getDirectoryStructure(
         const orderList = indexContent
           .split('\n')
           .map(line => line.trim())
-          .filter(line => line && !line.startsWith('#'));
+          .filter(line => line && !line.startsWith('#'))
+          // Strip numbered prefixes like "1. ", "2. "
+          .map(line => line.replace(/^\d+\.\s*/, ''));
+
+        // Build a lookup: index entry name → actual filesystem item
+        const nonIndexItems = items.filter(item => item !== '!index.md');
+        const findItem = (name: string): string | undefined => {
+          // Match directory name directly
+          if (nonIndexItems.includes(name)) { return name; }
+          // Match file name with .md extension
+          if (nonIndexItems.includes(`${name}.md`)) { return `${name}.md`; }
+          // Match file name with ! prefix (e.g., "Overall" → "!Overall.md")
+          if (nonIndexItems.includes(`!${name}.md`)) { return `!${name}.md`; }
+          return undefined;
+        };
 
         const indexedItems: string[] = [];
-        orderList.forEach(item => {
-          if (items.includes(item)) {
-            indexedItems.push(item);
+        orderList.forEach(entry => {
+          const match = findItem(entry);
+          if (match) {
+            indexedItems.push(match);
           }
         });
 
-        const remainingItems = items.filter(
-          item => !indexedItems.includes(item) && item !== '!index.md'
-        );
+        const remainingItems = nonIndexItems
+          .filter(item => !indexedItems.includes(item))
+          .sort();
 
         orderedItems = [...indexedItems, ...remainingItems];
       } catch (error) {
@@ -89,7 +110,7 @@ export function getDirectoryStructure(
       }
     } else {
       // No index file → alphabetical, overview.md first
-      orderedItems = items.filter(item => item !== 'overview.md').sort();
+      orderedItems = items.filter(item => item !== 'overview.md' && item !== '!index.md').sort();
       if (items.includes('overview.md')) {
         orderedItems.unshift('overview.md');
       }
@@ -117,22 +138,26 @@ export function getDirectoryStructure(
           }
         }
 
-        result.directories.push({
+        const dirEntry: DirectoryNode = {
           name,
           path: item,
           url: itemUrl,
           children: getDirectoryStructure(itemPath, itemUrl),
-        });
+        };
+        result.directories.push(dirEntry);
+        result.items.push({ type: 'directory', ...dirEntry });
       } else if (item.endsWith('.md') && item !== 'overview.md') {
         const content = fs.readFileSync(itemPath, 'utf8');
         const titleMatch = content.match(/^# (.+)/m);
         const name = titleMatch?.[1] ?? item.replace('.md', '');
 
-        result.files.push({
+        const fileEntry: DirectoryFile = {
           name,
           path: item,
           url: itemUrl,
-        });
+        };
+        result.files.push(fileEntry);
+        result.items.push({ type: 'file', ...fileEntry });
       }
     }
 

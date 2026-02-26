@@ -18,7 +18,7 @@ const TOWN_LOCATIONS: TownLocation[] = [
   {
     id: 'market',
     name: 'Market',
-    description: 'Browse the many shops of Aurora Town. Purchase items, berries, pastries, and more.',
+    description: 'Browse the many shops of Heimdal City. Purchase items, berries, pastries, and more.',
     route: '/town/market',
     icon: 'fas fa-store',
     image: PLACEHOLDER_IMAGE,
@@ -130,16 +130,16 @@ const TOWN_LOCATIONS: TownLocation[] = [
 ];
 
 export default function TownPage() {
-  useDocumentTitle('Aurora Town');
+  useDocumentTitle('Heimdal City');
 
   const navigate = useNavigate();
 
   return (
     <div className="town-page">
       <div className="town-page__header">
-        <h1>Aurora Town</h1>
+        <h1>Heimdal City</h1>
         <p className="town-page__subtitle">
-          Welcome to Aurora Town! Explore the shops, activities, and services available to trainers.
+          Welcome to Heimdal City! Explore the shops, activities, and services available to trainers.
         </p>
       </div>
 

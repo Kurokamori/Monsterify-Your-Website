@@ -115,7 +115,7 @@ export default function GardenPage() {
 
       <div className="activity-location__description">
         <p>
-          Welcome to the mystical Aurora Town Garden! Ancient magic flows through these enchanted grounds,
+          Welcome to the mystical Heimdal City Garden! Ancient magic flows through these enchanted grounds,
           where luminescent flowers bloom under starlight and crystal-clear streams carry whispers of old spells.
           Here, the boundary between nature and wonder grows thin.
         </p>

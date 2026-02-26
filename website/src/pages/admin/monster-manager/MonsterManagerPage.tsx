@@ -11,15 +11,8 @@ import adminService from '@services/adminService'
 import { AdminMonsterEditModal } from '@components/admin/AdminMonsterEditModal'
 import type { Monster } from '@services/monsterService'
 import type { Trainer } from '@components/trainers/types/Trainer'
+import { MONSTER_TYPES, MONSTER_ATTRIBUTES } from '@utils/staticValues'
 import '@styles/admin/monster-manager.css'
-
-// ============================================================================
-// Constants
-// ============================================================================
-
-const MONSTER_TYPES = ['Normal', 'Fire', 'Water', 'Electric', 'Grass', 'Ice', 'Fighting', 'Poison', 'Ground', 'Flying', 'Psychic', 'Bug', 'Rock', 'Ghost', 'Dragon', 'Dark', 'Steel', 'Fairy']
-
-const SPECIAL_ATTRIBUTES = ['Shiny', 'Alpha', 'Shadow', 'Paradox', 'Pokerus']
 
 // ============================================================================
 // Helpers
@@ -383,12 +376,12 @@ function MonsterManagerContent() {
   }, [])
 
   const rollRandomAttribute = useCallback(() => {
-    const a = SPECIAL_ATTRIBUTES[Math.floor(Math.random() * SPECIAL_ATTRIBUTES.length)]
+    const a = MONSTER_ATTRIBUTES[Math.floor(Math.random() * MONSTER_ATTRIBUTES.length)]
     setAddForm(prev => ({ ...prev, attribute: a }))
   }, [])
 
   const handleAddMonster = useCallback(async () => {
-    if (!addTrainer || !addForm.species1 || !addForm.type1) return
+    if (!addTrainer || !addForm.species1 || !addForm.type1 || !addForm.attribute) return
     setAddSubmitting(true)
     try {
       await adminService.createAndInitializeMonster({
@@ -820,7 +813,7 @@ function MonsterManagerContent() {
               type="button"
               className="button primary"
               onClick={handleAddMonster}
-              disabled={!addTrainer || !addForm.species1 || !addForm.type1 || addSubmitting}
+              disabled={!addTrainer || !addForm.species1 || !addForm.type1 || !addForm.attribute || addSubmitting}
             >
               {addSubmitting ? (
                 <><i className="fas fa-spinner fa-spin" /> Creating...</>
@@ -900,9 +893,12 @@ function MonsterManagerContent() {
 
           {/* Attribute */}
           <div className="monster-manager__add-field">
-            <label>Attribute</label>
+            <label>Attribute <span className="monster-manager__required">*</span></label>
             <div className="monster-manager__add-inline">
-              <input type="text" className="input" value={addForm.attribute} onChange={(e) => updateAddForm('attribute', e.target.value)} placeholder="e.g. Shiny" />
+              <select className="select" value={addForm.attribute} onChange={(e) => updateAddForm('attribute', e.target.value)}>
+                <option value="">— Select —</option>
+                {MONSTER_ATTRIBUTES.map(a => <option key={a} value={a}>{a}</option>)}
+              </select>
               <button type="button" className="button sm secondary" onClick={rollRandomAttribute}>
                 <i className="fas fa-dice" /> Roll
               </button>

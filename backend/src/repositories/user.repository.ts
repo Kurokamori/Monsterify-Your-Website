@@ -21,6 +21,10 @@ export type ContentSettings = {
   intense_violence: boolean;
 };
 
+export type NotificationSettings = {
+  chat_notifications: boolean;
+};
+
 const DEFAULT_CONTENT_SETTINGS: ContentSettings = {
   mature_enabled: false,
   gore: false,
@@ -28,6 +32,10 @@ const DEFAULT_CONTENT_SETTINGS: ContentSettings = {
   nsfw_heavy: false,
   triggering: false,
   intense_violence: false,
+};
+
+const DEFAULT_NOTIFICATION_SETTINGS: NotificationSettings = {
+  chat_notifications: false,
 };
 
 export type UserRow = {
@@ -40,12 +48,14 @@ export type UserRow = {
   monster_roller_settings: MonsterRollerSettings | string | null;
   theme: string | null;
   content_settings: ContentSettings | string | null;
+  notification_settings: NotificationSettings | string | null;
   created_at: Date;
 };
 
-export type UserPublic = Omit<UserRow, 'password' | 'monster_roller_settings' | 'content_settings'> & {
+export type UserPublic = Omit<UserRow, 'password' | 'monster_roller_settings' | 'content_settings' | 'notification_settings'> & {
   monster_roller_settings: MonsterRollerSettings | null;
   content_settings: ContentSettings;
+  notification_settings: NotificationSettings;
 };
 
 export type UserCreateInput = {
@@ -65,6 +75,7 @@ export type UserUpdateInput = {
   monsterRollerSettings?: MonsterRollerSettings | null;
   theme?: string | null;
   contentSettings?: ContentSettings | null;
+  notificationSettings?: NotificationSettings | null;
 };
 
 export type AdminUserQueryOptions = {
@@ -130,6 +141,24 @@ const normalizeContentSettings = (
   return settings;
 };
 
+const normalizeNotificationSettings = (
+  settings: UserRow['notification_settings']
+): NotificationSettings => {
+  if (!settings) {
+    return { ...DEFAULT_NOTIFICATION_SETTINGS };
+  }
+
+  if (typeof settings === 'string') {
+    try {
+      return JSON.parse(settings) as NotificationSettings;
+    } catch {
+      return { ...DEFAULT_NOTIFICATION_SETTINGS };
+    }
+  }
+
+  return settings;
+};
+
 const normalizeUser = (user: UserRow): UserPublic => ({
   id: user.id,
   username: user.username,
@@ -139,6 +168,7 @@ const normalizeUser = (user: UserRow): UserPublic => ({
   monster_roller_settings: normalizeMonsterRollerSettings(user.monster_roller_settings),
   theme: user.theme,
   content_settings: normalizeContentSettings(user.content_settings),
+  notification_settings: normalizeNotificationSettings(user.notification_settings),
   created_at: user.created_at,
 });
 
@@ -157,6 +187,7 @@ export class UserRepository extends BaseRepository<UserPublic, UserCreateInput, 
       'monster_roller_settings',
       'theme',
       'content_settings',
+      'notification_settings',
       'created_at',
     ].join(', ');
   }
@@ -299,6 +330,9 @@ export class UserRepository extends BaseRepository<UserPublic, UserCreateInput, 
     if (input.contentSettings !== undefined) {
       pushUpdate('content_settings', JSON.stringify(input.contentSettings));
     }
+    if (input.notificationSettings !== undefined) {
+      pushUpdate('notification_settings', JSON.stringify(input.notificationSettings));
+    }
 
     if (updates.length === 0) {
       const existing = await this.findById(id);
@@ -354,5 +388,9 @@ export class UserRepository extends BaseRepository<UserPublic, UserCreateInput, 
 
   async updateContentSettings(id: number, settings: ContentSettings): Promise<UserPublic> {
     return this.update(id, { contentSettings: settings });
+  }
+
+  async updateNotificationSettings(id: number, settings: NotificationSettings): Promise<UserPublic> {
+    return this.update(id, { notificationSettings: settings });
   }
 }

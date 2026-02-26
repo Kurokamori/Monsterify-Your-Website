@@ -1,6 +1,6 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import { UserRepository, UserPublic, UserRow, UserCreateInput, MonsterRollerSettings, ContentSettings, AdminUserQueryOptions, PaginatedUsers } from '../repositories';
+import { UserRepository, UserPublic, UserRow, UserCreateInput, MonsterRollerSettings, ContentSettings, NotificationSettings, AdminUserQueryOptions, PaginatedUsers } from '../repositories';
 
 export type { AdminUserQueryOptions, PaginatedUsers };
 
@@ -436,6 +436,10 @@ export class UserService {
    */
   async updateContentSettings(id: number, settings: ContentSettings): Promise<UserPublic> {
     return this.userRepository.updateContentSettings(id, settings);
+  }
+
+  async updateNotificationSettings(id: number, settings: NotificationSettings): Promise<UserPublic> {
+    return this.userRepository.updateNotificationSettings(id, settings);
   }
 
   /**

@@ -60,6 +60,7 @@ export function Apothecary({ className = '' }: ApothecaryProps) {
   const [berrySuccess, setBerrySuccess] = useState(false);
   const [updatedMonster, setUpdatedMonster] = useState<Monster | null>(null);
   const [newSplitMonster, setNewSplitMonster] = useState<Monster | null>(null);
+  const [divestName, setDivestName] = useState('');
   const [availableBerries, setAvailableBerries] = useState<Record<string, number>>({});
 
   // State for berry filtering
@@ -224,6 +225,7 @@ export function Apothecary({ className = '' }: ApothecaryProps) {
     setSelectedSpecies('');
     setRolledSpecies([]);
     setNewSplitMonster(null);
+    setDivestName('');
   }, []);
 
   // Apply berry to monster
@@ -238,7 +240,8 @@ export function Apothecary({ className = '' }: ApothecaryProps) {
         monsterId: selectedMonster.id,
         berryName: selectedBerry,
         trainerId: parseInt(selectedTrainer),
-        speciesValue
+        speciesValue,
+        newMonsterName: selectedBerry === 'Divest Berry' && divestName.trim() ? divestName.trim() : undefined
       });
 
       if (response.data.success && response.data.monster) {
@@ -268,7 +271,7 @@ export function Apothecary({ className = '' }: ApothecaryProps) {
       setShowSpeciesModal(false);
       setSpeciesImages({});
     }
-  }, [selectedMonster, selectedBerry, selectedTrainer, trainerMonsters, fetchAvailableBerries]);
+  }, [selectedMonster, selectedBerry, selectedTrainer, trainerMonsters, fetchAvailableBerries, divestName]);
 
   // Handle using a berry
   const handleUseBerry = useCallback(async () => {
@@ -626,6 +629,19 @@ export function Apothecary({ className = '' }: ApothecaryProps) {
                       </div>
                     </div>
                   </div>
+
+                  {selectedBerry === 'Divest Berry' && selectedMonster && (
+                    <div className="form-group">
+                      <label className="form-label">Name for new monster:</label>
+                      <input
+                        type="text"
+                        className="input"
+                        placeholder={`Name for new monster (${selectedMonster.species1 || 'split species'})`}
+                        value={divestName}
+                        onChange={(e) => setDivestName(e.target.value)}
+                      />
+                    </div>
+                  )}
 
                   {berryError && (
                     <div className="alert error">

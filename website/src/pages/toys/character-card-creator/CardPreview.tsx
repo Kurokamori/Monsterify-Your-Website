@@ -1,5 +1,5 @@
 import { forwardRef } from 'react';
-import type { CardData, CardField, StatValues } from './types';
+import type { CardData, CardField, StatValues, PaletteConfig } from './types';
 import { getAspectDimensions } from './types';
 
 // --- Gender Symbol Rendering ---
@@ -341,6 +341,69 @@ function FieldsLayout({ fields, card, labelStyle, valueStyle, contentLayout, lay
   );
 }
 
+// --- Color Palette Display ---
+
+function PaletteDisplay({ palette }: { palette: PaletteConfig }) {
+  if (!palette.enabled || palette.colors.length === 0) return null;
+
+  const isHorizontal = palette.orientation === 'horizontal';
+  const totalCustomSize = palette.sizing === 'custom'
+    ? palette.colors.reduce((sum, c) => sum + c.size, 0)
+    : 0;
+
+  const getSwatchSize = (c: { size: number }) => {
+    if (palette.sizing === 'uniform') {
+      return `${100 / palette.colors.length}%`;
+    }
+    return `${(c.size / totalCustomSize) * 100}%`;
+  };
+
+  const containerStyle: React.CSSProperties = {
+    display: 'flex',
+    flexDirection: isHorizontal ? 'row' : 'column',
+    gap: palette.gap,
+    width: '100%',
+    height: palette.height,
+    flexShrink: 0,
+    overflow: 'hidden',
+    ...(palette.style === 'circles' ? { justifyContent: 'center' } : {}),
+    ...(palette.style === 'slanted' ? { overflow: 'visible' } : {}),
+  };
+
+  return (
+    <div style={containerStyle}>
+      {palette.colors.map((c, idx) => {
+        const size = getSwatchSize(c);
+        const isCircle = palette.style === 'circles';
+        const isSlanted = palette.style === 'slanted';
+
+        const swatchStyle: React.CSSProperties = {
+          background: c.color,
+          flexShrink: 0,
+          ...(isHorizontal
+            ? { width: size, height: '100%' }
+            : { height: size, width: '100%' }
+          ),
+          borderRadius: isCircle ? '50%' : palette.swatchRadius,
+          ...(palette.swatchBorderWidth > 0 ? {
+            border: `${palette.swatchBorderWidth}px solid ${palette.swatchBorderColor}`,
+            boxSizing: 'border-box' as const,
+          } : {}),
+          ...(isSlanted ? { transform: `skewX(${-palette.skewAngle}deg)` } : {}),
+          ...(isCircle ? {
+            width: palette.height,
+            height: palette.height,
+            flexBasis: palette.height,
+            flexGrow: 0,
+          } : {}),
+        };
+
+        return <div key={idx} style={swatchStyle} />;
+      })}
+    </div>
+  );
+}
+
 // --- Card Preview Component ---
 
 interface CardPreviewProps {
@@ -472,7 +535,53 @@ export const CardPreview = forwardRef<HTMLDivElement, CardPreviewProps>(({ card 
             />
           </div>
         )}
+
+        {/* Color Palette (inside content, horizontal) */}
+        {customization.palette.enabled && customization.palette.orientation === 'horizontal' && (
+          <div style={{ marginTop: 'auto', paddingTop: 4 }}>
+            <PaletteDisplay palette={customization.palette} />
+          </div>
+        )}
       </div>
+
+      {/* Color Palette (vertical, alongside content) */}
+      {customization.palette.enabled && customization.palette.orientation === 'vertical' && (
+        <div style={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: customization.palette.gap,
+          padding: customization.palette.gap,
+          width: customization.palette.height,
+          flexShrink: 0,
+        }}>
+          {customization.palette.colors.map((c, idx) => {
+            const isCircle = customization.palette.style === 'circles';
+            const isSlanted = customization.palette.style === 'slanted';
+            const totalSize = customization.palette.sizing === 'custom'
+              ? customization.palette.colors.reduce((sum, cl) => sum + cl.size, 0)
+              : 0;
+            const size = customization.palette.sizing === 'uniform'
+              ? `${100 / customization.palette.colors.length}%`
+              : `${(c.size / totalSize) * 100}%`;
+
+            return (
+              <div key={idx} style={{
+                background: c.color,
+                height: isCircle ? customization.palette.height - customization.palette.gap * 2 : size,
+                width: isCircle ? customization.palette.height - customization.palette.gap * 2 : '100%',
+                borderRadius: isCircle ? '50%' : customization.palette.swatchRadius,
+                ...(customization.palette.swatchBorderWidth > 0 ? {
+                  border: `${customization.palette.swatchBorderWidth}px solid ${customization.palette.swatchBorderColor}`,
+                  boxSizing: 'border-box' as const,
+                } : {}),
+                flexShrink: isCircle ? 0 : 1,
+                flexGrow: isCircle ? 0 : 1,
+                ...(isSlanted ? { transform: `skewY(${-customization.palette.skewAngle}deg)` } : {}),
+              }} />
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 });

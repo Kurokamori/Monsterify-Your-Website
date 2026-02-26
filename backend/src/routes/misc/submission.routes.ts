@@ -35,6 +35,7 @@ import {
   generateGiftItems,
   generateGiftMonsters,
   finalizeGiftRewards,
+	  forfeitGiftMonster,
   // Rerolls / Claims
   rerollSubmissionItems,
   rerollSubmissionMonsters,
@@ -136,6 +137,7 @@ router.post('/gift-items/allocate', authenticate, allocateGiftItem);
 // Gift reward generation
 router.post('/gift-rewards/items', authenticate, generateGiftItems);
 router.post('/gift-rewards/monsters', authenticate, generateGiftMonsters);
+	router.post('/gift-rewards/forfeit-monster', authenticate, forfeitGiftMonster);
 router.post('/gift-rewards/finalize', authenticate, finalizeGiftRewards);
 
 // Reroll and claim

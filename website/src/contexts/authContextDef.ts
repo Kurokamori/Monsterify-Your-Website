@@ -20,6 +20,10 @@ export interface ContentSettings {
   intense_violence: boolean;
 }
 
+export interface NotificationSettings {
+  chat_notifications: boolean;
+}
+
 export interface User {
   id: number;
   username: string;
@@ -30,6 +34,7 @@ export interface User {
   theme?: string;
   monster_roller_settings?: MonsterRollerSettings;
   content_settings?: ContentSettings;
+  notification_settings?: NotificationSettings;
 }
 
 export interface AuthContextType {
@@ -43,6 +48,7 @@ export interface AuthContextType {
   updateProfile: (userData: Partial<User>) => Promise<boolean>;
   updateMonsterRollerSettings: (settings: MonsterRollerSettings) => Promise<boolean>;
   updateContentSettings: (settings: ContentSettings) => Promise<boolean>;
+  updateNotificationSettings: (settings: NotificationSettings) => Promise<boolean>;
   updateTheme: (theme: string) => Promise<boolean>;
   changePassword: (currentPassword: string, newPassword: string) => Promise<boolean>;
   requestPasswordReset: (email: string) => Promise<boolean>;

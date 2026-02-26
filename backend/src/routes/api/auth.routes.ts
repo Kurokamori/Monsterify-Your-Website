@@ -12,6 +12,7 @@ import {
   updateMonsterRollerSettings,
   updateUserTheme,
   updateContentSettings,
+  updateNotificationSettings,
   testDiscordConfig,
   discordCallback,
   discordLinkStart,
@@ -61,5 +62,6 @@ router.get('/roller-settings', authenticate, getMonsterRollerSettings);
 router.put('/roller-settings', authenticate, updateMonsterRollerSettings);
 router.put('/theme', authenticate, updateUserTheme);
 router.put('/content-settings', authenticate, updateContentSettings);
+router.put('/notification-settings', authenticate, updateNotificationSettings);
 
 export default router;

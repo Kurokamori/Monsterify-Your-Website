@@ -153,7 +153,7 @@ export default function FarmPage() {
 
       <div className="activity-location__description">
         <p>
-          Welcome to the sprawling Aurora Town Farm! Rolling fields stretch to the horizon under golden skies,
+          Welcome to the sprawling Heimdal City Farm! Rolling fields stretch to the horizon under golden skies,
           where mystical creatures graze alongside ordinary livestock, and crops grow with an otherworldly vigor.
           The scent of fresh earth and morning dew carries hints of magic in the air.
         </p>

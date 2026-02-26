@@ -107,6 +107,35 @@ export class ChatRoomRepository extends BaseRepository<
   }
 
   /**
+   * Get unread counts for multiple trainers in a single query.
+   * Returns a map of trainerId -> total unread count.
+   */
+  async getUnreadCountsForTrainers(trainerIds: number[]): Promise<Record<number, number>> {
+    if (trainerIds.length === 0) {
+      return {};
+    }
+
+    const result = await db.query<{ trainer_id: number; unread_count: string }>(
+      `SELECT crm.trainer_id,
+              COUNT(*) FILTER (
+                WHERE cr.last_message_at IS NOT NULL
+                  AND (crm.last_read_at IS NULL OR cr.last_message_at > crm.last_read_at)
+              )::int AS unread_count
+       FROM chat_room_members crm
+       JOIN chat_rooms cr ON cr.id = crm.chat_room_id
+       WHERE crm.trainer_id = ANY($1)
+       GROUP BY crm.trainer_id`,
+      [trainerIds],
+    );
+
+    const counts: Record<number, number> = {};
+    for (const row of result.rows) {
+      counts[row.trainer_id] = Number(row.unread_count);
+    }
+    return counts;
+  }
+
+  /**
    * Find an existing DM room between two trainers.
    */
   async findDmBetween(trainerIdA: number, trainerIdB: number): Promise<ChatRoom | null> {

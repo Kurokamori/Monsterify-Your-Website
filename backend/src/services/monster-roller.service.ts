@@ -371,10 +371,42 @@ export class MonsterRollerService {
           console.log(`Direct species assignment: ${chosenName}${dbMonster ? ' (found in DB)' : ' (name only)'}`);
         }
       } else {
-        // Balance across tables: randomly select which table to query first.
-        const shuffledTables = this.shuffleArray([...rollParams.tables]);
+        // Equal chance across tables, except fakemon gets reduced weight
+        // since it has far fewer entries and would otherwise be overrepresented.
+        const TABLE_WEIGHTS: Partial<Record<MonsterTable, number>> = {
+          fakemon: 0.25,
+        };
 
-        for (const table of shuffledTables) {
+        const weightedTables: { table: MonsterTable; weight: number }[] =
+          rollParams.tables.map((table) => ({
+            table,
+            weight: TABLE_WEIGHTS[table] ?? 1,
+          }));
+
+        const totalWeight = weightedTables.reduce((sum, t) => sum + t.weight, 0);
+        const shuffled = this.shuffleArray(weightedTables);
+
+        // Pick a table using weighted random selection
+        const roll = this.rng() * totalWeight;
+        let cumulative = 0;
+        const orderedTables: MonsterTable[] = [];
+
+        for (const wt of shuffled) {
+          cumulative += wt.weight;
+          if (roll < cumulative) {
+            orderedTables.push(wt.table);
+            break;
+          }
+        }
+
+        // Add remaining tables as fallbacks in case the chosen one has no results
+        for (const wt of shuffled) {
+          if (!orderedTables.includes(wt.table)) {
+            orderedTables.push(wt.table);
+          }
+        }
+
+        for (const table of orderedTables) {
           const { query, params: queryParams } = this.buildQuery({
             ...rollParams,
             tables: [table],

@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback, useEffect } from 'react';
+import { useState, useRef, useCallback, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { toPng } from 'html-to-image';
 import { useDocumentTitle } from '@hooks/useDocumentTitle';
@@ -7,13 +7,13 @@ import trainerService from '@services/trainerService';
 import monsterService from '@services/monsterService';
 import type { Trainer } from '@components/trainers/types/Trainer';
 import type { Monster } from '@services/monsterService';
+import { TrainerAutocomplete } from '@components/common/TrainerAutocomplete';
+import { MonsterAutocomplete } from '@components/common/MonsterAutocomplete';
 import type { CardData, CardSubject } from './types';
-import { getDefaultCardData, getDefaultCustomization, getTrainerDefaultFields, getMonsterDefaultFields } from './types';
+import { getDefaultCardData, getDefaultCustomization, getTrainerDefaultFields, getMonsterDefaultFields, getAspectDimensions } from './types';
 import { populateTrainerFields, populateMonsterFields, extractMonsterStats } from './cardDataUtils';
 import { CardPreview } from './CardPreview';
 import { CardEditor } from './CardEditor';
-
-type SourceOption = { id: number; name: string; image: string | null };
 
 const CharacterCardCreatorPage = () => {
   useDocumentTitle('Character Card Creator');
@@ -23,8 +23,8 @@ const CharacterCardCreatorPage = () => {
 
   // Source data lists
   const [trainers, setTrainers] = useState<Trainer[]>([]);
-  const [monsters, setMonsters] = useState<Monster[]>([]);
-  const [loadingSource, setLoadingSource] = useState(false);
+  const [trainerMonsters, setTrainerMonsters] = useState<Monster[]>([]);
+  const [loadingMonsters, setLoadingMonsters] = useState(false);
 
   // Card state
   const [card, setCard] = useState<CardData>(getDefaultCardData());
@@ -32,35 +32,54 @@ const CharacterCardCreatorPage = () => {
   // Source selection state
   const [sourceTrainer, setSourceTrainer] = useState<Trainer | null>(null);
   const [sourceMonster, setSourceMonster] = useState<Monster | null>(null);
+  const [selectedTrainerId, setSelectedTrainerId] = useState<string | number | null>(null);
 
   // Export state
   const [exporting, setExporting] = useState(false);
 
-  // Load user's trainers and monsters on mount
+  // Preview scaling: scale the fixed-size card to fit its container
+  const canvasRef = useRef<HTMLDivElement>(null);
+  const [previewScale, setPreviewScale] = useState(1);
+
+  const cardDimensions = useMemo(() => getAspectDimensions(card.customization.aspectRatio), [card.customization.aspectRatio]);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const updateScale = () => {
+      const available = canvas.clientWidth - 16; // account for padding
+      const scale = Math.min(1, available / cardDimensions.width);
+      setPreviewScale(scale);
+    };
+
+    updateScale();
+    const observer = new ResizeObserver(updateScale);
+    observer.observe(canvas);
+    return () => observer.disconnect();
+  }, [cardDimensions.width]);
+
+  // Load user's trainers on mount
   useEffect(() => {
     if (!currentUser) return;
-    setLoadingSource(true);
-    Promise.all([
-      trainerService.getUserTrainers().then((r: { trainers: Trainer[] }) => r.trainers || []).catch(() => [] as Trainer[]),
-      monsterService.getMonstersByUserId().catch(() => []),
-    ]).then(([t, m]) => {
-      setTrainers(t);
-      setMonsters(m);
-    }).finally(() => setLoadingSource(false));
+    trainerService.getUserTrainers()
+      .then((r: { trainers: Trainer[] }) => setTrainers(r.trainers || []))
+      .catch(() => setTrainers([]));
   }, [currentUser]);
 
-  // Build source options list
-  const trainerOptions: SourceOption[] = trainers.map(t => ({
-    id: t.id,
-    name: t.name || `Trainer #${t.id}`,
-    image: t.main_ref || null,
-  }));
-
-  const monsterOptions: SourceOption[] = monsters.map(m => ({
-    id: m.id,
-    name: m.name || `Monster #${m.id}`,
-    image: (m as Record<string, unknown>).img_link as string || null,
-  }));
+  // Load monsters when a trainer is selected (for monster subject)
+  const loadTrainerMonsters = useCallback(async (trainerId: string | number) => {
+    setLoadingMonsters(true);
+    try {
+      const data = await monsterService.getMonstersByTrainerId(trainerId);
+      const monsters = Array.isArray(data) ? data : data.monsters || data.data || [];
+      setTrainerMonsters(monsters);
+    } catch {
+      setTrainerMonsters([]);
+    } finally {
+      setLoadingMonsters(false);
+    }
+  }, []);
 
   // Subject change handler
   const handleSubjectChange = useCallback((subject: CardSubject) => {
@@ -88,18 +107,34 @@ const CharacterCardCreatorPage = () => {
     }
     setSourceTrainer(null);
     setSourceMonster(null);
+    setSelectedTrainerId(null);
+    setTrainerMonsters([]);
   }, [card.customization]);
 
-  // Source selection handler
-  const handleSourceSelect = useCallback((sourceId: number) => {
-    if (card.subject === 'trainer') {
-      const trainer = trainers.find(t => t.id === sourceId);
-      if (!trainer) return;
+  // Trainer selection handler
+  const handleTrainerSelect = useCallback((trainerId: string | number | null) => {
+    if (!trainerId) {
+      setSourceTrainer(null);
+      setSelectedTrainerId(null);
+      if (card.subject === 'trainer') {
+        setCard(prev => ({ ...prev, sourceId: null, name: '', image: null, imageFile: null, fields: getTrainerDefaultFields(), stats: null }));
+      }
+      if (card.subject === 'monster') {
+        setTrainerMonsters([]);
+        setSourceMonster(null);
+        setCard(prev => ({ ...prev, sourceId: null, name: '', image: null, imageFile: null, fields: getMonsterDefaultFields(), stats: null }));
+      }
+      return;
+    }
+    setSelectedTrainerId(trainerId);
+    const trainer = trainers.find(t => t.id === trainerId);
+
+    if (card.subject === 'trainer' && trainer) {
       setSourceTrainer(trainer);
       setSourceMonster(null);
       setCard(prev => ({
         ...prev,
-        sourceId,
+        sourceId: Number(trainerId),
         name: trainer.name || '',
         image: trainer.main_ref || null,
         imageFile: null,
@@ -107,21 +142,34 @@ const CharacterCardCreatorPage = () => {
         stats: null,
       }));
     } else if (card.subject === 'monster') {
-      const monster = monsters.find(m => m.id === sourceId);
-      if (!monster) return;
-      setSourceMonster(monster);
-      setSourceTrainer(null);
-      setCard(prev => ({
-        ...prev,
-        sourceId,
-        name: (monster as Record<string, unknown>).name as string || '',
-        image: (monster as Record<string, unknown>).img_link as string || null,
-        imageFile: null,
-        fields: populateMonsterFields(monster),
-        stats: extractMonsterStats(monster),
-      }));
+      // For monster subject, selecting a trainer loads their monsters
+      setSourceTrainer(trainer || null);
+      setSourceMonster(null);
+      setCard(prev => ({ ...prev, sourceId: null, name: '', image: null, imageFile: null, fields: getMonsterDefaultFields(), stats: null }));
+      loadTrainerMonsters(trainerId);
     }
-  }, [card.subject, trainers, monsters]);
+  }, [card.subject, trainers, loadTrainerMonsters]);
+
+  // Monster selection handler
+  const handleMonsterSelect = useCallback((monsterId: string | number | null) => {
+    if (!monsterId) {
+      setSourceMonster(null);
+      setCard(prev => ({ ...prev, sourceId: null, name: '', image: null, imageFile: null, fields: getMonsterDefaultFields(), stats: null }));
+      return;
+    }
+    const monster = trainerMonsters.find(m => m.id === monsterId);
+    if (!monster) return;
+    setSourceMonster(monster);
+    setCard(prev => ({
+      ...prev,
+      sourceId: Number(monsterId),
+      name: (monster as Record<string, unknown>).name as string || '',
+      image: (monster as Record<string, unknown>).img_link as string || null,
+      imageFile: null,
+      fields: populateMonsterFields(monster),
+      stats: extractMonsterStats(monster),
+    }));
+  }, [trainerMonsters]);
 
   // Image upload handler
   const handleImageUpload = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
@@ -172,8 +220,6 @@ const CharacterCardCreatorPage = () => {
     }
   }, []);
 
-  const currentOptions = card.subject === 'trainer' ? trainerOptions : monsterOptions;
-
   return (
     <div className="ccc-page">
       <Link to="/toys" className="ccc-back-link">
@@ -206,25 +252,44 @@ const CharacterCardCreatorPage = () => {
           ))}
         </div>
 
-        {card.subject !== 'custom' && (
+        {card.subject === 'trainer' && (
           <div className="ccc-source__selector">
-            {loadingSource ? (
-              <span className="ccc-source__loading">Loading your {card.subject}s...</span>
-            ) : currentOptions.length === 0 ? (
-              <span className="ccc-source__empty">
-                No {card.subject}s found. {!currentUser && 'Log in to load your characters.'}
-              </span>
-            ) : (
-              <select
-                className="ccc-source__select"
-                value={card.sourceId ?? ''}
-                onChange={(e) => handleSourceSelect(Number(e.target.value))}
-              >
-                <option value="" disabled>Select a {card.subject}...</option>
-                {currentOptions.map(opt => (
-                  <option key={opt.id} value={opt.id}>{opt.name}</option>
-                ))}
-              </select>
+            <TrainerAutocomplete
+              trainers={trainers}
+              selectedTrainerId={selectedTrainerId}
+              onSelect={handleTrainerSelect}
+              label="Trainer"
+              placeholder="Type to search your trainers..."
+              noPadding
+            />
+          </div>
+        )}
+
+        {card.subject === 'monster' && (
+          <div className="ccc-source__selector">
+            <TrainerAutocomplete
+              trainers={trainers}
+              selectedTrainerId={selectedTrainerId}
+              onSelect={handleTrainerSelect}
+              label="Trainer"
+              placeholder="Select a trainer first..."
+              noPadding
+            />
+            {selectedTrainerId && (
+              <div className="ccc-source__monster-select">
+                {loadingMonsters ? (
+                  <span className="ccc-source__loading">Loading monsters...</span>
+                ) : (
+                  <MonsterAutocomplete
+                    monsters={trainerMonsters as { id: string | number; name: string }[]}
+                    selectedMonsterId={card.sourceId}
+                    onSelect={handleMonsterSelect}
+                    label="Monster"
+                    placeholder="Type to search monsters..."
+                    noPadding
+                  />
+                )}
+              </div>
             )}
           </div>
         )}
@@ -272,8 +337,17 @@ const CharacterCardCreatorPage = () => {
               </button>
             </div>
           </div>
-          <div className="ccc-workspace__preview-canvas">
-            <CardPreview ref={previewRef} card={card} />
+          <div className="ccc-workspace__preview-canvas" ref={canvasRef}>
+            <div
+              style={{
+                transform: previewScale < 1 ? `scale(${previewScale})` : undefined,
+                transformOrigin: 'top center',
+                width: previewScale < 1 ? cardDimensions.width : undefined,
+                height: previewScale < 1 ? cardDimensions.height * previewScale : undefined,
+              }}
+            >
+              <CardPreview ref={previewRef} card={card} />
+            </div>
           </div>
         </div>
 

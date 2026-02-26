@@ -79,6 +79,24 @@
 
 .mobile-menu-button {
   display: none;
+  position: relative;
+}
+
+.mobile-menu-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  border-radius: 8px;
+  background: var(--error-color);
+  color: var(--text-color);
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 16px;
+  text-align: center;
+  pointer-events: none;
 }
 
 /* ---------- Dropdown Menu ---------- */
@@ -303,6 +321,28 @@
 .user-dropdown-trigger .dropdown-chevron {
   font-size: var(--font-size-xxxsmall);
   margin-left: var(--spacing-xxsmall);
+}
+
+.user-dropdown-trigger {
+  position: relative;
+}
+
+.user-dropdown-badge {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 9px;
+  background: var(--error-color);
+  color: var(--text-color);
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 18px;
+  text-align: center;
+  box-shadow: 0 2px 4px var(--overlay-light);
+  pointer-events: none;
 }
 
 .user-dropdown-menu {

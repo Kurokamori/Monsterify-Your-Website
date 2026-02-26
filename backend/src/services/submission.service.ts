@@ -16,6 +16,7 @@ import { PromptSubmissionRepository } from '../repositories/prompt-submission.re
 
 import { PromptRepository } from '../repositories/prompt.repository';
 import { ItemRepository } from '../repositories/item.repository';
+import { BazarRepository, type BazarMonsterCreateInput } from '../repositories/bazar.repository';
 import { SubmissionRewardService } from './submission-reward.service';
 import type {
   ArtSubmissionData,
@@ -1518,6 +1519,64 @@ export class SubmissionService {
       monstersAwarded: monsterAssignments.length,
     };
   }
+
+	  async forfeitGiftMonster(
+	    monster: Record<string, unknown>,
+	    playerUserId: string,
+	    monsterName?: string,
+	  ): Promise<{ success: boolean; bazarMonsterId: number }> {
+	    if (!monster) {
+	      throw new Error('Monster data is required');
+	    }
+
+	    const trimmedName = (monsterName ?? '').trim();
+	    const fallbackSpecies =
+	      (monster.species1 as string) ||
+	      (monster.species2 as string) ||
+	      (monster.species3 as string) ||
+	      'Unknown';
+	    const baseName = (monster.name as string) || fallbackSpecies || 'Gift Monster';
+	    const name = trimmedName || baseName;
+
+	    const bazarRepository = new BazarRepository();
+
+	    const bazarInput: BazarMonsterCreateInput = {
+	      originalMonsterId: -1,
+	      forfeitedByTrainerId: -1,
+	      forfeitedByUserId: playerUserId,
+	      name,
+	      species1: (monster.species1 as string) ?? 'Unknown',
+	      species2: (monster.species2 as string) ?? null,
+	      species3: (monster.species3 as string) ?? null,
+	      type1: (monster.type1 as string) ?? 'Normal',
+	      type2: (monster.type2 as string) ?? null,
+	      type3: (monster.type3 as string) ?? null,
+	      type4: (monster.type4 as string) ?? null,
+	      type5: (monster.type5 as string) ?? null,
+	      attribute: (monster.attribute as string) ?? null,
+	      level: 1,
+	      imgLink: (monster.image_url as string) ?? null,
+	    };
+
+	    const bazarMonster = await bazarRepository.createMonster(bazarInput);
+
+	    try {
+	      await bazarRepository.recordTransaction(
+	        'forfeit_monster',
+	        'monster',
+	        bazarMonster.id,
+	        -1,
+	        playerUserId,
+	        null,
+	        null,
+	        { gift_reward: true, monster_name: name, species: bazarInput.species1 },
+	      );
+	    } catch (txError) {
+	      console.error('Error recording gift monster forfeit transaction:', txError);
+	    }
+
+	    return { success: true, bazarMonsterId: bazarMonster.id };
+	  }
 
   async claimPromptRewards(
     promptSubmissionId: number,

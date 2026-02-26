@@ -12,9 +12,14 @@ interface GuideDirectory {
   children?: GuideStructure;
 }
 
+type GuideItem =
+  | ({ type: 'directory' } & GuideDirectory)
+  | ({ type: 'file' } & GuideFile);
+
 interface GuideStructure {
   directories?: GuideDirectory[];
   files?: GuideFile[];
+  items?: GuideItem[];
 }
 
 interface GuideSidebarProps {
@@ -38,48 +43,65 @@ export const GuideSidebar = ({ structure, category }: GuideSidebarProps) => {
     return activePath.startsWith(dirPath + '/');
   };
 
+  const renderDir = (dir: GuideDirectory, basePath: string) => {
+    const dirPath = basePath ? `${basePath}/${dir.path}` : dir.path;
+    const dirExpanded = isExpanded(dirPath) || containsActivePath(dirPath);
+
+    return (
+      <div className="guide-sidebar__item" key={`dir-${dirPath}`}>
+        <div
+          className={`guide-sidebar__dir ${dirExpanded ? 'guide-sidebar__dir--expanded' : ''}`}
+          onClick={() => toggleDirectory(dirPath)}
+        >
+          <span className="guide-sidebar__icon">
+            {dirExpanded ? '\u25BC' : '\u25B6'}
+          </span>
+          <span className="guide-sidebar__name">{dir.name || 'Unnamed Directory'}</span>
+        </div>
+
+        {dirExpanded && dir.children && (
+          <div className="guide-sidebar__children">
+            {renderStructure(dir.children, dirPath)}
+          </div>
+        )}
+      </div>
+    );
+  };
+
+  const renderFile = (file: GuideFile, basePath: string) => {
+    const filePath = basePath ? `${basePath}/${file.path}` : file.path;
+
+    return (
+      <div
+        className={`guide-sidebar__item guide-sidebar__file ${isActive(filePath) ? 'guide-sidebar__file--active' : ''}`}
+        key={`file-${filePath}`}
+      >
+        <Link to={`/guides/${category}/${filePath}`}>
+          {file.name || 'Unnamed Guide'}
+        </Link>
+      </div>
+    );
+  };
+
   const renderStructure = (struct: GuideStructure, basePath = ''): JSX.Element => {
+    // Use items array for correct interleaved ordering when available
+    if (struct.items?.length) {
+      return (
+        <>
+          {struct.items.map((item) =>
+            item.type === 'directory'
+              ? renderDir(item, basePath)
+              : renderFile(item, basePath)
+          )}
+        </>
+      );
+    }
+
+    // Fallback: directories first, then files
     return (
       <>
-        {struct.directories?.map((dir) => {
-          const dirPath = basePath ? `${basePath}/${dir.path}` : dir.path;
-          const dirExpanded = isExpanded(dirPath) || containsActivePath(dirPath);
-
-          return (
-            <div className="guide-sidebar__item" key={dirPath}>
-              <div
-                className={`guide-sidebar__dir ${dirExpanded ? 'guide-sidebar__dir--expanded' : ''}`}
-                onClick={() => toggleDirectory(dirPath)}
-              >
-                <span className="guide-sidebar__icon">
-                  {dirExpanded ? '\u25BC' : '\u25B6'}
-                </span>
-                <span className="guide-sidebar__name">{dir.name || 'Unnamed Directory'}</span>
-              </div>
-
-              {dirExpanded && dir.children && (
-                <div className="guide-sidebar__children">
-                  {renderStructure(dir.children, dirPath)}
-                </div>
-              )}
-            </div>
-          );
-        })}
-
-        {struct.files?.map((file) => {
-          const filePath = basePath ? `${basePath}/${file.path}` : file.path;
-
-          return (
-            <div
-              className={`guide-sidebar__item guide-sidebar__file ${isActive(filePath) ? 'guide-sidebar__file--active' : ''}`}
-              key={filePath}
-            >
-              <Link to={`/guides/${category}/${filePath}`}>
-                {file.name || 'Unnamed Guide'}
-              </Link>
-            </div>
-          );
-        })}
+        {struct.directories?.map((dir) => renderDir(dir, basePath))}
+        {struct.files?.map((file) => renderFile(file, basePath))}
       </>
     );
   };

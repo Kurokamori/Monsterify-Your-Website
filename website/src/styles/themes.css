@@ -6,8 +6,8 @@
 
 :root[data-theme="dawn"] {
     /* Main Colors */
-    --background-color: #e8e0d8;
-    --background-color-hover: #d6dce6;
+    --background-color: #b5b9ca;
+    --background-color-hover: #abb5c4;
 
     --text-color: #1a1e2a;
     --text-color-muted: #1a1e2a99;
@@ -20,7 +20,7 @@
     --secondary-color-hover: #b8c4d4;
     --secondary-color-active: #a3b1c6;
 
-    --accent-color: #c4960e;
+    --accent-color: #b39029;
     --accent-color-hover: #a87f08;
     --accent-color-active: #daa520;
     --accent-color-muted: #c4960e88;
@@ -49,22 +49,22 @@
     /* Type Colors — slightly richer for light backgrounds */
     --normal-type:   #8a8a60;
     --fire-type:     #c85a10;
-    --water-type:    #34508a;
+    --water-type:    #6086d4;
     --electric-type: #b8890a;
-    --grass-type:    #468028;
+    --grass-type:    #7fb167;
     --ice-type:      #5a9e9e;
-    --fighting-type: #752a26;
-    --poison-type:   #6a3570;
+    --fighting-type: #9d605d;
+    --poison-type:   #ab6ab3;
     --ground-type:   #705840;
-    --flying-type:   #5e7090;
-    --psychic-type:  #b03a5e;
+    --flying-type:   #909fb8;
+    --psychic-type:  #cb5a7c;
     --bug-type:      #8a9a10;
-    --rock-type:     #5a5230;
-    --ghost-type:    #524468;
-    --dragon-type:   #3e1c90;
-    --dark-type:     #2c2a40;
+    --rock-type:     #615c46;
+    --ghost-type:    #726489;
+    --dragon-type:   #5e42a1;
+    --dark-type:     #6e6d7d;
     --steel-type:    #6868a0;
-    --fairy-type:    #d8607e;
+    --fairy-type:    #ff98b2;
 
     /* Additional Custom Types */
     --light-type:    #6a9fd0;

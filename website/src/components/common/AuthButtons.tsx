@@ -4,9 +4,10 @@ import { useAuth } from '../../contexts/AuthContext';
 
 interface AuthButtonsProps {
   onLogout?: () => void;
+  totalUnread?: number;
 }
 
-export const AuthButtons = ({ onLogout }: AuthButtonsProps) => {
+export const AuthButtons = ({ onLogout, totalUnread = 0 }: AuthButtonsProps) => {
   const { currentUser, isAuthenticated, logout } = useAuth();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -52,6 +53,9 @@ export const AuthButtons = ({ onLogout }: AuthButtonsProps) => {
             <i className="fas fa-user-circle user-icon"></i>
             <span className="user-name">{currentUser?.display_name || currentUser?.username || 'User'}</span>
             <i className={`fas fa-chevron-${dropdownOpen ? 'up' : 'down'} dropdown-chevron`}></i>
+            {totalUnread > 0 && (
+              <span className="user-dropdown-badge">{totalUnread}</span>
+            )}
           </button>
 
           {dropdownOpen && (

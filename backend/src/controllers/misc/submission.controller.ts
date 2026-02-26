@@ -783,6 +783,41 @@ export async function finalizeGiftRewards(req: Request, res: Response): Promise<
   }
 }
 
+export async function forfeitGiftMonster(req: Request, res: Response): Promise<void> {
+  try {
+    const userId = getDiscordUserId(req);
+    if (!userId) {
+      res.status(401).json({ success: false, message: 'User not authenticated' });
+      return;
+    }
+
+    const { monster, name } = req.body as {
+      monster?: Record<string, unknown>;
+      name?: string;
+    };
+
+    if (!monster) {
+      res.status(400).json({ success: false, message: 'Missing required field: monster' });
+      return;
+    }
+
+    const result = await submissionService.forfeitGiftMonster(
+      monster as Record<string, unknown>,
+      userId,
+      name,
+    );
+
+    res.json({
+      success: true,
+      message: 'Monster successfully forfeited to the Bazar!',
+      bazarMonsterId: result.bazarMonsterId,
+    });
+  } catch (error) {
+    console.error('Error forfeiting gift monster to bazar:', error);
+    res.status(500).json({ success: false, message: 'Failed to forfeit monster to bazar' });
+  }
+}
+
 // =============================================================================
 // External Submissions
 // =============================================================================

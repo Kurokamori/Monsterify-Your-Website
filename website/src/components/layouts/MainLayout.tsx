@@ -1,7 +1,9 @@
 import { useState, useEffect, useCallback } from 'react';
-import { Outlet, Link } from 'react-router-dom';
+import { Outlet, Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { AuthButtons } from '../common/AuthButtons';
+import chatService from '../../services/chatService';
+import chatSocketService from '../../services/chatSocketService';
 
 interface DropdownState {
   [key: string]: boolean;
@@ -74,6 +76,60 @@ export const MainLayout = () => {
   const { isAuthenticated, currentUser } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState<DropdownState>({});
+  const [totalUnread, setTotalUnread] = useState(0);
+  const location = useLocation();
+
+  // Fetch total unread count if chat notifications are enabled
+  const chatNotificationsEnabled = currentUser?.notification_settings?.chat_notifications;
+
+  const fetchUnread = useCallback(() => {
+    if (!isAuthenticated || !chatNotificationsEnabled) return;
+    chatService.getTotalUnread()
+      .then(setTotalUnread)
+      .catch(() => setTotalUnread(0));
+  }, [isAuthenticated, chatNotificationsEnabled]);
+
+  // Poll unread count and listen to socket for realtime updates
+  useEffect(() => {
+    if (!isAuthenticated || !chatNotificationsEnabled) {
+      setTotalUnread(0);
+      return;
+    }
+
+    fetchUnread();
+    const interval = setInterval(fetchUnread, 60000);
+
+    // Listen to socket room:updated events to bump the badge immediately
+    chatSocketService.connect();
+    const handleRoomUpdate = () => {
+      // A new message arrived somewhere — re-fetch the accurate count
+      // Small delay to let the backend update last_message_at first
+      setTimeout(fetchUnread, 500);
+    };
+    chatSocketService.onRoomUpdate(handleRoomUpdate);
+
+    return () => {
+      clearInterval(interval);
+      chatSocketService.offRoomUpdate(handleRoomUpdate);
+      chatSocketService.disconnect();
+    };
+  }, [isAuthenticated, chatNotificationsEnabled, fetchUnread]);
+
+  // Re-fetch unread when navigating away from group chats (to pick up markRead changes)
+  useEffect(() => {
+    if (!isAuthenticated || !chatNotificationsEnabled) return;
+    if (!location.pathname.startsWith('/toys/group-chats')) {
+      fetchUnread();
+    }
+  }, [location.pathname, isAuthenticated, chatNotificationsEnabled, fetchUnread]);
+
+  // Listen for explicit unread-changed events from chat components
+  useEffect(() => {
+    if (!isAuthenticated || !chatNotificationsEnabled) return;
+    const handler = () => fetchUnread();
+    window.addEventListener('chat:unread-changed', handler);
+    return () => window.removeEventListener('chat:unread-changed', handler);
+  }, [isAuthenticated, chatNotificationsEnabled, fetchUnread]);
 
   // Close mobile menu when window is resized
   useEffect(() => {
@@ -159,6 +215,9 @@ export const MainLayout = () => {
             aria-label="Toggle mobile menu"
           >
             <i className="fas fa-bars"></i>
+            {totalUnread > 0 && (
+              <span className="mobile-menu-badge">{totalUnread}</span>
+            )}
           </button>
           <Link to="/trainers" className="top-nav-link">Trainers</Link>
           <Link to="/fakedex" className="top-nav-link">Fakedex</Link>
@@ -238,7 +297,7 @@ export const MainLayout = () => {
           )}
         </div>
         <div className="nav-right">
-          <AuthButtons />
+          <AuthButtons totalUnread={totalUnread} />
         </div>
       </nav>
 
@@ -350,7 +409,7 @@ export const MainLayout = () => {
           )}
 
           <div className="mobile-nav__auth">
-            <AuthButtons onLogout={closeMobileMenu} />
+            <AuthButtons onLogout={closeMobileMenu} totalUnread={totalUnread} />
           </div>
         </div>
       </div>

@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import type { CardData, CardField, CardLayout, CardCustomization, ContentLayoutMode, GenderFieldMode } from './types';
+import type { CardData, CardField, CardLayout, CardCustomization, ContentLayoutMode, GenderFieldMode, PaletteConfig, PaletteStyle, PaletteOrientation, PaletteSizing, PaletteColor } from './types';
 import { LAYOUT_PRESETS, ASPECT_RATIOS } from './types';
 import { EXTRA_TRAINER_FIELDS, EXTRA_MONSTER_FIELDS, getTrainerFieldValue, getMonsterFieldValue, splitGenderField, combineGenderFields } from './cardDataUtils';
 import type { Trainer } from '@components/trainers/types/Trainer';
@@ -362,6 +362,13 @@ export const CardEditor = ({ card, onChange, sourceTrainer, sourceMonster }: Car
         )}
       </div>
 
+      {/* Color Palette */}
+      <PaletteEditor
+        palette={customization.palette}
+        onChange={(palette) => updateCustomization({ palette })}
+        imageSrc={card.imageFile ? URL.createObjectURL(card.imageFile) : card.image}
+      />
+
       {/* Fields */}
       <div className="ccc-editor__section">
         <h3 className="ccc-editor__section-title">
@@ -454,6 +461,223 @@ export const CardEditor = ({ card, onChange, sourceTrainer, sourceMonster }: Car
     </div>
   );
 };
+
+// --- Palette Editor Sub-component ---
+
+function PaletteEditor({ palette, onChange, imageSrc }: {
+  palette: PaletteConfig;
+  onChange: (p: PaletteConfig) => void;
+  imageSrc: string | null;
+}) {
+  const updatePalette = (updates: Partial<PaletteConfig>) => {
+    onChange({ ...palette, ...updates });
+  };
+
+  const updateColor = (index: number, updates: Partial<PaletteColor>) => {
+    const newColors = palette.colors.map((c, i) => i === index ? { ...c, ...updates } : c);
+    onChange({ ...palette, colors: newColors });
+  };
+
+  const addColor = () => {
+    onChange({ ...palette, colors: [...palette.colors, { color: '#888888', size: 100 / (palette.colors.length + 1) }] });
+  };
+
+  const removeColor = (index: number) => {
+    if (palette.colors.length <= 1) return;
+    onChange({ ...palette, colors: palette.colors.filter((_, i) => i !== index) });
+  };
+
+  // Eye-dropper (uses EyeDropper API if available)
+  const pickFromImage = async (index: number) => {
+    if ('EyeDropper' in window) {
+      try {
+        const dropper = new (window as unknown as { EyeDropper: new () => { open: () => Promise<{ sRGBHex: string }> } }).EyeDropper();
+        const result = await dropper.open();
+        updateColor(index, { color: result.sRGBHex });
+      } catch {
+        // User cancelled
+      }
+    }
+  };
+
+  const hasEyeDropper = 'EyeDropper' in window;
+
+  return (
+    <div className="ccc-editor__section">
+      <h3 className="ccc-editor__section-title">
+        <i className="fas fa-swatchbook"></i> Color Palette
+      </h3>
+      <label className="ccc-editor__checkbox">
+        <input
+          type="checkbox"
+          checked={palette.enabled}
+          onChange={(e) => updatePalette({ enabled: e.target.checked })}
+        />
+        Show color palette
+      </label>
+
+      {palette.enabled && (
+        <>
+          {/* Style */}
+          <div className="ccc-editor__row">
+            <label className="ccc-editor__label">Style</label>
+            <div className="ccc-editor__toggle-group">
+              {([
+                { value: 'rectangles', label: 'Rectangles' },
+                { value: 'circles', label: 'Circles' },
+                { value: 'slanted', label: 'Slanted' },
+              ] as { value: PaletteStyle; label: string }[]).map((opt) => (
+                <button
+                  key={opt.value}
+                  className={`ccc-editor__toggle ${palette.style === opt.value ? 'ccc-editor__toggle--active' : ''}`}
+                  onClick={() => updatePalette({ style: opt.value })}
+                >
+                  {opt.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Orientation */}
+          <div className="ccc-editor__row">
+            <label className="ccc-editor__label">Direction</label>
+            <div className="ccc-editor__toggle-group">
+              {([
+                { value: 'horizontal', label: 'Horizontal' },
+                { value: 'vertical', label: 'Vertical' },
+              ] as { value: PaletteOrientation; label: string }[]).map((opt) => (
+                <button
+                  key={opt.value}
+                  className={`ccc-editor__toggle ${palette.orientation === opt.value ? 'ccc-editor__toggle--active' : ''}`}
+                  onClick={() => updatePalette({ orientation: opt.value })}
+                >
+                  {opt.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Sizing mode */}
+          <div className="ccc-editor__row">
+            <label className="ccc-editor__label">Sizing</label>
+            <div className="ccc-editor__toggle-group">
+              {([
+                { value: 'uniform', label: 'Uniform' },
+                { value: 'custom', label: 'Custom' },
+              ] as { value: PaletteSizing; label: string }[]).map((opt) => (
+                <button
+                  key={opt.value}
+                  className={`ccc-editor__toggle ${palette.sizing === opt.value ? 'ccc-editor__toggle--active' : ''}`}
+                  onClick={() => updatePalette({ sizing: opt.value })}
+                >
+                  {opt.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Height */}
+          <div className="ccc-editor__row">
+            <label className="ccc-editor__label">Size</label>
+            <input
+              type="range" min={16} max={80} value={palette.height}
+              onChange={(e) => updatePalette({ height: Number(e.target.value) })}
+            />
+            <span className="ccc-editor__range-value">{palette.height}px</span>
+          </div>
+
+          {/* Gap */}
+          <div className="ccc-editor__row">
+            <label className="ccc-editor__label">Gap</label>
+            <input
+              type="range" min={0} max={16} value={palette.gap}
+              onChange={(e) => updatePalette({ gap: Number(e.target.value) })}
+            />
+            <span className="ccc-editor__range-value">{palette.gap}px</span>
+          </div>
+
+          {/* Swatch Radius */}
+          <div className="ccc-editor__row">
+            <label className="ccc-editor__label">Roundness</label>
+            <input
+              type="range" min={0} max={palette.style === 'circles' ? 50 : 20} value={palette.swatchRadius}
+              onChange={(e) => updatePalette({ swatchRadius: Number(e.target.value) })}
+            />
+            <span className="ccc-editor__range-value">{palette.swatchRadius}px</span>
+          </div>
+
+          {/* Border */}
+          <div className="ccc-editor__row">
+            <label className="ccc-editor__label">Border Width</label>
+            <input
+              type="range" min={0} max={6} value={palette.swatchBorderWidth}
+              onChange={(e) => updatePalette({ swatchBorderWidth: Number(e.target.value) })}
+            />
+            <span className="ccc-editor__range-value">{palette.swatchBorderWidth}px</span>
+          </div>
+          {palette.swatchBorderWidth > 0 && (
+            <div className="ccc-editor__row">
+              <ColorPicker label="Border Color" value={palette.swatchBorderColor} onChange={(v) => updatePalette({ swatchBorderColor: v })} />
+            </div>
+          )}
+
+          {/* Skew angle (slanted only) */}
+          {palette.style === 'slanted' && (
+            <div className="ccc-editor__row">
+              <label className="ccc-editor__label">Skew</label>
+              <input
+                type="range" min={-45} max={45} value={palette.skewAngle}
+                onChange={(e) => updatePalette({ skewAngle: Number(e.target.value) })}
+              />
+              <span className="ccc-editor__range-value">{palette.skewAngle}°</span>
+            </div>
+          )}
+
+          {/* Color swatches */}
+          <div className="ccc-palette-editor__colors">
+            {palette.colors.map((c, idx) => (
+              <div key={idx} className="ccc-palette-editor__color-row">
+                <input
+                  type="color"
+                  value={c.color}
+                  onChange={(e) => updateColor(idx, { color: e.target.value })}
+                  className="ccc-editor__color-input"
+                />
+                {hasEyeDropper && imageSrc && (
+                  <button
+                    className="ccc-palette-editor__eyedropper"
+                    onClick={() => pickFromImage(idx)}
+                    title="Pick color from screen"
+                  >
+                    <i className="fas fa-eye-dropper"></i>
+                  </button>
+                )}
+                {palette.sizing === 'custom' && (
+                  <input
+                    type="range" min={5} max={100} value={c.size}
+                    onChange={(e) => updateColor(idx, { size: Number(e.target.value) })}
+                    className="ccc-palette-editor__size-slider"
+                  />
+                )}
+                <button
+                  className="ccc-editor__field-remove"
+                  onClick={() => removeColor(idx)}
+                  disabled={palette.colors.length <= 1}
+                  title="Remove color"
+                >
+                  <i className="fas fa-times"></i>
+                </button>
+              </div>
+            ))}
+          </div>
+          <button className="button secondary sm" onClick={addColor}>
+            <i className="fas fa-plus"></i> Add Color
+          </button>
+        </>
+      )}
+    </div>
+  );
+}
 
 // --- Color Picker Sub-component ---
 

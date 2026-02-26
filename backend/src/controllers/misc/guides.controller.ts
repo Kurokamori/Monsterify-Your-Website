@@ -75,6 +75,12 @@ export async function getGuideContent(req: Request, res: Response): Promise<void
     // Sanitize path to prevent directory traversal
     const sanitizedPath = (guidePath || '').replace(/\.\./g, '').replace(/^\/+/, '');
 
+    // Block access to !index.md files
+    if (sanitizedPath.endsWith('!index.md') || sanitizedPath.endsWith('!index')) {
+      res.status(404).json({ success: false, message: 'Content not found' });
+      return;
+    }
+
     // Construct the full path
     let filePath = path.join(CONTENT_BASE_PATH, category, sanitizedPath);
 

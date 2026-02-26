@@ -19,6 +19,7 @@ export type {
   UserRow,
   MonsterRollerSettings,
   ContentSettings,
+  NotificationSettings,
   AdminUserQueryOptions,
   PaginatedUsers,
 } from './user.repository';

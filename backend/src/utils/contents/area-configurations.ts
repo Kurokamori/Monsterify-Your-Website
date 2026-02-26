@@ -1004,8 +1004,8 @@ export const regionDefinitions: RegionDefinitionsMap = {
     "resources": "Treasure, Booty, Spoils of War",
     "lore": "The pirate haven of Conoco Island, where the bravest and most ruthless sailors in the world make their home. The bay is a lawless place, ruled by the iron fist of the pirate lords. The waters are teeming with Monsters, and the air is thick with the scent of salt and danger. The pirates here are a rough and tumble bunch, and visitors are advised to tread carefully.",
     "mapCoordinates": {
-      "x": 5,
-      "y": 5,
+      "x": 83.93982808022922,
+      "y": 1.6064574135764769,
       "width": 15,
       "height": 15
     },

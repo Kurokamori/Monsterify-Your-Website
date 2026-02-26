@@ -4,6 +4,8 @@ import { memoryUpload } from '@middleware/upload.middleware';
 import {
   getChatProfile,
   updateChatProfile,
+  getUnreadCounts,
+  getUserTotalUnread,
   getMyRooms,
   getRoomDetails,
   createGroupChat,
@@ -33,6 +35,8 @@ router.patch('/profiles/:trainerId', updateChatProfile);
 // Rooms
 // ============================================================================
 
+router.get('/unread-counts', getUnreadCounts);
+router.get('/total-unread', getUserTotalUnread);
 router.get('/rooms/trainer/:trainerId', getMyRooms);
 router.get('/rooms/:roomId', getRoomDetails);
 router.post('/rooms', createGroupChat);

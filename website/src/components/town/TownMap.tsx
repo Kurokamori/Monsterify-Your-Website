@@ -115,7 +115,7 @@ export function TownMap({ className = '' }: TownMapProps) {
         <div className="map-background">
           <img
             src="/images/town/town-map-bg.jpg"
-            alt="Aurora Town Map"
+            alt="Heimdal City Map"
             className="map-image"
             onError={(e) => {
               (e.target as HTMLImageElement).src = 'https://via.placeholder.com/1200x800/1e2532/d6a339?text=Aurora+Town+Map';

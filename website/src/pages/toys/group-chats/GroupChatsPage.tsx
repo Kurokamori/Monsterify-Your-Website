@@ -38,7 +38,7 @@ const GroupChatsPage = () => {
 
     return () => {
       chatSocketService.stopHeartbeat();
-      chatSocketService.disconnect();
+      // Don't disconnect — MainLayout keeps the socket alive for badge updates
     };
   }, [selectedTrainer, isAdminMode]);
 
@@ -119,6 +119,8 @@ const GroupChatsPage = () => {
     setRooms((prev) =>
       prev.map((r) => (r.id === roomId ? { ...r, unreadCount: 0 } : r)),
     );
+    // Notify MainLayout to refresh the badge after markRead completes
+    setTimeout(() => window.dispatchEvent(new Event('chat:unread-changed')), 600);
   }, []);
 
   const refreshRooms = useCallback(async () => {

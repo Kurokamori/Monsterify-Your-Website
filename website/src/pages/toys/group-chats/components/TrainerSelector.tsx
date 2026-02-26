@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '@contexts/AuthContext';
 import trainerService from '@services/trainerService';
+import chatService from '@services/chatService';
 import type { TrainerOption } from '../types';
 
 interface TrainerSelectorProps {
@@ -10,6 +11,7 @@ interface TrainerSelectorProps {
 const TrainerSelector = ({ onSelect }: TrainerSelectorProps) => {
   const { currentUser } = useAuth();
   const [trainers, setTrainers] = useState<TrainerOption[]>([]);
+  const [unreadCounts, setUnreadCounts] = useState<Record<number, number>>({});
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -38,6 +40,17 @@ const TrainerSelector = ({ onSelect }: TrainerSelectorProps) => {
         }
 
         setTrainers(mapped);
+
+        // Fetch unread counts for all non-admin trainers
+        const realIds = mapped.filter((t) => !t.isAdmin).map((t) => t.id);
+        if (realIds.length > 0) {
+          try {
+            const counts = await chatService.getUnreadCounts(realIds);
+            setUnreadCounts(counts);
+          } catch {
+            // Silently fail — badges just won't show
+          }
+        }
       } catch (err) {
         console.error('Failed to load trainers:', err);
       } finally {
@@ -93,6 +106,11 @@ const TrainerSelector = ({ onSelect }: TrainerSelectorProps) => {
               </div>
             )}
             <span className="trainer-selector__name">{trainer.name}</span>
+            {!trainer.isAdmin && unreadCounts[trainer.id] > 0 && (
+              <span className="trainer-selector__unread-badge">
+                {unreadCounts[trainer.id]}
+              </span>
+            )}
           </button>
         ))}
       </div>

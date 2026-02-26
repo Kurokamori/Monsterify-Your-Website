@@ -85,11 +85,12 @@ export const YouTubeSection = ({ label, value }: YouTubeSectionProps) => {
               <iframe
                 width="100%"
                 height="315"
-                src={`https://www.youtube-nocookie.com/embed/${videoId}?origin=${encodeURIComponent(window.location.origin)}&rel=0`}
+                src={`https://www.youtube.com/embed/${videoId}?origin=${encodeURIComponent(window.location.origin)}&rel=0&modestbranding=1&iv_load_policy=3`}
                 title={label}
-                frameBorder="0"
+                style={{ border: 0 }}
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                referrerPolicy="no-referrer-when-downgrade"
+                referrerPolicy="strict-origin-when-cross-origin"
+                sandbox="allow-scripts allow-same-origin allow-presentation allow-popups allow-popups-to-escape-sandbox allow-forms"
                 allowFullScreen
                 onError={() => setEmbedError(true)}
               ></iframe>

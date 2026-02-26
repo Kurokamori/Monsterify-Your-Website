@@ -1,7 +1,7 @@
 import { useState, useEffect, type FormEvent } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../contexts/useAuth';
-import type { MonsterRollerSettings, ContentSettings } from '../../contexts/authContextDef';
+import type { MonsterRollerSettings, ContentSettings, NotificationSettings } from '../../contexts/authContextDef';
 import { useTheme, THEMES } from '../../contexts/ThemeContext';
 import { FormInput } from '../../components/common/FormInput';
 import { Modal } from '../../components/common/Modal';
@@ -9,6 +9,7 @@ import { ErrorModal } from '../../components/common/ErrorModal';
 import { LoadingSpinner } from '../../components/common/LoadingSpinner';
 import { SuccessMessage } from '../../components/common/SuccessMessage';
 import { ContentSettingsSection } from '../../components/profile/ContentSettingsSection';
+import { NotificationSettingsSection } from '../../components/profile/NotificationSettingsSection';
 import { useDocumentTitle } from '../../hooks/useDocumentTitle';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:4000/api';
@@ -52,6 +53,10 @@ const DEFAULT_CONTENT_SETTINGS: ContentSettings = {
   intense_violence: false,
 };
 
+const DEFAULT_NOTIFICATION_SETTINGS: NotificationSettings = {
+  chat_notifications: false,
+};
+
 // --- Helpers ---
 
 function parseSettings<T>(raw: unknown, fallback: T): T {
@@ -76,6 +81,7 @@ export default function ProfilePage() {
     updateProfile,
     updateMonsterRollerSettings,
     updateContentSettings,
+    updateNotificationSettings,
     error: authError,
     clearError,
   } = useAuth();
@@ -92,6 +98,7 @@ export default function ProfilePage() {
   const [discordId, setDiscordId] = useState('');
   const [monsterSettings, setMonsterSettings] = useState<MonsterRollerSettings>(DEFAULT_MONSTER_SETTINGS);
   const [contentSettings, setContentSettings] = useState<ContentSettings>(DEFAULT_CONTENT_SETTINGS);
+  const [notificationSettings, setNotificationSettings] = useState<NotificationSettings>(DEFAULT_NOTIFICATION_SETTINGS);
 
   // UI state
   const [saving, setSaving] = useState(false);
@@ -135,14 +142,15 @@ export default function ProfilePage() {
     window.location.href = `${API_URL}/auth/discord/link`;
   };
 
-  // Load user data
+  // Load user data (skip while saving to avoid race conditions from concurrent updates)
   useEffect(() => {
-    if (!currentUser) return;
+    if (!currentUser || saving) return;
     setDisplayName(currentUser.display_name || '');
     setDiscordId(currentUser.discord_id || '');
     setMonsterSettings(parseSettings(currentUser.monster_roller_settings, DEFAULT_MONSTER_SETTINGS));
     setContentSettings(parseSettings(currentUser.content_settings, DEFAULT_CONTENT_SETTINGS));
-  }, [currentUser]);
+    setNotificationSettings(parseSettings(currentUser.notification_settings, DEFAULT_NOTIFICATION_SETTINGS));
+  }, [currentUser, saving]);
 
   // Redirect if not authenticated (wait for auth to finish loading first)
   useEffect(() => {
@@ -163,13 +171,14 @@ export default function ProfilePage() {
       setError(null);
       setSuccess(null);
 
-      const [profileOk, settingsOk, contentOk] = await Promise.all([
+      const [profileOk, settingsOk, contentOk, notifOk] = await Promise.all([
         updateProfile({ display_name: displayName, discord_id: discordId }),
         updateMonsterRollerSettings(monsterSettings),
         updateContentSettings(contentSettings),
+        updateNotificationSettings(notificationSettings),
       ]);
 
-      if (profileOk && settingsOk && contentOk) {
+      if (profileOk && settingsOk && contentOk && notifOk) {
         setSuccess('Profile settings updated successfully!');
       } else {
         setError(authError || 'Some settings could not be updated. Please try again.');
@@ -253,7 +262,7 @@ export default function ProfilePage() {
               name="profile_discord_id"
               value={discordId}
               onChange={e => setDiscordId(e.target.value)}
-              placeholder="Enter your Discord ID (e.g., 123412456789)"
+              placeholder="Enter your Discord ID NOT your username but the string of numbers"
               disabled={saving}
               icon={<i className="fa-brands fa-discord" />}
             />
@@ -334,6 +343,13 @@ export default function ProfilePage() {
         <ContentSettingsSection
           contentSettings={contentSettings}
           onSettingsChange={setContentSettings}
+          loading={saving}
+        />
+
+        {/* Notification Settings */}
+        <NotificationSettingsSection
+          notificationSettings={notificationSettings}
+          onSettingsChange={setNotificationSettings}
           loading={saving}
         />
 

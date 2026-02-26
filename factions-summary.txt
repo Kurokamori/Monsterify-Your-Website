@@ -1,0 +1,35 @@
+Factions Summary
+================
+
+Digital Dawn
+  A covert faction of talented hackers and technologists determined to merge the digital and physical worlds. They aim to weaponize Digimon to achieve dominance, operating discreetly from hidden bases in the Connoco Archipelago.
+
+League
+  Elite trainers driven by competition and glory. Through gyms, tournaments, and rigorous battles, they uphold order, prestige, and the spirit of challenge from their headquarters in Central City.
+
+Cat Pirates (The Nyakuzas)
+  Adventurous, feline-themed pirates driven by curiosity, thrill, and treasure. Renowned for their playful but unpredictable nature, their crews navigate the seas and islands with stealth and charm.
+
+Pokemon Ranchers
+  Caretakers who live harmoniously with Pokemon, tending farms and ranches to support communities. Their simple, dedicated lifestyle emphasizes sustainability and the natural bond between humans and Pokemon.
+
+Professor Koa's Lab
+  A haven for peaceful research dedicated to the harmonious coexistence of Pokemon, Digimon, and Yokai. Led by Professor Koa, it serves as an educational hub, mentoring aspiring adventurers near the serene fields of Zoryan Meadows.
+
+Project Obsidian
+  Dark scientists obsessed with forcibly fusing lifeforms. Masquerading under progress, their unethical ambitions threaten to rewrite the laws of nature itself. Hidden laboratories near Central City conceal their controversial experiments.
+
+Rangers
+  Guardians of nature, Rangers bond with Pokemon without capturing them. They maintain ecological balance, resolve conflicts peacefully, and respond swiftly to emergencies throughout the Outerwilds and Far Reaches.
+
+Spirit Keepers
+  Spiritual protectors fostering peace and understanding between Yokai and humanity. They maintain sacred temples and sanctuaries near ancient sites, mediating conflicts through rituals, exorcisms, and compassionate guidance primarily on Conoocoo Island and the Far Reaches.
+
+Tamers
+  Tech-savvy partners of Digimon, the Tamers monitor and manage digital anomalies that impact the physical world. Their expertise ensures the stability and safety of digital hotspots scattered across the islands.
+
+The Tribes
+  Mysterious and neutral, the Tribes live secluded lives on the outer islands, guarding their secrets fiercely and interacting little with outsiders. Their true customs and goals remain unknown.
+
+The Twilight Order
+  Mystics wielding forbidden rituals to control powerful Yokai. Driven by a desire to ascend spiritually, they harness dark spiritual energies, their presence most notable around ancient sites on Conoocoo Island and throughout the Far Reaches.

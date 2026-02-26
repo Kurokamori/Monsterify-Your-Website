@@ -215,10 +215,15 @@ export function BazarAdoptMonster({
                       {getSpeciesDisplay(monster)}
                     </p>
                     <div className="bazar-adopt-monster__card-types">
-                      {getTypes(monster).slice(0, 2).map((type, idx) => (
+                      {getTypes(monster).map((type, idx) => (
                         <TypeBadge key={idx} type={type} size="sm" />
                       ))}
                     </div>
+                    {monster.attribute && (
+                      <div className="bazar-adopt-monster__card-attribute">
+                        <AttributeBadge attribute={monster.attribute} size="sm" />
+                      </div>
+                    )}
                     {monster.level && (
                       <span className="bazar-adopt-monster__card-level">
                         Lv. {monster.level}

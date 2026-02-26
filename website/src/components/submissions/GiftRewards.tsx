@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { AutocompleteInput, AutocompleteOption } from '../common/AutocompleteInput';
+import { TrainerAutocomplete } from '../common/TrainerAutocomplete';
 import { TypeBadge } from '../common/TypeBadge';
 import { AttributeBadge } from '../common/AttributeBadge';
 import { ErrorModal } from '../common/ErrorModal';
@@ -37,6 +38,9 @@ interface GiftMonster {
   type5?: string;
   attribute?: string;
   image_url?: string;
+  species1_image?: string;
+  species2_image?: string;
+  species3_image?: string;
 }
 
 interface LevelAllocation {
@@ -111,6 +115,7 @@ export function GiftRewards({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [generatingRewards, setGeneratingRewards] = useState(false);
+	  const [forfeitingIndex, setForfeitingIndex] = useState<number | null>(null);
 
   // Calculate reward counts
   const itemRewardCount = Math.floor(giftLevels / 5);
@@ -233,6 +238,68 @@ export function GiftRewards({
       [monsterIndex]: name
     });
   };
+
+	  const handleForfeitMonster = async (monsterIndex: number) => {
+	    const monster = monsterRewards[monsterIndex];
+	    if (!monster) return;
+
+	    const confirmed = window.confirm(
+	      'Are you sure you want to forfeit this gift monster to the Bazar? This cannot be undone.',
+	    );
+	    if (!confirmed) return;
+
+	    try {
+	      setForfeitingIndex(monsterIndex);
+	      setError(null);
+
+	      const response = await api.post<{
+	        success: boolean;
+	        bazarMonsterId?: number;
+	        message?: string;
+	      }>('/submissions/gift-rewards/forfeit-monster', {
+	        monster,
+	        name: (monsterNames[monsterIndex] || '').trim() || undefined,
+	      });
+
+	      if (!response.data?.success) {
+	        setError(response.data?.message || 'Failed to forfeit monster to the Bazar. Please try again.');
+	        return;
+	      }
+
+	      // Remove the forfeited monster and reindex assignment/name maps
+	      setMonsterRewards(prev => prev.filter((_, idx) => idx !== monsterIndex));
+	      setMonsterAssignments(prev => {
+	        const updated: Record<number, string> = {};
+	        Object.keys(prev).forEach((key) => {
+	          const idx = Number(key);
+	          if (idx < monsterIndex) {
+	            updated[idx] = prev[idx];
+	          } else if (idx > monsterIndex) {
+	            updated[idx - 1] = prev[idx];
+	          }
+	        });
+	        return updated;
+	      });
+	      setMonsterNames(prev => {
+	        const updated: Record<number, string> = {};
+	        Object.keys(prev).forEach((key) => {
+	          const idx = Number(key);
+	          if (idx < monsterIndex) {
+	            updated[idx] = prev[idx];
+	          } else if (idx > monsterIndex) {
+	            updated[idx - 1] = prev[idx];
+	          }
+	        });
+	        return updated;
+	      });
+	    } catch (err) {
+	      console.error('Error forfeiting gift monster:', err);
+	      const axiosError = err as { response?: { data?: { message?: string } } };
+	      setError(axiosError.response?.data?.message || 'Failed to forfeit monster to the Bazar. Please try again.');
+	    } finally {
+	      setForfeitingIndex(null);
+	    }
+	  };
 
   const validateAssignments = (): string | null => {
     // Check that all items are assigned
@@ -567,7 +634,7 @@ export function GiftRewards({
             </h3>
             <p className="form-tooltip--section">Assign each item to one of your trainers. Items go into the trainer's inventory.</p>
 
-            <div className="container grid grid-medium">
+            <div className="container grid grid-large">
               {itemRewards.map((item, index) => (
                 <div key={index} className="reward-item">
                   <div className="reward-item__icon reward-item__icon--item">
@@ -613,88 +680,127 @@ export function GiftRewards({
             </h3>
             <p className="form-tooltip--section">Name each monster and assign them to a trainer. The monster will be added to that trainer's PC.</p>
 
-            <div className="monster-rewards-grid container grid grid-medium">
-              {monsterRewards.map((monster, index) => (
-                <div key={index} className="gift-monster-card card">
-                  <div className="card__image">
-                    <img
-                      src={monster.image_url || '/images/default_mon.png'}
-                      alt={monster.name || monster.species1}
-                      onError={(e) => {
-                        const target = e.target as HTMLImageElement;
-                        target.onerror = null;
-                        target.src = '/images/default_mon.png';
-                      }}
-                    />
-                  </div>
+            <div className="monster-rewards-grid container grid grid-large">
+              {monsterRewards.map((monster, index) => {
+                const speciesImageEntries = [
+                  {
+                    species: monster.species1,
+                    url: monster.species1_image || monster.image_url,
+                  },
+                  {
+                    species: monster.species2,
+                    url: monster.species2_image,
+                  },
+                  {
+                    species: monster.species3,
+                    url: monster.species3_image,
+                  },
+                ].filter((entry) => entry.species);
 
-                  <div className="card__body">
-                    <h4 className="card__title">
-                      {monster.name || monster.species1 || 'Mystery Monster'}
-                    </h4>
-
-                    {/* Species */}
-                    <div className="gift-monster-species">
-                      {monster.species1 && <span className="species-name">{monster.species1}</span>}
-                      {monster.species2 && <span className="species-name"> / {monster.species2}</span>}
-                      {monster.species3 && <span className="species-name"> / {monster.species3}</span>}
-                    </div>
-
-                    {/* Types */}
-                    <div className="gift-monster-types container horizontal gap-small">
-                      {monster.type1 && <TypeBadge type={monster.type1} size="xs" />}
-                      {monster.type2 && <TypeBadge type={monster.type2} size="xs" />}
-                      {monster.type3 && <TypeBadge type={monster.type3} size="xs" />}
-                      {monster.type4 && <TypeBadge type={monster.type4} size="xs" />}
-                      {monster.type5 && <TypeBadge type={monster.type5} size="xs" />}
-                    </div>
-
-                    {/* Attribute */}
-                    {monster.attribute && (
-                      <div className="gift-monster-attribute">
-                        <AttributeBadge attribute={monster.attribute} size="xs" />
-                      </div>
-                    )}
-
-                    {/* Assignment */}
-                    <div className="monster-assignment container vertical gap-small">
-                      <div className="form-group form-group--small-padding">
-                        <label className="form-label">Monster Name</label>
-                        <input
-                          type="text"
-                          className="input"
-                          value={monsterNames[index] || ''}
-                          onChange={(e) => handleMonsterNameChange(index, e.target.value)}
-                          placeholder="Enter monster name"
+                return (
+                  <div key={index} className="gift-monster-card card">
+                    <div className="card__image">
+                      {speciesImageEntries.length === 0 ? (
+                        <img
+                          src={monster.image_url || '/images/default_mon.png'}
+                          alt={monster.name || monster.species1 || 'Mystery Monster'}
+                          onError={(e) => {
+                            const target = e.target as HTMLImageElement;
+                            target.onerror = null;
+                            target.src = '/images/default_mon.png';
+                          }}
                         />
+                      ) : (
+                        speciesImageEntries.map((entry, imgIndex) => (
+                          <img
+                            key={imgIndex}
+                            src={entry.url || '/images/default_mon.png'}
+                            alt={entry.species || monster.name || monster.species1 || 'Mystery Monster'}
+                            onError={(e) => {
+                              const target = e.target as HTMLImageElement;
+                              target.onerror = null;
+                              target.src = '/images/default_mon.png';
+                            }}
+                          />
+                        ))
+                      )}
+                    </div>
+
+                    <div className="card__body">
+                      {/* Species */}
+                      <div className="gift-monster-species">
+                        {monster.species1 && <span className="species-name">{monster.species1}</span>}
+                        {monster.species2 && <span className="species-name"> / {monster.species2}</span>}
+                        {monster.species3 && <span className="species-name"> / {monster.species3}</span>}
                       </div>
 
-                      <div className="form-group form-group--small-padding">
-                        <label className="form-label">Assign to Trainer</label>
-                        <select
-                          className="select"
-                          value={monsterAssignments[index] || ''}
-                          onChange={(e) => handleMonsterAssignment(index, e.target.value)}
-                        >
-                          <option value="">Select Trainer...</option>
-                          {userTrainers.map(trainer => (
-                            <option key={trainer.id} value={trainer.id}>
-                              {trainer.name}
-                            </option>
-                          ))}
-                        </select>
+                      {/* Types */}
+                      <div className="gift-monster-types container horizontal gap-small">
+                        {monster.type1 && <TypeBadge type={monster.type1} size="xs" />}
+                        {monster.type2 && <TypeBadge type={monster.type2} size="xs" />}
+                        {monster.type3 && <TypeBadge type={monster.type3} size="xs" />}
+                        {monster.type4 && <TypeBadge type={monster.type4} size="xs" />}
+                        {monster.type5 && <TypeBadge type={monster.type5} size="xs" />}
+                      </div>
+
+                      {/* Attribute */}
+                      {monster.attribute && (
+                        <div className="gift-monster-attribute">
+                          <AttributeBadge attribute={monster.attribute} size="xs" />
+                        </div>
+                      )}
+
+                      {/* Assignment */}
+                      <div className="monster-assignment container vertical gap-small">
+                        <div className="form-group form-group--small-padding">
+                          <label className="form-label">Monster Name</label>
+                          <input
+                            type="text"
+                            className="input"
+                            value={monsterNames[index] || ''}
+                            onChange={(e) => handleMonsterNameChange(index, e.target.value)}
+                            placeholder="Enter monster name"
+                          />
+                        </div>
+
+                        <div className="form-group form-group--small-padding">
+                          <label className="form-label">Assign to Trainer</label>
+                          <TrainerAutocomplete
+                            trainers={userTrainers}
+                            selectedTrainerId={monsterAssignments[index] || ''}
+                            onChange={(id) => handleMonsterAssignment(index, id != null ? id.toString() : '')}
+                            label=""
+                            placeholder="Select trainer"
+                            noPadding
+                          />
+                        </div>
+
+                        <div className="monster-assignment__actions">
+                          <button
+                            type="button"
+                            className="button danger"
+                            onClick={() => handleForfeitMonster(index)}
+                            disabled={forfeitingIndex === index}
+                          >
+                            {forfeitingIndex === index ? (
+                              <><i className="fas fa-spinner fa-spin"></i> Forfeiting...</>
+                            ) : (
+                              <><i className="fas fa-times"></i> Forfeit to Bazar</>
+                            )}
+                          </button>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         </div>
       )}
 
       {/* Action Buttons */}
-      <div className="gift-rewards-actions container horizontal gap-small">
+      <div className="gift-rewards-actions container horizontal">
         <button
           type="button"
           className="button secondary"

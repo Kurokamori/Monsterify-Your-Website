@@ -7,6 +7,35 @@ export type GenderSymbolColor = 'text' | 'gendered';
 export type ContentLayoutMode = 'simple' | 'two-column' | 'panelled' | 'compact' | 'two-column-panelled' | 'two-column-combined';
 export type ImageObjectFit = 'cover' | 'contain';
 export type GenderFieldMode = 'combined' | 'split';
+export type PaletteStyle = 'rectangles' | 'circles' | 'slanted';
+export type PaletteOrientation = 'horizontal' | 'vertical';
+export type PaletteSizing = 'uniform' | 'custom';
+
+export interface PaletteColor {
+  color: string;
+  /** Custom size as percentage (only used when sizing is 'custom') */
+  size: number;
+}
+
+export interface PaletteConfig {
+  enabled: boolean;
+  style: PaletteStyle;
+  orientation: PaletteOrientation;
+  sizing: PaletteSizing;
+  colors: PaletteColor[];
+  /** Gap between swatches in px */
+  gap: number;
+  /** Height of the palette bar in px */
+  height: number;
+  /** Skew angle in degrees for slanted style */
+  skewAngle: number;
+  /** Border radius of individual swatches */
+  swatchRadius: number;
+  /** Border width of individual swatches in px */
+  swatchBorderWidth: number;
+  /** Border color of individual swatches */
+  swatchBorderColor: string;
+}
 
 export interface CardField {
   id: string;
@@ -59,6 +88,7 @@ export interface CardCustomization {
   contentGap: number;
   panelBorderColor: string;
   genderFieldMode: GenderFieldMode;
+  palette: PaletteConfig;
 }
 
 export interface CardData {
@@ -196,6 +226,28 @@ export function getMonsterDefaultFields(): CardField[] {
   ];
 }
 
+export function getDefaultPaletteConfig(): PaletteConfig {
+  return {
+    enabled: false,
+    style: 'rectangles',
+    orientation: 'horizontal',
+    sizing: 'uniform',
+    colors: [
+      { color: '#e74c3c', size: 20 },
+      { color: '#3498db', size: 20 },
+      { color: '#2ecc71', size: 20 },
+      { color: '#f39c12', size: 20 },
+      { color: '#9b59b6', size: 20 },
+    ],
+    gap: 4,
+    height: 32,
+    skewAngle: 20,
+    swatchRadius: 0,
+    swatchBorderWidth: 0,
+    swatchBorderColor: '#000000',
+  };
+}
+
 export function getDefaultCustomization(): CardCustomization {
   return {
     layout: LAYOUT_PRESETS[0],
@@ -217,6 +269,7 @@ export function getDefaultCustomization(): CardCustomization {
     contentGap: 4,
     panelBorderColor: '#4b5d76',
     genderFieldMode: 'combined',
+    palette: getDefaultPaletteConfig(),
   };
 }
 

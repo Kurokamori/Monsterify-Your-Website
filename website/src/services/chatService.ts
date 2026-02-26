@@ -28,6 +28,16 @@ async function updateProfile(
 // Rooms
 // ============================================================================
 
+async function getTotalUnread(): Promise<number> {
+  const res = await api.get('/chats/total-unread');
+  return res.data.data.totalUnread;
+}
+
+async function getUnreadCounts(trainerIds: number[]): Promise<Record<number, number>> {
+  const res = await api.get('/chats/unread-counts', { params: { trainerIds: trainerIds.join(',') } });
+  return res.data.data;
+}
+
 async function getRooms(trainerId: number): Promise<ChatRoom[]> {
   const res = await api.get(`/chats/rooms/trainer/${trainerId}`);
   return res.data.data;
@@ -166,6 +176,8 @@ async function adminSendMessage(roomId: number, content: string, senderName?: st
 const chatService = {
   getProfile,
   updateProfile,
+  getTotalUnread,
+  getUnreadCounts,
   getRooms,
   getRoomDetails,
   createGroupChat,

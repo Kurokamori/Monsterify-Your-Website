@@ -93,25 +93,25 @@ const CATEGORY_TO_INVENTORY: Record<string, string> = {
 };
 
 const DEFAULT_MONSTER_PARAMS: Record<string, unknown> = {
-  includeStages: ['base stage', "doesn't evolve"],
+  includeStages: ['Base Stage', "Doesn't Evolve"],
   legendary: false,
   mythical: false,
   tableFilters: {
     digimon: { includeRanks: ['Baby I', 'Baby II', 'In-Training', 'Rookie'] },
     yokai: { includeRanks: ['E', 'D', 'C'] },
-    finalfantasy: { includeStages: ['base stage', "doesn't evolve"] },
+    finalfantasy: { includeStages: ['Base Stage', "Doesn't Evolve"] },
     monsterhunter: { includeRanks: [1, 2, 3] },
   },
 };
 
 const BIRTHDAY_MONSTER_PARAMS: Record<string, unknown> = {
-  includeStages: ['base stage', "doesn't evolve", 'Baby I', 'Baby II'],
+  includeStages: ['Base Stage', "Doesn't Evolve", 'Baby I', 'Baby II'],
   legendary: false,
   mythical: false,
   tableFilters: {
     digimon: { includeRanks: ['Baby I', 'Baby II', 'In-Training', 'Rookie'] },
     yokai: { includeRanks: ['E', 'D', 'C'] },
-    finalfantasy: { includeStages: ['base stage', "doesn't evolve"] },
+    finalfantasy: { includeStages: ['Base Stage', "Doesn't Evolve"] },
     monsterhunter: { includeRanks: [1, 2, 3] },
   },
 };

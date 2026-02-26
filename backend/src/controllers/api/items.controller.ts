@@ -271,6 +271,7 @@ export async function useBerry(req: Request, res: Response): Promise<void> {
     const berryName = body.berryName as string | undefined;
     const trainerId = body.trainerId !== null ? Number(body.trainerId) : undefined;
     const speciesValue = body.speciesValue as string | undefined;
+    const newMonsterName = body.newMonsterName as string | undefined;
     const userId = req.user?.discord_id;
     const isAdmin = req.user?.is_admin === true;
 
@@ -289,6 +290,7 @@ export async function useBerry(req: Request, res: Response): Promise<void> {
       berryName,
       trainerId,
       speciesValue,
+      newMonsterName: newMonsterName?.trim() ?? undefined,
       userId: userId ?? '',
       isAdmin,
     });

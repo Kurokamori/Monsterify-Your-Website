@@ -81,7 +81,7 @@ export default function MarketPage() {
   return (
     <div className="market-page">
       <div className="market-page__header">
-        <h1>Aurora Town Market</h1>
+        <h1>Heimdal City Market</h1>
         <p className="market-page__subtitle">
           Welcome to the market! Visit our many shops to purchase items, use berries and pastries,
           evolve your monsters, and more.

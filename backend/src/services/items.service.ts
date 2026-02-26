@@ -32,6 +32,7 @@ export type UseBerryParams = {
   berryName: string;
   trainerId: number;
   speciesValue?: string;
+  newMonsterName?: string;
   userId: string;
   isAdmin?: boolean;
 };
@@ -218,7 +219,7 @@ export class ItemsService {
   // ==========================================================================
 
   async useBerry(params: UseBerryParams): Promise<UseBerryResult> {
-    const { monsterId, berryName, trainerId, speciesValue, userId, isAdmin } = params;
+    const { monsterId, berryName, trainerId, speciesValue, newMonsterName, userId, isAdmin } = params;
 
     // Validate trainer ownership
     const trainer = await this.trainerRepo.findById(trainerId);
@@ -255,6 +256,7 @@ export class ItemsService {
       monster,
       berryName,
       speciesValue,
+      newMonsterName,
       userSettings,
     );
 
@@ -511,6 +513,7 @@ export class ItemsService {
     monster: MonsterWithTrainer,
     berryName: string,
     speciesValue: string | undefined,
+    newMonsterName: string | undefined,
     userSettings: UserSettings,
   ): Promise<{ update: MonsterUpdateInput; applied: boolean; newMonster?: MonsterWithTrainer }> {
     const update: MonsterUpdateInput = {};
@@ -689,7 +692,7 @@ export class ItemsService {
           throw new Error('Monster must have at least 2 species to use Divest Berry');
         }
 
-        const splitResult = await this.handleDivestBerry(monster);
+        const splitResult = await this.handleDivestBerry(monster, newMonsterName);
         Object.assign(update, splitResult.update);
         newMonster = splitResult.newMonster;
         applied = true;
@@ -823,24 +826,28 @@ export class ItemsService {
 
   private async handleDivestBerry(
     monster: MonsterWithTrainer,
+    newMonsterName?: string,
   ): Promise<{ update: MonsterUpdateInput; newMonster: MonsterWithTrainer }> {
     const update: MonsterUpdateInput = {};
     let splitSpecies: string;
 
     if (monster.species3) {
-      // 3 species -> keep species1+species2, split off species3
+      // 3 species -> new monster gets species1, original keeps species2+species3
+      splitSpecies = monster.species1;
+      update.species1 = monster.species2;
+      update.species2 = monster.species3;
       update.species3 = null;
-      splitSpecies = monster.species3;
     } else {
-      // 2 species -> keep species1, split off species2
+      // 2 species -> new monster gets species1, original keeps species2
+      splitSpecies = monster.species1;
+      update.species1 = monster.species2;
       update.species2 = null;
-      splitSpecies = monster.species2 ?? '';
     }
 
     // Initialize new monster with proper stats via MonsterInitializerService
     const initializedData = await this.monsterInitializer.initializeMonster({
       trainer_id: monster.trainer_id,
-      name: `${monster.name} Clone`,
+      name: newMonsterName ?? `${monster.name} Clone`,
       species1: splitSpecies,
       type1: monster.type1,
       type2: monster.type2,
@@ -856,7 +863,7 @@ export class ItemsService {
     const newMonster = await this.monsterRepo.create({
       trainerId: monster.trainer_id,
       playerUserId: monster.player_user_id,
-      name: initializedData.name ?? `${monster.name} Clone`,
+      name: newMonsterName ?? (initializedData.name ?? `${monster.name} Clone`),
       species1: initializedData.species1 ?? splitSpecies,
       species2: initializedData.species2 ?? null,
       species3: initializedData.species3 ?? null,

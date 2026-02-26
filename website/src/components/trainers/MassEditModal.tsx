@@ -36,6 +36,7 @@ export interface MassEditMonster {
 interface BerrySelection {
   type: string;
   id: number;
+  divestName?: string;
 }
 
 interface PastrySelection {
@@ -57,6 +58,7 @@ interface Operation {
   operationId: string;
   newName?: string;
   berryType?: string;
+  newMonsterName?: string;
   pastryType?: string;
   value?: string;
 }
@@ -274,6 +276,18 @@ export function MassEditModal({
     }));
   }, []);
 
+  const handleBerryDivestNameChange = useCallback((monsterId: number, berryIndex: number, divestName: string) => {
+    setEditData(prev => ({
+      ...prev,
+      [monsterId]: {
+        ...prev[monsterId],
+        berries: prev[monsterId].berries.map((berry, index) =>
+          index === berryIndex ? { ...berry, divestName } : berry
+        )
+      }
+    }));
+  }, []);
+
   const handlePastryChange = useCallback((monsterId: number, pastryIndex: number, pastryType: string) => {
     setEditData(prev => ({
       ...prev,
@@ -361,6 +375,7 @@ export function MassEditModal({
             monsterId: parseInt(monsterId),
             monsterName: monster.name,
             berryType: berry.type,
+            newMonsterName: berry.type === 'Divest Berry' ? berry.divestName?.trim() || undefined : undefined,
             operationId: `${monsterId}-berry-${index}`
           });
         }
@@ -488,7 +503,8 @@ export function MassEditModal({
             monsterId: op.monsterId,
             berryName: op.berryType,
             trainerId,
-            speciesValue: null
+            speciesValue: null,
+            newMonsterName: op.newMonsterName || undefined
           });
 
           if (response.data.success) {
@@ -627,7 +643,8 @@ export function MassEditModal({
             monsterId: op.monsterId,
             berryName: op.berryType,
             trainerId,
-            speciesValue: selectedSpecies
+            speciesValue: selectedSpecies,
+            newMonsterName: op.newMonsterName || undefined
           });
 
           if (response.data.success) {
@@ -831,38 +848,49 @@ export function MassEditModal({
                       </button>
                     </div>
                     {editData[monster.id]?.berries.map((berry, index) => (
-                      <div key={berry.id} className="flex gap-xs mb-xxs">
-                        <select
-                          value={berry.type}
-                          onChange={(e) => handleBerryChange(monster.id, index, e.target.value)}
-                          className="form-input flex-1"
-                        >
-                          <option value="">Select berry</option>
-                          {Object.entries(trainerInventory.berries).map(([berryType, originalCount]) => {
-                            const remainingCount = remainingBerries[berryType] || 0;
-                            const isCurrentlySelected = berry.type === berryType;
-                            const canSelect = remainingCount > 0 || isCurrentlySelected;
-                            const canUseOnMonster = canBerryBeUsedOnMonster(berryType, monster);
-                            const isNotValid = berry.type != 'Edenwiess' && berry.type != 'Forget-Me-Not' && berry.type != 'Edenweiss' && berry.type != 'Forget-me-Not';
-
-                            if (originalCount > 0 && canSelect && canUseOnMonster && isNotValid) {
-                              return (
-                                <option key={berryType} value={berryType} title={getBerryDescription(berryType)}>
-                                  {berryType} (x{remainingCount + (isCurrentlySelected ? 1 : 0)}) - {getBerryDescription(berryType)}
-                                </option>
-                              );
-                            }
-                            return null;
-                          })}
-                        </select>
-                        {editData[monster.id].berries.length > 1 && (
-                          <button
-                            type="button"
-                            onClick={() => removeBerryDropdown(monster.id, index)}
-                            className="button xs danger no-flex"
+                      <div key={berry.id}>
+                        <div className="flex gap-xs mb-xxs">
+                          <select
+                            value={berry.type}
+                            onChange={(e) => handleBerryChange(monster.id, index, e.target.value)}
+                            className="form-input flex-1"
                           >
-                            <i className="fas fa-times"></i>
-                          </button>
+                            <option value="">Select berry</option>
+                            {Object.entries(trainerInventory.berries).map(([berryType, originalCount]) => {
+                              const remainingCount = remainingBerries[berryType] || 0;
+                              const isCurrentlySelected = berry.type === berryType;
+                              const canSelect = remainingCount > 0 || isCurrentlySelected;
+                              const canUseOnMonster = canBerryBeUsedOnMonster(berryType, monster);
+                              const isNotValid = berry.type != 'Edenwiess' && berry.type != 'Forget-Me-Not' && berry.type != 'Edenweiss' && berry.type != 'Forget-me-Not';
+
+                              if (originalCount > 0 && canSelect && canUseOnMonster && isNotValid) {
+                                return (
+                                  <option key={berryType} value={berryType} title={getBerryDescription(berryType)}>
+                                    {berryType} (x{remainingCount + (isCurrentlySelected ? 1 : 0)}) - {getBerryDescription(berryType)}
+                                  </option>
+                                );
+                              }
+                              return null;
+                            })}
+                          </select>
+                          {editData[monster.id].berries.length > 1 && (
+                            <button
+                              type="button"
+                              onClick={() => removeBerryDropdown(monster.id, index)}
+                              className="button xs danger no-flex"
+                            >
+                              <i className="fas fa-times"></i>
+                            </button>
+                          )}
+                        </div>
+                        {berry.type === 'Divest Berry' && (
+                          <input
+                            type="text"
+                            placeholder={`Name for new monster (${monster.species1 || 'split species'})`}
+                            value={berry.divestName || ''}
+                            onChange={(e) => handleBerryDivestNameChange(monster.id, index, e.target.value)}
+                            className="form-input mb-xxs"
+                          />
                         )}
                       </div>
                     ))}

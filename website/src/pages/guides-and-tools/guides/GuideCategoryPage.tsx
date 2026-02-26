@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useParams, useLocation } from 'react-router-dom';
 import { useDocumentTitle } from '../../../hooks/useDocumentTitle';
 import { AutoStateContainer } from '../../../components/common/StateContainer';
@@ -18,13 +18,17 @@ const GuideCategoryPage = () => {
   const [error, setError] = useState<string | null>(null);
   const [categories, setCategories] = useState<CategoriesMap>({});
   const [content, setContent] = useState('');
+  const hasLoaded = useRef(false);
 
   // Extract sub-path from URL (empty for category overview, populated for specific guide)
   const subPath = location.pathname.replace(`/guides/${category}/`, '').replace(`/guides/${category}`, '');
 
   const fetchContent = useCallback(async () => {
     try {
-      setLoading(true);
+      // Only show loading spinner on initial load, not when switching guides
+      if (!hasLoaded.current) {
+        setLoading(true);
+      }
       setError(null);
 
       const [categoriesResponse, contentResponse] = await Promise.all([
@@ -40,6 +44,7 @@ const GuideCategoryPage = () => {
       setError('Failed to load guide content. Please try again later.');
     } finally {
       setLoading(false);
+      hasLoaded.current = true;
     }
   }, [category, subPath]);
 

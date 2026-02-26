@@ -101,6 +101,10 @@ export class ChatService {
     return this.roomRepo.findByTrainerId(trainerId);
   }
 
+  async getUnreadCountsForTrainers(trainerIds: number[]): Promise<Record<number, number>> {
+    return this.roomRepo.getUnreadCountsForTrainers(trainerIds);
+  }
+
   async getRoomById(roomId: number): Promise<ChatRoom | null> {
     return this.roomRepo.findById(roomId);
   }

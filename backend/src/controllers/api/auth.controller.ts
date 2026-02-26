@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { UserService } from '../../services/user.service';
-import { ContentSettings, UserPublic } from '../../repositories';
+import { ContentSettings, NotificationSettings, UserPublic } from '../../repositories';
 
 const userService = new UserService();
 
@@ -333,6 +333,42 @@ export async function updateContentSettings(req: Request, res: Response): Promis
     res.status(500).json({
       success: false,
       message: 'Server error while updating content settings',
+    });
+  }
+}
+
+// =============================================================================
+// Notification Settings
+// =============================================================================
+
+export async function updateNotificationSettings(req: Request, res: Response): Promise<void> {
+  try {
+    if (!req.user) {
+      res.status(401).json({ success: false, message: 'Not authenticated' });
+      return;
+    }
+
+    const settings = req.body;
+    if (!settings || typeof settings !== 'object') {
+      res.status(400).json({ success: false, message: 'Invalid settings format' });
+      return;
+    }
+
+    const sanitized: NotificationSettings = {
+      chat_notifications: !!settings.chat_notifications,
+    };
+
+    const updatedUser = await userService.updateNotificationSettings(req.user.id, sanitized);
+
+    res.json({
+      success: true,
+      notification_settings: updatedUser.notification_settings,
+    });
+  } catch (error) {
+    console.error('Update notification settings error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error while updating notification settings',
     });
   }
 }

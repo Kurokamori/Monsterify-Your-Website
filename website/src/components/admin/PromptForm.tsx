@@ -85,8 +85,8 @@ export function PromptForm({ prompt, onSuccess, onCancel }: PromptFormProps) {
           ? (Array.isArray(prompt.tags) ? prompt.tags : JSON.parse(prompt.tags as unknown as string))
           : [],
         active_months: (prompt.active_months as string) || '',
-        start_date: prompt.start_date && typeof prompt.start_date === 'string' ? prompt.start_date.split('T')[0] : '',
-        end_date: prompt.end_date && typeof prompt.end_date === 'string' ? prompt.end_date.split('T')[0] : ''
+        start_date: (prompt.startDate || prompt.start_date) && typeof (prompt.startDate || prompt.start_date) === 'string' ? String(prompt.startDate || prompt.start_date).split('T')[0] : '',
+        end_date: (prompt.endDate || prompt.end_date) && typeof (prompt.endDate || prompt.end_date) === 'string' ? String(prompt.endDate || prompt.end_date).split('T')[0] : ''
       });
     }
   }, [prompt]);

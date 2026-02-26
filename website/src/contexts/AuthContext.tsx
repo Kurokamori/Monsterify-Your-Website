@@ -8,11 +8,12 @@ import {
   type User,
   type MonsterRollerSettings,
   type ContentSettings,
+  type NotificationSettings,
   type RegisterData
 } from './authContextDef';
 
 // Re-export types for consumers
-export type { AuthContextType, User, MonsterRollerSettings, ContentSettings, RegisterData };
+export type { AuthContextType, User, MonsterRollerSettings, ContentSettings, NotificationSettings, RegisterData };
 
 interface JwtPayload {
   exp: number;
@@ -293,6 +294,34 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     }
   };
 
+  // Update user's notification settings
+  const updateNotificationSettings = async (settings: NotificationSettings): Promise<boolean> => {
+    try {
+      setError('');
+      setLoading(true);
+
+      const response = await api.put('/auth/notification-settings', settings);
+
+      if (response.data.success) {
+        setCurrentUser(prevUser => {
+          if (!prevUser) return null;
+          const updatedUser = { ...prevUser, notification_settings: response.data.notification_settings };
+          localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(updatedUser));
+          return updatedUser;
+        });
+      }
+
+      return true;
+    } catch (err: unknown) {
+      console.error('Notification settings update error:', err);
+      const axiosError = err as { response?: { data?: { message?: string } } };
+      setError(axiosError.response?.data?.message || 'Failed to update notification settings. Please try again.');
+      return false;
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // Update user's theme preference
   const updateTheme = async (theme: string): Promise<boolean> => {
     try {
@@ -387,6 +416,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     updateProfile,
     updateMonsterRollerSettings,
     updateContentSettings,
+    updateNotificationSettings,
     updateTheme,
     changePassword,
     requestPasswordReset,

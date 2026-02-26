@@ -557,9 +557,7 @@ export class MonsterInitializerService {
       initializedMonster.gender ??= this.generateGender();
 
       // Assign a random Digimon attribute (Data/Virus/Vaccine/Free/Variable) if not set
-      if (!initializedMonster.attribute) {
-        initializedMonster.attribute = DIGIMON_ATTRIBUTES[Math.floor(Math.random() * DIGIMON_ATTRIBUTES.length)];
-      }
+      initializedMonster.attribute ??= DIGIMON_ATTRIBUTES[Math.floor(Math.random() * DIGIMON_ATTRIBUTES.length)];
 
       // Set initial friendship (0-70 random value) if not already set
       initializedMonster.friendship ??= Math.floor(Math.random() * 71);
@@ -629,7 +627,7 @@ export class MonsterInitializerService {
     const total = weights.reduce((a, b) => a + b, 0);
     let roll = Math.random() * total;
     for (let i = 0; i < weights.length; i++) {
-      roll -= weights[i]!;
+      roll -= (weights[i] ?? 0);
       if (roll <= 0) { return i; }
     }
     return weights.length - 1;

@@ -3,6 +3,8 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../../contexts/useAuth';
 import rerollerService, { type RerollClaim } from '../../services/rerollerService';
 import { LoadingSpinner } from '../../components/common/LoadingSpinner';
+import { TypeBadge } from '../../components/common/TypeBadge';
+import { AttributeBadge } from '../../components/common/AttributeBadge';
 import { useDocumentTitle } from '../../hooks/useDocumentTitle';
 
 // --- Types ---
@@ -15,11 +17,20 @@ interface Trainer {
 interface ClaimMonster {
   species1: string;
   species2?: string;
+  species3?: string;
   image_url?: string;
   species1_img?: string;
+  species1_image?: string;
+  species2_img?: string;
+  species2_image?: string;
+  species3_img?: string;
+  species3_image?: string;
   type1?: string;
   type2?: string;
   type3?: string;
+  type4?: string;
+  type5?: string;
+  attribute?: string;
   claimed: boolean;
 }
 
@@ -399,7 +410,7 @@ export default function RerollClaimPage() {
                   </div>
                 )}
 
-                <div className="reward-grid">
+                <div className="claim-reward-grid">
                   {sessionData.monsters.map((monster, index) => {
                     const isSelected = !!monsterSelections[index];
                     const selection = monsterSelections[index];
@@ -413,21 +424,47 @@ export default function RerollClaimPage() {
                         className={getRewardCardClass(monster.claimed, isSelected, atLimit)}
                         onClick={() => toggleMonsterSelection(index)}
                       >
-                        <img
-                          src={monster.image_url || monster.species1_img || '/images/monsters/default.png'}
-                          alt={monster.species1}
-                          className="reward-image"
-                          onError={e => handleImageError(e, '/images/monsters/default.png')}
-                        />
-                        <div className="reward-name">{monster.species1}</div>
-                        {monster.species2 && (
-                          <div className="reward-details">+ {monster.species2}</div>
-                        )}
-                        <div className="reward-types">
-                          {monster.type1 && <span className="reward-type-badge">{monster.type1}</span>}
-                          {monster.type2 && <span className="reward-type-badge">{monster.type2}</span>}
-                          {monster.type3 && <span className="reward-type-badge">{monster.type3}</span>}
+                        <div className="reward-images">
+                          <img
+                            src={monster.image_url || monster.species1_image || monster.species1_img || '/images/monsters/default.png'}
+                            alt={monster.species1}
+                            className="reward-image"
+                            onError={e => handleImageError(e, '/images/monsters/default.png')}
+                          />
+                          {monster.species2 && (monster.species2_image || monster.species2_img) && (
+                            <img
+                              src={monster.species2_image || monster.species2_img}
+                              alt={monster.species2}
+                              className="reward-image"
+                              onError={e => handleImageError(e, '/images/monsters/default.png')}
+                            />
+                          )}
+                          {monster.species3 && (monster.species3_image || monster.species3_img) && (
+                            <img
+                              src={monster.species3_image || monster.species3_img}
+                              alt={monster.species3}
+                              className="reward-image"
+                              onError={e => handleImageError(e, '/images/monsters/default.png')}
+                            />
+                          )}
                         </div>
+                        <div className="reward-name">
+                          {monster.species1}
+                          {monster.species2 && ` / ${monster.species2}`}
+                          {monster.species3 && ` / ${monster.species3}`}
+                        </div>
+                        <div className="reward-types">
+                          {monster.type1 && <TypeBadge type={monster.type1} size="xs" />}
+                          {monster.type2 && <TypeBadge type={monster.type2} size="xs" />}
+                          {monster.type3 && <TypeBadge type={monster.type3} size="xs" />}
+                          {monster.type4 && <TypeBadge type={monster.type4} size="xs" />}
+                          {monster.type5 && <TypeBadge type={monster.type5} size="xs" />}
+                        </div>
+                        {monster.attribute && (
+                          <div className="reward-attribute">
+                            <AttributeBadge attribute={monster.attribute} size="xs" />
+                          </div>
+                        )}
 
                         {monster.claimed && <span className="claimed-badge">Already Claimed</span>}
                         {isSelected && <span className="selected-badge">Selected</span>}
@@ -485,7 +522,7 @@ export default function RerollClaimPage() {
                   </div>
                 )}
 
-                <div className="reward-grid">
+                <div className="claim-reward-grid">
                   {sessionData.items.map((item, index) => {
                     const isSelected = !!itemSelections[index];
                     const selection = itemSelections[index];

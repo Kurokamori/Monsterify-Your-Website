@@ -484,6 +484,12 @@
   margin-bottom: var(--spacing-xsmall);
 }
 
+.bazar-adopt-monster__card-attribute {
+  display: flex;
+  justify-content: center;
+  margin-bottom: var(--spacing-xxsmall);
+}
+
 .bazar-adopt-monster__card-level {
   display: inline-block;
   color: var(--accent-color);

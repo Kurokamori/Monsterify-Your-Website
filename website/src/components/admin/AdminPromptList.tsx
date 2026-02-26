@@ -5,9 +5,12 @@ export interface PromptData {
   title: string;
   description?: string;
   type: string;
-  is_active: boolean;
+  is_active?: boolean;
+  isActive?: boolean;
   is_currently_available?: boolean;
+  isCurrentlyAvailable?: boolean;
   end_date?: string;
+  endDate?: string;
   rewards?: string | Record<string, unknown>;
   submission_count?: number;
   approved_count?: number;
@@ -43,11 +46,14 @@ function formatRewards(rewards: string | Record<string, unknown> | undefined): s
 }
 
 function getStatusBadge(prompt: PromptData): { text: string; className: string } {
-  if (!prompt.is_active) return { text: 'Inactive', className: 'inactive' };
-  if (prompt.type === 'event' && prompt.end_date) {
-    if (new Date(prompt.end_date) < new Date()) return { text: 'Expired', className: 'expired' };
+  const isActive = prompt.isActive ?? prompt.is_active;
+  const endDate = prompt.endDate ?? prompt.end_date;
+  const isCurrentlyAvailable = prompt.isCurrentlyAvailable ?? prompt.is_currently_available;
+  if (!isActive) return { text: 'Inactive', className: 'inactive' };
+  if (prompt.type === 'event' && endDate) {
+    if (new Date(endDate) < new Date()) return { text: 'Expired', className: 'expired' };
   }
-  if (prompt.is_currently_available) return { text: 'Active', className: 'active' };
+  if (isCurrentlyAvailable) return { text: 'Active', className: 'active' };
   return { text: 'Scheduled', className: 'scheduled' };
 }
 
@@ -180,7 +186,7 @@ export function AdminPromptList({ prompts, loading, filters, onFiltersChange, on
       <div className="item-config">
         <div className="summary-stats">
           <div className="stat-item"><span className="admin-prompt__stat-label">Total Prompts:</span> <span className="stat-value">{prompts.length}</span></div>
-          <div className="stat-item"><span className="admin-prompt__stat-label">Active:</span> <span className="stat-value">{prompts.filter(p => p.is_active).length}</span></div>
+          <div className="stat-item"><span className="admin-prompt__stat-label">Active:</span> <span className="stat-value">{prompts.filter(p => p.isActive ?? p.is_active).length}</span></div>
           <div className="stat-item"><span className="admin-prompt__stat-label">Total Submissions:</span> <span className="stat-value">{prompts.reduce((sum, p) => sum + (p.submission_count || 0), 0)}</span></div>
         </div>
       </div>

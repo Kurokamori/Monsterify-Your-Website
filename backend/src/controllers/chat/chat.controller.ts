@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { ChatService } from '../../services/chat.service.js';
+import { db } from '../../database';
 import cloudinary from '../../utils/cloudinary.js';
 
 const chatService = new ChatService();
@@ -28,6 +29,64 @@ export async function updateChatProfile(req: Request, res: Response): Promise<vo
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Failed to update profile';
     res.status(400).json({ success: false, error: message });
+  }
+}
+
+// ============================================================================
+// Unread Counts (bulk)
+// ============================================================================
+
+export async function getUnreadCounts(req: Request, res: Response): Promise<void> {
+  try {
+    const raw = req.query.trainerIds as string;
+    if (!raw) {
+      res.json({ success: true, data: {} });
+      return;
+    }
+    const trainerIds = raw.split(',').map(Number).filter((n) => !isNaN(n));
+    const counts = await chatService.getUnreadCountsForTrainers(trainerIds);
+    res.json({ success: true, data: counts });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : 'Failed to get unread counts';
+    res.status(500).json({ success: false, error: message });
+  }
+}
+
+// ============================================================================
+// Total Unread (user-level)
+// ============================================================================
+
+export async function getUserTotalUnread(req: Request, res: Response): Promise<void> {
+  try {
+    if (!req.user) {
+      res.status(401).json({ success: false, error: 'Not authenticated' });
+      return;
+    }
+
+    // Look up trainers for this user via discord_id
+    const user = req.user as { id: number; discord_id?: string | null };
+    if (!user.discord_id) {
+      res.json({ success: true, data: { totalUnread: 0 } });
+      return;
+    }
+
+    const trainerResult = await db.query<{ id: number }>(
+      'SELECT id FROM trainers WHERE player_user_id = $1',
+      [user.discord_id],
+    );
+    const trainerIds = trainerResult.rows.map((r) => r.id);
+
+    if (trainerIds.length === 0) {
+      res.json({ success: true, data: { totalUnread: 0 } });
+      return;
+    }
+
+    const counts = await chatService.getUnreadCountsForTrainers(trainerIds);
+    const totalUnread = Object.values(counts).reduce((sum, c) => sum + c, 0);
+    res.json({ success: true, data: { totalUnread } });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : 'Failed to get total unread';
+    res.status(500).json({ success: false, error: message });
   }
 }
 

@@ -156,6 +156,7 @@
 }
 
 .trainer-selector__card {
+  position: relative;
   display: flex;
   align-items: center;
   gap: var(--spacing-small);
@@ -2887,6 +2888,24 @@
 
 .trainer-selector__avatar--admin i {
   font-size: var(--font-size-large);
+}
+
+.trainer-selector__unread-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  border-radius: 10px;
+  background: var(--error-color);
+  color: var(--text-color);
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 20px;
+  text-align: center;
+  box-shadow: 0 2px 4px var(--overlay-light);
+  pointer-events: none;
 }
 
 /* Admin label in sidebar header */

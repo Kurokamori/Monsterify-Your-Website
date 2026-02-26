@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useRef } from 'react'
 import { Modal } from '@components/common/Modal'
 import monsterService from '@services/monsterService'
 import abilityService from '@services/abilityService'
+import { MONSTER_TYPES, MONSTER_ATTRIBUTES, MONSTER_NATURES } from '@utils/staticValues'
 import type { Monster, MonsterMove } from '@services/monsterService'
 import type { Ability } from '@services/abilityService'
 import '@styles/admin/admin-monster-edit.css'
@@ -10,19 +11,12 @@ import '@styles/admin/admin-monster-edit.css'
 // Constants
 // ============================================================================
 
-const NATURES = [
-  'Hardy', 'Lonely', 'Brave', 'Adamant', 'Naughty',
-  'Bold', 'Docile', 'Relaxed', 'Impish', 'Lax',
-  'Timid', 'Hasty', 'Serious', 'Jolly', 'Naive',
-  'Modest', 'Mild', 'Quiet', 'Bashful', 'Rash',
-  'Calm', 'Gentle', 'Sassy', 'Careful', 'Quirky',
-]
-
 const STAT_LABELS: Record<string, string> = {
   hp: 'HP', atk: 'Atk', def: 'Def', spa: 'SpA', spd: 'SpD', spe: 'Spe',
 }
 
 const STAT_KEYS = ['hp', 'atk', 'def', 'spa', 'spd', 'spe'] as const
+const TYPE_KEYS = ['type1', 'type2', 'type3', 'type4', 'type5'] as const
 
 function parseMoveset(raw: unknown): string[] {
   if (Array.isArray(raw)) return raw.filter((m): m is string => typeof m === 'string')
@@ -53,6 +47,8 @@ interface FormState {
   friendship: number
   ability1: string
   ability2: string
+  type1: string; type2: string; type3: string; type4: string; type5: string
+  attribute: string
   hp_iv: number; atk_iv: number; def_iv: number; spa_iv: number; spd_iv: number; spe_iv: number
   hp_ev: number; atk_ev: number; def_ev: number; spa_ev: number; spd_ev: number; spe_ev: number
   hp_total: number; atk_total: number; def_total: number; spa_total: number; spd_total: number; spe_total: number
@@ -301,6 +297,12 @@ export function AdminMonsterEditModal({
         friendship: (m.friendship as number) ?? 0,
         ability1: (m.ability1 as string) ?? '',
         ability2: (m.ability2 as string) ?? '',
+        type1: (m.type1 as string) ?? '',
+        type2: (m.type2 as string) ?? '',
+        type3: (m.type3 as string) ?? '',
+        type4: (m.type4 as string) ?? '',
+        type5: (m.type5 as string) ?? '',
+        attribute: (m.attribute as string) ?? '',
         hp_iv: (m.hp_iv as number) ?? 0, atk_iv: (m.atk_iv as number) ?? 0,
         def_iv: (m.def_iv as number) ?? 0, spa_iv: (m.spa_iv as number) ?? 0,
         spd_iv: (m.spd_iv as number) ?? 0, spe_iv: (m.spe_iv as number) ?? 0,
@@ -358,6 +360,12 @@ export function AdminMonsterEditModal({
         friendship: form.friendship,
         ability1: form.ability1 || null,
         ability2: form.ability2 || null,
+        type1: form.type1 || null,
+        type2: form.type2 || null,
+        type3: form.type3 || null,
+        type4: form.type4 || null,
+        type5: form.type5 || null,
+        attribute: form.attribute || null,
         hp_iv: form.hp_iv, atk_iv: form.atk_iv, def_iv: form.def_iv,
         spa_iv: form.spa_iv, spd_iv: form.spd_iv, spe_iv: form.spe_iv,
         hp_ev: form.hp_ev, atk_ev: form.atk_ev, def_ev: form.def_ev,
@@ -435,7 +443,7 @@ export function AdminMonsterEditModal({
                   onChange={(e) => updateField('nature', e.target.value)}
                 >
                   <option value="">— Select —</option>
-                  {NATURES.map(n => <option key={n} value={n}>{n}</option>)}
+                  {MONSTER_NATURES.map(n => <option key={n} value={n}>{n}</option>)}
                 </select>
               </div>
               <div className="admin-monster-edit__field">
@@ -448,6 +456,39 @@ export function AdminMonsterEditModal({
                   max={255}
                   onChange={(e) => updateNumericField('friendship', e.target.value, 0, 255)}
                 />
+              </div>
+            </div>
+          </div>
+
+          {/* Types & Attribute */}
+          <div className="admin-monster-edit__section">
+            <h4 className="admin-monster-edit__section-title">
+              <i className="fas fa-shield-alt" /> Types & Attribute
+            </h4>
+            <div className="admin-monster-edit__row-3">
+              {TYPE_KEYS.map((key, i) => (
+                <div key={key} className="admin-monster-edit__field">
+                  <label className="admin-monster-edit__label">Type {i + 1}</label>
+                  <select
+                    className="select"
+                    value={form[key]}
+                    onChange={(e) => updateField(key, e.target.value)}
+                  >
+                    <option value="">— None —</option>
+                    {MONSTER_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
+                  </select>
+                </div>
+              ))}
+              <div className="admin-monster-edit__field">
+                <label className="admin-monster-edit__label">Attribute</label>
+                <select
+                  className="select"
+                  value={form.attribute}
+                  onChange={(e) => updateField('attribute', e.target.value)}
+                >
+                  <option value="">— None —</option>
+                  {MONSTER_ATTRIBUTES.map(a => <option key={a} value={a}>{a}</option>)}
+                </select>
               </div>
             </div>
           </div>
