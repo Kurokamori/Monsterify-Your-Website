@@ -4,6 +4,10 @@
 
 ## Rangers
 
+## Spirit Keepers
+
+## The Tribes
+
 ## Tamers
 
 ## Professor Koa's Lab
@@ -12,16 +16,12 @@
 
 # Neutral
 
-## Ranchers
+## League
 
 ## Project Obsidian
 
-## Nyakuza
-
-## Spirit Keepers
-
 ## Digital Dawn
 
-## The Tribes
+## Nyakuza
 
 ## Twilight Order

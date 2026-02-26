@@ -228,7 +228,7 @@ export type RegionValue = (typeof Region)[keyof typeof Region];
 export const FactionName = {
   NYAKUZA: 'Nyakuza',
   DIGITAL_DAWN: 'Digital Dawn',
-  POKEMON_RANCHERS: 'Pokemon Ranchers',
+  POKEMON_RANCHERS: 'Ranchers',
   KOAS_LABORATORY: "Koa's Laboratory",
   PROJECT_OBSIDIAN: 'Project Obsidian',
   SPIRIT_KEEPERS: 'Spirit Keepers',
