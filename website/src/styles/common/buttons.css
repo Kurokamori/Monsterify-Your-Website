@@ -90,6 +90,7 @@
 .button.success {
   background-color: var(--success-dark);
   color: var(--text-color);
+  border: 1px solid var(--success-color);
 }
 
 .button.success:hover:not(:disabled) {

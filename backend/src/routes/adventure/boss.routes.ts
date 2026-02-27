@@ -17,6 +17,7 @@ import {
   deleteBoss,
   deleteUserDamage,
   setUserDamage,
+  generateRewardClaims,
 } from '@controllers/adventure/boss.controller';
 
 const router: Router = Router();
@@ -53,5 +54,6 @@ router.put('/admin/:id', authenticate, requireAdmin, updateBoss);
 router.delete('/admin/:id', authenticate, requireAdmin, deleteBoss);
 router.delete('/admin/:id/damage/:userId', authenticate, requireAdmin, deleteUserDamage);
 router.put('/admin/:id/damage/:userId', authenticate, requireAdmin, setUserDamage);
+router.post('/admin/:id/generate-rewards', authenticate, requireAdmin, generateRewardClaims);
 
 export default router;

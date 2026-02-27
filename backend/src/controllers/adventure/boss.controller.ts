@@ -366,6 +366,22 @@ export async function deleteUserDamage(req: Request, res: Response): Promise<voi
   }
 }
 
+export async function generateRewardClaims(req: Request, res: Response): Promise<void> {
+  try {
+    const bossId = parseInt(req.params.id as string, 10);
+    if (isNaN(bossId)) {
+      res.status(400).json({ success: false, message: 'Invalid boss ID' });
+      return;
+    }
+    const result = await bossService.adminGenerateRewardClaims(bossId);
+    res.json({ success: true, message: `Generated ${result.created} reward claims`, data: result });
+  } catch (error) {
+    const msg = error instanceof Error ? error.message : 'Failed to generate reward claims';
+    console.error('Error generating reward claims:', error);
+    res.status(500).json({ success: false, message: msg });
+  }
+}
+
 export async function setUserDamage(req: Request, res: Response): Promise<void> {
   try {
     const bossId = parseInt(req.params.id as string, 10);

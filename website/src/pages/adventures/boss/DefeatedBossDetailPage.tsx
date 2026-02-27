@@ -71,10 +71,11 @@ const DefeatedBossDetailPage = () => {
 
     let monsterData: BossMonsterData | null = null;
     try {
-      if (bossData.userReward.rewardType === 'boss_monster' && bossData.boss.rewardMonsterData) {
-        monsterData = JSON.parse(bossData.boss.rewardMonsterData) as BossMonsterData;
-      } else if (bossData.boss.gruntMonsterData) {
-        monsterData = JSON.parse(bossData.boss.gruntMonsterData) as BossMonsterData;
+      const raw = bossData.userReward.rewardType === 'boss_monster'
+        ? bossData.boss.rewardMonsterData
+        : bossData.boss.gruntMonsterData;
+      if (raw) {
+        monsterData = (typeof raw === 'string' ? JSON.parse(raw) : raw) as BossMonsterData;
       }
     } catch {
       // Invalid JSON
@@ -259,7 +260,6 @@ const BossDetailContent = ({ bossData, currentUserId, onClaimReward }: BossDetai
                     <th>Damage</th>
                     <th>Submissions</th>
                     <th>Reward</th>
-                    <th>Status</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -267,8 +267,6 @@ const BossDetailContent = ({ bossData, currentUserId, onClaimReward }: BossDetai
                     <LeaderboardRow
                       key={entry.userId ?? entry.rank}
                       entry={entry}
-                      isCurrentUser={currentUserId === entry.userId}
-                      onClaimReward={onClaimReward}
                     />
                   ))}
                 </tbody>
@@ -289,11 +287,9 @@ const BossDetailContent = ({ bossData, currentUserId, onClaimReward }: BossDetai
 
 interface LeaderboardRowProps {
   entry: BossLeaderboardEntry;
-  isCurrentUser: boolean;
-  onClaimReward: () => void;
 }
 
-const LeaderboardRow = ({ entry, isCurrentUser, onClaimReward }: LeaderboardRowProps) => {
+const LeaderboardRow = ({ entry }: LeaderboardRowProps) => {
   const getRankIcon = (rank: number): string => {
     switch (rank) {
       case 1: return '\u{1F947}';
@@ -350,30 +346,6 @@ const LeaderboardRow = ({ entry, isCurrentUser, onClaimReward }: LeaderboardRowP
             <i className="fas fa-gift"></i> Grunt Monster
           </span>
         )}
-      </td>
-      <td>
-        <div className="boss-leaderboard__status-cell">
-          {entry.rewardClaim ? (
-            entry.rewardClaim.isClaimed ? (
-              <span className="badge badge--claimed">
-                <i className="fas fa-check"></i> Claimed
-              </span>
-            ) : (
-              <span className="badge badge--unclaimed">
-                <i className="fas fa-clock"></i> Pending
-              </span>
-            )
-          ) : (
-            <span className="badge badge--no-reward">
-              <i className="fas fa-minus"></i> N/A
-            </span>
-          )}
-          {isCurrentUser && entry.rewardClaim && !entry.rewardClaim.isClaimed && (
-            <button className="button primary sm" onClick={onClaimReward}>
-              Claim
-            </button>
-          )}
-        </div>
       </td>
     </tr>
   );

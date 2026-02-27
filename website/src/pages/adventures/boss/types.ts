@@ -97,8 +97,8 @@ export interface UserRewardStatus {
 export interface DefeatedBossDetailData {
   boss: DefeatedBossSummary & {
     description?: string;
-    rewardMonsterData?: string;
-    gruntMonsterData?: string;
+    rewardMonsterData?: string | Record<string, unknown> | null;
+    gruntMonsterData?: string | Record<string, unknown> | null;
   };
   leaderboard: BossLeaderboardEntry[];
   userReward?: UserRewardStatus;

@@ -199,6 +199,11 @@ const bossService = {
     return response.data;
   },
 
+  adminGenerateRewards: async (bossId: number): Promise<{ success: boolean; message: string; data: { created: number } }> => {
+    const response = await api.post(`/bosses/admin/${bossId}/generate-rewards`);
+    return response.data;
+  },
+
   adminGetLeaderboard: async (bossId: number, limit = 100): Promise<AdminLeaderboardEntry[]> => {
     const response = await api.get(`/bosses/${bossId}/leaderboard`, { params: { limit } });
     return response.data.data || [];

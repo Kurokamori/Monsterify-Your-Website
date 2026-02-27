@@ -407,6 +407,23 @@ export default function BossManagerPage() {
     );
   };
 
+  const handleGenerateRewards = async (boss: AdminBoss) => {
+    setSaving(true);
+    setStatusMsg(null);
+    try {
+      const result = await bossService.adminGenerateRewards(boss.id);
+      if (result.data.created > 0) {
+        setStatusMsg({ type: 'success', text: `Generated ${result.data.created} reward claims for "${boss.name}"` });
+      } else {
+        setStatusMsg({ type: 'error', text: 'Reward claims already exist for this boss (0 created)' });
+      }
+    } catch (err) {
+      setStatusMsg({ type: 'error', text: getAxiosError(err, 'Failed to generate rewards') });
+    } finally {
+      setSaving(false);
+    }
+  };
+
   // ── Damage handlers ─────────────────────────────────────────────
 
   const handleApplyDamage = async () => {
@@ -727,6 +744,16 @@ export default function BossManagerPage() {
                         >
                           <i className="fas fa-crosshairs" />
                         </button>
+                        {boss.status === 'defeated' && (
+                          <button
+                            className="button success sm"
+                            onClick={() => handleGenerateRewards(boss)}
+                            title="Generate reward claims"
+                            disabled={saving}
+                          >
+                            <i className="fas fa-gift" />
+                          </button>
+                        )}
                         <button
                           className="button danger sm"
                           onClick={() => handleDeleteBoss(boss)}

@@ -370,7 +370,7 @@ export class BossRepository extends BaseRepository<Boss, BossCreateInput, BossUp
       `
         SELECT
           COALESCE(u.id, bd.user_id) as user_id,
-          bd.user_id as damage_user_id,
+          MIN(bd.user_id) as damage_user_id,
           u.username,
           u.discord_id,
           SUM(bd.damage_amount) as total_damage,
@@ -378,7 +378,7 @@ export class BossRepository extends BaseRepository<Boss, BossCreateInput, BossUp
         FROM boss_damage bd
         LEFT JOIN users u ON (bd.user_id = u.id OR bd.user_id::text = u.discord_id)
         WHERE bd.boss_id = $1
-        GROUP BY COALESCE(u.id, bd.user_id), bd.user_id, u.username, u.discord_id
+        GROUP BY COALESCE(u.id, bd.user_id), u.username, u.discord_id
         ORDER BY total_damage DESC
         LIMIT $2
       `,
@@ -430,10 +430,21 @@ export class BossRepository extends BaseRepository<Boss, BossCreateInput, BossUp
     return normalizeBossRewardClaim(claimRow);
   }
 
-  async getUnclaimedRewards(userId: number): Promise<(BossRewardClaim & { bossName: string; bossImage: string | null })[]> {
-    const result = await db.query<BossRewardClaimRow & { boss_name: string; boss_image: string | null }>(
+  async getUnclaimedRewards(userId: number): Promise<(BossRewardClaim & {
+    bossName: string;
+    bossImage: string | null;
+    rewardMonsterData: string | null;
+    gruntMonsterData: string | null;
+  })[]> {
+    const result = await db.query<BossRewardClaimRow & {
+      boss_name: string;
+      boss_image: string | null;
+      reward_monster_data: string | null;
+      grunt_monster_data: string | null;
+    }>(
       `
-        SELECT brc.*, b.name as boss_name, b.image_url as boss_image
+        SELECT brc.*, b.name as boss_name, b.image_url as boss_image,
+               b.reward_monster_data, b.grunt_monster_data
         FROM boss_reward_claims brc
         JOIN bosses b ON brc.boss_id = b.id
         WHERE brc.user_id = $1 AND brc.is_claimed::boolean = false
@@ -446,6 +457,8 @@ export class BossRepository extends BaseRepository<Boss, BossCreateInput, BossUp
       ...normalizeBossRewardClaim(row),
       bossName: row.boss_name,
       bossImage: row.boss_image,
+      rewardMonsterData: row.reward_monster_data,
+      gruntMonsterData: row.grunt_monster_data,
     }));
   }
 
@@ -471,7 +484,7 @@ export class BossRepository extends BaseRepository<Boss, BossCreateInput, BossUp
     await db.query(
       `
         UPDATE boss_reward_claims
-        SET is_claimed = 1, claimed_at = CURRENT_TIMESTAMP, monster_name = $1, assigned_trainer_id = $2
+        SET is_claimed = true, claimed_at = CURRENT_TIMESTAMP, monster_name = $1, assigned_trainer_id = $2
         WHERE boss_id = $3 AND user_id = $4
       `,
       [monsterName, trainerId, bossId, userId]
@@ -500,7 +513,12 @@ export class BossRepository extends BaseRepository<Boss, BossCreateInput, BossUp
 
   async getTotalParticipants(bossId: number): Promise<number> {
     const result = await db.query<{ count: string }>(
-      `SELECT COUNT(DISTINCT user_id) as count FROM boss_damage WHERE boss_id = $1`,
+      `
+        SELECT COUNT(DISTINCT COALESCE(u.id, bd.user_id)) as count
+        FROM boss_damage bd
+        LEFT JOIN users u ON (bd.user_id = u.id OR bd.user_id::text = u.discord_id)
+        WHERE bd.boss_id = $1
+      `,
       [bossId]
     );
     return parseInt(result.rows[0]?.count ?? '0', 10);
