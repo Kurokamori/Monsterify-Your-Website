@@ -4,8 +4,9 @@ import api from '../../services/api';
 interface Submission {
   id: number;
   title: string;
-  description: string;
-  content_type: 'art' | 'writing';
+  description: string | null;
+  submissionType: 'art' | 'writing';
+  imageUrl: string | null;
   url: string;
 }
 
@@ -43,7 +44,7 @@ export const PersonDetailModal = ({
     const fetchAvailableSubmissions = async () => {
       try {
         const response = await api.get(`/factions/trainers/${trainerId}/submissions/available-for-meeting`);
-        setAvailableSubmissions(response.data.submissions || []);
+        setAvailableSubmissions(response.data.data || []);
       } catch (err) {
         console.error('Error fetching available submissions:', err);
         setError('Failed to load available submissions');
@@ -150,7 +151,7 @@ export const PersonDetailModal = ({
                   <option value="">Select a submission</option>
                   {availableSubmissions.map(submission => (
                     <option key={submission.id} value={submission.id}>
-                      {submission.title} ({submission.content_type})
+                      {submission.title} ({submission.submissionType})
                     </option>
                   ))}
                 </select>

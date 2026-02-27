@@ -33,6 +33,23 @@ import {
   addMonsterToTeamAdmin,
   updateMonsterAdmin,
   deleteMonsterAdmin,
+  updateFactionAdmin,
+  bulkUpdateFactionPropertyAdmin,
+  getFactionTitlesAdmin,
+  createFactionTitleAdmin,
+  updateFactionTitleAdmin,
+  deleteFactionTitleAdmin,
+  getFactionRelationshipsAdmin,
+  createFactionRelationshipAdmin,
+  updateFactionRelationshipAdmin,
+  deleteFactionRelationshipAdmin,
+  getFactionStoreItemsAdmin,
+  createFactionStoreItemAdmin,
+  updateFactionStoreItemAdmin,
+  deleteFactionStoreItemAdmin,
+  getAllPromptsAdmin,
+  getFactionPromptsAdmin,
+  deleteFactionPromptAdmin,
 } from '@controllers/adventure/faction.controller';
 
 const router = Router();
@@ -75,6 +92,27 @@ router.get('/tributes/pending', authenticate, requireAdmin, getPendingTributes);
 router.put('/tributes/:tributeId/review', authenticate, requireAdmin, reviewTribute);
 router.post('/:factionId/prompts', authenticate, requireAdmin, createFactionPrompt);
 router.put('/prompts/:promptId', authenticate, requireAdmin, updateFactionPrompt);
+
+// Admin: Faction Management
+router.put('/admin/factions/bulk-property', authenticate, requireAdmin, bulkUpdateFactionPropertyAdmin);
+router.put('/admin/factions/:factionId', authenticate, requireAdmin, updateFactionAdmin);
+router.get('/admin/factions/:factionId/titles', authenticate, requireAdmin, getFactionTitlesAdmin);
+router.post('/admin/titles', authenticate, requireAdmin, createFactionTitleAdmin);
+router.put('/admin/titles/:titleId', authenticate, requireAdmin, updateFactionTitleAdmin);
+router.delete('/admin/titles/:titleId', authenticate, requireAdmin, deleteFactionTitleAdmin);
+router.get('/admin/factions/:factionId/relationships', authenticate, requireAdmin, getFactionRelationshipsAdmin);
+router.post('/admin/relationships', authenticate, requireAdmin, createFactionRelationshipAdmin);
+router.put('/admin/relationships/:relationshipId', authenticate, requireAdmin, updateFactionRelationshipAdmin);
+router.delete('/admin/relationships/:relationshipId', authenticate, requireAdmin, deleteFactionRelationshipAdmin);
+router.get('/admin/factions/:factionId/store-items', authenticate, requireAdmin, getFactionStoreItemsAdmin);
+router.post('/admin/store-items', authenticate, requireAdmin, createFactionStoreItemAdmin);
+router.put('/admin/store-items/:itemId', authenticate, requireAdmin, updateFactionStoreItemAdmin);
+router.delete('/admin/store-items/:itemId', authenticate, requireAdmin, deleteFactionStoreItemAdmin);
+router.get('/admin/prompts/all', authenticate, requireAdmin, getAllPromptsAdmin);
+router.get('/admin/factions/:factionId/prompts', authenticate, requireAdmin, getFactionPromptsAdmin);
+router.delete('/admin/prompts/:promptId', authenticate, requireAdmin, deleteFactionPromptAdmin);
+
+// Admin: People Management
 router.get('/admin/people', authenticate, requireAdmin, getAllFactionPeopleAdmin);
 router.post('/admin/people', authenticate, requireAdmin, createFactionPersonAdmin);
 router.put('/admin/people/:personId', authenticate, requireAdmin, updateFactionPersonAdmin);

@@ -185,13 +185,14 @@ export class FactionPersonMeetingRepository extends BaseRepository<
     return (result.rowCount ?? 0) > 0;
   }
 
-  async getAvailableSubmissionsForMeeting(trainerId: number): Promise<{ id: number; title: string; createdAt: Date }[]> {
-    const result = await db.query<{ id: number; title: string; created_at: Date }>(
+  async getAvailableSubmissionsForMeeting(trainerId: number): Promise<{ id: number; title: string; createdAt: Date; submissionType: 'art' | 'writing'; imageUrl: string | null; description: string | null }[]> {
+    const result = await db.query<{ id: number; title: string; created_at: Date; submission_type: 'art' | 'writing'; image_url: string | null; description: string | null }>(
       `
-        SELECT s.id, s.title, s.created_at
+        SELECT s.id, s.title, s.created_at, s.submission_type, s.description,
+          (SELECT si.image_url FROM submission_images si WHERE si.submission_id = s.id AND si.is_main::boolean = true LIMIT 1) as image_url
         FROM submissions s
-        WHERE s.trainer_id = $1
-        AND s.id NOT IN (
+        JOIN submission_trainers st ON st.submission_id = s.id AND st.trainer_id = $1
+        WHERE s.id NOT IN (
           SELECT fs.submission_id FROM faction_submissions fs
           WHERE fs.trainer_id = $1 AND fs.submission_id IS NOT NULL
         )
@@ -211,6 +212,9 @@ export class FactionPersonMeetingRepository extends BaseRepository<
       id: row.id,
       title: row.title,
       createdAt: row.created_at,
+      submissionType: row.submission_type,
+      imageUrl: row.image_url,
+      description: row.description,
     }));
   }
 

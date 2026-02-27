@@ -1,4 +1,4 @@
-import { ReactNode, MouseEvent } from 'react';
+import { ReactNode, MouseEvent, createElement } from 'react';
 
 type CardVariant = 'default' | 'compact' | 'flat';
 type CardSize = 'sm' | 'md' | 'lg';
@@ -47,7 +47,9 @@ export interface CardProps {
   /** Hoverable state (adds hover effect) */
   hoverable?: boolean;
   /** Clickable card */
-  onClick?: (e: MouseEvent<HTMLDivElement>) => void;
+  onClick?: (e: MouseEvent<HTMLElement>) => void;
+  /** Link URL - renders as <a> to enable right-click/middle-click open in new tab */
+  href?: string;
   /** Additional className */
   className?: string;
   /** Full height mode */
@@ -73,6 +75,7 @@ export const Card = ({
   disabled = false,
   hoverable = false,
   onClick,
+  href,
   className = '',
   fullHeight = false
 }: CardProps) => {
@@ -83,8 +86,9 @@ export const Card = ({
     }
   };
 
-  const handleClick = (e: MouseEvent<HTMLDivElement>) => {
+  const handleClick = (e: MouseEvent<HTMLElement>) => {
     if (disabled || !onClick) return;
+    if (href) e.preventDefault();
     onClick(e);
   };
 
@@ -167,8 +171,13 @@ export const Card = ({
     );
   };
 
-  return (
-    <div className={cardClasses} onClick={handleClick}>
+  const Tag = href ? 'a' : 'div';
+  const tagProps = href ? { href } : {};
+
+  return createElement(
+    Tag,
+    { className: cardClasses, onClick: handleClick, ...tagProps },
+    <>
       {(imagePosition === 'top' || imagePosition === 'background') && renderImage()}
 
       <div className="card__content">
@@ -185,6 +194,6 @@ export const Card = ({
       {renderFooter()}
 
       {selected && <div className="card__selected-indicator" />}
-    </div>
+    </>
   );
 };

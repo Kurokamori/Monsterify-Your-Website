@@ -10,6 +10,8 @@ interface StoreItem {
   price: number;
   standing_requirement: number;
   stock_quantity: number;
+  title_name?: string | null;
+  title_id?: number | null;
 }
 
 interface Faction {
@@ -195,9 +197,11 @@ export const FactionStore = ({ factionId, trainerId, faction }: FactionStoreProp
                   <i className="fas fa-coins"></i>
                 </div>
 
-                {item.standing_requirement > 0 && (
+                {(item.title_name || item.standing_requirement > 0) && (
                   <div className="text-muted" style={{ fontSize: 'var(--font-size-small)' }}>
-                    Requires {item.standing_requirement} standing
+                    {item.title_name
+                      ? `Requires "${item.title_name}" title`
+                      : `Requires ${item.standing_requirement} standing`}
                   </div>
                 )}
 

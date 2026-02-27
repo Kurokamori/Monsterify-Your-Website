@@ -203,3 +203,10 @@ export type {
   TrainerLeaderboardEntry,
   GlobalStats,
 } from './statisticsService';
+export { default as bookmarkService } from './bookmarkService';
+export type {
+  BookmarkCategory,
+  BookmarkItem,
+  BookmarkTextNote,
+  CategoryItemsResponse,
+} from './bookmarkService';

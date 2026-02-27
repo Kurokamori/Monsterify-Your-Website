@@ -1,3 +1,3 @@
 # The Tribes
 
-Mysterious and neutral, the Tribes live secluded lives on the outer islands, guarding their secrets fiercely and interacting little with outsiders. Their true customs and goals remain unknown.
+Mysterious and fiercely independent, the Tribes guard their customs, rituals, and secrets from the outside world. Three major tribes — the Old Ones of the Conoocoo Archipelago, the Featherless Ones, and the Wyvern People of the Sky Isles — maintain their isolation as a deliberate path to preservation, intervening only when outsiders threaten the balance of their islands.

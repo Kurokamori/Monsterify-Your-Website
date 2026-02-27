@@ -1,0 +1,429 @@
+/* ==============================
+   Bookmarks Pages
+   ============================== */
+
+/* --- Bookmarks List Page --- */
+
+.bookmarks-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: var(--spacing-large);
+}
+
+.bookmarks-page .page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--spacing-large);
+  flex-wrap: wrap;
+  gap: var(--spacing-small);
+}
+
+.bookmarks-page .page-header h1 {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-small);
+}
+
+.bookmarks-empty {
+  text-align: center;
+  padding: var(--spacing-xlarge) var(--spacing-large);
+  color: var(--text-color-muted);
+}
+
+.bookmarks-empty i {
+  font-size: 3rem;
+  opacity: 0.4;
+}
+
+.bookmarks-empty p {
+  margin-bottom: var(--spacing-small);
+}
+
+.bookmarks-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: var(--spacing-medium);
+}
+
+.bookmark-category-card {
+  background: var(--primary-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  padding: var(--spacing-medium);
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s;
+  position: relative;
+}
+
+.bookmark-category-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-medium);
+}
+
+.bookmark-category-card__title {
+  font-weight: 600;
+  font-size: 1.1rem;
+  margin-bottom: var(--spacing-xsmall);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xsmall);
+}
+
+.bookmark-category-card__count {
+  color: var(--text-color-muted);
+  font-size: 0.875rem;
+  margin-bottom: var(--spacing-small);
+}
+
+.bookmark-category-card__actions {
+  display: flex;
+  gap: var(--spacing-xsmall);
+}
+
+.bookmarks-back {
+  margin-top: var(--spacing-large);
+}
+
+/* --- Canvas Page --- */
+
+.bookmark-canvas-page {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: var(--spacing-medium);
+}
+
+/* Toolbar */
+.bookmark-toolbar {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-medium);
+  margin-bottom: var(--spacing-medium);
+  flex-wrap: wrap;
+}
+
+.bookmark-toolbar__title {
+  flex: 1;
+  font-size: 1.25rem;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.bookmark-toolbar__modes {
+  display: flex;
+  gap: 2px;
+}
+
+.bookmark-toolbar__modes .button {
+  border-radius: 0;
+}
+
+.bookmark-toolbar__modes .button:first-child {
+  border-radius: var(--border-radius) 0 0 var(--border-radius);
+}
+
+.bookmark-toolbar__modes .button:last-child {
+  border-radius: 0 var(--border-radius) var(--border-radius) 0;
+}
+
+/* Edit toolbar */
+.bookmark-edit-toolbar {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--spacing-medium);
+  margin-bottom: var(--spacing-medium);
+  flex-wrap: wrap;
+  padding: var(--spacing-small);
+  background: var(--primary-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+}
+
+.bookmark-edit-toolbar__section {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--spacing-xsmall);
+  flex-wrap: wrap;
+}
+
+/* Canvas */
+.bookmark-canvas {
+  position: relative;
+  width: 100%;
+  min-height: 600px;
+  aspect-ratio: 16 / 10;
+  background: var(--primary-color);
+  border: 2px solid var(--border-color);
+  border-radius: var(--border-radius);
+  overflow: hidden;
+}
+
+.bookmark-canvas--interactive {
+  cursor: default;
+}
+
+.bookmark-canvas__empty {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  color: var(--text-color-muted);
+  pointer-events: none;
+}
+
+/* Canvas cards */
+.bookmark-canvas-card {
+  position: absolute;
+  background: var(--primary-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+  transition: box-shadow 0.15s;
+  z-index: 1;
+}
+
+.bookmark-canvas-card:hover {
+  box-shadow: var(--shadow-medium);
+  z-index: 2;
+}
+
+.bookmark-canvas-card.draggable {
+  cursor: grab;
+  user-select: none;
+}
+
+.bookmark-canvas-card.draggable:active {
+  cursor: grabbing;
+  z-index: 10;
+}
+
+.bookmark-canvas-card__inner {
+  position: relative;
+}
+
+.bookmark-canvas-card__inner--full {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.bookmark-canvas-card__image {
+  width: 100%;
+  aspect-ratio: 1;
+  overflow: hidden;
+  background: var(--background-color);
+}
+
+.bookmark-canvas-card__image--fill {
+  aspect-ratio: unset;
+  flex: 1;
+  min-height: 0;
+}
+
+.bookmark-canvas-card__image img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.bookmark-canvas-card__info {
+  padding: 4px 6px;
+}
+
+.bookmark-canvas-card__name {
+  font-weight: 600;
+  font-size: 0.75rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.bookmark-canvas-card__species {
+  font-size: 0.65rem;
+  color: var(--text-color-muted);
+}
+
+.bookmark-canvas-card__types {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  margin-top: 2px;
+}
+
+.bookmark-canvas-card__types .badge {
+  font-size: 0.55rem;
+  padding: 0 3px;
+}
+
+.bookmark-canvas-card__attribute {
+  margin-top: 2px;
+}
+
+.bookmark-canvas-card__attribute .badge {
+  font-size: 0.55rem;
+  padding: 0 3px;
+}
+
+.bookmark-canvas-card__delete {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: none;
+  background: var(--error-dark);
+  color: var(--text-color);
+  font-size: 0.7rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 5;
+}
+
+.bookmark-canvas-card__delete:hover {
+  background: var(--error-color);
+}
+
+.bookmark-canvas-card__resize {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 12px;
+  height: 12px;
+  cursor: nwse-resize;
+  z-index: 5;
+  background: linear-gradient(135deg, transparent 50%, var(--accent-color) 50%);
+  border-radius: 0 0 var(--border-radius) 0;
+  opacity: 0.6;
+  transition: opacity 0.15s;
+}
+
+.bookmark-canvas-card__resize:hover {
+  opacity: 1;
+}
+
+/* Canvas notes */
+.bookmark-canvas-note {
+  position: absolute;
+  z-index: 1;
+  min-width: 60px;
+}
+
+.bookmark-canvas-note.draggable {
+  cursor: grab;
+  user-select: none;
+}
+
+.bookmark-canvas-note.draggable:active {
+  cursor: grabbing;
+  z-index: 10;
+}
+
+.bookmark-canvas-note__content {
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.bookmark-canvas-note__textarea {
+  width: 100%;
+  min-height: 60px;
+  background: transparent;
+  border: 1px dashed var(--border-color);
+  border-radius: var(--border-radius);
+  padding: var(--spacing-xsmall);
+  resize: both;
+  font-family: inherit;
+}
+
+.bookmark-canvas-note__controls {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 4px;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+.bookmark-canvas-note:hover .bookmark-canvas-note__controls {
+  opacity: 1;
+}
+
+.bookmark-canvas-note__color {
+  width: 22px;
+  height: 22px;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  background: transparent;
+}
+
+.bookmark-canvas-note__fontsize {
+  font-size: 0.7rem;
+  padding: 1px 2px;
+  border-radius: var(--border-radius);
+  border: 1px solid var(--border-color);
+  background: var(--primary-color);
+  color: var(--text-color);
+}
+
+.bookmark-canvas-note__delete {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: none;
+  background: var(--error-dark);
+  color: var(--text-color);
+  font-size: 0.6rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bookmark-canvas-note__delete:hover {
+  background: var(--error-color);
+}
+
+/* --- Responsive --- */
+
+@media (max-width: 768px) {
+  .bookmarks-grid {
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  }
+
+  .bookmark-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .bookmark-toolbar__title {
+    text-align: center;
+  }
+
+  .bookmark-toolbar__modes {
+    justify-content: center;
+  }
+
+  .bookmark-edit-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .bookmark-edit-toolbar__section {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .bookmark-canvas {
+    min-height: 400px;
+    aspect-ratio: auto;
+  }
+}

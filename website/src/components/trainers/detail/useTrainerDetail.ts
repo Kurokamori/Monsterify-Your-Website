@@ -48,6 +48,15 @@ export interface RewardPopupData {
   message?: string;
 }
 
+export interface TrainerGalleryImage {
+  id: number;
+  image_url: string;
+  title: string | null;
+  created_at: string;
+  is_mature: boolean;
+  content_rating: Record<string, boolean> | null;
+}
+
 interface InventoryData {
   [category: string]: Record<string, number>;
 }
@@ -111,6 +120,7 @@ export function useTrainerDetail() {
   // Core data
   const [trainer, setTrainer] = useState<Trainer | null>(null);
   const [monsters, setMonsters] = useState<TrainerMonster[]>([]);
+  const [galleryImages, setGalleryImages] = useState<TrainerGalleryImage[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -294,6 +304,18 @@ export function useTrainerDetail() {
           if (!Array.isArray(trainerData.additional_refs)) {
             trainerData.additional_refs = [];
           }
+        }
+
+        // Fetch gallery (submissions featuring this trainer)
+        try {
+          const galleryResponse = await trainerService.getTrainerGallery(id);
+          if (galleryResponse?.success && Array.isArray(galleryResponse.data)) {
+            setGalleryImages(galleryResponse.data);
+          } else {
+            setGalleryImages([]);
+          }
+        } catch {
+          setGalleryImages([]);
         }
 
         setTrainer(trainerData);
@@ -861,6 +883,7 @@ export function useTrainerDetail() {
     id,
     trainer,
     monsters,
+    galleryImages,
     loading,
     error,
     isOwner,

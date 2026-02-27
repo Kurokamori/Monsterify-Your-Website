@@ -1,3 +1,3 @@
-# The Spirit Keepers
+# Spirit Keepers
 
-Spiritual protectors fostering peace and understanding between Yokai and humanity. They maintain sacred temples and sanctuaries near ancient sites, mediating conflicts through rituals, exorcisms, and compassionate guidance primarily on Conoocoo Island and the Far Reaches.
+Ancient spiritual practitioners who predate the Great Change. They believe the Change was not a change at all, but a revelation of what always existed. Dedicated to maintaining the balance between the physical and spiritual worlds, they protect sacred sites, mediate conflicts between spirits and people, and preserve traditions that others have long forgotten.

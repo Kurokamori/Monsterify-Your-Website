@@ -205,6 +205,12 @@ const trainerService = {
     return response.data;
   },
 
+  // Get trainer gallery (submissions featuring this trainer)
+  getTrainerGallery: async (trainerId: number | string): Promise<{ success: boolean; data: { id: number; image_url: string; title: string | null; created_at: string; is_mature: boolean; content_rating: Record<string, boolean> | null }[] }> => {
+    const response = await api.get(`/trainers/${trainerId}/gallery`);
+    return response.data;
+  },
+
   // Get trainer additional references
   getTrainerReferences: async (trainerId: number | string): Promise<AdditionalReference[]> => {
     const response = await api.get(`/trainers/${trainerId}/references`);

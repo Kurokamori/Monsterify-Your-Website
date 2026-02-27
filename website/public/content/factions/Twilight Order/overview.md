@@ -1,3 +1,3 @@
-# The Twilight Order
+# Twilight Order
 
-Mystics wielding forbidden rituals to control powerful Yokai. Driven by a desire to ascend spiritually, they harness dark spiritual energies, their presence most notable around ancient sites on Conoocoo Island and throughout the Far Reaches.
+Mystics and scholars who believe Alters and Fusions are divine advancements of nature — direct acts of god. They seek spiritual ascension and a new world order with Alters atop the social ladder, viewing themselves as enlightened guides destined to lead a great spiritual awakening. Their hands, however, are far from clean.

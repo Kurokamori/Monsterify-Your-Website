@@ -140,6 +140,7 @@ const TrainersPage = () => {
       showPlayer
       showTypes
       onTrainerClick={handleTrainerClick}
+      getTrainerHref={(trainer) => `/trainers/${trainer.id}`}
       title="Trainers"
     />
   );

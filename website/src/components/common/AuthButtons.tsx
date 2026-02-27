@@ -76,6 +76,9 @@ export const AuthButtons = ({ onLogout, totalUnread = 0 }: AuthButtonsProps) => 
               <Link to="/profile/art-todo" className="top-nav-link" onClick={() => setDropdownOpen(false)}>
                 <i className="fas fa-palette"></i> Art Todo List
               </Link>
+              <Link to="/profile/bookmarks" className="top-nav-link" onClick={() => setDropdownOpen(false)}>
+                <i className="fas fa-bookmark"></i> Bookmarks
+              </Link>
               <Link to="/submissions" className="top-nav-link" onClick={() => setDropdownOpen(false)}>
                 <i className="fas fa-upload"></i> Process Submission
               </Link>

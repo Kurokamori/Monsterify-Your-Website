@@ -611,6 +611,21 @@ export async function updateFeaturedMonsters(req: Request, res: Response): Promi
 // References & Images
 // =============================================================================
 
+export async function getTrainerGallery(req: Request, res: Response): Promise<void> {
+  try {
+    const id = parseInt(req.params.id as string);
+    const gallery = await trainerService.getTrainerGallery(id);
+    res.json({ success: true, count: gallery.length, data: gallery });
+  } catch (error) {
+    const msg = error instanceof Error ? error.message : 'Server error';
+    if (msg.includes('not found')) {
+      res.status(404).json({ success: false, message: msg });
+      return;
+    }
+    res.json({ success: true, count: 0, data: [] });
+  }
+}
+
 export async function getTrainerReferences(req: Request, res: Response): Promise<void> {
   try {
     const id = parseInt(req.params.id as string);

@@ -834,13 +834,13 @@ export class ItemsService {
     if (monster.species3) {
       // 3 species -> new monster gets species1, original keeps species2+species3
       splitSpecies = monster.species1;
-      update.species1 = monster.species2;
+      update.species1 = monster.species2 ?? undefined;
       update.species2 = monster.species3;
       update.species3 = null;
     } else {
       // 2 species -> new monster gets species1, original keeps species2
       splitSpecies = monster.species1;
-      update.species1 = monster.species2;
+      update.species1 = monster.species2 ?? undefined;
       update.species2 = null;
     }
 

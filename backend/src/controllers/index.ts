@@ -414,3 +414,20 @@ export {
   getAreaConfiguration,
   getAreaHierarchy,
 } from './adventure/area.controller';
+
+// Bookmark Controller
+export {
+  getCategories as getBookmarkCategories,
+  getCategoryById as getBookmarkCategoryById,
+  createCategory as createBookmarkCategory,
+  updateCategory as updateBookmarkCategory,
+  deleteCategory as deleteBookmarkCategory,
+  getCategoryItems as getBookmarkCategoryItems,
+  addItem as addBookmarkItem,
+  updateItemPosition as updateBookmarkItemPosition,
+  bulkUpdatePositions as bulkUpdateBookmarkPositions,
+  removeItem as removeBookmarkItem,
+  addNote as addBookmarkNote,
+  updateNote as updateBookmarkNote,
+  removeNote as removeBookmarkNote,
+} from './misc/bookmark.controller';

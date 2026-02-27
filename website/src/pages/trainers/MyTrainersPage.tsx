@@ -220,18 +220,12 @@ const MyTrainersPage = () => {
       {displayTrainers.length > 0 ? (
         <div className="my-trainers__grid">
           {displayTrainers.map(trainer => (
-            <div
+            <a
               key={trainer.id}
+              href={`/trainers/${trainer.id}`}
               className="card card--default card--clickable card--full-height my-trainer-card"
-              onClick={() => navigate(`/trainers/${trainer.id}`)}
-              role="link"
+              onClick={(e) => { e.preventDefault(); navigate(`/trainers/${trainer.id}`); }}
               tabIndex={0}
-              onKeyDown={e => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                  e.preventDefault();
-                  navigate(`/trainers/${trainer.id}`);
-                }
-              }}
             >
               {/* Card Image */}
               <div className="card__image" style={{ height: '180px' }}>
@@ -275,7 +269,7 @@ const MyTrainersPage = () => {
               </div>
 
               {/* Actions */}
-              <div className="card__footer" onClick={e => e.stopPropagation()}>
+              <div className="card__footer" onClick={e => { e.stopPropagation(); e.preventDefault(); }}>
                 <div className="card__actions">
                   <Link to={`/trainers/${trainer.id}`} className="button primary sm">
                     <i className="fa-solid fa-eye"></i> View
@@ -291,7 +285,7 @@ const MyTrainersPage = () => {
                   </button>
                 </div>
               </div>
-            </div>
+            </a>
           ))}
         </div>
       ) : trainers.length > 0 ? (

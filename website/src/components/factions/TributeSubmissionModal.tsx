@@ -4,8 +4,9 @@ import api from '../../services/api';
 interface Submission {
   id: number;
   title: string;
-  description: string;
-  content_type: 'art' | 'writing';
+  description: string | null;
+  submissionType: 'art' | 'writing';
+  imageUrl: string | null;
   url: string;
 }
 
@@ -69,7 +70,7 @@ export const TributeSubmissionModal = ({
         ]);
 
         setTributeRequirement(tributeResponse.data.requirement);
-        setAvailableSubmissions(submissionsResponse.data.submissions || []);
+        setAvailableSubmissions(submissionsResponse.data.data || []);
       } catch (err) {
         console.error('Error fetching tribute data:', err);
         setError('Failed to load tribute requirements');
@@ -108,7 +109,7 @@ export const TributeSubmissionModal = ({
       const tributeData = {
         title_id: tributeRequirement.title.id,
         trainer_id: trainerId,
-        submission_type: useExistingSubmission ? selectedSubmission!.content_type : submissionType,
+        submission_type: useExistingSubmission ? selectedSubmission!.submissionType : submissionType,
         submission_url: useExistingSubmission ? selectedSubmission!.url : submissionUrl,
         submission_description: useExistingSubmission
           ? `Using existing submission: ${selectedSubmission!.title}. ${submissionDescription || selectedSubmission!.description}`
@@ -222,7 +223,7 @@ export const TributeSubmissionModal = ({
                         <option value="">Select a submission</option>
                         {availableSubmissions.map(submission => (
                           <option key={submission.id} value={submission.id}>
-                            {submission.title} ({submission.content_type})
+                            {submission.title} ({submission.submissionType})
                           </option>
                         ))}
                       </select>

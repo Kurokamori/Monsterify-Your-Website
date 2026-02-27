@@ -4,9 +4,10 @@ import api from '../../services/api';
 interface Submission {
   id: number;
   title: string;
-  description: string;
-  content_type: 'art' | 'writing';
-  created_at: string;
+  description: string | null;
+  submissionType: 'art' | 'writing';
+  imageUrl: string | null;
+  createdAt: string;
 }
 
 interface FactionPrompt {
@@ -99,8 +100,8 @@ export const FactionSubmissionModal = ({
           api.get(`/factions/${faction.id}/prompts`)
         ]);
 
-        setAvailableSubmissions(submissionsResponse.data.submissions || []);
-        setFactionPrompts(promptsResponse.data.prompts || []);
+        setAvailableSubmissions(submissionsResponse.data.data || []);
+        setFactionPrompts(promptsResponse.data.data || []);
       } catch (err) {
         console.error('Error fetching data:', err);
         setError('Failed to load submissions and prompts');
@@ -188,40 +189,62 @@ export const FactionSubmissionModal = ({
   const renderStep1 = () => (
     <div className="multistep-modal__content">
       <h3>Select a Submission</h3>
-      <p className="text-muted">Choose an approved artwork or writing submission to use for faction standing:</p>
+      <p className="text-muted">Choose a submitted artwork or writing submission to use for faction standing:</p>
 
       {availableSubmissions.length === 0 ? (
         <div className="submission-selector__no-submissions">
           <p>No available submissions found.</p>
-          <p>You need approved artwork or writing submissions that haven't been used for faction standing yet.</p>
+          <p>You need submitted artwork or writing submissions that haven't been used for faction standing yet.</p>
         </div>
       ) : (
-        <div className="form-grid cols-2">
-          {availableSubmissions.map(submission => (
-            <div
-              key={submission.id}
-              className={[
-                'card',
-                'card--clickable',
-                formData.submissionId === submission.id.toString() && 'card--selected'
-              ].filter(Boolean).join(' ')}
-              onClick={() => setFormData(prev => ({ ...prev, submissionId: submission.id.toString() }))}
-            >
-              <div className="card__header">
-                <span style={{ fontSize: '1.5rem' }}>
-                  {submission.content_type === 'art' ? '\u{1F3A8}' : '\u{1F4DD}'}
-                </span>
-                <span className="badge neutral sm">{submission.content_type}</span>
+        <div className="submission__gallery-grid" style={{ gap: 'var(--spacing-small)' }}>
+          {availableSubmissions.map(submission => {
+            const isSelected = formData.submissionId === submission.id.toString();
+            const isArt = submission.submissionType === 'art';
+
+            return (
+              <div
+                key={submission.id}
+                className={`gallery-item card card--clickable ${isSelected ? 'card--selected' : ''}`}
+                onClick={() => setFormData(prev => ({ ...prev, submissionId: submission.id.toString() }))}
+              >
+                {isArt && submission.imageUrl ? (
+                  <>
+                    <div className="card__image">
+                      <img
+                        src={submission.imageUrl}
+                        alt={submission.title}
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement;
+                          target.onerror = null;
+                          target.src = '/images/default_art.png';
+                        }}
+                      />
+                    </div>
+                    <div className="card__body">
+                      <h4 className="submission__gallery-item-title">{submission.title}</h4>
+                      <span className="text-muted" style={{ fontSize: 'var(--font-size-xsmall)' }}>
+                        {new Date(submission.createdAt).toLocaleDateString()}
+                      </span>
+                    </div>
+                  </>
+                ) : (
+                  <div className="library-item-text-cover">
+                    <div className="library-item-text-cover-icon">
+                      <i className="fas fa-feather-alt"></i>
+                    </div>
+                    <h4 className="submission__gallery-item-title">{submission.title}</h4>
+                    {submission.description && (
+                      <p className="library-item-text-cover-description">{submission.description}</p>
+                    )}
+                    <span className="text-muted" style={{ fontSize: 'var(--font-size-xsmall)' }}>
+                      {new Date(submission.createdAt).toLocaleDateString()}
+                    </span>
+                  </div>
+                )}
               </div>
-              <div className="card__body">
-                <h4>{submission.title}</h4>
-                <p className="text-muted">{submission.description}</p>
-                <span className="text-muted" style={{ fontSize: 'var(--font-size-xsmall)' }}>
-                  {new Date(submission.created_at).toLocaleDateString()}
-                </span>
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
     </div>
@@ -238,7 +261,11 @@ export const FactionSubmissionModal = ({
         <div className="submission-preview">
           <h5>Selected Submission:</h5>
           <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-xsmall)' }}>
-            <span>{selectedSubmission?.content_type === 'art' ? '\u{1F3A8}' : '\u{1F4DD}'}</span>
+            {selectedSubmission?.submissionType === 'art' && selectedSubmission?.imageUrl ? (
+              <img src={selectedSubmission.imageUrl} alt="" style={{ width: '40px', height: '40px', objectFit: 'cover', borderRadius: 'var(--radius-small)' }} />
+            ) : (
+              <i className="fas fa-feather-alt"></i>
+            )}
             <span>{selectedSubmission?.title}</span>
           </div>
         </div>

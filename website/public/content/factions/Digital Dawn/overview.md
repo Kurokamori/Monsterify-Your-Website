@@ -1,3 +1,3 @@
 # Digital Dawn
 
-A covert faction of talented hackers and technologists determined to merge the digital and physical worlds. They aim to weaponize Digimon to achieve dominance, operating discreetly from hidden bases in the Connoco Archipelago.
+Part zealots, part cyber-criminals, Digital Dawn was born from one of the first encounters with a Digimon. They seek to find or create the Digital World — a vast parallel expanse they believe is their destiny to control. With unrivaled technological prowess and the unique ability to harness Digimon for digital attacks, they are a force to be reckoned with.

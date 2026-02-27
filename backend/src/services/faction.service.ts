@@ -5,7 +5,7 @@ import { FactionPersonMeetingRepository } from '../repositories/faction-person-m
 import { FactionPromptRepository } from '../repositories/faction-prompt.repository';
 import { FactionSubmissionRepository } from '../repositories/faction-submission.repository';
 import { FactionTributeRepository } from '../repositories/faction-tribute.repository';
-import type { FactionRow, FactionTitleRow, FactionRelationshipRow, FactionStandingRow, FactionStoreItemRow } from '../repositories/faction.repository';
+import type { FactionRow, FactionTitleRow, FactionRelationshipRow, FactionStandingRow, FactionStoreItemRow, FactionUpdateInput } from '../repositories/faction.repository';
 import type { FactionPerson, FactionPersonWithDetails, FactionPersonMonster } from '../repositories/faction-person.repository';
 import type { FactionPersonMeetingCreateInput } from '../repositories/faction-person-meeting.repository';
 import type { FactionPrompt, FactionPromptCreateInput, FactionPromptUpdateInput } from '../repositories/faction-prompt.repository';
@@ -63,6 +63,9 @@ export type AvailableSubmission = {
   id: number;
   title: string;
   createdAt: Date;
+  submissionType: 'art' | 'writing';
+  imageUrl: string | null;
+  description: string | null;
 };
 
 // =============================================================================
@@ -120,8 +123,20 @@ export class FactionService {
 
     if (trainerId) {
       const standing = await this.factionRepo.getTrainerStanding(trainerId, factionId);
-      const currentStanding = standing?.standing ?? 0;
-      return items.filter(item => Math.abs(currentStanding) >= item.standing_requirement);
+      const currentStanding = Math.abs(standing?.standing ?? 0);
+
+      if (items.some(i => i.title_id)) {
+        const titles = await this.factionRepo.getTitles(factionId);
+        return items.filter(item => {
+          if (item.title_id) {
+            const requiredTitle = titles.find(t => t.id === item.title_id);
+            return requiredTitle ? currentStanding >= requiredTitle.standing_requirement : false;
+          }
+          return currentStanding >= item.standing_requirement;
+        });
+      }
+
+      return items.filter(item => currentStanding >= item.standing_requirement);
     }
 
     return items;
@@ -292,7 +307,7 @@ export class FactionService {
         if (title) {
           return {
             nextTitleId: title.id,
-            nextTitleName: title.title_name,
+            nextTitleName: title.name,
             standingRequired: cap,
             currentStanding: currentAbs,
             hasMetRequirement: currentAbs >= cap,
@@ -347,12 +362,13 @@ export class FactionService {
   }
 
   async getAvailableSubmissions(trainerId: number): Promise<AvailableSubmission[]> {
-    const result = await db.query<{ id: number; title: string; created_at: Date }>(
+    const result = await db.query<{ id: number; title: string; created_at: Date; submission_type: 'art' | 'writing'; image_url: string | null; description: string | null }>(
       `
-        SELECT s.id, s.title, s.created_at
+        SELECT s.id, s.title, s.created_at, s.submission_type, s.description,
+          (SELECT si.image_url FROM submission_images si WHERE si.submission_id = s.id AND si.is_main::boolean = true LIMIT 1) as image_url
         FROM submissions s
-        WHERE s.trainer_id = $1
-        AND s.id NOT IN (
+        JOIN submission_trainers st ON st.submission_id = s.id AND st.trainer_id = $1
+        WHERE s.id NOT IN (
           SELECT fs.submission_id FROM faction_submissions fs
           WHERE fs.trainer_id = $1 AND fs.submission_id IS NOT NULL
         )
@@ -364,16 +380,20 @@ export class FactionService {
       id: row.id,
       title: row.title,
       createdAt: row.created_at,
+      submissionType: row.submission_type,
+      imageUrl: row.image_url,
+      description: row.description,
     }));
   }
 
   async getAvailableSubmissionsForTribute(trainerId: number): Promise<AvailableSubmission[]> {
-    const result = await db.query<{ id: number; title: string; created_at: Date }>(
+    const result = await db.query<{ id: number; title: string; created_at: Date; submission_type: 'art' | 'writing'; image_url: string | null; description: string | null }>(
       `
-        SELECT s.id, s.title, s.created_at
+        SELECT s.id, s.title, s.created_at, s.submission_type, s.description,
+          (SELECT si.image_url FROM submission_images si WHERE si.submission_id = s.id AND si.is_main::boolean = true LIMIT 1) as image_url
         FROM submissions s
-        WHERE s.trainer_id = $1
-        AND s.id NOT IN (
+        JOIN submission_trainers st ON st.submission_id = s.id AND st.trainer_id = $1
+        WHERE s.id NOT IN (
           SELECT fs.submission_id FROM faction_submissions fs
           WHERE fs.trainer_id = $1 AND fs.submission_id IS NOT NULL
         )
@@ -389,6 +409,9 @@ export class FactionService {
       id: row.id,
       title: row.title,
       createdAt: row.created_at,
+      submissionType: row.submission_type,
+      imageUrl: row.image_url,
+      description: row.description,
     }));
   }
 
@@ -510,6 +533,78 @@ export class FactionService {
   }
 
   // ===========================================================================
+  // Admin: Faction Management
+  // ===========================================================================
+
+  async updateFaction(id: number, data: FactionUpdateInput): Promise<FactionRow> {
+    return this.factionRepo.update(id, data);
+  }
+
+  async bulkUpdateFactionProperty(property: string, updates: { id: number; value: string | null }[]): Promise<FactionRow[]> {
+    return this.factionRepo.bulkUpdateProperty(property, updates);
+  }
+
+  // Admin: Titles
+  async createTitle(factionId: number, data: { titleName: string; standingRequirement: number; isPositive: boolean }): Promise<FactionTitleRow> {
+    return this.factionRepo.createTitle(factionId, data);
+  }
+
+  async updateTitleAdmin(titleId: number, data: { titleName?: string; standingRequirement?: number; isPositive?: boolean }): Promise<FactionTitleRow> {
+    return this.factionRepo.updateTitle(titleId, data);
+  }
+
+  async deleteTitle(titleId: number): Promise<boolean> {
+    return this.factionRepo.deleteTitle(titleId);
+  }
+
+  // Admin: Relationships
+  async getRelationshipsAdmin(factionId: number): Promise<FactionRelationshipRow[]> {
+    return this.factionRepo.getAllRelationships(factionId);
+  }
+
+  async createRelationship(data: { factionId: number; relatedFactionId: number; relationshipType: string; standingModifier: number }): Promise<FactionRelationshipRow> {
+    return this.factionRepo.createRelationship(data);
+  }
+
+  async updateRelationship(relationshipId: number, data: { relatedFactionId?: number; relationshipType?: string; standingModifier?: number }): Promise<FactionRelationshipRow> {
+    return this.factionRepo.updateRelationship(relationshipId, data);
+  }
+
+  async deleteRelationship(relationshipId: number): Promise<boolean> {
+    return this.factionRepo.deleteRelationship(relationshipId);
+  }
+
+  // Admin: Store Items
+  async getAllStoreItemsAdmin(factionId: number): Promise<FactionStoreItemRow[]> {
+    return this.factionRepo.getAllStoreItemsAdmin(factionId);
+  }
+
+  async createStoreItem(data: { factionId: number; itemName: string; price: number; standingRequirement?: number; isActive?: boolean; itemCategory?: string | null; titleId?: number | null }): Promise<FactionStoreItemRow> {
+    return this.factionRepo.createStoreItem(data);
+  }
+
+  async updateStoreItem(itemId: number, data: { itemName?: string; price?: number; standingRequirement?: number; isActive?: boolean; itemCategory?: string | null; titleId?: number | null }): Promise<FactionStoreItemRow> {
+    return this.factionRepo.updateStoreItem(itemId, data);
+  }
+
+  async deleteStoreItem(itemId: number): Promise<boolean> {
+    return this.factionRepo.deleteStoreItem(itemId);
+  }
+
+  // Admin: Prompts
+  async getAllPromptsAdmin(): Promise<import('../repositories/faction-prompt.repository').FactionPromptWithDetails[]> {
+    return this.promptRepo.findAllWithFactions(false);
+  }
+
+  async getFactionPromptsAdmin(factionId: number): Promise<FactionPrompt[]> {
+    return this.promptRepo.findByFactionId(factionId, false);
+  }
+
+  async deleteFactionPrompt(promptId: number): Promise<boolean> {
+    return this.promptRepo.delete(promptId);
+  }
+
+  // ===========================================================================
   // Store Purchase
   // ===========================================================================
 
@@ -523,10 +618,17 @@ export class FactionService {
       throw new Error('Item not found in faction store');
     }
 
-    // Check standing requirement
+    // Check standing requirement (title-based or legacy)
     const standing = await this.factionRepo.getTrainerStanding(trainerId, factionId);
     const currentStanding = Math.abs(standing?.standing ?? 0);
-    if (currentStanding < item.standing_requirement) {
+
+    if (item.title_id) {
+      const titles = await this.factionRepo.getTitles(factionId);
+      const requiredTitle = titles.find(t => t.id === item.title_id);
+      if (requiredTitle && currentStanding < requiredTitle.standing_requirement) {
+        throw new Error(`Requires title "${requiredTitle.name}" to purchase this item`);
+      }
+    } else if (currentStanding < item.standing_requirement) {
       throw new Error('Insufficient standing to purchase this item');
     }
 
@@ -552,12 +654,13 @@ export class FactionService {
     );
 
     // Add items to inventory
+    const category = item.item_category ?? 'general';
     for (let i = 0; i < quantity; i++) {
       await db.query(
         `INSERT INTO trainer_inventory (trainer_id, item_name, category, quantity)
-         VALUES ($1, $2, 'general', 1)
+         VALUES ($1, $2, $3, 1)
          ON CONFLICT (trainer_id, item_name) DO UPDATE SET quantity = trainer_inventory.quantity + 1`,
-        [trainerId, item.item_name]
+        [trainerId, item.item_name, category]
       );
     }
 

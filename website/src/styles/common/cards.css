@@ -57,6 +57,11 @@
 
 /* ---------- Card States ---------- */
 
+a.card {
+  text-decoration: none;
+  color: inherit;
+}
+
 .card--clickable {
   cursor: pointer;
 }

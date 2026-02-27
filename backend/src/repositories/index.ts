@@ -668,3 +668,25 @@ export type {
   RerollSessionQueryOptions,
   PaginatedRerollSessions,
 } from './reroll.repository';
+
+// ============================================================================
+// Bookmark Repository
+// ============================================================================
+
+export { BookmarkRepository } from './bookmark.repository';
+export type {
+  BookmarkCategoryRow,
+  BookmarkCategory,
+  BookmarkCategoryWithCounts,
+  BookmarkCategoryCreateInput,
+  BookmarkCategoryUpdateInput,
+  BookmarkItemType,
+  BookmarkItemRow,
+  BookmarkItem,
+  BookmarkItemWithDetails,
+  BookmarkItemCreateInput,
+  BookmarkTextNoteRow,
+  BookmarkTextNote,
+  BookmarkTextNoteCreateInput,
+  BookmarkTextNoteUpdateInput,
+} from './bookmark.repository';

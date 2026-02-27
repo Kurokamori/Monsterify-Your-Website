@@ -881,12 +881,14 @@ export class MonsterRepository extends BaseRepository<MonsterWithTrainer, Monste
   }
 
   // Gallery - submissions featuring this monster
-  async getGallery(monsterId: number): Promise<{ id: number; image_url: string; title: string | null; created_at: Date }[]> {
-    const result = await db.query<{ id: number; image_url: string; title: string | null; created_at: Date }>(
+  async getGallery(monsterId: number): Promise<{ id: number; image_url: string; title: string | null; created_at: Date; is_mature: boolean; content_rating: Record<string, boolean> | null }[]> {
+    const result = await db.query<{ id: number; image_url: string; title: string | null; created_at: Date; is_mature: boolean; content_rating: Record<string, boolean> | null }>(
       `
         SELECT s.id,
           (SELECT si.image_url FROM submission_images si WHERE si.submission_id = s.id AND si.is_main::boolean = true LIMIT 1) as image_url,
-          s.title, s.created_at
+          s.title, s.created_at,
+          COALESCE(s.is_mature::boolean, false) as is_mature,
+          s.content_rating
         FROM submissions s
         JOIN submission_monsters sm ON sm.submission_id = s.id
         WHERE sm.monster_id = $1

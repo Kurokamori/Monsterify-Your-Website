@@ -1028,4 +1028,12 @@ export class TrainerService {
 
     return { forfeited: { monsters: forfeitedMonsters, items: forfeitedItems } };
   }
+
+  async getTrainerGallery(trainerId: number): Promise<{ id: number; image_url: string; title: string | null; created_at: Date; is_mature: boolean; content_rating: Record<string, boolean> | null }[]> {
+    const trainer = await this.trainerRepo.findById(trainerId);
+    if (!trainer) {
+      throw new Error(`Trainer with ID ${trainerId} not found`);
+    }
+    return this.trainerRepo.getGallery(trainerId);
+  }
 }

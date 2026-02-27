@@ -456,4 +456,23 @@ export class TrainerRepository extends BaseRepository<TrainerWithStats, TrainerC
     }
     return updated;
   }
+
+  // Gallery - submissions featuring this trainer
+  async getGallery(trainerId: number): Promise<{ id: number; image_url: string; title: string | null; created_at: Date; is_mature: boolean; content_rating: Record<string, boolean> | null }[]> {
+    const result = await db.query<{ id: number; image_url: string; title: string | null; created_at: Date; is_mature: boolean; content_rating: Record<string, boolean> | null }>(
+      `
+        SELECT s.id,
+          (SELECT si.image_url FROM submission_images si WHERE si.submission_id = s.id AND si.is_main::boolean = true LIMIT 1) as image_url,
+          s.title, s.created_at,
+          COALESCE(s.is_mature::boolean, false) as is_mature,
+          s.content_rating
+        FROM submissions s
+        JOIN submission_trainers st ON st.submission_id = s.id
+        WHERE st.trainer_id = $1
+        ORDER BY s.created_at DESC
+      `,
+      [trainerId]
+    );
+    return result.rows.filter(row => row.image_url !== null && row.image_url !== undefined);
+  }
 }

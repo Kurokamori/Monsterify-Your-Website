@@ -1,6 +1,27 @@
 import { BaseRepository } from './base.repository';
 import { db } from '../database';
 
+// --- Gift Item Definition Types ---
+
+export type GiftItemSpecific = {
+  type: 'specific';
+  items: { name: string; quantity: number }[];
+};
+
+export type GiftItemRandomSubset = {
+  type: 'random_subset';
+  items: string[];
+  quantity: number;
+};
+
+export type GiftItemRandomCategory = {
+  type: 'random_category';
+  category: string;
+  quantity: number;
+};
+
+export type GiftItemDefinition = GiftItemSpecific | GiftItemRandomSubset | GiftItemRandomCategory;
+
 export type FactionPromptRow = {
   id: number;
   faction_id: number;
@@ -8,6 +29,7 @@ export type FactionPromptRow = {
   description: string | null;
   modifier: number;
   is_active: boolean;
+  submission_gift_items: string | object | null;
   created_at: Date;
   updated_at: Date;
 };
@@ -19,6 +41,7 @@ export type FactionPrompt = {
   description: string | null;
   modifier: number;
   isActive: boolean;
+  submissionGiftItems: GiftItemDefinition[] | null;
   createdAt: Date;
   updatedAt: Date;
 };
@@ -34,6 +57,7 @@ export type FactionPromptCreateInput = {
   description?: string | null;
   modifier?: number;
   isActive?: boolean;
+  submissionGiftItems?: GiftItemDefinition[] | null;
 };
 
 export type FactionPromptUpdateInput = {
@@ -41,6 +65,14 @@ export type FactionPromptUpdateInput = {
   description?: string | null;
   modifier?: number;
   isActive?: boolean;
+  submissionGiftItems?: GiftItemDefinition[] | null;
+};
+
+const parseGiftItems = (val: string | object | null): GiftItemDefinition[] | null => {
+  if (!val) { return null; }
+  if (Array.isArray(val)) { return val; }
+  if (typeof val === 'object') { return val as unknown as GiftItemDefinition[]; }
+  try { return JSON.parse(val); } catch { return null; }
 };
 
 const normalizeFactionPrompt = (row: FactionPromptRow): FactionPrompt => ({
@@ -50,6 +82,7 @@ const normalizeFactionPrompt = (row: FactionPromptRow): FactionPrompt => ({
   description: row.description,
   modifier: row.modifier,
   isActive: row.is_active,
+  submissionGiftItems: parseGiftItems(row.submission_gift_items),
   createdAt: row.created_at,
   updatedAt: row.updated_at,
 });
@@ -125,8 +158,8 @@ export class FactionPromptRepository extends BaseRepository<
   override async create(input: FactionPromptCreateInput): Promise<FactionPrompt> {
     const result = await db.query<{ id: number }>(
       `
-        INSERT INTO faction_prompts (faction_id, name, description, modifier, is_active)
-        VALUES ($1, $2, $3, $4, $5)
+        INSERT INTO faction_prompts (faction_id, name, description, modifier, is_active, submission_gift_items)
+        VALUES ($1, $2, $3, $4, $5, $6)
         RETURNING id
       `,
       [
@@ -135,6 +168,7 @@ export class FactionPromptRepository extends BaseRepository<
         input.description ?? null,
         input.modifier ?? 0,
         input.isActive ?? true,
+        input.submissionGiftItems ? JSON.stringify(input.submissionGiftItems) : null,
       ]
     );
 
@@ -168,6 +202,10 @@ export class FactionPromptRepository extends BaseRepository<
     if (input.isActive !== undefined) {
       values.push(input.isActive);
       updates.push(`is_active = $${values.length}`);
+    }
+    if (input.submissionGiftItems !== undefined) {
+      values.push(input.submissionGiftItems ? JSON.stringify(input.submissionGiftItems) : null);
+      updates.push(`submission_gift_items = $${values.length}`);
     }
 
     if (updates.length === 0) {

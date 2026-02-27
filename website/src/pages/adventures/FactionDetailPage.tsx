@@ -270,7 +270,7 @@ const FactionDetailPage = () => {
             <div className="banner-overlay">
               <div className="faction-navigation">
                 <button
-                  className="button icon"
+                  className="button icon no-flex"
                   onClick={() => navigateToFaction('left')}
                   title="Previous Faction"
                 >
@@ -280,7 +280,7 @@ const FactionDetailPage = () => {
                   {faction.name}
                 </h1>
                 <button
-                  className="button icon"
+                  className="button icon no-flex"
                   onClick={() => navigateToFaction('right')}
                   title="Next Faction"
                 >

@@ -417,11 +417,12 @@ export async function createFactionPrompt(req: Request, res: Response): Promise<
       return;
     }
 
-    const { name, description, modifier, isActive } = req.body as {
+    const { name, description, modifier, isActive, submissionGiftItems } = req.body as {
       name?: string;
       description?: string;
       modifier?: number;
       isActive?: boolean;
+      submissionGiftItems?: unknown[] | null;
     };
 
     if (!name) {
@@ -435,6 +436,7 @@ export async function createFactionPrompt(req: Request, res: Response): Promise<
       description: description ?? null,
       modifier,
       isActive,
+      submissionGiftItems: submissionGiftItems as import('../../repositories/faction-prompt.repository').GiftItemDefinition[] | undefined,
     });
 
     res.json({ success: true, data: prompt, message: 'Faction prompt created successfully' });
@@ -453,11 +455,12 @@ export async function updateFactionPrompt(req: Request, res: Response): Promise<
       return;
     }
 
-    const { name, description, modifier, isActive } = req.body as {
+    const { name, description, modifier, isActive, submissionGiftItems } = req.body as {
       name?: string;
       description?: string;
       modifier?: number;
       isActive?: boolean;
+      submissionGiftItems?: unknown[] | null;
     };
 
     const prompt = await factionService.updateFactionPrompt(promptId, {
@@ -465,6 +468,7 @@ export async function updateFactionPrompt(req: Request, res: Response): Promise<
       description,
       modifier,
       isActive,
+      submissionGiftItems: submissionGiftItems as import('../../repositories/faction-prompt.repository').GiftItemDefinition[] | undefined,
     });
 
     res.json({ success: true, data: prompt, message: 'Faction prompt updated successfully' });
@@ -560,6 +564,372 @@ export async function getTrainerMetPeople(req: Request, res: Response): Promise<
   } catch (error) {
     console.error('Error getting trainer met people:', error);
     res.status(500).json({ success: false, message: 'Failed to get trainer met people' });
+  }
+}
+
+// =============================================================================
+// Admin: Faction Management
+// =============================================================================
+
+export async function updateFactionAdmin(req: Request, res: Response): Promise<void> {
+  try {
+    const factionId = parseInt(req.params.factionId as string);
+    if (isNaN(factionId)) {
+      res.status(400).json({ success: false, message: 'Invalid faction ID' });
+      return;
+    }
+
+    const { name, description, bannerImage, iconImage, color } = req.body as {
+      name?: string;
+      description?: string | null;
+      bannerImage?: string | null;
+      iconImage?: string | null;
+      color?: string | null;
+    };
+
+    const faction = await factionService.updateFaction(factionId, { name, description, bannerImage, iconImage, color });
+    res.json({ success: true, data: faction, message: 'Faction updated successfully' });
+  } catch (error) {
+    const msg = error instanceof Error ? error.message : 'Failed to update faction';
+    console.error('Error updating faction:', error);
+    res.status(400).json({ success: false, message: msg });
+  }
+}
+
+export async function bulkUpdateFactionPropertyAdmin(req: Request, res: Response): Promise<void> {
+  try {
+    const { property, updates } = req.body as {
+      property?: string;
+      updates?: { id: number; value: string | null }[];
+    };
+
+    if (!property || !updates || !Array.isArray(updates)) {
+      res.status(400).json({ success: false, message: 'Property and updates array are required' });
+      return;
+    }
+
+    const factions = await factionService.bulkUpdateFactionProperty(property, updates);
+    res.json({ success: true, data: factions, message: `Updated ${factions.length} factions` });
+  } catch (error) {
+    const msg = error instanceof Error ? error.message : 'Failed to bulk update factions';
+    console.error('Error bulk updating factions:', error);
+    res.status(400).json({ success: false, message: msg });
+  }
+}
+
+// Admin: Titles
+
+export async function getFactionTitlesAdmin(req: Request, res: Response): Promise<void> {
+  try {
+    const factionId = parseInt(req.params.factionId as string);
+    if (isNaN(factionId)) {
+      res.status(400).json({ success: false, message: 'Invalid faction ID' });
+      return;
+    }
+
+    const faction = await factionService.getFactionById(factionId);
+    if (!faction) {
+      res.status(404).json({ success: false, message: 'Faction not found' });
+      return;
+    }
+
+    res.json({ success: true, data: faction.titles });
+  } catch (error) {
+    console.error('Error getting faction titles:', error);
+    res.status(500).json({ success: false, message: 'Failed to get faction titles' });
+  }
+}
+
+export async function createFactionTitleAdmin(req: Request, res: Response): Promise<void> {
+  try {
+    const { factionId, titleName, standingRequirement, isPositive } = req.body as {
+      factionId?: number;
+      titleName?: string;
+      standingRequirement?: number;
+      isPositive?: boolean;
+    };
+
+    if (!factionId || !titleName || standingRequirement === undefined) {
+      res.status(400).json({ success: false, message: 'Faction ID, title name, and standing requirement are required' });
+      return;
+    }
+
+    const title = await factionService.createTitle(factionId, {
+      titleName,
+      standingRequirement,
+      isPositive: isPositive ?? true,
+    });
+    res.json({ success: true, data: title, message: 'Title created successfully' });
+  } catch (error) {
+    const msg = error instanceof Error ? error.message : 'Failed to create title';
+    console.error('Error creating title:', error);
+    res.status(400).json({ success: false, message: msg });
+  }
+}
+
+export async function updateFactionTitleAdmin(req: Request, res: Response): Promise<void> {
+  try {
+    const titleId = parseInt(req.params.titleId as string);
+    if (isNaN(titleId)) {
+      res.status(400).json({ success: false, message: 'Invalid title ID' });
+      return;
+    }
+
+    const { titleName, standingRequirement, isPositive } = req.body as {
+      titleName?: string;
+      standingRequirement?: number;
+      isPositive?: boolean;
+    };
+
+    const title = await factionService.updateTitleAdmin(titleId, { titleName, standingRequirement, isPositive });
+    res.json({ success: true, data: title, message: 'Title updated successfully' });
+  } catch (error) {
+    const msg = error instanceof Error ? error.message : 'Failed to update title';
+    console.error('Error updating title:', error);
+    res.status(400).json({ success: false, message: msg });
+  }
+}
+
+export async function deleteFactionTitleAdmin(req: Request, res: Response): Promise<void> {
+  try {
+    const titleId = parseInt(req.params.titleId as string);
+    if (isNaN(titleId)) {
+      res.status(400).json({ success: false, message: 'Invalid title ID' });
+      return;
+    }
+
+    const success = await factionService.deleteTitle(titleId);
+    if (success) {
+      res.json({ success: true, message: 'Title deleted successfully' });
+    } else {
+      res.status(404).json({ success: false, message: 'Title not found' });
+    }
+  } catch (error) {
+    console.error('Error deleting title:', error);
+    res.status(500).json({ success: false, message: 'Failed to delete title' });
+  }
+}
+
+// Admin: Relationships
+
+export async function getFactionRelationshipsAdmin(req: Request, res: Response): Promise<void> {
+  try {
+    const factionId = parseInt(req.params.factionId as string);
+    if (isNaN(factionId)) {
+      res.status(400).json({ success: false, message: 'Invalid faction ID' });
+      return;
+    }
+
+    const relationships = await factionService.getRelationshipsAdmin(factionId);
+    res.json({ success: true, data: relationships });
+  } catch (error) {
+    console.error('Error getting faction relationships:', error);
+    res.status(500).json({ success: false, message: 'Failed to get faction relationships' });
+  }
+}
+
+export async function createFactionRelationshipAdmin(req: Request, res: Response): Promise<void> {
+  try {
+    const { factionId, relatedFactionId, relationshipType, standingModifier } = req.body as {
+      factionId?: number;
+      relatedFactionId?: number;
+      relationshipType?: string;
+      standingModifier?: number;
+    };
+
+    if (!factionId || !relatedFactionId || !relationshipType || standingModifier === undefined) {
+      res.status(400).json({ success: false, message: 'All relationship fields are required' });
+      return;
+    }
+
+    const relationship = await factionService.createRelationship({ factionId, relatedFactionId, relationshipType, standingModifier });
+    res.json({ success: true, data: relationship, message: 'Relationship created successfully' });
+  } catch (error) {
+    const msg = error instanceof Error ? error.message : 'Failed to create relationship';
+    console.error('Error creating relationship:', error);
+    res.status(400).json({ success: false, message: msg });
+  }
+}
+
+export async function updateFactionRelationshipAdmin(req: Request, res: Response): Promise<void> {
+  try {
+    const relationshipId = parseInt(req.params.relationshipId as string);
+    if (isNaN(relationshipId)) {
+      res.status(400).json({ success: false, message: 'Invalid relationship ID' });
+      return;
+    }
+
+    const { relatedFactionId, relationshipType, standingModifier } = req.body as {
+      relatedFactionId?: number;
+      relationshipType?: string;
+      standingModifier?: number;
+    };
+
+    const relationship = await factionService.updateRelationship(relationshipId, { relatedFactionId, relationshipType, standingModifier });
+    res.json({ success: true, data: relationship, message: 'Relationship updated successfully' });
+  } catch (error) {
+    const msg = error instanceof Error ? error.message : 'Failed to update relationship';
+    console.error('Error updating relationship:', error);
+    res.status(400).json({ success: false, message: msg });
+  }
+}
+
+export async function deleteFactionRelationshipAdmin(req: Request, res: Response): Promise<void> {
+  try {
+    const relationshipId = parseInt(req.params.relationshipId as string);
+    if (isNaN(relationshipId)) {
+      res.status(400).json({ success: false, message: 'Invalid relationship ID' });
+      return;
+    }
+
+    const success = await factionService.deleteRelationship(relationshipId);
+    if (success) {
+      res.json({ success: true, message: 'Relationship deleted successfully' });
+    } else {
+      res.status(404).json({ success: false, message: 'Relationship not found' });
+    }
+  } catch (error) {
+    console.error('Error deleting relationship:', error);
+    res.status(500).json({ success: false, message: 'Failed to delete relationship' });
+  }
+}
+
+// Admin: Store Items
+
+export async function getFactionStoreItemsAdmin(req: Request, res: Response): Promise<void> {
+  try {
+    const factionId = parseInt(req.params.factionId as string);
+    if (isNaN(factionId)) {
+      res.status(400).json({ success: false, message: 'Invalid faction ID' });
+      return;
+    }
+
+    const items = await factionService.getAllStoreItemsAdmin(factionId);
+    res.json({ success: true, data: items });
+  } catch (error) {
+    console.error('Error getting faction store items:', error);
+    res.status(500).json({ success: false, message: 'Failed to get faction store items' });
+  }
+}
+
+export async function createFactionStoreItemAdmin(req: Request, res: Response): Promise<void> {
+  try {
+    const { factionId, itemName, price, standingRequirement, isActive, itemCategory, titleId } = req.body as {
+      factionId?: number;
+      itemName?: string;
+      price?: number;
+      standingRequirement?: number;
+      isActive?: boolean;
+      itemCategory?: string | null;
+      titleId?: number | null;
+    };
+
+    if (!factionId || !itemName || price === undefined) {
+      res.status(400).json({ success: false, message: 'Faction ID, item name, and price are required' });
+      return;
+    }
+
+    const item = await factionService.createStoreItem({ factionId, itemName, price, standingRequirement, isActive, itemCategory, titleId });
+    res.json({ success: true, data: item, message: 'Store item created successfully' });
+  } catch (error) {
+    const msg = error instanceof Error ? error.message : 'Failed to create store item';
+    console.error('Error creating store item:', error);
+    res.status(400).json({ success: false, message: msg });
+  }
+}
+
+export async function updateFactionStoreItemAdmin(req: Request, res: Response): Promise<void> {
+  try {
+    const itemId = parseInt(req.params.itemId as string);
+    if (isNaN(itemId)) {
+      res.status(400).json({ success: false, message: 'Invalid item ID' });
+      return;
+    }
+
+    const { itemName, price, standingRequirement, isActive, itemCategory, titleId } = req.body as {
+      itemName?: string;
+      price?: number;
+      standingRequirement?: number;
+      isActive?: boolean;
+      itemCategory?: string | null;
+      titleId?: number | null;
+    };
+
+    const item = await factionService.updateStoreItem(itemId, { itemName, price, standingRequirement, isActive, itemCategory, titleId });
+    res.json({ success: true, data: item, message: 'Store item updated successfully' });
+  } catch (error) {
+    const msg = error instanceof Error ? error.message : 'Failed to update store item';
+    console.error('Error updating store item:', error);
+    res.status(400).json({ success: false, message: msg });
+  }
+}
+
+export async function deleteFactionStoreItemAdmin(req: Request, res: Response): Promise<void> {
+  try {
+    const itemId = parseInt(req.params.itemId as string);
+    if (isNaN(itemId)) {
+      res.status(400).json({ success: false, message: 'Invalid item ID' });
+      return;
+    }
+
+    const success = await factionService.deleteStoreItem(itemId);
+    if (success) {
+      res.json({ success: true, message: 'Store item deleted successfully' });
+    } else {
+      res.status(404).json({ success: false, message: 'Store item not found' });
+    }
+  } catch (error) {
+    console.error('Error deleting store item:', error);
+    res.status(500).json({ success: false, message: 'Failed to delete store item' });
+  }
+}
+
+// Admin: All Prompts
+
+export async function getAllPromptsAdmin(_req: Request, res: Response): Promise<void> {
+  try {
+    const prompts = await factionService.getAllPromptsAdmin();
+    res.json({ success: true, data: prompts });
+  } catch (error) {
+    console.error('Error getting all prompts:', error);
+    res.status(500).json({ success: false, message: 'Failed to get prompts' });
+  }
+}
+
+export async function getFactionPromptsAdmin(req: Request, res: Response): Promise<void> {
+  try {
+    const factionId = parseInt(req.params.factionId as string);
+    if (isNaN(factionId)) {
+      res.status(400).json({ success: false, message: 'Invalid faction ID' });
+      return;
+    }
+
+    const prompts = await factionService.getFactionPromptsAdmin(factionId);
+    res.json({ success: true, data: prompts });
+  } catch (error) {
+    console.error('Error getting faction prompts:', error);
+    res.status(500).json({ success: false, message: 'Failed to get faction prompts' });
+  }
+}
+
+export async function deleteFactionPromptAdmin(req: Request, res: Response): Promise<void> {
+  try {
+    const promptId = parseInt(req.params.promptId as string);
+    if (isNaN(promptId)) {
+      res.status(400).json({ success: false, message: 'Invalid prompt ID' });
+      return;
+    }
+
+    const deleted = await factionService.deleteFactionPrompt(promptId);
+    if (!deleted) {
+      res.status(404).json({ success: false, message: 'Prompt not found' });
+      return;
+    }
+    res.json({ success: true, message: 'Prompt deleted successfully' });
+  } catch (error) {
+    const msg = error instanceof Error ? error.message : 'Failed to delete prompt';
+    console.error('Error deleting prompt:', error);
+    res.status(400).json({ success: false, message: msg });
   }
 }
 

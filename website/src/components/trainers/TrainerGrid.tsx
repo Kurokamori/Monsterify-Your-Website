@@ -73,6 +73,8 @@ interface TrainerGridProps {
   // Interactions
   /** Trainer click handler */
   onTrainerClick?: (trainer: Trainer | TrainerCardData) => void;
+  /** Generate href for trainer links (enables right-click/middle-click open in new tab) */
+  getTrainerHref?: (trainer: Trainer | TrainerCardData) => string;
   /** Currently selected trainer ID */
   selectedTrainerId?: number;
   /** Trainer action buttons */
@@ -150,6 +152,7 @@ export function TrainerGrid({
 
   // Interactions
   onTrainerClick,
+  getTrainerHref,
   selectedTrainerId,
   trainerActions,
 
@@ -193,18 +196,20 @@ export function TrainerGrid({
           showTypes={showTypes}
           maxTypes={maxTypes}
           onClick={onTrainerClick}
+          href={getTrainerHref?.(trainer)}
           selected={selectedTrainerId === trainer.id}
           actions={actions?.map(action => ({
             ...action,
             onClick: (e) => {
               e.stopPropagation();
+              e.preventDefault();
               action.onClick();
             }
           }))}
         />
       );
     },
-    [showMonsterCount, showPlayer, showTypes, maxTypes, onTrainerClick, selectedTrainerId, trainerActions]
+    [showMonsterCount, showPlayer, showTypes, maxTypes, onTrainerClick, getTrainerHref, selectedTrainerId, trainerActions]
   );
 
   // Key extractor

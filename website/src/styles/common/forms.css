@@ -206,7 +206,6 @@
   font-size: var(--font-size-small);
   font-weight: 500;
   gap: var(--spacing-medium);
-  margin-top: var(--spacing-large);
   padding: var(--spacing-xsmall) 0;
 }
 

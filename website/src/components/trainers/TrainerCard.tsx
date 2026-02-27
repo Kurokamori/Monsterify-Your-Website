@@ -30,6 +30,8 @@ interface TrainerCardProps {
   maxTypes?: number;
   /** Custom image fallback */
   imageFallback?: string;
+  /** Link URL for right-click/middle-click open in new tab */
+  href?: string;
   /** Card actions */
   actions?: CardAction[];
   /** Click handler */
@@ -56,6 +58,7 @@ export function TrainerCard({
   showTypes = true,
   maxTypes = 3,
   imageFallback = DEFAULT_TRAINER_IMAGE,
+  href,
   actions,
   onClick,
   selected = false,
@@ -135,6 +138,7 @@ export function TrainerCard({
       selected={selected}
       disabled={disabled}
       onClick={onClick ? handleClick : undefined}
+      href={href}
       fullHeight
       className={`trainer-card ${className}`}
       {...cardProps}

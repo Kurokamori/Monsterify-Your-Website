@@ -1,3 +1,3 @@
 # Professor Koa's Lab
 
-A haven for peaceful research dedicated to the harmonious coexistence of Pokémon, Digimon, and Yokai. Led by Professor Koa, it serves as an educational hub, mentoring aspiring adventurers near the serene fields of Zoryan Meadows.
+The heart of education and research on the islands, with the main laboratory in Heimdal City and outposts across the region. Led by Professor Koa, the Lab is dedicated to understanding fusions, type changes, and alters — while serving as neutral ground between factions and mentoring the next generation of adventurers.

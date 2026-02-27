@@ -28,6 +28,7 @@ const ADMIN_CATEGORIES: AdminCategory[] = [
       { name: 'Player Mission Manager', icon: 'fas fa-tasks', description: 'View and manage player mission progress', path: '/admin/player-mission-manager' },
       { name: 'Adventure Location Manager', icon: 'fas fa-map-marked-alt', description: 'Manage adventure locations and areas', path: '/admin/adventure-location-manager' },
       { name: 'Event Manager', icon: 'fas fa-calendar-alt', description: 'Create and manage game events', path: '/admin/event-manager' },
+      { name: 'Faction Manager', icon: 'fas fa-shield-alt', description: 'Manage factions and faction quests', path: '/admin/faction-manager' },
     ],
   },
   {

@@ -55,7 +55,7 @@ export const FACTIONS: Record<FactionNameValue, FactionDefinition> = {
   [FactionName.NYAKUZA]: {
     name: FactionName.NYAKUZA,
     description:
-      'A mysterious organization of cat-like beings who operate in the shadows, dealing in information and rare goods.',
+      'Adventurous feline pirates driven by curiosity, thrill, and loyalty. Operating from Pirate\'s Bay, they deal in rare goods and information with charm and unpredictability.',
     color: '#8B4A9C',
     bannerImage: 'nyakuza_banner.png',
     iconImage: 'nyakuza.png',
@@ -63,7 +63,7 @@ export const FACTIONS: Record<FactionNameValue, FactionDefinition> = {
   [FactionName.DIGITAL_DAWN]: {
     name: FactionName.DIGITAL_DAWN,
     description:
-      'Tech-savvy innovators pushing the boundaries of digital monster research and virtual reality.',
+      'Part zealots, part cyber-criminals, Digital Dawn seeks to find or create the Digital World. With unrivaled technological prowess and the ability to harness Digimon, they are a force to be reckoned with.',
     color: '#00BFFF',
     bannerImage: 'digital_dawn_banner.png',
     iconImage: 'digital_dawn.png',
@@ -71,7 +71,7 @@ export const FACTIONS: Record<FactionNameValue, FactionDefinition> = {
   [FactionName.POKEMON_RANCHERS]: {
     name: FactionName.POKEMON_RANCHERS,
     description:
-      'Traditional monster breeders and caretakers who focus on the natural bond between trainers and their companions.',
+      'A loose faction of ranchers and caretakers who provide food, goods, and stability for the islands. They share a deep love for monsters and advocate for their humane treatment.',
     color: '#228B22',
     bannerImage: 'pokemon_ranchers_banner.png',
     iconImage: 'pokemon_ranchers.png',
@@ -79,7 +79,7 @@ export const FACTIONS: Record<FactionNameValue, FactionDefinition> = {
   [FactionName.KOAS_LABORATORY]: {
     name: FactionName.KOAS_LABORATORY,
     description:
-      'Scientific researchers dedicated to understanding the mysteries of monster evolution and genetics.',
+      'The heart of education and research on the islands, led by Professor Koa. A region-wide science center dedicated to understanding fusions, type changes, alters, and serving as neutral ground between factions.',
     color: '#FF6347',
     bannerImage: 'koas_laboratory_banner.png',
     iconImage: 'koas_laboratory.png',
@@ -87,7 +87,7 @@ export const FACTIONS: Record<FactionNameValue, FactionDefinition> = {
   [FactionName.PROJECT_OBSIDIAN]: {
     name: FactionName.PROJECT_OBSIDIAN,
     description:
-      'A secretive military organization focused on developing powerful battle strategies and advanced combat techniques.',
+      'A dark scientific organization obsessed with altering lifeforms. Masquerading as an extension of Koa\'s Lab, they seek to harness complete control over type changes, fusions, and alters for profit and power.',
     color: '#2F2F2F',
     bannerImage: 'project_obsidian_banner.png',
     iconImage: 'project_obsidian.png',
@@ -95,7 +95,7 @@ export const FACTIONS: Record<FactionNameValue, FactionDefinition> = {
   [FactionName.SPIRIT_KEEPERS]: {
     name: FactionName.SPIRIT_KEEPERS,
     description:
-      'Mystical guardians who protect ancient spirits and maintain the balance between the physical and spiritual worlds.',
+      'Ancient spiritual practitioners who predate the Great Change. They believe the Change was merely a revelation of what always existed, and dedicate themselves to maintaining the balance between the physical and spiritual worlds.',
     color: '#9370DB',
     bannerImage: 'spirit_keepers_banner.png',
     iconImage: 'spirit_keepers.png',
@@ -111,7 +111,7 @@ export const FACTIONS: Record<FactionNameValue, FactionDefinition> = {
   [FactionName.TWILIGHT_ORDER]: {
     name: FactionName.TWILIGHT_ORDER,
     description:
-      'Scholars of the arcane who seek to understand the deeper mysteries of the monster world through ancient knowledge.',
+      'Mystics and scholars who believe Alters and Fusions are divine advancements of nature. They seek spiritual ascension and a new world order with Alters atop the social ladder, viewing themselves as enlightened guides.',
     color: '#4B0082',
     bannerImage: 'twilight_order_banner.png',
     iconImage: 'twilight_order.png',
@@ -119,7 +119,7 @@ export const FACTIONS: Record<FactionNameValue, FactionDefinition> = {
   [FactionName.LEAGUE]: {
     name: FactionName.LEAGUE,
     description:
-      'Elite trainers driven by competition and glory, upholding order and prestige through rigorous battles.',
+      'The oldest and most visible power structure in the archipelago. Built on gyms, tournaments, and ranked competition, the League believes battle is the most honest language and serves as the closest thing the islands have to a government.',
     color: '#FFD700',
     bannerImage: 'league_banner.png',
     iconImage: 'league.png',
@@ -127,7 +127,7 @@ export const FACTIONS: Record<FactionNameValue, FactionDefinition> = {
   [FactionName.RANGERS]: {
     name: FactionName.RANGERS,
     description:
-      'Protectors of the wilderness who work to preserve the natural habitats and ensure monster conservation.',
+      'Intermediaries between nature, monster, and man. Rangers go where the map runs out, maintaining ecological balance and protecting the delicate ecosystem of the islands with selfless dedication.',
     color: '#006400',
     bannerImage: 'rangers_banner.png',
     iconImage: 'rangers.png',
@@ -135,7 +135,7 @@ export const FACTIONS: Record<FactionNameValue, FactionDefinition> = {
   [FactionName.TAMERS]: {
     name: FactionName.TAMERS,
     description:
-      'Specialists in monster behavior and training, focusing on developing unique bonds and communication techniques.',
+      'Originally nerdy teens attuned to technology, Tamers harness the digital energy surging through the world. They protect all lifeforms — especially digital ones — and believe the digital world is best left alone.',
     color: '#FF8C00',
     bannerImage: 'tamers_banner.png',
     iconImage: 'tamers.png',

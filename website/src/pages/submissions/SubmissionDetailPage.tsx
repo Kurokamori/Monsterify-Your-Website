@@ -549,10 +549,11 @@ const SubmissionDetailPage = ({ type }: SubmissionDetailPageProps) => {
               <h2>Featured Trainers</h2>
               <div className="featured-entities-grid">
                 {submission.trainers.map(trainer => (
-                  <div
+                  <a
                     key={trainer.id}
+                    href={`/trainers/${trainer.id}`}
                     className="featured-entity-card"
-                    onClick={() => navigate(`/trainers/${trainer.id}`)}
+                    onClick={(e) => { e.preventDefault(); navigate(`/trainers/${trainer.id}`); }}
                   >
                     <div className="featured-entity-image">
                       <img
@@ -576,7 +577,7 @@ const SubmissionDetailPage = ({ type }: SubmissionDetailPageProps) => {
                           ))}
                       </div>
                     </div>
-                  </div>
+                  </a>
                 ))}
               </div>
             </div>
@@ -588,10 +589,11 @@ const SubmissionDetailPage = ({ type }: SubmissionDetailPageProps) => {
               <h2>Featured Monsters</h2>
               <div className="featured-entities-grid">
                 {submission.monsters.map(monster => (
-                  <div
+                  <a
                     key={monster.id}
+                    href={`/monsters/${monster.id}`}
                     className="featured-entity-card"
-                    onClick={() => navigate(`/monsters/${monster.id}`)}
+                    onClick={(e) => { e.preventDefault(); navigate(`/monsters/${monster.id}`); }}
                   >
                     <div className="featured-entity-image">
                       <img
@@ -621,7 +623,7 @@ const SubmissionDetailPage = ({ type }: SubmissionDetailPageProps) => {
                         </div>
                       )}
                     </div>
-                  </div>
+                  </a>
                 ))}
               </div>
             </div>

@@ -1,3 +1,3 @@
 # Tamers
 
-Tech-savvy partners of Digimon, the Tamers monitor and manage digital anomalies that impact the physical world. Their expertise ensures the stability and safety of digital hotspots scattered across the islands.
+Originally nerdy teens attuned to technology, Tamers became some of the only people able to harness the digital energy surging through the world after the Great Change. They protect all lifeforms — especially digital ones — and while they believe a digital world may exist, they think it's best left alone. Monsters are friends, not just partners.

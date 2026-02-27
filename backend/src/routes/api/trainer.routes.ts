@@ -16,6 +16,7 @@ import {
   updateMonsterBoxPositions,
   getFeaturedMonsters,
   updateFeaturedMonsters,
+  getTrainerGallery,
   getTrainerReferences,
   getTrainerImages,
   uploadTrainerImage,
@@ -102,6 +103,7 @@ router.put('/:id/featured-monsters', authenticate, updateFeaturedMonsters);
 // References & Images
 // =============================================================================
 
+router.get('/:id/gallery', getTrainerGallery);
 router.get('/:id/references', getTrainerReferences);
 router.get('/:id/images', getTrainerImages);
 router.post('/:id/mega-image', authenticate, addTrainerMegaImage);

@@ -46,6 +46,8 @@ export type MonsterGalleryItem = {
   image_url: string;
   title: string | null;
   created_at: Date;
+  is_mature: boolean;
+  content_rating: Record<string, boolean> | null;
 };
 
 export type MonsterReference = {

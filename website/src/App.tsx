@@ -11,6 +11,8 @@ import FakemonDetailPage from './pages/fakemon/FakemonDetailPage'
 import RerollClaimPage from './pages/utility/RerollClaimPage'
 import ProfilePage from './pages/profile/ProfilePage'
 import PersonalArtTodoPage from './pages/profile/PersonalArtTodoPage'
+import BookmarksPage from './pages/profile/bookmarks/BookmarksPage'
+import BookmarkCanvasPage from './pages/profile/bookmarks/BookmarkCanvasPage'
 import AddTrainerPage from './pages/profile/AddTrainerPage'
 import EditTrainerPage from './pages/trainers/EditTrainerPage'
 import MyTrainersPage from './pages/trainers/MyTrainersPage'
@@ -106,6 +108,7 @@ import { GardenManagerPage } from './pages/admin/garden-manager'
 import { TrainerInventoryEditorPage } from './pages/admin/trainer-inventory-editor'
 import { ChatManagerPage } from './pages/admin/chat-manager'
 import { MonthlyDistributionPage } from './pages/admin/monthly-distribution'
+import { FactionManagerPage } from './pages/admin/faction-manager'
 import InteractiveMapPage from './pages/guides-and-tools/guides/InteractiveMapPage'
 import LandmassGuidePage from './pages/guides-and-tools/guides/LandmassGuidePage'
 import RegionGuidePage from './pages/guides-and-tools/guides/RegionGuidePage'
@@ -132,6 +135,8 @@ function App() {
         {/* Profile Routes */}
         <Route path="profile" element={<ProfilePage />} />
         <Route path="profile/art-todo" element={<PersonalArtTodoPage />} />
+        <Route path="profile/bookmarks" element={<BookmarksPage />} />
+        <Route path="profile/bookmarks/:categoryId" element={<BookmarkCanvasPage />} />
         <Route path="profile/add-trainer" element={<AddTrainerPage />} />
         <Route path="profile/trainers" element={<MyTrainersPage />} />
         <Route path="profile/reference" element={<ReferenceTodoPage />} />
@@ -233,6 +238,7 @@ function App() {
         <Route path="admin/trainer-inventory-editor" element={<TrainerInventoryEditorPage />} />
         <Route path="admin/chat-manager" element={<ChatManagerPage />} />
         <Route path="admin/monthly-distribution" element={<MonthlyDistributionPage />} />
+        <Route path="admin/faction-manager" element={<FactionManagerPage />} />
 
         {/* Statistics Routes */}
         <Route path="statistics" element={<StatisticsPage />} />

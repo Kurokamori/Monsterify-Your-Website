@@ -21,7 +21,7 @@ const TrainerDetailPage = () => {
   const detail = useTrainerDetail();
 
   const {
-    trainer, monsters, loading, error, isOwner, filteredMonsters,
+    trainer, monsters, galleryImages, loading, error, isOwner, filteredMonsters,
     activeTab, setActiveTab,
     currentPCBox, setCurrentPCBox, searchTerm, setSearchTerm, viewMode, setViewMode,
     getMaxBoxNumber, getBoxMonsters, getBoxMonstersForDisplay, getFilteredBoxMonsters,
@@ -155,7 +155,7 @@ const TrainerDetailPage = () => {
       label: 'Additional Refs',
       icon: 'fas fa-images',
       content: trainer ? (
-        <AdditionalRefsTab trainer={trainer} handleImageClick={handleImageClick} />
+        <AdditionalRefsTab trainer={trainer} galleryImages={galleryImages} handleImageClick={handleImageClick} />
       ) : null,
     },
     {
