@@ -222,11 +222,22 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       setLoading(true);
 
       const response = await api.patch('/auth/profile', userData);
+      const serverUser = response.data.user;
 
-      const updatedUser = response.data.user;
-      localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(updatedUser));
-
-      setCurrentUser(updatedUser);
+      setCurrentUser(prevUser => {
+        if (!prevUser) {
+          localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(serverUser));
+          return serverUser;
+        }
+        // Only apply fields that were sent in this request to avoid overwriting
+        // concurrent settings updates (content, notification, roller settings)
+        const merged = { ...prevUser };
+        for (const key of Object.keys(userData)) {
+          (merged as Record<string, unknown>)[key] = (serverUser as Record<string, unknown>)[key];
+        }
+        localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(merged));
+        return merged;
+      });
       return true;
     } catch (err: unknown) {
       console.error('Profile update error:', err);

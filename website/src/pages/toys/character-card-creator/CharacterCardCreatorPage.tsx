@@ -191,6 +191,7 @@ const CharacterCardCreatorPage = () => {
       const dataUrl = await toPng(previewRef.current, {
         cacheBust: true,
         pixelRatio: 2,
+        skipFonts: true,
       });
       const link = document.createElement('a');
       link.download = `${card.name || 'character-card'}.png`;

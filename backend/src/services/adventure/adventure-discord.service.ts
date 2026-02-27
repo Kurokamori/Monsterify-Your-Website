@@ -35,8 +35,6 @@ export type ArchiveResult = {
 
 export type DiscordConfig = {
   botToken?: string;
-  botUrl?: string;
-  botHttpPort?: number;
   defaultChannelId?: string;
   guildId?: string;
   websiteUrl?: string;
@@ -46,9 +44,9 @@ export type DiscordConfig = {
 // Constants
 // ============================================================================
 
+const DISCORD_API_BASE = 'https://discord.com/api/v10';
+
 const DEFAULT_CONFIG: DiscordConfig = {
-  botUrl: 'http://localhost:3002',
-  botHttpPort: 3001,
   websiteUrl: 'http://localhost:4888',
 };
 
@@ -69,7 +67,9 @@ const DEFAULT_WELCOME_MESSAGE = (adventureTitle: string): string =>
 // ============================================================================
 
 /**
- * Service for Discord thread management for adventures
+ * Service for Discord thread management for adventures.
+ * Calls the Discord REST API directly using the bot token,
+ * so it works regardless of whether the backend and bot are co-located.
  */
 export class AdventureDiscordService {
   private config: DiscordConfig;
@@ -88,10 +88,6 @@ export class AdventureDiscordService {
     this.config = {
       ...DEFAULT_CONFIG,
       botToken: process.env.DISCORD_BOT_TOKEN,
-      botUrl: process.env.DISCORD_BOT_URL ?? DEFAULT_CONFIG.botUrl,
-      botHttpPort: process.env.DISCORD_BOT_HTTP_PORT
-        ? parseInt(process.env.DISCORD_BOT_HTTP_PORT, 10)
-        : DEFAULT_CONFIG.botHttpPort,
       defaultChannelId: process.env.DEFAULT_ADVENTURE_CHANNEL_ID,
       guildId: process.env.DISCORD_GUILD_ID,
       websiteUrl: process.env.WEBSITE_URL ?? DEFAULT_CONFIG.websiteUrl,
@@ -99,8 +95,16 @@ export class AdventureDiscordService {
     };
   }
 
+  /** Shared headers for Discord API calls */
+  private get discordHeaders() {
+    return {
+      Authorization: `Bot ${this.config.botToken}`,
+      'Content-Type': 'application/json',
+    };
+  }
+
   /**
-   * Create a Discord thread for an adventure via HTTP request to Discord bot
+   * Create a Discord thread for an adventure via the Discord REST API
    */
   async createAdventureThread(
     adventure: Adventure,
@@ -118,50 +122,56 @@ export class AdventureDiscordService {
     }
 
     try {
-      // Make HTTP request to Discord bot endpoint
-      const response = await axios.post<ThreadCreationResult>(
-        `${this.config.botUrl}/api/create-thread`,
+      const threadName = `${emoji} ${adventure.title}`.slice(0, 100);
+
+      // Create a public thread via Discord REST API
+      const response = await axios.post(
+        `${DISCORD_API_BASE}/channels/${targetChannelId}/threads`,
         {
-          adventureId: adventure.id,
-          adventureName: adventure.title,
-          channelId: targetChannelId,
-          emoji,
+          name: threadName,
+          auto_archive_duration: 10080, // 7 days
+          type: 11, // PUBLIC_THREAD
         },
         {
           timeout: 15000,
-          headers: {
-            'Content-Type': 'application/json',
-          },
+          headers: this.discordHeaders,
         }
       );
 
-      if (response.data.success && response.data.threadId) {
-        // Store thread information in database
-        await this.adventureThreadRepository.create({
-          adventureId: adventure.id,
-          discordThreadId: response.data.threadId,
-          discordChannelId: targetChannelId,
-          threadName: response.data.threadName ?? `${emoji} ${adventure.title}`,
-        });
+      const thread = response.data as { id: string; name: string };
 
-        // Update adventure with Discord thread info
-        await this.adventureRepository.update(adventure.id, {
-          discordThreadId: response.data.threadId,
-          discordChannelId: targetChannelId,
-        });
+      // Store thread information in database
+      await this.adventureThreadRepository.create({
+        adventureId: adventure.id,
+        discordThreadId: thread.id,
+        discordChannelId: targetChannelId,
+        threadName: thread.name,
+      });
 
-        // Send welcome message
-        const welcomeMessage = await this.generateWelcomeMessage(adventure);
-        await this.sendMessageToThread(response.data.threadId, welcomeMessage);
+      // Update adventure with Discord thread info
+      await this.adventureRepository.update(adventure.id, {
+        discordThreadId: thread.id,
+        discordChannelId: targetChannelId,
+      });
 
-        console.log(
-          `Discord thread created for adventure "${adventure.title}": ${response.data.threadId}`
-        );
+      // Send welcome message
+      const welcomeMessage = await this.generateWelcomeMessage(adventure);
+      await this.sendMessageToThread(thread.id, welcomeMessage);
 
-        return response.data;
-      } else {
-        throw new Error(response.data.message ?? 'Failed to create thread');
-      }
+      const guildId = this.config.guildId ?? '@me';
+      const threadUrl = `https://discord.com/channels/${guildId}/${thread.id}`;
+
+      console.log(
+        `Discord thread created for adventure "${adventure.title}": ${thread.id}`
+      );
+
+      return {
+        success: true,
+        threadId: thread.id,
+        threadName: thread.name,
+        channelId: targetChannelId,
+        threadUrl,
+      };
     } catch (error) {
       const axiosError = error as AxiosError;
       console.error('Error creating Discord thread:', axiosError.message);
@@ -235,36 +245,23 @@ export class AdventureDiscordService {
   }
 
   /**
-   * Send message to adventure thread
+   * Send message to adventure thread via Discord REST API
    */
   async sendMessageToThread(threadId: string, message: string): Promise<MessageSendResult> {
     try {
-      const discordBotUrl = `http://localhost:${this.config.botHttpPort}`;
-
-      console.log(`Sending message to Discord bot at ${discordBotUrl}/send-message`);
-
-      const response = await axios.post<MessageSendResult>(
-        `${discordBotUrl}/send-message`,
-        {
-          threadId,
-          message,
-        },
+      await axios.post(
+        `${DISCORD_API_BASE}/channels/${threadId}/messages`,
+        { content: message },
         {
           timeout: 10000,
+          headers: this.discordHeaders,
         }
       );
 
-      return response.data;
+      return { success: true };
     } catch (error) {
       const axiosError = error as AxiosError;
       console.error('Error sending message to Discord thread:', axiosError.message);
-
-      if (axiosError.code === 'ECONNREFUSED') {
-        return {
-          success: false,
-          message: 'Discord bot HTTP server is not running',
-        };
-      }
 
       return {
         success: false,
@@ -274,24 +271,27 @@ export class AdventureDiscordService {
   }
 
   /**
-   * Archive adventure thread via Discord bot
+   * Archive adventure thread via Discord REST API
    */
   async archiveThread(threadId: string): Promise<ArchiveResult> {
     try {
-      const discordBotUrl = `http://localhost:${this.config.botHttpPort}`;
-
-      const response = await axios.post<ArchiveResult>(
-        `${discordBotUrl}/archive-thread`,
+      // Lock and archive the thread
+      await axios.patch(
+        `${DISCORD_API_BASE}/channels/${threadId}`,
         {
-          threadId,
-          reason: 'Adventure completed',
+          locked: true,
+          archived: true,
         },
         {
           timeout: 10000,
+          headers: this.discordHeaders,
         }
       );
 
-      return response.data;
+      return {
+        success: true,
+        message: `Thread ${threadId} archived`,
+      };
     } catch (error) {
       const axiosError = error as AxiosError;
       console.error('Error archiving Discord thread:', axiosError.message);

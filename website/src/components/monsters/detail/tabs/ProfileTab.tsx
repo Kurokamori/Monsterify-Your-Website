@@ -1,6 +1,15 @@
 import type { Monster } from '@services/monsterService';
 import { getFriendshipMessage } from '../useMonsterDetail';
 
+const ISO_DATE_REGEX = /^\d{4}-\d{2}-\d{2}(T|\s)/;
+
+function formatDateString(value: string): string {
+  if (!ISO_DATE_REGEX.test(value)) return value;
+  const date = new Date(value);
+  if (isNaN(date.getTime())) return value;
+  return date.toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' });
+}
+
 interface ProfileTabProps {
   monster: Monster;
 }
@@ -113,7 +122,7 @@ export const ProfileTab = ({ monster }: ProfileTabProps) => {
             {!!monster.date_met && (
               <div className="inventory-item">
                 <span className="detail-label">Date Met</span>
-                <span className="detail-value">{String(monster.date_met)}</span>
+                <span className="detail-value">{formatDateString(String(monster.date_met))}</span>
               </div>
             )}
             {!!monster.acquired && (

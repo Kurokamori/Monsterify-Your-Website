@@ -462,7 +462,7 @@ export const CardPreview = forwardRef<HTMLDivElement, CardPreviewProps>(({ card 
         display: 'flex',
         flexDirection: isVertical ? 'column' : 'row',
         overflow: 'hidden',
-        fontFamily: "'Inter', Arial, sans-serif",
+        fontFamily: "system-ui, -apple-system, Arial, sans-serif",
         position: 'relative',
         boxSizing: 'border-box',
       }}
