@@ -159,8 +159,8 @@ const trainerService = {
   },
 
   // Delete a trainer
-  deleteTrainer: async (id: number | string): Promise<void> => {
-    await api.delete(`/trainers/${id}`);
+  deleteTrainer: async (id: number | string, forfeitToBazar = false): Promise<void> => {
+    await api.delete(`/trainers/${id}`, { data: { forfeitToBazar } });
   },
 
   // Get monsters for a trainer

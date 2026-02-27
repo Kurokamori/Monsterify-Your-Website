@@ -68,6 +68,7 @@ const MyTrainersPage = () => {
   const [deleteTarget, setDeleteTarget] = useState<Trainer | null>(null);
   const [deleteError, setDeleteError] = useState<string | null>(null);
   const [deleting, setDeleting] = useState(false);
+  const [forfeitToBazar, setForfeitToBazar] = useState(false);
 
   // Auth redirect
   useEffect(() => {
@@ -122,8 +123,9 @@ const MyTrainersPage = () => {
     try {
       setDeleting(true);
       setDeleteError(null);
-      await trainerService.deleteTrainer(deleteTarget.id);
+      await trainerService.deleteTrainer(deleteTarget.id, forfeitToBazar);
       setDeleteTarget(null);
+      setForfeitToBazar(false);
       await fetchTrainers();
     } catch (err) {
       const msg = (err as { response?: { data?: { message?: string } } })
@@ -132,12 +134,14 @@ const MyTrainersPage = () => {
     } finally {
       setDeleting(false);
     }
-  }, [deleteTarget, fetchTrainers]);
+  }, [deleteTarget, forfeitToBazar, fetchTrainers]);
 
   const openDeleteModal = useCallback((trainer: Trainer, e: React.MouseEvent) => {
     e.stopPropagation();
+    e.preventDefault();
     setDeleteTarget(trainer);
     setDeleteError(null);
+    setForfeitToBazar(false);
   }, []);
 
   // Loading/error states
@@ -324,8 +328,23 @@ const MyTrainersPage = () => {
           <div className="my-trainers__delete-modal">
             <p>
               Are you sure you want to delete the trainer <strong>{deleteTarget.name}</strong>?
-              This will permanently remove the trainer and all associated data.
-              This action cannot be undone.
+              This will permanently remove the trainer. This action cannot be undone.
+            </p>
+
+            <label className="my-trainers__forfeit-option">
+              <input
+                type="checkbox"
+                checked={forfeitToBazar}
+                onChange={e => setForfeitToBazar(e.target.checked)}
+              />
+              <span>
+                Forfeit all items and monsters to the Bazar
+              </span>
+            </label>
+            <p className="my-trainers__forfeit-hint">
+              {forfeitToBazar
+                ? 'All monsters and items will be sent to the Bazar for other trainers to claim before the trainer is deleted.'
+                : 'All monsters and items belonging to this trainer will be permanently lost.'}
             </p>
 
             {deleteError && (

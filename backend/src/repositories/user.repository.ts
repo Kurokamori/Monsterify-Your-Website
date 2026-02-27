@@ -10,6 +10,7 @@ export type MonsterRollerSettings = {
   fakemon: boolean;
   finalfantasy: boolean;
   monsterhunter: boolean;
+  dragonquest: boolean;
 };
 
 export type ContentSettings = {
@@ -103,6 +104,7 @@ const DEFAULT_MONSTER_ROLLER_SETTINGS: MonsterRollerSettings = {
   fakemon: true,
   finalfantasy: true,
   monsterhunter: true,
+  dragonquest: true,
 };
 
 const normalizeMonsterRollerSettings = (

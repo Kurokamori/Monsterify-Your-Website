@@ -257,6 +257,17 @@ export type {
   PaginatedFinalFantasySpecies,
 } from './finalfantasy-species.repository';
 
+// Dragon Quest Species Repository
+export { DragonQuestSpeciesRepository } from './dragonquest-species.repository';
+export type {
+  DragonQuestSpeciesRow,
+  DragonQuestSpecies,
+  DragonQuestSpeciesCreateInput,
+  DragonQuestSpeciesUpdateInput,
+  DragonQuestSpeciesQueryOptions,
+  PaginatedDragonQuestSpecies,
+} from './dragonquest-species.repository';
+
 // Fakemon Species Repository
 export { FakemonSpeciesRepository } from './fakemon-species.repository';
 export type {

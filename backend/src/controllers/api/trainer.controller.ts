@@ -374,8 +374,19 @@ export async function deleteTrainer(req: Request, res: Response): Promise<void> 
       return;
     }
 
-    await trainerService.deleteTrainer(id);
-    res.json({ success: true, message: `Trainer with ID ${id} deleted` });
+    const forfeitToBazar = req.body?.forfeitToBazar === true;
+
+    if (forfeitToBazar) {
+      const result = await trainerService.adminDeleteWithForfeit(id, true);
+      res.json({
+        success: true,
+        message: `Trainer deleted. Forfeited ${result.forfeited.monsters} monsters and ${result.forfeited.items} item stacks to the bazar.`,
+        data: result,
+      });
+    } else {
+      await trainerService.deleteTrainer(id);
+      res.json({ success: true, message: `Trainer with ID ${id} deleted` });
+    }
   } catch (error) {
     console.error('Error in deleteTrainer:', error);
     res.status(500).json({ success: false, message: 'Server error' });

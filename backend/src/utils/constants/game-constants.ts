@@ -17,6 +17,7 @@ export const MONSTER_TABLES = [
   'fakemon',
   'finalfantasy',
   'monsterhunter',
+  'dragonquest',
 ] as const;
 
 export type MonsterTable = (typeof MONSTER_TABLES)[number];
@@ -31,6 +32,7 @@ export const TABLE_NAME_MAP: Record<MonsterTable, string> = {
   fakemon: 'fakemon',
   finalfantasy: 'finalfantasy_monsters',
   monsterhunter: 'monsterhunter_monsters',
+  dragonquest: 'dragonquest_monsters',
 };
 
 // ============================================================================
@@ -137,6 +139,18 @@ export const TABLE_SCHEMAS: Record<MonsterTable, TableSchema> = {
     stageField: null,
     imageField: 'image_url',
     additionalFields: [],
+  },
+  dragonquest: {
+    idField: 'id',
+    nameField: 'name',
+    typeFields: [],
+    attributeField: null,
+    rarityFields: [],
+    evolutionFields: [],
+    stageField: null,
+    imageField: 'image_url',
+    // family and subfamily are stored but treated as taxonomy, not rarity/stage
+    additionalFields: ['family', 'subfamily'],
   },
 };
 
@@ -357,6 +371,9 @@ export const EGG_HATCHING = {
     },
     monsterhunter: {
       // Monster Hunter monsters don't evolve
+    },
+    dragonquest: {
+      // Dragon Quest monsters don't have evolution stages — all are eligible
     },
   },
 } as const;

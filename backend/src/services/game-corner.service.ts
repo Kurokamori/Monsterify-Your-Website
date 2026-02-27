@@ -940,6 +940,7 @@ export class GameCornerService {
       fakemon: true,
       finalfantasy: true,
       monsterhunter: true,
+      dragonquest: true,
     };
 
     if (!user.monster_roller_settings) {

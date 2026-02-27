@@ -15,6 +15,7 @@ const SPECIES_TABLES = [
   'fakemon',
   'finalfantasy_monsters',
   'monsterhunter_monsters',
+  'dragonquest_monsters',
 ] as const;
 
 /**
@@ -133,6 +134,10 @@ async function rollRandomSpecies(
       SELECT name FROM monsterhunter_monsters
       WHERE rank IN ('1', '2', '3')
     `);
+  }
+
+  if (settings.dragonquestEnabled) {
+    queryParts.push(`SELECT name FROM dragonquest_monsters`);
   }
 
   if (queryParts.length === 0) {
@@ -263,6 +268,8 @@ export async function getSpeciesList(req: Request, res: Response): Promise<void>
         SELECT name FROM finalfantasy_monsters
         UNION
         SELECT name FROM monsterhunter_monsters
+        UNION
+        SELECT name FROM dragonquest_monsters
       ) AS all_species
     `;
 
@@ -315,6 +322,8 @@ export async function searchSpecies(req: Request, res: Response): Promise<void> 
         SELECT name FROM finalfantasy_monsters
         UNION
         SELECT name FROM monsterhunter_monsters
+        UNION
+        SELECT name FROM dragonquest_monsters
       ) AS all_species
       WHERE name ILIKE $1
       ORDER BY name

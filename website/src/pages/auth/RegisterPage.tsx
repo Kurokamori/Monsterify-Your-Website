@@ -22,6 +22,7 @@ const FANDOM_OPTIONS: FandomOption[] = [
   { key: 'fakemon', label: 'Fakemon', icon: '\u2B50' },
   { key: 'finalfantasy', label: 'Final Fantasy', icon: '\uD83D\uDD2E' },
   { key: 'monsterhunter', label: 'Monster Hunter', icon: '\uD83D\uDDE1\uFE0F' },
+  { key: 'dragonquest', label: 'Dragon Quest', icon: '\u2694\uFE0F' },
 ];
 
 const DEFAULT_SETTINGS: MonsterRollerSettings = {
@@ -33,6 +34,7 @@ const DEFAULT_SETTINGS: MonsterRollerSettings = {
   fakemon: true,
   finalfantasy: true,
   monsterhunter: true,
+  dragonquest: true,
 };
 
 export default function RegisterPage() {

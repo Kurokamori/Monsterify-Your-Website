@@ -540,6 +540,7 @@ export class AdoptionService {
       fakemon: true,
       finalfantasy: true,
       monsterhunter: true,
+      dragonquest: true,
     };
 
     const trainer = await this.trainerRepository.findById(trainerId);

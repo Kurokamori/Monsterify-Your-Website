@@ -384,6 +384,7 @@ export class AntiqueService {
       fakemon: true,
       finalfantasy: true,
       monsterhunter: true,
+      dragonquest: true,
     };
 
     if (!playerUserId) {

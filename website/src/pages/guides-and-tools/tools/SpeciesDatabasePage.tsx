@@ -312,7 +312,7 @@ const SpeciesDatabasePage = () => {
             <p>Try adjusting your search or filters</p>
           </div>
         ) : (
-          <div className="species-grid">
+          <div className="species-database__grid">
             {species.map((speciesItem) => (
               <SpeciesCard
                 key={speciesItem[franchiseConfig.idField] as string}

@@ -13,6 +13,7 @@ import {
   FakemonSpeciesRepository,
   FinalFantasySpeciesRepository,
   MonsterHunterSpeciesRepository,
+  DragonQuestSpeciesRepository,
 } from '../repositories';
 import type {
   MonsterWithTrainer,
@@ -94,7 +95,8 @@ type FranchiseId =
   | 'pals'
   | 'fakemon'
   | 'finalfantasy'
-  | 'monsterhunter';
+  | 'monsterhunter'
+  | 'dragonquest';
 
 const ATTRIBUTES = ['Data', 'Virus', 'Vaccine', 'Variable', 'Free'] as const;
 
@@ -107,6 +109,7 @@ const DEFAULT_USER_SETTINGS: UserSettings = {
   fakemon: true,
   finalfantasy: true,
   monsterhunter: true,
+  dragonquest: true,
 };
 
 // ============================================================================
@@ -131,6 +134,7 @@ export class BreedingService {
   private fakemonRepo: FakemonSpeciesRepository;
   private finalFantasyRepo: FinalFantasySpeciesRepository;
   private monsterHunterRepo: MonsterHunterSpeciesRepository;
+  private dragonQuestRepo: DragonQuestSpeciesRepository;
 
   // In-memory breeding sessions
   private sessions = new Map<string, BreedingSession>();
@@ -159,6 +163,7 @@ export class BreedingService {
     this.fakemonRepo = new FakemonSpeciesRepository();
     this.finalFantasyRepo = new FinalFantasySpeciesRepository();
     this.monsterHunterRepo = new MonsterHunterSpeciesRepository();
+    this.dragonQuestRepo = new DragonQuestSpeciesRepository();
   }
 
   // ==========================================================================
@@ -167,7 +172,7 @@ export class BreedingService {
 
   private async identifyFranchise(species: string): Promise<FranchiseId | null> {
     // Check each franchise in parallel for efficiency
-    const [pokemon, digimon, yokai, nexomon, pals, fakemon, finalFantasy, monsterHunter] =
+    const [pokemon, digimon, yokai, nexomon, pals, fakemon, finalFantasy, monsterHunter, dragonQuest] =
       await Promise.all([
         this.pokemonRepo.findByName(species),
         this.digimonRepo.findByName(species),
@@ -177,6 +182,7 @@ export class BreedingService {
         this.fakemonRepo.findByName(species),
         this.finalFantasyRepo.findByName(species),
         this.monsterHunterRepo.findByName(species),
+        this.dragonQuestRepo.findByName(species),
       ]);
 
     if (pokemon) { return 'pokemon'; }
@@ -187,6 +193,7 @@ export class BreedingService {
     if (fakemon) { return 'fakemon'; }
     if (finalFantasy) { return 'finalfantasy'; }
     if (monsterHunter) { return 'monsterhunter'; }
+    if (dragonQuest) { return 'dragonquest'; }
 
     return null;
   }
@@ -202,8 +209,8 @@ export class BreedingService {
       return { eligible: true, reason: '' };
     }
 
-    // Pals and Monster Hunter are always eligible
-    if (franchise === 'pals' || franchise === 'monsterhunter') {
+    // Pals, Monster Hunter, and Dragon Quest are always eligible (no evolution stages)
+    if (franchise === 'pals' || franchise === 'monsterhunter' || franchise === 'dragonquest') {
       return { eligible: true, reason: '' };
     }
 
@@ -311,6 +318,7 @@ export class BreedingService {
       fakemon: rollerSettings.fakemon ?? true,
       finalfantasy: rollerSettings.finalfantasy ?? true,
       monsterhunter: rollerSettings.monsterhunter ?? true,
+      dragonquest: rollerSettings.dragonquest ?? true,
     };
   }
 
@@ -324,10 +332,11 @@ export class BreedingService {
     if (settings.fakemon) { tables.push('fakemon'); }
     if (settings.finalfantasy) { tables.push('finalfantasy'); }
     if (settings.monsterhunter) { tables.push('monsterhunter'); }
+    if (settings.dragonquest) { tables.push('dragonquest'); }
 
     // If nothing enabled, enable all
     if (tables.length === 0) {
-      return ['pokemon', 'digimon', 'yokai', 'nexomon', 'pals', 'fakemon', 'finalfantasy', 'monsterhunter'];
+      return ['pokemon', 'digimon', 'yokai', 'nexomon', 'pals', 'fakemon', 'finalfantasy', 'monsterhunter', 'dragonquest'];
     }
 
     return tables;
@@ -372,6 +381,10 @@ export class BreedingService {
       }
       case 'monsterhunter': {
         // Monster Hunter monsters always breed true
+        return species;
+      }
+      case 'dragonquest': {
+        // Dragon Quest monsters always breed true (no evolutions)
         return species;
       }
     }

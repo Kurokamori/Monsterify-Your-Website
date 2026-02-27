@@ -33,6 +33,7 @@ const ALL_TABLES_ENABLED: UserSettings = {
   fakemon: true,
   finalfantasy: true,
   monsterhunter: true,
+  dragonquest: true,
 };
 
 function parseUserSettings(settings: MonsterRollerSettings | null): UserSettings {
@@ -49,6 +50,7 @@ function parseUserSettings(settings: MonsterRollerSettings | null): UserSettings
     fakemon: settings.fakemon !== false,
     finalfantasy: settings.finalfantasy !== false,
     monsterhunter: settings.monsterhunter !== false,
+    dragonquest: settings.dragonquest !== false,
   };
 }
 

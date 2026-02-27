@@ -466,7 +466,7 @@ const EvolutionExplorerPage = () => {
         <h1>Evolution Explorer</h1>
         <p>
           Explore evolution trees for Digimon, Yokai, Pokemon, Nexomon, Fakemon, and Final Fantasy creatures.
-          Monster Hunter creatures can be searched but do not evolve.
+          Monster Hunter and Dragon Quest creatures can be searched but do not evolve.
         </p>
       </div>
 

@@ -2561,6 +2561,7 @@ export class SubmissionService {
       fakemon: true,
       finalfantasy: true,
       monsterhunter: true,
+      dragonquest: true,
     };
 
     const trainer = await this.trainerRepo.findById(trainerId);

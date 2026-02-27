@@ -688,6 +688,7 @@ export class GardenService {
       fakemon: true,
       finalfantasy: true,
       monsterhunter: true,
+      dragonquest: true,
     };
 
     const user = await this.userRepository.findById(userId);

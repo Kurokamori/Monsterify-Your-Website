@@ -9,6 +9,7 @@ export interface MonsterRollerSettings {
   fakemon?: boolean;
   finalfantasy?: boolean;
   monsterhunter?: boolean;
+  dragonquest?: boolean;
 }
 
 export interface ContentSettings {

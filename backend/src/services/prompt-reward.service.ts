@@ -724,6 +724,7 @@ export class PromptRewardService {
       fakemon: true,
       finalfantasy: true,
       monsterhunter: true,
+      dragonquest: true,
     };
 
     if (trainer?.player_user_id) {

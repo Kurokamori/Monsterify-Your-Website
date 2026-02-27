@@ -31,6 +31,7 @@ const FANDOM_OPTIONS: FandomOption[] = [
   { key: 'fakemon', label: 'Fakemon', icon: '⭐' },
   { key: 'finalfantasy', label: 'Final Fantasy', icon: '🔮' },
   { key: 'monsterhunter', label: 'Monster Hunter', icon: '🗡️' },
+  { key: 'dragonquest', label: 'Dragon Quest', icon: '⚔️' },
 ];
 
 const DEFAULT_MONSTER_SETTINGS: MonsterRollerSettings = {
@@ -42,6 +43,7 @@ const DEFAULT_MONSTER_SETTINGS: MonsterRollerSettings = {
   fakemon: true,
   finalfantasy: true,
   monsterhunter: true,
+  dragonquest: true,
 };
 
 const DEFAULT_CONTENT_SETTINGS: ContentSettings = {

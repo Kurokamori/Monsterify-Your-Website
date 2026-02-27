@@ -1100,6 +1100,7 @@ export class ItemsService {
       fakemon: true,
       finalfantasy: true,
       monsterhunter: true,
+      dragonquest: true,
     };
 
     if (!settings) {

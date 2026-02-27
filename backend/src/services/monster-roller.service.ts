@@ -23,6 +23,7 @@ export type UserSettings = {
   fakemon?: boolean;
   finalfantasy?: boolean;
   monsterhunter?: boolean;
+  dragonquest?: boolean;
 };
 
 export type TableFilter = {
@@ -113,6 +114,8 @@ export type RollParams = {
   families?: string | null;
   levelRequired?: number | null;
   ndex?: number | null;
+  family?: string | null;
+  subfamily?: string | null;
 };
 
 export type RolledMonster = {
@@ -147,6 +150,8 @@ export type RolledMonster = {
   level_required?: number | null;
   tribe?: string | null;
   ndex?: number | null;
+  family?: string | null;
+  subfamily?: string | null;
   [key: string]: unknown;
 };
 
@@ -238,6 +243,7 @@ export class MonsterRollerService {
       fakemon: true,
       finalfantasy: true,
       monsterhunter: true,
+      dragonquest: true,
     };
 
     // Apply user settings to enabled tables
@@ -252,28 +258,12 @@ export class MonsterRollerService {
    * Apply user settings to enabled tables
    */
   private applyUserSettings(): void {
-    const allTables = [...this.enabledTables];
-
-    // Filter enabled tables based on user settings
+    // Filter enabled tables based on user settings.
+    // Include by default; only exclude if explicitly set to false.
     this.enabledTables = this.enabledTables.filter((table) => {
-      const settingKeyWithSuffix = `${table}_enabled` as keyof UserSettings;
-      const settingKeySimple = table as keyof UserSettings;
-
-      const isEnabledWithSuffix =
-        this.userSettings[settingKeyWithSuffix] === true ||
-        this.userSettings[settingKeyWithSuffix] === ('true' as unknown as boolean);
-      const isEnabledSimple =
-        this.userSettings[settingKeySimple] === true ||
-        this.userSettings[settingKeySimple] === ('true' as unknown as boolean);
-
-      return isEnabledWithSuffix || isEnabledSimple;
+      const userSetting = this.userSettings[table as keyof UserSettings];
+      return userSetting !== false;
     });
-
-    // Fallback: if no tables are enabled, use all tables
-    if (this.enabledTables.length === 0) {
-      console.log('No tables enabled after filtering, using all tables as fallback');
-      this.enabledTables = allTables;
-    }
 
     console.log('Enabled tables after applying user settings:', this.enabledTables);
   }
@@ -656,6 +646,7 @@ export class MonsterRollerService {
           '' as attribute, '' as rank, '' as families,
           '' as digimon_type, '' as natural_attributes, 0 as level_required,
           '' as tribe,
+          '' as family, '' as subfamily,
           'pokemon' as monster_type
         `;
       case 'digimon':
@@ -668,6 +659,7 @@ export class MonsterRollerService {
           attribute, rank, families,
           digimon_type, natural_attributes, level_required,
           '' as tribe,
+          '' as family, '' as subfamily,
           'digimon' as monster_type
         `;
       case 'yokai':
@@ -680,6 +672,7 @@ export class MonsterRollerService {
           '' as attribute, rank, '' as families,
           '' as digimon_type, '' as natural_attributes, 0 as level_required,
           tribe,
+          '' as family, '' as subfamily,
           'yokai' as monster_type
         `;
       case 'nexomon':
@@ -692,6 +685,7 @@ export class MonsterRollerService {
           '' as attribute, '' as rank, '' as families,
           '' as digimon_type, '' as natural_attributes, 0 as level_required,
           '' as tribe,
+          '' as family, '' as subfamily,
           'nexomon' as monster_type
         `;
       case 'pals':
@@ -704,6 +698,7 @@ export class MonsterRollerService {
           '' as attribute, '' as rank, '' as families,
           '' as digimon_type, '' as natural_attributes, 0 as level_required,
           '' as tribe,
+          '' as family, '' as subfamily,
           'pals' as monster_type
         `;
       case 'fakemon':
@@ -716,6 +711,7 @@ export class MonsterRollerService {
           attribute, '' as rank, '' as families,
           '' as digimon_type, '' as natural_attributes, 0 as level_required,
           '' as tribe,
+          '' as family, '' as subfamily,
           'fakemon' as monster_type
         `;
       case 'finalfantasy':
@@ -728,6 +724,7 @@ export class MonsterRollerService {
           '' as attribute, NULL::text as rank, '' as families,
           '' as digimon_type, '' as natural_attributes, 0 as level_required,
           '' as tribe,
+          '' as family, '' as subfamily,
           'finalfantasy' as monster_type
         `;
       case 'monsterhunter':
@@ -740,7 +737,21 @@ export class MonsterRollerService {
           element as attribute, rank::text as rank, '' as families,
           '' as digimon_type, '' as natural_attributes, 0 as level_required,
           '' as tribe,
+          '' as family, '' as subfamily,
           'monsterhunter' as monster_type
+        `;
+      case 'dragonquest':
+        return `
+          id, name,
+          '' as type_primary, '' as type_secondary, '' as type3, '' as type4, '' as type5,
+          '' as evolves_from, '' as evolves_to, '' as breeding_results, '' as stage,
+          false as is_legendary, false as is_mythical, 0 as ndex, image_url,
+          '' as species2, '' as species3,
+          '' as attribute, '' as rank, '' as families,
+          '' as digimon_type, '' as natural_attributes, 0 as level_required,
+          '' as tribe,
+          family, subfamily,
+          'dragonquest' as monster_type
         `;
       default:
         throw new Error(`Unknown table: ${table}`);
@@ -1061,6 +1072,14 @@ export class MonsterRollerService {
 
     if (table === 'pokemon' && params.ndex) {
       conditions += ` AND ndex = ${addParam(parseInt(String(params.ndex)))}`;
+    }
+
+    if (table === 'dragonquest' && params.family) {
+      conditions += ` AND family ILIKE ${addParam(`%${params.family}%`)}`;
+    }
+
+    if (table === 'dragonquest' && params.subfamily) {
+      conditions += ` AND subfamily ILIKE ${addParam(`%${params.subfamily}%`)}`;
     }
 
     if (params.breedingResults) {

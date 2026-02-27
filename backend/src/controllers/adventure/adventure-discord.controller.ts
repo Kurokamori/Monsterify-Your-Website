@@ -79,6 +79,7 @@ async function getUserSettingsFromDiscordId(discordUserId: string): Promise<User
     fakemon: true,
     finalfantasy: true,
     monsterhunter: true,
+    dragonquest: true,
   };
 
   const user = await userRepository.findByDiscordId(discordUserId);

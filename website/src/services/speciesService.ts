@@ -36,11 +36,28 @@ export interface FranchiseConfigItem {
 
 export type FranchiseKey =
   | 'pokemon' | 'digimon' | 'nexomon' | 'yokai'
-  | 'monsterhunter' | 'finalfantasy' | 'pals' | 'fakemon';
+  | 'monsterhunter' | 'finalfantasy' | 'pals' | 'fakemon' | 'dragonquest';
 
 // --- Franchise configuration ---
 
 export const FRANCHISE_CONFIG: Record<FranchiseKey, FranchiseConfigItem> = {
+  dragonquest: {
+    name: 'Dragon Quest',
+    endpoint: '/dragonquest-monsters',
+    idField: 'id',
+    nameField: 'name',
+    imageField: 'imageUrl',
+    sortDefault: 'name',
+    filters: {
+      family: { label: 'Family', field: 'family', options: null },
+      subfamily: { label: 'Subfamily', field: 'subfamily', options: null },
+    },
+    displayFields: [
+      { key: 'family', label: 'Family' },
+      { key: 'subfamily', label: 'Subfamily' },
+    ],
+    evolutionFields: null,
+  },
   pokemon: {
     name: 'Pokemon',
     endpoint: '/pokemon-monsters',

@@ -22,6 +22,7 @@ export interface MonsterRollerSettings {
   fakemonEnabled: boolean;
   finalfantasyEnabled: boolean;
   monsterhunterEnabled: boolean;
+  dragonquestEnabled: boolean;
 }
 
 /**
@@ -36,6 +37,7 @@ export const DEFAULT_MONSTER_ROLLER_SETTINGS: MonsterRollerSettings = {
   fakemonEnabled: true,
   finalfantasyEnabled: true,
   monsterhunterEnabled: true,
+  dragonquestEnabled: true,
 };
 
 /**

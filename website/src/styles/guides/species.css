@@ -77,6 +77,24 @@
   margin-top: var(--spacing-xxsmall);
 }
 
+/* ---------- Species Database Grid ---------- */
+
+.species-database__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: var(--spacing-small);
+}
+
+@media (max-width: 480px) {
+  .species-database__grid {
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  }
+
+  .species-database__grid .species-card {
+    padding: var(--spacing-xsmall);
+  }
+}
+
 /* ---------- Species Detail Modal ---------- */
 
 .species-detail {

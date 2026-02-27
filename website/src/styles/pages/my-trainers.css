@@ -108,6 +108,34 @@
   line-height: 1.5;
 }
 
+.my-trainers__forfeit-option {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xsmall);
+  padding: var(--spacing-small);
+  background-color: var(--primary-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-small);
+  cursor: pointer;
+  margin-bottom: var(--spacing-xsmall);
+}
+
+.my-trainers__forfeit-option:hover {
+  border-color: var(--accent-color);
+}
+
+.my-trainers__forfeit-option input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+.my-trainers__forfeit-hint {
+  font-size: var(--font-size-small);
+  color: var(--text-color-muted);
+  font-style: italic;
+}
+
 .my-trainers__delete-error {
   color: var(--error-color);
   background-color: var(--error-dark);

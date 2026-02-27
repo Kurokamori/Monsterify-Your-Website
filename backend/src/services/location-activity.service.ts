@@ -69,6 +69,7 @@ function transformUserSettings(settings: MonsterRollerSettings | null): UserSett
       fakemon: true,
       finalfantasy: true,
       monsterhunter: true,
+      dragonquest: true,
     };
   }
   return {
@@ -80,6 +81,7 @@ function transformUserSettings(settings: MonsterRollerSettings | null): UserSett
     fakemon: settings.fakemon ?? true,
     finalfantasy: settings.finalfantasy ?? true,
     monsterhunter: settings.monsterhunter ?? true,
+    dragonquest: settings.dragonquest ?? true,
   };
 }
 

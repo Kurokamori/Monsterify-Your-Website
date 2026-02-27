@@ -520,6 +520,33 @@ const fakemonConfig: SpeciesAdminConfig = {
   },
 };
 
+const dragonquestConfig: SpeciesAdminConfig = {
+  franchise: 'dragonquest',
+  label: 'Dragon Quest',
+  icon: 'fas fa-sword',
+  columns: [
+    { key: 'name', header: 'Name', sortable: true },
+    { key: 'family', header: 'Family', sortable: true },
+    { key: 'subfamily', header: 'Subfamily', sortable: true },
+  ],
+  formSections: [
+    {
+      fields: [
+        { key: 'name', label: 'Name', type: 'text', required: true },
+        { key: 'family', label: 'Family', type: 'text' },
+        { key: 'subfamily', label: 'Subfamily', type: 'text' },
+        { key: 'imageUrl', label: 'Image', type: 'file' },
+      ],
+    },
+  ],
+  defaultValues: { name: '', family: '', subfamily: '', imageUrl: '' },
+  validate: (values) => {
+    const errors: Record<string, string> = {};
+    required(values, 'name', 'Name', errors);
+    return errors;
+  },
+};
+
 // ── Export map ───────────────────────────────────────────────────────
 
 export const SPECIES_ADMIN_CONFIGS: Record<FranchiseKey, SpeciesAdminConfig> = {
@@ -531,6 +558,7 @@ export const SPECIES_ADMIN_CONFIGS: Record<FranchiseKey, SpeciesAdminConfig> = {
   monsterhunter: monsterhunterConfig,
   finalfantasy: finalfantasyConfig,
   fakemon: fakemonConfig,
+  dragonquest: dragonquestConfig,
 };
 
 export function getSpeciesAdminConfig(franchise: FranchiseKey): SpeciesAdminConfig {
