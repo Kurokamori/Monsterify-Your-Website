@@ -14,7 +14,7 @@ interface CompleteTaskResponse extends BaseResponse {
 
 interface TrackHabitResponse extends BaseResponse {
   data?: {
-    habit: { id: number; title: string; streak: number; best_streak: number };
+    habit: { id: number; title: string; streak: number; bestStreak: number };
     streakChange: number;
     rewards?: { levels: number; coins: number; trainerName: string };
   };

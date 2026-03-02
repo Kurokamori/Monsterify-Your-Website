@@ -15,8 +15,8 @@ import 'dotenv/config';
 import { REST, Routes } from 'discord.js';
 import { getModules } from './commands/registry.js';
 
-const token = process.env['DISCORD_BOT_TOKEN'];
-const clientId = process.env['DISCORD_CLIENT_ID'];
+const token = process.env['DISCORD_BOT_TOKEN'] ?? '';
+const clientId = process.env['DISCORD_CLIENT_ID'] ?? '';
 
 if (!token || !clientId) {
   console.error('Missing DISCORD_BOT_TOKEN or DISCORD_CLIENT_ID in .env');
@@ -35,15 +35,16 @@ async function deploy() {
     ? []
     : getModules()
         .filter((m) => m.command)
-        .map((m) => m.command!.data.toJSON());
+        .map((m) => m.command?.data.toJSON())
+        .filter(Boolean);
 
   const action = clearMode ? 'Clearing' : 'Deploying';
   const target = guildId ? `guild ${guildId}` : 'globally';
   console.log(`${action} ${commands.length} command(s) ${target}...`);
 
   const route = guildId
-    ? Routes.applicationGuildCommands(clientId!, guildId)
-    : Routes.applicationCommands(clientId!);
+    ? Routes.applicationGuildCommands(clientId, guildId)
+    : Routes.applicationCommands(clientId);
 
   const result = await rest.put(route, { body: commands }) as unknown[];
 

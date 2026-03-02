@@ -17,13 +17,13 @@ const scheduleService = new ScheduleService();
 const scheduledTasksService = new ScheduledTasksService();
 
 function parseOptionalInt(value: unknown): number | null {
-  if (value === null || value === undefined || value === '') return null;
+  if (value === null || value === undefined || value === '') { return null; }
   const num = typeof value === 'number' ? value : parseInt(String(value));
   return isNaN(num) ? null : num;
 }
 
 function parseIntOrZero(value: unknown): number {
-  if (value === null || value === undefined || value === '') return 0;
+  if (value === null || value === undefined || value === '') { return 0; }
   const num = typeof value === 'number' ? value : parseInt(String(value));
   return isNaN(num) ? 0 : num;
 }

@@ -24,19 +24,23 @@ import {
 
 function extractId(customId: string, prefix: string): number | null {
   const match = customId.match(new RegExp(`^${prefix}_(\\d+)$`));
-  return match ? parseInt(match[1]!, 10) : null;
+  return match?.[1] ? parseInt(match[1], 10) : null;
 }
 
 function extractSnoozeInfo(customId: string): { minutes: number; type: string; id: number } | null {
   const match = customId.match(/^schedule_snooze_(\d+[mh])_(\w+)_(\d+)$/);
   if (!match) { return null; }
 
-  const duration = match[1]!;
+  const duration = match[1];
+  const type = match[2];
+  const idStr = match[3];
+  if (!duration || !type || !idStr) { return null; }
+
   const minutes = duration.endsWith('h')
     ? parseInt(duration, 10) * 60
     : parseInt(duration, 10);
 
-  return { minutes, type: match[2]!, id: parseInt(match[3]!, 10) };
+  return { minutes, type, id: parseInt(idStr, 10) };
 }
 
 async function replySuccess(interaction: ButtonInteraction, embed: EmbedBuilder): Promise<void> {
@@ -132,7 +136,7 @@ const completeHabitHandler: ButtonHandler = {
       if (habit) {
         embed.addFields(
           { name: 'Current Streak', value: `${habit.streak} day${habit.streak !== 1 ? 's' : ''} 🔥`, inline: true },
-          { name: 'Best Streak', value: `${habit.best_streak} day${habit.best_streak !== 1 ? 's' : ''}`, inline: true },
+          { name: 'Best Streak', value: `${habit.bestStreak} day${habit.bestStreak !== 1 ? 's' : ''}`, inline: true },
         );
       }
 

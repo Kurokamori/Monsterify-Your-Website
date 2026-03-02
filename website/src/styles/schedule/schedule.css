@@ -485,6 +485,12 @@
   color: var(--text-color-muted);
 }
 
+.routine-item__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xxsmall);
+}
+
 .routine-item__complete {
   display: flex;
   align-items: center;

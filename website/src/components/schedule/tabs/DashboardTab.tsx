@@ -30,7 +30,7 @@ export const DashboardTab = ({ data, onRefresh, onTabChange }: DashboardTabProps
   const totalPendingTasks = tasks.pending.length;
   const totalDueTasks = tasks.due.length;
   const totalActiveHabits = habits.filter(h => h.status === 'active').length;
-  const totalActiveRoutines = routines.filter(r => r.is_active).length;
+  const totalActiveRoutines = routines.filter(r => r.isActive).length;
 
   // Calculate habit streak stats
   const habitStreaks = habits.map(h => h.streak || 0);
