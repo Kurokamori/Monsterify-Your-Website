@@ -293,6 +293,7 @@ export async function claimRewards(req: Request, res: Response): Promise<void> {
     const result = await adventureService.claimRewards({
       adventureLogId,
       userId,
+      discordUserId: req.user?.discord_id,
       levelAllocations,
       coinAllocations,
       itemAllocations,

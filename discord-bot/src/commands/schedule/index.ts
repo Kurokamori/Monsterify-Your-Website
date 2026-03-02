@@ -6,6 +6,7 @@
  */
 
 import { EmbedBuilder, type ButtonInteraction } from 'discord.js';
+import { AxiosError } from 'axios';
 import type { ButtonHandler } from '../../types/command.types.js';
 import { EmbedColor } from '../../constants/colors.js';
 import { SCHEDULE } from '../../constants/button-ids.js';
@@ -25,6 +26,16 @@ import {
 function extractId(customId: string, prefix: string): number | null {
   const match = customId.match(new RegExp(`^${prefix}_(\\d+)$`));
   return match?.[1] ? parseInt(match[1], 10) : null;
+}
+
+/** Extract a human-readable error message from an axios error or generic error. */
+function getErrorMessage(err: unknown, fallback: string): string {
+  if (err instanceof AxiosError && err.response?.data) {
+    const data = err.response.data as { message?: string };
+    if (data.message) { return data.message; }
+  }
+  if (err instanceof Error) { return err.message; }
+  return fallback;
 }
 
 function extractSnoozeInfo(customId: string): { minutes: number; type: string; id: number } | null {
@@ -99,7 +110,7 @@ const completeTaskHandler: ButtonHandler = {
       await replySuccess(interaction, embed);
     } catch (err) {
       console.error('Error completing task from DM:', err);
-      await replyError(interaction, 'Something went wrong while completing the task.');
+      await replyError(interaction, getErrorMessage(err, 'Something went wrong while completing the task.'));
     }
   },
 };
@@ -151,7 +162,7 @@ const completeHabitHandler: ButtonHandler = {
       await replySuccess(interaction, embed);
     } catch (err) {
       console.error('Error tracking habit from DM:', err);
-      await replyError(interaction, 'Something went wrong while tracking the habit.');
+      await replyError(interaction, getErrorMessage(err, 'Something went wrong while tracking the habit.'));
     }
   },
 };
@@ -195,7 +206,7 @@ const completeRoutineItemHandler: ButtonHandler = {
       await replySuccess(interaction, embed);
     } catch (err) {
       console.error('Error completing routine item from DM:', err);
-      await replyError(interaction, 'Something went wrong while completing the routine item.');
+      await replyError(interaction, getErrorMessage(err, 'Something went wrong while completing the routine item.'));
     }
   },
 };
@@ -296,7 +307,7 @@ const deleteTaskHandler: ButtonHandler = {
       await replySuccess(interaction, embed);
     } catch (err) {
       console.error('Error deleting task from DM:', err);
-      await replyError(interaction, 'Something went wrong while deleting the task.');
+      await replyError(interaction, getErrorMessage(err, 'Something went wrong while deleting the task.'));
     }
   },
 };
@@ -332,7 +343,7 @@ const deleteHabitHandler: ButtonHandler = {
       await replySuccess(interaction, embed);
     } catch (err) {
       console.error('Error deleting habit from DM:', err);
-      await replyError(interaction, 'Something went wrong while deleting the habit.');
+      await replyError(interaction, getErrorMessage(err, 'Something went wrong while deleting the habit.'));
     }
   },
 };
@@ -368,7 +379,7 @@ const deleteRoutineItemHandler: ButtonHandler = {
       await replySuccess(interaction, embed);
     } catch (err) {
       console.error('Error deleting routine item from DM:', err);
-      await replyError(interaction, 'Something went wrong while deleting the routine item.');
+      await replyError(interaction, getErrorMessage(err, 'Something went wrong while deleting the routine item.'));
     }
   },
 };

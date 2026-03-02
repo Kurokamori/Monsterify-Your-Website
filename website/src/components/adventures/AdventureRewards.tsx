@@ -2,7 +2,10 @@ import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { LoadingSpinner } from '../common/LoadingSpinner';
 import { ErrorMessage } from '../common/ErrorMessage';
+import { TrainerAutocomplete } from '../common/TrainerAutocomplete';
+import { MonsterAutocomplete } from '../common/MonsterAutocomplete';
 import api from '../../services/api';
+import trainerService from '../../services/trainerService';
 import {
   Trainer,
   Monster,
@@ -77,9 +80,9 @@ export const AdventureRewards = () => {
       const userId = currentUser?.discord_id;
       if (!userId) return;
 
-      // Load user's trainers
-      const trainersResponse = await api.get(`/trainers/user/${userId}`);
-      const trainers = trainersResponse.data.trainers || [];
+      // Load user's trainers via trainerService (handles all response shapes)
+      const result = await trainerService.getUserTrainers(userId);
+      const trainers = result.trainers || [];
       setUserTrainers(trainers);
 
       // Load monsters for all trainers
@@ -327,7 +330,7 @@ export const AdventureRewards = () => {
                     </span>
                     <button
                       type="button"
-                      className="button icon danger"
+                      className="button icon danger no-flex"
                       onClick={() => handleRemoveAllocation(allocation.id)}
                     >
                       <i className="fas fa-times"></i>
@@ -367,60 +370,43 @@ export const AdventureRewards = () => {
 
                     {selectedEntityType === 'trainer' && (
                       <div className="form-row">
-                        <label>Trainer:</label>
-                        <select
-                          className="input"
-                          value={selectedEntityId}
-                          onChange={(e) => setSelectedEntityId(e.target.value)}
-                        >
-                          <option value="">Select trainer</option>
-                          {userTrainers.map(trainer => (
-                            <option key={trainer.id} value={trainer.id}>
-                              {trainer.name}
-                            </option>
-                          ))}
-                        </select>
+                        <TrainerAutocomplete
+                          trainers={userTrainers}
+                          selectedTrainerId={selectedEntityId || null}
+                          onSelect={(id) => setSelectedEntityId(id ? String(id) : '')}
+                          label="Trainer"
+                          placeholder="Type to search trainers..."
+                          noPadding
+                        />
                       </div>
                     )}
 
                     {selectedEntityType === 'monster' && (
                       <>
                         <div className="form-row">
-                          <label>Trainer (owner):</label>
-                          <select
-                            className="input"
-                            value={selectedTrainerId}
-                            onChange={(e) => {
-                              setSelectedTrainerId(e.target.value);
+                          <TrainerAutocomplete
+                            trainers={userTrainers}
+                            selectedTrainerId={selectedTrainerId || null}
+                            onSelect={(id) => {
+                              setSelectedTrainerId(id ? String(id) : '');
                               setSelectedEntityId('');
                             }}
-                          >
-                            <option value="">Select trainer</option>
-                            {userTrainers.map(trainer => (
-                              <option key={trainer.id} value={trainer.id}>
-                                {trainer.name}
-                              </option>
-                            ))}
-                          </select>
+                            label="Trainer (owner)"
+                            placeholder="Type to search trainers..."
+                            noPadding
+                          />
                         </div>
 
                         {selectedTrainerId && (
                           <div className="form-row">
-                            <label>Monster:</label>
-                            <select
-                              className="input"
-                              value={selectedEntityId}
-                              onChange={(e) => setSelectedEntityId(e.target.value)}
-                            >
-                              <option value="">Select monster</option>
-                              {userMonsters
-                                .filter(monster => monster.trainer_id === parseInt(selectedTrainerId))
-                                .map(monster => (
-                                  <option key={monster.id} value={monster.id}>
-                                    {monster.name || `${monster.species1}${monster.species2 ? `/${monster.species2}` : ''}`}
-                                  </option>
-                                ))}
-                            </select>
+                            <MonsterAutocomplete
+                              monsters={userMonsters.filter(m => m.trainer_id === parseInt(selectedTrainerId))}
+                              selectedMonsterId={selectedEntityId || null}
+                              onSelect={(id) => setSelectedEntityId(id ? String(id) : '')}
+                              label="Monster"
+                              placeholder="Type to search monsters..."
+                              noPadding
+                            />
                           </div>
                         )}
                       </>
@@ -488,22 +474,17 @@ export const AdventureRewards = () => {
                       )}
                     </div>
                     <div className="trainer-assignment">
-                      <label>Assign to trainer:</label>
-                      <select
-                        className="input"
-                        value={itemAssignments[index] || ''}
-                        onChange={(e) => setItemAssignments({
+                      <TrainerAutocomplete
+                        trainers={userTrainers}
+                        selectedTrainerId={itemAssignments[index] || null}
+                        onSelect={(id) => setItemAssignments({
                           ...itemAssignments,
-                          [index]: e.target.value
+                          [index]: id ? String(id) : ''
                         })}
-                      >
-                        <option value="">Select trainer</option>
-                        {userTrainers.map(trainer => (
-                          <option key={trainer.id} value={trainer.id}>
-                            {trainer.name}
-                          </option>
-                        ))}
-                      </select>
+                        label="Assign to trainer"
+                        placeholder="Type to search trainers..."
+                        noPadding
+                      />
                     </div>
                   </div>
                 ))}
@@ -529,7 +510,7 @@ export const AdventureRewards = () => {
                     </div>
                     <button
                       type="button"
-                      className="button icon danger"
+                      className="button icon danger no-flex"
                       onClick={() => removeCoinAllocation(index)}
                     >
                       <i className="fas fa-times"></i>
@@ -558,19 +539,14 @@ export const AdventureRewards = () => {
                   <h4>Assign Coins to Trainer</h4>
                   <div className="form-row">
                     <div className="form-group">
-                      <label>Trainer:</label>
-                      <select
-                        className="input"
-                        value={selectedEntityId}
-                        onChange={(e) => setSelectedEntityId(e.target.value)}
-                      >
-                        <option value="">Select a trainer</option>
-                        {userTrainers.map(trainer => (
-                          <option key={trainer.id} value={trainer.id}>
-                            {trainer.name}
-                          </option>
-                        ))}
-                      </select>
+                      <TrainerAutocomplete
+                        trainers={userTrainers}
+                        selectedTrainerId={selectedEntityId || null}
+                        onSelect={(id) => setSelectedEntityId(id ? String(id) : '')}
+                        label="Trainer"
+                        placeholder="Type to search trainers..."
+                        noPadding
+                      />
                     </div>
                     <div className="form-group">
                       <label>Coins:</label>

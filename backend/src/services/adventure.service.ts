@@ -63,6 +63,7 @@ export type ItemAllocation = {
 export type ClaimRewardsInput = {
   adventureLogId: number;
   userId: number;
+  discordUserId?: string | null;
   levelAllocations?: LevelAllocation[];
   coinAllocations?: CoinAllocation[];
   itemAllocations?: ItemAllocation[];
@@ -335,7 +336,7 @@ export class AdventureService {
   // ==========================================================================
 
   async claimRewards(input: ClaimRewardsInput): Promise<{ success: boolean; message: string }> {
-    const { adventureLogId, userId, levelAllocations, coinAllocations, itemAllocations } = input;
+    const { adventureLogId, userId, discordUserId, levelAllocations, coinAllocations, itemAllocations } = input;
 
     // Validate adventure log
     const adventureLog = await this.adventureLogRepository.findById(adventureLogId);
@@ -343,7 +344,11 @@ export class AdventureService {
       return { success: false, message: 'Adventure log not found' };
     }
 
-    if (adventureLog.userId !== userId) {
+    // Ownership check: match by user_id OR discord_user_id since adventure
+    // logs created from Discord may not have user_id linked yet.
+    const ownerByUserId = adventureLog.userId != null && adventureLog.userId === userId;
+    const ownerByDiscord = discordUserId && adventureLog.discordUserId === discordUserId;
+    if (!ownerByUserId && !ownerByDiscord) {
       return { success: false, message: 'You can only claim your own rewards' };
     }
 

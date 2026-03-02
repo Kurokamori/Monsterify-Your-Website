@@ -14,11 +14,81 @@ import {
 } from '../repositories';
 
 // ============================================================================
-// Bridge configuration
+// Discord REST API helper
 // ============================================================================
 
-const BRIDGE_BASE_URL = process.env.DISCORD_BOT_BRIDGE_URL
-  ?? `http://localhost:${process.env.DISCORD_BOT_HTTP_PORT ?? '3001'}`;
+const DISCORD_API = 'https://discord.com/api/v10';
+const BOT_TOKEN = process.env.DISCORD_BOT_TOKEN;
+
+/**
+ * Send a DM to a Discord user using the REST API directly.
+ * This works across separate Heroku dynos — no bridge server needed.
+ */
+async function sendDiscordDm(
+  discordId: string,
+  embed: DiscordEmbed,
+  buttons?: DiscordButton[],
+): Promise<void> {
+  if (!BOT_TOKEN) {
+    throw new Error('DISCORD_BOT_TOKEN is not configured');
+  }
+
+  const headers = {
+    Authorization: `Bot ${BOT_TOKEN}`,
+    'Content-Type': 'application/json',
+  };
+
+  // Step 1: Create/get the DM channel
+  const dmChannel = await axios.post<{ id: string }>(
+    `${DISCORD_API}/users/@me/channels`,
+    { recipient_id: discordId },
+    { headers, timeout: 10000 },
+  );
+  const channelId = dmChannel.data.id;
+
+  // Step 2: Build the message payload
+  const messagePayload: Record<string, unknown> = {
+    embeds: [{
+      title: embed.title,
+      description: embed.description,
+      color: embed.color ?? 0x5865f2,
+      fields: embed.fields,
+      footer: embed.footer,
+      timestamp: new Date().toISOString(),
+    }],
+  };
+
+  if (buttons && buttons.length > 0) {
+    const styleMap: Record<string, number> = {
+      primary: 1,
+      secondary: 2,
+      success: 3,
+      danger: 4,
+    };
+
+    messagePayload.components = [{
+      type: 1, // ACTION_ROW
+      components: buttons.map(btn => ({
+        type: 2, // BUTTON
+        custom_id: btn.customId,
+        label: btn.label,
+        style: styleMap[btn.style] ?? 1,
+        emoji: btn.emoji ? { name: btn.emoji } : undefined,
+      })),
+    }];
+  }
+
+  // Step 3: Send the message
+  await axios.post(
+    `${DISCORD_API}/channels/${channelId}/messages`,
+    messagePayload,
+    { headers, timeout: 10000 },
+  );
+}
+
+// ============================================================================
+// Types
+// ============================================================================
 
 // Reminder embed colors
 const REMINDER_COLORS = {
@@ -27,17 +97,16 @@ const REMINDER_COLORS = {
   routine_item: 0xe67e22, // orange
 } as const;
 
-// Button style types for the bridge
-type BridgeButtonStyle = 'primary' | 'secondary' | 'success' | 'danger';
+type DiscordButtonStyle = 'primary' | 'secondary' | 'success' | 'danger';
 
-type BridgeButton = {
+type DiscordButton = {
   customId: string;
   label: string;
-  style: BridgeButtonStyle;
+  style: DiscordButtonStyle;
   emoji?: string;
 };
 
-type BridgeEmbed = {
+type DiscordEmbed = {
   title: string;
   description: string;
   color: number;
@@ -108,13 +177,13 @@ export class ReminderService {
    * Build the embed and buttons for a reminder DM
    */
   private buildReminderMessage(reminder: ReminderWithUserDetails, extraFields?: Array<{ name: string; value: string; inline?: boolean }>): {
-    embed: BridgeEmbed;
-    buttons: BridgeButton[];
+    embed: DiscordEmbed;
+    buttons: DiscordButton[];
   } {
     const typeLabel = reminder.itemType === 'routine_item' ? 'Routine Item' : reminder.itemType.charAt(0).toUpperCase() + reminder.itemType.slice(1);
     const actionVerb = reminder.itemType === 'task' ? 'complete your task' : reminder.itemType === 'habit' ? 'track your habit' : 'complete your routine item';
 
-    const embed: BridgeEmbed = {
+    const embed: DiscordEmbed = {
       title: `${typeLabel} Reminder: ${reminder.title}`,
       description: `Don't forget to ${actionVerb}!`,
       color: REMINDER_COLORS[reminder.itemType] ?? 0x5865f2,
@@ -137,7 +206,7 @@ export class ReminderService {
 
     const itemTypeShort = reminder.itemType === 'routine_item' ? 'routine_item' : reminder.itemType;
 
-    const buttons: BridgeButton[] = [
+    const buttons: DiscordButton[] = [
       { customId: completeId, label: 'Complete', style: 'success', emoji: '✅' },
       { customId: `schedule_snooze_15m_${itemTypeShort}_${itemId}`, label: '15 min', style: 'secondary', emoji: '⏰' },
       { customId: `schedule_snooze_1hr_${itemTypeShort}_${itemId}`, label: '1 hour', style: 'secondary', emoji: '🕐' },
@@ -148,7 +217,7 @@ export class ReminderService {
   }
 
   /**
-   * Send a Discord reminder DM via the bot bridge server
+   * Send a Discord reminder DM via the Discord REST API
    */
   async sendDiscordReminder(reminder: ReminderWithUserDetails): Promise<void> {
     if (!reminder.userDiscordId) {
@@ -172,11 +241,7 @@ export class ReminderService {
 
       const { embed, buttons } = this.buildReminderMessage(reminder, extraFields);
 
-      await axios.post(`${BRIDGE_BASE_URL}/send-dm`, {
-        discordId: reminder.userDiscordId,
-        embed,
-        buttons,
-      }, { timeout: 10000 });
+      await sendDiscordDm(reminder.userDiscordId, embed, buttons);
 
       console.log(`Sent reminder DM to ${reminder.userDiscordId}: ${reminder.title}`);
     } catch (error) {
@@ -228,11 +293,7 @@ export class ReminderService {
 
     const { embed, buttons } = this.buildReminderMessage(fakeReminder, extraFields);
 
-    await axios.post(`${BRIDGE_BASE_URL}/send-dm`, {
-      discordId,
-      embed,
-      buttons,
-    }, { timeout: 10000 });
+    await sendDiscordDm(discordId, embed, buttons);
 
     console.log(`Sent immediate reminder DM to ${discordId}: ${title}`);
   }
@@ -283,7 +344,7 @@ export class ReminderService {
     }
 
     try {
-      const embed: BridgeEmbed = {
+      const embed: DiscordEmbed = {
         title: `Streak Reset: ${habit.title}`,
         description: `Your **${habit.streak}-day** streak for "${habit.title}" has been reset. Don't give up - start a new streak today!`,
         color: 0xfee75c, // warning yellow
@@ -293,13 +354,9 @@ export class ReminderService {
         ],
       };
 
-      await axios.post(`${BRIDGE_BASE_URL}/send-dm`, {
-        discordId,
-        embed,
-        buttons: [
-          { customId: `schedule_complete_habit_${habit.id}`, label: 'Track Now', style: 'success', emoji: '✅' },
-        ],
-      }, { timeout: 10000 });
+      await sendDiscordDm(discordId, embed, [
+        { customId: `schedule_complete_habit_${habit.id}`, label: 'Track Now', style: 'success', emoji: '✅' },
+      ]);
 
       console.log(`Sent streak reset notification to ${discordId}: ${habit.title}`);
     } catch (error) {
