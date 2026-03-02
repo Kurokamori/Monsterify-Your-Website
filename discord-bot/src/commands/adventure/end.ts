@@ -42,7 +42,7 @@ export async function handleEnd(interaction: ChatInputCommandInteraction): Promi
 
   const rewardsRow = createActionRow(
     createLinkButton(
-      `${siteUrl()}/adventure-rewards`,
+      `${siteUrl()}/adventures/rewards`,
       'Claim Rewards',
       '🎁',
     ),
