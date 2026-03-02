@@ -34,6 +34,7 @@ export interface Task {
   reminder_time: string;
   reminder_days: string[];
   status: TaskStatus;
+  completed_at: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -102,31 +103,31 @@ export type PatternType = 'daily' | 'weekdays' | 'weekends' | 'custom';
 
 export interface RoutineItem {
   id?: number;
-  routine_id?: number;
+  routineId?: number;
   title: string;
   description: string;
-  scheduled_time: string;
-  order_index: number;
-  reward_levels: number;
-  reward_coins: number;
-  reward_trainer_id: number | string;
-  trainer_name?: string;
-  reminder_enabled: number;
-  reminder_offset: number;
-  completed_today?: boolean;
+  scheduledTime: string;
+  orderIndex: number;
+  rewardLevels: number;
+  rewardCoins: number;
+  rewardTrainerId: number | string;
+  trainerName?: string;
+  reminderEnabled: number;
+  reminderOffset: number;
+  completedToday?: boolean;
 }
 
 export interface Routine {
   id: number;
-  user_id: number;
+  userId: number;
   name: string;
   description: string;
-  pattern_type: PatternType;
-  pattern_days: string[];
-  is_active: number;
+  patternType: PatternType;
+  patternDays: string[];
+  isActive: number;
   items: RoutineItem[];
-  created_at: string;
-  updated_at: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface RoutineFormData {

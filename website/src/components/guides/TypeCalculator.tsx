@@ -138,7 +138,7 @@ export const TypeCalculator = () => {
                   className="button danger sm"
                   title="Remove Type"
                 >
-                  \u00d7
+                  {'\u00d7'}
                 </button>
               )}
             </div>

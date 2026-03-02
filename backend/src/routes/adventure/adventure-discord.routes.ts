@@ -6,6 +6,7 @@ import {
   createAdventureThread,
   getAdventureByThreadId,
   trackMessage,
+  syncParticipants,
   generateEncounter,
   attemptCapture,
   resolveBattle,
@@ -96,6 +97,7 @@ router.get('/thread/:discordThreadId', getAdventureByThreadId);
 // =============================================================================
 
 router.post('/message', trackMessage);
+router.post('/sync-participants', syncParticipants);
 
 // =============================================================================
 // Encounter Routes

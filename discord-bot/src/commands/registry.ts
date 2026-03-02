@@ -36,6 +36,7 @@ import * as monster from './monster/index.js';
 import * as town from './town/index.js';
 import * as shop from './shop/index.js';
 import * as buy from './buy/index.js';
+import * as schedule from './schedule/index.js';
 
 /**
  * Master list of all command modules.
@@ -51,6 +52,7 @@ const MODULES: CommandModule[] = [
   town,
   shop,
   buy,
+  schedule,
 ];
 
 // ============================================================================

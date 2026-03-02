@@ -52,8 +52,13 @@ export const SchedulePage = () => {
     setActiveTab(tab);
   };
 
-  const refreshData = () => {
-    loadDashboardData();
+  const refreshData = async () => {
+    try {
+      const response = await api.get('/schedule/dashboard');
+      setDashboardData(response.data.data);
+    } catch (err) {
+      console.error('Error refreshing dashboard data:', err);
+    }
   };
 
   if (loading) {

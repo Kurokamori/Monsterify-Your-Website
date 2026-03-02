@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import api from '../../../services/api';
+import { useAuth } from '@contexts/useAuth';
 import { LoadingSpinner } from '../../common/LoadingSpinner';
 import { ErrorMessage } from '../../common/ErrorMessage';
 import { ConfirmModal } from '../../common/ConfirmModal';
@@ -14,6 +15,8 @@ interface HabitsTabProps {
 type FilterType = 'all' | HabitStatus;
 
 export const HabitsTab = ({ trainers, onRefresh }: HabitsTabProps) => {
+  const { currentUser } = useAuth();
+  const isAdmin = currentUser?.is_admin ?? false;
   const [habits, setHabits] = useState<Habit[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -68,6 +71,16 @@ export const HabitsTab = ({ trainers, onRefresh }: HabitsTabProps) => {
     } catch (err) {
       console.error('Error deleting habit:', err);
       alert('Failed to delete habit');
+    }
+  };
+
+  const handleRemindNow = async (type: string, id: number) => {
+    try {
+      await api.post(`/schedule/admin/remind-now/${type}/${id}`);
+      alert('Reminder sent!');
+    } catch (err) {
+      console.error('Error sending reminder:', err);
+      alert('Failed to send reminder');
     }
   };
 
@@ -231,6 +244,16 @@ export const HabitsTab = ({ trainers, onRefresh }: HabitsTabProps) => {
                   <i className="fas fa-trash"></i>
                   Delete
                 </button>
+                {isAdmin && (
+                  <button
+                    className="button secondary sm"
+                    onClick={() => handleRemindNow('habit', habit.id)}
+                    title="Send a test reminder DM to yourself"
+                  >
+                    <i className="fas fa-bell"></i>
+                    Remind Now
+                  </button>
+                )}
               </div>
             </div>
           ))}

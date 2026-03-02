@@ -54,10 +54,10 @@ const DEFAULT_WELCOME_MESSAGE = (adventureTitle: string): string =>
   `**Welcome to ${adventureTitle}!**\n\n` +
   `This is your adventure thread! Here's how it works:\n\n` +
   `Every message you send counts toward your word count\n` +
-  `Use \`/encounter\` to roll random encounters\n` +
-  `Use \`/capture [trainer] [pokeball]\` to catch wild monsters\n` +
-  `Use \`/result\` to resolve battle encounters\n` +
-  `Use \`/end\` to complete the adventure and claim rewards\n\n` +
+  `Use \`/adventure encounter\` to roll random encounters\n` +
+  `Use \`/adventure capture trainer:[name] pokeball:[type]\` to catch wild monsters\n` +
+  `Use \`/adventure result\` to resolve wild encounters\n` +
+  `Use \`/adventure end\` to complete the adventure and claim rewards\n\n` +
   `**Maximum encounters:** 3 per adventure\n` +
   `**Rewards:** 50 words = 1 level, 1 word = 1 coin, every 1,000 words = 1 item\n\n` +
   `Good luck, adventurers!`;

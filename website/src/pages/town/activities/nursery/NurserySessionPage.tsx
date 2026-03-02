@@ -252,27 +252,18 @@ export default function NurserySessionPage() {
   // Build species label for naming section
   const getSpeciesLabel = useCallback(() => {
     if (!currentEggData) return 'Selected Monster';
-    const labels: string[] = [];
-
-    claimedMonsterIndices.forEach(idx => {
-      const monster = currentEggData.monsters[idx];
-      if (monster) {
-        const speciesParts = [monster.species1, monster.species2, monster.species3].filter(Boolean);
-        labels.push(speciesParts.length > 0 ? speciesParts.join(' / ') : (monster.species || monster.species_name || monster.name || 'Unknown'));
-      }
-    });
 
     const selectedIdx = selectedMonsters[currentEggData.eggId];
     if (selectedIdx !== undefined) {
       const monster = currentEggData.monsters[selectedIdx];
       if (monster) {
         const speciesParts = [monster.species1, monster.species2, monster.species3].filter(Boolean);
-        labels.push(speciesParts.length > 0 ? speciesParts.join(' / ') : (monster.species || monster.species_name || monster.name || 'Selected Monster'));
+        return speciesParts.length > 0 ? speciesParts.join(' / ') : (monster.species || monster.species_name || monster.name || 'Selected Monster');
       }
     }
 
-    return labels.join(' / ') || 'Selected Monster';
-  }, [currentEggData, claimedMonsterIndices, selectedMonsters]);
+    return 'Selected Monster';
+  }, [currentEggData, selectedMonsters]);
 
   // Naming section component (used in two places)
   const renderNamingSection = () => {

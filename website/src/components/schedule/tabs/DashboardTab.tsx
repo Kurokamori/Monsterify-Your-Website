@@ -39,7 +39,7 @@ export const DashboardTab = ({ data, onRefresh, onTabChange }: DashboardTabProps
 
   // Calculate completion stats for today's routines
   const todaysRoutineItems = routines.flatMap(r => r.items || []);
-  const completedRoutineItems = todaysRoutineItems.filter(item => item.completed_today).length;
+  const completedRoutineItems = todaysRoutineItems.filter(item => item.completedToday).length;
   const totalRoutineItems = todaysRoutineItems.length;
 
   return (
@@ -229,7 +229,7 @@ export const DashboardTab = ({ data, onRefresh, onTabChange }: DashboardTabProps
                   <div className="item-card__header">
                     <h3 className="item-card__title">{routine.name}</h3>
                     <span className="item-status item-status--active">
-                      {routine.items?.filter(i => i.completed_today).length || 0}/
+                      {routine.items?.filter(i => i.completedToday).length || 0}/
                       {routine.items?.length || 0} completed
                     </span>
                   </div>
@@ -237,7 +237,7 @@ export const DashboardTab = ({ data, onRefresh, onTabChange }: DashboardTabProps
                     <p className="schedule-item-description">{routine.description}</p>
                   )}
                   <div className="item-meta">
-                    <span>Pattern: {capitalize(routine.pattern_type)}</span>
+                    <span>Pattern: {capitalize(routine.patternType)}</span>
                     <span>Items: {routine.items?.length || 0}</span>
                   </div>
                 </div>

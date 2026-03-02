@@ -1,4 +1,5 @@
 import type { Message } from 'discord.js';
+import { getAdventureByThreadId, trackMessage } from '../services/adventure.service.js';
 
 /**
  * Count words in a string.  Splits on whitespace, ignores empty tokens.
@@ -30,19 +31,26 @@ export async function execute(message: Message): Promise<void> {
     return;
   }
 
-  // TODO: Once the adventure service is implemented, replace the log below
-  // with actual API calls:
-  //
-  //   const adventure = await adventureService.getByThreadId(message.channel.id);
-  //   if (!adventure || adventure.status === 'completed') return;
-  //   await adventureService.trackMessage({
-  //     discordThreadId: message.channel.id,
-  //     discordUserId:   message.author.id,
-  //     wordCount,
-  //     messageCount:    1,
-  //   });
+  const adventure = await getAdventureByThreadId(message.channel.id);
+  if (!adventure || adventure.status === 'completed') {
+    return;
+  }
 
-  console.log(
-    `[word-count] ${message.author.username} in thread ${message.channel.name}: ${wordCount} words`,
-  );
+  try {
+    await trackMessage({
+      discordThreadId: message.channel.id,
+      discordUserId:   message.author.id,
+      wordCount,
+      messageCount:    1,
+    });
+
+    console.log(
+      `[word-count] ${message.author.username} in thread ${message.channel.name}: ${wordCount} words (tracked)`,
+    );
+  } catch (err) {
+    console.error(
+      `[word-count] Failed to track message for ${message.author.username} in ${message.channel.name}:`,
+      err,
+    );
+  }
 }

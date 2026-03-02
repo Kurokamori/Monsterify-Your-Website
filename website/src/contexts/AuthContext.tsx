@@ -132,10 +132,10 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   useEffect(() => {
     if (!currentUser) return;
 
-    const token = localStorage.getItem(TOKEN_STORAGE_KEY);
-
     const intervalId = setInterval(async () => {
-      if (token && isTokenExpiredOrClose(token) && !refreshing) {
+      // Read token fresh from localStorage each check (avoid stale closure)
+      const currentToken = localStorage.getItem(TOKEN_STORAGE_KEY);
+      if (currentToken && isTokenExpiredOrClose(currentToken) && !refreshing) {
         try {
           await refreshTokenFn();
         } catch {
@@ -288,7 +288,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       if (response.data.success) {
         setCurrentUser(prevUser => {
           if (!prevUser) return null;
-          const updatedUser = { ...prevUser, content_settings: response.data.settings };
+          const updatedUser = { ...prevUser, content_settings: response.data.content_settings };
           localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(updatedUser));
           return updatedUser;
         });

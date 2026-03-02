@@ -80,7 +80,7 @@ export const MainLayout = () => {
   const location = useLocation();
 
   // Fetch total unread count if chat notifications are enabled
-  const chatNotificationsEnabled = currentUser?.notification_settings?.chat_notifications;
+  const chatNotificationsEnabled = currentUser?.notification_settings?.chat_notifications !== false;
 
   const fetchUnread = useCallback(() => {
     if (!isAuthenticated || !chatNotificationsEnabled) return;

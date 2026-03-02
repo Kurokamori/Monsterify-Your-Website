@@ -15,6 +15,24 @@ export async function handleEnd(interaction: ChatInputCommandInteraction): Promi
 
   await interaction.deferReply();
 
+  // Retroactive reconciliation — fetch the full thread history and sync
+  // participant tallies so missed messages are accounted for.
+  if (interaction.channel) {
+    try {
+      const tally = await adventureService.reconcileThreadMessages(interaction.channel);
+      if (tally.length > 0) {
+        const { synced } = await adventureService.syncParticipants(adventure.id, tally);
+        const totalWords = tally.reduce((sum, p) => sum + p.wordCount, 0);
+        console.log(
+          `[adventure-end] Synced ${synced} participants (${totalWords} total words) for adventure ${adventure.id}`,
+        );
+      }
+    } catch (err) {
+      console.error('[adventure-end] Failed to reconcile thread messages:', err);
+      // Continue with end — the real-time tracking data is still usable
+    }
+  }
+
   const result = await adventureService.endAdventure({
     adventureId: adventure.id,
     discordUserId: interaction.user.id,

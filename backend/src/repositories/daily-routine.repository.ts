@@ -10,7 +10,7 @@ export type DailyRoutineRow = {
   description: string | null;
   pattern_type: PatternType;
   pattern_days: string | object | null;
-  is_active: boolean;
+  is_active: number;
   created_at: Date;
   updated_at: Date;
 };
@@ -22,7 +22,7 @@ export type DailyRoutine = {
   description: string | null;
   patternType: PatternType;
   patternDays: string[];
-  isActive: boolean;
+  isActive: number;
   createdAt: Date;
   updatedAt: Date;
 };
@@ -41,7 +41,7 @@ export type RoutineItemRow = {
   reward_levels: number;
   reward_coins: number;
   reward_trainer_id: number | null;
-  reminder_enabled: boolean;
+  reminder_enabled: number;
   reminder_offset: number;
   created_at: Date;
   updated_at: Date;
@@ -57,7 +57,7 @@ export type RoutineItem = {
   rewardLevels: number;
   rewardCoins: number;
   rewardTrainerId: number | null;
-  reminderEnabled: boolean;
+  reminderEnabled: number;
   reminderOffset: number;
   createdAt: Date;
   updatedAt: Date;
@@ -74,7 +74,7 @@ export type DailyRoutineCreateInput = {
   description?: string | null;
   patternType?: PatternType;
   patternDays?: string[];
-  isActive?: boolean;
+  isActive?: number;
 };
 
 export type DailyRoutineUpdateInput = Partial<DailyRoutineCreateInput>;
@@ -88,7 +88,7 @@ export type RoutineItemCreateInput = {
   rewardLevels?: number;
   rewardCoins?: number;
   rewardTrainerId?: number | null;
-  reminderEnabled?: boolean;
+  reminderEnabled?: number;
   reminderOffset?: number;
 };
 
@@ -248,7 +248,7 @@ export class DailyRoutineRepository extends BaseRepository<
         input.description ?? null,
         input.patternType ?? 'daily',
         patternDaysJson,
-        input.isActive ?? true,
+        input.isActive ?? 1,
       ]
     );
 
@@ -341,7 +341,7 @@ export class DailyRoutineRepository extends BaseRepository<
         input.rewardLevels ?? 0,
         input.rewardCoins ?? 0,
         input.rewardTrainerId ?? null,
-        input.reminderEnabled ?? false,
+        input.reminderEnabled ?? 0,
         input.reminderOffset ?? 0,
       ]
     );

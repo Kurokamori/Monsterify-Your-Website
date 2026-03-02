@@ -21,6 +21,11 @@ export interface EvolutionFields {
   lineField?: string;
 }
 
+export interface FilterEndpoint {
+  path: string;
+  dependsOn?: string;
+}
+
 export interface FranchiseConfigItem {
   name: string;
   endpoint: string;
@@ -30,6 +35,7 @@ export interface FranchiseConfigItem {
   imageField: string;
   sortDefault: string;
   filters: Record<string, FilterConfig>;
+  filterEndpoints?: Record<string, FilterEndpoint>;
   displayFields: DisplayField[];
   evolutionFields: EvolutionFields | null;
 }
@@ -51,6 +57,10 @@ export const FRANCHISE_CONFIG: Record<FranchiseKey, FranchiseConfigItem> = {
     filters: {
       family: { label: 'Family', field: 'family', options: null },
       subfamily: { label: 'Subfamily', field: 'subfamily', options: null },
+    },
+    filterEndpoints: {
+      family: { path: '/dragonquest-monsters/families' },
+      subfamily: { path: '/dragonquest-monsters/subfamilies', dependsOn: 'family' },
     },
     displayFields: [
       { key: 'family', label: 'Family' },
@@ -358,6 +368,25 @@ const speciesService = {
       }
     }
     return options;
+  },
+
+  // Fetch dynamic filter options from dedicated endpoints
+  fetchDynamicFilterOptions: async (
+    franchise: FranchiseKey,
+    filterKey: string,
+    dependsOnValue?: string,
+  ): Promise<string[]> => {
+    const config = resolveConfig(franchise);
+    const endpoint = config.filterEndpoints?.[filterKey];
+    if (!endpoint) return [];
+
+    const params: Record<string, string> = {};
+    if (endpoint.dependsOn && dependsOnValue) {
+      params[endpoint.dependsOn] = dependsOnValue;
+    }
+
+    const response = await api.get(endpoint.path, { params });
+    return response.data?.data ?? [];
   },
 
   // Get adjacent species for prev/next navigation

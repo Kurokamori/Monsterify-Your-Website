@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { ScheduleService } from '../../services/schedule.service';
 import { ScheduledTasksService } from '../../services/scheduled-tasks.service';
 import { CronService } from '../../services/cron.service';
+import { ReminderService } from '../../services/reminder.service';
 import {
   TaskPriority,
   TaskDifficulty,
@@ -9,10 +10,92 @@ import {
   HabitStatus,
   HabitFrequency,
   PatternType,
+  ReminderItemType,
 } from '../../repositories';
 
 const scheduleService = new ScheduleService();
 const scheduledTasksService = new ScheduledTasksService();
+
+function parseOptionalInt(value: unknown): number | null {
+  if (value === null || value === undefined || value === '') return null;
+  const num = typeof value === 'number' ? value : parseInt(String(value));
+  return isNaN(num) ? null : num;
+}
+
+function parseIntOrZero(value: unknown): number {
+  if (value === null || value === undefined || value === '') return 0;
+  const num = typeof value === 'number' ? value : parseInt(String(value));
+  return isNaN(num) ? 0 : num;
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function mapTaskBody(body: any, userId: number) {
+  return {
+    userId,
+    title: body.title,
+    description: body.description ?? null,
+    dueDate: body.due_date ?? body.dueDate ?? null,
+    priority: body.priority as TaskPriority | undefined,
+    difficulty: body.difficulty as TaskDifficulty | undefined,
+    category: body.category ?? null,
+    tags: body.tags,
+    steps: body.steps,
+    currentStep: body.current_step ?? body.currentStep,
+    status: body.status as TaskStatus | undefined,
+    repeatType: body.repeat_type ?? body.repeatType ?? null,
+    repeatInterval: parseOptionalInt(body.repeat_interval ?? body.repeatInterval),
+    repeatDays: body.repeat_days ?? body.repeatDays,
+    rewardLevels: parseIntOrZero(body.reward_levels ?? body.rewardLevels),
+    rewardCoins: parseIntOrZero(body.reward_coins ?? body.rewardCoins),
+    rewardTrainerId: parseOptionalInt(body.reward_trainer_id ?? body.rewardTrainerId),
+    reminderEnabled: parseIntOrZero(body.reminder_enabled ?? body.reminderEnabled),
+    reminderTime: body.reminder_time ?? body.reminderTime ?? null,
+    reminderDays: body.reminder_days ?? body.reminderDays,
+  };
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function mapHabitBody(body: any, userId: number) {
+  return {
+    userId,
+    title: body.title,
+    description: body.description ?? null,
+    frequency: body.frequency as HabitFrequency | undefined,
+    rewardLevels: parseIntOrZero(body.reward_levels ?? body.rewardLevels),
+    rewardCoins: parseIntOrZero(body.reward_coins ?? body.rewardCoins),
+    rewardTrainerId: parseOptionalInt(body.reward_trainer_id ?? body.rewardTrainerId),
+    reminderEnabled: parseIntOrZero(body.reminder_enabled ?? body.reminderEnabled),
+    reminderTime: body.reminder_time ?? body.reminderTime ?? null,
+    reminderDays: body.reminder_days ?? body.reminderDays,
+  };
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function mapRoutineBody(body: any, userId: number) {
+  return {
+    userId,
+    name: body.name,
+    description: body.description ?? null,
+    patternType: body.pattern_type ?? body.patternType as PatternType | undefined,
+    patternDays: body.pattern_days ?? body.patternDays,
+    isActive: parseIntOrZero(body.is_active ?? body.isActive),
+  };
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function mapRoutineItemBody(body: any) {
+  return {
+    title: body.title,
+    description: body.description ?? null,
+    scheduledTime: body.scheduled_time ?? body.scheduledTime ?? null,
+    orderIndex: parseIntOrZero(body.order_index ?? body.orderIndex),
+    rewardLevels: parseIntOrZero(body.reward_levels ?? body.rewardLevels),
+    rewardCoins: parseIntOrZero(body.reward_coins ?? body.rewardCoins),
+    rewardTrainerId: parseOptionalInt(body.reward_trainer_id ?? body.rewardTrainerId),
+    reminderEnabled: parseIntOrZero(body.reminder_enabled ?? body.reminderEnabled),
+    reminderOffset: parseIntOrZero(body.reminder_offset ?? body.reminderOffset),
+  };
+}
 
 // =============================================================================
 // Tasks
@@ -81,7 +164,7 @@ export async function createTask(req: Request, res: Response): Promise<void> {
       return;
     }
 
-    const taskData = { ...req.body, userId: req.user.id };
+    const taskData = mapTaskBody(req.body, req.user.id);
     const task = await scheduleService.createTask(taskData);
 
     // Sync reminder if enabled
@@ -117,7 +200,7 @@ export async function updateTask(req: Request, res: Response): Promise<void> {
       return;
     }
 
-    const updatedTask = await scheduleService.updateTask(id, req.body);
+    const updatedTask = await scheduleService.updateTask(id, mapTaskBody(req.body, req.user.id));
 
     // Sync reminder
     if (req.user.discord_id) {
@@ -230,7 +313,7 @@ export async function createHabit(req: Request, res: Response): Promise<void> {
       return;
     }
 
-    const habitData = { ...req.body, userId: req.user.id };
+    const habitData = mapHabitBody(req.body, req.user.id);
     const habit = await scheduleService.createHabit(habitData);
 
     // Sync reminder if enabled
@@ -266,7 +349,7 @@ export async function updateHabit(req: Request, res: Response): Promise<void> {
       return;
     }
 
-    const updatedHabit = await scheduleService.updateHabit(id, req.body);
+    const updatedHabit = await scheduleService.updateHabit(id, mapHabitBody(req.body, req.user.id));
 
     // Sync reminder
     if (req.user.discord_id) {
@@ -379,7 +462,7 @@ export async function createRoutine(req: Request, res: Response): Promise<void> 
       return;
     }
 
-    const routineData = { ...req.body, userId: req.user.id };
+    const routineData = mapRoutineBody(req.body, req.user.id);
     const routine = await scheduleService.createRoutine(routineData);
 
     res.status(201).json({ success: true, data: routine, message: 'Routine created successfully' });
@@ -410,7 +493,7 @@ export async function updateRoutine(req: Request, res: Response): Promise<void> 
       return;
     }
 
-    const updatedRoutine = await scheduleService.updateRoutine(id, req.body);
+    const updatedRoutine = await scheduleService.updateRoutine(id, mapRoutineBody(req.body, req.user.id));
     res.json({ success: true, data: updatedRoutine, message: 'Routine updated successfully' });
   } catch (error) {
     const msg = error instanceof Error ? error.message : 'Error updating routine';
@@ -455,7 +538,7 @@ export async function addRoutineItem(req: Request, res: Response): Promise<void>
       return;
     }
 
-    const item = await scheduleService.addRoutineItem(routineId, req.body);
+    const item = await scheduleService.addRoutineItem(routineId, mapRoutineItemBody(req.body));
 
     // Sync reminder if enabled
     if (item.reminderEnabled && req.user.discord_id) {
@@ -478,7 +561,7 @@ export async function updateRoutineItem(req: Request, res: Response): Promise<vo
     }
 
     const itemId = parseInt(req.params.itemId as string);
-    const item = await scheduleService.updateRoutineItem(itemId, req.body);
+    const item = await scheduleService.updateRoutineItem(itemId, mapRoutineItemBody(req.body));
 
     // Sync reminder
     if (req.user.discord_id) {
@@ -687,6 +770,48 @@ export async function getDistributionRuns(req: Request, res: Response): Promise<
   } catch (error) {
     const msg = error instanceof Error ? error.message : 'Error getting distribution runs';
     console.error('Error getting distribution runs:', error);
+    res.status(500).json({ success: false, message: msg });
+  }
+}
+
+// =============================================================================
+// Admin: Remind Now
+// =============================================================================
+
+const reminderService = new ReminderService();
+
+export async function remindNow(req: Request, res: Response): Promise<void> {
+  try {
+    if (!req.user) {
+      res.status(401).json({ success: false, message: 'Not authenticated' });
+      return;
+    }
+
+    const { type, id } = req.params;
+    const validTypes: ReminderItemType[] = ['task', 'habit', 'routine_item'];
+
+    if (!validTypes.includes(type as ReminderItemType)) {
+      res.status(400).json({ success: false, message: `Invalid type: ${type}. Must be one of: ${validTypes.join(', ')}` });
+      return;
+    }
+
+    if (!req.user.discord_id) {
+      res.status(400).json({ success: false, message: 'User does not have a linked Discord account' });
+      return;
+    }
+
+    const itemId = parseInt(id as string);
+    if (isNaN(itemId)) {
+      res.status(400).json({ success: false, message: 'Invalid item ID' });
+      return;
+    }
+
+    await reminderService.sendImmediateReminder(type as ReminderItemType, itemId, req.user.discord_id);
+
+    res.json({ success: true, message: 'Reminder sent successfully' });
+  } catch (error) {
+    const msg = error instanceof Error ? error.message : 'Error sending reminder';
+    console.error('Error sending immediate reminder:', error);
     res.status(500).json({ success: false, message: msg });
   }
 }

@@ -1,7 +1,18 @@
 import { Request, Response } from 'express';
 import { db } from '../../database';
-import { UserRepository } from '../../repositories';
-import { DEFAULT_MONSTER_ROLLER_SETTINGS, MonsterRollerSettings } from '../../utils/types/user.types';
+import { UserRepository, MonsterRollerSettings } from '../../repositories';
+
+const DEFAULT_MONSTER_ROLLER_SETTINGS: MonsterRollerSettings = {
+  pokemon: true,
+  digimon: true,
+  yokai: true,
+  pals: true,
+  nexomon: true,
+  fakemon: true,
+  finalfantasy: true,
+  monsterhunter: true,
+  dragonquest: true,
+};
 
 const userRepository = new UserRepository();
 
@@ -77,7 +88,7 @@ async function rollRandomSpecies(
 
   const queryParts: string[] = [];
 
-  if (settings.pokemonEnabled) {
+  if (settings.pokemon) {
     queryParts.push(`
       SELECT name FROM pokemon_monsters
       WHERE (stage = 'Base Stage' OR stage = 'Doesn''t Evolve')
@@ -86,14 +97,14 @@ async function rollRandomSpecies(
     `);
   }
 
-  if (settings.digimonEnabled) {
+  if (settings.digimon) {
     queryParts.push(`
       SELECT name FROM digimon_monsters
       WHERE rank IN ('Baby I', 'Baby II')
     `);
   }
 
-  if (settings.yokaiEnabled) {
+  if (settings.yokai) {
     queryParts.push(`
       SELECT name FROM yokai_monsters
       WHERE rank IN ('E', 'D', 'C')
@@ -101,7 +112,7 @@ async function rollRandomSpecies(
     `);
   }
 
-  if (settings.nexomonEnabled) {
+  if (settings.nexomon) {
     queryParts.push(`
       SELECT name FROM nexomon_monsters
       WHERE (stage = 'Base Stage' OR stage = 'Doesn''t Evolve')
@@ -109,11 +120,11 @@ async function rollRandomSpecies(
     `);
   }
 
-  if (settings.palsEnabled) {
+  if (settings.pals) {
     queryParts.push(`SELECT name FROM pals_monsters`);
   }
 
-  if (settings.fakemonEnabled) {
+  if (settings.fakemon) {
     queryParts.push(`
       SELECT name FROM fakemon
       WHERE (stage = 'Base Stage' OR stage = 'Doesn''t Evolve')
@@ -122,21 +133,21 @@ async function rollRandomSpecies(
     `);
   }
 
-  if (settings.finalfantasyEnabled) {
+  if (settings.finalfantasy) {
     queryParts.push(`
       SELECT name FROM finalfantasy_monsters
       WHERE stage = 'base stage' OR stage = 'doesn''t evolve'
     `);
   }
 
-  if (settings.monsterhunterEnabled) {
+  if (settings.monsterhunter) {
     queryParts.push(`
       SELECT name FROM monsterhunter_monsters
       WHERE rank IN ('1', '2', '3')
     `);
   }
 
-  if (settings.dragonquestEnabled) {
+  if (settings.dragonquest) {
     queryParts.push(`SELECT name FROM dragonquest_monsters`);
   }
 

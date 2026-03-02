@@ -34,6 +34,7 @@ export const SLUG_TO_FRANCHISE: Record<string, FranchiseKey> = {
   'monster-hunter': 'monsterhunter',
   'final-fantasy': 'finalfantasy',
   'fakemon': 'fakemon',
+  'dragon-quest': 'dragonquest',
 };
 
 // ── Option lists ────────────────────────────────────────────────────

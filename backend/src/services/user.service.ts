@@ -142,7 +142,7 @@ export class UserService {
       is_admin: user.is_admin,
     };
 
-    return jwt.sign(payload, JWT_SECRET, { expiresIn: '1h' });
+    return jwt.sign(payload, JWT_SECRET, { expiresIn: '8h' });
   }
 
   /**
@@ -157,7 +157,7 @@ export class UserService {
       type: 'refresh',
     };
 
-    const expiresIn = rememberMe ? '30d' : '1d';
+    const expiresIn = rememberMe ? '30d' : '7d';
     return jwt.sign(payload, JWT_REFRESH_SECRET, { expiresIn });
   }
 

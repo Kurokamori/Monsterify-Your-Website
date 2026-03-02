@@ -36,7 +36,7 @@ const DEFAULT_CONTENT_SETTINGS: ContentSettings = {
 };
 
 const DEFAULT_NOTIFICATION_SETTINGS: NotificationSettings = {
-  chat_notifications: false,
+  chat_notifications: true,
 };
 
 export type UserRow = {

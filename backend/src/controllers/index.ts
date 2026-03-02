@@ -162,6 +162,7 @@ export {
   getMonthlyItemsConfig,
   updateMonthlyItemsConfig,
   getDistributionRuns,
+  remindNow,
 } from './misc/schedule.controller';
 
 // Monster Controller

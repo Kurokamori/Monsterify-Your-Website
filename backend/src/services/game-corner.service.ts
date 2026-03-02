@@ -191,9 +191,22 @@ export class GameCornerService {
     for (let slot = 0; slot < totalSlots; slot++) {
       const roll = Math.random();
 
-      if (roll < chances.coin || slot === 0) {
+      // First slot always guarantees coins so there's a base payout
+      if (slot === 0) {
         rewards.push(this.generateCoinReward(getRandomTrainerId(), baseCoinAmount));
-      } else if (roll < chances.coin + chances.item) {
+      } else if (roll < chances.monster) {
+        // Check monster first (rarest) so it doesn't get swallowed by coin/item ranges
+        const monsterReward = await this.generateMonsterReward(getRandomTrainerId(), userSettings);
+        if (monsterReward) {
+          rewards.push(monsterReward);
+        } else {
+          rewards.push(this.generateCoinReward(getRandomTrainerId(), baseCoinAmount));
+        }
+      } else if (roll < chances.monster + chances.level) {
+        rewards.push(
+          this.generateLevelReward(getRandomTrainerId(), input.totalFocusMinutes, input.completedSessions),
+        );
+      } else if (roll < chances.monster + chances.level + chances.item) {
         const itemReward = await this.generateItemReward(
           getRandomTrainerId(),
           input.totalFocusMinutes,
@@ -201,16 +214,20 @@ export class GameCornerService {
         );
         if (itemReward) {
           rewards.push(itemReward);
+        } else {
+          rewards.push(this.generateCoinReward(getRandomTrainerId(), baseCoinAmount));
         }
-      } else if (roll < chances.coin + chances.item + chances.level) {
-        rewards.push(
-          this.generateLevelReward(getRandomTrainerId(), input.totalFocusMinutes, input.completedSessions),
+      } else if (roll < chances.monster + chances.level + chances.item + chances.coin) {
+        rewards.push(this.generateCoinReward(getRandomTrainerId(), baseCoinAmount));
+      } else {
+        // Leftover slots that didn't hit anything get a small common item
+        // This ensures sessions feel rewarding and items show up regularly
+        const fallbackItem = await this.generateItemReward(
+          getRandomTrainerId(),
+          input.totalFocusMinutes,
+          input.completedSessions,
         );
-      } else if (roll < chances.coin + chances.item + chances.level + chances.monster) {
-        const monsterReward = await this.generateMonsterReward(getRandomTrainerId(), userSettings);
-        if (monsterReward) {
-          rewards.push(monsterReward);
-        }
+        rewards.push(fallbackItem ?? this.generateCoinReward(getRandomTrainerId(), baseCoinAmount));
       }
     }
 
@@ -376,15 +393,20 @@ export class GameCornerService {
 
   private calculateRewardChances(
     multiplier: number,
-    totalSlots: number,
+    _totalSlots: number,
   ): { coin: number; item: number; level: number; monster: number } {
-    // Base chances with per-session random jitter (+/- 30%) for unpredictability
-    const jitter = () => 0.7 + Math.random() * 0.6;
+    // Per-slot chances (NOT divided by totalSlots — each slot rolls independently)
+    // Jitter adds +/- 15% variance per session for unpredictability
+    const jitter = () => 0.85 + Math.random() * 0.3;
 
-    const coin = (Math.min(2.0, 0.6 + multiplier * 0.2) * jitter()) / totalSlots;
-    const item = (Math.min(2.0, 0.6 + multiplier * 0.2) * jitter()) / totalSlots;
-    const level = (Math.min(1.8, 0.5 + multiplier * 0.15) * jitter()) / totalSlots;
-    const monster = (Math.min(1.2, 0.15 + multiplier * 0.12) * jitter()) / totalSlots;
+    // Coins: ~30-40% base chance per slot
+    const coin = Math.min(0.45, (0.30 + multiplier * 0.03)) * jitter();
+    // Items: ~30-40% base chance per slot (moderately common — small items should show up often)
+    const item = Math.min(0.50, (0.32 + multiplier * 0.04)) * jitter();
+    // Levels: ~15-20% base chance per slot
+    const level = Math.min(0.25, (0.14 + multiplier * 0.02)) * jitter();
+    // Monsters: ~8-12% base chance per slot (somewhat more likely than before)
+    const monster = Math.min(0.15, (0.06 + multiplier * 0.02)) * jitter();
     return { coin, item, level, monster };
   }
 

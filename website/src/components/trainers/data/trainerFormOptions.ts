@@ -141,7 +141,11 @@ export const RACES = [
   'Catfolk',
   'Catfolk (Faller)',
   'Catfolk (Alter)',
-  'Catfolk (Alter Faller)'
+  'Catfolk (Alter Faller)',
+  'Anthro',
+  'Anthro (Faller)',
+  'Anthro (Alter)',
+  'Anthro (Alter Faller)'
 ] as const;
 
 export type Race = typeof RACES[number];

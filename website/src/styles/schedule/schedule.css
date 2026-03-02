@@ -203,17 +203,17 @@
 
 .item-status--pending {
   background-color: var(--warning-dark);
-  color: var(--warning-color);
+  color: var(--text-color);
 }
 
 .item-status--completed {
   background-color: var(--success-dark);
-  color: var(--success-color);
+  color: var(--text-color);
 }
 
 .item-status--active {
   background-color: var(--success-dark);
-  color: var(--success-color);
+  color: var(--text-color);
 }
 
 .item-status--paused,
@@ -224,7 +224,7 @@
 
 .item-status--due {
   background-color: var(--error-dark);
-  color: var(--error-color);
+  color: var(--text-color);
 }
 
 /* ---------- Item Meta ---------- */
@@ -255,6 +255,110 @@
   margin-top: var(--spacing-xsmall);
   padding-top: var(--spacing-xsmall);
   border-top: 1px solid var(--border-color);
+}
+
+/* ---------- Completed Tasks Section ---------- */
+
+.completed-tasks-section {
+  border-top: 1px solid var(--border-color);
+  padding-top: var(--spacing-small);
+}
+
+.completed-tasks-toggle {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xsmall);
+  background: none;
+  border: none;
+  color: var(--text-color-muted);
+  font-size: var(--font-size-medium);
+  font-weight: 600;
+  cursor: pointer;
+  padding: var(--spacing-xxsmall) 0;
+  transition: color 0.2s ease;
+}
+
+.completed-tasks-toggle:hover {
+  color: var(--text-color);
+}
+
+.completed-tasks-toggle i {
+  font-size: var(--font-size-xsmall);
+  width: 1rem;
+  text-align: center;
+}
+
+.completed-tasks-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xxsmall);
+  margin-top: var(--spacing-xsmall);
+}
+
+.completed-task-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-xsmall);
+  padding: var(--spacing-xsmall) var(--spacing-small);
+  background-color: var(--background-color);
+  border: 1px solid var(--border-color);
+  border-left: 3px solid var(--success-color);
+  border-radius: var(--border-radius-small);
+  opacity: 0.75;
+  transition: opacity 0.2s ease;
+}
+
+.completed-task-row:hover {
+  opacity: 1;
+}
+
+.completed-task-row__info {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xsmall);
+  flex: 1;
+  min-width: 0;
+}
+
+.completed-task-row__icon {
+  color: var(--success-color);
+  font-size: var(--font-size-small);
+  flex-shrink: 0;
+}
+
+.completed-task-row__title {
+  font-size: var(--font-size-small);
+  color: var(--text-color-muted);
+  text-decoration: line-through;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.completed-task-row__date {
+  font-size: var(--font-size-xsmall);
+  color: var(--text-color-muted);
+  flex-shrink: 0;
+  opacity: 0.7;
+}
+
+.completed-task-row__actions {
+  display: flex;
+  gap: var(--spacing-xxsmall);
+  flex-shrink: 0;
+}
+
+@media (max-width: 480px) {
+  .completed-task-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--spacing-xsmall);
+  }
+
+  .completed-task-row__actions {
+    justify-content: flex-end;
+  }
 }
 
 /* ---------- Streak Badge ---------- */

@@ -117,13 +117,47 @@ const EditTrainerPage = () => {
   }
 
   if (!isAuthorized) {
+    const userId = currentUser ? String(currentUser.id) : 'N/A';
+    const discordId = currentUser?.discord_id ? String(currentUser.discord_id) : 'N/A';
+    const playerId = trainer?.player_user_id ? String(trainer.player_user_id) : 'N/A';
+
+    const reasons: string[] = [];
+    if (!currentUser) {
+      reasons.push('You are not logged in.');
+    } else if (!trainer) {
+      reasons.push('Trainer data could not be loaded.');
+    } else {
+      if (!trainer.player_user_id) {
+        reasons.push('This trainer has no owner assigned (player_user_id is empty). An admin needs to assign ownership.');
+      } else {
+        if (userId !== playerId && discordId !== playerId) {
+          reasons.push(`Your account does not match this trainer's owner.`);
+        }
+        if (discordId === 'N/A') {
+          reasons.push('Your account has no Discord ID linked. Try logging out and back in via Discord.');
+        }
+      }
+    }
+
     return (
       <div className="main-container">
         <div className="state-container">
           <i className="fa-solid fa-lock"></i>
           <h2>Not Authorized</h2>
           <p>You are not authorized to edit this trainer.</p>
-          <Link to={`/trainers/${id}`} className="button secondary">
+          <div style={{ textAlign: 'left', background: 'var(--bg-secondary, #1a1a2e)', padding: '1rem', borderRadius: '8px', marginTop: '1rem', fontSize: '0.85rem', maxWidth: '500px' }}>
+            <p style={{ fontWeight: 'bold', marginBottom: '0.5rem' }}>Debug Info:</p>
+            <ul style={{ listStyle: 'disc', paddingLeft: '1.25rem', margin: 0 }}>
+              {reasons.map((r, i) => <li key={i} style={{ marginBottom: '0.25rem' }}>{r}</li>)}
+              <li>Your User ID: <code>{userId}</code></li>
+              <li>Your Discord ID: <code>{discordId}</code></li>
+              <li>Trainer Owner ID: <code>{playerId}</code></li>
+            </ul>
+            <p style={{ marginTop: '0.75rem', fontSize: '0.8rem', opacity: 0.7 }}>
+              Share this info with an admin if you believe this is an error.
+            </p>
+          </div>
+          <Link to={`/trainers/${id}`} className="button secondary" style={{ marginTop: '1rem' }}>
             View Trainer
           </Link>
         </div>

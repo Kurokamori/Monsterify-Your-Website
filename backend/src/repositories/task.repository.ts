@@ -8,7 +8,7 @@ export type RepeatType = 'daily' | 'weekly' | 'monthly' | 'yearly';
 
 export type TaskStep = {
   text: string;
-  completed: boolean;
+  completed: number;
 };
 
 export type TaskRow = {
@@ -30,7 +30,7 @@ export type TaskRow = {
   reward_levels: number;
   reward_coins: number;
   reward_trainer_id: number | null;
-  reminder_enabled: boolean;
+  reminder_enabled: number;
   reminder_time: string | null;
   reminder_days: string | object | null;
   completed_at: Date | null;
@@ -57,7 +57,7 @@ export type Task = {
   rewardLevels: number;
   rewardCoins: number;
   rewardTrainerId: number | null;
-  reminderEnabled: boolean;
+  reminderEnabled: number;
   reminderTime: string | null;
   reminderDays: string[];
   completedAt: Date | null;
@@ -85,7 +85,7 @@ export type TaskCreateInput = {
   rewardLevels?: number;
   rewardCoins?: number;
   rewardTrainerId?: number | null;
-  reminderEnabled?: boolean;
+  reminderEnabled?: number;
   reminderTime?: string | null;
   reminderDays?: string[];
 };
@@ -217,11 +217,11 @@ export class TaskRepository extends BaseRepository<Task, TaskCreateInput, TaskUp
       `
         INSERT INTO tasks (
           user_id, title, description, due_date, priority, difficulty,
-          category, tags, steps, repeat_type, repeat_interval, repeat_days,
+          category, tags, steps, status, repeat_type, repeat_interval, repeat_days,
           reward_levels, reward_coins, reward_trainer_id, reminder_enabled,
           reminder_time, reminder_days
         )
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19)
         RETURNING id
       `,
       [
@@ -234,13 +234,14 @@ export class TaskRepository extends BaseRepository<Task, TaskCreateInput, TaskUp
         input.category ?? null,
         tagsJson,
         stepsJson,
+        'pending',
         input.repeatType ?? null,
         input.repeatInterval ?? null,
         repeatDaysJson,
         input.rewardLevels ?? 0,
         input.rewardCoins ?? 0,
         input.rewardTrainerId ?? null,
-        input.reminderEnabled ?? false,
+        input.reminderEnabled ?? 0,
         input.reminderTime ?? null,
         reminderDaysJson,
       ]

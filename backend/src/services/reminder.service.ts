@@ -1,3 +1,4 @@
+import axios from 'axios';
 import {
   ReminderRepository,
   ReminderWithUserDetails,
@@ -11,6 +12,38 @@ import {
   DailyRoutineRepository,
   DailyRoutineWithItems,
 } from '../repositories';
+
+// ============================================================================
+// Bridge configuration
+// ============================================================================
+
+const BRIDGE_BASE_URL = process.env.DISCORD_BOT_BRIDGE_URL
+  ?? `http://localhost:${process.env.DISCORD_BOT_HTTP_PORT ?? '3001'}`;
+
+// Reminder embed colors
+const REMINDER_COLORS = {
+  task: 0x3498db,      // blue
+  habit: 0x2ecc71,     // green
+  routine_item: 0xe67e22, // orange
+} as const;
+
+// Button style types for the bridge
+type BridgeButtonStyle = 'primary' | 'secondary' | 'success' | 'danger';
+
+type BridgeButton = {
+  customId: string;
+  label: string;
+  style: BridgeButtonStyle;
+  emoji?: string;
+};
+
+type BridgeEmbed = {
+  title: string;
+  description: string;
+  color: number;
+  fields?: Array<{ name: string; value: string; inline?: boolean }>;
+  footer?: { text: string };
+};
 
 export type ReminderProcessingResults = {
   reminders: ReminderWithUserDetails[];
@@ -72,27 +105,136 @@ export class ReminderService {
   }
 
   /**
-   * Send Discord reminder
-   * @param reminder - Reminder object
+   * Build the embed and buttons for a reminder DM
+   */
+  private buildReminderMessage(reminder: ReminderWithUserDetails, extraFields?: Array<{ name: string; value: string; inline?: boolean }>): {
+    embed: BridgeEmbed;
+    buttons: BridgeButton[];
+  } {
+    const typeLabel = reminder.itemType === 'routine_item' ? 'Routine Item' : reminder.itemType.charAt(0).toUpperCase() + reminder.itemType.slice(1);
+    const actionVerb = reminder.itemType === 'task' ? 'complete your task' : reminder.itemType === 'habit' ? 'track your habit' : 'complete your routine item';
+
+    const embed: BridgeEmbed = {
+      title: `${typeLabel} Reminder: ${reminder.title}`,
+      description: `Don't forget to ${actionVerb}!`,
+      color: REMINDER_COLORS[reminder.itemType] ?? 0x5865f2,
+      fields: extraFields,
+      footer: { text: `Reminder for ${typeLabel} #${reminder.itemId}` },
+    };
+
+    const itemId = reminder.itemId ?? 0;
+    const completeId = reminder.itemType === 'task'
+      ? `schedule_complete_task_${itemId}`
+      : reminder.itemType === 'habit'
+        ? `schedule_complete_habit_${itemId}`
+        : `schedule_complete_routine_item_${itemId}`;
+
+    const deleteId = reminder.itemType === 'task'
+      ? `schedule_delete_task_${itemId}`
+      : reminder.itemType === 'habit'
+        ? `schedule_delete_habit_${itemId}`
+        : `schedule_delete_routine_item_${itemId}`;
+
+    const itemTypeShort = reminder.itemType === 'routine_item' ? 'routine_item' : reminder.itemType;
+
+    const buttons: BridgeButton[] = [
+      { customId: completeId, label: 'Complete', style: 'success', emoji: '✅' },
+      { customId: `schedule_snooze_15m_${itemTypeShort}_${itemId}`, label: '15 min', style: 'secondary', emoji: '⏰' },
+      { customId: `schedule_snooze_1hr_${itemTypeShort}_${itemId}`, label: '1 hour', style: 'secondary', emoji: '🕐' },
+      { customId: deleteId, label: 'Delete', style: 'danger', emoji: '🗑️' },
+    ];
+
+    return { embed, buttons };
+  }
+
+  /**
+   * Send a Discord reminder DM via the bot bridge server
    */
   async sendDiscordReminder(reminder: ReminderWithUserDetails): Promise<void> {
-    try {
-      // This would integrate with the Discord bot
-      // For now, we'll just log the reminder
-      console.log(`Reminder for ${reminder.userDiscordId}: ${reminder.title}`);
+    if (!reminder.userDiscordId) {
+      console.warn(`Skipping reminder ${reminder.id}: no Discord ID`);
+      return;
+    }
 
-      // In a real implementation, this would send a DM via Discord bot
-      // Example:
-      // const discordBot = require('../discord/bot');
-      // await discordBot.sendDM(reminder.userDiscordId, {
-      //   title: `Reminder: ${reminder.title}`,
-      //   description: `Don't forget to ${reminder.itemType === 'task' ? 'complete your task' : 'track your habit'}!`,
-      //   command: `/${reminder.itemType} ${reminder.itemType === 'task' ? 'complete' : 'track'} ${reminder.itemId}`
-      // });
+    try {
+      // Fetch extra context for habits (streak info)
+      let extraFields: Array<{ name: string; value: string; inline?: boolean }> | undefined;
+
+      if (reminder.itemType === 'habit' && reminder.itemId) {
+        const habit = await this.habitRepository.findById(reminder.itemId);
+        if (habit) {
+          extraFields = [
+            { name: 'Current Streak', value: `${habit.streak} day${habit.streak !== 1 ? 's' : ''} 🔥`, inline: true },
+            { name: 'Best Streak', value: `${habit.bestStreak} day${habit.bestStreak !== 1 ? 's' : ''}`, inline: true },
+          ];
+        }
+      }
+
+      const { embed, buttons } = this.buildReminderMessage(reminder, extraFields);
+
+      await axios.post(`${BRIDGE_BASE_URL}/send-dm`, {
+        discordId: reminder.userDiscordId,
+        embed,
+        buttons,
+      }, { timeout: 10000 });
+
+      console.log(`Sent reminder DM to ${reminder.userDiscordId}: ${reminder.title}`);
     } catch (error) {
-      console.error('Error sending Discord reminder:', error);
+      const msg = error instanceof Error ? error.message : String(error);
+      console.error(`Error sending Discord reminder ${reminder.id}:`, msg);
       throw error;
     }
+  }
+
+  /**
+   * Send a reminder DM for a specific item (used by admin "Remind Me Now")
+   */
+  async sendImmediateReminder(itemType: ReminderItemType, itemId: number, discordId: string): Promise<void> {
+    let title = 'Unknown';
+    let extraFields: Array<{ name: string; value: string; inline?: boolean }> | undefined;
+
+    if (itemType === 'task') {
+      const task = await this.taskRepository.findById(itemId);
+      if (!task) { throw new Error('Task not found'); }
+      title = task.title;
+    } else if (itemType === 'habit') {
+      const habit = await this.habitRepository.findById(itemId);
+      if (!habit) { throw new Error('Habit not found'); }
+      title = habit.title;
+      extraFields = [
+        { name: 'Current Streak', value: `${habit.streak} day${habit.streak !== 1 ? 's' : ''} 🔥`, inline: true },
+        { name: 'Best Streak', value: `${habit.bestStreak} day${habit.bestStreak !== 1 ? 's' : ''}`, inline: true },
+      ];
+    } else if (itemType === 'routine_item') {
+      // Find routine item title by checking all user routines
+      const reminder = await this.reminderRepository.findByItemTypeAndId('routine_item', itemId);
+      title = reminder[0]?.title ?? 'Routine Item';
+    }
+
+    const fakeReminder: ReminderWithUserDetails = {
+      id: 0,
+      userId: 0,
+      discordId,
+      itemType,
+      itemId,
+      title,
+      reminderTime: '',
+      reminderDays: [],
+      isActive: true,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      userDiscordId: discordId,
+    };
+
+    const { embed, buttons } = this.buildReminderMessage(fakeReminder, extraFields);
+
+    await axios.post(`${BRIDGE_BASE_URL}/send-dm`, {
+      discordId,
+      embed,
+      buttons,
+    }, { timeout: 10000 });
+
+    console.log(`Sent immediate reminder DM to ${discordId}: ${title}`);
   }
 
   /**
@@ -128,24 +270,41 @@ export class ReminderService {
   }
 
   /**
-   * Send streak reset notification
-   * @param habit - Habit object
+   * Send streak reset notification via Discord DM
    */
   async sendStreakResetNotification(habit: HabitWithDetails): Promise<void> {
-    try {
-      // In a real implementation, this would send a DM via Discord bot
-      console.log(`Streak reset notification for habit ${habit.id}: ${habit.title} (was ${habit.streak} days)`);
+    // Look up the user's Discord ID from the reminder
+    const reminder = await this.reminderRepository.findByUserAndItem(habit.userId, 'habit', habit.id);
+    const discordId = reminder?.discordId;
 
-      // Example:
-      // const discordBot = require('../discord/bot');
-      // await discordBot.sendDM(habit.userDiscordId, {
-      //   title: `Streak Reset: ${habit.title}`,
-      //   description: `Your ${habit.streak}-day streak for "${habit.title}" has been reset. Don't give up - start a new streak today!`,
-      //   color: 'warning'
-      // });
+    if (!discordId) {
+      console.log(`Streak reset notification for habit ${habit.id}: ${habit.title} (was ${habit.streak} days) - no Discord ID`);
+      return;
+    }
+
+    try {
+      const embed: BridgeEmbed = {
+        title: `Streak Reset: ${habit.title}`,
+        description: `Your **${habit.streak}-day** streak for "${habit.title}" has been reset. Don't give up - start a new streak today!`,
+        color: 0xfee75c, // warning yellow
+        fields: [
+          { name: 'Best Streak', value: `${habit.bestStreak} day${habit.bestStreak !== 1 ? 's' : ''}`, inline: true },
+          { name: 'Frequency', value: habit.frequency === 'daily' ? 'Daily' : 'Weekly', inline: true },
+        ],
+      };
+
+      await axios.post(`${BRIDGE_BASE_URL}/send-dm`, {
+        discordId,
+        embed,
+        buttons: [
+          { customId: `schedule_complete_habit_${habit.id}`, label: 'Track Now', style: 'success', emoji: '✅' },
+        ],
+      }, { timeout: 10000 });
+
+      console.log(`Sent streak reset notification to ${discordId}: ${habit.title}`);
     } catch (error) {
-      console.error('Error sending streak reset notification:', error);
-      throw error;
+      const msg = error instanceof Error ? error.message : String(error);
+      console.error(`Error sending streak reset notification for habit ${habit.id}:`, msg);
     }
   }
 
@@ -381,7 +540,7 @@ export class ReminderService {
       title: `${routine.name}: ${item.title}`,
       reminderTime,
       reminderDays: routine.patternDays,
-      isActive: routine.isActive,
+      isActive: !!routine.isActive,
     });
   }
 

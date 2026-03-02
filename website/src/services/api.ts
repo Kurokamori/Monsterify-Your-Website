@@ -9,7 +9,21 @@ declare module 'axios' {
       maxRetries: number;
       retryDelay: number;
     };
+    _retryAfterRefresh?: boolean;
   }
+}
+
+// Track in-flight token refresh to avoid multiple simultaneous refreshes
+let isRefreshing = false;
+let refreshSubscribers: Array<(token: string) => void> = [];
+
+function onRefreshed(token: string) {
+  refreshSubscribers.forEach(cb => cb(token));
+  refreshSubscribers = [];
+}
+
+function addRefreshSubscriber(cb: (token: string) => void) {
+  refreshSubscribers.push(cb);
 }
 
 // Configuration
@@ -114,16 +128,69 @@ api.interceptors.response.use(
       return api(config);
     }
 
-    // Handle 401 Unauthorized errors (token expired, etc.)
+    // Handle 401 Unauthorized errors - attempt token refresh before logging out
     if (
       error.response?.status === 401 &&
       !config?.url?.includes('/auth/login') &&
-      !config?.url?.includes('/auth/register')
+      !config?.url?.includes('/auth/register') &&
+      !config?.url?.includes('/auth/refresh') &&
+      !config?._retryAfterRefresh
     ) {
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
-      localStorage.removeItem('refreshToken');
-      window.location.href = '/login';
+      const refreshToken = localStorage.getItem('refreshToken');
+
+      if (refreshToken) {
+        if (!isRefreshing) {
+          isRefreshing = true;
+
+          try {
+            const response = await axios.post(
+              `${API_CONFIG.baseURL}/auth/refresh`,
+              { refreshToken }
+            );
+
+            if (response.data.success && response.data.token) {
+              const newToken = response.data.token;
+              localStorage.setItem('token', newToken);
+              isRefreshing = false;
+              onRefreshed(newToken);
+
+              // Retry the original request with the new token
+              if (config) {
+                config.headers.Authorization = `Bearer ${newToken}`;
+                config._retryAfterRefresh = true;
+                return api(config);
+              }
+            } else {
+              throw new Error('Refresh failed');
+            }
+          } catch {
+            isRefreshing = false;
+            refreshSubscribers = [];
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            localStorage.removeItem('refreshToken');
+            window.location.href = '/login';
+            return Promise.reject(error);
+          }
+        } else {
+          // Another request is already refreshing - queue this one
+          return new Promise((resolve) => {
+            addRefreshSubscriber((newToken: string) => {
+              if (config) {
+                config.headers.Authorization = `Bearer ${newToken}`;
+                config._retryAfterRefresh = true;
+                resolve(api(config));
+              }
+            });
+          });
+        }
+      } else {
+        // No refresh token available - log out
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        localStorage.removeItem('refreshToken');
+        window.location.href = '/login';
+      }
     }
 
     return Promise.reject(error);

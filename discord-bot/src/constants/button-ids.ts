@@ -86,6 +86,19 @@ export const BATTLE = {
   RESULT: 'battle_result',
 } as const;
 
+// -- Schedule Reminders ------------------------------------------------------
+
+export const SCHEDULE = {
+  COMPLETE_TASK: 'schedule_complete_task',
+  COMPLETE_HABIT: 'schedule_complete_habit',
+  COMPLETE_ROUTINE_ITEM: 'schedule_complete_routine_item',
+  SNOOZE_15M: 'schedule_snooze_15m',
+  SNOOZE_1HR: 'schedule_snooze_1hr',
+  DELETE_TASK: 'schedule_delete_task',
+  DELETE_HABIT: 'schedule_delete_habit',
+  DELETE_ROUTINE_ITEM: 'schedule_delete_routine_item',
+} as const;
+
 // -- Shop --------------------------------------------------------------------
 
 export const SHOP = {

@@ -229,7 +229,7 @@ export const TeamBuilder = () => {
                         className="button secondary sm"
                         title="Remove Type"
                       >
-                        \u00d7
+                        {'\u00d7'}
                       </button>
                     )}
                   </div>
@@ -258,7 +258,7 @@ export const TeamBuilder = () => {
                 className="button secondary sm"
                 title="Clear Monster"
               >
-                \u00d7
+                {'\u00d7'}
               </button>
             </div>
           </div>

@@ -229,6 +229,60 @@ export async function trackMessage(req: Request, res: Response): Promise<void> {
 }
 
 // =============================================================================
+// Participant Sync (retroactive reconciliation)
+// =============================================================================
+
+export async function syncParticipants(req: Request, res: Response): Promise<void> {
+  try {
+    const { adventureId, participants } = req.body as {
+      adventureId?: number;
+      participants?: Array<{ discordUserId: string; wordCount: number; messageCount: number }>;
+    };
+
+    if (!adventureId || !participants || !Array.isArray(participants)) {
+      res.status(400).json({ success: false, message: 'Missing adventureId or participants array' });
+      return;
+    }
+
+    const adventure = await adventureRepository.findById(adventureId);
+    if (!adventure) {
+      res.status(404).json({ success: false, message: 'Adventure not found' });
+      return;
+    }
+
+    const results: Array<{ discordUserId: string; wordCount: number; messageCount: number }> = [];
+
+    for (const entry of participants) {
+      const existing = await participantRepository.findByAdventureAndDiscordUser(adventureId, entry.discordUserId);
+
+      if (existing) {
+        // Replace counts with the authoritative tally from Discord
+        const updated = await participantRepository.update(existing.id, {
+          wordCount: entry.wordCount,
+          messageCount: entry.messageCount,
+          lastMessageAt: new Date(),
+        });
+        results.push({ discordUserId: entry.discordUserId, wordCount: updated.wordCount, messageCount: updated.messageCount });
+      } else {
+        // New participant not previously tracked
+        const created = await participantRepository.create({
+          adventureId,
+          discordUserId: entry.discordUserId,
+          wordCount: entry.wordCount,
+          messageCount: entry.messageCount,
+        });
+        results.push({ discordUserId: entry.discordUserId, wordCount: created.wordCount, messageCount: created.messageCount });
+      }
+    }
+
+    res.json({ success: true, synced: results.length, participants: results });
+  } catch (error) {
+    console.error('Error syncing participants:', error);
+    res.status(500).json({ success: false, message: 'Failed to sync participants' });
+  }
+}
+
+// =============================================================================
 // Encounters
 // =============================================================================
 

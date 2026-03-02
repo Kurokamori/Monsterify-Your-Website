@@ -197,8 +197,19 @@ export async function updateTrainer(req: Request, res: Response): Promise<void> 
 
     // Authorization: owner or admin
     const userId = req.user?.discord_id;
-    if (userId && trainer.player_user_id !== userId && !req.user?.is_admin) {
-      res.status(403).json({ success: false, message: 'Not authorized to update this trainer' });
+    if (!userId) {
+      res.status(401).json({
+        success: false,
+        message: 'Not authenticated. Please log in again.',
+        debug: { reason: 'No discord_id on authenticated user', userId: req.user?.id ?? null },
+      });
+      return;
+    }
+    if (trainer.player_user_id !== userId && !req.user?.is_admin) {
+      res.status(403).json({
+        success: false,
+        message: `Not authorized to update this trainer. Your Discord ID (${userId}) does not match the trainer owner (${trainer.player_user_id ?? 'unset'}). Contact an admin if this is your trainer.`,
+      });
       return;
     }
 

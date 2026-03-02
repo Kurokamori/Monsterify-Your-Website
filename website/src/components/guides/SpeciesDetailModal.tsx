@@ -252,7 +252,7 @@ export const SpeciesDetailModal = ({
       </div>
 
       <div className="species-modal__hint">
-        <span><kbd>\u2190</kbd> <kbd>\u2192</kbd> to navigate</span>
+        <span><kbd>{'\u2190'}</kbd> <kbd>{'\u2192'}</kbd> to navigate</span>
         <span><kbd>Esc</kbd> to close</span>
       </div>
     </Modal>

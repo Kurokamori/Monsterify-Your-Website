@@ -24,8 +24,9 @@
 }
 
 .type-calculator__selectors {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
   gap: var(--spacing-medium);
   margin-bottom: var(--spacing-xlarge);
 }

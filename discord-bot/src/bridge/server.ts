@@ -1,5 +1,14 @@
 import express, { type Request, type Response } from 'express';
-import { ChannelType, type TextChannel, type ThreadChannel } from 'discord.js';
+import {
+  ChannelType,
+  ButtonStyle,
+  ActionRowBuilder,
+  ButtonBuilder,
+  EmbedBuilder,
+  type TextChannel,
+  type ThreadChannel,
+  type MessageActionRowComponentBuilder,
+} from 'discord.js';
 import type { DuskClient } from '../client.js';
 import { config } from '../config/index.js';
 
@@ -22,6 +31,23 @@ interface CreateThreadBody {
 interface ArchiveThreadBody {
   threadId: string;
   reason?: string;
+}
+
+interface SendDmBody {
+  discordId: string;
+  embed: {
+    title: string;
+    description: string;
+    color?: number;
+    fields?: Array<{ name: string; value: string; inline?: boolean }>;
+    footer?: { text: string };
+  };
+  buttons?: Array<{
+    customId: string;
+    label: string;
+    style: 'primary' | 'secondary' | 'success' | 'danger';
+    emoji?: string;
+  }>;
 }
 
 interface BridgeSuccess {
@@ -168,6 +194,77 @@ export function startBridgeServer(client: DuskClient): void {
       res.json(body);
     } catch (err) {
       console.error(`Bridge: failed to archive thread ${threadId}:`, err);
+      error(res, 500, err instanceof Error ? err.message : 'Unknown error');
+    }
+  });
+
+  // -- Send DM to a user ----------------------------------------------------
+
+  app.post('/send-dm', async (req: Request, res: Response) => {
+    const { discordId, embed, buttons } = req.body as SendDmBody;
+
+    if (!discordId || !embed) {
+      error(res, 400, 'discordId and embed are required');
+      return;
+    }
+
+    try {
+      const user = await client.users.fetch(discordId);
+      if (!user) {
+        error(res, 404, `User ${discordId} not found`);
+        return;
+      }
+
+      const embedBuilder = new EmbedBuilder()
+        .setTitle(embed.title)
+        .setDescription(embed.description)
+        .setColor(embed.color ?? 0x5865f2)
+        .setTimestamp();
+
+      if (embed.fields) {
+        for (const field of embed.fields) {
+          embedBuilder.addFields({ name: field.name, value: field.value, inline: field.inline ?? false });
+        }
+      }
+
+      if (embed.footer) {
+        embedBuilder.setFooter({ text: embed.footer.text });
+      }
+
+      const messageOptions: { embeds: EmbedBuilder[]; components?: ActionRowBuilder<MessageActionRowComponentBuilder>[] } = {
+        embeds: [embedBuilder],
+      };
+
+      if (buttons && buttons.length > 0) {
+        const styleMap: Record<string, ButtonStyle> = {
+          primary: ButtonStyle.Primary,
+          secondary: ButtonStyle.Secondary,
+          success: ButtonStyle.Success,
+          danger: ButtonStyle.Danger,
+        };
+
+        const row = new ActionRowBuilder<MessageActionRowComponentBuilder>();
+        for (const btn of buttons) {
+          const button = new ButtonBuilder()
+            .setCustomId(btn.customId)
+            .setLabel(btn.label)
+            .setStyle(styleMap[btn.style] ?? ButtonStyle.Primary);
+
+          if (btn.emoji) {
+            button.setEmoji(btn.emoji);
+          }
+
+          row.addComponents(button);
+        }
+
+        messageOptions.components = [row];
+      }
+
+      const sent = await user.send(messageOptions);
+      const body: BridgeResponse = { success: true, messageId: sent.id };
+      res.json(body);
+    } catch (err) {
+      console.error(`Bridge: failed to send DM to ${discordId}:`, err);
       error(res, 500, err instanceof Error ? err.message : 'Unknown error');
     }
   });

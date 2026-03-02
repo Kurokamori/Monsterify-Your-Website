@@ -81,14 +81,24 @@ export class ScheduleService {
     return taskWithDetails ?? (updated as TaskWithDetails);
   }
 
-  async completeTask(id: number, userId: number): Promise<TaskWithDetails> {
+  async completeTask(id: number, userId: number): Promise<{ task: TaskWithDetails; rewards?: { levels: number; coins: number; trainerName: string } }> {
     const task = await this.taskRepository.findById(id);
     if (!task) { throw new Error('Task not found'); }
     if (task.userId !== userId) { throw new Error('Not authorized'); }
 
     const completed = await this.taskRepository.complete(id);
     const taskWithDetails = await this.taskRepository.findById(completed.id);
-    return taskWithDetails ?? (completed as TaskWithDetails);
+    const result: { task: TaskWithDetails; rewards?: { levels: number; coins: number; trainerName: string } } = {
+      task: taskWithDetails ?? (completed as TaskWithDetails),
+    };
+
+    // Grant rewards to trainer
+    if (task.rewardTrainerId && (task.rewardLevels > 0 || task.rewardCoins > 0)) {
+      const trainer = await this.trainerRepository.addLevelsAndCoins(task.rewardTrainerId, task.rewardLevels, task.rewardCoins);
+      result.rewards = { levels: task.rewardLevels, coins: task.rewardCoins, trainerName: trainer.name };
+    }
+
+    return result;
   }
 
   async deleteTask(id: number, userId: number): Promise<void> {
@@ -123,17 +133,25 @@ export class ScheduleService {
     return habitWithDetails ?? (updated as HabitWithDetails);
   }
 
-  async trackHabit(id: number, userId: number): Promise<{ habit: HabitWithDetails; streakChange: number }> {
+  async trackHabit(id: number, userId: number): Promise<{ habit: HabitWithDetails; streakChange: number; rewards?: { levels: number; coins: number; trainerName: string } }> {
     const habit = await this.habitRepository.findById(id);
     if (!habit) { throw new Error('Habit not found'); }
     if (habit.userId !== userId) { throw new Error('Not authorized'); }
 
     const result = await this.habitRepository.track(id);
     const habitWithDetails = await this.habitRepository.findById(result.habit.id);
-    return {
+    const response: { habit: HabitWithDetails; streakChange: number; rewards?: { levels: number; coins: number; trainerName: string } } = {
       habit: habitWithDetails ?? (result.habit as HabitWithDetails),
       streakChange: result.streakChange,
     };
+
+    // Grant rewards to trainer
+    if (habit.rewardTrainerId && (habit.rewardLevels > 0 || habit.rewardCoins > 0)) {
+      const trainer = await this.trainerRepository.addLevelsAndCoins(habit.rewardTrainerId, habit.rewardLevels, habit.rewardCoins);
+      response.rewards = { levels: habit.rewardLevels, coins: habit.rewardCoins, trainerName: trainer.name };
+    }
+
+    return response;
   }
 
   async deleteHabit(id: number, userId: number): Promise<void> {
@@ -188,8 +206,17 @@ export class ScheduleService {
     return this.dailyRoutineRepository.deleteItem(itemId);
   }
 
-  async completeRoutineItem(itemId: number, userId: number): Promise<{ success: boolean; item: RoutineItem }> {
-    return this.dailyRoutineRepository.completeItem(itemId, userId);
+  async completeRoutineItem(itemId: number, userId: number): Promise<{ success: boolean; item: RoutineItem; rewards?: { levels: number; coins: number; trainerName: string } }> {
+    const result = await this.dailyRoutineRepository.completeItem(itemId, userId);
+
+    // Grant rewards to trainer
+    const item = result.item;
+    if (item.rewardTrainerId && (item.rewardLevels > 0 || item.rewardCoins > 0)) {
+      const trainer = await this.trainerRepository.addLevelsAndCoins(item.rewardTrainerId, item.rewardLevels, item.rewardCoins);
+      return { ...result, rewards: { levels: item.rewardLevels, coins: item.rewardCoins, trainerName: trainer.name } };
+    }
+
+    return result;
   }
 
   async getTodaysRoutines(userId: number): Promise<DailyRoutineWithItems[]> {

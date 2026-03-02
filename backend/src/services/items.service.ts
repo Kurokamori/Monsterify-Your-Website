@@ -1116,6 +1116,7 @@ export class ItemsService {
       fakemon: settings.fakemon ?? true,
       finalfantasy: settings.finalfantasy ?? true,
       monsterhunter: settings.monsterhunter ?? true,
+      dragonquest: settings.dragonquest ?? true,
     };
   }
 

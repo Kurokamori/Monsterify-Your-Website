@@ -59,9 +59,9 @@ export const RoutineModal = ({
       setFormData({
         name: routine.name,
         description: routine.description || '',
-        pattern_type: routine.pattern_type,
-        pattern_days: routine.pattern_days || [],
-        is_active: routine.is_active,
+        pattern_type: routine.patternType,
+        pattern_days: routine.patternDays || [],
+        is_active: routine.isActive,
         items: routine.items || []
       });
     } else {
@@ -117,9 +117,15 @@ export const RoutineModal = ({
   const addItem = () => {
     if (newItem.title.trim()) {
       const newRoutineItem: RoutineItem = {
-        ...newItem,
-        order_index: formData.items.length,
-        reward_trainer_id: newItem.reward_trainer_id || ''
+        title: newItem.title,
+        description: newItem.description,
+        scheduledTime: newItem.scheduled_time,
+        orderIndex: formData.items.length,
+        rewardLevels: newItem.reward_levels,
+        rewardCoins: newItem.reward_coins,
+        rewardTrainerId: newItem.reward_trainer_id || '',
+        reminderEnabled: newItem.reminder_enabled,
+        reminderOffset: newItem.reminder_offset,
       };
 
       setFormData(prev => ({
@@ -136,7 +142,7 @@ export const RoutineModal = ({
       ...prev,
       items: prev.items.filter((_, i) => i !== index).map((item, i) => ({
         ...item,
-        order_index: i
+        orderIndex: i
       }))
     }));
   };
@@ -149,7 +155,7 @@ export const RoutineModal = ({
       if (newIndex >= 0 && newIndex < items.length) {
         [items[index], items[newIndex]] = [items[newIndex], items[index]];
         items.forEach((item, i) => {
-          item.order_index = i;
+          item.orderIndex = i;
         });
       }
 
@@ -359,9 +365,9 @@ export const RoutineModal = ({
                       <h5>{item.title}</h5>
                       {item.description && <p>{item.description}</p>}
                       <div className="routine-item-card__meta">
-                        {item.scheduled_time && <span>Time: {item.scheduled_time}</span>}
-                        {(item.reward_levels > 0 || item.reward_coins > 0) && (
-                          <span>Reward: {item.reward_levels} levels, {item.reward_coins} coins</span>
+                        {item.scheduledTime && <span>Time: {item.scheduledTime}</span>}
+                        {(item.rewardLevels > 0 || item.rewardCoins > 0) && (
+                          <span>Reward: {item.rewardLevels} levels, {item.rewardCoins} coins</span>
                         )}
                       </div>
                     </div>

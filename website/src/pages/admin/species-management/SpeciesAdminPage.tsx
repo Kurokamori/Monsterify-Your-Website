@@ -46,6 +46,36 @@ function SpeciesAdminContent() {
   // Delete
   const [deleteTarget, setDeleteTarget] = useState<Species | null>(null);
 
+  // Dynamic filter options (fetched from backend endpoints)
+  const [dynamicFilterOptions, setDynamicFilterOptions] = useState<Record<string, string[]>>({});
+
+  // Fetch dynamic filter options from backend
+  useEffect(() => {
+    if (!franchiseKey || !franchiseConfig?.filterEndpoints) return;
+
+    const endpoints = franchiseConfig.filterEndpoints;
+    for (const [filterKey, endpoint] of Object.entries(endpoints)) {
+      if (endpoint.dependsOn) continue; // dependent filters are fetched separately
+      speciesService.fetchDynamicFilterOptions(franchiseKey, filterKey).then(options => {
+        setDynamicFilterOptions(prev => ({ ...prev, [filterKey]: options }));
+      }).catch(err => console.error(`Error fetching ${filterKey} options:`, err));
+    }
+  }, [franchiseKey, franchiseConfig?.filterEndpoints]);
+
+  // Fetch dependent filter options when their parent value changes
+  useEffect(() => {
+    if (!franchiseKey || !franchiseConfig?.filterEndpoints) return;
+
+    const endpoints = franchiseConfig.filterEndpoints;
+    for (const [filterKey, endpoint] of Object.entries(endpoints)) {
+      if (!endpoint.dependsOn) continue;
+      const parentValue = filterValues[endpoint.dependsOn];
+      speciesService.fetchDynamicFilterOptions(franchiseKey, filterKey, parentValue || undefined).then(options => {
+        setDynamicFilterOptions(prev => ({ ...prev, [filterKey]: options }));
+      }).catch(err => console.error(`Error fetching ${filterKey} options:`, err));
+    }
+  }, [franchiseKey, franchiseConfig?.filterEndpoints, filterValues]);
+
   const fetchData = useCallback(async () => {
     if (!franchiseKey) return;
     setLoading(true);
@@ -78,6 +108,7 @@ function SpeciesAdminContent() {
     setCurrentPage(1);
     setSearchValue('');
     setFilterValues({});
+    setDynamicFilterOptions({});
     setSortBy(franchiseConfig?.sortDefault ?? 'name');
     setSortOrder('asc');
   }, [franchiseKey, franchiseConfig?.sortDefault]);
@@ -131,11 +162,11 @@ function SpeciesAdminContent() {
     );
   }
 
-  // Build filter configs from franchise config + admin config filter options
+  // Build filter configs from franchise config + admin config filter options + dynamic options
   const tableFilters: FilterConfig[] = Object.entries(franchiseConfig.filters).map(([filterKey, fc]) => {
-    // Priority: static options from FRANCHISE_CONFIG > filterOptions from admin config > boolean fallback
     const staticOptions = fc.options;
     const configOptions = config.filterOptions?.[filterKey];
+    const dynamicOptions = dynamicFilterOptions[filterKey];
 
     let options: { value: string; label: string }[];
     if (staticOptions) {
@@ -144,6 +175,8 @@ function SpeciesAdminContent() {
       options = [{ value: 'true', label: 'Yes' }, { value: 'false', label: 'No' }];
     } else if (configOptions) {
       options = configOptions.map(o => ({ value: o, label: o }));
+    } else if (dynamicOptions) {
+      options = dynamicOptions.map(o => ({ value: o, label: o }));
     } else {
       options = [];
     }

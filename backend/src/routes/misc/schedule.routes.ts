@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { authenticate, requireAdmin } from '@middleware/auth.middleware';
+import { authenticateAny, requireAdmin } from '@middleware/auth.middleware';
 import {
   // Tasks
   getTasks,
@@ -36,12 +36,13 @@ import {
   getMonthlyItemsConfig,
   updateMonthlyItemsConfig,
   getDistributionRuns,
+  remindNow,
 } from '../../controllers';
 
 const router = Router();
 
-// All schedule routes require authentication
-router.use(authenticate);
+// All schedule routes require authentication (JWT or Discord bot)
+router.use(authenticateAny);
 
 // ============================================================================
 // Dashboard
@@ -97,5 +98,6 @@ router.put('/admin/monthly/items-config', requireAdmin, updateMonthlyItemsConfig
 router.post('/admin/manual/monthly-distribution', requireAdmin, manualMonthlyDistribution);
 router.get('/admin/status', requireAdmin, getCronJobStatus);
 router.get('/admin/distribution-runs', requireAdmin, getDistributionRuns);
+router.post('/admin/remind-now/:type/:id', requireAdmin, remindNow);
 
 export default router;

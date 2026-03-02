@@ -82,6 +82,7 @@ const ADMIN_CATEGORIES: AdminCategory[] = [
       { name: 'Final Fantasy', icon: 'fas fa-hat-wizard', description: 'Manage Final Fantasy species', path: '/admin/species/final-fantasy' },
       { name: 'Fakemon', icon: 'fas fa-paint-brush', description: 'Manage Fakemon species', path: '/admin/species/fakemon' },
       { name: 'Digimon', icon: 'fas fa-microchip', description: 'Manage Digimon species', path: '/admin/species/digimon' },
+      { name: 'Dragon Quest', icon: 'fas fa-dragon', description: 'Manage Dragon Quest species', path: '/admin/species/dragon-quest' },
     ],
   },
   {

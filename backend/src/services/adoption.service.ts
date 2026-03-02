@@ -11,6 +11,7 @@ import {
   MonsterCreateInput,
   MonsterWithTrainer,
   UserRepository,
+  SubmissionRepository,
 } from '../repositories';
 import { MonsterRollerService, type UserSettings } from './monster-roller.service';
 import { MonsterInitializerService, InitializedMonster } from './monster-initializer.service';
@@ -46,6 +47,7 @@ export type ClaimAdoptInput = {
   speciesValue?: string;
   typeValue?: string;
   artDetails?: AdoptionArtDetails;
+  submissionId?: number;
 };
 
 export type ClaimAdoptResult = {
@@ -121,6 +123,7 @@ export class AdoptionService {
   private monsterRepository: MonsterRepository;
   private monsterInitializer: MonsterInitializerService;
   private userRepository: UserRepository;
+  private submissionRepository: SubmissionRepository;
 
   constructor(
     adoptRepository?: MonthlyAdoptRepository,
@@ -135,6 +138,7 @@ export class AdoptionService {
     this.monsterRepository = monsterRepository ?? new MonsterRepository();
     this.monsterInitializer = monsterInitializer ?? new MonsterInitializerService();
     this.userRepository = new UserRepository();
+    this.submissionRepository = new SubmissionRepository();
   }
 
   // ==========================================================================
@@ -195,7 +199,7 @@ export class AdoptionService {
   // ==========================================================================
 
   async claimAdopt(input: ClaimAdoptInput): Promise<ClaimAdoptResult> {
-    const { adoptId, trainerId, monsterName, discordUserId, berryName, pastryName, speciesValue, typeValue, artDetails } = input;
+    const { adoptId, trainerId, monsterName, discordUserId, berryName, pastryName, speciesValue, typeValue, artDetails, submissionId } = input;
 
     // Validate adopt exists
     const adopt = await this.adoptRepository.findById(adoptId);
@@ -274,6 +278,15 @@ export class AdoptionService {
 
     // Record the adoption claim
     await this.adoptRepository.recordAdoptionClaim(adoptId, trainerId, createdMonster.id);
+
+    // Link the adopted monster to the submission artwork
+    if (submissionId) {
+      try {
+        await this.submissionRepository.linkMonster(submissionId, createdMonster.id);
+      } catch (error) {
+        console.error(`Failed to link monster ${createdMonster.id} to submission ${submissionId}:`, error);
+      }
+    }
 
     // Apply art reward levels and coins if art details provided
     let artLevels = 0;

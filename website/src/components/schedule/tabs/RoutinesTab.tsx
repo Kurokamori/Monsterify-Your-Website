@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import api from '../../../services/api';
+import { useAuth } from '@contexts/useAuth';
 import { LoadingSpinner } from '../../common/LoadingSpinner';
 import { ErrorMessage } from '../../common/ErrorMessage';
 import { ConfirmModal } from '../../common/ConfirmModal';
@@ -14,6 +15,8 @@ interface RoutinesTabProps {
 type ViewType = 'today' | 'all';
 
 export const RoutinesTab = ({ trainers, onRefresh }: RoutinesTabProps) => {
+  const { currentUser } = useAuth();
+  const isAdmin = currentUser?.is_admin ?? false;
   const [routines, setRoutines] = useState<Routine[]>([]);
   const [todaysRoutines, setTodaysRoutines] = useState<Routine[]>([]);
   const [loading, setLoading] = useState(true);
@@ -53,12 +56,30 @@ export const RoutinesTab = ({ trainers, onRefresh }: RoutinesTabProps) => {
   };
 
   const handleCompleteRoutineItem = async (itemId: number) => {
+    // Optimistic update - mark item as completed immediately
+    setTodaysRoutines(prev =>
+      prev.map(routine => ({
+        ...routine,
+        items: routine.items?.map(item =>
+          item.id === itemId ? { ...item, completedToday: true } : item
+        ),
+      }))
+    );
+
     try {
       await api.post(`/schedule/routines/items/${itemId}/complete`);
-      loadTodaysRoutines();
       onRefresh();
     } catch (err) {
       console.error('Error completing routine item:', err);
+      // Revert optimistic update on failure
+      setTodaysRoutines(prev =>
+        prev.map(routine => ({
+          ...routine,
+          items: routine.items?.map(item =>
+            item.id === itemId ? { ...item, completedToday: false } : item
+          ),
+        }))
+      );
       alert('Failed to complete routine item');
     }
   };
@@ -74,6 +95,16 @@ export const RoutinesTab = ({ trainers, onRefresh }: RoutinesTabProps) => {
     } catch (err) {
       console.error('Error deleting routine:', err);
       alert('Failed to delete routine');
+    }
+  };
+
+  const handleRemindNow = async (type: string, id: number) => {
+    try {
+      await api.post(`/schedule/admin/remind-now/${type}/${id}`);
+      alert('Reminder sent!');
+    } catch (err) {
+      console.error('Error sending reminder:', err);
+      alert('Failed to send reminder');
     }
   };
 
@@ -96,7 +127,7 @@ export const RoutinesTab = ({ trainers, onRefresh }: RoutinesTabProps) => {
 
   const calculateCompletionRate = (routine: Routine): number => {
     if (!routine.items || routine.items.length === 0) return 0;
-    const completed = routine.items.filter(item => item.completed_today).length;
+    const completed = routine.items.filter(item => item.completedToday).length;
     return Math.round((completed / routine.items.length) * 100);
   };
 
@@ -168,29 +199,40 @@ export const RoutinesTab = ({ trainers, onRefresh }: RoutinesTabProps) => {
 
                 <div className="routine-items">
                   <h4>
-                    Items ({routine.items?.filter(i => i.completed_today).length || 0}/{routine.items?.length || 0})
+                    Items ({routine.items?.filter(i => i.completedToday).length || 0}/{routine.items?.length || 0})
                   </h4>
                   {routine.items && routine.items.length > 0 ? (
                     <ul className="routine-item-list">
                       {routine.items.map(item => (
                         <li
                           key={item.id}
-                          className={`routine-item ${item.completed_today ? 'completed' : ''}`}
+                          className={`routine-item ${item.completedToday ? 'completed' : ''}`}
                         >
                           <div className="routine-item__content">
                             <span className="routine-item__title">{item.title}</span>
-                            {item.scheduled_time && (
-                              <span className="routine-item__time">{item.scheduled_time}</span>
+                            {item.scheduledTime && (
+                              <span className="routine-item__time">{item.scheduledTime}</span>
                             )}
                           </div>
-                          {!item.completed_today && (
-                            <button
-                              className="routine-item__complete"
-                              onClick={() => handleCompleteRoutineItem(item.id!)}
-                            >
-                              <i className="fas fa-check"></i>
-                            </button>
-                          )}
+                          <div className="routine-item__actions">
+                            {!item.completedToday && (
+                              <button
+                                className="routine-item__complete"
+                                onClick={() => handleCompleteRoutineItem(item.id!)}
+                              >
+                                <i className="fas fa-check"></i>
+                              </button>
+                            )}
+                            {isAdmin && (
+                              <button
+                                className="routine-item__complete"
+                                onClick={() => handleRemindNow('routine_item', item.id!)}
+                                title="Send a test reminder DM"
+                              >
+                                <i className="fas fa-bell"></i>
+                              </button>
+                            )}
+                          </div>
                         </li>
                       ))}
                     </ul>
@@ -222,12 +264,12 @@ export const RoutinesTab = ({ trainers, onRefresh }: RoutinesTabProps) => {
             {routines.map(routine => (
               <div
                 key={routine.id}
-                className={`item-card ${routine.is_active ? 'item-card--active' : 'item-card--inactive'}`}
+                className={`item-card ${routine.isActive ? 'item-card--active' : 'item-card--inactive'}`}
               >
                 <div className="item-card__header">
                   <h3 className="item-card__title">{routine.name}</h3>
-                  <span className={`item-status ${routine.is_active ? 'item-status--active' : 'item-status--inactive'}`}>
-                    {routine.is_active ? 'Active' : 'Inactive'}
+                  <span className={`item-status ${routine.isActive ? 'item-status--active' : 'item-status--inactive'}`}>
+                    {routine.isActive ? 'Active' : 'Inactive'}
                   </span>
                 </div>
 
@@ -236,10 +278,10 @@ export const RoutinesTab = ({ trainers, onRefresh }: RoutinesTabProps) => {
                 )}
 
                 <div className="item-meta">
-                  <span>Pattern: {capitalize(routine.pattern_type)}</span>
+                  <span>Pattern: {capitalize(routine.patternType)}</span>
                   <span>Items: {routine.items?.length || 0}</span>
-                  {routine.pattern_days && routine.pattern_days.length > 0 && (
-                    <span>Days: {routine.pattern_days.map(capitalize).join(', ')}</span>
+                  {routine.patternDays && routine.patternDays.length > 0 && (
+                    <span>Days: {routine.patternDays.map(capitalize).join(', ')}</span>
                   )}
                 </div>
 
@@ -258,6 +300,16 @@ export const RoutinesTab = ({ trainers, onRefresh }: RoutinesTabProps) => {
                     <i className="fas fa-trash"></i>
                     Delete
                   </button>
+                  {isAdmin && routine.items && routine.items.length > 0 && (
+                    <button
+                      className="button secondary sm"
+                      onClick={() => handleRemindNow('routine_item', routine.items![0]!.id!)}
+                      title="Send a test reminder DM for the first routine item"
+                    >
+                      <i className="fas fa-bell"></i>
+                      Remind Now
+                    </button>
+                  )}
                 </div>
               </div>
             ))}

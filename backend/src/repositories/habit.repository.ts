@@ -19,7 +19,7 @@ export type HabitRow = {
   reward_levels: number;
   reward_coins: number;
   reward_trainer_id: number | null;
-  reminder_enabled: boolean;
+  reminder_enabled: number;
   reminder_time: string | null;
   reminder_days: string | object | null;
   created_at: Date;
@@ -40,7 +40,7 @@ export type Habit = {
   rewardLevels: number;
   rewardCoins: number;
   rewardTrainerId: number | null;
-  reminderEnabled: boolean;
+  reminderEnabled: number;
   reminderTime: string | null;
   reminderDays: string[];
   createdAt: Date;
@@ -60,7 +60,7 @@ export type HabitCreateInput = {
   rewardLevels?: number;
   rewardCoins?: number;
   rewardTrainerId?: number | null;
-  reminderEnabled?: boolean;
+  reminderEnabled?: number;
   reminderTime?: string | null;
   reminderDays?: string[];
 };
@@ -219,7 +219,7 @@ export class HabitRepository extends BaseRepository<Habit, HabitCreateInput, Hab
         input.rewardLevels ?? 0,
         input.rewardCoins ?? 0,
         input.rewardTrainerId ?? null,
-        input.reminderEnabled ?? false,
+        input.reminderEnabled ?? 0,
         input.reminderTime ?? null,
         reminderDaysJson,
         nextResetAt,

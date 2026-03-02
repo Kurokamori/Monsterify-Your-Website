@@ -8,6 +8,7 @@
  * {@link ./battle.service.ts}.
  */
 
+import type { TextBasedChannel } from 'discord.js';
 import type {
   CreateThreadRequest,
   TrackMessageRequest,
@@ -385,6 +386,82 @@ export async function trackMessageWordCount(
     wordCount,
     messageCount: 1,
   });
+}
+
+// ============================================================================
+// Participant sync (retroactive reconciliation)
+// ============================================================================
+
+interface SyncParticipantsResponse extends BaseResponse {
+  synced?: number;
+  participants?: unknown[];
+}
+
+export interface ParticipantTally {
+  discordUserId: string;
+  wordCount: number;
+  messageCount: number;
+}
+
+/**
+ * Push an authoritative participant tally to the backend, replacing any
+ * previously tracked counts.
+ */
+export async function syncParticipants(
+  adventureId: number,
+  participants: ParticipantTally[],
+): Promise<{ synced: number }> {
+  const res = await post<SyncParticipantsResponse>(
+    '/adventures/discord/sync-participants',
+    { adventureId, participants },
+  );
+  return { synced: res.synced ?? 0 };
+}
+
+/**
+ * Fetch every message in a Discord thread and tally word counts per user.
+ *
+ * Paginates through the full history (100 messages per request) so that even
+ * very long adventures are covered.  Bot messages are excluded.
+ */
+export async function reconcileThreadMessages(
+  channel: TextBasedChannel,
+): Promise<ParticipantTally[]> {
+  const tally = new Map<string, { wordCount: number; messageCount: number }>();
+
+  let beforeId: string | undefined;
+
+  for (;;) {
+    const fetched = await channel.messages.fetch({
+      limit: 100,
+      ...(beforeId ? { before: beforeId } : {}),
+    });
+
+    if (fetched.size === 0) { break; }
+
+    for (const msg of fetched.values()) {
+      if (msg.author.bot) { continue; }
+
+      const words = msg.content.trim().split(/\s+/).filter((w) => w.length > 0).length;
+      if (words === 0) { continue; }
+
+      const existing = tally.get(msg.author.id);
+      if (existing) {
+        existing.wordCount += words;
+        existing.messageCount += 1;
+      } else {
+        tally.set(msg.author.id, { wordCount: words, messageCount: 1 });
+      }
+    }
+
+    beforeId = fetched.last()?.id;
+    if (fetched.size < 100) { break; }
+  }
+
+  return Array.from(tally.entries()).map(([discordUserId, counts]) => ({
+    discordUserId,
+    ...counts,
+  }));
 }
 
 // ============================================================================
