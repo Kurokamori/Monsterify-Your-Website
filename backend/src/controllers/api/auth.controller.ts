@@ -409,7 +409,11 @@ export async function discordCallback(req: Request, res: Response): Promise<void
       id: user.id,
       username: user.username,
       display_name: user.display_name,
+      discord_id: user.discord_id,
       is_admin: user.is_admin,
+      monster_roller_settings: user.monster_roller_settings,
+      theme: user.theme ?? 'dusk',
+      content_settings: user.content_settings,
     }));
 
     res.redirect(`${frontendUrl}/discord-auth-success?token=${token}&refreshToken=${refreshToken}&user=${userParam}`);
