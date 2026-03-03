@@ -121,7 +121,9 @@ export function BreedMonsters({
         const trainers = response.data.data || response.data.trainers || [];
         setUserTrainers(trainers);
         if (trainers.length > 0) {
-          setUserTrainer(trainers[0].id);
+          const pIds = currentUser?.priority_trainer_ids ?? [];
+          const pt = trainers.find((t: { id: number | string }) => pIds.includes(Number(t.id)));
+          setUserTrainer((pt ?? trainers[0]).id);
         }
       } catch (err) {
         console.error('Error fetching user trainers:', err);
@@ -132,7 +134,7 @@ export function BreedMonsters({
     };
 
     fetchUserTrainers();
-  }, [currentUser?.discord_id]);
+  }, [currentUser?.discord_id, currentUser?.priority_trainer_ids]);
 
   // Fetch all trainers
   useEffect(() => {

@@ -549,13 +549,14 @@
 
 .value-option {
   padding: var(--spacing-xsmall) var(--spacing-small);
-  background-color: var(--secondary-color);
   border: 1px solid var(--border-color);
   border-radius: var(--border-radius-small);
   cursor: pointer;
   font-size: var(--font-size-small);
   transition: all var(--transition-fast);
+  color: var(--text-color);
 }
+
 
 .value-option:hover {
   background-color: var(--accent-color-hover);

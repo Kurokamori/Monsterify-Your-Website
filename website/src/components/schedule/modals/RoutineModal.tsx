@@ -53,6 +53,7 @@ export const RoutineModal = ({
   const [showAddItem, setShowAddItem] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [deletedItemIds, setDeletedItemIds] = useState<number[]>([]);
 
   useEffect(() => {
     if (routine) {
@@ -70,6 +71,7 @@ export const RoutineModal = ({
     setNewItem(INITIAL_NEW_ITEM);
     setShowAddItem(false);
     setError('');
+    setDeletedItemIds([]);
   }, [routine, isOpen]);
 
   const handleInputChange = (
@@ -138,6 +140,10 @@ export const RoutineModal = ({
   };
 
   const removeItem = (index: number) => {
+    const removedItem = formData.items[index];
+    if (removedItem?.id) {
+      setDeletedItemIds(prev => [...prev, removedItem.id!]);
+    }
     setFormData(prev => ({
       ...prev,
       items: prev.items.filter((_, i) => i !== index).map((item, i) => ({
@@ -178,6 +184,11 @@ export const RoutineModal = ({
 
       if (response.data.success) {
         const routineId = routine?.id || response.data.data.id;
+
+        // Delete removed items
+        for (const itemId of deletedItemIds) {
+          await api.delete(`/schedule/routines/items/${itemId}`);
+        }
 
         // Add new items to the routine
         for (const item of formData.items) {

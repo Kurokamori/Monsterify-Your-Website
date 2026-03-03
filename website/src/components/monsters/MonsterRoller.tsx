@@ -88,7 +88,9 @@ export const MonsterRoller = ({
           setUserTrainers(trainers);
 
           if (trainers.length > 0) {
-            setSelectedTrainer(trainers[0].id.toString());
+            const priorityIds = currentUser?.priority_trainer_ids ?? [];
+            const priorityTrainer = trainers.find((t: Trainer) => priorityIds.includes(Number(t.id)));
+            setSelectedTrainer((priorityTrainer ?? trainers[0]).id.toString());
           }
         }
       } catch (err) {
@@ -100,7 +102,7 @@ export const MonsterRoller = ({
     };
 
     fetchInitialData();
-  }, [trainerId]);
+  }, [trainerId, currentUser?.priority_trainer_ids]);
 
   const handleSourceToggle = (source: string) => {
     setSelectedSources(prev => {

@@ -435,6 +435,24 @@ export async function attemptCapture(req: Request, res: Response): Promise<void>
       return;
     }
 
+    // Build whereMet from adventure area/region info
+    let whereMet: string | undefined;
+    try {
+      const resolvedAdventureId = adventureId ?? await captureService.getAdventureIdFromEncounter(resolvedEncounterId);
+      if (resolvedAdventureId) {
+        const adventure = await adventureRepository.findById(resolvedAdventureId);
+        if (adventure?.areaName && adventure?.regionName) {
+          whereMet = `${adventure.areaName} - ${adventure.regionName}`;
+        } else if (adventure?.regionName) {
+          whereMet = adventure.regionName;
+        } else if (adventure?.areaName) {
+          whereMet = adventure.areaName;
+        }
+      }
+    } catch (err) {
+      console.error('Failed to resolve whereMet for capture:', err);
+    }
+
     const captureResult = await captureService.attemptCapture({
       encounterId: resolvedEncounterId,
       discordUserId,
@@ -443,6 +461,7 @@ export async function attemptCapture(req: Request, res: Response): Promise<void>
       pokepuffCount: pokepuffCount ?? 0,
       monsterIndex: monsterIndex ?? 1,
       isBattleCapture: isBattleCapture ?? false,
+      whereMet,
     });
 
     res.json({ success: true, captureResult });

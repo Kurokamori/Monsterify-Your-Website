@@ -50,13 +50,15 @@ export type UserRow = {
   theme: string | null;
   content_settings: ContentSettings | string | null;
   notification_settings: NotificationSettings | string | null;
+  priority_trainer_ids: number[] | string | null;
   created_at: Date;
 };
 
-export type UserPublic = Omit<UserRow, 'password' | 'monster_roller_settings' | 'content_settings' | 'notification_settings'> & {
+export type UserPublic = Omit<UserRow, 'password' | 'monster_roller_settings' | 'content_settings' | 'notification_settings' | 'priority_trainer_ids'> & {
   monster_roller_settings: MonsterRollerSettings | null;
   content_settings: ContentSettings;
   notification_settings: NotificationSettings;
+  priority_trainer_ids: number[];
 };
 
 export type UserCreateInput = {
@@ -77,6 +79,7 @@ export type UserUpdateInput = {
   theme?: string | null;
   contentSettings?: ContentSettings | null;
   notificationSettings?: NotificationSettings | null;
+  priorityTrainerIds?: number[];
 };
 
 export type AdminUserQueryOptions = {
@@ -161,6 +164,24 @@ const normalizeNotificationSettings = (
   return settings;
 };
 
+const normalizePriorityTrainerIds = (
+  ids: UserRow['priority_trainer_ids']
+): number[] => {
+  if (!ids) {
+    return [];
+  }
+
+  if (typeof ids === 'string') {
+    try {
+      return JSON.parse(ids) as number[];
+    } catch {
+      return [];
+    }
+  }
+
+  return ids;
+};
+
 const normalizeUser = (user: UserRow): UserPublic => ({
   id: user.id,
   username: user.username,
@@ -171,6 +192,7 @@ const normalizeUser = (user: UserRow): UserPublic => ({
   theme: user.theme,
   content_settings: normalizeContentSettings(user.content_settings),
   notification_settings: normalizeNotificationSettings(user.notification_settings),
+  priority_trainer_ids: normalizePriorityTrainerIds(user.priority_trainer_ids),
   created_at: user.created_at,
 });
 
@@ -190,6 +212,7 @@ export class UserRepository extends BaseRepository<UserPublic, UserCreateInput, 
       'theme',
       'content_settings',
       'notification_settings',
+      'priority_trainer_ids',
       'created_at',
     ].join(', ');
   }
@@ -335,6 +358,9 @@ export class UserRepository extends BaseRepository<UserPublic, UserCreateInput, 
     if (input.notificationSettings !== undefined) {
       pushUpdate('notification_settings', JSON.stringify(input.notificationSettings));
     }
+    if (input.priorityTrainerIds !== undefined) {
+      pushUpdate('priority_trainer_ids', JSON.stringify(input.priorityTrainerIds));
+    }
 
     if (updates.length === 0) {
       const existing = await this.findById(id);
@@ -394,5 +420,9 @@ export class UserRepository extends BaseRepository<UserPublic, UserCreateInput, 
 
   async updateNotificationSettings(id: number, settings: NotificationSettings): Promise<UserPublic> {
     return this.update(id, { notificationSettings: settings });
+  }
+
+  async updatePriorityTrainers(id: number, trainerIds: number[]): Promise<UserPublic> {
+    return this.update(id, { priorityTrainerIds: trainerIds });
   }
 }

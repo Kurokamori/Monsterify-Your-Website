@@ -96,7 +96,7 @@ function getRewardCardClass(
 export default function RerollClaimPage() {
   const { token } = useParams<{ token: string }>();
   const navigate = useNavigate();
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, currentUser } = useAuth();
 
   useDocumentTitle('Claim Rewards');
 
@@ -128,7 +128,9 @@ export default function RerollClaimPage() {
       setSessionData(data);
 
       if (data.trainers?.length > 0) {
-        setDefaultTrainerId(String(data.trainers[0].id));
+        const pIds = currentUser?.priority_trainer_ids ?? [];
+        const pt = data.trainers.find((t: { id: number | string }) => pIds.includes(Number(t.id)));
+        setDefaultTrainerId(String((pt ?? data.trainers[0]).id));
       }
     } catch (err: unknown) {
       const axiosErr = err as { response?: { data?: { message?: string } } };
@@ -136,7 +138,7 @@ export default function RerollClaimPage() {
     } finally {
       setLoading(false);
     }
-  }, [token, isAuthenticated]);
+  }, [token, isAuthenticated, currentUser?.priority_trainer_ids]);
 
   useEffect(() => { fetchSession(); }, [fetchSession]);
 

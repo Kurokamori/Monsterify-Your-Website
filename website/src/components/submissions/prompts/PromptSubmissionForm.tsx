@@ -69,7 +69,9 @@ export function PromptSubmissionForm({
         setUserTrainers(response.trainers || []);
 
         if (response.trainers && response.trainers.length > 0) {
-          setTrainerId(response.trainers[0].id);
+          const pIds = currentUser?.priority_trainer_ids ?? [];
+          const pt = response.trainers.find((t: { id: number | string }) => pIds.includes(Number(t.id)));
+          setTrainerId((pt ?? response.trainers[0]).id);
         }
       } catch (err) {
         setError(extractErrorMessage(err, 'Failed to load trainers. Please try again later.'));

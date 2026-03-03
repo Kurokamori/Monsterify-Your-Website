@@ -17,6 +17,7 @@ export type CaptureData = {
   pokepuffCount?: number;
   monsterIndex?: number;
   isBattleCapture?: boolean;
+  whereMet?: string;
 };
 
 export type MonsterToCapture = {
@@ -164,6 +165,7 @@ export class CaptureService {
       pokepuffCount = 0,
       monsterIndex = 1,
       isBattleCapture = false,
+      whereMet,
     } = captureData;
 
     // Normalize pokeball name to canonical form (case/diacritic insensitive)
@@ -226,7 +228,7 @@ export class CaptureService {
     let capturedMonster: CapturedMonster | null = null;
     if (captureSuccess) {
       // Initialize and create monster
-      capturedMonster = await this.initializeAndCreateMonster(monsterToCapture, trainer.id);
+      capturedMonster = await this.initializeAndCreateMonster(monsterToCapture, trainer.id, whereMet);
 
       // Update encounter to mark this monster as captured
       await this.markMonsterCaptured(encounter, monsterToCapture, discordUserId);
@@ -274,6 +276,19 @@ export class CaptureService {
       encounter_type: row.encounter_type,
       encounter_data: encounterData,
     };
+  }
+
+  /**
+   * Get the adventure ID associated with an encounter
+   * @param encounterId - Encounter ID
+   * @returns Adventure ID or null
+   */
+  async getAdventureIdFromEncounter(encounterId: number): Promise<number | null> {
+    const result = await db.query<{ adventure_id: number }>(
+      'SELECT adventure_id FROM adventure_encounters WHERE id = $1',
+      [encounterId]
+    );
+    return result.rows[0]?.adventure_id ?? null;
   }
 
   /**
@@ -483,7 +498,8 @@ export class CaptureService {
    */
   async initializeAndCreateMonster(
     monsterData: MonsterToCapture,
-    trainerId: number
+    trainerId: number,
+    whereMet?: string
   ): Promise<CapturedMonster> {
     // Prepare monster data for creation — include all species, types, and attribute
     const monsterInput: MonsterCreateInput = {
@@ -500,7 +516,7 @@ export class CaptureService {
       attribute: monsterData.attribute ?? null,
       level: monsterData.level,
       hpTotal: 100, // Default starting HP
-      whereMet: 'Adventure Capture',
+      whereMet: whereMet ?? 'Adventure Capture',
     };
 
     // Create the monster in the database

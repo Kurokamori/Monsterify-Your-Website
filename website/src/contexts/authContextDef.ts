@@ -36,6 +36,7 @@ export interface User {
   monster_roller_settings?: MonsterRollerSettings;
   content_settings?: ContentSettings;
   notification_settings?: NotificationSettings;
+  priority_trainer_ids?: number[];
 }
 
 export interface AuthContextType {
@@ -50,6 +51,7 @@ export interface AuthContextType {
   updateMonsterRollerSettings: (settings: MonsterRollerSettings) => Promise<boolean>;
   updateContentSettings: (settings: ContentSettings) => Promise<boolean>;
   updateNotificationSettings: (settings: NotificationSettings) => Promise<boolean>;
+  updatePriorityTrainers: (trainerIds: number[]) => Promise<boolean>;
   updateTheme: (theme: string) => Promise<boolean>;
   changePassword: (currentPassword: string, newPassword: string) => Promise<boolean>;
   requestPasswordReset: (email: string) => Promise<boolean>;

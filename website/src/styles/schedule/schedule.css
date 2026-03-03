@@ -264,6 +264,12 @@
   padding-top: var(--spacing-small);
 }
 
+.completed-tasks-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
 .completed-tasks-toggle {
   display: flex;
   align-items: center;

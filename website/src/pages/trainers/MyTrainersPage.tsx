@@ -52,7 +52,7 @@ function compareTrainers(a: Trainer, b: Trainer, sortBy: SortField): number {
 const MyTrainersPage = () => {
   useDocumentTitle('My Trainers');
 
-  const { isAuthenticated, currentUser } = useAuth();
+  const { isAuthenticated, currentUser, updatePriorityTrainers } = useAuth();
   const navigate = useNavigate();
 
   const [trainers, setTrainers] = useState<Trainer[]>([]);
@@ -69,6 +69,18 @@ const MyTrainersPage = () => {
   const [deleteError, setDeleteError] = useState<string | null>(null);
   const [deleting, setDeleting] = useState(false);
   const [forfeitToBazar, setForfeitToBazar] = useState(false);
+
+  const priorityIds = useMemo(() => currentUser?.priority_trainer_ids ?? [], [currentUser?.priority_trainer_ids]);
+
+  const togglePriority = useCallback(async (trainerId: string | number, e: React.MouseEvent) => {
+    e.stopPropagation();
+    e.preventDefault();
+    const numId = Number(trainerId);
+    const newIds = priorityIds.includes(numId)
+      ? priorityIds.filter(id => id !== numId)
+      : [...priorityIds, numId];
+    await updatePriorityTrainers(newIds);
+  }, [priorityIds, updatePriorityTrainers]);
 
   // Auth redirect
   useEffect(() => {
@@ -103,19 +115,22 @@ const MyTrainersPage = () => {
     return [...new Set(factions)].sort();
   }, [trainers]);
 
-  // Sorted & filtered trainers
+  // Sorted & filtered trainers (priority trainers always first)
   const displayTrainers = useMemo(() => {
     const result = filterFaction
       ? trainers.filter(t => t.faction === filterFaction)
       : [...trainers];
 
     result.sort((a, b) => {
+      const aPriority = priorityIds.includes(Number(a.id));
+      const bPriority = priorityIds.includes(Number(b.id));
+      if (aPriority !== bPriority) return aPriority ? -1 : 1;
       const cmp = compareTrainers(a, b, sortBy);
       return sortOrder === 'asc' ? cmp : -cmp;
     });
 
     return result;
-  }, [trainers, filterFaction, sortBy, sortOrder]);
+  }, [trainers, filterFaction, sortBy, sortOrder, priorityIds]);
 
   // Delete handler
   const handleDelete = useCallback(async () => {
@@ -275,6 +290,13 @@ const MyTrainersPage = () => {
               {/* Actions */}
               <div className="card__footer" onClick={e => { e.stopPropagation(); e.preventDefault(); }}>
                 <div className="card__actions">
+                  <button
+                    className={`button sm${priorityIds.includes(Number(trainer.id)) ? ' accent' : ' secondary'}`}
+                    onClick={e => togglePriority(trainer.id, e)}
+                    title={priorityIds.includes(Number(trainer.id)) ? 'Remove from priority' : 'Set as priority'}
+                  >
+                    <i className={`fa-${priorityIds.includes(Number(trainer.id)) ? 'solid' : 'regular'} fa-star`}></i>
+                  </button>
                   <Link to={`/trainers/${trainer.id}`} className="button primary sm">
                     <i className="fa-solid fa-eye"></i> View
                   </Link>

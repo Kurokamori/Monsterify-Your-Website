@@ -87,6 +87,10 @@ interface MonsterReferenceSubmissionFormProps {
   onSubmissionComplete?: (result: SubmissionResult) => void;
 }
 
+const getNameFromFileName = (file: File): string => {
+  return file.name.replace(/\.[^/.]+$/, '').replace(/[-_]/g, ' ');
+};
+
 const DEFAULT_REFERENCE: ReferenceEntry = {
   trainerId: '',
   monsterName: '',
@@ -235,10 +239,12 @@ export function MonsterReferenceSubmissionForm({ onSubmissionComplete }: Monster
     if (!file) return;
     setReferences(prev => {
       const updated = [...prev];
+      const nameFromFile = getNameFromFileName(file);
       updated[index] = {
         ...updated[index],
         referenceFile: file,
         referencePreview: URL.createObjectURL(file),
+        monsterName: updated[index].monsterName || nameFromFile,
       };
       return updated;
     });
@@ -270,6 +276,7 @@ export function MonsterReferenceSubmissionForm({ onSubmissionComplete }: Monster
     const newRefs: ReferenceEntry[] = files.map(file => ({
       ...DEFAULT_REFERENCE,
       trainerId: bulkTrainerId,
+      monsterName: getNameFromFileName(file),
       referenceFile: file,
       referencePreview: URL.createObjectURL(file),
       customLevels: bulkUseCustomLevels ? bulkCustomLevels : 0,
@@ -644,6 +651,7 @@ export function MonsterReferenceSubmissionForm({ onSubmissionComplete }: Monster
                       disabled={!reference.trainerId}
                       returnName
                       allowFreeText
+                      defaultText={reference.monsterName}
                     />
                   </div>
                 </div>
@@ -663,6 +671,7 @@ export function MonsterReferenceSubmissionForm({ onSubmissionComplete }: Monster
                       disabled={!reference.trainerId}
                       returnName
                       allowFreeText
+                      defaultText={reference.monsterName}
                     />
                   </div>
                   <div className="bulk-info">
@@ -704,6 +713,11 @@ export function MonsterReferenceSubmissionForm({ onSubmissionComplete }: Monster
               {reference.referencePreview && (
                 <div className="image-preview">
                   <img src={reference.referencePreview} alt="Reference Preview" />
+                  {reference.referenceFile && (
+                    <p className="form-help-text" style={{ textAlign: 'center', marginTop: '0.25rem' }}>
+                      {reference.referenceFile.name}
+                    </p>
+                  )}
                 </div>
               )}
 

@@ -5,6 +5,8 @@ import {
   MonsterRepository,
   INVENTORY_CATEGORIES,
 } from '../repositories';
+import { db } from '../database';
+import { TABLE_NAME_MAP } from '../utils/constants';
 import type {
   MonsterRollerSettings,
   MonsterCreateInput,
@@ -180,6 +182,50 @@ export class NurseryService {
       return null;
     }
     return trainer;
+  }
+
+  // ==========================================================================
+  // Species Validation (legendary/mythical check)
+  // ==========================================================================
+
+  private async validateSpeciesInput(speciesName: string): Promise<{ valid: boolean; error?: string }> {
+    type SpeciesLookupRow = {
+      name: string;
+      is_legendary: boolean;
+      is_mythical: boolean;
+    };
+
+    const tables = Object.entries(TABLE_NAME_MAP) as [string, string][];
+
+    for (const [monsterType, tableName] of tables) {
+      const hasLegendary = ['pokemon', 'nexomon', 'fakemon'].includes(monsterType);
+      const hasMythical = ['pokemon', 'fakemon'].includes(monsterType);
+
+      const result = await db.query<SpeciesLookupRow>(
+        `SELECT
+          name,
+          ${hasLegendary ? 'is_legendary' : 'false'} as is_legendary,
+          ${hasMythical ? 'is_mythical' : 'false'} as is_mythical
+        FROM ${tableName}
+        WHERE name = $1
+        LIMIT 1`,
+        [speciesName],
+      );
+
+      if (result.rows.length > 0) {
+        const species = result.rows[0]!;
+        if (species.is_legendary) {
+          return { valid: false, error: `"${speciesName}" is a legendary species and cannot be used as a species input.` };
+        }
+        if (species.is_mythical) {
+          return { valid: false, error: `"${speciesName}" is a mythical species and cannot be used as a species input.` };
+        }
+        return { valid: true };
+      }
+    }
+
+    // Species not found in any table - let it pass through (the egg hatcher will handle unknown species)
+    return { valid: true };
   }
 
   // ==========================================================================
@@ -383,6 +429,19 @@ export class NurseryService {
     }
     if ((selectedItems['Radio Buttons'] ?? 0) > 0 && (!speciesInputs?.species1 || !speciesInputs?.species2 || !speciesInputs?.species3)) {
       return { success: false, status: 400, message: 'Radio Buttons item requires species1, species2, and species3 to be specified' };
+    }
+
+    // Validate species inputs are not legendary or mythical
+    const speciesFieldsToValidate: string[] = [];
+    if (speciesInputs?.species1) speciesFieldsToValidate.push(speciesInputs.species1);
+    if (speciesInputs?.species2) speciesFieldsToValidate.push(speciesInputs.species2);
+    if (speciesInputs?.species3) speciesFieldsToValidate.push(speciesInputs.species3);
+
+    for (const speciesName of speciesFieldsToValidate) {
+      const validation = await this.validateSpeciesInput(speciesName);
+      if (!validation.valid) {
+        return { success: false, status: 400, message: validation.error! };
+      }
     }
 
     const trainer = await this.verifyTrainerOwnership(trainerId, userId);

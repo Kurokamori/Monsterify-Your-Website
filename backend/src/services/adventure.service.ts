@@ -346,7 +346,7 @@ export class AdventureService {
 
     // Ownership check: match by user_id OR discord_user_id since adventure
     // logs created from Discord may not have user_id linked yet.
-    const ownerByUserId = adventureLog.userId != null && adventureLog.userId === userId;
+    const ownerByUserId = adventureLog.userId !== null && adventureLog.userId !== undefined && adventureLog.userId === userId;
     const ownerByDiscord = discordUserId && adventureLog.discordUserId === discordUserId;
     if (!ownerByUserId && !ownerByDiscord) {
       return { success: false, message: 'You can only claim your own rewards' };

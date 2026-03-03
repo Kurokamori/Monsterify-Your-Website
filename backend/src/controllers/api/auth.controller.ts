@@ -41,6 +41,7 @@ export async function registerUser(req: Request, res: Response): Promise<void> {
         monster_roller_settings: user.monster_roller_settings,
         theme: user.theme ?? 'dusk',
         content_settings: user.content_settings,
+        priority_trainer_ids: user.priority_trainer_ids,
       },
       token,
       refreshToken,
@@ -96,6 +97,7 @@ export async function loginUser(req: Request, res: Response): Promise<void> {
         monster_roller_settings: user.monster_roller_settings,
         theme: user.theme ?? 'dusk',
         content_settings: user.content_settings,
+        priority_trainer_ids: user.priority_trainer_ids,
       },
       token,
       refreshToken,
@@ -156,6 +158,7 @@ export async function getUserProfile(req: Request, res: Response): Promise<void>
         monster_roller_settings: user.monster_roller_settings,
         theme: user.theme ?? 'dusk',
         content_settings: user.content_settings,
+        priority_trainer_ids: user.priority_trainer_ids,
       },
     });
   } catch (error) {
@@ -192,6 +195,7 @@ export async function updateUserProfile(req: Request, res: Response): Promise<vo
         monster_roller_settings: updatedUser.monster_roller_settings,
         theme: updatedUser.theme ?? 'dusk',
         content_settings: updatedUser.content_settings,
+        priority_trainer_ids: updatedUser.priority_trainer_ids,
       },
     });
   } catch (error) {
@@ -374,6 +378,38 @@ export async function updateNotificationSettings(req: Request, res: Response): P
 }
 
 // =============================================================================
+// Priority Trainers
+// =============================================================================
+
+export async function updatePriorityTrainers(req: Request, res: Response): Promise<void> {
+  try {
+    if (!req.user) {
+      res.status(401).json({ success: false, message: 'Not authenticated' });
+      return;
+    }
+
+    const { trainerIds } = req.body as { trainerIds?: unknown };
+    if (!Array.isArray(trainerIds) || !trainerIds.every((id: unknown) => typeof id === 'number')) {
+      res.status(400).json({ success: false, message: 'trainerIds must be an array of numbers' });
+      return;
+    }
+
+    const updatedUser = await userService.updatePriorityTrainers(req.user.id, trainerIds as number[]);
+
+    res.json({
+      success: true,
+      priority_trainer_ids: updatedUser.priority_trainer_ids,
+    });
+  } catch (error) {
+    console.error('Update priority trainers error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error while updating priority trainers',
+    });
+  }
+}
+
+// =============================================================================
 // Discord OAuth
 // =============================================================================
 
@@ -414,6 +450,7 @@ export async function discordCallback(req: Request, res: Response): Promise<void
       monster_roller_settings: user.monster_roller_settings,
       theme: user.theme ?? 'dusk',
       content_settings: user.content_settings,
+      priority_trainer_ids: user.priority_trainer_ids,
     }));
 
     res.redirect(`${frontendUrl}/discord-auth-success?token=${token}&refreshToken=${refreshToken}&user=${userParam}`);

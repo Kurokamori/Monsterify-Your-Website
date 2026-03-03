@@ -73,6 +73,7 @@ export {
   updateUserTheme,
   updateContentSettings,
   updateNotificationSettings,
+  updatePriorityTrainers,
   testDiscordConfig,
   discordCallback,
   discordLinkStart,

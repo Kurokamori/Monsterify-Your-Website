@@ -333,6 +333,31 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     }
   };
 
+  // Update user's priority trainers
+  const updatePriorityTrainers = async (trainerIds: number[]): Promise<boolean> => {
+    try {
+      setError('');
+
+      const response = await api.put('/auth/priority-trainers', { trainerIds });
+
+      if (response.data.success) {
+        setCurrentUser(prevUser => {
+          if (!prevUser) return null;
+          const updatedUser = { ...prevUser, priority_trainer_ids: response.data.priority_trainer_ids };
+          localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(updatedUser));
+          return updatedUser;
+        });
+      }
+
+      return true;
+    } catch (err: unknown) {
+      console.error('Priority trainers update error:', err);
+      const axiosError = err as { response?: { data?: { message?: string } } };
+      setError(axiosError.response?.data?.message || 'Failed to update priority trainers.');
+      return false;
+    }
+  };
+
   // Update user's theme preference
   const updateTheme = async (theme: string): Promise<boolean> => {
     try {
@@ -428,6 +453,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     updateMonsterRollerSettings,
     updateContentSettings,
     updateNotificationSettings,
+    updatePriorityTrainers,
     updateTheme,
     changePassword,
     requestPasswordReset,

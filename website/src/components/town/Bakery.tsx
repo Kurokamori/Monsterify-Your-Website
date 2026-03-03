@@ -238,7 +238,7 @@ export function Bakery({ className = '' }: BakeryProps) {
     } else if (valueType === 'species') {
       try {
         setPastryLoading(true);
-        const response = await api.get('/species/list', { params: { limit: 5000 } });
+        const response = await api.get('/species/list', { params: { limit: 5000, excludeLegendary: 'true', excludeMythical: 'true' } });
         if (response.data.success && response.data.species) {
           options = response.data.species;
           setFilteredValueOptions(options);
@@ -318,7 +318,7 @@ export function Bakery({ className = '' }: BakeryProps) {
     try {
       const valueType = getPastryValueType(selectedPastry);
       if (valueType === 'species') {
-        const response = await api.get('/species/search', { params: { query: searchValue } });
+        const response = await api.get('/species/search', { params: { query: searchValue, excludeLegendary: 'true', excludeMythical: 'true' } });
         if (response.data.success && response.data.species) {
           setFilteredValueOptions(response.data.species);
         } else {
@@ -682,7 +682,7 @@ export function Bakery({ className = '' }: BakeryProps) {
             {filteredValueOptions.map((value, index) => (
               <button
                 key={index}
-                className={`value-option ${selectedValue === value ? 'selected' : ''}`}
+                className={`value-option type-${value.toLowerCase()} ${selectedValue === value ? 'selected' : ''}`}
                 onClick={() => handleValueSelect(value)}
               >
                 {value}

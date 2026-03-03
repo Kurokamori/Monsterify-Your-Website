@@ -13,6 +13,7 @@ import {
   updateUserTheme,
   updateContentSettings,
   updateNotificationSettings,
+  updatePriorityTrainers,
   testDiscordConfig,
   discordCallback,
   discordLinkStart,
@@ -63,5 +64,6 @@ router.put('/roller-settings', authenticate, updateMonsterRollerSettings);
 router.put('/theme', authenticate, updateUserTheme);
 router.put('/content-settings', authenticate, updateContentSettings);
 router.put('/notification-settings', authenticate, updateNotificationSettings);
+router.put('/priority-trainers', authenticate, updatePriorityTrainers);
 
 export default router;

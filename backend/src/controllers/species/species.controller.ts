@@ -261,28 +261,51 @@ export async function getSpeciesList(req: Request, res: Response): Promise<void>
   try {
     const limit = parseInt(req.query.limit as string) || 100;
     const search = (req.query.search as string) || '';
+    const excludeLegendary = req.query.excludeLegendary === 'true';
+    const excludeMythical = req.query.excludeMythical === 'true';
 
-    let query = `
-      SELECT name FROM (
-        SELECT name FROM pokemon_monsters
-        UNION
-        SELECT name FROM digimon_monsters
-        UNION
-        SELECT name FROM nexomon_monsters
-        UNION
-        SELECT name FROM yokai_monsters
-        UNION
-        SELECT name FROM pals_monsters
-        UNION
-        SELECT name FROM fakemon
-        UNION
-        SELECT name FROM finalfantasy_monsters
-        UNION
-        SELECT name FROM monsterhunter_monsters
-        UNION
-        SELECT name FROM dragonquest_monsters
-      ) AS all_species
-    `;
+    const queryParts: string[] = [];
+
+    if (excludeLegendary || excludeMythical) {
+      // Pokemon: has both is_legendary and is_mythical
+      const pokemonConditions: string[] = [];
+      if (excludeLegendary) pokemonConditions.push('is_legendary::boolean = false');
+      if (excludeMythical) pokemonConditions.push('is_mythical::boolean = false');
+      queryParts.push(`SELECT name FROM pokemon_monsters WHERE ${pokemonConditions.join(' AND ')}`);
+
+      // Nexomon: has is_legendary only
+      if (excludeLegendary) {
+        queryParts.push(`SELECT name FROM nexomon_monsters WHERE is_legendary::boolean = false`);
+      } else {
+        queryParts.push(`SELECT name FROM nexomon_monsters`);
+      }
+
+      // Fakemon: has both is_legendary and is_mythical
+      const fakemonConditions: string[] = [];
+      if (excludeLegendary) fakemonConditions.push('is_legendary::boolean = false');
+      if (excludeMythical) fakemonConditions.push('is_mythical::boolean = false');
+      queryParts.push(`SELECT name FROM fakemon WHERE ${fakemonConditions.join(' AND ')}`);
+
+      // These tables don't have legendary/mythical columns
+      queryParts.push(`SELECT name FROM digimon_monsters`);
+      queryParts.push(`SELECT name FROM yokai_monsters`);
+      queryParts.push(`SELECT name FROM pals_monsters`);
+      queryParts.push(`SELECT name FROM finalfantasy_monsters`);
+      queryParts.push(`SELECT name FROM monsterhunter_monsters`);
+      queryParts.push(`SELECT name FROM dragonquest_monsters`);
+    } else {
+      queryParts.push(`SELECT name FROM pokemon_monsters`);
+      queryParts.push(`SELECT name FROM digimon_monsters`);
+      queryParts.push(`SELECT name FROM nexomon_monsters`);
+      queryParts.push(`SELECT name FROM yokai_monsters`);
+      queryParts.push(`SELECT name FROM pals_monsters`);
+      queryParts.push(`SELECT name FROM fakemon`);
+      queryParts.push(`SELECT name FROM finalfantasy_monsters`);
+      queryParts.push(`SELECT name FROM monsterhunter_monsters`);
+      queryParts.push(`SELECT name FROM dragonquest_monsters`);
+    }
+
+    let query = `SELECT name FROM (${queryParts.join(' UNION ')}) AS all_species`;
 
     const params: unknown[] = [];
 
@@ -310,32 +333,53 @@ export async function searchSpecies(req: Request, res: Response): Promise<void> 
   try {
     const search = (req.query.search as string) || (req.query.query as string) || '';
     const limit = parseInt(req.query.limit as string) || 20;
+    const excludeLegendary = req.query.excludeLegendary === 'true';
+    const excludeMythical = req.query.excludeMythical === 'true';
 
     if (!search) {
       res.status(400).json({ success: false, message: 'Search term is required' });
       return;
     }
 
+    const queryParts: string[] = [];
+
+    if (excludeLegendary || excludeMythical) {
+      const pokemonConditions: string[] = [];
+      if (excludeLegendary) pokemonConditions.push('is_legendary::boolean = false');
+      if (excludeMythical) pokemonConditions.push('is_mythical::boolean = false');
+      queryParts.push(`SELECT name FROM pokemon_monsters WHERE ${pokemonConditions.join(' AND ')}`);
+
+      if (excludeLegendary) {
+        queryParts.push(`SELECT name FROM nexomon_monsters WHERE is_legendary::boolean = false`);
+      } else {
+        queryParts.push(`SELECT name FROM nexomon_monsters`);
+      }
+
+      const fakemonConditions: string[] = [];
+      if (excludeLegendary) fakemonConditions.push('is_legendary::boolean = false');
+      if (excludeMythical) fakemonConditions.push('is_mythical::boolean = false');
+      queryParts.push(`SELECT name FROM fakemon WHERE ${fakemonConditions.join(' AND ')}`);
+
+      queryParts.push(`SELECT name FROM digimon_monsters`);
+      queryParts.push(`SELECT name FROM yokai_monsters`);
+      queryParts.push(`SELECT name FROM pals_monsters`);
+      queryParts.push(`SELECT name FROM finalfantasy_monsters`);
+      queryParts.push(`SELECT name FROM monsterhunter_monsters`);
+      queryParts.push(`SELECT name FROM dragonquest_monsters`);
+    } else {
+      queryParts.push(`SELECT name FROM pokemon_monsters`);
+      queryParts.push(`SELECT name FROM digimon_monsters`);
+      queryParts.push(`SELECT name FROM nexomon_monsters`);
+      queryParts.push(`SELECT name FROM yokai_monsters`);
+      queryParts.push(`SELECT name FROM pals_monsters`);
+      queryParts.push(`SELECT name FROM fakemon`);
+      queryParts.push(`SELECT name FROM finalfantasy_monsters`);
+      queryParts.push(`SELECT name FROM monsterhunter_monsters`);
+      queryParts.push(`SELECT name FROM dragonquest_monsters`);
+    }
+
     const query = `
-      SELECT name FROM (
-        SELECT name FROM pokemon_monsters
-        UNION
-        SELECT name FROM digimon_monsters
-        UNION
-        SELECT name FROM nexomon_monsters
-        UNION
-        SELECT name FROM yokai_monsters
-        UNION
-        SELECT name FROM pals_monsters
-        UNION
-        SELECT name FROM fakemon
-        UNION
-        SELECT name FROM finalfantasy_monsters
-        UNION
-        SELECT name FROM monsterhunter_monsters
-        UNION
-        SELECT name FROM dragonquest_monsters
-      ) AS all_species
+      SELECT name FROM (${queryParts.join(' UNION ')}) AS all_species
       WHERE name ILIKE $1
       ORDER BY name
       LIMIT $2

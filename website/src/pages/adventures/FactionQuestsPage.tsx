@@ -43,7 +43,9 @@ const FactionQuestsPage = () => {
         const trainers = response.data.data || [];
         setUserTrainers(trainers);
         if (trainers.length > 0) {
-          setSelectedTrainer(trainers[0].id);
+          const pIds = currentUser?.priority_trainer_ids ?? [];
+          const pt = trainers.find((t: { id: number | string }) => pIds.includes(Number(t.id)));
+          setSelectedTrainer((pt ?? trainers[0]).id);
         }
       } catch (err) {
         console.error('Error fetching user trainers:', err);

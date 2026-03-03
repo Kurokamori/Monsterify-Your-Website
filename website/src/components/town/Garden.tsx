@@ -82,7 +82,9 @@ export function Garden({ className = '' }: GardenProps) {
         setUserTrainers(trainers);
 
         if (trainers.length > 0) {
-          const firstTrainer = trainers[0];
+          const pIds = currentUser?.priority_trainer_ids ?? [];
+          const pt = trainers.find((t: { id: number | string }) => pIds.includes(Number(t.id)));
+          const firstTrainer = pt ?? trainers[0];
           setSelectedTrainer(firstTrainer.id.toString());
 
           const gardenResponse = await api.get(`/town/garden/${firstTrainer.id}`);
@@ -97,7 +99,7 @@ export function Garden({ className = '' }: GardenProps) {
     };
 
     fetchData();
-  }, [isAuthenticated, currentUser?.discord_id]);
+  }, [isAuthenticated, currentUser?.discord_id, currentUser?.priority_trainer_ids]);
 
   // Handle trainer change
   const handleTrainerChange = useCallback(async (trainerId: string) => {

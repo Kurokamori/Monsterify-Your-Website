@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@contexts/useAuth';
 import { useDocumentTitle } from '@hooks/useDocumentTitle';
@@ -167,14 +167,16 @@ export default function NurseryPage() {
       setUserTrainers(trainers);
 
       if (trainers.length > 0) {
-        setSelectedTrainerId(String(trainers[0].id));
+        const pIds = currentUser?.priority_trainer_ids ?? [];
+        const pt = trainers.find((t: { id: number | string }) => pIds.includes(Number(t.id)));
+        setSelectedTrainerId(String((pt ?? trainers[0]).id));
       }
     } catch (err) {
       setError(extractErrorMessage(err, 'Failed to load trainer data.'));
     } finally {
       setLoading(false);
     }
-  }, [currentUser?.discord_id]);
+  }, [currentUser?.discord_id, currentUser?.priority_trainer_ids]);
 
   useEffect(() => {
     if (isAuthenticated && currentUser) {
@@ -336,8 +338,39 @@ export default function NurseryPage() {
     return true;
   }, [perEggItems]);
 
+  // Species autocomplete state
+  const [speciesSuggestions, setSpeciesSuggestions] = useState<Record<string, string[]>>({});
+  const [activeSpeciesField, setActiveSpeciesField] = useState<string | null>(null);
+  const speciesSearchTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
   const handleSpeciesInputChange = useCallback((key: string, value: string) => {
     setSpeciesInputs(prev => ({ ...prev, [key]: value }));
+    setActiveSpeciesField(key);
+
+    // Debounced species search
+    if (speciesSearchTimerRef.current) clearTimeout(speciesSearchTimerRef.current);
+    if (value.trim().length >= 2) {
+      speciesSearchTimerRef.current = setTimeout(async () => {
+        try {
+          const response = await api.get('/species/search', {
+            params: { query: value, excludeLegendary: 'true', excludeMythical: 'true', limit: 10 }
+          });
+          if (response.data.success && response.data.species) {
+            setSpeciesSuggestions(prev => ({ ...prev, [key]: response.data.species }));
+          }
+        } catch {
+          // silently fail
+        }
+      }, 300);
+    } else {
+      setSpeciesSuggestions(prev => ({ ...prev, [key]: [] }));
+    }
+  }, []);
+
+  const handleSpeciesSelect = useCallback((key: string, value: string) => {
+    setSpeciesInputs(prev => ({ ...prev, [key]: value }));
+    setSpeciesSuggestions(prev => ({ ...prev, [key]: [] }));
+    setActiveSpeciesField(null);
   }, []);
 
   // Validation
@@ -507,16 +540,59 @@ export default function NurseryPage() {
         <div className="nursery-item__special-inputs">
           {Array.from({ length: speciesCount }, (_, i) => {
             const key = `species${i + 1}` as keyof SpeciesInputs;
+            const suggestions = speciesSuggestions[key] || [];
+            const showSuggestions = activeSpeciesField === key && suggestions.length > 0;
             return (
-              <div key={key} className="nursery-item__special-input">
+              <div key={key} className="nursery-item__special-input" style={{ position: 'relative' }}>
                 <label>Species {i + 1}:</label>
                 <input
                   type="text"
                   className="input"
                   value={speciesInputs[key] || ''}
                   onChange={e => handleSpeciesInputChange(key, e.target.value)}
-                  placeholder={`Enter species ${i + 1}`}
+                  onFocus={() => setActiveSpeciesField(key)}
+                  onBlur={() => setTimeout(() => setActiveSpeciesField(null), 200)}
+                  placeholder={`Search species (no legendaries/mythicals)`}
+                  autoComplete="off"
                 />
+                {showSuggestions && (
+                  <div className="nursery-species-suggestions" style={{
+                    position: 'absolute',
+                    top: '100%',
+                    left: 0,
+                    right: 0,
+                    zIndex: 10,
+                    background: 'var(--surface-elevated, #2a2a3e)',
+                    border: '1px solid var(--border-color, #3a3a4e)',
+                    borderRadius: '0.5rem',
+                    maxHeight: '200px',
+                    overflowY: 'auto',
+                    boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
+                  }}>
+                    {suggestions.map(name => (
+                      <button
+                        key={name}
+                        type="button"
+                        className="nursery-species-suggestion"
+                        style={{
+                          display: 'block',
+                          width: '100%',
+                          padding: '0.5rem 0.75rem',
+                          textAlign: 'left',
+                          background: 'none',
+                          border: 'none',
+                          color: 'var(--text-primary, #fff)',
+                          cursor: 'pointer',
+                          fontSize: '0.875rem',
+                        }}
+                        onMouseDown={e => e.preventDefault()}
+                        onClick={() => handleSpeciesSelect(key, name)}
+                      >
+                        {name}
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
             );
           })}

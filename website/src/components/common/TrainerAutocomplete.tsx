@@ -1,5 +1,6 @@
 import { useMemo, useState, useCallback, useEffect } from 'react';
 import { AutocompleteInput, AutocompleteOption } from './AutocompleteInput';
+import { useAuth } from '../../contexts/AuthContext';
 import api from '../../services/api';
 
 interface Trainer {
@@ -49,6 +50,9 @@ export function TrainerAutocomplete({
   id,
   name,
 }: TrainerAutocompleteProps) {
+  const { currentUser } = useAuth();
+  const priorityIds = useMemo(() => currentUser?.priority_trainer_ids ?? [], [currentUser?.priority_trainer_ids]);
+
   // Self-fetch trainers if not provided
   const [fetchedTrainers, setFetchedTrainers] = useState<Trainer[]>([]);
   const [fetchLoading, setFetchLoading] = useState(false);
@@ -94,7 +98,9 @@ export function TrainerAutocomplete({
   }, [onSelect, onChange, onSelectTrainer, trainers]);
 
   const formatTrainerDisplay = useCallback((trainer: Trainer): string => {
-    let display = trainer.name;
+    const isPriority = priorityIds.includes(Number(trainer.id));
+    let display = isPriority ? '\u2605 ' : '';
+    display += trainer.name;
     const extras: string[] = [];
 
     if (trainer.level !== undefined) {
@@ -114,15 +120,22 @@ export function TrainerAutocomplete({
     }
 
     return display;
-  }, [showOwnership]);
+  }, [showOwnership, priorityIds]);
 
   const options: AutocompleteOption[] = useMemo(() => {
-    return trainers.map((trainer) => ({
+    const mapped = trainers.map((trainer) => ({
       name: formatTrainerDisplay(trainer),
       value: trainer.id,
       matchNames: [trainer.name],
+      _priority: priorityIds.includes(Number(trainer.id)),
     }));
-  }, [trainers, formatTrainerDisplay]);
+    // Sort priority trainers to the top
+    mapped.sort((a, b) => {
+      if (a._priority !== b._priority) return a._priority ? -1 : 1;
+      return 0;
+    });
+    return mapped;
+  }, [trainers, formatTrainerDisplay, priorityIds]);
 
   const selectedTrainer = useMemo(() => {
     if (resolvedSelectedId == null) return null;

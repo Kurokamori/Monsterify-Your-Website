@@ -1,4 +1,4 @@
-import { useMemo, useState, useCallback } from 'react';
+import { useMemo, useState, useCallback, useEffect } from 'react';
 import { AutocompleteInput, AutocompleteOption } from './AutocompleteInput';
 
 interface Monster {
@@ -27,6 +27,7 @@ interface MonsterAutocompleteProps {
   id?: string;
   name?: string;
   noPadding?: boolean;
+  defaultText?: string;
 }
 
 export function MonsterAutocomplete({
@@ -43,6 +44,7 @@ export function MonsterAutocomplete({
   id,
   name,
   noPadding = false,
+  defaultText,
 }: MonsterAutocompleteProps) {
   const getMonsterTypes = useCallback((monster: Monster): string[] => {
     if (monster.types && monster.types.length > 0) {
@@ -93,8 +95,14 @@ export function MonsterAutocomplete({
   }, [monsters, selectedMonsterId]);
 
   const [inputValue, setInputValue] = useState(
-    selectedMonster ? formatMonsterDisplay(selectedMonster) : ''
+    selectedMonster ? formatMonsterDisplay(selectedMonster) : (defaultText || '')
   );
+
+  useEffect(() => {
+    if (defaultText !== undefined) {
+      setInputValue(defaultText);
+    }
+  }, [defaultText]);
 
   const handleChange = useCallback((value: string) => {
     setInputValue(value);

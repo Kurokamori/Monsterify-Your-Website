@@ -81,6 +81,10 @@ interface MegaImageReferenceSubmissionFormProps {
   onSubmissionComplete?: (result: SubmissionResult) => void;
 }
 
+const getNameFromFileName = (file: File): string => {
+  return file.name.replace(/\.[^/.]+$/, '').replace(/[-_]/g, ' ');
+};
+
 const DEFAULT_REFERENCE: ReferenceEntry = {
   trainerId: '',
   monsterName: '',
@@ -236,11 +240,13 @@ export function MegaImageReferenceSubmissionForm({ onSubmissionComplete }: MegaI
     if (!file) return;
     setReferences(prev => {
       const updated = [...prev];
+      const nameFromFile = getNameFromFileName(file);
       updated[index] = {
         ...updated[index],
         referenceFile: file,
         referenceUrl: '',
         referencePreview: URL.createObjectURL(file),
+        monsterName: updated[index].monsterName || nameFromFile,
       };
       return updated;
     });
@@ -483,6 +489,7 @@ export function MegaImageReferenceSubmissionForm({ onSubmissionComplete }: MegaI
                     disabled={!reference.trainerId}
                     returnName
                     allowFreeText
+                    defaultText={reference.monsterName}
                   />
                 </div>
               </div>
@@ -511,6 +518,11 @@ export function MegaImageReferenceSubmissionForm({ onSubmissionComplete }: MegaI
                 {reference.referencePreview && (
                   <div className="image-preview">
                     <img src={reference.referencePreview} alt="Mega evolution preview" />
+                    {reference.referenceFile && (
+                      <p className="form-help-text" style={{ textAlign: 'center', marginTop: '0.25rem' }}>
+                        {reference.referenceFile.name}
+                      </p>
+                    )}
                   </div>
                 )}
               </div>

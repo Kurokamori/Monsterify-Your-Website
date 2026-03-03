@@ -442,6 +442,10 @@ export class UserService {
     return this.userRepository.updateNotificationSettings(id, settings);
   }
 
+  async updatePriorityTrainers(id: number, trainerIds: number[]): Promise<UserPublic> {
+    return this.userRepository.updatePriorityTrainers(id, trainerIds);
+  }
+
   /**
    * Change user password
    * @param id - User ID

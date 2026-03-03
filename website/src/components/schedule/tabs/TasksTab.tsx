@@ -21,6 +21,7 @@ export const TasksTab = ({ trainers, onRefresh }: TasksTabProps) => {
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [editingTask, setEditingTask] = useState<Task | null>(null);
   const [deleteConfirm, setDeleteConfirm] = useState<Task | null>(null);
+  const [deleteAllConfirm, setDeleteAllConfirm] = useState(false);
   const [showCompleted, setShowCompleted] = useState(false);
 
   const loadTasks = useCallback(async () => {
@@ -63,6 +64,19 @@ export const TasksTab = ({ trainers, onRefresh }: TasksTabProps) => {
     } catch (err) {
       console.error('Error deleting task:', err);
       alert('Failed to delete task');
+    }
+  };
+
+  const handleDeleteAllCompleted = async () => {
+    const completed = tasks.filter(t => t.status === 'completed');
+    try {
+      await Promise.all(completed.map(t => api.delete(`/schedule/tasks/${t.id}`)));
+      loadTasks();
+      onRefresh();
+      setDeleteAllConfirm(false);
+    } catch (err) {
+      console.error('Error deleting completed tasks:', err);
+      alert('Failed to delete some completed tasks');
     }
   };
 
@@ -222,13 +236,24 @@ export const TasksTab = ({ trainers, onRefresh }: TasksTabProps) => {
           {/* Completed Tasks */}
           {completedTasks.length > 0 && (
             <div className="completed-tasks-section">
-              <button
-                className="completed-tasks-toggle"
-                onClick={() => setShowCompleted(!showCompleted)}
-              >
-                <i className={`fas fa-chevron-${showCompleted ? 'down' : 'right'}`}></i>
-                <span>Completed ({completedTasks.length})</span>
-              </button>
+              <div className="completed-tasks-header">
+                <button
+                  className="completed-tasks-toggle"
+                  onClick={() => setShowCompleted(!showCompleted)}
+                >
+                  <i className={`fas fa-chevron-${showCompleted ? 'down' : 'right'}`}></i>
+                  <span>Completed ({completedTasks.length})</span>
+                </button>
+                {showCompleted && (
+                  <button
+                    className="button danger sm no-flex"
+                    onClick={() => setDeleteAllConfirm(true)}
+                  >
+                    <i className="fas fa-trash"></i>
+                    Delete All
+                  </button>
+                )}
+              </div>
 
               {showCompleted && (
                 <div className="completed-tasks-list">
@@ -286,6 +311,19 @@ export const TasksTab = ({ trainers, onRefresh }: TasksTabProps) => {
         message={`Are you sure you want to delete "${deleteConfirm?.title}"?`}
         warning="This action cannot be undone."
         confirmText="Delete"
+        variant="danger"
+        confirmIcon="fas fa-trash"
+      />
+
+      {/* Delete All Completed Confirmation Modal */}
+      <ConfirmModal
+        isOpen={deleteAllConfirm}
+        onClose={() => setDeleteAllConfirm(false)}
+        onConfirm={handleDeleteAllCompleted}
+        title="Delete All Completed Tasks"
+        message={`Are you sure you want to delete all ${completedTasks.length} completed task${completedTasks.length !== 1 ? 's' : ''}?`}
+        warning="This action cannot be undone."
+        confirmText="Delete All"
         variant="danger"
         confirmIcon="fas fa-trash"
       />
