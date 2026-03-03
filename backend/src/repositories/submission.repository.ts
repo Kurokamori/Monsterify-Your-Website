@@ -290,13 +290,26 @@ function buildMatureContentFilter(
     return ' AND (s.is_mature::boolean IS NOT TRUE)';
   }
   if (matureFilters) {
+    const allFilterKeys = ['gore', 'nsfw_light', 'nsfw_heavy', 'triggering', 'intense_violence'];
     const enabledFilters = Object.keys(matureFilters).filter(key => matureFilters[key]);
-    if (enabledFilters.length > 0) {
-      const filterConditions = enabledFilters
-        .map(f => `(s.content_rating->>'${f}')::boolean = true`)
-        .join(' OR ');
-      return ` AND (s.is_mature::boolean IS NOT TRUE OR (${filterConditions}))`;
+    const disabledFilters = allFilterKeys.filter(key => !matureFilters[key]);
+
+    // All filters enabled — show everything
+    if (disabledFilters.length === 0) {
+      return '';
     }
+
+    // All filters disabled — hide all mature content
+    if (enabledFilters.length === 0) {
+      return ' AND (s.is_mature::boolean IS NOT TRUE)';
+    }
+
+    // Some filters enabled — show non-mature, mature with no rating, or mature matching enabled types
+    // Exclude mature content that specifically matches only disabled types
+    const filterConditions = enabledFilters
+      .map(f => `(s.content_rating->>'${f}')::boolean = true`)
+      .join(' OR ');
+    return ` AND (s.is_mature::boolean IS NOT TRUE OR s.content_rating IS NULL OR s.content_rating = '{}'::jsonb OR (${filterConditions}))`;
   }
   return '';
 }

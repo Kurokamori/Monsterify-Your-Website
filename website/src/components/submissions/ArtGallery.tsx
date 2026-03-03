@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '@contexts/useAuth';
 import { AutocompleteInput, AutocompleteOption } from '../common/AutocompleteInput';
 import { Pagination } from '../common/Pagination';
 import { MatureContentFilter, MatureFilters } from './MatureContentFilter';
@@ -45,6 +46,8 @@ const SIZE_ORDER: ThumbnailSize[] = ['small', 'medium', 'large', 'xlarge'];
 
 export function ArtGallery() {
   const navigate = useNavigate();
+  const { currentUser } = useAuth();
+  const contentSettings = currentUser?.content_settings;
 
   // State
   const [artworks, setArtworks] = useState<Artwork[]>([]);
@@ -68,6 +71,19 @@ export function ArtGallery() {
     intense_violence: true
   });
   const [externalFilter, setExternalFilter] = useState<'all' | 'game' | 'external'>('all');
+
+  // Sync mature filters with user content settings
+  useEffect(() => {
+    if (contentSettings) {
+      setMatureFilters({
+        gore: contentSettings.gore ?? false,
+        nsfw_light: contentSettings.nsfw_light ?? false,
+        nsfw_heavy: contentSettings.nsfw_heavy ?? false,
+        triggering: contentSettings.triggering ?? false,
+        intense_violence: contentSettings.intense_violence ?? false,
+      });
+    }
+  }, [contentSettings]);
 
   const currentLimit = THUMBNAIL_CONFIG[thumbnailSize].limit;
 
@@ -156,11 +172,11 @@ export function ArtGallery() {
     setThumbnailSize('large');
     setShowMature(false);
     setMatureFilters({
-      gore: true,
-      nsfw_light: true,
-      nsfw_heavy: true,
-      triggering: true,
-      intense_violence: true
+      gore: contentSettings?.gore ?? true,
+      nsfw_light: contentSettings?.nsfw_light ?? true,
+      nsfw_heavy: contentSettings?.nsfw_heavy ?? true,
+      triggering: contentSettings?.triggering ?? true,
+      intense_violence: contentSettings?.intense_violence ?? true
     });
     setExternalFilter('all');
     setPage(1);
@@ -272,6 +288,7 @@ export function ArtGallery() {
           onShowMatureChange={setShowMature}
           activeFilters={matureFilters}
           onFilterChange={handleMatureFilterChange}
+          userSettings={contentSettings}
         />
 
         <div className="gallery-filter-actions">

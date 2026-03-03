@@ -359,6 +359,10 @@ const submissionService = {
     appendJsonArray(formData, 'npcs', d.npcs);
 
     appendIfPresent(formData, 'isGift', d.isGift);
+    appendIfPresent(formData, 'isMature', d.isMature);
+    if (d.contentRating) {
+      formData.append('contentRating', JSON.stringify(d.contentRating));
+    }
 
     if (d.tags?.length) {
       formData.append('tags', JSON.stringify(d.tags));
@@ -446,6 +450,11 @@ const submissionService = {
 
     if (d.tags?.length) {
       formData.append('tags', JSON.stringify(d.tags));
+    }
+
+    appendIfPresent(formData, 'isMature', d.isMature);
+    if (d.contentRating) {
+      formData.append('contentRating', JSON.stringify(d.contentRating));
     }
 
     // Book/chapter data
