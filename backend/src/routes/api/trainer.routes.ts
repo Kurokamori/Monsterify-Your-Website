@@ -71,10 +71,10 @@ router.delete('/admin/:id', authenticate, requireAdmin, adminDeleteTrainer);
 router.get('/:id', getTrainerById);
 
 // Update trainer (with optional file upload)
-router.put('/:id', upload.single('image'), updateTrainer);
+router.put('/:id', authenticate, upload.single('image'), updateTrainer);
 
 // Delete trainer
-router.delete('/:id', deleteTrainer);
+router.delete('/:id', authenticate, deleteTrainer);
 
 // =============================================================================
 // Inventory
