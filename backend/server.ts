@@ -45,7 +45,7 @@ app.use(helmet({
                 "https://picsum.photos",
                 "*" // Allow all image sources for now - can be restricted later
             ],
-            connectSrc: ["'self'", "https://api.cloudinary.com", "wss:", "ws:"],
+            connectSrc: ["'self'", "https://api.cloudinary.com", "https://res.cloudinary.com", "wss:", "ws:"],
             frameSrc: ["'self'", "https://*.cloudinary.com", "https://*.youtube.com"],
             objectSrc: ["'none'"],
             upgradeInsecureRequests: process.env.NODE_ENV === 'production' ? [] : null,
