@@ -555,6 +555,7 @@
   font-size: var(--font-size-small);
   transition: all var(--transition-fast);
   color: var(--text-color);
+  background-color: var(--background-color);
 }
 
 

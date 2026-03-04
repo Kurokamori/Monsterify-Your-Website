@@ -208,6 +208,7 @@ export class ShopService {
     shopId: string,
     itemId: number,
     quantity: number,
+    giftToTrainerId?: number,
   ): Promise<PurchaseResult> {
     const shop = await this.shopRepo.findByShopId(shopId);
     if (!shop) {
@@ -266,8 +267,16 @@ export class ShopService {
       );
     }
 
+    // Validate gift recipient if specified
+    if (giftToTrainerId) {
+      const giftTrainer = await this.trainerRepo.findById(giftToTrainerId);
+      if (!giftTrainer) {
+        throw new Error('Gift recipient trainer not found');
+      }
+    }
+
     return db.transaction(async () => {
-      // Deduct currency
+      // Deduct currency from the buyer
       await this.trainerRepo.updateCurrency(trainerId, -totalCost);
 
       // Reduce stock if applicable (only for non-constant shops)
@@ -276,13 +285,14 @@ export class ShopService {
         updatedShopItem = await this.shopRepo.reduceShopItemStock(shopItem.id, quantity);
       }
 
-      // Add item to trainer inventory
+      // Add item to recipient's inventory (gift target or buyer)
+      const recipientId = giftToTrainerId || trainerId;
       const itemName = shopItem.name ?? 'Unknown Item';
       const rawCategory = shopItem.category ?? 'items';
       const category: InventoryCategory = INVENTORY_CATEGORIES.includes(rawCategory as InventoryCategory)
         ? (rawCategory as InventoryCategory)
         : 'items';
-      await this.inventoryRepo.addItem(trainerId, category, itemName, quantity);
+      await this.inventoryRepo.addItem(recipientId, category, itemName, quantity);
 
       const updatedTrainer = await this.trainerRepo.findById(trainerId);
 

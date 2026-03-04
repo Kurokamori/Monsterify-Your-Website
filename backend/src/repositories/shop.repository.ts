@@ -305,7 +305,7 @@ export class ShopRepository extends BaseRepository<ShopRow, ShopCreateInput, Sho
 
   async findShopItemById(id: number): Promise<ShopItemRow | null> {
     const result = await db.query<ShopItemRow>(
-      'SELECT * FROM shop_items WHERE id = $1',
+      'SELECT si.*, i.name, i.description, i.image_url, i.category, i.type, i.rarity, i.effect FROM shop_items si JOIN items i ON si.item_id = i.id WHERE si.id = $1',
       [id]
     );
     return result.rows[0] ?? null;

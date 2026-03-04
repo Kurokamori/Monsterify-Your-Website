@@ -7,6 +7,7 @@ import { LoadingSpinner } from '../common/LoadingSpinner';
 import { ErrorMessage } from '../common/ErrorMessage';
 import { FormSelect } from '../common/FormSelect';
 import { ActionButtonGroup } from '../common/ActionButtonGroup';
+import { TrainerAutocomplete } from '../common/TrainerAutocomplete';
 import {
   BERRY_DESCRIPTIONS,
   PASTRY_DESCRIPTIONS,
@@ -119,6 +120,9 @@ export function Shop({
   const [purchaseLoading, setPurchaseLoading] = useState(false);
   const [purchaseSuccess, setPurchaseSuccess] = useState(false);
   const [purchaseError, setPurchaseError] = useState('');
+
+  // Gift state
+  const [giftTrainerId, setGiftTrainerId] = useState<string | number | null>(null);
 
   // Determine filter categories based on shop category (exclude 'all' since stackable)
   const filterCategories = useMemo((): ShopCategory[] => {
@@ -254,6 +258,7 @@ export function Shop({
     setPurchaseQuantity(1);
     setPurchaseSuccess(false);
     setPurchaseError('');
+    setGiftTrainerId(null);
   }, []);
 
   // Close purchase modal
@@ -262,6 +267,7 @@ export function Shop({
     setSelectedItem(null);
     setPurchaseQuantity(1);
     setPurchaseError('');
+    setGiftTrainerId(null);
   }, []);
 
   // Handle quantity change
@@ -325,7 +331,8 @@ export function Shop({
       const response = await api.post(`/shops/${shopId}/purchase`, {
         item_id: selectedItem.id,
         quantity: purchaseQuantity,
-        trainer_id: selectedTrainer
+        trainer_id: selectedTrainer,
+        ...(giftTrainerId ? { gift_to_trainer_id: Number(giftTrainerId) } : {}),
       });
 
       if (response.data.success) {
@@ -350,6 +357,7 @@ export function Shop({
     canAfford,
     shopId,
     purchaseQuantity,
+    giftTrainerId,
     fetchUserTrainers,
     fetchShopItems,
     onPurchaseComplete
@@ -359,6 +367,7 @@ export function Shop({
   const handleBuyMore = useCallback(() => {
     setPurchaseSuccess(false);
     setPurchaseQuantity(1);
+    setGiftTrainerId(null);
   }, []);
 
   // Handle image error
@@ -419,7 +428,8 @@ export function Shop({
       <h3>Purchase Successful!</h3>
       <p>
         You have successfully purchased {purchaseQuantity}{' '}
-        {purchaseQuantity > 1 ? `${selectedItem?.name}s` : selectedItem?.name}.
+        {purchaseQuantity > 1 ? `${selectedItem?.name}s` : selectedItem?.name}
+        {giftTrainerId ? ' as a gift!' : '.'}
       </p>
       <ActionButtonGroup align="center" className="mt-md">
         <button className="button secondary" onClick={closePurchaseModal}>
@@ -522,6 +532,26 @@ export function Shop({
                   }))
                 ]}
               />
+            </div>
+
+            {/* Gift to trainer */}
+            <div className="form-group">
+              <TrainerAutocomplete
+                label="Gift to (optional)"
+                placeholder="Search all trainers to gift item..."
+                selectedTrainerId={giftTrainerId}
+                onSelect={setGiftTrainerId}
+                noPadding
+              />
+              {giftTrainerId && (
+                <button
+                  type="button"
+                  className="button ghost sm mt-xs"
+                  onClick={() => setGiftTrainerId(null)}
+                >
+                  <i className="fas fa-times"></i> Clear gift
+                </button>
+              )}
             </div>
 
             {/* Purchase summary */}

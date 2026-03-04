@@ -302,10 +302,11 @@ export async function stockShop(req: Request, res: Response): Promise<void> {
 export async function purchaseItem(req: Request, res: Response): Promise<void> {
   try {
     const shopId = req.params.shopId as string;
-    const { trainer_id, item_id, quantity } = req.body as {
+    const { trainer_id, item_id, quantity, gift_to_trainer_id } = req.body as {
       trainer_id?: number;
       item_id?: number;
       quantity?: number;
+      gift_to_trainer_id?: number;
     };
 
     if (!trainer_id || !item_id || !quantity) {
@@ -321,6 +322,7 @@ export async function purchaseItem(req: Request, res: Response): Promise<void> {
       shopId,
       item_id,
       quantity,
+      gift_to_trainer_id || undefined,
     );
 
     res.json({ success: true, data: result, message: 'Item purchased successfully' });
