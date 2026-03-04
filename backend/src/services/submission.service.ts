@@ -539,7 +539,7 @@ export class SubmissionService {
 
     // Level caps detected — still apply rewards
     if (levelCapInfo.cappedMonsters.length > 0) {
-      const appliedRewards = await this.rewardService.applyRewards(rewards, websiteUserId, submissionId);
+      const appliedRewards = await this.rewardService.applyRewards(rewards, websiteUserId, submissionId, userId);
       return {
         success: true,
         hasLevelCaps: true,
@@ -551,7 +551,7 @@ export class SubmissionService {
     }
 
     // Apply rewards (always apply non-gift rewards)
-    const appliedRewards = await this.rewardService.applyRewards(rewards, websiteUserId, submissionId);
+    const appliedRewards = await this.rewardService.applyRewards(rewards, websiteUserId, submissionId, userId);
 
     // Gift levels detected
     if (rewards.totalGiftLevels && rewards.totalGiftLevels > 0) {
@@ -673,7 +673,7 @@ export class SubmissionService {
     await this.submissionRepo.updateCalculatorConfig(submissionId, calculatorConfig, rewardSnapshot);
 
     // Apply rewards (always apply non-gift rewards)
-    const appliedRewards = await this.rewardService.applyRewards(rewards, websiteUserId, submissionId);
+    const appliedRewards = await this.rewardService.applyRewards(rewards, websiteUserId, submissionId, userId);
 
     if (levelCapInfo.cappedMonsters.length > 0) {
       return {
@@ -1120,7 +1120,8 @@ export class SubmissionService {
       const appliedRewards = await this.rewardService.applyRewards(
         structuredRewards as unknown as ArtRewardResult,
         websiteUserId,
-        submissionId
+        submissionId,
+        userId
       );
 
       return {
@@ -1136,7 +1137,8 @@ export class SubmissionService {
     const appliedRewards = await this.rewardService.applyRewards(
       structuredRewards as unknown as ArtRewardResult,
       websiteUserId,
-      submissionId
+      submissionId,
+      userId
     );
 
     return {
@@ -1330,7 +1332,7 @@ export class SubmissionService {
     await this.submissionRepo.updateCalculatorConfig(submissionId, calculatorConfig, rewardSnapshot);
 
     const levelCapInfo = await this.rewardService.checkLevelCaps(artWritingRewards.monsterRewards || []);
-    const appliedArtWritingRewards = await this.rewardService.applyRewards(artWritingRewards, websiteUserId, submissionId);
+    const appliedArtWritingRewards = await this.rewardService.applyRewards(artWritingRewards, websiteUserId, submissionId, userId);
 
     return {
       success: true,
@@ -1838,13 +1840,13 @@ export class SubmissionService {
   // External Submissions
   // ===========================================================================
 
-  async calculateExternalArtRewards(data: ExternalArtSubmissionData): Promise<{ rewards: ExternalRewardResult }> {
-    const rewards = this.rewardService.calculateExternalArtRewards(data);
+  async calculateExternalArtRewards(data: ExternalArtSubmissionData, userId?: number): Promise<{ rewards: ExternalRewardResult }> {
+    const rewards = this.rewardService.calculateExternalArtRewards(data, userId);
     return { rewards };
   }
 
-  async calculateExternalWritingRewards(data: ExternalWritingSubmissionData): Promise<{ rewards: ExternalRewardResult }> {
-    const rewards = this.rewardService.calculateExternalWritingRewards(data);
+  async calculateExternalWritingRewards(data: ExternalWritingSubmissionData, userId?: number): Promise<{ rewards: ExternalRewardResult }> {
+    const rewards = this.rewardService.calculateExternalWritingRewards(data, userId);
     return { rewards };
   }
 
@@ -1876,7 +1878,7 @@ export class SubmissionService {
       quality: data.quality as ExternalArtSubmissionData['quality'],
       backgrounds: backgrounds as ExternalArtSubmissionData['backgrounds'],
       characters: characters as ExternalArtSubmissionData['characters'],
-    });
+    }, websiteUserId);
 
     // Create submission
     const { id: submissionId } = await this.submissionRepo.createSubmission({
@@ -1900,7 +1902,7 @@ export class SubmissionService {
     await this.submissionRepo.addTags(submissionId, [...tags, 'external']);
 
     // Apply bonus rewards (garden points, mission progress, boss damage) at half rate
-    await this.rewardService.applyExternalBonusRewards(rewards, websiteUserId, submissionId);
+    await this.rewardService.applyExternalBonusRewards(rewards, websiteUserId, submissionId, userId);
 
     return {
       success: true,
@@ -1945,7 +1947,7 @@ export class SubmissionService {
     // Calculate rewards
     const rewards = this.rewardService.calculateExternalWritingRewards({
       wordCount: data.wordCount,
-    });
+    }, websiteUserId);
 
     // Chapter handling
     let chapterNumber = data.chapterNumber ?? null;
@@ -1989,7 +1991,7 @@ export class SubmissionService {
     await this.submissionRepo.addTags(submissionId, [...tags, 'external']);
 
     // Apply bonus rewards at half rate
-    await this.rewardService.applyExternalBonusRewards(rewards, websiteUserId, submissionId);
+    await this.rewardService.applyExternalBonusRewards(rewards, websiteUserId, submissionId, userId);
 
     return {
       success: true,

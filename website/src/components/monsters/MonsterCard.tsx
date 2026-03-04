@@ -46,6 +46,7 @@ interface MonsterCardProps {
   monster: Monster;
   linkToDetail?: boolean;
   fullHeight?: boolean;
+  header?: boolean;
   onImageClick?: (imageUrl: string) => void;
 }
 
@@ -54,7 +55,8 @@ const DEFAULT_IMAGE = '/images/default_mon.png';
 export const MonsterCard = ({
   monster,
   linkToDetail = true,
-  fullHeight = false
+  fullHeight = false,
+  header = true
 }: MonsterCardProps) => {
   const [referenceImages, setReferenceImages] = useState<ReferenceImage[]>([]);
   const [showModal, setShowModal] = useState(false);
@@ -218,6 +220,7 @@ export const MonsterCard = ({
 
   const cardContent = (
     <>
+      {header &&
       <div className="monster-card__header">
         <h3 className="monster-card__name">
           {monster.name || monster.species1 || 'Unnamed Monster'}
@@ -225,7 +228,7 @@ export const MonsterCard = ({
         {monster.level && (
           <span className="monster-card__level">Lv. {monster.level}</span>
         )}
-      </div>
+      </div>}
 
       <div className="monster-card__image">
         <img

@@ -4,8 +4,12 @@ import {
   TrainerInventoryRepository,
   ItemRepository,
   ItemRow,
+  MonsterRepository,
+  MonsterCreateInput,
 } from '../repositories';
 import { SpecialBerryService } from './special-berry.service';
+import { MonsterRollerService } from './monster-roller.service';
+import { MonsterInitializerService } from './monster-initializer.service';
 
 export type RewardItem = {
   item_id?: number;
@@ -80,18 +84,23 @@ export class ImmediateRewardService {
   private trainerRepository: TrainerRepository;
   private inventoryRepository: TrainerInventoryRepository;
   private itemRepository: ItemRepository;
+  private monsterRepository: MonsterRepository;
   private specialBerryService: SpecialBerryService;
+  private monsterInitializer: MonsterInitializerService;
 
   constructor(
     trainerRepository?: TrainerRepository,
     inventoryRepository?: TrainerInventoryRepository,
     itemRepository?: ItemRepository,
-    specialBerryService?: SpecialBerryService
+    specialBerryService?: SpecialBerryService,
+    monsterRepository?: MonsterRepository
   ) {
     this.trainerRepository = trainerRepository ?? new TrainerRepository();
     this.inventoryRepository = inventoryRepository ?? new TrainerInventoryRepository();
     this.itemRepository = itemRepository ?? new ItemRepository();
+    this.monsterRepository = monsterRepository ?? new MonsterRepository();
     this.specialBerryService = specialBerryService ?? new SpecialBerryService();
+    this.monsterInitializer = new MonsterInitializerService();
   }
 
   /**
@@ -198,26 +207,69 @@ export class ImmediateRewardService {
     rollParams: MonsterRollParameters = {}
   ): Promise<RolledMonster | null> {
     try {
-      // Set default parameters if not provided
-      const defaultParams: MonsterRollParameters = {
-        legendary_allowed: false,
-        mythical_allowed: false,
-        max_stage: 2,
-        baby_allowed: true,
-        ...rollParams,
+      const monsterRoller = new MonsterRollerService();
+
+      // Roll a random monster with the given parameters
+      const rolledSpecies = await monsterRoller.rollMonster({
+        legendary: rollParams.legendary_allowed ?? false,
+        mythical: rollParams.mythical_allowed ?? false,
+        includeStages: rollParams.max_stage
+          ? Array.from({ length: rollParams.max_stage }, (_, i) => String(i + 1))
+          : undefined,
+      });
+
+      if (!rolledSpecies) {
+        console.warn(`MonsterRoller returned null for trainer ${trainerId}`);
+        return null;
+      }
+
+      // Generate IVs and stats
+      const level = 1;
+      const ivs = this.monsterInitializer.generateIVs();
+      const nature = this.monsterInitializer.generateNature();
+      const stats = this.monsterInitializer.calculateStats(level, { ...ivs, nature });
+
+      // Create the monster in the database
+      const createInput: MonsterCreateInput = {
+        trainerId,
+        name: rolledSpecies.name,
+        species1: rolledSpecies.species1 ?? rolledSpecies.name,
+        species2: rolledSpecies.species2 ?? null,
+        species3: rolledSpecies.species3 ?? null,
+        type1: rolledSpecies.type1 ?? rolledSpecies.type_primary ?? 'Normal',
+        type2: rolledSpecies.type2 ?? rolledSpecies.type_secondary ?? null,
+        type3: rolledSpecies.type3 ?? null,
+        type4: rolledSpecies.type4 ?? null,
+        type5: rolledSpecies.type5 ?? null,
+        attribute: rolledSpecies.attribute ?? null,
+        level,
+        nature,
+        hpIv: ivs.hp_iv,
+        atkIv: ivs.atk_iv,
+        defIv: ivs.def_iv,
+        spaIv: ivs.spa_iv,
+        spdIv: ivs.spd_iv,
+        speIv: ivs.spe_iv,
+        hpTotal: stats.hp_total,
+        atkTotal: stats.atk_total,
+        defTotal: stats.def_total,
+        spaTotal: stats.spa_total,
+        spdTotal: stats.spd_total,
+        speTotal: stats.spe_total,
+        imgLink: rolledSpecies.image_url ?? null,
+        dateMet: new Date(),
+        whereMet: 'Prompt Reward',
       };
 
-      // TODO: Implement proper MonsterRoller service
-      // For now, this is a placeholder that would call the MonsterRoller
-      console.log(`Rolling monster for trainer ${trainerId} with params:`, defaultParams);
+      const createdMonster = await this.monsterRepository.create(createInput);
 
-      // This would be replaced with actual monster rolling logic
-      // const monsterRoller = new MonsterRoller();
-      // const rolledMonster = await monsterRoller.rollMonster({ trainerId, ...defaultParams });
-      // return rolledMonster;
+      console.log(`Rolled and added monster ${rolledSpecies.name} (ID: ${createdMonster.id}) to trainer ${trainerId}`);
 
-      console.log(`Monster rolling not yet implemented - returning null`);
-      return null;
+      return {
+        id: createdMonster.id,
+        species_name: rolledSpecies.name,
+        level,
+      };
     } catch (error) {
       console.error('Error rolling monster:', error);
       throw error;

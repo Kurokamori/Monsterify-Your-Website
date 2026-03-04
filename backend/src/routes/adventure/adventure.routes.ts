@@ -9,6 +9,7 @@ import {
   updateAdventure,
   deleteAdventure,
   completeAdventure,
+  cancelAdventure,
   claimRewards,
   adminGetAllAdventures,
   adminGetParticipants,
@@ -34,6 +35,7 @@ router.post('/', authenticateAny, createAdventure);
 router.put('/:id', authenticate, updateAdventure);
 router.delete('/:id', authenticate, deleteAdventure);
 router.post('/:id/complete', authenticate, completeAdventure);
+router.post('/:id/cancel', authenticateAny, cancelAdventure);
 router.post('/rewards/claim', authenticate, claimRewards);
 
 export default router;

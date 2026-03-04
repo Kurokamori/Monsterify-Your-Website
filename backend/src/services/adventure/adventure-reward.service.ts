@@ -9,6 +9,9 @@ import {
   ItemRepository,
   ItemRow,
   ItemEarned,
+  TrainerRepository,
+  TrainerInventoryRepository,
+  UserRepository,
 } from '../../repositories';
 
 export type RewardRates = {
@@ -112,6 +115,9 @@ export class AdventureRewardService {
   private adventureLogRepository: AdventureLogRepository;
   private participantRepository: AdventureParticipantRepository;
   private itemRepository: ItemRepository;
+  private trainerRepository: TrainerRepository;
+  private inventoryRepository: TrainerInventoryRepository;
+  private userRepository: UserRepository;
   private rewardRates: RewardRates;
 
   constructor(
@@ -119,12 +125,18 @@ export class AdventureRewardService {
     adventureLogRepository?: AdventureLogRepository,
     participantRepository?: AdventureParticipantRepository,
     itemRepository?: ItemRepository,
-    rewardRates?: Partial<RewardRates>
+    rewardRates?: Partial<RewardRates>,
+    trainerRepository?: TrainerRepository,
+    inventoryRepository?: TrainerInventoryRepository,
+    userRepository?: UserRepository
   ) {
     this.adventureRepository = adventureRepository ?? new AdventureRepository();
     this.adventureLogRepository = adventureLogRepository ?? new AdventureLogRepository();
     this.participantRepository = participantRepository ?? new AdventureParticipantRepository();
     this.itemRepository = itemRepository ?? new ItemRepository();
+    this.trainerRepository = trainerRepository ?? new TrainerRepository();
+    this.inventoryRepository = inventoryRepository ?? new TrainerInventoryRepository();
+    this.userRepository = userRepository ?? new UserRepository();
     this.rewardRates = { ...DEFAULT_REWARD_RATES, ...rewardRates };
   }
 
@@ -408,15 +420,99 @@ export class AdventureRewardService {
       throw new Error('Rewards already claimed');
     }
 
-    // TODO: In a full implementation, this would:
-    // 1. Validate the adventure log belongs to the user
-    // 2. Apply level allocations to trainers/monsters
-    // 3. Add items to trainer inventories
-    // 4. Mark adventure log as claimed
+    // Validate the adventure log belongs to the user
+    if (log.userId !== null && log.userId !== userId) {
+      throw new Error('This reward does not belong to you');
+    }
 
     console.log(`Processing reward claim for adventure log ${adventureLogId}`);
-    console.log(`Level allocations:`, levelAllocations);
-    console.log(`Item allocations:`, itemAllocations);
+
+    // Look up the user to get their discord_id for trainer lookup
+    const user = await this.userRepository.findById(userId);
+    if (!user) {
+      throw new Error('User not found');
+    }
+
+    const discordId = user.discord_id;
+    if (!discordId) {
+      throw new Error('User does not have a linked Discord account');
+    }
+
+    // Helper to get user's trainers
+    const getUserTrainers = async () => this.trainerRepository.findByUserId(discordId);
+
+    // Apply level allocations to trainers
+    if (levelAllocations && Object.keys(levelAllocations).length > 0) {
+      const totalAllocated = Object.values(levelAllocations).reduce((sum, lvl) => sum + lvl, 0);
+      if (totalAllocated > log.levelsEarned) {
+        throw new Error(
+          `Cannot allocate ${totalAllocated} levels — only ${log.levelsEarned} earned`
+        );
+      }
+
+      for (const [trainerIdStr, levels] of Object.entries(levelAllocations)) {
+        const trainerId = parseInt(trainerIdStr, 10);
+        if (levels > 0 && !isNaN(trainerId)) {
+          await this.trainerRepository.addLevels(trainerId, levels);
+          console.log(`Added ${levels} level(s) to trainer ${trainerId}`);
+        }
+      }
+    } else if (log.levelsEarned > 0) {
+      // If no allocations specified, apply to first trainer
+      const trainers = await getUserTrainers();
+      if (trainers.length > 0 && trainers[0]) {
+        await this.trainerRepository.addLevels(trainers[0].id, log.levelsEarned);
+        console.log(`Added ${log.levelsEarned} level(s) to trainer ${trainers[0].id} (default)`);
+      }
+    }
+
+    // Apply coins to the user's first trainer
+    if (log.coinsEarned > 0) {
+      const trainers = await getUserTrainers();
+      if (trainers.length > 0 && trainers[0]) {
+        await this.trainerRepository.updateCurrency(trainers[0].id, log.coinsEarned);
+        console.log(`Added ${log.coinsEarned} coins to trainer ${trainers[0].id}`);
+      }
+    }
+
+    // Apply item allocations to trainer inventories
+    if (itemAllocations && Object.keys(itemAllocations).length > 0) {
+      for (const [trainerIdStr, itemIds] of Object.entries(itemAllocations)) {
+        const trainerId = parseInt(trainerIdStr, 10);
+        if (isNaN(trainerId)) {continue;}
+
+        for (const itemId of itemIds) {
+          const item = log.itemsEarned.find((i) => i.itemId === itemId);
+          if (item) {
+            const itemRecord = await this.itemRepository.findById(item.itemId);
+            const category = itemRecord?.category?.toLowerCase() ?? 'items';
+            await this.inventoryRepository.addItem(
+              trainerId,
+              category as 'items' | 'balls' | 'berries' | 'pastries' | 'evolution' | 'eggs' | 'antiques' | 'helditems' | 'seals' | 'keyitems',
+              item.itemName,
+              item.quantity
+            );
+            console.log(`Added ${item.quantity}x ${item.itemName} to trainer ${trainerId}`);
+          }
+        }
+      }
+    } else if (log.itemsEarned.length > 0) {
+      // If no allocations specified, add items to user's first trainer
+      const trainers = await getUserTrainers();
+      if (trainers.length > 0 && trainers[0]) {
+        for (const item of log.itemsEarned) {
+          const itemRecord = await this.itemRepository.findById(item.itemId);
+          const category = itemRecord?.category?.toLowerCase() ?? 'items';
+          await this.inventoryRepository.addItem(
+            trainers[0].id,
+            category as 'items' | 'balls' | 'berries' | 'pastries' | 'evolution' | 'eggs' | 'antiques' | 'helditems' | 'seals' | 'keyitems',
+            item.itemName,
+            item.quantity
+          );
+          console.log(`Added ${item.quantity}x ${item.itemName} to trainer ${trainers[0].id} (default)`);
+        }
+      }
+    }
 
     // Mark as claimed
     await this.adventureLogRepository.markAsClaimed(adventureLogId);

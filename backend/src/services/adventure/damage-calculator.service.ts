@@ -301,18 +301,87 @@ export class DamageCalculatorService {
    * Process a status move through StatusMoveService
    */
   private async processStatusMove(
-    _moveData: MoveData,
-    _attacker: MonsterData,
-    _defender: MonsterData,
-    _battleId: number | null
+    moveData: MoveData,
+    attacker: MonsterData,
+    defender: MonsterData,
+    battleId: number | null
   ): Promise<DamageResult | null> {
     if (!this.statusMoveService) {
       return null;
     }
 
-    // TODO: Integrate with StatusMoveService when fully implemented
-    // For now, return null to indicate fallback to normal damage
-    return null;
+    const moveName = moveData.move_name ?? moveData.moveName ?? '';
+
+    // Convert MonsterData to StatusMoveBattleMonster format
+    const attackerMonster: import('./status-move.service').StatusMoveBattleMonster = {
+      id: (attacker as Record<string, unknown>).id as number ?? 0,
+      name: attacker.name ?? 'Attacker',
+      current_hp: attacker.current_hp ?? attacker.hp ?? 100,
+      max_hp: attacker.max_hp ?? attacker.hp ?? 100,
+      monster_data: {
+        type1: attacker.type1 ?? attacker.monster_data?.type1 ?? null,
+        type2: attacker.type2 ?? attacker.monster_data?.type2 ?? null,
+        stat_modifications: attacker.stat_modifications,
+      },
+      stat_modifications: attacker.stat_modifications,
+    };
+
+    const defenderMonster: import('./status-move.service').StatusMoveBattleMonster = {
+      id: (defender as Record<string, unknown>).id as number ?? 0,
+      name: defender.name ?? 'Defender',
+      current_hp: defender.current_hp ?? defender.hp ?? 100,
+      max_hp: defender.max_hp ?? defender.hp ?? 100,
+      monster_data: {
+        type1: defender.type1 ?? defender.monster_data?.type1 ?? null,
+        type2: defender.type2 ?? defender.monster_data?.type2 ?? null,
+        stat_modifications: defender.stat_modifications,
+      },
+      stat_modifications: defender.stat_modifications,
+    };
+
+    const statusMoveData: import('./status-move.service').StatusMoveData = {
+      move_name: moveName,
+      accuracy: moveData.accuracy ?? undefined,
+      power: moveData.power ?? undefined,
+      type: moveData.move_type ?? moveData.type,
+    };
+
+    const result = await this.statusMoveService.processStatusMove(
+      statusMoveData,
+      attackerMonster,
+      defenderMonster,
+      battleId ?? 0
+    );
+
+    if (!result) {
+      return null;
+    }
+
+    // Check if it's a SpecialDamageMoveResult (has proceedWithDamage)
+    if ('proceedWithDamage' in result) {
+      return {
+        damage: 0,
+        hits: true,
+        isCritical: false,
+        effectiveness: 1.0,
+        message: result.baseMessage,
+        isSpecialDamageMove: result.isSpecialDamageMove,
+        specialMoveConfig: result.moveConfig,
+        proceedWithDamage: result.proceedWithDamage,
+      };
+    }
+
+    // It's a StatusMoveResult
+    return {
+      damage: result.damage,
+      hits: result.hits,
+      isCritical: false,
+      effectiveness: 1.0,
+      message: result.message,
+      isSpecialDamageMove: false,
+      proceedWithDamage: false,
+      requiresSwitchOut: result.requiresSwitchOut,
+    };
   }
 
   /**

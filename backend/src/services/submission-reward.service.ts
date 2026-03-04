@@ -195,6 +195,16 @@ export type LevelCapResult = {
  * Service for calculating and applying submission rewards.
  * Handles art and writing submissions with different reward formulas.
  */
+type CachedBonuses = {
+  gardenPoints: number;
+  missionProgress: number;
+  bossDamage: number;
+  totalLevels: number;
+  cachedAt: number;
+};
+
+const BONUS_CACHE_TTL_MS = 15 * 60 * 1000; // 15 minutes
+
 export class SubmissionRewardService {
   private trainerRepository: TrainerRepository;
   private monsterRepository: MonsterRepository;
@@ -203,6 +213,7 @@ export class SubmissionRewardService {
   private gardenPointRepository: GardenPointRepository;
   private userMissionRepository: UserMissionRepository;
   private bossRepository: BossRepository;
+  private bonusCache: Map<number, CachedBonuses> = new Map();
 
   constructor(
     trainerRepository?: TrainerRepository,
@@ -217,6 +228,36 @@ export class SubmissionRewardService {
     this.gardenPointRepository = new GardenPointRepository();
     this.userMissionRepository = new UserMissionRepository();
     this.bossRepository = new BossRepository();
+    this.cleanupBonusCachePeriodically();
+  }
+
+  private cleanupBonusCachePeriodically(): void {
+    setInterval(() => {
+      const now = Date.now();
+      for (const [key, entry] of this.bonusCache) {
+        if (now - entry.cachedAt > BONUS_CACHE_TTL_MS) {
+          this.bonusCache.delete(key);
+        }
+      }
+    }, 5 * 60 * 1000).unref();
+  }
+
+  private getCachedBonuses(userId: number | undefined, totalLevels: number): CachedBonuses | null {
+    if (!userId) return null;
+    const cached = this.bonusCache.get(userId);
+    if (!cached) return null;
+    if (Date.now() - cached.cachedAt > BONUS_CACHE_TTL_MS) {
+      this.bonusCache.delete(userId);
+      return null;
+    }
+    // Only reuse if the total levels match (same submission parameters)
+    if (cached.totalLevels !== totalLevels) return null;
+    return cached;
+  }
+
+  private cacheBonuses(userId: number | undefined, totalLevels: number, gardenPoints: number, missionProgress: number, bossDamage: number): void {
+    if (!userId) return;
+    this.bonusCache.set(userId, { gardenPoints, missionProgress, bossDamage, totalLevels, cachedAt: Date.now() });
   }
 
   // ==========================================================================
@@ -310,9 +351,21 @@ export class SubmissionRewardService {
       + monsterRewards.reduce((sum, r) => sum + r.levels, 0);
 
     // Calculate bonuses: totalLevels / rand(2-4) + rand(1-4), each independently
-    const gardenPoints = Math.floor(totalLevelsForBonuses / (Math.floor(Math.random() * 3) + 2)) + Math.floor(Math.random() * 4) + 1;
-    const missionProgress = Math.floor(totalLevelsForBonuses / (Math.floor(Math.random() * 3) + 2)) + Math.floor(Math.random() * 4) + 1;
-    const bossDamage = Math.floor(totalLevelsForBonuses / (Math.floor(Math.random() * 3) + 2)) + Math.floor(Math.random() * 4) + 1;
+    // Reuse cached values if available (so preview matches submission)
+    const cachedBonuses = this.getCachedBonuses(userId, totalLevelsForBonuses);
+    let gardenPoints: number;
+    let missionProgress: number;
+    let bossDamage: number;
+    if (cachedBonuses) {
+      gardenPoints = cachedBonuses.gardenPoints;
+      missionProgress = cachedBonuses.missionProgress;
+      bossDamage = cachedBonuses.bossDamage;
+    } else {
+      gardenPoints = Math.floor(totalLevelsForBonuses / (Math.floor(Math.random() * 3) + 2)) + Math.floor(Math.random() * 4) + 1;
+      missionProgress = Math.floor(totalLevelsForBonuses / (Math.floor(Math.random() * 3) + 2)) + Math.floor(Math.random() * 4) + 1;
+      bossDamage = Math.floor(totalLevelsForBonuses / (Math.floor(Math.random() * 3) + 2)) + Math.floor(Math.random() * 4) + 1;
+      this.cacheBonuses(userId, totalLevelsForBonuses, gardenPoints, missionProgress, bossDamage);
+    }
 
     // Calculate gift items
     const giftItems = await this.calculateGiftItems(
@@ -679,9 +732,21 @@ export class SubmissionRewardService {
     }
 
     // Calculate bonuses: totalLevels / rand(2-4) + rand(1-4), each independently
-    const gardenPoints = Math.floor(totalLevels / (Math.floor(Math.random() * 3) + 2)) + Math.floor(Math.random() * 4) + 1;
-    const missionProgress = Math.floor(totalLevels / (Math.floor(Math.random() * 3) + 2)) + Math.floor(Math.random() * 4) + 1;
-    const bossDamage = Math.floor(totalLevels / (Math.floor(Math.random() * 3) + 2)) + Math.floor(Math.random() * 4) + 1;
+    // Reuse cached values if available (so preview matches submission)
+    const cachedWritingBonuses = this.getCachedBonuses(userId, totalLevels);
+    let gardenPoints: number;
+    let missionProgress: number;
+    let bossDamage: number;
+    if (cachedWritingBonuses) {
+      gardenPoints = cachedWritingBonuses.gardenPoints;
+      missionProgress = cachedWritingBonuses.missionProgress;
+      bossDamage = cachedWritingBonuses.bossDamage;
+    } else {
+      gardenPoints = Math.floor(totalLevels / (Math.floor(Math.random() * 3) + 2)) + Math.floor(Math.random() * 4) + 1;
+      missionProgress = Math.floor(totalLevels / (Math.floor(Math.random() * 3) + 2)) + Math.floor(Math.random() * 4) + 1;
+      bossDamage = Math.floor(totalLevels / (Math.floor(Math.random() * 3) + 2)) + Math.floor(Math.random() * 4) + 1;
+      this.cacheBonuses(userId, totalLevels, gardenPoints, missionProgress, bossDamage);
+    }
 
     // Calculate gift items (1 item per 5 gift levels)
     const giftItems: GiftItem[] = [];
@@ -870,7 +935,8 @@ export class SubmissionRewardService {
   async applyRewards(
     rewards: ArtRewardResult | WritingRewardResult,
     userId: number,
-    submissionId: number
+    submissionId: number,
+    discordUserId?: string
   ): Promise<AppliedRewardsResult> {
     const result: AppliedRewardsResult = {
       trainers: [],
@@ -972,9 +1038,9 @@ export class SubmissionRewardService {
     }
 
     // Apply mission progress
-    if (rewards.missionProgress > 0) {
+    if (rewards.missionProgress > 0 && discordUserId) {
       try {
-        const missionResult = await this.userMissionRepository.addProgress(String(userId), rewards.missionProgress);
+        const missionResult = await this.userMissionRepository.addProgress(discordUserId, rewards.missionProgress);
         result.missionProgress = {
           amount: rewards.missionProgress,
           success: true,
@@ -1007,6 +1073,9 @@ export class SubmissionRewardService {
         result.bossDamage = rewards.bossDamage;
       }
     }
+
+    // Invalidate cached bonuses after applying
+    this.bonusCache.delete(userId);
 
     return result;
   }
@@ -1164,7 +1233,7 @@ export class SubmissionRewardService {
   // External Submission Rewards
   // ==========================================================================
 
-  calculateExternalArtRewards(data: ExternalArtSubmissionData): ExternalRewardResult {
+  calculateExternalArtRewards(data: ExternalArtSubmissionData, userId?: number): ExternalRewardResult {
     const { quality, backgrounds = [], characters = [] } = data;
 
     const baseLevels = ART_QUALITY_BASE_LEVELS[quality] ?? 2;
@@ -1186,32 +1255,54 @@ export class SubmissionRewardService {
     const totalLevels = Math.floor(rawLevels / EXTERNAL_REWARD_RATES.artLevelDivisor);
     const totalCoins = totalLevels * EXTERNAL_REWARD_RATES.coinsPerLevel;
 
-    const gardenPoints = Math.floor(
-      (Math.floor(totalLevels / (Math.floor(Math.random() * 3) + 2)) + Math.floor(Math.random() * 4) + 1) / EXTERNAL_REWARD_RATES.bonusRewardDivisor
-    );
-    const missionProgress = Math.floor(
-      (Math.floor(totalLevels / (Math.floor(Math.random() * 3) + 2)) + Math.floor(Math.random() * 4) + 1) / EXTERNAL_REWARD_RATES.bonusRewardDivisor
-    );
-    const bossDamage = Math.floor(
-      (Math.floor(totalLevels / (Math.floor(Math.random() * 3) + 2)) + Math.floor(Math.random() * 4) + 1) / EXTERNAL_REWARD_RATES.bonusRewardDivisor
-    );
+    const cachedBonuses = this.getCachedBonuses(userId, totalLevels);
+    let gardenPoints: number;
+    let missionProgress: number;
+    let bossDamage: number;
+    if (cachedBonuses) {
+      gardenPoints = cachedBonuses.gardenPoints;
+      missionProgress = cachedBonuses.missionProgress;
+      bossDamage = cachedBonuses.bossDamage;
+    } else {
+      gardenPoints = Math.floor(
+        (Math.floor(totalLevels / (Math.floor(Math.random() * 3) + 2)) + Math.floor(Math.random() * 4) + 1) / EXTERNAL_REWARD_RATES.bonusRewardDivisor
+      );
+      missionProgress = Math.floor(
+        (Math.floor(totalLevels / (Math.floor(Math.random() * 3) + 2)) + Math.floor(Math.random() * 4) + 1) / EXTERNAL_REWARD_RATES.bonusRewardDivisor
+      );
+      bossDamage = Math.floor(
+        (Math.floor(totalLevels / (Math.floor(Math.random() * 3) + 2)) + Math.floor(Math.random() * 4) + 1) / EXTERNAL_REWARD_RATES.bonusRewardDivisor
+      );
+      this.cacheBonuses(userId, totalLevels, gardenPoints, missionProgress, bossDamage);
+    }
 
     return { totalLevels, totalCoins, gardenPoints, missionProgress, bossDamage };
   }
 
-  calculateExternalWritingRewards(data: ExternalWritingSubmissionData): ExternalRewardResult {
+  calculateExternalWritingRewards(data: ExternalWritingSubmissionData, userId?: number): ExternalRewardResult {
     const totalLevels = Math.floor(data.wordCount / EXTERNAL_REWARD_RATES.wordsPerLevel);
     const totalCoins = totalLevels * EXTERNAL_REWARD_RATES.coinsPerLevel;
 
-    const gardenPoints = Math.floor(
-      (Math.floor(totalLevels / (Math.floor(Math.random() * 3) + 2)) + Math.floor(Math.random() * 4) + 1) / EXTERNAL_REWARD_RATES.bonusRewardDivisor
-    );
-    const missionProgress = Math.floor(
-      (Math.floor(totalLevels / (Math.floor(Math.random() * 3) + 2)) + Math.floor(Math.random() * 4) + 1) / EXTERNAL_REWARD_RATES.bonusRewardDivisor
-    );
-    const bossDamage = Math.floor(
-      (Math.floor(totalLevels / (Math.floor(Math.random() * 3) + 2)) + Math.floor(Math.random() * 4) + 1) / EXTERNAL_REWARD_RATES.bonusRewardDivisor
-    );
+    const cachedBonuses = this.getCachedBonuses(userId, totalLevels);
+    let gardenPoints: number;
+    let missionProgress: number;
+    let bossDamage: number;
+    if (cachedBonuses) {
+      gardenPoints = cachedBonuses.gardenPoints;
+      missionProgress = cachedBonuses.missionProgress;
+      bossDamage = cachedBonuses.bossDamage;
+    } else {
+      gardenPoints = Math.floor(
+        (Math.floor(totalLevels / (Math.floor(Math.random() * 3) + 2)) + Math.floor(Math.random() * 4) + 1) / EXTERNAL_REWARD_RATES.bonusRewardDivisor
+      );
+      missionProgress = Math.floor(
+        (Math.floor(totalLevels / (Math.floor(Math.random() * 3) + 2)) + Math.floor(Math.random() * 4) + 1) / EXTERNAL_REWARD_RATES.bonusRewardDivisor
+      );
+      bossDamage = Math.floor(
+        (Math.floor(totalLevels / (Math.floor(Math.random() * 3) + 2)) + Math.floor(Math.random() * 4) + 1) / EXTERNAL_REWARD_RATES.bonusRewardDivisor
+      );
+      this.cacheBonuses(userId, totalLevels, gardenPoints, missionProgress, bossDamage);
+    }
 
     return { totalLevels, totalCoins, gardenPoints, missionProgress, bossDamage };
   }
@@ -1219,7 +1310,8 @@ export class SubmissionRewardService {
   async applyExternalBonusRewards(
     rewards: ExternalRewardResult,
     userId: number,
-    submissionId: number
+    submissionId: number,
+    discordUserId?: string
   ): Promise<void> {
     if (rewards.gardenPoints > 0) {
       try {
@@ -1229,9 +1321,9 @@ export class SubmissionRewardService {
       }
     }
 
-    if (rewards.missionProgress > 0) {
+    if (rewards.missionProgress > 0 && discordUserId) {
       try {
-        await this.userMissionRepository.addProgress(String(userId), rewards.missionProgress);
+        await this.userMissionRepository.addProgress(discordUserId, rewards.missionProgress);
       } catch (err) {
         console.error('[applyExternalBonusRewards] Failed to add mission progress:', err);
       }
@@ -1252,6 +1344,9 @@ export class SubmissionRewardService {
         console.error('[applyExternalBonusRewards] Failed to add boss damage:', err);
       }
     }
+
+    // Invalidate cached bonuses after applying
+    this.bonusCache.delete(userId);
   }
 
   async allocateExternalLevels(

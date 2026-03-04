@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useDocumentTitle } from '../../../hooks/useDocumentTitle';
 import { AutoStateContainer } from '../../../components/common/StateContainer';
@@ -19,6 +19,7 @@ const MissionStartPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [starting, setStarting] = useState(false);
+  const [search, setSearch] = useState('');
 
   useDocumentTitle(mission ? `Start: ${mission.title}` : 'Start Mission');
 
@@ -67,6 +68,19 @@ const MissionStartPage = () => {
       return next;
     });
   };
+
+  const filteredMonsters = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    if (!q) return monsters;
+    return monsters.filter((m) => {
+      const types = getMonsterTypes(m);
+      return (
+        m.name.toLowerCase().includes(q) ||
+        (m.trainer_name && m.trainer_name.toLowerCase().includes(q)) ||
+        types.some((t) => t.toLowerCase().includes(q))
+      );
+    });
+  }, [monsters, search]);
 
   const handleStart = async () => {
     if (!missionId || selected.size === 0) return;
@@ -121,8 +135,34 @@ const MissionStartPage = () => {
                   <p>Make sure you have monsters that meet the level and type requirements.</p>
                 </div>
               ) : (
+                <>
+                <div className="mission-start__search">
+                  <div className="search-bar">
+                    <i className="fas fa-search"></i>
+                    <input
+                      type="text"
+                      placeholder="Search by name, trainer, or type..."
+                      value={search}
+                      onChange={(e) => setSearch(e.target.value)}
+                    />
+                    {search && (
+                      <button
+                        type="button"
+                        className="search-bar__clear"
+                        onClick={() => setSearch('')}
+                      >
+                        <i className="fas fa-times"></i>
+                      </button>
+                    )}
+                  </div>
+                  {search && (
+                    <span className="mission-start__search-count">
+                      {filteredMonsters.length} of {monsters.length} monsters
+                    </span>
+                  )}
+                </div>
                 <div className="monster-select-grid">
-                  {monsters.map((monster) => {
+                  {filteredMonsters.map((monster) => {
                     const isSelected = selected.has(monster.id);
                     const isDisabled = !isSelected && selected.size >= mission.maxMonsters;
                     const types = getMonsterTypes(monster);
@@ -173,6 +213,7 @@ const MissionStartPage = () => {
                     );
                   })}
                 </div>
+                </>
               )}
             </div>
 

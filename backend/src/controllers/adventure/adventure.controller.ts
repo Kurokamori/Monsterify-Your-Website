@@ -266,6 +266,42 @@ export async function completeAdventure(req: Request, res: Response): Promise<vo
 }
 
 // =============================================================================
+// Cancel Adventure
+// =============================================================================
+
+export async function cancelAdventure(req: Request, res: Response): Promise<void> {
+  try {
+    if (!req.user) {
+      res.status(401).json({ success: false, message: 'Authentication required' });
+      return;
+    }
+
+    const id = parseInt(req.params.id as string);
+    if (isNaN(id)) {
+      res.status(400).json({ success: false, message: 'Invalid adventure ID' });
+      return;
+    }
+
+    const result = await adventureService.cancelAdventure(
+      id,
+      req.user.id,
+      req.user.is_admin ?? false,
+    );
+
+    if (!result.success) {
+      const statusCode = result.message === 'Adventure not found' ? 404 : 403;
+      res.status(statusCode).json(result);
+      return;
+    }
+
+    res.json(result);
+  } catch (error) {
+    console.error('Error cancelling adventure:', error);
+    res.status(500).json({ success: false, message: 'Failed to cancel adventure' });
+  }
+}
+
+// =============================================================================
 // Claim Rewards
 // =============================================================================
 

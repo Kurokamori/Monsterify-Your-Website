@@ -1,4 +1,8 @@
 import type { AnyThreadChannel } from 'discord.js';
+import {
+  getAdventureByThreadId,
+  completeAdventure,
+} from '../services/adventure.service.js';
 
 /**
  * Detects when a thread becomes locked via the `threadUpdate` event.
@@ -16,12 +20,14 @@ export async function execute(
 
   console.log(`[thread-lock] Thread locked: ${newThread.name} (${newThread.id})`);
 
-  // TODO: Once the adventure service is implemented, finalise the adventure
-  // when its thread is locked (if it hasn't already been completed):
-  //
-  //   const adventure = await adventureService.getByThreadId(newThread.id);
-  //   if (adventure && adventure.status === 'active') {
-  //     await adventureService.complete(adventure.id);
-  //     console.log(`Adventure #${adventure.id} completed — thread was locked`);
-  //   }
+  try {
+    const adventure = await getAdventureByThreadId(newThread.id);
+    if (adventure?.status === 'active') {
+      await completeAdventure(adventure.id, 'system');
+      console.log(`[thread-lock] Adventure #${adventure.id} completed — thread was locked`);
+    }
+  } catch (err) {
+    // Non-critical: log and move on
+    console.error(`[thread-lock] Failed to complete adventure for thread ${newThread.id}:`, err);
+  }
 }

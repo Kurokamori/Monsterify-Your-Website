@@ -269,8 +269,8 @@ export async function getSpeciesList(req: Request, res: Response): Promise<void>
     if (excludeLegendary || excludeMythical) {
       // Pokemon: has both is_legendary and is_mythical
       const pokemonConditions: string[] = [];
-      if (excludeLegendary) pokemonConditions.push('is_legendary::boolean = false');
-      if (excludeMythical) pokemonConditions.push('is_mythical::boolean = false');
+      if (excludeLegendary) { pokemonConditions.push('is_legendary::boolean = false'); }
+      if (excludeMythical) { pokemonConditions.push('is_mythical::boolean = false'); }
       queryParts.push(`SELECT name FROM pokemon_monsters WHERE ${pokemonConditions.join(' AND ')}`);
 
       // Nexomon: has is_legendary only
@@ -282,8 +282,8 @@ export async function getSpeciesList(req: Request, res: Response): Promise<void>
 
       // Fakemon: has both is_legendary and is_mythical
       const fakemonConditions: string[] = [];
-      if (excludeLegendary) fakemonConditions.push('is_legendary::boolean = false');
-      if (excludeMythical) fakemonConditions.push('is_mythical::boolean = false');
+      if (excludeLegendary) { fakemonConditions.push('is_legendary::boolean = false'); }
+      if (excludeMythical) { fakemonConditions.push('is_mythical::boolean = false'); }
       queryParts.push(`SELECT name FROM fakemon WHERE ${fakemonConditions.join(' AND ')}`);
 
       // These tables don't have legendary/mythical columns
@@ -345,8 +345,8 @@ export async function searchSpecies(req: Request, res: Response): Promise<void> 
 
     if (excludeLegendary || excludeMythical) {
       const pokemonConditions: string[] = [];
-      if (excludeLegendary) pokemonConditions.push('is_legendary::boolean = false');
-      if (excludeMythical) pokemonConditions.push('is_mythical::boolean = false');
+      if (excludeLegendary) { pokemonConditions.push('is_legendary::boolean = false'); }
+      if (excludeMythical) { pokemonConditions.push('is_mythical::boolean = false'); }
       queryParts.push(`SELECT name FROM pokemon_monsters WHERE ${pokemonConditions.join(' AND ')}`);
 
       if (excludeLegendary) {
@@ -356,8 +356,8 @@ export async function searchSpecies(req: Request, res: Response): Promise<void> 
       }
 
       const fakemonConditions: string[] = [];
-      if (excludeLegendary) fakemonConditions.push('is_legendary::boolean = false');
-      if (excludeMythical) fakemonConditions.push('is_mythical::boolean = false');
+      if (excludeLegendary) { fakemonConditions.push('is_legendary::boolean = false'); }
+      if (excludeMythical) { fakemonConditions.push('is_mythical::boolean = false'); }
       queryParts.push(`SELECT name FROM fakemon WHERE ${fakemonConditions.join(' AND ')}`);
 
       queryParts.push(`SELECT name FROM digimon_monsters`);

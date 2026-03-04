@@ -836,7 +836,8 @@ export async function calculateExternalArtRewards(req: Request, res: Response): 
       characters: parseJsonField<unknown[]>(req.body.characters, []) as ExternalArtSubmissionData['characters'],
     };
 
-    const result = await submissionService.calculateExternalArtRewards(data);
+    const websiteUserId = parseInt(getWebsiteUserId(req));
+    const result = await submissionService.calculateExternalArtRewards(data, websiteUserId);
     res.json({ success: true, ...result });
   } catch (error) {
     console.error('Error calculating external art rewards:', error);
@@ -852,7 +853,8 @@ export async function calculateExternalWritingRewards(req: Request, res: Respons
       return;
     }
 
-    const result = await submissionService.calculateExternalWritingRewards({ wordCount });
+    const websiteUserId = parseInt(getWebsiteUserId(req));
+    const result = await submissionService.calculateExternalWritingRewards({ wordCount }, websiteUserId);
     res.json({ success: true, ...result });
   } catch (error) {
     console.error('Error calculating external writing rewards:', error);

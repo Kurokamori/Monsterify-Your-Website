@@ -362,6 +362,14 @@ export class AdventureRepository extends BaseRepository<Adventure, AdventureCrea
     return result.rows;
   }
 
+  async getEncounterById(encounterId: number): Promise<AdventureEncounterRow | null> {
+    const result = await db.query<AdventureEncounterRow>(
+      'SELECT * FROM adventure_encounters WHERE id = $1',
+      [encounterId]
+    );
+    return result.rows[0] ?? null;
+  }
+
   async addEncounter(
     adventureId: number,
     encounterData: {

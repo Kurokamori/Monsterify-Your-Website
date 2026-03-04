@@ -12,7 +12,6 @@ export type UserMissionRow = {
   started_at: Date;
   completed_at: Date | null;
   created_at: Date;
-  updated_at: Date;
 };
 
 export type UserMission = {
@@ -26,7 +25,6 @@ export type UserMission = {
   startedAt: Date;
   completedAt: Date | null;
   createdAt: Date;
-  updatedAt: Date;
 };
 
 export type UserMissionWithDetails = UserMission & {
@@ -84,7 +82,6 @@ const normalizeUserMission = (row: UserMissionRow): UserMission => ({
   startedAt: row.started_at,
   completedAt: row.completed_at,
   createdAt: row.created_at,
-  updatedAt: row.updated_at,
 });
 
 type UserMissionWithDetailsRow = UserMissionRow & {
@@ -239,7 +236,6 @@ export class UserMissionRepository extends BaseRepository<
       return existing;
     }
 
-    updates.push(`updated_at = CURRENT_TIMESTAMP`);
     values.push(id);
 
     await db.query(
@@ -268,7 +264,7 @@ export class UserMissionRepository extends BaseRepository<
       const isCompleted = newProgress >= mission.requiredProgress;
 
       await db.query(
-        `UPDATE user_missions SET current_progress = $1, status = $2, updated_at = CURRENT_TIMESTAMP WHERE id = $3`,
+        `UPDATE user_missions SET current_progress = $1, status = $2 WHERE id = $3`,
         [newProgress, isCompleted ? 'completed' : 'active', mission.id]
       );
 
@@ -301,7 +297,7 @@ export class UserMissionRepository extends BaseRepository<
     }
 
     await db.query(
-      `UPDATE user_missions SET reward_claimed = 1, updated_at = CURRENT_TIMESTAMP WHERE id = $1`,
+      `UPDATE user_missions SET reward_claimed = 1 WHERE id = $1`,
       [missionId]
     );
 

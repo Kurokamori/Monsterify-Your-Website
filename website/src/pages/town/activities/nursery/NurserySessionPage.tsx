@@ -487,6 +487,7 @@ export default function NurserySessionPage() {
                     monster={monster}
                     linkToDetail={false}
                     fullHeight={false}
+                    header={false}
                   />
 
                   {isCurrentlySelected && !isEggSelected && (

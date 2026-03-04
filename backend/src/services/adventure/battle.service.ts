@@ -3,6 +3,7 @@ import {
   AdventureEncounterRow,
 } from '../../repositories/adventure.repository';
 import { AdventureParticipantRepository } from '../../repositories/adventure-participant.repository';
+import { AdventureLogRepository } from '../../repositories/adventure-log.repository';
 import { ItemRepository } from '../../repositories/item.repository';
 
 // ============================================================================
@@ -81,6 +82,7 @@ export type EncounterData = {
 export class BattleService {
   private adventureRepository: AdventureRepository;
   private adventureParticipantRepository: AdventureParticipantRepository;
+  private adventureLogRepository: AdventureLogRepository;
   private itemRepository: ItemRepository;
 
   private battleOutcomes: BattleOutcomes = {
@@ -92,12 +94,14 @@ export class BattleService {
   constructor(
     adventureRepository?: AdventureRepository,
     adventureParticipantRepository?: AdventureParticipantRepository,
-    itemRepository?: ItemRepository
+    itemRepository?: ItemRepository,
+    adventureLogRepository?: AdventureLogRepository
   ) {
     this.adventureRepository = adventureRepository ?? new AdventureRepository();
     this.adventureParticipantRepository =
       adventureParticipantRepository ?? new AdventureParticipantRepository();
     this.itemRepository = itemRepository ?? new ItemRepository();
+    this.adventureLogRepository = adventureLogRepository ?? new AdventureLogRepository();
   }
 
   /**
@@ -303,17 +307,48 @@ export class BattleService {
     adventureId: number,
     rewards: BattleRewards
   ): Promise<void> {
-    // Get all participants for this adventure
     const participants = await this.adventureParticipantRepository.findByAdventureId(adventureId);
 
-    // For now, just log the distribution
-    // In a full implementation, you would add these rewards to adventure logs
     console.log(`Distributing battle rewards to ${participants.length} participants:`);
     console.log(`- Coins: ${rewards.coins} each`);
     console.log(`- Items: ${rewards.items.map((item) => item.name).join(', ')}`);
 
-    // TODO: Implement actual reward distribution to adventure logs
-    // This would involve creating or updating adventure_logs entries for each participant
+    for (const participant of participants) {
+      // Check if an adventure log already exists for this participant
+      const existingLog = participant.discordUserId
+        ? await this.adventureLogRepository.findByAdventureAndDiscordUser(
+            adventureId,
+            participant.discordUserId
+          )
+        : null;
+
+      const itemsEarned = rewards.items.map((item) => ({
+        itemId: item.id,
+        itemName: item.name,
+        quantity: item.quantity,
+        rarity: item.rarity ?? undefined,
+        description: item.description ?? undefined,
+      }));
+
+      if (existingLog) {
+        // Add rewards to existing adventure log
+        await this.adventureLogRepository.addRewards(existingLog.id, {
+          coinsEarned: rewards.coins,
+          itemsEarned,
+        });
+      } else {
+        // Create new adventure log entry for this participant
+        await this.adventureLogRepository.create({
+          adventureId,
+          discordUserId: participant.discordUserId,
+          userId: participant.userId,
+          wordCount: 0,
+          levelsEarned: 0,
+          coinsEarned: rewards.coins,
+          itemsEarned,
+        });
+      }
+    }
   }
 
   /**
@@ -336,6 +371,7 @@ export class BattleService {
 
     // Parse battle results from encounter data if stored
     // For now, just count battles
+    // TODO: Enhance this to actually parse and calculate stats based on stored battle outcomes and rewards
     stats.totalBattles = battles.length;
 
     return stats;
@@ -381,18 +417,7 @@ export class BattleService {
    * Get encounter by ID
    */
   private async getEncounterById(encounterId: number): Promise<AdventureEncounterRow | null> {
-    // Get all encounters and find the one with matching ID
-    // This is a workaround since there's no direct getEncounterById method
-    // TODO: Add getEncounterById to AdventureRepository for better performance
-    const adventures = await this.adventureRepository.findAll({ limit: 1000 });
-    for (const adventure of adventures.adventures) {
-      const encounters = await this.adventureRepository.getEncounters(adventure.id);
-      const encounter = encounters.find((e) => e.id === encounterId);
-      if (encounter) {
-        return encounter;
-      }
-    }
-    return null;
+    return this.adventureRepository.getEncounterById(encounterId);
   }
 
   /**

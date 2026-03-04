@@ -1033,16 +1033,87 @@ export class BattleActionService {
   }
 
   /**
-   * Attempt to capture a monster (placeholder)
+   * Attempt to capture a monster during battle
    */
   async attemptCapture(
-    _target: BattleMonster,
+    target: BattleMonster,
     itemName: string,
     participant: BattleParticipant
   ): Promise<ItemEffectResult> {
-    // TODO: Implement capture mechanics
+    const targetData = target.monsterData as MonsterData;
+    const targetName = targetData.name ?? 'the wild monster';
+
+    // Only wild/opponent monsters can be captured
+    if (target.participantId === participant.id) {
+      return { message: `You can't capture your own monster!` };
+    }
+
+    // Calculate capture rate based on ball type
+    const ballRates: Record<string, number> = {
+      'Poke Ball': 0.5,
+      'Great Ball': 0.65,
+      'Ultra Ball': 0.8,
+      'Master Ball': 1.0,
+      'Premier Ball': 0.5,
+      'Luxury Ball': 0.5,
+      'Timer Ball': 0.6,
+      'Repeat Ball': 0.7,
+      'Net Ball': 0.6,
+      'Dive Ball': 0.6,
+    };
+
+    const baseRate = ballRates[itemName] ?? 0.5;
+
+    // HP-based modifier: lower HP = easier to catch
+    const hpRatio = target.currentHp / target.maxHp;
+    const hpModifier = 1 + (1 - hpRatio) * 0.5; // Up to 1.5x at low HP
+
+    const captureChance = Math.min(1, baseRate * hpModifier);
+    const captureSuccess = Math.random() < captureChance;
+
+    // Consume the ball from inventory
+    if (participant.trainerId) {
+      await this.trainerInventoryRepository.removeItem(participant.trainerId, 'balls', itemName, 1);
+    }
+
+    if (captureSuccess) {
+      // Mark the battle monster as captured (fainted/inactive)
+      await this.battleMonsterRepository.update(target.id, {
+        isFainted: true,
+        isActive: false,
+      });
+
+      // If a trainer owns this participant, add the monster to their collection
+      if (participant.trainerId) {
+        const monsterData = target.monsterData as Record<string, unknown>;
+        const species1 = (monsterData.species1 as string) ?? targetName;
+        const type1 = (monsterData.type1 as string) ?? 'Normal';
+
+        await this.monsterRepository.create({
+          trainerId: participant.trainerId,
+          name: targetName,
+          species1,
+          species2: (monsterData.species2 as string) ?? null,
+          species3: (monsterData.species3 as string) ?? null,
+          type1,
+          type2: (monsterData.type2 as string) ?? null,
+          type3: (monsterData.type3 as string) ?? null,
+          type4: (monsterData.type4 as string) ?? null,
+          type5: (monsterData.type5 as string) ?? null,
+          attribute: (monsterData.attribute as string) ?? null,
+          level: (monsterData.level as number) ?? 1,
+          dateMet: new Date(),
+          whereMet: 'Battle Capture',
+        });
+      }
+
+      return {
+        message: `${participant.trainerName} threw a ${itemName}! ...Gotcha! ${targetName} was caught!`,
+      };
+    }
+
     return {
-      message: `${participant.trainerName} threw a ${itemName}!`,
+      message: `${participant.trainerName} threw a ${itemName} at ${targetName}! ...Oh no! ${targetName} broke free!`,
     };
   }
 
@@ -1921,11 +1992,12 @@ export class BattleActionService {
    * Handle monster knockout
    */
   private async handleMonsterKnockout(
-    _battleId: number,
+    battleId: number,
     monster: BattleMonster
   ): Promise<void> {
     const monsterData = monster.monsterData as MonsterData;
-    console.log(`Monster ${monsterData.name ?? 'Unknown'} was knocked out!`);
+    const monsterName = monsterData.name ?? 'Unknown';
+    console.log(`Monster ${monsterName} was knocked out!`);
 
     // Mark as fainted
     await this.battleMonsterRepository.update(monster.id, {
@@ -1933,7 +2005,33 @@ export class BattleActionService {
       isActive: false,
     });
 
-    // TODO: Award experience/levels to the attacker's monster
+    // Award experience to the opposing team's active monsters
+    const defeatedLevel = monsterData.level ?? 1;
+    const expGain = Math.max(1, Math.floor(defeatedLevel / 2));
+
+    // Determine which team defeated this monster
+    const participant = await this.battleParticipantRepository.findById(monster.participantId);
+    if (!participant) {return;}
+
+    const opposingParticipants = await this.battleParticipantRepository.findByBattleId(battleId);
+    const attackerParticipants = opposingParticipants.filter(
+      (p) => p.teamSide !== participant.teamSide
+    );
+
+    for (const attacker of attackerParticipants) {
+      // Award levels to the attacker's active monsters' real counterparts
+      const activeMonsters = await this.battleMonsterRepository.findActiveByParticipant(attacker.id);
+      for (const activeMonster of activeMonsters) {
+        if (activeMonster.monsterId && !activeMonster.isFainted) {
+          // Add levels to the actual monster in the database
+          await this.monsterRepository.addLevels(activeMonster.monsterId, expGain);
+          const activeData = activeMonster.monsterData as MonsterData;
+          console.log(
+            `Awarded ${expGain} level(s) to ${activeData.name ?? 'monster'} for defeating ${monsterName}`
+          );
+        }
+      }
+    }
   }
 
   /**

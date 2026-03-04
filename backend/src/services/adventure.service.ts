@@ -309,6 +309,28 @@ export class AdventureService {
     return { success: true, message: 'Adventure completed successfully', adventure: completedAdventure };
   }
 
+  async cancelAdventure(
+    id: number,
+    userId: number,
+    isAdmin: boolean,
+  ): Promise<{ success: boolean; message: string; adventure?: Adventure }> {
+    const adventure = await this.adventureRepository.findById(id);
+    if (!adventure) {
+      return { success: false, message: 'Adventure not found' };
+    }
+
+    if (adventure.creatorId !== userId && !isAdmin) {
+      return { success: false, message: 'You can only cancel your own adventures' };
+    }
+
+    if (adventure.status !== 'active' && adventure.status !== 'pending') {
+      return { success: false, message: 'Adventure is not active or pending' };
+    }
+
+    const cancelledAdventure = await this.adventureRepository.update(id, { status: 'cancelled' });
+    return { success: true, message: 'Adventure cancelled successfully', adventure: cancelledAdventure };
+  }
+
   // ==========================================================================
   // Regions
   // ==========================================================================

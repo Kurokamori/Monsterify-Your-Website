@@ -212,8 +212,8 @@ export class NurseryService {
         [speciesName],
       );
 
-      if (result.rows.length > 0) {
-        const species = result.rows[0]!;
+      const species = result.rows[0];
+      if (species) {
         if (species.is_legendary) {
           return { valid: false, error: `"${speciesName}" is a legendary species and cannot be used as a species input.` };
         }
@@ -433,14 +433,14 @@ export class NurseryService {
 
     // Validate species inputs are not legendary or mythical
     const speciesFieldsToValidate: string[] = [];
-    if (speciesInputs?.species1) speciesFieldsToValidate.push(speciesInputs.species1);
-    if (speciesInputs?.species2) speciesFieldsToValidate.push(speciesInputs.species2);
-    if (speciesInputs?.species3) speciesFieldsToValidate.push(speciesInputs.species3);
+    if (speciesInputs?.species1) { speciesFieldsToValidate.push(speciesInputs.species1); }
+    if (speciesInputs?.species2) { speciesFieldsToValidate.push(speciesInputs.species2); }
+    if (speciesInputs?.species3) { speciesFieldsToValidate.push(speciesInputs.species3); }
 
     for (const speciesName of speciesFieldsToValidate) {
       const validation = await this.validateSpeciesInput(speciesName);
       if (!validation.valid) {
-        return { success: false, status: 400, message: validation.error! };
+        return { success: false, status: 400, message: validation.error ?? 'Invalid species' };
       }
     }
 
