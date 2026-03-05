@@ -479,14 +479,14 @@
   padding: 0.5rem 2.25rem 0.5rem 2.25rem;
   border: 1px solid var(--border-color);
   border-radius: var(--border-radius);
-  background: var(--bg-input);
+  background: var(--input-background);
   color: var(--text-color);
   font-size: 0.9rem;
 }
 
 .mission-start__search .search-bar input:focus {
   outline: none;
-  border-color: var(--color-primary);
+  border-color: var(--primary-color);
 }
 
 .mission-start__search .search-bar__clear {

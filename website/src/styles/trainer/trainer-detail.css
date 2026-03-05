@@ -1069,26 +1069,81 @@
   width: 100%;
   height: 100%;
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   background-color: var(--overlay-light);
 }
 
 .box-preview-monster-image {
-  flex: 1;
   width: 100%;
+  height: 100%;
   object-fit: contain;
   display: block;
 }
 
-.box-preview-monster-name {
-  font-size: 7px;
-  text-align: center;
-  padding: 1px;
-  background-color: var(--overlay-dark);
-  white-space: nowrap;
+/* --- Monster hover card (All Boxes compact view) --- */
+
+.monster-hover-card {
+  position: fixed;
+  z-index: 9999;
+  width: 260px;
+  background: var(--primary-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-large);
+  box-shadow: var(--shadow-large);
   overflow: hidden;
-  text-overflow: ellipsis;
+  pointer-events: auto;
+  animation: hover-card-fade-in 0.15s ease-out;
+}
+
+@keyframes hover-card-fade-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.monster-hover-card__image {
+  width: 100%;
+  height: 200px;
+  background: var(--overlay-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.monster-hover-card__image img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.monster-hover-card__info {
+  padding: var(--spacing-small);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.monster-hover-card__name {
+  margin: 0;
+  font-size: var(--font-size-medium);
+  font-weight: 700;
   color: var(--text-color);
+}
+
+.monster-hover-card__species {
+  font-size: var(--font-size-small);
+  color: var(--text-color-muted);
+}
+
+.monster-hover-card__types {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.monster-hover-card__attribute {
+  display: flex;
 }
 
 /* ==============================

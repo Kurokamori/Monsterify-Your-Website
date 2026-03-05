@@ -1230,3 +1230,39 @@
     gap: var(--spacing-xsmall);
   }
 }
+
+/* Species autocomplete suggestions */
+
+.nursery-species-field {
+  position: relative;
+}
+
+.nursery-species-suggestions {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  background: var(--primary-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-medium);
+  max-height: 200px;
+  overflow-y: auto;
+  box-shadow: var(--shadow-medium);
+}
+
+.nursery-species-suggestion {
+  display: block;
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+  background: none;
+  border: none;
+  color: var(--text-color);
+  cursor: pointer;
+  font-size: var(--font-size-small);
+}
+
+.nursery-species-suggestion:hover {
+  background: var(--overlay-light);
+}

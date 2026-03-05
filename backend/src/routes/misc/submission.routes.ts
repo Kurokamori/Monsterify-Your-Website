@@ -150,6 +150,7 @@ router.patch('/:id/edit-participants', authenticate, editParticipants);
 
 // Submission management
 router.put('/:id', authenticate, updateSubmission);
+router.patch('/:id', authenticate, updateSubmission);
 router.delete('/:id', authenticate, deleteSubmission);
 
 export default router;

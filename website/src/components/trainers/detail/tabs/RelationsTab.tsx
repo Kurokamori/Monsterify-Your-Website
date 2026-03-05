@@ -94,7 +94,7 @@ export const RelationsTab = ({ trainer, relatedTrainers, relatedMonsters }: Rela
                     }
                   </p>
                   {relation.elaboration && (
-                    <p className="relation-elaboration">{relation.elaboration}</p>
+                    <p className="relation-elaboration" style={{ whiteSpace: 'pre-line' }}>{relation.elaboration}</p>
                   )}
                 </div>
               </Link>

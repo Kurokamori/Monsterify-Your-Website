@@ -1037,10 +1037,10 @@ export const regionDefinitions: RegionDefinitionsMap = {
     "resources": "Ancient Amber, Young Fossils, Prehistoric Berries  and Fruits",
     "lore": "The Primordial Jungle exists outside normal time in a way that is not metaphor but measurable fact — radiocarbon dating of its soil returns impossible readings, and electronic clocks malfunction within a day of entering the canopy. Fossil Pokémon that have no business being alive walk freely alongside their living relatives, the extinction event that should have claimed them apparently never arriving in this particular pocket of history. Ancient Digimon in their most primordial forms — data-entities so old their code predates any known Digimon taxonomy — drift between the enormous trees like living ghosts of the Digital World's earliest age, communicating in signal patterns that Digital Dawn scholars have spent years trying to decode. Primal Yokai of immense and unnamed power tend the deep jungle as they have always done, their forms drawn from concepts that predate human language, their attitude toward visitors ranging from curious to territorial depending on factors that cannot be predicted. Monster Hunter apex beasts — titanosaurs, elder drakes, and colossal armoured behemoths — rule the deep interior with absolute authority, and the local tribes have built their entire culture around coexistence with creatures that could level a settlement without noticing.",
     "mapCoordinates": {
-      "x": 15,
-      "y": 40,
+      "x": 14.928366762177646,
+      "y": 20.390289219197708,
       "width": 60,
-      "height": 25
+      "height": 42.818879835243564
     },
     "images": {
       "guide": "/images/maps/regions/primordial-jungle-detailed.png"
@@ -1068,10 +1068,10 @@ export const regionDefinitions: RegionDefinitionsMap = {
     "resources": "Preservation Crystals, Ancient Ice, Time Shards",
     "lore": "Crystal Cove is one of the most scientifically baffling locations in the known world — its crystalline formations act as natural time capsules, preserving ancient marine Monsters in states of perfect stasis that are indistinguishable from life, yet technically not life as any biologist would define it. The crystals pulse with a slow, deep temporal energy, creating pockets where time stutters: stand in one spot and a minute passes normally; step two feet to the left and that same minute takes an hour, or a second. Some Digimon data-patterns appear to have crystallized here long ago, their digital signatures frozen in iridescent mineral amber — the Digital Dawn calls these crystallized data-ghosts 'digital fossils' and treats their study as their most sacred research obligation. Ancient Water-type Pokémon of forms that no modern classification system recognizes drift in the deepest crystal chambers, preserved but faintly aware, their eyes tracking visitors with slow, deep curiosity. The local coastal tribes speak of the crystals as the sea's memory — everything the ocean has ever witnessed, stored in mineral silence.",
     "mapCoordinates": {
-      "x": 35,
-      "y": 70,
-      "width": 25,
-      "height": 18
+      "x": 30.909742120343843,
+      "y": 67.56446991404012,
+      "width": 28.946991404011463,
+      "height": 29.903183202005735
     },
     "images": {
       "guide": "/images/maps/regions/crystal-cove-detailed.png"
@@ -1100,8 +1100,8 @@ export const regionDefinitions: RegionDefinitionsMap = {
     "resources": "Sacred Obsidian, Ember Lotus Petals, Crimson Iron",
     "lore": "Volcanic Peaks rises from the heart of the Primordial Jungle like a fist of raw geological fury, its summit perpetually veiled in ash-cloud that glows orange from below at night. For centuries, the Emberkin clans have made sacred pacts with the Great Forge Spirit buried in the magma chambers beneath the islands, believing every lava flow a blessing to temper their tools and strengthen their bonds with the valley’s monstrous guardians. Monster Hunter-class fire drakes — ancient Rathalos and Teostra-kin bred in isolation — rule the upper slopes with the casual authority of creatures that have never known a serious challenger, and the Emberkin maintain respectful distances that generations of painful learning have taught them is the correct approach. Fire-type Pokémon that reach the volcanic vents undergo accelerated, unusual evolutions, the intense heat catalyzing changes that would take decades elsewhere into a matter of hours. The entire archipelago is aware when the great volcano stirs; the ground trembles all the way to the coast, and every monster on every island pauses, briefly, to acknowledge it.",
     "mapCoordinates": {
-      "x": 35,
-      "y": 15,
+      "x": 33.92550143266476,
+      "y": 12.99426934097421,
       "width": 18,
       "height": 22
     },
@@ -1130,8 +1130,8 @@ export const regionDefinitions: RegionDefinitionsMap = {
     "resources": "Ancient Moss, Mist Essence, Bog Minerals",
     "lore": "Mist Marshlands is whispered about even among the archipelago's secretive tribes as the nursery of the ancient world — the place where the first amphibious Monsters crawled from primordial water to land, and where that process has never entirely stopped. Ghost Yokai of a particularly primal and wordless kind haunt the deepest fog-banks, their forms barely distinct from the mist itself, serving as the unacknowledged guardians of the ancient breeding grounds that still function in the marsh's heart exactly as they did millions of years ago. Ancient Water and Grass Pokémon of forms that appear in no modern field guide breed in the sheltered reed thickets, their eggs tended by Ghost-type companions who seem to understand the importance of the work even if they cannot articulate it. Some researchers believe the perpetual mist itself carries biological information — spores, proteins, genetic memories — that influences the development of every creature that breathes it long enough. The fog here never fully lifts, even on the clearest days elsewhere in the archipelago; some things, the marshlands seem to say, should remain hidden from the light.",
     "mapCoordinates": {
-      "x": 60,
-      "y": 55,
+      "x": 60.2865329512894,
+      "y": 54.2836676217765,
       "width": 22,
       "height": 40
     },
@@ -16274,8 +16274,8 @@ export const areaConfigurations: AreaConfigurationsMap = {
     ],
     "description": "Ancient temple where time itself seems suspended, guarded by timeless spirits.",
     "mapCoordinates": {
-      "x": 65,
-      "y": 10,
+      "x": 66.2893982808023,
+      "y": 9.283667621776502,
       "width": 16,
       "height": 13
     }

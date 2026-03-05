@@ -1,5 +1,9 @@
+import { useState, useRef, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 import { Link } from 'react-router-dom';
 import type { TrainerMonster } from '@services/trainerService';
+import { TypeBadge } from '@components/common/TypeBadge';
+import { AttributeBadge } from '@components/common/AttributeBadge';
 
 export type PCBoxCellSize = 'xsmall' | 'small' | 'medium' | 'large';
 
@@ -83,32 +87,7 @@ export const PCBoxGrid = ({
 
   if (compact) {
     return (
-      <div className="box-preview-grid">
-        {Array.from({ length: 30 }).map((_, slotIndex) => {
-          const monster = monsters[slotIndex];
-          return (
-            <div className="box-preview-slot" key={slotIndex}>
-              {monster ? (
-                <Link
-                  to={`/monsters/${monster.id}`}
-                  className="box-preview-monster"
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  <img
-                    src={monster.img_link || '/images/default_mon.png'}
-                    alt={monster.name}
-                    className="box-preview-monster-image"
-                    onError={handleImgError}
-                  />
-                  <div className="box-preview-monster-name">{monster.name}</div>
-                </Link>
-              ) : (
-                <div className="pc-box-empty-slot"></div>
-              )}
-            </div>
-          );
-        })}
-      </div>
+      <CompactBoxGrid monsters={monsters} handleImgError={handleImgError} />
     );
   }
 
@@ -148,5 +127,128 @@ export const PCBoxGrid = ({
         );
       })}
     </div>
+  );
+};
+
+/* ── Compact grid with hover card ── */
+
+const CompactBoxGrid = ({
+  monsters,
+  handleImgError,
+}: {
+  monsters: (TrainerMonster | null)[];
+  handleImgError: (e: React.SyntheticEvent<HTMLImageElement>) => void;
+}) => {
+  const [hoveredMonster, setHoveredMonster] = useState<TrainerMonster | null>(null);
+  const [cardPos, setCardPos] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
+  const hoverTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const handleMouseEnter = useCallback((e: React.MouseEvent, monster: TrainerMonster) => {
+    if (hoverTimeout.current) clearTimeout(hoverTimeout.current);
+    const slotRect = (e.currentTarget as HTMLElement).getBoundingClientRect();
+
+    const cardWidth = 260;
+    const cardHeight = 320;
+
+    // Position to the right of the slot by default
+    let x = slotRect.right + 8;
+    let y = slotRect.top;
+
+    // If card would overflow right, show on the left side
+    if (x + cardWidth > window.innerWidth) {
+      x = slotRect.left - cardWidth - 8;
+    }
+
+    // If card would overflow bottom, shift up
+    if (y + cardHeight > window.innerHeight) {
+      y = window.innerHeight - cardHeight - 8;
+    }
+
+    setCardPos({ x, y });
+    setHoveredMonster(monster);
+  }, []);
+
+  const handleMouseLeave = useCallback(() => {
+    hoverTimeout.current = setTimeout(() => setHoveredMonster(null), 100);
+  }, []);
+
+  const types = hoveredMonster
+    ? [hoveredMonster.type1, hoveredMonster.type2, hoveredMonster.type3, hoveredMonster.type4, hoveredMonster.type5].filter(Boolean) as string[]
+    : [];
+  const species = hoveredMonster
+    ? [hoveredMonster.species1, hoveredMonster.species2, hoveredMonster.species3].filter(Boolean) as string[]
+    : [];
+
+  return (
+    <>
+      <div className="box-preview-grid">
+        {Array.from({ length: 30 }).map((_, slotIndex) => {
+          const monster = monsters[slotIndex];
+          return (
+            <div
+              className="box-preview-slot"
+              key={slotIndex}
+              onMouseEnter={monster ? (e) => handleMouseEnter(e, monster) : undefined}
+              onMouseLeave={monster ? handleMouseLeave : undefined}
+            >
+              {monster ? (
+                <Link
+                  to={`/monsters/${monster.id}`}
+                  className="box-preview-monster"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <img
+                    src={monster.img_link || '/images/default_mon.png'}
+                    alt={monster.name}
+                    className="box-preview-monster-image"
+                    onError={handleImgError}
+                  />
+                </Link>
+              ) : (
+                <div className="pc-box-empty-slot"></div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+
+      {hoveredMonster && createPortal(
+        <div
+          className="monster-hover-card"
+          style={{ top: cardPos.y, left: cardPos.x }}
+          onMouseEnter={() => { if (hoverTimeout.current) clearTimeout(hoverTimeout.current); }}
+          onMouseLeave={handleMouseLeave}
+        >
+          <div className="monster-hover-card__image">
+            <img
+              src={hoveredMonster.img_link || '/images/default_mon.png'}
+              alt={hoveredMonster.name}
+              onError={handleImgError}
+            />
+          </div>
+          <div className="monster-hover-card__info">
+            <h4 className="monster-hover-card__name">{hoveredMonster.name}</h4>
+            {species.length > 0 && (
+              <div className="monster-hover-card__species">
+                {species.join(' / ')}
+              </div>
+            )}
+            {types.length > 0 && (
+              <div className="monster-hover-card__types">
+                {types.map((t, i) => (
+                  <TypeBadge key={i} type={t} size="xs" />
+                ))}
+              </div>
+            )}
+            {hoveredMonster.attribute && (
+              <div className="monster-hover-card__attribute">
+                <AttributeBadge attribute={hoveredMonster.attribute} size="xs" />
+              </div>
+            )}
+          </div>
+        </div>,
+        document.body
+      )}
+    </>
   );
 };

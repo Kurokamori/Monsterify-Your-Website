@@ -543,7 +543,7 @@ export default function NurseryPage() {
             const suggestions = speciesSuggestions[key] || [];
             const showSuggestions = activeSpeciesField === key && suggestions.length > 0;
             return (
-              <div key={key} className="nursery-item__special-input" style={{ position: 'relative' }}>
+              <div key={key} className="nursery-item__special-input nursery-species-field">
                 <label>Species {i + 1}:</label>
                 <input
                   type="text"
@@ -556,35 +556,12 @@ export default function NurseryPage() {
                   autoComplete="off"
                 />
                 {showSuggestions && (
-                  <div className="nursery-species-suggestions" style={{
-                    position: 'absolute',
-                    top: '100%',
-                    left: 0,
-                    right: 0,
-                    zIndex: 10,
-                    background: 'var(--surface-elevated, #2a2a3e)',
-                    border: '1px solid var(--border-color, #3a3a4e)',
-                    borderRadius: '0.5rem',
-                    maxHeight: '200px',
-                    overflowY: 'auto',
-                    boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
-                  }}>
+                  <div className="nursery-species-suggestions">
                     {suggestions.map(name => (
                       <button
                         key={name}
                         type="button"
                         className="nursery-species-suggestion"
-                        style={{
-                          display: 'block',
-                          width: '100%',
-                          padding: '0.5rem 0.75rem',
-                          textAlign: 'left',
-                          background: 'none',
-                          border: 'none',
-                          color: 'var(--text-primary, #fff)',
-                          cursor: 'pointer',
-                          fontSize: '0.875rem',
-                        }}
                         onMouseDown={e => e.preventDefault()}
                         onClick={() => handleSpeciesSelect(key, name)}
                       >
