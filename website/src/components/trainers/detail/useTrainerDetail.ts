@@ -424,9 +424,10 @@ export function useTrainerDetail() {
     try {
       const response = await trainerService.claimAchievement(id, achievementId);
       if (response.success) {
+        const reward = response.data.reward || response.data.rewards;
         setRewardPopupData({
           achievement: response.data.achievement,
-          rewards: response.data.rewards,
+          rewards: reward,
         });
         setShowRewardPopup(true);
 
@@ -434,11 +435,11 @@ export function useTrainerDetail() {
           a.id === achievementId ? { ...a, claimed: true, canClaim: false } : a
         ));
 
-        if (response.data.rewards?.currency) {
+        if (reward?.currency) {
           setTrainer(prev => prev ? {
             ...prev,
-            currency_amount: (prev.currency_amount || 0) + response.data.rewards.currency,
-            total_earned_currency: (prev.total_earned_currency || 0) + response.data.rewards.currency,
+            currency_amount: (prev.currency_amount || 0) + reward.currency,
+            total_earned_currency: (prev.total_earned_currency || 0) + reward.currency,
           } : prev);
         }
 
@@ -461,10 +462,18 @@ export function useTrainerDetail() {
       setIsClaimingAll(true);
       const response = await trainerService.claimAllAchievements(id);
       if (response.success) {
+        // Normalize claimedAchievements to match frontend Achievement shape
+        const normalizedAchievements = (response.data.claimedAchievements || []).map(
+          (a: { id: string; name: string; reward?: { currency?: number; item?: string }; reward_currency?: number; reward_item?: string }) => ({
+            ...a,
+            reward_currency: a.reward_currency ?? a.reward?.currency,
+            reward_item: a.reward_item ?? a.reward?.item,
+          })
+        );
         setRewardPopupData({
           isBulk: true,
           claimedCount: response.data.claimedCount,
-          claimedAchievements: response.data.claimedAchievements,
+          claimedAchievements: normalizedAchievements,
           totalRewards: response.data.totalRewards,
           message: response.message,
         });

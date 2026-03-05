@@ -26,7 +26,7 @@ import {
 import type { Monster } from '../common/MonsterDetails';
 import type { TrainerInventory, QueuedItem, SpeciesImagesMap } from './types';
 
-const EXCLUDED_BERRIES = ['Forget-Me-Not', 'Forget-me-Not', 'Edenwiess', 'Edenweiss'];
+const EXCLUDED_BERRIES = ['Forget-Me-Not', 'Forget-me-Not', 'Edenweiss', 'Edenweiss'];
 
 interface AdoptionItemModalProps {
   isOpen: boolean;

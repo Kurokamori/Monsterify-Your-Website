@@ -1,17 +1,17 @@
 import { TrainerInventoryRepository } from '../repositories';
 
-export type SpecialBerryName = 'Forget-Me-Not' | 'Edenwiess';
+export type SpecialBerryName = 'Forget-Me-Not' | 'Edenweiss';
 
 export type SpecialBerryInventory = {
   'Forget-Me-Not': number;
-  'Edenwiess': number;
+  'Edenweiss': number;
 };
 
 /**
- * Service for managing special berries (Forget-Me-Not and Edenwiess)
+ * Service for managing special berries (Forget-Me-Not and Edenweiss)
  * These berries have special effects in the game:
  * - Forget-Me-Not: Used for move management
- * - Edenwiess: Used for evolution/transformation effects
+ * - Edenweiss: Used for evolution/transformation effects
  */
 export class SpecialBerryService {
   private inventoryRepository: TrainerInventoryRepository;
@@ -23,7 +23,7 @@ export class SpecialBerryService {
   /**
    * Check if trainer has a specific special berry
    * @param trainerId - Trainer ID
-   * @param berryName - Berry name ('Forget-Me-Not' or 'Edenwiess')
+   * @param berryName - Berry name ('Forget-Me-Not' or 'Edenweiss')
    * @returns Whether trainer has at least one of the specified berry
    */
   async hasSpecialBerry(trainerId: number, berryName: SpecialBerryName): Promise<boolean> {
@@ -47,7 +47,7 @@ export class SpecialBerryService {
   /**
    * Consume a special berry from trainer inventory
    * @param trainerId - Trainer ID
-   * @param berryName - Berry name ('Forget-Me-Not' or 'Edenwiess')
+   * @param berryName - Berry name ('Forget-Me-Not' or 'Edenweiss')
    * @returns Whether berry was successfully consumed
    */
   async consumeSpecialBerry(trainerId: number, berryName: SpecialBerryName): Promise<boolean> {
@@ -86,18 +86,18 @@ export class SpecialBerryService {
     try {
       const inventory = await this.inventoryRepository.findByTrainerId(trainerId);
       if (!inventory?.berries) {
-        return { 'Forget-Me-Not': 0, 'Edenwiess': 0 };
+        return { 'Forget-Me-Not': 0, 'Edenweiss': 0 };
       }
 
       const berries = inventory.berries;
 
       return {
         'Forget-Me-Not': berries['Forget-Me-Not'] ?? 0,
-        'Edenwiess': berries['Edenwiess'] ?? 0,
+        'Edenweiss': berries['Edenweiss'] ?? 0,
       };
     } catch (error) {
       console.error(`Error getting special berries for trainer ${trainerId}:`, error);
-      return { 'Forget-Me-Not': 0, 'Edenwiess': 0 };
+      return { 'Forget-Me-Not': 0, 'Edenweiss': 0 };
     }
   }
 
@@ -163,12 +163,12 @@ export class SpecialBerryService {
   }
 
   /**
-   * Check if trainer can use Edenwiess berry (has at least one)
+   * Check if trainer can use Edenweiss berry (has at least one)
    * @param trainerId - Trainer ID
-   * @returns Whether trainer can use Edenwiess
+   * @returns Whether trainer can use Edenweiss
    */
-  async canUseEdenwiess(trainerId: number): Promise<boolean> {
-    return this.hasSpecialBerry(trainerId, 'Edenwiess');
+  async canUseEdenweiss(trainerId: number): Promise<boolean> {
+    return this.hasSpecialBerry(trainerId, 'Edenweiss');
   }
 
   /**
@@ -181,11 +181,11 @@ export class SpecialBerryService {
   }
 
   /**
-   * Use Edenwiess berry (consume it)
+   * Use Edenweiss berry (consume it)
    * @param trainerId - Trainer ID
    * @returns Whether the berry was successfully used
    */
-  async useEdenwiess(trainerId: number): Promise<boolean> {
-    return this.consumeSpecialBerry(trainerId, 'Edenwiess');
+  async useEdenweiss(trainerId: number): Promise<boolean> {
+    return this.consumeSpecialBerry(trainerId, 'Edenweiss');
   }
 }

@@ -861,7 +861,7 @@ export function MassEditModal({
                               const isCurrentlySelected = berry.type === berryType;
                               const canSelect = remainingCount > 0 || isCurrentlySelected;
                               const canUseOnMonster = canBerryBeUsedOnMonster(berryType, monster);
-                              const isNotValid = berry.type != 'Edenwiess' && berry.type != 'Forget-Me-Not' && berry.type != 'Edenweiss' && berry.type != 'Forget-me-Not';
+                              const isNotValid = berry.type != 'Edenweiss' && berry.type != 'Forget-Me-Not' && berry.type != 'Edenweiss' && berry.type != 'Forget-me-Not';
 
                               if (originalCount > 0 && canSelect && canUseOnMonster && isNotValid) {
                                 return (

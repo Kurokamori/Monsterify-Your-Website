@@ -264,6 +264,14 @@ const TrainerDetailPage = () => {
                           {rewardPopupData.claimedAchievements.map((a, i) => (
                             <div key={i} className="claimed-achievement-item">
                               <span className="achievement-name-small">{a.name}</span>
+                              <span className="achievement-reward-small">
+                                {a.reward_currency && (
+                                  <span><i className="fas fa-coins"></i> {a.reward_currency}</span>
+                                )}
+                                {a.reward_item && (
+                                  <span><i className="fas fa-gift"></i> {a.reward_item}</span>
+                                )}
+                              </span>
                             </div>
                           ))}
                         </div>

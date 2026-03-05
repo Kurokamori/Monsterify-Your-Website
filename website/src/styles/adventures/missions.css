@@ -28,25 +28,12 @@
   gap: var(--spacing-xxsmall);
 }
 
-.missions-section__active-banner {
-  margin-bottom: var(--spacing-medium);
-}
-
-.missions-section__active-banner .alert {
-  margin-bottom: var(--spacing-small);
-}
-
 /* ── Grid ───────────────────────────────────────────────────────────────── */
 
 .missions-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
   gap: var(--spacing-medium);
-}
-
-.missions-grid--single {
-  grid-template-columns: 1fr;
-  max-width: 600px;
 }
 
 /* ── Mission Card ───────────────────────────────────────────────────────── */

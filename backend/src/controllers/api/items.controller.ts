@@ -627,9 +627,9 @@ export async function addSpecialBerriesToTrainer(req: Request, res: Response): P
     const berryName = body.berryName as SpecialBerryName | undefined;
     const quantity = body.quantity ? parseInt(String(body.quantity), 10) : 5;
 
-    const validBerries: SpecialBerryName[] = ['Forget-Me-Not', 'Edenwiess'];
+    const validBerries: SpecialBerryName[] = ['Forget-Me-Not', 'Edenweiss'];
     if (berryName && !validBerries.includes(berryName)) {
-      res.status(400).json({ success: false, message: 'Invalid berry name. Must be Forget-Me-Not or Edenwiess' });
+      res.status(400).json({ success: false, message: 'Invalid berry name. Must be Forget-Me-Not or Edenweiss' });
       return;
     }
 

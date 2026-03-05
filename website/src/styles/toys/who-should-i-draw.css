@@ -74,7 +74,6 @@
   color: var(--text-color-muted);
 }
 
-.wsid-config__select,
 .wsid-config__input {
   background: var(--input-background);
   border: 1px solid var(--border-color);
@@ -86,7 +85,6 @@
   transition: border-color 0.2s;
 }
 
-.wsid-config__select:focus,
 .wsid-config__input:focus {
   outline: none;
   border-color: var(--accent-color);

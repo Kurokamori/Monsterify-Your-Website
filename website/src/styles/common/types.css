@@ -2,11 +2,11 @@
 .normal, .type-normal { 
     background-color: var(--normal-type); 
 }
-.fire, .type-fire { 
-    background-color: var(--fire-type); 
+.type-fire {
+    background-color: var(--fire-type);
 }
-.water, .type-water { 
-    background-color: var(--water-type); 
+.type-water {
+    background-color: var(--water-type);
 }
 .type-electric { 
     background-color: var(--electric-type); 
@@ -35,8 +35,8 @@
 .type-bug { 
     background-color: var(--bug-type); 
 }
-.rock, .type-rock { 
-    background-color: var(--rock-type); 
+.type-rock {
+    background-color: var(--rock-type);
 }
 .ghost, .type-ghost { 
     background-color: var(--ghost-type); 

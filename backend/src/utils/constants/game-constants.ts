@@ -405,7 +405,7 @@ export const MILK_TYPE_MINIMUMS: Record<string, number> = {
 // Special Berries
 // ============================================================================
 
-export const SPECIAL_BERRIES = ['Forget-Me-Not', 'Edenwiess'] as const;
+export const SPECIAL_BERRIES = ['Forget-Me-Not', 'Edenweiss'] as const;
 
 export type SpecialBerryName = (typeof SPECIAL_BERRIES)[number];
 

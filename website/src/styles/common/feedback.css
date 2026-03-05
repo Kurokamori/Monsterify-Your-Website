@@ -86,24 +86,6 @@
   padding: var(--spacing-large) var(--spacing-xlarge);
 }
 
-/* ---------- Alert with Close Button ---------- */
-
-.alert .alert-close {
-  background: none;
-  border: none;
-  color: inherit;
-  cursor: pointer;
-  font-size: var(--font-size-xlarge);
-  margin-left: auto;
-  opacity: 0.7;
-  padding: 0;
-  transition: opacity 0.2s;
-}
-
-.alert .alert-close:hover {
-  opacity: 1;
-}
-
 /* ======================
    Loading States
    ====================== */
@@ -249,14 +231,9 @@
   height: 12px;
 }
 
-.progress.xl {
-  height: 16px;
-}
-
 /* ---------- Progress Bar Variants ---------- */
 
-.progress-fill.primary,
-.progress-fill.default {
+.progress-fill.primary {
   background: linear-gradient(90deg, var(--accent-color) 0%, var(--accent-color-active) 100%);
 }
 
@@ -282,32 +259,7 @@
 .progress-fill.special-defense { background-color: var(--grass-type); }
 .progress-fill.speed { background-color: var(--fairy-type); }
 
-/* ---------- Progress with Shine Effect ---------- */
-
-.progress-fill.shine::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(90deg, transparent 0%, var(--overlay-light) 50%, transparent 100%);
-  animation: progressShine 2s linear infinite;
-}
-
-@keyframes progressShine {
-  0% { transform: translateX(-100%); }
-  100% { transform: translateX(100%); }
-}
-
 /* ---------- Progress Bar with Label ---------- */
-
-.progress-wrapper {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-small);
-}
-
-.progress-wrapper .progress {
-  flex: 1;
-}
 
 .progress-label {
   font-size: var(--font-size-xsmall);

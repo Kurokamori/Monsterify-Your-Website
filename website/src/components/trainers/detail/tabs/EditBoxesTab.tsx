@@ -95,7 +95,7 @@ export const EditBoxesTab = ({
             {isSaving ? <i className="fas fa-spinner fa-spin"></i> : <i className="fas fa-star"></i>}
           </button>
         </div>
-        <div className="edit-box-grid featured-monsters-grid featured-monsters-compact">
+        <div className="edit-box-grid featured-monsters-compact">
           {Array.from({ length: 6 }).map((_, slotIndex) => {
             const monster = featuredMonsters[slotIndex];
             return (

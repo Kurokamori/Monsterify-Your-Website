@@ -257,16 +257,6 @@
   justify-content: center;
 }
 
-.reward-type-badge {
-  padding: var(--spacing-xxsmall) var(--spacing-xsmall);
-  border-radius: var(--border-radius-small);
-  font-size: var(--font-size-xsmall);
-  font-weight: 600;
-  text-transform: uppercase;
-  background-color: var(--accent-color);
-  color: var(--background-color);
-}
-
 .reward-attribute {
   display: flex;
   justify-content: center;

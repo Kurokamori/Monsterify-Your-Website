@@ -491,7 +491,7 @@ export class ItemsService {
   ): Promise<{ success: boolean; message: string; berries: Record<string, number> }> {
     if (!berryName) {
       await this.specialBerryService.addSpecialBerry(trainerId, 'Forget-Me-Not', quantity);
-      await this.specialBerryService.addSpecialBerry(trainerId, 'Edenwiess', quantity);
+      await this.specialBerryService.addSpecialBerry(trainerId, 'Edenweiss', quantity);
     } else {
       await this.specialBerryService.addSpecialBerry(trainerId, berryName, quantity);
     }

@@ -118,17 +118,6 @@
 
 /* ---------- Discord Link ---------- */
 
-.discord-id-row {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-small);
-}
-
-.discord-id-row .form-group {
-  flex: 1;
-  margin-bottom: 0;
-}
-
 .discord-link-btn {
   flex-shrink: 0;
   margin-bottom: 0;
@@ -248,8 +237,4 @@
     padding-left: calc(16px + var(--spacing-xsmall));
   }
 
-  .discord-id-row {
-    flex-direction: column;
-    align-items: stretch;
-  }
 }

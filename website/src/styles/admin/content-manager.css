@@ -477,17 +477,6 @@
   cursor: not-allowed;
 }
 
-.content-manager__btn--secondary {
-  background: transparent;
-  border: 1px solid var(--border-color);
-  color: var(--text-color);
-}
-
-.content-manager__btn--secondary:hover {
-  border-color: var(--accent-color);
-  color: var(--accent-color);
-}
-
 .content-manager__btn--danger {
   background: transparent;
   border: 1px solid var(--error-color);

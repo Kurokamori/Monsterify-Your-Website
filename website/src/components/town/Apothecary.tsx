@@ -19,7 +19,7 @@ import { itemsService } from '../../services';
 import { getItemImageUrl, handleItemImageError } from '../../utils/imageUtils';
 import { extractErrorMessage } from '../../utils/errorUtils';
 
-const EXCLUDED_BERRIES = ['Forget-Me-Not', 'Forget-me-Not', 'Edenwiess', 'Edenweiss'];
+const EXCLUDED_BERRIES = ['Forget-Me-Not', 'Forget-me-Not', 'Edenweiss', 'Edenweiss'];
 
 interface ApothecaryProps {
   className?: string;

@@ -146,11 +146,6 @@
   box-shadow: 0 0 4px var(--success-color);
 }
 
-.appraisal-editor__item-status--default {
-  background: var(--warning-color);
-  box-shadow: 0 0 4px var(--warning-color);
-}
-
 /* --- Editor Panel --- */
 
 .appraisal-editor__panel {
@@ -181,23 +176,6 @@
 .appraisal-editor__title {
   margin: 0;
   font-size: var(--font-size-xlarge);
-}
-
-.appraisal-editor__badge {
-  font-size: var(--font-size-xsmall);
-  padding: var(--spacing-xxsmall) var(--spacing-xsmall);
-  border-radius: var(--border-radius-full);
-  font-weight: 500;
-}
-
-.appraisal-editor__badge--configured {
-  background: var(--overlay-light);
-  color: var(--success-color);
-}
-
-.appraisal-editor__badge--default {
-  background: var(--warning-glow);
-  color: var(--warning-color);
 }
 
 .appraisal-editor__form {
@@ -406,23 +384,6 @@
   border-color: var(--accent-color);
   color: var(--accent-color);
   font-weight: 500;
-}
-
-/* --- Info Section --- */
-
-.appraisal-editor__info-row {
-  display: flex;
-  gap: var(--spacing-medium);
-  font-size: var(--font-size-small);
-}
-
-.appraisal-editor__info-label {
-  color: var(--text-color-muted);
-  min-width: 80px;
-}
-
-.appraisal-editor__info-value {
-  color: var(--text-color);
 }
 
 /* --- Actions --- */

@@ -114,7 +114,7 @@ export default function NurserySessionPage() {
         monsterIndex,
         monsterName: monsterName || `Hatched Monster ${eggId}`,
         dnaSplicers: 0,
-        useEdenwiess: false,
+        useEdenweiss: false,
       });
 
       if (response.data.success) {
@@ -152,8 +152,8 @@ export default function NurserySessionPage() {
     }
   }, [session, sessionId, selectedMonsters, monsterNames, currentEgg]);
 
-  // Claim extra monster with Edenwiess berry
-  const handleClaimWithEdenwiess = useCallback(async (eggId: number) => {
+  // Claim extra monster with Edenweiss berry
+  const handleClaimWithEdenweiss = useCallback(async (eggId: number) => {
     if (!sessionId) return;
     const monsterIndex = selectedMonsters[eggId];
     const monsterName = monsterNames[eggId];
@@ -173,11 +173,11 @@ export default function NurserySessionPage() {
         monsterIndex,
         monsterName: monsterName || `Hatched Monster ${eggId}`,
         dnaSplicers: 0,
-        useEdenwiess: true,
+        useEdenweiss: true,
       });
 
       if (response.data.success) {
-        setStatusMessage({ type: 'success', message: 'Extra monster claimed with Edenwiess!' });
+        setStatusMessage({ type: 'success', message: 'Extra monster claimed with Edenweiss!' });
 
         // Update session with claimed monsters and berries
         setSession(prev => {
@@ -469,19 +469,19 @@ export default function NurserySessionPage() {
           </h3>
           <div className="nursery-monsters__grid">
             {currentEggData.monsters.map((monster, index) => {
-              const isClaimedWithEdenwiess = claimedMonsterIndices.includes(index);
+              const isClaimedWithEdenweiss = claimedMonsterIndices.includes(index);
               const isCurrentlySelected = selectedMonsters[currentEggData.eggId] === index;
 
               let slotClass = 'nursery-monster-slot';
               if (isCurrentlySelected) slotClass += ' nursery-monster-slot--selected';
               if (isEggSelected) slotClass += ' nursery-monster-slot--disabled';
-              if (isClaimedWithEdenwiess) slotClass += ' nursery-monster-slot--claimed';
+              if (isClaimedWithEdenweiss) slotClass += ' nursery-monster-slot--claimed';
 
               return (
                 <div
                   key={index}
                   className={slotClass}
-                  onClick={() => !isEggSelected && !isClaimedWithEdenwiess && handleMonsterSelect(currentEggData.eggId, index)}
+                  onClick={() => !isEggSelected && !isClaimedWithEdenweiss && handleMonsterSelect(currentEggData.eggId, index)}
                 >
                   <MonsterCard
                     monster={monster}
@@ -498,7 +498,7 @@ export default function NurserySessionPage() {
                     </div>
                   )}
 
-                  {isClaimedWithEdenwiess && (
+                  {isClaimedWithEdenweiss && (
                     <div className="nursery-claimed-overlay">
                       <div className="nursery-claimed-badge">
                         <i className="fas fa-star"></i>
@@ -538,31 +538,31 @@ export default function NurserySessionPage() {
                 </button>
               )}
 
-              {selectedMonsters[currentEggData.eggId] !== undefined && session.specialBerries['Edenwiess'] > 0 && (
+              {selectedMonsters[currentEggData.eggId] !== undefined && session.specialBerries['Edenweiss'] > 0 && (
                 <button
-                  className="nursery-special-button nursery-special-button--edenwiess"
-                  onClick={() => handleClaimWithEdenwiess(currentEggData.eggId)}
+                  className="nursery-special-button nursery-special-button--Edenweiss"
+                  onClick={() => handleClaimWithEdenweiss(currentEggData.eggId)}
                   disabled={submitting}
-                  title="Claim this monster as an extra using an Edenwiess berry"
+                  title="Claim this monster as an extra using an Edenweiss berry"
                 >
                   <div className="nursery-special-button__icon">
                     <i className="fas fa-plus-circle"></i>
                   </div>
                   <div className="nursery-special-button__content">
-                    <span className="nursery-special-button__title">Use Edenwiess</span>
+                    <span className="nursery-special-button__title">Use Edenweiss</span>
                     <span className="nursery-special-button__description">
-                      Claim as extra ({session.specialBerries['Edenwiess']} available)
+                      Claim as extra ({session.specialBerries['Edenweiss']} available)
                     </span>
                   </div>
                 </button>
               )}
             </div>
 
-            {session.specialBerries['Edenwiess'] > 0 && (
-              <div className="nursery-edenwiess-help">
+            {session.specialBerries['Edenweiss'] > 0 && (
+              <div className="nursery-Edenweiss-help">
                 <i className="fas fa-info-circle"></i>
-                <div className="nursery-edenwiess-help__text">
-                  <strong>Edenwiess Tip:</strong> Select a monster and use "Edenwiess" to claim it as extra,
+                <div className="nursery-Edenweiss-help__text">
+                  <strong>Edenweiss Tip:</strong> Select a monster and use "Edenweiss" to claim it as extra,
                   then select another monster to complete the egg.
                 </div>
               </div>

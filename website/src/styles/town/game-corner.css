@@ -351,24 +351,6 @@
   color: var(--text-color);
 }
 
-/* ---------- Reward Sections ---------- */
-
-.game-corner__reward-section {
-  margin-bottom: var(--spacing-large);
-}
-
-.game-corner__reward-section h3 {
-  margin: 0 0 var(--spacing-medium) 0;
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-xsmall);
-  color: var(--text-color);
-}
-
-.game-corner__reward-section h3 i {
-  color: var(--accent-color);
-}
-
 /* ---------- Monster Reward Card ---------- */
 
 .game-corner__monster-grid {
@@ -381,53 +363,6 @@
   display: flex;
   flex-direction: column;
   gap: var(--spacing-small);
-}
-
-.game-corner__monster-content {
-  display: flex;
-  gap: var(--spacing-small);
-}
-
-.game-corner__monster-image {
-  width: 80px;
-  height: 80px;
-  border-radius: var(--border-radius-medium);
-  object-fit: cover;
-  flex-shrink: 0;
-  background-color: var(--background-color);
-}
-
-.game-corner__monster-fallback {
-  width: 80px;
-  height: 80px;
-  border-radius: var(--border-radius-medium);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  background-color: var(--background-color);
-  color: var(--text-color-muted);
-  font-size: clamp(1.5rem, 1.25rem + 1vw, 2.5rem);
-}
-
-.game-corner__monster-info {
-  flex: 1;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-xxsmall);
-}
-
-.game-corner__monster-name {
-  font-weight: 600;
-  font-size: var(--font-size-large);
-  color: var(--text-color);
-  margin: 0;
-}
-
-.game-corner__monster-level {
-  font-size: var(--font-size-small);
-  color: var(--text-color-muted);
 }
 
 .game-corner__monster-claim {
@@ -450,39 +385,7 @@
   gap: var(--spacing-xsmall);
 }
 
-.game-corner__reward-icon {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-xsmall);
-}
-
-.game-corner__reward-icon i {
-  font-size: var(--font-size-large);
-}
-
-.game-corner__reward-icon--coin i { color: var(--accent-color); }
 .game-corner__reward-icon--item i { color: var(--psychic-type); }
-.game-corner__reward-icon--level i { color: var(--success-color); }
-.game-corner__reward-icon--monster i { color: var(--error-color); }
-
-.game-corner__reward-title {
-  font-weight: 600;
-  color: var(--text-color);
-}
-
-.game-corner__reward-desc {
-  font-size: var(--font-size-small);
-  color: var(--text-color-muted);
-}
-
-.game-corner__claimed-badge {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-xxsmall);
-  font-size: var(--font-size-small);
-  color: var(--success-color);
-  margin-top: var(--spacing-xxsmall);
-}
 
 /* ---------- Responsive ---------- */
 

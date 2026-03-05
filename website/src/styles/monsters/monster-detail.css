@@ -21,20 +21,14 @@
   height: 0.5rem;
 }
 
-.box-info {
-  font-size: var(--font-size-small);
-  color: var(--text-color-muted);
-  font-weight: 600;
-}
-
 .box-nav-placeholder {
   width: 120px;
 }
 
 /* ---------- Header ---------- */
 .monster-profile-image-container {
-  width: clamp(35%, 40vw, 45%);
-  height: clamp(20vh, 40vh, 70vh);
+  width: 100%;
+  height: 100%;
   max-height: 100%;
   border-radius: var(--border-radius-medium);
   overflow: hidden;

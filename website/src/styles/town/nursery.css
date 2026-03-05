@@ -974,7 +974,7 @@
   color: white;
 }
 
-.nursery-special-button--edenwiess .nursery-special-button__icon {
+.nursery-special-button--Edenweiss .nursery-special-button__icon {
   background-color: var(--warning-color);
   color: white;
 }
@@ -995,7 +995,7 @@
   color: var(--text-color-muted);
 }
 
-.nursery-edenwiess-help {
+.nursery-Edenweiss-help {
   display: flex;
   align-items: flex-start;
   gap: var(--spacing-small);
@@ -1005,13 +1005,13 @@
   border-radius: var(--border-radius-small);
 }
 
-.nursery-edenwiess-help i {
+.nursery-Edenweiss-help i {
   color: var(--accent-color);
   margin-top: 2px;
   flex-shrink: 0;
 }
 
-.nursery-edenwiess-help__text {
+.nursery-Edenweiss-help__text {
   flex: 1;
   color: var(--text-color-muted);
   line-height: 1.5;

@@ -316,14 +316,6 @@
   border: 1px solid var(--border-color);
 }
 
-.relationship-item.ally {
-  border-left-color: var(--success-color);
-}
-
-.relationship-item.enemy {
-  border-left-color: var(--error-color);
-}
-
 .relationship-item.neutral {
   border-left-color: var(--text-color-muted);
 }
@@ -347,17 +339,6 @@
   display: flex;
   flex-direction: column;
   gap: var(--spacing-medium);
-}
-
-.submission-step h3 {
-  color: var(--accent-color);
-  margin-bottom: var(--spacing-xsmall);
-}
-
-.submission-step p {
-  color: var(--text-color-muted);
-  margin-bottom: var(--spacing-small);
-  line-height: 1.6;
 }
 
 .submissions-grid {
@@ -421,66 +402,9 @@
   gap: var(--spacing-xxsmall);
 }
 
-/* Score Calculation */
-
-.score-calculation {
-  background-color: var(--background-color);
-  border: 2px solid var(--accent-color);
-  border-radius: var(--border-radius-medium);
-  padding: var(--spacing-small);
-}
-
-.score-calculation h4 {
-  color: var(--accent-color);
-  margin: 0 0 var(--spacing-xsmall) 0;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.score-value {
-  font-size: var(--font-size-xlarge);
-  font-weight: 700;
-  color: var(--accent-color);
-}
-
 .person-card.locked {
   opacity: 0.6;
   cursor: not-allowed;
-}
-
-.person-card.met {
-  border-color: var(--success-color);
-}
-
-.person-card.can-meet {
-  border-color: var(--warning-color);
-}
-
-.person-name {
-  margin: 0 0 var(--spacing-xxsmall) 0;
-  color: var(--text-color);
-  font-size: var(--font-size-medium);
-  font-weight: 600;
-}
-
-.person-subtitle {
-  margin: 0;
-  color: var(--text-color-muted);
-  font-size: var(--font-size-small);
-}
-
-.locked-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: var(--overlay-dark);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
 }
 
 .no-submissions {
@@ -493,59 +417,6 @@
 
 .no-submissions p {
   color: var(--text-color-muted);
-}
-
-.standing-preview {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--spacing-xsmall);
-  padding: var(--spacing-xsmall);
-  background-color: var(--background-color);
-  border: 1px solid var(--success-color);
-  border-radius: var(--border-radius-small);
-}
-
-.standing-gain {
-  font-weight: 700;
-  color: var(--success-color);
-}
-
-.selected-submission-info {
-  background-color: var(--background-color);
-  border: 1px solid var(--accent-color);
-  border-radius: var(--border-radius-small);
-  padding: var(--spacing-xsmall);
-}
-
-.selected-submission-info h4 {
-  color: var(--accent-color);
-  margin: 0 0 var(--spacing-xxsmall) 0;
-  font-size: var(--font-size-small);
-}
-
-.prompt-description {
-  background-color: var(--background-color);
-  border-left: 3px solid var(--accent-color);
-  border-radius: var(--border-radius-small);
-  color: var(--text-color-muted);
-  font-size: var(--font-size-small);
-  font-style: italic;
-  line-height: 1.5;
-  padding: var(--spacing-xsmall);
-  margin-top: var(--spacing-xxsmall);
-}
-
-.success-step {
-  text-align: center;
-  padding: var(--spacing-medium);
-}
-
-.stat-info div {
-  color: var(--text-color-muted);
-  font-size: var(--font-size-small);
-  display: flex;
-  justify-content: space-between;
 }
 
 /* ---------- Responsive ---------- */

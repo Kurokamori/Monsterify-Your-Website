@@ -360,21 +360,6 @@
   margin-bottom: var(--spacing-small);
 }
 
-.chat-manager__add-member-input {
-  flex: 1;
-  padding: var(--spacing-xsmall) var(--spacing-small);
-  background: var(--input-background);
-  border: 1px solid var(--border-color);
-  border-radius: var(--border-radius-small);
-  color: var(--text-color);
-  font-size: var(--font-size-small);
-}
-
-.chat-manager__add-member-input:focus {
-  outline: none;
-  border-color: var(--accent-color);
-}
-
 .chat-manager__add-member-btn {
   padding: var(--spacing-xsmall) var(--spacing-small);
   background: var(--accent-color);

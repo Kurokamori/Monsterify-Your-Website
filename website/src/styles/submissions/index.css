@@ -680,11 +680,6 @@
   gap: var(--spacing-medium);
 }
 
-.reallocation-intro {
-  font-size: var(--font-size-medium);
-  color: var(--text-color);
-}
-
 .level-summary {
   margin: var(--spacing-small) 0;
 }
@@ -2434,57 +2429,6 @@
   gap: var(--spacing-xxsmall);
 }
 
-.gift-option {
-  margin-top: var(--spacing-xsmall);
-  padding-top: var(--spacing-xsmall);
-  border-top: 1px solid var(--border-color);
-}
-
-.gift-checkbox-label {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-xsmall);
-  cursor: pointer;
-  font-size: var(--font-size-small);
-}
-
-.gift-recipient {
-  margin-top: var(--spacing-xsmall);
-}
-
-.gift-participants-section {
-  background: var(--accent-color-hover);
-  border-color: var(--accent-color);
-}
-
-.gift-participants-list {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-xsmall);
-}
-
-.gift-participant-item {
-  padding: var(--spacing-xsmall);
-  background: var(--primary-color);
-  border-radius: var(--border-radius-small);
-}
-
-.gift-participant-info {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-xsmall);
-}
-
-.gift-arrow {
-  color: var(--accent-color);
-}
-
-.gift-explanation {
-  font-size: var(--font-size-small);
-  color: var(--text-color-muted);
-  margin-top: var(--spacing-xsmall);
-}
-
 .calculator-actions {
   margin-top: var(--spacing-medium);
 }
@@ -2502,10 +2446,6 @@
   display: flex;
   align-items: center;
   gap: var(--spacing-small);
-}
-
-.word-count-input {
-  width: 120px;
 }
 
 .word-count-info {
@@ -2936,20 +2876,6 @@
   transform: scale(1.05);
 }
 
-.selected-item-image {
-  width: 80px;
-  height: 80px;
-  border-radius: var(--border-radius-small);
-  overflow: hidden;
-  flex-shrink: 0;
-}
-
-.selected-item-image img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-}
-
 /* ---------- Featured Entities ---------- */
 
 .featured-entities-grid {
@@ -3320,13 +3246,6 @@ a.featured-entity-card {
   pointer-events: none;
 }
 
-.edit-participants-saving {
-  text-align: center;
-  padding: var(--spacing-small);
-  color: var(--accent-color);
-  font-weight: 600;
-}
-
 /* ---------- Submission Success ---------- */
 
 .submission-success {
@@ -3556,16 +3475,6 @@ a.featured-entity-card {
   color: var(--text-color);
   font-size: var(--font-size-xxlarge);
   cursor: pointer;
-}
-
-/* ---------- Submission Overlay ---------- */
-
-.submission-overlay {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--spacing-small);
-  padding: var(--spacing-large);
 }
 
 /* ---------- Responsive: Submission Pages ---------- */

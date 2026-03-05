@@ -43,11 +43,6 @@
 
 /* ------- Responsive Auto-fit Grids ------- */
 /* These grids use auto-fit with min() to stay intrinsically responsive */
-.container.grid-small {
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 9rem), 1fr));
-    gap: clamp(0.5rem, 0.3rem + 0.6vw, 1rem);
-}
-
 .container.grid-medium {
     grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr));
     gap: clamp(0.75rem, 0.5rem + 0.75vw, 1.5rem);
@@ -61,11 +56,6 @@
 /* ------- Column Grids ------- */
 /* Uses auto-fit with tuned min widths to approximate N columns on desktop
    and collapse gracefully to fewer columns on smaller viewports */
-.container.grid-2 {
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
-    gap: clamp(0.75rem, 0.5rem + 0.75vw, 1.5rem);
-}
-
 .container.grid-3 {
     grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
     gap: clamp(0.75rem, 0.5rem + 0.75vw, 1.5rem);
@@ -73,16 +63,6 @@
 
 .container.grid-4 {
     grid-template-columns: repeat(auto-fit, minmax(min(100%, 11rem), 1fr));
-    gap: clamp(0.75rem, 0.5rem + 0.75vw, 1.5rem);
-}
-
-.container.grid-5 {
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 9rem), 1fr));
-    gap: clamp(0.75rem, 0.5rem + 0.75vw, 1.5rem);
-}
-
-.container.grid-6 {
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 7.5rem), 1fr));
     gap: clamp(0.75rem, 0.5rem + 0.75vw, 1.5rem);
 }
 
@@ -100,16 +80,8 @@
 }
 
 /* ------- Margin Utilities ------- */
-.container.margin-small {
-    margin: var(--spacing-small);
-}
-
 .container.margin-medium {
     margin: var(--spacing-medium);
-}
-
-.container.margin-large {
-    margin: var(--spacing-large);
 }
 
 /* ------- Width Utilities ------- */

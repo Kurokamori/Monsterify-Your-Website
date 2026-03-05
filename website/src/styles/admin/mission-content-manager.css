@@ -104,11 +104,6 @@
 }
 
 /* Difficulty badge colors (extend existing badge system) */
-.badge.easy {
-  background-color: var(--success-dark);
-  color: var(--success-color);
-}
-
 .badge.medium {
   background-color: var(--warning-dark);
   color: var(--text-color);
@@ -119,12 +114,3 @@
   color: var(--error-color);
 }
 
-.badge.expert {
-  background-color: var(--accent-color-active);
-  color: var(--text-color);
-}
-
-.badge.draft {
-  background-color: var(--warning-dark);
-  color: var(--text-color);
-}

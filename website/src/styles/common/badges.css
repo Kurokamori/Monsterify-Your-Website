@@ -91,7 +91,7 @@
 }
 
 .badge.tertiary {
-  background-color: var(--primary-color);
+  background-color: var(--background-color-hover);
   color: var(--text-color);
   padding: var(--spacing-xsmall) var(--spacing-small);
 }
@@ -117,21 +117,6 @@
 }
 
 /* ---------- Rarity Badges ---------- */
-
-.badge.common {
-  background-color: var(--secondary-color);
-  color: var(--text-color);
-}
-
-.badge.uncommon {
-  background-color: var(--success-dark);
-  color: var(--success-color);
-}
-
-.badge.rare {
-  background-color: var(--water-type);
-  color: var(--text-color);
-}
 
 .badge.legendary {
   background: linear-gradient(135deg, var(--accent-color), var(--accent-color-active));

@@ -38,7 +38,7 @@ export interface HatchedEgg {
 
 export interface SpecialBerryInventory {
   'Forget-Me-Not': number;
-  'Edenwiess': number;
+  'Edenweiss': number;
 }
 
 export interface SelectedMonsterInfo {

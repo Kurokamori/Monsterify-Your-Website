@@ -97,7 +97,7 @@ export const ProfileTab = ({
           </div>
           {!featuredMonstersCollapsed && (
             <>
-              <div className="catalogue-grid">
+              <div className="featured-monsters-compact">
                 {activeFeatured.map((monster) => (
                   <Link to={`/monsters/${monster!.id}`} className="trainer-detail__monster-card" key={monster!.id}>
                     <div className="monster-image-container">
@@ -162,25 +162,25 @@ export const ProfileTab = ({
           {(trainer.gender || trainer.pronouns || trainer.sexuality || trainer.race) && (
             <div className="personal-info-row">
               {trainer.gender && (
-                <div className="inventory-item">
+                <div className="profile-item">
                   <span className="detail-label">Gender</span>
                   <span className="detail-value">{trainer.gender}</span>
                 </div>
               )}
               {trainer.pronouns && (
-                <div className="inventory-item">
+                <div className="profile-item">
                   <span className="detail-label">Pronouns</span>
                   <span className="detail-value">{trainer.pronouns}</span>
                 </div>
               )}
               {trainer.sexuality && (
-                <div className="inventory-item">
+                <div className="profile-item">
                   <span className="detail-label">Sexuality</span>
                   <span className="detail-value">{trainer.sexuality}</span>
                 </div>
               )}
               {trainer.race && (
-                <div className="inventory-item">
+                <div className="profile-item">
                   <span className="detail-label">Race</span>
                   <span className="detail-value">{trainer.race}</span>
                 </div>
@@ -190,13 +190,13 @@ export const ProfileTab = ({
           {(trainer.height || trainer.weight) && (
             <div className="personal-info-row">
               {trainer.height && (
-                <div className="inventory-item">
+                <div className="profile-item">
                   <span className="detail-label">Height</span>
                   <span className="detail-value">{trainer.height}</span>
                 </div>
               )}
               {trainer.weight && (
-                <div className="inventory-item">
+                <div className="profile-item">
                   <span className="detail-label">Weight</span>
                   <span className="detail-value">{trainer.weight}</span>
                 </div>

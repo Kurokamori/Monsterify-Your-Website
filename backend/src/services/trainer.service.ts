@@ -128,6 +128,7 @@ export type AchievementClaimResult = {
 export type AchievementClaimAllResult = {
   message: string;
   claimedCount: number;
+  claimedAchievements: { id: string; name: string; reward: { currency?: number; item?: string } }[];
   totalRewards: { currency: number; items: string[] };
 };
 
@@ -854,6 +855,7 @@ export class TrainerService {
 
     let totalCurrency = 0;
     const items: string[] = [];
+    const claimedAchievements: { id: string; name: string; reward: { currency?: number; item?: string } }[] = [];
 
     for (const achievement of claimable) {
       await this.achievementRepo.claimAchievement(trainerId, achievement.id);
@@ -864,6 +866,11 @@ export class TrainerService {
         items.push(achievement.reward.item);
         await this.inventoryRepo.addItem(trainerId, 'items', achievement.reward.item, 1);
       }
+      claimedAchievements.push({
+        id: achievement.id,
+        name: achievement.name,
+        reward: achievement.reward,
+      });
     }
 
     if (totalCurrency > 0) {
@@ -873,6 +880,7 @@ export class TrainerService {
     return {
       message: `Claimed ${claimable.length} achievements!`,
       claimedCount: claimable.length,
+      claimedAchievements,
       totalRewards: { currency: totalCurrency, items },
     };
   }

@@ -20,11 +20,6 @@
   margin: 0 0 var(--spacing-xsmall) 0;
 }
 
-.shop__description {
-  color: var(--text-color-muted);
-  margin: 0;
-}
-
 /* ---------- Trainer Wallet Display ---------- */
 
 .shop-wallet {
@@ -594,11 +589,6 @@
   margin-bottom: var(--spacing-xsmall);
   border-radius: var(--border-radius-small);
   background-color: var(--secondary-color);
-}
-
-.shop-species-card__name {
-  font-size: var(--font-size-small);
-  font-weight: 500;
 }
 
 /* ---------- Success State ---------- */

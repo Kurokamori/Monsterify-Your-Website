@@ -340,13 +340,6 @@
   font-size: var(--font-size-xsmall);
 }
 
-.boss-leaderboard__status-cell {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-xsmall);
-  flex-wrap: wrap;
-}
-
 .boss-leaderboard__empty {
   text-align: center;
   padding: var(--spacing-large);

@@ -531,24 +531,6 @@
   margin-right: var(--spacing-xsmall);
 }
 
-.emoji-btn {
-  padding: var(--spacing-xxsmall) var(--spacing-xsmall);
-  background-color: var(--primary-color);
-  border: 1px solid var(--border-color);
-  border-radius: var(--border-radius-small);
-  font-size: var(--font-size-large);
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.emoji-btn:hover {
-  border-color: var(--accent-color);
-}
-
-.emoji-btn.selected {
-  border-color: var(--accent-color);
-  background-color: var(--primary-color-hover);
-}
 
 /* ---------- Adventure Rewards ---------- */
 
@@ -750,18 +732,6 @@
   background-color: var(--primary-color);
   border: 1px solid var(--border-color);
   border-radius: var(--border-radius-small);
-}
-
-.allocation-form__row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--spacing-small);
-  margin-bottom: var(--spacing-small);
-}
-
-.allocation-form__row .form-group {
-  flex: 1;
-  min-width: 150px;
 }
 
 .allocation-form__actions {
@@ -1086,18 +1056,6 @@
   color: var(--text-color);
 }
 
-.boss-health__bar {
-  height: 1rem;
-  background-color: var(--primary-color);
-  border-radius: var(--border-radius-small);
-  overflow: hidden;
-}
-
-.boss-health__fill {
-  height: 100%;
-  border-radius: var(--border-radius-small);
-  transition: width 0.3s ease;
-}
 
 .boss-health__percentage {
   text-align: center;

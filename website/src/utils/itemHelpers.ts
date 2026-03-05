@@ -158,7 +158,7 @@ export const getSpeciesSlotAffected = (berryName: string): number => {
  */
 export const canBerryBeUsedOnMonster = (berryName: string, monster: Monster): boolean => {
   // Filter out Edenweiss and Forget-Me-Not
-  if (berryName === 'Edenweiss' || berryName === 'Forget-Me-Not' || berryName === 'Edenwiess') {
+  if (berryName === 'Edenweiss' || berryName === 'Forget-Me-Not' || berryName === 'Edenweiss') {
     return false;
   }
 

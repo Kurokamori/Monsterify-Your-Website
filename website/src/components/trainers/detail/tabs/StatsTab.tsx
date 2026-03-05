@@ -48,7 +48,7 @@ export const StatsTab = ({ trainer, monsters }: StatsTabProps) => {
   const levelDistribution = useMemo(() => {
     const ranges: Record<string, number> = {
       '1-10': 0, '11-20': 0, '21-30': 0, '31-40': 0, '41-50': 0,
-      '51-60': 0, '61-70': 0, '71-80': 0, '81-90': 0, '91-100': 0, '100+': 0,
+      '51-60': 0, '61-70': 0, '71-80': 0, '81-90': 0, '91-100': 0,
     };
     monsters.forEach(m => {
       const level = Number(m.level) || 1;
@@ -62,7 +62,6 @@ export const StatsTab = ({ trainer, monsters }: StatsTabProps) => {
       else if (level <= 80) ranges['71-80']++;
       else if (level <= 90) ranges['81-90']++;
       else if (level <= 100) ranges['91-100']++;
-      else ranges['100+']++;
     });
     return Object.entries(ranges);
   }, [monsters]);

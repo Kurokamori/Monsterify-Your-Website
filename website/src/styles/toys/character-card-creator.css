@@ -112,26 +112,7 @@
   margin-top: var(--spacing-small);
 }
 
-.ccc-source__select {
-  width: 100%;
-  max-width: 400px;
-  background: var(--input-background);
-  border: 1px solid var(--border-color);
-  border-radius: var(--border-radius-small);
-  padding: var(--spacing-xsmall) var(--spacing-small);
-  color: var(--text-color);
-  font-size: var(--font-size-small);
-  cursor: pointer;
-  transition: border-color 0.2s;
-}
-
-.ccc-source__select:focus {
-  outline: none;
-  border-color: var(--accent-color);
-}
-
-.ccc-source__loading,
-.ccc-source__empty {
+.ccc-source__loading {
   font-size: var(--font-size-small);
   color: var(--text-color-muted);
 }

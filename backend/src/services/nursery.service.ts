@@ -38,7 +38,7 @@ export type HatchSession = {
   selectedMonsters: Record<string, SelectedMonsterInfo>;
   claimedMonsters: string[];
   normalClaims: Record<string, boolean>;
-  edenwiessUses: Record<string, number>;
+  EdenweissUses: Record<string, number>;
   userSettings: UserSettings;
   speciesInputs: SpeciesInputs;
   specialBerries: SpecialBerryInventory;
@@ -64,7 +64,7 @@ export type SelectMonsterInput = {
   monsterIndex: number;
   monsterName?: string;
   dnaSplicers?: number;
-  useEdenwiess?: boolean;
+  useEdenweiss?: boolean;
 };
 
 export type SelectMonsterResult = {
@@ -380,7 +380,7 @@ export class NurseryService {
       selectedMonsters: {},
       claimedMonsters: [],
       normalClaims: {},
-      edenwiessUses: {},
+      EdenweissUses: {},
       userSettings,
       speciesInputs: {},
       specialBerries,
@@ -524,7 +524,7 @@ export class NurseryService {
       selectedMonsters: {},
       claimedMonsters: [],
       normalClaims: {},
-      edenwiessUses: {},
+      EdenweissUses: {},
       userSettings,
       speciesInputs,
       specialBerries,
@@ -581,7 +581,7 @@ export class NurseryService {
   // ==========================================================================
 
   async selectMonster(input: SelectMonsterInput, userId: string): Promise<{ success: true } & SelectMonsterResult | { success: false; status: number; message: string }> {
-    const { sessionId, eggId, monsterIndex, monsterName, dnaSplicers, useEdenwiess } = input;
+    const { sessionId, eggId, monsterIndex, monsterName, dnaSplicers, useEdenweiss } = input;
 
     const session = this.sessions.get(sessionId);
     if (!session) {
@@ -597,22 +597,22 @@ export class NurseryService {
       return { success: false, status: 400, message: 'This monster has already been claimed' };
     }
 
-    // Edenwiess or normal claim logic
-    if (useEdenwiess) {
-      const hasEdenwiess = await this.specialBerryService.hasSpecialBerry(session.trainerId, 'Edenwiess');
-      if (!hasEdenwiess) {
-        return { success: false, status: 400, message: 'You do not have an Edenwiess berry' };
+    // Edenweiss or normal claim logic
+    if (useEdenweiss) {
+      const hasEdenweiss = await this.specialBerryService.hasSpecialBerry(session.trainerId, 'Edenweiss');
+      if (!hasEdenweiss) {
+        return { success: false, status: 400, message: 'You do not have an Edenweiss berry' };
       }
 
-      const consumed = await this.specialBerryService.consumeSpecialBerry(session.trainerId, 'Edenwiess');
+      const consumed = await this.specialBerryService.consumeSpecialBerry(session.trainerId, 'Edenweiss');
       if (!consumed) {
-        return { success: false, status: 500, message: 'Failed to consume Edenwiess berry' };
+        return { success: false, status: 500, message: 'Failed to consume Edenweiss berry' };
       }
 
-      session.edenwiessUses[eggId] = (session.edenwiessUses[eggId] ?? 0) + 1;
+      session.EdenweissUses[eggId] = (session.EdenweissUses[eggId] ?? 0) + 1;
     } else {
       if (session.normalClaims[eggId]) {
-        return { success: false, status: 400, message: 'You can only claim one monster per egg without using an Edenwiess berry' };
+        return { success: false, status: 400, message: 'You can only claim one monster per egg without using an Edenweiss berry' };
       }
       session.normalClaims[eggId] = true;
     }
@@ -717,8 +717,8 @@ export class NurseryService {
 
     return {
       success: true,
-      message: useEdenwiess
-        ? 'Extra monster claimed successfully with Edenwiess berry'
+      message: useEdenweiss
+        ? 'Extra monster claimed successfully with Edenweiss berry'
         : 'Monster claimed successfully',
       monster: {
         id: createdMonster.id,
@@ -778,7 +778,7 @@ export class NurseryService {
     session.selectedMonsters = {};
     session.claimedMonsters = [];
     session.normalClaims = {};
-    session.edenwiessUses = {};
+    session.EdenweissUses = {};
 
     const updatedSpecialBerries = await this.specialBerryService.getAvailableSpecialBerries(session.trainerId);
     session.specialBerries = updatedSpecialBerries;

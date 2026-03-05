@@ -15,10 +15,6 @@
   justify-content: space-between;
 }
 
-.pagination.start {
-  justify-content: flex-start;
-}
-
 .pagination.end {
   justify-content: flex-end;
 }
@@ -33,27 +29,9 @@
   color: var(--text-color);
 }
 
-/* Info text */
-.pagination-info {
-  color: var(--text-color-muted);
-  font-size: var(--font-size-small);
-  font-weight: 500;
-  min-width: 120px;
-  padding: 0 var(--spacing-small);
-  text-align: center;
-}
-
 /* ==============================================
    RESPONSIVE STYLES
    ============================================== */
-
-@media (max-width: 767px) {
-  .pagination-info {
-    min-width: auto;
-    order: -1;
-    width: 100%;
-  }
-}
 
 /* Accessibility: Reduced Motion */
 @media (prefers-reduced-motion: reduce) {

@@ -20,11 +20,6 @@
 
 /* ---------- Size Variants ---------- */
 
-.image-container.tiny {
-  width: 40px;
-  height: 40px;
-}
-
 .image-container.xs {
   width: 60px;
   height: 60px;
@@ -45,50 +40,16 @@
   height: 300px;
 }
 
-.image-container.xlarge {
-  width: 500px;
-  height: 500px;
-}
-
 /* ---------- Shape Variants ---------- */
-
-.image-container.circular {
-  border-radius: 50%;
-}
-
-.image-container.circular img {
-  object-fit: cover;
-}
 
 .image-container.rounded {
   border-radius: var(--border-radius-medium);
-}
-
-/* ---------- Fit Variants ---------- */
-
-.image-container.cover img {
-  object-fit: cover;
 }
 
 /* ---------- Spacing Variants ---------- */
 
 .image-container.no-margin {
   margin: 0;
-}
-
-.image-container.inline {
-  display: inline-flex;
-  margin: 0;
-}
-
-.image-container.activity {
-  width: 100%;
-  height: clamp(300px, 40vw, 700px);
-  border-radius: var(--border-radius-large);
-}
-
-.image-container.activity img {
-  object-fit: cover;
 }
 
 .image-container img {
@@ -119,14 +80,3 @@
   margin-top: var(--spacing-xsmall);
 }
 
-.species-image-container {
-  align-items: center;
-  background: var(--primary-color-hover);
-  border: 1px solid var(--border-color);
-  border-radius: var(--border-radius-small);
-  display: flex;
-  height: 60px;
-  justify-content: center;
-  overflow: hidden;
-  width: 60px;
-}

@@ -530,12 +530,6 @@
 
 /* ---------- Submission Selector ---------- */
 
-.submission-selector {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-xsmall);
-}
-
 .submission-selector__no-submissions {
   padding: var(--spacing-medium);
   background-color: var(--background-color);

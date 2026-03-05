@@ -72,7 +72,7 @@ export type InventoryItemInfo = {
 const DEFAULT_INVENTORY = {
   items: { 'Daycare Daypass': 1, 'Legacy Leeway': 1 },
   balls: { 'Poke Ball': 10 },
-  berries: { 'Forget-Me-Not': 2, 'Edenwiess': 2 },
+  berries: { 'Forget-Me-Not': 2, 'Edenweiss': 2 },
   eggs: { 'Standard Egg': 1 },
   keyitems: { 'Mission Mandate': 1 },
 };

@@ -254,31 +254,6 @@
   background: linear-gradient(135deg, var(--accent-glow) 0%, var(--primary-color) 100%);
 }
 
-.top-monster-card.rank-1 .top-monster-rank-badge {
-  background: linear-gradient(135deg, var(--accent-color-active), var(--accent-color));
-  box-shadow: 0 4px 12px var(--accent-glow);
-}
-
-.top-monster-card.rank-2 .top-monster-rank-badge {
-  background: linear-gradient(135deg, var(--steel-type), var(--secondary-color));
-}
-
-.top-monster-card.rank-3 .top-monster-rank-badge {
-  background: linear-gradient(135deg, var(--warning-dark), var(--warning-dark));
-}
-
-.top-monster-rank-badge {
-  position: absolute;
-  top: var(--spacing-small); right: var(--spacing-small);
-  background: linear-gradient(135deg, var(--accent-color), var(--accent-color-hover));
-  color: var(--text-color);
-  font-weight: 800;
-  font-size: var(--font-size-small);
-  padding: var(--spacing-xxsmall) var(--spacing-xsmall);
-  border-radius: var(--border-radius-small);
-  z-index: 1;
-}
-
 .top-monster-avatar {
   width: clamp(64px, 8vw, 90px); height: clamp(64px, 8vw, 90px);
   border-radius: var(--border-radius-medium);
@@ -504,55 +479,6 @@
   color: var(--text-color-muted);
 }
 
-/* ==============================
-   Stats Table
-   ============================== */
-
-.stats-table-wrapper { overflow-x: auto; }
-
-.stats-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.stats-table th,
-.stats-table td {
-  padding: var(--spacing-small) var(--spacing-medium);
-  text-align: left;
-  border-bottom: 1px solid var(--border-color);
-}
-
-.stats-table th {
-  font-weight: 600;
-  color: var(--text-color-muted);
-  font-size: var(--font-size-small);
-  background: var(--primary-color);
-  white-space: nowrap;
-}
-
-.stats-table th:first-child { border-radius: var(--border-radius-small) 0 0 0; }
-.stats-table th:last-child { border-radius: 0 var(--border-radius-small) 0 0; }
-
-.stats-table th.sortable {
-  cursor: pointer;
-  user-select: none;
-  transition: color 0.2s;
-}
-
-.stats-table th.sortable:hover,
-.stats-table th.sortable.active {
-  color: var(--accent-color);
-}
-
-.stats-table th.sortable i {
-  margin-left: var(--spacing-xsmall);
-  font-size: var(--font-size-xsmall);
-}
-
-.stats-table tbody tr { transition: background 0.2s; }
-.stats-table tbody tr:hover { background: var(--primary-color-hover); }
-.stats-table tbody tr:last-child td { border-bottom: none; }
-
 .monster-table-cell {
   display: flex;
   align-items: center;
@@ -576,35 +502,6 @@
   display: flex;
   gap: var(--spacing-xxsmall);
   flex-wrap: wrap;
-}
-
-.win-rate-cell {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-small);
-}
-
-.win-rate-bar {
-  flex: 1;
-  min-width: 60px; max-width: 100px;
-  height: 8px;
-  background: var(--primary-color);
-  border-radius: var(--border-radius-small);
-  overflow: hidden;
-}
-
-.win-rate-fill {
-  height: 100%;
-  background: linear-gradient(90deg, var(--success-color), var(--success-light));
-  border-radius: var(--border-radius-small);
-  transition: width 0.5s ease;
-}
-
-.win-rate-text {
-  font-weight: 600;
-  font-size: var(--font-size-small);
-  color: var(--success-color);
-  min-width: 40px;
 }
 
 /* ==============================
@@ -1398,7 +1295,6 @@
     flex-direction: row;
   }
 
-  .win-rate-bar { display: none; }
 
   .podium-card {
     min-width: auto;

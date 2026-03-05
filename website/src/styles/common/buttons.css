@@ -222,15 +222,7 @@ button.filter.active-secondary {
   height: 100%;
 }
 
-.button.tall {
-  height: 100%;
-}
-
 /* ---------- Justify Modifiers ---------- */
-
-.button.justify-start {
-  justify-content: flex-start;
-}
 
 .button.justify-end {
   justify-content: flex-end;

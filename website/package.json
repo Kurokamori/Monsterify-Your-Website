@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "preview": "vite preview",
-    "lint": "eslint . && tsc -b --force && node scripts/css-linter.js",
+    "lint": "eslint . && tsc -b --force && node scripts/css-linter.js && node scripts/unused-css-linter.js",
     "type-check": "tsc -b --force"
   },
   "dependencies": {

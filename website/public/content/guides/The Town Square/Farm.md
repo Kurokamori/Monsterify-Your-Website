@@ -17,6 +17,6 @@ Digimon Must be Champion Rank or Higher (No Rookies, Training 1, or Training 2\)
 Choose two trainers (or the same trainer twice) and two mons to begin breeding;  
 Breeding results in 1-4 monsters with some combination of their parents’ characteristics and/or mutations.
 
-All bred children are claimable by default, no need for Edenwiesses here\!
+All bred children are claimable by default, no need for Edenweisses here\!
 
 Oh Arceus, why are you still here? I’m not going sappy on you, get. But…come back if you need any more help. I guess.
