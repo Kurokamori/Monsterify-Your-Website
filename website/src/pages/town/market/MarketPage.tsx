@@ -23,7 +23,7 @@ const SHOP_IMAGES: Record<string, string> = {
   apothecary: PLACEHOLDER_IMAGE,
   bakery: PLACEHOLDER_IMAGE,
   witchs_hut: PLACEHOLDER_IMAGE,
-  megamart: PLACEHOLDER_IMAGE,
+  megamart: 'https://i.imgur.com/6BbJZ89.jpeg',
   'antique-store': PLACEHOLDER_IMAGE,
   nursery: PLACEHOLDER_IMAGE,
   pirates_dock: PLACEHOLDER_IMAGE,
