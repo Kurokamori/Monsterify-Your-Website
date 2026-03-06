@@ -214,14 +214,16 @@ export function AntiqueAppraisal({
             )}
             <div className="flex-1">
               <h3>{getSpeciesDisplay()}</h3>
-              <div className="badge-group badge-group--sm mt-xs">
+              <div className="badge-group badge-group--sm mt-xs flex-wrap badge-group--gap-xs">
                 {getTypes().map((type, idx) => (
                   <TypeBadge key={idx} type={type} size="sm" />
                 ))}
               </div>
+              <div>
               {rolledMonster?.attribute && (
                 <AttributeBadge attribute={rolledMonster.attribute} size="sm" className="mt-xs" />
               )}
+              </div>
               {rolledMonster?.level && (
                 <p className="text-sm text-muted mt-xs">Level {rolledMonster.level}</p>
               )}

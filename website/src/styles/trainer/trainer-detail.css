@@ -426,6 +426,14 @@
   flex-shrink: 0;
 }
 
+.featured-monsters-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 150px), 1fr));
+  gap: var(--spacing-small);
+  padding: var(--spacing-small) 0;
+}
+
+
 .trainer-detail__monster-card {
   display: flex;
   flex-direction: column;

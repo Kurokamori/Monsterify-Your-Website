@@ -152,7 +152,10 @@ export class AntiqueAuctionRepository extends BaseRepository<
 
   async findByAntique(antique: string): Promise<AntiqueAuction[]> {
     const result = await db.query<AntiqueAuctionRow>(
-      'SELECT * FROM antique_auctions WHERE antique = $1 ORDER BY name ASC',
+      `SELECT * FROM antique_auctions
+       WHERE antique = $1
+          OR REPLACE(antique, E'\\u2019', '''') = REPLACE($1, E'\\u2019', '''')
+       ORDER BY name ASC`,
       [antique]
     );
     return result.rows.map(normalizeAntiqueAuction);

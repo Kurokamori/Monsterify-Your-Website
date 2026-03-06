@@ -83,8 +83,12 @@ export class AntiqueSettingRepository extends BaseRepository<
   }
 
   async findByItemName(itemName: string): Promise<AntiqueSetting | null> {
+    // Match with normalized apostrophes: both straight (') and curly (\u2019) variants
     const result = await db.query<AntiqueSettingRow>(
-      'SELECT * FROM antique_settings WHERE item_name = $1',
+      `SELECT * FROM antique_settings
+       WHERE item_name = $1
+          OR REPLACE(item_name, E'\\u2019', '''') = REPLACE($1, E'\\u2019', '''')
+       LIMIT 1`,
       [itemName]
     );
     const row = result.rows[0];
