@@ -733,7 +733,6 @@ export class TrainerService {
     const typeCounts = await this.countMonstersByType(trainerId);
     const attributeCounts = await this.countMonstersByAttribute(trainerId);
     const level100Count = await this.countLevel100Monsters(trainerId);
-    const unownCount = await this.countUnownMonsters(trainerId);
 
     const achievements: AchievementProgress[] = [];
 
@@ -808,13 +807,15 @@ export class TrainerService {
     }
 
     // Special achievements
+    const specialProgress = await this.getSpecialAchievementProgress(trainerId);
     for (const def of TrainerAchievementRepository.getSpecialAchievements()) {
       const claimed = claimedIds.has(def.id);
-      const unlocked = unownCount >= def.requirement;
+      const progress = specialProgress[def.id] ?? 0;
+      const unlocked = progress >= def.requirement;
       achievements.push({
         ...def,
         category: 'special',
-        progress: unownCount,
+        progress,
         unlocked,
         claimed,
         requirement: def.requirement,
@@ -968,6 +969,53 @@ export class TrainerService {
       [trainerId],
     );
     return parseInt(result.rows[0]?.count ?? '0', 10);
+  }
+
+  private async getSpecialAchievementProgress(trainerId: number): Promise<Record<string, number>> {
+    const progress: Record<string, number> = {};
+
+    // Unown count (for 'Allegedly Literate')
+    progress['unown_26'] = await this.countUnownMonsters(trainerId);
+
+    // Unique species count (for 'Oak is Calling')
+    // A monster can have up to 3 species; each unique species name counts once
+    const uniqueSpeciesResult = await db.query<{ count: string }>(
+      `SELECT COUNT(DISTINCT species) AS count FROM (
+        SELECT species1 AS species FROM monsters WHERE trainer_id = $1 AND species1 IS NOT NULL
+        UNION
+        SELECT species2 FROM monsters WHERE trainer_id = $1 AND species2 IS NOT NULL
+        UNION
+        SELECT species3 FROM monsters WHERE trainer_id = $1 AND species3 IS NOT NULL
+      ) AS all_species`,
+      [trainerId],
+    );
+    progress['oak_is_calling'] = parseInt(uniqueSpeciesResult.rows[0]?.count ?? '0', 10);
+
+    // Total monster count (for 'Are you an Adoption Center?')
+    const totalResult = await db.query<{ count: string }>(
+      'SELECT COUNT(*) AS count FROM monsters WHERE trainer_id = $1',
+      [trainerId],
+    );
+    progress['adoption_center'] = parseInt(totalResult.rows[0]?.count ?? '0', 10);
+
+    // Max duplicates of any single species (for 'Variety the Same')
+    // Cross-checks all 3 species slots: if species X appears in any slot of a monster, that monster counts
+    const varietyResult = await db.query<{ max_count: string }>(
+      `SELECT COALESCE(MAX(cnt), 0) AS max_count FROM (
+        SELECT species, COUNT(DISTINCT monster_id) AS cnt FROM (
+          SELECT id AS monster_id, species1 AS species FROM monsters WHERE trainer_id = $1 AND species1 IS NOT NULL
+          UNION ALL
+          SELECT id, species2 FROM monsters WHERE trainer_id = $1 AND species2 IS NOT NULL
+          UNION ALL
+          SELECT id, species3 FROM monsters WHERE trainer_id = $1 AND species3 IS NOT NULL
+        ) AS all_species
+        GROUP BY species
+      ) AS species_counts`,
+      [trainerId],
+    );
+    progress['variety_the_same'] = parseInt(varietyResult.rows[0]?.max_count ?? '0', 10);
+
+    return progress;
   }
 
   // ===========================================================================

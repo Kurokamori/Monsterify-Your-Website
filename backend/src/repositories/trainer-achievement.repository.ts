@@ -257,6 +257,9 @@ const TRAINER_LEVEL_ACHIEVEMENTS: AchievementDefinition[] = [
 
 const SPECIAL_ACHIEVEMENTS: AchievementDefinition[] = [
   { id: 'unown_26', name: 'Allegedly Literate', description: 'Own 26 Unown', requirement: 26, reward: { currency: 10000, item: 'Standard Egg' } },
+  { id: 'oak_is_calling', name: 'Oak is Calling', description: 'Own 151+ unique monster species', requirement: 151, reward: { currency: 15000 } },
+  { id: 'adoption_center', name: 'Are you an Adoption Center?', description: 'Own more than 250 monsters', requirement: 251, reward: { currency: 10000 } },
+  { id: 'variety_the_same', name: 'Variety the Same', description: 'Own more than 5 different monsters with the same species', requirement: 6, reward: { currency: 5000 } },
 ];
 
 export class TrainerAchievementRepository extends BaseRepository<

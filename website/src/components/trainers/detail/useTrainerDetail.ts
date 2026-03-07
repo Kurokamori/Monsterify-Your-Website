@@ -364,7 +364,17 @@ export function useTrainerDetail() {
         setAchievements(response.data?.achievements || []);
         const statsResponse = await trainerService.getAchievementStats(id);
         if (statsResponse.success) {
-          setAchievementStats(statsResponse.data?.stats || null);
+          const raw = statsResponse.data?.stats;
+          if (raw) {
+            setAchievementStats({
+              total: raw.totalAchievements ?? raw.total ?? 0,
+              unlocked: raw.unlockedCount ?? raw.unlocked ?? 0,
+              claimed: raw.claimedCount ?? raw.claimed ?? 0,
+              unclaimed: (raw.unlockedCount ?? raw.unlocked ?? 0) - (raw.claimedCount ?? raw.claimed ?? 0),
+            });
+          } else {
+            setAchievementStats(null);
+          }
         }
       }
     } catch {
