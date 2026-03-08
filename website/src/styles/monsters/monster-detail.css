@@ -488,28 +488,7 @@
 
 /* ---------- Lineage ---------- */
 
-.monster-lineage-tree {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-medium);
-}
-
-.monster-lineage-section h3 {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-xxsmall);
-  margin-bottom: var(--spacing-xsmall);
-}
-
-.monster-lineage-auto {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-xxsmall);
-  font-size: var(--font-size-small);
-  color: var(--text-color-muted);
-  margin-top: var(--spacing-xxsmall);
-}
-
+/* Preserved shared classes */
 .monster-species-text {
   font-size: var(--font-size-small);
   color: var(--text-color-muted);
@@ -528,7 +507,275 @@
   border-radius: var(--border-radius-small);
 }
 
-.monster-lineage-form {
+/* --- Lineage Tree Layout --- */
+
+.lineage-tree-view {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+/* --- Lineage Tier --- */
+
+.lineage-tier {
+  position: relative;
+}
+
+.lineage-tier + .lineage-tier {
+  padding-top: var(--spacing-medium);
+}
+
+.lineage-tier + .lineage-tier::before {
+  content: '';
+  display: block;
+  width: 2px;
+  height: var(--spacing-small);
+  background: linear-gradient(to bottom, transparent, var(--accent-color-muted), transparent);
+  margin: 0 auto var(--spacing-xsmall);
+  border-radius: 1px;
+}
+
+/* Tier Header — centered label with decorative side lines */
+
+.lineage-tier-header {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xsmall);
+  margin-bottom: var(--spacing-small);
+}
+
+.lineage-tier-header::before,
+.lineage-tier-header::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+}
+
+.lineage-tier-header::before {
+  background: linear-gradient(to right, transparent, var(--border-color));
+}
+
+.lineage-tier-header::after {
+  background: linear-gradient(to left, transparent, var(--border-color));
+}
+
+.lineage-tier-label {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xxsmall);
+  font-size: var(--font-size-xsmall);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-color-muted);
+  white-space: nowrap;
+  padding: var(--spacing-xxsmall) var(--spacing-xsmall);
+}
+
+.lineage-tier-label i {
+  color: var(--accent-color);
+  font-size: var(--font-size-xxsmall);
+}
+
+.lineage-tier-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.4em;
+  height: 1.4em;
+  padding: 0 0.35em;
+  background: var(--accent-color-subtle);
+  color: var(--accent-color);
+  border-radius: var(--border-radius-full);
+  font-size: var(--font-size-xxsmall);
+  font-weight: 700;
+  margin-left: 2px;
+}
+
+/* Tier Cards — centered flex layout */
+
+.lineage-tier-cards {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--spacing-small);
+}
+
+/* --- Lineage Node (Monster Card) --- */
+
+.lineage-node {
+  width: 180px;
+  background: var(--primary-color);
+  border: 1px solid var(--border-color);
+  border-top: 3px solid var(--node-accent, var(--accent-color));
+  border-radius: var(--border-radius-medium);
+  overflow: hidden;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+.lineage-node:hover {
+  transform: translateY(-4px);
+  box-shadow:
+    0 8px 20px var(--overlay-medium),
+    0 0 0 1px var(--node-accent, var(--accent-color));
+  border-color: var(--node-accent, var(--accent-color));
+}
+
+/* Node Image */
+
+.lineage-node-image {
+  width: 100%;
+  aspect-ratio: 1;
+  background: var(--background-color);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.lineage-node-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transition: transform 0.3s ease;
+}
+
+.lineage-node:hover .lineage-node-image img {
+  transform: scale(1.05);
+}
+
+/* Level Badge on Image */
+
+.lineage-node-level {
+  position: absolute;
+  bottom: var(--spacing-xxsmall);
+  right: var(--spacing-xxsmall);
+  background: var(--accent-color);
+  color: var(--background-color);
+  font-size: var(--font-size-xxsmall);
+  font-weight: 700;
+  padding: 2px var(--spacing-xsmall);
+  border-radius: var(--border-radius-small);
+  line-height: 1.4;
+}
+
+/* Node Info */
+
+.lineage-node-info {
+  padding: var(--spacing-xsmall);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  border-top: 1px solid var(--overlay-light);
+}
+
+.lineage-node-name {
+  font-size: var(--font-size-small);
+  font-weight: 600;
+  color: var(--text-color);
+  text-decoration: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+  display: block;
+  transition: color 0.15s ease;
+}
+
+.lineage-node-name:hover {
+  color: var(--accent-color);
+}
+
+.lineage-node-species {
+  font-size: var(--font-size-xxsmall);
+  color: var(--text-color-muted);
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+/* Auto Breeding Label */
+
+.lineage-node-auto {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: var(--font-size-xxsmall);
+  color: var(--accent-color-muted);
+  margin-top: 2px;
+  padding: 1px var(--spacing-xxsmall);
+  background: var(--accent-color-subtle);
+  border-radius: var(--border-radius-small);
+}
+
+.lineage-node-auto i {
+  font-size: var(--font-size-xxxsmall);
+}
+
+/* Remove Button */
+
+.lineage-node-remove {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  background: var(--error-color);
+  color: #fff;
+  border: none;
+  border-radius: var(--border-radius-full);
+  cursor: pointer;
+  font-size: var(--font-size-xxsmall);
+  transition: background 0.15s ease, transform 0.15s ease;
+  margin-top: var(--spacing-xxsmall);
+}
+
+.lineage-node-remove:hover {
+  background: var(--error-dark);
+  transform: scale(1.1);
+}
+
+/* --- Lineage Empty State --- */
+
+.lineage-empty {
+  text-align: center;
+  padding: var(--spacing-xlarge) var(--spacing-medium);
+}
+
+.lineage-empty-icon {
+  font-size: clamp(2rem, 1.5rem + 2vw, 3rem);
+  color: var(--accent-color-muted);
+  margin-bottom: var(--spacing-small);
+  opacity: 0.4;
+}
+
+.lineage-empty-title {
+  font-size: var(--font-size-large);
+  font-weight: 600;
+  color: var(--text-color);
+  margin: 0 0 var(--spacing-xxsmall);
+}
+
+.lineage-empty-text {
+  color: var(--text-color-muted);
+  font-size: var(--font-size-small);
+  margin: 0 0 var(--spacing-xsmall);
+}
+
+.lineage-empty-hint {
+  color: var(--text-color-muted);
+  font-size: var(--font-size-small);
+  margin: 0;
+}
+
+/* --- Lineage Edit Form --- */
+
+.lineage-form {
   margin-top: var(--spacing-medium);
   padding: var(--spacing-medium);
   background: var(--overlay-light);
@@ -536,8 +783,62 @@
   border: 1px solid var(--overlay-medium);
 }
 
-.monster-lineage-form h3 {
-  margin-top: 0;
+.lineage-form-header {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xsmall);
+  margin-bottom: var(--spacing-small);
+  padding-bottom: var(--spacing-xsmall);
+  border-bottom: 1px solid var(--overlay-medium);
+}
+
+.lineage-form-header i {
+  color: var(--accent-color);
+}
+
+.lineage-form-header h3 {
+  margin: 0;
+  font-size: var(--font-size-large);
+  color: var(--accent-color);
+}
+
+.lineage-form-fields {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-small);
+}
+
+.lineage-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xxsmall);
+}
+
+.lineage-form-group label {
+  font-weight: 600;
+  font-size: var(--font-size-small);
+}
+
+.lineage-form-optional {
+  font-weight: 400;
+  color: var(--text-color-muted);
+}
+
+.lineage-form-selected {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xxsmall);
+  margin-top: var(--spacing-xxsmall);
+  color: var(--success-color);
+  font-size: var(--font-size-small);
+}
+
+/* --- Lineage Responsive --- */
+
+@media (max-width: 480px) {
+  .lineage-node {
+    width: 150px;
+  }
 }
 
 /* ---------- Lineage Search ---------- */

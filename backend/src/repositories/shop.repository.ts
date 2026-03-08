@@ -402,6 +402,14 @@ export class ShopRepository extends BaseRepository<ShopRow, ShopCreateInput, Sho
     return (result.rowCount ?? 0) > 0;
   }
 
+  async clearOldShopItems(shopId: string, beforeDate: string): Promise<number> {
+    const result = await db.query(
+      'DELETE FROM shop_items WHERE shop_id = $1 AND date < $2',
+      [shopId, beforeDate]
+    );
+    return result.rowCount ?? 0;
+  }
+
   async reduceShopItemStock(id: number, quantity: number): Promise<ShopItemRow> {
     const result = await db.query<ShopItemRow>(
       `

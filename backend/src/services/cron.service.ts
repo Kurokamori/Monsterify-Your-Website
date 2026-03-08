@@ -6,6 +6,7 @@ import {
   type DailyCleanupResult,
   type WeeklyStatisticsResult,
 } from './prompt-automation.service';
+import { ShopService } from './shop.service';
 
 export type CronJobStatus = {
   running: boolean;
@@ -22,16 +23,19 @@ export class CronService {
   private scheduledTasksService: ScheduledTasksService;
   private reminderService: ReminderService;
   private promptAutomationService: PromptAutomationService;
+  private shopService: ShopService;
 
   constructor(
     scheduledTasksService?: ScheduledTasksService,
     reminderService?: ReminderService,
-    promptAutomationService?: PromptAutomationService
+    promptAutomationService?: PromptAutomationService,
+    shopService?: ShopService,
   ) {
     this.jobs = new Map();
     this.scheduledTasksService = scheduledTasksService ?? new ScheduledTasksService();
     this.reminderService = reminderService ?? new ReminderService();
     this.promptAutomationService = promptAutomationService ?? new PromptAutomationService();
+    this.shopService = shopService ?? new ShopService();
   }
 
   /**
@@ -57,6 +61,9 @@ export class CronService {
 
     // Habit streak reset check every hour
     this.scheduleHabitStreakResetCheck();
+
+    // Daily shop restocking at 00:05 UTC
+    this.scheduleDailyShopRestock();
 
     console.log('Cron jobs initialized successfully');
   }
@@ -136,6 +143,31 @@ export class CronService {
 
     this.jobs.set('habitStreakReset', job);
     console.log('Habit streak reset cron job scheduled to run every hour');
+  }
+
+  /**
+   * Schedule daily shop restocking
+   * Runs every day at 00:05 UTC to restock non-constant shops with fresh prices
+   */
+  scheduleDailyShopRestock(): void {
+    const job = cron.schedule(
+      '5 0 * * *',
+      async () => {
+        console.log('Running daily shop restock...');
+        try {
+          const result = await this.shopService.restockAllShops();
+          console.log(`Daily shop restock completed: ${result.shopsRestocked} shops, ${result.totalItems} items`);
+        } catch (error) {
+          console.error('Error in daily shop restock:', error);
+        }
+      },
+      {
+        timezone: 'UTC',
+      }
+    );
+
+    this.jobs.set('dailyShopRestock', job);
+    console.log('Daily shop restock cron job scheduled for 00:05 UTC daily');
   }
 
   /**
