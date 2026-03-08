@@ -3,6 +3,7 @@ import type { Achievement, AchievementStats } from '../useTrainerDetail';
 const CATEGORY_ICONS: Record<string, string> = {
   type: 'fas fa-fire',
   attribute: 'fas fa-shield-alt',
+  franchise: 'fas fa-gamepad',
   level100: 'fas fa-star',
   trainer_level: 'fas fa-trophy',
   special: 'fas fa-crown',
@@ -18,6 +19,8 @@ interface AchievementsTabProps {
   isClaimingAll: boolean;
   handleClaimAchievement: (id: number) => void;
   handleClaimAllAchievements: () => void;
+  getItemImageUrl: (itemName: string, category: string) => string;
+  handleItemDetailClick: (itemName: string, category: string) => void;
 }
 
 export const AchievementsTab = ({
@@ -30,6 +33,8 @@ export const AchievementsTab = ({
   isClaimingAll,
   handleClaimAchievement,
   handleClaimAllAchievements,
+  getItemImageUrl,
+  handleItemDetailClick,
 }: AchievementsTabProps) => {
   const filtered = achievements.filter(a => {
     if (achievementFilter === 'all') return true;
@@ -43,6 +48,7 @@ export const AchievementsTab = ({
     { key: 'unlocked', label: 'Unlocked', count: achievements.filter(a => a.unlocked).length },
     { key: 'type', label: 'Type', count: achievements.filter(a => a.category === 'type').length },
     { key: 'attribute', label: 'Attribute', count: achievements.filter(a => a.category === 'attribute').length },
+    { key: 'franchise', label: 'Species', count: achievements.filter(a => a.category === 'franchise').length },
     { key: 'level100', label: 'Level 100', count: achievements.filter(a => a.category === 'level100').length },
     { key: 'trainer_level', label: 'Trainer Level', count: achievements.filter(a => a.category === 'trainer_level').length },
     { key: 'special', label: 'Special', count: achievements.filter(a => a.category === 'special').length },
@@ -132,16 +138,47 @@ export const AchievementsTab = ({
                     </span>
                   </div>
 
-                  {(achievement.reward_currency || achievement.reward_item) && (
+                  {(achievement.reward?.currency || achievement.reward?.levels || achievement.reward?.items?.length || achievement.reward?.item) && (
                     <div className="achievement-reward">
-                      {achievement.reward_currency && (
+                      {achievement.reward?.currency && (
                         <span className="reward-currency">
-                          <i className="fas fa-coins"></i> {achievement.reward_currency}
+                          <i className="fas fa-coins"></i> {achievement.reward.currency}
                         </span>
                       )}
-                      {achievement.reward_item && (
-                        <span className="trainer-detail__reward-item">
-                          <i className="fas fa-gift"></i> {achievement.reward_item}
+                      {achievement.reward?.levels && (
+                        <span className="reward-levels">
+                          <i className="fas fa-arrow-up"></i> {achievement.reward.levels} {achievement.reward.levels === 1 ? 'Level' : 'Levels'}
+                        </span>
+                      )}
+                      {achievement.reward?.items?.map((item, i) => (
+                        <span
+                          key={i}
+                          className="achievement-reward-item clickable-item"
+                          onClick={(e) => { e.stopPropagation(); handleItemDetailClick(item.name, 'items'); }}
+                        >
+                          <img
+                            className="achievement-reward-item__image"
+                            src={getItemImageUrl(item.name, 'items')}
+                            alt={item.name}
+                            onError={(e) => { (e.target as HTMLImageElement).onerror = null; (e.target as HTMLImageElement).src = '/images/default_item.png'; }}
+                          />
+                          <span className="achievement-reward-item__text">
+                            {item.quantity > 1 ? `${item.quantity}x ` : ''}{item.name}
+                          </span>
+                        </span>
+                      ))}
+                      {achievement.reward?.item && !achievement.reward?.items?.length && (
+                        <span
+                          className="achievement-reward-item clickable-item"
+                          onClick={(e) => { e.stopPropagation(); handleItemDetailClick(achievement.reward!.item!, 'items'); }}
+                        >
+                          <img
+                            className="achievement-reward-item__image"
+                            src={getItemImageUrl(achievement.reward.item, 'items')}
+                            alt={achievement.reward.item}
+                            onError={(e) => { (e.target as HTMLImageElement).onerror = null; (e.target as HTMLImageElement).src = '/images/default_item.png'; }}
+                          />
+                          <span className="achievement-reward-item__text">{achievement.reward.item}</span>
                         </span>
                       )}
                     </div>

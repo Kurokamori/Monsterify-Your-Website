@@ -9,6 +9,7 @@ export type UserMissionRow = {
   current_progress: number;
   required_progress: number;
   reward_claimed: boolean;
+  reward_summary: string | null;
   started_at: Date;
   completed_at: Date | null;
   created_at: Date;
@@ -22,6 +23,7 @@ export type UserMission = {
   currentProgress: number;
   requiredProgress: number;
   rewardClaimed: boolean;
+  rewardSummary: Record<string, unknown> | null;
   startedAt: Date;
   completedAt: Date | null;
   createdAt: Date;
@@ -58,6 +60,7 @@ type MissionMonsterRow = {
   type4: string | null;
   type5: string | null;
   attribute: string | null;
+  trainer_id: number | null;
   trainer_name: string | null;
 };
 
@@ -68,7 +71,17 @@ export type MissionMonster = {
   imgLink: string | null;
   types: string[];
   attribute: string | null;
+  trainerId: number | null;
   trainerName: string | null;
+};
+
+const parseJsonField = (value: string | null): Record<string, unknown> | null => {
+  if (!value) { return null; }
+  try {
+    return typeof value === 'string' ? JSON.parse(value) : value;
+  } catch {
+    return null;
+  }
 };
 
 const normalizeUserMission = (row: UserMissionRow): UserMission => ({
@@ -78,7 +91,8 @@ const normalizeUserMission = (row: UserMissionRow): UserMission => ({
   status: row.status,
   currentProgress: row.current_progress,
   requiredProgress: row.required_progress,
-  rewardClaimed: row.reward_claimed,
+  rewardClaimed: Boolean(row.reward_claimed),
+  rewardSummary: parseJsonField(row.reward_summary),
   startedAt: row.started_at,
   completedAt: row.completed_at,
   createdAt: row.created_at,
@@ -157,7 +171,8 @@ export class UserMissionRepository extends BaseRepository<
         SELECT um.*, m.title, m.description, m.difficulty, m.duration
         FROM user_missions um
         JOIN missions m ON um.mission_id = m.id
-        WHERE um.user_id = $1 AND um.status = 'active'
+        WHERE um.user_id = $1
+          AND (um.status = 'active' OR (um.status = 'completed' AND um.reward_claimed::boolean = false))
       `,
       [userId]
     );
@@ -263,10 +278,17 @@ export class UserMissionRepository extends BaseRepository<
       const newProgress = mission.currentProgress + progress;
       const isCompleted = newProgress >= mission.requiredProgress;
 
-      await db.query(
-        `UPDATE user_missions SET current_progress = $1, status = $2 WHERE id = $3`,
-        [newProgress, isCompleted ? 'completed' : 'active', mission.id]
-      );
+      if (isCompleted) {
+        await db.query(
+          `UPDATE user_missions SET current_progress = $1, status = 'completed', completed_at = CURRENT_TIMESTAMP WHERE id = $2`,
+          [newProgress, mission.id]
+        );
+      } else {
+        await db.query(
+          `UPDATE user_missions SET current_progress = $1, status = 'active' WHERE id = $2`,
+          [newProgress, mission.id]
+        );
+      }
 
       const updatedMission = { ...mission, currentProgress: newProgress, status: isCompleted ? 'completed' : 'active' };
 
@@ -315,6 +337,29 @@ export class UserMissionRepository extends BaseRepository<
       [userId]
     );
     return result.rows.map(normalizeUserMissionWithDetails);
+  }
+
+  async saveRewardSummary(id: number, summary: Record<string, unknown>): Promise<void> {
+    await db.query(
+      'UPDATE user_missions SET reward_summary = $1 WHERE id = $2',
+      [JSON.stringify(summary), id]
+    );
+  }
+
+  async findLastCompletedByUserId(userId: string): Promise<UserMissionWithDetails | null> {
+    const result = await db.query<UserMissionWithDetailsRow>(
+      `
+        SELECT um.*, m.title, m.description, m.difficulty, m.duration
+        FROM user_missions um
+        JOIN missions m ON um.mission_id = m.id
+        WHERE um.user_id = $1 AND um.status = 'completed'
+        ORDER BY um.completed_at DESC NULLS LAST, um.id DESC
+        LIMIT 1
+      `,
+      [userId]
+    );
+    const row = result.rows[0];
+    return row ? normalizeUserMissionWithDetails(row) : null;
   }
 
   // ── Admin Queries ────────────────────────────────────────────────────
@@ -413,7 +458,7 @@ export class UserMissionRepository extends BaseRepository<
     const result = await db.query<MissionMonsterRow>(
       `
         SELECT m.id, m.name, m.level, m.img_link, m.type1, m.type2, m.type3, m.type4, m.type5, m.attribute,
-               t.name as trainer_name
+               m.trainer_id, t.name as trainer_name
         FROM mission_monsters mm
         JOIN monsters m ON mm.monster_id = m.id
         LEFT JOIN trainers t ON m.trainer_id = t.id
@@ -428,6 +473,7 @@ export class UserMissionRepository extends BaseRepository<
       imgLink: row.img_link,
       types: [row.type1, row.type2, row.type3, row.type4, row.type5].filter((t): t is string => t !== null),
       attribute: row.attribute,
+      trainerId: row.trainer_id,
       trainerName: row.trainer_name,
     }));
   }

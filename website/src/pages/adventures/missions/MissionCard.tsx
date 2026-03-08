@@ -1,8 +1,24 @@
 import { TypeBadge } from '../../../components/common/TypeBadge';
 import { AttributeBadge } from '../../../components/common/AttributeBadge';
 import { BadgeGroup } from '../../../components/common/BadgeGroup';
-import type { Mission, MissionRequirements, MissionRewardConfig } from './types';
+import type { Mission, MissionRequirements, MissionRewardConfig, MissionItemRewardEntry } from './types';
 import { getDifficultyConfig, parseJson } from './types';
+
+// ── Helpers ────────────────────────────────────────────────────────────────
+
+const formatAmount = (val: number | { min: number; max: number } | undefined): string | null => {
+  if (val === undefined || val === null) return null;
+  if (typeof val === 'number') return val > 0 ? String(val) : null;
+  if (val.min === 0 && val.max === 0) return null;
+  return val.min === val.max ? String(val.min) : `${val.min}-${val.max}`;
+};
+
+const getItemLabel = (entry: MissionItemRewardEntry): string => {
+  if (entry.itemName) return entry.itemName;
+  if (entry.category) return `Random ${entry.category}`;
+  if (entry.itemPool && entry.itemPool.length > 0) return 'Random item';
+  return 'Item';
+};
 
 // ── Shared sub-components ──────────────────────────────────────────────────
 
@@ -17,36 +33,46 @@ export const DifficultyBadge = ({ difficulty }: { difficulty: string }) => {
 
 export const RewardsList = ({ rewardConfig }: { rewardConfig: MissionRewardConfig | null }) => {
   if (!rewardConfig) return null;
+
+  const levelsStr = formatAmount(rewardConfig.levels);
+  const coinsStr = formatAmount(rewardConfig.coins);
+  const items = rewardConfig.items ?? [];
+  const hasRewards = levelsStr || coinsStr || items.length > 0;
+
+  if (!hasRewards) return null;
+
   return (
     <div className="mission-card__rewards">
       <h4 className="mission-card__section-title">
         <i className="fas fa-gift"></i> Potential Rewards
       </h4>
       <div className="mission-card__reward-grid">
-        {rewardConfig.levels && (
+        {levelsStr && (
           <div className="mission-card__reward-item">
             <i className="fas fa-arrow-up"></i>
-            <span>{rewardConfig.levels.min}-{rewardConfig.levels.max} Levels</span>
+            <span>{levelsStr} Levels</span>
           </div>
         )}
-        {rewardConfig.coins && (
+        {coinsStr && (
           <div className="mission-card__reward-item">
             <i className="fas fa-coins"></i>
-            <span>{rewardConfig.coins.min}-{rewardConfig.coins.max} Coins</span>
+            <span>{coinsStr} Coins</span>
           </div>
         )}
-        {rewardConfig.items && (
-          <div className="mission-card__reward-item">
-            <i className="fas fa-box-open"></i>
-            <span>{rewardConfig.items.min}-{rewardConfig.items.max} Items</span>
-          </div>
-        )}
-        {rewardConfig.monsters && (
-          <div className="mission-card__reward-item">
-            <i className="fas fa-paw"></i>
-            <span>{rewardConfig.monsters.count} Monster{rewardConfig.monsters.count !== 1 ? 's' : ''}</span>
-          </div>
-        )}
+        {items.map((entry, i) => {
+          const label = getItemLabel(entry);
+          const qty = entry.quantity && entry.quantity > 1 ? `${entry.quantity}x ` : '';
+          const chance = entry.chance !== undefined && entry.chance < 100;
+          return (
+            <div key={i} className="mission-card__reward-item">
+              <i className="fas fa-box-open"></i>
+              <span>{qty}{label}</span>
+              {chance && (
+                <span className="mission-card__reward-chance">{entry.chance}%</span>
+              )}
+            </div>
+          );
+        })}
       </div>
     </div>
   );

@@ -608,6 +608,338 @@
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
+   Reward Chance Badge
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.mission-card__reward-chance {
+  display: inline-flex;
+  align-items: center;
+  padding: 0 var(--spacing-xxsmall);
+  border-radius: var(--border-radius-small);
+  font-size: var(--font-size-xsmall);
+  font-weight: 600;
+  color: var(--warning-color);
+  background: color-mix(in srgb, var(--warning-color) 15%, transparent);
+  margin-left: var(--spacing-xxsmall);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   Mission Reward Summary
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.missions-section__summary {
+  margin-bottom: var(--spacing-large);
+}
+
+.mission-reward-summary {
+  background: var(--primary-color);
+  border-radius: var(--border-radius-medium);
+  padding: var(--spacing-medium);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-medium);
+}
+
+.mission-reward-summary--unclaimed {
+  border: 2px solid var(--warning-color);
+  box-shadow: 0 0 16px color-mix(in srgb, var(--warning-color) 25%, transparent);
+}
+
+.mission-reward-summary--claimed {
+  border: 2px solid var(--success-color);
+  box-shadow: 0 0 8px color-mix(in srgb, var(--success-color) 15%, transparent);
+}
+
+.mission-reward-summary__header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xxsmall);
+}
+
+.mission-reward-summary__title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-small);
+  flex-wrap: wrap;
+}
+
+.mission-reward-summary__title {
+  margin: 0;
+  font-size: var(--font-size-large);
+  color: var(--text-color);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xsmall);
+}
+
+.mission-reward-summary--unclaimed .mission-reward-summary__title i {
+  color: var(--warning-color);
+}
+
+.mission-reward-summary--claimed .mission-reward-summary__title i {
+  color: var(--success-color);
+}
+
+.mission-reward-summary__description {
+  margin: 0;
+  color: var(--text-color-muted);
+  font-size: var(--font-size-small);
+}
+
+.mission-reward-summary__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-small);
+}
+
+.mission-reward-summary__pending {
+  text-align: center;
+  padding: var(--spacing-medium);
+  color: var(--text-color-muted);
+  font-size: var(--font-size-medium);
+}
+
+.mission-reward-summary__pending i {
+  margin-right: var(--spacing-xsmall);
+  color: var(--accent-color);
+}
+
+.mission-reward-summary__sections {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-small);
+}
+
+.mission-reward-summary__section {
+  background: var(--overlay-light);
+  border-radius: var(--border-radius-small);
+  padding: var(--spacing-small);
+}
+
+.mission-reward-summary__section-title {
+  margin: 0 0 var(--spacing-xsmall);
+  font-size: var(--font-size-small);
+  font-weight: 600;
+  color: var(--text-color);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xxsmall);
+}
+
+.mission-reward-summary__section-title i {
+  color: var(--accent-color);
+}
+
+.mission-reward-summary__list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xxsmall);
+}
+
+.mission-reward-summary__list-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: var(--font-size-small);
+  padding: var(--spacing-xxsmall) 0;
+}
+
+.mission-reward-summary__item-name {
+  color: var(--text-color);
+  font-weight: 500;
+}
+
+.mission-reward-summary__item-value {
+  color: var(--accent-color);
+  font-weight: 600;
+}
+
+.mission-reward-summary__item-category {
+  color: var(--text-color-muted);
+  font-size: var(--font-size-xsmall);
+  margin-left: var(--spacing-xsmall);
+}
+
+.mission-reward-summary__footer {
+  display: flex;
+  justify-content: center;
+  padding-top: var(--spacing-small);
+  border-top: 1px solid var(--border-color);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   Mission Claim Modal
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.mission-claim-modal {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-medium);
+}
+
+/* Let autocomplete dropdowns overflow outside the modal container */
+.modal-container:has(.mission-claim-modal) {
+  overflow-y: visible;
+}
+
+.modal-overlay:has(.mission-claim-modal) {
+  overflow-y: auto;
+}
+
+.mission-claim-modal__preview {
+  background: var(--overlay-light);
+  border-radius: var(--border-radius-small);
+  padding: var(--spacing-medium);
+}
+
+.mission-claim-modal__preview h4 {
+  margin: 0 0 var(--spacing-small);
+  font-size: var(--font-size-medium);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xsmall);
+}
+
+.mission-claim-modal__preview h4 i {
+  color: var(--accent-color);
+}
+
+.mission-claim-modal__stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-small);
+}
+
+.mission-claim-modal__stats span {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xxsmall);
+  font-size: var(--font-size-small);
+  color: var(--text-color);
+  background: var(--primary-color);
+  padding: var(--spacing-xxsmall) var(--spacing-xsmall);
+  border-radius: var(--border-radius-small);
+}
+
+.mission-claim-modal__stats span i {
+  color: var(--accent-color);
+}
+
+.mission-claim-modal__trainer-select {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xsmall);
+}
+
+.mission-claim-modal__trainer-select h4 {
+  margin: 0;
+  font-size: var(--font-size-medium);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xsmall);
+}
+
+.mission-claim-modal__trainer-select h4 i {
+  color: var(--accent-color);
+}
+
+.mission-claim-modal__item-assignment {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-small);
+  padding: var(--spacing-xsmall);
+  background: var(--overlay-light);
+  border-radius: var(--border-radius-small);
+}
+
+.mission-claim-modal__item-name {
+  font-weight: 600;
+  font-size: var(--font-size-small);
+  color: var(--text-color);
+  white-space: nowrap;
+  min-width: 120px;
+}
+
+.mission-claim-modal__item-assignment .trainer-autocomplete {
+  flex: 1;
+}
+
+.mission-claim-modal__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--spacing-small);
+  padding-top: var(--spacing-small);
+  border-top: 1px solid var(--border-color);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   Mission Form — Amount & Item Editors
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.mission-form__amount-editor {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xsmall);
+  margin-bottom: var(--spacing-small);
+}
+
+.mission-form__amount-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-small);
+}
+
+.mission-form__amount-toggle {
+  display: flex;
+  gap: var(--spacing-xxsmall);
+}
+
+.mission-form__item-rewards {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-small);
+}
+
+.mission-form__item-entry {
+  background: var(--overlay-light);
+  border-radius: var(--border-radius-small);
+  padding: var(--spacing-small);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xsmall);
+}
+
+.mission-form__item-entry-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-small);
+}
+
+.mission-form__item-entry-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xsmall);
+}
+
+.mission-form__item-entry-fields {
+  display: flex;
+  gap: var(--spacing-small);
+}
+
+.mission-form__item-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xxsmall);
+  flex: 1;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
    Responsive
    ═══════════════════════════════════════════════════════════════════════════ */
 
@@ -627,6 +959,19 @@
   .missions-section__filters {
     flex-direction: column;
     align-items: stretch;
+  }
+
+  .mission-reward-summary__title-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .mission-claim-modal__stats {
+    flex-direction: column;
+  }
+
+  .mission-form__item-entry-fields {
+    flex-direction: column;
   }
 }
 

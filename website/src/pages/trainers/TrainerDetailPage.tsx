@@ -135,6 +135,8 @@ const TrainerDetailPage = () => {
           isClaimingAll={isClaimingAll}
           handleClaimAchievement={handleClaimAchievement}
           handleClaimAllAchievements={handleClaimAllAchievements}
+          getItemImageUrl={getItemImageUrl}
+          handleItemDetailClick={handleItemDetailClick}
         />
       ),
     },
@@ -236,6 +238,7 @@ const TrainerDetailPage = () => {
           isOpen={isItemDetailModalOpen}
           onClose={() => setIsItemDetailModalOpen(false)}
           item={selectedItemForDetail}
+          modalId="achievement-item-detail"
         />
 
         {/* Achievement Reward Popup */}
@@ -265,11 +268,40 @@ const TrainerDetailPage = () => {
                             <div key={i} className="claimed-achievement-item">
                               <span className="achievement-name-small">{a.name}</span>
                               <span className="achievement-reward-small">
-                                {a.reward_currency && (
-                                  <span><i className="fas fa-coins"></i> {a.reward_currency}</span>
+                                {a.reward?.currency && (
+                                  <span><i className="fas fa-coins"></i> {a.reward.currency}</span>
                                 )}
-                                {a.reward_item && (
-                                  <span><i className="fas fa-gift"></i> {a.reward_item}</span>
+                                {a.reward?.levels && (
+                                  <span><i className="fas fa-arrow-up"></i> {a.reward.levels} {a.reward.levels === 1 ? 'Level' : 'Levels'}</span>
+                                )}
+                                {a.reward?.items?.map((item, j) => (
+                                  <span
+                                    key={j}
+                                    className="achievement-reward-item clickable-item"
+                                    onClick={(e) => { e.stopPropagation(); handleItemDetailClick(item.name, 'items'); }}
+                                  >
+                                    <img
+                                      className="achievement-reward-item__image"
+                                      src={getItemImageUrl(item.name, 'items')}
+                                      alt={item.name}
+                                      onError={(e) => { (e.target as HTMLImageElement).onerror = null; (e.target as HTMLImageElement).src = '/images/default_item.png'; }}
+                                    />
+                                    {item.quantity > 1 ? `${item.quantity}x ` : ''}{item.name}
+                                  </span>
+                                ))}
+                                {a.reward?.item && !a.reward?.items?.length && (
+                                  <span
+                                    className="achievement-reward-item clickable-item"
+                                    onClick={(e) => { e.stopPropagation(); handleItemDetailClick(a.reward!.item!, 'items'); }}
+                                  >
+                                    <img
+                                      className="achievement-reward-item__image"
+                                      src={getItemImageUrl(a.reward.item, 'items')}
+                                      alt={a.reward.item}
+                                      onError={(e) => { (e.target as HTMLImageElement).onerror = null; (e.target as HTMLImageElement).src = '/images/default_item.png'; }}
+                                    />
+                                    {a.reward.item}
+                                  </span>
                                 )}
                               </span>
                             </div>
@@ -287,10 +319,25 @@ const TrainerDetailPage = () => {
                               <span className="reward-text">{rewardPopupData.totalRewards.currency} Coins</span>
                             </div>
                           )}
+                          {rewardPopupData.totalRewards.levels && (
+                            <div className="reward-item-popup">
+                              <i className="fas fa-arrow-up reward-icon"></i>
+                              <span className="reward-text">{rewardPopupData.totalRewards.levels} {rewardPopupData.totalRewards.levels === 1 ? 'Level' : 'Levels'}</span>
+                            </div>
+                          )}
                           {rewardPopupData.totalRewards.items?.map((item, i) => (
-                            <div key={i} className="reward-item-popup">
-                              <i className="fas fa-gift reward-icon"></i>
-                              <span className="reward-text">{item}</span>
+                            <div
+                              key={i}
+                              className="reward-item-popup clickable-item"
+                              onClick={() => handleItemDetailClick(item.name, 'items')}
+                            >
+                              <img
+                                className="achievement-reward-item__image"
+                                src={getItemImageUrl(item.name, 'items')}
+                                alt={item.name}
+                                onError={(e) => { (e.target as HTMLImageElement).onerror = null; (e.target as HTMLImageElement).src = '/images/default_item.png'; }}
+                              />
+                              <span className="reward-text">{item.quantity > 1 ? `${item.quantity}x ` : ''}{item.name}</span>
                             </div>
                           ))}
                         </div>
@@ -315,9 +362,38 @@ const TrainerDetailPage = () => {
                               <span className="reward-text">{rewardPopupData.rewards.currency} Coins</span>
                             </div>
                           )}
-                          {rewardPopupData.rewards.item && (
+                          {rewardPopupData.rewards.levels && (
                             <div className="reward-item-popup">
-                              <i className="fas fa-gift reward-icon"></i>
+                              <i className="fas fa-arrow-up reward-icon"></i>
+                              <span className="reward-text">{rewardPopupData.rewards.levels} {rewardPopupData.rewards.levels === 1 ? 'Level' : 'Levels'}</span>
+                            </div>
+                          )}
+                          {rewardPopupData.rewards.items?.map((item, i) => (
+                            <div
+                              key={i}
+                              className="reward-item-popup clickable-item"
+                              onClick={() => handleItemDetailClick(item.name, 'items')}
+                            >
+                              <img
+                                className="achievement-reward-item__image"
+                                src={getItemImageUrl(item.name, 'items')}
+                                alt={item.name}
+                                onError={(e) => { (e.target as HTMLImageElement).onerror = null; (e.target as HTMLImageElement).src = '/images/default_item.png'; }}
+                              />
+                              <span className="reward-text">{item.quantity > 1 ? `${item.quantity}x ` : ''}{item.name}</span>
+                            </div>
+                          ))}
+                          {rewardPopupData.rewards.item && !rewardPopupData.rewards.items?.length && (
+                            <div
+                              className="reward-item-popup clickable-item"
+                              onClick={() => handleItemDetailClick(rewardPopupData.rewards!.item!, 'items')}
+                            >
+                              <img
+                                className="achievement-reward-item__image"
+                                src={getItemImageUrl(rewardPopupData.rewards.item, 'items')}
+                                alt={rewardPopupData.rewards.item}
+                                onError={(e) => { (e.target as HTMLImageElement).onerror = null; (e.target as HTMLImageElement).src = '/images/default_item.png'; }}
+                              />
                               <span className="reward-text">{rewardPopupData.rewards.item}</span>
                             </div>
                           )}

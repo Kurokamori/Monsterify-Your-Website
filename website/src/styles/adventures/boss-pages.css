@@ -138,6 +138,11 @@
   color: var(--success-color);
 }
 
+.badge--status-warning {
+  background-color: var(--warning-dark);
+  color: var(--warning-color);
+}
+
 /* ---------- Boss Leaderboard ---------- */
 
 .boss-leaderboard {

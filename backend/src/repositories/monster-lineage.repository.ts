@@ -26,7 +26,16 @@ export type MonsterLineage = {
 export type MonsterLineageWithDetails = MonsterLineage & {
   relatedMonsterName: string | null;
   relatedMonsterSpecies: string | null;
+  relatedMonsterSpecies2: string | null;
+  relatedMonsterSpecies3: string | null;
   relatedMonsterLevel: number | null;
+  relatedMonsterImgLink: string | null;
+  relatedMonsterType1: string | null;
+  relatedMonsterType2: string | null;
+  relatedMonsterType3: string | null;
+  relatedMonsterType4: string | null;
+  relatedMonsterType5: string | null;
+  relatedMonsterAttribute: string | null;
   createdByUsername: string | null;
 };
 
@@ -65,7 +74,16 @@ const normalizeMonsterLineage = (row: MonsterLineageRow): MonsterLineage => ({
 type MonsterLineageWithDetailsRow = MonsterLineageRow & {
   related_monster_name: string | null;
   related_monster_species: string | null;
+  related_monster_species2: string | null;
+  related_monster_species3: string | null;
   related_monster_level: number | null;
+  related_monster_img_link: string | null;
+  related_monster_type1: string | null;
+  related_monster_type2: string | null;
+  related_monster_type3: string | null;
+  related_monster_type4: string | null;
+  related_monster_type5: string | null;
+  related_monster_attribute: string | null;
   created_by_username: string | null;
 };
 
@@ -73,9 +91,34 @@ const normalizeMonsterLineageWithDetails = (row: MonsterLineageWithDetailsRow): 
   ...normalizeMonsterLineage(row),
   relatedMonsterName: row.related_monster_name,
   relatedMonsterSpecies: row.related_monster_species,
+  relatedMonsterSpecies2: row.related_monster_species2,
+  relatedMonsterSpecies3: row.related_monster_species3,
   relatedMonsterLevel: row.related_monster_level,
+  relatedMonsterImgLink: row.related_monster_img_link,
+  relatedMonsterType1: row.related_monster_type1,
+  relatedMonsterType2: row.related_monster_type2,
+  relatedMonsterType3: row.related_monster_type3,
+  relatedMonsterType4: row.related_monster_type4,
+  relatedMonsterType5: row.related_monster_type5,
+  relatedMonsterAttribute: row.related_monster_attribute,
   createdByUsername: row.created_by_username,
 });
+
+const MONSTER_DETAIL_COLUMNS = `
+  m.name as related_monster_name,
+  m.species1 as related_monster_species,
+  m.species2 as related_monster_species2,
+  m.species3 as related_monster_species3,
+  m.level as related_monster_level,
+  m.img_link as related_monster_img_link,
+  m.type1 as related_monster_type1,
+  m.type2 as related_monster_type2,
+  m.type3 as related_monster_type3,
+  m.type4 as related_monster_type4,
+  m.type5 as related_monster_type5,
+  m.attribute as related_monster_attribute,
+  u.username as created_by_username
+`;
 
 export class MonsterLineageRepository extends BaseRepository<
   MonsterLineage,
@@ -100,10 +143,7 @@ export class MonsterLineageRepository extends BaseRepository<
       `
         SELECT
           ml.*,
-          m.name as related_monster_name,
-          m.species1 as related_monster_species,
-          m.level as related_monster_level,
-          u.username as created_by_username
+          ${MONSTER_DETAIL_COLUMNS}
         FROM monster_lineage ml
         JOIN monsters m ON ml.parent_id = m.id
         LEFT JOIN users u ON ml.created_by::text = u.id::text
@@ -120,10 +160,7 @@ export class MonsterLineageRepository extends BaseRepository<
       `
         SELECT
           ml.*,
-          m.name as related_monster_name,
-          m.species1 as related_monster_species,
-          m.level as related_monster_level,
-          u.username as created_by_username
+          ${MONSTER_DETAIL_COLUMNS}
         FROM monster_lineage ml
         JOIN monsters m ON ml.parent_id = m.id
         LEFT JOIN users u ON ml.created_by::text = u.id::text
@@ -140,10 +177,7 @@ export class MonsterLineageRepository extends BaseRepository<
       `
         SELECT
           ml.*,
-          m.name as related_monster_name,
-          m.species1 as related_monster_species,
-          m.level as related_monster_level,
-          u.username as created_by_username
+          ${MONSTER_DETAIL_COLUMNS}
         FROM monster_lineage ml
         JOIN monsters m ON ml.parent_id = m.id
         LEFT JOIN users u ON ml.created_by::text = u.id::text
@@ -160,10 +194,7 @@ export class MonsterLineageRepository extends BaseRepository<
       `
         SELECT
           ml.*,
-          m.name as related_monster_name,
-          m.species1 as related_monster_species,
-          m.level as related_monster_level,
-          u.username as created_by_username
+          ${MONSTER_DETAIL_COLUMNS}
         FROM monster_lineage ml
         JOIN monsters m ON ml.parent_id = m.id
         LEFT JOIN users u ON ml.created_by::text = u.id::text
@@ -180,13 +211,22 @@ export class MonsterLineageRepository extends BaseRepository<
       `
         SELECT DISTINCT
           ml2.*,
-          m3.name as related_monster_name,
-          m3.species1 as related_monster_species,
-          m3.level as related_monster_level,
+          m.name as related_monster_name,
+          m.species1 as related_monster_species,
+          m.species2 as related_monster_species2,
+          m.species3 as related_monster_species3,
+          m.level as related_monster_level,
+          m.img_link as related_monster_img_link,
+          m.type1 as related_monster_type1,
+          m.type2 as related_monster_type2,
+          m.type3 as related_monster_type3,
+          m.type4 as related_monster_type4,
+          m.type5 as related_monster_type5,
+          m.attribute as related_monster_attribute,
           u.username as created_by_username
         FROM monster_lineage ml1
         JOIN monster_lineage ml2 ON ml1.parent_id = ml2.monster_id
-        JOIN monsters m3 ON ml2.parent_id = m3.id
+        JOIN monsters m ON ml2.parent_id = m.id
         LEFT JOIN users u ON ml2.created_by::text = u.id::text
         WHERE ml1.monster_id = $1
           AND ml1.relationship_type = 'child'

@@ -32,3 +32,6 @@ export * from './move.types';
 
 // Chat system types
 export * from './chat.types';
+
+// Mission reward types
+export * from './mission.types';

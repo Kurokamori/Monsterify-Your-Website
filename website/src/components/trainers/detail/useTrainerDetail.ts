@@ -22,11 +22,16 @@ export interface Achievement {
   category?: string;
   progress?: number;
   target?: number;
+  requirement?: number;
   unlocked?: boolean;
   claimed?: boolean;
   canClaim?: boolean;
-  reward_currency?: number;
-  reward_item?: string;
+  reward?: {
+    currency?: number;
+    levels?: number;
+    items?: { name: string; quantity: number }[];
+    item?: string;
+  };
   [key: string]: unknown;
 }
 
@@ -41,10 +46,10 @@ export interface AchievementStats {
 export interface RewardPopupData {
   isBulk?: boolean;
   achievement?: Achievement;
-  rewards?: { currency?: number; item?: string };
+  rewards?: { currency?: number; levels?: number; items?: { name: string; quantity: number }[]; item?: string };
   claimedCount?: number;
   claimedAchievements?: Achievement[];
-  totalRewards?: { currency?: number; items?: string[] };
+  totalRewards?: { currency?: number; levels?: number; items?: { name: string; quantity: number }[] };
   message?: string;
 }
 
@@ -361,7 +366,42 @@ export function useTrainerDetail() {
       setAchievementsLoading(true);
       const response = await trainerService.getAchievements(id);
       if (response.success) {
-        setAchievements(response.data?.achievements || []);
+        const loadedAchievements = response.data?.achievements || [];
+        setAchievements(loadedAchievements);
+
+        // Fetch item details for achievement reward items (for images)
+        const achievementItemNames = new Set<string>();
+        for (const a of loadedAchievements) {
+          if (a.reward?.items) {
+            for (const item of a.reward.items) {
+              achievementItemNames.add(item.name);
+            }
+          }
+          if (a.reward?.item) {
+            achievementItemNames.add(a.reward.item);
+          }
+        }
+        if (achievementItemNames.size > 0) {
+          try {
+            // Fetch all items in one call and build lookup map
+            const allItemsResponse = await itemsService.getItems({ limit: 1000 });
+            if (allItemsResponse.data?.length > 0) {
+              const newDetails: Record<string, Item> = {};
+              for (const itemName of achievementItemNames) {
+                const found = allItemsResponse.data.find(item =>
+                  item.name.toLowerCase() === itemName.toLowerCase()
+                );
+                if (found) newDetails[itemName] = found;
+              }
+              if (Object.keys(newDetails).length > 0) {
+                setInventoryItemDetails(prev => ({ ...prev, ...newDetails }));
+              }
+            }
+          } catch {
+            // skip item detail fetch errors
+          }
+        }
+
         const statsResponse = await trainerService.getAchievementStats(id);
         if (statsResponse.success) {
           const raw = statsResponse.data?.stats;
@@ -452,6 +492,12 @@ export function useTrainerDetail() {
             total_earned_currency: (prev.total_earned_currency || 0) + reward.currency,
           } : prev);
         }
+        if (reward?.levels) {
+          setTrainer(prev => prev ? {
+            ...prev,
+            level: (prev.level || 0) + reward.levels,
+          } : prev);
+        }
 
         setAchievementStats(prev => prev ? {
           ...prev,
@@ -472,12 +518,9 @@ export function useTrainerDetail() {
       setIsClaimingAll(true);
       const response = await trainerService.claimAllAchievements(id);
       if (response.success) {
-        // Normalize claimedAchievements to match frontend Achievement shape
         const normalizedAchievements = (response.data.claimedAchievements || []).map(
-          (a: { id: string; name: string; reward?: { currency?: number; item?: string }; reward_currency?: number; reward_item?: string }) => ({
+          (a: { id: string; name: string; reward?: { currency?: number; levels?: number; items?: { name: string; quantity: number }[]; item?: string } }) => ({
             ...a,
-            reward_currency: a.reward_currency ?? a.reward?.currency,
-            reward_item: a.reward_item ?? a.reward?.item,
           })
         );
         setRewardPopupData({
@@ -501,6 +544,12 @@ export function useTrainerDetail() {
             ...prev,
             currency_amount: (prev.currency_amount || 0) + response.data.totalRewards.currency,
             total_earned_currency: (prev.total_earned_currency || 0) + response.data.totalRewards.currency,
+          } : prev);
+        }
+        if (response.data.totalRewards?.levels > 0) {
+          setTrainer(prev => prev ? {
+            ...prev,
+            level: (prev.level || 0) + response.data.totalRewards.levels,
           } : prev);
         }
 

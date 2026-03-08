@@ -12,6 +12,7 @@ interface ModalProps {
   footer?: ReactNode;
   size?: ModalSize;
   closeOnOverlayClick?: boolean;
+  modalId?: string;
 }
 
 const sizeClasses: Record<ModalSize, string> = {
@@ -28,9 +29,10 @@ export const Modal = ({
   children,
   footer,
   size = 'medium',
-  closeOnOverlayClick = true
+  closeOnOverlayClick = true,
+  modalId
 }: ModalProps) => {
-  const { zIndex } = useModalManager(isOpen);
+  const { zIndex } = useModalManager(isOpen, modalId);
 
   // Handle ESC key to close modal
   useEffect(() => {

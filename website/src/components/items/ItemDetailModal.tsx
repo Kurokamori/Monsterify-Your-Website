@@ -17,6 +17,7 @@ interface ItemDetailModalProps {
   isOpen: boolean;
   onClose: () => void;
   item: ItemDetailData | null;
+  modalId?: string;
 }
 
 const getRarityBadgeClass = (rarity?: string): string => {
@@ -32,7 +33,7 @@ const getRarityBadgeClass = (rarity?: string): string => {
   return rarityMap[rarityLower] || '';
 };
 
-export const ItemDetailModal = ({ isOpen, onClose, item }: ItemDetailModalProps) => {
+export const ItemDetailModal = ({ isOpen, onClose, item, modalId }: ItemDetailModalProps) => {
   if (!item) return null;
 
   const rarityClass = getRarityBadgeClass(item.rarity);
@@ -44,7 +45,7 @@ export const ItemDetailModal = ({ isOpen, onClose, item }: ItemDetailModalProps)
   );
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title="Item Details" size="medium" footer={footer}>
+    <Modal isOpen={isOpen} onClose={onClose} title="Item Details" size="medium" footer={footer} modalId={modalId}>
       <div className="item-detail">
         <div className="item-detail__header">
           <div className="item-detail__image">

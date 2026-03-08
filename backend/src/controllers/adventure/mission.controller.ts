@@ -172,9 +172,14 @@ export async function claimMissionRewards(req: Request, res: Response): Promise<
       return;
     }
 
-    const result = await missionService.claimRewards(missionId, userId);
+    const { itemAssignments, levelAllocations } = (req.body ?? {}) as {
+      itemAssignments?: { itemIndex: number; trainerId: number }[];
+      levelAllocations?: { targetType: 'monster' | 'trainer'; targetId: number; levels: number }[];
+    };
 
-    if (result.success) {
+    const result = await missionService.claimRewards(missionId, userId, { itemAssignments, levelAllocations });
+
+    if (result.success || result.needsAllocation) {
       res.json(result);
     } else {
       res.status(400).json(result);
@@ -182,6 +187,23 @@ export async function claimMissionRewards(req: Request, res: Response): Promise<
   } catch (error) {
     const msg = error instanceof Error ? error.message : 'Failed to claim mission rewards';
     console.error('Error claiming mission rewards:', error);
+    res.status(500).json({ success: false, message: msg });
+  }
+}
+
+export async function getLastCompletedMission(req: Request, res: Response): Promise<void> {
+  try {
+    const userId = req.user?.discord_id;
+    if (!userId) {
+      res.status(400).json({ success: false, message: 'User authentication required' });
+      return;
+    }
+
+    const mission = await missionService.getLastCompletedMission(userId);
+    res.json({ success: true, data: mission });
+  } catch (error) {
+    const msg = error instanceof Error ? error.message : 'Failed to get last completed mission';
+    console.error('Error getting last completed mission:', error);
     res.status(500).json({ success: false, message: msg });
   }
 }

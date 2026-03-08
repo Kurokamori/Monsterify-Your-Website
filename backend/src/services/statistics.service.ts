@@ -953,6 +953,8 @@ export class StatisticsService {
     const allAchievementIds = TrainerAchievementRepository.getAllAchievementIds();
     const typeAchievements = TrainerAchievementRepository.getTypeAchievements();
     const attributeAchievements = TrainerAchievementRepository.getAttributeAchievements();
+    const typeCountAchievements = TrainerAchievementRepository.getTypeCountAchievements();
+    const franchiseAchievements = TrainerAchievementRepository.getFranchiseAchievements();
     const level100Achievements = TrainerAchievementRepository.getLevel100Achievements();
     const trainerLevelAchievements = TrainerAchievementRepository.getTrainerLevelAchievements();
     const specialAchievements = TrainerAchievementRepository.getSpecialAchievements();
@@ -966,11 +968,13 @@ export class StatisticsService {
       playerDisplayName: string;
       type: number;
       attribute: number;
+      franchise: number;
       level100: number;
       trainerLevel: number;
       special: number;
       typeSubtypes: Record<string, number>;
       attributeSubtypes: Record<string, number>;
+      franchiseSubtypes: Record<string, number>;
     };
 
     const categoryStats: Record<number, CategoryStat> = {};
@@ -987,11 +991,13 @@ export class StatisticsService {
         playerDisplayName: displayName(claim),
         type: 0,
         attribute: 0,
+        franchise: 0,
         level100: 0,
         trainerLevel: 0,
         special: 0,
         typeSubtypes: {},
         attributeSubtypes: {},
+        franchiseSubtypes: {},
       });
 
       for (const [typeName, defs] of Object.entries(typeAchievements)) {
@@ -1001,10 +1007,24 @@ export class StatisticsService {
         }
       }
 
+      for (const [label, defs] of Object.entries(typeCountAchievements)) {
+        if (findInCategory(claim.achievement_id, defs)) {
+          stat.type++;
+          stat.typeSubtypes[label] = (stat.typeSubtypes[label] ?? 0) + 1;
+        }
+      }
+
       for (const [attrName, defs] of Object.entries(attributeAchievements)) {
         if (findInCategory(claim.achievement_id, defs)) {
           stat.attribute++;
           stat.attributeSubtypes[attrName] = (stat.attributeSubtypes[attrName] ?? 0) + 1;
+        }
+      }
+
+      for (const [franchiseName, defs] of Object.entries(franchiseAchievements)) {
+        if (findInCategory(claim.achievement_id, defs)) {
+          stat.franchise++;
+          stat.franchiseSubtypes[franchiseName] = (stat.franchiseSubtypes[franchiseName] ?? 0) + 1;
         }
       }
 
@@ -1040,7 +1060,7 @@ export class StatisticsService {
     }).sort((a, b) => a.count - b.count);
 
     // Top by category
-    const categoryKeys = ['type', 'attribute', 'level100', 'trainerLevel', 'special'] as const;
+    const categoryKeys = ['type', 'attribute', 'franchise', 'level100', 'trainerLevel', 'special'] as const;
     const topByCategory: Record<string, unknown[]> = {};
 
     for (const cat of categoryKeys) {
@@ -1060,9 +1080,9 @@ export class StatisticsService {
     }
 
     // Top by subtypes
-    const topBySubtype: { types: Record<string, unknown[]>; attributes: Record<string, unknown[]> } = { types: {}, attributes: {} };
+    const topBySubtype: { types: Record<string, unknown[]>; attributes: Record<string, unknown[]>; franchises: Record<string, unknown[]> } = { types: {}, attributes: {}, franchises: {} };
 
-    for (const typeName of Object.keys(typeAchievements)) {
+    for (const typeName of [...Object.keys(typeAchievements), ...Object.keys(typeCountAchievements)]) {
       topBySubtype.types[typeName] = Object.entries(categoryStats)
         .filter(([, d]) => (d.typeSubtypes[typeName] ?? 0) > 0)
         .sort(([, a], [, b]) => (b.typeSubtypes[typeName] ?? 0) - (a.typeSubtypes[typeName] ?? 0))
@@ -1094,14 +1114,37 @@ export class StatisticsService {
         }));
     }
 
+    for (const franchiseName of Object.keys(franchiseAchievements)) {
+      topBySubtype.franchises[franchiseName] = Object.entries(categoryStats)
+        .filter(([, d]) => (d.franchiseSubtypes[franchiseName] ?? 0) > 0)
+        .sort(([, a], [, b]) => (b.franchiseSubtypes[franchiseName] ?? 0) - (a.franchiseSubtypes[franchiseName] ?? 0))
+        .slice(0, 3)
+        .map(([tid, d]) => ({
+          trainerId: parseInt(tid),
+          count: d.franchiseSubtypes[franchiseName],
+          trainerName: d.trainerName,
+          title: d.title,
+          faction: d.faction,
+          mainRef: d.mainRef,
+          playerDisplayName: d.playerDisplayName,
+        }));
+    }
+
     // Count category totals
     let typeTotalDefs = 0;
     for (const defs of Object.values(typeAchievements)) {
       typeTotalDefs += defs.length;
     }
+    for (const defs of Object.values(typeCountAchievements)) {
+      typeTotalDefs += defs.length;
+    }
     let attrTotalDefs = 0;
     for (const defs of Object.values(attributeAchievements)) {
       attrTotalDefs += defs.length;
+    }
+    let franchiseTotalDefs = 0;
+    for (const defs of Object.values(franchiseAchievements)) {
+      franchiseTotalDefs += defs.length;
     }
 
     return {
@@ -1120,6 +1163,7 @@ export class StatisticsService {
       categoryBreakdown: {
         type: typeTotalDefs,
         attribute: attrTotalDefs,
+        franchise: franchiseTotalDefs,
         level100: level100Achievements.length,
         trainerLevel: trainerLevelAchievements.length,
         special: specialAchievements.length,

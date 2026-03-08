@@ -4,6 +4,7 @@ import {
   TrainerInventoryRepository,
   TrainerAchievementRepository,
   MonsterRepository,
+  ItemRepository,
 } from '../repositories';
 import type {
   TrainerWithStats,
@@ -120,16 +121,24 @@ export type AchievementResult = {
   trainer: { id: number; name: string; level: number };
 };
 
+export type AchievementReward = {
+  currency?: number;
+  levels?: number;
+  items?: { name: string; quantity: number }[];
+  /** @deprecated Use items array instead */
+  item?: string;
+};
+
 export type AchievementClaimResult = {
   achievement: { id: string; name: string };
-  reward: { currency?: number; item?: string };
+  reward: AchievementReward;
 };
 
 export type AchievementClaimAllResult = {
   message: string;
   claimedCount: number;
-  claimedAchievements: { id: string; name: string; reward: { currency?: number; item?: string } }[];
-  totalRewards: { currency: number; items: string[] };
+  claimedAchievements: { id: string; name: string; reward: AchievementReward }[];
+  totalRewards: { currency: number; levels: number; items: { name: string; quantity: number }[] };
 };
 
 export type AchievementStats = {
@@ -194,6 +203,7 @@ export class TrainerService {
   private inventoryRepo: TrainerInventoryRepository;
   private achievementRepo: TrainerAchievementRepository;
   private monsterRepo: MonsterRepository;
+  private itemRepo: ItemRepository;
   private berryService: SpecialBerryService;
 
   constructor(
@@ -207,6 +217,7 @@ export class TrainerService {
     this.inventoryRepo = inventoryRepo ?? new TrainerInventoryRepository();
     this.achievementRepo = achievementRepo ?? new TrainerAchievementRepository();
     this.monsterRepo = monsterRepo ?? new MonsterRepository();
+    this.itemRepo = new ItemRepository();
     this.berryService = berryService ?? new SpecialBerryService();
   }
 
@@ -756,6 +767,29 @@ export class TrainerService {
       }
     }
 
+    // Type count achievements (monsters with exactly N types)
+    const typeCountCounts = await this.countMonstersByTypeCount(trainerId);
+    const typeCountAchievements = TrainerAchievementRepository.getTypeCountAchievements();
+    for (const [label, defs] of Object.entries(typeCountAchievements)) {
+      // Extract the number from the label (e.g. '1 Type' -> 1)
+      const typeNum = parseInt(label);
+      const progress = typeCountCounts[typeNum] ?? 0;
+      for (const def of defs) {
+        const claimed = claimedIds.has(def.id);
+        const unlocked = progress >= def.requirement;
+        achievements.push({
+          ...def,
+          category: 'type',
+          type: label,
+          progress,
+          unlocked,
+          claimed,
+          requirement: def.requirement,
+          canClaim: isOwner && unlocked && !claimed,
+        });
+      }
+    }
+
     // Attribute achievements
     const attributeAchievements = TrainerAchievementRepository.getAttributeAchievements();
     for (const [attribute, defs] of Object.entries(attributeAchievements)) {
@@ -806,6 +840,27 @@ export class TrainerService {
       });
     }
 
+    // Franchise achievements
+    const franchiseCounts = await this.countMonstersByFranchise(trainerId);
+    const franchiseAchievements = TrainerAchievementRepository.getFranchiseAchievements();
+    for (const [franchise, defs] of Object.entries(franchiseAchievements)) {
+      const progress = franchiseCounts[franchise] ?? 0;
+      for (const def of defs) {
+        const claimed = claimedIds.has(def.id);
+        const unlocked = progress >= def.requirement;
+        achievements.push({
+          ...def,
+          category: 'franchise',
+          type: franchise,
+          progress,
+          unlocked,
+          claimed,
+          requirement: def.requirement,
+          canClaim: isOwner && unlocked && !claimed,
+        });
+      }
+    }
+
     // Special achievements
     const specialProgress = await this.getSpecialAchievementProgress(trainerId);
     for (const def of TrainerAchievementRepository.getSpecialAchievements()) {
@@ -840,8 +895,23 @@ export class TrainerService {
     if (def.reward.currency) {
       await this.trainerRepo.updateCurrency(trainerId, def.reward.currency);
     }
+    if (def.reward.levels) {
+      await this.trainerRepo.addLevels(trainerId, def.reward.levels);
+    }
+    if (def.reward.items) {
+      for (const item of def.reward.items) {
+        const itemRow = await this.itemRepo.findByName(item.name);
+        const category = (INVENTORY_CATEGORIES.includes(itemRow?.category as InventoryCategory)
+          ? itemRow?.category : 'items') as InventoryCategory;
+        await this.inventoryRepo.addItem(trainerId, category, item.name, item.quantity);
+      }
+    }
+    // Legacy single item support
     if (def.reward.item) {
-      await this.inventoryRepo.addItem(trainerId, 'items', def.reward.item, 1);
+      const itemRow = await this.itemRepo.findByName(def.reward.item);
+      const category = (INVENTORY_CATEGORIES.includes(itemRow?.category as InventoryCategory)
+        ? itemRow?.category : 'items') as InventoryCategory;
+      await this.inventoryRepo.addItem(trainerId, category, def.reward.item, 1);
     }
 
     return {
@@ -855,17 +925,34 @@ export class TrainerService {
     const claimable = achievements.filter((a) => a.canClaim);
 
     let totalCurrency = 0;
-    const items: string[] = [];
-    const claimedAchievements: { id: string; name: string; reward: { currency?: number; item?: string } }[] = [];
+    let totalLevels = 0;
+    const itemTotals: Record<string, number> = {};
+    const claimedAchievements: { id: string; name: string; reward: AchievementReward }[] = [];
 
     for (const achievement of claimable) {
       await this.achievementRepo.claimAchievement(trainerId, achievement.id);
       if (achievement.reward.currency) {
         totalCurrency += achievement.reward.currency;
       }
+      if (achievement.reward.levels) {
+        totalLevels += achievement.reward.levels;
+      }
+      if (achievement.reward.items) {
+        for (const item of achievement.reward.items) {
+          itemTotals[item.name] = (itemTotals[item.name] ?? 0) + item.quantity;
+          const itemRow = await this.itemRepo.findByName(item.name);
+          const category = (INVENTORY_CATEGORIES.includes(itemRow?.category as InventoryCategory)
+            ? itemRow?.category : 'items') as InventoryCategory;
+          await this.inventoryRepo.addItem(trainerId, category, item.name, item.quantity);
+        }
+      }
+      // Legacy single item support
       if (achievement.reward.item) {
-        items.push(achievement.reward.item);
-        await this.inventoryRepo.addItem(trainerId, 'items', achievement.reward.item, 1);
+        itemTotals[achievement.reward.item] = (itemTotals[achievement.reward.item] ?? 0) + 1;
+        const itemRow = await this.itemRepo.findByName(achievement.reward.item);
+        const category = (INVENTORY_CATEGORIES.includes(itemRow?.category as InventoryCategory)
+          ? itemRow?.category : 'items') as InventoryCategory;
+        await this.inventoryRepo.addItem(trainerId, category, achievement.reward.item, 1);
       }
       claimedAchievements.push({
         id: achievement.id,
@@ -877,12 +964,17 @@ export class TrainerService {
     if (totalCurrency > 0) {
       await this.trainerRepo.updateCurrency(trainerId, totalCurrency);
     }
+    if (totalLevels > 0) {
+      await this.trainerRepo.addLevels(trainerId, totalLevels);
+    }
+
+    const items = Object.entries(itemTotals).map(([name, quantity]) => ({ name, quantity }));
 
     return {
       message: `Claimed ${claimable.length} achievements!`,
       claimedCount: claimable.length,
       claimedAchievements,
-      totalRewards: { currency: totalCurrency, items },
+      totalRewards: { currency: totalCurrency, levels: totalLevels, items },
     };
   }
 
@@ -919,10 +1011,12 @@ export class TrainerService {
 
   private findAchievementDefinition(
     achievementId: string,
-  ): { id: string; name: string; reward: { currency?: number; item?: string } } | null {
+  ): { id: string; name: string; reward: AchievementReward } | null {
     const allDefs = [
       ...Object.values(TrainerAchievementRepository.getTypeAchievements()).flat(),
+      ...Object.values(TrainerAchievementRepository.getTypeCountAchievements()).flat(),
       ...Object.values(TrainerAchievementRepository.getAttributeAchievements()).flat(),
+      ...Object.values(TrainerAchievementRepository.getFranchiseAchievements()).flat(),
       ...TrainerAchievementRepository.getLevel100Achievements(),
       ...TrainerAchievementRepository.getTrainerLevelAchievements(),
       ...TrainerAchievementRepository.getSpecialAchievements(),
@@ -969,6 +1063,64 @@ export class TrainerService {
       [trainerId],
     );
     return parseInt(result.rows[0]?.count ?? '0', 10);
+  }
+
+  private async countMonstersByTypeCount(trainerId: number): Promise<Record<number, number>> {
+    // Count how many non-null type slots each monster has, then group by that count
+    const result = await db.query<{ type_count: number; monster_count: string }>(
+      `SELECT type_count, COUNT(*) AS monster_count FROM (
+        SELECT id,
+          (CASE WHEN type1 IS NOT NULL THEN 1 ELSE 0 END) +
+          (CASE WHEN type2 IS NOT NULL THEN 1 ELSE 0 END) +
+          (CASE WHEN type3 IS NOT NULL THEN 1 ELSE 0 END) +
+          (CASE WHEN type4 IS NOT NULL THEN 1 ELSE 0 END) +
+          (CASE WHEN type5 IS NOT NULL THEN 1 ELSE 0 END) AS type_count
+        FROM monsters WHERE trainer_id = $1
+      ) AS counts
+      GROUP BY type_count`,
+      [trainerId],
+    );
+    const counts: Record<number, number> = {};
+    for (const row of result.rows) {
+      counts[row.type_count] = parseInt(row.monster_count, 10);
+    }
+    return counts;
+  }
+
+  private async countMonstersByFranchise(trainerId: number): Promise<Record<string, number>> {
+    // Maps franchise display name to its species table
+    const franchiseTables: Record<string, string> = {
+      Digimon: 'digimon_monsters',
+      Yokai: 'yokai_monsters',
+      'Monster Hunter': 'monsterhunter_monsters',
+      Fakemon: 'fakemon',
+      Nexomon: 'nexomon_monsters',
+      'Dragon Quest': 'dragonquest_monsters',
+      Pokemon: 'pokemon_monsters',
+      Palworld: 'pals_monsters',
+      'Final Fantasy': 'finalfantasy_monsters',
+    };
+
+    const counts: Record<string, number> = {};
+
+    for (const [franchise, table] of Object.entries(franchiseTables)) {
+      // Count distinct monsters where any of their species slots match a name in the franchise table
+      // A single monster with e.g. Pikachu/Chocobo counts once for Pokemon and once for Final Fantasy
+      const result = await db.query<{ count: string }>(
+        `SELECT COUNT(DISTINCT m.id) AS count
+         FROM monsters m
+         WHERE m.trainer_id = $1
+           AND (
+             m.species1 IN (SELECT name FROM ${table})
+             OR m.species2 IN (SELECT name FROM ${table})
+             OR m.species3 IN (SELECT name FROM ${table})
+           )`,
+        [trainerId],
+      );
+      counts[franchise] = parseInt(result.rows[0]?.count ?? '0', 10);
+    }
+
+    return counts;
   }
 
   private async getSpecialAchievementProgress(trainerId: number): Promise<Record<string, number>> {

@@ -96,15 +96,6 @@ export class AntiqueService {
   // Helpers
   // ==========================================================================
 
-  /**
-   * Normalize smart/curly quotes to ASCII so inventory keys match DB item_names.
-   * Inventory JSON keys typically use straight apostrophes (') while DB entries
-   * may contain Unicode right-single-quotes (\u2019) or vice-versa.
-   */
-  private normalizeApostrophes(str: string): string {
-    return str.replace(/[\u2018\u2019\u201A\u201B]/g, "'");
-  }
-
   private settingToAntique(setting: AntiqueSetting): Antique {
     return {
       name: setting.itemName,

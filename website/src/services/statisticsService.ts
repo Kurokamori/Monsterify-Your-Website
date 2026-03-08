@@ -161,10 +161,12 @@ export interface AchievementStatsResponse {
   topBySubtype: {
     types: Record<string, SubtypeTrainerEntry[]>;
     attributes: Record<string, SubtypeTrainerEntry[]>;
+    franchises: Record<string, SubtypeTrainerEntry[]>;
   };
   categoryBreakdown: {
     type: number;
     attribute: number;
+    franchise: number;
     level100: number;
     trainerLevel: number;
     special: number;

@@ -10,7 +10,8 @@ Berries allow you to remove or randomize different traits of your monster, and c
 | Cocon Berry      | Randomize Type 2 (if present)                                                   |
 | Datei Berry      | Randomize Attribute                                                             |
 | Durian Berry     | Randomize Type 3 (if present)                                                   |
-| Edenweiss        | Allows you to pick two Pokémon from a single roll.                              |
+| Divest Berry     | Split the first species of the monster off to create two monsters.              |
+| Edenweiss        | Allows you to pick two Monsters from a single roll.                             |
 | Espara Berry     | Add Type 5 (if not present)                                                     |
 | Fani Berry       | Remove Type 5 (if present)                                                      |
 | Forget-Me-Not    | Allows you to reroll anything, from berry rolls to egg rolls to prompt rolls... |

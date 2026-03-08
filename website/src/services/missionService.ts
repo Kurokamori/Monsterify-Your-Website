@@ -22,12 +22,77 @@ export interface MissionRequirements {
   minLevel?: number;
 }
 
-export interface MissionRewardConfig {
-  levels?: { min: number; max: number };
-  coins?: { min: number; max: number };
-  items?: { min: number; max: number };
-  monsters?: { count: number };
+// ── Rich Reward Config ─────────────────────────────────────────────────────
+
+export interface MissionItemRewardEntry {
+  itemName?: string;
+  itemId?: number;
+  category?: string;
+  itemPool?: number[];
+  quantity?: number;
+  chance?: number;
 }
+
+export interface MissionRewardConfig {
+  levels?: number | { min: number; max: number };
+  coins?: number | { min: number; max: number };
+  items?: MissionItemRewardEntry[];
+}
+
+// ── Reward Summary ─────────────────────────────────────────────────────────
+
+export interface MissionRewardSummaryMonster {
+  monsterId: number;
+  name: string;
+  levelsGained: number;
+  newLevel: number;
+  capped: boolean;
+  excessLevels: number;
+}
+
+export interface MissionRewardSummaryTrainer {
+  trainerId: number;
+  name: string;
+  coinsGained: number;
+}
+
+export interface MissionRewardSummaryItem {
+  itemName: string;
+  quantity: number;
+  category?: string;
+  wasRandom: boolean;
+  trainerId?: number;
+  trainerName?: string;
+}
+
+export interface ItemTrainerAssignment {
+  itemIndex: number;
+  trainerId: number;
+}
+
+export interface MissionRewardSummaryReallocation {
+  targetType: 'monster' | 'trainer';
+  targetId: number;
+  targetName: string;
+  levels: number;
+}
+
+export interface MissionRewardSummary {
+  totalLevels: number;
+  totalCoins: number;
+  monsters: MissionRewardSummaryMonster[];
+  trainers: MissionRewardSummaryTrainer[];
+  items: MissionRewardSummaryItem[];
+  reallocations: MissionRewardSummaryReallocation[];
+}
+
+export interface LevelAllocationInput {
+  targetType: 'monster' | 'trainer';
+  targetId: number;
+  levels: number;
+}
+
+// ── Monster & Mission Types ────────────────────────────────────────────────
 
 export interface MissionMonster {
   id: number;
@@ -36,6 +101,7 @@ export interface MissionMonster {
   imgLink: string | null;
   types: string[];
   attribute: string | null;
+  trainerId?: number | null;
   trainerName: string | null;
 }
 
@@ -47,6 +113,7 @@ export interface UserMission {
   currentProgress: number;
   requiredProgress: number;
   rewardClaimed: boolean;
+  rewardSummary: MissionRewardSummary | null;
   startedAt: string;
   completedAt: string | null;
   title: string;
@@ -54,6 +121,7 @@ export interface UserMission {
   difficulty: string;
   duration: number;
   monsters: MissionMonster[];
+  rewardConfig?: MissionRewardConfig | null;
 }
 
 export interface EligibleMonster {
@@ -98,6 +166,21 @@ export interface AdminUserMissionParams {
   sortOrder?: string;
 }
 
+export interface ClaimRewardsResponse {
+  success: boolean;
+  message: string;
+  needsAllocation?: boolean;
+  excessLevels?: number;
+  redistributableLevels?: number;
+  rewardPreview?: {
+    totalLevels: number;
+    totalCoins: number;
+    items: MissionRewardSummaryItem[];
+    monsters: MissionRewardSummaryMonster[];
+  };
+  rewardSummary?: MissionRewardSummary;
+}
+
 // ── Service ────────────────────────────────────────────────────────────────
 
 const missionService = {
@@ -126,8 +209,16 @@ const missionService = {
     return response.data;
   },
 
-  claimRewards: async (missionId: number | string) => {
-    const response = await api.post(`/missions/${missionId}/claim`);
+  claimRewards: async (
+    missionId: number | string,
+    body?: { itemAssignments?: ItemTrainerAssignment[]; levelAllocations?: LevelAllocationInput[] },
+  ): Promise<ClaimRewardsResponse> => {
+    const response = await api.post(`/missions/${missionId}/claim`, body ?? {});
+    return response.data;
+  },
+
+  getLastCompletedMission: async (): Promise<{ success: boolean; data: UserMission | null }> => {
+    const response = await api.get('/missions/user/last-completed');
     return response.data;
   },
 

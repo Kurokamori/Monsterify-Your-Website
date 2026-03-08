@@ -13,6 +13,9 @@ General Items from the game.
 | Poké Puff                 | Helps pacify a Pokémon so you don't have to fight them (for missions). Gives +10 to your roll. |
 | Fertilizer                | Use it to increase the garden harvests ready for you.                                          |
 | Bottle Cap                | Train a Pokémon's IVs.                                                                         |
+| Mutagenic Mulch           | Increase the likeliness of mutations in breeding                                               |
+| Teeming Totem             | Increase the amount of offsprings in breeding                                                  |
+| Hermit's Ward             | Decrease the amount of offsprings in breeding                                                  |
 | Gorgeous Royal Ribbon     | A gorgeous and regal Ribbon that is the peak of fabulous.                                      |
 | Daycare Daypass           | Allows you to adopt one Pokémon from the monthly adopt list.                                   |
 | Legacy Leeway             | Allows you to breed two Pokémon together.                                                      |

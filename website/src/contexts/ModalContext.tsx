@@ -58,7 +58,9 @@ export const ModalProvider = ({ children }: ModalProviderProps) => {
 
       // Calculate z-index based on modal type and order
       let baseZIndex = 1000;
-      if (id.includes('monster-card')) {
+      if (id.includes('achievement-item')) {
+        baseZIndex = 10100; // Above achievement reward popup (z-index: 10000)
+      } else if (id.includes('monster-card')) {
         baseZIndex = 1100; // Higher base for monster card modals
       } else if (id.includes('image-modal')) {
         baseZIndex = 1050; // Medium base for other image modals

@@ -243,20 +243,20 @@ export class SubmissionRewardService {
   }
 
   private getCachedBonuses(userId: number | undefined, totalLevels: number): CachedBonuses | null {
-    if (!userId) return null;
+    if (!userId) { return null; }
     const cached = this.bonusCache.get(userId);
-    if (!cached) return null;
+    if (!cached) { return null; }
     if (Date.now() - cached.cachedAt > BONUS_CACHE_TTL_MS) {
       this.bonusCache.delete(userId);
       return null;
     }
     // Only reuse if the total levels match (same submission parameters)
-    if (cached.totalLevels !== totalLevels) return null;
+    if (cached.totalLevels !== totalLevels) { return null; }
     return cached;
   }
 
   private cacheBonuses(userId: number | undefined, totalLevels: number, gardenPoints: number, missionProgress: number, bossDamage: number): void {
-    if (!userId) return;
+    if (!userId) { return; }
     this.bonusCache.set(userId, { gardenPoints, missionProgress, bossDamage, totalLevels, cachedAt: Date.now() });
   }
 

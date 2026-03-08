@@ -322,7 +322,7 @@ export async function purchaseItem(req: Request, res: Response): Promise<void> {
       shopId,
       item_id,
       quantity,
-      gift_to_trainer_id || undefined,
+      gift_to_trainer_id ?? undefined,
     );
 
     res.json({ success: true, data: result, message: 'Item purchased successfully' });

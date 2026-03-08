@@ -71,6 +71,7 @@ function OverviewSubTab({ stats }: { stats: AchievementStatsResponse }) {
         <div className="category-breakdown-grid">
           <CategoryItem label="Type Achievements" count={stats.categoryBreakdown.type} />
           <CategoryItem label="Attribute Achievements" count={stats.categoryBreakdown.attribute} />
+          <CategoryItem label="Franchise Achievements" count={stats.categoryBreakdown.franchise} />
           <CategoryItem label="Level 100 Achievements" count={stats.categoryBreakdown.level100} />
           <CategoryItem label="Trainer Level Achievements" count={stats.categoryBreakdown.trainerLevel} />
           <CategoryItem label="Special Achievements" count={stats.categoryBreakdown.special} />
@@ -114,6 +115,7 @@ function CategoriesSubTab({ stats }: { stats: AchievementStatsResponse }) {
   const categoryLabels: Record<string, string> = {
     type: 'Type',
     attribute: 'Attribute',
+    franchise: 'Franchise',
     level100: 'Level 100',
     trainerLevel: 'Trainer Level',
     special: 'Special',
@@ -169,6 +171,32 @@ function SubtypesSubTab({ stats }: { stats: AchievementStatsResponse }) {
           {Object.entries(stats.topBySubtype.types).map(([type, trainers]) => (
             <div key={type} className={`subtype-card sub-type-${type.toLowerCase()}`}>
               <h5>{type} Type</h5>
+              <div className="subtype-entries">
+                {trainers.slice(0, 3).map((trainer, index) => (
+                  <div key={trainer.trainerId} className="subtype-entry">
+                    <span className="subtype-entry__rank">#{index + 1}</span>
+                    <span className="subtype-entry__name">{trainer.trainerName}</span>
+                    <span className="subtype-entry__count">{trainer.count}</span>
+                  </div>
+                ))}
+                {trainers.length === 0 && (
+                  <div className="subtype-entry subtype-entry--empty">No achievements yet</div>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="stats-section">
+        <h3 className="stats-section__title">
+          <i className="fas fa-gamepad" />
+          Top Franchise Specialists
+        </h3>
+        <div className="subtype-grid">
+          {Object.entries(stats.topBySubtype.franchises).map(([franchise, trainers]) => (
+            <div key={franchise} className={`subtype-card sub-franchise-${franchise.toLowerCase().replace(/\s+/g, '-')}`}>
+              <h5>{franchise}</h5>
               <div className="subtype-entries">
                 {trainers.slice(0, 3).map((trainer, index) => (
                   <div key={trainer.trainerId} className="subtype-entry">

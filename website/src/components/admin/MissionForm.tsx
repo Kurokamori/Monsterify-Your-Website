@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, FormEvent } from 'react';
 import { AdminForm } from './AdminForm';
 import type { FieldSection } from './AdminForm';
-import type { Mission, MissionRequirements, MissionRewardConfig } from '@services/missionService';
+import type { Mission, MissionRequirements, MissionRewardConfig, MissionItemRewardEntry } from '@services/missionService';
 import missionService from '@services/missionService';
 
 interface MissionFormProps {
@@ -23,6 +23,19 @@ const STATUS_OPTIONS = [
   { value: 'draft', label: 'Draft' },
 ];
 
+const ITEM_CATEGORY_OPTIONS = [
+  { value: 'berries', label: 'Berries' },
+  { value: 'balls', label: 'Balls' },
+  { value: 'items', label: 'Items' },
+  { value: 'pastries', label: 'Pastries' },
+  { value: 'evolution', label: 'Evolution' },
+  { value: 'helditems', label: 'Held Items' },
+  { value: 'antiques', label: 'Antiques' },
+  { value: 'seals', label: 'Seals' },
+  { value: 'keyitems', label: 'Key Items' },
+  { value: 'eggs', label: 'Eggs' },
+];
+
 const EMPTY_FORM = {
   title: '',
   description: '',
@@ -40,12 +53,30 @@ const EMPTY_REQUIREMENTS: MissionRequirements = {
   minLevel: 0,
 };
 
-const EMPTY_REWARDS: MissionRewardConfig = {
-  levels: { min: 0, max: 0 },
-  coins: { min: 0, max: 0 },
-  items: { min: 0, max: 0 },
-  monsters: { count: 0 },
-};
+type AmountMode = 'fixed' | 'range';
+
+interface RewardState {
+  levelsMode: AmountMode;
+  levelsFixed: number;
+  levelsMin: number;
+  levelsMax: number;
+  coinsMode: AmountMode;
+  coinsFixed: number;
+  coinsMin: number;
+  coinsMax: number;
+  items: ItemEntryState[];
+}
+
+type ItemMode = 'static' | 'category' | 'pool';
+
+interface ItemEntryState {
+  mode: ItemMode;
+  itemName: string;
+  category: string;
+  itemPool: string;
+  quantity: number;
+  chance: number;
+}
 
 function parseRequirements(raw: MissionRequirements | null): MissionRequirements {
   if (!raw) return { ...EMPTY_REQUIREMENTS, types: [], attributes: [] };
@@ -56,14 +87,103 @@ function parseRequirements(raw: MissionRequirements | null): MissionRequirements
   };
 }
 
-function parseRewardConfig(raw: MissionRewardConfig | null): MissionRewardConfig {
-  if (!raw) return { ...EMPTY_REWARDS, levels: { min: 0, max: 0 }, coins: { min: 0, max: 0 }, items: { min: 0, max: 0 }, monsters: { count: 0 } };
-  return {
-    levels: raw.levels ?? { min: 0, max: 0 },
-    coins: raw.coins ?? { min: 0, max: 0 },
-    items: raw.items ?? { min: 0, max: 0 },
-    monsters: raw.monsters ?? { count: 0 },
+function parseRewardConfig(raw: MissionRewardConfig | null): RewardState {
+  const state: RewardState = {
+    levelsMode: 'fixed',
+    levelsFixed: 0,
+    levelsMin: 0,
+    levelsMax: 0,
+    coinsMode: 'fixed',
+    coinsFixed: 0,
+    coinsMin: 0,
+    coinsMax: 0,
+    items: [],
   };
+
+  if (!raw) return state;
+
+  // Parse levels
+  if (raw.levels !== undefined) {
+    if (typeof raw.levels === 'number') {
+      state.levelsMode = 'fixed';
+      state.levelsFixed = raw.levels;
+    } else {
+      state.levelsMode = 'range';
+      state.levelsMin = raw.levels.min;
+      state.levelsMax = raw.levels.max;
+    }
+  }
+
+  // Parse coins
+  if (raw.coins !== undefined) {
+    if (typeof raw.coins === 'number') {
+      state.coinsMode = 'fixed';
+      state.coinsFixed = raw.coins;
+    } else {
+      state.coinsMode = 'range';
+      state.coinsMin = raw.coins.min;
+      state.coinsMax = raw.coins.max;
+    }
+  }
+
+  // Parse items
+  if (raw.items) {
+    state.items = raw.items.map((entry): ItemEntryState => {
+      if (entry.itemName) {
+        return { mode: 'static', itemName: entry.itemName, category: 'berries', itemPool: '', quantity: entry.quantity ?? 1, chance: entry.chance ?? 100 };
+      }
+      if (entry.category) {
+        return { mode: 'category', itemName: '', category: entry.category, itemPool: '', quantity: entry.quantity ?? 1, chance: entry.chance ?? 100 };
+      }
+      if (entry.itemPool) {
+        return { mode: 'pool', itemName: '', category: 'berries', itemPool: entry.itemPool.join(', '), quantity: entry.quantity ?? 1, chance: entry.chance ?? 100 };
+      }
+      return { mode: 'static', itemName: '', category: 'berries', itemPool: '', quantity: 1, chance: 100 };
+    });
+  }
+
+  return state;
+}
+
+function buildRewardConfig(state: RewardState): MissionRewardConfig {
+  const config: MissionRewardConfig = {};
+
+  // Levels
+  if (state.levelsMode === 'fixed' && state.levelsFixed > 0) {
+    config.levels = state.levelsFixed;
+  } else if (state.levelsMode === 'range' && (state.levelsMin > 0 || state.levelsMax > 0)) {
+    config.levels = { min: state.levelsMin, max: state.levelsMax };
+  }
+
+  // Coins
+  if (state.coinsMode === 'fixed' && state.coinsFixed > 0) {
+    config.coins = state.coinsFixed;
+  } else if (state.coinsMode === 'range' && (state.coinsMin > 0 || state.coinsMax > 0)) {
+    config.coins = { min: state.coinsMin, max: state.coinsMax };
+  }
+
+  // Items
+  if (state.items.length > 0) {
+    config.items = state.items.map((entry): MissionItemRewardEntry => {
+      const base: MissionItemRewardEntry = {
+        quantity: entry.quantity,
+        chance: entry.chance,
+      };
+      if (entry.mode === 'static') {
+        base.itemName = entry.itemName;
+      } else if (entry.mode === 'category') {
+        base.category = entry.category;
+      } else if (entry.mode === 'pool') {
+        base.itemPool = entry.itemPool
+          .split(',')
+          .map(s => parseInt(s.trim(), 10))
+          .filter(n => !isNaN(n));
+      }
+      return base;
+    });
+  }
+
+  return config;
 }
 
 function TagInput({ label, tags, onChange }: { label: string; tags: string[]; onChange: (tags: string[]) => void }) {
@@ -136,10 +256,185 @@ function MinMaxInput({ label, value, onChange }: { label: string; value: { min: 
   );
 }
 
+function AmountEditor({
+  label,
+  mode,
+  fixedValue,
+  minValue,
+  maxValue,
+  onModeChange,
+  onFixedChange,
+  onRangeChange,
+}: {
+  label: string;
+  mode: AmountMode;
+  fixedValue: number;
+  minValue: number;
+  maxValue: number;
+  onModeChange: (mode: AmountMode) => void;
+  onFixedChange: (val: number) => void;
+  onRangeChange: (min: number, max: number) => void;
+}) {
+  return (
+    <div className="mission-form__amount-editor">
+      <div className="mission-form__amount-header">
+        <label className="form-label">{label}</label>
+        <div className="mission-form__amount-toggle">
+          <button
+            type="button"
+            className={`button sm ${mode === 'fixed' ? 'primary' : 'secondary'}`}
+            onClick={() => onModeChange('fixed')}
+          >
+            Fixed
+          </button>
+          <button
+            type="button"
+            className={`button sm ${mode === 'range' ? 'primary' : 'secondary'}`}
+            onClick={() => onModeChange('range')}
+          >
+            Range
+          </button>
+        </div>
+      </div>
+      {mode === 'fixed' ? (
+        <input
+          type="number"
+          className="input sm"
+          value={fixedValue}
+          min={0}
+          onChange={e => onFixedChange(Number(e.target.value) || 0)}
+        />
+      ) : (
+        <MinMaxInput
+          label=""
+          value={{ min: minValue, max: maxValue }}
+          onChange={val => onRangeChange(val.min, val.max)}
+        />
+      )}
+    </div>
+  );
+}
+
+function ItemRewardEditor({
+  items,
+  onChange,
+}: {
+  items: ItemEntryState[];
+  onChange: (items: ItemEntryState[]) => void;
+}) {
+  const addItem = () => {
+    onChange([...items, { mode: 'static', itemName: '', category: 'berries', itemPool: '', quantity: 1, chance: 100 }]);
+  };
+
+  const removeItem = (index: number) => {
+    onChange(items.filter((_, i) => i !== index));
+  };
+
+  const updateItem = (index: number, partial: Partial<ItemEntryState>) => {
+    const next = [...items];
+    next[index] = { ...next[index], ...partial } as ItemEntryState;
+    onChange(next);
+  };
+
+  return (
+    <div className="mission-form__item-rewards">
+      <div className="mission-form__amount-header">
+        <label className="form-label">Item Rewards</label>
+        <button type="button" className="button secondary sm" onClick={addItem}>
+          <i className="fas fa-plus"></i> Add Item
+        </button>
+      </div>
+
+      {items.map((entry, i) => (
+        <div key={i} className="mission-form__item-entry">
+          <div className="mission-form__item-entry-header">
+            <select
+              className="select sm"
+              value={entry.mode}
+              onChange={e => updateItem(i, { mode: e.target.value as ItemMode })}
+            >
+              <option value="static">Static Item</option>
+              <option value="category">Random from Category</option>
+              <option value="pool">Random from Pool</option>
+            </select>
+            <button
+              type="button"
+              className="button icon danger small"
+              onClick={() => removeItem(i)}
+            >
+              <i className="fas fa-trash"></i>
+            </button>
+          </div>
+
+          <div className="mission-form__item-entry-body">
+            {entry.mode === 'static' && (
+              <input
+                type="text"
+                className="input sm"
+                value={entry.itemName}
+                onChange={e => updateItem(i, { itemName: e.target.value })}
+                placeholder="Item name..."
+              />
+            )}
+            {entry.mode === 'category' && (
+              <select
+                className="select sm"
+                value={entry.category}
+                onChange={e => updateItem(i, { category: e.target.value })}
+              >
+                {ITEM_CATEGORY_OPTIONS.map(opt => (
+                  <option key={opt.value} value={opt.value}>{opt.label}</option>
+                ))}
+              </select>
+            )}
+            {entry.mode === 'pool' && (
+              <input
+                type="text"
+                className="input sm"
+                value={entry.itemPool}
+                onChange={e => updateItem(i, { itemPool: e.target.value })}
+                placeholder="Comma-separated item IDs..."
+              />
+            )}
+
+            <div className="mission-form__item-entry-fields">
+              <div className="mission-form__item-field">
+                <label className="form-label">Qty</label>
+                <input
+                  type="number"
+                  className="input sm"
+                  value={entry.quantity}
+                  min={1}
+                  onChange={e => updateItem(i, { quantity: Number(e.target.value) || 1 })}
+                />
+              </div>
+              <div className="mission-form__item-field">
+                <label className="form-label">Chance %</label>
+                <input
+                  type="number"
+                  className="input sm"
+                  value={entry.chance}
+                  min={0}
+                  max={100}
+                  onChange={e => updateItem(i, { chance: Number(e.target.value) || 0 })}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      ))}
+
+      {items.length === 0 && (
+        <p className="form-tooltip--section">No item rewards configured. Click "Add Item" to add one.</p>
+      )}
+    </div>
+  );
+}
+
 export function MissionForm({ mission, onSuccess, onCancel }: MissionFormProps) {
   const [values, setValues] = useState<Record<string, unknown>>({ ...EMPTY_FORM });
   const [requirements, setRequirements] = useState<MissionRequirements>(parseRequirements(null));
-  const [rewardConfig, setRewardConfig] = useState<MissionRewardConfig>(parseRewardConfig(null));
+  const [rewardState, setRewardState] = useState<RewardState>(parseRewardConfig(null));
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitting, setSubmitting] = useState(false);
 
@@ -156,11 +451,11 @@ export function MissionForm({ mission, onSuccess, onCancel }: MissionFormProps) 
         requiredProgress: mission.requiredProgress,
       });
       setRequirements(parseRequirements(mission.requirements));
-      setRewardConfig(parseRewardConfig(mission.rewardConfig));
+      setRewardState(parseRewardConfig(mission.rewardConfig));
     } else {
       setValues({ ...EMPTY_FORM });
       setRequirements(parseRequirements(null));
-      setRewardConfig(parseRewardConfig(null));
+      setRewardState(parseRewardConfig(null));
     }
     setErrors({});
   }, [mission]);
@@ -188,6 +483,8 @@ export function MissionForm({ mission, onSuccess, onCancel }: MissionFormProps) 
 
     setSubmitting(true);
     try {
+      const rewardConfig = buildRewardConfig(rewardState);
+
       const payload = {
         title: String(values.title).trim(),
         description: String(values.description || '').trim() || null,
@@ -218,7 +515,7 @@ export function MissionForm({ mission, onSuccess, onCancel }: MissionFormProps) 
     } finally {
       setSubmitting(false);
     }
-  }, [values, requirements, rewardConfig, mission, onSuccess]);
+  }, [values, requirements, rewardState, mission, onSuccess]);
 
   const sections: FieldSection[] = [
     {
@@ -272,31 +569,30 @@ export function MissionForm({ mission, onSuccess, onCancel }: MissionFormProps) 
           type: 'custom',
           render: () => (
             <div className="mission-form__json-section">
-              <MinMaxInput
+              <AmountEditor
                 label="Level Rewards"
-                value={rewardConfig.levels ?? { min: 0, max: 0 }}
-                onChange={levels => setRewardConfig(prev => ({ ...prev, levels }))}
+                mode={rewardState.levelsMode}
+                fixedValue={rewardState.levelsFixed}
+                minValue={rewardState.levelsMin}
+                maxValue={rewardState.levelsMax}
+                onModeChange={mode => setRewardState(prev => ({ ...prev, levelsMode: mode }))}
+                onFixedChange={val => setRewardState(prev => ({ ...prev, levelsFixed: val }))}
+                onRangeChange={(min, max) => setRewardState(prev => ({ ...prev, levelsMin: min, levelsMax: max }))}
               />
-              <MinMaxInput
+              <AmountEditor
                 label="Coin Rewards"
-                value={rewardConfig.coins ?? { min: 0, max: 0 }}
-                onChange={coins => setRewardConfig(prev => ({ ...prev, coins }))}
+                mode={rewardState.coinsMode}
+                fixedValue={rewardState.coinsFixed}
+                minValue={rewardState.coinsMin}
+                maxValue={rewardState.coinsMax}
+                onModeChange={mode => setRewardState(prev => ({ ...prev, coinsMode: mode }))}
+                onFixedChange={val => setRewardState(prev => ({ ...prev, coinsFixed: val }))}
+                onRangeChange={(min, max) => setRewardState(prev => ({ ...prev, coinsMin: min, coinsMax: max }))}
               />
-              <MinMaxInput
-                label="Item Rewards"
-                value={rewardConfig.items ?? { min: 0, max: 0 }}
-                onChange={items => setRewardConfig(prev => ({ ...prev, items }))}
+              <ItemRewardEditor
+                items={rewardState.items}
+                onChange={items => setRewardState(prev => ({ ...prev, items }))}
               />
-              <div className="mission-form__field-row">
-                <label className="form-label">Monster Reward Count</label>
-                <input
-                  type="number"
-                  className="input sm"
-                  value={rewardConfig.monsters?.count ?? 0}
-                  min={0}
-                  onChange={e => setRewardConfig(prev => ({ ...prev, monsters: { count: Number(e.target.value) || 0 } }))}
-                />
-              </div>
             </div>
           ),
         },

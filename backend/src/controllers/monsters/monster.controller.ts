@@ -563,11 +563,39 @@ export async function initializeMonsterController(req: Request, res: Response): 
 // Lineage
 // =============================================================================
 
+function lineageToMonsterShape(entries: { parentId: number; relatedMonsterName: string | null; relatedMonsterSpecies: string | null; relatedMonsterSpecies2: string | null; relatedMonsterSpecies3: string | null; relatedMonsterLevel: number | null; relatedMonsterImgLink: string | null; relatedMonsterType1: string | null; relatedMonsterType2: string | null; relatedMonsterType3: string | null; relatedMonsterType4: string | null; relatedMonsterType5: string | null; relatedMonsterAttribute: string | null; isAutomatic: boolean }[]) {
+  return entries.map((entry) => ({
+    id: entry.parentId,
+    name: entry.relatedMonsterName,
+    species1: entry.relatedMonsterSpecies,
+    species2: entry.relatedMonsterSpecies2,
+    species3: entry.relatedMonsterSpecies3,
+    level: entry.relatedMonsterLevel,
+    img_link: entry.relatedMonsterImgLink,
+    type1: entry.relatedMonsterType1,
+    type2: entry.relatedMonsterType2,
+    type3: entry.relatedMonsterType3,
+    type4: entry.relatedMonsterType4,
+    type5: entry.relatedMonsterType5,
+    attribute: entry.relatedMonsterAttribute,
+    is_automatic: entry.isAutomatic,
+  }));
+}
+
 export async function getMonsterLineage(req: Request, res: Response): Promise<void> {
   try {
     const id = parseInt(req.params.id as string);
     const lineage = await monsterService.getMonsterLineage(id);
-    res.json({ success: true, data: lineage });
+    res.json({
+      success: true,
+      data: {
+        monsterId: lineage.monsterId,
+        parents: lineageToMonsterShape(lineage.parents),
+        siblings: lineageToMonsterShape(lineage.siblings),
+        children: lineageToMonsterShape(lineage.children),
+        grandchildren: lineageToMonsterShape(lineage.grandchildren),
+      },
+    });
   } catch (error) {
     const msg = error instanceof Error ? error.message : 'Server error';
     // Return empty lineage gracefully on DB errors (e.g., table doesn't exist yet)

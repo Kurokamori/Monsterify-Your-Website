@@ -8,6 +8,7 @@ import {
   getEligibleMonsters,
   startMission,
   claimMissionRewards,
+  getLastCompletedMission,
   createMission,
   updateMission,
   deleteMission,
@@ -44,6 +45,7 @@ router.get('/:id', getMissionById);
 
 router.get('/user/available', authenticate, getAvailableMissions);
 router.get('/user/active', authenticate, getActiveMissions);
+router.get('/user/last-completed', authenticate, getLastCompletedMission);
 router.get('/:missionId/eligible-monsters', authenticate, getEligibleMonsters);
 router.post('/:missionId/start', authenticate, startMission);
 router.post('/:missionId/claim', authenticate, claimMissionRewards);

@@ -286,7 +286,7 @@ export class ShopService {
       }
 
       // Add item to recipient's inventory (gift target or buyer)
-      const recipientId = giftToTrainerId || trainerId;
+      const recipientId = giftToTrainerId ?? trainerId;
       const itemName = shopItem.name ?? 'Unknown Item';
       const rawCategory = shopItem.category ?? 'items';
       const category: InventoryCategory = INVENTORY_CATEGORIES.includes(rawCategory as InventoryCategory)

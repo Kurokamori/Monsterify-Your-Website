@@ -1,7 +1,10 @@
+import { db } from '../database';
 import {
   MissionRepository,
   UserMissionRepository,
   MonsterRepository,
+  ItemRepository,
+  TrainerInventoryRepository,
 } from '../repositories';
 import type {
   Mission,
@@ -16,7 +19,20 @@ import type {
   MissionMonster,
   AdminUserMissionQueryOptions,
   PaginatedAdminUserMissions,
+  ItemRow,
 } from '../repositories';
+import type {
+  MissionRewardConfig,
+  MissionItemRewardEntry,
+  MissionRewardSummary,
+  MissionRewardSummaryMonster,
+  MissionRewardSummaryTrainer,
+  MissionRewardSummaryItem,
+  MissionRewardSummaryReallocation,
+  LevelAllocationInput,
+  ItemTrainerAssignment,
+} from '../utils/types';
+import { ItemRollerService } from './item-roller.service';
 
 // ============================================================================
 // Types
@@ -41,7 +57,21 @@ export type StartMissionResult = {
 export type ClaimMissionResult = {
   success: boolean;
   message: string;
+  needsAllocation?: boolean;
+  excessLevels?: number;
+  redistributableLevels?: number;
+  rewardPreview?: {
+    totalLevels: number;
+    totalCoins: number;
+    items: MissionRewardSummaryItem[];
+    monsters: MissionRewardSummaryMonster[];
+  };
+  rewardSummary?: MissionRewardSummary;
   mission?: UserMissionWithDetails;
+};
+
+export type LastCompletedMissionResult = UserMissionWithMonsters & {
+  rewardConfig: MissionRewardConfig | null;
 };
 
 // ============================================================================
@@ -52,6 +82,9 @@ export class MissionService {
   private missionRepo: MissionRepository;
   private userMissionRepo: UserMissionRepository;
   private monsterRepo: MonsterRepository;
+  private itemRepo: ItemRepository;
+  private inventoryRepo: TrainerInventoryRepository;
+  private itemRoller: ItemRollerService;
 
   constructor(
     missionRepo?: MissionRepository,
@@ -61,6 +94,9 @@ export class MissionService {
     this.missionRepo = missionRepo ?? new MissionRepository();
     this.userMissionRepo = userMissionRepo ?? new UserMissionRepository();
     this.monsterRepo = monsterRepo ?? new MonsterRepository();
+    this.itemRepo = new ItemRepository();
+    this.inventoryRepo = new TrainerInventoryRepository();
+    this.itemRoller = new ItemRollerService();
   }
 
   // ==========================================================================
@@ -160,6 +196,26 @@ export class MissionService {
   }
 
   // ==========================================================================
+  // Last Completed Mission
+  // ==========================================================================
+
+  async getLastCompletedMission(userId: string): Promise<LastCompletedMissionResult | null> {
+    const userMission = await this.userMissionRepo.findLastCompletedByUserId(userId);
+    if (!userMission) { return null; }
+
+    const [monsters, mission] = await Promise.all([
+      this.userMissionRepo.getMissionMonsters(userMission.id),
+      this.missionRepo.findById(userMission.missionId),
+    ]);
+
+    return {
+      ...userMission,
+      monsters,
+      rewardConfig: (mission?.rewardConfig as MissionRewardConfig) ?? null,
+    };
+  }
+
+  // ==========================================================================
   // Mission Actions
   // ==========================================================================
 
@@ -205,23 +261,337 @@ export class MissionService {
   }
 
   async claimRewards(
-    missionId: number,
+    userMissionId: number,
     userId: string,
+    body?: { itemAssignments?: ItemTrainerAssignment[]; levelAllocations?: LevelAllocationInput[] },
   ): Promise<ClaimMissionResult> {
-    const mission = await this.userMissionRepo.claimReward(missionId, userId);
+    // 1. Validate
+    const userMission = await this.userMissionRepo.findById(userMissionId);
+    if (!userMission) {
+      return { success: false, message: 'Mission not found' };
+    }
+    if (userMission.userId !== userId) {
+      return { success: false, message: 'This mission does not belong to you' };
+    }
+    if (userMission.status !== 'completed') {
+      return { success: false, message: 'Mission is not completed yet' };
+    }
+    if (userMission.rewardClaimed) {
+      return { success: false, message: 'Rewards already claimed' };
+    }
 
+    // 2. Fetch mission config and deployed monsters
+    const mission = await this.missionRepo.findById(userMission.missionId);
     if (!mission) {
+      return { success: false, message: 'Mission definition not found' };
+    }
+
+    const rewardConfig = (mission.rewardConfig ?? {}) as MissionRewardConfig;
+    const monsters = await this.userMissionRepo.getMissionMonsters(userMission.id);
+
+    // 3. Resolve reward amounts — reuse cached preview if available to avoid re-rolling
+    const cachedPreview = userMission.rewardSummary as unknown as
+      | { pending: true; totalLevels: number; totalCoins: number; rolledItems: MissionRewardSummaryItem[]; monsterLevelResults: MissionRewardSummaryMonster[] }
+      | null;
+    const hasCachedPreview = cachedPreview && typeof cachedPreview === 'object' && 'pending' in cachedPreview && cachedPreview.pending === true;
+
+    const totalLevels = hasCachedPreview ? cachedPreview.totalLevels : (rewardConfig.levels ? this.resolveAmount(rewardConfig.levels) : 0);
+    const totalCoins = hasCachedPreview ? cachedPreview.totalCoins : (rewardConfig.coins ? this.resolveAmount(rewardConfig.coins) : 0);
+    const rolledItems = hasCachedPreview ? cachedPreview.rolledItems : await this.rollItemRewards(rewardConfig.items ?? []);
+    const monsterLevelResults: MissionRewardSummaryMonster[] = hasCachedPreview ? cachedPreview.monsterLevelResults : [];
+
+    // 4. Distribute levels to deployed monsters — cap at 100, track excess
+    let totalExcess = 0;
+
+    if (!hasCachedPreview) {
+      const levelsPerMonster = monsters.length > 0 ? Math.floor(totalLevels / monsters.length) : 0;
+      const extraLevels = monsters.length > 0 ? totalLevels % monsters.length : totalLevels;
+
+      monsters.forEach((monster, i) => {
+        const assignedLevels = levelsPerMonster + (i < extraLevels ? 1 : 0);
+        const newLevel = Math.min(monster.level + assignedLevels, 100);
+        const excess = Math.max(0, (monster.level + assignedLevels) - 100);
+
+        monsterLevelResults.push({
+          monsterId: monster.id,
+          name: monster.name,
+          levelsGained: newLevel - monster.level,
+          newLevel,
+          capped: excess > 0,
+          excessLevels: excess,
+        });
+
+        totalExcess += excess;
+      });
+    } else {
+      totalExcess = monsterLevelResults.reduce((sum, m) => sum + m.excessLevels, 0);
+    }
+
+    const redistributableLevels = Math.floor(totalExcess / 2);
+
+    // 5. If level reallocation needed or items need a trainer selection, return preview
+    const needsLevelReallocation = redistributableLevels > 0 && (!body?.levelAllocations || body.levelAllocations.length === 0);
+    const needsTrainerSelection = rolledItems.length > 0 && (!body?.itemAssignments || body.itemAssignments.length === 0);
+
+    if (needsLevelReallocation || needsTrainerSelection) {
+      // Cache the rolled values so the confirmation call uses the same results
+      if (!hasCachedPreview) {
+        await db.query(
+          'UPDATE user_missions SET reward_summary = $1 WHERE id = $2',
+          [JSON.stringify({ pending: true, totalLevels, totalCoins, rolledItems, monsterLevelResults }), userMission.id]
+        );
+      }
+
       return {
         success: false,
-        message: 'No completed unclaimed mission found',
+        needsAllocation: true,
+        excessLevels: totalExcess,
+        redistributableLevels,
+        rewardPreview: {
+          totalLevels,
+          totalCoins,
+          items: rolledItems,
+          monsters: monsterLevelResults,
+        },
+        message: needsLevelReallocation
+          ? 'Level reallocation needed — some monsters exceed the level cap'
+          : 'Select a trainer to receive item rewards',
       };
+    }
+
+    // Validate level allocations if provided
+    const levelAllocations = body?.levelAllocations ?? [];
+    if (redistributableLevels > 0) {
+      const totalAllocated = levelAllocations.reduce((sum, a) => sum + a.levels, 0);
+      if (totalAllocated > redistributableLevels) {
+        return { success: false, message: `Cannot allocate more than ${redistributableLevels} redistributable levels` };
+      }
+    }
+
+    // 6. Execute in transaction (levels, coins, summary — NOT items, which use separate connections)
+    const itemAssignments = body?.itemAssignments ?? [];
+
+    const rewardSummary = await db.transaction(async (client) => {
+      // Apply monster levels
+      for (const result of monsterLevelResults) {
+        if (result.levelsGained > 0) {
+          await client.query(
+            'UPDATE monsters SET level = LEAST(level + $1, 100) WHERE id = $2',
+            [result.levelsGained, result.monsterId]
+          );
+        }
+      }
+
+      // Apply reallocation levels
+      const reallocations: MissionRewardSummaryReallocation[] = [];
+      for (const alloc of levelAllocations) {
+        if (alloc.levels <= 0) { continue; }
+
+        if (alloc.targetType === 'monster') {
+          await client.query(
+            'UPDATE monsters SET level = LEAST(level + $1, 100) WHERE id = $2',
+            [alloc.levels, alloc.targetId]
+          );
+          const nameResult = await client.query<{ name: string }>(
+            'SELECT name FROM monsters WHERE id = $1',
+            [alloc.targetId]
+          );
+          reallocations.push({
+            targetType: 'monster',
+            targetId: alloc.targetId,
+            targetName: nameResult.rows[0]?.name ?? `Monster #${alloc.targetId}`,
+            levels: alloc.levels,
+          });
+        } else {
+          await client.query(
+            'UPDATE trainers SET level = level + $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2',
+            [alloc.levels, alloc.targetId]
+          );
+          const nameResult = await client.query<{ name: string }>(
+            'SELECT name FROM trainers WHERE id = $1',
+            [alloc.targetId]
+          );
+          reallocations.push({
+            targetType: 'trainer',
+            targetId: alloc.targetId,
+            targetName: nameResult.rows[0]?.name ?? `Trainer #${alloc.targetId}`,
+            levels: alloc.levels,
+          });
+        }
+      }
+
+      // Apply coins — distribute proportionally to unique trainers of deployed monsters
+      const trainerSummaries: MissionRewardSummaryTrainer[] = [];
+      if (totalCoins > 0 && monsters.length > 0) {
+        const uniqueTrainerIds = [...new Set(monsters.map(m => m.trainerId).filter((id): id is number => id !== null))];
+        const coinsPerTrainer = uniqueTrainerIds.length > 0 ? Math.floor(totalCoins / uniqueTrainerIds.length) : 0;
+        const extraCoins = uniqueTrainerIds.length > 0 ? totalCoins % uniqueTrainerIds.length : 0;
+
+        for (let i = 0; i < uniqueTrainerIds.length; i++) {
+          const tid = uniqueTrainerIds[i] as number;
+          const coins = coinsPerTrainer + (i === 0 ? extraCoins : 0);
+          if (coins > 0) {
+            await client.query(
+              'UPDATE trainers SET currency_amount = currency_amount + $1, total_earned_currency = total_earned_currency + $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2',
+              [coins, tid]
+            );
+            const nameResult = await client.query<{ name: string }>(
+              'SELECT name FROM trainers WHERE id = $1',
+              [tid]
+            );
+            trainerSummaries.push({
+              trainerId: tid,
+              name: nameResult.rows[0]?.name ?? `Trainer #${tid}`,
+              coinsGained: coins,
+            });
+          }
+        }
+      }
+
+      // Build reward summary
+      const summary: MissionRewardSummary = {
+        totalLevels,
+        totalCoins,
+        monsters: monsterLevelResults,
+        trainers: trainerSummaries,
+        items: rolledItems,
+        reallocations,
+      };
+
+      // Save summary and mark claimed
+      await client.query(
+        'UPDATE user_missions SET reward_claimed = 1, completed_at = COALESCE(completed_at, CURRENT_TIMESTAMP), reward_summary = $1 WHERE id = $2',
+        [JSON.stringify(summary), userMission.id]
+      );
+
+      return summary;
+    });
+
+    // Apply items AFTER transaction commits — uses separate connections so must not be inside transaction
+    if (rolledItems.length > 0 && itemAssignments.length > 0) {
+      // Look up trainer names for the summary
+      const trainerNameCache: Record<number, string> = {};
+
+      for (let i = 0; i < rolledItems.length; i++) {
+        const assignment = itemAssignments.find(a => a.itemIndex === i);
+        if (!assignment) { continue; }
+
+        const item = rolledItems[i]!;
+        try {
+          let itemRecord: ItemRow | null = null;
+          if (item.itemName) {
+            itemRecord = await this.itemRepo.findByName(item.itemName);
+          }
+          if (itemRecord) {
+            const category = this.getInventoryCategory(itemRecord);
+            await this.inventoryRepo.addItem(assignment.trainerId, category, itemRecord.name, item.quantity);
+          }
+
+          // Attach trainer info to the summary item
+          item.trainerId = assignment.trainerId;
+          if (!trainerNameCache[assignment.trainerId]) {
+            const result = await db.query<{ name: string }>('SELECT name FROM trainers WHERE id = $1', [assignment.trainerId]);
+            trainerNameCache[assignment.trainerId] = result.rows[0]?.name ?? `Trainer #${assignment.trainerId}`;
+          }
+          item.trainerName = trainerNameCache[assignment.trainerId];
+        } catch (err) {
+          console.error(`Failed to distribute item "${item.itemName}" to trainer ${assignment.trainerId}:`, err);
+        }
+      }
+
+      // Re-save the summary with trainer info on items
+      await db.query(
+        'UPDATE user_missions SET reward_summary = $1 WHERE id = $2',
+        [JSON.stringify(rewardSummary), userMissionId]
+      );
     }
 
     return {
       success: true,
       message: 'Mission rewards claimed successfully',
-      mission,
+      rewardSummary,
     };
+  }
+
+  // ==========================================================================
+  // Reward Helpers
+  // ==========================================================================
+
+  private resolveAmount(val: number | { min: number; max: number }): number {
+    if (typeof val === 'number') { return val; }
+    return Math.floor(Math.random() * (val.max - val.min + 1)) + val.min;
+  }
+
+  private async rollItemRewards(entries: MissionItemRewardEntry[]): Promise<MissionRewardSummaryItem[]> {
+    const results: MissionRewardSummaryItem[] = [];
+
+    for (const entry of entries) {
+      // Chance check
+      const chance = entry.chance ?? 100;
+      if (Math.random() * 100 > chance) { continue; }
+
+      const quantity = entry.quantity ?? 1;
+
+      // Static item by name
+      if (entry.itemName) {
+        const item = await this.itemRepo.findByName(entry.itemName);
+        if (item) {
+          results.push({ itemName: item.name, quantity, category: item.category ?? undefined, wasRandom: false });
+        }
+        continue;
+      }
+
+      // Static item by ID
+      if (entry.itemId) {
+        const item = await this.itemRepo.findById(entry.itemId);
+        if (item) {
+          results.push({ itemName: item.name, quantity, category: item.category ?? undefined, wasRandom: false });
+        }
+        continue;
+      }
+
+      // Random from category
+      if (entry.category) {
+        const rolled = await this.itemRoller.rollOne({ category: entry.category as 'berries' | 'items' | 'balls' });
+        if (rolled) {
+          results.push({ itemName: rolled.name, quantity, category: entry.category, wasRandom: true });
+        }
+        continue;
+      }
+
+      // Random from pool
+      if (entry.itemPool && entry.itemPool.length > 0) {
+        const randomId = entry.itemPool[Math.floor(Math.random() * entry.itemPool.length)] as number;
+        const item = await this.itemRepo.findById(randomId);
+        if (item) {
+          results.push({ itemName: item.name, quantity, category: item.category ?? undefined, wasRandom: true });
+        }
+      }
+    }
+
+    return results;
+  }
+
+  private getInventoryCategory(
+    item: ItemRow
+  ): 'items' | 'balls' | 'berries' | 'pastries' | 'evolution' | 'eggs' | 'antiques' | 'helditems' | 'seals' | 'keyitems' {
+    const category = item.category?.toLowerCase() ?? 'items';
+    const categoryMap: Record<
+      string,
+      'items' | 'balls' | 'berries' | 'pastries' | 'evolution' | 'eggs' | 'antiques' | 'helditems' | 'seals' | 'keyitems'
+    > = {
+      items: 'items',
+      balls: 'balls',
+      berries: 'berries',
+      pastries: 'pastries',
+      evolution: 'evolution',
+      eggs: 'eggs',
+      antiques: 'antiques',
+      helditems: 'helditems',
+      seals: 'seals',
+      keyitems: 'keyitems',
+    };
+    return categoryMap[category] ?? 'items';
   }
 
   // ==========================================================================
