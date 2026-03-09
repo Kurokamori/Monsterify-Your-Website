@@ -1,0 +1,187 @@
+/* ==============================
+   Fakemon Evolution Method Editor
+   ============================== */
+
+.evo-method {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xsmall);
+}
+
+/* ── Header ──────────────────────────── */
+
+.evo-method__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-xsmall);
+}
+
+.evo-method__header .form-label {
+  margin: 0;
+}
+
+.evo-method__actions {
+  display: flex;
+  gap: var(--spacing-xxsmall);
+}
+
+/* ── Empty state ─────────────────────── */
+
+.evo-method__empty {
+  font-size: var(--font-size-small);
+  color: var(--text-color-muted);
+  font-style: italic;
+  text-align: center;
+  padding: var(--spacing-medium);
+  border: 1px dashed var(--border-color);
+  border-radius: var(--border-radius-medium);
+  margin: 0;
+}
+
+/* ── Chain container ─────────────────── */
+
+.evo-method__chain {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.evo-method__step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 400px;
+}
+
+/* ── Entry card ──────────────────────── */
+
+.evo-method__card {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xsmall);
+  width: 100%;
+  padding: var(--spacing-xsmall) var(--spacing-small);
+  background: var(--primary-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-medium);
+  box-sizing: border-box;
+}
+
+.evo-method__card-num {
+  font-size: var(--font-size-xsmall);
+  color: var(--text-color-muted);
+  font-weight: 700;
+  min-width: 36px;
+}
+
+.evo-method__card-name {
+  flex: 1;
+  font-size: var(--font-size-small);
+  font-weight: 600;
+}
+
+.evo-method__card-types {
+  display: flex;
+  gap: 4px;
+}
+
+.evo-method__type-tag {
+  font-size: 10px;
+  padding: 2px 7px;
+  border-radius: 10px;
+  background: var(--secondary-color);
+  color: var(--text-color);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+/* ── Arrow block between entries ─────── */
+
+.evo-method__arrow-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 0;
+}
+
+.evo-method__line {
+  width: 2px;
+  height: 10px;
+  background: var(--border-color);
+}
+
+.evo-method__arrow {
+  font-size: 9px;
+  color: var(--text-color-muted);
+  line-height: 1;
+}
+
+/* ── Method/detail inputs ────────────── */
+
+.evo-method__method-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.evo-method__select {
+  padding: 4px 8px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-small);
+  background: var(--input-background);
+  color: var(--text-color);
+  font-size: var(--font-size-xsmall);
+  cursor: pointer;
+}
+
+.evo-method__select:focus {
+  outline: none;
+  border-color: var(--accent-color);
+}
+
+.evo-method__level-input {
+  width: 58px;
+  padding: 4px 6px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-small);
+  background: var(--input-background);
+  color: var(--text-color);
+  font-size: var(--font-size-xsmall);
+  font-weight: 700;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.evo-method__level-input:focus,
+.evo-method__detail-input:focus {
+  outline: none;
+  border-color: var(--accent-color);
+}
+
+.evo-method__detail-input {
+  width: 150px;
+  padding: 4px 6px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-small);
+  background: var(--input-background);
+  color: var(--text-color);
+  font-size: var(--font-size-xsmall);
+  box-sizing: border-box;
+}
+
+/* Hide number spinners */
+.evo-method__level-input::-webkit-outer-spin-button,
+.evo-method__level-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.evo-method__level-input[type='number'] {
+  -moz-appearance: textfield;
+}

@@ -7,6 +7,7 @@ import type { ItemDetailData } from '@components/items/ItemDetailModal';
 import { useAuth } from '@contexts/useAuth';
 import { useDocumentTitle } from '@hooks/useDocumentTitle';
 import type { Trainer, TrainerRelation } from '@components/trainers/types/Trainer';
+import type { MonsterBoxPosition } from '../detail/shared/boxSortUtils';
 
 // --- Types ---
 
@@ -154,6 +155,10 @@ export function useTrainerDetail() {
   const [statusType, setStatusType] = useState<'info' | 'success' | 'error' | 'warning'>('info');
   const [additionalBoxes, setAdditionalBoxes] = useState(0);
   const [featuredMonstersCollapsed, setFeaturedMonstersCollapsed] = useState(false);
+
+  // Box settings state (lock/default)
+  const [boxSettings, setBoxSettings] = useState<{ boxNumber: number; isLocked: boolean; isDefault: boolean }[]>([]);
+  const [showAutoSortModal, setShowAutoSortModal] = useState(false);
 
   // Inventory state
   const [inventoryData, setInventoryData] = useState<InventoryData | null>(null);
@@ -646,6 +651,175 @@ export function useTrainerDetail() {
     setTimeout(() => setStatusMessage(''), 5000);
   }, [fetchTrainerData]);
 
+  // --- Box settings ---
+
+  const isBoxLocked = useCallback((boxNum: number): boolean => {
+    return boxSettings.some(s => s.boxNumber === boxNum && s.isLocked);
+  }, [boxSettings]);
+
+  const isDefaultBox = useCallback((boxNum: number): boolean => {
+    return boxSettings.some(s => s.boxNumber === boxNum && s.isDefault);
+  }, [boxSettings]);
+
+  const toggleBoxLock = useCallback((boxNum: number) => {
+    setBoxSettings(prev => {
+      const existing = prev.find(s => s.boxNumber === boxNum);
+      if (existing) {
+        return prev.map(s =>
+          s.boxNumber === boxNum ? { ...s, isLocked: !s.isLocked } : s
+        );
+      }
+      return [...prev, { boxNumber: boxNum, isLocked: true, isDefault: false }];
+    });
+  }, []);
+
+  const setDefaultBox = useCallback((boxNum: number) => {
+    setBoxSettings(prev => {
+      const wasDefault = prev.some(s => s.boxNumber === boxNum && s.isDefault);
+      const existing = prev.find(s => s.boxNumber === boxNum);
+      if (existing) {
+        return prev.map(s => ({
+          ...s,
+          isDefault: s.boxNumber === boxNum ? !wasDefault : false,
+        }));
+      }
+      // Clear all defaults and add new entry
+      return [
+        ...prev.map(s => ({ ...s, isDefault: false })),
+        { boxNumber: boxNum, isLocked: false, isDefault: true },
+      ];
+    });
+  }, []);
+
+  const lockedBoxNumbers = useMemo(() => {
+    return new Set(boxSettings.filter(s => s.isLocked).map(s => s.boxNumber));
+  }, [boxSettings]);
+
+  const handleSwapBoxes = useCallback((sourceBoxIndex: number, targetBoxIndex: number) => {
+    if (sourceBoxIndex === targetBoxIndex) { return; }
+    setBoxMonsters(prev => prev.map(m => {
+      if (m.box_number === sourceBoxIndex) {
+        return { ...m, box_number: targetBoxIndex };
+      }
+      if (m.box_number === targetBoxIndex) {
+        return { ...m, box_number: sourceBoxIndex };
+      }
+      return m;
+    }));
+    // Also swap box settings
+    setBoxSettings(prev => prev.map(s => {
+      if (s.boxNumber === sourceBoxIndex) {
+        return { ...s, boxNumber: targetBoxIndex };
+      }
+      if (s.boxNumber === targetBoxIndex) {
+        return { ...s, boxNumber: sourceBoxIndex };
+      }
+      return s;
+    }));
+    setStatusMessage(`Swapped Box ${sourceBoxIndex + 1} and Box ${targetBoxIndex + 1}. Remember to save!`);
+    setStatusType('info');
+  }, []);
+
+  const handleInsertBoxBefore = useCallback((sourceBoxIndex: number, targetBoxIndex: number) => {
+    if (sourceBoxIndex === targetBoxIndex) { return; }
+    setBoxMonsters(prev => {
+      // Collect all unique box numbers
+      const allBoxNums = new Set(prev.map(m => m.box_number ?? 0));
+      allBoxNums.add(sourceBoxIndex);
+      allBoxNums.add(targetBoxIndex);
+      const sorted = Array.from(allBoxNums).sort((a, b) => a - b);
+
+      // Build new order: remove source, insert before target
+      const withoutSource = sorted.filter(n => n !== sourceBoxIndex);
+      const insertIdx = withoutSource.indexOf(targetBoxIndex);
+      const newOrder = [...withoutSource.slice(0, insertIdx), sourceBoxIndex, ...withoutSource.slice(insertIdx)];
+
+      // Map old box numbers to new sequential positions
+      const boxMap = new Map<number, number>();
+      newOrder.forEach((oldBox, newIdx) => {
+        // The new box number is the position in sorted order
+        boxMap.set(oldBox, sorted[newIdx]);
+      });
+
+      return prev.map(m => {
+        const oldBox = m.box_number ?? 0;
+        const newBox = boxMap.get(oldBox);
+        if (newBox != null && newBox !== oldBox) {
+          return { ...m, box_number: newBox };
+        }
+        return m;
+      });
+    });
+    // Also remap box settings
+    setBoxSettings(prev => {
+      const allBoxNums = new Set(prev.map(s => s.boxNumber));
+      allBoxNums.add(sourceBoxIndex);
+      allBoxNums.add(targetBoxIndex);
+      const sorted = Array.from(allBoxNums).sort((a, b) => a - b);
+
+      const withoutSource = sorted.filter(n => n !== sourceBoxIndex);
+      const insertIdx = withoutSource.indexOf(targetBoxIndex);
+      const newOrder = [...withoutSource.slice(0, insertIdx), sourceBoxIndex, ...withoutSource.slice(insertIdx)];
+
+      const boxMap = new Map<number, number>();
+      newOrder.forEach((oldBox, newIdx) => {
+        boxMap.set(oldBox, sorted[newIdx]);
+      });
+
+      return prev.map(s => {
+        const newBox = boxMap.get(s.boxNumber);
+        if (newBox != null) {
+          return { ...s, boxNumber: newBox };
+        }
+        return s;
+      });
+    });
+    setStatusMessage(`Moved Box ${sourceBoxIndex + 1} before Box ${targetBoxIndex + 1}. Remember to save!`);
+    setStatusType('info');
+  }, []);
+
+  const handleApplySort = useCallback((positions: MonsterBoxPosition[]) => {
+    setBoxMonsters(prev => {
+      const monsterMap = new Map(prev.map(m => [m.id, m]));
+      return positions
+        .map(pos => {
+          const monster = monsterMap.get(pos.id);
+          if (!monster) return null;
+          return {
+            ...monster,
+            box_number: pos.boxNumber,
+            trainer_index: pos.trainerIndex,
+          };
+        })
+        .filter(Boolean) as TrainerMonster[];
+    });
+    setStatusMessage('Monsters sorted! Review the result and click "Save Changes" to persist.');
+    setStatusType('info');
+  }, []);
+
+  const fetchBoxSettings = useCallback(async () => {
+    if (!id) return;
+    try {
+      const response = await trainerService.getBoxSettings(id);
+      if (response.success) {
+        setBoxSettings(response.settings);
+      }
+    } catch {
+      // skip
+    }
+  }, [id]);
+
+  const handleSaveBoxSettings = useCallback(async () => {
+    if (!id) return;
+    try {
+      // Only save settings that have at least one flag set
+      const toSave = boxSettings.filter(s => s.isLocked || s.isDefault);
+      await trainerService.updateBoxSettings(id, toSave);
+    } catch (err) {
+      console.error('Error saving box settings:', err);
+    }
+  }, [id, boxSettings]);
+
   // --- Drag and drop ---
 
   const handleDragStart = useCallback((
@@ -794,6 +968,9 @@ export function useTrainerDetail() {
           position: (m.trainer_index as number) ?? 0,
         }));
 
+      // Also save box settings
+      await handleSaveBoxSettings();
+
       const response = await trainerService.updateMonsterBoxPositions(id, positions);
 
       if (response.success) {
@@ -828,7 +1005,7 @@ export function useTrainerDetail() {
     } finally {
       setIsSaving(false);
     }
-  }, [isSaving, id, boxMonsters, featuredMonsters]);
+  }, [isSaving, id, boxMonsters, featuredMonsters, handleSaveBoxSettings]);
 
   const handleSaveFeaturedMonsters = useCallback(async () => {
     if (isSaving || !id) return;
@@ -936,6 +1113,11 @@ export function useTrainerDetail() {
     fetchFeatured();
   }, [id, trainer, featuredMonstersLoaded]);
 
+  // Fetch box settings when entering edit-boxes tab
+  useEffect(() => {
+    if (trainer && activeTab === 'edit-boxes') fetchBoxSettings();
+  }, [trainer, activeTab, fetchBoxSettings]);
+
   // Fetch achievements when tab is opened
   useEffect(() => {
     if (trainer && activeTab === 'achievements') fetchAchievements();
@@ -996,6 +1178,17 @@ export function useTrainerDetail() {
     handleSaveBoxes,
     handleSaveFeaturedMonsters,
     handleAddBox,
+    boxSettings,
+    isBoxLocked,
+    isDefaultBox,
+    toggleBoxLock,
+    setDefaultBox: setDefaultBox,
+    lockedBoxNumbers,
+    showAutoSortModal,
+    setShowAutoSortModal,
+    handleApplySort,
+    handleSwapBoxes,
+    handleInsertBoxBefore,
 
     // Inventory
     inventoryData,

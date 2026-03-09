@@ -2953,3 +2953,277 @@
     min-height: 44px;
   }
 }
+
+/* ============================================================================
+   Box Settings (Lock / Default) & Auto Sort
+   ============================================================================ */
+
+.box-setting-icons {
+  display: flex;
+  gap: 4px;
+  margin-left: auto;
+}
+
+.box-setting-icons button {
+  background: transparent;
+  border: 1px solid var(--border-color);
+  color: var(--text-color-muted);
+  border-radius: 4px;
+  cursor: pointer;
+  padding: 2px 6px;
+  font-size: 0.75rem;
+  transition: all 0.2s;
+}
+
+.box-setting-icons button:hover {
+  border-color: var(--accent-color);
+  color: var(--accent-color);
+}
+
+.box-setting-icons button.active {
+  border-color: var(--accent-color);
+  color: var(--accent-color);
+  background: var(--accent-color-subtle);
+}
+
+.box-setting-icons button.active .fa-lock {
+  color: var(--error-color);
+}
+
+.box-setting-icons button.active .fa-star {
+  color: var(--warning-color);
+}
+
+.edit-box-locked {
+  border-color: var(--error-dark) !important;
+  opacity: 0.85;
+}
+
+.edit-box-locked .edit-box-grid {
+  position: relative;
+}
+
+.edit-box-default {
+  border-color: var(--warning-dark) !important;
+}
+
+.edit-box-grid--locked {
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.edit-box-grid--default {
+  border: 1px solid var(--accent-color-dark);
+  border-radius: 4px;
+}
+
+/* Auto Sort Modal */
+
+.auto-sort-modal {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.auto-sort-section {
+  background: var(--primary-color);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 1rem;
+}
+
+.auto-sort-section h3 {
+  margin: 0 0 0.25rem 0;
+  font-size: 0.95rem;
+  color: var(--text-color);
+}
+
+.auto-sort-hint {
+  margin: 0 0 0.75rem 0;
+  font-size: 0.8rem;
+  color: var(--text-color-muted);
+}
+
+.special-separations {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.sort-checkbox,
+.sort-radio {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  color: var(--text-color);
+  cursor: pointer;
+}
+
+.sort-checkbox input,
+.sort-radio input {
+  accent-color: var(--accent-color);
+}
+
+.segregation-options {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.segregation-sub-options {
+  padding-left: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin-top: 0.25rem;
+}
+
+.sort-field-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.sort-field-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 6px 8px;
+  background: var(--secondary-color);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  cursor: grab;
+  transition: background 0.15s, opacity 0.15s;
+}
+
+.sort-field-item:hover {
+  background: var(--secondary-color-hover);
+}
+
+.sort-field-item.dragging {
+  opacity: 0.5;
+}
+
+.sort-field-handle {
+  color: var(--text-color-muted);
+  font-size: 0.85rem;
+  cursor: grab;
+}
+
+.sort-field-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex: 1;
+  font-size: 0.85rem;
+  color: var(--text-color);
+  cursor: pointer;
+}
+
+.sort-field-checkbox input {
+  accent-color: var(--accent-color);
+}
+
+.sort-direction-toggle {
+  font-size: 0.75rem;
+}
+
+.sort-direction-toggle.disabled {
+  opacity: 0.3;
+}
+
+.auto-sort-note {
+  font-size: 0.8rem;
+  color: var(--text-color-muted);
+  padding: 0.5rem;
+  background: var(--overlay-dark);
+  border-radius: 4px;
+  border: 1px solid var(--error-dark);
+}
+
+.auto-sort-note i {
+  margin-right: 0.35rem;
+  color: var(--error-color);
+}
+
+.auto-sort-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--border-color);
+}
+
+/* ============================================================================
+   Box Rearrangement (Drag Entire Boxes)
+   ============================================================================ */
+
+.edit-box-wrapper {
+  position: relative;
+}
+
+.box-drag-handle {
+  cursor: grab;
+  color: var(--text-color-muted);
+  padding: 2px 4px;
+  font-size: 0.85rem;
+  opacity: 0.6;
+  transition: opacity 0.2s, color 0.2s;
+  user-select: none;
+}
+
+.box-drag-handle:hover {
+  opacity: 1;
+  color: var(--accent-color);
+}
+
+.box-drag-handle:active {
+  cursor: grabbing;
+}
+
+.edit-box-dragging {
+  opacity: 0.4;
+}
+
+.box-drop-zone {
+  height: 0;
+  position: relative;
+  transition: height 0.2s;
+  overflow: visible;
+}
+
+.box-drop-zone__indicator {
+  position: absolute;
+  top: -12px;
+  left: 0;
+  right: 0;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  color: transparent;
+  z-index: 5;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.box-drop-zone--active .box-drop-zone__indicator {
+  background: var(--accent-color-subtle);
+  border: 2px dashed var(--accent-color);
+  color: var(--accent-color);
+  top: -16px;
+  height: 32px;
+}
+
+.box-drop-zone--active {
+  height: 8px;
+}
+
+.edit-box-header.box-drop-swap {
+  outline: 2px solid var(--warning-color);
+  outline-offset: -2px;
+  background: var(--accent-color-subtle);
+}

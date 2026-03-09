@@ -84,6 +84,19 @@
   border-top: 1px solid var(--border-color);
 }
 
+/* ---------- Three-section layout (e.g. Fakemon) ---------- */
+
+.admin-form__three-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-medium);
+}
+
+.admin-form__three-section-bottom {
+  border-top: 1px solid var(--border-color);
+  padding-top: var(--spacing-medium);
+}
+
 /* ---------- Responsive ---------- */
 
 @media (max-width: 768px) {

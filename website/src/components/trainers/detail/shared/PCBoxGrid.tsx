@@ -12,6 +12,8 @@ interface PCBoxGridProps {
   editable?: boolean;
   compact?: boolean;
   cellSize?: PCBoxCellSize;
+  isLocked?: boolean;
+  isDefault?: boolean;
   onDragStart?: (e: React.DragEvent, monster: TrainerMonster | null, boxIndex: number, slotIndex: number) => void;
   onDragOver?: (e: React.DragEvent) => void;
   onDragEnter?: (e: React.DragEvent) => void;
@@ -27,6 +29,8 @@ export const PCBoxGrid = ({
   editable = false,
   compact = false,
   cellSize = 'medium',
+  isLocked = false,
+  isDefault = false,
   onDragStart,
   onDragOver,
   onDragEnter,
@@ -43,8 +47,14 @@ export const PCBoxGrid = ({
   };
 
   if (editable) {
+    const gridClasses = [
+      'edit-box-grid',
+      isLocked ? 'edit-box-grid--locked' : '',
+      isDefault ? 'edit-box-grid--default' : '',
+    ].filter(Boolean).join(' ');
+
     return (
-      <div className="edit-box-grid" data-box-number={boxIndex}>
+      <div className={gridClasses} data-box-number={boxIndex}>
         {Array.from({ length: 30 }).map((_, slotIndex) => {
           const monster = monsters[slotIndex];
           return (

@@ -75,8 +75,8 @@ export class ShopService {
   ): number {
     // Multiply itemId by a large prime and XOR with a date-derived number
     // so that consecutive days and close item IDs produce very different seeds
-    const [y, m, d] = dateStr.split('-').map(Number);
-    const dateBits = (((y! * 367 + m!) * 31 + d!) * 0x45d9f3b) ^ 0xa5a5a5a5;
+    const [y = 0, m = 0, d = 0] = dateStr.split('-').map(Number);
+    const dateBits = (((y * 367 + m) * 31 + d) * 0x45d9f3b) ^ 0xa5a5a5a5;
     const itemBits = Math.imul(itemId, 0x9e3779b9); // golden ratio hash
     const seed = (dateBits ^ itemBits) >>> 0;
     const rng = ShopService.seededRandom(seed);
@@ -138,7 +138,7 @@ export class ShopService {
     if (shop.is_constant && shop.category) {
       const items = await this.itemRepo.findByCategory(shop.category);
       const priceModifier = shop.price_modifier ?? 1.0;
-      const today = new Date().toISOString().split('T')[0]!;
+      const today = new Date().toISOString().split('T')[0] as string;
 
       return items.map((item) => ({
         id: item.id,
@@ -159,7 +159,7 @@ export class ShopService {
     }
 
     // Non-constant shops load from shop_items table (filtered by today's date)
-    const today = new Date().toISOString().split('T')[0]!;
+    const today = new Date().toISOString().split('T')[0] as string;
     let items = await this.shopRepo.getShopItems(shopId, today);
 
     // Auto-stock if no items exist for today
@@ -218,7 +218,7 @@ export class ShopService {
     const shuffled = [...items].sort(() => Math.random() - 0.5);
     const selected = shuffled.slice(0, count);
 
-    const today = new Date().toISOString().split('T')[0]!;
+    const today = new Date().toISOString().split('T')[0] as string;
     const addedItems: ShopItemRow[] = [];
     for (const item of selected) {
       const price = ShopService.rollPrice(item.base_price, priceModifier, item.id, today);
@@ -245,16 +245,16 @@ export class ShopService {
    */
   async restockAllShops(): Promise<{ shopsRestocked: number; totalItems: number }> {
     const shops = await this.shopRepo.findAllActive();
-    const today = new Date().toISOString().split('T')[0]!;
+    const today = new Date().toISOString().split('T')[0] as string;
     let shopsRestocked = 0;
     let totalItems = 0;
 
     for (const shop of shops) {
-      if (shop.is_constant || !shop.category) continue;
+      if (shop.is_constant || !shop.category) { continue; }
 
       // Check if already stocked for today
       const existing = await this.shopRepo.getShopItems(shop.shop_id, today);
-      if (existing.length > 0) continue;
+      if (existing.length > 0) { continue; }
 
       // Clear old items from previous days
       await this.shopRepo.clearOldShopItems(shop.shop_id, today);
@@ -302,7 +302,7 @@ export class ShopService {
         throw new Error('Item not found or unavailable in this shop');
       }
       const priceModifier = shop.price_modifier ?? 1.0;
-      const today = new Date().toISOString().split('T')[0]!;
+      const today = new Date().toISOString().split('T')[0] as string;
       shopItem = {
         id: itemRow.id,
         shop_id: shopId,

@@ -17,7 +17,13 @@ export interface FieldDef {
   placeholder?: string;
   options?: { value: string | number; label: string }[];
   rows?: number;
-  render?: (value: unknown, onChange: (value: unknown) => void, errors: Record<string, string>) => ReactNode;
+  render?: (
+    value: unknown,
+    onChange: (value: unknown) => void,
+    errors: Record<string, string>,
+    formValues?: Record<string, unknown>,
+    formOnChange?: (key: string, value: unknown) => void,
+  ) => ReactNode;
   min?: number;
   max?: number;
   disabled?: boolean;
@@ -167,7 +173,7 @@ function renderField(
       );
 
     case 'custom':
-      return field.render?.(value, (v) => onChange(field.key, v), errors) ?? null;
+      return field.render?.(value, (v) => onChange(field.key, v), errors, values, onChange) ?? null;
 
     default:
       return null;
@@ -199,6 +205,7 @@ export function AdminForm({
   }
 
   const useColumns = sections.length === 2;
+  const useThreeSection = sections.length === 3;
 
   return (
     <div className="admin-form">
@@ -216,6 +223,21 @@ export function AdminForm({
                   {section.fields.map(field => renderField(field, values, errors, onChange))}
                 </div>
               ))}
+            </div>
+          ) : useThreeSection ? (
+            <div className="admin-form__three-section">
+              <div className="admin-form__columns">
+                {sections.slice(0, 2).map((section, i) => (
+                  <div key={i} className="admin-form__column">
+                    {section.title && <h3 className="admin-form__section-title">{section.title}</h3>}
+                    {section.fields.map(field => renderField(field, values, errors, onChange))}
+                  </div>
+                ))}
+              </div>
+              <div className="admin-form__three-section-bottom admin-form__column">
+                {sections[2].title && <h3 className="admin-form__section-title">{sections[2].title}</h3>}
+                {sections[2].fields.map(field => renderField(field, values, errors, onChange))}
+              </div>
             </div>
           ) : (
             sections.map((section, i) => (

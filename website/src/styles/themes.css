@@ -89,6 +89,7 @@
     --discord-color: #5865f2;
 
     --input-disabled-background: var(--primary-color-hover);
+    --node-accent: var(--accent-color);
     --faction-color: var(--border-color);
 
     /* Shadows — softer for light theme */
@@ -189,6 +190,7 @@
     --discord-color: #7289da;
 
     --input-disabled-background: var(--primary-color);
+    --node-accent: var(--accent-color);
     --faction-color: var(--border-color);
 
     /* Shadows — stronger for high contrast */

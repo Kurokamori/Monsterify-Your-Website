@@ -631,15 +631,6 @@
   margin-bottom: var(--spacing-large);
 }
 
-.mission-reward-summary {
-  background: var(--primary-color);
-  border-radius: var(--border-radius-medium);
-  padding: var(--spacing-medium);
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-medium);
-}
-
 .mission-reward-summary--unclaimed {
   border: 2px solid var(--warning-color);
   box-shadow: 0 0 16px color-mix(in srgb, var(--warning-color) 25%, transparent);

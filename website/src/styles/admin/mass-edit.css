@@ -1,0 +1,193 @@
+/* ==============================
+   Species Admin - Mass Edit
+   ============================== */
+
+.mass-edit {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-medium);
+}
+
+.mass-edit__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--spacing-small);
+}
+
+.mass-edit__header h1 {
+  margin: 0;
+  font-size: var(--font-size-xlarge);
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+.mass-edit__header-actions {
+  display: flex;
+  gap: var(--spacing-xsmall);
+  align-items: center;
+}
+
+/* ---------- Cards Grid ---------- */
+
+.mass-edit__cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: var(--spacing-small);
+}
+
+/* ---------- Card ---------- */
+
+.mass-edit__card {
+  background-color: var(--primary-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-medium);
+  padding: var(--spacing-small);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xsmall);
+  transition: border-color 0.2s ease;
+}
+
+.mass-edit__card--modified {
+  border-left: 3px solid var(--accent-color);
+}
+
+.mass-edit__card-top {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-xsmall);
+}
+
+.mass-edit__card-image {
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+  border-radius: var(--border-radius-small);
+  background-color: var(--primary-color-hover);
+  flex-shrink: 0;
+}
+
+.mass-edit__card-link {
+  margin-left: auto;
+  color: var(--text-color-muted);
+  font-size: var(--font-size-small);
+  transition: color 0.15s ease;
+}
+
+.mass-edit__card-link:hover {
+  color: var(--accent-color);
+}
+
+/* ---------- Card Fields ---------- */
+
+.mass-edit__card-fields {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xxsmall);
+}
+
+.mass-edit__field {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.mass-edit__field-label {
+  font-size: var(--font-size-xsmall);
+  color: var(--text-color-muted);
+  font-weight: 500;
+}
+
+.mass-edit__field .input,
+.mass-edit__field .select,
+.mass-edit__field .textarea {
+  font-size: var(--font-size-small);
+  padding: var(--spacing-xxsmall) var(--spacing-xsmall);
+}
+
+.mass-edit__field .textarea {
+  resize: vertical;
+  min-height: 40px;
+}
+
+.mass-edit__field--checkbox {
+  flex-direction: row;
+  align-items: center;
+}
+
+.mass-edit__field--checkbox .mass-edit__field-label {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xxsmall);
+  font-size: var(--font-size-small);
+  color: var(--text-color);
+  cursor: pointer;
+}
+
+/* ---------- Messages ---------- */
+
+.mass-edit__message {
+  padding: var(--spacing-xsmall) var(--spacing-small);
+  border-radius: var(--border-radius-medium);
+  font-size: var(--font-size-small);
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-xsmall);
+}
+
+.mass-edit__message--success {
+  background-color: var(--overlay-light);
+  border: 1px solid var(--success-color);
+  color: var(--success-color);
+}
+
+.mass-edit__message--error {
+  background-color: var(--overlay-light);
+  border: 1px solid var(--error-color);
+  color: var(--error-color);
+}
+
+/* ---------- Progress ---------- */
+
+.mass-edit__progress {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xsmall);
+}
+
+.mass-edit__progress .progress {
+  flex: 1;
+}
+
+/* ---------- Sticky Save Bar ---------- */
+
+.mass-edit__save-bar {
+  position: sticky;
+  bottom: 0;
+  background-color: var(--primary-color);
+  border-top: 1px solid var(--border-color);
+  padding: var(--spacing-xsmall) var(--spacing-small);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: var(--border-radius-medium) var(--border-radius-medium) 0 0;
+  box-shadow: 0 -2px 8px var(--overlay-medium);
+  z-index: 10;
+  font-size: var(--font-size-small);
+  color: var(--text-color-muted);
+}
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 768px) {
+  .mass-edit__cards {
+    grid-template-columns: 1fr;
+  }
+
+  .mass-edit__header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

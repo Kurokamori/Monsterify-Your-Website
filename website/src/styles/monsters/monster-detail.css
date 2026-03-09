@@ -726,7 +726,7 @@
   width: 22px;
   height: 22px;
   background: var(--error-color);
-  color: #fff;
+  color: var(--text-color);
   border: none;
   border-radius: var(--border-radius-full);
   cursor: pointer;

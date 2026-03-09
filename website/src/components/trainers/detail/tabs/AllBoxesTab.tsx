@@ -50,6 +50,18 @@ export const AllBoxesTab = ({
               <i className="fas fa-edit"></i> Mass Edit
             </button>
           )}
+          {isOwner && monsters.length > 0 && (
+            <button
+              className="button secondary"
+              onClick={() => {
+                setCurrentPCBox(0);
+                setActiveTab('edit-boxes');
+              }}
+              title="Edit your boxes"
+            >
+              <i className="fas fa-edit"></i> Edit Boxes
+            </button>
+          )}
           {monsters.length > 0 && (
             <div className="view-toggle">
               <button

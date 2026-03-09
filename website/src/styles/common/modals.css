@@ -458,6 +458,272 @@
 }
 
 /* ==============================
+   MassEditModal Results Step
+   ============================== */
+
+/* Summary header */
+.me-results__summary {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-xsmall);
+  padding: var(--spacing-medium) var(--spacing-small);
+  background: linear-gradient(180deg, var(--primary-color-hover) 0%, transparent 100%);
+  border-radius: var(--border-radius-large);
+  text-align: center;
+}
+
+.me-results__summary-icon {
+  font-size: clamp(1.5rem, 1.3rem + 1vw, 2.25rem);
+  line-height: 1;
+}
+
+.me-results__summary-icon--success {
+  color: var(--success-color);
+}
+
+.me-results__summary-icon--mixed {
+  color: var(--warning-color);
+}
+
+.me-results__title {
+  font-size: var(--font-size-xlarge);
+  font-weight: 700;
+  margin: 0;
+}
+
+/* Progress bar */
+.me-results__progress {
+  display: flex;
+  width: 100%;
+  max-width: 320px;
+  height: 6px;
+  border-radius: var(--border-radius-full);
+  overflow: hidden;
+  background-color: var(--secondary-color);
+}
+
+.me-results__progress-bar {
+  height: 100%;
+  background-color: var(--success-color);
+  transition: width var(--transition-medium) ease-out;
+}
+
+.me-results__progress-bar--error {
+  background-color: var(--error-color);
+}
+
+/* Stat pills */
+.me-results__stats {
+  display: flex;
+  gap: var(--spacing-xsmall);
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.me-results__stat {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xxsmall);
+  font-size: var(--font-size-small);
+  font-weight: 600;
+  padding: var(--spacing-xxsmall) var(--spacing-small);
+  border-radius: var(--border-radius-full);
+}
+
+.me-results__stat--success {
+  background-color: var(--success-dark);
+  color: var(--success-color);
+}
+
+.me-results__stat--error {
+  background-color: var(--error-dark);
+  color: var(--error-color);
+}
+
+.me-results__stat--total {
+  background-color: var(--secondary-color);
+  color: var(--text-color-muted);
+}
+
+/* Results list */
+.me-results__list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xsmall);
+}
+
+/* Result card */
+.me-results__card {
+  display: flex;
+  border-radius: var(--border-radius-medium);
+  overflow: hidden;
+  background-color: var(--primary-color);
+  border: 1px solid var(--border-color);
+  animation: me-result-enter 0.3s ease-out both;
+}
+
+@keyframes me-result-enter {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Left status strip */
+.me-results__card-strip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: clamp(28px, 3vw, 36px);
+  flex-shrink: 0;
+  font-size: var(--font-size-small);
+}
+
+.me-results__card--success .me-results__card-strip {
+  background-color: var(--success-dark);
+  color: var(--success-color);
+}
+
+.me-results__card--error .me-results__card-strip {
+  background-color: var(--error-dark);
+  color: var(--error-color);
+}
+
+/* Card body */
+.me-results__card-body {
+  flex: 1;
+  padding: var(--spacing-small);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xsmall);
+  min-width: 0;
+}
+
+.me-results__card-header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xxsmall);
+}
+
+.me-results__card-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-small);
+}
+
+.me-results__monster-name {
+  font-size: var(--font-size-medium);
+  font-weight: 600;
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.me-results__message {
+  font-size: var(--font-size-small);
+  color: var(--text-color-muted);
+  margin: 0;
+}
+
+/* Before/After comparison */
+.me-results__comparison {
+  display: flex;
+  align-items: stretch;
+  gap: var(--spacing-xsmall);
+  background-color: var(--background-color);
+  border-radius: var(--border-radius-small);
+  padding: var(--spacing-xsmall);
+}
+
+.me-results__comparison-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xxsmall);
+  min-width: 0;
+}
+
+.me-results__comparison-label {
+  font-size: var(--font-size-xxsmall);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-color-muted);
+}
+
+.me-results__comparison-col--after .me-results__comparison-label {
+  color: var(--accent-color);
+}
+
+.me-results__comparison-data {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xxsmall);
+}
+
+.me-results__species {
+  font-size: var(--font-size-small);
+  font-weight: 500;
+  margin: 0;
+}
+
+.me-results__comparison-arrow {
+  display: flex;
+  align-items: center;
+  color: var(--text-color-muted);
+  font-size: var(--font-size-xsmall);
+  padding: 0 var(--spacing-xxsmall);
+  flex-shrink: 0;
+}
+
+/* New monster created */
+.me-results__new-monster {
+  background: linear-gradient(135deg, var(--accent-color-subtle), transparent);
+  border: 1px solid var(--accent-color-muted);
+  border-radius: var(--border-radius-small);
+  padding: var(--spacing-xsmall);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xxsmall);
+}
+
+.me-results__new-monster-header {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xxsmall);
+  font-size: var(--font-size-small);
+  font-weight: 700;
+  color: var(--accent-color-active);
+}
+
+.me-results__new-monster-info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xxsmall);
+  font-size: var(--font-size-small);
+}
+
+/* Mobile adjustments */
+@media (max-width: 480px) {
+  .me-results__comparison {
+    flex-direction: column;
+  }
+
+  .me-results__comparison-arrow {
+    transform: rotate(90deg);
+    justify-content: center;
+    padding: var(--spacing-xxsmall) 0;
+  }
+}
+
+/* ==============================
    Error Modal
    ============================== */
 

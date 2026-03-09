@@ -250,13 +250,16 @@ function SpeciesAdminContent() {
         }}
       />
 
-      {config.hasMassAdd && (
-        <div style={{ marginTop: 'var(--spacing-small)' }}>
+      <div style={{ marginTop: 'var(--spacing-small)', display: 'flex', gap: 'var(--spacing-xsmall)' }}>
+        <Link to={`${basePath}/mass-edit`} className="button secondary">
+          <i className="fas fa-edit"></i> Mass Edit
+        </Link>
+        {config.hasMassAdd && (
           <Link to={`${basePath}/mass-add`} className="button secondary">
             <i className="fas fa-images"></i> Mass Add {config.label}
           </Link>
-        </div>
-      )}
+        )}
+      </div>
 
       <ConfirmModal
         isOpen={!!deleteTarget}

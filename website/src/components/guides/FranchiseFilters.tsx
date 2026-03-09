@@ -7,7 +7,7 @@ const POKEMON_TYPES = [
 ];
 
 const DIGIMON_RANKS = [
-  'Baby', 'In-Training', 'Rookie', 'Champion', 'Ultimate', 'Mega', 'Ultra'
+  'Baby I', 'Baby II', 'Child', 'Adult', 'Perfect', 'Ultimate', 'Armor', 'Hybrid', 'Unknown'
 ];
 
 const DIGIMON_ATTRIBUTES = [

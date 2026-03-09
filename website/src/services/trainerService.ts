@@ -199,6 +199,18 @@ const trainerService = {
     return response.data;
   },
 
+  // Get box settings (lock/default)
+  getBoxSettings: async (trainerId: number | string): Promise<{ success: boolean; settings: { boxNumber: number; isLocked: boolean; isDefault: boolean }[] }> => {
+    const response = await api.get(`/trainers/${trainerId}/box-settings`);
+    return response.data;
+  },
+
+  // Update box settings (lock/default)
+  updateBoxSettings: async (trainerId: number | string, settings: { boxNumber: number; isLocked: boolean; isDefault: boolean }[]) => {
+    const response = await api.put(`/trainers/${trainerId}/box-settings`, { settings });
+    return response.data;
+  },
+
   // Get trainer inventory
   getTrainerInventory: async (trainerId: number | string): Promise<TrainerInventory> => {
     const response = await api.get(`/trainers/${trainerId}/inventory`);

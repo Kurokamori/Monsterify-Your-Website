@@ -14,6 +14,8 @@ import {
   getTrainerMonsters,
   getAllTrainerMonsters,
   updateMonsterBoxPositions,
+  getBoxSettings,
+  updateBoxSettings,
   getFeaturedMonsters,
   updateFeaturedMonsters,
   getTrainerGallery,
@@ -91,6 +93,13 @@ router.put('/:id/inventory', updateTrainerInventoryItem);
 router.get('/:id/monsters', getTrainerMonsters);
 router.get('/:id/monsters/all', getAllTrainerMonsters);
 router.put('/:id/monsters/boxes', updateMonsterBoxPositions);
+
+// =============================================================================
+// Box Settings
+// =============================================================================
+
+router.get('/:id/box-settings', getBoxSettings);
+router.put('/:id/box-settings', authenticate, updateBoxSettings);
 
 // =============================================================================
 // Featured Monsters

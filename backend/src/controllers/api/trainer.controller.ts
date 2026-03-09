@@ -1,9 +1,12 @@
 import { Request, Response } from 'express';
 import { TrainerService } from '../../services/trainer.service';
 import type { InventoryCategory } from '../../repositories';
+import { TrainerBoxSettingsRepository } from '../../repositories';
+import type { BoxSettingInput } from '../../repositories';
 import cloudinary from '../../utils/cloudinary';
 
 const trainerService = new TrainerService();
+const boxSettingsRepo = new TrainerBoxSettingsRepository();
 
 // =============================================================================
 // Trainer CRUD
@@ -568,6 +571,84 @@ export async function updateMonsterBoxPositions(req: Request, res: Response): Pr
     res.json({ success: true, message: 'Monster box positions updated successfully' });
   } catch (error) {
     console.error('Error in updateMonsterBoxPositions:', error);
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
+}
+
+// =============================================================================
+// Box Settings
+// =============================================================================
+
+export async function getBoxSettings(req: Request, res: Response): Promise<void> {
+  try {
+    const trainerId = parseInt(req.params.id as string);
+    const trainer = await trainerService.getTrainerById(trainerId);
+    if (!trainer) {
+      res.status(404).json({ success: false, message: `Trainer with ID ${trainerId} not found` });
+      return;
+    }
+
+    const settings = await boxSettingsRepo.findByTrainerId(trainerId);
+    res.json({
+      success: true,
+      settings: settings.map(s => ({
+        boxNumber: s.box_number,
+        isLocked: s.is_locked,
+        isDefault: s.is_default,
+      })),
+    });
+  } catch (error) {
+    console.error('Error in getBoxSettings:', error);
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
+}
+
+export async function updateBoxSettings(req: Request, res: Response): Promise<void> {
+  try {
+    const trainerId = parseInt(req.params.id as string);
+    const { settings } = req.body as { settings?: { boxNumber: number; isLocked: boolean; isDefault: boolean }[] };
+
+    if (!settings || !Array.isArray(settings)) {
+      res.status(400).json({ success: false, message: 'Invalid settings data. Expected an array of settings.' });
+      return;
+    }
+
+    const trainer = await trainerService.getTrainerById(trainerId);
+    if (!trainer) {
+      res.status(404).json({ success: false, message: `Trainer with ID ${trainerId} not found` });
+      return;
+    }
+
+    const userId = req.user?.discord_id;
+    if (userId && trainer.player_user_id !== userId && !req.user?.is_admin) {
+      res.status(403).json({ success: false, message: "Not authorized to update this trainer's box settings" });
+      return;
+    }
+
+    // Enforce max 1 default
+    const defaults = settings.filter(s => s.isDefault);
+    if (defaults.length > 1) {
+      res.status(400).json({ success: false, message: 'Only one box can be set as default' });
+      return;
+    }
+
+    const input: BoxSettingInput[] = settings.map(s => ({
+      boxNumber: s.boxNumber,
+      isLocked: s.isLocked,
+      isDefault: s.isDefault,
+    }));
+
+    const result = await boxSettingsRepo.upsertMany(trainerId, input);
+    res.json({
+      success: true,
+      settings: result.map(s => ({
+        boxNumber: s.box_number,
+        isLocked: s.is_locked,
+        isDefault: s.is_default,
+      })),
+    });
+  } catch (error) {
+    console.error('Error in updateBoxSettings:', error);
     res.status(500).json({ success: false, message: 'Server error' });
   }
 }

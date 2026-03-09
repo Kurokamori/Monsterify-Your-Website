@@ -2,8 +2,9 @@ import { createElement } from 'react';
 import { type FranchiseKey, FRANCHISE_CONFIG } from '@services/speciesService';
 import { type ColumnDef } from '@components/admin/AdminTable';
 import { type FieldSection } from '@components/admin/AdminForm';
-import { EvolutionLineEditor, FakemonAutocompleteField } from '@components/admin/EvolutionLineEditor';
-import { type EvolutionEntry } from '@services/fakemonService';
+import { FakemonAutocompleteField } from '@components/admin/EvolutionLineEditor';
+import { FakemonStatsField } from '@components/admin/FakemonStatsField';
+import { FakemonEvolutionMethodEditor } from '@components/admin/FakemonEvolutionMethodEditor';
 
 // ── Types ───────────────────────────────────────────────────────────
 
@@ -47,7 +48,7 @@ const POKEMON_TYPES = [
 
 const EVOLUTION_STAGES = ['Base Stage', 'Middle Stage', 'Final Stage', "Doesn't Evolve"];
 
-const DIGIMON_RANKS = ['Fresh', 'In-Training', 'Rookie', 'Champion', 'Ultimate', 'Mega', 'Ultra', 'Armor'];
+const DIGIMON_RANKS = ['Baby I', 'Baby II', 'Child', 'Adult', 'Perfect', 'Ultimate', 'Armor', 'Hybrid', 'Unknown'];
 const DIGIMON_ATTRIBUTES = ['Vaccine', 'Data', 'Virus', 'Free', 'Variable'];
 
 const NEXOMON_TYPES = [
@@ -446,12 +447,15 @@ const fakemonConfig: SpeciesAdminConfig = {
         { key: 'ability1', label: 'Ability 1', type: 'text' },
         { key: 'ability2', label: 'Ability 2', type: 'text' },
         { key: 'hiddenAbility', label: 'Hidden Ability', type: 'text' },
-        { key: 'hp', label: 'HP', type: 'number', min: 0 },
-        { key: 'attack', label: 'Attack', type: 'number', min: 0 },
-        { key: 'defense', label: 'Defense', type: 'number', min: 0 },
-        { key: 'specialAttack', label: 'Sp. Attack', type: 'number', min: 0 },
-        { key: 'specialDefense', label: 'Sp. Defense', type: 'number', min: 0 },
-        { key: 'speed', label: 'Speed', type: 'number', min: 0 },
+        {
+          key: '_statsWidget',
+          label: 'Base Stats',
+          type: 'custom',
+          render: (_value, _onChange, errors, formValues, formOnChange) =>
+            formValues && formOnChange
+              ? createElement(FakemonStatsField, { formValues, formOnChange, errors })
+              : null,
+        },
         { key: 'stage', label: 'Stage', type: 'text' },
         { key: 'isLegendary', label: 'Legendary', type: 'checkbox' },
         { key: 'isMythical', label: 'Mythical', type: 'checkbox' },
@@ -490,14 +494,12 @@ const fakemonConfig: SpeciesAdminConfig = {
         { key: 'breedingResults', label: 'Breeding Results', type: 'text', helpText: 'Baby form from breeding' },
         {
           key: 'evolutionLine',
-          label: 'Evolution Line',
+          label: 'Evolution Chain',
           type: 'custom',
-          render: (value, onChange) =>
-            createElement(EvolutionLineEditor, {
-              key: 'evolutionLine',
-              value: (Array.isArray(value) ? value : []) as EvolutionEntry[],
-              onChange,
-            }),
+          render: (_value, _onChange, _errors, formValues, formOnChange) =>
+            formValues && formOnChange
+              ? createElement(FakemonEvolutionMethodEditor, { formValues, formOnChange })
+              : null,
         },
       ],
     },

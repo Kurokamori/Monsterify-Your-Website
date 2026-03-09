@@ -75,7 +75,7 @@
   color: var(--text-color);
 }
 
-.badge.neutral, .badge.inactive {
+.badge.neutral {
   background-color: var(--primary-color);
   color: var(--text-color-muted);
 }

@@ -31,6 +31,9 @@ const TrainerDetailPage = () => {
     handleDragStart, handleDragOver, handleDragEnter, handleDragLeave, handleDrop, handleDragEnd,
     handleFeaturedDrop, handleFeaturedDragOver, handleFeaturedDragLeave,
     handleSaveBoxes, handleSaveFeaturedMonsters, handleAddBox,
+    boxMonsters, isBoxLocked, isDefaultBox, toggleBoxLock,
+    setDefaultBox, lockedBoxNumbers, showAutoSortModal, setShowAutoSortModal, handleApplySort,
+    handleSwapBoxes, handleInsertBoxBefore,
     inventoryData, isItemDetailModalOpen, setIsItemDetailModalOpen, selectedItemForDetail,
     handleItemDetailClick, getItemImageUrl,
     achievements, achievementStats, achievementsLoading, achievementFilter, setAchievementFilter,
@@ -198,6 +201,17 @@ const TrainerDetailPage = () => {
           setActiveTab={setActiveTab}
           setStatusMessage={setStatusMessage}
           setStatusType={setStatusType}
+          isBoxLocked={isBoxLocked}
+          isDefaultBox={isDefaultBox}
+          toggleBoxLock={toggleBoxLock}
+          setDefaultBox={setDefaultBox}
+          lockedBoxNumbers={lockedBoxNumbers}
+          boxMonsters={boxMonsters}
+          showAutoSortModal={showAutoSortModal}
+          setShowAutoSortModal={setShowAutoSortModal}
+          handleApplySort={handleApplySort}
+          handleSwapBoxes={handleSwapBoxes}
+          handleInsertBoxBefore={handleInsertBoxBefore}
         />
       ),
     });

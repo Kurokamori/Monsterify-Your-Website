@@ -13,6 +13,7 @@
 @import './statistics.css';
 @import './admin-dashboard.css';
 @import '../admin/species-admin.css';
+@import '../admin/mass-edit.css';
 @import '../admin/map-manager.css';
 @import '../admin/reroller.css';
 @import '../admin/submission-manager.css';

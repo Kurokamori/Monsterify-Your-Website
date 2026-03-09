@@ -1,6 +1,9 @@
+import { useState, useRef, useCallback } from 'react';
 import type { TrainerMonster } from '@services/trainerService';
 import type { FeaturedMonster } from '../useTrainerDetail';
 import { PCBoxGrid } from '../shared/PCBoxGrid';
+import { AutoSortModal } from '../shared/AutoSortModal';
+import type { MonsterBoxPosition } from '../shared/boxSortUtils';
 
 interface EditBoxesTabProps {
   featuredMonsters: (FeaturedMonster | null)[];
@@ -25,6 +28,20 @@ interface EditBoxesTabProps {
   setActiveTab: (tab: string) => void;
   setStatusMessage: (msg: string) => void;
   setStatusType: (type: 'info' | 'success' | 'error' | 'warning') => void;
+  // Box settings
+  isBoxLocked: (boxNum: number) => boolean;
+  isDefaultBox: (boxNum: number) => boolean;
+  toggleBoxLock: (boxNum: number) => void;
+  setDefaultBox: (boxNum: number) => void;
+  lockedBoxNumbers: Set<number>;
+  // Auto sort
+  boxMonsters: TrainerMonster[];
+  showAutoSortModal: boolean;
+  setShowAutoSortModal: (show: boolean) => void;
+  handleApplySort: (positions: MonsterBoxPosition[]) => void;
+  // Box rearrangement
+  handleSwapBoxes: (sourceBox: number, targetBox: number) => void;
+  handleInsertBoxBefore: (sourceBox: number, targetBox: number) => void;
 }
 
 export const EditBoxesTab = ({
@@ -50,6 +67,17 @@ export const EditBoxesTab = ({
   setActiveTab,
   setStatusMessage,
   setStatusType,
+  isBoxLocked,
+  isDefaultBox,
+  toggleBoxLock,
+  setDefaultBox,
+  lockedBoxNumbers,
+  boxMonsters,
+  showAutoSortModal,
+  setShowAutoSortModal,
+  handleApplySort,
+  handleSwapBoxes,
+  handleInsertBoxBefore,
 }: EditBoxesTabProps) => {
   const handleImgError = (e: React.SyntheticEvent<HTMLImageElement>) => {
     const target = e.target as HTMLImageElement;
@@ -59,11 +87,111 @@ export const EditBoxesTab = ({
 
   const featuredIds = featuredMonsters.filter(Boolean).map(fm => fm!.id);
 
+  // Box-level drag and drop state
+  const [draggedBoxIndex, setDraggedBoxIndex] = useState<number | null>(null);
+  const [dropTargetBox, setDropTargetBox] = useState<number | null>(null);
+  const [dropMode, setDropMode] = useState<'before' | 'swap' | null>(null);
+  const boxDragCounter = useRef<Map<number, number>>(new Map());
+
+  const handleBoxDragStart = useCallback((e: React.DragEvent, boxIndex: number) => {
+    setDraggedBoxIndex(boxIndex);
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('application/box-drag', String(boxIndex));
+    (e.currentTarget as HTMLElement).classList.add('box-dragging');
+  }, []);
+
+  const handleBoxDragEnd = useCallback((e: React.DragEvent) => {
+    (e.currentTarget as HTMLElement).classList.remove('box-dragging');
+    setDraggedBoxIndex(null);
+    setDropTargetBox(null);
+    setDropMode(null);
+    boxDragCounter.current.clear();
+    // Clean up all drop indicators
+    document.querySelectorAll('.box-drop-before, .box-drop-swap').forEach(el => {
+      el.classList.remove('box-drop-before', 'box-drop-swap');
+    });
+  }, []);
+
+  const handleBoxDropZoneDragOver = useCallback((e: React.DragEvent, boxIndex: number) => {
+    if (draggedBoxIndex == null || draggedBoxIndex === boxIndex) { return; }
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    setDropTargetBox(boxIndex);
+    setDropMode('before');
+  }, [draggedBoxIndex]);
+
+  const handleBoxDropZoneDragLeave = useCallback((_e: React.DragEvent, boxIndex: number) => {
+    if (dropTargetBox === boxIndex && dropMode === 'before') {
+      setDropTargetBox(null);
+      setDropMode(null);
+    }
+  }, [dropTargetBox, dropMode]);
+
+  const handleBoxDropZoneDrop = useCallback((e: React.DragEvent, boxIndex: number) => {
+    e.preventDefault();
+    if (draggedBoxIndex != null && draggedBoxIndex !== boxIndex) {
+      handleInsertBoxBefore(draggedBoxIndex, boxIndex);
+    }
+    setDraggedBoxIndex(null);
+    setDropTargetBox(null);
+    setDropMode(null);
+    boxDragCounter.current.clear();
+  }, [draggedBoxIndex, handleInsertBoxBefore]);
+
+  const handleBoxHeaderDragOver = useCallback((e: React.DragEvent, boxIndex: number) => {
+    if (draggedBoxIndex == null || draggedBoxIndex === boxIndex) { return; }
+    e.preventDefault();
+    e.stopPropagation();
+    e.dataTransfer.dropEffect = 'move';
+    setDropTargetBox(boxIndex);
+    setDropMode('swap');
+  }, [draggedBoxIndex]);
+
+  const handleBoxHeaderDragEnter = useCallback((e: React.DragEvent, boxIndex: number) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const count = (boxDragCounter.current.get(boxIndex) ?? 0) + 1;
+    boxDragCounter.current.set(boxIndex, count);
+    if (draggedBoxIndex != null && draggedBoxIndex !== boxIndex) {
+      (e.currentTarget as HTMLElement).classList.add('box-drop-swap');
+    }
+  }, [draggedBoxIndex]);
+
+  const handleBoxHeaderDragLeave = useCallback((e: React.DragEvent, boxIndex: number) => {
+    e.stopPropagation();
+    const count = (boxDragCounter.current.get(boxIndex) ?? 0) - 1;
+    boxDragCounter.current.set(boxIndex, count);
+    if (count <= 0) {
+      boxDragCounter.current.delete(boxIndex);
+      (e.currentTarget as HTMLElement).classList.remove('box-drop-swap');
+      if (dropTargetBox === boxIndex && dropMode === 'swap') {
+        setDropTargetBox(null);
+        setDropMode(null);
+      }
+    }
+  }, [dropTargetBox, dropMode]);
+
+  const handleBoxHeaderDrop = useCallback((e: React.DragEvent, boxIndex: number) => {
+    e.preventDefault();
+    e.stopPropagation();
+    (e.currentTarget as HTMLElement).classList.remove('box-drop-swap');
+    if (draggedBoxIndex != null && draggedBoxIndex !== boxIndex) {
+      handleSwapBoxes(draggedBoxIndex, boxIndex);
+    }
+    setDraggedBoxIndex(null);
+    setDropTargetBox(null);
+    setDropMode(null);
+    boxDragCounter.current.clear();
+  }, [draggedBoxIndex, handleSwapBoxes]);
+
   return (
     <div className="trainer-detail__stats-section">
       <div className="tree-header">
         <h2>Edit Boxes</h2>
         <div className="edit-boxes-actions">
+          <button className="button primary" onClick={() => setShowAutoSortModal(true)}>
+            <i className="fas fa-sort"></i> Auto Sort
+          </button>
           <button className="button primary" onClick={handleSaveBoxes} disabled={isSaving}>
             {isSaving ? (
               <><i className="fas fa-spinner fa-spin"></i> Saving...</>
@@ -81,6 +209,17 @@ export const EditBoxesTab = ({
         <div className={`status-message ${statusType}`}>{statusMessage}</div>
       )}
 
+      <div className="edit-boxes-instructions">
+        <p>
+          <i className="fas fa-info-circle"></i> <br />
+          Drag and drop monsters to rearrange them between boxes or add them to featured slots. <br />
+          Use the grip handle (<i className="fas fa-grip-vertical"></i>) to drag entire boxes — drop on another box header to swap, or drop between boxes to insert. <br />
+          Use the lock icon to prevent changes to a box, and the star icon to set a default box that new monsters will be added to. <br />
+          Use the Auto Sort button to automatically sort monsters in a box based on various criteria. <br />
+          Changes will not be saved until you click "Save Changes" or "Save Featured".
+        </p>
+      </div>
+
       {/* Featured Monsters Section */}
       <div className="ref-item featured-monsters-box">
         <div className="edit-box-header">
@@ -95,7 +234,7 @@ export const EditBoxesTab = ({
             {isSaving ? <i className="fas fa-spinner fa-spin"></i> : <i className="fas fa-star"></i>}
           </button>
         </div>
-        <div className="edit-box-grid featured-monsters-grid featured-monsters-compact">
+        <div className="featured-monsters-compact">
           {Array.from({ length: 6 }).map((_, slotIndex) => {
             const monster = featuredMonsters[slotIndex];
             return (
@@ -158,13 +297,6 @@ export const EditBoxesTab = ({
         </div>
       </div>
 
-      <div className="edit-boxes-instructions">
-        <p>
-          <i className="fas fa-info-circle"></i> Drag and drop monsters to rearrange them between boxes or add them to featured slots.
-          Changes will not be saved until you click "Save Changes" or "Save Featured".
-        </p>
-      </div>
-
       <div className="edit-boxes-controls">
         <button className="button primary" onClick={handleAddBox} title="Add a new empty box">
           <i className="fas fa-plus"></i> Add Box
@@ -174,28 +306,87 @@ export const EditBoxesTab = ({
       <div className="edit-boxes-grid">
         {Array.from({ length: Math.max(getMaxBoxNumber(), 1) }).map((_, boxIndex) => {
           const bm = getBoxMonsters(boxIndex);
+          const locked = isBoxLocked(boxIndex);
+          const isDefault = isDefaultBox(boxIndex);
+          const isDragSource = draggedBoxIndex === boxIndex;
           return (
-            <div className="ref-item" key={boxIndex}>
-              <div className="edit-box-header">
-                <h3>Box {boxIndex + 1}</h3>
-                <span>{bm.filter(Boolean).length}/30</span>
+            <div key={boxIndex} className="edit-box-wrapper">
+              {/* Drop zone before this box (insert mode) */}
+              {draggedBoxIndex != null && draggedBoxIndex !== boxIndex && (
+                <div
+                  className={`box-drop-zone ${dropTargetBox === boxIndex && dropMode === 'before' ? 'box-drop-zone--active' : ''}`}
+                  onDragOver={(e) => handleBoxDropZoneDragOver(e, boxIndex)}
+                  onDragLeave={(e) => handleBoxDropZoneDragLeave(e, boxIndex)}
+                  onDrop={(e) => handleBoxDropZoneDrop(e, boxIndex)}
+                >
+                  <div className="box-drop-zone__indicator">
+                    <i className="fas fa-arrow-right"></i> Insert here
+                  </div>
+                </div>
+              )}
+              <div className={`ref-item ${locked ? 'edit-box-locked' : ''} ${isDefault ? 'edit-box-default' : ''} ${isDragSource ? 'edit-box-dragging' : ''}`}>
+                <div
+                  className="edit-box-header"
+                  onDragOver={(e) => handleBoxHeaderDragOver(e, boxIndex)}
+                  onDragEnter={(e) => handleBoxHeaderDragEnter(e, boxIndex)}
+                  onDragLeave={(e) => handleBoxHeaderDragLeave(e, boxIndex)}
+                  onDrop={(e) => handleBoxHeaderDrop(e, boxIndex)}
+                >
+                  <div
+                    className="box-drag-handle"
+                    draggable
+                    onDragStart={(e) => handleBoxDragStart(e, boxIndex)}
+                    onDragEnd={handleBoxDragEnd}
+                    title="Drag to rearrange box"
+                  >
+                    <i className="fas fa-grip-vertical"></i>
+                  </div>
+                  <h3>Box {boxIndex + 1}</h3>
+                  <span>{bm.filter(Boolean).length}/30</span>
+                  <div className="box-setting-icons">
+                    <button
+                      onClick={() => toggleBoxLock(boxIndex)}
+                      className={`button icon sm no-flex ${locked ? 'active' : ''}`}
+                      title={locked ? 'Unlock box' : 'Lock box'}
+                    >
+                      <i className={`fas fa-${locked ? 'lock' : 'lock-open'}`}></i>
+                    </button>
+                    <button
+                      onClick={() => setDefaultBox(boxIndex)}
+                      className={`button icon sm no-flex ${isDefault ? 'active' : ''}`}
+                      title={isDefault ? 'Remove default' : 'Set as default box'}
+                    >
+                      <i className="fas fa-star"></i>
+                    </button>
+                  </div>
+                </div>
+                <PCBoxGrid
+                  monsters={bm}
+                  editable
+                  boxIndex={boxIndex}
+                  featuredMonsterIds={featuredIds}
+                  isLocked={locked}
+                  isDefault={isDefault}
+                  onDragStart={handleDragStart}
+                  onDragOver={handleDragOver}
+                  onDragEnter={handleDragEnter}
+                  onDragLeave={handleDragLeave}
+                  onDrop={handleDrop}
+                  onDragEnd={handleDragEnd}
+                />
               </div>
-              <PCBoxGrid
-                monsters={bm}
-                editable
-                boxIndex={boxIndex}
-                featuredMonsterIds={featuredIds}
-                onDragStart={handleDragStart}
-                onDragOver={handleDragOver}
-                onDragEnter={handleDragEnter}
-                onDragLeave={handleDragLeave}
-                onDrop={handleDrop}
-                onDragEnd={handleDragEnd}
-              />
             </div>
           );
         })}
       </div>
+
+      <AutoSortModal
+        monsters={boxMonsters}
+        lockedBoxNumbers={lockedBoxNumbers}
+        onApplySort={handleApplySort}
+        isOpen={showAutoSortModal}
+        onClose={() => setShowAutoSortModal(false)}
+      />
     </div>
   );
 };

@@ -33,6 +33,13 @@ export type {
   TrainerUpdateInput,
 } from './trainer.repository';
 
+// Trainer Box Settings Repository
+export { TrainerBoxSettingsRepository } from './trainer-box-settings.repository';
+export type {
+  TrainerBoxSettingRow,
+  BoxSettingInput,
+} from './trainer-box-settings.repository';
+
 // Trainer Inventory Repository
 export { TrainerInventoryRepository, INVENTORY_CATEGORIES } from './trainer-inventory.repository';
 export type {

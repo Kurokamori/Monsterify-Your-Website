@@ -476,7 +476,7 @@ export class MissionService {
         const assignment = itemAssignments.find(a => a.itemIndex === i);
         if (!assignment) { continue; }
 
-        const item = rolledItems[i]!;
+        const item = rolledItems[i] as (typeof rolledItems)[number];
         try {
           let itemRecord: ItemRow | null = null;
           if (item.itemName) {

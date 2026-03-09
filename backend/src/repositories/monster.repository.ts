@@ -1,5 +1,6 @@
 import { BaseRepository } from './base.repository';
 import { db } from '../database';
+import { TrainerBoxSettingsRepository } from './trainer-box-settings.repository';
 
 // Row type as stored in database
 export type MonsterRow = {
@@ -525,7 +526,13 @@ export class MonsterRepository extends BaseRepository<MonsterWithTrainer, Monste
     if (input.boxNumber === null || input.boxNumber === undefined || input.trainerIndex === null || input.trainerIndex === undefined) {
       const occupied = await this.getBoxPositions(input.trainerId);
       const occupiedSet = new Set(occupied.map(p => `${p.box_number}-${p.trainer_index}`));
-      const nextPos = this.findNextEmptyPosition(occupiedSet);
+
+      // Fetch box settings for lock/default awareness
+      const boxSettingsRepo = new TrainerBoxSettingsRepository();
+      const lockedBoxNumbers = new Set(await boxSettingsRepo.getLockedBoxNumbers(input.trainerId));
+      const defaultBox = await boxSettingsRepo.getDefaultBoxNumber(input.trainerId);
+
+      const nextPos = this.findNextEmptyPositionWithSettings(occupiedSet, lockedBoxNumbers, defaultBox);
       if (nextPos) {
         await this.updateBoxPosition(monsterId, nextPos.boxNumber, nextPos.trainerIndex);
       }
@@ -1040,6 +1047,53 @@ export class MonsterRepository extends BaseRepository<MonsterWithTrainer, Monste
   }
 
   /**
+   * Find next empty position respecting locked/default box settings.
+   * 1. Try default box first (if set and not locked)
+   * 2. Scan from default+1 onward, skipping locked boxes
+   * 3. If no default, scan from 0 skipping locked boxes
+   */
+  private findNextEmptyPositionWithSettings(
+    occupiedPositions: Set<string>,
+    lockedBoxNumbers: Set<number>,
+    defaultBox: number | null,
+  ): { boxNumber: number; trainerIndex: number } | null {
+    const tryBox = (boxNumber: number): { boxNumber: number; trainerIndex: number } | null => {
+      if (lockedBoxNumbers.has(boxNumber)) { return null; }
+      for (let trainerIndex = 0; trainerIndex < 30; trainerIndex++) {
+        if (!occupiedPositions.has(`${boxNumber}-${trainerIndex}`)) {
+          return { boxNumber, trainerIndex };
+        }
+      }
+      return null;
+    };
+
+    // Try default box first
+    if (defaultBox !== null) {
+      const pos = tryBox(defaultBox);
+      if (pos) { return pos; }
+
+      // Scan from default+1 onward
+      for (let boxNumber = defaultBox + 1; boxNumber < 100; boxNumber++) {
+        const p = tryBox(boxNumber);
+        if (p) { return p; }
+      }
+      // Wrap around from 0 to default-1
+      for (let boxNumber = 0; boxNumber < defaultBox; boxNumber++) {
+        const p = tryBox(boxNumber);
+        if (p) { return p; }
+      }
+      return null;
+    }
+
+    // No default: scan from 0 skipping locked
+    for (let boxNumber = 0; boxNumber < 100; boxNumber++) {
+      const pos = tryBox(boxNumber);
+      if (pos) { return pos; }
+    }
+    return null;
+  }
+
+  /**
    * Fix duplicate box positions — when two or more monsters share the same slot,
    * keep the first (lowest ID) and move the rest to the next empty slot.
    */
@@ -1103,6 +1157,7 @@ export class MonsterRepository extends BaseRepository<MonsterWithTrainer, Monste
    * Auto-assign box positions to monsters that don't have them.
    * Calls fixDuplicateBoxPositions first, then appends unassigned monsters
    * after the highest currently occupied position (preserveGaps behavior).
+   * Respects locked box settings — will not place monsters into locked boxes.
    */
   async autoAssignBoxPositions(trainerId: number): Promise<void> {
     await this.fixDuplicateBoxPositions(trainerId);
@@ -1117,6 +1172,18 @@ export class MonsterRepository extends BaseRepository<MonsterWithTrainer, Monste
     const unassigned = allMonsters.filter(m => m.box_number === null || m.trainer_index === null);
     if (unassigned.length === 0) {
       return;
+    }
+
+    // Fetch locked box settings
+    const boxSettingsRepo = new TrainerBoxSettingsRepository();
+    const lockedBoxNumbers = new Set(await boxSettingsRepo.getLockedBoxNumbers(trainerId));
+
+    // Build occupied set from assigned monsters
+    const occupiedPositions = new Set<string>();
+    for (const m of allMonsters) {
+      if (m.box_number !== null && m.trainer_index !== null) {
+        occupiedPositions.add(`${m.box_number}-${m.trainer_index}`);
+      }
     }
 
     // Find the highest occupied position to append after it
@@ -1138,11 +1205,17 @@ export class MonsterRepository extends BaseRepository<MonsterWithTrainer, Monste
     let currentPosition = maxPositionInHighestBox + 1;
 
     for (const monster of unassigned) {
-      if (currentPosition >= 30) {
-        currentPosition = 0;
-        currentBox++;
+      // Advance position, skipping locked boxes
+      while (currentPosition >= 30 || lockedBoxNumbers.has(currentBox)) {
+        if (lockedBoxNumbers.has(currentBox) || currentPosition >= 30) {
+          currentPosition = 0;
+          currentBox++;
+        }
       }
+      if (currentBox >= 100) { break; }
+
       await this.updateBoxPosition(monster.id, currentBox, currentPosition);
+      occupiedPositions.add(`${currentBox}-${currentPosition}`);
       currentPosition++;
     }
   }

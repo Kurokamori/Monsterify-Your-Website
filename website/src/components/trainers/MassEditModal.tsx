@@ -1070,88 +1070,162 @@ export function MassEditModal({
   const renderResultsStep = () => {
     const successCount = processingResults.filter(r => r.status === 'success').length;
     const errorCount = processingResults.filter(r => r.status === 'error').length;
+    const totalCount = processingResults.length;
+    const successRatio = totalCount > 0 ? (successCount / totalCount) * 100 : 0;
+
+    const getOperationIcon = (type: string) => {
+      switch (type) {
+        case 'rename': return 'fa-pen';
+        case 'berry': return 'fa-seedling';
+        case 'pastry': return 'fa-cookie-bite';
+        default: return 'fa-cog';
+      }
+    };
+
+    const getOperationLabel = (type: string) => {
+      switch (type) {
+        case 'rename': return 'Rename';
+        case 'berry': return 'Berry';
+        case 'pastry': return 'Pastry';
+        default: return 'Edit';
+      }
+    };
 
     return (
       <div className="mass-edit-content">
-        <h3 className="mb-sm">Mass Edit Complete</h3>
-        <div className="mb-md">
-          <p className="text-success">{successCount} operations completed successfully</p>
-          {errorCount > 0 && <p className="text-danger">{errorCount} operations failed</p>}
+        {/* Summary Header */}
+        <div className="me-results__summary">
+          <div className={`me-results__summary-icon ${errorCount === 0 ? 'me-results__summary-icon--success' : 'me-results__summary-icon--mixed'}`}>
+            <i className={`fas ${errorCount === 0 ? 'fa-check-circle' : 'fa-exclamation-circle'}`}></i>
+          </div>
+          <h3 className="me-results__title">
+            {errorCount === 0 ? 'All Operations Complete' : 'Mass Edit Complete'}
+          </h3>
+
+          {/* Progress bar */}
+          <div className="me-results__progress">
+            <div className="me-results__progress-bar" style={{ width: `${successRatio}%` }}></div>
+            {errorCount > 0 && (
+              <div className="me-results__progress-bar me-results__progress-bar--error" style={{ width: `${100 - successRatio}%` }}></div>
+            )}
+          </div>
+
+          <div className="me-results__stats">
+            <span className="me-results__stat me-results__stat--success">
+              <i className="fas fa-check"></i> {successCount} succeeded
+            </span>
+            {errorCount > 0 && (
+              <span className="me-results__stat me-results__stat--error">
+                <i className="fas fa-times"></i> {errorCount} failed
+              </span>
+            )}
+            <span className="me-results__stat me-results__stat--total">
+              {totalCount} total
+            </span>
+          </div>
         </div>
 
-        <div className="form-stack gap-sm">
+        {/* Results List */}
+        <div className="me-results__list">
           {processingResults.map((result, index) => (
             <div
               key={index}
-              className={`card ${result.status === 'success' ? 'card--success' : 'card--danger'}`}
+              className={`me-results__card ${result.status === 'success' ? 'me-results__card--success' : 'me-results__card--error'}`}
+              style={{ animationDelay: `${index * 40}ms` }}
             >
-              <div className="card__content">
-                <div className="flex gap-sm align-center">
-                  <i className={`fas ${result.status === 'success' ? 'fa-check-circle text-success' : 'fa-times-circle text-danger'}`}></i>
-                  <div className="flex-1">
-                    <h4>{result.displayName || result.monsterName}</h4>
-                    <p className="text-sm text-muted">{result.message}</p>
+              {/* Left status strip */}
+              <div className="me-results__card-strip">
+                <i className={`fas ${result.status === 'success' ? 'fa-check' : 'fa-times'}`}></i>
+              </div>
+
+              <div className="me-results__card-body">
+                {/* Header row */}
+                <div className="me-results__card-header">
+                  <div className="me-results__card-title-row">
+                    <h4 className="me-results__monster-name">
+                      {result.displayName || result.monsterName}
+                    </h4>
+                    <span className={`badge xs ${result.status === 'success' ? 'success' : 'error'}`}>
+                      <i className={`fas ${getOperationIcon(result.type)}`}></i>{' '}
+                      {getOperationLabel(result.type)}
+                    </span>
                   </div>
+                  <p className="me-results__message">{result.message}</p>
                 </div>
 
+                {/* Before/After Comparison */}
                 {result.status === 'success' && result.updatedMonster && (
-                  <div className="flex gap-md mt-sm">
+                  <div className="me-results__comparison">
                     {result.beforeMonster && (
-                      <div className="flex-1 flex flex-col gap-xs">
-                        <h3 className="text-sm mb-xxs">Before</h3>
-                        <p className="mt-xxs">
-                          {[result.beforeMonster.species1, result.beforeMonster.species2, result.beforeMonster.species3]
+                      <div className="me-results__comparison-col">
+                        <span className="me-results__comparison-label">Before</span>
+                        <div className="me-results__comparison-data">
+                          <p className="me-results__species">
+                            {[result.beforeMonster.species1, result.beforeMonster.species2, result.beforeMonster.species3]
+                              .filter(Boolean)
+                              .join(' + ')}
+                          </p>
+                          <div className="badge-group badge-group--sm badge-group--gap-xs badge-group--wrap">
+                            {[result.beforeMonster.type1, result.beforeMonster.type2, result.beforeMonster.type3,
+                              result.beforeMonster.type4, result.beforeMonster.type5]
+                              .filter(Boolean)
+                              .map((type, idx) => (
+                                <TypeBadge key={idx} type={type!} size="xs" />
+                              ))}
+                          </div>
+                          {result.beforeMonster.attribute && (
+                            <AttributeBadge attribute={result.beforeMonster.attribute} size="xs" />
+                          )}
+                        </div>
+                      </div>
+                    )}
+                    {result.beforeMonster && (
+                      <div className="me-results__comparison-arrow">
+                        <i className="fas fa-chevron-right"></i>
+                      </div>
+                    )}
+                    <div className="me-results__comparison-col me-results__comparison-col--after">
+                      <span className="me-results__comparison-label">
+                        {result.beforeMonster ? 'After' : 'Result'}
+                      </span>
+                      <div className="me-results__comparison-data">
+                        <p className="me-results__species">
+                          {[result.updatedMonster.species1, result.updatedMonster.species2, result.updatedMonster.species3]
                             .filter(Boolean)
                             .join(' + ')}
                         </p>
-                        <div className="badge-group badge-group--sm badge-group--gap-sm badge-group--wrap">
-                          {[result.beforeMonster.type1, result.beforeMonster.type2, result.beforeMonster.type3,
-                            result.beforeMonster.type4, result.beforeMonster.type5]
+                        <div className="badge-group badge-group--sm badge-group--gap-xs badge-group--wrap">
+                          {[result.updatedMonster.type1, result.updatedMonster.type2, result.updatedMonster.type3,
+                            result.updatedMonster.type4, result.updatedMonster.type5]
                             .filter(Boolean)
                             .map((type, idx) => (
-                              <TypeBadge key={idx} type={type!} size="sm" />
+                              <TypeBadge key={idx} type={type!} size="xs" />
                             ))}
                         </div>
-                        {result.beforeMonster.attribute && (
-                          <AttributeBadge attribute={result.beforeMonster.attribute} size="sm" />
+                        {result.updatedMonster.attribute && (
+                          <AttributeBadge attribute={result.updatedMonster.attribute} size="xs" />
                         )}
                       </div>
-                    )}
-                    <div className="flex align-center">
-                      <i className="fas fa-arrow-right text-muted"></i>
-                    </div>
-                    <div className="flex-1 flex flex-col gap-xs">
-                      <h3 className="text-sm mb-xxs">After</h3>
-                      <p className="mt-xxs">
-                        {[result.updatedMonster.species1, result.updatedMonster.species2, result.updatedMonster.species3]
-                          .filter(Boolean)
-                          .join(' + ')}
-                      </p>
-                      <div className="badge-group badge-group--sm badge-group--gap-sm badge-group--wrap">
-                        {[result.updatedMonster.type1, result.updatedMonster.type2, result.updatedMonster.type3,
-                          result.updatedMonster.type4, result.updatedMonster.type5]
-                          .filter(Boolean)
-                          .map((type, idx) => (
-                            <TypeBadge key={idx} type={type!} size="sm" />
-                          ))}
-                      </div>
-                      {result.updatedMonster.attribute && (
-                        <AttributeBadge attribute={result.updatedMonster.attribute} size="sm" />
-                      )}
                     </div>
                   </div>
                 )}
 
+                {/* New Monster Created */}
                 {result.newMonster && (
-                  <div className="mt-sm p-sm bg-success-subtle border-radius">
-                    <h5 className="text-sm mb-xxs">New Monster Created!</h5>
-                    <p className="text-sm"><strong>{result.newMonster.name}</strong></p>
-                    <div className="badge-group badge-group--sm">
-                      {[result.newMonster.species1, result.newMonster.species2, result.newMonster.species3]
-                        .filter(Boolean)
-                        .map((species, idx) => (
-                          <span key={idx} className="badge">{species}</span>
-                        ))}
+                  <div className="me-results__new-monster">
+                    <div className="me-results__new-monster-header">
+                      <i className="fas fa-star"></i>
+                      <span>New Monster Created</span>
+                    </div>
+                    <div className="me-results__new-monster-info">
+                      <strong>{result.newMonster.name}</strong>
+                      <div className="badge-group badge-group--sm badge-group--gap-xs badge-group--wrap">
+                        {[result.newMonster.species1, result.newMonster.species2, result.newMonster.species3]
+                          .filter(Boolean)
+                          .map((species, idx) => (
+                            <span key={idx} className="badge secondary xs">{species}</span>
+                          ))}
+                      </div>
                     </div>
                   </div>
                 )}

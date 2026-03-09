@@ -7,6 +7,7 @@ import {
   searchSpecies,
   rollSpecies,
   postSpeciesImages,
+  getSpeciesMetadata,
 } from '../../controllers/species/species.controller';
 
 const router = Router();
@@ -20,5 +21,6 @@ router.get('/search', searchSpecies);
 // POST endpoints (body-based, used by town components)
 router.post('/roll', optionalAuth, rollSpecies);
 router.post('/images', postSpeciesImages);
+router.post('/metadata', getSpeciesMetadata);
 
 export default router;

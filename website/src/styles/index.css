@@ -111,6 +111,7 @@
     --shadow-large: 0 8px 24px rgba(0, 0, 0, 0.3);
 
     /* Dynamic defaults (overridden via inline styles) */
+    --node-accent: var(--accent-color);
     --faction-color: var(--border-color);
     --input-disabled-background: var(--primary-color);
 

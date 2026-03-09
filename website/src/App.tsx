@@ -80,7 +80,7 @@ import BazarPage from './pages/town/BazarPage'
 import TownPage from './pages/town/TownPage'
 import TradeCenterPage from './pages/town/TradeCenterPage'
 import AdminDashboardPage from './pages/admin/AdminDashboardPage'
-import { SpeciesAdminPage, SpeciesFormPage, MassAddPage } from './pages/admin/species-management'
+import { SpeciesAdminPage, SpeciesFormPage, MassAddPage, MassEditPage } from './pages/admin/species-management'
 import { SubmissionManagerPage } from './pages/admin/submission-management'
 import { UserManagerPage } from './pages/admin/user-management'
 import { ItemManagerPage, ItemFormPage, ItemImageManagerPage, ItemRollerPage } from './pages/admin/item-management'
@@ -204,6 +204,7 @@ function App() {
         {/* Admin Routes */}
         <Route path="admin" element={<AdminDashboardPage />} />
         <Route path="admin/species/fakemon/mass-add" element={<MassAddPage />} />
+        <Route path="admin/species/:franchise/mass-edit" element={<MassEditPage />} />
         <Route path="admin/species/:franchise" element={<SpeciesAdminPage />} />
         <Route path="admin/species/:franchise/add" element={<SpeciesFormPage />} />
         <Route path="admin/species/:franchise/edit/:id" element={<SpeciesFormPage />} />

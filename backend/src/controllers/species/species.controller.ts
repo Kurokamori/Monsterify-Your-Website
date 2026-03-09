@@ -329,6 +329,84 @@ export async function getSpeciesList(req: Request, res: Response): Promise<void>
   }
 }
 
+/**
+ * Batch lookup species metadata (franchise, stage, legendary/mythical status).
+ * POST /species/metadata  { speciesNames: string[] }
+ */
+export async function getSpeciesMetadata(req: Request, res: Response): Promise<void> {
+  try {
+    const { speciesNames } = req.body as { speciesNames?: string[] };
+
+    if (!speciesNames || !Array.isArray(speciesNames) || speciesNames.length === 0) {
+      res.status(400).json({ success: false, message: 'speciesNames array is required' });
+      return;
+    }
+
+    // Deduplicate and lowercase for matching
+    const unique = [...new Set(speciesNames.map(n => n.trim()))];
+    const lowerNames = unique.map(n => n.toLowerCase());
+
+    const metadata: Record<string, { franchise: string | null; stage: string | null; isLegendary: boolean; isMythical: boolean }> = {};
+
+    // Define franchise table configs
+    const tableConfigs: {
+      table: string;
+      franchise: string;
+      stageField: string | null;
+      legendaryField: string | null;
+      mythicalField: string | null;
+    }[] = [
+      { table: 'pokemon_monsters', franchise: 'pokemon', stageField: 'stage', legendaryField: 'is_legendary', mythicalField: 'is_mythical' },
+      { table: 'fakemon', franchise: 'fakemon', stageField: 'stage', legendaryField: 'is_legendary', mythicalField: 'is_mythical' },
+      { table: 'digimon_monsters', franchise: 'digimon', stageField: 'rank', legendaryField: null, mythicalField: null },
+      { table: 'nexomon_monsters', franchise: 'nexomon', stageField: 'stage', legendaryField: 'is_legendary', mythicalField: null },
+      { table: 'yokai_monsters', franchise: 'yokai', stageField: 'rank', legendaryField: null, mythicalField: null },
+      { table: 'finalfantasy_monsters', franchise: 'finalfantasy', stageField: 'stage', legendaryField: null, mythicalField: null },
+      { table: 'pals_monsters', franchise: 'pals', stageField: null, legendaryField: null, mythicalField: null },
+      { table: 'monsterhunter_monsters', franchise: 'monsterhunter', stageField: null, legendaryField: null, mythicalField: null },
+      { table: 'dragonquest_monsters', franchise: 'dragonquest', stageField: null, legendaryField: null, mythicalField: null },
+    ];
+
+    for (const config of tableConfigs) {
+      // Build SELECT fields
+      const selectFields = ['name'];
+      if (config.stageField) { selectFields.push(`${config.stageField} as stage`); }
+      if (config.legendaryField) { selectFields.push(`${config.legendaryField}::boolean as is_legendary`); }
+      if (config.mythicalField) { selectFields.push(`${config.mythicalField}::boolean as is_mythical`); }
+
+      const result = await db.query<Record<string, unknown>>(
+        `SELECT ${selectFields.join(', ')} FROM ${config.table} WHERE LOWER(name) = ANY($1::text[])`,
+        [lowerNames],
+      );
+
+      for (const row of result.rows) {
+        const name = row.name as string;
+        // Find original-cased name from input
+        const originalName = unique.find(n => n.toLowerCase() === name.toLowerCase()) ?? name;
+        // First match wins — skip if already found
+        if (metadata[originalName]) { continue; }
+
+        metadata[originalName] = {
+          franchise: config.franchise,
+          stage: config.stageField ? (row.stage as string | null) : null,
+          isLegendary: config.legendaryField ? !!(row.is_legendary) : false,
+          isMythical: config.mythicalField ? !!(row.is_mythical) : false,
+        };
+      }
+    }
+
+    // Fill in any names that weren't found
+    for (const name of unique) {
+      metadata[name] ??= { franchise: null, stage: null, isLegendary: false, isMythical: false };
+    }
+
+    res.json({ success: true, data: metadata });
+  } catch (error) {
+    console.error('Error in getSpeciesMetadata:', error);
+    res.status(500).json({ success: false, message: 'Internal server error' });
+  }
+}
+
 export async function searchSpecies(req: Request, res: Response): Promise<void> {
   try {
     const search = (req.query.search as string) || (req.query.query as string) || '';

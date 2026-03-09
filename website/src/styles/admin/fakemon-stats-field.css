@@ -1,0 +1,140 @@
+/* ==============================
+   Fakemon Stats Field Widget
+   ============================== */
+
+.fk-stats {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-small);
+}
+
+/* ── Randomizer bar ──────────────────── */
+
+.fk-stats__randomizer {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xsmall);
+  padding: var(--spacing-xsmall) var(--spacing-small);
+  background: var(--primary-color-hover);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-medium);
+}
+
+.fk-stats__random-label {
+  font-size: var(--font-size-xsmall);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-color-muted);
+  white-space: nowrap;
+}
+
+.fk-stats__tier-select {
+  flex: 1;
+  min-width: 0;
+}
+
+.fk-stats__roll-btn {
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* ── Stats 2×3 grid ──────────────────── */
+
+.fk-stats__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px var(--spacing-medium);
+}
+
+/* ── Single stat row ─────────────────── */
+
+.fk-stat-row {
+  display: grid;
+  /* label | number input | bar */
+  grid-template-columns: 50px 52px 1fr;
+  align-items: center;
+  gap: 6px;
+}
+
+.fk-stat-row__label {
+  font-size: var(--font-size-xsmall);
+  font-weight: 700;
+  text-align: right;
+  white-space: nowrap;
+  /* color set inline per stat */
+}
+
+.fk-stat-row__input {
+  width: 100%;
+  padding: 4px 6px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-small);
+  background: var(--input-background);
+  color: var(--text-color);
+  font-size: var(--font-size-small);
+  font-weight: 700;
+  text-align: center;
+  box-sizing: border-box;
+  transition: border-color 0.15s ease;
+}
+
+.fk-stat-row__input:focus {
+  outline: none;
+  border-color: var(--accent-color);
+}
+
+/* Hide browser number spinners */
+.fk-stat-row__input::-webkit-outer-spin-button,
+.fk-stat-row__input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.fk-stat-row__input[type='number'] {
+  -moz-appearance: textfield;
+}
+
+.fk-stat-row__track {
+  height: 8px;
+  border-radius: 4px;
+  background: var(--primary-color-hover);
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+}
+
+.fk-stat-row__fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.25s ease;
+  min-width: 2px;
+}
+
+.fk-stat-row--error .fk-stat-row__input {
+  border-color: var(--error-color);
+}
+
+/* ── BST total ───────────────────────── */
+
+.fk-stats__bst {
+  text-align: right;
+  font-size: var(--font-size-small);
+  color: var(--text-color-muted);
+  padding-top: var(--spacing-xsmall);
+  border-top: 1px solid var(--border-color);
+}
+
+.fk-stats__bst strong {
+  color: var(--accent-color);
+  font-size: var(--font-size-medium);
+  font-weight: 700;
+  margin-left: 4px;
+}
+
+/* ── Responsive ──────────────────────── */
+
+@media (max-width: 900px) {
+  .fk-stats__grid {
+    grid-template-columns: 1fr;
+  }
+}
