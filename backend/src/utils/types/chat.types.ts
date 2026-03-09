@@ -59,6 +59,7 @@ export interface ChatRoomRow {
   faction_name: string | null;
   last_message_at: Date | null;
   last_message_preview: string | null;
+  last_message_sender_trainer_id: number | null;
   created_at: Date;
   updated_at: Date;
 }
@@ -72,6 +73,7 @@ export interface ChatRoom {
   factionName: string | null;
   lastMessageAt: Date | null;
   lastMessagePreview: string | null;
+  lastMessageSenderTrainerId: number | null;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -100,6 +102,7 @@ export interface ChatRoomUpdateInput {
   icon_url?: string | null;
   last_message_at?: Date;
   last_message_preview?: string;
+  last_message_sender_trainer_id?: number | null;
 }
 
 // ============================================================================

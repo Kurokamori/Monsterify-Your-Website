@@ -364,6 +364,7 @@ export class ChatService {
     await this.roomRepo.update(input.roomId, {
       last_message_at: new Date(),
       last_message_preview: preview.slice(0, 200),
+      last_message_sender_trainer_id: input.trainerId,
     });
 
     return message;

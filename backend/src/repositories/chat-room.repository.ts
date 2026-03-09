@@ -19,6 +19,7 @@ const normalize = (row: ChatRoomRow): ChatRoom => ({
   factionName: row.faction_name ?? null,
   lastMessageAt: row.last_message_at,
   lastMessagePreview: row.last_message_preview,
+  lastMessageSenderTrainerId: row.last_message_sender_trainer_id ?? null,
   createdAt: row.created_at,
   updatedAt: row.updated_at,
 });
@@ -94,7 +95,7 @@ export class ChatRoomRepository extends BaseRepository<
       // since actual message counts are in S3, not Postgres.
       // The frontend will use last_read_at vs last_message_at for the badge.
       const unreadCount =
-        row.last_read_at && row.last_message_at && row.last_message_at > row.last_read_at
+        row.last_message_at && (row.last_read_at === null || row.last_message_at > row.last_read_at)
           ? 1 // At least one unread
           : 0;
 
@@ -195,6 +196,10 @@ export class ChatRoomRepository extends BaseRepository<
     if (input.last_message_preview !== undefined) {
       values.push(input.last_message_preview);
       updates.push(`last_message_preview = $${values.length}`);
+    }
+    if (input.last_message_sender_trainer_id !== undefined) {
+      values.push(input.last_message_sender_trainer_id);
+      updates.push(`last_message_sender_trainer_id = $${values.length}`);
     }
 
     if (updates.length === 0) {

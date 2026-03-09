@@ -5,9 +5,10 @@ import { useAuth } from '../../contexts/AuthContext';
 interface AuthButtonsProps {
   onLogout?: () => void;
   totalUnread?: number;
+  totalNotifications?: number;
 }
 
-export const AuthButtons = ({ onLogout, totalUnread = 0 }: AuthButtonsProps) => {
+export const AuthButtons = ({ onLogout, totalUnread = 0, totalNotifications = 0 }: AuthButtonsProps) => {
   const { currentUser, isAuthenticated, logout } = useAuth();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -53,8 +54,8 @@ export const AuthButtons = ({ onLogout, totalUnread = 0 }: AuthButtonsProps) => 
             <i className="fas fa-user-circle user-icon"></i>
             <span className="user-name">{currentUser?.display_name || currentUser?.username || 'User'}</span>
             <i className={`fas fa-chevron-${dropdownOpen ? 'up' : 'down'} dropdown-chevron`}></i>
-            {totalUnread > 0 && (
-              <span className="user-dropdown-badge">{totalUnread}</span>
+            {(totalUnread + totalNotifications) > 0 && (
+              <span className="user-dropdown-badge">{totalUnread + totalNotifications}</span>
             )}
           </button>
 
@@ -62,6 +63,14 @@ export const AuthButtons = ({ onLogout, totalUnread = 0 }: AuthButtonsProps) => 
             <div className="user-dropdown-menu">
               <Link to="/profile" className="top-nav-link" onClick={() => setDropdownOpen(false)}>
                 <i className="fas fa-cog"></i> Profile Settings
+              </Link>
+              <Link to="/profile/notifications" className="top-nav-link" onClick={() => setDropdownOpen(false)}>
+                <i className="fas fa-bell"></i> Notifications
+                {(totalUnread + totalNotifications) > 0 && (
+                  <span className="user-dropdown-badge" style={{ position: 'static', marginLeft: '0.5rem' }}>
+                    {totalUnread + totalNotifications}
+                  </span>
+                )}
               </Link>
               <div className="dropdown-divider"></div>
               <Link to="/profile/trainers" className="top-nav-link" onClick={() => setDropdownOpen(false)}>

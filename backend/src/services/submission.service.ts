@@ -39,6 +39,7 @@ import { MonsterInitializerService } from './monster-initializer.service';
 import type { MonsterData } from './monster-initializer.service';
 import type { MonsterTable } from '../utils/constants';
 import cloudinary from '../utils/cloudinary';
+import { ReferenceApprovalRepository } from '../repositories/reference-approval.repository';
 
 // =============================================================================
 // Types
@@ -190,6 +191,7 @@ export class SubmissionService {
   private specialBerryService: SpecialBerryService;
   private monsterInitService: MonsterInitializerService;
   private userRepo: UserRepository;
+  private refApprovalRepo: ReferenceApprovalRepository;
 
   constructor(
     submissionRepo?: SubmissionRepository,
@@ -214,6 +216,7 @@ export class SubmissionService {
     this.specialBerryService = specialBerryService ?? new SpecialBerryService();
     this.monsterInitService = monsterInitService ?? new MonsterInitializerService();
     this.userRepo = new UserRepository();
+    this.refApprovalRepo = new ReferenceApprovalRepository();
   }
 
   // ===========================================================================
@@ -920,7 +923,17 @@ export class SubmissionService {
     const { referenceType, body, files } = data;
 
     const references: Array<Record<string, unknown>> = [];
-    const totalRewards = { levels: 0, coins: 0, giftLevels: 0, cappedLevels: 0 };
+    const totalRewards = { levels: 0, coins: 0, cappedLevels: 0 };
+    type PendingApprovalData = {
+      trainerId: number;
+      ownerUserId: number;
+      referenceType: string;
+      referenceUrl: string;
+      rewardLevels: number;
+      rewardCoins: number;
+      metadata: Record<string, unknown>;
+    };
+    const pendingApprovalData: PendingApprovalData[] = [];
 
     const referenceCount = Object.keys(body)
       .filter(key => String(key).startsWith('trainerId_'))
@@ -934,9 +947,16 @@ export class SubmissionService {
 
       // Check gift status
       let isGift = false;
+      let ownerWebsiteUserId: number | null = null;
       const playerUserId = await this.submissionRepo.findPlayerUserId(parseInt(trainerId));
       if (playerUserId && playerUserId !== userId) {
         isGift = true;
+        const ownerUser = await this.userRepo.findByDiscordId(playerUserId);
+        ownerWebsiteUserId = ownerUser?.id ?? null;
+        if (!ownerWebsiteUserId) {
+          // Owner not found as website user – treat as non-gift
+          isGift = false;
+        }
       }
 
       const reference: Record<string, unknown> = {
@@ -1014,35 +1034,62 @@ export class SubmissionService {
         refCoins = customLevels ? customLevels * 50 : 200;
       }
 
-      // Apply reference-specific side effects
+      if (isGift && ownerWebsiteUserId) {
+        // Defer gift references – create a pending approval record instead of applying immediately
+        const metadata: Record<string, unknown> = {};
+        if (reference.monsterName) {metadata.monsterName = reference.monsterName;}
+        if (reference.megaArtist) {metadata.megaArtist = reference.megaArtist;}
+        if (reference.megaSpecies1) {metadata.megaSpecies1 = reference.megaSpecies1;}
+        if (reference.megaSpecies2) {metadata.megaSpecies2 = reference.megaSpecies2;}
+        if (reference.megaSpecies3) {metadata.megaSpecies3 = reference.megaSpecies3;}
+        if (reference.megaType1) {metadata.megaType1 = reference.megaType1;}
+        if (reference.megaType2) {metadata.megaType2 = reference.megaType2;}
+        if (reference.megaType3) {metadata.megaType3 = reference.megaType3;}
+        if (reference.megaType4) {metadata.megaType4 = reference.megaType4;}
+        if (reference.megaType5) {metadata.megaType5 = reference.megaType5;}
+        if (reference.megaType6) {metadata.megaType6 = reference.megaType6;}
+        if (reference.megaAbility) {metadata.megaAbility = reference.megaAbility;}
+        if (reference.instanceCount) {metadata.instanceCount = reference.instanceCount;}
+        if (reference.customLevels) {metadata.customLevels = reference.customLevels;}
+        pendingApprovalData.push({
+          trainerId: parseInt(trainerId),
+          ownerUserId: ownerWebsiteUserId,
+          referenceType,
+          referenceUrl: reference.referenceUrl as string,
+          rewardLevels: refLevels,
+          rewardCoins: refCoins,
+          metadata,
+        });
+        continue; // Skip adding to references array / accumulating totals
+      }
+
+      // Apply reference-specific side effects for non-gift references
       await this.applyReferenceSideEffects(reference, referenceType);
 
       totalRewards.levels += refLevels;
       totalRewards.coins += refCoins;
-      if (isGift) {
-        totalRewards.giftLevels += refLevels;
-      }
 
       references.push({ ...reference, rewards: { levels: refLevels, coins: refCoins } });
     }
 
-    if (references.length === 0) {
+    if (references.length === 0 && pendingApprovalData.length === 0) {
       throw new Error('No valid references provided');
     }
 
     totalRewards.cappedLevels = Math.ceil(totalRewards.levels * 0.05);
 
-    // Create submission
+    // Create submission (always, even if all refs are pending approvals)
+    const totalRefCount = references.length + pendingApprovalData.length;
     const { id: submissionId } = await this.submissionRepo.createSubmission({
       userId,
       title: `${referenceType.charAt(0).toUpperCase() + referenceType.slice(1)} Reference`,
-      description: `Reference for ${references.length} ${referenceType}(s)`,
+      description: `Reference for ${totalRefCount} ${referenceType}(s)`,
       contentType: referenceType,
       submissionType: 'reference',
       status: 'approved',
     });
 
-    // Add submission references
+    // Add submission references for immediate (non-gift) refs
     for (const ref of references) {
       await this.submissionRepo.addReference(submissionId, {
         referenceType,
@@ -1051,6 +1098,32 @@ export class SubmissionService {
         referenceUrl: ref.referenceUrl as string,
         instanceCount: (ref.instanceCount as number) ?? 1,
       });
+    }
+
+    // Create pending approval records for gift refs
+    for (const pending of pendingApprovalData) {
+      await this.refApprovalRepo.create({
+        submissionId,
+        submitterUserId: websiteUserId,
+        ownerUserId: pending.ownerUserId,
+        trainerId: pending.trainerId,
+        referenceType: pending.referenceType,
+        referenceUrl: pending.referenceUrl,
+        rewardLevels: pending.rewardLevels,
+        rewardCoins: pending.rewardCoins,
+        metadata: pending.metadata,
+      });
+    }
+
+    // If all references were gifts (pending), return early with pending message
+    if (references.length === 0 && pendingApprovalData.length > 0) {
+      return {
+        success: true,
+        hasPendingApprovals: true,
+        pendingApprovalCount: pendingApprovalData.length,
+        submission: { id: submissionId },
+        message: `${pendingApprovalData.length} reference(s) are pending approval by the trainer owner(s). You will be notified when they are reviewed.`,
+      };
     }
 
     // Build structured rewards for level cap checking
@@ -1112,28 +1185,6 @@ export class SubmissionService {
       bossDamage: Math.floor(totalRewards.levels / (Math.floor(Math.random() * 3) + 2)) + Math.floor(Math.random() * 4) + 1,
     };
 
-    // Handle gift levels
-    if (totalRewards.giftLevels > 0) {
-      const giftItems = await this.generateGiftItems(Math.floor(totalRewards.giftLevels / 5));
-      const giftMonsters = await this.generateGiftMonsters(Math.floor(totalRewards.giftLevels / 10));
-
-      const appliedRewards = await this.rewardService.applyRewards(
-        structuredRewards as unknown as ArtRewardResult,
-        websiteUserId,
-        submissionId,
-        userId
-      );
-
-      return {
-        success: true,
-        hasGiftLevels: true,
-        totalGiftLevels: totalRewards.giftLevels,
-        rewards: { ...appliedRewards, totalGiftLevels: totalRewards.giftLevels, giftItems, giftMonsters },
-        submission: { id: submissionId, references },
-        message: 'Gift levels detected. Please allocate your gift level rewards.',
-      };
-    }
-
     const appliedRewards = await this.rewardService.applyRewards(
       structuredRewards as unknown as ArtRewardResult,
       websiteUserId,
@@ -1141,10 +1192,16 @@ export class SubmissionService {
       userId
     );
 
+    const hasPendingApprovals = pendingApprovalData.length > 0;
     return {
       success: true,
       submission: { id: submissionId, references },
       rewards: appliedRewards,
+      ...(hasPendingApprovals && {
+        hasPendingApprovals: true,
+        pendingApprovalCount: pendingApprovalData.length,
+        message: `${pendingApprovalData.length} gift reference(s) are pending approval by the trainer owner(s).`,
+      }),
     };
   }
 

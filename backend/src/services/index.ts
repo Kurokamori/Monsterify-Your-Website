@@ -499,3 +499,11 @@ export type {
   SubmitPromptData,
   SubmitPromptCombinedData,
 } from './submission.service';
+
+// Notification Service
+export { NotificationService } from './notification.service';
+export type {
+  NotificationSummary,
+  MissedChatItem,
+  RewardsSummary,
+} from './notification.service';

@@ -433,3 +433,19 @@ export {
   updateNote as updateBookmarkNote,
   removeNote as removeBookmarkNote,
 } from './misc/bookmark.controller';
+
+
+// Notification Controller
+export {
+  getSummary as getNotificationSummary,
+  getMissedChats as getNotificationMissedChats,
+  getPendingApprovals as getNotificationPendingApprovals,
+  acceptApproval as acceptNotificationApproval,
+  rejectApproval as rejectNotificationApproval,
+  acceptAll as acceptAllNotificationApprovals,
+  rejectAll as rejectAllNotificationApprovals,
+  getRewardsSummary as getNotificationRewardsSummary,
+  claimGiftRewards as claimNotificationGiftRewards,
+  getUnclaimedBossRewards as getNotificationUnclaimedBossRewards,
+  getUnclaimedMissions as getNotificationUnclaimedMissions,
+} from './misc/notification.controller';

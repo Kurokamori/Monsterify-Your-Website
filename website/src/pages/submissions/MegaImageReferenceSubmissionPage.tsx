@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@contexts/useAuth';
 import { useDocumentTitle } from '@hooks/useDocumentTitle';
 import { PageHeader } from '@components/layouts/PageHeader';
@@ -8,6 +8,9 @@ import { SubmissionSuccessDisplay } from './SubmissionSuccessDisplay';
 
 interface SubmissionResult {
   rewards?: Record<string, unknown>;
+  hasPendingApprovals?: boolean;
+  pendingApprovalCount?: number;
+  message?: string;
 }
 
 const MegaImageReferenceSubmissionPage = () => {
@@ -34,9 +37,11 @@ const MegaImageReferenceSubmissionPage = () => {
   const handleSubmissionComplete = (result: SubmissionResult) => {
     setSubmissionSuccess(true);
     setSubmissionResult(result);
-    redirectTimerRef.current = setTimeout(() => {
-      navigate('/submissions?tab=gallery');
-    }, 5000);
+    if (!result.hasPendingApprovals || result.rewards) {
+      redirectTimerRef.current = setTimeout(() => {
+        navigate('/submissions?tab=gallery');
+      }, 5000);
+    }
   };
 
   if (!isAuthenticated) return null;
@@ -54,10 +59,22 @@ const MegaImageReferenceSubmissionPage = () => {
       />
 
       {submissionSuccess ? (
-        <SubmissionSuccessDisplay
-          result={submissionResult}
-          redirectMessage="Redirecting to gallery in 5 seconds..."
-        />
+        <>
+          {submissionResult?.hasPendingApprovals && (
+            <div className="info-message" style={{ marginBottom: '1rem' }}>
+              <strong>Pending Approval:</strong>{' '}
+              {submissionResult.message ?? `${submissionResult.pendingApprovalCount} reference(s) are pending approval by the trainer owner(s).`}
+              {' '}
+              <Link to="/profile/notifications">View in Notifications</Link>
+            </div>
+          )}
+          {(submissionResult?.rewards || !submissionResult?.hasPendingApprovals) && (
+            <SubmissionSuccessDisplay
+              result={submissionResult}
+              redirectMessage="Redirecting to gallery in 5 seconds..."
+            />
+          )}
+        </>
       ) : (
         <MegaImageReferenceSubmissionForm onSubmissionComplete={handleSubmissionComplete} />
       )}

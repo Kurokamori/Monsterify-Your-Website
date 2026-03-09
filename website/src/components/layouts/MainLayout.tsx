@@ -4,6 +4,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { AuthButtons } from '../common/AuthButtons';
 import chatService from '../../services/chatService';
 import chatSocketService from '../../services/chatSocketService';
+import notificationService from '../../services/notificationService';
 
 interface DropdownState {
   [key: string]: boolean;
@@ -77,6 +78,7 @@ export const MainLayout = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState<DropdownState>({});
   const [totalUnread, setTotalUnread] = useState(0);
+  const [totalNotifications, setTotalNotifications] = useState(0);
   const location = useLocation();
 
   // Fetch total unread count if chat notifications are enabled
@@ -88,6 +90,20 @@ export const MainLayout = () => {
       .then(setTotalUnread)
       .catch(() => setTotalUnread(0));
   }, [isAuthenticated, chatNotificationsEnabled]);
+
+  const fetchNotificationCount = useCallback(() => {
+    if (!isAuthenticated) return;
+    notificationService.getSummary()
+      .then((summary) => {
+        const nonChatCount =
+          summary.pendingDesignApprovals +
+          summary.unclaimedGiftRewards +
+          summary.pendingBossRewards +
+          summary.pendingMissionRewards;
+        setTotalNotifications(nonChatCount);
+      })
+      .catch(() => setTotalNotifications(0));
+  }, [isAuthenticated]);
 
   // Poll unread count and listen to socket for realtime updates
   useEffect(() => {
@@ -130,6 +146,17 @@ export const MainLayout = () => {
     window.addEventListener('chat:unread-changed', handler);
     return () => window.removeEventListener('chat:unread-changed', handler);
   }, [isAuthenticated, chatNotificationsEnabled, fetchUnread]);
+
+  // Poll non-chat notification count every 60s
+  useEffect(() => {
+    if (!isAuthenticated) {
+      setTotalNotifications(0);
+      return;
+    }
+    fetchNotificationCount();
+    const interval = setInterval(fetchNotificationCount, 60000);
+    return () => clearInterval(interval);
+  }, [isAuthenticated, fetchNotificationCount]);
 
   // Close mobile menu when window is resized
   useEffect(() => {
@@ -297,7 +324,7 @@ export const MainLayout = () => {
           )}
         </div>
         <div className="nav-right">
-          <AuthButtons totalUnread={totalUnread} />
+          <AuthButtons totalUnread={totalUnread} totalNotifications={totalNotifications} />
         </div>
       </nav>
 
@@ -409,7 +436,7 @@ export const MainLayout = () => {
           )}
 
           <div className="mobile-nav__auth">
-            <AuthButtons onLogout={closeMobileMenu} totalUnread={totalUnread} />
+            <AuthButtons onLogout={closeMobileMenu} totalUnread={totalUnread} totalNotifications={totalNotifications} />
           </div>
         </div>
       </div>

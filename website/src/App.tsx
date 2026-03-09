@@ -30,6 +30,7 @@ import ReferenceTodoPage from './pages/profile/reference/ReferenceTodoPage'
 import ReferenceHelperPage from './pages/profile/reference/ReferenceHelperPage'
 import SchedulePage from './pages/profile/schedule/SchedulePage'
 import GameTasksPage from './pages/profile/schedule/GameTasksPage'
+import NotificationsPage from './pages/profile/NotificationsPage'
 import GuidesIndexPage from './pages/guides-and-tools/guides/GuidesIndexPage'
 import GuideCategoryPage from './pages/guides-and-tools/guides/GuideCategoryPage'
 import GuideDetailPage from './pages/guides-and-tools/guides/GuideDetailPage'
@@ -144,6 +145,7 @@ function App() {
         <Route path="profile/trainers/:id/starter-selection" element={<StarterSelectionPage />} />
         <Route path="profile/schedule" element={<SchedulePage />} />
         <Route path="profile/tasks" element={<GameTasksPage />} />
+        <Route path="profile/notifications" element={<NotificationsPage />} />
 
         {/* Adventure Routes */}
         <Route path="adventures" element={<AdventuresPage />} />

@@ -74,6 +74,9 @@ import submissionRoutes from './misc/submission.routes';
 // Bookmark Routes
 import bookmarkRoutes from './misc/bookmark.routes';
 
+// Notification Routes
+import notificationRoutes from './misc/notification.routes';
+
 // Chat Routes
 import chatRoutes from './chat/chat.routes';
 import chatAdminRoutes from './chat/chat-admin.routes';
@@ -189,6 +192,9 @@ router.use('/submissions', submissionRoutes);
 
 // Bookmark Routes
 router.use('/bookmarks', bookmarkRoutes);
+
+// Notification Routes
+router.use('/notifications', notificationRoutes);
 
 // Chat Routes
 router.use('/chats', chatRoutes);
