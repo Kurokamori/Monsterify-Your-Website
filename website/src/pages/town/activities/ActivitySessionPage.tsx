@@ -52,7 +52,7 @@ export default function ActivitySessionPage() {
         // Fetch regular activity session
         const response = await townService.getActivitySession(sessionId);
 
-        if (response.success && response.session && response.prompt && response.flavor) {
+        if (response.success && response.session && response.prompt) {
           setSession({
             session_id: response.session.session_id,
             location: response.session.location,
@@ -64,9 +64,9 @@ export default function ActivitySessionPage() {
             prompt_text: response.prompt.prompt_text,
           });
           setFlavor({
-            id: response.flavor.flavor_id,
-            flavor_text: response.flavor.flavor_text,
-            image_url: response.flavor.image_url,
+            id: response.flavor?.flavor_id,
+            flavor_text: response.flavor?.flavor_text ?? null,
+            image_url: response.flavor?.image_url ?? null,
           });
         } else {
           setError(response.message || 'Failed to load session details.');
@@ -83,7 +83,7 @@ export default function ActivitySessionPage() {
 
   const handleReturnToActivity = () => {
     if (session?.location) {
-      navigate(`/town/activities/${session.location}`);
+      navigate(`/town/activities/${session.location.replace(/_/g, '-')}`);
     } else {
       navigate('/town');
     }
@@ -114,7 +114,7 @@ export default function ActivitySessionPage() {
     );
   }
 
-  if (!session || !prompt || !flavor) {
+  if (!session || !prompt) {
     return (
       <div className="activity-page">
         <div className="activity-page__breadcrumb">
@@ -163,7 +163,7 @@ export default function ActivitySessionPage() {
       <SessionDisplay
         session={session}
         prompt={prompt}
-        flavor={flavor}
+        flavor={flavor ?? { flavor_text: null, image_url: null }}
         onReturnToActivity={handleReturnToActivity}
       />
     </div>

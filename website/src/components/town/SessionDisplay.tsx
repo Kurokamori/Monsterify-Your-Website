@@ -140,7 +140,7 @@ export function SessionDisplay({
     );
   }
 
-  if (!session || !prompt || !flavor) {
+  if (!session || !prompt) {
     return (
       <div className="session-display">
         <ErrorMessage message="Session data not found. Please try starting a new activity." />
@@ -157,16 +157,20 @@ export function SessionDisplay({
     <div className="session-display">
       <div className="session-display__content">
         {/* Flavor text with NPC */}
-        <div className="session-display__flavor mb-md">
-          {flavor.image_url && (
-            <img
-              src={flavor.image_url}
-              alt={`${session.location} ${session.activity}`}
-              className="session-display__npc-avatar"
-            />
-          )}
-          <p className="session-display__flavor-text">{flavor.flavor_text}</p>
-        </div>
+        {(flavor?.image_url || flavor?.flavor_text) && (
+          <div className="session-display__flavor mb-md">
+            {flavor.image_url && (
+              <img
+                src={flavor.image_url}
+                alt={`${session.location} ${session.activity}`}
+                className="session-display__npc-avatar"
+              />
+            )}
+            {flavor.flavor_text && (
+              <p className="session-display__flavor-text">{flavor.flavor_text}</p>
+            )}
+          </div>
+        )}
 
         {/* Prompt */}
         <Card className="mb-md">

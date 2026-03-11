@@ -17,6 +17,7 @@ export default function GardenPage() {
     loading,
     error,
     activeSession,
+    otherActiveSession,
     cooldown,
     showSession,
     sessionData,
@@ -63,7 +64,7 @@ export default function GardenPage() {
   }
 
   // Session view
-  if (showSession && sessionData && promptData && flavorData) {
+  if (showSession && sessionData && promptData) {
     const activityName = sessionData.activity.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
 
     return (
@@ -84,7 +85,7 @@ export default function GardenPage() {
         <SessionDisplay
           session={sessionData}
           prompt={promptData}
-          flavor={flavorData}
+          flavor={flavorData ?? { flavor_text: null, image_url: null }}
           loading={sessionLoading}
           error={error}
           onReturnToActivity={returnToActivity}
@@ -124,6 +125,15 @@ export default function GardenPage() {
         </p>
       </div>
 
+      {otherActiveSession && (
+        <div className="activity-location__other-session">
+          <i className="fas fa-exclamation-circle"></i>
+          <span>
+            You have an active session at the <strong>{otherActiveSession.location.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}</strong>. Complete it before starting a new activity here.
+          </span>
+        </div>
+      )}
+
       {gardenCooldown?.active && (
         <div className="activity-location__cooldown">
           <i className="fas fa-hourglass-half"></i>
@@ -162,7 +172,7 @@ export default function GardenPage() {
                   <button
                     className="button primary"
                     onClick={() => startActivity('tend')}
-                    disabled={gardenCooldown?.active}
+                    disabled={gardenCooldown?.active || !!otherActiveSession}
                   >
                     <i className="fas fa-seedling"></i> Tend Garden
                   </button>

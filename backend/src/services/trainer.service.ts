@@ -1066,15 +1066,15 @@ export class TrainerService {
   }
 
   private async countMonstersByTypeCount(trainerId: number): Promise<Record<number, number>> {
-    // Count how many non-null type slots each monster has, then group by that count
+    // Count how many non-null, non-empty type slots each monster has, then group by that count
     const result = await db.query<{ type_count: number; monster_count: string }>(
       `SELECT type_count, COUNT(*) AS monster_count FROM (
         SELECT id,
-          (CASE WHEN type1 IS NOT NULL THEN 1 ELSE 0 END) +
-          (CASE WHEN type2 IS NOT NULL THEN 1 ELSE 0 END) +
-          (CASE WHEN type3 IS NOT NULL THEN 1 ELSE 0 END) +
-          (CASE WHEN type4 IS NOT NULL THEN 1 ELSE 0 END) +
-          (CASE WHEN type5 IS NOT NULL THEN 1 ELSE 0 END) AS type_count
+          (CASE WHEN type1 IS NOT NULL AND type1 != '' THEN 1 ELSE 0 END) +
+          (CASE WHEN type2 IS NOT NULL AND type2 != '' THEN 1 ELSE 0 END) +
+          (CASE WHEN type3 IS NOT NULL AND type3 != '' THEN 1 ELSE 0 END) +
+          (CASE WHEN type4 IS NOT NULL AND type4 != '' THEN 1 ELSE 0 END) +
+          (CASE WHEN type5 IS NOT NULL AND type5 != '' THEN 1 ELSE 0 END) AS type_count
         FROM monsters WHERE trainer_id = $1
       ) AS counts
       GROUP BY type_count`,
@@ -1133,11 +1133,11 @@ export class TrainerService {
     // A monster can have up to 3 species; each unique species name counts once
     const uniqueSpeciesResult = await db.query<{ count: string }>(
       `SELECT COUNT(DISTINCT species) AS count FROM (
-        SELECT species1 AS species FROM monsters WHERE trainer_id = $1 AND species1 IS NOT NULL
+        SELECT species1 AS species FROM monsters WHERE trainer_id = $1 AND species1 IS NOT NULL AND species1 != ''
         UNION
-        SELECT species2 FROM monsters WHERE trainer_id = $1 AND species2 IS NOT NULL
+        SELECT species2 FROM monsters WHERE trainer_id = $1 AND species2 IS NOT NULL AND species2 != ''
         UNION
-        SELECT species3 FROM monsters WHERE trainer_id = $1 AND species3 IS NOT NULL
+        SELECT species3 FROM monsters WHERE trainer_id = $1 AND species3 IS NOT NULL AND species3 != ''
       ) AS all_species`,
       [trainerId],
     );
@@ -1155,11 +1155,11 @@ export class TrainerService {
     const varietyResult = await db.query<{ max_count: string }>(
       `SELECT COALESCE(MAX(cnt), 0) AS max_count FROM (
         SELECT species, COUNT(DISTINCT monster_id) AS cnt FROM (
-          SELECT id AS monster_id, species1 AS species FROM monsters WHERE trainer_id = $1 AND species1 IS NOT NULL
+          SELECT id AS monster_id, species1 AS species FROM monsters WHERE trainer_id = $1 AND species1 IS NOT NULL AND species1 != ''
           UNION ALL
-          SELECT id, species2 FROM monsters WHERE trainer_id = $1 AND species2 IS NOT NULL
+          SELECT id, species2 FROM monsters WHERE trainer_id = $1 AND species2 IS NOT NULL AND species2 != ''
           UNION ALL
-          SELECT id, species3 FROM monsters WHERE trainer_id = $1 AND species3 IS NOT NULL
+          SELECT id, species3 FROM monsters WHERE trainer_id = $1 AND species3 IS NOT NULL AND species3 != ''
         ) AS all_species
         GROUP BY species
       ) AS species_counts`,

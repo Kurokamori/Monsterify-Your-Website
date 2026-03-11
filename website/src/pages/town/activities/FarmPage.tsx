@@ -20,6 +20,7 @@ export default function FarmPage() {
     loading,
     error,
     activeSession,
+    otherActiveSession,
     cooldown,
     showSession,
     sessionData,
@@ -76,7 +77,7 @@ export default function FarmPage() {
   }
 
   // Session view
-  if (showSession && sessionData && promptData && flavorData) {
+  if (showSession && sessionData && promptData) {
     const activityName = sessionData.activity.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
 
     return (
@@ -97,7 +98,7 @@ export default function FarmPage() {
         <SessionDisplay
           session={sessionData}
           prompt={promptData}
-          flavor={flavorData}
+          flavor={flavorData ?? { flavor_text: null, image_url: null }}
           loading={sessionLoading}
           error={error}
           onReturnToActivity={returnToActivity}
@@ -162,6 +163,15 @@ export default function FarmPage() {
         </p>
       </div>
 
+      {otherActiveSession && (
+        <div className="activity-location__other-session">
+          <i className="fas fa-exclamation-circle"></i>
+          <span>
+            You have an active session at the <strong>{otherActiveSession.location.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}</strong>. Complete it before starting a new activity here.
+          </span>
+        </div>
+      )}
+
       {farmCooldown?.active && (
         <div className="activity-location__cooldown">
           <i className="fas fa-hourglass-half"></i>
@@ -200,7 +210,7 @@ export default function FarmPage() {
                   <button
                     className="button primary"
                     onClick={() => startActivity('work')}
-                    disabled={farmCooldown?.active}
+                    disabled={farmCooldown?.active || !!otherActiveSession}
                   >
                     <i className="fas fa-tractor"></i> Work the Farm
                   </button>

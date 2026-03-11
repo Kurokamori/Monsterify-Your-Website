@@ -4,7 +4,7 @@ import { TypeBadge } from '@components/common/TypeBadge';
 import { AttributeBadge } from '@components/common/AttributeBadge';
 import { BadgeGroup } from '@components/common/BadgeGroup';
 import { TrainerAutocomplete } from '@components/common/TrainerAutocomplete';
-import { RewardItem } from '@components/common/RewardItem';
+import { RewardItem, type RewardData } from '@components/common/RewardItem';
 import { getItemImageUrl, handleItemImageError } from '@utils/imageUtils';
 import type {
   ActivityReward,
@@ -184,11 +184,13 @@ export function ActivityRewardGrid({
                     ) : (
                       <RewardItem
                         reward={{
-                          type: reward.type,
+                          type: reward.type as RewardData['type'],
                           rarity: reward.rarity,
                           claimed: reward.claimed,
                           amount: (data.amount ?? data.levels ?? data.points ?? data.quantity) as number | undefined,
-                          label: (data.title as string) || undefined,
+                          label: ['coin', 'level', 'points'].includes(reward.type)
+                            ? undefined
+                            : (data.title as string) || undefined,
                         }}
                       />
                     )}

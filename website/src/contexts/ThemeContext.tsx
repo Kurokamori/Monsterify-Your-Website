@@ -1,6 +1,5 @@
 import { useState, useEffect, useCallback, ReactNode } from 'react';
 import { useAuth } from './useAuth';
-import api from '../services/api';
 import { ThemeContext, THEMES, type ThemeContextType } from './themeContextDef';
 
 // Re-export types and constants for consumers
@@ -25,7 +24,7 @@ interface ThemeProviderProps {
 }
 
 export const ThemeProvider = ({ children }: ThemeProviderProps) => {
-  const { currentUser, isAuthenticated } = useAuth();
+  const { currentUser, isAuthenticated, updateTheme } = useAuth();
 
   // Initialize from localStorage for a flash-free first paint
   const [theme, setThemeState] = useState<string>(() => {
@@ -54,15 +53,17 @@ export const ThemeProvider = ({ children }: ThemeProviderProps) => {
     setThemeState(themeId);
     localStorage.setItem(THEME_STORAGE_KEY, themeId);
 
-    // Persist to backend if authenticated
+    // Persist to backend if authenticated. updateTheme also updates the user
+    // object in localStorage, keeping it in sync so page reloads don't revert
+    // to the stale theme stored on the user object.
     if (isAuthenticated) {
       try {
-        await api.put('/auth/theme', { theme: themeId });
+        await updateTheme(themeId);
       } catch (err) {
         console.error('Failed to save theme preference:', err);
       }
     }
-  }, [isAuthenticated]);
+  }, [isAuthenticated, updateTheme]);
 
   const value: ThemeContextType = { theme, setTheme, THEMES };
 

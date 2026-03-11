@@ -10,10 +10,17 @@ interface ActiveSessionRef {
   activity: string;
 }
 
+interface OtherActiveSession {
+  session_id: string;
+  location: string;
+  activity: string;
+}
+
 interface UseActivityLocationReturn {
   loading: boolean;
   error: string | null;
   activeSession: ActiveSessionRef | null;
+  otherActiveSession: OtherActiveSession | null;
   cooldown: Record<string, ActivityCooldown>;
   showSession: boolean;
   sessionData: ActivitySession | null;
@@ -38,6 +45,7 @@ export function useActivityLocation(location: string): UseActivityLocationReturn
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [activeSession, setActiveSession] = useState<ActiveSessionRef | null>(null);
+  const [otherActiveSession, setOtherActiveSession] = useState<OtherActiveSession | null>(null);
   const [cooldown, setCooldown] = useState<Record<string, ActivityCooldown>>({});
 
   const [showSession, setShowSession] = useState(false);
@@ -52,6 +60,7 @@ export function useActivityLocation(location: string): UseActivityLocationReturn
       const response = await townService.getLocationStatus(location);
 
       setActiveSession(response.active_session ?? null);
+      setOtherActiveSession(response.other_active_session ?? null);
 
       if (response.cooldown) {
         // Normalize cooldown — the API returns either a single cooldown object
@@ -89,7 +98,7 @@ export function useActivityLocation(location: string): UseActivityLocationReturn
       if (response.success && response.session_id) {
         const sessionResponse = await townService.getActivitySession(response.session_id);
 
-        if (sessionResponse.success && sessionResponse.session && sessionResponse.prompt && sessionResponse.flavor) {
+        if (sessionResponse.success && sessionResponse.session && sessionResponse.prompt) {
           setSessionData({
             session_id: sessionResponse.session.session_id,
             location: sessionResponse.session.location,
@@ -101,9 +110,9 @@ export function useActivityLocation(location: string): UseActivityLocationReturn
             prompt_text: sessionResponse.prompt.prompt_text,
           });
           setFlavorData({
-            id: sessionResponse.flavor.flavor_id,
-            flavor_text: sessionResponse.flavor.flavor_text,
-            image_url: sessionResponse.flavor.image_url,
+            id: sessionResponse.flavor?.flavor_id,
+            flavor_text: sessionResponse.flavor?.flavor_text ?? null,
+            image_url: sessionResponse.flavor?.image_url ?? null,
           });
           setShowSession(true);
           setActiveSession({
@@ -131,7 +140,7 @@ export function useActivityLocation(location: string): UseActivityLocationReturn
       setError(null);
       const sessionResponse = await townService.getActivitySession(activeSession.session_id);
 
-      if (sessionResponse.success && sessionResponse.session && sessionResponse.prompt && sessionResponse.flavor) {
+      if (sessionResponse.success && sessionResponse.session && sessionResponse.prompt) {
         setSessionData({
           session_id: sessionResponse.session.session_id,
           location: sessionResponse.session.location,
@@ -143,9 +152,9 @@ export function useActivityLocation(location: string): UseActivityLocationReturn
           prompt_text: sessionResponse.prompt.prompt_text,
         });
         setFlavorData({
-          id: sessionResponse.flavor.flavor_id,
-          flavor_text: sessionResponse.flavor.flavor_text,
-          image_url: sessionResponse.flavor.image_url,
+          id: sessionResponse.flavor?.flavor_id,
+          flavor_text: sessionResponse.flavor?.flavor_text ?? null,
+          image_url: sessionResponse.flavor?.image_url ?? null,
         });
         setShowSession(true);
       } else {
@@ -164,25 +173,30 @@ export function useActivityLocation(location: string): UseActivityLocationReturn
   }, [fetchStatus]);
 
   const returnToActivity = useCallback(async () => {
+    const currentSessionId = sessionData?.session_id || activeSession?.session_id;
+
     setShowSession(false);
     setSessionData(null);
     setPromptData(null);
     setFlavorData(null);
     setActiveSession(null);
 
-    try {
-      await townService.clearActivitySession(location);
-    } catch {
-      // Silently handle — we still want to refresh status
+    if (currentSessionId) {
+      try {
+        await townService.clearActivitySession(currentSessionId);
+      } catch {
+        // Silently handle — we still want to refresh status
+      }
     }
 
     fetchStatus();
-  }, [location, fetchStatus]);
+  }, [sessionData, activeSession, fetchStatus]);
 
   return {
     loading,
     error,
     activeSession,
+    otherActiveSession,
     cooldown,
     showSession,
     sessionData,

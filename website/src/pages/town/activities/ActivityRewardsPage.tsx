@@ -457,7 +457,7 @@ export default function ActivityRewardsPage() {
           </button>
         )}
 
-        <Link to={`/town/activities/${session.location}`} className="button primary">
+        <Link to={`/town/activities/${session.location.replace(/_/g, '-')}`} className="button primary">
           <i className="fas fa-redo"></i> Do Another Task
         </Link>
       </div>

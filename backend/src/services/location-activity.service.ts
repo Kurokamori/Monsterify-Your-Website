@@ -128,23 +128,25 @@ export class LocationActivityService {
       throw new Error(`Invalid activity '${activity}' for location '${location}'`);
     }
 
-    // Check for existing active session
-    const activeSessions = await this.sessionRepo.findActiveByUserId(userId);
-    if (activeSessions.length > 0) {
-      const existing = activeSessions[0];
-      if (!existing) {
-        throw new Error('Unexpected error: active session not found');
-      }
-      return {
-        session_id: existing.session_id,
-        redirect: `/town/activities/session/${existing.session_id}`,
-      };
-    }
-
     // Fetch prompts for this location/activity
     const prompts = await this.promptRepo.findByLocationActivity(location, activity);
     if (prompts.length === 0) {
       throw new Error('No prompts available for this location and activity');
+    }
+
+    // Check for existing active session
+    const activeSessions = await this.sessionRepo.findActiveByUserId(userId);
+    if (activeSessions.length > 0) {
+      const existing = activeSessions[0]!;
+      if (existing.location === location) {
+        // Same location — resume the existing session
+        return {
+          session_id: existing.session_id,
+          redirect: `/town/activities/session/${existing.session_id}`,
+        };
+      }
+      // Different location — do not delete; block the new start instead
+      throw new Error(`You already have an active session at ${existing.location}. Complete it before starting a new activity.`);
     }
 
     // Select random prompt
@@ -176,8 +178,8 @@ export class LocationActivityService {
 
   async getSession(sessionId: string, userId: string): Promise<{
     session: ActivitySession;
-    prompt: { id: number; prompt_text: string; difficulty: string | null };
-    flavor: { image_url: string | null; flavor_text: string | null };
+    prompt: { prompt_id: number; prompt_text: string; difficulty: string | null };
+    flavor: { flavor_id: number | null; image_url: string | null; flavor_text: string | null };
   }> {
     const row = await this.sessionRepo.findBySessionId(sessionId);
     if (!row) {
@@ -189,29 +191,59 @@ export class LocationActivityService {
 
     const session = parseSessionRow(row);
 
-    // Get the prompt
-    const prompt = await this.promptRepo.findById(session.prompt_id);
-    const promptData = prompt ?? {
-      id: session.prompt_id,
-      prompt_text: 'Complete the activity to earn rewards.',
-      difficulty: session.difficulty,
-    };
+    // Get the prompt — if the stored prompt was deleted, fetch a fresh one for this location/activity
+    let promptData = await this.promptRepo.findById(session.prompt_id);
+    if (!promptData) {
+      const freshPrompts = await this.promptRepo.findByLocationActivity(session.location, session.activity);
+      if (freshPrompts.length > 0) {
+        promptData = freshPrompts[Math.floor(Math.random() * freshPrompts.length)]!;
+        // Update the session with the new prompt_id so future fetches work
+        try {
+          await this.sessionRepo.updatePromptId(session.session_id, promptData.id);
+        } catch {
+          // Non-critical — the prompt will still display correctly this time
+        }
+      }
+    }
+    if (!promptData) {
+      promptData = {
+        id: session.prompt_id,
+        prompt_text: 'Complete the activity to earn rewards.',
+        difficulty: session.difficulty,
+        location: session.location,
+        activity: session.activity,
+        created_at: new Date(),
+        updated_at: new Date(),
+      };
+    }
 
-    // Get the flavor
-    const flavor = await this.flavorRepo.findByLocation(session.location);
-    const flavorData = flavor ?? {
+    // Get the flavor (don't fail the whole request if flavor fetch fails)
+    let flavorData: { id?: number; image_url: string | null; flavor_text: string | null } = {
       image_url: null,
       flavor_text: null,
     };
+    try {
+      const flavor = await this.flavorRepo.findByLocation(session.location);
+      if (flavor) {
+        flavorData = {
+          id: flavor.id,
+          image_url: flavor.image_url,
+          flavor_text: flavor.flavor_text,
+        };
+      }
+    } catch (err) {
+      console.error('Error fetching flavor for location', session.location, err);
+    }
 
     return {
       session,
       prompt: {
-        id: promptData.id,
+        prompt_id: promptData.id,
         prompt_text: promptData.prompt_text,
         difficulty: promptData.difficulty,
       },
       flavor: {
+        flavor_id: flavorData.id ?? null,
         image_url: flavorData.image_url,
         flavor_text: flavorData.flavor_text,
       },
@@ -439,14 +471,21 @@ export class LocationActivityService {
 
   async getLocationStatus(userId: string, location: string): Promise<{
     active_session: ActivitySession | null;
+    other_active_session: { session_id: string; location: string; activity: string } | null;
   }> {
     if (!isValidLocation(location)) {
       throw new Error(`Invalid location: ${location}`);
     }
 
-    const row = await this.sessionRepo.findActiveByUserIdAndLocation(userId, location);
+    const allActive = await this.sessionRepo.findActiveByUserId(userId);
+    const thisLocationRow = allActive.find((r) => r.location === location) ?? null;
+    const otherLocationRow = allActive.find((r) => r.location !== location) ?? null;
+
     return {
-      active_session: row ? parseSessionRow(row) : null,
+      active_session: thisLocationRow ? parseSessionRow(thisLocationRow) : null,
+      other_active_session: otherLocationRow
+        ? { session_id: otherLocationRow.session_id, location: otherLocationRow.location, activity: otherLocationRow.activity }
+        : null,
     };
   }
 

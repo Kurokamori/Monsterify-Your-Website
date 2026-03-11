@@ -87,6 +87,11 @@ export interface LocationStatusResponse {
     activity: string;
     [key: string]: unknown;
   } | null;
+  other_active_session?: {
+    session_id: string;
+    location: string;
+    activity: string;
+  } | null;
   cooldown?: Record<string, ActivityCooldown> | ActivityCooldown;
 }
 
@@ -385,8 +390,8 @@ const townService = {
     return response.data;
   },
 
-  clearActivitySession: async (location: string): Promise<{ success: boolean }> => {
-    const response = await api.post('/town/activities/clear-session', { location });
+  clearActivitySession: async (sessionId: string): Promise<{ success: boolean }> => {
+    const response = await api.post('/town/activities/clear-session', { sessionId });
     return response.data;
   },
 

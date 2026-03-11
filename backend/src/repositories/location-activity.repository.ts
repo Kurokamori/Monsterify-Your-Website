@@ -67,6 +67,16 @@ export class LocationActivitySessionRepository {
     );
   }
 
+  async updatePromptId(sessionId: string, promptId: number): Promise<ActivitySessionRow> {
+    return db.one<ActivitySessionRow>(
+      `UPDATE location_activity_sessions
+       SET prompt_id = $2
+       WHERE session_id = $1
+       RETURNING *`,
+      [sessionId, promptId]
+    );
+  }
+
   async updateRewards(sessionId: string, rewardsJson: string): Promise<ActivitySessionRow> {
     return db.one<ActivitySessionRow>(
       `UPDATE location_activity_sessions

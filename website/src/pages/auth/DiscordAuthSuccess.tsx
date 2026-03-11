@@ -45,6 +45,11 @@ export default function DiscordAuthSuccess() {
           localStorage.setItem('token', token);
           localStorage.setItem('refreshToken', refreshToken);
           localStorage.setItem('user', JSON.stringify(user));
+          // Sync the standalone theme key so ThemeContext doesn't flash
+          // the default theme before the user object is read on first load.
+          if (user.theme) {
+            localStorage.setItem('theme', user.theme);
+          }
 
           if (api.defaults) {
             api.defaults.headers.common['Authorization'] = `Bearer ${token}`;

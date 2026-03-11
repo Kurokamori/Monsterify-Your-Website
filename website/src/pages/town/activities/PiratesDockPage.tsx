@@ -17,6 +17,7 @@ export default function PiratesDockPage() {
     loading,
     error,
     activeSession,
+    otherActiveSession,
     cooldown,
     showSession,
     sessionData,
@@ -64,7 +65,7 @@ export default function PiratesDockPage() {
   }
 
   // Session view
-  if (showSession && sessionData && promptData && flavorData) {
+  if (showSession && sessionData && promptData) {
     const activityName = sessionData.activity.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
 
     return (
@@ -85,7 +86,7 @@ export default function PiratesDockPage() {
         <SessionDisplay
           session={sessionData}
           prompt={promptData}
-          flavor={flavorData}
+          flavor={flavorData ?? { flavor_text: null, image_url: null }}
           loading={sessionLoading}
           error={error}
           onReturnToActivity={returnToActivity}
@@ -153,6 +154,15 @@ export default function PiratesDockPage() {
         </p>
       </div>
 
+      {otherActiveSession && (
+        <div className="activity-location__other-session">
+          <i className="fas fa-exclamation-circle"></i>
+          <span>
+            You have an active session at the <strong>{otherActiveSession.location.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}</strong>. Complete it before starting a new activity here.
+          </span>
+        </div>
+      )}
+
       <div className="activity-location__grid">
         {/* Swab the Deck */}
         <div className="activity-card">
@@ -179,6 +189,7 @@ export default function PiratesDockPage() {
                 <button
                   className="button primary"
                   onClick={() => startActivity('swab')}
+                  disabled={!!otherActiveSession}
                 >
                   <i className="fas fa-broom"></i> Swab the Deck
                 </button>
@@ -212,6 +223,7 @@ export default function PiratesDockPage() {
                 <button
                   className="button primary"
                   onClick={() => startActivity('fishing')}
+                  disabled={!!otherActiveSession}
                 >
                   <i className="fas fa-fish"></i> Go Fishing
                 </button>
