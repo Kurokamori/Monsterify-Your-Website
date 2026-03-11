@@ -1,4 +1,15 @@
 import { useState, useEffect, useCallback } from 'react';
+
+export const LOCATION_NAMES: Record<string, string> = {
+  garden: 'Garden',
+  farm: 'Farm',
+  pirates_dock: "Pirate's Dock",
+  game_corner: 'Game Corner',
+};
+
+export function getLocationName(location: string): string {
+  return LOCATION_NAMES[location] ?? location.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+}
 import { useAuth } from '@contexts/useAuth';
 import townService from '@services/townService';
 import type { ActivitySession, ActivityPrompt, ActivityFlavor } from '@components/town';
@@ -111,8 +122,8 @@ export function useActivityLocation(location: string): UseActivityLocationReturn
           });
           setFlavorData({
             id: sessionResponse.flavor?.flavor_id,
-            flavor_text: sessionResponse.flavor?.flavor_text ?? null,
-            image_url: sessionResponse.flavor?.image_url ?? null,
+            flavor_text: sessionResponse.flavor?.flavor_text ?? '',
+            image_url: sessionResponse.flavor?.image_url,
           });
           setShowSession(true);
           setActiveSession({
@@ -153,8 +164,8 @@ export function useActivityLocation(location: string): UseActivityLocationReturn
         });
         setFlavorData({
           id: sessionResponse.flavor?.flavor_id,
-          flavor_text: sessionResponse.flavor?.flavor_text ?? null,
-          image_url: sessionResponse.flavor?.image_url ?? null,
+          flavor_text: sessionResponse.flavor?.flavor_text ?? '',
+          image_url: sessionResponse.flavor?.image_url,
         });
         setShowSession(true);
       } else {

@@ -1,10 +1,12 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '@contexts/useAuth';
 import { useDocumentTitle } from '@hooks/useDocumentTitle';
-import { useActivityLocation } from '@hooks/useActivityLocation';
+import { useActivityLocation, getLocationName } from '@hooks/useActivityLocation';
 import { SessionDisplay } from '@components/town';
 import { LoadingSpinner } from '@components/common/LoadingSpinner';
 import { ErrorMessage } from '@components/common/ErrorMessage';
+import { InfoModal } from '@components/common/InfoModal';
 import '@styles/town/activities.css';
 import '@styles/town/session.css';
 
@@ -12,6 +14,7 @@ export default function GardenPage() {
   useDocumentTitle('Garden');
 
   const { isAuthenticated } = useAuth();
+  const [showBlockedModal, setShowBlockedModal] = useState(false);
 
   const {
     loading,
@@ -30,6 +33,14 @@ export default function GardenPage() {
   } = useActivityLocation('garden');
 
   const gardenCooldown = cooldown.garden;
+
+  const handleStartActivity = (activity: string) => {
+    if (otherActiveSession) {
+      setShowBlockedModal(true);
+      return;
+    }
+    startActivity(activity);
+  };
 
   if (loading) {
     return (
@@ -85,7 +96,7 @@ export default function GardenPage() {
         <SessionDisplay
           session={sessionData}
           prompt={promptData}
-          flavor={flavorData ?? { flavor_text: null, image_url: null }}
+          flavor={flavorData ?? { flavor_text: '' }}
           loading={sessionLoading}
           error={error}
           onReturnToActivity={returnToActivity}
@@ -96,6 +107,19 @@ export default function GardenPage() {
 
   return (
     <div className="activity-page">
+      <InfoModal
+        isOpen={showBlockedModal}
+        onClose={() => setShowBlockedModal(false)}
+        title="Activity In Progress"
+        description={
+          otherActiveSession
+            ? `You already have an active session at the ${getLocationName(otherActiveSession.location)}. Complete it before starting a new activity.`
+            : ''
+        }
+        primaryAction={{ label: 'Got it', onClick: () => setShowBlockedModal(false) }}
+        size="small"
+      />
+
       <div className="activity-page__breadcrumb">
         <Link to="/town" className="breadcrumb-link">
           <i className="fas fa-arrow-left"></i> Back to Town
@@ -124,15 +148,6 @@ export default function GardenPage() {
           Choose your path through this magical sanctuary — each holds its own mysteries and rewards.
         </p>
       </div>
-
-      {otherActiveSession && (
-        <div className="activity-location__other-session">
-          <i className="fas fa-exclamation-circle"></i>
-          <span>
-            You have an active session at the <strong>{otherActiveSession.location.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}</strong>. Complete it before starting a new activity here.
-          </span>
-        </div>
-      )}
 
       {gardenCooldown?.active && (
         <div className="activity-location__cooldown">
@@ -171,8 +186,8 @@ export default function GardenPage() {
                 <div className="activity-card__actions">
                   <button
                     className="button primary"
-                    onClick={() => startActivity('tend')}
-                    disabled={gardenCooldown?.active || !!otherActiveSession}
+                    onClick={() => handleStartActivity('tend')}
+                    disabled={gardenCooldown?.active}
                   >
                     <i className="fas fa-seedling"></i> Tend Garden
                   </button>

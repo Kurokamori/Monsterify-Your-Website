@@ -65,8 +65,8 @@ export default function ActivitySessionPage() {
           });
           setFlavor({
             id: response.flavor?.flavor_id,
-            flavor_text: response.flavor?.flavor_text ?? null,
-            image_url: response.flavor?.image_url ?? null,
+            flavor_text: response.flavor?.flavor_text ?? '',
+            image_url: response.flavor?.image_url,
           });
         } else {
           setError(response.message || 'Failed to load session details.');
@@ -163,7 +163,7 @@ export default function ActivitySessionPage() {
       <SessionDisplay
         session={session}
         prompt={prompt}
-        flavor={flavor ?? { flavor_text: null, image_url: null }}
+        flavor={flavor ?? { flavor_text: '' }}
         onReturnToActivity={handleReturnToActivity}
       />
     </div>

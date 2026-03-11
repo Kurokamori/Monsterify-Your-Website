@@ -177,26 +177,6 @@
   font-size: var(--font-size-medium);
 }
 
-/* ---------- Other Active Session Banner ---------- */
-
-.activity-location__other-session {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-small);
-  padding: var(--spacing-small) var(--spacing-medium);
-  background-color: var(--secondary-color);
-  border-radius: var(--border-radius-medium);
-  border-left: 3px solid var(--accent-color);
-  margin-bottom: var(--spacing-large);
-  color: var(--text-color-muted);
-}
-
-.activity-location__other-session i {
-  color: var(--accent-color);
-  font-size: var(--font-size-medium);
-  flex-shrink: 0;
-}
-
 /* ---------- Activity Cards Grid ---------- */
 
 .activity-location__grid {

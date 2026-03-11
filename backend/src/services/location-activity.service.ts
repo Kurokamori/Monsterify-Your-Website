@@ -137,7 +137,10 @@ export class LocationActivityService {
     // Check for existing active session
     const activeSessions = await this.sessionRepo.findActiveByUserId(userId);
     if (activeSessions.length > 0) {
-      const existing = activeSessions[0]!;
+      const [existing] = activeSessions;
+      if (!existing) {
+        throw new Error('No active session found');
+      }
       if (existing.location === location) {
         // Same location — resume the existing session
         return {
@@ -196,26 +199,27 @@ export class LocationActivityService {
     if (!promptData) {
       const freshPrompts = await this.promptRepo.findByLocationActivity(session.location, session.activity);
       if (freshPrompts.length > 0) {
-        promptData = freshPrompts[Math.floor(Math.random() * freshPrompts.length)]!;
-        // Update the session with the new prompt_id so future fetches work
-        try {
-          await this.sessionRepo.updatePromptId(session.session_id, promptData.id);
-        } catch {
-          // Non-critical — the prompt will still display correctly this time
+        const freshPrompt = freshPrompts[Math.floor(Math.random() * freshPrompts.length)];
+        if (freshPrompt) {
+          promptData = freshPrompt;
+          // Update the session with the new prompt_id so future fetches work
+          try {
+            await this.sessionRepo.updatePromptId(session.session_id, promptData.id);
+          } catch {
+            // Non-critical — the prompt will still display correctly this time
+          }
         }
       }
     }
-    if (!promptData) {
-      promptData = {
-        id: session.prompt_id,
-        prompt_text: 'Complete the activity to earn rewards.',
-        difficulty: session.difficulty,
-        location: session.location,
-        activity: session.activity,
-        created_at: new Date(),
-        updated_at: new Date(),
-      };
-    }
+    promptData ??= {
+      id: session.prompt_id,
+      prompt_text: 'Complete the activity to earn rewards.',
+      difficulty: session.difficulty,
+      location: session.location,
+      activity: session.activity,
+      created_at: new Date(),
+      updated_at: new Date(),
+    };
 
     // Get the flavor (don't fail the whole request if flavor fetch fails)
     let flavorData: { id?: number; image_url: string | null; flavor_text: string | null } = {
