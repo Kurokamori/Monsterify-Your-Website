@@ -56,14 +56,21 @@ export interface FactionRelationshipRow {
 export interface FactionStoreItemRow {
   id: number;
   faction_id: number;
-  item_name: string;
+  item_id: number;
   price: number;
   standing_requirement: number;
   is_active: boolean;
-  item_category: string | null;
   title_id: number | null;
-  title_name?: string | null;
   created_at: string;
+  // Joined from items
+  item_name: string;
+  item_description: string | null;
+  item_effect: string | null;
+  item_category: string;
+  item_type: string | null;
+  image_url: string | null;
+  // Joined from faction_titles
+  title_name?: string | null;
 }
 
 export interface FactionPromptRow {
@@ -185,26 +192,24 @@ const factionAdminService = {
 
   createStoreItem: async (data: {
     factionId: number;
-    itemName: string;
+    itemId: number;
     price: number;
     standingRequirement?: number;
     isActive?: boolean;
-    itemCategory?: string | null;
     titleId?: number | null;
   }): Promise<FactionStoreItemRow> => {
     const response = await api.post('/factions/admin/store-items', data);
     return response.data.data;
   },
 
-  updateStoreItem: async (itemId: number, data: {
-    itemName?: string;
+  updateStoreItem: async (storeItemId: number, data: {
+    itemId?: number;
     price?: number;
     standingRequirement?: number;
     isActive?: boolean;
-    itemCategory?: string | null;
     titleId?: number | null;
   }): Promise<FactionStoreItemRow> => {
-    const response = await api.put(`/factions/admin/store-items/${itemId}`, data);
+    const response = await api.put(`/factions/admin/store-items/${storeItemId}`, data);
     return response.data.data;
   },
 

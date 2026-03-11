@@ -1,0 +1,192 @@
+/* ==============================
+   Faction Quests
+   ============================== */
+
+.quest-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-medium);
+}
+
+.quest-intro {
+  text-align: center;
+  padding: var(--spacing-small) var(--spacing-medium);
+  color: var(--text-color-muted);
+  line-height: 1.6;
+}
+
+.quest-standing-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xsmall);
+  background: var(--primary-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-medium);
+  padding: var(--spacing-xsmall) var(--spacing-small);
+  margin-top: var(--spacing-xsmall);
+  font-size: var(--font-size-small);
+  color: var(--accent-color);
+}
+
+.quest-empty {
+  text-align: center;
+  padding: var(--spacing-xlarge);
+  color: var(--text-color-muted);
+}
+
+.quest-empty i {
+  font-size: 2.5rem;
+  margin-bottom: var(--spacing-small);
+  display: block;
+  opacity: 0.5;
+}
+
+/* ---------- Quest Tier Sections ---------- */
+
+.quest-tier {
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-medium);
+  overflow: hidden;
+}
+
+.quest-tier--locked {
+  opacity: 0.7;
+}
+
+.quest-tier__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-small) var(--spacing-medium);
+  background: var(--primary-color);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.quest-tier__title {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xsmall);
+}
+
+.quest-tier__title h3 {
+  margin: 0;
+  font-size: var(--font-size-medium);
+}
+
+.quest-tier__title i {
+  color: var(--accent-color);
+}
+
+.quest-tier__requirement {
+  font-size: var(--font-size-small);
+  color: var(--text-color-muted);
+}
+
+/* ---------- Quest Grid ---------- */
+
+.quest-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: var(--spacing-small);
+  padding: var(--spacing-small);
+}
+
+/* ---------- Quest Cards ---------- */
+
+.quest-card {
+  position: relative;
+  padding: var(--spacing-small);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xsmall);
+}
+
+.quest-card--locked {
+  pointer-events: none;
+}
+
+.quest-card--locked .quest-card__header,
+.quest-card--locked .quest-card__description {
+  filter: blur(1px);
+  opacity: 0.4;
+}
+
+.quest-card__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--spacing-xsmall);
+}
+
+.quest-card__name {
+  margin: 0;
+  font-size: var(--font-size-medium);
+  color: var(--text-color);
+  flex: 1;
+}
+
+.quest-card__description {
+  color: var(--text-color-muted);
+  font-size: var(--font-size-small);
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* ---------- Locked Overlay ---------- */
+
+.quest-card__locked-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-xxsmall);
+  background: var(--overlay-light);
+  border-radius: var(--border-radius-small);
+  font-size: var(--font-size-small);
+  color: var(--text-color-muted);
+  z-index: 2;
+}
+
+.quest-card__locked-overlay i {
+  font-size: var(--font-size-large);
+}
+
+/* ---------- Rewards ---------- */
+
+.quest-card__rewards {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--spacing-xxsmall);
+  padding-top: var(--spacing-xsmall);
+  border-top: 1px solid var(--border-color);
+}
+
+.quest-card__rewards-label {
+  font-size: var(--font-size-xsmall);
+  color: var(--text-color-muted);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xxsmall);
+}
+
+.quest-card__reward-item {
+  display: flex;
+  gap: var(--spacing-xxsmall);
+}
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 768px) {
+  .quest-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .quest-tier__header {
+    flex-direction: column;
+    gap: var(--spacing-xsmall);
+    align-items: flex-start;
+  }
+}

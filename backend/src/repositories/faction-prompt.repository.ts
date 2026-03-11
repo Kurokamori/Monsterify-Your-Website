@@ -30,6 +30,7 @@ export type FactionPromptRow = {
   modifier: number;
   is_active: boolean;
   submission_gift_items: string | object | null;
+  standing_requirement: number;
   created_at: Date;
   updated_at: Date;
 };
@@ -42,6 +43,7 @@ export type FactionPrompt = {
   modifier: number;
   isActive: boolean;
   submissionGiftItems: GiftItemDefinition[] | null;
+  standingRequirement: number;
   createdAt: Date;
   updatedAt: Date;
 };
@@ -58,6 +60,7 @@ export type FactionPromptCreateInput = {
   modifier?: number;
   isActive?: boolean;
   submissionGiftItems?: GiftItemDefinition[] | null;
+  standingRequirement?: number;
 };
 
 export type FactionPromptUpdateInput = {
@@ -66,6 +69,7 @@ export type FactionPromptUpdateInput = {
   modifier?: number;
   isActive?: boolean;
   submissionGiftItems?: GiftItemDefinition[] | null;
+  standingRequirement?: number;
 };
 
 const parseGiftItems = (val: string | object | null): GiftItemDefinition[] | null => {
@@ -83,6 +87,7 @@ const normalizeFactionPrompt = (row: FactionPromptRow): FactionPrompt => ({
   modifier: row.modifier,
   isActive: row.is_active,
   submissionGiftItems: parseGiftItems(row.submission_gift_items),
+  standingRequirement: row.standing_requirement ?? 0,
   createdAt: row.created_at,
   updatedAt: row.updated_at,
 });
@@ -132,7 +137,7 @@ export class FactionPromptRepository extends BaseRepository<
       query += ' AND is_active::boolean = true';
     }
 
-    query += ' ORDER BY modifier DESC, name ASC';
+    query += ' ORDER BY standing_requirement ASC, modifier DESC, name ASC';
 
     const result = await db.query<FactionPromptRow>(query, params);
     return result.rows.map(normalizeFactionPrompt);
@@ -158,8 +163,8 @@ export class FactionPromptRepository extends BaseRepository<
   override async create(input: FactionPromptCreateInput): Promise<FactionPrompt> {
     const result = await db.query<{ id: number }>(
       `
-        INSERT INTO faction_prompts (faction_id, name, description, modifier, is_active, submission_gift_items)
-        VALUES ($1, $2, $3, $4, $5, $6)
+        INSERT INTO faction_prompts (faction_id, name, description, modifier, is_active, submission_gift_items, standing_requirement)
+        VALUES ($1, $2, $3, $4, $5, $6, $7)
         RETURNING id
       `,
       [
@@ -169,6 +174,7 @@ export class FactionPromptRepository extends BaseRepository<
         input.modifier ?? 0,
         input.isActive ?? true,
         input.submissionGiftItems ? JSON.stringify(input.submissionGiftItems) : null,
+        input.standingRequirement ?? 0,
       ]
     );
 
@@ -206,6 +212,10 @@ export class FactionPromptRepository extends BaseRepository<
     if (input.submissionGiftItems !== undefined) {
       values.push(input.submissionGiftItems ? JSON.stringify(input.submissionGiftItems) : null);
       updates.push(`submission_gift_items = $${values.length}`);
+    }
+    if (input.standingRequirement !== undefined) {
+      values.push(input.standingRequirement);
+      updates.push(`standing_requirement = $${values.length}`);
     }
 
     if (updates.length === 0) {

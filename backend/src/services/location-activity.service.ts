@@ -128,13 +128,7 @@ export class LocationActivityService {
       throw new Error(`Invalid activity '${activity}' for location '${location}'`);
     }
 
-    // Fetch prompts for this location/activity
-    const prompts = await this.promptRepo.findByLocationActivity(location, activity);
-    if (prompts.length === 0) {
-      throw new Error('No prompts available for this location and activity');
-    }
-
-    // Check for existing active session
+    // Check for existing active session first (fast fail)
     const activeSessions = await this.sessionRepo.findActiveByUserId(userId);
     if (activeSessions.length > 0) {
       const [existing] = activeSessions;
@@ -149,7 +143,14 @@ export class LocationActivityService {
         };
       }
       // Different location — do not delete; block the new start instead
-      throw new Error(`You already have an active session at ${existing.location}. Complete it before starting a new activity.`);
+      const locationName = existing.location.replace(/_/g, ' ').replace(/\b\w/g, (l: string) => l.toUpperCase());
+      throw new Error(`You already have an active session at the ${locationName}. Complete it before starting a new activity.`);
+    }
+
+    // Fetch prompts for this location/activity
+    const prompts = await this.promptRepo.findByLocationActivity(location, activity);
+    if (prompts.length === 0) {
+      throw new Error('No prompts available for this location and activity');
     }
 
     // Select random prompt

@@ -53,7 +53,7 @@ export default function PerFactionPanel({ factions, onFactionUpdated, statusMsg,
   // New row forms
   const [newTitle, setNewTitle] = useState({ titleName: '', standingRequirement: 0, isPositive: true });
   const [newRelationship, setNewRelationship] = useState({ relatedFactionId: 0, relationshipType: 'ally', standingModifier: 0 });
-  const [newStoreItem, setNewStoreItem] = useState({ itemName: '', price: 0, standingRequirement: 0, isActive: true, itemCategory: '', titleId: 0 as number | null });
+  const [newStoreItem, setNewStoreItem] = useState({ itemId: 0, price: 0, standingRequirement: 0, isActive: true, titleId: 0 as number | null });
   const [newPrompt, setNewPrompt] = useState({ name: '', description: '', modifier: 0, isActive: true });
 
   // Gift items editor
@@ -245,20 +245,19 @@ export default function PerFactionPanel({ factions, onFactionUpdated, statusMsg,
   // ── Store Items ──────────────────────────────────────────────
 
   const handleCreateStoreItem = async () => {
-    if (!selectedFactionId || !newStoreItem.itemName.trim()) return;
+    if (!selectedFactionId || !newStoreItem.itemId) return;
     setSaving(true);
     try {
       const item = await factionAdminService.createStoreItem({
         factionId: selectedFactionId,
-        itemName: newStoreItem.itemName.trim(),
+        itemId: newStoreItem.itemId,
         price: newStoreItem.price,
         standingRequirement: newStoreItem.standingRequirement,
         isActive: newStoreItem.isActive,
-        itemCategory: newStoreItem.itemCategory || null,
         titleId: newStoreItem.titleId || null,
       });
       setStoreItems(prev => [...prev, item]);
-      setNewStoreItem({ itemName: '', price: 0, standingRequirement: 0, isActive: true, itemCategory: '', titleId: null });
+      setNewStoreItem({ itemId: 0, price: 0, standingRequirement: 0, isActive: true, titleId: null });
       setNewStoreCategory('');
       setStatusMsg({ type: 'success', text: 'Store item created' });
     } catch (err) {
@@ -268,7 +267,7 @@ export default function PerFactionPanel({ factions, onFactionUpdated, statusMsg,
     }
   };
 
-  const handleUpdateStoreItem = async (itemId: number, data: { itemName?: string; price?: number; standingRequirement?: number; isActive?: boolean; itemCategory?: string | null; titleId?: number | null }) => {
+  const handleUpdateStoreItem = async (itemId: number, data: { price?: number; standingRequirement?: number; isActive?: boolean; titleId?: number | null }) => {
     setSaving(true);
     try {
       const updated = await factionAdminService.updateStoreItem(itemId, data);
@@ -737,20 +736,10 @@ export default function PerFactionPanel({ factions, onFactionUpdated, statusMsg,
                         {storeItems.map(item => (
                           <tr key={item.id}>
                             <td>
-                              <span className="badge neutral sm">{item.item_category || 'general'}</span>
+                              <span className="badge neutral sm">{item.item_category}</span>
                             </td>
                             <td>
-                              <input
-                                type="text"
-                                defaultValue={item.item_name}
-                                key={`name-${item.id}-${item.item_name}`}
-                                onBlur={e => {
-                                  if (e.target.value !== item.item_name) {
-                                    handleUpdateStoreItem(item.id, { itemName: e.target.value });
-                                  }
-                                }}
-                                style={{ minWidth: '150px' }}
-                              />
+                              <span>{item.item_name}</span>
                             </td>
                             <td>
                               <input
@@ -809,7 +798,7 @@ export default function PerFactionPanel({ factions, onFactionUpdated, statusMsg,
                       onChange={e => {
                         const cat = e.target.value;
                         setNewStoreCategory(cat);
-                        setNewStoreItem(prev => ({ ...prev, itemCategory: cat, itemName: '' }));
+                        setNewStoreItem(prev => ({ ...prev, itemId: 0 }));
                         if (cat) loadCategoryItems(cat);
                       }}
                       className="faction-manager__input"
@@ -823,14 +812,14 @@ export default function PerFactionPanel({ factions, onFactionUpdated, statusMsg,
                   <div className="faction-manager__field">
                     <label>Item</label>
                     <select
-                      value={newStoreItem.itemName}
-                      onChange={e => setNewStoreItem(prev => ({ ...prev, itemName: e.target.value }))}
+                      value={newStoreItem.itemId || ''}
+                      onChange={e => setNewStoreItem(prev => ({ ...prev, itemId: parseInt(e.target.value) || 0 }))}
                       className="faction-manager__input"
                       disabled={!newStoreCategory}
                     >
                       <option value="">Select item...</option>
                       {(categoryItems[newStoreCategory] || []).map(i => (
-                        <option key={i.id} value={i.name}>{i.name}</option>
+                        <option key={i.id} value={i.id}>{i.name}</option>
                       ))}
                     </select>
                   </div>
@@ -857,7 +846,7 @@ export default function PerFactionPanel({ factions, onFactionUpdated, statusMsg,
                       ))}
                     </select>
                   </div>
-                  <button className="button primary sm" onClick={handleCreateStoreItem} disabled={saving || !newStoreItem.itemName.trim()}>
+                  <button className="button primary sm" onClick={handleCreateStoreItem} disabled={saving || !newStoreItem.itemId}>
                     <i className="fas fa-plus" /> Add
                   </button>
                 </div>

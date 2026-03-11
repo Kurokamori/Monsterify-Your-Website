@@ -1,6 +1,7 @@
 /* Faction Styles Index */
 @import './standing.css';
 @import './people.css';
+@import './quests.css';
 
 /* ---------- Faction Store ---------- */
 
@@ -8,4 +9,25 @@
   display: flex;
   flex-direction: column;
   gap: var(--spacing-medium);
+}
+
+.faction-store__item-card .card__header {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--spacing-xxsmall);
+}
+
+.faction-store__item-image {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: var(--spacing-small) 0;
+  background: var(--bg-secondary, rgba(0, 0, 0, 0.15));
+}
+
+.faction-store__item-image img {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+  image-rendering: pixelated;
 }

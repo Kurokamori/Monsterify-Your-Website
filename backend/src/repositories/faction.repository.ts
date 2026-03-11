@@ -41,14 +41,21 @@ export type FactionStandingRow = {
 export type FactionStoreItemRow = {
   id: number;
   faction_id: number;
-  item_name: string;
+  item_id: number;
   price: number;
   standing_requirement: number;
   is_active: boolean;
-  item_category: string | null;
   title_id: number | null;
-  title_name?: string | null;
   created_at: Date;
+  // Joined from items
+  item_name: string;
+  item_description: string | null;
+  item_effect: string | null;
+  item_category: string;
+  item_type: string | null;
+  image_url: string | null;
+  // Joined from faction_titles
+  title_name?: string | null;
 };
 
 export type FactionCreateInput = {
@@ -123,10 +130,15 @@ export class FactionRepository extends BaseRepository<FactionRow, FactionCreateI
   async getStoreItems(factionId: number): Promise<FactionStoreItemRow[]> {
     const result = await db.query<FactionStoreItemRow>(
       `
-        SELECT fs.*, ft.name as title_name
+        SELECT fs.id, fs.faction_id, fs.item_id, fs.price, fs.standing_requirement,
+               fs.title_id, fs.is_active, fs.created_at,
+               i.name AS item_name, i.description AS item_description, i.effect AS item_effect,
+               i.category AS item_category, i.type AS item_type, i.image_url,
+               ft.name AS title_name
         FROM faction_stores fs
+        JOIN items i ON fs.item_id = i.id
         LEFT JOIN faction_titles ft ON fs.title_id = ft.id
-        WHERE fs.faction_id = $1 AND fs.is_active::boolean = true
+        WHERE fs.faction_id = $1 AND fs.is_active = true
         ORDER BY fs.standing_requirement ASC, fs.price ASC
       `,
       [factionId]
@@ -410,8 +422,13 @@ export class FactionRepository extends BaseRepository<FactionRow, FactionCreateI
 
   async getAllStoreItemsAdmin(factionId: number): Promise<FactionStoreItemRow[]> {
     const result = await db.query<FactionStoreItemRow>(
-      `SELECT fs.*, ft.name as title_name
+      `SELECT fs.id, fs.faction_id, fs.item_id, fs.price, fs.standing_requirement,
+              fs.title_id, fs.is_active, fs.created_at,
+              i.name AS item_name, i.description AS item_description,
+              i.category AS item_category, i.type AS item_type, i.image_url,
+              ft.name AS title_name
        FROM faction_stores fs
+       JOIN items i ON fs.item_id = i.id
        LEFT JOIN faction_titles ft ON fs.title_id = ft.id
        WHERE fs.faction_id = $1
        ORDER BY fs.standing_requirement ASC, fs.price ASC`,
@@ -420,24 +437,26 @@ export class FactionRepository extends BaseRepository<FactionRow, FactionCreateI
     return result.rows;
   }
 
-  async createStoreItem(data: { factionId: number; itemName: string; price: number; standingRequirement?: number; isActive?: boolean; itemCategory?: string | null; titleId?: number | null }): Promise<FactionStoreItemRow> {
-    const result = await db.query<FactionStoreItemRow>(
-      `INSERT INTO faction_stores (faction_id, item_name, price, standing_requirement, is_active, item_category, title_id)
-       VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *`,
-      [data.factionId, data.itemName, data.price, data.standingRequirement ?? 0, data.isActive ?? true, data.itemCategory ?? null, data.titleId ?? null]
+  async createStoreItem(data: { factionId: number; itemId: number; price: number; standingRequirement?: number; isActive?: boolean; titleId?: number | null }): Promise<FactionStoreItemRow> {
+    const result = await db.query<{ id: number }>(
+      `INSERT INTO faction_stores (faction_id, item_id, price, standing_requirement, is_active, title_id)
+       VALUES ($1, $2, $3, $4, $5, $6) RETURNING id`,
+      [data.factionId, data.itemId, data.price, data.standingRequirement ?? 0, data.isActive ?? true, data.titleId ?? null]
     );
     const row = result.rows[0];
     if (!row) { throw new Error('Failed to create store item'); }
-    return row;
+    const full = await this.getStoreItemById(row.id);
+    if (!full) { throw new Error('Failed to fetch created store item'); }
+    return full;
   }
 
-  async updateStoreItem(itemId: number, data: { itemName?: string; price?: number; standingRequirement?: number; isActive?: boolean; itemCategory?: string | null; titleId?: number | null }): Promise<FactionStoreItemRow> {
+  async updateStoreItem(itemId: number, data: { itemId?: number; price?: number; standingRequirement?: number; isActive?: boolean; titleId?: number | null }): Promise<FactionStoreItemRow> {
     const updates: string[] = [];
     const values: unknown[] = [];
 
-    if (data.itemName !== undefined) {
-      values.push(data.itemName);
-      updates.push(`item_name = $${values.length}`);
+    if (data.itemId !== undefined) {
+      values.push(data.itemId);
+      updates.push(`item_id = $${values.length}`);
     }
     if (data.price !== undefined) {
       values.push(data.price);
@@ -451,30 +470,38 @@ export class FactionRepository extends BaseRepository<FactionRow, FactionCreateI
       values.push(data.isActive);
       updates.push(`is_active = $${values.length}`);
     }
-    if (data.itemCategory !== undefined) {
-      values.push(data.itemCategory);
-      updates.push(`item_category = $${values.length}`);
-    }
     if (data.titleId !== undefined) {
       values.push(data.titleId);
       updates.push(`title_id = $${values.length}`);
     }
 
-    if (updates.length === 0) {
-      const existing = await db.query<FactionStoreItemRow>('SELECT * FROM faction_stores WHERE id = $1', [itemId]);
-      const row = existing.rows[0];
-      if (!row) { throw new Error('Store item not found'); }
-      return row;
+    if (updates.length > 0) {
+      values.push(itemId);
+      await db.query(
+        `UPDATE faction_stores SET ${updates.join(', ')} WHERE id = $${values.length}`,
+        values
+      );
     }
 
-    values.push(itemId);
+    const full = await this.getStoreItemById(itemId);
+    if (!full) { throw new Error('Store item not found'); }
+    return full;
+  }
+
+  private async getStoreItemById(id: number): Promise<FactionStoreItemRow | null> {
     const result = await db.query<FactionStoreItemRow>(
-      `UPDATE faction_stores SET ${updates.join(', ')} WHERE id = $${values.length} RETURNING *`,
-      values
+      `SELECT fs.id, fs.faction_id, fs.item_id, fs.price, fs.standing_requirement,
+              fs.title_id, fs.is_active, fs.created_at,
+              i.name AS item_name, i.description AS item_description,
+              i.category AS item_category, i.type AS item_type, i.image_url,
+              ft.name AS title_name
+       FROM faction_stores fs
+       JOIN items i ON fs.item_id = i.id
+       LEFT JOIN faction_titles ft ON fs.title_id = ft.id
+       WHERE fs.id = $1`,
+      [id]
     );
-    const row = result.rows[0];
-    if (!row) { throw new Error('Store item not found after update'); }
-    return row;
+    return result.rows[0] ?? null;
   }
 
   async deleteStoreItem(itemId: number): Promise<boolean> {

@@ -295,6 +295,7 @@
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: var(--spacing-medium);
   transition: gap 0.2s;
+  margin-top: var(--spacing-medium);
 }
 
 /* Gallery size variants */

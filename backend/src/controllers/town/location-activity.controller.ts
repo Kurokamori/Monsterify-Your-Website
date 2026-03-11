@@ -248,6 +248,7 @@ export async function getLocationStatus(req: Request, res: Response): Promise<vo
     res.json({
       success: true,
       active_session: result.active_session,
+      other_active_session: result.other_active_session,
     });
   } catch (error) {
     console.error('Error getting location status:', error);

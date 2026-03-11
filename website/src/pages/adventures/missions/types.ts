@@ -19,12 +19,13 @@ export type {
 
 // ── Difficulty helpers ─────────────────────────────────────────────────────
 
-export type Difficulty = 'easy' | 'medium' | 'hard' | 'extreme';
+export type Difficulty = 'easy' | 'medium' | 'hard' | 'expert' | 'extreme';
 
 export const DIFFICULTY_CONFIG: Record<Difficulty, { label: string; color: string; icon: string }> = {
   easy: { label: 'Easy', color: 'var(--success-color)', icon: 'fas fa-leaf' },
   medium: { label: 'Medium', color: 'var(--warning-color)', icon: 'fas fa-fire' },
   hard: { label: 'Hard', color: 'var(--error-color)', icon: 'fas fa-skull' },
+  expert: { label: 'Expert', color: 'var(--legendary-color, #9C27B0)', icon: 'fas fa-bolt' },
   extreme: { label: 'Extreme', color: 'var(--legendary-color, #9C27B0)', icon: 'fas fa-bolt' },
 };
 

@@ -8,6 +8,7 @@ import {
   FactionStandingDisplay,
   FactionStore,
   FactionSubmissionModal,
+  FactionQuests,
   TributeSubmissionModal,
   KnownPeople
 } from '../../components/factions';
@@ -223,6 +224,19 @@ const FactionDetailPage = () => {
       )
     },
     {
+      key: 'quests',
+      label: 'Quests',
+      icon: 'fas fa-scroll',
+      content: (
+        <FactionQuests
+          factionId={factionId!}
+          trainerId={selectedTrainer}
+          standing={standing?.standing ?? 0}
+          faction={faction}
+        />
+      )
+    },
+    {
       key: 'store',
       label: 'Faction Store',
       icon: 'fas fa-store',
@@ -349,6 +363,7 @@ const FactionDetailPage = () => {
             <FactionSubmissionModal
               faction={faction}
               trainerId={selectedTrainer}
+              standing={standing?.standing ?? 0}
               onClose={() => setShowSubmissionModal(false)}
               onSubmit={handleSubmissionComplete}
             />

@@ -117,8 +117,12 @@ export async function getFactionStore(req: Request, res: Response): Promise<void
     }
 
     const trainerId = req.query.trainerId ? parseInt(req.query.trainerId as string) : undefined;
-    const items = await factionService.getFactionStore(factionId, trainerId);
-    res.json({ success: true, data: items });
+    const [items, standing] = await Promise.all([
+      factionService.getFactionStore(factionId, trainerId),
+      trainerId ? factionService.getTrainerFactionStanding(trainerId, factionId).catch(() => null) : null,
+    ]);
+    const currentStanding = standing?.standing?.standing ?? 0;
+    res.json({ success: true, items, currentStanding });
   } catch (error) {
     console.error('Error getting faction store:', error);
     res.status(500).json({ success: false, message: 'Failed to get faction store' });
@@ -145,7 +149,7 @@ export async function purchaseFromFactionStore(req: Request, res: Response): Pro
     }
 
     const result = await factionService.purchaseFromFactionStore(factionId, trainerId, itemId, quantity);
-    res.json({ success: true, data: result, message: 'Item purchased successfully' });
+    res.json({ success: true, data: result, remainingStanding: result.remainingStanding, message: 'Item purchased successfully' });
   } catch (error) {
     const msg = error instanceof Error ? error.message : 'Failed to purchase item';
     console.error('Error purchasing from faction store:', error);
@@ -417,12 +421,13 @@ export async function createFactionPrompt(req: Request, res: Response): Promise<
       return;
     }
 
-    const { name, description, modifier, isActive, submissionGiftItems } = req.body as {
+    const { name, description, modifier, isActive, submissionGiftItems, standingRequirement } = req.body as {
       name?: string;
       description?: string;
       modifier?: number;
       isActive?: boolean;
       submissionGiftItems?: unknown[] | null;
+      standingRequirement?: number;
     };
 
     if (!name) {
@@ -437,6 +442,7 @@ export async function createFactionPrompt(req: Request, res: Response): Promise<
       modifier,
       isActive,
       submissionGiftItems: submissionGiftItems as import('../../repositories/faction-prompt.repository').GiftItemDefinition[] | undefined,
+      standingRequirement,
     });
 
     res.json({ success: true, data: prompt, message: 'Faction prompt created successfully' });
@@ -455,12 +461,13 @@ export async function updateFactionPrompt(req: Request, res: Response): Promise<
       return;
     }
 
-    const { name, description, modifier, isActive, submissionGiftItems } = req.body as {
+    const { name, description, modifier, isActive, submissionGiftItems, standingRequirement } = req.body as {
       name?: string;
       description?: string;
       modifier?: number;
       isActive?: boolean;
       submissionGiftItems?: unknown[] | null;
+      standingRequirement?: number;
     };
 
     const prompt = await factionService.updateFactionPrompt(promptId, {
@@ -469,6 +476,7 @@ export async function updateFactionPrompt(req: Request, res: Response): Promise<
       modifier,
       isActive,
       submissionGiftItems: submissionGiftItems as import('../../repositories/faction-prompt.repository').GiftItemDefinition[] | undefined,
+      standingRequirement,
     });
 
     res.json({ success: true, data: prompt, message: 'Faction prompt updated successfully' });
@@ -814,22 +822,21 @@ export async function getFactionStoreItemsAdmin(req: Request, res: Response): Pr
 
 export async function createFactionStoreItemAdmin(req: Request, res: Response): Promise<void> {
   try {
-    const { factionId, itemName, price, standingRequirement, isActive, itemCategory, titleId } = req.body as {
+    const { factionId, itemId, price, standingRequirement, isActive, titleId } = req.body as {
       factionId?: number;
-      itemName?: string;
+      itemId?: number;
       price?: number;
       standingRequirement?: number;
       isActive?: boolean;
-      itemCategory?: string | null;
       titleId?: number | null;
     };
 
-    if (!factionId || !itemName || price === undefined) {
-      res.status(400).json({ success: false, message: 'Faction ID, item name, and price are required' });
+    if (!factionId || !itemId || price === undefined) {
+      res.status(400).json({ success: false, message: 'Faction ID, item ID, and price are required' });
       return;
     }
 
-    const item = await factionService.createStoreItem({ factionId, itemName, price, standingRequirement, isActive, itemCategory, titleId });
+    const item = await factionService.createStoreItem({ factionId, itemId, price, standingRequirement, isActive, titleId });
     res.json({ success: true, data: item, message: 'Store item created successfully' });
   } catch (error) {
     const msg = error instanceof Error ? error.message : 'Failed to create store item';
@@ -840,22 +847,21 @@ export async function createFactionStoreItemAdmin(req: Request, res: Response): 
 
 export async function updateFactionStoreItemAdmin(req: Request, res: Response): Promise<void> {
   try {
-    const itemId = parseInt(req.params.itemId as string);
-    if (isNaN(itemId)) {
+    const storeItemId = parseInt(req.params.itemId as string);
+    if (isNaN(storeItemId)) {
       res.status(400).json({ success: false, message: 'Invalid item ID' });
       return;
     }
 
-    const { itemName, price, standingRequirement, isActive, itemCategory, titleId } = req.body as {
-      itemName?: string;
+    const { itemId, price, standingRequirement, isActive, titleId } = req.body as {
+      itemId?: number;
       price?: number;
       standingRequirement?: number;
       isActive?: boolean;
-      itemCategory?: string | null;
       titleId?: number | null;
     };
 
-    const item = await factionService.updateStoreItem(itemId, { itemName, price, standingRequirement, isActive, itemCategory, titleId });
+    const item = await factionService.updateStoreItem(storeItemId, { itemId, price, standingRequirement, isActive, titleId });
     res.json({ success: true, data: item, message: 'Store item updated successfully' });
   } catch (error) {
     const msg = error instanceof Error ? error.message : 'Failed to update store item';

@@ -15,6 +15,7 @@ interface FactionPrompt {
   name: string;
   description: string;
   modifier: number;
+  standingRequirement: number;
 }
 
 interface Faction {
@@ -34,6 +35,7 @@ interface SubmissionFormData {
 interface FactionSubmissionModalProps {
   faction: Faction;
   trainerId: number | string;
+  standing?: number;
   onClose: () => void;
   onSubmit: (data: unknown) => void;
 }
@@ -49,6 +51,7 @@ const INITIAL_FORM_DATA: SubmissionFormData = {
 export const FactionSubmissionModal = ({
   faction,
   trainerId,
+  standing = 0,
   onClose,
   onSubmit
 }: FactionSubmissionModalProps) => {
@@ -190,6 +193,10 @@ export const FactionSubmissionModal = ({
     <div className="multistep-modal__content">
       <h3>Select a Submission</h3>
       <p className="text-muted">Choose a submitted artwork or writing submission to use for faction standing:</p>
+      <div className="submission__alert submission__alert--info">
+        <i className="fas fa-info-circle"></i>
+        <span>The selected artwork must be faction-specific — it should depict your trainer interacting with or participating in activities related to {faction.name}. General artwork that simply features a faction member is not eligible.</span>
+      </div>
 
       {availableSubmissions.length === 0 ? (
         <div className="submission-selector__no-submissions">
@@ -279,7 +286,9 @@ export const FactionSubmissionModal = ({
             className="select"
           >
             <option value="">No specific prompt</option>
-            {factionPrompts.map(prompt => (
+            {factionPrompts
+              .filter(prompt => Math.abs(standing) >= (prompt.standingRequirement ?? 0))
+              .map(prompt => (
               <option key={prompt.id} value={prompt.id}>
                 {prompt.name} (+{prompt.modifier} bonus)
               </option>

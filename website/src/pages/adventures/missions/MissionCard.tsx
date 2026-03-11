@@ -141,8 +141,8 @@ export const MissionCard = ({ mission, onClick, footer }: MissionCardProps) => {
 
       <div className="mission-card__stats">
         <div className="mission-card__stat">
-          <i className="fas fa-clock"></i>
-          <span>{mission.duration} submissions</span>
+          <i className="fas fa-star"></i>
+          <span>{mission.requiredProgress} points</span>
         </div>
         <div className="mission-card__stat">
           <i className="fas fa-paw"></i>

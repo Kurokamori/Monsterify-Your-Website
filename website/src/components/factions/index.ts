@@ -1,6 +1,7 @@
 export { FactionStandingDisplay } from './FactionStandingDisplay';
 export { FactionStore } from './FactionStore';
 export { FactionSubmissionModal } from './FactionSubmissionModal';
+export { FactionQuests } from './FactionQuests';
 export { TributeSubmissionModal } from './TributeSubmissionModal';
 export { KnownPeople } from './KnownPeople';
 export { PersonDetailModal } from './PersonDetailModal';

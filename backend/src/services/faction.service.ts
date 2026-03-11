@@ -340,13 +340,24 @@ export class FactionService {
       throw new Error('This trainer has already used this submission for faction standing');
     }
 
-    // Check if submission exists and belongs to trainer
-    const submissionCheck = await db.query<{ id: number; trainer_id: number }>(
-      'SELECT id, trainer_id FROM submissions WHERE id = $1',
-      [data.submissionId]
+    // Check prompt standing requirement
+    if (data.promptId) {
+      const prompt = await this.promptRepo.findById(data.promptId);
+      if (prompt && prompt.standingRequirement > 0) {
+        const standing = await this.factionRepo.getTrainerStanding(data.trainerId, data.factionId);
+        const currentStanding = Math.abs(standing?.standing ?? 0);
+        if (currentStanding < prompt.standingRequirement) {
+          throw new Error(`This quest requires ${prompt.standingRequirement} standing to attempt (you have ${currentStanding})`);
+        }
+      }
+    }
+
+    // Check if submission exists and trainer is associated with it (as owner or collaborator)
+    const submissionCheck = await db.query<{ id: number }>(
+      'SELECT s.id FROM submissions s JOIN submission_trainers st ON st.submission_id = s.id WHERE s.id = $1 AND st.trainer_id = $2',
+      [data.submissionId, data.trainerId]
     );
-    const sub = submissionCheck.rows[0];
-    if (sub?.trainer_id !== data.trainerId) {
+    if (!submissionCheck.rows[0]) {
       throw new Error('Invalid submission or submission does not belong to this trainer');
     }
 
@@ -579,11 +590,11 @@ export class FactionService {
     return this.factionRepo.getAllStoreItemsAdmin(factionId);
   }
 
-  async createStoreItem(data: { factionId: number; itemName: string; price: number; standingRequirement?: number; isActive?: boolean; itemCategory?: string | null; titleId?: number | null }): Promise<FactionStoreItemRow> {
+  async createStoreItem(data: { factionId: number; itemId: number; price: number; standingRequirement?: number; isActive?: boolean; titleId?: number | null }): Promise<FactionStoreItemRow> {
     return this.factionRepo.createStoreItem(data);
   }
 
-  async updateStoreItem(itemId: number, data: { itemName?: string; price?: number; standingRequirement?: number; isActive?: boolean; itemCategory?: string | null; titleId?: number | null }): Promise<FactionStoreItemRow> {
+  async updateStoreItem(itemId: number, data: { itemId?: number; price?: number; standingRequirement?: number; isActive?: boolean; titleId?: number | null }): Promise<FactionStoreItemRow> {
     return this.factionRepo.updateStoreItem(itemId, data);
   }
 
@@ -611,6 +622,7 @@ export class FactionService {
   async purchaseFromFactionStore(factionId: number, trainerId: number, itemId: number, quantity: number): Promise<{
     item: FactionStoreItemRow;
     totalCost: number;
+    remainingStanding: number;
   }> {
     const items = await this.factionRepo.getStoreItems(factionId);
     const item = items.find(i => i.id === itemId);
@@ -620,7 +632,12 @@ export class FactionService {
 
     // Check standing requirement (title-based or legacy)
     const standing = await this.factionRepo.getTrainerStanding(trainerId, factionId);
-    const currentStanding = Math.abs(standing?.standing ?? 0);
+    const currentStanding = standing?.standing ?? 0;
+
+    // Cannot use negative standing
+    if (currentStanding <= 0) {
+      throw new Error('You need positive faction standing to purchase items');
+    }
 
     if (item.title_id) {
       const titles = await this.factionRepo.getTitles(factionId);
@@ -634,24 +651,14 @@ export class FactionService {
 
     const totalCost = item.price * quantity;
 
-    // Check trainer currency
-    const trainerResult = await db.query<{ currency: number }>(
-      'SELECT currency FROM trainers WHERE id = $1',
-      [trainerId]
-    );
-    const trainer = trainerResult.rows[0];
-    if (!trainer) {
-      throw new Error('Trainer not found');
-    }
-    if (trainer.currency < totalCost) {
-      throw new Error('Insufficient currency');
+    // Cannot take standing into the negative
+    if (currentStanding - totalCost < 0) {
+      throw new Error('Insufficient faction standing to purchase this item');
     }
 
-    // Deduct currency
-    await db.query(
-      'UPDATE trainers SET currency = currency - $1 WHERE id = $2',
-      [totalCost, trainerId]
-    );
+    // Deduct standing
+    const newStanding = currentStanding - totalCost;
+    await this.factionRepo.setTrainerStanding(trainerId, factionId, newStanding);
 
     // Add items to inventory
     const category = item.item_category ?? 'general';
@@ -664,7 +671,7 @@ export class FactionService {
       );
     }
 
-    return { item, totalCost };
+    return { item, totalCost, remainingStanding: newStanding };
   }
 
   // ===========================================================================
