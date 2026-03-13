@@ -12,6 +12,14 @@ const __dirname = path.dirname(__filename);
 const CONTENT_BASE_PATH = path.resolve(__dirname, '..', '..', '..', '..', 'website', 'public', 'content');
 const VALID_CATEGORIES = ['guides', 'lore', 'factions', 'npcs'];
 
+interface SearchResult {
+  category: string;
+  categoryName: string;
+  filePath: string;
+  title: string;
+  matches: { context: string; lineNumber: number }[];
+}
+
 // Express 5 wildcard params return an array of segments
 function getWildcardPath(param: unknown): string {
   if (Array.isArray(param)) { return param.join('/'); }
@@ -127,5 +135,120 @@ export async function getGuideContent(req: Request, res: Response): Promise<void
   } catch (error) {
     console.error('Error getting guide content:', error);
     res.status(500).json({ success: false, message: 'Failed to get guide content' });
+  }
+}
+
+/**
+ * Recursively collect all markdown files in a directory
+ */
+function collectMarkdownFiles(dirPath: string, basePath: string): { filePath: string; relativePath: string }[] {
+  const results: { filePath: string; relativePath: string }[] = [];
+  if (!fs.existsSync(dirPath)) {return results;}
+
+  const items = fs.readdirSync(dirPath);
+  for (const item of items) {
+    if (item === '!index.md') {continue;}
+    const fullPath = path.join(dirPath, item);
+    const relPath = basePath ? `${basePath}/${item}` : item;
+    const stat = fs.statSync(fullPath);
+
+    if (stat.isDirectory()) {
+      results.push(...collectMarkdownFiles(fullPath, relPath));
+    } else if (item.endsWith('.md')) {
+      results.push({ filePath: fullPath, relativePath: relPath });
+    }
+  }
+  return results;
+}
+
+/**
+ * Search across guide content for a query string
+ * GET /api/guides/search?q=query&category=optional
+ */
+export async function searchGuides(req: Request, res: Response): Promise<void> {
+  try {
+    const query = (req.query.q as string || '').trim();
+    const categoryFilter = (req.query.category as string || '').trim();
+
+    if (!query || query.length < 2) {
+      res.json({ success: true, results: [] });
+      return;
+    }
+
+    const categoriesToSearch = categoryFilter && VALID_CATEGORIES.includes(categoryFilter)
+      ? [categoryFilter]
+      : VALID_CATEGORIES;
+
+    const results: SearchResult[] = [];
+    const queryLower = query.toLowerCase();
+    const MAX_RESULTS = 50;
+
+    for (const category of categoriesToSearch) {
+      if (results.length >= MAX_RESULTS) {break;}
+
+      const categoryPath = path.join(CONTENT_BASE_PATH, category);
+      const files = collectMarkdownFiles(categoryPath, '');
+
+      for (const { filePath, relativePath } of files) {
+        if (results.length >= MAX_RESULTS) {break;}
+
+        const raw = fs.readFileSync(filePath, 'utf8');
+
+        // Strip YAML front matter before searching
+        let content = raw;
+        const fmMatch = raw.match(/^---\n[\s\S]*?\n---\n([\s\S]*)$/);
+        if (fmMatch?.[1]) {content = fmMatch[1];}
+
+        const contentLower = content.toLowerCase();
+        if (!contentLower.includes(queryLower)) {continue;}
+
+        // Extract title from first h1
+        const titleMatch = content.match(/^# (.+)/m);
+        const title = titleMatch?.[1] ?? relativePath.replace(/\.md$/, '').split('/').pop() ?? relativePath;
+
+        // Find matching lines with context
+        const lines = content.split('\n');
+        const matches: { context: string; lineNumber: number }[] = [];
+        const CONTEXT_LINES = 1;
+
+        for (let i = 0; i < lines.length; i++) {
+          if (matches.length >= 5) {break;}
+          const line = lines[i];
+          if (!line?.toLowerCase().includes(queryLower)) {continue;}
+
+          const start = Math.max(0, i - CONTEXT_LINES);
+          const end = Math.min(lines.length - 1, i + CONTEXT_LINES);
+          const contextLines: string[] = [];
+          for (let j = start; j <= end; j++) {
+            contextLines.push(lines[j] ?? '');
+          }
+          matches.push({
+            context: contextLines.join('\n'),
+            lineNumber: i + 1,
+          });
+          // Skip ahead to avoid overlapping contexts
+          i = end;
+        }
+
+        if (matches.length > 0) {
+          // Build the navigable path (strip .md, strip overview.md → use dir path)
+          let navPath = relativePath;
+          if (navPath.endsWith('.md')) {navPath = navPath.slice(0, -3);}
+
+          results.push({
+            category,
+            categoryName: CATEGORY_NAMES[category] ?? category,
+            filePath: navPath,
+            title,
+            matches,
+          });
+        }
+      }
+    }
+
+    res.json({ success: true, results });
+  } catch (error) {
+    console.error('Error searching guides:', error);
+    res.status(500).json({ success: false, message: 'Failed to search guides' });
   }
 }

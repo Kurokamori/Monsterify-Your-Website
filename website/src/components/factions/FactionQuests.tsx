@@ -142,7 +142,7 @@ export const FactionQuests = ({ factionId, trainerId, standing, faction }: Facti
                   <div className="quest-card__header">
                     <h4 className="quest-card__name">{prompt.name}</h4>
                     <span
-                      className="badge accent"
+                      className="badge badge--accent"
                       style={isUnlocked && faction.color ? { borderColor: faction.color } : undefined}
                     >
                       +{prompt.modifier} Bonus

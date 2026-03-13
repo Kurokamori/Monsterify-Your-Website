@@ -1,0 +1,267 @@
+/* ==============================
+   Guide Search
+   - Search bar, dropdown results, highlights
+   ============================== */
+
+.guide-search {
+  position: relative;
+  margin-bottom: var(--spacing-large);
+}
+
+/* ---------- Search Bar ---------- */
+
+.guide-search__bar {
+  display: flex;
+  gap: var(--spacing-small);
+  align-items: stretch;
+}
+
+.guide-search__input-wrapper {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xsmall);
+  padding: var(--spacing-xsmall) var(--spacing-small);
+  background-color: var(--primary-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-medium);
+  transition: border-color var(--transition-fast);
+  min-width: 0;
+}
+
+.guide-search__input-wrapper:focus-within {
+  border-color: var(--accent-color);
+}
+
+.guide-search__icon {
+  color: var(--text-color-muted);
+  font-size: var(--font-size-small);
+  flex-shrink: 0;
+}
+
+.guide-search__input {
+  flex: 1;
+  background: none;
+  border: none;
+  color: var(--text-color);
+  font-size: var(--font-size-small);
+  font-family: var(--font-family);
+  outline: none;
+  min-width: 0;
+}
+
+.guide-search__input::placeholder {
+  color: var(--text-color-muted);
+}
+
+.guide-search__clear {
+  background: none;
+  border: none;
+  color: var(--text-color-muted);
+  cursor: pointer;
+  padding: var(--spacing-xxsmall);
+  font-size: var(--font-size-small);
+  line-height: 1;
+  flex-shrink: 0;
+  transition: color var(--transition-fast);
+}
+
+.guide-search__clear:hover {
+  color: var(--text-color);
+}
+
+.guide-search__spinner {
+  color: var(--accent-color);
+  font-size: var(--font-size-small);
+  flex-shrink: 0;
+}
+
+.guide-search__category-select {
+  background-color: var(--primary-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-medium);
+  color: var(--text-color);
+  font-size: var(--font-size-small);
+  font-family: var(--font-family);
+  padding: var(--spacing-xsmall) var(--spacing-small);
+  cursor: pointer;
+  outline: none;
+  transition: border-color var(--transition-fast);
+  flex-shrink: 0;
+}
+
+.guide-search__category-select:focus {
+  border-color: var(--accent-color);
+}
+
+.guide-search__category-select option {
+  background-color: var(--primary-color);
+  color: var(--text-color);
+}
+
+/* ---------- Dropdown ---------- */
+
+.guide-search__dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  margin-top: var(--spacing-xxsmall);
+  background-color: var(--primary-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-medium);
+  box-shadow: var(--shadow-large);
+  z-index: 100;
+  max-height: 480px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--accent-color) var(--primary-color);
+}
+
+.guide-search__empty {
+  padding: var(--spacing-medium);
+  text-align: center;
+  color: var(--text-color-muted);
+  font-size: var(--font-size-small);
+  font-style: italic;
+}
+
+.guide-search__count {
+  padding: var(--spacing-xsmall) var(--spacing-medium);
+  font-size: var(--font-size-xsmall);
+  color: var(--text-color-muted);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.guide-search__results {
+  display: flex;
+  flex-direction: column;
+}
+
+/* ---------- Result Groups ---------- */
+
+.guide-search__group {
+  display: flex;
+  flex-direction: column;
+}
+
+.guide-search__group-header {
+  padding: var(--spacing-xsmall) var(--spacing-medium);
+  font-size: var(--font-size-xsmall);
+  font-weight: 600;
+  color: var(--accent-color);
+  background-color: var(--background-color);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+/* ---------- Individual Results ---------- */
+
+.guide-search__result {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xxsmall);
+  padding: var(--spacing-small) var(--spacing-medium);
+  border: none;
+  background: none;
+  text-align: left;
+  cursor: pointer;
+  width: 100%;
+  color: var(--text-color);
+  font-family: var(--font-family);
+  transition: background-color var(--transition-fast);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.guide-search__result:last-child {
+  border-bottom: none;
+}
+
+.guide-search__result:hover {
+  background-color: var(--primary-color-hover);
+}
+
+.guide-search__result-title {
+  font-size: var(--font-size-small);
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+.guide-search__result-path {
+  font-size: var(--font-size-xxsmall);
+  color: var(--text-color-muted);
+}
+
+.guide-search__result-context {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  margin-top: var(--spacing-xxsmall);
+  padding: var(--spacing-xxsmall) var(--spacing-xsmall);
+  background-color: var(--background-color);
+  border-radius: var(--border-radius-small);
+  border-left: 2px solid var(--accent-color-dark);
+  font-size: var(--font-size-xxsmall);
+  color: var(--text-color-muted);
+  line-height: 1.5;
+  overflow: hidden;
+}
+
+.guide-search__context-line {
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ---------- Highlights ---------- */
+
+.guide-search__highlight {
+  background-color: var(--accent-color-subtle);
+  color: var(--accent-color);
+  padding: 0 1px;
+  border-radius: 2px;
+}
+
+/* Highlights inside rendered markdown content */
+.guide-search-highlight {
+  background-color: var(--accent-color-subtle);
+  color: var(--accent-color-active);
+  padding: 1px 3px;
+  border-radius: 2px;
+  outline: 1px solid var(--accent-color-dark);
+}
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 768px) {
+  .guide-search__bar {
+    flex-direction: column;
+  }
+
+  .guide-search__category-select {
+    width: 100%;
+  }
+
+  .guide-search__dropdown {
+    max-height: 360px;
+  }
+}
+
+@media (max-width: 480px) {
+  .guide-search__dropdown {
+    max-height: 300px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .guide-search__input-wrapper,
+  .guide-search__result,
+  .guide-search__clear,
+  .guide-search__category-select {
+    transition: none;
+  }
+}

@@ -3,6 +3,7 @@ import { useParams, useLocation } from 'react-router-dom';
 import { useDocumentTitle } from '../../../hooks/useDocumentTitle';
 import { AutoStateContainer } from '../../../components/common/StateContainer';
 import { GuideCategoryTabs } from '../../../components/guides/GuideCategoryTabs';
+import { GuideSearch } from '../../../components/guides/GuideSearch';
 import { GuideSidebar } from '../../../components/guides/GuideSidebar';
 import { MarkdownRenderer } from '../../../components/guides/MarkdownRenderer';
 import guidesService from '../../../services/guidesService';
@@ -61,6 +62,8 @@ const GuideCategoryPage = () => {
         loadingMessage={`Loading ${category} guides...`}
       >
         <GuideCategoryTabs categories={categories} activeCategory={category} />
+
+        <GuideSearch activeCategory={category} />
 
         <div className="guide-content-layout">
           <div className="guide-content-layout__sidebar">

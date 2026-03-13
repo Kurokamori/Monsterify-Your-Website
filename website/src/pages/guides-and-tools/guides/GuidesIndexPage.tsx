@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { useDocumentTitle } from '../../../hooks/useDocumentTitle';
 import { AutoStateContainer } from '../../../components/common/StateContainer';
+import { GuideSearch } from '../../../components/guides/GuideSearch';
 import guidesService from '../../../services/guidesService';
 import type { CategoriesMap } from './types';
 import { getCategoryIcon, getCategoryDescription, getCategoryLink } from './types';
@@ -75,6 +76,8 @@ const GuidesIndexPage = () => {
           <h1>Guides &amp; Documentation</h1>
           <p>Learn everything you need to know about the game</p>
         </div>
+
+        <GuideSearch />
 
         <div className="guide-index__grid">
           {Object.keys(categories).map((key) => (

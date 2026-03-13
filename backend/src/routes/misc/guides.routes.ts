@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getCategories, getGuideContent } from '@controllers/misc/guides.controller';
+import { getCategories, getGuideContent, searchGuides } from '@controllers/misc/guides.controller';
 
 const router = Router();
 
@@ -7,6 +7,9 @@ const router = Router();
 
 // Get all guide categories with directory structures
 router.get('/categories', getCategories);
+
+// Search across guide content
+router.get('/search', searchGuides);
 
 // Get content for a specific guide (category root or subpath)
 router.get('/:category', getGuideContent);

@@ -11,6 +11,8 @@ import { TypeBadge } from '../common/TypeBadge';
 import { AttributeBadge } from '../common/AttributeBadge';
 import api from '../../services/api';
 import bazarService from '../../services/bazarService';
+import speciesService from '../../services/speciesService';
+import type { SpeciesImageMap } from '../../services/speciesService';
 import { extractErrorMessage } from '../../utils/errorUtils';
 import type {
   TownTrainer,
@@ -36,6 +38,9 @@ export function BazarAdoptMonster({
     total: 0,
     limit: 12
   });
+
+  // Species images cache
+  const [speciesImages, setSpeciesImages] = useState<SpeciesImageMap>({});
 
   // User's trainers for adoption
   const [userTrainers, setUserTrainers] = useState<TownTrainer[]>([]);
@@ -83,6 +88,30 @@ export function BazarAdoptMonster({
       setUserTrainers(data.trainers || data || []);
     }).catch(() => setUserTrainers([]));
   }, [fetchMonsters]);
+
+  // Fetch species images when monsters change
+  useEffect(() => {
+    if (monsters.length === 0) return;
+
+    const allSpecies = new Set<string>();
+    for (const m of monsters) {
+      if (m.species1) allSpecies.add(m.species1);
+      if (m.species2) allSpecies.add(m.species2);
+      if (m.species3) allSpecies.add(m.species3);
+    }
+
+    const needed = [...allSpecies].filter(s => !speciesImages[s]);
+    if (needed.length === 0) return;
+
+    speciesService.getSpeciesImages(needed).then(imageMap => {
+      setSpeciesImages(prev => ({ ...prev, ...imageMap }));
+    }).catch(() => {});
+  }, [monsters, speciesImages]);
+
+  // Get species list for a monster
+  const getSpeciesList = useCallback((monster: BazarMonster) => {
+    return [monster.species1, monster.species2, monster.species3].filter(Boolean) as string[];
+  }, []);
 
   // Handle page change
   const handlePageChange = useCallback((page: number) => {
@@ -193,26 +222,56 @@ export function BazarAdoptMonster({
                   hoverable
                 >
                   <div className="bazar-adopt-monster__card-image">
-                    {monster.img_link ? (
-                      <img
-                        src={monster.img_link}
-                        alt={monster.name || getSpeciesDisplay(monster)}
-                        onError={(e) => {
-                          (e.target as HTMLImageElement).src = '/images/monsters/default.png';
-                        }}
-                      />
-                    ) : (
-                      <div className="bazar-adopt-monster__card-placeholder">
-                        <i className="fas fa-question"></i>
-                      </div>
-                    )}
+                    {(() => {
+                      const species = getSpeciesList(monster);
+                      const hasSpeciesImages = species.some(s => speciesImages[s]?.image_url);
+
+                      if (monster.img_link) {
+                        return (
+                          <img
+                            src={monster.img_link}
+                            alt={monster.name || getSpeciesDisplay(monster)}
+                            onError={(e) => {
+                              (e.target as HTMLImageElement).src = '/images/monsters/default.png';
+                            }}
+                          />
+                        );
+                      }
+
+                      if (hasSpeciesImages) {
+                        return (
+                          <div className={`bazar-adopt-monster__species-images bazar-adopt-monster__species-images--${species.filter(s => speciesImages[s]?.image_url).length}`}>
+                            {species.map((s, i) => {
+                              const imgData = speciesImages[s];
+                              if (!imgData?.image_url) return null;
+                              return (
+                                <img
+                                  key={i}
+                                  src={imgData.image_url}
+                                  alt={s}
+                                  onError={(e) => {
+                                    (e.target as HTMLImageElement).style.display = 'none';
+                                  }}
+                                />
+                              );
+                            })}
+                          </div>
+                        );
+                      }
+
+                      return (
+                        <div className="bazar-adopt-monster__card-placeholder">
+                          <i className="fas fa-question"></i>
+                        </div>
+                      );
+                    })()}
                   </div>
                   <div className="bazar-adopt-monster__card-info">
                     <h4 className="bazar-adopt-monster__card-name">
-                      {monster.name || 'Unnamed'}
+                      {getSpeciesDisplay(monster)}
                     </h4>
                     <p className="bazar-adopt-monster__card-species">
-                      {getSpeciesDisplay(monster)}
+                      {monster.name || 'Unnamed'}
                     </p>
                     <div className="bazar-adopt-monster__card-types">
                       {getTypes(monster).map((type, idx) => (
@@ -267,24 +326,54 @@ export function BazarAdoptMonster({
                 {/* Monster Preview */}
                 <div className="bazar-adopt-monster__preview">
                   <div className="bazar-adopt-monster__preview-image">
-                    {selectedMonster.img_link ? (
-                      <img
-                        src={selectedMonster.img_link}
-                        alt={selectedMonster.name || getSpeciesDisplay(selectedMonster)}
-                        onError={(e) => {
-                          (e.target as HTMLImageElement).src = '/images/monsters/default.png';
-                        }}
-                      />
-                    ) : (
-                      <div className="bazar-adopt-monster__preview-placeholder">
-                        <i className="fas fa-question"></i>
-                      </div>
-                    )}
+                    {(() => {
+                      const species = getSpeciesList(selectedMonster);
+                      const hasSpeciesImages = species.some(s => speciesImages[s]?.image_url);
+
+                      if (selectedMonster.img_link) {
+                        return (
+                          <img
+                            src={selectedMonster.img_link}
+                            alt={selectedMonster.name || getSpeciesDisplay(selectedMonster)}
+                            onError={(e) => {
+                              (e.target as HTMLImageElement).src = '/images/monsters/default.png';
+                            }}
+                          />
+                        );
+                      }
+
+                      if (hasSpeciesImages) {
+                        return (
+                          <div className={`bazar-adopt-monster__species-images bazar-adopt-monster__species-images--${species.filter(s => speciesImages[s]?.image_url).length}`}>
+                            {species.map((s, i) => {
+                              const imgData = speciesImages[s];
+                              if (!imgData?.image_url) return null;
+                              return (
+                                <img
+                                  key={i}
+                                  src={imgData.image_url}
+                                  alt={s}
+                                  onError={(e) => {
+                                    (e.target as HTMLImageElement).style.display = 'none';
+                                  }}
+                                />
+                              );
+                            })}
+                          </div>
+                        );
+                      }
+
+                      return (
+                        <div className="bazar-adopt-monster__preview-placeholder">
+                          <i className="fas fa-question"></i>
+                        </div>
+                      );
+                    })()}
                   </div>
                   <div className="bazar-adopt-monster__preview-info">
-                    <h3>{selectedMonster.name || 'Unnamed Monster'}</h3>
+                    <h3>{getSpeciesDisplay(selectedMonster)}</h3>
                     <p className="bazar-adopt-monster__preview-species">
-                      {getSpeciesDisplay(selectedMonster)}
+                      {selectedMonster.name || 'Unnamed Monster'}
                     </p>
                     <div className="bazar-adopt-monster__preview-types">
                       {getTypes(selectedMonster).map((type, idx) => (

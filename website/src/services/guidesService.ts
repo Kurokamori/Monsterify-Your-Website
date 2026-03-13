@@ -17,6 +17,19 @@ export interface GuideContent {
   [key: string]: unknown;
 }
 
+export interface GuideSearchMatch {
+  context: string;
+  lineNumber: number;
+}
+
+export interface GuideSearchResult {
+  category: string;
+  categoryName: string;
+  filePath: string;
+  title: string;
+  matches: GuideSearchMatch[];
+}
+
 export interface GuideDetailData {
   id: string;
   title: string;
@@ -76,6 +89,14 @@ const guidesService = {
   getDetailCategories: async (): Promise<GuideDetailCategory[]> => {
     const response = await api.get('/guides/categories');
     return response.data.categories || [];
+  },
+
+  // Search across guide content
+  searchGuides: async (query: string, category?: string): Promise<GuideSearchResult[]> => {
+    const params: Record<string, string> = { q: query };
+    if (category) params.category = category;
+    const response = await api.get('/guides/search', { params });
+    return response.data.results || [];
   },
 };
 

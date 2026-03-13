@@ -421,6 +421,7 @@
 .bazar-adopt-monster__card {
   cursor: pointer;
   transition: transform var(--transition-medium), box-shadow var(--transition-medium);
+  min-width: 0;
 }
 
 .bazar-adopt-monster__card:hover {
@@ -456,6 +457,32 @@
   font-size: clamp(1.5rem, 1.25rem + 1vw, 2.5rem);
 }
 
+.bazar-adopt-monster__species-images {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-xxsmall);
+}
+
+.bazar-adopt-monster__species-images img {
+  max-height: 85%;
+  object-fit: contain;
+}
+
+.bazar-adopt-monster__species-images--1 img {
+  max-width: 85%;
+}
+
+.bazar-adopt-monster__species-images--2 img {
+  max-width: 45%;
+}
+
+.bazar-adopt-monster__species-images--3 img {
+  max-width: 30%;
+}
+
 .bazar-adopt-monster__card-info {
   text-align: center;
 }
@@ -465,9 +492,8 @@
   font-size: var(--font-size-small);
   font-weight: 600;
   margin: 0 0 var(--spacing-xxsmall) 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 .bazar-adopt-monster__card-species {
@@ -637,6 +663,7 @@
   position: relative;
   cursor: pointer;
   transition: transform var(--transition-medium), box-shadow var(--transition-medium);
+  min-width: 0;
 }
 
 .bazar-forfeit-monster__card:hover {
@@ -691,6 +718,32 @@
   font-size: clamp(1.5rem, 1.25rem + 1vw, 2.5rem);
 }
 
+.bazar-forfeit-monster__species-images {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-xxsmall);
+}
+
+.bazar-forfeit-monster__species-images img {
+  max-height: 85%;
+  object-fit: contain;
+}
+
+.bazar-forfeit-monster__species-images--1 img {
+  max-width: 85%;
+}
+
+.bazar-forfeit-monster__species-images--2 img {
+  max-width: 45%;
+}
+
+.bazar-forfeit-monster__species-images--3 img {
+  max-width: 30%;
+}
+
 .bazar-forfeit-monster__card-info {
   text-align: center;
 }
@@ -700,9 +753,8 @@
   font-size: var(--font-size-small);
   font-weight: 600;
   margin: 0 0 var(--spacing-xxsmall) 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 .bazar-forfeit-monster__card-species {

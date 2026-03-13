@@ -1,5 +1,6 @@
 export { FranchiseFilters } from './FranchiseFilters';
 export { GuideCategoryTabs } from './GuideCategoryTabs';
+export { GuideSearch } from './GuideSearch';
 export { GuideSidebar } from './GuideSidebar';
 export { MarkdownRenderer } from './MarkdownRenderer';
 export { SpeciesCard } from './SpeciesCard';
