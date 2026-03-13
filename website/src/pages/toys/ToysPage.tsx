@@ -31,6 +31,13 @@ const toys: ToyDefinition[] = [
     icon: 'fas fa-comments',
     path: '/toys/group-chats',
   },
+  {
+    id: 'admin-connect',
+    name: 'Admin Connect',
+    description: 'Track progress, planned features, bug fixes, and community requests.',
+    icon: 'fas fa-clipboard-list',
+    path: '/toys/admin-connect',
+  },
 ];
 
 const ToysPage = () => {

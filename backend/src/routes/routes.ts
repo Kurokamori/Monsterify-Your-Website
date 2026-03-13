@@ -71,6 +71,9 @@ import statisticsRoutes from './misc/statistics.routes';
 // Submission Routes
 import submissionRoutes from './misc/submission.routes';
 
+// Admin Connect Routes
+import adminConnectRoutes from './misc/admin-connect.routes';
+
 // Bookmark Routes
 import bookmarkRoutes from './misc/bookmark.routes';
 
@@ -189,6 +192,9 @@ router.use('/statistics', statisticsRoutes);
 
 // Submission Routes
 router.use('/submissions', submissionRoutes);
+
+// Admin Connect Routes
+router.use('/admin-connect', adminConnectRoutes);
 
 // Bookmark Routes
 router.use('/bookmarks', bookmarkRoutes);

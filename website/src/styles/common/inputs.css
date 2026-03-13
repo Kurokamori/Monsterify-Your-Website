@@ -33,6 +33,10 @@ select.input, select.select, select.form-input {
     text-align: left;
 }
 
+select.input:hover, select.select:hover, select.form-input:hover {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23cda00f' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+}
+
 select.input:focus, select.select:focus, select.form-input:focus {
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23ffc521' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
 }
@@ -282,6 +286,12 @@ input[type="number"].form-input::-webkit-inner-spin-button {
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%238a9ab3' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
 }
 
+:root[data-theme="dawn"] select.input:hover,
+:root[data-theme="dawn"] select.select:hover,
+:root[data-theme="dawn"] select.form-input:hover {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23b39029' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+}
+
 :root[data-theme="dawn"] select.input:focus,
 :root[data-theme="dawn"] select.select:focus,
 :root[data-theme="dawn"] select.form-input:focus {
@@ -293,4 +303,10 @@ input[type="number"].form-input::-webkit-inner-spin-button {
 :root[data-theme="high-contrast"] select.select,
 :root[data-theme="high-contrast"] select.form-input {
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23ffffff' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+}
+
+:root[data-theme="high-contrast"] select.input:hover,
+:root[data-theme="high-contrast"] select.select:hover,
+:root[data-theme="high-contrast"] select.form-input:hover {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23ffc521' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
 }

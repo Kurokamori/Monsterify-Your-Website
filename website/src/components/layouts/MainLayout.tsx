@@ -19,7 +19,8 @@ interface NavLink {
 
 const GUIDES_LINKS: (NavLink | { sectionHeader: string })[] = [
   { to: '/guides', label: 'All Guides' },
-  { sectionHeader: 'Game Guides' },
+  { to: '/guides/guides', label: 'Game Guides'},
+  { sectionHeader: 'Basic Guides' },
   { to: '/guides/guides/Creating%20a%20Trainer/!Creating%20a%20Trainer.md', label: 'Creating a Trainer', subItem: true },
   { to: '/guides/guides/Monster%20Creation/Monster%20Design%20Guide.md', label: 'Monster Creation', subItem: true },
   { to: '/guides/guides/Submissions%20and%20Progression/!!Submitting%20Artwork.md', label: 'Submissions and Progression', subItem: true },

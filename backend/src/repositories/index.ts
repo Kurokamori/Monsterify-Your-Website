@@ -708,3 +708,17 @@ export type {
   BookmarkTextNoteCreateInput,
   BookmarkTextNoteUpdateInput,
 } from './bookmark.repository';
+
+// Admin Connect Repository
+export { AdminConnectRepository } from './admin-connect.repository';
+export type {
+  AdminConnectItemRow,
+  AdminConnectItem,
+  AdminConnectItemWithSubs,
+  AdminConnectItemCreateInput,
+  AdminConnectItemUpdateInput,
+  AdminConnectSubItemRow,
+  AdminConnectSubItem,
+  AdminConnectSubItemCreateInput,
+  AdminConnectSubItemUpdateInput,
+} from './admin-connect.repository';

@@ -449,3 +449,18 @@ export {
   getUnclaimedBossRewards as getNotificationUnclaimedBossRewards,
   getUnclaimedMissions as getNotificationUnclaimedMissions,
 } from './misc/notification.controller';
+
+// Admin Connect Controller
+export {
+  getAdminConnectItems,
+  getAdminConnectItem,
+  createAdminConnectItem,
+  updateAdminConnectItem,
+  resolveAdminConnectItem,
+  reopenAdminConnectItem,
+  deleteAdminConnectItem,
+  reorderAdminConnectItems,
+  createAdminConnectSubItem,
+  updateAdminConnectSubItem,
+  deleteAdminConnectSubItem,
+} from './misc/admin-connect.controller';

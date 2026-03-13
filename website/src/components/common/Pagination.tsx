@@ -1,3 +1,5 @@
+import { useState, useRef, useEffect } from 'react';
+
 interface PaginationProps {
   currentPage: number;
   totalPages: number;
@@ -7,6 +9,25 @@ interface PaginationProps {
 type PageItem = number | '...';
 
 export const Pagination = ({ currentPage, totalPages, onPageChange }: PaginationProps) => {
+  const [jumpInput, setJumpInput] = useState<'left' | 'right' | null>(null);
+  const [jumpValue, setJumpValue] = useState('');
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (jumpInput && inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [jumpInput]);
+
+  const handleJumpSubmit = () => {
+    const page = parseInt(jumpValue, 10);
+    if (!isNaN(page) && page >= 1 && page <= totalPages) {
+      onPageChange(page);
+    }
+    setJumpInput(null);
+    setJumpValue('');
+  };
+
   const getPageNumbers = (): PageItem[] => {
     const pageNumbers: PageItem[] = [];
     const maxPagesToShow = 5;
@@ -16,36 +37,29 @@ export const Pagination = ({ currentPage, totalPages, onPageChange }: Pagination
         pageNumbers.push(i);
       }
     } else {
-      // Always include first page
       pageNumbers.push(1);
 
-      // Calculate start and end of page range
       let start = Math.max(2, currentPage - 1);
       let end = Math.min(totalPages - 1, currentPage + 1);
 
-      // Adjust if at the beginning or end
       if (currentPage <= 2) {
         end = Math.min(totalPages - 1, maxPagesToShow - 1);
       } else if (currentPage >= totalPages - 1) {
         start = Math.max(2, totalPages - maxPagesToShow + 2);
       }
 
-      // Add ellipsis if needed
       if (start > 2) {
         pageNumbers.push('...');
       }
 
-      // Add middle pages
       for (let i = start; i <= end; i++) {
         pageNumbers.push(i);
       }
 
-      // Add ellipsis if needed
       if (end < totalPages - 1) {
         pageNumbers.push('...');
       }
 
-      // Always include last page
       if (totalPages > 1) {
         pageNumbers.push(totalPages);
       }
@@ -58,6 +72,13 @@ export const Pagination = ({ currentPage, totalPages, onPageChange }: Pagination
     return null;
   }
 
+  const ellipsisPositions = getPageNumbers().reduce<('left' | 'right')[]>((acc, item) => {
+    if (item === '...') acc.push(acc.length === 0 ? 'left' : 'right');
+    return acc;
+  }, []);
+
+  let ellipsisIndex = 0;
+
   return (
     <div className="pagination">
       <button
@@ -68,10 +89,52 @@ export const Pagination = ({ currentPage, totalPages, onPageChange }: Pagination
         <i className="fas fa-chevron-left"></i>
       </button>
 
-      {getPageNumbers().map((page, index) => (
-        page === '...' ? (
-          <span key={`ellipsis-${index}`} className="pagination-ellipsis">...</span>
-        ) : (
+      {getPageNumbers().map((page, index) => {
+        if (page === '...') {
+          const position = ellipsisPositions[ellipsisIndex++] || 'left';
+          const isOpen = jumpInput === position;
+
+          if (isOpen) {
+            return (
+              <form
+                key={`ellipsis-${position}`}
+                className="pagination-jump"
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  handleJumpSubmit();
+                }}
+              >
+                <input
+                  ref={inputRef}
+                  type="number"
+                  min={1}
+                  max={totalPages}
+                  value={jumpValue}
+                  onChange={(e) => setJumpValue(e.target.value)}
+                  onBlur={handleJumpSubmit}
+                  placeholder="#"
+                  className="pagination-jump-input"
+                />
+              </form>
+            );
+          }
+
+          return (
+            <button
+              key={`ellipsis-${position}`}
+              className="button secondary pagination-ellipsis-btn"
+              onClick={() => {
+                setJumpInput(position);
+                setJumpValue('');
+              }}
+              title="Jump to page..."
+            >
+              ...
+            </button>
+          );
+        }
+
+        return (
           <button
             key={page}
             className={`button secondary ${currentPage === page ? 'active' : ''}`}
@@ -79,8 +142,8 @@ export const Pagination = ({ currentPage, totalPages, onPageChange }: Pagination
           >
             {page}
           </button>
-        )
-      ))}
+        );
+      })}
 
       <button
         className="button secondary"

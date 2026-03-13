@@ -507,3 +507,6 @@ export type {
   MissedChatItem,
   RewardsSummary,
 } from './notification.service';
+
+// Admin Connect Service
+export { AdminConnectService } from './admin-connect.service';

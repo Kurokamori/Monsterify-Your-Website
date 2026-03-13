@@ -19,14 +19,45 @@
   justify-content: flex-end;
 }
 
-/* Ellipsis */
-.pagination-ellipsis {
+/* Ellipsis button */
+.pagination-ellipsis-btn {
   min-width: clamp(1.5rem, 1.2rem + 1vw, 2.5rem);
-  height: clamp(1.5rem, 1.2rem + 1vw, 2.5rem);
+  cursor: pointer;
+  letter-spacing: 1px;
+}
+
+/* Page jump input */
+.pagination-jump {
   display: flex;
   align-items: center;
-  justify-content: center;
+}
+
+.pagination-jump-input {
+  width: 3.5rem;
+  height: clamp(1.5rem, 1.2rem + 1vw, 2.5rem);
+  text-align: center;
+  border: 2px solid var(--primary-color);
+  border-radius: var(--border-radius);
+  background: var(--card-bg);
   color: var(--text-color);
+  font-size: var(--font-size-small);
+  padding: 0 var(--spacing-xsmall);
+}
+
+.pagination-jump-input:focus {
+  outline: none;
+  border-color: var(--accent-color);
+}
+
+/* Hide number input spinners */
+.pagination-jump-input::-webkit-inner-spin-button,
+.pagination-jump-input::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.pagination-jump-input[type='number'] {
+  -moz-appearance: textfield;
 }
 
 /* ==============================================
