@@ -847,7 +847,7 @@ function ItemFormModal({ item, defaultCategory, onClose, onSaved }: ItemFormModa
       <div className="modal-container max-w-md" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
           <h2 className="modal-title">{isEdit ? 'Edit Item' : 'New Item'}</h2>
-          <button className="button close" onClick={onClose}>&times;</button>
+          <button className="button no-flex close" onClick={onClose}>&times;</button>
         </div>
 
         <div className="modal-body">

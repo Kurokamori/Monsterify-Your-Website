@@ -89,7 +89,7 @@ export const Pagination = ({ currentPage, totalPages, onPageChange }: Pagination
         <i className="fas fa-chevron-left"></i>
       </button>
 
-      {getPageNumbers().map((page, index) => {
+      {getPageNumbers().map((page) => {
         if (page === '...') {
           const position = ellipsisPositions[ellipsisIndex++] || 'left';
           const isOpen = jumpInput === position;

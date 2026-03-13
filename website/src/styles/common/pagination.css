@@ -38,7 +38,7 @@
   text-align: center;
   border: 2px solid var(--primary-color);
   border-radius: var(--border-radius);
-  background: var(--card-bg);
+  background: var(--input-background);
   color: var(--text-color);
   font-size: var(--font-size-small);
   padding: 0 var(--spacing-xsmall);
