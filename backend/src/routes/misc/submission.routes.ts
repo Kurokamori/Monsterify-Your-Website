@@ -124,7 +124,14 @@ router.post('/writing/calculate', authenticate, calculateWritingRewards);
 router.post('/reference/calculate', authenticate, calculateReferenceRewards);
 
 // Submission creation
-router.post('/art', authenticate, upload.single('image'), submitArt);
+router.post('/art', authenticate, upload.fields([
+  { name: 'image', maxCount: 1 },
+  { name: 'additionalImage0', maxCount: 1 },
+  { name: 'additionalImage1', maxCount: 1 },
+  { name: 'additionalImage2', maxCount: 1 },
+  { name: 'additionalImage3', maxCount: 1 },
+  { name: 'additionalImage4', maxCount: 1 },
+]), submitArt);
 router.post('/writing', authenticate, upload.single('coverImage'), submitWriting);
 router.post('/reference/submit', authenticate, upload.any(), submitReference);
 

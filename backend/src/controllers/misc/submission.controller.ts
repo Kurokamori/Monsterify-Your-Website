@@ -394,15 +394,29 @@ export async function submitArt(req: Request, res: Response): Promise<void> {
     }
 
     // Upload image to Cloudinary if provided
+    const files = req.files as Record<string, Express.Multer.File[]> | undefined;
     let imageUrl: string | undefined;
-    if (req.file) {
-      const result = await cloudinary.uploader.upload(req.file.path, { folder: 'submissions/art' });
+    const mainFile = files?.image?.[0];
+    if (mainFile) {
+      const result = await cloudinary.uploader.upload(mainFile.path, { folder: 'submissions/art' });
       imageUrl = result.secure_url;
     } else if (req.body.imageUrl) {
       imageUrl = req.body.imageUrl;
     } else {
       res.status(400).json({ success: false, message: 'Image file or URL is required' });
       return;
+    }
+
+    // Upload additional images to Cloudinary
+    const additionalImageUrls: string[] = [];
+    for (let i = 0; i < 5; i++) {
+      const additionalFile = files?.[`additionalImage${i}`]?.[0];
+      if (additionalFile) {
+        const result = await cloudinary.uploader.upload(additionalFile.path, { folder: 'submissions/art' });
+        additionalImageUrls.push(result.secure_url);
+      } else if (req.body[`additionalImageUrl${i}`]) {
+        additionalImageUrls.push(req.body[`additionalImageUrl${i}`]);
+      }
     }
 
     const isMature = req.body.isMature === 'true' || req.body.isMature === true;
@@ -423,7 +437,7 @@ export async function submitArt(req: Request, res: Response): Promise<void> {
       isMature,
       contentRating: parseJsonField<Record<string, unknown>>(req.body.contentRating, {}),
       imageUrl,
-      additionalImages: req.body.additionalImages,
+      additionalImages: additionalImageUrls.length > 0 ? additionalImageUrls : undefined,
       useStaticRewards: req.body.useStaticRewards === 'true' || req.body.useStaticRewards === true,
     };
 

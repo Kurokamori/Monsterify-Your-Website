@@ -291,6 +291,9 @@ export class SubmissionService {
     });
 
     const mainImage = images.find(img => img.is_main) ?? images[0];
+    const additionalImages = images
+      .filter(img => !img.is_main && img !== mainImage)
+      .map(img => ({ url: img.image_url }));
 
     return {
       id: submission.id,
@@ -308,6 +311,7 @@ export class SubmissionService {
       display_name: submission.userDisplayName,
       trainer_name: submission.trainerName,
       image_url: mainImage ? mainImage.image_url : null,
+      additional_images: additionalImages.length > 0 ? additionalImages : undefined,
       images,
       tags,
       monsters: processedMonsters,
