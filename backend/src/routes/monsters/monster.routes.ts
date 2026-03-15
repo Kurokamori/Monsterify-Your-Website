@@ -38,6 +38,8 @@ import {
   adminChangeMonsterOwner,
   adminDeleteMonster as adminDeleteMonsterController,
   searchMoves,
+  browseMonsters,
+  getFilterOptions,
 } from '@controllers/monsters/monster.controller';
 import {
   evolveMonster,
@@ -50,6 +52,12 @@ const router = Router();
 
 // Get all monsters
 router.get('/', getAllMonsters);
+
+// Browse monsters (public paginated with filters)
+router.get('/browse', browseMonsters);
+
+// Public filter options (types + attributes)
+router.get('/filter-options', getFilterOptions);
 
 // Search monsters
 router.get('/search', searchMonsters);

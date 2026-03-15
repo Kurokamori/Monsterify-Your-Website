@@ -870,6 +870,160 @@ export class MonsterRepository extends BaseRepository<MonsterWithTrainer, Monste
     return result.rows.map(r => r.attribute);
   }
 
+  async findPaginatedPublic(params: {
+    page: number;
+    limit: number;
+    search?: string;
+    sortBy?: string;
+    sortOrder?: 'asc' | 'desc';
+    trainerId?: number;
+    userId?: string;
+    type?: string;
+    typeSlots?: string;
+    species?: string;
+    speciesSlots?: string;
+    attribute?: string;
+    levelMin?: number;
+    levelMax?: number;
+    levelExact?: number;
+    hasImage?: 'yes' | 'no' | 'both';
+  }): Promise<{ monsters: MonsterWithTrainer[]; total: number }> {
+    const {
+      page, limit, search, sortBy, sortOrder = 'desc',
+      trainerId, userId, type, typeSlots, species, speciesSlots,
+      attribute, levelMin, levelMax, levelExact, hasImage,
+    } = params;
+    const conditions: string[] = [];
+    const values: unknown[] = [];
+    let paramIndex = 1;
+
+    if (search) {
+      const likeTerm = `%${search}%`;
+      conditions.push(`(
+        m.name ILIKE $${paramIndex}
+        OR m.species1 ILIKE $${paramIndex}
+        OR m.species2 ILIKE $${paramIndex}
+        OR m.species3 ILIKE $${paramIndex}
+        OR t.name ILIKE $${paramIndex}
+      )`);
+      values.push(likeTerm);
+      paramIndex++;
+    }
+
+    if (trainerId) {
+      conditions.push(`m.trainer_id = $${paramIndex}`);
+      values.push(trainerId);
+      paramIndex++;
+    }
+
+    if (userId) {
+      conditions.push(`m.player_user_id = $${paramIndex}`);
+      values.push(userId);
+      paramIndex++;
+    }
+
+    if (type) {
+      const slots = typeSlots ? typeSlots.split(',').map(s => s.trim()) : ['1','2','3','4','5'];
+      const typeConds: string[] = [];
+      for (const slot of slots) {
+        const field = `m.type${slot}`;
+        typeConds.push(`${field} ILIKE $${paramIndex}`);
+      }
+      if (typeConds.length > 0) {
+        conditions.push(`(${typeConds.join(' OR ')})`);
+        values.push(type);
+        paramIndex++;
+      }
+    }
+
+    if (species) {
+      const speciesLike = `%${species}%`;
+      const slots = speciesSlots ? speciesSlots.split(',').map(s => s.trim()) : ['1','2','3'];
+      const speciesConds: string[] = [];
+      for (const slot of slots) {
+        const field = `m.species${slot}`;
+        speciesConds.push(`${field} ILIKE $${paramIndex}`);
+      }
+      if (speciesConds.length > 0) {
+        conditions.push(`(${speciesConds.join(' OR ')})`);
+        values.push(speciesLike);
+        paramIndex++;
+      }
+    }
+
+    if (attribute) {
+      conditions.push(`m.attribute ILIKE $${paramIndex}`);
+      values.push(attribute);
+      paramIndex++;
+    }
+
+    if (levelMin !== undefined) {
+      conditions.push(`m.level >= $${paramIndex}`);
+      values.push(levelMin);
+      paramIndex++;
+    }
+
+    if (levelMax !== undefined) {
+      conditions.push(`m.level <= $${paramIndex}`);
+      values.push(levelMax);
+      paramIndex++;
+    }
+
+    if (levelExact !== undefined) {
+      conditions.push(`m.level = $${paramIndex}`);
+      values.push(levelExact);
+      paramIndex++;
+    }
+
+    if (hasImage === 'yes') {
+      conditions.push(`m.img_link IS NOT NULL AND m.img_link != ''`);
+    } else if (hasImage === 'no') {
+      conditions.push(`(m.img_link IS NULL OR m.img_link = '')`);
+    }
+
+    const whereClause = conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : '';
+
+    const allowedSortFields: Record<string, string> = {
+      id: 'm.id',
+      name: 'm.name',
+      level: 'm.level',
+      species1: 'm.species1',
+      type1: 'm.type1',
+      trainer_name: 't.name',
+      attribute: 'm.attribute',
+      created_at: 'm.created_at',
+    };
+    const sortColumn = allowedSortFields[sortBy ?? 'id'] ?? 'm.id';
+    const direction = sortOrder === 'asc' ? 'ASC' : 'DESC';
+
+    const offset = (page - 1) * limit;
+    values.push(limit);
+    const limitParam = paramIndex++;
+    values.push(offset);
+    const offsetParam = paramIndex;
+
+    const sql = `
+      SELECT m.*, t.name as trainer_name, u.username as player_username, COUNT(*) OVER() as total_count
+      FROM monsters m
+      JOIN trainers t ON m.trainer_id = t.id
+      LEFT JOIN users u ON m.player_user_id = u.discord_id
+      ${whereClause}
+      ORDER BY ${sortColumn} ${direction}
+      LIMIT $${limitParam} OFFSET $${offsetParam}
+    `;
+
+    const result = await db.query<MonsterWithTrainer & { total_count: string; player_username: string }>(sql, values);
+
+    const firstRow = result.rows[0];
+    const total = firstRow ? parseInt(firstRow.total_count, 10) : 0;
+    const monsters = result.rows.map(row => {
+      const { total_count: _total_count, ...monster } = row;
+      return normalizeMonsterTypes(monster as unknown as MonsterWithTrainer);
+    });
+
+    return { monsters, total };
+  }
+
   // Evolution Chain - find all monsters sharing the same species evolution line
   async getEvolutionChain(monsterId: number): Promise<MonsterWithTrainer[]> {
     const monster = await this.findById(monsterId);

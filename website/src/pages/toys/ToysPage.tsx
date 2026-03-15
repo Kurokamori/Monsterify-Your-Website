@@ -32,6 +32,13 @@ const toys: ToyDefinition[] = [
     path: '/toys/group-chats',
   },
   {
+    id: 'all-the-monsters',
+    name: 'All The Monsters',
+    description: 'Browse, search, and filter through every monster in the game.',
+    icon: 'fas fa-dragon',
+    path: '/toys/all-the-monsters',
+  },
+  {
     id: 'admin-connect',
     name: 'Admin Connect',
     description: 'Track progress, planned features, bug fixes, and community requests.',

@@ -740,6 +740,38 @@ export class MonsterService {
     };
   }
 
+  async browseMonsters(params: {
+    page: number;
+    limit: number;
+    search?: string;
+    sortBy?: string;
+    sortOrder?: 'asc' | 'desc';
+    trainerId?: number;
+    userId?: string;
+    type?: string;
+    typeSlots?: string;
+    species?: string;
+    speciesSlots?: string;
+    attribute?: string;
+    levelMin?: number;
+    levelMax?: number;
+    levelExact?: number;
+    hasImage?: 'yes' | 'no' | 'both';
+  }): Promise<{
+    monsters: MonsterWithTrainer[];
+    totalPages: number;
+    currentPage: number;
+    totalMonsters: number;
+  }> {
+    const { monsters, total } = await this.monsterRepo.findPaginatedPublic(params);
+    return {
+      monsters,
+      totalPages: Math.ceil(total / params.limit) || 1,
+      currentPage: params.page,
+      totalMonsters: total,
+    };
+  }
+
   async getAdminFilterOptions(): Promise<{ types: string[]; attributes: string[] }> {
     const [types, attributes] = await Promise.all([
       this.monsterRepo.getDistinctTypes(),

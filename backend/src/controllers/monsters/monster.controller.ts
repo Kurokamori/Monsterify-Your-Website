@@ -756,6 +756,55 @@ export async function getMonsterSpecies(req: Request, res: Response): Promise<vo
 // Admin Level Management
 // =============================================================================
 
+export async function browseMonsters(req: Request, res: Response): Promise<void> {
+  try {
+    const page = parseInt(req.query.page as string) || 1;
+    const limit = Math.min(parseInt(req.query.limit as string) || 24, 100);
+    const search = (req.query.search as string) || undefined;
+    const sortBy = (req.query.sortBy as string) || 'id';
+    const sortOrder = (req.query.sortOrder as string) === 'asc' ? 'asc' as const : 'desc' as const;
+    const trainerId = req.query.trainerId ? parseInt(req.query.trainerId as string) : undefined;
+    const userId = (req.query.userId as string) || undefined;
+    const type = (req.query.type as string) || undefined;
+    const typeSlots = (req.query.typeSlots as string) || undefined;
+    const species = (req.query.species as string) || undefined;
+    const speciesSlots = (req.query.speciesSlots as string) || undefined;
+    const attribute = (req.query.attribute as string) || undefined;
+    const levelMin = req.query.levelMin ? parseInt(req.query.levelMin as string) : undefined;
+    const levelMax = req.query.levelMax ? parseInt(req.query.levelMax as string) : undefined;
+    const levelExact = req.query.levelExact ? parseInt(req.query.levelExact as string) : undefined;
+    const hasImage = (req.query.hasImage as string) || undefined;
+
+    const result = await monsterService.browseMonsters({
+      page, limit, search, sortBy, sortOrder,
+      trainerId, userId, type, typeSlots, species, speciesSlots,
+      attribute, levelMin, levelMax, levelExact,
+      hasImage: hasImage as 'yes' | 'no' | 'both' | undefined,
+    });
+
+    res.json({
+      success: true,
+      monsters: result.monsters,
+      totalPages: result.totalPages,
+      currentPage: result.currentPage,
+      totalMonsters: result.totalMonsters,
+    });
+  } catch (error) {
+    console.error('Error in browseMonsters:', error);
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
+}
+
+export async function getFilterOptions(_req: Request, res: Response): Promise<void> {
+  try {
+    const options = await monsterService.getAdminFilterOptions();
+    res.json({ success: true, types: options.types, attributes: options.attributes });
+  } catch (error) {
+    console.error('Error in getFilterOptions:', error);
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
+}
+
 export async function adminGetFilterOptions(_req: Request, res: Response): Promise<void> {
   try {
     const options = await monsterService.getAdminFilterOptions();

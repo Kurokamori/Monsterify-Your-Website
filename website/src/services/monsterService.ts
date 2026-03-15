@@ -397,6 +397,18 @@ const monsterService = {
 
   // ── Search & initialization ───────────────────────────────────────
 
+  // Browse monsters (public paginated with filters)
+  browseMonsters: async (params: Record<string, unknown> = {}): Promise<MonsterListResponse> => {
+    const response = await api.get('/monsters/browse', { params });
+    return response.data;
+  },
+
+  // Get public filter options (types + attributes)
+  getFilterOptions: async (): Promise<{ types: string[]; attributes: string[] }> => {
+    const response = await api.get('/monsters/filter-options');
+    return { types: response.data.types ?? [], attributes: response.data.attributes ?? [] };
+  },
+
   // Search monsters by name, species, or trainer name
   searchMonsters: async (searchTerm: string, limit = 10): Promise<SearchResult> => {
     if (!searchTerm || searchTerm.trim().length < 2) {

@@ -69,6 +69,7 @@ import WhoShouldIDrawPage from './pages/toys/WhoShouldIDrawPage'
 import CharacterCardCreatorPage from './pages/toys/character-card-creator/CharacterCardCreatorPage'
 import GroupChatsPage from './pages/toys/group-chats/GroupChatsPage'
 import { AdminConnectPage } from './pages/toys/admin-connect'
+import { AllTheMonstersPage } from './pages/toys/all-the-monsters'
 import ActivitySessionPage from './pages/town/activities/ActivitySessionPage'
 import ActivityRewardsPage from './pages/town/activities/ActivityRewardsPage'
 import GardenPage from './pages/town/activities/GardenPage'
@@ -254,6 +255,7 @@ function App() {
         <Route path="toys/who-should-i-draw" element={<WhoShouldIDrawPage />} />
         <Route path="toys/character-card-creator" element={<CharacterCardCreatorPage />} />
         <Route path="toys/group-chats" element={<GroupChatsPage />} />
+        <Route path="toys/all-the-monsters" element={<AllTheMonstersPage />} />
         <Route path="toys/admin-connect" element={<AdminConnectPage />} />
 
         {/* Town Hub */}

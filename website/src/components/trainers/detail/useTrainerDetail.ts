@@ -234,7 +234,7 @@ export function useTrainerDetail() {
         m && m.box_number != null ? m.box_number : 0
       ));
     }
-    return Math.max(maxBox, additionalBoxes) + 1;
+    return maxBox + 1 + additionalBoxes;
   }, [searchTerm, filteredMonsters.length, boxMonsters, additionalBoxes]);
 
   const getBoxMonsters = useCallback((boxIndex: number): (TrainerMonster | null)[] => {
