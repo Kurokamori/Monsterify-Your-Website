@@ -71,7 +71,7 @@ const CharacterCardCreatorPage = () => {
   const loadTrainerMonsters = useCallback(async (trainerId: string | number) => {
     setLoadingMonsters(true);
     try {
-      const data = await monsterService.getMonstersByTrainerId(trainerId);
+      const data = await monsterService.getTrainerMonsters(trainerId);
       const monsters = Array.isArray(data) ? data : data.monsters || data.data || [];
       setTrainerMonsters(monsters);
     } catch {
@@ -361,6 +361,7 @@ const CharacterCardCreatorPage = () => {
             onChange={setCard}
             sourceTrainer={sourceTrainer}
             sourceMonster={sourceMonster}
+            trainers={trainers}
           />
         </div>
       </div>

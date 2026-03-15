@@ -1,5 +1,5 @@
 import { forwardRef } from 'react';
-import type { CardData, CardField, StatValues, PaletteConfig } from './types';
+import type { CardData, CardField, StatValues, PaletteConfig, CardSection, ImageGridSection, ImageCalloutSection, FeaturedMonstersSection, ImageStyleConfig, GridImage } from './types';
 import { getAspectDimensions } from './types';
 
 // --- Gender Symbol Rendering ---
@@ -404,6 +404,299 @@ function PaletteDisplay({ palette }: { palette: PaletteConfig }) {
   );
 }
 
+// --- Image with Background/Cut Style ---
+
+function getImageSrc(img: GridImage): string | null {
+  if (img.file) return URL.createObjectURL(img.file);
+  if (img.url) return img.url;
+  return null;
+}
+
+function getBackgroundClipPath(shape: ImageStyleConfig['backgroundShape']): string | undefined {
+  switch (shape) {
+    case 'diamond': return 'polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%)';
+    case 'hexagon': return 'polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%)';
+    default: return undefined;
+  }
+}
+
+function getBackgroundBorderRadius(shape: ImageStyleConfig['backgroundShape']): string {
+  switch (shape) {
+    case 'circle': return '50%';
+    case 'rounded': return '12px';
+    case 'square':
+    case 'diamond':
+    case 'hexagon': return '0';
+    default: return '0';
+  }
+}
+
+function StyledImage({ src, imageStyle, size, objectFit = 'cover', scale = 100, positionX = 50, positionY = 50 }: {
+  src: string;
+  imageStyle: ImageStyleConfig;
+  size?: string;
+  objectFit?: 'cover' | 'contain';
+  scale?: number;
+  positionX?: number;
+  positionY?: number;
+}) {
+  const hasBackground = imageStyle.backgroundShape !== 'none';
+  const clipPath = getBackgroundClipPath(imageStyle.backgroundShape);
+  const bgRadius = getBackgroundBorderRadius(imageStyle.backgroundShape);
+  const imgTransform = scale !== 100 ? `scale(${scale / 100})` : undefined;
+  const imgPosition = objectFit === 'cover' ? `${positionX}% ${positionY}%` : undefined;
+
+  if (hasBackground) {
+    return (
+      <div style={{
+        position: 'relative',
+        width: size || '100%',
+        aspectRatio: '1',
+        flexShrink: 0,
+      }}>
+        {/* Background shape behind the image */}
+        <div style={{
+          position: 'absolute',
+          inset: 0,
+          background: imageStyle.backgroundColor,
+          borderRadius: bgRadius,
+          clipPath,
+        }} />
+        {/* Image on top, not clipped by background */}
+        <img
+          src={src}
+          alt=""
+          crossOrigin="anonymous"
+          style={{
+            position: 'relative',
+            width: '100%',
+            height: '100%',
+            objectFit,
+            objectPosition: imgPosition,
+            transform: imgTransform,
+            borderRadius: `${imageStyle.cutRadius}%`,
+          }}
+        />
+      </div>
+    );
+  }
+
+  return (
+    <img
+      src={src}
+      alt=""
+      crossOrigin="anonymous"
+      style={{
+        width: size || '100%',
+        aspectRatio: '1',
+        objectFit,
+        objectPosition: imgPosition,
+        transform: imgTransform,
+        borderRadius: `${imageStyle.cutRadius}%`,
+        flexShrink: 0,
+      }}
+    />
+  );
+}
+
+// --- Section Renderers ---
+
+function ImageGridSectionDisplay({ section, headingStyle, panelStyle }: {
+  section: ImageGridSection;
+  headingStyle: React.CSSProperties;
+  panelStyle: React.CSSProperties;
+}) {
+  const justifyMap = { left: 'flex-start', center: 'center', right: 'flex-end' } as const;
+  const justifyContainerMap = { left: 'flex-start', center: 'center', right: 'flex-end' } as const;
+  const visibleImages = section.images.filter(img => img.file || img.url);
+  const scaled = section.gridScale < 100;
+
+  return (
+    <div style={{ ...panelStyle, ...(section.borderWidth > 0 ? { border: `${section.borderWidth}px solid ${section.borderColor}` } : {}) }}>
+      {section.heading && (
+        <div style={{ ...headingStyle, marginBottom: 6 }}>{section.heading}</div>
+      )}
+      <div style={scaled ? { display: 'flex', justifyContent: justifyContainerMap[section.justification] } : undefined}>
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: `repeat(${section.columns}, 1fr)`,
+          gridTemplateRows: section.rows > 1 ? `repeat(${section.rows}, 1fr)` : undefined,
+          gap: 6,
+          justifyItems: justifyMap[section.justification],
+          width: scaled ? `${section.gridScale}%` : '100%',
+        }}>
+          {visibleImages.map((img) => {
+            const src = getImageSrc(img);
+            if (!src) return null;
+            return (
+              <StyledImage key={img.id} src={src} imageStyle={section.imageStyle} />
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ImageCalloutSectionDisplay({ section, headingStyle, textStyle, panelStyle }: {
+  section: ImageCalloutSection;
+  headingStyle: React.CSSProperties;
+  textStyle: React.CSSProperties;
+  panelStyle: React.CSSProperties;
+}) {
+  const imgSrc = getImageSrc(section.image);
+  const imageColumn = (
+    <div style={{ width: `${section.imageSizePercent}%`, flexShrink: 0, display: 'flex', alignItems: 'flex-start', justifyContent: 'center' }}>
+      {imgSrc && (
+        <StyledImage src={imgSrc} imageStyle={section.imageStyle} size="100%" />
+      )}
+    </div>
+  );
+
+  const textColumn = (
+    <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 4, minWidth: 0 }}>
+      {section.heading && (
+        <div style={headingStyle}>{section.heading}</div>
+      )}
+      {section.body && (
+        <div style={{ ...textStyle, whiteSpace: 'pre-wrap' }}>{section.body}</div>
+      )}
+    </div>
+  );
+
+  return (
+    <div style={{
+      ...panelStyle,
+      display: 'flex',
+      gap: 10,
+      alignItems: 'flex-start',
+      ...(section.borderWidth > 0 ? { border: `${section.borderWidth}px solid ${section.borderColor}` } : {}),
+    }}>
+      {section.imagePosition === 'left' ? <>{imageColumn}{textColumn}</> : <>{textColumn}{imageColumn}</>}
+    </div>
+  );
+}
+
+function FeaturedMonstersSectionDisplay({ section, headingStyle, textStyle, panelStyle }: {
+  section: FeaturedMonstersSection;
+  headingStyle: React.CSSProperties;
+  textStyle: React.CSSProperties;
+  panelStyle: React.CSSProperties;
+}) {
+  const justifyMap = { left: 'flex-start', center: 'center', right: 'flex-end' } as const;
+  const justifyContainerMap = { left: 'flex-start', center: 'center', right: 'flex-end' } as const;
+  const scaled = section.gridScale < 100;
+
+  return (
+    <div style={{ ...panelStyle, ...(section.borderWidth > 0 ? { border: `${section.borderWidth}px solid ${section.borderColor}` } : {}) }}>
+      {section.heading && (
+        <div style={{ ...headingStyle, marginBottom: 6 }}>{section.heading}</div>
+      )}
+      <div style={scaled ? { display: 'flex', justifyContent: justifyContainerMap[section.justification] } : undefined}>
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: `repeat(${section.columns}, 1fr)`,
+          gridTemplateRows: section.rows > 1 ? `repeat(${section.rows}, 1fr)` : undefined,
+          gap: 6,
+          justifyItems: justifyMap[section.justification],
+          width: scaled ? `${section.gridScale}%` : '100%',
+        }}>
+          {section.monsters.map((item) => {
+            if (!item.imageUrl) return null;
+            const fit = item.useOverride ? item.objectFit : section.globalObjectFit;
+            const scale = item.useOverride ? item.scale : section.globalScale;
+            const posX = item.useOverride ? item.positionX : section.globalPositionX;
+            const posY = item.useOverride ? item.positionY : section.globalPositionY;
+            return (
+              <div key={item.id} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2, overflow: 'hidden', width: '100%' }}>
+                <div style={{ width: '100%', overflow: 'hidden' }}>
+                  <StyledImage
+                    src={item.imageUrl}
+                    imageStyle={section.imageStyle}
+                    objectFit={fit}
+                    scale={scale}
+                    positionX={posX}
+                    positionY={posY}
+                  />
+                </div>
+                {section.showNames && item.name && (
+                  <span style={{ ...textStyle, fontSize: (textStyle.fontSize as number) - 1, textAlign: 'center', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '100%' }}>
+                    {item.name}
+                  </span>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function SectionsDisplay({ sections, card }: { sections: CardSection[]; card: CardData }) {
+  const { layout, headingFontSize, paragraphFontSize, useHeadingColor, panelBorderColor } = card.customization;
+
+  const headingStyle: React.CSSProperties = {
+    fontSize: headingFontSize,
+    fontWeight: 700,
+    color: useHeadingColor ? layout.headingColor : layout.textColor,
+    margin: 0,
+    lineHeight: 1.3,
+  };
+
+  const textStyle: React.CSSProperties = {
+    fontSize: paragraphFontSize,
+    color: layout.textColor,
+    lineHeight: 1.4,
+  };
+
+  const panelStyle: React.CSSProperties = {
+    padding: '6px 10px',
+    border: `1px solid ${panelBorderColor}`,
+    borderRadius: 4,
+    background: layout.secondaryColor,
+  };
+
+  if (sections.length === 0) return null;
+
+  return (
+    <>
+      {sections.map((section) => {
+        if (section.type === 'image-grid') {
+          return (
+            <ImageGridSectionDisplay
+              key={section.id}
+              section={section}
+              headingStyle={headingStyle}
+              panelStyle={panelStyle}
+            />
+          );
+        }
+        if (section.type === 'featured-monsters') {
+          return (
+            <FeaturedMonstersSectionDisplay
+              key={section.id}
+              section={section}
+              headingStyle={headingStyle}
+              textStyle={textStyle}
+              panelStyle={panelStyle}
+            />
+          );
+        }
+        return (
+          <ImageCalloutSectionDisplay
+            key={section.id}
+            section={section}
+            headingStyle={headingStyle}
+            textStyle={textStyle}
+            panelStyle={panelStyle}
+          />
+        );
+      })}
+    </>
+  );
+}
+
 // --- Card Preview Component ---
 
 interface CardPreviewProps {
@@ -524,6 +817,11 @@ export const CardPreview = forwardRef<HTMLDivElement, CardPreviewProps>(({ card 
           layout={layout}
           contentGap={contentGap}
         />
+
+        {/* Sections (Image Grids & Callouts) */}
+        {card.sections.length > 0 && (
+          <SectionsDisplay sections={card.sections} card={card} />
+        )}
 
         {/* Stats section */}
         {stats && showStatBars && (

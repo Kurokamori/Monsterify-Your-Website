@@ -10,6 +10,8 @@ export type GenderFieldMode = 'combined' | 'split';
 export type PaletteStyle = 'rectangles' | 'circles' | 'slanted';
 export type PaletteOrientation = 'horizontal' | 'vertical';
 export type PaletteSizing = 'uniform' | 'custom';
+export type SectionJustification = 'left' | 'center' | 'right';
+export type ImageBackgroundShape = 'none' | 'circle' | 'square' | 'rounded' | 'diamond' | 'hexagon';
 
 export interface PaletteColor {
   color: string;
@@ -36,6 +38,78 @@ export interface PaletteConfig {
   /** Border color of individual swatches */
   swatchBorderColor: string;
 }
+
+export interface ImageStyleConfig {
+  backgroundShape: ImageBackgroundShape;
+  backgroundColor: string;
+  cutRadius: number;
+}
+
+export interface GridImage {
+  id: string;
+  url: string;
+  file: File | null;
+}
+
+export interface ImageGridSection {
+  id: string;
+  type: 'image-grid';
+  heading: string;
+  columns: number;
+  rows: number;
+  justification: SectionJustification;
+  images: GridImage[];
+  borderWidth: number;
+  borderColor: string;
+  imageStyle: ImageStyleConfig;
+  gridScale: number;
+}
+
+export interface ImageCalloutSection {
+  id: string;
+  type: 'image-callout';
+  heading: string;
+  body: string;
+  imagePosition: 'left' | 'right';
+  imageSizePercent: number;
+  image: GridImage;
+  imageStyle: ImageStyleConfig;
+  borderWidth: number;
+  borderColor: string;
+}
+
+export interface FeaturedMonsterItem {
+  id: string;
+  monsterId: number;
+  name: string;
+  imageUrl: string;
+  objectFit: ImageObjectFit;
+  scale: number;
+  positionX: number;
+  positionY: number;
+  useOverride: boolean;
+}
+
+export interface FeaturedMonstersSection {
+  id: string;
+  type: 'featured-monsters';
+  heading: string;
+  columns: number;
+  rows: number;
+  justification: SectionJustification;
+  monsters: FeaturedMonsterItem[];
+  borderWidth: number;
+  borderColor: string;
+  imageStyle: ImageStyleConfig;
+  globalObjectFit: ImageObjectFit;
+  globalScale: number;
+  globalPositionX: number;
+  globalPositionY: number;
+  showNames: boolean;
+  gridScale: number;
+}
+
+export type CardSection = ImageGridSection | ImageCalloutSection | FeaturedMonstersSection;
 
 export interface CardField {
   id: string;
@@ -100,6 +174,7 @@ export interface CardData {
   fields: CardField[];
   stats: StatValues | null;
   customization: CardCustomization;
+  sections: CardSection[];
 }
 
 // --- Layout Presets ---
@@ -248,6 +323,66 @@ export function getDefaultPaletteConfig(): PaletteConfig {
   };
 }
 
+export function getDefaultImageStyle(): ImageStyleConfig {
+  return {
+    backgroundShape: 'none',
+    backgroundColor: '#888888',
+    cutRadius: 0,
+  };
+}
+
+export function createImageGridSection(): ImageGridSection {
+  return {
+    id: `grid_${Date.now()}`,
+    type: 'image-grid',
+    heading: 'Gallery',
+    columns: 3,
+    rows: 1,
+    justification: 'center',
+    images: [],
+    borderWidth: 0,
+    borderColor: '#4b5d76',
+    imageStyle: getDefaultImageStyle(),
+    gridScale: 100,
+  };
+}
+
+export function createImageCalloutSection(): ImageCalloutSection {
+  return {
+    id: `callout_${Date.now()}`,
+    type: 'image-callout',
+    heading: 'About',
+    body: '',
+    imagePosition: 'left',
+    imageSizePercent: 40,
+    image: { id: `img_${Date.now()}`, url: '', file: null },
+    imageStyle: getDefaultImageStyle(),
+    borderWidth: 0,
+    borderColor: '#4b5d76',
+  };
+}
+
+export function createFeaturedMonstersSection(): FeaturedMonstersSection {
+  return {
+    id: `featured_${Date.now()}`,
+    type: 'featured-monsters',
+    heading: 'Featured Monsters',
+    columns: 3,
+    rows: 1,
+    justification: 'center',
+    monsters: [],
+    borderWidth: 0,
+    borderColor: '#4b5d76',
+    imageStyle: getDefaultImageStyle(),
+    globalObjectFit: 'cover',
+    globalScale: 100,
+    globalPositionX: 50,
+    globalPositionY: 50,
+    showNames: true,
+    gridScale: 100,
+  };
+}
+
 export function getDefaultCustomization(): CardCustomization {
   return {
     layout: LAYOUT_PRESETS[0],
@@ -283,6 +418,7 @@ export function getDefaultCardData(): CardData {
     fields: getTrainerDefaultFields(),
     stats: null,
     customization: getDefaultCustomization(),
+    sections: [],
   };
 }
 

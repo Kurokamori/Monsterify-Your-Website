@@ -589,6 +589,138 @@
 }
 
 /* ==============================
+   Section Editor (Image Grids & Callouts)
+   ============================== */
+
+.ccc-editor__section-hint {
+  font-size: var(--font-size-xsmall);
+  color: var(--text-color-muted);
+  margin: 0;
+}
+
+.ccc-editor__subsection {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-small);
+}
+
+.ccc-editor__subsection-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-small);
+}
+
+.ccc-editor__subsection-label {
+  font-size: var(--font-size-small);
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+.ccc-editor__subsection-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xxsmall);
+}
+
+.ccc-editor__grid-editor,
+.ccc-editor__callout-editor {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-small);
+}
+
+.ccc-editor__textarea {
+  background: var(--primary-color);
+  border: 1px solid var(--border-color);
+  border-radius: 3px;
+  padding: 4px 6px;
+  color: var(--text-color);
+  font-size: var(--font-size-xsmall);
+  font-family: inherit;
+  resize: vertical;
+  min-height: 48px;
+}
+
+.ccc-editor__textarea:focus {
+  outline: none;
+  border-color: var(--accent-color);
+}
+
+.ccc-editor__images-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xxsmall);
+}
+
+.ccc-editor__image-item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xsmall);
+  padding: var(--spacing-xxsmall);
+  background: var(--input-background);
+  border-radius: var(--border-radius-small);
+  border: 1px solid var(--border-color);
+}
+
+.ccc-editor__image-item-preview {
+  flex-shrink: 0;
+}
+
+.ccc-editor__image-style {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-small);
+}
+
+/* Featured Monsters Editor */
+.ccc-editor__monster-picker {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xxsmall);
+}
+
+.ccc-editor__loading-text {
+  font-size: var(--font-size-xsmall);
+  color: var(--text-color-muted);
+}
+
+.ccc-editor__featured-monster-item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xxsmall);
+  padding: var(--spacing-xxsmall);
+  background: var(--input-background);
+  border-radius: var(--border-radius-small);
+  border: 1px solid var(--border-color);
+}
+
+.ccc-editor__featured-monster-row {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xsmall);
+}
+
+.ccc-editor__featured-monster-name {
+  font-size: var(--font-size-xsmall);
+  font-weight: 600;
+  color: var(--text-color);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+
+.ccc-editor__featured-monster-overrides {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xxsmall);
+  padding: var(--spacing-xxsmall) var(--spacing-xsmall);
+  margin-left: var(--spacing-medium);
+  border-left: 2px solid var(--accent-color);
+}
+
+/* ==============================
    Card Export Target
    ============================== */
 

@@ -25,6 +25,7 @@ export type PromptRow = {
   min_trainer_level: number | null;
   max_trainer_level: number | null;
   required_factions: string | null;
+  event_name: string | null;
   created_at: Date;
   updated_at: Date;
 };
@@ -57,6 +58,7 @@ export type Prompt = {
   minTrainerLevel: number | null;
   maxTrainerLevel: number | null;
   requiredFactions: string[] | null;
+  eventName: string | null;
   submissionCount: number;
   approvedCount: number;
   pendingCount: number;
@@ -85,6 +87,7 @@ export type PromptCreateInput = {
   minTrainerLevel?: number | null;
   maxTrainerLevel?: number | null;
   requiredFactions?: string[] | null;
+  eventName?: string | null;
 };
 
 export type PromptUpdateInput = Partial<PromptCreateInput>;
@@ -131,6 +134,7 @@ const normalizePrompt = (row: PromptWithStats): Prompt => ({
   minTrainerLevel: row.min_trainer_level,
   maxTrainerLevel: row.max_trainer_level,
   requiredFactions: parseJsonField<string[] | null>(row.required_factions, null),
+  eventName: row.event_name,
   submissionCount: Number(row.submission_count) || 0,
   approvedCount: Number(row.approved_count) || 0,
   pendingCount: Number(row.pending_count) || 0,
@@ -280,10 +284,10 @@ export class PromptRepository extends BaseRepository<Prompt, PromptCreateInput, 
           title, description, type, category, difficulty, is_active,
           priority, max_submissions, max_submissions_per_trainer, requires_approval,
           active_months, start_date, end_date, rewards, requirements, tags,
-          min_trainer_level, max_trainer_level, required_factions, created_at
+          min_trainer_level, max_trainer_level, required_factions, event_name, created_at
         )
         VALUES (
-          $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, CURRENT_TIMESTAMP
+          $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, CURRENT_TIMESTAMP
         )
         RETURNING id
       `,
@@ -307,6 +311,7 @@ export class PromptRepository extends BaseRepository<Prompt, PromptCreateInput, 
         input.minTrainerLevel ?? null,
         input.maxTrainerLevel ?? null,
         input.requiredFactions ? JSON.stringify(input.requiredFactions) : null,
+        input.eventName ?? null,
       ]
     );
 
@@ -345,6 +350,7 @@ export class PromptRepository extends BaseRepository<Prompt, PromptCreateInput, 
       minTrainerLevel: { column: 'min_trainer_level' },
       maxTrainerLevel: { column: 'max_trainer_level' },
       requiredFactions: { column: 'required_factions', isJson: true },
+      eventName: { column: 'event_name' },
     };
 
     for (const [key, { column, isJson }] of Object.entries(fieldMappings)) {

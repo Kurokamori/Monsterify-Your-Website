@@ -71,11 +71,11 @@ export interface Trainer {
   level: number;
 }
 
-// User Inventory
+// User Inventory — backend returns Record<string, number> per category
 export interface UserInventory {
-  keyitems?: KeyItem[];
-  keyItems?: KeyItem[];
-  key_items?: KeyItem[];
+  keyitems?: Record<string, number> | KeyItem[];
+  keyItems?: Record<string, number> | KeyItem[];
+  key_items?: Record<string, number> | KeyItem[];
 }
 
 export interface KeyItem {

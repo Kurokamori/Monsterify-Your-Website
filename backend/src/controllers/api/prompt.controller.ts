@@ -121,6 +121,7 @@ export async function createPrompt(req: Request, res: Response): Promise<void> {
       minTrainerLevel: body.min_trainer_level as number | null | undefined,
       maxTrainerLevel: body.max_trainer_level as number | null | undefined,
       requiredFactions: body.required_factions as string[] | null | undefined,
+      eventName: body.event_name as string | null | undefined,
     });
 
     res.status(201).json({
@@ -177,6 +178,7 @@ export async function updatePrompt(req: Request, res: Response): Promise<void> {
       minTrainerLevel: body.min_trainer_level as number | null | undefined,
       maxTrainerLevel: body.max_trainer_level as number | null | undefined,
       requiredFactions: body.required_factions as string[] | null | undefined,
+      eventName: body.event_name as string | null | undefined,
     });
 
     res.json({

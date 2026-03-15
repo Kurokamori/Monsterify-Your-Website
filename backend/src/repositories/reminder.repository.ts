@@ -158,7 +158,7 @@ export class ReminderRepository extends BaseRepository<Reminder, ReminderCreateI
         input.title,
         input.reminderTime,
         reminderDaysJson,
-        input.isActive ?? true,
+        (input.isActive ?? true) ? 1 : 0,
       ]
     );
 
@@ -202,7 +202,7 @@ export class ReminderRepository extends BaseRepository<Reminder, ReminderCreateI
       updates.push(`reminder_days = $${values.length}`);
     }
     if (input.isActive !== undefined) {
-      values.push(input.isActive);
+      values.push(input.isActive ? 1 : 0);
       updates.push(`is_active = $${values.length}`);
     }
 

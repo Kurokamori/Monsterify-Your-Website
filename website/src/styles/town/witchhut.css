@@ -288,8 +288,8 @@
 }
 
 .witchs-hut-requires-item {
-  background-color: var(--accent-color-active);
-  color: var(--accent-color);
+  background-color: var(--overlay-light);
+  color: var(--text-color);
   padding: var(--spacing-xxsmall) var(--spacing-small);
   border-radius: var(--border-radius-full);
   font-size: var(--font-size-xsmall);

@@ -32,6 +32,12 @@ const TOOL_LINKS = [
     title: 'Species Database',
     description: 'Explore species across different monster franchises.',
   },
+  {
+    to: '/guides/available-prompts',
+    icon: 'fas fa-scroll',
+    title: 'Available Prompts',
+    description: 'Browse submission prompts and see what rewards await.',
+  },
 ];
 
 const GuidesIndexPage = () => {

@@ -22,6 +22,8 @@ interface AutocompleteInputProps {
   showDescriptionBelow?: boolean;
   onDescriptionFound?: (description: string | null) => void;
   onSelect?: (option: AutocompleteOption | null) => void;
+  /** When true, acts as a search filter: blur preserves partial text, no auto-correction, no validation indicator */
+  freeText?: boolean;
 }
 
 const MAX_DISPLAYED_OPTIONS = 20;
@@ -41,6 +43,7 @@ export function AutocompleteInput({
   showDescriptionBelow = false,
   onDescriptionFound,
   onSelect,
+  freeText = false,
 }: AutocompleteInputProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [filteredOptions, setFilteredOptions] = useState<AutocompleteOption[]>([]);
@@ -117,6 +120,8 @@ export function AutocompleteInput({
   };
 
   const handleInputBlur = () => {
+    if (freeText) return;
+
     const normalized = normalizeOptions(options);
     const match = findMatch(value, normalized);
 
@@ -191,7 +196,7 @@ export function AutocompleteInput({
           className="input"
           autoComplete="off"
         />
-        {value && (
+        {value && !freeText && (
           <span className={`validation-indicator ${isValid ? 'valid' : 'invalid'}`}>
             {isValid ? (
               <i className="fa-solid fa-check" />

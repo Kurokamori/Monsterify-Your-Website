@@ -193,10 +193,25 @@ export const AdventureCreationForm = ({ onAdventureCreated }: AdventureCreationF
   const getItemQuantity = (inventory: UserInventory | null, itemName: string): number => {
     if (!inventory || !itemName) return 0;
 
-    const keyItems: KeyItem[] = inventory.keyitems || inventory.keyItems || inventory.key_items || [];
+    const keyItems = inventory.keyitems || inventory.keyItems || inventory.key_items;
+    if (!keyItems) return 0;
 
+    // Backend returns Record<string, number> (e.g. { "Mission Mandate": 5 })
+    if (!Array.isArray(keyItems) && typeof keyItems === 'object') {
+      const record = keyItems as Record<string, number>;
+      // Direct match
+      if (record[itemName] !== undefined) return record[itemName];
+      // Case-insensitive match
+      const lowerName = itemName.toLowerCase();
+      for (const [key, qty] of Object.entries(record)) {
+        if (key.toLowerCase() === lowerName) return qty;
+      }
+      return 0;
+    }
+
+    // Fallback: array format
     if (Array.isArray(keyItems)) {
-      const item = keyItems.find(item => {
+      const item = (keyItems as KeyItem[]).find(item => {
         const name = item.name || item.item_name || item.itemName;
         if (name === itemName) return true;
         if (itemName.toLowerCase().includes('mission mandate') &&

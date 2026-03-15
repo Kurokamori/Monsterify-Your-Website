@@ -419,6 +419,7 @@ export default function TradeCenterPage() {
                 <MonsterTradeSide
                   title={`From: ${getTrainerName(fromTrainerId)}`}
                   monsters={filteredFromMonsters}
+                  allMonsters={fromMonsters}
                   selectedMonsters={selectedFromMonsters}
                   searchTerm={fromMonsterSearch}
                   onSearchChange={setFromMonsterSearch}
@@ -430,6 +431,7 @@ export default function TradeCenterPage() {
                 <MonsterTradeSide
                   title={`To: ${getTrainerName(toTrainerId)}`}
                   monsters={filteredToMonsters}
+                  allMonsters={toMonsters}
                   selectedMonsters={selectedToMonsters}
                   searchTerm={toMonsterSearch}
                   onSearchChange={setToMonsterSearch}
@@ -441,6 +443,7 @@ export default function TradeCenterPage() {
                 <ItemTradeSide
                   title={`From: ${getTrainerName(fromTrainerId)}`}
                   inventory={filteredFromInventory}
+                  fullInventory={fromInventory}
                   selectedItems={selectedFromItems}
                   searchTerm={fromItemSearch}
                   onSearchChange={setFromItemSearch}
@@ -454,6 +457,7 @@ export default function TradeCenterPage() {
                 <ItemTradeSide
                   title={`To: ${getTrainerName(toTrainerId)}`}
                   inventory={filteredToInventory}
+                  fullInventory={toInventory}
                   selectedItems={selectedToItems}
                   searchTerm={toItemSearch}
                   onSearchChange={setToItemSearch}
@@ -531,6 +535,7 @@ export default function TradeCenterPage() {
 interface MonsterTradeSideProps {
   title: string;
   monsters: TradeMonster[];
+  allMonsters: TradeMonster[];
   selectedMonsters: number[];
   searchTerm: string;
   onSearchChange: (v: string) => void;
@@ -540,6 +545,7 @@ interface MonsterTradeSideProps {
 function MonsterTradeSide({
   title,
   monsters,
+  allMonsters,
   selectedMonsters,
   searchTerm,
   onSearchChange,
@@ -547,7 +553,7 @@ function MonsterTradeSide({
 }: MonsterTradeSideProps) {
   const monsterOptions: AutocompleteOption[] = useMemo(() => {
     const seen = new Set<string>();
-    return monsters
+    return allMonsters
       .filter(m => {
         if (seen.has(m.name)) return false;
         seen.add(m.name);
@@ -556,10 +562,11 @@ function MonsterTradeSide({
       .map(m => ({
         name: m.name,
         value: m.name,
+        description: [m.species1, m.species2, m.species3].filter(Boolean).join(' · '),
         matchNames: [m.species1, m.species2, m.species3, m.type1, m.type2, m.type3, m.type4, m.type5]
           .filter((v): v is string => !!v),
       }));
-  }, [monsters]);
+  }, [allMonsters]);
 
   return (
     <div className="trade-center__side">
@@ -570,7 +577,7 @@ function MonsterTradeSide({
           value={searchTerm}
           onChange={onSearchChange}
           options={monsterOptions}
-          onSelect={(option) => onSearchChange(option?.name ?? '')}
+          freeText
         />
       </div>
       <div className="trade-center__monster-list">
@@ -618,6 +625,7 @@ function MonsterTradeSide({
 interface ItemTradeSideProps {
   title: string;
   inventory: TradeInventory;
+  fullInventory: TradeInventory;
   selectedItems: TradeItems;
   searchTerm: string;
   onSearchChange: (v: string) => void;
@@ -629,6 +637,7 @@ interface ItemTradeSideProps {
 function ItemTradeSide({
   title,
   inventory,
+  fullInventory,
   selectedItems,
   searchTerm,
   onSearchChange,
@@ -639,7 +648,7 @@ function ItemTradeSide({
   const itemOptions: AutocompleteOption[] = useMemo(() => {
     const names: AutocompleteOption[] = [];
     const seen = new Set<string>();
-    for (const items of Object.values(inventory)) {
+    for (const items of Object.values(fullInventory)) {
       for (const itemName of Object.keys(items)) {
         if (!seen.has(itemName)) {
           seen.add(itemName);
@@ -648,7 +657,7 @@ function ItemTradeSide({
       }
     }
     return names;
-  }, [inventory]);
+  }, [fullInventory]);
 
   return (
     <div className="trade-center__side">
@@ -659,7 +668,7 @@ function ItemTradeSide({
           value={searchTerm}
           onChange={onSearchChange}
           options={itemOptions}
-          onSelect={(option) => onSearchChange(option?.name ?? '')}
+          freeText
         />
         <select
           value={categoryFilter}

@@ -41,6 +41,7 @@ import TypeCalculatorPage from './pages/guides-and-tools/tools/TypeCalculatorPag
 import AbilityDatabasePage from './pages/guides-and-tools/tools/AbilityDatabasePage'
 import SpeciesDatabasePage from './pages/guides-and-tools/tools/SpeciesDatabasePage'
 import EvolutionExplorerPage from './pages/guides-and-tools/tools/EvolutionExplorerPage'
+import AvailablePromptsPage from './pages/guides-and-tools/tools/AvailablePromptsPage'
 import MonsterDetailPage from './pages/monsters/MonsterDetailPage'
 import EditMonsterPage from './pages/monsters/EditMonsterPage'
 import StarterSelectionPage from './pages/monsters/StarterSelectionPage'
@@ -168,6 +169,7 @@ function App() {
         <Route path="guides/ability-database" element={<AbilityDatabasePage />} />
         <Route path="guides/species-database" element={<SpeciesDatabasePage />} />
         <Route path="guides/evolution-explorer" element={<EvolutionExplorerPage />} />
+        <Route path="guides/available-prompts" element={<AvailablePromptsPage />} />
         <Route path="guides/interactive-map" element={<InteractiveMapPage />} />
         <Route path="guides/interactive-map/landmass/:landmassId" element={<LandmassGuidePage />} />
         <Route path="guides/interactive-map/landmass/:landmassId/region/:regionId" element={<RegionGuidePage />} />

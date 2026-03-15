@@ -871,20 +871,31 @@ export function useTrainerDetail() {
 
       const updatedDragged = { ...draggedMonster, box_number: targetBoxIndex, trainer_index: targetSlotIndex };
 
-      if (targetMonster) {
-        const idx = updated.findIndex(m => m && m.id === targetMonster.id);
-        if (idx !== -1) updated.splice(idx, 1);
-      }
-      updated.push(updatedDragged);
+      // The dragged monster's original box position
+      const origBox = draggedMonster.box_number;
+      const origSlot = draggedMonster.trainer_index as number;
 
+      // Move dragged monster to the new position
+      const existingIdx = updated.findIndex(m => m && m.id === draggedMonster.id);
+      if (existingIdx !== -1) {
+        updated[existingIdx] = { ...draggedMonster, box_number: targetBoxIndex, trainer_index: targetSlotIndex };
+      } else {
+        updated.push(updatedDragged);
+      }
+
+      // Swap: target monster goes to the dragged monster's original box position
+      if (targetMonster) {
+        const targetIdx = updated.findIndex(m => m && m.id === targetMonster.id);
+        if (targetIdx !== -1) {
+          updated[targetIdx] = { ...targetMonster, box_number: origBox, trainer_index: origSlot };
+        }
+      }
+      setBoxMonsters(updated);
+
+      // Remove from featured
       const updatedFeatured = [...featuredMonsters];
       if (dragSourceSlot != null) updatedFeatured[dragSourceSlot] = null;
       setFeaturedMonsters(updatedFeatured);
-
-      if (targetMonster) {
-        updated.push({ ...targetMonster, box_number: undefined, trainer_index: undefined });
-      }
-      setBoxMonsters(updated);
     } else {
       // Box-to-box
       const updated = [...boxMonsters];

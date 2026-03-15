@@ -1,7 +1,10 @@
-import { useCallback } from 'react';
-import type { CardData, CardField, CardLayout, CardCustomization, ContentLayoutMode, GenderFieldMode, PaletteConfig, PaletteStyle, PaletteOrientation, PaletteSizing, PaletteColor } from './types';
-import { LAYOUT_PRESETS, ASPECT_RATIOS } from './types';
+import { useCallback, useState } from 'react';
+import type { CardData, CardField, CardLayout, CardCustomization, ContentLayoutMode, GenderFieldMode, PaletteConfig, PaletteStyle, PaletteOrientation, PaletteSizing, PaletteColor, CardSection, ImageGridSection, ImageCalloutSection, FeaturedMonstersSection, FeaturedMonsterItem, ImageStyleConfig, ImageBackgroundShape, ImageObjectFit, SectionJustification, GridImage } from './types';
+import { LAYOUT_PRESETS, ASPECT_RATIOS, createImageGridSection, createImageCalloutSection, createFeaturedMonstersSection } from './types';
 import { EXTRA_TRAINER_FIELDS, EXTRA_MONSTER_FIELDS, getTrainerFieldValue, getMonsterFieldValue, splitGenderField, combineGenderFields } from './cardDataUtils';
+import { TrainerAutocomplete } from '@components/common/TrainerAutocomplete';
+import { MonsterAutocomplete } from '@components/common/MonsterAutocomplete';
+import monsterService from '@services/monsterService';
 import type { Trainer } from '@components/trainers/types/Trainer';
 import type { Monster } from '@services/monsterService';
 
@@ -10,9 +13,10 @@ interface CardEditorProps {
   onChange: (card: CardData) => void;
   sourceTrainer: Trainer | null;
   sourceMonster: Monster | null;
+  trainers: Trainer[];
 }
 
-export const CardEditor = ({ card, onChange, sourceTrainer, sourceMonster }: CardEditorProps) => {
+export const CardEditor = ({ card, onChange, sourceTrainer, sourceMonster, trainers }: CardEditorProps) => {
   const { customization, fields } = card;
 
   const updateCustomization = useCallback((updates: Partial<CardCustomization>) => {
@@ -458,6 +462,49 @@ export const CardEditor = ({ card, onChange, sourceTrainer, sourceMonster }: Car
           )}
         </div>
       </div>
+
+      {/* Sections (Image Grids & Callouts) */}
+      <div className="ccc-editor__section">
+        <h3 className="ccc-editor__section-title">
+          <i className="fas fa-th"></i> Sections
+        </h3>
+        <p className="ccc-editor__section-hint">Add image grids and callouts below the card fields.</p>
+        {card.sections.map((section, idx) => (
+          <SectionEditor
+            key={section.id}
+            section={section}
+            index={idx}
+            total={card.sections.length}
+            panelBorderColor={customization.panelBorderColor}
+            trainers={trainers}
+            onChange={(updated) => {
+              const newSections = card.sections.map(s => s.id === updated.id ? updated : s);
+              onChange({ ...card, sections: newSections });
+            }}
+            onRemove={() => {
+              onChange({ ...card, sections: card.sections.filter(s => s.id !== section.id) });
+            }}
+            onMove={(dir) => {
+              const newIdx = idx + dir;
+              if (newIdx < 0 || newIdx >= card.sections.length) return;
+              const newSections = [...card.sections];
+              [newSections[idx], newSections[newIdx]] = [newSections[newIdx], newSections[idx]];
+              onChange({ ...card, sections: newSections });
+            }}
+          />
+        ))}
+        <div className="ccc-editor__field-actions">
+          <button className="button secondary sm" onClick={() => onChange({ ...card, sections: [...card.sections, createImageGridSection()] })}>
+            <i className="fas fa-th"></i> Add Image Grid
+          </button>
+          <button className="button secondary sm" onClick={() => onChange({ ...card, sections: [...card.sections, createImageCalloutSection()] })}>
+            <i className="fas fa-columns"></i> Add Image Callout
+          </button>
+          <button className="button secondary sm" onClick={() => onChange({ ...card, sections: [...card.sections, createFeaturedMonstersSection()] })}>
+            <i className="fas fa-dragon"></i> Add Featured Monsters
+          </button>
+        </div>
+      </div>
     </div>
   );
 };
@@ -674,6 +721,708 @@ function PaletteEditor({ palette, onChange, imageSrc }: {
             <i className="fas fa-plus"></i> Add Color
           </button>
         </>
+      )}
+    </div>
+  );
+}
+
+// --- Section Editor Sub-component ---
+
+const SECTION_ICONS: Record<CardSection['type'], string> = {
+  'image-grid': 'fa-th',
+  'image-callout': 'fa-columns',
+  'featured-monsters': 'fa-dragon',
+};
+
+const SECTION_LABELS: Record<CardSection['type'], string> = {
+  'image-grid': 'Image Grid',
+  'image-callout': 'Image Callout',
+  'featured-monsters': 'Featured Monsters',
+};
+
+function SectionEditor({ section, index, total, panelBorderColor, trainers, onChange, onRemove, onMove }: {
+  section: CardSection;
+  index: number;
+  total: number;
+  panelBorderColor: string;
+  trainers: Trainer[];
+  onChange: (s: CardSection) => void;
+  onRemove: () => void;
+  onMove: (dir: -1 | 1) => void;
+}) {
+  return (
+    <div className="ccc-editor__subsection" style={{ border: `1px solid ${panelBorderColor}`, borderRadius: 6, padding: 10, marginBottom: 8 }}>
+      <div className="ccc-editor__subsection-header">
+        <span className="ccc-editor__subsection-label">
+          <i className={`fas ${SECTION_ICONS[section.type]}`}></i>
+          {' '}{SECTION_LABELS[section.type]}
+        </span>
+        <div className="ccc-editor__subsection-actions">
+          <button className="ccc-editor__field-move" onClick={() => onMove(-1)} disabled={index === 0} title="Move up">
+            <i className="fas fa-chevron-up"></i>
+          </button>
+          <button className="ccc-editor__field-move" onClick={() => onMove(1)} disabled={index === total - 1} title="Move down">
+            <i className="fas fa-chevron-down"></i>
+          </button>
+          <button className="ccc-editor__field-remove" onClick={onRemove} title="Remove section">
+            <i className="fas fa-trash"></i>
+          </button>
+        </div>
+      </div>
+
+      {section.type === 'image-grid' && (
+        <ImageGridEditor section={section} onChange={(s) => onChange(s)} />
+      )}
+      {section.type === 'image-callout' && (
+        <ImageCalloutEditor section={section} onChange={(s) => onChange(s)} />
+      )}
+      {section.type === 'featured-monsters' && (
+        <FeaturedMonstersEditor section={section} trainers={trainers} onChange={(s) => onChange(s)} />
+      )}
+    </div>
+  );
+}
+
+// --- Image Grid Editor ---
+
+function ImageGridEditor({ section, onChange }: {
+  section: ImageGridSection;
+  onChange: (s: ImageGridSection) => void;
+}) {
+  const addImage = () => {
+    onChange({
+      ...section,
+      images: [...section.images, { id: `img_${Date.now()}`, url: '', file: null }],
+    });
+  };
+
+  const updateImage = (imgId: string, updates: Partial<GridImage>) => {
+    onChange({
+      ...section,
+      images: section.images.map(img => img.id === imgId ? { ...img, ...updates } : img),
+    });
+  };
+
+  const removeImage = (imgId: string) => {
+    onChange({
+      ...section,
+      images: section.images.filter(img => img.id !== imgId),
+    });
+  };
+
+  const handleImageFile = (imgId: string, e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    updateImage(imgId, { file, url: '' });
+  };
+
+  return (
+    <div className="ccc-editor__grid-editor">
+      {/* Heading */}
+      <div className="ccc-editor__row">
+        <label className="ccc-editor__label">Heading</label>
+        <input
+          type="text"
+          className="ccc-editor__field-value-input"
+          value={section.heading}
+          onChange={(e) => onChange({ ...section, heading: e.target.value })}
+          placeholder="Section heading..."
+        />
+      </div>
+
+      {/* Grid dimensions */}
+      <div className="ccc-editor__row">
+        <label className="ccc-editor__label">Columns</label>
+        <input
+          type="range" min={1} max={6} value={section.columns}
+          onChange={(e) => onChange({ ...section, columns: Number(e.target.value) })}
+        />
+        <span className="ccc-editor__range-value">{section.columns}</span>
+      </div>
+      <div className="ccc-editor__row">
+        <label className="ccc-editor__label">Rows</label>
+        <input
+          type="range" min={1} max={6} value={section.rows}
+          onChange={(e) => onChange({ ...section, rows: Number(e.target.value) })}
+        />
+        <span className="ccc-editor__range-value">{section.rows}</span>
+      </div>
+
+      {/* Justification */}
+      <div className="ccc-editor__row">
+        <label className="ccc-editor__label">Justify</label>
+        <div className="ccc-editor__toggle-group">
+          {(['left', 'center', 'right'] as SectionJustification[]).map((j) => (
+            <button
+              key={j}
+              className={`ccc-editor__toggle ${section.justification === j ? 'ccc-editor__toggle--active' : ''}`}
+              onClick={() => onChange({ ...section, justification: j })}
+            >
+              {j.charAt(0).toUpperCase() + j.slice(1)}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Grid Scale */}
+      <div className="ccc-editor__row">
+        <label className="ccc-editor__label">Grid Size</label>
+        <input
+          type="range" min={20} max={100} value={section.gridScale}
+          onChange={(e) => onChange({ ...section, gridScale: Number(e.target.value) })}
+        />
+        <span className="ccc-editor__range-value">{section.gridScale}%</span>
+      </div>
+
+      {/* Border */}
+      <div className="ccc-editor__row">
+        <label className="ccc-editor__label">Border Width</label>
+        <input
+          type="range" min={0} max={6} value={section.borderWidth}
+          onChange={(e) => onChange({ ...section, borderWidth: Number(e.target.value) })}
+        />
+        <span className="ccc-editor__range-value">{section.borderWidth}px</span>
+      </div>
+      {section.borderWidth > 0 && (
+        <div className="ccc-editor__row">
+          <ColorPicker label="Border Color" value={section.borderColor} onChange={(v) => onChange({ ...section, borderColor: v })} />
+        </div>
+      )}
+
+      {/* Image Style */}
+      <ImageStyleEditor
+        style={section.imageStyle}
+        onChange={(imageStyle) => onChange({ ...section, imageStyle })}
+      />
+
+      {/* Images list */}
+      <div className="ccc-editor__row">
+        <label className="ccc-editor__label">Images ({section.images.length})</label>
+      </div>
+      <div className="ccc-editor__images-list">
+        {section.images.map((img) => (
+          <div key={img.id} className="ccc-editor__image-item">
+            <div className="ccc-editor__image-item-preview">
+              {(img.file || img.url) ? (
+                <img
+                  src={img.file ? URL.createObjectURL(img.file) : img.url}
+                  alt=""
+                  style={{ width: 40, height: 40, objectFit: 'cover', borderRadius: 4 }}
+                />
+              ) : (
+                <div style={{ width: 40, height: 40, background: 'rgba(128,128,128,0.2)', borderRadius: 4, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <i className="fas fa-image" style={{ opacity: 0.4 }}></i>
+                </div>
+              )}
+            </div>
+            <input
+              type="text"
+              className="ccc-editor__field-value-input"
+              value={img.url}
+              onChange={(e) => updateImage(img.id, { url: e.target.value, file: null })}
+              placeholder="Image URL..."
+              style={{ flex: 1 }}
+            />
+            <label className="button secondary sm" style={{ cursor: 'pointer', margin: 0, whiteSpace: 'nowrap' }}>
+              <i className="fas fa-upload"></i>
+              <input type="file" accept="image/*" onChange={(e) => handleImageFile(img.id, e)} style={{ display: 'none' }} />
+            </label>
+            <button className="ccc-editor__field-remove" onClick={() => removeImage(img.id)} title="Remove image">
+              <i className="fas fa-times"></i>
+            </button>
+          </div>
+        ))}
+      </div>
+      <button className="button secondary sm" onClick={addImage}>
+        <i className="fas fa-plus"></i> Add Image
+      </button>
+    </div>
+  );
+}
+
+// --- Image Callout Editor ---
+
+function ImageCalloutEditor({ section, onChange }: {
+  section: ImageCalloutSection;
+  onChange: (s: ImageCalloutSection) => void;
+}) {
+  const handleImageFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    onChange({ ...section, image: { ...section.image, file, url: '' } });
+  };
+
+  return (
+    <div className="ccc-editor__callout-editor">
+      {/* Heading */}
+      <div className="ccc-editor__row">
+        <label className="ccc-editor__label">Heading</label>
+        <input
+          type="text"
+          className="ccc-editor__field-value-input"
+          value={section.heading}
+          onChange={(e) => onChange({ ...section, heading: e.target.value })}
+          placeholder="Section heading..."
+        />
+      </div>
+
+      {/* Body */}
+      <div className="ccc-editor__row" style={{ flexDirection: 'column', alignItems: 'stretch' }}>
+        <label className="ccc-editor__label">Body Text</label>
+        <textarea
+          className="ccc-editor__textarea"
+          value={section.body}
+          onChange={(e) => onChange({ ...section, body: e.target.value })}
+          placeholder="Body text..."
+          rows={3}
+        />
+      </div>
+
+      {/* Image Position */}
+      <div className="ccc-editor__row">
+        <label className="ccc-editor__label">Image Side</label>
+        <div className="ccc-editor__toggle-group">
+          <button
+            className={`ccc-editor__toggle ${section.imagePosition === 'left' ? 'ccc-editor__toggle--active' : ''}`}
+            onClick={() => onChange({ ...section, imagePosition: 'left' })}
+          >Left</button>
+          <button
+            className={`ccc-editor__toggle ${section.imagePosition === 'right' ? 'ccc-editor__toggle--active' : ''}`}
+            onClick={() => onChange({ ...section, imagePosition: 'right' })}
+          >Right</button>
+        </div>
+      </div>
+
+      {/* Image Size */}
+      <div className="ccc-editor__row">
+        <label className="ccc-editor__label">Image Size</label>
+        <input
+          type="range" min={20} max={80} value={section.imageSizePercent}
+          onChange={(e) => onChange({ ...section, imageSizePercent: Number(e.target.value) })}
+        />
+        <span className="ccc-editor__range-value">{section.imageSizePercent}%</span>
+      </div>
+
+      {/* Border */}
+      <div className="ccc-editor__row">
+        <label className="ccc-editor__label">Border Width</label>
+        <input
+          type="range" min={0} max={6} value={section.borderWidth}
+          onChange={(e) => onChange({ ...section, borderWidth: Number(e.target.value) })}
+        />
+        <span className="ccc-editor__range-value">{section.borderWidth}px</span>
+      </div>
+      {section.borderWidth > 0 && (
+        <div className="ccc-editor__row">
+          <ColorPicker label="Border Color" value={section.borderColor} onChange={(v) => onChange({ ...section, borderColor: v })} />
+        </div>
+      )}
+
+      {/* Image Style */}
+      <ImageStyleEditor
+        style={section.imageStyle}
+        onChange={(imageStyle) => onChange({ ...section, imageStyle })}
+      />
+
+      {/* Image upload */}
+      <div className="ccc-editor__row">
+        <label className="ccc-editor__label">Image</label>
+      </div>
+      <div className="ccc-editor__image-item">
+        <div className="ccc-editor__image-item-preview">
+          {(section.image.file || section.image.url) ? (
+            <img
+              src={section.image.file ? URL.createObjectURL(section.image.file) : section.image.url}
+              alt=""
+              style={{ width: 40, height: 40, objectFit: 'cover', borderRadius: 4 }}
+            />
+          ) : (
+            <div style={{ width: 40, height: 40, background: 'rgba(128,128,128,0.2)', borderRadius: 4, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <i className="fas fa-image" style={{ opacity: 0.4 }}></i>
+            </div>
+          )}
+        </div>
+        <input
+          type="text"
+          className="ccc-editor__field-value-input"
+          value={section.image.url}
+          onChange={(e) => onChange({ ...section, image: { ...section.image, url: e.target.value, file: null } })}
+          placeholder="Image URL..."
+          style={{ flex: 1 }}
+        />
+        <label className="button secondary sm" style={{ cursor: 'pointer', margin: 0, whiteSpace: 'nowrap' }}>
+          <i className="fas fa-upload"></i>
+          <input type="file" accept="image/*" onChange={handleImageFile} style={{ display: 'none' }} />
+        </label>
+        {(section.image.file || section.image.url) && (
+          <button className="ccc-editor__field-remove" onClick={() => onChange({ ...section, image: { ...section.image, url: '', file: null } })} title="Clear image">
+            <i className="fas fa-times"></i>
+          </button>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// --- Featured Monsters Editor ---
+
+function FeaturedMonstersEditor({ section, trainers, onChange }: {
+  section: FeaturedMonstersSection;
+  trainers: Trainer[];
+  onChange: (s: FeaturedMonstersSection) => void;
+}) {
+  const [selectedTrainerId, setSelectedTrainerId] = useState<string | number | null>(null);
+  const [availableMonsters, setAvailableMonsters] = useState<Monster[]>([]);
+  const [loadingMonsters, setLoadingMonsters] = useState(false);
+
+  const handleTrainerSelect = async (trainerId: string | number | null) => {
+    setSelectedTrainerId(trainerId);
+    if (!trainerId) {
+      setAvailableMonsters([]);
+      return;
+    }
+    setLoadingMonsters(true);
+    try {
+      const data = await monsterService.getTrainerMonsters(trainerId);
+      const monsters = Array.isArray(data) ? data : data.monsters || data.data || [];
+      setAvailableMonsters(monsters);
+    } catch {
+      setAvailableMonsters([]);
+    } finally {
+      setLoadingMonsters(false);
+    }
+  };
+
+  const handleMonsterAdd = (monsterId: string | number | null) => {
+    if (!monsterId) return;
+    const monster = availableMonsters.find(m => m.id === monsterId);
+    if (!monster) return;
+    const m = monster as Record<string, unknown>;
+    // Avoid duplicates
+    if (section.monsters.some(fm => fm.monsterId === Number(monsterId))) return;
+    const item: FeaturedMonsterItem = {
+      id: `fm_${Date.now()}_${monsterId}`,
+      monsterId: Number(monsterId),
+      name: (m.name as string) || 'Monster',
+      imageUrl: (m.img_link as string) || '',
+      objectFit: section.globalObjectFit,
+      scale: section.globalScale,
+      positionX: section.globalPositionX,
+      positionY: section.globalPositionY,
+      useOverride: false,
+    };
+    onChange({ ...section, monsters: [...section.monsters, item] });
+  };
+
+  const updateMonster = (itemId: string, updates: Partial<FeaturedMonsterItem>) => {
+    onChange({
+      ...section,
+      monsters: section.monsters.map(m => m.id === itemId ? { ...m, ...updates } : m),
+    });
+  };
+
+  const removeMonster = (itemId: string) => {
+    onChange({ ...section, monsters: section.monsters.filter(m => m.id !== itemId) });
+  };
+
+  const moveMonster = (itemId: string, dir: -1 | 1) => {
+    const idx = section.monsters.findIndex(m => m.id === itemId);
+    if (idx < 0) return;
+    const newIdx = idx + dir;
+    if (newIdx < 0 || newIdx >= section.monsters.length) return;
+    const newMonsters = [...section.monsters];
+    [newMonsters[idx], newMonsters[newIdx]] = [newMonsters[newIdx], newMonsters[idx]];
+    onChange({ ...section, monsters: newMonsters });
+  };
+
+  return (
+    <div className="ccc-editor__grid-editor">
+      {/* Heading */}
+      <div className="ccc-editor__row">
+        <label className="ccc-editor__label">Heading</label>
+        <input
+          type="text"
+          className="ccc-editor__field-value-input"
+          value={section.heading}
+          onChange={(e) => onChange({ ...section, heading: e.target.value })}
+          placeholder="Section heading..."
+        />
+      </div>
+
+      {/* Grid dimensions */}
+      <div className="ccc-editor__row">
+        <label className="ccc-editor__label">Columns</label>
+        <input
+          type="range" min={1} max={6} value={section.columns}
+          onChange={(e) => onChange({ ...section, columns: Number(e.target.value) })}
+        />
+        <span className="ccc-editor__range-value">{section.columns}</span>
+      </div>
+      <div className="ccc-editor__row">
+        <label className="ccc-editor__label">Rows</label>
+        <input
+          type="range" min={1} max={6} value={section.rows}
+          onChange={(e) => onChange({ ...section, rows: Number(e.target.value) })}
+        />
+        <span className="ccc-editor__range-value">{section.rows}</span>
+      </div>
+
+      {/* Justification */}
+      <div className="ccc-editor__row">
+        <label className="ccc-editor__label">Justify</label>
+        <div className="ccc-editor__toggle-group">
+          {(['left', 'center', 'right'] as SectionJustification[]).map((j) => (
+            <button
+              key={j}
+              className={`ccc-editor__toggle ${section.justification === j ? 'ccc-editor__toggle--active' : ''}`}
+              onClick={() => onChange({ ...section, justification: j })}
+            >
+              {j.charAt(0).toUpperCase() + j.slice(1)}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Show names */}
+      <label className="ccc-editor__checkbox">
+        <input
+          type="checkbox"
+          checked={section.showNames}
+          onChange={(e) => onChange({ ...section, showNames: e.target.checked })}
+        />
+        Show monster names
+      </label>
+
+      {/* Grid Scale */}
+      <div className="ccc-editor__row">
+        <label className="ccc-editor__label">Grid Size</label>
+        <input
+          type="range" min={20} max={100} value={section.gridScale}
+          onChange={(e) => onChange({ ...section, gridScale: Number(e.target.value) })}
+        />
+        <span className="ccc-editor__range-value">{section.gridScale}%</span>
+      </div>
+
+      {/* Border */}
+      <div className="ccc-editor__row">
+        <label className="ccc-editor__label">Border Width</label>
+        <input
+          type="range" min={0} max={6} value={section.borderWidth}
+          onChange={(e) => onChange({ ...section, borderWidth: Number(e.target.value) })}
+        />
+        <span className="ccc-editor__range-value">{section.borderWidth}px</span>
+      </div>
+      {section.borderWidth > 0 && (
+        <div className="ccc-editor__row">
+          <ColorPicker label="Border Color" value={section.borderColor} onChange={(v) => onChange({ ...section, borderColor: v })} />
+        </div>
+      )}
+
+      {/* Image Style */}
+      <ImageStyleEditor
+        style={section.imageStyle}
+        onChange={(imageStyle) => onChange({ ...section, imageStyle })}
+      />
+
+      {/* Global Image Settings */}
+      <div className="ccc-editor__row">
+        <label className="ccc-editor__label">Default Fit</label>
+        <div className="ccc-editor__toggle-group">
+          {(['cover', 'contain'] as ImageObjectFit[]).map((fit) => (
+            <button
+              key={fit}
+              className={`ccc-editor__toggle ${section.globalObjectFit === fit ? 'ccc-editor__toggle--active' : ''}`}
+              onClick={() => onChange({ ...section, globalObjectFit: fit })}
+            >
+              {fit.charAt(0).toUpperCase() + fit.slice(1)}
+            </button>
+          ))}
+        </div>
+      </div>
+      <div className="ccc-editor__row">
+        <label className="ccc-editor__label">Default Scale</label>
+        <input
+          type="range" min={100} max={300} value={section.globalScale}
+          onChange={(e) => onChange({ ...section, globalScale: Number(e.target.value) })}
+        />
+        <span className="ccc-editor__range-value">{section.globalScale}%</span>
+      </div>
+      {section.globalObjectFit === 'cover' && (
+        <>
+          <div className="ccc-editor__row">
+            <label className="ccc-editor__label">Default Pos X</label>
+            <input
+              type="range" min={0} max={100} value={section.globalPositionX}
+              onChange={(e) => onChange({ ...section, globalPositionX: Number(e.target.value) })}
+            />
+            <span className="ccc-editor__range-value">{section.globalPositionX}%</span>
+          </div>
+          <div className="ccc-editor__row">
+            <label className="ccc-editor__label">Default Pos Y</label>
+            <input
+              type="range" min={0} max={100} value={section.globalPositionY}
+              onChange={(e) => onChange({ ...section, globalPositionY: Number(e.target.value) })}
+            />
+            <span className="ccc-editor__range-value">{section.globalPositionY}%</span>
+          </div>
+        </>
+      )}
+
+      {/* Add Monster Picker */}
+      <div className="ccc-editor__monster-picker">
+        <label className="ccc-editor__label">Add Monster</label>
+        <TrainerAutocomplete
+          trainers={trainers}
+          selectedTrainerId={selectedTrainerId}
+          onSelect={handleTrainerSelect}
+          label=""
+          placeholder="Select a trainer..."
+          noPadding
+        />
+        {selectedTrainerId && (
+          <div style={{ marginTop: 4 }}>
+            {loadingMonsters ? (
+              <span className="ccc-editor__loading-text">Loading monsters...</span>
+            ) : (
+              <MonsterAutocomplete
+                key={`picker_${section.monsters.length}`}
+                monsters={availableMonsters as { id: string | number; name: string }[]}
+                selectedMonsterId={null}
+                onSelect={handleMonsterAdd}
+                label=""
+                placeholder="Search & add a monster..."
+                noPadding
+              />
+            )}
+          </div>
+        )}
+      </div>
+
+      {/* Monster List */}
+      {section.monsters.length > 0 && (
+        <div className="ccc-editor__images-list">
+          {section.monsters.map((item, idx) => (
+            <div key={item.id} className="ccc-editor__featured-monster-item">
+              <div className="ccc-editor__featured-monster-row">
+                <div className="ccc-editor__field-controls">
+                  <button className="ccc-editor__field-move" onClick={() => moveMonster(item.id, -1)} disabled={idx === 0} title="Move up">
+                    <i className="fas fa-chevron-up"></i>
+                  </button>
+                  <button className="ccc-editor__field-move" onClick={() => moveMonster(item.id, 1)} disabled={idx === section.monsters.length - 1} title="Move down">
+                    <i className="fas fa-chevron-down"></i>
+                  </button>
+                </div>
+                <div className="ccc-editor__image-item-preview">
+                  {item.imageUrl ? (
+                    <img src={item.imageUrl} alt={item.name} style={{ width: 36, height: 36, objectFit: 'cover', borderRadius: 4 }} />
+                  ) : (
+                    <div style={{ width: 36, height: 36, background: 'rgba(128,128,128,0.2)', borderRadius: 4, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <i className="fas fa-dragon" style={{ opacity: 0.4, fontSize: 12 }}></i>
+                    </div>
+                  )}
+                </div>
+                <span className="ccc-editor__featured-monster-name">{item.name}</span>
+                <label className="ccc-editor__checkbox" style={{ marginLeft: 'auto' }}>
+                  <input
+                    type="checkbox"
+                    checked={item.useOverride}
+                    onChange={(e) => updateMonster(item.id, { useOverride: e.target.checked })}
+                  />
+                  Override
+                </label>
+                <button className="ccc-editor__field-remove" onClick={() => removeMonster(item.id)} title="Remove monster">
+                  <i className="fas fa-times"></i>
+                </button>
+              </div>
+              {/* Per-image overrides */}
+              {item.useOverride && (
+                <div className="ccc-editor__featured-monster-overrides">
+                  <div className="ccc-editor__row">
+                    <label className="ccc-editor__label">Fit</label>
+                    <div className="ccc-editor__toggle-group">
+                      {(['cover', 'contain'] as ImageObjectFit[]).map((fit) => (
+                        <button
+                          key={fit}
+                          className={`ccc-editor__toggle ${item.objectFit === fit ? 'ccc-editor__toggle--active' : ''}`}
+                          onClick={() => updateMonster(item.id, { objectFit: fit })}
+                        >
+                          {fit.charAt(0).toUpperCase() + fit.slice(1)}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="ccc-editor__row">
+                    <label className="ccc-editor__label">Scale</label>
+                    <input
+                      type="range" min={100} max={300} value={item.scale}
+                      onChange={(e) => updateMonster(item.id, { scale: Number(e.target.value) })}
+                    />
+                    <span className="ccc-editor__range-value">{item.scale}%</span>
+                  </div>
+                  {item.objectFit === 'cover' && (
+                    <>
+                      <div className="ccc-editor__row">
+                        <label className="ccc-editor__label">Pos X</label>
+                        <input
+                          type="range" min={0} max={100} value={item.positionX}
+                          onChange={(e) => updateMonster(item.id, { positionX: Number(e.target.value) })}
+                        />
+                        <span className="ccc-editor__range-value">{item.positionX}%</span>
+                      </div>
+                      <div className="ccc-editor__row">
+                        <label className="ccc-editor__label">Pos Y</label>
+                        <input
+                          type="range" min={0} max={100} value={item.positionY}
+                          onChange={(e) => updateMonster(item.id, { positionY: Number(e.target.value) })}
+                        />
+                        <span className="ccc-editor__range-value">{item.positionY}%</span>
+                      </div>
+                    </>
+                  )}
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// --- Image Style Editor (shared between grid and callout) ---
+
+function ImageStyleEditor({ style, onChange }: {
+  style: ImageStyleConfig;
+  onChange: (s: ImageStyleConfig) => void;
+}) {
+  return (
+    <div className="ccc-editor__image-style">
+      <div className="ccc-editor__row">
+        <label className="ccc-editor__label">Cut Style</label>
+        <input
+          type="range" min={0} max={50} value={style.cutRadius}
+          onChange={(e) => onChange({ ...style, cutRadius: Number(e.target.value) })}
+        />
+        <span className="ccc-editor__range-value">{style.cutRadius}%</span>
+      </div>
+      <div className="ccc-editor__row">
+        <label className="ccc-editor__label">Background</label>
+        <div className="ccc-editor__toggle-group">
+          {(['none', 'circle', 'square', 'rounded', 'diamond', 'hexagon'] as ImageBackgroundShape[]).map((shape) => (
+            <button
+              key={shape}
+              className={`ccc-editor__toggle ${style.backgroundShape === shape ? 'ccc-editor__toggle--active' : ''}`}
+              onClick={() => onChange({ ...style, backgroundShape: shape })}
+            >
+              {shape.charAt(0).toUpperCase() + shape.slice(1)}
+            </button>
+          ))}
+        </div>
+      </div>
+      {style.backgroundShape !== 'none' && (
+        <div className="ccc-editor__row">
+          <ColorPicker label="Bg Color" value={style.backgroundColor} onChange={(v) => onChange({ ...style, backgroundColor: v })} />
+        </div>
       )}
     </div>
   );

@@ -35,6 +35,7 @@ const GUIDES_LINKS: (NavLink | { sectionHeader: string })[] = [
   { to: '/guides/evolution-explorer', label: 'Evolution Explorer', subItem: true },
   { to: '/guides/ability-database', label: 'Ability Database', subItem: true },
   { to: '/guides/species-database', label: 'Species Database', subItem: true },
+  { to: '/guides/available-prompts', label: 'Available Prompts', subItem: true },
   { to: '/under-construction', label: 'Interactive Map', subItem: true }
 ];
 
