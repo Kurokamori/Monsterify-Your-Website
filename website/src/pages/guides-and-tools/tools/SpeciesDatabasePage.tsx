@@ -29,7 +29,7 @@ const SpeciesDatabasePage = () => {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
   const [total, setTotal] = useState(0);
-  const limit = 30;
+  const [limit, setLimit] = useState(30);
 
   // Filters
   const [searchTerm, setSearchTerm] = useState('');
@@ -324,13 +324,13 @@ const SpeciesDatabasePage = () => {
           </div>
         )}
 
-        {totalPages > 1 && (
-          <Pagination
-            currentPage={page}
-            totalPages={totalPages}
-            onPageChange={handlePageChange}
-          />
-        )}
+        <Pagination
+          currentPage={page}
+          totalPages={totalPages}
+          onPageChange={handlePageChange}
+          perPage={limit}
+          onPerPageChange={(val) => { setLimit(val); setPage(1); }}
+        />
       </div>
 
       {/* Species Detail Modal */}

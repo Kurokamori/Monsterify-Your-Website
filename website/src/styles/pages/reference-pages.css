@@ -194,6 +194,85 @@
   border-bottom: 2px solid var(--accent-color);
 }
 
+/* ---------- Header Actions ---------- */
+
+.ref-page__header-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xsmall);
+  flex-wrap: wrap;
+}
+
+/* ---------- Pre-Evolution Section ---------- */
+
+.ref-preevo {
+  margin-top: var(--spacing-small);
+  padding-top: var(--spacing-small);
+  border-top: 1px dashed var(--border-color);
+}
+
+.ref-preevo--empty {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xsmall);
+  color: var(--text-color-muted);
+  font-size: var(--font-size-xsmall);
+  font-style: italic;
+  padding: var(--spacing-xxsmall) 0;
+}
+
+.ref-preevo--empty i {
+  opacity: 0.5;
+}
+
+.ref-preevo__loading {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xsmall);
+  color: var(--text-color-muted);
+  font-size: var(--font-size-xsmall);
+  padding: var(--spacing-xxsmall) 0;
+}
+
+.ref-preevo__loading i {
+  color: var(--accent-color);
+}
+
+.ref-preevo__title {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xsmall);
+  margin: 0 0 var(--spacing-small) 0;
+  color: var(--accent-color);
+  font-size: var(--font-size-small);
+  font-weight: 600;
+}
+
+.ref-preevo__grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-small);
+}
+
+.ref-preevo__item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-xxsmall);
+}
+
+.ref-preevo__label {
+  font-size: var(--font-size-xsmall);
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+.ref-preevo__method {
+  font-size: var(--font-size-xxsmall);
+  color: var(--text-color-muted);
+  font-style: italic;
+}
+
 /* ---------- Species References ---------- */
 
 .ref-species {
@@ -342,7 +421,8 @@
     display: none;
   }
 
-  .ref-species__grid {
+  .ref-species__grid,
+  .ref-preevo__grid {
     flex-direction: column;
     align-items: center;
   }

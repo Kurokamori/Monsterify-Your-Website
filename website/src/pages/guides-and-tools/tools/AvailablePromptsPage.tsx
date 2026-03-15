@@ -101,7 +101,7 @@ const AvailablePromptsPage = () => {
 
   // Pagination
   const [page, setPage] = useState(1);
-  const limit = 24;
+  const [limit, setLimit] = useState(24);
 
   // Expanded cards
   const [expandedPrompt, setExpandedPrompt] = useState<number | null>(null);
@@ -253,7 +253,7 @@ const AvailablePromptsPage = () => {
     if (groupedPrompts) return null;
     const start = (page - 1) * limit;
     return filteredPrompts.slice(start, start + limit);
-  }, [filteredPrompts, page, groupedPrompts]);
+  }, [filteredPrompts, page, groupedPrompts, limit]);
 
   const totalPages = groupedPrompts ? 0 : Math.ceil(filteredPrompts.length / limit);
 
@@ -683,13 +683,13 @@ const AvailablePromptsPage = () => {
             <div className="available-prompts__grid">
               {paginatedPrompts.map(renderPromptCard)}
             </div>
-            {totalPages > 1 && (
-              <Pagination
-                currentPage={page}
-                totalPages={totalPages}
-                onPageChange={setPage}
-              />
-            )}
+            <Pagination
+              currentPage={page}
+              totalPages={totalPages}
+              onPageChange={setPage}
+              perPage={limit}
+              onPerPageChange={(val) => { setLimit(val); setPage(1); }}
+            />
           </>
         ) : (
           <div className="available-prompts__no-results">

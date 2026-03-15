@@ -611,6 +611,8 @@ export function AdoptionCenter({ className = '' }: AdoptionCenterProps) {
           currentPage={pagination.page}
           totalPages={pagination.totalPages}
           onPageChange={handlePageChange}
+          perPage={pagination.limit}
+          onPerPageChange={(val) => setPagination(prev => ({ ...prev, limit: val, page: 1 }))}
         />
       )}
 
@@ -815,13 +817,16 @@ export function AdoptionCenter({ className = '' }: AdoptionCenterProps) {
                             </button>
                           ))}
                         </div>
-                        {artworksPagination.totalPages > 1 && (
-                          <Pagination
-                            currentPage={artworksPagination.page}
-                            totalPages={artworksPagination.totalPages}
-                            onPageChange={(page) => fetchUserArtworks(page)}
-                          />
-                        )}
+                        <Pagination
+                          currentPage={artworksPagination.page}
+                          totalPages={artworksPagination.totalPages}
+                          onPageChange={(page) => fetchUserArtworks(page)}
+                          perPage={artworksPagination.limit}
+                          onPerPageChange={(val) => {
+                            setArtworksPagination(prev => ({ ...prev, limit: val, page: 1 }));
+                            fetchUserArtworks(1);
+                          }}
+                        />
                       </>
                     ) : (
                       <p className="text-muted">No artworks found.</p>

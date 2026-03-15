@@ -9,7 +9,7 @@ import { BadgeGroup } from '../../components/common/BadgeGroup';
 import { useDocumentTitle } from '../../hooks/useDocumentTitle';
 import { MONSTER_TYPES, MONSTER_ATTRIBUTES, SPECIES_CATEGORIES } from '../../utils/staticValues';
 
-const ITEMS_PER_PAGE = 36;
+const DEFAULT_PER_PAGE = 36;
 
 /** Extract types array from a fakemon's type1-type5 fields */
 function getTypes(mon: Fakemon): string[] {
@@ -37,6 +37,7 @@ export default function FakemonDexPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(DEFAULT_PER_PAGE);
   const [selectedType, setSelectedType] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
   const [selectedAttribute, setSelectedAttribute] = useState('');
@@ -50,7 +51,7 @@ export default function FakemonDexPage() {
       setError(null);
       const params: FakemonListParams = {
         page: currentPage,
-        limit: ITEMS_PER_PAGE,
+        limit: itemsPerPage,
         type: selectedType || undefined,
         category: selectedCategory || undefined,
         attribute: selectedAttribute || undefined,
@@ -65,7 +66,7 @@ export default function FakemonDexPage() {
     } finally {
       setLoading(false);
     }
-  }, [currentPage, selectedType, selectedCategory, selectedAttribute, searchTerm]);
+  }, [currentPage, selectedType, selectedCategory, selectedAttribute, searchTerm, itemsPerPage]);
 
   useEffect(() => {
     fetchFakemon();
@@ -269,6 +270,8 @@ export default function FakemonDexPage() {
             currentPage={currentPage}
             totalPages={totalPages}
             onPageChange={setCurrentPage}
+            perPage={itemsPerPage}
+            onPerPageChange={(val) => { setItemsPerPage(val); setCurrentPage(1); }}
           />
         </>
       )}

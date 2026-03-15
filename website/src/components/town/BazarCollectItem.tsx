@@ -49,7 +49,7 @@ export function BazarCollectItem({
     page: 1,
     totalPages: 1,
     total: 0,
-    limit: 12
+    limit: 24
   });
 
   // User's trainers
@@ -119,6 +119,11 @@ export function BazarCollectItem({
   const handlePageChange = useCallback((page: number) => {
     fetchItems(page, selectedCategory);
   }, [fetchItems, selectedCategory]);
+
+  // Handle per-page change
+  const handlePerPageChange = useCallback((newLimit: number) => {
+    setPagination(prev => ({ ...prev, limit: newLimit, page: 1 }));
+  }, []);
 
   // Open collection modal
   const handleItemClick = useCallback((item: BazarItem) => {
@@ -239,13 +244,13 @@ export function BazarCollectItem({
               ))}
             </div>
 
-            {pagination.totalPages > 1 && (
-              <Pagination
-                currentPage={pagination.page}
-                totalPages={pagination.totalPages}
-                onPageChange={handlePageChange}
-              />
-            )}
+            <Pagination
+              currentPage={pagination.page}
+              totalPages={pagination.totalPages}
+              onPageChange={handlePageChange}
+              perPage={pagination.limit}
+              onPerPageChange={handlePerPageChange}
+            />
           </>
         )}
       </div>

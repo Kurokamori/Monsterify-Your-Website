@@ -111,6 +111,7 @@ export function MySubmissions() {
   // Pagination state
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [limit, setLimit] = useState(12);
 
   // Modal state
   const [selectedSubmission, setSelectedSubmission] = useState<Submission | null>(null);
@@ -147,7 +148,7 @@ export function MySubmissions() {
           submissionType: activeSubTab,
           sortBy,
           page,
-          limit: 12
+          limit
         }
       });
 
@@ -164,7 +165,7 @@ export function MySubmissions() {
     } finally {
       setLoading(false);
     }
-  }, [isAuthenticated, activeSubTab, sortBy, page]);
+  }, [isAuthenticated, activeSubTab, sortBy, page, limit]);
 
   useEffect(() => {
     fetchSubmissions();
@@ -526,6 +527,8 @@ export function MySubmissions() {
             currentPage={page}
             totalPages={totalPages}
             onPageChange={setPage}
+            perPage={limit}
+            onPerPageChange={(val) => { setLimit(val); setPage(1); }}
           />
         </>
       ) : (

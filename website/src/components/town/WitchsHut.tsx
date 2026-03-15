@@ -20,6 +20,7 @@ import type {
 } from './types';
 import { extractErrorMessage } from '../../utils/errorUtils';
 import { getItemImageUrl, handleItemImageError } from '../../utils/imageUtils';
+import speciesService, { type SpeciesImageMap } from '../../services/speciesService';
 
 // Evolution items configuration
 const EVOLUTION_ITEMS: EvolutionItem[] = [
@@ -78,6 +79,9 @@ export function WitchsHut({ className = '', onEvolutionComplete }: WitchsHutProp
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState('');
   const [useVoidStone, setUseVoidStone] = useState(false);
+
+  // Species images for evolution options
+  const [evolutionImages, setEvolutionImages] = useState<SpeciesImageMap>({});
 
   // Loading and status state
   const [loading, setLoading] = useState(false);
@@ -194,17 +198,30 @@ export function WitchsHut({ className = '', onEvolutionComplete }: WitchsHutProp
       setEvolutionOptions([]);
       setSelectedEvolution('');
       setEvolutionPreview(null);
+      setEvolutionImages({});
 
       const response = await api.get(`/monsters/${monster.id}/evolution-options`, {
         params: { speciesSlot }
       });
 
       if (response.data?.success && response.data.data) {
-        setEvolutionOptions(response.data.data);
+        const options: EvolutionOption[] = response.data.data;
+        setEvolutionOptions(options);
+
+        // Fetch species images for all evolution options
+        const speciesNames = options.map(o => o.name);
+        if (speciesNames.length > 0) {
+          try {
+            const images = await speciesService.getSpeciesImages(speciesNames);
+            setEvolutionImages(images);
+          } catch {
+            // Images are non-critical, continue without them
+          }
+        }
 
         // Auto-select if only one option
-        if (response.data.data.length === 1) {
-          const option = response.data.data[0];
+        if (options.length === 1) {
+          const option = options[0];
           setSelectedEvolution(option.name);
           await fetchEvolutionPreview(option.name, option.type);
         }
@@ -427,6 +444,9 @@ export function WitchsHut({ className = '', onEvolutionComplete }: WitchsHutProp
             <i className="fas fa-magic"></i>
           </span>
         </div>
+        {monster.level != null && (
+          <span className="witchs-hut-card-level">Lv. {monster.level}</span>
+        )}
         <p className="card__subtitle">
           {monster.species1}
           {monster.species2 && ` + ${monster.species2}`}
@@ -587,6 +607,13 @@ export function WitchsHut({ className = '', onEvolutionComplete }: WitchsHutProp
                       className={`witchs-hut-evolution-card ${selectedEvolution === evolution.name ? 'selected' : ''}`}
                       onClick={() => handleEvolutionSelect(evolution)}
                     >
+                      {evolutionImages[evolution.name]?.image_url && (
+                        <img
+                          src={evolutionImages[evolution.name].image_url}
+                          alt={evolution.name}
+                          className="witchs-hut-evolution-card-image"
+                        />
+                      )}
                       <span className="witchs-hut-evolution-name">{evolution.name}</span>
                       <span className="witchs-hut-evolution-type">{evolution.type}</span>
                     </button>

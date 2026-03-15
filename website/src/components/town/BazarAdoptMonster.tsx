@@ -36,7 +36,7 @@ export function BazarAdoptMonster({
     page: 1,
     totalPages: 1,
     total: 0,
-    limit: 12
+    limit: 24
   });
 
   // Species images cache
@@ -117,6 +117,11 @@ export function BazarAdoptMonster({
   const handlePageChange = useCallback((page: number) => {
     fetchMonsters(page);
   }, [fetchMonsters]);
+
+  // Handle per-page change
+  const handlePerPageChange = useCallback((newLimit: number) => {
+    setPagination(prev => ({ ...prev, limit: newLimit, page: 1 }));
+  }, []);
 
   // Get species display string
   const getSpeciesDisplay = useCallback((monster: BazarMonster) => {
@@ -293,13 +298,13 @@ export function BazarAdoptMonster({
               ))}
             </div>
 
-            {pagination.totalPages > 1 && (
-              <Pagination
-                currentPage={pagination.page}
-                totalPages={pagination.totalPages}
-                onPageChange={handlePageChange}
-              />
-            )}
+            <Pagination
+              currentPage={pagination.page}
+              totalPages={pagination.totalPages}
+              onPageChange={handlePageChange}
+              perPage={pagination.limit}
+              onPerPageChange={handlePerPageChange}
+            />
           </>
         )}
       </div>

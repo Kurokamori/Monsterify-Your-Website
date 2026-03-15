@@ -51,7 +51,7 @@ export function PromptList({
   const [showSubmissionModal, setShowSubmissionModal] = useState(false);
   const [page, setPage] = useState(1);
   const [total, setTotal] = useState(0);
-  const limit = 12;
+  const [limit, setLimit] = useState(12);
 
   const fetchPrompts = useCallback(async () => {
     try {
@@ -87,7 +87,7 @@ export function PromptList({
     } finally {
       setLoading(false);
     }
-  }, [filters, page, trainerId]);
+  }, [filters, page, trainerId, limit]);
 
   const fetchCategories = useCallback(async () => {
     try {
@@ -263,6 +263,8 @@ export function PromptList({
             currentPage={page}
             totalPages={totalPages}
             onPageChange={setPage}
+            perPage={limit}
+            onPerPageChange={(val) => { setLimit(val); setPage(1); }}
           />
         </>
       )}

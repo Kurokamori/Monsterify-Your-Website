@@ -60,6 +60,53 @@
   -moz-appearance: textfield;
 }
 
+/* Pagination wrapper (holds buttons + per-page) */
+.pagination-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-xsmall);
+  margin: var(--spacing-medium) 0;
+}
+
+.pagination-wrapper > .pagination {
+  margin: 0;
+}
+
+/* Per-page selector */
+.pagination-per-page {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xsmall);
+  opacity: 0.6;
+  transition: opacity 0.2s ease;
+}
+
+.pagination-per-page:hover {
+  opacity: 1;
+}
+
+.pagination-per-page__label {
+  font-size: var(--font-size-xsmall, 0.75rem);
+  color: var(--text-color-muted);
+  user-select: none;
+}
+
+.pagination-per-page__select {
+  font-size: var(--font-size-xsmall, 0.75rem);
+  padding: 0.1rem 0.3rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  background: var(--input-background);
+  color: var(--text-color);
+  cursor: pointer;
+}
+
+.pagination-per-page__select:focus {
+  outline: none;
+  border-color: var(--primary-color);
+}
+
 /* ==============================================
    RESPONSIVE STYLES
    ============================================== */

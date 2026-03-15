@@ -508,15 +508,15 @@ export default function AntiqueStorePage() {
                 </div>
 
                 {/* Pagination */}
-                {cataloguePagination.totalPages > 1 && (
-                  <div className="mt-md">
-                    <Pagination
-                      currentPage={cataloguePagination.page}
-                      totalPages={cataloguePagination.totalPages}
-                      onPageChange={(page) => setCataloguePagination(prev => ({ ...prev, page }))}
-                    />
-                  </div>
-                )}
+                <div className="mt-md">
+                  <Pagination
+                    currentPage={cataloguePagination.page}
+                    totalPages={cataloguePagination.totalPages}
+                    onPageChange={(page) => setCataloguePagination(prev => ({ ...prev, page }))}
+                    perPage={cataloguePagination.limit}
+                    onPerPageChange={(val) => setCataloguePagination(prev => ({ ...prev, limit: val, page: 1 }))}
+                  />
+                </div>
               </>
             )}
           </div>

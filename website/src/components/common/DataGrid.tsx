@@ -93,6 +93,10 @@ interface DataGridProps<T> {
   onPageChange?: (page: number) => void;
   /** Show pagination */
   showPagination?: boolean;
+  /** Items per page (enables per-page selector in Pagination) */
+  perPage?: number;
+  /** Callback when per-page changes */
+  onPerPageChange?: (perPage: number) => void;
 
   // Header
   /** Header title */
@@ -148,6 +152,8 @@ export function DataGrid<T>({
   totalPages = 1,
   onPageChange,
   showPagination = true,
+  perPage,
+  onPerPageChange,
 
   // Header
   title,
@@ -366,12 +372,14 @@ export function DataGrid<T>({
       </AutoStateContainer>
 
       {/* Pagination */}
-      {showPagination && totalPages > 1 && !loading && !error && (
+      {showPagination && !loading && !error && (
         <div className="data-grid__pagination">
           <Pagination
             currentPage={currentPage}
             totalPages={totalPages}
             onPageChange={onPageChange || (() => {})}
+            perPage={perPage}
+            onPerPageChange={onPerPageChange}
           />
         </div>
       )}

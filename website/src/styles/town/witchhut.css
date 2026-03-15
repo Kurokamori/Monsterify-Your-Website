@@ -124,6 +124,12 @@
   align-items: center;
 }
 
+.witchs-hut-card-level {
+  font-size: var(--font-size-xsmall);
+  color: var(--text-color-muted);
+  font-weight: 500;
+}
+
 /* ---------- Help Section ---------- */
 
 .witchs-hut-help {
@@ -326,6 +332,18 @@
   border-color: var(--accent-color);
   background-color: var(--accent-color);
   color: var(--background-color);
+}
+
+.witchs-hut-evolution-card-image {
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+  border-radius: var(--border-radius-small);
+  background-color: var(--background-color);
+}
+
+.witchs-hut-evolution-card.selected .witchs-hut-evolution-card-image {
+  background-color: var(--overlay-light);
 }
 
 .witchs-hut-evolution-name {

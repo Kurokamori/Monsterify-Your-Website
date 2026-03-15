@@ -60,6 +60,8 @@ interface AdminTableProps<T> {
   currentPage?: number;
   totalPages?: number;
   onPageChange?: (page: number) => void;
+  perPage?: number;
+  onPerPageChange?: (perPage: number) => void;
 
   selectable?: boolean;
   bulkActions?: BulkAction[];
@@ -90,6 +92,8 @@ export function AdminTable<T>({
   currentPage = 1,
   totalPages = 1,
   onPageChange,
+  perPage,
+  onPerPageChange,
   selectable = false,
   bulkActions,
   actions,
@@ -300,11 +304,13 @@ export function AdminTable<T>({
             </table>
           </div>
 
-          {totalPages > 1 && onPageChange && (
+          {(totalPages > 1 || (perPage && onPerPageChange)) && onPageChange && (
             <Pagination
               currentPage={currentPage}
               totalPages={totalPages}
               onPageChange={onPageChange}
+              perPage={perPage}
+              onPerPageChange={onPerPageChange}
             />
           )}
         </>

@@ -4,11 +4,16 @@ interface PaginationProps {
   currentPage: number;
   totalPages: number;
   onPageChange: (page: number) => void;
+  perPage?: number;
+  onPerPageChange?: (perPage: number) => void;
+  perPageOptions?: number[];
 }
 
 type PageItem = number | '...';
 
-export const Pagination = ({ currentPage, totalPages, onPageChange }: PaginationProps) => {
+const DEFAULT_PER_PAGE_OPTIONS = [12, 24, 48, 96];
+
+export const Pagination = ({ currentPage, totalPages, onPageChange, perPage, onPerPageChange, perPageOptions = DEFAULT_PER_PAGE_OPTIONS }: PaginationProps) => {
   const [jumpInput, setJumpInput] = useState<'left' | 'right' | null>(null);
   const [jumpValue, setJumpValue] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
@@ -68,8 +73,29 @@ export const Pagination = ({ currentPage, totalPages, onPageChange }: Pagination
     return pageNumbers;
   };
 
-  if (totalPages <= 1) {
+  const hasPerPageSelector = perPage != null && onPerPageChange;
+
+  if (totalPages <= 1 && !hasPerPageSelector) {
     return null;
+  }
+
+  if (totalPages <= 1 && hasPerPageSelector) {
+    return (
+      <div className="pagination-wrapper">
+        <div className="pagination-per-page">
+          <span className="pagination-per-page__label">per page:</span>
+          <select
+            className="select pagination-per-page__select"
+            value={perPage}
+            onChange={(e) => onPerPageChange(Number(e.target.value))}
+          >
+            {perPageOptions.map(opt => (
+              <option key={opt} value={opt}>{opt}</option>
+            ))}
+          </select>
+        </div>
+      </div>
+    );
   }
 
   const ellipsisPositions = getPageNumbers().reduce<('left' | 'right')[]>((acc, item) => {
@@ -80,78 +106,95 @@ export const Pagination = ({ currentPage, totalPages, onPageChange }: Pagination
   let ellipsisIndex = 0;
 
   return (
-    <div className="pagination">
-      <button
-        className="button secondary"
-        onClick={() => onPageChange(currentPage - 1)}
-        disabled={currentPage === 1}
-      >
-        <i className="fas fa-chevron-left"></i>
-      </button>
+    <div className="pagination-wrapper">
+      <div className="pagination">
+        <button
+          className="button secondary"
+          onClick={() => onPageChange(currentPage - 1)}
+          disabled={currentPage === 1}
+        >
+          <i className="fas fa-chevron-left"></i>
+        </button>
 
-      {getPageNumbers().map((page) => {
-        if (page === '...') {
-          const position = ellipsisPositions[ellipsisIndex++] || 'left';
-          const isOpen = jumpInput === position;
+        {getPageNumbers().map((page) => {
+          if (page === '...') {
+            const position = ellipsisPositions[ellipsisIndex++] || 'left';
+            const isOpen = jumpInput === position;
 
-          if (isOpen) {
+            if (isOpen) {
+              return (
+                <form
+                  key={`ellipsis-${position}`}
+                  className="pagination-jump"
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    handleJumpSubmit();
+                  }}
+                >
+                  <input
+                    ref={inputRef}
+                    type="number"
+                    min={1}
+                    max={totalPages}
+                    value={jumpValue}
+                    onChange={(e) => setJumpValue(e.target.value)}
+                    onBlur={handleJumpSubmit}
+                    placeholder="#"
+                    className="pagination-jump-input"
+                  />
+                </form>
+              );
+            }
+
             return (
-              <form
+              <button
                 key={`ellipsis-${position}`}
-                className="pagination-jump"
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  handleJumpSubmit();
+                className="button secondary pagination-ellipsis-btn"
+                onClick={() => {
+                  setJumpInput(position);
+                  setJumpValue('');
                 }}
+                title="Jump to page..."
               >
-                <input
-                  ref={inputRef}
-                  type="number"
-                  min={1}
-                  max={totalPages}
-                  value={jumpValue}
-                  onChange={(e) => setJumpValue(e.target.value)}
-                  onBlur={handleJumpSubmit}
-                  placeholder="#"
-                  className="pagination-jump-input"
-                />
-              </form>
+                ...
+              </button>
             );
           }
 
           return (
             <button
-              key={`ellipsis-${position}`}
-              className="button secondary pagination-ellipsis-btn"
-              onClick={() => {
-                setJumpInput(position);
-                setJumpValue('');
-              }}
-              title="Jump to page..."
+              key={page}
+              className={`button secondary ${currentPage === page ? 'active' : ''}`}
+              onClick={() => onPageChange(page)}
             >
-              ...
+              {page}
             </button>
           );
-        }
+        })}
 
-        return (
-          <button
-            key={page}
-            className={`button secondary ${currentPage === page ? 'active' : ''}`}
-            onClick={() => onPageChange(page)}
+        <button
+          className="button secondary"
+          onClick={() => onPageChange(currentPage + 1)}
+          disabled={currentPage === totalPages}
+        >
+          <i className="fas fa-chevron-right"></i>
+        </button>
+      </div>
+
+      {perPage != null && onPerPageChange && (
+        <div className="pagination-per-page">
+          <span className="pagination-per-page__label">per page:</span>
+          <select
+            className="select pagination-per-page__select"
+            value={perPage}
+            onChange={(e) => onPerPageChange(Number(e.target.value))}
           >
-            {page}
-          </button>
-        );
-      })}
-
-      <button
-        className="button secondary"
-        onClick={() => onPageChange(currentPage + 1)}
-        disabled={currentPage === totalPages}
-      >
-        <i className="fas fa-chevron-right"></i>
-      </button>
+            {perPageOptions.map(opt => (
+              <option key={opt} value={opt}>{opt}</option>
+            ))}
+          </select>
+        </div>
+      )}
     </div>
   );
 };

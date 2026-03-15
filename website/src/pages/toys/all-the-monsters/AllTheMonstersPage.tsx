@@ -738,6 +738,9 @@ const AllTheMonstersPage = () => {
             currentPage={currentPage}
             totalPages={totalPages}
             onPageChange={setCurrentPage}
+            perPage={perPage}
+            onPerPageChange={(val) => { setPerPage(val); resetPage(); }}
+            perPageOptions={PER_PAGE_OPTIONS}
           />
         </>
       )}

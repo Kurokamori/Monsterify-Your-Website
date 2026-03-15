@@ -76,6 +76,7 @@ function RerollerSessionsContent() {
   const [statusFilter, setStatusFilter] = useState('');
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [limit, setLimit] = useState(20);
 
   const deleteConfirm = useConfirmModal();
 
@@ -86,7 +87,7 @@ function RerollerSessionsContent() {
       const response = await rerollerService.listSessions({
         status: statusFilter || undefined,
         page,
-        limit: 20,
+        limit,
       });
       setSessions(response.data ?? []);
       setTotalPages(response.pagination?.totalPages ?? 1);
@@ -96,7 +97,7 @@ function RerollerSessionsContent() {
     } finally {
       setLoading(false);
     }
-  }, [statusFilter, page]);
+  }, [statusFilter, page, limit]);
 
   useEffect(() => {
     fetchSessions();
@@ -236,6 +237,8 @@ function RerollerSessionsContent() {
             currentPage={page}
             totalPages={totalPages}
             onPageChange={setPage}
+            perPage={limit}
+            onPerPageChange={(val) => { setLimit(val); setPage(1); }}
           />
         </>
       )}

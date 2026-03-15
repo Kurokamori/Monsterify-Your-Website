@@ -29,7 +29,7 @@ const AbilityDatabasePage = () => {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
   const [total, setTotal] = useState(0);
-  const limit = 24;
+  const [limit, setLimit] = useState(24);
 
   // Sorting
   const [sortBy, setSortBy] = useState('name');
@@ -324,13 +324,13 @@ const AbilityDatabasePage = () => {
           </div>
         )}
 
-        {totalPages > 1 && (
-          <Pagination
-            currentPage={page}
-            totalPages={totalPages}
-            onPageChange={setPage}
-          />
-        )}
+        <Pagination
+          currentPage={page}
+          totalPages={totalPages}
+          onPageChange={setPage}
+          perPage={limit}
+          onPerPageChange={(val) => { setLimit(val); setPage(1); }}
+        />
       </div>
     </div>
   );

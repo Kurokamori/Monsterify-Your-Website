@@ -78,6 +78,7 @@ export function WritingLibrary() {
   const [error, setError] = useState('');
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [limit, setLimit] = useState(12);
   const [contentTypeFilter, setContentTypeFilter] = useState('all');
   const [tagFilters, setTagFilters] = useState<string[]>([]);
   const [tagInputValue, setTagInputValue] = useState('');
@@ -114,7 +115,7 @@ export function WritingLibrary() {
 
       const params: Record<string, string | number | boolean> = {
         page,
-        limit: 12,
+        limit,
         sort: sortBy,
         showMature
       };
@@ -156,7 +157,7 @@ export function WritingLibrary() {
       setLoading(false);
       setInitialLoad(false);
     }
-  }, [page, contentTypeFilter, tagFilters, sortBy, showBooksOnly, showMature, matureFilters, initialLoad, externalFilter]);
+  }, [page, contentTypeFilter, tagFilters, sortBy, showBooksOnly, showMature, matureFilters, initialLoad, externalFilter, limit]);
 
   const fetchTags = useCallback(async () => {
     try {
@@ -445,6 +446,8 @@ export function WritingLibrary() {
         currentPage={page}
         totalPages={totalPages}
         onPageChange={handlePageChange}
+        perPage={limit}
+        onPerPageChange={(val) => { setLimit(val); setPage(1); }}
       />
 
       <ErrorModal

@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { TrainerAutocomplete } from '../common/TrainerAutocomplete';
 import { LoadingSpinner } from '../common/LoadingSpinner';
 import { ErrorMessage } from '../common/ErrorMessage';
@@ -50,7 +50,7 @@ export function BazarForfeitMonster({
     page: 1,
     totalPages: 1,
     total: 0,
-    limit: 12
+    limit: 24
   });
 
   // Species images cache
@@ -138,6 +138,21 @@ export function BazarForfeitMonster({
       fetchMonsters(selectedTrainer.id, page);
     }
   }, [selectedTrainer, fetchMonsters]);
+
+  // Handle per-page change
+  const prevLimitRef = useRef(pagination.limit);
+  useEffect(() => {
+    if (pagination.limit !== prevLimitRef.current) {
+      prevLimitRef.current = pagination.limit;
+      if (selectedTrainer) {
+        fetchMonsters(selectedTrainer.id, 1);
+      }
+    }
+  }, [pagination.limit, selectedTrainer, fetchMonsters]);
+
+  const handlePerPageChange = useCallback((newLimit: number) => {
+    setPagination(prev => ({ ...prev, limit: newLimit, page: 1 }));
+  }, []);
 
   // Toggle monster selection
   const toggleMonsterSelection = useCallback((monsterId: number) => {
@@ -388,13 +403,13 @@ export function BazarForfeitMonster({
                     ))}
                   </div>
 
-                  {pagination.totalPages > 1 && (
-                    <Pagination
-                      currentPage={pagination.page}
-                      totalPages={pagination.totalPages}
-                      onPageChange={handlePageChange}
-                    />
-                  )}
+                  <Pagination
+                    currentPage={pagination.page}
+                    totalPages={pagination.totalPages}
+                    onPageChange={handlePageChange}
+                    perPage={pagination.limit}
+                    onPerPageChange={handlePerPageChange}
+                  />
                 </>
               )}
             </div>

@@ -26,6 +26,24 @@ export interface TrainerWithMonsters {
   monsters: UnreferencedMonster[];
 }
 
+/** A stage in a monster's personal evolution history */
+export interface EvolutionStage {
+  id?: number | string;
+  order?: number;
+  species1?: string;
+  species2?: string;
+  species3?: string;
+  image?: string;
+  type1?: string;
+  type2?: string;
+  type3?: string;
+  type4?: string;
+  type5?: string;
+  attribute?: string;
+  evolution_method?: string;
+  level?: number;
+}
+
 /** Trainer summary for the helper page dropdown */
 export interface TrainerSummary {
   id: number;

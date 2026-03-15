@@ -24,6 +24,7 @@ const ReferenceTodoPage = () => {
   const [collapsedTrainers, setCollapsedTrainers] = useState<Record<number, boolean>>({});
   const [speciesImages, setSpeciesImages] = useState<SpeciesImageMap>({});
   const [imageSize, setImageSize] = useState<ImageSize>('medium');
+  const [showLineage, setShowLineage] = useState(true);
 
   const fetchData = useCallback(async () => {
     if (!currentUser?.discord_id) return;
@@ -99,14 +100,24 @@ const ReferenceTodoPage = () => {
       >
         <div className="ref-page__header">
           <h1>Reference To-Do List</h1>
-          <button
-            className="button secondary no-flex"
-            onClick={cycleImageSize}
-            title={`Current: ${IMAGE_SIZE_LABELS[imageSize]}. Click to cycle.`}
-          >
-            <i className="fas fa-expand-arrows-alt"></i>
-            {IMAGE_SIZE_LABELS[imageSize]}
-          </button>
+          <div className="ref-page__header-actions">
+            <button
+              className={`button secondary no-flex ${showLineage ? 'active' : ''}`}
+              onClick={() => setShowLineage((prev) => !prev)}
+              title="Show pre-evolution images from lineage data"
+            >
+              <i className="fas fa-sitemap"></i>
+              {showLineage ? 'Hide Lineage' : 'Show Lineage'}
+            </button>
+            <button
+              className="button secondary no-flex"
+              onClick={cycleImageSize}
+              title={`Current: ${IMAGE_SIZE_LABELS[imageSize]}. Click to cycle.`}
+            >
+              <i className="fas fa-expand-arrows-alt"></i>
+              {IMAGE_SIZE_LABELS[imageSize]}
+            </button>
+          </div>
         </div>
 
         <p className="ref-page__description">
@@ -139,6 +150,7 @@ const ReferenceTodoPage = () => {
                     monsters={trainer.monsters}
                     speciesImages={speciesImages}
                     imageSize={imageSize}
+                    showLineage={showLineage}
                   />
                 </div>
               )}

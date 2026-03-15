@@ -14,7 +14,7 @@ import {
 } from './speciesFieldConfig';
 import type { FieldDef } from '@components/admin/AdminForm';
 
-const PER_PAGE = 25;
+const DEFAULT_PER_PAGE = 25;
 const CONCURRENT_SAVES = 5;
 
 // Field types we can render inline (exclude 'custom' and 'file')
@@ -39,6 +39,7 @@ function MassEditContent() {
   const [species, setSpecies] = useState<Record<string, unknown>[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [perPage, setPerPage] = useState(DEFAULT_PER_PAGE);
 
   // Edit tracking
   const editsRef = useRef<Map<string, Record<string, unknown>>>(new Map());
@@ -60,7 +61,7 @@ function MassEditContent() {
     try {
       const result = await speciesService.getSpecies(franchiseKey, {
         page: currentPage,
-        limit: PER_PAGE,
+        limit: perPage,
         sortBy: franchiseConfig.sortDefault,
         sortOrder: 'asc',
       });
@@ -80,7 +81,7 @@ function MassEditContent() {
     } finally {
       setLoading(false);
     }
-  }, [franchiseKey, franchiseConfig, currentPage, idField]);
+  }, [franchiseKey, franchiseConfig, currentPage, idField, perPage]);
 
   useEffect(() => {
     fetchPage();
@@ -340,13 +341,13 @@ function MassEditContent() {
             })}
           </div>
 
-          {totalPages > 1 && (
-            <Pagination
-              currentPage={currentPage}
-              totalPages={totalPages}
-              onPageChange={setCurrentPage}
-            />
-          )}
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={setCurrentPage}
+            perPage={perPage}
+            onPerPageChange={(val) => { setPerPage(val); setCurrentPage(1); }}
+          />
         </>
       )}
 
