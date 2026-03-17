@@ -347,40 +347,7 @@
   color: var(--error-color);
 }
 
-/* --- Tabs --- */
-
-.content-manager__tab-bar {
-  display: flex;
-  border-bottom: 1px solid var(--border-color);
-}
-
-.content-manager__tab {
-  padding: var(--spacing-xsmall) var(--spacing-medium);
-  border: none;
-  background: none;
-  color: var(--text-color-muted);
-  cursor: pointer;
-  font-size: var(--font-size-small);
-  font-weight: 500;
-  border-bottom: 2px solid transparent;
-  transition: all 0.15s;
-}
-
-.content-manager__tab:hover {
-  color: var(--text-color);
-}
-
-.content-manager__tab--active {
-  color: var(--accent-color);
-  border-bottom-color: var(--accent-color);
-}
-
 /* --- Editor --- */
-
-.content-manager__editor {
-  display: flex;
-  flex-direction: column;
-}
 
 .content-manager__toolbar {
   display: flex;
@@ -435,13 +402,6 @@
   outline: none;
 }
 
-/* --- Preview --- */
-
-.content-manager__preview {
-  min-height: 400px;
-  padding: var(--spacing-medium);
-  overflow-y: auto;
-}
 
 /* --- Actions --- */
 
