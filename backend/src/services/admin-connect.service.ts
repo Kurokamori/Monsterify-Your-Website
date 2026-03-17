@@ -68,11 +68,15 @@ export class AdminConnectService {
 
   // ── Update Notes ────────────────────────────────────────────────
 
-  async getUpdateNotes(): Promise<string> {
+  async getUpdateNotes(): Promise<{ content: string; lastClearedAt: string | null }> {
     return this.repo.getUpdateNotes();
   }
 
-  async saveUpdateNotes(content: string): Promise<string> {
+  async saveUpdateNotes(content: string): Promise<{ content: string; lastClearedAt: string | null }> {
     return this.repo.saveUpdateNotes(content);
+  }
+
+  async clearForUpdate(): Promise<{ content: string; lastClearedAt: string | null }> {
+    return this.repo.clearForUpdate();
   }
 }

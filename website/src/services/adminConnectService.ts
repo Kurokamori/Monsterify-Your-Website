@@ -136,13 +136,18 @@ const adminConnectService = {
   },
 
   // Update notes
-  async getUpdateNotes(): Promise<string> {
+  async getUpdateNotes(): Promise<{ content: string; lastClearedAt: string | null }> {
     const res = await api.get('/admin-connect/update-notes');
     return res.data.data;
   },
 
-  async saveUpdateNotes(content: string): Promise<string> {
+  async saveUpdateNotes(content: string): Promise<{ content: string; lastClearedAt: string | null }> {
     const res = await api.put('/admin-connect/update-notes', { content });
+    return res.data.data;
+  },
+
+  async clearForUpdate(): Promise<{ content: string; lastClearedAt: string | null }> {
+    const res = await api.post('/admin-connect/update-notes/clear');
     return res.data.data;
   },
 };

@@ -83,6 +83,7 @@ export default function AdminConnectPage() {
 
   // Update notes
   const [updateNotes, setUpdateNotes] = useState('');
+  const [lastClearedAt, setLastClearedAt] = useState<string | null>(null);
   const [showUpdateNotes, setShowUpdateNotes] = useState(false);
   const [notesSaving, setNotesSaving] = useState(false);
   const debouncedNotes = useDebounce(updateNotes, 1000);
@@ -118,8 +119,9 @@ export default function AdminConnectPage() {
 
   // Fetch update notes
   useEffect(() => {
-    adminConnectService.getUpdateNotes().then((content) => {
-      setUpdateNotes(content);
+    adminConnectService.getUpdateNotes().then((data) => {
+      setUpdateNotes(data.content);
+      setLastClearedAt(data.lastClearedAt);
       notesInitializedRef.current = true;
     }).catch(() => { /* ignore */ });
   }, []);
@@ -249,9 +251,14 @@ export default function AdminConnectPage() {
   const totalInProgress = items.filter((i) => i.status === 'in-progress').length;
   const totalResolved = items.filter((i) => i.status === 'resolved').length;
 
-  // Resolved items sorted by recency (most recently resolved first)
+  // Resolved items sorted by recency, only those resolved after last clear
+  const clearThreshold = lastClearedAt ? new Date(lastClearedAt).getTime() : 0;
   const resolvedItems = items
-    .filter((i) => i.status === 'resolved')
+    .filter((i) => {
+      if (i.status !== 'resolved') return false;
+      if (!i.resolvedAt) return false;
+      return new Date(i.resolvedAt).getTime() > clearThreshold;
+    })
     .sort((a, b) => {
       const aTime = a.resolvedAt ? new Date(a.resolvedAt).getTime() : 0;
       const bTime = b.resolvedAt ? new Date(b.resolvedAt).getTime() : 0;
@@ -342,9 +349,26 @@ export default function AdminConnectPage() {
 
               {resolvedItems.length > 0 && (
                 <div className="ac-update-notes__resolved">
-                  <h4 className="ac-update-notes__resolved-title">
-                    <i className="fas fa-check-circle" /> Completed Tasks ({resolvedItems.length})
-                  </h4>
+                  <div className="ac-update-notes__resolved-header">
+                    <h4 className="ac-update-notes__resolved-title">
+                      <i className="fas fa-check-circle" /> Completed Tasks ({resolvedItems.length})
+                    </h4>
+                    {isAdmin && (
+                      <button
+                        className="button small ghost no-flex ac-update-notes__clear-btn"
+                        onClick={async () => {
+                          if (!confirm('Mark update as pushed? This will clear the notes and reset the completed tasks list.')) return;
+                          try {
+                            const result = await adminConnectService.clearForUpdate();
+                            setUpdateNotes(result.content);
+                            setLastClearedAt(result.lastClearedAt);
+                          } catch { setError('Failed to clear for update'); }
+                        }}
+                      >
+                        <i className="fas fa-broom" /> Clear for Update
+                      </button>
+                    )}
+                  </div>
                   <div className="ac-update-notes__resolved-list">
                     {resolvedItems.map((item) => {
                       const isSecret = item.isSecret && !isAdmin;

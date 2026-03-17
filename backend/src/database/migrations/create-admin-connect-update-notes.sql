@@ -2,6 +2,7 @@
 CREATE TABLE IF NOT EXISTS admin_connect_update_notes (
   id INTEGER PRIMARY KEY DEFAULT 1,
   content TEXT NOT NULL DEFAULT '',
+  last_cleared_at TIMESTAMPTZ,
   updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   CONSTRAINT single_row CHECK (id = 1)
 );

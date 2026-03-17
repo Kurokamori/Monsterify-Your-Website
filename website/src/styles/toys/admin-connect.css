@@ -141,13 +141,24 @@
   margin-top: var(--spacing-small);
 }
 
+.ac-update-notes__resolved-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--spacing-xsmall);
+}
+
 .ac-update-notes__resolved-title {
   font-size: var(--font-size-small);
   color: var(--success-color);
-  margin: 0 0 var(--spacing-xsmall);
+  margin: 0;
   display: flex;
   align-items: center;
   gap: var(--spacing-xxsmall);
+}
+
+.ac-update-notes__clear-btn {
+  flex-shrink: 0;
 }
 
 .ac-update-notes__resolved-list {

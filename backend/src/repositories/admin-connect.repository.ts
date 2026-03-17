@@ -346,21 +346,34 @@ export class AdminConnectRepository extends BaseRepository<
 
   // ── Update Notes ────────────────────────────────────────────────
 
-  async getUpdateNotes(): Promise<string> {
-    const result = await db.query<{ content: string }>(
-      `SELECT content FROM admin_connect_update_notes WHERE id = 1`,
+  async getUpdateNotes(): Promise<{ content: string; lastClearedAt: string | null }> {
+    const result = await db.query<{ content: string; last_cleared_at: string | null }>(
+      `SELECT content, last_cleared_at FROM admin_connect_update_notes WHERE id = 1`,
     );
-    return result.rows[0]?.content ?? '';
+    const row = result.rows[0];
+    return { content: row?.content ?? '', lastClearedAt: row?.last_cleared_at ?? null };
   }
 
-  async saveUpdateNotes(content: string): Promise<string> {
-    const result = await db.query<{ content: string }>(
+  async saveUpdateNotes(content: string): Promise<{ content: string; lastClearedAt: string | null }> {
+    const result = await db.query<{ content: string; last_cleared_at: string | null }>(
       `INSERT INTO admin_connect_update_notes (id, content, updated_at)
        VALUES (1, $1, NOW())
        ON CONFLICT (id) DO UPDATE SET content = $1, updated_at = NOW()
-       RETURNING content`,
+       RETURNING content, last_cleared_at`,
       [content],
     );
-    return result.rows[0]?.content ?? '';
+    const row = result.rows[0];
+    return { content: row?.content ?? '', lastClearedAt: row?.last_cleared_at ?? null };
+  }
+
+  async clearForUpdate(): Promise<{ content: string; lastClearedAt: string | null }> {
+    const result = await db.query<{ content: string; last_cleared_at: string | null }>(
+      `INSERT INTO admin_connect_update_notes (id, content, last_cleared_at, updated_at)
+       VALUES (1, '', NOW(), NOW())
+       ON CONFLICT (id) DO UPDATE SET content = '', last_cleared_at = NOW(), updated_at = NOW()
+       RETURNING content, last_cleared_at`,
+    );
+    const row = result.rows[0];
+    return { content: row?.content ?? '', lastClearedAt: row?.last_cleared_at ?? null };
   }
 }

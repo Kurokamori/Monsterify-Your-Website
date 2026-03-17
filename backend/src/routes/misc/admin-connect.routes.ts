@@ -14,6 +14,7 @@ import {
   deleteAdminConnectSubItem,
   getUpdateNotes,
   saveUpdateNotes,
+  clearForUpdate,
 } from '../../controllers/misc/admin-connect.controller';
 
 const router = Router();
@@ -24,6 +25,7 @@ router.get('/', authenticate, getAdminConnectItems);
 // Update notes — public read, admin write (must be before /:id)
 router.get('/update-notes', authenticate, getUpdateNotes);
 router.put('/update-notes', authenticate, requireAdmin, saveUpdateNotes);
+router.post('/update-notes/clear', authenticate, requireAdmin, clearForUpdate);
 
 router.get('/:id', authenticate, getAdminConnectItem);
 

@@ -246,3 +246,13 @@ export async function saveUpdateNotes(req: Request, res: Response): Promise<void
     res.status(500).json({ success: false, message: 'Error saving update notes' });
   }
 }
+
+export async function clearForUpdate(_req: Request, res: Response): Promise<void> {
+  try {
+    const result = await service.clearForUpdate();
+    res.json({ success: true, data: result });
+  } catch (error) {
+    console.error('Error clearing for update:', error);
+    res.status(500).json({ success: false, message: 'Error clearing for update' });
+  }
+}
