@@ -46,3 +46,4 @@ export { useMultistepModal } from './useMultistepModal';
 export type { Step } from './MultistepModal';
 export { PurchaseModal } from './PurchaseModal';
 export type { PurchaseItem, PurchaseModalProps } from './PurchaseModal';
+export { WysiwygEditor } from './WysiwygEditor';

@@ -1,10 +1,8 @@
-import { useState, useEffect, useCallback, useRef } from 'react'
-import { marked } from 'marked'
+import { useState, useEffect, useCallback } from 'react'
 import { useDocumentTitle } from '@hooks/useDocumentTitle'
 import { AdminRoute } from '@components/common/AdminRoute'
-import { ConfirmModal, useConfirmModal, LoadingSpinner } from '@components/common'
+import { ConfirmModal, useConfirmModal, LoadingSpinner, WysiwygEditor } from '@components/common'
 import { Modal } from '@components/common/Modal'
-import { MarkdownRenderer } from '@components/guides/MarkdownRenderer'
 import contentService, {
   type CategoriesResponse,
   type DirectoryStructure,
@@ -58,10 +56,6 @@ function filterTree(structure: DirectoryStructure | null, query: string): Direct
   return { directories: filteredDirs, files: filteredFiles }
 }
 
-function parseMarkdownToHtml(markdown: string): string {
-  marked.setOptions({ gfm: true, breaks: true })
-  return marked.parse(markdown) as string
-}
 
 // ============================================================================
 // Types
@@ -196,40 +190,6 @@ function TreeNode({
 }
 
 // ============================================================================
-// Toolbar Buttons
-// ============================================================================
-
-interface ToolbarItem {
-  label: string
-  icon?: string
-  text?: string
-  prefix: string
-  suffix: string
-}
-
-const TOOLBAR_ITEMS: (ToolbarItem | 'sep')[] = [
-  { label: 'H1', text: 'H1', prefix: '# ', suffix: '' },
-  { label: 'H2', text: 'H2', prefix: '## ', suffix: '' },
-  { label: 'H3', text: 'H3', prefix: '### ', suffix: '' },
-  'sep',
-  { label: 'Bold', icon: 'fas fa-bold', prefix: '**', suffix: '**' },
-  { label: 'Italic', icon: 'fas fa-italic', prefix: '_', suffix: '_' },
-  { label: 'Strikethrough', icon: 'fas fa-strikethrough', prefix: '~~', suffix: '~~' },
-  'sep',
-  { label: 'Link', icon: 'fas fa-link', prefix: '[', suffix: '](url)' },
-  { label: 'Image', icon: 'fas fa-image', prefix: '![alt](', suffix: ')' },
-  'sep',
-  { label: 'Unordered List', icon: 'fas fa-list-ul', prefix: '- ', suffix: '' },
-  { label: 'Ordered List', icon: 'fas fa-list-ol', prefix: '1. ', suffix: '' },
-  { label: 'Blockquote', icon: 'fas fa-quote-right', prefix: '> ', suffix: '' },
-  'sep',
-  { label: 'Inline Code', icon: 'fas fa-code', prefix: '`', suffix: '`' },
-  { label: 'Code Block', text: '{}', prefix: '```\n', suffix: '\n```' },
-  { label: 'Horizontal Rule', text: 'HR', prefix: '\n---\n', suffix: '' },
-  { label: 'Table', icon: 'fas fa-table', prefix: '| Header | Header |\n| ------ | ------ |\n| Cell   | Cell   |', suffix: '' },
-]
-
-// ============================================================================
 // Main Component
 // ============================================================================
 
@@ -244,14 +204,12 @@ export default function ContentManagerPage() {
   const [selectedItem, setSelectedItem] = useState<SelectedItem | null>(null)
   const [form, setForm] = useState<FormState>({ title: '', content: '', fileName: '' })
   const [originalForm, setOriginalForm] = useState<FormState>({ title: '', content: '', fileName: '' })
-  const [activeTab, setActiveTab] = useState<'editor' | 'preview'>('editor')
   const [saving, setSaving] = useState(false)
   const [statusMsg, setStatusMsg] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
   const [newDirModal, setNewDirModal] = useState<NewDirModalState>({ isOpen: false, category: '', parentPath: '', name: '' })
   const [sortOrderModal, setSortOrderModal] = useState<SortOrderModalState>({ isOpen: false, category: '', parentPath: '', items: [], saving: false })
 
   const confirmModal = useConfirmModal()
-  const textareaRef = useRef<HTMLTextAreaElement>(null)
 
   // --- Load categories ---
 
@@ -307,7 +265,6 @@ export default function ContentManagerPage() {
       setForm(formState)
       setOriginalForm(formState)
       setSelectedItem({ category, filePath, fileName, isNew: false })
-      setActiveTab('editor')
     } catch (err) {
       setStatusMsg({ type: 'error', text: getAxiosError(err, 'Failed to load content') })
     }
@@ -325,7 +282,6 @@ export default function ContentManagerPage() {
     setForm(formState)
     setOriginalForm(formState)
     setSelectedItem({ category, filePath: parentPath, fileName: '', isNew: true })
-    setActiveTab('editor')
   }, [])
 
   const handleNewFile = useCallback((category: string, parentPath: string) => {
@@ -423,26 +379,6 @@ export default function ContentManagerPage() {
     }
   }, [newDirModal, loadCategories])
 
-  // --- Markdown insert ---
-
-  const insertMarkdown = useCallback((prefix: string, suffix: string) => {
-    const textarea = textareaRef.current
-    if (!textarea) return
-
-    const start = textarea.selectionStart
-    const end = textarea.selectionEnd
-    const selected = form.content.substring(start, end)
-    const newContent = form.content.substring(0, start) + prefix + selected + suffix + form.content.substring(end)
-    setForm(prev => ({ ...prev, content: newContent }))
-
-    // Restore cursor position after React re-renders
-    requestAnimationFrame(() => {
-      textarea.focus()
-      const cursorPos = start + prefix.length + selected.length
-      textarea.setSelectionRange(cursorPos, cursorPos)
-    })
-  }, [form.content])
-
   // --- Tree UI ---
 
   const toggleCategory = useCallback((cat: string) => {
@@ -518,12 +454,6 @@ export default function ContentManagerPage() {
       setSortOrderModal(prev => ({ ...prev, saving: false }))
     }
   }, [sortOrderModal.items, loadCategories])
-
-  // --- Preview content ---
-
-  const previewHtml = activeTab === 'preview'
-    ? parseMarkdownToHtml(`# ${form.title}\n\n${form.content}`)
-    : ''
 
   // --- Render ---
 
@@ -677,56 +607,12 @@ export default function ContentManagerPage() {
                     </div>
                   )}
 
-                  {/* Tab bar */}
-                  <div className="content-manager__tab-bar">
-                    <button
-                      type="button"
-                      className={`content-manager__tab${activeTab === 'editor' ? ' content-manager__tab--active' : ''}`}
-                      onClick={() => setActiveTab('editor')}
-                    >
-                      <i className="fas fa-edit" /> Editor
-                    </button>
-                    <button
-                      type="button"
-                      className={`content-manager__tab${activeTab === 'preview' ? ' content-manager__tab--active' : ''}`}
-                      onClick={() => setActiveTab('preview')}
-                    >
-                      <i className="fas fa-eye" /> Preview
-                    </button>
-                  </div>
-
-                  {/* Editor / Preview */}
-                  {activeTab === 'editor' ? (
-                    <div className="content-manager__editor">
-                      <div className="content-manager__toolbar">
-                        {TOOLBAR_ITEMS.map((item, i) => {
-                          if (item === 'sep') return <div key={`sep-${i}`} className="content-manager__toolbar-sep" />
-                          return (
-                            <button
-                              key={item.label}
-                              type="button"
-                              className="content-manager__toolbar-btn"
-                              title={item.label}
-                              onClick={() => insertMarkdown(item.prefix, item.suffix)}
-                            >
-                              {item.icon ? <i className={item.icon} /> : item.text}
-                            </button>
-                          )
-                        })}
-                      </div>
-                      <textarea
-                        ref={textareaRef}
-                        className="content-manager__textarea"
-                        value={form.content}
-                        onChange={(e) => setForm(prev => ({ ...prev, content: e.target.value }))}
-                        placeholder="Write your markdown content here..."
-                      />
-                    </div>
-                  ) : (
-                    <div className="content-manager__preview">
-                      <MarkdownRenderer content={previewHtml} />
-                    </div>
-                  )}
+                  {/* WYSIWYG Editor */}
+                  <WysiwygEditor
+                    content={form.content}
+                    onContentChange={(content) => setForm(prev => ({ ...prev, content }))}
+                    placeholder="Write your content here..."
+                  />
                 </div>
 
                 {/* Actions */}

@@ -1,9 +1,7 @@
-import { useState, useEffect, useCallback, useRef } from 'react'
-import { marked } from 'marked'
+import { useState, useEffect, useCallback } from 'react'
 import { useDocumentTitle } from '@hooks/useDocumentTitle'
 import { AdminRoute } from '@components/common/AdminRoute'
-import { ConfirmModal, useConfirmModal, LoadingSpinner } from '@components/common'
-import { MarkdownRenderer } from '@components/guides/MarkdownRenderer'
+import { ConfirmModal, useConfirmModal, LoadingSpinner, WysiwygEditor } from '@components/common'
 import eventAdminService, {
   type EventSummary,
   type EventPart,
@@ -20,11 +18,6 @@ function getAxiosError(error: unknown, fallback: string): string {
   }
   if (error instanceof Error) return error.message
   return fallback
-}
-
-function parseMarkdownToHtml(markdown: string): string {
-  marked.setOptions({ gfm: true, breaks: true })
-  return marked.parse(markdown) as string
 }
 
 function formatDateForInput(dateStr: string): string {
@@ -61,150 +54,6 @@ const CATEGORIES = [
   { value: 'upcoming', label: 'Upcoming' },
   { value: 'past', label: 'Past' },
 ]
-
-// ============================================================================
-// Toolbar
-// ============================================================================
-
-interface ToolbarItem {
-  label: string
-  icon?: string
-  text?: string
-  prefix: string
-  suffix: string
-}
-
-const TOOLBAR_ITEMS: (ToolbarItem | 'sep')[] = [
-  { label: 'H1', text: 'H1', prefix: '# ', suffix: '' },
-  { label: 'H2', text: 'H2', prefix: '## ', suffix: '' },
-  { label: 'H3', text: 'H3', prefix: '### ', suffix: '' },
-  'sep',
-  { label: 'Bold', icon: 'fas fa-bold', prefix: '**', suffix: '**' },
-  { label: 'Italic', icon: 'fas fa-italic', prefix: '_', suffix: '_' },
-  { label: 'Strikethrough', icon: 'fas fa-strikethrough', prefix: '~~', suffix: '~~' },
-  'sep',
-  { label: 'Link', icon: 'fas fa-link', prefix: '[', suffix: '](url)' },
-  { label: 'Image', icon: 'fas fa-image', prefix: '![alt](', suffix: ')' },
-  'sep',
-  { label: 'Unordered List', icon: 'fas fa-list-ul', prefix: '- ', suffix: '' },
-  { label: 'Ordered List', icon: 'fas fa-list-ol', prefix: '1. ', suffix: '' },
-  { label: 'Blockquote', icon: 'fas fa-quote-right', prefix: '> ', suffix: '' },
-  'sep',
-  { label: 'Inline Code', icon: 'fas fa-code', prefix: '`', suffix: '`' },
-  { label: 'Code Block', text: '{}', prefix: '```\n', suffix: '\n```' },
-  { label: 'Horizontal Rule', text: 'HR', prefix: '\n---\n', suffix: '' },
-  { label: 'Table', icon: 'fas fa-table', prefix: '| Header | Header |\n| ------ | ------ |\n| Cell   | Cell   |', suffix: '' },
-]
-
-// ============================================================================
-// Markdown Toolbar (reusable)
-// ============================================================================
-
-function MarkdownToolbar({
-  textareaRef,
-  content,
-  onContentChange,
-  onUploadImage,
-  uploading,
-}: {
-  textareaRef: React.RefObject<HTMLTextAreaElement | null>
-  content: string
-  onContentChange: (content: string) => void
-  onUploadImage?: (e: React.ChangeEvent<HTMLInputElement>) => void
-  uploading?: boolean
-}) {
-  const fileInputRef = useRef<HTMLInputElement>(null)
-
-  const insertMarkdown = useCallback((prefix: string, suffix: string) => {
-    const textarea = textareaRef.current
-    if (!textarea) return
-
-    const start = textarea.selectionStart
-    const end = textarea.selectionEnd
-    const selected = content.substring(start, end)
-    const newContent = content.substring(0, start) + prefix + selected + suffix + content.substring(end)
-    onContentChange(newContent)
-
-    requestAnimationFrame(() => {
-      textarea.focus()
-      const cursorPos = start + prefix.length + selected.length
-      textarea.setSelectionRange(cursorPos, cursorPos)
-    })
-  }, [textareaRef, content, onContentChange])
-
-  return (
-    <div className="content-manager__toolbar">
-      {TOOLBAR_ITEMS.map((item, i) => {
-        if (item === 'sep') return <div key={`sep-${i}`} className="content-manager__toolbar-sep" />
-        return (
-          <button
-            key={item.label}
-            type="button"
-            className="content-manager__toolbar-btn"
-            title={item.label}
-            onClick={() => insertMarkdown(item.prefix, item.suffix)}
-          >
-            {item.icon ? <i className={item.icon} /> : item.text}
-          </button>
-        )
-      })}
-      {onUploadImage && (
-        <>
-          <div className="content-manager__toolbar-sep" />
-          <button
-            type="button"
-            className="content-manager__toolbar-btn"
-            title="Upload Image"
-            onClick={() => fileInputRef.current?.click()}
-            disabled={uploading}
-          >
-            <i className={uploading ? 'fas fa-spinner fa-spin' : 'fas fa-upload'} />
-          </button>
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept="image/*"
-            style={{ display: 'none' }}
-            onChange={onUploadImage}
-          />
-        </>
-      )}
-    </div>
-  )
-}
-
-// ============================================================================
-// Part Markdown Editor (single part with toolbar + textarea)
-// ============================================================================
-
-function PartMarkdownEditor({
-  content,
-  onContentChange,
-  placeholder,
-}: {
-  content: string
-  onContentChange: (content: string) => void
-  placeholder?: string
-}) {
-  const textareaRef = useRef<HTMLTextAreaElement>(null)
-
-  return (
-    <div className="content-manager__editor">
-      <MarkdownToolbar
-        textareaRef={textareaRef}
-        content={content}
-        onContentChange={onContentChange}
-      />
-      <textarea
-        ref={textareaRef}
-        className="content-manager__textarea"
-        value={content}
-        onChange={(e) => onContentChange(e.target.value)}
-        placeholder={placeholder || 'Write content in markdown...'}
-      />
-    </div>
-  )
-}
 
 // ============================================================================
 // Part Editor Sub-Component
@@ -355,7 +204,7 @@ function PartEditor({
                 </div>
                 <div className="content-manager__field">
                   <label>Content</label>
-                  <PartMarkdownEditor
+                  <WysiwygEditor
                     content={form.content}
                     onContentChange={(content) => setPartForms(prev => ({
                       ...prev,
@@ -398,10 +247,10 @@ function PartEditor({
             </div>
             <div className="content-manager__field">
               <label>Content</label>
-              <PartMarkdownEditor
+              <WysiwygEditor
                 content={newPartForm.content}
-                onContentChange={(content) => setNewPartForm(prev => prev ? { ...prev, content } : null)}
-                placeholder="Write part content in markdown..."
+                onContentChange={(content: string) => setNewPartForm(prev => prev ? { ...prev, content } : null)}
+                placeholder="Write part content..."
               />
             </div>
             <div style={{ display: 'flex', gap: 'var(--spacing-xsmall)' }}>
@@ -443,7 +292,6 @@ export default function EventManagerPage() {
   const [isNew, setIsNew] = useState(false)
   const [form, setForm] = useState<FormState>(EMPTY_FORM)
   const [originalForm, setOriginalForm] = useState<FormState>(EMPTY_FORM)
-  const [activeTab, setActiveTab] = useState<'editor' | 'preview'>('editor')
   const [saving, setSaving] = useState(false)
   const [statusMsg, setStatusMsg] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
   const [searchQuery, setSearchQuery] = useState('')
@@ -453,7 +301,6 @@ export default function EventManagerPage() {
   const [isMultiPart, setIsMultiPart] = useState(false)
 
   const confirmModal = useConfirmModal()
-  const textareaRef = useRef<HTMLTextAreaElement>(null)
 
   // --- Load events ---
 
@@ -528,7 +375,6 @@ export default function EventManagerPage() {
       setIsNew(false)
       setIsMultiPart(event.isMultiPart || false)
       setEventParts(event.parts || [])
-      setActiveTab('editor')
     } catch (err) {
       setStatusMsg({ type: 'error', text: getAxiosError(err, 'Failed to load event') })
     }
@@ -548,7 +394,6 @@ export default function EventManagerPage() {
     setIsNew(true)
     setIsMultiPart(false)
     setEventParts([])
-    setActiveTab('editor')
   }, [])
 
   const handleNewEvent = useCallback(() => {
@@ -660,32 +505,22 @@ export default function EventManagerPage() {
 
   // --- Image upload ---
 
-  const handleImageUpload = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (!file) return
-
+  const handleImageUpload = useCallback(async (file: File): Promise<string | null> => {
     setUploading(true)
     try {
       const result = await eventAdminService.uploadImage(file)
       if (result.imageUrl) {
-        const textarea = textareaRef.current
-        if (textarea) {
-          const start = textarea.selectionStart
-          const imageMarkdown = `![${file.name}](${result.imageUrl})`
-          const newContent = form.content.substring(0, start) + imageMarkdown + form.content.substring(start)
-          setForm(prev => ({ ...prev, content: newContent }))
-        } else {
-          setForm(prev => ({ ...prev, content: prev.content + `\n![${file.name}](${result.imageUrl})` }))
-        }
         setStatusMsg({ type: 'success', text: 'Image uploaded and inserted' })
+        return result.imageUrl
       }
+      return null
     } catch (err) {
       setStatusMsg({ type: 'error', text: getAxiosError(err, 'Failed to upload image') })
+      return null
     } finally {
       setUploading(false)
-      e.target.value = ''
     }
-  }, [form.content])
+  }, [])
 
   // --- UI helpers ---
 
@@ -705,12 +540,6 @@ export default function EventManagerPage() {
     const q = searchQuery.toLowerCase()
     return list.filter(e => e.title.toLowerCase().includes(q) || e.description?.toLowerCase().includes(q))
   }
-
-  // --- Preview ---
-
-  const previewHtml = activeTab === 'preview'
-    ? parseMarkdownToHtml(`# ${form.title}\n${form.startDate} to ${form.endDate}\n\n${form.content}`)
-    : ''
 
   // --- Render ---
 
@@ -919,47 +748,14 @@ export default function EventManagerPage() {
                     </div>
                   </div>
 
-                  {/* Tab bar */}
-                  <div className="content-manager__tab-bar">
-                    <button
-                      type="button"
-                      className={`content-manager__tab${activeTab === 'editor' ? ' content-manager__tab--active' : ''}`}
-                      onClick={() => setActiveTab('editor')}
-                    >
-                      <i className="fas fa-edit" /> {isMultiPart ? 'Overview Editor' : 'Editor'}
-                    </button>
-                    <button
-                      type="button"
-                      className={`content-manager__tab${activeTab === 'preview' ? ' content-manager__tab--active' : ''}`}
-                      onClick={() => setActiveTab('preview')}
-                    >
-                      <i className="fas fa-eye" /> Preview
-                    </button>
-                  </div>
-
-                  {/* Editor / Preview */}
-                  {activeTab === 'editor' ? (
-                    <div className="content-manager__editor">
-                      <MarkdownToolbar
-                        textareaRef={textareaRef}
-                        content={form.content}
-                        onContentChange={(content) => setForm(prev => ({ ...prev, content }))}
-                        onUploadImage={handleImageUpload}
-                        uploading={uploading}
-                      />
-                      <textarea
-                        ref={textareaRef}
-                        className="content-manager__textarea"
-                        value={form.content}
-                        onChange={(e) => setForm(prev => ({ ...prev, content: e.target.value }))}
-                        placeholder={isMultiPart ? 'Write the event overview/description in markdown...' : 'Write your event content in markdown...'}
-                      />
-                    </div>
-                  ) : (
-                    <div className="content-manager__preview">
-                      <MarkdownRenderer content={previewHtml} />
-                    </div>
-                  )}
+                  {/* WYSIWYG Editor */}
+                  <WysiwygEditor
+                    content={form.content}
+                    onContentChange={(content) => setForm(prev => ({ ...prev, content }))}
+                    placeholder={isMultiPart ? 'Write the event overview/description...' : 'Write your event content...'}
+                    onUploadImage={handleImageUpload}
+                    uploading={uploading}
+                  />
 
                   {/* Parts editor for multi-part events */}
                   {isMultiPart && !isNew && selectedEventId && (
