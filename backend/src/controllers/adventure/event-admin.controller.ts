@@ -1,16 +1,9 @@
 import { Request, Response } from 'express';
-import * as fs from 'fs';
-import * as path from 'path';
-import { fileURLToPath } from 'url';
 import { EventService } from '../../services/event.service';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+import { EventRepository } from '../../repositories/event.repository';
 
 const eventService = new EventService();
-const EVENTS_BASE = path.resolve(__dirname, '..', '..', '..', '..', 'website', 'public', 'content', 'events');
-
-const VALID_CATEGORIES = ['current', 'upcoming', 'past'];
+const repo = new EventRepository();
 
 function sanitizeFileName(name: string): string {
   return name
@@ -30,10 +23,10 @@ function sanitizeFileName(name: string): string {
  */
 export async function listAllEvents(_req: Request, res: Response): Promise<void> {
   try {
-    const allEvents = eventService.getAllEvents();
+    const allEvents = await eventService.getAllEvents();
     const categorized = eventService.categorizeEventsByDate(allEvents);
 
-    const mapEvent = (event: ReturnType<typeof eventService.getAllEvents>[0], category: string) => ({
+    const mapEvent = (event: (typeof allEvents)[0], category: string) => ({
       id: event.id,
       title: event.title,
       startDate: event.startDate,
@@ -41,7 +34,6 @@ export async function listAllEvents(_req: Request, res: Response): Promise<void>
       description: event.description,
       imageUrl: event.imageUrl,
       category,
-      filePath: event.filePath,
       isMultiPart: event.isMultiPart,
       partCount: event.parts?.length ?? 0,
     });
@@ -53,7 +45,7 @@ export async function listAllEvents(_req: Request, res: Response): Promise<void>
         upcoming: categorized.upcoming.map(e => mapEvent(e, 'upcoming')),
         past: categorized.past.map(e => mapEvent(e, 'past')),
       },
-      summary: eventService.getEventsSummary(),
+      summary: await eventService.getEventsSummary(),
     });
   } catch (error) {
     console.error('Error listing events:', error);
@@ -66,37 +58,52 @@ export async function listAllEvents(_req: Request, res: Response): Promise<void>
  */
 export async function getEventForEdit(req: Request, res: Response): Promise<void> {
   try {
-    const { eventId } = req.params;
+    const eventId = req.params.eventId as string;
     if (!eventId) {
       res.status(400).json({ success: false, message: 'Event ID is required' });
       return;
     }
 
-    const allEvents = eventService.getAllEvents();
-    const event = allEvents.find(e => e.id === eventId);
-
-    if (!event) {
+    const eventWithParts = await repo.findByEventIdWithParts(eventId);
+    if (!eventWithParts) {
       res.status(404).json({ success: false, message: 'Event not found' });
       return;
     }
 
-    // Determine which folder the event is in
-    const relativePath = path.relative(EVENTS_BASE, event.filePath);
-    const category = relativePath.split(path.sep)[0] ?? 'current';
+    // Determine category from dates
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const start = new Date(eventWithParts.startDate);
+    const end = new Date(eventWithParts.endDate);
+    const eventStart = new Date(start.getFullYear(), start.getMonth(), start.getDate());
+    const eventEnd = new Date(end.getFullYear(), end.getMonth(), end.getDate());
+
+    let category = 'current';
+    if (eventEnd < today) {category = 'past';}
+    else if (eventStart > today) {category = 'upcoming';}
 
     res.json({
       success: true,
       event: {
-        id: event.id,
-        title: event.title,
-        startDate: event.startDate.toISOString().split('T')[0],
-        endDate: event.endDate.toISOString().split('T')[0],
-        description: event.description,
-        imageUrl: event.imageUrl,
+        id: eventWithParts.eventId,
+        title: eventWithParts.title,
+        startDate: eventWithParts.startDate instanceof Date
+          ? eventWithParts.startDate.toISOString().split('T')[0]
+          : String(eventWithParts.startDate),
+        endDate: eventWithParts.endDate instanceof Date
+          ? eventWithParts.endDate.toISOString().split('T')[0]
+          : String(eventWithParts.endDate),
+        description: eventWithParts.description,
+        imageUrl: eventWithParts.imageUrl,
         category,
-        content: event.content,
-        isMultiPart: event.isMultiPart,
-        parts: event.parts ?? [],
+        content: eventWithParts.content,
+        isMultiPart: eventWithParts.isMultiPart,
+        parts: eventWithParts.parts.map(p => ({
+          id: p.partId,
+          title: p.title,
+          content: p.content,
+          order: p.sortOrder,
+        })),
       },
     });
   } catch (error) {
@@ -110,7 +117,7 @@ export async function getEventForEdit(req: Request, res: Response): Promise<void
  */
 export async function createEvent(req: Request, res: Response): Promise<void> {
   try {
-    const { title, startDate, endDate, content, category, fileName, isMultiPart } = req.body;
+    const { title, startDate, endDate, content, fileName, isMultiPart } = req.body;
 
     if (!title || !startDate || !endDate) {
       res.status(400).json({ success: false, message: 'Title, start date, and end date are required' });
@@ -122,7 +129,6 @@ export async function createEvent(req: Request, res: Response): Promise<void> {
       return;
     }
 
-    const targetCategory = VALID_CATEGORIES.includes(category) ? category : 'upcoming';
     const safeName = fileName ? sanitizeFileName(fileName) : sanitizeFileName(title);
 
     if (!safeName) {
@@ -130,37 +136,35 @@ export async function createEvent(req: Request, res: Response): Promise<void> {
       return;
     }
 
-    const dirPath = path.join(EVENTS_BASE, targetCategory);
-    if (!fs.existsSync(dirPath)) {
-      fs.mkdirSync(dirPath, { recursive: true });
+    // Check for duplicate
+    const existing = await repo.findByEventId(safeName);
+    if (existing) {
+      res.status(409).json({ success: false, message: 'An event with this name already exists' });
+      return;
     }
 
-    if (isMultiPart) {
-      // Create directory structure for multi-part event
-      const eventDirPath = path.join(dirPath, safeName);
-      if (fs.existsSync(eventDirPath)) {
-        res.status(409).json({ success: false, message: 'An event with this name already exists' });
-        return;
+    // Extract description from content (first non-empty, non-heading, non-image line)
+    let description = '';
+    if (content) {
+      const lines = content.split('\n');
+      for (const line of lines) {
+        const trimmed = line.trim();
+        if (trimmed && !trimmed.startsWith('#') && !trimmed.startsWith('![')) {
+          description = trimmed;
+          break;
+        }
       }
-
-      fs.mkdirSync(eventDirPath, { recursive: true });
-
-      // Create overview.md
-      const overviewContent = `# ${title}\n${startDate} to ${endDate}\n\n${content ?? ''}`;
-      fs.writeFileSync(path.join(eventDirPath, 'overview.md'), overviewContent, 'utf8');
-    } else {
-      // Single-part event (regular .md file)
-      const filePath = path.join(dirPath, `${safeName}.md`);
-      if (fs.existsSync(filePath)) {
-        res.status(409).json({ success: false, message: 'An event with this file name already exists' });
-        return;
-      }
-
-      const fullContent = `# ${title}\n${startDate} to ${endDate}\n\n${content}`;
-      fs.writeFileSync(filePath, fullContent, 'utf8');
     }
 
-    eventService.clearCache();
+    await repo.create({
+      eventId: safeName,
+      title,
+      startDate,
+      endDate,
+      description,
+      content: content ?? '',
+      isMultiPart: isMultiPart ?? false,
+    });
 
     res.json({
       success: true,
@@ -179,59 +183,40 @@ export async function createEvent(req: Request, res: Response): Promise<void> {
 export async function updateEvent(req: Request, res: Response): Promise<void> {
   try {
     const eventId = req.params.eventId as string;
-    const { title, startDate, endDate, content, category } = req.body;
+    const { title, startDate, endDate, content } = req.body;
 
     if (!eventId) {
       res.status(400).json({ success: false, message: 'Event ID is required' });
       return;
     }
 
-    // Find the existing event
-    const allEvents = eventService.getAllEvents();
-    const event = allEvents.find(e => e.id === eventId);
-
+    const event = await repo.findByEventId(eventId);
     if (!event) {
       res.status(404).json({ success: false, message: 'Event not found' });
       return;
     }
 
-    const currentRelPath = path.relative(EVENTS_BASE, event.filePath);
-    const currentCategory = currentRelPath.split(path.sep)[0];
-    const targetCategory = category && VALID_CATEGORIES.includes(category) ? category : currentCategory;
-
-    if (event.isMultiPart) {
-      // Update overview.md for multi-part event
-      const overviewContent = `# ${title ?? event.title}\n${startDate ?? event.startDate.toISOString().split('T')[0]} to ${endDate ?? event.endDate.toISOString().split('T')[0]}\n\n${content !== undefined ? content : event.content.split('\n').slice(3).join('\n')}`;
-
-      if (targetCategory !== currentCategory) {
-        // Move entire directory
-        const newDirPath = path.join(EVENTS_BASE, targetCategory, eventId);
-        if (!fs.existsSync(path.join(EVENTS_BASE, targetCategory))) {
-          fs.mkdirSync(path.join(EVENTS_BASE, targetCategory), { recursive: true });
+    // Extract description if content is updated
+    let description: string | undefined;
+    if (content !== undefined) {
+      description = '';
+      const lines = content.split('\n');
+      for (const line of lines) {
+        const trimmed = line.trim();
+        if (trimmed && !trimmed.startsWith('#') && !trimmed.startsWith('![')) {
+          description = trimmed;
+          break;
         }
-        fs.renameSync(event.filePath, newDirPath);
-        fs.writeFileSync(path.join(newDirPath, 'overview.md'), overviewContent, 'utf8');
-      } else {
-        fs.writeFileSync(path.join(event.filePath, 'overview.md'), overviewContent, 'utf8');
-      }
-    } else {
-      // Single-part event update
-      const fullContent = `# ${title ?? event.title}\n${startDate ?? event.startDate.toISOString().split('T')[0]} to ${endDate ?? event.endDate.toISOString().split('T')[0]}\n\n${content !== undefined ? content : event.content.split('\n').slice(3).join('\n')}`;
-
-      if (targetCategory !== currentCategory) {
-        const newDirPath = path.join(EVENTS_BASE, targetCategory);
-        if (!fs.existsSync(newDirPath)) {
-          fs.mkdirSync(newDirPath, { recursive: true });
-        }
-        const newFilePath = path.join(newDirPath, `${eventId}.md`);
-        fs.writeFileSync(newFilePath, fullContent, 'utf8');
-        fs.unlinkSync(event.filePath);
-      } else {
-        fs.writeFileSync(event.filePath, fullContent, 'utf8');
       }
     }
 
-    eventService.clearCache();
+    await repo.update(event.id, {
+      title,
+      startDate,
+      endDate,
+      content,
+      description,
+    });
 
     res.json({
       success: true,
@@ -248,29 +233,20 @@ export async function updateEvent(req: Request, res: Response): Promise<void> {
  */
 export async function deleteEvent(req: Request, res: Response): Promise<void> {
   try {
-    const { eventId } = req.params;
+    const eventId = req.params.eventId as string;
 
     if (!eventId) {
       res.status(400).json({ success: false, message: 'Event ID is required' });
       return;
     }
 
-    const allEvents = eventService.getAllEvents();
-    const event = allEvents.find(e => e.id === eventId);
-
+    const event = await repo.findByEventId(eventId);
     if (!event) {
       res.status(404).json({ success: false, message: 'Event not found' });
       return;
     }
 
-    if (event.isMultiPart) {
-      // Remove entire directory
-      fs.rmSync(event.filePath, { recursive: true, force: true });
-    } else {
-      fs.unlinkSync(event.filePath);
-    }
-
-    eventService.clearCache();
+    await repo.delete(event.id); // CASCADE deletes parts
 
     res.json({
       success: true,
@@ -287,7 +263,7 @@ export async function deleteEvent(req: Request, res: Response): Promise<void> {
  */
 export async function addPart(req: Request, res: Response): Promise<void> {
   try {
-    const { eventId } = req.params;
+    const eventId = req.params.eventId as string;
     const { title, content } = req.body;
 
     if (!eventId) {
@@ -299,27 +275,23 @@ export async function addPart(req: Request, res: Response): Promise<void> {
       return;
     }
 
-    const allEvents = eventService.getAllEvents();
-    const event = allEvents.find(e => e.id === eventId);
-
+    const event = await repo.findByEventId(eventId);
     if (!event?.isMultiPart) {
       res.status(404).json({ success: false, message: 'Multi-part event not found' });
       return;
     }
 
-    // Determine next part number
-    const existingParts = event.parts ?? [];
-    const maxOrder = existingParts.reduce((max, p) => {
-      const num = parseInt(p.id.replace('part-', ''));
-      return num > max ? num : max;
-    }, 0);
+    const maxOrder = await repo.getMaxPartOrder(event.id);
     const nextNum = maxOrder + 1;
     const partId = `part-${nextNum}`;
 
-    const partContent = `# ${title}\n\n${content}`;
-    fs.writeFileSync(path.join(event.filePath, `${partId}.md`), partContent, 'utf8');
-
-    eventService.clearCache();
+    await repo.createPart({
+      eventId: event.id,
+      partId,
+      title,
+      content,
+      sortOrder: nextNum,
+    });
 
     res.json({
       success: true,
@@ -337,7 +309,8 @@ export async function addPart(req: Request, res: Response): Promise<void> {
  */
 export async function updatePart(req: Request, res: Response): Promise<void> {
   try {
-    const { eventId, partId } = req.params;
+    const eventId = req.params.eventId as string;
+    const partId = req.params.partId as string;
     const { title, content } = req.body;
 
     if (!eventId || !partId) {
@@ -345,24 +318,19 @@ export async function updatePart(req: Request, res: Response): Promise<void> {
       return;
     }
 
-    const allEvents = eventService.getAllEvents();
-    const event = allEvents.find(e => e.id === eventId);
-
+    const event = await repo.findByEventId(eventId);
     if (!event?.isMultiPart) {
       res.status(404).json({ success: false, message: 'Multi-part event not found' });
       return;
     }
 
-    const partPath = path.join(event.filePath, `${partId}.md`);
-    if (!fs.existsSync(partPath)) {
+    const part = await repo.getPartByPartId(event.id, partId);
+    if (!part) {
       res.status(404).json({ success: false, message: 'Part not found' });
       return;
     }
 
-    const partContent = `# ${title}\n\n${content}`;
-    fs.writeFileSync(partPath, partContent, 'utf8');
-
-    eventService.clearCache();
+    await repo.updatePart(part.id, { title, content });
 
     res.json({
       success: true,
@@ -379,29 +347,27 @@ export async function updatePart(req: Request, res: Response): Promise<void> {
  */
 export async function deletePart(req: Request, res: Response): Promise<void> {
   try {
-    const { eventId, partId } = req.params;
+    const eventId = req.params.eventId as string;
+    const partId = req.params.partId as string;
 
     if (!eventId || !partId) {
       res.status(400).json({ success: false, message: 'Event ID and Part ID are required' });
       return;
     }
 
-    const allEvents = eventService.getAllEvents();
-    const event = allEvents.find(e => e.id === eventId);
-
+    const event = await repo.findByEventId(eventId);
     if (!event?.isMultiPart) {
       res.status(404).json({ success: false, message: 'Multi-part event not found' });
       return;
     }
 
-    const partPath = path.join(event.filePath, `${partId}.md`);
-    if (!fs.existsSync(partPath)) {
+    const part = await repo.getPartByPartId(event.id, partId);
+    if (!part) {
       res.status(404).json({ success: false, message: 'Part not found' });
       return;
     }
 
-    fs.unlinkSync(partPath);
-    eventService.clearCache();
+    await repo.deletePart(part.id);
 
     res.json({
       success: true,
@@ -414,7 +380,7 @@ export async function deletePart(req: Request, res: Response): Promise<void> {
 }
 
 /**
- * Upload an image for an event (returns a URL to embed in markdown)
+ * Upload an image for an event (uses existing upload middleware, returns URL)
  */
 export async function uploadEventImage(req: Request, res: Response): Promise<void> {
   try {
@@ -423,23 +389,8 @@ export async function uploadEventImage(req: Request, res: Response): Promise<voi
       return;
     }
 
-    // Save to a public directory accessible from the frontend
-    const uploadsDir = path.resolve(EVENTS_BASE, '..', '..', 'uploads', 'events');
-    if (!fs.existsSync(uploadsDir)) {
-      fs.mkdirSync(uploadsDir, { recursive: true });
-    }
-
-    const ext = path.extname(req.file.originalname);
-    const fileName = `event-${Date.now()}-${Math.round(Math.random() * 1e6)}${ext}`;
-    const destPath = path.join(uploadsDir, fileName);
-
-    fs.copyFileSync(req.file.path, destPath);
-    // Clean up temp upload
-    if (fs.existsSync(req.file.path)) {
-      fs.unlinkSync(req.file.path);
-    }
-
-    const imageUrl = `/uploads/events/${fileName}`;
+    // The upload middleware has already saved the file; use its path
+    const imageUrl = `/uploads/events/${req.file.filename ?? req.file.originalname}`;
 
     res.json({
       success: true,

@@ -9,6 +9,7 @@ import contentService, {
   type CategoriesResponse,
   type DirectoryStructure,
   type DirectoryNode,
+  type SortOrderItem,
 } from '@services/contentService'
 
 // ============================================================================
@@ -86,6 +87,14 @@ interface NewDirModalState {
   name: string
 }
 
+interface SortOrderModalState {
+  isOpen: boolean
+  category: string
+  parentPath: string
+  items: SortOrderItem[]
+  saving: boolean
+}
+
 // ============================================================================
 // TreeNode Sub-Component
 // ============================================================================
@@ -99,6 +108,7 @@ function TreeNode({
   onSelectFile,
   onNewFile,
   onNewDir,
+  onSortOrder,
 }: {
   structure: DirectoryStructure
   category: string
@@ -108,6 +118,7 @@ function TreeNode({
   onSelectFile: (category: string, filePath: string, fileName: string) => void
   onNewFile: (category: string, parentPath: string) => void
   onNewDir: (category: string, parentPath: string) => void
+  onSortOrder: (category: string, parentPath: string) => void
 }) {
   return (
     <div className="content-manager__tree">
@@ -125,6 +136,13 @@ function TreeNode({
               <i className={`fas ${isExpanded ? 'fa-folder-open' : 'fa-folder'}`} />
               <span>{dir.name}</span>
               <span className="content-manager__tree-dir-actions">
+                <button
+                  type="button"
+                  title="Edit sort order"
+                  onClick={(e) => { e.stopPropagation(); onSortOrder(category, dir.url) }}
+                >
+                  <i className="fas fa-sort" />
+                </button>
                 <button
                   type="button"
                   title="New file"
@@ -152,6 +170,7 @@ function TreeNode({
                   onSelectFile={onSelectFile}
                   onNewFile={onNewFile}
                   onNewDir={onNewDir}
+                  onSortOrder={onSortOrder}
                 />
               </div>
             )}
@@ -229,6 +248,7 @@ export default function ContentManagerPage() {
   const [saving, setSaving] = useState(false)
   const [statusMsg, setStatusMsg] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
   const [newDirModal, setNewDirModal] = useState<NewDirModalState>({ isOpen: false, category: '', parentPath: '', name: '' })
+  const [sortOrderModal, setSortOrderModal] = useState<SortOrderModalState>({ isOpen: false, category: '', parentPath: '', items: [], saving: false })
 
   const confirmModal = useConfirmModal()
   const textareaRef = useRef<HTMLTextAreaElement>(null)
@@ -447,6 +467,58 @@ export default function ContentManagerPage() {
     setNewDirModal({ isOpen: true, category, parentPath, name: '' })
   }, [])
 
+  // --- Sort order ---
+
+  const openSortOrderModal = useCallback(async (category: string, parentPath: string) => {
+    try {
+      const data = await contentService.getSortOrder(category, parentPath)
+      setSortOrderModal({ isOpen: true, category, parentPath, items: data.items, saving: false })
+    } catch (err) {
+      setStatusMsg({ type: 'error', text: getAxiosError(err, 'Failed to load sort order') })
+    }
+  }, [])
+
+  const moveSortItem = useCallback((fromIndex: number, toIndex: number) => {
+    setSortOrderModal(prev => {
+      const items = [...prev.items]
+      const [moved] = items.splice(fromIndex, 1)
+      if (moved) items.splice(toIndex, 0, moved)
+      return { ...prev, items }
+    })
+  }, [])
+
+  const handleSaveSortOrder = useCallback(async () => {
+    setSortOrderModal(prev => ({ ...prev, saving: true }))
+    try {
+      const updates = sortOrderModal.items.map((item, idx) => ({
+        id: item.id,
+        sortOrder: idx + 1,
+      }))
+      await contentService.updateSortOrder(updates)
+      setSortOrderModal(prev => ({ ...prev, isOpen: false, saving: false }))
+      await loadCategories()
+    } catch (err) {
+      setStatusMsg({ type: 'error', text: getAxiosError(err, 'Failed to save sort order') })
+      setSortOrderModal(prev => ({ ...prev, saving: false }))
+    }
+  }, [sortOrderModal.items, loadCategories])
+
+  const handleClearSortOrder = useCallback(async () => {
+    setSortOrderModal(prev => ({ ...prev, saving: true }))
+    try {
+      const updates = sortOrderModal.items.map(item => ({
+        id: item.id,
+        sortOrder: 0,
+      }))
+      await contentService.updateSortOrder(updates)
+      setSortOrderModal(prev => ({ ...prev, isOpen: false, saving: false }))
+      await loadCategories()
+    } catch (err) {
+      setStatusMsg({ type: 'error', text: getAxiosError(err, 'Failed to clear sort order') })
+      setSortOrderModal(prev => ({ ...prev, saving: false }))
+    }
+  }, [sortOrderModal.items, loadCategories])
+
   // --- Preview content ---
 
   const previewHtml = activeTab === 'preview'
@@ -508,6 +580,13 @@ export default function ContentManagerPage() {
                       <span className="content-manager__category-actions">
                         <button
                           type="button"
+                          title="Edit sort order"
+                          onClick={(e) => { e.stopPropagation(); openSortOrderModal(key, '') }}
+                        >
+                          <i className="fas fa-sort" />
+                        </button>
+                        <button
+                          type="button"
                           title="New file in root"
                           onClick={(e) => { e.stopPropagation(); handleNewFile(key, '') }}
                         >
@@ -534,6 +613,7 @@ export default function ContentManagerPage() {
                           onSelectFile={selectFile}
                           onNewFile={handleNewFile}
                           onNewDir={openNewDirModal}
+                          onSortOrder={openSortOrderModal}
                         />
                       </div>
                     )}
@@ -712,6 +792,92 @@ export default function ContentManagerPage() {
             />
             <span className="content-manager__hint">Letters, numbers, hyphens, and underscores only</span>
           </div>
+        </Modal>
+
+        {/* Sort Order Modal */}
+        <Modal
+          isOpen={sortOrderModal.isOpen}
+          onClose={() => setSortOrderModal(prev => ({ ...prev, isOpen: false }))}
+          title={`Sort Order: ${sortOrderModal.category}${sortOrderModal.parentPath ? '/' + sortOrderModal.parentPath : ''}`}
+          size="small"
+          footer={
+            <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
+              <button
+                type="button"
+                className="button secondary"
+                onClick={handleClearSortOrder}
+                disabled={sortOrderModal.saving}
+              >
+                Clear Order
+              </button>
+              <button
+                type="button"
+                className="button secondary"
+                onClick={() => setSortOrderModal(prev => ({ ...prev, isOpen: false }))}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                className="button primary"
+                onClick={handleSaveSortOrder}
+                disabled={sortOrderModal.saving}
+              >
+                {sortOrderModal.saving ? 'Saving...' : 'Save Order'}
+              </button>
+            </div>
+          }
+        >
+          <p style={{ margin: '0 0 12px', fontSize: '0.85rem', opacity: 0.7 }}>
+            Drag items to reorder. Position in the list determines display order.
+          </p>
+          {sortOrderModal.items.length === 0 ? (
+            <p style={{ textAlign: 'center', opacity: 0.5 }}>No items at this level</p>
+          ) : (
+            <div className="content-manager__sort-list">
+              {sortOrderModal.items.map((item, index) => (
+                <div
+                  key={item.id}
+                  className="content-manager__sort-item"
+                  draggable
+                  onDragStart={(e) => { e.dataTransfer.setData('text/plain', String(index)) }}
+                  onDragOver={(e) => { e.preventDefault() }}
+                  onDrop={(e) => {
+                    e.preventDefault()
+                    const fromIndex = parseInt(e.dataTransfer.getData('text/plain'), 10)
+                    if (!isNaN(fromIndex) && fromIndex !== index) {
+                      moveSortItem(fromIndex, index)
+                    }
+                  }}
+                >
+                  <span className="content-manager__sort-handle">
+                    <i className="fas fa-grip-vertical" />
+                  </span>
+                  <i className={`fas ${item.isDirectory ? 'fa-folder' : 'fa-file-alt'}`} style={{ opacity: 0.5 }} />
+                  <span className="content-manager__sort-title">{item.title}</span>
+                  <span className="content-manager__sort-position">{index + 1}</span>
+                  <span className="content-manager__sort-arrows">
+                    <button
+                      type="button"
+                      disabled={index === 0}
+                      onClick={() => moveSortItem(index, index - 1)}
+                      title="Move up"
+                    >
+                      <i className="fas fa-chevron-up" />
+                    </button>
+                    <button
+                      type="button"
+                      disabled={index === sortOrderModal.items.length - 1}
+                      onClick={() => moveSortItem(index, index + 1)}
+                      title="Move down"
+                    >
+                      <i className="fas fa-chevron-down" />
+                    </button>
+                  </span>
+                </div>
+              ))}
+            </div>
+          )}
         </Modal>
 
         <ConfirmModal {...confirmModal.modalProps} />

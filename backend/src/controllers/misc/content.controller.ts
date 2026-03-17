@@ -1,16 +1,18 @@
 import { Request, Response } from 'express';
-import * as path from 'path';
-import * as fs from 'fs';
-import { fileURLToPath } from 'url';
-import {
-  getDirectoryStructure,
-  loadMarkdownContent,
-} from '../../utils/markdownUtils';
+import { markdownToHtml } from '../../utils/markdownUtils';
+import { GuideContentRepository } from '../../repositories/guide-content.repository';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const CONTENT_BASE_PATH = path.resolve(__dirname, '..', '..', '..', '..', 'website', 'public', 'content');
+const repo = new GuideContentRepository();
+
 const VALID_CATEGORIES = ['guides', 'lore', 'factions', 'npcs', 'locations'];
+
+const CATEGORY_NAMES: Record<string, string> = {
+  guides: 'Game Guides',
+  lore: 'Lore',
+  factions: 'Factions',
+  npcs: 'NPCs',
+  locations: 'Locations',
+};
 
 // Express 5 wildcard params (*contentPath) return an array of segments
 function getContentPath(req: Request): string {
@@ -25,33 +27,15 @@ function getContentPath(req: Request): string {
 
 export async function getCategories(_req: Request, res: Response): Promise<void> {
   try {
-    const categories: Record<string, { name: string; path: string; structure: ReturnType<typeof getDirectoryStructure> }> = {
-      guides: {
-        name: 'Game Guides',
-        path: 'guides',
-        structure: getDirectoryStructure(path.join(CONTENT_BASE_PATH, 'guides'), ''),
-      },
-      lore: {
-        name: 'Lore',
-        path: 'lore',
-        structure: getDirectoryStructure(path.join(CONTENT_BASE_PATH, 'lore'), ''),
-      },
-      factions: {
-        name: 'Factions',
-        path: 'factions',
-        structure: getDirectoryStructure(path.join(CONTENT_BASE_PATH, 'factions'), ''),
-      },
-      npcs: {
-        name: 'NPCs',
-        path: 'npcs',
-        structure: getDirectoryStructure(path.join(CONTENT_BASE_PATH, 'npcs'), ''),
-      },
-      locations: {
-        name: 'Locations',
-        path: 'locations',
-        structure: getDirectoryStructure(path.join(CONTENT_BASE_PATH, 'locations'), ''),
-      },
-    };
+    const categories: Record<string, { name: string; path: string; structure: unknown }> = {};
+
+    for (const category of VALID_CATEGORIES) {
+      categories[category] = {
+        name: CATEGORY_NAMES[category] ?? category,
+        path: category,
+        structure: await repo.buildDirectoryStructure(category),
+      };
+    }
 
     res.json(categories);
   } catch (error) {
@@ -70,31 +54,32 @@ export async function getContent(req: Request, res: Response): Promise<void> {
       return;
     }
 
-    // Sanitize path to prevent directory traversal
     const sanitizedPath = contentPath.replace(/\.\./g, '').replace(/^\/+/, '');
 
-    // Construct the full path
-    let filePath = path.join(CONTENT_BASE_PATH, category, sanitizedPath);
+    // Try as exact file (with .md extension)
+    let entry = await repo.findByPath(
+      category,
+      sanitizedPath.endsWith('.md') ? sanitizedPath : `${sanitizedPath}.md`,
+    );
 
-    // Check if it's a directory
-    if (fs.existsSync(filePath) && fs.statSync(filePath).isDirectory()) {
-      filePath = path.join(filePath, 'overview.md');
-    } else if (!filePath.endsWith('.md')) {
-      filePath += '.md';
+    // Try as directory overview
+    entry ??= await repo.findOverview(category, sanitizedPath || '');
+
+    // Try the path itself as a .md file if sanitizedPath already ends with .md
+    if (!entry && sanitizedPath.endsWith('.md')) {
+      entry = await repo.findByPath(category, sanitizedPath);
     }
 
-    if (!fs.existsSync(filePath)) {
+    if (!entry) {
       res.status(404).json({ success: false, message: 'Content not found' });
       return;
     }
 
-    const result = loadMarkdownContent(filePath);
-
     res.json({
       success: true,
-      content: result.content,
-      html: result.html,
-      metadata: result.metadata,
+      content: entry.content,
+      html: markdownToHtml(entry.content),
+      metadata: entry.metadata,
       path: sanitizedPath,
     });
   } catch (error) {
@@ -120,17 +105,7 @@ export async function saveContent(req: Request, res: Response): Promise<void> {
     }
 
     const sanitizedPath = contentPath.replace(/\.\./g, '').replace(/^\/+/, '');
-    let filePath = path.join(CONTENT_BASE_PATH, category, sanitizedPath);
-
-    if (!filePath.endsWith('.md')) {
-      filePath += '.md';
-    }
-
-    // Ensure directory exists
-    const dirPath = path.dirname(filePath);
-    if (!fs.existsSync(dirPath)) {
-      fs.mkdirSync(dirPath, { recursive: true });
-    }
+    const filePath = sanitizedPath.endsWith('.md') ? sanitizedPath : `${sanitizedPath}.md`;
 
     // Prepare content with title
     let finalContent = content;
@@ -138,7 +113,34 @@ export async function saveContent(req: Request, res: Response): Promise<void> {
       finalContent = `# ${title}\n\n${content}`;
     }
 
-    fs.writeFileSync(filePath, finalContent, 'utf8');
+    // Extract title from content
+    const titleMatch = finalContent.match(/^# (.+)/m);
+    const extractedTitle = titleMatch?.[1] ?? filePath.replace(/\.md$/, '').split('/').pop() ?? filePath;
+
+    // Determine parent path
+    const pathParts = filePath.split('/');
+    const parentPath = pathParts.length > 1 ? pathParts.slice(0, -1).join('/') : '';
+    const fileName = pathParts[pathParts.length - 1] ?? '';
+    const isOverview = fileName === 'overview.md';
+
+    // Check if entry exists
+    const existing = await repo.findByPath(category, filePath);
+
+    if (existing) {
+      await repo.update(existing.id, {
+        content: finalContent,
+        title: extractedTitle,
+      });
+    } else {
+      await repo.create({
+        category,
+        path: filePath,
+        title: extractedTitle,
+        content: finalContent,
+        isOverview,
+        parentPath,
+      });
+    }
 
     res.json({
       success: true,
@@ -162,29 +164,25 @@ export async function deleteContent(req: Request, res: Response): Promise<void> 
     }
 
     const sanitizedPath = contentPath.replace(/\.\./g, '').replace(/^\/+/, '');
-    let filePath = path.join(CONTENT_BASE_PATH, category, sanitizedPath);
 
-    if (!fs.existsSync(filePath)) {
-      if (fs.existsSync(filePath + '.md')) {
-        filePath += '.md';
-      } else {
-        res.status(404).json({ success: false, message: 'Content not found' });
-        return;
-      }
+    // Try deleting as a file
+    const filePath = sanitizedPath.endsWith('.md') ? sanitizedPath : `${sanitizedPath}.md`;
+    const deletedFile = await repo.deleteByCategoryAndPath(category, filePath);
+
+    if (deletedFile) {
+      res.json({ success: true, message: 'File deleted successfully' });
+      return;
     }
 
-    const isDirectory = fs.statSync(filePath).isDirectory();
+    // Try deleting as a directory (all entries with this parent path prefix)
+    const deletedCount = await repo.deleteByParentPathPrefix(category, sanitizedPath);
 
-    if (isDirectory) {
-      fs.rmSync(filePath, { recursive: true });
-    } else {
-      fs.unlinkSync(filePath);
+    if (deletedCount > 0) {
+      res.json({ success: true, message: 'Directory deleted successfully' });
+      return;
     }
 
-    res.json({
-      success: true,
-      message: `${isDirectory ? 'Directory' : 'File'} deleted successfully`,
-    });
+    res.status(404).json({ success: false, message: 'Content not found' });
   } catch (error) {
     console.error('Error deleting content:', error);
     res.status(500).json({ success: false, message: 'Failed to delete content' });
@@ -202,35 +200,90 @@ export async function createDirectory(req: Request, res: Response): Promise<void
       return;
     }
 
-    if (!name || !/^[a-zA-Z0-9-_]+$/.test(name)) {
+    if (!name || !/^[a-zA-Z0-9-_ ]+$/.test(name)) {
       res.status(400).json({
         success: false,
-        message: 'Invalid directory name. Use only letters, numbers, hyphens, and underscores.',
+        message: 'Invalid directory name. Use only letters, numbers, hyphens, underscores, and spaces.',
       });
       return;
     }
 
     const sanitizedPath = dirPath.replace(/\.\./g, '').replace(/^\/+/, '');
-    const fullPath = path.join(CONTENT_BASE_PATH, category, sanitizedPath, name);
+    const fullDirPath = sanitizedPath ? `${sanitizedPath}/${name}` : name;
+    const overviewPath = `${fullDirPath}/overview.md`;
 
-    if (fs.existsSync(fullPath)) {
+    // Check if directory already exists
+    const existing = await repo.findByPath(category, overviewPath);
+    if (existing) {
       res.status(400).json({ success: false, message: 'Directory already exists' });
       return;
     }
 
-    fs.mkdirSync(fullPath, { recursive: true });
-
-    // Create overview.md file
-    const overviewPath = path.join(fullPath, 'overview.md');
-    fs.writeFileSync(overviewPath, `# ${name}\n\nOverview content for ${name}`, 'utf8');
+    // Create overview.md entry for the new directory
+    await repo.create({
+      category,
+      path: overviewPath,
+      title: name,
+      content: `# ${name}\n\nOverview content for ${name}`,
+      isOverview: true,
+      parentPath: fullDirPath,
+    });
 
     res.json({
       success: true,
       message: 'Directory created successfully',
-      path: path.join(sanitizedPath, name).replace(/\\/g, '/'),
+      path: fullDirPath.replace(/\\/g, '/'),
     });
   } catch (error) {
     console.error('Error creating directory:', error);
     res.status(500).json({ success: false, message: 'Failed to create directory' });
+  }
+}
+
+export async function getSortOrder(req: Request, res: Response): Promise<void> {
+  try {
+    const category = req.params.category as string;
+    const parentPath = getContentPath(req);
+
+    if (!VALID_CATEGORIES.includes(category)) {
+      res.status(400).json({ success: false, message: 'Invalid category' });
+      return;
+    }
+
+    const sanitizedPath = parentPath.replace(/\.\./g, '').replace(/^\/+/, '');
+    const items = await repo.getItemsAtLevel(category, sanitizedPath);
+
+    res.json({
+      success: true,
+      items: items.map(item => ({
+        id: item.id,
+        title: item.title,
+        path: item.path,
+        isOverview: item.isOverview,
+        isDirectory: item.isOverview,
+        sortOrder: item.sortOrder,
+      })),
+    });
+  } catch (error) {
+    console.error('Error getting sort order:', error);
+    res.status(500).json({ success: false, message: 'Failed to get sort order' });
+  }
+}
+
+export async function updateSortOrder(req: Request, res: Response): Promise<void> {
+  try {
+    const { items } = req.body as { items?: { id: number; sortOrder: number }[] };
+
+    if (!items || !Array.isArray(items)) {
+      res.status(400).json({ success: false, message: 'Items array is required' });
+      return;
+    }
+
+    await repo.bulkUpdateSortOrders(items);
+
+    res.json({ success: true, message: 'Sort order updated successfully' });
+  } catch (error) {
+    console.error('Error updating sort order:', error);
+    res.status(500).json({ success: false, message: 'Failed to update sort order' });
   }
 }

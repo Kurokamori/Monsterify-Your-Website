@@ -9,7 +9,7 @@ const eventService = new EventService();
 
 export async function getEventCategories(_req: Request, res: Response): Promise<void> {
   try {
-    const allEvents = eventService.getAllEvents();
+    const allEvents = await eventService.getAllEvents();
     const categorized = eventService.categorizeEventsByDate(allEvents);
 
     res.json({
@@ -38,7 +38,7 @@ export async function getEventCategories(_req: Request, res: Response): Promise<
 export async function getEventContent(req: Request, res: Response): Promise<void> {
   try {
     const eventId = req.params.eventId as string;
-    const event = eventService.getEventById(eventId);
+    const event = await eventService.getEventById(eventId);
 
     if (!event) {
       res.status(404).json({ error: 'Event not found' });
@@ -72,7 +72,7 @@ export async function getEventContent(req: Request, res: Response): Promise<void
 
 export async function getCurrentEvents(_req: Request, res: Response): Promise<void> {
   try {
-    const events = eventService.getEventsByCategory('current');
+    const events = await eventService.getEventsByCategory('current');
 
     res.json({
       events: events.map(event => ({
@@ -81,8 +81,8 @@ export async function getCurrentEvents(_req: Request, res: Response): Promise<vo
         description: event.description,
         startDate: event.startDate,
         endDate: event.endDate,
-        formattedStartDate: event.startDate.toLocaleDateString(),
-        formattedEndDate: event.endDate.toLocaleDateString(),
+        formattedStartDate: new Date(event.startDate).toLocaleDateString(),
+        formattedEndDate: new Date(event.endDate).toLocaleDateString(),
         imageUrl: event.imageUrl,
         isMultiPart: event.isMultiPart,
         partCount: event.parts?.length ?? 0,
@@ -99,7 +99,7 @@ export async function getCurrentEvents(_req: Request, res: Response): Promise<vo
 
 export async function getPastEvents(_req: Request, res: Response): Promise<void> {
   try {
-    const events = eventService.getEventsByCategory('past');
+    const events = await eventService.getEventsByCategory('past');
 
     res.json({
       events: events.map(event => ({
@@ -108,8 +108,8 @@ export async function getPastEvents(_req: Request, res: Response): Promise<void>
         description: event.description,
         startDate: event.startDate,
         endDate: event.endDate,
-        formattedStartDate: event.startDate.toLocaleDateString(),
-        formattedEndDate: event.endDate.toLocaleDateString(),
+        formattedStartDate: new Date(event.startDate).toLocaleDateString(),
+        formattedEndDate: new Date(event.endDate).toLocaleDateString(),
         imageUrl: event.imageUrl,
         isMultiPart: event.isMultiPart,
         partCount: event.parts?.length ?? 0,
@@ -126,7 +126,7 @@ export async function getPastEvents(_req: Request, res: Response): Promise<void>
 
 export async function getUpcomingEvents(_req: Request, res: Response): Promise<void> {
   try {
-    const events = eventService.getEventsByCategory('upcoming');
+    const events = await eventService.getEventsByCategory('upcoming');
 
     res.json({
       events: events.map(event => ({
@@ -135,8 +135,8 @@ export async function getUpcomingEvents(_req: Request, res: Response): Promise<v
         description: event.description,
         startDate: event.startDate,
         endDate: event.endDate,
-        formattedStartDate: event.startDate.toLocaleDateString(),
-        formattedEndDate: event.endDate.toLocaleDateString(),
+        formattedStartDate: new Date(event.startDate).toLocaleDateString(),
+        formattedEndDate: new Date(event.endDate).toLocaleDateString(),
         imageUrl: event.imageUrl,
         isMultiPart: event.isMultiPart,
         partCount: event.parts?.length ?? 0,

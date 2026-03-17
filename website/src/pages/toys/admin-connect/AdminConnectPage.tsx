@@ -87,7 +87,7 @@ export default function AdminConnectPage() {
   const [showUpdateNotes, setShowUpdateNotes] = useState(false);
   const [notesSaving, setNotesSaving] = useState(false);
   const debouncedNotes = useDebounce(updateNotes, 1000);
-  const notesInitializedRef = useRef(false);
+  const notesDirtyRef = useRef(false);
 
   // Admin modals
   const [showCreateModal, setShowCreateModal] = useState(false);
@@ -120,15 +120,15 @@ export default function AdminConnectPage() {
   // Fetch update notes
   useEffect(() => {
     adminConnectService.getUpdateNotes().then((data) => {
-      setUpdateNotes(data.content);
-      setLastClearedAt(data.lastClearedAt);
-      notesInitializedRef.current = true;
+      const content = typeof data.content === 'string' ? data.content : '';
+      setUpdateNotes(content === '[object Object]' ? '' : content);
+      setLastClearedAt(data.lastClearedAt ?? null);
     }).catch(() => { /* ignore */ });
   }, []);
 
-  // Auto-save update notes (admin only)
+  // Auto-save update notes (only after user edits, not on load)
   useEffect(() => {
-    if (!isAdmin || !notesInitializedRef.current) return;
+    if (!isAdmin || !notesDirtyRef.current) return;
     setNotesSaving(true);
     adminConnectService.saveUpdateNotes(debouncedNotes).finally(() => setNotesSaving(false));
   }, [debouncedNotes, isAdmin]);
@@ -339,7 +339,7 @@ export default function AdminConnectPage() {
                 <textarea
                   className="textarea ac-update-notes__textarea"
                   value={updateNotes}
-                  onChange={(e) => setUpdateNotes(e.target.value)}
+                  onChange={(e) => { notesDirtyRef.current = true; setUpdateNotes(e.target.value); }}
                   placeholder="Write notes about what will be in the next update..."
                   rows={4}
                 />
@@ -359,6 +359,7 @@ export default function AdminConnectPage() {
                         onClick={async () => {
                           if (!confirm('Mark update as pushed? This will clear the notes and reset the completed tasks list.')) return;
                           try {
+                            notesDirtyRef.current = false;
                             const result = await adminConnectService.clearForUpdate();
                             setUpdateNotes(result.content);
                             setLastClearedAt(result.lastClearedAt);

@@ -508,3 +508,77 @@
     max-height: none;
   }
 }
+
+/* --- Sort Order Modal --- */
+
+.content-manager__sort-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.content-manager__sort-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  background: var(--background-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-small);
+  cursor: grab;
+  user-select: none;
+  transition: background-color 0.15s;
+}
+
+.content-manager__sort-item:active {
+  cursor: grabbing;
+}
+
+.content-manager__sort-item:hover {
+  background: var(--background-color-hover);
+}
+
+.content-manager__sort-handle {
+  color: var(--text-color-muted);
+  cursor: grab;
+}
+
+.content-manager__sort-title {
+  flex: 1;
+  font-size: 0.9rem;
+}
+
+.content-manager__sort-position {
+  font-size: 0.75rem;
+  color: var(--text-color-muted);
+  background: var(--primary-color);
+  padding: 2px 6px;
+  border-radius: var(--border-radius-small);
+  min-width: 20px;
+  text-align: center;
+}
+
+.content-manager__sort-arrows {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.content-manager__sort-arrows button {
+  background: none;
+  border: none;
+  color: var(--text-color-muted);
+  cursor: pointer;
+  padding: 0 4px;
+  font-size: 0.7rem;
+  line-height: 1;
+}
+
+.content-manager__sort-arrows button:hover:not(:disabled) {
+  color: var(--primary-color);
+}
+
+.content-manager__sort-arrows button:disabled {
+  opacity: 0.2;
+  cursor: not-allowed;
+}

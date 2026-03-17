@@ -245,6 +245,8 @@ export {
   saveContent,
   deleteContent,
   createDirectory,
+  getSortOrder,
+  updateSortOrder,
 } from './misc/content.controller';
 
 // Events Controller

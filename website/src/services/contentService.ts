@@ -47,6 +47,20 @@ export interface SaveContentData {
   content: string;
 }
 
+export interface SortOrderItem {
+  id: number;
+  title: string;
+  path: string;
+  isOverview: boolean;
+  isDirectory: boolean;
+  sortOrder: number;
+}
+
+export interface SortOrderResponse {
+  success: boolean;
+  items: SortOrderItem[];
+}
+
 // --- Service ---
 
 const contentService = {
@@ -72,6 +86,19 @@ const contentService = {
 
   createDirectory: async (category: string, path: string, name: string): Promise<MutationResponse> => {
     const response = await api.post(`/content/${category}/directory/${path}`, { name });
+    return response.data;
+  },
+
+  getSortOrder: async (category: string, parentPath = ''): Promise<SortOrderResponse> => {
+    const url = parentPath
+      ? `/content/${category}/sort-order/${parentPath}`
+      : `/content/${category}/sort-order`;
+    const response = await api.get(url);
+    return response.data;
+  },
+
+  updateSortOrder: async (items: { id: number; sortOrder: number }[]): Promise<MutationResponse> => {
+    const response = await api.put('/content/sort-order', { items });
     return response.data;
   },
 };

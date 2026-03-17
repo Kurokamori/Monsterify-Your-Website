@@ -1,16 +1,17 @@
 import { Request, Response } from 'express';
-import * as path from 'path';
-import * as fs from 'fs';
-import { fileURLToPath } from 'url';
-import {
-  getDirectoryStructure,
-  loadMarkdownContent,
-} from '../../utils/markdownUtils';
+import { markdownToHtml } from '../../utils/markdownUtils';
+import { GuideContentRepository } from '../../repositories/guide-content.repository';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const CONTENT_BASE_PATH = path.resolve(__dirname, '..', '..', '..', '..', 'website', 'public', 'content');
+const repo = new GuideContentRepository();
+
 const VALID_CATEGORIES = ['guides', 'lore', 'factions', 'npcs'];
+
+const CATEGORY_NAMES: Record<string, string> = {
+  guides: 'Game Guides',
+  lore: 'Lore',
+  factions: 'Factions',
+  npcs: 'NPCs',
+};
 
 interface SearchResult {
   category: string;
@@ -26,13 +27,6 @@ function getWildcardPath(param: unknown): string {
   return (param as string) ?? '';
 }
 
-const CATEGORY_NAMES: Record<string, string> = {
-  guides: 'Game Guides',
-  lore: 'Lore',
-  factions: 'Factions',
-  npcs: 'NPCs',
-};
-
 // ============================================================================
 // Controllers
 // ============================================================================
@@ -43,19 +37,13 @@ const CATEGORY_NAMES: Record<string, string> = {
  */
 export async function getCategories(_req: Request, res: Response): Promise<void> {
   try {
-    const categories: Record<
-      string,
-      { name: string; path: string; structure: ReturnType<typeof getDirectoryStructure> }
-    > = {};
+    const categories: Record<string, { name: string; path: string; structure: unknown }> = {};
 
     for (const category of VALID_CATEGORIES) {
-      const categoryPath = path.join(CONTENT_BASE_PATH, category);
       categories[category] = {
         name: CATEGORY_NAMES[category] ?? category,
         path: category,
-        structure: fs.existsSync(categoryPath)
-          ? getDirectoryStructure(categoryPath, '')
-          : null,
+        structure: await repo.buildDirectoryStructure(category),
       };
     }
 
@@ -80,85 +68,64 @@ export async function getGuideContent(req: Request, res: Response): Promise<void
       return;
     }
 
-    // Sanitize path to prevent directory traversal
     const sanitizedPath = (guidePath || '').replace(/\.\./g, '').replace(/^\/+/, '');
 
-    // Block access to !index.md files
+    // Block access to !index paths
     if (sanitizedPath.endsWith('!index.md') || sanitizedPath.endsWith('!index')) {
       res.status(404).json({ success: false, message: 'Content not found' });
       return;
     }
 
-    // Construct the full path
-    let filePath = path.join(CONTENT_BASE_PATH, category, sanitizedPath);
-
-    // Check if it's a directory
-    if (fs.existsSync(filePath) && fs.statSync(filePath).isDirectory()) {
-      filePath = path.join(filePath, 'overview.md');
-    } else if (!filePath.endsWith('.md')) {
-      filePath += '.md';
-    }
-
-    // If file doesn't exist, generate a default page for category roots
-    if (!fs.existsSync(filePath)) {
-      if (!sanitizedPath || sanitizedPath === '/') {
-        const categoryPath = path.join(CONTENT_BASE_PATH, category);
-        if (fs.existsSync(categoryPath)) {
-          const categoryName = CATEGORY_NAMES[category] ?? category;
-          const defaultContent = `# ${categoryName}\n\nWelcome to the ${categoryName} section. Please select a topic from the sidebar to get started.`;
-
-          res.json({
-            success: true,
-            content: defaultContent,
-            html: `<h1>${categoryName}</h1>\n<p>Welcome to the ${categoryName} section. Please select a topic from the sidebar to get started.</p>`,
-            metadata: { title: categoryName },
-            path: sanitizedPath,
-            isGenerated: true,
-          });
-          return;
-        }
+    // Empty path = category root
+    if (!sanitizedPath || sanitizedPath === '/') {
+      const overview = await repo.findOverview(category, '');
+      if (overview) {
+        res.json({
+          success: true,
+          content: overview.content,
+          html: markdownToHtml(overview.content),
+          metadata: overview.metadata,
+          path: sanitizedPath,
+        });
+        return;
       }
 
+      // Generate a default page for the category root
+      const categoryName = CATEGORY_NAMES[category] ?? category;
+      const defaultContent = `# ${categoryName}\n\nWelcome to the ${categoryName} section. Please select a topic from the sidebar to get started.`;
+      res.json({
+        success: true,
+        content: defaultContent,
+        html: `<h1>${categoryName}</h1>\n<p>Welcome to the ${categoryName} section. Please select a topic from the sidebar to get started.</p>`,
+        metadata: { title: categoryName },
+        path: sanitizedPath,
+        isGenerated: true,
+      });
+      return;
+    }
+
+    // Try as exact file path (with .md)
+    let entry = await repo.findByPath(category, sanitizedPath.endsWith('.md') ? sanitizedPath : `${sanitizedPath}.md`);
+
+    // Try as directory (look for overview)
+    entry ??= await repo.findOverview(category, sanitizedPath);
+
+    if (!entry) {
       res.status(404).json({ success: false, message: 'Content not found' });
       return;
     }
 
-    const result = loadMarkdownContent(filePath);
-
     res.json({
       success: true,
-      content: result.content,
-      html: result.html,
-      metadata: result.metadata,
+      content: entry.content,
+      html: markdownToHtml(entry.content),
+      metadata: entry.metadata,
       path: sanitizedPath,
     });
   } catch (error) {
     console.error('Error getting guide content:', error);
     res.status(500).json({ success: false, message: 'Failed to get guide content' });
   }
-}
-
-/**
- * Recursively collect all markdown files in a directory
- */
-function collectMarkdownFiles(dirPath: string, basePath: string): { filePath: string; relativePath: string }[] {
-  const results: { filePath: string; relativePath: string }[] = [];
-  if (!fs.existsSync(dirPath)) {return results;}
-
-  const items = fs.readdirSync(dirPath);
-  for (const item of items) {
-    if (item === '!index.md') {continue;}
-    const fullPath = path.join(dirPath, item);
-    const relPath = basePath ? `${basePath}/${item}` : item;
-    const stat = fs.statSync(fullPath);
-
-    if (stat.isDirectory()) {
-      results.push(...collectMarkdownFiles(fullPath, relPath));
-    } else if (item.endsWith('.md')) {
-      results.push({ filePath: fullPath, relativePath: relPath });
-    }
-  }
-  return results;
 }
 
 /**
@@ -179,70 +146,51 @@ export async function searchGuides(req: Request, res: Response): Promise<void> {
       ? [categoryFilter]
       : VALID_CATEGORIES;
 
+    const matchingEntries = await repo.search(query, categoriesToSearch, 50);
+
     const results: SearchResult[] = [];
     const queryLower = query.toLowerCase();
-    const MAX_RESULTS = 50;
 
-    for (const category of categoriesToSearch) {
-      if (results.length >= MAX_RESULTS) {break;}
+    for (const entry of matchingEntries) {
+      // Strip frontmatter if any remains
+      let content = entry.content;
+      const fmMatch = content.match(/^---\n[\s\S]*?\n---\n([\s\S]*)$/);
+      if (fmMatch?.[1]) { content = fmMatch[1]; }
 
-      const categoryPath = path.join(CONTENT_BASE_PATH, category);
-      const files = collectMarkdownFiles(categoryPath, '');
+      // Find matching lines with context
+      const lines = content.split('\n');
+      const matches: { context: string; lineNumber: number }[] = [];
+      const CONTEXT_LINES = 1;
 
-      for (const { filePath, relativePath } of files) {
-        if (results.length >= MAX_RESULTS) {break;}
+      for (let i = 0; i < lines.length; i++) {
+        if (matches.length >= 5) {break;}
+        const line = lines[i];
+        if (!line?.toLowerCase().includes(queryLower)) {continue;}
 
-        const raw = fs.readFileSync(filePath, 'utf8');
-
-        // Strip YAML front matter before searching
-        let content = raw;
-        const fmMatch = raw.match(/^---\n[\s\S]*?\n---\n([\s\S]*)$/);
-        if (fmMatch?.[1]) {content = fmMatch[1];}
-
-        const contentLower = content.toLowerCase();
-        if (!contentLower.includes(queryLower)) {continue;}
-
-        // Extract title from first h1
-        const titleMatch = content.match(/^# (.+)/m);
-        const title = titleMatch?.[1] ?? relativePath.replace(/\.md$/, '').split('/').pop() ?? relativePath;
-
-        // Find matching lines with context
-        const lines = content.split('\n');
-        const matches: { context: string; lineNumber: number }[] = [];
-        const CONTEXT_LINES = 1;
-
-        for (let i = 0; i < lines.length; i++) {
-          if (matches.length >= 5) {break;}
-          const line = lines[i];
-          if (!line?.toLowerCase().includes(queryLower)) {continue;}
-
-          const start = Math.max(0, i - CONTEXT_LINES);
-          const end = Math.min(lines.length - 1, i + CONTEXT_LINES);
-          const contextLines: string[] = [];
-          for (let j = start; j <= end; j++) {
-            contextLines.push(lines[j] ?? '');
-          }
-          matches.push({
-            context: contextLines.join('\n'),
-            lineNumber: i + 1,
-          });
-          // Skip ahead to avoid overlapping contexts
-          i = end;
+        const start = Math.max(0, i - CONTEXT_LINES);
+        const end = Math.min(lines.length - 1, i + CONTEXT_LINES);
+        const contextLines: string[] = [];
+        for (let j = start; j <= end; j++) {
+          contextLines.push(lines[j] ?? '');
         }
+        matches.push({
+          context: contextLines.join('\n'),
+          lineNumber: i + 1,
+        });
+        i = end; // Skip ahead to avoid overlapping contexts
+      }
 
-        if (matches.length > 0) {
-          // Build the navigable path (strip .md, strip overview.md → use dir path)
-          let navPath = relativePath;
-          if (navPath.endsWith('.md')) {navPath = navPath.slice(0, -3);}
+      if (matches.length > 0) {
+        let navPath = entry.path;
+        if (navPath.endsWith('.md')) {navPath = navPath.slice(0, -3);}
 
-          results.push({
-            category,
-            categoryName: CATEGORY_NAMES[category] ?? category,
-            filePath: navPath,
-            title,
-            matches,
-          });
-        }
+        results.push({
+          category: entry.category,
+          categoryName: CATEGORY_NAMES[entry.category] ?? entry.category,
+          filePath: navPath,
+          title: entry.title,
+          matches,
+        });
       }
     }
 

@@ -1,3 +1,0 @@
-# Submitting Items
-(Coming Soon)
-

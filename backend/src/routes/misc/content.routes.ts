@@ -6,6 +6,8 @@ import {
   saveContent,
   deleteContent,
   createDirectory,
+  getSortOrder,
+  updateSortOrder,
 } from '@controllers/misc/content.controller';
 
 const router: Router = Router();
@@ -19,6 +21,11 @@ router.use(requireAdmin);
 // ============================================================================
 
 router.get('/categories', getCategories);
+
+// Sort order management
+router.get('/:category/sort-order', getSortOrder);
+router.get('/:category/sort-order/*contentPath', getSortOrder);
+router.put('/sort-order', updateSortOrder);
 
 // Directory creation must be before generic wildcard POST
 router.post('/:category/directory/*contentPath', createDirectory);
