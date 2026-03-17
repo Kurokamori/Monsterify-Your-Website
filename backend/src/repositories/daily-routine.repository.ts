@@ -322,6 +322,22 @@ export class DailyRoutineRepository extends BaseRepository<
   }
 
   // Routine Item methods
+  async findItemById(itemId: number): Promise<(RoutineItem & { routineName: string }) | null> {
+    const result = await db.query<RoutineItemRow & { routine_name: string }>(
+      `SELECT ri.*, dr.name as routine_name
+       FROM routine_items ri
+       JOIN daily_routines dr ON ri.routine_id = dr.id
+       WHERE ri.id = $1`,
+      [itemId]
+    );
+    const row = result.rows[0];
+    if (!row) {return null;}
+    return {
+      ...normalizeRoutineItem(row),
+      routineName: row.routine_name,
+    };
+  }
+
   async addItem(input: RoutineItemCreateInput): Promise<RoutineItem> {
     const result = await db.query<{ id: number }>(
       `

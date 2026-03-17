@@ -352,11 +352,16 @@ export function WitchsHut({ className = '', onEvolutionComplete }: WitchsHutProp
       setLoading(true);
       setEvolutionError('');
 
+      // Map frontend item IDs to their inventory names
+      const resolvedEvolutionItem = selectedEvolutionItem === 'Aurora Stone'
+        ? 'Aurora Evolution Stone'
+        : selectedEvolutionItem;
+
       const evolutionData = {
         trainerId: selectedTrainer,
         speciesSlot: selectedSpeciesSlot,
         evolutionName: useDigitalRepairKit ? customSpeciesName.trim() : selectedEvolution,
-        evolutionItem: selectedEvolutionItem,
+        evolutionItem: resolvedEvolutionItem,
         imageUrl: useVoidStone ? null : imageUrl,
         useVoidStone,
         useDigitalRepairKit,
@@ -697,8 +702,8 @@ export function WitchsHut({ className = '', onEvolutionComplete }: WitchsHutProp
 
           {/* Image Section */}
           <div className="witchs-hut-method">
-            <h5>Evolution Image</h5>
-            <p>Upload an image or use a Void Stone to bypass this requirement</p>
+            <h5>Evolution Image/File</h5>
+            <p>Upload an image/file or use a Void Stone to bypass this requirement -- the image/file you upload should be artwork (or writing) of the monster evolving such as how they evolved, what led up to it, or how the trainer reacted.</p>
 
             <div className="witchs-hut-image-tabs">
               <button

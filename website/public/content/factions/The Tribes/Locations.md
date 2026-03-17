@@ -12,11 +12,11 @@ What is known: the Old Ones maintain villages throughout the jungle and hold cer
 
 The Featherless Ones are nomadic, moving between the floating islands of the Sky Isles in patterns dictated by wind, season, and tradition. They do not build permanent settlements in the way outsiders understand the term — their camps are assembled and disassembled as they travel.
 
-They are most frequently sighted in and around Aurora Heights and the Nimbus Capital's outer reaches, though they range across the entire Sky Isles. The Wind Gardens and the areas around the Celestial Shrine are believed to hold spiritual significance for them.
+They are most frequently sighted in and around Boreal Sanctum and the Empyrean Capital's outer reaches, though they range across the entire Sky Isles. The Zephyr Gardens and the areas around the Celestial Shrine are believed to hold spiritual significance for them.
 
-## The Wyvern People — Sky Isles, Draconic Abyss
+## The Wyvern People — Sky Isles, Ouroboros Abyss
 
-The Wyvern People are the most geographically fixed of the three tribes. Their primary settlement is Wyrmclaw Village in the Draconic Abyss — a territory so dangerous that its inaccessibility serves as a natural fortress. The Bone Citadel and the Dragon Graveyard are central to their culture, and the Apex Throne is believed to be their most sacred site.
+The Wyvern People are the most geographically fixed of the three tribes. Their primary settlement is Wyrmclaw Village in the Ouroboros Abyss — a territory so dangerous that its inaccessibility serves as a natural fortress. The Bone Citadel and the Dragon Graveyard are central to their culture, and the Apex Throne is believed to be their most sacred site.
 
 The Wyvern People also maintain smaller encampments across the Sky Isles, though these are less permanent and more defensive in nature — watchtowers and patrol points rather than homes.
 

@@ -373,8 +373,12 @@ export {
 
 // Game Corner Controller
 export {
+  getGameCornerSession,
+  saveGameCornerSession,
+  deleteGameCornerSession,
   generateGameCornerRewards,
   claimGameCornerReward,
+  forfeitGameCornerReward,
 } from './town/game-corner.controller';
 
 // Chat Controller

@@ -70,6 +70,12 @@ export const ADVENTURE = {
   START_CUSTOM: 'adventure_start_custom',
   START_MODAL: 'adventure_start_modal',
   START_CUSTOM_MODAL: 'adventure_start_custom_modal',
+  HERE_CUSTOM: 'adventure_here_custom',
+  HERE_PREBUILT: 'adventure_here_prebuilt',
+  HERE_LANDMASS: 'adventure_here_landmass',
+  HERE_REGION: 'adventure_here_region',
+  HERE_AREA: 'adventure_here_area',
+  HERE_MODAL: 'adventure_here_modal',
 } as const;
 
 // -- Battle ------------------------------------------------------------------

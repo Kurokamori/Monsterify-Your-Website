@@ -27,6 +27,7 @@ export type CreateAdventureInput = {
   description?: string;
   threadEmoji?: string;
   adventureType?: 'prebuilt' | 'custom';
+  isSilent?: boolean;
   region?: string;
   area?: string;
   landmass?: string;
@@ -166,7 +167,7 @@ export class AdventureService {
   // ==========================================================================
 
   async createAdventure(input: CreateAdventureInput): Promise<CreateAdventureResult> {
-    const { creatorId, title, description, threadEmoji, adventureType, area, region, landmass, selectedTrainer } = input;
+    const { creatorId, title, description, threadEmoji, adventureType, isSilent, area, region, landmass, selectedTrainer } = input;
 
     if (!title?.trim()) {
       return { success: false, message: 'Adventure title is required' };
@@ -176,6 +177,7 @@ export class AdventureService {
       creatorId,
       title: title.trim(),
       status: 'active',
+      isSilent: isSilent ?? false,
     };
 
     // Handle prebuilt adventures with area configuration
@@ -211,9 +213,9 @@ export class AdventureService {
 
     const adventure = await this.adventureRepository.create(adventureData);
 
-    // Create Discord thread
+    // Create Discord thread (skip for silent adventures — the bot registers the thread separately)
     let discordThreadResult: ThreadCreationResult | null = null;
-    if (this.discordService.isDiscordAvailable()) {
+    if (!isSilent && this.discordService.isDiscordAvailable()) {
       try {
         discordThreadResult = await this.discordService.createAdventureThread(
           adventure,

@@ -722,3 +722,11 @@ export type {
   AdminConnectSubItemCreateInput,
   AdminConnectSubItemUpdateInput,
 } from './admin-connect.repository';
+
+// Game Corner Session Repository
+export { GameCornerSessionRepository } from './game-corner-session.repository';
+export type {
+  GameCornerSessionRow,
+  GameCornerSession,
+  GameCornerSessionUpsertInput,
+} from './game-corner-session.repository';

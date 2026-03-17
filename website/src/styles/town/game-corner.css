@@ -4,6 +4,26 @@
    Pomodoro timer with video player, reward system.
    ============================================================================= */
 
+/* ---------- Restored Session Banner ---------- */
+
+.game-corner__restored-banner {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-small);
+  padding: var(--spacing-small) var(--spacing-medium);
+  background-color: var(--overlay-light);
+  border: 1px solid var(--blue-glow);
+  border-radius: var(--border-radius);
+  color: var(--text-color);
+  margin-bottom: var(--spacing-medium);
+  font-size: 0.9rem;
+}
+
+.game-corner__restored-banner i {
+  color: var(--water-type);
+  flex-shrink: 0;
+}
+
 /* ---------- Layout ---------- */
 
 .game-corner__layout {

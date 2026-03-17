@@ -65,4 +65,14 @@ export class AdminConnectService {
   async deleteSubItem(id: number): Promise<boolean> {
     return this.repo.deleteSubItem(id);
   }
+
+  // ── Update Notes ────────────────────────────────────────────────
+
+  async getUpdateNotes(): Promise<string> {
+    return this.repo.getUpdateNotes();
+  }
+
+  async saveUpdateNotes(content: string): Promise<string> {
+    return this.repo.saveUpdateNotes(content);
+  }
 }

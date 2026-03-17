@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useAuth } from '@contexts/AuthContext';
 import { useDocumentTitle } from '@hooks/useDocumentTitle';
+import { useDebounce } from '@hooks/useDebounce';
 import adminConnectService, {
   AdminConnectItem,
   AdminConnectSubItem,
@@ -80,6 +81,13 @@ export default function AdminConnectPage() {
   const [expandedIds, setExpandedIds] = useState<Set<number>>(new Set());
   const [searchQuery, setSearchQuery] = useState('');
 
+  // Update notes
+  const [updateNotes, setUpdateNotes] = useState('');
+  const [showUpdateNotes, setShowUpdateNotes] = useState(false);
+  const [notesSaving, setNotesSaving] = useState(false);
+  const debouncedNotes = useDebounce(updateNotes, 1000);
+  const notesInitializedRef = useRef(false);
+
   // Admin modals
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [createDefaultCategory, setCreateDefaultCategory] = useState<AdminConnectCategory | undefined>();
@@ -107,6 +115,21 @@ export default function AdminConnectPage() {
   }, []);
 
   useEffect(() => { fetchItems(); }, [fetchItems]);
+
+  // Fetch update notes
+  useEffect(() => {
+    adminConnectService.getUpdateNotes().then((content) => {
+      setUpdateNotes(content);
+      notesInitializedRef.current = true;
+    }).catch(() => { /* ignore */ });
+  }, []);
+
+  // Auto-save update notes (admin only)
+  useEffect(() => {
+    if (!isAdmin || !notesInitializedRef.current) return;
+    setNotesSaving(true);
+    adminConnectService.saveUpdateNotes(debouncedNotes).finally(() => setNotesSaving(false));
+  }, [debouncedNotes, isAdmin]);
 
   // ── Sorting & Filtering ─────────────────────────────────────
 
@@ -226,6 +249,15 @@ export default function AdminConnectPage() {
   const totalInProgress = items.filter((i) => i.status === 'in-progress').length;
   const totalResolved = items.filter((i) => i.status === 'resolved').length;
 
+  // Resolved items sorted by recency (most recently resolved first)
+  const resolvedItems = items
+    .filter((i) => i.status === 'resolved')
+    .sort((a, b) => {
+      const aTime = a.resolvedAt ? new Date(a.resolvedAt).getTime() : 0;
+      const bTime = b.resolvedAt ? new Date(b.resolvedAt).getTime() : 0;
+      return bTime - aTime;
+    });
+
   // ── Render ──────────────────────────────────────────────────
 
   if (loading) {
@@ -278,6 +310,64 @@ export default function AdminConnectPage() {
         <div className="alert error ac-alert-dismissible">
           <i className="fas fa-exclamation-triangle" /> {error}
           <button className="button close" onClick={() => setError('')}>&times;</button>
+        </div>
+      )}
+
+      {/* Update Notes Section */}
+      {(updateNotes || isAdmin || resolvedItems.length > 0) && (
+        <div className="ac-update-notes">
+          <button
+            className="ac-update-notes__toggle"
+            onClick={() => setShowUpdateNotes(!showUpdateNotes)}
+          >
+            <i className={`fas fa-chevron-${showUpdateNotes ? 'up' : 'down'}`} />
+            <i className="fas fa-scroll" />
+            <span className="ac-update-notes__toggle-label">Update Notes</span>
+            {notesSaving && <span className="ac-update-notes__saving">Saving...</span>}
+          </button>
+
+          {showUpdateNotes && (
+            <div className="ac-update-notes__content">
+              {isAdmin ? (
+                <textarea
+                  className="textarea ac-update-notes__textarea"
+                  value={updateNotes}
+                  onChange={(e) => setUpdateNotes(e.target.value)}
+                  placeholder="Write notes about what will be in the next update..."
+                  rows={4}
+                />
+              ) : updateNotes ? (
+                <p className="ac-update-notes__text">{updateNotes}</p>
+              ) : null}
+
+              {resolvedItems.length > 0 && (
+                <div className="ac-update-notes__resolved">
+                  <h4 className="ac-update-notes__resolved-title">
+                    <i className="fas fa-check-circle" /> Completed Tasks ({resolvedItems.length})
+                  </h4>
+                  <div className="ac-update-notes__resolved-list">
+                    {resolvedItems.map((item) => {
+                      const isSecret = item.isSecret && !isAdmin;
+                      const displayName = isSecret ? (item.secretName ?? 'Secret Item') : item.name;
+                      return (
+                        <div key={item.id} className="ac-update-notes__resolved-item">
+                          <span className={`ac-card__category-icon ac-card__category-icon--${item.category} ac-update-notes__resolved-icon`}>
+                            <i className={`fas ${CATEGORY_ICONS[item.category] ?? 'fa-ellipsis-h'}`} />
+                          </span>
+                          <span className="ac-update-notes__resolved-name">{displayName}</span>
+                          {item.resolvedAt && (
+                            <span className="ac-update-notes__resolved-date">
+                              {new Date(item.resolvedAt).toLocaleDateString()}
+                            </span>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
         </div>
       )}
 

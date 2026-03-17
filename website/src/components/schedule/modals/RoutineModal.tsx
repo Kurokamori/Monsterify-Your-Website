@@ -380,6 +380,9 @@ export const RoutineModal = ({
                         {(item.rewardLevels > 0 || item.rewardCoins > 0) && (
                           <span>Reward: {item.rewardLevels} levels, {item.rewardCoins} coins</span>
                         )}
+                        {item.reminderEnabled === 1 && (
+                          <span><i className="fas fa-bell"></i> Discord Reminder{item.reminderOffset > 0 ? ` (${item.reminderOffset}min before)` : ''}</span>
+                        )}
                       </div>
                     </div>
 
@@ -496,6 +499,44 @@ export const RoutineModal = ({
                     ))}
                   </select>
                 </div>
+              </div>
+
+              {/* Discord Reminders */}
+              <div className="schedule-form__section">
+                <label className="checkbox-label">
+                  <input
+                    type="checkbox"
+                    name="reminder_enabled"
+                    className="checkbox"
+                    checked={newItem.reminder_enabled === 1}
+                    onChange={handleItemInputChange}
+                  />
+                  Enable Discord Reminders
+                </label>
+                <span className="schedule-form__help">
+                  Get reminded via Discord DM to complete this item
+                </span>
+
+                {newItem.reminder_enabled === 1 && (
+                  <div className="form-group">
+                    <label className="form-label" htmlFor="item-reminder-offset">
+                      Remind Me (minutes before scheduled time)
+                    </label>
+                    <input
+                      type="number"
+                      id="item-reminder-offset"
+                      name="reminder_offset"
+                      className="input"
+                      value={newItem.reminder_offset}
+                      onChange={handleItemNumberChange}
+                      min={0}
+                      placeholder="0"
+                    />
+                    <span className="schedule-form__help">
+                      Set to 0 to remind at the scheduled time, or enter minutes to be reminded earlier
+                    </span>
+                  </div>
+                )}
               </div>
 
               <div className="add-item-actions">

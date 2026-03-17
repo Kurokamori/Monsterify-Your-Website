@@ -115,6 +115,7 @@ export async function createAdventure(req: Request, res: Response): Promise<void
       description,
       threadEmoji,
       adventureType,
+      isSilent,
       region,
       area,
       landmass,
@@ -124,6 +125,7 @@ export async function createAdventure(req: Request, res: Response): Promise<void
       description?: string;
       threadEmoji?: string;
       adventureType?: 'prebuilt' | 'custom';
+      isSilent?: boolean;
       region?: string;
       area?: string;
       landmass?: string;
@@ -136,6 +138,7 @@ export async function createAdventure(req: Request, res: Response): Promise<void
       description,
       threadEmoji,
       adventureType,
+      isSilent,
       region,
       area,
       landmass,

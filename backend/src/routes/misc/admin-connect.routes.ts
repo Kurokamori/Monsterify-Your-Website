@@ -12,12 +12,19 @@ import {
   createAdminConnectSubItem,
   updateAdminConnectSubItem,
   deleteAdminConnectSubItem,
+  getUpdateNotes,
+  saveUpdateNotes,
 } from '../../controllers/misc/admin-connect.controller';
 
 const router = Router();
 
 // Public — any authenticated user can view
 router.get('/', authenticate, getAdminConnectItems);
+
+// Update notes — public read, admin write (must be before /:id)
+router.get('/update-notes', authenticate, getUpdateNotes);
+router.put('/update-notes', authenticate, requireAdmin, saveUpdateNotes);
+
 router.get('/:id', authenticate, getAdminConnectItem);
 
 // Admin-only — CRUD on items

@@ -1,11 +1,78 @@
 import { Request, Response } from 'express';
 import { GameCornerService, type RewardType } from '../../services/game-corner.service';
-import { TrainerRepository } from '../../repositories';
+import { TrainerRepository, GameCornerSessionRepository } from '../../repositories';
+import type { GameCornerSessionUpsertInput } from '../../repositories';
 
 type MonsterRewardData = Record<string, unknown>;
 
 const gameCornerService = new GameCornerService();
 const trainerRepository = new TrainerRepository();
+const sessionRepository = new GameCornerSessionRepository();
+
+// =============================================================================
+// Session CRUD
+// =============================================================================
+
+export async function getGameCornerSession(req: Request, res: Response): Promise<void> {
+  try {
+    const user = req.user;
+    if (!user?.discord_id) {
+      res.status(401).json({ success: false, message: 'User not authenticated' });
+      return;
+    }
+
+    const session = await sessionRepository.findByUserId(user.discord_id);
+    res.json({ success: true, session });
+  } catch (error) {
+    console.error('Error fetching Game Corner session:', error);
+    res.status(500).json({ success: false, message: 'Failed to fetch session' });
+  }
+}
+
+export async function saveGameCornerSession(req: Request, res: Response): Promise<void> {
+  try {
+    const user = req.user;
+    if (!user?.discord_id) {
+      res.status(401).json({ success: false, message: 'User not authenticated' });
+      return;
+    }
+
+    const input = req.body as GameCornerSessionUpsertInput;
+
+    if (
+      input.sessionLength === undefined ||
+      input.sessionCount === undefined
+    ) {
+      res.status(400).json({
+        success: false,
+        message: 'Missing required session fields',
+      });
+      return;
+    }
+
+    const session = await sessionRepository.upsert(user.discord_id, input);
+    res.json({ success: true, session });
+  } catch (error) {
+    console.error('Error saving Game Corner session:', error);
+    res.status(500).json({ success: false, message: 'Failed to save session' });
+  }
+}
+
+export async function deleteGameCornerSession(req: Request, res: Response): Promise<void> {
+  try {
+    const user = req.user;
+    if (!user?.discord_id) {
+      res.status(401).json({ success: false, message: 'User not authenticated' });
+      return;
+    }
+
+    await sessionRepository.deleteByUserId(user.discord_id);
+    res.json({ success: true });
+  } catch (error) {
+    console.error('Error deleting Game Corner session:', error);
+    res.status(500).json({ success: false, message: 'Failed to delete session' });
+  }
+}
 
 // =============================================================================
 // Generate Rewards
@@ -48,6 +115,9 @@ export async function generateGameCornerRewards(req: Request, res: Response): Pr
       user.discord_id,
       user,
     );
+
+    // Delete the session now that rewards have been generated
+    await sessionRepository.deleteByUserId(user.discord_id);
 
     res.json({
       success: true,

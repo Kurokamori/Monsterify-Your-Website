@@ -134,6 +134,17 @@ const adminConnectService = {
   async removeSubItem(itemId: number, subId: number): Promise<void> {
     await api.delete(`/admin-connect/${itemId}/sub-items/${subId}`);
   },
+
+  // Update notes
+  async getUpdateNotes(): Promise<string> {
+    const res = await api.get('/admin-connect/update-notes');
+    return res.data.data;
+  },
+
+  async saveUpdateNotes(content: string): Promise<string> {
+    const res = await api.put('/admin-connect/update-notes', { content });
+    return res.data.data;
+  },
 };
 
 export default adminConnectService;

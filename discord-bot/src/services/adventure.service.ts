@@ -91,6 +91,7 @@ interface RawAdventure {
   description: string | null;
   status: string;
   adventure_type: string;
+  is_silent: boolean;
   region: string | null;
   area_id: string | null;
   area_config?: string | Record<string, unknown> | null;
@@ -124,6 +125,7 @@ export interface Adventure {
   description: string | null;
   status: string;
   adventureType: string;
+  isSilent: boolean;
   region: string | null;
   areaId: string | null;
   areaConfig: Record<string, unknown> | null;
@@ -194,6 +196,7 @@ function mapAdventure(raw: RawAdventure): Adventure {
     description: raw.description,
     status: raw.status,
     adventureType: raw.adventure_type,
+    isSilent: raw.is_silent ?? false,
     region: raw.region,
     areaId: raw.area_id,
     areaConfig: parseJsonField(raw.area_config),
@@ -305,6 +308,7 @@ export async function createAdventure(
     description?: string;
     threadEmoji?: string;
     adventureType?: string;
+    isSilent?: boolean;
     region?: string;
     area?: string;
     landmass?: string;

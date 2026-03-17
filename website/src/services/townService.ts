@@ -173,6 +173,38 @@ export interface GameCornerClaimResponse {
   reward?: GameCornerRewardData;
 }
 
+export interface GameCornerSessionData {
+  id: number;
+  userId: string;
+  sessionLength: number;
+  breakLength: number;
+  longBreakLength: number;
+  sessionCount: number;
+  completedSessions: number;
+  totalFocusMinutes: number;
+  currentSession: number;
+  isBreak: boolean;
+  timerActive: boolean;
+  timeRemaining: number;
+  timerEndTime: number | null;
+  totalTimerDuration: number;
+}
+
+export interface GameCornerSessionInput {
+  sessionLength: number;
+  breakLength: number;
+  longBreakLength: number;
+  sessionCount: number;
+  completedSessions: number;
+  totalFocusMinutes: number;
+  currentSession: number;
+  isBreak: boolean;
+  timerActive: boolean;
+  timeRemaining: number;
+  timerEndTime: number | null;
+  totalTimerDuration: number;
+}
+
 export interface TradeListingParams {
   status?: string;
   page?: number;
@@ -429,6 +461,21 @@ const townService = {
   },
 
   // ── Game corner ───────────────────────────────────────────────────
+
+  getGameCornerSession: async (): Promise<{ success: boolean; session: GameCornerSessionData | null }> => {
+    const response = await api.get('/town/game-corner/session');
+    return response.data;
+  },
+
+  saveGameCornerSession: async (input: GameCornerSessionInput): Promise<{ success: boolean; session: GameCornerSessionData }> => {
+    const response = await api.put('/town/game-corner/session', input);
+    return response.data;
+  },
+
+  deleteGameCornerSession: async (): Promise<{ success: boolean }> => {
+    const response = await api.delete('/town/game-corner/session');
+    return response.data;
+  },
 
   generateGameCornerRewards: async (input: GameCornerRewardInput): Promise<GameCornerRewardsResponse> => {
     const response = await api.post('/town/game-corner/rewards', input);

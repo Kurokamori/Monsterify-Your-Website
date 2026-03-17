@@ -77,6 +77,112 @@
   margin-bottom: var(--spacing-medium);
 }
 
+/* ── Update Notes ─────────────────────────────────────────── */
+
+.ac-update-notes {
+  background: var(--primary-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-medium);
+  margin-bottom: var(--spacing-medium);
+  overflow: hidden;
+}
+
+.ac-update-notes__toggle {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xsmall);
+  width: 100%;
+  padding: var(--spacing-xsmall) var(--spacing-small);
+  background: none;
+  border: none;
+  color: var(--text-color);
+  cursor: pointer;
+  font-size: var(--font-size-medium);
+  font-weight: 600;
+  text-align: left;
+  transition: background var(--transition-fast);
+}
+
+.ac-update-notes__toggle:hover {
+  background: var(--primary-color-hover);
+}
+
+.ac-update-notes__toggle-label {
+  flex: 1;
+}
+
+.ac-update-notes__saving {
+  font-size: var(--font-size-xxsmall);
+  color: var(--text-color-muted);
+  font-weight: 400;
+  font-style: italic;
+}
+
+.ac-update-notes__content {
+  padding: var(--spacing-small);
+  border-top: 1px solid var(--border-color);
+}
+
+.ac-update-notes__textarea {
+  width: 100%;
+  resize: vertical;
+  min-height: 80px;
+}
+
+.ac-update-notes__text {
+  color: var(--text-color);
+  font-size: var(--font-size-small);
+  line-height: 1.6;
+  margin: 0;
+  white-space: pre-wrap;
+}
+
+.ac-update-notes__resolved {
+  margin-top: var(--spacing-small);
+}
+
+.ac-update-notes__resolved-title {
+  font-size: var(--font-size-small);
+  color: var(--success-color);
+  margin: 0 0 var(--spacing-xsmall);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xxsmall);
+}
+
+.ac-update-notes__resolved-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xxsmall);
+}
+
+.ac-update-notes__resolved-item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xsmall);
+  padding: var(--spacing-xxsmall) var(--spacing-xsmall);
+  background: var(--secondary-color);
+  border-radius: var(--border-radius-small);
+}
+
+.ac-update-notes__resolved-icon {
+  width: 22px;
+  height: 22px;
+  font-size: var(--font-size-xxsmall);
+}
+
+.ac-update-notes__resolved-name {
+  flex: 1;
+  font-size: var(--font-size-small);
+  color: var(--text-color);
+}
+
+.ac-update-notes__resolved-date {
+  font-size: var(--font-size-xxsmall);
+  color: var(--text-color-muted);
+  flex-shrink: 0;
+}
+
 /* ── Toolbar ───────────────────────────────────────────────── */
 
 .ac-toolbar {

@@ -587,7 +587,7 @@ You approach the hidden Fog Temple, its silhouette shifting within luminous mars
 
 Mystical floating islands suspended in the clouds, where ancient sky civilizations built cities that touch the stars and commune with celestial Monsters.
 
-## Nimbus Capital
+## Empyrean Capital
 
 **Dominant Types:** Flying, Psychic, Fairy
 
@@ -609,7 +609,7 @@ You arrive at Sky Harbor where windborne vessels dock on braids of compressed ai
 
 Welcome to the Wind Gardens—floating beds and very opinionated breezes.
 
-## Aurora Heights
+## Boreal Sanctum
 
 **Dominant Types:** Psychic, Ice, Fairy
 
@@ -631,7 +631,7 @@ Welcome to the Celestial Shrine, a ridge-top observatory where solar fire meets 
 
 High altitude winds bite at Shooting Star Peak where meteors thread luminous arcs.
 
-## Tempest Zones
+## Vayu Maelstrom
 
 **Dominant Types:** Electric, Flying, Steel
 
@@ -653,7 +653,7 @@ Welcome to the Thunder Arena—duels choreographed by lightning and applause.
 
 You spiral toward the Electric Vortex, heart of converging storm channels.
 
-## Draconic Abyss
+## Ouroboros Abyss
 
 **Dominant Types:** Dragon, Fire, Dark
 

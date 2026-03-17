@@ -399,10 +399,10 @@ export const landmassDefinitions: LandmassDefinitionsMap = {
       "Steel"
     ],
     "regions": [
-      "nimbus-capital",
-      "aurora-heights",
-      "tempest-zones",
-      "draconic-abyss"
+      "empyrean-capital",
+      "boreal-sanctum",
+      "vayu-maelstrom",
+      "ouroboros-abyss"
     ],
     "lore": "These islands defy gravity itself, held aloft by a confluence of ancient sky magic, electromagnetic ley currents, and celestial energy that no scholar has yet fully explained. Flying-type Pokémon and dragon-kind have evolved beyond all earthbound limitations here, their wings shaped by winds that blow in four dimensions. Flying Digimon — Birdramon, Garudamon, and their kin — serve as royal messengers and palace guards in the great cloud cities, their digital nature resonating powerfully with the electromagnetic fields that keep the islands airborne. The two great tribes, the Featherless Ones and the Wyvern People, have warred for generations over dominion of the sky roads, each calling upon their monster allies in the struggle. At the highest reaches, where the air grows thin and the stars seem close enough to touch, the most ancient and powerful beings hold court in silence, watching the world below with ageless patience.",
     "mapCoordinates": {
@@ -434,9 +434,9 @@ export const regionDefinitions: RegionDefinitionsMap = {
     "areas": [
       "heimdal-city",
       "hygge-village",
-      "bonfire-town",
-      "hearthstone-temple",
-      "golden-hall"
+      "balefire-crossing",
+      "fridhof-temple",
+      "gladsheim-hall"
     ],
     "description": "A peaceful northern homeland with cozy settlements, where Normal-type Monsters gather in harmonious communities.",
     "elevation": "200 - 800 ft",
@@ -466,8 +466,8 @@ export const regionDefinitions: RegionDefinitionsMap = {
       "agni-city",
       "yagna-village",
       "tapas-town",
-      "sacred-pyre",
-      "eternal-flame"
+      "chita-ghat",
+      "akshay-jyoti"
     ],
     "description": "Sacred fire mountains where eternal flames burn, home to powerful Fire-type Monsters.",
     "elevation": "3,000 - 8,500 ft",
@@ -494,11 +494,11 @@ export const regionDefinitions: RegionDefinitionsMap = {
     ],
     "climate": "Mediterranean Marine",
     "areas": [
-      "atlantis-city",
+      "thalassa-city",
       "nereid-harbor",
       "amphitrite-town",
-      "trident-temple",
-      "maelstrom-point"
+      "triaina-temple",
+      "charybdis-point"
     ],
     "description": "Coastal realm ruled by the sea lord's power, teeming with Water-type Monsters.",
     "elevation": "Sea Level - 400 ft",
@@ -526,10 +526,10 @@ export const regionDefinitions: RegionDefinitionsMap = {
     "climate": "High Plains Stormy",
     "areas": [
       "wakinyan-city",
-      "storm-dance-village",
-      "thunder-mesa",
-      "great-nest",
-      "lightning-spire"
+      "heyoka-village",
+      "akicita-mesa",
+      "mahpiya-aerie",
+      "wakiya-spire"
     ],
     "description": "Ancient sky realm where the great Storm Eagle soars, crackling with Electric-type energy.",
     "elevation": "4,000 - 9,000 ft",
@@ -559,8 +559,8 @@ export const regionDefinitions: RegionDefinitionsMap = {
       "eleusis-city",
       "persephone-village",
       "ceres-town",
-      "mystery-temple",
-      "golden-wheat"
+      "telesterion",
+      "thesmophoria-fields"
     ],
     "description": "The harvest spirit's blessed forest, where Grass-type Monsters flourish in eternal spring.",
     "elevation": "500 - 2,000 ft",
@@ -588,10 +588,10 @@ export const regionDefinitions: RegionDefinitionsMap = {
     "climate": "Subarctic Tundra (Giant's Winter)",
     "areas": [
       "utgard-city",
-      "frost-village",
+      "niflheim-village",
       "rimeheart-town",
       "jotun-halls",
-      "eternal-glacier"
+      "fimbulvetr-glacier"
     ],
     "description": "Frozen realm of frost titans, where Ice-type Monsters thrive in the eternal winter.",
     "elevation": "2,000 - 7,500 ft",
@@ -620,9 +620,9 @@ export const regionDefinitions: RegionDefinitionsMap = {
     "areas": [
       "kurukshetra-city",
       "dharma-village",
-      "valor-town",
-      "honor-temple",
-      "grand-colosseum"
+      "veera-town",
+      "maryada-temple",
+      "akhara-colosseum"
     ],
     "description": "Ancient warrior training grounds, where Fighting-type Monsters hone their martial arts.",
     "elevation": "1,500 - 5,000 ft",
@@ -650,10 +650,10 @@ export const regionDefinitions: RegionDefinitionsMap = {
     "climate": "Mystical Swamp (Witch's Domain)",
     "areas": [
       "witchwood-city",
-      "cauldron-village",
-      "bog-town",
+      "koschei-village",
+      "kikimora-town",
       "iron-teeth-hut",
-      "poison-pools"
+      "zmey-pools"
     ],
     "description": "Crowsfoot Marsh, where Poison-type Monsters brew in toxic mists.",
     "elevation": "50 - 300 ft",
@@ -681,10 +681,10 @@ export const regionDefinitions: RegionDefinitionsMap = {
     "climate": "Continental Steppe (Earth Mother's Domain)",
     "areas": [
       "tellus-city",
-      "terra-village",
+      "ops-village",
       "gaia-town",
-      "mother-temple",
-      "sacred-canyon"
+      "magna-mater-temple",
+      "mundus-canyon"
     ],
     "description": "The earth mother's sacred valley, where Ground-type Monsters shape the very land.",
     "elevation": "800 - 2,500 ft",
@@ -712,10 +712,10 @@ export const regionDefinitions: RegionDefinitionsMap = {
     "climate": "Highland Tropical (Feathered Winds)",
     "areas": [
       "tenochtitlan-sky",
-      "wind-village",
-      "feather-town",
-      "serpent-pyramid",
-      "floating-gardens"
+      "ehecatl-village",
+      "quetzalli-town",
+      "coatepec-pyramid",
+      "chinampa-gardens"
     ],
     "description": "The feathered serpent's domain, where Flying-type Monsters dance on ancient wind currents.",
     "elevation": "3,500 - 8,000 ft",
@@ -744,9 +744,9 @@ export const regionDefinitions: RegionDefinitionsMap = {
     "areas": [
       "delphi-city",
       "pythia-village",
-      "vision-town",
+      "mantis-town",
       "apollo-temple",
-      "sacred-vapors"
+      "pneuma-springs"
     ],
     "description": "The oracle's mystical realm, where Psychic-type Monsters commune with higher powers.",
     "elevation": "2,200 - 4,500 ft",
@@ -774,9 +774,9 @@ export const regionDefinitions: RegionDefinitionsMap = {
     "climate": "Tropical Rainforest (Story Weaver's Domain)",
     "areas": [
       "kumasi-city",
-      "story-village",
-      "web-town",
-      "great-tree",
+      "anansesem-village",
+      "ntoma-town",
+      "nyame-dua",
       "silk-library"
     ],
     "description": "The spider lord's intricate forest, where Bug-type Monsters weave stories in silk and shadow.",
@@ -805,10 +805,10 @@ export const regionDefinitions: RegionDefinitionsMap = {
     "climate": "Highland Oceanic (Druidic)",
     "areas": [
       "avalon-city",
-      "druid-village",
+      "nemeton-village",
       "cairn-town",
-      "stonehenge-site",
-      "memory-cliffs"
+      "cromlech-stones",
+      "ogham-cliffs"
     ],
     "description": "Ancient stone circle highlands, where Rock-type Monsters guard ancient mystical secrets.",
     "elevation": "2,800 - 6,200 ft",
@@ -837,9 +837,9 @@ export const regionDefinitions: RegionDefinitionsMap = {
     "areas": [
       "mictlampa-city",
       "xochitonal-village",
-      "bone-town",
-      "death-pyramid",
-      "river-crossing"
+      "tzompantli-town",
+      "teocalli-pyramid",
+      "apanohuaia-crossing"
     ],
     "description": "Ancient underworld realm where spirits dwell, home to mysterious Ghost-type Monsters.",
     "elevation": "100 - 1,000 ft (mostly underground)",
@@ -867,9 +867,9 @@ export const regionDefinitions: RegionDefinitionsMap = {
     "climate": "Temperate Continental (Dragon's Breath)",
     "areas": [
       "tianlong-city",
-      "jade-village",
-      "wisdom-town",
-      "imperial-palace",
+      "yulong-village",
+      "longmen-town",
+      "huanglong-palace",
       "nine-dragons"
     ],
     "description": "Ancient dragon realm of wisdom and power, where majestic Dragon-type Monsters reign supreme.",
@@ -898,10 +898,10 @@ export const regionDefinitions: RegionDefinitionsMap = {
     "climate": "Twilight Forest (Trickster's Domain)",
     "areas": [
       "corvus-city",
-      "shadow-village",
-      "twilight-town",
+      "coyote-hollow",
+      "iktomi-town",
       "trickster-lodge",
-      "eternal-dusk"
+      "obsidian-dusk"
     ],
     "description": "Native American trickster's twilight realm, where cunning Dark-type Monsters lurk in shadows.",
     "elevation": "600 - 2,400 ft",
@@ -926,12 +926,12 @@ export const regionDefinitions: RegionDefinitionsMap = {
     "dominantTypes": [
       "Steel"
     ],
-    "climate": "Industrial Volcanic (Divine Workshop)",
+    "climate": "Industrial Volcanic (Automaton Workshop)",
     "areas": [
       "vulcan-city",
       "cyclops-village",
-      "forge-town",
-      "divine-workshop",
+      "brontes-town",
+      "automaton-workshop",
       "adamant-peak"
     ],
     "description": "Greek god's industrial workshop, where Steel-type Monsters craft legendary metals and machines.",
@@ -962,8 +962,8 @@ export const regionDefinitions: RegionDefinitionsMap = {
       "titania-city",
       "oberon-village",
       "puck-town",
-      "summer-court",
-      "enchanted-glade"
+      "beltane-court",
+      "sidhe-glade"
     ],
     "description": "Ancient fairy kingdom of wonder and magic, where Fairy-type Monsters hold eternal revelries.",
     "elevation": "400 - 2,200 ft",
@@ -992,9 +992,9 @@ export const regionDefinitions: RegionDefinitionsMap = {
     ],
     "climate": "Tropical",
     "areas": [
-      "pirate-port",
-      "pirate-village",
-      "hidden-cove",
+      "tortuga-port",
+      "filibuster-cove",
+      "smugglers-den",
       "nyakuza-landing",
       "skull-rock"
     ],
@@ -1028,7 +1028,7 @@ export const regionDefinitions: RegionDefinitionsMap = {
     "climate": "Tropical Prehistoric",
     "areas": [
       "amber-village",
-      "dinosaur-valley",
+      "saurian-valley",
       "time-temple"
     ],
     "description": "The massive central jungle where prehistoric Monsters roam among ancient trees that have stood since the dawn of time.",
@@ -1058,7 +1058,7 @@ export const regionDefinitions: RegionDefinitionsMap = {
     ],
     "climate": "Temperate",
     "areas": [
-      "coastal-settlement",
+      "tidewalker-settlement",
       "ancient-reef",
       "time-pools"
     ],
@@ -1121,8 +1121,8 @@ export const regionDefinitions: RegionDefinitionsMap = {
     ],
     "climate": "Misty Prehistoric Wetland",
     "areas": [
-      "mist-village",
-      "fog-temple"
+      "brumehaven-village",
+      "miasma-temple"
     ],
     "description": "Mysterious marshlands shrouded in perpetual mist, where water and grass-type ancients breed in secret.",
     "elevation": "50 - 400 ft",
@@ -1140,9 +1140,9 @@ export const regionDefinitions: RegionDefinitionsMap = {
     }
   },
 
-  'nimbus-capital': {
-    "id": "nimbus-capital",
-    "name": "Nimbus Capital",
+  'empyrean-capital': {
+    "id": "empyrean-capital",
+    "name": "Empyrean Capital",
     "landmassId": "sky-isles",
     "dominantTypes": [
       "Flying",
@@ -1151,16 +1151,16 @@ export const regionDefinitions: RegionDefinitionsMap = {
     ],
     "climate": "Stratospheric Royal (Cloud Kingdom)",
     "areas": [
-      "cloud-palace",
+      "stratos-palace",
       "storm-district",
       "sky-harbor",
-      "wind-gardens"
+      "zephyr-gardens"
     ],
     "description": "The grand floating capital built on storm clouds, where sky kings rule from palaces of crystallized air.",
     "elevation": "8,000 - 12,000 ft",
     "wildlife": "Royal Sky Guardians, Cloud Architects, Storm Nobles",
     "resources": "Crystallized Air, Royal Wind Gems, Storm Silk",
-    "lore": "Nimbus Capital is built on the largest stable cloud formation in the known world, its streets and towers formed from compressed stormcloud solidified by generations of ambient sky-magic into something that looks like marble but weighs nothing at all. The city follows celestial patterns as it rotates slowly through the heavens, its position on any given day determinable only by those born under the sky's particular rhythms — ground-worlders require a sky-born guide or risk watching the capital drift out of reach mid-crossing. Flying Digimon serve as the city's royal guard and diplomatic corps: Birdramon is the traditional mount of the sky patrol, Garudamon holds a place of honour equivalent to a marshal, and the elegant Silphymon is employed in the messenger services that connect Nimbus Capital to every other floating island community. Flying-type Pokémon of extraordinary beauty have evolved in the cloud environment, their plumage adapted to low-UV, high-altitude living in ways that make them spectacular even by sky standards. The ground world sends tribute and trade delegations that arrive by hot-air balloon and leave with treaties that no ground-bound lawyer has ever fully understood.",
+    "lore": "Empyrean Capital is built on the largest stable cloud formation in the known world, its streets and towers formed from compressed stormcloud solidified by generations of ambient sky-magic into something that looks like marble but weighs nothing at all. The city follows celestial patterns as it rotates slowly through the heavens, its position on any given day determinable only by those born under the sky's particular rhythms — ground-worlders require a sky-born guide or risk watching the capital drift out of reach mid-crossing. Flying Digimon serve as the city's royal guard and diplomatic corps: Birdramon is the traditional mount of the sky patrol, Garudamon holds a place of honour equivalent to a marshal, and the elegant Silphymon is employed in the messenger services that connect Empyrean Capital to every other floating island community. Flying-type Pokémon of extraordinary beauty have evolved in the cloud environment, their plumage adapted to low-UV, high-altitude living in ways that make them spectacular even by sky standards. The ground world sends tribute and trade delegations that arrive by hot-air balloon and leave with treaties that no ground-bound lawyer has ever fully understood.",
     "mapCoordinates": {
       "x": 40,
       "y": 35,
@@ -1168,13 +1168,13 @@ export const regionDefinitions: RegionDefinitionsMap = {
       "height": 20
     },
     "images": {
-      "guide": "/images/maps/regions/nimbus-capital-detailed.png"
+      "guide": "/images/maps/regions/empyrean-capital-detailed.png"
     }
   },
 
-  'aurora-heights': {
-    "id": "aurora-heights",
-    "name": "Aurora Heights",
+  'boreal-sanctum': {
+    "id": "boreal-sanctum",
+    "name": "Boreal Sanctum",
     "landmassId": "sky-isles",
     "dominantTypes": [
       "Psychic",
@@ -1184,15 +1184,15 @@ export const regionDefinitions: RegionDefinitionsMap = {
     "climate": "Celestial Arctic Sky (Aurora Realm)",
     "areas": [
       "starlight-observatory",
-      "aurora-village",
+      "borealis-village",
       "celestial-shrine",
-      "shooting-star"
+      "stellafall-point"
     ],
     "description": "Highest floating islands where aurora lights dance and celestial Monsters gather under starlight.",
     "elevation": "15,000 - 20,000 ft",
     "wildlife": "Aurora Dancers, Star Gazers, Celestial Messengers",
     "resources": "Aurora Crystals, Starlight Essence, Celestial Ice",
-    "lore": "Aurora Heights is so high that the sky above it is a deep indigo even at noon, and at night the aurora fills the entire visible vault with curtains of light that shift in patterns the inhabitants have spent generations learning to interpret. Psychic-type Digimon find their processing dramatically elevated at this altitude — the electromagnetic activity of the aurora interfaces with their data-cores in ways that produce calculation speeds and perceptive clarity beyond anything achievable at lower elevations, and the Digital Dawn maintains a permanent research station here staffed entirely by Digimon and their handlers. Legendary Pokémon of celestial nature have been sighted here with regularity that defies the word 'legendary': Jirachi, Clefable lineages, and forms that match no published classification drift between the aurora curtains as if on familiar errands. Ice and Fairy Yokai of the most refined and remote kind inhabit the permanent aurora zones, their forms so deeply adapted to the celestial light that they become partially invisible during the most intense auroral displays. The sky oracle tradition that Aurora Heights maintains serves both the Sky Isles and, through careful diplomatic channel, the people of Conoco Island below.",
+    "lore": "Boreal Sanctum is so high that the sky above it is a deep indigo even at noon, and at night the aurora fills the entire visible vault with curtains of light that shift in patterns the inhabitants have spent generations learning to interpret. Psychic-type Digimon find their processing dramatically elevated at this altitude — the electromagnetic activity of the aurora interfaces with their data-cores in ways that produce calculation speeds and perceptive clarity beyond anything achievable at lower elevations, and the Digital Dawn maintains a permanent research station here staffed entirely by Digimon and their handlers. Legendary Pokémon of celestial nature have been sighted here with regularity that defies the word 'legendary': Jirachi, Clefable lineages, and forms that match no published classification drift between the aurora curtains as if on familiar errands. Ice and Fairy Yokai of the most refined and remote kind inhabit the permanent aurora zones, their forms so deeply adapted to the celestial light that they become partially invisible during the most intense auroral displays. The sky oracle tradition that Boreal Sanctum maintains serves both the Sky Isles and, through careful diplomatic channel, the people of Conoco Island below.",
     "mapCoordinates": {
       "x": 20,
       "y": 15,
@@ -1200,13 +1200,13 @@ export const regionDefinitions: RegionDefinitionsMap = {
       "height": 22
     },
     "images": {
-      "guide": "/images/maps/regions/aurora-heights-detailed.png"
+      "guide": "/images/maps/regions/boreal-sanctum-detailed.png"
     }
   },
 
-  'tempest-zones': {
-    "id": "tempest-zones",
-    "name": "Tempest Zones",
+  'vayu-maelstrom': {
+    "id": "vayu-maelstrom",
+    "name": "Vayu Maelstrom",
     "landmassId": "sky-isles",
     "dominantTypes": [
       "Electric",
@@ -1215,7 +1215,7 @@ export const regionDefinitions: RegionDefinitionsMap = {
     ],
     "climate": "Eternal Tempest (Storm Chaos)",
     "areas": [
-      "lightning-city",
+      "fulgurite-city",
       "storm-riders",
       "thunder-arena",
       "electric-vortex"
@@ -1224,7 +1224,7 @@ export const regionDefinitions: RegionDefinitionsMap = {
     "elevation": "10,000 - 16,000 ft",
     "wildlife": "Storm Lords, Lightning Riders, Thunder Titans",
     "resources": "Pure Lightning, Storm Cores, Thunder Metals",
-    "lore": "The Tempest Zones have been in continuous storm for as long as any record exists — the lightning strikes so frequently that the islands themselves are permanently scarred, their surfaces vitrified into glass plains that crackle underfoot and reflect every bolt in a thousand directions. Electric Digimon feed directly on the raw lightning here, their data-cores charged to extraordinary capacity; Thunderbirmon and Voltobaltomon are the most powerful specimens ever recorded, their digital architecture essentially redesigned by generations of pure electrical saturation. Monster Hunter-class flying wyverns hunt the storm currents with terrifying grace, using the electromagnetic fields to locate prey through the opaque cloud cover, and the Wyvern People tribe considers the Tempest Zones their most sacred proving ground. Electric-type Pokémon have evolved features here that no ground-world specimen possesses: redundant electrical organs, storm-sense that detects lightning strikes before they form, and fur or feathers that channel current rather than resist it. The legends are not entirely metaphorical — those who genuinely master storm navigation in the Tempest Zones do develop an intuitive understanding of weather that functions as a kind of meteorological precognition.",
+    "lore": "The Vayu Maelstrom have been in continuous storm for as long as any record exists — the lightning strikes so frequently that the islands themselves are permanently scarred, their surfaces vitrified into glass plains that crackle underfoot and reflect every bolt in a thousand directions. Electric Digimon feed directly on the raw lightning here, their data-cores charged to extraordinary capacity; Thunderbirmon and Voltobaltomon are the most powerful specimens ever recorded, their digital architecture essentially redesigned by generations of pure electrical saturation. Monster Hunter-class flying wyverns hunt the storm currents with terrifying grace, using the electromagnetic fields to locate prey through the opaque cloud cover, and the Wyvern People tribe considers the Vayu Maelstrom their most sacred proving ground. Electric-type Pokémon have evolved features here that no ground-world specimen possesses: redundant electrical organs, storm-sense that detects lightning strikes before they form, and fur or feathers that channel current rather than resist it. The legends are not entirely metaphorical — those who genuinely master storm navigation in the Vayu Maelstrom do develop an intuitive understanding of weather that functions as a kind of meteorological precognition.",
     "mapCoordinates": {
       "x": 65,
       "y": 50,
@@ -1232,13 +1232,13 @@ export const regionDefinitions: RegionDefinitionsMap = {
       "height": 25
     },
     "images": {
-      "guide": "/images/maps/regions/tempest-zones-detailed.png"
+      "guide": "/images/maps/regions/vayu-maelstrom-detailed.png"
     }
   },
 
-  'draconic-abyss': {
-    "id": "draconic-abyss",
-    "name": "Draconic Abyss",
+  'ouroboros-abyss': {
+    "id": "ouroboros-abyss",
+    "name": "Ouroboros Abyss",
     "landmassId": "sky-isles",
     "dominantTypes": [
       "Dragon",
@@ -1257,7 +1257,7 @@ export const regionDefinitions: RegionDefinitionsMap = {
     "elevation": "18,000 - 25,000 ft",
     "wildlife": "Ancient Dragon Lords, Wyrmclaw Tribal Warriors, Bone Drakes",
     "resources": "Dragon Bones, Infernal Crystals, Tribal Totems",
-    "lore": "The Draconic Abyss is not misnamed — it is both the highest point of the Sky Isles and a kind of abyss in the philosophical sense, a place where conventional rules of survival, civilisation, and common sense cease to apply. The oldest Dragon Digimon make their lairs in the citadels of bone and cooled dragonfire that dot the floating peaks: Examon keeps court in the highest spire, Imperialdramon patrols the abyss-gaps between islands with territorial absolutism, and SkullGreymon-aspect entities drift through the lower fog as grim territorial markers. Dragon-type Monster Hunter elder dragons — Fatalis-kin and other apex entities that the Wyrmclaw Tribe reveres as living gods — occupy the most extreme reaches, their mere breath capable of scorching stone to glass. The Wyrmclaw Tribe, humans who made blood-pacts with dragons so many generations ago that draconic traits have begun appearing in their bloodline, serve as both the tribe of this region and the self-appointed gatekeepers of it; outsiders who enter without their escort rarely exit. The very air at this altitude burns with concentrated draconic energy, and visitors without both extraordinary skill and an explicit dragon blessing will find the region uninhabitable within hours.",
+    "lore": "The Ouroboros Abyss is not misnamed — it is both the highest point of the Sky Isles and a kind of abyss in the philosophical sense, a place where conventional rules of survival, civilisation, and common sense cease to apply. The oldest Dragon Digimon make their lairs in the citadels of bone and cooled dragonfire that dot the floating peaks: Examon keeps court in the highest spire, Imperialdramon patrols the abyss-gaps between islands with territorial absolutism, and SkullGreymon-aspect entities drift through the lower fog as grim territorial markers. Dragon-type Monster Hunter elder dragons — Fatalis-kin and other apex entities that the Wyrmclaw Tribe reveres as living gods — occupy the most extreme reaches, their mere breath capable of scorching stone to glass. The Wyrmclaw Tribe, humans who made blood-pacts with dragons so many generations ago that draconic traits have begun appearing in their bloodline, serve as both the tribe of this region and the self-appointed gatekeepers of it; outsiders who enter without their escort rarely exit. The very air at this altitude burns with concentrated draconic energy, and visitors without both extraordinary skill and an explicit dragon blessing will find the region uninhabitable within hours.",
     "mapCoordinates": {
       "x": 15,
       "y": 70,
@@ -1265,7 +1265,7 @@ export const regionDefinitions: RegionDefinitionsMap = {
       "height": 25
     },
     "images": {
-      "guide": "/images/maps/regions/draconic-abyss-detailed.png"
+      "guide": "/images/maps/regions/ouroboros-abyss-detailed.png"
     }
   },
 
@@ -2289,13 +2289,13 @@ export const areaConfigurations: AreaConfigurationsMap = {
     }
   },
 
-  'atlantis-city': {
+  'thalassa-city': {
     "landmass": "conoco-island",
     "landmassName": "Conoco Island",
     "region": "poseidons-reach",
     "regionName": "Poseidon's Reach",
     "welcomeMessages": {
-      "base": "Welcome to Atlantis City, the magnificent underwater capital with crystal domes and flowing water streets!",
+      "base": "Welcome to Thalassa City, the magnificent underwater capital with crystal domes and flowing water streets!",
       "variations": [
         "Crystal domes protect this underwater marvel where Water-type Monsters rule the flowing streets.",
         "The sea palace rises majestically in this underwater city of crystal and flowing water.",
@@ -2359,7 +2359,7 @@ export const areaConfigurations: AreaConfigurationsMap = {
       }
     ],
     "images": {
-      "guide": "/images/maps/areas/atlantis-city-detailed.png"
+      "guide": "/images/maps/areas/thalassa-city-detailed.png"
     },
     "difficulty": "Hard",
     "elevation": "-200 ft",
@@ -2414,8 +2414,8 @@ export const areaConfigurations: AreaConfigurationsMap = {
         "description": "Rare seaweed used in underwater construction"
       }
     ],
-    "lore": "Atlantis City serves as the magnificent capital of the sea lord's underwater kingdom, a place where ancient oceanic power merged with divine architecture to create something that should not, by any reasonable measure, be sustainable — and yet it has endured for over two millennia without significant structural failure. Water Pokémon of noble bearing constitute most of the city's upper-class citizenry, their complex social hierarchies playing out in the crystal dome chambers with a formality that surface-world diplomats find simultaneously admirable and exhausting. Sea Yokai of the deep tradition — the great Umibōzu is said to have an audience chamber in the lowest stratum of the city, accessed only by the most trusted water-kind — hold their own court in parallel to the surface government, their authority in certain matters absolute and unchallenged by any mortal law.",
-    "history": "Built by ancient sea peoples whose civilisation was, by all accounts, far more advanced than any contemporary record suggests, Atlantis City has stood beneath the waves for over two millennia in a state of extraordinary preservation. The crystal dome technology that keeps the sea water at bay is not fully understood by modern engineers — the closest analysis suggests it operates on a combination of mineral resonance and something that Digimon scholars identify as stabilised data-lattice, implying that the city's builders may have had access to Digital World technology at a time when no such concept should have existed. Each passing century adds new coral architecture, growing the city organically in ways its original designers may or may not have anticipated.",
+    "lore": "Thalassa City serves as the magnificent capital of the sea lord's underwater kingdom, a place where ancient oceanic power merged with divine architecture to create something that should not, by any reasonable measure, be sustainable — and yet it has endured for over two millennia without significant structural failure. Water Pokémon of noble bearing constitute most of the city's upper-class citizenry, their complex social hierarchies playing out in the crystal dome chambers with a formality that surface-world diplomats find simultaneously admirable and exhausting. Sea Yokai of the deep tradition — the great Umibōzu is said to have an audience chamber in the lowest stratum of the city, accessed only by the most trusted water-kind — hold their own court in parallel to the surface government, their authority in certain matters absolute and unchallenged by any mortal law.",
+    "history": "Built by ancient sea peoples whose civilisation was, by all accounts, far more advanced than any contemporary record suggests, Thalassa City has stood beneath the waves for over two millennia in a state of extraordinary preservation. The crystal dome technology that keeps the sea water at bay is not fully understood by modern engineers — the closest analysis suggests it operates on a combination of mineral resonance and something that Digimon scholars identify as stabilised data-lattice, implying that the city's builders may have had access to Digital World technology at a time when no such concept should have existed. Each passing century adds new coral architecture, growing the city organically in ways its original designers may or may not have anticipated.",
     "dangers": [
       "Drowning risk without proper equipment",
       "Water pressure at depth",
@@ -2439,13 +2439,13 @@ export const areaConfigurations: AreaConfigurationsMap = {
     }
   },
 
-  'aurora-village': {
+  'borealis-village': {
     "landmass": "conoco-island",
     "landmassName": "Conoco Island",
     "region": "jotun-tundra",
     "regionName": "Jötun Tundra",
     "welcomeMessages": {
-      "base": "Welcome to Aurora Village, a crystalline hamlet illuminated nightly by dancing sky veils.",
+      "base": "Welcome to Borealis Village, a crystalline hamlet illuminated nightly by dancing sky veils.",
       "variations": [
         "Ice lanterns refract auroral bands into tranquil courtyards.",
         "Soft geothermal vents warm communal circles beneath emerald lights.",
@@ -2509,7 +2509,7 @@ export const areaConfigurations: AreaConfigurationsMap = {
       }
     ],
     "images": {
-      "guide": "/images/maps/areas/aurora-village-detailed.png"
+      "guide": "/images/maps/areas/borealis-village-detailed.png"
     },
     "difficulty": "Easy",
     "elevation": "3,200 ft",
@@ -2564,7 +2564,7 @@ export const areaConfigurations: AreaConfigurationsMap = {
       }
     ],
     "lore": "Villagers believe each aurora ribbon is a woven promise from ancestral guardians — a tradition that is not merely sentimental, as the aurora here does respond to certain sounds and movements in ways that atmospheric physics alone struggles to explain. Ice Yokai of the Yuki-onna lineage have been observed walking through the village on the clearest aurora nights, their presence neither threatening nor entirely comfortable, their expressions absorbed in the sky display as if reading a letter from someone they miss. Ice and Fairy Digimon such as IceLeomon and Lilamon are drawn to the village's quiet, their data-forms stabilised by the consistent cold and the aurora's electromagnetic regularity in ways that more chaotic environments cannot provide.",
-    "history": "Founded around a geothermal spring that provided warmth sufficient to prevent the total winter isolation that claims most settlements this deep in the Jötun Tundra, Aurora Village grew from a single family's survival shelter into a community of several hundred over four generations of careful, deliberate expansion. The spring is considered sacred — the village's founding family maintained that it was a gift from one of the ancestral Ice Yokai, and the subsequent arrival of those spirits during aurora events has done nothing to challenge the tradition. The Prism Lantern tradition was developed two generations in, when a village craftsperson discovered that correctly faceted ice crystal could maintain the aurora's light long after the sky had gone dark.",
+    "history": "Founded around a geothermal spring that provided warmth sufficient to prevent the total winter isolation that claims most settlements this deep in the Jötun Tundra, Borealis Village grew from a single family's survival shelter into a community of several hundred over four generations of careful, deliberate expansion. The spring is considered sacred — the village's founding family maintained that it was a gift from one of the ancestral Ice Yokai, and the subsequent arrival of those spirits during aurora events has done nothing to challenge the tradition. The Prism Lantern tradition was developed two generations in, when a village craftsperson discovered that correctly faceted ice crystal could maintain the aurora's light long after the sky had gone dark.",
     "dangers": [
       "Frostbite risk",
       "Sudden whiteout squalls",
@@ -2733,13 +2733,13 @@ export const areaConfigurations: AreaConfigurationsMap = {
     }
   },
 
-  'bog-town': {
+  'kikimora-town': {
     "landmass": "conoco-island",
     "landmassName": "Conoco Island",
     "region": "crowsfoot-marsh",
     "regionName": "Crowsfoot Marsh",
     "welcomeMessages": {
-      "base": "Welcome to Bog Town—stilt-steps, reed roofs, and lanterns that keep the fog polite.",
+      "base": "Welcome to Kikimora Town—stilt-steps, reed roofs, and lanterns that keep the fog polite.",
       "variations": [
         "Peat barges creak through channels while frog-drummers keep time at dusk.",
         "Guides tap boardwalk posts—one for depth, two for danger, three for dinner.",
@@ -2794,7 +2794,7 @@ export const areaConfigurations: AreaConfigurationsMap = {
       }
     ],
     "images": {
-      "guide": "/images/maps/areas/bog-town-detailed.png"
+      "guide": "/images/maps/areas/kikimora-town-detailed.png"
     },
     "difficulty": "Medium",
     "elevation": "20 ft",
@@ -2849,8 +2849,8 @@ export const areaConfigurations: AreaConfigurationsMap = {
         "description": "Equipment for traveling through marshes"
       }
     ],
-    "lore": "Bog Town is proof that resilience and ingenuity can make a home of anywhere — built on stilts above perpetually waterlogged ground, its residents have turned what most people consider an obstacle into an identity. The will-o'-wisps that drift along the waterways are a source of genuine local pride: they are not, the guides insist firmly, dangerous — they are the ambient expressions of the marsh's Ghost and Poison Yokai neighbors, conducting their own business in the liminal space between solid ground and open water. Virus-type Digimon that pass through the marsh tend to linger near Bog Town's lantern-lit docks, drawn by the same peat-mist chemistry that makes the fog-effects here particularly rich for their data-metabolism.",
-    "history": "Founded by settlers who arrived in the marsh as refugees from a territorial dispute in the drier lands to the north, the original Bog Town inhabitants had no choice but to learn the marsh or perish in it. They chose to learn it, and within two generations their children could navigate the waterways blindfolded by sound alone. The community that emerged from those difficult early decades became one of the most cohesive and self-sufficient on Conoco Island, developing construction techniques, navigation methods, and ecological practices that the wider world is only now beginning to study seriously.",
+    "lore": "Kikimora Town is proof that resilience and ingenuity can make a home of anywhere — built on stilts above perpetually waterlogged ground, its residents have turned what most people consider an obstacle into an identity. The will-o'-wisps that drift along the waterways are a source of genuine local pride: they are not, the guides insist firmly, dangerous — they are the ambient expressions of the marsh's Ghost and Poison Yokai neighbors, conducting their own business in the liminal space between solid ground and open water. Virus-type Digimon that pass through the marsh tend to linger near Kikimora Town's lantern-lit docks, drawn by the same peat-mist chemistry that makes the fog-effects here particularly rich for their data-metabolism.",
+    "history": "Founded by settlers who arrived in the marsh as refugees from a territorial dispute in the drier lands to the north, the original Kikimora Town inhabitants had no choice but to learn the marsh or perish in it. They chose to learn it, and within two generations their children could navigate the waterways blindfolded by sound alone. The community that emerged from those difficult early decades became one of the most cohesive and self-sufficient on Conoco Island, developing construction techniques, navigation methods, and ecological practices that the wider world is only now beginning to study seriously.",
     "dangers": [
       "Getting lost in the marsh",
       "Quicksand and bog holes",
@@ -3018,13 +3018,13 @@ export const areaConfigurations: AreaConfigurationsMap = {
     }
   },
 
-  'bone-town': {
+  'tzompantli-town': {
     "landmass": "conoco-island",
     "landmassName": "Conoco Island",
     "region": "jotun-tundra",
     "regionName": "Jötun Tundra",
     "welcomeMessages": {
-      "base": "Welcome to Bone Town, a frontier settlement built from cleaned giant remains and packed snow mortar.",
+      "base": "Welcome to Tzompantli Town, a frontier settlement built from cleaned giant remains and packed snow mortar.",
       "variations": [
         "Smoke curls from marrow-hollow chimneys lining the frozen thoroughfare.",
         "Bone totems ward off restless spirits as traders barter frost-salvaged relics.",
@@ -3080,7 +3080,7 @@ export const areaConfigurations: AreaConfigurationsMap = {
       }
     ],
     "images": {
-      "guide": "/images/maps/areas/bone-town-detailed.png"
+      "guide": "/images/maps/areas/tzompantli-town-detailed.png"
     },
     "difficulty": "Medium",
     "elevation": "5,900 ft",
@@ -3133,8 +3133,8 @@ export const areaConfigurations: AreaConfigurationsMap = {
         "description": "Runic fragment retaining minor ward charge."
       }
     ],
-    "lore": "Built by traders who followed the ossuary salvage routes through the Jötun Tundra and eventually decided that the junction between three such routes was better as a settlement than a campsite, Bone Town has a pragmatism about it that its more mystically-inclined tundra neighbours sometimes find refreshing and sometimes find unsettling. The bone totems that line the main thoroughfare are functional as much as ceremonial — they carry minor ward-charges that discourage the more aggressive Ghost-type entities from entering town limits, a quiet negotiation with the supernatural that the residents manage with the same matter-of-fact competence they apply to frozen pipes and supply wagon scheduling. Ghost Digimon such as Bakemon drift at the ward-perimeter with what locals describe as 'respectful disappointment,' and the relationship is considered mutually acceptable.",
-    "history": "Bone Town grew from a single trading post established at the confluence of three frost-clan ossuary salvage routes, a neutral exchange point that the clans agreed to leave unaffiliated so that all could use it without political complication. That neutral status has been maintained through every territorial shift in the surrounding tundra over three hundred years of recorded history, a diplomatic achievement that the town's current leadership credits to the founding charter's single critical clause: no clan colours, banners, or territorial markers within half a league of the central market, ever, without exception.",
+    "lore": "Built by traders who followed the ossuary salvage routes through the Jötun Tundra and eventually decided that the junction between three such routes was better as a settlement than a campsite, Tzompantli Town has a pragmatism about it that its more mystically-inclined tundra neighbours sometimes find refreshing and sometimes find unsettling. The bone totems that line the main thoroughfare are functional as much as ceremonial — they carry minor ward-charges that discourage the more aggressive Ghost-type entities from entering town limits, a quiet negotiation with the supernatural that the residents manage with the same matter-of-fact competence they apply to frozen pipes and supply wagon scheduling. Ghost Digimon such as Bakemon drift at the ward-perimeter with what locals describe as 'respectful disappointment,' and the relationship is considered mutually acceptable.",
+    "history": "Tzompantli Town grew from a single trading post established at the confluence of three frost-clan ossuary salvage routes, a neutral exchange point that the clans agreed to leave unaffiliated so that all could use it without political complication. That neutral status has been maintained through every territorial shift in the surrounding tundra over three hundred years of recorded history, a diplomatic achievement that the town's current leadership credits to the founding charter's single critical clause: no clan colours, banners, or territorial markers within half a league of the central market, ever, without exception.",
     "dangers": [
       "Spirit pickpockets",
       "Frost nip",
@@ -3154,13 +3154,13 @@ export const areaConfigurations: AreaConfigurationsMap = {
     }
   },
 
-  'bonfire-town': {
+  'balefire-crossing': {
     "landmass": "conoco-island",
     "landmassName": "Conoco Island",
     "region": "hearthfall-commons",
     "regionName": "Hearthfall Commons",
     "welcomeMessages": {
-      "base": "Welcome to Bonfire Town—the eternal flame, the louder stories, and the best roasted anything.",
+      "base": "Welcome to Balefire Crossing—the eternal flame, the louder stories, and the best roasted anything.",
       "variations": [
         "Festival drums sync with crackling embers; strangers become friends by the second verse.",
         "Pass a mug, share a tale—if the fire pops, it agrees with you.",
@@ -3218,7 +3218,7 @@ export const areaConfigurations: AreaConfigurationsMap = {
       }
     ],
     "images": {
-      "guide": "/images/maps/areas/bonfire-town-detailed.png"
+      "guide": "/images/maps/areas/balefire-crossing-detailed.png"
     },
     "difficulty": "Easy",
     "elevation": "450 ft",
@@ -3274,7 +3274,7 @@ export const areaConfigurations: AreaConfigurationsMap = {
       }
     ],
     "lore": "The eternal bonfire has burned for over five hundred years, fed by a combination of community dedication, magical resilience, and the faint but genuine attention of the Hearthfall Commons' household Yokai — the Zashiki-warashi who inhabit every old building in the region consider the bonfire their communal hearth, and it is their passive blessing that keeps it burning through storms that should logically have extinguished it decades ago. Story Sprites — Fairy-type Pokémon and Digimon of the Fairymon aspect — gather at the fire's edge on festival nights to collect the tales told there, weaving them into the ambient folklore of the region in ways that researchers have compared to a living oral tradition with its own curatorial instincts. Moogles settled in this town early and enthusiastically, their kupo-punctuated commentary on the storytelling circle a beloved fixture of festival nights.",
-    "history": "Bonfire Town was founded around a natural eternal flame that early northern settlers discovered burning in a clearing with no discernible fuel source — it was simply burning, had apparently always been burning, and gave every indication of intending to continue regardless of anyone's plans for the area. The settlers built around it with the quiet confidence of people who recognised a good omen when they saw one, and the town grew as travellers stopped to warm themselves and found the fire's influence on conversation so pleasant that they stayed longer than intended. The festival infrastructure grew organically over generations until the town became one of the most celebrated gathering places on Conoco Island.",
+    "history": "Balefire Crossing was founded around a natural eternal flame that early northern settlers discovered burning in a clearing with no discernible fuel source — it was simply burning, had apparently always been burning, and gave every indication of intending to continue regardless of anyone's plans for the area. The settlers built around it with the quiet confidence of people who recognised a good omen when they saw one, and the town grew as travellers stopped to warm themselves and found the fire's influence on conversation so pleasant that they stayed longer than intended. The festival infrastructure grew organically over generations until the town became one of the most celebrated gathering places on Conoco Island.",
     "dangers": [
       "Fire safety near bonfire",
       "Crowded during festivals",
@@ -3431,13 +3431,13 @@ export const areaConfigurations: AreaConfigurationsMap = {
     }
   },
 
-  'cauldron-village': {
+  'koschei-village': {
     "landmass": "conoco-island",
     "landmassName": "Conoco Island",
     "region": "crowsfoot-marsh",
     "regionName": "Crowsfoot Marsh",
     "welcomeMessages": {
-      "base": "Welcome to Cauldron Village—where every doorstep bubbles and the air tastes faintly of mint and mystery.",
+      "base": "Welcome to Koschei Village—where every doorstep bubbles and the air tastes faintly of mint and mystery.",
       "variations": [
         "Herb bundles sway from rafters; kettles gossip in little steams.",
         "Potion smoke curls into sigils—if it winks, you got the good batch.",
@@ -3492,7 +3492,7 @@ export const areaConfigurations: AreaConfigurationsMap = {
       }
     ],
     "images": {
-      "guide": "/images/maps/areas/cauldron-village-detailed.png"
+      "guide": "/images/maps/areas/koschei-village-detailed.png"
     },
     "difficulty": "Medium",
     "elevation": "30 ft",
@@ -3547,8 +3547,8 @@ export const areaConfigurations: AreaConfigurationsMap = {
         "description": "Collections of potion formulas"
       }
     ],
-    "lore": "Cauldron Village represents the lighter and more fragrant side of Crowsfoot Marsh's alchemical tradition — a deliberate philosophical choice made by its founders, who understood perfectly well how to brew darker things and simply declined to. The ingredient gardens that surround every home are tended with the assistance of Herb Fairies — Fairy and Grass-type Pokémon whose presence is considered essential to the more delicate brews — and the relationship between the village's human alchemists and their monster partners is so intertwined that recipes are passed down as shared memories rather than written formulae. Ghost Digimon such as Bakemon drift through the herb gardens on still mornings as a matter of habit, their proximity improving certain fermentation processes in ways that the village's chief brewer acknowledges, somewhat uncomfortably, she cannot entirely explain.",
-    "history": "Established by hedge witches who arrived in the marsh as a deliberate act of counter-identity — choosing to settle adjacent to the region's darker reputation and make something useful of the same ingredients that others used for harmful purposes — Cauldron Village has been a centre of healing alchemy for over a century. Its founding covenant required every practitioner to submit their three most powerful formulas to community review before using them, a tradition that has both prevented harm and created the village's famous collaborative recipe archive, which is considered the finest collection of marsh-origin medicinal formulae in the world.",
+    "lore": "Koschei Village represents the lighter and more fragrant side of Crowsfoot Marsh's alchemical tradition — a deliberate philosophical choice made by its founders, who understood perfectly well how to brew darker things and simply declined to. The ingredient gardens that surround every home are tended with the assistance of Herb Fairies — Fairy and Grass-type Pokémon whose presence is considered essential to the more delicate brews — and the relationship between the village's human alchemists and their monster partners is so intertwined that recipes are passed down as shared memories rather than written formulae. Ghost Digimon such as Bakemon drift through the herb gardens on still mornings as a matter of habit, their proximity improving certain fermentation processes in ways that the village's chief brewer acknowledges, somewhat uncomfortably, she cannot entirely explain.",
+    "history": "Established by hedge witches who arrived in the marsh as a deliberate act of counter-identity — choosing to settle adjacent to the region's darker reputation and make something useful of the same ingredients that others used for harmful purposes — Koschei Village has been a centre of healing alchemy for over a century. Its founding covenant required every practitioner to submit their three most powerful formulas to community review before using them, a tradition that has both prevented harm and created the village's famous collaborative recipe archive, which is considered the finest collection of marsh-origin medicinal formulae in the world.",
     "dangers": [
       "Potion explosions",
       "Toxic ingredient exposure",
@@ -3813,7 +3813,7 @@ export const areaConfigurations: AreaConfigurationsMap = {
     ],
     "resources": [
       {
-        "name": "Golden Wheat",
+        "name": "Thesmophoria Fields",
         "rarity": "Rare",
         "description": "Premium wheat with exceptional nutritional value"
       },
@@ -3852,13 +3852,13 @@ export const areaConfigurations: AreaConfigurationsMap = {
     }
   },
 
-  'cloud-palace': {
+  'stratos-palace': {
     "landmass": "sky-isles",
     "landmassName": "Sky Isles",
-    "region": "nimbus-capital",
-    "regionName": "Nimbus Capital",
+    "region": "empyrean-capital",
+    "regionName": "Empyrean Capital",
     "welcomeMessages": {
-      "base": "Welcome to the Cloud Palace—solid sky underfoot, coronets cut from cirrus and dawn.",
+      "base": "Welcome to the Stratos Palace—solid sky underfoot, coronets cut from cirrus and dawn.",
       "variations": [
         "Aether bridges hum; look down only if you like vertigo.",
         "Crystalized air balustrades ring with thunder’s afterthought.",
@@ -3915,7 +3915,7 @@ export const areaConfigurations: AreaConfigurationsMap = {
       }
     ],
     "images": {
-      "guide": "/images/maps/areas/cloud-palace-detailed.png"
+      "guide": "/images/maps/areas/stratos-palace-detailed.png"
     },
     "difficulty": "Extreme",
     "elevation": "12,000 ft",
@@ -3927,7 +3927,7 @@ export const areaConfigurations: AreaConfigurationsMap = {
       "Sky Royal Court",
       "Crystallized Architecture",
       "Cloud Throne Room",
-      "Royal Wind Gardens",
+      "Royal Zephyr Gardens",
       "Floating Chambers"
     ],
     "wildlife": [
@@ -3970,8 +3970,8 @@ export const areaConfigurations: AreaConfigurationsMap = {
         "description": "The raw material of cloud formation"
       }
     ],
-    "lore": "The Cloud Palace is the seat of power for the Sky Kings, ancient rulers who have governed the floating isles for millennia in a state of dignified continuity that ground-world governments regard with equal parts admiration and bafflement. Built from clouds given permanent form through sky magic the original architects did not fully document before departing, the palace exists in a state between solid and ethereal — its walls opaque or translucent depending on the light and the mood of the attending court, its corridors occasionally rearranging themselves between one audience and the next. Flying Digimon form the core of the palace's royal guard: Garudamon holds the rank of First Wing, Silphymon serves as chief courier, and the rare Phoenixmon is permitted to nest in the upper spire as a mark of the sky royalty's favour — an arrangement the Phoenixmon seems to find entirely acceptable.",
-    "history": "Constructed over a thousand years ago by the first Sky King using techniques that have never been fully replicated, the Cloud Palace has served as the centre of sky realm politics and culture through every succession, every war between the Featherless Ones and the Wyvern People, and at least three occasions when it was partially destroyed and had to be rebuilt around its own ruins. It rotates through the heavens in a pattern that the royal astronomers can predict to the minute, following ancient star-chart routes that were established before the palace was built — as if the route existed first, and the palace was placed upon it as a carriage is placed upon rails.",
+    "lore": "The Stratos Palace is the seat of power for the Sky Kings, ancient rulers who have governed the floating isles for millennia in a state of dignified continuity that ground-world governments regard with equal parts admiration and bafflement. Built from clouds given permanent form through sky magic the original architects did not fully document before departing, the palace exists in a state between solid and ethereal — its walls opaque or translucent depending on the light and the mood of the attending court, its corridors occasionally rearranging themselves between one audience and the next. Flying Digimon form the core of the palace's royal guard: Garudamon holds the rank of First Wing, Silphymon serves as chief courier, and the rare Phoenixmon is permitted to nest in the upper spire as a mark of the sky royalty's favour — an arrangement the Phoenixmon seems to find entirely acceptable.",
+    "history": "Constructed over a thousand years ago by the first Sky King using techniques that have never been fully replicated, the Stratos Palace has served as the centre of sky realm politics and culture through every succession, every war between the Featherless Ones and the Wyvern People, and at least three occasions when it was partially destroyed and had to be rebuilt around its own ruins. It rotates through the heavens in a pattern that the royal astronomers can predict to the minute, following ancient star-chart routes that were established before the palace was built — as if the route existed first, and the palace was placed upon it as a carriage is placed upon rails.",
     "dangers": [
       "Royal guards",
       "Political intrigue",
@@ -3995,13 +3995,13 @@ export const areaConfigurations: AreaConfigurationsMap = {
     }
   },
 
-  'coastal-settlement': {
+  'tidewalker-settlement': {
     "landmass": "conoco-island",
     "landmassName": "Conoco Island",
     "region": "poseidons-reach",
     "regionName": "Poseidon's Reach",
     "welcomeMessages": {
-      "base": "Welcome to the Coastal Settlement, a tide-hugging outpost of coral-lashed piers and net terraces.",
+      "base": "Welcome to the Tidewalker Settlement, a tide-hugging outpost of coral-lashed piers and net terraces.",
       "variations": [
         "Sea-spray wind chimes guide fishing skiffs to biolight docks.",
         "Kelp-dried lattices creak rhythmically with the swell.",
@@ -4057,7 +4057,7 @@ export const areaConfigurations: AreaConfigurationsMap = {
       }
     ],
     "images": {
-      "guide": "/images/maps/areas/coastal-settlement-detailed.png"
+      "guide": "/images/maps/areas/tidewalker-settlement-detailed.png"
     },
     "difficulty": "Medium",
     "elevation": "Sea Level",
@@ -4110,7 +4110,7 @@ export const areaConfigurations: AreaConfigurationsMap = {
         "description": "Shell capturing rhythmic wave patterns."
       }
     ],
-    "lore": "The Coastal Settlement serves as the first acclimation point for deeper reef expeditions — the place where visitors breathe salt air long enough to stop feeling the pull of the mainland, and where the tidal nursery pools introduce newcomers to the juvenile Water-type monsters that will become their underwater companions. The bioluminescent dock organisms are not installed lighting but a Water/Grass Digimon colony that has chosen to live there symbiotically, their data-forms feeding on the mineral-rich tidal water and providing light in exchange, a negotiated arrangement that no one can quite remember the origin of but that everyone agrees is working well. Water Yokai of the smaller, benevolent Kappa tradition maintain the tidal nursery pools with dedicated attention, their particular expertise in aquatic ecosystem management making them invaluable partners to the reef stewards.",
+    "lore": "The Tidewalker Settlement serves as the first acclimation point for deeper reef expeditions — the place where visitors breathe salt air long enough to stop feeling the pull of the mainland, and where the tidal nursery pools introduce newcomers to the juvenile Water-type monsters that will become their underwater companions. The bioluminescent dock organisms are not installed lighting but a Water/Grass Digimon colony that has chosen to live there symbiotically, their data-forms feeding on the mineral-rich tidal water and providing light in exchange, a negotiated arrangement that no one can quite remember the origin of but that everyone agrees is working well. Water Yokai of the smaller, benevolent Kappa tradition maintain the tidal nursery pools with dedicated attention, their particular expertise in aquatic ecosystem management making them invaluable partners to the reef stewards.",
     "history": "Founded by reef stewards who arrived to find the coastal shallows badly over-harvested — the previous generation of resource extraction having taken far more than the ecosystem could replace in a human lifetime — the settlement's entire founding purpose was rehabilitation rather than exploitation. The founders' children grew up in a coastal environment that was visibly recovering, and the experience shaped the settlement's culture so thoroughly that voluntary resource limits have been maintained without legal compulsion ever since, a degree of ecological self-governance that visiting researchers from other regions routinely cite as extraordinary.",
     "dangers": [
       "Slip hazards",
@@ -4402,7 +4402,7 @@ export const areaConfigurations: AreaConfigurationsMap = {
     }
   },
 
-  'death-pyramid': {
+  'teocalli-pyramid': {
     "landmass": "conoco-island",
     "landmassName": "Conoco Island",
     "region": "mictlan-hollows",
@@ -4469,7 +4469,7 @@ export const areaConfigurations: AreaConfigurationsMap = {
       }
     ],
     "images": {
-      "guide": "/images/maps/areas/death-pyramid-detailed.png"
+      "guide": "/images/maps/areas/teocalli-pyramid-detailed.png"
     },
     "difficulty": "Hard",
     "elevation": "320 ft rise",
@@ -4522,8 +4522,8 @@ export const areaConfigurations: AreaConfigurationsMap = {
         "description": "Broken tablet sliver with partial funerary script."
       }
     ],
-    "lore": "The Death Pyramid was built to resonate with layered timelines — its architecture is not merely symbolic of the journey to the underworld but is a functional instrument for navigating the boundary between living and dead, its stepped geometry calibrated over generations of crypt-seer adjustment to maintain maximum contact with the spirit dimension that underlies Mictlan Hollows. Ghost Yokai of the highest authority gather here on the days when the spirit-membrane is thinnest, conducting ancient rites that the human priests assist rather than lead, their role understood as custodial rather than directive. Ghost Digimon such as LadyDevimon and the SkullSatamon line are drawn to the pyramid's apex with an urgency that their handlers describe as close to compulsive — the resonance between the pyramid's accumulated spiritual energy and the death-aspect of their Digimon data-structures creates a feedback loop of heightened ability that neither fully comfortable nor entirely resistible.",
-    "history": "The Death Pyramid was reclaimed from collapsing dunes by crypt seers who recognised its structural and spiritual significance several generations after its original builders abandoned it — the reasons for abandonment being unclear and the crypt seers being too professionally cautious to speculate. The warding work that followed the reclamation took longer than the structural restoration, the accumulated spiritual residue of centuries of neglect having attracted entities that required considerable negotiation before agreeing to relocate. The pyramid has since been restored to its original function, operating under a joint custodianship agreement between the human crypt seers, the local Ghost Yokai governance, and the Mictlan Hollows surface community.",
+    "lore": "The Teocalli Pyramid was built to resonate with layered timelines — its architecture is not merely symbolic of the journey to the underworld but is a functional instrument for navigating the boundary between living and dead, its stepped geometry calibrated over generations of crypt-seer adjustment to maintain maximum contact with the spirit dimension that underlies Mictlan Hollows. Ghost Yokai of the highest authority gather here on the days when the spirit-membrane is thinnest, conducting ancient rites that the human priests assist rather than lead, their role understood as custodial rather than directive. Ghost Digimon such as LadyDevimon and the SkullSatamon line are drawn to the pyramid's apex with an urgency that their handlers describe as close to compulsive — the resonance between the pyramid's accumulated spiritual energy and the death-aspect of their Digimon data-structures creates a feedback loop of heightened ability that neither fully comfortable nor entirely resistible.",
+    "history": "The Teocalli Pyramid was reclaimed from collapsing dunes by crypt seers who recognised its structural and spiritual significance several generations after its original builders abandoned it — the reasons for abandonment being unclear and the crypt seers being too professionally cautious to speculate. The warding work that followed the reclamation took longer than the structural restoration, the accumulated spiritual residue of centuries of neglect having attracted entities that required considerable negotiation before agreeing to relocate. The pyramid has since been restored to its original function, operating under a joint custodianship agreement between the human crypt seers, the local Ghost Yokai governance, and the Mictlan Hollows surface community.",
     "dangers": [
       "Soul pulse disorientation",
       "Falling reliquary lids",
@@ -4819,13 +4819,13 @@ export const areaConfigurations: AreaConfigurationsMap = {
     }
   },
 
-  'dinosaur-valley': {
+  'saurian-valley': {
     "landmass": "conoocoo-archipelago",
     "landmassName": "Conoocoo Archipelago",
     "region": "primordial-jungle",
     "regionName": "Primordial Jungle",
     "welcomeMessages": {
-      "base": "Welcome to Dinosaur Valley—where the past never left and the ground still thunders.",
+      "base": "Welcome to Saurian Valley—where the past never left and the ground still thunders.",
       "variations": [
         "Fern canopies hiss as tails sweep—walk softly, or become a teachable moment.",
         "River mud keeps perfect footprints; some are… bigger than your tent.",
@@ -4961,13 +4961,13 @@ export const areaConfigurations: AreaConfigurationsMap = {
     }
   },
 
-  'divine-workshop': {
+  'automaton-workshop': {
     "landmass": "conoco-island",
     "landmassName": "Conoco Island",
     "region": "hephaestus-forge",
     "regionName": "Hephaestus Forge",
     "welcomeMessages": {
-      "base": "You enter the Divine Workshop, anvils ringing with god-forged resonance.",
+      "base": "You enter the Automaton Workshop, anvils ringing with god-forged resonance.",
       "variations": [
         "Runic bellows channel eternal flame through alloy crucibles.",
         "Cyclopean assistants temper glowing ingots with rhythmic precision.",
@@ -5024,7 +5024,7 @@ export const areaConfigurations: AreaConfigurationsMap = {
       }
     ],
     "images": {
-      "guide": "/images/maps/areas/divine-workshop-detailed.png"
+      "guide": "/images/maps/areas/automaton-workshop-detailed.png"
     },
     "difficulty": "Hard",
     "elevation": "4,800 ft caldera rim",
@@ -5077,8 +5077,8 @@ export const areaConfigurations: AreaConfigurationsMap = {
         "description": "Heavy dense stone holding latent heat."
       }
     ],
-    "lore": "The Divine Workshop is said to channel forgotten volcanic hymn cycles — ancient sound-frequency patterns that the original forge-priests discovered could be used to stabilise alloy purity at a molecular level, producing metals that no subsequent technique has been able to replicate. Steel-type Pals are the workshop's primary labour force, Anubis and Wixen working in precise coordination with the runic bellows and celestial alloy crucibles, their natural facility with metalwork enhanced by the workshop's divine fire into something that approaches artistry. Andromon and HiAndromon-lineage Digimon have integrated so thoroughly into the workshop's mechanical systems that they are effectively part of the apparatus — self-maintaining components of the forge itself, their data-structures reinforced by the same divine fire that tempers the metal.",
-    "history": "The Divine Workshop was reinforced to its current specification after a containment spiral failure that nearly collapsed the inner crucibles — an event that workshop historians refer to with studied understatement as 'the disruption' and that outside accounts describe as a several-hour period during which a significant portion of the Hephaestus Forge region experienced the consistent and alarming impression that the sky was on fire. The reinforcement work took a decade and produced a workshop that is now considered structurally over-engineered to a degree that borders on the theological, the engineering team having apparently decided that if something was going to contain divine fire it should do so with an appropriate margin of safety.",
+    "lore": "The Automaton Workshop is said to channel forgotten volcanic hymn cycles — ancient sound-frequency patterns that the original forge-priests discovered could be used to stabilise alloy purity at a molecular level, producing metals that no subsequent technique has been able to replicate. Steel-type Pals are the workshop's primary labour force, Anubis and Wixen working in precise coordination with the runic bellows and celestial alloy crucibles, their natural facility with metalwork enhanced by the workshop's divine fire into something that approaches artistry. Andromon and HiAndromon-lineage Digimon have integrated so thoroughly into the workshop's mechanical systems that they are effectively part of the apparatus — self-maintaining components of the forge itself, their data-structures reinforced by the same divine fire that tempers the metal.",
+    "history": "The Automaton Workshop was reinforced to its current specification after a containment spiral failure that nearly collapsed the inner crucibles — an event that workshop historians refer to with studied understatement as 'the disruption' and that outside accounts describe as a several-hour period during which a significant portion of the Hephaestus Forge region experienced the consistent and alarming impression that the sky was on fire. The reinforcement work took a decade and produced a workshop that is now considered structurally over-engineered to a degree that borders on the theological, the engineering team having apparently decided that if something was going to contain divine fire it should do so with an appropriate margin of safety.",
     "dangers": [
       "Heat shock",
       "Slag bursts",
@@ -5101,8 +5101,8 @@ export const areaConfigurations: AreaConfigurationsMap = {
   'dragon-graveyard': {
     "landmass": "conoco-island",
     "landmassName": "Conoco Island",
-    "region": "draconic-abyss",
-    "regionName": "Draconic Abyss",
+    "region": "ouroboros-abyss",
+    "regionName": "Ouroboros Abyss",
     "welcomeMessages": {
       "base": "You tread upon the Dragon Graveyard, where ancient bones drift as silent monuments.",
       "variations": [
@@ -5370,13 +5370,13 @@ export const areaConfigurations: AreaConfigurationsMap = {
     }
   },
 
-  'druid-village': {
+  'nemeton-village': {
     "landmass": "conoco-island",
     "landmassName": "Conoco Island",
     "region": "stoneheart-cliffs",
     "regionName": "Stoneheart Cliffs",
     "welcomeMessages": {
-      "base": "Welcome to Druid Village where living rock and moss weave seamless dwellings.",
+      "base": "Welcome to Nemeton Village where living rock and moss weave seamless dwellings.",
       "variations": [
         "Stone masons coax runes to bloom in bioluminescent patterns.",
         "Circle chants resonate through aligned menhir paths.",
@@ -5432,7 +5432,7 @@ export const areaConfigurations: AreaConfigurationsMap = {
       }
     ],
     "images": {
-      "guide": "/images/maps/areas/druid-village-detailed.png"
+      "guide": "/images/maps/areas/nemeton-village-detailed.png"
     },
     "difficulty": "Medium",
     "elevation": "5,300 ft",
@@ -5485,8 +5485,8 @@ export const areaConfigurations: AreaConfigurationsMap = {
         "description": "Moist cushioning plant matter for crafting."
       }
     ],
-    "lore": "The Rootwardens who tend Druid Village have spent generations tuning the living rock-and-moss architecture to amplify restorative resonance — a process that involves as much negotiation with the Stone Yokai that inhabit the larger menhirs as it does technical knowledge of geomantic principles. Rock and Grass-type Pokémon live in such complete integration with the village's structures that the distinction between settlement and forest has become genuinely unclear; Trevenant serve as load-bearing members of certain walls, and the boundary between architectural element and independent entity is a philosophical question the village's healers discuss at length. Rock Digimon of the Gotsumon lineage are considered full community members with residency rights, their cultural contribution to the Stoneheart Cliffs tradition of stone-reading valued equally with any human druids.",
-    "history": "Druid Village formed gradually after the Stoneheart Cliffs' geological activity stabilised enough to allow permanent root lattice growth — a process that took several decades of incremental change during which the settlement existed in a state of ongoing negotiation with the landscape itself. The village's characteristic organic architecture emerged not from design but from decades of the inhabitants allowing the Trevenant, Woodmon, and Grass Digimon who shared the space to grow as they wished, then adapting the human infrastructure to work with the resulting forms rather than against them. The result is a settlement that cannot be replicated because its development was fundamentally collaborative with non-human partners whose aesthetic preferences were only legible in retrospect.",
+    "lore": "The Rootwardens who tend Nemeton Village have spent generations tuning the living rock-and-moss architecture to amplify restorative resonance — a process that involves as much negotiation with the Stone Yokai that inhabit the larger menhirs as it does technical knowledge of geomantic principles. Rock and Grass-type Pokémon live in such complete integration with the village's structures that the distinction between settlement and forest has become genuinely unclear; Trevenant serve as load-bearing members of certain walls, and the boundary between architectural element and independent entity is a philosophical question the village's healers discuss at length. Rock Digimon of the Gotsumon lineage are considered full community members with residency rights, their cultural contribution to the Stoneheart Cliffs tradition of stone-reading valued equally with any human druids.",
+    "history": "Nemeton Village formed gradually after the Stoneheart Cliffs' geological activity stabilised enough to allow permanent root lattice growth — a process that took several decades of incremental change during which the settlement existed in a state of ongoing negotiation with the landscape itself. The village's characteristic organic architecture emerged not from design but from decades of the inhabitants allowing the Trevenant, Woodmon, and Grass Digimon who shared the space to grow as they wished, then adapting the human infrastructure to work with the resulting forms rather than against them. The result is a settlement that cannot be replicated because its development was fundamentally collaborative with non-human partners whose aesthetic preferences were only legible in retrospect.",
     "dangers": [
       "Root bridge sway falls",
       "Glyph overgrowth entanglement"
@@ -5508,8 +5508,8 @@ export const areaConfigurations: AreaConfigurationsMap = {
   'electric-vortex': {
     "landmass": "sky-isles",
     "landmassName": "Sky Isles",
-    "region": "tempest-zones",
-    "regionName": "Tempest Zones",
+    "region": "vayu-maelstrom",
+    "regionName": "Vayu Maelstrom",
     "welcomeMessages": {
       "base": "You spiral toward the Electric Vortex, heart of converging storm channels.",
       "variations": [
@@ -5621,7 +5621,7 @@ export const areaConfigurations: AreaConfigurationsMap = {
         "description": "Powder infused with static potential."
       }
     ],
-    "lore": "The Electric Vortex formed where levitation eddies from the Sky Isles' magnetic foundations intersect with the migrating storm belts that traverse the Tempest Zones — a confluence of forces that produces a self-sustaining electromagnetic core that has been spinning continuously since before any written record of the sky isles exists. Electric Digimon treat the Vortex as a kind of holy site: Thunderbirmon orbits the outer rings in extended meditative cycles, and Raidramon-lineage entities have been observed descending into the central core and emerging changed in ways that digital monitoring cannot fully categorise. Nimbus Core entities — essentially living electrical stabilisers in Digimon form — maintain the vortex's polarity balance in an ongoing act of stewardship that the Wyvern People recognise as a form of guardianship they do not interfere with.",
+    "lore": "The Electric Vortex formed where levitation eddies from the Sky Isles' magnetic foundations intersect with the migrating storm belts that traverse the Vayu Maelstrom — a confluence of forces that produces a self-sustaining electromagnetic core that has been spinning continuously since before any written record of the sky isles exists. Electric Digimon treat the Vortex as a kind of holy site: Thunderbirmon orbits the outer rings in extended meditative cycles, and Raidramon-lineage entities have been observed descending into the central core and emerging changed in ways that digital monitoring cannot fully categorise. Nimbus Core entities — essentially living electrical stabilisers in Digimon form — maintain the vortex's polarity balance in an ongoing act of stewardship that the Wyvern People recognise as a form of guardianship they do not interfere with.",
     "history": "The Electric Vortex was mapped over a series of dangerous expeditions by airborne scouts using tethered sensor rigs that needed to be rebuilt after almost every run — the electromagnetic forces within the vortex are so intense that unshielded electronics fail within seconds, and the shielded versions lasted only marginally longer. The mapping that exists today required twenty-three separate expeditions conducted over six years, and is acknowledged even by its creators to be a description of the vortex as it was rather than as it is, since the internal structure shifts constantly in ways that suggest an active, responsive intelligence the scouts were not equipped to characterise.",
     "dangers": [
       "Arc surges",
@@ -5921,13 +5921,13 @@ export const areaConfigurations: AreaConfigurationsMap = {
     }
   },
 
-  'enchanted-glade': {
+  'sidhe-glade': {
     "landmass": "conoco-island",
     "landmassName": "Conoco Island",
     "region": "seelie-courts",
     "regionName": "Seelie Courts",
     "welcomeMessages": {
-      "base": "Welcome to the Enchanted Glade where midnight wishes bend fairy light.",
+      "base": "Welcome to the Sidhe Glade where midnight wishes bend fairy light.",
       "variations": [
         "Will-o-wisps trace spirals above dew jeweled petals.",
         "Mushroom circles hum with gentle harmonic chords.",
@@ -5985,7 +5985,7 @@ export const areaConfigurations: AreaConfigurationsMap = {
       }
     ],
     "images": {
-      "guide": "/images/maps/areas/enchanted-glade-detailed.png"
+      "guide": "/images/maps/areas/sidhe-glade-detailed.png"
     },
     "difficulty": "Medium",
     "elevation": "Forest floor basin",
@@ -6038,8 +6038,8 @@ export const areaConfigurations: AreaConfigurationsMap = {
         "description": "Delicate bloom fragments for basic infusions."
       }
     ],
-    "lore": "The Enchanted Glade attunes itself to the distant fairy courts of the Seelie realm, reflecting their seasonal mood shifts in its own ambient energy with the fidelity of a living receiver — when the courts are joyful, the glade blazes with colour; when they grieve, it grows quieter and the flowers close. Fairy Yokai in their Tengu-aspect forms maintain the harmony stone circles at the glade's edges, their ancient connection to the Seelie Courts predating the human settlements by centuries and giving their stewardship a proprietary quality that the courts' own emissaries respect. Fairy Digimon such as Fairimon and Kazemon dance at the bloom rings during alignment events, their light-data weaving into the glade's bioluminescent network in ways that the Seelie Court's own scholars describe as 'genuine contribution' rather than mere presence.",
-    "history": "The Enchanted Glade's current stable state was achieved after wardstones were placed to anchor the fluctuating portals that once made it unpredictably inaccessible — the portals connected the glade to the deeper fairy courts in ways that were wonderful for the courts and deeply inconvenient for anyone who arrived to find the glade physically in a different location than it had been the previous visit. The wardstone placement was a collaborative project between Seelie Court emissaries and human fairy-mancers, conducted over a series of careful negotiations that established the access protocols still in use today, including the spiral petal portal alignment that all visitors must navigate correctly before the glade will permit entry.",
+    "lore": "The Sidhe Glade attunes itself to the distant fairy courts of the Seelie realm, reflecting their seasonal mood shifts in its own ambient energy with the fidelity of a living receiver — when the courts are joyful, the glade blazes with colour; when they grieve, it grows quieter and the flowers close. Fairy Yokai in their Tengu-aspect forms maintain the harmony stone circles at the glade's edges, their ancient connection to the Seelie Courts predating the human settlements by centuries and giving their stewardship a proprietary quality that the courts' own emissaries respect. Fairy Digimon such as Fairimon and Kazemon dance at the bloom rings during alignment events, their light-data weaving into the glade's bioluminescent network in ways that the Seelie Court's own scholars describe as 'genuine contribution' rather than mere presence.",
+    "history": "The Sidhe Glade's current stable state was achieved after wardstones were placed to anchor the fluctuating portals that once made it unpredictably inaccessible — the portals connected the glade to the deeper fairy courts in ways that were wonderful for the courts and deeply inconvenient for anyone who arrived to find the glade physically in a different location than it had been the previous visit. The wardstone placement was a collaborative project between Seelie Court emissaries and human fairy-mancers, conducted over a series of careful negotiations that established the access protocols still in use today, including the spiral petal portal alignment that all visitors must navigate correctly before the glade will permit entry.",
     "dangers": [
       "Resonance overload dizziness",
       "Spore haze drowsiness"
@@ -6058,13 +6058,13 @@ export const areaConfigurations: AreaConfigurationsMap = {
     }
   },
 
-  'eternal-dusk': {
+  'obsidian-dusk': {
     "landmass": "conoco-island",
     "landmassName": "Conoco Island",
     "region": "ravens-shadow",
     "regionName": "Raven's Shadow",
     "welcomeMessages": {
-      "base": "You enter the Eternal Dusk Grove, where twilight geometry defies natural law.",
+      "base": "You enter the Obsidian Dusk Grove, where twilight geometry defies natural law.",
       "variations": [
         "Trees cast multiple conflicting shadows.",
         "Raven silhouettes merge then split along branch lines.",
@@ -6120,7 +6120,7 @@ export const areaConfigurations: AreaConfigurationsMap = {
       }
     ],
     "images": {
-      "guide": "/images/maps/areas/eternal-dusk-detailed.png"
+      "guide": "/images/maps/areas/obsidian-dusk-detailed.png"
     },
     "difficulty": "Hard",
     "elevation": "Undulating moor",
@@ -6173,8 +6173,8 @@ export const areaConfigurations: AreaConfigurationsMap = {
         "description": "Grows on monoliths absorbing echo traces."
       }
     ],
-    "lore": "In the Eternal Dusk Grove, the light never fully fades — it hovers at that precise threshold between day and night where shadows have maximum autonomy and the world becomes most interesting to those who live in its margins. Dark Yokai of the Tanuki and Kitsune traditions are the grove's most settled inhabitants, their shapeshifting capabilities in perfect harmony with a landscape where nothing has a single, fixed form. Dark/Virus Digimon such as Impmon and the Ravemon lineage find the perpetual twilight stabilising to their data-forms, the ambient shadow-energy providing a consistent operating environment that the more chaotic light-conditions elsewhere in Raven's Shadow deny them, and the Digital Dawn reluctantly acknowledges that some of their more unconventional data-theory emerges from researchers who spend extended time in this grove.",
-    "history": "The Eternal Dusk Grove was once a battlefield — the accounts of which conflict dramatically depending on which tradition is consulted — and the layered shadow wards that now define its character were laid down by Dark Yokai of considerable power in the aftermath, their purpose being the permanent reclamation of the space from the residual violence that had soaked into the soil. The reclamation took decades and produced a place that is genuinely peaceful in a way that should perhaps be more unsettling than it is, given what lies underneath the shadow wards. The Spirit Keepers maintain that the wards are holding and that no monitoring is currently necessary; other factions maintain a respectful distance and choose not to investigate the first claim by testing the second.",
+    "lore": "In the Obsidian Dusk Grove, the light never fully fades — it hovers at that precise threshold between day and night where shadows have maximum autonomy and the world becomes most interesting to those who live in its margins. Dark Yokai of the Tanuki and Kitsune traditions are the grove's most settled inhabitants, their shapeshifting capabilities in perfect harmony with a landscape where nothing has a single, fixed form. Dark/Virus Digimon such as Impmon and the Ravemon lineage find the perpetual twilight stabilising to their data-forms, the ambient shadow-energy providing a consistent operating environment that the more chaotic light-conditions elsewhere in Raven's Shadow deny them, and the Digital Dawn reluctantly acknowledges that some of their more unconventional data-theory emerges from researchers who spend extended time in this grove.",
+    "history": "The Obsidian Dusk Grove was once a battlefield — the accounts of which conflict dramatically depending on which tradition is consulted — and the layered shadow wards that now define its character were laid down by Dark Yokai of considerable power in the aftermath, their purpose being the permanent reclamation of the space from the residual violence that had soaked into the soil. The reclamation took decades and produced a place that is genuinely peaceful in a way that should perhaps be more unsettling than it is, given what lies underneath the shadow wards. The Spirit Keepers maintain that the wards are holding and that no monitoring is currently necessary; other factions maintain a respectful distance and choose not to investigate the first claim by testing the second.",
     "dangers": [
       "Visibility loss",
       "Echo confusion",
@@ -6194,13 +6194,13 @@ export const areaConfigurations: AreaConfigurationsMap = {
     }
   },
 
-  'eternal-flame': {
+  'akshay-jyoti': {
     "landmass": "conoco-island",
     "landmassName": "Conoco Island",
     "region": "agni-peaks",
     "regionName": "Agni Peaks",
     "welcomeMessages": {
-      "base": "Welcome to the Eternal Flame Shrine, the mountain peak where the sacred flame burns as a beacon for all the island!",
+      "base": "Welcome to the Akshay Jyoti Shrine, the mountain peak where the sacred flame burns as a beacon for all the island!",
       "variations": [
         "The eternal flame atop this mountain peak serves as a divine beacon visible across the entire island.",
         "Sacred energies converge at this peak shrine where the eternal flame has burned since time immemorial.",
@@ -6261,7 +6261,7 @@ export const areaConfigurations: AreaConfigurationsMap = {
       }
     ],
     "images": {
-      "guide": "/images/maps/areas/eternal-flame-detailed.png"
+      "guide": "/images/maps/areas/akshay-jyoti-detailed.png"
     },
     "difficulty": "Hard",
     "elevation": "3800 ft",
@@ -6316,8 +6316,8 @@ export const areaConfigurations: AreaConfigurationsMap = {
         "description": "Glowing embers that never die out"
       }
     ],
-    "lore": "The Eternal Flame is said to be a window into the cosmic fire that burns at the heart of creation — a claim that is easier to dismiss before one has stood before it, and considerably harder after. Fire Yokai of every known tradition gather here at their respective sacred intervals, the Kasha and lesser flame-spirits treating it as the ultimate authority on matters of fire-divinity, a status it holds without apparent effort or awareness. Phoenixmon-lineage Digimon make the arduous climb to the summit flame as a matter of lifecycle necessity — something in the flame's resonance accelerates their evolution and revival cycles, a fact the Digital Dawn has documented exhaustively without being able to explain why a geological phenomenon would interface with digital biology in this way.",
-    "history": "The Eternal Flame has been revered since the earliest human habitation of Agni Peaks — before the fire temples of Agni City were built, before the sacred rites were formalised, the flame itself was simply there, burning without fuel on a volcanic summit and drawing the awestruck and the desperate alike. Its prophetic properties were discovered, according to the oldest accounts, by a seer who climbed to the peak during a time of crisis and descended with knowledge that resolved the crisis but left her forever changed in ways she described as entirely worthwhile. The formalisation of pilgrimage protocols came later, developed in response to visitors who arrived unprepared and experienced the flame's revelations without adequate psychological support to integrate them.",
+    "lore": "The Akshay Jyoti is said to be a window into the cosmic fire that burns at the heart of creation — a claim that is easier to dismiss before one has stood before it, and considerably harder after. Fire Yokai of every known tradition gather here at their respective sacred intervals, the Kasha and lesser flame-spirits treating it as the ultimate authority on matters of fire-divinity, a status it holds without apparent effort or awareness. Phoenixmon-lineage Digimon make the arduous climb to the summit flame as a matter of lifecycle necessity — something in the flame's resonance accelerates their evolution and revival cycles, a fact the Digital Dawn has documented exhaustively without being able to explain why a geological phenomenon would interface with digital biology in this way.",
+    "history": "The Akshay Jyoti has been revered since the earliest human habitation of Agni Peaks — before the fire temples of Agni City were built, before the sacred rites were formalised, the flame itself was simply there, burning without fuel on a volcanic summit and drawing the awestruck and the desperate alike. Its prophetic properties were discovered, according to the oldest accounts, by a seer who climbed to the peak during a time of crisis and descended with knowledge that resolved the crisis but left her forever changed in ways she described as entirely worthwhile. The formalisation of pilgrimage protocols came later, developed in response to visitors who arrived unprepared and experienced the flame's revelations without adequate psychological support to integrate them.",
     "dangers": [
       "Overwhelming visions",
       "Mystical energy exposure",
@@ -6341,13 +6341,13 @@ export const areaConfigurations: AreaConfigurationsMap = {
     }
   },
 
-  'eternal-glacier': {
+  'fimbulvetr-glacier': {
     "landmass": "conoco-island",
     "landmassName": "Conoco Island",
     "region": "jotun-tundra",
     "regionName": "Jötun Tundra",
     "welcomeMessages": {
-      "base": "Welcome to the Eternal Glacier—ancient ice that remembers, and a horizon that doesn't blink.",
+      "base": "Welcome to the Fimbulvetr Glacier—ancient ice that remembers, and a horizon that doesn't blink.",
       "variations": [
         "Cracks sing old songs; step to the rhythm or not at all.",
         "Frost halos drift above crevasses—giant bridges appear when they are needed, not wanted.",
@@ -6403,7 +6403,7 @@ export const areaConfigurations: AreaConfigurationsMap = {
       }
     ],
     "images": {
-      "guide": "/images/maps/areas/eternal-glacier-detailed.png"
+      "guide": "/images/maps/areas/fimbulvetr-glacier-detailed.png"
     },
     "difficulty": "Extreme",
     "elevation": "3000 ft",
@@ -6458,8 +6458,8 @@ export const areaConfigurations: AreaConfigurationsMap = {
         "description": "Relics from the time when the world was young"
       }
     ],
-    "lore": "The Eternal Glacier is ancient in a way that makes even the Jötun Tundra's other primordial features look recent — a remnant of the world's creation that holds in its ice layers the memories and physical artifacts of ages so remote that no mythology has names for them. Ice Yokai of the Yuki-onna tradition avoid the glacier's deepest zones, which they describe with the specific kind of respectful brevity that implies they know exactly what is there and have decided that knowing is sufficient. LadyDevimon and Ghost-aspect Ice Digimon are drawn to the memorial ice — the sections where ancient creatures are preserved in attitudes of moment rather than rest — their data-cores resonating with what they describe as 'the oldest known data-pattern' that their architectures recognise but cannot decode.",
-    "history": "The Eternal Glacier formed at the world's beginning and has advanced and retreated across the tundra in cycles measured in millennia rather than years, preserving in perfect stasis everything its leading edge touched before the retreat left it exposed again. Archaeologists working the glacier's retreating margins have recovered artifacts from so many different eras in the same exposed layer that the stratigraphy is effectively useless as a dating method — items from ages separated by ten thousand years sit side by side where the glacier deposited them with democratic impartiality. The most significant finds are logged under the joint custodianship of the tundra's academic community, the Jötun Tundra's tribal elders, and the Spirit Keepers, with access negotiated case by case.",
+    "lore": "The Fimbulvetr Glacier is ancient in a way that makes even the Jötun Tundra's other primordial features look recent — a remnant of the world's creation that holds in its ice layers the memories and physical artifacts of ages so remote that no mythology has names for them. Ice Yokai of the Yuki-onna tradition avoid the glacier's deepest zones, which they describe with the specific kind of respectful brevity that implies they know exactly what is there and have decided that knowing is sufficient. LadyDevimon and Ghost-aspect Ice Digimon are drawn to the memorial ice — the sections where ancient creatures are preserved in attitudes of moment rather than rest — their data-cores resonating with what they describe as 'the oldest known data-pattern' that their architectures recognise but cannot decode.",
+    "history": "The Fimbulvetr Glacier formed at the world's beginning and has advanced and retreated across the tundra in cycles measured in millennia rather than years, preserving in perfect stasis everything its leading edge touched before the retreat left it exposed again. Archaeologists working the glacier's retreating margins have recovered artifacts from so many different eras in the same exposed layer that the stratigraphy is effectively useless as a dating method — items from ages separated by ten thousand years sit side by side where the glacier deposited them with democratic impartiality. The most significant finds are logged under the joint custodianship of the tundra's academic community, the Jötun Tundra's tribal elders, and the Spirit Keepers, with access negotiated case by case.",
     "dangers": [
       "Extreme primordial cold",
       "Time distortion effects",
@@ -6483,13 +6483,13 @@ export const areaConfigurations: AreaConfigurationsMap = {
     }
   },
 
-  'feather-town': {
+  'quetzalli-town': {
     "landmass": "conoco-island",
     "landmassName": "Conoco Island",
     "region": "quetzal-winds",
     "regionName": "Quetzal Winds",
     "welcomeMessages": {
-      "base": "Welcome to Feather Town—rainbow plumes, ceremonial stitches, and art that flutters when you blink.",
+      "base": "Welcome to Quetzalli Town—rainbow plumes, ceremonial stitches, and art that flutters when you blink.",
       "variations": [
         "Looms hum in birdsong meter; tailfeathers become tapestry and myth.",
         "Dyers coax sunrise from pigments; even the wind leaves with souvenirs.",
@@ -6545,7 +6545,7 @@ export const areaConfigurations: AreaConfigurationsMap = {
       }
     ],
     "images": {
-      "guide": "/images/maps/areas/feather-town-detailed.png"
+      "guide": "/images/maps/areas/quetzalli-town-detailed.png"
     },
     "difficulty": "Easy",
     "elevation": "2500 ft",
@@ -6600,8 +6600,8 @@ export const areaConfigurations: AreaConfigurationsMap = {
         "description": "Specialized equipment for featherwork"
       }
     ],
-    "lore": "Feather Town preserves the ancient art of sacred featherwork — the tradition of creating ceremonial objects whose beauty honours the feathered serpent spirit and encodes cosmological knowledge in patterns that only the initiated can fully read. Flying Yokai in their Karasu Tengu aspect are the town's most honoured suppliers of raw material, their shed feathers considered particularly sacred for ceremonial use; they do not simply leave feathers but present them in specific arrangements that the master craftspeople of the town interpret as quality indicators and sometimes as messages. Hawkmon-lineage Digimon have developed a remarkable rapport with the town's artisans, their feather-patterns offering design inspirations that have been incorporated into several significant ceremonial traditions over the past century.",
-    "history": "Feather Town was established by master featherworkers who had studied the ancient traditions and chose this location in Quetzal Winds deliberately, believing that proximity to the actual feathered serpent's domain would imbue their work with genuine sacred resonance rather than mere aesthetic merit. The town's reputation for magnificent ceremonial creations spread quickly and has been maintained through a combination of extraordinary craft skill, genuine spiritual commitment, and the contribution of their Flying Yokai and Digimon neighbours whose living presence in the creative process produces results that cannot be replicated elsewhere.",
+    "lore": "Quetzalli Town preserves the ancient art of sacred featherwork — the tradition of creating ceremonial objects whose beauty honours the feathered serpent spirit and encodes cosmological knowledge in patterns that only the initiated can fully read. Flying Yokai in their Karasu Tengu aspect are the town's most honoured suppliers of raw material, their shed feathers considered particularly sacred for ceremonial use; they do not simply leave feathers but present them in specific arrangements that the master craftspeople of the town interpret as quality indicators and sometimes as messages. Hawkmon-lineage Digimon have developed a remarkable rapport with the town's artisans, their feather-patterns offering design inspirations that have been incorporated into several significant ceremonial traditions over the past century.",
+    "history": "Quetzalli Town was established by master featherworkers who had studied the ancient traditions and chose this location in Quetzal Winds deliberately, believing that proximity to the actual feathered serpent's domain would imbue their work with genuine sacred resonance rather than mere aesthetic merit. The town's reputation for magnificent ceremonial creations spread quickly and has been maintained through a combination of extraordinary craft skill, genuine spiritual commitment, and the contribution of their Flying Yokai and Digimon neighbours whose living presence in the creative process produces results that cannot be replicated elsewhere.",
     "dangers": [
       "Allergic reactions to exotic feathers",
       "Competition among artisans",
@@ -6627,8 +6627,8 @@ export const areaConfigurations: AreaConfigurationsMap = {
   'flame-chasm': {
     "landmass": "sky-isles",
     "landmassName": "Sky Isles",
-    "region": "draconic-abyss",
-    "regionName": "Draconic Abyss",
+    "region": "ouroboros-abyss",
+    "regionName": "Ouroboros Abyss",
     "welcomeMessages": {
       "base": "You descend toward the Flame Chasm where dragonfire cascades into a bottomless rift.",
       "variations": [
@@ -6761,13 +6761,13 @@ export const areaConfigurations: AreaConfigurationsMap = {
     }
   },
 
-  'floating-gardens': {
+  'chinampa-gardens': {
     "landmass": "conoco-island",
     "landmassName": "Conoco Island",
     "region": "quetzal-winds",
     "regionName": "Quetzal Winds",
     "welcomeMessages": {
-      "base": "Welcome to the Floating Gardens—aerial orchards drifting on whispered windcraft.",
+      "base": "Welcome to the Chinampa Gardens—aerial orchards drifting on whispered windcraft.",
       "variations": [
         "Lattice roots sip clouds; gardeners prune with kites.",
         "Fruit bells chime as terraces glide past the sun.",
@@ -6822,7 +6822,7 @@ export const areaConfigurations: AreaConfigurationsMap = {
       }
     ],
     "images": {
-      "guide": "/images/maps/areas/floating-gardens-detailed.png"
+      "guide": "/images/maps/areas/chinampa-gardens-detailed.png"
     },
     "difficulty": "Hard",
     "elevation": "5000 ft",
@@ -6877,8 +6877,8 @@ export const areaConfigurations: AreaConfigurationsMap = {
         "description": "Seeds adapted for growth without soil"
       }
     ],
-    "lore": "The Floating Gardens drift through the mid-altitudes of Quetzal Winds on interconnected root-lattice platforms, tended by aerial botanists who have spent generations perfecting the art of soilless cultivation. Wind-magic practitioners wove the original platforms from compressed cloud-fiber and living root, creating terraces that self-anchor in stable updraft corridors and rotate slowly through the day to ensure even sunlight. Grass and Fairy-type Pokémon are beloved fixtures of the Gardens — Comfey garlands adorn every suspension rope, and Whimsicott drifting between beds are regarded as lucky omens by the gardeners. Lilamon-line Digimon, who carry data-encoded botanical knowledge in their core structure, have become indispensable assistants to the cultivators, able to diagnose plant ailments that human botanists cannot detect. The Gardens produce fruits and flowers impossible to cultivate at ground level, prized across Conoco Island for their concentrated elemental essence and extraordinary flavour.",
-    "history": "The original Floating Gardens were small ritual platforms launched by Quetzal Winds priests to carry offerings to sky spirits — decorative rather than agricultural. A generation of practical-minded wind mages recognized the structural potential in the platforms and began scaling them into functional growing terraces, a transformation completed over roughly two centuries of iterative design. The great expansion occurred when a Grass-type Pokémon migration brought an unusual species of root-vine capable of binding platform segments without mechanical fastenings, enabling the multi-level garden systems visible today. Several platforms were lost to storm events over the years, and their drifting remnants — still alive, still blooming — can sometimes be spotted well outside the main cluster, hosting isolated ecosystems of their own.",
+    "lore": "The Chinampa Gardens drift through the mid-altitudes of Quetzal Winds on interconnected root-lattice platforms, tended by aerial botanists who have spent generations perfecting the art of soilless cultivation. Wind-magic practitioners wove the original platforms from compressed cloud-fiber and living root, creating terraces that self-anchor in stable updraft corridors and rotate slowly through the day to ensure even sunlight. Grass and Fairy-type Pokémon are beloved fixtures of the Gardens — Comfey garlands adorn every suspension rope, and Whimsicott drifting between beds are regarded as lucky omens by the gardeners. Lilamon-line Digimon, who carry data-encoded botanical knowledge in their core structure, have become indispensable assistants to the cultivators, able to diagnose plant ailments that human botanists cannot detect. The Gardens produce fruits and flowers impossible to cultivate at ground level, prized across Conoco Island for their concentrated elemental essence and extraordinary flavour.",
+    "history": "The original Chinampa Gardens were small ritual platforms launched by Quetzal Winds priests to carry offerings to sky spirits — decorative rather than agricultural. A generation of practical-minded wind mages recognized the structural potential in the platforms and began scaling them into functional growing terraces, a transformation completed over roughly two centuries of iterative design. The great expansion occurred when a Grass-type Pokémon migration brought an unusual species of root-vine capable of binding platform segments without mechanical fastenings, enabling the multi-level garden systems visible today. Several platforms were lost to storm events over the years, and their drifting remnants — still alive, still blooming — can sometimes be spotted well outside the main cluster, hosting isolated ecosystems of their own.",
     "dangers": [
       "Falling from floating platforms",
       "Wind magic plant interactions",
@@ -6902,13 +6902,13 @@ export const areaConfigurations: AreaConfigurationsMap = {
     }
   },
 
-  'fog-temple': {
+  'miasma-temple': {
     "landmass": "conoocoo-archipelago",
     "landmassName": "Conoocoo Archipelago",
     "region": "mist-marshlands",
     "regionName": "Mist Marshlands",
     "welcomeMessages": {
-      "base": "You approach the hidden Fog Temple, its silhouette shifting within luminous marsh haze.",
+      "base": "You approach the hidden Miasma Temple, its silhouette shifting within luminous marsh haze.",
       "variations": [
         "Bog spirits trace spiral glyphs in drifting vapor.",
         "Condensation beads into hovering droplets that refract pale runes.",
@@ -6967,7 +6967,7 @@ export const areaConfigurations: AreaConfigurationsMap = {
       }
     ],
     "images": {
-      "guide": "/images/maps/areas/fog-temple-detailed.png"
+      "guide": "/images/maps/areas/miasma-temple-detailed.png"
     },
     "difficulty": "Extreme",
     "elevation": "Bog water level",
@@ -7020,8 +7020,8 @@ export const areaConfigurations: AreaConfigurationsMap = {
         "description": "Condensed vapor droplet with faint echo energy."
       }
     ],
-    "lore": "The Fog Temple rests half-submerged in the Mist Marshlands of the Conoocoo Archipelago, its upper spires visible only when the marsh exhales — a rhythmic cycle of rising and subsiding fog that the temple's architects reportedly designed the entire structure around. Ghost and Water-type Pokémon move freely through its flooded lower chambers, treating the drowned halls as a natural extension of the surrounding wetlands. Duskull and Dusclops are considered guardians of the inner sanctum in local tradition, and they do not permit the careless to proceed further than the outer causeway. Shakomon-line Digimon are drawn here by the echo resonance in the bell causeways — the tonal frequencies align with ancient data frequencies that these aquatic species use for long-range communication. Spirit Keepers have maintained a small research and ritual presence at the Fog Temple for generations, studying the precise relationship between the breathing cycles and the behaviour of the marsh's Ghost-type inhabitants.",
-    "history": "The Fog Temple was built by an early Conoocoo Archipelago civilization who revered the marsh as a living entity, and constructed the temple to serve as a point of dialogue between the human world and the spirit world that the mist was believed to conceal. For centuries after that civilization's decline, the temple sank progressively deeper into the bog until only the highest spire remained visible — a landmark locally called the Ghost Finger. It was formally rediscovered during an extended drought that temporarily lowered the outer fog curtain and exposed the causeway entrances, prompting a joint Spirit Keepers and Ranger expedition that mapped the interior over the course of three expeditions. Full restoration is considered infeasible due to the temple's integration with the marsh ecosystem, and most scholars agree that attempting drainage would destroy both the site and the ecosystem it supports.",
+    "lore": "The Miasma Temple rests half-submerged in the Mist Marshlands of the Conoocoo Archipelago, its upper spires visible only when the marsh exhales — a rhythmic cycle of rising and subsiding fog that the temple's architects reportedly designed the entire structure around. Ghost and Water-type Pokémon move freely through its flooded lower chambers, treating the drowned halls as a natural extension of the surrounding wetlands. Duskull and Dusclops are considered guardians of the inner sanctum in local tradition, and they do not permit the careless to proceed further than the outer causeway. Shakomon-line Digimon are drawn here by the echo resonance in the bell causeways — the tonal frequencies align with ancient data frequencies that these aquatic species use for long-range communication. Spirit Keepers have maintained a small research and ritual presence at the Miasma Temple for generations, studying the precise relationship between the breathing cycles and the behaviour of the marsh's Ghost-type inhabitants.",
+    "history": "The Miasma Temple was built by an early Conoocoo Archipelago civilization who revered the marsh as a living entity, and constructed the temple to serve as a point of dialogue between the human world and the spirit world that the mist was believed to conceal. For centuries after that civilization's decline, the temple sank progressively deeper into the bog until only the highest spire remained visible — a landmark locally called the Ghost Finger. It was formally rediscovered during an extended drought that temporarily lowered the outer fog curtain and exposed the causeway entrances, prompting a joint Spirit Keepers and Ranger expedition that mapped the interior over the course of three expeditions. Full restoration is considered infeasible due to the temple's integration with the marsh ecosystem, and most scholars agree that attempting drainage would destroy both the site and the ecosystem it supports.",
     "dangers": [
       "Visibility collapse",
       "Spirit misdirection",
@@ -7041,13 +7041,13 @@ export const areaConfigurations: AreaConfigurationsMap = {
     }
   },
 
-  'forge-town': {
+  'brontes-town': {
     "landmass": "conoco-island",
     "landmassName": "Conoco Island",
     "region": "hephaestus-forge",
     "regionName": "Hephaestus Forge",
     "welcomeMessages": {
-      "base": "Ore carts rattle as you arrive in Forge Town—gateway to divine metal veins.",
+      "base": "Ore carts rattle as you arrive in Brontes Town—gateway to divine metal veins.",
       "variations": [
         "Refining towers vent steady orange plumes.",
         "Apprentices assay glowing ingots at slag terraces.",
@@ -7104,7 +7104,7 @@ export const areaConfigurations: AreaConfigurationsMap = {
       }
     ],
     "images": {
-      "guide": "/images/maps/areas/forge-town-detailed.png"
+      "guide": "/images/maps/areas/brontes-town-detailed.png"
     },
     "difficulty": "Medium",
     "elevation": "2,150 ft",
@@ -7157,8 +7157,8 @@ export const areaConfigurations: AreaConfigurationsMap = {
         "description": "Granular assay feedstock."
       }
     ],
-    "lore": "Forge Town is the beating logistical heart of the Hephaestus Forge region — a sprawling refinery settlement where raw ore from the mountain seams is processed, graded, and distributed to the divine smithing workshops deeper in the highlands. Its refining towers vent steady orange plumes around the clock, and the rhythmic percussion of calibration pylons testing alloy batches has earned the settlement its nickname: the Metronome. Steel-type Pokémon are drawn here by the ambient magnetic resonance from the refinery stacks, and Magnezone families are regularly contracted to monitor purity output — their magnetic sense detecting trace contamination faster than any mechanical assay. Guardromon-line Digimon work alongside the ore carts and conveyor systems, their mechanical bodies well-suited to the high-heat, abrasive environment, and several Guardromon have risen to become full partners in guild operations. The Pals population in Forge Town is substantial; Digtoise and Dumud clans perform the deep-seam boring that human workers cannot safely reach, and their contribution to regional ore output has reshaped the entire economy of the Forge.",
-    "history": "Forge Town was founded at the natural confluence of three ore veins that converge beneath the current town square — a geological coincidence that prospectors called the Triple Gift. The original settlement was a seasonal camp, occupied only during ore extraction seasons before ore cart technology made year-round habitation viable. Over time the refinery infrastructure became too large and valuable to relocate, and the camp became a permanent town with a mixed population of human smiths, Pokémon partners, and an increasingly established Digimon community. A major explosion in Refinery Tower Four, caused by a pressure valve failure, killed twelve workers and severely damaged the eastern processing complex; the rebuilt Tower Four is deliberately oversized compared to its counterparts as a memorial and a reminder of the cost of complacency.",
+    "lore": "Brontes Town is the beating logistical heart of the Hephaestus Forge region — a sprawling refinery settlement where raw ore from the mountain seams is processed, graded, and distributed to the divine smithing workshops deeper in the highlands. Its refining towers vent steady orange plumes around the clock, and the rhythmic percussion of calibration pylons testing alloy batches has earned the settlement its nickname: the Metronome. Steel-type Pokémon are drawn here by the ambient magnetic resonance from the refinery stacks, and Magnezone families are regularly contracted to monitor purity output — their magnetic sense detecting trace contamination faster than any mechanical assay. Guardromon-line Digimon work alongside the ore carts and conveyor systems, their mechanical bodies well-suited to the high-heat, abrasive environment, and several Guardromon have risen to become full partners in guild operations. The Pals population in Brontes Town is substantial; Digtoise and Dumud clans perform the deep-seam boring that human workers cannot safely reach, and their contribution to regional ore output has reshaped the entire economy of the Forge.",
+    "history": "Brontes Town was founded at the natural confluence of three ore veins that converge beneath the current town square — a geological coincidence that prospectors called the Triple Gift. The original settlement was a seasonal camp, occupied only during ore extraction seasons before ore cart technology made year-round habitation viable. Over time the refinery infrastructure became too large and valuable to relocate, and the camp became a permanent town with a mixed population of human smiths, Pokémon partners, and an increasingly established Digimon community. A major explosion in Refinery Tower Four, caused by a pressure valve failure, killed twelve workers and severely damaged the eastern processing complex; the rebuilt Tower Four is deliberately oversized compared to its counterparts as a memorial and a reminder of the cost of complacency.",
     "dangers": [
       "Conveyor pinch points",
       "Fume buildup",
@@ -7178,13 +7178,13 @@ export const areaConfigurations: AreaConfigurationsMap = {
     }
   },
 
-  'frost-village': {
+  'niflheim-village': {
     "landmass": "conoco-island",
     "landmassName": "Conoco Island",
     "region": "jotun-tundra",
     "regionName": "Jötun Tundra",
     "welcomeMessages": {
-      "base": "Welcome to Frost Village—giant-country modesty, hearth grit, and neighbors who shovel your roof.",
+      "base": "Welcome to Niflheim Village—giant-country modesty, hearth grit, and neighbors who shovel your roof.",
       "variations": [
         "Windbreak palisades sing; braided ropes guide you home in whiteouts.",
         "Sled bells mark the paths; soup kettles mark the end of them.",
@@ -7239,7 +7239,7 @@ export const areaConfigurations: AreaConfigurationsMap = {
       }
     ],
     "images": {
-      "guide": "/images/maps/areas/frost-village-detailed.png"
+      "guide": "/images/maps/areas/niflheim-village-detailed.png"
     },
     "difficulty": "Hard",
     "elevation": "1500 ft",
@@ -7294,8 +7294,8 @@ export const areaConfigurations: AreaConfigurationsMap = {
         "description": "Essential goods for surviving harsh winters"
       }
     ],
-    "lore": "Frost Village is a testament to the stubborn persistence of those who refused to yield the Jötun Tundra to the frost giants — a tight-knit settlement of wind-hardened homes, braided rope guides, and communal hearths that burn regardless of season. Ice-type Pokémon are treated as neighbours rather than wildlife here; Snover families share wood-stacks with village households, and Beartic are considered the unofficial watch-monsters of the outer palisade. Garurumon-line Digimon have integrated so thoroughly into the village's sled-relay network that most residents cannot remember a time before their participation. The village maintains a careful diplomatic tradition with the Jötun clans nearby — not peace, exactly, but a sustained ceasefire maintained through annual tribute exchanges and a shared hatred of the blizzard season. Chillet Pals from the tundra have recently become regular visitors, drawn to the village's warmth during deep-winter cold snaps and tolerated so long as they refrain from raiding the jerky stores.",
-    "history": "The original Norse settlers who founded Frost Village arrived in the Jötun Tundra after being driven from warmer regions by a territorial dispute that history has recorded only vaguely as the Long Argument. They chose the tundra specifically because the giants had written it off as too cold for productive habitation — an assessment the settlers counted on to buy them peace. The early decades were brutal, with multiple near-abandonments during catastrophic winter seasons, but the discovery of a network of semi-insulated underground hot-spring passages beneath the settlement gave the village its permanent foothold. The village's signature windbreak palisade architecture was developed after the Third Giant Raid destroyed the original outer wall, and the rebuilt design has not been successfully breached since.",
+    "lore": "Niflheim Village is a testament to the stubborn persistence of those who refused to yield the Jötun Tundra to the frost giants — a tight-knit settlement of wind-hardened homes, braided rope guides, and communal hearths that burn regardless of season. Ice-type Pokémon are treated as neighbours rather than wildlife here; Snover families share wood-stacks with village households, and Beartic are considered the unofficial watch-monsters of the outer palisade. Garurumon-line Digimon have integrated so thoroughly into the village's sled-relay network that most residents cannot remember a time before their participation. The village maintains a careful diplomatic tradition with the Jötun clans nearby — not peace, exactly, but a sustained ceasefire maintained through annual tribute exchanges and a shared hatred of the blizzard season. Chillet Pals from the tundra have recently become regular visitors, drawn to the village's warmth during deep-winter cold snaps and tolerated so long as they refrain from raiding the jerky stores.",
+    "history": "The original Norse settlers who founded Niflheim Village arrived in the Jötun Tundra after being driven from warmer regions by a territorial dispute that history has recorded only vaguely as the Long Argument. They chose the tundra specifically because the giants had written it off as too cold for productive habitation — an assessment the settlers counted on to buy them peace. The early decades were brutal, with multiple near-abandonments during catastrophic winter seasons, but the discovery of a network of semi-insulated underground hot-spring passages beneath the settlement gave the village its permanent foothold. The village's signature windbreak palisade architecture was developed after the Third Giant Raid destroyed the original outer wall, and the rebuilt design has not been successfully breached since.",
     "dangers": [
       "Extreme cold exposure",
       "Giant raids and conflicts",
@@ -7460,13 +7460,13 @@ export const areaConfigurations: AreaConfigurationsMap = {
     }
   },
 
-  'golden-hall': {
+  'gladsheim-hall': {
     "landmass": "conoco-island",
     "landmassName": "Conoco Island",
     "region": "hearthfall-commons",
     "regionName": "Hearthfall Commons",
     "welcomeMessages": {
-      "base": "Welcome to the Golden Hall—tapestries of bragging rights and mead with muscle memory.",
+      "base": "Welcome to the Gladsheim Hall—tapestries of bragging rights and mead with muscle memory.",
       "variations": [
         "Long tables, louder laughter—stories polished shinier than the walls.",
         "Champion plaques wink as you pass—either luck or lighting.",
@@ -7523,7 +7523,7 @@ export const areaConfigurations: AreaConfigurationsMap = {
       }
     ],
     "images": {
-      "guide": "/images/maps/areas/golden-hall-detailed.png"
+      "guide": "/images/maps/areas/gladsheim-hall-detailed.png"
     },
     "difficulty": "Medium",
     "elevation": "500 ft",
@@ -7578,8 +7578,8 @@ export const areaConfigurations: AreaConfigurationsMap = {
         "description": "Tapestries commemorating great achievements"
       }
     ],
-    "lore": "The Golden Hall is the apex gathering place of Hearthfall Commons — a vast Norse-style mead hall whose rafters are hung with embroidered tapestries depicting every significant deed accomplished in the region's history, updated seasonally by a devoted order of story-weavers. Its long tables have hosted peace treaties, retirement feasts, and the occasional furious argument that somehow ended in lifelong friendship. Normal and Fighting-type Pokémon are the most common inhabitants of the Hall's back corridors; Ursaring serve as the unofficial staff, managing the cellars and food stores with unmatched dedication. Bearmon-line Digimon have taken to the mead-hall tradition with gusto, developing their own internal ranking system that maps loosely onto the Hall's honour plaques. Entry is technically open to all, but the great golden doors are said to open wider — metaphorically and literally — for those who have done something genuinely worth noting.",
-    "history": "The Golden Hall was raised by the founding clans of Hearthfall Commons as a neutral meeting ground, a place where feuding families could negotiate without the tactical disadvantage of hosting their rivals under their own roof. Its location was chosen for its equidistance from the three largest original settlements, and the triple-entrance design ensures no clan's guests must pass through another's wing. The Hall has been burned twice, once by accident during a particularly exuberant torchlit celebration and once during a genuine raid, and both times the rebuilding process was treated as a communal festival rather than a burden. The current structure is considered the third and definitive version, expanded to four times the original footprint to accommodate the region's growth.",
+    "lore": "The Gladsheim Hall is the apex gathering place of Hearthfall Commons — a vast Norse-style mead hall whose rafters are hung with embroidered tapestries depicting every significant deed accomplished in the region's history, updated seasonally by a devoted order of story-weavers. Its long tables have hosted peace treaties, retirement feasts, and the occasional furious argument that somehow ended in lifelong friendship. Normal and Fighting-type Pokémon are the most common inhabitants of the Hall's back corridors; Ursaring serve as the unofficial staff, managing the cellars and food stores with unmatched dedication. Bearmon-line Digimon have taken to the mead-hall tradition with gusto, developing their own internal ranking system that maps loosely onto the Hall's honour plaques. Entry is technically open to all, but the great golden doors are said to open wider — metaphorically and literally — for those who have done something genuinely worth noting.",
+    "history": "The Gladsheim Hall was raised by the founding clans of Hearthfall Commons as a neutral meeting ground, a place where feuding families could negotiate without the tactical disadvantage of hosting their rivals under their own roof. Its location was chosen for its equidistance from the three largest original settlements, and the triple-entrance design ensures no clan's guests must pass through another's wing. The Hall has been burned twice, once by accident during a particularly exuberant torchlit celebration and once during a genuine raid, and both times the rebuilding process was treated as a communal festival rather than a burden. The current structure is considered the third and definitive version, expanded to four times the original footprint to accommodate the region's growth.",
     "dangers": [
       "Competitive atmosphere",
       "Challenges from veteran trainers",
@@ -7601,13 +7601,13 @@ export const areaConfigurations: AreaConfigurationsMap = {
     }
   },
 
-  'golden-wheat': {
+  'thesmophoria-fields': {
     "landmass": "conoco-island",
     "landmassName": "Conoco Island",
     "region": "demeters-grove",
     "regionName": "Demeter's Grove",
     "welcomeMessages": {
-      "base": "Welcome to the Golden Wheat—fields that gleam like sunrise and feed like folklore.",
+      "base": "Welcome to the Thesmophoria Fields—fields that gleam like sunrise and feed like folklore.",
       "variations": [
         "Wind combs the grain; the rows answer in rustled hymns.",
         "Threshing drums set an easy march—bring a basket, leave with blessings.",
@@ -7664,7 +7664,7 @@ export const areaConfigurations: AreaConfigurationsMap = {
       }
     ],
     "images": {
-      "guide": "/images/maps/areas/golden-wheat-detailed.png"
+      "guide": "/images/maps/areas/thesmophoria-fields-detailed.png"
     },
     "difficulty": "Easy",
     "elevation": "300 ft",
@@ -7719,8 +7719,8 @@ export const areaConfigurations: AreaConfigurationsMap = {
         "description": "Magical essence that promotes growth"
       }
     ],
-    "lore": "The Golden Wheat stretches across the gentlest terrain in Demeter's Grove — a seemingly endless expanse of grain that ripples with divine light in the late afternoon and emits a faint warmth at night that locals insist is Demeter's own exhalation. Grass and Normal-type Pokémon are at their most relaxed and generous here; Sawsbuck walk openly through the rows, and Comfey drifts through the air as if the entire field is a single long garland. Palmon-line Digimon have integrated seamlessly into the agricultural cycle, their botanical instincts extending to the wheat itself — some agricultural families consider a Palmon's approval of a field's soil composition the most reliable growing indicator available. The grain produced here is qualitatively different from wheat grown elsewhere: denser, sweeter, and with a shelf life that bakers across Conoco Island treat as borderline miraculous. Demeter's Grove farmers speak of the fields with quiet reverence, never boasting, as if excessive pride might disturb the balance that keeps the harvest perfect season after season.",
-    "history": "Agricultural records from Demeter's Grove trace the Golden Wheat back further than any other cultivated land on Conoco Island, with the oldest records describing it in terms that blur the line between farming and religious observance. Early settlers discovered the fields already partially cultivated — rows laid out in patterns they identified as sacred geometry — and chose to continue rather than replant, a decision that the subsequent ten thousand unbroken harvests has generally validated. There was a documented near-failure during a period of regional drought roughly eight centuries ago, when the wheat thinned and browned for the first time in living memory; it recovered completely when the farmers began daily offering ceremonies, an event that cemented the agricultural-religious tradition still observed today. The Eikthyrdeer Pals arrived in the area relatively recently and have been the most significant agricultural partners the fields have seen in centuries, their naturally gentle grazing patterns aerating the soil in ways that traditional tillage methods approximate but never quite match.",
+    "lore": "The Thesmophoria Fields stretches across the gentlest terrain in Demeter's Grove — a seemingly endless expanse of grain that ripples with divine light in the late afternoon and emits a faint warmth at night that locals insist is Demeter's own exhalation. Grass and Normal-type Pokémon are at their most relaxed and generous here; Sawsbuck walk openly through the rows, and Comfey drifts through the air as if the entire field is a single long garland. Palmon-line Digimon have integrated seamlessly into the agricultural cycle, their botanical instincts extending to the wheat itself — some agricultural families consider a Palmon's approval of a field's soil composition the most reliable growing indicator available. The grain produced here is qualitatively different from wheat grown elsewhere: denser, sweeter, and with a shelf life that bakers across Conoco Island treat as borderline miraculous. Demeter's Grove farmers speak of the fields with quiet reverence, never boasting, as if excessive pride might disturb the balance that keeps the harvest perfect season after season.",
+    "history": "Agricultural records from Demeter's Grove trace the Thesmophoria Fields back further than any other cultivated land on Conoco Island, with the oldest records describing it in terms that blur the line between farming and religious observance. Early settlers discovered the fields already partially cultivated — rows laid out in patterns they identified as sacred geometry — and chose to continue rather than replant, a decision that the subsequent ten thousand unbroken harvests has generally validated. There was a documented near-failure during a period of regional drought roughly eight centuries ago, when the wheat thinned and browned for the first time in living memory; it recovered completely when the farmers began daily offering ceremonies, an event that cemented the agricultural-religious tradition still observed today. The Eikthyrdeer Pals arrived in the area relatively recently and have been the most significant agricultural partners the fields have seen in centuries, their naturally gentle grazing patterns aerating the soil in ways that traditional tillage methods approximate but never quite match.",
     "dangers": [
       "Getting lost in vast fields",
       "Overwhelming sense of peace and contentment",
@@ -7742,13 +7742,13 @@ export const areaConfigurations: AreaConfigurationsMap = {
     }
   },
 
-  'grand-colosseum': {
+  'akhara-colosseum': {
     "landmass": "conoco-island",
     "landmassName": "Conoco Island",
     "region": "kshatriya-arena",
     "regionName": "Kshatriya Arena",
     "welcomeMessages": {
-      "base": "Welcome to the Grand Colosseum—honor louder than crowds and sand that remembers every step.",
+      "base": "Welcome to the Akhara Colosseum—honor louder than crowds and sand that remembers every step.",
       "variations": [
         "Trumpets blaze; banners judge your posture.",
         "Oathstones line the tunnel—touch one, fight fair.",
@@ -7805,7 +7805,7 @@ export const areaConfigurations: AreaConfigurationsMap = {
       }
     ],
     "images": {
-      "guide": "/images/maps/areas/grand-colosseum-detailed.png"
+      "guide": "/images/maps/areas/akhara-colosseum-detailed.png"
     },
     "difficulty": "Extreme",
     "elevation": "1150 ft",
@@ -7860,8 +7860,8 @@ export const areaConfigurations: AreaConfigurationsMap = {
         "description": "Advanced fighting methods"
       }
     ],
-    "lore": "The Grand Colosseum is the supreme arena of the Kshatriya Arena region — a stone amphitheatre whose oathstones have absorbed centuries of honour-bound combat into their mineral structure, so that veteran fighters can feel a faint vibration underfoot when they step onto the sand that newcomers cannot perceive. Fighting-type Pokémon come to the Colosseum to test their limits against the best in the region, and the waiting chambers beneath the arena floor are permanently populated by Machamp families who treat the arena as their spiritual home. WarGreymon-line Digimon compete here with a near-religious intensity; their bouts draw the largest crowds of any scheduled events, and their pre-match preparation rituals — lengthy, precise, and deeply personal — are now observed in respectful silence by the entire audience as a Colosseum custom. Volcamon-line Digimon serve as unofficial referees for the most heated bouts, their ability to read combat temperature preventing escalations that honour culture alone cannot always contain. The Colosseum's records hall documents every championship bout in detail, and Orserk Pals have recently begun competing in the open-category brackets, their physical prowess drawing considerable attention from veteran trainers.",
-    "history": "The Grand Colosseum was constructed by the founders of the Kshatriya Arena region as a permanent answer to the problem of disputes: rather than warring over territory, the founding clans agreed to settle all major conflicts through sanctioned combat at a neutral site. The first structure was far smaller, a simple sandy ring with wooden palisade seating, but it expanded with each generation as the tradition grew from a conflict-resolution mechanism into a beloved cultural institution. Three separate expansions have extended the seating capacity to its current level; the most recent expansion controversially added underground preparation chambers after several visiting fighters complained of inadequate pre-match facilities. The Colosseum's most famous bout — the Three-Day Marathon between two rival champions a century ago — ended in a draw that neither competitor ever contested, and both are commemorated by statues flanking the main entrance.",
+    "lore": "The Akhara Colosseum is the supreme arena of the Kshatriya Arena region — a stone amphitheatre whose oathstones have absorbed centuries of honour-bound combat into their mineral structure, so that veteran fighters can feel a faint vibration underfoot when they step onto the sand that newcomers cannot perceive. Fighting-type Pokémon come to the Colosseum to test their limits against the best in the region, and the waiting chambers beneath the arena floor are permanently populated by Machamp families who treat the arena as their spiritual home. WarGreymon-line Digimon compete here with a near-religious intensity; their bouts draw the largest crowds of any scheduled events, and their pre-match preparation rituals — lengthy, precise, and deeply personal — are now observed in respectful silence by the entire audience as a Colosseum custom. Volcamon-line Digimon serve as unofficial referees for the most heated bouts, their ability to read combat temperature preventing escalations that honour culture alone cannot always contain. The Colosseum's records hall documents every championship bout in detail, and Orserk Pals have recently begun competing in the open-category brackets, their physical prowess drawing considerable attention from veteran trainers.",
+    "history": "The Akhara Colosseum was constructed by the founders of the Kshatriya Arena region as a permanent answer to the problem of disputes: rather than warring over territory, the founding clans agreed to settle all major conflicts through sanctioned combat at a neutral site. The first structure was far smaller, a simple sandy ring with wooden palisade seating, but it expanded with each generation as the tradition grew from a conflict-resolution mechanism into a beloved cultural institution. Three separate expansions have extended the seating capacity to its current level; the most recent expansion controversially added underground preparation chambers after several visiting fighters complained of inadequate pre-match facilities. The Colosseum's most famous bout — the Three-Day Marathon between two rival champions a century ago — ended in a draw that neither competitor ever contested, and both are commemorated by statues flanking the main entrance.",
     "dangers": [
       "Elite-level combat",
       "Serious injury risk",
@@ -7885,13 +7885,13 @@ export const areaConfigurations: AreaConfigurationsMap = {
     }
   },
 
-  'great-nest': {
+  'mahpiya-aerie': {
     "landmass": "conoco-island",
     "landmassName": "Conoco Island",
     "region": "thunderbird-heights",
     "regionName": "Thunderbird Heights",
     "welcomeMessages": {
-      "base": "Welcome to the Great Nest—lightning-forged boughs and thermals that whistle like hymns.",
+      "base": "Welcome to the Mahpiya Aerie—lightning-forged boughs and thermals that whistle like hymns.",
       "variations": [
         "Charred timbers gleam with meteoric veins; feathers hum with static.",
         "Storm sap congeals into amber sparks—don’t pocket it unless you like surprises.",
@@ -7947,7 +7947,7 @@ export const areaConfigurations: AreaConfigurationsMap = {
       }
     ],
     "images": {
-      "guide": "/images/maps/areas/great-nest-detailed.png"
+      "guide": "/images/maps/areas/mahpiya-aerie-detailed.png"
     },
     "difficulty": "Extreme",
     "elevation": "9000 ft",
@@ -8002,8 +8002,8 @@ export const areaConfigurations: AreaConfigurationsMap = {
         "description": "Pieces of the Thunderbird's sacred eggs"
       }
     ],
-    "lore": "The Great Nest is the nexus of storm energy in all of Thunderbird Heights — a massive structure of lightning-struck timber, storm-forged metal, and compacted cloud-mass that hums with electrical charge strong enough to raise the hair on unprotected visitors. The Thunderbird is not merely a resident of this site; according to every tradition associated with the Heights, the Nest and the Thunderbird are inseparable, each having shaped the other over uncounted generations. Zapdos-kin Pokémon circle the outer perimeter constantly, neither descending nor departing, their behaviour suggesting a kind of permanent vigil. Phoenixmon-line Digimon treat the Nest as a spiritual summit — a destination that marks the absolute highest tier of their growth cycle, reached only when their data has achieved sufficient resonance with lightning-element energies. Rotom forms that have been exposed to storm energy for extended periods have been documented near the Nest's lower reaches, their normally mischievous energy subdued into something closer to reverence.",
-    "history": "The Great Nest predates every human settlement in the Thunderbird Heights region and may predate the Heights themselves as a distinct geographical feature — some researchers argue that the Thunderbird's repeated lightning strikes to the same location over millennia are responsible for the plateau's current elevation. The tribal cultures of the region have documented interactions with the Nest through oral tradition going back at least forty generations, with consistent accounts of the Thunderbird permitting specific individuals — storm-priests, storm-callers, or simply those the great bird found interesting — to approach the lower boughs and observe. The Stormproof Visitor Band requirement was instituted after a non-tribal expedition in the last century approached the Nest without preparation, triggering a defensive storm response that flattened three hundred metres of surrounding ridge. No one was killed, but the lesson was decisive.",
+    "lore": "The Mahpiya Aerie is the nexus of storm energy in all of Thunderbird Heights — a massive structure of lightning-struck timber, storm-forged metal, and compacted cloud-mass that hums with electrical charge strong enough to raise the hair on unprotected visitors. The Thunderbird is not merely a resident of this site; according to every tradition associated with the Heights, the Nest and the Thunderbird are inseparable, each having shaped the other over uncounted generations. Zapdos-kin Pokémon circle the outer perimeter constantly, neither descending nor departing, their behaviour suggesting a kind of permanent vigil. Phoenixmon-line Digimon treat the Nest as a spiritual summit — a destination that marks the absolute highest tier of their growth cycle, reached only when their data has achieved sufficient resonance with lightning-element energies. Rotom forms that have been exposed to storm energy for extended periods have been documented near the Nest's lower reaches, their normally mischievous energy subdued into something closer to reverence.",
+    "history": "The Mahpiya Aerie predates every human settlement in the Thunderbird Heights region and may predate the Heights themselves as a distinct geographical feature — some researchers argue that the Thunderbird's repeated lightning strikes to the same location over millennia are responsible for the plateau's current elevation. The tribal cultures of the region have documented interactions with the Nest through oral tradition going back at least forty generations, with consistent accounts of the Thunderbird permitting specific individuals — storm-priests, storm-callers, or simply those the great bird found interesting — to approach the lower boughs and observe. The Stormproof Visitor Band requirement was instituted after a non-tribal expedition in the last century approached the Nest without preparation, triggering a defensive storm response that flattened three hundred metres of surrounding ridge. No one was killed, but the lesson was decisive.",
     "dangers": [
       "Direct confrontation with Thunderbird",
       "Divine lightning strikes",
@@ -8027,7 +8027,7 @@ export const areaConfigurations: AreaConfigurationsMap = {
     }
   },
 
-  'great-tree': {
+  'nyame-dua': {
     "landmass": "conoco-island",
     "landmassName": "Conoco Island",
     "region": "anansi-woods",
@@ -8089,7 +8089,7 @@ export const areaConfigurations: AreaConfigurationsMap = {
       }
     ],
     "images": {
-      "guide": "/images/maps/areas/great-tree-detailed.png"
+      "guide": "/images/maps/areas/nyame-dua-detailed.png"
     },
     "difficulty": "Hard",
     "elevation": "Root rise plateau",
@@ -8142,8 +8142,8 @@ export const areaConfigurations: AreaConfigurationsMap = {
         "description": "Durable organic weave material."
       }
     ],
-    "lore": "The Great Tree stands at the heart of the Anansi Woods as the oldest living repository of the region's stories — its bark is covered in silk runes woven by generations of Spinarak, Tentomon, and Leavanny who have added to its script-tapestry without ever removing what came before, so that the entire trunk reads as a continuous narrative from root to crown. Bug and Fairy-type Pokémon are the tree's primary caretakers; Combee collectives harvest resin globes that preserve individual story fragments in living amber, and Leavanny families maintain the silk infrastructure with meticulous care. Kuwagamon-line Digimon serve as the tree's impromptu security force, patrolling the outer root rise and gently discouraging those who approach with harvesting intent rather than scholarly purpose. The story trance phenomenon is well-documented: visitors who read too deeply into the silk runes without an anchor sometimes lose track of time so completely that they are found days later, believing only an hour has passed. The sap that pools at the base of the tree is considered among the most valuable craft materials in the Woods, capable of preserving any knowledge pressed into it.",
-    "history": "The Great Tree's origin story is itself recorded on its lowest roots — a silk panel depicting a figure who is understood to be Anansi placing the first thread on the bark, establishing the tradition of narrative weaving that has continued uninterrupted ever since. The tree grew around the silk as much as the silk grew around the tree, and the current root-rise plateau is believed to be the direct result of centuries of accumulated story-energy compressing and lifting the soil beneath. A major portion of the upper canopy silk was destroyed by a wind event roughly three centuries ago, and the recovery effort — a coordinated weaving project involving every Bug-type family in the Woods — is itself documented in the replacement panels, giving the upper portion of the tree an unusual meta-narrative quality where the story of its own repair is incorporated into the text.",
+    "lore": "The Nyame Dua stands at the heart of the Anansi Woods as the oldest living repository of the region's stories — its bark is covered in silk runes woven by generations of Spinarak, Tentomon, and Leavanny who have added to its script-tapestry without ever removing what came before, so that the entire trunk reads as a continuous narrative from root to crown. Bug and Fairy-type Pokémon are the tree's primary caretakers; Combee collectives harvest resin globes that preserve individual story fragments in living amber, and Leavanny families maintain the silk infrastructure with meticulous care. Kuwagamon-line Digimon serve as the tree's impromptu security force, patrolling the outer root rise and gently discouraging those who approach with harvesting intent rather than scholarly purpose. The story trance phenomenon is well-documented: visitors who read too deeply into the silk runes without an anchor sometimes lose track of time so completely that they are found days later, believing only an hour has passed. The sap that pools at the base of the tree is considered among the most valuable craft materials in the Woods, capable of preserving any knowledge pressed into it.",
+    "history": "The Nyame Dua's origin story is itself recorded on its lowest roots — a silk panel depicting a figure who is understood to be Anansi placing the first thread on the bark, establishing the tradition of narrative weaving that has continued uninterrupted ever since. The tree grew around the silk as much as the silk grew around the tree, and the current root-rise plateau is believed to be the direct result of centuries of accumulated story-energy compressing and lifting the soil beneath. A major portion of the upper canopy silk was destroyed by a wind event roughly three centuries ago, and the recovery effort — a coordinated weaving project involving every Bug-type family in the Woods — is itself documented in the replacement panels, giving the upper portion of the tree an unusual meta-narrative quality where the story of its own repair is incorporated into the text.",
     "dangers": [
       "Falling silk mats",
       "Story trance distraction"
@@ -8162,13 +8162,13 @@ export const areaConfigurations: AreaConfigurationsMap = {
     }
   },
 
-  'hearthstone-temple': {
+  'fridhof-temple': {
     "landmass": "conoco-island",
     "landmassName": "Conoco Island",
     "region": "hearthfall-commons",
     "regionName": "Hearthfall Commons",
     "welcomeMessages": {
-      "base": "Welcome to the Hearthstone Temple—a fire that never sleeps and blessings that travel well.",
+      "base": "Welcome to the Fridhof Temple—a fire that never sleeps and blessings that travel well.",
       "variations": [
         "Warmth rolls from the altar like a friendly tide.",
         "Carved runes glow ember-gold; the air smells like home.",
@@ -8225,7 +8225,7 @@ export const areaConfigurations: AreaConfigurationsMap = {
       }
     ],
     "images": {
-      "guide": "/images/maps/areas/hearthstone-temple-detailed.png"
+      "guide": "/images/maps/areas/fridhof-temple-detailed.png"
     },
     "difficulty": "Medium",
     "elevation": "600 ft",
@@ -8280,8 +8280,8 @@ export const areaConfigurations: AreaConfigurationsMap = {
         "description": "Water blessed by the temple priests"
       }
     ],
-    "lore": "Hearthstone Temple is built around a single stone that has never been cold — an irregularly shaped chunk of basalt-like mineral that radiates gentle warmth without visible flame or identifiable heat source, and which regional tradition identifies as the original gift of fire brought to humanity by an ancient spirit in the time before recorded history. Normal and Fire-type Pokémon are naturally drawn to the Temple's warmth; Flareon who linger near the hearthstone for extended periods are said to carry a distinctive quality of flame that burns more steadily and more gently than wild fire, a phenomenon that local breeders value highly. Flarimon-line Digimon have made the Temple a site of regular pilgrimage, their spiritual protocols aligning closely with those of the human temple clergy in ways that scholars of monster culture find particularly interesting. Piyomon families nest in the temple eaves and have done so for as long as records exist — their white plumage acquires a faint golden tint from the hearthstone's ambient glow, and these 'blessed doves' are eagerly sought by households across Hearthfall Commons as companions believed to carry the Temple's warmth with them.",
-    "history": "Hearthstone Temple predates Heimdal City by several centuries, existing first as an open-air site marked only by the hearthstone itself and a ring of carved standing stones placed by the earliest settlers to acknowledge its significance. The enclosed temple structure was built incrementally as the pilgrimage tradition grew, with each generation's construction guild adding one more chamber, one more passage, one more wing, until the current layered complex emerged. A period of religious controversy roughly four hundred years ago saw a faction attempt to remove the hearthstone for study at a scholarly institution; the attempt failed when every member of the removal party independently and inexplicably fell into a deep sleep before reaching the temple door. The stone has not been touched since, and the temple clergy consider the incident a definitive theological statement from something they decline to name too specifically.",
+    "lore": "Fridhof Temple is built around a single stone that has never been cold — an irregularly shaped chunk of basalt-like mineral that radiates gentle warmth without visible flame or identifiable heat source, and which regional tradition identifies as the original gift of fire brought to humanity by an ancient spirit in the time before recorded history. Normal and Fire-type Pokémon are naturally drawn to the Temple's warmth; Flareon who linger near the hearthstone for extended periods are said to carry a distinctive quality of flame that burns more steadily and more gently than wild fire, a phenomenon that local breeders value highly. Flarimon-line Digimon have made the Temple a site of regular pilgrimage, their spiritual protocols aligning closely with those of the human temple clergy in ways that scholars of monster culture find particularly interesting. Piyomon families nest in the temple eaves and have done so for as long as records exist — their white plumage acquires a faint golden tint from the hearthstone's ambient glow, and these 'blessed doves' are eagerly sought by households across Hearthfall Commons as companions believed to carry the Temple's warmth with them.",
+    "history": "Fridhof Temple predates Heimdal City by several centuries, existing first as an open-air site marked only by the hearthstone itself and a ring of carved standing stones placed by the earliest settlers to acknowledge its significance. The enclosed temple structure was built incrementally as the pilgrimage tradition grew, with each generation's construction guild adding one more chamber, one more passage, one more wing, until the current layered complex emerged. A period of religious controversy roughly four hundred years ago saw a faction attempt to remove the hearthstone for study at a scholarly institution; the attempt failed when every member of the removal party independently and inexplicably fell into a deep sleep before reaching the temple door. The stone has not been touched since, and the temple clergy consider the incident a definitive theological statement from something they decline to name too specifically.",
     "dangers": [
       "Sacred site - respect required",
       "Protective guardian spirits",
@@ -8443,13 +8443,13 @@ export const areaConfigurations: AreaConfigurationsMap = {
     }
   },
 
-  'hidden-cove': {
+  'smugglers-den': {
     "landmass": "conoco-island",
     "landmassName": "Conoco Island",
     "region": "pirates-bay",
     "regionName": "Pirates' Bay",
     "welcomeMessages": {
-      "base": "Welcome to the Hidden Cove—cutlass smiles, fog-thick alleys, and maps that lie politely.",
+      "base": "Welcome to the Smugglers Den—cutlass smiles, fog-thick alleys, and maps that lie politely.",
       "variations": [
         "Reef teeth guard the inlet; only locals and lunatics thread the pass.",
         "Signal lamps wink in codes; if you wink back, you just hired yourself.",
@@ -8506,7 +8506,7 @@ export const areaConfigurations: AreaConfigurationsMap = {
       }
     ],
     "images": {
-      "guide": "/images/maps/areas/hidden-cove-detailed.png"
+      "guide": "/images/maps/areas/smugglers-den-detailed.png"
     },
     "difficulty": "Extreme",
     "elevation": "0 ft - 100 ft",
@@ -8562,8 +8562,8 @@ export const areaConfigurations: AreaConfigurationsMap = {
         "description": "Maps to the most guarded treasure locations across all oceans"
       }
     ],
-    "lore": "Hidden Cove is the worst-kept secret in Pirates' Bay — everyone knows it exists, no one outside the fraternity can find it, and the handful who have stumbled upon its entrance reef by accident have encountered either a polite escort back to open water or, less politely, nothing at all from then on. The Cove is defended not just by its rock maze approaches but by a Jormuntide that has inhabited the outer channel for as long as any living pirate can document, treating the passage as its exclusive territory and permitting only those bearing the Black Flag Token to proceed without incident. Dark and Water-type Pokémon are common throughout the Cove's interior waterways; Murkrow networks relay messages between factions within minutes, and Gyarados families patrol the underground waterways where the natural cavern system provides excellent ambush positions. Cawgnito-line Pals have become prized intelligence assets within the Cove's social hierarchy, their Dark-type instincts and aerial mobility making them ideal courier-spies in an environment where information is currency.",
-    "history": "The Hidden Cove's recorded history is patchy by design — pirate culture does not encourage meticulous documentation — but five centuries of accumulated graffiti, carved naming records, and recovered account books paint a picture of a site that has changed hands at least eleven times through internal power struggles. Each new ruling faction has added to the defensive infrastructure without removing predecessor work, resulting in a labyrinthine cavern complex that even long-term residents navigate partly by instinct. The largest single construction event was the excavation of the treasure vault network, reportedly achieved through a combination of Digtoise Pal labour and controlled detonations over a two-decade period. The current ruling faction has maintained occupancy for sixty years, the longest unbroken tenure in the Cove's documented history, which most outside observers attribute to an unusual policy of accepting competent outsiders rather than restricting membership to established bloodlines.",
+    "lore": "Smugglers Den is the worst-kept secret in Pirates' Bay — everyone knows it exists, no one outside the fraternity can find it, and the handful who have stumbled upon its entrance reef by accident have encountered either a polite escort back to open water or, less politely, nothing at all from then on. The Cove is defended not just by its rock maze approaches but by a Jormuntide that has inhabited the outer channel for as long as any living pirate can document, treating the passage as its exclusive territory and permitting only those bearing the Black Flag Token to proceed without incident. Dark and Water-type Pokémon are common throughout the Cove's interior waterways; Murkrow networks relay messages between factions within minutes, and Gyarados families patrol the underground waterways where the natural cavern system provides excellent ambush positions. Cawgnito-line Pals have become prized intelligence assets within the Cove's social hierarchy, their Dark-type instincts and aerial mobility making them ideal courier-spies in an environment where information is currency.",
+    "history": "The Smugglers Den's recorded history is patchy by design — pirate culture does not encourage meticulous documentation — but five centuries of accumulated graffiti, carved naming records, and recovered account books paint a picture of a site that has changed hands at least eleven times through internal power struggles. Each new ruling faction has added to the defensive infrastructure without removing predecessor work, resulting in a labyrinthine cavern complex that even long-term residents navigate partly by instinct. The largest single construction event was the excavation of the treasure vault network, reportedly achieved through a combination of Digtoise Pal labour and controlled detonations over a two-decade period. The current ruling faction has maintained occupancy for sixty years, the longest unbroken tenure in the Cove's documented history, which most outside observers attribute to an unusual policy of accepting competent outsiders rather than restricting membership to established bloodlines.",
     "dangers": [
       "Extremely hostile inhabitants",
       "Deadly entrance trials",
@@ -8589,13 +8589,13 @@ export const areaConfigurations: AreaConfigurationsMap = {
     }
   },
 
-  'honor-temple': {
+  'maryada-temple': {
     "landmass": "conoco-island",
     "landmassName": "Conoco Island",
     "region": "kshatriya-arena",
     "regionName": "Kshatriya Arena",
     "welcomeMessages": {
-      "base": "Welcome to the Honor Temple—oaths first, footwork second.",
+      "base": "Welcome to the Maryada Temple—oaths first, footwork second.",
       "variations": [
         "Censer smoke traces perfect circles—break one and start over.",
         "Shrine bells judge cadence; your stance will hear about it.",
@@ -8652,7 +8652,7 @@ export const areaConfigurations: AreaConfigurationsMap = {
       }
     ],
     "images": {
-      "guide": "/images/maps/areas/honor-temple-detailed.png"
+      "guide": "/images/maps/areas/maryada-temple-detailed.png"
     },
     "difficulty": "Hard",
     "elevation": "1300 ft",
@@ -8707,8 +8707,8 @@ export const areaConfigurations: AreaConfigurationsMap = {
         "description": "Symbols of commitment to honorable warfare"
       }
     ],
-    "lore": "The Honor Temple is the spiritual cornerstone of the Kshatriya Arena region — a place where warriors come not to fight but to be reminded why fighting must be done with integrity, and where the oaths taken before battle are considered more binding than any contract. Its purification pools reflect the face of whoever leans over them with an unsettling clarity that veterans describe as showing not the face you have but the face you claimed to be when you first took up your weapon. Fighting and Psychic-type Pokémon are common here, drawn by the concentrated honour-energy that has accumulated in the stone over centuries of vow-taking; Lucario are particularly notable residents, their aura-reading ability making them natural temple functionaries who can assess a petitioner's sincerity in seconds. Knightmon-line Digimon serve as permanent temple guardians, their oath-bound nature harmonising so completely with the temple's function that the temple clergy has formally recognised them as co-custodians rather than merely residents. The Sacred Tiger that Raikou-kin and SaberLeomon embody in temple tradition is said to manifest physically during certain ceremonies, visible to those whose honour-state the temple judges sufficiently advanced.",
-    "history": "The Honor Temple was established by the founders of the Kshatriya Arena tradition as a necessary counterbalance to the Grand Colosseum — a place of stillness and introspection to offset the arena's noise and competition. The founding philosophy held that combat without spiritual grounding inevitably degraded into mere violence, and that the arena's glory depended on the integrity of those who competed in it. The temple complex was built over several generations, with each generation's contribution required to be approved by the previous generation's senior priests before construction began — a process that produced a building of unusual architectural consistency despite its long construction timeline. The most controversial moment in the temple's history was a ruling, roughly two centuries ago, that declared a reigning arena champion's vows void due to demonstrated dishonour in conduct outside combat; the champion was required to undergo the full purification ritual publicly, and the humility with which they did so is considered the defining example of the system working as intended.",
+    "lore": "The Maryada Temple is the spiritual cornerstone of the Kshatriya Arena region — a place where warriors come not to fight but to be reminded why fighting must be done with integrity, and where the oaths taken before battle are considered more binding than any contract. Its purification pools reflect the face of whoever leans over them with an unsettling clarity that veterans describe as showing not the face you have but the face you claimed to be when you first took up your weapon. Fighting and Psychic-type Pokémon are common here, drawn by the concentrated honour-energy that has accumulated in the stone over centuries of vow-taking; Lucario are particularly notable residents, their aura-reading ability making them natural temple functionaries who can assess a petitioner's sincerity in seconds. Knightmon-line Digimon serve as permanent temple guardians, their oath-bound nature harmonising so completely with the temple's function that the temple clergy has formally recognised them as co-custodians rather than merely residents. The Sacred Tiger that Raikou-kin and SaberLeomon embody in temple tradition is said to manifest physically during certain ceremonies, visible to those whose honour-state the temple judges sufficiently advanced.",
+    "history": "The Maryada Temple was established by the founders of the Kshatriya Arena tradition as a necessary counterbalance to the Akhara Colosseum — a place of stillness and introspection to offset the arena's noise and competition. The founding philosophy held that combat without spiritual grounding inevitably degraded into mere violence, and that the arena's glory depended on the integrity of those who competed in it. The temple complex was built over several generations, with each generation's contribution required to be approved by the previous generation's senior priests before construction began — a process that produced a building of unusual architectural consistency despite its long construction timeline. The most controversial moment in the temple's history was a ruling, roughly two centuries ago, that declared a reigning arena champion's vows void due to demonstrated dishonour in conduct outside combat; the champion was required to undergo the full purification ritual publicly, and the humility with which they did so is considered the defining example of the system working as intended.",
     "dangers": [
       "Spiritual judgment of character",
       "Binding sacred oaths",
@@ -8869,7 +8869,7 @@ export const areaConfigurations: AreaConfigurationsMap = {
     }
   },
 
-  'imperial-palace': {
+  'huanglong-palace': {
     "landmass": "conoco-island",
     "landmassName": "Conoco Island",
     "region": "long-valley",
@@ -8933,7 +8933,7 @@ export const areaConfigurations: AreaConfigurationsMap = {
       }
     ],
     "images": {
-      "guide": "/images/maps/areas/imperial-palace-detailed.png"
+      "guide": "/images/maps/areas/huanglong-palace-detailed.png"
     },
     "difficulty": "Extreme",
     "elevation": "Terraced high seat",
@@ -8986,8 +8986,8 @@ export const areaConfigurations: AreaConfigurationsMap = {
         "description": "Fragrant compound calming volatile auras."
       }
     ],
-    "lore": "The Imperial Palace is the formal seat of Long Valley's draconic governance — a multi-tiered terrace complex where elder Dragon-type lineages have administered the valley's affairs for as long as anyone has documented, adjudicating territorial disputes, mediating inter-species conflicts, and issuing the edicts that regulate jade trading, monsoon water rights, and sacred site access. Dratini and Dragonair move through the palace's lower courts as junior attendants, their calm temperament and empathic range making them excellent diplomatic liaisons between the elder drakes and visiting parties. Seadramon-line Digimon serve as the palace's memory-keepers, their data-encoded recollection of every audience held over centuries making them indispensable to the administrative process. The Pearl Court's reflective pools are used as a form of divination during major rulings — the palace clergy reads the reflection distortions caused by draconic aura fields as supplementary evidence in contested cases. Jetragon-line monsters and Hydreigon-class Pokémon occupy the upper terraces, accessible only to those who have passed the audience seal examination, and their presence is considered a visual reminder that the palace's governance operates at scales that most visitors will never fully appreciate.",
-    "history": "The original Imperial Palace was a smaller structure built over a dragon-bone deposit that early Long Valley settlers identified as a place of natural power — the bones were determined to be the remains of an ancient apex drake, and the palace was raised above them as both shelter and memorial. The current tiered terrace design emerged after a solar alignment event cracked the original terraces along three structural fault lines, requiring complete reconstruction; the architects chose to elevate the new structure significantly higher than its predecessor, partially for practical drainage reasons and partially because the incident was interpreted as a sign that the original height was inadequate for the palace's purpose. Several wings have been added in subsequent centuries as the valley's population and administrative complexity grew, and the oldest wing — the Ancestral Pearl Court — has been deliberately preserved in its unaltered form despite structural impracticality.",
+    "lore": "The Huanglong Palace is the formal seat of Long Valley's draconic governance — a multi-tiered terrace complex where elder Dragon-type lineages have administered the valley's affairs for as long as anyone has documented, adjudicating territorial disputes, mediating inter-species conflicts, and issuing the edicts that regulate jade trading, monsoon water rights, and sacred site access. Dratini and Dragonair move through the palace's lower courts as junior attendants, their calm temperament and empathic range making them excellent diplomatic liaisons between the elder drakes and visiting parties. Seadramon-line Digimon serve as the palace's memory-keepers, their data-encoded recollection of every audience held over centuries making them indispensable to the administrative process. The Pearl Court's reflective pools are used as a form of divination during major rulings — the palace clergy reads the reflection distortions caused by draconic aura fields as supplementary evidence in contested cases. Jetragon-line monsters and Hydreigon-class Pokémon occupy the upper terraces, accessible only to those who have passed the audience seal examination, and their presence is considered a visual reminder that the palace's governance operates at scales that most visitors will never fully appreciate.",
+    "history": "The original Huanglong Palace was a smaller structure built over a dragon-bone deposit that early Long Valley settlers identified as a place of natural power — the bones were determined to be the remains of an ancient apex drake, and the palace was raised above them as both shelter and memorial. The current tiered terrace design emerged after a solar alignment event cracked the original terraces along three structural fault lines, requiring complete reconstruction; the architects chose to elevate the new structure significantly higher than its predecessor, partially for practical drainage reasons and partially because the incident was interpreted as a sign that the original height was inadequate for the palace's purpose. Several wings have been added in subsequent centuries as the valley's population and administrative complexity grew, and the oldest wing — the Ancestral Pearl Court — has been deliberately preserved in its unaltered form despite structural impracticality.",
     "dangers": [
       "Protocol breach penalties",
       "Reflective glare fatigue"
@@ -9148,13 +9148,13 @@ export const areaConfigurations: AreaConfigurationsMap = {
     }
   },
 
-  'jade-village': {
+  'yulong-village': {
     "landmass": "conoco-island",
     "landmassName": "Conoco Island",
     "region": "long-valley",
     "regionName": "Long Valley",
     "welcomeMessages": {
-      "base": "You enter Jade Village where artisans polish scale fragments into luminous charms.",
+      "base": "You enter Yulong Village where artisans polish scale fragments into luminous charms.",
       "variations": [
         "Water channels tumble through carving courts.",
         "Polishers hold gemstones against sunrise for hue calibration.",
@@ -9210,7 +9210,7 @@ export const areaConfigurations: AreaConfigurationsMap = {
       }
     ],
     "images": {
-      "guide": "/images/maps/areas/jade-village-detailed.png"
+      "guide": "/images/maps/areas/yulong-village-detailed.png"
     },
     "difficulty": "Medium",
     "elevation": "Valley terrace",
@@ -9263,8 +9263,8 @@ export const areaConfigurations: AreaConfigurationsMap = {
         "description": "Amplifies protective enchantments."
       }
     ],
-    "lore": "Jade Village is the artisan hub of Long Valley — a terrace settlement built around the tradition of transforming shed dragon scales into luminous protective charms, a craft that requires equal parts metallurgical knowledge, elemental attunement, and the willingness to negotiate with the dragon who shed the scale in the first place. Dragon and Fairy-type Pokémon are the village's primary partners in this trade; Swablu and Altaria deposit scales willingly near the polishing basins, treating the exchange as a kind of craft commission, and Wisemon-line Digimon serve as the village's quality evaluators, their dimensional perception allowing them to assess a charm's resonance properties in ways that purely physical testing cannot replicate. The jade slurry that lubricates the carving process comes from a mineral spring discovered when the canal terrace was first cut, and its particular mineral composition is believed to be responsible for the distinctive green-gold sheen that Long Valley charms display when held to sunlight. Young drakes from the broader Long Valley region visit Jade Village as a kind of cultural tradition, exchanging recently shed scales for finished ward pendants — a transaction that both parties consider mutually beneficial.",
-    "history": "Jade Village began as a single carving workshop established by a Long Valley artisan who had developed a technique for processing dragon scales without the brittle fracturing that plagued earlier attempts. The technique spread rapidly through the valley's crafting community, and within two generations a full village had grown around the original workshop site. The major expansion event was the completion of the canal terrace system, which brought water power to the polishing fountains and enabled a scale of production previously impossible by hand-power alone. The original workshop building is preserved at the village centre and still operated by the founding family's descendants, who are locally regarded as the ultimate authority on quality standards — a status they maintain with a combination of genuine expertise and theatrical deliberateness.",
+    "lore": "Yulong Village is the artisan hub of Long Valley — a terrace settlement built around the tradition of transforming shed dragon scales into luminous protective charms, a craft that requires equal parts metallurgical knowledge, elemental attunement, and the willingness to negotiate with the dragon who shed the scale in the first place. Dragon and Fairy-type Pokémon are the village's primary partners in this trade; Swablu and Altaria deposit scales willingly near the polishing basins, treating the exchange as a kind of craft commission, and Wisemon-line Digimon serve as the village's quality evaluators, their dimensional perception allowing them to assess a charm's resonance properties in ways that purely physical testing cannot replicate. The jade slurry that lubricates the carving process comes from a mineral spring discovered when the canal terrace was first cut, and its particular mineral composition is believed to be responsible for the distinctive green-gold sheen that Long Valley charms display when held to sunlight. Young drakes from the broader Long Valley region visit Yulong Village as a kind of cultural tradition, exchanging recently shed scales for finished ward pendants — a transaction that both parties consider mutually beneficial.",
+    "history": "Yulong Village began as a single carving workshop established by a Long Valley artisan who had developed a technique for processing dragon scales without the brittle fracturing that plagued earlier attempts. The technique spread rapidly through the valley's crafting community, and within two generations a full village had grown around the original workshop site. The major expansion event was the completion of the canal terrace system, which brought water power to the polishing fountains and enabled a scale of production previously impossible by hand-power alone. The original workshop building is preserved at the village centre and still operated by the founding family's descendants, who are locally regarded as the ultimate authority on quality standards — a status they maintain with a combination of genuine expertise and theatrical deliberateness.",
     "dangers": [
       "Jade dust inhalation",
       "Wet stone slips"
@@ -9703,13 +9703,13 @@ export const areaConfigurations: AreaConfigurationsMap = {
     }
   },
 
-  'lightning-city': {
+  'fulgurite-city': {
     "landmass": "sky-isles",
     "landmassName": "Sky Isles",
-    "region": "tempest-zones",
-    "regionName": "Tempest Zones",
+    "region": "vayu-maelstrom",
+    "regionName": "Vayu Maelstrom",
     "welcomeMessages": {
-      "base": "Welcome to Lightning City—streets wired to the sky and rooftops that purr with thunder.",
+      "base": "Welcome to Fulgurite City—streets wired to the sky and rooftops that purr with thunder.",
       "variations": [
         "Conductor spires sip storms; crosswalks flash in forked brilliance.",
         "Capacitors hum lullabies—bring rubber soles and bold ideas.",
@@ -9765,7 +9765,7 @@ export const areaConfigurations: AreaConfigurationsMap = {
       }
     ],
     "images": {
-      "guide": "/images/maps/areas/lightning-city-detailed.png"
+      "guide": "/images/maps/areas/fulgurite-city-detailed.png"
     },
     "difficulty": "Extreme",
     "elevation": "14,000 ft",
@@ -9820,8 +9820,8 @@ export const areaConfigurations: AreaConfigurationsMap = {
         "description": "Metal constantly charged with electricity"
       }
     ],
-    "lore": "Lightning City is the most electrified urban environment in the known world — a Sky Isles settlement built within the Tempest Zones' permanent storm belt where every structure is simultaneously a shelter and a conductor, and the city's power grid is fed directly by the lightning strikes that hit the conductor spires approximately every forty-three seconds by regional average. Electric and Steel-type Pokémon are not merely common here but structurally essential; Manectric families maintain the distribution transformers, and Magnezone are the city's most sought-after grid engineers, their natural magnetic field control enabling precision regulation that mechanical systems cannot achieve alone. Elecmon-line Digimon have integrated so thoroughly into the city's electrical infrastructure that portions of the grid are classified as partially sapient, the Digimon having embedded data-routing protocols into the copper that respond to load conditions autonomously. Orserk Pals work in the heavy-discharge zones where the raw lightning intake is too intense for most other workers, their natural lightning resistance making them the only practical option for maintenance in those areas. The city's transit system runs on captured lightning, and delays are not measured in minutes but in the number of strikes missed — a unit of time measurement that strikes visitors as either charming or deeply alarming depending on their relationship with high-voltage environments.",
-    "history": "Lightning City was founded by the storm rider communities of the Sky Isles' Tempest Zones — groups who had developed the techniques for navigating and surviving within the permanent storm system and recognised that the energy it produced was not merely a hazard to be endured but a resource to be cultivated. The first permanent structures were essentially large metal stakes driven into the storm's current paths, and the city grew around the grid those stakes formed. Three major reconstruction events following catastrophic overload incidents shaped the current city layout, with each reconstruction incorporating lessons from the previous failure into the next design. The current conductor spire system was the innovation that ended the reconstruction cycle, its load-balancing architecture finally matching the storm's input with the city's consumption capacity.",
+    "lore": "Fulgurite City is the most electrified urban environment in the known world — a Sky Isles settlement built within the Vayu Maelstrom' permanent storm belt where every structure is simultaneously a shelter and a conductor, and the city's power grid is fed directly by the lightning strikes that hit the conductor spires approximately every forty-three seconds by regional average. Electric and Steel-type Pokémon are not merely common here but structurally essential; Manectric families maintain the distribution transformers, and Magnezone are the city's most sought-after grid engineers, their natural magnetic field control enabling precision regulation that mechanical systems cannot achieve alone. Elecmon-line Digimon have integrated so thoroughly into the city's electrical infrastructure that portions of the grid are classified as partially sapient, the Digimon having embedded data-routing protocols into the copper that respond to load conditions autonomously. Orserk Pals work in the heavy-discharge zones where the raw lightning intake is too intense for most other workers, their natural lightning resistance making them the only practical option for maintenance in those areas. The city's transit system runs on captured lightning, and delays are not measured in minutes but in the number of strikes missed — a unit of time measurement that strikes visitors as either charming or deeply alarming depending on their relationship with high-voltage environments.",
+    "history": "Fulgurite City was founded by the storm rider communities of the Sky Isles' Vayu Maelstrom — groups who had developed the techniques for navigating and surviving within the permanent storm system and recognised that the energy it produced was not merely a hazard to be endured but a resource to be cultivated. The first permanent structures were essentially large metal stakes driven into the storm's current paths, and the city grew around the grid those stakes formed. Three major reconstruction events following catastrophic overload incidents shaped the current city layout, with each reconstruction incorporating lessons from the previous failure into the next design. The current conductor spire system was the innovation that ended the reconstruction cycle, its load-balancing architecture finally matching the storm's input with the city's consumption capacity.",
     "dangers": [
       "Constant lightning strikes",
       "Electrical overload",
@@ -9845,13 +9845,13 @@ export const areaConfigurations: AreaConfigurationsMap = {
     }
   },
 
-  'lightning-spire': {
+  'wakiya-spire': {
     "landmass": "conoco-island",
     "landmassName": "Conoco Island",
     "region": "thunderbird-heights",
     "regionName": "Thunderbird Heights",
     "welcomeMessages": {
-      "base": "Welcome to the Lightning Spire—stone that drinks thunder and smiles about it.",
+      "base": "Welcome to the Wakiya Spire—stone that drinks thunder and smiles about it.",
       "variations": [
         "Storm ladders climb the air; your hair volunteers for leadership.",
         "Metal veins in the rock glow like captive dawns.",
@@ -9908,7 +9908,7 @@ export const areaConfigurations: AreaConfigurationsMap = {
       }
     ],
     "images": {
-      "guide": "/images/maps/areas/lightning-spire-detailed.png"
+      "guide": "/images/maps/areas/wakiya-spire-detailed.png"
     },
     "difficulty": "Extreme",
     "elevation": "8500 ft",
@@ -9963,8 +9963,8 @@ export const areaConfigurations: AreaConfigurationsMap = {
         "description": "Glass formed by lightning striking sand"
       }
     ],
-    "lore": "The Lightning Spire is the most consistently struck point on Conoco Island — a natural rock formation whose metallic vein composition and elevation combine to make it the preferred lightning destination for every storm system that moves through Thunderbird Heights, which in practical terms means it is struck with enough frequency that the stone has been fundamentally altered by the accumulated charge. Electric and Rock-type Pokémon are the Spire's primary inhabitants; Talonflame-line Piddomon nest in the upper crannies, having evolved a heat-resistance response to the constant discharge temperature, and Wisemon-line Digimon have established a research station in the mid-section that uses the Spire's charge cycles as a high-energy data processing environment. The aurora effects that the Spire generates during peak electrical activity are among the most spectacular naturally occurring phenomena in the region — multicoloured sheets of ionised air that are visible from as far away as Hearthfall Commons on clear nights. Tribes of Thunderbird Heights regard the Spire as the Thunderbird's secondary perch, less sacred than the Great Nest but still treated with considerable respect.",
-    "history": "The Lightning Spire was documented in the earliest geological surveys of Thunderbird Heights as anomalous — the rock composition differed substantially from the surrounding formations, suggesting either a distinct geological origin or extensive modification by an external force. Current scholarly consensus favours the latter, identifying the metallic vein structure as consistent with millennia of lightning-induced mineral migration, meaning the Spire has literally been building itself from lightning for an estimated three thousand years or more. The research station was established after a previous attempt to mine the lightning-altered stone resulted in an incident that the surviving researchers declined to describe in writing beyond the phrase \"sustained electrical protest.\" The current arrangement — observation and passive energy harvesting only — has proven more productive and considerably less alarming.",
+    "lore": "The Wakiya Spire is the most consistently struck point on Conoco Island — a natural rock formation whose metallic vein composition and elevation combine to make it the preferred lightning destination for every storm system that moves through Thunderbird Heights, which in practical terms means it is struck with enough frequency that the stone has been fundamentally altered by the accumulated charge. Electric and Rock-type Pokémon are the Spire's primary inhabitants; Talonflame-line Piddomon nest in the upper crannies, having evolved a heat-resistance response to the constant discharge temperature, and Wisemon-line Digimon have established a research station in the mid-section that uses the Spire's charge cycles as a high-energy data processing environment. The aurora effects that the Spire generates during peak electrical activity are among the most spectacular naturally occurring phenomena in the region — multicoloured sheets of ionised air that are visible from as far away as Hearthfall Commons on clear nights. Tribes of Thunderbird Heights regard the Spire as the Thunderbird's secondary perch, less sacred than the Mahpiya Aerie but still treated with considerable respect.",
+    "history": "The Wakiya Spire was documented in the earliest geological surveys of Thunderbird Heights as anomalous — the rock composition differed substantially from the surrounding formations, suggesting either a distinct geological origin or extensive modification by an external force. Current scholarly consensus favours the latter, identifying the metallic vein structure as consistent with millennia of lightning-induced mineral migration, meaning the Spire has literally been building itself from lightning for an estimated three thousand years or more. The research station was established after a previous attempt to mine the lightning-altered stone resulted in an incident that the surviving researchers declined to describe in writing beyond the phrase \"sustained electrical protest.\" The current arrangement — observation and passive energy harvesting only — has proven more productive and considerably less alarming.",
     "dangers": [
       "Constant lightning strikes",
       "Overwhelming electrical fields",
@@ -9988,13 +9988,13 @@ export const areaConfigurations: AreaConfigurationsMap = {
     }
   },
 
-  'maelstrom-point': {
+  'charybdis-point': {
     "landmass": "conoco-island",
     "landmassName": "Conoco Island",
     "region": "poseidons-reach",
     "regionName": "Poseidon's Reach",
     "welcomeMessages": {
-      "base": "Welcome to Maelstrom Point—whirlpool classrooms for very confident sailors.",
+      "base": "Welcome to Charybdis Point—whirlpool classrooms for very confident sailors.",
       "variations": [
         "Gulls ride the rim like critics; waves grade on a spiral.",
         "Signal buoys blink warnings in ancient maritime sarcasm.",
@@ -10051,7 +10051,7 @@ export const areaConfigurations: AreaConfigurationsMap = {
       }
     ],
     "images": {
-      "guide": "/images/maps/areas/maelstrom-point-detailed.png"
+      "guide": "/images/maps/areas/charybdis-point-detailed.png"
     },
     "difficulty": "Extreme",
     "elevation": "200 ft",
@@ -10106,8 +10106,8 @@ export const areaConfigurations: AreaConfigurationsMap = {
         "description": "Crystal that predicts weather changes"
       }
     ],
-    "lore": "Maelstrom Point is the most treacherous navigational challenge in Poseidon's Reach — a cape where geological formations beneath the surface combine with tidal forces to generate whirlpools of sufficient size and persistence that they have been continuously active for longer than maritime records exist. Water and Dark-type Pokémon thrive in the chaotic currents here; Tentacruel are the largest visible inhabitants, their tentacle networks extending into the whirlpool channels where they feed on the disrupted sea life. Cthulhumon-line species are documented in the Maelstrom's deeper reaches, their presence considered an indicator of genuinely extreme depth and pressure conditions. Airdramon-line Digimon use the Maelstrom's updraft columns — generated by the warm-cold water interaction in the whirlpool centres — as training grounds for aerial navigation, treating the turbulent air above the water as a kind of atmospheric obstacle course. Navigation through the Point is considered one of the defining tests of maritime mastery in the region, and the Navigator's Seal requirement exists not as bureaucratic obstruction but as a genuine quality filter — the Point has killed unprepared sailors with routine indifference since before the Seal system existed.",
-    "history": "Maelstrom Point appears in the earliest Poseidon's Reach maritime records as a fixed hazard notation — something to be navigated around rather than through, with no suggestion that passage was considered viable. The first documented successful transit was achieved by a navigator whose technique was immediately classified as a guild secret and shared only through direct apprenticeship for the following century. The lighthouse beacon was established after a political agreement that determined the Point's navigation route was too valuable as a short-cut lane to remain a guild monopoly, and the published current charts that followed transformed the Point from an impassable barrier into a challenging but viable passage. The Navigator's Seal requirement was instituted after the charts enabled several underqualified expeditions to attempt the passage with predictable results.",
+    "lore": "Charybdis Point is the most treacherous navigational challenge in Poseidon's Reach — a cape where geological formations beneath the surface combine with tidal forces to generate whirlpools of sufficient size and persistence that they have been continuously active for longer than maritime records exist. Water and Dark-type Pokémon thrive in the chaotic currents here; Tentacruel are the largest visible inhabitants, their tentacle networks extending into the whirlpool channels where they feed on the disrupted sea life. Cthulhumon-line species are documented in the Maelstrom's deeper reaches, their presence considered an indicator of genuinely extreme depth and pressure conditions. Airdramon-line Digimon use the Maelstrom's updraft columns — generated by the warm-cold water interaction in the whirlpool centres — as training grounds for aerial navigation, treating the turbulent air above the water as a kind of atmospheric obstacle course. Navigation through the Point is considered one of the defining tests of maritime mastery in the region, and the Navigator's Seal requirement exists not as bureaucratic obstruction but as a genuine quality filter — the Point has killed unprepared sailors with routine indifference since before the Seal system existed.",
+    "history": "Charybdis Point appears in the earliest Poseidon's Reach maritime records as a fixed hazard notation — something to be navigated around rather than through, with no suggestion that passage was considered viable. The first documented successful transit was achieved by a navigator whose technique was immediately classified as a guild secret and shared only through direct apprenticeship for the following century. The lighthouse beacon was established after a political agreement that determined the Point's navigation route was too valuable as a short-cut lane to remain a guild monopoly, and the published current charts that followed transformed the Point from an impassable barrier into a challenging but viable passage. The Navigator's Seal requirement was instituted after the charts enabled several underqualified expeditions to attempt the passage with predictable results.",
     "dangers": [
       "Massive deadly whirlpools",
       "Unpredictable currents",
@@ -10131,13 +10131,13 @@ export const areaConfigurations: AreaConfigurationsMap = {
     }
   },
 
-  'memory-cliffs': {
+  'ogham-cliffs': {
     "landmass": "conoco-island",
     "landmassName": "Conoco Island",
     "region": "stoneheart-cliffs",
     "regionName": "Stoneheart Cliffs",
     "welcomeMessages": {
-      "base": "Wind keens across the Memory Cliffs where runes chronicle unbroken island epochs.",
+      "base": "Wind keens across the Ogham Cliffs where runes chronicle unbroken island epochs.",
       "variations": [
         "Sunset light reveals otherwise hidden strata inscriptions.",
         "Resonant chisel echoes replay historic turning points.",
@@ -10193,7 +10193,7 @@ export const areaConfigurations: AreaConfigurationsMap = {
       }
     ],
     "images": {
-      "guide": "/images/maps/areas/memory-cliffs-detailed.png"
+      "guide": "/images/maps/areas/ogham-cliffs-detailed.png"
     },
     "difficulty": "Extreme",
     "elevation": "Cliff shelf sequence",
@@ -10246,8 +10246,8 @@ export const areaConfigurations: AreaConfigurationsMap = {
         "description": "Focuses resonance to reveal hidden layers."
       }
     ],
-    "lore": "The Memory Cliffs are the geological diary of Conoco Island — a sequence of cliff faces where generations of rune stewards have carved historical records into exposed strata layers, creating an archive that reads horizontally across time and vertically across the scope of events it records. Rock and Psychic-type Pokémon inhabit the cliff faces with equal comfort; Onix families stabilise loose inscription shelves with their body weight, serving an unintentional preservation function, while Claydol hover at various heights reading glyph sequences with an attentiveness that scholars have found both flattering and slightly unnerving. Wisemon-line Digimon conduct ongoing data verification of the carved records against their own archived copies, a cross-referencing project that has identified seventeen significant historical discrepancies over the past century. The equinox illumination phenomenon — where specific strata layers glow briefly as sunlight strikes them at the precise seasonal angle — was the original discovery that drew the first rune stewards to this location, and the pattern of which layers ignite has been used to track historical dating for over a thousand years. Claydol-line Pokémon and Katress Pals have independently developed what appears to be a form of cliff-reading practice, spending extended periods in physical contact with the inscribed stone surfaces.",
-    "history": "The Memory Cliffs' oldest layers predate any human settlement on Conoco Island, with the deepest accessible inscriptions appearing to be in a script that no living scholar has fully deciphered and that may not have been created by human hands at all. The human rune steward tradition began approximately fifteen hundred years ago when a single scholar chose the Cliffs as a recording site and established the conventions — elevation, spacing, notation format — that every subsequent generation of stewards has followed. The systematic cataloguing project, involving harness teams documenting every accessible inscription, began six generations ago and is projected to reach completion in approximately two more generations at current pace. A rockfall event three centuries ago destroyed a significant section of middle-period inscriptions, a loss that rune stewards still refer to as the Gap, and the reconstruction effort to interpret surrounding layers and infer the lost content is ongoing.",
+    "lore": "The Ogham Cliffs are the geological diary of Conoco Island — a sequence of cliff faces where generations of rune stewards have carved historical records into exposed strata layers, creating an archive that reads horizontally across time and vertically across the scope of events it records. Rock and Psychic-type Pokémon inhabit the cliff faces with equal comfort; Onix families stabilise loose inscription shelves with their body weight, serving an unintentional preservation function, while Claydol hover at various heights reading glyph sequences with an attentiveness that scholars have found both flattering and slightly unnerving. Wisemon-line Digimon conduct ongoing data verification of the carved records against their own archived copies, a cross-referencing project that has identified seventeen significant historical discrepancies over the past century. The equinox illumination phenomenon — where specific strata layers glow briefly as sunlight strikes them at the precise seasonal angle — was the original discovery that drew the first rune stewards to this location, and the pattern of which layers ignite has been used to track historical dating for over a thousand years. Claydol-line Pokémon and Katress Pals have independently developed what appears to be a form of cliff-reading practice, spending extended periods in physical contact with the inscribed stone surfaces.",
+    "history": "The Ogham Cliffs' oldest layers predate any human settlement on Conoco Island, with the deepest accessible inscriptions appearing to be in a script that no living scholar has fully deciphered and that may not have been created by human hands at all. The human rune steward tradition began approximately fifteen hundred years ago when a single scholar chose the Cliffs as a recording site and established the conventions — elevation, spacing, notation format — that every subsequent generation of stewards has followed. The systematic cataloguing project, involving harness teams documenting every accessible inscription, began six generations ago and is projected to reach completion in approximately two more generations at current pace. A rockfall event three centuries ago destroyed a significant section of middle-period inscriptions, a loss that rune stewards still refer to as the Gap, and the reconstruction effort to interpret surrounding layers and infer the lost content is ongoing.",
     "dangers": [
       "Loose shelf crumble",
       "Echo vertigo"
@@ -10403,13 +10403,13 @@ export const areaConfigurations: AreaConfigurationsMap = {
     }
   },
 
-  'mist-village': {
+  'brumehaven-village': {
     "landmass": "conoco-island",
     "landmassName": "Conoco Island",
     "region": "mist-marshlands",
     "regionName": "Mist Marshlands",
     "welcomeMessages": {
-      "base": "You approach Mist Village where stilt homes fade in and out of spectral haze.",
+      "base": "You approach Brumehaven Village where stilt homes fade in and out of spectral haze.",
       "variations": [
         "Reed flutes echo across glassy pools.",
         "Tidal vapors braid around suspended walkways.",
@@ -10465,7 +10465,7 @@ export const areaConfigurations: AreaConfigurationsMap = {
       }
     ],
     "images": {
-      "guide": "/images/maps/areas/mist-village-detailed.png"
+      "guide": "/images/maps/areas/brumehaven-village-detailed.png"
     },
     "difficulty": "Medium",
     "elevation": "Stilt platform level",
@@ -10518,8 +10518,8 @@ export const areaConfigurations: AreaConfigurationsMap = {
         "description": "Stabilized vapor nucleus used in catalysts."
       }
     ],
-    "lore": "Mist Village is a stilt-built community in the Conoocoo Archipelago's Mist Marshlands that has engineered a life around the fog rather than despite it — using the daily rise and fall of the mist layer for agricultural irrigation, passive concealment from unwanted visitors, and the reed-flute communication system that lets villagers coordinate across poor visibility without shouting. Water and Ghost-type Pokémon move freely through the village's pier networks; Phantump are considered good omens when they condense near the reed flute platforms, and Lotad families cultivate the lily pool nets that form the village's food infrastructure. Syakomon-line Digimon are regular visitors from the surrounding marsh, their aquatic comfort giving them free access to the underwater village supports that most surface visitors never see. Teafant Pals have become the village's most beloved newcomers, their gentle water-manipulation ability proving unexpectedly useful for directing biolight algae blooms toward harvesting nets. The children of the village who grew up chasing luminous frog sprites between piers have, according to local wisdom, the best spatial navigation ability of any population on the island.",
-    "history": "Mist Village was founded by marsh-dwellers who chose stilt construction specifically to remain above the seasonal waterline fluctuations that made conventional ground-level building impractical in this part of the Conoocoo Archipelago. The original village was smaller, with fewer platforms and simpler connecting boardwalks, but a low-water year exposed the original support posts as insufficiently anchored and the subsequent flood season required near-complete reconstruction. The rebuilt village was designed with the flood-and-drought cycle as a primary engineering constraint rather than an afterthought, resulting in the current deeper-anchored support system and the elevated platform network. The biolight pool cultivation technique was developed about four generations ago by a villager who observed that Syakomon disturbing the pools seemed to increase their luminosity and adapted the observation into a managed system.",
+    "lore": "Brumehaven Village is a stilt-built community in the Conoocoo Archipelago's Mist Marshlands that has engineered a life around the fog rather than despite it — using the daily rise and fall of the mist layer for agricultural irrigation, passive concealment from unwanted visitors, and the reed-flute communication system that lets villagers coordinate across poor visibility without shouting. Water and Ghost-type Pokémon move freely through the village's pier networks; Phantump are considered good omens when they condense near the reed flute platforms, and Lotad families cultivate the lily pool nets that form the village's food infrastructure. Syakomon-line Digimon are regular visitors from the surrounding marsh, their aquatic comfort giving them free access to the underwater village supports that most surface visitors never see. Teafant Pals have become the village's most beloved newcomers, their gentle water-manipulation ability proving unexpectedly useful for directing biolight algae blooms toward harvesting nets. The children of the village who grew up chasing luminous frog sprites between piers have, according to local wisdom, the best spatial navigation ability of any population on the island.",
+    "history": "Brumehaven Village was founded by marsh-dwellers who chose stilt construction specifically to remain above the seasonal waterline fluctuations that made conventional ground-level building impractical in this part of the Conoocoo Archipelago. The original village was smaller, with fewer platforms and simpler connecting boardwalks, but a low-water year exposed the original support posts as insufficiently anchored and the subsequent flood season required near-complete reconstruction. The rebuilt village was designed with the flood-and-drought cycle as a primary engineering constraint rather than an afterthought, resulting in the current deeper-anchored support system and the elevated platform network. The biolight pool cultivation technique was developed about four generations ago by a villager who observed that Syakomon disturbing the pools seemed to increase their luminosity and adapted the observation into a managed system.",
     "dangers": [
       "Boardwalk slicks",
       "Low visibility collisions"
@@ -10538,13 +10538,13 @@ export const areaConfigurations: AreaConfigurationsMap = {
     }
   },
 
-  'mother-temple': {
+  'magna-mater-temple': {
     "landmass": "conoco-island",
     "landmassName": "Conoco Island",
     "region": "terra-madre-basin",
     "regionName": "Terra Madre Basin",
     "welcomeMessages": {
-      "base": "Welcome to the Mother Temple—earth’s heartbeat set to sanctuary tempo.",
+      "base": "Welcome to the Magna Mater Temple—earth’s heartbeat set to sanctuary tempo.",
       "variations": [
         "Root-pillars cradle the nave; moss writes blessings in cursive.",
         "Spring wells whisper names—answer softly and bring offerings.",
@@ -10602,7 +10602,7 @@ export const areaConfigurations: AreaConfigurationsMap = {
       }
     ],
     "images": {
-      "guide": "/images/maps/areas/mother-temple-detailed.png"
+      "guide": "/images/maps/areas/magna-mater-temple-detailed.png"
     },
     "difficulty": "Hard",
     "elevation": "900 ft",
@@ -10657,8 +10657,8 @@ export const areaConfigurations: AreaConfigurationsMap = {
         "description": "Rocks that promote growth and healing"
       }
     ],
-    "lore": "The Mother Temple is the sacred focal point of the Terra Madre Basin — a temple built into living stone and root rather than cut from it, where the architecture has grown as much as it has been constructed, and where the spring wells at the nave's centre have been flowing without interruption since before the temple's recorded history. Grass and Ground-type Pokémon approach the Mother Temple with a reverence that their behaviour in other locations does not quite prepare visitors for; Eikthyrdeer walk the sacred grounds with a stillness that veterans describe as qualitatively different from their normal gait, and Sawsbuck who rest near the spring wells are considered by the temple clergy to be carrying a blessing that spreads through their herd. Rosemon-line Digimon are among the temple's most devoted attendants, their botanical data-structures responding to the Basin's leyline network in ways that manifest as extraordinary flowering displays during major ceremonies. Angewomon-line Digimon serve a protective function that the temple clergy has never felt the need to formalise — they are simply there, and threats to the temple tend not to materialise in their presence. The Eikthyrdeer Pals who graze in the sacred grounds have been formally recognised by the clergy as temple guardians, the first non-monster-franchise beings to receive such status.",
-    "history": "The Mother Temple's founding accounts differ in details but agree on essentials: a group of settlers from different cultural backgrounds arrived at the same site independently within the span of a single season, each guided by a tradition that pointed to this specific location, and chose to build together rather than separately. The multi-cultural foundation is visible in the temple's architecture, which incorporates construction traditions from at least seven distinct cultural groups in a synthesis that scholars of religious architecture find either inspiring or deeply confusing depending on their prior assumptions. The Earthmother Icon requirement for access was established not as a restriction but as a form of intention-setting — the process of obtaining the icon involves a period of reflection that the clergy considers essential preparation for the temple's more intensive ceremonies.",
+    "lore": "The Magna Mater Temple is the sacred focal point of the Terra Madre Basin — a temple built into living stone and root rather than cut from it, where the architecture has grown as much as it has been constructed, and where the spring wells at the nave's centre have been flowing without interruption since before the temple's recorded history. Grass and Ground-type Pokémon approach the Magna Mater Temple with a reverence that their behaviour in other locations does not quite prepare visitors for; Eikthyrdeer walk the sacred grounds with a stillness that veterans describe as qualitatively different from their normal gait, and Sawsbuck who rest near the spring wells are considered by the temple clergy to be carrying a blessing that spreads through their herd. Rosemon-line Digimon are among the temple's most devoted attendants, their botanical data-structures responding to the Basin's leyline network in ways that manifest as extraordinary flowering displays during major ceremonies. Angewomon-line Digimon serve a protective function that the temple clergy has never felt the need to formalise — they are simply there, and threats to the temple tend not to materialise in their presence. The Eikthyrdeer Pals who graze in the sacred grounds have been formally recognised by the clergy as temple guardians, the first non-monster-franchise beings to receive such status.",
+    "history": "The Magna Mater Temple's founding accounts differ in details but agree on essentials: a group of settlers from different cultural backgrounds arrived at the same site independently within the span of a single season, each guided by a tradition that pointed to this specific location, and chose to build together rather than separately. The multi-cultural foundation is visible in the temple's architecture, which incorporates construction traditions from at least seven distinct cultural groups in a synthesis that scholars of religious architecture find either inspiring or deeply confusing depending on their prior assumptions. The Earthmother Icon requirement for access was established not as a restriction but as a form of intention-setting — the process of obtaining the icon involves a period of reflection that the clergy considers essential preparation for the temple's more intensive ceremonies.",
     "dangers": [
       "Overwhelming maternal love",
       "Emotional spiritual experiences",
@@ -10681,13 +10681,13 @@ export const areaConfigurations: AreaConfigurationsMap = {
     }
   },
 
-  'mystery-temple': {
+  'telesterion': {
     "landmass": "conoco-island",
     "landmassName": "Conoco Island",
     "region": "demeters-grove",
     "regionName": "Demeter's Grove",
     "welcomeMessages": {
-      "base": "Welcome to the Mystery Temple—rites of seed, shadow, and sunrise.",
+      "base": "Welcome to the Telesterion—rites of seed, shadow, and sunrise.",
       "variations": [
         "Grain torches flicker in cyclers; silence is part of the liturgy.",
         "Veiled hymns braid through hypostyles—follow the pomegranate glyphs.",
@@ -10744,7 +10744,7 @@ export const areaConfigurations: AreaConfigurationsMap = {
       }
     ],
     "images": {
-      "guide": "/images/maps/areas/mystery-temple-detailed.png"
+      "guide": "/images/maps/areas/telesterion-detailed.png"
     },
     "difficulty": "Extreme",
     "elevation": "1000 ft",
@@ -10799,8 +10799,8 @@ export const areaConfigurations: AreaConfigurationsMap = {
         "description": "Stones that reveal hidden truths"
       }
     ],
-    "lore": "The Mystery Temple is the inner sanctum of Demeter's Grove — a place where the seasonal cycle of death and renewal is not merely observed but directly experienced by those permitted to enter, through initiatory ceremonies that the temple's keepers describe only in fragments and allegories. Its hypostyle hall is lit by grain torches whose light cycles in a rhythm that initiates report as synchronising with their own breathing within minutes of entry. Grass, Fairy, and Psychic-type Pokémon are found throughout the temple in unusual combinations that reflect the dual nature of its mysteries; Espeon serve as threshold guides, their psychic sensitivity allowing them to read an initiate's readiness state, while Ghost-type Pokémon represent the death-aspect mysteries and are treated as essential presences rather than hazards. BlackGatomon-line Digimon occupy a specific ceremonial role in the Mystery Temple's deepest chambers, their nature as beings that exist at the intersection of dark and light making them ideal guardians of the rites that explore both aspects of the cycle. Sphinxmon-line Digimon serve as threshold questioners, and no initiate has ever reported finding their riddles easy.",
-    "history": "The Mystery Temple was established in the earliest centuries of Demeter's Grove as a dedicated space for the more intensive aspects of the grove's agricultural spiritual tradition — the practices that could not be conducted in open sacred spaces because their depth required containment and preparation. The original structure was much simpler, with a single initiation chamber; the current multi-chamber complex evolved over fifteen centuries of gradual deepening and expansion as successive generations of mystery-keepers developed new layers of the tradition. The Kernos Token requirement was established after an incident that the temple's records describe only as the Uninvited Seeing, which apparently demonstrated conclusively that unprepared access to the deeper chambers produced outcomes that the temple considers its responsibility to prevent.",
+    "lore": "The Telesterion is the inner sanctum of Demeter's Grove — a place where the seasonal cycle of death and renewal is not merely observed but directly experienced by those permitted to enter, through initiatory ceremonies that the temple's keepers describe only in fragments and allegories. Its hypostyle hall is lit by grain torches whose light cycles in a rhythm that initiates report as synchronising with their own breathing within minutes of entry. Grass, Fairy, and Psychic-type Pokémon are found throughout the temple in unusual combinations that reflect the dual nature of its mysteries; Espeon serve as threshold guides, their psychic sensitivity allowing them to read an initiate's readiness state, while Ghost-type Pokémon represent the death-aspect mysteries and are treated as essential presences rather than hazards. BlackGatomon-line Digimon occupy a specific ceremonial role in the Telesterion's deepest chambers, their nature as beings that exist at the intersection of dark and light making them ideal guardians of the rites that explore both aspects of the cycle. Sphinxmon-line Digimon serve as threshold questioners, and no initiate has ever reported finding their riddles easy.",
+    "history": "The Telesterion was established in the earliest centuries of Demeter's Grove as a dedicated space for the more intensive aspects of the grove's agricultural spiritual tradition — the practices that could not be conducted in open sacred spaces because their depth required containment and preparation. The original structure was much simpler, with a single initiation chamber; the current multi-chamber complex evolved over fifteen centuries of gradual deepening and expansion as successive generations of mystery-keepers developed new layers of the tradition. The Kernos Token requirement was established after an incident that the temple's records describe only as the Uninvited Seeing, which apparently demonstrated conclusively that unprepared access to the deeper chambers produced outcomes that the temple considers its responsibility to prevent.",
     "dangers": [
       "Overwhelming divine knowledge",
       "Initiation trials that can destroy the unworthy",
@@ -11669,13 +11669,13 @@ export const areaConfigurations: AreaConfigurationsMap = {
     }
   },
 
-  'pirate-port': {
+  'tortuga-port': {
     "landmass": "conoco-island",
     "landmassName": "Conoco Island",
     "region": "pirates-bay",
     "regionName": "Pirates' Bay",
     "welcomeMessages": {
-      "base": "Welcome to the Pirate Port—lawless docks, loud coffers, and legends with bar tabs.",
+      "base": "Welcome to the Tortuga Port—lawless docks, loud coffers, and legends with bar tabs.",
       "variations": [
         "Chain cranes swing treasure nets; gulls file claims promptly.",
         "Shanties chart the tides; the chorus knows your name already.",
@@ -11733,7 +11733,7 @@ export const areaConfigurations: AreaConfigurationsMap = {
       }
     ],
     "images": {
-      "guide": "/images/maps/areas/pirate-port-detailed.png"
+      "guide": "/images/maps/areas/tortuga-port-detailed.png"
     },
     "difficulty": "Hard",
     "elevation": "0 ft - Sea Level",
@@ -11801,8 +11801,8 @@ export const areaConfigurations: AreaConfigurationsMap = {
         "description": "Ropes, sails, cannons, and other maritime equipment"
       }
     ],
-    "lore": "Pirate Port is the commercial and political hub of Pirates' Bay — the settlement where the pirate community conducts its official-unofficial business, from contraband auctions to crew recruitment to the complex multi-party negotiations that govern territorial rights among the Bay's competing factions. Water and Dark-type Pokémon are found throughout the Port in numbers that reflect the Bay's maritime character; Gyarados patrol the harbour approaches as a combination of security measure and status symbol, and Seadramon-line Digimon operate the deeper channel navigation services that keep large-vessel traffic moving. Impmon-line Digimon are the Port's most prolific information brokers, their Dark-type instincts for leverage and their social mobility through every level of the Port's hierarchy making them the first resource most visitors consult when they need to know something they shouldn't. Jormuntide Pals have staked out sections of the harbour floor as territorial claims that the Port's surface governance has learned to work around rather than contest. The Port Code — the set of informal rules that govern conduct within the Port's bounds — is not written down anywhere and has never been formally agreed to by any party, but violations are enforced with remarkable consistency.",
-    "history": "Pirate Port grew around a natural deep-water harbour that offered shelter for large vessels in a coastline that offered very little of it. The settlement that formed was not planned but accumulated, with each generation of occupants adding structures that suited their immediate needs without reference to any overarching plan, resulting in the current layered tangle of docks, warehouses, taverns, and residences that navigates on insider knowledge rather than any logical layout. Captain Blackwater, the Port's most celebrated founder-figure, is credited in local legend with establishing the first version of the Port Code after a series of escalating disputes threatened to make the harbour too dangerous for anyone to use — an intervention that the legend credits with saving the Port and the legend's embellishments have credited with rather more than that.",
+    "lore": "Tortuga Port is the commercial and political hub of Pirates' Bay — the settlement where the pirate community conducts its official-unofficial business, from contraband auctions to crew recruitment to the complex multi-party negotiations that govern territorial rights among the Bay's competing factions. Water and Dark-type Pokémon are found throughout the Port in numbers that reflect the Bay's maritime character; Gyarados patrol the harbour approaches as a combination of security measure and status symbol, and Seadramon-line Digimon operate the deeper channel navigation services that keep large-vessel traffic moving. Impmon-line Digimon are the Port's most prolific information brokers, their Dark-type instincts for leverage and their social mobility through every level of the Port's hierarchy making them the first resource most visitors consult when they need to know something they shouldn't. Jormuntide Pals have staked out sections of the harbour floor as territorial claims that the Port's surface governance has learned to work around rather than contest. The Port Code — the set of informal rules that govern conduct within the Port's bounds — is not written down anywhere and has never been formally agreed to by any party, but violations are enforced with remarkable consistency.",
+    "history": "Tortuga Port grew around a natural deep-water harbour that offered shelter for large vessels in a coastline that offered very little of it. The settlement that formed was not planned but accumulated, with each generation of occupants adding structures that suited their immediate needs without reference to any overarching plan, resulting in the current layered tangle of docks, warehouses, taverns, and residences that navigates on insider knowledge rather than any logical layout. Captain Blackwater, the Port's most celebrated founder-figure, is credited in local legend with establishing the first version of the Port Code after a series of escalating disputes threatened to make the harbour too dangerous for anyone to use — an intervention that the legend credits with saving the Port and the legend's embellishments have credited with rather more than that.",
     "dangers": [
       "Violent pirate crews",
       "Unpredictable weather",
@@ -11828,13 +11828,13 @@ export const areaConfigurations: AreaConfigurationsMap = {
     }
   },
 
-  'pirate-village': {
+  'filibuster-cove': {
     "landmass": "conoco-island",
     "landmassName": "Conoco Island",
     "region": "pirates-bay",
     "regionName": "Pirates' Bay",
     "welcomeMessages": {
-      "base": "Welcome to the Pirate Village—shanty lanes, buried rumors, and hammocks that whisper.",
+      "base": "Welcome to the Filibuster Cove—shanty lanes, buried rumors, and hammocks that whisper.",
       "variations": [
         "Kids trade treasure maps; most lead to good stories.",
         "Signal flags talk across rooftops—some gossip, some warnings.",
@@ -11891,7 +11891,7 @@ export const areaConfigurations: AreaConfigurationsMap = {
       }
     ],
     "images": {
-      "guide": "/images/maps/areas/pirate-village-detailed.png"
+      "guide": "/images/maps/areas/filibuster-cove-detailed.png"
     },
     "difficulty": "Hard",
     "elevation": "10 ft - 50 ft",
@@ -11947,8 +11947,8 @@ export const areaConfigurations: AreaConfigurationsMap = {
         "description": "Sturdy marine equipment crafted by experienced sailors"
       }
     ],
-    "lore": "Pirate Village is the residential hinterland of the Pirate Port — a sprawling shantytown where pirate families, retired crews, and those whose relationship with the sea is more complicated than they like to explain have put down roots in the chaotic but surprisingly functional community that has grown here over three centuries. Dark and Normal-type Pokémon are the village's constant population; Mightyena families fill the role of neighbourhood watch, their loyalty to established territories giving them a predictability that the village uses as its primary security infrastructure, and Meowth and Chillet are so ubiquitous that counting them is considered a local game for children with time to fill. Impmon-line Digimon are endemic to every alley and back-market, their information networks so thoroughly integrated into the village's social fabric that they are effectively the village's nervous system. The underground tunnel network connects the village's various neighbourhoods and factions in ways that the surface street layout deliberately obscures, and knowledge of the tunnels is treated as a citizenship indicator — newcomers who don't know the routes are identifiable immediately.",
-    "history": "Pirate Village began as exactly what its name suggests — a collection of temporary shelters erected by pirate crews who needed somewhere to rest, repair, and store things between voyages and found that Pirate Port's main docks were becoming too expensive for everyday residential use. The permanence crept up on the original settlers; what was meant to be a seasonal camp became a year-round residence became a multi-generational community with its own traditions, territorial boundaries, and strong opinions about how things should be done. The village's famous refusal to be formally incorporated into any governance structure — including the Port's own looser arrangements — has been tested several times by external parties and has so far survived through a combination of collective stubbornness, inconvenient geography, and the practical consideration that the village's underground networks make occupation significantly harder than its surface appearance suggests.",
+    "lore": "Filibuster Cove is the residential hinterland of the Tortuga Port — a sprawling shantytown where pirate families, retired crews, and those whose relationship with the sea is more complicated than they like to explain have put down roots in the chaotic but surprisingly functional community that has grown here over three centuries. Dark and Normal-type Pokémon are the village's constant population; Mightyena families fill the role of neighbourhood watch, their loyalty to established territories giving them a predictability that the village uses as its primary security infrastructure, and Meowth and Chillet are so ubiquitous that counting them is considered a local game for children with time to fill. Impmon-line Digimon are endemic to every alley and back-market, their information networks so thoroughly integrated into the village's social fabric that they are effectively the village's nervous system. The underground tunnel network connects the village's various neighbourhoods and factions in ways that the surface street layout deliberately obscures, and knowledge of the tunnels is treated as a citizenship indicator — newcomers who don't know the routes are identifiable immediately.",
+    "history": "Filibuster Cove began as exactly what its name suggests — a collection of temporary shelters erected by pirate crews who needed somewhere to rest, repair, and store things between voyages and found that Tortuga Port's main docks were becoming too expensive for everyday residential use. The permanence crept up on the original settlers; what was meant to be a seasonal camp became a year-round residence became a multi-generational community with its own traditions, territorial boundaries, and strong opinions about how things should be done. The village's famous refusal to be formally incorporated into any governance structure — including the Port's own looser arrangements — has been tested several times by external parties and has so far survived through a combination of collective stubbornness, inconvenient geography, and the practical consideration that the village's underground networks make occupation significantly harder than its surface appearance suggests.",
     "dangers": [
       "Gang territorial disputes",
       "Buried treasure traps",
@@ -11974,13 +11974,13 @@ export const areaConfigurations: AreaConfigurationsMap = {
     }
   },
 
-  'poison-pools': {
+  'zmey-pools': {
     "landmass": "conoco-island",
     "landmassName": "Conoco Island",
     "region": "crowsfoot-marsh",
     "regionName": "Crowsfoot Marsh",
     "welcomeMessages": {
-      "base": "Welcome to the Poison Pools—toxic mirrors and riches that bite back.",
+      "base": "Welcome to the Zmey Pools—toxic mirrors and riches that bite back.",
       "variations": [
         "Iridescent films swirl; beauty here files its teeth.",
         "Bone markers warn the bold; reeds whisper antidotes and dares.",
@@ -12037,7 +12037,7 @@ export const areaConfigurations: AreaConfigurationsMap = {
       }
     ],
     "images": {
-      "guide": "/images/maps/areas/poison-pools-detailed.png"
+      "guide": "/images/maps/areas/zmey-pools-detailed.png"
     },
     "difficulty": "Extreme",
     "elevation": "10 ft",
@@ -12092,8 +12092,8 @@ export const areaConfigurations: AreaConfigurationsMap = {
         "description": "Rare plants that counteract specific toxins"
       }
     ],
-    "lore": "The Poison Pools of Crowsfoot Marsh are one of the most paradoxically productive environments on Conoco Island — a network of toxic pools whose iridescent surface films and corrosive chemistry would be unambiguously dangerous if not for the extraordinary alchemical and medicinal value of the substances they produce. Poison and Water-type Pokémon are uniquely adapted to the Pools' chemistry; Muk families regulate the concentration of the most dangerous compounds through active consumption, performing an ecosystem service that the alchemical community is careful not to disrupt. Raremon-line Digimon have evolved data structures that treat the toxic chemistry as a nutrient resource, their presence considered a natural concentrating mechanism that improves the quality of harvestable materials. Otamamon-line Digimon serve as living pH indicators, their behaviour patterns shifting predictably in response to chemical changes that instruments would detect more slowly. The Antitoxin Permit requirement was developed in collaboration with the marsh's alchemical community specifically to ensure that harvesting activities don't exceed the Pools' natural production rate — over-extraction has historically produced chemical desert conditions that the community has learned to prevent through careful management.",
-    "history": "The Poison Pools' origin is a matter of some scholarly debate — the magical accident theory, the natural geological theory, and the deliberate ancient alchemical installation theory all have adherents and none has been definitively proven. What is clear from marsh records is that the Pools have been present since before organised settlement of the Crowsfoot Marsh area, and that early settlers initially avoided the site before an apothecary tradition developed that recognised the Pools' medicinal potential. The Antitoxin Permit system was instituted after an unregulated harvesting period in the previous century produced chemical drift events that affected settlements several kilometres downwind — an experience that convinced even the most libertarian members of the marsh community that some coordination was necessary.",
+    "lore": "The Zmey Pools of Crowsfoot Marsh are one of the most paradoxically productive environments on Conoco Island — a network of toxic pools whose iridescent surface films and corrosive chemistry would be unambiguously dangerous if not for the extraordinary alchemical and medicinal value of the substances they produce. Poison and Water-type Pokémon are uniquely adapted to the Pools' chemistry; Muk families regulate the concentration of the most dangerous compounds through active consumption, performing an ecosystem service that the alchemical community is careful not to disrupt. Raremon-line Digimon have evolved data structures that treat the toxic chemistry as a nutrient resource, their presence considered a natural concentrating mechanism that improves the quality of harvestable materials. Otamamon-line Digimon serve as living pH indicators, their behaviour patterns shifting predictably in response to chemical changes that instruments would detect more slowly. The Antitoxin Permit requirement was developed in collaboration with the marsh's alchemical community specifically to ensure that harvesting activities don't exceed the Pools' natural production rate — over-extraction has historically produced chemical desert conditions that the community has learned to prevent through careful management.",
+    "history": "The Zmey Pools' origin is a matter of some scholarly debate — the magical accident theory, the natural geological theory, and the deliberate ancient alchemical installation theory all have adherents and none has been definitively proven. What is clear from marsh records is that the Pools have been present since before organised settlement of the Crowsfoot Marsh area, and that early settlers initially avoided the site before an apothecary tradition developed that recognised the Pools' medicinal potential. The Antitoxin Permit system was instituted after an unregulated harvesting period in the previous century produced chemical drift events that affected settlements several kilometres downwind — an experience that convinced even the most libertarian members of the marsh community that some coordination was necessary.",
     "dangers": [
       "Lethal poison exposure",
       "Toxic vapor inhalation",
@@ -12527,7 +12527,7 @@ export const areaConfigurations: AreaConfigurationsMap = {
     }
   },
 
-  'river-crossing': {
+  'apanohuaia-crossing': {
     "landmass": "conoco-island",
     "landmassName": "Conoco Island",
     "region": "mictlan-hollows",
@@ -12588,7 +12588,7 @@ export const areaConfigurations: AreaConfigurationsMap = {
       }
     ],
     "images": {
-      "guide": "/images/maps/areas/river-crossing-detailed.png"
+      "guide": "/images/maps/areas/apanohuaia-crossing-detailed.png"
     },
     "difficulty": "Hard",
     "elevation": "Riverbank terraces",
@@ -12641,8 +12641,8 @@ export const areaConfigurations: AreaConfigurationsMap = {
         "description": "Captured eddy infused with transitional energy."
       }
     ],
-    "lore": "The River Crossing is the threshold site of the Mictlan Hollows — the point where the River of Souls meets the living world's bank, and where those who come to remember, release, or commune with the departed must first pass the ferryman's assessment. Ghost and Water-type Pokémon inhabit the river's margins in densities that seem to increase the closer one approaches the actual crossing point; Froslass drift just above the surface, Lampent provide navigation light along the bank, and the spectral ferryman figure that appears during crossing ceremonies is believed by local tradition to be an ancient Bakemon-line Digimon whose data structure has fused so completely with the river's spiritual current that it no longer has a separate existence. Syakomon-line Digimon manage the upstream current monitoring stations, their aquatic affinity making them reliable early-warning systems when spiritual weather — the Mictlan Hollows equivalent of meteorological conditions — is building toward a significant event. Necromus Pals serve as current shade assistants, their Dark-type presence attracting the crossing spirits that the ferryman needs to complete the transit ritual.",
-    "history": "The River Crossing's formal dock system was established after a period of unregulated crossings produced what records describe as drift loss — instances where living petitioners who attempted the crossing without proper guidance were pulled into the river's current and carried further into the Mictlan Hollows than they intended to go, requiring significant effort to retrieve. The Ferryman Token system was designed not to restrict access but to ensure that every crossing is supervised by someone who understands the river's behaviour patterns and can intervene if conditions shift during transit. Several generations of ferryman practitioners have added to the dock infrastructure over time, each contributing elements that reflect the spiritual understanding current in their era, making the current docking system a historical record of the tradition's development as much as a practical facility.",
+    "lore": "The Apanohuaia Crossing is the threshold site of the Mictlan Hollows — the point where the River of Souls meets the living world's bank, and where those who come to remember, release, or commune with the departed must first pass the ferryman's assessment. Ghost and Water-type Pokémon inhabit the river's margins in densities that seem to increase the closer one approaches the actual crossing point; Froslass drift just above the surface, Lampent provide navigation light along the bank, and the spectral ferryman figure that appears during crossing ceremonies is believed by local tradition to be an ancient Bakemon-line Digimon whose data structure has fused so completely with the river's spiritual current that it no longer has a separate existence. Syakomon-line Digimon manage the upstream current monitoring stations, their aquatic affinity making them reliable early-warning systems when spiritual weather — the Mictlan Hollows equivalent of meteorological conditions — is building toward a significant event. Necromus Pals serve as current shade assistants, their Dark-type presence attracting the crossing spirits that the ferryman needs to complete the transit ritual.",
+    "history": "The Apanohuaia Crossing's formal dock system was established after a period of unregulated crossings produced what records describe as drift loss — instances where living petitioners who attempted the crossing without proper guidance were pulled into the river's current and carried further into the Mictlan Hollows than they intended to go, requiring significant effort to retrieve. The Ferryman Token system was designed not to restrict access but to ensure that every crossing is supervised by someone who understands the river's behaviour patterns and can intervene if conditions shift during transit. Several generations of ferryman practitioners have added to the dock infrastructure over time, each contributing elements that reflect the spiritual understanding current in their era, making the current docking system a historical record of the tradition's development as much as a practical facility.",
     "dangers": [
       "Current pull",
       "Lantern glare disorientation"
@@ -12797,13 +12797,13 @@ export const areaConfigurations: AreaConfigurationsMap = {
     }
   },
 
-  'sacred-canyon': {
+  'mundus-canyon': {
     "landmass": "conoco-island",
     "landmassName": "Conoco Island",
     "region": "terra-madre-basin",
     "regionName": "Terra Madre Basin",
     "welcomeMessages": {
-      "base": "Welcome to the Sacred Canyon—stone pages, earth scripture.",
+      "base": "Welcome to the Mundus Canyon—stone pages, earth scripture.",
       "variations": [
         "Layered cliffs glow at dusk; geologic sentences finish themselves.",
         "Root bridges hum with leylines—step like you’re reading aloud.",
@@ -12859,7 +12859,7 @@ export const areaConfigurations: AreaConfigurationsMap = {
       }
     ],
     "images": {
-      "guide": "/images/maps/areas/sacred-canyon-detailed.png"
+      "guide": "/images/maps/areas/mundus-canyon-detailed.png"
     },
     "difficulty": "Hard",
     "elevation": "400 ft to 1200 ft",
@@ -12914,7 +12914,7 @@ export const areaConfigurations: AreaConfigurationsMap = {
         "description": "Layers of earth with historical significance"
       }
     ],
-    "lore": "Sacred Canyon serves as a natural library of the Earth's history, where each stone layer tells the story of geological ages and ancient earth magic — researchers have catalogued over forty distinct strata, some corresponding to extinction-level events, others to periods of extraordinary biological flourishing. Rock and Ground-type Pokémon revere the canyon as ancestral territory; Claydol that wander its floor have been observed tracing the wall formations with precise gestures, as though reading inscriptions only they can perceive. Gotsumon-line Digimon store compressed data in the mineral resonance of the canyon walls, using its natural crystal inclusions as external memory arrays that have outlasted every manufactured storage medium. Ancient Earth Spirits — composite beings of Ground and Ghost energy — are the canyon's true archivists, and field researchers have reported that approaching them with genuine geological questions sometimes yields access to formations otherwise sealed off as unstable.",
+    "lore": "Mundus Canyon serves as a natural library of the Earth's history, where each stone layer tells the story of geological ages and ancient earth magic — researchers have catalogued over forty distinct strata, some corresponding to extinction-level events, others to periods of extraordinary biological flourishing. Rock and Ground-type Pokémon revere the canyon as ancestral territory; Claydol that wander its floor have been observed tracing the wall formations with precise gestures, as though reading inscriptions only they can perceive. Gotsumon-line Digimon store compressed data in the mineral resonance of the canyon walls, using its natural crystal inclusions as external memory arrays that have outlasted every manufactured storage medium. Ancient Earth Spirits — composite beings of Ground and Ghost energy — are the canyon's true archivists, and field researchers have reported that approaching them with genuine geological questions sometimes yields access to formations otherwise sealed off as unstable.",
     "history": "Carved by earth magic and natural forces over millions of years, the canyon preserves the complete geological history of the region in its stone walls, making it one of the most significant natural research sites on Conoco Island. The earliest human accounts of the canyon describe it as already ancient — the Grass-spirit traditions of the Terra Madre Basin claim the canyon was formed when the land itself wept during a catastrophic age, and that the canyon's current shape is the Earth's scar. Rangers who hold jurisdiction over the site restrict entry to credentialled researchers and experienced guides, as the canyon's maze structure has claimed a significant number of lost expeditions over the past century.",
     "dangers": [
       "Rockslides and unstable formations",
@@ -12939,13 +12939,13 @@ export const areaConfigurations: AreaConfigurationsMap = {
     }
   },
 
-  'sacred-pyre': {
+  'chita-ghat': {
     "landmass": "conoco-island",
     "landmassName": "Conoco Island",
     "region": "agni-peaks",
     "regionName": "Agni Peaks",
     "welcomeMessages": {
-      "base": "Welcome to the Sacred Pyre—peakfire that writes the sky in bright handwriting.",
+      "base": "Welcome to the Chita Ghat—peakfire that writes the sky in bright handwriting.",
       "variations": [
         "Dawn rites kindle staircases of flame; dusk braids the smoke into prayers.",
         "Bellows of wind feed the altar; the coals remember names.",
@@ -13001,7 +13001,7 @@ export const areaConfigurations: AreaConfigurationsMap = {
       }
     ],
     "images": {
-      "guide": "/images/maps/areas/sacred-pyre-detailed.png"
+      "guide": "/images/maps/areas/chita-ghat-detailed.png"
     },
     "difficulty": "Extreme",
     "elevation": "6000 ft",
@@ -13056,7 +13056,7 @@ export const areaConfigurations: AreaConfigurationsMap = {
         "description": "Raw divine power emanating from the pyre"
       }
     ],
-    "lore": "The Sacred Pyre is believed to be the earthly manifestation of the fire spirit's divine presence — not a fire that was lit, but a fire that simply is, as fundamental to existence as the peak it crowns. The flame shifts colour with the time of day and the spiritual state of those approaching it; white at dawn, gold at midday, and a deep violet-crimson at dusk that pilgrims describe as overwhelming to witness directly. Fire and Psychic-type Pokémon gathered here exhibit behaviours not seen elsewhere in the Agni Peaks: Victini have been documented circling the pyre in slow spirals for days at a time, and Chandelure flames turn a pure white in its presence. Agunimon-line Digimon treat the pyre as the highest calibration point for fire-attribute data purification, making a climb to the Sacred Pyre the unofficial final trial for any fire-type Digimon seeking to advance its evolutionary potential. Those who approach with impure intent — documented in more than a few warning records maintained by the resident priest order — report the pyre extinguishing and reigniting in a colour that, by all accounts, no one has looked at twice.",
+    "lore": "The Chita Ghat is believed to be the earthly manifestation of the fire spirit's divine presence — not a fire that was lit, but a fire that simply is, as fundamental to existence as the peak it crowns. The flame shifts colour with the time of day and the spiritual state of those approaching it; white at dawn, gold at midday, and a deep violet-crimson at dusk that pilgrims describe as overwhelming to witness directly. Fire and Psychic-type Pokémon gathered here exhibit behaviours not seen elsewhere in the Agni Peaks: Victini have been documented circling the pyre in slow spirals for days at a time, and Chandelure flames turn a pure white in its presence. Agunimon-line Digimon treat the pyre as the highest calibration point for fire-attribute data purification, making a climb to the Chita Ghat the unofficial final trial for any fire-type Digimon seeking to advance its evolutionary potential. Those who approach with impure intent — documented in more than a few warning records maintained by the resident priest order — report the pyre extinguishing and reigniting in a colour that, by all accounts, no one has looked at twice.",
     "history": "The pyre has existed since ancient times, predating any written record in the Agni Peaks region and possibly preceding the human settlement of the island entirely. The priest order that maintains the site — formally chartered under the Spirit Keeper faction — holds oral histories describing the flame as present when the first intelligent beings reached the peaks, already burning and already sacred. Periodic attempts to study the fire with conventional instruments have uniformly failed; thermometric readings return impossible values, and analysis of the ash yields compounds that should not exist at any naturally producible temperature. The pyre's status as the most sacred site in all of Agni Peaks is essentially unchallenged, even by factions that contest most other territorial claims.",
     "dangers": [
       "Divine fire that burns the unworthy",
@@ -13081,13 +13081,13 @@ export const areaConfigurations: AreaConfigurationsMap = {
     }
   },
 
-  'sacred-vapors': {
+  'pneuma-springs': {
     "landmass": "conoco-island",
     "landmassName": "Conoco Island",
     "region": "oracles-sanctum",
     "regionName": "Oracle's Sanctum",
     "welcomeMessages": {
-      "base": "You descend into the Sacred Vapors where mineral mists thicken prophetic focus.",
+      "base": "You descend into the Pneuma Springs where mineral mists thicken prophetic focus.",
       "variations": [
         "Condensed droplets refract prism runes in the air.",
         "A low humming chant resonates through vapor columns.",
@@ -13144,7 +13144,7 @@ export const areaConfigurations: AreaConfigurationsMap = {
       }
     ],
     "images": {
-      "guide": "/images/maps/areas/sacred-vapors-detailed.png"
+      "guide": "/images/maps/areas/pneuma-springs-detailed.png"
     },
     "difficulty": "Extreme",
     "elevation": "Subterranean fumerole galleries",
@@ -13199,7 +13199,7 @@ export const areaConfigurations: AreaConfigurationsMap = {
       }
     ],
     "lore": "Sages claim overlapping destinies precipitate as mist stratification here — that the density and colour of each vapour column corresponds to the convergence of specific fate-threads, and that reading the cavern's mist at any given moment is equivalent to reading the immediate futures of everyone presently standing in it. Psychic and Fairy-type Pokémon are the most reliable navigators of the vapors: Grumpig stabilise the vision currents that would otherwise overwhelm human visitors, while Chimecho produce tonal resonances that keep the mist from stratifying into feedback loops. Wisemon-line Digimon have established permanent monitoring stations at the major vent junctions, using the geothermal data pulses to refine their predictive modelling software into capabilities that reportedly exceed any manufactured oracle system. The trance vapors themselves are chemically unremarkable outside the cavern — samples collected and analysed at sea level show nothing unusual, which the sages take as confirmation that the prophetic property is not chemical but something the rock itself produces.",
-    "history": "Discovered after a seismic shift opened the lower vent lattice and released the first vapour columns into the upper Oracle's Sanctum passages, the Sacred Vapors were initially treated as a geological curiosity rather than a sacred site. The first documented trance experience was accidental — a survey team measuring the new vents reported collective visions of events that subsequently occurred within the following week. Spirit Keeper scholars arrived within a month and have maintained jurisdiction over the site since, formalising the Vapor Rite Seal access requirement after three early visitors experienced vision overloads that required months of recovery.",
+    "history": "Discovered after a seismic shift opened the lower vent lattice and released the first vapour columns into the upper Oracle's Sanctum passages, the Pneuma Springs were initially treated as a geological curiosity rather than a sacred site. The first documented trance experience was accidental — a survey team measuring the new vents reported collective visions of events that subsequently occurred within the following week. Spirit Keeper scholars arrived within a month and have maintained jurisdiction over the site since, formalising the Vapor Rite Seal access requirement after three early visitors experienced vision overloads that required months of recovery.",
     "dangers": [
       "Hyper-vision overload",
       "Heat exhaustion",
@@ -13219,13 +13219,13 @@ export const areaConfigurations: AreaConfigurationsMap = {
     }
   },
 
-  'serpent-pyramid': {
+  'coatepec-pyramid': {
     "landmass": "conoco-island",
     "landmassName": "Conoco Island",
     "region": "quetzal-winds",
     "regionName": "Quetzal Winds",
     "welcomeMessages": {
-      "base": "Welcome to the Serpent Pyramid—feathered coils of wind and rite.",
+      "base": "Welcome to the Coatepec Pyramid—feathered coils of wind and rite.",
       "variations": [
         "Step tiers breathe like lungs; chants ride the thermals.",
         "Shadow of the serpent sweeps noon—make a wish, then hold onto something.",
@@ -13282,7 +13282,7 @@ export const areaConfigurations: AreaConfigurationsMap = {
       }
     ],
     "images": {
-      "guide": "/images/maps/areas/serpent-pyramid-detailed.png"
+      "guide": "/images/maps/areas/coatepec-pyramid-detailed.png"
     },
     "difficulty": "Extreme",
     "elevation": "4000 ft",
@@ -13337,7 +13337,7 @@ export const areaConfigurations: AreaConfigurationsMap = {
         "description": "Stones that channel divine wind power"
       }
     ],
-    "lore": "The Serpent Pyramid is the most sacred site of Quetzalcoatl worship, where the feathered serpent god reveals his greatest mysteries to those who have proven themselves worthy through years of devotion and demonstrated mastery of wind magic. The pyramid's stepped tiers are not merely architectural but functional — each ascending tier intensifies the wind magic ambient at that elevation, so that the uppermost platform exists in a near-constant state of divine atmospheric charge that has been measured as generating localised weather phenomena. Flying and Dragon-type Pokémon treat the pyramid with extraordinary deference; Salamence that would challenge almost anything else in the Quetzal Winds will circle the pyramid at a respectful distance and not descend unless the wind currents specifically draw them in. Seraphimon and other celestial-data Digimon regard the pyramid as one of the few non-digital locations where their data-light form achieves its maximum resonance, making it a pilgrimage destination for Digimon of the highest angel-attribute evolutionary lines. Those who have stood at the apex report that the wind does not blow here so much as listen.",
+    "lore": "The Coatepec Pyramid is the most sacred site of Quetzalcoatl worship, where the feathered serpent god reveals his greatest mysteries to those who have proven themselves worthy through years of devotion and demonstrated mastery of wind magic. The pyramid's stepped tiers are not merely architectural but functional — each ascending tier intensifies the wind magic ambient at that elevation, so that the uppermost platform exists in a near-constant state of divine atmospheric charge that has been measured as generating localised weather phenomena. Flying and Dragon-type Pokémon treat the pyramid with extraordinary deference; Salamence that would challenge almost anything else in the Quetzal Winds will circle the pyramid at a respectful distance and not descend unless the wind currents specifically draw them in. Seraphimon and other celestial-data Digimon regard the pyramid as one of the few non-digital locations where their data-light form achieves its maximum resonance, making it a pilgrimage destination for Digimon of the highest angel-attribute evolutionary lines. Those who have stood at the apex report that the wind does not blow here so much as listen.",
     "history": "Built by the greatest architects of the Quetzal Winds culture under what their records describe as direct divine guidance — the founding priests claimed they did not design the pyramid so much as receive it in a continuous sequence of wind-delivered visions — the pyramid's construction methods remain partially unexplained by modern structural analysis. The stone alignment tolerances exceed what should have been achievable with period tools, and the wind-channelling properties of the tier geometry are precise enough that modern aeronautical engineers have confirmed the structure functions as an intentional amplifier rather than an accidental one. The Plumed Serpent Sigil access requirement was formalised after the Ranger-aligned research team that attempted an unsanctioned survey in the early settlement period encountered what their filed report describes only as a wind that had opinions.",
     "dangers": [
       "Direct divine presence",
@@ -13362,13 +13362,13 @@ export const areaConfigurations: AreaConfigurationsMap = {
     }
   },
 
-  'shadow-village': {
+  'coyote-hollow': {
     "landmass": "conoco-island",
     "landmassName": "Conoco Island",
     "region": "ravens-shadow",
     "regionName": "Raven's Shadow",
     "welcomeMessages": {
-      "base": "You enter Shadow Village where silhouettes stretch and whisper oblique counsel.",
+      "base": "You enter Coyote Hollow where silhouettes stretch and whisper oblique counsel.",
       "variations": [
         "Divergent shadows detach briefly then realign.",
         "Low caws punctuate shifting canopy twilight.",
@@ -13426,7 +13426,7 @@ export const areaConfigurations: AreaConfigurationsMap = {
       }
     ],
     "images": {
-      "guide": "/images/maps/areas/shadow-village-detailed.png"
+      "guide": "/images/maps/areas/coyote-hollow-detailed.png"
     },
     "difficulty": "Hard",
     "elevation": "Twilight hollow basin",
@@ -13480,8 +13480,8 @@ export const areaConfigurations: AreaConfigurationsMap = {
         "description": "Inscribing quill from dusk corvid plumage."
       }
     ],
-    "lore": "Ravens teach that truth emerges sharper when carved from layered obscurity — and Shadow Village has built an entire intellectual culture around that principle, treating the withholding of direct information as a form of respect for the person seeking it. Dark and Ghost-type Pokémon are the village's most prominent residents and effectively its information network; Honchkrow families run the echo-whisper alleys, encoding and decoding messages in rune-fragment sequences that require Whisper Corvid familiarity to read. Ravemon-line Digimon serve as the village's memory infrastructure, their data-shadow forms ideal for storing records that shouldn't be held in visible media. Void Scribes — Banette and Phantomon who have taken up the shadow-vellum craft — inscribe the village's deepest records in writing materials that resist illumination by design, ensuring that the archive can only be accessed by those with the sensitivity to read in perpetual dusk. Outsiders who expect Shadow Village to be sinister are usually surprised to find it functional, methodical, and quietly proud of its unusual approach to knowledge management.",
-    "history": "Formed after migrating dusk currents stabilised over the basin and created the permanently low-light conditions that make the settlement possible, Shadow Village was not originally planned as a centre of esoteric scholarship — it began as a refuge for Dark-type monster communities whose behaviour made cohabitation with more light-adapted settlements difficult. The founding residents developed the shadow-archive system out of practical necessity: their natural light-suppression abilities meant that conventional written records were routinely obscured, and encoding information into shadow-medium became the functional alternative. Over generations, what began as a workaround became a philosophy, and Shadow Village is now recognised across Conoco Island as the most reliable source of information that other archives have deemed too sensitive to preserve in conventional form.",
+    "lore": "Ravens teach that truth emerges sharper when carved from layered obscurity — and Coyote Hollow has built an entire intellectual culture around that principle, treating the withholding of direct information as a form of respect for the person seeking it. Dark and Ghost-type Pokémon are the village's most prominent residents and effectively its information network; Honchkrow families run the echo-whisper alleys, encoding and decoding messages in rune-fragment sequences that require Whisper Corvid familiarity to read. Ravemon-line Digimon serve as the village's memory infrastructure, their data-shadow forms ideal for storing records that shouldn't be held in visible media. Void Scribes — Banette and Phantomon who have taken up the shadow-vellum craft — inscribe the village's deepest records in writing materials that resist illumination by design, ensuring that the archive can only be accessed by those with the sensitivity to read in perpetual dusk. Outsiders who expect Coyote Hollow to be sinister are usually surprised to find it functional, methodical, and quietly proud of its unusual approach to knowledge management.",
+    "history": "Formed after migrating dusk currents stabilised over the basin and created the permanently low-light conditions that make the settlement possible, Coyote Hollow was not originally planned as a centre of esoteric scholarship — it began as a refuge for Dark-type monster communities whose behaviour made cohabitation with more light-adapted settlements difficult. The founding residents developed the shadow-archive system out of practical necessity: their natural light-suppression abilities meant that conventional written records were routinely obscured, and encoding information into shadow-medium became the functional alternative. Over generations, what began as a workaround became a philosophy, and Coyote Hollow is now recognised across Conoco Island as the most reliable source of information that other archives have deemed too sensitive to preserve in conventional form.",
     "dangers": [
       "Light source suppression",
       "Echo disorientation",
@@ -13501,13 +13501,13 @@ export const areaConfigurations: AreaConfigurationsMap = {
     }
   },
 
-  'shooting-star': {
+  'stellafall-point': {
     "landmass": "sky-isles",
     "landmassName": "Sky Isles",
-    "region": "aurora-heights",
-    "regionName": "Aurora Heights",
+    "region": "boreal-sanctum",
+    "regionName": "Boreal Sanctum",
     "welcomeMessages": {
-      "base": "High altitude winds bite at Shooting Star Peak where meteors thread luminous arcs.",
+      "base": "High altitude winds bite at Stellafall Point Peak where meteors thread luminous arcs.",
       "variations": [
         "Fragments hiss into crystal catchment nets.",
         "Auroral bands fold around observation spires.",
@@ -13565,7 +13565,7 @@ export const areaConfigurations: AreaConfigurationsMap = {
       }
     ],
     "images": {
-      "guide": "/images/maps/areas/shooting-star-detailed.png"
+      "guide": "/images/maps/areas/stellafall-point-detailed.png"
     },
     "difficulty": "Extreme",
     "elevation": "19,400 ft summit ridge",
@@ -13619,7 +13619,7 @@ export const areaConfigurations: AreaConfigurationsMap = {
         "description": "Charged particulate used in cold infusion rituals."
       }
     ],
-    "lore": "Shooting Star Peak aligns with the three major seasonal meteor streams in positions that have been precisely mapped over centuries, allowing the installation of catch-nets at the exact coordinates where fragment density peaks — maximising harvest yield while minimising the navigational chaos of working in an active impact zone. Psychic, Ice, and Fairy-type Pokémon are the only species capable of working the peak's extreme altitude comfortably; Deoxys-form entities appear during major meteor events and have been documented assisting with fragment collection in exchanges that no researcher has yet explained, and Minior descend in their protective shells regularly enough to have become a logistical consideration for the net maintenance teams. Solarmon-line Digimon manage the cosmic energy conduit arrays, their data-light bodies naturally resonant with the stellar charge that infuses the collected meteorite fragments. Angewomon-class Digimon serve as emergency stabilisers when a meteor convergence event produces more cosmic energy than the conduits can process safely, absorbing the overflow into their own data structures without apparent harm. The Celestial Catch Permit requirement is not bureaucratic formality — the altitude, the active impact risk, and the unpredictable cosmic energy surges make this one of the three most dangerous worksites in the Sky Isles.",
+    "lore": "Stellafall Point Peak aligns with the three major seasonal meteor streams in positions that have been precisely mapped over centuries, allowing the installation of catch-nets at the exact coordinates where fragment density peaks — maximising harvest yield while minimising the navigational chaos of working in an active impact zone. Psychic, Ice, and Fairy-type Pokémon are the only species capable of working the peak's extreme altitude comfortably; Deoxys-form entities appear during major meteor events and have been documented assisting with fragment collection in exchanges that no researcher has yet explained, and Minior descend in their protective shells regularly enough to have become a logistical consideration for the net maintenance teams. Solarmon-line Digimon manage the cosmic energy conduit arrays, their data-light bodies naturally resonant with the stellar charge that infuses the collected meteorite fragments. Angewomon-class Digimon serve as emergency stabilisers when a meteor convergence event produces more cosmic energy than the conduits can process safely, absorbing the overflow into their own data structures without apparent harm. The Celestial Catch Permit requirement is not bureaucratic formality — the altitude, the active impact risk, and the unpredictable cosmic energy surges make this one of the three most dangerous worksites in the Sky Isles.",
     "history": "The first nets were woven from aurora silk arrays anchored by prism pylons driven into the peak's upper ridge — a construction method developed by the Featherless Ones faction's early skycraft engineers, who recognised the peak's alignment properties before the formal meteor-stream charts were compiled. The original infrastructure was destroyed in a major convergence event approximately two centuries ago and rebuilt with reinforced materials, incorporating the lesson that the nets needed to be sacrificial rather than permanent. The current installation philosophy — nets designed to be replaced each major season rather than maintained indefinitely — has reduced catastrophic infrastructure losses to near zero, and the peak is now considered one of the most reliably productive resource extraction sites in the entire Sky Isles.",
     "dangers": [
       "Meteor impact shock",
@@ -14078,8 +14078,8 @@ export const areaConfigurations: AreaConfigurationsMap = {
   'starlight-observatory': {
     "landmass": "sky-isles",
     "landmassName": "Sky Isles",
-    "region": "aurora-heights",
-    "regionName": "Aurora Heights",
+    "region": "boreal-sanctum",
+    "regionName": "Boreal Sanctum",
     "welcomeMessages": {
       "base": "You enter the Starlight Observatory where crystal arrays track shifting constellations.",
       "variations": [
@@ -14193,7 +14193,7 @@ export const areaConfigurations: AreaConfigurationsMap = {
       }
     ],
     "lore": "The Starlight Observatory was built precisely where three auroral nodes converge — a positioning that was not accidental but the product of decades of celestial survey work, as the convergence point generates atmospheric conditions that amplify telescope clarity to a degree not achievable at any other location in the Sky Isles. Psychic and Ice-type Pokémon are the observatory's most consistent research partners: Beheeyem independently chart orbital resonance patterns and have contributed data that the observatory's human astronomers have incorporated directly into published sky maps, and Latios-line Pokémon circle the apex spire in patterns that correlate with significant celestial events in ways that remain unexplained. Wisemon-line Digimon operate the Cosmic Prediction Array's data-processing functions, their analytical capabilities making them the only personnel able to process the volume of data the multi-spectrum array generates in real time. The Star Communion Chamber is the observatory's most restricted area — Psychic-type specialists who have spent time there describe the experience as receiving information rather than gathering it, as though the stars themselves were making observations about their observers.",
-    "history": "The Starlight Observatory expanded to its current form after the development of the crystal lattice framework allowed multi-spectrum scanning capabilities that the original single-lens design could not support. The original structure was a simple observation tower used by the Featherless Ones faction for navigation purposes; its transformation into a research facility began when Beheeyem communities in the area began consistently appearing at the tower during significant astronomical events and were found to be generating observational data of considerably higher quality than the tower's instruments. The current collaborative model — human astronomers, Psychic-type Pokémon, and Digimon analytical systems working in structured partnership — was formalised after the first joint paper produced by the collaboration was accepted as the definitive reference for Aurora Heights stellar cartography.",
+    "history": "The Starlight Observatory expanded to its current form after the development of the crystal lattice framework allowed multi-spectrum scanning capabilities that the original single-lens design could not support. The original structure was a simple observation tower used by the Featherless Ones faction for navigation purposes; its transformation into a research facility began when Beheeyem communities in the area began consistently appearing at the tower during significant astronomical events and were found to be generating observational data of considerably higher quality than the tower's instruments. The current collaborative model — human astronomers, Psychic-type Pokémon, and Digimon analytical systems working in structured partnership — was formalised after the first joint paper produced by the collaboration was accepted as the definitive reference for Boreal Sanctum stellar cartography.",
     "dangers": [
       "Hypoxia",
       "Lens frost fractures",
@@ -14213,13 +14213,13 @@ export const areaConfigurations: AreaConfigurationsMap = {
     }
   },
 
-  'stonehenge-site': {
+  'cromlech-stones': {
     "landmass": "conoco-island",
     "landmassName": "Conoco Island",
     "region": "stoneheart-cliffs",
     "regionName": "Stoneheart Cliffs",
     "welcomeMessages": {
-      "base": "Standing monoliths loom at the Stonehenge Site aligning with pulsing celestial nodes.",
+      "base": "Standing monoliths loom at the Cromlech Stones aligning with pulsing celestial nodes.",
       "variations": [
         "Shadow lengths synchronize across disparate stones.",
         "Subsonic vibrations travel through ring lintels.",
@@ -14274,7 +14274,7 @@ export const areaConfigurations: AreaConfigurationsMap = {
       }
     ],
     "images": {
-      "guide": "/images/maps/areas/stonehenge-site-detailed.png"
+      "guide": "/images/maps/areas/cromlech-stones-detailed.png"
     },
     "difficulty": "Extreme",
     "elevation": "High plateau ring",
@@ -14328,7 +14328,7 @@ export const areaConfigurations: AreaConfigurationsMap = {
         "description": "Glow lichen aiding low-light readings."
       }
     ],
-    "lore": "Legends claim the first island epoch reset — the catastrophic realignment of the island's leyline network that geomancers date to approximately four thousand years ago — was triggered here under a triple eclipse when all three of the site's alignment beams fired simultaneously for the first time. Rock and Psychic-type Pokémon treat the Stonehenge Site as a place of deep reverence: Solrock gather at the ring during every significant astronomical event and have been observed in apparent communication with the Alignment Wisps that manifest at the monolith junctions, and Claydol rotate slowly in the inner ring regardless of observed seasonal alignment, as though operating on a calendar no one else can see. Guardromon-line Digimon maintain the Rune Sentry function at the outer markers, their mechanical precision making them ideal for the continuous minor ley adjustments that keep the ring stable. The deeper sub-ring layers — accessible only by solving the harmonic lock sequences that seal the primary excavation tunnels — are believed by the Spirit Keeper faction to contain infrastructure predating the island itself, though no confirmed access has been documented.",
+    "lore": "Legends claim the first island epoch reset — the catastrophic realignment of the island's leyline network that geomancers date to approximately four thousand years ago — was triggered here under a triple eclipse when all three of the site's alignment beams fired simultaneously for the first time. Rock and Psychic-type Pokémon treat the Cromlech Stones as a place of deep reverence: Solrock gather at the ring during every significant astronomical event and have been observed in apparent communication with the Alignment Wisps that manifest at the monolith junctions, and Claydol rotate slowly in the inner ring regardless of observed seasonal alignment, as though operating on a calendar no one else can see. Guardromon-line Digimon maintain the Rune Sentry function at the outer markers, their mechanical precision making them ideal for the continuous minor ley adjustments that keep the ring stable. The deeper sub-ring layers — accessible only by solving the harmonic lock sequences that seal the primary excavation tunnels — are believed by the Spirit Keeper faction to contain infrastructure predating the island itself, though no confirmed access has been documented.",
     "history": "Excavated partially in a series of Ranger-sponsored digs that reached the third sub-ring layer before the harmonic lock sequences halted progress — not through any physical barrier but because the instruments brought into the lower chambers began returning temporal readings inconsistent with the date of excavation, causing the lead researcher to halt work pending analysis that has never been fully resolved. The surface ring and first sub-ring have been mapped and are considered stable; the Druidic Alignment Rod access requirement was introduced after an unlicensed visit during a solstice alignment resulted in a Portal instability event that displaced three researchers to locations on Conoco Island approximately fifteen kilometres from the site. They were physically unharmed but describe the experience as having lasted several days subjectively.",
     "dangers": [
       "Temporal disorientation",
@@ -14349,13 +14349,13 @@ export const areaConfigurations: AreaConfigurationsMap = {
     }
   },
 
-  'storm-dance-village': {
+  'heyoka-village': {
     "landmass": "conoco-island",
     "landmassName": "Conoco Island",
     "region": "thunderbird-heights",
     "regionName": "Thunderbird Heights",
     "welcomeMessages": {
-      "base": "Welcome to Storm Dance Village—feet drum, clouds answer.",
+      "base": "Welcome to Heyoka Village—feet drum, clouds answer.",
       "variations": [
         "Prayer fans flutter lightning-quick; the air keeps tempo.",
         "Totem poles hum with sky song; offer respect and decent footwork.",
@@ -14410,7 +14410,7 @@ export const areaConfigurations: AreaConfigurationsMap = {
       }
     ],
     "images": {
-      "guide": "/images/maps/areas/storm-dance-village-detailed.png"
+      "guide": "/images/maps/areas/heyoka-village-detailed.png"
     },
     "difficulty": "Medium",
     "elevation": "6500 ft",
@@ -14465,7 +14465,7 @@ export const areaConfigurations: AreaConfigurationsMap = {
         "description": "Feathers blessed in storm dances"
       }
     ],
-    "lore": "Storm Dance Village preserves the ancient traditions of communicating with the Thunderbird through sacred dances that mirror the movement of storms and the flight of the great spirit — ceremonies in which the rhythmic percussion of thunder drums is not merely accompaniment but direct address, each beat pattern corresponding to a specific message in the Thunderbird's ritual dialect. Electric, Flying, and Ground-type Pokémon participate in the ceremonies not as audience but as co-celebrants: Altaria descend from the upper peaks during rain rites, Sawsbuck Thunder Elk whose antlers spark with genuine electrical discharge lead processions through the village perimeter, and Ursaring Dance Bears have participated in the village's ceremonies for so many generations that they are considered founding members rather than wildlife. Monochromon-line Digimon have taken up residence in the village's outer pastures, their reliable thunderstorm weather-sense making them valuable as early-warning systems that allow the shamans to begin rain rites at precisely the right atmospheric window. Outsiders who approach Storm Dance Village with genuine respect and appropriate offerings are welcomed into outer ceremony positions — the tradition holds that the Thunderbird can hear sincerity regardless of cultural origin.",
+    "lore": "Heyoka Village preserves the ancient traditions of communicating with the Thunderbird through sacred dances that mirror the movement of storms and the flight of the great spirit — ceremonies in which the rhythmic percussion of thunder drums is not merely accompaniment but direct address, each beat pattern corresponding to a specific message in the Thunderbird's ritual dialect. Electric, Flying, and Ground-type Pokémon participate in the ceremonies not as audience but as co-celebrants: Altaria descend from the upper peaks during rain rites, Sawsbuck Thunder Elk whose antlers spark with genuine electrical discharge lead processions through the village perimeter, and Ursaring Dance Bears have participated in the village's ceremonies for so many generations that they are considered founding members rather than wildlife. Monochromon-line Digimon have taken up residence in the village's outer pastures, their reliable thunderstorm weather-sense making them valuable as early-warning systems that allow the shamans to begin rain rites at precisely the right atmospheric window. Outsiders who approach Heyoka Village with genuine respect and appropriate offerings are welcomed into outer ceremony positions — the tradition holds that the Thunderbird can hear sincerity regardless of cultural origin.",
     "history": "Founded by shamans who received the first Thunderbird communication in a storm that lasted nine days and left no destruction in its wake — an event the founding oral histories describe as the Thunderbird choosing to speak rather than act. The village has maintained these sacred traditions for generations with a continuity that has survived multiple regional upheavals, in part because the Thunderbird's continued responsiveness to the dances provides ongoing experiential confirmation of the tradition's validity. The shamanic lineage that holds the Thunderbird's ritual dialect has recently entered into a formal information-sharing agreement with Spirit Keeper scholars, creating written documentation of the ceremony structures for the first time — a decision that generated significant internal debate about preservation versus secrecy.",
     "dangers": [
       "Powerful spiritual energy",
@@ -14492,8 +14492,8 @@ export const areaConfigurations: AreaConfigurationsMap = {
   'storm-district': {
     "landmass": "sky-isles",
     "landmassName": "Sky Isles",
-    "region": "nimbus-capital",
-    "regionName": "Nimbus Capital",
+    "region": "empyrean-capital",
+    "regionName": "Empyrean Capital",
     "welcomeMessages": {
       "base": "Welcome to the Storm District—commerce on a live wire.",
       "variations": [
@@ -14595,8 +14595,8 @@ export const areaConfigurations: AreaConfigurationsMap = {
         "description": "Fabric woven from controlled lightning"
       }
     ],
-    "lore": "The Storm District is the commercial heart of the Nimbus Capital — a marketplace where every transaction is powered by the same storm energy that makes the Sky Isles habitable, and where the controlled lightning running through the arc lamp grid is as much a symbol of the capital's authority as it is a practical utility. Electric, Flying, and Steel-type Pokémon are both the district's workforce and its most active traders: Magnezone entities run the wind-forge stalls that produce storm-treated goods available nowhere at lower altitude, Jolteon couriers carry time-sensitive documents and small cargo between platforms at speeds that mechanical alternatives cannot match, and Zapdos-line creatures serve as the district's most visible symbol — their presence in the upper arc lamp grid is both a security measure and an advertisement. Andromon Digimon manage the district's automated trading systems, their industrial-data attributes making them ideal operators of the lightning-powered receipt and inventory infrastructure. The Storm Market Writ requirement reflects the capital's position: access to the district's most powerful trade networks requires demonstrating that you are a legitimate participant rather than a weather tourist.",
-    "history": "Established as the main trading hub of Nimbus Capital when the district's controlled lightning infrastructure was first scaled to commercial capacity, the Storm District grew rapidly once the wind-forge technology that produces storm-treated goods was formalised and made available to licensed vendors. The district's current layout — arc lamp grid, wind-forge stall rows, and the slipstream courier network — emerged from three successive expansion phases driven by trade volume that consistently exceeded projections. The Storm Silk trade in particular, once a specialist craft, is now the district's highest-value commodity category and has drawn merchant families from as far as Conoco Island seeking access to the Nimbus Capital's production infrastructure.",
+    "lore": "The Storm District is the commercial heart of the Empyrean Capital — a marketplace where every transaction is powered by the same storm energy that makes the Sky Isles habitable, and where the controlled lightning running through the arc lamp grid is as much a symbol of the capital's authority as it is a practical utility. Electric, Flying, and Steel-type Pokémon are both the district's workforce and its most active traders: Magnezone entities run the wind-forge stalls that produce storm-treated goods available nowhere at lower altitude, Jolteon couriers carry time-sensitive documents and small cargo between platforms at speeds that mechanical alternatives cannot match, and Zapdos-line creatures serve as the district's most visible symbol — their presence in the upper arc lamp grid is both a security measure and an advertisement. Andromon Digimon manage the district's automated trading systems, their industrial-data attributes making them ideal operators of the lightning-powered receipt and inventory infrastructure. The Storm Market Writ requirement reflects the capital's position: access to the district's most powerful trade networks requires demonstrating that you are a legitimate participant rather than a weather tourist.",
+    "history": "Established as the main trading hub of Empyrean Capital when the district's controlled lightning infrastructure was first scaled to commercial capacity, the Storm District grew rapidly once the wind-forge technology that produces storm-treated goods was formalised and made available to licensed vendors. The district's current layout — arc lamp grid, wind-forge stall rows, and the slipstream courier network — emerged from three successive expansion phases driven by trade volume that consistently exceeded projections. The Storm Silk trade in particular, once a specialist craft, is now the district's highest-value commodity category and has drawn merchant families from as far as Conoco Island seeking access to the Empyrean Capital's production infrastructure.",
     "dangers": [
       "Electrical discharge",
       "Wind shear"
@@ -14617,8 +14617,8 @@ export const areaConfigurations: AreaConfigurationsMap = {
   'storm-riders': {
     "landmass": "sky-isles",
     "landmassName": "Sky Isles",
-    "region": "tempest-zones",
-    "regionName": "Tempest Zones",
+    "region": "vayu-maelstrom",
+    "regionName": "Vayu Maelstrom",
     "welcomeMessages": {
       "base": "Roaring currents circle the Storm Riders Outpost perched at the edge of stacked thunderheads.",
       "variations": [
@@ -14732,8 +14732,8 @@ export const areaConfigurations: AreaConfigurationsMap = {
         "description": "Dense grounding material for storm gear."
       }
     ],
-    "lore": "The Storm Riders Outpost was founded to tame the fractal storm lanes of the Tempest Zones for long-range traversal — to convert what was previously an impassable band of weather chaos into a navigable, if demanding, high-speed route connecting the Sky Isles' more distant reaches. Electric, Flying, and Steel-type Pokémon are the outpost's permanent staff in all but name: Emolga draft-ride between the rod arrays as living turbulence monitors, Rotom-form entities log micro-current fluctuations that feed into the Jet Stream Cartography Deck's live charts, and Axew Ion Drakelet juveniles practice charge cycling along the spire peaks in conditions that develop the storm resilience they will need as adults. Raidramon-line Digimon serve as the outpost's most critical safety asset — their ability to absorb and redirect electrical charge makes them the first responders when a lightning chain event produces overcharge conditions that would otherwise knock human riders off their anchors. The Storm Rider License is earned through a documented series of escalating traversal trials, culminating in a solo run through the triple shear corridor without assistance — a requirement that eliminates a significant number of applicants and is considered non-negotiable.",
-    "history": "The outpost expanded to its current operational scale after the successful mapping of the triple shear corridor — a notoriously unpredictable storm lane that had caused the most traversal incidents of any route in the Tempest Zones. The mapping expedition that produced the working chart lost two vessels to the corridor's vortex collapse behaviour before developing the monitoring protocol that made safe transit possible, and the current magnetic anchor platform design incorporates lessons from those losses directly. The outpost's expansion also attracted the Ion Drakelet population, which had previously avoided the area; researchers believe the new anchor infrastructure provides stable charge-cycling points that the juvenile dragons need for development, and their presence has been welcomed as an unplanned but significant ecological benefit.",
+    "lore": "The Storm Riders Outpost was founded to tame the fractal storm lanes of the Vayu Maelstrom for long-range traversal — to convert what was previously an impassable band of weather chaos into a navigable, if demanding, high-speed route connecting the Sky Isles' more distant reaches. Electric, Flying, and Steel-type Pokémon are the outpost's permanent staff in all but name: Emolga draft-ride between the rod arrays as living turbulence monitors, Rotom-form entities log micro-current fluctuations that feed into the Jet Stream Cartography Deck's live charts, and Axew Ion Drakelet juveniles practice charge cycling along the spire peaks in conditions that develop the storm resilience they will need as adults. Raidramon-line Digimon serve as the outpost's most critical safety asset — their ability to absorb and redirect electrical charge makes them the first responders when a lightning chain event produces overcharge conditions that would otherwise knock human riders off their anchors. The Storm Rider License is earned through a documented series of escalating traversal trials, culminating in a solo run through the triple shear corridor without assistance — a requirement that eliminates a significant number of applicants and is considered non-negotiable.",
+    "history": "The outpost expanded to its current operational scale after the successful mapping of the triple shear corridor — a notoriously unpredictable storm lane that had caused the most traversal incidents of any route in the Vayu Maelstrom. The mapping expedition that produced the working chart lost two vessels to the corridor's vortex collapse behaviour before developing the monitoring protocol that made safe transit possible, and the current magnetic anchor platform design incorporates lessons from those losses directly. The outpost's expansion also attracted the Ion Drakelet population, which had previously avoided the area; researchers believe the new anchor infrastructure provides stable charge-cycling points that the juvenile dragons need for development, and their presence has been welcomed as an unplanned but significant ecological benefit.",
     "dangers": [
       "Anchor line snapback",
       "Unpredicted vortex collapse",
@@ -14753,13 +14753,13 @@ export const areaConfigurations: AreaConfigurationsMap = {
     }
   },
 
-  'story-village': {
+  'anansesem-village': {
     "landmass": "conoco-island",
     "landmassName": "Conoco Island",
     "region": "anansi-woods",
     "regionName": "Anansi Woods",
     "welcomeMessages": {
-      "base": "Welcome to Story Village—spiral webs teaching in concentric chapters.",
+      "base": "Welcome to Anansesem Village—spiral webs teaching in concentric chapters.",
       "variations": [
         "Elder weavers tug a strand—the lesson arrives as a breeze.",
         "Tales are braided, not told; listen with your hands.",
@@ -14815,7 +14815,7 @@ export const areaConfigurations: AreaConfigurationsMap = {
       }
     ],
     "images": {
-      "guide": "/images/maps/areas/story-village-detailed.png"
+      "guide": "/images/maps/areas/anansesem-village-detailed.png"
     },
     "difficulty": "Easy",
     "elevation": "Lower canopy cradle",
@@ -14869,8 +14869,8 @@ export const areaConfigurations: AreaConfigurationsMap = {
         "description": "Condensed motif cluster enhancing recall."
       }
     ],
-    "lore": "Story Village is where the foundational narratives of the Anansi Woods begin — not in written form or even spoken word, but as simple lattice songs encoded into the first web structures that young weavers produce under elder guidance. Bug, Fairy, and Dark-type Pokémon are the village's core community; Venipede hop web-to-web spreading fresh narrative spores that contribute new story material to the active archive, Kricketune serve as Silk Tutors whose musical output literally guides apprentice weavers' hands through the proper glyph loops, and Araquanid Archive Menders repair frayed lore threads before the story they contain degrades past recovery. Tentomon and Waspmon Digimon work alongside the archive community as structural assistants, their electric-data properties helping reinforce the web infrastructure against the humidity that gradually weakens untreated silk. The Night Glow Tale Loom activates at dusk and produces a complete bioluminescent rendering of the day's new story contributions — the village's most visited spectacle, and the most reliable way to understand what the Anansi Woods considers worth remembering on any given day.",
-    "history": "Story Village expanded to its current canopy-spanning scale when the elder weavers of the Anansi Woods made the deliberate decision to decentralise archive growth rather than concentrate all new story threads in the Silk Library. The reasoning was cultural rather than logistical: the library was becoming a repository of finished works, while the village needed to remain a living place where stories were actively made. The decentralisation allowed each generation of apprentice weavers to contribute directly to an accessible local archive rather than submitting work to the library's more formal curation process, and the resulting increase in story diversity and volume has been cited as one of the most significant developments in Anansi Woods cultural history.",
+    "lore": "Anansesem Village is where the foundational narratives of the Anansi Woods begin — not in written form or even spoken word, but as simple lattice songs encoded into the first web structures that young weavers produce under elder guidance. Bug, Fairy, and Dark-type Pokémon are the village's core community; Venipede hop web-to-web spreading fresh narrative spores that contribute new story material to the active archive, Kricketune serve as Silk Tutors whose musical output literally guides apprentice weavers' hands through the proper glyph loops, and Araquanid Archive Menders repair frayed lore threads before the story they contain degrades past recovery. Tentomon and Waspmon Digimon work alongside the archive community as structural assistants, their electric-data properties helping reinforce the web infrastructure against the humidity that gradually weakens untreated silk. The Night Glow Tale Loom activates at dusk and produces a complete bioluminescent rendering of the day's new story contributions — the village's most visited spectacle, and the most reliable way to understand what the Anansi Woods considers worth remembering on any given day.",
+    "history": "Anansesem Village expanded to its current canopy-spanning scale when the elder weavers of the Anansi Woods made the deliberate decision to decentralise archive growth rather than concentrate all new story threads in the Silk Library. The reasoning was cultural rather than logistical: the library was becoming a repository of finished works, while the village needed to remain a living place where stories were actively made. The decentralisation allowed each generation of apprentice weavers to contribute directly to an accessible local archive rather than submitting work to the library's more formal curation process, and the resulting increase in story diversity and volume has been cited as one of the most significant developments in Anansi Woods cultural history.",
     "dangers": [
       "Mild silk entanglement",
       "Attention drift during multitale teaching"
@@ -14889,13 +14889,13 @@ export const areaConfigurations: AreaConfigurationsMap = {
     }
   },
 
-  'summer-court': {
+  'beltane-court': {
     "landmass": "conoco-island",
     "landmassName": "Conoco Island",
     "region": "seelie-courts",
     "regionName": "Seelie Courts",
     "welcomeMessages": {
-      "base": "Welcome to the Summer Court—eternal solstice and festivals that outlast your stamina.",
+      "base": "Welcome to the Beltane Court—eternal solstice and festivals that outlast your stamina.",
       "variations": [
         "Sunlace canopies throw gold over everything—especially your plans.",
         "Light-weavers knit warmth into the air; joy is mandatory.",
@@ -14951,7 +14951,7 @@ export const areaConfigurations: AreaConfigurationsMap = {
       }
     ],
     "images": {
-      "guide": "/images/maps/areas/summer-court-detailed.png"
+      "guide": "/images/maps/areas/beltane-court-detailed.png"
     },
     "difficulty": "Extreme",
     "elevation": "Sunstone pavilion rise",
@@ -15005,8 +15005,8 @@ export const areaConfigurations: AreaConfigurationsMap = {
         "description": "Bright droplet boosting minor healing brews."
       }
     ],
-    "lore": "The Summer Court is believed to anchor the island's cyclical emotional rejuvenation — that the festivals celebrated here do not merely lift the spirits of those attending but generate a warmth that propagates outward through the Seelie Courts' leyline network and influences the ambient emotional state of Conoco Island as a whole. Fairy, Fire, and Grass-type Pokémon treat the Summer Court as their spiritual apex: Cleffa trail radiant sparks during the festival dances in numbers that make the court glow independent of the natural sunlight, Florges conduct bloom synchronisation rituals that coordinate flower opening across the entire Seelie Courts region, and Rapidash Sunflare Heralds announce the rite sequences in solar glyphs visible from the neighbouring regions. Lilamon-line Digimon serve as the court's bloom cycle administrators, their plant-data attributes making them naturally suited to the synchronisation work that underpins the Summer Court's most dramatic visual spectacles. Angewomon-class Digimon participate in the Joy Renewal Ceremonies in a capacity the court's records describe as voluntary — they come because the Summer Court is, by measurable spiritual metrics, the most positive-energy site in the entire island chain.",
-    "history": "The Summer Court formed when a perennial bloom alignment in the Seelie Courts region stabilised the ambient warmth to year-round solstice conditions — an event that the Fairy-type communities of the area treated as an invitation to establish permanent festival infrastructure rather than seasonal celebrations. The Solstice Circlet access requirement was introduced not to restrict entry but to ensure that those arriving at the court's most intensive ceremony periods had made the spiritual preparation that makes the experience beneficial rather than overwhelming; the court's records document a small number of visitors who arrived unprepared and experienced joy-overload states requiring recovery time. The Summer Court and the Winter Court are the Seelie Courts' two anchor points, and the tension between them — not antagonistic but complementary — is considered the primary driver of the region's extraordinary magical diversity.",
+    "lore": "The Beltane Court is believed to anchor the island's cyclical emotional rejuvenation — that the festivals celebrated here do not merely lift the spirits of those attending but generate a warmth that propagates outward through the Seelie Courts' leyline network and influences the ambient emotional state of Conoco Island as a whole. Fairy, Fire, and Grass-type Pokémon treat the Beltane Court as their spiritual apex: Cleffa trail radiant sparks during the festival dances in numbers that make the court glow independent of the natural sunlight, Florges conduct bloom synchronisation rituals that coordinate flower opening across the entire Seelie Courts region, and Rapidash Sunflare Heralds announce the rite sequences in solar glyphs visible from the neighbouring regions. Lilamon-line Digimon serve as the court's bloom cycle administrators, their plant-data attributes making them naturally suited to the synchronisation work that underpins the Beltane Court's most dramatic visual spectacles. Angewomon-class Digimon participate in the Joy Renewal Ceremonies in a capacity the court's records describe as voluntary — they come because the Beltane Court is, by measurable spiritual metrics, the most positive-energy site in the entire island chain.",
+    "history": "The Beltane Court formed when a perennial bloom alignment in the Seelie Courts region stabilised the ambient warmth to year-round solstice conditions — an event that the Fairy-type communities of the area treated as an invitation to establish permanent festival infrastructure rather than seasonal celebrations. The Solstice Circlet access requirement was introduced not to restrict entry but to ensure that those arriving at the court's most intensive ceremony periods had made the spiritual preparation that makes the experience beneficial rather than overwhelming; the court's records document a small number of visitors who arrived unprepared and experienced joy-overload states requiring recovery time. The Beltane Court and the Winter Court are the Seelie Courts' two anchor points, and the tension between them — not antagonistic but complementary — is considered the primary driver of the region's extraordinary magical diversity.",
     "dangers": [
       "Heat mirage fatigue",
       "Overexposure glare",
@@ -15452,13 +15452,13 @@ export const areaConfigurations: AreaConfigurationsMap = {
     }
   },
 
-  'terra-village': {
+  'ops-village': {
     "landmass": "conoco-island",
     "landmassName": "Conoco Island",
     "region": "terra-madre-basin",
     "regionName": "Terra Madre Basin",
     "welcomeMessages": {
-      "base": "Welcome to Terra Village—soil so good it grades your gardening.",
+      "base": "Welcome to Ops Village—soil so good it grades your gardening.",
       "variations": [
         "Vines train themselves; farmers mostly supervise and snack.",
         "Irrigation stones purr when content—water follows the sound.",
@@ -15515,7 +15515,7 @@ export const areaConfigurations: AreaConfigurationsMap = {
       }
     ],
     "images": {
-      "guide": "/images/maps/areas/terra-village-detailed.png"
+      "guide": "/images/maps/areas/ops-village-detailed.png"
     },
     "difficulty": "Easy",
     "elevation": "600 ft",
@@ -15570,8 +15570,8 @@ export const areaConfigurations: AreaConfigurationsMap = {
         "description": "Seeds enhanced by earth magic"
       }
     ],
-    "lore": "Terra Village embodies the nurturing aspect of Mother Earth made tangible — the soil here is not merely fertile by geological fortune but alive with a low-level earth magic that responds to attentive care, producing crops of quality and variety that agricultural researchers consistently struggle to replicate elsewhere even with equivalent soil composition data. Grass, Ground, Bug, and Fairy-type Pokémon are the village's essential partners in its agricultural work: Comfey families tend the crop rows as garden spirits with genuine botanical knowledge, Diggersby-line Pokémon aerate the soil through burrowing patterns calibrated to the specific depth needs of each planting season's crops, and Rattata-Chuumon pairs manage grain collection with an efficiency that the village's human farmers have consistently failed to improve upon through mechanisation. Palmon-line Digimon serve as the village's soil diagnosticians, their plant-data attributes allowing them to assess nutritional deficiencies and magical imbalances in the earth faster than any conventional analysis method. The Miracle Soil designation — given to Terra Village's topsoil samples in the agricultural research literature — is treated by the villagers themselves as a description of good maintenance rather than a natural gift, reflecting a philosophy that the earth's generosity is earned rather than inherited.",
-    "history": "Founded by farmers who discovered a natural confluence of earth magic at this specific location in the Terra Madre Basin and recognised it as the basis for a different kind of agricultural practice — one built on partnership with the land's living systems rather than management of them — Terra Village has perfected sustainable farming methods over generations of collaborative refinement between human residents and the Grass and Ground-type monster communities who were already working the land when the first settlers arrived. The village has resisted several pressures to scale its production methods for export, reasoning that the Miracle Soil conditions cannot be replicated and that attempting to do so would compromise the partnership model that produces them. The earth blessing ceremonies that mark each planting season are not ceremonial in the decorative sense but functional — participants describe them as genuine negotiations with the land about the coming season's plans.",
+    "lore": "Ops Village embodies the nurturing aspect of Mother Earth made tangible — the soil here is not merely fertile by geological fortune but alive with a low-level earth magic that responds to attentive care, producing crops of quality and variety that agricultural researchers consistently struggle to replicate elsewhere even with equivalent soil composition data. Grass, Ground, Bug, and Fairy-type Pokémon are the village's essential partners in its agricultural work: Comfey families tend the crop rows as garden spirits with genuine botanical knowledge, Diggersby-line Pokémon aerate the soil through burrowing patterns calibrated to the specific depth needs of each planting season's crops, and Rattata-Chuumon pairs manage grain collection with an efficiency that the village's human farmers have consistently failed to improve upon through mechanisation. Palmon-line Digimon serve as the village's soil diagnosticians, their plant-data attributes allowing them to assess nutritional deficiencies and magical imbalances in the earth faster than any conventional analysis method. The Miracle Soil designation — given to Ops Village's topsoil samples in the agricultural research literature — is treated by the villagers themselves as a description of good maintenance rather than a natural gift, reflecting a philosophy that the earth's generosity is earned rather than inherited.",
+    "history": "Founded by farmers who discovered a natural confluence of earth magic at this specific location in the Terra Madre Basin and recognised it as the basis for a different kind of agricultural practice — one built on partnership with the land's living systems rather than management of them — Ops Village has perfected sustainable farming methods over generations of collaborative refinement between human residents and the Grass and Ground-type monster communities who were already working the land when the first settlers arrived. The village has resisted several pressures to scale its production methods for export, reasoning that the Miracle Soil conditions cannot be replicated and that attempting to do so would compromise the partnership model that produces them. The earth blessing ceremonies that mark each planting season are not ceremonial in the decorative sense but functional — participants describe them as genuine negotiations with the land about the coming season's plans.",
     "dangers": [
       "Overconfidence in magical farming",
       "Soil magic dependency",
@@ -15597,8 +15597,8 @@ export const areaConfigurations: AreaConfigurationsMap = {
   'thunder-arena': {
     "landmass": "sky-isles",
     "landmassName": "Sky Isles",
-    "region": "tempest-zones",
-    "regionName": "Tempest Zones",
+    "region": "vayu-maelstrom",
+    "regionName": "Vayu Maelstrom",
     "welcomeMessages": {
       "base": "Welcome to the Thunder Arena—duels choreographed by lightning and applause.",
       "variations": [
@@ -15711,7 +15711,7 @@ export const areaConfigurations: AreaConfigurationsMap = {
       }
     ],
     "lore": "The Thunder Arena's geometry was not designed for aesthetics but for physics — every angle of the Lightning Battle Grid's conductor placement is tuned to focus resonance into safe discharge corridors that contain the combatant's full electrical output without losing it to the surrounding atmosphere, meaning that a fight at the Thunder Arena is played with consequences that softer venues simply cannot replicate. Electric, Flying, and Steel-type Pokémon populate the arena in roles as diverse as the infrastructure itself: Plusle Arc Sprites stitch minor arcs between conductor studs as part of the arena's continuous calibration process, Luxray Bolt Monitors adjust discharge timing sequences to match the day's atmospheric conditions, and Zapdos-line Storm Gladiators channel multi-bolt surges through their wing arrays in demonstrations that the arena's records classify as the highest practical output events regularly achievable by non-legendary combatants. Andromon and Machinedramon-line Digimon serve as the arena's technical staff, their steel-data attributes making them the only personnel capable of working inside the charge synchronisation pillars during active sessions. The Storm Charter requirement exists in part because the Thunder Arena's discharge events affect the surrounding wind lanes — uncredentialled combatants whose outputs deviate from the arena's calibration ranges cause problems for Sky Isles air traffic that extend well beyond the arena's walls.",
-    "history": "Erected after early informal duels in the Tempest Zones repeatedly destabilised surrounding wind lanes and generated complaints from Sky Harbor traffic coordinators who found their approach corridors disrupted by rogue discharge events, the Thunder Arena was designed specifically to contain what informal combat in the region could not. The original design went through three iterations before the arc geometry was tuned correctly; the first two produced arenas that contained the discharge but dampened it to ineffectiveness, which the combatant community rejected as defeating the purpose. The current design — which contains the discharge while allowing it to express fully within the grid — was achieved through a collaboration between the arena's engineers and the Zapdos-line community, whose intuitive understanding of discharge propagation contributed the critical adjustments that made the safe corridor system functional.",
+    "history": "Erected after early informal duels in the Vayu Maelstrom repeatedly destabilised surrounding wind lanes and generated complaints from Sky Harbor traffic coordinators who found their approach corridors disrupted by rogue discharge events, the Thunder Arena was designed specifically to contain what informal combat in the region could not. The original design went through three iterations before the arc geometry was tuned correctly; the first two produced arenas that contained the discharge but dampened it to ineffectiveness, which the combatant community rejected as defeating the purpose. The current design — which contains the discharge while allowing it to express fully within the grid — was achieved through a collaboration between the arena's engineers and the Zapdos-line community, whose intuitive understanding of discharge propagation contributed the critical adjustments that made the safe corridor system functional.",
     "dangers": [
       "Unscheduled arc forks",
       "Magnetic disorientation",
@@ -15731,13 +15731,13 @@ export const areaConfigurations: AreaConfigurationsMap = {
     }
   },
 
-  'thunder-mesa': {
+  'akicita-mesa': {
     "landmass": "conoco-island",
     "landmassName": "Conoco Island",
     "region": "thunderbird-heights",
     "regionName": "Thunderbird Heights",
     "welcomeMessages": {
-      "base": "Welcome to Thunder Mesa—flat top, tall storms, excellent acoustics.",
+      "base": "Welcome to Akicita Mesa—flat top, tall storms, excellent acoustics.",
       "variations": [
         "Echo chambers carve thunder into verses—try not to duet.",
         "Lightning calendars etch the rim; today looks… energetic.",
@@ -15794,7 +15794,7 @@ export const areaConfigurations: AreaConfigurationsMap = {
       }
     ],
     "images": {
-      "guide": "/images/maps/areas/thunder-mesa-detailed.png"
+      "guide": "/images/maps/areas/akicita-mesa-detailed.png"
     },
     "difficulty": "Hard",
     "elevation": "7500 ft",
@@ -15849,8 +15849,8 @@ export const areaConfigurations: AreaConfigurationsMap = {
         "description": "Crystals that store electrical energy"
       }
     ],
-    "lore": "Thunder Mesa is where the Thunderbird's voice is loudest — the flat-topped formation's stone chamber geometry creates echoes that some say contain messages from the spirit world, though the shamans of Storm Dance Village are careful to distinguish between the mesa's natural acoustic amplification and actual Thunderbird communication, noting that the former is impressive and the latter is rare. Electric, Flying, and Rock-type Pokémon have established the mesa as their primary Thunderbird Heights territory: Heliolisk Lightning Lizards position themselves in the highest-exposure positions to absorb lightning strikes directly into their biology, Crobat-Devimon pairs navigate the echo chambers using the thunder reverberations as echolocation in conditions where conventional sonar would be overwhelmed, and Pikachu Static Mouse populations have evolved fur-charge tolerances that make them effectively immune to the mesa's baseline electrical conditions. Raiju-line Yokai treat the mesa as sacred territory, and their presence in numbers is one of the clearest indicators that a significant Thunderbird Heights spiritual event is approaching. The Mesa Grounding Spike access requirement is not optional — the mesa's electrical exposure at the rim exceeds fatal thresholds for unprotected visitors during the frequent lightning events, and the spike's grounding function is a literal survival tool rather than a ceremonial one.",
-    "history": "The mesa has been shaped by millions of lightning strikes over millennia, creating the natural stone chamber formations that give it its famous acoustic properties — a process that geologists estimate is ongoing, with each significant lightning season adding new fracture patterns that modify the echo profiles in ways that the Thunderbird Heights shamans track as part of their seasonal spiritual calendar. The mesa's role as the Thunderbird's voice site predates the formal Storm Dance Village tradition by an indeterminate period; the earliest written accounts describe the mesa as already a known sacred site when the first shamanic lineages established themselves in the region. The quartz crystal deposits in the rim walls are a by-product of the long-term lightning exposure — their formation required the specific mineral composition of the mesa's base rock combined with sustained high-temperature discharge events across geological time, making them impossible to synthesise and genuinely irreplaceable as resonance-amplification material.",
+    "lore": "Akicita Mesa is where the Thunderbird's voice is loudest — the flat-topped formation's stone chamber geometry creates echoes that some say contain messages from the spirit world, though the shamans of Heyoka Village are careful to distinguish between the mesa's natural acoustic amplification and actual Thunderbird communication, noting that the former is impressive and the latter is rare. Electric, Flying, and Rock-type Pokémon have established the mesa as their primary Thunderbird Heights territory: Heliolisk Lightning Lizards position themselves in the highest-exposure positions to absorb lightning strikes directly into their biology, Crobat-Devimon pairs navigate the echo chambers using the thunder reverberations as echolocation in conditions where conventional sonar would be overwhelmed, and Pikachu Static Mouse populations have evolved fur-charge tolerances that make them effectively immune to the mesa's baseline electrical conditions. Raiju-line Yokai treat the mesa as sacred territory, and their presence in numbers is one of the clearest indicators that a significant Thunderbird Heights spiritual event is approaching. The Mesa Grounding Spike access requirement is not optional — the mesa's electrical exposure at the rim exceeds fatal thresholds for unprotected visitors during the frequent lightning events, and the spike's grounding function is a literal survival tool rather than a ceremonial one.",
+    "history": "The mesa has been shaped by millions of lightning strikes over millennia, creating the natural stone chamber formations that give it its famous acoustic properties — a process that geologists estimate is ongoing, with each significant lightning season adding new fracture patterns that modify the echo profiles in ways that the Thunderbird Heights shamans track as part of their seasonal spiritual calendar. The mesa's role as the Thunderbird's voice site predates the formal Heyoka Village tradition by an indeterminate period; the earliest written accounts describe the mesa as already a known sacred site when the first shamanic lineages established themselves in the region. The quartz crystal deposits in the rim walls are a by-product of the long-term lightning exposure — their formation required the specific mineral composition of the mesa's base rock combined with sustained high-temperature discharge events across geological time, making them impossible to synthesise and genuinely irreplaceable as resonance-amplification material.",
     "dangers": [
       "Extreme lightning danger",
       "Deafening thunder sounds",
@@ -16557,13 +16557,13 @@ export const areaConfigurations: AreaConfigurationsMap = {
     }
   },
 
-  'trident-temple': {
+  'triaina-temple': {
     "landmass": "conoco-island",
     "landmassName": "Conoco Island",
     "region": "poseidons-reach",
     "regionName": "Poseidon's Reach",
     "welcomeMessages": {
-      "base": "Welcome to the Trident Temple—sea-quakes felt in bone and tide.",
+      "base": "Welcome to the Triaina Temple—sea-quakes felt in bone and tide.",
       "variations": [
         "Salt spray beads on stone runes; the floor swells like a heartbeat.",
         "Conductor channels hum with thunder under seawater.",
@@ -16621,7 +16621,7 @@ export const areaConfigurations: AreaConfigurationsMap = {
       }
     ],
     "images": {
-      "guide": "/images/maps/areas/trident-temple-detailed.png"
+      "guide": "/images/maps/areas/triaina-temple-detailed.png"
     },
     "difficulty": "Hard",
     "elevation": "50 ft",
@@ -16676,7 +16676,7 @@ export const areaConfigurations: AreaConfigurationsMap = {
         "description": "Coral grown in the presence of divine energy"
       }
     ],
-    "lore": "The Trident Temple houses the most sacred artifact of the sea lord — a weapon whose power is so great that it causes constant tremors in both earth and sea simply by virtue of being present, meaning that the temple's earthquake chambers and conductor channels are not ornamental but structural necessities designed to absorb and redirect the trident's ambient seismic output. Water, Electric, Steel, and Rock-type Pokémon are the temple's resident guardians and clergy: Magnamon-class entities serve as Trident Guardians in a divine protection role that their steel-attribute forms are uniquely suited to, Groudon Earthquake Spirits emerge from the conductor channels during the most intense tremor events to assist with seismic redistribution, and Jellicent Ocean Wraiths — the spirits of those lost at sea who have sworn service to the temple in exchange for continued existence — patrol the outer approaches with a dedication born of genuine gratitude rather than compelled duty. Machinedramon-line Digimon manage the temple's structural integrity monitoring, their mechanical-data attributes allowing them to track micro-fracture propagation in the conductor channels with the precision that the trident's continuous seismic output requires. The Trident Writ requirement exists because the divine trials that test worthiness at the temple's inner sanctum are not symbolic — failure is not merely disappointing but has documented physical consequences.",
+    "lore": "The Triaina Temple houses the most sacred artifact of the sea lord — a weapon whose power is so great that it causes constant tremors in both earth and sea simply by virtue of being present, meaning that the temple's earthquake chambers and conductor channels are not ornamental but structural necessities designed to absorb and redirect the trident's ambient seismic output. Water, Electric, Steel, and Rock-type Pokémon are the temple's resident guardians and clergy: Magnamon-class entities serve as Trident Guardians in a divine protection role that their steel-attribute forms are uniquely suited to, Groudon Earthquake Spirits emerge from the conductor channels during the most intense tremor events to assist with seismic redistribution, and Jellicent Ocean Wraiths — the spirits of those lost at sea who have sworn service to the temple in exchange for continued existence — patrol the outer approaches with a dedication born of genuine gratitude rather than compelled duty. Machinedramon-line Digimon manage the temple's structural integrity monitoring, their mechanical-data attributes allowing them to track micro-fracture propagation in the conductor channels with the precision that the trident's continuous seismic output requires. The Trident Writ requirement exists because the divine trials that test worthiness at the temple's inner sanctum are not symbolic — failure is not merely disappointing but has documented physical consequences.",
     "history": "Built to contain and honour the sea lord's trident after it was temporarily left on earth during an event that the temple's founding records describe with circumspect language as a period when divine attention was elsewhere, the temple has grown from its original containment function into the undisputed centre of all oceanic divine power in the Poseidon's Reach region. The Ocean Wraith community that now serves the temple arrived gradually over centuries as the temple's presence drew spirits of the drowned seeking purpose, and their integration into the temple's clergy structure is considered one of the most significant collaborative arrangements between the living and the departed in the island's spiritual history.",
     "dangers": [
       "Divine earthquakes and tremors",
@@ -16701,13 +16701,13 @@ export const areaConfigurations: AreaConfigurationsMap = {
     }
   },
 
-  'twilight-town': {
+  'iktomi-town': {
     "landmass": "conoco-island",
     "landmassName": "Conoco Island",
     "region": "ravens-shadow",
     "regionName": "Raven's Shadow",
     "welcomeMessages": {
-      "base": "Welcome to Twilight Town—stacked dusk layers and shops that sell riddles by the pound.",
+      "base": "Welcome to Iktomi Town—stacked dusk layers and shops that sell riddles by the pound.",
       "variations": [
         "Streetlamps glow out of order; time follows local bylaws.",
         "Market stalls trade memories for maps; haggle carefully.",
@@ -16764,7 +16764,7 @@ export const areaConfigurations: AreaConfigurationsMap = {
       }
     ],
     "images": {
-      "guide": "/images/maps/areas/twilight-town-detailed.png"
+      "guide": "/images/maps/areas/iktomi-town-detailed.png"
     },
     "difficulty": "Hard",
     "elevation": "Terraced twilight flats",
@@ -16818,8 +16818,8 @@ export const areaConfigurations: AreaConfigurationsMap = {
         "description": "Dense nexus bead regulating local dusk persistence."
       }
     ],
-    "lore": "Twilight Town was established to harness the persistent twilight of the Raven's Shadow basin for advanced shadow craft and mnemonic riddling — the town's Temporal Gradient Plaza is not a park but a research installation where the staggered dusk layers are studied as a naturally occurring model of time's relationship with light, and the Riddle Exchange Bazaars are its most visible commercial application, trading riddles as currency in an economy that values cognitive challenge over material exchange. Dark, Ghost, Psychic, and Flying-type Pokémon maintain the town's distinctive character: Murkrow Dusk Flickers skim the temporal shear edges harvesting echo motes that feed into the town's shadow-craft supply chain, Sableye Phase Scribes etch shifting inscriptions into basalt markers at intervals that only make sense when read across multiple dusk layers simultaneously, and Honchkrow Gloam Architects stabilise the multi-layer dusk corridors that would otherwise collapse into the undifferentiated shadow that makes the Shadow Village adjacent, but not identical, to this more commercially minded settlement. BlackGatomon-line Digimon serve as the town's most experienced dusk-corridor navigators, their dark-data attributes allowing them to move between gradient layers with the ease that human visitors can only achieve after months of phase anchor training. The phased causeways aligned to dusk intervals are the town's most unusual infrastructure — they exist in different layers at different times of day, and a visitor who has not studied the schedule will find themselves attempting to use a bridge that is not currently in the same temporal layer they are occupying.",
-    "history": "Twilight Town's spatial grid was recalibrated after a series of corridor looping incidents in its early settlement period — events in which the gradient layers had not been sufficiently stabilised, causing residents and visitors to experience the town's dusk-layer sequence as repeating rather than progressing. The recalibration, which required the cooperative effort of every Gloam Architect in residence and took several weeks of continuous adjustment, produced the stable corridor system currently in operation and established the Gloam Calibration Obelisks as permanent monitoring infrastructure. The riddle commerce economy that Twilight Town is now known for developed organically from the cognitive skills that the shadow-craft training requires — practitioners who spent years developing the paradox-tolerant thinking that dusk-layer navigation demands found that they had also developed an appetite for riddle exchange as a social form, and the Bazaars grew from that appetite.",
+    "lore": "Iktomi Town was established to harness the persistent twilight of the Raven's Shadow basin for advanced shadow craft and mnemonic riddling — the town's Temporal Gradient Plaza is not a park but a research installation where the staggered dusk layers are studied as a naturally occurring model of time's relationship with light, and the Riddle Exchange Bazaars are its most visible commercial application, trading riddles as currency in an economy that values cognitive challenge over material exchange. Dark, Ghost, Psychic, and Flying-type Pokémon maintain the town's distinctive character: Murkrow Dusk Flickers skim the temporal shear edges harvesting echo motes that feed into the town's shadow-craft supply chain, Sableye Phase Scribes etch shifting inscriptions into basalt markers at intervals that only make sense when read across multiple dusk layers simultaneously, and Honchkrow Gloam Architects stabilise the multi-layer dusk corridors that would otherwise collapse into the undifferentiated shadow that makes the Coyote Hollow adjacent, but not identical, to this more commercially minded settlement. BlackGatomon-line Digimon serve as the town's most experienced dusk-corridor navigators, their dark-data attributes allowing them to move between gradient layers with the ease that human visitors can only achieve after months of phase anchor training. The phased causeways aligned to dusk intervals are the town's most unusual infrastructure — they exist in different layers at different times of day, and a visitor who has not studied the schedule will find themselves attempting to use a bridge that is not currently in the same temporal layer they are occupying.",
+    "history": "Iktomi Town's spatial grid was recalibrated after a series of corridor looping incidents in its early settlement period — events in which the gradient layers had not been sufficiently stabilised, causing residents and visitors to experience the town's dusk-layer sequence as repeating rather than progressing. The recalibration, which required the cooperative effort of every Gloam Architect in residence and took several weeks of continuous adjustment, produced the stable corridor system currently in operation and established the Gloam Calibration Obelisks as permanent monitoring infrastructure. The riddle commerce economy that Iktomi Town is now known for developed organically from the cognitive skills that the shadow-craft training requires — practitioners who spent years developing the paradox-tolerant thinking that dusk-layer navigation demands found that they had also developed an appetite for riddle exchange as a social form, and the Bazaars grew from that appetite.",
     "dangers": [
       "Temporal disorientation",
       "Shadow echo stalking"
@@ -16988,13 +16988,13 @@ export const areaConfigurations: AreaConfigurationsMap = {
     }
   },
 
-  'valor-town': {
+  'veera-town': {
     "landmass": "conoco-island",
     "landmassName": "Conoco Island",
     "region": "kshatriya-arena",
     "regionName": "Kshatriya Arena",
     "welcomeMessages": {
-      "base": "Welcome to Valor Town—academies by day, honorable bruises by night.",
+      "base": "Welcome to Veera Town—academies by day, honorable bruises by night.",
       "variations": [
         "Drill fields ring with cadence; pride keeps the beat.",
         "Armory banners list alumni—aim to be a footnote at least.",
@@ -17051,7 +17051,7 @@ export const areaConfigurations: AreaConfigurationsMap = {
       }
     ],
     "images": {
-      "guide": "/images/maps/areas/valor-town-detailed.png"
+      "guide": "/images/maps/areas/veera-town-detailed.png"
     },
     "difficulty": "Hard",
     "elevation": "1100 ft",
@@ -17106,8 +17106,8 @@ export const areaConfigurations: AreaConfigurationsMap = {
         "description": "Strategic knowledge for combat"
       }
     ],
-    "lore": "Valor Town celebrates the warrior spirit that faces danger without hesitation, teaching that true courage comes from protecting others rather than seeking personal glory — a distinction the town's academies enforce with a rigour that has caused more than a few promising recruits to reconsider their motivations. Fighting, Steel, and Fire-type Pokémon are Valor Town's most respected residents and combat instructors: Pyroar Brave Lions lead the senior warrior training cohorts in exercises where actual courage is assessed rather than simulated, Lucario Honor Wolves serve as sparring partners whose Aura sensitivity makes them effectively impossible to deceive about a training partner's mental state, and Staraptor Courage Birds serve as aerial battlefield monitors during the Courage Trials, providing the objective perspective that ground-based observers cannot always maintain. Leomon-line Digimon hold formal instructor positions at the town's most prestigious academies, their warrior-data attributes and honour code making them trusted evaluators in a community where standards are enforced by peer expectation as much as institutional authority. The Hero Monuments that line Valor Town's central avenue document not just military achievement but the specific protective acts that each honoured warrior performed, reminding active students that the monuments' subjects are celebrated for what they gave rather than what they took.",
-    "history": "Established by veteran warriors who had survived enough campaigns to understand the difference between courage and recklessness, and who wanted to pass down the traditions of heroic combat in a form that would prevent the next generation from repeating the mistakes that experience had taught them, Valor Town was designed from its founding as an educational institution rather than a military base. The Kshatriya Arena region's existing fighting culture provided a ready student population, and the town's academies quickly developed reputations for producing warriors whose discipline distinguished them in any subsequent service. The Valor Writ requirement ensures that those who access the most intensive training programmes have been assessed as capable of benefiting from them — not gatekeeping but a practical determination that certain training methods require a foundation of existing competence to be useful rather than harmful.",
+    "lore": "Veera Town celebrates the warrior spirit that faces danger without hesitation, teaching that true courage comes from protecting others rather than seeking personal glory — a distinction the town's academies enforce with a rigour that has caused more than a few promising recruits to reconsider their motivations. Fighting, Steel, and Fire-type Pokémon are Veera Town's most respected residents and combat instructors: Pyroar Brave Lions lead the senior warrior training cohorts in exercises where actual courage is assessed rather than simulated, Lucario Honor Wolves serve as sparring partners whose Aura sensitivity makes them effectively impossible to deceive about a training partner's mental state, and Staraptor Courage Birds serve as aerial battlefield monitors during the Courage Trials, providing the objective perspective that ground-based observers cannot always maintain. Leomon-line Digimon hold formal instructor positions at the town's most prestigious academies, their warrior-data attributes and honour code making them trusted evaluators in a community where standards are enforced by peer expectation as much as institutional authority. The Hero Monuments that line Veera Town's central avenue document not just military achievement but the specific protective acts that each honoured warrior performed, reminding active students that the monuments' subjects are celebrated for what they gave rather than what they took.",
+    "history": "Established by veteran warriors who had survived enough campaigns to understand the difference between courage and recklessness, and who wanted to pass down the traditions of heroic combat in a form that would prevent the next generation from repeating the mistakes that experience had taught them, Veera Town was designed from its founding as an educational institution rather than a military base. The Kshatriya Arena region's existing fighting culture provided a ready student population, and the town's academies quickly developed reputations for producing warriors whose discipline distinguished them in any subsequent service. The Valor Writ requirement ensures that those who access the most intensive training programmes have been assessed as capable of benefiting from them — not gatekeeping but a practical determination that certain training methods require a foundation of existing competence to be useful rather than harmful.",
     "dangers": [
       "Intense physical training",
       "Combat exercises",
@@ -17131,13 +17131,13 @@ export const areaConfigurations: AreaConfigurationsMap = {
     }
   },
 
-  'vision-town': {
+  'mantis-town': {
     "landmass": "conoco-island",
     "landmassName": "Conoco Island",
     "region": "oracles-sanctum",
     "regionName": "Oracle's Sanctum",
     "welcomeMessages": {
-      "base": "Welcome to Vision Town—auric shields up, probabilities under review.",
+      "base": "Welcome to Mantis Town—auric shields up, probabilities under review.",
       "variations": [
         "Analysis cloisters hum; ink dries in fractals.",
         "Skyline arrays model fate; bring questions and spare outcomes.",
@@ -17194,7 +17194,7 @@ export const areaConfigurations: AreaConfigurationsMap = {
       }
     ],
     "images": {
-      "guide": "/images/maps/areas/vision-town-detailed.png"
+      "guide": "/images/maps/areas/mantis-town-detailed.png"
     },
     "difficulty": "Hard",
     "elevation": "Ridgetop plateaus",
@@ -17248,8 +17248,8 @@ export const areaConfigurations: AreaConfigurationsMap = {
         "description": "Stabilizes mid-range predictive echo depth."
       }
     ],
-    "lore": "Vision Town was founded when wandering seers — practitioners whose raw psychic talent outpaced their analytical structure — required a facility that could provide the disciplined synthesis methods that trance artistry alone could not achieve. Psychic, Fairy, and Electric-type Pokémon are the town's resident research community: Natu Focus Finches perch on calibration rods stabilising the mind fields that would otherwise contaminate adjacent researchers' probability lattice work, Kirlia Lattice Analysts chart divergence thresholds in sand arrays with a precision that the town's human researchers match only after years of practice, and Metang Auric Wardens maintain the shield resonance under storm interference that makes Vision Town's high-ridge location a productive research environment rather than a chaotic one. Wisemon-line Digimon serve as the town's computational core, processing the probability braid data that the Foresight Harmonizer Ring generates at volumes that human analysts cannot directly manage. The Probability Lattice Labs produce research that is shared across Oracle's Sanctum's institutions, making Vision Town not merely an enclave but the analytical backbone of the entire region's predictive infrastructure.",
-    "history": "Vision Town expanded to its current research-enclave scale after the town's practitioners coordinated the mitigation of a cascading misread cycle — an event in which multiple seers operating without proper auric shielding had generated interlocking predictions that each reinforced the others' errors, producing a probability feedback loop that affected the Oracle's Sanctum region's psychic environment for three weeks before Vision Town's analysts developed the correction protocol that resolved it. The Auric Research Permit requirement was introduced immediately after this event; the permit process includes an assessment of the applicant's existing auric shielding capability, ensuring that new arrivals at the town's Probability Lattice Labs are not inadvertently contributing to another cascade before they have learned the baseline containment practices the town's safety depends on.",
+    "lore": "Mantis Town was founded when wandering seers — practitioners whose raw psychic talent outpaced their analytical structure — required a facility that could provide the disciplined synthesis methods that trance artistry alone could not achieve. Psychic, Fairy, and Electric-type Pokémon are the town's resident research community: Natu Focus Finches perch on calibration rods stabilising the mind fields that would otherwise contaminate adjacent researchers' probability lattice work, Kirlia Lattice Analysts chart divergence thresholds in sand arrays with a precision that the town's human researchers match only after years of practice, and Metang Auric Wardens maintain the shield resonance under storm interference that makes Mantis Town's high-ridge location a productive research environment rather than a chaotic one. Wisemon-line Digimon serve as the town's computational core, processing the probability braid data that the Foresight Harmonizer Ring generates at volumes that human analysts cannot directly manage. The Probability Lattice Labs produce research that is shared across Oracle's Sanctum's institutions, making Mantis Town not merely an enclave but the analytical backbone of the entire region's predictive infrastructure.",
+    "history": "Mantis Town expanded to its current research-enclave scale after the town's practitioners coordinated the mitigation of a cascading misread cycle — an event in which multiple seers operating without proper auric shielding had generated interlocking predictions that each reinforced the others' errors, producing a probability feedback loop that affected the Oracle's Sanctum region's psychic environment for three weeks before Mantis Town's analysts developed the correction protocol that resolved it. The Auric Research Permit requirement was introduced immediately after this event; the permit process includes an assessment of the applicant's existing auric shielding capability, ensuring that new arrivals at the town's Probability Lattice Labs are not inadvertently contributing to another cascade before they have learned the baseline containment practices the town's safety depends on.",
     "dangers": [
       "Prediction overfitting",
       "Focus dehydration",
@@ -17550,13 +17550,13 @@ export const areaConfigurations: AreaConfigurationsMap = {
     }
   },
 
-  'web-town': {
+  'ntoma-town': {
     "landmass": "conoco-island",
     "landmassName": "Conoco Island",
     "region": "anansi-woods",
     "regionName": "Anansi Woods",
     "welcomeMessages": {
-      "base": "Welcome to Web Town—suspended avenues and contracts in thread.",
+      "base": "Welcome to Ntoma Town—suspended avenues and contracts in thread.",
       "variations": [
         "Silk girders hum with news; step light, read twice.",
         "Pattern engineers tune crossings for story throughput.",
@@ -17613,7 +17613,7 @@ export const areaConfigurations: AreaConfigurationsMap = {
       }
     ],
     "images": {
-      "guide": "/images/maps/areas/web-town-detailed.png"
+      "guide": "/images/maps/areas/ntoma-town-detailed.png"
     },
     "difficulty": "Hard",
     "elevation": "Upper canopy tension grid",
@@ -17667,8 +17667,8 @@ export const areaConfigurations: AreaConfigurationsMap = {
         "description": "Dense encoded spool boosting crafting inspiration."
       }
     ],
-    "lore": "Web Town was established to alleviate congestion in the original Anansi Woods archive canopies when the volume of new story threads being produced by Story Village and the Silk Library's expanded operations exceeded the existing infrastructure's capacity to route them efficiently — a problem of narrative logistics as much as physical storage. Bug, Dark, and Fairy-type Pokémon are the town's operational core: Joltik Strand Runners shuttle charge along data filaments at the speeds that Web Town's high-throughput lattice requires, Ariados Pattern Auditors validate lattice integrity under the sustained load that the town's main Tension Hub Exchanges operate at continuously, and Galvantula Resonance Brokers balance the multi-thread narrative throughput that determines whether the Anansi Woods' story-distribution network runs smoothly or accumulates the backlogs that the town was built to prevent. Tentomon and Waspmon Digimon serve as Web Town's technical support layer, their data-attribute capabilities allowing them to diagnose and resolve lattice problems faster than physical inspection alone could achieve. The Silk Transit Permit requirement ensures that the town's strand bridges are used by traffic that has been routed through the coordination system — unlicensed crossing creates the lattice jams that the town's Pattern Auditors spend their working hours resolving.",
-    "history": "Web Town was reinforced after a tri-node oscillation cascade event in which three simultaneous lattice failures at adjacent Tension Hubs created a resonance loop that propagated through approximately forty percent of the town's strand network before the Resonance Brokers identified the oscillation pattern and implemented the emergency damping protocol. The cascade caused no physical injuries but disrupted the Anansi Woods' narrative distribution for eleven days while repairs were completed, and the loss of story throughput during that period is described in the town's records as the most significant single disruption to Anansi Woods cultural life in its recent history. The reinforcement that followed added redundant damping nodes at every Tension Hub junction, making a comparable cascade event impossible under the current design.",
+    "lore": "Ntoma Town was established to alleviate congestion in the original Anansi Woods archive canopies when the volume of new story threads being produced by Anansesem Village and the Silk Library's expanded operations exceeded the existing infrastructure's capacity to route them efficiently — a problem of narrative logistics as much as physical storage. Bug, Dark, and Fairy-type Pokémon are the town's operational core: Joltik Strand Runners shuttle charge along data filaments at the speeds that Ntoma Town's high-throughput lattice requires, Ariados Pattern Auditors validate lattice integrity under the sustained load that the town's main Tension Hub Exchanges operate at continuously, and Galvantula Resonance Brokers balance the multi-thread narrative throughput that determines whether the Anansi Woods' story-distribution network runs smoothly or accumulates the backlogs that the town was built to prevent. Tentomon and Waspmon Digimon serve as Ntoma Town's technical support layer, their data-attribute capabilities allowing them to diagnose and resolve lattice problems faster than physical inspection alone could achieve. The Silk Transit Permit requirement ensures that the town's strand bridges are used by traffic that has been routed through the coordination system — unlicensed crossing creates the lattice jams that the town's Pattern Auditors spend their working hours resolving.",
+    "history": "Ntoma Town was reinforced after a tri-node oscillation cascade event in which three simultaneous lattice failures at adjacent Tension Hubs created a resonance loop that propagated through approximately forty percent of the town's strand network before the Resonance Brokers identified the oscillation pattern and implemented the emergency damping protocol. The cascade caused no physical injuries but disrupted the Anansi Woods' narrative distribution for eleven days while repairs were completed, and the loss of story throughput during that period is described in the town's records as the most significant single disruption to Anansi Woods cultural life in its recent history. The reinforcement that followed added redundant damping nodes at every Tension Hub junction, making a comparable cascade event impossible under the current design.",
     "dangers": [
       "Strand snap recoil",
       "Harmonic overload"
@@ -17687,13 +17687,13 @@ export const areaConfigurations: AreaConfigurationsMap = {
     }
   },
 
-  'wind-gardens': {
+  'zephyr-gardens': {
     "landmass": "sky-isles",
     "landmassName": "Sky Isles",
-    "region": "nimbus-capital",
-    "regionName": "Nimbus Capital",
+    "region": "empyrean-capital",
+    "regionName": "Empyrean Capital",
     "welcomeMessages": {
-      "base": "Welcome to the Wind Gardens—floating beds and very opinionated breezes.",
+      "base": "Welcome to the Zephyr Gardens—floating beds and very opinionated breezes.",
       "variations": [
         "Aerophytes sip clouds; gardeners steer with kites.",
         "Jetstream harps keep time for pruning.",
@@ -17750,7 +17750,7 @@ export const areaConfigurations: AreaConfigurationsMap = {
       }
     ],
     "images": {
-      "guide": "/images/maps/areas/wind-gardens-detailed.png"
+      "guide": "/images/maps/areas/zephyr-gardens-detailed.png"
     },
     "difficulty": "Medium",
     "elevation": "High-altitude aeroponic tiers",
@@ -17804,8 +17804,8 @@ export const areaConfigurations: AreaConfigurationsMap = {
         "description": "Concentrated airborne floral extract."
       }
     ],
-    "lore": "The Wind Gardens' practitioners pioneered airflow nutrient cycling as a complete replacement for soil medium dependency — a horticulture philosophy that began as a constraint of altitude and became, over generations of refinement, a deliberate methodology producing plant varieties that cannot be grown any other way. Grass, Flying, and Fairy-type Pokémon are the gardens' resident horticulturists and infrastructure: Hoppip Pollen Wisps drift through the aeroponic tiers distributing micro-spore clusters that provide the biological diversity the gardens require, Skiploom Glide Gardeners manage airflow trimming patterns with the instinctive precision of beings for whom jetstream navigation is simply how they move, and Jumpluff Jetstream Curators optimise vortex nutrient circulation across the multiple tiers with techniques that human gardeners have spent decades learning to approximate. Kazemon-line Digimon serve as the gardens' atmospheric engineering staff, their wind-attribute data making them ideal operators for the Jetstream Pruning Arrays that maintain the laminar flow conditions the aerophyte matrices require. The Sky Nectar produced at the Wind Gardens is one of the Nimbus Capital's most distinctive exports — concentrated airborne floral extract whose production process is impossible to replicate at lower altitudes.",
-    "history": "The Wind Gardens expanded to their current scale after successful frost resilience graft trials produced aerophyte varieties capable of maintaining productive growth through the Nimbus Capital's coldest periods, which had previously created seasonal gaps in the gardens' output. The frost resilience work was conducted over several growing cycles in collaboration with the Glide Gardener population, whose wing-membrane sensitivity to temperature change gave them earlier warning of approaching frost conditions than any instrument available at the time. The expansion that followed the successful trials tripled the gardens' aeroponic tier count and introduced the Sky Nectar Suspension Pods that are now the installation's most recognisable structural feature.",
+    "lore": "The Zephyr Gardens' practitioners pioneered airflow nutrient cycling as a complete replacement for soil medium dependency — a horticulture philosophy that began as a constraint of altitude and became, over generations of refinement, a deliberate methodology producing plant varieties that cannot be grown any other way. Grass, Flying, and Fairy-type Pokémon are the gardens' resident horticulturists and infrastructure: Hoppip Pollen Wisps drift through the aeroponic tiers distributing micro-spore clusters that provide the biological diversity the gardens require, Skiploom Glide Gardeners manage airflow trimming patterns with the instinctive precision of beings for whom jetstream navigation is simply how they move, and Jumpluff Jetstream Curators optimise vortex nutrient circulation across the multiple tiers with techniques that human gardeners have spent decades learning to approximate. Kazemon-line Digimon serve as the gardens' atmospheric engineering staff, their wind-attribute data making them ideal operators for the Jetstream Pruning Arrays that maintain the laminar flow conditions the aerophyte matrices require. The Sky Nectar produced at the Zephyr Gardens is one of the Empyrean Capital's most distinctive exports — concentrated airborne floral extract whose production process is impossible to replicate at lower altitudes.",
+    "history": "The Zephyr Gardens expanded to their current scale after successful frost resilience graft trials produced aerophyte varieties capable of maintaining productive growth through the Empyrean Capital's coldest periods, which had previously created seasonal gaps in the gardens' output. The frost resilience work was conducted over several growing cycles in collaboration with the Glide Gardener population, whose wing-membrane sensitivity to temperature change gave them earlier warning of approaching frost conditions than any instrument available at the time. The expansion that followed the successful trials tripled the gardens' aeroponic tier count and introduced the Sky Nectar Suspension Pods that are now the installation's most recognisable structural feature.",
     "dangers": [
       "Crosswind shear",
       "Lift ring destabilization"
@@ -17824,13 +17824,13 @@ export const areaConfigurations: AreaConfigurationsMap = {
     }
   },
 
-  'wind-village': {
+  'ehecatl-village': {
     "landmass": "conoco-island",
     "landmassName": "Conoco Island",
     "region": "quetzal-winds",
     "regionName": "Quetzal Winds",
     "welcomeMessages": {
-      "base": "Welcome to Wind Village—breezeways that sing and roofs that listen.",
+      "base": "Welcome to Ehecatl Village—breezeways that sing and roofs that listen.",
       "variations": [
         "Streamers read the weather before it happens.",
         "Ceremonial kites map thermals for apprentices.",
@@ -17887,7 +17887,7 @@ export const areaConfigurations: AreaConfigurationsMap = {
       }
     ],
     "images": {
-      "guide": "/images/maps/areas/wind-village-detailed.png"
+      "guide": "/images/maps/areas/ehecatl-village-detailed.png"
     },
     "difficulty": "Medium",
     "elevation": "3000 ft",
@@ -17942,8 +17942,8 @@ export const areaConfigurations: AreaConfigurationsMap = {
         "description": "Feathers that assist in wind magic"
       }
     ],
-    "lore": "Wind Village serves as the primary training ground for those who wish to master air magic — a practice that requires not just technical study but an attitudinal shift, which is why the village's teachers consistently describe the curriculum as teaching respect for the sky before it teaches command of it. Flying, Grass, and Fairy-type Pokémon are Wind Village's foundational community: Cutiefly Wind Sprites dance on air currents in ways that apprentices learn to read as instruction in the shapes available to a skilled wind mage, Gatomon Breeze Cats demonstrate air-walking with a casual confidence that new students find both inspiring and temporarily discouraging, and Butterfree Sky Butterflies serve as living demonstrations of long-range wind-current riding that makes the theoretical curriculum suddenly practical. Fairymon-line Digimon serve as Wind Village's senior instructors in the aerial flight disciplines, their wind-attribute data making them the most technically capable teachers of the advanced courses. Ceremonial kites are not decorative — they are precision instruments for thermal mapping, and apprentices who learn to read them graduate having internalised wind-pattern recognition that no amount of classroom instruction can provide.",
-    "history": "Founded by wind mages who had independently discovered and mapped the Quetzal Winds region's optimal air currents for magical training, and who recognised that sharing their individual discoveries would accelerate everyone's progress, Wind Village grew from a loose consortium of isolated practitioners into the region's most respected aerial magic education facility over the course of several generations. The curriculum that the founding mages developed together, incorporating each practitioner's particular expertise, has been refined continuously since then and is now considered the definitive wind magic training programme in the island chain. The Sky Ceremony tradition that marks each year's graduation cohort was introduced by the second generation of village teachers as a practical capstone assessment in which graduates demonstrate their mastery by performing a coordinated atmospheric working under actual sky conditions rather than controlled training environments.",
+    "lore": "Ehecatl Village serves as the primary training ground for those who wish to master air magic — a practice that requires not just technical study but an attitudinal shift, which is why the village's teachers consistently describe the curriculum as teaching respect for the sky before it teaches command of it. Flying, Grass, and Fairy-type Pokémon are Ehecatl Village's foundational community: Cutiefly Wind Sprites dance on air currents in ways that apprentices learn to read as instruction in the shapes available to a skilled wind mage, Gatomon Breeze Cats demonstrate air-walking with a casual confidence that new students find both inspiring and temporarily discouraging, and Butterfree Sky Butterflies serve as living demonstrations of long-range wind-current riding that makes the theoretical curriculum suddenly practical. Fairymon-line Digimon serve as Ehecatl Village's senior instructors in the aerial flight disciplines, their wind-attribute data making them the most technically capable teachers of the advanced courses. Ceremonial kites are not decorative — they are precision instruments for thermal mapping, and apprentices who learn to read them graduate having internalised wind-pattern recognition that no amount of classroom instruction can provide.",
+    "history": "Founded by wind mages who had independently discovered and mapped the Quetzal Winds region's optimal air currents for magical training, and who recognised that sharing their individual discoveries would accelerate everyone's progress, Ehecatl Village grew from a loose consortium of isolated practitioners into the region's most respected aerial magic education facility over the course of several generations. The curriculum that the founding mages developed together, incorporating each practitioner's particular expertise, has been refined continuously since then and is now considered the definitive wind magic training programme in the island chain. The Sky Ceremony tradition that marks each year's graduation cohort was introduced by the second generation of village teachers as a practical capstone assessment in which graduates demonstrate their mastery by performing a coordinated atmospheric working under actual sky conditions rather than controlled training environments.",
     "dangers": [
       "Wind magic training accidents",
       "Sudden air current changes",
@@ -17966,13 +17966,13 @@ export const areaConfigurations: AreaConfigurationsMap = {
     }
   },
 
-  'wisdom-town': {
+  'longmen-town': {
     "landmass": "conoco-island",
     "landmassName": "Conoco Island",
     "region": "long-valley",
     "regionName": "Long Valley",
     "welcomeMessages": {
-      "base": "Welcome to Wisdom Town—jade archives, patient bells, and lectures that molt.",
+      "base": "Welcome to Longmen Town—jade archives, patient bells, and lectures that molt.",
       "variations": [
         "Scroll vaults breathe; scholars practice quiet like a martial art.",
         "Resonance cloisters tune thought into tidy constellations.",
@@ -18029,7 +18029,7 @@ export const areaConfigurations: AreaConfigurationsMap = {
       }
     ],
     "images": {
-      "guide": "/images/maps/areas/wisdom-town-detailed.png"
+      "guide": "/images/maps/areas/longmen-town-detailed.png"
     },
     "difficulty": "Hard",
     "elevation": "Terraced scholar ridge",
@@ -18083,8 +18083,8 @@ export const areaConfigurations: AreaConfigurationsMap = {
         "description": "Authorization token for restricted discourse halls."
       }
     ],
-    "lore": "Wisdom Town exists to ensure that the draconic wisdom lineage of the Long Valley remains curated and reproducible — not preserved in the static sense of a museum but maintained as living scholarship, with the Jade Scroll Vaults updated continuously by the Archive Curators who treat each new contribution as an addition to an ongoing conversation rather than a deposit in a closed collection. Dragon, Psychic, and Fairy-type Pokémon are the town's scholarly community: Axew Scroll Whelps warm parchment for preservation with a gentle thermal output that the town's archivists have found superior to any mechanical warming device, Fraxure Archive Curators maintain the jade-scroll catalogue with a methodical attention to detail that their Dragon-type heritage seems to make instinctive, and Haxorus Resonance Elders moderate high-level philosophical harmonics in the Resonant Debate Forum with an authority that comes from accumulated wisdom rather than imposed rank. Wisemon Digimon serve as Wisdom Town's data integration layer, their analytical capabilities allowing them to cross-reference the jade-scroll archive with digital databases maintained by partner institutions across the island chain. The Jade Scroll Writ requirement ensures that those accessing the restricted discourse halls have demonstrated sufficient scholarly background to contribute constructively rather than simply consuming the archive's resources.",
-    "history": "Wisdom Town's archive climate system was upgraded after a condensation event caused by an unusual atmospheric confluence damaged approximately eighty jade scroll sections before the humidity monitoring systems detected the moisture levels. The upgrade introduced the Pearl Distillation Gardens as an active climate regulation system — the gardens' moisture management function was a secondary discovery during the development of the distillation process, and has proven more effective than the mechanical dehumidification it replaced. The incident that triggered the upgrade is recorded in the town's annals with characteristic academic thoroughness, including a full catalogue of the damaged sections and the reconstruction work that partially restored their content.",
+    "lore": "Longmen Town exists to ensure that the draconic wisdom lineage of the Long Valley remains curated and reproducible — not preserved in the static sense of a museum but maintained as living scholarship, with the Jade Scroll Vaults updated continuously by the Archive Curators who treat each new contribution as an addition to an ongoing conversation rather than a deposit in a closed collection. Dragon, Psychic, and Fairy-type Pokémon are the town's scholarly community: Axew Scroll Whelps warm parchment for preservation with a gentle thermal output that the town's archivists have found superior to any mechanical warming device, Fraxure Archive Curators maintain the jade-scroll catalogue with a methodical attention to detail that their Dragon-type heritage seems to make instinctive, and Haxorus Resonance Elders moderate high-level philosophical harmonics in the Resonant Debate Forum with an authority that comes from accumulated wisdom rather than imposed rank. Wisemon Digimon serve as Longmen Town's data integration layer, their analytical capabilities allowing them to cross-reference the jade-scroll archive with digital databases maintained by partner institutions across the island chain. The Jade Scroll Writ requirement ensures that those accessing the restricted discourse halls have demonstrated sufficient scholarly background to contribute constructively rather than simply consuming the archive's resources.",
+    "history": "Longmen Town's archive climate system was upgraded after a condensation event caused by an unusual atmospheric confluence damaged approximately eighty jade scroll sections before the humidity monitoring systems detected the moisture levels. The upgrade introduced the Pearl Distillation Gardens as an active climate regulation system — the gardens' moisture management function was a secondary discovery during the development of the distillation process, and has proven more effective than the mechanical dehumidification it replaced. The incident that triggered the upgrade is recorded in the town's annals with characteristic academic thoroughness, including a full catalogue of the damaged sections and the reconstruction work that partially restored their content.",
     "dangers": [
       "Information overload",
       "Scroll humidity imbalance"
@@ -18249,8 +18249,8 @@ export const areaConfigurations: AreaConfigurationsMap = {
   'wyrmclaw-village': {
     "landmass": "sky-isles",
     "landmassName": "Sky Isles",
-    "region": "draconic-abyss",
-    "regionName": "Draconic Abyss",
+    "region": "ouroboros-abyss",
+    "regionName": "Ouroboros Abyss",
     "welcomeMessages": {
       "base": "Welcome to Wyrmclaw Village—sky edges, blood oaths, and neighbors with wingspans.",
       "variations": [
@@ -18365,7 +18365,7 @@ export const areaConfigurations: AreaConfigurationsMap = {
       }
     ],
     "lore": "The Wyrmclaw Tribe are descendants of humans who made blood pacts with dragons during the Dragon Wars — pacts that were not merely strategic alliances but genuine biological and spiritual mergers that have, over generations, produced a people who are genuinely something between human and dragon. Dragon, Fire, Dark, and Flying-type Pokémon exist alongside the tribe not as companions or wildlife but as kin; Garchomp Wyrmclaw Warriors have bond-relationships with their dragon partners that the Spirit Keeper faction's analysts describe as more complete than any documented trainer-monster relationship, and the Druddigon Bone Drakes that serve the tribe are not controlled creatures but ancient partners whose lineages predate the original pacts. Skullgreymon-line Digimon serve the tribe as ancestral spirit warriors, their undead-dragon attribute making them the closest Digital equivalent to the tribe's own transformed nature. Devimon-line entities serve as Blood Familiar intermediaries in the tribe's most significant ritual contexts. The Wyrmclaw Oathband requirement is the only access path because the tribe does not recognise authority structures that are not founded on demonstrated commitment — the Oathband signals that a visitor has made a binding promise that the tribe considers meaningful, which is the minimum threshold for being worth the tribe's attention rather than its immediate hostility.",
-    "history": "The tribe formed during the Dragon Wars when desperate humans at the Draconic Abyss's edge sought power through blood bonds with dragons who were themselves under threat — a convergence of mutual necessity that produced the founding pacts whose terms have been honoured on both sides ever since. Over generations, they have become something between human and dragon, their physical forms gradually incorporating the draconic traits that the pacts awoke in their bloodlines. The Dragon Blood resource that is the tribe's most sacred material is not a commodity to them but a record of lineage — each sample carries the ancestral information of both the human and dragon lines involved in its production, and is treated as irreplaceable heritage rather than trade goods, which is why encounters with outsiders seeking it tend to proceed badly.",
+    "history": "The tribe formed during the Dragon Wars when desperate humans at the Ouroboros Abyss's edge sought power through blood bonds with dragons who were themselves under threat — a convergence of mutual necessity that produced the founding pacts whose terms have been honoured on both sides ever since. Over generations, they have become something between human and dragon, their physical forms gradually incorporating the draconic traits that the pacts awoke in their bloodlines. The Dragon Blood resource that is the tribe's most sacred material is not a commodity to them but a record of lineage — each sample carries the ancestral information of both the human and dragon lines involved in its production, and is treated as irreplaceable heritage rather than trade goods, which is why encounters with outsiders seeking it tend to proceed badly.",
     "dangers": [
       "Immediate attack on sight",
       "Dragon-bonded warriors",

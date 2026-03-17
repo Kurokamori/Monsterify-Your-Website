@@ -1,6 +1,9 @@
 import { Router } from 'express';
 import { authenticate } from '@middleware/auth.middleware';
 import {
+  getGameCornerSession,
+  saveGameCornerSession,
+  deleteGameCornerSession,
   generateGameCornerRewards,
   claimGameCornerReward,
   forfeitGameCornerReward,
@@ -11,6 +14,15 @@ const router = Router();
 // ============================================================================
 // Authenticated Routes
 // ============================================================================
+
+// GET /api/town/game-corner/session — Get current in-progress session
+router.get('/session', authenticate, getGameCornerSession);
+
+// PUT /api/town/game-corner/session — Create or update in-progress session
+router.put('/session', authenticate, saveGameCornerSession);
+
+// DELETE /api/town/game-corner/session — Delete session (on reset or completion)
+router.delete('/session', authenticate, deleteGameCornerSession);
 
 // POST /api/town/game-corner/rewards — Generate rewards for a pomodoro session
 router.post('/rewards', authenticate, generateGameCornerRewards);

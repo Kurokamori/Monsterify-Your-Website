@@ -9,6 +9,7 @@ export type AdventureRow = {
   title: string;
   description: string | null;
   status: AdventureStatus;
+  is_silent: boolean;
   landmass_id: string | null;
   landmass_name: string | null;
   region_id: string | null;
@@ -35,6 +36,7 @@ export type Adventure = {
   title: string;
   description: string | null;
   status: AdventureStatus;
+  isSilent: boolean;
   landmassId: string | null;
   landmassName: string | null;
   regionId: string | null;
@@ -57,6 +59,7 @@ export type AdventureCreateInput = {
   title: string;
   description?: string | null;
   status?: AdventureStatus;
+  isSilent?: boolean;
   landmassId?: string | null;
   landmassName?: string | null;
   regionId?: string | null;
@@ -87,6 +90,7 @@ export type AdventureUpdateInput = {
 export type AdventureQueryOptions = {
   status?: AdventureStatus | 'all' | null;
   creatorId?: number | null;
+  includeSilent?: boolean;
   page?: number;
   limit?: number;
   sort?: 'newest' | 'oldest' | 'title' | 'encounters';
@@ -128,6 +132,7 @@ const normalizeAdventure = (row: AdventureWithCreator): Adventure => ({
   title: row.title,
   description: row.description,
   status: row.status,
+  isSilent: row.is_silent ?? false,
   landmassId: row.landmass_id,
   landmassName: row.landmass_name,
   regionId: row.region_id,
@@ -157,10 +162,14 @@ export class AdventureRepository extends BaseRepository<Adventure, AdventureCrea
   }
 
   async findAll(options: AdventureQueryOptions = {}): Promise<PaginatedAdventures> {
-    const { status = null, creatorId = null, page = 1, limit = 10, sort = 'newest' } = options;
+    const { status = null, creatorId = null, includeSilent = false, page = 1, limit = 10, sort = 'newest' } = options;
 
     const conditions: string[] = ['1=1'];
     const params: unknown[] = [];
+
+    if (!includeSilent) {
+      conditions.push('(a.is_silent = false OR a.is_silent IS NULL)');
+    }
 
     if (status && status !== 'all') {
       params.push(status);
@@ -241,11 +250,11 @@ export class AdventureRepository extends BaseRepository<Adventure, AdventureCrea
     const result = await db.query<{ id: number }>(
       `
         INSERT INTO adventures (
-          creator_id, title, description, status,
+          creator_id, title, description, status, is_silent,
           landmass_id, landmass_name, region_id, region_name,
           area_id, area_name, area_config, created_at, updated_at
         )
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
         RETURNING id
       `,
       [
@@ -253,6 +262,7 @@ export class AdventureRepository extends BaseRepository<Adventure, AdventureCrea
         input.title,
         input.description ?? null,
         input.status ?? 'active',
+        input.isSilent ?? false,
         input.landmassId ?? null,
         input.landmassName ?? null,
         input.regionId ?? null,

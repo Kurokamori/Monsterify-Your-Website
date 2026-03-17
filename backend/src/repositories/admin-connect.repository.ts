@@ -343,4 +343,24 @@ export class AdminConnectRepository extends BaseRepository<
     const result = await db.query(`DELETE FROM admin_connect_sub_items WHERE id = $1`, [id]);
     return (result.rowCount ?? 0) > 0;
   }
+
+  // ── Update Notes ────────────────────────────────────────────────
+
+  async getUpdateNotes(): Promise<string> {
+    const result = await db.query<{ content: string }>(
+      `SELECT content FROM admin_connect_update_notes WHERE id = 1`,
+    );
+    return result.rows[0]?.content ?? '';
+  }
+
+  async saveUpdateNotes(content: string): Promise<string> {
+    const result = await db.query<{ content: string }>(
+      `INSERT INTO admin_connect_update_notes (id, content, updated_at)
+       VALUES (1, $1, NOW())
+       ON CONFLICT (id) DO UPDATE SET content = $1, updated_at = NOW()
+       RETURNING content`,
+      [content],
+    );
+    return result.rows[0]?.content ?? '';
+  }
 }

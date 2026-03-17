@@ -219,3 +219,30 @@ export async function deleteAdminConnectSubItem(req: Request, res: Response): Pr
     res.status(500).json({ success: false, message: 'Error deleting sub-item' });
   }
 }
+
+// ── Update Notes ────────────────────────────────────────────────
+
+export async function getUpdateNotes(_req: Request, res: Response): Promise<void> {
+  try {
+    const content = await service.getUpdateNotes();
+    res.json({ success: true, data: content });
+  } catch (error) {
+    console.error('Error fetching update notes:', error);
+    res.status(500).json({ success: false, message: 'Error fetching update notes' });
+  }
+}
+
+export async function saveUpdateNotes(req: Request, res: Response): Promise<void> {
+  try {
+    const { content } = req.body;
+    if (typeof content !== 'string') {
+      res.status(400).json({ success: false, message: 'Content must be a string' });
+      return;
+    }
+    const saved = await service.saveUpdateNotes(content);
+    res.json({ success: true, data: saved });
+  } catch (error) {
+    console.error('Error saving update notes:', error);
+    res.status(500).json({ success: false, message: 'Error saving update notes' });
+  }
+}

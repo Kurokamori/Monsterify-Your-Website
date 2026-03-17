@@ -271,9 +271,9 @@ export class ReminderService {
         { name: 'Best Streak', value: `${habit.bestStreak} day${habit.bestStreak !== 1 ? 's' : ''}`, inline: true },
       ];
     } else if (itemType === 'routine_item') {
-      // Find routine item title by checking all user routines
-      const reminder = await this.reminderRepository.findByItemTypeAndId('routine_item', itemId);
-      title = reminder[0]?.title ?? 'Routine Item';
+      const routineItem = await this.dailyRoutineRepository.findItemById(itemId);
+      if (!routineItem) { throw new Error('Routine item not found'); }
+      title = `${routineItem.routineName}: ${routineItem.title}`;
     }
 
     const fakeReminder: ReminderWithUserDetails = {

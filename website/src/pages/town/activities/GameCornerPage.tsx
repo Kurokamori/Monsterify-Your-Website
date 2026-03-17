@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '@contexts/useAuth';
 import { useDocumentTitle } from '@hooks/useDocumentTitle';
 import townService from '@services/townService';
-import type { GameCornerRewardData, GameCornerTrainer } from '@services/townService';
+import type { GameCornerRewardData, GameCornerTrainer, GameCornerSessionInput } from '@services/townService';
 import trainerService from '@services/trainerService';
 import speciesService from '@services/speciesService';
 import type { SpeciesImageMap } from '@services/speciesService';
@@ -115,12 +115,17 @@ export default function GameCornerPage() {
   const [breakLength, setBreakLength] = useState(5);
   const [longBreakLength, setLongBreakLength] = useState(15);
   const [sessionCount, setSessionCount] = useState(4);
-  const [, setCurrentSession] = useState(0);
+  const [currentSession, setCurrentSession] = useState(0);
   const [isBreak, setIsBreak] = useState(false);
   const [completedSessions, setCompletedSessions] = useState(0);
   const [totalFocusMinutes, setTotalFocusMinutes] = useState(0);
   const [timerStartTime, setTimerStartTime] = useState<number | null>(null);
   const [totalTimerDuration, setTotalTimerDuration] = useState(0);
+
+  // --- Session persistence ---
+  const [sessionRestored, setSessionRestored] = useState(false);
+  const [hasActiveSession, setHasActiveSession] = useState(false);
+  const saveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // --- Rewards state ---
   const [showProductivityRating, setShowProductivityRating] = useState(false);
@@ -144,7 +149,60 @@ export default function GameCornerPage() {
   const circleRef = useRef<SVGCircleElement>(null);
 
   // ==========================================================================
-  // Fetch trainers on mount
+  // Session persistence helpers
+  // ==========================================================================
+
+  const buildSessionInput = useCallback((overrides?: Partial<GameCornerSessionInput>): GameCornerSessionInput => {
+    const base: GameCornerSessionInput = {
+      sessionLength,
+      breakLength,
+      longBreakLength,
+      sessionCount,
+      completedSessions,
+      totalFocusMinutes,
+      currentSession,
+      isBreak,
+      timerActive,
+      timeRemaining,
+      timerEndTime: timerStartTime && timerActive
+        ? timerStartTime + totalTimerDuration * 1000
+        : null,
+      totalTimerDuration,
+    };
+    return overrides ? { ...base, ...overrides } : base;
+  }, [
+    sessionLength, breakLength, longBreakLength, sessionCount,
+    completedSessions, totalFocusMinutes, currentSession, isBreak,
+    timerActive, timeRemaining, timerStartTime, totalTimerDuration,
+  ]);
+
+  const saveSession = useCallback((overrides?: Partial<GameCornerSessionInput>) => {
+    if (!isAuthenticated) return;
+
+    // Debounce saves
+    if (saveTimeoutRef.current) {
+      clearTimeout(saveTimeoutRef.current);
+    }
+    saveTimeoutRef.current = setTimeout(() => {
+      const input = buildSessionInput(overrides);
+      townService.saveGameCornerSession(input).then(() => {
+        setHasActiveSession(true);
+      }).catch((err) => {
+        console.error('Failed to save game corner session:', err);
+      });
+    }, 300);
+  }, [isAuthenticated, buildSessionInput]);
+
+  const deleteSession = useCallback(() => {
+    if (!isAuthenticated) return;
+    setHasActiveSession(false);
+    townService.deleteGameCornerSession().catch((err) => {
+      console.error('Failed to delete game corner session:', err);
+    });
+  }, [isAuthenticated]);
+
+  // ==========================================================================
+  // Fetch trainers + restore session on mount
   // ==========================================================================
 
   useEffect(() => {
@@ -153,26 +211,71 @@ export default function GameCornerPage() {
       return;
     }
 
-    const fetchTrainers = async () => {
+    const init = async () => {
       try {
         setLoading(true);
         const userId = currentUser?.discord_id;
-        const response = await trainerService.getUserTrainers(userId);
+
+        // Fetch trainers and session in parallel
+        const [trainerResponse, sessionResponse] = await Promise.all([
+          trainerService.getUserTrainers(userId),
+          townService.getGameCornerSession(),
+        ]);
+
         setTrainers(
-          (response.trainers || []).map(t => ({
+          (trainerResponse.trainers || []).map(t => ({
             id: typeof t.id === 'string' ? parseInt(t.id, 10) : t.id as number,
             name: t.name,
             level: t.level as number | undefined,
           })),
         );
+
+        // Restore session if one exists
+        if (sessionResponse.session) {
+          const s = sessionResponse.session;
+          setSessionLength(s.sessionLength);
+          setBreakLength(s.breakLength);
+          setLongBreakLength(s.longBreakLength);
+          setSessionCount(s.sessionCount);
+          setCompletedSessions(s.completedSessions);
+          setTotalFocusMinutes(s.totalFocusMinutes);
+          setCurrentSession(s.currentSession);
+          setIsBreak(s.isBreak);
+          setTotalTimerDuration(s.totalTimerDuration);
+          setHasActiveSession(true);
+
+          if (s.timerActive && s.timerEndTime) {
+            // Timer was running — calculate remaining time from stored end time
+            const now = Date.now();
+            const remaining = Math.max(0, Math.floor((s.timerEndTime - now) / 1000));
+
+            if (remaining > 0) {
+              // Timer still has time left — resume it
+              setTimeRemaining(remaining);
+              setTotalTimerDuration(remaining);
+              setTimerStartTime(now);
+              setTimerActive(true);
+            } else {
+              // Timer expired while away — set to 0 so user can proceed
+              setTimeRemaining(0);
+              setTimerActive(false);
+            }
+          } else {
+            // Timer was paused — restore remaining time as-is
+            setTimeRemaining(s.timeRemaining);
+            setTimerActive(false);
+          }
+        }
+        setSessionRestored(true);
       } catch (err) {
-        setError(extractErrorMessage(err, 'Failed to load trainers. Please try again later.'));
+        setError(extractErrorMessage(err, 'Failed to load Game Corner. Please try again later.'));
+        setSessionRestored(true);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchTrainers();
+    init();
   }, [isAuthenticated, currentUser?.discord_id]);
 
   // ==========================================================================
@@ -200,8 +303,25 @@ export default function GameCornerPage() {
         const breakTime = (shouldUseLongBreak(newCompleted) ? longBreakLength : breakLength) * 60;
         setTimeRemaining(breakTime);
         setTotalTimerDuration(breakTime);
-        setTimerStartTime(Date.now());
+        const now = Date.now();
+        setTimerStartTime(now);
         setTimerActive(true);
+
+        // Save session with updated break state
+        if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
+        saveTimeoutRef.current = setTimeout(() => {
+          townService.saveGameCornerSession({
+            sessionLength, breakLength, longBreakLength, sessionCount,
+            completedSessions: newCompleted,
+            totalFocusMinutes: totalFocusMinutes + sessionLength,
+            currentSession,
+            isBreak: true,
+            timerActive: true,
+            timeRemaining: breakTime,
+            timerEndTime: now + breakTime * 1000,
+            totalTimerDuration: breakTime,
+          }).catch(err => console.error('Failed to save session:', err));
+        }, 300);
 
         return newCompleted;
       });
@@ -223,13 +343,30 @@ export default function GameCornerPage() {
         const sessionTime = sessionLength * 60;
         setTimeRemaining(sessionTime);
         setTotalTimerDuration(sessionTime);
-        setTimerStartTime(Date.now());
+        const now = Date.now();
+        setTimerStartTime(now);
         setTimerActive(true);
+
+        // Save session with updated focus state
+        if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
+        saveTimeoutRef.current = setTimeout(() => {
+          townService.saveGameCornerSession({
+            sessionLength, breakLength, longBreakLength, sessionCount,
+            completedSessions,
+            totalFocusMinutes,
+            currentSession: next,
+            isBreak: false,
+            timerActive: true,
+            timeRemaining: sessionTime,
+            timerEndTime: now + sessionTime * 1000,
+            totalTimerDuration: sessionTime,
+          }).catch(err => console.error('Failed to save session:', err));
+        }, 300);
 
         return next;
       });
     }
-  }, [isBreak, sessionCount, sessionLength, breakLength, longBreakLength, audioEnabled]);
+  }, [isBreak, sessionCount, sessionLength, breakLength, longBreakLength, audioEnabled, completedSessions, totalFocusMinutes, currentSession]);
 
   useEffect(() => {
     if (!timerActive || !timerStartTime) return;
@@ -296,9 +433,10 @@ export default function GameCornerPage() {
 
     if (!timerActive) {
       const now = Date.now();
+      let newTime: number;
 
       if (timeRemaining === 0) {
-        const newTime = isBreak
+        newTime = isBreak
           ? (shouldUseLongBreak(completedSessions) ? longBreakLength : breakLength) * 60
           : sessionLength * 60;
         setTimeRemaining(newTime);
@@ -306,16 +444,31 @@ export default function GameCornerPage() {
         setTimerStartTime(now);
       } else {
         // Resume from pause
-        setTotalTimerDuration(timeRemaining);
+        newTime = timeRemaining;
+        setTotalTimerDuration(newTime);
         setTimerStartTime(now);
       }
 
       setTimerActive(true);
+
+      // Save session with running timer
+      saveSession({
+        timerActive: true,
+        timeRemaining: newTime,
+        timerEndTime: now + newTime * 1000,
+        totalTimerDuration: newTime,
+      });
     }
   };
 
   const pauseTimer = () => {
     setTimerActive(false);
+
+    // Save paused state
+    saveSession({
+      timerActive: false,
+      timerEndTime: null,
+    });
   };
 
   const resetTimer = () => {
@@ -327,6 +480,11 @@ export default function GameCornerPage() {
     setTotalFocusMinutes(0);
     setTimerStartTime(null);
     setTotalTimerDuration(0);
+
+    // Delete session from DB on reset
+    if (hasActiveSession) {
+      deleteSession();
+    }
   };
 
   // ==========================================================================
@@ -376,6 +534,9 @@ export default function GameCornerPage() {
         totalFocusMinutes,
         productivityScore: rating,
       });
+
+      // Session is deleted server-side when rewards are generated
+      setHasActiveSession(false);
 
       setRewards(result.rewards);
       setRewardStats(result.stats);
@@ -565,6 +726,13 @@ export default function GameCornerPage() {
   }
 
   // ==========================================================================
+  // Restored session banner
+  // ==========================================================================
+
+  const showRestoredBanner = sessionRestored && hasActiveSession && !timerActive && !showRewards && !showProductivityRating
+    && (completedSessions > 0 || timeRemaining > 0);
+
+  // ==========================================================================
   // Main render
   // ==========================================================================
 
@@ -587,6 +755,17 @@ export default function GameCornerPage() {
           </p>
         </div>
       </div>
+
+      {/* Restored session notice */}
+      {showRestoredBanner && (
+        <div className="game-corner__restored-banner">
+          <i className="fas fa-info-circle"></i>
+          <span>
+            Your previous session has been restored ({completedSessions}/{sessionCount} sessions completed).
+            Press Start to continue or Reset to start over.
+          </span>
+        </div>
+      )}
 
       {/* ================================================================ */}
       {/* Main Layout: Video + Timer                                       */}

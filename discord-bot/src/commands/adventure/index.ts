@@ -3,6 +3,7 @@
  *
  * Subcommands:
  *   start     — Start a new adventure (wizard or direct)
+ *   here      — Start a silent adventure in the current thread
  *   encounter — Generate a random encounter
  *   capture   — Attempt to capture a monster
  *   end       — End the adventure and calculate rewards
@@ -21,6 +22,15 @@ import {
   startModalHandler,
   customModalHandler,
 } from './start.js';
+import { handleHere } from './here.js';
+import {
+  hereCustomButtonHandler,
+  herePrebuiltButtonHandler,
+  hereLandmassSelectHandler,
+  hereRegionSelectHandler,
+  hereAreaSelectHandler,
+  hereModalHandler,
+} from './here.js';
 import { handleEncounter } from './encounter.js';
 import { handleCapture } from './capture.js';
 import { handleEnd } from './end.js';
@@ -43,6 +53,11 @@ export const command: Command = {
         .addStringOption((opt) =>
           opt.setName('location').setDescription('Area ID for direct start (skip wizard)').setRequired(false),
         ),
+    )
+    .addSubcommand((sub) =>
+      sub
+        .setName('here')
+        .setDescription('Start a silent adventure in this thread (not shown on website)'),
     )
     .addSubcommand((sub) =>
       sub
@@ -88,10 +103,11 @@ export const command: Command = {
     name: 'adventure',
     description: 'Start, manage, and complete adventures. Generate encounters and capture monsters.',
     category: 'Adventure',
-    usage: '/adventure start | /adventure encounter | /adventure capture | /adventure end',
+    usage: '/adventure start | /adventure here | /adventure encounter | /adventure capture | /adventure end',
     examples: [
       '/adventure start',
       '/adventure start trainer:Ash location:heimdal-city',
+      '/adventure here',
       '/adventure encounter',
       '/adventure capture trainer:Ash pokeball:Great Ball',
       '/adventure capture trainer:Ash pokeball:Ultra Ball index:2 pokepuffs:3',
@@ -105,6 +121,9 @@ export const command: Command = {
     switch (subcommand) {
       case 'start':
         await handleStart(interaction);
+        break;
+      case 'here':
+        await handleHere(interaction);
         break;
       case 'encounter':
         await handleEncounter(interaction);
@@ -131,15 +150,21 @@ export const command: Command = {
 export const buttons: ButtonHandler[] = [
   adventureMenuButtonHandler,
   customButtonHandler,
+  hereCustomButtonHandler,
+  herePrebuiltButtonHandler,
 ];
 
 export const selectMenus: SelectMenuHandler[] = [
   landmassSelectHandler,
   regionSelectHandler,
   areaSelectHandler,
+  hereLandmassSelectHandler,
+  hereRegionSelectHandler,
+  hereAreaSelectHandler,
 ];
 
 export const modals: ModalHandler[] = [
   startModalHandler,
   customModalHandler,
+  hereModalHandler,
 ];
