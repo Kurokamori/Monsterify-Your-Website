@@ -527,6 +527,11 @@ export class MonsterInitializerService {
       // Make a copy of the monster data
       const initializedMonster: InitializedMonster = { ...monsterData } as InitializedMonster;
 
+      // Default name to species1 if not provided
+      if (!initializedMonster.name && initializedMonster.species1) {
+        initializedMonster.name = initializedMonster.species1;
+      }
+
       // Generate IVs if not already set
       if (!initializedMonster.hp_iv) {
         const ivs = this.generateIVs();

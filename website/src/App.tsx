@@ -117,6 +117,7 @@ import InteractiveMapPage from './pages/guides-and-tools/guides/InteractiveMapPa
 import LandmassGuidePage from './pages/guides-and-tools/guides/LandmassGuidePage'
 import RegionGuidePage from './pages/guides-and-tools/guides/RegionGuidePage'
 import AreaGuidePage from './pages/guides-and-tools/guides/AreaGuidePage'
+import UserProfilePage from './pages/profile/UserProfilePage'
 
 function App() {
   return (
@@ -149,6 +150,9 @@ function App() {
         <Route path="profile/schedule" element={<SchedulePage />} />
         <Route path="profile/tasks" element={<GameTasksPage />} />
         <Route path="profile/notifications" element={<NotificationsPage />} />
+
+        {/* Public User Profile */}
+        <Route path="users/:id" element={<UserProfilePage />} />
 
         {/* Adventure Routes */}
         <Route path="adventures" element={<AdventuresPage />} />

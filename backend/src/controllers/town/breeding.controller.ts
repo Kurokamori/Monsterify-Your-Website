@@ -163,6 +163,58 @@ export async function claimBreedingResult(req: Request, res: Response): Promise<
 }
 
 // =============================================================================
+// Forfeit Breeding Result to Bazar
+// =============================================================================
+
+export async function forfeitBreedingResult(req: Request, res: Response): Promise<void> {
+  try {
+    const { sessionId, monsterIndex, name } = req.body as {
+      sessionId?: string;
+      monsterIndex?: number;
+      name?: string;
+    };
+    const userId = req.user?.discord_id;
+
+    if (!userId) {
+      res.status(401).json({ success: false, message: 'Authentication required' });
+      return;
+    }
+
+    if (!sessionId || monsterIndex === undefined) {
+      res.status(400).json({
+        success: false,
+        message: 'Missing required parameters: sessionId, monsterIndex',
+      });
+      return;
+    }
+
+    const result = await breedingService.forfeitBreedingResult(sessionId, monsterIndex, userId, name);
+
+    res.json({
+      success: true,
+      message: 'Monster forfeited to the Bazar successfully',
+      data: result,
+    });
+  } catch (error) {
+    const msg = error instanceof Error ? error.message : 'Server error';
+    console.error('Error in forfeitBreedingResult:', error);
+    if (msg.includes('session not found')) {
+      res.status(404).json({ success: false, message: msg });
+      return;
+    }
+    if (msg.includes('only access your own')) {
+      res.status(403).json({ success: false, message: msg });
+      return;
+    }
+    if (msg.includes('Invalid monster index') || msg.includes('already been claimed')) {
+      res.status(400).json({ success: false, message: msg });
+      return;
+    }
+    res.status(500).json({ success: false, message: msg });
+  }
+}
+
+// =============================================================================
 // Reroll Breeding Results
 // =============================================================================
 
@@ -238,6 +290,32 @@ export async function getBreedingSession(req: Request, res: Response): Promise<v
       res.status(403).json({ success: false, message: msg });
       return;
     }
+    res.status(500).json({ success: false, message: msg });
+  }
+}
+
+// =============================================================================
+// Get Active Breeding Clutch
+// =============================================================================
+
+export async function getActiveClutch(req: Request, res: Response): Promise<void> {
+  try {
+    const userId = req.user?.discord_id;
+
+    if (!userId) {
+      res.status(401).json({ success: false, message: 'Authentication required' });
+      return;
+    }
+
+    const session = await breedingService.getActiveClutch(userId);
+
+    res.json({
+      success: true,
+      data: session,
+    });
+  } catch (error) {
+    const msg = error instanceof Error ? error.message : 'Server error';
+    console.error('Error in getActiveClutch:', error);
     res.status(500).json({ success: false, message: msg });
   }
 }

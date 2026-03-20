@@ -222,6 +222,202 @@ export async function deleteUser(req: Request, res: Response): Promise<void> {
 }
 
 // =============================================================================
+// Public User Profiles
+// =============================================================================
+
+export async function getPublicUserProfile(req: Request, res: Response): Promise<void> {
+  try {
+    const idParam = req.params.id as string;
+    const numericId = parseInt(idParam);
+
+    // Try numeric user ID first, then fall back to discord ID lookup
+    let profile = !isNaN(numericId) && String(numericId) === idParam
+      ? await userService.getPublicProfile(numericId)
+      : null;
+    profile ??= await userService.getPublicProfileByDiscordId(idParam);
+
+    if (!profile) {
+      res.status(404).json({ success: false, message: 'User not found' });
+      return;
+    }
+
+    res.json({ success: true, profile });
+  } catch (error) {
+    console.error('Error getting public user profile:', error);
+    res.status(500).json({ success: false, message: 'Server error while getting user profile' });
+  }
+}
+
+async function resolveUser(idParam: string) {
+  const numericId = parseInt(idParam);
+  if (!isNaN(numericId) && String(numericId) === idParam) {
+    return userService.findById(numericId);
+  }
+  // Treat as discord_id
+  const row = await userService.findByDiscordId(idParam);
+  if (!row) {
+    return null;
+  }
+  return userService.findById(row.id);
+}
+
+export async function getUserProfileSubmissions(req: Request, res: Response): Promise<void> {
+  try {
+    const idParam = req.params.id as string;
+    const user = await resolveUser(idParam);
+    if (!user) {
+      res.status(404).json({ success: false, message: 'User not found' });
+      return;
+    }
+
+    const {
+      page = '1',
+      limit = '20',
+      type,
+      sort = 'newest',
+      showMature,
+      matureFilters,
+    } = req.query as Record<string, string | undefined>;
+
+    const pageNum = Math.max(1, parseInt(page || '1', 10));
+    const limitNum = Math.min(50, Math.max(1, parseInt(limit || '20', 10)));
+    const offset = (pageNum - 1) * limitNum;
+
+    // Build mature content filter
+    let matureClause = '';
+    if (showMature !== 'true') {
+      matureClause = `AND (s.is_mature::boolean IS NOT TRUE)`;
+    } else if (matureFilters) {
+      try {
+        const filters = JSON.parse(matureFilters);
+        const enabledTypes: string[] = [];
+        if (filters.gore) { enabledTypes.push(`(s.content_rating->>'gore')::boolean = true`); }
+        if (filters.nsfw_light) { enabledTypes.push(`(s.content_rating->>'nsfw_light')::boolean = true`); }
+        if (filters.nsfw_heavy) { enabledTypes.push(`(s.content_rating->>'nsfw_heavy')::boolean = true`); }
+        if (filters.triggering) { enabledTypes.push(`(s.content_rating->>'triggering')::boolean = true`); }
+        if (filters.intense_violence) { enabledTypes.push(`(s.content_rating->>'intense_violence')::boolean = true`); }
+
+        if (enabledTypes.length === 0) {
+          matureClause = `AND (s.is_mature::boolean IS NOT TRUE)`;
+        } else {
+          matureClause = `AND (s.is_mature::boolean IS NOT TRUE OR s.content_rating IS NULL OR ${enabledTypes.join(' OR ')})`;
+        }
+      } catch {
+        matureClause = `AND (s.is_mature::boolean IS NOT TRUE)`;
+      }
+    }
+
+    // Build type filter
+    let typeClause = '';
+    if (type === 'art') {
+      typeClause = `AND s.submission_type = 'art'`;
+    } else if (type === 'writing') {
+      typeClause = `AND s.submission_type = 'writing'`;
+    }
+
+    // Build user matching - match by discord_id or user id
+    const userConditions: string[] = [];
+    const params: unknown[] = [];
+    let paramIdx = 1;
+
+    if (user.discord_id) {
+      userConditions.push(`s.user_id::text = $${paramIdx}`);
+      params.push(user.discord_id);
+      paramIdx++;
+    }
+    userConditions.push(`s.user_id::text = $${paramIdx}`);
+    params.push(String(user.id));
+    paramIdx++;
+
+    const userClause = `(${userConditions.join(' OR ')})`;
+
+    const sortClause = sort === 'oldest' ? 'ASC' : 'DESC';
+
+    // Count query
+    const countResult = await db.query<{ count: string }>(
+      `SELECT COUNT(*)::int as count FROM submissions s WHERE ${userClause} AND s.parent_id IS NULL ${typeClause} ${matureClause}`,
+      params
+    );
+    const total = parseInt(countResult.rows[0]?.count ?? '0', 10);
+
+    // Data query
+    const dataParams = [...params, limitNum, offset];
+    const result = await db.query(
+      `SELECT
+        s.id, s.title, s.description, s.submission_type, s.submission_date, s.is_book, s.is_mature, s.content_rating,
+        u.display_name, u.username,
+        (SELECT image_url FROM submission_images WHERE submission_id = s.id AND is_main::boolean = true LIMIT 1) as image_url,
+        (SELECT image_url FROM submission_images WHERE submission_id = s.id AND is_main::boolean = true LIMIT 1) as cover_image_url,
+        (SELECT COUNT(*) FROM submissions WHERE parent_id = s.id) as chapter_count
+      FROM submissions s
+      LEFT JOIN users u ON s.user_id::text = u.discord_id OR s.user_id::text = u.id::text
+      WHERE ${userClause} AND s.parent_id IS NULL ${typeClause} ${matureClause}
+      ORDER BY s.submission_date ${sortClause}
+      LIMIT $${paramIdx} OFFSET $${paramIdx + 1}`,
+      dataParams
+    );
+
+    res.json({
+      success: true,
+      submissions: result.rows,
+      pagination: {
+        page: pageNum,
+        limit: limitNum,
+        total,
+        totalPages: Math.ceil(total / limitNum),
+      },
+    });
+  } catch (error) {
+    console.error('Error getting user profile submissions:', error);
+    res.status(500).json({ success: false, message: 'Failed to get user submissions' });
+  }
+}
+
+export async function getUserProfileTrainers(req: Request, res: Response): Promise<void> {
+  try {
+    const idParam = req.params.id as string;
+    const user = await resolveUser(idParam);
+    if (!user) {
+      res.status(404).json({ success: false, message: 'User not found' });
+      return;
+    }
+
+    const userConditions: string[] = [];
+    const params: unknown[] = [];
+
+    if (user.discord_id) {
+      userConditions.push(`t.player_user_id = $1`);
+      params.push(user.discord_id);
+      userConditions.push(`t.player_user_id = $2`);
+      params.push(String(user.id));
+    } else {
+      userConditions.push(`t.player_user_id = $1`);
+      params.push(String(user.id));
+    }
+
+    const result = await db.query(
+      `SELECT
+        t.id, t.name, t.nickname, t.level, t.faction,
+        t.species1, t.species2, t.species3,
+        t.type1, t.type2, t.type3, t.type4, t.type5, t.type6,
+        t.main_ref, t.icon,
+        (SELECT COUNT(*)::int FROM monsters WHERE trainer_id = t.id) as monster_count,
+        u.display_name as player_display_name, u.username as player_username
+      FROM trainers t
+      LEFT JOIN users u ON t.player_user_id = u.discord_id OR t.player_user_id = u.id::text
+      WHERE ${userConditions.join(' OR ')}
+      ORDER BY t.level DESC, t.name ASC`,
+      params
+    );
+
+    res.json({ success: true, trainers: result.rows });
+  } catch (error) {
+    console.error('Error getting user profile trainers:', error);
+    res.status(500).json({ success: false, message: 'Failed to get user trainers' });
+  }
+}
+
+// =============================================================================
 // Related Submissions (Public)
 // =============================================================================
 

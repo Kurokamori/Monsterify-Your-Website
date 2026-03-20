@@ -8,6 +8,9 @@ import {
   updateUserAdmin,
   deleteUser,
   getUserRelatedSubmissions,
+  getPublicUserProfile,
+  getUserProfileSubmissions,
+  getUserProfileTrainers,
 } from '../../controllers';
 
 const router = Router();
@@ -16,6 +19,9 @@ const router = Router();
 // Public Routes
 // ============================================================================
 
+router.get('/:id/profile', getPublicUserProfile);
+router.get('/:id/profile/submissions', getUserProfileSubmissions);
+router.get('/:id/profile/trainers', getUserProfileTrainers);
 router.get('/:id/submissions/related', getUserRelatedSubmissions);
 
 // ============================================================================

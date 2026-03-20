@@ -110,6 +110,35 @@ export function BreedMonsters({
     monster2: ''
   });
 
+  // Check for active breeding clutch on mount
+  useEffect(() => {
+    const checkActiveClutch = async () => {
+      if (!currentUser?.discord_id) return;
+
+      try {
+        const response = await api.get('/town/farm/breed/active');
+        if (response.data?.success && response.data.data) {
+          const session = response.data.data;
+          setBreedingResults({
+            parent1: session.parent1,
+            parent2: session.parent2,
+            offspring: session.offspring.map((o: Offspring, i: number) => ({
+              ...o,
+              claimed: session.claimedMonsters.includes(i),
+            })),
+            sessionId: session.sessionId,
+            specialBerries: session.specialBerries || {},
+            claimedMonsters: session.claimedMonsters || [],
+          });
+        }
+      } catch {
+        // No active clutch or error checking - silently continue
+      }
+    };
+
+    checkActiveClutch();
+  }, [currentUser?.discord_id]);
+
   // Fetch user trainers
   useEffect(() => {
     const fetchUserTrainers = async () => {
@@ -439,6 +468,36 @@ export function BreedMonsters({
     }
   }, [breedingResults, offspringNames, offspringTrainers]);
 
+  // Handle forfeiting offspring to the bazar
+  const handleForfeitOffspring = useCallback(async (index: number) => {
+    if (!breedingResults) return;
+
+    try {
+      setLoading(true);
+      const response = await api.post('/town/farm/breed/forfeit', {
+        sessionId: breedingResults.sessionId,
+        monsterIndex: index,
+        name: offspringNames[index] || undefined,
+      });
+
+      if (response.data?.success) {
+        setBreedingResults(prev => prev ? {
+          ...prev,
+          offspring: prev.offspring.map((o, i) => i === index ? { ...o, claimed: true } : o),
+          specialBerries: response.data.data.specialBerries,
+          claimedMonsters: response.data.data.claimedMonsters
+        } : null);
+      } else {
+        setError(response.data?.message || 'Failed to forfeit monster.');
+      }
+    } catch (err) {
+      console.error('Error forfeiting:', err);
+      setError(extractErrorMessage(err, 'Failed to forfeit monster.'));
+    } finally {
+      setLoading(false);
+    }
+  }, [breedingResults, offspringNames]);
+
   // Handle reroll
   const handleReroll = useCallback(async () => {
     if (!breedingResults) return;
@@ -619,6 +678,15 @@ export function BreedMonsters({
                     >
                       {offspring.claimed ? 'Claimed' : 'Claim'}
                     </button>
+                    {!offspring.claimed && (
+                      <button
+                        className="button danger sm no-flex"
+                        onClick={() => handleForfeitOffspring(index)}
+                        disabled={loading}
+                      >
+                        <i className="fas fa-times"></i> Forfeit
+                      </button>
+                    )}
                   </div>
                 </div>
               </Card>

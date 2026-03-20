@@ -320,7 +320,14 @@ const SubmissionDetailPage = ({ type }: SubmissionDetailPageProps) => {
           <div className="submission-header-content">
             <h1 className="submission-title">{submission.title}</h1>
             <div className="upload-title">
-              Created By: { submission.display_name || submission.username || 'Unknown'}
+              Created By:{' '}
+              {submission.user_id ? (
+                <Link to={`/users/${submission.user_id}`} className="creator-link">
+                  {submission.display_name || submission.username || 'Unknown'}
+                </Link>
+              ) : (
+                submission.display_name || submission.username || 'Unknown'
+              )}
             </div>
           </div>
           <div className="submission-meta">

@@ -271,6 +271,19 @@ export class UserService {
   }
 
   /**
+   * Get public profile for a user
+   * @param id - User ID
+   * @returns Public profile data or null
+   */
+  async getPublicProfile(id: number) {
+    return this.userRepository.findPublicProfile(id);
+  }
+
+  async getPublicProfileByDiscordId(discordId: string) {
+    return this.userRepository.findPublicProfileByDiscordId(discordId);
+  }
+
+  /**
    * Get user by username (includes password for auth purposes)
    * @param username - Username
    * @returns User row or null
@@ -329,6 +342,9 @@ export class UserService {
       monsterRollerSettings?: MonsterRollerSettings;
       theme?: string;
       contentSettings?: ContentSettings;
+      profileImageUrl?: string | null;
+      profileTrainerId?: number | null;
+      bio?: string | null;
     }
   ): Promise<UserPublic> {
     // Check if user exists
@@ -387,6 +403,9 @@ export class UserService {
       monsterRollerSettings: data.monsterRollerSettings,
       theme: data.theme,
       contentSettings: data.contentSettings,
+      profileImageUrl: data.profileImageUrl,
+      profileTrainerId: data.profileTrainerId,
+      bio: data.bio,
     });
   }
 

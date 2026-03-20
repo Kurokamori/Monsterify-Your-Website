@@ -14,7 +14,10 @@ import {
   FinalFantasySpeciesRepository,
   MonsterHunterSpeciesRepository,
   DragonQuestSpeciesRepository,
+  BreedingClutchRepository,
+  BazarRepository,
 } from '../repositories';
+import type { BazarMonsterCreateInput } from '../repositories';
 import type {
   MonsterWithTrainer,
   MonsterCreateInput,
@@ -87,6 +90,12 @@ export type RerollResult = {
   specialBerries: SpecialBerryInventory;
 };
 
+export type ForfeitResult = {
+  bazarMonsterId: number;
+  claimedMonsters: number[];
+  specialBerries: SpecialBerryInventory;
+};
+
 type FranchiseId =
   | 'pokemon'
   | 'digimon'
@@ -136,8 +145,9 @@ export class BreedingService {
   private monsterHunterRepo: MonsterHunterSpeciesRepository;
   private dragonQuestRepo: DragonQuestSpeciesRepository;
 
-  // In-memory breeding sessions
-  private sessions = new Map<string, BreedingSession>();
+  // Database-backed breeding clutch storage
+  private clutchRepo: BreedingClutchRepository;
+  private bazarRepo: BazarRepository;
 
   constructor(
     monsterRepo?: MonsterRepository,
@@ -164,6 +174,8 @@ export class BreedingService {
     this.finalFantasyRepo = new FinalFantasySpeciesRepository();
     this.monsterHunterRepo = new MonsterHunterSpeciesRepository();
     this.dragonQuestRepo = new DragonQuestSpeciesRepository();
+    this.clutchRepo = new BreedingClutchRepository();
+    this.bazarRepo = new BazarRepository();
   }
 
   // ==========================================================================
@@ -743,24 +755,20 @@ export class BreedingService {
     // Get special berries
     const specialBerries = await this.berryService.getAvailableSpecialBerries(trainerId);
 
-    // Create session
+    // Persist clutch to database
     const sessionId = randomUUID();
-    const session: BreedingSession = {
+    await this.clutchRepo.create({
       sessionId,
       userId,
       trainerId,
       parent1Id,
       parent2Id,
-      parent1,
-      parent2,
+      parent1Data: parent1,
+      parent2Data: parent2,
       offspring,
       userSettings,
       specialBerries,
-      claimedMonsters: [],
-      createdAt: new Date().toISOString(),
-    };
-
-    this.sessions.set(sessionId, session);
+    });
 
     return {
       sessionId,
@@ -778,30 +786,32 @@ export class BreedingService {
     customName?: string,
     claimTrainerId?: number,
   ): Promise<ClaimResult> {
-    const session = this.sessions.get(sessionId);
-    if (!session) {
+    const clutch = await this.clutchRepo.findBySessionId(sessionId);
+    if (!clutch) {
       throw new Error('Breeding session not found');
     }
 
-    if (session.userId !== userId) {
+    if (clutch.userId !== userId) {
       throw new Error('You can only access your own breeding sessions');
     }
 
-    if (monsterIndex < 0 || monsterIndex >= session.offspring.length) {
+    const offspring = clutch.offspring as InitializedMonster[];
+
+    if (monsterIndex < 0 || monsterIndex >= offspring.length) {
       throw new Error('Invalid monster index');
     }
 
-    if (session.claimedMonsters.includes(monsterIndex)) {
+    if (clutch.claimedMonsters.includes(monsterIndex)) {
       throw new Error('This monster has already been claimed');
     }
 
-    const monsterData = session.offspring[monsterIndex];
+    const monsterData = offspring[monsterIndex];
     if (!monsterData) {
       throw new Error('Invalid monster index');
     }
 
     // Determine which trainer to assign the monster to
-    const targetTrainerId = claimTrainerId ?? session.trainerId;
+    const targetTrainerId = claimTrainerId ?? clutch.trainerId;
 
     // Get the trainer for correct user ID
     const trainer = await this.trainerRepo.findById(targetTrainerId);
@@ -855,65 +865,69 @@ export class BreedingService {
     // Add automatic lineage tracking
     try {
       await this.lineageRepo.addBreedingLineage(
-        session.parent1Id,
-        session.parent2Id,
+        clutch.parent1Id,
+        clutch.parent2Id,
         [savedMonster.id],
       );
     } catch (lineageError) {
       console.error('Error adding lineage tracking:', lineageError);
-      // Don't fail the breeding if lineage tracking fails
     }
 
     // Mark monster as claimed
-    session.claimedMonsters.push(monsterIndex);
+    const updatedClaimed = [...clutch.claimedMonsters, monsterIndex];
 
     // Get updated special berries
-    const updatedBerries = await this.berryService.getAvailableSpecialBerries(session.trainerId);
-    session.specialBerries = updatedBerries;
+    const updatedBerries = await this.berryService.getAvailableSpecialBerries(clutch.trainerId);
+
+    // If all offspring are claimed, delete the clutch record
+    if (updatedClaimed.length >= offspring.length) {
+      await this.clutchRepo.deleteBySessionId(sessionId);
+    } else {
+      await this.clutchRepo.updateClaimedMonsters(sessionId, updatedClaimed);
+      await this.clutchRepo.updateSpecialBerries(sessionId, updatedBerries);
+    }
 
     return {
       monster: savedMonster,
-      claimedMonsters: session.claimedMonsters,
+      claimedMonsters: updatedClaimed,
       specialBerries: updatedBerries,
     };
   }
 
   async rerollBreedingResults(sessionId: string, userId: string): Promise<RerollResult> {
-    const session = this.sessions.get(sessionId);
-    if (!session) {
+    const clutch = await this.clutchRepo.findBySessionId(sessionId);
+    if (!clutch) {
       throw new Error('Breeding session not found');
     }
 
-    if (session.userId !== userId) {
+    if (clutch.userId !== userId) {
       throw new Error('You can only access your own breeding sessions');
     }
 
     // Check and consume Forget-Me-Not berry
-    const hasBerry = await this.berryService.hasSpecialBerry(session.trainerId, 'Forget-Me-Not');
+    const hasBerry = await this.berryService.hasSpecialBerry(clutch.trainerId, 'Forget-Me-Not');
     if (!hasBerry) {
       throw new Error('You do not have a Forget-Me-Not berry');
     }
 
-    const consumed = await this.berryService.consumeSpecialBerry(session.trainerId, 'Forget-Me-Not');
+    const consumed = await this.berryService.consumeSpecialBerry(clutch.trainerId, 'Forget-Me-Not');
     if (!consumed) {
       throw new Error('Failed to consume Forget-Me-Not berry');
     }
 
     // Generate new offspring
-    const offspringData = await this.generateBreedingResults(
-      session.parent1,
-      session.parent2,
-      session.userSettings,
-    );
+    const parent1 = clutch.parent1Data as MonsterWithTrainer;
+    const parent2 = clutch.parent2Data as MonsterWithTrainer;
+    const userSettings = clutch.userSettings as unknown as UserSettings;
+
+    const offspringData = await this.generateBreedingResults(parent1, parent2, userSettings);
     const newOffspring = await this.initializeOffspring(offspringData);
 
-    // Update session
-    session.offspring = newOffspring;
-    session.claimedMonsters = [];
-
     // Get updated special berries
-    const updatedBerries = await this.berryService.getAvailableSpecialBerries(session.trainerId);
-    session.specialBerries = updatedBerries;
+    const updatedBerries = await this.berryService.getAvailableSpecialBerries(clutch.trainerId);
+
+    // Update clutch in database
+    await this.clutchRepo.updateOffspringAndClaimed(sessionId, newOffspring, [], updatedBerries);
 
     return {
       sessionId,
@@ -922,16 +936,163 @@ export class BreedingService {
     };
   }
 
-  async getBreedingSession(sessionId: string, userId: string): Promise<BreedingSession> {
-    const session = this.sessions.get(sessionId);
-    if (!session) {
+  async forfeitBreedingResult(
+    sessionId: string,
+    monsterIndex: number,
+    userId: string,
+    customName?: string,
+  ): Promise<ForfeitResult> {
+    const clutch = await this.clutchRepo.findBySessionId(sessionId);
+    if (!clutch) {
       throw new Error('Breeding session not found');
     }
 
-    if (session.userId !== userId) {
+    if (clutch.userId !== userId) {
       throw new Error('You can only access your own breeding sessions');
     }
 
-    return session;
+    const offspring = clutch.offspring as InitializedMonster[];
+
+    if (monsterIndex < 0 || monsterIndex >= offspring.length) {
+      throw new Error('Invalid monster index');
+    }
+
+    if (clutch.claimedMonsters.includes(monsterIndex)) {
+      throw new Error('This monster has already been claimed');
+    }
+
+    const monsterData = offspring[monsterIndex];
+    if (!monsterData) {
+      throw new Error('Invalid monster index');
+    }
+
+    const name = customName?.trim() || monsterData.name || monsterData.species1 || 'Unknown';
+
+    // Create monster directly in the bazar
+    const bazarInput: BazarMonsterCreateInput = {
+      originalMonsterId: -1,
+      forfeitedByTrainerId: -1,
+      forfeitedByUserId: userId,
+      name,
+      species1: monsterData.species1 ?? 'Unknown',
+      species2: monsterData.species2 as string | null,
+      species3: monsterData.species3 as string | null,
+      type1: monsterData.type1 ?? 'Normal',
+      type2: monsterData.type2 as string | null,
+      type3: monsterData.type3 as string | null,
+      type4: monsterData.type4 as string | null,
+      type5: monsterData.type5 as string | null,
+      attribute: monsterData.attribute as string | null,
+      level: 1,
+      nature: monsterData.nature as string | undefined,
+      characteristic: monsterData.characteristic as string | undefined,
+      gender: monsterData.gender as string | undefined,
+      friendship: 70,
+      ability1: monsterData.ability1 as string | undefined,
+      ability2: monsterData.ability2 as string | undefined,
+      moveset: typeof monsterData.moveset === 'string'
+        ? monsterData.moveset
+        : Array.isArray(monsterData.moveset)
+          ? JSON.stringify(monsterData.moveset)
+          : undefined,
+      hpIv: monsterData.hp_iv,
+      atkIv: monsterData.atk_iv,
+      defIv: monsterData.def_iv,
+      spaIv: monsterData.spa_iv,
+      spdIv: monsterData.spd_iv,
+      speIv: monsterData.spe_iv,
+      hpTotal: monsterData.hp_total,
+      atkTotal: monsterData.atk_total,
+      defTotal: monsterData.def_total,
+      spaTotal: monsterData.spa_total,
+      spdTotal: monsterData.spd_total,
+      speTotal: monsterData.spe_total,
+    };
+
+    const bazarMonster = await this.bazarRepo.createMonster(bazarInput);
+
+    // Record transaction (non-critical)
+    try {
+      await this.bazarRepo.recordTransaction(
+        'forfeit_monster',
+        'monster',
+        bazarMonster.id,
+        -1,
+        userId,
+        null,
+        null,
+        { breeding_forfeit: true, monster_name: name, species: monsterData.species1 },
+      );
+    } catch (txError) {
+      console.error('Error recording breeding forfeit transaction:', txError);
+    }
+
+    // Mark monster as claimed
+    const updatedClaimed = [...clutch.claimedMonsters, monsterIndex];
+
+    // Get updated special berries
+    const updatedBerries = await this.berryService.getAvailableSpecialBerries(clutch.trainerId);
+
+    // If all offspring are claimed/forfeited, delete the clutch record
+    if (updatedClaimed.length >= offspring.length) {
+      await this.clutchRepo.deleteBySessionId(sessionId);
+    } else {
+      await this.clutchRepo.updateClaimedMonsters(sessionId, updatedClaimed);
+      await this.clutchRepo.updateSpecialBerries(sessionId, updatedBerries);
+    }
+
+    return {
+      bazarMonsterId: bazarMonster.id,
+      claimedMonsters: updatedClaimed,
+      specialBerries: updatedBerries,
+    };
+  }
+
+  async getBreedingSession(sessionId: string, userId: string): Promise<BreedingSession> {
+    const clutch = await this.clutchRepo.findBySessionId(sessionId);
+    if (!clutch) {
+      throw new Error('Breeding session not found');
+    }
+
+    if (clutch.userId !== userId) {
+      throw new Error('You can only access your own breeding sessions');
+    }
+
+    return this.clutchToSession(clutch);
+  }
+
+  async getActiveClutch(userId: string): Promise<BreedingSession | null> {
+    const clutch = await this.clutchRepo.findActiveByUserId(userId);
+    if (!clutch) {
+      return null;
+    }
+
+    // Refresh special berries from the actual inventory
+    const updatedBerries = await this.berryService.getAvailableSpecialBerries(clutch.trainerId);
+    if (JSON.stringify(updatedBerries) !== JSON.stringify(clutch.specialBerries)) {
+      await this.clutchRepo.updateSpecialBerries(clutch.sessionId, updatedBerries);
+    }
+
+    return {
+      ...this.clutchToSession(clutch),
+      specialBerries: updatedBerries,
+    };
+  }
+
+  private clutchToSession(clutch: import('../repositories/breeding-clutch.repository').BreedingClutch): BreedingSession {
+    return {
+      sessionId: clutch.sessionId,
+      userId: clutch.userId,
+      trainerId: clutch.trainerId,
+      parent1Id: clutch.parent1Id,
+      parent2Id: clutch.parent2Id,
+      parent1: clutch.parent1Data as MonsterWithTrainer,
+      parent2: clutch.parent2Data as MonsterWithTrainer,
+      offspring: clutch.offspring as InitializedMonster[],
+      userSettings: clutch.userSettings as unknown as UserSettings,
+      specialBerries: clutch.specialBerries as SpecialBerryInventory,
+      claimedMonsters: clutch.claimedMonsters,
+      createdAt: clutch.createdAt.toISOString(),
+    };
   }
 }

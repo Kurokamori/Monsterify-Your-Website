@@ -688,6 +688,17 @@ export type {
 } from './reroll.repository';
 
 // ============================================================================
+// Breeding Clutch Repository
+// ============================================================================
+
+export { BreedingClutchRepository } from './breeding-clutch.repository';
+export type {
+  BreedingClutchRow,
+  BreedingClutch,
+  BreedingClutchCreateInput,
+} from './breeding-clutch.repository';
+
+// ============================================================================
 // Bookmark Repository
 // ============================================================================
 

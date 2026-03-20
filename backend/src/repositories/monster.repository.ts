@@ -442,6 +442,7 @@ export class MonsterRepository extends BaseRepository<MonsterWithTrainer, Monste
 
   override async create(input: MonsterCreateInput): Promise<MonsterWithTrainer> {
     const level = input.level ?? 1;
+    const name = input.name || input.species1;
     const randomIv = () => Math.floor(Math.random() * 32);
 
     const result = await db.query<{ id: number }>(
@@ -454,20 +455,20 @@ export class MonsterRepository extends BaseRepository<MonsterWithTrainer, Monste
           spd_total, spd_iv, spd_ev, spe_total, spe_iv, spe_ev,
           nature, characteristic, gender, friendship, ability1, ability2,
           moveset, img_link, date_met, where_met, box_number, trainer_index,
-          shiny, alpha, shadow, paradox, pokerus
+          shiny, alpha, shadow, paradox, pokerus, created_at
         )
         VALUES (
           $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13,
           $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25,
           $26, $27, $28, $29, $30, $31, $32, $33, $34, $35, $36, $37,
-          $38, $39, $40, $41, $42, $43, $44, $45, $46, $47, $48
+          $38, $39, $40, $41, $42, $43, $44, $45, $46, $47, $48, NOW()
         )
         RETURNING id
       `,
       [
         input.trainerId,
         input.playerUserId ?? null,
-        input.name,
+        name,
         input.species1,
         input.species2 ?? null,
         input.species3 ?? null,

@@ -250,7 +250,7 @@ export class BazarService {
         ability1: bazarMonster.ability1,
         ability2: bazarMonster.ability2,
         moveset,
-        imgLink: bazarMonster.imgLink,
+        imgLink: undefined,
         shiny: bazarMonster.shiny,
         alpha: bazarMonster.alpha,
         shadow: bazarMonster.shadow,

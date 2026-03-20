@@ -210,3 +210,5 @@ export type {
   BookmarkTextNote,
   CategoryItemsResponse,
 } from './bookmarkService';
+export { default as userProfileService } from './userProfileService';
+export type { PublicUserProfile, ProfileSubmission, ProfileTrainer, ProfileSubmissionsResponse } from './userProfileService';

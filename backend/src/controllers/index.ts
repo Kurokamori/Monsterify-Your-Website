@@ -59,6 +59,9 @@ export {
   updateUser as updateUserAdmin,
   deleteUser,
   getUserRelatedSubmissions,
+  getPublicUserProfile,
+  getUserProfileSubmissions,
+  getUserProfileTrainers,
 } from './api/user.controller';
 
 // Auth Controller

@@ -33,6 +33,9 @@ export interface User {
   email?: string;
   is_admin: boolean;
   theme?: string;
+  profile_image_url?: string | null;
+  profile_trainer_id?: number | null;
+  bio?: string | null;
   monster_roller_settings?: MonsterRollerSettings;
   content_settings?: ContentSettings;
   notification_settings?: NotificationSettings;

@@ -42,6 +42,9 @@ export async function registerUser(req: Request, res: Response): Promise<void> {
         theme: user.theme ?? 'dusk',
         content_settings: user.content_settings,
         priority_trainer_ids: user.priority_trainer_ids,
+        profile_image_url: user.profile_image_url,
+        profile_trainer_id: user.profile_trainer_id,
+        bio: user.bio,
       },
       token,
       refreshToken,
@@ -98,6 +101,9 @@ export async function loginUser(req: Request, res: Response): Promise<void> {
         theme: user.theme ?? 'dusk',
         content_settings: user.content_settings,
         priority_trainer_ids: user.priority_trainer_ids,
+        profile_image_url: user.profile_image_url,
+        profile_trainer_id: user.profile_trainer_id,
+        bio: user.bio,
       },
       token,
       refreshToken,
@@ -159,6 +165,9 @@ export async function getUserProfile(req: Request, res: Response): Promise<void>
         theme: user.theme ?? 'dusk',
         content_settings: user.content_settings,
         priority_trainer_ids: user.priority_trainer_ids,
+        profile_image_url: user.profile_image_url,
+        profile_trainer_id: user.profile_trainer_id,
+        bio: user.bio,
       },
     });
   } catch (error) {
@@ -174,14 +183,20 @@ export async function updateUserProfile(req: Request, res: Response): Promise<vo
       return;
     }
 
-    const { display_name, discord_id } = req.body as {
+    const { display_name, discord_id, profile_image_url, profile_trainer_id, bio } = req.body as {
       display_name?: string;
       discord_id?: string;
+      profile_image_url?: string | null;
+      profile_trainer_id?: number | null;
+      bio?: string | null;
     };
 
     const updatedUser = await userService.update(req.user.id, {
       displayName: display_name,
       discordId: discord_id,
+      profileImageUrl: profile_image_url,
+      profileTrainerId: profile_trainer_id,
+      bio: bio,
     });
 
     res.json({
@@ -196,6 +211,9 @@ export async function updateUserProfile(req: Request, res: Response): Promise<vo
         theme: updatedUser.theme ?? 'dusk',
         content_settings: updatedUser.content_settings,
         priority_trainer_ids: updatedUser.priority_trainer_ids,
+        profile_image_url: updatedUser.profile_image_url,
+        profile_trainer_id: updatedUser.profile_trainer_id,
+        bio: updatedUser.bio,
       },
     });
   } catch (error) {
@@ -451,6 +469,9 @@ export async function discordCallback(req: Request, res: Response): Promise<void
       theme: user.theme ?? 'dusk',
       content_settings: user.content_settings,
       priority_trainer_ids: user.priority_trainer_ids,
+      profile_image_url: user.profile_image_url,
+      profile_trainer_id: user.profile_trainer_id,
+      bio: user.bio,
     }));
 
     res.redirect(`${frontendUrl}/discord-auth-success?token=${token}&refreshToken=${refreshToken}&user=${userParam}`);

@@ -48,7 +48,15 @@ export const TrainerDetailHeader = ({ trainer, isOwner }: TrainerDetailHeaderPro
           <div className="trainer-player-info">
             <div>
               <i className="fas fa-user"></i>
-              <span>Owned by {trainer.player_display_name || trainer.player_username || 'Unknown Player'}</span>
+              <span>Owned by{' '}
+                {trainer.player_user_id ? (
+                  <Link to={`/users/${trainer.player_user_id}`} className="creator-link">
+                    {trainer.player_display_name || trainer.player_username || 'Unknown Player'}
+                  </Link>
+                ) : (
+                  trainer.player_display_name || trainer.player_username || 'Unknown Player'
+                )}
+              </span>
             </div>
             <div className="trainer-level-faction">
               <span className="trainer-level">Level {trainer.level || 1}</span>

@@ -51,6 +51,9 @@ export type UserRow = {
   content_settings: ContentSettings | string | null;
   notification_settings: NotificationSettings | string | null;
   priority_trainer_ids: number[] | string | null;
+  profile_image_url: string | null;
+  profile_trainer_id: number | null;
+  bio: string | null;
   created_at: Date;
 };
 
@@ -80,6 +83,9 @@ export type UserUpdateInput = {
   contentSettings?: ContentSettings | null;
   notificationSettings?: NotificationSettings | null;
   priorityTrainerIds?: number[];
+  profileImageUrl?: string | null;
+  profileTrainerId?: number | null;
+  bio?: string | null;
 };
 
 export type AdminUserQueryOptions = {
@@ -193,6 +199,9 @@ const normalizeUser = (user: UserRow): UserPublic => ({
   content_settings: normalizeContentSettings(user.content_settings),
   notification_settings: normalizeNotificationSettings(user.notification_settings),
   priority_trainer_ids: normalizePriorityTrainerIds(user.priority_trainer_ids),
+  profile_image_url: user.profile_image_url,
+  profile_trainer_id: user.profile_trainer_id,
+  bio: user.bio,
   created_at: user.created_at,
 });
 
@@ -213,6 +222,9 @@ export class UserRepository extends BaseRepository<UserPublic, UserCreateInput, 
       'content_settings',
       'notification_settings',
       'priority_trainer_ids',
+      'profile_image_url',
+      'profile_trainer_id',
+      'bio',
       'created_at',
     ].join(', ');
   }
@@ -302,8 +314,8 @@ export class UserRepository extends BaseRepository<UserPublic, UserCreateInput, 
     const displayName = input.displayName ?? input.username;
     const result = await db.query<UserRow>(
       `
-        INSERT INTO users (username, display_name, discord_id, password, is_admin)
-        VALUES ($1, $2, $3, $4, $5)
+        INSERT INTO users (username, display_name, discord_id, password, is_admin, created_at)
+        VALUES ($1, $2, $3, $4, $5, NOW())
         RETURNING ${this.selectColumns}
       `,
       [
@@ -360,6 +372,15 @@ export class UserRepository extends BaseRepository<UserPublic, UserCreateInput, 
     }
     if (input.priorityTrainerIds !== undefined) {
       pushUpdate('priority_trainer_ids', JSON.stringify(input.priorityTrainerIds));
+    }
+    if (input.profileImageUrl !== undefined) {
+      pushUpdate('profile_image_url', input.profileImageUrl);
+    }
+    if (input.profileTrainerId !== undefined) {
+      pushUpdate('profile_trainer_id', input.profileTrainerId);
+    }
+    if (input.bio !== undefined) {
+      pushUpdate('bio', input.bio);
     }
 
     if (updates.length === 0) {
@@ -424,5 +445,61 @@ export class UserRepository extends BaseRepository<UserPublic, UserCreateInput, 
 
   async updatePriorityTrainers(id: number, trainerIds: number[]): Promise<UserPublic> {
     return this.update(id, { priorityTrainerIds: trainerIds });
+  }
+
+  async findPublicProfile(id: number): Promise<{
+    id: number;
+    username: string;
+    display_name: string;
+    profile_image_url: string | null;
+    profile_trainer_id: number | null;
+    profile_trainer_image: string | null;
+    bio: string | null;
+    created_at: Date | null;
+    trainer_count: number;
+    monster_count: number;
+  } | null> {
+    const result = await db.query(
+      `SELECT
+        u.id, u.username, u.display_name, u.profile_image_url, u.profile_trainer_id, u.bio, u.created_at,
+        pt.main_ref as profile_trainer_image,
+        (SELECT COUNT(*)::int FROM trainers WHERE player_user_id = u.id::text OR player_user_id = u.discord_id) as trainer_count,
+        (SELECT COUNT(*)::int FROM monsters m
+         JOIN trainers t ON m.trainer_id = t.id
+         WHERE t.player_user_id = u.id::text OR t.player_user_id = u.discord_id) as monster_count
+      FROM users u
+      LEFT JOIN trainers pt ON pt.id = u.profile_trainer_id
+      WHERE u.id = $1`,
+      [id]
+    );
+    return result.rows[0] ?? null;
+  }
+
+  async findPublicProfileByDiscordId(discordId: string): Promise<{
+    id: number;
+    username: string;
+    display_name: string;
+    profile_image_url: string | null;
+    profile_trainer_id: number | null;
+    profile_trainer_image: string | null;
+    bio: string | null;
+    created_at: Date | null;
+    trainer_count: number;
+    monster_count: number;
+  } | null> {
+    const result = await db.query(
+      `SELECT
+        u.id, u.username, u.display_name, u.profile_image_url, u.profile_trainer_id, u.bio, u.created_at,
+        pt.main_ref as profile_trainer_image,
+        (SELECT COUNT(*)::int FROM trainers WHERE player_user_id = u.id::text OR player_user_id = u.discord_id) as trainer_count,
+        (SELECT COUNT(*)::int FROM monsters m
+         JOIN trainers t ON m.trainer_id = t.id
+         WHERE t.player_user_id = u.id::text OR t.player_user_id = u.discord_id) as monster_count
+      FROM users u
+      LEFT JOIN trainers pt ON pt.id = u.profile_trainer_id
+      WHERE u.discord_id = $1`,
+      [discordId]
+    );
+    return result.rows[0] ?? null;
   }
 }

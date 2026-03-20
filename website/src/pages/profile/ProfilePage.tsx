@@ -11,6 +11,7 @@ import { SuccessMessage } from '../../components/common/SuccessMessage';
 import { ContentSettingsSection } from '../../components/profile/ContentSettingsSection';
 import { NotificationSettingsSection } from '../../components/profile/NotificationSettingsSection';
 import { useDocumentTitle } from '../../hooks/useDocumentTitle';
+import userProfileService from '@services/userProfileService';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:4000/api';
 
@@ -102,6 +103,13 @@ export default function ProfilePage() {
   const [contentSettings, setContentSettings] = useState<ContentSettings>(DEFAULT_CONTENT_SETTINGS);
   const [notificationSettings, setNotificationSettings] = useState<NotificationSettings>(DEFAULT_NOTIFICATION_SETTINGS);
 
+  // Profile picture & bio state
+  const [bio, setBio] = useState(currentUser?.bio || '');
+  const [profileImageUrl, setProfileImageUrl] = useState(currentUser?.profile_image_url || '');
+  const [profileTrainerId, setProfileTrainerId] = useState<number | null>(currentUser?.profile_trainer_id || null);
+  const [userTrainers, setUserTrainers] = useState<Array<{ id: number; name: string; main_ref?: string }>>([]);
+  const [uploadingImage, setUploadingImage] = useState(false);
+
   // UI state
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -149,10 +157,29 @@ export default function ProfilePage() {
     if (!currentUser || saving) return;
     setDisplayName(currentUser.display_name || '');
     setDiscordId(currentUser.discord_id || '');
+    setBio(currentUser.bio || '');
+    setProfileImageUrl(currentUser.profile_image_url || '');
+    setProfileTrainerId(currentUser.profile_trainer_id || null);
     setMonsterSettings(parseSettings(currentUser.monster_roller_settings, DEFAULT_MONSTER_SETTINGS));
     setContentSettings(parseSettings(currentUser.content_settings, DEFAULT_CONTENT_SETTINGS));
     setNotificationSettings(parseSettings(currentUser.notification_settings, DEFAULT_NOTIFICATION_SETTINGS));
   }, [currentUser, saving]);
+
+  // Fetch trainers for profile picture selection
+  useEffect(() => {
+    const fetchTrainers = async () => {
+      if (!currentUser) return;
+      try {
+        const response = await userProfileService.getProfileTrainers(currentUser.id);
+        if (response.success) {
+          setUserTrainers(response.trainers);
+        }
+      } catch (err) {
+        console.error('Error fetching trainers for pfp:', err);
+      }
+    };
+    fetchTrainers();
+  }, [currentUser]);
 
   // Redirect if not authenticated (wait for auth to finish loading first)
   useEffect(() => {
@@ -165,6 +192,40 @@ export default function ProfilePage() {
     setMonsterSettings(prev => ({ ...prev, [key]: !prev[key] }));
   };
 
+  const handleProfileImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    try {
+      setUploadingImage(true);
+      const result = await userProfileService.uploadProfileImage(file);
+      if (result.success && result.secure_url) {
+        setProfileImageUrl(result.secure_url);
+        setProfileTrainerId(null);
+      }
+    } catch (err) {
+      console.error('Upload error:', err);
+      setError('Failed to upload image');
+    } finally {
+      setUploadingImage(false);
+    }
+  };
+
+  const handleTrainerPfpSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const val = e.target.value;
+    if (val === '') {
+      setProfileTrainerId(null);
+    } else {
+      setProfileTrainerId(parseInt(val));
+      setProfileImageUrl('');
+    }
+  };
+
+  const handleClearPfp = () => {
+    setProfileImageUrl('');
+    setProfileTrainerId(null);
+  };
+
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
@@ -174,7 +235,13 @@ export default function ProfilePage() {
       setSuccess(null);
 
       const [profileOk, settingsOk, contentOk, notifOk] = await Promise.all([
-        updateProfile({ display_name: displayName, discord_id: discordId }),
+        updateProfile({
+          display_name: displayName,
+          discord_id: discordId || undefined,
+          profile_image_url: profileImageUrl || null,
+          profile_trainer_id: profileTrainerId,
+          bio: bio || null,
+        }),
         updateMonsterRollerSettings(monsterSettings),
         updateContentSettings(contentSettings),
         updateNotificationSettings(notificationSettings),
@@ -240,6 +307,54 @@ export default function ProfilePage() {
 
       {/* Settings Form */}
       <form className="profile-form" onSubmit={handleSubmit}>
+        {/* Profile Picture */}
+        <div className="profile-picture-section">
+          <div className="profile-picture-preview">
+            <img
+              src={
+                profileTrainerId
+                  ? (userTrainers.find(t => t.id === profileTrainerId)?.main_ref || '/images/default_trainer.png')
+                  : (profileImageUrl || '/images/default_trainer.png')
+              }
+              alt="Profile"
+              onError={(e) => { (e.target as HTMLImageElement).src = '/images/default_trainer.png'; }}
+            />
+          </div>
+          <div className="profile-picture-controls">
+            <h3>Profile Picture</h3>
+            <div className="option-row">
+              <label className="button secondary profile-picture-upload-btn">
+                <i className="fas fa-upload"></i> Upload Image
+                <input
+                  type="file"
+                  accept="image/jpeg,image/png,image/gif,image/webp"
+                  onChange={handleProfileImageUpload}
+                  disabled={uploadingImage}
+                />
+              </label>
+              {(profileImageUrl || profileTrainerId) && (
+                <button type="button" className="button tertiary" onClick={handleClearPfp}>
+                  <i className="fas fa-times"></i> Clear
+                </button>
+              )}
+            </div>
+            {uploadingImage && <span className="text-muted">Uploading...</span>}
+            <div className="option-row">
+              <label>Or use a trainer's picture:</label>
+              <select
+                className="select"
+                value={profileTrainerId ?? ''}
+                onChange={handleTrainerPfpSelect}
+              >
+                <option value="">-- None --</option>
+                {userTrainers.map(t => (
+                  <option key={t.id} value={t.id}>{t.name}</option>
+                ))}
+              </select>
+            </div>
+          </div>
+        </div>
+
         {/* Basic Info */}
         <div className="settings-section">
           <h2 className="settings-section-title">
@@ -283,6 +398,21 @@ export default function ProfilePage() {
             </button>
             </div>
             </div>
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="bio">Bio</label>
+            <textarea
+              id="bio"
+              value={bio}
+              onChange={(e) => setBio(e.target.value)}
+              placeholder="Tell others about yourself..."
+              maxLength={500}
+              rows={3}
+              className="textarea"
+              disabled={saving}
+            />
+            <small className="text-muted">{bio.length}/500</small>
           </div>
         </div>
 

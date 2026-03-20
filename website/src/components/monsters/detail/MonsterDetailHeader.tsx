@@ -135,6 +135,17 @@ export const MonsterDetailHeader = ({
                   </Link>
                 </span>
               </div>
+              {trainer.player_user_id && (trainer.player_display_name || trainer.player_username) && (
+                <div>
+                  <i className="fas fa-palette"></i>
+                  <span>
+                    Owner:{' '}
+                    <Link to={`/users/${trainer.player_user_id}`} className="creator-link">
+                      {trainer.player_display_name || trainer.player_username}
+                    </Link>
+                  </span>
+                </div>
+              )}
             </div>
           )}
 
