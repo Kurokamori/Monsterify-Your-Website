@@ -16,7 +16,8 @@ import type {
   EvolutionItem,
   EvolutionInventory,
   EvolvedMonster,
-  WitchsHutProps
+  WitchsHutProps,
+  MultiSlotState,
 } from './types';
 import { extractErrorMessage } from '../../utils/errorUtils';
 import { getItemImageUrl, handleItemImageError } from '../../utils/imageUtils';
@@ -46,6 +47,7 @@ const EVOLUTION_ITEMS: EvolutionItem[] = [
 ];
 
 type SpeciesSlot = 'species1' | 'species2' | 'species3';
+type EvolutionMode = 'standard' | 'chimera' | 'hydra';
 
 /**
  * WitchsHut component for evolving monsters
@@ -90,6 +92,10 @@ export function WitchsHut({ className = '', onEvolutionComplete }: WitchsHutProp
   const [evolutionError, setEvolutionError] = useState('');
   const [evolutionSuccess, setEvolutionSuccess] = useState(false);
   const [evolvedMonster, setEvolvedMonster] = useState<EvolvedMonster | null>(null);
+
+  // Multi-evolution state (Chimera Stone / Hydra Crystal)
+  const [evolutionMode, setEvolutionMode] = useState<EvolutionMode>('standard');
+  const [multiSlots, setMultiSlots] = useState<MultiSlotState[]>([]);
 
   // Fetch user trainers
   useEffect(() => {
@@ -253,6 +259,8 @@ export function WitchsHut({ className = '', onEvolutionComplete }: WitchsHutProp
     setUseDigitalRepairKit(false);
     setEvolutionPreview(null);
     setCustomSpeciesName('');
+    setEvolutionMode('standard');
+    setMultiSlots([]);
 
     if (monster.species1) {
       await fetchEvolutionOptions(monster, 'species1');
@@ -308,6 +316,261 @@ export function WitchsHut({ className = '', onEvolutionComplete }: WitchsHutProp
       setSelectedEvolutionItem('');
     }
   }, [useVoidStone, selectedEvolutionItem]);
+
+  // ===================================================================
+  // Multi-Evolution Handlers (Chimera Stone / Hydra Crystal)
+  // ===================================================================
+
+  const fetchMultiSlotOptions = useCallback(async (
+    slotIndex: number,
+    speciesSlot: SpeciesSlot,
+  ) => {
+    if (!selectedMonster) return;
+
+    setMultiSlots(prev => prev.map((s, i) =>
+      i === slotIndex ? { ...s, loadingOptions: true } : s
+    ));
+
+    try {
+      const response = await api.get(`/monsters/${selectedMonster.id}/evolution-options`, {
+        params: { speciesSlot },
+      });
+
+      const options: EvolutionOption[] = response.data?.success ? response.data.data : [];
+
+      let images: Record<string, { image_url: string; species: string }> = {};
+      if (options.length > 0) {
+        try {
+          images = await speciesService.getSpeciesImages(options.map(o => o.name));
+        } catch {
+          // Images are non-critical
+        }
+      }
+
+      setMultiSlots(prev => prev.map((s, i) =>
+        i === slotIndex ? {
+          ...s,
+          evolutionOptions: options,
+          evolutionImages: images,
+          loadingOptions: false,
+          selectedEvolution: options.length === 1 ? options[0].name : s.selectedEvolution,
+        } : s
+      ));
+    } catch {
+      setMultiSlots(prev => prev.map((s, i) =>
+        i === slotIndex ? { ...s, evolutionOptions: [], loadingOptions: false } : s
+      ));
+    }
+  }, [selectedMonster]);
+
+  const handleModeChange = useCallback(async (mode: EvolutionMode) => {
+    setEvolutionMode(mode);
+    setEvolutionError('');
+    setImageUrl('');
+    setImageFile(null);
+    setImagePreview('');
+    setUseVoidStone(false);
+    setSelectedEvolutionItem('');
+
+    if (mode === 'standard') {
+      setMultiSlots([]);
+      if (selectedMonster && selectedMonster[selectedSpeciesSlot]) {
+        await fetchEvolutionOptions(selectedMonster, selectedSpeciesSlot);
+      }
+      return;
+    }
+
+    if (!selectedMonster) return;
+
+    const speciesEntries: { slot: SpeciesSlot; name: string }[] = [];
+    if (selectedMonster.species1) speciesEntries.push({ slot: 'species1', name: selectedMonster.species1 });
+    if (selectedMonster.species2) speciesEntries.push({ slot: 'species2', name: selectedMonster.species2 });
+    if (selectedMonster.species3) speciesEntries.push({ slot: 'species3', name: selectedMonster.species3 });
+
+    const isAutoSelect = mode === 'hydra' || (mode === 'chimera' && speciesEntries.length === 2);
+
+    const newSlots: MultiSlotState[] = speciesEntries.map(entry => ({
+      speciesSlot: entry.slot,
+      speciesName: entry.name,
+      selected: isAutoSelect,
+      evolutionOptions: [],
+      selectedEvolution: '',
+      useDigitalRepairKit: false,
+      customSpeciesName: '',
+      evolutionImages: {},
+      loadingOptions: false,
+    }));
+
+    setMultiSlots(newSlots);
+
+    if (isAutoSelect) {
+      for (let i = 0; i < newSlots.length; i++) {
+        if (newSlots[i].selected) {
+          fetchMultiSlotOptions(i, newSlots[i].speciesSlot);
+        }
+      }
+    }
+  }, [selectedMonster, selectedSpeciesSlot, fetchEvolutionOptions, fetchMultiSlotOptions]);
+
+  const handleMultiSlotToggle = useCallback(async (index: number) => {
+    const slot = multiSlots[index];
+    if (!slot) return;
+
+    if (slot.selected) {
+      setMultiSlots(prev => prev.map((s, i) =>
+        i === index ? {
+          ...s,
+          selected: false,
+          selectedEvolution: '',
+          customSpeciesName: '',
+          useDigitalRepairKit: false,
+        } : s
+      ));
+    } else {
+      const selectedCount = multiSlots.filter(s => s.selected).length;
+      if (selectedCount >= 2) return;
+
+      setMultiSlots(prev => prev.map((s, i) =>
+        i === index ? { ...s, selected: true } : s
+      ));
+
+      if (slot.evolutionOptions.length === 0) {
+        await fetchMultiSlotOptions(index, slot.speciesSlot);
+      }
+    }
+  }, [multiSlots, fetchMultiSlotOptions]);
+
+  const handleMultiSlotEvolutionSelect = useCallback((index: number, evolutionName: string) => {
+    setMultiSlots(prev => prev.map((s, i) =>
+      i === index ? { ...s, selectedEvolution: evolutionName } : s
+    ));
+  }, []);
+
+  const handleMultiSlotDrkToggle = useCallback((index: number) => {
+    setMultiSlots(prev => prev.map((s, i) =>
+      i === index ? {
+        ...s,
+        useDigitalRepairKit: !s.useDigitalRepairKit,
+        selectedEvolution: !s.useDigitalRepairKit ? '' : s.selectedEvolution,
+      } : s
+    ));
+  }, []);
+
+  const handleMultiSlotCustomName = useCallback((index: number, name: string) => {
+    setMultiSlots(prev => prev.map((s, i) =>
+      i === index ? { ...s, customSpeciesName: name } : s
+    ));
+  }, []);
+
+  const handleMultiEvolve = useCallback(async () => {
+    if (!selectedMonster || !selectedTrainer) {
+      setEvolutionError('Please select a monster to evolve.');
+      return;
+    }
+
+    const selectedSlots = multiSlots.filter(s => s.selected);
+    const stoneType = evolutionMode === 'chimera' ? 'Chimera Stone' : 'Hydra Crystal';
+
+    if (!hasEvolutionItem(stoneType)) {
+      setEvolutionError(`You don't have a ${stoneType} in your inventory.`);
+      return;
+    }
+
+    for (const slot of selectedSlots) {
+      if (!slot.selectedEvolution && !slot.useDigitalRepairKit) {
+        setEvolutionError(`Please select an evolution for ${slot.speciesName} or use a Digital Repair Kit.`);
+        return;
+      }
+      if (slot.useDigitalRepairKit && !slot.customSpeciesName.trim()) {
+        setEvolutionError(`Please enter a custom species name for ${slot.speciesName}.`);
+        return;
+      }
+    }
+
+    if (!imageUrl && !imageFile && !useVoidStone) {
+      setEvolutionError('Please provide an image or use Void Evolution Stones.');
+      return;
+    }
+
+    if (useVoidStone) {
+      const voidCount = getItemCount('Void Evolution Stone');
+      if (voidCount < selectedSlots.length) {
+        setEvolutionError(`Not enough Void Evolution Stones. Need ${selectedSlots.length}, have ${voidCount}.`);
+        return;
+      }
+    }
+
+    try {
+      setLoading(true);
+      setEvolutionError('');
+
+      const evolutions = selectedSlots.map(slot => ({
+        speciesSlot: slot.speciesSlot,
+        evolutionName: slot.useDigitalRepairKit ? slot.customSpeciesName.trim() : slot.selectedEvolution,
+        useDigitalRepairKit: slot.useDigitalRepairKit,
+        customEvolutionName: slot.useDigitalRepairKit ? slot.customSpeciesName.trim() : undefined,
+      }));
+
+      const evolutionData = {
+        trainerId: selectedTrainer,
+        stoneType,
+        evolutions,
+        imageUrl: useVoidStone ? null : imageUrl,
+        useVoidStone,
+      };
+
+      let response;
+      if (imageFile && !useVoidStone) {
+        const formData = new FormData();
+        formData.append('image', imageFile);
+        formData.append('trainerId', String(selectedTrainer));
+        formData.append('stoneType', stoneType);
+        formData.append('evolutions', JSON.stringify(evolutions));
+        formData.append('useVoidStone', String(useVoidStone));
+        if (imageUrl) formData.append('imageUrl', imageUrl);
+
+        response = await api.post(`/monsters/${selectedMonster.id}/multi-evolve`, formData, {
+          headers: { 'Content-Type': 'multipart/form-data' },
+        });
+      } else {
+        response = await api.post(`/monsters/${selectedMonster.id}/multi-evolve`, evolutionData);
+      }
+
+      if (response.data?.success && response.data.data) {
+        try {
+          const [invRes, monRes] = await Promise.all([
+            api.get(`/trainers/${selectedTrainer}/inventory`),
+            api.get(`/monsters/trainer/${selectedTrainer}`),
+          ]);
+          setTrainerInventory(invRes.data.data || { evolution: {} });
+          setTrainerMonsters(monRes.data.monsters || []);
+        } catch {
+          // Refresh is non-critical
+        }
+
+        setEvolvedMonster(response.data.data);
+        setEvolutionSuccess(true);
+        onEvolutionComplete?.(response.data.data);
+      } else {
+        setEvolutionError(response.data?.message || 'Failed to evolve monster.');
+      }
+    } catch (err) {
+      setEvolutionError(extractErrorMessage(err, 'An error occurred during evolution.'));
+    } finally {
+      setLoading(false);
+    }
+  }, [
+    selectedMonster,
+    selectedTrainer,
+    multiSlots,
+    evolutionMode,
+    imageUrl,
+    imageFile,
+    useVoidStone,
+    hasEvolutionItem,
+    getItemCount,
+    onEvolutionComplete,
+  ]);
 
   // Close modal
   const closeModal = useCallback(() => {
@@ -860,6 +1123,363 @@ export function WitchsHut({ className = '', onEvolutionComplete }: WitchsHutProp
     );
   };
 
+  // Render mode selector (shown for multi-species monsters)
+  const renderModeSelector = () => {
+    if (!selectedMonster) return null;
+
+    const speciesCount = [selectedMonster.species1, selectedMonster.species2, selectedMonster.species3]
+      .filter(Boolean).length;
+
+    if (speciesCount < 2) return null;
+
+    const chimeraCount = getItemCount('Chimera Stone');
+    const hydraCount = getItemCount('Hydra Crystal');
+    const canChimera = speciesCount >= 2 && chimeraCount > 0;
+    const canHydra = speciesCount === 3 && hydraCount > 0;
+
+    return (
+      <div className="witchs-hut-mode-selector">
+        <button
+          className={`witchs-hut-mode-option ${evolutionMode === 'standard' ? 'active' : ''}`}
+          onClick={() => handleModeChange('standard')}
+        >
+          <i className="fas fa-magic"></i>
+          <span className="witchs-hut-mode-name">Standard</span>
+          <span className="witchs-hut-mode-desc">Evolve one species</span>
+        </button>
+        <button
+          className={`witchs-hut-mode-option ${evolutionMode === 'chimera' ? 'active' : ''} ${!canChimera ? 'disabled' : ''}`}
+          onClick={() => canChimera && handleModeChange('chimera')}
+          disabled={!canChimera}
+          title={!canChimera ? (speciesCount < 2 ? 'Requires 2+ species' : 'No Chimera Stones in inventory') : `Chimera Stone (${chimeraCount} available)`}
+        >
+          <i className="fas fa-link"></i>
+          <span className="witchs-hut-mode-name">Chimera Stone</span>
+          <span className="witchs-hut-mode-desc">Evolve 2 species at once</span>
+          <span className="witchs-hut-mode-count">{chimeraCount} available</span>
+        </button>
+        {speciesCount === 3 && (
+          <button
+            className={`witchs-hut-mode-option ${evolutionMode === 'hydra' ? 'active' : ''} ${!canHydra ? 'disabled' : ''}`}
+            onClick={() => canHydra && handleModeChange('hydra')}
+            disabled={!canHydra}
+            title={!canHydra ? 'No Hydra Crystals in inventory' : `Hydra Crystal (${hydraCount} available)`}
+          >
+            <i className="fas fa-crown"></i>
+            <span className="witchs-hut-mode-name">Hydra Crystal</span>
+            <span className="witchs-hut-mode-desc">Evolve all 3 species</span>
+            <span className="witchs-hut-mode-count">{hydraCount} available</span>
+          </button>
+        )}
+      </div>
+    );
+  };
+
+  // Render a single species card for multi-evolution
+  const renderMultiSlotCard = (slot: MultiSlotState, index: number) => {
+    const drkAvailable = hasEvolutionItem('Digital Repair Kit');
+    const slotLabel = slot.speciesSlot === 'species1' ? 'Species 1'
+      : slot.speciesSlot === 'species2' ? 'Species 2' : 'Species 3';
+
+    return (
+      <div key={slot.speciesSlot} className={`witchs-hut-multi-slot ${slot.selected ? 'selected' : 'unselected'}`}>
+        <div className="witchs-hut-multi-slot-header">
+          <h5>
+            <span className="witchs-hut-multi-slot-label">{slotLabel}</span>
+            <span className="witchs-hut-multi-slot-name">{slot.speciesName}</span>
+          </h5>
+          {evolutionMode === 'chimera' && multiSlots.length === 3 && (
+            <button
+              className={`button ${slot.selected ? 'primary' : 'secondary'} sm no-flex`}
+              onClick={() => handleMultiSlotToggle(index)}
+            >
+              {slot.selected ? 'Selected' : 'Select'}
+            </button>
+          )}
+        </div>
+
+        {slot.selected && (
+          <div className="witchs-hut-multi-slot-body">
+            {slot.loadingOptions ? (
+              <div className="witchs-hut-loading">
+                <LoadingSpinner size="sm" />
+                <span>Loading options...</span>
+              </div>
+            ) : (
+              <>
+                {slot.evolutionOptions.length > 0 && !slot.useDigitalRepairKit && (
+                  <div className="witchs-hut-evolution-options">
+                    {slot.evolutionOptions.map((evo, evoIndex) => (
+                      <button
+                        key={evoIndex}
+                        className={`witchs-hut-evolution-card ${slot.selectedEvolution === evo.name ? 'selected' : ''}`}
+                        onClick={() => handleMultiSlotEvolutionSelect(index, evo.name)}
+                      >
+                        {slot.evolutionImages[evo.name]?.image_url && (
+                          <img
+                            src={slot.evolutionImages[evo.name].image_url}
+                            alt={evo.name}
+                            className="witchs-hut-evolution-card-image"
+                          />
+                        )}
+                        <span className="witchs-hut-evolution-name">{evo.name}</span>
+                        <span className="witchs-hut-evolution-type">{evo.type}</span>
+                      </button>
+                    ))}
+                  </div>
+                )}
+
+                {slot.evolutionOptions.length === 0 && !slot.loadingOptions && !slot.useDigitalRepairKit && (
+                  <div className="witchs-hut-no-options">
+                    <i className="fas fa-info-circle"></i>
+                    <span>No natural evolutions found. Use a Digital Repair Kit for custom evolution.</span>
+                  </div>
+                )}
+
+                <div className="witchs-hut-multi-drk">
+                  <button
+                    className={`button ${slot.useDigitalRepairKit ? 'primary' : 'secondary'} sm no-flex`}
+                    onClick={() => handleMultiSlotDrkToggle(index)}
+                    disabled={!drkAvailable}
+                  >
+                    {slot.useDigitalRepairKit ? 'DRK Active' : 'Use Digital Repair Kit'}
+                  </button>
+                  {slot.useDigitalRepairKit && (
+                    <input
+                      type="text"
+                      className="input"
+                      value={slot.customSpeciesName}
+                      onChange={(e) => handleMultiSlotCustomName(index, e.target.value)}
+                      placeholder="Enter species name..."
+                    />
+                  )}
+                </div>
+
+                {(slot.selectedEvolution || (slot.useDigitalRepairKit && slot.customSpeciesName.trim())) && (
+                  <div className="witchs-hut-multi-slot-selected">
+                    <i className="fas fa-arrow-right"></i>
+                    <strong>{slot.useDigitalRepairKit ? slot.customSpeciesName.trim() : slot.selectedEvolution}</strong>
+                  </div>
+                )}
+              </>
+            )}
+          </div>
+        )}
+      </div>
+    );
+  };
+
+  // Render multi-evolution form (Chimera Stone / Hydra Crystal)
+  const renderMultiEvolutionForm = () => {
+    if (!selectedMonster) return null;
+
+    const selectedSlots = multiSlots.filter(s => s.selected);
+    const stoneType = evolutionMode === 'chimera' ? 'Chimera Stone' : 'Hydra Crystal';
+    const voidStoneCost = selectedSlots.length;
+    const voidStoneCount = getItemCount('Void Evolution Stone');
+    const showSpeciesSelector = evolutionMode === 'chimera' && multiSlots.length === 3;
+    const stepOffset = showSpeciesSelector ? 1 : 0;
+
+    return (
+      <div className="witchs-hut-evolution-form">
+        {/* Monster Summary */}
+        <div className="witchs-hut-summary">
+          <div className="witchs-hut-monster-info">
+            <h3>{selectedMonster.name}</h3>
+            <p className="witchs-hut-level">Level {selectedMonster.level}</p>
+            <p className="witchs-hut-species">
+              {selectedMonster.species1}
+              {selectedMonster.species2 && ` + ${selectedMonster.species2}`}
+              {selectedMonster.species3 && ` + ${selectedMonster.species3}`}
+            </p>
+            <div className="badge-group badge-group--sm mt-xs badge-group--wrap badge-group--gap-xs">
+              {selectedMonster.type1 && <TypeBadge type={selectedMonster.type1} size="sm" />}
+              {selectedMonster.type2 && <TypeBadge type={selectedMonster.type2} size="sm" />}
+              {selectedMonster.type3 && <TypeBadge type={selectedMonster.type3} size="sm" />}
+              {selectedMonster.type4 && <TypeBadge type={selectedMonster.type4} size="sm" />}
+              {selectedMonster.type5 && <TypeBadge type={selectedMonster.type5} size="sm" />}
+            </div>
+          </div>
+          <div className="witchs-hut-arrow">
+            <i className="fas fa-arrow-right"></i>
+          </div>
+          <div className="witchs-hut-target">
+            {selectedSlots.some(s => s.selectedEvolution || (s.useDigitalRepairKit && s.customSpeciesName.trim())) ? (
+              <div className="witchs-hut-multi-targets">
+                {selectedSlots.map(slot => {
+                  const targetName = slot.useDigitalRepairKit
+                    ? slot.customSpeciesName.trim()
+                    : slot.selectedEvolution;
+                  return targetName ? (
+                    <span key={slot.speciesSlot} className="witchs-hut-target-name">
+                      {targetName}
+                    </span>
+                  ) : (
+                    <span key={slot.speciesSlot} className="witchs-hut-target-pending">?</span>
+                  );
+                })}
+              </div>
+            ) : (
+              <>
+                <i className="fas fa-question"></i>
+                <span>Choose Evolutions</span>
+              </>
+            )}
+          </div>
+        </div>
+
+        {/* Stone Info */}
+        <div className="witchs-hut-stone-info">
+          <i className="fas fa-gem"></i>
+          <span>Using: <strong>{stoneType}</strong> ({getItemCount(stoneType)} available)</span>
+        </div>
+
+        {/* Species Selection (chimera on 3-species only) */}
+        {showSpeciesSelector && (
+          <div className="witchs-hut-step">
+            <div className="witchs-hut-step-header">
+              <span className="witchs-hut-step-number">1</span>
+              <h4>Select 2 Species to Evolve</h4>
+              <span className="witchs-hut-step-subtitle">
+                {selectedSlots.length}/2 selected
+              </span>
+            </div>
+            <p className="witchs-hut-multi-select-info">
+              Choose which two species you want to evolve simultaneously. The third will remain unchanged.
+            </p>
+          </div>
+        )}
+
+        {/* Per-species Evolution */}
+        <div className="witchs-hut-step">
+          <div className="witchs-hut-step-header">
+            <span className="witchs-hut-step-number">{1 + stepOffset}</span>
+            <h4>Choose Evolutions</h4>
+          </div>
+          <div className="witchs-hut-multi-slots">
+            {multiSlots.map((slot, index) => renderMultiSlotCard(slot, index))}
+          </div>
+        </div>
+
+        {/* Image & Void Stones */}
+        <div className="witchs-hut-step">
+          <div className="witchs-hut-step-header">
+            <span className="witchs-hut-step-number">{2 + stepOffset}</span>
+            <h4>Evolution Image</h4>
+          </div>
+          <div className="witchs-hut-method">
+            <h5>Evolution Image/File</h5>
+            <p>
+              Upload an image/file or use Void Stones to bypass this requirement.
+              One image covers all species being evolved.
+            </p>
+            <div className="witchs-hut-void-cost-info">
+              <i className="fas fa-info-circle"></i>
+              <span>
+                <strong>Void Stone cost:</strong> {voidStoneCost} Void Evolution Stone{voidStoneCost !== 1 ? 's' : ''} (1 per species being evolved).
+                Only 1 image/file is needed regardless of how many species evolve.
+              </span>
+            </div>
+
+            <div className="witchs-hut-image-tabs">
+              <button
+                className={`button ${!useVoidStone ? 'primary' : 'secondary'} no-flex`}
+                onClick={() => setUseVoidStone(false)}
+              >
+                <i className="fas fa-image"></i>
+                Upload Image
+              </button>
+              <button
+                className={`button ${useVoidStone ? 'primary' : 'secondary'} no-flex`}
+                onClick={() => setUseVoidStone(!useVoidStone)}
+                disabled={voidStoneCount < voidStoneCost}
+                title={`Need ${voidStoneCost} Void Stone${voidStoneCost !== 1 ? 's' : ''} (${voidStoneCount} available)`}
+              >
+                <i className="fas fa-gem"></i>
+                Use Void Stones ({voidStoneCost} needed, {voidStoneCount} avail.)
+              </button>
+            </div>
+
+            {!useVoidStone && (
+              <div className="witchs-hut-image-inputs">
+                <input
+                  type="text"
+                  className="input"
+                  value={imageUrl}
+                  onChange={handleImageUrlChange}
+                  placeholder="Enter image URL"
+                />
+                <div className="witchs-hut-file-input">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageFileChange}
+                    id="multi-evolution-image-upload"
+                  />
+                  <label htmlFor="multi-evolution-image-upload" className="button secondary no-flex">
+                    <i className="fas fa-upload"></i>
+                    Choose File
+                  </label>
+                </div>
+              </div>
+            )}
+
+            {useVoidStone && (
+              <div className="witchs-hut-void-info">
+                <i className="fas fa-gem"></i>
+                <span>
+                  Using {voidStoneCost} Void Evolution Stone{voidStoneCost !== 1 ? 's' : ''} ({voidStoneCount} available) - No image required
+                </span>
+              </div>
+            )}
+
+            {imagePreview && !useVoidStone && (
+              <div className="witchs-hut-image-preview">
+                <img src={imagePreview} alt="Preview" />
+                <button
+                  className="witchs-hut-remove-preview"
+                  onClick={() => {
+                    setImagePreview('');
+                    setImageUrl('');
+                    setImageFile(null);
+                  }}
+                >
+                  <i className="fas fa-times"></i>
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {evolutionError && <ErrorMessage message={evolutionError} />}
+
+        <div className="witchs-hut-actions">
+          <button className="button secondary no-flex" onClick={closeModal}>
+            <i className="fas fa-times"></i>
+            Cancel
+          </button>
+          <button
+            className="button primary no-flex"
+            onClick={handleMultiEvolve}
+            disabled={loading || selectedSlots.length < 2}
+          >
+            {loading ? (
+              <>
+                <LoadingSpinner size="sm" message="" />
+                Evolving...
+              </>
+            ) : (
+              <>
+                <i className="fas fa-magic"></i>
+                Evolve {selectedSlots.length} Species
+              </>
+            )}
+          </button>
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div className={`witchs-hut ${className}`.trim()}>
       {error && <ErrorMessage message={error} />}
@@ -942,6 +1562,9 @@ export function WitchsHut({ className = '', onEvolutionComplete }: WitchsHutProp
                 <li>Select from available evolution options or use a Digital Repair Kit for custom evolution</li>
                 <li>Upload an image or use a Void Stone to bypass the image requirement</li>
                 <li>Optionally use evolution items to add or modify types</li>
+                <li>Use a <strong>Chimera Stone</strong> to evolve 2 species simultaneously (requires 2+ species)</li>
+                <li>Use a <strong>Hydra Crystal</strong> to evolve all 3 species at once (requires 3 species)</li>
+                <li>Multi-evolution Void Stones cost 1 per species being evolved, but only 1 image is needed</li>
               </ul>
             </div>
           </div>
@@ -961,7 +1584,12 @@ export function WitchsHut({ className = '', onEvolutionComplete }: WitchsHutProp
         title={selectedMonster?.name || 'Monster Evolution'}
         size="large"
       >
-        {evolutionSuccess ? renderSuccessScreen() : renderEvolutionForm()}
+        {evolutionSuccess ? renderSuccessScreen() : (
+          <>
+            {renderModeSelector()}
+            {evolutionMode === 'standard' ? renderEvolutionForm() : renderMultiEvolutionForm()}
+          </>
+        )}
       </Modal>
     </div>
   );

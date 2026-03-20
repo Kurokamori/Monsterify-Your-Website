@@ -98,11 +98,12 @@ export async function getHarvestSession(req: Request, res: Response): Promise<vo
 
 export async function claimReward(req: Request, res: Response): Promise<void> {
   try {
-    const { sessionId, rewardId, trainerId, monsterName } = req.body as {
+    const { sessionId, rewardId, trainerId, monsterName, ball } = req.body as {
       sessionId?: string;
       rewardId?: string;
       trainerId?: number;
       monsterName?: string;
+      ball?: string;
     };
     const userId = req.user?.id;
 
@@ -116,7 +117,7 @@ export async function claimReward(req: Request, res: Response): Promise<void> {
       return;
     }
 
-    const result = await gardenService.claimReward(sessionId, rewardId, trainerId, userId, monsterName);
+    const result = await gardenService.claimReward(sessionId, rewardId, trainerId, userId, monsterName, ball);
 
     res.json({
       success: true,

@@ -18,6 +18,7 @@ import type {
 import { MonsterRollerService, type UserSettings, type RollParams } from './monster-roller.service';
 import { MonsterInitializerService } from './monster-initializer.service';
 import { ItemRollerService } from './item-roller.service';
+import { ItemRepository } from '../repositories/item.repository';
 import type { MonsterTable } from '../utils/constants';
 
 // ============================================================================
@@ -901,6 +902,19 @@ export class GameCornerService {
     playerUserId: string,
     monsterData: MonsterRewardData,
   ): Promise<void> {
+    // Game corner monsters come in a random ball from all available balls
+    let randomBall = 'Poke Ball';
+    try {
+      const itemRepo = new ItemRepository();
+      const ballItems = await itemRepo.findByCategory('balls');
+      if (ballItems.length > 0) {
+        const randomIndex = Math.floor(Math.random() * ballItems.length);
+        randomBall = ballItems[randomIndex]?.name ?? 'Poke Ball';
+      }
+    } catch {
+      // fallback to Poke Ball
+    }
+
     const createInput: MonsterCreateInput = {
       trainerId,
       playerUserId,
@@ -914,6 +928,7 @@ export class GameCornerService {
       attribute: monsterData.attribute,
       level: monsterData.level || 1,
       whereMet: 'Game Corner',
+      ball: randomBall,
     };
 
     const created = await this.monsterRepository.create(createInput);

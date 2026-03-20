@@ -4,6 +4,7 @@ import { TypeBadge } from '@components/common/TypeBadge';
 import { AttributeBadge } from '@components/common/AttributeBadge';
 import { BadgeGroup } from '@components/common/BadgeGroup';
 import { TrainerAutocomplete } from '@components/common/TrainerAutocomplete';
+import { BallSelector, type BallInventoryEntry } from '@components/common/BallSelector';
 import { RewardItem, type RewardData } from '@components/common/RewardItem';
 import { getItemImageUrl, handleItemImageError } from '@utils/imageUtils';
 import type {
@@ -31,6 +32,9 @@ export interface ActivityRewardGridProps {
   monsterNames?: Record<string | number, string>;
   onMonsterNameChange?: (rewardId: string | number, name: string) => void;
   rewardExtras?: Record<string | number, RewardExtraData>;
+  selectedBalls?: Record<string | number, string>;
+  onBallChange?: (rewardId: string | number, ball: string) => void;
+  ballInventory?: BallInventoryEntry[];
 }
 
 /**
@@ -129,6 +133,9 @@ export function ActivityRewardGrid({
   monsterNames,
   onMonsterNameChange,
   rewardExtras,
+  selectedBalls,
+  onBallChange,
+  ballInventory,
 }: ActivityRewardGridProps) {
   const [imgErrors, setImgErrors] = useState<Record<string, boolean>>({});
   const [lightbox, setLightbox] = useState<{ url: string; species: string } | null>(null);
@@ -343,6 +350,13 @@ export function ActivityRewardGrid({
                               placeholder="Monster name (optional)"
                               value={monsterNames?.[reward.id] || ''}
                               onChange={e => onMonsterNameChange(reward.id, e.target.value)}
+                            />
+                          )}
+                          {onBallChange && (
+                            <BallSelector
+                              selectedBall={selectedBalls?.[reward.id] || 'Poke Ball'}
+                              onBallChange={(ball) => onBallChange(reward.id, ball)}
+                              inventory={ballInventory}
                             />
                           )}
                           <div className="activity-reward-grid__buttons">

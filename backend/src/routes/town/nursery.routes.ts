@@ -7,6 +7,7 @@ import {
   startHatch,
   startNurture,
   getHatchSession,
+  getActiveSessions,
   selectHatchedMonster,
   rerollHatchingResults,
 } from '@controllers/town/nursery.controller';
@@ -21,6 +22,9 @@ router.get('/eggs/:trainerId', getTrainerEggs);
 
 // GET /api/nursery/egg-items/:trainerId
 router.get('/egg-items/:trainerId', getEggItems);
+
+// GET /api/nursery/active-sessions
+router.get('/active-sessions', getActiveSessions);
 
 // POST /api/nursery/hatch
 router.post('/hatch', upload.single('imageFile'), startHatch);

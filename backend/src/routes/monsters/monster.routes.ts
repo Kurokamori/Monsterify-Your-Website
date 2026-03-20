@@ -43,6 +43,7 @@ import {
 } from '@controllers/monsters/monster.controller';
 import {
   evolveMonster,
+  multiEvolveMonster,
   getEvolutionOptions,
 } from '@controllers/api/evolution.controller';
 
@@ -129,6 +130,7 @@ router.get('/:id/references', getMonsterReferences);
 // Evolution options and evolve (handled by evolution controller)
 router.get('/:id/evolution-options', authenticate, getEvolutionOptions);
 router.post('/:id/evolve', authenticate, upload.single('image'), evolveMonster);
+router.post('/:id/multi-evolve', authenticate, upload.single('image'), multiEvolveMonster);
 
 // Mega images
 router.get('/:id/mega-images', getMegaImages);

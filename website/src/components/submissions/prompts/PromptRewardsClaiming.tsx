@@ -5,6 +5,8 @@ import { MonsterAutocomplete } from '../../common/MonsterAutocomplete';
 import { LoadingSpinner } from '../../common/LoadingSpinner';
 import { ErrorModal } from '../../common/ErrorModal';
 import { SuccessMessage } from '../../common/SuccessMessage';
+import { BallSelector, type BallInventoryEntry } from '../../common/BallSelector';
+import trainerService from '../../../services/trainerService';
 import { GiftRewards } from '../GiftRewards';
 import { LevelCapReallocation } from '../LevelCapReallocation';
 
@@ -156,8 +158,12 @@ export function PromptRewardsClaiming({
     promptRewards?.monsters?.filter((m: UnclaimedMonster) => !m.claimed) || []
   );
   const [monsterNames, setMonsterNames] = useState<Record<number, string>>({});
+  const [monsterBalls, setMonsterBalls] = useState<Record<number, string>>({});
   const [monsterTrainers, setMonsterTrainers] = useState<Record<number, string | number>>({});
   const [claimingMonster, setClaimingMonster] = useState<number | null>(null);
+
+  // Ball inventory per trainer
+  const [ballInventoryMap, setBallInventoryMap] = useState<Record<string | number, BallInventoryEntry[]>>({});
 
   // UI state
   const [error, setError] = useState('');
@@ -167,15 +173,37 @@ export function PromptRewardsClaiming({
   useEffect(() => {
     if (promptRewards?.monsters) {
       const names: Record<number, string> = {};
+      const balls: Record<number, string> = {};
       const trainers: Record<number, string | number> = {};
       promptRewards.monsters.forEach((_monster: UnclaimedMonster, index: number) => {
         names[index] = '';
+        balls[index] = 'Poke Ball';
         trainers[index] = trainerId;
       });
       setMonsterNames(names);
+      setMonsterBalls(balls);
       setMonsterTrainers(trainers);
     }
   }, [promptRewards, trainerId]);
+
+  // Fetch ball inventory for assigned trainers
+  useEffect(() => {
+    const trainerIds = new Set(Object.values(monsterTrainers).filter(Boolean).map(String));
+    trainerIds.forEach(tid => {
+      if (!tid) return;
+      setBallInventoryMap(prev => {
+        if (prev[tid]) return prev; // Already fetched
+        trainerService.getTrainerInventory(tid).then(inv => {
+          const raw = (inv as unknown as { data?: { balls?: unknown } }).data?.balls ?? inv.balls;
+          const balls: BallInventoryEntry[] = Array.isArray(raw)
+            ? raw.map((b: { name: string; quantity: number }) => ({ name: b.name, quantity: b.quantity }))
+            : Object.entries(raw || {}).map(([name, quantity]) => ({ name, quantity: quantity as number }));
+          setBallInventoryMap(p => ({ ...p, [tid]: balls }));
+        }).catch(() => {});
+        return { ...prev, [tid]: [] }; // Placeholder to prevent re-fetch
+      });
+    });
+  }, [monsterTrainers]);
 
   // Build available targets for LevelCapReallocation
   const buildAvailableTargets = () => {
@@ -270,7 +298,8 @@ export function PromptRewardsClaiming({
         promptSubmission.id,
         assignedTrainerId,
         monsterIndex,
-        monsterName.trim()
+        monsterName.trim(),
+        monsterBalls[monsterIndex] || 'Poke Ball'
       );
 
       if (result.success) {
@@ -614,6 +643,18 @@ export function PromptRewardsClaiming({
                           [index]: id || trainerId
                         }))}
                         placeholder="Select trainer..."
+                      />
+                    </div>
+
+                    <div className="form-group">
+                      <label>Ball</label>
+                      <BallSelector
+                        selectedBall={monsterBalls[index] || 'Poke Ball'}
+                        onBallChange={(ball) => setMonsterBalls(prev => ({
+                          ...prev,
+                          [index]: ball
+                        }))}
+                        inventory={monsterTrainers[index] ? ballInventoryMap[monsterTrainers[index]] : undefined}
                       />
                     </div>
 

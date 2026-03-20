@@ -15,6 +15,7 @@ import {
 } from '../repositories';
 import { MonsterRollerService, type UserSettings } from './monster-roller.service';
 import { MonsterInitializerService, InitializedMonster } from './monster-initializer.service';
+import { consumeBallFromInventory } from '../utils/ballUtils';
 import { MONSTER_TYPES, DIGIMON_ATTRIBUTES } from '../utils/constants';
 import {
   ART_QUALITY_BASE_LEVELS,
@@ -48,6 +49,7 @@ export type ClaimAdoptInput = {
   typeValue?: string;
   artDetails?: AdoptionArtDetails;
   submissionId?: number;
+  ball?: string;
 };
 
 export type ClaimAdoptResult = {
@@ -199,7 +201,7 @@ export class AdoptionService {
   // ==========================================================================
 
   async claimAdopt(input: ClaimAdoptInput): Promise<ClaimAdoptResult> {
-    const { adoptId, trainerId, monsterName, discordUserId, berryName, pastryName, speciesValue, typeValue, artDetails, submissionId } = input;
+    const { adoptId, trainerId, monsterName, discordUserId, berryName, pastryName, speciesValue, typeValue, artDetails, submissionId, ball } = input;
 
     // Validate adopt exists
     const adopt = await this.adoptRepository.findById(adoptId);
@@ -268,13 +270,16 @@ export class AdoptionService {
     // Create the monster in the database
     let createdMonster: MonsterWithTrainer;
     try {
-      createdMonster = await this.monsterRepository.create(this.toMonsterCreateInput(initializedMonster, trainerId, discordUserId ?? trainer.player_user_id));
+      createdMonster = await this.monsterRepository.create(this.toMonsterCreateInput(initializedMonster, trainerId, discordUserId ?? trainer.player_user_id, ball));
     } catch (error) {
       // Refund the item on creation failure
       await this.refundClaimItem(trainerId, itemResult);
       const msg = error instanceof Error ? error.message : 'Unknown error';
       return { success: false, message: `Failed to create monster: ${msg}` };
     }
+
+    // Consume the ball from trainer inventory
+    await consumeBallFromInventory(trainerId, ball ?? 'Poke Ball');
 
     // Record the adoption claim
     await this.adoptRepository.recordAdoptionClaim(adoptId, trainerId, createdMonster.id);
@@ -597,6 +602,7 @@ export class AdoptionService {
     monster: InitializedMonster,
     trainerId: number,
     playerUserId: string,
+    ball?: string,
   ): MonsterCreateInput {
     return {
       trainerId,
@@ -639,6 +645,7 @@ export class AdoptionService {
       moveset: typeof monster.moveset === 'string' ? JSON.parse(monster.moveset) : (monster.moveset as string[]) ?? [],
       dateMet: monster.date_met ? new Date(monster.date_met as string) : new Date(),
       whereMet: (monster.where_met as string) ?? 'Adoption Center',
+      ball: ball ?? 'Poke Ball',
     };
   }
 }

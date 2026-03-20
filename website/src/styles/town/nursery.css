@@ -3,6 +3,76 @@
    Egg hatching and nurturing interface
    ============================== */
 
+/* ---------- Active Sessions Banner ---------- */
+
+.nursery-active-sessions {
+  background-color: var(--primary-color);
+  border: 1px solid var(--accent-color);
+  border-radius: var(--border-radius-medium);
+  padding: var(--spacing-medium);
+  margin-bottom: var(--spacing-large);
+}
+
+.nursery-active-sessions__header {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-small);
+  font-weight: 600;
+  color: var(--accent-color);
+  margin-bottom: var(--spacing-small);
+}
+
+.nursery-active-session {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: var(--spacing-small) var(--spacing-medium);
+  background-color: var(--secondary-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-small);
+  cursor: pointer;
+  transition: border-color 0.2s, background-color 0.2s;
+  color: var(--text-primary);
+  font-family: inherit;
+  font-size: inherit;
+}
+
+.nursery-active-session:hover {
+  border-color: var(--accent-color);
+  background-color: var(--hover-color);
+}
+
+.nursery-active-session + .nursery-active-session {
+  margin-top: var(--spacing-xsmall);
+}
+
+.nursery-active-session__info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+}
+
+.nursery-active-session__trainer {
+  font-weight: 600;
+}
+
+.nursery-active-session__detail {
+  font-size: var(--font-size-small);
+  color: var(--text-secondary);
+}
+
+.nursery-active-session__action {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xsmall);
+  color: var(--accent-color);
+  font-weight: 600;
+  font-size: var(--font-size-small);
+  white-space: nowrap;
+}
+
 /* ---------- Resources Display ---------- */
 
 .nursery-resources {
@@ -792,6 +862,7 @@
 }
 
 .nursery-naming__input-wrap {
+  margin-bottom: var(--spacing-large);
   position: relative;
 }
 

@@ -356,6 +356,19 @@ export interface WitchsHutProps {
   onEvolutionComplete?: (monster: EvolvedMonster) => void;
 }
 
+// Multi-evolution slot state for Chimera Stone / Hydra Crystal
+export interface MultiSlotState {
+  speciesSlot: 'species1' | 'species2' | 'species3';
+  speciesName: string;
+  selected: boolean;
+  evolutionOptions: EvolutionOption[];
+  selectedEvolution: string;
+  useDigitalRepairKit: boolean;
+  customSpeciesName: string;
+  evolutionImages: Record<string, { image_url: string; species: string }>;
+  loadingOptions: boolean;
+}
+
 // ========== Shop Types ==========
 
 // Shop item from API
@@ -458,6 +471,7 @@ export interface BazarMonster {
   level?: number;
   img_link?: string;
   main_ref?: string;
+  ball?: string;
   forfeited_by?: number | string;
   forfeited_at?: string;
   original_trainer_name?: string;

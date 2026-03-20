@@ -13,6 +13,7 @@ import monsterService from '@services/monsterService';
 import trainerService from '@services/trainerService';
 import type { TrainerListResponse, TrainerMonstersResponse } from '@services/trainerService';
 import type { Monster } from '@services/monsterService';
+import { BallSelector, type BallInventoryEntry } from '@components/common/BallSelector';
 import {
   monsterToFormData,
   parseMonsterFunFacts,
@@ -48,6 +49,9 @@ export function MonsterEditForm({ monster, onSubmit, onCancel, onSuccess }: Mons
   const [allTrainers, setAllTrainers] = useState<{ id: number; name: string }[]>([]);
   const [trainerMonsters, setTrainerMonsters] = useState<Record<string, { id: number; name: string }[]>>({});
 
+  // Ball inventory for ball swap
+  const [ballInventory, setBallInventory] = useState<BallInventoryEntry[]>([]);
+
   // UI state
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -71,6 +75,20 @@ export function MonsterEditForm({ monster, onSubmit, onCancel, onSuccess }: Mons
       }
     }).catch(() => { /* ignore */ });
   }, []);
+
+  // Load ball inventory for ball swap
+  useEffect(() => {
+    const trainerId = monster.trainer_id;
+    if (!trainerId) return;
+    trainerService.getTrainerInventory(trainerId).then((inv) => {
+      const raw = (inv as unknown as { data?: { balls?: unknown } }).data?.balls ?? inv.balls;
+      if (!raw) return;
+      const entries: BallInventoryEntry[] = Array.isArray(raw)
+        ? raw.map((b: { name: string; quantity: number }) => ({ name: b.name, quantity: b.quantity }))
+        : Object.entries(raw).map(([name, quantity]) => ({ name, quantity: quantity as number }));
+      setBallInventory(entries);
+    }).catch(() => { /* ignore */ });
+  }, [monster.trainer_id]);
 
   // Load mega images on mount
   useEffect(() => {
@@ -370,6 +388,17 @@ export function MonsterEditForm({ monster, onSubmit, onCancel, onSuccess }: Mons
               value={formData.date_met}
               onChange={(e: ChangeEvent<HTMLInputElement>) => handleFieldChange('date_met', e.target.value)}
               disabled={saving}
+            />
+          </div>
+          <div className="form-group" style={{ marginTop: 'var(--spacing-small)' }}>
+            <label className="form-label">Ball</label>
+            <BallSelector
+              selectedBall={formData.ball}
+              onBallChange={(ball) => handleFieldChange('ball', ball)}
+              disabled={saving}
+              showWarning
+              warningText="Changing a monster's ball will consume one of the new ball from your trainer's inventory. The old ball will NOT be returned."
+              inventory={ballInventory}
             />
           </div>
         </div>

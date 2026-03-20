@@ -1,4 +1,4 @@
-import { LoadingSpinner, ErrorMessage, SuccessMessage } from '@components/common';
+import { LoadingSpinner, ErrorMessage, SuccessMessage, BallSelector } from '@components/common';
 import { StarterMonsterCard } from './StarterMonsterCard';
 import { STEPS, getOrdinal } from './starterSelectionUtils';
 import type { StarterMonster, StarterSet } from '@services/monsterRollerService';
@@ -211,6 +211,15 @@ export function ReviewStep({ selectedStarters, starterNames, onNameChange, onGoB
                     <i className="fas fa-times" />
                   </button>
                 )}
+              </div>
+              <div className="form-group mt-xs">
+                <label className="form-label">Ball</label>
+                <BallSelector
+                  selectedBall="Poke Ball"
+                  onBallChange={() => {}}
+                  disabled
+                  compact
+                />
               </div>
               <button
                 className="button secondary no-flex sm"

@@ -33,6 +33,7 @@ export {
   getAllTypes,
   getAllRarities,
   getItemById,
+  getBallItems,
   createItem,
   createBulkItems,
   uploadImage,

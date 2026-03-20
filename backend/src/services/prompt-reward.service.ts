@@ -18,6 +18,7 @@ import {
   getRandomElement,
   MONSTER_TABLES,
 } from '../utils/constants';
+import { consumeBallFromInventory } from '../utils/ballUtils';
 
 // ============================================================================
 // Types
@@ -203,7 +204,8 @@ export class PromptRewardService {
     prompt: PromptInput,
     submission: SubmissionInput,
     qualityScore = 5,
-    bonusApplied = false
+    bonusApplied = false,
+    ball?: string
   ): Promise<DistributedRewards> {
     const rewards: PromptRewardConfig =
       typeof prompt.rewards === 'string' ? JSON.parse(prompt.rewards) : prompt.rewards;
@@ -286,7 +288,8 @@ export class PromptRewardService {
     await this.distributeRewardsToTrainer(
       submission.trainer_id,
       distributedRewards,
-      rewards.monster_roll?.parameters
+      rewards.monster_roll?.parameters,
+      ball
     );
 
     // Log the distribution (non-blocking)
@@ -305,7 +308,8 @@ export class PromptRewardService {
   private async distributeRewardsToTrainer(
     trainerId: number,
     rewards: DistributedRewards,
-    monsterRollParams?: Record<string, unknown>
+    monsterRollParams?: Record<string, unknown>,
+    ball?: string
   ): Promise<void> {
     await db.transaction(async (client) => {
       // Add levels
@@ -345,7 +349,7 @@ export class PromptRewardService {
 
       // Create static monsters immediately
       for (const staticConfig of rewards.static_monsters) {
-        const created = await this.createStaticMonster(trainerId, staticConfig);
+        const created = await this.createStaticMonster(trainerId, staticConfig, ball);
         if (created) {
           rewards.created_monsters.push(created);
         }
@@ -353,7 +357,7 @@ export class PromptRewardService {
 
       // Create semi-random monsters immediately
       for (const semiRandomConfig of rewards.semi_random_monsters) {
-        const created = await this.createSemiRandomMonster(trainerId, semiRandomConfig);
+        const created = await this.createSemiRandomMonster(trainerId, semiRandomConfig, ball);
         if (created) {
           rewards.created_monsters.push(created);
         }
@@ -492,7 +496,8 @@ export class PromptRewardService {
    */
   private async createStaticMonster(
     trainerId: number,
-    config: StaticMonsterConfig
+    config: StaticMonsterConfig,
+    ball?: string
   ): Promise<CreatedMonster | null> {
     if (!config.species_name && !config.species_id) {
       console.warn('Static monster missing species information:', config);
@@ -542,9 +547,14 @@ export class PromptRewardService {
       imgLink: imageUrl,
       dateMet: new Date(),
       whereMet: 'Prompt Reward',
+      ball: ball ?? 'Poke Ball',
     };
 
     const created = await this.monsterRepository.create(monsterInput);
+
+    // Consume the ball from trainer inventory
+    await consumeBallFromInventory(trainerId, ball ?? 'Poke Ball');
+
     console.log(`Created static monster ${name} (level ${config.level ?? 1}) for trainer ${trainerId}`);
 
     return {
@@ -566,7 +576,8 @@ export class PromptRewardService {
    */
   private async createSemiRandomMonster(
     trainerId: number,
-    config: SemiRandomMonsterConfig
+    config: SemiRandomMonsterConfig,
+    ball?: string
   ): Promise<CreatedMonster | null> {
     if (!config.species_name && !config.species_id) {
       console.warn('Semi-random monster missing species information:', config);
@@ -656,9 +667,14 @@ export class PromptRewardService {
       imgLink: fusionImageUrl,
       dateMet: new Date(),
       whereMet: 'Prompt Reward',
+      ball: ball ?? 'Poke Ball',
     };
 
     const created = await this.monsterRepository.create(monsterInput);
+
+    // Consume the ball from trainer inventory
+    await consumeBallFromInventory(trainerId, ball ?? 'Poke Ball');
+
     console.log(`Created semi-random monster ${monsterName} (level ${level}) for trainer ${trainerId}`);
 
     return {
@@ -697,7 +713,8 @@ export class PromptRewardService {
    */
   async claimMonsterRoll(
     rollId: number,
-    trainerId: number
+    trainerId: number,
+    ball?: string
   ): Promise<CreatedMonster> {
     // Fetch the roll
     const rollResult = await db.query<UnclaimedMonsterRoll>(
@@ -770,9 +787,13 @@ export class PromptRewardService {
       imgLink: rolledMonster.image_url ?? null,
       dateMet: new Date(),
       whereMet: 'Monster Roll (Prompt Reward)',
+      ball: ball ?? 'Poke Ball',
     };
 
     const createdMonster = await this.monsterRepository.create(monsterInput);
+
+    // Consume the ball from trainer inventory
+    await consumeBallFromInventory(trainerId, ball ?? 'Poke Ball');
 
     // Initialize monster with stats, moves, abilities, etc.
     try {

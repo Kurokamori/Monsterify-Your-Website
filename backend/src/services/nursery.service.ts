@@ -3,6 +3,7 @@ import {
   TrainerRepository,
   TrainerInventoryRepository,
   MonsterRepository,
+  NurserySessionRepository,
   INVENTORY_CATEGORIES,
 } from '../repositories';
 import { db } from '../database';
@@ -19,6 +20,7 @@ import { SpecialBerryService } from './special-berry.service';
 import type { SpecialBerryInventory } from './special-berry.service';
 import type { UserSettings } from './monster-roller.service';
 import cloudinary from '../utils/cloudinary';
+import { consumeBallFromInventory } from '../utils/ballUtils';
 
 // ============================================================================
 // Types
@@ -42,6 +44,7 @@ export type HatchSession = {
   userSettings: UserSettings;
   speciesInputs: SpeciesInputs;
   specialBerries: SpecialBerryInventory;
+  ball?: string;
   createdAt: string;
 };
 
@@ -65,6 +68,7 @@ export type SelectMonsterInput = {
   monsterName?: string;
   dnaSplicers?: number;
   useEdenweiss?: boolean;
+  ball?: string;
 };
 
 export type SelectMonsterResult = {
@@ -159,17 +163,45 @@ function parseUserSettings(settings: MonsterRollerSettings | null): UserSettings
 // ============================================================================
 
 export class NurseryService {
-  private sessions = new Map<string, HatchSession>();
+  private sessionRepo: NurserySessionRepository;
   private trainerRepo: TrainerRepository;
   private inventoryRepo: TrainerInventoryRepository;
   private monsterRepo: MonsterRepository;
   private specialBerryService: SpecialBerryService;
 
   constructor() {
+    this.sessionRepo = new NurserySessionRepository();
     this.trainerRepo = new TrainerRepository();
     this.inventoryRepo = new TrainerInventoryRepository();
     this.monsterRepo = new MonsterRepository();
     this.specialBerryService = new SpecialBerryService(this.inventoryRepo);
+  }
+
+  // ==========================================================================
+  // Session Persistence Helpers
+  // ==========================================================================
+
+  private async saveSession(session: HatchSession): Promise<void> {
+    await this.sessionRepo.save(
+      session.sessionId,
+      session.userId,
+      session.trainerId,
+      session as unknown as Record<string, unknown>,
+    );
+  }
+
+  private async loadSession(sessionId: string): Promise<HatchSession | null> {
+    const row = await this.sessionRepo.findBySessionId(sessionId);
+    if (!row) { return null; }
+    return row.session_data as unknown as HatchSession;
+  }
+
+  private async deleteSession(sessionId: string): Promise<void> {
+    await this.sessionRepo.delete(sessionId);
+  }
+
+  private isSessionComplete(session: HatchSession): boolean {
+    return session.hatchedEggs.every(egg => session.selectedMonsters[egg.eggId]);
   }
 
   // ==========================================================================
@@ -297,8 +329,9 @@ export class NurseryService {
     imageUrl?: string | null;
     file?: Express.Multer.File;
     rollerSettings: MonsterRollerSettings | null;
+    ball?: string;
   }): Promise<{ success: true } & HatchSessionResult | { success: false; status: number; message: string }> {
-    const { trainerId, userId, eggCount, useIncubator, useVoidStone, rollerSettings } = params;
+    const { trainerId, userId, eggCount, useIncubator, useVoidStone, rollerSettings, ball } = params;
     let { imageUrl } = params;
 
     const trainer = await this.verifyTrainerOwnership(trainerId, userId);
@@ -384,10 +417,11 @@ export class NurseryService {
       userSettings,
       speciesInputs: {},
       specialBerries,
+      ball: ball ?? 'Poke Ball',
       createdAt: new Date().toISOString(),
     };
 
-    this.sessions.set(sessionId, session);
+    await this.saveSession(session);
 
     // Consume eggs
     await this.inventoryRepo.removeItem(trainerId, 'eggs', 'Standard Egg', eggCount);
@@ -416,8 +450,9 @@ export class NurseryService {
     selectedItems: Record<string, number>;
     speciesInputs: SpeciesInputs;
     rollerSettings: MonsterRollerSettings | null;
+    ball?: string;
   }): Promise<{ success: true } & HatchSessionResult | { success: false; status: number; message: string }> {
-    const { trainerId, userId, eggCount, useIncubator, useVoidStone, selectedItems, speciesInputs, rollerSettings } = params;
+    const { trainerId, userId, eggCount, useIncubator, useVoidStone, selectedItems, speciesInputs, rollerSettings, ball } = params;
     let { imageUrl } = params;
 
     // Validate species inputs for species control items
@@ -528,10 +563,11 @@ export class NurseryService {
       userSettings,
       speciesInputs,
       specialBerries,
+      ball: ball ?? 'Poke Ball',
       createdAt: new Date().toISOString(),
     };
 
-    this.sessions.set(sessionId, session);
+    await this.saveSession(session);
 
     // Consume eggs
     await this.inventoryRepo.removeItem(trainerId, 'eggs', 'Standard Egg', eggCount);
@@ -565,8 +601,8 @@ export class NurseryService {
   // Get Session
   // ==========================================================================
 
-  getSession(sessionId: string, userId: string): { success: true; session: HatchSession } | { success: false; status: number; message: string } {
-    const session = this.sessions.get(sessionId);
+  async getSession(sessionId: string, userId: string): Promise<{ success: true; session: HatchSession } | { success: false; status: number; message: string }> {
+    const session = await this.loadSession(sessionId);
     if (!session) {
       return { success: false, status: 404, message: 'Hatch session not found' };
     }
@@ -577,13 +613,32 @@ export class NurseryService {
   }
 
   // ==========================================================================
+  // Get Active Sessions for User
+  // ==========================================================================
+
+  async getActiveSessions(userId: string): Promise<{ sessionId: string; trainerId: number; type: string; eggCount: number; selectedCount: number; createdAt: string }[]> {
+    const rows = await this.sessionRepo.findByUserId(userId);
+    return rows.map(row => {
+      const data = row.session_data as unknown as HatchSession;
+      return {
+        sessionId: data.sessionId,
+        trainerId: data.trainerId,
+        type: data.type,
+        eggCount: data.eggCount,
+        selectedCount: Object.keys(data.selectedMonsters || {}).length,
+        createdAt: data.createdAt,
+      };
+    });
+  }
+
+  // ==========================================================================
   // Select Monster
   // ==========================================================================
 
   async selectMonster(input: SelectMonsterInput, userId: string): Promise<{ success: true } & SelectMonsterResult | { success: false; status: number; message: string }> {
     const { sessionId, eggId, monsterIndex, monsterName, dnaSplicers, useEdenweiss } = input;
 
-    const session = this.sessions.get(sessionId);
+    const session = await this.loadSession(sessionId);
     if (!session) {
       return { success: false, status: 404, message: 'Hatch session not found' };
     }
@@ -692,9 +747,13 @@ export class NurseryService {
           ? initialized.moveset
           : [],
       whereMet: initialized.where_met,
+      ball: input.ball ?? session.ball ?? 'Poke Ball',
     };
 
     const createdMonster = await this.monsterRepo.create(createInput);
+
+    // Consume the ball from trainer inventory
+    await consumeBallFromInventory(session.trainerId, input.ball ?? session.ball ?? 'Poke Ball');
 
     // Mark this monster as claimed
     session.claimedMonsters.push(eggKey);
@@ -714,6 +773,13 @@ export class NurseryService {
     // Update special berries
     const updatedSpecialBerries = await this.specialBerryService.getAvailableSpecialBerries(session.trainerId);
     session.specialBerries = updatedSpecialBerries;
+
+    // Persist session state (or delete if complete)
+    if (this.isSessionComplete(session)) {
+      await this.deleteSession(sessionId);
+    } else {
+      await this.saveSession(session);
+    }
 
     return {
       success: true,
@@ -741,7 +807,7 @@ export class NurseryService {
   // ==========================================================================
 
   async rerollResults(sessionId: string, userId: string): Promise<{ success: true } & RerollResult | { success: false; status: number; message: string }> {
-    const session = this.sessions.get(sessionId);
+    const session = await this.loadSession(sessionId);
     if (!session) {
       return { success: false, status: 404, message: 'Hatch session not found' };
     }
@@ -782,6 +848,9 @@ export class NurseryService {
 
     const updatedSpecialBerries = await this.specialBerryService.getAvailableSpecialBerries(session.trainerId);
     session.specialBerries = updatedSpecialBerries;
+
+    // Persist updated session
+    await this.saveSession(session);
 
     return {
       success: true,

@@ -10,6 +10,7 @@ import {
 import { SpecialBerryService } from './special-berry.service';
 import { MonsterRollerService } from './monster-roller.service';
 import { MonsterInitializerService } from './monster-initializer.service';
+import { consumeBallFromInventory } from '../utils/ballUtils';
 
 export type RewardItem = {
   item_id?: number;
@@ -259,9 +260,13 @@ export class ImmediateRewardService {
         imgLink: rolledSpecies.image_url ?? null,
         dateMet: new Date(),
         whereMet: 'Prompt Reward',
+        ball: 'Poke Ball',
       };
 
       const createdMonster = await this.monsterRepository.create(createInput);
+
+      // Consume the ball from trainer inventory
+      await consumeBallFromInventory(trainerId, 'Poke Ball');
 
       console.log(`Rolled and added monster ${rolledSpecies.name} (ID: ${createdMonster.id}) to trainer ${trainerId}`);
 

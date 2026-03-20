@@ -3,6 +3,7 @@ import { FormInput } from '../common/FormInput';
 import { FormSelect } from '../common/FormSelect';
 import { FormTextArea } from '../common/FormTextArea';
 import { AutocompleteInput } from '../common/AutocompleteInput';
+import { BallSelector } from '../common/BallSelector';
 import {
   TYPE_OPTIONS,
   FACTION_OPTIONS,
@@ -564,6 +565,18 @@ export function FavoriteTypesFields({
           onChange={handleAutocompleteChange('fav_berry')}
           options={BERRY_OPTIONS}
           placeholder="Favorite berry"
+          disabled={disabled}
+        />
+      </div>
+
+      <div style={{ marginTop: 'var(--spacing-small)' }}>
+        <label className="form-label">Preferred Ball</label>
+        <p className="form-help-text" style={{ marginBottom: 'var(--spacing-xs)' }}>
+          New monsters will default to this ball when no specific ball is chosen.
+        </p>
+        <BallSelector
+          selectedBall={formData.preferred_ball || 'Poke Ball'}
+          onBallChange={(ball) => onChange('preferred_ball', ball)}
           disabled={disabled}
         />
       </div>

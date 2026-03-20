@@ -15,6 +15,7 @@ import {
 } from '../repositories';
 import { MonsterRollerService, type UserSettings } from './monster-roller.service';
 import { MonsterInitializerService } from './monster-initializer.service';
+import { consumeBallFromInventory } from '../utils/ballUtils';
 
 // ============================================================================
 // Types
@@ -234,7 +235,8 @@ export class GardenService {
     rewardId: string,
     trainerId: number,
     userId: number,
-    monsterName?: string
+    monsterName?: string,
+    ball?: string
   ): Promise<ClaimResult> {
     const session = GardenService.activeHarvestSessions.get(sessionId);
     if (!session) {
@@ -273,7 +275,7 @@ export class GardenService {
       }
 
       case 'monster': {
-        claimResult = await this.claimMonsterReward(reward, trainerId, userId, trainer.player_user_id, monsterName);
+        claimResult = await this.claimMonsterReward(reward, trainerId, userId, trainer.player_user_id, monsterName, ball);
         break;
       }
 
@@ -385,24 +387,26 @@ export class GardenService {
     trainerId: number,
     userId: number,
     playerUserId: string,
-    monsterName?: string
+    monsterName?: string,
+    ball?: string
   ): Promise<Record<string, unknown>> {
     const rewardData = reward.rewardData;
 
     // Check if monster was pre-rolled
     if (rewardData.monster_id) {
-      return this.claimPreRolledMonster(rewardData, trainerId, playerUserId, monsterName);
+      return this.claimPreRolledMonster(rewardData, trainerId, playerUserId, monsterName, ball);
     }
 
     // Roll monster on-demand
-    return this.rollAndClaimMonster(rewardData, trainerId, userId, playerUserId, reward.id, monsterName);
+    return this.rollAndClaimMonster(rewardData, trainerId, userId, playerUserId, reward.id, monsterName, ball);
   }
 
   private async claimPreRolledMonster(
     rewardData: Record<string, unknown>,
     trainerId: number,
     playerUserId: string,
-    monsterName?: string
+    monsterName?: string,
+    ball?: string
   ): Promise<Record<string, unknown>> {
     const name = monsterName?.trim() ?? (rewardData.monster_name as string) ?? 'Unnamed';
 
@@ -420,9 +424,13 @@ export class GardenService {
       imgLink: null,
       whereMet: 'Garden Activity',
       dateMet: new Date(),
+      ball: ball ?? 'Poke Ball',
     };
 
     const createdMonster = await this.monsterRepository.create(monsterInput);
+
+    // Consume the ball from trainer inventory
+    await consumeBallFromInventory(trainerId, ball ?? 'Poke Ball');
 
     // Initialize monster stats
     try {
@@ -440,7 +448,8 @@ export class GardenService {
     userId: number,
     playerUserId: string,
     rewardId: string,
-    monsterName?: string
+    monsterName?: string,
+    ball?: string
   ): Promise<Record<string, unknown>> {
     const userSettings = await this.getUserSettings(userId);
     const sessionId = rewardId;
@@ -475,9 +484,13 @@ export class GardenService {
       level: 5,
       whereMet: 'Garden Activity',
       dateMet: new Date(),
+      ball: ball ?? 'Poke Ball',
     };
 
     const createdMonster = await this.monsterRepository.create(monsterInput);
+
+    // Consume the ball from trainer inventory
+    await consumeBallFromInventory(trainerId, ball ?? 'Poke Ball');
 
     try {
       const initialized = await this.initializerService.initializeMonster(createdMonster.id);

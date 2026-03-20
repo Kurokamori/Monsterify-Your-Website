@@ -5,10 +5,12 @@ import { Card } from '../common/Card';
 import { LoadingSpinner } from '../common/LoadingSpinner';
 import { ErrorMessage } from '../common/ErrorMessage';
 import { TrainerAutocomplete } from '../common/TrainerAutocomplete';
+import { BallSelector, type BallInventoryEntry } from '../common/BallSelector';
 import { TypeBadge } from '../common/TypeBadge';
 import { AttributeBadge } from '../common/AttributeBadge';
 import type { Monster } from '../common/MonsterDetails';
 import { extractErrorMessage } from '../../utils/errorUtils';
+import trainerService from '../../services/trainerService';
 import speciesService from '../../services/speciesService';
 import type { SpeciesImageMap } from '../../services/speciesService';
 import itemsService from '../../services/itemsService';
@@ -93,6 +95,10 @@ export function BreedMonsters({
   const [offspringSpeciesImages, setOffspringSpeciesImages] = useState<SpeciesImageMap>({});
   const [offspringNames, setOffspringNames] = useState<Record<number, string>>({});
   const [offspringTrainers, setOffspringTrainers] = useState<Record<number, number | string | null>>({});
+  const [offspringBalls, setOffspringBalls] = useState<Record<number, string>>({});
+
+  // Ball inventory for user's trainer
+  const [ballInventory, setBallInventory] = useState<BallInventoryEntry[]>([]);
 
   // Extra items state
   const [itemsSectionOpen, setItemsSectionOpen] = useState(false);
@@ -232,6 +238,21 @@ export function BreedMonsters({
 
     fetchMonsters();
   }, [userTrainer, fetchEligibleIds]);
+
+  // Fetch ball inventory for user's trainer
+  useEffect(() => {
+    if (!userTrainer) {
+      setBallInventory([]);
+      return;
+    }
+    trainerService.getTrainerInventory(userTrainer).then(inv => {
+      const raw = (inv as unknown as { data?: { balls?: unknown } }).data?.balls ?? inv.balls;
+      const balls: BallInventoryEntry[] = Array.isArray(raw)
+        ? raw.map((b: { name: string; quantity: number }) => ({ name: b.name, quantity: b.quantity }))
+        : Object.entries(raw || {}).map(([name, quantity]) => ({ name, quantity: quantity as number }));
+      setBallInventory(balls);
+    }).catch(() => setBallInventory([]));
+  }, [userTrainer]);
 
   // Fetch any trainer monsters
   useEffect(() => {
@@ -447,7 +468,8 @@ export function BreedMonsters({
         sessionId: breedingResults.sessionId,
         monsterIndex: index,
         name: offspringNames[index] || undefined,
-        trainerId: selectedTrainerId
+        trainerId: selectedTrainerId,
+        ball: offspringBalls[index] || 'Poke Ball',
       });
 
       if (response.data?.success) {
@@ -466,7 +488,7 @@ export function BreedMonsters({
     } finally {
       setLoading(false);
     }
-  }, [breedingResults, offspringNames, offspringTrainers]);
+  }, [breedingResults, offspringNames, offspringTrainers, offspringBalls]);
 
   // Handle forfeiting offspring to the bazar
   const handleForfeitOffspring = useCallback(async (index: number) => {
@@ -513,6 +535,7 @@ export function BreedMonsters({
       if (response.data?.success) {
         setOffspringNames({});
         setOffspringTrainers({});
+        setOffspringBalls({});
         setBreedingResults(prev => prev ? {
           ...prev,
           offspring: response.data.data.offspring.map((o: Offspring) => ({ ...o, claimed: false })),
@@ -666,6 +689,13 @@ export function BreedMonsters({
                           label=""
                           placeholder="Select trainer to claim..."
                           noPadding={true}
+                        />
+                      </div>
+                      <div className="form-group form-group--no-padding mt-xs">
+                        <BallSelector
+                          selectedBall={offspringBalls[index] || 'Poke Ball'}
+                          onBallChange={(ball) => setOffspringBalls(prev => ({ ...prev, [index]: ball }))}
+                          inventory={ballInventory}
                         />
                       </div>
                     </>

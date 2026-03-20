@@ -13,6 +13,7 @@ export interface MonsterFormData {
   weight: string;
   where_met: string;
   date_met: string;
+  ball: string;
   shiny: boolean;
   alpha: boolean;
   shadow: boolean;
@@ -75,6 +76,7 @@ export function monsterToFormData(monster: Monster): MonsterFormData {
     weight: str(monster[`weight`]),
     where_met: str(monster[`where_met`]),
     date_met: dateMet,
+    ball: str(monster[`ball`]) || 'Poke Ball',
     shiny: !!monster[`shiny`],
     alpha: !!monster[`alpha`],
     shadow: !!monster[`shadow`],

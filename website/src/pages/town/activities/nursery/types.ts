@@ -61,6 +61,7 @@ export interface HatchSession {
   selectedMonsters: Record<string, SelectedMonsterInfo>;
   claimedMonsters: string[];
   specialBerries: SpecialBerryInventory;
+  ball?: string;
   createdAt: string;
 }
 
@@ -132,4 +133,18 @@ export interface RerollResponse {
   specialBerries: SpecialBerryInventory;
   session?: HatchSession;
   message?: string;
+}
+
+export interface ActiveSession {
+  sessionId: string;
+  trainerId: number;
+  type: 'hatch' | 'nurture';
+  eggCount: number;
+  selectedCount: number;
+  createdAt: string;
+}
+
+export interface ActiveSessionsResponse {
+  success: boolean;
+  sessions: ActiveSession[];
 }

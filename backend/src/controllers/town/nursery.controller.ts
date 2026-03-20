@@ -63,12 +63,13 @@ export async function startHatch(req: Request, res: Response): Promise<void> {
       return;
     }
 
-    const { trainerId, eggCount, useIncubator, useVoidStone, imageUrl } = req.body as {
+    const { trainerId, eggCount, useIncubator, useVoidStone, imageUrl, ball } = req.body as {
       trainerId: number;
       eggCount: string | number;
       useIncubator: string | boolean;
       useVoidStone: string | boolean;
       imageUrl?: string;
+      ball?: string;
     };
 
     const result = await nurseryService.startHatch({
@@ -80,6 +81,7 @@ export async function startHatch(req: Request, res: Response): Promise<void> {
       imageUrl,
       file: req.file,
       rollerSettings: req.user?.monster_roller_settings ?? null,
+      ball,
     });
 
     if (!result.success) {
@@ -110,6 +112,7 @@ export async function startNurture(req: Request, res: Response): Promise<void> {
       imageUrl?: string;
       selectedItems?: string | Record<string, number>;
       speciesInputs?: string | SpeciesInputs;
+      ball?: string;
     };
 
     let selectedItems: Record<string, number> = {};
@@ -137,6 +140,7 @@ export async function startNurture(req: Request, res: Response): Promise<void> {
       selectedItems,
       speciesInputs,
       rollerSettings: req.user?.monster_roller_settings ?? null,
+      ball: body.ball,
     });
 
     if (!result.success) {
@@ -160,7 +164,7 @@ export async function getHatchSession(req: Request, res: Response): Promise<void
     }
 
     const sessionId = req.params.sessionId as string;
-    const result = nurseryService.getSession(sessionId, userId);
+    const result = await nurseryService.getSession(sessionId, userId);
 
     if (!result.success) {
       res.status(result.status).json({ success: false, message: result.message });
@@ -171,6 +175,22 @@ export async function getHatchSession(req: Request, res: Response): Promise<void
   } catch (error) {
     console.error('Error getting hatch session:', error);
     res.status(500).json({ success: false, message: 'Failed to get hatch session' });
+  }
+}
+
+export async function getActiveSessions(req: Request, res: Response): Promise<void> {
+  try {
+    const userId = req.user?.discord_id;
+    if (!userId) {
+      res.status(401).json({ success: false, message: 'User not authenticated' });
+      return;
+    }
+
+    const sessions = await nurseryService.getActiveSessions(userId);
+    res.json({ success: true, sessions });
+  } catch (error) {
+    console.error('Error getting active sessions:', error);
+    res.status(500).json({ success: false, message: 'Failed to get active sessions' });
   }
 }
 

@@ -95,6 +95,9 @@ export interface Trainer {
   mega_ability?: string;
   mega_info?: MegaEvolutionInfo;
 
+  // Preferred ball for new monsters
+  preferred_ball?: string;
+
   // Additional data (JSON fields)
   additional_refs?: AdditionalReference[];
   secrets?: TrainerSecret[];
@@ -236,6 +239,9 @@ export interface TrainerFormData {
   quote?: string;
   tldr?: string;
   biography?: string;
+
+  // Preferred ball
+  preferred_ball?: string;
 
   // User ID (for creation)
   user_id?: string;

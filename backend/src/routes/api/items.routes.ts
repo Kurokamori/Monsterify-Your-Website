@@ -13,6 +13,8 @@ import {
   uploadImage,
   updateItem,
   deleteItem,
+  // Ball Items
+  getBallItems,
   // Berry & Pastry Usage
   useBerry,
   usePastry,
@@ -34,6 +36,7 @@ const router = Router();
 // Public Routes
 // ============================================================================
 
+router.get('/balls', getBallItems);
 router.get('/', getAllItems);
 router.get('/categories', getAllCategories);
 router.get('/types', getAllTypes);

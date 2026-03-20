@@ -5,7 +5,9 @@ import { useDocumentTitle } from '@hooks/useDocumentTitle';
 import { LoadingSpinner } from '@components/common/LoadingSpinner';
 import { ErrorMessage } from '@components/common/ErrorMessage';
 import { ActivityRewardGrid } from '@components/town/ActivityRewardGrid';
+import { type BallInventoryEntry } from '@components/common/BallSelector';
 import townService from '@services/townService';
+import trainerService from '@services/trainerService';
 import itemsService from '@services/itemsService';
 import api from '@services/api';
 import type {
@@ -55,6 +57,8 @@ export default function ActivityRewardsPage() {
   const [isGardenHarvest, setIsGardenHarvest] = useState(false);
   const [itemImages, setItemImages] = useState<Record<string, string | null>>({});
   const [monsterNames, setMonsterNames] = useState<Record<string | number, string>>({});
+  const [selectedBalls, setSelectedBalls] = useState<Record<string | number, string>>({});
+  const [ballInventory, setBallInventory] = useState<BallInventoryEntry[]>([]);
 
   // Fetch session and rewards data
   useEffect(() => {
@@ -157,6 +161,19 @@ export default function ActivityRewardsPage() {
     fetchData();
   }, [isAuthenticated, sessionId]);
 
+  // Fetch ball inventory for the first trainer
+  useEffect(() => {
+    if (trainers.length === 0) return;
+    const firstTrainerId = trainers[0].id;
+    trainerService.getTrainerInventory(firstTrainerId).then(inv => {
+      const raw = (inv as unknown as { data?: { balls?: unknown } }).data?.balls ?? inv.balls;
+      const balls: BallInventoryEntry[] = Array.isArray(raw)
+        ? raw.map((b: { name: string; quantity: number }) => ({ name: b.name, quantity: b.quantity }))
+        : Object.entries(raw || {}).map(([name, quantity]) => ({ name, quantity: quantity as number }));
+      setBallInventory(balls);
+    }).catch(() => setBallInventory([]));
+  }, [trainers]);
+
   // Trainer selection handler
   const handleTrainerSelect = useCallback((rewardId: string | number, trainerId: string | number | null) => {
     if (trainerId == null) return;
@@ -205,10 +222,12 @@ export default function ActivityRewardsPage() {
 
       if (isGardenHarvest) {
         const userMonsterName = monsterNames[rewardId] || '';
-        response = await townService.claimGardenHarvestReward(sessionId, rewardId, trainerId, userMonsterName);
+        const ball = selectedBalls[rewardId] || undefined;
+        response = await townService.claimGardenHarvestReward(sessionId, rewardId, trainerId, userMonsterName, ball);
       } else {
         const userMonsterName = monsterNames[rewardId] || undefined;
-        response = await townService.claimActivityReward(sessionId, rewardId, trainerId, userMonsterName);
+        const ball = selectedBalls[rewardId] || undefined;
+        response = await townService.claimActivityReward(sessionId, rewardId, trainerId, userMonsterName, ball);
       }
 
       if (response.success) {
@@ -237,7 +256,7 @@ export default function ActivityRewardsPage() {
     } finally {
       setClaimingReward(null);
     }
-  }, [sessionId, selectedTrainers, isGardenHarvest, refreshRewards, monsterNames]);
+  }, [sessionId, selectedTrainers, isGardenHarvest, refreshRewards, monsterNames, selectedBalls]);
 
   // Forfeit a monster reward to the bazar
   const forfeitReward = useCallback(async (rewardId: string | number) => {
@@ -304,9 +323,11 @@ export default function ActivityRewardsPage() {
         let response: { success: boolean; message?: string };
 
         if (isGardenHarvest) {
-          response = await townService.claimGardenHarvestReward(sessionId, reward.id, trainerId, monsterNames[reward.id] || '');
+          const ball = selectedBalls[reward.id] || undefined;
+          response = await townService.claimGardenHarvestReward(sessionId, reward.id, trainerId, monsterNames[reward.id] || '', ball);
         } else {
-          response = await townService.claimActivityReward(sessionId, reward.id, trainerId, monsterNames[reward.id] || undefined);
+          const ball = selectedBalls[reward.id] || undefined;
+          response = await townService.claimActivityReward(sessionId, reward.id, trainerId, monsterNames[reward.id] || undefined, ball);
         }
 
         if (response.success) {
@@ -340,7 +361,7 @@ export default function ActivityRewardsPage() {
     }
 
     setBatchClaiming(false);
-  }, [sessionId, rewards, selectedTrainers, isGardenHarvest, refreshRewards, monsterNames]);
+  }, [sessionId, rewards, selectedTrainers, isGardenHarvest, refreshRewards, monsterNames, selectedBalls]);
 
   // ---------- Render States ----------
 
@@ -435,6 +456,11 @@ export default function ActivityRewardsPage() {
         onMonsterNameChange={(rewardId, name) => {
           setMonsterNames(prev => ({ ...prev, [rewardId]: name }));
         }}
+        selectedBalls={selectedBalls}
+        onBallChange={(rewardId, ball) => {
+          setSelectedBalls(prev => ({ ...prev, [rewardId]: ball }));
+        }}
+        ballInventory={ballInventory}
       />
 
       {/* Footer actions */}

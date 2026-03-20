@@ -347,12 +347,14 @@ const townService = {
     rewardId: number | string,
     trainerId: number | string,
     monsterName = '',
+    ball?: string,
   ) => {
     const response = await api.post('/garden/claim', {
       sessionId,
       rewardId,
       trainerId,
       monsterName,
+      ...(ball && { ball }),
     });
     return response.data;
   },
@@ -387,12 +389,14 @@ const townService = {
     rewardId: number | string,
     trainerId: number | string,
     monsterName?: string,
+    ball?: string,
   ): Promise<ActivityClaimResponse> => {
     const response = await api.post('/town/activities/claim', {
       sessionId,
       rewardId,
       trainerId,
       ...(monsterName != null && { monsterName }),
+      ...(ball && { ball }),
     });
     return response.data;
   },

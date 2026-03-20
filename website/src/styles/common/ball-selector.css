@@ -1,0 +1,175 @@
+/* Ball Selector Component */
+
+.ball-selector {
+  position: relative;
+}
+
+.ball-selector__warning {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xsmall);
+  padding: var(--spacing-xsmall) var(--spacing-small);
+  background: var(--warning-glow);
+  border: 1px solid var(--warning-color);
+  border-radius: var(--border-radius-small);
+  color: var(--warning-color);
+  font-size: 0.85rem;
+  margin-bottom: var(--spacing-small);
+}
+
+.ball-selector__warning i {
+  flex-shrink: 0;
+}
+
+.ball-selector__cost-notice {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xsmall);
+  padding: var(--spacing-xsmall) var(--spacing-small);
+  background: var(--accent-color-subtle);
+  border: 1px solid var(--accent-color-dark);
+  border-radius: var(--border-radius-small);
+  color: var(--accent-color);
+  font-size: 0.85rem;
+  margin-bottom: var(--spacing-small);
+}
+
+.ball-selector__cost-notice i {
+  flex-shrink: 0;
+}
+
+.ball-selector__current {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-small);
+  padding: var(--spacing-xsmall) var(--spacing-small);
+  background: var(--primary-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-small);
+}
+
+.ball-selector__current--clickable {
+  cursor: pointer;
+  transition: border-color 0.2s ease;
+}
+
+.ball-selector__current--clickable:hover {
+  border-color: var(--accent-color);
+}
+
+.ball-selector__current--disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.ball-selector__icon {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.ball-selector__name {
+  font-weight: 500;
+  flex: 1;
+}
+
+.ball-selector__change-btn {
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+.ball-selector__dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  margin-top: 4px;
+  background: var(--background-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-small);
+  box-shadow: var(--shadow-large);
+  max-height: 280px;
+  overflow-y: auto;
+}
+
+.ball-selector__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 4px;
+  padding: var(--spacing-xsmall);
+}
+
+.ball-selector__option {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xsmall);
+  padding: var(--spacing-xsmall) 8px;
+  border: 1px solid transparent;
+  border-radius: var(--border-radius-small);
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: background 0.15s ease, border-color 0.15s ease;
+  text-align: left;
+  width: 100%;
+}
+
+.ball-selector__option:hover {
+  background: var(--background-color-hover);
+}
+
+.ball-selector__option--selected {
+  background: var(--accent-color-subtle);
+  border-color: var(--accent-color);
+}
+
+.ball-selector__option-icon {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.ball-selector__option-name {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex: 1;
+}
+
+.ball-selector__option-qty {
+  font-size: 0.75rem;
+  color: var(--text-color-muted);
+  flex-shrink: 0;
+}
+
+.ball-selector__empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-xsmall);
+  padding: var(--spacing-medium);
+  color: var(--text-color-muted);
+  font-size: 0.9rem;
+}
+
+/* Compact mode (for display only, no selection) */
+.ball-selector--compact .ball-selector__current {
+  display: inline-flex;
+  padding: 2px 8px;
+  background: transparent;
+  border: none;
+  gap: var(--spacing-xsmall);
+}
+
+.ball-selector--compact .ball-selector__icon {
+  width: 22px;
+  height: 22px;
+}
+
+.ball-selector--compact .ball-selector__name {
+  font-weight: normal;
+}

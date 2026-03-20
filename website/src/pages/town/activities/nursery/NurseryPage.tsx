@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@contexts/useAuth';
 import { useDocumentTitle } from '@hooks/useDocumentTitle';
 import { FormSelect } from '@components/common/FormSelect';
+import { BallSelector, type BallInventoryEntry } from '@components/common/BallSelector';
 import { LoadingSpinner } from '@components/common/LoadingSpinner';
 import { ErrorMessage } from '@components/common/ErrorMessage';
 import api from '@services/api';
@@ -11,7 +12,10 @@ import type {
   EggItemsResponse,
   HatchResponse,
   SpeciesInputs,
+  ActiveSession,
+  ActiveSessionsResponse,
 } from './types';
+import trainerService from '@services/trainerService';
 import { extractErrorMessage } from '@utils/errorUtils';
 import { getItemImageUrl, handleItemImageError } from '@utils/imageUtils';
 import '@styles/town/activities.css';
@@ -126,6 +130,9 @@ export default function NurseryPage() {
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
+  // Active sessions (resumable)
+  const [activeSessions, setActiveSessions] = useState<ActiveSession[]>([]);
+
   // Trainer data
   const [userTrainers, setUserTrainers] = useState<UserTrainer[]>([]);
   const [selectedTrainerId, setSelectedTrainerId] = useState('');
@@ -141,6 +148,24 @@ export default function NurseryPage() {
   const [speciesInputs, setSpeciesInputs] = useState<SpeciesInputs>({});
   // Which egg tab is active for item selection
   const [activeEggTab, setActiveEggTab] = useState(0);
+  // Ball selection for hatched monsters
+  const [selectedBall, setSelectedBall] = useState('Poke Ball');
+  const [ballInventory, setBallInventory] = useState<BallInventoryEntry[]>([]);
+
+  // Fetch ball inventory when trainer changes
+  useEffect(() => {
+    if (!selectedTrainerId) {
+      setBallInventory([]);
+      return;
+    }
+    trainerService.getTrainerInventory(selectedTrainerId).then(inv => {
+      const raw = (inv as unknown as { data?: { balls?: unknown } }).data?.balls ?? inv.balls;
+      const balls: BallInventoryEntry[] = Array.isArray(raw)
+        ? raw.map((b: { name: string; quantity: number }) => ({ name: b.name, quantity: b.quantity }))
+        : Object.entries(raw || {}).map(([name, quantity]) => ({ name, quantity: quantity as number }));
+      setBallInventory(balls);
+    }).catch(() => setBallInventory([]));
+  }, [selectedTrainerId]);
 
   // Aggregate per-egg items into totals for backend submission
   const selectedItems = useMemo(() => {
@@ -157,14 +182,22 @@ export default function NurseryPage() {
   // totalUsedPerItem is the same as selectedItems (aggregated totals)
   const totalUsedPerItem = selectedItems;
 
-  // Fetch user trainers on mount
+  // Fetch user trainers and active sessions on mount
   const fetchTrainers = useCallback(async () => {
     if (!currentUser?.discord_id) return;
     try {
       setLoading(true);
-      const response = await api.get(`/trainers/user/${currentUser.discord_id}`);
-      const trainers: UserTrainer[] = response.data.data || [];
+      const [trainerRes, sessionsRes] = await Promise.all([
+        api.get(`/trainers/user/${currentUser.discord_id}`),
+        api.get<ActiveSessionsResponse>('/nursery/active-sessions').catch(() => null),
+      ]);
+
+      const trainers: UserTrainer[] = trainerRes.data.data || [];
       setUserTrainers(trainers);
+
+      if (sessionsRes?.data?.success) {
+        setActiveSessions(sessionsRes.data.sessions || []);
+      }
 
       if (trainers.length > 0) {
         const pIds = currentUser?.priority_trainer_ids ?? [];
@@ -275,6 +308,7 @@ export default function NurseryPage() {
     setPerEggItems({ 0: {} });
     setActiveEggTab(0);
     setSpeciesInputs({});
+    setSelectedBall('Poke Ball');
     setError(null);
   }, []);
 
@@ -398,6 +432,7 @@ export default function NurseryPage() {
       formData.append('trainerId', selectedTrainerId);
       formData.append('eggCount', String(eggCount));
       formData.append('useIncubator', String(useIncubator));
+      formData.append('ball', selectedBall);
 
       if (imageFile) {
         formData.append('imageFile', imageFile);
@@ -420,7 +455,7 @@ export default function NurseryPage() {
     } finally {
       setSubmitting(false);
     }
-  }, [validate, selectedTrainerId, eggCount, useIncubator, imageFile, selectedItems, speciesInputs, navigate]);
+  }, [validate, selectedTrainerId, eggCount, useIncubator, imageFile, selectedItems, speciesInputs, selectedBall, navigate]);
 
   // Shared controls rendered in both tabs
   const renderSharedControls = (mode: 'hatch' | 'nurture') => (
@@ -527,6 +562,19 @@ export default function NurseryPage() {
           </div>
         </div>
       )}
+
+      {/* Ball Selection */}
+      <div className="nursery-form__section">
+        <h4 className="nursery-form__section-title">
+          <i className="fas fa-circle"></i> Ball Type
+        </h4>
+        <BallSelector
+          selectedBall={selectedBall}
+          onBallChange={setSelectedBall}
+          disabled={submitting}
+          inventory={ballInventory}
+        />
+      </div>
 
     </div>
   );
@@ -663,6 +711,38 @@ export default function NurseryPage() {
         onChange={handleTrainerChange}
         options={trainerOptions}
       />
+
+      {/* Active Sessions Banner */}
+      {activeSessions.length > 0 && (
+        <div className="nursery-active-sessions">
+          <div className="nursery-active-sessions__header">
+            <i className="fas fa-clock"></i>
+            <span>You have {activeSessions.length === 1 ? 'an active hatching session' : `${activeSessions.length} active hatching sessions`}</span>
+          </div>
+          {activeSessions.map(sess => {
+            const trainerName = userTrainers.find(t => t.id === sess.trainerId)?.name ?? `Trainer #${sess.trainerId}`;
+            return (
+              <button
+                key={sess.sessionId}
+                className="nursery-active-session"
+                onClick={() => navigate(`/town/activities/nursery/session/${sess.sessionId}`)}
+              >
+                <div className="nursery-active-session__info">
+                  <span className="nursery-active-session__trainer">{trainerName}</span>
+                  <span className="nursery-active-session__detail">
+                    {sess.type === 'hatch' ? 'Simple Hatch' : 'Advanced Nurture'} &middot;{' '}
+                    {sess.selectedCount}/{sess.eggCount} eggs claimed
+                  </span>
+                </div>
+                <div className="nursery-active-session__action">
+                  <span>Resume</span>
+                  <i className="fas fa-arrow-right"></i>
+                </div>
+              </button>
+            );
+          })}
+        </div>
+      )}
 
       {selectedTrainerId && (
         <>

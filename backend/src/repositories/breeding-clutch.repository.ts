@@ -46,8 +46,8 @@ export type BreedingClutchCreateInput = {
 };
 
 const parseJson = <T>(value: string | object | null | undefined, fallback: T): T => {
-  if (value === null || value === undefined) return fallback;
-  if (typeof value === 'object') return value as T;
+  if (value === null || value === undefined) { return fallback; }
+  if (typeof value === 'object') { return value as T; }
   try {
     return JSON.parse(value) as T;
   } catch {
@@ -94,7 +94,7 @@ export class BreedingClutchRepository {
       ]
     );
     const row = result.rows[0];
-    if (!row) throw new Error('Failed to create breeding clutch');
+    if (!row) { throw new Error('Failed to create breeding clutch'); }
     return normalize(row);
   }
 

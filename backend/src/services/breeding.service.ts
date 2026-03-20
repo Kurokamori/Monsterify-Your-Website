@@ -29,6 +29,7 @@ import { SpecialBerryService } from './special-berry.service';
 import type { SpecialBerryInventory } from './special-berry.service';
 import { MonsterRollerService } from './monster-roller.service';
 import type { UserSettings } from './monster-roller.service';
+import { consumeBallFromInventory } from '../utils/ballUtils';
 
 // ============================================================================
 // Types
@@ -785,6 +786,7 @@ export class BreedingService {
     userId: string,
     customName?: string,
     claimTrainerId?: number,
+    ball?: string,
   ): Promise<ClaimResult> {
     const clutch = await this.clutchRepo.findBySessionId(sessionId);
     if (!clutch) {
@@ -858,9 +860,13 @@ export class BreedingService {
       spaTotal: monsterData.spa_total,
       spdTotal: monsterData.spd_total,
       speTotal: monsterData.spe_total,
+      ball: ball ?? 'Poke Ball',
     };
 
     const savedMonster = await this.monsterRepo.create(monsterToCreate);
+
+    // Consume the ball from trainer inventory
+    await consumeBallFromInventory(targetTrainerId, ball ?? 'Poke Ball');
 
     // Add automatic lineage tracking
     try {
@@ -966,6 +972,7 @@ export class BreedingService {
       throw new Error('Invalid monster index');
     }
 
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- intentional: empty strings should fall through
     const name = customName?.trim() || monsterData.name || monsterData.species1 || 'Unknown';
 
     // Create monster directly in the bazar

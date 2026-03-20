@@ -1,6 +1,19 @@
 import { BaseRepository } from './base.repository';
 import { db } from '../database';
 
+type PublicProfile = {
+  id: number;
+  username: string;
+  display_name: string;
+  profile_image_url: string | null;
+  profile_trainer_id: number | null;
+  profile_trainer_image: string | null;
+  bio: string | null;
+  created_at: Date | null;
+  trainer_count: number;
+  monster_count: number;
+};
+
 export type MonsterRollerSettings = {
   pokemon: boolean;
   digimon: boolean;
@@ -447,19 +460,8 @@ export class UserRepository extends BaseRepository<UserPublic, UserCreateInput, 
     return this.update(id, { priorityTrainerIds: trainerIds });
   }
 
-  async findPublicProfile(id: number): Promise<{
-    id: number;
-    username: string;
-    display_name: string;
-    profile_image_url: string | null;
-    profile_trainer_id: number | null;
-    profile_trainer_image: string | null;
-    bio: string | null;
-    created_at: Date | null;
-    trainer_count: number;
-    monster_count: number;
-  } | null> {
-    const result = await db.query(
+  async findPublicProfile(id: number): Promise<PublicProfile | null> {
+    const result = await db.query<PublicProfile>(
       `SELECT
         u.id, u.username, u.display_name, u.profile_image_url, u.profile_trainer_id, u.bio, u.created_at,
         pt.main_ref as profile_trainer_image,
@@ -475,19 +477,8 @@ export class UserRepository extends BaseRepository<UserPublic, UserCreateInput, 
     return result.rows[0] ?? null;
   }
 
-  async findPublicProfileByDiscordId(discordId: string): Promise<{
-    id: number;
-    username: string;
-    display_name: string;
-    profile_image_url: string | null;
-    profile_trainer_id: number | null;
-    profile_trainer_image: string | null;
-    bio: string | null;
-    created_at: Date | null;
-    trainer_count: number;
-    monster_count: number;
-  } | null> {
-    const result = await db.query(
+  async findPublicProfileByDiscordId(discordId: string): Promise<PublicProfile | null> {
+    const result = await db.query<PublicProfile>(
       `SELECT
         u.id, u.username, u.display_name, u.profile_image_url, u.profile_trainer_id, u.bio, u.created_at,
         pt.main_ref as profile_trainer_image,

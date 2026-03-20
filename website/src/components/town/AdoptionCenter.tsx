@@ -9,12 +9,14 @@ import { Pagination } from '../common/Pagination';
 import { TypeBadge } from '../common/TypeBadge';
 import { AttributeBadge } from '../common/AttributeBadge';
 import { TrainerAutocomplete } from '../common/TrainerAutocomplete';
+import { BallSelector, type BallInventoryEntry } from '../common/BallSelector';
 import { SearchBar } from '../common/SearchBar';
 import { FormInput } from '../common/FormInput';
 import { FormSelect } from '../common/FormSelect';
 import { ActionButtonGroup } from '../common/ActionButtonGroup';
 import { AdoptionItemModal } from './AdoptionItemModal';
 import api from '../../services/api';
+import trainerService from '../../services/trainerService';
 import { extractErrorMessage } from '../../utils/errorUtils';
 import type { Monster } from '../common/MonsterDetails';
 import type {
@@ -126,6 +128,7 @@ export function AdoptionCenter({ className = '' }: AdoptionCenterProps) {
   const [selectedAdopt, setSelectedAdopt] = useState<Adopt | null>(null);
   const [showAdoptModal, setShowAdoptModal] = useState(false);
   const [monsterName, setMonsterName] = useState('');
+  const [selectedBall, setSelectedBall] = useState('Poke Ball');
   const [adoptionLoading, setAdoptionLoading] = useState(false);
   const [adoptionSuccess, setAdoptionSuccess] = useState(false);
   const [adoptionError, setAdoptionError] = useState('');
@@ -153,6 +156,24 @@ export function AdoptionCenter({ className = '' }: AdoptionCenterProps) {
   // Image popout
   const [showImagePopout, setShowImagePopout] = useState(false);
   const [popoutImage, setPopoutImage] = useState({ url: '', species: '' });
+
+  // Ball inventory for selected trainer
+  const [ballInventory, setBallInventory] = useState<BallInventoryEntry[]>([]);
+
+  // Fetch ball inventory when selected trainer changes
+  useEffect(() => {
+    if (!selectedTrainer) {
+      setBallInventory([]);
+      return;
+    }
+    trainerService.getTrainerInventory(selectedTrainer).then(inv => {
+      const raw = (inv as unknown as { data?: { balls?: unknown } }).data?.balls ?? inv.balls;
+      const balls: BallInventoryEntry[] = Array.isArray(raw)
+        ? raw.map((b: { name: string; quantity: number }) => ({ name: b.name, quantity: b.quantity }))
+        : Object.entries(raw || {}).map(([name, quantity]) => ({ name, quantity: quantity as number }));
+      setBallInventory(balls);
+    }).catch(() => setBallInventory([]));
+  }, [selectedTrainer]);
 
   // Art reward results
   const [earnedLevels, setEarnedLevels] = useState(0);
@@ -379,6 +400,7 @@ export function AdoptionCenter({ className = '' }: AdoptionCenterProps) {
   const handleAdoptClick = (adopt: Adopt) => {
     setSelectedAdopt(adopt);
     setMonsterName(adopt.species1 || '');
+    setSelectedBall('Poke Ball');
     setShowAdoptModal(true);
     setAdoptionSuccess(false);
     setAdoptionError('');
@@ -434,6 +456,7 @@ export function AdoptionCenter({ className = '' }: AdoptionCenterProps) {
         adoptId: selectedAdopt.id,
         trainerId: selectedTrainer,
         monsterName: monsterName.trim(),
+        ball: selectedBall,
         artworkId: selectedArtwork?.id,
         artDetails: {
           quality: artQuality,
@@ -760,6 +783,17 @@ export function AdoptionCenter({ className = '' }: AdoptionCenterProps) {
                           : 'No Daypasses'
                       }))}
                       placeholder="Type to search trainers..."
+                    />
+                  </div>
+
+                  {/* Ball Selection */}
+                  <div className="form-group">
+                    <label className="form-label">Ball Type</label>
+                    <BallSelector
+                      selectedBall={selectedBall}
+                      onBallChange={setSelectedBall}
+                      disabled={adoptionLoading}
+                      inventory={ballInventory}
                     />
                   </div>
 

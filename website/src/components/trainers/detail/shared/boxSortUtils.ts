@@ -13,7 +13,7 @@ export interface SortConfig {
     typeMode: 'type1Only' | 'allTypes';
   };
   sortWithin: Array<{
-    field: 'level' | 'type' | 'name' | 'species' | 'attribute';
+    field: 'level' | 'type' | 'name' | 'species' | 'attribute' | 'dateMet';
     direction: 'asc' | 'desc';
     enabled: boolean;
   }>;
@@ -257,6 +257,12 @@ function buildComparator(
         case 'attribute':
           cmp = ((a.attribute as string) || '').localeCompare((b.attribute as string) || '');
           break;
+        case 'dateMet': {
+          const dateA = (a.date_met as string) || '';
+          const dateB = (b.date_met as string) || '';
+          cmp = dateA.localeCompare(dateB);
+          break;
+        }
       }
 
       if (cmp !== 0) return cmp * mult;
@@ -282,5 +288,6 @@ export const DEFAULT_SORT_CONFIG: SortConfig = {
     { field: 'name', direction: 'asc', enabled: false },
     { field: 'species', direction: 'asc', enabled: false },
     { field: 'attribute', direction: 'asc', enabled: false },
+    { field: 'dateMet', direction: 'desc', enabled: false },
   ],
 };

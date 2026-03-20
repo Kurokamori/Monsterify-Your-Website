@@ -23,6 +23,7 @@ const SORT_FIELD_LABELS: Record<string, string> = {
   name: 'Name (Alphabetical)',
   species: 'Group by Species',
   attribute: 'Attribute',
+  dateMet: 'Date Met',
 };
 
 export const AutoSortModal = ({

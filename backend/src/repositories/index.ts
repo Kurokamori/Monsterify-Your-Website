@@ -741,3 +741,9 @@ export type {
   GameCornerSession,
   GameCornerSessionUpsertInput,
 } from './game-corner-session.repository';
+
+// Nursery Session Repository
+export { NurserySessionRepository } from './nursery-session.repository';
+export type {
+  NurserySessionRow,
+} from './nursery-session.repository';

@@ -1,5 +1,6 @@
 import type { Monster } from '@services/monsterService';
 import { getFriendshipMessage } from '../useMonsterDetail';
+import { BallSelector } from '@components/common/BallSelector';
 
 const ISO_DATE_REGEX = /^\d{4}-\d{2}-\d{2}(T|\s)/;
 
@@ -25,9 +26,8 @@ export const ProfileTab = ({ monster }: ProfileTabProps) => {
     monster.friendship !== undefined
   );
 
-  const hasOrigin = !!(
-    monster.where_met || monster.date_met || monster.acquired || monster.ball
-  );
+  // Ball always exists (defaults to Poke Ball), so origin section is always shown
+  const hasOrigin = true;
 
   const hasPhysical = !!(monster.height || monster.weight);
 
@@ -131,12 +131,16 @@ export const ProfileTab = ({ monster }: ProfileTabProps) => {
                 <span className="detail-value">{String(monster.acquired)}</span>
               </div>
             )}
-            {!!monster.ball && (
-              <div className="inventory-item">
-                <span className="detail-label">Ball</span>
-                <span className="detail-value">{String(monster.ball)}</span>
-              </div>
-            )}
+            <div className="inventory-item">
+              <span className="detail-label">Ball</span>
+              <span className="detail-value">
+                <BallSelector
+                  selectedBall={String(monster.ball || 'Poke Ball')}
+                  onBallChange={() => {}}
+                  compact
+                />
+              </span>
+            </div>
           </div>
         </div>
       )}

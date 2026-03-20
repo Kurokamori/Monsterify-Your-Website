@@ -5,7 +5,9 @@ import { useDocumentTitle } from '@hooks/useDocumentTitle';
 import { LoadingSpinner } from '@components/common/LoadingSpinner';
 import { ErrorMessage } from '@components/common/ErrorMessage';
 import { SuccessMessage } from '@components/common/SuccessMessage';
+import { BallSelector, type BallInventoryEntry } from '@components/common/BallSelector';
 import { MonsterCard } from '@components/monsters/MonsterCard';
+import trainerService from '@services/trainerService';
 import api from '@services/api';
 import type { HatchSession, SessionResponse, SelectMonsterResponse, RerollResponse } from './types';
 import { extractErrorMessage } from '@utils/errorUtils';
@@ -32,6 +34,8 @@ export default function NurserySessionPage() {
   const [monsterNames, setMonsterNames] = useState<Record<number, string>>({});
   const [submitting, setSubmitting] = useState(false);
   const [statusMessage, setStatusMessage] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
+  const [selectedBall, setSelectedBall] = useState('Poke Ball');
+  const [ballInventory, setBallInventory] = useState<BallInventoryEntry[]>([]);
 
   // Fetch session
   const fetchSession = useCallback(async () => {
@@ -44,6 +48,11 @@ export default function NurserySessionPage() {
       if (response.data.success) {
         const sess = response.data.session;
         setSession(sess);
+
+        // Use ball from session (set during hatch/nurture start) as default
+        if (sess.ball) {
+          setSelectedBall(sess.ball);
+        }
 
         // Initialize selected monsters and names from existing session data
         const initialSelected: Record<number, number | undefined> = {};
@@ -59,6 +68,14 @@ export default function NurserySessionPage() {
 
         setSelectedMonsters(initialSelected);
         setMonsterNames(initialNames);
+
+        // Advance to first unclaimed egg when resuming a session
+        const firstUnclaimedIdx = sess.hatchedEggs.findIndex(
+          egg => !sess.selectedMonsters[egg.eggId]
+        );
+        if (firstUnclaimedIdx !== -1) {
+          setCurrentEgg(firstUnclaimedIdx);
+        }
       } else {
         setError(response.data.message || 'Failed to load hatch session');
       }
@@ -72,6 +89,18 @@ export default function NurserySessionPage() {
   useEffect(() => {
     fetchSession();
   }, [fetchSession]);
+
+  // Fetch ball inventory when session loads
+  useEffect(() => {
+    if (!session?.trainerId) return;
+    trainerService.getTrainerInventory(session.trainerId).then(inv => {
+      const raw = (inv as unknown as { data?: { balls?: unknown } }).data?.balls ?? inv.balls;
+      const balls: BallInventoryEntry[] = Array.isArray(raw)
+        ? raw.map((b: { name: string; quantity: number }) => ({ name: b.name, quantity: b.quantity }))
+        : Object.entries(raw || {}).map(([name, quantity]) => ({ name, quantity: quantity as number }));
+      setBallInventory(balls);
+    }).catch(() => setBallInventory([]));
+  }, [session?.trainerId]);
 
   // Auto-clear status messages
   useEffect(() => {
@@ -115,6 +144,7 @@ export default function NurserySessionPage() {
         monsterName: monsterName || `Hatched Monster ${eggId}`,
         dnaSplicers: 0,
         useEdenweiss: false,
+        ball: selectedBall,
       });
 
       if (response.data.success) {
@@ -150,7 +180,7 @@ export default function NurserySessionPage() {
     } finally {
       setSubmitting(false);
     }
-  }, [session, sessionId, selectedMonsters, monsterNames, currentEgg]);
+  }, [session, sessionId, selectedMonsters, monsterNames, currentEgg, selectedBall]);
 
   // Claim extra monster with Edenweiss berry
   const handleClaimWithEdenweiss = useCallback(async (eggId: number) => {
@@ -174,6 +204,7 @@ export default function NurserySessionPage() {
         monsterName: monsterName || `Hatched Monster ${eggId}`,
         dnaSplicers: 0,
         useEdenweiss: true,
+        ball: selectedBall,
       });
 
       if (response.data.success) {
@@ -198,7 +229,7 @@ export default function NurserySessionPage() {
     } finally {
       setSubmitting(false);
     }
-  }, [sessionId, selectedMonsters, monsterNames]);
+  }, [sessionId, selectedMonsters, monsterNames, selectedBall]);
 
   // Reroll egg with Forget-Me-Not berry
   const handleRerollEgg = useCallback(async () => {
@@ -291,6 +322,12 @@ export default function NurserySessionPage() {
               {(monsterNames[currentEggData.eggId] || '').length}/50
             </div>
           </div>
+          <BallSelector
+            selectedBall={selectedBall}
+            onBallChange={setSelectedBall}
+            disabled={submitting}
+            inventory={ballInventory}
+          />
         </div>
       </div>
     );

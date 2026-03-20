@@ -3,7 +3,9 @@ import { AutocompleteInput, AutocompleteOption } from '../common/AutocompleteInp
 import { TrainerAutocomplete } from '../common/TrainerAutocomplete';
 import { TypeBadge } from '../common/TypeBadge';
 import { AttributeBadge } from '../common/AttributeBadge';
+import { BallSelector, type BallInventoryEntry } from '../common/BallSelector';
 import { ErrorModal } from '../common/ErrorModal';
+import trainerService from '../../services/trainerService';
 import api from '../../services/api';
 
 interface Trainer {
@@ -61,6 +63,7 @@ interface MonsterAssignment {
   monster: GiftMonster;
   trainerId: number;
   name: string;
+  ball?: string;
 }
 
 interface GiftRewardsData {
@@ -100,6 +103,7 @@ export function GiftRewards({
   const [monsterRewards, setMonsterRewards] = useState<GiftMonster[]>([]);
   const [monsterAssignments, setMonsterAssignments] = useState<Record<number, string>>({});
   const [monsterNames, setMonsterNames] = useState<Record<number, string>>({});
+  const [monsterBalls, setMonsterBalls] = useState<Record<number, string>>({});
 
   // State for adding new allocations
   const [selectedEntityType, setSelectedEntityType] = useState<'trainer' | 'monster'>('trainer');
@@ -110,6 +114,9 @@ export function GiftRewards({
   const [trainerSearchText, setTrainerSearchText] = useState('');
   const [monsterTrainerSearchText, setMonsterTrainerSearchText] = useState('');
   const [monsterSearchText, setMonsterSearchText] = useState('');
+
+  // Ball inventory per trainer
+  const [ballInventoryMap, setBallInventoryMap] = useState<Record<string, BallInventoryEntry[]>>({});
 
   // Loading and error states
   const [loading, setLoading] = useState(false);
@@ -149,15 +156,18 @@ export function GiftRewards({
         });
         setMonsterRewards(monsterResponse.data.monsters || []);
 
-        // Initialize monster assignments and names
+        // Initialize monster assignments, names, and balls
         const initialMonsterAssignments: Record<number, string> = {};
         const initialMonsterNames: Record<number, string> = {};
+        const initialMonsterBalls: Record<number, string> = {};
         monsterResponse.data.monsters?.forEach((monster, index) => {
           initialMonsterAssignments[index] = '';
           initialMonsterNames[index] = monster.name || '';
+          initialMonsterBalls[index] = 'Poke Ball';
         });
         setMonsterAssignments(initialMonsterAssignments);
         setMonsterNames(initialMonsterNames);
+        setMonsterBalls(initialMonsterBalls);
       }
 
     } catch (err) {
@@ -172,6 +182,26 @@ export function GiftRewards({
   useEffect(() => {
     generateRewards();
   }, [generateRewards]);
+
+  // Fetch ball inventory for newly assigned trainers
+  useEffect(() => {
+    const trainerIds = new Set(Object.values(monsterAssignments).filter(Boolean));
+    trainerIds.forEach(tid => {
+      if (!tid) return;
+      setBallInventoryMap(prev => {
+        if (prev[tid]) return prev; // Already fetched
+        // Mark as fetching to avoid duplicate requests
+        trainerService.getTrainerInventory(tid).then(inv => {
+          const raw = (inv as unknown as { data?: { balls?: unknown } }).data?.balls ?? inv.balls;
+          const balls: BallInventoryEntry[] = Array.isArray(raw)
+            ? raw.map((b: { name: string; quantity: number }) => ({ name: b.name, quantity: b.quantity }))
+            : Object.entries(raw || {}).map(([name, quantity]) => ({ name, quantity: quantity as number }));
+          setBallInventoryMap(p => ({ ...p, [tid]: balls }));
+        }).catch(() => {});
+        return { ...prev, [tid]: [] }; // Placeholder to prevent re-fetch
+      });
+    });
+  }, [monsterAssignments]);
 
   const handleAddAllocation = () => {
     if (!selectedEntityId || allocationLevels < 1 || allocationLevels > availableLevels) {
@@ -292,6 +322,18 @@ export function GiftRewards({
 	        });
 	        return updated;
 	      });
+	      setMonsterBalls(prev => {
+	        const updated: Record<number, string> = {};
+	        Object.keys(prev).forEach((key) => {
+	          const idx = Number(key);
+	          if (idx < monsterIndex) {
+	            updated[idx] = prev[idx];
+	          } else if (idx > monsterIndex) {
+	            updated[idx - 1] = prev[idx];
+	          }
+	        });
+	        return updated;
+	      });
 	    } catch (err) {
 	      console.error('Error forfeiting gift monster:', err);
 	      const axiosError = err as { response?: { data?: { message?: string } } };
@@ -345,7 +387,8 @@ export function GiftRewards({
         monsterAssignments: monsterRewards.map((monster, index) => ({
           monster,
           trainerId: parseInt(monsterAssignments[index]),
-          name: monsterNames[index].trim()
+          name: monsterNames[index].trim(),
+          ball: monsterBalls[index] || 'Poke Ball'
         }))
       };
 
@@ -772,6 +815,18 @@ export function GiftRewards({
                             label=""
                             placeholder="Select trainer"
                             noPadding
+                          />
+                        </div>
+
+                        <div className="form-group form-group--small-padding">
+                          <label className="form-label">Ball</label>
+                          <BallSelector
+                            selectedBall={monsterBalls[index] || 'Poke Ball'}
+                            onBallChange={(ball) => setMonsterBalls(prev => ({
+                              ...prev,
+                              [index]: ball
+                            }))}
+                            inventory={monsterAssignments[index] ? ballInventoryMap[monsterAssignments[index]] : undefined}
                           />
                         </div>
 

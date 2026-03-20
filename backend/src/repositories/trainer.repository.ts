@@ -64,6 +64,7 @@ export type TrainerRow = {
   zodiac: string | null;
   chinese_zodiac: string | null;
   mega_info: string | null;
+  preferred_ball: string | null;
   created_at: Date;
   updated_at: Date;
 };
@@ -127,6 +128,7 @@ export type TrainerProfileFields = {
   secrets?: string | null;
   relations?: string | null;
   icon?: string | null;
+  preferred_ball?: string | null;
 };
 
 export type TrainerCreateInput = {
@@ -255,7 +257,7 @@ export class TrainerRepository extends BaseRepository<TrainerWithStats, TrainerC
       'birthplace', 'residence', 'race', 'occupation', 'theme', 'voice_claim',
       'quote', 'tldr', 'biography',
       'strengths', 'weaknesses', 'likes', 'dislikes', 'flaws', 'values', 'quirks',
-      'secrets', 'relations', 'icon',
+      'secrets', 'relations', 'icon', 'preferred_ball',
     ];
 
     for (const field of profileFields) {
@@ -314,7 +316,7 @@ export class TrainerRepository extends BaseRepository<TrainerWithStats, TrainerC
       'birthplace', 'residence', 'race', 'occupation', 'theme', 'voice_claim',
       'quote', 'tldr', 'biography',
       'strengths', 'weaknesses', 'likes', 'dislikes', 'flaws', 'values', 'quirks',
-      'secrets', 'relations', 'icon',
+      'secrets', 'relations', 'icon', 'preferred_ball',
     ];
 
     for (const [key, column] of Object.entries(fieldMap)) {

@@ -7,7 +7,9 @@ import { FormInput } from '../common/FormInput';
 import { TypeBadge } from '../common/TypeBadge';
 import { AttributeBadge } from '../common/AttributeBadge';
 import { ActionButtonGroup } from '../common/ActionButtonGroup';
+import { BallSelector, type BallInventoryEntry } from '../common/BallSelector';
 import api from '../../services/api';
+import trainerService from '../../services/trainerService';
 import type { RolledMonster, AntiqueTrainer } from './types';
 import type { Monster } from '../common/MonsterDetails';
 
@@ -38,8 +40,12 @@ export function AntiqueAppraisal({
   const [error, setError] = useState<string | null>(null);
   const [rolledMonster, setRolledMonster] = useState<RolledMonster | null>(null);
 
+  // Ball inventory
+  const [ballInventory, setBallInventory] = useState<BallInventoryEntry[]>([]);
+
   // Adoption state
   const [monsterName, setMonsterName] = useState('');
+  const [selectedBall, setSelectedBall] = useState('Poke Ball');
   const [adoptSuccess, setAdoptSuccess] = useState(false);
   const [adoptLoading, setAdoptLoading] = useState(false);
   const [adoptError, setAdoptError] = useState<string | null>(null);
@@ -69,11 +75,27 @@ export function AntiqueAppraisal({
     if (isOpen) {
       setRolledMonster(null);
       setMonsterName('');
+      setSelectedBall('Poke Ball');
       setAdoptSuccess(false);
       setError(null);
       setAdoptError(null);
     }
   }, [isOpen]);
+
+  // Fetch ball inventory when trainer changes
+  useEffect(() => {
+    if (!trainerId || !isOpen) {
+      setBallInventory([]);
+      return;
+    }
+    trainerService.getTrainerInventory(trainerId).then(inv => {
+      const raw = (inv as unknown as { data?: { balls?: unknown } }).data?.balls ?? inv.balls;
+      const balls: BallInventoryEntry[] = Array.isArray(raw)
+        ? raw.map((b: { name: string; quantity: number }) => ({ name: b.name, quantity: b.quantity }))
+        : Object.entries(raw || {}).map(([name, quantity]) => ({ name, quantity: quantity as number }));
+      setBallInventory(balls);
+    }).catch(() => setBallInventory([]));
+  }, [trainerId, isOpen]);
 
   // Handle appraisal
   const handleAppraise = async () => {
@@ -120,6 +142,7 @@ export function AntiqueAppraisal({
       const monsterData = {
         ...rolledMonster,
         name: monsterName,
+        ball: selectedBall,
         trainer_id: parseInt(String(trainerId)),
         discord_user_id: trainer.discord_user_id || trainer.discord_id
       };
@@ -241,6 +264,15 @@ export function AntiqueAppraisal({
           placeholder="Enter monster name"
           required
         />
+
+        <div className="form-group">
+          <label className="form-label">Ball</label>
+          <BallSelector
+            selectedBall={selectedBall}
+            onBallChange={setSelectedBall}
+            inventory={ballInventory}
+          />
+        </div>
 
         {adoptError && <ErrorMessage message={adoptError} />}
 

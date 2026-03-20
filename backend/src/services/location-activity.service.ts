@@ -9,6 +9,7 @@ import type { InventoryCategory, BazarMonsterCreateInput } from '../repositories
 import type { UserPublic, MonsterRollerSettings } from '../repositories';
 import { MonsterRollerService, type RollParams, type UserSettings } from './monster-roller.service';
 import { MonsterInitializerService } from './monster-initializer.service';
+import { consumeBallFromInventory } from '../utils/ballUtils';
 import { ItemRollerService } from './item-roller.service';
 import {
   isValidLocation,
@@ -303,7 +304,8 @@ export class LocationActivityService {
     rewardId: string,
     trainerId: number,
     userId: string,
-    monsterName?: string
+    monsterName?: string,
+    ball?: string
   ): Promise<ClaimResult> {
     const row = await this.sessionRepo.findBySessionId(sessionId);
     if (!row) {
@@ -342,7 +344,7 @@ export class LocationActivityService {
         await this.claimLevelReward(trainerId, reward.reward_data as LevelRewardData);
         break;
       case 'monster':
-        await this.claimMonsterReward(trainerId, userId, reward.reward_data as MonsterRewardData, monsterName);
+        await this.claimMonsterReward(trainerId, userId, reward.reward_data as MonsterRewardData, monsterName, ball);
         break;
     }
 
@@ -531,7 +533,8 @@ export class LocationActivityService {
     trainerId: number,
     userId: string,
     data: MonsterRewardData,
-    monsterName?: string
+    monsterName?: string,
+    ball?: string
   ): Promise<void> {
     const rolledMonster = data.rolled_monster;
     if (!rolledMonster) {
@@ -602,7 +605,11 @@ export class LocationActivityService {
       moveset: initializedMonster.moveset as string[] | undefined,
       imgLink: null,
       whereMet: 'Town Activity',
+      ball: ball ?? 'Poke Ball',
     });
+
+    // Consume the ball from trainer inventory
+    await consumeBallFromInventory(trainerId, ball ?? 'Poke Ball');
 
     // Update reward data with the created monster info
     data.monster_id = newMonster.id;

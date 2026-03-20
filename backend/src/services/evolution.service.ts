@@ -42,6 +42,22 @@ export type EvolveResult = {
   monster: MonsterWithTrainer;
 };
 
+export type MultiEvolutionSlot = {
+  speciesSlot: SpeciesSlot;
+  evolutionName?: string;
+  useDigitalRepairKit?: boolean;
+  customEvolutionName?: string;
+};
+
+export type MultiEvolveInput = {
+  monsterId: number;
+  trainerId: number;
+  stoneType: string;
+  evolutions: MultiEvolutionSlot[];
+  imageUrl?: string;
+  useVoidStone?: boolean;
+};
+
 // ============================================================================
 // Constants
 // ============================================================================
@@ -66,7 +82,7 @@ const EVOLUTION_ITEM_TYPE_MAP: Record<string, string> = {
   'Normal Stone': 'Normal',
 };
 
-const NO_TYPE_CHANGE_ITEMS = ['Void Evolution Stone', 'Digital Repair Kit'];
+const NO_TYPE_CHANGE_ITEMS = ['Void Evolution Stone', 'Digital Repair Kit', 'Chimera Stone', 'Hydra Crystal'];
 
 // ============================================================================
 // Service
@@ -183,6 +199,169 @@ export class EvolutionService {
 
     if (useDigitalRepairKit) {
       await this.inventoryRepo.removeItem(trainerId, 'evolution', 'Digital Repair Kit', 1);
+    }
+
+    return { monster: updatedMonster };
+  }
+
+  // ==========================================================================
+  // Multi-Evolve Monster (Chimera Stone / Hydra Crystal)
+  // ==========================================================================
+
+  async multiEvolveMonster(input: MultiEvolveInput): Promise<EvolveResult> {
+    const {
+      monsterId,
+      trainerId,
+      stoneType,
+      evolutions,
+      useVoidStone,
+    } = input;
+
+    // Validate monster exists
+    const monster = await this.monsterRepo.findById(monsterId);
+    if (!monster) {
+      throw new Error(`Monster with ID ${monsterId} not found`);
+    }
+
+    // Validate trainer exists
+    const trainer = await this.trainerRepo.findById(trainerId);
+    if (!trainer) {
+      throw new Error(`Trainer with ID ${trainerId} not found`);
+    }
+
+    // Validate monster belongs to trainer
+    if (monster.trainer_id !== trainerId) {
+      throw new Error('This monster does not belong to the specified trainer');
+    }
+
+    // Validate stone type
+    const validStones = ['Chimera Stone', 'Hydra Crystal'];
+    if (!validStones.includes(stoneType)) {
+      throw new Error('Invalid multi-evolution stone type');
+    }
+
+    // Validate species count vs stone type
+    const speciesCount = [monster.species1, monster.species2, monster.species3]
+      .filter(Boolean).length;
+
+    if (stoneType === 'Chimera Stone') {
+      if (speciesCount < 2) {
+        throw new Error('Chimera Stone requires a monster with at least 2 species');
+      }
+      if (evolutions.length !== 2) {
+        throw new Error('Chimera Stone requires exactly 2 species to evolve');
+      }
+    }
+
+    if (stoneType === 'Hydra Crystal') {
+      if (speciesCount !== 3) {
+        throw new Error('Hydra Crystal requires a monster with exactly 3 species');
+      }
+      if (evolutions.length !== 3) {
+        throw new Error('Hydra Crystal requires exactly 3 species to evolve');
+      }
+    }
+
+    // Validate no duplicate species slots
+    const slots = evolutions.map(e => e.speciesSlot);
+    if (new Set(slots).size !== slots.length) {
+      throw new Error('Cannot evolve the same species slot twice');
+    }
+
+    // Validate image or void stones
+    if (!input.imageUrl && !useVoidStone) {
+      throw new Error('Image URL is required, or use Void Evolution Stones');
+    }
+
+    // Validate stone inventory
+    await this.validateInventoryItem(trainerId, stoneType);
+
+    // Validate void stone count (1 per species being evolved)
+    if (useVoidStone) {
+      const hasEnough = await this.inventoryRepo.hasItem(
+        trainerId, 'Void Evolution Stone', evolutions.length,
+      );
+      if (!hasEnough) {
+        throw new Error(
+          `Not enough Void Evolution Stones. Need ${evolutions.length} (1 per species being evolved)`,
+        );
+      }
+    }
+
+    // Validate each evolution slot and count DRKs needed
+    let drkCount = 0;
+    for (const evo of evolutions) {
+      const speciesValue = this.getSpeciesValue(monster, evo.speciesSlot);
+      if (!speciesValue) {
+        throw new Error(`The monster does not have a ${evo.speciesSlot}`);
+      }
+
+      if (!evo.evolutionName && !evo.useDigitalRepairKit) {
+        throw new Error(
+          `Evolution name is required for ${evo.speciesSlot}, or use a Digital Repair Kit`,
+        );
+      }
+
+      if (evo.useDigitalRepairKit) {
+        if (!evo.customEvolutionName?.trim()) {
+          throw new Error(
+            `Custom evolution name is required when using Digital Repair Kit for ${evo.speciesSlot}`,
+          );
+        }
+        drkCount++;
+      }
+    }
+
+    // Validate DRK count
+    if (drkCount > 0) {
+      const hasEnoughDrk = await this.inventoryRepo.hasItem(
+        trainerId, 'Digital Repair Kit', drkCount,
+      );
+      if (!hasEnoughDrk) {
+        throw new Error(`Not enough Digital Repair Kits. Need ${drkCount}`);
+      }
+    }
+
+    // Build the update
+    const update: MonsterUpdateInput = {
+      level: monster.level + 1,
+      imgLink: null,
+    };
+
+    // Update each species slot
+    for (const evo of evolutions) {
+      const speciesValue = this.getSpeciesValue(monster, evo.speciesSlot);
+      if (!speciesValue) {
+        continue; // Already validated above
+      }
+      const newSpeciesName = this.determineNewSpeciesName(
+        speciesValue,
+        evo.evolutionName,
+        evo.useDigitalRepairKit,
+        evo.customEvolutionName,
+      );
+      this.setSpeciesSlot(update, evo.speciesSlot, newSpeciesName);
+    }
+
+    // Save evolution history
+    await this.saveEvolutionHistory(monsterId, monster, stoneType);
+
+    // Update monster in database
+    const updatedMonster = await this.monsterRepo.update(monsterId, update);
+
+    // Consume items
+    await this.inventoryRepo.removeItem(trainerId, 'evolution', stoneType, 1);
+
+    if (useVoidStone) {
+      await this.inventoryRepo.removeItem(
+        trainerId, 'evolution', 'Void Evolution Stone', evolutions.length,
+      );
+    }
+
+    if (drkCount > 0) {
+      await this.inventoryRepo.removeItem(
+        trainerId, 'evolution', 'Digital Repair Kit', drkCount,
+      );
     }
 
     return { monster: updatedMonster };

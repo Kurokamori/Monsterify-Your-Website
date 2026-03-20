@@ -209,6 +209,7 @@ export async function selectStarters(req: Request, res: Response): Promise<void>
             ? initialized.moveset
             : [],
         whereMet: initialized.where_met,
+        ball: 'Poke Ball',
       });
 
       createdMonsters.push(newMonster);

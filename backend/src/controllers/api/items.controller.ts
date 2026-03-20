@@ -14,6 +14,28 @@ function paramToString(param: string | string[] | undefined): string {
 }
 
 // ============================================================================
+// Ball Items (for ball selection UI)
+// ============================================================================
+
+export async function getBallItems(_req: Request, res: Response): Promise<void> {
+  try {
+    const result = await itemsService.getAllItems({
+      category: 'balls',
+      limit: 200,
+      page: 1,
+      search: '',
+      sortBy: 'name',
+      sortOrder: 'asc',
+    });
+    res.json({ success: true, data: result.data });
+  } catch (error) {
+    const msg = error instanceof Error ? error.message : 'Error fetching ball items';
+    console.error('Error fetching ball items:', error);
+    res.status(500).json({ success: false, message: msg });
+  }
+}
+
+// ============================================================================
 // CRUD Operations (Public + Admin)
 // ============================================================================
 

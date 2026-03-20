@@ -4,6 +4,7 @@ import { FormInput } from '../common/FormInput';
 import { LoadingSpinner } from '../common/LoadingSpinner';
 import { ErrorMessage } from '../common/ErrorMessage';
 import { ActionButtonGroup } from '../common/ActionButtonGroup';
+import { BallSelector } from '../common/BallSelector';
 import { Modal } from '../common/Modal';
 import { Pagination } from '../common/Pagination';
 import { Card } from '../common/Card';
@@ -293,6 +294,13 @@ export function BazarAdoptMonster({
                         Lv. {monster.level}
                       </span>
                     )}
+                    {monster.ball && (
+                      <BallSelector
+                        selectedBall={monster.ball}
+                        onBallChange={() => {}}
+                        compact
+                      />
+                    )}
                   </div>
                 </Card>
               ))}
@@ -392,6 +400,13 @@ export function BazarAdoptMonster({
                       <p className="bazar-adopt-monster__preview-level">
                         Level {selectedMonster.level}
                       </p>
+                    )}
+                    {selectedMonster.ball && (
+                      <BallSelector
+                        selectedBall={selectedMonster.ball}
+                        onBallChange={() => {}}
+                        compact
+                      />
                     )}
                   </div>
                 </div>

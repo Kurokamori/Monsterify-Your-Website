@@ -62,6 +62,19 @@ interface BerryPastryImagesResponse {
  */
 const itemsService = {
   /**
+   * Get all ball items (for ball selection UI)
+   */
+  getBallItems: async (): Promise<Item[]> => {
+    try {
+      const response = await api.get('/items/balls');
+      return response.data?.data ?? [];
+    } catch (error) {
+      console.error('Error fetching ball items:', error);
+      return [];
+    }
+  },
+
+  /**
    * Get all items with pagination and filtering
    */
   getItems: async (params: GetItemsParams = {}): Promise<ItemsResponse> => {

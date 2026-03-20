@@ -10,7 +10,9 @@ import { TrainerAutocomplete } from '../common/TrainerAutocomplete';
 import { TypeBadge } from '../common/TypeBadge';
 import { AttributeBadge } from '../common/AttributeBadge';
 import { ActionButtonGroup } from '../common/ActionButtonGroup';
+import { BallSelector, type BallInventoryEntry } from '../common/BallSelector';
 import api from '../../services/api';
+import trainerService from '../../services/trainerService';
 import type { AntiqueAuctionOption, TownTrainer, AntiqueTrainer } from './types';
 import type { Monster } from '../common/MonsterDetails';
 
@@ -48,10 +50,14 @@ export function AntiqueAuction({
 
   // Adoption state
   const [monsterName, setMonsterName] = useState('');
+  const [selectedBall, setSelectedBall] = useState('Poke Ball');
   const [targetTrainerId, setTargetTrainerId] = useState<string | number>(trainerId);
   const [adoptSuccess, setAdoptSuccess] = useState(false);
   const [adoptLoading, setAdoptLoading] = useState(false);
   const [adoptError, setAdoptError] = useState<string | null>(null);
+
+  // Ball inventory
+  const [ballInventory, setBallInventory] = useState<BallInventoryEntry[]>([]);
 
   // Image popout state
   const [showImagePopout, setShowImagePopout] = useState(false);
@@ -119,9 +125,25 @@ export function AntiqueAuction({
     if (isOpen) {
       setAdoptSuccess(false);
       setAdoptError(null);
+      setSelectedBall('Poke Ball');
       setTargetTrainerId(trainerId);
     }
   }, [isOpen, trainerId]);
+
+  // Fetch ball inventory when target trainer changes
+  useEffect(() => {
+    if (!targetTrainerId) {
+      setBallInventory([]);
+      return;
+    }
+    trainerService.getTrainerInventory(targetTrainerId).then(inv => {
+      const raw = (inv as unknown as { data?: { balls?: unknown } }).data?.balls ?? inv.balls;
+      const balls: BallInventoryEntry[] = Array.isArray(raw)
+        ? raw.map((b: { name: string; quantity: number }) => ({ name: b.name, quantity: b.quantity }))
+        : Object.entries(raw || {}).map(([name, quantity]) => ({ name, quantity: quantity as number }));
+      setBallInventory(balls);
+    }).catch(() => setBallInventory([]));
+  }, [targetTrainerId]);
 
   // Handle option selection
   const handleOptionSelect = useCallback((option: AntiqueAuctionOption) => {
@@ -162,6 +184,7 @@ export function AntiqueAuction({
         antique,
         auctionId: selectedOption.id,
         monsterName,
+        ball: selectedBall,
         discordUserId: targetTrainer?.discord_user_id || targetTrainer?.discord_id ||
                        trainer.discord_user_id || trainer.discord_id
       });
@@ -325,6 +348,15 @@ export function AntiqueAuction({
               placeholder="Enter monster name"
               required
             />
+
+            <div className="form-group">
+              <label className="form-label">Ball</label>
+              <BallSelector
+                selectedBall={selectedBall}
+                onBallChange={setSelectedBall}
+                inventory={ballInventory}
+              />
+            </div>
 
             {adoptError && <ErrorMessage message={adoptError} />}
 

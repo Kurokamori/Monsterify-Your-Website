@@ -141,6 +141,7 @@ export type MonsterCreateInput = {
   shadow?: boolean;
   paradox?: boolean;
   pokerus?: boolean;
+  ball?: string | null;
 };
 
 export type MonsterUpdateInput = {
@@ -280,6 +281,12 @@ export class MonsterRepository extends BaseRepository<MonsterWithTrainer, Monste
   }
 
   override async findById(id: number): Promise<MonsterWithTrainer | null> {
+    // Auto-fix monsters with no ball set
+    await db.query(
+      `UPDATE monsters SET ball = 'Poke Ball' WHERE id = $1 AND (ball IS NULL OR ball = '')`,
+      [id]
+    );
+
     const result = await db.query<MonsterWithTrainer>(
       `${BASE_SELECT_WITH_TRAINER} WHERE m.id = $1`,
       [id]
@@ -455,13 +462,13 @@ export class MonsterRepository extends BaseRepository<MonsterWithTrainer, Monste
           spd_total, spd_iv, spd_ev, spe_total, spe_iv, spe_ev,
           nature, characteristic, gender, friendship, ability1, ability2,
           moveset, img_link, date_met, where_met, box_number, trainer_index,
-          shiny, alpha, shadow, paradox, pokerus, created_at
+          shiny, alpha, shadow, paradox, pokerus, ball, created_at
         )
         VALUES (
           $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13,
           $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25,
           $26, $27, $28, $29, $30, $31, $32, $33, $34, $35, $36, $37,
-          $38, $39, $40, $41, $42, $43, $44, $45, $46, $47, $48, NOW()
+          $38, $39, $40, $41, $42, $43, $44, $45, $46, $47, $48, $49, NOW()
         )
         RETURNING id
       `,
@@ -505,7 +512,7 @@ export class MonsterRepository extends BaseRepository<MonsterWithTrainer, Monste
         input.ability2 ?? null,
         input.moveset ? JSON.stringify(input.moveset) : '[]',
         input.imgLink ?? null,
-        input.dateMet ?? null,
+        input.dateMet ?? new Date(),
         input.whereMet ?? null,
         input.boxNumber ?? null,
         input.trainerIndex ?? null,
@@ -514,6 +521,7 @@ export class MonsterRepository extends BaseRepository<MonsterWithTrainer, Monste
         (input.shadow ? 1 : 0),
         (input.paradox ? 1 : 0),
         (input.pokerus ? 1 : 0),
+        input.ball ?? 'Poke Ball',
       ]
     );
 

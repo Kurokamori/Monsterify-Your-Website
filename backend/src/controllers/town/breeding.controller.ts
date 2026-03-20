@@ -115,11 +115,12 @@ export async function batchCheckBreedingEligibility(req: Request, res: Response)
 
 export async function claimBreedingResult(req: Request, res: Response): Promise<void> {
   try {
-    const { sessionId, monsterIndex, name, trainerId } = req.body as {
+    const { sessionId, monsterIndex, name, trainerId, ball } = req.body as {
       sessionId?: string;
       monsterIndex?: number;
       name?: string;
       trainerId?: number;
+      ball?: string;
     };
     const userId = req.user?.discord_id;
 
@@ -136,7 +137,7 @@ export async function claimBreedingResult(req: Request, res: Response): Promise<
       return;
     }
 
-    const result = await breedingService.claimBreedingResult(sessionId, monsterIndex, userId, name, trainerId);
+    const result = await breedingService.claimBreedingResult(sessionId, monsterIndex, userId, name, trainerId, ball);
 
     res.json({
       success: true,

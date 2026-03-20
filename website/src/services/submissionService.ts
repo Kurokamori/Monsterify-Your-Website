@@ -862,11 +862,13 @@ const submissionService = {
     trainerId: number | string,
     monsterIndex: number,
     monsterName: string,
+    ball?: string,
   ) => {
     const response = await api.post(`/submissions/${submissionId}/claim-monster`, {
       trainerId,
       monsterIndex,
       monsterName,
+      ball,
     });
     return response.data;
   },

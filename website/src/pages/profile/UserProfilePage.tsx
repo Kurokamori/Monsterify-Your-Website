@@ -310,7 +310,7 @@ const UserProfilePage = () => {
                               target.src = '/images/default_book.png';
                             }}
                           />
-                          {sub.is_book && (
+                          {Boolean(sub.is_book) && (
                             <div className="library-item-book-badge">
                               <i className="fas fa-book"></i> {sub.chapter_count || 0} Chapters
                             </div>

@@ -227,8 +227,8 @@ export class CaptureService {
 
     let capturedMonster: CapturedMonster | null = null;
     if (captureSuccess) {
-      // Initialize and create monster
-      capturedMonster = await this.initializeAndCreateMonster(monsterToCapture, trainer.id, whereMet);
+      // Initialize and create monster — captured in the ball that was used
+      capturedMonster = await this.initializeAndCreateMonster(monsterToCapture, trainer.id, whereMet, pokeballType);
 
       // Update encounter to mark this monster as captured
       await this.markMonsterCaptured(encounter, monsterToCapture, discordUserId);
@@ -499,7 +499,8 @@ export class CaptureService {
   async initializeAndCreateMonster(
     monsterData: MonsterToCapture,
     trainerId: number,
-    whereMet?: string
+    whereMet?: string,
+    ballUsed?: string
   ): Promise<CapturedMonster> {
     // Prepare monster data for creation — include all species, types, and attribute
     const monsterInput: MonsterCreateInput = {
@@ -517,6 +518,7 @@ export class CaptureService {
       level: monsterData.level,
       hpTotal: 100, // Default starting HP
       whereMet: whereMet ?? 'Adventure Capture',
+      ball: ballUsed ?? 'Poke Ball',
     };
 
     // Create the monster in the database

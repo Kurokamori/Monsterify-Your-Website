@@ -22,6 +22,7 @@ import {
 import { MonsterRollerService, type UserSettings } from './monster-roller.service';
 import { MonsterInitializerService } from './monster-initializer.service';
 import cloudinary from '../utils/cloudinary';
+import { consumeBallFromInventory } from '../utils/ballUtils';
 
 // ============================================================================
 // Types
@@ -274,7 +275,8 @@ export class AntiqueService {
     antiqueName: string,
     auctionId: number,
     monsterName?: string,
-    discordUserId?: string
+    discordUserId?: string,
+    ball?: string
   ): Promise<AuctionResult> {
     const actualTrainerId = targetTrainerId ?? trainerId;
 
@@ -313,9 +315,13 @@ export class AntiqueService {
       level: 1,
       dateMet: new Date(),
       whereMet: 'Antique Auction',
+      ball: ball ?? 'Poke Ball',
     };
 
     const monster = await this.monsterRepository.create(monsterInput);
+
+    // Consume the ball from trainer inventory
+    await consumeBallFromInventory(actualTrainerId, ball ?? 'Poke Ball');
 
     // Initialize the monster with proper stats and moves
     let initializedMonster: Record<string, unknown>;

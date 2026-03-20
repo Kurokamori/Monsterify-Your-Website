@@ -6,6 +6,7 @@ import {
   UserRepository,
   MoveRepository,
 } from '../repositories';
+import { consumeBallFromInventory } from '../utils/ballUtils';
 import type {
   MonsterWithTrainer,
   MonsterCreateInput,
@@ -202,6 +203,11 @@ export class MonsterService {
 
     if (requestingUserId && monster.player_user_id !== requestingUserId && !isAdmin) {
       throw new Error('Not authorized to update this monster');
+    }
+
+    // If ball is being changed, consume the new ball from trainer inventory
+    if (input.ball && input.ball !== monster.ball) {
+      await consumeBallFromInventory(monster.trainer_id, input.ball);
     }
 
     return this.monsterRepo.update(id, input);

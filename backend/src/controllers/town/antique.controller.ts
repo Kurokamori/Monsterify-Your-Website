@@ -163,6 +163,7 @@ export async function auctionAntique(req: Request, res: Response): Promise<void>
       auctionId,
       monsterName,
       discordUserId,
+      ball,
     } = req.body as {
       trainerId?: number;
       targetTrainerId?: number;
@@ -170,6 +171,7 @@ export async function auctionAntique(req: Request, res: Response): Promise<void>
       auctionId?: number;
       monsterName?: string;
       discordUserId?: string;
+      ball?: string;
     };
 
     if (!trainerId || !antique || !auctionId) {
@@ -186,7 +188,8 @@ export async function auctionAntique(req: Request, res: Response): Promise<void>
       antique,
       auctionId,
       monsterName,
-      discordUserId
+      discordUserId,
+      ball
     );
 
     res.json({

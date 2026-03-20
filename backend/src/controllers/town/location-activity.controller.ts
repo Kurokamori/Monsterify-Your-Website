@@ -118,7 +118,7 @@ export async function completeActivity(req: Request, res: Response): Promise<voi
 
 export async function claimReward(req: Request, res: Response): Promise<void> {
   try {
-    const { sessionId, rewardId, trainerId, monsterName } = req.body;
+    const { sessionId, rewardId, trainerId, monsterName, ball } = req.body;
     const userId = req.user?.discord_id;
 
     if (!userId) {
@@ -134,7 +134,7 @@ export async function claimReward(req: Request, res: Response): Promise<void> {
       return;
     }
 
-    const result = await service.claimReward(sessionId, rewardId, trainerId, userId, monsterName);
+    const result = await service.claimReward(sessionId, rewardId, trainerId, userId, monsterName, ball);
 
     res.json({
       success: true,
