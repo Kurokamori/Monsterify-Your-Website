@@ -59,13 +59,16 @@
 /* ---------- Trainer Grid ---------- */
 
 .my-trainers__grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
+  display: flex;
+  flex-wrap: wrap;
   gap: var(--spacing-medium);
 }
 
 .my-trainer-card {
   text-align: center;
+  width: 280px;
+  max-width: 100%;
+  flex-shrink: 0;
 }
 
 /* ---------- Trainer Card Stats ---------- */

@@ -102,6 +102,7 @@ export function AdoptionCenter({ className = '' }: AdoptionCenterProps) {
   // Auth state
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [priorityTrainerIds, setPriorityTrainerIds] = useState<number[]>([]);
 
   // Adoption data state
   const [loading, setLoading] = useState(true);
@@ -197,6 +198,7 @@ export function AdoptionCenter({ className = '' }: AdoptionCenterProps) {
         const user = JSON.parse(userData);
         setCurrentUserId(user.discord_id);
         setIsAuthenticated(true);
+        setPriorityTrainerIds(Array.isArray(user.priority_trainer_ids) ? user.priority_trainer_ids : []);
       } catch (e) {
         console.error('Error parsing user data:', e);
       }
@@ -323,9 +325,10 @@ export function AdoptionCenter({ className = '' }: AdoptionCenterProps) {
       }
       setUserTrainers(trainers);
 
-      // Set default trainer if available
+      // Set default trainer if available (prefer priority trainer)
       if (trainers.length > 0 && !selectedTrainer) {
-        setSelectedTrainer(trainers[0].id);
+        const priorityTrainer = trainers.find(t => priorityTrainerIds.includes(Number(t.id)));
+        setSelectedTrainer((priorityTrainer ?? trainers[0]).id);
       }
 
       // Check daypasses for each trainer
@@ -335,7 +338,7 @@ export function AdoptionCenter({ className = '' }: AdoptionCenterProps) {
     } catch (err) {
       console.error('Error fetching user trainers:', err);
     }
-  }, [currentUserId, selectedTrainer, checkTrainerDaypasses]);
+  }, [currentUserId, selectedTrainer, checkTrainerDaypasses, priorityTrainerIds]);
 
   // Fetch data when filters change
   useEffect(() => {

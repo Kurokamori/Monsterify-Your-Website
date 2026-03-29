@@ -157,7 +157,8 @@ export function ArtSubmissionForm({ onSubmissionComplete }: ArtSubmissionFormPro
       try {
         const userId = currentUser?.discord_id;
         const trainersResponse = await trainerService.getUserTrainers(userId);
-        setUserTrainers(trainersResponse.trainers || []);
+        const ownedTrainers = (trainersResponse.trainers || []).map((t: Trainer) => ({ ...t, is_owned: true }));
+        setUserTrainers(ownedTrainers);
 
         if (trainersResponse.trainers?.length > 0) {
           const allMons: Monster[] = [];

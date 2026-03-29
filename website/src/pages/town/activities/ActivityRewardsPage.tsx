@@ -45,7 +45,7 @@ export default function ActivityRewardsPage() {
   useDocumentTitle('Activity Rewards');
 
   const { sessionId } = useParams<{ sessionId: string }>();
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, currentUser } = useAuth();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [session, setSession] = useState<SessionData | null>(null);
@@ -143,11 +143,13 @@ export default function ActivityRewardsPage() {
           }).catch(() => {});
         }
 
-        // Initialize default trainer selection (first trainer for each reward)
+        // Initialize default trainer selection (priority trainer first, then first trainer)
         if (trainersList.length > 0) {
+          const priorityIds = currentUser?.priority_trainer_ids ?? [];
+          const defaultTrainer = trainersList.find(t => priorityIds.includes(Number(t.id))) ?? trainersList[0];
           const initial: Record<string | number, string | number> = {};
           rewardsList.forEach(reward => {
-            initial[reward.id] = trainersList[0].id;
+            initial[reward.id] = defaultTrainer.id;
           });
           setSelectedTrainers(initial);
         }
@@ -161,10 +163,11 @@ export default function ActivityRewardsPage() {
     fetchData();
   }, [isAuthenticated, sessionId]);
 
-  // Fetch ball inventory for the first trainer
+  // Fetch ball inventory for the default (priority) trainer
   useEffect(() => {
     if (trainers.length === 0) return;
-    const firstTrainerId = trainers[0].id;
+    const priorityIds = currentUser?.priority_trainer_ids ?? [];
+    const firstTrainerId = (trainers.find(t => priorityIds.includes(Number(t.id))) ?? trainers[0]).id;
     trainerService.getTrainerInventory(firstTrainerId).then(inv => {
       const raw = (inv as unknown as { data?: { balls?: unknown } }).data?.balls ?? inv.balls;
       const balls: BallInventoryEntry[] = Array.isArray(raw)

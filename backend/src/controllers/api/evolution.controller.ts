@@ -42,7 +42,8 @@ export async function evolveMonster(req: Request, res: Response): Promise<void> 
       customEvolutionName?: string;
     };
 
-    if (!trainerId || !speciesSlot) {
+    const numTrainerId = Number(trainerId);
+    if (!numTrainerId || isNaN(numTrainerId) || !speciesSlot) {
       res.status(400).json({
         success: false,
         message: 'Trainer ID and species slot are required',
@@ -66,7 +67,7 @@ export async function evolveMonster(req: Request, res: Response): Promise<void> 
 
     const input: EvolveInput = {
       monsterId,
-      trainerId,
+      trainerId: numTrainerId,
       speciesSlot: speciesSlot as SpeciesSlot,
       evolutionName,
       evolutionItem,

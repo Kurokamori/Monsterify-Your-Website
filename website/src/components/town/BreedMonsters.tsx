@@ -312,7 +312,8 @@ export function BreedMonsters({
   // Filter monsters: must have image, be eligible, and match search
   const filteredMonsters1 = useMemo(() => {
     const eligible = userTrainerMonsters.filter(m =>
-      m.img_link?.trim() && m.id != null && eligibleIds1.has(m.id)
+      m.img_link?.trim() && m.id != null && eligibleIds1.has(m.id) &&
+      !(String(userTrainer) === String(anyTrainer) && selectedMonster2 && m.id === selectedMonster2.id)
     );
     if (!searchTerm1.trim()) return eligible;
 
@@ -323,11 +324,12 @@ export function BreedMonsters({
       monster.species2?.toLowerCase().includes(term) ||
       monster.species3?.toLowerCase().includes(term)
     );
-  }, [userTrainerMonsters, searchTerm1, eligibleIds1]);
+  }, [userTrainerMonsters, searchTerm1, eligibleIds1, userTrainer, anyTrainer, selectedMonster2]);
 
   const filteredMonsters2 = useMemo(() => {
     const eligible = anyTrainerMonsters.filter(m =>
-      m.img_link?.trim() && m.id != null && eligibleIds2.has(m.id)
+      m.img_link?.trim() && m.id != null && eligibleIds2.has(m.id) &&
+      !(String(userTrainer) === String(anyTrainer) && selectedMonster1 && m.id === selectedMonster1.id)
     );
     if (!searchTerm2.trim()) return eligible;
 
@@ -338,7 +340,7 @@ export function BreedMonsters({
       monster.species2?.toLowerCase().includes(term) ||
       monster.species3?.toLowerCase().includes(term)
     );
-  }, [anyTrainerMonsters, searchTerm2, eligibleIds2]);
+  }, [anyTrainerMonsters, searchTerm2, eligibleIds2, userTrainer, anyTrainer, selectedMonster1]);
 
   // Check monster eligibility
   const checkEligibility = useCallback(async (monsterId: number, monsterNumber: 1 | 2): Promise<boolean> => {

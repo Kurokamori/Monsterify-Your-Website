@@ -62,6 +62,12 @@ api.interceptors.request.use(
       config.headers.Authorization = `Bearer ${token}`;
     }
 
+    // Extend timeout for file uploads (FormData) since they involve
+    // image upload to Cloudinary + DB writes + reward processing
+    if (config.data instanceof FormData) {
+      config.timeout = 120000; // 2 minutes for file uploads
+    }
+
     return config;
   },
   (error: AxiosError) => {
@@ -107,8 +113,13 @@ api.interceptors.response.use(
       };
     }
 
-    // Check if we should retry the request
+    // Only retry safe (idempotent) methods — never retry POST/PUT/PATCH/DELETE
+    // as they can cause duplicate submissions, uploads, and reward applications
+    const safeMethod = config?.method?.toUpperCase();
+    const isRetryable = safeMethod === 'GET' || safeMethod === 'HEAD' || safeMethod === 'OPTIONS';
+
     if (
+      isRetryable &&
       config &&
       config.retry &&
       config.retry.retryCount < config.retry.maxRetries &&

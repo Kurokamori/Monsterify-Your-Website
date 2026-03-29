@@ -198,7 +198,8 @@ export function WritingSubmissionForm({
       try {
         const userId = currentUser?.discord_id;
         const response = await trainerService.getUserTrainers(userId);
-        setUserTrainers(response.trainers || []);
+        const ownedTrainers = (response.trainers || []).map((t: Trainer) => ({ ...t, is_owned: true }));
+        setUserTrainers(ownedTrainers);
 
         if (response.trainers && response.trainers.length > 0) {
           const allMonsters: Monster[] = [];
