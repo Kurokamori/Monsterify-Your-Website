@@ -64,14 +64,24 @@ const ITEM_EFFECTS: Record<string, string> = {
   'Data Color Incense': 'Filter results to Data attribute',
   'Vaccine Color Incense': 'Filter results to Vaccine attribute',
   // Exclusion items
-  'Spell Tag': 'Exclude Yokai from the hatching pool',
+  'Mended Bell': 'Include Pokemon in the hatching pool',
+  'Broken Bell': 'Exclude Pokemon from the hatching pool',
   'DigiMeat': 'Include Digimon in the hatching pool',
   'DigiTofu': 'Exclude Digimon from the hatching pool',
-  'Broken Bell': 'Exclude Pokemon from the hatching pool',
+  'Sacred Seal': 'Include Yokai in the hatching pool',
+  'Spell Tag': 'Exclude Yokai from the hatching pool',
   'Complex Core': 'Include Nexomon in the hatching pool',
   'Shattered Core': 'Exclude Nexomon from the hatching pool',
   "Worker's Permit": 'Include Pals in the hatching pool',
   'Workers Strike Notice': 'Exclude Pals from the hatching pool',
+  'Starry Crayon': 'Include Fakemon in the hatching pool',
+  'Erased Sketch': 'Exclude Fakemon from the hatching pool',
+  'Slime Crown': 'Include Dragon Quest monsters in the hatching pool',
+  'Chimaera Wing': 'Exclude Dragon Quest monsters from the hatching pool',
+  "Hunter's Mark": 'Include Monster Hunter monsters in the hatching pool',
+  'Smoke Bomb': 'Exclude Monster Hunter monsters from the hatching pool',
+  'Crystal Shard': 'Include Final Fantasy monsters in the hatching pool',
+  'Broken Crystal': 'Exclude Final Fantasy monsters from the hatching pool',
   // Codes
   'Corruption Code': 'Override attribute to Virus',
   'Repair Code': 'Override attribute to Vaccine',
@@ -720,7 +730,6 @@ export default function NurseryPage() {
             <span>You have {activeSessions.length === 1 ? 'an active hatching session' : `${activeSessions.length} active hatching sessions`}</span>
           </div>
           {activeSessions.map(sess => {
-            const trainerName = userTrainers.find(t => t.id === sess.trainerId)?.name ?? `Trainer #${sess.trainerId}`;
             return (
               <button
                 key={sess.sessionId}
@@ -728,7 +737,7 @@ export default function NurseryPage() {
                 onClick={() => navigate(`/town/activities/nursery/session/${sess.sessionId}`)}
               >
                 <div className="nursery-active-session__info">
-                  <span className="nursery-active-session__trainer">{trainerName}</span>
+                  <span className="nursery-active-session__trainer">{sess.trainerName}</span>
                   <span className="nursery-active-session__detail">
                     {sess.type === 'hatch' ? 'Simple Hatch' : 'Advanced Nurture'} &middot;{' '}
                     {sess.selectedCount}/{sess.eggCount} eggs claimed

@@ -33,14 +33,14 @@
   border-radius: var(--border-radius-small);
   cursor: pointer;
   transition: border-color 0.2s, background-color 0.2s;
-  color: var(--text-primary);
+  color: var(--text-color);
   font-family: inherit;
   font-size: inherit;
 }
 
 .nursery-active-session:hover {
   border-color: var(--accent-color);
-  background-color: var(--hover-color);
+  background-color: var(--secondary-color-hover);
 }
 
 .nursery-active-session + .nursery-active-session {
@@ -60,7 +60,7 @@
 
 .nursery-active-session__detail {
   font-size: var(--font-size-small);
-  color: var(--text-secondary);
+  color: var(--text-color-muted);
 }
 
 .nursery-active-session__action {

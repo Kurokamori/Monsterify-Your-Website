@@ -120,6 +120,9 @@ export interface Monster extends BaseEntity {
   shadow: boolean;
   paradox: boolean;
   pokerus: boolean;
+  albino: boolean;
+  melanistic: boolean;
+  dot: boolean;
   isStarterTemplate: boolean;
 }
 
@@ -199,6 +202,9 @@ export interface MonsterCreateInput {
   alpha?: boolean;
   shadow?: boolean;
   paradox?: boolean;
+  albino?: boolean;
+  melanistic?: boolean;
+  dot?: boolean;
 }
 
 /**

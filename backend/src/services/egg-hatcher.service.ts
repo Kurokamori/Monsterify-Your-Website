@@ -3,6 +3,7 @@ import {
   MONSTER_TABLES,
   EGG_HATCHING,
   ICE_CREAM_TYPE_SLOTS,
+  isMonsterTable,
   type MonsterTable,
 } from '../utils/constants';
 import { MonsterRollerService, type RollParams, type RolledMonster, type UserSettings, type TableFilter } from './monster-roller.service';
@@ -220,9 +221,40 @@ export class EggHatcherService {
     // Process selected items to build roll parameters
     const rollParams = await this.processEggItems(selectedItems, speciesInputs);
 
-    // Apply user settings to roll parameters
-    rollParams.userSettings = this.userSettings;
-    rollParams.enabledTables = this.enabledTables;
+    // Extract franchise table names from includeTypes/excludeTypes and use them
+    // to override enabledTables. Items like "Worker's Permit" (pals) or
+    // "Complex Core" (nexomon) should add tables even if the user has them
+    // disabled in their preferences.
+    let adjustedTables = [...this.enabledTables];
+    const adjustedSettings = { ...this.userSettings };
+
+    if (rollParams.includeTypes && rollParams.includeTypes.length > 0) {
+      const franchisesToAdd = rollParams.includeTypes.filter(isMonsterTable);
+      for (const franchise of franchisesToAdd) {
+        if (!adjustedTables.includes(franchise)) {
+          adjustedTables.push(franchise);
+        }
+        // Override user setting so MonsterRollerService won't re-filter it out
+        adjustedSettings[franchise as keyof UserSettings] = true;
+      }
+      // Remove franchise names so they don't pollute the SQL type conditions
+      rollParams.includeTypes = rollParams.includeTypes.filter((t) => !isMonsterTable(t));
+    }
+
+    if (rollParams.excludeTypes && rollParams.excludeTypes.length > 0) {
+      const franchisesToRemove = rollParams.excludeTypes.filter(isMonsterTable);
+      adjustedTables = adjustedTables.filter((t) => !franchisesToRemove.includes(t));
+      for (const franchise of franchisesToRemove) {
+        // Override user setting so MonsterRollerService won't re-add it
+        adjustedSettings[franchise as keyof UserSettings] = false;
+      }
+      // Remove franchise names so they don't pollute the SQL type conditions
+      rollParams.excludeTypes = rollParams.excludeTypes.filter((t) => !isMonsterTable(t));
+    }
+
+    // Apply adjusted settings (with item overrides) to roll parameters
+    rollParams.userSettings = adjustedSettings;
+    rollParams.enabledTables = adjustedTables;
 
     console.log('Final roll parameters:', rollParams);
 
@@ -386,7 +418,42 @@ export class EggHatcherService {
       rollParams.excludeTypes.push('pals');
     }
 
+    if (itemName === 'Erased Sketch') {
+      rollParams.excludeTypes = rollParams.excludeTypes ?? [];
+      rollParams.excludeTypes.push('fakemon');
+    }
+
+    if (itemName === 'Chimaera Wing') {
+      rollParams.excludeTypes = rollParams.excludeTypes ?? [];
+      rollParams.excludeTypes.push('dragonquest');
+    }
+
+    if (itemName === 'Smoke Bomb') {
+      rollParams.excludeTypes = rollParams.excludeTypes ?? [];
+      rollParams.excludeTypes.push('monsterhunter');
+    }
+
+    if (itemName === 'Broken Crystal') {
+      rollParams.excludeTypes = rollParams.excludeTypes ?? [];
+      rollParams.excludeTypes.push('finalfantasy');
+    }
+
     // Inclusion items
+    if (itemName === 'Mended Bell') {
+      rollParams.includeTypes = rollParams.includeTypes ?? [];
+      rollParams.includeTypes.push('pokemon');
+    }
+
+    if (itemName === 'DigiMeat') {
+      rollParams.includeTypes = rollParams.includeTypes ?? [];
+      rollParams.includeTypes.push('digimon');
+    }
+
+    if (itemName === 'Sacred Seal') {
+      rollParams.includeTypes = rollParams.includeTypes ?? [];
+      rollParams.includeTypes.push('yokai');
+    }
+
     if (itemName === 'Complex Core') {
       rollParams.includeTypes = rollParams.includeTypes ?? [];
       rollParams.includeTypes.push('nexomon');
@@ -395,6 +462,26 @@ export class EggHatcherService {
     if (itemName === "Worker's Permit") {
       rollParams.includeTypes = rollParams.includeTypes ?? [];
       rollParams.includeTypes.push('pals');
+    }
+
+    if (itemName === 'Starry Crayon') {
+      rollParams.includeTypes = rollParams.includeTypes ?? [];
+      rollParams.includeTypes.push('fakemon');
+    }
+
+    if (itemName === 'Slime Crown') {
+      rollParams.includeTypes = rollParams.includeTypes ?? [];
+      rollParams.includeTypes.push('dragonquest');
+    }
+
+    if (itemName === "Hunter's Mark") {
+      rollParams.includeTypes = rollParams.includeTypes ?? [];
+      rollParams.includeTypes.push('monsterhunter');
+    }
+
+    if (itemName === 'Crystal Shard') {
+      rollParams.includeTypes = rollParams.includeTypes ?? [];
+      rollParams.includeTypes.push('finalfantasy');
     }
 
     // Attribute override items

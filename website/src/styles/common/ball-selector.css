@@ -146,16 +146,6 @@
   flex-shrink: 0;
 }
 
-.ball-selector__empty {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--spacing-xsmall);
-  padding: var(--spacing-medium);
-  color: var(--text-color-muted);
-  font-size: 0.9rem;
-}
-
 /* Compact mode (for display only, no selection) */
 .ball-selector--compact .ball-selector__current {
   display: inline-flex;

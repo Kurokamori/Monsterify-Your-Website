@@ -21,6 +21,9 @@ export const SpecialAttribute = {
   SHADOW: 'Shadow',
   PARADOX: 'Paradox',
   POKERUS: 'Pokerus',
+  ALBINO: 'Albino',
+  MELANISTIC: 'Melanistic',
+  DOT: 'Dot',
 } as const;
 
 export type SpecialAttributeValue = (typeof SpecialAttribute)[keyof typeof SpecialAttribute];

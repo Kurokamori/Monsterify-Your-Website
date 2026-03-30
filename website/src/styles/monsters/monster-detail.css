@@ -172,6 +172,12 @@
 .monster-special--paradox i { color: var(--water-type); }
 .monster-special--pokerus { border-left-color: var(--success-color); }
 .monster-special--pokerus i { color: var(--success-color); }
+.monster-special--albino { border-left-color: var(--fairy-type); }
+.monster-special--albino i { color: var(--fairy-type); }
+.monster-special--melanistic { border-left-color: var(--dark-type); }
+.monster-special--melanistic i { color: var(--dark-type); }
+.monster-special--dot { border-left-color: var(--psychic-type); }
+.monster-special--dot i { color: var(--psychic-type); }
 
 /* ---------- Stats ---------- */
 

@@ -138,6 +138,7 @@ export interface RerollResponse {
 export interface ActiveSession {
   sessionId: string;
   trainerId: number;
+  trainerName: string;
   type: 'hatch' | 'nurture';
   eggCount: number;
   selectedCount: number;

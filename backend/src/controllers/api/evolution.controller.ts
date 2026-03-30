@@ -28,8 +28,8 @@ export async function evolveMonster(req: Request, res: Response): Promise<void> 
       evolutionName,
       evolutionItem,
       imageUrl,
-      useVoidStone,
-      useDigitalRepairKit,
+      useVoidStone: rawUseVoidStone,
+      useDigitalRepairKit: rawUseDigitalRepairKit,
       customEvolutionName,
     } = req.body as {
       trainerId?: number;
@@ -37,10 +37,14 @@ export async function evolveMonster(req: Request, res: Response): Promise<void> 
       evolutionName?: string;
       evolutionItem?: string;
       imageUrl?: string;
-      useVoidStone?: boolean;
-      useDigitalRepairKit?: boolean;
+      useVoidStone?: boolean | string;
+      useDigitalRepairKit?: boolean | string;
       customEvolutionName?: string;
     };
+
+    // FormData sends booleans as strings ("true"/"false") — parse them properly
+    const useVoidStone = rawUseVoidStone === true || rawUseVoidStone === 'true';
+    const useDigitalRepairKit = rawUseDigitalRepairKit === true || rawUseDigitalRepairKit === 'true';
 
     const numTrainerId = Number(trainerId);
     if (!numTrainerId || isNaN(numTrainerId) || !speciesSlot) {

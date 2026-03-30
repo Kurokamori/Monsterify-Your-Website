@@ -101,8 +101,15 @@ const EGG_ITEM_CATEGORIES = {
     'Normal Poffin', 'Fire Poffin', 'Water Poffin', 'Electric Poffin', 'Grass Poffin', 'Ice Poffin',
     'Fighting Poffin', 'Poison Poffin', 'Ground Poffin', 'Flying Poffin', 'Psychic Poffin', 'Bug Poffin',
     'Rock Poffin', 'Ghost Poffin', 'Dragon Poffin', 'Dark Poffin', 'Steel Poffin', 'Fairy Poffin',
-    'Spell Tag', 'DigiMeat', 'DigiTofu', 'Broken Bell', 'Complex Core', 'Shattered Core',
+    'Mended Bell', 'Broken Bell',
+    'DigiMeat', 'DigiTofu',
+    'Sacred Seal', 'Spell Tag',
+    'Complex Core', 'Shattered Core',
     "Worker's Permit", 'Workers Strike Notice',
+    'Starry Crayon', 'Erased Sketch',
+    'Slime Crown', 'Chimaera Wing',
+    "Hunter's Mark", 'Smoke Bomb',
+    'Crystal Shard', 'Broken Crystal',
   ],
   outcomeModifiers: [
     'Normal Nurture Kit', 'Fire Nurture Kit', 'Water Nurture Kit', 'Electric Nurture Kit', 'Grass Nurture Kit', 'Ice Nurture Kit',
@@ -609,6 +616,36 @@ export class NurseryService {
     if (session.userId !== userId) {
       return { success: false, status: 403, message: 'You can only access your own hatch sessions' };
     }
+
+    // Re-roll any unclaimed eggs that have empty monster arrays (failed rolls)
+    const emptyEggs = session.hatchedEggs.filter(
+      egg => egg.monsters.length === 0 && !session.selectedMonsters[egg.eggId]
+    );
+
+    if (emptyEggs.length > 0) {
+      const hatcher = new EggHatcherService({
+        seed: Date.now().toString(),
+        userSettings: session.userSettings,
+      });
+
+      for (const egg of emptyEggs) {
+        const retryResults = await hatcher.hatchEggs({
+          trainerId: session.trainerId,
+          eggCount: 1,
+          useIncubator: session.useIncubator,
+          imageUrl: session.imageUrl,
+          selectedItems: session.selectedItems,
+          speciesInputs: session.speciesInputs,
+        });
+
+        if (retryResults[0] && retryResults[0].monsters.length > 0) {
+          egg.monsters = retryResults[0].monsters;
+        }
+      }
+
+      await this.saveSession(session);
+    }
+
     return { success: true, session };
   }
 
@@ -616,19 +653,21 @@ export class NurseryService {
   // Get Active Sessions for User
   // ==========================================================================
 
-  async getActiveSessions(userId: string): Promise<{ sessionId: string; trainerId: number; type: string; eggCount: number; selectedCount: number; createdAt: string }[]> {
+  async getActiveSessions(userId: string): Promise<{ sessionId: string; trainerId: number; trainerName: string; type: string; eggCount: number; selectedCount: number; createdAt: string }[]> {
     const rows = await this.sessionRepo.findByUserId(userId);
-    return rows.map(row => {
+    return Promise.all(rows.map(async row => {
       const data = row.session_data as unknown as HatchSession;
+      const trainer = await this.trainerRepo.findById(data.trainerId);
       return {
         sessionId: data.sessionId,
         trainerId: data.trainerId,
+        trainerName: trainer?.name ?? `Trainer #${data.trainerId}`,
         type: data.type,
         eggCount: data.eggCount,
         selectedCount: Object.keys(data.selectedMonsters || {}).length,
         createdAt: data.createdAt,
       };
-    });
+    }));
   }
 
   // ==========================================================================

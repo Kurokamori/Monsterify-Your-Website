@@ -412,6 +412,9 @@ export function MonsterEditForm({ monster, onSubmit, onCancel, onSuccess }: Mons
             <FormCheckbox name="shadow" label="Shadow" checked={formData.shadow} onChange={handleCheckboxChange} disabled={saving} />
             <FormCheckbox name="paradox" label="Paradox" checked={formData.paradox} onChange={handleCheckboxChange} disabled={saving} />
             <FormCheckbox name="pokerus" label="Pokerus" checked={formData.pokerus} onChange={handleCheckboxChange} disabled={saving} />
+            <FormCheckbox name="albino" label="Albino" checked={formData.albino} onChange={handleCheckboxChange} disabled={saving} />
+            <FormCheckbox name="melanistic" label="Melanistic" checked={formData.melanistic} onChange={handleCheckboxChange} disabled={saving} />
+            <FormCheckbox name="dot" label="Dot" checked={formData.dot} onChange={handleCheckboxChange} disabled={saving} />
           </div>
         </div>
 

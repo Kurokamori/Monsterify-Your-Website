@@ -161,6 +161,7 @@ export default function ActivityRewardsPage() {
     };
 
     fetchData();
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- priority_trainer_ids only affects initial trainer selection, not data fetching
   }, [isAuthenticated, sessionId]);
 
   // Fetch ball inventory for the default (priority) trainer
@@ -175,6 +176,7 @@ export default function ActivityRewardsPage() {
         : Object.entries(raw || {}).map(([name, quantity]) => ({ name, quantity: quantity as number }));
       setBallInventory(balls);
     }).catch(() => setBallInventory([]));
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- only re-run when trainers list changes, not on every priority_trainer_ids reference change
   }, [trainers]);
 
   // Trainer selection handler

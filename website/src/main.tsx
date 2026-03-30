@@ -1,15 +1,7 @@
-import { StrictMode, useEffect } from 'react'
+import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import { BrowserRouter, useLocation } from 'react-router-dom'
-
-function ScrollToTop() {
-  const { pathname } = useLocation()
-  useEffect(() => {
-    window.scrollTo(0, 0)
-  }, [pathname])
-  return null
-}
-
+import { BrowserRouter } from 'react-router-dom'
+import { ScrollToTop } from './components/common/ScrollToTop'
 import { AuthProvider } from './contexts/AuthContext'
 import { ThemeProvider } from './contexts/ThemeContext'
 import { ModalProvider } from './contexts/ModalContext'

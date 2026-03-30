@@ -32,7 +32,8 @@ export const ProfileTab = ({ monster }: ProfileTabProps) => {
   const hasPhysical = !!(monster.height || monster.weight);
 
   const hasSpecialFeatures = !!(
-    monster.shiny || monster.alpha || monster.shadow || monster.paradox || monster.pokerus
+    monster.shiny || monster.alpha || monster.shadow || monster.paradox || monster.pokerus ||
+    monster.albino || monster.melanistic || monster.dot
   );
 
   return (
@@ -235,6 +236,33 @@ export const ProfileTab = ({ monster }: ProfileTabProps) => {
                 <div>
                   <strong>Pokerus</strong>
                   <p>Beneficial virus enhancing growth</p>
+                </div>
+              </div>
+            )}
+            {!!monster.albino && (
+              <div className="monster-special-card monster-special--albino">
+                <i className="fas fa-sun"></i>
+                <div>
+                  <strong>Albino</strong>
+                  <p>A rare pale-colored variant</p>
+                </div>
+              </div>
+            )}
+            {!!monster.melanistic && (
+              <div className="monster-special-card monster-special--melanistic">
+                <i className="fas fa-moon"></i>
+                <div>
+                  <strong>Melanistic</strong>
+                  <p>A rare dark-colored variant</p>
+                </div>
+              </div>
+            )}
+            {!!monster.dot && (
+              <div className="monster-special-card monster-special--dot">
+                <i className="fas fa-circle"></i>
+                <div>
+                  <strong>Dot</strong>
+                  <p>A uniquely marked specimen</p>
                 </div>
               </div>
             )}

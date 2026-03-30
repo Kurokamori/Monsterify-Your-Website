@@ -19,6 +19,9 @@ export interface MonsterFormData {
   shadow: boolean;
   paradox: boolean;
   pokerus: boolean;
+  albino: boolean;
+  melanistic: boolean;
+  dot: boolean;
   held_item: string;
   seal: string;
   mark: string;
@@ -82,6 +85,9 @@ export function monsterToFormData(monster: Monster): MonsterFormData {
     shadow: !!monster[`shadow`],
     paradox: !!monster[`paradox`],
     pokerus: !!monster[`pokerus`],
+    albino: !!monster[`albino`],
+    melanistic: !!monster[`melanistic`],
+    dot: !!monster[`dot`],
     held_item: str(monster[`held_item`]),
     seal: str(monster[`seal`]),
     mark: str(monster[`mark`]),

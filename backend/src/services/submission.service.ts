@@ -1168,17 +1168,6 @@ export class SubmissionService {
       levelCapInfo = await this.rewardService.checkLevelCaps(monsterRewards);
     }
 
-    if (levelCapInfo.cappedMonsters.length > 0) {
-      return {
-        success: true,
-        hasLevelCaps: true,
-        cappedMonsters: levelCapInfo.cappedMonsters,
-        rewards: { monsterRewards, trainerRewards, ...totalRewards },
-        submission: { id: submissionId, title: `${referenceType.charAt(0).toUpperCase() + referenceType.slice(1)} Reference`, references },
-        message: 'Level caps detected. Please reallocate excess levels before submitting.',
-      };
-    }
-
     // Build structured rewards
     // Calculate bonuses: totalLevels / rand(2-4) + rand(1-4), each independently
     const structuredRewards = {
@@ -1195,6 +1184,17 @@ export class SubmissionService {
       submissionId,
       userId
     );
+
+    if (levelCapInfo.cappedMonsters.length > 0) {
+      return {
+        success: true,
+        hasLevelCaps: true,
+        cappedMonsters: levelCapInfo.cappedMonsters,
+        rewards: appliedRewards,
+        submission: { id: submissionId, title: `${referenceType.charAt(0).toUpperCase() + referenceType.slice(1)} Reference`, references },
+        message: 'Level caps detected. Please reallocate excess levels before submitting.',
+      };
+    }
 
     const hasPendingApprovals = pendingApprovalData.length > 0;
     return {
