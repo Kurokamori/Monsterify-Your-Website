@@ -85,7 +85,10 @@ const contentService = {
   },
 
   createDirectory: async (category: string, path: string, name: string): Promise<MutationResponse> => {
-    const response = await api.post(`/content/${category}/directory/${path}`, { name });
+    const url = path
+      ? `/content/${category}/directory/${path}`
+      : `/content/${category}/directory`;
+    const response = await api.post(url, { name });
     return response.data;
   },
 

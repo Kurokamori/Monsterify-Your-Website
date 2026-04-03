@@ -28,6 +28,7 @@ router.get('/:category/sort-order/*contentPath', getSortOrder);
 router.put('/sort-order', updateSortOrder);
 
 // Directory creation must be before generic wildcard POST
+router.post('/:category/directory', createDirectory);
 router.post('/:category/directory/*contentPath', createDirectory);
 
 router.get('/:category', getContent);

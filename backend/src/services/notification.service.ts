@@ -3,6 +3,8 @@ import { MonsterRepository } from '../repositories/monster.repository';
 import { ChatRoomRepository } from '../repositories/chat-room.repository';
 import { BossRepository } from '../repositories/boss.repository';
 import { UserMissionRepository } from '../repositories/user-mission.repository';
+import { UserRepository } from '../repositories/user.repository';
+import { GardenPointRepository } from '../repositories/garden-point.repository';
 import { ReferenceApprovalRepository } from '../repositories/reference-approval.repository';
 import type { PendingApprovalWithDetails, AcceptedApprovalForSubmitter } from '../repositories/reference-approval.repository';
 
@@ -37,6 +39,8 @@ export class NotificationService {
   private chatRoomRepo: ChatRoomRepository;
   private bossRepo: BossRepository;
   private userMissionRepo: UserMissionRepository;
+  private userRepo: UserRepository;
+  private gardenPointRepo: GardenPointRepository;
   private refApprovalRepo: ReferenceApprovalRepository;
 
   constructor() {
@@ -45,6 +49,8 @@ export class NotificationService {
     this.chatRoomRepo = new ChatRoomRepository();
     this.bossRepo = new BossRepository();
     this.userMissionRepo = new UserMissionRepository();
+    this.userRepo = new UserRepository();
+    this.gardenPointRepo = new GardenPointRepository();
     this.refApprovalRepo = new ReferenceApprovalRepository();
   }
 
@@ -267,8 +273,8 @@ export class NotificationService {
     }
   }
 
-  private async applyApprovalRewards(approval: { trainerId: number; rewardLevels: number; rewardCoins: number; referenceType: string; metadata: Record<string, unknown> | null }): Promise<void> {
-    const { trainerId, rewardLevels, rewardCoins, referenceType, metadata } = approval;
+  private async applyApprovalRewards(approval: { submitterUserId: number; trainerId: number; rewardLevels: number; rewardCoins: number; referenceType: string; metadata: Record<string, unknown> | null; submissionId: number }): Promise<void> {
+    const { submitterUserId, trainerId, rewardLevels, rewardCoins, referenceType, metadata, submissionId } = approval;
     const meta = (metadata ?? {}) as Record<string, unknown>;
     const isMonsterRef = referenceType === 'monster' || referenceType === 'mega image';
 
@@ -288,6 +294,42 @@ export class NotificationService {
       // Trainer reference – levels and coins both go to the trainer
       if (rewardLevels > 0 || rewardCoins > 0) {
         await this.trainerRepo.addLevelsAndCoins(trainerId, rewardLevels, rewardCoins);
+      }
+    }
+
+    // Apply bonus rewards (garden points, mission progress, boss damage) to the artist/submitter
+    if (rewardLevels > 0) {
+      const gardenPoints = Math.floor(rewardLevels / (Math.floor(Math.random() * 3) + 2)) + Math.floor(Math.random() * 4) + 1;
+      const missionProgress = Math.floor(rewardLevels / (Math.floor(Math.random() * 3) + 2)) + Math.floor(Math.random() * 4) + 1;
+      const bossDamage = Math.floor(rewardLevels / (Math.floor(Math.random() * 3) + 2)) + Math.floor(Math.random() * 4) + 1;
+
+      try {
+        await this.gardenPointRepo.addPoints(submitterUserId, gardenPoints);
+      } catch (err) {
+        console.error('[applyApprovalRewards] Failed to add garden points:', err);
+      }
+
+      try {
+        const submitter = await this.userRepo.findById(submitterUserId);
+        if (submitter?.discord_id) {
+          await this.userMissionRepo.addProgress(submitter.discord_id, missionProgress);
+        }
+      } catch (err) {
+        console.error('[applyApprovalRewards] Failed to add mission progress:', err);
+      }
+
+      try {
+        const activeBoss = await this.bossRepo.findActiveBoss();
+        if (activeBoss) {
+          await this.bossRepo.addDamage(activeBoss.id, submitterUserId, bossDamage, submissionId);
+          const newHp = Math.max(0, activeBoss.currentHp - bossDamage);
+          await this.bossRepo.update(activeBoss.id, {
+            currentHp: newHp,
+            status: newHp <= 0 ? 'defeated' : activeBoss.status,
+          });
+        }
+      } catch (err) {
+        console.error('[applyApprovalRewards] Failed to add boss damage:', err);
       }
     }
   }

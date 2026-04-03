@@ -504,7 +504,7 @@ export default function PersonalArtTodoPage() {
                       <div className="art-todo-references-header">
                         <span className="art-todo-references-label">References</span>
                         <button
-                          className="button secondary icon sm"
+                          className="button secondary icon sm no-flex"
                           onClick={e => { e.stopPropagation(); openMatrix(item); }}
                           title="View full reference matrix"
                         >

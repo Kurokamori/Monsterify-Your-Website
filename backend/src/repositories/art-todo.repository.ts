@@ -394,7 +394,7 @@ export class ArtTodoRepository extends BaseRepository<
         input.status ?? 'pending',
         input.priority ?? 'medium',
         input.dueDate ?? null,
-        input.isPersistent ?? false,
+        (input.isPersistent ?? false) ? 1 : 0,
         input.stepsTotal ?? 0,
         input.stepsCompleted ?? 0,
       ]
@@ -436,7 +436,7 @@ export class ArtTodoRepository extends BaseRepository<
       updates.push(`due_date = $${values.length}`);
     }
     if (input.isPersistent !== undefined) {
-      values.push(input.isPersistent);
+      values.push(input.isPersistent ? 1 : 0);
       updates.push(`is_persistent = $${values.length}`);
     }
     if (input.stepsTotal !== undefined) {

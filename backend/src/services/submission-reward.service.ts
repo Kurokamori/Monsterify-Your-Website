@@ -8,6 +8,7 @@ import {
 } from '../repositories';
 import { ItemRollerService } from './item-roller.service';
 import { MonsterInitializerService } from './monster-initializer.service';
+import { BossService } from './boss.service';
 import {
   ART_QUALITY_BASE_LEVELS,
   BACKGROUND_BONUS_LEVELS,
@@ -213,6 +214,7 @@ export class SubmissionRewardService {
   private gardenPointRepository: GardenPointRepository;
   private userMissionRepository: UserMissionRepository;
   private bossRepository: BossRepository;
+  private bossService: BossService;
   private bonusCache: Map<number, CachedBonuses> = new Map();
 
   constructor(
@@ -228,6 +230,7 @@ export class SubmissionRewardService {
     this.gardenPointRepository = new GardenPointRepository();
     this.userMissionRepository = new UserMissionRepository();
     this.bossRepository = new BossRepository();
+    this.bossService = new BossService();
     this.cleanupBonusCachePeriodically();
   }
 
@@ -1054,18 +1057,12 @@ export class SubmissionRewardService {
       }
     }
 
-    // Apply boss damage
+    // Apply boss damage (via BossService so reward claims auto-generate on defeat)
     if (rewards.bossDamage > 0) {
       try {
         const activeBoss = await this.bossRepository.findActiveBoss();
         if (activeBoss) {
-          await this.bossRepository.addDamage(activeBoss.id, userId, rewards.bossDamage, submissionId);
-          // Update boss HP
-          const newHp = Math.max(0, activeBoss.currentHp - rewards.bossDamage);
-          await this.bossRepository.update(activeBoss.id, {
-            currentHp: newHp,
-            status: newHp <= 0 ? 'defeated' : activeBoss.status,
-          });
+          await this.bossService.addDamage(activeBoss.id, userId, rewards.bossDamage, submissionId);
           result.bossDamage = { amount: rewards.bossDamage, results: [] };
         }
       } catch (err) {
@@ -1333,12 +1330,7 @@ export class SubmissionRewardService {
       try {
         const activeBoss = await this.bossRepository.findActiveBoss();
         if (activeBoss) {
-          await this.bossRepository.addDamage(activeBoss.id, userId, rewards.bossDamage, submissionId);
-          const newHp = Math.max(0, activeBoss.currentHp - rewards.bossDamage);
-          await this.bossRepository.update(activeBoss.id, {
-            currentHp: newHp,
-            status: newHp <= 0 ? 'defeated' : activeBoss.status,
-          });
+          await this.bossService.addDamage(activeBoss.id, userId, rewards.bossDamage, submissionId);
         }
       } catch (err) {
         console.error('[applyExternalBonusRewards] Failed to add boss damage:', err);
