@@ -247,7 +247,7 @@ export async function createBoss(req: Request, res: Response): Promise<void> {
       month?: number;
       year?: number;
       reward_monster_data?: Record<string, unknown>;
-      grunt_monster_data?: Record<string, unknown>;
+      grunt_monster_data?: Record<string, unknown>[] | Record<string, unknown>;
     };
 
     if (!name || !total_hp || !month || !year) {
@@ -258,6 +258,12 @@ export async function createBoss(req: Request, res: Response): Promise<void> {
       return;
     }
 
+    // Normalize grunt_monster_data: accept single object or array
+    let gruntData: Record<string, unknown>[] | null = null;
+    if (grunt_monster_data) {
+      gruntData = Array.isArray(grunt_monster_data) ? grunt_monster_data : [grunt_monster_data];
+    }
+
     const input: BossCreateInput = {
       name,
       description: description ?? null,
@@ -266,7 +272,7 @@ export async function createBoss(req: Request, res: Response): Promise<void> {
       month,
       year,
       rewardMonsterData: reward_monster_data ?? null,
-      gruntMonsterData: grunt_monster_data ?? null,
+      gruntMonsterData: gruntData,
     };
 
     const boss = await bossService.createBoss(input);
@@ -307,8 +313,18 @@ export async function updateBoss(req: Request, res: Response): Promise<void> {
       year?: number;
       status?: string;
       reward_monster_data?: Record<string, unknown>;
-      grunt_monster_data?: Record<string, unknown>;
+      grunt_monster_data?: Record<string, unknown>[] | Record<string, unknown>;
     };
+
+    // Normalize grunt_monster_data: accept single object or array
+    let gruntData: Record<string, unknown>[] | undefined = undefined;
+    if (grunt_monster_data !== undefined) {
+      if (grunt_monster_data === null) {
+        gruntData = undefined;
+      } else {
+        gruntData = Array.isArray(grunt_monster_data) ? grunt_monster_data : [grunt_monster_data];
+      }
+    }
 
     const input: BossUpdateInput = {
       name,
@@ -320,7 +336,7 @@ export async function updateBoss(req: Request, res: Response): Promise<void> {
       year,
       status,
       rewardMonsterData: reward_monster_data,
-      gruntMonsterData: grunt_monster_data,
+      gruntMonsterData: gruntData,
     };
 
     const boss = await bossService.updateBoss(id, input);

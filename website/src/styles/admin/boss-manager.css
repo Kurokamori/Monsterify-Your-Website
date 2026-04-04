@@ -238,6 +238,38 @@
   letter-spacing: 0.05em;
 }
 
+/* Grunt Options */
+.boss-manager__grunt-options {
+  margin-bottom: var(--spacing-medium);
+}
+
+.boss-manager__grunt-header {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-small);
+  margin-bottom: var(--spacing-small);
+  flex-wrap: wrap;
+}
+
+.boss-manager__grunt-header h4 {
+  margin: 0;
+  font-size: var(--font-size-small);
+  font-weight: 600;
+  color: var(--text-color-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.boss-manager__grunt-option {
+  position: relative;
+  margin-bottom: var(--spacing-small);
+}
+
+.boss-manager__grunt-remove {
+  margin-top: calc(-1 * var(--spacing-small));
+  margin-bottom: var(--spacing-small);
+}
+
 /* Dynamic List Inputs (species, types) */
 .boss-manager__list-inputs {
   display: flex;

@@ -30,7 +30,7 @@ export type Boss = {
   year: number | null;
   status: string;
   rewardMonsterData: Record<string, unknown> | null;
-  gruntMonsterData: Record<string, unknown> | null;
+  gruntMonsterData: Record<string, unknown>[] | null;
   startDate: Date | null;
   createdAt: Date;
   updatedAt: Date;
@@ -44,7 +44,7 @@ export type BossCreateInput = {
   month?: number | null;
   year?: number | null;
   rewardMonsterData?: Record<string, unknown> | null;
-  gruntMonsterData?: Record<string, unknown> | null;
+  gruntMonsterData?: Record<string, unknown>[] | null;
 };
 
 export type BossUpdateInput = Partial<BossCreateInput> & {
@@ -88,6 +88,7 @@ export type BossRewardClaimRow = {
   claimed_at: Date | null;
   monster_name: string | null;
   assigned_trainer_id: number | null;
+  grunt_index: number | null;
   created_at: Date;
 };
 
@@ -102,6 +103,7 @@ export type BossRewardClaim = {
   claimedAt: Date | null;
   monsterName: string | null;
   assignedTrainerId: number | null;
+  gruntIndex: number | null;
   createdAt: Date;
 };
 
@@ -123,6 +125,20 @@ const parseJsonField = (value: string | null): Record<string, unknown> | null =>
   }
 };
 
+/** Parse grunt_monster_data: always returns an array, handles legacy single-object format */
+const parseGruntJsonField = (value: string | null): Record<string, unknown>[] | null => {
+  if (!value) {return null;}
+  try {
+    const parsed = typeof value === 'string' ? JSON.parse(value) : value;
+    if (Array.isArray(parsed)) {return parsed;}
+    // Legacy single-object format → wrap in array
+    if (parsed && typeof parsed === 'object') {return [parsed];}
+    return null;
+  } catch {
+    return null;
+  }
+};
+
 const normalizeBoss = (row: BossRow): Boss => ({
   id: row.id,
   name: row.name,
@@ -134,7 +150,7 @@ const normalizeBoss = (row: BossRow): Boss => ({
   year: row.year,
   status: row.status,
   rewardMonsterData: parseJsonField(row.reward_monster_data),
-  gruntMonsterData: parseJsonField(row.grunt_monster_data),
+  gruntMonsterData: parseGruntJsonField(row.grunt_monster_data),
   startDate: row.start_date,
   createdAt: row.created_at,
   updatedAt: row.updated_at,
@@ -160,6 +176,7 @@ const normalizeBossRewardClaim = (row: BossRewardClaimRow): BossRewardClaim => (
   claimedAt: row.claimed_at,
   monsterName: row.monster_name,
   assignedTrainerId: row.assigned_trainer_id,
+  gruntIndex: row.grunt_index,
   createdAt: row.created_at,
 });
 
@@ -401,15 +418,16 @@ export class BossRepository extends BaseRepository<Boss, BossCreateInput, BossUp
     userId: number,
     rewardType: string,
     damageDealt: number,
-    rankPosition: number
+    rankPosition: number,
+    gruntIndex: number | null = null
   ): Promise<BossRewardClaim> {
     const result = await db.query<{ id: number }>(
       `
-        INSERT INTO boss_reward_claims (boss_id, user_id, reward_type, damage_dealt, rank_position)
-        VALUES ($1, $2, $3, $4, $5)
+        INSERT INTO boss_reward_claims (boss_id, user_id, reward_type, damage_dealt, rank_position, grunt_index)
+        VALUES ($1, $2, $3, $4, $5, $6)
         RETURNING id
       `,
-      [bossId, userId, rewardType, damageDealt, rankPosition]
+      [bossId, userId, rewardType, damageDealt, rankPosition, gruntIndex]
     );
 
     const insertedRow = result.rows[0];

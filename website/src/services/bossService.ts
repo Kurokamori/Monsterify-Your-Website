@@ -54,7 +54,7 @@ export interface AdminBoss {
   year: number | null;
   status: string;
   rewardMonsterData: Record<string, unknown> | null;
-  gruntMonsterData: Record<string, unknown> | null;
+  gruntMonsterData: Record<string, unknown>[] | null;
   startDate: string | null;
   createdAt: string;
   updatedAt: string;
@@ -153,7 +153,7 @@ const bossService = {
     month: number;
     year: number;
     reward_monster_data?: Record<string, unknown> | null;
-    grunt_monster_data?: Record<string, unknown> | null;
+    grunt_monster_data?: Record<string, unknown>[] | null;
   }): Promise<AdminBoss> => {
     const response = await api.post('/bosses/admin/create', data);
     return response.data.data;
@@ -169,7 +169,7 @@ const bossService = {
     year?: number;
     status?: string;
     reward_monster_data?: Record<string, unknown> | null;
-    grunt_monster_data?: Record<string, unknown> | null;
+    grunt_monster_data?: Record<string, unknown>[] | null;
   }): Promise<AdminBoss> => {
     const response = await api.put(`/bosses/admin/${id}`, data);
     return response.data.data;

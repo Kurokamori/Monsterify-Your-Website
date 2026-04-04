@@ -71,11 +71,22 @@ const DefeatedBossDetailPage = () => {
 
     let monsterData: BossMonsterData | null = null;
     try {
-      const raw = bossData.userReward.rewardType === 'boss_monster'
-        ? bossData.boss.rewardMonsterData
-        : bossData.boss.gruntMonsterData;
-      if (raw) {
-        monsterData = (typeof raw === 'string' ? JSON.parse(raw) : raw) as BossMonsterData;
+      if (bossData.userReward.rewardType === 'boss_monster') {
+        const raw = bossData.boss.rewardMonsterData;
+        if (raw) {
+          monsterData = (typeof raw === 'string' ? JSON.parse(raw) : raw) as BossMonsterData;
+        }
+      } else {
+        const raw = bossData.boss.gruntMonsterData;
+        if (raw) {
+          const parsed = typeof raw === 'string' ? JSON.parse(raw) : raw;
+          if (Array.isArray(parsed)) {
+            const idx = bossData.userReward.gruntIndex ?? 0;
+            monsterData = (parsed[idx] ?? parsed[0]) as BossMonsterData;
+          } else {
+            monsterData = parsed as BossMonsterData;
+          }
+        }
       }
     } catch {
       // Invalid JSON

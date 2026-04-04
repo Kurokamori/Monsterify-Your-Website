@@ -107,7 +107,6 @@ const CONTENT_TYPE_OPTIONS = [
   { value: 'book', label: 'Book (can contain chapters)' },
   { value: 'chapter', label: 'Chapter (belongs to a book)' },
   { value: 'profile', label: 'Character Profile' },
-  { value: 'prompt', label: 'Prompt-based' },
   { value: 'poem', label: 'Poem' },
   { value: 'other', label: 'Other' },
 ];

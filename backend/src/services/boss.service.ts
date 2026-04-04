@@ -44,6 +44,7 @@ export type DefeatedBossDetails = {
     damageDealt: number;
     rankPosition: number;
     monsterName?: string | null;
+    gruntIndex?: number | null;
   };
   totalParticipants: number;
 };
@@ -53,6 +54,7 @@ export type UnclaimedReward = BossRewardClaim & {
   bossImage: string | null;
   rewardMonsterData: string | null;
   gruntMonsterData: string | null;
+  gruntIndex: number | null;
 };
 
 export type BossWithRewards = {
@@ -198,6 +200,7 @@ export class BossService {
           damageDealt: userClaim.damageDealt,
           rankPosition: userClaim.rankPosition,
           monsterName: userClaim.monsterName,
+          gruntIndex: userClaim.gruntIndex,
         };
       }
     }
@@ -304,11 +307,15 @@ export class BossService {
       return { created: 0 };
     }
 
+    const gruntCount = boss.gruntMonsterData?.length ?? 0;
     const leaderboard = await this.bossRepo.getLeaderboard(bossId, 500);
     for (const [i, entry] of leaderboard.entries()) {
       const rank = i + 1;
       const rewardType = rank === 1 ? 'boss_monster' : 'grunt_monster';
-      await this.bossRepo.createRewardClaim(bossId, entry.userId, rewardType, entry.totalDamage, rank);
+      const gruntIndex = rewardType === 'grunt_monster' && gruntCount > 0
+        ? Math.floor(Math.random() * gruntCount)
+        : null;
+      await this.bossRepo.createRewardClaim(bossId, entry.userId, rewardType, entry.totalDamage, rank, gruntIndex);
     }
 
     return { created: leaderboard.length };
@@ -316,7 +323,7 @@ export class BossService {
 
   /**
    * Generate reward claims for all participants when a boss is defeated.
-   * Rank 1 gets 'boss_monster', everyone else gets 'grunt_monster'.
+   * Rank 1 gets 'boss_monster', everyone else gets a randomly chosen 'grunt_monster'.
    */
   private async generateRewardClaims(bossId: number): Promise<void> {
     try {
@@ -326,11 +333,17 @@ export class BossService {
         return;
       }
 
+      const boss = await this.bossRepo.findById(bossId);
+      const gruntCount = boss?.gruntMonsterData?.length ?? 0;
+
       const leaderboard = await this.bossRepo.getLeaderboard(bossId, 500);
       for (const [i, entry] of leaderboard.entries()) {
         const rank = i + 1;
         const rewardType = rank === 1 ? 'boss_monster' : 'grunt_monster';
-        await this.bossRepo.createRewardClaim(bossId, entry.userId, rewardType, entry.totalDamage, rank);
+        const gruntIndex = rewardType === 'grunt_monster' && gruntCount > 0
+          ? Math.floor(Math.random() * gruntCount)
+          : null;
+        await this.bossRepo.createRewardClaim(bossId, entry.userId, rewardType, entry.totalDamage, rank, gruntIndex);
       }
     } catch (error) {
       console.error('Error generating reward claims for boss', bossId, error);
@@ -374,9 +387,13 @@ export class BossService {
     }
 
     // 3. Determine which monster template to use
-    const template = claim.rewardType === 'boss_monster'
-      ? boss.rewardMonsterData
-      : boss.gruntMonsterData;
+    let template: Record<string, unknown> | null = null;
+    if (claim.rewardType === 'boss_monster') {
+      template = boss.rewardMonsterData;
+    } else if (boss.gruntMonsterData && boss.gruntMonsterData.length > 0) {
+      const idx = claim.gruntIndex ?? 0;
+      template = boss.gruntMonsterData[idx] ?? boss.gruntMonsterData[0] ?? null;
+    }
 
     if (!template) {
       return { success: true, claim, message: 'Reward claimed but no monster template configured' };
@@ -517,6 +534,18 @@ export class BossService {
       }
     };
 
+    const parseGruntJson = (val: string | null): Record<string, unknown>[] | null => {
+      if (!val) {return null;}
+      try {
+        const parsed = typeof val === 'string' ? JSON.parse(val) : val;
+        if (Array.isArray(parsed)) {return parsed;}
+        if (parsed && typeof parsed === 'object') {return [parsed];}
+        return null;
+      } catch {
+        return null;
+      }
+    };
+
     return {
       id: row.id,
       name: row.name,
@@ -528,7 +557,7 @@ export class BossService {
       year: row.year,
       status: row.status,
       rewardMonsterData: parseJson(row.reward_monster_data),
-      gruntMonsterData: parseJson(row.grunt_monster_data),
+      gruntMonsterData: parseGruntJson(row.grunt_monster_data),
       startDate: row.start_date,
       createdAt: row.created_at,
       updatedAt: row.updated_at,

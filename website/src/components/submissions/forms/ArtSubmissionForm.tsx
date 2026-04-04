@@ -90,7 +90,6 @@ const CONTENT_TYPE_OPTIONS = [
   { value: 'trainer', label: 'Trainer Art' },
   { value: 'location', label: 'Location Art' },
   { value: 'event', label: 'Event Art' },
-  { value: 'prompt', label: 'Prompt-based Art' },
 ];
 
 const DEFAULT_CALCULATOR_VALUES: ArtCalculatorValues = {

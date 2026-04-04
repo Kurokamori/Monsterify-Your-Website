@@ -101,6 +101,7 @@ import finalfantasyRoutes from './species/finalfantasy-species.routes';
 import fakemonRoutes from './species/fakemon-species.routes';
 import palsRoutes from './species/pals-species.routes';
 import dragonquestRoutes from './species/dragonquest-species.routes';
+import speciesImageRoutes from './species/species-images.routes';
 
 
 // Create router
@@ -147,6 +148,7 @@ router.use('/finalfantasy-monsters', finalfantasyRoutes);
 router.use('/fakedex', fakemonRoutes);
 router.use('/pals-monsters', palsRoutes);
 router.use('/dragonquest-monsters', dragonquestRoutes);
+router.use('/species-images', speciesImageRoutes);
 
 // Boss, Content, Events, Mission Routes
 router.use('/bosses', bossRoutes);

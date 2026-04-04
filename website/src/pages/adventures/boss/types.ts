@@ -18,6 +18,7 @@ export interface UnclaimedBossReward {
   rankPosition: number;
   rewardMonsterData?: string;
   gruntMonsterData?: string;
+  gruntIndex?: number | null;
 }
 
 /** Parsed reward data for the claim modal */
@@ -91,6 +92,7 @@ export interface UserRewardStatus {
   damageDealt: number;
   rankPosition: number;
   monsterName?: string;
+  gruntIndex?: number | null;
 }
 
 /** Full defeated boss detail from API */
@@ -98,7 +100,7 @@ export interface DefeatedBossDetailData {
   boss: DefeatedBossSummary & {
     description?: string;
     rewardMonsterData?: string | Record<string, unknown> | null;
-    gruntMonsterData?: string | Record<string, unknown> | null;
+    gruntMonsterData?: string | Record<string, unknown>[] | Record<string, unknown> | null;
   };
   leaderboard: BossLeaderboardEntry[];
   userReward?: UserRewardStatus;
@@ -118,7 +120,15 @@ export function parseRewardData(reward: UnclaimedBossReward): RewardClaimData {
     if (reward.rewardType === 'boss_monster' && reward.rewardMonsterData) {
       monsterData = JSON.parse(reward.rewardMonsterData) as BossMonsterData;
     } else if (reward.rewardType === 'grunt_monster' && reward.gruntMonsterData) {
-      monsterData = JSON.parse(reward.gruntMonsterData) as BossMonsterData;
+      const parsed = JSON.parse(reward.gruntMonsterData);
+      if (Array.isArray(parsed)) {
+        // Use the assigned grunt index, fallback to first
+        const idx = reward.gruntIndex ?? 0;
+        monsterData = (parsed[idx] ?? parsed[0]) as BossMonsterData;
+      } else {
+        // Legacy single-object format
+        monsterData = parsed as BossMonsterData;
+      }
     }
   } catch {
     // Invalid JSON, leave as null

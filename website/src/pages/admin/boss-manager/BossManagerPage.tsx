@@ -70,6 +70,19 @@ function serializeMonsterData(data: MonsterData): Record<string, unknown> | null
   };
 }
 
+function serializeGruntMonsterDataArray(dataList: MonsterData[]): Record<string, unknown>[] | null {
+  const serialized = dataList
+    .map(serializeMonsterData)
+    .filter((d): d is Record<string, unknown> => d !== null);
+  return serialized.length > 0 ? serialized : null;
+}
+
+function parseGruntMonsterDataArray(raw: Record<string, unknown>[] | null): MonsterData[] {
+  if (!raw || !Array.isArray(raw)) return [{ ...EMPTY_MONSTER_DATA }];
+  if (raw.length === 0) return [{ ...EMPTY_MONSTER_DATA }];
+  return raw.map(parseMonsterData);
+}
+
 const EMPTY_BOSS_FORM = {
   name: '',
   description: '',
@@ -242,7 +255,7 @@ export default function BossManagerPage() {
   const [creatingBoss, setCreatingBoss] = useState(false);
   const [bossForm, setBossForm] = useState(EMPTY_BOSS_FORM);
   const [rewardMonster, setRewardMonster] = useState<MonsterData>({ ...EMPTY_MONSTER_DATA });
-  const [gruntMonster, setGruntMonster] = useState<MonsterData>({ ...EMPTY_MONSTER_DATA });
+  const [gruntMonsters, setGruntMonsters] = useState<MonsterData[]>([{ ...EMPTY_MONSTER_DATA }]);
   const [imagePreviewError, setImagePreviewError] = useState(false);
 
   // ── Damage state ────────────────────────────────────────────────
@@ -301,7 +314,7 @@ export default function BossManagerPage() {
     setEditingBoss(null);
     setBossForm({ ...EMPTY_BOSS_FORM });
     setRewardMonster({ ...EMPTY_MONSTER_DATA });
-    setGruntMonster({ ...EMPTY_MONSTER_DATA });
+    setGruntMonsters([{ ...EMPTY_MONSTER_DATA }]);
     setImagePreviewError(false);
     setCreatingBoss(true);
     setStatusMsg(null);
@@ -321,7 +334,7 @@ export default function BossManagerPage() {
       status: boss.status,
     });
     setRewardMonster(parseMonsterData(boss.rewardMonsterData));
-    setGruntMonster(parseMonsterData(boss.gruntMonsterData));
+    setGruntMonsters(parseGruntMonsterDataArray(boss.gruntMonsterData));
     setImagePreviewError(false);
     setStatusMsg(null);
   };
@@ -345,7 +358,7 @@ export default function BossManagerPage() {
     setStatusMsg(null);
     try {
       const rewardData = serializeMonsterData(rewardMonster);
-      const gruntData = serializeMonsterData(gruntMonster);
+      const gruntData = serializeGruntMonsterDataArray(gruntMonsters);
 
       if (editingBoss) {
         await bossService.adminUpdateBoss(editingBoss.id, {
@@ -650,11 +663,42 @@ export default function BossManagerPage() {
             data={rewardMonster}
             onChange={setRewardMonster}
           />
-          <MonsterDataEditor
-            label="Participant Reward (All Others)"
-            data={gruntMonster}
-            onChange={setGruntMonster}
-          />
+          {/* Grunt Monster Options */}
+          <div className="boss-manager__grunt-options">
+            <div className="boss-manager__grunt-header">
+              <h4>Participant Rewards (All Others)</h4>
+              <span className="boss-manager__muted">
+                {gruntMonsters.length} option{gruntMonsters.length !== 1 ? 's' : ''} — one is randomly assigned per player
+              </span>
+              <button
+                type="button"
+                className="button secondary sm"
+                onClick={() => setGruntMonsters(prev => [...prev, { ...EMPTY_MONSTER_DATA }])}
+              >
+                <i className="fas fa-plus" /> Add Grunt Option
+              </button>
+            </div>
+            {gruntMonsters.map((grunt, idx) => (
+              <div key={idx} className="boss-manager__grunt-option">
+                <MonsterDataEditor
+                  label={`Grunt Option #${idx + 1}`}
+                  data={grunt}
+                  onChange={(updated) => {
+                    setGruntMonsters(prev => prev.map((g, i) => i === idx ? updated : g));
+                  }}
+                />
+                {gruntMonsters.length > 1 && (
+                  <button
+                    type="button"
+                    className="button danger sm boss-manager__grunt-remove"
+                    onClick={() => setGruntMonsters(prev => prev.filter((_, i) => i !== idx))}
+                  >
+                    <i className="fas fa-trash" /> Remove Option #{idx + 1}
+                  </button>
+                )}
+              </div>
+            ))}
+          </div>
 
           {/* Form Actions */}
           <div className="boss-manager__form-actions">
