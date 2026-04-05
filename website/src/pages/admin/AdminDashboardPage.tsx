@@ -32,11 +32,19 @@ const ADMIN_CATEGORIES: AdminCategory[] = [
     ],
   },
   {
+    name: 'Communication',
+    icon: 'fas fa-bullhorn',
+    tools: [
+      { name: 'Changelog Manager', icon: 'fas fa-clipboard-list', description: 'Manage version changelogs and What\'s New popups', path: '/admin/changelog-manager' },
+    ],
+  },
+  {
     name: 'Guide / Tool Manager',
     icon: 'fas fa-book-open',
     tools: [
       { name: 'Content Manager', icon: 'fas fa-file-alt', description: 'Manage guide content and pages', path: '/admin/content-manager' },
       { name: 'Interactive Map Manager', icon: 'fas fa-map', description: 'Edit interactive map data and regions', path: '/admin/interactive-map-manager' },
+      { name: 'Calendar Manager', icon: 'fas fa-calendar-plus', description: 'Manage miscellaneous calendar dates', path: '/admin/calendar-manager' },
     ],
   },
   {

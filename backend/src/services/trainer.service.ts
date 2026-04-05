@@ -100,6 +100,7 @@ export type TrainerCreateData = {
 export type TrainerUpdateData = {
   name?: string;
   mainRef?: string | null;
+  mainRefArtist?: string | null;
   additionalRefs?: string | null;
   birthday?: string | null;
   megaInfo?: string | null;
@@ -370,11 +371,12 @@ export class TrainerService {
     }
 
     // Extract profile fields
-    const { name: _n, mainRef: _m, additionalRefs: _ar, birthday: _bd, megaInfo: _mi, ...profileFields } = data;
+    const { name: _n, mainRef: _m, mainRefArtist: _mra, additionalRefs: _ar, birthday: _bd, megaInfo: _mi, ...profileFields } = data;
 
     return this.trainerRepo.update(id, {
       name: data.name,
       mainRef: data.mainRef,
+      mainRefArtist: data.mainRefArtist,
       additionalRefs: data.additionalRefs,
       birthday: data.birthday,
       zodiac,

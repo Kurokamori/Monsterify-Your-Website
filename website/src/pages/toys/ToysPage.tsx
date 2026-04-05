@@ -45,6 +45,13 @@ const toys: ToyDefinition[] = [
     icon: 'fas fa-clipboard-list',
     path: '/toys/admin-connect',
   },
+  {
+    id: 'changelog',
+    name: 'Changelog',
+    description: 'View all version updates and changes made to the site.',
+    icon: 'fas fa-scroll',
+    path: '/toys/changelog',
+  },
 ];
 
 const ToysPage = () => {

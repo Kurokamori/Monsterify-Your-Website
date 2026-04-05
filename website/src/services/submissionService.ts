@@ -8,6 +8,50 @@ export type ArtQuality = 'sketch' | 'lineart' | 'flat' | 'rendered' | string;
 export type CollaboratorRole = 'editor' | 'viewer';
 export type RecipientType = 'trainer' | 'monster';
 
+export interface MonsterConditionAutoResult {
+  monsterId: number;
+  monsterName: string;
+  trainerId: number;
+  trainerName: string;
+  effectApplied: Record<string, unknown>;
+}
+
+export interface MonsterConditionEligibleMonster {
+  monsterId: number;
+  monsterName: string;
+  trainerId: number;
+  trainerName: string;
+  currentValue: unknown;
+  imgLink: string | null;
+  species1: string;
+  species2?: string | null;
+  species3?: string | null;
+  type1?: string | null;
+  type2?: string | null;
+  type3?: string | null;
+  type4?: string | null;
+  type5?: string | null;
+  attribute?: string | null;
+}
+
+export interface MonsterConditionResult {
+  conditionId: string;
+  conditionType: string;
+  applicationMode: 'auto' | 'opt-in';
+  label: string;
+  autoResults?: MonsterConditionAutoResult[];
+  eligibleMonsters?: MonsterConditionEligibleMonster[];
+}
+
+export interface MonsterCondition {
+  id: string;
+  conditionType: string;
+  applicationMode: 'auto' | 'opt-in';
+  criteria: Record<string, unknown>;
+  effect: Record<string, unknown>;
+  label: string;
+}
+
 export interface Submission {
   id: number;
   type?: SubmissionType;
@@ -838,6 +882,14 @@ const submissionService = {
   // Claim prompt-specific rewards
   claimPromptRewards: async (submissionId: number | string, allocations: ClaimRewardsOptions) => {
     const response = await api.post(`/submissions/prompt/${submissionId}/claim-rewards`, allocations);
+    return response.data;
+  },
+
+  applyMonsterConditions: async (
+    submissionId: number | string,
+    selections: { conditionId: string; monsterIds: number[] }[]
+  ) => {
+    const response = await api.post(`/submissions/prompt/${submissionId}/apply-conditions`, { selections });
     return response.data;
   },
 

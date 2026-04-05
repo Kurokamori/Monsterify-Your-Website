@@ -79,6 +79,9 @@ export const GalleryTab = ({ monster, galleryImages, handleImageClick }: Gallery
                 onError={handleImgError}
               />
               <div className="monster-gallery-caption">Main Reference</div>
+              {monster.main_ref_artist && (
+                <p className="text-muted text-sm">Art by: {monster.main_ref_artist}</p>
+              )}
             </div>
           )}
 

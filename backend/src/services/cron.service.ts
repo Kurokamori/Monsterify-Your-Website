@@ -7,6 +7,7 @@ import {
   type WeeklyStatisticsResult,
 } from './prompt-automation.service';
 import { ShopService } from './shop.service';
+import { HolidayCalculatorService } from './holiday-calculator.service';
 
 export type CronJobStatus = {
   running: boolean;
@@ -24,6 +25,7 @@ export class CronService {
   private reminderService: ReminderService;
   private promptAutomationService: PromptAutomationService;
   private shopService: ShopService;
+  private holidayCalculatorService: HolidayCalculatorService;
 
   constructor(
     scheduledTasksService?: ScheduledTasksService,
@@ -36,6 +38,7 @@ export class CronService {
     this.reminderService = reminderService ?? new ReminderService();
     this.promptAutomationService = promptAutomationService ?? new PromptAutomationService();
     this.shopService = shopService ?? new ShopService();
+    this.holidayCalculatorService = new HolidayCalculatorService();
   }
 
   /**
@@ -64,6 +67,9 @@ export class CronService {
 
     // Daily shop restocking at 00:05 UTC
     this.scheduleDailyShopRestock();
+
+    // Yearly holiday date generation on Jan 1st at 00:10 UTC
+    this.scheduleYearlyHolidayGeneration();
 
     console.log('Cron jobs initialized successfully');
   }
@@ -263,6 +269,32 @@ export class CronService {
     const result = await this.promptAutomationService.runWeeklyStatistics();
     console.log('Manual prompt weekly statistics completed:', result);
     return result;
+  }
+
+  /**
+   * Schedule yearly holiday date generation
+   * Runs on January 1st at 00:10 UTC to generate holiday dates for the new year
+   */
+  scheduleYearlyHolidayGeneration(): void {
+    const job = cron.schedule(
+      '10 0 1 1 *',
+      async () => {
+        const year = new Date().getFullYear();
+        console.log(`Running yearly holiday date generation for ${year}...`);
+        try {
+          const result = await this.holidayCalculatorService.generateHolidayDates(year);
+          console.log(`Holiday date generation completed: ${result.generated} holidays generated for ${year}`);
+        } catch (error) {
+          console.error('Error in yearly holiday date generation:', error);
+        }
+      },
+      {
+        timezone: 'UTC',
+      }
+    );
+
+    this.jobs.set('yearlyHolidayGeneration', job);
+    console.log('Yearly holiday generation cron job scheduled for Jan 1st at 00:10 UTC');
   }
 
   /**

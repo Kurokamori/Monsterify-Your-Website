@@ -1,6 +1,17 @@
 import { BaseRepository } from './base.repository';
 import { db } from '../database';
 
+export type MonsterConditionApplicationMode = 'auto' | 'opt-in';
+
+export type MonsterCondition = {
+  id: string;
+  conditionType: string;
+  applicationMode: MonsterConditionApplicationMode;
+  criteria: Record<string, unknown>;
+  effect: Record<string, unknown>;
+  label: string;
+};
+
 export type PromptType = 'general' | 'monthly' | 'event' | 'progress';
 export type PromptDifficulty = 'easy' | 'medium' | 'hard' | 'expert';
 
@@ -26,6 +37,7 @@ export type PromptRow = {
   max_trainer_level: number | null;
   required_factions: string | null;
   event_name: string | null;
+  monster_conditions: string | null;
   created_at: Date;
   updated_at: Date;
 };
@@ -59,6 +71,7 @@ export type Prompt = {
   maxTrainerLevel: number | null;
   requiredFactions: string[] | null;
   eventName: string | null;
+  monsterConditions: MonsterCondition[] | null;
   submissionCount: number;
   approvedCount: number;
   pendingCount: number;
@@ -88,6 +101,7 @@ export type PromptCreateInput = {
   maxTrainerLevel?: number | null;
   requiredFactions?: string[] | null;
   eventName?: string | null;
+  monsterConditions?: MonsterCondition[] | null;
 };
 
 export type PromptUpdateInput = Partial<PromptCreateInput>;
@@ -135,6 +149,7 @@ const normalizePrompt = (row: PromptWithStats): Prompt => ({
   maxTrainerLevel: row.max_trainer_level,
   requiredFactions: parseJsonField<string[] | null>(row.required_factions, null),
   eventName: row.event_name,
+  monsterConditions: parseJsonField<MonsterCondition[] | null>(row.monster_conditions, null),
   submissionCount: Number(row.submission_count) || 0,
   approvedCount: Number(row.approved_count) || 0,
   pendingCount: Number(row.pending_count) || 0,
@@ -284,10 +299,11 @@ export class PromptRepository extends BaseRepository<Prompt, PromptCreateInput, 
           title, description, type, category, difficulty, is_active,
           priority, max_submissions, max_submissions_per_trainer, requires_approval,
           active_months, start_date, end_date, rewards, requirements, tags,
-          min_trainer_level, max_trainer_level, required_factions, event_name, created_at
+          min_trainer_level, max_trainer_level, required_factions, event_name,
+          monster_conditions, created_at
         )
         VALUES (
-          $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, CURRENT_TIMESTAMP
+          $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, CURRENT_TIMESTAMP
         )
         RETURNING id
       `,
@@ -312,6 +328,7 @@ export class PromptRepository extends BaseRepository<Prompt, PromptCreateInput, 
         input.maxTrainerLevel ?? null,
         input.requiredFactions ? JSON.stringify(input.requiredFactions) : null,
         input.eventName ?? null,
+        input.monsterConditions ? JSON.stringify(input.monsterConditions) : null,
       ]
     );
 
@@ -351,6 +368,7 @@ export class PromptRepository extends BaseRepository<Prompt, PromptCreateInput, 
       maxTrainerLevel: { column: 'max_trainer_level' },
       requiredFactions: { column: 'required_factions', isJson: true },
       eventName: { column: 'event_name' },
+      monsterConditions: { column: 'monster_conditions', isJson: true },
     };
 
     for (const [key, { column, isJson }] of Object.entries(fieldMappings)) {

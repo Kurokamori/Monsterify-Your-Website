@@ -14,6 +14,8 @@ export interface Mission {
   rewardConfig: MissionRewardConfig | null;
   requiredProgress: number;
   status: string;
+  completionCount?: number;
+  meetsRequirements?: boolean;
 }
 
 export interface MissionRequirements {

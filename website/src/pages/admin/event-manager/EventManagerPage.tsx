@@ -29,6 +29,30 @@ function formatDateForInput(dateStr: string): string {
 // Types
 // ============================================================================
 
+const TYPE_COLORS = [
+  { value: '', label: 'Default (accent)' },
+  { value: 'normal-type', label: 'Normal' },
+  { value: 'fire-type', label: 'Fire' },
+  { value: 'water-type', label: 'Water' },
+  { value: 'electric-type', label: 'Electric' },
+  { value: 'grass-type', label: 'Grass' },
+  { value: 'ice-type', label: 'Ice' },
+  { value: 'fighting-type', label: 'Fighting' },
+  { value: 'poison-type', label: 'Poison' },
+  { value: 'ground-type', label: 'Ground' },
+  { value: 'flying-type', label: 'Flying' },
+  { value: 'psychic-type', label: 'Psychic' },
+  { value: 'bug-type', label: 'Bug' },
+  { value: 'rock-type', label: 'Rock' },
+  { value: 'ghost-type', label: 'Ghost' },
+  { value: 'dragon-type', label: 'Dragon' },
+  { value: 'dark-type', label: 'Dark' },
+  { value: 'steel-type', label: 'Steel' },
+  { value: 'fairy-type', label: 'Fairy' },
+  { value: 'light-type', label: 'Light' },
+  { value: 'cosmic-type', label: 'Cosmic' },
+]
+
 interface FormState {
   title: string
   startDate: string
@@ -37,6 +61,7 @@ interface FormState {
   category: string
   fileName: string
   isMultiPart: boolean
+  color: string
 }
 
 const EMPTY_FORM: FormState = {
@@ -47,6 +72,7 @@ const EMPTY_FORM: FormState = {
   category: 'upcoming',
   fileName: '',
   isMultiPart: false,
+  color: '',
 }
 
 const CATEGORIES = [
@@ -71,23 +97,28 @@ function PartEditor({
   onStatus: (msg: { type: 'success' | 'error'; text: string }) => void
 }) {
   const [expandedPart, setExpandedPart] = useState<string | null>(null)
-  const [partForms, setPartForms] = useState<Record<string, { title: string; content: string }>>({})
+  const [partForms, setPartForms] = useState<Record<string, { title: string; content: string; startDate: string; endDate: string }>>({})
   const [savingPart, setSavingPart] = useState<string | null>(null)
-  const [newPartForm, setNewPartForm] = useState<{ title: string; content: string } | null>(null)
+  const [newPartForm, setNewPartForm] = useState<{ title: string; content: string; startDate: string; endDate: string } | null>(null)
   const confirmModal = useConfirmModal()
 
   // Initialize part forms from parts data
   useEffect(() => {
-    const forms: Record<string, { title: string; content: string }> = {}
+    const forms: Record<string, { title: string; content: string; startDate: string; endDate: string }> = {}
     parts.forEach(part => {
       // Extract body content (skip title line)
       const lines = part.content.split('\n')
       let bodyStart = 0
-      if (lines[0]?.startsWith('#')) bodyStart = 1
-      while (bodyStart < lines.length && lines[bodyStart]?.trim() === '') bodyStart++
+      if (lines[0]?.startsWith('#')) { bodyStart = 1; }
+      while (bodyStart < lines.length && lines[bodyStart]?.trim() === '') { bodyStart++; }
       const bodyContent = lines.slice(bodyStart).join('\n')
 
-      forms[part.id] = { title: part.title, content: bodyContent }
+      forms[part.id] = {
+        title: part.title,
+        content: bodyContent,
+        startDate: part.startDate ? formatDateForInput(part.startDate) : '',
+        endDate: part.endDate ? formatDateForInput(part.endDate) : '',
+      }
     })
     setPartForms(forms)
   }, [parts])
@@ -98,7 +129,12 @@ function PartEditor({
 
     setSavingPart(partId)
     try {
-      await eventAdminService.updatePart(eventId, partId, form)
+      await eventAdminService.updatePart(eventId, partId, {
+        title: form.title,
+        content: form.content,
+        startDate: form.startDate || undefined,
+        endDate: form.endDate || undefined,
+      })
       onStatus({ type: 'success', text: `Part "${form.title}" saved` })
       onPartsChange()
     } catch (err) {
@@ -134,6 +170,8 @@ function PartEditor({
       await eventAdminService.addPart(eventId, {
         title: newPartForm.title.trim(),
         content: newPartForm.content,
+        startDate: newPartForm.startDate || undefined,
+        endDate: newPartForm.endDate || undefined,
       })
       onStatus({ type: 'success', text: 'Part added' })
       setNewPartForm(null)
@@ -153,7 +191,7 @@ function PartEditor({
           <button
             type="button"
             className="content-manager__btn content-manager__btn--primary"
-            onClick={() => setNewPartForm({ title: '', content: '' })}
+            onClick={() => setNewPartForm({ title: '', content: '', startDate: '', endDate: '' })}
           >
             <i className="fas fa-plus" /> Add Part
           </button>
@@ -202,6 +240,30 @@ function PartEditor({
                     }))}
                   />
                 </div>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--spacing-small)' }}>
+                  <div className="content-manager__field">
+                    <label>Part Start Date</label>
+                    <input
+                      type="date"
+                      value={form.startDate}
+                      onChange={(e) => setPartForms(prev => ({
+                        ...prev,
+                        [part.id]: { ...prev[part.id]!, startDate: e.target.value },
+                      }))}
+                    />
+                  </div>
+                  <div className="content-manager__field">
+                    <label>Part End Date</label>
+                    <input
+                      type="date"
+                      value={form.endDate}
+                      onChange={(e) => setPartForms(prev => ({
+                        ...prev,
+                        [part.id]: { ...prev[part.id]!, endDate: e.target.value },
+                      }))}
+                    />
+                  </div>
+                </div>
                 <div className="content-manager__field">
                   <label>Content</label>
                   <WysiwygEditor
@@ -244,6 +306,24 @@ function PartEditor({
                 onChange={(e) => setNewPartForm(prev => prev ? { ...prev, title: e.target.value } : null)}
                 placeholder="e.g. Part 1 - A Mysterious Letter"
               />
+            </div>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--spacing-small)' }}>
+              <div className="content-manager__field">
+                <label>Part Start Date</label>
+                <input
+                  type="date"
+                  value={newPartForm.startDate}
+                  onChange={(e) => setNewPartForm(prev => prev ? { ...prev, startDate: e.target.value } : null)}
+                />
+              </div>
+              <div className="content-manager__field">
+                <label>Part End Date</label>
+                <input
+                  type="date"
+                  value={newPartForm.endDate}
+                  onChange={(e) => setNewPartForm(prev => prev ? { ...prev, endDate: e.target.value } : null)}
+                />
+              </div>
             </div>
             <div className="content-manager__field">
               <label>Content</label>
@@ -327,6 +407,7 @@ export default function EventManagerPage() {
     || form.endDate !== originalForm.endDate
     || form.category !== originalForm.category
     || form.fileName !== originalForm.fileName
+    || form.color !== originalForm.color
 
   const guardDirty = useCallback((action: () => void) => {
     if (isDirty) {
@@ -368,6 +449,7 @@ export default function EventManagerPage() {
         category: event.category,
         fileName: event.id,
         isMultiPart: event.isMultiPart || false,
+        color: event.color || '',
       }
       setForm(formState)
       setOriginalForm(formState)
@@ -429,6 +511,7 @@ export default function EventManagerPage() {
           category: form.category,
           fileName: form.fileName.trim(),
           isMultiPart: form.isMultiPart,
+          color: form.color || null,
         })
         setStatusMsg({ type: 'success', text: result.message })
         setIsNew(false)
@@ -451,6 +534,7 @@ export default function EventManagerPage() {
           endDate: form.endDate,
           content: form.content,
           category: form.category,
+          color: form.color || null,
         })
         setStatusMsg({ type: 'success', text: result.message })
         setOriginalForm({ ...form })
@@ -709,8 +793,8 @@ export default function EventManagerPage() {
                     </>
                   )}
 
-                  {/* Date range and category row */}
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 'var(--spacing-small)' }}>
+                  {/* Date range, category, and color row */}
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: 'var(--spacing-small)' }}>
                     <div className="content-manager__field">
                       <label>Start Date</label>
                       <input
@@ -742,6 +826,26 @@ export default function EventManagerPage() {
                         }}
                       >
                         {CATEGORIES.map(c => (
+                          <option key={c.value} value={c.value}>{c.label}</option>
+                        ))}
+                      </select>
+                    </div>
+                    <div className="content-manager__field">
+                      <label>Calendar Color</label>
+                      <select
+                        value={form.color}
+                        onChange={(e) => setForm(prev => ({ ...prev, color: e.target.value }))}
+                        style={{
+                          padding: 'var(--spacing-xsmall) var(--spacing-small)',
+                          border: '1px solid var(--border-color)',
+                          borderRadius: 'var(--border-radius-small)',
+                          background: 'var(--background-color)',
+                          color: form.color ? `var(--${form.color})` : 'var(--text-color)',
+                          fontSize: 'var(--font-size-small)',
+                          fontWeight: form.color ? 600 : 400,
+                        }}
+                      >
+                        {TYPE_COLORS.map(c => (
                           <option key={c.value} value={c.value}>{c.label}</option>
                         ))}
                       </select>

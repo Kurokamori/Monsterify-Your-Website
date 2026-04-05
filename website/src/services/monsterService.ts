@@ -17,12 +17,16 @@ export interface Monster {
   level?: number;
   img_link?: string;
   main_ref?: string;
+  main_ref_artist?: string;
+  mega_ref_artist?: string;
   trainer_id?: number;
   box_number?: number;
   box_position?: number;
   gender?: string;
   friendship?: number;
   nature?: string;
+  can_talk?: number;
+  can_talk_descriptor?: string | null;
   [key: string]: unknown;
 }
 

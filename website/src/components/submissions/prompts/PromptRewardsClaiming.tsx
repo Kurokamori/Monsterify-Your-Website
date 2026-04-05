@@ -9,6 +9,8 @@ import { BallSelector, type BallInventoryEntry } from '../../common/BallSelector
 import trainerService from '../../../services/trainerService';
 import { GiftRewards } from '../GiftRewards';
 import { LevelCapReallocation } from '../LevelCapReallocation';
+import { MonsterConditionStep } from './MonsterConditionStep';
+import type { MonsterConditionResult, MonsterCondition } from '../../../services/submissionService';
 
 interface Trainer {
   id: string | number;
@@ -102,6 +104,9 @@ interface SubmissionResult {
   hasGiftLevels?: boolean;
   hasLevelCaps?: boolean;
   cappedMonsters?: CappedMonster[];
+  monsterConditionResults?: MonsterConditionResult[];
+  hasMonsterConditions?: boolean;
+  promptMonsterConditions?: MonsterCondition[];
 }
 
 interface PromptRewardsClaimingProps {
@@ -115,7 +120,7 @@ interface PromptRewardsClaimingProps {
   onSubmitAnother: () => void;
 }
 
-type RewardsStep = 'levelCap' | 'giftRewards' | 'promptRewards';
+type RewardsStep = 'levelCap' | 'giftRewards' | 'monsterConditions' | 'promptRewards';
 
 export function PromptRewardsClaiming({
   submissionResult,
@@ -135,13 +140,17 @@ export function PromptRewardsClaiming({
     promptRewards = {},
     hasGiftLevels = false,
     hasLevelCaps = false,
-    cappedMonsters = []
+    cappedMonsters = [],
+    monsterConditionResults = [],
+    hasMonsterConditions = false,
+    promptMonsterConditions = [],
   } = submissionResult || {};
 
   // Determine the first step based on what's needed
   const getInitialStep = (): RewardsStep => {
     if (hasLevelCaps && cappedMonsters.length > 0) return 'levelCap';
     if (hasGiftLevels && (artWritingRewards?.totalGiftLevels || 0) > 0) return 'giftRewards';
+    if (hasMonsterConditions && monsterConditionResults.length > 0) return 'monsterConditions';
     return 'promptRewards';
   };
 
@@ -224,6 +233,8 @@ export function PromptRewardsClaiming({
   const handleLevelCapComplete = () => {
     if (hasGiftLevels && (artWritingRewards?.totalGiftLevels || 0) > 0) {
       setCurrentStep('giftRewards');
+    } else if (hasMonsterConditions && monsterConditionResults.length > 0) {
+      setCurrentStep('monsterConditions');
     } else {
       setCurrentStep('promptRewards');
     }
@@ -232,6 +243,16 @@ export function PromptRewardsClaiming({
 
   // Handle gift rewards completion
   const handleGiftRewardsComplete = () => {
+    if (hasMonsterConditions && monsterConditionResults.length > 0) {
+      setCurrentStep('monsterConditions');
+    } else {
+      setCurrentStep('promptRewards');
+    }
+    window.scrollTo(0, 0);
+  };
+
+  // Handle monster conditions completion
+  const handleMonsterConditionsComplete = () => {
     setCurrentStep('promptRewards');
     window.scrollTo(0, 0);
   };
@@ -375,6 +396,30 @@ export function PromptRewardsClaiming({
           onComplete={handleGiftRewardsComplete}
           onCancel={handleGiftRewardsComplete}
           submissionType={submission?.submissionType || 'art'}
+        />
+      </div>
+    );
+  }
+
+  // Render monster conditions step
+  if (currentStep === 'monsterConditions') {
+    return (
+      <div className="prompt-rewards-claiming">
+        <div className="form-section rewards-summary-section">
+          <h3>Submission Complete!</h3>
+          <div className="submission-summary">
+            <p><strong>Title:</strong> {submission?.title}</p>
+            <p><strong>Type:</strong> {submission?.submissionType === 'art' ? 'Art' : 'Writing'}</p>
+            <p><strong>Prompt:</strong> {prompt?.title}</p>
+            <p><strong>Trainer:</strong> {trainer?.name}</p>
+          </div>
+        </div>
+
+        <MonsterConditionStep
+          conditionResults={monsterConditionResults}
+          promptConditions={promptMonsterConditions}
+          promptSubmissionId={promptSubmission?.id ?? 0}
+          onComplete={handleMonsterConditionsComplete}
         />
       </div>
     );

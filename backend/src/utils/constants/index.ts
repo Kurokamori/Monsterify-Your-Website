@@ -50,3 +50,6 @@ export * from './monster-status-moves';
 
 // Faction chat alias mapping
 export * from './faction-chat-mapping';
+
+// Monster "Can Talk" speech progression
+export * from './can-talk';

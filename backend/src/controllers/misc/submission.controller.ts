@@ -1400,3 +1400,35 @@ export async function searchCollaboratorUsers(req: Request, res: Response): Prom
     res.status(500).json({ success: false, message: 'Failed to search users' });
   }
 }
+
+// =============================================================================
+// Apply Monster Conditions (opt-in selections)
+// =============================================================================
+
+export async function applyMonsterConditions(req: Request, res: Response): Promise<void> {
+  try {
+    const promptSubmissionId = parseInt(req.params.id as string, 10);
+    if (isNaN(promptSubmissionId)) {
+      res.status(400).json({ success: false, message: 'Invalid submission ID' });
+      return;
+    }
+
+    const { selections } = req.body as {
+      selections: { conditionId: string; monsterIds: number[] }[];
+    };
+
+    if (!selections || !Array.isArray(selections) || selections.length === 0) {
+      res.status(400).json({ success: false, message: 'Selections are required' });
+      return;
+    }
+
+    const userId = req.user?.id?.toString() ?? '';
+    const result = await submissionService.applyMonsterConditions(promptSubmissionId, selections, userId);
+
+    res.json(result);
+  } catch (error) {
+    console.error('Error applying monster conditions:', error);
+    const msg = error instanceof Error ? error.message : 'Failed to apply monster conditions';
+    res.status(500).json({ success: false, message: msg });
+  }
+}

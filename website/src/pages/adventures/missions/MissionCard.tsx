@@ -159,6 +159,13 @@ export const MissionCard = ({ mission, onClick, footer }: MissionCardProps) => {
       <RequirementsList requirements={requirements} />
       <RewardsList rewardConfig={rewardConfig} />
 
+      {mission.completionCount !== undefined && mission.completionCount > 0 && (
+        <div className="mission-card__completion-count">
+          <i className="fas fa-check-double"></i>
+          <span>Completed : {mission.completionCount} {mission.completionCount === 1 ? 'Time' : 'Times'}</span>
+        </div>
+      )}
+
       {footer && <div className="mission-card__footer">{footer}</div>}
     </div>
   );

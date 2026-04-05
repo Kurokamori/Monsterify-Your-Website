@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { useDocumentTitle } from '@hooks/useDocumentTitle';
 import { useAuth } from '@contexts/AuthContext';
 import {
@@ -55,9 +55,12 @@ export default function AntiqueStorePage() {
   useDocumentTitle('Antique Store');
 
   const { isAuthenticated, currentUser } = useAuth();
+  const [searchParams] = useSearchParams();
 
-  // View state
-  const [activeView, setActiveView] = useState<ActiveView>('inventory');
+  // View state — default to catalogue if URL says so
+  const [activeView, setActiveView] = useState<ActiveView>(
+    searchParams.get('view') === 'catalogue' ? 'catalogue' : 'inventory'
+  );
 
   // Loading/error states
   const [loading, setLoading] = useState(true);
@@ -85,7 +88,7 @@ export default function AntiqueStorePage() {
     creators: []
   });
   const [selectedFilters, setSelectedFilters] = useState<SelectedFilters>({
-    antique: '',
+    antique: searchParams.get('antique') ?? '',
     species: '',
     type: '',
     creator: ''

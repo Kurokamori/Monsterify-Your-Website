@@ -43,6 +43,7 @@ export const AvailableMissions = () => {
   const [error, setError] = useState<string | null>(null);
   const [selectedDifficulty, setSelectedDifficulty] = useState('all');
   const [claimingId, setClaimingId] = useState<number | null>(null);
+  const [dismissedSummary, setDismissedSummary] = useState(false);
 
   // Claim flow state
   const [claimStep, setClaimStep] = useState<ClaimStep>(null);
@@ -214,11 +215,12 @@ export const AvailableMissions = () => {
         )}
 
         {/* Last claimed mission reward summary (only when nothing else active) */}
-        {!hasInProgress && lastMission && lastMission.rewardClaimed && lastMission.rewardSummary && (
+        {!hasInProgress && !dismissedSummary && lastMission && lastMission.rewardClaimed && lastMission.rewardSummary && (
           <div className="missions-section__summary">
             <MissionRewardSummary
               mission={lastMission}
               variant="view-only"
+              onDismiss={() => setDismissedSummary(true)}
             />
           </div>
         )}
@@ -343,26 +345,70 @@ export const AvailableMissions = () => {
               </select>
             </div>
 
-            <div className="missions-grid">
-              {missions.map((mission) => (
-                <MissionCard
-                  key={mission.id}
-                  mission={mission}
-                  onClick={() => navigate(`/adventures/missions/${mission.id}/start`)}
-                  footer={
-                    <button
-                      className="button primary"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        navigate(`/adventures/missions/${mission.id}/start`);
-                      }}
-                    >
-                      <i className="fas fa-play"></i> Start Mission
-                    </button>
-                  }
-                />
-              ))}
-            </div>
+            {(() => {
+              const metRequirements = missions.filter(m => m.meetsRequirements);
+              const notMet = missions.filter(m => !m.meetsRequirements);
+
+              return (
+                <>
+                  {metRequirements.length > 0 && (
+                    <div className="missions-section__group">
+                      <h3 className="missions-section__group-title">
+                        <i className="fas fa-check-circle"></i> Requirements Met
+                      </h3>
+                      <div className="missions-grid">
+                        {metRequirements.map((mission) => (
+                          <MissionCard
+                            key={mission.id}
+                            mission={mission}
+                            onClick={() => navigate(`/adventures/missions/${mission.id}/start`)}
+                            footer={
+                              <button
+                                className="button primary"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  navigate(`/adventures/missions/${mission.id}/start`);
+                                }}
+                              >
+                                <i className="fas fa-play"></i> Start Mission
+                              </button>
+                            }
+                          />
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {notMet.length > 0 && (
+                    <div className="missions-section__group">
+                      <h3 className="missions-section__group-title missions-section__group-title--muted">
+                        <i className="fas fa-lock"></i> Available
+                      </h3>
+                      <div className="missions-grid">
+                        {notMet.map((mission) => (
+                          <MissionCard
+                            key={mission.id}
+                            mission={mission}
+                            onClick={() => navigate(`/adventures/missions/${mission.id}/start`)}
+                            footer={
+                              <button
+                                className="button primary"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  navigate(`/adventures/missions/${mission.id}/start`);
+                                }}
+                              >
+                                <i className="fas fa-play"></i> Start Mission
+                              </button>
+                            }
+                          />
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </>
+              );
+            })()}
           </>
         )}
       </AutoStateContainer>

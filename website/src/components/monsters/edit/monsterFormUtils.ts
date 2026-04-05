@@ -28,6 +28,7 @@ export interface MonsterFormData {
   tldr: string;
   bio: string;
   img_link: string;
+  main_ref_artist: string;
   likes: string;
   dislikes: string;
   lore: string;
@@ -43,6 +44,9 @@ export interface MonsterFormData {
   mega_stat_bonus: string;
   mega_stone_img: string;
   mega_image: string;
+  mega_ref_artist: string;
+  // Communication
+  can_talk_descriptor: string;
 }
 
 export interface FormFunFact {
@@ -94,6 +98,7 @@ export function monsterToFormData(monster: Monster): MonsterFormData {
     tldr: str(monster[`tldr`]),
     bio: str(monster[`bio`]),
     img_link: str(monster.img_link),
+    main_ref_artist: str(monster.main_ref_artist),
     likes: str(monster[`likes`]),
     dislikes: str(monster[`dislikes`]),
     lore: str(monster[`lore`]),
@@ -108,6 +113,8 @@ export function monsterToFormData(monster: Monster): MonsterFormData {
     mega_stat_bonus: str(monster[`mega_stat_bonus`] ?? ''),
     mega_stone_img: str(monster[`mega_stone_img`]),
     mega_image: str(monster[`mega_img_link`]),
+    mega_ref_artist: str(monster.mega_ref_artist),
+    can_talk_descriptor: str(monster['can_talk_descriptor']),
   };
 }
 

@@ -15,6 +15,7 @@ export type EventRow = {
   image_url: string | null;
   content: string;
   is_multi_part: boolean;
+  color: string | null;
   created_at: Date;
   updated_at: Date;
 };
@@ -29,6 +30,7 @@ export type GameEvent = {
   imageUrl: string | null;
   content: string;
   isMultiPart: boolean;
+  color: string | null;
   createdAt: Date;
   updatedAt: Date;
 };
@@ -40,6 +42,8 @@ export type EventPartRow = {
   title: string;
   content: string;
   sort_order: number;
+  start_date: Date | null;
+  end_date: Date | null;
   created_at: Date;
   updated_at: Date;
 };
@@ -51,6 +55,8 @@ export type EventPart = {
   title: string;
   content: string;
   sortOrder: number;
+  startDate: Date | null;
+  endDate: Date | null;
   createdAt: Date;
   updatedAt: Date;
 };
@@ -64,6 +70,7 @@ export type EventCreateInput = {
   imageUrl?: string | null;
   content?: string;
   isMultiPart?: boolean;
+  color?: string | null;
 };
 
 export type EventUpdateInput = {
@@ -73,6 +80,7 @@ export type EventUpdateInput = {
   description?: string;
   imageUrl?: string | null;
   content?: string;
+  color?: string | null;
 };
 
 export type EventPartCreateInput = {
@@ -81,11 +89,15 @@ export type EventPartCreateInput = {
   title: string;
   content: string;
   sortOrder: number;
+  startDate?: string | null;
+  endDate?: string | null;
 };
 
 export type EventPartUpdateInput = {
   title?: string;
   content?: string;
+  startDate?: string | null;
+  endDate?: string | null;
 };
 
 export type GameEventWithParts = GameEvent & {
@@ -106,6 +118,7 @@ const normalizeEvent = (row: EventRow): GameEvent => ({
   imageUrl: row.image_url,
   content: row.content,
   isMultiPart: row.is_multi_part,
+  color: row.color,
   createdAt: row.created_at,
   updatedAt: row.updated_at,
 });
@@ -117,6 +130,8 @@ const normalizePart = (row: EventPartRow): EventPart => ({
   title: row.title,
   content: row.content,
   sortOrder: row.sort_order,
+  startDate: row.start_date,
+  endDate: row.end_date,
   createdAt: row.created_at,
   updatedAt: row.updated_at,
 });
@@ -161,9 +176,19 @@ export class EventRepository extends BaseRepository<
     return rows.map(normalizeEvent);
   }
 
+  async findAllWithParts(): Promise<GameEventWithParts[]> {
+    const events = await this.findAll();
+    const results: GameEventWithParts[] = [];
+    for (const event of events) {
+      const parts = event.isMultiPart ? await this.getPartsByEventId(event.id) : [];
+      results.push({ ...event, parts });
+    }
+    return results;
+  }
+
   async findByEventIdWithParts(eventId: string): Promise<GameEventWithParts | null> {
     const event = await this.findByEventId(eventId);
-    if (!event) {return null;}
+    if (!event) { return null; }
 
     const parts = event.isMultiPart ? await this.getPartsByEventId(event.id) : [];
     return { ...event, parts };
@@ -171,8 +196,8 @@ export class EventRepository extends BaseRepository<
 
   override async create(input: EventCreateInput): Promise<GameEvent> {
     const row = await db.one<EventRow>(
-      `INSERT INTO events (event_id, title, start_date, end_date, description, image_url, content, is_multi_part)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+      `INSERT INTO events (event_id, title, start_date, end_date, description, image_url, content, is_multi_part, color)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
        RETURNING *`,
       [
         input.eventId,
@@ -183,6 +208,7 @@ export class EventRepository extends BaseRepository<
         input.imageUrl ?? null,
         input.content ?? '',
         input.isMultiPart ?? false,
+        input.color ?? null,
       ],
     );
     return normalizeEvent(row);
@@ -215,6 +241,10 @@ export class EventRepository extends BaseRepository<
     if (input.content !== undefined) {
       values.push(input.content);
       updates.push(`content = $${values.length}`);
+    }
+    if (input.color !== undefined) {
+      values.push(input.color);
+      updates.push(`color = $${values.length}`);
     }
 
     values.push(id);
@@ -252,10 +282,10 @@ export class EventRepository extends BaseRepository<
 
   async createPart(input: EventPartCreateInput): Promise<EventPart> {
     const row = await db.one<EventPartRow>(
-      `INSERT INTO event_parts (event_id, part_id, title, content, sort_order)
-       VALUES ($1, $2, $3, $4, $5)
+      `INSERT INTO event_parts (event_id, part_id, title, content, sort_order, start_date, end_date)
+       VALUES ($1, $2, $3, $4, $5, $6, $7)
        RETURNING *`,
-      [input.eventId, input.partId, input.title, input.content, input.sortOrder],
+      [input.eventId, input.partId, input.title, input.content, input.sortOrder, input.startDate ?? null, input.endDate ?? null],
     );
     return normalizePart(row);
   }
@@ -271,6 +301,14 @@ export class EventRepository extends BaseRepository<
     if (input.content !== undefined) {
       values.push(input.content);
       updates.push(`content = $${values.length}`);
+    }
+    if (input.startDate !== undefined) {
+      values.push(input.startDate);
+      updates.push(`start_date = $${values.length}`);
+    }
+    if (input.endDate !== undefined) {
+      values.push(input.endDate);
+      updates.push(`end_date = $${values.length}`);
     }
 
     values.push(id);

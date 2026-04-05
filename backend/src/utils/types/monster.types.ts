@@ -124,6 +124,10 @@ export interface Monster extends BaseEntity {
   melanistic: boolean;
   dot: boolean;
   isStarterTemplate: boolean;
+
+  // Speech progression
+  canTalk: number;
+  canTalkDescriptor: string | null;
 }
 
 /**

@@ -1,10 +1,11 @@
-import { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { Outlet, Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { AuthButtons } from '../common/AuthButtons';
 import chatService from '../../services/chatService';
 import chatSocketService from '../../services/chatSocketService';
 import notificationService from '../../services/notificationService';
+import { WhatsNewModal } from '../common/WhatsNewModal';
 
 interface DropdownState {
   [key: string]: boolean;
@@ -36,6 +37,7 @@ const GUIDES_LINKS: (NavLink | { sectionHeader: string })[] = [
   { to: '/guides/ability-database', label: 'Ability Database', subItem: true },
   { to: '/guides/species-database', label: 'Species Database', subItem: true },
   { to: '/guides/available-prompts', label: 'Available Prompts', subItem: true },
+  { to: '/guides/calendar', label: 'Calendar', subItem: true },
   { to: '/under-construction', label: 'Interactive Map', subItem: true }
 ];
 
@@ -74,6 +76,81 @@ const ADVENTURES_LINKS: NavLink[] = [
   { to: '/adventures?tab=boss', label: 'Boss' },
   { to: '/adventures?tab=faction-quests', label: 'Faction Quests' },
 ];
+
+function AutoColumnDropdown({ children, className }: { children: React.ReactNode; className?: string }) {
+  const innerRef = useRef<HTMLDivElement>(null);
+
+  // Wrap runs of children between section headers into groups so
+  // CSS columns can prefer breaking at section boundaries.
+  const groupedChildren = useMemo(() => {
+    const childArray = React.Children.toArray(children);
+    const hasHeaders = childArray.some(
+      c => React.isValidElement(c) && (c.props as Record<string, unknown>).className?.toString().includes('dropdown-section-header')
+    );
+    if (!hasHeaders) return children;
+
+    const groups: React.ReactNode[] = [];
+    let currentGroup: React.ReactNode[] = [];
+
+    for (const child of childArray) {
+      const isHeader = React.isValidElement(child) &&
+        (child.props as Record<string, unknown>).className?.toString().includes('dropdown-section-header');
+      if (isHeader && currentGroup.length > 0) {
+        groups.push(
+          <div className="dropdown-section-group" key={`sg-${groups.length}`}>
+            {currentGroup}
+          </div>
+        );
+        currentGroup = [];
+      }
+      currentGroup.push(child);
+    }
+    if (currentGroup.length > 0) {
+      groups.push(
+        <div className="dropdown-section-group" key={`sg-${groups.length}`}>
+          {currentGroup}
+        </div>
+      );
+    }
+    return groups;
+  }, [children]);
+
+  useEffect(() => {
+    const el = innerRef.current;
+    if (!el) return;
+
+    const reflow = () => {
+      // Reset to single column to measure natural height
+      el.style.columns = '';
+      el.style.width = '';
+      el.style.maxHeight = '';
+      const natural = el.scrollHeight;
+      const navRect = el.closest('.top-nav')?.getBoundingClientRect();
+      const navBottom = navRect ? navRect.bottom : 80;
+      const available = window.innerHeight - navBottom - 16; // 16px breathing room
+
+      if (natural > available && available > 0) {
+        const cols = Math.ceil(natural / available);
+        const singleWidth = el.offsetWidth;
+        el.style.columns = `${cols}`;
+        el.style.width = `${singleWidth * cols}px`;
+        el.style.maxHeight = `${available}px`;
+      }
+    };
+
+    reflow();
+    window.addEventListener('resize', reflow);
+    return () => window.removeEventListener('resize', reflow);
+  }, [groupedChildren]);
+
+  return (
+    <div className={`dropdown-content ${className || ''}`}>
+      <div className="dropdown-content-inner" ref={innerRef}>
+        {groupedChildren}
+      </div>
+    </div>
+  );
+}
 
 export const MainLayout = () => {
   const { isAuthenticated, currentUser } = useAuth();
@@ -257,9 +334,9 @@ export const MainLayout = () => {
               Guides
               <span className="dropdown-arrow"></span>
             </Link>
-            <div className="dropdown-content dropdown-sectioned">
+            <AutoColumnDropdown className="dropdown-sectioned">
               {GUIDES_LINKS.map(link => renderNavLink(link))}
-            </div>
+            </AutoColumnDropdown>
           </div>
 
           {/* Submissions Dropdown */}
@@ -268,7 +345,7 @@ export const MainLayout = () => {
               Submissions
               <span className="dropdown-arrow"></span>
             </Link>
-            <div className="dropdown-content">
+            <AutoColumnDropdown>
               <Link to="/submissions?tab=gallery">Gallery</Link>
               <Link to="/submissions?tab=library">Library</Link>
               {isAuthenticated && (
@@ -277,7 +354,7 @@ export const MainLayout = () => {
                   <Link to="/submissions?tab=my-submissions">My Submissions</Link>
                 </>
               )}
-            </div>
+            </AutoColumnDropdown>
           </div>
 
           <div className="nav-divider"></div>
@@ -290,11 +367,11 @@ export const MainLayout = () => {
                   Markets
                   <span className="dropdown-arrow"></span>
                 </Link>
-                <div className="dropdown-content">
+                <AutoColumnDropdown>
                   {MARKET_LINKS.map(link => (
                     <Link key={link.to} to={link.to}>{link.label}</Link>
                   ))}
-                </div>
+                </AutoColumnDropdown>
               </div>
 
               {/* Town Dropdown */}
@@ -303,11 +380,11 @@ export const MainLayout = () => {
                   Town
                   <span className="dropdown-arrow"></span>
                 </Link>
-                <div className="dropdown-content">
+                <AutoColumnDropdown>
                   {TOWN_LINKS.map(link => (
                     <Link key={link.to} to={link.to}>{link.label}</Link>
                   ))}
-                </div>
+                </AutoColumnDropdown>
               </div>
 
               {/* Adventures Dropdown */}
@@ -316,11 +393,11 @@ export const MainLayout = () => {
                   Adventures
                   <span className="dropdown-arrow"></span>
                 </span>
-                <div className="dropdown-content">
+                <AutoColumnDropdown>
                   {ADVENTURES_LINKS.map(link => (
                     <Link key={link.to} to={link.to}>{link.label}</Link>
                   ))}
-                </div>
+                </AutoColumnDropdown>
               </div>
             </>
           )}
@@ -455,6 +532,9 @@ export const MainLayout = () => {
           <Link to="/admin/trainer-manager">Trainers</Link>
         </div>
       )}
+
+      {/* What's New Popup */}
+      <WhatsNewModal />
 
       {/* Main Content */}
       <main className="main-content">

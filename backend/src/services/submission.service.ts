@@ -40,6 +40,7 @@ import type { MonsterData } from './monster-initializer.service';
 import type { MonsterTable } from '../utils/constants';
 import cloudinary from '../utils/cloudinary';
 import { ReferenceApprovalRepository } from '../repositories/reference-approval.repository';
+import { MonsterConditionService, type ConditionResult, type ParticipatingMonster } from './monster-condition.service';
 
 // =============================================================================
 // Types
@@ -939,6 +940,10 @@ export class SubmissionService {
     };
     const pendingApprovalData: PendingApprovalData[] = [];
 
+    // Look up the submitter's display name for artist attribution
+    const submitterUser = await this.userRepo.findByDiscordId(userId);
+    const submitterArtistName = submitterUser?.display_name || submitterUser?.username || null;
+
     const referenceCount = Object.keys(body)
       .filter(key => String(key).startsWith('trainerId_'))
       .length;
@@ -1055,6 +1060,7 @@ export class SubmissionService {
         if (reference.megaAbility) {metadata.megaAbility = reference.megaAbility;}
         if (reference.instanceCount) {metadata.instanceCount = reference.instanceCount;}
         if (reference.customLevels) {metadata.customLevels = reference.customLevels;}
+        if (submitterArtistName) {metadata.artistName = submitterArtistName;}
         pendingApprovalData.push({
           trainerId: parseInt(trainerId),
           ownerUserId: ownerWebsiteUserId,
@@ -1068,7 +1074,7 @@ export class SubmissionService {
       }
 
       // Apply reference-specific side effects for non-gift references
-      await this.applyReferenceSideEffects(reference, referenceType);
+      await this.applyReferenceSideEffects(reference, referenceType, submitterArtistName);
 
       totalRewards.levels += refLevels;
       totalRewards.coins += refCoins;
@@ -1395,6 +1401,23 @@ export class SubmissionService {
     const levelCapInfo = await this.rewardService.checkLevelCaps(artWritingRewards.monsterRewards || []);
     const appliedArtWritingRewards = await this.rewardService.applyRewards(artWritingRewards, websiteUserId, submissionId, userId);
 
+    // Evaluate monster conditions from prompt
+    let monsterConditionResults: ConditionResult[] = [];
+    const conditions = prompt.monsterConditions ?? [];
+    if (conditions.length > 0 && monstersArray.length > 0) {
+      const conditionService = new MonsterConditionService();
+      const participatingMonsters: ParticipatingMonster[] = (monstersArray as Record<string, unknown>[])
+        .filter((m) => m.monsterId)
+        .map((m) => ({
+          monsterId: Number(m.monsterId),
+          trainerId: Number(m.trainerId ?? data.trainerId),
+        }));
+
+      if (participatingMonsters.length > 0) {
+        monsterConditionResults = await conditionService.evaluateAndApply(conditions, participatingMonsters);
+      }
+    }
+
     return {
       success: true,
       submission: { id: submissionId, title: data.title, submissionType: data.submissionType, status: 'approved', imageUrl },
@@ -1404,6 +1427,9 @@ export class SubmissionService {
       hasLevelCaps: levelCapInfo.cappedMonsters.length > 0,
       cappedMonsters: levelCapInfo.cappedMonsters,
       hasGiftLevels: artWritingRewards.totalGiftLevels > 0,
+      monsterConditionResults,
+      hasMonsterConditions: monsterConditionResults.length > 0,
+      promptMonsterConditions: conditions,
       message: 'Submission created successfully! Art/Writing rewards applied. Please claim your prompt rewards.',
     };
   }
@@ -1717,6 +1743,43 @@ export class SubmissionService {
       appliedRewards,
       unclaimedMonsters: rewards.monsters ? (rewards.monsters as unknown[]).filter((m: unknown) => !(m as { claimed: boolean }).claimed) : [],
     };
+  }
+
+  /**
+   * Apply opt-in monster condition selections for a prompt submission.
+   */
+  async applyMonsterConditions(
+    promptSubmissionId: number,
+    selections: { conditionId: string; monsterIds: number[] }[],
+    _userId: string
+  ): Promise<{ success: boolean; results: ConditionResult[] }> {
+    const submission = await this.promptSubmissionRepo.findRawById(promptSubmissionId);
+    if (!submission) {
+      throw new Error('Prompt submission not found');
+    }
+
+    const prompt = await this.promptRepo.findById(submission.prompt_id);
+    if (!prompt) {
+      throw new Error('Prompt not found');
+    }
+
+    const conditions = prompt.monsterConditions ?? [];
+    if (conditions.length === 0) {
+      throw new Error('This prompt has no monster conditions');
+    }
+
+    const conditionService = new MonsterConditionService();
+    const results = await conditionService.applyOptInSelections(conditions, selections);
+
+    // Mark conditions as applied in rewards_granted
+    const rewards = typeof submission.rewards_granted === 'string'
+      ? JSON.parse(submission.rewards_granted)
+      : submission.rewards_granted ?? {};
+    rewards.conditionsApplied = true;
+    rewards.conditionResults = results;
+    await this.promptSubmissionRepo.updateRewardsGranted(promptSubmissionId, JSON.stringify(rewards));
+
+    return { success: true, results };
   }
 
   // ===========================================================================
@@ -2432,29 +2495,30 @@ export class SubmissionService {
     }
   }
 
-  private async applyReferenceSideEffects(reference: Record<string, unknown>, referenceType: string): Promise<void> {
+  private async applyReferenceSideEffects(reference: Record<string, unknown>, referenceType: string, artistName?: string | null): Promise<void> {
     const trainerId = reference.trainerId as number;
     const referenceUrl = reference.referenceUrl as string;
 
     if (referenceType === 'trainer') {
-      await this.trainerRepo.update(trainerId, { mainRef: referenceUrl });
+      await this.trainerRepo.update(trainerId, { mainRef: referenceUrl, mainRefArtist: artistName ?? null });
     } else if (referenceType === 'monster') {
       const monsterName = reference.monsterName as string;
       const monster = await this.monsterRepo.findByTrainerAndName(trainerId, monsterName);
       if (monster) {
         await this.monsterRepo.addImage(monster.id, referenceUrl, 'main');
-        await this.monsterRepo.update(monster.id, { imgLink: referenceUrl });
+        await this.monsterRepo.update(monster.id, { imgLink: referenceUrl, mainRefArtist: artistName ?? null });
       }
     } else if (referenceType === 'mega image') {
       const monsterName = reference.monsterName as string;
       const monster = await this.monsterRepo.findByTrainerAndName(trainerId, monsterName);
       if (monster) {
         await this.monsterRepo.addMegaImage(monster.id, referenceUrl);
+        await this.monsterRepo.update(monster.id, { megaRefArtist: artistName ?? null });
       }
     } else if (referenceType === 'trainer mega') {
       const megaInfo = {
         mega_ref: referenceUrl ?? '',
-        mega_artist: reference.megaArtist ?? '',
+        mega_artist: reference.megaArtist || artistName || '',
         mega_species1: reference.megaSpecies1 ?? '',
         mega_species2: reference.megaSpecies2 ?? '',
         mega_species3: reference.megaSpecies3 ?? '',

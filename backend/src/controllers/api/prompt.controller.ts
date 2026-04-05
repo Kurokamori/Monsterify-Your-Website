@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { PromptService } from '../../services/prompt.service';
 import type { PromptQueryOptions } from '../../repositories';
+import type { MonsterCondition } from '../../repositories/prompt.repository';
 
 const promptService = new PromptService();
 
@@ -122,6 +123,7 @@ export async function createPrompt(req: Request, res: Response): Promise<void> {
       maxTrainerLevel: body.max_trainer_level as number | null | undefined,
       requiredFactions: body.required_factions as string[] | null | undefined,
       eventName: body.event_name as string | null | undefined,
+      monsterConditions: body.monster_conditions as MonsterCondition[] | null | undefined,
     });
 
     res.status(201).json({
@@ -179,6 +181,7 @@ export async function updatePrompt(req: Request, res: Response): Promise<void> {
       maxTrainerLevel: body.max_trainer_level as number | null | undefined,
       requiredFactions: body.required_factions as string[] | null | undefined,
       eventName: body.event_name as string | null | undefined,
+      monsterConditions: body.monster_conditions as MonsterCondition[] | null | undefined,
     });
 
     res.json({

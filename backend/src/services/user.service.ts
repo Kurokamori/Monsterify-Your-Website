@@ -450,6 +450,10 @@ export class UserService {
     return this.userRepository.updateTheme(id, theme);
   }
 
+  async updateFont(id: number, font: string | null): Promise<UserPublic> {
+    return this.userRepository.updateFont(id, font);
+  }
+
   /**
    * Update user's content settings
    */

@@ -146,6 +146,12 @@ export const MonsterDetailHeader = ({
                   </span>
                 </div>
               )}
+              {monster.main_ref_artist && (
+                <div>
+                  <i className="fas fa-paint-brush"></i>
+                  <span>Art by: {monster.main_ref_artist}</span>
+                </div>
+              )}
             </div>
           )}
 

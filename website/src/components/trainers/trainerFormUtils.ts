@@ -16,6 +16,7 @@ export function trainerToFormData(trainer: Partial<Trainer>): Partial<TrainerFor
     currency_amount: trainer.currency_amount,
     total_earned_currency: trainer.total_earned_currency,
     main_ref: trainer.main_ref,
+    main_ref_artist: trainer.main_ref_artist,
     gender: trainer.gender,
     pronouns: trainer.pronouns,
     sexuality: trainer.sexuality,

@@ -1,6 +1,7 @@
 import type { Monster } from '@services/monsterService';
 import { getFriendshipMessage } from '../useMonsterDetail';
 import { BallSelector } from '@components/common/BallSelector';
+import { CAN_TALK_LEVELS, CAN_TALK_DESCRIPTORS } from '@utils/canTalkConstants';
 
 const ISO_DATE_REGEX = /^\d{4}-\d{2}-\d{2}(T|\s)/;
 
@@ -106,6 +107,30 @@ export const ProfileTab = ({ monster }: ProfileTabProps) => {
               </div>
             </div>
           )}
+        </div>
+      )}
+
+      {/* Communication */}
+      {monster.can_talk !== undefined && monster.can_talk !== null && (
+        <div className="trainer-detail__stats-section">
+          <h2>Communication</h2>
+          <div className="personal-info-row">
+            <div className="inventory-item">
+              <span className="detail-label">Speech Level</span>
+              <span className="detail-value">
+                {CAN_TALK_LEVELS[monster.can_talk as 0 | 1 | 2 | 3]?.label ?? 'Unknown'}
+              </span>
+            </div>
+            <div className="inventory-item">
+              <span className="detail-label">Description</span>
+              <span className="detail-value">
+                {monster.can_talk_descriptor
+                  || CAN_TALK_DESCRIPTORS[monster.can_talk as number]?.[0]
+                  || CAN_TALK_LEVELS[monster.can_talk as 0 | 1 | 2 | 3]?.default
+                  || 'Unknown'}
+              </span>
+            </div>
+          </div>
         </div>
       )}
 

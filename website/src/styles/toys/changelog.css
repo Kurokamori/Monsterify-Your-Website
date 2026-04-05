@@ -1,0 +1,259 @@
+/* ── Changelog Page ─────────────────────────────────────────────── */
+
+.changelog-page {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 1.5rem;
+}
+
+.changelog-page__header {
+  margin-bottom: 1.5rem;
+}
+
+.changelog-page__header h1 {
+  margin: 0;
+  font-size: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.changelog-page__header p {
+  margin: 0.25rem 0 0;
+  color: var(--text-color-muted);
+  font-size: 0.875rem;
+}
+
+.changelog-page__login {
+  text-align: center;
+  color: var(--text-color-muted);
+  padding: 2rem;
+}
+
+.changelog-page__error {
+  background: var(--error-color);
+  color: var(--background-color);
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  font-size: 0.875rem;
+}
+
+.changelog-page__loading,
+.changelog-page__empty {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: var(--text-color-muted);
+}
+
+.changelog-page__empty i {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  display: block;
+  opacity: 0.4;
+}
+
+/* ── Changelog Entries ──────────────────────────────────────────── */
+
+.changelog-page__list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.changelog-entry {
+  background: var(--primary-color);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  overflow: hidden;
+  transition: border-color 0.15s;
+}
+
+.changelog-entry--expanded {
+  border-color: var(--accent-color);
+}
+
+.changelog-entry__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 1rem 1.25rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  color: inherit;
+  font: inherit;
+  gap: 1rem;
+  transition: background 0.1s;
+}
+
+.changelog-entry__header:hover {
+  background: var(--overlay-light);
+}
+
+.changelog-entry__info {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  min-width: 0;
+}
+
+.changelog-entry__info h2 {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+
+.changelog-entry__latest {
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  background: var(--accent-color);
+  color: white;
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+  letter-spacing: 0.04em;
+  flex-shrink: 0;
+}
+
+.changelog-entry__meta {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-shrink: 0;
+  color: var(--text-color-muted);
+  font-size: 0.85rem;
+}
+
+.changelog-entry__date {
+  white-space: nowrap;
+}
+
+.changelog-entry__body {
+  padding: 0 1.25rem 1.25rem;
+  border-top: 1px solid var(--border-color);
+}
+
+.changelog-entry__content {
+  padding-top: 1rem;
+  font-size: 0.925rem;
+  line-height: 1.7;
+}
+
+.changelog-entry__content h1,
+.changelog-entry__content h2,
+.changelog-entry__content h3 {
+  margin-top: 1.25rem;
+  margin-bottom: 0.5rem;
+}
+
+.changelog-entry__content h1:first-child,
+.changelog-entry__content h2:first-child,
+.changelog-entry__content h3:first-child {
+  margin-top: 0;
+}
+
+.changelog-entry__content ul,
+.changelog-entry__content ol {
+  padding-left: 1.5rem;
+  margin: 0.5rem 0;
+}
+
+.changelog-entry__content li {
+  margin-bottom: 0.25rem;
+}
+
+.changelog-entry__content p {
+  margin: 0.5rem 0;
+}
+
+.changelog-entry__content strong {
+  font-weight: 600;
+}
+
+.changelog-entry__content code {
+  background: var(--overlay-light);
+  padding: 0.15rem 0.35rem;
+  border-radius: 4px;
+  font-size: 0.85em;
+}
+
+.changelog-entry__no-content {
+  padding-top: 0.75rem;
+  color: var(--text-color-muted);
+}
+
+/* ── What's New Modal (reused in modal component) ───────────────── */
+
+.whats-new-modal__content {
+  font-size: 0.925rem;
+  line-height: 1.7;
+}
+
+.whats-new-modal__content h1,
+.whats-new-modal__content h2,
+.whats-new-modal__content h3 {
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.whats-new-modal__content h1:first-child,
+.whats-new-modal__content h2:first-child,
+.whats-new-modal__content h3:first-child {
+  margin-top: 0;
+}
+
+.whats-new-modal__content ul,
+.whats-new-modal__content ol {
+  padding-left: 1.5rem;
+  margin: 0.5rem 0;
+}
+
+.whats-new-modal__content li {
+  margin-bottom: 0.25rem;
+}
+
+.whats-new-modal__content p {
+  margin: 0.5rem 0;
+}
+
+.whats-new-modal__content strong {
+  font-weight: 600;
+}
+
+.whats-new-modal__version-tag {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 600;
+  background: var(--accent-color);
+  color: white;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  margin-bottom: 0.75rem;
+}
+
+.whats-new-modal__date {
+  color: var(--text-color-muted);
+  font-size: 0.8rem;
+  margin-bottom: 1rem;
+}
+
+.whats-new-modal__footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.whats-new-modal__changelog-link {
+  color: var(--accent-color);
+  font-size: 0.85rem;
+  text-decoration: none;
+}
+
+.whats-new-modal__changelog-link:hover {
+  text-decoration: underline;
+}

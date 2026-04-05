@@ -33,6 +33,7 @@ export interface User {
   email?: string;
   is_admin: boolean;
   theme?: string;
+  font?: string;
   profile_image_url?: string | null;
   profile_trainer_id?: number | null;
   bio?: string | null;
@@ -56,6 +57,7 @@ export interface AuthContextType {
   updateNotificationSettings: (settings: NotificationSettings) => Promise<boolean>;
   updatePriorityTrainers: (trainerIds: number[]) => Promise<boolean>;
   updateTheme: (theme: string) => Promise<boolean>;
+  updateFont: (font: string) => Promise<boolean>;
   changePassword: (currentPassword: string, newPassword: string) => Promise<boolean>;
   requestPasswordReset: (email: string) => Promise<boolean>;
   resetPassword: (token: string, newPassword: string) => Promise<boolean>;

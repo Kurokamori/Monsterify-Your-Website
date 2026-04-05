@@ -7,6 +7,8 @@ export interface EventPart {
   title: string;
   content: string;
   order: number;
+  startDate?: string | null;
+  endDate?: string | null;
 }
 
 export interface EventSummary {
@@ -19,6 +21,7 @@ export interface EventSummary {
   category: string;
   isMultiPart?: boolean;
   partCount?: number;
+  color?: string | null;
 }
 
 export interface EventDetail {
@@ -31,6 +34,7 @@ export interface EventDetail {
   category: string;
   content: string;
   isMultiPart?: boolean;
+  color?: string | null;
   parts?: EventPart[];
 }
 
@@ -70,6 +74,7 @@ export interface CreateEventData {
   category: string;
   fileName?: string;
   isMultiPart?: boolean;
+  color?: string | null;
 }
 
 export interface UpdateEventData {
@@ -78,6 +83,7 @@ export interface UpdateEventData {
   endDate?: string;
   content?: string;
   category?: string;
+  color?: string | null;
 }
 
 // --- Service ---
@@ -119,12 +125,12 @@ const eventAdminService = {
 
   // --- Part CRUD ---
 
-  addPart: async (eventId: string, data: { title: string; content: string }): Promise<MutationResponse> => {
+  addPart: async (eventId: string, data: { title: string; content: string; startDate?: string; endDate?: string }): Promise<MutationResponse> => {
     const response = await api.post(`/admin/events/${eventId}/parts`, data);
     return response.data;
   },
 
-  updatePart: async (eventId: string, partId: string, data: { title: string; content: string }): Promise<MutationResponse> => {
+  updatePart: async (eventId: string, partId: string, data: { title: string; content: string; startDate?: string; endDate?: string }): Promise<MutationResponse> => {
     const response = await api.put(`/admin/events/${eventId}/parts/${partId}`, data);
     return response.data;
   },

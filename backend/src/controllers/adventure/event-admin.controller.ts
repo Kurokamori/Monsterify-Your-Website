@@ -36,6 +36,7 @@ export async function listAllEvents(_req: Request, res: Response): Promise<void>
       category,
       isMultiPart: event.isMultiPart,
       partCount: event.parts?.length ?? 0,
+      color: event.color,
     });
 
     res.json({
@@ -98,11 +99,14 @@ export async function getEventForEdit(req: Request, res: Response): Promise<void
         category,
         content: eventWithParts.content,
         isMultiPart: eventWithParts.isMultiPart,
+        color: eventWithParts.color,
         parts: eventWithParts.parts.map(p => ({
           id: p.partId,
           title: p.title,
           content: p.content,
           order: p.sortOrder,
+          startDate: p.startDate instanceof Date ? p.startDate.toISOString().split('T')[0] : p.startDate,
+          endDate: p.endDate instanceof Date ? p.endDate.toISOString().split('T')[0] : p.endDate,
         })),
       },
     });
@@ -117,7 +121,7 @@ export async function getEventForEdit(req: Request, res: Response): Promise<void
  */
 export async function createEvent(req: Request, res: Response): Promise<void> {
   try {
-    const { title, startDate, endDate, content, fileName, isMultiPart } = req.body;
+    const { title, startDate, endDate, content, fileName, isMultiPart, color } = req.body;
 
     if (!title || !startDate || !endDate) {
       res.status(400).json({ success: false, message: 'Title, start date, and end date are required' });
@@ -164,6 +168,7 @@ export async function createEvent(req: Request, res: Response): Promise<void> {
       description,
       content: content ?? '',
       isMultiPart: isMultiPart ?? false,
+      color: color ?? null,
     });
 
     res.json({
@@ -183,7 +188,7 @@ export async function createEvent(req: Request, res: Response): Promise<void> {
 export async function updateEvent(req: Request, res: Response): Promise<void> {
   try {
     const eventId = req.params.eventId as string;
-    const { title, startDate, endDate, content } = req.body;
+    const { title, startDate, endDate, content, color } = req.body;
 
     if (!eventId) {
       res.status(400).json({ success: false, message: 'Event ID is required' });
@@ -216,6 +221,7 @@ export async function updateEvent(req: Request, res: Response): Promise<void> {
       endDate,
       content,
       description,
+      color,
     });
 
     res.json({
@@ -264,7 +270,7 @@ export async function deleteEvent(req: Request, res: Response): Promise<void> {
 export async function addPart(req: Request, res: Response): Promise<void> {
   try {
     const eventId = req.params.eventId as string;
-    const { title, content } = req.body;
+    const { title, content, startDate, endDate } = req.body;
 
     if (!eventId) {
       res.status(400).json({ success: false, message: 'Event ID is required' });
@@ -291,6 +297,8 @@ export async function addPart(req: Request, res: Response): Promise<void> {
       title,
       content,
       sortOrder: nextNum,
+      startDate: startDate ?? null,
+      endDate: endDate ?? null,
     });
 
     res.json({
@@ -311,7 +319,7 @@ export async function updatePart(req: Request, res: Response): Promise<void> {
   try {
     const eventId = req.params.eventId as string;
     const partId = req.params.partId as string;
-    const { title, content } = req.body;
+    const { title, content, startDate, endDate } = req.body;
 
     if (!eventId || !partId) {
       res.status(400).json({ success: false, message: 'Event ID and Part ID are required' });
@@ -330,7 +338,7 @@ export async function updatePart(req: Request, res: Response): Promise<void> {
       return;
     }
 
-    await repo.updatePart(part.id, { title, content });
+    await repo.updatePart(part.id, { title, content, startDate, endDate });
 
     res.json({
       success: true,

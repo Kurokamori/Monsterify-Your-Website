@@ -310,6 +310,33 @@ export async function updateUserTheme(req: Request, res: Response): Promise<void
 }
 
 // =============================================================================
+// Font
+// =============================================================================
+
+export async function updateUserFont(req: Request, res: Response): Promise<void> {
+  try {
+    if (!req.user) {
+      res.status(401).json({ success: false, message: 'Not authenticated' });
+      return;
+    }
+
+    const { font } = req.body as { font?: string };
+
+    if (!font || typeof font !== 'string') {
+      res.status(400).json({ success: false, message: 'Invalid font value' });
+      return;
+    }
+
+    const updatedUser = await userService.updateFont(req.user.id, font);
+
+    res.json({ success: true, font: updatedUser.font ?? 'atkinson' });
+  } catch (error) {
+    console.error('Update font error:', error);
+    res.status(500).json({ success: false, message: 'Server error while updating font' });
+  }
+}
+
+// =============================================================================
 // Content Settings
 // =============================================================================
 

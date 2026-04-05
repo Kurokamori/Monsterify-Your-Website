@@ -23,6 +23,7 @@ import {
   type FormFunFact,
   type FormMonsterRelation,
 } from './monsterFormUtils';
+import { CAN_TALK_LEVELS, CAN_TALK_DESCRIPTORS } from '@utils/canTalkConstants';
 
 // --- Types ---
 
@@ -418,6 +419,39 @@ export function MonsterEditForm({ monster, onSubmit, onCancel, onSuccess }: Mons
           </div>
         </div>
 
+        {/* ── Communication ── */}
+        {monster.can_talk !== undefined && monster.can_talk !== null && (
+          <div className="form-section">
+            <h3 className="form-section__title">Communication</h3>
+            <div className="form-grid cols-2">
+              <div className="form-group">
+                <label>Speech Level</label>
+                <input
+                  type="text"
+                  value={CAN_TALK_LEVELS[monster.can_talk as 0 | 1 | 2 | 3]?.label ?? 'Unknown'}
+                  disabled
+                  className="form-input"
+                />
+                <small className="form-help-text">Speech level can only be changed through prompt progression.</small>
+              </div>
+              <FormSelect
+                name="can_talk_descriptor"
+                label="Description"
+                value={formData.can_talk_descriptor || ''}
+                onChange={(e: ChangeEvent<HTMLSelectElement>) => handleFieldChange('can_talk_descriptor', e.target.value)}
+                disabled={saving}
+                options={[
+                  { value: '', label: '-- Use Default --' },
+                  ...(CAN_TALK_DESCRIPTORS[monster.can_talk as number] ?? []).map(d => ({
+                    value: d,
+                    label: d,
+                  })),
+                ]}
+              />
+            </div>
+          </div>
+        )}
+
         {/* ── Held Items ── */}
         <div className="form-section">
           <h3 className="form-section__title">Held Items</h3>
@@ -482,6 +516,14 @@ export function MonsterEditForm({ monster, onSubmit, onCancel, onSuccess }: Mons
             />
             <div className="form-help-text">Upload a clear image of your monster. Recommended size: 800x800 pixels.</div>
           </div>
+          <FormInput
+            name="main_ref_artist"
+            label="Main Image Artist"
+            value={formData.main_ref_artist || ''}
+            onChange={(e: ChangeEvent<HTMLInputElement>) => handleFieldChange('main_ref_artist', e.target.value)}
+            disabled={saving}
+            placeholder="Artist name (auto-filled on ref submission)"
+          />
         </div>
 
         {/* ── Mega Evolution ── */}
@@ -594,6 +636,14 @@ export function MonsterEditForm({ monster, onSubmit, onCancel, onSuccess }: Mons
                     />
                     <div className="form-help-text">Upload an image of your monster's mega evolution form. Recommended size: 800x800 pixels.</div>
                   </div>
+                  <FormInput
+                    name="mega_ref_artist"
+                    label="Mega Image Artist"
+                    value={formData.mega_ref_artist || ''}
+                    onChange={(e: ChangeEvent<HTMLInputElement>) => handleFieldChange('mega_ref_artist', e.target.value)}
+                    disabled={saving}
+                    placeholder="Artist name (auto-filled on ref submission)"
+                  />
                 </>
               )}
             </>

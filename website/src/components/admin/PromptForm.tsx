@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { RewardConfigurator, RewardConfig } from './RewardConfigurator';
+import { MonsterConditionConfigurator, type MonsterCondition } from './MonsterConditionConfigurator';
 import itemsService, { Item } from '../../services/itemsService';
 import api from '../../services/api';
 
@@ -24,6 +25,7 @@ interface PromptFormData {
   tags: string[];
   prerequisites: string;
   rewards: RewardConfig;
+  monster_conditions: MonsterCondition[];
 }
 
 interface PromptFormProps {
@@ -57,7 +59,8 @@ const DEFAULT_FORM_DATA: PromptFormData = {
     coins: 0,
     items: [],
     monster_roll: { enabled: false, parameters: {} as never }
-  }
+  },
+  monster_conditions: [],
 };
 
 export function PromptForm({ prompt, onSuccess, onCancel }: PromptFormProps) {
@@ -73,6 +76,11 @@ export function PromptForm({ prompt, onSuccess, onCancel }: PromptFormProps) {
         ? JSON.parse(prompt.rewards as unknown as string)
         : prompt.rewards || {};
 
+      const monsterConditions = prompt.monsterConditions || prompt.monster_conditions;
+      const parsedConditions = monsterConditions
+        ? (typeof monsterConditions === 'string' ? JSON.parse(monsterConditions as unknown as string) : monsterConditions)
+        : [];
+
       setFormData({
         ...DEFAULT_FORM_DATA,
         ...prompt,
@@ -86,7 +94,8 @@ export function PromptForm({ prompt, onSuccess, onCancel }: PromptFormProps) {
           : [],
         active_months: (prompt.active_months as string) || '',
         start_date: (prompt.startDate || prompt.start_date) && typeof (prompt.startDate || prompt.start_date) === 'string' ? String(prompt.startDate || prompt.start_date).split('T')[0] : '',
-        end_date: (prompt.endDate || prompt.end_date) && typeof (prompt.endDate || prompt.end_date) === 'string' ? String(prompt.endDate || prompt.end_date).split('T')[0] : ''
+        end_date: (prompt.endDate || prompt.end_date) && typeof (prompt.endDate || prompt.end_date) === 'string' ? String(prompt.endDate || prompt.end_date).split('T')[0] : '',
+        monster_conditions: Array.isArray(parsedConditions) ? parsedConditions : [],
       });
     }
   }, [prompt]);
@@ -117,6 +126,10 @@ export function PromptForm({ prompt, onSuccess, onCancel }: PromptFormProps) {
 
   const handleRewardsChange = (newRewards: RewardConfig) => {
     setFormData(prev => ({ ...prev, rewards: newRewards }));
+  };
+
+  const handleConditionsChange = (newConditions: MonsterCondition[]) => {
+    setFormData(prev => ({ ...prev, monster_conditions: newConditions }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -282,6 +295,16 @@ export function PromptForm({ prompt, onSuccess, onCancel }: PromptFormProps) {
         <div className="form-section">
           <h3>Rewards Configuration</h3>
           <RewardConfigurator rewards={formData.rewards} onChange={handleRewardsChange} availableItems={availableItems} />
+        </div>
+
+        {/* Monster Conditions */}
+        <div className="form-section">
+          <h3>Monster Conditions</h3>
+          <p className="form-help-text" style={{ marginBottom: '1rem' }}>
+            Configure conditions that check or modify participating monsters when this prompt is submitted.
+            Auto-apply conditions are processed immediately. Opt-in conditions let the user select which monsters to affect.
+          </p>
+          <MonsterConditionConfigurator conditions={formData.monster_conditions} onChange={handleConditionsChange} />
         </div>
 
         {/* Error Display */}

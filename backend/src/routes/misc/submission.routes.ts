@@ -62,6 +62,7 @@ import {
   submitExternalArt,
   submitExternalWriting,
   allocateExternalLevels,
+  applyMonsterConditions,
 } from '../../controllers/misc/submission.controller';
 
 const router = Router();
@@ -100,6 +101,7 @@ router.post('/prompt/calculate', authenticate, calculatePromptRewards);
 router.post('/prompt/submit', authenticate, upload.single('submissionFile'), submitPrompt);
 router.post('/prompt/combined', authenticate, upload.single('image'), submitPromptCombined);
 router.post('/prompt/:id/claim-rewards', authenticate, claimPromptRewards);
+router.post('/prompt/:id/apply-conditions', authenticate, applyMonsterConditions);
 
 // External submission routes (must be before /:id to avoid matching)
 router.post('/external/art/calculate', authenticate, calculateExternalArtRewards);

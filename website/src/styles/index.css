@@ -1,3 +1,44 @@
+/* Self-hosted fonts — add @font-face blocks here when adding new selfHosted fonts to FONTS[] */
+@font-face {
+  font-family: 'Atkinson Hyperlegible';
+  src: url('/fonts/AtkinsonHyperlegible/AtkinsonHyperlegible-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Atkinson Hyperlegible';
+  src: url('/fonts/AtkinsonHyperlegible/AtkinsonHyperlegible-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Atkinson Hyperlegible';
+  src: url('/fonts/AtkinsonHyperlegible/AtkinsonHyperlegible-Italic.ttf') format('truetype');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Atkinson Hyperlegible';
+  src: url('/fonts/AtkinsonHyperlegible/AtkinsonHyperlegible-BoldItalic.ttf') format('truetype');
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+    font-family: 'Open Dyslexic';
+    src: url('/fonts/OpenDyslexic/OpenDyslexic-Regular.otf') format('opentype');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
 :root {
     /* Main Colors */
     --background-color: #111319;
@@ -82,7 +123,7 @@
     --font-size-xlarge:  clamp(1.05rem, 0.99rem + 0.3vw, 1.25rem);
     --font-size-xxlarge: clamp(1.25rem, 1.1rem + 0.74vw, 1.75rem);
 
-    --font-family: 'Inter', Arial, sans-serif;
+    --font-family: 'Atkinson Hyperlegible', sans-serif;
 
     /* Spacing — fluid scale from 320px to 1400px viewport */
     --spacing-xxsmall: clamp(0.15rem, 0.12rem + 0.15vw, 0.25rem);

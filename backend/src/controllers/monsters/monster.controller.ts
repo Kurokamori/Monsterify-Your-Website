@@ -187,6 +187,8 @@ export async function updateMonster(req: Request, res: Response): Promise<void> 
       mega_ability: 'megaAbility', mega_stat_bonus: 'megaStatBonus',
       mega_stone_name: 'megaStoneName', has_mega_stone: 'hasMegaStone',
       mega_img_link: 'megaImgLink', mega_stone_img: 'megaStoneImg',
+      main_ref_artist: 'mainRefArtist', mega_ref_artist: 'megaRefArtist',
+      can_talk_descriptor: 'canTalkDescriptor',
     };
 
     for (const [snakeKey, camelKey] of Object.entries(fieldMap)) {

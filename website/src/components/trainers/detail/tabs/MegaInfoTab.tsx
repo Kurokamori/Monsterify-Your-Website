@@ -63,7 +63,7 @@ export const MegaInfoTab = ({ trainer }: MegaInfoTabProps) => {
                 target.src = '/images/default_trainer.png';
               }}
             />
-            {megaArtist && <div className="image-credit">Art by: {megaArtist}</div>}
+            {megaArtist && <p className="text-muted text-sm">Art by: {megaArtist}</p>}
           </div>
         )}
 

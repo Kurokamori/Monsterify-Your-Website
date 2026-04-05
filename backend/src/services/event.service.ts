@@ -15,6 +15,7 @@ export type EventMetadata = {
   imageUrl: string | null;
   content: string;
   isMultiPart: boolean;
+  color: string | null;
   parts?: { id: string; title: string; content: string; order: number }[];
 };
 
@@ -49,6 +50,7 @@ function eventToMetadata(event: GameEvent, parts?: EventPart[]): EventMetadata {
     imageUrl: event.imageUrl,
     content: event.content,
     isMultiPart: event.isMultiPart,
+    color: event.color,
     parts: parts?.map(p => ({
       id: p.partId,
       title: p.title,

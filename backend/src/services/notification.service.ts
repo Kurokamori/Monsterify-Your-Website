@@ -232,18 +232,25 @@ export class NotificationService {
   private async applyApprovalSideEffects(approval: AcceptedApprovalForSubmitter | Awaited<ReturnType<ReferenceApprovalRepository['findById']>>): Promise<void> {
     if (!approval) {return;}
 
-    const { trainerId, referenceType, referenceUrl, metadata } = approval;
+    const { trainerId, referenceType, referenceUrl, metadata, submitterUserId } = approval;
     const meta = (metadata ?? {}) as Record<string, unknown>;
 
+    // Resolve artist name: use metadata if stored, otherwise look up submitter
+    let artistName = (meta.artistName as string | undefined) || null;
+    if (!artistName && submitterUserId) {
+      const submitter = await this.userRepo.findById(submitterUserId);
+      artistName = submitter?.display_name || submitter?.username || null;
+    }
+
     if (referenceType === 'trainer') {
-      await this.trainerRepo.update(trainerId, { mainRef: referenceUrl });
+      await this.trainerRepo.update(trainerId, { mainRef: referenceUrl, mainRefArtist: artistName });
     } else if (referenceType === 'monster') {
       const monsterName = meta.monsterName as string | undefined;
       if (monsterName) {
         const monster = await this.monsterRepo.findByTrainerAndName(trainerId, monsterName);
         if (monster) {
           await this.monsterRepo.addImage(monster.id, referenceUrl, 'main');
-          await this.monsterRepo.update(monster.id, { imgLink: referenceUrl });
+          await this.monsterRepo.update(monster.id, { imgLink: referenceUrl, mainRefArtist: artistName });
         }
       }
     } else if (referenceType === 'mega image') {
@@ -252,12 +259,13 @@ export class NotificationService {
         const monster = await this.monsterRepo.findByTrainerAndName(trainerId, monsterName);
         if (monster) {
           await this.monsterRepo.addMegaImage(monster.id, referenceUrl);
+          await this.monsterRepo.update(monster.id, { megaRefArtist: artistName });
         }
       }
     } else if (referenceType === 'trainer mega') {
       const megaInfo = {
         mega_ref: referenceUrl ?? '',
-        mega_artist: meta.megaArtist ?? '',
+        mega_artist: meta.megaArtist || artistName || '',
         mega_species1: meta.megaSpecies1 ?? '',
         mega_species2: meta.megaSpecies2 ?? '',
         mega_species3: meta.megaSpecies3 ?? '',

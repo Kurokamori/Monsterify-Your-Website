@@ -69,6 +69,7 @@ import WhoShouldIDrawPage from './pages/toys/WhoShouldIDrawPage'
 import CharacterCardCreatorPage from './pages/toys/character-card-creator/CharacterCardCreatorPage'
 import GroupChatsPage from './pages/toys/group-chats/GroupChatsPage'
 import { AdminConnectPage } from './pages/toys/admin-connect'
+import { ChangelogPage } from './pages/toys/changelog'
 import { AllTheMonstersPage } from './pages/toys/all-the-monsters'
 import ActivitySessionPage from './pages/town/activities/ActivitySessionPage'
 import ActivityRewardsPage from './pages/town/activities/ActivityRewardsPage'
@@ -113,6 +114,9 @@ import { TrainerInventoryEditorPage } from './pages/admin/trainer-inventory-edit
 import { ChatManagerPage } from './pages/admin/chat-manager'
 import { MonthlyDistributionPage } from './pages/admin/monthly-distribution'
 import { FactionManagerPage } from './pages/admin/faction-manager'
+import { ChangelogManagerPage } from './pages/admin/changelog-manager'
+import { CalendarManagerPage } from './pages/admin/calendar-manager'
+import CalendarPage from './pages/guides-and-tools/guides/CalendarPage'
 import InteractiveMapPage from './pages/guides-and-tools/guides/InteractiveMapPage'
 import LandmassGuidePage from './pages/guides-and-tools/guides/LandmassGuidePage'
 import RegionGuidePage from './pages/guides-and-tools/guides/RegionGuidePage'
@@ -175,6 +179,7 @@ function App() {
         <Route path="guides/species-database" element={<SpeciesDatabasePage />} />
         <Route path="guides/evolution-explorer" element={<EvolutionExplorerPage />} />
         <Route path="guides/available-prompts" element={<AvailablePromptsPage />} />
+        <Route path="guides/calendar" element={<CalendarPage />} />
         <Route path="guides/interactive-map" element={<InteractiveMapPage />} />
         <Route path="guides/interactive-map/landmass/:landmassId" element={<LandmassGuidePage />} />
         <Route path="guides/interactive-map/landmass/:landmassId/region/:regionId" element={<RegionGuidePage />} />
@@ -250,6 +255,8 @@ function App() {
         <Route path="admin/chat-manager" element={<ChatManagerPage />} />
         <Route path="admin/monthly-distribution" element={<MonthlyDistributionPage />} />
         <Route path="admin/faction-manager" element={<FactionManagerPage />} />
+        <Route path="admin/changelog-manager" element={<ChangelogManagerPage />} />
+        <Route path="admin/calendar-manager" element={<CalendarManagerPage />} />
 
         {/* Statistics Routes */}
         <Route path="statistics" element={<StatisticsPage />} />
@@ -261,6 +268,7 @@ function App() {
         <Route path="toys/group-chats" element={<GroupChatsPage />} />
         <Route path="toys/all-the-monsters" element={<AllTheMonstersPage />} />
         <Route path="toys/admin-connect" element={<AdminConnectPage />} />
+        <Route path="toys/changelog" element={<ChangelogPage />} />
 
         {/* Town Hub */}
         <Route path="town" element={<TownPage />} />

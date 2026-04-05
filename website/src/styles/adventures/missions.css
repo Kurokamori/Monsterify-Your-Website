@@ -28,6 +28,30 @@
   gap: var(--spacing-xxsmall);
 }
 
+/* ── Section Groups ────────────────────────────────────────────────────── */
+
+.missions-section__group {
+  margin-bottom: var(--spacing-large);
+}
+
+.missions-section__group-title {
+  margin: 0 0 var(--spacing-small);
+  font-size: var(--font-size-medium);
+  color: var(--success-color);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xsmall);
+}
+
+.missions-section__group-title i {
+  width: 20px;
+  text-align: center;
+}
+
+.missions-section__group-title--muted {
+  color: var(--text-color-muted);
+}
+
 /* ── Grid ───────────────────────────────────────────────────────────────── */
 
 .missions-grid {
@@ -183,6 +207,24 @@
 
 .mission-card__reward-item i {
   color: var(--accent-color);
+  width: 16px;
+  text-align: center;
+}
+
+/* ── Completion Count ───────────────────────────────────────────────────── */
+
+.mission-card__completion-count {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xxsmall);
+  font-size: var(--font-size-small);
+  color: var(--success-color);
+  font-weight: 600;
+  padding-top: var(--spacing-xsmall);
+  border-top: 1px solid var(--border-color);
+}
+
+.mission-card__completion-count i {
   width: 16px;
   text-align: center;
 }
@@ -632,11 +674,13 @@
 }
 
 .mission-reward-summary--unclaimed {
+  padding: var(--spacing-medium);
   border: 2px solid var(--warning-color);
   box-shadow: 0 0 16px color-mix(in srgb, var(--warning-color) 25%, transparent);
 }
 
 .mission-reward-summary--claimed {
+  padding: var(--spacing-medium);
   border: 2px solid var(--success-color);
   box-shadow: 0 0 8px color-mix(in srgb, var(--success-color) 15%, transparent);
 }
@@ -753,6 +797,29 @@
   color: var(--text-color-muted);
   font-size: var(--font-size-xsmall);
   margin-left: var(--spacing-xsmall);
+}
+
+.mission-reward-summary__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-small);
+}
+
+.mission-reward-summary__dismiss {
+  background: none;
+  border: none;
+  color: var(--text-color-muted);
+  cursor: pointer;
+  padding: var(--spacing-xxsmall);
+  font-size: var(--font-size-medium);
+  line-height: 1;
+  border-radius: var(--border-radius-small);
+  transition: color 0.2s ease, background 0.2s ease;
+}
+
+.mission-reward-summary__dismiss:hover {
+  color: var(--text-color);
+  background: var(--overlay-light);
 }
 
 .mission-reward-summary__footer {

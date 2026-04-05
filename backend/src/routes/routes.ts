@@ -74,6 +74,14 @@ import submissionRoutes from './misc/submission.routes';
 // Admin Connect Routes
 import adminConnectRoutes from './misc/admin-connect.routes';
 
+// Calendar Routes
+import calendarRoutes from './misc/calendar.routes';
+import calendarAdminRoutes from './misc/calendar-admin.routes';
+import holidayDateAdminRoutes from './misc/holiday-date-admin.routes';
+
+// Changelog Routes
+import changelogRoutes from './misc/changelog.routes';
+
 // Bookmark Routes
 import bookmarkRoutes from './misc/bookmark.routes';
 
@@ -197,6 +205,14 @@ router.use('/submissions', submissionRoutes);
 
 // Admin Connect Routes
 router.use('/admin-connect', adminConnectRoutes);
+
+// Calendar Routes
+router.use('/calendar', calendarRoutes);
+router.use('/admin/calendar', calendarAdminRoutes);
+router.use('/admin/holiday-dates', holidayDateAdminRoutes);
+
+// Changelog Routes
+router.use('/changelog', changelogRoutes);
 
 // Bookmark Routes
 router.use('/bookmarks', bookmarkRoutes);

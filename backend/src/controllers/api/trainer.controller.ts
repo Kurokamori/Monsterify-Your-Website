@@ -305,6 +305,7 @@ export async function updateTrainer(req: Request, res: Response): Promise<void> 
     const updatedTrainer = await trainerService.updateTrainer(id, {
       name: bodyData.name,
       mainRef: mainRef ?? bodyData.main_ref,
+      mainRefArtist: bodyData.main_ref_artist,
       additionalRefs: additionalRefs ?? bodyData.additional_refs,
       birthday: bodyData.birthday,
       megaInfo,

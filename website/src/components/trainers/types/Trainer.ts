@@ -79,6 +79,7 @@ export interface Trainer {
 
   // Images
   main_ref?: string;
+  main_ref_artist?: string;
   mega_ref?: string;
   mega_artist?: string;
 
@@ -183,6 +184,7 @@ export interface TrainerFormData {
   currency_amount?: number;
   total_earned_currency?: number;
   main_ref?: string;
+  main_ref_artist?: string;
 
   // Personal Info
   gender?: string;

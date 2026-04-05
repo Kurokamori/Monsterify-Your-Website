@@ -4,10 +4,11 @@ interface MissionRewardSummaryProps {
   mission: UserMission;
   variant: 'needs-attention' | 'view-only';
   onClaim?: () => void;
+  onDismiss?: () => void;
   claiming?: boolean;
 }
 
-export const MissionRewardSummary = ({ mission, variant, onClaim, claiming }: MissionRewardSummaryProps) => {
+export const MissionRewardSummary = ({ mission, variant, onClaim, onDismiss, claiming }: MissionRewardSummaryProps) => {
   const summary = mission.rewardSummary;
   const isUnclaimed = variant === 'needs-attention';
   const className = `mission-reward-summary ${isUnclaimed ? 'mission-reward-summary--unclaimed' : 'mission-reward-summary--claimed'}`;
@@ -20,9 +21,20 @@ export const MissionRewardSummary = ({ mission, variant, onClaim, claiming }: Mi
             <i className={isUnclaimed ? 'fas fa-exclamation-circle' : 'fas fa-check-circle'}></i>
             {' '}{mission.title}
           </h3>
-          <span className={`badge badge--status badge--status-${isUnclaimed ? 'completed' : 'claimed'}`}>
-            {isUnclaimed ? 'Rewards Available' : 'Rewards Claimed'}
-          </span>
+          <div className="mission-reward-summary__actions">
+            <span className={`badge badge--status badge--status-${isUnclaimed ? 'completed' : 'claimed'}`}>
+              {isUnclaimed ? 'Rewards Available' : 'Rewards Claimed'}
+            </span>
+            {onDismiss && (
+              <button
+                className="mission-reward-summary__dismiss"
+                onClick={onDismiss}
+                title="Dismiss"
+              >
+                <i className="fas fa-times"></i>
+              </button>
+            )}
+          </div>
         </div>
         {mission.description && (
           <p className="mission-reward-summary__description">{mission.description}</p>

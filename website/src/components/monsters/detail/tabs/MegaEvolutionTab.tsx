@@ -121,6 +121,9 @@ export const MegaEvolutionTab = ({ monster, megaImages }: MegaEvolutionTabProps)
                 </div>
               )}
             </div>
+            {(monster.mega_ref_artist as string) && (
+              <p className="text-muted text-sm" style={{ textAlign: 'center' }}>Art by: {monster.mega_ref_artist as string}</p>
+            )}
             <div className="monster-mega-form-details">
               <p className="monster-mega-form-species">{megaSpecies}</p>
               {megaTypes.length > 0 && (

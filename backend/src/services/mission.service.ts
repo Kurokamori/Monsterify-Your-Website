@@ -42,8 +42,13 @@ export type UserMissionWithMonsters = UserMissionWithDetails & {
   monsters: MissionMonster[];
 };
 
+export type AvailableMissionWithMeta = Mission & {
+  completionCount: number;
+  meetsRequirements: boolean;
+};
+
 export type AvailableMissionsResult = {
-  availableMissions: Mission[];
+  availableMissions: AvailableMissionWithMeta[];
   hasActiveMission: boolean;
   activeMissions: UserMissionWithMonsters[];
 };
@@ -112,9 +117,11 @@ export class MissionService {
   }
 
   async getAvailableMissions(userId: string): Promise<AvailableMissionsResult> {
-    const [activeMissions, allActiveMissions] = await Promise.all([
+    const [activeMissions, allActiveMissions, completionCounts, userMonsters] = await Promise.all([
       this.userMissionRepo.findActiveByUserId(userId),
       this.missionRepo.findActiveMissions(),
+      this.userMissionRepo.getCompletionCountsByUserId(userId),
+      this.monsterRepo.findByUserId(userId),
     ]);
 
     const hasActiveMission = activeMissions.length > 0;
@@ -129,9 +136,36 @@ export class MissionService {
 
     // Filter out missions the user already has active
     const activeMissionIds = new Set(activeMissions.map(m => m.missionId));
-    const availableMissions = allActiveMissions.filter(
+    const filtered = allActiveMissions.filter(
       m => !activeMissionIds.has(m.id),
     );
+
+    // Add completion count and eligibility to each mission
+    const availableMissions: AvailableMissionWithMeta[] = filtered.map(mission => {
+      const requirements = mission.requirements as { types?: string[]; attributes?: string[]; minLevel?: number } | null;
+      const requiredTypes = requirements?.types ?? [];
+      const requiredAttributes = requirements?.attributes ?? [];
+
+      const eligible = userMonsters.filter(m => {
+        if (m.level < mission.minLevel) { return false; }
+        if (requiredTypes.length > 0) {
+          const monsterTypes = [m.type1, m.type2, m.type3, m.type4, m.type5]
+            .filter((t): t is string => t !== null)
+            .map(t => t.toLowerCase());
+          if (!requiredTypes.some(rt => monsterTypes.includes(rt.toLowerCase()))) { return false; }
+        }
+        if (requiredAttributes.length > 0) {
+          if (!m.attribute || !requiredAttributes.some(a => a.toLowerCase() === m.attribute?.toLowerCase())) { return false; }
+        }
+        return true;
+      });
+
+      return {
+        ...mission,
+        completionCount: completionCounts[mission.id] ?? 0,
+        meetsRequirements: eligible.length > 0,
+      };
+    });
 
     return {
       availableMissions,

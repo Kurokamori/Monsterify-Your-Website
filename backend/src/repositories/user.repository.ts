@@ -61,6 +61,7 @@ export type UserRow = {
   is_admin: boolean;
   monster_roller_settings: MonsterRollerSettings | string | null;
   theme: string | null;
+  font: string | null;
   content_settings: ContentSettings | string | null;
   notification_settings: NotificationSettings | string | null;
   priority_trainer_ids: number[] | string | null;
@@ -93,6 +94,7 @@ export type UserUpdateInput = {
   isAdmin?: boolean;
   monsterRollerSettings?: MonsterRollerSettings | null;
   theme?: string | null;
+  font?: string | null;
   contentSettings?: ContentSettings | null;
   notificationSettings?: NotificationSettings | null;
   priorityTrainerIds?: number[];
@@ -209,6 +211,7 @@ const normalizeUser = (user: UserRow): UserPublic => ({
   is_admin: user.is_admin,
   monster_roller_settings: normalizeMonsterRollerSettings(user.monster_roller_settings),
   theme: user.theme,
+  font: user.font,
   content_settings: normalizeContentSettings(user.content_settings),
   notification_settings: normalizeNotificationSettings(user.notification_settings),
   priority_trainer_ids: normalizePriorityTrainerIds(user.priority_trainer_ids),
@@ -232,6 +235,7 @@ export class UserRepository extends BaseRepository<UserPublic, UserCreateInput, 
       'is_admin',
       'monster_roller_settings',
       'theme',
+      'font',
       'content_settings',
       'notification_settings',
       'priority_trainer_ids',
@@ -377,6 +381,9 @@ export class UserRepository extends BaseRepository<UserPublic, UserCreateInput, 
     if (input.theme !== undefined) {
       pushUpdate('theme', input.theme);
     }
+    if (input.font !== undefined) {
+      pushUpdate('font', input.font);
+    }
     if (input.contentSettings !== undefined) {
       pushUpdate('content_settings', JSON.stringify(input.contentSettings));
     }
@@ -446,6 +453,10 @@ export class UserRepository extends BaseRepository<UserPublic, UserCreateInput, 
 
   async updateTheme(id: number, theme: string | null): Promise<UserPublic> {
     return this.update(id, { theme });
+  }
+
+  async updateFont(id: number, font: string | null): Promise<UserPublic> {
+    return this.update(id, { font });
   }
 
   async updateContentSettings(id: number, settings: ContentSettings): Promise<UserPublic> {

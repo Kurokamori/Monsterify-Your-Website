@@ -2214,6 +2214,7 @@
   border-radius: var(--border-radius-medium);
   overflow: hidden;
   transition: all 0.2s;
+  padding: var(--spacing-small);
 }
 
 .monster-claim-card.claimed {
@@ -2222,6 +2223,8 @@
 }
 
 .monster-claim-card .monster-preview {
+  margin: 0 auto;
+  width: 90%;
   height: 150px;
   overflow: hidden;
   background: var(--background-color);
@@ -2230,7 +2233,7 @@
 .monster-claim-card .monster-preview img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
 }
 
 .monster-claim-card .monster-placeholder {

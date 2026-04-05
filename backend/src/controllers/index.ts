@@ -75,6 +75,7 @@ export {
   getMonsterRollerSettings,
   updateMonsterRollerSettings,
   updateUserTheme,
+  updateUserFont,
   updateContentSettings,
   updateNotificationSettings,
   updatePriorityTrainers,
@@ -474,3 +475,14 @@ export {
   updateAdminConnectSubItem,
   deleteAdminConnectSubItem,
 } from './misc/admin-connect.controller';
+
+// Changelog Controller
+export {
+  getPublishedChangelog,
+  getLatestChangelog,
+  getAllChangelog,
+  getChangelogById,
+  createChangelog,
+  updateChangelog,
+  deleteChangelog,
+} from './misc/changelog.controller';

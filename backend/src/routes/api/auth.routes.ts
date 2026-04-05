@@ -11,6 +11,7 @@ import {
   getMonsterRollerSettings,
   updateMonsterRollerSettings,
   updateUserTheme,
+  updateUserFont,
   updateContentSettings,
   updateNotificationSettings,
   updatePriorityTrainers,
@@ -62,6 +63,7 @@ router.patch('/profile', authenticate, updateUserProfile);
 router.get('/roller-settings', authenticate, getMonsterRollerSettings);
 router.put('/roller-settings', authenticate, updateMonsterRollerSettings);
 router.put('/theme', authenticate, updateUserTheme);
+router.put('/font', authenticate, updateUserFont);
 router.put('/content-settings', authenticate, updateContentSettings);
 router.put('/notification-settings', authenticate, updateNotificationSettings);
 router.put('/priority-trainers', authenticate, updatePriorityTrainers);

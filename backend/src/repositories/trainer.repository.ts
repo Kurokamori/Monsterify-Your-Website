@@ -64,6 +64,7 @@ export type TrainerRow = {
   zodiac: string | null;
   chinese_zodiac: string | null;
   mega_info: string | null;
+  main_ref_artist: string | null;
   preferred_ball: string | null;
   created_at: Date;
   updated_at: Date;
@@ -146,6 +147,7 @@ export type TrainerCreateInput = {
 export type TrainerUpdateInput = {
   name?: string;
   mainRef?: string | null;
+  mainRefArtist?: string | null;
   additionalRefs?: string | null;
   birthday?: string | null;
   zodiac?: string | null;
@@ -298,6 +300,7 @@ export class TrainerRepository extends BaseRepository<TrainerWithStats, TrainerC
     const fieldMap: Record<string, string> = {
       name: 'name',
       mainRef: 'main_ref',
+      mainRefArtist: 'main_ref_artist',
       additionalRefs: 'additional_refs',
       birthday: 'birthday',
       zodiac: 'zodiac',

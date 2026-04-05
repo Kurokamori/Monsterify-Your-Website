@@ -2,7 +2,7 @@ import { useState, useEffect, type FormEvent } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../contexts/useAuth';
 import type { MonsterRollerSettings, ContentSettings, NotificationSettings } from '../../contexts/authContextDef';
-import { useTheme, THEMES } from '../../contexts/ThemeContext';
+import { useTheme, THEMES, FONTS } from '../../contexts/ThemeContext';
 import { FormInput } from '../../components/common/FormInput';
 import { Modal } from '../../components/common/Modal';
 import { ErrorModal } from '../../components/common/ErrorModal';
@@ -88,7 +88,7 @@ export default function ProfilePage() {
     error: authError,
     clearError,
   } = useAuth();
-  const { theme, setTheme } = useTheme();
+  const { theme, setTheme, font, setFont } = useTheme();
   const navigate = useNavigate();
 
   // Clear any stale auth errors on mount
@@ -438,6 +438,34 @@ export default function ProfilePage() {
                 />
                 <span className="theme-option-label">{t.label}</span>
                 <small className="theme-option-desc">{t.description}</small>
+              </label>
+            ))}
+          </div>
+        </div>
+
+        {/* Font */}
+        <div className="settings-section">
+          <h2 className="settings-section-title">
+            <i className="fa-solid fa-font" /> Font
+          </h2>
+          <p className="settings-section-desc">Choose the site font (independent of theme):</p>
+
+          <div className="theme-options">
+            {FONTS.map(f => (
+              <label
+                key={f.id}
+                className={`theme-option${font === f.id ? ' active' : ''}`}
+                style={{ fontFamily: f.family }}
+              >
+                <input
+                  type="radio"
+                  name="font"
+                  value={f.id}
+                  checked={font === f.id}
+                  onChange={() => setFont(f.id)}
+                />
+                <span className="theme-option-label">{f.label}</span>
+                <small className="theme-option-desc">{f.description}</small>
               </label>
             ))}
           </div>

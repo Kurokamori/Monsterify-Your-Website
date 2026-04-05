@@ -379,6 +379,27 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     }
   };
 
+  // Update user's font preference
+  const updateFont = async (font: string): Promise<boolean> => {
+    try {
+      const response = await api.put('/auth/font', { font });
+
+      if (response.data.success) {
+        setCurrentUser(prevUser => {
+          if (!prevUser) return null;
+          const updatedUser = { ...prevUser, font: response.data.font };
+          localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(updatedUser));
+          return updatedUser;
+        });
+      }
+
+      return true;
+    } catch (err) {
+      console.error('Font update error:', err);
+      return false;
+    }
+  };
+
   // Change password
   const changePassword = async (currentPassword: string, newPassword: string): Promise<boolean> => {
     try {
@@ -455,6 +476,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     updateNotificationSettings,
     updatePriorityTrainers,
     updateTheme,
+    updateFont,
     changePassword,
     requestPasswordReset,
     resetPassword,

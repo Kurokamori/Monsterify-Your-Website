@@ -86,7 +86,11 @@ export type MonsterRow = {
   has_mega_stone: boolean;
   mega_img_link: string | null;
   mega_stone_img: string | null;
+  main_ref_artist: string | null;
+  mega_ref_artist: string | null;
   is_starter_template: boolean;
+  can_talk: number;
+  can_talk_descriptor: string | null;
   created_at: Date;
   updated_at: Date;
 };
@@ -230,6 +234,10 @@ export type MonsterUpdateInput = {
   hasMegaStone?: boolean;
   megaImgLink?: string | null;
   megaStoneImg?: string | null;
+  mainRefArtist?: string | null;
+  megaRefArtist?: string | null;
+  canTalk?: number;
+  canTalkDescriptor?: string | null;
 };
 
 export type MonsterImageRow = {
@@ -471,14 +479,15 @@ export class MonsterRepository extends BaseRepository<MonsterWithTrainer, Monste
           spd_total, spd_iv, spd_ev, spe_total, spe_iv, spe_ev,
           nature, characteristic, gender, friendship, ability1, ability2,
           moveset, img_link, date_met, where_met, box_number, trainer_index,
-          shiny, alpha, shadow, paradox, pokerus, albino, melanistic, dot, ball, created_at
+          shiny, alpha, shadow, paradox, pokerus, albino, melanistic, dot, ball,
+          can_talk, can_talk_descriptor, created_at
         )
         VALUES (
           $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13,
           $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25,
           $26, $27, $28, $29, $30, $31, $32, $33, $34, $35, $36, $37,
           $38, $39, $40, $41, $42, $43, $44, $45, $46, $47, $48, $49,
-          $50, $51, $52, NOW()
+          $50, $51, $52, $53, NOW()
         )
         RETURNING id
       `,
@@ -535,6 +544,8 @@ export class MonsterRepository extends BaseRepository<MonsterWithTrainer, Monste
         (input.melanistic ? 1 : 0),
         (input.dot ? 1 : 0),
         input.ball ?? 'Poke Ball',
+        0, // can_talk default
+        null, // can_talk_descriptor default
       ]
     );
 
@@ -651,6 +662,10 @@ export class MonsterRepository extends BaseRepository<MonsterWithTrainer, Monste
       hasMegaStone: 'has_mega_stone',
       megaImgLink: 'mega_img_link',
       megaStoneImg: 'mega_stone_img',
+      mainRefArtist: 'main_ref_artist',
+      megaRefArtist: 'mega_ref_artist',
+      canTalk: 'can_talk',
+      canTalkDescriptor: 'can_talk_descriptor',
     };
 
     const booleanFields = new Set(['shiny', 'alpha', 'shadow', 'paradox', 'pokerus', 'albino', 'melanistic', 'dot', 'hasMegaStone', 'isStarterTemplate']);

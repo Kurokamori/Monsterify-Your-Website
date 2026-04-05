@@ -26,11 +26,6 @@ export const TrainerDetailHeader = ({ trainer, isOwner }: TrainerDetailHeaderPro
           className="trainer-profile-image"
           onError={handleImgError}
         />
-        {!!(trainer as unknown as Record<string, unknown>).main_ref_artist && (
-          <div className="image-credit">
-            Art by: {String((trainer as unknown as Record<string, unknown>).main_ref_artist)}
-          </div>
-        )}
       </div>
 
       <div className="trainer-profile-info">
@@ -58,6 +53,12 @@ export const TrainerDetailHeader = ({ trainer, isOwner }: TrainerDetailHeaderPro
                 )}
               </span>
             </div>
+            {trainer.main_ref_artist && (
+              <div>
+                <i className="fas fa-paint-brush"></i>
+                <span>Art by: {trainer.main_ref_artist}</span>
+              </div>
+            )}
             <div className="trainer-level-faction">
               <span className="trainer-level">Level {trainer.level || 1}</span>
               {trainer.faction && (

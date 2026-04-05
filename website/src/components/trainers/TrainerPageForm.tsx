@@ -376,6 +376,14 @@ export function TrainerPageForm({
               Upload a clear image of your trainer. Recommended size: 800x800 pixels.
             </div>
           </div>
+          <FormInput
+            name="main_ref_artist"
+            label="Main Image Artist"
+            value={formData.main_ref_artist || ''}
+            onChange={(e: ChangeEvent<HTMLInputElement>) => handleFieldChange('main_ref_artist', e.target.value)}
+            disabled={saving}
+            placeholder="Artist name (auto-filled on ref submission)"
+          />
         </div>
 
         {/* Species & Types */}

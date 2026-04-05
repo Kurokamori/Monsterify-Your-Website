@@ -362,6 +362,21 @@ export class UserMissionRepository extends BaseRepository<
     return row ? normalizeUserMissionWithDetails(row) : null;
   }
 
+  async getCompletionCountsByUserId(userId: string): Promise<Record<number, number>> {
+    const result = await db.query<{ mission_id: number; count: string }>(
+      `SELECT mission_id, COUNT(*) as count
+       FROM user_missions
+       WHERE user_id = $1 AND status = 'completed' AND reward_claimed::boolean = true
+       GROUP BY mission_id`,
+      [userId]
+    );
+    const counts: Record<number, number> = {};
+    for (const row of result.rows) {
+      counts[row.mission_id] = parseInt(row.count, 10);
+    }
+    return counts;
+  }
+
   // ── Admin Queries ────────────────────────────────────────────────────
 
   async findAllPaginated(options: AdminUserMissionQueryOptions = {}): Promise<PaginatedAdminUserMissions> {
