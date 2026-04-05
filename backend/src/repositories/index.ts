@@ -624,7 +624,7 @@ export type {
 } from './antique-auction.repository';
 
 // ============================================================================
-// Art Todo Repository
+// Art To-Do Repository
 // ============================================================================
 
 export { ArtTodoRepository } from './art-todo.repository';

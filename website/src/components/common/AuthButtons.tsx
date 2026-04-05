@@ -83,7 +83,7 @@ export const AuthButtons = ({ onLogout, totalUnread = 0, totalNotifications = 0 
                 <i className="fas fa-hands-helping"></i> Reference Helper
               </Link>
               <Link to="/profile/art-todo" className="top-nav-link" onClick={() => setDropdownOpen(false)}>
-                <i className="fas fa-palette"></i> Art Todo List
+                <i className="fas fa-palette"></i> Art To-Do List
               </Link>
               <Link to="/profile/bookmarks" className="top-nav-link" onClick={() => setDropdownOpen(false)}>
                 <i className="fas fa-bookmark"></i> Bookmarks

@@ -4,7 +4,7 @@ import express, { Router } from 'express';
 import authRoutes from './api/auth.routes';
 import userRoutes from './api/user.routes';
 
-// Schedule & Art Todo Routes
+// Schedule & Art To-Do Routes
 import scheduleRoutes from './misc/schedule.routes';
 import artTodoRoutes from './misc/art-todo.routes';
 
@@ -119,7 +119,7 @@ const router: Router = express.Router();
 router.use('/auth', authRoutes);
 router.use('/users', userRoutes);
 
-// Schedule & Art Todo Routes
+// Schedule & Art To-Do Routes
 router.use('/schedule', scheduleRoutes);
 router.use('/art-todo', artTodoRoutes);
 

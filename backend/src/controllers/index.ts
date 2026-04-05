@@ -85,7 +85,7 @@ export {
   discordLinkCallback,
 } from './api/auth.controller';
 
-// Art Todo Controller
+// Art To-Do Controller
 export {
   getPersonalItems,
   getLists,

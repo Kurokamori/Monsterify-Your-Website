@@ -396,7 +396,7 @@ function ArtTodosCard({ todos }: { todos: ArtTodo[] }) {
   return (
     <div className="dashboard-card">
       <div className="dashboard-card__header">
-        <h3>Art Todo List</h3>
+        <h3>Art To-Do List</h3>
         <Link to="/profile/art-todo" className="button primary small no-flex">View All</Link>
       </div>
       <div className="task-list">

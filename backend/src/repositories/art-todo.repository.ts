@@ -1,7 +1,7 @@
 import { BaseRepository } from './base.repository';
 import { db } from '../database';
 
-// Art Todo List Types
+// Art To-Do List Types
 export type ArtTodoListRow = {
   id: number;
   user_id: number;
@@ -27,7 +27,7 @@ export type ArtTodoListWithItems = ArtTodoList & {
   items: ArtTodoItemWithDetails[];
 };
 
-// Art Todo Item Types
+// Art To-Do Item Types
 export type ArtTodoItemPriority = 'low' | 'medium' | 'high';
 export type ArtTodoItemStatus = 'pending' | 'in_progress' | 'completed';
 
@@ -65,7 +65,7 @@ export type ArtTodoItemWithDetails = ArtTodoItem & {
   references: ArtTodoReferenceWithDetails[];
 };
 
-// Art Todo Reference Types
+// Art To-Do Reference Types
 export type ArtTodoReferenceType = 'trainer' | 'monster';
 
 export type ArtTodoReferenceRow = {
@@ -249,11 +249,11 @@ export class ArtTodoRepository extends BaseRepository<
 
     const insertedRow = result.rows[0];
     if (!insertedRow) {
-      throw new Error('Failed to insert art todo list');
+      throw new Error('Failed to insert art to-do list');
     }
     const list = await this.findById(insertedRow.id);
     if (!list) {
-      throw new Error('Failed to create art todo list');
+      throw new Error('Failed to create art to-do list');
     }
     return list;
   }
@@ -274,7 +274,7 @@ export class ArtTodoRepository extends BaseRepository<
     if (updates.length === 0) {
       const existing = await this.findById(id);
       if (!existing) {
-        throw new Error('Art todo list not found');
+        throw new Error('Art to-do list not found');
       }
       return existing;
     }
@@ -287,7 +287,7 @@ export class ArtTodoRepository extends BaseRepository<
 
     const updated = await this.findById(id);
     if (!updated) {
-      throw new Error('Art todo list not found after update');
+      throw new Error('Art to-do list not found after update');
     }
     return updated;
   }
@@ -402,11 +402,11 @@ export class ArtTodoRepository extends BaseRepository<
 
     const insertedRow = result.rows[0];
     if (!insertedRow) {
-      throw new Error('Failed to insert art todo item');
+      throw new Error('Failed to insert art to-do item');
     }
     const item = await this.getItemById(insertedRow.id, userId);
     if (!item) {
-      throw new Error('Failed to create art todo item');
+      throw new Error('Failed to create art to-do item');
     }
     return item;
   }
@@ -451,7 +451,7 @@ export class ArtTodoRepository extends BaseRepository<
     if (updates.length === 0) {
       const existing = await this.getItemById(id, userId);
       if (!existing) {
-        throw new Error('Art todo item not found');
+        throw new Error('Art to-do item not found');
       }
       return existing;
     }
@@ -475,7 +475,7 @@ export class ArtTodoRepository extends BaseRepository<
 
     const updated = await this.getItemById(id, userId);
     if (!updated) {
-      throw new Error('Art todo item not found after update');
+      throw new Error('Art to-do item not found after update');
     }
     return updated;
   }

@@ -71,7 +71,7 @@ function refIcon(type: ReferenceType): string {
 // --- Component ---
 
 export default function PersonalArtTodoPage() {
-  useDocumentTitle('Art Todo');
+  useDocumentTitle('Art To-Do');
 
   const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
@@ -117,7 +117,7 @@ export default function PersonalArtTodoPage() {
       const data = await artTodoService.getLists();
       setLists(data);
     } catch {
-      setError('Failed to load art todo lists. Please try again later.');
+      setError('Failed to load art to-do lists. Please try again later.');
     } finally {
       setLoading(false);
     }
@@ -345,7 +345,7 @@ export default function PersonalArtTodoPage() {
 
   // --- Render guards ---
 
-  if (loading) return <LoadingSpinner message="Loading art todo lists..." />;
+  if (loading) return <LoadingSpinner message="Loading art to-do lists..." />;
 
   if (error && lists.length === 0) {
     return <ErrorMessage message={error} onRetry={fetchLists} />;
@@ -379,8 +379,8 @@ export default function PersonalArtTodoPage() {
           <div className="art-todo-empty-icon">
             <i className="fa-solid fa-palette" />
           </div>
-          <h2>No Art Todo Lists Yet</h2>
-          <p>Create your first art todo list to start organizing your creative projects!</p>
+          <h2>No Art To-do Lists Yet</h2>
+          <p>Create your first art to-do list to start organizing your creative projects!</p>
           <button className="button primary lg" onClick={openCreateList}>
             Create Your First List
           </button>
@@ -555,7 +555,7 @@ export default function PersonalArtTodoPage() {
       <Modal
         isOpen={listModalMode !== null}
         onClose={closeListModal}
-        title={listModalMode === 'create' ? 'Create New Art Todo List' : 'Edit Art Todo List'}
+        title={listModalMode === 'create' ? 'Create New Art to-do List' : 'Edit Art to-do List'}
       >
         <form onSubmit={handleListSubmit}>
           <FormInput
@@ -590,7 +590,7 @@ export default function PersonalArtTodoPage() {
       <Modal
         isOpen={itemModalMode !== null}
         onClose={closeItemModal}
-        title={itemModalMode === 'create' ? 'Create New Art Todo Item' : 'Edit Art Todo Item'}
+        title={itemModalMode === 'create' ? 'Create New Art to-do Item' : 'Edit Art to-do Item'}
       >
         <form onSubmit={handleItemSubmit}>
           <FormInput

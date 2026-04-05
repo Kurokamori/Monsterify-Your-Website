@@ -236,10 +236,10 @@ export class NotificationService {
     const meta = (metadata ?? {}) as Record<string, unknown>;
 
     // Resolve artist name: use metadata if stored, otherwise look up submitter
-    let artistName = (meta.artistName as string | undefined) || null;
+    let artistName = (meta.artistName as string | undefined) ?? null;
     if (!artistName && submitterUserId) {
       const submitter = await this.userRepo.findById(submitterUserId);
-      artistName = submitter?.display_name || submitter?.username || null;
+      artistName = submitter?.display_name ?? submitter?.username ?? null;
     }
 
     if (referenceType === 'trainer') {
@@ -265,7 +265,7 @@ export class NotificationService {
     } else if (referenceType === 'trainer mega') {
       const megaInfo = {
         mega_ref: referenceUrl ?? '',
-        mega_artist: meta.megaArtist || artistName || '',
+        mega_artist: meta.megaArtist ?? artistName ?? '',
         mega_species1: meta.megaSpecies1 ?? '',
         mega_species2: meta.megaSpecies2 ?? '',
         mega_species3: meta.megaSpecies3 ?? '',

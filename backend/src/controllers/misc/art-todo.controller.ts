@@ -19,7 +19,7 @@ export async function getPersonalItems(req: Request, res: Response): Promise<voi
     const items = await artTodoService.getPersonalItems(req.user.id, limit);
     res.json({ success: true, items });
   } catch (error) {
-    console.error('Error getting personal art todo items:', error);
+    console.error('Error getting personal art to-do items:', error);
     res.status(500).json({ success: false, message: 'Error getting personal items' });
   }
 }
@@ -38,7 +38,7 @@ export async function getLists(req: Request, res: Response): Promise<void> {
     const lists = await artTodoService.getLists(req.user.id);
     res.json({ success: true, data: lists });
   } catch (error) {
-    console.error('Error getting art todo lists:', error);
+    console.error('Error getting art to-do lists:', error);
     res.status(500).json({ success: false, message: 'Error getting lists' });
   }
 }
@@ -60,7 +60,7 @@ export async function getListById(req: Request, res: Response): Promise<void> {
 
     res.json({ success: true, data: list });
   } catch (error) {
-    console.error('Error getting art todo list:', error);
+    console.error('Error getting art to-do list:', error);
     res.status(500).json({ success: false, message: 'Error getting list' });
   }
 }
@@ -82,7 +82,7 @@ export async function createList(req: Request, res: Response): Promise<void> {
     const list = await artTodoService.createList(req.user.id, title.trim(), description?.trim());
     res.status(201).json({ success: true, data: list });
   } catch (error) {
-    console.error('Error creating art todo list:', error);
+    console.error('Error creating art to-do list:', error);
     res.status(500).json({ success: false, message: 'Error creating list' });
   }
 }
@@ -111,7 +111,7 @@ export async function updateList(req: Request, res: Response): Promise<void> {
 
     res.json({ success: true, data: list });
   } catch (error) {
-    console.error('Error updating art todo list:', error);
+    console.error('Error updating art to-do list:', error);
     res.status(500).json({ success: false, message: 'Error updating list' });
   }
 }
@@ -133,7 +133,7 @@ export async function deleteList(req: Request, res: Response): Promise<void> {
 
     res.json({ success: true, message: 'List deleted successfully' });
   } catch (error) {
-    console.error('Error deleting art todo list:', error);
+    console.error('Error deleting art to-do list:', error);
     res.status(500).json({ success: false, message: 'Error deleting list' });
   }
 }
@@ -153,7 +153,7 @@ export async function getItems(req: Request, res: Response): Promise<void> {
     const items = await artTodoService.getItems(listId, req.user.id);
     res.json({ success: true, data: items });
   } catch (error) {
-    console.error('Error getting art todo items:', error);
+    console.error('Error getting art to-do items:', error);
     res.status(500).json({ success: false, message: 'Error getting items' });
   }
 }
@@ -197,7 +197,7 @@ export async function createItem(req: Request, res: Response): Promise<void> {
 
     res.status(201).json({ success: true, data: item });
   } catch (error) {
-    console.error('Error creating art todo item:', error);
+    console.error('Error creating art to-do item:', error);
     res.status(500).json({ success: false, message: 'Error creating item' });
   }
 }
@@ -246,7 +246,7 @@ export async function updateItem(req: Request, res: Response): Promise<void> {
 
     res.json({ success: true, data: item });
   } catch (error) {
-    console.error('Error updating art todo item:', error);
+    console.error('Error updating art to-do item:', error);
     res.status(500).json({ success: false, message: 'Error updating item' });
   }
 }
@@ -275,7 +275,7 @@ export async function moveItem(req: Request, res: Response): Promise<void> {
 
     res.json({ success: true, data: item });
   } catch (error) {
-    console.error('Error moving art todo item:', error);
+    console.error('Error moving art to-do item:', error);
     res.status(500).json({ success: false, message: 'Error moving item' });
   }
 }
@@ -297,7 +297,7 @@ export async function deleteItem(req: Request, res: Response): Promise<void> {
 
     res.json({ success: true, message: 'Item deleted successfully' });
   } catch (error) {
-    console.error('Error deleting art todo item:', error);
+    console.error('Error deleting art to-do item:', error);
     res.status(500).json({ success: false, message: 'Error deleting item' });
   }
 }

@@ -942,7 +942,7 @@ export class SubmissionService {
 
     // Look up the submitter's display name for artist attribution
     const submitterUser = await this.userRepo.findByDiscordId(userId);
-    const submitterArtistName = submitterUser?.display_name || submitterUser?.username || null;
+    const submitterArtistName = submitterUser?.display_name ?? submitterUser?.username ?? null;
 
     const referenceCount = Object.keys(body)
       .filter(key => String(key).startsWith('trainerId_'))
@@ -2518,7 +2518,7 @@ export class SubmissionService {
     } else if (referenceType === 'trainer mega') {
       const megaInfo = {
         mega_ref: referenceUrl ?? '',
-        mega_artist: reference.megaArtist || artistName || '',
+        mega_artist: reference.megaArtist ?? artistName ?? '',
         mega_species1: reference.megaSpecies1 ?? '',
         mega_species2: reference.megaSpecies2 ?? '',
         mega_species3: reference.megaSpecies3 ?? '',

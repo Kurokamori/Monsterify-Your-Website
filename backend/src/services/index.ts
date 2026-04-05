@@ -327,7 +327,7 @@ export type {
   ScrollOfSecretsResult,
 } from './mega-mart.service';
 
-// Art Todo Service
+// Art To-Do Service
 export { ArtTodoService } from './art-todo.service';
 
 // Schedule Service
